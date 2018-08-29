@@ -1,0 +1,124 @@
+<?php
+
+namespace App\Traits;
+
+use Exception;
+
+trait UtilsTrait
+{
+
+    /**
+     * converts the specified data into the format that the multiselect
+     * needs in order to works
+     * NOTE: this new structure only applies for the monterail.github.io/vue-multiselect/ library
+     * @param  object $data
+     * @param  string $itemRef
+     * @return collection
+     */
+    protected function multiSelectFormat($data, $itemRef = '')
+    {
+        $newFormartCollection = collect([]);
+
+        if (is_array($data)) {
+            collect($data)->each(function ($item, $key) use ($newFormartCollection, $itemRef) {
+                $newFormartCollection->push([
+                    'name' => $item,
+                    'value' => $item
+                ]);
+            });
+        } else {//or collection
+            collect($data)->each(function ($item, $key) use ($newFormartCollection, $itemRef) {
+                $name = $itemRef ? $item[$itemRef] : $item;
+
+                $newFormartCollection->push([
+                    'name' => $key,
+                    'value' => $name
+                ]);
+            });
+        }
+
+        return $newFormartCollection;
+    }
+
+    /**
+     * returns the absolute path for talend parameters used in
+     * talend jobs execution
+     * this methos only must be used to get the cd_path and sh_path
+     * parameters
+     *
+     * this method assumes that the talend is located in storage/talend_jobs
+     * @param  string $parameter
+     * @return string
+     */
+    protected function getAbsoluteTalendParameter($parameter)
+    {
+        $parameter = $this->getValueFromEnvFile($parameter);
+        if (!starts_with($parameter, '/')) {
+            $parameter = "/$parameter";
+        }
+        return storage_path("talend_jobs$parameter");
+    }
+
+    /**
+     * returns the PayU api key located in the .env file
+     * @return string
+     */
+    protected function payuApiKey()
+    {
+        return $this->getValueFromEnvFile('PAYU_APIKEY');
+    }
+
+    /**
+     * returns the PayU merchant id located in the .env file
+     * @return string
+     */
+    protected function payuMerchantId()
+    {
+        return $this->getValueFromEnvFile('PAYU_MERCHANT_ID');
+    }
+
+    /**
+     * returns the PayU account id located in the .env file
+     * @return string
+     */
+    protected function payuAccountId()
+    {
+        return $this->getValueFromEnvFile('PAYU_ACCOUNT_ID');
+    }
+
+    /**
+     * returns the PayU test value located in the .env file
+     * @return string
+     */
+    protected function payuTest()
+    {
+        return $this->getValueFromEnvFile('PAYU_TEST') == 'is_test';
+    }
+
+    /**
+     * returns the PayU payment site url located in the .env file
+     * @return string
+     */
+    protected function payuPaymentSiteUrl()
+    {
+        return $this->getValueFromEnvFile('PAYU_PAYMENT_SITE_URL');
+    }
+
+    /**
+     * returns a value located in the .env file
+     * by its key
+     *
+     * if it is not defined, throws exception
+     * @param  string $parameter
+     * @return string
+     */
+    protected function getValueFromEnvFile($parameter)
+    {
+        $value = env($parameter);
+        if (!$value) {
+            throw new Exception('Parameter not found in .env file');
+        }
+        return $value;
+    }
+
+}

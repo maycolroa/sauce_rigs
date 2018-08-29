@@ -1,0 +1,14 @@
+<?php
+
+namespace App\Administrative;
+
+use Illuminate\Database\Eloquent\Model;
+
+class Company extends Model
+{
+    protected $table = 'sau_companies';
+
+    public function users(){
+        return $this->belongsToMany('App\User','sau_company_user');
+    }
+}
