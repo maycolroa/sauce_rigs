@@ -11,6 +11,7 @@ class EmailTestController extends Controller
         $mail = new MailInformation();
         $mail->setRecipients(['riera_1992@hotmail.com']);
         $mail->setMessage("Este es un mensaje de prueba");
+        $mail->setModule(1);
         //$mail->setFrom(['address'=>'sause@gmail.com', 'name'=>'Roberth Riera']);
         $mail->setFrom('sause@gmail.com');
         //$mail->setSubject('Notification Test');

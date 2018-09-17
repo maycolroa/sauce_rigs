@@ -19,6 +19,9 @@ class MailInformation
     //Mail message
     private $message;
 
+    //Stores the id of the module that is executing the action
+    private $module;
+
     public function __construct()
     {
         $this->recipients = [];
@@ -81,5 +84,15 @@ class MailInformation
     public function getMessage()
     {
         return $this->message;
+    }
+
+    public function setModule($module)
+    {
+        $this->module = $module;
+    }
+
+    public function getModule()
+    {
+        return $this->module;
     }
 }
