@@ -52,4 +52,5 @@ mixAssetsDir('vendor/fonts/*/*', (src, dest) => mix.copy(src, dest));
 mix.js('resources/assets/app.js', 'public');
 mix.js('resources/assets/auth.js', 'public');
 
+mix.sass('resources/assets/app.scss', 'public');
 mix.version();

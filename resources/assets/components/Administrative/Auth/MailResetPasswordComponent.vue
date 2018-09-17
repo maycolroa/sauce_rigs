@@ -6,7 +6,7 @@
         <div class="p-4 p-sm-5">
           <!-- Logo -->
             <div class="d-flex justify-content-center align-items-center">
-                <img class="ui-w-120 rounded-circle" src="https://mail.google.com/mail/u/0/?ui=2&ik=ed8c0f24ac&view=fimg&th=1652489abeae751f&attid=0.3&disp=emb&realattid=ii_jko664ke0_16524898dc13abbd&attbid=ANGjdJ-Zkh0y9cFEGtY2MleJmXpBxxkrG3MxJmRjAZroOYGKfNJslkSxUIP2gh9aejgNnhy8vav628fWI2ySf4QSEbuy1iMwA3tcYo8cBN6K-WSQl3EUHlasYuWC1EY&sz=w674-h634&ats=1533916330579&rm=1652489abeae751f&zw&atsh=1">
+                <img class="ui-w-120 rounded-circle" src="~@/icons/Sauce.png">
             </div>
          <!-- / Logo -->
             
@@ -46,7 +46,7 @@
 <style src="@/vendor/styles/pages/authentication.scss" lang="scss"></style>
 <script>
 import VueInput from "@/components/Inputs/VueInput.vue";
-import Form from "@/components/utils/Form.js";
+import Form from "@/utils/Form.js";
 
 export default {
   components: {

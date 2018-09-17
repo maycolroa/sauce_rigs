@@ -4,8 +4,8 @@ namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Schema;
-use App\Services\ViewService;
 use Illuminate\Support\Facades\View;
+use App\Services\ConfigurationServices;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -17,8 +17,6 @@ class AppServiceProvider extends ServiceProvider
     public function boot()
     {
         Schema::defaultStringLength(250);
-
-        View::share('viewService', new ViewService());
     }
 
     /**
@@ -28,6 +26,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        //
+      $this->app->singleton('configuration_service', function () {
+        return new ConfigurationServices();
+      });
     }
 }

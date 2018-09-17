@@ -68,7 +68,9 @@ class EloquentVuetableBuilder
             $data->orderBy($orderBy, $direction);
         }
 
-        $results = $data->get()->toArray();
+        $results = $data->get();
+
+        $this->applyChangesTo($results);
 
         return [
             'data' => $results,
@@ -115,6 +117,56 @@ class EloquentVuetableBuilder
         });
     }
 
+    /**
+     * Add a new column to the columns to add.
+     *
+     * @param string $column
+     * @param string|Closure $content
+     */
+    public function addColumn($column, $content)
+    {
+        $this->columnsToAdd[$column] = $content;
+
+        return $this;
+    }
+
+    /**
+     * Edit the results inside the pagination object.
+     *
+     * @param  \Illuminate\Pagination\LengthAwarePaginator $results
+     * @param  array $columnsToEdit
+     * @return \Illuminate\Pagination\LengthAwarePaginator
+     */
+    public function applyChangesTo($results)
+    {
+        if (empty($this->columnsToAdd)) {
+            return $results;
+        }
+
+        if ($results instanceof LengthAwarePaginator) {
+            $newData = $results->getCollection();
+            return $results->setCollection($this->editData($newData));
+
+        } else if ($results instanceof Collection) {
+            return $this->editData($results);
+
+        } else {
+            throw new Exception('invalid results object');
+        }
+    }
+
+    /**
+     * edits the $data fetched from the database 
+     * @param  collection $data
+     * @return void
+     */
+    public function editData($data)
+    {
+        return $data->map(function ($model) {
+            $model = $this->addModelAttibutes($model);
+            return $model;
+        });
+    }
 
     /**
      * Add the model attributes acording to the columnsToAdd attribute.
@@ -130,6 +182,29 @@ class EloquentVuetableBuilder
             }
 
             $model = $this->changeAttribute($model, $column, $value);
+        }
+
+        return $model;
+    }
+
+    /**
+     * Change a model attribe
+     *
+     * @param  \Illuminate\Database\Eloquent\Model $model
+     * @param  string $attribute
+     * @param  string|Closure $value
+     * @return \Illuminate\Database\Eloquent\Model
+     */
+    public function changeAttribute($model, $attribute, $value)
+    {
+        if ($value instanceof Closure) {
+            $model->setAttribute($attribute, $value($model));
+        } else {
+            $model->setAttribute($attribute, $value);
+        }
+
+        if ($model->relationLoaded($attribute)) {
+            $model->setRelation($attribute, 'removed');
         }
 
         return $model;

@@ -10,6 +10,8 @@
                          track-by="value"
                          :multiple="multiple"
                          :placeholder="placeholder"
+                         :disabled="disabled"
+                         deselect-label="Puede quitar este valor"
                          :hide-selected="multiple"
                          :show-labels="false"
                          @input="updateValue"
@@ -85,6 +87,12 @@ export default {
                 });
         }
     },
+    watch: {
+      selectedObject(){
+        this.selectValue = this.selectedObject;
+        this.options.push(this.selectedObject);
+      }
+    },
     mounted() {
          if (this.selectedObject) {
             this.options.push(this.selectedObject);
@@ -108,3 +116,8 @@ export default {
     },
 }
 </script>
+<style>
+  .multiselect--disabled{
+    opacity: 1 !important;
+  }
+</style>

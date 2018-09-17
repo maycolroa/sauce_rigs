@@ -41,7 +41,3 @@ if (token) {
 //     encrypted: true
 // });
 
-/**
- * Load Vue.js app
- */
-

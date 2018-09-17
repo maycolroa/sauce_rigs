@@ -16,6 +16,7 @@
     
   </div>
   <div class="layout-overlay" @click="closeSidenav"></div>
+  <notifications group="app"/>
 </div>
 </template>
 <script>

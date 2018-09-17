@@ -12,6 +12,13 @@ class Employee extends Model
     protected $table = 'sau_employees';
 
     public function audiometries(){
-        return $this->hasMany('App\BiologicalMonitoring\Audiometry','employee_id');
+        return $this->hasMany('App\PreventiveOccupationalMedicine\BiologicalMonitoring\Audiometry','employee_id');
+    }
+
+    public function multiselect(){
+      return [
+        'name' => "{$this->identification} - {$this->name}",
+        'value' => $this->id
+      ];
     }
 }

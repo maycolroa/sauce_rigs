@@ -85,7 +85,7 @@ class EmployeesController extends Controller
         //
     }
 
-    public function data(Request $request){
+    public function multiselect(Request $request){
         $keyword = "%{$request->keyword}%";
         $employees = Employee::selectRaw("
             sau_employees.id as id,

@@ -10,10 +10,12 @@
                 :searchable="searchable"
                 :show-labels="false"
                 :placeholder="placeholder"
-                :disabled="false"
+                :disabled="disabled"
                 label="name"
+                :hide-selected="hideSelected"
+                deselect-label="Puede quitar este valor"
                 :class="state"
-                track-by="value"
+                track-by="name"
                 @input="updateValue"
                 :allow-empty="true"
                 :multiple="multiple"
@@ -31,65 +33,76 @@
 <style src="vue-multiselect/dist/vue-multiselect.min.css"></style>
 
 <script>
-import Multiselect from 'vue-multiselect'
+import Multiselect from "vue-multiselect";
 export default {
-    props: {
-        error: { type: String },
-        name: { type: String, required: true },
-        value: [String, Number, Object, Array],
-        options: { type: Array, required: true },
-        label: { type: String, default: '' },
-        disabled: { type: Boolean, default: false },
-        searchable: {type: Boolean, default: false},
-        placeholder: { type: String, default: '' },
-        multiple: { type: Boolean, default: false },
-        textBlock: {type: String},
-        actionBlock: {type: String},
+  props: {
+    error: { type: String },
+    name: { type: String, required: true },
+    value: [String, Number, Object, Array],
+    options: { type: Array, required: true },
+    label: { type: String, default: "" },
+    disabled: { type: Boolean, default: false },
+    searchable: { type: Boolean, default: false },
+    hideSelected: { type: Boolean, default: true },
+    placeholder: { type: String, default: "" },
+    multiple: { type: Boolean, default: false },
+    textBlock: { type: String },
+    actionBlock: { type: String }
+  },
+  components: {
+    Multiselect
+  },
+  data() {
+    return {
+      selectValue: ""
+    };
+  },
+  watch: {
+    options() {
+      this.setMultiselectValue();
+    }
+  },
+  methods: {
+    limitText(count) {
+      return `y ${count} mas`;
     },
-    components:{
-        Multiselect,
+    updateValue() {
+      let value = this.multiple ? this.selectValue : this.selectValue.value;
+
+      this.$emit("input", value);
     },
-    data() {
-        return {
-            selectValue: ''
+    setMultiselectValue() {
+      if (this.value) {
+        if (this.multiple) {
+          if (typeof this.value == "object") {
+            this.selectValue = this.value;
+          } else {
+            this.selectValue = this.value.split(",").map(v => {
+              
+              return {'name': v, 'value': v}
+            });
+          }
+        } else {
+          this.selectValue = this.value
+            ? _.find(this.options, { value: this.value })
+            : "";
         }
+      }
+    }
+  },
+  computed: {
+    state() {
+      if (!this.error) {
+        return null;
+      } else {
+        return "is-invalid";
+      }
     },
-    watch: {
-        value() {
-            this.setMultiselectValue();
-        }
-    },
-    methods: {
-        limitText (count) {
-            return `y ${count} mas`
-        },
-        updateValue() {
-            let value = this.multiple ? this.selectValue : this.selectValue.value;
-            this.$emit('input', value);
-        },
-        setMultiselectValue() {
-            if (this.multiple) {
-                this.selectValue = this.value;
-            } else {
-                this.selectValue = this.value ? _.find(this.options, {value: this.value}) : '';
-            }
-        }
-    },
-    mounted() {
-        this.setMultiselectValue();
-    },
-    computed:{
-        state(){
-            if(!this.error){
-                return null;
-            }
-            else{
-                return 'is-invalid';
-            }
-        },
-        classBlock(){
-            return this.textBlock ? 'd-flex justify-content-between align-items-end' : '';
-        },
-    },
-}
+    classBlock() {
+      return this.textBlock
+        ? "d-flex justify-content-between align-items-end"
+        : "";
+    }
+  }
+};
 </script>

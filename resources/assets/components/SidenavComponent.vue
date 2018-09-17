@@ -1,6 +1,5 @@
 <template>
   <sidenav :orientation="orientation" :class="curClasses">
-
     <!-- Brand logo -->
     <div class="app-brand logo" v-if="orientation !== 'horizontal'">
       <span class="app-brand-logo logo bg-primary">
@@ -21,7 +20,7 @@
       <sidenav-router-link icon="fas fa-angle-right" to="/" :exact="true">Restricciones y Recomendaciones</sidenav-router-link>
       <sidenav-menu icon="fas fa-angle-right" :open="true">
         <template slot="link-text">Monitoreo Biologico</template>
-        <sidenav-router-link :to="{ name: 'audiometry'}" :exact="true">Audiometrias</sidenav-router-link>
+        <sidenav-router-link :to="{ name: 'biologicalmonitoring-audiometry'}" :exact="true">Audiometrias</sidenav-router-link>
         <sidenav-router-link to="/" :exact="true">Espirometrias</sidenav-router-link>
         <sidenav-router-link to="/" :exact="true">Otros Examenes</sidenav-router-link>
       </sidenav-menu>

@@ -5,7 +5,7 @@ import Meta from 'vue-meta'
 import globals from '@/globals'
 
 // rutas
-import PreventiveLaborMedicine from './PreventiveLaborMedicine.js'
+import PreventiveOccupationalMedicine from './PreventiveOccupationalMedicine.js'
 
 Vue.use(Router)
 Vue.use(Meta)
@@ -16,7 +16,7 @@ const router = new Router({
   routes: [
     { path: '', redirect: '/biologicalmonitoring/audiometry' }
   ]
-    .concat(PreventiveLaborMedicine),
+    .concat(PreventiveOccupationalMedicine),
 })
 
 router.afterEach(() => {

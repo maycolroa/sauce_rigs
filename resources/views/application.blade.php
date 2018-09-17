@@ -14,22 +14,21 @@
     <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,500,500i,700,700i,900" rel="stylesheet">
 
     <!-- Icons. Uncomment required icon fonts -->
-    <link rel="stylesheet" href="{{ mix('/vendor/fonts/fontawesome.css') }}">
-    <link rel="stylesheet" href="{{ mix('/vendor/fonts/ionicons.css') }}">
-    <link rel="stylesheet" href="{{ mix('/vendor/fonts/linearicons.css') }}">
-    <link rel="stylesheet" href="{{ mix('/vendor/fonts/open-iconic.css') }}">
-    <link rel="stylesheet" href="{{ mix('/vendor/fonts/pe-icon-7-stroke.css') }}">
+
 
     <!-- Promises -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bluebird/3.3.4/bluebird.min.js"></script>
 
     <!-- Layout helpers -->
     <script src="{{ mix('/vendor/js/layout-helpers.js') }}"></script>
+    
+    <link rel="stylesheet" href="{{ mix('/app.css') }}">
 
 </head>
 <body>
-
-    <div id="app"></div>
+    <div id="app">
+        <router-view/>
+    </div>
 
     <script src="{{ mix('/app.js') }}"></script>
 

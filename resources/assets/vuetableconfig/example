@@ -1,0 +1,44 @@
+export default [
+    {
+    name: 'biologicalmonitoring-audiometry',
+    fields : [{ //seccion para configurar las columnas que va a tener la tabla
+        name : 'tabla.campo', //Nombre de la tabla y campo segun la consulta sin alias
+        data:'id_alias',  //nombre campo en la consulta incluyendo los alias
+        title : 'ID', //Valor que aparecera en el encabezado de la tabla
+        sortable: false, //Si se puede ordenar
+        searchable : false,  //Si se puede buscar
+        detail : false, //Si aparece en la tabla o si aparece como detalle (boton + al inicio de la tabla) si no hay ninguna fila con detail no aparece el +
+        key : true //Clave primaria de la tabla, puede funcionar mal la tabla si no se especifica, y debe haber solo una fila con key true si hay mas de una entonces se pone la priemra        },
+    ],
+    'controlls' : [{
+      type: 'push', //Tipo de boton, existen dos tipos, los push y los base, en este caso los push son los botons que siempre van a redireccionar con el router de vue, por ejemplo, editar siempre va a redireccionar a otra ruta donde esta el formulario de edicion.
+      buttons:[{
+        config: {
+          color:'',color del boton, dentro de variant, ver plantilla
+          borderless: true, //si es borderless, ver plantilla
+          icon:'ion ion-md-eye',//Icono que tendra el boton 
+        },
+        data:{
+          routePush: {name: 'biologicalmonitoring-audiometry-edit'}, //Si es tipo push entonces se pone el route push del router de vue al que se va a redireccionar
+          id: 'id', //valor del data que se enviara para que se ejecute el metodo
+        }
+      }]
+    },
+    {
+      type: 'base', //Tipo de boton, existen dos tipos, los push y los base, en este caso los base son los botons que ya tienen una funcionalidad hecha, por ejemplo, delete siempre va a sacar una ventana de confirmacion para eliminar.
+      buttons: [{
+        name:'delete', // boton que se va a usar de tipo base
+        data: {
+          action:'/biologicalmonitoring/audiometry/', //En caso de ser delete, se pone la ruta de accion para laravel, donde se realizara el delete , usa el verbo http delete
+          id: 'id', //valor del data que se enviara para que se ejecute el metodo
+          messageConfirmation : 'Esta seguro de borrar la audiometria del __date__ para el empleado __employee_identification__ - __employee_name__' //En caso de que sea delete este sera el mensaje de confirmacion que aparecera, si en el mensaje se requiere que aparezca ul valor de una de las columnas entonces entre __ NOMBRE CAMPO__ que vendria siendo el valor de data
+        },
+      }],
+    }],
+    configuration: { //Configuracion general de la tabla
+        urlData: '/biologicalmonitoring/audiometry/data', //URL donde se saca la informacion, ruta de laravel
+        filterColumns: true, //Si tiene filtro por columnas o si un campo global de filtro
+    }
+}
+
+];

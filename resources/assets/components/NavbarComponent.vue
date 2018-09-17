@@ -43,71 +43,91 @@
           </template>
 
           <b-row>
-            <b-col class="my-2 mx-2">
+            <b-col>
               <a class="text-dark cursor-pointer">
-              <img class="img-fluid" src="https://mail.google.com/mail/u/0/?ui=2&ik=ed8c0f24ac&view=fimg&th=1652485af9799abe&attid=0.7&disp=emb&realattid=ii_jko60h0b0_1652485854d8409d&attbid=ANGjdJ8_DDZubCBie19grd9iqOiH2JuLd2cHJzAqe6zbqwvQ9xNJgCtyRhN6HrzcwMDSNEOr3gELZlpW0aqyb01PvIDjZnqTIjnS4E2p8V5yr2W0EvJwfZ-AHCdlK1M&sz=w512-h512&ats=1533916068723&rm=1652485af9799abe&zw&atsh=1">
-              <div class="text-center font-weight-bold pt-1">
-                Administrativo
+              <div class="my-2 mx-2 text-center">
+                <img class="ui-w-60" src="~@/icons/Administrative.png">
+                <div class="text-center font-weight-bold pt-1">
+                  Administrativo
+                </div>
               </div>
               </a>
             </b-col>
-            <b-col class="my-2 mx-2">
+            <b-col>
               <a class="text-dark cursor-pointer">
-              <img class="img-fluid" src="https://mail.google.com/mail/u/0/?ui=2&ik=ed8c0f24ac&view=fimg&th=165247d87d90853b&attid=0.6&disp=emb&realattid=ii_jko5ovy88_165247d452ec7f40&attbid=ANGjdJ8z913YxV4EGRO3kAX77SINgNY2mJs6DClLdr0CB44CpijkpbJ5WSwbVVCFE8ETs70_gQGF59On-0djqA2_NLE2KwmSDfglC_wzKjiZdg1chKB6nuwA3qAMvHY&sz=w512-h512&ats=1533915719542&rm=165247d87d90853b&zw&atsh=1">
-              <div class="text-center font-weight-bold pt-1">
-                Seguridad industrial
+                <div class="my-2 mx-2 text-center">
+                  <img class="ui-w-60" src="~@/icons/IndustrialSecure.png">
+                  <div class="text-center font-weight-bold pt-1">
+                    Seguridad industrial
+                  </div>
               </div>
               </a>
             </b-col>
-            <b-col class="my-2 mx-2">
+            <b-col>
               <a class="text-dark cursor-pointer">
-              <img class="img-fluid" src="https://mail.google.com/mail/u/0/?ui=2&ik=ed8c0f24ac&view=fimg&th=165247d87d90853b&attid=0.2&disp=emb&realattid=ii_jko58zbz1_1652471f3b7ce8f5&attbid=ANGjdJ_wMnTvyX48K1CQttLDqZrKO8pNQlih-nQQPrGFuVcFYxxTaLMYDwSKPVvPkrgXyoajve6VZiKjPxTNfTa3PyCxFeHX9L5l9ITwVCTTctqjFXCAknxIKPsPMek&sz=w512-h512&ats=1533915719542&rm=165247d87d90853b&zw&atsh=1">
-              <div class="text-center font-weight-bold pt-1">
-                Higiene industrial
-              </div>
-              </a>
-            </b-col>
-          </b-row>
-          <b-row>
-            <b-col class="my-2 mx-2">
-              <a class="text-dark cursor-pointer">
-              <img class="img-fluid" src="https://mail.google.com/mail/u/0/?ui=2&ik=ed8c0f24ac&view=fimg&th=1652466ce68ab8af&attid=0.1&disp=emb&realattid=ii_jko4t4dm0_1652466a947a5bc8&attbid=ANGjdJ8PnvxYmG8p0FZIkxp9zfhUkkqKyrDFMYt8_mcgzRJd6Vs5nSh1P_XaLHp_LaC4AKbifrpaTksVmjllqr4Y-zlQy3tiZJNpNlScoNIxSjcaL4V_JYXcyIWgArY&sz=w512-h512&ats=1533914048386&rm=1652466ce68ab8af&zw&atsh=1">
-              <div class="text-center font-weight-bold pt-1">
-                Medicina laboral  y preventiva
-              </div>
-              </a>
-            </b-col>
-            <b-col class="my-2 mx-2">
-              <a class="text-dark cursor-pointer">
-              <img class="img-fluid" src="https://mail.google.com/mail/u/0/?ui=2&ik=ed8c0f24ac&view=fimg&th=165247d87d90853b&attid=0.1&disp=emb&realattid=ii_jko5accn2_1652472ebdf00394&attbid=ANGjdJ_CwXUC9bs8NpCXsUVlVegoZzDVTfXR07WUfmyMIE1RmYXFWIbNeIOKBZyYmod3AFeroxIzWz8s3xkoMB10e_3yWR7oe2lwcmgwk3uvwC7j-46av15azbusp8Q&sz=w512-h512&ats=1533915719542&rm=165247d87d90853b&zw&atsh=1">
-              <div class="text-center font-weight-bold pt-1">
-                Formacion y capacitación
-              </div>
-              </a>
-            </b-col>
-            <b-col class="my-2 mx-2">
-              <a class="text-dark cursor-pointer">
-              <img class="img-fluid" src="https://mail.google.com/mail/u/0/?ui=2&ik=ed8c0f24ac&view=fimg&th=165247d87d90853b&attid=0.5&disp=emb&realattid=ii_jko5brko4_1652473ef4550f8f&attbid=ANGjdJ82ArJ0KapLViVSL-usQxDS7E7vEKEZqCCPiGySIq4H5EXLj9Iid-ykNIEK9X1F4ZXPyfqtaSKdRWhVJjMw14PK4hoKTONZtCN9B_n4n3kUom8D0vEh9HU5O-g&sz=w512-h512&ats=1533915719542&rm=165247d87d90853b&zw&atsh=1">
-              <div class="text-center font-weight-bold pt-1">
-                Medicion y seguimiento
+              <div class="my-2 mx-2 text-center">
+                <img class="ui-w-60" src="~@/icons/IndustrialHygiene.png">
+                <div class="text-center font-weight-bold pt-1">
+                  Higiene industrial
+                </div>
               </div>
               </a>
             </b-col>
           </b-row>
 
           <b-row>
-            <b-col class="my-2 mx-2">
+            <b-col>
               <a class="text-dark cursor-pointer">
-              <img class="img-fluid" src="https://mail.google.com/mail/u/0/?ui=2&ik=ed8c0f24ac&view=fimg&th=165247d87d90853b&attid=0.3&disp=emb&realattid=ii_jko5h5sl5_1652477c5840998a&attbid=ANGjdJ_Ny0vbbcijX8GS91xJrZAiakZ7JM0U0AW16U90p8RFX7DXWZe95iryzd7Qurd973Ib4t29P557t6-3zqqoC-o5FrzemAk40f0naA15ep6KVw5xihffV1GvvNU&sz=w512-h512&ats=1533915719542&rm=165247d87d90853b&zw&atsh=1">
-              <div class="text-center font-weight-bold pt-1">
-                Aspectos Legales
+              <div class="my-2 mx-2 text-center">
+                <img class="ui-w-60" src="~@/icons/PreventiveOccupationalMedicine.png">
+                <div class="text-center font-weight-bold pt-1">
+                  Medicina laboral y preventiva
+                </div>
               </div>
               </a>
             </b-col>
-            <b-col class="my-2 mx-2"></b-col>
-            <b-col class="my-2 mx-2"></b-col>
+            <b-col>
+              <a class="text-dark cursor-pointer">
+                <div class="my-2 mx-2 text-center">
+                  <img class="ui-w-60" src="~@/icons/TrainingQualification.png">
+                  <div class="text-center font-weight-bold pt-1">
+                    Formacion y capacitación
+                  </div>
+              </div>
+              </a>
+            </b-col>
+            <b-col>
+              <a class="text-dark cursor-pointer">
+              <div class="my-2 mx-2 text-center">
+                <img class="ui-w-60" src="~@/icons/MeasurementMonitoring.png">
+                <div class="text-center font-weight-bold pt-1">
+                  Medicion y seguimiento
+                </div>
+              </div>
+              </a>
+            </b-col>
           </b-row>
 
+          <b-row>
+            <b-col>
+              <a class="text-dark cursor-pointer">
+              <div class="my-2 mx-2 text-center">
+                <img class="ui-w-60" src="~@/icons/LegalAspects.png">
+                <div class="text-center font-weight-bold pt-1">
+                  Aspectos Legales
+                </div>
+              </div>
+              </a>
+            </b-col>
+            <b-col>
+              <div class="my-2 mx-2 text-center">
+              </div>
+            </b-col>
+            <b-col>
+              <div class="my-2 mx-2 text-center">
+              </div>
+            </b-col>
+          </b-row>
         </b-nav-item-dropdown>
 
         <!-- Divider -->
@@ -142,20 +162,19 @@ export default {
       default: true
     }
   },
-  components: {
-  
-  },
+  components: {},
 
   methods: {
-    toggleSidenav () {
-      this.layoutHelpers.toggleCollapsed()
+    toggleSidenav() {
+      this.layoutHelpers.toggleCollapsed();
     },
 
-    getLayoutNavbarBg () {
-      return this.layoutNavbarBg
+    getLayoutNavbarBg() {
+      return this.layoutNavbarBg;
     },
-    logout(){
-       axios.post('/logout')
+    logout() {
+      axios
+        .post("/logout")
         .then(response => {
           location.href = "/login";
         })
@@ -164,5 +183,5 @@ export default {
         });
     }
   }
-}
+};
 </script>

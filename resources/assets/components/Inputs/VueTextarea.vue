@@ -20,7 +20,7 @@ export default {
   props: {
     error: {type: String, default: null},
     label: {type: String},
-    value: {type: String, default:''},
+    value: {default:''},
     placeholder: {type:String},
     rows: { type: Number, default: 3 },
     name: { type: String, required: true },

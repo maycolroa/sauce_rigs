@@ -4,17 +4,20 @@
             <div v-if="label">{{label}}</div>
             <a v-if="textBlock" :href="actionBlock" class="d-block small">{{textBlock}}</a>
         </div>
-        <b-input
+        <b-input-group :append="append" :prepend="prepend">
+        <b-input 
             :value="value" 
             :state="state" 
             :placeholder="placeholder" 
             :type="type"
-            :step="type == 'number' ? step : ''"
             :name="name"
+            :min="min"
+            :max="max"
             :disabled="disabled"
             :autocomplete="autocomplete ? 'off' : ''"
             @input="updateValue($event)"
             />
+        </b-input-group>
     </b-form-group>
 </template>
 
@@ -23,10 +26,13 @@ export default {
   props: {
     error: {type: String, default: null},
     label: {type: String},
-    value: {type: String, default:''},
+    value: {type: [String,Number], default:''},
     placeholder: {type:String},
     type: { type: String, default: 'text' },
-    step: { type: String, default: '' },
+    min: { type: String, default: '' },
+    max: { type: String, default: '' },
+    append: {type: String, default: null},
+    prepend: {type: String, default: null},
     name: { type: String, required: true },
     disabled: { type: Boolean, default: false },
     autocomplete: { type: Boolean, default: false },

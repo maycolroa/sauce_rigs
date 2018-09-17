@@ -1,9 +1,8 @@
 require('./entry-point.js');
 
 import Vue from 'vue'
-import Notifications from 'vue-notification'
-import App from './App'
 import router from './router/index.js'
+import Notifications from 'vue-notification'
 
 import BootstrapVue from 'bootstrap-vue'
 
@@ -23,10 +22,18 @@ Vue.mixin({
   data: globals
 })
 
+Vue.component('vue-table', require('./components/VueTableComponent.vue'));
+
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
   router,
-  template: '<App/>',
-  components: { App }
+  metaInfo: {
+    title: 'SAUCE',
+    titleTemplate: '%s - SAUCE'
+  },
+  updated () {
+    // Remove loading state
+    setTimeout(() => document.body.classList.remove('app-loading'), 1)
+  }
 })

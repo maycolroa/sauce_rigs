@@ -1,10 +1,15 @@
 <template>
   <div>
-    <v-server-table :url="urlData" :columns="columns" :options="options">
+    <v-server-table :url="config.configuration.urlData" :columns="columns" :options="options" ref="vuetable">
       <template slot="controlls" slot-scope="props">
         <div>
-          <b-btn variant="outline-success borderless icon-btn" class="btn-xs" @click.prevent="edit(props.row)"><i class="ion ion-md-create"></i></b-btn>
-          <b-btn variant="outline-danger borderless icon-btn" class="btn-xs" @click.prevent="remove(props.row)"><i class="ion ion-md-close"></i></b-btn>
+          
+          <b-btn v-for="(button, index) in controllsPush" :key="index" 
+          :variant="button.config.color + ' ' + (button.config.borderless ? 'borderless' : '') + ' ' + (button.config.icon ? 'icon-btn' : '')" 
+          class="btn-xs"
+          @click.prevent="pushButton(button,props.row)"><i :class="button.config.icon"></i></b-btn>
+          
+          <b-btn v-if="controllsBase.includes('delete')" variant="outline-danger borderless icon-btn" class="btn-xs" @click.prevent="confirmRemove(props.row)"><i class="ion ion-md-close"></i></b-btn>
         </div>
       </template>
       <template :slot="details.length > 0 ? 'child_row': null" slot-scope="props">
@@ -15,6 +20,16 @@
         </b-row>
       </template>
     </v-server-table>
+
+    <!-- modal confirmation for delete -->
+    <b-modal ref="modalConfirmationRemove" class="modal-slide" hide-header hide-footer>
+      <p class="text-center text-big mb-4">
+        {{messageConfirmationRemove}}.
+      </p>
+      <b-btn block variant="primary" @click="remove()">Aceptar</b-btn>
+      <b-btn block variant="default" @click="hideModalConfirmationRemove()">Cancelar</b-btn>
+        <small class="text-muted">Esta accion no se puede deshacer.</small>
+    </b-modal>
   </div>
 </template>
 <style scope>
@@ -31,25 +46,28 @@
 <script>
 import Vue from 'vue'
 import {ServerTable, ClientTable, Event} from 'vue-tables-2';
+import VueTableConfig from '@/vuetableconfig/';
+import Alerts from '@/utils/Alerts.js';
 
 Vue.use(ServerTable)
 
 export default {
   name: 'vue-table',
-  metaInfo: {
-    title: 'VueTable'
-  },
   props:{
-    filterColumns: {type:Boolean, default:false},
-    urlData: {type:String, required: true},
-    fields: {type: Object, required: true},
+    configName: {type: String, required: true},
+    config: {type: Object, default: function(){
+      return VueTableConfig.get(this.configName);
+    }},
   },
-  created() {
-    
+  data(){
+    return{
+      messageConfirmationRemove:'',
+      actionRemove:''
+    }
   },
   computed: {
     columns(){
-      let columns = this.fields.fields.filter((f) => {
+      let columns = this.config.fields.filter((f) => {
         return !f.detail && !f.key;
       });
       return columns.map((f) => {
@@ -60,8 +78,8 @@ export default {
       let options = {
         pagination: { chunk: 5 },
         perPage: 10,
-        serverMultiSorting: true,
-        perPageValues: [10,25,50,100],
+        perPageValues: [],
+        serverMultiSorting: false,
         sortIcon: {
           is: 'fa-sort',
           base: 'fas',
@@ -81,7 +99,6 @@ export default {
           last:'Último',
           filter:"Filtro:",
           filterPlaceholder:"Consulta buscada",
-          limit:"Registros:",
           page:"Pagina:",
           noResults:"Sin registros coincidentes",
           filterBy:"Filtrar por {column}",
@@ -91,7 +108,7 @@ export default {
         },
       };
 
-      var fields = this.fields.fields;
+      var fields = this.config.fields;
 
       var fieldsFilter = fields.filter((f) => {
           return f.searchable;
@@ -117,7 +134,7 @@ export default {
       });
 
       //set prop filter conlumns in opions vuetable
-      options.filterByColumn = this.filterColumns;
+      options.filterByColumn = this.config.configuration.filterColumns;
 
       //define unique key column
       options.uniqueKey = fields.filter((f) => {
@@ -139,19 +156,85 @@ export default {
     },
 
     details(){
-      let fieldsDetail =  this.fields.fields.filter((f) => {
+      let fieldsDetail =  this.config.fields.filter((f) => {
         return f.detail;
       });
       
       return fieldsDetail;
+    },
+
+    controllsBase(){
+      let controlls = this.config.controlls
+      .filter(c => {
+        return c.type == 'base'
+      })
+      .map(c => {
+        return c.buttons.map(b => {
+          return b.name;
+        })[0];
+      });
+      return controlls;
+    },
+    controllsPush(){
+      let controlls = this.config.controlls.filter(c => {
+        return c.type == 'push'
+      })[0];
+      return controlls.buttons;
     }
   },
   methods: {
-    edit (row) {
-      alert(`Edit: ${row.first_name} ${row.last_name}`)
+    pushButton (button, row) {
+      console.log(button);
+
+      if(button.data.routePush.name != undefined){
+         let id = row[button.data.id];
+         this.$router.push({name: button.data.routePush.name, params : { id }});
+      }
+      else if(button.data.routePush.route != undefined){
+        let id = row[button.data.id];
+         this.$router.push({path: `/${button.data.routePush.route}/${ id }`});
+      }
+      else if(button.data.route != undefined){
+         let id = row[button.data.id];
+         this.$router.push({path: `/${button.data.route}/${ id }`});
+      }
+      else{
+        throw "not define data valid for route redirect";
+      }
     },
-    remove (row) {
-      alert(`Remove: ${row.first_name} ${row.last_name}`)
+    confirmRemove (row) {
+      let controll = VueTableConfig.getControllBase(this.config.controlls,'delete');
+
+      let id = row[controll.data.id];
+
+      this.actionRemove = controll.data.action+id;
+
+      this.messageConfirmationRemove = (controll.data.messageConfirmation.split("__")).map((e,i) => {
+        if((i % 2) == 1){
+          return row[e];
+        }
+        else{
+          return e;
+        }
+      }).join('');
+
+      this.$refs.modalConfirmationRemove.show()
+    },
+    
+    remove(){
+      axios.delete(this.actionRemove)
+      .then(response => {
+        this.$refs.vuetable.refresh(); 
+        
+        Alerts.success('Exito',response.data.messsage);
+      })
+      .catch(error => {
+          Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
+      });
+      this.$refs.modalConfirmationRemove.hide();
+    },
+    hideModalConfirmationRemove(){
+      this.$refs.modalConfirmationRemove.hide();
     }
   }
 }

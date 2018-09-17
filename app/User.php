@@ -31,6 +31,6 @@ class User extends Authenticatable
     ];
 
     public function companies(){
-        return $this->belongsToMany('App\Administrative\Company','sau_company_user');
+      return $this->belongsToMany('App\Administrative\Company','sau_company_user');
     }
 }

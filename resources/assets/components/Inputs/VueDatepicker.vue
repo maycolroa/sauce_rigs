@@ -5,11 +5,12 @@
             <a v-if="textBlock" :href="actionBlock" class="d-block small">{{textBlock}}</a>
         </div>
             <datepicker
+            :disabled="disabled"             
                 :value="value" 
                 :placeholder="placeholder" 
                 :name="name"
-                :input-class="state"
-                :disabled="disabled"
+                :input-class="inputclass"
+                :language="es"
                 @input="updateValue($event)"
                 :bootstrapStyling="true"
                 :monday-first="true"
@@ -23,6 +24,8 @@
 <style src="@/vendor/libs/vuejs-datepicker/vuejs-datepicker.scss" lang="scss"></style>
 <script>
 import Datepicker from 'vuejs-datepicker'
+import {es} from 'vuejs-datepicker/dist/locale'
+
 export default {
   props: {
     error: {type: String, default: null},
@@ -36,11 +39,17 @@ export default {
     fullMonthName: {type: Boolean, default: true},
     disabledDates: {type: Object}
   },
+  data () {
+    return {
+      es: es
+    }
+  },
   components:{
       Datepicker
   },
   computed:{
-      state(){
+      inputclass(){
+        return this.error ? (this.disabled ? 'is-invalid disabled-class': 'is-invalid') :  (this.disabled ? 'disabled-class' : null);
           if(!this.error){
               return null;
           }
@@ -54,9 +63,13 @@ export default {
   },
   methods: {
     updateValue(value) {
-        console.log(value.toDateString());
       this.$emit('input', value.toDateString());
     }
   }
 }
 </script>
+<style>
+.disabled-class {
+  background-color: #f1f1f2 !important;
+}
+</style>

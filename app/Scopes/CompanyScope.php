@@ -8,8 +8,18 @@ use Illuminate\Database\Eloquent\Builder;
 
 class CompanyScope implements Scope {
       public function apply(Builder $builder, Model $model) {
-        $where = $model->scope_table_for_company == null ? 'company_id' : $model->scope_table_for_company.'.company_id';
-        $builder->where($where, '1');
+        if($model->scope_table_for_company_table != null){
+            if($builder->getQuery()->joins != null){
+                foreach($builder->getQuery()->joins as $join){
+                    if($join->table == $model->scope_table_for_company_table){
+                        $where = $model->scope_table_for_company_table.'.company_id';
+                        $builder->where($where, '1');
+                    }
+                }
+            }
+        }else{
+            $builder->where('company_id', '1');
+        }
       }
 
       public function remove(Builder $builder, Model $model) {
