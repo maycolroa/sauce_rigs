@@ -12,6 +12,8 @@
 */
 Auth::routes();
 
+Route::get('emailTest', 'EmailTestController@index');
+
 Route::get('export/{url}',function($url){
   return Storage::disk('public')->download(base64_decode($url));
 });
