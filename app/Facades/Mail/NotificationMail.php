@@ -32,8 +32,11 @@ class NotificationMail
         if (!Module::find($mail->getModule()))
             throw new \Exception(trans('mail.module_not_exist'));
 
-        try {
-            Mail::to($mail->getRecipients())->send(new NotificationGeneralMail($mail));
+        try { 
+            $message = (new NotificationGeneralMail($mail))
+                ->onQueue('emails');
+
+            Mail::to($mail->getRecipients())->queue($message);
 
             $event = explode("\\", Route::currentRouteAction());
             $event = $event[COUNT($event) - 1];
