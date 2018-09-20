@@ -5,6 +5,7 @@ Se ha generador una exportacion de audiometrias.
 Descargar
 @endcomponent
 
+
 @component('mail::subcopy')
 Este link es valido por 24 horas
 @endcomponent

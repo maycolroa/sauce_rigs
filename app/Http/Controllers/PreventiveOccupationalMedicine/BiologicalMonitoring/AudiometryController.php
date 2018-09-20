@@ -70,7 +70,7 @@ class AudiometryController extends Controller
     public function show($id)
     {
       $audiometry = Audiometry::findOrFail($id);
-            
+
       try{
         $audiometry->date = (Carbon::createFromFormat('Y-m-d',$audiometry->date))->format('D M d Y');
         $audiometry->multiselect_employee = $audiometry->employee->multiselect(); 
@@ -129,13 +129,6 @@ class AudiometryController extends Controller
     public function export()
     {
       try{
-        $audiometries = Audiometry::select(
-          'bm_audiometries.*',
-          'sau_employees.identification as employee_identification',
-          'sau_employees.name as employee_name'
-        )->join('sau_employees','sau_employees.id','bm_audiometries.employee_id')
-        ->join('sau_employees_regionals','sau_employees_regionals.id','sau_employees.employee_regional_id');
-
         AudiometryExportJob::dispatch();
       
         return $this->respondHttp200();

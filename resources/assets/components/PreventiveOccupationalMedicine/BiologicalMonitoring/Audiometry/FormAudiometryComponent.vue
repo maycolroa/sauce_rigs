@@ -41,19 +41,19 @@
 
             <b-card bg-variant="transparent" border-variant="primary" title="Derecha Aereo" class="mb-3 box-shadow-none">
               <b-form-row>
-                <vue-input :disabled="viewOnly" class="col-md" append="dB" v-model="form.right_500" label="500 Hz" type="number" name="right_500" :error="form.errorsFor('right_500')" placeholder="0"></vue-input>
-                <vue-input :disabled="viewOnly" class="col-md" append="dB" v-model="form.right_1000" label="1000 Hz" type="number" name="right_1000" :error="form.errorsFor('right_1000')" placeholder="0"></vue-input>
+                <vue-input :disabled="viewOnly" class="col-md" append="dB" v-model="form.air_right_500" label="500 Hz" type="number" name="air_right_500" :error="form.errorsFor('air_right_500')" placeholder="0"></vue-input>
+                <vue-input :disabled="viewOnly" class="col-md" append="dB" v-model="form.air_right_1000" label="1000 Hz" type="number" name="air_right_1000" :error="form.errorsFor('air_right_1000')" placeholder="0"></vue-input>
               </b-form-row>
               <b-form-row>
-                <vue-input :disabled="viewOnly" class="col-md" append="dB" v-model="form.right_2000" label="2000 Hz" type="number" name="right_2000" :error="form.errorsFor('right_2000')" placeholder="0"></vue-input>
-                <vue-input :disabled="viewOnly" class="col-md" append="dB" v-model="form.right_3000" label="3000 Hz" type="number" name="right_3000" :error="form.errorsFor('right_3000')" placeholder="0"></vue-input>
+                <vue-input :disabled="viewOnly" class="col-md" append="dB" v-model="form.air_right_2000" label="2000 Hz" type="number" name="air_right_2000" :error="form.errorsFor('air_right_2000')" placeholder="0"></vue-input>
+                <vue-input :disabled="viewOnly" class="col-md" append="dB" v-model="form.air_right_3000" label="3000 Hz" type="number" name="air_right_3000" :error="form.errorsFor('air_right_3000')" placeholder="0"></vue-input>
                 </b-form-row>
               <b-form-row>
-                <vue-input :disabled="viewOnly" class="col-md" append="dB" v-model="form.right_4000" label="4000 Hz" type="number" name="right_4000" :error="form.errorsFor('right_4000')" placeholder="0"></vue-input>
-                <vue-input :disabled="viewOnly" class="col-md" append="dB" v-model="form.right_6000" label="6000 Hz" type="number" name="right_6000" :error="form.errorsFor('right_6000')" placeholder="0"></vue-input>
+                <vue-input :disabled="viewOnly" class="col-md" append="dB" v-model="form.air_right_4000" label="4000 Hz" type="number" name="air_right_4000" :error="form.errorsFor('air_right_4000')" placeholder="0"></vue-input>
+                <vue-input :disabled="viewOnly" class="col-md" append="dB" v-model="form.air_right_6000" label="6000 Hz" type="number" name="air_right_6000" :error="form.errorsFor('air_right_6000')" placeholder="0"></vue-input>
               </b-form-row>
               <b-form-row>
-              <vue-input :disabled="viewOnly" class="col-md" append="dB" v-model="form.right_8000" label="8000 Hz" type="number" name="right_8000" :error="form.errorsFor('right_8000')" placeholder="0"></vue-input>
+              <vue-input :disabled="viewOnly" class="col-md" append="dB" v-model="form.air_right_8000" label="8000 Hz" type="number" name="air_right_8000" :error="form.errorsFor('air_right_8000')" placeholder="0"></vue-input>
               <b-col></b-col>
               </b-form-row>
             </b-card>
@@ -63,19 +63,19 @@
 
             <b-card bg-variant="transparent" border-variant="secondary" title="Izquierda Aereo" class="mb-3 box-shadow-none">
               <b-form-row>
-                <vue-input append="dB" :disabled="viewOnly" class="col-md" v-model="form.left_500" label="500 Hz" type="number" name="left_500" :error="form.errorsFor('left_500')" placeholder="0"></vue-input>
-                <vue-input append="dB" :disabled="viewOnly" class="col-md" v-model="form.left_1000" label="1000 Hz" type="number" name="left_1000" :error="form.errorsFor('left_1000')" placeholder="0"></vue-input>
+                <vue-input append="dB" :disabled="viewOnly" class="col-md" v-model="form.air_left_500" label="500 Hz" type="number" name="air_left_500" :error="form.errorsFor('air_left_500')" placeholder="0"></vue-input>
+                <vue-input append="dB" :disabled="viewOnly" class="col-md" v-model="form.air_left_1000" label="1000 Hz" type="number" name="air_left_1000" :error="form.errorsFor('air_left_1000')" placeholder="0"></vue-input>
               </b-form-row>
               <b-form-row>
-                <vue-input append="dB" :disabled="viewOnly" class="col-md" v-model="form.left_2000" label="2000 Hz" type="number" name="left_2000" :error="form.errorsFor('left_2000')" placeholder="0"></vue-input>
-                <vue-input append="dB" :disabled="viewOnly" class="col-md" v-model="form.left_3000" label="3000 Hz" type="number" name="left_3000" :error="form.errorsFor('left_3000')" placeholder="0"></vue-input>
+                <vue-input append="dB" :disabled="viewOnly" class="col-md" v-model="form.air_left_2000" label="2000 Hz" type="number" name="air_left_2000" :error="form.errorsFor('air_left_2000')" placeholder="0"></vue-input>
+                <vue-input append="dB" :disabled="viewOnly" class="col-md" v-model="form.air_left_3000" label="3000 Hz" type="number" name="air_left_3000" :error="form.errorsFor('air_left_3000')" placeholder="0"></vue-input>
               </b-form-row>
               <b-form-row>
-                <vue-input append="dB" :disabled="viewOnly" class="col-md" v-model="form.left_4000" label="4000 Hz" type="number" name="left_4000" :error="form.errorsFor('left_4000')" placeholder="0"></vue-input>
-                <vue-input append="dB" :disabled="viewOnly" class="col-md" v-model="form.left_6000" label="6000 Hz" type="number" name="left_6000" :error="form.errorsFor('left_6000')" placeholder="0"></vue-input>
+                <vue-input append="dB" :disabled="viewOnly" class="col-md" v-model="form.air_left_4000" label="4000 Hz" type="number" name="air_left_4000" :error="form.errorsFor('air_left_4000')" placeholder="0"></vue-input>
+                <vue-input append="dB" :disabled="viewOnly" class="col-md" v-model="form.air_left_6000" label="6000 Hz" type="number" name="air_left_6000" :error="form.errorsFor('air_left_6000')" placeholder="0"></vue-input>
               </b-form-row>
               <b-form-row>
-                <vue-input append="dB" :disabled="viewOnly" class="col-md" v-model="form.left_8000" label="8000 Hz" type="number" name="left_8000" :error="form.errorsFor('left_8000')" placeholder="0"></vue-input>
+                <vue-input append="dB" :disabled="viewOnly" class="col-md" v-model="form.air_left_8000" label="8000 Hz" type="number" name="air_left_8000" :error="form.errorsFor('air_left_8000')" placeholder="0"></vue-input>
                 <b-col></b-col>
               </b-form-row>
             </b-card>
@@ -90,15 +90,15 @@
 
             <b-card bg-variant="transparent" border-variant="primary" title="Derecha Oseo" class="mb-3 box-shadow-none">
               <b-form-row>
-                <vue-input :disabled="viewOnly" class="col-md" append="dB" v-model="form.right_500" label="500 Hz" type="number" name="right_500" :error="form.errorsFor('right_500')" placeholder="0"></vue-input>
-                <vue-input :disabled="viewOnly" class="col-md" append="dB" v-model="form.right_1000" label="1000 Hz" type="number" name="right_1000" :error="form.errorsFor('right_1000')" placeholder="0"></vue-input>
+                <vue-input :disabled="viewOnly" class="col-md" append="dB" v-model="form.osseous_right_500" label="500 Hz" type="number" name="osseous_right_500" :error="form.errorsFor('osseous_right_500')" placeholder="0"></vue-input>
+                <vue-input :disabled="viewOnly" class="col-md" append="dB" v-model="form.osseous_right_1000" label="1000 Hz" type="number" name="osseous_right_1000" :error="form.errorsFor('osseous_right_1000')" placeholder="0"></vue-input>
               </b-form-row>
               <b-form-row>
-                <vue-input :disabled="viewOnly" class="col-md" append="dB" v-model="form.right_2000" label="2000 Hz" type="number" name="right_2000" :error="form.errorsFor('right_2000')" placeholder="0"></vue-input>
-                <vue-input :disabled="viewOnly" class="col-md" append="dB" v-model="form.right_3000" label="3000 Hz" type="number" name="right_3000" :error="form.errorsFor('right_3000')" placeholder="0"></vue-input>
+                <vue-input :disabled="viewOnly" class="col-md" append="dB" v-model="form.osseous_right_2000" label="2000 Hz" type="number" name="osseous_right_2000" :error="form.errorsFor('osseous_right_2000')" placeholder="0"></vue-input>
+                <vue-input :disabled="viewOnly" class="col-md" append="dB" v-model="form.osseous_right_3000" label="3000 Hz" type="number" name="osseous_right_3000" :error="form.errorsFor('osseous_right_3000')" placeholder="0"></vue-input>
                 </b-form-row>
               <b-form-row>
-                <vue-input :disabled="viewOnly" class="col-md" append="dB" v-model="form.right_4000" label="4000 Hz" type="number" name="right_4000" :error="form.errorsFor('right_4000')" placeholder="0"></vue-input>
+                <vue-input :disabled="viewOnly" class="col-md" append="dB" v-model="form.osseous_right_4000" label="4000 Hz" type="number" name="osseous_right_4000" :error="form.errorsFor('osseous_right_4000')" placeholder="0"></vue-input>
                 <b-col></b-col>
               </b-form-row>
             </b-card>
@@ -108,15 +108,15 @@
 
             <b-card bg-variant="transparent" border-variant="secondary" title="Izquierda Oseo" class="mb-3 box-shadow-none">
               <b-form-row>
-                <vue-input append="dB" :disabled="viewOnly" class="col-md" v-model="form.left_500" label="500 Hz" type="number" name="left_500" :error="form.errorsFor('left_500')" placeholder="0"></vue-input>
-                <vue-input append="dB" :disabled="viewOnly" class="col-md" v-model="form.left_1000" label="1000 Hz" type="number" name="left_1000" :error="form.errorsFor('left_1000')" placeholder="0"></vue-input>
+                <vue-input append="dB" :disabled="viewOnly" class="col-md" v-model="form.osseous_left_500" label="500 Hz" type="number" name="osseous_left_500" :error="form.errorsFor('osseous_left_500')" placeholder="0"></vue-input>
+                <vue-input append="dB" :disabled="viewOnly" class="col-md" v-model="form.osseous_left_1000" label="1000 Hz" type="number" name="osseous_left_1000" :error="form.errorsFor('osseous_left_1000')" placeholder="0"></vue-input>
               </b-form-row>
               <b-form-row>
-                <vue-input append="dB" :disabled="viewOnly" class="col-md" v-model="form.left_2000" label="2000 Hz" type="number" name="left_2000" :error="form.errorsFor('left_2000')" placeholder="0"></vue-input>
-                <vue-input append="dB" :disabled="viewOnly" class="col-md" v-model="form.left_3000" label="3000 Hz" type="number" name="left_3000" :error="form.errorsFor('left_3000')" placeholder="0"></vue-input>
+                <vue-input append="dB" :disabled="viewOnly" class="col-md" v-model="form.osseous_left_2000" label="2000 Hz" type="number" name="osseous_left_2000" :error="form.errorsFor('osseous_left_2000')" placeholder="0"></vue-input>
+                <vue-input append="dB" :disabled="viewOnly" class="col-md" v-model="form.osseous_left_3000" label="3000 Hz" type="number" name="osseous_left_3000" :error="form.errorsFor('osseous_left_3000')" placeholder="0"></vue-input>
               </b-form-row>
               <b-form-row>
-                <vue-input append="dB" :disabled="viewOnly" class="col-md" v-model="form.left_4000" label="4000 Hz" type="number" name="left_4000" :error="form.errorsFor('left_4000')" placeholder="0"></vue-input>
+                <vue-input append="dB" :disabled="viewOnly" class="col-md" v-model="form.osseous_left_4000" label="4000 Hz" type="number" name="osseous_left_4000" :error="form.errorsFor('osseous_left_4000')" placeholder="0"></vue-input>
                 <b-col></b-col>
               </b-form-row>
             </b-card>
@@ -125,7 +125,7 @@
         </div>
       </tab-content>
       <tab-content v-if="viewOnly" title="Resultado">
-        Step Content 1
+        <results-audiometry :audiometry="form"/>
       </tab-content>
 
       <template slot="footer" slot-scope="props">
@@ -148,7 +148,9 @@ import VueAdvancedSelect from "@/components/Inputs/VueAdvancedSelect.vue";
 import VueInput from "@/components/Inputs/VueInput.vue";
 import VueDatepicker from "@/components/Inputs/VueDatepicker.vue";
 import VueTextarea from "@/components/Inputs/VueTextarea.vue";
+import ResultsAudiometry from '@/components/PreventiveOccupationalMedicine/BiologicalMonitoring/Audiometry/ResultsAudiometryComponent.vue';
 import Form from "@/utils/Form.js";
+
 import { FormWizard, TabContent, WizardStep } from "vue-form-wizard";
 
 export default {
@@ -160,7 +162,8 @@ export default {
     VueTextarea,
     FormWizard,
     TabContent,
-    WizardStep
+    WizardStep,
+    ResultsAudiometry
   },
   mounted() {
     this.$refs.wizardFormAudiometry.activateAll();
@@ -193,22 +196,32 @@ export default {
           employee_id: "",
           work_zone_noise: "",
           exposition_level: "",
-          left_500: "",
-          left_1000: "",
-          left_2000: "",
-          left_3000: "",
-          left_4000: "",
-          left_6000: "",
-          left_8000: "",
-          right_500: "",
-          right_1000: "",
-          right_2000: "",
-          right_3000: "",
-          right_4000: "",
-          right_6000: "",
-          right_8000: "",
-          left_clasification: "",
-          right_clasification: "",
+          air_left_500: "",
+          air_left_1000: "",
+          air_left_2000: "",
+          air_left_3000: "",
+          air_left_4000: "",
+          air_left_6000: "",
+          air_left_8000: "",
+          air_right_500: "",
+          air_right_1000: "",
+          air_right_2000: "",
+          air_right_3000: "",
+          air_right_4000: "",
+          air_right_6000: "",
+          air_right_8000: "",
+          osseous_right_500: "",
+          osseous_right_1000: "",
+          osseous_right_2000: "",
+          osseous_right_3000: "",
+          osseous_right_4000: "",
+          osseous_left_500: "",
+          osseous_left_1000: "",
+          osseous_left_2000: "",
+          osseous_left_3000: "",
+          osseous_left_4000: "",
+          air_left_clasification: "",
+          air_right_clasification: "",
           recommendations: "",
           observation: "",
           test_score: "",
