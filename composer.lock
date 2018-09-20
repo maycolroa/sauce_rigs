@@ -1,10 +1,10 @@
 {
     "_readme": [
         "This file locks the dependencies of your project to a known state",
-        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "1540a9378005e9e17b70e9eb60f41dd5",
+    "content-hash": "085ac9c391a7b56105f87f3b120b6ffb",
     "packages": [
         {
             "name": "dnoegel/php-xdg-base-dir",
@@ -802,6 +802,43 @@
                 "phpspreadsheet"
             ],
             "time": "2018-08-26T09:50:19+00:00"
+        },
+        {
+            "name": "maddhatter/markdown-table",
+            "version": "1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/maddhatter/markdown-table.git",
+                "reference": "146dc419a073990b0adde6f22d79ff13ebf21bfc"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/maddhatter/markdown-table/zipball/146dc419a073990b0adde6f22d79ff13ebf21bfc",
+                "reference": "146dc419a073990b0adde6f22d79ff13ebf21bfc",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/contracts": "^5.0",
+                "php": ">=5.4.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "MaddHatter\\MarkdownTable\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Shawn Tunney",
+                    "email": "shawn.tunney@gmail.com"
+                }
+            ],
+            "description": "Dynamically generate markdown tables",
+            "time": "2017-06-02T13:16:54+00:00"
         },
         {
             "name": "markbaker/complex",

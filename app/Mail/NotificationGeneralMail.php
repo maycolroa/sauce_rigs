@@ -6,7 +6,6 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Contracts\Queue\ShouldQueue;
-use App\Facades\Mail\NotificationMail;
 
 class NotificationGeneralMail extends Mailable
 {
@@ -19,7 +18,7 @@ class NotificationGeneralMail extends Mailable
      *
      * @return void
      */
-    public function __construct(NotificationMail $mail)
+    public function __construct($mail)
     {
         $this->mail = $mail;
     }
@@ -31,8 +30,8 @@ class NotificationGeneralMail extends Mailable
      */
     public function build()
     {
-        return $this->subject($this->mail->getSubject())
-                    ->markdown('mail.notification.index')
+        return $this->subject($this->mail->subject)
+                    ->markdown('mail.'.$this->mail->view)
                     ->with(['mail' => $this->mail]);
     }
 }

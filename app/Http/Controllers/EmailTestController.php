@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
-use App\Models\MailInformation;
+
 use App\Facades\Mail\Facades\NotificationMail;
 use App\User;
 use App\Models\Module;
@@ -12,21 +12,9 @@ class EmailTestController extends Controller
     {   
         //$users = User::find(2);
         $users = User::get();
-        //$users = ['riera_1992@hotmail.com'];
-        //dd($users);
-        
-        /*$mail = new MailInformation();
-        $mail->setRecipients($users);
-        $mail->setMessage("Este es un mensaje de prueba");
-        $mail->setModule(1);
-        //$mail->setFrom(['address'=>'sause@gmail.com', 'name'=>'Roberth Riera']);
-        $mail->setFrom('sause@gmail.com');
-        //$mail->setSubject('Notification Test');
-
-        return NotificationMail::sendMail($mail);*/
 
         $buttons = [
-            ['text'=>'Descargar', 'url'=>'www.example.com'],
+            ['text'=>'Descargar', 'url'=>'www.example.com'/*, 'color'=>'green'*/],
             ['text'=>'Oferta', 'url'=>'www.oferta.com'],
         ];
 
@@ -36,14 +24,23 @@ class EmailTestController extends Controller
             'Tercer elemento de la lista'
         ];
 
+        $columns = ['Name','Email','Age'];
+
+        $data = [
+            ['Luis', 'luis@gmail.com', 32],
+            ['Miguel', 'miguel@hotmail.com', 24],
+            ['Arturo', 'arturo@outlook.com', 30]
+        ];
+
         $module = Module::where('name', 'mod 1')->first();
         
-        dd(NotificationMail::view('asd')
-            ->subject('Notificacion')
+        dd(NotificationMail::/*view('asd')
+            ->*/subject('Notificacion')
             ->message('Mensaje de prueba')
             ->recipients($users)
             ->buttons($buttons)
             ->list($list)
+            ->table($columns, $data)
             ->module($module)
             ->send()
         );
