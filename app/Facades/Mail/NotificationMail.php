@@ -84,6 +84,27 @@ class NotificationMail
         if (!$recipients instanceof Collection && !$recipients instanceof User)
             throw new \Exception('Invalid recipient format');
         
+        if ($recipients instanceof Collection)
+        {
+            if ($recipients->isEmpty())
+                throw new \Exception('Empty collection');
+            
+            $recipients = $recipients->filter(function ($value, $key) {
+                if ($value instanceof User && 
+                preg_match('/^[_a-z0-9-]+(.[_a-z0-9-]+)*@[a-z0-9-]+(.[a-z0-9-]+)*(.[a-z]{2,4})$/', $value->email) )
+                    return true;
+                else 
+                    return false;
+            });
+
+            if ($recipients->isEmpty())
+                throw new \Exception('The collection was empty after filtering the invalid emails');
+        }
+
+        if ($recipients instanceof User && 
+                !preg_match('/^[_a-z0-9-]+(.[_a-z0-9-]+)*@[a-z0-9-]+(.[a-z0-9-]+)*(.[a-z]{2,4})$/', $recipients->email) )
+            throw new \Exception('Incorrect email format');
+        
         $this->recipients = $recipients;
 
         return $this;
@@ -185,16 +206,31 @@ class NotificationMail
     /**
      * Send the mail
      *
+     * @return booleam
      */
     public function send()
     {
-        if ($this->recipients instanceof Collection && $this->recipients->isEmpty())
+        if (empty($this->recipients))
             throw new \Exception(trans('mail.recipient_empty'));
-        else if (!$this->recipients instanceof User)
-            throw new \Exception(trans('mail.recipient_empty'));
-    }
 
-    public static function sendMail(MailInformation $mail)
+        if (empty($this->module))
+            throw new \Exception(trans('mail.module_empty'));
+
+        try { 
+            $message = (new NotificationGeneralMail($this))
+                ->onQueue('emails');
+
+            Mail::to($this->recipients)->queue($message);
+        }
+        catch (\Exception $e) {
+            dd($e);
+            throw new \Exception(trans('mail.send_error'));
+        }
+
+        return true;
+    }
+ 
+    /*public static function sendMail(MailInformation $mail)
     {
         if (empty($mail->getRecipients()))
             throw new \Exception(trans('mail.recipient_empty'));
@@ -230,5 +266,5 @@ class NotificationMail
             dd($e);
             throw new \Exception(trans('mail.send_error'));
         }
-    }
+    }*/
 }
