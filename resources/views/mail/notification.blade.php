@@ -6,7 +6,11 @@
 
 @if(isset($mail->list))
 @foreach($mail->list as $item)
+@if($mail->list_order)
 1.  {{ $item }}
+@else
+*  {{ $item }}
+@endif
 @endforeach
 @endif
 
@@ -17,12 +21,14 @@
 @endif
 
 @if(isset($mail->buttons))
-@component('mail::button', ['url' => $mail->buttons[0]['url'], 'color' => isset($mail->buttons[0]['color']) ? $mail->buttons[0]['color'] : 'blue'])
+@component('mail::button', ['url' => $mail->buttons[0]['url'], 'color' => isset($mail->buttons[0]['color']) ? $mail->buttons[0]['color'] : 'red'])
     {{ $mail->buttons[0]['text'] }}
 @endcomponent
+@endif
 
+@if(isset($mail->subcopy))
 @component('mail::subcopy')
-    Este link es valido por 24 horas
+    {{ $mail->subcopy }}
 @endcomponent
 @endif
 

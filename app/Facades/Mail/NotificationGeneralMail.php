@@ -1,11 +1,10 @@
 <?php
 
-namespace App\Mail;
+namespace App\Facades\Mail;
 
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Contracts\Queue\ShouldQueue;
 
 class NotificationGeneralMail extends Mailable
 {
