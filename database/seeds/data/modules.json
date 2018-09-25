@@ -1,0 +1,44 @@
+[
+    {
+        "application": "Administrative",
+        "modules": []
+    },
+    {
+        "application": "IndustrialSecure",
+        "modules": []
+    },
+    {
+        "application": "IndustrialHygiene",
+        "modules": []
+    },
+    {
+        "application": "PreventiveOccupationalMedicine",
+        "modules": [
+            {
+                "name": "BiologicalMonitoring",
+                "display_name": "Biological Monitoring"
+            },
+            {
+                "name": "Audiometry",
+                "display_name": "Audiometry"
+            }
+        ]
+    },
+    {
+        "application": "TrainingQualification",
+        "modules": []
+    },
+    {
+        "application": "MeasurementMonitoring",
+        "modules": []
+    },
+    {
+        "application": "LegalAspects",
+        "modules": [
+            {
+                "name": "LegalMatrix",
+                "display_name": "Legal Matrix"
+            }
+        ]
+    }    
+]
