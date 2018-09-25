@@ -2,43 +2,43 @@
     {
         "id": 1,
         "name": "Administrative",
-        "display_name": "Administrative",
+        "display_name": "Administrativo",
         "image": "Administrative"
     },
     {
         "id": 2,
         "name": "IndustrialSecure",
-        "display_name": "Industrial Security",
+        "display_name": "Seguridad Industrial",
         "image": "IndustrialSecure"
     },
     {
         "id": 3,
         "name": "IndustrialHygiene",
-        "display_name": "Industrial hygiene",
+        "display_name": "Higiene Industrial",
         "image": "IndustrialHygiene"
     },
     {
         "id": 4,
         "name": "PreventiveOccupationalMedicine",
-        "display_name": "Preventive Occupational Medicine",
+        "display_name": "Medicina Laboral y Preventiva",
         "image": "PreventiveOccupationalMedicine"
     },
     {
         "id": 5,
         "name": "TrainingQualification",
-        "display_name": "Training Qualification",
+        "display_name": "Formación y Capacitación",
         "image": "TrainingQualification"
     },
     {
         "id": 6,
         "name": "MeasurementMonitoring",
-        "display_name": "Measurement Monitoring",
+        "display_name": "Medición y Seguimiento",
         "image": "MeasurementMonitoring"
     },
     {
         "id": 7,
         "name": "LegalAspects",
-        "display_name": "Legal Aspects",
+        "display_name": "Aspectos Legales",
         "image": "LegalAspects"
     }
 ]

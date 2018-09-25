@@ -16,11 +16,11 @@
         "modules": [
             {
                 "name": "BiologicalMonitoring",
-                "display_name": "Biological Monitoring"
+                "display_name": "Monitoreo Biológico"
             },
             {
                 "name": "Audiometry",
-                "display_name": "Audiometry"
+                "display_name": "Audiometrias"
             }
         ]
     },
@@ -37,7 +37,7 @@
         "modules": [
             {
                 "name": "LegalMatrix",
-                "display_name": "Legal Matrix"
+                "display_name": "Matriz Legal"
             }
         ]
     }    
