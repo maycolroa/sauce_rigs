@@ -11,4 +11,9 @@ class Company extends Model
     public function users(){
         return $this->belongsToMany('App\User','sau_company_user');
     }
+
+    public function licenses()
+    {
+        return $this->hasMany(License::class);
+    }
 }

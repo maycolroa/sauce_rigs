@@ -1,10 +1,10 @@
 <template>
 <div class="layout-wrapper layout-2">
     <div class="layout-inner">
-      <sidenav/>
+      <sidenav :data="data" :appSelected="appSelected"/>
 
       <div class="layout-container">
-        <Navbar/>
+        <Navbar :data="data" :appSelected="appSelected" @changeApp="changeModules($event)"/>
 
         <div class="layout-content">
           <div class="router-transitions container-fluid flex-grow-1 container-p-y">
@@ -27,21 +27,41 @@ export default {
         Navbar,
         Sidenav,
     },
+    data(){
+      return {
+        data: {},
+        appSelected: 'PreventiveOccupationalMedicine' //Valor temporal
+      }
+    },
+    mounted () {
+      this.layoutHelpers.init()
+      this.layoutHelpers.update()
+      this.layoutHelpers.setAutoUpdate(true)
+      this.permits()
+    },
 
-  mounted () {
-    this.layoutHelpers.init()
-    this.layoutHelpers.update()
-    this.layoutHelpers.setAutoUpdate(true)
-  },
+    beforeDestroy () {
+      this.layoutHelpers.destroy()
+    },
 
-  beforeDestroy () {
-    this.layoutHelpers.destroy()
-  },
-
-  methods: {
-    closeSidenav () {
-      this.layoutHelpers.setCollapsed(true)
+    methods: {
+      closeSidenav () {
+        this.layoutHelpers.setCollapsed(true)
+      },
+      permits () {
+          axios
+            .get('/appWithModules')
+            .then(response => {
+                this.data = response.data;
+            })
+            .catch(error => {
+                Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
+            });
+      },
+      changeModules(event)
+      {
+        this.appSelected = event
+      }
     }
-  }
 }
 </script>

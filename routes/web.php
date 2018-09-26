@@ -17,7 +17,7 @@ Route::get('emailTest', 'EmailTestController@index');
 Route::get('export/{url}',function($url){
   return Storage::disk('public')->download(base64_decode($url));
 });
-
+Route::get('appWithModules', 'ApplicationController@appsWhithModules');
 Route::middleware(['auth'])->group(function () { 
   
     //GET methods
@@ -45,4 +45,5 @@ Route::middleware(['auth'])->group(function () {
     //Return view for spa
     Route::get('/{any}', 'ApplicationController@index')->where('any', '.*');
 
+    //Route::get('appWithModules', 'ApplicationController@appsWhithModules');
 });

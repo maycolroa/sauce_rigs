@@ -5,7 +5,7 @@
       <span class="app-brand-logo logo bg-primary">
         <div class="ui-w-30 rounded-circle align-middle text-circle">S</div>
       </span>
-      <span class="app-brand-text logo font-weight-normal ml-2">Medicina Laboral Preventiva</span>
+      <span class="app-brand-text logo font-weight-normal ml-2"> {{ appName }} </span>
     </b-navbar-brand>
 
     <!-- Sidenav toggle-->
@@ -43,90 +43,18 @@
           </template>
 
           <b-row>
-            <b-col>
-              <a class="text-dark cursor-pointer">
-              <div class="my-2 mx-2 text-center">
-                <img class="ui-w-60" src="~@/icons/Administrative.png">
-                <div class="text-center font-weight-bold pt-1">
-                  Administrativo
-                </div>
-              </div>
-              </a>
-            </b-col>
-            <b-col>
-              <a class="text-dark cursor-pointer">
+            <template v-for="(item, index) in apps">
+              <b-col :key="index" v-if="item.modules.length > 0">
+                <a @click.prevent="$emit('changeApp', index)" class="text-dark cursor-pointer">
                 <div class="my-2 mx-2 text-center">
-                  <img class="ui-w-60" src="~@/icons/IndustrialSecure.png">
+                  <img class="ui-w-60" :src="`/images/${item.image}.png`" alt="">
                   <div class="text-center font-weight-bold pt-1">
-                    Seguridad industrial
+                    {{ item.display_name }}
                   </div>
-              </div>
-              </a>
-            </b-col>
-            <b-col>
-              <a class="text-dark cursor-pointer">
-              <div class="my-2 mx-2 text-center">
-                <img class="ui-w-60" src="~@/icons/IndustrialHygiene.png">
-                <div class="text-center font-weight-bold pt-1">
-                  Higiene industrial
                 </div>
-              </div>
-              </a>
-            </b-col>
-          </b-row>
-
-          <b-row>
-            <b-col>
-              <a class="text-dark cursor-pointer">
-              <div class="my-2 mx-2 text-center">
-                <img class="ui-w-60" src="~@/icons/PreventiveOccupationalMedicine.png">
-                <div class="text-center font-weight-bold pt-1">
-                  Medicina laboral y preventiva
-                </div>
-              </div>
-              </a>
-            </b-col>
-            <b-col>
-              <a class="text-dark cursor-pointer">
-                <div class="my-2 mx-2 text-center">
-                  <img class="ui-w-60" src="~@/icons/TrainingQualification.png">
-                  <div class="text-center font-weight-bold pt-1">
-                    Formacion y capacitación
-                  </div>
-              </div>
-              </a>
-            </b-col>
-            <b-col>
-              <a class="text-dark cursor-pointer">
-              <div class="my-2 mx-2 text-center">
-                <img class="ui-w-60" src="~@/icons/MeasurementMonitoring.png">
-                <div class="text-center font-weight-bold pt-1">
-                  Medicion y seguimiento
-                </div>
-              </div>
-              </a>
-            </b-col>
-          </b-row>
-
-          <b-row>
-            <b-col>
-              <a class="text-dark cursor-pointer">
-              <div class="my-2 mx-2 text-center">
-                <img class="ui-w-60" src="~@/icons/LegalAspects.png">
-                <div class="text-center font-weight-bold pt-1">
-                  Aspectos Legales
-                </div>
-              </div>
-              </a>
-            </b-col>
-            <b-col>
-              <div class="my-2 mx-2 text-center">
-              </div>
-            </b-col>
-            <b-col>
-              <div class="my-2 mx-2 text-center">
-              </div>
-            </b-col>
+                </a>
+              </b-col>
+            </template>
           </b-row>
         </b-nav-item-dropdown>
 
@@ -160,6 +88,16 @@ export default {
     sidenavToggle: {
       type: Boolean,
       default: true
+    },
+    data: {
+      type: Object,
+      required: true,
+      default: {}
+    },
+    appSelected: {
+      type: String,
+      required: true,
+      default: ''
     }
   },
   components: {},
@@ -182,6 +120,14 @@ export default {
           location.href = "/login";
         });
     }
+  },
+  computed: {
+      apps: function () {
+        return this.data;
+      },
+      appName: function () {
+        return this.data[this.appSelected] != undefined ? this.data[this.appSelected].display_name : ''
+      }
   }
 };
 </script>
