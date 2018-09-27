@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Facades\Configuration;
 use Illuminate\Support\Facades\Auth;
+use Session;
 
 class ApplicationController extends Controller
 {
@@ -26,6 +27,9 @@ class ApplicationController extends Controller
     {
       if(Auth::check())
       {
+        $companies = Auth::user()->companies;
+
+        dd($companies);
         return [
             "IndustrialHygiene" => [
                 "display_name" => "Higiene Industrial",
