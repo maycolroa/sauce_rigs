@@ -18,7 +18,7 @@ Route::get('export/{url}',function($url){
   return Storage::disk('public')->download(base64_decode($url));
 });
 Route::get('appWithModules', 'ApplicationController@appsWhithModules');
-Route::middleware(['auth'])->group(function () { 
+Route::middleware(['auth', 'checkLicense'])->group(function () { 
   
     //GET methods
     Route::get('templates/audiometryimport',function(){
