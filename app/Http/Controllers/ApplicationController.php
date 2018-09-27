@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use App\Facades\Configuration;
 use Illuminate\Support\Facades\Auth;
 use Session;
+use App\Administrative\License;
 
 class ApplicationController extends Controller
 {
@@ -27,10 +28,56 @@ class ApplicationController extends Controller
     {
       if(Auth::check())
       {
-        $companies = Auth::user()->companies;
+        $data = [];
+        $licenses = License::whereRaw('? BETWEEN started_at AND ended_at', [date('Y-m-d')])->get();
+        $arr_sub_mod = [];
 
-        dd($companies);
-        return [
+        foreach ($licenses as $value)
+        {
+          $app = $value->module->application;
+          $mod = $value->module;
+          $arr_mod = [];
+
+          if (!isset($data[$app->name]))
+          {
+            $data[$app->name]["display_name"] = $app->display_name;
+            $data[$app->name]["image"]        = $app->image;
+            $data[$app->name]["modules"]      = [];
+          }
+
+          $subMod_name = explode("/", $mod->name);
+          $subMod_display_name = explode("/", $mod->display_name);
+
+          if (COUNT($subMod_name) == 1) //Modulo
+          {
+            array_push($data[$app->name]["modules"], ["name"=>$mod->name, "display_name"=>$mod->display_name]);
+          }
+          else //Submodulo
+          {
+            if (!isset($arr_sub_mod[$app->name][$subMod_name[0]]))
+            {
+              array_push($data[$app->name]["modules"], ["name"=>$subMod_name[0], "display_name"=>$subMod_display_name[0], "subModules"=>[]]);
+            }
+
+            $arr_sub_mod[$app->name][$subMod_name[0]][] = [
+              "name"=> $subMod_name[1], "display_name" => $subMod_display_name[1]
+            ];
+          }
+
+          foreach ($data as $keyApp => $value)
+          {
+            foreach ($value["modules"] as $keyMod => $value2)
+            {
+              if (isset($value2["subModules"]))
+              {
+                $data[$keyApp]["modules"][$keyMod]["subModules"] = $arr_sub_mod[$keyApp][$value2["name"]];
+              }
+            }
+          }
+        }
+        return $data;
+        
+        /*return [
             "IndustrialHygiene" => [
                 "display_name" => "Higiene Industrial",
                 "image" => "IndustrialHygiene",
@@ -83,7 +130,7 @@ class ApplicationController extends Controller
                 "modules" => [
                 ]
             ]
-        ];
+        ];*/
       }
 
       return $this->respondHttp401();
