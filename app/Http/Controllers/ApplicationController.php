@@ -24,6 +24,12 @@ class ApplicationController extends Controller
       return $this->respondHttp500();
     }
 
+    /**
+     * Returns an object with the applications and modules permissions 
+     * according to the active licenses for the user in session
+     *
+     * @return array
+     */
     public function appsWhithModules()
     {
       if(Auth::check())
