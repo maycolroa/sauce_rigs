@@ -7,6 +7,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Support\Facades\Auth;
 use Session;
+use DB;
 
 class LogSuccessfulLogin
 {
@@ -28,7 +29,24 @@ class LogSuccessfulLogin
      */
     public function handle(Login $event)
     {   
-        $user = Auth::user()->companies->first();
-        Session::put('company_id', $user->pivot->company_id);
+        $companies = Auth::user()->companies;
+
+        foreach ($companies as $val)
+        {
+            $license = DB::table('sau_licenses')
+                    ->whereRaw('company_id = ? 
+                                AND ? BETWEEN started_at AND ended_at', 
+                                [$val->pivot->company_id, date('Y-m-d')])
+                    ->first();
+
+            if ($license)
+            {
+                Session::put('company_id', $val->pivot->company_id);
+                break;
+            }
+        }
+
+        if (!Session::get('company_id'))
+            Session::put('company_id', null);
     }
 }
