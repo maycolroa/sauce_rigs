@@ -5,39 +5,195 @@
     },
     {
         "application": "IndustrialSecure",
-        "modules": []
+        "modules": [
+            {
+                "name": "hazardMatrix",
+                "display_name" : "Matriz de Peligros"
+            },
+            {
+                "name": "hazardsAndRiskManagement",
+                "display_name" : "Gestión de Peligros y Riesgos"
+            },
+            {
+                "name": "securityInspections",
+                "display_name" : "Inspecciones de Seguridad"
+            },
+            {
+                "name": "emergencyPlan",
+                "display_name" : "Plan de Emergencias"
+            },
+            {
+                "name": "personalProtectionItems",
+                "display_name" : "Elementos de Protección Personal"
+            },
+            {
+                "name": "investigationOfIncidentsAndWorkAccidents",
+                "display_name" : "Investigación de Incidentes y Accidentes de Trabajo"
+            }
+        ]
     },
     {
         "application": "IndustrialHygiene",
-        "modules": []
+        "modules": [
+            {
+                "name": "measurements",
+                "display_name" : "Mediciones"
+            },
+            {
+                "name": "Controls",
+                "display_name" : "Controles"
+            }
+        ]
     },
     {
         "application": "PreventiveOccupationalMedicine",
         "modules": [
             {
-                "name": "BiologicalMonitoring",
-                "display_name": "Monitoreo Biológico"
+                "name": "sociodemographicSescription",
+                "display_name" : "Descripción Sociodemografica"
             },
             {
-                "name": "Audiometry",
-                "display_name": "Audiometrias"
+                "name": "epidemiologicalSurveillanceSystems",
+                "display_name" : "Sistemas de Vigilancia Epidemiológica"
+            },
+            {
+                "name": "medicalConcepts",
+                "display_name" : "Conceptos Médicos"
+            },
+            {
+                "name": "restrictionsAndRecommendations",
+                "display_name" : "Restricciones y Recomendaciones"
+            },
+            {
+                "name": "biologicalMonitoring/audiometry",
+                "display_name": "Monitoreo Biológico/Audiometría"
+            },
+            {
+                "name": "biologicalMonitoring/spirometry",
+                "display_name": "Monitoreo Biológico/Espirometrias"
+            },
+            {
+                "name": "biologicalMonitoring/otherExams",
+                "display_name": "Monitoreo Biológico/Otros Exámenes"
+            },
+            {
+                "name": "truancyAndIndicators",
+                "display_name" : "Ausentismo e Indicadores"
+            },
+            {
+                "name": "professions",
+                "display_name" : "Profesiogramas"
+            },
+            {
+                "name": "proceduresAndPrograms",
+                "display_name" : "Procedimientos y Programas"
+            },
+            {
+                "name": "svePsychosocial",
+                "display_name" : "SVE Psicosocial"
+            },
+            {
+                "name": "jobAnalysis",
+                "display_name" : "Analisís de puestos de Trabajo"
             }
         ]
     },
     {
         "application": "TrainingQualification",
-        "modules": []
+        "modules": [
+            {
+                "name": "induction",
+                "display_name" : "Inducción"
+            },
+            {
+                "name": "reInduction",
+                "display_name" : "Re-Inducción"
+            },
+            {
+                "name": "training/generalitiesOfTheSST",
+                "display_name" : "Capacitación/Generalidades del SST"
+            },
+            {
+                "name": "training/riskManagement",
+                "display_name" : "Capacitación/Gestión del Riesgo"
+            },
+            {
+                "name": "workout",
+                "display_name" : "Entrenamiento"
+            }
+        ]
     },
     {
         "application": "MeasurementMonitoring",
-        "modules": []
+        "modules": [
+            {
+                "name": "systemResources",
+                "display_name" : "Recursos del Sistema"
+            },
+            {
+                "name": "objectivesOfTheSystem",
+                "display_name" : "Objetivos del Sistema"
+            },
+            {
+                "name": "workPlans",
+                "display_name" : "Planes de Trabajo"
+            },
+            {
+                "name": "systemIndicators",
+                "display_name" : "Indicadores del Sistema"
+            },
+            {
+                "name": "correctivePreventiveAndImprovementActions",
+                "display_name" : "Acciones correctivas, preventivas y de mejora"
+            },
+            {
+                "name": "internalAndExternalAudits",
+                "display_name" : "Auditorías Internas y Externas"
+            },
+            {
+                "name": "systemEvaluation",
+                "display_name" : "Evaluación del Sistema"
+            },
+            {
+                "name": "acquisitionsAndContracting",
+                "display_name" : "Adquisiciones y Contratación"
+            },
+            {
+                "name": "reviewByManagement",
+                "display_name" : "Revisión por la dirección"
+            },
+            {
+                "name": "changeManagement",
+                "display_name" : "Gestión del Cambio"
+            }
+        ]
     },
     {
         "application": "LegalAspects",
         "modules": [
             {
-                "name": "LegalMatrix",
-                "display_name": "Matriz Legal"
+                "name": "responsibilities",
+                "display_name": "Responsabilidades"
+            },
+            {
+                "name": "policies",
+                "display_name": "Políticas"
+            },
+            {
+                "name": "regulations",
+                "display_name": "Reglamentos"
+            },
+            {
+                "name": "committees",
+                "display_name": "Comites"
+            },
+            {
+                "name": "legalMatrix/securityAndHealthAtWork",
+                "display_name": "Matriz Legal/Seguridad y Salud en el Trabajo"
+            },
+            {
+                "name": "legalMatrix/aspectsEnvironmental",
+                "display_name": "Matriz Legal/Aspectos Ambientales"
             }
         ]
     }    
