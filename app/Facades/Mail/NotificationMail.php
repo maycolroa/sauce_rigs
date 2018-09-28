@@ -216,12 +216,12 @@ class NotificationMail
      * @param boolean $order
      * @return $this
      */
-    public function list($data, $order = false)
+    public function list($data, $order = null)
     {
         if (!is_array($data))
             throw new \Exception('The format of the list is incorrect');
         
-        if (!is_bool($order))
+        if (!is_string($order) && $order != null)
             throw new \Exception('The format of the order is incorrect');
 
         $this->list = $data;
@@ -363,21 +363,11 @@ class NotificationMail
      */
     public function with($data)
     {
-        if (empty($data) || !is_array($data))
+        if (empty($data) || !$this->is_assoc($data))
             throw new \Exception('The format of the data is incorrect');
 
-        $i = 1;
-        $aux = new \stdClass();
-        
-        foreach ($data as $value)
-        {
-            $name = 'param_'.$i;
-            $aux->$name = $value;
-            $i++;
-        }
 
-        $this->with = $aux;
-
+        $this->with = $data;
         return $this;
     }
 
@@ -403,7 +393,7 @@ class NotificationMail
             $this->createLog();
         }
         catch (\Exception $e) {
-            dd($e);
+          dd($e);
             throw new \Exception('An error occurred while sending the mail');
         }
 

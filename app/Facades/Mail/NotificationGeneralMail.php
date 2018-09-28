@@ -29,8 +29,15 @@ class NotificationGeneralMail extends Mailable
      */
     public function build()
     {
+      if($this->mail->view == 'notification'){
         return $this->subject($this->mail->subject)
                     ->markdown('mail.'.$this->mail->view)
                     ->with(['mail' => $this->mail]);
+      }
+      else{
+        return $this->subject($this->mail->subject)
+                    ->markdown('mail.'.$this->mail->view)
+                    ->with($this->mail->with);
+      }
     }
 }
