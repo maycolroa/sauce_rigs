@@ -33,8 +33,8 @@ class AudiometryController extends Controller
     
        $audiometry = Audiometry::select(
            'bm_audiometries.*',
-           'sau_employees.identification as employee_identification',
-           'sau_employees.name as employee_name'
+           'sau_employees.identification as identification',
+           'sau_employees.name as name'
         )->join('sau_employees','sau_employees.id','bm_audiometries.employee_id')
         ->join('sau_employees_regionals','sau_employees_regionals.id','sau_employees.employee_regional_id');
 

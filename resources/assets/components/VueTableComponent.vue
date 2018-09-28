@@ -12,12 +12,16 @@
           <b-btn v-if="controllsBase.includes('delete')" variant="outline-danger borderless icon-btn" class="btn-xs" @click.prevent="confirmRemove(props.row)"><i class="ion ion-md-close"></i></b-btn>
         </div>
       </template>
-      <template :slot="details.length > 0 ? 'child_row': null" slot-scope="props">
-        <b-row class="mx-0">
-        <b-col cols="6" v-for="(field, index) in details" :key="index">
-          <b>{{field.title}}:</b> {{props.row[field.data]}}
-        </b-col>
-        </b-row>
+     }
+      <template :slot="details.length > 0 || config.configuration.detailComponent ? 'child_row': null" slot-scope="props">
+        <div v-if="!component">
+          <b-row class="mx-0">
+          <b-col cols="6" v-for="(field, index) in details" :key="index">
+            <b>{{field.title}}:</b> {{props.row[field.data]}}
+          </b-col>
+          </b-row>
+        </div>
+        <component :is="component" v-if="component" :row="props.row"/>
       </template>
     </v-server-table>
 
@@ -62,10 +66,17 @@ export default {
   data(){
     return{
       messageConfirmationRemove:'',
-      actionRemove:''
+      actionRemove:'',
+      component: null,
     }
   },
   computed: {
+    loader(){
+      if(this.config.configuration.detailComponent){
+        return () => import(`@/components${this.config.configuration.detailComponent}`);
+      }
+      return () => null;
+    },
     columns(){
       let columns = this.config.fields.filter((f) => {
         return !f.detail && !f.key;
@@ -76,6 +87,7 @@ export default {
     },
     options(){
       let options = {
+        columnsDropdown: true,
         pagination: { chunk: 5 },
         perPage: 10,
         perPageValues: [],
@@ -150,8 +162,7 @@ export default {
       let countdetail = fields.filter((f) => {
         return f.detail;
       }).length;
-       options.skin += countdetail > 0 ?  " table-with-detail": " table-without-detail";
-
+       options.skin += (countdetail > 0 || this.config.configuration.detailComponent) ?  " table-with-detail": " table-without-detail";
       return options;
     },
 
@@ -182,9 +193,17 @@ export default {
       return controlls.buttons;
     }
   },
+  mounted() {
+    if(this.loader()){
+      this.loader()
+              .then(() => {
+                  this.component = () => this.loader()
+              })
+    }
+    
+  },
   methods: {
     pushButton (button, row) {
-      console.log(button);
 
       if(button.data.routePush.name != undefined){
          let id = row[button.data.id];

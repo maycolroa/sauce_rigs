@@ -28,16 +28,16 @@ class UpdateTableBmAudiometriesAddColumns extends Migration
           $table->renameColumn('right_4000','air_right_4000');
           $table->renameColumn('right_6000','air_right_6000');
           $table->renameColumn('right_8000','air_right_8000');
-          $table->integer('osseous_left_500');
-          $table->integer('osseous_left_1000');
-          $table->integer('osseous_left_2000');
-          $table->integer('osseous_left_3000');
-          $table->integer('osseous_left_4000');
-          $table->integer('osseous_right_500');
-          $table->integer('osseous_right_1000');
-          $table->integer('osseous_right_2000');
-          $table->integer('osseous_right_3000');
-          $table->integer('osseous_right_4000');
+          $table->integer('osseous_left_500')->nullable();
+          $table->integer('osseous_left_1000')->nullable();
+          $table->integer('osseous_left_2000')->nullable();
+          $table->integer('osseous_left_3000')->nullable();
+          $table->integer('osseous_left_4000')->nullable();
+          $table->integer('osseous_right_500')->nullable();
+          $table->integer('osseous_right_1000')->nullable();
+          $table->integer('osseous_right_2000')->nullable();
+          $table->integer('osseous_right_3000')->nullable();
+          $table->integer('osseous_right_4000')->nullable();
         });
     }
 

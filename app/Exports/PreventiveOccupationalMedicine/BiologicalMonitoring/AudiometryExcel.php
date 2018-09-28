@@ -32,13 +32,8 @@ class AudiometryExcel implements FromCollection, WithHeadings, WithMapping, With
     {
         return [
           Date::dateTimeToExcel(Carbon::createFromFormat('Y-m-d',$audiometries->date)),
-          $audiometries->type,
-          $audiometries->work_zone_noise,
           $audiometries->previews_events,
           $audiometries->exposition_level,
-          $audiometries->left_clasification,
-          $audiometries->right_clasification,
-          $audiometries->test_score,
           $audiometries->epp,
           $audiometries->air_left_500,
           $audiometries->air_left_1000,
@@ -77,13 +72,8 @@ class AudiometryExcel implements FromCollection, WithHeadings, WithMapping, With
     {
         return [
           'Fecha',
-          'Tipo',
-          'Ruido de la zona de trabajo',
           'Eventos Previos',
           'Nivel de exposicion (Disometría)',
-          'Clasificación izquierda',
-          'Clasificación derecha',
-          'Resultado de la prueba',
           'EPP',
           'Aereo Izquierda 500',
           'Aereo Izquierda 1000',

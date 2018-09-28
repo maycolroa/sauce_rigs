@@ -9,7 +9,41 @@
         </wizard-step>
       </template>
       <!-- / -->
+      <tab-content v-if="viewOnly" title="Resultado">
+        <div class="row">
 
+          <div class="col-lg">
+
+            <b-card bg-variant="transparent" border-variant="primary" title="Oido Derecho" class="mb-3 box-shadow-none">
+              <results-audiometry :gap="form.gap_right"
+                                  :air-pta="form.air_right_pta"
+                                  :osseous-pta="form.osseous_right_pta"
+                                  :severity-grade-air-pta="form.severity_grade_air_right_pta"
+                                  :severity-grade-osseous-pta="form.severity_grade_osseous_right_pta"
+                                  :severity-grade-air4000="form.severity_grade_air_right_4000"
+                                  :severity-grade-osseous4000="form.severity_grade_osseous_right_4000"
+                                  :severity-grade-air6000="form.severity_grade_air_right_6000"
+                                  :severity-grade-air8000="form.severity_grade_air_right_8000"/>
+            </b-card>
+
+          </div>
+          <div class="col-lg">
+
+            <b-card bg-variant="transparent" border-variant="secondary" title="Oido izquierdo" class="mb-3 box-shadow-none">
+              <results-audiometry :gap="form.gap_left"
+                                  :air-pta="form.air_left_pta"
+                                  :osseous-pta="form.osseous_left_pta"
+                                  :severity-grade-air-pta="form.severity_grade_air_left_pta"
+                                  :severity-grade-osseous-pta="form.severity_grade_osseous_left_pta"
+                                  :severity-grade-air4000="form.severity_grade_air_left_4000"
+                                  :severity-grade-osseous4000="form.severity_grade_osseous_left_4000"
+                                  :severity-grade-air6000="form.severity_grade_air_left_6000"
+                                  :severity-grade-air8000="form.severity_grade_air_left_8000"/>
+            </b-card>
+
+          </div>
+        </div>
+      </tab-content>
       <tab-content title="General">
         <b-form-row>
           <vue-datepicker :disabled="viewOnly" class="col-md-6" v-model="form.date" label="Fecha" :full-month-name="true" placeholder="Seleccione la fecha" :error="form.errorsFor('date')" name="date" :disabled-dates="disabledDates">
@@ -20,10 +54,6 @@
         </b-form-row>
         <vue-textarea :disabled="viewOnly" v-model="form.previews_events" label="Eventos previos" :error="form.errorsFor('previews_events')" name="previews_events" placeholder="Eventos previos"></vue-textarea>
 
-        <b-form-row>
-          <vue-input :disabled="viewOnly" class="col-md-6" v-model="form.type" label="Tipo" type="text" name="type" :error="form.errorsFor('type')" placeholder="Tipo"></vue-input>
-          <vue-input :disabled="viewOnly" class="col-md-6" v-model="form.work_zone_noise" label="Ruido de la zona de trabajo" type="text" name="work_zone_noise" :error="form.errorsFor('work_zone_noise')" placeholder="Ruido de la zona de trabajo"></vue-input>
-        </b-form-row>
         <b-form-row>
           <vue-advanced-select :disabled="viewOnly" class="col-md-6" v-model="form.exposition_level" :error="form.errorsFor('exposition_level')" :multiple="false" :options="expositionLevel" :hide-selected="false" name="exposition_level" label="Nivel de exposicion (Disometría)" placeholder="Seleccione el nivel de exposicion (Disometría)">
           </vue-advanced-select>
@@ -124,9 +154,7 @@
           </div>
         </div>
       </tab-content>
-      <tab-content v-if="viewOnly" title="Resultado">
-        <results-audiometry :audiometry="form"/>
-      </tab-content>
+
 
       <template slot="footer" slot-scope="props">
         <b-btn variant="default" :to="cancelUrl" :disabled="loading">{{ viewOnly ? "Atras" : "Cancelar"}}</b-btn>
@@ -150,7 +178,6 @@ import VueDatepicker from "@/components/Inputs/VueDatepicker.vue";
 import VueTextarea from "@/components/Inputs/VueTextarea.vue";
 import ResultsAudiometry from '@/components/PreventiveOccupationalMedicine/BiologicalMonitoring/Audiometry/ResultsAudiometryComponent.vue';
 import Form from "@/utils/Form.js";
-
 import { FormWizard, TabContent, WizardStep } from "vue-form-wizard";
 
 export default {
@@ -192,9 +219,7 @@ export default {
         return {
           date: "",
           previews_events: "",
-          type: "",
           employee_id: "",
-          work_zone_noise: "",
           exposition_level: "",
           air_left_500: "",
           air_left_1000: "",
@@ -220,11 +245,8 @@ export default {
           osseous_left_2000: "",
           osseous_left_3000: "",
           osseous_left_4000: "",
-          air_left_clasification: "",
-          air_right_clasification: "",
           recommendations: "",
           observation: "",
-          test_score: "",
           epp: ""
         };
       }

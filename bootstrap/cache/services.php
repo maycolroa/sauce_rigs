@@ -33,6 +33,7 @@
     29 => 'App\\Providers\\EventServiceProvider',
     30 => 'App\\Providers\\RouteServiceProvider',
     31 => 'Maatwebsite\\Excel\\ExcelServiceProvider',
+    32 => 'App\\Providers\\ObserverServiceProvider',
   ),
   'eager' => 
   array (
@@ -54,6 +55,7 @@
     15 => 'App\\Providers\\EventServiceProvider',
     16 => 'App\\Providers\\RouteServiceProvider',
     17 => 'Maatwebsite\\Excel\\ExcelServiceProvider',
+    18 => 'App\\Providers\\ObserverServiceProvider',
   ),
   'deferred' => 
   array (
