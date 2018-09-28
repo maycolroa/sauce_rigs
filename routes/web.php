@@ -17,9 +17,13 @@ Route::get('emailTest', 'EmailTestController@index');
 Route::get('export/{url}',function($url){
   return Storage::disk('public')->download(base64_decode($url));
 });
-Route::get('appWithModules', 'ApplicationController@appsWhithModules');
+
 Route::middleware(['auth', 'checkLicense'])->group(function () { 
-  
+
+    Route::get('appWithModules', 'ApplicationController@appsWhithModules');
+    Route::get('getCompanies', 'ApplicationController@getCompanies');
+    Route::post('changeCompany', 'ApplicationController@changeCompany');
+
     //GET methods
     Route::get('templates/audiometryimport',function(){
       return Storage::disk('local')->download('/templates/PlantillaImportacionAudiometria.xlsx');
@@ -44,6 +48,4 @@ Route::middleware(['auth', 'checkLicense'])->group(function () {
 
     //Return view for spa
     Route::get('/{any}', 'ApplicationController@index')->where('any', '.*');
-
-    //Route::get('appWithModules', 'ApplicationController@appsWhithModules');
 });

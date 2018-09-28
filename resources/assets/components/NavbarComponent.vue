@@ -32,9 +32,41 @@
         </label>
       </b-navbar-nav>
 
-      
+      <b-navbar-nav class="align-items-lg-center ml-auto">
+        
+        <label class="nav-item navbar-text navbar-search-box p-0 active">
+          <div class="ui-icon ui-icon-sm ion bg-primary border-0 text-white"> 
+            {{ companyName.substr(0,1).toUpperCase() }} 
+          </div>
+          <div class="media-body line-height-condenced ml-3">
+            <div class="text-dark">{{ companyName }}</div>
+          </div>
+        </label>
+
+        <!-- Divider -->
+        <div class="nav-item d-none d-lg-block text-big font-weight-light line-height-1 opacity-25 mr-3 ml-1">|</div>
+
+        <b-nav-item-dropdown no-caret :right="!isRTL" class="demo-navbar-notifications mr-lg-3"
+            v-if="Object.keys(company.data).length > 1">
+          <template slot="button-content">
+            <i class="ion ion-md-cog navbar-icon align-middle"></i>
+            <span class="d-lg-none align-middle">&nbsp; Cog </span>
+          </template>
+
+          <b-list-group flush>
+            <template v-for="(item, index) in company.data">
+              <b-list-group-item href="javascript:void(0)" class="media d-flex align-items-center"
+                 :key="index" v-if="index != company.selected" @click="changeCompany(index)">
+                <div class="ui-icon ui-icon-sm ion bg-primary border-0 text-white"> {{ item.name.substr(0,1).toUpperCase() }} </div>
+                <div class="media-body line-height-condenced ml-3">
+                  <div class="text-dark">{{ item.name }}</div>
+                </div>
+              </b-list-group-item>
+            </template>
+          </b-list-group>
+        </b-nav-item-dropdown>
+
         <!--Aplications-->
-        <b-navbar-nav class="align-items-lg-center ml-auto">
 
         <b-nav-item-dropdown no-caret :right="!isRTL" class="navbar-application-sauce mr-lg-3">
           <template slot="button-content">
@@ -101,7 +133,14 @@ export default {
     }
   },
   components: {},
-
+  data(){
+      return {
+        company: {
+          selected: null,
+          data: []
+        }
+      }
+    },
   methods: {
     toggleSidenav() {
       this.layoutHelpers.toggleCollapsed();
@@ -119,7 +158,33 @@ export default {
         .catch(error => {
           location.href = "/login";
         });
+    },
+    companies () {
+      axios
+        .get('/getCompanies')
+        .then(response => {
+            this.company.selected = response.data.selected
+            this.company.data = response.data.data
+        })
+        .catch(error => {
+            Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
+        });
+    },
+    changeCompany(company) {
+      axios
+        .post('/changeCompany', {
+            company_id: company
+        })
+        .then(response => {
+            location.reload()
+        })
+        .catch(error => {
+            Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
+        });
     }
+  },
+  mounted () {
+    this.companies()
   },
   computed: {
       apps: function () {
@@ -127,7 +192,10 @@ export default {
       },
       appName: function () {
         return this.data[this.appSelected] != undefined ? this.data[this.appSelected].display_name : ''
-      }
+      },
+      companyName: function () {
+        return this.company.data[this.company.selected] != undefined ? this.company.data[this.company.selected].name : ''
+      },
   }
 };
 </script>

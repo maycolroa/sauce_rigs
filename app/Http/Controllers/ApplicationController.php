@@ -9,6 +9,7 @@ use App\Facades\Configuration;
 use Illuminate\Support\Facades\Auth;
 use Session;
 use App\Administrative\License;
+use DB;
 
 class ApplicationController extends Controller
 {
@@ -140,5 +141,40 @@ class ApplicationController extends Controller
       }
 
       return $this->respondHttp401();
+    }
+
+    public function getCompanies()
+    {
+      if(Auth::check())
+      {
+        $companies = Auth::user()->companies;
+        $data = [];
+
+        foreach ($companies as $val)
+        {
+            $license = DB::table('sau_licenses')
+                    ->whereRaw('company_id = ? 
+                                AND ? BETWEEN started_at AND ended_at', 
+                                [$val->pivot->company_id, date('Y-m-d')])
+                    ->first();
+          
+            if ($license)
+            {
+              $data[$val->pivot->company_id] = [
+                  "id"=>$val->pivot->company_id, 
+                  "name"=>ucwords(strtolower($val->name))
+                ];
+            }
+        }
+        
+        return ["selected"=>Session::get('company_id'), "data"=>$data];
+      }
+
+      return $this->respondHttp401();
+    }
+
+    public function changeCompany(Request $request)
+    {
+      Session::put('company_id', $request->input('company_id'));
     }
 }

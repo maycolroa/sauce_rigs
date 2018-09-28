@@ -18,7 +18,7 @@
         <template v-if="item['subModules'] != undefined"> <!--Sub Modulos -->
           <sidenav-menu icon="fas fa-angle-right" :key="index">
             <template slot="link-text">{{ item.display_name }}</template>
-            <sidenav-router-link :to="{ name: subIndex.name}" :exact="true"
+            <sidenav-router-link :to="{ name: (item.name+'-'+subItem.name).toLowerCase() }" :exact="true"
                 v-for="(subItem, subIndex) in item.subModules" :key="subIndex"> 
                 {{ subItem.display_name }} 
             </sidenav-router-link>
