@@ -1,5 +1,4 @@
 require('./entry-point.js');
-//require('./utils.js');
 
 import Vue from 'vue'
 import router from './router/index.js'
@@ -25,18 +24,12 @@ Vue.mixin({
 
 Vue.mixin({
   computed: {
-    /*companiesUser: function () {
-      return window.globalCompaniesUser !== undefined ? window.globalCompaniesUser : null
-    },
-    appModulesUser: function () {
-      return window.globalAppModulesUser !== undefined ? window.globalAppModulesUser : null
-    },*/
     routeAppName: function () {
       
-      if (this.$route.name != undefined)
+      if (this.$route.path != undefined)
       {
-        let name = this.$route.name.split('-')
-        return name[0] != '\\' ? name[0] : ''
+        let name = this.$route.path.split('/')
+        return name[1] != '' ? name[1] : ''
       }
       
       return ''

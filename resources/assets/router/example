@@ -2,12 +2,53 @@ import LayoutModules from '@/views/layoutModules' //Layout Secudario el cual inc
 import Home from '@/views/home' //Vista principal que sera utilida para la raiz de cada aplicacion
 
 export default [{
-    path: '/legalaspects',
-    component: LayoutModules,
-    //props: true,
-    children: [{
-      path: '',
-      name: 'legalaspects',
-      component: Home,
-    }]
+  path: '/preventiveoccupationalmedicine', //Ruta principal de la aplicacion
+  component: LayoutModules, //Componente que contiene el SideNav
+  children: [{ //En este arrglo se almacenaran los modulos de la aplicacion
+    name: 'preventiveoccupationalmedicine', 
+    path: '', //Ruta por defecto o vista principal de la aplicacion
+    component: Home //Componente Home para las aplicaciones
+  }, {
+    name: 'biologicalmonitoring-audiometry', //Nombre del modulo unido por "-" con el submodulo
+    path: 'biologicalmonitoring/audiometry', //Path del modulo unido por "/" con el submodulo
+    component: () => //Componente uque sera renderizado para la ruta actual
+        import('@/views/PreventiveOccupationalMedicine/biologicalmonitoring/audiometry/index')
+  }, {
+    name: 'biologicalmonitoring-audiometry-create',
+    path: 'biologicalmonitoring/audiometry/create',
+    component: () =>
+      import('@/views/PreventiveOccupationalMedicine/biologicalmonitoring/audiometry/create')
+  }, {
+    name: 'biologicalmonitoring-audiometry-edit',
+    path: 'biologicalmonitoring/audiometry/edit/:id',
+    component: () =>
+      import('@/views/PreventiveOccupationalMedicine/biologicalmonitoring/audiometry/edit')
+  }, {
+    name: 'biologicalmonitoring-audiometry-view',
+    path: 'biologicalmonitoring/audiometry/view/:id',
+    component: () =>
+      import('@/views/PreventiveOccupationalMedicine/biologicalmonitoring/audiometry/view')
+  }, {
+    name: 'biologicalmonitoring-audiometry-report',
+    path: 'biologicalmonitoring/audiometry/report/:id',
+    component: () =>
+      import('@/views/PreventiveOccupationalMedicine/biologicalmonitoring/audiometry/report')
   }]
+}]
+
+
+NOTAS:
+
+- Los nombres de las rutas para las aplicaciones y modulos deben coincidir con lo que esta almacenado
+  en base de datos en las tablas applicacions y modules, de lo contrario la aplicacion no cargara
+  correctamente el menu
+- La ruta principal de cada archivo de configuracion siempre sera el nombre de la aplicacion
+- Para definir la ruta de un modulo que contiene submodulos debe contener la siguiente estructua
+
+  NombreModulo-NombreSubmodulo
+  NombreModulo-NombreSubmodulo-Accion
+
+  En base de datos tendra la estructura:
+
+  applications: NombreAplicacion
+  modules: NombreModulo/NombreSubmodulo

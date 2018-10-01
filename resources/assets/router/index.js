@@ -20,10 +20,6 @@ Vue.use(Meta)
 const router = new Router({
   base: '/',
   mode: 'history',
-  /*routes: [
-    { path: '', redirect: '/preventiveoccupationalmedicine/biologicalmonitoring/audiometry' }
-  ].concat(PreventiveOccupationalMedicine),
-  */
   routes: [
     { 
       path: '', 

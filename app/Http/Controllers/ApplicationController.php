@@ -85,61 +85,6 @@ class ApplicationController extends Controller
           }
         }
         return $data;
-        
-        /*return [
-            "IndustrialHygiene" => [
-                "display_name" => "Higiene Industrial",
-                "image" => "IndustrialHygiene",
-                "modules" => [
-                  [
-                    "name"=>"linkDirecto", 
-                    "display_name"=>"Link Directo"
-                  ]
-                ]
-            ],
-            "PreventiveOccupationalMedicine" => [
-                "display_name" => "Medicina Laboral y Preventiva",
-                "image" => "PreventiveOccupationalMedicine",
-                "modules" => [
-                    [
-                      "name"=>"BiologicalMonitoring", 
-                      "display_name"=>"Monitoreo Biológico",
-                      "subModules" => [
-                        ["name"=>"Audiometry", "display_name"=>"Audiometrias"],
-                        ["name"=>"Spirometry", "display_name"=>"Espirometrias"]
-                      ]
-                    ],
-                    [
-                      "name"=>"MedicalConcepts", 
-                      "display_name"=>"Conceptos Medicos",
-                      "subModules" => [
-                        ["name"=>"SubMo1", "display_name"=>"Sub Modulo 1"],
-                        ["name"=>"SubMo2", "display_name"=>"Sub Modulo 2"]
-                      ]
-                    ],
-                    [
-                      "name"=>"linkDirecto", 
-                      "display_name"=>"Link Directo"
-                    ]
-                ]
-            ],
-            "LegalAspects" => [
-                "display_name" => "Aspectos Legales",
-                "image" => "LegalAspects",
-                "modules" => [
-                  [
-                    "name"=>"linkDirecto", 
-                    "display_name"=>"Link Directo"
-                  ]
-                ]
-            ],
-            "TrainingQualification" => [
-                "display_name" => "Formación y Capacitación",
-                "image" => "TrainingQualification",
-                "modules" => [
-                ]
-            ]
-        ];*/
       }
 
       return $this->respondHttp401();
@@ -202,6 +147,47 @@ class ApplicationController extends Controller
         if (isset($data[$currentPath[0]]) )//Permiso a la aplicacion
           $new_path .= $currentPath[0];
         //ELSE ---> Esta en la raiz o No tiene acceso a la aplicacion
+      }
+      else
+      {
+        $app = $currentPath[0];
+
+        if (!isset($data[$app]))//NO tienen Permiso a la aplicacion
+          return $new_path;
+
+        $new_path .= $app;
+        $modules = explode("-", $request->input('currentName'));
+
+        if (COUNT($modules) == 1) //Link directo
+        {
+          foreach ($data[$app]["modules"] as $key => $value)
+          {
+            if(strtolower($value["name"]) == $modules[0])
+              return $new_path .= '/'.$modules[0];
+          }
+        }
+        else //Submodulo
+        {
+          $path_mod = '';
+
+          foreach ($data[$app]["modules"] as $key => $value)
+          {
+            if(strtolower($value["name"]) == $modules[0]) //Entra si tiene permiso al modulo
+            {
+              $path_mod = $modules[0];
+              $pos_mod = $key;
+            }
+          }
+
+          if ($path_mod != '')//Si tiene permiso al modulo verifica el submodulo
+          {
+            foreach ($data[$app]["modules"][$pos_mod]["subModules"] as $key => $value)
+            {
+              if(strtolower($value["name"]) == $modules[1])
+                return $new_path .= '/'.$path_mod.'/'.$modules[1];
+            }
+          }
+        }
       }
 
       return $new_path;

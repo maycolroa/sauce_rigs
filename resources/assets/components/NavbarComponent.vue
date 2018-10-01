@@ -35,22 +35,16 @@
       <b-navbar-nav class="align-items-lg-center ml-auto">
         
         <label class="nav-item navbar-text navbar-search-box p-0 active">
-          <div class="ui-icon ui-icon-sm ion bg-primary border-0 text-white"> 
-            {{ companyName.substr(0,1).toUpperCase() }} 
-          </div>
           <div class="media-body line-height-condenced ml-3">
             <div class="text-dark">{{ companyName }}</div>
           </div>
         </label>
 
-        <!-- Divider -->
-        <div class="nav-item d-none d-lg-block text-big font-weight-light line-height-1 opacity-25 mr-3 ml-1">|</div>
-
         <b-nav-item-dropdown no-caret :right="!isRTL" class="demo-navbar-notifications mr-lg-3"
             v-if="Object.keys(company.data).length > 1">
           <template slot="button-content">
-            <i class="ion ion-md-cog navbar-icon align-middle"></i>
-            <span class="d-lg-none align-middle">&nbsp; Cog </span>
+            <i class="fas fa-sync navbar-icon align-middle"></i>
+            <span class="d-lg-none align-middle">&nbsp; </span>
           </template>
 
           <b-list-group flush>
@@ -65,6 +59,9 @@
             </template>
           </b-list-group>
         </b-nav-item-dropdown>
+
+        <!-- Divider -->
+        <div class="nav-item d-none d-lg-block text-big font-weight-light line-height-1 opacity-25 mr-3 ml-1">|</div>
 
         <!--Aplications-->
 
@@ -171,12 +168,12 @@ export default {
       axios
         .post('/changeCompany', {
             company_id: company,
-            currentPath: this.$route.path
+            currentPath: this.$route.path,
+            currentName: this.$route.name
         })
         .then(response => {
-            //location.reload()
             console.log(response.data)
-            this.$router.go(response.data)
+            window.location = response.data
         })
         .catch(error => {
             Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');

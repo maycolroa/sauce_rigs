@@ -4,7 +4,6 @@ import Home from '@/views/home'
 export default [{
     path: '/measurementmonitoring',
     component: LayoutModules,
-    //props: true,
     children: [{
       path: '',
       name: 'measurementmonitoring',
