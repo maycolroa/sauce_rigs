@@ -18,7 +18,7 @@
         <template v-if="item['subModules'] != undefined"> <!--Sub Modulos -->
           <sidenav-menu icon="fas fa-angle-right" :key="index">
             <template slot="link-text">{{ item.display_name }}</template>
-            <sidenav-router-link :to="{ name: (item.name+'-'+subItem.name).toLowerCase() }" :exact="true"
+            <sidenav-router-link :to="{ name: (item.name+'-'+subItem.name) }" :exact="true"
                 v-for="(subItem, subIndex) in item.subModules" :key="subIndex"> 
                 {{ subItem.display_name }} 
             </sidenav-router-link>
@@ -56,11 +56,6 @@ export default {
       type: Object,
       required: true,
       default: {}
-    },
-    appSelected: {
-      type: String,
-      required: true,
-      default: ''
     }
   },
 
@@ -83,10 +78,10 @@ export default {
       )
     },
     modules: function () {
-      return this.data[this.appSelected] != undefined ? this.data[this.appSelected].modules : []
+      return this.data[this.routeAppName] != undefined ? this.data[this.routeAppName].modules : []
     },
     appName: function () {
-      return this.data[this.appSelected] != undefined ? this.data[this.appSelected].display_name : ''
+        return this.data[this.routeAppName] != undefined ? this.data[this.routeAppName].display_name : ''
     },
     firstCharAppName: function () {
       return this.appName.substr(0,1).toUpperCase()

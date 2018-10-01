@@ -42,7 +42,9 @@ class ApplicationController extends Controller
         foreach ($licenses as $value)
         {
           $app = $value->module->application;
+          $app->name = strtolower($app->name);
           $mod = $value->module;
+          $mod->name = strtolower($mod->name);
           $arr_mod = [];
 
           if (!isset($data[$app->name]))
@@ -143,6 +145,11 @@ class ApplicationController extends Controller
       return $this->respondHttp401();
     }
 
+    /**
+     * Returns an arrangement with all the applications and modules allowed for the user in session
+     *
+     * @return Array
+     */
     public function getCompanies()
     {
       if(Auth::check())
@@ -173,8 +180,30 @@ class ApplicationController extends Controller
       return $this->respondHttp401();
     }
 
+    /**
+     * Update the company_id and check if the current route is allowed for the other company of the user, 
+     * in case of not having permission, a route with a level lower than the current module is calculated 
+     * until arriving at the root of the application
+     *
+     * @param Request $request
+     * @return String
+     */
     public function changeCompany(Request $request)
     {
       Session::put('company_id', $request->input('company_id'));
+
+      $new_path = "/";
+      $data = $this->appsWhithModules();
+      $currentPath = trim($request->input('currentPath'), '/');
+      $currentPath = explode("/", $currentPath);
+
+      if (COUNT($currentPath) == 1) 
+      {
+        if (isset($data[$currentPath[0]]) )//Permiso a la aplicacion
+          $new_path .= $currentPath[0];
+        //ELSE ---> Esta en la raiz o No tiene acceso a la aplicacion
+      }
+
+      return $new_path;
     }
 }

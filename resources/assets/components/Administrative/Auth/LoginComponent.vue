@@ -89,7 +89,7 @@ export default {
               this.$notify({
                 group: 'auth',
                 title: 'Error',
-                text: "Error al iniciar sesion"
+                text: error
               });
           });
       }

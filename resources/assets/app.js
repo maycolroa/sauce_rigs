@@ -1,4 +1,5 @@
 require('./entry-point.js');
+//require('./utils.js');
 
 import Vue from 'vue'
 import router from './router/index.js'
@@ -20,6 +21,27 @@ Vue.use(Notifications)
 // Global RTL flag
 Vue.mixin({
   data: globals
+})
+
+Vue.mixin({
+  computed: {
+    /*companiesUser: function () {
+      return window.globalCompaniesUser !== undefined ? window.globalCompaniesUser : null
+    },
+    appModulesUser: function () {
+      return window.globalAppModulesUser !== undefined ? window.globalAppModulesUser : null
+    },*/
+    routeAppName: function () {
+      
+      if (this.$route.name != undefined)
+      {
+        let name = this.$route.name.split('-')
+        return name[0] != '\\' ? name[0] : ''
+      }
+      
+      return ''
+    }
+  }
 })
 
 Vue.component('vue-table', require('./components/VueTableComponent.vue'));

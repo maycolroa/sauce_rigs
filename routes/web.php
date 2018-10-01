@@ -16,7 +16,7 @@ Route::get('export/{url}',function($url){
   return Storage::disk('public')->download(base64_decode($url));
 });
 
-Route::middleware(['auth', 'checkLicense'])->group(function () { 
+Route::middleware(['auth'])->group(function () { 
     Route::get('appWithModules', 'ApplicationController@appsWhithModules');
     Route::get('getCompanies', 'ApplicationController@getCompanies');
     Route::post('changeCompany', 'ApplicationController@changeCompany');

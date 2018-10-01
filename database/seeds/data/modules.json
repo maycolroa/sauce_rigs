@@ -1,17 +1,17 @@
 [
     {
-        "application": "Administrative",
+        "application": "administrative",
         "modules": []
     },
     {
-        "application": "IndustrialSecure",
+        "application": "industrialSecure",
         "modules": [
             {
                 "name": "hazardMatrix",
                 "display_name" : "Matriz de Peligros"
             },
             {
-                "name": "hazardsAndRiskManagement",
+                "name": "hazardsRiskManagement",
                 "display_name" : "Gestión de Peligros y Riesgos"
             },
             {
@@ -27,26 +27,26 @@
                 "display_name" : "Elementos de Protección Personal"
             },
             {
-                "name": "investigationOfIncidentsAndWorkAccidents",
+                "name": "investigationIncidentsWorkAccidents",
                 "display_name" : "Investigación de Incidentes y Accidentes de Trabajo"
             }
         ]
     },
     {
-        "application": "IndustrialHygiene",
+        "application": "industrialHygiene",
         "modules": [
             {
                 "name": "measurements",
                 "display_name" : "Mediciones"
             },
             {
-                "name": "Controls",
+                "name": "controls",
                 "display_name" : "Controles"
             }
         ]
     },
     {
-        "application": "PreventiveOccupationalMedicine",
+        "application": "preventiveOccupationalMedicine",
         "modules": [
             {
                 "name": "sociodemographicSescription",
@@ -61,7 +61,7 @@
                 "display_name" : "Conceptos Médicos"
             },
             {
-                "name": "restrictionsAndRecommendations",
+                "name": "restrictionsRecommendations",
                 "display_name" : "Restricciones y Recomendaciones"
             },
             {
@@ -85,7 +85,7 @@
                 "display_name" : "Profesiogramas"
             },
             {
-                "name": "proceduresAndPrograms",
+                "name": "proceduresPrograms",
                 "display_name" : "Procedimientos y Programas"
             },
             {
@@ -99,7 +99,7 @@
         ]
     },
     {
-        "application": "TrainingQualification",
+        "application": "trainingQualification",
         "modules": [
             {
                 "name": "induction",
@@ -110,7 +110,7 @@
                 "display_name" : "Re-Inducción"
             },
             {
-                "name": "training/generalitiesOfTheSST",
+                "name": "training/generalitiesSst",
                 "display_name" : "Capacitación/Generalidades del SST"
             },
             {
@@ -124,14 +124,14 @@
         ]
     },
     {
-        "application": "MeasurementMonitoring",
+        "application": "measurementMonitoring",
         "modules": [
             {
                 "name": "systemResources",
                 "display_name" : "Recursos del Sistema"
             },
             {
-                "name": "objectivesOfTheSystem",
+                "name": "objectivesSystem",
                 "display_name" : "Objetivos del Sistema"
             },
             {
@@ -143,11 +143,11 @@
                 "display_name" : "Indicadores del Sistema"
             },
             {
-                "name": "correctivePreventiveAndImprovementActions",
+                "name": "correctivePreventiveImprovementActions",
                 "display_name" : "Acciones correctivas, preventivas y de mejora"
             },
             {
-                "name": "internalAndExternalAudits",
+                "name": "internalExternalAudits",
                 "display_name" : "Auditorías Internas y Externas"
             },
             {
@@ -155,11 +155,11 @@
                 "display_name" : "Evaluación del Sistema"
             },
             {
-                "name": "acquisitionsAndContracting",
+                "name": "acquisitionsContracting",
                 "display_name" : "Adquisiciones y Contratación"
             },
             {
-                "name": "reviewByManagement",
+                "name": "reviewManagement",
                 "display_name" : "Revisión por la dirección"
             },
             {
@@ -169,7 +169,7 @@
         ]
     },
     {
-        "application": "LegalAspects",
+        "application": "legalAspects",
         "modules": [
             {
                 "name": "responsibilities",
@@ -188,12 +188,8 @@
                 "display_name": "Comites"
             },
             {
-                "name": "legalMatrix/securityAndHealthAtWork",
-                "display_name": "Matriz Legal/Seguridad y Salud en el Trabajo"
-            },
-            {
-                "name": "legalMatrix/aspectsEnvironmental",
-                "display_name": "Matriz Legal/Aspectos Ambientales"
+                "name": "legalMatrix",
+                "display_name": "Matriz Legal"
             }
         ]
     }    

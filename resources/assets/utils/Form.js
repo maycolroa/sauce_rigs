@@ -100,15 +100,23 @@ export default class Form {
           resolve(response);
         })
         .catch(error => {
-          console.log(error.response);
+          //console.log(error.response);
           if(error.response.data.message == 'The given data was invalid.'){
             Alerts.error('Error en los datos', 'Los datos ingresados no son validos');  
           }
           else{
             Alerts.error();
           }
-          this.formSubmitFailed(error);
-          reject(error);
+
+          if (error.response.status == 422)
+          {
+            reject(error.response.data.errors.email)
+          }
+          else
+          {
+            this.formSubmitFailed(error);
+            reject(error);
+          }
         });
     });
   }

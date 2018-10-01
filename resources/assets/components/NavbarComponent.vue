@@ -77,14 +77,14 @@
           <b-row>
             <template v-for="(item, index) in apps">
               <b-col :key="index" v-if="item.modules.length > 0">
-                <a @click.prevent="$emit('changeApp', index)" class="text-dark cursor-pointer">
+                <router-link :to="{ name: index/*, params: {apps: apps}*/}" class="text-dark cursor-pointer">
                 <div class="my-2 mx-2 text-center">
                   <img class="ui-w-60" :src="`/images/${item.image}.png`" alt="">
                   <div class="text-center font-weight-bold pt-1">
                     {{ item.display_name }}
                   </div>
                 </div>
-                </a>
+                </router-link>
               </b-col>
             </template>
           </b-row>
@@ -115,6 +115,8 @@
 </template>
 
 <script>
+import Alerts from '@/utils/Alerts.js';
+
 export default {
   props: {
     sidenavToggle: {
@@ -125,11 +127,6 @@ export default {
       type: Object,
       required: true,
       default: {}
-    },
-    appSelected: {
-      type: String,
-      required: true,
-      default: ''
     }
   },
   components: {},
@@ -173,17 +170,20 @@ export default {
     changeCompany(company) {
       axios
         .post('/changeCompany', {
-            company_id: company
+            company_id: company,
+            currentPath: this.$route.path
         })
         .then(response => {
-            location.reload()
+            //location.reload()
+            console.log(response.data)
+            this.$router.go(response.data)
         })
         .catch(error => {
             Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
         });
     }
   },
-  mounted () {
+  created () {
     this.companies()
   },
   computed: {
@@ -191,7 +191,7 @@ export default {
         return this.data;
       },
       appName: function () {
-        return this.data[this.appSelected] != undefined ? this.data[this.appSelected].display_name : ''
+        return this.data[this.routeAppName] != undefined ? this.data[this.routeAppName].display_name : ''
       },
       companyName: function () {
         return this.company.data[this.company.selected] != undefined ? this.company.data[this.company.selected].name : ''
