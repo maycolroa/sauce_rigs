@@ -30,6 +30,18 @@ class User extends Authenticatable
         'password', 'remember_token',
     ];
 
+    protected $attributes = [
+        'state' => 0
+    ];
+
+    public function setPasswordAttribute($value)
+    {
+        if(isset($value))
+        {
+            $this->attributes['password'] = bcrypt($value);
+        }
+    }
+
     public function companies(){
       return $this->belongsToMany('App\Administrative\Company','sau_company_user');
     }

@@ -85,7 +85,7 @@ export default class Form {
    * @param  {string} url
    * @return {Promise}
    */
-  submit(url) {
+  submit(url, isLogin = false) {
     return new Promise((resolve, reject) => {
       axios.post(url, this.data())
         .then(response => {
@@ -108,7 +108,7 @@ export default class Form {
             Alerts.error();
           }
 
-          if (error.response.status == 422)
+          if (isLogin && error.response.status == 422)
           {
             reject(error.response.data.errors.email)
           }

@@ -1,0 +1,75 @@
+<template>
+
+  <b-form :action="url" @submit.prevent="submit" autocomplete="off">
+    <b-form-row>
+      <vue-input :disabled="viewOnly" class="col-md-6" v-model="form.name" label="Nombre" type="text" name="name" :error="form.errorsFor('name')" placeholder="Nombre"></vue-input>
+      <vue-input :disabled="viewOnly" class="col-md-6" v-model="form.email" label="Email" type="text" name="email" :error="form.errorsFor('email')" placeholder="Email"></vue-input>
+    </b-form-row>
+
+    <b-form-row>
+      <vue-input :disabled="viewOnly" class="col-md-6" v-model="form.password" label="Contraseña" type="password" name="password" :error="form.errorsFor('password')" placeholder="Contraseña"></vue-input>
+      <vue-input :disabled="viewOnly" class="col-md-6" v-model="form.document" label="Documento" type="text" name="document" :error="form.errorsFor('document')" placeholder="Documento"></vue-input>
+    </b-form-row>
+
+    <template v-if="!viewOnly">
+      <b-btn type="submit" :disabled="loading" variant="primary">Finalizar</b-btn>
+    </template>
+    <template v-else>
+      <b-btn :to="{name:'administrative-users'}" variant="primary">Regresar</b-btn>
+    </template>
+  </b-form>
+</template>
+
+<script>
+import VueInput from "@/components/Inputs/VueInput.vue";
+import Form from "@/utils/Form.js";
+
+export default {
+  components: {
+    VueInput
+  },
+  props: {
+    url: { type: String },
+    method: { type: String },
+    cancelUrl: { type: [String, Object], required: true },
+    isEdit: { type: Boolean, default: false },
+    viewOnly: { type: Boolean, default: false },
+    user: {
+      default() {
+        return {
+            name: '',
+            email: '',
+            password: '',
+            document: ''
+        };
+      }
+    }
+  },
+  watch: {
+    user() {
+      this.loading = false;
+      this.form = Form.makeFrom(this.user, this.method);
+    }
+  },
+  data() {
+    return {
+      loading: this.isEdit,
+      form: Form.makeFrom(this.user, this.method),
+    };
+  },
+  methods: {
+    submit(e) {
+      this.loading = true;
+      this.form
+        .submit(e.target.action)
+        .then(response => {
+          this.loading = false;
+          this.$router.push({ name: "administrative-users" });
+        })
+        .catch(error => {
+          this.loading = false;
+        });
+    }
+  }
+};
+</script>

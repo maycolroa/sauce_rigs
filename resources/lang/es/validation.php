@@ -117,7 +117,10 @@ return [
     'attributes'           => [
       'epp' => 'Elemento de proteccion personal',
       'date' => 'Fecha',
-      'employee_id' => 'Empleado'
+      'employee_id' => 'Empleado',
+      'document' => 'Documento',
+      'name' => 'Nombre',
+      'password' => 'Contraseña'
 
     ],
 

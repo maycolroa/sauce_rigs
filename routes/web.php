@@ -44,11 +44,19 @@ Route::middleware(['auth'])->group(function () {
     });
 
     //Administrativo
-    Route::prefix('administrative')->group(function () {
+    Route::prefix('administration')->group(function () {
       Route::post('users/data', 'Administrative\Users\UserController@data');
       Route::post('users/export', 'Administrative\Users\UserController@export');
       Route::post('users/multiselect_epp', 'Administrative\Users\UserController@multiselectEPP');
-      Route::ApiResource('users', 'Administrative\Users\UserController');   
+      Route::ApiResource('users', 'Administrative\Users\UserController', ['except'=>['create']]);
+
+      /*Route::prefix('user')->group(function () {
+        Route::get('/', 'Administrative\Users\UserController@index');
+        Route::post('store', 'Administrative\Users\UserController@store');
+        Route::get('edit/{id}', 'Administrative\Users\UserController@edit');
+        Route::put('update/{id}', 'Administrative\Users\UserController@update');
+        Route::delete('delete/{id}', 'Administrative\Users\UserController@destroy');
+      });*/
     });
 
     //Return view for spa

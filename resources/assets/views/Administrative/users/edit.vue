@@ -1,16 +1,18 @@
 <template>
   <div>
     <h4 class="font-weight-bold mb-4">
-       <span class="text-muted font-weight-light">Audiometrias /</span> Ver
+       <span class="text-muted font-weight-light">Usuarios /</span> Editar
     </h4>
 
     <div class="col-md">
       <b-card no-body>
         <b-card-body>
-            <biological-monitoring-audiometry-form
-                :audiometry="data"
-                :view-only="true"
-                :cancel-url="{ name: 'biologicalmonitoring-audiometry'}"/>
+            <administrative-user-form
+                :url="`/administration/users/${this.$route.params.id}`"
+                method="PUT"
+                :user="data"
+                :is-edit="true"
+                :cancel-url="{ name: 'administrative-users'}"/>
         </b-card-body>
       </b-card>
     </div>
@@ -18,16 +20,16 @@
 </template>
 
 <script>
-import BiologicalMonitoringAudiometryForm from '@/components/PreventiveOccupationalMedicine/BiologicalMonitoring/Audiometry/FormAudiometryComponent.vue';
+import AdministrativeUserForm from '@/components/Administrative/Users/FormUserComponent.vue';
 import Alerts from '@/utils/Alerts.js';
 
 export default {
-  name: 'audiometry-view',
+  name: 'administrative-users-edit',
   metaInfo: {
-    title: 'Audiometria - Ver'
+    title: 'Usuarios - Editar'
   },
   components:{
-    BiologicalMonitoringAudiometryForm
+    AdministrativeUserForm
   },
   data () {
     return {
@@ -35,7 +37,7 @@ export default {
     }
   },
   created(){
-    axios.get(`/biologicalmonitoring/audiometry/${this.$route.params.id}`)
+    axios.get(`/administration/users/${this.$route.params.id}`)
     .then(response => {
         this.data = response.data.data;
     })

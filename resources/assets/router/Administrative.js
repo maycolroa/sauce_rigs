@@ -15,15 +15,18 @@ export default [{
         import('@/views/Administrative/users/index')
     }, {
       name: 'administrative-users-create',
-      path: 'users/create',
-      component: Home,
+      path: 'users/creates',
+      component: () =>
+        import('@/views/Administrative/users/create')
     }, {
       name: 'administrative-users-edit',
       path: 'users/edit/:id',
-      component: Home,
+      component: () =>
+        import('@/views/Administrative/users/edit')
     }, {
       name: 'administrative-users-view',
       path: 'users/view/:id',
-      component: Home,
+      component: () =>
+        import('@/views/Administrative/users/view')
     }]
   }]

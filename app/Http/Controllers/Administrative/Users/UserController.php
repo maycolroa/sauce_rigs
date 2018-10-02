@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Administrative\Users;
 use Illuminate\Http\Request;
 use App\Vuetable\Facades\Vuetable;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\PreventiveOccupationalMedicine\BiologicalMonitoring\AudiometryRequest;
+use App\Http\Requests\Administrative\Users\UserRequest;
 use App\User;
 use Carbon\Carbon;
 use App\Jobs\Administrative\Users\UserExportJob;
@@ -39,12 +39,19 @@ class UserController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\AudiometryRequest  $request
+     * @param  \Illuminate\Http\UserRequest  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(AudiometryRequest $request)
+    public function store(UserRequest $request)
     {
+        $user = new User($request->all());
         
+        if(!$user->save()){
+            return $this->respondHttp500();
+        }
+        return $this->respondHttp200([
+            'message' => 'Se creo el usuario'
+        ]);
     }
 
     /**
@@ -55,7 +62,16 @@ class UserController extends Controller
      */
     public function show($id)
     {
-
+        $user = User::findOrFail($id);
+            
+        try
+        {
+            return $this->respondHttp200([
+                'data' => $user,
+            ]);
+        } catch(Exception $e){
+            $this->respondHttp500();
+        }
     }
 
 
@@ -66,10 +82,16 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(AudiometryRequest $request, User $user)
+    public function update(UserRequest $request, User $user)
     {
- 
-      
+        $user->fill($request->all());
+        
+        if(!$user->update()){
+          return $this->respondHttp500();
+        }
+        return $this->respondHttp200([
+            'message' => 'Se actualizo el usuario'
+        ]);
     }
 
     /**

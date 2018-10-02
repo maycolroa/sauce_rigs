@@ -40,7 +40,7 @@ export default {
   },
   methods: {
     exportUsers(){
-      axios.post('/administrative/users/export')
+      axios.post('/administration/users/export')
       .then(response => {
         Alerts.warning('Información', 'Se inicio la exportación, se le notificara a su correo electronico cuando finalice el proceso.');
       }).catch(error => {

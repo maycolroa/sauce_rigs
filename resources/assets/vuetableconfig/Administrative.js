@@ -38,14 +38,14 @@ export default [
       buttons: [{
         name:'delete',
         data: {
-          action:'/administrative/users/',
+          action:'/administration/users/',
           id: 'id',
           messageConfirmation : 'Esta seguro de borrar el usuario del __name__'
         },
       }],
     }],
     configuration: {
-        urlData: '/administrative/users/data',
+        urlData: '/administration/users/data',
         filterColumns: true,
     }
 }
