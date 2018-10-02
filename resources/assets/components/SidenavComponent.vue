@@ -25,7 +25,7 @@
           </sidenav-menu>
         </template>
         <template v-else> <!-- Link Directo -->
-          <sidenav-router-link icon="fas fa-angle-right" :to="{ name: item.name}" :exact="true" :key="index"> 
+          <sidenav-router-link icon="fas fa-angle-right" :to="{ name: (routeAppName+'-'+item.name)}" :exact="true" :key="index"> 
               {{ item.display_name }} 
           </sidenav-router-link>
         </template>

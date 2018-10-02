@@ -465,7 +465,7 @@ class NotificationMail
         $log->module_id = $this->module->id;
         $log->event = $event;
         $log->subject = $this->subject;
-        $log->message = $this->message;
+        $log->message = isset($this->message) ? $this->message : '';
         $log->created_at = date("Y-m-d H:i:s");
         $log->save();
     }

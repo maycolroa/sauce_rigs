@@ -43,6 +43,14 @@ Route::middleware(['auth'])->group(function () {
         Route::post('multiselect', 'ApplicationController@multiselect');
     });
 
+    //Administrativo
+    Route::prefix('administrative')->group(function () {
+      Route::post('users/data', 'Administrative\Users\UserController@data');
+      Route::post('users/export', 'Administrative\Users\UserController@export');
+      Route::post('users/multiselect_epp', 'Administrative\Users\UserController@multiselectEPP');
+      Route::ApiResource('users', 'Administrative\Users\UserController');   
+    });
+
     //Return view for spa
     Route::get('/{any}', 'ApplicationController@index')->where('any', '.*');
 });

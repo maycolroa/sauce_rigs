@@ -1,7 +1,12 @@
 [
     {
         "application": "administrative",
-        "modules": []
+        "modules": [
+            {
+                "name": "users",
+                "display_name": "Usuarios"
+            }
+        ]
     },
     {
         "application": "industrialSecure",
