@@ -10,6 +10,7 @@
             <administrative-user-form
                 :url="`/administration/users/${this.$route.params.id}`"
                 method="PUT"
+                roles-data-url="/selects/roles"
                 :user="data"
                 :is-edit="true"
                 :cancel-url="{ name: 'administrative-users'}"/>

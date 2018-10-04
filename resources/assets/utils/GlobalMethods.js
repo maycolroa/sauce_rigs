@@ -15,4 +15,17 @@ export default class GlobalMethods {
       });
     });
   }
+
+  static getPermissionsMultiselect(select){
+    return new Promise((resolve, reject) => {
+      axios.post('/selects/permissions')
+      .then(response => {
+        resolve(response.data);
+      })
+      .catch(error => {
+          Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
+          reject(error);
+      });
+    });
+  }
 }

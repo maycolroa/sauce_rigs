@@ -15,7 +15,7 @@ export default [{
         import('@/views/Administrative/users/index')
     }, {
       name: 'administrative-users-create',
-      path: 'users/creates',
+      path: 'users/create',
       component: () =>
         import('@/views/Administrative/users/create')
     }, {
@@ -28,5 +28,25 @@ export default [{
       path: 'users/view/:id',
       component: () =>
         import('@/views/Administrative/users/view')
+    }, {
+      name: 'administrative-roles',
+      path: 'roles',
+      component: () =>
+        import('@/views/Administrative/roles/index')
+    }, {
+      name: 'administrative-roles-create',
+      path: 'roles/create',
+      component: () =>
+        import('@/views/Administrative/roles/create')
+    }, {
+      name: 'administrative-roles-edit',
+      path: 'roles/edit/:id',
+      component: () =>
+        import('@/views/Administrative/roles/edit')
+    }, {
+      name: 'administrative-roles-view',
+      path: 'roles/view/:id',
+      component: () =>
+        import('@/views/Administrative/roles/view')
     }]
   }]

@@ -7,8 +7,8 @@ use App\Vuetable\Facades\Vuetable;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Administrative\Users\UserRequest;
 use App\User;
-use Carbon\Carbon;
 use App\Jobs\Administrative\Users\UserExportJob;
+use Session;
 
 class UserController extends Controller
 {
@@ -29,8 +29,13 @@ class UserController extends Controller
     */
    public function data(Request $request)
    {
-    
-       $users = User::select('*');
+        $users = User::select(
+            'sau_users.*',
+            'roles.name as role_name')
+            ->join('sau_company_user','sau_company_user.user_id','sau_users.id')
+            ->leftJoin('role_user','role_user.user_id','sau_users.id')
+            ->leftJoin('roles','roles.id','role_user.role_id')
+            ->where('sau_company_user.company_id', Session::get('company_id'));
 
        return Vuetable::of($users)
                 ->make();
@@ -49,6 +54,9 @@ class UserController extends Controller
         if(!$user->save()){
             return $this->respondHttp500();
         }
+
+        $user->syncRoles([$request->get('role_id')]);
+
         return $this->respondHttp200([
             'message' => 'Se creo el usuario'
         ]);
@@ -66,6 +74,14 @@ class UserController extends Controller
             
         try
         {
+            $roles = $user->roles;
+
+            foreach ($roles as $key => $value) {
+                $user->multiselect_role = $value->multiselect();
+                $user->role_id = $value->id;
+                break;
+            }
+            
             return $this->respondHttp200([
                 'data' => $user,
             ]);
@@ -89,6 +105,9 @@ class UserController extends Controller
         if(!$user->update()){
           return $this->respondHttp500();
         }
+
+        $user->syncRoles([$request->get('role_id')]);
+        
         return $this->respondHttp200([
             'message' => 'Se actualizo el usuario'
         ]);
@@ -103,6 +122,8 @@ class UserController extends Controller
     public function destroy(User $user)
     {
         $user->companies()->detach();
+        $user->syncRoles()->sync([]); // Eliminar datos de relaciones
+        $user->syncPermissions()->sync([]); // Eliminar datos de relaciones
 
         if(!$user->delete())
         {

@@ -11,6 +11,11 @@
       <vue-input :disabled="viewOnly" class="col-md-6" v-model="form.document" label="Documento" type="text" name="document" :error="form.errorsFor('document')" placeholder="Documento"></vue-input>
     </b-form-row>
 
+    <b-form-row>
+      <vue-ajax-advanced-select :disabled="viewOnly" class="col-md-6" v-model="form.role_id" :error="form.errorsFor('role_id')" :selected-object="form.multiselect_role" name="role_id" label="Rol" placeholder="Seleccione el rol del usuario" :url="rolesDataUrl">
+          </vue-ajax-advanced-select>
+    </b-form-row>
+
     <template v-if="!viewOnly">
       <b-btn type="submit" :disabled="loading" variant="primary">Finalizar</b-btn>
     </template>
@@ -21,11 +26,13 @@
 </template>
 
 <script>
+import VueAjaxAdvancedSelect from "@/components/Inputs/VueAjaxAdvancedSelect.vue";
 import VueInput from "@/components/Inputs/VueInput.vue";
 import Form from "@/utils/Form.js";
 
 export default {
   components: {
+    VueAjaxAdvancedSelect,
     VueInput
   },
   props: {
@@ -34,13 +41,15 @@ export default {
     cancelUrl: { type: [String, Object], required: true },
     isEdit: { type: Boolean, default: false },
     viewOnly: { type: Boolean, default: false },
+    rolesDataUrl: { type: String, default: "" },
     user: {
       default() {
         return {
             name: '',
             email: '',
             password: '',
-            document: ''
+            document: '',
+            role_id: ''
         };
       }
     }

@@ -120,7 +120,9 @@ return [
       'employee_id' => 'Empleado',
       'document' => 'Documento',
       'name' => 'Nombre',
-      'password' => 'Contraseña'
+      'password' => 'Contraseña',
+      'role_id' => 'Rol',
+      'permissions_multiselect' => 'Permisos'
 
     ],
 

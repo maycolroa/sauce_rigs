@@ -11,6 +11,7 @@
             <administrative-user-form 
                 url="/administration/users"
                 method="POST"
+                roles-data-url="/selects/roles"
                 :cancel-url="{ name: 'administrative-users'}"/>
         </b-card-body>
       </b-card>

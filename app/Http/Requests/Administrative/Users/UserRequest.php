@@ -30,6 +30,7 @@ class UserRequest extends FormRequest
             'name'      => 'required|string',
             'email'     => 'required|email|unique:sau_users,email,' . $id . ',id',
             'document'  => 'required|numeric',
+            'role_id'   => 'required'
         ];
 
         switch($this->method())

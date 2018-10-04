@@ -5,6 +5,10 @@
             {
                 "name": "users",
                 "display_name": "Usuarios"
+            },
+            {
+                "name": "roles",
+                "display_name": "Roles"
             }
         ]
     },

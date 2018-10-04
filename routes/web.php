@@ -41,22 +41,18 @@ Route::middleware(['auth'])->group(function () {
     Route::prefix('selects')->group(function () {
         Route::post('employees', 'Administrative\EmployeesController@multiselect');  
         Route::post('multiselect', 'ApplicationController@multiselect');
+        Route::post('roles', 'Administrative\Roles\RoleController@multiselect');  
+        Route::post('permissions', 'Administrative\Roles\RoleController@multiselectPermissions');
     });
 
     //Administrativo
     Route::prefix('administration')->group(function () {
       Route::post('users/data', 'Administrative\Users\UserController@data');
       Route::post('users/export', 'Administrative\Users\UserController@export');
-      Route::post('users/multiselect_epp', 'Administrative\Users\UserController@multiselectEPP');
-      Route::ApiResource('users', 'Administrative\Users\UserController', ['except'=>['create']]);
+      Route::ApiResource('users', 'Administrative\Users\UserController');
 
-      /*Route::prefix('user')->group(function () {
-        Route::get('/', 'Administrative\Users\UserController@index');
-        Route::post('store', 'Administrative\Users\UserController@store');
-        Route::get('edit/{id}', 'Administrative\Users\UserController@edit');
-        Route::put('update/{id}', 'Administrative\Users\UserController@update');
-        Route::delete('delete/{id}', 'Administrative\Users\UserController@destroy');
-      });*/
+      Route::post('role/data', 'Administrative\Roles\RoleController@data');
+      Route::ApiResource('role', 'Administrative\Roles\RoleController');
     });
 
     //Return view for spa

@@ -33,7 +33,11 @@ class UserExportJob implements ShouldQueue
      */
     public function handle()
     {
-      $users = User::select('*');
+      $users = User::select(
+            'sau_users.*',
+            'roles.name as role_name'
+        )->join('role_user','role_user.user_id','sau_users.id')
+        ->join('roles','roles.id','role_user.role_id');
 
       $nameExcel = 'export/1/usuarios_'.date("YmdHis").'.xlsx';
       Excel::store(new UsersExcel($users->get()),$nameExcel,'public',\Maatwebsite\Excel\Excel::XLSX);
