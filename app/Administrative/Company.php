@@ -3,9 +3,12 @@
 namespace App\Administrative;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Traits\CompanyTrait;
 
 class Company extends Model
 {
+    use CompanyTrait;
+    
     protected $table = 'sau_companies';
 
     public function users(){

@@ -99,7 +99,7 @@ class ApplicationController extends Controller
     {
       if(Auth::check())
       {
-        $companies = Auth::user()->companies;
+        $companies = Auth::user()->companies()->withoutGlobalScopes()->get();
         $data = [];
 
         foreach ($companies as $val)

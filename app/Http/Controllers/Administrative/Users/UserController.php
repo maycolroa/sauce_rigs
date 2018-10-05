@@ -30,8 +30,8 @@ class UserController extends Controller
    public function data(Request $request)
    {
         $users = User::select(
-            'sau_users.*',
-            'roles.name as role_name')
+            'sau_users.name as name', 'sau_users.email as email', 'sau_users.document as document', 
+            'sau_users.document_type as document_type', 'roles.name as role_name')
             ->join('sau_company_user','sau_company_user.user_id','sau_users.id')
             ->leftJoin('role_user','role_user.user_id','sau_users.id')
             ->leftJoin('roles','roles.id','role_user.role_id')
