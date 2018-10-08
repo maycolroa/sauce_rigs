@@ -29,13 +29,7 @@ class UserController extends Controller
     */
    public function data(Request $request)
    {
-        $users = User::select(
-            'sau_users.name as name', 'sau_users.email as email', 'sau_users.document as document', 
-            'sau_users.document_type as document_type', 'roles.name as role_name')
-            ->join('sau_company_user','sau_company_user.user_id','sau_users.id')
-            ->leftJoin('role_user','role_user.user_id','sau_users.id')
-            ->leftJoin('roles','roles.id','role_user.role_id')
-            ->where('sau_company_user.company_id', Session::get('company_id'));
+        $users = User::has('companies');
 
        return Vuetable::of($users)
                 ->make();
@@ -55,6 +49,7 @@ class UserController extends Controller
             return $this->respondHttp500();
         }
 
+        $user->companies()->sync(Session::get('company_id'));
         $user->syncRoles([$request->get('role_id')]);
 
         return $this->respondHttp200([

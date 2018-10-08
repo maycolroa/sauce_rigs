@@ -9,7 +9,6 @@
         <b-card-body>
             <administrative-role-form 
                 :role="data"
-                :permissions="permissions"
                 :view-only="true"
                 :cancel-url="{ name: 'administrative-roles'}"/>
         </b-card-body>
@@ -21,7 +20,6 @@
 <script>
 import AdministrativeRoleForm from '@/components/Administrative/roles/FormRoleComponent.vue';
 import Alerts from '@/utils/Alerts.js';
-import GlobalMethods from '@/utils/GlobalMethods.js';
 
 export default {
   name: 'administrative-roles-view',
@@ -33,23 +31,13 @@ export default {
   },
   data () {
     return {
-      data: [],
-      permissions:[]
+      data: []
     }
   },
   created(){
     axios.get(`/administration/role/${this.$route.params.id}`)
     .then(response => {
         this.data = response.data.data;
-    })
-    .catch(error => {
-        Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
-        this.$router.go(-1);
-    });
-
-    GlobalMethods.getPermissionsMultiselect()
-    .then(response => {
-        this.permissions = response;
     })
     .catch(error => {
         Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');

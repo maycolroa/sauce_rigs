@@ -49,6 +49,7 @@ class ApplicationController extends Controller
 
           if (!isset($data[$app->name]))
           {
+            $data[$app->name]["id"]           = $app->id;
             $data[$app->name]["display_name"] = $app->display_name;
             $data[$app->name]["image"]        = $app->image;
             $data[$app->name]["modules"]      = [];
@@ -59,7 +60,7 @@ class ApplicationController extends Controller
 
           if (COUNT($subMod_name) == 1) //Modulo
           {
-            array_push($data[$app->name]["modules"], ["name"=>$mod->name, "display_name"=>$mod->display_name]);
+            array_push($data[$app->name]["modules"], ["id"=>$mod->id, "name"=>$mod->name, "display_name"=>$mod->display_name]);
           }
           else //Submodulo
           {
@@ -69,7 +70,7 @@ class ApplicationController extends Controller
             }
 
             $arr_sub_mod[$app->name][$subMod_name[0]][] = [
-              "name"=> $subMod_name[1], "display_name" => $subMod_display_name[1]
+              "id"=>$mod->id, "name"=> $subMod_name[1], "display_name" => $subMod_display_name[1]
             ];
           }
 
@@ -191,5 +192,31 @@ class ApplicationController extends Controller
       }
 
       return $new_path;
+    }
+
+    public function multiselectGroupModules()
+    {
+      $data = $this->appsWhithModules();
+      $result = [];
+
+      foreach($data as $keyApp => $valueApp)
+      {
+        foreach ($valueApp["modules"] as $keyModule => $valueModule)
+        {
+          if (isset($valueModule["subModules"]))
+          {
+            foreach ($valueModule["subModules"] as $keySubModule => $valueSubModule)
+            {
+              $result[$valueApp["display_name"]][$valueSubModule["id"]] = $valueSubModule["display_name"];  
+            }
+          }
+          else
+          {
+            $result[$valueApp["display_name"]][$valueModule["id"]] = $valueModule["display_name"];
+          }
+        }
+      }
+
+      return $this->multiSelectGroupFormat($result);
     }
 }

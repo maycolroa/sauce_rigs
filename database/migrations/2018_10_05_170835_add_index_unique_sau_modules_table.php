@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class AlterIndexUniquePermissionsTable extends Migration
+class AddIndexUniqueSauModulesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,9 +13,8 @@ class AlterIndexUniquePermissionsTable extends Migration
      */
     public function up()
     {
-        Schema::table('permissions', function (Blueprint $table) {
-            $table->dropUnique(['name']);
-            $table->unique(['name', 'module_id']);
+        Schema::table('sau_modules', function (Blueprint $table) {
+            $table->unique(['name']);
         });
     }
 
@@ -26,7 +25,7 @@ class AlterIndexUniquePermissionsTable extends Migration
      */
     public function down()
     {
-        Schema::table('permissions', function (Blueprint $table) {
+        Schema::table('sau_modules', function (Blueprint $table) {
             $table->dropUnique(['name']);
         });
     }

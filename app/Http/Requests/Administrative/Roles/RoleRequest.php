@@ -4,6 +4,7 @@ namespace App\Http\Requests\Administrative\Roles;
 
 use Illuminate\Foundation\Http\FormRequest;
 use App\Facades\Configuration;
+use App\Rules\Permission;
 use Session;
 
 class RoleRequest extends FormRequest
@@ -29,7 +30,7 @@ class RoleRequest extends FormRequest
 
         return [
             'name' => 'required|string|unique:roles,name,'.$id.',id,company_id,'.Session::get('company_id'),
-            'permissions_multiselect' => 'required'
+            'permissions_asignates' => ['required', new Permission()]
         ];
     }
 }

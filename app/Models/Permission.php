@@ -15,7 +15,7 @@ class Permission extends LaratrustPermission
     {
         return [
             'name' => $this->name,
-            'value' => $this->id
+            'value' => $this->name
         ];
     }
 }

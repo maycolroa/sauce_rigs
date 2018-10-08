@@ -122,7 +122,7 @@ return [
       'name' => 'Nombre',
       'password' => 'Contraseña',
       'role_id' => 'Rol',
-      'permissions_multiselect' => 'Permisos'
+      'permissions_asignates' => 'Permisos'
 
     ],
 

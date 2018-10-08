@@ -54,12 +54,21 @@ class RoleController extends Controller
             return $this->respondHttp500();
         }
 
-        $ids = [];
+        $permissions = [];
 
-        foreach($request->get('permissions_multiselect') as $v)
+        foreach($request->get('permissions_asignates') as $v)
         {
-            array_push($ids, json_decode($v)->value);
+            $item = json_decode($v)->permissions;
+
+            foreach ($item as $key => $value)
+            {
+                array_push($permissions, $value->value);
+            }
         }
+
+        $ids = Permission::select('id')->whereIn("name", $permissions)
+                        ->get()
+                        ->pluck('id');
 
         $role->syncPermissions($ids); 
 
@@ -82,12 +91,25 @@ class RoleController extends Controller
         {
             $permissions = $role->permissions;
             $multiselect = [];
+            $data = [];
 
-            foreach ($permissions as $key => $value) {
-                $multiselect[] = $value->multiselect();
+            foreach ($permissions as $key => $value)
+            {
+                if (!isset($data[$value->module->id]))
+                {
+                    $arr = [
+                        'id' => $value->module->id,
+                        'name' => $value->module->display_name,
+                        'permissions' => []
+                    ];
+
+                    $data[$value->module->id] = $arr;
+                }
+
+                array_push($data[$value->module->id]["permissions"], $value->multiselect());
             }
 
-            $role->permissions_multiselect = $multiselect;
+            $role->permissions_asignates = $data;
 
             return $this->respondHttp200([
                 'data' => $role,
@@ -113,14 +135,23 @@ class RoleController extends Controller
             return $this->respondHttp500();
         }
 
-        $ids = [];
+        $permissions = [];
 
-        foreach($request->get('permissions_multiselect') as $v)
+        foreach($request->get('permissions_asignates') as $v)
         {
-            array_push($ids, json_decode($v)->value);
+            $item = json_decode($v)->permissions;
+
+            foreach ($item as $key => $value)
+            {
+                array_push($permissions, $value->value);
+            }
         }
 
-        $role->syncPermissions($ids);
+        $ids = Permission::select('id')->whereIn("name", $permissions)
+                        ->get()
+                        ->pluck('id');
+
+        $role->syncPermissions($ids); 
 
         return $this->respondHttp200([
             'message' => 'Se actualizo el rol'
@@ -166,30 +197,47 @@ class RoleController extends Controller
 
     public function multiselectPermissions()
     {
-        $licenses = License::select('module_id')->whereRaw('? BETWEEN started_at AND ended_at', [date('Y-m-d')])
+        //Obtiene los module_id de todas las licencias activas
+        $modules = License::select('module_id')->whereRaw('? BETWEEN started_at AND ended_at', [date('Y-m-d')])
                         ->groupBy('module_id')
                         ->get()
                         ->pluck('module_id');
-
-        $permissions = Permission::select("id", "name")->whereIn("module_id", $licenses)->pluck('id', 'name');
+        
+        //Obtiene todos los permisos de esos module_id
+        $permissions = Permission::select("id", "name", "module_id")->whereIn("module_id", $modules)->get();
 
         $options = [
             'validate_all' => true,
             'return_type' => 'both'
         ];
 
+        //Devuelve un array con true/false para cada verificacion de permiso para el usuario en sesion
         list($validate, $allValidations) = Auth::user()->ability(
             null,
-            array_keys($permissions->toArray()),
+            array_keys($permissions->pluck('id', 'name')->toArray()),
             $options
         );
 
         $allValidations = $allValidations["permissions"];
 
-        $data = $permissions->filter(function ($value, $key) use ($allValidations) {
+        //Filtra de todos los permisos obtenidos cuales son los permitidos
+        $data = $permissions->pluck('id', 'name')->filter(function ($value, $key) use ($allValidations) {
             return $allValidations[$key];
-        });
+        })->toArray();
 
-        return $this->multiSelectFormat($data);
+        $final =[];
+
+        foreach ($permissions as $value)
+        {
+            if (isset($data[$value->name]))
+                $final[$value->module_id][$value->id] = $value->name;
+        }
+
+        foreach ($final as $key => $value)
+        {
+            $final[$key] = $this->multiSelectFormat($value);
+        }
+        
+        return $final;
     }
 }

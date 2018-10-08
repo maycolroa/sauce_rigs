@@ -11,6 +11,7 @@
             <administrative-role-form 
                 url="/administration/role"
                 method="POST"
+                :modules="modules"
                 :permissions="permissions"
                 :cancel-url="{ name: 'administrative-roles'}"/>
         </b-card-body>
@@ -34,6 +35,7 @@ export default {
   },
   data(){
     return {
+      modules: [],
       permissions:[]
     }
   },
@@ -41,6 +43,14 @@ export default {
     GlobalMethods.getPermissionsMultiselect()
     .then(response => {
         this.permissions = response;
+    })
+    .catch(error => {
+        Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
+        this.$router.go(-1);
+    });
+    GlobalMethods.getModulesMultiselectGroup()
+    .then(response => {
+        this.modules = response;
     })
     .catch(error => {
         Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
