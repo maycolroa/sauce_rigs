@@ -5,8 +5,9 @@
       <div class="col-md-6"> 
         <b-form-row>
           <vue-input :disabled="viewOnly" class="col-md-12" v-model="form.name" label="Nombre" type="text" name="name" :error="form.errorsFor('name')" placeholder="Nombre"></vue-input>
-          <vue-input :disabled="viewOnly" class="col-md-12" v-model="form.description" label="Descripción" type="text" name="description" :error="form.errorsFor('description')" placeholder="Descripción"></vue-input>
         </b-form-row>
+
+        <vue-textarea :disabled="viewOnly" v-model="form.description" label="Descripción" :error="form.errorsFor('description')" name="description" placeholder="Descripción"></vue-textarea>
 
         <b-form-row>
           <vue-advanced-select-group :disabled="viewOnly" v-model="module_selected" :value="module_selected" class="col-md-12" :options="modules" :limit="1000" :searchable="true" name="modules_multiselect" label="Aplicación \ Módulo" placeholder="Seleccione un modulo">
@@ -28,16 +29,16 @@
         </div>
         <perfect-scrollbar :options="{ wheelPropagation: true }" class="mb-4" style="height: 450px; padding-right: 10px;">
           <template  v-for="(item, index) in form.permissions_asignates">
-            <b-card no-body class="mb-2 border-primary" v-if="item != null && item != undefined" :key="index">
-              <b-card-header class="bg-primary">
-                <a class="text-white" href="javascript:void(0)" v-b-toggle="'accordion-' + index"> <strong> {{ item.name }} </strong> </a>
+            <b-card no-body class="mb-2 border-secondary" v-if="item != null && item != undefined" :key="index">
+              <b-card-header class="bg-secondary">
+                <a class="d-flex justify-content-between text-white" href="javascript:void(0)" v-b-toggle="'accordion-' + index"> {{ item.name }} <div class="collapse-icon"></div> </a>
               </b-card-header>
               <b-collapse :id="`accordion-${index}`" visible accordion="accordion">
                 <b-card-body>
                   <b-list-group>
                     <b-list-group-item v-for="(itemPermission, indexPermission) in item.permissions" 
                         class="d-flex justify-content-between align-items-center" :key="indexPermission">
-                      <strong>{{ itemPermission.name }}</strong> <span class="badge badge-danger" v-if="!viewOnly" style="cursor: pointer;" @click="removePermission(index, indexPermission, itemPermission)"><i class="ion ion-md-close"></i></span>
+                      <strong>{{ itemPermission.name }}</strong> <span class="badge badge-secondary" v-if="!viewOnly" style="cursor: pointer;" @click="removePermission(index, indexPermission, itemPermission)"><i class="ion ion-md-close"></i></span>
                     </b-list-group-item>
                   </b-list-group>
                 </b-card-body>
@@ -45,14 +46,14 @@
             </b-card>
           </template>
         </perfect-scrollbar>
-        
-        <template v-if="!viewOnly">
-          <b-btn type="submit" :disabled="loading" variant="primary">Finalizar</b-btn>
-        </template>
-        <template v-else>
-          <b-btn :to="{name:'administrative-roles'}" variant="primary">Regresar</b-btn>
-        </template>
       </div>
+    </div>
+
+    <div class="row float-right pt-10 pr-10">
+      <template v-if="!viewOnly">
+        <b-btn variant="default" :to="cancelUrl" :disabled="loading">{{ viewOnly ? "Atras" : "Cancelar"}}</b-btn>
+        <b-btn type="submit" :disabled="loading" variant="primary" v-if="!viewOnly">Finalizar</b-btn>
+      </template>
     </div>
   </b-form>
 </template>
@@ -62,6 +63,7 @@ import PerfectScrollbar from '@/vendor/libs/perfect-scrollbar/PerfectScrollbar'
 import VueInput from "@/components/Inputs/VueInput.vue";
 import VueAdvancedSelect from "@/components/Inputs/VueAdvancedSelect.vue";
 import VueAdvancedSelectGroup from "@/components/Inputs/VueAdvancedSelectGroup.vue";
+import VueTextarea from "@/components/Inputs/VueTextarea.vue";
 import Form from "@/utils/Form.js";
 
 export default {
@@ -69,7 +71,8 @@ export default {
     VueInput,
     VueAdvancedSelect,
     VueAdvancedSelectGroup,
-    PerfectScrollbar
+    PerfectScrollbar,
+    VueTextarea
   },
   props: {
     url: { type: String },

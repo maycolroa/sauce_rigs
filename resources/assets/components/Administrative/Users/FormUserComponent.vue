@@ -16,12 +16,12 @@
           </vue-ajax-advanced-select>
     </b-form-row>
 
-    <template v-if="!viewOnly">
-      <b-btn type="submit" :disabled="loading" variant="primary">Finalizar</b-btn>
-    </template>
-    <template v-else>
-      <b-btn :to="{name:'administrative-users'}" variant="primary">Regresar</b-btn>
-    </template>
+    <div class="row float-right pt-10 pr-10">
+      <template v-if="!viewOnly">
+        <b-btn variant="default" :to="cancelUrl" :disabled="loading">{{ viewOnly ? "Atras" : "Cancelar"}}</b-btn>
+        <b-btn type="submit" :disabled="loading" variant="primary" v-if="!viewOnly">Finalizar</b-btn>
+      </template>
+    </div>
   </b-form>
 </template>
 
