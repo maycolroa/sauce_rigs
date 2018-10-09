@@ -33,62 +33,7 @@ class ApplicationController extends Controller
      */
     public function appsWhithModules()
     {
-      if(Auth::check())
-      {
-        $data = [];
-        $licenses = License::whereRaw('? BETWEEN started_at AND ended_at', [date('Y-m-d')])->get();
-        $arr_sub_mod = [];
-
-        foreach ($licenses as $value)
-        {
-          $app = $value->module->application;
-          $app->name = strtolower($app->name);
-          $mod = $value->module;
-          $mod->name = strtolower($mod->name);
-          $arr_mod = [];
-
-          if (!isset($data[$app->name]))
-          {
-            $data[$app->name]["id"]           = $app->id;
-            $data[$app->name]["display_name"] = $app->display_name;
-            $data[$app->name]["image"]        = $app->image;
-            $data[$app->name]["modules"]      = [];
-          }
-
-          $subMod_name = explode("/", $mod->name);
-          $subMod_display_name = explode("/", $mod->display_name);
-
-          if (COUNT($subMod_name) == 1) //Modulo
-          {
-            array_push($data[$app->name]["modules"], ["id"=>$mod->id, "name"=>$mod->name, "display_name"=>$mod->display_name]);
-          }
-          else //Submodulo
-          {
-            if (!isset($arr_sub_mod[$app->name][$subMod_name[0]]))
-            {
-              array_push($data[$app->name]["modules"], ["name"=>$subMod_name[0], "display_name"=>$subMod_display_name[0], "subModules"=>[]]);
-            }
-
-            $arr_sub_mod[$app->name][$subMod_name[0]][] = [
-              "id"=>$mod->id, "name"=> $subMod_name[1], "display_name" => $subMod_display_name[1]
-            ];
-          }
-
-          foreach ($data as $keyApp => $value)
-          {
-            foreach ($value["modules"] as $keyMod => $value2)
-            {
-              if (isset($value2["subModules"]))
-              {
-                $data[$keyApp]["modules"][$keyMod]["subModules"] = $arr_sub_mod[$keyApp][$value2["name"]];
-              }
-            }
-          }
-        }
-        return $data;
-      }
-
-      return $this->respondHttp401();
+      return $this->getAppsModules();
     }
 
     /**
@@ -139,7 +84,7 @@ class ApplicationController extends Controller
       Session::put('company_id', $request->input('company_id'));
 
       $new_path = "/";
-      $data = $this->appsWhithModules();
+      $data = $this->getAppsModules();
       $currentPath = trim($request->input('currentPath'), '/');
       $currentPath = explode("/", $currentPath);
 
@@ -194,9 +139,14 @@ class ApplicationController extends Controller
       return $new_path;
     }
 
+    /**
+     * Returns an array for a group-type input
+     *
+     * @return Array
+     */
     public function multiselectGroupModules()
     {
-      $data = $this->appsWhithModules();
+      $data = $this->getAppsModules();
       $result = [];
 
       foreach($data as $keyApp => $valueApp)

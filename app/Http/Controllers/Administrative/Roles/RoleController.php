@@ -5,11 +5,9 @@ namespace App\Http\Controllers\Administrative\Roles;
 use Illuminate\Http\Request;
 use App\Vuetable\Facades\Vuetable;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\Administrative\Roles\RoleRequest;
 use App\Models\Role;
 use App\Models\Permission;
-use App\Administrative\License;
 use Session;
 
 class RoleController extends Controller
@@ -181,6 +179,12 @@ class RoleController extends Controller
         ]);
     }
 
+    /**
+     * Returns an array for a select type input
+     *
+     * @param Request $request
+     * @return Array
+     */
     public function multiselect(Request $request)
     {
         $keyword = "%{$request->keyword}%";
@@ -195,49 +199,20 @@ class RoleController extends Controller
         ]);
     }
 
+    /**
+     * Returns an array for a select type input
+     *
+     * @return void
+     */
     public function multiselectPermissions()
     {
-        //Obtiene los module_id de todas las licencias activas
-        $modules = License::select('module_id')->whereRaw('? BETWEEN started_at AND ended_at', [date('Y-m-d')])
-                        ->groupBy('module_id')
-                        ->get()
-                        ->pluck('module_id');
-        
-        //Obtiene todos los permisos de esos module_id
-        $permissions = Permission::select("id", "name", "module_id")->whereIn("module_id", $modules)->get();
+        $permissions = $this->getModulePermissions();
 
-        $options = [
-            'validate_all' => true,
-            'return_type' => 'both'
-        ];
-
-        //Devuelve un array con true/false para cada verificacion de permiso para el usuario en sesion
-        list($validate, $allValidations) = Auth::user()->ability(
-            null,
-            array_keys($permissions->pluck('id', 'name')->toArray()),
-            $options
-        );
-
-        $allValidations = $allValidations["permissions"];
-
-        //Filtra de todos los permisos obtenidos cuales son los permitidos
-        $data = $permissions->pluck('id', 'name')->filter(function ($value, $key) use ($allValidations) {
-            return $allValidations[$key];
-        })->toArray();
-
-        $final =[];
-
-        foreach ($permissions as $value)
+        foreach ($permissions as $key => $value)
         {
-            if (isset($data[$value->name]))
-                $final[$value->module_id][$value->id] = $value->name;
-        }
-
-        foreach ($final as $key => $value)
-        {
-            $final[$key] = $this->multiSelectFormat($value);
+            $permissions[$key] = $this->multiSelectFormat($value);
         }
         
-        return $final;
+        return $permissions;
     }
 }
