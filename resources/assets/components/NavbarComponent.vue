@@ -74,7 +74,7 @@
           <b-row>
             <template v-for="(item, index) in apps">
               <b-col :key="index" v-if="item.modules.length > 0">
-                <router-link :to="{ name: index/*, params: {apps: apps}*/}" class="text-dark cursor-pointer">
+                <router-link :to="{ name: index}" class="text-dark cursor-pointer">
                 <div class="my-2 mx-2 text-center">
                   <img class="ui-w-60" :src="`/images/${item.image}.png`" alt="">
                   <div class="text-center font-weight-bold pt-1">
@@ -172,7 +172,6 @@ export default {
             currentName: this.$route.name
         })
         .then(response => {
-            console.log(response.data)
             window.location = response.data
         })
         .catch(error => {
