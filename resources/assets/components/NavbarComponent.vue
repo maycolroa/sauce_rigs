@@ -65,7 +65,7 @@
 
         <!--Aplications-->
 
-        <b-nav-item-dropdown no-caret :right="!isRTL" class="navbar-application-sauce mr-lg-3">
+        <b-nav-item-dropdown no-caret :right="!isRTL" id="navbar-application-sauce" class="navbar-application-sauce mr-lg-3">
           <template slot="button-content">
             <i class="ion ion-md-apps navbar-icon align-middle"></i>
             <span class="d-lg-none align-middle">&nbsp; Aplicaciones</span>
@@ -74,7 +74,7 @@
           <b-row>
             <template v-for="(item, index) in apps">
               <b-col :key="index" v-if="item.modules.length > 0">
-                <router-link :to="{ name: index}" class="text-dark cursor-pointer">
+                <router-link :to="{ name: index}" v-on:click.native="toggleApp()" class="text-dark cursor-pointer item-app-navbar">
                 <div class="my-2 mx-2 text-center">
                   <img class="ui-w-60" :src="`/images/${item.image}.png`" alt="">
                   <div class="text-center font-weight-bold pt-1">
@@ -177,6 +177,9 @@ export default {
         .catch(error => {
             Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
         });
+    }, 
+    toggleApp: function () {
+      document.getElementById('navbar-application-sauce__BV_button_').click()
     }
   },
   created () {
@@ -191,7 +194,7 @@ export default {
       },
       companyName: function () {
         return this.company.data[this.company.selected] != undefined ? this.company.data[this.company.selected].name : ''
-      },
+      }
   }
 };
 </script>
