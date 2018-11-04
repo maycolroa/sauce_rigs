@@ -179,6 +179,10 @@ img {
     -premailer-width: 100%;
 }
 
+.table thead {
+    text-align: left
+}
+
 .table th {
     border-bottom: 1px solid #EDEFF2;
     padding-bottom: 8px;

@@ -1,31 +1,36 @@
-import Layout from '@/views/layout'
+import LayoutModules from '@/views/layoutModules'
+import Home from '@/views/Home'
 
 export default [{
-  path: '/biologicalmonitoring/audiometry',
-  component: Layout,
+  path: '/preventiveoccupationalmedicine',
+  component: LayoutModules,
   children: [{
+    name: 'preventiveoccupationalmedicine',
     path: '',
+    component: Home
+  }, {
     name: 'biologicalmonitoring-audiometry',
+    path: 'biologicalmonitoring/audiometry',
     component: () =>
-      import('@/views/PreventiveOccupationalMedicine/biologicalmonitoring/audiometry/index')
+        import('@/views/PreventiveOccupationalMedicine/biologicalmonitoring/audiometry/index')
   }, {
     name: 'biologicalmonitoring-audiometry-create',
-    path: 'create',
+    path: 'biologicalmonitoring/audiometry/create',
     component: () =>
       import('@/views/PreventiveOccupationalMedicine/biologicalmonitoring/audiometry/create')
   }, {
     name: 'biologicalmonitoring-audiometry-edit',
-    path: 'edit/:id',
+    path: 'biologicalmonitoring/audiometry/edit/:id',
     component: () =>
       import('@/views/PreventiveOccupationalMedicine/biologicalmonitoring/audiometry/edit')
   }, {
     name: 'biologicalmonitoring-audiometry-view',
-    path: 'view/:id',
+    path: 'biologicalmonitoring/audiometry/view/:id',
     component: () =>
       import('@/views/PreventiveOccupationalMedicine/biologicalmonitoring/audiometry/view')
   }, {
     name: 'biologicalmonitoring-audiometry-report',
-    path: 'report/:id',
+    path: 'biologicalmonitoring/audiometry/report/:id',
     component: () =>
       import('@/views/PreventiveOccupationalMedicine/biologicalmonitoring/audiometry/report')
   }]

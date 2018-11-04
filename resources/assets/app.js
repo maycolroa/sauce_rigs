@@ -22,6 +22,21 @@ Vue.mixin({
   data: globals
 })
 
+Vue.mixin({
+  computed: {
+    routeAppName: function () {
+      
+      if (this.$route.path != undefined)
+      {
+        let name = this.$route.path.split('/')
+        return name[1] != '' ? name[1] : ''
+      }
+      
+      return ''
+    }
+  }
+})
+
 Vue.component('vue-table', require('./components/VueTableComponent.vue'));
 
 /* eslint-disable no-new */

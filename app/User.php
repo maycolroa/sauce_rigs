@@ -4,9 +4,11 @@ namespace App;
 
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Laratrust\Traits\LaratrustUserTrait;
 
 class User extends Authenticatable
 {
+    use LaratrustUserTrait;
     use Notifiable;
 
     /**
@@ -18,7 +20,7 @@ class User extends Authenticatable
     protected $table = 'sau_users';
 
     protected $fillable = [
-        'name', 'email', 'password','state'
+        'name', 'email', 'password','state', 'document', 'document_type', 'created_at', 'updated_at'
     ];
 
     /**
@@ -29,6 +31,18 @@ class User extends Authenticatable
     protected $hidden = [
         'password', 'remember_token',
     ];
+
+    protected $attributes = [
+        'state' => 0
+    ];
+
+    public function setPasswordAttribute($value)
+    {
+        if(isset($value))
+        {
+            $this->attributes['password'] = bcrypt($value);
+        }
+    }
 
     public function companies(){
       return $this->belongsToMany('App\Administrative\Company','sau_company_user');

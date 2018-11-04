@@ -1,7 +1,7 @@
 <template>
   <div>
     <h4 class="font-weight-bold mb-4">
-       <span class="text-muted font-weight-light">Audiometrias /</span> Editar
+       <span class="text-muted font-weight-light">Audiometrias /</span> Ver
     </h4>
 
     <div class="col-md">

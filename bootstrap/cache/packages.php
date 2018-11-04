@@ -6,6 +6,13 @@
       0 => 'Fideloper\\Proxy\\TrustedProxyServiceProvider',
     ),
   ),
+  'laravel/tinker' => 
+  array (
+    'providers' => 
+    array (
+      0 => 'Laravel\\Tinker\\TinkerServiceProvider',
+    ),
+  ),
   'maatwebsite/excel' => 
   array (
     'providers' => 
@@ -17,18 +24,22 @@
       'Excel' => 'Maatwebsite\\Excel\\Facades\\Excel',
     ),
   ),
-  'laravel/tinker' => 
-  array (
-    'providers' => 
-    array (
-      0 => 'Laravel\\Tinker\\TinkerServiceProvider',
-    ),
-  ),
   'nunomaduro/collision' => 
   array (
     'providers' => 
     array (
       0 => 'NunoMaduro\\Collision\\Adapters\\Laravel\\CollisionServiceProvider',
+    ),
+  ),
+  'santigarcor/laratrust' => 
+  array (
+    'providers' => 
+    array (
+      0 => 'Laratrust\\LaratrustServiceProvider',
+    ),
+    'aliases' => 
+    array (
+      'Laratrust' => 'Laratrust\\LaratrustFacade',
     ),
   ),
 );

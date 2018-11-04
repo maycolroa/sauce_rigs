@@ -20,7 +20,7 @@
                 :allow-empty="true"
                 :multiple="multiple"
                 :close-on-select="!multiple"
-                :limit="5"
+                :limit="limit"
                 :limit-text="limitText">
             <span slot="noResult">No se encontraron elementos</span>
         </multiselect>
@@ -47,7 +47,8 @@ export default {
     placeholder: { type: String, default: "" },
     multiple: { type: Boolean, default: false },
     textBlock: { type: String },
-    actionBlock: { type: String }
+    actionBlock: { type: String },
+    limit: { type: Number, default: 5 }
   },
   components: {
     Multiselect

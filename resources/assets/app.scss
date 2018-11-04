@@ -143,3 +143,10 @@ table.b-table>tfoot>tr>th.sorting {
     width: 22rem;
   }
 }
+
+@media (min-width: 992px) {
+  .demo-navbar-messages .dropdown-menu, .demo-navbar-notifications .dropdown-menu {
+    margin-top: .5rem;
+    width: 22rem;
+  }
+}

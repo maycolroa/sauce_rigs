@@ -5,7 +5,7 @@
       <span class="app-brand-logo logo bg-primary">
         <div class="ui-w-30 rounded-circle align-middle text-circle">S</div>
       </span>
-      <span class="app-brand-text logo font-weight-normal ml-2">Medicina Laboral Preventiva</span>
+      <span class="app-brand-text logo font-weight-normal ml-2"> {{ appName }} </span>
     </b-navbar-brand>
 
     <!-- Sidenav toggle-->
@@ -32,101 +32,58 @@
         </label>
       </b-navbar-nav>
 
-      
-        <!--Aplications-->
-        <b-navbar-nav class="align-items-lg-center ml-auto">
+      <b-navbar-nav class="align-items-lg-center ml-auto">
+        
+        <label class="nav-item navbar-text navbar-search-box p-0 active">
+          <div class="media-body line-height-condenced ml-3">
+            <div class="text-dark">{{ companyName }}</div>
+          </div>
+        </label>
 
-        <b-nav-item-dropdown no-caret :right="!isRTL" class="navbar-application-sauce mr-lg-3">
+        <b-nav-item-dropdown no-caret :right="!isRTL" class="demo-navbar-notifications mr-lg-3"
+            v-if="Object.keys(company.data).length > 1">
+          <template slot="button-content">
+            <i class="fas fa-sync navbar-icon align-middle"></i>
+            <span class="d-lg-none align-middle">&nbsp; </span>
+          </template>
+
+          <b-list-group flush>
+            <template v-for="(item, index) in company.data">
+              <b-list-group-item href="javascript:void(0)" class="media d-flex align-items-center"
+                 :key="index" v-if="index != company.selected" @click="changeCompany(index)">
+                <div class="ui-icon ui-icon-sm ion bg-primary border-0 text-white"> {{ item.name.substr(0,1).toUpperCase() }} </div>
+                <div class="media-body line-height-condenced ml-3">
+                  <div class="text-dark">{{ item.name }}</div>
+                </div>
+              </b-list-group-item>
+            </template>
+          </b-list-group>
+        </b-nav-item-dropdown>
+
+        <!-- Divider -->
+        <div class="nav-item d-none d-lg-block text-big font-weight-light line-height-1 opacity-25 mr-3 ml-1">|</div>
+
+        <!--Aplications-->
+
+        <b-nav-item-dropdown no-caret :right="!isRTL" id="navbar-application-sauce" class="navbar-application-sauce mr-lg-3">
           <template slot="button-content">
             <i class="ion ion-md-apps navbar-icon align-middle"></i>
             <span class="d-lg-none align-middle">&nbsp; Aplicaciones</span>
           </template>
 
           <b-row>
-            <b-col>
-              <a class="text-dark cursor-pointer">
-              <div class="my-2 mx-2 text-center">
-                <img class="ui-w-60" src="~@/icons/Administrative.png">
-                <div class="text-center font-weight-bold pt-1">
-                  Administrativo
-                </div>
-              </div>
-              </a>
-            </b-col>
-            <b-col>
-              <a class="text-dark cursor-pointer">
+            <template v-for="(item, index) in apps">
+              <b-col :key="index" v-if="item.modules.length > 0">
+                <router-link :to="{ name: index}" v-on:click.native="toggleApp()" class="text-dark cursor-pointer item-app-navbar">
                 <div class="my-2 mx-2 text-center">
-                  <img class="ui-w-60" src="~@/icons/IndustrialSecure.png">
+                  <img class="ui-w-60" :src="`/images/${item.image}.png`" alt="">
                   <div class="text-center font-weight-bold pt-1">
-                    Seguridad industrial
+                    {{ item.display_name }}
                   </div>
-              </div>
-              </a>
-            </b-col>
-            <b-col>
-              <a class="text-dark cursor-pointer">
-              <div class="my-2 mx-2 text-center">
-                <img class="ui-w-60" src="~@/icons/IndustrialHygiene.png">
-                <div class="text-center font-weight-bold pt-1">
-                  Higiene industrial
                 </div>
-              </div>
-              </a>
-            </b-col>
-          </b-row>
-
-          <b-row>
-            <b-col>
-              <a class="text-dark cursor-pointer">
-              <div class="my-2 mx-2 text-center">
-                <img class="ui-w-60" src="~@/icons/PreventiveOccupationalMedicine.png">
-                <div class="text-center font-weight-bold pt-1">
-                  Medicina laboral y preventiva
-                </div>
-              </div>
-              </a>
-            </b-col>
-            <b-col>
-              <a class="text-dark cursor-pointer">
-                <div class="my-2 mx-2 text-center">
-                  <img class="ui-w-60" src="~@/icons/TrainingQualification.png">
-                  <div class="text-center font-weight-bold pt-1">
-                    Formacion y capacitación
-                  </div>
-              </div>
-              </a>
-            </b-col>
-            <b-col>
-              <a class="text-dark cursor-pointer">
-              <div class="my-2 mx-2 text-center">
-                <img class="ui-w-60" src="~@/icons/MeasurementMonitoring.png">
-                <div class="text-center font-weight-bold pt-1">
-                  Medicion y seguimiento
-                </div>
-              </div>
-              </a>
-            </b-col>
-          </b-row>
-
-          <b-row>
-            <b-col>
-              <a class="text-dark cursor-pointer">
-              <div class="my-2 mx-2 text-center">
-                <img class="ui-w-60" src="~@/icons/LegalAspects.png">
-                <div class="text-center font-weight-bold pt-1">
-                  Aspectos Legales
-                </div>
-              </div>
-              </a>
-            </b-col>
-            <b-col>
-              <div class="my-2 mx-2 text-center">
-              </div>
-            </b-col>
-            <b-col>
-              <div class="my-2 mx-2 text-center">
-              </div>
-            </b-col>
+                </router-link>
+              </b-col>
+            </template>
           </b-row>
         </b-nav-item-dropdown>
 
@@ -155,15 +112,29 @@
 </template>
 
 <script>
+import Alerts from '@/utils/Alerts.js';
+
 export default {
   props: {
     sidenavToggle: {
       type: Boolean,
       default: true
+    },
+    data: {
+      type: Object,
+      required: true,
+      default: {}
     }
   },
   components: {},
-
+  data(){
+      return {
+        company: {
+          selected: null,
+          data: []
+        }
+      }
+    },
   methods: {
     toggleSidenav() {
       this.layoutHelpers.toggleCollapsed();
@@ -181,7 +152,49 @@ export default {
         .catch(error => {
           location.href = "/login";
         });
+    },
+    companies () {
+      axios
+        .get('/getCompanies')
+        .then(response => {
+            this.company.selected = response.data.selected
+            this.company.data = response.data.data
+        })
+        .catch(error => {
+            Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
+        });
+    },
+    changeCompany(company) {
+      axios
+        .post('/changeCompany', {
+            company_id: company,
+            currentPath: this.$route.path,
+            currentName: this.$route.name
+        })
+        .then(response => {
+            window.location = response.data
+        })
+        .catch(error => {
+            Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
+        });
+    }, 
+    toggleApp: function () {
+      document.getElementById('navbar-application-sauce__BV_button_').click()
     }
+  },
+  created () {
+    this.companies()
+  },
+  computed: {
+      apps: function () {
+        return this.data;
+      },
+      appName: function () {
+        return this.data[this.routeAppName] != undefined ? this.data[this.routeAppName].display_name : ''
+      },
+      companyName: function () {
+        return this.company.data[this.company.selected] != undefined ? this.company.data[this.company.selected].name : ''
+      }
   }
 };
 </script>

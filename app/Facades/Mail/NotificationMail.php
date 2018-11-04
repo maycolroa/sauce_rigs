@@ -1,0 +1,488 @@
+<?php
+
+namespace App\Facades\Mail;
+
+use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Database\Eloquent\Collection;
+use App\Facades\Mail\NotificationGeneralMail;
+use App\User;
+use App\Models\LogMail;
+use App\Models\Module;
+use Route;
+use Exception;
+
+class NotificationMail
+{
+    /**
+     * Recipients to whom the mail will be sent
+     *
+     * @var Illuminate\Database\Eloquent\Collection
+     * @var App\User
+     */
+    private $recipients;
+
+    /**
+     * Subject of the mail
+     *
+     * @var string
+     */
+    private $subject = 'Notificación';
+
+    /**
+     * Mail message
+     *
+     * @var string
+     */
+    private $message;
+
+    /**
+     * Name of the view that will be used in the mail content
+     *
+     * @var string
+     */
+    private $view = 'notification';
+
+    /**
+     * Arrangement of buttons. Ej: [ ['text'=>'Download', 'url'=>'www.example.com', 'color'=>'green'] ]
+     * The color parameter is optional
+     * 
+     * @var array
+     */
+    private $buttons = [];
+
+    /**
+     * Stores a list. Ej: ['item_1', 'item_2', 'item_3']
+     *
+     * @var array
+     */
+    private $list;
+
+    /**
+     * Indicates whether the list will be sorted - Default: false
+     *
+     * @var booleam
+     */
+    private $list_order;
+
+    /**
+     * Stores the information of a table
+     *
+     * @var \MaddHatter\MarkdownTable\Builder
+     */
+    private $table;
+
+    /**
+     * Module that executes the event
+     *
+     * @var App\Models\Module
+     * @var string
+     */
+    private $module;
+
+    /**
+     * Message that will be placed at the end of the mail
+     *
+     * @var string
+     */
+    private $subcopy;
+
+    /**
+     * Stores additional data that will be sent to the view
+     * They can be accessed as follows: $with->param_# . Where # is the order in which the data was sent
+     *
+     * @var array
+     */
+    private $with;
+
+    public function __construct()
+    {
+ 
+    }
+
+    /**
+     * Edit the recipients of the email
+     *
+     * @param Illuminate\Database\Eloquent\Collection $recipients
+     * @param App\User $recipients
+     * @return $this
+     */
+
+    public function recipients($recipients)
+    {
+        if (!$recipients instanceof Collection && !$recipients instanceof User)
+            throw new \Exception('Invalid recipient format');
+        
+        if ($recipients instanceof Collection)
+        {
+            if ($recipients->isEmpty())
+                throw new \Exception('Empty collection');
+            
+            $recipients = $recipients->filter(function ($value, $key) {
+                if ($value instanceof User && 
+                preg_match('/^[_a-z0-9-]+(.[_a-z0-9-]+)*@[a-z0-9-]+(.[a-z0-9-]+)*(.[a-z]{2,4})$/', $value->email) )
+                    return true;
+                else 
+                    return false;
+            });
+
+            if ($recipients->isEmpty())
+                throw new \Exception('The collection was empty after filtering the invalid emails');
+        }
+
+        if ($recipients instanceof User && 
+                !preg_match('/^[_a-z0-9-]+(.[_a-z0-9-]+)*@[a-z0-9-]+(.[a-z0-9-]+)*(.[a-z]{2,4})$/', $recipients->email) )
+            throw new \Exception('Incorrect email format');
+        
+        $this->recipients = $recipients;
+
+        return $this;
+    }
+
+    /**
+     * Edit the mail subject
+     *
+     * @param string $subject
+     * @return $this
+     */
+    public function subject($subject)
+    {
+        if (!is_string($subject) || $subject == '')
+            throw new \Exception('The format of the subject is incorrect'); 
+
+        $this->subject = $subject;
+
+        return $this;
+    }
+
+    /**
+     * Edit the mail message
+     *
+     * @param string $message
+     * @return $this
+     */
+    public function message($message)
+    {
+        if (!is_string($message) || $message == '')
+            throw new \Exception('The format of the message is incorrect'); 
+
+        $this->message = $message;
+
+        return $this;
+    }
+    
+    /**
+     * Edit the view that will be used in the mail content
+     *
+     * @param string $view
+     * @return $this
+     */
+    public function view($view)
+    {
+        if (!is_string($view) || $view == '')
+            throw new \Exception('The format of the view is incorrect'); 
+
+        $this->view = $view;
+
+        return $this;
+    }
+    
+    /**
+     * Edit the buttons that will be available in the mail view
+     *
+     * @param array $buttons
+     * @return $this
+     */
+    public function buttons($buttons)
+    {   
+        if (!is_array($buttons))
+            throw new \Exception('The array of buttons does not comply with the format: array (array ("text" => "Download", "url" => "www.example.com"))');
+
+        foreach($buttons as $button)
+        {
+            if (!isset($button["text"]) || !isset($button["url"]))
+                throw new \Exception('The array of buttons does not comply with the format: array (array ("text" => "Download", "url" => "www.example.com"))');
+        }
+
+        $this->buttons = $buttons;
+
+        return $this;
+    }
+
+    /**
+     * Edit the list that will be displayed in the mail
+     *
+     * @param array $data
+     * @param boolean $order
+     * @return $this
+     */
+    public function list($data, $order = null)
+    {
+        if (!is_array($data))
+            throw new \Exception('The format of the list is incorrect');
+        
+        if (!is_string($order) && $order != null)
+            throw new \Exception('The format of the order is incorrect');
+
+        $this->list = $data;
+        $this->list_order = $order;
+
+        return $this;
+    }
+
+    /**
+     * Process the information that will be shown in the table
+     *
+     * @param Illuminate\Database\Eloquent\Collection $data
+     * @param array $data
+     * @return $this
+     */
+    public function table($data)
+    {
+        if ($data instanceof Collection && !$data->isEmpty())
+        {
+            $information = [];
+
+            $headers = array_keys($data->toArray()[0]);
+ 
+            foreach ($data->toArray() as $key => $value)
+            {
+                $aux = [];
+
+                foreach ($value as $key2 => $value2)
+                {
+                    array_push($aux, ($value2 ? $value2 : ''));
+                }
+
+                array_push($information, $aux);
+            }
+
+            $this->generateTable($headers, $information);
+        }   
+        else if (is_array($data) && !empty($data))
+        {
+            $information = [];
+            $i = 0;
+            
+            foreach ($data as $key => $value)
+            {
+                if (is_array($value) && $this->is_assoc($value))
+                {
+                    if ($i == 0)
+                        $headers = array_keys($value);
+
+                    $aux = [];
+
+                    foreach ($value as $key2 => $value2)
+                    {
+                        array_push($aux, ($value2 ? $value2 : ''));
+                    }
+
+                    array_push($information, $aux);
+                    $i++;
+                }
+                else
+                    throw new \Exception('Invalid recipient format');
+            }
+
+            $this->generateTable($headers, $information);
+        }
+        else 
+            throw new \Exception('Invalid recipient format');
+
+        return $this;
+    }
+
+    /**
+     * Generates the Markdown Table
+     *
+     * @param array $headers
+     * @param array $information
+     * @return void
+     */
+    private function generateTable($headers, $information)
+    {
+        // create instance of the table builder
+        $tableBuilder = new \MaddHatter\MarkdownTable\Builder();
+
+        // add some data
+        $tableBuilder
+            ->headers($headers) //headers
+            ->align(['L']) // set column alignment
+            ->rows($information);
+        
+        $this->table = $tableBuilder;
+    }
+
+    /**
+     * Edit the module that performs the action
+     *
+     * @param App\Models\Module $module
+     * @param string $module
+     * @return $this
+     */
+    public function module($module)
+    {
+        if (is_string($module))
+        {
+            $module = Module::where('name', $module)->first();
+
+            if (!$module)
+                throw new \Exception('Module not found');   
+        }
+        else if (!$module instanceof Module)
+            throw new \Exception('Invalid module format');
+        
+        $this->module = $module;
+
+        return $this;
+    }
+
+    /**
+     * Set the content that appears at the bottom of the page
+     *
+     * @param string $subcopy
+     * @return $this
+     */
+    public function subcopy($subcopy)
+    {
+        if (!is_string($subcopy) || $subcopy == '')
+            throw new \Exception('The format of the subcopy is incorrect'); 
+
+        $this->subcopy = $subcopy;
+
+        return $this;
+    }
+
+    /**
+     * Process the data that will be passed to the view
+     * Remaining the names of the parameters as param_ # . Where # is the order in which the data was sent
+     * 
+     * @param array $data
+     * @return $this
+     */
+    public function with($data)
+    {
+        if (empty($data) || !$this->is_assoc($data))
+            throw new \Exception('The format of the data is incorrect');
+
+
+        $this->with = $data;
+        return $this;
+    }
+
+    /**
+     * Send the mail
+     *
+     * @return booleam
+     */
+    public function send()
+    {
+        if (empty($this->recipients))
+            throw new \Exception('No valid recipient was entered');
+
+        if (empty($this->module))
+            throw new \Exception('The id of the module that performed the action was not entered');
+
+        try { 
+            $message = (new NotificationGeneralMail($this->prepareData()))
+                ->onQueue('emails');
+            
+            Mail::to($this->recipients)->queue($message);
+
+            $this->createLog();
+        }
+        catch (\Exception $e) {
+          dd($e);
+            throw new \Exception('An error occurred while sending the mail');
+        }
+
+        return true;
+    }
+
+    /**
+     * Returns the information needed to build the mail
+     *
+     * @return stdClass
+     */
+    private function prepareData()
+    {
+        $data = new \stdClass();
+        $data->recipients = $this->recipients;
+        $data->view = $this->view;
+        $data->subject = $this->subject;
+
+        if (!empty($this->message))
+            $data->message = $this->message;
+
+        if (!empty($this->buttons))
+            $data->buttons = $this->buttons;
+        
+        if (!empty($this->list))
+        {
+            $data->list = $this->list;
+            $data->list_order = $this->list_order;
+        }
+
+        if (!empty($this->table))
+            $data->table = $this->table;
+
+        if (!empty($this->subcopy))
+            $data->subcopy = $this->subcopy;
+        
+        if (!empty($this->with))
+            $data->with = $this->with;
+
+        return $data;
+    }
+
+    /**
+     * Create a record of the sent email
+     *
+     * @return void
+     */
+    private function createLog()
+    {
+        $log = new LogMail();
+
+        $event = explode("\\", Route::currentRouteAction());
+        $event = $event[COUNT($event) - 1];
+
+        if ($this->recipients instanceof User)
+            $log->recipients = $this->recipients->email;    
+        else if ($this->recipients instanceof Collection)
+        {
+            $array = [];
+
+            foreach($this->recipients as $item)
+            {
+                array_push($array, $item->email);
+            }
+
+            $log->recipients = implode(',', $array);
+        }
+        
+        $log->module_id = $this->module->id;
+        $log->event = $event;
+        $log->subject = $this->subject;
+        $log->message = isset($this->message) ? $this->message : '';
+        $log->created_at = date("Y-m-d H:i:s");
+        $log->save();
+    }
+
+    /**
+     * Check if an array is associative
+     *
+     * @param array $array
+     * @return boolean
+     */
+    private function is_assoc($array)
+    {
+        // Keys of the array
+        $keys = array_keys($array);
+
+        // If the array keys of the keys match the keys, then the array must
+        // not be associative (e.g. the keys array looked like {0:0, 1:1...}).
+        return array_keys($keys) !== $keys;
+    }
+}

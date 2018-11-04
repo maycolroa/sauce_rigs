@@ -142,6 +142,11 @@ return [
       'osseous_left_2000' => '2000 Hz',
       'osseous_left_3000' => '3000 Hz',
       'osseous_left_4000' => '4000 Hz',
+      'document' => 'Documento',
+      'name' => 'Nombre',
+      'password' => 'Contraseña',
+      'role_id' => 'Rol',
+      'permissions_asignates' => 'Permisos'
     ],
 
 ];
