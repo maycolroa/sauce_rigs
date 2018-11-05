@@ -35,6 +35,7 @@ class AudiometryExcel implements FromCollection, WithHeadings, WithMapping, With
           Date::dateTimeToExcel(Carbon::createFromFormat('Y-m-d',$audiometries->date)),
           $audiometries->employee_identification,
           $audiometries->employee_name,
+          $audiometries->previews_events,
           $audiometries->exposition_level,
           $audiometries->epp,
           $audiometries->recommendations,
@@ -92,6 +93,7 @@ class AudiometryExcel implements FromCollection, WithHeadings, WithMapping, With
           'Fecha',
           'Identificación empleado',
           'Nombre empleado',
+          'Eventos Previos',
           'Nivel de exposición (Disometría)',
           'EPP',
           'Recomendaciones',
@@ -147,7 +149,6 @@ class AudiometryExcel implements FromCollection, WithHeadings, WithMapping, With
     {
         return [
             'A' => NumberFormat::FORMAT_DATE_DDMMYYYY,
-            'H' => NumberFormat::FORMAT_NUMBER,
             'I' => NumberFormat::FORMAT_NUMBER,
             'J' => NumberFormat::FORMAT_NUMBER,
             'K' => NumberFormat::FORMAT_NUMBER,
@@ -171,12 +172,13 @@ class AudiometryExcel implements FromCollection, WithHeadings, WithMapping, With
             'AC' => NumberFormat::FORMAT_NUMBER,
             'AD' => NumberFormat::FORMAT_NUMBER,
             'AE' => NumberFormat::FORMAT_NUMBER,
-            'AG' => NumberFormat::FORMAT_NUMBER_00,
-            'AL' => NumberFormat::FORMAT_NUMBER_00,
-            'AP' => NumberFormat::FORMAT_NUMBER_00,
-            'AU' => NumberFormat::FORMAT_NUMBER_00,
-            'AX' => NumberFormat::FORMAT_DATE_DDMMYYYY,
+            'AF' => NumberFormat::FORMAT_NUMBER,
+            'AH' => NumberFormat::FORMAT_NUMBER_00,
+            'AM' => NumberFormat::FORMAT_NUMBER_00,
+            'AQ' => NumberFormat::FORMAT_NUMBER_00,
+            'AV' => NumberFormat::FORMAT_NUMBER_00,
             'AY' => NumberFormat::FORMAT_DATE_DDMMYYYY,
+            'AZ' => NumberFormat::FORMAT_DATE_DDMMYYYY,
         ];
     }
 }
