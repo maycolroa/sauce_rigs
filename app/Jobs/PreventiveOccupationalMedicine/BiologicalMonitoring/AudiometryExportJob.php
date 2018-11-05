@@ -10,9 +10,8 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Support\Facades\Auth;
 use App\PreventiveOccupationalMedicine\BiologicalMonitoring\Audiometry;
 use Maatwebsite\Excel\Facades\Excel;
-use App\Mail\PreventiveOccupationalMedicine\BiologicalMonitoring\AudiometryExportMail;
 use App\Exports\PreventiveOccupationalMedicine\BiologicalMonitoring\AudiometryExcel;
-use Illuminate\Support\Facades\Mail;
+use App\Facades\Mail\Facades\NotificationMail;
 
 class AudiometryExportJob implements ShouldQueue
 {
@@ -46,6 +45,13 @@ class AudiometryExportJob implements ShouldQueue
       
       $paramUrl = base64_encode($nameExcel);
 
-      Mail::to(Auth::user())->send(new AudiometryExportMail(url("/export/{$paramUrl}")));
+      NotificationMail::
+        subject('Exportación de las audiometrias')
+        ->recipients(Auth::user())
+        ->message('Se ha generado una exportación de audiometrias.')
+        ->subcopy('Este link es valido por 24 horas')
+        ->buttons([['text'=>'Descargar', 'url'=>url("/export/{$paramUrl}")]])
+        ->module('biologicalMonitoring/audiometry')
+        ->send();
     }
 }
