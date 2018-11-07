@@ -11,6 +11,20 @@ class Employee extends Model
 
     protected $table = 'sau_employees';
 
+    protected $fillable = [
+      'name',
+      'date_of_birth',
+      'sex',
+      'identification',
+      'email',
+      'employee_area_id',
+      'employee_position_id',
+      'employee_regional_id',
+      'employee_eps_id',
+      'income_date',
+      'company_id'
+  ];
+
     public function audiometries(){
         return $this->hasMany('App\PreventiveOccupationalMedicine\BiologicalMonitoring\Audiometry','employee_id');
     }

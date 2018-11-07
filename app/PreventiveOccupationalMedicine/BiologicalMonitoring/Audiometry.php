@@ -87,12 +87,23 @@ class Audiometry extends Model
      */
     public function setEppAttribute($value)
     {
-      if($value != null){
+      if($value != null)
+      {
         $epp = [];
-        foreach($value as $v){
-          array_push($epp,json_decode($v)->value);
-        }
+
+        if (is_array($value)) //Formulario
+        {
+          foreach($value as $v)
+          {
+            array_push($epp,json_decode($v)->value);
+          }
+          
           $this->attributes['epp'] = implode(",", $epp);
+        }
+        else //Excel
+        {
+          $this->attributes['epp'] = implode(",", array_map('trim', explode(",", $value))); //Para eliminar espacios en blanco entre valores
+        }
       }
     }
 }
