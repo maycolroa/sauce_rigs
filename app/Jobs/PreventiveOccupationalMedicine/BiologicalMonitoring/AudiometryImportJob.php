@@ -44,7 +44,7 @@ class AudiometryImportJob implements ShouldQueue
         NotificationMail::
           subject('Importación de las audiometrias')
           ->recipients(Auth::user())
-          ->message($e->getMessage())
+          ->message('Se produjo un error durante el proceso de importación de las audiometrias. Contacte con el administrador')
           ->module('biologicalMonitoring/audiometry')
           ->send();
       }

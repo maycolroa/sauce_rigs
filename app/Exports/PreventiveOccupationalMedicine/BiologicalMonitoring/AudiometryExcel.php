@@ -11,8 +11,19 @@ use Maatwebsite\Excel\Concerns\WithMapping;
 use Maatwebsite\Excel\Concerns\WithColumnFormatting;
 use Carbon\Carbon;
 
-class AudiometryExcel implements FromCollection, WithHeadings, WithMapping, WithColumnFormatting
+use Maatwebsite\Excel\Concerns\WithEvents;
+use Maatwebsite\Excel\Concerns\RegistersEventListeners;
+use Maatwebsite\Excel\Events\AfterSheet;
+use \Maatwebsite\Excel\Sheet;
+
+Sheet::macro('styleCells', function (Sheet $sheet, string $cellRange, array $style) {
+  $sheet->getDelegate()->getStyle($cellRange)->applyFromArray($style);
+});
+
+class AudiometryExcel implements FromCollection, WithHeadings, WithMapping, WithColumnFormatting, WithEvents
 {
+  use RegistersEventListeners;
+
   protected $audiometries;
 
   public function __construct(Collection $audiometries)
@@ -180,5 +191,26 @@ class AudiometryExcel implements FromCollection, WithHeadings, WithMapping, With
             'AY' => NumberFormat::FORMAT_DATE_DDMMYYYY,
             'AZ' => NumberFormat::FORMAT_DATE_DDMMYYYY,
         ];
+    }
+
+    public static function afterSheet(AfterSheet $event)
+    {
+      $event->sheet->styleCells(
+        'A1:AZ1',
+          [
+            'alignment' => [
+              'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT,
+              'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
+            ],
+            'borders' => [
+              'allBorders' => [
+                'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THICK,
+              ],
+            ],
+            'font' => [
+              'bold' => true,
+            ]
+          ]
+      );
     }
 }
