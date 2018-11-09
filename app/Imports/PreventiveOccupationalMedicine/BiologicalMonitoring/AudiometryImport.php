@@ -12,7 +12,7 @@ use App\Administrative\EmployeeRegional;
 use App\Administrative\EmployeePosition;
 use App\Facades\Configuration;
 use App\PreventiveOccupationalMedicine\BiologicalMonitoring\Audiometry;
-use App\Exports\PreventiveOccupationalMedicine\BiologicalMonitoring\AudiometryImportErrorsExcel;
+use App\Exports\PreventiveOccupationalMedicine\BiologicalMonitoring\AudiometryImportErrorExcel;
 use App\Facades\Mail\Facades\NotificationMail;
 use Illuminate\Support\Facades\Auth;
 use Maatwebsite\Excel\Facades\Excel;
@@ -22,8 +22,11 @@ use Exception;
 
 class AudiometryImport implements ToCollection
 {
-    protected $company_id;
-    protected $errors = [];
+    private $company_id;
+    private $errors = [];
+    private $errors_data = [];
+    private $sheet = 1;
+    private $key_row = 2;
 
     public function __construct()
     {
@@ -32,46 +35,72 @@ class AudiometryImport implements ToCollection
 
     public function collection(Collection $rows)
     {
-        $insert = [];
-
-        foreach ($rows as $key => $row) 
-        {  
-            $this->key_row = $key + 1;
-            $employee_id = $this->checkEmployee($row);
-
-            if ($employee_id)
+        if ($this->sheet == 1)
+        {
+            try
             {
-                $this->createAudiometry($row, $employee_id);
-            }
-        }
+                foreach ($rows as $key => $row) 
+                {  
+                    if ($key > 0) //Saltar cabecera
+                    {
+                        if (COUNT($row) == 40)
+                        {
+                            $employee_id = $this->checkEmployee($row);
 
-        if (COUNT($this->errors) == 0)
-        {
-            NotificationMail::
-                subject('Importación de las audiometrias')
-                ->recipients(Auth::user())
-                ->message('El proceso de importación de todos los registros de audiometrias finalizo correctamente')
-                ->module('biologicalMonitoring/audiometry')
-                ->send();
-        }
-        else
-        {
-            $nameExcel = 'export/1/audiometrias_errors_'.date("YmdHis").'.xlsx';
-            Excel::store(new AudiometryImportErrorsExcel($this->errors), $nameExcel, 'public',\Maatwebsite\Excel\Excel::XLSX);
+                            if ($employee_id)
+                            {
+                                $this->createAudiometry($row, $employee_id);
+                            }
+                        }
+                        else
+                        {
+                            $this->setError('Formato inválido');
+                            $this->setErrorData($row);
+                        }
+                    }
+                }
+
+                if (COUNT($this->errors) == 0)
+                {
+                    NotificationMail::
+                        subject('Importación de las audiometrias')
+                        ->recipients(Auth::user())
+                        ->message('El proceso de importación de todos los registros de audiometrias finalizo correctamente')
+                        ->module('biologicalMonitoring/audiometry')
+                        ->send();
+                }
+                else
+                {
+                    $nameExcel = 'export/1/audiometrias_errors_'.date("YmdHis").'.xlsx';
+                    Excel::store(new AudiometryImportErrorExcel(collect($this->errors_data), $this->errors), $nameExcel, 'public',\Maatwebsite\Excel\Excel::XLSX);
+                    
+                    $paramUrl = base64_encode($nameExcel);
             
-            $paramUrl = base64_encode($nameExcel);
-    
-            NotificationMail::
-                subject('Importación de las audiometrias')
-                ->recipients(Auth::user())
-                ->message('El proceso de importación de las audiometrias finalizo correctamente, pero algunas filas contenian errores. Puede descargar el archivo con el detalle de los errores en el botón de abajo.')
-                ->subcopy('Este link es valido por 24 horas')
-                ->buttons([['text'=>'Descargar', 'url'=>url("/export/{$paramUrl}")]])
-                ->module('biologicalMonitoring/audiometry')
-                ->send();
-        }
+                    NotificationMail::
+                        subject('Importación de las audiometrias')
+                        ->recipients(Auth::user())
+                        ->message('El proceso de importación de las audiometrias finalizo correctamente, pero algunas filas contenian errores. Puede descargar el archivo con el detalle de los errores en el botón de abajo.')
+                        ->subcopy('Este link es valido por 24 horas')
+                        ->buttons([['text'=>'Descargar', 'url'=>url("/export/{$paramUrl}")]])
+                        ->module('biologicalMonitoring/audiometry')
+                        ->send();
+                }
+                
+            } catch (\Exception $e)
+            {
+                NotificationMail::
+                    subject('Importación de las audiometrias')
+                    ->recipients(Auth::user())
+                    ->message('Se produjo un error durante el proceso de importación de las audiometrias. Contacte con el administrador')
+                    //->message($e->getMessage())
+                    ->module('biologicalMonitoring/audiometry')
+                    ->send();
+            }
 
-        //dd($this->errors);
+            $this->sheet++;
+
+            //dd($this->errors);
+        }
     }
 
     private function checkEmployee($row)
@@ -88,8 +117,8 @@ class AudiometryImport implements ToCollection
 
             if ($eps)
             {
-                $row[4] = $this->validateDate($row[4]);
-                $row[9] = $this->validateDate($row[9]);
+                $fecha_nacimiento = $this->validateDate($row[4]);
+                $fecha_ingreso = $this->validateDate($row[9]);
 
                 $validator = Validator::make(
                     [
@@ -97,11 +126,11 @@ class AudiometryImport implements ToCollection
                         'nombre'            => $row[1],
                         'sexo'              => $row[2],
                         'email'             => $row[3],
-                        'fecha_nacimiento'  => $row[4],
+                        'fecha_nacimiento'  => $fecha_nacimiento,
                         'area'              => $row[5],
                         'cargo'             => $row[6],
                         'regional'          => $row[8],
-                        'fecha_ingreso'     => $row[9]
+                        'fecha_ingreso'     => $fecha_ingreso
                     ],
                     [
                         'identificacion'   => 'required|numeric',
@@ -129,12 +158,12 @@ class AudiometryImport implements ToCollection
                         'name' => $row[1],
                         'sex' => $row[2],
                         'email' => $row[3],
-                        'date_of_birth' => $row[4],
+                        'date_of_birth' => $fecha_nacimiento,
                         'employee_area_id' => $this->checkArea($row[5]),
                         'employee_position_id' => $this->checkPosition($row[6]),
                         'employee_regional_id' => $this->checkRegional($row[8]),
                         'employee_eps_id' => $eps->id,
-                        'income_date' => $row[9],
+                        'income_date' => $fecha_ingreso,
                         'company_id' => $this->company_id,
                     ]);
 
@@ -147,6 +176,7 @@ class AudiometryImport implements ToCollection
             }
         }
 
+        $this->setErrorData($row);
         return null;
     }
 
@@ -179,6 +209,12 @@ class AudiometryImport implements ToCollection
         $this->errors[$this->key_row][] = ucfirst($message);
     }
 
+    private function setErrorData($row)
+    {
+        $this->errors_data[] = $row;
+        $this->key_row++;
+    }
+
     private function validateDate($date)
     {
         try
@@ -194,7 +230,7 @@ class AudiometryImport implements ToCollection
 
     private function createAudiometry($row, $employee_id)
     {
-        $row[10] = $this->validateDate($row[10]);
+        $fecha = $this->validateDate($row[10]);
 
         $NUMBERS_AVAILABLE_RESULTS = "0,5,10,15,20,25,30,35,40,45,50,55,60,65,70,75,80,85,90,95,100,105,110,115,120";
         $EPP = implode(",", Configuration::getConfiguration('biologicalmonitoring_audiometries_select_epp'));
@@ -202,7 +238,7 @@ class AudiometryImport implements ToCollection
 
         $validator = Validator::make(
             [
-                'fecha'                     => $row[10],
+                'fecha'                     => $fecha,
                 'eventos_previos'           => $row[11],
                 'empleado'                  => $employee_id,
                 'epp'                       => array_map('trim', explode(",", $row[12])),
@@ -278,11 +314,13 @@ class AudiometryImport implements ToCollection
             {
                 $this->setError($value);
             }
+            
+            $this->setErrorData($row);
         }
         else 
         {
             Audiometry::create([
-                'date'               => $row[10],
+                'date'               => $fecha,
                 'previews_events'    => $row[11],
                 'employee_id'        => $employee_id,
                 'epp'                => $row[12],

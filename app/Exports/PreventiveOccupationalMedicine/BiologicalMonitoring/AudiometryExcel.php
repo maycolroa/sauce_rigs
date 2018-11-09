@@ -202,11 +202,6 @@ class AudiometryExcel implements FromCollection, WithHeadings, WithMapping, With
               'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT,
               'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
             ],
-            'borders' => [
-              'allBorders' => [
-                'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THICK,
-              ],
-            ],
             'font' => [
               'bold' => true,
             ]

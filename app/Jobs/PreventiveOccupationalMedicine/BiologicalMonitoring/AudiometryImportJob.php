@@ -11,9 +11,6 @@ use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Imports\PreventiveOccupationalMedicine\BiologicalMonitoring\AudiometryImport;
-use App\Facades\Mail\Facades\NotificationMail;
-use Illuminate\Support\Facades\Auth;
-use Exception;
 
 class AudiometryImportJob implements ShouldQueue
 {
@@ -34,19 +31,7 @@ class AudiometryImportJob implements ShouldQueue
      */
     public function handle()
     { 
-      try
-      {
-        Excel::import(new AudiometryImport, "/import/1/$this->nameFile", 'public');
-        Storage::disk('public')->delete('import/1/'. $this->nameFile);
-        
-      } catch (\Exception $e)
-      {
-        NotificationMail::
-          subject('Importación de las audiometrias')
-          ->recipients(Auth::user())
-          ->message('Se produjo un error durante el proceso de importación de las audiometrias. Contacte con el administrador')
-          ->module('biologicalMonitoring/audiometry')
-          ->send();
-      }
+      Excel::import(new AudiometryImport, "/import/1/$this->nameFile", 'public');
+      Storage::disk('public')->delete('import/1/'. $this->nameFile);
     }
 }

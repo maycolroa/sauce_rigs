@@ -7,13 +7,14 @@ use Maatwebsite\Excel\Concerns\FromView;
 use Maatwebsite\Excel\Concerns\WithEvents;
 use Maatwebsite\Excel\Concerns\RegistersEventListeners;
 use Maatwebsite\Excel\Events\AfterSheet;
+use Maatwebsite\Excel\Concerns\WithTitle;
 use \Maatwebsite\Excel\Sheet;
 
 Sheet::macro('styleCells', function (Sheet $sheet, string $cellRange, array $style) {
   $sheet->getDelegate()->getStyle($cellRange)->applyFromArray($style);
 });
 
-class AudiometryImportErrorsExcel implements FromView, WithEvents
+class AudiometryImportErrorListExcel implements FromView, WithEvents, WithTitle
 {
   use RegistersEventListeners;
 
@@ -33,11 +34,6 @@ class AudiometryImportErrorsExcel implements FromView, WithEvents
               'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT,
               'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
             ],
-            'borders' => [
-              'allBorders' => [
-                'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THICK,
-              ],
-            ],
             'font' => [
               'bold' => true,
             ]
@@ -45,9 +41,17 @@ class AudiometryImportErrorsExcel implements FromView, WithEvents
       );
     }
 
+    /**
+     * @return string
+    */
+    public function title(): string
+    {
+        return 'Lista de Errores';
+    }
+
     public function view(): View
     {
-        return view('mail.preventiveoccupationalmedicine.biologicalmonitoring.audiometryimporterrors', [
+        return view('mail.preventiveoccupationalmedicine.biologicalmonitoring.audiometry-import-errors-list', [
             'errors' => $this->errors
         ]);
     }
