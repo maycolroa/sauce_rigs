@@ -13,6 +13,8 @@
               <div v-if="row.employee_name"><b>Identificación Empleado:</b> {{row.employee_name}}</div>
               <div v-if="row.previews_events"><b>Eventos Previos:</b> {{row.previews_events}}</div>
               <div v-if="row.epp"><b>EPP:</b> {{row.epp}}</div>
+              <div v-if="row.base_type_air"><b>Base Aereo Tipo:</b> {{row.base_type_air}}</div>
+              <div v-if="row.base_air"><b>Base Aereo:</b> <router-link :to="{ path: `audiometry/view/${row.base_air}` }">Ver Audiometria</router-link> </div>
               <div v-if="row.observation"><b>Observaciones:</b> {{row.observation.length > 70 ? row.observation.substring(0, 70) + '...' : row.observation}}</div>
               <div v-if="row.created_at"><b>Fecha Creación:</b> {{row.created_at}}</div>
             </b-col>
