@@ -136,7 +136,7 @@ class AudiometryImport implements ToCollection
                         'identificacion'   => 'required|numeric',
                         'nombre'           => 'required|string',
                         'sexo'             => 'required|string',
-                        'email'            => 'required|email|unique:sau_employees,email,null,id',
+                        'email'            => 'required|email|unique:sau_employees,email,null,id,company_id,'.$this->company_id,
                         'fecha_nacimiento' => 'nullable|date',
                         'area'             => 'required',
                         'cargo'            => 'required',
