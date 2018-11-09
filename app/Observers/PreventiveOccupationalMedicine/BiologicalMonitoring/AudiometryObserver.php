@@ -32,6 +32,9 @@ class AudiometryObserver
       $audiometry->severity_grade_air_right_6000 = $this->SeverityGradeAirRight6000($audiometry);
       $audiometry->severity_grade_air_left_8000 = $this->SeverityGradeAirLeft8000($audiometry);
       $audiometry->severity_grade_air_right_8000 = $this->SeverityGradeAirRight8000($audiometry);
+      $base_air = $this->BasePta($audiometry, 'air');
+      $audiometry->base_type_air = $base_air[0];
+      $audiometry->base_air      = $base_air[1];
     }
 
       
@@ -269,4 +272,52 @@ class AudiometryObserver
         return "Hipoacusia profunda";
       }
     }
+
+    /**
+     * Metodo para el atributo base_type_?? y base_?? (?? --> Air / Osseous)
+     */
+
+     private function BasePta($audiometry, $type)
+     { 
+        $col_base_type = "base_type_".$type;
+        $audiometry_base = Audiometry::where('employee_id', $audiometry->employee_id)->where($col_base_type, 'Base')->first();
+        
+        if (!$audiometry_base)
+          return ['Base', null];
+
+        $col_left = "severity_grade_".$type."_left_pta";
+        $col_right = "severity_grade_".$type."_right_pta";
+
+        $base_level = $this->levelPTA($audiometry_base->$col_left) + $this->levelPTA($audiometry_base->$col_right);
+        $new_level = $this->levelPTA($audiometry->$col_left) + $this->levelPTA($audiometry->$col_right);
+
+        if ($base_level >= $new_level)
+        {
+          return ['No base', $audiometry_base->id];
+        }
+        else
+        {
+          $audiometry_base->$col_base_type = 'No base';
+          $audiometry_base->unsetEventDispatcher();
+          $audiometry_base->save();
+          return ['Base', null];
+        }
+     }
+
+     private function levelPTA($value)
+     {
+        if ($value == 'Audición normal')
+          return 1;
+        else if ($value == 'Hipoacusia leve')
+          return 2;
+        else if ($value == 'Hipoacusia moderada')
+          return 3;
+        else if ($value == 'Hipoacusia moderada a severa')
+          return 4;
+        else if ($value == 'Hipoacusia severa')
+          return 5;
+        else if ($value == 'Hipoacusia profunda')
+          return 6;
+        else 0;
+     }
 }
