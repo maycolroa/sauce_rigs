@@ -33,5 +33,10 @@ export default [{
     path: 'biologicalmonitoring/audiometry/report/:id',
     component: () =>
       import('@/views/PreventiveOccupationalMedicine/biologicalmonitoring/audiometry/report')
+  }, {
+    name: 'biologicalmonitoring-audiometry-report-pta',
+    path: 'biologicalmonitoring/audiometry/reportpta',
+    component: () =>
+      import('@/views/PreventiveOccupationalMedicine/biologicalmonitoring/audiometry/reportPta')
   }]
 }]

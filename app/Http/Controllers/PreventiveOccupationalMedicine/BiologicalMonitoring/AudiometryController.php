@@ -157,4 +157,103 @@ class AudiometryController extends Controller
         return $this->respondHttp500();
       }
     }
+
+    public function reportPta(Request $request)
+    {
+      try
+      {
+        $data = [
+          'air_left_pta' => [],
+          'air_left_legend' => [],
+          'air_right_pta' => [],
+          'air_right_legend' => [],
+        ];
+
+        $key_types = ['air'];
+        $key_orientation = ['left', 'right'];
+
+        foreach ($key_types as $type)
+        {
+          foreach ($key_orientation as $orientation)
+          {
+            $col = 'bm_audiometries.severity_grade_'.$type.'_'.$orientation.'_pta';
+
+            $audiometry = Audiometry::selectRaw(
+              'COUNT(IF('.$col.'="Audición normal",1, NULL)) as AN,
+               COUNT(IF('.$col.'="Hipoacusia leve",1, NULL)) as HL,
+               COUNT(IF('.$col.'="Hipoacusia moderada",1, NULL)) as HM,
+               COUNT(IF('.$col.'="Hipoacusia moderada a severa",1, NULL)) as HMS,
+               COUNT(IF('.$col.'="Hipoacusia severa",1, NULL)) as HS,
+               COUNT(IF('.$col.'="Hipoacusia profunda",1, NULL)) as HP'
+            )->join('sau_employees','sau_employees.id','bm_audiometries.employee_id');
+            
+            if ($request->get('year') != '')
+            {
+              $audiometry->whereRaw('YEAR(bm_audiometries.date) IN ('.implode(",", $this->getDataFromMultiselect($request->get('year'))).')');
+            }
+
+            if ($request->get('area') != '')
+            {
+              $audiometry->whereIn('sau_employees.employee_area_id', $this->getDataFromMultiselect($request->get('area')));
+            }
+
+            if ($request->get('regional') != '')
+            {
+              $audiometry->whereIn('sau_employees.employee_regional_id', $this->getDataFromMultiselect($request->get('regional')));
+            }
+            
+            $aux = [];
+            $aux_legend = [];
+
+            foreach ($audiometry->get() as $key => $value)
+            {
+              if ($value->AN > 0)
+              {
+                $aux['Audición normal'] = $value->AN;
+                array_push($aux_legend, 'Audición normal');
+              }
+              if ($value->HL > 0)
+              {
+                $aux['Hipoacusia leve'] = $value->HL;
+                array_push($aux_legend, 'Hipoacusia leve');
+              }
+              if ($value->HM > 0)
+              {
+                $aux['Hipoacusia moderada'] = $value->HM;
+                array_push($aux_legend, 'Hipoacusia moderada');
+              }
+              if ($value->HMS > 0)
+              {
+                $aux['Hipoacusia moderada a severa'] = $value->HMS;
+                array_push($aux_legend, 'Hipoacusia moderada a severa');
+              }
+              if ($value->HS > 0)
+              {
+                $aux['Hipoacusia severa'] = $value->HS;
+                array_push($aux_legend, 'Hipoacusia severa');
+              }
+              if ($value->HP > 0)
+              {
+                $aux['Hipoacusia profunda'] = $value->HP;
+                array_push($aux_legend, 'Hipoacusia profunda');
+              }
+            }
+
+            if (COUNT($aux) > 0)
+            {
+              $key = $type.'_'.$orientation;
+              $data[$key.'_pta'] = $this->multiSelectFormat(collect($aux));
+              $data[$key.'_legend'] = $aux_legend;
+            }
+
+          }
+        }
+
+        return $this->respondHttp200([
+            'data' => $data,
+        ]);
+      }catch(Exception $e){
+        $this->respondHttp500();
+      }
+    }
 }
