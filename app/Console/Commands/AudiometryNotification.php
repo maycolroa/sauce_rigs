@@ -53,7 +53,7 @@ class AudiometryNotification extends Command
           )->join('sau_employees','sau_employees.id','bm_audiometries.employee_id')
           ->withoutGlobalScopes()
           ->whereRaw('bm_audiometries.date = DATE_ADD(CURDATE(), INTERVAL -1 DAY)')
-          ->where('base_type_air', 'Base')->get();
+          ->where('base_type', 'Base')->get();
 
           
         if (!$audiometries->isEmpty())

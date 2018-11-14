@@ -14,8 +14,8 @@ class AddColumnsBmAudiometriesTable extends Migration
     public function up()
     {
         Schema::table('bm_audiometries', function (Blueprint $table) {
-            $table->string('base_type_air')->nullable();
-            $table->integer('base_air')->nullable();
+            $table->string('base_type')->nullable();
+            $table->integer('base')->nullable();
         });
     }
 
@@ -27,8 +27,8 @@ class AddColumnsBmAudiometriesTable extends Migration
     public function down()
     {
         Schema::table('bm_audiometries', function (Blueprint $table) {
-            $table->dropColumn('base_type_air');
-            $table->dropColumn('base_air');
+            $table->dropColumn('base_type');
+            $table->dropColumn('base');
         });
     }
 }
