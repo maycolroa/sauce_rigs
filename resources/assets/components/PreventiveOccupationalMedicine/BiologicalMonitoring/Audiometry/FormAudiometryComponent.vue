@@ -43,6 +43,15 @@
 
           </div>
         </div>
+        <div class="row">
+            <div class="col-lg">
+              <b-card bg-variant="transparent" border-variant="dark" title="Base" class="mb-12 box-shadow-none">
+                <div><b>Tipo Base:</b> {{ form.base_type  }}</div>
+                <div v-if="form.base"><b>Base:</b> <router-link :to="{ path: `${form.base}` }">Ver Audiometria</router-link></div>
+              </b-card>
+            </div>
+        </div>
+        <br>
       </tab-content>
       <tab-content title="General">
         <b-form-row>
@@ -247,7 +256,9 @@ export default {
           osseous_left_4000: "",
           recommendations: "",
           observation: "",
-          epp: ""
+          epp: "",
+          base_type: "",
+          base: ""
         };
       }
     }

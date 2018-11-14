@@ -35,14 +35,24 @@ export default {
     }
   },
   created(){
-    axios.get(`/biologicalmonitoring/audiometry/${this.$route.params.id}`)
-    .then(response => {
-        this.data = response.data.data;
-    })
-    .catch(error => {
-        Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
-        this.$router.go(-1);
-    });
+    this.fetchData()
   },
+  watch: {
+    '$route' (to, from) {
+      this.fetchData()
+    }
+  },
+  methods: {
+    fetchData() {
+      axios.get(`/biologicalmonitoring/audiometry/${this.$route.params.id}`)
+        .then(response => {
+            this.data = response.data.data;
+        })
+        .catch(error => {
+            Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
+            this.$router.go(-1);
+        });
+    }
+  }
 }
 </script>
