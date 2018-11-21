@@ -1,7 +1,7 @@
 <template>
   <div>
     <h4 class="font-weight-bold mb-4">
-       <span class="text-muted font-weight-light">Audiometrias /</span> Editar
+       <span class="text-muted font-weight-light">Audiometrias /</span> Ver
     </h4>
 
     <div class="col-md">
@@ -35,14 +35,24 @@ export default {
     }
   },
   created(){
-    axios.get(`/biologicalmonitoring/audiometry/${this.$route.params.id}`)
-    .then(response => {
-        this.data = response.data.data;
-    })
-    .catch(error => {
-        Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
-        this.$router.go(-1);
-    });
+    this.fetchData()
   },
+  watch: {
+    '$route' (to, from) {
+      this.fetchData()
+    }
+  },
+  methods: {
+    fetchData() {
+      axios.get(`/biologicalmonitoring/audiometry/${this.$route.params.id}`)
+        .then(response => {
+            this.data = response.data.data;
+        })
+        .catch(error => {
+            Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
+            this.$router.go(-1);
+        });
+    }
+  }
 }
 </script>

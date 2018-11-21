@@ -195,6 +195,16 @@ trait ResponseTrait
     }
 
     /**
+     * Responds a http request as 401 => Unauthorized
+     * @param  String $message
+     * @return \Illuminate\Http\Response
+     */
+    protected function respondHttp401($response = 'Unauthorized')
+    {
+        return $this->respondWithError($response, 401);
+    }
+
+    /**
      * Responds a http request as 503 => Service Unavailable
      * @param  String $message
      * @return \Illuminate\Http\Response

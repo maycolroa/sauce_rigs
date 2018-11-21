@@ -79,7 +79,7 @@ export default {
   methods: {
       submit(e) {
         this.loading = true;
-          this.form.submit(e.target.action)
+          this.form.submit(e.target.action, true)
           .then(response => {
               this.loading = false;
               location.href = "/";
@@ -89,7 +89,7 @@ export default {
               this.$notify({
                 group: 'auth',
                 title: 'Error',
-                text: "Error al iniciar sesion"
+                text: error
               });
           });
       }

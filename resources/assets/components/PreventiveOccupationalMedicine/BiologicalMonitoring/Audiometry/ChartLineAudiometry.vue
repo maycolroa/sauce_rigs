@@ -42,8 +42,9 @@ export default {
     data(){
       this.lineOptions = {
         color: this.colorLine == 'red' ? colorsRed : colorsBlue,
+        backgroundColor: '#fff',
         title: {
-          text: this.title
+          text: 'asdfasdfasd asdfasdf',
         },
         tooltip: {
           trigger: 'axis',

@@ -1,0 +1,357 @@
+<?php
+
+namespace App\Imports\PreventiveOccupationalMedicine\BiologicalMonitoring;
+
+use Illuminate\Support\Collection;
+use Maatwebsite\Excel\Concerns\ToCollection;
+
+use App\Administrative\Employee;
+use App\Administrative\EmployeeEPS;
+use App\Administrative\EmployeeArea;
+use App\Administrative\EmployeeRegional;
+use App\Administrative\EmployeePosition;
+use App\Facades\Configuration;
+use App\PreventiveOccupationalMedicine\BiologicalMonitoring\Audiometry;
+use App\Exports\PreventiveOccupationalMedicine\BiologicalMonitoring\AudiometryImportErrorExcel;
+use App\Facades\Mail\Facades\NotificationMail;
+use Illuminate\Support\Facades\Auth;
+use Maatwebsite\Excel\Facades\Excel;
+use Validator;
+use Session;
+use Exception;
+
+class AudiometryImport implements ToCollection
+{
+    private $company_id;
+    private $errors = [];
+    private $errors_data = [];
+    private $sheet = 1;
+    private $key_row = 2;
+
+    public function __construct()
+    {
+      $this->company_id = Session::get('company_id');
+    }
+
+    public function collection(Collection $rows)
+    {
+        if ($this->sheet == 1)
+        {
+            try
+            {
+                foreach ($rows as $key => $row) 
+                {  
+                    if ($key > 0) //Saltar cabecera
+                    {
+                        if (COUNT($row) == 40)
+                        {
+                            $employee_id = $this->checkEmployee($row);
+
+                            if ($employee_id)
+                            {
+                                $this->createAudiometry($row, $employee_id);
+                            }
+                        }
+                        else
+                        {
+                            $this->setError('Formato inválido');
+                            $this->setErrorData($row);
+                        }
+                    }
+                }
+
+                if (COUNT($this->errors) == 0)
+                {
+                    NotificationMail::
+                        subject('Importación de las audiometrias')
+                        ->recipients(Auth::user())
+                        ->message('El proceso de importación de todos los registros de audiometrias finalizo correctamente')
+                        ->module('biologicalMonitoring/audiometry')
+                        ->send();
+                }
+                else
+                {
+                    $nameExcel = 'export/1/audiometrias_errors_'.date("YmdHis").'.xlsx';
+                    Excel::store(new AudiometryImportErrorExcel(collect($this->errors_data), $this->errors), $nameExcel, 'public',\Maatwebsite\Excel\Excel::XLSX);
+                    
+                    $paramUrl = base64_encode($nameExcel);
+            
+                    NotificationMail::
+                        subject('Importación de las audiometrias')
+                        ->recipients(Auth::user())
+                        ->message('El proceso de importación de las audiometrias finalizo correctamente, pero algunas filas contenian errores. Puede descargar el archivo con el detalle de los errores en el botón de abajo.')
+                        ->subcopy('Este link es valido por 24 horas')
+                        ->buttons([['text'=>'Descargar', 'url'=>url("/export/{$paramUrl}")]])
+                        ->module('biologicalMonitoring/audiometry')
+                        ->send();
+                }
+                
+            } catch (\Exception $e)
+            {
+                NotificationMail::
+                    subject('Importación de las audiometrias')
+                    ->recipients(Auth::user())
+                    ->message('Se produjo un error durante el proceso de importación de las audiometrias. Contacte con el administrador')
+                    //->message($e->getMessage())
+                    ->module('biologicalMonitoring/audiometry')
+                    ->send();
+            }
+
+            $this->sheet++;
+
+            //dd($this->errors);
+        }
+    }
+
+    private function checkEmployee($row)
+    {
+        $employee = Employee::where('identification', $row[0])->first();
+
+        if ($employee)
+        {
+            return $employee->id;
+        }
+        else
+        {
+            $eps = EmployeeEPS::where('code', $row[7])->first();
+
+            if ($eps)
+            {
+                $fecha_nacimiento = $this->validateDate($row[4]);
+                $fecha_ingreso = $this->validateDate($row[9]);
+
+                $validator = Validator::make(
+                    [
+                        'identificacion'    => $row[0],
+                        'nombre'            => $row[1],
+                        'sexo'              => $row[2],
+                        'email'             => $row[3],
+                        'fecha_nacimiento'  => $fecha_nacimiento,
+                        'area'              => $row[5],
+                        'cargo'             => $row[6],
+                        'regional'          => $row[8],
+                        'fecha_ingreso'     => $fecha_ingreso
+                    ],
+                    [
+                        'identificacion'   => 'required|numeric',
+                        'nombre'           => 'required|string',
+                        'sexo'             => 'required|string',
+                        'email'            => 'required|email|unique:sau_employees,email,null,id,company_id,'.$this->company_id,
+                        'fecha_nacimiento' => 'nullable|date',
+                        'area'             => 'required',
+                        'cargo'            => 'required',
+                        'regional'         => 'required',
+                        'fecha_ingreso'    => 'required|date',
+                    ]);
+
+                if ($validator->fails())
+                {
+                    foreach ($validator->messages()->all() as $value)
+                    {
+                        $this->setError($value);
+                    }
+                }
+                else 
+                {
+                    $employee = Employee::create([
+                        'identification' => $row[0],
+                        'name' => $row[1],
+                        'sex' => $row[2],
+                        'email' => $row[3],
+                        'date_of_birth' => $fecha_nacimiento,
+                        'employee_area_id' => $this->checkArea($row[5]),
+                        'employee_position_id' => $this->checkPosition($row[6]),
+                        'employee_regional_id' => $this->checkRegional($row[8]),
+                        'employee_eps_id' => $eps->id,
+                        'income_date' => $fecha_ingreso,
+                        'company_id' => $this->company_id,
+                    ]);
+
+                    return $employee->id;
+                }
+            }
+            else
+            {
+                $this->setError('Codigo EPS inválido');
+            }
+        }
+
+        $this->setErrorData($row);
+        return null;
+    }
+
+    private function checkArea($area)
+    {
+        $area = EmployeeArea::firstOrCreate(['name' => $area], 
+                                            ['name' => $area, 'company_id' => $this->company_id]);
+
+        return $area->id;
+    }
+
+    private function checkRegional($regional)
+    {
+        $regional = EmployeeRegional::firstOrCreate(['name' => $regional], 
+                                            ['name' => $regional, 'company_id' => $this->company_id]);
+
+        return $regional->id;
+    }
+
+    private function checkPosition($position)
+    {
+        $position = EmployeePosition::firstOrCreate(['name' => $position], 
+                                            ['name' => $position, 'company_id' => $this->company_id]);
+
+        return $position->id;
+    }
+
+    private function setError($message)
+    {
+        $this->errors[$this->key_row][] = ucfirst($message);
+    }
+
+    private function setErrorData($row)
+    {
+        $this->errors_data[] = $row;
+        $this->key_row++;
+    }
+
+    private function validateDate($date)
+    {
+        try
+        {
+            $d = \PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($date);
+        }
+        catch (\Exception $e) {
+            return $date;
+        }
+
+        return $d ? $d : null;
+    }
+
+    private function createAudiometry($row, $employee_id)
+    {
+        $fecha = $this->validateDate($row[10]);
+
+        $NUMBERS_AVAILABLE_RESULTS = "0,5,10,15,20,25,30,35,40,45,50,55,60,65,70,75,80,85,90,95,100,105,110,115,120";
+        $EPP = implode(",", Configuration::getConfiguration('biologicalmonitoring_audiometries_select_epp'));
+        $EXPOSITION_LEVEL = implode(",", Configuration::getConfiguration('biologicalmonitoring_audiometries_select_exposition_level'));
+
+        $validator = Validator::make(
+            [
+                'fecha'                     => $fecha,
+                'eventos_previos'           => $row[11],
+                'empleado'                  => $employee_id,
+                'epp'                       => array_map('trim', explode(",", $row[12])),
+                'nivel_exposicion'          => $row[13],
+                'aereo_derecha_500'         => $row[14],
+                'aereo_derecha_1000'        => $row[15],
+                'aereo_derecha_2000'        => $row[16],
+                'aereo_derecha_3000'        => $row[17],
+                'aereo_derecha_4000'        => $row[18],
+                'aereo_derecha_6000'        => $row[19],
+                'aereo_derecha_8000'        => $row[20],
+                'aereo_izquierda_500'       => $row[21],
+                'aereo_izquierda_1000'      => $row[22],
+                'aereo_izquierda_2000'      => $row[23],
+                'aereo_izquierda_3000'      => $row[24],
+                'aereo_izquierda_4000'      => $row[25],
+                'aereo_izquierda_6000'      => $row[26],
+                'aereo_izquierda_8000'      => $row[27],
+                'oseo_derecha_500'          => $row[28],
+                'oseo_derecha_1000'         => $row[29],
+                'oseo_derecha_2000'         => $row[30],
+                'oseo_derecha_3000'         => $row[31],
+                'oseo_derecha_4000'         => $row[32],
+                'oseo_izquierda_500'        => $row[33],
+                'oseo_izquierda_1000'       => $row[34],
+                'oseo_izquierda_2000'       => $row[35],
+                'oseo_izquierda_3000'       => $row[36],
+                'oseo_izquierda_4000'       => $row[37],
+                'recomendaciones_generales' => $row[38],
+                'observaciones_generales'   => $row[39],
+            ],
+            [
+                'fecha'                     => 'required|date|before_or_equal:today',
+                'eventos_previos'           => 'nullable',
+                'empleado'                  => 'required|exists:sau_employees,id',
+                "epp"                       => "nullable|array|min:1",
+                "epp.*"                     => "nullable|in:$EPP",
+                'nivel_exposicion'          => "nullable|in:$EXPOSITION_LEVEL",
+                'aereo_izquierda_500'       => "required|in:$NUMBERS_AVAILABLE_RESULTS|integer|digits_between:0,120",
+                'aereo_izquierda_1000'      => "required|in:$NUMBERS_AVAILABLE_RESULTS|integer|digits_between:0,120",
+                'aereo_izquierda_2000'      => "required|in:$NUMBERS_AVAILABLE_RESULTS|integer|digits_between:0,120",
+                'aereo_izquierda_3000'      => "required|in:$NUMBERS_AVAILABLE_RESULTS|integer|digits_between:0,120",
+                'aereo_izquierda_4000'      => "required|in:$NUMBERS_AVAILABLE_RESULTS|integer|digits_between:0,120",
+                'aereo_izquierda_6000'      => "required|in:$NUMBERS_AVAILABLE_RESULTS|integer|digits_between:0,120",
+                'aereo_izquierda_8000'      => "required|in:$NUMBERS_AVAILABLE_RESULTS|integer|digits_between:0,120",
+                'aereo_derecha_500'         => "required|in:$NUMBERS_AVAILABLE_RESULTS|integer|digits_between:0,120",
+                'aereo_derecha_1000'        => "required|in:$NUMBERS_AVAILABLE_RESULTS|integer|digits_between:0,120",
+                'aereo_derecha_2000'        => "required|in:$NUMBERS_AVAILABLE_RESULTS|integer|digits_between:0,120",
+                'aereo_derecha_3000'        => "required|in:$NUMBERS_AVAILABLE_RESULTS|integer|digits_between:0,120",
+                'aereo_derecha_4000'        => "required|in:$NUMBERS_AVAILABLE_RESULTS|integer|digits_between:0,120",
+                'aereo_derecha_6000'        => "required|in:$NUMBERS_AVAILABLE_RESULTS|integer|digits_between:0,120",
+                'aereo_derecha_8000'        => "required|in:$NUMBERS_AVAILABLE_RESULTS|integer|digits_between:0,120",
+                'oseo_izquierda_500'        => "nullable|in:$NUMBERS_AVAILABLE_RESULTS|integer|digits_between:0,120",
+                'oseo_izquierda_1000'       => "nullable|in:$NUMBERS_AVAILABLE_RESULTS|integer|digits_between:0,120",
+                'oseo_izquierda_2000'       => "nullable|in:$NUMBERS_AVAILABLE_RESULTS|integer|digits_between:0,120",
+                'oseo_izquierda_3000'       => "nullable|in:$NUMBERS_AVAILABLE_RESULTS|integer|digits_between:0,120",
+                'oseo_izquierda_4000'       => "nullable|in:$NUMBERS_AVAILABLE_RESULTS|integer|digits_between:0,120",
+                'oseo_derecha_500'          => "nullable|in:$NUMBERS_AVAILABLE_RESULTS|integer|digits_between:0,120",
+                'oseo_derecha_1000'         => "nullable|in:$NUMBERS_AVAILABLE_RESULTS|integer|digits_between:0,120",
+                'oseo_derecha_2000'         => "nullable|in:$NUMBERS_AVAILABLE_RESULTS|integer|digits_between:0,120",
+                'oseo_derecha_3000'         => "nullable|in:$NUMBERS_AVAILABLE_RESULTS|integer|digits_between:0,120",
+                'oseo_derecha_4000'         => "nullable|in:$NUMBERS_AVAILABLE_RESULTS|integer|digits_between:0,120",
+                'recomendaciones_generales' => 'nullable',
+                'observaciones_generales'   => 'nullable',
+            ],
+            [
+                'epp.*.in' => 'epp es inválido.',
+            ]);
+
+        if ($validator->fails())
+        {
+            foreach ($validator->messages()->all() as $value)
+            {
+                $this->setError($value);
+            }
+            
+            $this->setErrorData($row);
+        }
+        else 
+        {
+            Audiometry::create([
+                'date'               => $fecha,
+                'previews_events'    => $row[11],
+                'employee_id'        => $employee_id,
+                'epp'                => $row[12],
+                'exposition_level'   => $row[13],
+                'air_right_500'      => $row[14],
+                'air_right_1000'     => $row[15],
+                'air_right_2000'     => $row[16],
+                'air_right_3000'     => $row[17],
+                'air_right_4000'     => $row[18],
+                'air_right_6000'     => $row[19],
+                'air_right_8000'     => $row[20],
+                'air_left_500'       => $row[21],
+                'air_left_1000'      => $row[22],
+                'air_left_2000'      => $row[23],
+                'air_left_3000'      => $row[24],
+                'air_left_4000'      => $row[25],
+                'air_left_6000'      => $row[26],
+                'air_left_8000'      => $row[27],
+                'osseous_right_500'  => $row[28],
+                'osseous_right_1000' => $row[29],
+                'osseous_right_2000' => $row[30],
+                'osseous_right_3000' => $row[31],
+                'osseous_right_4000' => $row[32],
+                'osseous_left_500'   => $row[33],
+                'osseous_left_1000'  => $row[34],
+                'osseous_left_2000'  => $row[35],
+                'osseous_left_3000'  => $row[36],
+                'osseous_left_4000'  => $row[37],
+                'recommendations'    => $row[38],
+                'observation'        => $row[39],
+            ]);
+        }
+    }
+}

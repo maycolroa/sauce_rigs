@@ -5,6 +5,7 @@ namespace App\Scopes;
 use Illuminate\Database\Eloquent\Scope;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
+use Session;
 
 class CompanyScope implements Scope {
       public function apply(Builder $builder, Model $model) {
@@ -13,12 +14,12 @@ class CompanyScope implements Scope {
                 foreach($builder->getQuery()->joins as $join){
                     if($join->table == $model->scope_table_for_company_table){
                         $where = $model->scope_table_for_company_table.'.company_id';
-                        $builder->where($where, '1');
+                        $builder->where($where, Session::get('company_id'));
                     }
                 }
             }
         }else{
-            $builder->where('company_id', '1');
+            $builder->where('company_id', Session::get('company_id'));
         }
       }
 

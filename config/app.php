@@ -151,6 +151,7 @@ return [
          * Package Service Providers...
          */
         App\Vuetable\VuetableServiceProvider::class,
+        App\Facades\Mail\NotificationMailServiceProvider::class,
 
         /*
          * Application Service Providers...
@@ -161,6 +162,7 @@ return [
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
         Maatwebsite\Excel\ExcelServiceProvider::class,
+        App\Providers\ObserverServiceProvider::class,
 
     ],
 
@@ -212,6 +214,7 @@ return [
         'View' => Illuminate\Support\Facades\View::class,
         'Vuetable' => App\Vuetable\Facades::class,
         'Excel' => Maatwebsite\Excel\Facades\Excel::class,
+        'NotificationMail' => App\Facades\Mail\NotificationMail::class,
     ],
 
 ];

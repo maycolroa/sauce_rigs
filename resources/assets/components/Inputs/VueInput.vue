@@ -4,7 +4,7 @@
             <div v-if="label">{{label}}</div>
             <a v-if="textBlock" :href="actionBlock" class="d-block small">{{textBlock}}</a>
         </div>
-        <b-input-group :append="append" :prepend="prepend">
+        <b-input-group :class="state" :append="append" :prepend="prepend">
         <b-input 
             :value="value" 
             :state="state" 
@@ -18,6 +18,9 @@
             @input="updateValue($event)"
             />
         </b-input-group>
+        <b-form-feedback class="d-block" v-if="state == 'invalid'">
+            {{ error }}
+        </b-form-feedback>
     </b-form-group>
 </template>
 
@@ -60,3 +63,10 @@ export default {
 
 }
 </script>
+<style lang="scss">
+.input-group.invalid {
+  ~ .invalid-feedback {
+    display: block;
+  }
+}
+</style>

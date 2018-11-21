@@ -3,9 +3,9 @@
     <!-- Brand logo -->
     <div class="app-brand logo" v-if="orientation !== 'horizontal'">
       <span class="app-brand-logo logo bg-primary">
-        <div class="ui-w-30 rounded-circle align-middle text-circle">M</div>
+        <div class="ui-w-30 rounded-circle align-middle text-circle">{{ firstCharAppName }}</div>
       </span>
-      <a href="/" class="app-brand-text logo sidenav-text font-weight-normal ml-2">Medicina Laboral Preventiva</a>
+      <a href="/" class="app-brand-text logo sidenav-text font-weight-normal ml-2"> {{ appName }} </a>
       <a href="javascript:void(0)" class="layout-sidenav-toggle sidenav-link text-large ml-auto" @click="toggleSidenav()">
         <i class="ion ion-md-menu align-middle"></i>
       </a>
@@ -14,21 +14,22 @@
 
     <!-- Inner -->
     <div class="sidenav-inner" :class="{ 'py-1': orientation !== 'horizontal' }">
-      <sidenav-router-link icon="fas fa-angle-right" to="/" :exact="true">Descripción Sociodemografica</sidenav-router-link>
-      <sidenav-router-link icon="fas fa-angle-right" to="/" :exact="true">Sistemas de Vigilancia Epidemiológica</sidenav-router-link>
-      <sidenav-router-link icon="fas fa-angle-right" to="/" :exact="true">Conceptos Medicos</sidenav-router-link>
-      <sidenav-router-link icon="fas fa-angle-right" to="/" :exact="true">Restricciones y Recomendaciones</sidenav-router-link>
-      <sidenav-menu icon="fas fa-angle-right" :open="true">
-        <template slot="link-text">Monitoreo Biologico</template>
-        <sidenav-router-link :to="{ name: 'biologicalmonitoring-audiometry'}" :exact="true">Audiometrias</sidenav-router-link>
-        <sidenav-router-link to="/" :exact="true">Espirometrias</sidenav-router-link>
-        <sidenav-router-link to="/" :exact="true">Otros Examenes</sidenav-router-link>
-      </sidenav-menu>
-      <sidenav-router-link icon="fas fa-angle-right" to="/" :exact="true">Ausentismo e Indicadores</sidenav-router-link>
-      <sidenav-router-link icon="fas fa-angle-right" to="/" :exact="true">Profesiogramas</sidenav-router-link>
-      <sidenav-router-link icon="fas fa-angle-right" to="/" :exact="true">Procedimientos y Programas</sidenav-router-link>
-      <sidenav-router-link icon="fas fa-angle-right" to="/" :exact="true">SVE Psicosocial</sidenav-router-link>
-      <sidenav-router-link icon="fas fa-angle-right" to="/" :exact="true">Analisís de puestos de Trabajo</sidenav-router-link>
+      <template v-for="(item, index) in modules">
+        <template v-if="item['subModules'] != undefined"> <!--Sub Modulos -->
+          <sidenav-menu icon="fas fa-angle-right" :key="index">
+            <template slot="link-text">{{ item.display_name }}</template>
+            <sidenav-router-link :to="{ name: (item.name+'-'+subItem.name) }" :active="isMenuActive(item.name+'-'+subItem.name)" :exact="true"
+                v-for="(subItem, subIndex) in item.subModules" :key="subIndex"> 
+                {{ subItem.display_name }} 
+            </sidenav-router-link>
+          </sidenav-menu>
+        </template>
+        <template v-else> <!-- Link Directo -->
+          <sidenav-router-link icon="fas fa-angle-right" :to="{ name: (routeAppName+'-'+item.name)}" :active="isMenuActive(routeAppName+'-'+item.name)" :exact="true" :key="index"> 
+              {{ item.display_name }} 
+          </sidenav-router-link>
+        </template>
+      </template>
     </div>
   </sidenav>
 </template>
@@ -50,6 +51,11 @@ export default {
     orientation: {
       type: String,
       default: 'vertical'
+    },
+    data: {
+      type: Object,
+      required: true,
+      default: {}
     }
   },
 
@@ -70,12 +76,21 @@ export default {
           ? 'layout-sidenav'
           : 'layout-sidenav-horizontal container-p-x flex-grow-0'
       )
+    },
+    modules: function () {
+      return this.data[this.routeAppName] != undefined ? this.data[this.routeAppName].modules : []
+    },
+    appName: function () {
+        return this.data[this.routeAppName] != undefined ? this.data[this.routeAppName].display_name : ''
+    },
+    firstCharAppName: function () {
+      return this.appName.substr(0,1).toUpperCase()
     }
   },
 
   methods: {
     isMenuActive (url) {
-      return this.$route.path.indexOf(url) === 0
+      return this.$route.name.indexOf(url) === 0
     },
 
     isMenuOpen (url) {

@@ -17,7 +17,10 @@ Route::get('export/{url}',function($url){
 });
 
 Route::middleware(['auth'])->group(function () { 
-  
+    Route::get('appWithModules', 'ApplicationController@appsWhithModules');
+    Route::get('getCompanies', 'ApplicationController@getCompanies');
+    Route::post('changeCompany', 'ApplicationController@changeCompany');
+
     //GET methods
     Route::get('templates/audiometryimport',function(){
       return Storage::disk('local')->download('/templates/PlantillaImportacionAudiometria.xlsx');
@@ -32,15 +35,31 @@ Route::middleware(['auth'])->group(function () {
       Route::post('audiometry/import', 'PreventiveOccupationalMedicine\BiologicalMonitoring\AudiometryController@import');
       Route::post('audiometry/export', 'PreventiveOccupationalMedicine\BiologicalMonitoring\AudiometryController@export');
       Route::post('audiometry/multiselect_epp', 'PreventiveOccupationalMedicine\BiologicalMonitoring\AudiometryController@multiselectEPP');
+      Route::post('audiometry/reportPta', 'PreventiveOccupationalMedicine\BiologicalMonitoring\AudiometryController@reportPta');
       Route::ApiResource('audiometry', 'PreventiveOccupationalMedicine\BiologicalMonitoring\AudiometryController');   
     });
 
     Route::prefix('selects')->group(function () {
         Route::post('employees', 'Administrative\EmployeesController@multiselect');  
         Route::post('multiselect', 'ApplicationController@multiselect');
+        Route::post('roles', 'Administrative\Roles\RoleController@multiselect');  
+        Route::post('modulesGroup', 'ApplicationController@multiselectGroupModules');
+        Route::post('permissions', 'Administrative\Roles\RoleController@multiselectPermissions');
+        Route::post('areas', 'Administrative\EmployeeAreaController@multiselect');  
+        Route::post('regionales', 'Administrative\EmployeeRegionalController@multiselect');
+        Route::post('years', 'ApplicationController@multiselectYears');  
+    });
+
+    //Administrativo
+    Route::prefix('administration')->group(function () {
+      Route::post('users/data', 'Administrative\Users\UserController@data');
+      Route::post('users/export', 'Administrative\Users\UserController@export');
+      Route::ApiResource('users', 'Administrative\Users\UserController');
+
+      Route::post('role/data', 'Administrative\Roles\RoleController@data');
+      Route::ApiResource('role', 'Administrative\Roles\RoleController');
     });
 
     //Return view for spa
     Route::get('/{any}', 'ApplicationController@index')->where('any', '.*');
-
 });

@@ -1,0 +1,49 @@
+[
+    {
+        "application": "administrative",
+        "modules": [
+            {
+                "name": "users",
+                "display_name": "Usuarios"
+            },
+            {
+                "name": "roles",
+                "display_name": "Roles"
+            }
+        ]
+    },
+    {
+        "application": "industrialSecure",
+        "modules": [
+        ]
+    },
+    {
+        "application": "industrialHygiene",
+        "modules": [
+        ]
+    },
+    {
+        "application": "preventiveOccupationalMedicine",
+        "modules": [
+            {
+                "name": "biologicalMonitoring/audiometry",
+                "display_name": "Monitoreo Biológico/Audiometría"
+            }
+        ]
+    },
+    {
+        "application": "trainingQualification",
+        "modules": [
+        ]
+    },
+    {
+        "application": "measurementMonitoring",
+        "modules": [
+        ]
+    },
+    {
+        "application": "legalAspects",
+        "modules": [
+        ]
+    }    
+]

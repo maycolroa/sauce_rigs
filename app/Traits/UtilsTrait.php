@@ -41,6 +41,41 @@ trait UtilsTrait
     }
 
     /**
+     * converts the specified data into the format that the multiselect Group
+     * needs in order to works
+     * NOTE: this new structure only applies for the monterail.github.io/vue-multiselect/ library
+     * @param  array $data
+     * @param  string $itemRef
+     * @return collection
+     */
+    protected function multiSelectGroupFormat($data)
+    {
+        $newFormartCollection = collect([]);
+
+        if (is_array($data)) {
+            collect($data)->each(function ($item, $key) use ($newFormartCollection) {
+
+                $children = [];
+
+                foreach ($item as $keyChild => $value)
+                {
+                    array_push($children, [
+                        'name' => $value,
+                        'value' => $keyChild
+                    ]);
+                }
+
+                $newFormartCollection->push([
+                    'parent' => $key,
+                    'children' => $children
+                ]);
+            });
+        }
+
+        return $newFormartCollection;
+    }
+
+    /**
      * returns the absolute path for talend parameters used in
      * talend jobs execution
      * this methos only must be used to get the cd_path and sh_path
@@ -121,4 +156,21 @@ trait UtilsTrait
         return $value;
     }
 
+    /**
+     * Returns an array with the multiselect data sent to the controller
+     * @param Object $object
+     *
+     * @return Array
+     */
+    protected function getDataFromMultiselect($object)
+    {
+        $data = [];
+
+        foreach($object as $v)
+        {
+            array_push($data, json_decode($v)->value);
+        }
+
+        return $data;
+    }
 }
