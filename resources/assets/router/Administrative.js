@@ -88,5 +88,25 @@ export default [{
       path: 'regionals/view/:id',
       component: () =>
         import('@/views/Administrative/regionals/view')
+    }, {
+      name: 'administrative-businesses',
+      path: 'businesses',
+      component: () =>
+        import('@/views/Administrative/businesses/index')
+    }, {
+      name: 'administrative-businesses-create',
+      path: 'businesses/create',
+      component: () =>
+        import('@/views/Administrative/businesses/create')
+    }, {
+      name: 'administrative-businesses-edit',
+      path: 'businesses/edit/:id',
+      component: () =>
+        import('@/views/Administrative/businesses/edit')
+    }, {
+      name: 'administrative-businesses-view',
+      path: 'businesses/view/:id',
+      component: () =>
+        import('@/views/Administrative/businesses/view')
     }]
   }]

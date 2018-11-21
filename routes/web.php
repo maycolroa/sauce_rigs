@@ -64,6 +64,9 @@ Route::middleware(['auth'])->group(function () {
 
       Route::post('regional/data', 'Administrative\EmployeeRegionalController@data');
       Route::ApiResource('regional', 'Administrative\EmployeeRegionalController');
+
+      Route::post('business/data', 'Administrative\EmployeeBusinessController@data');
+      Route::ApiResource('business', 'Administrative\EmployeeBusinessController');
     });
 
     //Return view for spa

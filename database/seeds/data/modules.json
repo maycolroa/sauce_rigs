@@ -17,6 +17,10 @@
             {
                 "name": "regionals",
                 "display_name": "Regionales"
+            },
+            {
+                "name": "businesses",
+                "display_name": "Centro de costos"
             }
         ]
     },
