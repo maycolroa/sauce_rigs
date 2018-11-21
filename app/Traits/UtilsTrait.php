@@ -156,4 +156,21 @@ trait UtilsTrait
         return $value;
     }
 
+    /**
+     * Returns an array with the multiselect data sent to the controller
+     * @param Object $object
+     *
+     * @return Array
+     */
+    protected function getDataFromMultiselect($object)
+    {
+        $data = [];
+
+        foreach($object as $v)
+        {
+            array_push($data, json_decode($v)->value);
+        }
+
+        return $data;
+    }
 }

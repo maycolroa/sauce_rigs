@@ -17,7 +17,7 @@
     </b-form-row>
 
     <div class="row float-right pt-10 pr-10">
-      <template v-if="!viewOnly">
+      <template>
         <b-btn variant="default" :to="cancelUrl" :disabled="loading">{{ viewOnly ? "Atras" : "Cancelar"}}</b-btn>&nbsp;&nbsp;
         <b-btn type="submit" :disabled="loading" variant="primary" v-if="!viewOnly">Finalizar</b-btn>
       </template>

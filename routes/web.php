@@ -35,6 +35,7 @@ Route::middleware(['auth'])->group(function () {
       Route::post('audiometry/import', 'PreventiveOccupationalMedicine\BiologicalMonitoring\AudiometryController@import');
       Route::post('audiometry/export', 'PreventiveOccupationalMedicine\BiologicalMonitoring\AudiometryController@export');
       Route::post('audiometry/multiselect_epp', 'PreventiveOccupationalMedicine\BiologicalMonitoring\AudiometryController@multiselectEPP');
+      Route::post('audiometry/reportPta', 'PreventiveOccupationalMedicine\BiologicalMonitoring\AudiometryController@reportPta');
       Route::ApiResource('audiometry', 'PreventiveOccupationalMedicine\BiologicalMonitoring\AudiometryController');   
     });
 
@@ -44,6 +45,9 @@ Route::middleware(['auth'])->group(function () {
         Route::post('roles', 'Administrative\Roles\RoleController@multiselect');  
         Route::post('modulesGroup', 'ApplicationController@multiselectGroupModules');
         Route::post('permissions', 'Administrative\Roles\RoleController@multiselectPermissions');
+        Route::post('areas', 'Administrative\EmployeeAreaController@multiselect');  
+        Route::post('regionales', 'Administrative\EmployeeRegionalController@multiselect');
+        Route::post('years', 'ApplicationController@multiselectYears');  
     });
 
     //Administrativo

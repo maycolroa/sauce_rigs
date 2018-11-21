@@ -22,7 +22,7 @@
 </template>
 
 <script>
-import AdministrativeRoleForm from '@/components/Administrative/roles/FormRoleComponent.vue';
+import AdministrativeRoleForm from '@/components/Administrative/Roles/FormRoleComponent.vue';
 import Alerts from '@/utils/Alerts.js';
 import GlobalMethods from '@/utils/GlobalMethods.js';
 

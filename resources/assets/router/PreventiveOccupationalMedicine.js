@@ -1,5 +1,5 @@
 import LayoutModules from '@/views/layoutModules'
-import Home from '@/views/home'
+import Home from '@/views/Home'
 
 export default [{
   path: '/preventiveoccupationalmedicine',
@@ -33,7 +33,10 @@ export default [{
     path: 'biologicalmonitoring/audiometry/report/:id',
     component: () =>
       import('@/views/PreventiveOccupationalMedicine/biologicalmonitoring/audiometry/report')
+  }, {
+    name: 'biologicalmonitoring-audiometry-report-pta',
+    path: 'biologicalmonitoring/audiometry/reportpta',
+    component: () =>
+      import('@/views/PreventiveOccupationalMedicine/biologicalmonitoring/audiometry/reportPta')
   }]
 }]
-
-//preventiveoccupationalmedicine/biologicalmonitoring/audiometry

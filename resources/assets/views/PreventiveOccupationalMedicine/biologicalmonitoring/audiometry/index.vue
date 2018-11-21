@@ -10,6 +10,7 @@
         <b-card-header class="with-elements">
           <div class="card-title-elements">
             <b-btn :to="{name:'biologicalmonitoring-audiometry-create'}" variant="primary">Crear Audiometria</b-btn>
+            <b-btn :to="{name:'biologicalmonitoring-audiometry-report-pta'}" variant="primary">Ver Informes</b-btn>
           </div>
           <div class="card-title-elements ml-md-auto">
             <b-dd variant="default" :right="isRTL">
@@ -17,7 +18,7 @@
               <span class='fas fa-cogs'></span>
             </template>
             <input id="fileInputImportAudiometry" type="file" style="display:none" v-on:input="importAudiometry"/>
-            <b-dd-item onclick="document.getElementById('fileInputImportAudiometry').click()">
+            <b-dd-item @click="importAudiometryMessage()">
               <i class="fas fa-upload"></i> &nbsp;Importar
             </b-dd-item>
             <b-dd-item href="/templates/audiometryimport" target="blank"><i class="fas fa-file-alt"></i> &nbsp;Generar Plantilla</b-dd-item>
@@ -33,6 +34,22 @@
         </b-card-body>
     </b-card>
     </div>
+
+    <!-- modal confirmation for import -->
+    <b-modal ref="modalConfirmationImport" class="modal-slide" hide-header hide-footer>
+      <p class="text-justific mb-4">
+        Estimado Usuario para realizar la importarción el archivo debe cumplir lo siguiente:<br><br>
+
+        <ol>
+          <li>Formato excel (*.xlsx).</li>
+          <li>Incluir las cabeceras de los campos en la primera fila del documento.</li>
+          <li>Solo se leera la primera hoja del documento (En caso de tener mas de una).</li>
+        </ol>
+
+      </p>
+      <b-btn block variant="primary" @click="importAudiometryConfirmation()">Aceptar</b-btn>
+      <b-btn block variant="default" @click="toggleModalConfirmationImport(false)">Cancelar</b-btn>
+    </b-modal>
   </div>
 </template>
 
@@ -69,6 +86,19 @@ export default {
       }).catch(error => {
         Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
       });;
+    },
+    importAudiometryMessage() {
+      this.toggleModalConfirmationImport(true)
+    },
+    importAudiometryConfirmation() {
+      this.toggleModalConfirmationImport(false);
+      document.getElementById('fileInputImportAudiometry').click()
+    },
+    toggleModalConfirmationImport(toggle) {
+      if (toggle)
+        this.$refs.modalConfirmationImport.show()
+      else
+        this.$refs.modalConfirmationImport.hide();
     }
   },
 }

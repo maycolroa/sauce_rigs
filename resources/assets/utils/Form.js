@@ -15,15 +15,16 @@ export default class Form {
    * @param  {Boolean} clearAfterResponse
    * @return {void}
    */
-  constructor(data, method = 'post', clearAfterResponse = false) {
+  constructor(data, method = 'post', clearAfterResponse = false, showMessage = true) {
     this.updateData(data);
     this.method = method;
     this.clearAfterResponse = clearAfterResponse;
     this.errors = new FormErrors();
+    this.showMessage = showMessage
   }
 
-  static makeFrom(data, method = 'post', clearAfterResponse = false) {
-    return new this(data, method, clearAfterResponse);
+  static makeFrom(data, method = 'post', clearAfterResponse = false, showMessage = true) {
+    return new this(data, method, clearAfterResponse, showMessage);
   }
 
   /**
@@ -90,13 +91,16 @@ export default class Form {
       axios.post(url, this.data())
         .then(response => {
           this.formSubmitSucceded(response);
-          if(response.data.message){
-            Alerts.success('Exito',response.data.message);
+
+          if (this.showMessage)
+          {
+            if(response.data.message){
+              Alerts.success('Exito',response.data.message);
+            }
+            else{
+              Alerts.success();
+            }
           }
-          else{
-            Alerts.success();
-          }
-          
           resolve(response);
         })
         .catch(error => {
