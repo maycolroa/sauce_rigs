@@ -48,5 +48,25 @@ export default [{
       path: 'roles/view/:id',
       component: () =>
         import('@/views/Administrative/roles/view')
+    }, {
+      name: 'administrative-positions',
+      path: 'positions',
+      component: () =>
+        import('@/views/Administrative/positions/index')
+    }, {
+      name: 'administrative-positions-create',
+      path: 'positions/create',
+      component: () =>
+        import('@/views/Administrative/positions/create')
+    }, {
+      name: 'administrative-positions-edit',
+      path: 'positions/edit/:id',
+      component: () =>
+        import('@/views/Administrative/positions/edit')
+    }, {
+      name: 'administrative-positions-view',
+      path: 'positions/view/:id',
+      component: () =>
+        import('@/views/Administrative/positions/view')
     }]
   }]

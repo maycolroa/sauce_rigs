@@ -96,5 +96,52 @@ export default [
       urlData: '/administration/role/data',
       filterColumns: true,
     }
+  },
+  {
+    name: 'administrative-positions',
+    fields: [
+      { name: 'sau_employees_positions.id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true },
+      { name: 'sau_employees_positions.name', data: 'name', title: 'Nombre', sortable: true, searchable: true, detail: false, key: false },
+      { name: '', data: 'controlls', title: 'Controles', sortable: false, searchable: false, detail: false, key: false },
+    ],
+    'controlls': [{
+      type: 'push',
+      buttons: [{
+        config: {
+          color: 'outline-success',
+          borderless: true,
+          icon: 'ion ion-md-create',
+        },
+        data: {
+          routePush: { name: 'administrative-positions-edit' },
+          id: 'id',
+        }
+      }, {
+        config: {
+          color: 'outline-info',
+          borderless: true,
+          icon: 'ion ion-md-eye',
+        },
+        data: {
+          routePush: { name: 'administrative-positions-view' },
+          id: 'id',
+        }
+      }]
+    },
+    {
+      type: 'base',
+      buttons: [{
+        name: 'delete',
+        data: {
+          action: '/administration/position/',
+          id: 'id',
+          messageConfirmation: 'Esta seguro de borrar el cargo __name__'
+        },
+      }],
+    }],
+    configuration: {
+      urlData: '/administration/position/data',
+      filterColumns: true,
+    }
   }
 ];

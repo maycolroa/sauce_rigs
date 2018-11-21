@@ -15,4 +15,9 @@ class EmployeePosition extends Model
         'name',
         'company_id'
     ];
+
+    public function employees()
+    {
+        return $this->hasMany(Employee::class, 'employee_position_id');
+    }
 }

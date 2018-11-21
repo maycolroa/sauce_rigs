@@ -9,6 +9,10 @@
             {
                 "name": "roles",
                 "display_name": "Roles"
+            },
+            {
+                "name": "positions",
+                "display_name": "Cargos"
             }
         ]
     },
