@@ -13,6 +13,10 @@
             {
                 "name": "positions",
                 "display_name": "Cargos"
+            },
+            {
+                "name": "regionals",
+                "display_name": "Regionales"
             }
         ]
     },

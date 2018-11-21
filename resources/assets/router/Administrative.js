@@ -68,5 +68,25 @@ export default [{
       path: 'positions/view/:id',
       component: () =>
         import('@/views/Administrative/positions/view')
+    }, {
+      name: 'administrative-regionals',
+      path: 'regionals',
+      component: () =>
+        import('@/views/Administrative/regionals/index')
+    }, {
+      name: 'administrative-regionals-create',
+      path: 'regionals/create',
+      component: () =>
+        import('@/views/Administrative/regionals/create')
+    }, {
+      name: 'administrative-regionals-edit',
+      path: 'regionals/edit/:id',
+      component: () =>
+        import('@/views/Administrative/regionals/edit')
+    }, {
+      name: 'administrative-regionals-view',
+      path: 'regionals/view/:id',
+      component: () =>
+        import('@/views/Administrative/regionals/view')
     }]
   }]
