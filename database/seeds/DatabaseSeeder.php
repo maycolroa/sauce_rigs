@@ -15,5 +15,6 @@ class DatabaseSeeder extends Seeder
         $this->call(ApplicationsSeeder::class);
         $this->call(ModulesSeeder::class);
         $this->call(SauConfiguration::class);
+        $this->call(MakeAllPermissionsSeeder::class);
     }
 }

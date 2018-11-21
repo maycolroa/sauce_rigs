@@ -70,7 +70,6 @@ class ModulesSeeder extends Seeder
             $this->command->info('Proceso terminado exitosamente');
 
         } catch (\Exception $e) {
-            dd($e);
             DB::rollback();
             $this->command->info('Ocurrio un error al ejecutar la clase ModulesSeeder');
         }
