@@ -1,5 +1,5 @@
 import LayoutModules from '@/views/layoutModules'
-import Home from '@/views/Home'
+import Home from '@/views/home'
 
 export default [{
     path: '/trainingqualification',

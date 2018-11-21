@@ -32,10 +32,10 @@ class AudiometryController extends Controller
    {
     
        $audiometry = Audiometry::select(
-           'bm_audiometries.*',
+           'sau_bm_audiometries.*',
            'sau_employees.identification as identification',
            'sau_employees.name as name'
-        )->join('sau_employees','sau_employees.id','bm_audiometries.employee_id')
+        )->join('sau_employees','sau_employees.id','sau_bm_audiometries.employee_id')
         ->join('sau_employees_regionals','sau_employees_regionals.id','sau_employees.employee_regional_id');
 
        return Vuetable::of($audiometry)
@@ -176,7 +176,7 @@ class AudiometryController extends Controller
         {
           foreach ($key_orientation as $orientation)
           {
-            $col = 'bm_audiometries.severity_grade_'.$type.'_'.$orientation.'_pta';
+            $col = 'sau_bm_audiometries.severity_grade_'.$type.'_'.$orientation.'_pta';
 
             $audiometry = Audiometry::selectRaw(
               'COUNT(IF('.$col.'="Audición normal",1, NULL)) as AN,
@@ -185,11 +185,11 @@ class AudiometryController extends Controller
                COUNT(IF('.$col.'="Hipoacusia moderada a severa",1, NULL)) as HMS,
                COUNT(IF('.$col.'="Hipoacusia severa",1, NULL)) as HS,
                COUNT(IF('.$col.'="Hipoacusia profunda",1, NULL)) as HP'
-            )->join('sau_employees','sau_employees.id','bm_audiometries.employee_id');
+            )->join('sau_employees','sau_employees.id','sau_bm_audiometries.employee_id');
             
             if ($request->get('year') != '')
             {
-              $audiometry->whereRaw('YEAR(bm_audiometries.date) IN ('.implode(",", $this->getDataFromMultiselect($request->get('year'))).')');
+              $audiometry->whereRaw('YEAR(sau_bm_audiometries.date) IN ('.implode(",", $this->getDataFromMultiselect($request->get('year'))).')');
             }
 
             if ($request->get('area') != '')

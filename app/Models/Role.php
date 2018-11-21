@@ -9,6 +9,8 @@ class Role extends LaratrustRole
 {
     use CompanyTrait;
 
+    protected $table = 'sau_roles';
+
     protected $fillable = [
         'name', 'description'
     ];

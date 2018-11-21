@@ -23,7 +23,7 @@ class ApplicationsSeeder extends Seeder
             $applications = json_decode($file, true);
 
             foreach ($applications as $value)
-            {	
+            {
                 if (isset($value['name']) && isset($value['display_name']) && isset($value['image']))
                 {
                     $item = [];

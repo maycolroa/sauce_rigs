@@ -13,7 +13,7 @@ class AddColumnsPermissionsTable extends Migration
      */
     public function up()
     {
-        Schema::table('permissions', function (Blueprint $table) {
+        Schema::table('sau_permissions', function (Blueprint $table) {
             $table->integer('module_id')->after('description')->unsigned();
             $table->foreign('module_id')->references('id')->on('sau_modules');
         });
@@ -26,7 +26,8 @@ class AddColumnsPermissionsTable extends Migration
      */
     public function down()
     {
-        Schema::table('permissions', function (Blueprint $table) {
+        Schema::table('sau_permissions', function (Blueprint $table) {
+          $table->dropForeign('sau_permissions_module_id_foreign');
             $table->dropColumn('module_id');
         });
     }

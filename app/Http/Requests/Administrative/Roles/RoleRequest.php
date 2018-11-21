@@ -29,7 +29,7 @@ class RoleRequest extends FormRequest
         $id = $this->input('id');
 
         return [
-            'name' => 'required|string|unique:roles,name,'.$id.',id,company_id,'.Session::get('company_id'),
+            'name' => 'required|string|unique:sau_roles,name,'.$id.',id,company_id,'.Session::get('company_id'),
             'permissions_asignates' => ['required', new Permission()]
         ];
     }

@@ -10,7 +10,7 @@ class Audiometry extends Model
 {
     use CompanyTrait;
 
-    protected $table = 'bm_audiometries';
+    protected $table = 'sau_bm_audiometries';
 
     protected $fillable = [
       'date',

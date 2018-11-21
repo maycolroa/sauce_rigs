@@ -58,7 +58,7 @@ class MakeAllPermissionsSeeder extends Seeder
 
         } catch (\Exception $e) {
             DB::rollback();
-            $this->command->info('Ocurrio un error al ejecutar la clase MakeAllPermissionsSeeder');
+            $this->command->info('Ocurrio un error al ejecutar la clase MakeAllPermissionsSeeder '.$e);
         }
 
     }

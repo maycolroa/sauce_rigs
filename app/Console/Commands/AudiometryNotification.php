@@ -45,14 +45,14 @@ class AudiometryNotification extends Command
     public function handle()
     {
         $audiometries = Audiometry::select(
-            'bm_audiometries.*',
+            'sau_bm_audiometries.*',
             'sau_employees.identification as employee_identification',
             'sau_employees.name as employee_name',
             'sau_employees.company_id as company_id',
             'sau_employees.email as email'
-          )->join('sau_employees','sau_employees.id','bm_audiometries.employee_id')
+          )->join('sau_employees','sau_employees.id','sau_bm_audiometries.employee_id')
           ->withoutGlobalScopes()
-          ->whereRaw('bm_audiometries.date = DATE_ADD(CURDATE(), INTERVAL -1 DAY)')
+          ->whereRaw('sau_bm_audiometries.date = DATE_ADD(CURDATE(), INTERVAL -1 DAY)')
           ->where('base_type', 'Base')->get();
 
           

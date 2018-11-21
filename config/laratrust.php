@@ -110,32 +110,32 @@ return [
         /**
          * Roles table.
          */
-        'roles' => 'roles',
+        'roles' => 'sau_roles',
 
         /**
          * Permissions table.
          */
-        'permissions' => 'permissions',
+        'permissions' => 'sau_permissions',
 
         /**
          * Teams table.
          */
-        'teams' => 'teams',
+        'teams' => 'sau_teams',
 
         /**
          * Role - User intermediate table.
          */
-        'role_user' => 'role_user',
+        'role_user' => 'sau_role_user',
 
         /**
          * Permission - User intermediate table.
          */
-        'permission_user' => 'permission_user',
+        'permission_user' => 'sau_permission_user',
 
         /**
          * Permission - Role intermediate table.
          */
-        'permission_role' => 'permission_role',
+        'permission_role' => 'sau_permission_role',
 
     ],
 

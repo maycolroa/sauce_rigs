@@ -13,7 +13,7 @@ class AlterIndexUniqueRolesTable extends Migration
      */
     public function up()
     {
-        Schema::table('roles', function (Blueprint $table) {
+        Schema::table('sau_roles', function (Blueprint $table) {
             $table->dropUnique(['name']);
             $table->unique(['name', 'company_id']);
         });
@@ -26,8 +26,8 @@ class AlterIndexUniqueRolesTable extends Migration
      */
     public function down()
     {
-        Schema::table('roles', function (Blueprint $table) {
-            $table->dropUnique(['name']);
+        Schema::table('sau_roles', function (Blueprint $table) {
+            $table->dropUnique(['name', 'company_id']);
         });
     }
 }

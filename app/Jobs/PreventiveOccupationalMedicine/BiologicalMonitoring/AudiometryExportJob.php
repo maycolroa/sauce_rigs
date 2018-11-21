@@ -34,10 +34,10 @@ class AudiometryExportJob implements ShouldQueue
     public function handle()
     {
       $audiometries = Audiometry::select(
-        'bm_audiometries.*',
+        'sau_bm_audiometries.*',
         'sau_employees.identification as employee_identification',
         'sau_employees.name as employee_name'
-      )->join('sau_employees','sau_employees.id','bm_audiometries.employee_id')
+      )->join('sau_employees','sau_employees.id','sau_bm_audiometries.employee_id')
       ->join('sau_employees_regionals','sau_employees_regionals.id','sau_employees.employee_regional_id');
 
       $nameExcel = 'export/1/audiometrias_'.date("YmdHis").'.xlsx';

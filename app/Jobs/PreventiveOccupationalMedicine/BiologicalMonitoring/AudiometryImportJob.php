@@ -30,7 +30,7 @@ class AudiometryImportJob implements ShouldQueue
      * @return void
      */
     public function handle()
-    { 
+    {
       Excel::import(new AudiometryImport, "/import/1/$this->nameFile", 'public');
       Storage::disk('public')->delete('import/1/'. $this->nameFile);
     }

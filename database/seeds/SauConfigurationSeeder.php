@@ -3,7 +3,7 @@
 use Illuminate\Database\Seeder;
 use App\Models\Configuration;
 
-class SauConfiguration extends Seeder
+class SauConfigurationSeeder extends Seeder
 {
     /**
      * Run the database seeds.

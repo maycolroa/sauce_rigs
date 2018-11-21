@@ -13,7 +13,7 @@ class AddColumnsRolesTable extends Migration
      */
     public function up()
     {
-        Schema::table('roles', function (Blueprint $table) {
+        Schema::table('sau_roles', function (Blueprint $table) {
             $table->integer('company_id')->after('description')->unsigned();
             $table->foreign('company_id')->references('id')->on('sau_companies');
         });
@@ -26,8 +26,9 @@ class AddColumnsRolesTable extends Migration
      */
     public function down()
     {
-        Schema::table('roles', function (Blueprint $table) {
-            $table->dropColumn('company_id');
+        Schema::table('sau_roles', function (Blueprint $table) {
+          $table->dropForeign('sau_roles_company_id_foreign');
+          $table->dropColumn('company_id');
         });
     }
 }
