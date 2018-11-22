@@ -129,24 +129,24 @@ class EmployeeRegionalController extends Controller
         if($request->has('keyword'))
         {
             $keyword = "%{$request->keyword}%";
-            $areas = EmployeeRegional::select("id", "name")
+            $regionals = EmployeeRegional::select("id", "name")
                 ->where(function ($query) use ($keyword) {
                     $query->orWhere('name', 'like', $keyword);
                 })
                 ->take(30)->pluck('id', 'name');
 
             return $this->respondHttp200([
-                'options' => $this->multiSelectFormat($areas)
+                'options' => $this->multiSelectFormat($regionals)
             ]);
         }
         else
         {
-            $areas = EmployeeRegional::selectRaw("
+            $regionals = EmployeeRegional::selectRaw("
                 sau_employees_regionals.id as id,
                 sau_employees_regionals.name as name
             ")->pluck('id', 'name');
         
-            return $this->multiSelectFormat($areas);
+            return $this->multiSelectFormat($regionals);
         }
     }
 }

@@ -128,5 +128,25 @@ export default [{
       path: 'headquarters/view/:id',
       component: () =>
         import('@/views/Administrative/headquarters/view')
+    }, {
+      name: 'administrative-areas',
+      path: 'areas',
+      component: () =>
+        import('@/views/Administrative/areas/index')
+    }, {
+      name: 'administrative-areas-create',
+      path: 'areas/create',
+      component: () =>
+        import('@/views/Administrative/areas/create')
+    }, {
+      name: 'administrative-areas-edit',
+      path: 'areas/edit/:id',
+      component: () =>
+        import('@/views/Administrative/areas/edit')
+    }, {
+      name: 'administrative-areas-view',
+      path: 'areas/view/:id',
+      component: () =>
+        import('@/views/Administrative/areas/view')
     }]
   }]

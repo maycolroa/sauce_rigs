@@ -25,6 +25,10 @@
             {
                 "name": "headquarters",
                 "display_name": "Sedes"
+            },
+            {
+                "name": "areas",
+                "display_name": "Áreas"
             }
         ]
     },

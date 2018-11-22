@@ -107,10 +107,10 @@ class EmployeeHeadquarterController extends Controller
      */
     public function destroy(EmployeeHeadquarter $headquarter)
     {
-        /*if (count($headquarter->employees) > 0)
+        if (count($headquarter->areas) > 0)
         {
-            return $this->respondWithError('No se puede eliminar el centro de costo porque hay empleados asociados a él');
-        }*/
+            return $this->respondWithError('No se puede eliminar la sede porque hay áreas asociadas a ella');
+        }
 
         if(!$headquarter->delete())
         {
@@ -120,5 +120,42 @@ class EmployeeHeadquarterController extends Controller
         return $this->respondHttp200([
             'message' => 'Se elimino la sede'
         ]);
+    }
+
+    /**
+     * Returns an array for a select type input
+     *
+     * @param Request $request
+     * @return Array
+     */
+
+    public function multiselect(Request $request)
+    {
+        if($request->has('keyword'))
+        {
+            $keyword = "%{$request->keyword}%";
+            $headquarters = EmployeeHeadquarter::selectRaw(
+                "sau_employees_headquarters.id as id,
+                CONCAT(sau_employees_regionals.name, ' / ', sau_employees_headquarters.name) as name")
+            ->join('sau_employees_regionals', 'sau_employees_regionals.id', 'sau_employees_headquarters.employee_regional_id')
+            ->where(function ($query) use ($keyword) {
+                $query->orWhere('sau_employees_regionals.name', 'like', $keyword);
+                $query->orWhere('sau_employees_headquarters.name', 'like', $keyword);
+            })
+            ->take(30)->pluck('id', 'name');
+
+            return $this->respondHttp200([
+                'options' => $this->multiSelectFormat($headquarters)
+            ]);
+        }
+        else
+        {
+            $headquarters = EmployeeHeadquarter::selectRaw(
+                "sau_employees_headquarters.id as id,
+                CONCAT(sau_employees_regionals.name, ' / ', sau_employees_headquarters.name) as name")
+            ->join('sau_employees_regionals', 'sau_employees_regionals.id', 'sau_employees_headquarters.employee_regional_id')->pluck('id', 'name');
+        
+            return $this->multiSelectFormat($headquarters);
+        }
     }
 }

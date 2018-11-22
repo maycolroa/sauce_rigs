@@ -24,10 +24,15 @@ class EmployeeHeadquarter extends Model
         return $this->belongsTo(EmployeeRegional::class, 'employee_regional_id');
     }
 
+    public function areas()
+    {
+        return $this->hasMany(EmployeeArea::class, 'employee_headquarter_id');
+    }
+
     public function multiselect()
     {
         return [
-            'name' => $this->name,
+            'name' => $this->regional->name.' / '.$this->name,
             'value' => $this->id
         ];
     }

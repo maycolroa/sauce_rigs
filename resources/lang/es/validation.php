@@ -147,7 +147,8 @@ return [
       'password' => 'Contraseña',
       'role_id' => 'Rol',
       'permissions_asignates' => 'Permisos',
-      'employee_regional_id' => 'Regional'
+      'employee_regional_id' => 'Regional',
+      'employee_headquarter_id' => 'Sede'
     ],
 
 ];
