@@ -98,15 +98,17 @@ class AudiometryImport implements ToCollection
             }
 
             $this->sheet++;
-
+            
             //dd($this->errors);
         }
     }
 
     private function checkEmployee($row)
     {
-        $employee = Employee::where('identification', $row[0])->first();
-      
+        $employee = Employee::withoutGlobalScopes()->where('identification', $row[0])->first();
+        \Log::info($employee);
+        \Log::info($row[0]);
+        \Log::info(Employee::withoutGlobalScopes()->where('identification', $row[0])->toSql());
         if ($employee)
         {
             return $employee->id;
