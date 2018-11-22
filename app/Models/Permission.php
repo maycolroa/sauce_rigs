@@ -18,7 +18,7 @@ class Permission extends LaratrustPermission
     public function multiselect()
     {
         return [
-            'name' => $this->name,
+            'name' => $this->display_name,
             'value' => $this->name
         ];
     }

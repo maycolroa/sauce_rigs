@@ -4,6 +4,7 @@ namespace App\Http\Requests\PreventiveOccupationalMedicine\BiologicalMonitoring;
 
 use Illuminate\Foundation\Http\FormRequest;
 use App\Facades\Configuration;
+use App\Rules\AudiometryDate;
 
 class AudiometryRequest extends FormRequest
 {
@@ -26,7 +27,7 @@ class AudiometryRequest extends FormRequest
     {
       $NUMBERS_AVAILABLE_RESULTS = "0,5,10,15,20,25,30,35,40,45,50,55,60,65,70,75,80,85,90,95,100,105,110,115,120";
       return [
-            'date' => 'required|date|before_or_equal:today',
+            'date' => ['required','date','before_or_equal:today', new AudiometryDate($this->id, $this->employee_id)],
             'previews_events' => 'nullable',
             'employee_id' => 'required|exists:sau_employees,id',
             'exposition_level' => 'max:250|nullable',

@@ -47,7 +47,7 @@ Route::middleware(['auth'])->group(function () {
         Route::post('permissions', 'Administrative\Roles\RoleController@multiselectPermissions');
         Route::post('areas', 'Administrative\EmployeeAreaController@multiselect');  
         Route::post('regionales', 'Administrative\EmployeeRegionalController@multiselect');
-        Route::post('years', 'ApplicationController@multiselectYears');  
+        Route::post('years/audiometry', 'PreventiveOccupationalMedicine\BiologicalMonitoring\AudiometryController@multiselectYears');  
     });
 
     //Administrativo

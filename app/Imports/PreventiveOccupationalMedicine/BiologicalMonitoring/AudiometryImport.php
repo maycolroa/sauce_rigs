@@ -10,6 +10,7 @@ use App\Administrative\EmployeeEPS;
 use App\Administrative\EmployeeArea;
 use App\Administrative\EmployeeRegional;
 use App\Administrative\EmployeePosition;
+use App\Rules\AudiometryDate;
 use App\Facades\Configuration;
 use App\PreventiveOccupationalMedicine\BiologicalMonitoring\Audiometry;
 use App\Exports\PreventiveOccupationalMedicine\BiologicalMonitoring\AudiometryImportErrorExcel;
@@ -91,8 +92,8 @@ class AudiometryImport implements ToCollection
                 NotificationMail::
                     subject('Importación de las audiometrias')
                     ->recipients(Auth::user())
-                    ->message('Se produjo un error durante el proceso de importación de las audiometrias. Contacte con el administrador')
-                    //->message($e->getMessage())
+                    /*->message('Se produjo un error durante el proceso de importación de las audiometrias. Contacte con el administrador')*/
+                    ->message($e->getMessage())
                     ->module('biologicalMonitoring/audiometry')
                     ->send();
             }
@@ -135,7 +136,7 @@ class AudiometryImport implements ToCollection
                     [
                         'identificacion'   => 'required|numeric',
                         'nombre'           => 'required|string',
-                        'sexo'             => 'required|string',
+                        'sexo'             => 'required|string|in:M,m,F,f',
                         'email'            => 'required|email|unique:sau_employees,email,null,id,company_id,'.$this->company_id,
                         'fecha_nacimiento' => 'nullable|date',
                         'area'             => 'required',
@@ -271,7 +272,7 @@ class AudiometryImport implements ToCollection
                 'observaciones_generales'   => $row[39],
             ],
             [
-                'fecha'                     => 'required|date|before_or_equal:today',
+                'fecha'                     => ['required','date','before_or_equal:today', new AudiometryDate(null, $employee_id, $fecha)],
                 'eventos_previos'           => 'nullable',
                 'empleado'                  => 'required|exists:sau_employees,id',
                 "epp"                       => "nullable|array|min:1",

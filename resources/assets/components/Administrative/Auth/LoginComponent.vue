@@ -24,9 +24,11 @@
           type="password"
           placeholder="Contraseña"
           :error="form.errorsFor('password')"
-          text-block="¿Olvidaste tu contraseña?"
-          :action-block="passwordResetAction"
           ></vue-input>
+          <!-- 
+            Parametros del input anterior comentados por no estar funcionando
+            text-block="¿Olvidaste tu contraseña?"
+            :action-block="passwordResetAction" -->
         <div class="d-flex justify-content-between align-items-center m-0">
           <b-check name="rememberMe" v-model="form.rememberMe" class="m-0">Recuerdame</b-check>
           <b-btn type="submit" variant="primary" :disabled="loading">Ingresar</b-btn>

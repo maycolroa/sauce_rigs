@@ -35,4 +35,9 @@ class Employee extends Model
         'value' => $this->id
       ];
     }
+
+    public function setSexAttribute($value)
+    {
+      $this->attributes['sex'] = strtoupper($value);
+    }
 }
