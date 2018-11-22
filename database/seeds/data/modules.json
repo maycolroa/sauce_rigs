@@ -29,6 +29,10 @@
             {
                 "name": "areas",
                 "display_name": "Áreas"
+            },
+            {
+                "name": "processes",
+                "display_name": "Procesos"
             }
         ]
     },

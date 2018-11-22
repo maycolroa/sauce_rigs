@@ -148,5 +148,25 @@ export default [{
       path: 'areas/view/:id',
       component: () =>
         import('@/views/Administrative/areas/view')
+    }, {
+      name: 'administrative-processes',
+      path: 'processes',
+      component: () =>
+        import('@/views/Administrative/processes/index')
+    }, {
+      name: 'administrative-processes-create',
+      path: 'processes/create',
+      component: () =>
+        import('@/views/Administrative/processes/create')
+    }, {
+      name: 'administrative-processes-edit',
+      path: 'processes/edit/:id',
+      component: () =>
+        import('@/views/Administrative/processes/edit')
+    }, {
+      name: 'administrative-processes-view',
+      path: 'processes/view/:id',
+      component: () =>
+        import('@/views/Administrative/processes/view')
     }]
   }]

@@ -23,4 +23,17 @@ class EmployeeArea extends Model
     {
         return $this->belongsTo(EmployeeHeadquarter::class, 'employee_headquarter_id');
     }
+
+    public function processes()
+    {
+        return $this->hasMany(EmployeeProcess::class, 'employee_area_id');
+    }
+
+    public function multiselect()
+    {
+        return [
+            'name' => $this->headquarter->regional->name.' / '.$this->headquarter->name. ' / '.$this->name,
+            'value' => $this->id
+        ];
+    }
 }

@@ -110,10 +110,10 @@ class EmployeeAreaController extends Controller
      */
     public function destroy(EmployeeArea $area)
     {
-        /*if (count($area->process) > 0)
+        if (count($area->processes) > 0)
         {
             return $this->respondWithError('No se puede eliminar el área porque hay procesos asociados a ella');
-        }*/
+        }
 
         if(!$area->delete())
         {
@@ -125,12 +125,43 @@ class EmployeeAreaController extends Controller
         ]);
     }
 
-    public function multiselect(){
-        $areas = EmployeeArea::selectRaw("
-            sau_employees_areas.id as id,
-            sau_employees_areas.name as name
-        ")->pluck('id', 'name');
+    /**
+     * Returns an array for a select type input
+     *
+     * @param Request $request
+     * @return Array
+     */
+
+    public function multiselect(Request $request)
+    {
+        if($request->has('keyword'))
+        {
+            $keyword = "%{$request->keyword}%";
+            $areas = EmployeeArea::selectRaw(
+                "sau_employees_areas.id as id,
+                CONCAT(sau_employees_regionals.name, ' / ', sau_employees_headquarters.name, ' / ', sau_employees_areas.name) as name")
+            ->join('sau_employees_headquarters', 'sau_employees_headquarters.id', 'sau_employees_areas.employee_headquarter_id')
+            ->join('sau_employees_regionals', 'sau_employees_regionals.id', 'sau_employees_headquarters.employee_regional_id')
+            ->where(function ($query) use ($keyword) {
+                $query->orWhere('sau_employees_regionals.name', 'like', $keyword);
+                $query->orWhere('sau_employees_headquarters.name', 'like', $keyword);
+                $query->orWhere('sau_employees_areas.name', 'like', $keyword);
+            })
+            ->take(30)->pluck('id', 'name');
+
+            return $this->respondHttp200([
+                'options' => $this->multiSelectFormat($areas)
+            ]);
+        }
+        else
+        {
+            $areas = EmployeeArea::selectRaw(
+                    "sau_employees_areas.id as id,
+                    CONCAT(sau_employees_regionals.name, ' / ', sau_employees_headquarters.name, ' / ', sau_employees_areas.name) as name")
+                ->join('sau_employees_headquarters', 'sau_employees_headquarters.id', 'sau_employees_areas.employee_headquarter_id')
+                ->join('sau_employees_regionals', 'sau_employees_regionals.id', 'sau_employees_headquarters.employee_regional_id')->pluck('id', 'name');
         
-        return $this->multiSelectFormat($areas);
+            return $this->multiSelectFormat($areas);
+        }
     }
 }

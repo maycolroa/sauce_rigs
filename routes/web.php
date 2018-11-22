@@ -75,6 +75,9 @@ Route::middleware(['auth'])->group(function () {
 
       Route::post('area/data', 'Administrative\EmployeeAreaController@data');
       Route::ApiResource('area', 'Administrative\EmployeeAreaController');
+
+      Route::post('process/data', 'Administrative\EmployeeProcessController@data');
+      Route::ApiResource('process', 'Administrative\EmployeeProcessController');
     });
 
     //Return view for spa

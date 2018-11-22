@@ -334,5 +334,55 @@ export default [
       urlData: '/administration/area/data',
       filterColumns: true,
     }
+  },
+  {
+    name: 'administrative-processes',
+    fields: [
+      { name: 'sau_employees_processes.id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true },
+      { name: 'sau_employees_processes.name', data: 'name', title: 'Nombre', sortable: true, searchable: true, detail: false, key: false },
+      { name: 'area', data: 'area', title: 'Área', sortable: true, searchable: true, detail: false, key: false },
+      { name: 'sede', data: 'sede', title: 'Sede', sortable: true, searchable: true, detail: false, key: false },
+      { name: 'regional', data: 'regional', title: 'Regional', sortable: true, searchable: true, detail: false, key: false },
+      { name: '', data: 'controlls', title: 'Controles', sortable: false, searchable: false, detail: false, key: false },
+    ],
+    'controlls': [{
+      type: 'push',
+      buttons: [{
+        config: {
+          color: 'outline-success',
+          borderless: true,
+          icon: 'ion ion-md-create',
+        },
+        data: {
+          routePush: { name: 'administrative-processes-edit' },
+          id: 'id',
+        }
+      }, {
+        config: {
+          color: 'outline-info',
+          borderless: true,
+          icon: 'ion ion-md-eye',
+        },
+        data: {
+          routePush: { name: 'administrative-processes-view' },
+          id: 'id',
+        }
+      }]
+    },
+    {
+      type: 'base',
+      buttons: [{
+        name: 'delete',
+        data: {
+          action: '/administration/process/',
+          id: 'id',
+          messageConfirmation: 'Esta seguro de borrar el proceso __name__'
+        },
+      }],
+    }],
+    configuration: {
+      urlData: '/administration/process/data',
+      filterColumns: true,
+    }
   }
 ];
