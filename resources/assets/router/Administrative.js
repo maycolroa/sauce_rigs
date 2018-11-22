@@ -108,5 +108,25 @@ export default [{
       path: 'businesses/view/:id',
       component: () =>
         import('@/views/Administrative/businesses/view')
+    }, {
+      name: 'administrative-headquarters',
+      path: 'headquarters',
+      component: () =>
+        import('@/views/Administrative/headquarters/index')
+    }, {
+      name: 'administrative-headquarters-create',
+      path: 'headquarters/create',
+      component: () =>
+        import('@/views/Administrative/headquarters/create')
+    }, {
+      name: 'administrative-headquarters-edit',
+      path: 'headquarters/edit/:id',
+      component: () =>
+        import('@/views/Administrative/headquarters/edit')
+    }, {
+      name: 'administrative-headquarters-view',
+      path: 'headquarters/view/:id',
+      component: () =>
+        import('@/views/Administrative/headquarters/view')
     }]
   }]

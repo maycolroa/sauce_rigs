@@ -102,7 +102,7 @@ class EmployeeRegionalController extends Controller
      */
     public function destroy(EmployeeRegional $regional)
     {
-        if (count($regional->employees) > 0 /*|| count($regional->sedes) > 0*/)
+        if (count($regional->employees) > 0 || count($regional->headquarters) > 0)
         {
             return $this->respondWithError('No se puede eliminar la regional porque hay empleados/sedes asociados a ella');
         }
@@ -117,12 +117,36 @@ class EmployeeRegionalController extends Controller
         ]);
     }
 
-    public function multiselect(){
-        $areas = EmployeeRegional::selectRaw("
-            sau_employees_regionals.id as id,
-            sau_employees_regionals.name as name
-        ")->pluck('id', 'name');
+    /**
+     * Returns an array for a select type input
+     *
+     * @param Request $request
+     * @return Array
+     */
+
+    public function multiselect(Request $request)
+    {
+        if($request->has('keyword'))
+        {
+            $keyword = "%{$request->keyword}%";
+            $areas = EmployeeRegional::select("id", "name")
+                ->where(function ($query) use ($keyword) {
+                    $query->orWhere('name', 'like', $keyword);
+                })
+                ->take(30)->pluck('id', 'name');
+
+            return $this->respondHttp200([
+                'options' => $this->multiSelectFormat($areas)
+            ]);
+        }
+        else
+        {
+            $areas = EmployeeRegional::selectRaw("
+                sau_employees_regionals.id as id,
+                sau_employees_regionals.name as name
+            ")->pluck('id', 'name');
         
-        return $this->multiSelectFormat($areas);
+            return $this->multiSelectFormat($areas);
+        }
     }
 }

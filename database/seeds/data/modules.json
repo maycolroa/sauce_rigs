@@ -21,6 +21,10 @@
             {
                 "name": "businesses",
                 "display_name": "Centro de costos"
+            },
+            {
+                "name": "headquarters",
+                "display_name": "Sedes"
             }
         ]
     },

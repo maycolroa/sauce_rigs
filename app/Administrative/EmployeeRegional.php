@@ -21,8 +21,16 @@ class EmployeeRegional extends Model
         return $this->hasMany(Employee::class, 'employee_regional_id');
     }
 
-    /*public function sedes()
+    public function headquarters()
     {
-        return $this->hasMany(EmployeeSede::class, 'employee_regional_id');
-    }*/
+        return $this->hasMany(EmployeeHeadquarter::class, 'employee_regional_id');
+    }
+
+    public function multiselect()
+    {
+        return [
+            'name' => $this->name,
+            'value' => $this->id
+        ];
+    }
 }

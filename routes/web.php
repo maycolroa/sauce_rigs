@@ -48,6 +48,7 @@ Route::middleware(['auth'])->group(function () {
         Route::post('areas', 'Administrative\EmployeeAreaController@multiselect');  
         Route::post('regionales', 'Administrative\EmployeeRegionalController@multiselect');
         Route::post('years', 'ApplicationController@multiselectYears');  
+        Route::post('regionals', 'Administrative\EmployeeRegionalController@multiselect');  
     });
 
     //Administrativo
@@ -67,6 +68,9 @@ Route::middleware(['auth'])->group(function () {
 
       Route::post('business/data', 'Administrative\EmployeeBusinessController@data');
       Route::ApiResource('business', 'Administrative\EmployeeBusinessController');
+
+      Route::post('headquarter/data', 'Administrative\EmployeeHeadquarterController@data');
+      Route::ApiResource('headquarter', 'Administrative\EmployeeHeadquarterController');
     });
 
     //Return view for spa
