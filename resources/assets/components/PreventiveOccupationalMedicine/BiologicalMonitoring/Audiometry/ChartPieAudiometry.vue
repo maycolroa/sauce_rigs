@@ -60,25 +60,22 @@ export default {
             legend: {
                 orient: 'vertical',
                 left: 'left',
-                data: this.legend
+                data: this.legend,
             },
             series: [{
                 name: 'Informes PTA',
                 type: 'pie',
                 radius: '55%',
-                roseType: 'angle',
                 data: this.data,
                 itemStyle: {
-                    normal: {
-                        shadowBlur: 50,
-                        shadowOffsetX: 0,
-                        shadowOffsetY: 0,
-                        shadowColor: 'rgba(0, 0, 0, 0.2)'
-                    },
                     emphasis: {
-                        shadowBlur: 50,
+                        shadowBlur: 10,
+                        shadowOffsetX: 0,
                         shadowColor: 'rgba(0, 0, 0, 0.5)'
                     }
+                },
+                label: {
+                    formatter: '{c} - ({d}%)',
                 }
             }],
             animationDuration: 2000
