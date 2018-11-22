@@ -10,6 +10,8 @@ use App\PreventiveOccupationalMedicine\BiologicalMonitoring\Audiometry;
 use Carbon\Carbon;
 use App\Jobs\PreventiveOccupationalMedicine\BiologicalMonitoring\AudiometryExportJob;
 use App\Jobs\PreventiveOccupationalMedicine\BiologicalMonitoring\AudiometryImportJob;
+use Illuminate\Support\Facades\Auth;
+use Session;
 
 class AudiometryController extends Controller
 {
@@ -129,7 +131,7 @@ class AudiometryController extends Controller
     public function export()
     {
       try{
-        AudiometryExportJob::dispatch();
+        AudiometryExportJob::dispatch(Auth::user());
       
         return $this->respondHttp200();
       }catch(Exception $e){
@@ -150,7 +152,7 @@ class AudiometryController extends Controller
     public function import(Request $request)
     {
       try{
-       AudiometryImportJob::dispatch($request->file);
+       AudiometryImportJob::dispatch($request->file, Session::get('company_id'), Auth::user());
       
        return $this->respondHttp200();
       }catch(Exception $e){

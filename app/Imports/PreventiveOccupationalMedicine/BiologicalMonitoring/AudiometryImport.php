@@ -14,23 +14,23 @@ use App\Facades\Configuration;
 use App\PreventiveOccupationalMedicine\BiologicalMonitoring\Audiometry;
 use App\Exports\PreventiveOccupationalMedicine\BiologicalMonitoring\AudiometryImportErrorExcel;
 use App\Facades\Mail\Facades\NotificationMail;
-use Illuminate\Support\Facades\Auth;
 use Maatwebsite\Excel\Facades\Excel;
 use Validator;
-use Session;
 use Exception;
 
 class AudiometryImport implements ToCollection
 {
     private $company_id;
+    private $user;
     private $errors = [];
     private $errors_data = [];
     private $sheet = 1;
     private $key_row = 2;
 
-    public function __construct()
+    public function __construct($company_id, $user)
     {
-      $this->company_id = Session::get('company_id');
+      $this->user = $user;
+      $this->company_id = $company_id;
     }
 
     public function collection(Collection $rows)
@@ -64,7 +64,7 @@ class AudiometryImport implements ToCollection
                 {
                     NotificationMail::
                         subject('Importación de las audiometrias')
-                        ->recipients(Auth::user())
+                        ->recipients($this->user)
                         ->message('El proceso de importación de todos los registros de audiometrias finalizo correctamente')
                         ->module('biologicalMonitoring/audiometry')
                         ->send();
@@ -78,7 +78,7 @@ class AudiometryImport implements ToCollection
             
                     NotificationMail::
                         subject('Importación de las audiometrias')
-                        ->recipients(Auth::user())
+                        ->recipients($this->user)
                         ->message('El proceso de importación de las audiometrias finalizo correctamente, pero algunas filas contenian errores. Puede descargar el archivo con el detalle de los errores en el botón de abajo.')
                         ->subcopy('Este link es valido por 24 horas')
                         ->buttons([['text'=>'Descargar', 'url'=>url("/export/{$paramUrl}")]])
@@ -90,7 +90,7 @@ class AudiometryImport implements ToCollection
             {
                 NotificationMail::
                     subject('Importación de las audiometrias')
-                    ->recipients(Auth::user())
+                    ->recipients($this->user)
                     ->message('Se produjo un error durante el proceso de importación de las audiometrias. Contacte con el administrador')
                     //->message($e->getMessage())
                     ->module('biologicalMonitoring/audiometry')
@@ -106,7 +106,7 @@ class AudiometryImport implements ToCollection
     private function checkEmployee($row)
     {
         $employee = Employee::where('identification', $row[0])->first();
-
+      
         if ($employee)
         {
             return $employee->id;
