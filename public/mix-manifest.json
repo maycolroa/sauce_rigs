@@ -1,19 +1,7 @@
 {
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-    "/app.js": "/app.js?id=4725dabcbdc61b20e5e7",
-    "/app.css": "/app.css?id=dde0a405cd1c9d95b3c5",
-    "/auth.js": "/auth.js?id=c1577e069574fe981335",
-=======
     "/app.js": "/app.js?id=dc0590ac3e0a65bcc56a",
     "/app.css": "/app.css?id=540f259fbfb875b47e42",
     "/auth.js": "/auth.js?id=124f4ae62a1d01efface",
->>>>>>> Stashed changes
-=======
-    "/app.js": "/app.js?id=dc0590ac3e0a65bcc56a",
-    "/app.css": "/app.css?id=540f259fbfb875b47e42",
-    "/auth.js": "/auth.js?id=124f4ae62a1d01efface",
->>>>>>> Stashed changes
     "/vendor/js/layout-helpers.js": "/vendor/js/layout-helpers.js?id=c2e05efd1e8ecb16f2bc",
     "/vendor/js/material-ripple.js": "/vendor/js/material-ripple.js?id=ccab55be4003eb9c1194",
     "/vendor/js/theme-settings.js": "/vendor/js/theme-settings.js?id=c6d3c23a0484243ff949",
