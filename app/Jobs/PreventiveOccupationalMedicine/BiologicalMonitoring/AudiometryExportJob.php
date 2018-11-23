@@ -7,7 +7,6 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
-use Illuminate\Support\Facades\Auth;
 use App\PreventiveOccupationalMedicine\BiologicalMonitoring\Audiometry;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\PreventiveOccupationalMedicine\BiologicalMonitoring\AudiometryExcel;
@@ -17,13 +16,16 @@ class AudiometryExportJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
+    protected $user;
+
     /**
      * Create a new job instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct($user)
     {
+      $this->user = $user;
     }
 
     /**
@@ -44,10 +46,10 @@ class AudiometryExportJob implements ShouldQueue
       Excel::store(new AudiometryExcel($audiometries->get()),$nameExcel,'public',\Maatwebsite\Excel\Excel::XLSX);
       
       $paramUrl = base64_encode($nameExcel);
-
+      
       NotificationMail::
         subject('Exportación de las audiometrias')
-        ->recipients(Auth::user())
+        ->recipients($this->user)
         ->message('Se ha generado una exportación de audiometrias.')
         ->subcopy('Este link es valido por 24 horas')
         ->buttons([['text'=>'Descargar', 'url'=>url("/export/{$paramUrl}")]])

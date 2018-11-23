@@ -9,6 +9,7 @@ use App\Http\Requests\Administrative\Users\UserRequest;
 use App\User;
 use App\Jobs\Administrative\Users\UserExportJob;
 use Session;
+use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
 {
@@ -140,7 +141,7 @@ class UserController extends Controller
     {
         try
         {
-            UserExportJob::dispatch();
+            UserExportJob::dispatch(Auth::user());
           
             return $this->respondHttp200();
         } 
