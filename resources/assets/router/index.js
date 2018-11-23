@@ -2,6 +2,7 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import Meta from 'vue-meta'
 import LayoutMaster from '@/views/layoutMaster'
+import IndexPage from '@/views/indexPage'
 
 import globals from '@/globals'
 
@@ -24,7 +25,13 @@ const router = new Router({
     { 
       path: '', 
       component: LayoutMaster,
-      children: []
+      children: [
+        {
+          path: '',
+          name: '',
+          component: IndexPage
+        },
+      ]
         .concat(Administrative) 
         .concat(IndustrialHygiene)
         .concat(IndustrialSecure)

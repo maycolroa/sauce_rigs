@@ -142,7 +142,7 @@ export default {
     {
       for(var i in this.permissions_module)
       {
-        if(this.permissions_module[i].name == this.permission_selected)
+        if(this.permissions_module[i].value == this.permission_selected)
         {
           if (this.role.permissions_asignates[this.module_selected.value] == undefined)
           {

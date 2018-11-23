@@ -18,9 +18,9 @@
             @input="updateValue($event)"
             />
         </b-input-group>
-        <b-form-feedback class="d-block" v-if="state == 'invalid'">
+        <!-- <b-form-feedback class="d-block" v-if="state == 'invalid'">
             {{ error }}
-        </b-form-feedback>
+        </b-form-feedback> -->
     </b-form-group>
 </template>
 

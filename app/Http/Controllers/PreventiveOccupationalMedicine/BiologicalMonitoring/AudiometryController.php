@@ -41,6 +41,9 @@ class AudiometryController extends Controller
         ->join('sau_employees_regionals','sau_employees_regionals.id','sau_employees.employee_regional_id');
 
        return Vuetable::of($audiometry)
+                ->addColumn('base_si_no', function ($audiometry) {
+                  return $audiometry->base_type == 'Base' ? 'Si' : 'No';
+                })
                 ->make();
    }
 
@@ -257,5 +260,22 @@ class AudiometryController extends Controller
       }catch(Exception $e){
         $this->respondHttp500();
       }
+    }
+
+    /**
+     * Returns an arrangement with the last 5 years
+     *
+     * @return Array
+     */
+    public function multiselectYears()
+    {
+      $audiometries = Audiometry::selectRaw(
+        'DISTINCT YEAR(sau_bm_audiometries.date) as year'
+      )->join('sau_employees','sau_employees.id','sau_bm_audiometries.employee_id')
+      ->orderBy('year')
+      ->get()
+      ->pluck('year', 'year');
+
+      return $this->multiSelectFormat($audiometries);
     }
 }

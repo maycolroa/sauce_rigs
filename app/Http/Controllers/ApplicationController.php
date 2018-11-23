@@ -169,24 +169,4 @@ class ApplicationController extends Controller
 
       return $this->multiSelectGroupFormat($result);
     }
-
-    /**
-     * Returns an arrangement with the last 5 years
-     *
-     * @return Array
-     */
-    public function multiselectYears()
-    {
-      $year_ini = date("Y", strtotime(date("Y")."- 3 year")); 
-
-      $years = array();
-
-      do
-      {
-        $years[] = $year_ini;
-        $year_ini++;
-      } while ($year_ini <= date("Y"));
-
-      return $this->multiSelectFormat($years);
-    }
 }

@@ -102,8 +102,8 @@
             
           </template>
 
-          <b-dd-item><i class="ion ion-ios-person text-lightest"></i> &nbsp; Mi Perfil</b-dd-item>
-          <b-dd-divider />
+          <!-- <b-dd-item><i class="ion ion-ios-person text-lightest"></i> &nbsp; Mi Perfil</b-dd-item>
+          <b-dd-divider /> -->
           <b-dd-item href="/logout"><i class="ion ion-ios-log-out text-danger"></i> &nbsp; Cerrar sesión</b-dd-item>
         </b-nav-item-dropdown>
       </b-navbar-nav>

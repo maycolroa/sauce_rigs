@@ -88,7 +88,7 @@ export default {
         this.$router.go(-1);
     });
 
-    GlobalMethods.getDataMultiselect('/selects/years')
+    GlobalMethods.getDataMultiselect('/selects/years/audiometry')
     .then(response => {
         this.years = response;
     })

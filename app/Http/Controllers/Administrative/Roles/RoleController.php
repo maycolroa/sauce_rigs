@@ -210,7 +210,9 @@ class RoleController extends Controller
 
         foreach ($permissions as $key => $value)
         {
-            $permissions[$key] = $this->multiSelectFormat($value);
+            $ids = array_keys($value);
+            $data = Permission::whereIn('id', $ids)->pluck('name', 'display_name');
+            $permissions[$key] = $this->multiSelectFormat($data);
         }
         
         return $permissions;
