@@ -47,7 +47,9 @@ Route::middleware(['auth'])->group(function () {
         Route::post('permissions', 'Administrative\Roles\RoleController@multiselectPermissions');
         Route::post('areas', 'Administrative\EmployeeAreaController@multiselect');  
         Route::post('regionales', 'Administrative\EmployeeRegionalController@multiselect');
-        Route::post('years/audiometry', 'PreventiveOccupationalMedicine\BiologicalMonitoring\AudiometryController@multiselectYears');  
+        Route::post('years/audiometry', 'ApplicationController@multiselectYears');  
+        Route::post('regionals', 'Administrative\EmployeeRegionalController@multiselect');
+        Route::post('headquarters', 'Administrative\EmployeeHeadquarterController@multiselect');  
     });
 
     //Administrativo
@@ -58,6 +60,24 @@ Route::middleware(['auth'])->group(function () {
 
       Route::post('role/data', 'Administrative\Roles\RoleController@data');
       Route::ApiResource('role', 'Administrative\Roles\RoleController');
+
+      Route::post('position/data', 'Administrative\EmployeePositionController@data');
+      Route::ApiResource('position', 'Administrative\EmployeePositionController');
+
+      Route::post('regional/data', 'Administrative\EmployeeRegionalController@data');
+      Route::ApiResource('regional', 'Administrative\EmployeeRegionalController');
+
+      Route::post('business/data', 'Administrative\EmployeeBusinessController@data');
+      Route::ApiResource('business', 'Administrative\EmployeeBusinessController');
+
+      Route::post('headquarter/data', 'Administrative\EmployeeHeadquarterController@data');
+      Route::ApiResource('headquarter', 'Administrative\EmployeeHeadquarterController');
+
+      Route::post('area/data', 'Administrative\EmployeeAreaController@data');
+      Route::ApiResource('area', 'Administrative\EmployeeAreaController');
+
+      Route::post('process/data', 'Administrative\EmployeeProcessController@data');
+      Route::ApiResource('process', 'Administrative\EmployeeProcessController');
     });
 
     //Return view for spa

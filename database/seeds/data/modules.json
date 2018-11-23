@@ -9,6 +9,30 @@
             {
                 "name": "roles",
                 "display_name": "Roles"
+            },
+            {
+                "name": "positions",
+                "display_name": "Cargos"
+            },
+            {
+                "name": "regionals",
+                "display_name": "Regionales"
+            },
+            {
+                "name": "businesses",
+                "display_name": "Centro de costos"
+            },
+            {
+                "name": "headquarters",
+                "display_name": "Sedes"
+            },
+            {
+                "name": "areas",
+                "display_name": "Áreas"
+            },
+            {
+                "name": "processes",
+                "display_name": "Procesos"
             }
         ]
     },

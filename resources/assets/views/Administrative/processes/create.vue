@@ -1,0 +1,39 @@
+<template>
+  <div>
+    <h4 class="font-weight-bold mb-4">
+       <span class="text-muted font-weight-light">Procesos /</span> Crear
+    </h4>
+
+
+    <div class="col-md">
+      <b-card no-body>
+        <b-card-body>
+            <administrative-process-form 
+                url="/administration/process"
+                method="POST"
+                areas-data-url="/selects/areas"
+                :cancel-url="{ name: 'administrative-processes'}"/>
+        </b-card-body>
+      </b-card>
+    </div>
+  </div>
+</template>   
+
+<script>
+import AdministrativeProcessForm from '@/components/Administrative/Processes/FormProcessComponent.vue';
+import Alerts from '@/utils/Alerts.js';
+
+export default {
+  name: 'administrative-processes-create',
+  metaInfo: {
+    title: 'Procesos - Crear'
+  },
+  components:{
+    AdministrativeProcessForm
+  },
+  data(){
+    return {
+    }
+  }
+}
+</script>

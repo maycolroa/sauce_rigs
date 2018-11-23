@@ -5,19 +5,19 @@ namespace App\Administrative;
 use Illuminate\Database\Eloquent\Model;
 use App\Traits\CompanyTrait;
 
-class EmployeePosition extends Model
+class EmployeeBusiness extends Model
 {
     use CompanyTrait;
 
-    protected $table = 'sau_employees_positions';
+    protected $table = 'sau_employees_businesses';
 
     protected $fillable = [
         'name',
         'company_id'
     ];
 
-    public function employees()
+    /*public function employees()
     {
-        return $this->hasMany(Employee::class, 'employee_position_id');
-    }
+        return $this->hasMany(Employee::class, 'employee_business_id');
+    }*/
 }

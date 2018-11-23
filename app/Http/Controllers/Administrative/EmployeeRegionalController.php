@@ -4,8 +4,10 @@ namespace App\Http\Controllers\Administrative;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-
+use App\Vuetable\Facades\Vuetable;
 use App\Administrative\EmployeeRegional;
+use App\Http\Requests\Administrative\Regionals\RegionalRequest;
+use Session;
 
 class EmployeeRegionalController extends Controller
 {
@@ -16,28 +18,40 @@ class EmployeeRegionalController extends Controller
      */
     public function index()
     {
-        //
+        return view('application');
     }
 
     /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
+    * Display a listing of the resource.
+    *
+    * @return \Illuminate\Http\Response
+    */
+    public function data(Request $request)
     {
-        //
+        $regionals = EmployeeRegional::select('*');
+
+        return Vuetable::of($regionals)
+                    ->make();
     }
 
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  App\Http\Requests\Administrative\Regionals\RegionalRequest  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(RegionalRequest $request)
     {
-        //
+        $regional = new EmployeeRegional($request->all());
+        $regional->company_id = Session::get('company_id');
+        
+        if(!$regional->save()){
+            return $this->respondHttp500();
+        }
+
+        return $this->respondHttp200([
+            'message' => 'Se creo la regional'
+        ]);
     }
 
     /**
@@ -48,49 +62,91 @@ class EmployeeRegionalController extends Controller
      */
     public function show($id)
     {
-        //
-    }
+        try
+        {
+            $regional = EmployeeRegional::findOrFail($id);
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
+            return $this->respondHttp200([
+                'data' => $regional,
+            ]);
+        } catch(Exception $e){
+            $this->respondHttp500();
+        }
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param  App\Http\Requests\Administrative\Regionals\RegionalRequest  $request
+     * @param  EmployeeRegional  $regional
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(RegionalRequest $request, EmployeeRegional $regional)
     {
-        //
+        $regional->fill($request->all());
+        
+        if(!$regional->update()){
+          return $this->respondHttp500();
+        }
+        
+        return $this->respondHttp200([
+            'message' => 'Se actualizo la regional'
+        ]);
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param  EmployeeRegional  $regional
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(EmployeeRegional $regional)
     {
-        //
+        if (count($regional->employees) > 0 || count($regional->headquarters) > 0)
+        {
+            return $this->respondWithError('No se puede eliminar la regional porque hay empleados/sedes asociados a ella');
+        }
+
+        if(!$regional->delete())
+        {
+            return $this->respondHttp500();
+        }
+        
+        return $this->respondHttp200([
+            'message' => 'Se elimino la regional'
+        ]);
     }
 
-    public function multiselect(){
-        $areas = EmployeeRegional::selectRaw("
-            sau_employees_regionals.id as id,
-            sau_employees_regionals.name as name
-        ")->pluck('id', 'name');
+    /**
+     * Returns an array for a select type input
+     *
+     * @param Request $request
+     * @return Array
+     */
+
+    public function multiselect(Request $request)
+    {
+        if($request->has('keyword'))
+        {
+            $keyword = "%{$request->keyword}%";
+            $regionals = EmployeeRegional::select("id", "name")
+                ->where(function ($query) use ($keyword) {
+                    $query->orWhere('name', 'like', $keyword);
+                })
+                ->take(30)->pluck('id', 'name');
+
+            return $this->respondHttp200([
+                'options' => $this->multiSelectFormat($regionals)
+            ]);
+        }
+        else
+        {
+            $regionals = EmployeeRegional::selectRaw("
+                sau_employees_regionals.id as id,
+                sau_employees_regionals.name as name
+            ")->pluck('id', 'name');
         
-        return $this->multiSelectFormat($areas);
+            return $this->multiSelectFormat($regionals);
+        }
     }
 }

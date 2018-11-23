@@ -5,34 +5,34 @@ namespace App\Administrative;
 use Illuminate\Database\Eloquent\Model;
 use App\Traits\CompanyTrait;
 
-class EmployeeArea extends Model
+class EmployeeHeadquarter extends Model
 {
     use CompanyTrait;
-
-    protected $table = 'sau_employees_areas';
+    
+    protected $table = 'sau_employees_headquarters';
 
     protected $fillable = [
         'name',
-        'employee_headquarter_id'
+        'employee_regional_id'
     ];
 
     //the attribute define the table for scope company execute
     public $scope_table_for_company_table = 'sau_employees_regionals';
 
-    public function headquarter()
+    public function regional()
     {
-        return $this->belongsTo(EmployeeHeadquarter::class, 'employee_headquarter_id');
+        return $this->belongsTo(EmployeeRegional::class, 'employee_regional_id');
     }
 
-    public function processes()
+    public function areas()
     {
-        return $this->hasMany(EmployeeProcess::class, 'employee_area_id');
+        return $this->hasMany(EmployeeArea::class, 'employee_headquarter_id');
     }
 
     public function multiselect()
     {
         return [
-            'name' => $this->headquarter->regional->name.' / '.$this->headquarter->name. ' / '.$this->name,
+            'name' => $this->regional->name.' / '.$this->name,
             'value' => $this->id
         ];
     }

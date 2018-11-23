@@ -96,5 +96,293 @@ export default [
       urlData: '/administration/role/data',
       filterColumns: true,
     }
+  },
+  {
+    name: 'administrative-positions',
+    fields: [
+      { name: 'sau_employees_positions.id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true },
+      { name: 'sau_employees_positions.name', data: 'name', title: 'Nombre', sortable: true, searchable: true, detail: false, key: false },
+      { name: '', data: 'controlls', title: 'Controles', sortable: false, searchable: false, detail: false, key: false },
+    ],
+    'controlls': [{
+      type: 'push',
+      buttons: [{
+        config: {
+          color: 'outline-success',
+          borderless: true,
+          icon: 'ion ion-md-create',
+        },
+        data: {
+          routePush: { name: 'administrative-positions-edit' },
+          id: 'id',
+        }
+      }, {
+        config: {
+          color: 'outline-info',
+          borderless: true,
+          icon: 'ion ion-md-eye',
+        },
+        data: {
+          routePush: { name: 'administrative-positions-view' },
+          id: 'id',
+        }
+      }]
+    },
+    {
+      type: 'base',
+      buttons: [{
+        name: 'delete',
+        data: {
+          action: '/administration/position/',
+          id: 'id',
+          messageConfirmation: 'Esta seguro de borrar el cargo __name__'
+        },
+      }],
+    }],
+    configuration: {
+      urlData: '/administration/position/data',
+      filterColumns: true,
+    }
+  },
+  {
+    name: 'administrative-regionals',
+    fields: [
+      { name: 'sau_employees_regionals.id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true },
+      { name: 'sau_employees_regionals.name', data: 'name', title: 'Nombre', sortable: true, searchable: true, detail: false, key: false },
+      { name: '', data: 'controlls', title: 'Controles', sortable: false, searchable: false, detail: false, key: false },
+    ],
+    'controlls': [{
+      type: 'push',
+      buttons: [{
+        config: {
+          color: 'outline-success',
+          borderless: true,
+          icon: 'ion ion-md-create',
+        },
+        data: {
+          routePush: { name: 'administrative-regionals-edit' },
+          id: 'id',
+        }
+      }, {
+        config: {
+          color: 'outline-info',
+          borderless: true,
+          icon: 'ion ion-md-eye',
+        },
+        data: {
+          routePush: { name: 'administrative-regionals-view' },
+          id: 'id',
+        }
+      }]
+    },
+    {
+      type: 'base',
+      buttons: [{
+        name: 'delete',
+        data: {
+          action: '/administration/regional/',
+          id: 'id',
+          messageConfirmation: 'Esta seguro de borrar la regional __name__'
+        },
+      }],
+    }],
+    configuration: {
+      urlData: '/administration/regional/data',
+      filterColumns: true,
+    }
+  },
+  {
+    name: 'administrative-businesses',
+    fields: [
+      { name: 'sau_employees_businesses.id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true },
+      { name: 'sau_employees_businesses.name', data: 'name', title: 'Nombre', sortable: true, searchable: true, detail: false, key: false },
+      { name: '', data: 'controlls', title: 'Controles', sortable: false, searchable: false, detail: false, key: false },
+    ],
+    'controlls': [{
+      type: 'push',
+      buttons: [{
+        config: {
+          color: 'outline-success',
+          borderless: true,
+          icon: 'ion ion-md-create',
+        },
+        data: {
+          routePush: { name: 'administrative-businesses-edit' },
+          id: 'id',
+        }
+      }, {
+        config: {
+          color: 'outline-info',
+          borderless: true,
+          icon: 'ion ion-md-eye',
+        },
+        data: {
+          routePush: { name: 'administrative-businesses-view' },
+          id: 'id',
+        }
+      }]
+    },
+    {
+      type: 'base',
+      buttons: [{
+        name: 'delete',
+        data: {
+          action: '/administration/business/',
+          id: 'id',
+          messageConfirmation: 'Esta seguro de borrar el centro de costo __name__'
+        },
+      }],
+    }],
+    configuration: {
+      urlData: '/administration/business/data',
+      filterColumns: true,
+    }
+  },
+  {
+    name: 'administrative-headquarters',
+    fields: [
+      { name: 'sau_employees_headquarters.id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true },
+      { name: 'sau_employees_headquarters.name', data: 'name', title: 'Nombre', sortable: true, searchable: true, detail: false, key: false },
+      { name: 'regional', data: 'regional', title: 'Regional', sortable: true, searchable: true, detail: false, key: false },
+      { name: '', data: 'controlls', title: 'Controles', sortable: false, searchable: false, detail: false, key: false },
+    ],
+    'controlls': [{
+      type: 'push',
+      buttons: [{
+        config: {
+          color: 'outline-success',
+          borderless: true,
+          icon: 'ion ion-md-create',
+        },
+        data: {
+          routePush: { name: 'administrative-headquarters-edit' },
+          id: 'id',
+        }
+      }, {
+        config: {
+          color: 'outline-info',
+          borderless: true,
+          icon: 'ion ion-md-eye',
+        },
+        data: {
+          routePush: { name: 'administrative-headquarters-view' },
+          id: 'id',
+        }
+      }]
+    },
+    {
+      type: 'base',
+      buttons: [{
+        name: 'delete',
+        data: {
+          action: '/administration/headquarter/',
+          id: 'id',
+          messageConfirmation: 'Esta seguro de borrar la sede __name__'
+        },
+      }],
+    }],
+    configuration: {
+      urlData: '/administration/headquarter/data',
+      filterColumns: true,
+    }
+  },
+  {
+    name: 'administrative-areas',
+    fields: [
+      { name: 'sau_employees_areas.id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true },
+      { name: 'sau_employees_areas.name', data: 'name', title: 'Nombre', sortable: true, searchable: true, detail: false, key: false },
+      { name: 'sede', data: 'sede', title: 'Sede', sortable: true, searchable: true, detail: false, key: false },
+      { name: 'regional', data: 'regional', title: 'Regional', sortable: true, searchable: true, detail: false, key: false },
+      { name: '', data: 'controlls', title: 'Controles', sortable: false, searchable: false, detail: false, key: false },
+    ],
+    'controlls': [{
+      type: 'push',
+      buttons: [{
+        config: {
+          color: 'outline-success',
+          borderless: true,
+          icon: 'ion ion-md-create',
+        },
+        data: {
+          routePush: { name: 'administrative-areas-edit' },
+          id: 'id',
+        }
+      }, {
+        config: {
+          color: 'outline-info',
+          borderless: true,
+          icon: 'ion ion-md-eye',
+        },
+        data: {
+          routePush: { name: 'administrative-areas-view' },
+          id: 'id',
+        }
+      }]
+    },
+    {
+      type: 'base',
+      buttons: [{
+        name: 'delete',
+        data: {
+          action: '/administration/area/',
+          id: 'id',
+          messageConfirmation: 'Esta seguro de borrar el área __name__'
+        },
+      }],
+    }],
+    configuration: {
+      urlData: '/administration/area/data',
+      filterColumns: true,
+    }
+  },
+  {
+    name: 'administrative-processes',
+    fields: [
+      { name: 'sau_employees_processes.id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true },
+      { name: 'sau_employees_processes.name', data: 'name', title: 'Nombre', sortable: true, searchable: true, detail: false, key: false },
+      { name: 'area', data: 'area', title: 'Área', sortable: true, searchable: true, detail: false, key: false },
+      { name: 'sede', data: 'sede', title: 'Sede', sortable: true, searchable: true, detail: false, key: false },
+      { name: 'regional', data: 'regional', title: 'Regional', sortable: true, searchable: true, detail: false, key: false },
+      { name: '', data: 'controlls', title: 'Controles', sortable: false, searchable: false, detail: false, key: false },
+    ],
+    'controlls': [{
+      type: 'push',
+      buttons: [{
+        config: {
+          color: 'outline-success',
+          borderless: true,
+          icon: 'ion ion-md-create',
+        },
+        data: {
+          routePush: { name: 'administrative-processes-edit' },
+          id: 'id',
+        }
+      }, {
+        config: {
+          color: 'outline-info',
+          borderless: true,
+          icon: 'ion ion-md-eye',
+        },
+        data: {
+          routePush: { name: 'administrative-processes-view' },
+          id: 'id',
+        }
+      }]
+    },
+    {
+      type: 'base',
+      buttons: [{
+        name: 'delete',
+        data: {
+          action: '/administration/process/',
+          id: 'id',
+          messageConfirmation: 'Esta seguro de borrar el proceso __name__'
+        },
+      }],
+    }],
+    configuration: {
+      urlData: '/administration/process/data',
+      filterColumns: true,
+    }
   }
 ];
