@@ -93,7 +93,7 @@ class AudiometryExcel implements FromCollection, WithHeadings, WithMapping, With
           $audiometries->osseous_right_pta,
           $audiometries->severity_grade_osseous_right_pta,
           $audiometries->severity_grade_osseous_right_4000,
-          $audiometries->base_type,
+          ($audiometries->base_type == 'Base' ? 'Si' : 'No'),
           Date::dateTimeToExcel($audiometries->created_at),
           Date::dateTimeToExcel($audiometries->updated_at),
         ];
@@ -152,7 +152,7 @@ class AudiometryExcel implements FromCollection, WithHeadings, WithMapping, With
           'Óseo Derecha PTA',
           'Óseo Grado de severidad Derecha PTA',
           'Óseo Grado de severidad Derecha 4000 Hz',
-          'Tipo Base',
+          'Base',
           'Fecha creación', 
           'Fecha actualización',
         ];
