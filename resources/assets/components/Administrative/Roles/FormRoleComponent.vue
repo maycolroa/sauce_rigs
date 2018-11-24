@@ -15,7 +15,7 @@
         </b-form-row>
 
         <b-form-row>
-          <vue-advanced-select :disabled="viewOnly" v-model="permission_selected" :value="permission_selected" class="col-md-12" :options="permissions_module" :limit="1000" :searchable="true" name="permissions_multiselect" label="Permisos" placeholder="Seleccione los permisos">
+          <vue-advanced-select :disabled="viewOnly" v-model="permission_selected" :value="permission_selected" class="col-md-12" :options="permissions_module" :close-on-select="false" :limit="1000" :searchable="true" name="permissions_multiselect" label="Permisos" placeholder="Seleccione los permisos">
             </vue-advanced-select>
         </b-form-row>
       </div>
@@ -31,9 +31,9 @@
           <template  v-for="(item, index) in form.permissions_asignates">
             <b-card no-body class="mb-2 border-secondary" v-if="item != undefined && Object.keys(item.permissions).length > 0" :key="index">
               <b-card-header class="bg-secondary">
-                <a class="d-flex justify-content-between text-white" href="javascript:void(0)" v-b-toggle="'accordion-' + index"> {{ item.name }} <div class="collapse-icon"></div> </a>
+                <a class="d-flex justify-content-between text-white" href="javascript:void(0)" v-b-toggle="'accordion' + index+'-1'"> {{ item.name }} <div class="collapse-icon"></div> </a>
               </b-card-header>
-              <b-collapse :id="`accordion-${index}`" visible accordion="accordion">
+              <b-collapse :id="`accordion${index}-1`" visible :accordion="`accordion${index}`">
                 <b-card-body>
                   <b-list-group>
                     <b-list-group-item v-for="(itemPermission, indexPermission) in item.permissions" 

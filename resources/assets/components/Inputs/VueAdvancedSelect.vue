@@ -19,7 +19,7 @@
                 @input="updateValue"
                 :allow-empty="true"
                 :multiple="multiple"
-                :close-on-select="!multiple"
+                :close-on-select="closeOnSelectState"
                 :limit="limit"
                 :limit-text="limitText">
             <span slot="noResult">No se encontraron elementos</span>
@@ -48,7 +48,8 @@ export default {
     multiple: { type: Boolean, default: false },
     textBlock: { type: String },
     actionBlock: { type: String },
-    limit: { type: Number, default: 5 }
+    limit: { type: Number, default: 5 },
+    closeOnSelect: {type: Boolean, default: true}
   },
   components: {
     Multiselect
@@ -103,6 +104,10 @@ export default {
       return this.textBlock
         ? "d-flex justify-content-between align-items-end"
         : "";
+    },
+    closeOnSelectState()
+    {
+      return this.closeOnSelect ? !this.multiple : this.closeOnSelect
     }
   }
 };

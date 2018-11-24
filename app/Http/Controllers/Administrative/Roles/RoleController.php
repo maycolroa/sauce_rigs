@@ -45,6 +45,7 @@ class RoleController extends Controller
     public function store(RoleRequest $request)
     {
         $role = new Role($request->all());
+        $role->display_name = $request->get('name');
         $role->company_id = Session::get('company_id');
         
         if(!$role->save())
@@ -128,6 +129,7 @@ class RoleController extends Controller
     public function update(RoleRequest $request, Role $role)
     {
         $role->fill($request->all());
+        $role->display_name = $request->get('name');
         
         if(!$role->update()) {            
             return $this->respondHttp500();
