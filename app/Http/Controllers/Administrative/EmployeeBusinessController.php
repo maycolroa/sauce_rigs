@@ -102,10 +102,10 @@ class EmployeeBusinessController extends Controller
      */
     public function destroy(EmployeeBusiness $business)
     {
-        /*if (count($business->employees) > 0)
+        if (count($business->employees) > 0)
         {
             return $this->respondWithError('No se puede eliminar el centro de costo porque hay empleados asociados a él');
-        }*/
+        }
 
         if(!$business->delete())
         {
