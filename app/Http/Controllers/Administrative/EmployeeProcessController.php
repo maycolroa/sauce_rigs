@@ -122,13 +122,34 @@ class EmployeeProcessController extends Controller
         ]);
     }
 
-    public function multiselect()
+    /**
+     * Returns an array for a select type input
+     *
+     * @param Request $request
+     * @return Array
+     */
+
+    public function multiselect(Request $request)
     {
-        $processes = EmployeeProcess::selectRaw("
-            sau_employees_areas.id as id,
-            sau_employees_areas.name as name
-        ")->pluck('id', 'name');
-        
-        return $this->multiSelectFormat($processes);
+        if($request->has('keyword'))
+        {
+            if ($request->has('area') && $request->get('area') != '')
+            {
+                $keyword = "%{$request->keyword}%";
+                $areas = EmployeeProcess::selectRaw(
+                    "sau_employees_processes.id as id,
+                    sau_employees_processes.name as name")
+                ->join('sau_employees_areas', 'sau_employees_areas.id', 'sau_employees_processes.employee_area_id')
+                ->where('employee_area_id', $request->get('area'))
+                ->where(function ($query) use ($keyword) {
+                    $query->orWhere('sau_employees_processes.name', 'like', $keyword);
+                })
+                ->take(30)->pluck('id', 'name');
+
+                return $this->respondHttp200([
+                    'options' => $this->multiSelectFormat($areas)
+                ]);
+            }
+        }
     }
 }

@@ -116,4 +116,37 @@ class EmployeeBusinessController extends Controller
             'message' => 'Se elimino el centro de costo'
         ]);
     }
+
+    /**
+     * Returns an array for a select type input
+     *
+     * @param Request $request
+     * @return Array
+     */
+
+    public function multiselect(Request $request)
+    {
+        if($request->has('keyword'))
+        {
+            $keyword = "%{$request->keyword}%";
+            $businesses = EmployeeBusiness::select("id", "name")
+                ->where(function ($query) use ($keyword) {
+                    $query->orWhere('name', 'like', $keyword);
+                })
+                ->take(30)->pluck('id', 'name');
+
+            return $this->respondHttp200([
+                'options' => $this->multiSelectFormat($businesses)
+            ]);
+        }
+        else
+        {
+            $businesses = EmployeeBusiness::selectRaw("
+                sau_employees_businesses.id as id,
+                sau_employees_businesses.name as name
+            ")->pluck('id', 'name');
+        
+            return $this->multiSelectFormat($businesses);
+        }
+    }
 }

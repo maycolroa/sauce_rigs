@@ -117,12 +117,36 @@ class EmployeePositionController extends Controller
         ]);
     }
 
-    public function multiselect(){
-        $positions = EmployeePosition::selectRaw("
-            sau_employees_positions.id as id,
-            sau_employees_positions.name as name
-        ")->pluck('id', 'name');
+    /**
+     * Returns an array for a select type input
+     *
+     * @param Request $request
+     * @return Array
+     */
+
+    public function multiselect(Request $request)
+    {
+        if($request->has('keyword'))
+        {
+            $keyword = "%{$request->keyword}%";
+            $positions = EmployeePosition::select("id", "name")
+                ->where(function ($query) use ($keyword) {
+                    $query->orWhere('name', 'like', $keyword);
+                })
+                ->take(30)->pluck('id', 'name');
+
+            return $this->respondHttp200([
+                'options' => $this->multiSelectFormat($positions)
+            ]);
+        }
+        else
+        {
+            $positions = EmployeePosition::selectRaw("
+                sau_employees_positions.id as id,
+                sau_employees_positions.name as name
+            ")->pluck('id', 'name');
         
-        return $this->multiSelectFormat($positions);
+            return $this->multiSelectFormat($positions);
+        }
     }
 }

@@ -168,5 +168,25 @@ export default [{
       path: 'processes/view/:id',
       component: () =>
         import('@/views/Administrative/processes/view')
+    }, {
+      name: 'administrative-employees',
+      path: 'employees',
+      component: () =>
+        import('@/views/Administrative/employees/index')
+    }, {
+      name: 'administrative-employees-create',
+      path: 'employees/create',
+      component: () =>
+        import('@/views/Administrative/employees/create')
+    }, {
+      name: 'administrative-employees-edit',
+      path: 'employees/edit/:id',
+      component: () =>
+        import('@/views/Administrative/employees/edit')
+    }, {
+      name: 'administrative-employees-view',
+      path: 'employees/view/:id',
+      component: () =>
+        import('@/views/Administrative/employees/view')
     }]
   }]

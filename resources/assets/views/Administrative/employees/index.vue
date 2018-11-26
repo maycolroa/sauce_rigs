@@ -1,7 +1,7 @@
 <template>
   <div>
     <h4 class="font-weight-bold mb-4">
-      Procesos
+      Empleados
     </h4>
 
 
@@ -9,12 +9,12 @@
       <b-card no-body>
         <b-card-header class="with-elements">
           <div class="card-title-elements">
-            <b-btn :to="{name:'administrative-processes-create'}" variant="primary">Crear Proceso</b-btn>
+            <b-btn :to="{name:'administrative-employees-create'}" variant="primary">Crear Empleado</b-btn>
           </div>
         </b-card-header>
         <b-card-body>
              <vue-table
-                configName="administrative-processes"
+                configName="administrative-employees"
                 ></vue-table>
         </b-card-body>
     </b-card>
@@ -26,9 +26,9 @@
 import Alerts from '@/utils/Alerts.js';
 
 export default {
-  name: 'processes',
+  name: 'employees',
   metaInfo: {
-    title: 'Procesos'
+    title: 'Empleados'
   }
 }
 </script>

@@ -149,7 +149,15 @@ return [
       'permissions_asignates' => 'Permisos',
       'employee_regional_id' => 'Regional',
       'employee_headquarter_id' => 'Sede',
-      'employee_area_id' => 'Área'
+      'employee_area_id' => 'Área',
+      'employee_process_id' => 'Proceso',
+      'employee_eps_id' => 'EPS',
+      'employee_business_id' => 'Centro de costo',
+      'employee_position_id' => 'Cargo',
+      'sex' => 'Sexo',
+      'identification' => 'Identificacón',
+      'date_of_birth' => 'Fecha de cumpleaños',
+      'income_date' => 'Fecha de ingreso'
     ],
 
 ];

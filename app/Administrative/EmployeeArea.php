@@ -32,7 +32,7 @@ class EmployeeArea extends Model
     public function multiselect()
     {
         return [
-            'name' => $this->headquarter->regional->name.' / '.$this->headquarter->name. ' / '.$this->name,
+            'name' => $this->name,
             'value' => $this->id
         ];
     }

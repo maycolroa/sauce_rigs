@@ -33,6 +33,10 @@
             {
                 "name": "processes",
                 "display_name": "Procesos"
+            },
+            {
+                "name": "employees",
+                "display_name": "Empleados"
             }
         ]
     },

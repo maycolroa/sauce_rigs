@@ -46,10 +46,15 @@ Route::middleware(['auth'])->group(function () {
         Route::post('modulesGroup', 'ApplicationController@multiselectGroupModules');
         Route::post('permissions', 'Administrative\Roles\RoleController@multiselectPermissions');
         Route::post('areas', 'Administrative\EmployeeAreaController@multiselect');  
-        Route::post('regionales', 'Administrative\EmployeeRegionalController@multiselect');
+        /*Route::post('regionales', 'Administrative\EmployeeRegionalController@multiselect');*/
         Route::post('years/audiometry', 'ApplicationController@multiselectYears');  
         Route::post('regionals', 'Administrative\EmployeeRegionalController@multiselect');
         Route::post('headquarters', 'Administrative\EmployeeHeadquarterController@multiselect');  
+        Route::post('sexs', 'ApplicationController@multiselectSexs');  
+        Route::post('processes', 'Administrative\EmployeeProcessController@multiselect');
+        Route::post('positions', 'Administrative\EmployeePositionController@multiselect');
+        Route::post('businesses', 'Administrative\EmployeeBusinessController@multiselect');
+        Route::post('eps', 'ApplicationController@multiselectEps');
     });
 
     //Administrativo
@@ -78,6 +83,9 @@ Route::middleware(['auth'])->group(function () {
 
       Route::post('process/data', 'Administrative\EmployeeProcessController@data');
       Route::ApiResource('process', 'Administrative\EmployeeProcessController');
+
+      Route::post('employee/data', 'Administrative\EmployeesController@data');
+      Route::ApiResource('employee', 'Administrative\EmployeesController');
     });
 
     //Return view for spa

@@ -51,6 +51,8 @@ export default {
         actionBlock: {type: String},
         url: { type: String, required: true },
         selectedObject: { type: Object },
+        parameters: { type: Object},
+        emptyAll: {type: Boolean, default: false}
     },
     components:{
         Multiselect,
@@ -60,7 +62,8 @@ export default {
             selectValue: [],
             allowEvent: true,
             options: [],
-            isLoading: false
+            isLoading: false,
+            postData: ''
         }
     },
     methods: {
@@ -74,7 +77,16 @@ export default {
         },
         asyncFind(keyword) {
             this.isLoading = true;
-            axios.post(this.url, {keyword})
+
+            if (this.parameters)
+            {
+                this.postData = Object.assign({}, {keyword}, this.parameters);
+            }
+            else
+            {
+                this.postData = {keyword}
+            }
+            axios.post(this.url, this.postData)
                 .then(resp => {
                     this.isLoading = false;
                     if (resp.data.options) {
@@ -91,6 +103,14 @@ export default {
       selectedObject(){
         this.selectValue = this.selectedObject;
         this.options.push(this.selectedObject);
+      },
+      emptyAll(){
+        if (this.emptyAll)
+        {
+            this.selectValue = []
+            this.options.splice(0)
+            this.$emit('updateEmpty')
+        }
       }
     },
     mounted() {

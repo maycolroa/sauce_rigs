@@ -32,7 +32,7 @@ class EmployeeHeadquarter extends Model
     public function multiselect()
     {
         return [
-            'name' => $this->regional->name.' / '.$this->name,
+            'name' => $this->name,
             'value' => $this->id
         ];
     }

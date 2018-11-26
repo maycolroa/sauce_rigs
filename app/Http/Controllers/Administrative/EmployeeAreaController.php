@@ -136,22 +136,23 @@ class EmployeeAreaController extends Controller
     {
         if($request->has('keyword'))
         {
-            $keyword = "%{$request->keyword}%";
-            $areas = EmployeeArea::selectRaw(
-                "sau_employees_areas.id as id,
-                CONCAT(sau_employees_regionals.name, ' / ', sau_employees_headquarters.name, ' / ', sau_employees_areas.name) as name")
-            ->join('sau_employees_headquarters', 'sau_employees_headquarters.id', 'sau_employees_areas.employee_headquarter_id')
-            ->join('sau_employees_regionals', 'sau_employees_regionals.id', 'sau_employees_headquarters.employee_regional_id')
-            ->where(function ($query) use ($keyword) {
-                $query->orWhere('sau_employees_regionals.name', 'like', $keyword);
-                $query->orWhere('sau_employees_headquarters.name', 'like', $keyword);
-                $query->orWhere('sau_employees_areas.name', 'like', $keyword);
-            })
-            ->take(30)->pluck('id', 'name');
+            if ($request->has('headquarter') && $request->get('headquarter') != '')
+            {
+                $keyword = "%{$request->keyword}%";
+                $areas = EmployeeArea::selectRaw(
+                    "sau_employees_areas.id as id,
+                    sau_employees_areas.name as name")
+                ->join('sau_employees_headquarters', 'sau_employees_headquarters.id', 'sau_employees_areas.employee_headquarter_id')
+                ->where('employee_headquarter_id', $request->get('headquarter'))
+                ->where(function ($query) use ($keyword) {
+                    $query->orWhere('sau_employees_areas.name', 'like', $keyword);
+                })
+                ->take(30)->pluck('id', 'name');
 
-            return $this->respondHttp200([
-                'options' => $this->multiSelectFormat($areas)
-            ]);
+                return $this->respondHttp200([
+                    'options' => $this->multiSelectFormat($areas)
+                ]);
+            }
         }
         else
         {

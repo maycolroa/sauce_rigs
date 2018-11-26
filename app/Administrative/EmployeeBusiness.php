@@ -20,4 +20,12 @@ class EmployeeBusiness extends Model
     {
         return $this->hasMany(Employee::class, 'employee_business_id');
     }*/
+
+    public function multiselect()
+    {
+        return [
+            'name' => $this->name,
+            'value' => $this->id
+        ];
+    }
 }
