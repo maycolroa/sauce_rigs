@@ -9,6 +9,7 @@
         <b-card-body>
             <administrative-area-form
                 :area="data"
+                :disable-wacth-select-in-created="true"
                 :view-only="true"
                 :cancel-url="{ name: 'administrative-areas'}"/>
         </b-card-body>

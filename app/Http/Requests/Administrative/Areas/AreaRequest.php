@@ -28,7 +28,8 @@ class AreaRequest extends FormRequest
 
         return [
             'name' => 'required|string|unique:sau_employees_areas,name,'.$id.',id,employee_headquarter_id,'.$employee_headquarter_id,
-            'employee_headquarter_id' => 'required|exists:sau_employees_headquarters,id'
+            'employee_regional_id' => 'required|exists:sau_employees_regionals,id',
+            'employee_headquarter_id' => 'required|exists:sau_employees_headquarters,id',
         ];
     }
 }

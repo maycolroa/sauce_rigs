@@ -10,7 +10,9 @@
             <administrative-area-form 
                 :url="`/administration/area/${this.$route.params.id}`"
                 method="PUT"
+                regionals-data-url="/selects/regionals"
                 headquarters-data-url="/selects/headquarters"
+                :disable-wacth-select-in-created="true"
                 :area="data"
                 :is-edit="true"
                 :cancel-url="{ name: 'administrative-areas'}"/>

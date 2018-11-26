@@ -11,6 +11,7 @@
             <administrative-area-form 
                 url="/administration/area"
                 method="POST"
+                regionals-data-url="/selects/regionals"
                 headquarters-data-url="/selects/headquarters"
                 :cancel-url="{ name: 'administrative-areas'}"/>
         </b-card-body>

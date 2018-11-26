@@ -71,8 +71,9 @@ class EmployeeAreaController extends Controller
         try
         {
             $area = EmployeeArea::findOrFail($id);
-
-            $area->multiselect_headquarter = $area->headquarter->multiselect(); 
+            $area->employee_regional_id = $area->headquarter->regional->id;
+            $area->multiselect_regional = $area->headquarter->regional->multiselect(); 
+            $area->multiselect_sede = $area->headquarter->multiselect(); 
 
             return $this->respondHttp200([
                 'data' => $area,
