@@ -107,9 +107,9 @@ class EmployeeHeadquarterController extends Controller
      */
     public function destroy(EmployeeHeadquarter $headquarter)
     {
-        if (count($headquarter->areas) > 0)
+        if (count($headquarter->employees) > 0 || count($headquarter->areas) > 0)
         {
-            return $this->respondWithError('No se puede eliminar la sede porque hay áreas asociadas a ella');
+            return $this->respondWithError('No se puede eliminar la sede porque hay empleados/áreas asociadas a ella');
         }
 
         if(!$headquarter->delete())

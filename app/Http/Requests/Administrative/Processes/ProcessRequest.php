@@ -28,6 +28,8 @@ class ProcessRequest extends FormRequest
 
         return [
             'name' => 'required|string|unique:sau_employees_processes,name,'.$id.',id,employee_area_id,'.$employee_area_id,
+            'employee_regional_id' => 'required|exists:sau_employees_regionals,id',
+            'employee_headquarter_id' => 'required|exists:sau_employees_headquarters,id',
             'employee_area_id' => 'required|exists:sau_employees_areas,id'
         ];
     }

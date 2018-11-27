@@ -29,6 +29,11 @@ class EmployeeHeadquarter extends Model
         return $this->hasMany(EmployeeArea::class, 'employee_headquarter_id');
     }
 
+    public function employees()
+    {
+        return $this->hasMany(Employee::class, 'employee_headquarter_id');
+    }
+
     public function multiselect()
     {
         return [

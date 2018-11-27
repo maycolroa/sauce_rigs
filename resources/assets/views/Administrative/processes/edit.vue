@@ -10,7 +10,10 @@
             <administrative-process-form 
                 :url="`/administration/process/${this.$route.params.id}`"
                 method="PUT"
+                regionals-data-url="/selects/regionals"
+                headquarters-data-url="/selects/headquarters"
                 areas-data-url="/selects/areas"
+                :disable-wacth-select-in-created="true"
                 :process="data"
                 :is-edit="true"
                 :cancel-url="{ name: 'administrative-processes'}"/>

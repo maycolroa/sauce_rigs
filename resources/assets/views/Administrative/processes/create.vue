@@ -11,6 +11,8 @@
             <administrative-process-form 
                 url="/administration/process"
                 method="POST"
+                regionals-data-url="/selects/regionals"
+                headquarters-data-url="/selects/headquarters"
                 areas-data-url="/selects/areas"
                 :cancel-url="{ name: 'administrative-processes'}"/>
         </b-card-body>

@@ -73,7 +73,11 @@ class EmployeeProcessController extends Controller
         try
         {
             $process = EmployeeProcess::findOrFail($id);
-
+            $process->employee_regional_id = $process->area->headquarter->regional->id;
+            $process->employee_headquarter_id = $process->area->headquarter->id;
+            $process->employee_area_id = $process->area->id;
+            $process->multiselect_regional = $process->area->headquarter->regional->multiselect(); 
+            $process->multiselect_sede = $process->area->headquarter->multiselect(); 
             $process->multiselect_area = $process->area->multiselect(); 
 
             return $this->respondHttp200([
@@ -112,6 +116,11 @@ class EmployeeProcessController extends Controller
      */
     public function destroy(EmployeeProcess $process)
     {
+        if (count($process->employees) > 0)
+        {
+            return $this->respondWithError('No se puede eliminar el proceso porque hay empleados asociados a él');
+        }
+
         if(!$process->delete())
         {
             return $this->respondHttp500();

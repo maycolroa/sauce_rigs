@@ -10,6 +10,7 @@
             <administrative-process-form
                 :process="data"
                 :view-only="true"
+                :disable-wacth-select-in-created="true"
                 :cancel-url="{ name: 'administrative-processes'}"/>
         </b-card-body>
       </b-card>
