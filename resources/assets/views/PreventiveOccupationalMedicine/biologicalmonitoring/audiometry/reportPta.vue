@@ -79,7 +79,7 @@ export default {
         this.$router.go(-1);
     });
 
-    GlobalMethods.getDataMultiselect('/selects/regionales')
+    GlobalMethods.getDataMultiselect('/selects/regionals')
     .then(response => {
         this.regionales = response;
     })

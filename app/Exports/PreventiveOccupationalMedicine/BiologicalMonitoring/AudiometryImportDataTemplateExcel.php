@@ -19,7 +19,7 @@ Sheet::macro('styleCells', function (Sheet $sheet, string $cellRange, array $sty
   $sheet->getDelegate()->getStyle($cellRange)->applyFromArray($style);
 });
 
-class AudiometryImportErrorDataExcel implements FromCollection, WithHeadings, WithMapping, WithColumnFormatting, WithEvents, WithTitle
+class AudiometryImportDataTemplateExcel implements FromCollection, WithHeadings, WithMapping, WithColumnFormatting, WithEvents, WithTitle
 {
     use RegistersEventListeners;
 
@@ -55,13 +55,16 @@ class AudiometryImportErrorDataExcel implements FromCollection, WithHeadings, Wi
         return [
           'Identificacion',
           'Nombre',
-          'Sexo',
+          'Sexo (M, F)',
           'Email',
           'Fecha Nacimiento',
-          'Area',
           'Cargo',
-          'EPS (Los posibles valores se encuentran en la pestaña “EPS”, se debe ingresar el codigo de la EPS)',
+          'Centro de Costo',
           'Regional',
+          'Sede',
+          'Área',
+          'Proceso',
+          'EPS (Los posibles valores se encuentran en la pestaña “EPS”, se debe ingresar el codigo de la EPS)',
           'Fecha Ingreso Empresa',
           'Fecha',
           'Eventos Previos',
@@ -101,11 +104,8 @@ class AudiometryImportErrorDataExcel implements FromCollection, WithHeadings, Wi
         return [
             'A' => NumberFormat::FORMAT_NUMBER,
             'E' => NumberFormat::FORMAT_DATE_DDMMYYYY,
-            'J' => NumberFormat::FORMAT_DATE_DDMMYYYY,
-            'K' => NumberFormat::FORMAT_DATE_DDMMYYYY,
-            'O' => NumberFormat::FORMAT_NUMBER,
-            'P' => NumberFormat::FORMAT_NUMBER,
-            'Q' => NumberFormat::FORMAT_NUMBER,
+            'M' => NumberFormat::FORMAT_DATE_DDMMYYYY,
+            'N' => NumberFormat::FORMAT_DATE_DDMMYYYY,
             'R' => NumberFormat::FORMAT_NUMBER,
             'S' => NumberFormat::FORMAT_NUMBER,
             'T' => NumberFormat::FORMAT_NUMBER,
@@ -126,21 +126,125 @@ class AudiometryImportErrorDataExcel implements FromCollection, WithHeadings, Wi
             'AI' => NumberFormat::FORMAT_NUMBER,
             'AJ' => NumberFormat::FORMAT_NUMBER,
             'AK' => NumberFormat::FORMAT_NUMBER,
-            'AL' => NumberFormat::FORMAT_NUMBER
+            'AL' => NumberFormat::FORMAT_NUMBER,
+            'AM' => NumberFormat::FORMAT_NUMBER,
+            'AN' => NumberFormat::FORMAT_NUMBER,
+            'AO' => NumberFormat::FORMAT_NUMBER
         ];
     }
 
     public static function afterSheet(AfterSheet $event)
     {
+      $red = "d9534f";
+      $blue = "5Bc0de";
+      $yellow = "f4d75e";
+      $white = "FFFFFF";
+
       $event->sheet->styleCells(
-        'A1:AN1',
+        'A1:AQ1',
           [
             'alignment' => [
               'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT,
               'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
             ],
             'font' => [
-              'bold' => true,
+                'name' => 'Arial',
+            ]
+          ]
+      );
+
+      $event->sheet->styleCells(
+        'A1:Q1',
+          [
+            'fill' => [
+                'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_GRADIENT_LINEAR,
+                'rotation' => 90,
+                'startColor' => [
+                    'rgb' => $white
+                ],
+                'endColor' => [
+                    'rgb' => $yellow
+                ],
+            ]
+          ]
+      );
+
+      $event->sheet->styleCells(
+        'R1:X1',
+          [
+            'fill' => [
+                'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_GRADIENT_LINEAR,
+                'rotation' => 90,
+                'startColor' => [
+                    'rgb' => $white
+                ],
+                'endColor' => [
+                    'rgb' => $red
+                ],
+            ]
+          ]
+      );
+
+      $event->sheet->styleCells(
+        'Y1:AE1',
+          [
+            'fill' => [
+                'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_GRADIENT_LINEAR,
+                'rotation' => 90,
+                'startColor' => [
+                    'rgb' => $white
+                ],
+                'endColor' => [
+                    'rgb' => $blue
+                ],
+            ]
+          ]
+      );
+
+      $event->sheet->styleCells(
+        'AF1:AJ1',
+          [
+            'fill' => [
+                'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_GRADIENT_LINEAR,
+                'rotation' => 90,
+                'startColor' => [
+                    'rgb' => $white
+                ],
+                'endColor' => [
+                    'rgb' => $red
+                ],
+            ]
+          ]
+      );
+
+      $event->sheet->styleCells(
+        'AK1:AO1',
+          [
+            'fill' => [
+                'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_GRADIENT_LINEAR,
+                'rotation' => 90,
+                'startColor' => [
+                    'rgb' => $white
+                ],
+                'endColor' => [
+                    'rgb' => $blue
+                ],
+            ]
+          ]
+      );
+
+      $event->sheet->styleCells(
+        'AP1:AQ1',
+          [
+            'fill' => [
+                'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_GRADIENT_LINEAR,
+                'rotation' => 90,
+                'startColor' => [
+                    'rgb' => $white
+                ],
+                'endColor' => [
+                    'rgb' => $yellow
+                ],
             ]
           ]
       );

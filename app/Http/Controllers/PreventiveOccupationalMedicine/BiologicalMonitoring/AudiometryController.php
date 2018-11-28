@@ -134,7 +134,7 @@ class AudiometryController extends Controller
     public function export()
     {
       try{
-        AudiometryExportJob::dispatch(Auth::user());
+        AudiometryExportJob::dispatch(Auth::user(), Session::get('company_id'));
       
         return $this->respondHttp200();
       }catch(Exception $e){

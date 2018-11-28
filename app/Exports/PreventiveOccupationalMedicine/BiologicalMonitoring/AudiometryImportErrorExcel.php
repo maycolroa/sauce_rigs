@@ -4,8 +4,8 @@ namespace App\Exports\PreventiveOccupationalMedicine\BiologicalMonitoring;
 
 use Maatwebsite\Excel\Concerns\Exportable;
 use Maatwebsite\Excel\Concerns\WithMultipleSheets;
-use App\Exports\PreventiveOccupationalMedicine\BiologicalMonitoring\AudiometryImportErrorDataExcel;
-use App\Exports\PreventiveOccupationalMedicine\BiologicalMonitoring\AudiometryImportErrorEpsExcel;
+use App\Exports\PreventiveOccupationalMedicine\BiologicalMonitoring\AudiometryImportDataTemplateExcel;
+use App\Exports\PreventiveOccupationalMedicine\BiologicalMonitoring\AudiometryImportEpsTemplateExcel;
 use App\Exports\PreventiveOccupationalMedicine\BiologicalMonitoring\AudiometryImportErrorListExcel;
 
 class AudiometryImportErrorExcel implements WithMultipleSheets
@@ -28,8 +28,8 @@ class AudiometryImportErrorExcel implements WithMultipleSheets
     {
         $sheets = [];
 
-        $sheets[] = new AudiometryImportErrorDataExcel($this->data);
-        $sheets[] = new AudiometryImportErrorEpsExcel();
+        $sheets[] = new AudiometryImportDataTemplateExcel($this->data);
+        $sheets[] = new AudiometryImportEpsTemplateExcel();
         $sheets[] = new AudiometryImportErrorListExcel($this->errors);
 
         return $sheets;

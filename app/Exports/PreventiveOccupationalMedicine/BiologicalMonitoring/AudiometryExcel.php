@@ -197,6 +197,11 @@ class AudiometryExcel implements FromCollection, WithHeadings, WithMapping, With
 
     public static function afterSheet(AfterSheet $event)
     {
+        $red = "d9534f";
+        $blue = "5Bc0de";
+        $yellow = "f4d75e";
+        $white = "FFFFFF";
+
       $event->sheet->styleCells(
         'A1:BA1',
           [
@@ -205,7 +210,135 @@ class AudiometryExcel implements FromCollection, WithHeadings, WithMapping, With
               'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
             ],
             'font' => [
-              'bold' => true,
+              'name' => 'Arial',
+            ]
+          ]
+      );
+
+      $event->sheet->styleCells(
+        'A1:H1',
+          [
+            'fill' => [
+                'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_GRADIENT_LINEAR,
+                'rotation' => 90,
+                'startColor' => [
+                    'rgb' => $white
+                ],
+                'endColor' => [
+                    'rgb' => $yellow
+                ],
+            ]
+          ]
+      );
+
+      $event->sheet->styleCells(
+        'I1:O1',
+          [
+            'fill' => [
+                'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_GRADIENT_LINEAR,
+                'rotation' => 90,
+                'startColor' => [
+                    'rgb' => $white
+                ],
+                'endColor' => [
+                    'rgb' => $blue
+                ],
+            ]
+          ]
+      );
+
+      $event->sheet->styleCells(
+        'P1:V1',
+          [
+            'fill' => [
+                'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_GRADIENT_LINEAR,
+                'rotation' => 90,
+                'startColor' => [
+                    'rgb' => $white
+                ],
+                'endColor' => [
+                    'rgb' => $red
+                ],
+            ]
+          ]
+      );
+
+      $event->sheet->styleCells(
+        'W1:AA1',
+          [
+            'fill' => [
+                'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_GRADIENT_LINEAR,
+                'rotation' => 90,
+                'startColor' => [
+                    'rgb' => $white
+                ],
+                'endColor' => [
+                    'rgb' => $blue
+                ],
+            ]
+          ]
+      );
+
+      $event->sheet->styleCells(
+        'AB1:AF1',
+          [
+            'fill' => [
+                'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_GRADIENT_LINEAR,
+                'rotation' => 90,
+                'startColor' => [
+                    'rgb' => $white
+                ],
+                'endColor' => [
+                    'rgb' => $red
+                ],
+            ]
+          ]
+      );
+
+      $event->sheet->styleCells(
+        'AG1:AO1',
+          [
+            'fill' => [
+                'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_GRADIENT_LINEAR,
+                'rotation' => 90,
+                'startColor' => [
+                    'rgb' => $white
+                ],
+                'endColor' => [
+                    'rgb' => $blue
+                ],
+            ]
+          ]
+      );
+
+      $event->sheet->styleCells(
+        'AP1:AX1',
+          [
+            'fill' => [
+                'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_GRADIENT_LINEAR,
+                'rotation' => 90,
+                'startColor' => [
+                    'rgb' => $white
+                ],
+                'endColor' => [
+                    'rgb' => $red
+                ],
+            ]
+          ]
+      );
+
+      $event->sheet->styleCells(
+        'AY1:BB1',
+          [
+            'fill' => [
+                'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_GRADIENT_LINEAR,
+                'rotation' => 90,
+                'startColor' => [
+                    'rgb' => $white
+                ],
+                'endColor' => [
+                    'rgb' => $yellow
+                ],
             ]
           ]
       );

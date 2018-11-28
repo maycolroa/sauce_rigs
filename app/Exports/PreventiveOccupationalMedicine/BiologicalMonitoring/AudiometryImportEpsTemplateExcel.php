@@ -11,7 +11,7 @@ use Maatwebsite\Excel\Concerns\WithEvents;
 use Maatwebsite\Excel\Concerns\RegistersEventListeners;
 use Maatwebsite\Excel\Events\AfterSheet;
 
-class AudiometryImportErrorEpsExcel implements FromQuery, WithMapping, WithHeadings, WithTitle, WithEvents
+class AudiometryImportEpsTemplateExcel implements FromQuery, WithMapping, WithHeadings, WithTitle, WithEvents
 {
     use RegistersEventListeners;
 
@@ -57,7 +57,8 @@ class AudiometryImportErrorEpsExcel implements FromQuery, WithMapping, WithHeadi
               'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
             ],
             'font' => [
-              'bold' => true,
+               'name' => 'Arial', 
+               'bold' => true,
             ]
           ]
       );
