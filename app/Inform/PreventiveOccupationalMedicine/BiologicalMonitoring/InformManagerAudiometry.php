@@ -29,19 +29,21 @@ class InformManagerAudiometry
     protected $areas;
     protected $processes;
     protected $businesses;
+    protected $positions;
     protected $years;
 
     /**
      * create an instance and set the attribute class
      * @param array $regionals
      */
-    function __construct($regionals = [], $headquarters = [], $areas = [], $processes = [], $businesses = [], $years = [])
+    function __construct($regionals = [], $headquarters = [], $areas = [], $processes = [], $businesses = [], $positions = [], $years = [])
     {
         $this->regionals = $regionals;
         $this->headquarters = $headquarters;
         $this->areas = $areas;
         $this->processes = $processes;
         $this->businesses = $businesses;
+        $this->positions = $positions;
         $this->years = $years;
     }
 
@@ -82,6 +84,7 @@ class InformManagerAudiometry
         ->inAreas($this->areas)
         ->inProcesses($this->processes)
         ->inBusinesses($this->businesses)
+        ->inPositions($this->positions)
         ->inYears($this->years)
         ->where('severity_grade_air_left_pta', '<>', '')
         ->groupBy('severity_grade_air_left_pta')
@@ -106,6 +109,7 @@ class InformManagerAudiometry
         ->inAreas($this->areas)
         ->inProcesses($this->processes)
         ->inBusinesses($this->businesses)
+        ->inPositions($this->positions)
         ->inYears($this->years)
         ->where('severity_grade_air_right_pta', '<>', '')
         ->groupBy('severity_grade_air_right_pta')

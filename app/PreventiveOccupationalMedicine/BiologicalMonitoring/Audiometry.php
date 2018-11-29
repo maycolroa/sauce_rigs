@@ -190,6 +190,22 @@ class Audiometry extends Model
     }
 
     /**
+     * filters checks through the given positions
+     * @param  Illuminate\Database\Eloquent\Builder $query
+     * @param  array $positions
+     * @return Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeInPositions($query, $positions)
+    {
+        $query->where(function ($subquery) use ($positions) {
+            foreach ($positions as $positionId) {
+                $subquery->orWhere('sau_employees.employee_position_id', $positionId);
+            }
+        });
+        return $query;
+    }
+
+    /**
      * filters checks through the given years
      * @param  Illuminate\Database\Eloquent\Builder $query
      * @param  array $years

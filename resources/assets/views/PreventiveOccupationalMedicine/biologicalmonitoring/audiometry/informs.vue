@@ -23,6 +23,10 @@
                     <b-row>
                         <b-col><vue-advanced-select v-model="selectedBusinesses" :multiple="true" :options="businesses" :searchable="true" name="businesses" label="Centros de costo">
                             </vue-advanced-select></b-col>
+                        <b-col><vue-advanced-select v-model="selectedPositions" :multiple="true" :options="positions" :searchable="true" name="positions" label="Cargos">
+                            </vue-advanced-select></b-col>
+                    </b-row>
+                    <b-row>
                         <b-col><vue-advanced-select v-model="selectedYears" :multiple="true" :options="years" :searchable="true" name="years" label="Años">
                             </vue-advanced-select></b-col>
                     </b-row>
@@ -83,6 +87,8 @@ export default {
             selectedProcesses: [],
             businesses: [],
             selectedBusinesses: [],
+            positions: [],
+            selectedPositions: [],
             years: [],
             selectedYears: [],
 
@@ -93,6 +99,7 @@ export default {
                 areas: false,
                 processes: false,
                 businesses: false,
+                positions: false,
                 years: false
             },
             isLoading: false,
@@ -113,6 +120,7 @@ export default {
         this.fetchSelect('areas', '/selects/areas')
         this.fetchSelect('processes', '/selects/processes')
         this.fetchSelect('businesses', '/selects/businesses')
+        this.fetchSelect('positions', '/selects/positions')
         this.fetchSelect('years', '/selects/years/audiometry')
     },
     watch: {
@@ -136,6 +144,10 @@ export default {
             this.selectedBusinesses = this.businesses
             this.ready.businesses = true
         },
+        positions() {
+            this.selectedPositions = this.positions
+            this.ready.positions = true
+        },
         years() {
             this.selectedYears = this.years
             this.ready.years = true
@@ -153,6 +165,9 @@ export default {
             this.fetch()
         },
         selectedBusinesses() {
+            this.fetch()
+        },
+        selectedPositions() {
             this.fetch()
         },
         selectedYears() {
@@ -173,7 +188,7 @@ export default {
         },
         isReady()
         {
-            if (this.ready.regionals && this.ready.headquarters && this.ready.areas && this.ready.processes && this.ready.businesses && this.ready.years)
+            if (this.ready.regionals && this.ready.headquarters && this.ready.areas && this.ready.processes && this.ready.businesses && this.ready.positions && this.ready.years)
             {
                 return true
             }
@@ -193,6 +208,7 @@ export default {
                     areas: this.selectedAreas,
                     processes: this.selectedProcesses,
                     businesses: this.selectedBusinesses,
+                    positions: this.selectedPositions,
                     years: this.selectedYears
                 })
                 .then(data => {
