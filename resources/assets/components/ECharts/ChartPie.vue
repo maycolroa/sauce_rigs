@@ -1,7 +1,15 @@
 <template>
+    <div>
       <vue-echart :options="pieOptions"
           ref="pie"
-          :auto-resize="true"/>
+          :auto-resize="true"
+          v-show="!displayEmpty"/>
+        <b-container v-show="displayEmpty">
+            <b-row align-h="center">
+                <b-col cols="6">No hay resultados</b-col>
+            </b-row>
+        </b-container>
+    </div>
 </template>
 
 <style>
@@ -97,6 +105,11 @@ export default {
   },
   created(){
 
+  },
+  computed: {
+    displayEmpty () {
+        return (this.chartData.datasets.data != undefined && this.chartData.datasets.data.length > 0) ? false : true
+    }
   },
   methods: {
     showLoading()

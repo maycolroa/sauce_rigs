@@ -9,25 +9,25 @@
             <b-card no-body>
                 <b-card-body>
                     <b-row>
-                        <b-col><vue-advanced-select v-model="selectedRegionals" :multiple="true" :options="regionals" :searchable="true" name="regionals" label="Regionales">
+                        <b-col><vue-advanced-select :disabled="isLoading" v-model="selectedRegionals" :multiple="true" :options="regionals" :searchable="true" name="regionals" label="Regionales">
                             </vue-advanced-select></b-col>
-                        <b-col><vue-advanced-select v-model="selectedHeadquarters" :multiple="true" :options="headquarters" :searchable="true" name="headquarters" label="Sedes">
-                            </vue-advanced-select></b-col>
-                    </b-row>
-                    <b-row>
-                        <b-col><vue-advanced-select v-model="selectedAreas" :multiple="true" :options="areas" :searchable="true" name="areas" label="Áreas">
-                            </vue-advanced-select></b-col>
-                        <b-col><vue-advanced-select v-model="selectedProcesses" :multiple="true" :options="processes" :searchable="true" name="processes" label="Procesos">
+                        <b-col><vue-advanced-select :disabled="isLoading" v-model="selectedHeadquarters" :multiple="true" :options="headquarters" :searchable="true" name="headquarters" label="Sedes">
                             </vue-advanced-select></b-col>
                     </b-row>
                     <b-row>
-                        <b-col><vue-advanced-select v-model="selectedBusinesses" :multiple="true" :options="businesses" :searchable="true" name="businesses" label="Centros de costo">
+                        <b-col><vue-advanced-select :disabled="isLoading" v-model="selectedAreas" :multiple="true" :options="areas" :searchable="true" name="areas" label="Áreas">
                             </vue-advanced-select></b-col>
-                        <b-col><vue-advanced-select v-model="selectedPositions" :multiple="true" :options="positions" :searchable="true" name="positions" label="Cargos">
+                        <b-col><vue-advanced-select :disabled="isLoading" v-model="selectedProcesses" :multiple="true" :options="processes" :searchable="true" name="processes" label="Procesos">
                             </vue-advanced-select></b-col>
                     </b-row>
                     <b-row>
-                        <b-col><vue-advanced-select v-model="selectedYears" :multiple="true" :options="years" :searchable="true" name="years" label="Años">
+                        <b-col><vue-advanced-select :disabled="isLoading" v-model="selectedBusinesses" :multiple="true" :options="businesses" :searchable="true" name="businesses" label="Centros de costo">
+                            </vue-advanced-select></b-col>
+                        <b-col><vue-advanced-select :disabled="isLoading" v-model="selectedPositions" :multiple="true" :options="positions" :searchable="true" name="positions" label="Cargos">
+                            </vue-advanced-select></b-col>
+                    </b-row>
+                    <b-row>
+                        <b-col><vue-advanced-select :disabled="isLoading" v-model="selectedYears" :multiple="true" :options="years" :searchable="true" name="years" label="Años">
                             </vue-advanced-select></b-col>
                     </b-row>
                 </b-card-body>
@@ -197,7 +197,7 @@ export default {
         },
         fetch()
         {
-            if (this.isReady())
+            if (this.isReady() && !this.isLoading)
             {
                 console.log('buscando...')
                 this.isLoading = true;
@@ -212,7 +212,6 @@ export default {
                     years: this.selectedYears
                 })
                 .then(data => {
-                    console.log(data)
                     this.update(data);
                     this.isLoading = false;
                 })
