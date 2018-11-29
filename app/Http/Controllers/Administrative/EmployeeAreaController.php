@@ -159,7 +159,7 @@ class EmployeeAreaController extends Controller
         {
             $areas = EmployeeArea::selectRaw(
                     "sau_employees_areas.id as id,
-                    CONCAT(sau_employees_regionals.name, ' / ', sau_employees_headquarters.name, ' / ', sau_employees_areas.name) as name")
+                    sau_employees_areas.name as name")
                 ->join('sau_employees_headquarters', 'sau_employees_headquarters.id', 'sau_employees_areas.employee_headquarter_id')
                 ->join('sau_employees_regionals', 'sau_employees_regionals.id', 'sau_employees_headquarters.employee_regional_id')->pluck('id', 'name');
         

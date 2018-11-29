@@ -145,7 +145,7 @@ class EmployeeProcessController extends Controller
             if ($request->has('area') && $request->get('area') != '')
             {
                 $keyword = "%{$request->keyword}%";
-                $areas = EmployeeProcess::selectRaw(
+                $processes = EmployeeProcess::selectRaw(
                     "sau_employees_processes.id as id,
                     sau_employees_processes.name as name")
                 ->join('sau_employees_areas', 'sau_employees_areas.id', 'sau_employees_processes.employee_area_id')
@@ -156,9 +156,20 @@ class EmployeeProcessController extends Controller
                 ->take(30)->pluck('id', 'name');
 
                 return $this->respondHttp200([
-                    'options' => $this->multiSelectFormat($areas)
+                    'options' => $this->multiSelectFormat($processes)
                 ]);
             }
+        }
+        else
+        {
+            $processes = EmployeeProcess::selectRaw(
+                    "sau_employees_processes.id as id,
+                    sau_employees_processes.name as name")
+                ->join('sau_employees_areas', 'sau_employees_areas.id', 'sau_employees_processes.employee_area_id')
+                ->join('sau_employees_headquarters', 'sau_employees_headquarters.id', 'sau_employees_areas.employee_headquarter_id')
+                ->join('sau_employees_regionals', 'sau_employees_regionals.id', 'sau_employees_headquarters.employee_regional_id')->pluck('id', 'name');
+        
+            return $this->multiSelectFormat($processes);
         }
     }
 }

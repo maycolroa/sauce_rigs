@@ -34,9 +34,9 @@ export default [{
     component: () =>
       import('@/views/PreventiveOccupationalMedicine/biologicalmonitoring/audiometry/report')
   }, {
-    name: 'biologicalmonitoring-audiometry-report-pta',
-    path: 'biologicalmonitoring/audiometry/reportpta',
+    name: 'biologicalmonitoring-audiometry-informs',
+    path: 'biologicalmonitoring/audiometry/informs',
     component: () =>
-      import('@/views/PreventiveOccupationalMedicine/biologicalmonitoring/audiometry/reportPta')
+      import('@/views/PreventiveOccupationalMedicine/biologicalmonitoring/audiometry/informs')
   }]
 }]

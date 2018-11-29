@@ -1,0 +1,219 @@
+<template>
+    <div>
+        <h4 class="font-weight-bold mb-4">
+            <span class="text-muted font-weight-light">Audiometrias /</span> Informes
+        </h4>
+        
+        <div class="row" style="padding-bottom: 10px;">
+            <div class="col-md">
+            <b-card no-body>
+                <b-card-body>
+                    <b-row>
+                        <b-col><vue-advanced-select v-model="selectedRegionals" :multiple="true" :options="regionals" :searchable="true" name="regionals" label="Regionales">
+                            </vue-advanced-select></b-col>
+                        <b-col><vue-advanced-select v-model="selectedHeadquarters" :multiple="true" :options="headquarters" :searchable="true" name="headquarters" label="Sedes">
+                            </vue-advanced-select></b-col>
+                    </b-row>
+                    <b-row>
+                        <b-col><vue-advanced-select v-model="selectedAreas" :multiple="true" :options="areas" :searchable="true" name="areas" label="Áreas">
+                            </vue-advanced-select></b-col>
+                        <b-col><vue-advanced-select v-model="selectedProcesses" :multiple="true" :options="processes" :searchable="true" name="processes" label="Procesos">
+                            </vue-advanced-select></b-col>
+                    </b-row>
+                    <b-row>
+                        <b-col><vue-advanced-select v-model="selectedBusinesses" :multiple="true" :options="businesses" :searchable="true" name="businesses" label="Centros de costo">
+                            </vue-advanced-select></b-col>
+                        <b-col><vue-advanced-select v-model="selectedYears" :multiple="true" :options="years" :searchable="true" name="years" label="Años">
+                            </vue-advanced-select></b-col>
+                    </b-row>
+                </b-card-body>
+            </b-card>
+            </div>
+        </div>
+
+        <b-row>
+            <b-col>
+                <b-card border-variant="primary" title="Derecha Aéreo PTA" class="mb-3 box-shadow-none">
+                    <chart-pie 
+                        :chart-data="airRightPtaPie"
+                        title="Informes PTA"
+                        color-line="red"
+                        ref="airRightPtaPie"/>
+                </b-card>
+            </b-col>
+            <b-col>
+                <b-card border-variant="primary" title="Izquierda Aéreo PTA" class="mb-3 box-shadow-none">
+                    <chart-pie 
+                        :chart-data="airLeftPtaPie"
+                        title="Informes PTA"
+                        color-line="blue"
+                        ref="airLeftPtaPie"/>
+                </b-card>
+            </b-col>
+        </b-row>
+
+        <b-btn variant="default" :to="{name: 'biologicalmonitoring-audiometry'}">Atras</b-btn>
+    </div>
+</template>
+
+<script>
+import Alerts from '@/utils/Alerts.js';
+import GlobalMethods from '@/utils/GlobalMethods.js';
+import VueAdvancedSelect from "@/components/Inputs/VueAdvancedSelect.vue";
+import ChartPie from '@/components/ECharts/ChartPie.vue';
+
+export default {
+    name: 'audiometry-report-pta',
+    metaInfo: {
+        title: 'Audiometria - Informes'
+    },
+    components:{
+        VueAdvancedSelect,
+        ChartPie
+    },
+    data () {
+        return {
+            regionals: [],
+            selectedRegionals: [],
+            headquarters: [],
+            selectedHeadquarters: [],
+            areas: [],
+            selectedAreas: [],
+            processes: [],
+            selectedProcesses: [],
+            businesses: [],
+            selectedBusinesses: [],
+            years: [],
+            selectedYears: [],
+
+            updateTimeout: 0,
+            ready: {
+                regionals: false,
+                headquarters: false,
+                areas: false,
+                processes: false,
+                businesses: false,
+                years: false
+            },
+            isLoading: false,
+
+            airLeftPtaPie: {
+                labels: [],
+                datasets: []
+            },
+            airRightPtaPie: {
+                labels: [],
+                datasets: []
+            }
+        }
+    },
+    created(){
+        this.fetchSelect('regionals', '/selects/regionals')
+        this.fetchSelect('headquarters', '/selects/headquarters')
+        this.fetchSelect('areas', '/selects/areas')
+        this.fetchSelect('processes', '/selects/processes')
+        this.fetchSelect('businesses', '/selects/businesses')
+        this.fetchSelect('years', '/selects/years/audiometry')
+    },
+    watch: {
+        regionals() {
+            this.selectedRegionals = this.regionals
+            this.ready.regionals = true
+        },
+        headquarters() {
+            this.selectedHeadquarters = this.headquarters
+            this.ready.headquarters = true
+        },
+        areas() {
+            this.selectedAreas = this.areas
+            this.ready.areas = true
+        },
+        processes() {
+            this.selectedProcesses = this.processes
+            this.ready.processes = true
+        },
+        businesses() {
+            this.selectedBusinesses = this.businesses
+            this.ready.businesses = true
+        },
+        years() {
+            this.selectedYears = this.years
+            this.ready.years = true
+        },
+        selectedRegionals() {
+            this.fetch()
+        },
+        selectedHeadquarters() {
+            this.fetch()
+        },
+        selectedAreas() {
+            this.fetch()
+        },
+        selectedProcesses() {
+            this.fetch()
+        },
+        selectedBusinesses() {
+            this.fetch()
+        },
+        selectedYears() {
+            this.fetch()
+        }
+    },
+    methods: {
+        fetchSelect(key, url)
+        {
+            GlobalMethods.getDataMultiselect(url)
+            .then(response => {
+                this[key] = response;
+            })
+            .catch(error => {
+                Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
+                this.$router.go(-1);
+            });
+        },
+        isReady()
+        {
+            if (this.ready.regionals && this.ready.headquarters && this.ready.areas && this.ready.processes && this.ready.businesses && this.ready.years)
+            {
+                return true
+            }
+            else 
+                return false
+        },
+        fetch()
+        {
+            if (this.isReady())
+            {
+                console.log('buscando...')
+                this.isLoading = true;
+
+                axios.post('/biologicalmonitoring/audiometry/informs', {
+                    regionals: this.selectedRegionals,
+                    headquarters: this.selectedHeadquarters,
+                    areas: this.selectedAreas,
+                    processes: this.selectedProcesses,
+                    businesses: this.selectedBusinesses,
+                    years: this.selectedYears
+                })
+                .then(data => {
+                    console.log(data)
+                    this.update(data);
+                    this.isLoading = false;
+                })
+                .catch(error => {
+                    console.log(error);
+                    this.isLoading = false;
+                    Alerts.error('Error', 'Hubo un problema recolectando la información');
+                });
+            }
+        },
+        update(data) {
+            _.forIn(data.data, (value, key) => {
+                if (this[key]) {
+                    this[key] = value;
+                }
+            });
+        }
+    }
+}
+</script>

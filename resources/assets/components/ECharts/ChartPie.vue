@@ -22,13 +22,20 @@ const colorsBlue = ['#647c8a', '#3f51b5', '#2196f3', '#00b862', '#afdf0a', '#a7b
 const colorsRed = ['#c23531','#2f4554', '#61a0a8', '#d48265', '#91c7ae','#749f83',  '#ca8622', '#bda29a','#6e7074', '#546570', '#c4ccd3'];
 
 export default {
-  name: 'chart-pie-audiometry',
+  name: 'chart-pie',
   metaInfo: {
-    title: 'Audiometria - Informes'
+    title: 'Informes'
   },
   props:{
-    data: {type: Array, required: true},
-    legend: {type: Array, required: true},
+    chartData: {
+        type: Object,
+        default() {
+            return {
+                labels: [],
+                datasets: []
+            }
+        }
+    },
     title: {type: String, default:''},
     colorLine: {type: String, default:'red'}
   },
@@ -40,7 +47,7 @@ export default {
     }),
 
   watch:{
-    data(){
+    chartData(){
         this.showLoading()
         
         this.pieOptions = {
@@ -60,13 +67,13 @@ export default {
             legend: {
                 orient: 'vertical',
                 left: 'left',
-                data: this.legend,
+                data: this.chartData.labels,    
             },
             series: [{
-                name: 'Informes PTA',
+                name: this.title,
                 type: 'pie',
                 radius: '55%',
-                data: this.data,
+                data: this.chartData.datasets.data,
                 itemStyle: {
                     emphasis: {
                         shadowBlur: 10,

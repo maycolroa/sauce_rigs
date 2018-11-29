@@ -155,7 +155,7 @@ class EmployeeHeadquarterController extends Controller
         {
             $headquarters = EmployeeHeadquarter::selectRaw(
                 "sau_employees_headquarters.id as id,
-                CONCAT(sau_employees_regionals.name, ' / ', sau_employees_headquarters.name) as name")
+                sau_employees_headquarters.name as name")
             ->join('sau_employees_regionals', 'sau_employees_regionals.id', 'sau_employees_headquarters.employee_regional_id')->pluck('id', 'name');
         
             return $this->multiSelectFormat($headquarters);
