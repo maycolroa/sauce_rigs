@@ -19,7 +19,7 @@ class CompanyScope implements Scope {
                 }
             }
         }else{
-            $builder->where('company_id', Session::get('company_id'));
+            $builder->where($model->getTable().'.company_id', Session::get('company_id'));
         }
       }
 
