@@ -66,7 +66,8 @@ class Audiometry extends Model
       'severity_grade_air_left_8000',
       'severity_grade_air_right_8000',
       'base_type',
-      'base'
+      'base',
+      'base_state'
     ];
 
     protected $dates = [

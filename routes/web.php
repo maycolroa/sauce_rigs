@@ -55,6 +55,7 @@ Route::middleware(['auth'])->group(function () {
         Route::post('positions', 'Administrative\EmployeePositionController@multiselect');
         Route::post('businesses', 'Administrative\EmployeeBusinessController@multiselect');
         Route::post('eps', 'ApplicationController@multiselectEps');
+        Route::post('multiselectBar', 'PreventiveOccupationalMedicine\BiologicalMonitoring\AudiometryInformController@multiselectBar');
     });
 
     //Administrativo

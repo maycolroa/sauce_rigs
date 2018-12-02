@@ -75,4 +75,21 @@ class AudiometryInformController extends Controller
         
         return $this->respondHttp200($informManager->getInformData());
     }
+
+    /**
+     * Returns an array for a select type input
+     *
+     * @return Array
+     */
+
+    public function multiselectBar()
+    {
+        $select = [
+            'Sedes' => 'employee_headquarter_id',
+            'Áreas' => 'employee_area_id',
+            'Procesos' => 'employee_process_id'
+        ];
+    
+        return $this->multiSelectFormat(collect($select));
+    }
 }

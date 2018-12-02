@@ -73,14 +73,14 @@ export default {
                 }
             },
             legend: {
-                orient: 'vertical',
-                left: 'left',
+                top: 'top',
                 data: this.chartData.labels,    
             },
             series: [{
                 name: this.title,
                 type: 'pie',
                 radius: '55%',
+                center: ['50%', '60%'],
                 data: this.chartData.datasets.data,
                 itemStyle: {
                     emphasis: {

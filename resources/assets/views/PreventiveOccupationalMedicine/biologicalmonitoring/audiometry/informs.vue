@@ -56,6 +56,52 @@
             </b-col>
         </b-row>
 
+        <b-row>
+            <b-col>
+                <b-card border-variant="primary" title="Población Expuesta" class="mb-3 box-shadow-none">
+                    <b-row>
+                        <b-col><vue-advanced-select :disabled="isLoading" v-model="exposedPopulationSelected" :options="selectBar" :searchable="true" name="exposedPopulationSelected">
+                            </vue-advanced-select></b-col>
+                    </b-row>
+                    <b-row align-h="end">
+                        <b-col cols="4">
+                            <b>Total Expuestos {{ exposedPopulationData.datasets.count }} </b>
+                        </b-col>
+                    </b-row>
+                    <chart-bar 
+                        :chart-data="exposedPopulationData"
+                        title="Población Expuesta"
+                        ref="exposedPopulation"/>
+                </b-card>
+            </b-col>
+            <b-col>
+                <b-card border-variant="primary" title="Población Expuesta con CUAT" class="mb-3 box-shadow-none">
+                    <b-row>
+                        <b-col><vue-advanced-select :disabled="isLoading" v-model="exposedPopulationCuatSelected" :options="selectBar" :searchable="true" name="exposedPopulationCuatSelected">
+                            </vue-advanced-select></b-col>
+                    </b-row>
+                    <chart-bar 
+                        :chart-data="exposedPopulationCuatData"
+                        title="Población Expuesta con CUAT"
+                        ref="exposedPopulationCuat"/>
+                </b-card>
+            </b-col>
+        </b-row>
+        <b-row>
+            <b-col>
+                <b-card border-variant="primary" title="Población Expuesta con CUAP" class="mb-3 box-shadow-none">
+                    <b-row>
+                        <b-col><vue-advanced-select :disabled="isLoading" v-model="exposedPopulationCuapSelected" :options="selectBar" :searchable="true" name="exposedPopulationCuapSelected">
+                            </vue-advanced-select></b-col>
+                    </b-row>
+                    <chart-bar 
+                        :chart-data="exposedPopulationCuapData"
+                        title="Población Expuesta con CUAP"
+                        ref="exposedPopulationCuap"/>
+                </b-card>
+            </b-col>
+        </b-row>
+
         <b-btn variant="default" :to="{name: 'biologicalmonitoring-audiometry'}">Atras</b-btn>
     </div>
 </template>
@@ -65,6 +111,7 @@ import Alerts from '@/utils/Alerts.js';
 import GlobalMethods from '@/utils/GlobalMethods.js';
 import VueAdvancedSelect from "@/components/Inputs/VueAdvancedSelect.vue";
 import ChartPie from '@/components/ECharts/ChartPie.vue';
+import ChartBar from '@/components/ECharts/ChartBar.vue';
 
 export default {
     name: 'audiometry-report-pta',
@@ -73,7 +120,8 @@ export default {
     },
     components:{
         VueAdvancedSelect,
-        ChartPie
+        ChartPie,
+        ChartBar
     },
     data () {
         return {
@@ -91,6 +139,7 @@ export default {
             selectedPositions: [],
             years: [],
             selectedYears: [],
+            selectBar: [],
 
             updateTimeout: 0,
             ready: {
@@ -111,10 +160,56 @@ export default {
             airRightPtaPie: {
                 labels: [],
                 datasets: []
-            }
+            },
+            exposedPopulation: {
+                employee_area_id: {
+                    labels: [],
+                    datasets: []
+                },
+                employee_headquarter_id: {
+                    labels: [],
+                    datasets: []
+                },
+                employee_process_id: {
+                    labels: [],
+                    datasets: []
+                }
+            },
+            exposedPopulationSelected: 'employee_area_id',
+            exposedPopulationCuat: {
+                employee_area_id: {
+                    labels: [],
+                    datasets: []
+                },
+                employee_headquarter_id: {
+                    labels: [],
+                    datasets: []
+                },
+                employee_process_id: {
+                    labels: [],
+                    datasets: []
+                }
+            },
+            exposedPopulationCuatSelected: 'employee_area_id',
+            exposedPopulationCuap: {
+                employee_area_id: {
+                    labels: [],
+                    datasets: []
+                },
+                employee_headquarter_id: {
+                    labels: [],
+                    datasets: []
+                },
+                employee_process_id: {
+                    labels: [],
+                    datasets: []
+                }
+            },
+            exposedPopulationCuapSelected: 'employee_area_id',
         }
     },
     created(){
+        this.fetchSelect('selectBar', '/selects/multiselectBar')
         this.fetchSelect('regionals', '/selects/regionals')
         this.fetchSelect('headquarters', '/selects/headquarters')
         this.fetchSelect('areas', '/selects/areas')
@@ -172,6 +267,17 @@ export default {
         },
         selectedYears() {
             this.fetch()
+        }
+    },
+    computed: {
+        exposedPopulationData: function() {
+            return this.exposedPopulation[this.exposedPopulationSelected]
+        },
+        exposedPopulationCuatData: function() {
+            return this.exposedPopulationCuat[this.exposedPopulationCuatSelected]
+        },
+        exposedPopulationCuapData: function() {
+            return this.exposedPopulationCuap[this.exposedPopulationCuapSelected]
         }
     },
     methods: {
