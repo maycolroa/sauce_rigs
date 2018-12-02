@@ -48,6 +48,7 @@
               <b-card bg-variant="transparent" border-variant="dark" class="mb-12 box-shadow-none">
                 <div><b>Base:</b> {{ form.base_type == 'Base' ? 'Si' : 'No'}}</div>
                 <div v-if="form.base"><router-link :to="{ path: `${form.base}` }">Ver Audiometria</router-link></div>
+                <div v-if="form.base_state"><b>Tipo Base:</b> {{ form.base_state }}</div>
               </b-card>
             </div>
         </div>
@@ -258,7 +259,8 @@ export default {
           observation: "",
           epp: "",
           base_type: "",
-          base: ""
+          base: "",
+          base_state: ""
         };
       }
     }

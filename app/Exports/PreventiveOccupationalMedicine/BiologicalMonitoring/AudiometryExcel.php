@@ -94,6 +94,7 @@ class AudiometryExcel implements FromCollection, WithHeadings, WithMapping, With
           $audiometries->severity_grade_osseous_right_pta,
           $audiometries->severity_grade_osseous_right_4000,
           ($audiometries->base_type == 'Base' ? 'Si' : 'No'),
+          $audiometries->base_state,
           Date::dateTimeToExcel($audiometries->created_at),
           Date::dateTimeToExcel($audiometries->updated_at),
         ];
@@ -153,6 +154,7 @@ class AudiometryExcel implements FromCollection, WithHeadings, WithMapping, With
           'Óseo Grado de severidad Derecha PTA',
           'Óseo Grado de severidad Derecha 4000 Hz',
           'Base',
+          'Tipo Base',
           'Fecha creación', 
           'Fecha actualización',
         ];
@@ -190,8 +192,8 @@ class AudiometryExcel implements FromCollection, WithHeadings, WithMapping, With
             'AM' => NumberFormat::FORMAT_NUMBER_00,
             'AQ' => NumberFormat::FORMAT_NUMBER_00,
             'AV' => NumberFormat::FORMAT_NUMBER_00,
-            'AZ' => NumberFormat::FORMAT_DATE_DDMMYYYY,
             'BA' => NumberFormat::FORMAT_DATE_DDMMYYYY,
+            'BB' => NumberFormat::FORMAT_DATE_DDMMYYYY,
         ];
     }
 
@@ -203,7 +205,7 @@ class AudiometryExcel implements FromCollection, WithHeadings, WithMapping, With
         $white = "FFFFFF";
 
       $event->sheet->styleCells(
-        'A1:BA1',
+        'A1:BB1',
           [
             'alignment' => [
               'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT,
