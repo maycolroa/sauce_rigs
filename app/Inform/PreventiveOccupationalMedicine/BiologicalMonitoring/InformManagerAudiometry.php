@@ -25,12 +25,12 @@ class InformManagerAudiometry
     ];
 
     const GROUPING_COLUMNS = [
-        //['sau_employees_regionals', 'employee_regional_id'],
+        ['sau_employees_regionals', 'employee_regional_id'],
         ['sau_employees_headquarters', 'employee_headquarter_id'],
         ['sau_employees_areas', 'employee_area_id'],
         ['sau_employees_processes', 'employee_process_id'],
-        //['sau_employees_businesses', 'employee_business_id'],
-        //['sau_employees_positions', 'employee_position_id']
+        ['sau_employees_businesses', 'employee_business_id'],
+        ['sau_employees_positions', 'employee_position_id']
     ];
 
     /**

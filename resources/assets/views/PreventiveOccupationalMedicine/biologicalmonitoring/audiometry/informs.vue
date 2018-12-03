@@ -162,7 +162,7 @@ export default {
                 datasets: []
             },
             exposedPopulation: {
-                employee_area_id: {
+                employee_regional_id: {
                     labels: [],
                     datasets: []
                 },
@@ -170,14 +170,26 @@ export default {
                     labels: [],
                     datasets: []
                 },
+                employee_area_id: {
+                    labels: [],
+                    datasets: []
+                },
                 employee_process_id: {
+                    labels: [],
+                    datasets: []
+                },
+                employee_business_id: {
+                    labels: [],
+                    datasets: []
+                },
+                employee_position_id: {
                     labels: [],
                     datasets: []
                 }
             },
-            exposedPopulationSelected: 'employee_area_id',
+            exposedPopulationSelected: 'employee_regional_id',
             exposedPopulationCuat: {
-                employee_area_id: {
+                employee_regional_id: {
                     labels: [],
                     datasets: []
                 },
@@ -185,14 +197,26 @@ export default {
                     labels: [],
                     datasets: []
                 },
+                employee_area_id: {
+                    labels: [],
+                    datasets: []
+                },
                 employee_process_id: {
+                    labels: [],
+                    datasets: []
+                },
+                employee_business_id: {
+                    labels: [],
+                    datasets: []
+                },
+                employee_position_id: {
                     labels: [],
                     datasets: []
                 }
             },
-            exposedPopulationCuatSelected: 'employee_area_id',
+            exposedPopulationCuatSelected: 'employee_regional_id',
             exposedPopulationCuap: {
-                employee_area_id: {
+                employee_regional_id: {
                     labels: [],
                     datasets: []
                 },
@@ -200,12 +224,24 @@ export default {
                     labels: [],
                     datasets: []
                 },
+                employee_area_id: {
+                    labels: [],
+                    datasets: []
+                },
                 employee_process_id: {
+                    labels: [],
+                    datasets: []
+                },
+                employee_business_id: {
+                    labels: [],
+                    datasets: []
+                },
+                employee_position_id: {
                     labels: [],
                     datasets: []
                 }
             },
-            exposedPopulationCuapSelected: 'employee_area_id',
+            exposedPopulationCuapSelected: 'employee_regional_id',
         }
     },
     created(){
