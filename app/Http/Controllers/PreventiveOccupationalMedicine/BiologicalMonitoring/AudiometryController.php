@@ -32,13 +32,35 @@ class AudiometryController extends Controller
     */
    public function data(Request $request)
    {
-    
        $audiometry = Audiometry::select(
            'sau_bm_audiometries.*',
            'sau_employees.identification as identification',
            'sau_employees.name as name'
         )->join('sau_employees','sau_employees.id','sau_bm_audiometries.employee_id')
         ->join('sau_employees_regionals','sau_employees_regionals.id','sau_employees.employee_regional_id');
+        
+        $filters = $request->get('filters');
+
+        if (isset($filters["regionals"]))
+          $audiometry->inRegionals($this->getValuesForMultiselect($filters["regionals"]));
+
+        if (isset($filters["headquarters"]))
+          $audiometry->inHeadquarters($this->getValuesForMultiselect($filters["headquarters"]));
+
+        if (isset($filters["areas"]))
+          $audiometry->inAreas($this->getValuesForMultiselect($filters["areas"]));
+
+        if (isset($filters["processes"]))
+          $audiometry->inProcesses($this->getValuesForMultiselect($filters["processes"]));
+
+        if (isset($filters["businesses"]))
+          $audiometry->inBusinesses($this->getValuesForMultiselect($filters["businesses"]));
+
+        if (isset($filters["positions"]))
+          $audiometry->inPositions($this->getValuesForMultiselect($filters["positions"]));
+
+        if (isset($filters["years"]))
+          $audiometry->inYears($this->getValuesForMultiselect($filters["years"]));
 
        return Vuetable::of($audiometry)
                 ->addColumn('base_si_no', function ($audiometry) {

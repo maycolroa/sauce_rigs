@@ -173,4 +173,12 @@ trait UtilsTrait
 
         return $data;
     }
+
+    protected function getValuesForMultiselect($data)
+    {
+        return  collect($data)
+                ->transform(function ($item, $index) {
+                    return $item['value'];
+                });
+    }
 }

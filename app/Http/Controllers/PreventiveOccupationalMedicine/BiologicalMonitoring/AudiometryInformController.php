@@ -36,40 +36,13 @@ class AudiometryInformController extends Controller
      */
     public function data(Request $request)
     {
-        $regionals = collect($request->regionals)
-        ->transform(function ($regional, $index) {
-            return $regional['value'];
-        });
-
-        $headquarters = collect($request->headquarters)
-        ->transform(function ($headquarter, $index) {
-            return $headquarter['value'];
-        });
-
-        $areas = collect($request->areas)
-        ->transform(function ($area, $index) {
-            return $area['value'];
-        });
-
-        $processes = collect($request->processes)
-        ->transform(function ($process, $index) {
-            return $process['value'];
-        });
-
-        $businesses = collect($request->businesses)
-        ->transform(function ($business, $index) {
-            return $business['value'];
-        });
-
-        $positions = collect($request->positions)
-        ->transform(function ($position, $index) {
-            return $position['value'];
-        });
-        
-        $years = collect($request->years)
-        ->transform(function ($year, $index) {
-            return $year['value'];
-        });
+        $regionals = $this->getValuesForMultiselect($request->regionals);
+        $headquarters = $this->getValuesForMultiselect($request->headquarters);
+        $areas = $this->getValuesForMultiselect($request->areas);
+        $processes = $this->getValuesForMultiselect($request->processes);
+        $businesses = $this->getValuesForMultiselect($request->businesses);
+        $positions = $this->getValuesForMultiselect($request->positions);
+        $years = $this->getValuesForMultiselect($request->years);
         
         $informManager = new InformManagerAudiometry($regionals, $headquarters, $areas, $processes, $businesses, $positions, $years);
         
