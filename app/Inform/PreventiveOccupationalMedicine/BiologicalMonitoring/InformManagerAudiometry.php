@@ -21,7 +21,8 @@ class InformManagerAudiometry
         'airRightPtaPie',
         'exposedPopulation',
         'exposedPopulationCuat',
-        'exposedPopulationCuap'
+        'exposedPopulationCuap',
+        'exposedPopulationaudiologicalCondition'
     ];
 
     const GROUPING_COLUMNS = [
@@ -216,6 +217,50 @@ class InformManagerAudiometry
         return $this->buildDataChart($audiometryState);
     }
     
+    /**
+     * Returns the reports of the exposed population audiological condition
+     * @return collection
+     */
+    public function exposedPopulationaudiologicalCondition()
+    {
+        $columns = $this::GROUPING_COLUMNS;
+        $informData = collect([]);
+
+        foreach ($columns as $column) {
+            $informData->put($column[1], $this->exposedPopulationaudiologicalConditionForColumns($column[0], $column[1]));
+        }
+    
+        return $informData->toArray();
+    }
+    
+    private function exposedPopulationaudiologicalConditionForColumns($table, $column)
+    {
+        $audiometryCoditions = Audiometry::selectRaw($table.".name as name,
+            COUNT(sau_employees.id) as count,
+            IF(
+                severity_grade_air_left_4000='Audición normal' AND
+                severity_grade_air_left_6000='Audición normal' AND
+                severity_grade_air_left_8000='Audición normal' AND
+                severity_grade_air_right_4000='Audición normal' AND
+                severity_grade_air_right_6000='Audición normal' AND
+                severity_grade_air_right_8000='Audición normal'
+            ,'Normal', 'Alterada') as 'serie'
+        ")
+        ->join('sau_employees','sau_employees.id','sau_bm_audiometries.employee_id')
+        ->join($table, $table.'.id','sau_employees.'.$column)
+        ->inRegionals($this->regionals)
+        ->inHeadquarters($this->headquarters)
+        ->inAreas($this->areas)
+        ->inProcesses($this->processes)
+        ->inBusinesses($this->businesses)
+        ->inPositions($this->positions)
+        ->inYears($this->years)
+        ->groupBy($column, 'serie')
+        ->get();
+
+        $barSeries = ['Normal', 'Alterada'];
+        return $this->buildMultiBarDataChart($audiometryCoditions, $barSeries);
+    }
 
     /**
      * takes the raw data collection and builds
@@ -240,6 +285,70 @@ class InformManagerAudiometry
             'datasets' => [
                 'data' => $data,
                 'count' => $total
+            ]
+        ]);
+    }
+
+    /**
+     * takes the raw data collection and builds
+     * a new collection with the right structure for the multibar
+     * chart data
+     * @param  collection $rawData
+     * @return collection
+     */
+    protected function buildMultiBarDataChart($rawData, $barSeries)
+    {
+        $labels = [];
+        $data = [];
+        $total = 0;
+        $series = [];
+
+        foreach ($barSeries as $value)
+        {
+            $series[$value] = [];
+        }
+
+        foreach ($rawData as $item)
+        {
+            if (!isset($labels[$item->name]))    
+                $labels[$item->name] = $item->name;
+
+            $series[$item->serie][$item->name] = ['name' => $item->name, 'value' => $item->count];
+
+            foreach ($barSeries as $value)
+            {
+                if (!isset($series[$value][$item->name]))
+                {
+                    $series[$value][$item->name] = ['name' => $item->name, 'value' => 0];
+                }
+            }
+            $total += $item->count;
+        }
+
+        foreach ($series as $key => $value) 
+        {
+            $info = [
+                "name" => $key,
+                "type" => 'bar',
+                "data" => array_values($value),
+                "label" => [
+                    "normal" => [
+                        "show" => true,
+                        "position" => "right",
+                        "color" => "black"
+                    ]
+                ]
+            ];
+
+            array_push($data, $info);
+        }
+
+        return collect([
+            'labels' => array_values($labels),
+            'datasets' => [
+                'data' => $data,
+                'count' => $total,
+                'series' => $barSeries
             ]
         ]);
     }

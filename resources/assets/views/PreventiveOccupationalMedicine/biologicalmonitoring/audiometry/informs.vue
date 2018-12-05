@@ -101,6 +101,20 @@
                 </b-card>
             </b-col>
         </b-row>
+        <b-row>
+            <b-col>
+                <b-card border-variant="primary" title="DX Audiometrias" class="mb-3 box-shadow-none">
+                    <b-row>
+                        <b-col><vue-advanced-select :disabled="isLoading" v-model="exposedPopulationaudiologicalConditionSelected" :options="selectBar" :searchable="true" name="exposedPopulationaudiologicalConditionSelected">
+                            </vue-advanced-select></b-col>
+                    </b-row>
+                    <chart-bar-multiple
+                        :chart-data="exposedPopulationaudiologicalConditionData"
+                        title="DX Audiometrias"
+                        ref="exposedPopulationaudiologicalCondition"/>
+                </b-card>
+            </b-col>
+        </b-row>
 
         <b-btn variant="default" :to="{name: 'biologicalmonitoring-audiometry'}">Atras</b-btn>
     </div>
@@ -112,6 +126,7 @@ import GlobalMethods from '@/utils/GlobalMethods.js';
 import VueAdvancedSelect from "@/components/Inputs/VueAdvancedSelect.vue";
 import ChartPie from '@/components/ECharts/ChartPie.vue';
 import ChartBar from '@/components/ECharts/ChartBar.vue';
+import ChartBarMultiple from '@/components/ECharts/ChartBarMultiple.vue';
 
 export default {
     name: 'audiometry-report-pta',
@@ -121,7 +136,8 @@ export default {
     components:{
         VueAdvancedSelect,
         ChartPie,
-        ChartBar
+        ChartBar,
+        ChartBarMultiple
     },
     data () {
         return {
@@ -242,6 +258,33 @@ export default {
                 }
             },
             exposedPopulationCuapSelected: 'employee_regional_id',
+            exposedPopulationaudiologicalCondition: {
+                employee_regional_id: {
+                    labels: [],
+                    datasets: []
+                },
+                employee_headquarter_id: {
+                    labels: [],
+                    datasets: []
+                },
+                employee_area_id: {
+                    labels: [],
+                    datasets: []
+                },
+                employee_process_id: {
+                    labels: [],
+                    datasets: []
+                },
+                employee_business_id: {
+                    labels: [],
+                    datasets: []
+                },
+                employee_position_id: {
+                    labels: [],
+                    datasets: []
+                }
+            },
+            exposedPopulationaudiologicalConditionSelected: 'employee_regional_id',
         }
     },
     created(){
@@ -314,6 +357,9 @@ export default {
         },
         exposedPopulationCuapData: function() {
             return this.exposedPopulationCuap[this.exposedPopulationCuapSelected]
+        },
+        exposedPopulationaudiologicalConditionData: function() {
+            return this.exposedPopulationaudiologicalCondition[this.exposedPopulationaudiologicalConditionSelected]
         }
     },
     methods: {
