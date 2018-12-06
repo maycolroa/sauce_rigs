@@ -423,6 +423,16 @@ export default [
           routePush: { name: 'administrative-employees-view' },
           id: 'id',
         }
+      } ,{
+        config: {
+          color:'outline-success',
+          borderless: true,
+          icon:'fas fa-chart-line',
+        },
+        data:{
+          routePush: {name: 'administrative-employees-informs'},
+          id: 'id',
+        }
       }]
     },
     {

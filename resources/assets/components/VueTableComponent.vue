@@ -1,6 +1,6 @@
 <template>
   <div>
-      <b-row>
+      <b-row v-if="viewIndex">
         <template v-for="(item, index) in filters"> 
           <b-col cols="6" :key="index" v-if="item.active"><vue-advanced-select  v-model="filtersSelected[index]" :multiple="true" :options="item.data" :searchable="true" :name="item.name" :label="item.label">
               </vue-advanced-select></b-col>
@@ -71,6 +71,8 @@ export default {
     config: {type: Object, default: function(){
       return VueTableConfig.get(this.configName);
     }},
+    viewIndex: { type: Boolean, default: true },
+    modelId: {type: [Number, String], default: null}
   },
   components:{
     VueAdvancedSelect,
@@ -250,7 +252,8 @@ export default {
           columns:'Columnas'
         },
         params: {
-          filters: this.filtersActive
+          filters: this.filtersActive,
+          modelId: this.modelId
         }
       };
 

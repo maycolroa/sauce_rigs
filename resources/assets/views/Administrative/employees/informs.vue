@@ -1,0 +1,127 @@
+<template>
+  <div>
+    <h4 class="font-weight-bold mb-4">
+       <span class="text-muted font-weight-light">Empleados /</span> Reporte Individual
+    </h4>
+
+    <div class="col-md">
+      <b-card no-body>
+        <b-card-body>
+            <b-row>
+                <b-col>
+                    <information-general :employee="employee_information"/>
+                </b-col>
+            </b-row>
+            <b-row>
+                <b-col>
+                    <b-card bg-variant="transparent" border-variant="dark" title="" class="mb-3 box-shadow-none">
+                        <audiometry-table
+                            :view-index="false"
+                            configNameTable="biologicalmonitoring-audiometry-employee"
+                            :employee-id="employee_id"/>
+                    </b-card>
+                </b-col>
+            </b-row>
+            <b-row>
+                <b-col>
+                    <b-card border-variant="primary" title="Oído Derecho" class="mb-3 box-shadow-none">
+                        <chart-line-multiple
+                            :chart-data="audiometries_right_ear"
+                            title="Oído Derecho"
+                            ref="audiometries_right_ear"/>
+                    </b-card>
+                </b-col>
+                <b-col>
+                    <b-card border-variant="secondary" title="Oído Izquierdo" class="mb-3 box-shadow-none">
+                        <chart-line-multiple
+                            :chart-data="audiometries_left_ear"
+                            title="Oído Izquierdo"
+                            ref="audiometries_left_ear"/>
+                    </b-card>
+                </b-col>
+            </b-row>
+        </b-card-body>
+      </b-card>
+    </div>
+  </div>
+</template>
+
+<script>
+import InformationGeneral from '@/components/Administrative/Employees/InformationGeneral.vue';
+import AudiometryTable from '@/views/PreventiveOccupationalMedicine/biologicalmonitoring/audiometry/index.vue';
+import ChartLineMultiple from '@/components/ECharts/ChartLineMultiple.vue';
+import Alerts from '@/utils/Alerts.js';
+
+export default {
+    name: 'administrative-employee-report',
+    metaInfo: {
+        title: 'Empleados - Reporte Individual'
+    },
+    components:{
+        InformationGeneral,
+        AudiometryTable,
+        ChartLineMultiple
+    },
+    data () {
+        return {
+            isLoading: false,
+            employee_id: this.$route.params.id,
+            employee_information: {
+                identification: '',
+                name: '',
+                date_of_birth: '',
+                age: '',
+                sex: '',
+                email: '',
+                income_date: '',
+                regional: '',
+                headquarter: '',
+                area: '',
+                process: '',
+                position: '',
+                business: '',
+                eps: ''
+            },
+            audiometries_right_ear: {
+                xAxis: [],
+                legend: [],
+                datasets: []
+            },
+            audiometries_left_ear: {
+                xAxis: [],
+                legend: [],
+                datasets: []
+            }
+        }
+    },
+    created(){
+        this.fetch()
+    },
+    methods: {
+        fetch()
+        {
+            this.isLoading = true;
+
+            axios.post('/administration/employee/informs', {
+                employee_id: this.employee_id
+            })
+            .then(data => {
+                this.update(data);
+                this.isLoading = false;
+            })
+            .catch(error => {
+                console.log(error);
+                this.isLoading = false;
+                Alerts.error('Error', 'Hubo un problema recolectando la información');
+            });
+        },
+        update(data) {
+            _.forIn(data.data, (value, key) => {
+                if (this[key]) {
+                    this[key] = value;
+                }
+            });
+        }
+    }
+}
+</script>

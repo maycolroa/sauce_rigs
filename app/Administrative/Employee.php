@@ -61,7 +61,7 @@ class Employee extends Model
 
     public function process()
     {
-        return $this->belongsTo(EmployeeArea::class, 'employee_process_id');
+        return $this->belongsTo(EmployeeProcess::class, 'employee_process_id');
     }
 
     public function eps()

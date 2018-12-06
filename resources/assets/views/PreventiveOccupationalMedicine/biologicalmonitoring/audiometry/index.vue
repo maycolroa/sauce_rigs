@@ -7,7 +7,7 @@
 
     <div class="col-md">
       <b-card no-body>
-        <b-card-header class="with-elements">
+        <b-card-header class="with-elements" v-if="viewIndex">
           <div class="card-title-elements">
             <b-btn :to="{name:'biologicalmonitoring-audiometry-create'}" variant="primary">Crear Audiometria</b-btn>
             <b-btn :to="{name:'biologicalmonitoring-audiometry-informs'}" variant="primary">Ver Informes</b-btn>
@@ -29,7 +29,9 @@
         </b-card-header>
         <b-card-body>
              <vue-table
-                configName="biologicalmonitoring-audiometry"
+                :configName="configNameTable"
+                :viewIndex="viewIndex"
+                :modelId="employeeId"
                 ></vue-table>
         </b-card-body>
     </b-card>
@@ -61,7 +63,11 @@ export default {
   metaInfo: {
     title: 'Audiometria'
   },
-
+  props: {
+    viewIndex: { type: Boolean, default: true },
+    employeeId: {type: [Number, String], default: null},
+    configNameTable: {type: String, default: 'biologicalmonitoring-audiometry'},
+  },
   methods: {
     exportAudiometry(){
       axios.post('/biologicalmonitoring/audiometry/export')

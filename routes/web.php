@@ -86,6 +86,7 @@ Route::middleware(['auth'])->group(function () {
       Route::ApiResource('process', 'Administrative\EmployeeProcessController');
 
       Route::post('employee/data', 'Administrative\EmployeesController@data');
+      Route::post('employee/informs', 'Administrative\Employees\EmployeeInformController@data');
       Route::ApiResource('employee', 'Administrative\EmployeesController');
     });
 
