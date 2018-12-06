@@ -14,7 +14,7 @@ class AddColumnSauEmployeesTable extends Migration
     public function up()
     {
         Schema::table('sau_employees', function (Blueprint $table) {
-            $table->unsignedInteger('employee_business_id');
+            $table->unsignedInteger('employee_business_id')->nullable();
         });
     }
 
