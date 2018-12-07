@@ -1,12 +1,20 @@
 <template>
   <div>
     <h4 class="font-weight-bold mb-4">
-       <span class="text-muted font-weight-light">Empleados /</span> Reporte Individual
+       <span class="text-muted font-weight-light">Audiometrias /</span> Informe Individual
     </h4>
 
     <div class="col-md">
       <b-card no-body>
         <b-card-body>
+            <b-row>
+                <b-col>
+                    <b-card bg-variant="transparent" border-variant="dark" title="" class="mb-3 box-shadow-none">
+                        <vue-ajax-advanced-select class="col-md-12" v-model="employee_id"  name="employee_id" label="Empleado" placeholder="Seleccione el empleado" :url="employeesDataUrl">
+                            </vue-ajax-advanced-select>
+                    </b-card>
+                </b-col>
+            </b-row>
             <b-row>
                 <b-col>
                     <information-general :employee="employee_information"/>
@@ -50,22 +58,25 @@
 import InformationGeneral from '@/components/Administrative/Employees/InformationGeneral.vue';
 import AudiometryTable from '@/views/PreventiveOccupationalMedicine/biologicalmonitoring/audiometry/index.vue';
 import ChartLineMultiple from '@/components/ECharts/ChartLineMultiple.vue';
+import VueAjaxAdvancedSelect from "@/components/Inputs/VueAjaxAdvancedSelect.vue";
 import Alerts from '@/utils/Alerts.js';
 
 export default {
-    name: 'administrative-employee-report',
+    name: 'audiometry-informs-individual',
     metaInfo: {
-        title: 'Empleados - Reporte Individual'
+        title: 'Audiometrias - Informe Individual'
     },
     components:{
         InformationGeneral,
         AudiometryTable,
-        ChartLineMultiple
+        ChartLineMultiple,
+        VueAjaxAdvancedSelect
     },
     data () {
         return {
             isLoading: false,
-            employee_id: this.$route.params.id,
+            employee_id: '-1',
+            employeesDataUrl: '/selects/employees',
             employee_information: {
                 identification: '',
                 name: '',
@@ -94,15 +105,17 @@ export default {
             }
         }
     },
-    created(){
-        this.fetch()
+    watch:{
+        employee_id () {
+            this.fetch()
+        }
     },
     methods: {
         fetch()
         {
             this.isLoading = true;
 
-            axios.post('/administration/employee/informs', {
+            axios.post('/biologicalmonitoring/audiometry/informs/individual', {
                 employee_id: this.employee_id
             })
             .then(data => {

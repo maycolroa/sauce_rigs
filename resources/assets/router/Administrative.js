@@ -188,10 +188,5 @@ export default [{
       path: 'employees/view/:id',
       component: () =>
         import('@/views/Administrative/employees/view')
-    }, {
-      name: 'administrative-employees-informs',
-      path: 'employees/informs/:id',
-      component: () =>
-        import('@/views/Administrative/employees/informs')
     }]
   }]

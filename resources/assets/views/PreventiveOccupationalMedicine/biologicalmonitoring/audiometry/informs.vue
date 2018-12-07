@@ -146,7 +146,7 @@ import ChartBar from '@/components/ECharts/ChartBar.vue';
 import ChartBarMultiple from '@/components/ECharts/ChartBarMultiple.vue';
 
 export default {
-    name: 'audiometry-report-pta',
+    name: 'audiometry-informs',
     metaInfo: {
         title: 'Audiometria - Informes'
     },

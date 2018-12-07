@@ -188,6 +188,9 @@ export default {
     'filtersSelected.years'() {
       this.updateFilterTable('years')
     },
+    modelId() {
+      Vue.nextTick( () => this.$refs.vuetable.refresh() )
+    }
   },
   computed: {
     filtersActive()

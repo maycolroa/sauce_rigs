@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Inform\Administrative\Employees;
+namespace App\Inform\PreventiveOccupationalMedicine\BiologicalMonitoring;
 
 use App\Administrative\Employee;
 use App\PreventiveOccupationalMedicine\BiologicalMonitoring\Audiometry;
 use Carbon\Carbon;
 
-class InformManagerEmployee
+class InformIndividualManagerAudiometry
 {
     /**
      * defines the availables informs

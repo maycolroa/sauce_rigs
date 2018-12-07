@@ -38,6 +38,7 @@ Route::middleware(['auth'])->group(function () {
       //Route::post('audiometry/reportPta', 'PreventiveOccupationalMedicine\BiologicalMonitoring\AudiometryController@reportPta');
       Route::ApiResource('audiometry', 'PreventiveOccupationalMedicine\BiologicalMonitoring\AudiometryController');   
       Route::post('audiometry/informs', 'PreventiveOccupationalMedicine\BiologicalMonitoring\AudiometryInformController@data');
+      Route::post('audiometry/informs/individual', 'PreventiveOccupationalMedicine\BiologicalMonitoring\AudiometryInformController@dataIndividual');
     });
 
     Route::prefix('selects')->group(function () {
@@ -86,7 +87,6 @@ Route::middleware(['auth'])->group(function () {
       Route::ApiResource('process', 'Administrative\EmployeeProcessController');
 
       Route::post('employee/data', 'Administrative\EmployeesController@data');
-      Route::post('employee/informs', 'Administrative\Employees\EmployeeInformController@data');
       Route::ApiResource('employee', 'Administrative\EmployeesController');
     });
 

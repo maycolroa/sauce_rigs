@@ -38,5 +38,10 @@ export default [{
     path: 'biologicalmonitoring/audiometry/informs',
     component: () =>
       import('@/views/PreventiveOccupationalMedicine/biologicalmonitoring/audiometry/informs')
+  }, {
+    name: 'biologicalmonitoring-audiometry-informs-individual',
+    path: 'biologicalmonitoring/audiometry/informs/individual',
+    component: () =>
+      import('@/views/PreventiveOccupationalMedicine/biologicalmonitoring/audiometry/informIndividual')
   }]
 }]

@@ -6,18 +6,10 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Inform\PreventiveOccupationalMedicine\BiologicalMonitoring\InformManagerAudiometry;
-use Session;
+use App\Inform\PreventiveOccupationalMedicine\BiologicalMonitoring\InformIndividualManagerAudiometry;
 
 class AudiometryInformController extends Controller
 {
-    /**
-     * creates and instance and middlewares are checked
-     */
-    /*function __construct()
-    {
-        $this->middleware('auth');
-    }*/
-
     /**
      * Display a listing of the resource.
      *
@@ -67,5 +59,20 @@ class AudiometryInformController extends Controller
         ];
     
         return $this->multiSelectFormat(collect($select));
+    }
+
+    /**
+     * returns the inform data according to
+     * multiple conditions, like filters
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function dataIndividual(Request $request)
+    {
+        $employee_id = $request->employee_id;
+        
+        $informManager = new InformIndividualManagerAudiometry($employee_id);
+        
+        return $this->respondHttp200($informManager->getInformData());
     }
 }

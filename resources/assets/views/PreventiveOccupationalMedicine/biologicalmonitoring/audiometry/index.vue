@@ -11,6 +11,7 @@
           <div class="card-title-elements">
             <b-btn :to="{name:'biologicalmonitoring-audiometry-create'}" variant="primary">Crear Audiometria</b-btn>
             <b-btn :to="{name:'biologicalmonitoring-audiometry-informs'}" variant="primary">Ver Informes</b-btn>
+            <b-btn :to="{name:'biologicalmonitoring-audiometry-informs-individual'}" variant="primary">Ver Informe Individual</b-btn>
           </div>
           <div class="card-title-elements ml-md-auto">
             <b-dd variant="default" :right="isRTL">
