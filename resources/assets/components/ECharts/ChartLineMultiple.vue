@@ -59,6 +59,7 @@ export default {
         
         this.lineOptions = {
             color: colors,
+            backgroundColor: '#fff',
             title: {
                 text: this.title,
             },

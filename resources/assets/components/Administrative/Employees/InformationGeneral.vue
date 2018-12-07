@@ -5,7 +5,7 @@
                 <b-col>
                     <div><b>Identificación:</b> {{employee.identification}}</div>
                     <div><b>Nombre:</b> {{employee.name}}</div>
-                    <div><b>Fecha de cumpleaños:</b> {{employee.date_of_birth}}</div>
+                    <div><b>Fecha de nacimiento:</b> {{employee.date_of_birth}}</div>
                     <div><b>Edad:</b> {{employee.age}}</div>
                     <div><b>Sexo:</b> {{employee.sex}}</div>
                     <div><b>Email:</b> {{employee.email}}</div>

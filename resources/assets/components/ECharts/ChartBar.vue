@@ -58,6 +58,7 @@ export default {
         
         this.barOptions = {
             color: colors,
+            backgroundColor: '#fff',
             title: {
                 text: this.title,
             },

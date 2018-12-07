@@ -24,18 +24,18 @@
             </b-row>
             <b-row>
                 <b-col>
-                    <b-card border-variant="primary" title="Oído Derecho" class="mb-3 box-shadow-none">
+                    <b-card border-variant="primary" title="Oído Derecho Aéreo" class="mb-3 box-shadow-none">
                         <chart-line-multiple
                             :chart-data="audiometries_right_ear"
-                            title="Oído Derecho"
+                            title="Oído Derecho Aéreo"
                             ref="audiometries_right_ear"/>
                     </b-card>
                 </b-col>
                 <b-col>
-                    <b-card border-variant="secondary" title="Oído Izquierdo" class="mb-3 box-shadow-none">
+                    <b-card border-variant="secondary" title="Oído Izquierdo Aéreo" class="mb-3 box-shadow-none">
                         <chart-line-multiple
                             :chart-data="audiometries_left_ear"
-                            title="Oído Izquierdo"
+                            title="Oído Izquierdo Aéreo"
                             ref="audiometries_left_ear"/>
                     </b-card>
                 </b-col>

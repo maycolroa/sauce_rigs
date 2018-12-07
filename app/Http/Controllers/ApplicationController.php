@@ -178,8 +178,8 @@ class ApplicationController extends Controller
      */
     public function multiselectSexs()
     {
-      $sexs = ["M", "F"];
-      return $this->multiSelectFormat($sexs);
+      $sexs = ["Masculino"=>"M", "Femenino"=>"F"];
+      return $this->multiSelectFormat(collect($sexs));
     }
 
     /**

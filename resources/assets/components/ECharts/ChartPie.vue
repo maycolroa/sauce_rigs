@@ -60,6 +60,7 @@ export default {
         
         this.pieOptions = {
             color: this.colorLine == 'red' ? colorsRed : colorsBlue,
+            backgroundColor: '#fff',
             title: {
                 text: 'Pie chart',
                 x: 'center'

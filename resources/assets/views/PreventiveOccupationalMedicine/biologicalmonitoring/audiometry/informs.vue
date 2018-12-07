@@ -74,11 +74,18 @@
                         ref="exposedPopulation"/>
                 </b-card>
             </b-col>
+        </b-row>
+        <b-row>
             <b-col>
                 <b-card border-variant="primary" title="Población Expuesta con CUAT" class="mb-3 box-shadow-none">
                     <b-row>
                         <b-col><vue-advanced-select :disabled="isLoading" v-model="exposedPopulationCuatSelected" :options="selectBar" :searchable="true" name="exposedPopulationCuatSelected">
                             </vue-advanced-select></b-col>
+                    </b-row>
+                    <b-row align-h="end">
+                        <b-col cols="6">
+                            <b>Total Expuestos con CUAT {{ exposedPopulationCuatData.datasets.count }} </b>
+                        </b-col>
                     </b-row>
                     <chart-bar 
                         :chart-data="exposedPopulationCuatData"
@@ -86,13 +93,16 @@
                         ref="exposedPopulationCuat"/>
                 </b-card>
             </b-col>
-        </b-row>
-        <b-row>
             <b-col>
                 <b-card border-variant="primary" title="Población Expuesta con CUAP" class="mb-3 box-shadow-none">
                     <b-row>
                         <b-col><vue-advanced-select :disabled="isLoading" v-model="exposedPopulationCuapSelected" :options="selectBar" :searchable="true" name="exposedPopulationCuapSelected">
                             </vue-advanced-select></b-col>
+                    </b-row>
+                    <b-row align-h="end">
+                        <b-col cols="6">
+                            <b>Total Expuestos con CUAP {{ exposedPopulationCuapData.datasets.count }} </b>
+                        </b-col>
                     </b-row>
                     <chart-bar 
                         :chart-data="exposedPopulationCuapData"
@@ -107,6 +117,13 @@
                     <b-row>
                         <b-col><vue-advanced-select :disabled="isLoading" v-model="exposedPopulationaudiologicalConditionSelected" :options="selectBar" :searchable="true" name="exposedPopulationaudiologicalConditionSelected">
                             </vue-advanced-select></b-col>
+                    </b-row>
+                    <b-row align-h="end">
+                        <b-col cols="4">
+                            <b>Total Normal {{ exposedPopulationaudiologicalConditionData.datasets.count.Normal }} </b>
+                            <br>
+                            <b>Total Alterada {{ exposedPopulationaudiologicalConditionData.datasets.count.Alterada }} </b>
+                        </b-col>
                     </b-row>
                     <chart-bar-multiple
                         :chart-data="exposedPopulationaudiologicalConditionData"
@@ -261,27 +278,39 @@ export default {
             exposedPopulationaudiologicalCondition: {
                 employee_regional_id: {
                     labels: [],
-                    datasets: []
+                    datasets: {
+                        count: []
+                    }
                 },
                 employee_headquarter_id: {
                     labels: [],
-                    datasets: []
+                    datasets: {
+                        count: []
+                    }
                 },
                 employee_area_id: {
                     labels: [],
-                    datasets: []
+                    datasets: {
+                        count: []
+                    }
                 },
                 employee_process_id: {
                     labels: [],
-                    datasets: []
+                    datasets: {
+                        count: []
+                    }
                 },
                 employee_business_id: {
                     labels: [],
-                    datasets: []
+                    datasets: {
+                        count: []
+                    }
                 },
                 employee_position_id: {
                     labels: [],
-                    datasets: []
+                    datasets: {
+                        count: []
+                    }
                 }
             },
             exposedPopulationaudiologicalConditionSelected: 'employee_regional_id',

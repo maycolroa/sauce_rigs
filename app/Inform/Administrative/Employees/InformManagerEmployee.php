@@ -68,7 +68,12 @@ class InformManagerEmployee
         $data['name'] = $this->employee->name;
         $data['date_of_birth'] = $this->employee->date_of_birth ? (Carbon::createFromFormat('Y-m-d',$this->employee->date_of_birth))->format('M d Y') : '-';
         $data['age'] = $this->employee->date_of_birth ? Carbon::parse($this->employee->date_of_birth)->age : '-';
-        $data['sex'] = $this->employee->sex;
+
+        if ($this->employee->sex)
+            $data['sex'] = $this->employee->sex == 'M' ? 'Masculino' : 'Femenino';
+        else
+            $data['sex'] = '-';
+
         $data['email'] = $this->employee->email;
         $data['income_date'] = $this->employee->income_date ? (Carbon::createFromFormat('Y-m-d',$this->employee->income_date))->format('M d Y') : '-';;
         $data['regional'] = isset($this->employee->regional) ? $this->employee->regional->name : '-';

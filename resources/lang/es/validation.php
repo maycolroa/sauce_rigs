@@ -156,7 +156,7 @@ return [
       'employee_position_id' => 'Cargo',
       'sex' => 'Sexo',
       'identification' => 'Identificacón',
-      'date_of_birth' => 'Fecha de cumpleaños',
+      'date_of_birth' => 'Fecha de nacimiento',
       'income_date' => 'Fecha de ingreso'
     ],
 

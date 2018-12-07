@@ -300,12 +300,15 @@ class InformManagerAudiometry
     {
         $labels = [];
         $data = [];
-        $total = 0;
+        $total = [];
         $series = [];
+        $max_value = 0;
+        $total_divisor = 0;
 
         foreach ($barSeries as $value)
         {
             $series[$value] = [];
+            $total[$value] = 0;
         }
 
         foreach ($rawData as $item)
@@ -322,7 +325,11 @@ class InformManagerAudiometry
                     $series[$value][$item->name] = ['name' => $item->name, 'value' => 0];
                 }
             }
-            $total += $item->count;
+
+            $total[$item->serie] += $item->count;
+
+            if ($item->count > $max_value)
+                $max_value = $item->count;
         }
 
         foreach ($series as $key => $value) 
@@ -341,7 +348,26 @@ class InformManagerAudiometry
             ];
 
             array_push($data, $info);
+            $total_divisor = COUNT($value);
         }
+
+        /**Divisor de series */
+        $data_divisor = [];
+
+        for ($i=0; $i < $total_divisor; $i++)
+        { 
+            array_push($data_divisor, $max_value);
+        }
+
+        $divisor = [
+            "name" => '',
+            "type" => 'bar',
+            "barWidth" => 3,
+            "data" => $data_divisor
+        ];
+
+        array_push($data, $divisor);
+        /************************* */
 
         return collect([
             'labels' => array_values($labels),

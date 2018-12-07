@@ -16,6 +16,7 @@
                          :show-labels="false"
                          @input="updateValue"
                          :allow-empty="false"
+                         @open="asyncFind"
                          @search-change="asyncFind"
                          :internal-search="false"
                          :options-limit="300"
