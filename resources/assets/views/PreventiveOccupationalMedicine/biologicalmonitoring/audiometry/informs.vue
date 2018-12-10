@@ -3,37 +3,14 @@
         <h4 class="font-weight-bold mb-4">
             <span class="text-muted font-weight-light">Audiometrias /</span> Informes
         </h4>
-        
-        <div class="row" style="padding-bottom: 10px;">
-            <div class="col-md">
-            <b-card no-body>
-                <b-card-body>
-                    <b-row>
-                        <b-col><vue-advanced-select :disabled="isLoading" v-model="selectedRegionals" :multiple="true" :options="regionals" :searchable="true" name="regionals" label="Regionales">
-                            </vue-advanced-select></b-col>
-                        <b-col><vue-advanced-select :disabled="isLoading" v-model="selectedHeadquarters" :multiple="true" :options="headquarters" :searchable="true" name="headquarters" label="Sedes">
-                            </vue-advanced-select></b-col>
-                    </b-row>
-                    <b-row>
-                        <b-col><vue-advanced-select :disabled="isLoading" v-model="selectedAreas" :multiple="true" :options="areas" :searchable="true" name="areas" label="Áreas">
-                            </vue-advanced-select></b-col>
-                        <b-col><vue-advanced-select :disabled="isLoading" v-model="selectedProcesses" :multiple="true" :options="processes" :searchable="true" name="processes" label="Procesos">
-                            </vue-advanced-select></b-col>
-                    </b-row>
-                    <b-row>
-                        <b-col><vue-advanced-select :disabled="isLoading" v-model="selectedBusinesses" :multiple="true" :options="businesses" :searchable="true" name="businesses" label="Centros de costo">
-                            </vue-advanced-select></b-col>
-                        <b-col><vue-advanced-select :disabled="isLoading" v-model="selectedPositions" :multiple="true" :options="positions" :searchable="true" name="positions" label="Cargos">
-                            </vue-advanced-select></b-col>
-                    </b-row>
-                    <b-row>
-                        <b-col><vue-advanced-select :disabled="isLoading" v-model="selectedYears" :multiple="true" :options="years" :searchable="true" name="years" label="Años">
-                            </vue-advanced-select></b-col>
-                    </b-row>
-                </b-card-body>
-            </b-card>
-            </div>
-        </div>
+        <b-row align-h="end">
+            <b-col cols="1">
+                <filter-general 
+                    v-model="filters" 
+                    configName="biologicalmonitoring-audiometry" 
+                    :isDisabled="isLoading"/>
+            </b-col>
+        </b-row>
 
         <b-row>
             <b-col>
@@ -144,6 +121,7 @@ import VueAdvancedSelect from "@/components/Inputs/VueAdvancedSelect.vue";
 import ChartPie from '@/components/ECharts/ChartPie.vue';
 import ChartBar from '@/components/ECharts/ChartBar.vue';
 import ChartBarMultiple from '@/components/ECharts/ChartBarMultiple.vue';
+import FilterGeneral from '@/components/Filters/FilterGeneral.vue';
 
 export default {
     name: 'audiometry-informs',
@@ -154,36 +132,13 @@ export default {
         VueAdvancedSelect,
         ChartPie,
         ChartBar,
-        ChartBarMultiple
+        ChartBarMultiple,
+        FilterGeneral
     },
     data () {
         return {
-            regionals: [],
-            selectedRegionals: [],
-            headquarters: [],
-            selectedHeadquarters: [],
-            areas: [],
-            selectedAreas: [],
-            processes: [],
-            selectedProcesses: [],
-            businesses: [],
-            selectedBusinesses: [],
-            positions: [],
-            selectedPositions: [],
-            years: [],
-            selectedYears: [],
+            filters: [],
             selectBar: [],
-
-            updateTimeout: 0,
-            ready: {
-                regionals: false,
-                headquarters: false,
-                areas: false,
-                processes: false,
-                businesses: false,
-                positions: false,
-                years: false
-            },
             isLoading: false,
 
             airLeftPtaPie: {
@@ -318,64 +273,6 @@ export default {
     },
     created(){
         this.fetchSelect('selectBar', '/selects/multiselectBar')
-        this.fetchSelect('regionals', '/selects/regionals')
-        this.fetchSelect('headquarters', '/selects/headquarters')
-        this.fetchSelect('areas', '/selects/areas')
-        this.fetchSelect('processes', '/selects/processes')
-        this.fetchSelect('businesses', '/selects/businesses')
-        this.fetchSelect('positions', '/selects/positions')
-        this.fetchSelect('years', '/selects/years/audiometry')
-    },
-    watch: {
-        regionals() {
-            this.selectedRegionals = this.regionals
-            this.ready.regionals = true
-        },
-        headquarters() {
-            this.selectedHeadquarters = this.headquarters
-            this.ready.headquarters = true
-        },
-        areas() {
-            this.selectedAreas = this.areas
-            this.ready.areas = true
-        },
-        processes() {
-            this.selectedProcesses = this.processes
-            this.ready.processes = true
-        },
-        businesses() {
-            this.selectedBusinesses = this.businesses
-            this.ready.businesses = true
-        },
-        positions() {
-            this.selectedPositions = this.positions
-            this.ready.positions = true
-        },
-        years() {
-            this.selectedYears = this.years
-            this.ready.years = true
-        },
-        selectedRegionals() {
-            this.fetch()
-        },
-        selectedHeadquarters() {
-            this.fetch()
-        },
-        selectedAreas() {
-            this.fetch()
-        },
-        selectedProcesses() {
-            this.fetch()
-        },
-        selectedBusinesses() {
-            this.fetch()
-        },
-        selectedPositions() {
-            this.fetch()
-        },
-        selectedYears() {
-            this.fetch()
-        }
     },
     computed: {
         exposedPopulationData: function() {
@@ -391,6 +288,14 @@ export default {
             return this.exposedPopulationaudiologicalCondition[this.exposedPopulationaudiologicalConditionSelected]
         }
     },
+    watch: {
+        filters: {
+            handler(val){
+                this.fetch()
+            },
+            deep: true
+        }
+    },
     methods: {
         fetchSelect(key, url)
         {
@@ -403,31 +308,14 @@ export default {
                 this.$router.go(-1);
             });
         },
-        isReady()
-        {
-            if (this.ready.regionals && this.ready.headquarters && this.ready.areas && this.ready.processes && this.ready.businesses && this.ready.positions && this.ready.years)
-            {
-                return true
-            }
-            else 
-                return false
-        },
         fetch()
         {
-            if (this.isReady() && !this.isLoading)
+            if (!this.isLoading)
             {
                 console.log('buscando...')
                 this.isLoading = true;
 
-                axios.post('/biologicalmonitoring/audiometry/informs', {
-                    regionals: this.selectedRegionals,
-                    headquarters: this.selectedHeadquarters,
-                    areas: this.selectedAreas,
-                    processes: this.selectedProcesses,
-                    businesses: this.selectedBusinesses,
-                    positions: this.selectedPositions,
-                    years: this.selectedYears
-                })
+                axios.post('/biologicalmonitoring/audiometry/informs', this.filters)
                 .then(data => {
                     this.update(data);
                     this.isLoading = false;

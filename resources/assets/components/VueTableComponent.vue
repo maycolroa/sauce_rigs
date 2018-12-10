@@ -1,10 +1,11 @@
 <template>
   <div>
-      <b-row v-if="viewIndex">
-        <template v-for="(item, index) in filters"> 
-          <b-col cols="6" :key="index" v-if="item.active"><vue-advanced-select  v-model="filtersSelected[index]" :multiple="true" :options="item.data" :searchable="true" :name="item.name" :label="item.label">
-              </vue-advanced-select></b-col>
-        </template>
+      <b-row align-h="end" v-if="configNameFilter">
+          <b-col cols="1">
+              <filter-general 
+                  v-model="filters" 
+                  :configName="configNameFilter" />
+          </b-col>
       </b-row>
 
     <v-server-table :url="config.configuration.urlData" :columns="columns" :options="options" ref="vuetable">
@@ -59,8 +60,7 @@ import Vue from 'vue'
 import {ServerTable, ClientTable, Event} from 'vue-tables-2';
 import VueTableConfig from '@/vuetableconfig/';
 import Alerts from '@/utils/Alerts.js';
-import GlobalMethods from '@/utils/GlobalMethods.js';
-import VueAdvancedSelect from "@/components/Inputs/VueAdvancedSelect.vue";
+import FilterGeneral from '@/components/Filters/FilterGeneral.vue';
 
 Vue.use(ServerTable)
 
@@ -75,137 +75,33 @@ export default {
     modelId: {type: [Number, String], default: null}
   },
   components:{
-    VueAdvancedSelect,
+    FilterGeneral
   },
   data(){
     return{
       messageConfirmationRemove:'',
       actionRemove:'',
       component: null,
-
-      filters: {
-        regionals: {
-          label: 'Regionales',
-          name: 'regionals',
-          data: [],
-          active: false,
-          ready: false
-        },
-        headquarters: {
-          label: 'Sedes',
-          name: 'headquarter',
-          data: [],
-          active: false,
-          ready: false
-        },
-        areas: {
-          label: 'Áreas',
-          name: 'areas',
-          data: [],
-          active: false,
-          ready: false
-        },
-        processes: {
-          label: 'Procesos',
-          name: 'processes',
-          data: [],
-          active: false,
-          ready: false
-        },
-        businesses: {
-          label: 'Centros de costo',
-          name: 'businesses',
-          data: [],
-          active: false,
-          ready: false
-        },
-        positions: {
-          label: 'Cargo',
-          name: 'positions',
-          data: [],
-          active: false,
-          ready: false
-        },
-        years: {
-          label: 'Años',
-          name: 'years',
-          data: [],
-          active: false,
-          ready: false
-        }
-      },
-      filtersSelected: {
-        regionals: [],
-        headquarters: [],
-        areas: [],
-        processes: [],
-        businesses: [],
-        positions: [],
-        years: []
-      }
+      filters: []
     }
   },
   watch: {
-    'filters.regionals.data'() {
-      this.updateFilterData('regionals')
-    },
-    'filters.headquarters.data'() {
-      this.updateFilterData('headquarters')
-    },
-    'filters.areas.data'() {
-      this.updateFilterData('areas')
-    },
-    'filters.processes.data'() {
-      this.updateFilterData('processes')
-    },
-    'filters.businesses.data'() {
-      this.updateFilterData('businesses')
-    },
-    'filters.positions.data'() {
-      this.updateFilterData('positions')
-    },
-    'filters.years.data'() {
-      this.updateFilterData('years')
-    },
-    'filtersSelected.regionals'() {
-      this.updateFilterTable('regionals')
-    },
-    'filtersSelected.headquarters'() {
-      this.updateFilterTable('headquarters')
-    },
-    'filtersSelected.areas'() {
-      this.updateFilterTable('areas')
-    },
-    'filtersSelected.processes'() {
-      this.updateFilterTable('processes')
-    },
-    'filtersSelected.businesses'() {
-      this.updateFilterTable('businesses')
-    },
-    'filtersSelected.positions'() {
-      this.updateFilterTable('positions')
-    },
-    'filtersSelected.years'() {
-      this.updateFilterTable('years')
+    filters: {
+        handler(val){
+            Vue.nextTick( () => this.$refs.vuetable.refresh() )
+        },
+        deep: true
     },
     modelId() {
       Vue.nextTick( () => this.$refs.vuetable.refresh() )
     }
   },
   computed: {
-    filtersActive()
-    {      
-      let data = {}
-
-      for(var i in this.filtersSelected)
-      {
-        if (this.filtersSelected[i].length > 0)
-        {
-          this.$set(data, i, this.filtersSelected[i])
-        }
-      }
-
-      return data;
+    configNameFilter() {
+      if (this.config.configuration.configNameFilter != undefined)
+        return this.config.configuration.configNameFilter
+      else 
+        return ''
     },
     loader(){
       if(this.config.configuration.detailComponent){
@@ -255,7 +151,7 @@ export default {
           columns:'Columnas'
         },
         params: {
-          filters: this.filtersActive,
+          filters: this.filters,
           modelId: this.modelId
         }
       };
@@ -333,22 +229,6 @@ export default {
       return controlls.buttons;
     }
   },
-  created() {
-    if (this.config.configuration.filters != undefined)
-    {
-      for(var i in this.config.configuration.filters)
-      {
-        let item = this.config.configuration.filters[i]
-
-        if (this.filters[item.key] != undefined)
-        {
-          this.filters[item.key].active = true
-          this.fetchFilterSelect(item.key, item.url)
-        }
-      }
-    }
-    
-  },
   mounted() {
     if(this.loader()){
       this.loader()
@@ -359,28 +239,6 @@ export default {
     
   },
   methods: {
-    fetchFilterSelect(key, url)
-    {
-        GlobalMethods.getDataMultiselect(url)
-        .then(response => {
-            this.filters[key].data = response;
-        })
-        .catch(error => {
-            Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
-        });
-    },
-    updateFilterData(key)
-    {
-      this.filtersSelected[key] = this.filters[key].data
-      setTimeout(() => {
-          this.filters[key].ready = true
-      }, 1000)
-    },
-    updateFilterTable(key)
-    {
-      if (this.filters[key].ready)
-        Vue.nextTick( () => this.$refs.vuetable.refresh() )
-    },
     pushButton (button, row) {
 
       if(button.data.routePush.name != undefined){
