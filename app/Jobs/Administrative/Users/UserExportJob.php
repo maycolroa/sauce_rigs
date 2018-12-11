@@ -44,9 +44,9 @@ class UserExportJob implements ShouldQueue
                 'sau_users.*',
                 'sau_roles.name as role'
             )->join('sau_role_user','sau_role_user.user_id','sau_users.id')
-            ->join('sau_roles','sau_roles.id','sau_role_user.role_id')
-            ->withoutGlobalScopes()
-            ->where('sau_roles.company_id', $this->company_id);
+            ->join('sau_roles','sau_roles.id','sau_role_user.role_id');
+
+          $users->company_scope = $this->company_id;
 
           $nameExcel = 'export/1/usuarios_'.date("YmdHis").'.xlsx';
           Excel::store(new UsersExcel($users->get()),$nameExcel,'public',\Maatwebsite\Excel\Excel::XLSX);

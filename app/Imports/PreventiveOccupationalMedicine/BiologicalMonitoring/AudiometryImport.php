@@ -95,8 +95,8 @@ class AudiometryImport implements ToCollection
                 NotificationMail::
                     subject('Importación de las audiometrias')
                     ->recipients($this->user)
-                    ->message('Se produjo un error durante el proceso de importación de las audiometrias. Contacte con el administrador')
-                    //->message($e->getMessage())
+                    //->message('Se produjo un error durante el proceso de importación de las audiometrias. Contacte con el administrador')
+                    ->message($e->getMessage())
                     ->module('biologicalMonitoring/audiometry')
                     ->send();
             }
@@ -109,10 +109,12 @@ class AudiometryImport implements ToCollection
 
     private function checkEmployee($row)
     {
-        $employee = Employee::withoutGlobalScopes()->where('company_id', $this->company_id)->where('identification', $row[0])->first();
+        $sql = Employee::where('identification', $row[0]);
+        $sql->company_scope = $this->company_id;
+        $employee = $sql->first();
         \Log::info($employee);
         \Log::info($row[0]);
-        \Log::info(Employee::withoutGlobalScopes()->where('company_id', $this->company_id)->where('identification', $row[0])->toSql());
+        \Log::info($sql->toSql());
         if ($employee)
         {
             return $employee->id;
@@ -208,26 +210,32 @@ class AudiometryImport implements ToCollection
         return $area->id;
     }
 
-    private function checkRegional($regional)
+    private function checkRegional($name)
     {
-        $regional = EmployeeRegional::withoutGlobalScopes()->firstOrCreate(['name' => $regional, 'company_id' => $this->company_id], 
-                                            ['name' => $regional, 'company_id' => $this->company_id]);
+        $regional = EmployeeRegional::query();
+        $regional->company_scope = $this->company_id;
+        $regional = $regional->firstOrCreate(['name' => $name], 
+                                            ['name' => $name, 'company_id' => $this->company_id]);
 
         return $regional->id;
     }
 
-    private function checkPosition($position)
+    private function checkPosition($name)
     {
-        $position = EmployeePosition::withoutGlobalScopes()->firstOrCreate(['name' => $position, 'company_id' => $this->company_id], 
-                                            ['name' => $position, 'company_id' => $this->company_id]);
+        $position = EmployeePosition::query();
+        $position->company_scope = $this->company_id;
+        $position = $position->firstOrCreate(['name' => $name], 
+                                            ['name' => $name, 'company_id' => $this->company_id]);
 
         return $position->id;
     }
 
-    private function checkBusiness($business)
+    private function checkBusiness($name)
     {
-        $business = EmployeeBusiness::withoutGlobalScopes()->firstOrCreate(['name' => $business, 'company_id' => $this->company_id], 
-                                            ['name' => $business, 'company_id' => $this->company_id]);
+        $business = EmployeeBusiness::query();
+        $business->company_scope = $this->company_id;
+        $business = $business->firstOrCreate(['name' => $name], 
+                                            ['name' => $name, 'company_id' => $this->company_id]);
 
         return $business->id;
     }

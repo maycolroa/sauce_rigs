@@ -43,9 +43,9 @@ class AudiometryExportJob implements ShouldQueue
         'sau_employees.name as employee_name'
       )
       ->join('sau_employees','sau_employees.id','sau_bm_audiometries.employee_id')
-      ->join('sau_employees_regionals','sau_employees_regionals.id','sau_employees.employee_regional_id')
-      ->withoutGlobalScopes()
-      ->where('sau_employees.company_id', $this->company_id);
+      ->join('sau_employees_regionals','sau_employees_regionals.id','sau_employees.employee_regional_id');
+
+      $audiometries->company_scope = $this->company_id;
 
       $nameExcel = 'export/1/audiometrias_'.date("YmdHis").'.xlsx';
       Excel::store(new AudiometryExcel($audiometries->get()),$nameExcel,'public',\Maatwebsite\Excel\Excel::XLSX);

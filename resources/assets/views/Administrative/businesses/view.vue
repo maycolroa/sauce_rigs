@@ -10,7 +10,7 @@
             <administrative-business-form
                 :business="data"
                 :view-only="true"
-                :cancel-url="{ name: 'administrative-business'}"/>
+                :cancel-url="{ name: 'administrative-businesses'}"/>
         </b-card-body>
       </b-card>
     </div>
