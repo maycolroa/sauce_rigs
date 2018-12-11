@@ -1,26 +1,29 @@
 <template>
     <div>
-      <vue-echart :options="barOptions"
-          ref="barMutiple"
-          :auto-resize="true"
-          v-show="!displayEmpty"/>
-        <b-container v-show="displayEmpty">
-            <b-row align-h="center">
-                <b-col cols="6">No hay resultados</b-col>
-            </b-row>
-        </b-container>
+        <perfect-scrollbar :options="{ wheelPropagation: true }" class="mb-4" style="height: 300px;">
+        <vue-echart :options="barOptions"
+            ref="barMutiple"
+            :auto-resize="true"
+            v-show="!displayEmpty"
+            :style="{ height: barHeight + 'px !important' }"/>
+            <b-container v-show="displayEmpty">
+                <b-row align-h="center">
+                    <b-col cols="6">No hay resultados</b-col>
+                </b-row>
+            </b-container>
+        </perfect-scrollbar>
     </div>
 </template>
 
 <style>
 .echarts {
-  height: 300px !important;
   width: 100% !important;
 }
 </style>
 
 <script>
 import ECharts from 'vue-echarts/components/ECharts.vue'
+import PerfectScrollbar from '@/vendor/libs/perfect-scrollbar/PerfectScrollbar'
 
 import 'echarts/lib/chart/bar'
 import 'echarts/lib/component/tooltip'
@@ -46,10 +49,12 @@ export default {
     title: {type: String, default:''}
   },
   components: {
-    'vue-echart': ECharts
+    'vue-echart': ECharts,
+    PerfectScrollbar
   },
   data:() => ({
-    barOptions:{}
+    barOptions:{},
+    height: 300
     }),
 
   watch:{
@@ -97,6 +102,8 @@ export default {
       
         let bar = this.$refs.barMutiple
         bar.hideLoading();
+
+        this.height = this.chartData.datasets.data[0].data.length * 60
     }
   },
   mounted(){
@@ -108,6 +115,9 @@ export default {
   computed: {
     displayEmpty () {
         return (this.chartData.datasets.data != undefined && this.chartData.datasets.data.length > 0) ? false : true
+    },
+    barHeight() {
+        return this.height
     }
   },
   methods: {

@@ -3,7 +3,8 @@
       <vue-echart :options="pieOptions"
           ref="pie"
           :auto-resize="true"
-          v-show="!displayEmpty"/>
+          v-show="!displayEmpty"
+          :style="{ height: '300px !important' }"/>
         <b-container v-show="displayEmpty">
             <b-row align-h="center">
                 <b-col cols="6">No hay resultados</b-col>
@@ -14,7 +15,6 @@
 
 <style>
 .echarts {
-  height: 300px !important;
   width: 100% !important;
 }
 </style>
@@ -51,7 +51,8 @@ export default {
     'vue-echart': ECharts
   },
   data:() => ({
-    pieOptions:{}
+    pieOptions:{},
+    height: '300px !important'
     }),
 
   watch:{
