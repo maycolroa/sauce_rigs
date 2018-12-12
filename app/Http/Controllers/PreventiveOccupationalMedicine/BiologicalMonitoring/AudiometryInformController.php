@@ -5,6 +5,7 @@ namespace App\Http\Controllers\PreventiveOccupationalMedicine\BiologicalMonitori
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Carbon\Carbon;
 use App\Inform\PreventiveOccupationalMedicine\BiologicalMonitoring\InformManagerAudiometry;
 use App\Inform\PreventiveOccupationalMedicine\BiologicalMonitoring\InformIndividualManagerAudiometry;
 
@@ -35,8 +36,21 @@ class AudiometryInformController extends Controller
         $businesses = $this->getValuesForMultiselect($request->businesses);
         $positions = $this->getValuesForMultiselect($request->positions);
         $years = $this->getValuesForMultiselect($request->years);
+        $dates = [];
+
+        if (isset($request->dateRange) && $request->dateRange)
+        {
+            $dates_request = explode('/', $request->dateRange);
+
+            if (COUNT($dates_request) == 2)
+            {
+                array_push($dates, (Carbon::createFromFormat('D M d Y',$dates_request[0]))->format('Ymd'));
+                array_push($dates, (Carbon::createFromFormat('D M d Y',$dates_request[1]))->format('Ymd'));
+            }
+            
+        }
         
-        $informManager = new InformManagerAudiometry($regionals, $headquarters, $areas, $processes, $businesses, $positions, $years);
+        $informManager = new InformManagerAudiometry($regionals, $headquarters, $areas, $processes, $businesses, $positions, $years, $dates);
         
         return $this->respondHttp200($informManager->getInformData());
     }

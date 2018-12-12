@@ -1,55 +1,85 @@
 <template>
     <b-form-group>
-        <div slot="label" :class="classBlock">
-            <div v-if="label">{{label}}</div>
-            <a v-if="textBlock" :href="actionBlock" class="d-block small">{{textBlock}}</a>
-        </div>
-            <flat-pickr
-                :disabled="disabled" 
-                :config="rangeConfig"          
-                :value="value" 
-                :placeholder="placeholder" 
-                :name="name"
-                :alt-input-class="inputclass"
-                @input="updateValue($event)" />
-                <b-form-invalid-feedback v-if="error" :force-show="true">
+        <b-row>
+          <b-col>
+            <div slot="label" :class="classBlock">
+                <div v-if="label">{{label}}</div>
+                <a v-if="textBlock" :href="actionBlock" class="d-block small">{{textBlock}}</a>
+            </div>
+          </b-col>
+        </b-row>
+        <b-row>
+          <b-col>
+            <datepicker
+                :calendar-button="true"
+                calendar-button-icon="ion ion-md-calendar"
+                :disabled="disabled"             
+                placeholder="Fecha inicio" 
+                :name="`${name}_1`"
+                :input-class="inputclass"
+                :language="es"
+                v-model="date_ini"
+                @input="updateValue($event)"
+                :bootstrapStyling="true"
+                :monday-first="true"
+                :full-month-name="fullMonthName"
+                :disabled-dates="disabledDates"
+                :highlighted="highlightedDates" />
+          </b-col>
+          <b-col>
+            <datepicker
+                :calendar-button="true"
+                calendar-button-icon="ion ion-md-calendar"
+                :disabled="disabled"             
+                placeholder="Fecha fin" 
+                :name="`${name}_2`"
+                :input-class="inputclass"
+                :language="es"
+                v-model="date_end"
+                @input="updateValue($event)"
+                :bootstrapStyling="true"
+                :monday-first="true"
+                :full-month-name="fullMonthName"
+                :disabled-dates="disabledDates"
+                :highlighted="highlightedDates" />
+            </b-col>
+        </b-row>
+        <b-row>
+            <b-col>
+              <b-form-invalid-feedback v-if="error" :force-show="true">
                    {{error}}
                 </b-form-invalid-feedback>
+            </b-col>
+          </b-row>
     </b-form-group>
 </template>
-<style src="@/vendor/libs/vue-flatpickr-component/vue-flatpickr-component.scss" lang="scss"></style>
+<style src="@/vendor/libs/vuejs-datepicker/vuejs-datepicker.scss" lang="scss"></style>
 <script>
-import FlatPickr from 'vue-flatpickr-component'
+import Datepicker from 'vuejs-datepicker'
 import {es} from 'vuejs-datepicker/dist/locale'
-
-function isRTL () {
-  return document.documentElement.getAttribute('dir') === 'rtl' ||
-         document.body.getAttribute('dir') === 'rtl'
-}
+import moment from 'moment'
 
 export default {
   props: {
     error: {type: String, default: null},
     label: {type: String},
     value: {type: String, default:''},
-    placeholder: {type:String},
     name: { type: String, required: true },
     disabled: { type: Boolean, default: false },
     textBlock: {type: String},
     actionBlock: {type: String},
+    fullMonthName: {type: Boolean, default: true},
+    disabledDates: {type: Object}
   },
   data () {
     return {
       es: es,
-      rangeConfig: {
-        mode: 'range',
-        altInput: true,
-        animate: !isRTL()
-      },
+      date_ini: '',
+      date_end: '',
     }
   },
   components:{
-      FlatPickr
+      Datepicker
   },
   computed:{
       inputclass(){
@@ -57,17 +87,34 @@ export default {
           if(!this.error){
               return null;
           }
-          else{
+          else {
               return 'is-invalid';
           }
       },
       classBlock(){
           return this.textBlock ? 'd-flex justify-content-between align-items-end' : '';
       },
+      highlightedDates() {
+        if (this.date_ini && this.date_end)
+        {
+          let toDate = new Date(this.date_end.getFullYear(), this.date_end.getMonth(), this.date_end.getDate())
+          toDate = toDate.setDate(toDate.getDate()+1)
+          return {
+            to: toDate,
+            from: new Date(this.date_ini.getFullYear(), this.date_ini.getMonth(), this.date_ini.getDate())
+          }
+        }
+        else
+        {
+          return {
+          }
+        }
+      }
   },
   methods: {
     updateValue(value) {
-      this.$emit('input', value.toDateString());
+      if (this.date_ini && this.date_end)
+        this.$emit('input', this.date_ini.toDateString() +'/'+ this.date_end.toDateString());
     }
   }
 }

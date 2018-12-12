@@ -13,7 +13,7 @@
               <div v-if="row.employee_name"><b>Identificación Empleado:</b> {{row.employee_name}}</div>
               <div v-if="row.previews_events"><b>Eventos Previos:</b> {{row.previews_events}}</div>
               <div v-if="row.epp"><b>EPP:</b> {{row.epp}}</div>
-              <div v-if="row.base_type"><b>Base:</b> {{ row.base_type == 'Base' ? 'Si' : 'No'}} <template  v-if="row.base"> - <router-link :to="{ path: `audiometry/view/${row.base}` }">Ver Audiometria</router-link></template></div>
+              <div v-if="row.base_type"><b>Base:</b> {{ row.base_type == 'Base' ? 'Si' : 'No'}} <template  v-if="row.base"> - <router-link :to="{ path: `/preventiveoccupationalmedicine/biologicalmonitoring/audiometry/view/${row.base}` }">Ver Audiometria</router-link></template></div>
               <div v-if="row.base_state"><b>Tipo Base:</b> {{row.base_state}}</div>
               <div v-if="row.observation"><b>Observaciones:</b> {{row.observation.length > 70 ? row.observation.substring(0, 70) + '...' : row.observation}}</div>
               <div v-if="row.created_at"><b>Fecha Creación:</b> {{row.created_at}}</div>

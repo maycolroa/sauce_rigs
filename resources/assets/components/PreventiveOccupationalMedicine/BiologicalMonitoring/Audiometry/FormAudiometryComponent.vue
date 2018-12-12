@@ -47,7 +47,7 @@
             <div class="col-lg">
               <b-card bg-variant="transparent" border-variant="dark" class="mb-12 box-shadow-none">
                 <div><b>Base:</b> {{ form.base_type == 'Base' ? 'Si' : 'No'}}</div>
-                <div v-if="form.base"><router-link :to="{ path: `${form.base}` }">Ver Audiometria</router-link></div>
+                <div v-if="form.base"><router-link :to="{ path: `/preventiveoccupationalmedicine/biologicalmonitoring/audiometry/view/${form.base}` }">Ver Audiometria</router-link></div>
                 <div v-if="form.base_state"><b>Tipo Base:</b> {{ form.base_state }}</div>
               </b-card>
             </div>

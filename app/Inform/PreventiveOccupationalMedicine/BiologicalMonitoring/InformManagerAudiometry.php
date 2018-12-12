@@ -45,12 +45,13 @@ class InformManagerAudiometry
     protected $businesses;
     protected $positions;
     protected $years;
+    protected $dateRange;
 
     /**
      * create an instance and set the attribute class
      * @param array $regionals
      */
-    function __construct($regionals = [], $headquarters = [], $areas = [], $processes = [], $businesses = [], $positions = [], $years = [])
+    function __construct($regionals = [], $headquarters = [], $areas = [], $processes = [], $businesses = [], $positions = [], $years = [], $dateRange = [])
     {
         $this->regionals = $regionals;
         $this->headquarters = $headquarters;
@@ -59,6 +60,7 @@ class InformManagerAudiometry
         $this->businesses = $businesses;
         $this->positions = $positions;
         $this->years = $years;
+        $this->dateRange = $dateRange;
     }
 
     /**
@@ -118,6 +120,7 @@ class InformManagerAudiometry
         ->inBusinesses($this->businesses)
         ->inPositions($this->positions)
         ->inYears($this->years)
+        ->betweenDate($this->dateRange)
         ->where($column, '<>', '')
         ->groupBy($column)
         ->pluck('count', $column);
@@ -210,6 +213,7 @@ class InformManagerAudiometry
         ->inBusinesses($this->businesses)
         ->inPositions($this->positions)
         ->inYears($this->years)
+        ->betweenDate($this->dateRange)
         ->where('sau_bm_audiometries.base_state', '=', $state)
         ->groupBy($column)
         ->pluck('count', 'name');
@@ -255,6 +259,7 @@ class InformManagerAudiometry
         ->inBusinesses($this->businesses)
         ->inPositions($this->positions)
         ->inYears($this->years)
+        ->betweenDate($this->dateRange)
         ->groupBy($column, 'serie')
         ->get();
 

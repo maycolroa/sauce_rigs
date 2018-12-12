@@ -35,6 +35,8 @@ export default {
   data () {
     return {
       data: [],
+      epp:[],
+      expositionLevel: []
     }
   },
   created(){

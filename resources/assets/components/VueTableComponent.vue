@@ -82,13 +82,15 @@ export default {
       messageConfirmationRemove:'',
       actionRemove:'',
       component: null,
-      filters: []
+      filters: [],
+      tableReady: false
     }
   },
   watch: {
     filters: {
         handler(val){
-            Vue.nextTick( () => this.$refs.vuetable.refresh() )
+            if (this.tableReady)
+              Vue.nextTick( () => this.$refs.vuetable.refresh() )
         },
         deep: true
     },
@@ -236,7 +238,10 @@ export default {
                   this.component = () => this.loader()
               })
     }
-    
+
+    setTimeout(() => {
+        this.tableReady = true
+    }, 4000)
   },
   methods: {
     pushButton (button, row) {

@@ -16,14 +16,14 @@
                         <b-card-body>
                             <b-row>
                                 <template v-for="(item, index) in filters"> 
-                                    <b-col cols="6" :key="index"    v-if="item.active"><vue-advanced-select  v-model="filtersSelected[index]" :multiple="true" :options="item.data" :searchable="true" :name="item.name" :label="item.label" :disabled="isDisabled">
+                                    <b-col cols="6" :key="index" v-if="item.active && index != 'dateRange'"><vue-advanced-select  v-model="filtersSelected[index]" :multiple="true" :options="item.data" :searchable="true" :name="item.name" :label="item.label" :disabled="isDisabled">
                                     </vue-advanced-select></b-col>
                                 </template>
                             </b-row>
-                            <!-- <b-row>
-                                <vue-datepicker-range class="col-md-6" v-model="date_range" label="Rango de fecha" :full-month-name="true" placeholder="Rango de fecha" name="date_range">
+                            <b-row v-if="filters.dateRange.active">
+                                <vue-datepicker-range class="col-md-12" v-model="filtersSelected.dateRange" :label="filters.dateRange.label" :name="filters.dateRange.name" :disabled="isDisabled">
                                     </vue-datepicker-range>
-                            </b-row> -->
+                            </b-row>
                         </b-card-body>
                     </b-card>
                 </div>
@@ -40,7 +40,7 @@
 import Alerts from '@/utils/Alerts.js';
 import GlobalMethods from '@/utils/GlobalMethods.js';
 import VueAdvancedSelect from "@/components/Inputs/VueAdvancedSelect.vue";
-//import VueDatepickerRange from "@/components/Inputs/VueDatepickerRange.vue";
+import VueDatepickerRange from "@/components/Inputs/VueDatepickerRange.vue";
 import { SweetModal, SweetModalTab } from 'sweet-modal-vue'
 import FilterConfig from '@/filterconfig/';
 
@@ -51,7 +51,7 @@ export default {
     },
     components:{
         VueAdvancedSelect,
-        //VueDatepickerRange,
+        VueDatepickerRange,
         SweetModal,
         SweetModalTab
     },
@@ -67,7 +67,6 @@ export default {
     },
     data () {
         return {
-            date_range: '',
             filters: {
                 regionals: {
                     label: 'Regionales',
@@ -117,6 +116,12 @@ export default {
                     data: [],
                     active: false,
                     ready: false
+                },
+                dateRange: {
+                    label: 'Rango de fecha',
+                    name: 'date_range',
+                    active: false,
+                    ready: false
                 }
             },
             filtersSelected: {
@@ -126,7 +131,8 @@ export default {
                 processes: [],
                 businesses: [],
                 positions: [],
-                years: []
+                years: [],
+                dateRange: ''
             }
         }
     },
@@ -140,7 +146,13 @@ export default {
                 if (this.filters[item.key] != undefined)
                 {
                     this.filters[item.key].active = true
-                    this.fetchFilterSelect(item.key, item.url)
+
+                    if (item.key == 'dateRange')
+                    {
+                        this.filters[item.key].ready = true
+                    }
+                    else
+                        this.fetchFilterSelect(item.key, item.url)
                 }
             }
         }
@@ -206,6 +218,9 @@ export default {
         },
         'filtersSelected.years'() {
             this.updateFilterTable('years')
+        },
+        'filtersSelected.dateRange'() {
+            this.updateFilterTable('dateRange')
         },
     },
     methods: {

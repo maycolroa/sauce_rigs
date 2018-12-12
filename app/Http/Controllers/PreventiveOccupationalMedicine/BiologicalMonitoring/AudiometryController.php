@@ -67,6 +67,20 @@ class AudiometryController extends Controller
         if (isset($filters["years"]))
           $audiometry->inYears($this->getValuesForMultiselect($filters["years"]));
 
+        if (isset($filters["dateRange"]) && $filters["dateRange"])
+        {
+            $dates_request = explode('/', $filters["dateRange"]);
+            $dates = [];
+
+            if (COUNT($dates_request) == 2)
+            {
+                array_push($dates, (Carbon::createFromFormat('D M d Y',$dates_request[0]))->format('Ymd'));
+                array_push($dates, (Carbon::createFromFormat('D M d Y',$dates_request[1]))->format('Ymd'));
+            }
+            
+            $audiometry->betweenDate($dates);
+        }
+
        return Vuetable::of($audiometry)
                 ->addColumn('base_si_no', function ($audiometry) {
                   return $audiometry->base_type == 'Base' ? 'Si' : 'No';

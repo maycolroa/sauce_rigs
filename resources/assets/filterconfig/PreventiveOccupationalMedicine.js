@@ -29,6 +29,9 @@ export default [
         {
           url: '/selects/years/audiometry',
           key: 'years',
+        },
+        {
+          key: 'dateRange'
         }
       ]
     }

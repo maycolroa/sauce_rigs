@@ -164,7 +164,7 @@ class EmployeeProcessController extends Controller
         {
             $processes = EmployeeProcess::selectRaw(
                     "sau_employees_processes.id as id,
-                    sau_employees_processes.name as name")
+                    CONCAT(sau_employees_regionals.name, '/', sau_employees_headquarters.name, '/', sau_employees_areas.name, '/', sau_employees_processes.name) as name")
                 ->join('sau_employees_areas', 'sau_employees_areas.id', 'sau_employees_processes.employee_area_id')
                 ->join('sau_employees_headquarters', 'sau_employees_headquarters.id', 'sau_employees_areas.employee_headquarter_id')
                 ->join('sau_employees_regionals', 'sau_employees_regionals.id', 'sau_employees_headquarters.employee_regional_id')->pluck('id', 'name');
