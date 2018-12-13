@@ -1,17 +1,17 @@
 <template>
     <div>
-        <perfect-scrollbar :options="{ wheelPropagation: true }" class="mb-4" style="height: 300px;">
-        <vue-echart :options="barOptions"
-            ref="bar"
-            :auto-resize="true"
-            v-show="!displayEmpty"
-            :style="{ height: barHeight + 'px !important' }"/>
-            <b-container v-show="displayEmpty">
-                <b-row align-h="center">
-                    <b-col cols="6">No hay resultados</b-col>
-                </b-row>
-            </b-container>
-        </perfect-scrollbar>
+        <div style="height: 300px; overflow:auto;">
+            <vue-echart :options="barOptions"
+                ref="bar"
+                :auto-resize="true"
+                v-show="!displayEmpty"
+                :style="{ height: barHeight + 'px !important' }"/>
+                <b-container v-show="displayEmpty">
+                    <b-row align-h="center">
+                        <b-col cols="6">No hay resultados</b-col>
+                    </b-row>
+                </b-container>
+        </div>
     </div>
 </template>
 
@@ -23,7 +23,6 @@
 
 <script>
 import ECharts from 'vue-echarts/components/ECharts.vue'
-import PerfectScrollbar from '@/vendor/libs/perfect-scrollbar/PerfectScrollbar'
 
 import 'echarts/lib/chart/bar'
 import 'echarts/lib/component/tooltip'
@@ -49,8 +48,7 @@ export default {
     title: {type: String, default:''}
   },
   components: {
-    'vue-echart': ECharts,
-    PerfectScrollbar
+    'vue-echart': ECharts
   },
   data:() => ({
     barOptions:{},
@@ -77,7 +75,6 @@ export default {
                 data: ['bar']
             },
             grid: {
-                left: '3%',
                 right: '4%',
                 bottom: '3%',
                 top: '2%',
@@ -130,7 +127,10 @@ export default {
         let bar = this.$refs.bar
         bar.hideLoading();
 
-        this.height = this.chartData.datasets.data.length * 30
+        if ((this.chartData.datasets.data.length * 30) > 300)
+            this.height = this.chartData.datasets.data.length * 30
+        else 
+            this.height = 300
     }
   },
   mounted(){
