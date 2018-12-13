@@ -75,9 +75,6 @@ export default {
                 data: ['bar']
             },
             grid: {
-                right: '4%',
-                bottom: '3%',
-                top: '2%',
                 containLabel: true
             },
             yAxis: {

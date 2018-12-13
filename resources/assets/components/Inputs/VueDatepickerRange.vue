@@ -23,7 +23,7 @@
                 :bootstrapStyling="true"
                 :monday-first="true"
                 :full-month-name="fullMonthName"
-                :disabled-dates="disabledDates"
+                :disabled-dates="disabledDatesIni"
                 :highlighted="highlightedDates" />
           </b-col>
           <b-col>
@@ -40,7 +40,7 @@
                 :bootstrapStyling="true"
                 :monday-first="true"
                 :full-month-name="fullMonthName"
-                :disabled-dates="disabledDates"
+                :disabled-dates="disabledDatesEnd"
                 :highlighted="highlightedDates" />
             </b-col>
         </b-row>
@@ -69,7 +69,6 @@ export default {
     textBlock: {type: String},
     actionBlock: {type: String},
     fullMonthName: {type: Boolean, default: true},
-    disabledDates: {type: Object}
   },
   data () {
     return {
@@ -102,6 +101,32 @@ export default {
           return {
             to: toDate,
             from: new Date(this.date_ini.getFullYear(), this.date_ini.getMonth(), this.date_ini.getDate())
+          }
+        }
+        else
+        {
+          return {
+          }
+        }
+      },
+      disabledDatesIni() {
+        if (this.date_end)
+        {
+          return {
+            from: this.date_end
+          }
+        }
+        else
+        {
+          return {
+          }
+        }
+      },
+      disabledDatesEnd() {
+        if (this.date_ini)
+        {
+          return {
+            to: this.date_ini
           }
         }
         else

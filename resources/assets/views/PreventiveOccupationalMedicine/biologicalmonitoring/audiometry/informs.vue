@@ -70,6 +70,8 @@
                         ref="exposedPopulationCuat"/>
                 </b-card>
             </b-col>
+        </b-row>
+        <b-row>
             <b-col>
                 <b-card border-variant="primary" title="Población Expuesta con CUAP" class="mb-3 box-shadow-none">
                     <b-row>
