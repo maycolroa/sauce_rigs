@@ -163,7 +163,7 @@ class InformManagerAudiometry
         ->inProcesses($this->processes)
         ->inBusinesses($this->businesses)
         ->inPositions($this->positions)
-        ->groupBy($column)
+        ->groupBy($table.'.name')
         ->pluck('count', 'name');
 
         return $this->buildDataChart($exposedPopulation);
@@ -215,7 +215,7 @@ class InformManagerAudiometry
         ->inYears($this->years)
         ->betweenDate($this->dateRange)
         ->where('sau_bm_audiometries.base_state', '=', $state)
-        ->groupBy($column)
+        ->groupBy($table.'.name')
         ->pluck('count', 'name');
 
         return $this->buildDataChart($audiometryState);
@@ -260,7 +260,7 @@ class InformManagerAudiometry
         ->inPositions($this->positions)
         ->inYears($this->years)
         ->betweenDate($this->dateRange)
-        ->groupBy($column, 'serie')
+        ->groupBy($table.'.name', 'serie')
         ->get();
 
         $barSeries = ['Normal', 'Alterada'];
