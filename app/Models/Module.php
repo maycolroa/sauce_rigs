@@ -19,4 +19,9 @@ class Module extends Model
     {
         return $this->hasMany(LogMail::class);
     }
+
+    public function licenses()
+    {
+        return $this->belongsToMany('App\Administrative\License','sau_license_module');
+    }
 }
