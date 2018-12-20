@@ -46,6 +46,10 @@
             {
                 "name": "activities",
                 "display_name": "Actividades"
+            },
+            {
+                "name": "dangers",
+                "display_name": "Peligros"
             }
         ]
     },

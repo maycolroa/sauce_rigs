@@ -45,5 +45,52 @@ export default [
         urlData: '/industrialSecurity/activity/data',
         filterColumns: true,
     }
+},
+{
+    name: 'industrialsecure-dangers',
+    fields: [
+        { name: 'sau_dm_dangers.id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true },
+        { name: 'sau_dm_dangers.name', data: 'name', title: 'Nombre', sortable: true, searchable: true, detail: false, key: false },
+        { name: '', data: 'controlls', title: 'Controles', sortable: false, searchable: false, detail: false, key: false },
+    ],
+    'controlls': [{
+        type: 'push',
+        buttons: [{
+        config: {
+            color: 'outline-success',
+            borderless: true,
+            icon: 'ion ion-md-create',
+        },
+        data: {
+            routePush: { name: 'industrialsecure-dangers-edit' },
+            id: 'id',
+        }
+        }, {
+        config: {
+            color: 'outline-info',
+            borderless: true,
+            icon: 'ion ion-md-eye',
+        },
+        data: {
+            routePush: { name: 'industrialsecure-dangers-view' },
+            id: 'id',
+        }
+        }]
+    },
+    {
+        type: 'base',
+        buttons: [{
+        name: 'delete',
+        data: {
+            action: '/industrialSecurity/danger/',
+            id: 'id',
+            messageConfirmation: 'Esta seguro de borrar el peligro __name__'
+        },
+        }],
+    }],
+    configuration: {
+        urlData: '/industrialSecurity/danger/data',
+        filterColumns: true,
+    }
 }
 ];

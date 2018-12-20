@@ -1,0 +1,38 @@
+<template>
+  <div>
+    <h4 class="font-weight-bold mb-4">
+       <span class="text-muted font-weight-light">Peligros /</span> Crear
+    </h4>
+
+
+    <div class="col-md">
+      <b-card no-body>
+        <b-card-body>
+            <industrial-secure-danger-form
+                url="/industrialSecurity/danger"
+                method="POST"
+                :cancel-url="{ name: 'industrialsecure-dangers'}"/>
+        </b-card-body>
+      </b-card>
+    </div>
+  </div>
+</template>
+
+<script>
+import IndustrialSecureDangerForm from '@/components/IndustrialSecure/Dangers/FormDangerComponent.vue';
+import Alerts from '@/utils/Alerts.js';
+
+export default {
+  name: 'industrialsecure-dangers-create',
+  metaInfo: {
+    title: 'Peligros - Crear'
+  },
+  components:{
+    IndustrialSecureDangerForm
+  },
+  data(){
+    return {
+    }
+  }
+}
+</script>

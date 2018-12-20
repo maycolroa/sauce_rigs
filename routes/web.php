@@ -95,6 +95,9 @@ Route::middleware(['auth'])->group(function () {
     Route::prefix('industrialSecurity')->group(function () {
       Route::post('activity/data', 'IndustrialSecure\ActivityController@data');
       Route::ApiResource('activity', 'IndustrialSecure\ActivityController');
+
+      Route::post('danger/data', 'IndustrialSecure\DangerController@data');
+      Route::ApiResource('danger', 'IndustrialSecure\DangerController');
     });
 
     //Return view for spa
