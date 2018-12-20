@@ -57,6 +57,7 @@ Route::middleware(['auth'])->group(function () {
         Route::post('businesses', 'Administrative\EmployeeBusinessController@multiselect');
         Route::post('eps', 'ApplicationController@multiselectEps');
         Route::post('multiselectBar', 'PreventiveOccupationalMedicine\BiologicalMonitoring\AudiometryInformController@multiselectBar');
+        Route::post('dmActivities', 'IndustrialSecure\ActivityController@multiselect');
     });
 
     //Administrativo
@@ -88,6 +89,12 @@ Route::middleware(['auth'])->group(function () {
 
       Route::post('employee/data', 'Administrative\EmployeesController@data');
       Route::ApiResource('employee', 'Administrative\EmployeesController');
+    });
+
+    //Seguridad Industrial
+    Route::prefix('industrialSecurity')->group(function () {
+      Route::post('activity/data', 'IndustrialSecure\ActivityController@data');
+      Route::ApiResource('activity', 'IndustrialSecure\ActivityController');
     });
 
     //Return view for spa

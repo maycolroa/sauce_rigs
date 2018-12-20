@@ -43,6 +43,10 @@
     {
         "application": "industrialSecure",
         "modules": [
+            {
+                "name": "activities",
+                "display_name": "Actividades"
+            }
         ]
     },
     {
