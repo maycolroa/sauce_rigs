@@ -58,6 +58,20 @@ Route::middleware(['auth'])->group(function () {
         Route::post('eps', 'ApplicationController@multiselectEps');
         Route::post('multiselectBar', 'PreventiveOccupationalMedicine\BiologicalMonitoring\AudiometryInformController@multiselectBar');
         Route::post('dmActivities', 'IndustrialSecure\ActivityController@multiselect');
+        Route::post('dmDangers', 'IndustrialSecure\DangerController@multiselect');
+        Route::post('dmGeneratedDangers', 'IndustrialSecure\DangerController@multiselectGeneratedDangers');
+        Route::post('tagsAdministrativeControls', 'IndustrialSecure\TagController@multiselectAdministrativeControls');
+        Route::post('tagsEngineeringControls', 'IndustrialSecure\TagController@multiselectEngineeringControls');
+        Route::post('tagsEpp', 'IndustrialSecure\TagController@multiselectEpp');
+        Route::post('tagsPossibleConsequencesDanger', 'IndustrialSecure\TagController@multiselectPossibleConsequencesDanger');
+        Route::post('tagsWarningSignage', 'IndustrialSecure\TagController@multiselectWarningSignage');
+        Route::post('conf/locationLevelFormModules', 'Administrative\Configurations\LocationLevelFormController@multiselectModules');
+      });
+
+    Route::prefix('radios')->group(function () {
+      Route::post('dmTypeActivities', 'IndustrialSecure\ActivityController@radioTypeActivities');
+      Route::post('siNo', 'ApplicationController@radioSiNo');
+      Route::post('conf/locationLevelForm', 'Administrative\Configurations\LocationLevelFormController@radioLocationLevels');
     });
 
     //Administrativo
@@ -89,6 +103,12 @@ Route::middleware(['auth'])->group(function () {
 
       Route::post('employee/data', 'Administrative\EmployeesController@data');
       Route::ApiResource('employee', 'Administrative\EmployeesController');
+
+      Route::prefix('configurations')->group(function () {
+        Route::post('locationLevelForms/data', 'Administrative\Configurations\LocationLevelFormController@data');
+        Route::ApiResource('locationLevelForms', 'Administrative\Configurations\LocationLevelFormController');
+        Route::post('locationLevelForms/getConfModule', 'Administrative\Configurations\LocationLevelFormController@getConfModule');
+      });
     });
 
     //Seguridad Industrial
@@ -98,6 +118,11 @@ Route::middleware(['auth'])->group(function () {
 
       Route::post('danger/data', 'IndustrialSecure\DangerController@data');
       Route::ApiResource('danger', 'IndustrialSecure\DangerController');
+
+      Route::post('dangersMatrix/data', 'IndustrialSecure\DangerMatrixController@data');
+      Route::ApiResource('dangersMatrix', 'IndustrialSecure\DangerMatrixController');
+
+      Route::post('getConfigQualificationMethodologies', 'IndustrialSecure\DangerMatrixController@getConfigQualificationMethodologies');
     });
 
     //Return view for spa

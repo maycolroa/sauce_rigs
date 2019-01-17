@@ -11,7 +11,8 @@
             <industrial-secure-danger-form
                 url="/industrialSecurity/danger"
                 method="POST"
-                :cancel-url="{ name: 'industrialsecure-dangers'}"/>
+                :cancel-url="{ name: 'industrialsecure-dangers'}"
+                :modal="modal"/>
         </b-card-body>
       </b-card>
     </div>
@@ -29,6 +30,9 @@ export default {
   },
   components:{
     IndustrialSecureDangerForm
+  },
+  props: {
+    modal: { type: Boolean, default: false },
   },
   data(){
     return {

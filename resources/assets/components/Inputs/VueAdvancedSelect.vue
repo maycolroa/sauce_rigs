@@ -21,7 +21,10 @@
                 :multiple="multiple"
                 :close-on-select="closeOnSelectState"
                 :limit="limit"
-                :limit-text="limitText">
+                :limit-text="limitText"
+                tag-placeholder="Añadir esto como nueva etiqueta"
+                :taggable="taggable"
+                @tag="addTag">
             <span slot="noResult">No se encontraron elementos</span>
         </multiselect>
         <b-form-invalid-feedback v-if="error" :force-show="true">
@@ -49,14 +52,15 @@ export default {
     textBlock: { type: String },
     actionBlock: { type: String },
     limit: { type: Number, default: 5 },
-    closeOnSelect: {type: Boolean, default: true}
+    closeOnSelect: {type: Boolean, default: true},
+    taggable: {type: Boolean, default: false}
   },
   components: {
     Multiselect
   },
   data() {
     return {
-      selectValue: ""
+      selectValue: []
     };
   },
   watch: {
@@ -64,14 +68,22 @@ export default {
       this.setMultiselectValue();
     }
   },
+  mounted() {
+      this.setMultiselectValue();
+  },
   methods: {
     limitText(count) {
       return `y ${count} mas`;
     },
     updateValue() {
-      let value = this.multiple ? this.selectValue : this.selectValue.value;
+      let value = this.multiple ? this.selectValue : (this.selectValue ? this.selectValue.value : '');
 
       this.$emit("input", value);
+
+      if (!this.multiple)
+      {
+        this.$emit("selectedName", this.selectValue ? this.selectValue.name : '');
+      }
     },
     setMultiselectValue() {
       if (this.value) {
@@ -89,8 +101,18 @@ export default {
             ? _.find(this.options, { value: this.value })
             : "";
         }
+
+        this.updateValue()
       }
-    }
+    },
+    addTag (newTag) {
+      this.selectValue.push({
+        name: newTag,
+        value: newTag
+      })
+      
+      this.updateValue()
+    },
   },
   computed: {
     state() {

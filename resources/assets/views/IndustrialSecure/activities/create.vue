@@ -11,7 +11,8 @@
             <industrial-secure-activity-form
                 url="/industrialSecurity/activity"
                 method="POST"
-                :cancel-url="{ name: 'industrialsecure-activities'}"/>
+                :cancel-url="{ name: 'industrialsecure-activities'}"
+                :modal="modal"/>
         </b-card-body>
       </b-card>
     </div>
@@ -29,6 +30,9 @@ export default {
   },
   components:{
     IndustrialSecureActivityForm
+  },
+  props: {
+    modal: { type: Boolean, default: false },
   },
   data(){
     return {

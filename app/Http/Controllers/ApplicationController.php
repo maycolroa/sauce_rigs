@@ -218,4 +218,15 @@ class ApplicationController extends Controller
             return $this->multiSelectFormat($eps);
         }
     }
+
+    /**
+     * Returns an arrangement with the si/no
+     *
+     * @return Array
+     */
+    public function radioSiNo()
+    {
+      $options = ["SI"=>"SI", "NO"=>"NO"];
+      return $this->radioFormat(collect($options));
+    }
 }

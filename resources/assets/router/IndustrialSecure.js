@@ -48,5 +48,25 @@ export default [{
       path: 'dangers/view/:id',
       component: () =>
         import('@/views/IndustrialSecure/dangers/view')
+    }, {
+      name: 'industrialsecure-dangermatrix',
+      path: 'dangermatrix',
+      component: () =>
+        import('@/views/IndustrialSecure/dangerMatrix/index')
+    }, {
+      name: 'industrialsecure-dangermatrix-create',
+      path: 'dangermatrix/create',
+      component: () =>
+        import('@/views/IndustrialSecure/dangerMatrix/create')
+    }, {
+      name: 'industrialsecure-dangermatrix-edit',
+      path: 'dangermatrix/edit/:id',
+      component: () =>
+        import('@/views/IndustrialSecure/dangerMatrix/edit')
+    }, {
+      name: 'industrialsecure-dangermatrix-view',
+      path: 'dangermatrix/view/:id',
+      component: () =>
+        import('@/views/IndustrialSecure/dangerMatrix/view')
     }]
   }]

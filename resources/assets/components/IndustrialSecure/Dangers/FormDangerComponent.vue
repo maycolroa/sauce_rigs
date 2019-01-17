@@ -7,7 +7,7 @@
 
     <div class="row float-right pt-10 pr-10">
       <template>
-        <b-btn variant="default" :to="cancelUrl" :disabled="loading">{{ viewOnly ? "Atras" : "Cancelar"}}</b-btn>&nbsp;&nbsp;
+        <b-btn variant="default" v-if="!modal" :to="cancelUrl" :disabled="loading">{{ viewOnly ? "Atras" : "Cancelar"}}</b-btn>&nbsp;&nbsp;
         <b-btn type="submit" :disabled="loading" variant="primary" v-if="!viewOnly">Finalizar</b-btn>
       </template>
     </div>
@@ -28,6 +28,7 @@ export default {
     cancelUrl: { type: [String, Object], required: true },
     isEdit: { type: Boolean, default: false },
     viewOnly: { type: Boolean, default: false },
+    modal: { type: Boolean, default: false },
     danger: {
       default() {
         return {
@@ -55,7 +56,14 @@ export default {
         .submit(e.target.action)
         .then(response => {
           this.loading = false;
-          this.$router.push({ name: "industrialsecure-dangers" });
+
+          if (this.modal)
+          {  
+            Object.assign(this.$data, this.$options.data.apply(this))
+            this.$parent.$emit("closeModal")
+          }
+          else
+            this.$router.push({ name: "industrialsecure-dangers" });
         })
         .catch(error => {
           this.loading = false;

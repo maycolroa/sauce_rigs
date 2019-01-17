@@ -102,10 +102,10 @@ class ActivityController extends Controller
      */
     public function destroy(Activity $activity)
     {
-        /*if (count($activity->employees) > 0 || count($activity->headquarters) > 0)
+        if (count($activity->dangerMatrixs) > 0)
         {
-            return $this->respondWithError('No se puede eliminar la actividad porque hay empleados/sedes asociados a ella');
-        }*/
+            return $this->respondWithError('No se puede eliminar la actividad porque hay matrices de peligro asociadas a ella');
+        }
 
         if(!$activity->delete())
         {
@@ -148,5 +148,16 @@ class ActivityController extends Controller
         
             return $this->multiSelectFormat($activities);
         }
+    }
+
+    /**
+     * Returns an arrangement with the type activities
+     *
+     * @return Array
+     */
+    public function radioTypeActivities()
+    {
+      $activities = ["Rutinaria"=>"Rutinaria", "No rutinaria"=>"No rutinaria"];
+      return $this->radioFormat(collect($activities));
     }
 }

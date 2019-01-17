@@ -37,6 +37,10 @@
             {
                 "name": "employees",
                 "display_name": "Empleados"
+            },
+            {
+                "name": "configurations/locationLevelForm",
+                "display_name": "Configuraciones/Nivel de localización en formulario"
             }
         ]
     },
@@ -50,6 +54,10 @@
             {
                 "name": "dangers",
                 "display_name": "Peligros"
+            },
+            {
+                "name": "dangerMatrix",
+                "display_name": "Matriz de peligros"
             }
         ]
     },

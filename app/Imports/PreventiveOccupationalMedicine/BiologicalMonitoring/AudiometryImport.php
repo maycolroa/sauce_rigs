@@ -95,8 +95,8 @@ class AudiometryImport implements ToCollection
                 NotificationMail::
                     subject('Importación de las audiometrias')
                     ->recipients($this->user)
-                    //->message('Se produjo un error durante el proceso de importación de las audiometrias. Contacte con el administrador')
-                    ->message($e->getMessage())
+                    ->message('Se produjo un error durante el proceso de importación de las audiometrias. Contacte con el administrador')
+                    //->message($e->getMessage())
                     ->module('biologicalMonitoring/audiometry')
                     ->send();
             }

@@ -440,5 +440,56 @@ export default [
       urlData: '/administration/employee/data',
       filterColumns: true,
     }
+  },
+  {
+    name: 'configurations-locationlevelform',
+    fields : [
+        {name: 'sau_conf_location_level_forms.id', data: 'id', title:'ID', sortable: false, searchable: false, detail: false, key: true},
+        {name: 'module', data:'module', title: 'Módulo', sortable: false, searchable: false, detail : false, key : false},
+        {name: 'sau_conf_location_level_forms.regional', data:'regional', title: 'Regional',sortable: true, searchable : true, detail : false, key : false},
+        {name: 'sau_conf_location_level_forms.headquarter', data:'headquarter', title : 'Sede',sortable: true, searchable : true, detail : false, key : false},
+        {name : 'sau_conf_location_level_forms.area', data:'area', title : 'Área',sortable: true, searchable : true, detail : false, key : false},
+        {name : 'sau_conf_location_level_forms.process', data:'process', title : 'Proceso ',sortable: true, searchable : true, detail : false, key : false},
+        {name : '', data:'controlls', title : 'Controles',sortable: false, searchable : false, detail : false, key : false},
+    ],
+    'controlls' : [{
+      type: 'push',
+      buttons:[{
+        config: {
+          color:'outline-success',
+          borderless: true,
+          icon:'ion ion-md-create',
+        },
+        data:{
+          routePush: {name: 'configurations-locationlevelform-edit'},
+          id: 'id',
+        }
+      },{
+        config: {
+          color:'outline-info',
+          borderless: true,
+          icon:'ion ion-md-eye',
+        },
+        data:{
+          routePush: {name: 'configurations-locationlevelform-view'},
+          id: 'id',
+        }
+      }]
+    },
+    {
+      type: 'base',
+      buttons: [{
+        name:'delete',
+        data: {
+          action:'/administration/configurations/locationLevelForms/',
+          id: 'id',
+          messageConfirmation : 'Esta seguro de borrar la configuración'
+        },
+      }],
+    }],
+    configuration: {
+        urlData: '/administration/configurations/locationLevelForms/data',
+        filterColumns: true
+    }
   }
 ];

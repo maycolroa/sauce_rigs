@@ -102,10 +102,10 @@ class DangerController extends Controller
      */
     public function destroy(Danger $danger)
     {
-        /*if (count($danger->employees) > 0 || count($danger->headquarters) > 0)
+        if (count($danger->dangerMatrixs) > 0)
         {
-            return $this->respondWithError('No se puede eliminar la actividad porque hay empleados/sedes asociados a ella');
-        }*/
+            return $this->respondWithError('No se puede eliminar el peligro porque hay matrices de peligro asociadas a el');
+        }
 
         if(!$danger->delete())
         {
@@ -148,5 +148,20 @@ class DangerController extends Controller
         
             return $this->multiSelectFormat($dangers);
         }
+    }
+
+    /**
+     * Returns an arrangement with the type generated dangers
+     *
+     * @return Array
+     */
+    public function multiselectGeneratedDangers()
+    {
+      $dangers = [
+          "Sitio de trabajo" => "Sitio de trabajo", 
+          "Vecindad" => "Vecindad",
+          "Fuera del sitio de trabajo" => "Fuera del sitio de trabajo"
+    ];
+      return $this->multiSelectFormat(collect($dangers));
     }
 }
