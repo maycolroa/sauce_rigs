@@ -15,6 +15,7 @@ use App\IndustrialSecure\TagsEngineeringControls;
 use App\IndustrialSecure\TagsEpp;
 use App\IndustrialSecure\TagsPossibleConsequencesDanger;
 use App\IndustrialSecure\TagsWarningSignage;
+use App\IndustrialSecure\ChangeHistory;
 use Illuminate\Support\Facades\Auth;
 use App\Administrative\Configurations\LocationLevelForm;
 use Session;
@@ -72,6 +73,7 @@ class DangerMatrixController extends Controller
             $dangerMatrix = DangerMatrix::findOrFail($id);
             $dangerMatrix->activitiesRemoved = [];
             $dangerMatrix->locations = $this->prepareDataLocationForm($dangerMatrix);
+            $dangerMatrix->changeHistory = '';
 
             foreach ($dangerMatrix->activities as $keyActivity => $itemActivity)
             {   
@@ -242,6 +244,9 @@ class DangerMatrixController extends Controller
 
         $newRules = array_merge($rules, $rulesConfLocation);
 
+        if ($dangerMatrix)
+            $newRules['changeHistory'] = 'required';
+
         return Validator::make($request->all(), $newRules)->validate();
     }
 
@@ -261,6 +266,11 @@ class DangerMatrixController extends Controller
             if ($dangerMatrix)
             {
                 $msg = 'Se actualizo la matriz de peligro';
+
+                $dangerMatrix->histories()->create([
+                    'user_id' => Auth::user()->id,
+                    'description' => $request->get('changeHistory')
+                ]);
             }
             else
             {
@@ -401,8 +411,8 @@ class DangerMatrixController extends Controller
         } catch (\Exception $e) {
             //$msg = $e->getMessage();
             DB::rollback();
-            //return $this->respondHttp500();
-            return $e->getMessage();
+            return $this->respondHttp500();
+            //return $e->getMessage();
         }
 
         return $this->respondHttp200([

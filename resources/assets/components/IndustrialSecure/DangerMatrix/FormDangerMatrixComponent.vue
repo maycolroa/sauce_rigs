@@ -66,6 +66,10 @@
         </b-card>
       </b-form-row>
 
+      <b-form-row v-if="isEdit">
+        <vue-textarea class="col-md-12" v-model="form.changeHistory" label="Detalle de cambios realizados" name="changeHistory" :error="form.errorsFor('changeHistory')" placeholder="Detalle de cambios realizados"></vue-textarea>
+      </b-form-row>
+
       <div class="row float-right pt-10 pr-10">
         <template>
           <b-btn variant="default" :to="cancelUrl" :disabled="loading">{{ viewOnly ? "Atras" : "Cancelar"}}</b-btn>&nbsp;&nbsp;
@@ -82,13 +86,15 @@ import Form from "@/utils/Form.js";
 import FormActivityComponent from '@/components/IndustrialSecure/DangerMatrix/FormActivityComponent.vue';
 import ModalsCreateComponent from '@/components/IndustrialSecure/DangerMatrix/ModalsCreateComponent.vue';
 import LocationLevelComponent from '@/components/CustomInputs/LocationLevelComponent.vue';
+import VueTextarea from "@/components/Inputs/VueTextarea.vue";
 
 export default {
   components: {
     VueInput,
     FormActivityComponent,
     ModalsCreateComponent,
-    LocationLevelComponent
+    LocationLevelComponent,
+    VueTextarea
   },
   props: {
     url: { type: String },
@@ -142,7 +148,8 @@ export default {
                 }
               }
             ],
-            activitiesRemoved: []
+            activitiesRemoved: [],
+            changeHistory: ''
         };
       }
     }
@@ -166,7 +173,7 @@ export default {
         .submit(e.target.action)
         .then(response => {
           this.loading = false;
-          //this.$router.push({ name: "industrialsecure-dangermatrix" });
+          this.$router.push({ name: "industrialsecure-dangermatrix" });
         })
         .catch(error => {
           this.loading = false;

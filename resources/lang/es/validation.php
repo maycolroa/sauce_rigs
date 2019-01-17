@@ -192,6 +192,7 @@ return [
       'locations.employee_headquarter_id' => 'Sede',
       'locations.employee_area_id' => 'Área',
       'locations.employee_process_id' => 'Proceso',
+      'changeHistory' => 'Detalle de cambios realizados'
     ],
 
 ];

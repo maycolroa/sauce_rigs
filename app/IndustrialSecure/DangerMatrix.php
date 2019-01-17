@@ -45,4 +45,9 @@ class DangerMatrix extends Model
     {
         return $this->belongsTo('App\Administrative\EmployeeProcess', 'employee_process_id');
     }
+
+    public function histories()
+    {
+        return $this->hasMany(ChangeHistory::class, 'danger_matrix_id');
+    }
 }
