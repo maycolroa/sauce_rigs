@@ -19,7 +19,7 @@
       <b-form-row style="padding-top: 15px;">
         <perfect-scrollbar :options="{ wheelPropagation: true }" class="mb-4" style="height: 600px; padding-right: 15px; width: 100%;">
           <template v-for="(danger, index) in activity.dangers">
-            <b-card no-body class="mb-2 border-secondary" :key="index" style="width: 100%;" v-show="showDander(danger.danger.name)">
+            <b-card no-body class="mb-2 border-secondary" :key="danger.key" style="width: 100%;" v-show="showDander(danger.danger.name)">
               <b-card-header class="bg-secondary">
                 <b-row>
                   <b-col cols="10" class="d-flex justify-content-between text-white"> {{ danger.danger.name ? danger.danger.name : 'Nuevo Peligro '+(index + 1) }}</b-col>
@@ -112,11 +112,13 @@ export default {
     activity: {
       default() {
         return {
+            key: new Date().getTime(),
             id: '',
             activity_id: '',
             type_activity: '',
             dangers: [
               {
+                key: new Date().getTime(),
                 id: '',
                 dm_activity_id: '',
                 danger_id: '',
@@ -176,6 +178,7 @@ export default {
   methods: {
     addDanger() {
       this.activity.dangers.push({
+        key: new Date().getTime(),
         id: '',
         dm_activity_id: '',
         danger_id: '',

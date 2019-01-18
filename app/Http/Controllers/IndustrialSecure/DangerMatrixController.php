@@ -18,6 +18,7 @@ use App\IndustrialSecure\TagsWarningSignage;
 use App\IndustrialSecure\ChangeHistory;
 use Illuminate\Support\Facades\Auth;
 use App\Administrative\Configurations\LocationLevelForm;
+use Carbon\Carbon;
 use Session;
 use Validator;
 use DB;
@@ -77,11 +78,13 @@ class DangerMatrixController extends Controller
 
             foreach ($dangerMatrix->activities as $keyActivity => $itemActivity)
             {   
+                $itemActivity->key = Carbon::now()->timestamp + rand(1,10000);
                 $itemActivity->dangersRemoved = [];
                 $itemActivity->multiselect_activity = $itemActivity->activity->multiselect();
 
                 foreach ($itemActivity->dangers as $keyDanger => $itemDanger)
                 {
+                    $itemDanger->key = Carbon::now()->timestamp + rand(1,10000);
                     $itemDanger->multiselect_danger = $itemDanger->danger->multiselect();
 
                     $qualificationsData = [];

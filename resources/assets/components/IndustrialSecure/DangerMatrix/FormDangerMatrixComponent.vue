@@ -36,7 +36,7 @@
           <b-tabs card pills class="nav-responsive-md md-pills-light">
             <b-tab 
                 v-for="(activity, index) in form.activities"
-                :key="index">
+                :key="activity.key">
                 <template slot="title">
                   <strong>{{ form.activities[index].activity.name ? form.activities[index].activity.name : 'Nuevo Actividad '+(index + 1) }}</strong> 
                   <b-btn @click.prevent="removeActivity(index)" 
@@ -138,6 +138,7 @@ export default {
             name: '',
             activities: [
               {
+                key: new Date().getTime(),
                 id: '',
                 activity_id: '',
                 type_activity: '',
@@ -181,6 +182,7 @@ export default {
     },
     addActiviy() {
       this.dangerMatrix.activities.push({
+        key: new Date().getTime(),
         id: '',
         activity_id: '',
         type_activity: '',

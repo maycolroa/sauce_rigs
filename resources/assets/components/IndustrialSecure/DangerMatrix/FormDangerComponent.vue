@@ -190,6 +190,7 @@ export default {
     danger: {
       default() {
         return {
+            key: new Date().getTime(),
             id: '',
             dm_activity_id: '',
             danger_id: '',
