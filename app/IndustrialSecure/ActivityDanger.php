@@ -45,7 +45,7 @@ class ActivityDanger extends Model
 
     public function qualifications()
     {
-        return $this->hasMany(QualificationMethodologie::class, 'activity_danger_id');
+        return $this->hasMany(QualificationDanger::class, 'activity_danger_id');
     }
 
 }

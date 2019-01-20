@@ -8,8 +8,7 @@ use App\Vuetable\Facades\Vuetable;
 use App\IndustrialSecure\DangerMatrix;
 use App\IndustrialSecure\DangerMatrixActivity;
 use App\IndustrialSecure\ActivityDanger;
-use App\IndustrialSecure\QualificationMethodologie;
-use App\IndustrialSecure\ConfigQualificationMethodologie;
+use App\IndustrialSecure\QualificationDanger;
 use App\IndustrialSecure\TagsAdministrativeControls;
 use App\IndustrialSecure\TagsEngineeringControls;
 use App\IndustrialSecure\TagsEpp;
@@ -91,7 +90,7 @@ class DangerMatrixController extends Controller
 
                     foreach ($itemDanger->qualifications as $keyQ => $itemQ)
                     {
-                        $qualificationsData[$itemQ->type] = ["qualification"=>$itemQ->qualification, "type"=>$itemQ->type];
+                        $qualificationsData[$itemQ->type_id] = ["value_id"=>$itemQ->value_id, "type_id"=>$itemQ->type_id];
                     }
 
                     $itemDanger->qualificationsData = $qualificationsData;
@@ -136,43 +135,6 @@ class DangerMatrixController extends Controller
         return $this->respondHttp200([
             'message' => 'Se elimino la matriz de peligro'
         ]);
-    }
-
-    /**
-     * Undocumented function
-     *
-     * @return void
-     */
-    public function getConfigQualificationMethodologies()
-    {
-        $config = ConfigQualificationMethodologie::select('types', 'qualifications')->first();
-        $data = [
-            "types" => [],
-            "qualifications" => [],
-            "help" => ""
-        ];
-
-        if ($config)
-        {
-            foreach (json_decode($config->types, true) as $key => $value) 
-            {
-                array_push($data["types"], $value["value"]);
-            }
-
-            $tmp = [];
-            $help = "";
-
-            foreach (json_decode($config->qualifications, true) as $key => $value)
-            {
-                array_push($tmp, $value["value"]);
-                $help .= $value["value"].'. '.$value["description"]."\n";
-            }
-
-            $data["qualifications"] = $this->multiSelectFormat($tmp);
-            $data["help"] = $help;
-        }
-
-        return $data;
     }
 
     /**
@@ -240,7 +202,7 @@ class DangerMatrixController extends Controller
             'activities.*.dangers.*.intervention_measures_administrative_controls' => 'required|array',
             'activities.*.dangers.*.intervention_measures_epp' => 'required|array',
             'activities.*.dangers.*.qualifications' => 'required|array',
-            'activities.*.dangers.*.qualifications.*.qualification' => 'required',
+            'activities.*.dangers.*.qualifications.*.value_id' => 'required',
         ];
 
         $rulesConfLocation = $this->getLocationFormRules('industrialSecure', 'dangerMatrix');
@@ -382,14 +344,14 @@ class DangerMatrixController extends Controller
                         return $this->respondHttp500();
                     }
 
-                    QualificationMethodologie::where('activity_danger_id', $danger->id)->delete();
+                    QualificationDanger::where('activity_danger_id', $danger->id)->delete();
 
                     foreach ($itemD['qualifications'] as $itemQ)
                     {
-                        $qualification = new QualificationMethodologie();
+                        $qualification = new QualificationDanger();
                         $qualification->activity_danger_id = $danger->id;
-                        $qualification->type = $itemQ['type'];
-                        $qualification->qualification = $itemQ['qualification'];
+                        $qualification->type_id = $itemQ['type_id'];
+                        $qualification->value_id = $itemQ['value_id'];
 
                         if(!$qualification->save()){
                             return $this->respondHttp500();

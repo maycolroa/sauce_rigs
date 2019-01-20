@@ -58,7 +58,7 @@ export default {
     this.fetchSelect('typeActivities', '/radios/dmTypeActivities')
     this.fetchSelect('dangerGenerated', '/selects/dmGeneratedDangers')
     this.fetchSelect('siNo', '/radios/siNo')
-    this.fetchSelect('qualifications', '/industrialSecurity/getConfigQualificationMethodologies')
+    this.fetchSelect('qualifications', '/administration/configurations/industrialSecurity/dangersMatrix/getQualificationsComponent')
   },
   methods: {
     fetchSelect(key, url)

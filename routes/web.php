@@ -108,6 +108,12 @@ Route::middleware(['auth'])->group(function () {
         Route::post('locationLevelForms/data', 'Administrative\Configurations\LocationLevelFormController@data');
         Route::ApiResource('locationLevelForms', 'Administrative\Configurations\LocationLevelFormController');
         Route::post('locationLevelForms/getConfModule', 'Administrative\Configurations\LocationLevelFormController@getConfModule');
+
+        Route::prefix('industrialSecurity')->group(function () {
+          Route::prefix('dangersMatrix')->group(function () {
+            Route::post('getQualificationsComponent', 'Administrative\Configurations\IndustrialSecure\DangerMatrix\QualificationController@getQualificationsComponent');
+          });
+        });
       });
     });
 
@@ -121,8 +127,6 @@ Route::middleware(['auth'])->group(function () {
 
       Route::post('dangersMatrix/data', 'IndustrialSecure\DangerMatrixController@data');
       Route::ApiResource('dangersMatrix', 'IndustrialSecure\DangerMatrixController');
-
-      Route::post('getConfigQualificationMethodologies', 'IndustrialSecure\DangerMatrixController@getConfigQualificationMethodologies');
     });
 
     //Return view for spa

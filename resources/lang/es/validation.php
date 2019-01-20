@@ -185,7 +185,7 @@ return [
       'activities.*.dangers.*.intervention_measures_warning_signage' => 'Señalización, Advertencia',
       'activities.*.dangers.*.intervention_measures_administrative_controls' => 'Controles administrativos',
       'activities.*.dangers.*.intervention_measures_epp' => 'EPP',
-      'activities.*.dangers.*.qualifications.*.qualification' => 'Calificación',
+      'activities.*.dangers.*.qualifications.*.value_id' => 'Calificación',
       'location_level_form' => 'Nivel localización en formulario',
       'module_id' => 'Módulo',
       'locations.employee_regional_id' => 'Regional',
