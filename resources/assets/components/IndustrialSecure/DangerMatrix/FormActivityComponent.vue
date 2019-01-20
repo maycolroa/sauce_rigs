@@ -26,7 +26,7 @@
                   <b-col cols="2">
                     <div class="float-right">
                       <b-button-group>
-                        <b-btn href="javascript:void(0)" v-b-toggle="'accordion' + index+'-1'" variant="link">
+                        <b-btn href="javascript:void(0)" v-b-toggle="'accordion' + danger.key+'-1'" variant="link">
                           <span class="collapse-icon"></span>
                         </b-btn>
                         <b-btn @click.prevent="removeDanger(index)" 
@@ -41,7 +41,7 @@
                   </b-col>
                 </b-row>
               </b-card-header>
-              <b-collapse :id="`accordion${index}-1`" visible :accordion="`accordion${index}`">
+              <b-collapse :id="`accordion${danger.key}-1`" visible :accordion="`accordion${danger.key}`">
                 <b-card-body>
                   <form-danger-component
                     :is-edit="isEdit"

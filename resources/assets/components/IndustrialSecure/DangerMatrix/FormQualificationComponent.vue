@@ -24,7 +24,7 @@
                 v-for="(item, index) in data"
                 :key="index" 
                 v-model="item.value_id"
-                :disabled="false" class="col-md-6" :multiple="false" :options="item.values" :hide-selected="false" name="qualification" :label="item.description" :btnLabelPopover="createHelp(item.help)" placeholder="Seleccione la calificación"
+                :disabled="viewOnly" class="col-md-6" :multiple="false" :options="item.values" :hide-selected="false" name="qualification" :label="item.description" :btnLabelPopover="createHelp(item.help)" placeholder="Seleccione la calificación"
                 :error="form.errorsFor('activities.'+indexActivity+'.dangers.'+indexDanger+'.qualifications.'+index+'.value_id')" >
                     </vue-advanced-select>
         </b-form-row>

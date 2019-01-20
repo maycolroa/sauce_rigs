@@ -68,7 +68,10 @@ export default {
         })
         .then(data => {
             if (Object.keys(data.data).length > 0)
-                this.inputs = data.data
+                setTimeout(() => {
+                    this.inputs = data.data
+                    this.disableWacth = false
+                }, 3000)
             this.isLoading = false;
         })
         .catch(error => {
@@ -77,9 +80,9 @@ export default {
         });
     },
     mounted() {
-        setTimeout(() => {
+        /*setTimeout(() => {
             this.disableWacth = false
-        }, 3000)
+        }, 3000)*/
     },
     watch: {
         'locationLevel.employee_regional_id'() {
