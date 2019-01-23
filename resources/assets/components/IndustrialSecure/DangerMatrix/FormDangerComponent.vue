@@ -118,8 +118,14 @@
 
             <tab-content title="Plan de acción">
               <b-card bg-variant="transparent" border-variant="secondary" title="" class="mb-3 box-shadow-none">
-                <b-form-row>
-                </b-form-row>
+                <action-plan-component
+                  :is-edit="isEdit"
+                  :view-only="viewOnly"
+                  :form="form"
+                  :prefix-index="`activities.${indexActivity}.dangers.${indexDanger}.`"
+                  :action-plan-states="actionPlanStates"
+                  v-model="danger.actionPlan"
+                  :action-plan="danger.actionPlan"/>
               </b-card>
             </tab-content>
 
@@ -142,6 +148,7 @@ import VueRadio from "@/components/Inputs/VueRadio.vue";
 import VueTextarea from "@/components/Inputs/VueTextarea.vue";
 import VueInput from "@/components/Inputs/VueInput.vue";
 import FormQualificationComponent from '@/components/IndustrialSecure/DangerMatrix/FormQualificationComponent.vue';
+import ActionPlanComponent from '@/components/CustomInputs/ActionPlanComponent.vue';
 import { FormWizard, TabContent, WizardStep } from "vue-form-wizard";
 
 export default {
@@ -154,7 +161,8 @@ export default {
     FormWizard,
     TabContent,
     WizardStep,
-    FormQualificationComponent
+    FormQualificationComponent,
+    ActionPlanComponent
   },
   mounted() {
     this.$refs.wizardFormDanger.activateAll();
@@ -183,6 +191,12 @@ export default {
     },
     qualifications: {
       type: [Array, Object],
+      default: function() {
+        return [];
+      }
+    },
+    actionPlanStates: {
+      type: Array,
       default: function() {
         return [];
       }
@@ -218,6 +232,10 @@ export default {
             intervention_measures_administrative_controls: '',
             intervention_measures_epp: '',
             qualifications: '',
+            actionPlan: {
+              activities: [],
+              activitiesRemoved: []
+            },
             danger: {
               name: ''
             }

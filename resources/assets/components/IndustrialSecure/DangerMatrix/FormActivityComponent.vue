@@ -51,6 +51,7 @@
                     :danger-generated="dangerGenerated"
                     :si-no="siNo"
                     :qualifications="qualifications"
+                    :action-plan-states="actionPlanStates"
                     :form="form"
                     :index-activity="indexActivity"
                     :index-danger="index"
@@ -109,6 +110,12 @@ export default {
         return [];
       }
     },
+    actionPlanStates: {
+      type: Array,
+      default: function() {
+        return [];
+      }
+    },
     activity: {
       default() {
         return {
@@ -146,6 +153,10 @@ export default {
                 intervention_measures_administrative_controls: '',
                 intervention_measures_epp: '',
                 qualifications: '',
+                actionPlan: {
+                  activities: [],
+                  activitiesRemoved: []
+                },
                 danger: {
                   name: ''
                 }
@@ -206,6 +217,10 @@ export default {
         intervention_measures_administrative_controls: '',
         intervention_measures_epp: '',
         qualifications: '',
+        actionPlan: {
+          activities: [],
+          activitiesRemoved: []
+        },
         danger: {
           name: ''
         }

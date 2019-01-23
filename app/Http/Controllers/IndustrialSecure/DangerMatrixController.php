@@ -94,6 +94,7 @@ class DangerMatrixController extends Controller
                     }
 
                     $itemDanger->qualificationsData = $qualificationsData;
+                    $itemDanger->actionPlan = $this->prepareDataActionPlanComponent($itemDanger);
                 }
             }
 
@@ -205,14 +206,20 @@ class DangerMatrixController extends Controller
             'activities.*.dangers.*.qualifications.*.value_id' => 'required',
         ];
 
-        $rulesConfLocation = $this->getLocationFormRules('industrialSecure', 'dangerMatrix');
+        $messages = [];
 
-        $newRules = array_merge($rules, $rulesConfLocation);
+        $rulesConfLocation = $this->getLocationFormRules('industrialSecure', 'dangerMatrix');
+        $rules = array_merge($rules, $rulesConfLocation);
+
+        $rulesActionPlan = $this->getActionPlanRules('activities.*.dangers.*.');
+        $rules = array_merge($rules, $rulesActionPlan['rules']);
+        $messages = array_merge($messages, $rulesActionPlan['messages']);
+
 
         if ($dangerMatrix)
-            $newRules['changeHistory'] = 'required';
-
-        return Validator::make($request->all(), $newRules)->validate();
+            $rules['changeHistory'] = 'required';
+        
+        return Validator::make($request->all(), $rules, $messages)->validate();
     }
 
     /**
@@ -357,6 +364,9 @@ class DangerMatrixController extends Controller
                             return $this->respondHttp500();
                         }
                     }
+
+                    /**Planes de acción*/
+                    $this->saveActionPlan($itemD['actionPlan'], 'dangerMatrix', $danger, Auth::user());
                 }
 
                 if (isset($itemA['dangersRemoved']) && COUNT($itemA['dangersRemoved']) > 0)
@@ -366,7 +376,10 @@ class DangerMatrixController extends Controller
                         $dangerDel = ActivityDanger::find($value['id']);
 
                         if ($dangerDel)
+                        {
+                            $this->modelDeleteAllActionPlan($dangerDel);
                             $dangerDel->delete();
+                        }
                     }
                 }
             }

@@ -14,7 +14,8 @@
                 :type-activities="typeActivities"
                 :danger-generated="dangerGenerated"
                 :si-no="siNo"
-                :qualifications="qualifications"/>
+                :qualifications="qualifications"
+                :action-plan-states="actionPlanStates"/>
         </b-card-body>
       </b-card>
     </div>
@@ -40,6 +41,7 @@ export default {
       dangerGenerated: [],
       siNo: [],
       qualifications: [],
+      actionPlanStates: [],
       data: []
     }
   },
@@ -57,6 +59,7 @@ export default {
     this.fetchSelect('dangerGenerated', '/selects/dmGeneratedDangers')
     this.fetchSelect('siNo', '/radios/siNo')
     this.fetchSelect('qualifications', '/administration/configurations/industrialSecurity/dangersMatrix/getQualificationsComponent')
+    this.fetchSelect('actionPlanStates', '/selects/actionPlanStates')
   },
   methods: {
     fetchSelect(key, url)

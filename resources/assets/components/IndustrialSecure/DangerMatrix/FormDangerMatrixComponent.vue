@@ -57,6 +57,7 @@
                   :danger-generated="dangerGenerated"
                   :si-no="siNo"
                   :qualifications="qualifications"
+                  :action-plan-states="actionPlanStates"
                   :form="form"
                   :index-activity="index"
                   @activityName="updateActivityNameTab"
@@ -122,6 +123,12 @@ export default {
     },
     qualifications: {
       type: [Array, Object],
+      default: function() {
+        return [];
+      }
+    },
+    actionPlanStates: {
+      type: Array,
       default: function() {
         return [];
       }

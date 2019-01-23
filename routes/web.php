@@ -66,6 +66,7 @@ Route::middleware(['auth'])->group(function () {
         Route::post('tagsPossibleConsequencesDanger', 'IndustrialSecure\TagController@multiselectPossibleConsequencesDanger');
         Route::post('tagsWarningSignage', 'IndustrialSecure\TagController@multiselectWarningSignage');
         Route::post('conf/locationLevelFormModules', 'Administrative\Configurations\LocationLevelFormController@multiselectModules');
+        Route::post('actionPlanStates', 'MultiSelectController@actionPlanStates');
       });
 
     Route::prefix('radios')->group(function () {

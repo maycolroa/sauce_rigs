@@ -52,7 +52,7 @@ export default {
                 return [];
             }
         },
-        qualificationsData: { type: Object },
+        qualificationsData: { type: [Array, Object]},
     },
     watch: {
         data: {
