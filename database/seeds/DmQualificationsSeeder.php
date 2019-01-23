@@ -1,8 +1,8 @@
 <?php
 
 use Illuminate\Database\Seeder;
-use App\IndustrialSecure\Qualification;
-use App\IndustrialSecure\QualificationType;
+use App\Administrative\Configurations\IndustrialSecure\DangerMatrix\Qualification;
+use App\Administrative\Configurations\IndustrialSecure\DangerMatrix\QualificationType;
 
 class DmQualificationsSeeder extends Seeder
 {
@@ -25,8 +25,6 @@ class DmQualificationsSeeder extends Seeder
 
             foreach ($configurations as $key => $item)
             {
-                $new = false;
-
                 if (isset($item['name']) && isset($item['types']))
                 {
                     if (COUNT($item['types']) > 0)
@@ -35,69 +33,58 @@ class DmQualificationsSeeder extends Seeder
 
                         if (!$qualification)
                         {
-                            $new = true;
                             $qualification = new Qualification();
                             $qualification->name = $item['name'];
                             $qualification->save();
-                        }
 
-                        $types = [];
-
-                        foreach ($item['types'] as $type)
-                        {
-                            if (isset($type['description']) && isset($type['values']))
+                            foreach ($item['types'] as $type)
                             {
-                                if (COUNT($type['values']) > 0)
+                                if (isset($type['description']) && isset($type['values']))
                                 {
-                                    array_push($types, $type['description']);
-
-                                    $qualificationType = $qualification->types()->updateOrCreate([
-                                            'description' => $type['description']
-                                        ], [
-                                            'description' => $type['description']
-                                        ]);
-
-                                    $values = [];
-
-                                    foreach ($type['values'] as $value)
+                                    if (COUNT($type['values']) > 0)
                                     {
-                                        if (isset($value['description']) && isset($value['value']))
-                                        {
-                                            array_push($values, $value['value']);
+                                        $qualificationType = $qualification->types()->updateOrCreate([
+                                                'description' => $type['description']
+                                            ], [
+                                                'description' => $type['description']
+                                            ]);
 
-                                            $qualificationType->values()->updateOrCreate([
-                                                    'value' => $value['value']
-                                                ], [
-                                                    'value' => $value['value'],
-                                                    'description' => $value['description']
-                                                ]);
-                                        }
-                                        else
+                                        foreach ($type['values'] as $value)
                                         {
-                                            $this->command->info('Valor de calificación omitido por formato invalido: '. json_encode($value));
+                                            if (isset($value['description']) && isset($value['value']))
+                                            {
+                                                $qualificationType->values()->updateOrCreate([
+                                                        'value' => $value['value']
+                                                    ], [
+                                                        'value' => $value['value'],
+                                                        'description' => $value['description']
+                                                    ]);
+                                            }
+                                            else
+                                            {
+                                                $this->command->info('Valor de calificación omitido por formato invalido: '. json_encode($value));
+                                            }
                                         }
                                     }
-                                    
-                                    //Esta linea debe ser comentada cuando se haga el modulo para el frontend ya que despues eliminara cualquier valor que haya sido agregado desde la web porque no existira en el JSON
-                                    $qualificationType->values()->whereNotIn('sau_dm_qualification_values.value', $values)->delete();
+                                    else 
+                                    {
+                                        $this->command->info('Tipo de calificación omitida por no tener valores de calificaciones asociadas: '. json_encode($type));
+                                    }
                                 }
-                                else 
+                                else
                                 {
-                                    $this->command->info('Tipo de calificación omitida por no tener valores de calificaciones asociadas: '. json_encode($type));
+                                    $this->command->info('Tipo de calificación omitida por formato invalido: '. json_encode($type));
                                 }
-                            }
-                            else
-                            {
-                                $this->command->info('Tipo de calificación omitida por formato invalido: '. json_encode($type));
                             }
                         }
-                        
-                        //Esta linea debe ser comentada cuando se haga el modulo para el frontend ya que despues eliminara cualquier valor que haya sido agregado desde la web porque no existira en el JSON
-                        $qualification->types()->whereNotIn('sau_dm_qualification_types.description', $types)->delete();
+                        else 
+                        {
+                            $this->command->info('Elemento omitido por existir en base de datos: '. $item['name']);
+                        }
                     }
                     else 
                     {
-                        $this->command->info('Elemento omitido por no tener tipos de calificaciones asociados: '. json_encode($item));
+                        $this->command->info('Elemento omitido por no tener tipos de calificaciones asociados: '. $item['name']);
                     }
                 }
                 else
@@ -111,8 +98,8 @@ class DmQualificationsSeeder extends Seeder
 
         } catch (\Exception $e) {
             DB::rollback();
-            //$this->command->info($e->getMessage());
-            $this->command->info('Ocurrio un error al ejecutar la clase DmQualificationsSeeder');
+            $this->command->info($e->getMessage());
+            //$this->command->info('Ocurrio un error al ejecutar la clase DmQualificationsSeeder');
         }
     }
 }
