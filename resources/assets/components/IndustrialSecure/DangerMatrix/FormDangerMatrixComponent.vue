@@ -38,7 +38,7 @@
                 v-for="(activity, index) in form.activities"
                 :key="activity.key">
                 <template slot="title">
-                  <strong>{{ form.activities[index].activity.name ? form.activities[index].activity.name : 'Nuevo Actividad '+(index + 1) }}</strong> 
+                  <strong>{{ form.activities[index].activity.name ? form.activities[index].activity.name : `Nuevo Actividad ${index + 1}` }}</strong> 
                   <b-btn @click.prevent="removeActivity(index)" 
                     v-if="form.activities.length > 1 && !viewOnly"
                     size="sm" 

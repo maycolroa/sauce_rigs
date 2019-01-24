@@ -1,9 +1,9 @@
 <template>
     <b-form autocomplete="off">
       <b-form-row>
-        <vue-ajax-advanced-select @selectedName="emitActivityName" :disabled="viewOnly" class="col-md-6" v-model="activity.activity_id" :selected-object="activity.multiselect_activity" name="activity_id" :error="form.errorsFor('activities.'+indexActivity+'.activity_id')" label="Actividad" placeholder="Seleccione la actividad" :url="activitiesDataUrl">
+        <vue-ajax-advanced-select @selectedName="emitActivityName" :disabled="viewOnly" class="col-md-6" v-model="activity.activity_id" :selected-object="activity.multiselect_activity" name="activity_id" :error="form.errorsFor(`activities.${indexActivity}.activity_id`)" label="Actividad" placeholder="Seleccione la actividad" :url="activitiesDataUrl">
           </vue-ajax-advanced-select>
-        <vue-radio :disabled="viewOnly" :checked="activity.type_activity" class="col-md-6" v-model="activity.type_activity" :options="typeActivities" name="type_activity" :error="form.errorsFor('activities.'+indexActivity+'.type_activity')" label="Tipo de actividad">
+        <vue-radio :disabled="viewOnly" :checked="activity.type_activity" class="col-md-6" v-model="activity.type_activity" :options="typeActivities" name="type_activity" :error="form.errorsFor(`activities.${indexActivity}.type_activity`)" label="Tipo de actividad">
           </vue-radio>
       </b-form-row>
       <b-form-row>
@@ -22,7 +22,7 @@
             <b-card no-body class="mb-2 border-secondary" :key="danger.key" style="width: 100%;" v-show="showDander(danger.danger.name)">
               <b-card-header class="bg-secondary">
                 <b-row>
-                  <b-col cols="10" class="d-flex justify-content-between text-white"> {{ danger.danger.name ? danger.danger.name : 'Nuevo Peligro '+(index + 1) }}</b-col>
+                  <b-col cols="10" class="d-flex justify-content-between text-white"> {{ danger.danger.name ? danger.danger.name : `Nuevo Peligro ${index + 1}` }}</b-col>
                   <b-col cols="2">
                     <div class="float-right">
                       <b-button-group>

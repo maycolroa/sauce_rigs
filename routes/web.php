@@ -51,7 +51,7 @@ Route::middleware(['auth'])->group(function () {
         Route::post('years/audiometry', 'PreventiveOccupationalMedicine\BiologicalMonitoring\AudiometryController@multiselectYears');  
         Route::post('regionals', 'Administrative\EmployeeRegionalController@multiselect');
         Route::post('headquarters', 'Administrative\EmployeeHeadquarterController@multiselect');  
-        Route::post('sexs', 'ApplicationController@multiselectSexs');  
+        Route::post('sexs', 'MultiSelectRadioController@sexs');  
         Route::post('processes', 'Administrative\EmployeeProcessController@multiselect');
         Route::post('positions', 'Administrative\EmployeePositionController@multiselect');
         Route::post('businesses', 'Administrative\EmployeeBusinessController@multiselect');
@@ -59,19 +59,19 @@ Route::middleware(['auth'])->group(function () {
         Route::post('multiselectBar', 'PreventiveOccupationalMedicine\BiologicalMonitoring\AudiometryInformController@multiselectBar');
         Route::post('dmActivities', 'IndustrialSecure\ActivityController@multiselect');
         Route::post('dmDangers', 'IndustrialSecure\DangerController@multiselect');
-        Route::post('dmGeneratedDangers', 'IndustrialSecure\DangerController@multiselectGeneratedDangers');
+        Route::post('dmGeneratedDangers', 'MultiSelectRadioController@dmGeneratedDangers');
         Route::post('tagsAdministrativeControls', 'IndustrialSecure\TagController@multiselectAdministrativeControls');
         Route::post('tagsEngineeringControls', 'IndustrialSecure\TagController@multiselectEngineeringControls');
         Route::post('tagsEpp', 'IndustrialSecure\TagController@multiselectEpp');
         Route::post('tagsPossibleConsequencesDanger', 'IndustrialSecure\TagController@multiselectPossibleConsequencesDanger');
         Route::post('tagsWarningSignage', 'IndustrialSecure\TagController@multiselectWarningSignage');
         Route::post('conf/locationLevelFormModules', 'Administrative\Configurations\LocationLevelFormController@multiselectModules');
-        Route::post('actionPlanStates', 'MultiSelectController@actionPlanStates');
+        Route::post('actionPlanStates', 'MultiSelectRadioController@actionPlanStates');
       });
 
     Route::prefix('radios')->group(function () {
-      Route::post('dmTypeActivities', 'IndustrialSecure\ActivityController@radioTypeActivities');
-      Route::post('siNo', 'ApplicationController@radioSiNo');
+      Route::post('dmTypeActivities', 'MultiSelectRadioController@dmTypeActivities');
+      Route::post('siNo', 'MultiSelectRadioController@siNo');
       Route::post('conf/locationLevelForm', 'Administrative\Configurations\LocationLevelFormController@radioLocationLevels');
     });
 

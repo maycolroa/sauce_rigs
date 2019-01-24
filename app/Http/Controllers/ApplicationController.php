@@ -172,17 +172,6 @@ class ApplicationController extends Controller
     }
 
     /**
-     * Returns an arrangement with the sexs
-     *
-     * @return Array
-     */
-    public function multiselectSexs()
-    {
-      $sexs = ["Masculino"=>"M", "Femenino"=>"F"];
-      return $this->multiSelectFormat(collect($sexs));
-    }
-
-    /**
      * Returns an array for a select type eps
      *
      * @param Request $request
@@ -217,16 +206,5 @@ class ApplicationController extends Controller
         
             return $this->multiSelectFormat($eps);
         }
-    }
-
-    /**
-     * Returns an arrangement with the si/no
-     *
-     * @return Array
-     */
-    public function radioSiNo()
-    {
-      $options = ["SI"=>"SI", "NO"=>"NO"];
-      return $this->radioFormat(collect($options));
     }
 }

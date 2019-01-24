@@ -149,15 +149,4 @@ class ActivityController extends Controller
             return $this->multiSelectFormat($activities);
         }
     }
-
-    /**
-     * Returns an arrangement with the type activities
-     *
-     * @return Array
-     */
-    public function radioTypeActivities()
-    {
-      $activities = ["Rutinaria"=>"Rutinaria", "No rutinaria"=>"No rutinaria"];
-      return $this->radioFormat(collect($activities));
-    }
 }

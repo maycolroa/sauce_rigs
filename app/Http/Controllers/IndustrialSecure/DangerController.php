@@ -149,19 +149,4 @@ class DangerController extends Controller
             return $this->multiSelectFormat($dangers);
         }
     }
-
-    /**
-     * Returns an arrangement with the type generated dangers
-     *
-     * @return Array
-     */
-    public function multiselectGeneratedDangers()
-    {
-      $dangers = [
-          "Sitio de trabajo" => "Sitio de trabajo", 
-          "Vecindad" => "Vecindad",
-          "Fuera del sitio de trabajo" => "Fuera del sitio de trabajo"
-    ];
-      return $this->multiSelectFormat(collect($dangers));
-    }
 }
