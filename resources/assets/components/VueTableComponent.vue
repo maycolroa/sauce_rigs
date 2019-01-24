@@ -289,7 +289,14 @@ export default {
         Alerts.success('Exito',response.data.messsage);
       })
       .catch(error => {
+        if (error.response.status == 500 && error.response.data.error != 'Internal Error')
+        {
+          Alerts.error('Error', error.response.data.error);
+        }
+        else
+        {
           Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
+        }
       });
       this.$refs.modalConfirmationRemove.hide();
     },
