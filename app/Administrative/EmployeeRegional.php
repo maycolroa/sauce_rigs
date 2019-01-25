@@ -26,6 +26,11 @@ class EmployeeRegional extends Model
         return $this->hasMany(EmployeeHeadquarter::class, 'employee_regional_id');
     }
 
+    public function dangerMatrices()
+    {
+        return $this->hasMany('App\IndustrialSecure\DangerMatrix', 'employee_regional_id');
+    }
+
     public function multiselect()
     {
         return [

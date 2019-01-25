@@ -24,7 +24,7 @@ class Activity extends Model
         ];
     }
 
-    public function dangerMatrixs()
+    public function dangerMatrices()
     {
         return $this->hasMany(DangerMatrixActivity::class, 'activity_id');
     }

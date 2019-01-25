@@ -116,9 +116,9 @@ class EmployeeProcessController extends Controller
      */
     public function destroy(EmployeeProcess $process)
     {
-        if (count($process->employees) > 0)
+        if (count($process->employees) > 0 || count($process->dangerMatrices) > 0)
         {
-            return $this->respondWithError('No se puede eliminar el proceso porque hay empleados asociados a él');
+            return $this->respondWithError('No se puede eliminar el proceso porque hay registros asociados a él');
         }
 
         if(!$process->delete())

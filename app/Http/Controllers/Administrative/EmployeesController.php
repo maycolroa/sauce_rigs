@@ -139,9 +139,9 @@ class EmployeesController extends Controller
      */
     public function destroy(Employee $employee)
     {
-        if (count($employee->audiometries) > 0)
+        if (count($employee->audiometries) > 0 || count($employee->actionPlanActivities) > 0)
         {
-            return $this->respondWithError('No se puede eliminar el empledado porque hay audiometrias asociadas a él');
+            return $this->respondWithError('No se puede eliminar el empleado porque hay registros asociados a él');
         }
 
         if(!$employee->delete())

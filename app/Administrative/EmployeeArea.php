@@ -34,6 +34,11 @@ class EmployeeArea extends Model
         return $this->hasMany(Employee::class, 'employee_area_id');
     }
 
+    public function dangerMatrices()
+    {
+        return $this->hasMany('App\IndustrialSecure\DangerMatrix', 'employee_area_id');
+    }
+
     public function multiselect()
     {
         return [

@@ -79,6 +79,11 @@ class Employee extends Model
         return $this->belongsTo(EmployeePosition::class, 'employee_position_id');
     }
 
+    public function actionPlanActivities()
+    {
+        return $this->hasMany('App\Models\ActionPlansActivity', 'employee_id');
+    }
+
     /**
      * filters checks through the given regionals
      * @param  Illuminate\Database\Eloquent\Builder $query

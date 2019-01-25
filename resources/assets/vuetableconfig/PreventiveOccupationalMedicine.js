@@ -13,7 +13,7 @@ export default [
         {name : 'sau_employees.identification', data:'identification', title : 'Identificación empleado',sortable: true, searchable : true, detail : false, key : false},
         {name : 'sau_employees.name', data:'name', title : 'Nombre empleado',sortable: true, searchable : true, detail : false, key : false},
         {name : 'base_si_no', data:'base_si_no', title : 'Base', sortable: false, searchable : false, detail : false, key : false},
-        {name : 'base_state', data:'base_state', title : 'Tipo Base', sortable: false, searchable : false, detail : false, key : false},
+        {name : 'base_state', data:'base_state', title : 'Tipo Base', sortable: true, searchable : true, detail : false, key : false},
         {name : '', data:'controlls', title : 'Controles',sortable: false, searchable : false, detail : false, key : false},
     ],
     'controlls' : [{
@@ -80,7 +80,7 @@ export default [
         {name : 'sau_bm_audiometries.gap_right', data:'gap_right', title : 'GAP Derecho',sortable: true, searchable : true, detail : false, key : false},        
         {name : 'sau_bm_audiometries.gap_left', data:'gap_left', title : 'GAP Izquierdo',sortable: true, searchable : true, detail : false, key : false},        
         {name : 'base_si_no', data:'base_si_no', title : 'Base', sortable: false, searchable : false, detail : false, key : false},
-        {name : 'base_state', data:'base_state', title : 'Tipo Base', sortable: false, searchable : false, detail : false, key : false},
+        {name : 'base_state', data:'base_state', title : 'Tipo Base', sortable: true, searchable : true, detail : false, key : false},
         {name : '', data:'controlls', title : 'Controles',sortable: false, searchable : false, detail : false, key : false},
     ],
     'controlls' : [{

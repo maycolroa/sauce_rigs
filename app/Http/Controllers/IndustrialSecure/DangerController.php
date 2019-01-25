@@ -102,7 +102,7 @@ class DangerController extends Controller
      */
     public function destroy(Danger $danger)
     {
-        if (count($danger->dangerMatrixs) > 0)
+        if (count($danger->dangerMatrices) > 0)
         {
             return $this->respondWithError('No se puede eliminar el peligro porque hay matrices de peligro asociadas a el');
         }

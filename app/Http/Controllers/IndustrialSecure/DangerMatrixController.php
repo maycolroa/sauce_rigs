@@ -128,9 +128,29 @@ class DangerMatrixController extends Controller
      */
     public function destroy(DangerMatrix $dangersMatrix)
     {
-        if(!$dangersMatrix->delete())
-        {
+        DB::beginTransaction();
+
+        try
+        { 
+            foreach ($dangersMatrix->activities as $keyActivity => $itemActivity)
+            {  
+                foreach ($itemActivity->dangers as $keyDanger => $itemDanger)
+                {
+                    $this->modelDeleteAllActionPlan($itemDanger);
+                }
+            }
+
+            if(!$dangersMatrix->delete())
+            {
+                return $this->respondHttp500();
+            }
+
+            DB::commit();
+
+        } catch (\Exception $e) {
+            DB::rollback();
             return $this->respondHttp500();
+            //return $e->getMessage();
         }
         
         return $this->respondHttp200([

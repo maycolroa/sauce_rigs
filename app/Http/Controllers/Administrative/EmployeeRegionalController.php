@@ -102,9 +102,9 @@ class EmployeeRegionalController extends Controller
      */
     public function destroy(EmployeeRegional $regional)
     {
-        if (count($regional->employees) > 0 || count($regional->headquarters) > 0)
+        if (count($regional->employees) > 0 || count($regional->headquarters) > 0 || count($regional->dangerMatrices) > 0)
         {
-            return $this->respondWithError('No se puede eliminar la regional porque hay empleados/sedes asociados a ella');
+            return $this->respondWithError('No se puede eliminar la regional porque hay registros asociados a ella');
         }
 
         if(!$regional->delete())

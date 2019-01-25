@@ -111,9 +111,9 @@ class EmployeeAreaController extends Controller
      */
     public function destroy(EmployeeArea $area)
     {
-        if (count($area->employees) > 0 || count($area->processes) > 0)
+        if (count($area->employees) > 0 || count($area->processes) > 0 || count($area->dangerMatrices) > 0)
         {
-            return $this->respondWithError('No se puede eliminar el área porque hay empleados/procesos asociados a ella');
+            return $this->respondWithError('No se puede eliminar el área porque hay registros asociados a ella');
         }
 
         if(!$area->delete())

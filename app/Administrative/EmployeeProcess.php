@@ -29,6 +29,11 @@ class EmployeeProcess extends Model
         return $this->hasMany(Employee::class, 'employee_process_id');
     }
 
+    public function dangerMatrices()
+    {
+        return $this->hasMany('App\IndustrialSecure\DangerMatrix', 'employee_process_id');
+    }
+
     public function multiselect()
     {
         return [

@@ -34,6 +34,11 @@ class EmployeeHeadquarter extends Model
         return $this->hasMany(Employee::class, 'employee_headquarter_id');
     }
 
+    public function dangerMatrices()
+    {
+        return $this->hasMany('App\IndustrialSecure\DangerMatrix', 'employee_headquarter_id');
+    }
+
     public function multiselect()
     {
         return [

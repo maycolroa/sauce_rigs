@@ -102,7 +102,7 @@ class ActivityController extends Controller
      */
     public function destroy(Activity $activity)
     {
-        if (count($activity->dangerMatrixs) > 0)
+        if (count($activity->dangerMatrices) > 0)
         {
             return $this->respondWithError('No se puede eliminar la actividad porque hay matrices de peligro asociadas a ella');
         }
