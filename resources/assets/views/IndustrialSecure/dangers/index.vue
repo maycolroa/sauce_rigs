@@ -1,0 +1,34 @@
+<template>
+  <div>
+    <h4 class="font-weight-bold mb-4">
+      Peligros
+    </h4>
+
+
+    <div class="col-md">
+      <b-card no-body>
+        <b-card-header class="with-elements">
+          <div class="card-title-elements">
+            <b-btn :to="{name:'industrialsecure-dangers-create'}" variant="primary">Crear Peligro</b-btn>
+          </div>
+        </b-card-header>
+        <b-card-body>
+             <vue-table
+                configName="industrialsecure-dangers"
+                ></vue-table>
+        </b-card-body>
+    </b-card>
+    </div>
+  </div>
+</template>
+
+<script>
+import Alerts from '@/utils/Alerts.js';
+
+export default {
+  name: 'dangers',
+  metaInfo: {
+    title: 'Peligros'
+  }
+}
+</script>

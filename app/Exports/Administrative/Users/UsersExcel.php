@@ -33,6 +33,7 @@ class UsersExcel implements FromCollection, WithHeadings, WithMapping, ShouldAut
           $users->state,
           $users->document,
           $users->document_type,
+          $users->role,
           $users->created_at,
           $users->updated_at,
         ];
@@ -46,8 +47,9 @@ class UsersExcel implements FromCollection, WithHeadings, WithMapping, ShouldAut
           'Estado',
           'Documento',
           'Tipo de Documento',
-          'Fecha Creacion',
-          'Fecha Actualizacion',
+          'Rol',
+          'Fecha Creación',
+          'Fecha Actualización',
         ];
     }
 }

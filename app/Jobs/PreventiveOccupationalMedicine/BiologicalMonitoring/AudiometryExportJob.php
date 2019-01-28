@@ -17,15 +17,17 @@ class AudiometryExportJob implements ShouldQueue
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     protected $user;
+    protected $company_id;
 
     /**
      * Create a new job instance.
      *
      * @return void
      */
-    public function __construct($user)
+    public function __construct($user, $company_id)
     {
       $this->user = $user;
+      $this->company_id = $company_id;
     }
 
     /**
@@ -39,8 +41,11 @@ class AudiometryExportJob implements ShouldQueue
         'sau_bm_audiometries.*',
         'sau_employees.identification as employee_identification',
         'sau_employees.name as employee_name'
-      )->join('sau_employees','sau_employees.id','sau_bm_audiometries.employee_id')
+      )
+      ->join('sau_employees','sau_employees.id','sau_bm_audiometries.employee_id')
       ->join('sau_employees_regionals','sau_employees_regionals.id','sau_employees.employee_regional_id');
+
+      $audiometries->company_scope = $this->company_id;
 
       $nameExcel = 'export/1/audiometrias_'.date("YmdHis").'.xlsx';
       Excel::store(new AudiometryExcel($audiometries->get()),$nameExcel,'public',\Maatwebsite\Excel\Excel::XLSX);

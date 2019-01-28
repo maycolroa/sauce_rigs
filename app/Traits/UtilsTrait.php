@@ -3,6 +3,7 @@
 namespace App\Traits;
 
 use Exception;
+use Session;
 
 trait UtilsTrait
 {
@@ -68,6 +69,38 @@ trait UtilsTrait
                 $newFormartCollection->push([
                     'parent' => $key,
                     'children' => $children
+                ]);
+            });
+        }
+
+        return $newFormartCollection;
+    }
+
+    /**
+     * converts the specified data into the format that the radio
+     * needs in order to works
+     * @param  object $data
+     * @param  string $itemRef
+     * @return collection
+     */
+    protected function radioFormat($data, $itemRef = '')
+    {
+        $newFormartCollection = collect([]);
+
+        if (is_array($data)) {
+            collect($data)->each(function ($item, $key) use ($newFormartCollection, $itemRef) {
+                $newFormartCollection->push([
+                    'text' => $item,
+                    'value' => $item
+                ]);
+            });
+        } else {//or collection
+            collect($data)->each(function ($item, $key) use ($newFormartCollection, $itemRef) {
+                $name = $itemRef ? $item[$itemRef] : $item;
+
+                $newFormartCollection->push([
+                    'text' => $key,
+                    'value' => $name
                 ]);
             });
         }
@@ -172,5 +205,35 @@ trait UtilsTrait
         }
 
         return $data;
+    }
+
+    protected function getValuesForMultiselect($data, $keyRef = 'value')
+    {
+        return  collect($data)
+                ->transform(function ($item, $index) use ($keyRef) {
+                    return $item[$keyRef];
+                });
+    }
+
+    protected function tagsPrepare($data)
+    {
+        $item = $this->getValuesForMultiselect($data, 'name')->unique();
+        return $item;
+    }
+
+    protected function tagsSave($data, $model)
+    {
+        foreach ($data as $value)
+        {
+            $item = $model::where('name', $value)->first();
+
+            if (!$item)
+                $model::create([
+                    'name'=>$value,
+                    'company_id'=>Session::get('company_id')
+                ]);
+
+            //$model::updateOrCreate(['name'=>$value, 'company_id'=>$company_id], ['name'=>$value, 'company_id'=>$company_id]);
+        }
     }
 }

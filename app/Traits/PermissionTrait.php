@@ -18,10 +18,15 @@ trait PermissionTrait
     public function getModulePermissions()
     {
         //Obtiene los module_id de todas las licencias activas
-        $modules = License::select('module_id')->whereRaw('? BETWEEN started_at AND ended_at', [date('Y-m-d')])
-                        ->groupBy('module_id')
-                        ->get()
-                        ->pluck('module_id');
+        $license = License::whereRaw('? BETWEEN started_at AND ended_at', [date('Y-m-d')])
+                ->first();
+
+        $modules = [];
+
+        foreach ($license->modules as $module)
+        {
+            array_push($modules, $module->id);
+        }
         
         //Obtiene todos los permisos de esos module_id
         $permissions = Permission::select("id", "name", "module_id")->whereIn("module_id", $modules)->get();

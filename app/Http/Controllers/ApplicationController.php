@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Auth;
 use Session;
 use App\Administrative\License;
 use DB;
+use App\Administrative\EmployeeEPS;
 
 class ApplicationController extends Controller
 {
@@ -168,5 +169,42 @@ class ApplicationController extends Controller
       }
 
       return $this->multiSelectGroupFormat($result);
+    }
+
+    /**
+     * Returns an array for a select type eps
+     *
+     * @param Request $request
+     * @return Array
+     */
+
+    public function multiselectEps(Request $request)
+    {
+        if($request->has('keyword'))
+        {
+            $keyword = "%{$request->keyword}%";
+            $eps = EmployeeEPS::selectRaw("
+                    sau_employees_eps.id as id,
+                    CONCAT(sau_employees_eps.code, ' - ', sau_employees_eps.name) as name
+                ")
+                ->where(function ($query) use ($keyword) {
+                    $query->orWhere('name', 'like', $keyword);
+                    $query->orWhere('code', 'like', $keyword);
+                })
+                ->take(30)->pluck('id', 'name');
+
+            return $this->respondHttp200([
+                'options' => $this->multiSelectFormat($eps)
+            ]);
+        }
+        else
+        {
+            $eps = EmployeeEPS::selectRaw("
+                sau_employees_eps.id as id,
+                CONCAT(sau_employees_eps.code, ' - ', sau_employees_eps.name) as name
+            ")->pluck('id', 'name');
+        
+            return $this->multiSelectFormat($eps);
+        }
     }
 }

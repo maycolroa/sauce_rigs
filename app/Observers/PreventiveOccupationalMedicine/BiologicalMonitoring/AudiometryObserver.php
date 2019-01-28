@@ -32,9 +32,10 @@ class AudiometryObserver
       $audiometry->severity_grade_air_right_6000 = $this->SeverityGradeAirRight6000($audiometry);
       $audiometry->severity_grade_air_left_8000 = $this->SeverityGradeAirLeft8000($audiometry);
       $audiometry->severity_grade_air_right_8000 = $this->SeverityGradeAirRight8000($audiometry);
-      $base = $this->BasePta($audiometry);
+      $base = $this->Base($audiometry);
       $audiometry->base_type = $base[0];
       $audiometry->base      = $base[1];
+      $audiometry->base_state      = $base[2];
     }
 
       
@@ -277,44 +278,84 @@ class AudiometryObserver
      * Metodo para el atributo base_type y base
      */
 
-     private function BasePta($audiometry)
+     private function Base($audiometry)
      { 
-        $col_base_type = "base_type";
-        $audiometry_base = Audiometry::where('employee_id', $audiometry->employee_id)->where('base_type', 'Base')->first();
-        
-        if (!$audiometry_base)
-          return ['Base', null];
-
-        $base_level = $this->levelPTA($audiometry_base->severity_grade_air_left_pta) + $this->levelPTA($audiometry_base->severity_grade_air_right_pta);
-        $new_level = $this->levelPTA($audiometry->severity_grade_air_left_pta) + $this->levelPTA($audiometry->severity_grade_air_right_pta);
-
-        if ($base_level >= $new_level)
+        //Esto se hace ya que al acutalizar la "Base" anterior a "No base" se llama nuevamente al oyente y cae en un ciclo que arruina el calculo de la base
+        if ($audiometry->base_type)
         {
-          return ['No base', $audiometry_base->id];
+          return [$audiometry->base_type, $audiometry->base, $audiometry->base_state];
+        }
+
+        $old_audiometry = Audiometry::
+                where('employee_id', $audiometry->employee_id)
+              ->where('date', '<', $audiometry->date)
+              ->orderBy('date', 'DESC')
+              ->first();
+        
+        if (!$old_audiometry)
+          return ['Base', null, 'Ninguno'];
+
+        $audiometry_base = Audiometry::where('employee_id', $audiometry->employee_id)->where('base_type', 'Base')->first();
+
+        if ($old_audiometry->base_state == 'CUAT')
+        {
+          $columns = $this->getColumnsBase();
+
+          foreach ($columns as $column)
+          {
+            if ( (($old_audiometry->$column - $audiometry_base->$column) >= 15) &&
+                (($audiometry->$column - $audiometry_base->$column) >= 15) )
+            {
+              $audiometry_base->base_type = 'No base';
+              //$audiometry_base->unsetEventDispatcher();
+              $audiometry_base->save();
+              return ['Base', null, 'CUAP'];
+            }
+          }
+
+          foreach ($columns as $column)
+          {
+            if ( ($audiometry->$column - $audiometry_base->$column) >= 15)
+            {
+              return ['No base', $audiometry_base->id, 'CUAT'];
+            }
+          }
+
+          return ['No base', $audiometry_base->id, 'Ninguno'];
         }
         else
         {
-          $audiometry_base->base_type = 'No base';
-          $audiometry_base->unsetEventDispatcher();
-          $audiometry_base->save();
-          return ['Base', null];
-        }
-     }
+          $columns = $this->getColumnsBase();
 
-     private function levelPTA($value)
+          foreach ($columns as $column)
+          {
+            if ( ($audiometry->$column - $audiometry_base->$column) >= 15)
+            {
+              return ['No base', $audiometry_base->id, 'CUAT'];
+            }
+          }
+
+          return ['No base', $audiometry_base->id, 'Ninguno'];
+        }
+    }
+
+     private function getColumnsBase()
      {
-        if ($value == 'Audición normal')
-          return 1;
-        else if ($value == 'Hipoacusia leve')
-          return 2;
-        else if ($value == 'Hipoacusia moderada')
-          return 3;
-        else if ($value == 'Hipoacusia moderada a severa')
-          return 4;
-        else if ($value == 'Hipoacusia severa')
-          return 5;
-        else if ($value == 'Hipoacusia profunda')
-          return 6;
-        else 0;
+       return [
+        'air_left_500',
+        'air_left_1000',
+        'air_left_2000',
+        'air_left_3000',
+        'air_left_4000',
+        'air_left_6000',
+        'air_left_8000',
+        'air_right_500',
+        'air_right_1000',
+        'air_right_2000',
+        'air_right_3000',
+        'air_right_4000',
+        'air_right_6000',
+        'air_right_8000',
+       ];
      }
 }

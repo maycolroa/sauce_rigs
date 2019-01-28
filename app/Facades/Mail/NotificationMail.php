@@ -391,13 +391,14 @@ class NotificationMail
             Mail::to($this->recipients)->queue($message);
 
             $this->createLog();
+            $this->restart();
         }
         catch (\Exception $e) {
-          dd($e);
+          //dd($e);
             throw new \Exception('An error occurred while sending the mail');
         }
 
-        return true;
+        return $this;
     }
 
     /**
@@ -484,5 +485,23 @@ class NotificationMail
         // If the array keys of the keys match the keys, then the array must
         // not be associative (e.g. the keys array looked like {0:0, 1:1...}).
         return array_keys($keys) !== $keys;
+    }
+
+    /**
+     * restart the class data
+     * @return void
+     */
+    private function restart()
+    {
+        $this->recipients = [];
+        $this->view = 'notification';
+        $this->subject = 'Notificación';
+        $this->message = '';
+        $this->buttons = [];
+        $this->list = [];
+        $this->list_order = '';
+        $this->table = [];
+        $this->subcopy = '';
+        $this->with = [];
     }
 }

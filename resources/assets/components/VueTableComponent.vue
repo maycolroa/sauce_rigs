@@ -1,5 +1,13 @@
 <template>
   <div>
+      <b-row align-h="end" v-if="configNameFilter">
+          <b-col cols="1">
+              <filter-general 
+                  v-model="filters" 
+                  :configName="configNameFilter" />
+          </b-col>
+      </b-row>
+
     <v-server-table :url="config.configuration.urlData" :columns="columns" :options="options" ref="vuetable">
       <template slot="controlls" slot-scope="props">
         <div>
@@ -52,6 +60,7 @@ import Vue from 'vue'
 import {ServerTable, ClientTable, Event} from 'vue-tables-2';
 import VueTableConfig from '@/vuetableconfig/';
 import Alerts from '@/utils/Alerts.js';
+import FilterGeneral from '@/components/Filters/FilterGeneral.vue';
 
 Vue.use(ServerTable)
 
@@ -62,15 +71,40 @@ export default {
     config: {type: Object, default: function(){
       return VueTableConfig.get(this.configName);
     }},
+    viewIndex: { type: Boolean, default: true },
+    modelId: {type: [Number, String], default: null}
+  },
+  components:{
+    FilterGeneral
   },
   data(){
     return{
       messageConfirmationRemove:'',
       actionRemove:'',
       component: null,
+      filters: [],
+      tableReady: false
+    }
+  },
+  watch: {
+    filters: {
+        handler(val){
+            if (this.tableReady)
+              Vue.nextTick( () => this.$refs.vuetable.refresh() )
+        },
+        deep: true
+    },
+    modelId() {
+      Vue.nextTick( () => this.$refs.vuetable.refresh() )
     }
   },
   computed: {
+    configNameFilter() {
+      if (this.config.configuration.configNameFilter != undefined)
+        return this.config.configuration.configNameFilter
+      else 
+        return ''
+    },
     loader(){
       if(this.config.configuration.detailComponent){
         return () => import(`@/components${this.config.configuration.detailComponent}`);
@@ -118,6 +152,10 @@ export default {
           defaultOption:'Select {column}',
           columns:'Columnas'
         },
+        params: {
+          filters: this.filters,
+          modelId: this.modelId
+        }
       };
 
       var fields = this.config.fields;
@@ -200,7 +238,10 @@ export default {
                   this.component = () => this.loader()
               })
     }
-    
+
+    setTimeout(() => {
+        this.tableReady = true
+    }, 4000)
   },
   methods: {
     pushButton (button, row) {
@@ -248,7 +289,14 @@ export default {
         Alerts.success('Exito',response.data.messsage);
       })
       .catch(error => {
+        if (error.response.status == 500 && error.response.data.error != 'Internal Error')
+        {
+          Alerts.error('Error', error.response.data.error);
+        }
+        else
+        {
           Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
+        }
       });
       this.$refs.modalConfirmationRemove.hide();
     },

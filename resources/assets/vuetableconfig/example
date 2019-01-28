@@ -39,6 +39,12 @@ export default [
         urlData: '/biologicalmonitoring/audiometry/data', //URL donde se saca la informacion, ruta de laravel
         filterColumns: true, //Si tiene filtro por columnas o si un campo global de filtro
         detailComponent: '/relative/component.vue'  //Si se desea que en el childrow de la tabla aparezca un componente especifico, entonces se debe poner aca la ruta al componente dentro de components ejemplo si nuestro componente esta dentro de @/components/relative/component.vue entonces se pondria /relative/component.vue. al hacer estoel componente tiene que tener una propiedad row de tipo object donde resiva toda el resultado que retorna el backend asi no esten visibles, por esa razon si se usa componente entonces no es necesario tener en data campos con detail : true, ya que no se usara ninguno por que el componente resive toda la respuesta de laravel.  
+        filters: [ //Arreglo de Filtros avanzados que se colocan sobre la tabla
+          {
+            url: '/selects/regionals', //URL desde donde buscara la informacion para el select multiple
+            key: 'regionals', //Clave unica del filtro definida en el componente vue-table
+          }
+        ]
     }
 }
 

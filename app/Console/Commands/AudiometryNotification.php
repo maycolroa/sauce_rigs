@@ -62,7 +62,7 @@ class AudiometryNotification extends Command
 
             foreach ($audiometries as $key => $value)
             {
-                $audiometry_count = Audiometry::where('employee_id', $value->employee_id)->withoutGlobalScopes()->count();
+                $audiometry_count = Audiometry::where('employee_id', $value->employee_id)->count();
 
                 if ($audiometry_count > 1)
                 {

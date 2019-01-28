@@ -15,7 +15,8 @@
                          :hide-selected="multiple"
                          :show-labels="false"
                          @input="updateValue"
-                         :allow-empty="false"
+                         :allow-empty="allowEmpty"
+                         @open="asyncFind"
                          @search-change="asyncFind"
                          :internal-search="false"
                          :options-limit="300"
@@ -25,6 +26,9 @@
                         :limit="5"
                         :limit-text="limitText"
                         :class="state"
+                        tag-placeholder="Añadir esto como nueva etiqueta"
+                        :taggable="taggable"
+                        @tag="addTag"
             >
                 <span slot="noResult">No se encontraron elementos</span>
             </multiselect>
@@ -51,6 +55,10 @@ export default {
         actionBlock: {type: String},
         url: { type: String, required: true },
         selectedObject: { type: Object },
+        parameters: { type: Object},
+        emptyAll: {type: Boolean, default: false},
+        taggable: {type: Boolean, default: false},
+        allowEmpty: {type: Boolean, default: false}
     },
     components:{
         Multiselect,
@@ -60,7 +68,8 @@ export default {
             selectValue: [],
             allowEvent: true,
             options: [],
-            isLoading: false
+            isLoading: false,
+            postData: ''
         }
     },
     methods: {
@@ -69,12 +78,28 @@ export default {
         },
          updateValue() {
             if (this.allowEvent) {
-                this.$emit('input', this.selectValue.value);
+                let value = this.multiple ? this.selectValue : (this.selectValue ? this.selectValue.value : '');
+
+                this.$emit('input', value);
+
+                if (!this.multiple)
+                {
+                    this.$emit("selectedName", this.selectValue ? this.selectValue.name : '');
+                }
             }
         },
         asyncFind(keyword) {
             this.isLoading = true;
-            axios.post(this.url, {keyword})
+
+            if (this.parameters)
+            {
+                this.postData = Object.assign({}, {keyword}, this.parameters);
+            }
+            else
+            {
+                this.postData = {keyword}
+            }
+            axios.post(this.url, this.postData)
                 .then(resp => {
                     this.isLoading = false;
                     if (resp.data.options) {
@@ -85,21 +110,70 @@ export default {
                     console.log('error');
                     this.isLoading = false;
                 });
-        }
+        },
+        addTag (newTag) {
+            this.selectValue.push({
+                name: newTag,
+                value: newTag
+            })
+
+            this.updateValue()
+        },
+        setMultiselectValue() {
+            if (this.value && this.options.length > 0) {
+                if (this.multiple) {
+                    if (typeof this.value == "object") {
+                        this.selectValue = this.value;
+                    } else {
+                        this.selectValue = this.value.split(",").map(v => {
+                        
+                        return {'name': v, 'value': v}
+                        });
+                    }
+                } else {
+                    this.selectValue = this.value
+                        ? _.find(this.options, { value: this.value })
+                        : "";
+                }
+
+                this.updateValue()
+            }
+            else if (this.value && this.options.length == 0 && this.taggable) {
+                if (this.multiple) {
+                    if (typeof this.value == "object") {
+                        this.selectValue = this.value;
+                    } else {
+                        this.selectValue = this.value.split(",").map(v => {
+                        
+                        return {'name': v, 'value': v}
+                        });
+                    }
+                }
+
+                this.updateValue()
+            }
+        },
     },
     watch: {
       selectedObject(){
         this.selectValue = this.selectedObject;
         this.options.push(this.selectedObject);
+      },
+      emptyAll(){
+        if (this.emptyAll)
+        {
+            this.selectValue = []
+            this.options.splice(0)
+            this.$emit('updateEmpty')
+        }
       }
     },
     mounted() {
          if (this.selectedObject) {
             this.options.push(this.selectedObject);
         }
-        if (this.value) {
-            this.selectValue = _.find(this.options, {value: this.value});
-        }
+
+        this.setMultiselectValue();
     },
     computed:{
         state(){

@@ -10,6 +10,9 @@ use App\Administrative\EmployeeEPS;
 use App\Administrative\EmployeeArea;
 use App\Administrative\EmployeeRegional;
 use App\Administrative\EmployeePosition;
+use App\Administrative\EmployeeBusiness;
+use App\Administrative\EmployeeHeadquarter;
+use App\Administrative\EmployeeProcess;
 use App\Rules\AudiometryDate;
 use App\Facades\Configuration;
 use App\PreventiveOccupationalMedicine\BiologicalMonitoring\Audiometry;
@@ -44,7 +47,7 @@ class AudiometryImport implements ToCollection
                 {  
                     if ($key > 0) //Saltar cabecera
                     {
-                        if (COUNT($row) == 40)
+                        if (COUNT($row) == 43)
                         {
                             $employee_id = $this->checkEmployee($row);
 
@@ -106,22 +109,24 @@ class AudiometryImport implements ToCollection
 
     private function checkEmployee($row)
     {
-        $employee = Employee::withoutGlobalScopes()->where('identification', $row[0])->first();
+        $sql = Employee::where('identification', $row[0]);
+        $sql->company_scope = $this->company_id;
+        $employee = $sql->first();
         \Log::info($employee);
         \Log::info($row[0]);
-        \Log::info(Employee::withoutGlobalScopes()->where('identification', $row[0])->toSql());
+        \Log::info($sql->toSql());
         if ($employee)
         {
             return $employee->id;
         }
         else
         {
-            $eps = EmployeeEPS::where('code', $row[7])->first();
+            $eps = EmployeeEPS::where('code', $row[11])->first();
 
             if ($eps)
             {
                 $fecha_nacimiento = $this->validateDate($row[4]);
-                $fecha_ingreso = $this->validateDate($row[9]);
+                $fecha_ingreso = $this->validateDate($row[12]);
 
                 $validator = Validator::make(
                     [
@@ -130,9 +135,12 @@ class AudiometryImport implements ToCollection
                         'sexo'              => $row[2],
                         'email'             => $row[3],
                         'fecha_nacimiento'  => $fecha_nacimiento,
-                        'area'              => $row[5],
-                        'cargo'             => $row[6],
-                        'regional'          => $row[8],
+                        'cargo'             => $row[5],
+                        'centro_costo'      => $row[6],
+                        'regional'          => $row[7],
+                        'sede'              => $row[8],
+                        'area'              => $row[9],
+                        'proceso'           => $row[10],
                         'fecha_ingreso'     => $fecha_ingreso
                     ],
                     [
@@ -141,9 +149,12 @@ class AudiometryImport implements ToCollection
                         'sexo'             => 'required|string|in:M,m,F,f',
                         'email'            => 'required|email|unique:sau_employees,email,null,id,company_id,'.$this->company_id,
                         'fecha_nacimiento' => 'nullable|date',
-                        'area'             => 'required',
                         'cargo'            => 'required',
+                        'centro_costo'     => 'required',
                         'regional'         => 'required',
+                        'sede'             => 'required',
+                        'area'             => 'required',
+                        'proceso'          => 'required',
                         'fecha_ingreso'    => 'required|date',
                     ]);
 
@@ -156,15 +167,23 @@ class AudiometryImport implements ToCollection
                 }
                 else 
                 {
+                    $regional_id = $this->checkRegional($row[7]);
+                    $headquarter_id = $this->checkHeadquarter($regional_id, $row[8]);
+                    $area_id = $this->checkArea($headquarter_id, $row[9]);
+                    $process_id = $this->checkProcess($area_id, $row[10]);
+
                     $employee = Employee::create([
                         'identification' => $row[0],
                         'name' => $row[1],
                         'sex' => $row[2],
                         'email' => $row[3],
                         'date_of_birth' => $fecha_nacimiento,
-                        'employee_area_id' => $this->checkArea($row[5]),
-                        'employee_position_id' => $this->checkPosition($row[6]),
-                        'employee_regional_id' => $this->checkRegional($row[8]),
+                        'employee_position_id' => $this->checkPosition($row[5]),
+                        'employee_business_id' => $this->checkBusiness($row[6]),
+                        'employee_regional_id' => $regional_id,
+                        'employee_headquarter_id' => $headquarter_id,
+                        'employee_area_id' => $area_id,
+                        'employee_process_id' => $process_id,
                         'employee_eps_id' => $eps->id,
                         'income_date' => $fecha_ingreso,
                         'company_id' => $this->company_id,
@@ -183,28 +202,58 @@ class AudiometryImport implements ToCollection
         return null;
     }
 
-    private function checkArea($area)
+    private function checkArea($headquarter_id, $area)
     {
-        $area = EmployeeArea::firstOrCreate(['name' => $area], 
-                                            ['name' => $area, 'company_id' => $this->company_id]);
+        $area = EmployeeArea::firstOrCreate(['name' => $area, 'employee_headquarter_id' => $headquarter_id], 
+                                            ['name' => $area, 'employee_headquarter_id' => $headquarter_id]);
 
         return $area->id;
     }
 
-    private function checkRegional($regional)
+    private function checkRegional($name)
     {
-        $regional = EmployeeRegional::firstOrCreate(['name' => $regional], 
-                                            ['name' => $regional, 'company_id' => $this->company_id]);
+        $regional = EmployeeRegional::query();
+        $regional->company_scope = $this->company_id;
+        $regional = $regional->firstOrCreate(['name' => $name], 
+                                            ['name' => $name, 'company_id' => $this->company_id]);
 
         return $regional->id;
     }
 
-    private function checkPosition($position)
+    private function checkPosition($name)
     {
-        $position = EmployeePosition::firstOrCreate(['name' => $position], 
-                                            ['name' => $position, 'company_id' => $this->company_id]);
+        $position = EmployeePosition::query();
+        $position->company_scope = $this->company_id;
+        $position = $position->firstOrCreate(['name' => $name], 
+                                            ['name' => $name, 'company_id' => $this->company_id]);
 
         return $position->id;
+    }
+
+    private function checkBusiness($name)
+    {
+        $business = EmployeeBusiness::query();
+        $business->company_scope = $this->company_id;
+        $business = $business->firstOrCreate(['name' => $name], 
+                                            ['name' => $name, 'company_id' => $this->company_id]);
+
+        return $business->id;
+    }
+
+    private function checkHeadquarter($regional_id, $headquarter)
+    {
+        $headquarter = EmployeeHeadquarter::firstOrCreate(['name' => $headquarter, 'employee_regional_id' => $regional_id], 
+                                            ['name' => $headquarter, 'employee_regional_id' => $regional_id]);
+
+        return $headquarter->id;
+    }
+
+    private function checkProcess($area_id, $process)
+    {
+        $process = EmployeeProcess::firstOrCreate(['name' => $process, 'employee_area_id' => $area_id], 
+                                            ['name' => $process, 'employee_area_id' => $area_id]);
+
+        return $process->id;
     }
 
     private function setError($message)
@@ -233,7 +282,7 @@ class AudiometryImport implements ToCollection
 
     private function createAudiometry($row, $employee_id)
     {
-        $fecha = $this->validateDate($row[10]);
+        $fecha = $this->validateDate($row[13]);
 
         $NUMBERS_AVAILABLE_RESULTS = "0,5,10,15,20,25,30,35,40,45,50,55,60,65,70,75,80,85,90,95,100,105,110,115,120";
         $EPP = implode(",", Configuration::getConfiguration('biologicalmonitoring_audiometries_select_epp'));
@@ -242,36 +291,36 @@ class AudiometryImport implements ToCollection
         $validator = Validator::make(
             [
                 'fecha'                     => $fecha,
-                'eventos_previos'           => $row[11],
+                'eventos_previos'           => $row[14],
                 'empleado'                  => $employee_id,
-                'epp'                       => array_map('trim', explode(",", $row[12])),
-                'nivel_exposicion'          => $row[13],
-                'aereo_derecha_500'         => $row[14],
-                'aereo_derecha_1000'        => $row[15],
-                'aereo_derecha_2000'        => $row[16],
-                'aereo_derecha_3000'        => $row[17],
-                'aereo_derecha_4000'        => $row[18],
-                'aereo_derecha_6000'        => $row[19],
-                'aereo_derecha_8000'        => $row[20],
-                'aereo_izquierda_500'       => $row[21],
-                'aereo_izquierda_1000'      => $row[22],
-                'aereo_izquierda_2000'      => $row[23],
-                'aereo_izquierda_3000'      => $row[24],
-                'aereo_izquierda_4000'      => $row[25],
-                'aereo_izquierda_6000'      => $row[26],
-                'aereo_izquierda_8000'      => $row[27],
-                'oseo_derecha_500'          => $row[28],
-                'oseo_derecha_1000'         => $row[29],
-                'oseo_derecha_2000'         => $row[30],
-                'oseo_derecha_3000'         => $row[31],
-                'oseo_derecha_4000'         => $row[32],
-                'oseo_izquierda_500'        => $row[33],
-                'oseo_izquierda_1000'       => $row[34],
-                'oseo_izquierda_2000'       => $row[35],
-                'oseo_izquierda_3000'       => $row[36],
-                'oseo_izquierda_4000'       => $row[37],
-                'recomendaciones_generales' => $row[38],
-                'observaciones_generales'   => $row[39],
+                'epp'                       => array_map('trim', explode(",", $row[15])),
+                'nivel_exposicion'          =>  $row[16],
+                'aereo_derecha_500'         =>  $row[17],
+                'aereo_derecha_1000'        =>  $row[18],
+                'aereo_derecha_2000'        =>  $row[19],
+                'aereo_derecha_3000'        =>  $row[20],
+                'aereo_derecha_4000'        =>  $row[21],
+                'aereo_derecha_6000'        =>  $row[22],
+                'aereo_derecha_8000'        =>  $row[23],
+                'aereo_izquierda_500'       =>  $row[24],
+                'aereo_izquierda_1000'      =>  $row[25],
+                'aereo_izquierda_2000'      =>  $row[26],
+                'aereo_izquierda_3000'      =>  $row[27],
+                'aereo_izquierda_4000'      =>  $row[28],
+                'aereo_izquierda_6000'      =>  $row[29],
+                'aereo_izquierda_8000'      =>  $row[30],
+                'oseo_derecha_500'          =>  $row[31],
+                'oseo_derecha_1000'         =>  $row[32],
+                'oseo_derecha_2000'         =>  $row[33],
+                'oseo_derecha_3000'         =>  $row[34],
+                'oseo_derecha_4000'         =>  $row[35],
+                'oseo_izquierda_500'        =>  $row[36],
+                'oseo_izquierda_1000'       =>  $row[37],
+                'oseo_izquierda_2000'       =>  $row[38],
+                'oseo_izquierda_3000'       =>  $row[39],
+                'oseo_izquierda_4000'       =>  $row[40],
+                'recomendaciones_generales' =>  $row[41],
+                'observaciones_generales'   =>  $row[42],
             ],
             [
                 'fecha'                     => ['required','date','before_or_equal:today', new AudiometryDate(null, $employee_id, $fecha)],
@@ -324,36 +373,36 @@ class AudiometryImport implements ToCollection
         {
             Audiometry::create([
                 'date'               => $fecha,
-                'previews_events'    => $row[11],
+                'previews_events'    => $row[14],
                 'employee_id'        => $employee_id,
-                'epp'                => $row[12],
-                'exposition_level'   => $row[13],
-                'air_right_500'      => $row[14],
-                'air_right_1000'     => $row[15],
-                'air_right_2000'     => $row[16],
-                'air_right_3000'     => $row[17],
-                'air_right_4000'     => $row[18],
-                'air_right_6000'     => $row[19],
-                'air_right_8000'     => $row[20],
-                'air_left_500'       => $row[21],
-                'air_left_1000'      => $row[22],
-                'air_left_2000'      => $row[23],
-                'air_left_3000'      => $row[24],
-                'air_left_4000'      => $row[25],
-                'air_left_6000'      => $row[26],
-                'air_left_8000'      => $row[27],
-                'osseous_right_500'  => $row[28],
-                'osseous_right_1000' => $row[29],
-                'osseous_right_2000' => $row[30],
-                'osseous_right_3000' => $row[31],
-                'osseous_right_4000' => $row[32],
-                'osseous_left_500'   => $row[33],
-                'osseous_left_1000'  => $row[34],
-                'osseous_left_2000'  => $row[35],
-                'osseous_left_3000'  => $row[36],
-                'osseous_left_4000'  => $row[37],
-                'recommendations'    => $row[38],
-                'observation'        => $row[39],
+                'epp'                => $row[15],
+                'exposition_level'   => $row[16],
+                'air_right_500'      => $row[17],
+                'air_right_1000'     => $row[18],
+                'air_right_2000'     => $row[19],
+                'air_right_3000'     => $row[20],
+                'air_right_4000'     => $row[21],
+                'air_right_6000'     => $row[22],
+                'air_right_8000'     => $row[23],
+                'air_left_500'       => $row[24],
+                'air_left_1000'      => $row[25],
+                'air_left_2000'      => $row[26],
+                'air_left_3000'      => $row[27],
+                'air_left_4000'      => $row[28],
+                'air_left_6000'      => $row[29],
+                'air_left_8000'      => $row[30],
+                'osseous_right_500'  => $row[31],
+                'osseous_right_1000' => $row[32],
+                'osseous_right_2000' => $row[33],
+                'osseous_right_3000' => $row[34],
+                'osseous_right_4000' => $row[35],
+                'osseous_left_500'   => $row[36],
+                'osseous_left_1000'  => $row[37],
+                'osseous_left_2000'  => $row[38],
+                'osseous_left_3000'  => $row[39],
+                'osseous_left_4000'  => $row[40],
+                'recommendations'    => $row[41],
+                'observation'        => $row[42],
             ]);
         }
     }

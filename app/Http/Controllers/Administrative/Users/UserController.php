@@ -10,6 +10,7 @@ use App\User;
 use App\Jobs\Administrative\Users\UserExportJob;
 use Session;
 use Illuminate\Support\Facades\Auth;
+use DB;
 
 class UserController extends Controller
 {
@@ -30,7 +31,13 @@ class UserController extends Controller
     */
    public function data(Request $request)
    {
-        $users = User::has('companies');
+        $users = User::select(
+            'sau_users.*',
+            'sau_roles.name as role'
+        )
+        ->join('sau_role_user', 'sau_role_user.user_id', 'sau_users.id')
+        ->join('sau_roles', 'sau_roles.id', 'sau_role_user.role_id')
+        ->where('sau_users.id', '<>', Auth::user()->id);
 
        return Vuetable::of($users)
                 ->make();
@@ -117,18 +124,29 @@ class UserController extends Controller
      */
     public function destroy(User $user)
     {
-        $user->companies()->detach();
-        $user->syncRoles()->sync([]); // Eliminar datos de relaciones
-        $user->syncPermissions()->sync([]); // Eliminar datos de relaciones
+        DB::beginTransaction();
 
-        if(!$user->delete())
+        try
         {
+            $user->companies()->detach();
+            $user->syncRoles([]); // Eliminar datos de relaciones
+            $user->syncPermissions([]); // Eliminar datos de relaciones
+
+            if(!$user->delete())
+            {
+                return $this->respondHttp500();
+            }
+
+            DB::commit();
+            
+            return $this->respondHttp200([
+                'message' => 'Se elimino el usuario'
+            ]);
+
+        } catch (\Exception $e) {
+            DB::rollback();
             return $this->respondHttp500();
         }
-        
-        return $this->respondHttp200([
-            'message' => 'Se elimino el usuario'
-        ]);
     }
 
     /**
@@ -141,7 +159,7 @@ class UserController extends Controller
     {
         try
         {
-            UserExportJob::dispatch(Auth::user());
+            UserExportJob::dispatch(Auth::user(), Session::get('company_id'));
           
             return $this->respondHttp200();
         } 

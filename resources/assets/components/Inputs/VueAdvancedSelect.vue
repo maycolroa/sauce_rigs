@@ -1,8 +1,17 @@
 <template>
     <b-form-group>
         <div slot="label" :class="classBlock">
-            <div v-if="label">{{label}}</div>
-            <a v-if="textBlock" :href="actionBlock" class="d-block small">{{textBlock}}</a>
+            <b-row>
+              <b-col>
+                <div v-if="label">{{label}}</div>
+                <a v-if="textBlock" :href="actionBlock" class="d-block small">{{textBlock}}</a>
+              </b-col>
+              <b-col>
+                <div v-if="btnLabelPopover && Object.keys(btnLabelPopover).length > 0" class="float-right" style="padding-right: 10px;">
+                    <b-btn v-b-popover.hover.focus.left="btnLabelPopover.content" :title="btnLabelPopover.title" variant="primary" class="btn-circle-micro"><span :class="btnLabelPopover.icon"></span></b-btn>
+                </div>
+              </b-col>
+            </b-row>
         </div>
         <multiselect v-model="selectValue"
                 :state="state" 
@@ -19,9 +28,12 @@
                 @input="updateValue"
                 :allow-empty="true"
                 :multiple="multiple"
-                :close-on-select="!multiple"
+                :close-on-select="closeOnSelectState"
                 :limit="limit"
-                :limit-text="limitText">
+                :limit-text="limitText"
+                tag-placeholder="Añadir esto como nueva etiqueta"
+                :taggable="taggable"
+                @tag="addTag">
             <span slot="noResult">No se encontraron elementos</span>
         </multiselect>
         <b-form-invalid-feedback v-if="error" :force-show="true">
@@ -48,14 +60,17 @@ export default {
     multiple: { type: Boolean, default: false },
     textBlock: { type: String },
     actionBlock: { type: String },
-    limit: { type: Number, default: 5 }
+    btnLabelPopover: { type: Object },
+    limit: { type: Number, default: 5 },
+    closeOnSelect: {type: Boolean, default: true},
+    taggable: {type: Boolean, default: false}
   },
   components: {
     Multiselect
   },
   data() {
     return {
-      selectValue: ""
+      selectValue: []
     };
   },
   watch: {
@@ -63,17 +78,25 @@ export default {
       this.setMultiselectValue();
     }
   },
+  mounted() {
+      this.setMultiselectValue();
+  },
   methods: {
     limitText(count) {
       return `y ${count} mas`;
     },
     updateValue() {
-      let value = this.multiple ? this.selectValue : this.selectValue.value;
+      let value = this.multiple ? this.selectValue : (this.selectValue ? this.selectValue.value : '');
 
       this.$emit("input", value);
+
+      if (!this.multiple)
+      {
+        this.$emit("selectedName", this.selectValue ? this.selectValue.name : '');
+      }
     },
     setMultiselectValue() {
-      if (this.value) {
+      if (this.value && this.options.length > 0) {
         if (this.multiple) {
           if (typeof this.value == "object") {
             this.selectValue = this.value;
@@ -88,8 +111,32 @@ export default {
             ? _.find(this.options, { value: this.value })
             : "";
         }
+
+        this.updateValue()
       }
-    }
+      else if (this.value && this.options.length == 0 && this.taggable) {
+          if (this.multiple) {
+              if (typeof this.value == "object") {
+                  this.selectValue = this.value;
+              } else {
+                  this.selectValue = this.value.split(",").map(v => {
+                  
+                  return {'name': v, 'value': v}
+                  });
+              }
+          }
+
+          this.updateValue()
+      }
+    },
+    addTag (newTag) {
+      this.selectValue.push({
+        name: newTag,
+        value: newTag
+      })
+      
+      this.updateValue()
+    },
   },
   computed: {
     state() {
@@ -103,6 +150,10 @@ export default {
       return this.textBlock
         ? "d-flex justify-content-between align-items-end"
         : "";
+    },
+    closeOnSelectState()
+    {
+      return this.closeOnSelect ? !this.multiple : this.closeOnSelect
     }
   }
 };

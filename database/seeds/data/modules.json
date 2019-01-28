@@ -9,12 +9,56 @@
             {
                 "name": "roles",
                 "display_name": "Roles"
+            },
+            {
+                "name": "positions",
+                "display_name": "Cargos"
+            },
+            {
+                "name": "regionals",
+                "display_name": "Regionales"
+            },
+            {
+                "name": "businesses",
+                "display_name": "Centro de costos"
+            },
+            {
+                "name": "headquarters",
+                "display_name": "Sedes"
+            },
+            {
+                "name": "areas",
+                "display_name": "Áreas"
+            },
+            {
+                "name": "processes",
+                "display_name": "Procesos"
+            },
+            {
+                "name": "employees",
+                "display_name": "Empleados"
+            },
+            {
+                "name": "configurations/locationLevelForm",
+                "display_name": "Configuraciones/Nivel de localización en formulario"
             }
         ]
     },
     {
         "application": "industrialSecure",
         "modules": [
+            {
+                "name": "activities",
+                "display_name": "Actividades"
+            },
+            {
+                "name": "dangers",
+                "display_name": "Peligros"
+            },
+            {
+                "name": "dangerMatrix",
+                "display_name": "Matriz de peligros"
+            }
         ]
     },
     {
