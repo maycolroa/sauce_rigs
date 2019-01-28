@@ -96,7 +96,7 @@ export default {
       }
     },
     setMultiselectValue() {
-      if (this.value) {
+      if (this.value && this.options.length > 0) {
         if (this.multiple) {
           if (typeof this.value == "object") {
             this.selectValue = this.value;
@@ -113,6 +113,20 @@ export default {
         }
 
         this.updateValue()
+      }
+      else if (this.value && this.options.length == 0 && this.taggable) {
+          if (this.multiple) {
+              if (typeof this.value == "object") {
+                  this.selectValue = this.value;
+              } else {
+                  this.selectValue = this.value.split(",").map(v => {
+                  
+                  return {'name': v, 'value': v}
+                  });
+              }
+          }
+
+          this.updateValue()
       }
     },
     addTag (newTag) {
