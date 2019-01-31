@@ -152,6 +152,7 @@ return [
          */
         App\Vuetable\VuetableServiceProvider::class,
         App\Facades\Mail\NotificationMailServiceProvider::class,
+        App\Facades\ActionPlans\ActionPlanServiceProvider::class,
 
         /*
          * Application Service Providers...
@@ -163,6 +164,7 @@ return [
         App\Providers\RouteServiceProvider::class,
         Maatwebsite\Excel\ExcelServiceProvider::class,
         App\Providers\ObserverServiceProvider::class,
+        DesignMyNight\Laravel\RecursiveCollectionServiceProvider::class
 
     ],
 
@@ -215,6 +217,7 @@ return [
         'Vuetable' => App\Vuetable\Facades::class,
         'Excel' => Maatwebsite\Excel\Facades\Excel::class,
         'NotificationMail' => App\Facades\Mail\NotificationMail::class,
+        'ActionPlan' => App\Facades\ActionPlans\ActionPlan::class,
     ],
 
 ];

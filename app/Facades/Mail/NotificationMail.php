@@ -9,6 +9,7 @@ use App\Facades\Mail\NotificationGeneralMail;
 use App\User;
 use App\Models\LogMail;
 use App\Models\Module;
+use App\Administrative\Employee;
 use Route;
 use Exception;
 
@@ -110,7 +111,7 @@ class NotificationMail
 
     public function recipients($recipients)
     {
-        if (!$recipients instanceof Collection && !$recipients instanceof User)
+        if (!$recipients instanceof Collection && !$recipients instanceof User && !$recipients instanceof Employee)
             throw new \Exception('Invalid recipient format');
         
         if ($recipients instanceof Collection)
@@ -119,7 +120,7 @@ class NotificationMail
                 throw new \Exception('Empty collection');
             
             $recipients = $recipients->filter(function ($value, $key) {
-                if ($value instanceof User && 
+                if (($value instanceof User || $value instanceof Employee) && 
                 preg_match('/^[_a-z0-9-]+(.[_a-z0-9-]+)*@[a-z0-9-]+(.[a-z0-9-]+)*(.[a-z]{2,4})$/', $value->email) )
                     return true;
                 else 
@@ -130,7 +131,7 @@ class NotificationMail
                 throw new \Exception('The collection was empty after filtering the invalid emails');
         }
 
-        if ($recipients instanceof User && 
+        if (($recipients instanceof User || $recipients instanceof Employee) && 
                 !preg_match('/^[_a-z0-9-]+(.[_a-z0-9-]+)*@[a-z0-9-]+(.[a-z0-9-]+)*(.[a-z]{2,4})$/', $recipients->email) )
             throw new \Exception('Incorrect email format');
         
@@ -282,13 +283,13 @@ class NotificationMail
                     $i++;
                 }
                 else
-                    throw new \Exception('Invalid recipient format');
+                    throw new \Exception('Invalid table format');
             }
 
             $this->generateTable($headers, $information);
         }
         else 
-            throw new \Exception('Invalid recipient format');
+            throw new \Exception('Invalid table format');
 
         return $this;
     }
@@ -449,7 +450,7 @@ class NotificationMail
         $event = explode("\\", Route::currentRouteAction());
         $event = $event[COUNT($event) - 1];
 
-        if ($this->recipients instanceof User)
+        if ($this->recipients instanceof User || $this->recipients instanceof Employee)
             $log->recipients = $this->recipients->email;    
         else if ($this->recipients instanceof Collection)
         {

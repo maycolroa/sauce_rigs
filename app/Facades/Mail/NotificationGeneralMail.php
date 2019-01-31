@@ -37,7 +37,7 @@ class NotificationGeneralMail extends Mailable
       else{
         return $this->subject($this->mail->subject)
                     ->markdown('mail.'.$this->mail->view)
-                    ->with($this->mail->with);
+                    ->with(['mail' => $this->mail]);
       }
     }
 }

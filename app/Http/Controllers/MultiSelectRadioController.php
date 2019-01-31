@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Facades\ActionPlans\Facades\ActionPlan;
 
 class MultiSelectRadioController extends Controller
 {
@@ -13,7 +14,7 @@ class MultiSelectRadioController extends Controller
      */
     public function actionPlanStates()
     {
-        return $this->multiSelectFormat($this->getActionPlanStates());
+        return $this->multiSelectFormat(ActionPlan::getStates());
     }
 
     /**
