@@ -4,6 +4,7 @@ namespace App\Traits;
 
 use Exception;
 use Session;
+use DateTime;
 
 trait UtilsTrait
 {
@@ -235,5 +236,34 @@ trait UtilsTrait
 
             //$model::updateOrCreate(['name'=>$value, 'company_id'=>$company_id], ['name'=>$value, 'company_id'=>$company_id]);
         }
+    }
+
+    /**
+     * Check if an array is associative
+     *
+     * @param Array $array
+     * @return Boolean
+     */
+    protected function is_assoc($array)
+    {
+        // Keys of the array
+        $keys = array_keys($array);
+
+        // If the array keys of the keys match the keys, then the array must
+        // not be associative (e.g. the keys array looked like {0:0, 1:1...}).
+        return array_keys($keys) !== $keys;
+    }
+
+    /**
+     * Valid if the date has a valid format
+     *
+     * @param String $date
+     * @param String $format
+     * @return Booleam
+     */
+    function validateDate($date, $format = 'Y-m-d H:i:s')
+    {
+        $d = DateTime::createFromFormat($format, $date);
+        return $d && $d->format($format) == $date;
     }
 }

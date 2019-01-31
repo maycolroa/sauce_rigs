@@ -1,4 +1,11 @@
 <?php return array (
+  'designmynight/laravel-recursive-collection' => 
+  array (
+    'providers' => 
+    array (
+      0 => 'DesignMyNight\\Laravel\\RecursiveCollectionServiceProvider',
+    ),
+  ),
   'fideloper/proxy' => 
   array (
     'providers' => 

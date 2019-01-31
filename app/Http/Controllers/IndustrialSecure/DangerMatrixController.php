@@ -17,6 +17,7 @@ use App\IndustrialSecure\TagsWarningSignage;
 use App\IndustrialSecure\ChangeHistory;
 use Illuminate\Support\Facades\Auth;
 use App\Administrative\Configurations\LocationLevelForm;
+use App\Facades\ActionPlans\Facades\ActionPlan;
 use Carbon\Carbon;
 use Session;
 use Validator;
@@ -94,7 +95,7 @@ class DangerMatrixController extends Controller
                     }
 
                     $itemDanger->qualificationsData = $qualificationsData;
-                    $itemDanger->actionPlan = $this->prepareDataActionPlanComponent($itemDanger);
+                    $itemDanger->actionPlan = ActionPlan::model($itemDanger)->prepareDataComponent();
                 }
             }
 
@@ -136,7 +137,7 @@ class DangerMatrixController extends Controller
             {  
                 foreach ($itemActivity->dangers as $keyDanger => $itemDanger)
                 {
-                    $this->modelDeleteAllActionPlan($itemDanger);
+                    ActionPlan::model($itemDanger)->modelDeleteAll();
                 }
             }
 
@@ -231,7 +232,7 @@ class DangerMatrixController extends Controller
         $rulesConfLocation = $this->getLocationFormRules('industrialSecure', 'dangerMatrix');
         $rules = array_merge($rules, $rulesConfLocation);
 
-        $rulesActionPlan = $this->getActionPlanRules('activities.*.dangers.*.');
+        $rulesActionPlan = ActionPlan::prefixIndex('activities.*.dangers.*.')->getRules();
         $rules = array_merge($rules, $rulesActionPlan['rules']);
         $messages = array_merge($messages, $rulesActionPlan['messages']);
 
@@ -293,6 +294,19 @@ class DangerMatrixController extends Controller
                         $activityDel->delete();
                 }
             }
+
+            //Se inician los atributos necesarios que seran estaticos para todas las actividades
+            // De esta forma se evitar la asignacion innecesaria una y otra vez 
+            ActionPlan::
+                    user(Auth::user())
+                ->module('dangerMatrix')
+                ->regional($dangerMatrix->regional ? $dangerMatrix->regional->name : null)
+                ->headquarter($dangerMatrix->headquarter ? $dangerMatrix->headquarter->name : null)
+                ->area($dangerMatrix->area ? $dangerMatrix->area->name : null)
+                ->process($dangerMatrix->process ? $dangerMatrix->process->name : null)
+                ->creationDate($dangerMatrix->created_at)
+                ->supervisorUser($dangerMatrix->user_id)
+                ->url(url('/industrialsecure/dangermatrix/view/'.$dangerMatrix->id));
 
             foreach ($request->get('activities') as $keyA => $itemA)
             {
@@ -386,7 +400,10 @@ class DangerMatrixController extends Controller
                     }
 
                     /**Planes de acción*/
-                    $this->saveActionPlan($itemD['actionPlan'], 'dangerMatrix', $danger, Auth::user());
+                    ActionPlan::
+                          model($danger)
+                        ->activities($itemD['actionPlan'])
+                        ->save();
                 }
 
                 if (isset($itemA['dangersRemoved']) && COUNT($itemA['dangersRemoved']) > 0)
@@ -397,12 +414,14 @@ class DangerMatrixController extends Controller
 
                         if ($dangerDel)
                         {
-                            $this->modelDeleteAllActionPlan($dangerDel);
+                            ActionPlan::model($dangerDel)->modelDeleteAll();
                             $dangerDel->delete();
                         }
                     }
                 }
             }
+
+            ActionPlan::sendMail();
 
             DB::commit();
 

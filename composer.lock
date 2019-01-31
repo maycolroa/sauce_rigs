@@ -1,11 +1,67 @@
 {
     "_readme": [
         "This file locks the dependencies of your project to a known state",
-        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "a9e40cccd30a405829b72759f04e9c21",
+    "content-hash": "c106f28310fa4646970a557e98a03831",
     "packages": [
+        {
+            "name": "designmynight/laravel-recursive-collection",
+            "version": "v1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/designmynight/laravel-recursive-collection.git",
+                "reference": "5a9853264a0e0969e99652deee957c3cba6a9207"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/designmynight/laravel-recursive-collection/zipball/5a9853264a0e0969e99652deee957c3cba6a9207",
+                "reference": "5a9853264a0e0969e99652deee957c3cba6a9207",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/support": "^5.5"
+            },
+            "require-dev": {
+                "orchestra/testbench": "^3.5",
+                "phpunit/phpunit": "^6.5"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "DesignMyNight\\Laravel\\RecursiveCollectionServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "DesignMyNight\\Laravel\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Steve Porter",
+                    "email": "steve@designmynight.com",
+                    "role": "Developer"
+                }
+            ],
+            "description": "A package to convert nested arrays and associative arrays into nested collections",
+            "homepage": "https://github.com/designmynight/laravel-recursive-collection",
+            "keywords": [
+                "collection",
+                "designmynight",
+                "laravel",
+                "laravel-collection",
+                "laravel-recursive-collection"
+            ],
+            "time": "2018-02-01T10:04:16+00:00"
+        },
         {
             "name": "dnoegel/php-xdg-base-dir",
             "version": "0.1",
