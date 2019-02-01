@@ -39,8 +39,8 @@
                 "display_name": "Empleados"
             },
             {
-                "name": "configurations/locationLevelForm",
-                "display_name": "Configuraciones/Nivel de localización en formulario"
+                "name": "configurations",
+                "display_name": "Configuraciones"
             }
         ]
     },
