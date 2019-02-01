@@ -137,6 +137,20 @@ class ActionPlan
     private $url;
 
     /**
+     * Id of the company
+     *
+     * @var Integer
+     */
+    private $company;
+
+    /**
+     * Id of the company
+     *
+     * @var Integer
+     */
+    private $daysAlertExpirationDate;
+
+    /**
      * Process of the main register that contains all the activities
      *
      * @return Array
@@ -417,6 +431,38 @@ class ActionPlan
     }
 
     /**
+     * Set the id of the company
+     *
+     * @param Integer $company
+     * @return $this
+     */
+    public function company($company)
+    {
+        if (!is_numeric($company))
+            throw new \Exception('Invalid company format');
+
+        $this->company = $company;
+
+        return $this;
+    }
+
+    /**
+     * Establishes the days on which workers must be altered by close expiration date
+     *
+     * @param Integer $daysAlertExpirationDate
+     * @return $this
+     */
+    public function daysAlertExpirationDate($daysAlertExpirationDate)
+    {
+        if (!is_numeric($daysAlertExpirationDate))
+            throw new \Exception('Invalid daysAlertExpirationDate format');
+
+        $this->daysAlertExpirationDate = $daysAlertExpirationDate;
+
+        return $this;
+    }
+
+    /**
      * Returns an array with the validation rules for action plans.
      *
      * @return Array
@@ -681,20 +727,81 @@ class ActionPlan
         return $list;
     }
 
-    private function prepareDataTable($data)
+    private function prepareDataTable($data, $format = 'D M d Y')
     {
         $result = [];
 
         foreach ($data as $key => $value) 
         {
             array_push($result, [
-                'Fecha Vencimiento' => Carbon::createFromFormat('D M d Y', $value['expiration_date'])->toFormattedDateString(),
-                'Fecha Ejecución' => Carbon::createFromFormat('D M d Y', $value['execution_date'])->toFormattedDateString(),
+                'Fecha Vencimiento' => Carbon::createFromFormat($format, $value['expiration_date'])->toFormattedDateString(),
+                'Fecha Ejecución' => Carbon::createFromFormat($format, $value['execution_date'])->toFormattedDateString(),
                 'Estado' => $value['state'],
                 'Descripción' => $value['description']
             ]);
         }
 
         return $result;
+    }
+
+    public function sendMailAlert()
+    {
+        if (empty($this->company))
+            throw new \Exception('A valid company has not been entered.');
+
+        if (empty($this->daysAlertExpirationDate))
+            throw new \Exception('A valid daysAlertExpirationDate has not been entered.');
+
+        $activities = ActionPlansActivity::
+                select(
+                    'sau_action_plans_activities.*',
+                    'sau_action_plans_activity_module.module_id as module_id',
+                    'sau_modules.name as module_name',
+                    'sau_applications.name as application_name'
+                )
+                ->join('sau_action_plans_activity_module', 'sau_action_plans_activity_module.activity_id', 'sau_action_plans_activities.id')
+                ->join('sau_modules', 'sau_modules.id', 'sau_action_plans_activity_module.module_id')
+                ->join('sau_applications', 'sau_applications.id', 'sau_modules.application_id')
+                ->join('sau_employees', 'sau_employees.id', 'sau_action_plans_activities.employee_id')
+                ->where('sau_action_plans_activities.state', 'Pendiente')
+                ->whereRaw("CURDATE() BETWEEN DATE_ADD(sau_action_plans_activities.expiration_date, INTERVAL -$this->daysAlertExpirationDate DAY) AND sau_action_plans_activities.expiration_date");
+
+        $activities->company_scope = $this->company;
+        $activities = $activities->get();
+
+        $groupResponsible = $activities->groupBy('employee_id');
+
+        foreach($groupResponsible as $data => $value)
+        {
+            $groupModule = $value->groupBy('module_id');
+
+            foreach($groupModule as $dataM => $valueM)
+            {
+                $responsible = Employee::query();
+                $responsible->company_scope = $this->company;
+                $responsible = $responsible->findOrFail($data);
+
+                $url = url(strtolower('/'.$value[0]->application_name.'/'.$value[0]->module_name));
+
+                if($responsible->email != null)
+                {
+                    $module = Module::find($dataM);
+
+                    NotificationMail::
+                        subject('Actividades Próximas a Vencerse')
+                        ->view('actionplan.activities')
+                        ->recipients($responsible)
+                        ->message('Las siguientes actividades están próximas a vencerse:')
+                        ->module($module)
+                        ->table($this->prepareDataTable($valueM->toArray(), 'Y-m-d'))
+                        //->list($this->prepareListItemMainEmail(), 'ul')
+                        ->with(['responsible'=>$responsible->name])
+                        ->buttons([
+                            ['text'=>'Llevarme al sitio', 'url'=>$url]
+                        ])
+                        ->send();
+                }
+            }
+        }
     }
 }

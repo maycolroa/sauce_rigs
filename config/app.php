@@ -153,6 +153,7 @@ return [
         App\Vuetable\VuetableServiceProvider::class,
         App\Facades\Mail\NotificationMailServiceProvider::class,
         App\Facades\ActionPlans\ActionPlanServiceProvider::class,
+        App\Facades\ConfigurationsCompany\ConfigurationsCompanyServiceProvider::class,
 
         /*
          * Application Service Providers...
@@ -218,6 +219,7 @@ return [
         'Excel' => Maatwebsite\Excel\Facades\Excel::class,
         'NotificationMail' => App\Facades\Mail\NotificationMail::class,
         'ActionPlan' => App\Facades\ActionPlans\ActionPlan::class,
+        'ConfigurationsCompany' => App\Facades\ConfigurationsCompany\ConfigurationsCompany::class,
     ],
 
 ];

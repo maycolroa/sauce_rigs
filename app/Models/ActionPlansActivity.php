@@ -3,9 +3,12 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Traits\CompanyTrait;
 
 class ActionPlansActivity extends Model
 {
+    use CompanyTrait;
+    
     protected $table = 'sau_action_plans_activities';
 
     protected $fillable = [
@@ -17,6 +20,9 @@ class ActionPlansActivity extends Model
         'state',
         'editable'
     ];
+
+    //the attribute define the table for scope company execute
+    public $scope_table_for_company_table = 'sau_employees';
 
     public function employee()
     {

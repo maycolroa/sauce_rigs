@@ -13,7 +13,8 @@ class Kernel extends ConsoleKernel
      * @var array
      */
     protected $commands = [
-        'App\Console\Commands\AudiometryNotification'
+        'App\Console\Commands\AudiometryNotification',
+        'App\Console\Commands\DaysAlertExpirationDateActionPlan'
     ];
 
     /**
@@ -27,6 +28,9 @@ class Kernel extends ConsoleKernel
         $schedule->command('audiometry-notification')
         ->timezone('America/Bogota')
         ->dailyAt('00:00');
+        $schedule->command('days-alert-expiration-date-action-plan')
+        ->timezone('America/Bogota')
+        ->dailyAt('01:00');
     }
 
     /**
