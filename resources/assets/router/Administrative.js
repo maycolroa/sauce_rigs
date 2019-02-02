@@ -189,24 +189,9 @@ export default [{
       component: () =>
         import('@/views/Administrative/employees/view')
     }, {
-      name: 'configurations-locationlevelform',
-      path: 'configurations/locationlevelform',
+      name: 'administrative-configurations',
+      path: 'configurations',
       component: () =>
-        import('@/views/Administrative/configurations/locationlevelform/index')
-    }, {
-      name: 'configurations-locationlevelform-create',
-      path: 'configurations/locationlevelform/create',
-      component: () =>
-        import('@/views/Administrative/configurations/locationlevelform/create')
-    }, {
-      name: 'configurations-locationlevelform-edit',
-      path: 'configurations/locationlevelform/edit/:id',
-      component: () =>
-        import('@/views/Administrative/configurations/locationlevelform/edit')
-    }, {
-      name: 'configurations-locationlevelform-view',
-      path: 'configurations/locationlevelform/view/:id',
-      component: () =>
-        import('@/views/Administrative/configurations/locationlevelform/view')
+        import('@/views/Administrative/configurations/index')
     }]
   }]

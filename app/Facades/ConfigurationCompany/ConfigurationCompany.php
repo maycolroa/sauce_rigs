@@ -16,9 +16,35 @@ class ConfigurationsCompany
      */
     private $company;
 
+    /**
+     * Key attribute
+     *
+     * @var String
+     */
+    private $key;
+
+    /**
+     * Value attribute
+     *
+     * @var String
+     */
+    private $value;
+
+    /**
+     * The possible keys and their descriptions
+     *
+     * @var Array
+     */
+    private $keys;
+
     public function __construct()
     {
         $this->company = Session::get('company_id') ? Session::get('company_id') : null;
+
+        $this->keys = [
+            'location_level_form' => 'Nivel localización en formulario',
+            'days_alert_expiration_date_action_plan' => 'Días de alerta por fecha de vencimiento cercana para los planes de acción'
+        ];
     }
 
     /**
@@ -33,6 +59,38 @@ class ConfigurationsCompany
             throw new \Exception('Invalid company format');
 
         $this->company = $company;
+
+        return $this;
+    }
+
+    /**
+     * Set the key
+     *
+     * @param String $key
+     * @return $this
+     */
+    public function key($key)
+    {
+        if (!is_string($key))
+            throw new \Exception('Invalid key format');
+
+        $this->key = $key;
+
+        return $this;
+    }
+
+    /**
+     * Set the value
+     *
+     * @param String $value
+     * @return $this
+     */
+    public function value($value)
+    {
+        if (empty($value))
+            throw new \Exception('Invalid value format');
+
+        $this->value = $value;
 
         return $this;
     }
@@ -99,5 +157,66 @@ class ConfigurationsCompany
         }
 
         return $data;
+    }
+
+    /**
+     * Returns an array with all configurations and their values, if any
+     *
+     * @return Array
+     */
+    public function findAll()
+    {
+        $data = [];
+
+        foreach ($this->keys as $key => $value) 
+        {
+            try
+            {
+                $value = $this->findByKey($key);
+            } catch(Exception $e){
+                $value = '';
+            }
+
+            $data[$key] = $value;
+        }
+
+        return $data;
+    }
+
+    /**
+     * Save the company configuration according to the defined key
+     * 
+     */
+    public function save()
+    {
+        if (empty($this->key))
+            throw new \Exception('A valid key has not been entered.');
+
+        if (empty($this->value))
+            throw new \Exception('A valid value has not been entered.');
+
+        $configuration = ConfigurationCompany::where('key', $this->key);
+        $configuration->company_scope = $this->company;
+        $configuration = $configuration->first();
+
+        if (!$configuration)
+        {
+            ConfigurationCompany::create([
+                'company_id' => $this->company,
+                'key' => strtolower($this->key),
+                'value' => $this->value,
+                'observation' => isset($this->keys[$this->key]) ? $this->keys[$this->key] : ''
+            ]);
+        }
+        else
+        {
+            $configuration->update([
+                'value' => $this->value,
+                'observation' => isset($this->keys[$this->key]) ? $this->keys[$this->key] : ''
+            ]);
+        }
+
+        $this->key = null;
+        $this->value = null;
     }
 }
