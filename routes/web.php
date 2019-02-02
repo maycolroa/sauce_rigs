@@ -72,7 +72,7 @@ Route::middleware(['auth'])->group(function () {
     Route::prefix('radios')->group(function () {
       Route::post('dmTypeActivities', 'MultiSelectRadioController@dmTypeActivities');
       Route::post('siNo', 'MultiSelectRadioController@siNo');
-      Route::post('conf/locationLevelForm', 'Administrative\Configurations\LocationLevelFormController@radioLocationLevels');
+      Route::post('conf/locationLevelForm', 'Administrative\ConfigurationController@radioLocationLevels');
     });
 
     //Administrativo
@@ -105,9 +105,10 @@ Route::middleware(['auth'])->group(function () {
       Route::post('employee/data', 'Administrative\EmployeesController@data');
       Route::ApiResource('employee', 'Administrative\EmployeesController');
 
+      Route::post('configuration', 'Administrative\ConfigurationController@store');
+      Route::get('configuration/view', 'Administrative\ConfigurationController@show');
+
       Route::prefix('configurations')->group(function () {
-        Route::post('locationLevelForms/data', 'Administrative\Configurations\LocationLevelFormController@data');
-        Route::ApiResource('locationLevelForms', 'Administrative\Configurations\LocationLevelFormController');
         Route::post('locationLevelForms/getConfModule', 'Administrative\Configurations\LocationLevelFormController@getConfModule');
 
         Route::prefix('industrialSecurity')->group(function () {
