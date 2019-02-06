@@ -42,13 +42,13 @@
                         <b-card-body>
                             <b-form-row>
                                 <vue-textarea :disabled="viewOnly" class="col-md-12" v-model="activity.description" label="Descripción" name="description" placeholder="Descripción" :error="form.errorsFor(`${prefixIndex}actionPlan.activities.${index}.description`)"></vue-textarea>
-                                <vue-ajax-advanced-select :disabled="viewOnly" class="col-md-12" v-model="activity.employee_id" :selected-object="activity.multiselect_employee" name="employee_id" label="Responsable" placeholder="Seleccione el responsable" :url="employeesDataUrl" :error="form.errorsFor(`${prefixIndex}actionPlan.activities.${index}.employee_id`)">
+                                <vue-ajax-advanced-select :disabled="viewOnly" class="col-md-12" v-model="activity.responsible_id" :selected-object="activity.multiselect_responsible" name="responsible_id" label="Responsable" placeholder="Seleccione el responsable" :url="userDataUrl" :error="form.errorsFor(`${prefixIndex}actionPlan.activities.${index}.responsible_id`)">
                                     </vue-ajax-advanced-select>
                             </b-form-row>
                             <b-form-row>
-                                <vue-datepicker :disabled="viewOnly" class="col-md-4" v-model="activity.execution_date" label="Fecha de ejecución" placeholder="Seleccione la fecha de ejecución" name="execution_date" :disabled-dates="disabledExecutionDate(index)" :error="form.errorsFor(`${prefixIndex}actionPlan.activities.${index}.execution_date`)">
+                                <vue-datepicker :disabled="viewOnly" class="col-md-4" v-model="activity.expiration_date" label="Fecha de vencimiento" placeholder="Seleccione la fecha de vencimiento" name="expiration_date" :disabled-dates="disabledExpirationDate(index)" :error="form.errorsFor(`${prefixIndex}actionPlan.activities.${index}.expiration_date`)">
                                     </vue-datepicker>
-                                <vue-datepicker :disabled="viewOnly || activity.execution_date == ''" class="col-md-4" v-model="activity.expiration_date" label="Fecha de vencimiento" placeholder="Seleccione la fecha de vencimiento" name="expiration_date" :disabled-dates="disabledExpirationDate(index)" :error="form.errorsFor(`${prefixIndex}actionPlan.activities.${index}.expiration_date`)">
+                                <vue-datepicker :disabled="viewOnly || activity.expiration_date == ''" class="col-md-4" v-model="activity.execution_date" label="Fecha de ejecución" placeholder="Seleccione la fecha de ejecución" name="execution_date" :disabled-dates="disabledExecutionDate(index)" :error="form.errorsFor(`${prefixIndex}actionPlan.activities.${index}.execution_date`)">
                                     </vue-datepicker>
                                 <vue-advanced-select :disabled="viewOnly" class="col-md-4" v-model="activity.state" :multiple="false" :options="actionPlanStates" :hide-selected="false" name="state" label="Estado" placeholder="Seleccione el estado" :error="form.errorsFor(`${prefixIndex}actionPlan.activities.${index}.state`)">
                                     </vue-advanced-select>
@@ -102,7 +102,7 @@ export default {
     data() {
         return {
             search: '',
-            employeesDataUrl: '/selects/employees'
+            userDataUrl: '/selects/users'
         };
     },
     created()
@@ -134,7 +134,7 @@ export default {
                 key: new Date().getTime(),
                 id: '',
                 description: '',
-                employee_id: '',
+                responsible_id: '',
                 execution_date: '',
                 expiration_date: '',
                 state: '',

@@ -11,7 +11,6 @@ use App\User;
 use App\Models\Module;
 use App\Models\ActionPlansActivity;
 use App\Models\ActionPlansActivityModule;
-use App\Administrative\Employee;
 use App\Administrative\EmployeeRegional;
 use App\Administrative\EmployeeHeadquarter;
 use App\Administrative\EmployeeArea;
@@ -476,17 +475,17 @@ class ActionPlan
         $rules['rules'][$this->prefixIndex.'actionPlan'] = 'array';
         $rules['rules'][$this->prefixIndex.'actionPlan.activities'] = 'array';
         $rules['rules'][$this->prefixIndex.'actionPlan.activities.*.description'] = 'required';
-        $rules['rules'][$this->prefixIndex.'actionPlan.activities.*.employee_id'] = 'required|exists:sau_employees,id';
-        $rules['rules'][$this->prefixIndex.'actionPlan.activities.*.execution_date'] = 'required|date';
+        $rules['rules'][$this->prefixIndex.'actionPlan.activities.*.responsible_id'] = 'required|exists:sau_users,id';
+        $rules['rules'][$this->prefixIndex.'actionPlan.activities.*.execution_date'] = 'date';
         $rules['rules'][$this->prefixIndex.'actionPlan.activities.*.expiration_date'] = 'required|date';
         $rules['rules'][$this->prefixIndex.'actionPlan.activities.*.state'] = "required|in:$ACTION_PLAN_STATES";
 
         $rules['messages'][$this->prefixIndex.'actionPlan.array'] = 'El campo Planes de acción debe ser un array';
         $rules['messages'][$this->prefixIndex.'actionPlan.activities.array'] = 'El campo Actividades debe ser un array';
         $rules['messages'][$this->prefixIndex.'actionPlan.activities.*.description.required'] = 'El campo Descripción es obligatorio.';
-        $rules['messages'][$this->prefixIndex.'actionPlan.activities.*.employee_id.required'] = 'El campo Responsable es obligatorio.';
-        $rules['messages'][$this->prefixIndex.'actionPlan.activities.*.employee_id.exists'] = 'El campo Responsable debe existir en la base de datos.';
-        $rules['messages'][$this->prefixIndex.'actionPlan.activities.*.execution_date.required'] = 'El campo Fecha de ejecución es obligatorio.';
+        $rules['messages'][$this->prefixIndex.'actionPlan.activities.*.responsible_id.required'] = 'El campo Responsable es obligatorio.';
+        $rules['messages'][$this->prefixIndex.'actionPlan.activities.*.responsible_id.exists'] = 'El campo Responsable debe existir en la base de datos.';
+        //$rules['messages'][$this->prefixIndex.'actionPlan.activities.*.execution_date.required'] = 'El campo Fecha de ejecución es obligatorio.';
         $rules['messages'][$this->prefixIndex.'actionPlan.activities.*.execution_date.date'] = 'El campo Fecha de ejecución debe ser una fecha valida';
         $rules['messages'][$this->prefixIndex.'actionPlan.activities.*.expiration_date.required'] = 'El campo Fecha de vencimiento es obligatorio.';
         $rules['messages'][$this->prefixIndex.'actionPlan.activities.*.expiration_date.date'] = 'El campo Fecha de vencimiento debe ser una fecha valida';
@@ -521,9 +520,9 @@ class ActionPlan
             $tmp['key'] = Carbon::now()->timestamp + rand(1,10000);
             $tmp['id'] = $value->activity->id;
             $tmp['description'] = $value->activity->description;
-            $tmp['employee_id'] = $value->activity->employee_id;
-            $tmp['multiselect_employee'] = $value->activity->employee->multiselect();
-            $tmp['execution_date'] = (Carbon::createFromFormat('Y-m-d', $value->activity->execution_date))->format('D M d Y');
+            $tmp['responsible_id'] = $value->activity->responsible_id;
+            $tmp['multiselect_responsible'] = $value->activity->responsible->multiselect();
+            $tmp['execution_date'] = ($value->activity->execution_date) ? (Carbon::createFromFormat('Y-m-d', $value->activity->execution_date))->format('D M d Y') : '';
             $tmp['expiration_date'] = (Carbon::createFromFormat('Y-m-d', $value->activity->expiration_date))->format('D M d Y');
             $tmp['state'] = $value->activity->state;
             $tmp['oldState'] = $value->activity->state;
@@ -588,8 +587,8 @@ class ActionPlan
                 $activity = ActionPlansActivity::find($itemA['id']);
 
             $activity->description = $itemA['description'];
-            $activity->employee_id = $itemA['employee_id'];
-            $activity->execution_date = (Carbon::createFromFormat('D M d Y', $itemA['execution_date']))->format('Ymd');
+            $activity->responsible_id = $itemA['responsible_id'];
+            $activity->execution_date = ($itemA['execution_date']) ? (Carbon::createFromFormat('D M d Y', $itemA['execution_date']))->format('Ymd') : null;
             $activity->expiration_date = (Carbon::createFromFormat('D M d Y', $itemA['expiration_date']))->format('Ymd');
             $activity->state = $itemA['state'];
             $activity->save();
@@ -653,11 +652,11 @@ class ActionPlan
     {
         $this->activitiesNew = collect($this->activitiesNew);
 
-        $groupResponsible = $this->activitiesNew->groupBy('employee_id');
+        $groupResponsible = $this->activitiesNew->groupBy('responsible_id');
 
         foreach($groupResponsible as $data => $value)
         {
-            $responsible = Employee::findOrFail($data);
+            $responsible = User::findOrFail($data);
 
             if($responsible->email != null)
             {
@@ -735,7 +734,7 @@ class ActionPlan
         {
             array_push($result, [
                 'Fecha Vencimiento' => Carbon::createFromFormat($format, $value['expiration_date'])->toFormattedDateString(),
-                'Fecha Ejecución' => Carbon::createFromFormat($format, $value['execution_date'])->toFormattedDateString(),
+                'Fecha Ejecución' => ($value['execution_date']) ? Carbon::createFromFormat($format, $value['execution_date'])->toFormattedDateString() : '',
                 'Estado' => $value['state'],
                 'Descripción' => $value['description']
             ]);
@@ -762,14 +761,15 @@ class ActionPlan
                 ->join('sau_action_plans_activity_module', 'sau_action_plans_activity_module.activity_id', 'sau_action_plans_activities.id')
                 ->join('sau_modules', 'sau_modules.id', 'sau_action_plans_activity_module.module_id')
                 ->join('sau_applications', 'sau_applications.id', 'sau_modules.application_id')
-                ->join('sau_employees', 'sau_employees.id', 'sau_action_plans_activities.employee_id')
+                ->join('sau_users', 'sau_users.id', 'sau_action_plans_activities.responsible_id')
+                ->join('sau_company_user', 'sau_company_user.user_id', 'sau_users.id')
                 ->where('sau_action_plans_activities.state', 'Pendiente')
                 ->whereRaw("CURDATE() BETWEEN DATE_ADD(sau_action_plans_activities.expiration_date, INTERVAL -$this->daysAlertExpirationDate DAY) AND sau_action_plans_activities.expiration_date");
 
         $activities->company_scope = $this->company;
         $activities = $activities->get();
 
-        $groupResponsible = $activities->groupBy('employee_id');
+        $groupResponsible = $activities->groupBy('responsible_id');
 
         foreach($groupResponsible as $data => $value)
         {
@@ -777,7 +777,7 @@ class ActionPlan
 
             foreach($groupModule as $dataM => $valueM)
             {
-                $responsible = Employee::query();
+                $responsible = User::query();
                 $responsible->company_scope = $this->company;
                 $responsible = $responsible->findOrFail($data);
 
