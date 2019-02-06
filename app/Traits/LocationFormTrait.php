@@ -2,10 +2,7 @@
 
 namespace App\Traits;
 
-use Illuminate\Support\Facades\Auth;
-use App\Administrative\Configurations\LocationLevelForm;
-use App\Models\Module;
-use App\Models\Application;
+use App\Facades\ConfigurationsCompany\Facades\ConfigurationsCompany;
 use Exception;
 
 trait LocationFormTrait
@@ -19,19 +16,42 @@ trait LocationFormTrait
      */
     protected function getLocationFormConfModule($application, $module)
     {
-        $locationLevelForm = LocationLevelForm::select(
-            'sau_conf_location_level_forms.regional as regional',
-            'sau_conf_location_level_forms.headquarter as headquarter',
-            'sau_conf_location_level_forms.area as area',
-            'sau_conf_location_level_forms.process as process'
-          )
-          ->join('sau_modules', 'sau_modules.id', 'sau_conf_location_level_forms.module_id')
-          ->join('sau_applications', 'sau_applications.id', 'sau_modules.application_id')
-          ->where('sau_applications.name', $application)
-          ->where('sau_modules.name', $module)
-          ->first();
+        $locationLevelForm = ConfigurationsCompany::findByKey('location_level_form');
+        $data = [];
+
+        if ($locationLevelForm)
+        {
+            if ($locationLevelForm == 'Regional')
+            {
+                $data["regional"] = "SI";
+                $data["headquarter"] = "NO";
+                $data["area"] = "NO";
+                $data["process"] = "NO";
+            }
+            else if ($locationLevelForm == 'Sede')
+            {
+                $data["regional"] = "SI";
+                $data["headquarter"] = "SI";
+                $data["area"] = "NO";
+                $data["process"] = "NO";
+            }
+            else if ($locationLevelForm == 'Área')
+            {
+                $data["regional"] = "SI";
+                $data["headquarter"] = "SI";
+                $data["area"] = "SI";
+                $data["process"] = "NO";
+            }
+            else if ($locationLevelForm == 'Proceso')
+            {
+                $data["regional"] = "SI";
+                $data["headquarter"] = "SI";
+                $data["area"] = "SI";
+                $data["process"] = "SI";
+            }
+        }
     
-        return $locationLevelForm;
+        return $data;
     }
 
     /**
@@ -49,13 +69,13 @@ trait LocationFormTrait
 
         if ($confLocation)
         {
-            if ($confLocation->regional == 'SI')
+            if ($confLocation['regional'] == 'SI')
                 $rules['locations.employee_regional_id'] = 'required';
-            if ($confLocation->headquarter == 'SI')
+            if ($confLocation['headquarter'] == 'SI')
                 $rules['locations.employee_headquarter_id'] = 'required';
-            if ($confLocation->area == 'SI')
+            if ($confLocation['area'] == 'SI')
                 $rules['locations.employee_area_id'] = 'required';
-            if ($confLocation->process == 'SI')
+            if ($confLocation['process'] == 'SI')
                 $rules['locations.employee_process_id'] = 'required';
         }
 
@@ -82,13 +102,13 @@ trait LocationFormTrait
             $model->employee_area_id = null;
             $model->employee_process_id = null;
 
-            if ($confLocation->regional == 'SI')
+            if ($confLocation['regional'] == 'SI')
                 $model->employee_regional_id = $data['employee_regional_id'];
-            if ($confLocation->headquarter == 'SI')
+            if ($confLocation['headquarter'] == 'SI')
                 $model->employee_headquarter_id = $data['employee_headquarter_id'];
-            if ($confLocation->area == 'SI')
+            if ($confLocation['area'] == 'SI')
                 $model->employee_area_id = $data['employee_area_id'];
-            if ($confLocation->process == 'SI')
+            if ($confLocation['process'] == 'SI')
                 $model->employee_process_id = $data['employee_process_id'];
 
             $model->save();

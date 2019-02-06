@@ -16,7 +16,6 @@ use App\IndustrialSecure\TagsPossibleConsequencesDanger;
 use App\IndustrialSecure\TagsWarningSignage;
 use App\IndustrialSecure\ChangeHistory;
 use Illuminate\Support\Facades\Auth;
-use App\Administrative\Configurations\LocationLevelForm;
 use App\Facades\ActionPlans\Facades\ActionPlan;
 use Carbon\Carbon;
 use Session;
