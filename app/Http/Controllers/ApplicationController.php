@@ -11,6 +11,7 @@ use Session;
 use App\Administrative\License;
 use DB;
 use App\Administrative\EmployeeEPS;
+use App\Vuetable\VuetableColumnManager;
 
 class ApplicationController extends Controller
 {
@@ -206,5 +207,17 @@ class ApplicationController extends Controller
         
             return $this->multiSelectFormat($eps);
         }
+    }
+
+    /**
+     * Returns the custom columns for a specific table
+     *
+     * @param Request $request
+     * @return Array
+     */
+    public function vuetableCustomColumns(Request $request)
+    {
+      $columnsManager = new VuetableColumnManager($request->get('customColumnsName'));
+      return $this->respondHttp200($columnsManager->getColumnsData());
     }
 }

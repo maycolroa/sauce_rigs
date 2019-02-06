@@ -8,13 +8,11 @@ use Exception;
 trait LocationFormTrait
 {
     /**
-     * returns the configuration for a specific module
-     * @param  String $application
-     * @param  String $module
+     * returns the configuration
      *
-     * @return App\Administrative\Configurations\LocationLevelForm
+     * @return Array
      */
-    protected function getLocationFormConfModule($application, $module)
+    protected function getLocationFormConfModule()
     {
         $locationLevelForm = ConfigurationsCompany::findByKey('location_level_form');
         $data = [];
@@ -55,15 +53,13 @@ trait LocationFormTrait
     }
 
     /**
-     * returns the configuration for a specific module
-     *
-     * @param  String $application
-     * @param  String $module
+     * returns the configuration 
+     * 
      * @return Array
      */
-    protected function getLocationFormRules($application, $module)
+    protected function getLocationFormRules()
     {
-        $confLocation = $this->getLocationFormConfModule($application, $module);
+        $confLocation = $this->getLocationFormConfModule();
 
         $rules = [];
 
@@ -84,16 +80,14 @@ trait LocationFormTrait
 
     /**
      * update the model that contains the location columns
-     *
-     * @param String $application
-     * @param String $module
+     * 
      * @param Illuminate\Database\Eloquent\Model $model
      * @param Array $data
      * @return void
      */
-    protected function updateModelLocationForm($application, $module, $model, $data)
+    protected function updateModelLocationForm($model, $data)
     {
-        $confLocation = $this->getLocationFormConfModule($application, $module);
+        $confLocation = $this->getLocationFormConfModule();
 
         if ($confLocation)
         {

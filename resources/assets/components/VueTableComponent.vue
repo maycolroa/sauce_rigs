@@ -67,6 +67,7 @@ Vue.use(ServerTable)
 export default {
   name: 'vue-table',
   props:{
+    customColumnsName: {type: Boolean, default: false},
     configName: {type: String, required: true},
     config: {type: Object, default: function(){
       return VueTableConfig.get(this.configName);
@@ -242,6 +243,19 @@ export default {
     setTimeout(() => {
         this.tableReady = true
     }, 4000)
+  },
+  created() {
+    if (this.customColumnsName)
+    {
+      axios.post('/vuetableCustomColumns', {'customColumnsName': this.config.name})
+      .then(response => {
+        this.config.fields = response.data.fields;
+      })
+      .catch(error => {
+          Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
+          this.$router.go(-1);
+      });
+    }
   },
   methods: {
     pushButton (button, row) {

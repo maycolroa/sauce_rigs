@@ -20,6 +20,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('appWithModules', 'ApplicationController@appsWhithModules');
     Route::get('getCompanies', 'ApplicationController@getCompanies');
     Route::post('changeCompany', 'ApplicationController@changeCompany');
+    Route::post('vuetableCustomColumns', 'ApplicationController@vuetableCustomColumns');
 
     //GET methods
     Route::get('templates/audiometryimport',function(){
