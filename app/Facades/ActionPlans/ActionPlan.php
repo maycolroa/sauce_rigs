@@ -11,7 +11,6 @@ use App\User;
 use App\Models\Module;
 use App\Models\ActionPlansActivity;
 use App\Models\ActionPlansActivityModule;
-use App\Administrative\Employee;
 use App\Administrative\EmployeeRegional;
 use App\Administrative\EmployeeHeadquarter;
 use App\Administrative\EmployeeArea;
@@ -476,17 +475,17 @@ class ActionPlan
         $rules['rules'][$this->prefixIndex.'actionPlan'] = 'array';
         $rules['rules'][$this->prefixIndex.'actionPlan.activities'] = 'array';
         $rules['rules'][$this->prefixIndex.'actionPlan.activities.*.description'] = 'required';
-        $rules['rules'][$this->prefixIndex.'actionPlan.activities.*.employee_id'] = 'required|exists:sau_employees,id';
-        $rules['rules'][$this->prefixIndex.'actionPlan.activities.*.execution_date'] = 'required|date';
+        $rules['rules'][$this->prefixIndex.'actionPlan.activities.*.responsible_id'] = 'required|exists:sau_users,id';
+        $rules['rules'][$this->prefixIndex.'actionPlan.activities.*.execution_date'] = 'date';
         $rules['rules'][$this->prefixIndex.'actionPlan.activities.*.expiration_date'] = 'required|date';
         $rules['rules'][$this->prefixIndex.'actionPlan.activities.*.state'] = "required|in:$ACTION_PLAN_STATES";
 
         $rules['messages'][$this->prefixIndex.'actionPlan.array'] = 'El campo Planes de acción debe ser un array';
         $rules['messages'][$this->prefixIndex.'actionPlan.activities.array'] = 'El campo Actividades debe ser un array';
         $rules['messages'][$this->prefixIndex.'actionPlan.activities.*.description.required'] = 'El campo Descripción es obligatorio.';
-        $rules['messages'][$this->prefixIndex.'actionPlan.activities.*.employee_id.required'] = 'El campo Responsable es obligatorio.';
-        $rules['messages'][$this->prefixIndex.'actionPlan.activities.*.employee_id.exists'] = 'El campo Responsable debe existir en la base de datos.';
-        $rules['messages'][$this->prefixIndex.'actionPlan.activities.*.execution_date.required'] = 'El campo Fecha de ejecución es obligatorio.';
+        $rules['messages'][$this->prefixIndex.'actionPlan.activities.*.responsible_id.required'] = 'El campo Responsable es obligatorio.';
+        $rules['messages'][$this->prefixIndex.'actionPlan.activities.*.responsible_id.exists'] = 'El campo Responsable debe existir en la base de datos.';
+        //$rules['messages'][$this->prefixIndex.'actionPlan.activities.*.execution_date.required'] = 'El campo Fecha de ejecución es obligatorio.';
         $rules['messages'][$this->prefixIndex.'actionPlan.activities.*.execution_date.date'] = 'El campo Fecha de ejecución debe ser una fecha valida';
         $rules['messages'][$this->prefixIndex.'actionPlan.activities.*.expiration_date.required'] = 'El campo Fecha de vencimiento es obligatorio.';
         $rules['messages'][$this->prefixIndex.'actionPlan.activities.*.expiration_date.date'] = 'El campo Fecha de vencimiento debe ser una fecha valida';
@@ -521,9 +520,9 @@ class ActionPlan
             $tmp['key'] = Carbon::now()->timestamp + rand(1,10000);
             $tmp['id'] = $value->activity->id;
             $tmp['description'] = $value->activity->description;
-            $tmp['employee_id'] = $value->activity->employee_id;
-            $tmp['multiselect_employee'] = $value->activity->employee->multiselect();
-            $tmp['execution_date'] = (Carbon::createFromFormat('Y-m-d', $value->activity->execution_date))->format('D M d Y');
+            $tmp['responsible_id'] = $value->activity->responsible_id;
+            $tmp['multiselect_responsible'] = $value->activity->responsible->multiselect();
+            $tmp['execution_date'] = ($value->activity->execution_date) ? (Carbon::createFromFormat('Y-m-d', $value->activity->execution_date))->format('D M d Y') : '';
             $tmp['expiration_date'] = (Carbon::createFromFormat('Y-m-d', $value->activity->expiration_date))->format('D M d Y');
             $tmp['state'] = $value->activity->state;
             $tmp['oldState'] = $value->activity->state;
@@ -588,8 +587,8 @@ class ActionPlan
                 $activity = ActionPlansActivity::find($itemA['id']);
 
             $activity->description = $itemA['description'];
-            $activity->employee_id = $itemA['employee_id'];
-            $activity->execution_date = (Carbon::createFromFormat('D M d Y', $itemA['execution_date']))->format('Ymd');
+            $activity->responsible_id = $itemA['responsible_id'];
+            $activity->execution_date = ($itemA['execution_date']) ? (Carbon::createFromFormat('D M d Y', $itemA['execution_date']))->format('Ymd') : null;
             $activity->expiration_date = (Carbon::createFromFormat('D M d Y', $itemA['expiration_date']))->format('Ymd');
             $activity->state = $itemA['state'];
             $activity->save();
@@ -653,11 +652,11 @@ class ActionPlan
     {
         $this->activitiesNew = collect($this->activitiesNew);
 
-        $groupResponsible = $this->activitiesNew->groupBy('employee_id');
+        $groupResponsible = $this->activitiesNew->groupBy('responsible_id');
 
         foreach($groupResponsible as $data => $value)
         {
-            $responsible = Employee::findOrFail($data);
+            $responsible = User::findOrFail($data);
 
             if($responsible->email != null)
             {
@@ -666,8 +665,8 @@ class ActionPlan
                     ->view('actionplan.activities')
                     ->recipients($responsible)
                     ->message('Se han asignado las siguientes actividades para usted.')
-                    ->module($this->module)
-                    ->table($this->prepareDataTable($value->toArray()))
+                    ->module('actionPlans')
+                    ->table($this->prepareDataTable($value->toArray(), $this->module->display_name))
                     ->list($this->prepareListItemMainEmail(), 'ul')
                     ->with(['responsible'=>$responsible->name])
                     ->buttons([
@@ -692,8 +691,8 @@ class ActionPlan
                 ->view('actionplan.activities')
                 ->recipients($this->supervisorUser)
                 ->message('El usuario '.$this->user->name.' ha cambiado el estado de las siguientes actividades:')
-                ->module($this->module)
-                ->table($this->prepareDataTable($this->activitiesReady))
+                ->module('actionPlans')
+                ->table($this->prepareDataTable($this->activitiesReady, $this->module->display_name))
                 ->list($this->prepareListItemMainEmail(), 'ul')
                 ->with(['responsible'=>$this->supervisorUser->name])
                 ->buttons([
@@ -727,7 +726,7 @@ class ActionPlan
         return $list;
     }
 
-    private function prepareDataTable($data, $format = 'D M d Y')
+    private function prepareDataTable($data, $module = null, $format = 'D M d Y')
     {
         $result = [];
 
@@ -735,9 +734,10 @@ class ActionPlan
         {
             array_push($result, [
                 'Fecha Vencimiento' => Carbon::createFromFormat($format, $value['expiration_date'])->toFormattedDateString(),
-                'Fecha Ejecución' => Carbon::createFromFormat($format, $value['execution_date'])->toFormattedDateString(),
+                'Fecha Ejecución' => ($value['execution_date']) ? Carbon::createFromFormat($format, $value['execution_date'])->toFormattedDateString() : '',
                 'Estado' => $value['state'],
-                'Descripción' => $value['description']
+                'Descripción' => $value['description'],
+                'Módulo' => $module ? $module : (isset($value['module_name']) ? $value['module_name'] : '')
             ]);
         }
 
@@ -756,52 +756,53 @@ class ActionPlan
                 select(
                     'sau_action_plans_activities.*',
                     'sau_action_plans_activity_module.module_id as module_id',
-                    'sau_modules.name as module_name',
-                    'sau_applications.name as application_name'
+                    'sau_modules.display_name as module_name'/*,
+                    'sau_applications.name as application_name'*/
                 )
                 ->join('sau_action_plans_activity_module', 'sau_action_plans_activity_module.activity_id', 'sau_action_plans_activities.id')
                 ->join('sau_modules', 'sau_modules.id', 'sau_action_plans_activity_module.module_id')
-                ->join('sau_applications', 'sau_applications.id', 'sau_modules.application_id')
-                ->join('sau_employees', 'sau_employees.id', 'sau_action_plans_activities.employee_id')
+                //->join('sau_applications', 'sau_applications.id', 'sau_modules.application_id')
+                ->join('sau_users', 'sau_users.id', 'sau_action_plans_activities.responsible_id')
+                ->join('sau_company_user', 'sau_company_user.user_id', 'sau_users.id')
                 ->where('sau_action_plans_activities.state', 'Pendiente')
-                ->whereRaw("CURDATE() BETWEEN DATE_ADD(sau_action_plans_activities.expiration_date, INTERVAL -$this->daysAlertExpirationDate DAY) AND sau_action_plans_activities.expiration_date");
+                ->whereRaw("CURDATE() = DATE_ADD(sau_action_plans_activities.expiration_date, INTERVAL -$this->daysAlertExpirationDate DAY)");
 
         $activities->company_scope = $this->company;
         $activities = $activities->get();
 
-        $groupResponsible = $activities->groupBy('employee_id');
+        $groupResponsible = $activities->groupBy('responsible_id');
 
         foreach($groupResponsible as $data => $value)
         {
-            $groupModule = $value->groupBy('module_id');
+            /*$groupModule = $value->groupBy('module_id');
 
             foreach($groupModule as $dataM => $valueM)
-            {
-                $responsible = Employee::query();
+            {*/
+                $responsible = User::query();
                 $responsible->company_scope = $this->company;
                 $responsible = $responsible->findOrFail($data);
 
-                $url = url(strtolower('/'.$value[0]->application_name.'/'.$value[0]->module_name));
+                //$url = url(strtolower('/'.$value[0]->application_name.'/'.$value[0]->module_name));
 
                 if($responsible->email != null)
                 {
-                    $module = Module::find($dataM);
+                    //$module = Module::find($dataM);
 
                     NotificationMail::
                         subject('Actividades Próximas a Vencerse')
                         ->view('actionplan.activities')
                         ->recipients($responsible)
                         ->message('Las siguientes actividades están próximas a vencerse:')
-                        ->module($module)
-                        ->table($this->prepareDataTable($valueM->toArray(), 'Y-m-d'))
+                        ->module('actionPlans')
+                        ->table($this->prepareDataTable($value->toArray(), null, 'Y-m-d'))
                         //->list($this->prepareListItemMainEmail(), 'ul')
                         ->with(['responsible'=>$responsible->name])
-                        ->buttons([
+                        /*->buttons([
                             ['text'=>'Llevarme al sitio', 'url'=>$url]
-                        ])
+                        ])*/
                         ->send();
                 }
-            }
+            //}
         }
     }
 }

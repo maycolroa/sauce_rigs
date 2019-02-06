@@ -95,11 +95,7 @@ export default [
 },
 {
     name: 'industrialsecure-dangermatrix',
-    fields: [
-        { name: 'sau_dangers_matrix.id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true },
-        { name: 'sau_dangers_matrix.name', data: 'name', title: 'Nombre', sortable: true, searchable: true, detail: false, key: false },
-        { name: '', data: 'controlls', title: 'Controles', sortable: false, searchable: false, detail: false, key: false },
-    ],
+    fields: [],
     'controlls': [{
         type: 'push',
         buttons: [{

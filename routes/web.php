@@ -20,6 +20,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('appWithModules', 'ApplicationController@appsWhithModules');
     Route::get('getCompanies', 'ApplicationController@getCompanies');
     Route::post('changeCompany', 'ApplicationController@changeCompany');
+    Route::post('vuetableCustomColumns', 'ApplicationController@vuetableCustomColumns');
 
     //GET methods
     Route::get('templates/audiometryimport',function(){
@@ -43,6 +44,7 @@ Route::middleware(['auth'])->group(function () {
 
     Route::prefix('selects')->group(function () {
         Route::post('employees', 'Administrative\EmployeesController@multiselect');  
+        Route::post('users', 'Administrative\Users\UserController@multiselect');  
         Route::post('multiselect', 'ApplicationController@multiselect');
         Route::post('roles', 'Administrative\Roles\RoleController@multiselect');  
         Route::post('modulesGroup', 'ApplicationController@multiselectGroupModules');
@@ -65,7 +67,6 @@ Route::middleware(['auth'])->group(function () {
         Route::post('tagsEpp', 'IndustrialSecure\TagController@multiselectEpp');
         Route::post('tagsPossibleConsequencesDanger', 'IndustrialSecure\TagController@multiselectPossibleConsequencesDanger');
         Route::post('tagsWarningSignage', 'IndustrialSecure\TagController@multiselectWarningSignage');
-        Route::post('conf/locationLevelFormModules', 'Administrative\Configurations\LocationLevelFormController@multiselectModules');
         Route::post('actionPlanStates', 'MultiSelectRadioController@actionPlanStates');
       });
 

@@ -41,6 +41,10 @@
             {
                 "name": "configurations",
                 "display_name": "Configuraciones"
+            },
+            {
+                "name": "actionPlans",
+                "display_name": "Planes de acción"
             }
         ]
     },

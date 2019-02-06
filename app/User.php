@@ -52,4 +52,12 @@ class User extends Authenticatable
     public function companies(){
       return $this->belongsToMany('App\Administrative\Company','sau_company_user');
     }
+
+    public function multiselect()
+    {
+        return [
+          'name' => "{$this->document} - {$this->name}",
+          'value' => $this->id
+        ];
+      }
 }

@@ -15,6 +15,7 @@
         <b-card-body>
              <vue-table
                 configName="industrialsecure-dangermatrix"
+                :customColumnsName="true"
                 ></vue-table>
         </b-card-body>
     </b-card>

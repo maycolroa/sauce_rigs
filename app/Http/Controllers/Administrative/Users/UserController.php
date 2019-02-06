@@ -167,4 +167,23 @@ class UserController extends Controller
             return $this->respondHttp500();
         }
     }
+
+    public function multiselect(Request $request){
+        $keyword = "%{$request->keyword}%";
+        $users = User::selectRaw("
+            sau_users.id as id,
+            CONCAT(sau_users.document, ' - ', sau_users.name) as name
+        ")
+        ->join('sau_role_user', 'sau_role_user.user_id', 'sau_users.id')
+        ->join('sau_roles', 'sau_roles.id', 'sau_role_user.role_id')
+        ->where('sau_users.id', '<>', Auth::user()->id)
+        ->where(function ($query) use ($keyword) {
+            $query->orWhere('sau_users.document', 'like', $keyword)
+            ->orWhere('sau_users.name', 'like', $keyword);
+        })
+        ->take(30)->pluck('id', 'name');
+        return $this->respondHttp200([
+            'options' => $this->multiSelectFormat($users)
+        ]);
+    }
 }

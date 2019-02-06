@@ -16,7 +16,6 @@ use App\IndustrialSecure\TagsPossibleConsequencesDanger;
 use App\IndustrialSecure\TagsWarningSignage;
 use App\IndustrialSecure\ChangeHistory;
 use Illuminate\Support\Facades\Auth;
-use App\Administrative\Configurations\LocationLevelForm;
 use App\Facades\ActionPlans\Facades\ActionPlan;
 use Carbon\Carbon;
 use Session;
@@ -42,7 +41,19 @@ class DangerMatrixController extends Controller
     */
     public function data(Request $request)
     {
-        $dangersMatrix = DangerMatrix::select('*');
+        $dangersMatrix = DangerMatrix::select(
+            'sau_dangers_matrix.*',
+            'sau_employees_regionals.name as regional',
+            'sau_employees_headquarters.name as headquarter',
+            'sau_employees_areas.name as area',
+            'sau_employees_processes.name as process',
+            'sau_users.name as supervisor'
+        )
+        ->leftJoin('sau_employees_regionals', 'sau_employees_regionals.id', 'sau_dangers_matrix.employee_regional_id')
+        ->leftJoin('sau_employees_headquarters', 'sau_employees_headquarters.id', 'sau_dangers_matrix.employee_headquarter_id')
+        ->leftJoin('sau_employees_areas', 'sau_employees_areas.id', 'sau_dangers_matrix.employee_area_id')
+        ->leftJoin('sau_employees_processes', 'sau_employees_processes.id', 'sau_dangers_matrix.employee_process_id')
+        ->join('sau_users', 'sau_users.id', 'sau_dangers_matrix.user_id');
 
         return Vuetable::of($dangersMatrix)
                     ->make();
@@ -229,7 +240,7 @@ class DangerMatrixController extends Controller
 
         $messages = [];
 
-        $rulesConfLocation = $this->getLocationFormRules('industrialSecure', 'dangerMatrix');
+        $rulesConfLocation = $this->getLocationFormRules();
         $rules = array_merge($rules, $rulesConfLocation);
 
         $rulesActionPlan = ActionPlan::prefixIndex('activities.*.dangers.*.')->getRules();
@@ -279,7 +290,7 @@ class DangerMatrixController extends Controller
                 return $this->respondHttp500();
             }
 
-            if($this->updateModelLocationForm('industrialSecure', 'dangerMatrix', $dangerMatrix, $request->get('locations')))
+            if($this->updateModelLocationForm($dangerMatrix, $request->get('locations')))
             {
                 return $this->respondHttp500();
             }

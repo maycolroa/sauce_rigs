@@ -13,7 +13,7 @@ class ActionPlansActivity extends Model
 
     protected $fillable = [
         'description',
-        'employee_id',
+        'responsible_id',
         'user_id',
         'execution_date',
         'expiration_date',
@@ -22,11 +22,11 @@ class ActionPlansActivity extends Model
     ];
 
     //the attribute define the table for scope company execute
-    public $scope_table_for_company_table = 'sau_employees';
+    public $scope_table_for_company_table = 'sau_company_user';
 
-    public function employee()
+    public function responsible()
     {
-        return $this->belongsTo('App\Administrative\Employee','employee_id');
+        return $this->belongsTo('App\User','responsible_id');
     }
 
     public function user()
