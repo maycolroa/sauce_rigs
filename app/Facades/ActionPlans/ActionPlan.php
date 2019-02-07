@@ -121,14 +121,6 @@ class ActionPlan
     private $creationDate;
 
     /**
-     * User who created the main record that contains all the activities
-     *
-     * @var App\User
-     * @var Integer
-     */
-    private $supervisorUser;
-
-    /**
      * Url of the main record that contains all the activities
      *
      * @var String
@@ -390,30 +382,6 @@ class ActionPlan
     }
 
     /**
-     * Assigns the module to which the executed actions are associated
-     *
-     * @param App\Models\Module $module
-     * @param String $module
-     * @return $this
-     */
-    public function supervisorUser($supervisorUser)
-    {
-        if (is_numeric($supervisorUser))
-        {
-            $supervisorUser = User::find($supervisorUser);
-
-            if (!$supervisorUser)
-                throw new \Exception('Supervisor user not found');   
-        }
-        if (!$supervisorUser instanceof User)
-            throw new Exception('the supervisor user is invalid');
-        
-        $this->supervisorUser = $supervisorUser;
-
-        return $this;
-    }
-
-    /**
      * Assign the URL of the main record that contains all the activities
      * 
      * @param String $url
@@ -522,6 +490,7 @@ class ActionPlan
             $tmp['description'] = $value->activity->description;
             $tmp['responsible_id'] = $value->activity->responsible_id;
             $tmp['multiselect_responsible'] = $value->activity->responsible->multiselect();
+            $tmp['user_id'] = $value->activity->user_id;
             $tmp['execution_date'] = ($value->activity->execution_date) ? (Carbon::createFromFormat('Y-m-d', $value->activity->execution_date))->format('D M d Y') : '';
             $tmp['expiration_date'] = (Carbon::createFromFormat('Y-m-d', $value->activity->expiration_date))->format('D M d Y');
             $tmp['state'] = $value->activity->state;
@@ -632,9 +601,6 @@ class ActionPlan
         if (empty($this->creationDate))
             throw new \Exception('A valid creation date has not been entered.');
 
-        if (empty($this->supervisorUser))
-            throw new \Exception('A valid supervisor user has not been entered.');
-
         if (empty($this->url))
             throw new \Exception('A valid url has not been entered.');
 
@@ -667,7 +633,7 @@ class ActionPlan
                     ->message('Se han asignado las siguientes actividades para usted.')
                     ->module('actionPlans')
                     ->table($this->prepareDataTable($value->toArray(), $this->module->display_name))
-                    ->list($this->prepareListItemMainEmail(), 'ul')
+                    ->list($this->prepareListItemMainEmail($this->user->name), 'ul')
                     ->with(['responsible'=>$responsible->name])
                     ->buttons([
                         ['text'=>'Llevarme al sitio', 'url'=>$this->url]
@@ -684,29 +650,38 @@ class ActionPlan
      */
     private function sendMailReady()
     {
-        if (!empty($this->activitiesReady))
+        $this->activitiesReady = collect($this->activitiesReady);
+
+        $groupSupervisor = $this->activitiesReady->groupBy('user_id');
+
+        foreach($groupSupervisor as $data => $value)
         {
-            NotificationMail::
-                subject('Actividades Realizadas')
-                ->view('actionplan.activities')
-                ->recipients($this->supervisorUser)
-                ->message('El usuario '.$this->user->name.' ha cambiado el estado de las siguientes actividades:')
-                ->module('actionPlans')
-                ->table($this->prepareDataTable($this->activitiesReady, $this->module->display_name))
-                ->list($this->prepareListItemMainEmail(), 'ul')
-                ->with(['responsible'=>$this->supervisorUser->name])
-                ->buttons([
-                    ['text'=>'Llevarme al sitio', 'url'=>$this->url]
-                ])
-                ->send();
+            $supervisor = User::findOrFail($data);
+
+            if($supervisor->email != null)
+            {
+                NotificationMail::
+                    subject('Actividades Realizadas')
+                    ->view('actionplan.activities')
+                    ->recipients($supervisor)
+                    ->message('El usuario '.$this->user->name.' ha cambiado el estado de las siguientes actividades:')
+                    ->module('actionPlans')
+                    ->table($this->prepareDataTable($value->toArray(), $this->module->display_name))
+                    ->list($this->prepareListItemMainEmail($supervisor->name), 'ul')
+                    ->with(['responsible'=>$supervisor->name])
+                    ->buttons([
+                        ['text'=>'Llevarme al sitio', 'url'=>$this->url]
+                    ])
+                    ->send();
+            }
         }
     }
 
-    private function prepareListItemMainEmail()
+    private function prepareListItemMainEmail($supervisor)
     {
         $list = [];
         
-        array_push($list, 'Usuario Supervisor: '.$this->supervisorUser->name);
+        array_push($list, 'Usuario Supervisor: '.$supervisor);
 
         if ($this->regional)
             array_push($list, 'Regional: '.$this->regional);
@@ -774,27 +749,27 @@ class ActionPlan
 
         foreach($groupResponsible as $data => $value)
         {
-            /*$groupModule = $value->groupBy('module_id');
+            $responsible = User::findOrFail($data);
 
-            foreach($groupModule as $dataM => $valueM)
-            {*/
-                $responsible = User::query();
-                $responsible->company_scope = $this->company;
-                $responsible = $responsible->findOrFail($data);
+            $groupSupervisor = $value->groupBy('user_id');
+
+            foreach($groupSupervisor as $dataS => $valueS)
+            {
+                $supervisor = User::findOrFail($dataS);
 
                 //$url = url(strtolower('/'.$value[0]->application_name.'/'.$value[0]->module_name));
 
-                if($responsible->email != null)
+                if($supervisor->email != null)
                 {
-                    //$module = Module::find($dataM);
+                    //$module = Module::find($dataS);
 
                     NotificationMail::
                         subject('Actividades Próximas a Vencerse')
                         ->view('actionplan.activities')
-                        ->recipients($responsible)
-                        ->message('Las siguientes actividades están próximas a vencerse:')
+                        ->recipients($supervisor)
+                        ->message('Las siguientes actividades están próximas a vencerse: ')
                         ->module('actionPlans')
-                        ->table($this->prepareDataTable($value->toArray(), null, 'Y-m-d'))
+                        ->table($this->prepareDataTable($valueS->toArray(), null, 'Y-m-d'))
                         //->list($this->prepareListItemMainEmail(), 'ul')
                         ->with(['responsible'=>$responsible->name])
                         /*->buttons([
@@ -802,7 +777,24 @@ class ActionPlan
                         ])*/
                         ->send();
                 }
-            //}
+            }
+
+            if($responsible->email != null)
+            {
+                NotificationMail::
+                    subject('Actividades Próximas a Vencerse')
+                    ->view('actionplan.activities')
+                    ->recipients($responsible)
+                    ->message('Las siguientes actividades están próximas a vencerse: ')
+                    ->module('actionPlans')
+                    ->table($this->prepareDataTable($value->toArray(), null, 'Y-m-d'))
+                    //->list($this->prepareListItemMainEmail(), 'ul')
+                    ->with(['responsible'=>$responsible->name])
+                    /*->buttons([
+                        ['text'=>'Llevarme al sitio', 'url'=>$url]
+                    ])*/
+                    ->send();
+            }
         }
     }
 }

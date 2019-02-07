@@ -316,7 +316,6 @@ class DangerMatrixController extends Controller
                 ->area($dangerMatrix->area ? $dangerMatrix->area->name : null)
                 ->process($dangerMatrix->process ? $dangerMatrix->process->name : null)
                 ->creationDate($dangerMatrix->created_at)
-                ->supervisorUser($dangerMatrix->user_id)
                 ->url(url('/industrialsecure/dangermatrix/view/'.$dangerMatrix->id));
 
             foreach ($request->get('activities') as $keyA => $itemA)
