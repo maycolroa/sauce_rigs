@@ -14,7 +14,8 @@
         </div>
       </b-form-row>
       <b-form-row v-if="activity.dangers.length > 0">
-        <vue-input class="col-md-12" v-model="search" label="Buscar Peligro" type="text" name="search" placeholder="Buscar Peligro" append='<span class="fas fa-search"></span>'></vue-input>
+        <vue-advanced-select class="col-md-12" v-model="search" :multiple="false" :options="searchOptions" :hide-selected="false" name="search" label="Buscar Peligro" placeholder="Seleccione el peligro">
+                      </vue-advanced-select>
       </b-form-row>
       <b-form-row style="padding-top: 15px;">
         <perfect-scrollbar :options="{ wheelPropagation: true }" class="mb-4" style="height: 600px; padding-right: 15px; width: 100%;">
@@ -69,6 +70,7 @@
 <script>
 import FormDangerComponent from '@/components/IndustrialSecure/DangerMatrix/FormDangerComponent.vue';
 import VueAjaxAdvancedSelect from "@/components/Inputs/VueAjaxAdvancedSelect.vue";
+import VueAdvancedSelect from "@/components/Inputs/VueAdvancedSelect.vue";
 import VueRadio from "@/components/Inputs/VueRadio.vue";
 import PerfectScrollbar from '@/vendor/libs/perfect-scrollbar/PerfectScrollbar';
 import VueInput from "@/components/Inputs/VueInput.vue";
@@ -78,6 +80,7 @@ export default {
     FormDangerComponent,
     VueRadio,
     VueAjaxAdvancedSelect,
+    VueAdvancedSelect,
     PerfectScrollbar,
     VueInput
   },
@@ -184,7 +187,23 @@ export default {
     };
   },
   computed: {
-    
+    searchOptions() {
+
+      let options = this.activity.dangers
+      .map((f) => {
+        if (f.danger.name)
+          return f.danger.name
+      })
+      .filter((value, index, self) => value && self.indexOf(value) === index)
+      .map((f) => {
+        return {"name": f, "value": f}
+      })
+
+      if (options.length == 0)
+        return []
+
+      return options;
+    }
   },
   methods: {
     addDanger() {
