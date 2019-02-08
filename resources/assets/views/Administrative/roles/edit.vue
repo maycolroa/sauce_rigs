@@ -13,6 +13,7 @@
                 :modules="modules"
                 :permissions="permissions"
                 :role="data"
+                :modules-removed="modulesRemoved"
                 :is-edit="true"
                 :cancel-url="{ name: 'administrative-roles'}"/>
         </b-card-body>
@@ -38,7 +39,8 @@ export default {
     return {
       data: [],
       modules: [],
-      permissions:[]
+      permissions:[],
+      modulesRemoved: []
     }
   },
   created(){  
@@ -66,6 +68,21 @@ export default {
                       if (this.permissions[keyModule][keyFullPermission].value == subElements[keyPermission].value)
                       {
                         this.permissions[keyModule].splice(keyFullPermission, 1);
+
+                        if (this.permissions[keyModule].length == 0)
+                        {
+                          for(var indexApp in this.modules)
+                          {
+                            for(var indexChild in this.modules[indexApp].children)
+                            {
+                              if (this.modules[indexApp].children[indexChild].value == keyModule)
+                              {
+                                this.modules[indexApp].children.splice(indexChild,1)
+                                this.$set(this.modulesRemoved, keyModule, indexApp)
+                              }
+                            }
+                          }
+                        }
                       }
                     }
                   }

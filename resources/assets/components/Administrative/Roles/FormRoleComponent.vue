@@ -92,6 +92,12 @@ export default {
         return [];
       }
     },
+    modulesRemoved: {
+      type: [Object, Array],
+      default: function() {
+        return [];
+      }
+    },
     role: {
       default() {
         return {
@@ -157,6 +163,23 @@ export default {
 
           this.role.permissions_asignates[this.module_selected.value].permissions.push(this.permissions_module[i])
           this.permissions_module.splice(i,1);
+
+          /***** */
+          if (this.permissions_module.length == 0)
+          {
+            for(var indexApp in this.modules)
+            {
+              for(var indexChild in this.modules[indexApp].children)
+              {
+                if (this.modules[indexApp].children[indexChild].value == this.module_selected.value)
+                {
+                  this.modules[indexApp].children.splice(indexChild,1)
+                  this.$set(this.modulesRemoved, this.module_selected.value, indexApp)
+                }
+              }
+            }
+          }
+
           break;
         }
       }
@@ -165,6 +188,14 @@ export default {
     {
       this.permission_selected = ''
       this.role.permissions_asignates[module_id].permissions.splice(index_permission, 1)
+
+      if (this.permissions[module_id].length == 0)
+      {
+        let indexApp = this.modulesRemoved[module_id]
+        this.modules[indexApp].children.push({"name": this.role.permissions_asignates[module_id].name, "value": module_id})
+        this.modulesRemoved.splice(module_id,1)
+      }
+
       this.permissions[module_id].push(object_permission)
     }
   }
