@@ -17,7 +17,11 @@
             :autocomplete="autocomplete ? 'off' : ''"
             @input="updateValue($event)"
             />
+            
         </b-input-group>
+        <b-form-text v-if="helpText">
+            {{ helpText }}
+        </b-form-text>
         <!-- <b-form-feedback class="d-block" v-if="state == 'invalid'">
             {{ error }}
         </b-form-feedback> -->
@@ -41,6 +45,7 @@ export default {
     autocomplete: { type: Boolean, default: false },
     textBlock: {type: String},
     actionBlock: {type: String},
+    helpText: {type: String}
   },
   computed:{
       state(){

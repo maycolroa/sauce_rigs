@@ -13,7 +13,7 @@ class CreateCtInformationContractLessee extends Migration
      */
     public function up()
     {
-        Schema::create('ct_information_contract_lessee', function (Blueprint $table) {
+        Schema::create('sau_ct_information_contract_lessee', function (Blueprint $table) {
             $table->increments('id');
             $table->unsignedInteger('company_id');
             $table->integer('nit');
@@ -37,6 +37,6 @@ class CreateCtInformationContractLessee extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('ct_information_contract_lessee');
+        Schema::dropIfExists('sau_ct_information_contract_lessee');
     }
 }

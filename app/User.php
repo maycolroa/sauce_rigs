@@ -52,4 +52,8 @@ class User extends Authenticatable
     public function companies(){
       return $this->belongsToMany('App\Administrative\Company','sau_company_user');
     }
+
+    public function generatePasswordUser(){
+      return $this->hasMany('App\Models\Administrative\GeneratePasswordUser','sau_generate_password_user');
+    }
 }

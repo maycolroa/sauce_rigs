@@ -88,6 +88,10 @@
     {
         "application": "legalAspects",
         "modules": [
+            {
+                "name": "contracts",
+                "display_name": "Contratistas"
+            }
         ]
     }    
 ]

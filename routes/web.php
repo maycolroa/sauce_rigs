@@ -16,6 +16,10 @@ Route::get('export/{url}',function($url){
   return Storage::disk('public')->download(base64_decode($url));
 });
 
+//Generar contraseña
+Route::get('/password/generate/{token}', 'Auth\GeneratePasswordController@generatePassword');
+Route::post('/password/generate/{id}', 'Auth\GeneratePasswordController@updatePassword');
+
 Route::middleware(['auth'])->group(function () { 
     Route::get('appWithModules', 'ApplicationController@appsWhithModules');
     Route::get('getCompanies', 'ApplicationController@getCompanies');
@@ -23,22 +27,22 @@ Route::middleware(['auth'])->group(function () {
 
     //GET methods
     Route::get('templates/audiometryimport',function(){
-      return Storage::disk('local')->download('/templates/PlantillaImportacionAudiometria.xlsx');
-      
-    });
+      	return Storage::disk('local')->download('/templates/PlantillaImportacionAudiometria.xlsx');
+	});
 
-    Route::get('/logout', 'Auth\LoginController@logout')->name('logout');
+	//Cerrar sesión 
+	Route::get('/logout', 'Auth\LoginController@logout')->name('logout');
 
     //Routes diferents to GET
     Route::prefix('biologicalmonitoring')->group(function () {
-      Route::post('audiometry/data', 'PreventiveOccupationalMedicine\BiologicalMonitoring\AudiometryController@data');
-      Route::post('audiometry/import', 'PreventiveOccupationalMedicine\BiologicalMonitoring\AudiometryController@import');
-      Route::post('audiometry/export', 'PreventiveOccupationalMedicine\BiologicalMonitoring\AudiometryController@export');
-      Route::post('audiometry/multiselect_epp', 'PreventiveOccupationalMedicine\BiologicalMonitoring\AudiometryController@multiselectEPP');
-      //Route::post('audiometry/reportPta', 'PreventiveOccupationalMedicine\BiologicalMonitoring\AudiometryController@reportPta');
-      Route::ApiResource('audiometry', 'PreventiveOccupationalMedicine\BiologicalMonitoring\AudiometryController');   
-      Route::post('audiometry/informs', 'PreventiveOccupationalMedicine\BiologicalMonitoring\AudiometryInformController@data');
-      Route::post('audiometry/informs/individual', 'PreventiveOccupationalMedicine\BiologicalMonitoring\AudiometryInformController@dataIndividual');
+      	Route::post('audiometry/data', 'PreventiveOccupationalMedicine\BiologicalMonitoring\AudiometryController@data');
+      	Route::post('audiometry/import', 'PreventiveOccupationalMedicine\BiologicalMonitoring\AudiometryController@import');
+      	Route::post('audiometry/export', 'PreventiveOccupationalMedicine\BiologicalMonitoring\AudiometryController@export');
+      	Route::post('audiometry/multiselect_epp', 'PreventiveOccupationalMedicine\BiologicalMonitoring\AudiometryController@multiselectEPP');
+      	//Route::post('audiometry/reportPta', 'PreventiveOccupationalMedicine\BiologicalMonitoring\AudiometryController@reportPta');
+      	Route::ApiResource('audiometry', 'PreventiveOccupationalMedicine\BiologicalMonitoring\AudiometryController');   
+      	Route::post('audiometry/informs', 'PreventiveOccupationalMedicine\BiologicalMonitoring\AudiometryInformController@data');
+      	Route::post('audiometry/informs/individual', 'PreventiveOccupationalMedicine\BiologicalMonitoring\AudiometryInformController@dataIndividual');
     });
 
     Route::prefix('selects')->group(function () {
@@ -67,67 +71,67 @@ Route::middleware(['auth'])->group(function () {
         Route::post('tagsWarningSignage', 'IndustrialSecure\TagController@multiselectWarningSignage');
         Route::post('conf/locationLevelFormModules', 'Administrative\Configurations\LocationLevelFormController@multiselectModules');
         Route::post('actionPlanStates', 'MultiSelectRadioController@actionPlanStates');
-      });
+    });
 
     Route::prefix('radios')->group(function () {
-      Route::post('dmTypeActivities', 'MultiSelectRadioController@dmTypeActivities');
-      Route::post('siNo', 'MultiSelectRadioController@siNo');
-      Route::post('conf/locationLevelForm', 'Administrative\Configurations\LocationLevelFormController@radioLocationLevels');
+      	Route::post('dmTypeActivities', 'MultiSelectRadioController@dmTypeActivities');
+      	Route::post('siNo', 'MultiSelectRadioController@siNo');
+      	Route::post('conf/locationLevelForm', 'Administrative\Configurations\LocationLevelFormController@radioLocationLevels');
     });
 
     //Administrativo
     Route::prefix('administration')->group(function () {
-      Route::post('users/data', 'Administrative\Users\UserController@data');
-      Route::post('users/export', 'Administrative\Users\UserController@export');
-      Route::ApiResource('users', 'Administrative\Users\UserController');
+		Route::post('users/data', 'Administrative\Users\UserController@data');
+		Route::post('users/export', 'Administrative\Users\UserController@export');
+		Route::ApiResource('users', 'Administrative\Users\UserController');
 
-      Route::post('role/data', 'Administrative\Roles\RoleController@data');
-      Route::ApiResource('role', 'Administrative\Roles\RoleController');
+		Route::post('role/data', 'Administrative\Roles\RoleController@data');
+		Route::ApiResource('role', 'Administrative\Roles\RoleController');
 
-      Route::post('position/data', 'Administrative\EmployeePositionController@data');
-      Route::ApiResource('position', 'Administrative\EmployeePositionController');
+		Route::post('position/data', 'Administrative\EmployeePositionController@data');
+		Route::ApiResource('position', 'Administrative\EmployeePositionController');
 
-      Route::post('regional/data', 'Administrative\EmployeeRegionalController@data');
-      Route::ApiResource('regional', 'Administrative\EmployeeRegionalController');
+		Route::post('regional/data', 'Administrative\EmployeeRegionalController@data');
+		Route::ApiResource('regional', 'Administrative\EmployeeRegionalController');
 
-      Route::post('business/data', 'Administrative\EmployeeBusinessController@data');
-      Route::ApiResource('business', 'Administrative\EmployeeBusinessController');
+		Route::post('business/data', 'Administrative\EmployeeBusinessController@data');
+		Route::ApiResource('business', 'Administrative\EmployeeBusinessController');
 
-      Route::post('headquarter/data', 'Administrative\EmployeeHeadquarterController@data');
-      Route::ApiResource('headquarter', 'Administrative\EmployeeHeadquarterController');
+		Route::post('headquarter/data', 'Administrative\EmployeeHeadquarterController@data');
+		Route::ApiResource('headquarter', 'Administrative\EmployeeHeadquarterController');
 
-      Route::post('area/data', 'Administrative\EmployeeAreaController@data');
-      Route::ApiResource('area', 'Administrative\EmployeeAreaController');
+		Route::post('area/data', 'Administrative\EmployeeAreaController@data');
+		Route::ApiResource('area', 'Administrative\EmployeeAreaController');
 
-      Route::post('process/data', 'Administrative\EmployeeProcessController@data');
-      Route::ApiResource('process', 'Administrative\EmployeeProcessController');
+		Route::post('process/data', 'Administrative\EmployeeProcessController@data');
+		Route::ApiResource('process', 'Administrative\EmployeeProcessController');
 
-      Route::post('employee/data', 'Administrative\EmployeesController@data');
-      Route::ApiResource('employee', 'Administrative\EmployeesController');
+		Route::post('employee/data', 'Administrative\EmployeesController@data');
+		Route::ApiResource('employee', 'Administrative\EmployeesController');
 
-      Route::prefix('configurations')->group(function () {
-        Route::post('locationLevelForms/data', 'Administrative\Configurations\LocationLevelFormController@data');
-        Route::ApiResource('locationLevelForms', 'Administrative\Configurations\LocationLevelFormController');
-        Route::post('locationLevelForms/getConfModule', 'Administrative\Configurations\LocationLevelFormController@getConfModule');
+		Route::prefix('configurations')->group(function () {
+				Route::post('locationLevelForms/data', 'Administrative\Configurations\LocationLevelFormController@data');
+				Route::ApiResource('locationLevelForms', 'Administrative\Configurations\LocationLevelFormController');
+				Route::post('locationLevelForms/getConfModule', 'Administrative\Configurations\LocationLevelFormController@getConfModule');
 
-        Route::prefix('industrialSecurity')->group(function () {
-          Route::prefix('dangersMatrix')->group(function () {
-            Route::post('getQualificationsComponent', 'Administrative\Configurations\IndustrialSecure\DangerMatrix\QualificationController@getQualificationsComponent');
-          });
-        });
-      });
+				Route::prefix('industrialSecurity')->group(function () {
+					Route::prefix('dangersMatrix')->group(function () {
+						Route::post('getQualificationsComponent', 'Administrative\Configurations\IndustrialSecure\DangerMatrix\QualificationController@getQualificationsComponent');
+					});
+				});
+		});
     });
 
     //Seguridad Industrial
     Route::prefix('industrialSecurity')->group(function () {
-      Route::post('activity/data', 'IndustrialSecure\ActivityController@data');
-      Route::ApiResource('activity', 'IndustrialSecure\ActivityController');
+		Route::post('activity/data', 'IndustrialSecure\ActivityController@data');
+		Route::ApiResource('activity', 'IndustrialSecure\ActivityController');
 
-      Route::post('danger/data', 'IndustrialSecure\DangerController@data');
-      Route::ApiResource('danger', 'IndustrialSecure\DangerController');
+		Route::post('danger/data', 'IndustrialSecure\DangerController@data');
+		Route::ApiResource('danger', 'IndustrialSecure\DangerController');
 
-      Route::post('dangersMatrix/data', 'IndustrialSecure\DangerMatrixController@data');
-      Route::ApiResource('dangersMatrix', 'IndustrialSecure\DangerMatrixController');
+		Route::post('dangersMatrix/data', 'IndustrialSecure\DangerMatrixController@data');
+		Route::ApiResource('dangersMatrix', 'IndustrialSecure\DangerMatrixController');
     });
 
     //Return view for spa

@@ -14,8 +14,10 @@ class AddRoleTypeAndModule extends Migration
     public function up()
     {
         Schema::table('sau_roles', function (Blueprint $table) {
-            $table->string('type_role', 50)->after('company_id');
-            $table->string('module', 50)->after('type_role')->nullable()->references('id')->on('sau_modules');
+            $table->string('type_role', 20)->after('company_id')->default('estatico');
+            $table->unsignedInteger('module_id')->after('type_role')->nullable();
+            
+            $table->foreign('module_id')->references('id')->on('sau_modules');
         });
     }
 
@@ -27,8 +29,9 @@ class AddRoleTypeAndModule extends Migration
     public function down()
     {
         Schema::table('sau_roles', function (Blueprint $table) {
+            $table->dropForeign('sau_roles_module_id_foreign');
             $table->dropColumn('type_role');
-            $table->dropColumn('module');
+            $table->dropColumn('module_id');
         });
     }
 }

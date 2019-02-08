@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateCtQualifications extends Migration
+class AddPasswordNullableUsers extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +13,8 @@ class CreateCtQualifications extends Migration
      */
     public function up()
     {
-        Schema::create('sau_ct_qualifications', function (Blueprint $table) {
-            $table->increments('id');
-            $table->string('name', 20);
-            $table->text('description');
-            $table->timestamps();
+        Schema::table('sau_users', function (Blueprint $table) {
+            $table->string('password')->nullable()->change();
         });
     }
 
@@ -28,6 +25,8 @@ class CreateCtQualifications extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('sau_ct_qualifications');
+        Schema::table('sau_users', function (Blueprint $table) {
+            $table->dropColumn('password');
+        });
     }
 }

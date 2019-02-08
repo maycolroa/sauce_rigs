@@ -13,7 +13,7 @@ class CreateCtListCheckItems extends Migration
      */
     public function up()
     {
-        Schema::create('ct_list_check_items', function (Blueprint $table) {
+        Schema::create('sau_ct_list_check_items', function (Blueprint $table) {
             $table->increments('id');
             $table->string('name', 100);
             $table->unsignedInteger('list_check_id');
@@ -21,7 +21,7 @@ class CreateCtListCheckItems extends Migration
             $table->timestamp('execution_date');
             $table->timestamps();
 
-            $table->foreign('list_check_id')->references('id')->on('ct_list_check');
+            $table->foreign('list_check_id')->references('id')->on('sau_ct_list_check');
         });
     }
 
@@ -32,6 +32,6 @@ class CreateCtListCheckItems extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('ct_list_check_items');
+        Schema::dropIfExists('sau_ct_list_check_items');
     }
 }

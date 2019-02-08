@@ -13,7 +13,7 @@ class CreateCtListCheck extends Migration
      */
     public function up()
     {
-        Schema::create('ct_list_check', function (Blueprint $table) {
+        Schema::create('sau_ct_list_check', function (Blueprint $table) {
             $table->increments('id');
             $table->unsignedInteger('company_id');
             $table->string('type', 50);
@@ -33,6 +33,6 @@ class CreateCtListCheck extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('ct_list_check');
+        Schema::dropIfExists('sau_ct_list_check');
     }
 }
