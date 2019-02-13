@@ -42,7 +42,7 @@
                   </b-col>
                 </b-row>
               </b-card-header>
-              <b-collapse :id="`accordion${danger.key}-1`" visible :accordion="`accordion${danger.key}`">
+              <b-collapse :id="`accordion${danger.key}-1`" visible :accordion="`accordion-${indexActivity}`">
                 <b-card-body>
                   <form-danger-component
                     :is-edit="isEdit"

@@ -38,7 +38,7 @@
                         </b-col>
                         </b-row>
                     </b-card-header>
-                    <b-collapse :id="`accordion${activity.key}-1`" visible :accordion="`accordion${activity.key}`">
+                    <b-collapse :id="`accordion${activity.key}-1`" visible :accordion="`accordion-${prefixIndex}`">
                         <b-card-body>
                             <b-form-row>
                                 <vue-textarea :disabled="viewOnly" class="col-md-12" v-model="activity.description" label="Descripción" name="description" placeholder="Descripción" :error="form.errorsFor(`${prefixIndex}actionPlan.activities.${index}.description`)"></vue-textarea>
