@@ -130,6 +130,8 @@ Route::middleware(['auth'])->group(function () {
 
       Route::post('dangersMatrix/data', 'IndustrialSecure\DangerMatrixController@data');
       Route::ApiResource('dangersMatrix', 'IndustrialSecure\DangerMatrixController');
+
+      Route::post('dangersMatrixHistory/data', 'IndustrialSecure\DangerMatrixHistoryController@data');
     });
 
     //Return view for spa

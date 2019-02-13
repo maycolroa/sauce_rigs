@@ -135,5 +135,19 @@ export default [
         urlData: '/industrialSecurity/dangersMatrix/data',
         filterColumns: true,
     }
+},
+{
+    name: 'industrialsecure-dangermatrix-history',
+    fields: [
+        { name: 'sau_dm_change_histories.id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true },
+        { name: 'sau_dm_change_histories.created_at', data: 'created_at', title: 'Fecha', sortable: true, searchable: false, detail: false, key: false },
+        { name: 'sau_users.name', data: 'name', title: 'Responsable', sortable: true, searchable: true, detail: false, key: false },
+        { name: 'sau_dm_change_histories.description', data: 'description', title: 'Descripción', sortable: true, searchable: true, detail: false, key: false },
+    ],
+    'controlls': [],
+    configuration: {
+        urlData: '/industrialSecurity/dangersMatrixHistory/data',
+        filterColumns: true,
+    }
 }
 ];
