@@ -71,6 +71,24 @@
         <vue-textarea class="col-md-12" v-model="form.changeHistory" label="Detalle de cambios realizados" name="changeHistory" :error="form.errorsFor('changeHistory')" placeholder="Detalle de cambios realizados"></vue-textarea>
       </b-form-row>
 
+      <b-form-row v-if="viewOnly">
+        <div class="col-md-12">
+          <h4 class="font-weight-bold mb-1">
+            Historial de cambios realizados
+          </h4>
+          <div class="col-md">
+            <b-card no-body>
+              <b-card-body>
+                  <vue-table
+                      configName="industrialsecure-dangermatrix-history"
+                      :modelId="form.id ? form.id : -1"
+                      ></vue-table>
+              </b-card-body>
+          </b-card>
+          </div>
+        </div>
+      </b-form-row>
+
       <div class="row float-right pt-10 pr-10">
         <template>
           <b-btn variant="default" :to="cancelUrl" :disabled="loading">{{ viewOnly ? "Atras" : "Cancelar"}}</b-btn>&nbsp;&nbsp;
