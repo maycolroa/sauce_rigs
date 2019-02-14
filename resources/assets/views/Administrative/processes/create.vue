@@ -14,7 +14,8 @@
                 regionals-data-url="/selects/regionals"
                 headquarters-data-url="/selects/headquarters"
                 areas-data-url="/selects/areas"
-                :cancel-url="{ name: 'administrative-processes'}"/>
+                :cancel-url="{ name: 'administrative-processes'}"
+                :modal="modal"/>
         </b-card-body>
       </b-card>
     </div>
@@ -32,6 +33,9 @@ export default {
   },
   components:{
     AdministrativeProcessForm
+  },
+  props: {
+    modal: { type: Boolean, default: false },
   },
   data(){
     return {

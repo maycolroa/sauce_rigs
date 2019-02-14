@@ -3,7 +3,8 @@
     <b-row v-if="!viewOnly">
       <b-col>
         <div class="float-right" style="padding-bottom: 20px;">
-            <modals-create-component/>
+            <modals-create-component
+              :conf-location="configLocation"/>
         </div>
       </b-col>
     </b-row>
@@ -18,7 +19,8 @@
           :location-level="dangerMatrix.locations"
           :form="form"
           application="industrialSecure"
-          module="dangerMatrix"/>
+          module="dangerMatrix"
+          @configLocation="setConfigLocation"/>
       </b-form-row>
 
       <b-form-row>
@@ -189,7 +191,8 @@ export default {
   data() {
     return {
       loading: this.isEdit,
-      form: Form.makeFrom(this.dangerMatrix, this.method)
+      form: Form.makeFrom(this.dangerMatrix, this.method),
+      configLocation: {}
     };
   },
   methods: {
@@ -225,6 +228,10 @@ export default {
     },
     updateActivityNameTab(values, index) {
       this.form.activities[index].activity.name = values
+    },
+    setConfigLocation(value)
+    {
+      this.configLocation = value
     }
   }
 };

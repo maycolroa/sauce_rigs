@@ -11,7 +11,8 @@
             <administrative-regional-form 
                 url="/administration/regional"
                 method="POST"
-                :cancel-url="{ name: 'administrative-regionals'}"/>
+                :cancel-url="{ name: 'administrative-regionals'}"
+                :modal="modal"/>
         </b-card-body>
       </b-card>
     </div>
@@ -29,6 +30,9 @@ export default {
   },
   components:{
     AdministrativeRegionalForm
+  },
+  props: {
+    modal: { type: Boolean, default: false },
   },
   data(){
     return {

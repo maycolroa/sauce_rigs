@@ -102,6 +102,9 @@ export default {
                 this.$emit("input", this.locationLevel);
             },
             deep: true
+        },
+        inputs() {
+            this.$emit("configLocation", this.inputs);
         }
     },
     methods: {

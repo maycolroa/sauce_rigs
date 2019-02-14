@@ -12,7 +12,8 @@
                 url="/administration/headquarter"
                 method="POST"
                 regionals-data-url="/selects/regionals"
-                :cancel-url="{ name: 'administrative-headquarters'}"/>
+                :cancel-url="{ name: 'administrative-headquarters'}"
+                :modal="modal"/>
         </b-card-body>
       </b-card>
     </div>
@@ -30,6 +31,9 @@ export default {
   },
   components:{
     AdministrativeHeadquarterForm
+  },
+  props: {
+    modal: { type: Boolean, default: false },
   },
   data(){
     return {
