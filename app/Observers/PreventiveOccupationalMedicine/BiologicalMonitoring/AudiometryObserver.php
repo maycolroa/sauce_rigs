@@ -32,10 +32,6 @@ class AudiometryObserver
       $audiometry->severity_grade_air_right_6000 = $this->SeverityGradeAirRight6000($audiometry);
       $audiometry->severity_grade_air_left_8000 = $this->SeverityGradeAirLeft8000($audiometry);
       $audiometry->severity_grade_air_right_8000 = $this->SeverityGradeAirRight8000($audiometry);
-      $base = $this->Base($audiometry);
-      $audiometry->base_type = $base[0];
-      $audiometry->base      = $base[1];
-      $audiometry->base_state      = $base[2];
     }
 
       
@@ -273,89 +269,4 @@ class AudiometryObserver
         return "Hipoacusia profunda";
       }
     }
-
-    /**
-     * Metodo para el atributo base_type y base
-     */
-
-     private function Base($audiometry)
-     { 
-        //Esto se hace ya que al acutalizar la "Base" anterior a "No base" se llama nuevamente al oyente y cae en un ciclo que arruina el calculo de la base
-        if ($audiometry->base_type)
-        {
-          return [$audiometry->base_type, $audiometry->base, $audiometry->base_state];
-        }
-
-        $old_audiometry = Audiometry::
-                where('employee_id', $audiometry->employee_id)
-              ->where('date', '<', $audiometry->date)
-              ->orderBy('date', 'DESC')
-              ->first();
-        
-        if (!$old_audiometry)
-          return ['Base', null, 'Ninguno'];
-
-        $audiometry_base = Audiometry::where('employee_id', $audiometry->employee_id)->where('base_type', 'Base')->first();
-
-        if ($old_audiometry->base_state == 'CUAT')
-        {
-          $columns = $this->getColumnsBase();
-
-          foreach ($columns as $column)
-          {
-            if ( (($old_audiometry->$column - $audiometry_base->$column) >= 15) &&
-                (($audiometry->$column - $audiometry_base->$column) >= 15) )
-            {
-              $audiometry_base->base_type = 'No base';
-              //$audiometry_base->unsetEventDispatcher();
-              $audiometry_base->save();
-              return ['Base', null, 'CUAP'];
-            }
-          }
-
-          foreach ($columns as $column)
-          {
-            if ( ($audiometry->$column - $audiometry_base->$column) >= 15)
-            {
-              return ['No base', $audiometry_base->id, 'CUAT'];
-            }
-          }
-
-          return ['No base', $audiometry_base->id, 'Ninguno'];
-        }
-        else
-        {
-          $columns = $this->getColumnsBase();
-
-          foreach ($columns as $column)
-          {
-            if ( ($audiometry->$column - $audiometry_base->$column) >= 15)
-            {
-              return ['No base', $audiometry_base->id, 'CUAT'];
-            }
-          }
-
-          return ['No base', $audiometry_base->id, 'Ninguno'];
-        }
-    }
-
-     private function getColumnsBase()
-     {
-       return [
-        'air_left_500',
-        'air_left_1000',
-        'air_left_2000',
-        'air_left_3000',
-        'air_left_4000',
-        'air_left_6000',
-        'air_left_8000',
-        'air_right_500',
-        'air_right_1000',
-        'air_right_2000',
-        'air_right_3000',
-        'air_right_4000',
-        'air_right_6000',
-        'air_right_8000',
-       ];
-     }
 }

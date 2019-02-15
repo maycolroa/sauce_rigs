@@ -12,9 +12,11 @@ use App\Jobs\PreventiveOccupationalMedicine\BiologicalMonitoring\AudiometryExpor
 use App\Jobs\PreventiveOccupationalMedicine\BiologicalMonitoring\AudiometryImportJob;
 use Illuminate\Support\Facades\Auth;
 use Session;
+use App\Traits\AudiometryTrait;
 
 class AudiometryController extends Controller
 {
+    use AudiometryTrait;
     /**
      * Display index.
      *
@@ -102,6 +104,9 @@ class AudiometryController extends Controller
         if(!$audiometry->save()){
             return $this->respondHttp500();
         }
+
+        $this->calculateBaseAudiometry($audiometry->employee_id);
+
         return $this->respondHttp200([
             'message' => 'Se creo la audiometria'
         ]);
@@ -145,6 +150,9 @@ class AudiometryController extends Controller
       if(!$audiometry->update()){
         return $this->respondHttp500();
       }
+
+      $this->calculateBaseAudiometry($audiometry->employee_id);
+
       return $this->respondHttp200([
           'message' => 'Se actualizo la audiometria'
       ]);
@@ -158,9 +166,14 @@ class AudiometryController extends Controller
      */
     public function destroy(Audiometry $audiometry)
     {
+        $employee_id = $audiometry->employee_id;
+
         if(!$audiometry->delete()){
           return $this->respondHttp500();
         }
+
+        $this->calculateBaseAudiometry($employee_id);
+        
         return $this->respondHttp200([
             'message' => 'Se elimino la audiometria'
         ]);
