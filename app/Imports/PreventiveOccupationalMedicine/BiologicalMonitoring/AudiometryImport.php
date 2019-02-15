@@ -21,9 +21,12 @@ use App\Facades\Mail\Facades\NotificationMail;
 use Maatwebsite\Excel\Facades\Excel;
 use Validator;
 use Exception;
+use App\Traits\AudiometryTrait;
 
 class AudiometryImport implements ToCollection
 {
+    use AudiometryTrait;
+
     private $company_id;
     private $user;
     private $errors = [];
@@ -43,6 +46,8 @@ class AudiometryImport implements ToCollection
         {
             try
             {
+                $employees_id = [];
+
                 foreach ($rows as $key => $row) 
                 {  
                     if ($key > 0) //Saltar cabecera
@@ -53,6 +58,7 @@ class AudiometryImport implements ToCollection
 
                             if ($employee_id)
                             {
+                                array_push($employees_id, $employee_id);
                                 $this->createAudiometry($row, $employee_id);
                             }
                         }
@@ -62,6 +68,13 @@ class AudiometryImport implements ToCollection
                             $this->setErrorData($row);
                         }
                     }
+                }
+
+                $employees_id = array_unique($employees_id);
+                    
+                foreach ($employees_id as $value)
+                {
+                    $this->calculateBaseAudiometry($value);
                 }
 
                 if (COUNT($this->errors) == 0)
