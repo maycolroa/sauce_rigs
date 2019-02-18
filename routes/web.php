@@ -22,11 +22,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('changeCompany', 'ApplicationController@changeCompany');
     Route::post('vuetableCustomColumns', 'ApplicationController@vuetableCustomColumns');
 
-    //GET methods
-    Route::get('templates/audiometryimport',function(){
-      return Storage::disk('local')->download('/templates/PlantillaImportacionAudiometria.xlsx');
-      
-    });
+    Route::get('templates/audiometryimport','PreventiveOccupationalMedicine\BiologicalMonitoring\AudiometryController@downloadTemplateImport');
 
     Route::get('/logout', 'Auth\LoginController@logout')->name('logout');
 

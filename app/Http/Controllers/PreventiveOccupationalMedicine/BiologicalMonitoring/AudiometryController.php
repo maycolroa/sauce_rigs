@@ -10,6 +10,8 @@ use App\PreventiveOccupationalMedicine\BiologicalMonitoring\Audiometry;
 use Carbon\Carbon;
 use App\Jobs\PreventiveOccupationalMedicine\BiologicalMonitoring\AudiometryExportJob;
 use App\Jobs\PreventiveOccupationalMedicine\BiologicalMonitoring\AudiometryImportJob;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\PreventiveOccupationalMedicine\BiologicalMonitoring\AudiometryImportTemplate;
 use Illuminate\Support\Facades\Auth;
 use Session;
 use App\Traits\AudiometryTrait;
@@ -232,5 +234,10 @@ class AudiometryController extends Controller
       ->pluck('year', 'year');
 
       return $this->multiSelectFormat($audiometries);
+    }
+
+    public function downloadTemplateImport()
+    {
+      return Excel::download(new AudiometryImportTemplate, 'PlantillaImportacionAudiometria.xlsx');
     }
 }
