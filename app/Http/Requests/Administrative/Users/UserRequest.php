@@ -30,22 +30,10 @@ class UserRequest extends FormRequest
             'name'      => 'required|string',
             'email'     => 'required|email|unique:sau_users,email,' . $id . ',id',
             'document'  => 'required|numeric',
-            'role_id'   => 'required'
+            'role_id'   => 'required',
+            'password'  => 'nullable|string|min:6'
         ];
-
-        switch($this->method())
-        {
-            case 'POST':
-                $rules['password'] = 'required|string|min:6';
-            break;
-
-            case 'PUT':
-                $rules['password'] = 'nullable|string|min:6';
-            break;
-
-            default:break;
-        }
-
+        
         return $rules;
     }
 }

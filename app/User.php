@@ -59,5 +59,10 @@ class User extends Authenticatable
           'name' => "{$this->document} - {$this->name}",
           'value' => $this->id
         ];
-      }
+    }
+    
+    public function generatePasswordUser()
+    {
+      return $this->hasMany('App\Models\Administrative\GeneratePasswordUser','sau_generate_password_user');
+    }
 }
