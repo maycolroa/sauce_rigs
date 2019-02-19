@@ -7,13 +7,16 @@ use App\Vuetable\Facades\Vuetable;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Administrative\Users\UserRequest;
 use App\User;
+use App\Traits\UserTrait;
 use App\Jobs\Administrative\Users\UserExportJob;
 use Session;
 use Illuminate\Support\Facades\Auth;
 use DB;
+use App\Facades\Mail\Facades\NotificationMail;
 
 class UserController extends Controller
 {
+    use UserTrait;
     /**
      * Display index.
      *
@@ -51,9 +54,9 @@ class UserController extends Controller
      */
     public function store(UserRequest $request)
     {
-        $user = new User($request->all());
-        
-        if(!$user->save()){
+        $user = $this->createUser($request);
+ 
+        if ($user == $this->respondHttp500() || $user == null) {
             return $this->respondHttp500();
         }
 
@@ -63,6 +66,7 @@ class UserController extends Controller
         return $this->respondHttp200([
             'message' => 'Se creo el usuario'
         ]);
+        
     }
 
     /**
@@ -145,6 +149,7 @@ class UserController extends Controller
 
         } catch (\Exception $e) {
             DB::rollback();
+            \Log::error($e->getMessage());
             return $this->respondHttp500();
         }
     }

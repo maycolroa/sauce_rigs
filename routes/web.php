@@ -16,6 +16,10 @@ Route::get('export/{url}',function($url){
   return Storage::disk('public')->download(base64_decode($url));
 });
 
+//Generar contraseña
+Route::get('/password/generate/{token}', 'Auth\GeneratePasswordController@generatePassword');
+Route::post('/password/generate/{id}', 'Auth\GeneratePasswordController@updatePassword');
+
 Route::middleware(['auth'])->group(function () { 
     Route::get('appWithModules', 'ApplicationController@appsWhithModules');
     Route::get('getCompanies', 'ApplicationController@getCompanies');
@@ -24,18 +28,19 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('templates/audiometryimport','PreventiveOccupationalMedicine\BiologicalMonitoring\AudiometryController@downloadTemplateImport');
 
-    Route::get('/logout', 'Auth\LoginController@logout')->name('logout');
+	//Cerrar sesión 
+	Route::get('/logout', 'Auth\LoginController@logout')->name('logout');
 
     //Routes diferents to GET
     Route::prefix('biologicalmonitoring')->group(function () {
-      Route::post('audiometry/data', 'PreventiveOccupationalMedicine\BiologicalMonitoring\AudiometryController@data');
-      Route::post('audiometry/import', 'PreventiveOccupationalMedicine\BiologicalMonitoring\AudiometryController@import');
-      Route::post('audiometry/export', 'PreventiveOccupationalMedicine\BiologicalMonitoring\AudiometryController@export');
-      Route::post('audiometry/multiselect_epp', 'PreventiveOccupationalMedicine\BiologicalMonitoring\AudiometryController@multiselectEPP');
-      //Route::post('audiometry/reportPta', 'PreventiveOccupationalMedicine\BiologicalMonitoring\AudiometryController@reportPta');
-      Route::ApiResource('audiometry', 'PreventiveOccupationalMedicine\BiologicalMonitoring\AudiometryController');   
-      Route::post('audiometry/informs', 'PreventiveOccupationalMedicine\BiologicalMonitoring\AudiometryInformController@data');
-      Route::post('audiometry/informs/individual', 'PreventiveOccupationalMedicine\BiologicalMonitoring\AudiometryInformController@dataIndividual');
+      	Route::post('audiometry/data', 'PreventiveOccupationalMedicine\BiologicalMonitoring\AudiometryController@data');
+      	Route::post('audiometry/import', 'PreventiveOccupationalMedicine\BiologicalMonitoring\AudiometryController@import');
+      	Route::post('audiometry/export', 'PreventiveOccupationalMedicine\BiologicalMonitoring\AudiometryController@export');
+      	Route::post('audiometry/multiselect_epp', 'PreventiveOccupationalMedicine\BiologicalMonitoring\AudiometryController@multiselectEPP');
+      	//Route::post('audiometry/reportPta', 'PreventiveOccupationalMedicine\BiologicalMonitoring\AudiometryController@reportPta');
+      	Route::ApiResource('audiometry', 'PreventiveOccupationalMedicine\BiologicalMonitoring\AudiometryController');   
+      	Route::post('audiometry/informs', 'PreventiveOccupationalMedicine\BiologicalMonitoring\AudiometryInformController@data');
+      	Route::post('audiometry/informs/individual', 'PreventiveOccupationalMedicine\BiologicalMonitoring\AudiometryInformController@dataIndividual');
     });
 
     Route::prefix('selects')->group(function () {
@@ -64,7 +69,7 @@ Route::middleware(['auth'])->group(function () {
         Route::post('tagsPossibleConsequencesDanger', 'IndustrialSecure\TagController@multiselectPossibleConsequencesDanger');
         Route::post('tagsWarningSignage', 'IndustrialSecure\TagController@multiselectWarningSignage');
         Route::post('actionPlanStates', 'MultiSelectRadioController@actionPlanStates');
-      });
+    });
 
     Route::prefix('radios')->group(function () {
       Route::post('dmTypeActivities', 'MultiSelectRadioController@dmTypeActivities');
