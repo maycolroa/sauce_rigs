@@ -81,58 +81,64 @@ Route::middleware(['auth'])->group(function () {
 
     //Administrativo
     Route::prefix('administration')->group(function () {
-		Route::post('users/data', 'Administrative\Users\UserController@data');
-		Route::post('users/export', 'Administrative\Users\UserController@export');
-		Route::ApiResource('users', 'Administrative\Users\UserController');
+			Route::post('users/data', 'Administrative\Users\UserController@data');
+			Route::post('users/export', 'Administrative\Users\UserController@export');
+			Route::ApiResource('users', 'Administrative\Users\UserController');
 
-		Route::post('role/data', 'Administrative\Roles\RoleController@data');
-		Route::ApiResource('role', 'Administrative\Roles\RoleController');
+			Route::post('role/data', 'Administrative\Roles\RoleController@data');
+			Route::ApiResource('role', 'Administrative\Roles\RoleController');
 
-		Route::post('position/data', 'Administrative\EmployeePositionController@data');
-		Route::ApiResource('position', 'Administrative\EmployeePositionController');
+			Route::post('position/data', 'Administrative\EmployeePositionController@data');
+			Route::ApiResource('position', 'Administrative\EmployeePositionController');
 
-		Route::post('regional/data', 'Administrative\EmployeeRegionalController@data');
-		Route::ApiResource('regional', 'Administrative\EmployeeRegionalController');
+			Route::post('regional/data', 'Administrative\EmployeeRegionalController@data');
+			Route::ApiResource('regional', 'Administrative\EmployeeRegionalController');
 
-		Route::post('business/data', 'Administrative\EmployeeBusinessController@data');
-		Route::ApiResource('business', 'Administrative\EmployeeBusinessController');
+			Route::post('business/data', 'Administrative\EmployeeBusinessController@data');
+			Route::ApiResource('business', 'Administrative\EmployeeBusinessController');
 
-		Route::post('headquarter/data', 'Administrative\EmployeeHeadquarterController@data');
-		Route::ApiResource('headquarter', 'Administrative\EmployeeHeadquarterController');
+			Route::post('headquarter/data', 'Administrative\EmployeeHeadquarterController@data');
+			Route::ApiResource('headquarter', 'Administrative\EmployeeHeadquarterController');
 
-		Route::post('area/data', 'Administrative\EmployeeAreaController@data');
-		Route::ApiResource('area', 'Administrative\EmployeeAreaController');
+			Route::post('area/data', 'Administrative\EmployeeAreaController@data');
+			Route::ApiResource('area', 'Administrative\EmployeeAreaController');
 
-		Route::post('process/data', 'Administrative\EmployeeProcessController@data');
-		Route::ApiResource('process', 'Administrative\EmployeeProcessController');
+			Route::post('process/data', 'Administrative\EmployeeProcessController@data');
+			Route::ApiResource('process', 'Administrative\EmployeeProcessController');
 
-		Route::post('employee/data', 'Administrative\EmployeesController@data');
-		Route::ApiResource('employee', 'Administrative\EmployeesController');
+			Route::post('employee/data', 'Administrative\EmployeesController@data');
+			Route::ApiResource('employee', 'Administrative\EmployeesController');
 
-		Route::prefix('configurations')->group(function () {
-				Route::post('locationLevelForms/data', 'Administrative\Configurations\LocationLevelFormController@data');
-				Route::ApiResource('locationLevelForms', 'Administrative\Configurations\LocationLevelFormController');
-				Route::post('locationLevelForms/getConfModule', 'Administrative\Configurations\LocationLevelFormController@getConfModule');
+			Route::prefix('configurations')->group(function () {
+					Route::post('locationLevelForms/data', 'Administrative\Configurations\LocationLevelFormController@data');
+					Route::ApiResource('locationLevelForms', 'Administrative\Configurations\LocationLevelFormController');
+					Route::post('locationLevelForms/getConfModule', 'Administrative\Configurations\LocationLevelFormController@getConfModule');
 
-				Route::prefix('industrialSecurity')->group(function () {
-					Route::prefix('dangersMatrix')->group(function () {
-						Route::post('getQualificationsComponent', 'Administrative\Configurations\IndustrialSecure\DangerMatrix\QualificationController@getQualificationsComponent');
+					Route::prefix('industrialSecurity')->group(function () {
+						Route::prefix('dangersMatrix')->group(function () {
+							Route::post('getQualificationsComponent', 'Administrative\Configurations\IndustrialSecure\DangerMatrix\QualificationController@getQualificationsComponent');
+						});
 					});
-				});
-		});
+			});
     });
 
     //Seguridad Industrial
     Route::prefix('industrialSecurity')->group(function () {
-		Route::post('activity/data', 'IndustrialSecure\ActivityController@data');
-		Route::ApiResource('activity', 'IndustrialSecure\ActivityController');
+			Route::post('activity/data', 'IndustrialSecure\ActivityController@data');
+			Route::ApiResource('activity', 'IndustrialSecure\ActivityController');
 
-		Route::post('danger/data', 'IndustrialSecure\DangerController@data');
-		Route::ApiResource('danger', 'IndustrialSecure\DangerController');
+			Route::post('danger/data', 'IndustrialSecure\DangerController@data');
+			Route::ApiResource('danger', 'IndustrialSecure\DangerController');
 
-		Route::post('dangersMatrix/data', 'IndustrialSecure\DangerMatrixController@data');
-		Route::ApiResource('dangersMatrix', 'IndustrialSecure\DangerMatrixController');
-    });
+			Route::post('dangersMatrix/data', 'IndustrialSecure\DangerMatrixController@data');
+			Route::ApiResource('dangersMatrix', 'IndustrialSecure\DangerMatrixController');
+		});
+		
+		//Aspectos Legales
+		Route::prefix('legalAspects')->group(function () {
+			Route::post('contracts/data', 'LegalAspects\ContractLesseeController@data');
+			Route::ApiResource('contracts', 'LegalAspects\ContractLesseeController');
+		});
 
     //Return view for spa
     Route::get('/{any}', 'ApplicationController@index')->where('any', '.*');

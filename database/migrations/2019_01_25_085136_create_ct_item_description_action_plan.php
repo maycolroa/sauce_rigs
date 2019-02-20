@@ -19,7 +19,7 @@ class CreateCtItemDescriptionActionPlan extends Migration
             $table->text('description');
             $table->string('state');
             
-            $table->foreign('list_check_item_id')->references('id')->on('sau_ct_list_check_items');
+            $table->foreign('list_check_item_id')->references('id')->on('sau_ct_list_check_items')->onDelete('cascade');
         });
     }
 

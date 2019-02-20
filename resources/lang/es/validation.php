@@ -192,7 +192,10 @@ return [
       'locations.employee_headquarter_id' => 'Sede',
       'locations.employee_area_id' => 'Área',
       'locations.employee_process_id' => 'Proceso',
-      'changeHistory' => 'Detalle de cambios realizados'
+      'changeHistory' => 'Detalle de cambios realizados',
+      'name_business' => 'Nombre de empresa',
+      'type' => 'Tipo de empresa',
+      'social_reason' => 'Razón social'
     ],
 
 ];

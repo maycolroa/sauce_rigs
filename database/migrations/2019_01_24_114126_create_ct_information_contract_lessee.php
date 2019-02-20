@@ -19,14 +19,14 @@ class CreateCtInformationContractLessee extends Migration
             $table->integer('nit');
             $table->string('type', 50);
             $table->string('business_name', 100);
-            $table->integer('phone');
-            $table->string('address', 100);
-            $table->string('legal_representative_name', 100);
-            $table->string('SG_SST_name', 100);
-            $table->integer('number_workers');
+            $table->integer('phone')->nullable();
+            $table->string('address', 100)->nullable();
+            $table->string('legal_representative_name', 100)->nullable();
+            $table->string('SG_SST_name', 100)->nullable();
+            $table->integer('number_workers')->nullable();
             $table->timestamps();
 
-            $table->foreign('company_id')->references('id')->on('sau_companies');
+            $table->foreign('company_id')->references('id')->on('sau_companies')->onDelete('cascade');
         });
     }
 

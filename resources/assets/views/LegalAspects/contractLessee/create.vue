@@ -1,7 +1,7 @@
 <template>
   	<div>
 		<h4 class="font-weight-bold mb-4">
-		<span class="text-muted font-weight-light">Usuarios /</span> Crear
+		<span class="text-muted font-weight-light">Usuarios /</span> Contratistas
 		</h4>
 
 
@@ -9,7 +9,7 @@
 			<b-card no-body>
 				<b-card-body>
 					<contract-lessee-form 
-						url="/administration/users"
+						url="/legalAspects/contracts"
 						method="POST"
 						roles-data-url="/selects/roles"
 						:cancel-url="{ name: 'legalaspects-contracts'}"/>
