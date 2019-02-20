@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Administrative\Roles\RoleRequest;
 use App\Models\Role;
 use App\Models\Permission;
+use Illuminate\Support\Facades\Auth;
 use Session;
 
 class RoleController extends Controller
@@ -44,9 +45,18 @@ class RoleController extends Controller
      */
     public function store(RoleRequest $request)
     {
-        $role = new Role($request->all());
+        $role = new Role();
+        $role->name = $request->get('name');
         $role->display_name = $request->get('name');
-        $role->company_id = Session::get('company_id');
+        $role->description = $request->get('description');
+
+        if ($request->has('type_role') && $request->get('type_role') == 'Definido')
+        {
+            $role->type_role = 'Definido';
+            $role->module_id = $request->get('module_id');
+        }
+        else
+            $role->company_id = Session::get('company_id');
         
         if(!$role->save())
         {
@@ -84,8 +94,14 @@ class RoleController extends Controller
      */
     public function show($id)
     {
-        $role = Role::findOrFail($id);
-            
+        if (Auth::user()->hasPermission('roles_manage_defined'))
+            $role = Role::withoutGlobalScopes()->findOrFail($id);
+        else 
+            $role = Role::findOrFail($id);
+        
+        if ($role->module)
+            $role->multiselect_module = $role->module->multiselect();
+        
         try
         {
             $permissions = $role->permissions;
@@ -126,10 +142,19 @@ class RoleController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(RoleRequest $request, Role $role)
+    public function update(RoleRequest $request, $id)
     {
-        $role->fill($request->all());
+        if (Auth::user()->hasPermission('roles_manage_defined'))
+            $role = Role::withoutGlobalScopes()->findOrFail($id);
+        else 
+            $role = Role::findOrFail($id);
+
+        $role->name = $request->get('name');
         $role->display_name = $request->get('name');
+        $role->description = $request->get('description');
+
+        if ($request->has('type_role') && $request->get('type_role') == 'Definido')
+            $role->module_id = $request->get('module_id');
         
         if(!$role->update()) {            
             return $this->respondHttp500();

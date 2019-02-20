@@ -5,7 +5,7 @@ namespace App\Http\Requests\Administrative\Roles;
 use Illuminate\Foundation\Http\FormRequest;
 use App\Facades\Configuration;
 use App\Rules\Permission;
-use Session;
+use App\Rules\RoleUnique;
 
 class RoleRequest extends FormRequest
 {
@@ -29,8 +29,9 @@ class RoleRequest extends FormRequest
         $id = $this->input('id');
 
         return [
-            'name' => 'required|string|unique:sau_roles,name,'.$id.',id,company_id,'.Session::get('company_id'),
-            'permissions_asignates' => ['required', new Permission()]
+            'name' => ['required','string',new RoleUnique($id, $this->input('type_role'))],
+            'permissions_asignates' => ['required', new Permission()],
+            'module_id' => 'required_if:type_role,true'
         ];
     }
 }

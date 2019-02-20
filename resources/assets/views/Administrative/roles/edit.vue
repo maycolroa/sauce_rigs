@@ -10,6 +10,7 @@
             <administrative-role-form 
                 :url="`/administration/role/${this.$route.params.id}`"
                 method="PUT"
+                :all-modules="allModules"
                 :modules="modules"
                 :permissions="permissions"
                 :role="data"
@@ -38,6 +39,7 @@ export default {
   data () {
     return {
       data: [],
+      allModules: [],
       modules: [],
       permissions:[],
       modulesRemoved: []
@@ -107,6 +109,15 @@ export default {
     GlobalMethods.getModulesMultiselectGroup()
     .then(response => {
         this.modules = response;
+    })
+    .catch(error => {
+        Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
+        this.$router.go(-1);
+    });
+
+    GlobalMethods.getModulesMultiselectGroup()
+    .then(response => {
+        this.allModules = response;
     })
     .catch(error => {
         Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
