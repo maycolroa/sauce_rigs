@@ -12,7 +12,7 @@ class Role extends LaratrustRole
     protected $table = 'sau_roles';
 
     protected $fillable = [
-        'name', 'description'
+        'name', 'description', 'module_id'
     ];
 
     public function multiselect(){
@@ -20,5 +20,10 @@ class Role extends LaratrustRole
         'name' => $this->name,
         'value' => $this->id
       ];
+    }
+
+    public function module()
+    {
+        return $this->belongsTo(Module::class, 'module_id');
     }
 }

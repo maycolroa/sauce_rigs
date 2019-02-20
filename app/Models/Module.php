@@ -24,4 +24,12 @@ class Module extends Model
     {
         return $this->belongsToMany('App\Administrative\License','sau_license_module');
     }
+
+    public function multiselect()
+    {
+        return [
+          'name' => $this->display_name,
+          'value' => $this->id
+        ];
+    }
 }

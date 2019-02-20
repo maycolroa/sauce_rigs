@@ -8,9 +8,18 @@
         </b-form-row>
 
         <vue-textarea :disabled="viewOnly" v-model="form.description" label="Descripción" :error="form.errorsFor('description')" name="description" placeholder="Descripción"></vue-textarea>
+ 
+        <b-form-row>          
+          <vue-checkbox-simple :disabled="isEdit || viewOnly" class="col-md-3" v-model="form.type_role" label="¿Definido?" :checked="form.type_role" name="type_role" checked-value="Definido" unchecked-value="No Definido"></vue-checkbox-simple>
 
+          <vue-advanced-select-group v-show="form.type_role == 'Definido'" :disabled="viewOnly" v-model="form.module_id" class="col-md-9" :options="allModules" :limit="1000" :searchable="true" name="module_id" label="Aplicación \ Módulo al que se asignara el Rol" placeholder="Seleccione un modulo" :error="form.errorsFor('module_id')" :selected-object="form.multiselect_module">
+          </vue-advanced-select-group>
+        </b-form-row>
+        
+        <hr class="border-light container-m--x mt-0 mb-4">
+        
         <b-form-row>
-          <vue-advanced-select-group :disabled="viewOnly" v-model="module_selected" :value="module_selected" class="col-md-12" :options="modules" :limit="1000" :searchable="true" name="modules_multiselect" label="Aplicación \ Módulo" placeholder="Seleccione un modulo">
+          <vue-advanced-select-group :disabled="viewOnly" v-model="module_selected" class="col-md-12" :options="modules" :limit="1000" :searchable="true" name="modules_multiselect" label="Aplicación \ Módulo" placeholder="Seleccione un modulo" :return-object="true">
           </vue-advanced-select-group>
         </b-form-row>
 
@@ -64,6 +73,7 @@ import VueInput from "@/components/Inputs/VueInput.vue";
 import VueAdvancedSelect from "@/components/Inputs/VueAdvancedSelect.vue";
 import VueAdvancedSelectGroup from "@/components/Inputs/VueAdvancedSelectGroup.vue";
 import VueTextarea from "@/components/Inputs/VueTextarea.vue";
+import VueCheckboxSimple from "@/components/Inputs/VueCheckboxSimple.vue";
 import Form from "@/utils/Form.js";
 
 export default {
@@ -72,7 +82,8 @@ export default {
     VueAdvancedSelect,
     VueAdvancedSelectGroup,
     PerfectScrollbar,
-    VueTextarea
+    VueTextarea,
+    VueCheckboxSimple
   },
   props: {
     url: { type: String },
@@ -80,6 +91,12 @@ export default {
     cancelUrl: { type: [String, Object], required: true },
     isEdit: { type: Boolean, default: false },
     viewOnly: { type: Boolean, default: false },
+    allModules: {
+      type: Array,
+      default: function() {
+        return [];
+      }
+    },
     modules: {
       type: Array,
       default: function() {
@@ -103,6 +120,8 @@ export default {
         return {
             name: '',
             description: '',
+            type_role: '',
+            module_id: '',
             permissions_asignates: []
         };
       }
