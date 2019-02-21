@@ -15,6 +15,7 @@
         <b-card-body>
              <vue-table
                 configName="administrative-roles"
+                :customColumnsName="true"
                 ></vue-table>
         </b-card-body>
     </b-card>

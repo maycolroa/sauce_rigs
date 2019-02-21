@@ -4,6 +4,7 @@ namespace App\Vuetable;
 
 use Exception;
 use App\Traits\LocationFormTrait;
+use Illuminate\Support\Facades\Auth;
 
 class VuetableColumnManager
 {
@@ -24,6 +25,7 @@ class VuetableColumnManager
      */
     const TABLES = [
         'industrialsecuredangermatrix',
+        'administrativeroles'
     ];
 
     protected $customColumnsName;
@@ -117,6 +119,35 @@ class VuetableColumnManager
             array_push($colums, [
                 'name'=>'process', 'data'=>'process', 'title'=>'Proceso', 'sortable'=>true, 'searchable'=>false, 'detail'=>false, 'key'=>false
             ]);
+
+        return $colums;
+    }
+
+    /**
+     * returns the columns for the roles
+     * 
+     * @return Array
+     */
+    public function administrativeroles()
+    {
+        if (Auth::user()->hasPermission('roles_manage_defined'))
+            $colums = [
+                ['name' => 'sau_roles.id', 'data'=> 'id', 'title'=> 'ID', 'sortable'=> false, 'searchable'=> false, 'detail'=> false, 'key'=> true ],
+                ['name' => 'sau_roles.name', 'data'=> 'name', 'title'=> 'Nombre', 'sortable'=> true, 'searchable'=> false, 'detail'=> false, 'key'=> false ],
+                ['name' => 'sau_roles.description', 'data'=> 'description', 'title'=> 'Descripción', 'sortable'=> true, 'searchable'=> true, 'detail'=> false, 'key'=> false ],
+                ['name' => 'sau_roles.type_role', 'data'=> 'type_role', 'title'=> 'Tipo', 'sortable'=> true, 'searchable'=> true, 'detail'=> false, 'key'=> false ],
+                ['name' => 'sau_modules.display_name', 'data'=> 'display_name', 'title'=> 'Módulo', 'sortable'=> true, 'searchable'=> false, 'detail'=> false, 'key'=> false ]
+            ];
+        else 
+            $colums = [
+                ['name' => 'sau_roles.id', 'data'=> 'id', 'title'=> 'ID', 'sortable'=> false, 'searchable'=> false, 'detail'=> false, 'key'=> true ],
+                ['name' => 'sau_roles.name', 'data'=> 'name', 'title'=> 'Nombre', 'sortable'=> true, 'searchable'=> true, 'detail'=> false, 'key'=> false ],
+                ['name' => 'sau_roles.description', 'data'=> 'description', 'title'=> 'Descripción', 'sortable'=> true, 'searchable'=> true, 'detail'=> false, 'key'=> false ],
+            ];
+
+        $colums = array_merge($colums, [
+            ['name' => '', 'data'=> 'controlls', 'title'=> 'Controles', 'sortable'=> false, 'searchable'=> false, 'detail'=> false, 'key'=> false ],
+        ]);
 
         return $colums;
     }
