@@ -8,7 +8,7 @@
           </b-col>
       </b-row>
 
-    <v-server-table :url="config.configuration.urlData" :columns="columns" :options="options" ref="vuetable">
+    <v-server-table :url="config.configuration.urlData" :columns="columns" :options="options" ref="vuetable" :key="keyVuetable">
       <template slot="controlls" slot-scope="props">
         <div>
           
@@ -84,7 +84,8 @@ export default {
       actionRemove:'',
       component: null,
       filters: [],
-      tableReady: false
+      tableReady: false,
+      keyVuetable: 'Vuetable'
     }
   },
   watch: {
@@ -250,6 +251,7 @@ export default {
       axios.post('/vuetableCustomColumns', {'customColumnsName': this.config.name})
       .then(response => {
         this.config.fields = response.data.fields;
+        this.keyVuetable = 'changeVuetable'
       })
       .catch(error => {
           Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');

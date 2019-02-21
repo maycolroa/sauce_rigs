@@ -30,8 +30,19 @@ class RoleController extends Controller
     */
    public function data(Request $request)
    {
-    
-       $roles = Role::select('*');
+        if (Auth::user()->hasPermission('roles_manage_defined'))
+
+            $roles = Role::withoutGlobalScopes()->select(
+                'sau_roles.id as id',
+                'sau_roles.name as name',
+                'sau_roles.description as description',
+                'sau_roles.type_role as type_role',
+                'sau_modules.display_name as display_name'
+            )
+            ->leftJoin('sau_modules', 'sau_modules.id', 'sau_roles.module_id')
+            ->whereRaw('(sau_roles.company_id = '.Session::get('company_id').' OR sau_roles.company_id IS NULL)');
+        else 
+            $roles = Role::select('*');
 
        return Vuetable::of($roles)
                 ->make();
@@ -189,8 +200,13 @@ class RoleController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Role $role)
+    public function destroy($id)
     {
+        if (Auth::user()->hasPermission('roles_manage_defined'))
+            $role = Role::withoutGlobalScopes()->findOrFail($id);
+        else 
+            $role = Role::findOrFail($id);
+
         $role->users()->sync([]); // Eliminar datos de relaciones
         $role->permissions()->sync([]); // Eliminar datos de relaciones
 
