@@ -31,7 +31,19 @@ class RoleRequest extends FormRequest
         return [
             'name' => ['required','string',new RoleUnique($id, $this->input('type_role'))],
             'permissions_asignates' => ['required', new Permission()],
-            'module_id' => 'required_if:type_role,true'
+            'module_id' => 'required_if:type_role,Definido'
+        ];
+    }
+
+    /**
+     * Get the validation error message.
+     *
+     * @return string
+     */
+    public function messages()
+    {
+        return [
+            'module_id.required_if' => 'El campo Módulo es obligatorio cuando el Rol es Definido.'
         ];
     }
 }
