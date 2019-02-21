@@ -32,7 +32,7 @@ class RoleController extends Controller
    {
         if (Auth::user()->hasPermission('roles_manage_defined'))
 
-            $roles = Role::withoutGlobalScopes()->select(
+            $roles = Role::select(
                 'sau_roles.id as id',
                 'sau_roles.name as name',
                 'sau_roles.description as description',
@@ -40,9 +40,15 @@ class RoleController extends Controller
                 'sau_modules.display_name as display_name'
             )
             ->leftJoin('sau_modules', 'sau_modules.id', 'sau_roles.module_id')
-            ->whereRaw('(sau_roles.company_id = '.Session::get('company_id').' OR sau_roles.company_id IS NULL)');
+            ->conditionController();
         else 
-            $roles = Role::select('*');
+        
+            $roles = Role::select(
+                'sau_roles.id as id',
+                'sau_roles.name as name',
+                'sau_roles.description as description'
+            )
+            ->conditionController();
 
        return Vuetable::of($roles)
                 ->make();
@@ -105,10 +111,7 @@ class RoleController extends Controller
      */
     public function show($id)
     {
-        if (Auth::user()->hasPermission('roles_manage_defined'))
-            $role = Role::withoutGlobalScopes()->findOrFail($id);
-        else 
-            $role = Role::findOrFail($id);
+        $role = Role::conditionController()->findOrFail($id);
         
         if ($role->module)
             $role->multiselect_module = $role->module->multiselect();
@@ -155,10 +158,7 @@ class RoleController extends Controller
      */
     public function update(RoleRequest $request, $id)
     {
-        if (Auth::user()->hasPermission('roles_manage_defined'))
-            $role = Role::withoutGlobalScopes()->findOrFail($id);
-        else 
-            $role = Role::findOrFail($id);
+        $role = Role::conditionController()->findOrFail($id);
 
         $role->name = $request->get('name');
         $role->display_name = $request->get('name');
@@ -202,10 +202,7 @@ class RoleController extends Controller
      */
     public function destroy($id)
     {
-        if (Auth::user()->hasPermission('roles_manage_defined'))
-            $role = Role::withoutGlobalScopes()->findOrFail($id);
-        else 
-            $role = Role::findOrFail($id);
+        $role = Role::conditionController()->findOrFail($id);
 
         $role->users()->sync([]); // Eliminar datos de relaciones
         $role->permissions()->sync([]); // Eliminar datos de relaciones
@@ -231,7 +228,7 @@ class RoleController extends Controller
     public function multiselect(Request $request)
     {
         $keyword = "%{$request->keyword}%";
-        $roles = Role::select("id", "name")
+        $roles = Role::conditionGeneral()->select("id", "name")
             ->where(function ($query) use ($keyword) {
                 $query->orWhere('name', 'like', $keyword);
              })
