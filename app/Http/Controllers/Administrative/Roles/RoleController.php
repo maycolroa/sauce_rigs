@@ -14,6 +14,18 @@ use Session;
 class RoleController extends Controller
 {
     /**
+     * creates and instance and middlewares are checked
+     */
+    function __construct()
+    {
+        $this->middleware('auth');
+        $this->middleware('permission:roles_c', ['only' => 'store']);
+        $this->middleware('permission:roles_r', ['except' =>['multiselect', 'multiselectPermissions']]);
+        $this->middleware('permission:roles_u', ['only' => 'update']);
+        $this->middleware('permission:roles_d', ['only' => 'destroy']);
+    }
+
+    /**
      * Display index.
      *
      * @return \Illuminate\Http\Response

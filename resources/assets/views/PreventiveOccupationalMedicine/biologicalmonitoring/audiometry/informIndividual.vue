@@ -51,6 +51,12 @@
         </b-card-body>
       </b-card>
     </div>
+
+    <div class="row float-right pt-10 pr-10">
+        <template>
+            <b-btn variant="default" :to="{name: 'biologicalmonitoring-audiometry'}">Atras</b-btn>
+        </template>
+    </div>
   </div>
 </template>
 

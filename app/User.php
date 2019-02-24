@@ -61,6 +61,16 @@ class User extends Authenticatable
       return $this->belongsToMany('App\Administrative\Company','sau_company_user');
     }
 
+    public function actionPlanResponsibles()
+    {
+        return $this->hasMany('App\Models\ActionPlansActivity', 'responsible_id');
+    }
+
+    public function actionPlanCreator()
+    {
+        return $this->hasMany('App\Models\ActionPlansActivity', 'user_id');
+    }
+
     public function multiselect()
     {
         return [

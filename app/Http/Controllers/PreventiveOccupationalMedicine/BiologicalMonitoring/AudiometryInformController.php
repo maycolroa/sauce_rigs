@@ -12,6 +12,15 @@ use App\Inform\PreventiveOccupationalMedicine\BiologicalMonitoring\InformIndivid
 class AudiometryInformController extends Controller
 {
     /**
+     * creates and instance and middlewares are checked
+     */
+    function __construct()
+    {
+        $this->middleware('auth');
+        $this->middleware('permission:biologicalMonitoring_audiometry_r');
+    }
+
+    /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response

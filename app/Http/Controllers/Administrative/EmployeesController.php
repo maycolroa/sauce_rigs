@@ -13,6 +13,18 @@ use Session;
 class EmployeesController extends Controller
 {
     /**
+     * creates and instance and middlewares are checked
+     */
+    function __construct()
+    {
+        $this->middleware('auth');
+        $this->middleware('permission:employees_c', ['only' => 'store']);
+        $this->middleware('permission:employees_r', ['except' =>'multiselect']);
+        $this->middleware('permission:employees_u', ['only' => 'update']);
+        $this->middleware('permission:employees_d', ['only' => 'destroy']);
+    }
+
+    /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
@@ -139,7 +151,7 @@ class EmployeesController extends Controller
      */
     public function destroy(Employee $employee)
     {
-        if (count($employee->audiometries) > 0 || count($employee->actionPlanActivities) > 0)
+        if (count($employee->audiometries) > 0)
         {
             return $this->respondWithError('No se puede eliminar el empleado porque hay registros asociados a él');
         }

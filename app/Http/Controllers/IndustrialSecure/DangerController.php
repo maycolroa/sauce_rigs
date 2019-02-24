@@ -12,6 +12,18 @@ use Session;
 class DangerController extends Controller
 {
     /**
+     * creates and instance and middlewares are checked
+     */
+    function __construct()
+    {
+        $this->middleware('auth');
+        $this->middleware('permission:dangers_c', ['only' => 'store']);
+        $this->middleware('permission:dangers_r', ['except' =>'multiselect']);
+        $this->middleware('permission:dangers_u', ['only' => 'update']);
+        $this->middleware('permission:dangers_d', ['only' => 'destroy']);
+    }
+
+    /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response

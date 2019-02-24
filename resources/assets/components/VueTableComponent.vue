@@ -218,19 +218,29 @@ export default {
       let controlls = this.config.controlls
       .filter(c => {
         return c.type == 'base'
+      })[0]
+      .buttons.filter(c => {
+        if (c.permission)
+          return auth.can[c.permission]
+        else 
+          return true
       })
       .map(c => {
-        return c.buttons.map(b => {
-          return b.name;
-        })[0];
+        return c.name;
       });
       return controlls;
     },
     controllsPush(){
       let controlls = this.config.controlls.filter(c => {
         return c.type == 'push'
-      })[0];
-      return controlls.buttons;
+      })[0]
+      .buttons.filter(c => {
+        if (c.permission)
+          return auth.can[c.permission]
+        else 
+          return true
+      });
+      return controlls;
     }
   },
   mounted() {
@@ -308,6 +318,10 @@ export default {
         if (error.response.status == 500 && error.response.data.error != 'Internal Error')
         {
           Alerts.error('Error', error.response.data.error);
+        }
+        else if (error.response.status == 403)
+        {
+          Alerts.error('Permiso Denegado', 'No tiene permitido realizar esta acción');
         }
         else
         {

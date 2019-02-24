@@ -17,7 +17,8 @@ export default [
         data: {
             routePush: { name: 'industrialsecure-activities-edit' },
             id: 'id',
-        }
+        },
+        permission: 'activities_u'
         }, {
         config: {
             color: 'outline-info',
@@ -27,7 +28,8 @@ export default [
         data: {
             routePush: { name: 'industrialsecure-activities-view' },
             id: 'id',
-        }
+        },
+        permission: 'activities_r'
         }]
     },
     {
@@ -39,6 +41,7 @@ export default [
             id: 'id',
             messageConfirmation: 'Esta seguro de borrar la actividad __name__'
         },
+        permission: 'activities_d'
         }],
     }],
     configuration: {
@@ -64,7 +67,8 @@ export default [
         data: {
             routePush: { name: 'industrialsecure-dangers-edit' },
             id: 'id',
-        }
+        },
+        permission: 'dangers_u'
         }, {
         config: {
             color: 'outline-info',
@@ -74,7 +78,8 @@ export default [
         data: {
             routePush: { name: 'industrialsecure-dangers-view' },
             id: 'id',
-        }
+        },
+        permission: 'dangers_r'
         }]
     },
     {
@@ -86,6 +91,7 @@ export default [
             id: 'id',
             messageConfirmation: 'Esta seguro de borrar el peligro __name__'
         },
+        permission: 'dangers_d'
         }],
     }],
     configuration: {
@@ -107,7 +113,8 @@ export default [
         data: {
             routePush: { name: 'industrialsecure-dangermatrix-edit' },
             id: 'id',
-        }
+        },
+        permission: 'dangerMatrix_u'
         }, {
         config: {
             color: 'outline-info',
@@ -117,7 +124,8 @@ export default [
         data: {
             routePush: { name: 'industrialsecure-dangermatrix-view' },
             id: 'id',
-        }
+        },
+        permission: 'dangerMatrix_r'
         }]
     },
     {
@@ -129,6 +137,7 @@ export default [
             id: 'id',
             messageConfirmation: 'Esta seguro de borrar la matriz de peligro __name__'
         },
+        permission: 'dangerMatrix_d'
         }],
     }],
     configuration: {

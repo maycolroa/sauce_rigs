@@ -12,6 +12,18 @@ use Session;
 class EmployeeRegionalController extends Controller
 {
     /**
+     * creates and instance and middlewares are checked
+     */
+    function __construct()
+    {
+        $this->middleware('auth');
+        $this->middleware('permission:regionals_c', ['only' => 'store']);
+        $this->middleware('permission:regionals_r', ['except' =>'multiselect']);
+        $this->middleware('permission:regionals_u', ['only' => 'update']);
+        $this->middleware('permission:regionals_d', ['only' => 'destroy']);
+    }
+
+    /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response

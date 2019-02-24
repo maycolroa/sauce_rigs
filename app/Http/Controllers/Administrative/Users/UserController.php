@@ -17,6 +17,19 @@ use App\Facades\Mail\Facades\NotificationMail;
 class UserController extends Controller
 {
     use UserTrait;
+
+    /**
+     * creates and instance and middlewares are checked
+     */
+    function __construct()
+    {
+        $this->middleware('auth');
+        $this->middleware('permission:users_c', ['only' => 'store']);
+        $this->middleware('permission:users_r', ['except' =>'multiselect']);
+        $this->middleware('permission:users_u', ['only' => 'update']);
+        $this->middleware('permission:users_d', ['only' => 'destroy']);
+    }
+    
     /**
      * Display index.
      *
@@ -132,6 +145,11 @@ class UserController extends Controller
 
         try
         {
+            if (count($user->actionPlanResponsibles) > 0 || count($user->actionPlanCreator) > 0)
+            {
+                return $this->respondWithError('No se puede eliminar el usuario porque hay registros asociados a él');
+            }
+
             $user->companies()->detach();
             $user->syncRoles([]); // Eliminar datos de relaciones
             $user->syncPermissions([]); // Eliminar datos de relaciones

@@ -3,19 +3,19 @@
   <b-form :action="url" @submit.prevent="submit" autocomplete="off">
 
     <b-form-row>
-      <vue-radio :checked="form.location_level_form" class="col-md-12" v-model="form.location_level_form" :options="locationLevels" name="location_level_form" :error="form.errorsFor('location_level_form')" label="Nivel localización en formulario">
+      <vue-radio :disabled="!auth.can['configurations_c'] && !auth.can['configurations_u']" :checked="form.location_level_form" class="col-md-12" v-model="form.location_level_form" :options="locationLevels" name="location_level_form" :error="form.errorsFor('location_level_form')" label="Nivel localización en formulario">
         </vue-radio>
     </b-form-row>
 
     <hr class="border-light container-m--x mt-0 mb-4">
     
     <b-form-row>
-        <vue-input class="col-md-12" v-model="form.days_alert_expiration_date_action_plan" label="Días de alerta por fecha de vencimiento cercana para los plane de acción" type="number" name="days_alert_expiration_date_action_plan" :error="form.errorsFor('days_alert_expiration_date_action_plan')" placeholder="1"></vue-input>
+        <vue-input :disabled="!auth.can['configurations_c'] && !auth.can['configurations_u']" class="col-md-12" v-model="form.days_alert_expiration_date_action_plan" label="Días de alerta por fecha de vencimiento cercana para los plane de acción" type="number" name="days_alert_expiration_date_action_plan" :error="form.errorsFor('days_alert_expiration_date_action_plan')" placeholder="1"></vue-input>
     </b-form-row>
 
     <div class="row float-right pt-10 pr-10">
       <template>
-        <b-btn type="submit" :disabled="loading" variant="primary">Guardar</b-btn>
+        <b-btn type="submit" :disabled="loading || (!auth.can['configurations_c'] && !auth.can['configurations_u'])" variant="primary">Guardar</b-btn>
       </template>
     </div>
   </b-form>

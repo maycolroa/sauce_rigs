@@ -25,6 +25,18 @@ use DB;
 class DangerMatrixController extends Controller
 {
     /**
+     * creates and instance and middlewares are checked
+     */
+    function __construct()
+    {
+        $this->middleware('auth');
+        $this->middleware('permission:dangerMatrix_c', ['only' => 'store']);
+        $this->middleware('permission:dangerMatrix_r');
+        $this->middleware('permission:dangerMatrix_u', ['only' => 'update']);
+        $this->middleware('permission:dangerMatrix_d', ['only' => 'destroy']);
+    }
+
+    /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response

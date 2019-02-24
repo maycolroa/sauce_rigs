@@ -12,6 +12,18 @@ use Session;
 class EmployeeProcessController extends Controller
 {
     /**
+     * creates and instance and middlewares are checked
+     */
+    function __construct()
+    {
+        $this->middleware('auth');
+        $this->middleware('permission:processes_c', ['only' => 'store']);
+        $this->middleware('permission:processes_r', ['except' =>'multiselect']);
+        $this->middleware('permission:processes_u', ['only' => 'update']);
+        $this->middleware('permission:processes_d', ['only' => 'destroy']);
+    }
+    
+    /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
