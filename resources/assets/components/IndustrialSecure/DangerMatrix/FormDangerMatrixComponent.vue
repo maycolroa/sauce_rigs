@@ -28,7 +28,7 @@
 
         <div class="col-md-6" v-if="!viewOnly">
           <div class="float-right" style="padding-top: 20px;">
-            <b-btn variant="primary" @click.prevent="addActiviy()"><span class="ion ion-md-add-circle"></span>&nbsp;&nbsp;Agregar Actividad</b-btn>
+            <b-btn variant="primary" @click.prevent="addActiviy()"><span class="ion ion-md-add-circle"></span>&nbsp;&nbsp;Agregar Proceso</b-btn>
           </div>
         </div>
       </b-form-row>
@@ -40,12 +40,12 @@
                 v-for="(activity, index) in form.activities"
                 :key="activity.key">
                 <template slot="title">
-                  <strong>{{ form.activities[index].activity.name ? form.activities[index].activity.name : `Nuevo Actividad ${index + 1}` }}</strong> 
+                  <strong>{{ form.activities[index].activity.name ? form.activities[index].activity.name : `Nuevo Proceso ${index + 1}` }}</strong> 
                   <b-btn @click.prevent="removeActivity(index)" 
                     v-if="form.activities.length > 1 && !viewOnly"
                     size="sm" 
                     variant="outline-primary icon-btn borderless"
-                    v-b-tooltip.top title="Eliminar Actividad">
+                    v-b-tooltip.top title="Eliminar Proceso">
                     <span class="ion ion-md-close-circle"></span>
                   </b-btn>
                 </template>
