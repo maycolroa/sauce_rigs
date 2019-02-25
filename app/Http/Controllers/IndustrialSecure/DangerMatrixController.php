@@ -450,8 +450,8 @@ class DangerMatrixController extends Controller
         } catch (\Exception $e) {
             //$msg = $e->getMessage();
             DB::rollback();
-            //return $this->respondHttp500();
-            return $e->getMessage();
+            return $this->respondHttp500();
+            //return $e->getMessage();
         }
 
         return $this->respondHttp200([
