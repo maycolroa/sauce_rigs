@@ -1,7 +1,7 @@
 <template>
   <div>
     <h4 class="font-weight-bold mb-4">
-       <span class="text-muted font-weight-light">Actividades /</span> Crear
+       <span class="text-muted font-weight-light">Procesos /</span> Crear
     </h4>
 
 
@@ -26,7 +26,7 @@ import Alerts from '@/utils/Alerts.js';
 export default {
   name: 'industrialsecure-activities-create',
   metaInfo: {
-    title: 'Actividades - Crear'
+    title: 'Procesos - Crear'
   },
   components:{
     IndustrialSecureActivityForm

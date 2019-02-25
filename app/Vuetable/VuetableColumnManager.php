@@ -81,7 +81,7 @@ class VuetableColumnManager
             ['name' => 'supervisor', 'data'=> 'supervisor', 'title'=> 'Supervisor', 'sortable'=> true, 'searchable'=> false, 'detail'=> false, 'key'=> false ],
         ];
 
-        $colums = array_merge($colums, $this->getColumnsLocations());
+        $colums = array_merge($colums, $this->getColumnsLocations(['process' => 'Macroproceso']));
         $colums = array_merge($colums, [
             ['name' => '', 'data'=> 'controlls', 'title'=> 'Controles', 'sortable'=> false, 'searchable'=> false, 'detail'=> false, 'key'=> false ],
         ]);
@@ -94,30 +94,49 @@ class VuetableColumnManager
      * 
      * @return Array
      */
-    private function getColumnsLocations()
+    private function getColumnsLocations($headers = [])
     {
         $colums = [];
 
         $confLocation = $this->getLocationFormConfModule();
+
+        $columnsHeader = [
+            'regional' => 'Regional',
+            'headquarter' => 'Sede',
+            'area' => 'Área',
+            'process' => 'Proceso'
+        ];
+
+        if (isset($headers['regional']) && $headers['regional'])
+            $columnsHeader['regional'] = $headers['regional'];
+        
+        if (isset($headers['headquarter']) && $headers['headquarter'])
+            $columnsHeader['headquarter'] = $headers['headquarter'];
+
+        if (isset($headers['area']) && $headers['area'])
+            $columnsHeader['area'] = $headers['area'];
+
+        if (isset($headers['process']) && $headers['process'])
+            $columnsHeader['process'] = $headers['process'];
         
         if ($confLocation['regional'] == 'SI')
             array_push($colums, [
-                'name'=>'regional', 'data'=>'regional', 'title'=>'Regional', 'sortable'=>true, 'searchable'=>false, 'detail'=>false, 'key'=>false
+                'name'=>'regional', 'data'=>'regional', 'title'=>$columnsHeader['regional'], 'sortable'=>true, 'searchable'=>false, 'detail'=>false, 'key'=>false
             ]);
 
         if ($confLocation['headquarter'] == 'SI')
             array_push($colums, [
-                'name'=>'headquarter', 'data'=>'headquarter', 'title'=>'Sede', 'sortable'=>true, 'searchable'=>false, 'detail'=>false, 'key'=>false
+                'name'=>'headquarter', 'data'=>'headquarter', 'title'=>$columnsHeader['headquarter'], 'sortable'=>true, 'searchable'=>false, 'detail'=>false, 'key'=>false
             ]);
 
         if ($confLocation['area'] == 'SI')
             array_push($colums, [
-                'name'=>'area', 'data'=>'area', 'title'=>'Área', 'sortable'=>true, 'searchable'=>false, 'detail'=>false, 'key'=>false
+                'name'=>'area', 'data'=>'area', 'title'=>$columnsHeader['area'], 'sortable'=>true, 'searchable'=>false, 'detail'=>false, 'key'=>false
             ]);
 
         if ($confLocation['process'] == 'SI')
             array_push($colums, [
-                'name'=>'process', 'data'=>'process', 'title'=>'Proceso', 'sortable'=>true, 'searchable'=>false, 'detail'=>false, 'key'=>false
+                'name'=>'process', 'data'=>'process', 'title'=>$columnsHeader['process'], 'sortable'=>true, 'searchable'=>false, 'detail'=>false, 'key'=>false
             ]);
 
         return $colums;

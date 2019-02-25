@@ -18,6 +18,18 @@ use App\Traits\AudiometryTrait;
 
 class AudiometryController extends Controller
 {
+    /**
+     * creates and instance and middlewares are checked
+     */
+    function __construct()
+    {
+        $this->middleware('auth');
+        $this->middleware('permission:biologicalMonitoring_audiometry_c', ['only' => ['store', 'import', 'downloadTemplateImport']]);
+        $this->middleware('permission:biologicalMonitoring_audiometry_r');
+        $this->middleware('permission:biologicalMonitoring_audiometry_u', ['only' => 'update']);
+        $this->middleware('permission:biologicalMonitoring_audiometry_d', ['only' => 'destroy']);
+    }
+
     use AudiometryTrait;
     /**
      * Display index.

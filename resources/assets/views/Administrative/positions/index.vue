@@ -8,13 +8,14 @@
     <div class="col-md">
       <b-card no-body>
         <b-card-header class="with-elements">
-          <div class="card-title-elements">
+          <div class="card-title-elements" v-if="auth.can['positions_c']">
             <b-btn :to="{name:'administrative-positions-create'}" variant="primary">Crear Cargo</b-btn>
           </div>
         </b-card-header>
         <b-card-body>
              <vue-table
                 configName="administrative-positions"
+                v-if="auth.can['positions_r']"
                 ></vue-table>
         </b-card-body>
     </b-card>

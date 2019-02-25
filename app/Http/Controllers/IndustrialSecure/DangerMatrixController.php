@@ -25,6 +25,18 @@ use DB;
 class DangerMatrixController extends Controller
 {
     /**
+     * creates and instance and middlewares are checked
+     */
+    function __construct()
+    {
+        $this->middleware('auth');
+        $this->middleware('permission:dangerMatrix_c', ['only' => 'store']);
+        $this->middleware('permission:dangerMatrix_r');
+        $this->middleware('permission:dangerMatrix_u', ['only' => 'update']);
+        $this->middleware('permission:dangerMatrix_d', ['only' => 'destroy']);
+    }
+
+    /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
@@ -219,21 +231,21 @@ class DangerMatrixController extends Controller
             'activities.*.dangers.*.visitor_quantity' => 'required|integer|min:0',
             'activities.*.dangers.*.student_quantity' => 'required|integer|min:0',
             'activities.*.dangers.*.esc_quantity' => 'required|integer|min:0',
-            'activities.*.dangers.*.existing_controls_engineering_controls' => 'required|array',
-            'activities.*.dangers.*.existing_controls_substitution' => 'required',
-            'activities.*.dangers.*.existing_controls_warning_signage' => 'required|array',
-            'activities.*.dangers.*.existing_controls_administrative_controls' => 'required|array',
-            'activities.*.dangers.*.existing_controls_epp' => 'required|array',
+            'activities.*.dangers.*.existing_controls_engineering_controls' => 'nullable|array',
+            'activities.*.dangers.*.existing_controls_substitution' => 'nullable',
+            'activities.*.dangers.*.existing_controls_warning_signage' => 'nullable|array',
+            'activities.*.dangers.*.existing_controls_administrative_controls' => 'nullable|array',
+            'activities.*.dangers.*.existing_controls_epp' => 'nullable|array',
             'activities.*.dangers.*.legal_requirements' => 'required|in:SI,NO',
             'activities.*.dangers.*.quality_policies' => 'required|in:SI,NO',
             'activities.*.dangers.*.objectives_goals' => 'required|in:SI,NO',
             'activities.*.dangers.*.risk_acceptability' => 'required|in:SI,NO',
-            'activities.*.dangers.*.intervention_measures_elimination' => 'required',
-            'activities.*.dangers.*.intervention_measures_substitution' => 'required',
-            'activities.*.dangers.*.intervention_measures_engineering_controls' => 'required|array',
-            'activities.*.dangers.*.intervention_measures_warning_signage' => 'required|array',
-            'activities.*.dangers.*.intervention_measures_administrative_controls' => 'required|array',
-            'activities.*.dangers.*.intervention_measures_epp' => 'required|array',
+            'activities.*.dangers.*.intervention_measures_elimination' => 'nullable',
+            'activities.*.dangers.*.intervention_measures_substitution' => 'nullable',
+            'activities.*.dangers.*.intervention_measures_engineering_controls' => 'nullable|array',
+            'activities.*.dangers.*.intervention_measures_warning_signage' => 'nullable|array',
+            'activities.*.dangers.*.intervention_measures_administrative_controls' => 'nullable|array',
+            'activities.*.dangers.*.intervention_measures_epp' => 'nullable|array',
             'activities.*.dangers.*.qualifications' => 'required|array',
             'activities.*.dangers.*.qualifications.*.value_id' => 'required',
         ];

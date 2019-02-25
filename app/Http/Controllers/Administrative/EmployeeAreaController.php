@@ -12,6 +12,18 @@ use Session;
 class EmployeeAreaController extends Controller
 {
     /**
+     * creates and instance and middlewares are checked
+     */
+    function __construct()
+    {
+        $this->middleware('auth');
+        $this->middleware('permission:areas_c', ['only' => 'store']);
+        $this->middleware('permission:areas_r', ['except' =>'multiselect']);
+        $this->middleware('permission:areas_u', ['only' => 'update']);
+        $this->middleware('permission:areas_d', ['only' => 'destroy']);
+    }
+
+    /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response

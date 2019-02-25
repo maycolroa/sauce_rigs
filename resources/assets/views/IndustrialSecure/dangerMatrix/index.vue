@@ -8,7 +8,7 @@
     <div class="col-md">
       <b-card no-body>
         <b-card-header class="with-elements">
-          <div class="card-title-elements">
+          <div class="card-title-elements" v-if="auth.can['dangerMatrix_c']">
             <b-btn :to="{name:'industrialsecure-dangermatrix-create'}" variant="primary">Crear Matriz de Peligro</b-btn>
           </div>
         </b-card-header>
@@ -16,6 +16,7 @@
              <vue-table
                 configName="industrialsecure-dangermatrix"
                 :customColumnsName="true"
+                v-if="auth.can['dangerMatrix_r']" 
                 ></vue-table>
         </b-card-body>
     </b-card>

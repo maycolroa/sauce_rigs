@@ -1,7 +1,7 @@
 <template>
   <div>
     <h4 class="font-weight-bold mb-4">
-       <span class="text-muted font-weight-light">Actividades /</span> Ver
+       <span class="text-muted font-weight-light">Procesos /</span> Ver
     </h4>
 
     <div class="col-md">
@@ -24,7 +24,7 @@ import Alerts from '@/utils/Alerts.js';
 export default {
   name: 'industrialsecure-activities-view',
   metaInfo: {
-    title: 'Actividades - Ver'
+    title: 'Procesos - Ver'
   },
   components:{
     IndustrialSecureActivityForm

@@ -21,7 +21,8 @@ export default [
         data: {
           routePush: { name: 'administrative-users-edit' },
           id: 'id',
-        }
+        },
+        permission: 'users_u'
       }, {
         config: {
           color: 'outline-info',
@@ -31,7 +32,8 @@ export default [
         data: {
           routePush: { name: 'administrative-users-view' },
           id: 'id',
-        }
+        },
+        permission: 'users_r'
       }]
     },
     {
@@ -43,6 +45,7 @@ export default [
           id: 'id',
           messageConfirmation: 'Esta seguro de borrar el usuario del __name__'
         },
+        permission: 'users_d'
       }],
     }],
     configuration: {
@@ -66,7 +69,8 @@ export default [
         data: {
           routePush: { name: 'administrative-roles-edit' },
           id: 'id',
-        }
+        },
+        permission: 'roles_u'
       }, {
         config: {
           color: 'outline-info',
@@ -76,7 +80,8 @@ export default [
         data: {
           routePush: { name: 'administrative-roles-view' },
           id: 'id',
-        }
+        },
+        permission: 'roles_r'
       }]
     },
     {
@@ -88,6 +93,7 @@ export default [
           id: 'id',
           messageConfirmation: 'Esta seguro de borrar el rol del __name__'
         },
+        permission: 'roles_d'
       }],
     }],
     configuration: {
@@ -113,7 +119,8 @@ export default [
         data: {
           routePush: { name: 'administrative-positions-edit' },
           id: 'id',
-        }
+        },
+        permission: 'positions_u'
       }, {
         config: {
           color: 'outline-info',
@@ -123,7 +130,8 @@ export default [
         data: {
           routePush: { name: 'administrative-positions-view' },
           id: 'id',
-        }
+        },
+        permission: 'positions_r'
       }]
     },
     {
@@ -135,6 +143,7 @@ export default [
           id: 'id',
           messageConfirmation: 'Esta seguro de borrar el cargo __name__'
         },
+        permission: 'positions_d'
       }],
     }],
     configuration: {
@@ -160,7 +169,8 @@ export default [
         data: {
           routePush: { name: 'administrative-regionals-edit' },
           id: 'id',
-        }
+        },
+        permission: 'regionals_u'
       }, {
         config: {
           color: 'outline-info',
@@ -170,7 +180,8 @@ export default [
         data: {
           routePush: { name: 'administrative-regionals-view' },
           id: 'id',
-        }
+        },
+        permission: 'regionals_r'
       }]
     },
     {
@@ -182,6 +193,7 @@ export default [
           id: 'id',
           messageConfirmation: 'Esta seguro de borrar la regional __name__'
         },
+        permission: 'regionals_d'
       }],
     }],
     configuration: {
@@ -207,7 +219,8 @@ export default [
         data: {
           routePush: { name: 'administrative-businesses-edit' },
           id: 'id',
-        }
+        },
+        permission: 'businesses_u'
       }, {
         config: {
           color: 'outline-info',
@@ -217,7 +230,8 @@ export default [
         data: {
           routePush: { name: 'administrative-businesses-view' },
           id: 'id',
-        }
+        },
+        permission: 'businesses_r'
       }]
     },
     {
@@ -229,6 +243,7 @@ export default [
           id: 'id',
           messageConfirmation: 'Esta seguro de borrar el centro de costo __name__'
         },
+        permission: 'businesses_d'
       }],
     }],
     configuration: {
@@ -255,7 +270,8 @@ export default [
         data: {
           routePush: { name: 'administrative-headquarters-edit' },
           id: 'id',
-        }
+        },
+        permission: 'headquarters_u'
       }, {
         config: {
           color: 'outline-info',
@@ -265,7 +281,8 @@ export default [
         data: {
           routePush: { name: 'administrative-headquarters-view' },
           id: 'id',
-        }
+        },
+        permission: 'headquarters_r'
       }]
     },
     {
@@ -277,6 +294,7 @@ export default [
           id: 'id',
           messageConfirmation: 'Esta seguro de borrar la sede __name__'
         },
+        permission: 'headquarters_d'
       }],
     }],
     configuration: {
@@ -304,7 +322,8 @@ export default [
         data: {
           routePush: { name: 'administrative-areas-edit' },
           id: 'id',
-        }
+        },
+        permission: 'areas_u'
       }, {
         config: {
           color: 'outline-info',
@@ -314,7 +333,8 @@ export default [
         data: {
           routePush: { name: 'administrative-areas-view' },
           id: 'id',
-        }
+        },
+        permission: 'areas_r'
       }]
     },
     {
@@ -326,6 +346,7 @@ export default [
           id: 'id',
           messageConfirmation: 'Esta seguro de borrar el área __name__'
         },
+        permission: 'areas_d'
       }],
     }],
     configuration: {
@@ -354,7 +375,8 @@ export default [
         data: {
           routePush: { name: 'administrative-processes-edit' },
           id: 'id',
-        }
+        },
+        permission: 'processes_u'
       }, {
         config: {
           color: 'outline-info',
@@ -364,7 +386,8 @@ export default [
         data: {
           routePush: { name: 'administrative-processes-view' },
           id: 'id',
-        }
+        },
+        permission: 'processes_r'
       }]
     },
     {
@@ -376,6 +399,7 @@ export default [
           id: 'id',
           messageConfirmation: 'Esta seguro de borrar el proceso __name__'
         },
+        permission: 'processes_d'
       }],
     }],
     configuration: {
@@ -409,7 +433,8 @@ export default [
         data: {
           routePush: { name: 'administrative-employees-edit' },
           id: 'id',
-        }
+        },
+        permission: 'employees_u'
       }, {
         config: {
           color: 'outline-info',
@@ -419,7 +444,8 @@ export default [
         data: {
           routePush: { name: 'administrative-employees-view' },
           id: 'id',
-        }
+        },
+        permission: 'employees_r'
       }]
     },
     {
@@ -431,62 +457,12 @@ export default [
           id: 'id',
           messageConfirmation: 'Esta seguro de borrar el empleado __name__'
         },
+        permission: 'employees_d'
       }],
     }],
     configuration: {
       urlData: '/administration/employee/data',
       filterColumns: true,
-    }
-  },
-  {
-    name: 'configurations-locationlevelform',
-    fields : [
-        {name: 'sau_conf_location_level_forms.id', data: 'id', title:'ID', sortable: false, searchable: false, detail: false, key: true},
-        {name: 'module', data:'module', title: 'Módulo', sortable: false, searchable: false, detail : false, key : false},
-        {name: 'sau_conf_location_level_forms.regional', data:'regional', title: 'Regional',sortable: true, searchable : true, detail : false, key : false},
-        {name: 'sau_conf_location_level_forms.headquarter', data:'headquarter', title : 'Sede',sortable: true, searchable : true, detail : false, key : false},
-        {name : 'sau_conf_location_level_forms.area', data:'area', title : 'Área',sortable: true, searchable : true, detail : false, key : false},
-        {name : 'sau_conf_location_level_forms.process', data:'process', title : 'Proceso ',sortable: true, searchable : true, detail : false, key : false},
-        {name : '', data:'controlls', title : 'Controles',sortable: false, searchable : false, detail : false, key : false},
-    ],
-    'controlls' : [{
-      type: 'push',
-      buttons:[{
-        config: {
-          color:'outline-success',
-          borderless: true,
-          icon:'ion ion-md-create',
-        },
-        data:{
-          routePush: {name: 'configurations-locationlevelform-edit'},
-          id: 'id',
-        }
-      },{
-        config: {
-          color:'outline-info',
-          borderless: true,
-          icon:'ion ion-md-eye',
-        },
-        data:{
-          routePush: {name: 'configurations-locationlevelform-view'},
-          id: 'id',
-        }
-      }]
-    },
-    {
-      type: 'base',
-      buttons: [{
-        name:'delete',
-        data: {
-          action:'/administration/configurations/locationLevelForms/',
-          id: 'id',
-          messageConfirmation : 'Esta seguro de borrar la configuración'
-        },
-      }],
-    }],
-    configuration: {
-        urlData: '/administration/configurations/locationLevelForms/data',
-        filterColumns: true
     }
   }
 ];

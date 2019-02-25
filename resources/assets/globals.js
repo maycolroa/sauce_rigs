@@ -63,6 +63,10 @@ export default function () {
       }
 
       animateScroll()
+    },
+
+    get auth() {
+      return auth
     }
   }
 }

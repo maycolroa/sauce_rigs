@@ -12,6 +12,18 @@ use Session;
 class EmployeeHeadquarterController extends Controller
 {
     /**
+     * creates and instance and middlewares are checked
+     */
+    function __construct()
+    {
+        $this->middleware('auth');
+        $this->middleware('permission:headquarters_c', ['only' => 'store']);
+        $this->middleware('permission:headquarters_r', ['except' =>'multiselect']);
+        $this->middleware('permission:headquarters_u', ['only' => 'update']);
+        $this->middleware('permission:headquarters_d', ['only' => 'destroy']);
+    }
+
+    /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response

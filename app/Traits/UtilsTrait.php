@@ -218,7 +218,11 @@ trait UtilsTrait
 
     protected function tagsPrepare($data)
     {
-        $item = $this->getValuesForMultiselect($data, 'name')->unique();
+        $item = collect([]);
+
+        if (!empty($data))
+            $item = $this->getValuesForMultiselect($data, 'name')->unique();
+
         return $item;
     }
 

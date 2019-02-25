@@ -12,6 +12,18 @@ use Session;
 class EmployeePositionController extends Controller
 {
     /**
+     * creates and instance and middlewares are checked
+     */
+    function __construct()
+    {
+        $this->middleware('auth');
+        $this->middleware('permission:positions_c', ['only' => 'store']);
+        $this->middleware('permission:positions_r', ['except' =>'multiselect']);
+        $this->middleware('permission:positions_u', ['only' => 'update']);
+        $this->middleware('permission:positions_d', ['only' => 'destroy']);
+    }
+
+    /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response

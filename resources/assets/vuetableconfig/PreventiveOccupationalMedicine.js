@@ -27,7 +27,8 @@ export default [
         data:{
           routePush: {name: 'biologicalmonitoring-audiometry-edit'},
           id: 'id',
-        }
+        },
+        permission: 'biologicalMonitoring_audiometry_u'
       },{
         config: {
           color:'outline-info',
@@ -37,7 +38,8 @@ export default [
         data:{
           routePush: {name: 'biologicalmonitoring-audiometry-view'},
           id: 'id',
-        }
+        },
+        permission: 'biologicalMonitoring_audiometry_r'
       },{
         config: {
           color:'outline-success',
@@ -47,7 +49,8 @@ export default [
         data:{
           routePush: {name: 'biologicalmonitoring-audiometry-report'},
           id: 'id',
-        }
+        },
+        permission: 'biologicalMonitoring_audiometry_r'
       }]
     },
     {
@@ -59,6 +62,7 @@ export default [
           id: 'id',
           messageConfirmation : 'Esta seguro de borrar la audiometria del __date__ para el empleado __employee_identification__ - __employee_name__'
         },
+        permission: 'biologicalMonitoring_audiometry_d'
       }],
     }],
     configuration: {
@@ -94,7 +98,8 @@ export default [
         data:{
           routePush: {name: 'biologicalmonitoring-audiometry-edit'},
           id: 'id',
-        }
+        },
+        permission: 'biologicalMonitoring_audiometry_u'
       },{
         config: {
           color:'outline-info',
@@ -104,7 +109,8 @@ export default [
         data:{
           routePush: {name: 'biologicalmonitoring-audiometry-view'},
           id: 'id',
-        }
+        },
+        permission: 'biologicalMonitoring_audiometry_r'
       },{
         config: {
           color:'outline-success',
@@ -114,7 +120,8 @@ export default [
         data:{
           routePush: {name: 'biologicalmonitoring-audiometry-report'},
           id: 'id',
-        }
+        },
+        permission: 'biologicalMonitoring_audiometry_r'
       }]
     },
     {
@@ -126,6 +133,7 @@ export default [
           id: 'id',
           messageConfirmation : 'Esta seguro de borrar la audiometria del __date__ para el empleado __employee_identification__ - __employee_name__'
         },
+        permission: 'biologicalMonitoring_audiometry_d'
       }],
     }],
     configuration: {

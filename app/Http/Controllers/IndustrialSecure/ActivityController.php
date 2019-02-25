@@ -12,6 +12,18 @@ use Session;
 class ActivityController extends Controller
 {
     /**
+     * creates and instance and middlewares are checked
+     */
+    function __construct()
+    {
+        $this->middleware('auth');
+        $this->middleware('permission:activities_c', ['only' => 'store']);
+        $this->middleware('permission:activities_r', ['except' =>'multiselect']);
+        $this->middleware('permission:activities_u', ['only' => 'update']);
+        $this->middleware('permission:activities_d', ['only' => 'destroy']);
+    }
+
+    /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response

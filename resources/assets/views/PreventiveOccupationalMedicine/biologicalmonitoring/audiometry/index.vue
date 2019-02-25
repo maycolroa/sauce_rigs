@@ -9,9 +9,9 @@
       <b-card no-body>
         <b-card-header class="with-elements" v-if="viewIndex">
           <div class="card-title-elements">
-            <b-btn :to="{name:'biologicalmonitoring-audiometry-create'}" variant="primary">Crear Audiometria</b-btn>
-            <b-btn :to="{name:'biologicalmonitoring-audiometry-informs'}" variant="primary">Ver Informes</b-btn>
-            <b-btn :to="{name:'biologicalmonitoring-audiometry-informs-individual'}" variant="primary">Ver Informe Individual</b-btn>
+            <b-btn v-if="auth.can['biologicalMonitoring_audiometry_c']" :to="{name:'biologicalmonitoring-audiometry-create'}" variant="primary">Crear Audiometria</b-btn>
+            <b-btn v-if="auth.can['biologicalMonitoring_audiometry_r']" :to="{name:'biologicalmonitoring-audiometry-informs'}" variant="primary">Ver Informes</b-btn>
+            <b-btn v-if="auth.can['biologicalMonitoring_audiometry_r']" :to="{name:'biologicalmonitoring-audiometry-informs-individual'}" variant="primary">Ver Informe Individual</b-btn>
           </div>
           <div class="card-title-elements ml-md-auto">
             <b-dd variant="default" :right="isRTL">
@@ -19,12 +19,12 @@
               <span class='fas fa-cogs'></span>
             </template>
             <input id="fileInputImportAudiometry" type="file" style="display:none" v-on:input="importAudiometry"/>
-            <b-dd-item @click="importAudiometryMessage()">
+            <b-dd-item v-if="auth.can['biologicalMonitoring_audiometry_c']" @click="importAudiometryMessage()">
               <i class="fas fa-upload"></i> &nbsp;Importar
             </b-dd-item>
-            <b-dd-item href="/templates/audiometryimport" target="blank"><i class="fas fa-file-alt"></i> &nbsp;Generar Plantilla</b-dd-item>
+            <b-dd-item v-if="auth.can['biologicalMonitoring_audiometry_c']" href="/templates/audiometryimport" target="blank"><i class="fas fa-file-alt"></i> &nbsp;Generar Plantilla</b-dd-item>
             <b-dd-divider></b-dd-divider>
-            <b-dd-item @click="exportAudiometry()"><i class="fas fa-download"></i> &nbsp;Exportar</b-dd-item>
+            <b-dd-item v-if="auth.can['biologicalMonitoring_audiometry_r']" @click="exportAudiometry()"><i class="fas fa-download"></i> &nbsp;Exportar</b-dd-item>
           </b-dd>
           </div>
         </b-card-header>
@@ -33,6 +33,7 @@
                 :configName="configNameTable"
                 :viewIndex="viewIndex"
                 :modelId="employeeId"
+                v-if="auth.can['biologicalMonitoring_audiometry_r']"
                 ></vue-table>
         </b-card-body>
     </b-card>

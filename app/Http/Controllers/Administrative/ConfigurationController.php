@@ -11,6 +11,16 @@ use Session;
 class ConfigurationController extends Controller
 {
     /**
+     * creates and instance and middlewares are checked
+     */
+    function __construct()
+    {
+        $this->middleware('auth');
+        $this->middleware('permission:configurations_c|configurations_u', ['only' => 'store']);
+        $this->middleware('permission:configurations_r');
+    }
+
+    /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response

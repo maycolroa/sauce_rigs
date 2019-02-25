@@ -1,15 +1,15 @@
 <template>
     <div class="col-md-12">
         <b-form-row>
-            <vue-ajax-advanced-select v-if="inputs.regional == 'SI'" :disabled="viewOnly" class="col-md-6" v-model="locationLevel.employee_regional_id" :selected-object="locationLevel.multiselect_regional" name="employee_regional_id" label="Regional" placeholder="Seleccione la regional" :url="regionalsDataUrl" :error="form.errorsFor('locations.employee_regional_id')">
+            <vue-ajax-advanced-select v-if="inputs.regional == 'SI'" :disabled="viewOnly" class="col-md-6" v-model="locationLevel.employee_regional_id" :selected-object="locationLevel.multiselect_regional" name="employee_regional_id" :label="labelRegional" :placeholder="`Seleccione la ${labelRegional}`" :url="regionalsDataUrl" :error="form.errorsFor('locations.employee_regional_id')">
                 </vue-ajax-advanced-select>
-            <vue-ajax-advanced-select v-if="inputs.headquarter == 'SI'" :disabled="viewOnly || !locationLevel.employee_regional_id" class="col-md-6" v-model="locationLevel.employee_headquarter_id" :selected-object="locationLevel.multiselect_headquarter" name="employee_headquarter_id" label="Sede" placeholder="Seleccione la sede" :url="headquartersDataUrl" :parameters="{regional: locationLevel.employee_regional_id }" :emptyAll="empty.headquarter" @updateEmpty="updateEmptyKey('headquarter')" :error="form.errorsFor('locations.employee_headquarter_id')">
+            <vue-ajax-advanced-select v-if="inputs.headquarter == 'SI'" :disabled="viewOnly || !locationLevel.employee_regional_id" class="col-md-6" v-model="locationLevel.employee_headquarter_id" :selected-object="locationLevel.multiselect_headquarter" name="employee_headquarter_id" :label="labelHeadquarter" :placeholder="`Seleccione la ${labelHeadquarter}`" :url="headquartersDataUrl" :parameters="{regional: locationLevel.employee_regional_id }" :emptyAll="empty.headquarter" @updateEmpty="updateEmptyKey('headquarter')" :error="form.errorsFor('locations.employee_headquarter_id')">
                 </vue-ajax-advanced-select>
         </b-form-row>
         <b-form-row>
-            <vue-ajax-advanced-select v-if="inputs.area == 'SI'" :disabled="viewOnly || !locationLevel.employee_headquarter_id" class="col-md-6" v-model="locationLevel.employee_area_id" :selected-object="locationLevel.multiselect_area" name="employee_area_id" label="Área" placeholder="Seleccione el área" :url="areasDataUrl" :parameters="{headquarter: locationLevel.employee_headquarter_id }" :emptyAll="empty.area" @updateEmpty="updateEmptyKey('area')" :error="form.errorsFor('locations.employee_area_id')">
+            <vue-ajax-advanced-select v-if="inputs.area == 'SI'" :disabled="viewOnly || !locationLevel.employee_headquarter_id" class="col-md-6" v-model="locationLevel.employee_area_id" :selected-object="locationLevel.multiselect_area" name="employee_area_id" :label="labelArea" :placeholder="`Seleccione el ${labelArea}`" :url="areasDataUrl" :parameters="{headquarter: locationLevel.employee_headquarter_id }" :emptyAll="empty.area" @updateEmpty="updateEmptyKey('area')" :error="form.errorsFor('locations.employee_area_id')">
                 </vue-ajax-advanced-select>
-            <vue-ajax-advanced-select v-if="inputs.process == 'SI'" :disabled="viewOnly || !locationLevel.employee_area_id" class="col-md-6" v-model="locationLevel.employee_process_id" :selected-object="locationLevel.multiselect_process" name="employee_process_id" label="Proceso" placeholder="Seleccione el proceso" :url="processesDataUrl" :parameters="{area: locationLevel.employee_area_id }" :emptyAll="empty.process" @updateEmpty="updateEmptyKey('process')" :error="form.errorsFor('locations.employee_process_id')">
+            <vue-ajax-advanced-select v-if="inputs.process == 'SI'" :disabled="viewOnly || !locationLevel.employee_area_id" class="col-md-6" v-model="locationLevel.employee_process_id" :selected-object="locationLevel.multiselect_process" name="employee_process_id" :label="labelProcess" :placeholder="`Seleccione el ${labelProcess}`" :url="processesDataUrl" :parameters="{area: locationLevel.employee_area_id }" :emptyAll="empty.process" @updateEmpty="updateEmptyKey('process')" :error="form.errorsFor('locations.employee_process_id')">
                 </vue-ajax-advanced-select>
         </b-form-row>
     </div>
@@ -28,6 +28,10 @@ export default {
         form: { type: Object, required: true },
         application: { type: String, required: true },
         module: { type: String, required: true },
+        labelRegional: { type: String, default: 'Regional' },
+        labelHeadquarter: { type: String, default: 'Sede' },
+        labelArea: { type: String, default: 'Área' },
+        labelProcess: { type: String, default: 'Proceso' },
         locationLevel: {
             default() {
                 return {

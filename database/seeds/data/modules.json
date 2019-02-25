@@ -53,7 +53,7 @@
         "modules": [
             {
                 "name": "activities",
-                "display_name": "Actividades"
+                "display_name": "SI - Procesos"
             },
             {
                 "name": "dangers",

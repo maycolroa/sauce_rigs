@@ -8,7 +8,7 @@
     <div class="col-md">
       <b-card no-body>
         <b-card-header class="with-elements">
-          <div class="card-title-elements">
+          <div class="card-title-elements" v-if="auth.can['roles_c']">
             <b-btn :to="{name:'administrative-roles-create'}" variant="primary">Crear Rol</b-btn>
           </div>
         </b-card-header>
@@ -16,6 +16,7 @@
              <vue-table
                 configName="administrative-roles"
                 :customColumnsName="true"
+                v-if="auth.can['roles_r']"
                 ></vue-table>
         </b-card-body>
     </b-card>
