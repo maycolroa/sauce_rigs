@@ -11,8 +11,6 @@
         <b-row>
           <b-col>
             <datepicker
-                :calendar-button="true"
-                calendar-button-icon="ion ion-md-calendar"
                 :disabled="disabled"             
                 placeholder="Fecha inicio" 
                 :name="`${name}_1`"
@@ -28,8 +26,6 @@
           </b-col>
           <b-col>
             <datepicker
-                :calendar-button="true"
-                calendar-button-icon="ion ion-md-calendar"
                 :disabled="disabled"             
                 placeholder="Fecha fin" 
                 :name="`${name}_2`"

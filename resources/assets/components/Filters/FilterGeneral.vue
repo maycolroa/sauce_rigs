@@ -45,10 +45,6 @@ import { SweetModal, SweetModalTab } from 'sweet-modal-vue'
 import FilterConfig from '@/filterconfig/';
 
 export default {
-    name: 'filters-filter-general',
-    metaInfo: {
-        title: 'Filtro General'
-    },
     components:{
         VueAdvancedSelect,
         VueDatepickerRange,
@@ -161,7 +157,7 @@ export default {
         this.$emit('input', this.filtersSelected)
     },
     computed: {
-        filtersActive()
+        /*filtersActive()
         {      
             let data = {}
 
@@ -174,7 +170,7 @@ export default {
             }
 
             return data;
-        },
+        },*/
     },
     watch: {
         'filters.regionals.data'() {
@@ -236,7 +232,7 @@ export default {
         },
         updateFilterData(key)
         {
-            this.filtersSelected[key] = this.filters[key].data
+            //this.filtersSelected[key] = this.filters[key].data
             setTimeout(() => {
                 this.filters[key].ready = true
             }, 1000)
