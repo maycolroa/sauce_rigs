@@ -58,6 +58,8 @@
                     <b-row>
                         <b-col><vue-advanced-select :disabled="isLoading" v-model="exposedPopulationCuatSelected" :options="selectBar" :searchable="true" name="exposedPopulationCuatSelected">
                             </vue-advanced-select></b-col>
+                        <b-col><vue-advanced-select :disabled="isLoading" v-model="exposedPopulationCuatPercentageSelected" :options="selectBarPercentage" :searchable="true" name="exposedPopulationCuatPercentageSelected">
+                            </vue-advanced-select></b-col>
                     </b-row>
                     <b-row align-h="end">
                         <b-col cols="6">
@@ -77,6 +79,8 @@
                     <b-row>
                         <b-col><vue-advanced-select :disabled="isLoading" v-model="exposedPopulationCuapSelected" :options="selectBar" :searchable="true" name="exposedPopulationCuapSelected">
                             </vue-advanced-select></b-col>
+                        <b-col><vue-advanced-select :disabled="isLoading" v-model="exposedPopulationCuapPercentageSelected" :options="selectBarPercentage" :searchable="true" name="exposedPopulationCuapPercentageSelected">
+                            </vue-advanced-select></b-col>
                     </b-row>
                     <b-row align-h="end">
                         <b-col cols="6">
@@ -95,6 +99,8 @@
                 <b-card border-variant="primary" title="DX Audiometrias" class="mb-3 box-shadow-none">
                     <b-row>
                         <b-col><vue-advanced-select :disabled="isLoading" v-model="exposedPopulationaudiologicalConditionSelected" :options="selectBar" :searchable="true" name="exposedPopulationaudiologicalConditionSelected">
+                            </vue-advanced-select></b-col>
+                        <b-col><vue-advanced-select :disabled="isLoading" v-model="exposedPopulationaudiologicalConditionPercentageSelected" :options="selectBarPercentage" :searchable="true" name="exposedPopulationaudiologicalConditionPercentageSelected">
                             </vue-advanced-select></b-col>
                     </b-row>
                     <b-row align-h="end">
@@ -145,6 +151,7 @@ export default {
         return {
             filters: [],
             selectBar: [],
+            selectBarPercentage: [],
             isLoading: false,
 
             airLeftPtaPie: {
@@ -184,114 +191,322 @@ export default {
             exposedPopulationSelected: 'employee_regional_id',
             exposedPopulationCuat: {
                 employee_regional_id: {
-                    labels: [],
-                    datasets: []
+                    total: {
+                        labels: [],
+                        datasets: []
+                    },
+                    percentage_x_employee: {
+                        labels: [],
+                        datasets: []
+                    },
+                    percentage_x_category: {
+                        labels: [],
+                        datasets: []
+                    }
                 },
                 employee_headquarter_id: {
-                    labels: [],
-                    datasets: []
+                    total: {
+                        labels: [],
+                        datasets: []
+                    },
+                    percentage_x_employee: {
+                        labels: [],
+                        datasets: []
+                    },
+                    percentage_x_category: {
+                        labels: [],
+                        datasets: []
+                    }
                 },
                 employee_area_id: {
-                    labels: [],
-                    datasets: []
+                    total: {
+                        labels: [],
+                        datasets: []
+                    },
+                    percentage_x_employee: {
+                        labels: [],
+                        datasets: []
+                    },
+                    percentage_x_category: {
+                        labels: [],
+                        datasets: []
+                    }
                 },
                 employee_process_id: {
-                    labels: [],
-                    datasets: []
+                    total: {
+                        labels: [],
+                        datasets: []
+                    },
+                    percentage_x_employee: {
+                        labels: [],
+                        datasets: []
+                    },
+                    percentage_x_category: {
+                        labels: [],
+                        datasets: []
+                    }
                 },
                 employee_business_id: {
-                    labels: [],
-                    datasets: []
+                    total: {
+                        labels: [],
+                        datasets: []
+                    },
+                    percentage_x_employee: {
+                        labels: [],
+                        datasets: []
+                    },
+                    percentage_x_category: {
+                        labels: [],
+                        datasets: []
+                    }
                 },
                 employee_position_id: {
-                    labels: [],
-                    datasets: []
+                    total: {
+                        labels: [],
+                        datasets: []
+                    },
+                    percentage_x_employee: {
+                        labels: [],
+                        datasets: []
+                    },
+                    percentage_x_category: {
+                        labels: [],
+                        datasets: []
+                    }
                 }
             },
             exposedPopulationCuatSelected: 'employee_regional_id',
+            exposedPopulationCuatPercentageSelected: 'total',
             exposedPopulationCuap: {
                 employee_regional_id: {
-                    labels: [],
-                    datasets: []
+                    total: {
+                        labels: [],
+                        datasets: []
+                    },
+                    percentage_x_employee: {
+                        labels: [],
+                        datasets: []
+                    },
+                    percentage_x_category: {
+                        labels: [],
+                        datasets: []
+                    }
                 },
                 employee_headquarter_id: {
-                    labels: [],
-                    datasets: []
+                    total: {
+                        labels: [],
+                        datasets: []
+                    },
+                    percentage_x_employee: {
+                        labels: [],
+                        datasets: []
+                    },
+                    percentage_x_category: {
+                        labels: [],
+                        datasets: []
+                    }
                 },
                 employee_area_id: {
-                    labels: [],
-                    datasets: []
+                    total: {
+                        labels: [],
+                        datasets: []
+                    },
+                    percentage_x_employee: {
+                        labels: [],
+                        datasets: []
+                    },
+                    percentage_x_category: {
+                        labels: [],
+                        datasets: []
+                    }
                 },
                 employee_process_id: {
-                    labels: [],
-                    datasets: []
+                    total: {
+                        labels: [],
+                        datasets: []
+                    },
+                    percentage_x_employee: {
+                        labels: [],
+                        datasets: []
+                    },
+                    percentage_x_category: {
+                        labels: [],
+                        datasets: []
+                    }
                 },
                 employee_business_id: {
-                    labels: [],
-                    datasets: []
+                    total: {
+                        labels: [],
+                        datasets: []
+                    },
+                    percentage_x_employee: {
+                        labels: [],
+                        datasets: []
+                    },
+                    percentage_x_category: {
+                        labels: [],
+                        datasets: []
+                    }
                 },
                 employee_position_id: {
-                    labels: [],
-                    datasets: []
+                    total: {
+                        labels: [],
+                        datasets: []
+                    },
+                    percentage_x_employee: {
+                        labels: [],
+                        datasets: []
+                    },
+                    percentage_x_category: {
+                        labels: [],
+                        datasets: []
+                    }
                 }
             },
             exposedPopulationCuapSelected: 'employee_regional_id',
+            exposedPopulationCuapPercentageSelected: 'total',
             exposedPopulationaudiologicalCondition: {
                 employee_regional_id: {
-                    labels: [],
-                    datasets: {
-                        count: []
+                    total: {
+                        labels: [],
+                        datasets: {
+                            count: []
+                        }
+                    },
+                    percentage_x_employee: {
+                        labels: [],
+                        datasets: {
+                            count: []
+                        }
+                    },
+                    percentage_x_category: {
+                        labels: [],
+                        datasets: {
+                            count: []
+                        }
                     }
                 },
                 employee_headquarter_id: {
-                    labels: [],
-                    datasets: {
-                        count: []
+                    total: {
+                        labels: [],
+                        datasets: {
+                            count: []
+                        }
+                    },
+                    percentage_x_employee: {
+                        labels: [],
+                        datasets: {
+                            count: []
+                        }
+                    },
+                    percentage_x_category: {
+                        labels: [],
+                        datasets: {
+                            count: []
+                        }
                     }
                 },
                 employee_area_id: {
-                    labels: [],
-                    datasets: {
-                        count: []
+                    total: {
+                        labels: [],
+                        datasets: {
+                            count: []
+                        }
+                    },
+                    percentage_x_employee: {
+                        labels: [],
+                        datasets: {
+                            count: []
+                        }
+                    },
+                    percentage_x_category: {
+                        labels: [],
+                        datasets: {
+                            count: []
+                        }
                     }
                 },
                 employee_process_id: {
-                    labels: [],
-                    datasets: {
-                        count: []
+                    total: {
+                        labels: [],
+                        datasets: {
+                            count: []
+                        }
+                    },
+                    percentage_x_employee: {
+                        labels: [],
+                        datasets: {
+                            count: []
+                        }
+                    },
+                    percentage_x_category: {
+                        labels: [],
+                        datasets: {
+                            count: []
+                        }
                     }
                 },
                 employee_business_id: {
-                    labels: [],
-                    datasets: {
-                        count: []
+                    total: {
+                        labels: [],
+                        datasets: {
+                            count: []
+                        }
+                    },
+                    percentage_x_employee: {
+                        labels: [],
+                        datasets: {
+                            count: []
+                        }
+                    },
+                    percentage_x_category: {
+                        labels: [],
+                        datasets: {
+                            count: []
+                        }
                     }
                 },
                 employee_position_id: {
-                    labels: [],
-                    datasets: {
-                        count: []
+                    total: {
+                        labels: [],
+                        datasets: {
+                            count: []
+                        }
+                    },
+                    percentage_x_employee: {
+                        labels: [],
+                        datasets: {
+                            count: []
+                        }
+                    },
+                    percentage_x_category: {
+                        labels: [],
+                        datasets: {
+                            count: []
+                        }
                     }
                 }
             },
             exposedPopulationaudiologicalConditionSelected: 'employee_regional_id',
+            exposedPopulationaudiologicalConditionPercentageSelected: 'total',
         }
     },
     created(){
         this.fetchSelect('selectBar', '/selects/multiselectBar')
+        this.fetchSelect('selectBarPercentage', '/selects/multiselectBarPercentage')
     },
     computed: {
         exposedPopulationData: function() {
             return this.exposedPopulation[this.exposedPopulationSelected]
         },
         exposedPopulationCuatData: function() {
-            return this.exposedPopulationCuat[this.exposedPopulationCuatSelected]
+            return this.exposedPopulationCuat[this.exposedPopulationCuatSelected][this.exposedPopulationCuatPercentageSelected]
         },
         exposedPopulationCuapData: function() {
-            return this.exposedPopulationCuap[this.exposedPopulationCuapSelected]
+            return this.exposedPopulationCuap[this.exposedPopulationCuapSelected][this.exposedPopulationCuapPercentageSelected]
         },
         exposedPopulationaudiologicalConditionData: function() {
-            return this.exposedPopulationaudiologicalCondition[this.exposedPopulationaudiologicalConditionSelected]
+            return this.exposedPopulationaudiologicalCondition[this.exposedPopulationaudiologicalConditionSelected][this.exposedPopulationaudiologicalConditionPercentageSelected]
         }
     },
     watch: {

@@ -60,6 +60,7 @@ Route::middleware(['auth'])->group(function () {
         Route::post('businesses', 'Administrative\EmployeeBusinessController@multiselect');
         Route::post('eps', 'ApplicationController@multiselectEps');
         Route::post('multiselectBar', 'PreventiveOccupationalMedicine\BiologicalMonitoring\AudiometryInformController@multiselectBar');
+        Route::post('multiselectBarPercentage', 'PreventiveOccupationalMedicine\BiologicalMonitoring\AudiometryInformController@multiselectBarPercentage');
         Route::post('dmActivities', 'IndustrialSecure\ActivityController@multiselect');
         Route::post('dmDangers', 'IndustrialSecure\DangerController@multiselect');
         Route::post('dmGeneratedDangers', 'MultiSelectRadioController@dmGeneratedDangers');
