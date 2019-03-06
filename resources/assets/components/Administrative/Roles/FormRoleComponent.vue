@@ -47,7 +47,9 @@
                   <b-list-group>
                     <b-list-group-item v-for="(itemPermission, indexPermission) in item.permissions" 
                         class="d-flex justify-content-between align-items-center" :key="indexPermission">
-                      <strong>{{ itemPermission.name }}</strong> <span class="badge badge-secondary" v-if="!viewOnly" style="cursor: pointer;" @click="removePermission(index, indexPermission, itemPermission)"><i class="ion ion-md-close"></i></span>
+                      <strong>{{ itemPermission.name }}</strong>
+                      <span class="badge badge-secondary" v-if="!viewOnly && auth.can[itemPermission.value]" style="cursor: pointer;" @click="removePermission(index, indexPermission, itemPermission)"><i class="ion ion-md-close"></i></span>
+                      <span class="badge badge-secondary" v-else-if="!viewOnly && !auth.can[itemPermission.value]" v-b-popover.hover.focus.left="'No puede remover este permiso'" ><i class="ion ion-ios-lock"></i></span>
                     </b-list-group-item>
                   </b-list-group>
                 </b-card-body>
