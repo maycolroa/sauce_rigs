@@ -24,14 +24,10 @@ if (token) {
   console.error('CSRF token not found: https://laravel.com/docs/csrf#csrf-x-csrf-token');
 }
 
-let auth = document.head.querySelector('meta[name="auth"]');
-
-if (auth) {
-  window.auth = JSON.parse(auth.content);
-} else {
+if (typeof authGlobal !== 'undefined')
+  window.auth = authGlobal
+else
   window.auth = {}
-}
-
 /**
  * Echo exposes an expressive API for subscribing to channels and listening
  * for events that are broadcast by Laravel. Echo and event broadcasting
