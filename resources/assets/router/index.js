@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import Router from 'vue-router'
+import { middleware } from 'vue-router-middleware'
 import Meta from 'vue-meta'
 import LayoutMaster from '@/views/layoutMaster'
 import IndexPage from '@/views/indexPage'
@@ -22,24 +23,26 @@ const router = new Router({
   base: '/',
   mode: 'history',
   routes: [
-    { 
-      path: '', 
-      component: LayoutMaster,
-      children: [
-        {
-          path: '',
-          name: '',
-          component: IndexPage
-        },
-      ]
-        .concat(Administrative) 
-        .concat(IndustrialHygiene)
-        .concat(IndustrialSecure)
-        .concat(LegalAspects)
-        .concat(MeasurementMonitoring)
-        .concat(PreventiveOccupationalMedicine)
-        .concat(TrainingQualification)    
-    }
+    ...middleware('require-auth', [
+      { 
+        path: '', 
+        component: LayoutMaster,
+        children: [
+          {
+            path: '',
+            name: '',
+            component: IndexPage
+          },
+        ]
+          .concat(Administrative) 
+          .concat(IndustrialHygiene)
+          .concat(IndustrialSecure)
+          .concat(LegalAspects)
+          .concat(MeasurementMonitoring)
+          .concat(PreventiveOccupationalMedicine)
+          .concat(TrainingQualification)    
+      }
+    ])
   ]
 })
 
