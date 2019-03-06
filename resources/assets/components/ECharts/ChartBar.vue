@@ -31,10 +31,7 @@ import 'echarts/lib/component/legend'
 const colors = ['#c23531','#2f4554', '#61a0a8', '#d48265', '#91c7ae','#749f83',  '#ca8622', '#bda29a','#6e7074', '#546570', '#c4ccd3', '#647c8a', '#3f51b5', '#2196f3', '#00b862', '#afdf0a', '#a7b61a', '#f3e562', '#ff9800', '#ff5722', '#ff4514', '#647c8a', '#3f51b5', '#2196f3', '#00b862', '#afdf0a'];
 
 export default {
-  name: 'chart-bar',
-  metaInfo: {
-    title: 'Informes'
-  },
+  name: 'chart-bar',    
   props:{
     chartData: {
         type: Object,
@@ -100,7 +97,8 @@ export default {
                     normal: {
                         show: true,
                         position: 'right',
-                        color: 'black'
+                        color: 'black',
+                        formatter: this.formatter,
                     }
                 },
                 itemStyle: {
@@ -142,6 +140,9 @@ export default {
     },
     barHeight() {
         return this.height
+    },
+    formatter() {
+        return this.chartData.datasets.type ? (this.chartData.datasets.type == 'percentage' ? '{c}%' : '{c}') : '{c}';
     }
   },
   methods: {

@@ -34,6 +34,12 @@ class InformManagerAudiometry
         ['sau_employees_positions', 'employee_position_id']
     ];
 
+    const TYPE_PERCENTAGE = [
+        'total' => [],
+        'percentage_x_employee' => [],
+        'percentage_x_category' => []
+    ];
+
     /**
      * this array must contain only the identifiers according to the case of the filter
      * @var array
@@ -46,6 +52,7 @@ class InformManagerAudiometry
     protected $positions;
     protected $years;
     protected $dateRange;
+    protected $totalEmployee;
 
     /**
      * create an instance and set the attribute class
@@ -61,6 +68,7 @@ class InformManagerAudiometry
         $this->positions = $positions;
         $this->years = $years;
         $this->dateRange = $dateRange;
+        $this->totalEmployee = $this->getTotalEmployee();
     }
 
     /**
@@ -190,13 +198,37 @@ class InformManagerAudiometry
     private function exposedPopulationState($state)
     {
         $columns = $this::GROUPING_COLUMNS;
-        $informData = collect([]);
+        $informData = [];
 
         foreach ($columns as $column) {
-            $informData->put($column[1], $this->exposedPopulationForState($column[0], $column[1], $state));
+            $informData[$column[1]] = $this::TYPE_PERCENTAGE;
+            $result_total = $this->exposedPopulationForState($column[0], $column[1], $state);
+            
+            $informData[$column[1]]['total'] = $result_total;
+            $informData[$column[1]]['percentage_x_employee'] = $this->percentageDataset($result_total->toArray(), $this->totalEmployee);
+            $informData[$column[1]]['percentage_x_category'] = $this->percentageDataset($result_total->toArray());
         }
-    
-        return $informData->toArray();
+
+        return $informData;
+    }
+
+    private function percentageDataset($data, $totalData = null)
+    {
+        if (!$totalData)
+            $total = $data['datasets']['count'];
+        else 
+            $total = $totalData;
+        
+        $data['datasets']['type'] = 'percentage';
+
+        foreach ($data['datasets']['data'] as $key => $value)
+        {
+            $data['datasets']['data'][$key]['value'] = round(
+                ($data['datasets']['data'][$key]['value'] / $total) * 100
+            , 1);
+        }
+
+        return $data;
     }
 
     private function exposedPopulationForState($table, $column, $state)
@@ -228,13 +260,42 @@ class InformManagerAudiometry
     public function exposedPopulationaudiologicalCondition()
     {
         $columns = $this::GROUPING_COLUMNS;
-        $informData = collect([]);
+        $informData = [];
 
         foreach ($columns as $column) {
-            $informData->put($column[1], $this->exposedPopulationaudiologicalConditionForColumns($column[0], $column[1]));
+            $informData[$column[1]] = $this::TYPE_PERCENTAGE;
+            $result_total = $this->exposedPopulationaudiologicalConditionForColumns($column[0], $column[1]);
+            
+            $informData[$column[1]]['total'] = $result_total;
+            $informData[$column[1]]['percentage_x_employee'] = $this->percentageMultiDataset($result_total->toArray(), true);
+            $informData[$column[1]]['percentage_x_category'] = $this->percentageMultiDataset($result_total->toArray());
         }
     
-        return $informData->toArray();
+        return $informData;
+    }
+
+    private function percentageMultiDataset($data, $totalData = false)
+    {        
+        foreach ($data['datasets']['data'] as $key => $value)
+        {
+            if ($value['name'] !== '')
+            {
+                if (!$totalData)
+                    $total = $data['datasets']['count'][$value['name']];
+                else 
+                    $total = array_sum($data['datasets']['count']);
+
+                foreach ($value['data'] as $key2 => $value2)
+                { 
+                    $data['datasets']['data'][$key]['data'][$key2]['value'] = round(
+                        ($data['datasets']['data'][$key]['data'][$key2]['value'] / $total) * 100
+                    , 1);
+                    $data['datasets']['data'][$key]['label']['normal']['formatter'] = "{c}%";
+                }
+            }
+        }
+
+        return $data;
     }
     
     private function exposedPopulationaudiologicalConditionForColumns($table, $column)
@@ -347,7 +408,8 @@ class InformManagerAudiometry
                     "normal" => [
                         "show" => true,
                         "position" => "right",
-                        "color" => "black"
+                        "color" => "black",
+                        "formatter" => "{c}"
                     ]
                 ]
             ];
@@ -382,5 +444,24 @@ class InformManagerAudiometry
                 'series' => $barSeries
             ]
         ]);
+    }
+
+    /**
+     * Return the total amount of exposed population
+     *
+     * @return void
+     */
+    private function getTotalEmployee()
+    {
+        $exposedPopulation = Employee::
+              inRegionals($this->regionals)
+            ->inHeadquarters($this->headquarters)
+            ->inAreas($this->areas)
+            ->inProcesses($this->processes)
+            ->inBusinesses($this->businesses)
+            ->inPositions($this->positions)
+            ->count();
+
+        return $exposedPopulation;
     }
 }

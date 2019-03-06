@@ -85,6 +85,23 @@ class AudiometryInformController extends Controller
     }
 
     /**
+     * Returns an array for a select type input
+     *
+     * @return Array
+     */
+
+    public function multiselectBarPercentage()
+    {
+        $select = [
+            'Total' => 'total',
+            '% respecto a la población' => 'percentage_x_employee',
+            '% respecto a la categoría' => 'percentage_x_category'
+        ];
+    
+        return $this->multiSelectFormat(collect($select));
+    }
+
+    /**
      * returns the inform data according to
      * multiple conditions, like filters
      *

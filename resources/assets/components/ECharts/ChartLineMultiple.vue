@@ -30,9 +30,6 @@ const colors = ['#c23531','#2f4554', '#61a0a8', '#d48265', '#91c7ae','#749f83', 
 
 export default {
   name: 'chart-line',
-  metaInfo: {
-    title: 'Informes'
-  },
   props:{
     chartData: {
         type: Object,
