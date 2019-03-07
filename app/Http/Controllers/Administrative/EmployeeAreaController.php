@@ -215,16 +215,18 @@ class EmployeeAreaController extends Controller
     {
         if($request->has('keyword'))
         {
-            if ($request->has('headquarter') && $request->get('headquarter') != '')
+            if ($request->has('process') && $request->get('process') != '' && $request->has('headquarter') && $request->get('headquarter') != '')
             {
                 $keyword = "%{$request->keyword}%";
                 $areas = EmployeeArea::selectRaw(
                     "sau_employees_areas.id as id,
                     sau_employees_areas.name as name")
-                ->join('sau_employees_headquarters', 'sau_employees_headquarters.id', 'sau_employees_areas.employee_headquarter_id')
+                ->join('sau_process_area', 'sau_process_area.employee_area_id', 'sau_employees_areas.id')
+                ->join('sau_employees_processes', 'sau_employees_processes.id', 'sau_process_area.employee_process_id')
+                ->where('employee_process_id', $request->get('process'))
                 ->where('employee_headquarter_id', $request->get('headquarter'))
                 ->where(function ($query) use ($keyword) {
-                    $query->orWhere('sau_employees_areas.name', 'like', $keyword);
+                    $query->orWhere('sau_employees_processes.name', 'like', $keyword);
                 })
                 ->take(30)->pluck('id', 'name');
 
