@@ -158,7 +158,7 @@ class EmployeeProcessController extends Controller
      */
     public function destroy(EmployeeProcess $process)
     {
-        if (count($process->employees) > 0 || count($process->dangerMatrices) > 0)
+        if (count($process->employees) > 0 || count($process->areas) > 0 || count($process->dangerMatrices) > 0)
         {
             return $this->respondWithError('No se puede eliminar el proceso porque hay registros asociados a él');
         }
@@ -184,16 +184,17 @@ class EmployeeProcessController extends Controller
     {
         if($request->has('keyword'))
         {
-            if ($request->has('area') && $request->get('area') != '')
+            if ($request->has('headquarter') && $request->get('headquarter') != '')
             {
                 $keyword = "%{$request->keyword}%";
                 $processes = EmployeeProcess::selectRaw(
                     "sau_employees_processes.id as id,
                     sau_employees_processes.name as name")
-                ->join('sau_employees_areas', 'sau_employees_areas.id', 'sau_employees_processes.employee_area_id')
-                ->where('employee_area_id', $request->get('area'))
+                ->join('sau_headquarter_process', 'sau_headquarter_process.employee_process_id', 'sau_employees_processes.id')
+                ->join('sau_employees_headquarters', 'sau_employees_headquarters.id', 'sau_headquarter_process.employee_headquarter_id')
+                ->where('sau_headquarter_process.employee_headquarter_id', $request->get('headquarter'))
                 ->where(function ($query) use ($keyword) {
-                    $query->orWhere('sau_employees_processes.name', 'like', $keyword);
+                    $query->orWhere('sau_employees_headquarters.name', 'like', $keyword);
                 })
                 ->take(30)->pluck('id', 'name');
 

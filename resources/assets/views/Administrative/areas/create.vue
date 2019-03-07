@@ -13,6 +13,7 @@
                 method="POST"
                 regionals-data-url="/selects/regionals"
                 headquarters-data-url="/selects/headquarters"
+                processes-data-url="/selects/processes"
                 :cancel-url="{ name: 'administrative-areas'}"
                 :modal="modal"/>
         </b-card-body>

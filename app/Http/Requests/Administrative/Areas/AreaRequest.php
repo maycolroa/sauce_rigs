@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Administrative\Areas;
 
 use Illuminate\Foundation\Http\FormRequest;
+use App\Rules\AreaUnique;
 
 class AreaRequest extends FormRequest
 {
@@ -24,12 +25,12 @@ class AreaRequest extends FormRequest
     public function rules()
     {
         $id = $this->input('id');
-        $employee_headquarter_id = $this->input('employee_headquarter_id');
 
         return [
-            'name' => 'required|string|unique:sau_employees_areas,name,'.$id.',id,employee_headquarter_id,'.$employee_headquarter_id,
+            'name' => ['required','string',new AreaUnique($id)],
             'employee_regional_id' => 'required|exists:sau_employees_regionals,id',
             'employee_headquarter_id' => 'required|exists:sau_employees_headquarters,id',
+            'employee_process_id' => 'required|array'
         ];
     }
 }

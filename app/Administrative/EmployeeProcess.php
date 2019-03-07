@@ -25,7 +25,7 @@ class EmployeeProcess extends Model
 
     public function areas()
     {
-        return $this->belongsToMany(EmployeeArea::class, 'sau_process_area');
+        return $this->belongsToMany(EmployeeArea::class, 'sau_process_area')->withPivot('employee_headquarter_id');
     }
     
     public function employees()

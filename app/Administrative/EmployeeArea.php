@@ -12,21 +12,15 @@ class EmployeeArea extends Model
     protected $table = 'sau_employees_areas';
 
     protected $fillable = [
-        'name',
-        'employee_headquarter_id'
+        'name'
     ];
 
     //the attribute define the table for scope company execute
     public $scope_table_for_company_table = 'sau_employees_regionals';
 
-    public function headquarter()
-    {
-        return $this->belongsTo(EmployeeHeadquarter::class, 'employee_headquarter_id');
-    }
-
     public function processes()
     {
-        return $this->hasMany(EmployeeProcess::class, 'employee_area_id');
+        return $this->belongsToMany(EmployeeProcess::class, 'sau_process_area')->withPivot('employee_headquarter_id');
     }
     
     public function employees()
