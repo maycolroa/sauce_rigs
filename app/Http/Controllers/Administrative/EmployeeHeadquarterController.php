@@ -119,7 +119,7 @@ class EmployeeHeadquarterController extends Controller
      */
     public function destroy(EmployeeHeadquarter $headquarter)
     {
-        if (count($headquarter->employees) > 0 || count($headquarter->areas) > 0 || count($headquarter->dangerMatrices) > 0)
+        if (count($headquarter->employees) > 0 || count($headquarter->processes) > 0 || count($headquarter->dangerMatrices) > 0)
         {
             return $this->respondWithError('No se puede eliminar la sede porque hay registros asociadas a ella');
         }

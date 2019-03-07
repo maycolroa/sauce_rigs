@@ -12,7 +12,6 @@
                 method="PUT"
                 regionals-data-url="/selects/regionals"
                 headquarters-data-url="/selects/headquarters"
-                areas-data-url="/selects/areas"
                 :disable-wacth-select-in-created="true"
                 :process="data"
                 :is-edit="true"

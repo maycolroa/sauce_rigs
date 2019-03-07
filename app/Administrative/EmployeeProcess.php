@@ -12,18 +12,22 @@ class EmployeeProcess extends Model
     protected $table = 'sau_employees_processes';
 
     protected $fillable = [
-        'name',
-        'employee_area_id'
+        'name'
     ];
 
     //the attribute define the table for scope company execute
     public $scope_table_for_company_table = 'sau_employees_regionals';
 
-    public function area()
+    public function headquarters()
     {
-        return $this->belongsTo(EmployeeArea::class, 'employee_area_id');
+        return $this->belongsToMany(EmployeeHeadquarter::class, 'sau_headquarter_process');
     }
 
+    public function areas()
+    {
+        return $this->belongsToMany(EmployeeArea::class, 'sau_process_area');
+    }
+    
     public function employees()
     {
         return $this->hasMany(Employee::class, 'employee_process_id');

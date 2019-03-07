@@ -359,8 +359,7 @@ export default [
     fields: [
       { name: 'sau_employees_processes.id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true },
       { name: 'sau_employees_processes.name', data: 'name', title: 'Nombre', sortable: true, searchable: false, detail: false, key: false },
-      { name: 'area', data: 'area', title: 'Área', sortable: true, searchable: false, detail: false, key: false },
-      { name: 'sede', data: 'sede', title: 'Sede', sortable: true, searchable: false, detail: false, key: false },
+      { name: 'sede', data: 'sede', title: 'Sedes', sortable: true, searchable: false, detail: false, key: false },
       { name: 'regional', data: 'regional', title: 'Regional', sortable: true, searchable: false, detail: false, key: false },
       { name: '', data: 'controlls', title: 'Controles', sortable: false, searchable: false, detail: false, key: false },
     ],

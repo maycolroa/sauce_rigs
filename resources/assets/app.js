@@ -22,19 +22,13 @@ Vue.use(VueRouterMiddleware, {
   middlewares: {
     // Convert to camelcase to dash string ex. requireAuth saves require-auth
     requireAuth(params, to, from, next) {
-      // Logic here
-      console.log('primero')
       next()
     },
     checkPermission(params, to, from, next) {
       if (params && auth.can[params])
         next()
       else
-      {
-        console.log('permiso denegado...') 
         next({ path: '/' })
-        //next(false)
-      }
     }
   }
 })

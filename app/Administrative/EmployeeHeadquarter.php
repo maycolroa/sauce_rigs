@@ -24,9 +24,9 @@ class EmployeeHeadquarter extends Model
         return $this->belongsTo(EmployeeRegional::class, 'employee_regional_id');
     }
 
-    public function areas()
+    public function processes()
     {
-        return $this->hasMany(EmployeeArea::class, 'employee_headquarter_id');
+        return $this->belongsToMany(EmployeeProcess::class, 'sau_headquarter_process');
     }
 
     public function employees()
