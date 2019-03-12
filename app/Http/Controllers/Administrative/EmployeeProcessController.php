@@ -207,10 +207,12 @@ class EmployeeProcessController extends Controller
         {
             $processes = EmployeeProcess::selectRaw(
                     "sau_employees_processes.id as id,
-                    CONCAT(sau_employees_regionals.name, '/', sau_employees_headquarters.name, '/', sau_employees_areas.name, '/', sau_employees_processes.name) as name")
-                ->join('sau_employees_areas', 'sau_employees_areas.id', 'sau_employees_processes.employee_area_id')
-                ->join('sau_employees_headquarters', 'sau_employees_headquarters.id', 'sau_employees_areas.employee_headquarter_id')
-                ->join('sau_employees_regionals', 'sau_employees_regionals.id', 'sau_employees_headquarters.employee_regional_id')->pluck('id', 'name');
+                     sau_employees_processes.name as name")
+                ->join('sau_headquarter_process', 'sau_headquarter_process.employee_process_id', 'sau_employees_processes.id')
+                ->join('sau_employees_headquarters', 'sau_employees_headquarters.id', 'sau_headquarter_process.employee_headquarter_id')
+                ->join('sau_employees_regionals', 'sau_employees_regionals.id', 'sau_employees_headquarters.employee_regional_id')
+                ->groupBy('sau_employees_processes.id', 'sau_employees_processes.name')
+                ->pluck('id', 'name');
         
             return $this->multiSelectFormat($processes);
         }

@@ -134,11 +134,19 @@ class Audiometry extends Model
      */
     public function scopeInHeadquarters($query, $headquarters)
     {
-        $query->where(function ($subquery) use ($headquarters) {
-            foreach ($headquarters as $headquarterId) {
-                $subquery->orWhere('sau_employees.employee_headquarter_id', $headquarterId);
-            }
-        });
+        $ids = [];
+
+        foreach ($headquarters as $key => $value)
+        {
+            $ids[] = $value;
+        }
+
+        if(COUNT($ids) > 0)
+        {
+            $ids = explode(",", implode(",", $ids));
+            $query->whereIn('sau_employees.employee_headquarter_id', $ids);
+        }
+
         return $query;
     }
 

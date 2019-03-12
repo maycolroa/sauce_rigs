@@ -166,9 +166,11 @@ class EmployeeHeadquarterController extends Controller
         else
         {
             $headquarters = EmployeeHeadquarter::selectRaw(
-                "sau_employees_headquarters.id as id,
-                CONCAT(sau_employees_regionals.name, '/', sau_employees_headquarters.name) as name")
-            ->join('sau_employees_regionals', 'sau_employees_regionals.id', 'sau_employees_headquarters.employee_regional_id')->pluck('id', 'name');
+                "GROUP_CONCAT(sau_employees_headquarters.id) as ids,
+                 sau_employees_headquarters.name as name")
+            ->join('sau_employees_regionals', 'sau_employees_regionals.id', 'sau_employees_headquarters.employee_regional_id')
+            ->groupBy('sau_employees_headquarters.name')
+            ->pluck('ids', 'name');
         
             return $this->multiSelectFormat($headquarters);
         }

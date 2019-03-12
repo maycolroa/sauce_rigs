@@ -75,8 +75,8 @@ class AudiometryInformController extends Controller
         $select = [
             'Regionales' => 'employee_regional_id',
             'Sedes' => 'employee_headquarter_id',
-            'Áreas' => 'employee_area_id',
             'Procesos' => 'employee_process_id',
+            'Áreas' => 'employee_area_id',
             'Centro de Costos' => 'employee_business_id',
             'Cargos' => 'employee_position_id'
         ];

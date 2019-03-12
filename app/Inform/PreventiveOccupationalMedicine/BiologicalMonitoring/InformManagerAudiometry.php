@@ -287,9 +287,13 @@ class InformManagerAudiometry
 
                 foreach ($value['data'] as $key2 => $value2)
                 { 
-                    $data['datasets']['data'][$key]['data'][$key2]['value'] = round(
-                        ($data['datasets']['data'][$key]['data'][$key2]['value'] / $total) * 100
-                    , 1);
+                    if ($total > 0)
+                        $data['datasets']['data'][$key]['data'][$key2]['value'] = round(
+                            ($data['datasets']['data'][$key]['data'][$key2]['value'] / $total) * 100
+                        , 1);
+                    else
+                        $data['datasets']['data'][$key]['data'][$key2]['value'] = 0;
+                        
                     $data['datasets']['data'][$key]['label']['normal']['formatter'] = "{c}%";
                 }
             }

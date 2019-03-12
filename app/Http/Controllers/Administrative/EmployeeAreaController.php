@@ -239,9 +239,14 @@ class EmployeeAreaController extends Controller
         {
             $areas = EmployeeArea::selectRaw(
                     "sau_employees_areas.id as id,
-                    CONCAT(sau_employees_regionals.name, '/', sau_employees_headquarters.name, '/', sau_employees_areas.name) as name")
-                ->join('sau_employees_headquarters', 'sau_employees_headquarters.id', 'sau_employees_areas.employee_headquarter_id')
-                ->join('sau_employees_regionals', 'sau_employees_regionals.id', 'sau_employees_headquarters.employee_regional_id')->pluck('id', 'name');
+                     sau_employees_areas.name as name")
+                ->join('sau_process_area', 'sau_process_area.employee_area_id', 'sau_employees_areas.id')
+                ->join('sau_employees_processes', 'sau_employees_processes.id', 'sau_process_area.employee_process_id')
+                ->join('sau_headquarter_process', 'sau_headquarter_process.employee_process_id', 'sau_employees_processes.id')
+                ->join('sau_employees_headquarters', 'sau_employees_headquarters.id', 'sau_headquarter_process.employee_headquarter_id')
+                ->join('sau_employees_regionals', 'sau_employees_regionals.id', 'sau_employees_headquarters.employee_regional_id')
+                ->groupBy('sau_employees_areas.id', 'sau_employees_areas.name')
+                ->pluck('id', 'name');
         
             return $this->multiSelectFormat($areas);
         }

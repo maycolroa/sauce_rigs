@@ -78,16 +78,16 @@ export default {
                     active: false,
                     ready: false
                 },
-                areas: {
-                    label: 'Áreas',
-                    name: 'areas',
+                processes: {
+                    label: 'Procesos',
+                    name: 'processes',
                     data: [],
                     active: false,
                     ready: false
                 },
-                processes: {
-                    label: 'Procesos',
-                    name: 'processes',
+                areas: {
+                    label: 'Áreas',
+                    name: 'areas',
                     data: [],
                     active: false,
                     ready: false
