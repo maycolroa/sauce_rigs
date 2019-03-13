@@ -79,7 +79,9 @@ export default {
     }
   },
   mounted() {
-      this.setMultiselectValue();
+      setTimeout(() => {
+          this.setMultiselectValue();
+      }, 2000)
   },
   methods: {
     limitText(count) {

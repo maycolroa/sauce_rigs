@@ -158,7 +158,7 @@ export default {
       selectedObject(){
         this.selectValue = this.selectedObject;
 
-        if (typeof this.value == "object")
+        if (typeof this.selectedObject == "object")
             this.options.push(this.selectedObject);
         else 
             _.forIn(this.selectedObject, (value, key) => {
@@ -176,7 +176,7 @@ export default {
     },
     mounted() {
         if (this.selectedObject) {
-            if (typeof this.value == "object")
+            if (typeof this.selectedObject == "object")
                 this.options.push(this.selectedObject);
             else 
                 _.forIn(this.selectedObject, (value, key) => {
