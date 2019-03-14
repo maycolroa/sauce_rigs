@@ -158,7 +158,7 @@ return [
       'identification' => 'Identificacón',
       'date_of_birth' => 'Fecha de nacimiento',
       'income_date' => 'Fecha de ingreso',
-      'activities.*.activity_id' => 'Actividad',
+      'activities.*.activity_id' => 'Proceso',
       'activities.*.type_activity' => 'Tipo de actividad',
       'activities.*.dangers' => 'Peligros',
       'activities.*.dangers.*.danger_id' => 'Peligro',

@@ -1,7 +1,7 @@
 <template>
     <b-form autocomplete="off">
       <b-form-row>
-        <vue-ajax-advanced-select @selectedName="emitActivityName" :disabled="viewOnly" class="col-md-6" v-model="activity.activity_id" :selected-object="activity.multiselect_activity" name="activity_id" :error="form.errorsFor(`activities.${indexActivity}.activity_id`)" label="Actividad" placeholder="Seleccione la actividad" :url="activitiesDataUrl">
+        <vue-ajax-advanced-select @selectedName="emitActivityName" :disabled="viewOnly" class="col-md-6" v-model="activity.activity_id" :selected-object="activity.multiselect_activity" name="activity_id" :error="form.errorsFor(`activities.${indexActivity}.activity_id`)" label="Proceso" placeholder="Seleccione el proceso" :url="activitiesDataUrl">
           </vue-ajax-advanced-select>
         <vue-radio :disabled="viewOnly" :checked="activity.type_activity" class="col-md-6" v-model="activity.type_activity" :options="typeActivities" name="type_activity" :error="form.errorsFor(`activities.${indexActivity}.type_activity`)" label="Tipo de actividad">
           </vue-radio>
