@@ -108,8 +108,8 @@ class AudiometryImport implements ToCollection
                 NotificationMail::
                     subject('Importación de las audiometrias')
                     ->recipients($this->user)
-                    ->message('Se produjo un error durante el proceso de importación de las audiometrias. Contacte con el administrador')
-                    //->message($e->getMessage())
+                    //->message('Se produjo un error durante el proceso de importación de las audiometrias. Contacte con el administrador')
+                    ->message($e->getMessage())
                     ->module('biologicalMonitoring/audiometry')
                     ->send();
             }
@@ -152,8 +152,8 @@ class AudiometryImport implements ToCollection
                         'centro_costo'      => $row[6],
                         'regional'          => $row[7],
                         'sede'              => $row[8],
-                        'area'              => $row[9],
-                        'proceso'           => $row[10],
+                        'proceso'           => $row[9],
+                        'area'              => $row[10],
                         'fecha_ingreso'     => $fecha_ingreso
                     ],
                     [
@@ -182,8 +182,8 @@ class AudiometryImport implements ToCollection
                 {
                     $regional_id = $this->checkRegional($row[7]);
                     $headquarter_id = $this->checkHeadquarter($regional_id, $row[8]);
-                    $area_id = $this->checkArea($headquarter_id, $row[9]);
-                    $process_id = $this->checkProcess($area_id, $row[10]);
+                    $process_id = $this->checkProcess($headquarter_id, $row[9]);
+                    $area_id = $this->checkArea($headquarter_id, $process_id, $row[10]);
 
                     $employee = Employee::create([
                         'identification' => $row[0],
@@ -215,10 +215,31 @@ class AudiometryImport implements ToCollection
         return null;
     }
 
-    private function checkArea($headquarter_id, $area)
-    {
-        $area = EmployeeArea::firstOrCreate(['name' => $area, 'employee_headquarter_id' => $headquarter_id], 
-                                            ['name' => $area, 'employee_headquarter_id' => $headquarter_id]);
+    private function checkArea($headquarter_id, $process_id, $area_name)
+    {        
+        $area = EmployeeRegional::select("sau_employees_areas.id as id")
+            ->join('sau_employees_headquarters', 'sau_employees_headquarters.employee_regional_id', 'sau_employees_regionals.id')
+            ->join('sau_headquarter_process', 'sau_headquarter_process.employee_headquarter_id', 'sau_employees_headquarters.id')
+            ->join('sau_employees_processes', 'sau_employees_processes.id', 'sau_headquarter_process.employee_process_id')
+            ->join('sau_process_area', 'sau_process_area.employee_process_id', 'sau_employees_processes.id')
+            ->join('sau_employees_areas', 'sau_employees_areas.id', 'sau_process_area.employee_area_id')
+            ->where('sau_employees_areas.name', $area_name)
+            ->groupBy('sau_employees_areas.id', 'sau_employees_areas.name');
+
+        $area->company_scope = $this->company_id;
+        $area = $area->first();
+
+        if (!$area)
+        {
+            $area = new EmployeeArea();
+            $area->name = $area_name;
+            $area->save();
+        }
+        else
+            $area = EmployeeArea::find($area->id);
+        
+        $area->processes()->wherePivot('employee_headquarter_id','=',$headquarter_id)->detach($process_id);
+        $area->processes()->attach($process_id, ['employee_headquarter_id' => $headquarter_id]);
 
         return $area->id;
     }
@@ -261,10 +282,29 @@ class AudiometryImport implements ToCollection
         return $headquarter->id;
     }
 
-    private function checkProcess($area_id, $process)
+    private function checkProcess($headquarter_id, $process_name)
     {
-        $process = EmployeeProcess::firstOrCreate(['name' => $process, 'employee_area_id' => $area_id], 
-                                            ['name' => $process, 'employee_area_id' => $area_id]);
+        $process = EmployeeRegional::select("sau_employees_processes.id as id")
+            ->join('sau_employees_headquarters', 'sau_employees_headquarters.employee_regional_id', 'sau_employees_regionals.id')
+            ->join('sau_headquarter_process', 'sau_headquarter_process.employee_headquarter_id', 'sau_employees_headquarters.id')
+            ->join('sau_employees_processes', 'sau_employees_processes.id', 'sau_headquarter_process.employee_process_id')
+            ->where('sau_employees_processes.name', $process_name)
+            ->groupBy('sau_employees_processes.id', 'sau_employees_processes.name');
+
+        $process->company_scope = $this->company_id;
+        $process = $process->first();
+
+        if (!$process)
+        {
+            $process = new EmployeeProcess();
+            $process->name = $process_name;
+            $process->save();
+        }
+        else
+            $process = EmployeeProcess::find($process->id);
+        
+        $process->headquarters()->detach($headquarter_id);
+        $process->headquarters()->attach($headquarter_id);
 
         return $process->id;
     }
