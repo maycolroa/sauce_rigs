@@ -10,7 +10,7 @@
     <b-form-row>
       <vue-ajax-advanced-select :disabled="viewOnly || !form.employee_regional_id" class="col-md-6" v-model="form.employee_headquarter_id" :error="form.errorsFor('employee_headquarter_id')" :selected-object="form.multiselect_sede" name="employee_headquarter_id" label="Sede" placeholder="Seleccione la sede" :url="headquartersDataUrl" :parameters="{regional: form.employee_regional_id }" :emptyAll="empty.headquarter" @updateEmpty="updateEmptyKey('headquarter')">
           </vue-ajax-advanced-select>
-      <vue-ajax-advanced-select :disabled="viewOnly || !form.employee_headquarter_id" class="col-md-6" v-model="form.employee_process_id" :error="form.errorsFor('employee_process_id')"  name="employee_process_id" label="Proceso" placeholder="Seleccione los procesos" :url="processesDataUrl" :parameters="{headquarter: form.employee_headquarter_id }" :emptyAll="empty.process" @updateEmpty="updateEmptyKey('process')" :multiple="true" :allowEmpty="true" :selected-object="form.multiselect_employee_process_id">
+      <vue-ajax-advanced-select :disabled="viewOnly || !form.employee_headquarter_id" class="col-md-6" v-model="form.employee_process_id" :error="form.errorsFor('employee_process_id')"  name="employee_process_id" label="Macroprocesos" placeholder="Seleccione los macroprocesos" :url="processesDataUrl" :parameters="{headquarter: form.employee_headquarter_id }" :emptyAll="empty.process" @updateEmpty="updateEmptyKey('process')" :multiple="true" :allowEmpty="true" :selected-object="form.multiselect_employee_process_id">
           </vue-ajax-advanced-select>
     </b-form-row>
 

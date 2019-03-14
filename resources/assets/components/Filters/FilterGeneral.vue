@@ -79,7 +79,7 @@ export default {
                     ready: false
                 },
                 processes: {
-                    label: 'Procesos',
+                    label: 'Macroprocesos',
                     name: 'processes',
                     data: [],
                     active: false,

@@ -150,7 +150,7 @@ return [
       'employee_regional_id' => 'Regional',
       'employee_headquarter_id' => 'Sede',
       'employee_area_id' => 'Área',
-      'employee_process_id' => 'Proceso',
+      'employee_process_id' => 'Macroproceso',
       'employee_eps_id' => 'EPS',
       'employee_business_id' => 'Centro de costo',
       'employee_position_id' => 'Cargo',
@@ -191,7 +191,7 @@ return [
       'locations.employee_regional_id' => 'Regional',
       'locations.employee_headquarter_id' => 'Sede',
       'locations.employee_area_id' => 'Área',
-      'locations.employee_process_id' => 'Proceso',
+      'locations.employee_process_id' => 'Macroproceso',
       'changeHistory' => 'Detalle de cambios realizados',
       'days_alert_expiration_date_action_plan' => 'Días de alerta'
     ],

@@ -14,7 +14,7 @@
                 <b-col>
                     <div><b>Regional:</b> {{employee.regional}}</div>
                     <div><b>Sede:</b> {{employee.headquarter}}</div>
-                    <div><b>Proceso:</b> {{employee.process}}</div>
+                    <div><b>Macroproceso:</b> {{employee.process}}</div>
                     <div><b>Área:</b> {{employee.area}}</div>
                     <div><b>Cargo:</b> {{employee.position}}</div>
                     <div><b>Centro de costo:</b> {{employee.business}}</div>
