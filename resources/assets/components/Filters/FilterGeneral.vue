@@ -16,7 +16,7 @@
                         <b-card-body>
                             <b-row>
                                 <template v-for="(item, index) in filters"> 
-                                    <b-col cols="6" :key="index" v-if="item.active && index != 'dateRange'"><vue-advanced-select  v-model="filtersSelected[index]" :multiple="true" :options="item.data" :searchable="true" :name="item.name" :label="item.label" :disabled="isDisabled">
+                                    <b-col cols="6" :key="index" v-if="item.active && index != 'dateRange'"><vue-advanced-select  v-model="filtersSelected[index]" :multiple="true" :options="item.data" :searchable="true" :name="item.name" :label="item.label" :disabled="isDisabled" :filterTypeSearch="true" @updateFilterTypeSearch="setFilterTypeSearch($event, item.name)">
                                     </vue-advanced-select></b-col>
                                 </template>
                             </b-row>
@@ -73,7 +73,7 @@ export default {
                 },
                 headquarters: {
                     label: 'Sedes',
-                    name: 'headquarter',
+                    name: 'headquarters',
                     data: [],
                     active: false,
                     ready: false
@@ -128,7 +128,16 @@ export default {
                 businesses: [],
                 positions: [],
                 years: [],
-                dateRange: ''
+                dateRange: '',
+                filtersType: {
+                    regionals: 'IN',
+                    headquarters: 'IN',
+                    areas: 'IN',
+                    processes: 'IN',
+                    businesses: 'IN',
+                    positions: 'IN',
+                    years: 'IN'
+                }
             }
         }
     },
@@ -247,6 +256,9 @@ export default {
         },
         hideFilterModal () {
             this.$refs.filterModal.hide()
+        },
+        setFilterTypeSearch(event, key) {
+            this.filtersSelected.filtersType[key] = event
         }
     }
 }

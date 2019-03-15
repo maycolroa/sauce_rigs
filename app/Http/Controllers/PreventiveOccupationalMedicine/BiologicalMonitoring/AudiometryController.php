@@ -63,25 +63,25 @@ class AudiometryController extends Controller
         $filters = $request->get('filters');
 
         if (isset($filters["regionals"]))
-          $audiometry->inRegionals($this->getValuesForMultiselect($filters["regionals"]));
+          $audiometry->inRegionals($this->getValuesForMultiselect($filters["regionals"]), $filters['filtersType']['regionals']);
 
         if (isset($filters["headquarters"]))
-          $audiometry->inHeadquarters($this->getValuesForMultiselect($filters["headquarters"]));
+          $audiometry->inHeadquarters($this->getValuesForMultiselect($filters["headquarters"]), $filters['filtersType']['headquarters']);
 
         if (isset($filters["areas"]))
-          $audiometry->inAreas($this->getValuesForMultiselect($filters["areas"]));
+          $audiometry->inAreas($this->getValuesForMultiselect($filters["areas"]), $filters['filtersType']['areas']);
 
         if (isset($filters["processes"]))
-          $audiometry->inProcesses($this->getValuesForMultiselect($filters["processes"]));
+          $audiometry->inProcesses($this->getValuesForMultiselect($filters["processes"]), $filters['filtersType']['processes']);
 
         if (isset($filters["businesses"]))
-          $audiometry->inBusinesses($this->getValuesForMultiselect($filters["businesses"]));
+          $audiometry->inBusinesses($this->getValuesForMultiselect($filters["businesses"]), $filters['filtersType']['businesses']);
 
         if (isset($filters["positions"]))
-          $audiometry->inPositions($this->getValuesForMultiselect($filters["positions"]));
+          $audiometry->inPositions($this->getValuesForMultiselect($filters["positions"]), $filters['filtersType']['positions']);
 
         if (isset($filters["years"]))
-          $audiometry->inYears($this->getValuesForMultiselect($filters["years"]));
+          $audiometry->inYears($this->getValuesForMultiselect($filters["years"]), $filters['filtersType']['years']);
 
         if (isset($filters["dateRange"]) && $filters["dateRange"])
         {

@@ -1,13 +1,19 @@
 <template>
     <b-form-group>
         <div slot="label" :class="classBlock">
-            <b-row>
+            <b-row align-v="end">
               <b-col>
                 <div v-if="label">{{label}}</div>
                 <a v-if="textBlock" :href="actionBlock" class="d-block small">{{textBlock}}</a>
               </b-col>
-              <b-col>
-                <div v-if="btnLabelPopover && Object.keys(btnLabelPopover).length > 0" class="float-right" style="padding-right: 10px;">
+              <b-col v-if="filterTypeSearch" align-self="end">
+                <div class="float-right radioSearch" style="padding-bottom: 0px; padding-right: 0px;padding-left: 0px;">
+                  <vue-radio checked="IN" v-model="filterTypeSearchValue" :options="[{'text':'=', 'value':'IN'}, {'text':'≠', 'value':'NOT IN'}]"  label="" :name="`${name}_filterTypeSearch`" @input="updateFilterTypeSearch">
+                  </vue-radio>
+                </div>
+              </b-col>
+              <b-col v-if="btnLabelPopover && Object.keys(btnLabelPopover).length > 0">
+                <div class="float-right" style="padding-right: 10px;">
                     <b-btn v-b-popover.hover.focus.left="btnLabelPopover.content" :title="btnLabelPopover.title" variant="primary" class="btn-circle-micro"><span :class="btnLabelPopover.icon"></span></b-btn>
                 </div>
               </b-col>
@@ -44,8 +50,15 @@
 <style src="@/vendor/libs/vue-multiselect/vue-multiselect.scss" lang="scss"></style>
 <style src="vue-multiselect/dist/vue-multiselect.min.css"></style>
 
+<style>
+.radioSearch .form-group {
+  margin-bottom: 0rem;
+}
+</style>
+
 <script>
 import Multiselect from "vue-multiselect";
+import VueRadio from "@/components/Inputs/VueRadio.vue";
 export default {
   props: {
     error: { type: String },
@@ -63,14 +76,17 @@ export default {
     btnLabelPopover: { type: Object },
     limit: { type: Number, default: 5 },
     closeOnSelect: {type: Boolean, default: true},
-    taggable: {type: Boolean, default: false}
+    taggable: {type: Boolean, default: false},
+    filterTypeSearch: { type: Boolean, default: false }
   },
   components: {
-    Multiselect
+    Multiselect,
+    VueRadio
   },
   data() {
     return {
-      selectValue: []
+      selectValue: [],
+      filterTypeSearchValue: 'IN'
     };
   },
   watch: {
@@ -139,6 +155,10 @@ export default {
       
       this.updateValue()
     },
+    updateFilterTypeSearch(value)
+    {
+        this.$emit('updateFilterTypeSearch', value);
+    }
   },
   computed: {
     state() {

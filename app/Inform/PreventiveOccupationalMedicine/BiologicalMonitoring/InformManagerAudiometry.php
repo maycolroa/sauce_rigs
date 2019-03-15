@@ -52,13 +52,14 @@ class InformManagerAudiometry
     protected $positions;
     protected $years;
     protected $dateRange;
+    protected $filtersType;
     protected $totalEmployee;
 
     /**
      * create an instance and set the attribute class
      * @param array $regionals
      */
-    function __construct($regionals = [], $headquarters = [], $areas = [], $processes = [], $businesses = [], $positions = [], $years = [], $dateRange = [])
+    function __construct($regionals = [], $headquarters = [], $areas = [], $processes = [], $businesses = [], $positions = [], $years = [], $dateRange = [], $filtersType = [])
     {
         $this->regionals = $regionals;
         $this->headquarters = $headquarters;
@@ -68,6 +69,7 @@ class InformManagerAudiometry
         $this->positions = $positions;
         $this->years = $years;
         $this->dateRange = $dateRange;
+        $this->filtersType = $filtersType;
         $this->totalEmployee = $this->getTotalEmployee();
     }
 
@@ -121,13 +123,13 @@ class InformManagerAudiometry
             COUNT(".$column.") as count
         ")
         ->join('sau_employees','sau_employees.id','sau_bm_audiometries.employee_id')
-        ->inRegionals($this->regionals)
-        ->inHeadquarters($this->headquarters)
-        ->inAreas($this->areas)
-        ->inProcesses($this->processes)
-        ->inBusinesses($this->businesses)
-        ->inPositions($this->positions)
-        ->inYears($this->years)
+        ->inRegionals($this->regionals, $this->filtersType['regionals'])
+        ->inHeadquarters($this->headquarters, $this->filtersType['headquarters'])
+        ->inAreas($this->areas, $this->filtersType['areas'])
+        ->inProcesses($this->processes, $this->filtersType['processes'])
+        ->inBusinesses($this->businesses, $this->filtersType['businesses'])
+        ->inPositions($this->positions, $this->filtersType['positions'])
+        ->inYears($this->years, $this->filtersType['years'])
         ->betweenDate($this->dateRange)
         ->where($column, '<>', '')
         ->groupBy($column)
@@ -165,12 +167,12 @@ class InformManagerAudiometry
             COUNT(sau_employees.id) as count
         ")
         ->join($table, $table.'.id','sau_employees.'.$column)
-        ->inRegionals($this->regionals)
-        ->inHeadquarters($this->headquarters)
-        ->inAreas($this->areas)
-        ->inProcesses($this->processes)
-        ->inBusinesses($this->businesses)
-        ->inPositions($this->positions)
+        ->inRegionals($this->regionals, $this->filtersType['regionals'])
+        ->inHeadquarters($this->headquarters, $this->filtersType['headquarters'])
+        ->inAreas($this->areas, $this->filtersType['areas'])
+        ->inProcesses($this->processes, $this->filtersType['processes'])
+        ->inBusinesses($this->businesses, $this->filtersType['businesses'])
+        ->inPositions($this->positions, $this->filtersType['positions'])
         ->groupBy($table.'.name')
         ->pluck('count', 'name');
 
@@ -238,13 +240,13 @@ class InformManagerAudiometry
         ")
         ->join('sau_employees','sau_employees.id','sau_bm_audiometries.employee_id')
         ->join($table, $table.'.id','sau_employees.'.$column)
-        ->inRegionals($this->regionals)
-        ->inHeadquarters($this->headquarters)
-        ->inAreas($this->areas)
-        ->inProcesses($this->processes)
-        ->inBusinesses($this->businesses)
-        ->inPositions($this->positions)
-        ->inYears($this->years)
+        ->inRegionals($this->regionals, $this->filtersType['regionals'])
+        ->inHeadquarters($this->headquarters, $this->filtersType['headquarters'])
+        ->inAreas($this->areas, $this->filtersType['areas'])
+        ->inProcesses($this->processes, $this->filtersType['processes'])
+        ->inBusinesses($this->businesses, $this->filtersType['businesses'])
+        ->inPositions($this->positions, $this->filtersType['positions'])
+        ->inYears($this->years, $this->filtersType['years'])
         ->betweenDate($this->dateRange)
         ->where('sau_bm_audiometries.base_state', '=', $state)
         ->groupBy($table.'.name')
@@ -317,13 +319,13 @@ class InformManagerAudiometry
         ")
         ->join('sau_employees','sau_employees.id','sau_bm_audiometries.employee_id')
         ->join($table, $table.'.id','sau_employees.'.$column)
-        ->inRegionals($this->regionals)
-        ->inHeadquarters($this->headquarters)
-        ->inAreas($this->areas)
-        ->inProcesses($this->processes)
-        ->inBusinesses($this->businesses)
-        ->inPositions($this->positions)
-        ->inYears($this->years)
+        ->inRegionals($this->regionals, $this->filtersType['regionals'])
+        ->inHeadquarters($this->headquarters, $this->filtersType['headquarters'])
+        ->inAreas($this->areas, $this->filtersType['areas'])
+        ->inProcesses($this->processes, $this->filtersType['processes'])
+        ->inBusinesses($this->businesses, $this->filtersType['businesses'])
+        ->inPositions($this->positions, $this->filtersType['positions'])
+        ->inYears($this->years, $this->filtersType['years'])
         ->betweenDate($this->dateRange)
         ->groupBy($table.'.name', 'serie')
         ->get();
@@ -458,12 +460,12 @@ class InformManagerAudiometry
     private function getTotalEmployee()
     {
         $exposedPopulation = Employee::
-              inRegionals($this->regionals)
-            ->inHeadquarters($this->headquarters)
-            ->inAreas($this->areas)
-            ->inProcesses($this->processes)
-            ->inBusinesses($this->businesses)
-            ->inPositions($this->positions)
+              inRegionals($this->regionals, $this->filtersType['regionals'])
+            ->inHeadquarters($this->headquarters, $this->filtersType['headquarters'])
+            ->inAreas($this->areas, $this->filtersType['areas'])
+            ->inProcesses($this->processes, $this->filtersType['processes'])
+            ->inBusinesses($this->businesses, $this->filtersType['businesses'])
+            ->inPositions($this->positions, $this->filtersType['positions'])
             ->count();
 
         return $exposedPopulation;

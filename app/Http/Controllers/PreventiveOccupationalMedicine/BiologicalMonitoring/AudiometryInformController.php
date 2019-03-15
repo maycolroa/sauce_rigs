@@ -46,6 +46,7 @@ class AudiometryInformController extends Controller
         $positions = $this->getValuesForMultiselect($request->positions);
         $years = $this->getValuesForMultiselect($request->years);
         $dates = [];
+        $filtersType = $request->filtersType;
 
         if (isset($request->dateRange) && $request->dateRange)
         {
@@ -59,7 +60,7 @@ class AudiometryInformController extends Controller
             
         }
         
-        $informManager = new InformManagerAudiometry($regionals, $headquarters, $areas, $processes, $businesses, $positions, $years, $dates);
+        $informManager = new InformManagerAudiometry($regionals, $headquarters, $areas, $processes, $businesses, $positions, $years, $dates, $filtersType);
         
         return $this->respondHttp200($informManager->getInformData());
     }
