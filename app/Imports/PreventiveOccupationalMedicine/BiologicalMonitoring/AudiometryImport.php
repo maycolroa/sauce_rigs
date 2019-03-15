@@ -84,6 +84,7 @@ class AudiometryImport implements ToCollection
                         ->recipients($this->user)
                         ->message('El proceso de importación de todos los registros de audiometrias finalizo correctamente')
                         ->module('biologicalMonitoring/audiometry')
+                        ->event('Job: AudiometryImportJob')
                         ->send();
                 }
                 else
@@ -100,6 +101,7 @@ class AudiometryImport implements ToCollection
                         ->subcopy('Este link es valido por 24 horas')
                         ->buttons([['text'=>'Descargar', 'url'=>url("/export/{$paramUrl}")]])
                         ->module('biologicalMonitoring/audiometry')
+                        ->event('Job: AudiometryImportJob')
                         ->send();
                 }
                 
@@ -111,6 +113,7 @@ class AudiometryImport implements ToCollection
                     //->message('Se produjo un error durante el proceso de importación de las audiometrias. Contacte con el administrador')
                     ->message($e->getMessage())
                     ->module('biologicalMonitoring/audiometry')
+                    ->event('Job: AudiometryImportJob')
                     ->send();
             }
 
