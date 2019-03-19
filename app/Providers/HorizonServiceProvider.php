@@ -5,6 +5,8 @@ namespace App\Providers;
 use Laravel\Horizon\Horizon;
 use Illuminate\Support\Facades\Gate;
 use Laravel\Horizon\HorizonApplicationServiceProvider;
+use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
+use DB;
 
 class HorizonServiceProvider extends HorizonApplicationServiceProvider
 {
@@ -20,6 +22,27 @@ class HorizonServiceProvider extends HorizonApplicationServiceProvider
         // Horizon::routeSmsNotificationsTo('15556667777');
         // Horizon::routeMailNotificationsTo('example@example.com');
         // Horizon::routeSlackNotificationsTo('slack-webhook-url', '#channel');
+
+        Horizon::auth(function ($request) {
+
+            if (isset($request->user()->id))
+            {
+                $result = DB::table('sau_roles')
+                            ->join('sau_role_user', 'sau_role_user.role_id', 'sau_roles.id')
+                            ->where('sau_role_user.user_id', $request->user()->id)
+                            ->where('sau_roles.name', 'Superadmin')
+                            ->whereNull('sau_roles.company_id')
+                            ->exists();
+
+                if (!$result) {
+                    throw new UnauthorizedHttpException('Unauthorized');
+                }
+            }
+            else
+                throw new UnauthorizedHttpException('Unauthorized');
+
+            return true;
+        });
     }
 
     /**
@@ -31,13 +54,10 @@ class HorizonServiceProvider extends HorizonApplicationServiceProvider
      */
     protected function gate()
     {
-        Gate::define('viewHorizon', function ($user) {
+        /*Gate::define('viewHorizon', function ($user) {
             return in_array($user->email, [
-                'florezanderson@thotstrategy.com',
-                'caladsantiago@thotstrategy.com',
-                'robertjoserieraumbria@gmail.com'
             ]);
-        });
+        });*/
     }
 
     /**
