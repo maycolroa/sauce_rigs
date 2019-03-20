@@ -10,6 +10,7 @@
         "fideloper/proxy": "^4.0",
         "laravel/framework": "5.7.*",
         "laravel/horizon": "^2.2",
+        "laravel/telescope": "^2.0",
         "laravel/tinker": "^1.0",
         "maatwebsite/excel": "^3.0",
         "maddhatter/markdown-table": "^1.0",

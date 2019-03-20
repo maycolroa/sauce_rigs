@@ -31,6 +31,7 @@ class Kernel extends ConsoleKernel
         $schedule->command('days-alert-expiration-date-action-plan')
         ->timezone('America/Bogota')
         ->dailyAt('01:00');
+        $schedule->command('telescope:prune')->daily();
     }
 
     /**
