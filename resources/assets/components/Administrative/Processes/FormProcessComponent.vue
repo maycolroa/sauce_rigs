@@ -7,9 +7,7 @@
           </vue-ajax-advanced-select>
     </b-form-row>
     <b-form-row>
-       <vue-ajax-advanced-select :disabled="viewOnly || !form.employee_regional_id" class="col-md-6" v-model="form.employee_headquarter_id" :error="form.errorsFor('employee_headquarter_id')" :selected-object="form.multiselect_sede" name="employee_headquarter_id" label="Sede" placeholder="Seleccione la sede" :url="headquartersDataUrl" :parameters="{regional: form.employee_regional_id }" :emptyAll="empty.headquarter" @updateEmpty="updateEmptyKey('headquarter')">
-          </vue-ajax-advanced-select>
-        <vue-ajax-advanced-select :disabled="viewOnly || !form.employee_headquarter_id" class="col-md-6" v-model="form.employee_area_id" :error="form.errorsFor('employee_area_id')" :selected-object="form.multiselect_area" name="employee_area_id" label="Área" placeholder="Seleccione el área" :url="areasDataUrl" :parameters="{headquarter: form.employee_headquarter_id }" :emptyAll="empty.area" @updateEmpty="updateEmptyKey('area')">
+       <vue-ajax-advanced-select :disabled="viewOnly || !form.employee_regional_id" class="col-md-6" v-model="form.employee_headquarter_id" :error="form.errorsFor('employee_headquarter_id')"  name="employee_headquarter_id" label="Sedes" placeholder="Seleccione las sedes" :url="headquartersDataUrl" :parameters="{regional: form.employee_regional_id }" :emptyAll="empty.headquarter" @updateEmpty="updateEmptyKey('headquarter')" :multiple="true" :allowEmpty="true" :selected-object="form.multiselect_employee_headquarter_id">
           </vue-ajax-advanced-select>
     </b-form-row>
 
@@ -40,7 +38,6 @@ export default {
     viewOnly: { type: Boolean, default: false },
     regionalsDataUrl: { type: String, default: "" },
     headquartersDataUrl: { type: String, default: "" },
-    areasDataUrl: { type: String, default: "" },
     disableWacthSelectInCreated: { type: Boolean, default: false},
     modal: { type: Boolean, default: false },
     process: {
@@ -49,7 +46,6 @@ export default {
             name: '',
             employee_regional_id: '',
             employee_headquarter_id: '',
-            employee_area_id: '',
         };
       }
     }
@@ -60,13 +56,9 @@ export default {
       this.form = Form.makeFrom(this.process, this.method);
     },
     'form.employee_regional_id'() {
-      this.emptySelect('employee_area_id', 'area')
       this.emptySelect('employee_headquarter_id', 'headquarter')
     },
     'form.employee_headquarter_id'() {
-      this.emptySelect('employee_area_id', 'area')
-    },
-    'form.employee_area_id'() {
       if (this.disableWacth)
         this.disableWacth = false
     }
@@ -76,8 +68,7 @@ export default {
       loading: this.isEdit,
       form: Form.makeFrom(this.process, this.method),
       empty: {
-        headquarter: false,
-        area: false
+        headquarter: false
       },
       disableWacth: this.disableWacthSelectInCreated,
     };

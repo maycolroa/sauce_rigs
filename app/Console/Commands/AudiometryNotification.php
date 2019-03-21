@@ -90,6 +90,7 @@ class AudiometryNotification extends Command
                         ->subcopy('Este link es valido por 24 horas')
                         ->buttons([['text'=>'Descargar', 'url'=>url("/export/{$paramUrl}")]])
                         ->module('biologicalMonitoring/audiometry')
+                        ->event('Tarea programada: AudiometryNotification')
                         ->send();
                 }
             }

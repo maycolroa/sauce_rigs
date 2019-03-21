@@ -8,6 +8,7 @@ use App\Vuetable\Facades\Vuetable;
 use App\Administrative\EmployeeArea;
 use App\Http\Requests\Administrative\Areas\AreaRequest;
 use Session;
+use DB;
 
 class EmployeeAreaController extends Controller
 {
@@ -40,16 +41,24 @@ class EmployeeAreaController extends Controller
     */
     public function data(Request $request)
     {
-        $headquarters = EmployeeArea::select(
-            'sau_employees_areas.id as id',
-            'sau_employees_areas.name as name',
-            'sau_employees_headquarters.name as sede',
-            'sau_employees_regionals.name as regional'
+        $areas = EmployeeArea::selectRaw(
+            'sau_employees_areas.id as id,
+             sau_employees_areas.name as name,
+             GROUP_CONCAT(CONCAT(" ", sau_employees_processes.name) ORDER BY sau_employees_processes.name ASC) as proceso,
+             sau_employees_headquarters.name as sede,
+             sau_employees_regionals.name as regional'
         )
-        ->join('sau_employees_headquarters', 'sau_employees_headquarters.id', 'sau_employees_areas.employee_headquarter_id')
-        ->join('sau_employees_regionals', 'sau_employees_regionals.id', 'sau_employees_headquarters.employee_regional_id');
+        ->join('sau_process_area', 'sau_process_area.employee_area_id', 'sau_employees_areas.id')
+        ->join('sau_employees_processes', 'sau_employees_processes.id', 'sau_process_area.employee_process_id')
+        ->join('sau_headquarter_process', function($q) {
+            $q->on('sau_headquarter_process.employee_process_id', '=', 'sau_employees_processes.id')
+              ->on('sau_process_area.employee_headquarter_id', '=', 'sau_headquarter_process.employee_headquarter_id');
+        })
+        ->join('sau_employees_headquarters', 'sau_employees_headquarters.id', 'sau_headquarter_process.employee_headquarter_id')
+        ->join('sau_employees_regionals', 'sau_employees_regionals.id', 'sau_employees_headquarters.employee_regional_id')
+        ->groupBy('sau_employees_areas.id', 'sau_employees_areas.name', 'sau_employees_regionals.name', 'sau_employees_headquarters.name');
 
-        return Vuetable::of($headquarters)
+        return Vuetable::of($areas)
                 ->make();
     }
 
@@ -61,9 +70,27 @@ class EmployeeAreaController extends Controller
      */
     public function store(AreaRequest $request)
     {
-        $area = new EmployeeArea($request->all());
-        
-        if(!$area->save()){
+        DB::beginTransaction();
+
+        try
+        { 
+            $area = new EmployeeArea($request->all());
+            $area->save();
+
+            $process = $this->getDataFromMultiselect($request->get('employee_process_id'));
+            $ids = [];
+
+            foreach ($process as $value)
+            {
+                $ids[$value] = ['employee_headquarter_id'=>$request->get('employee_headquarter_id')];
+            }
+
+            $area->processes()->sync($ids);
+
+            DB::commit();
+
+        } catch (\Exception $e) {
+            DB::rollback();
             return $this->respondHttp500();
         }
 
@@ -83,9 +110,30 @@ class EmployeeAreaController extends Controller
         try
         {
             $area = EmployeeArea::findOrFail($id);
-            $area->employee_regional_id = $area->headquarter->regional->id;
-            $area->multiselect_regional = $area->headquarter->regional->multiselect(); 
-            $area->multiselect_sede = $area->headquarter->multiselect(); 
+            $process = [];
+
+            foreach ($area->processes as $key => $value)
+            {
+                if ($key == 0)
+                {
+                    foreach ($value->headquarters as $key2 => $value2)
+                    {
+                        if ($value->pivot->employee_headquarter_id == $value2->id)
+                        {
+                            $area->employee_headquarter_id = $value2->id;
+                            $area->multiselect_sede = $value2->multiselect();
+                            $area->employee_regional_id = $value2->regional->id;
+                            $area->multiselect_regional = $value2->regional->multiselect();
+                            break;
+                        }
+                    }
+                }
+                
+                array_push($process, $value->multiselect());
+            }
+
+            $area->multiselect_employee_process_id = $process;
+            $area->employee_process_id = $process;
 
             return $this->respondHttp200([
                 'data' => $area,
@@ -104,12 +152,30 @@ class EmployeeAreaController extends Controller
      */
     public function update(AreaRequest $request, EmployeeArea $area)
     {
-        $area->fill($request->all());
-        
-        if(!$area->update()){
-          return $this->respondHttp500();
+        DB::beginTransaction();
+
+        try
+        { 
+            $area->fill($request->all());
+            $area->update();
+
+            $process = $this->getDataFromMultiselect($request->get('employee_process_id'));
+            $ids = [];
+
+            foreach ($process as $value)
+            {
+                $ids[$value] = ['employee_headquarter_id'=>$request->get('employee_headquarter_id')];
+            }
+            
+            $area->processes()->sync($ids);
+
+            DB::commit();
+
+        } catch (\Exception $e) {
+            DB::rollback();
+            return $this->respondHttp500();
         }
-        
+
         return $this->respondHttp200([
             'message' => 'Se actualizo el área'
         ]);
@@ -123,7 +189,7 @@ class EmployeeAreaController extends Controller
      */
     public function destroy(EmployeeArea $area)
     {
-        if (count($area->employees) > 0 || count($area->processes) > 0 || count($area->dangerMatrices) > 0)
+        if (count($area->employees) > 0 || count($area->dangerMatrices) > 0)
         {
             return $this->respondWithError('No se puede eliminar el área porque hay registros asociados a ella');
         }
@@ -149,16 +215,18 @@ class EmployeeAreaController extends Controller
     {
         if($request->has('keyword'))
         {
-            if ($request->has('headquarter') && $request->get('headquarter') != '')
+            if ($request->has('process') && $request->get('process') != '' && $request->has('headquarter') && $request->get('headquarter') != '')
             {
                 $keyword = "%{$request->keyword}%";
                 $areas = EmployeeArea::selectRaw(
                     "sau_employees_areas.id as id,
                     sau_employees_areas.name as name")
-                ->join('sau_employees_headquarters', 'sau_employees_headquarters.id', 'sau_employees_areas.employee_headquarter_id')
+                ->join('sau_process_area', 'sau_process_area.employee_area_id', 'sau_employees_areas.id')
+                ->join('sau_employees_processes', 'sau_employees_processes.id', 'sau_process_area.employee_process_id')
+                ->where('employee_process_id', $request->get('process'))
                 ->where('employee_headquarter_id', $request->get('headquarter'))
                 ->where(function ($query) use ($keyword) {
-                    $query->orWhere('sau_employees_areas.name', 'like', $keyword);
+                    $query->orWhere('sau_employees_processes.name', 'like', $keyword);
                 })
                 ->take(30)->pluck('id', 'name');
 
@@ -171,9 +239,14 @@ class EmployeeAreaController extends Controller
         {
             $areas = EmployeeArea::selectRaw(
                     "sau_employees_areas.id as id,
-                    CONCAT(sau_employees_regionals.name, '/', sau_employees_headquarters.name, '/', sau_employees_areas.name) as name")
-                ->join('sau_employees_headquarters', 'sau_employees_headquarters.id', 'sau_employees_areas.employee_headquarter_id')
-                ->join('sau_employees_regionals', 'sau_employees_regionals.id', 'sau_employees_headquarters.employee_regional_id')->pluck('id', 'name');
+                     sau_employees_areas.name as name")
+                ->join('sau_process_area', 'sau_process_area.employee_area_id', 'sau_employees_areas.id')
+                ->join('sau_employees_processes', 'sau_employees_processes.id', 'sau_process_area.employee_process_id')
+                ->join('sau_headquarter_process', 'sau_headquarter_process.employee_process_id', 'sau_employees_processes.id')
+                ->join('sau_employees_headquarters', 'sau_employees_headquarters.id', 'sau_headquarter_process.employee_headquarter_id')
+                ->join('sau_employees_regionals', 'sau_employees_regionals.id', 'sau_employees_headquarters.employee_regional_id')
+                ->groupBy('sau_employees_areas.id', 'sau_employees_areas.name')
+                ->pluck('id', 'name');
         
             return $this->multiSelectFormat($areas);
         }

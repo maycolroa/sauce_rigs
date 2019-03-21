@@ -74,7 +74,7 @@ class ConfigurationController extends Controller
      */
     public function radioLocationLevels()
     {
-      $options = ["Regional"=>"Regional", "Sede"=>"Sede", "Área"=>"Área", "Proceso"=>"Proceso"];
+      $options = ["Regional"=>"Regional", "Sede"=>"Sede", "Macroproceso"=>"Proceso", "Área"=>"Área"];
       return $this->radioFormat(collect($options));
     }
 }

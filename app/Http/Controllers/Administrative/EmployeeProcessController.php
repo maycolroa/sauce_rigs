@@ -8,6 +8,7 @@ use App\Vuetable\Facades\Vuetable;
 use App\Administrative\EmployeeProcess;
 use App\Http\Requests\Administrative\Processes\ProcessRequest;
 use Session;
+use DB;
 
 class EmployeeProcessController extends Controller
 {
@@ -40,16 +41,16 @@ class EmployeeProcessController extends Controller
     */
     public function data(Request $request)
     {
-        $processes = EmployeeProcess::select(
-            'sau_employees_processes.id as id',
-            'sau_employees_processes.name as name',
-            'sau_employees_areas.name as area',
-            'sau_employees_headquarters.name as sede',
-            'sau_employees_regionals.name as regional'
+        $processes = EmployeeProcess::selectRaw(
+            'sau_employees_processes.id as id,
+             sau_employees_processes.name as name,
+             GROUP_CONCAT(CONCAT(" ", sau_employees_headquarters.name) ORDER BY sau_employees_headquarters.name ASC) as sede,
+             sau_employees_regionals.name as regional'
         )
-        ->join('sau_employees_areas', 'sau_employees_areas.id', 'sau_employees_processes.employee_area_id')
-        ->join('sau_employees_headquarters', 'sau_employees_headquarters.id', 'sau_employees_areas.employee_headquarter_id')
-        ->join('sau_employees_regionals', 'sau_employees_regionals.id', 'sau_employees_headquarters.employee_regional_id');
+        ->join('sau_headquarter_process', 'sau_headquarter_process.employee_process_id', 'sau_employees_processes.id')
+        ->join('sau_employees_headquarters', 'sau_employees_headquarters.id', 'sau_headquarter_process.employee_headquarter_id')
+        ->join('sau_employees_regionals', 'sau_employees_regionals.id', 'sau_employees_headquarters.employee_regional_id')
+        ->groupBy('sau_employees_processes.id', 'sau_employees_processes.name', 'sau_employees_regionals.name');
 
         return Vuetable::of($processes)
                 ->make();
@@ -63,9 +64,19 @@ class EmployeeProcessController extends Controller
      */
     public function store(ProcessRequest $request)
     {
-        $process = new EmployeeProcess($request->all());
-        
-        if(!$process->save()){
+        DB::beginTransaction();
+
+        try
+        { 
+            $process = new EmployeeProcess($request->all());
+            $process->save();
+
+            $process->headquarters()->sync($this->getDataFromMultiselect($request->get('employee_headquarter_id')));
+
+            DB::commit();
+
+        } catch (\Exception $e) {
+            DB::rollback();
             return $this->respondHttp500();
         }
 
@@ -85,18 +96,27 @@ class EmployeeProcessController extends Controller
         try
         {
             $process = EmployeeProcess::findOrFail($id);
-            $process->employee_regional_id = $process->area->headquarter->regional->id;
-            $process->employee_headquarter_id = $process->area->headquarter->id;
-            $process->employee_area_id = $process->area->id;
-            $process->multiselect_regional = $process->area->headquarter->regional->multiselect(); 
-            $process->multiselect_sede = $process->area->headquarter->multiselect(); 
-            $process->multiselect_area = $process->area->multiselect(); 
+            $headquarters = [];
+
+            foreach ($process->headquarters as $key => $value)
+            {
+                if ($key == 0)
+                {
+                    $process->employee_regional_id = $value->regional->id;
+                    $process->multiselect_regional = $value->regional->multiselect();
+                }
+                
+                array_push($headquarters, $value->multiselect());
+            }
+
+            $process->multiselect_employee_headquarter_id = $headquarters;
+            $process->employee_headquarter_id = $headquarters;
 
             return $this->respondHttp200([
                 'data' => $process,
             ]);
         } catch(Exception $e){
-            $this->respondHttp500();
+            return $this->respondHttp500();
         }
     }
 
@@ -109,12 +129,22 @@ class EmployeeProcessController extends Controller
      */
     public function update(ProcessRequest $request, EmployeeProcess $process)
     {
-        $process->fill($request->all());
-        
-        if(!$process->update()){
-          return $this->respondHttp500();
+        DB::beginTransaction();
+
+        try
+        { 
+            $process->fill($request->all());
+            $process->update();
+
+            $process->headquarters()->sync($this->getDataFromMultiselect($request->get('employee_headquarter_id')));
+
+            DB::commit();
+
+        } catch (\Exception $e) {
+            DB::rollback();
+            return $this->respondHttp500();
         }
-        
+
         return $this->respondHttp200([
             'message' => 'Se actualizo el proceso'
         ]);
@@ -128,7 +158,7 @@ class EmployeeProcessController extends Controller
      */
     public function destroy(EmployeeProcess $process)
     {
-        if (count($process->employees) > 0 || count($process->dangerMatrices) > 0)
+        if (count($process->employees) > 0 || count($process->areas) > 0 || count($process->dangerMatrices) > 0)
         {
             return $this->respondWithError('No se puede eliminar el proceso porque hay registros asociados a él');
         }
@@ -154,16 +184,17 @@ class EmployeeProcessController extends Controller
     {
         if($request->has('keyword'))
         {
-            if ($request->has('area') && $request->get('area') != '')
+            if ($request->has('headquarter') && $request->get('headquarter') != '')
             {
                 $keyword = "%{$request->keyword}%";
                 $processes = EmployeeProcess::selectRaw(
                     "sau_employees_processes.id as id,
                     sau_employees_processes.name as name")
-                ->join('sau_employees_areas', 'sau_employees_areas.id', 'sau_employees_processes.employee_area_id')
-                ->where('employee_area_id', $request->get('area'))
+                ->join('sau_headquarter_process', 'sau_headquarter_process.employee_process_id', 'sau_employees_processes.id')
+                ->join('sau_employees_headquarters', 'sau_employees_headquarters.id', 'sau_headquarter_process.employee_headquarter_id')
+                ->where('sau_headquarter_process.employee_headquarter_id', $request->get('headquarter'))
                 ->where(function ($query) use ($keyword) {
-                    $query->orWhere('sau_employees_processes.name', 'like', $keyword);
+                    $query->orWhere('sau_employees_headquarters.name', 'like', $keyword);
                 })
                 ->take(30)->pluck('id', 'name');
 
@@ -176,10 +207,12 @@ class EmployeeProcessController extends Controller
         {
             $processes = EmployeeProcess::selectRaw(
                     "sau_employees_processes.id as id,
-                    CONCAT(sau_employees_regionals.name, '/', sau_employees_headquarters.name, '/', sau_employees_areas.name, '/', sau_employees_processes.name) as name")
-                ->join('sau_employees_areas', 'sau_employees_areas.id', 'sau_employees_processes.employee_area_id')
-                ->join('sau_employees_headquarters', 'sau_employees_headquarters.id', 'sau_employees_areas.employee_headquarter_id')
-                ->join('sau_employees_regionals', 'sau_employees_regionals.id', 'sau_employees_headquarters.employee_regional_id')->pluck('id', 'name');
+                     sau_employees_processes.name as name")
+                ->join('sau_headquarter_process', 'sau_headquarter_process.employee_process_id', 'sau_employees_processes.id')
+                ->join('sau_employees_headquarters', 'sau_employees_headquarters.id', 'sau_headquarter_process.employee_headquarter_id')
+                ->join('sau_employees_regionals', 'sau_employees_regionals.id', 'sau_employees_headquarters.employee_regional_id')
+                ->groupBy('sau_employees_processes.id', 'sau_employees_processes.name')
+                ->pluck('id', 'name');
         
             return $this->multiSelectFormat($processes);
         }

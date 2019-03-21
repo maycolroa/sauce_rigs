@@ -96,6 +96,13 @@ class NotificationMail
      */
     private $with;
 
+    /**
+     * Stores the detail of the action that sends the notification
+     *
+     * @var String
+     */
+    private $event;
+
     public function __construct()
     {
  
@@ -373,6 +380,22 @@ class NotificationMail
     }
 
     /**
+     * Edit the event
+     *
+     * @param string $subject
+     * @return $this
+     */
+    public function event($event)
+    {
+        if (!is_string($event) || $event == '')
+            throw new \Exception('The format of the event is incorrect'); 
+
+        $this->event = $event;
+
+        return $this;
+    }
+
+    /**
      * Send the mail
      *
      * @return booleam
@@ -447,8 +470,13 @@ class NotificationMail
     {
         $log = new LogMail();
 
-        $event = explode("\\", Route::currentRouteAction());
-        $event = $event[COUNT($event) - 1];
+        if (!empty($this->event))
+            $event = $this->event;
+        else
+        {
+            $event = explode("\\", Route::currentRouteAction());
+            $event = $event[COUNT($event) - 1];
+        }
 
         if ($this->recipients instanceof User || $this->recipients instanceof Employee)
             $log->recipients = $this->recipients->email;    

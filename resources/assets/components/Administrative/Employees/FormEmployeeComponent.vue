@@ -27,9 +27,9 @@
     </b-form-row>
 
     <b-form-row>
-      <vue-ajax-advanced-select :disabled="viewOnly || !form.employee_headquarter_id" class="col-md-6" v-model="form.employee_area_id" :error="form.errorsFor('employee_area_id')" :selected-object="form.multiselect_area" name="employee_area_id" label="Área" placeholder="Seleccione el área" :url="areasDataUrl" :parameters="{headquarter: form.employee_headquarter_id }" :emptyAll="empty.area" @updateEmpty="updateEmptyKey('area')">
+      <vue-ajax-advanced-select :disabled="viewOnly || !form.employee_headquarter_id" class="col-md-6" v-model="form.employee_process_id" :error="form.errorsFor('employee_process_id')" :selected-object="form.multiselect_proceso" name="employee_process_id" label="Macroproceso" placeholder="Seleccione el macroproceso" :url="processesDataUrl" :parameters="{headquarter: form.employee_headquarter_id }" :emptyAll="empty.process" @updateEmpty="updateEmptyKey('process')">
           </vue-ajax-advanced-select>
-      <vue-ajax-advanced-select :disabled="viewOnly || !form.employee_area_id" class="col-md-6" v-model="form.employee_process_id" :error="form.errorsFor('employee_process_id')" :selected-object="form.multiselect_proceso" name="employee_process_id" label="Proceso" placeholder="Seleccione el proceso" :url="processesDataUrl" :parameters="{area: form.employee_area_id }" :emptyAll="empty.process" @updateEmpty="updateEmptyKey('process')">
+      <vue-ajax-advanced-select :disabled="viewOnly || !form.employee_process_id" class="col-md-6" v-model="form.employee_area_id" :error="form.errorsFor('employee_area_id')" :selected-object="form.multiselect_area" name="employee_area_id" label="Área" placeholder="Seleccione el área" :url="areasDataUrl" :parameters="{process: form.employee_process_id, headquarter: form.employee_headquarter_id }" :emptyAll="empty.area" @updateEmpty="updateEmptyKey('area')">
           </vue-ajax-advanced-select>
     </b-form-row>
 
@@ -122,10 +122,10 @@ export default {
       this.emptySelect('employee_process_id', 'process')
       this.emptySelect('employee_area_id', 'area')
     },
-    'form.employee_area_id'() {
-      this.emptySelect('employee_process_id', 'process')
-    },
     'form.employee_process_id'() {
+      this.emptySelect('employee_areas_id', 'areas')
+    },
+    'form.employee_areas_id'() {
       if (this.disableWacth)
         this.disableWacth = false
     }

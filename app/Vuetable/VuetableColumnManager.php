@@ -129,14 +129,14 @@ class VuetableColumnManager
                 'name'=>'headquarter', 'data'=>'headquarter', 'title'=>$columnsHeader['headquarter'], 'sortable'=>true, 'searchable'=>false, 'detail'=>false, 'key'=>false
             ]);
 
-        if ($confLocation['area'] == 'SI')
-            array_push($colums, [
-                'name'=>'area', 'data'=>'area', 'title'=>$columnsHeader['area'], 'sortable'=>true, 'searchable'=>false, 'detail'=>false, 'key'=>false
-            ]);
-
         if ($confLocation['process'] == 'SI')
             array_push($colums, [
                 'name'=>'process', 'data'=>'process', 'title'=>$columnsHeader['process'], 'sortable'=>true, 'searchable'=>false, 'detail'=>false, 'key'=>false
+            ]);
+
+        if ($confLocation['area'] == 'SI')
+            array_push($colums, [
+                'name'=>'area', 'data'=>'area', 'title'=>$columnsHeader['area'], 'sortable'=>true, 'searchable'=>false, 'detail'=>false, 'key'=>false
             ]);
 
         return $colums;

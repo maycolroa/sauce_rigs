@@ -59,6 +59,7 @@ class AudiometryExportJob implements ShouldQueue
         ->subcopy('Este link es valido por 24 horas')
         ->buttons([['text'=>'Descargar', 'url'=>url("/export/{$paramUrl}")]])
         ->module('biologicalMonitoring/audiometry')
+        ->event('Job: AudiometryExportJob')
         ->send();
     }
 }

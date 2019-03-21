@@ -60,6 +60,7 @@ class UserExportJob implements ShouldQueue
             ->buttons([['text'=>'Descargar', 'url'=>url("/export/{$paramUrl}")]])
             ->module('users')
             ->subcopy('Este link es valido por 24 horas')
+            ->event('Job: UserExportJob')
             ->send();
 
       } catch (\Exception $e)
@@ -69,6 +70,7 @@ class UserExportJob implements ShouldQueue
               ->recipients($this->user)
               ->message('Se produjo un error durante el proceso de importación de los usuarios. Contacte con el administrador')
               ->module('users')
+              ->event('Job: UserExportJob')
               ->send();
       }
     }

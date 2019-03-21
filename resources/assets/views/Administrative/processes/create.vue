@@ -1,7 +1,7 @@
 <template>
   <div>
     <h4 class="font-weight-bold mb-4">
-       <span class="text-muted font-weight-light">Procesos /</span> Crear
+       <span class="text-muted font-weight-light">Macroprocesos /</span> Crear
     </h4>
 
 
@@ -13,7 +13,6 @@
                 method="POST"
                 regionals-data-url="/selects/regionals"
                 headquarters-data-url="/selects/headquarters"
-                areas-data-url="/selects/areas"
                 :cancel-url="{ name: 'administrative-processes'}"
                 :modal="modal"/>
         </b-card-body>
@@ -29,7 +28,7 @@ import Alerts from '@/utils/Alerts.js';
 export default {
   name: 'administrative-processes-create',
   metaInfo: {
-    title: 'Procesos - Crear'
+    title: 'Macroprocesos - Crear'
   },
   components:{
     AdministrativeProcessForm

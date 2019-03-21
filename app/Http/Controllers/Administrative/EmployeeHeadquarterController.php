@@ -119,7 +119,7 @@ class EmployeeHeadquarterController extends Controller
      */
     public function destroy(EmployeeHeadquarter $headquarter)
     {
-        if (count($headquarter->employees) > 0 || count($headquarter->areas) > 0 || count($headquarter->dangerMatrices) > 0)
+        if (count($headquarter->employees) > 0 || count($headquarter->processes) > 0 || count($headquarter->dangerMatrices) > 0)
         {
             return $this->respondWithError('No se puede eliminar la sede porque hay registros asociadas a ella');
         }
@@ -166,9 +166,11 @@ class EmployeeHeadquarterController extends Controller
         else
         {
             $headquarters = EmployeeHeadquarter::selectRaw(
-                "sau_employees_headquarters.id as id,
-                CONCAT(sau_employees_regionals.name, '/', sau_employees_headquarters.name) as name")
-            ->join('sau_employees_regionals', 'sau_employees_regionals.id', 'sau_employees_headquarters.employee_regional_id')->pluck('id', 'name');
+                "GROUP_CONCAT(sau_employees_headquarters.id) as ids,
+                 sau_employees_headquarters.name as name")
+            ->join('sau_employees_regionals', 'sau_employees_regionals.id', 'sau_employees_headquarters.employee_regional_id')
+            ->groupBy('sau_employees_headquarters.name')
+            ->pluck('ids', 'name');
         
             return $this->multiSelectFormat($headquarters);
         }

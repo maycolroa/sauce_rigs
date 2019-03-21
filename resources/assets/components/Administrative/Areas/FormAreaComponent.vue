@@ -10,6 +10,8 @@
     <b-form-row>
       <vue-ajax-advanced-select :disabled="viewOnly || !form.employee_regional_id" class="col-md-6" v-model="form.employee_headquarter_id" :error="form.errorsFor('employee_headquarter_id')" :selected-object="form.multiselect_sede" name="employee_headquarter_id" label="Sede" placeholder="Seleccione la sede" :url="headquartersDataUrl" :parameters="{regional: form.employee_regional_id }" :emptyAll="empty.headquarter" @updateEmpty="updateEmptyKey('headquarter')">
           </vue-ajax-advanced-select>
+      <vue-ajax-advanced-select :disabled="viewOnly || !form.employee_headquarter_id" class="col-md-6" v-model="form.employee_process_id" :error="form.errorsFor('employee_process_id')"  name="employee_process_id" label="Macroprocesos" placeholder="Seleccione los macroprocesos" :url="processesDataUrl" :parameters="{headquarter: form.employee_headquarter_id }" :emptyAll="empty.process" @updateEmpty="updateEmptyKey('process')" :multiple="true" :allowEmpty="true" :selected-object="form.multiselect_employee_process_id">
+          </vue-ajax-advanced-select>
     </b-form-row>
 
     <div class="row float-right pt-10 pr-10">
@@ -39,6 +41,7 @@ export default {
     viewOnly: { type: Boolean, default: false },
     regionalsDataUrl: { type: String, default: "" },
     headquartersDataUrl: { type: String, default: "" },
+    processesDataUrl: { type: String, default: "" },
     disableWacthSelectInCreated: { type: Boolean, default: false},
     modal: { type: Boolean, default: false },
     area: {
@@ -47,6 +50,7 @@ export default {
             name: '',
             employee_regional_id: '',
             employee_headquarter_id: '',
+            employee_process_id: ''
         };
       }
     }
@@ -57,9 +61,13 @@ export default {
       this.form = Form.makeFrom(this.area, this.method);
     },
     'form.employee_regional_id'() {
+      this.emptySelect('employee_process_id', 'process')
       this.emptySelect('employee_headquarter_id', 'headquarter')
     },
     'form.employee_headquarter_id'() {
+      this.emptySelect('employee_process_id', 'process')
+    },
+    'form.employee_process_id'() {
       if (this.disableWacth)
         this.disableWacth = false
     }
@@ -69,7 +77,8 @@ export default {
       loading: this.isEdit,
       form: Form.makeFrom(this.area, this.method),
       empty: {
-        headquarter: false
+        headquarter: false,
+        process: false
       },
       disableWacth: this.disableWacthSelectInCreated,
     };

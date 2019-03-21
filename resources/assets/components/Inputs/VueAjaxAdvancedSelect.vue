@@ -54,7 +54,7 @@ export default {
         textBlock: {type: String},
         actionBlock: {type: String},
         url: { type: String, required: true },
-        selectedObject: { type: Object },
+        selectedObject: { type: [Object, Array] },
         parameters: { type: Object},
         emptyAll: {type: Boolean, default: false},
         taggable: {type: Boolean, default: false},
@@ -157,7 +157,13 @@ export default {
     watch: {
       selectedObject(){
         this.selectValue = this.selectedObject;
-        this.options.push(this.selectedObject);
+
+        if (typeof this.selectedObject == "object")
+            this.options.push(this.selectedObject);
+        else 
+            _.forIn(this.selectedObject, (value, key) => {
+                this.options.push(value);
+            })
       },
       emptyAll(){
         if (this.emptyAll)
@@ -169,8 +175,13 @@ export default {
       }
     },
     mounted() {
-         if (this.selectedObject) {
-            this.options.push(this.selectedObject);
+        if (this.selectedObject) {
+            if (typeof this.selectedObject == "object")
+                this.options.push(this.selectedObject);
+            else 
+                _.forIn(this.selectedObject, (value, key) => {
+                    this.options.push(value);
+                })
         }
 
         this.setMultiselectValue();

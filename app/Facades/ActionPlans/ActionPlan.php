@@ -689,11 +689,11 @@ class ActionPlan
         if ($this->headquarter)
             array_push($list, 'Sede: '.$this->headquarter);
 
+        if ($this->process)
+            array_push($list, 'Macroproceso: '.$this->process);
+
         if ($this->area)
             array_push($list, 'Área: '.$this->area);
-
-        if ($this->process)
-            array_push($list, 'Proceso: '.$this->process);
 
         if ($this->creationDate)
             array_push($list, 'Fecha de creación: '.$this->creationDate);
@@ -769,6 +769,7 @@ class ActionPlan
                         ->recipients($supervisor)
                         ->message('Las siguientes actividades están próximas a vencerse: ')
                         ->module('actionPlans')
+                        ->event('Tarea programada: DaysAlertExpirationDateActionPlan')
                         ->table($this->prepareDataTable($valueS->toArray(), null, 'Y-m-d'))
                         //->list($this->prepareListItemMainEmail(), 'ul')
                         ->with(['responsible'=>$responsible->name])
@@ -787,6 +788,7 @@ class ActionPlan
                     ->recipients($responsible)
                     ->message('Las siguientes actividades están próximas a vencerse: ')
                     ->module('actionPlans')
+                    ->event('Tarea programada: DaysAlertExpirationDateActionPlan')
                     ->table($this->prepareDataTable($value->toArray(), null, 'Y-m-d'))
                     //->list($this->prepareListItemMainEmail(), 'ul')
                     ->with(['responsible'=>$responsible->name])

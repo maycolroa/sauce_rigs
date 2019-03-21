@@ -1,7 +1,7 @@
 <template>
   <div>
     <h4 class="font-weight-bold mb-4">
-       <span class="text-muted font-weight-light">Procesos /</span> Editar
+       <span class="text-muted font-weight-light">Macroprocesos /</span> Editar
     </h4>
 
     <div class="col-md">
@@ -12,7 +12,6 @@
                 method="PUT"
                 regionals-data-url="/selects/regionals"
                 headquarters-data-url="/selects/headquarters"
-                areas-data-url="/selects/areas"
                 :disable-wacth-select-in-created="true"
                 :process="data"
                 :is-edit="true"
@@ -30,7 +29,7 @@ import Alerts from '@/utils/Alerts.js';
 export default {
   name: 'administrative-processes-edit',
   metaInfo: {
-    title: 'Procesos - Editar'
+    title: 'Macroprocesos - Editar'
   },
   components:{
     AdministrativeProcessForm

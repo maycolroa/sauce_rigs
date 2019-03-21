@@ -12,7 +12,7 @@
         <b-form-row v-if="auth.can['roles_manage_defined']">          
           <vue-checkbox-simple :disabled="isEdit || viewOnly" class="col-md-3" v-model="form.type_role" label="¿Definido?" :checked="form.type_role" name="type_role" checked-value="Definido" unchecked-value="No Definido"></vue-checkbox-simple>
 
-          <vue-advanced-select-group v-show="form.type_role == 'Definido'" :disabled="viewOnly" v-model="form.module_id" class="col-md-9" :options="allModules" :limit="1000" :searchable="true" name="module_id" label="Aplicación \ Módulo al que se asignara el Rol" placeholder="Seleccione un modulo" :error="form.errorsFor('module_id')" :selected-object="form.multiselect_module">
+          <vue-advanced-select-group v-show="form.type_role == 'Definido'" :disabled="viewOnly" v-model="form.module_id" class="col-md-9" :options="allModules" :limit="1000" :searchable="true" name="module_id" label="Aplicación \ Módulo al que se asignará el Rol" placeholder="Seleccione un modulo" :error="form.errorsFor('module_id')" :selected-object="form.multiselect_module">
           </vue-advanced-select-group>
         </b-form-row>
         

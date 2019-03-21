@@ -20,8 +20,7 @@
           :form="form"
           application="industrialSecure"
           module="dangerMatrix"
-          @configLocation="setConfigLocation"
-          label-process="Macroproceso"/>
+          @configLocation="setConfigLocation"/>
       </b-form-row>
 
       <b-form-row>

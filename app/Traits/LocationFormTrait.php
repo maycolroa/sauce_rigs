@@ -23,29 +23,29 @@ trait LocationFormTrait
             {
                 $data["regional"] = "SI";
                 $data["headquarter"] = "NO";
-                $data["area"] = "NO";
                 $data["process"] = "NO";
+                $data["area"] = "NO";
             }
             else if ($locationLevelForm == 'Sede')
             {
                 $data["regional"] = "SI";
                 $data["headquarter"] = "SI";
+                $data["process"] = "NO";
                 $data["area"] = "NO";
-                $data["process"] = "NO";
-            }
-            else if ($locationLevelForm == 'Área')
-            {
-                $data["regional"] = "SI";
-                $data["headquarter"] = "SI";
-                $data["area"] = "SI";
-                $data["process"] = "NO";
             }
             else if ($locationLevelForm == 'Proceso')
             {
                 $data["regional"] = "SI";
                 $data["headquarter"] = "SI";
-                $data["area"] = "SI";
                 $data["process"] = "SI";
+                $data["area"] = "NO";
+            }
+            else if ($locationLevelForm == 'Área')
+            {
+                $data["regional"] = "SI";
+                $data["headquarter"] = "SI";
+                $data["process"] = "SI";
+                $data["area"] = "SI";
             }
         }
     
@@ -69,10 +69,10 @@ trait LocationFormTrait
                 $rules['locations.employee_regional_id'] = 'required';
             if ($confLocation['headquarter'] == 'SI')
                 $rules['locations.employee_headquarter_id'] = 'required';
-            if ($confLocation['area'] == 'SI')
-                $rules['locations.employee_area_id'] = 'required';
             if ($confLocation['process'] == 'SI')
                 $rules['locations.employee_process_id'] = 'required';
+            if ($confLocation['area'] == 'SI')
+                $rules['locations.employee_area_id'] = 'required';
         }
 
         return $rules;
@@ -93,17 +93,18 @@ trait LocationFormTrait
         {
             $model->employee_regional_id = null;
             $model->employee_headquarter_id = null;
-            $model->employee_area_id = null;
             $model->employee_process_id = null;
+            $model->employee_area_id = null;
 
             if ($confLocation['regional'] == 'SI')
                 $model->employee_regional_id = $data['employee_regional_id'];
             if ($confLocation['headquarter'] == 'SI')
                 $model->employee_headquarter_id = $data['employee_headquarter_id'];
-            if ($confLocation['area'] == 'SI')
-                $model->employee_area_id = $data['employee_area_id'];
             if ($confLocation['process'] == 'SI')
                 $model->employee_process_id = $data['employee_process_id'];
+            if ($confLocation['area'] == 'SI')
+                $model->employee_area_id = $data['employee_area_id'];
+            
 
             $model->save();
         }
@@ -121,13 +122,13 @@ trait LocationFormTrait
 
         $data['employee_regional_id'] = $model->employee_regional_id;
         $data['employee_headquarter_id'] = $model->employee_headquarter_id;
-        $data['employee_area_id'] = $model->employee_area_id;
         $data['employee_process_id'] = $model->employee_process_id;
+        $data['employee_area_id'] = $model->employee_area_id;
 
         $data['multiselect_regional'] = $model->regional ? $model->regional->multiselect() : null;
         $data['multiselect_headquarter'] = $model->headquarter ? $model->headquarter->multiselect() : null;
-        $data['multiselect_area'] = $model->area ? $model->area->multiselect() : null;
         $data['multiselect_process'] = $model->process ? $model->process->multiselect() : null;
+        $data['multiselect_area'] = $model->area ? $model->area->multiselect() : null;
 
         return $data;
     }

@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Administrative\Processes;
 
 use Illuminate\Foundation\Http\FormRequest;
+use App\Rules\MacroprocessUnique;
 
 class ProcessRequest extends FormRequest
 {
@@ -24,13 +25,11 @@ class ProcessRequest extends FormRequest
     public function rules()
     {
         $id = $this->input('id');
-        $employee_area_id = $this->input('employee_area_id');
 
         return [
-            'name' => 'required|string|unique:sau_employees_processes,name,'.$id.',id,employee_area_id,'.$employee_area_id,
+            'name' => ['required','string',new MacroprocessUnique($id)],
             'employee_regional_id' => 'required|exists:sau_employees_regionals,id',
-            'employee_headquarter_id' => 'required|exists:sau_employees_headquarters,id',
-            'employee_area_id' => 'required|exists:sau_employees_areas,id'
+            'employee_headquarter_id' => 'required|array'
         ];
     }
 }

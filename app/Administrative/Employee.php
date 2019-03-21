@@ -85,13 +85,17 @@ class Employee extends Model
      * @param  array $regionals
      * @return Illuminate\Database\Eloquent\Builder
      */
-    public function scopeInRegionals($query, $regionals)
+    public function scopeInRegionals($query, $regionals, $typeSearch = 'IN')
     {
-        $query->where(function ($subquery) use ($regionals) {
-            foreach ($regionals as $regionalId) {
-                $subquery->orWhere('sau_employees.employee_regional_id', $regionalId);
-            }
-        });
+        if (COUNT($regionals) > 0)
+        {
+            if ($typeSearch == 'IN')
+                $query->whereIn('sau_employees.employee_regional_id', $regionals);
+
+            else if ($typeSearch == 'NOT IN')
+                $query->whereNotIn('sau_employees.employee_regional_id', $regionals);
+        }
+
         return $query;
     }
 
@@ -101,13 +105,26 @@ class Employee extends Model
      * @param  array $headquarters
      * @return Illuminate\Database\Eloquent\Builder
      */
-    public function scopeInHeadquarters($query, $headquarters)
+    public function scopeInHeadquarters($query, $headquarters, $typeSearch = 'IN')
     {
-        $query->where(function ($subquery) use ($headquarters) {
-            foreach ($headquarters as $headquarterId) {
-                $subquery->orWhere('sau_employees.employee_headquarter_id', $headquarterId);
-            }
-        });
+        $ids = [];
+
+        foreach ($headquarters as $key => $value)
+        {
+            $ids[] = $value;
+        }
+
+        if(COUNT($ids) > 0)
+        {
+            $ids = explode(",", implode(",", $ids));
+
+            if ($typeSearch == 'IN')
+                $query->whereIn('sau_employees.employee_headquarter_id', $ids);
+
+            else if ($typeSearch == 'NOT IN')
+                $query->whereNotIn('sau_employees.employee_headquarter_id', $ids);
+        }
+
         return $query;
     }
 
@@ -117,13 +134,17 @@ class Employee extends Model
      * @param  array $areas
      * @return Illuminate\Database\Eloquent\Builder
      */
-    public function scopeInAreas($query, $areas)
+    public function scopeInAreas($query, $areas, $typeSearch = 'IN')
     {
-        $query->where(function ($subquery) use ($areas) {
-            foreach ($areas as $areaId) {
-                $subquery->orWhere('sau_employees.employee_area_id', $areaId);
-            }
-        });
+        if (COUNT($areas) > 0)
+        {
+            if ($typeSearch == 'IN')
+                $query->whereIn('sau_employees.employee_area_id', $areas);
+
+            else if ($typeSearch == 'NOT IN')
+                $query->whereNotIn('sau_employees.employee_area_id', $areas);
+        }
+
         return $query;
     }
 
@@ -133,13 +154,17 @@ class Employee extends Model
      * @param  array $processes
      * @return Illuminate\Database\Eloquent\Builder
      */
-    public function scopeInProcesses($query, $processes)
+    public function scopeInProcesses($query, $processes, $typeSearch = 'IN')
     {
-        $query->where(function ($subquery) use ($processes) {
-            foreach ($processes as $processId) {
-                $subquery->orWhere('sau_employees.employee_process_id', $processId);
-            }
-        });
+        if (COUNT($processes) > 0)
+        {
+            if ($typeSearch == 'IN')
+                $query->whereIn('sau_employees.employee_process_id', $processes);
+
+            else if ($typeSearch == 'NOT IN')
+                $query->whereNotIn('sau_employees.employee_process_id', $processes);
+        }
+
         return $query;
     }
 
@@ -149,13 +174,17 @@ class Employee extends Model
      * @param  array $businesses
      * @return Illuminate\Database\Eloquent\Builder
      */
-    public function scopeInBusinesses($query, $businesses)
+    public function scopeInBusinesses($query, $businesses, $typeSearch = 'IN')
     {
-        $query->where(function ($subquery) use ($businesses) {
-            foreach ($businesses as $businessId) {
-                $subquery->orWhere('sau_employees.employee_business_id', $businessId);
-            }
-        });
+        if (COUNT($businesses) > 0)
+        {
+            if ($typeSearch == 'IN')
+                $query->whereIn('sau_employees.employee_business_id', $businesses);
+
+            else if ($typeSearch == 'NOT IN')
+                $query->whereNotIn('sau_employees.employee_business_id', $businesses);
+        }
+
         return $query;
     }
 
@@ -165,13 +194,17 @@ class Employee extends Model
      * @param  array $positions
      * @return Illuminate\Database\Eloquent\Builder
      */
-    public function scopeInPositions($query, $positions)
+    public function scopeInPositions($query, $positions, $typeSearch = 'IN')
     {
-        $query->where(function ($subquery) use ($positions) {
-            foreach ($positions as $positionId) {
-                $subquery->orWhere('sau_employees.employee_position_id', $positionId);
-            }
-        });
+        if (COUNT($positions) > 0)
+        {
+            if ($typeSearch == 'IN')
+                $query->whereIn('sau_employees.employee_position_id', $positions);
+
+            else if ($typeSearch == 'NOT IN')
+                $query->whereNotIn('sau_employees.employee_position_id', $positions);
+        }
+
         return $query;
     }
 }

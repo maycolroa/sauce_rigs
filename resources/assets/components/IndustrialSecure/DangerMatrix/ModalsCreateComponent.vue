@@ -8,9 +8,9 @@
             &nbsp;&nbsp;
             <b-btn v-if="confLocation.headquarter == 'SI' && auth.can['headquarters_c']" class="btn-modals" variant="primary" @click="showFilterModal('headquarter')">Crear Sede</b-btn>
             &nbsp;&nbsp;
-            <b-btn v-if="confLocation.area == 'SI' && auth.can['areas_c']" class="btn-modals" variant="primary" @click="showFilterModal('area')">Crear Área</b-btn>
-            &nbsp;&nbsp;
             <b-btn v-if="confLocation.process == 'SI' && auth.can['processes_c']" class="btn-modals" variant="primary" @click="showFilterModal('process')">Crear Macroproceso</b-btn>
+            &nbsp;&nbsp;
+            <b-btn v-if="confLocation.area == 'SI' && auth.can['areas_c']" class="btn-modals" variant="primary" @click="showFilterModal('area')">Crear Área</b-btn>
         </div>
 
         <!-- Modal Activity -->
