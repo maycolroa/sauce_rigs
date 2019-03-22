@@ -27,7 +27,7 @@
                                 <span class="collapse-icon"></span>
                                 </b-btn>
                                 <b-btn @click.prevent="removeActivity(index)" 
-                                v-if="!viewOnly"
+                                v-if="!viewOnly && activity.editable != 'NO'"
                                 size="sm" 
                                 variant="secondary icon-btn borderless"
                                 v-b-tooltip.top title="Eliminar Actividad">
@@ -41,7 +41,7 @@
                     <b-collapse :id="`accordion${activity.key}-1`" visible :accordion="`accordion-${prefixIndex}`">
                         <b-card-body>
                             <b-form-row>
-                                <vue-textarea :disabled="viewOnly" class="col-md-12" v-model="activity.description" label="Descripción" name="description" placeholder="Descripción" :error="form.errorsFor(`${prefixIndex}actionPlan.activities.${index}.description`)"></vue-textarea>
+                                <vue-textarea :disabled="viewOnly || activity.editable == 'NO'" class="col-md-12" v-model="activity.description" label="Descripción" name="description" placeholder="Descripción" :error="form.errorsFor(`${prefixIndex}actionPlan.activities.${index}.description`)"></vue-textarea>
                                 <vue-ajax-advanced-select :disabled="viewOnly" class="col-md-12" v-model="activity.responsible_id" :selected-object="activity.multiselect_responsible" name="responsible_id" label="Responsable" placeholder="Seleccione el responsable" :url="userDataUrl" :error="form.errorsFor(`${prefixIndex}actionPlan.activities.${index}.responsible_id`)">
                                     </vue-ajax-advanced-select>
                             </b-form-row>
@@ -97,7 +97,13 @@ export default {
                     activitiesRemoved: []
                 }
             }
-        }
+        },
+        definedActivities: {
+            type: Array,
+            default: function() {
+                return [];
+            }
+        },
     },
     data() {
         return {
@@ -126,6 +132,24 @@ export default {
                 this.$emit("input", this.actionPlan);
             },
             deep: true
+        },
+        definedActivities()
+        {
+            if (!this.viewOnly && !this.isEdit)
+            {
+                _.forIn(this.definedActivities, (value, key) => {
+                    this.actionPlan.activities.push({
+                        key: new Date().getTime() + Math.floor(Math.random() * 1000),
+                        id: '',
+                        description: value,
+                        responsible_id: '',
+                        execution_date: '',
+                        expiration_date: '',
+                        state: '',
+                        editable: 'NO'
+                    })
+                });
+            }
         }
     },
     methods: {
