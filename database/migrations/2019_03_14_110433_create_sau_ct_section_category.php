@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateCtItemDescriptionActionPlan extends Migration
+class CreateSauCtSectionCategory extends Migration
 {
     /**
      * Run the migrations.
@@ -13,10 +13,12 @@ class CreateCtItemDescriptionActionPlan extends Migration
      */
     public function up()
     {
-        Schema::create('sau_ct_action_plan_default', function (Blueprint $table) {
+        Schema::create('sau_ct_section_category', function (Blueprint $table) {
             $table->increments('id');
-            $table->text('description');
-            $table->string('state');
+            $table->unsignedInteger('section_id');
+            $table->string('category_name', 100);
+
+            $table->foreign('section_id')->references('id')->on('sau_ct_section')->onDelete('cascade');
         });
     }
 
@@ -27,6 +29,6 @@ class CreateCtItemDescriptionActionPlan extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('sau_ct_action_plan_default');
+        Schema::dropIfExists('sau_ct_section_category');
     }
 }

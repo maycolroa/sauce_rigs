@@ -17,8 +17,8 @@ class CreateSauUserInformationContractLessee extends Migration
             $table->unsignedInteger('user_id');
             $table->unsignedInteger('information_id');
             
-            $table->foreign('user_id')->references('id')->on('sau_users');
-            $table->foreign('information_id')->references('id')->on('sau_ct_information_contract_lessee');
+            $table->foreign('user_id')->references('id')->on('sau_users')->onDelete('cascade');
+            $table->foreign('information_id')->references('id')->on('sau_ct_information_contract_lessee')->onDelete('cascade');
         });
     }
 
