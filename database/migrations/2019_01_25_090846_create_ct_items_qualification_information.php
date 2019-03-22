@@ -13,7 +13,7 @@ class CreateCtItemsQualificationInformation extends Migration
      */
     public function up()
     {
-        Schema::create('sau_ct_item_qualification', function (Blueprint $table) {
+        Schema::create('sau_ct_item_qualification_lessee', function (Blueprint $table) {
             $table->unsignedInteger('list_check_item_id');
             $table->unsignedInteger('qualification_id');
             $table->unsignedInteger('information_id');

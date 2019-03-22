@@ -48,7 +48,7 @@ Route::middleware(['auth'])->group(function () {
     Route::prefix('selects')->group(function () {
         Route::post('employees', 'Administrative\EmployeesController@multiselect');  
         Route::post('multiselect', 'ApplicationController@multiselect');
-        Route::post('roles', 'Administrative\Roles\RoleController@multiselect');  
+        Route::post('roles', 'Administrative\Roles\RoleController@multiselect');
         Route::post('modulesGroup', 'ApplicationController@multiselectGroupModules');
         Route::post('permissions', 'Administrative\Roles\RoleController@multiselectPermissions');
         Route::post('areas', 'Administrative\EmployeeAreaController@multiselect');  
@@ -136,7 +136,9 @@ Route::middleware(['auth'])->group(function () {
 		
 		//Aspectos Legales
 		Route::prefix('legalAspects')->group(function () {
-			Route::post('contracts/data', 'LegalAspects\ContractLesseeController@data');
+			Route::get('contracts/data', 'LegalAspects\ContractLesseeController@data');
+			Route::get('contracts/qualifications', 'LegalAspects\ContractLesseeController@qualifications');
+			Route::post('contracts/saveQualificationItems', 'LegalAspects\ContractLesseeController@saveQualificationItems');
 			Route::ApiResource('contracts', 'LegalAspects\ContractLesseeController');
 		});
 

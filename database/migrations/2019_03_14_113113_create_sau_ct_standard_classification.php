@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateCtItemDescriptionActionPlan extends Migration
+class CreateSauCtStandardClassification extends Migration
 {
     /**
      * Run the migrations.
@@ -13,10 +13,10 @@ class CreateCtItemDescriptionActionPlan extends Migration
      */
     public function up()
     {
-        Schema::create('sau_ct_action_plan_default', function (Blueprint $table) {
+        Schema::create('sau_ct_standard_classification', function (Blueprint $table) {
             $table->increments('id');
-            $table->text('description');
-            $table->string('state');
+            $table->string('standard_name', 50);
+            $table->timestamps();
         });
     }
 
@@ -27,6 +27,6 @@ class CreateCtItemDescriptionActionPlan extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('sau_ct_action_plan_default');
+        Schema::dropIfExists('sau_ct_standard_classification');
     }
 }

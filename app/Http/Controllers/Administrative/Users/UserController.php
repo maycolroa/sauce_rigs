@@ -134,6 +134,7 @@ class UserController extends Controller
             $user->companies()->detach();
             $user->syncRoles([]); // Eliminar datos de relaciones
             $user->syncPermissions([]); // Eliminar datos de relaciones
+            $user->contractInformation()->detach(); // Eliminar relación de contratista o arrendatario
 
             if(!$user->delete())
             {

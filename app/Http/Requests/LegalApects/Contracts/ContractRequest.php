@@ -25,16 +25,30 @@ class ContractRequest extends FormRequest
     {
         $id = $this->input('id');
 
+        if ($this->role == "Contratista") {
+            $rules = [
+                'name'      => 'required|string',
+                'email'     => 'required|email|unique:sau_users,email,' . $id . ',id',
+                'document'  => 'required|numeric',
+                'role'   => 'required',
+                'password'  => 'nullable|string|min:6',
+                'name_business' => 'required|string',
+                'nit' => 'required|numeric',
+                'classification' => 'required',
+                'social_reason' => 'required|string'
+            ];
+            return $rules;
+        }
+
         $rules = [
             'name'      => 'required|string',
             'email'     => 'required|email|unique:sau_users,email,' . $id . ',id',
             'document'  => 'required|numeric',
-            'role_id'   => 'required',
+            'role'   => 'required',
             'password'  => 'nullable|string|min:6',
             'name_business' => 'required|string',
             'nit' => 'required|numeric',
-            'type' => 'required',
-            'social_reason' => 'required|string',
+            'social_reason' => 'required|string'
         ];
         
         return $rules;

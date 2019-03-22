@@ -194,8 +194,18 @@ return [
       'locations.employee_process_id' => 'Proceso',
       'changeHistory' => 'Detalle de cambios realizados',
       'name_business' => 'Nombre de empresa',
-      'type' => 'Tipo de empresa',
-      'social_reason' => 'Razón social'
+      'classification' => 'Clasificación',
+      'social_reason' => 'Razón social',
+      'address' => 'Dirección',
+      'phone' => 'Teléfono',
+      'legal_representative_name' => 'Nombre del representante legal',
+      'SG_SST_name' => 'Nombre del responsable del SG-SST',
+      'environmental_management_name' => 'Nombre del encargado de gestión ambiental',
+      'economic_activity_of_company' => 'Actividad económica de la empresa',
+      'arl' => 'Arl',
+      'number_workers' => 'Número de trabajadores',
+      'risk_class' => 'Clase de riesgo',
+      'items_calificated.items.*.qualification' => 'Calificación'
     ],
 
 ];
