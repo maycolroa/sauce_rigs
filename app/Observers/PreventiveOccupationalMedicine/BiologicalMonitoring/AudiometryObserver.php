@@ -32,9 +32,6 @@ class AudiometryObserver
       $audiometry->severity_grade_air_right_6000 = $this->SeverityGradeAirRight6000($audiometry);
       $audiometry->severity_grade_air_left_8000 = $this->SeverityGradeAirLeft8000($audiometry);
       $audiometry->severity_grade_air_right_8000 = $this->SeverityGradeAirRight8000($audiometry);
-      $base = $this->BasePta($audiometry);
-      $audiometry->base_type = $base[0];
-      $audiometry->base      = $base[1];
     }
 
       
@@ -272,49 +269,4 @@ class AudiometryObserver
         return "Hipoacusia profunda";
       }
     }
-
-    /**
-     * Metodo para el atributo base_type y base
-     */
-
-     private function BasePta($audiometry)
-     { 
-        $col_base_type = "base_type";
-        $audiometry_base = Audiometry::where('employee_id', $audiometry->employee_id)->where('base_type', 'Base')->first();
-        
-        if (!$audiometry_base)
-          return ['Base', null];
-
-        $base_level = $this->levelPTA($audiometry_base->severity_grade_air_left_pta) + $this->levelPTA($audiometry_base->severity_grade_air_right_pta);
-        $new_level = $this->levelPTA($audiometry->severity_grade_air_left_pta) + $this->levelPTA($audiometry->severity_grade_air_right_pta);
-
-        if ($base_level >= $new_level)
-        {
-          return ['No base', $audiometry_base->id];
-        }
-        else
-        {
-          $audiometry_base->base_type = 'No base';
-          $audiometry_base->unsetEventDispatcher();
-          $audiometry_base->save();
-          return ['Base', null];
-        }
-     }
-
-     private function levelPTA($value)
-     {
-        if ($value == 'Audición normal')
-          return 1;
-        else if ($value == 'Hipoacusia leve')
-          return 2;
-        else if ($value == 'Hipoacusia moderada')
-          return 3;
-        else if ($value == 'Hipoacusia moderada a severa')
-          return 4;
-        else if ($value == 'Hipoacusia severa')
-          return 5;
-        else if ($value == 'Hipoacusia profunda')
-          return 6;
-        else 0;
-     }
 }

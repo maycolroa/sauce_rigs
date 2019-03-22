@@ -1,0 +1,16 @@
+[
+    {
+        "application": "administrative",
+        "modules": [
+            {
+                "name": "roles",
+                "permissions": [
+                    {
+                        "name": "roles_manage_defined",
+                        "display_name": "Administrar Roles Definidos"
+                    }
+                ]
+            }
+        ]
+    }    
+]

@@ -93,7 +93,8 @@ class AudiometryExcel implements FromCollection, WithHeadings, WithMapping, With
           $audiometries->osseous_right_pta,
           $audiometries->severity_grade_osseous_right_pta,
           $audiometries->severity_grade_osseous_right_4000,
-          $audiometries->base_type,
+          ($audiometries->base_type == 'Base' ? 'Si' : 'No'),
+          $audiometries->base_state,
           Date::dateTimeToExcel($audiometries->created_at),
           Date::dateTimeToExcel($audiometries->updated_at),
         ];
@@ -152,6 +153,7 @@ class AudiometryExcel implements FromCollection, WithHeadings, WithMapping, With
           'Óseo Derecha PTA',
           'Óseo Grado de severidad Derecha PTA',
           'Óseo Grado de severidad Derecha 4000 Hz',
+          'Base',
           'Tipo Base',
           'Fecha creación', 
           'Fecha actualización',
@@ -190,22 +192,155 @@ class AudiometryExcel implements FromCollection, WithHeadings, WithMapping, With
             'AM' => NumberFormat::FORMAT_NUMBER_00,
             'AQ' => NumberFormat::FORMAT_NUMBER_00,
             'AV' => NumberFormat::FORMAT_NUMBER_00,
-            'AZ' => NumberFormat::FORMAT_DATE_DDMMYYYY,
             'BA' => NumberFormat::FORMAT_DATE_DDMMYYYY,
+            'BB' => NumberFormat::FORMAT_DATE_DDMMYYYY,
         ];
     }
 
     public static function afterSheet(AfterSheet $event)
     {
+        $red = "d9534f";
+        $blue = "5Bc0de";
+        $yellow = "f4d75e";
+        $white = "FFFFFF";
+
       $event->sheet->styleCells(
-        'A1:BA1',
+        'A1:BB1',
           [
             'alignment' => [
               'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT,
               'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
             ],
             'font' => [
-              'bold' => true,
+              'name' => 'Arial',
+            ]
+          ]
+      );
+
+      $event->sheet->styleCells(
+        'A1:H1',
+          [
+            'fill' => [
+                'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_GRADIENT_LINEAR,
+                'rotation' => 90,
+                'startColor' => [
+                    'rgb' => $white
+                ],
+                'endColor' => [
+                    'rgb' => $yellow
+                ],
+            ]
+          ]
+      );
+
+      $event->sheet->styleCells(
+        'I1:O1',
+          [
+            'fill' => [
+                'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_GRADIENT_LINEAR,
+                'rotation' => 90,
+                'startColor' => [
+                    'rgb' => $white
+                ],
+                'endColor' => [
+                    'rgb' => $blue
+                ],
+            ]
+          ]
+      );
+
+      $event->sheet->styleCells(
+        'P1:V1',
+          [
+            'fill' => [
+                'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_GRADIENT_LINEAR,
+                'rotation' => 90,
+                'startColor' => [
+                    'rgb' => $white
+                ],
+                'endColor' => [
+                    'rgb' => $red
+                ],
+            ]
+          ]
+      );
+
+      $event->sheet->styleCells(
+        'W1:AA1',
+          [
+            'fill' => [
+                'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_GRADIENT_LINEAR,
+                'rotation' => 90,
+                'startColor' => [
+                    'rgb' => $white
+                ],
+                'endColor' => [
+                    'rgb' => $blue
+                ],
+            ]
+          ]
+      );
+
+      $event->sheet->styleCells(
+        'AB1:AF1',
+          [
+            'fill' => [
+                'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_GRADIENT_LINEAR,
+                'rotation' => 90,
+                'startColor' => [
+                    'rgb' => $white
+                ],
+                'endColor' => [
+                    'rgb' => $red
+                ],
+            ]
+          ]
+      );
+
+      $event->sheet->styleCells(
+        'AG1:AO1',
+          [
+            'fill' => [
+                'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_GRADIENT_LINEAR,
+                'rotation' => 90,
+                'startColor' => [
+                    'rgb' => $white
+                ],
+                'endColor' => [
+                    'rgb' => $blue
+                ],
+            ]
+          ]
+      );
+
+      $event->sheet->styleCells(
+        'AP1:AX1',
+          [
+            'fill' => [
+                'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_GRADIENT_LINEAR,
+                'rotation' => 90,
+                'startColor' => [
+                    'rgb' => $white
+                ],
+                'endColor' => [
+                    'rgb' => $red
+                ],
+            ]
+          ]
+      );
+
+      $event->sheet->styleCells(
+        'AY1:BB1',
+          [
+            'fill' => [
+                'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_GRADIENT_LINEAR,
+                'rotation' => 90,
+                'startColor' => [
+                    'rgb' => $white
+                ],
+                'endColor' => [
+                    'rgb' => $yellow
+                ],
             ]
           ]
       );

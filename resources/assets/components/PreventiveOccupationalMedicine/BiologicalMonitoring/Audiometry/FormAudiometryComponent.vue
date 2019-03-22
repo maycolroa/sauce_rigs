@@ -46,8 +46,9 @@
         <div class="row">
             <div class="col-lg">
               <b-card bg-variant="transparent" border-variant="dark" class="mb-12 box-shadow-none">
-                <div><b>Base:</b> {{ form.base_type  }}</div>
-                <div v-if="form.base"><router-link :to="{ path: `${form.base}` }">Ver Audiometria</router-link></div>
+                <div><b>Base:</b> {{ form.base_type == 'Base' ? 'Si' : 'No'}}</div>
+                <div v-if="form.base"><router-link :to="{ path: `/preventiveoccupationalmedicine/biologicalmonitoring/audiometry/view/${form.base}` }">Ver Audiometria</router-link></div>
+                <div v-if="form.base_state"><b>Tipo Base:</b> {{ form.base_state }}</div>
               </b-card>
             </div>
         </div>
@@ -169,7 +170,7 @@
         <b-btn variant="default" :to="cancelUrl" :disabled="loading">{{ viewOnly ? "Atras" : "Cancelar"}}</b-btn>
         <b-btn v-on:click="props.prevTab" :disabled="loading" variant="default">Anterior</b-btn>
         <b-btn v-on:click="props.nextTab" :disabled="loading || props.isLastStep" variant="default">Siguiente</b-btn>
-        <b-btn type="submit" :disabled="loading" variant="primary">Finalizar</b-btn>
+        <b-btn type="submit" :disabled="loading" variant="primary" v-if="!viewOnly">Finalizar</b-btn>
       </template>
 
     </form-wizard>
@@ -258,7 +259,8 @@ export default {
           observation: "",
           epp: "",
           base_type: "",
-          base: ""
+          base: "",
+          base_state: ""
         };
       }
     }

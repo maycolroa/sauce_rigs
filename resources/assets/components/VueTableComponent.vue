@@ -1,6 +1,14 @@
 <template>
   <div>
-    <v-server-table :url="config.configuration.urlData" :columns="columns" :options="options" ref="vuetable">
+      <b-row align-h="end" v-if="configNameFilter">
+          <b-col cols="1">
+              <filter-general 
+                  v-model="filters" 
+                  :configName="configNameFilter" />
+          </b-col>
+      </b-row>
+
+    <v-server-table :url="config.configuration.urlData" :columns="columns" :options="options" ref="vuetable" :key="keyVuetable">
       <template slot="controlls" slot-scope="props">
         <div>
           
@@ -52,25 +60,53 @@ import Vue from 'vue'
 import {ServerTable, ClientTable, Event} from 'vue-tables-2';
 import VueTableConfig from '@/vuetableconfig/';
 import Alerts from '@/utils/Alerts.js';
+import FilterGeneral from '@/components/Filters/FilterGeneral.vue';
 
 Vue.use(ServerTable)
 
 export default {
   name: 'vue-table',
   props:{
+    customColumnsName: {type: Boolean, default: false},
     configName: {type: String, required: true},
     config: {type: Object, default: function(){
       return VueTableConfig.get(this.configName);
     }},
+    viewIndex: { type: Boolean, default: true },
+    modelId: {type: [Number, String], default: null}
+  },
+  components:{
+    FilterGeneral
   },
   data(){
     return{
       messageConfirmationRemove:'',
       actionRemove:'',
       component: null,
+      filters: [],
+      tableReady: false,
+      keyVuetable: 'Vuetable'
+    }
+  },
+  watch: {
+    filters: {
+        handler(val){
+            if (this.tableReady)
+              Vue.nextTick( () => this.$refs.vuetable.refresh() )
+        },
+        deep: true
+    },
+    modelId() {
+      Vue.nextTick( () => this.$refs.vuetable.refresh() )
     }
   },
   computed: {
+    configNameFilter() {
+      if (this.config.configuration.configNameFilter != undefined)
+        return this.config.configuration.configNameFilter
+      else 
+        return ''
+    },
     loader(){
       if(this.config.configuration.detailComponent){
         return () => import(`@/components${this.config.configuration.detailComponent}`);
@@ -118,6 +154,10 @@ export default {
           defaultOption:'Select {column}',
           columns:'Columnas'
         },
+        params: {
+          filters: this.filters,
+          modelId: this.modelId
+        }
       };
 
       var fields = this.config.fields;
@@ -178,19 +218,29 @@ export default {
       let controlls = this.config.controlls
       .filter(c => {
         return c.type == 'base'
+      })[0]
+      .buttons.filter(c => {
+        if (c.permission)
+          return auth.can[c.permission]
+        else 
+          return true
       })
       .map(c => {
-        return c.buttons.map(b => {
-          return b.name;
-        })[0];
+        return c.name;
       });
       return controlls;
     },
     controllsPush(){
       let controlls = this.config.controlls.filter(c => {
         return c.type == 'push'
-      })[0];
-      return controlls.buttons;
+      })[0]
+      .buttons.filter(c => {
+        if (c.permission)
+          return auth.can[c.permission]
+        else 
+          return true
+      });
+      return controlls;
     }
   },
   mounted() {
@@ -200,7 +250,24 @@ export default {
                   this.component = () => this.loader()
               })
     }
-    
+
+    setTimeout(() => {
+        this.tableReady = true
+    }, 4000)
+  },
+  created() {
+    if (this.customColumnsName)
+    {
+      axios.post('/vuetableCustomColumns', {'customColumnsName': this.config.name})
+      .then(response => {
+        this.config.fields = response.data.fields;
+        this.keyVuetable = 'changeVuetable'
+      })
+      .catch(error => {
+          Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
+          this.$router.go(-1);
+      });
+    }
   },
   methods: {
     pushButton (button, row) {
@@ -248,7 +315,18 @@ export default {
         Alerts.success('Exito',response.data.messsage);
       })
       .catch(error => {
+        if (error.response.status == 500 && error.response.data.error != 'Internal Error')
+        {
+          Alerts.error('Error', error.response.data.error);
+        }
+        else if (error.response.status == 403)
+        {
+          Alerts.error('Permiso Denegado', 'No tiene permitido realizar esta acción');
+        }
+        else
+        {
           Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
+        }
       });
       this.$refs.modalConfirmationRemove.hide();
     },

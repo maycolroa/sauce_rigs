@@ -2,6 +2,7 @@ require('./entry-point.js');
 
 import Vue from 'vue'
 import router from './router/index.js'
+import VueRouterMiddleware from 'vue-router-middleware'
 import Notifications from 'vue-notification'
 
 import BootstrapVue from 'bootstrap-vue'
@@ -16,6 +17,21 @@ Vue.config.productionTip = false
 
 Vue.use(BootstrapVue)
 Vue.use(Notifications)
+Vue.use(VueRouterMiddleware, {
+  router,
+  middlewares: {
+    // Convert to camelcase to dash string ex. requireAuth saves require-auth
+    requireAuth(params, to, from, next) {
+      next()
+    },
+    checkPermission(params, to, from, next) {
+      if (params && auth.can[params])
+        next()
+      else
+        next({ path: '/' })
+    }
+  }
+})
 
 // Global RTL flag
 Vue.mixin({

@@ -10,9 +10,11 @@
             <administrative-role-form 
                 :url="`/administration/role/${this.$route.params.id}`"
                 method="PUT"
+                :all-modules="allModules"
                 :modules="modules"
                 :permissions="permissions"
                 :role="data"
+                :modules-removed="modulesRemoved"
                 :is-edit="true"
                 :cancel-url="{ name: 'administrative-roles'}"/>
         </b-card-body>
@@ -37,8 +39,10 @@ export default {
   data () {
     return {
       data: [],
+      allModules: [],
       modules: [],
-      permissions:[]
+      permissions:[],
+      modulesRemoved: []
     }
   },
   created(){  
@@ -66,6 +70,21 @@ export default {
                       if (this.permissions[keyModule][keyFullPermission].value == subElements[keyPermission].value)
                       {
                         this.permissions[keyModule].splice(keyFullPermission, 1);
+
+                        if (this.permissions[keyModule].length == 0)
+                        {
+                          for(var indexApp in this.modules)
+                          {
+                            for(var indexChild in this.modules[indexApp].children)
+                            {
+                              if (this.modules[indexApp].children[indexChild].value == keyModule)
+                              {
+                                this.modules[indexApp].children.splice(indexChild,1)
+                                this.$set(this.modulesRemoved, keyModule, indexApp)
+                              }
+                            }
+                          }
+                        }
                       }
                     }
                   }
@@ -90,6 +109,15 @@ export default {
     GlobalMethods.getModulesMultiselectGroup()
     .then(response => {
         this.modules = response;
+    })
+    .catch(error => {
+        Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
+        this.$router.go(-1);
+    });
+
+    GlobalMethods.getModulesMultiselectGroup()
+    .then(response => {
+        this.allModules = response;
     })
     .catch(error => {
         Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');

@@ -152,6 +152,8 @@ return [
          */
         App\Vuetable\VuetableServiceProvider::class,
         App\Facades\Mail\NotificationMailServiceProvider::class,
+        App\Facades\ActionPlans\ActionPlanServiceProvider::class,
+        App\Facades\ConfigurationsCompany\ConfigurationsCompanyServiceProvider::class,
 
         /*
          * Application Service Providers...
@@ -160,9 +162,11 @@ return [
         App\Providers\AuthServiceProvider::class,
         // App\Providers\BroadcastServiceProvider::class,
         App\Providers\EventServiceProvider::class,
+        App\Providers\TelescopeServiceProvider::class,
+        App\Providers\HorizonServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
         Maatwebsite\Excel\ExcelServiceProvider::class,
-        App\Providers\ObserverServiceProvider::class,
+        App\Providers\ObserverServiceProvider::class
 
     ],
 
@@ -215,6 +219,8 @@ return [
         'Vuetable' => App\Vuetable\Facades::class,
         'Excel' => Maatwebsite\Excel\Facades\Excel::class,
         'NotificationMail' => App\Facades\Mail\NotificationMail::class,
+        'ActionPlan' => App\Facades\ActionPlans\ActionPlan::class,
+        'ConfigurationsCompany' => App\Facades\ConfigurationsCompany\ConfigurationsCompany::class,
     ],
 
 ];

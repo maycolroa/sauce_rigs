@@ -16,8 +16,8 @@ class License extends Model
         return $this->belongsTo(Company::class);
     }
 
-    public function module()
+    public function modules()
     {
-        return $this->belongsTo('App\Models\Module', 'module_id');
+        return $this->belongsToMany('App\Models\Module','sau_license_module');
     }
 }

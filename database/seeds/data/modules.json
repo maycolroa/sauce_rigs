@@ -9,12 +9,60 @@
             {
                 "name": "roles",
                 "display_name": "Roles"
+            },
+            {
+                "name": "positions",
+                "display_name": "Cargos"
+            },
+            {
+                "name": "regionals",
+                "display_name": "Regionales"
+            },
+            {
+                "name": "businesses",
+                "display_name": "Centro de costos"
+            },
+            {
+                "name": "headquarters",
+                "display_name": "Sedes"
+            },
+            {
+                "name": "areas",
+                "display_name": "Áreas"
+            },
+            {
+                "name": "processes",
+                "display_name": "Macroprocesos"
+            },
+            {
+                "name": "employees",
+                "display_name": "Empleados"
+            },
+            {
+                "name": "configurations",
+                "display_name": "Configuraciones"
+            },
+            {
+                "name": "actionPlans",
+                "display_name": "Planes de acción"
             }
         ]
     },
     {
         "application": "industrialSecure",
         "modules": [
+            {
+                "name": "activities",
+                "display_name": "SI - Procesos"
+            },
+            {
+                "name": "dangers",
+                "display_name": "Peligros"
+            },
+            {
+                "name": "dangerMatrix",
+                "display_name": "Matriz de peligros"
+            }
         ]
     },
     {
@@ -44,6 +92,10 @@
     {
         "application": "legalAspects",
         "modules": [
+            {
+                "name": "contracts",
+                "display_name": "Contratistas"
+            }
         ]
     }    
 ]

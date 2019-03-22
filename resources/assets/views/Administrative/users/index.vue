@@ -8,10 +8,10 @@
     <div class="col-md">
       <b-card no-body>
         <b-card-header class="with-elements">
-          <div class="card-title-elements">
+          <div class="card-title-elements" v-if="auth.can['users_c']">
             <b-btn :to="{name:'administrative-users-create'}" variant="primary">Crear Usuario</b-btn>
           </div>
-          <div class="card-title-elements ml-md-auto">
+          <div class="card-title-elements ml-md-auto" v-if="auth.can['users_r']">
             <b-dd variant="default" :right="isRTL">
             <template slot="button-content">
               <span class='fas fa-cogs'></span>
@@ -23,6 +23,7 @@
         <b-card-body>
              <vue-table
                 configName="administrative-users"
+                v-if="auth.can['users_r']"
                 ></vue-table>
         </b-card-body>
     </b-card>

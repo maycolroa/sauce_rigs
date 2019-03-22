@@ -8,8 +8,10 @@
       <b-card no-body>
         <b-card-body>
             <biological-monitoring-audiometry-form
+                :epp="epp"
                 :audiometry="data"
                 :view-only="true"
+                :exposition-level="expositionLevel"
                 :cancel-url="{ name: 'biologicalmonitoring-audiometry'}"/>
         </b-card-body>
       </b-card>
@@ -20,6 +22,7 @@
 <script>
 import BiologicalMonitoringAudiometryForm from '@/components/PreventiveOccupationalMedicine/BiologicalMonitoring/Audiometry/FormAudiometryComponent.vue';
 import Alerts from '@/utils/Alerts.js';
+import GlobalMethods from '@/utils/GlobalMethods.js'
 
 export default {
   name: 'audiometry-view',
@@ -32,10 +35,28 @@ export default {
   data () {
     return {
       data: [],
+      epp:[],
+      expositionLevel: []
     }
   },
   created(){
     this.fetchData()
+
+    GlobalMethods.getConfigMultiselect('biologicalmonitoring_audiometries_select_epp')
+    .then(response => {
+        this.epp = response;
+    })
+    .catch(error => {
+        this.$router.go(-1);
+    });
+
+    GlobalMethods.getConfigMultiselect('biologicalmonitoring_audiometries_select_exposition_level')
+    .then(response => {
+        this.expositionLevel = response;
+    })
+    .catch(error => {
+        this.$router.go(-1);
+    });
   },
   watch: {
     '$route' (to, from) {

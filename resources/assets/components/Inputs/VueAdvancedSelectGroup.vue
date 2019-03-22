@@ -53,7 +53,9 @@ export default {
     textBlock: { type: String },
     actionBlock: { type: String },
     limit: { type: Number, default: 5 },
-    groupSelect: {type: Boolean, default: false}
+    groupSelect: {type: Boolean, default: false},
+    returnObject: {type: Boolean, default: false},
+    selectedObject: { type: Object },
   },
   components: {
     Multiselect
@@ -66,14 +68,24 @@ export default {
   watch: {
     options() {
       this.setMultiselectValue();
-    }
+    },
+    selectedObject(){
+      this.selectValue = this.selectedObject;
+    },
   },
+  mounted() {
+      if (this.selectedObject) {
+        this.selectValue = this.selectedObject;
+      }
+
+      this.updateValue();
+    },
   methods: {
     limitText(count) {
       return `y ${count} mas`;
     },
     updateValue() {
-      let value = this.selectValue;
+      let value = (this.multiple || this.returnObject) ? this.selectValue : (this.selectValue ? this.selectValue.value : '');
 
       this.$emit("input", value);
     },
@@ -89,10 +101,12 @@ export default {
             });
           }
         } else {
-          this.selectValue = this.value
-            ? _.find(this.options, { value: this.value })
-            : "";
+           this.selectValue = this.value
+              ? _.find(this.options, { value: this.value })
+              : "";
         }
+
+        this.updateValue()
       }
     }
   },

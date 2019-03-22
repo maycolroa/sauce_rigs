@@ -11,7 +11,8 @@ class Company extends Model
     
     protected $table = 'sau_companies';
 
-    public function users(){
+    public function users()
+    {
         return $this->belongsToMany('App\User','sau_company_user');
     }
 

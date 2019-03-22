@@ -64,7 +64,12 @@ export default class Form {
           }
           data.append(`${field}[]`, element);
         });
-      } else {
+      } 
+      else if (Object.prototype.toString.call(this[field]) === '[object Object]') {
+        let aux = JSON.stringify(this[field]);
+        data.append(field, aux);
+      }
+      else {
         data.append(field, this[field] == null ? '' : this[field]);
       }
     }
@@ -109,7 +114,10 @@ export default class Form {
             Alerts.error('Error en los datos', 'Los datos ingresados no son validos');  
           }
           else{
-            Alerts.error();
+            if (error.response.status == 403)
+              Alerts.error('Permiso Denegado', 'No tiene permitido realizar esta acción');
+            else 
+              Alerts.error();
           }
 
           if (isLogin && error.response.status == 422)

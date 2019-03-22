@@ -8,10 +8,23 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Administrative\Roles\RoleRequest;
 use App\Models\Role;
 use App\Models\Permission;
+use Illuminate\Support\Facades\Auth;
 use Session;
 
 class RoleController extends Controller
 {
+    /**
+     * creates and instance and middlewares are checked
+     */
+    function __construct()
+    {
+        $this->middleware('auth');
+        $this->middleware('permission:roles_c', ['only' => 'store']);
+        $this->middleware('permission:roles_r', ['except' =>['multiselect', 'multiselectPermissions']]);
+        $this->middleware('permission:roles_u', ['only' => 'update']);
+        $this->middleware('permission:roles_d', ['only' => 'destroy']);
+    }
+
     /**
      * Display index.
      *
@@ -29,8 +42,25 @@ class RoleController extends Controller
     */
    public function data(Request $request)
    {
-    
-       $roles = Role::select('*');
+        if (Auth::user()->hasPermission('roles_manage_defined'))
+
+            $roles = Role::select(
+                'sau_roles.id as id',
+                'sau_roles.name as name',
+                'sau_roles.description as description',
+                'sau_roles.type_role as type_role',
+                'sau_modules.display_name as display_name'
+            )
+            ->leftJoin('sau_modules', 'sau_modules.id', 'sau_roles.module_id')
+            ->conditionController();
+        else 
+        
+            $roles = Role::select(
+                'sau_roles.id as id',
+                'sau_roles.name as name',
+                'sau_roles.description as description'
+            )
+            ->conditionController();
 
        return Vuetable::of($roles)
                 ->make();
@@ -44,8 +74,18 @@ class RoleController extends Controller
      */
     public function store(RoleRequest $request)
     {
-        $role = new Role($request->all());
-        $role->company_id = Session::get('company_id');
+        $role = new Role();
+        $role->name = $request->get('name');
+        $role->display_name = $request->get('name');
+        $role->description = $request->get('description');
+
+        if ($request->has('type_role') && $request->get('type_role') == 'Definido')
+        {
+            $role->type_role = 'Definido';
+            $role->module_id = $request->get('module_id');
+        }
+        else
+            $role->company_id = Session::get('company_id');
         
         if(!$role->save())
         {
@@ -83,8 +123,11 @@ class RoleController extends Controller
      */
     public function show($id)
     {
-        $role = Role::findOrFail($id);
-            
+        $role = Role::conditionController()->findOrFail($id);
+        
+        if ($role->module)
+            $role->multiselect_module = $role->module->multiselect();
+        
         try
         {
             $permissions = $role->permissions;
@@ -125,9 +168,16 @@ class RoleController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(RoleRequest $request, Role $role)
+    public function update(RoleRequest $request, $id)
     {
-        $role->fill($request->all());
+        $role = Role::conditionController()->findOrFail($id);
+
+        $role->name = $request->get('name');
+        $role->display_name = $request->get('name');
+        $role->description = $request->get('description');
+
+        if ($request->has('type_role') && $request->get('type_role') == 'Definido')
+            $role->module_id = $request->get('module_id');
         
         if(!$role->update()) {            
             return $this->respondHttp500();
@@ -162,8 +212,10 @@ class RoleController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Role $role)
+    public function destroy($id)
     {
+        $role = Role::conditionController()->findOrFail($id);
+
         $role->users()->sync([]); // Eliminar datos de relaciones
         $role->permissions()->sync([]); // Eliminar datos de relaciones
 
@@ -188,7 +240,7 @@ class RoleController extends Controller
     public function multiselect(Request $request)
     {
         $keyword = "%{$request->keyword}%";
-        $roles = Role::select("id", "name")
+        $roles = Role::conditionGeneral()->select("id", "name")
             ->where(function ($query) use ($keyword) {
                 $query->orWhere('name', 'like', $keyword);
              })

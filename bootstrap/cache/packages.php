@@ -6,6 +6,38 @@
       0 => 'Fideloper\\Proxy\\TrustedProxyServiceProvider',
     ),
   ),
+  'laravel/horizon' => 
+  array (
+    'providers' => 
+    array (
+      0 => 'Laravel\\Horizon\\HorizonServiceProvider',
+    ),
+    'aliases' => 
+    array (
+      'Horizon' => 'Laravel\\Horizon\\Horizon',
+    ),
+  ),
+  'laravel/nexmo-notification-channel' => 
+  array (
+    'providers' => 
+    array (
+      0 => 'Illuminate\\Notifications\\NexmoChannelServiceProvider',
+    ),
+  ),
+  'laravel/slack-notification-channel' => 
+  array (
+    'providers' => 
+    array (
+      0 => 'Illuminate\\Notifications\\SlackChannelServiceProvider',
+    ),
+  ),
+  'laravel/telescope' => 
+  array (
+    'providers' => 
+    array (
+      0 => 'Laravel\\Telescope\\TelescopeServiceProvider',
+    ),
+  ),
   'laravel/tinker' => 
   array (
     'providers' => 
@@ -22,6 +54,13 @@
     'aliases' => 
     array (
       'Excel' => 'Maatwebsite\\Excel\\Facades\\Excel',
+    ),
+  ),
+  'nesbot/carbon' => 
+  array (
+    'providers' => 
+    array (
+      0 => 'Carbon\\Laravel\\ServiceProvider',
     ),
   ),
   'nunomaduro/collision' => 

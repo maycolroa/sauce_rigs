@@ -8,14 +8,23 @@
         </b-form-row>
 
         <vue-textarea :disabled="viewOnly" v-model="form.description" label="Descripción" :error="form.errorsFor('description')" name="description" placeholder="Descripción"></vue-textarea>
+ 
+        <b-form-row v-if="auth.can['roles_manage_defined']">          
+          <vue-checkbox-simple :disabled="isEdit || viewOnly" class="col-md-3" v-model="form.type_role" label="¿Definido?" :checked="form.type_role" name="type_role" checked-value="Definido" unchecked-value="No Definido"></vue-checkbox-simple>
 
+          <vue-advanced-select-group v-show="form.type_role == 'Definido'" :disabled="viewOnly" v-model="form.module_id" class="col-md-9" :options="allModules" :limit="1000" :searchable="true" name="module_id" label="Aplicación \ Módulo al que se asignará el Rol" placeholder="Seleccione un modulo" :error="form.errorsFor('module_id')" :selected-object="form.multiselect_module">
+          </vue-advanced-select-group>
+        </b-form-row>
+        
+        <hr class="border-light container-m--x mt-0 mb-4">
+        
         <b-form-row>
-          <vue-advanced-select-group :disabled="viewOnly" v-model="module_selected" :value="module_selected" class="col-md-12" :options="modules" :limit="1000" :searchable="true" name="modules_multiselect" label="Aplicación \ Módulo" placeholder="Seleccione un modulo">
+          <vue-advanced-select-group :disabled="viewOnly" v-model="module_selected" class="col-md-12" :options="modules" :limit="1000" :searchable="true" name="modules_multiselect" label="Aplicación \ Módulo" placeholder="Seleccione un modulo" :return-object="true">
           </vue-advanced-select-group>
         </b-form-row>
 
         <b-form-row>
-          <vue-advanced-select :disabled="viewOnly" v-model="permission_selected" :value="permission_selected" class="col-md-12" :options="permissions_module" :limit="1000" :searchable="true" name="permissions_multiselect" label="Permisos" placeholder="Seleccione los permisos">
+          <vue-advanced-select :disabled="viewOnly" v-model="permission_selected" :value="permission_selected" class="col-md-12" :options="permissions_module" :close-on-select="false" :limit="1000" :searchable="true" name="permissions_multiselect" label="Permisos" placeholder="Seleccione los permisos">
             </vue-advanced-select>
         </b-form-row>
       </div>
@@ -31,14 +40,16 @@
           <template  v-for="(item, index) in form.permissions_asignates">
             <b-card no-body class="mb-2 border-secondary" v-if="item != undefined && Object.keys(item.permissions).length > 0" :key="index">
               <b-card-header class="bg-secondary">
-                <a class="d-flex justify-content-between text-white" href="javascript:void(0)" v-b-toggle="'accordion-' + index"> {{ item.name }} <div class="collapse-icon"></div> </a>
+                <a class="d-flex justify-content-between text-white" href="javascript:void(0)" v-b-toggle="'accordion' + index+'-1'"> {{ item.name }} <div class="collapse-icon"></div> </a>
               </b-card-header>
-              <b-collapse :id="`accordion-${index}`" visible accordion="accordion">
+              <b-collapse :id="`accordion${index}-1`" visible :accordion="`accordion${index}`">
                 <b-card-body>
                   <b-list-group>
                     <b-list-group-item v-for="(itemPermission, indexPermission) in item.permissions" 
                         class="d-flex justify-content-between align-items-center" :key="indexPermission">
-                      <strong>{{ itemPermission.name }}</strong> <span class="badge badge-secondary" v-if="!viewOnly" style="cursor: pointer;" @click="removePermission(index, indexPermission, itemPermission)"><i class="ion ion-md-close"></i></span>
+                      <strong>{{ itemPermission.name }}</strong>
+                      <span class="badge badge-secondary" v-if="!viewOnly && auth.can[itemPermission.value]" style="cursor: pointer;" @click="removePermission(index, indexPermission, itemPermission)"><i class="ion ion-md-close"></i></span>
+                      <span class="badge badge-secondary" v-else-if="!viewOnly && !auth.can[itemPermission.value]" v-b-popover.hover.focus.left="'No puede remover este permiso'" ><i class="ion ion-ios-lock"></i></span>
                     </b-list-group-item>
                   </b-list-group>
                 </b-card-body>
@@ -64,6 +75,7 @@ import VueInput from "@/components/Inputs/VueInput.vue";
 import VueAdvancedSelect from "@/components/Inputs/VueAdvancedSelect.vue";
 import VueAdvancedSelectGroup from "@/components/Inputs/VueAdvancedSelectGroup.vue";
 import VueTextarea from "@/components/Inputs/VueTextarea.vue";
+import VueCheckboxSimple from "@/components/Inputs/VueCheckboxSimple.vue";
 import Form from "@/utils/Form.js";
 
 export default {
@@ -72,7 +84,8 @@ export default {
     VueAdvancedSelect,
     VueAdvancedSelectGroup,
     PerfectScrollbar,
-    VueTextarea
+    VueTextarea,
+    VueCheckboxSimple
   },
   props: {
     url: { type: String },
@@ -80,6 +93,12 @@ export default {
     cancelUrl: { type: [String, Object], required: true },
     isEdit: { type: Boolean, default: false },
     viewOnly: { type: Boolean, default: false },
+    allModules: {
+      type: Array,
+      default: function() {
+        return [];
+      }
+    },
     modules: {
       type: Array,
       default: function() {
@@ -92,11 +111,19 @@ export default {
         return [];
       }
     },
+    modulesRemoved: {
+      type: [Object, Array],
+      default: function() {
+        return [];
+      }
+    },
     role: {
       default() {
         return {
             name: '',
             description: '',
+            type_role: '',
+            module_id: '',
             permissions_asignates: []
         };
       }
@@ -157,6 +184,23 @@ export default {
 
           this.role.permissions_asignates[this.module_selected.value].permissions.push(this.permissions_module[i])
           this.permissions_module.splice(i,1);
+
+          /***** */
+          if (this.permissions_module.length == 0)
+          {
+            for(var indexApp in this.modules)
+            {
+              for(var indexChild in this.modules[indexApp].children)
+              {
+                if (this.modules[indexApp].children[indexChild].value == this.module_selected.value)
+                {
+                  this.modules[indexApp].children.splice(indexChild,1)
+                  this.$set(this.modulesRemoved, this.module_selected.value, indexApp)
+                }
+              }
+            }
+          }
+
           break;
         }
       }
@@ -165,6 +209,14 @@ export default {
     {
       this.permission_selected = ''
       this.role.permissions_asignates[module_id].permissions.splice(index_permission, 1)
+
+      if (this.permissions[module_id].length == 0)
+      {
+        let indexApp = this.modulesRemoved[module_id]
+        this.modules[indexApp].children.push({"name": this.role.permissions_asignates[module_id].name, "value": module_id})
+        this.modulesRemoved.splice(module_id,1)
+      }
+
       this.permissions[module_id].push(object_permission)
     }
   }

@@ -62,7 +62,7 @@ class AudiometryNotification extends Command
 
             foreach ($audiometries as $key => $value)
             {
-                $audiometry_count = Audiometry::where('employee_id', $value->employee_id)->withoutGlobalScopes()->count();
+                $audiometry_count = Audiometry::where('employee_id', $value->employee_id)->count();
 
                 if ($audiometry_count > 1)
                 {
@@ -90,6 +90,7 @@ class AudiometryNotification extends Command
                         ->subcopy('Este link es valido por 24 horas')
                         ->buttons([['text'=>'Descargar', 'url'=>url("/export/{$paramUrl}")]])
                         ->module('biologicalMonitoring/audiometry')
+                        ->event('Tarea programada: AudiometryNotification')
                         ->send();
                 }
             }

@@ -10,11 +10,27 @@ use App\PreventiveOccupationalMedicine\BiologicalMonitoring\Audiometry;
 use Carbon\Carbon;
 use App\Jobs\PreventiveOccupationalMedicine\BiologicalMonitoring\AudiometryExportJob;
 use App\Jobs\PreventiveOccupationalMedicine\BiologicalMonitoring\AudiometryImportJob;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\PreventiveOccupationalMedicine\BiologicalMonitoring\AudiometryImportTemplate;
 use Illuminate\Support\Facades\Auth;
 use Session;
+use App\Traits\AudiometryTrait;
 
 class AudiometryController extends Controller
 {
+    /**
+     * creates and instance and middlewares are checked
+     */
+    function __construct()
+    {
+        $this->middleware('auth');
+        $this->middleware('permission:biologicalMonitoring_audiometry_c', ['only' => ['store', 'import', 'downloadTemplateImport']]);
+        $this->middleware('permission:biologicalMonitoring_audiometry_r');
+        $this->middleware('permission:biologicalMonitoring_audiometry_u', ['only' => 'update']);
+        $this->middleware('permission:biologicalMonitoring_audiometry_d', ['only' => 'destroy']);
+    }
+
+    use AudiometryTrait;
     /**
      * Display index.
      *
@@ -32,13 +48,54 @@ class AudiometryController extends Controller
     */
    public function data(Request $request)
    {
-    
        $audiometry = Audiometry::select(
            'sau_bm_audiometries.*',
            'sau_employees.identification as identification',
            'sau_employees.name as name'
         )->join('sau_employees','sau_employees.id','sau_bm_audiometries.employee_id')
-        ->join('sau_employees_regionals','sau_employees_regionals.id','sau_employees.employee_regional_id');
+        /*->join('sau_employees_regionals','sau_employees_regionals.id','sau_employees.employee_regional_id')*/;
+        
+        if ($request->has('modelId') && $request->get('modelId'))
+        {
+          $audiometry->where('sau_bm_audiometries.employee_id', '=', $request->get('modelId'));
+        }
+
+        $filters = $request->get('filters');
+
+        if (isset($filters["regionals"]))
+          $audiometry->inRegionals($this->getValuesForMultiselect($filters["regionals"]), $filters['filtersType']['regionals']);
+
+        if (isset($filters["headquarters"]))
+          $audiometry->inHeadquarters($this->getValuesForMultiselect($filters["headquarters"]), $filters['filtersType']['headquarters']);
+
+        if (isset($filters["areas"]))
+          $audiometry->inAreas($this->getValuesForMultiselect($filters["areas"]), $filters['filtersType']['areas']);
+
+        if (isset($filters["processes"]))
+          $audiometry->inProcesses($this->getValuesForMultiselect($filters["processes"]), $filters['filtersType']['processes']);
+
+        if (isset($filters["businesses"]))
+          $audiometry->inBusinesses($this->getValuesForMultiselect($filters["businesses"]), $filters['filtersType']['businesses']);
+
+        if (isset($filters["positions"]))
+          $audiometry->inPositions($this->getValuesForMultiselect($filters["positions"]), $filters['filtersType']['positions']);
+
+        if (isset($filters["years"]))
+          $audiometry->inYears($this->getValuesForMultiselect($filters["years"]), $filters['filtersType']['years']);
+
+        if (isset($filters["dateRange"]) && $filters["dateRange"])
+        {
+            $dates_request = explode('/', $filters["dateRange"]);
+            $dates = [];
+
+            if (COUNT($dates_request) == 2)
+            {
+                array_push($dates, (Carbon::createFromFormat('D M d Y',$dates_request[0]))->format('Ymd'));
+                array_push($dates, (Carbon::createFromFormat('D M d Y',$dates_request[1]))->format('Ymd'));
+            }
+            
+            $audiometry->betweenDate($dates);
+        }
 
        return Vuetable::of($audiometry)
                 ->addColumn('base_si_no', function ($audiometry) {
@@ -61,6 +118,9 @@ class AudiometryController extends Controller
         if(!$audiometry->save()){
             return $this->respondHttp500();
         }
+
+        $this->calculateBaseAudiometry($audiometry->employee_id);
+
         return $this->respondHttp200([
             'message' => 'Se creo la audiometria'
         ]);
@@ -104,6 +164,9 @@ class AudiometryController extends Controller
       if(!$audiometry->update()){
         return $this->respondHttp500();
       }
+
+      $this->calculateBaseAudiometry($audiometry->employee_id);
+
       return $this->respondHttp200([
           'message' => 'Se actualizo la audiometria'
       ]);
@@ -117,9 +180,14 @@ class AudiometryController extends Controller
      */
     public function destroy(Audiometry $audiometry)
     {
+        $employee_id = $audiometry->employee_id;
+
         if(!$audiometry->delete()){
           return $this->respondHttp500();
         }
+
+        $this->calculateBaseAudiometry($employee_id);
+        
         return $this->respondHttp200([
             'message' => 'Se elimino la audiometria'
         ]);
@@ -134,7 +202,7 @@ class AudiometryController extends Controller
     public function export()
     {
       try{
-        AudiometryExportJob::dispatch(Auth::user());
+        AudiometryExportJob::dispatch(Auth::user(), Session::get('company_id'));
       
         return $this->respondHttp200();
       }catch(Exception $e){
@@ -163,105 +231,6 @@ class AudiometryController extends Controller
       }
     }
 
-    public function reportPta(Request $request)
-    {
-      try
-      {
-        $data = [
-          'air_left_pta' => [],
-          'air_left_legend' => [],
-          'air_right_pta' => [],
-          'air_right_legend' => [],
-        ];
-
-        $key_types = ['air'];
-        $key_orientation = ['left', 'right'];
-
-        foreach ($key_types as $type)
-        {
-          foreach ($key_orientation as $orientation)
-          {
-            $col = 'sau_bm_audiometries.severity_grade_'.$type.'_'.$orientation.'_pta';
-
-            $audiometry = Audiometry::selectRaw(
-              'COUNT(IF('.$col.'="Audición normal",1, NULL)) as AN,
-               COUNT(IF('.$col.'="Hipoacusia leve",1, NULL)) as HL,
-               COUNT(IF('.$col.'="Hipoacusia moderada",1, NULL)) as HM,
-               COUNT(IF('.$col.'="Hipoacusia moderada a severa",1, NULL)) as HMS,
-               COUNT(IF('.$col.'="Hipoacusia severa",1, NULL)) as HS,
-               COUNT(IF('.$col.'="Hipoacusia profunda",1, NULL)) as HP'
-            )->join('sau_employees','sau_employees.id','sau_bm_audiometries.employee_id');
-            
-            if ($request->get('year') != '')
-            {
-              $audiometry->whereRaw('YEAR(sau_bm_audiometries.date) IN ('.implode(",", $this->getDataFromMultiselect($request->get('year'))).')');
-            }
-
-            if ($request->get('area') != '')
-            {
-              $audiometry->whereIn('sau_employees.employee_area_id', $this->getDataFromMultiselect($request->get('area')));
-            }
-
-            if ($request->get('regional') != '')
-            {
-              $audiometry->whereIn('sau_employees.employee_regional_id', $this->getDataFromMultiselect($request->get('regional')));
-            }
-            
-            $aux = [];
-            $aux_legend = [];
-
-            foreach ($audiometry->get() as $key => $value)
-            {
-              if ($value->AN > 0)
-              {
-                $aux['Audición normal'] = $value->AN;
-                array_push($aux_legend, 'Audición normal');
-              }
-              if ($value->HL > 0)
-              {
-                $aux['Hipoacusia leve'] = $value->HL;
-                array_push($aux_legend, 'Hipoacusia leve');
-              }
-              if ($value->HM > 0)
-              {
-                $aux['Hipoacusia moderada'] = $value->HM;
-                array_push($aux_legend, 'Hipoacusia moderada');
-              }
-              if ($value->HMS > 0)
-              {
-                $aux['Hipoacusia moderada a severa'] = $value->HMS;
-                array_push($aux_legend, 'Hipoacusia moderada a severa');
-              }
-              if ($value->HS > 0)
-              {
-                $aux['Hipoacusia severa'] = $value->HS;
-                array_push($aux_legend, 'Hipoacusia severa');
-              }
-              if ($value->HP > 0)
-              {
-                $aux['Hipoacusia profunda'] = $value->HP;
-                array_push($aux_legend, 'Hipoacusia profunda');
-              }
-            }
-
-            if (COUNT($aux) > 0)
-            {
-              $key = $type.'_'.$orientation;
-              $data[$key.'_pta'] = $this->multiSelectFormat(collect($aux));
-              $data[$key.'_legend'] = $aux_legend;
-            }
-
-          }
-        }
-
-        return $this->respondHttp200([
-            'data' => $data,
-        ]);
-      }catch(Exception $e){
-        $this->respondHttp500();
-      }
-    }
-
     /**
      * Returns an arrangement with the last 5 years
      *
@@ -277,5 +246,10 @@ class AudiometryController extends Controller
       ->pluck('year', 'year');
 
       return $this->multiSelectFormat($audiometries);
+    }
+
+    public function downloadTemplateImport()
+    {
+      return Excel::download(new AudiometryImportTemplate, 'PlantillaImportacionAudiometria.xlsx');
     }
 }

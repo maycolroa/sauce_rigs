@@ -9,6 +9,7 @@ use App\Facades\Mail\NotificationGeneralMail;
 use App\User;
 use App\Models\LogMail;
 use App\Models\Module;
+use App\Administrative\Employee;
 use Route;
 use Exception;
 
@@ -95,6 +96,13 @@ class NotificationMail
      */
     private $with;
 
+    /**
+     * Stores the detail of the action that sends the notification
+     *
+     * @var String
+     */
+    private $event;
+
     public function __construct()
     {
  
@@ -110,7 +118,7 @@ class NotificationMail
 
     public function recipients($recipients)
     {
-        if (!$recipients instanceof Collection && !$recipients instanceof User)
+        if (!$recipients instanceof Collection && !$recipients instanceof User && !$recipients instanceof Employee)
             throw new \Exception('Invalid recipient format');
         
         if ($recipients instanceof Collection)
@@ -119,7 +127,7 @@ class NotificationMail
                 throw new \Exception('Empty collection');
             
             $recipients = $recipients->filter(function ($value, $key) {
-                if ($value instanceof User && 
+                if (($value instanceof User || $value instanceof Employee) && 
                 preg_match('/^[_a-z0-9-]+(.[_a-z0-9-]+)*@[a-z0-9-]+(.[a-z0-9-]+)*(.[a-z]{2,4})$/', $value->email) )
                     return true;
                 else 
@@ -130,7 +138,7 @@ class NotificationMail
                 throw new \Exception('The collection was empty after filtering the invalid emails');
         }
 
-        if ($recipients instanceof User && 
+        if (($recipients instanceof User || $recipients instanceof Employee) && 
                 !preg_match('/^[_a-z0-9-]+(.[_a-z0-9-]+)*@[a-z0-9-]+(.[a-z0-9-]+)*(.[a-z]{2,4})$/', $recipients->email) )
             throw new \Exception('Incorrect email format');
         
@@ -282,13 +290,13 @@ class NotificationMail
                     $i++;
                 }
                 else
-                    throw new \Exception('Invalid recipient format');
+                    throw new \Exception('Invalid table format');
             }
 
             $this->generateTable($headers, $information);
         }
         else 
-            throw new \Exception('Invalid recipient format');
+            throw new \Exception('Invalid table format');
 
         return $this;
     }
@@ -372,6 +380,22 @@ class NotificationMail
     }
 
     /**
+     * Edit the event
+     *
+     * @param string $subject
+     * @return $this
+     */
+    public function event($event)
+    {
+        if (!is_string($event) || $event == '')
+            throw new \Exception('The format of the event is incorrect'); 
+
+        $this->event = $event;
+
+        return $this;
+    }
+
+    /**
      * Send the mail
      *
      * @return booleam
@@ -391,13 +415,14 @@ class NotificationMail
             Mail::to($this->recipients)->queue($message);
 
             $this->createLog();
+            $this->restart();
         }
         catch (\Exception $e) {
-          dd($e);
+          //dd($e);
             throw new \Exception('An error occurred while sending the mail');
         }
 
-        return true;
+        return $this;
     }
 
     /**
@@ -445,10 +470,15 @@ class NotificationMail
     {
         $log = new LogMail();
 
-        $event = explode("\\", Route::currentRouteAction());
-        $event = $event[COUNT($event) - 1];
+        if (!empty($this->event))
+            $event = $this->event;
+        else
+        {
+            $event = explode("\\", Route::currentRouteAction());
+            $event = $event[COUNT($event) - 1];
+        }
 
-        if ($this->recipients instanceof User)
+        if ($this->recipients instanceof User || $this->recipients instanceof Employee)
             $log->recipients = $this->recipients->email;    
         else if ($this->recipients instanceof Collection)
         {
@@ -484,5 +514,23 @@ class NotificationMail
         // If the array keys of the keys match the keys, then the array must
         // not be associative (e.g. the keys array looked like {0:0, 1:1...}).
         return array_keys($keys) !== $keys;
+    }
+
+    /**
+     * restart the class data
+     * @return void
+     */
+    private function restart()
+    {
+        $this->recipients = [];
+        $this->view = 'notification';
+        $this->subject = 'Notificación';
+        $this->message = '';
+        $this->buttons = [];
+        $this->list = [];
+        $this->list_order = '';
+        $this->table = [];
+        $this->subcopy = '';
+        $this->with = [];
     }
 }

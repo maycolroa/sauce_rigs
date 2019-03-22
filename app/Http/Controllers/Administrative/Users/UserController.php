@@ -7,12 +7,29 @@ use App\Vuetable\Facades\Vuetable;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Administrative\Users\UserRequest;
 use App\User;
+use App\Traits\UserTrait;
 use App\Jobs\Administrative\Users\UserExportJob;
 use Session;
 use Illuminate\Support\Facades\Auth;
+use DB;
+use App\Facades\Mail\Facades\NotificationMail;
 
 class UserController extends Controller
 {
+    use UserTrait;
+
+    /**
+     * creates and instance and middlewares are checked
+     */
+    function __construct()
+    {
+        $this->middleware('auth');
+        $this->middleware('permission:users_c', ['only' => 'store']);
+        $this->middleware('permission:users_r', ['except' =>'multiselect']);
+        $this->middleware('permission:users_u', ['only' => 'update']);
+        $this->middleware('permission:users_d', ['only' => 'destroy']);
+    }
+    
     /**
      * Display index.
      *
@@ -30,7 +47,13 @@ class UserController extends Controller
     */
    public function data(Request $request)
    {
-        $users = User::has('companies');
+        $users = User::select(
+            'sau_users.*',
+            'sau_roles.name as role'
+        )
+        ->join('sau_role_user', 'sau_role_user.user_id', 'sau_users.id')
+        ->join('sau_roles', 'sau_roles.id', 'sau_role_user.role_id')
+        ->where('sau_users.id', '<>', Auth::user()->id);
 
        return Vuetable::of($users)
                 ->make();
@@ -44,9 +67,9 @@ class UserController extends Controller
      */
     public function store(UserRequest $request)
     {
-        $user = new User($request->all());
-        
-        if(!$user->save()){
+        $user = $this->createUser($request);
+ 
+        if ($user == $this->respondHttp500() || $user == null) {
             return $this->respondHttp500();
         }
 
@@ -56,6 +79,7 @@ class UserController extends Controller
         return $this->respondHttp200([
             'message' => 'Se creo el usuario'
         ]);
+        
     }
 
     /**
@@ -117,18 +141,35 @@ class UserController extends Controller
      */
     public function destroy(User $user)
     {
-        $user->companies()->detach();
-        $user->syncRoles()->sync([]); // Eliminar datos de relaciones
-        $user->syncPermissions()->sync([]); // Eliminar datos de relaciones
+        DB::beginTransaction();
 
-        if(!$user->delete())
+        try
         {
+            if (count($user->actionPlanResponsibles) > 0 || count($user->actionPlanCreator) > 0)
+            {
+                return $this->respondWithError('No se puede eliminar el usuario porque hay registros asociados a él');
+            }
+
+            $user->companies()->detach();
+            $user->syncRoles([]); // Eliminar datos de relaciones
+            $user->syncPermissions([]); // Eliminar datos de relaciones
+
+            if(!$user->delete())
+            {
+                return $this->respondHttp500();
+            }
+
+            DB::commit();
+            
+            return $this->respondHttp200([
+                'message' => 'Se elimino el usuario'
+            ]);
+
+        } catch (\Exception $e) {
+            DB::rollback();
+            \Log::error($e->getMessage());
             return $this->respondHttp500();
         }
-        
-        return $this->respondHttp200([
-            'message' => 'Se elimino el usuario'
-        ]);
     }
 
     /**
@@ -141,12 +182,31 @@ class UserController extends Controller
     {
         try
         {
-            UserExportJob::dispatch(Auth::user());
+            UserExportJob::dispatch(Auth::user(), Session::get('company_id'));
           
             return $this->respondHttp200();
         } 
         catch(Exception $e) {
             return $this->respondHttp500();
         }
+    }
+
+    public function multiselect(Request $request){
+        $keyword = "%{$request->keyword}%";
+        $users = User::selectRaw("
+            sau_users.id as id,
+            CONCAT(sau_users.document, ' - ', sau_users.name) as name
+        ")
+        ->join('sau_role_user', 'sau_role_user.user_id', 'sau_users.id')
+        ->join('sau_roles', 'sau_roles.id', 'sau_role_user.role_id')
+        ->where('sau_users.id', '<>', Auth::user()->id)
+        ->where(function ($query) use ($keyword) {
+            $query->orWhere('sau_users.document', 'like', $keyword)
+            ->orWhere('sau_users.name', 'like', $keyword);
+        })
+        ->take(30)->pluck('id', 'name');
+        return $this->respondHttp200([
+            'options' => $this->multiSelectFormat($users)
+        ]);
     }
 }

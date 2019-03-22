@@ -66,7 +66,8 @@ class Audiometry extends Model
       'severity_grade_air_left_8000',
       'severity_grade_air_right_8000',
       'base_type',
-      'base'
+      'base',
+      'base_state'
     ];
 
     protected $dates = [
@@ -107,5 +108,169 @@ class Audiometry extends Model
           $this->attributes['epp'] = implode(",", array_map('trim', explode(",", $value))); //Para eliminar espacios en blanco entre valores
         }
       }
+    }
+
+    /**
+     * filters checks through the given regionals
+     * @param  Illuminate\Database\Eloquent\Builder $query
+     * @param  array $regionals
+     * @return Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeInRegionals($query, $regionals, $typeSearch = 'IN')
+    {
+        if (COUNT($regionals) > 0)
+        {
+            if ($typeSearch == 'IN')
+                $query->whereIn('sau_employees.employee_regional_id', $regionals);
+
+            else if ($typeSearch == 'NOT IN')
+                $query->whereNotIn('sau_employees.employee_regional_id', $regionals);
+        }
+
+        return $query;
+    }
+
+    /**
+     * filters checks through the given headquarters
+     * @param  Illuminate\Database\Eloquent\Builder $query
+     * @param  array $headquarters
+     * @return Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeInHeadquarters($query, $headquarters, $typeSearch = 'IN')
+    {
+        $ids = [];
+
+        foreach ($headquarters as $key => $value)
+        {
+            $ids[] = $value;
+        }
+
+        if(COUNT($ids) > 0)
+        {
+            $ids = explode(",", implode(",", $ids));
+
+            if ($typeSearch == 'IN')
+                $query->whereIn('sau_employees.employee_headquarter_id', $ids);
+
+            else if ($typeSearch == 'NOT IN')
+                $query->whereNotIn('sau_employees.employee_headquarter_id', $ids);
+        }
+
+        return $query;
+    }
+
+    /**
+     * filters checks through the given areas
+     * @param  Illuminate\Database\Eloquent\Builder $query
+     * @param  array $areas
+     * @return Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeInAreas($query, $areas, $typeSearch = 'IN')
+    {
+        if (COUNT($areas) > 0)
+        {
+            if ($typeSearch == 'IN')
+                $query->whereIn('sau_employees.employee_area_id', $areas);
+
+            else if ($typeSearch == 'NOT IN')
+                $query->whereNotIn('sau_employees.employee_area_id', $areas);
+        }
+
+        return $query;
+    }
+
+    /**
+     * filters checks through the given processes
+     * @param  Illuminate\Database\Eloquent\Builder $query
+     * @param  array $processes
+     * @return Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeInProcesses($query, $processes, $typeSearch = 'IN')
+    {
+        if (COUNT($processes) > 0)
+        {
+            if ($typeSearch == 'IN')
+                $query->whereIn('sau_employees.employee_process_id', $processes);
+
+            else if ($typeSearch == 'NOT IN')
+                $query->whereNotIn('sau_employees.employee_process_id', $processes);
+        }
+
+        return $query;
+    }
+
+    /**
+     * filters checks through the given businesses
+     * @param  Illuminate\Database\Eloquent\Builder $query
+     * @param  array $businesses
+     * @return Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeInBusinesses($query, $businesses, $typeSearch = 'IN')
+    {
+        if (COUNT($businesses) > 0)
+        {
+            if ($typeSearch == 'IN')
+                $query->whereIn('sau_employees.employee_business_id', $businesses);
+
+            else if ($typeSearch == 'NOT IN')
+                $query->whereNotIn('sau_employees.employee_business_id', $businesses);
+        }
+
+        return $query;
+    }
+
+    /**
+     * filters checks through the given positions
+     * @param  Illuminate\Database\Eloquent\Builder $query
+     * @param  array $positions
+     * @return Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeInPositions($query, $positions, $typeSearch = 'IN')
+    {
+        if (COUNT($positions) > 0)
+        {
+            if ($typeSearch == 'IN')
+                $query->whereIn('sau_employees.employee_position_id', $positions);
+
+            else if ($typeSearch == 'NOT IN')
+                $query->whereNotIn('sau_employees.employee_position_id', $positions);
+        }
+        
+        return $query;
+    }
+
+    /**
+     * filters checks through the given years
+     * @param  Illuminate\Database\Eloquent\Builder $query
+     * @param  array $years
+     * @return Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeInYears($query, $years, $typeSearch = 'IN')
+    {
+        if (COUNT($years) > 0)
+        {
+            if ($typeSearch == 'IN')
+                $query->whereRaw("year(sau_bm_audiometries.date) IN (".$years->implode(',').")");
+
+            else if ($typeSearch == 'NOT IN')
+                $query->whereRaw("year(sau_bm_audiometries.date) NOT IN (".$years->implode(',').")");
+        }
+
+        return $query;
+    }
+
+    /**
+     * filters checks through the given date
+     * @param  Illuminate\Database\Eloquent\Builder $query
+     * @param  array $dates
+     * @return Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeBetweenDate($query, $dates)
+    {
+        if (COUNT($dates) == 2)
+        {
+            $query->whereBetween('sau_bm_audiometries.date', $dates);
+            return $query;
+        }
     }
 }
