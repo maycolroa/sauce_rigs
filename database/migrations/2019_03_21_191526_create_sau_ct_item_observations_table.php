@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateSauCtSubobjectiveObservationsTable extends Migration
+class CreateSauCtItemObservationsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,9 +13,9 @@ class CreateSauCtSubobjectiveObservationsTable extends Migration
      */
     public function up()
     {
-        Schema::create('sau_ct_subobjective_observations', function (Blueprint $table) {
+        Schema::create('sau_ct_item_observations', function (Blueprint $table) {
             $table->increments('id');
-            $table->unsignedInteger('subobjective_id');
+            $table->unsignedInteger('item_id');
             $table->text('description');
             $table->timestamps();
         });
@@ -28,6 +28,6 @@ class CreateSauCtSubobjectiveObservationsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('sau_ct_subobjective_observations');
+        Schema::dropIfExists('sau_ct_item_observations');
     }
 }

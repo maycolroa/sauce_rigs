@@ -22,7 +22,7 @@ export default {
     label: {type: String},
     value: {default:''},
     placeholder: {type:String},
-    rows: { type: Number, default: 3 },
+    rows: { type: [Number, String], default: 3 },
     name: { type: String, required: true },
     disabled: { type: Boolean, default: false },
     textBlock: {type: String},

@@ -70,12 +70,14 @@ Route::middleware(['auth'])->group(function () {
         Route::post('tagsPossibleConsequencesDanger', 'IndustrialSecure\TagController@multiselectPossibleConsequencesDanger');
         Route::post('tagsWarningSignage', 'IndustrialSecure\TagController@multiselectWarningSignage');
         Route::post('actionPlanStates', 'MultiSelectRadioController@actionPlanStates');
+        Route::post('contractors', 'LegalAspects\ContractLesseeController@multiselect'); 
     });
 
     Route::prefix('radios')->group(function () {
       Route::post('dmTypeActivities', 'MultiSelectRadioController@dmTypeActivities');
       Route::post('siNo', 'MultiSelectRadioController@siNo');
       Route::post('conf/locationLevelForm', 'Administrative\ConfigurationController@radioLocationLevels');
+      Route::post('ctTypesEvaluation', 'MultiSelectRadioController@ctTypesEvaluation');
     });
 
     //Administrativo
@@ -135,6 +137,20 @@ Route::middleware(['auth'])->group(function () {
 
       Route::post('dangersMatrixHistory/data', 'IndustrialSecure\DangerMatrixHistoryController@data');
     });
+
+    //Aspectos Legales
+    Route::prefix('legalAspects')->group(function () {
+      Route::post('typeRating/data', 'LegalAspects\TypeRatingController@data');
+      Route::post('typeRating/AllTypesRating', 'LegalAspects\TypeRatingController@getAllTypesRating');
+      Route::ApiResource('typeRating', 'LegalAspects\TypeRatingController');
+
+      Route::post('evaluation/data', 'LegalAspects\EvaluationController@data');
+      Route::put('evaluation/evaluate/{evaluation}', 'LegalAspects\EvaluationController@evaluate');
+      Route::ApiResource('evaluation', 'LegalAspects\EvaluationController');
+
+      Route::ApiResource('contract', 'LegalAspects\ContractLesseeController');
+    });
+
 
     //Return view for spa
     Route::get('/{any}', 'ApplicationController@index')->where('any', '.*');

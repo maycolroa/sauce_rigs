@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateSauCtInterviewedTable extends Migration
+class CreateSauCtItems extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +13,11 @@ class CreateSauCtInterviewedTable extends Migration
      */
     public function up()
     {
-        Schema::create('sau_ct_interviewees', function (Blueprint $table) {
+        Schema::create('sau_ct_items', function (Blueprint $table) {
             $table->increments('id');
-            $table->unsignedInteger('evaluation_id');
-            $table->string('name')->nullable();
-            $table->string('position')->nullable();
+            $table->unsignedInteger('subobjective_id');
+            $table->text('description');
+            $table->timestamps();
         });
     }
 
@@ -28,6 +28,6 @@ class CreateSauCtInterviewedTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('sau_ct_interviewees');
+        Schema::dropIfExists('sau_ct_items');
     }
 }
