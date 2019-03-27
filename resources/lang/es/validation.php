@@ -208,7 +208,19 @@ return [
       'items_calificated.items.*.qualification' => 'Calificación',
       'locations.employee_process_id' => 'Macroproceso',
       'changeHistory' => 'Detalle de cambios realizados',
-      'days_alert_expiration_date_action_plan' => 'Días de alerta'
+      'days_alert_expiration_date_action_plan' => 'Días de alerta',
+      'evaluators_id' => 'Evaluadores',
+      'type' => 'Tipo',
+      'information_contract_lessee_id' => 'Contratista',
+      'objectives' => 'Objetivos',
+      'objectives.*.description' => 'Descripción',
+      'objectives.*.subobjectives' => 'Subobjetivos',
+      'objectives.*.subobjectives.*.description' => 'Descipción',
+      'objectives.*.subobjectives.*.items' => 'Items',
+      'objectives.*.subobjectives.*.items.*.description' => 'Descripción',
+      'objectives.*.subobjectives.*.items.*.ratings.*.value' => 'Valor',
+      'objectives.*.subobjectives.*.items.*.observations.*.description' => 'Descripcón',
+      'interviewees.*.name' => 'Nombre'
     ],
 
 ];

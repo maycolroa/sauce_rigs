@@ -1,0 +1,125 @@
+<?php
+
+namespace App\Http\Controllers\LegalAspects;
+
+use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use App\Vuetable\Facades\Vuetable;
+use App\LegalAspects\TypeRating;
+use App\Http\Requests\LegalAspects\TypesRating\TypeRatingRequest;
+use Session;
+
+class TypeRatingController extends Controller
+{
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function index()
+    {
+        return view('application');
+    }
+
+    /**
+    * Display a listing of the resource.
+    *
+    * @return \Illuminate\Http\Response
+    */
+    public function data(Request $request)
+    {
+        $types = TypeRating::select('*');
+
+        return Vuetable::of($types)
+                    ->make();
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  App\Http\Requests\LegalAspects\TypesRating\TypeRatingRequest $request
+     * @return \Illuminate\Http\Response
+     */
+    public function store(TypeRatingRequest $request)
+    {
+        $rating = new TypeRating($request->all());
+        $rating->company_id = Session::get('company_id');
+        
+        if(!$rating->save()){
+            return $this->respondHttp500();
+        }
+
+        return $this->respondHttp200([
+            'message' => 'Se creo el tipo de calificación'
+        ]);
+    }
+
+    /**
+     * Display the specified resource.
+     *
+     * @param int $id
+     * @return \Illuminate\Http\Response
+     */
+    public function show($id)
+    {
+        try
+        {
+            $typeRating = TypeRating::findOrFail($id);
+
+            return $this->respondHttp200([
+                'data' => $typeRating,
+            ]);
+        } catch(Exception $e){
+            $this->respondHttp500();
+        }
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  App\Http\Requests\LegalAspects\TypesRating\TypeRatingRequest $request
+     * @param  App\LegalAspects\TypeRating $typeRating
+     * @return \Illuminate\Http\Response
+     */
+    public function update(TypeRatingRequest $request, TypeRating $typeRating)
+    {
+        $typeRating->fill($request->all());
+        
+        if(!$typeRating->update()){
+          return $this->respondHttp500();
+        }
+        
+        return $this->respondHttp200([
+            'message' => 'Se actualizo el tipo de calificación'
+        ]);
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  App\LegalAspects\TypeRating $typeRating
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy(TypeRating $typeRating)
+    {
+        if (count($typeRating->items) > 0)
+        {
+            return $this->respondWithError('No se puede eliminar el tipo de calificación porque hay items asociados a el');
+        }
+
+        if(!$typeRating->delete())
+        {
+            return $this->respondHttp500();
+        }
+        
+        return $this->respondHttp200([
+            'message' => 'Se elimino el tipo de calificación'
+        ]);
+    }
+
+    public function getAllTypesRating()
+    {
+        $types = TypeRating::get();
+        return $types;
+    }
+}

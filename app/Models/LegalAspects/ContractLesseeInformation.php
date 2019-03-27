@@ -38,4 +38,12 @@ class ContractLesseeInformation extends Model
     public function usersContract(){
         return $this->belongsToMany('App\User', 'sau_user_information_contract_lessee');
     }
+
+    public function multiselect()
+    {
+        return [
+            'name' => $this->nit,
+            'value' => $this->id
+        ];
+    }
 }

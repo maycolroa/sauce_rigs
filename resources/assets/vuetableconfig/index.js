@@ -1,11 +1,13 @@
 import PreventiveLaboralMedicine from './PreventiveOccupationalMedicine.js'
 import Administrative from './Administrative.js'
 import IndustrialSecure from './IndustrialSecure.js'
+import LegalAspects from './LegalAspects.js'
 
 const config = []
         .concat(PreventiveLaboralMedicine)
         .concat(Administrative)
-        .concat(IndustrialSecure);
+        .concat(IndustrialSecure)
+        .concat(LegalAspects);
 
 
 

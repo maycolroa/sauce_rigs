@@ -65,4 +65,15 @@ class MultiSelectRadioController extends Controller
         $options = ["SI"=>"SI", "NO"=>"NO"];
         return $this->radioFormat(collect($options));
     }
+
+    /**
+     * Returns an arrangement with the type evaluation
+     *
+     * @return Array
+     */
+    public function ctTypesEvaluation()
+    {
+        $evaluations = ["Verificación"=>"Verificación", "Seguimiento"=>"Seguimiento", "Adicional"=>"Adicional"];
+        return $this->radioFormat(collect($evaluations));
+    }
 }
