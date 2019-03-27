@@ -16,7 +16,7 @@ class CreateSauCtSectionCategoryItems extends Migration
         Schema::create('sau_ct_section_category_items', function (Blueprint $table) {
             $table->increments('id');
             $table->unsignedInteger('category_id');
-            $table->string('item_name', 100);
+            $table->string('item_name', 200);
             $table->text('criterion_description');
             $table->text('verification_mode');
             $table->double('percentage_weight');

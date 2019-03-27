@@ -11,51 +11,42 @@
 				</b-card-header>
 				<!-- <perfect-scrollbar style="height: 350px"> -->
 					<b-card-body>
-					<div class="rounded ui-bordered p-3 mb-3"  v-for="(item, index) in form.items" :key="item.id">
-						<p class="my-1">{{ index+1 }} - {{ item.item_name }}</p>
-						<span class="text-muted">{{ item.criterion_description}}</span>
-						<div class="media align-items-center mt-3">
-							<!-- <img src="/static/img/avatars/12-small.png" class="d-block ui-w-30 rounded-circle" alt> -->
-							<div class="media-body ml-2">
-								<b-btn v-if="item.qualification == 2" variant="primary" v-b-modal="`modals-default-${index+1}`">Plan de acción</b-btn>
-								<!-- Modal template -->
-								<!-- <b-modal :id="`modals-default-${index+1}`" cancel-title="Cancelar" ok-title="Aceptar" size="lg" @ok="add_plan_action(index)" :ok-disabled="action_plan.description != '' && action_plan.responsible != '' && action_plan.state != '' ? false : true"> -->
+						<div class="rounded ui-bordered p-3 mb-3"  v-for="(item, index) in form.items" :key="item.id">
+							<p class="my-1">{{ index+1 }} - {{ item.item_name }}</p>
+							<span class="text-muted">{{ item.criterion_description}}</span>
+							<div class="media align-items-center mt-3">
+								<div class="media-body ml-2">
+									<b-btn v-if="item.qualification == 2" variant="primary" v-b-modal="`modals-default-${index+1}`">Plan de acción</b-btn>
 									
+									<b-modal :id="`modals-default-${index+1}`"  cancel-title="Cancelar" ok-title="Aceptar" size="lg">
 										
-									<!-- <div slot="modal-title">
-										Plan de acción <span class="font-weight-light">Contratistas</span><br>
-										<small class="text-muted">Crea planes de acción para tu justificación</small>
-									</div>
-
-									<b-form-row>
-										<vue-input class="col-md-12" v-model="action_plan.description" label="Descripción" type="text" name="description"  placeholder="Descripción"></vue-input>
-									</b-form-row>
-
-									<b-form-row>
-										<vue-advanced-select class="col-md-6" v-model="action_plan.responsible"  name="responsible" label="Nombre del responsable" placeholder="Seleccione el responsable" :options="[{name: 'Juanito', value: 'Juanito'},{name: 'Jeferson', value: 'Jeferson'}]">
-                        				</vue-advanced-select>
-										<vue-advanced-select class="col-md-6" v-model="action_plan.state" name="state" label="Estado" placeholder="Seleccione el estado" :options="[{name: 'Pendiente', value: 'Pendiente'},{name: 'Ejecutada', value: 'Ejecutada'}]">
-                        				</vue-advanced-select>
-									</b-form-row> -->
-								<!-- </b-modal> -->
-							<!-- 	<b-card bg-variant="transparent" border-variant="secondary" title="" class="mb-3 box-shadow-none">
-											<action-plan-component
-											:is-edit="isEdit"
-											:view-only="viewOnly"
-											:form="contract"
-											:prefix-index="`items.${index}.`"
-											:action-plan-states="actionPlanStates"
-											v-model="contract.actionPlan"
-											:action-plan="contract.actionPlan"/>
-										</b-card> -->
-							</div>
-							<div class="text-muted small text-nowrap">
+											
+										<div slot="modal-title">
+											Plan de acción <span class="font-weight-light">Contratistas</span><br>
+											<small class="text-muted">Crea planes de acción para tu justificación</small>
+										</div>
+											<!-- border-variant="secondary" -->
+											<b-card bg-variant="transparent"  title="" class="mb-3 box-shadow-none">
+												<action-plan-component v-if="item.qualification == 2"
+												:is-edit="isEdit"
+												:view-only="viewOnly"
+												:form="form"
+												:prefix-index="`items.${index}.`"
+												:action-plan-states="actionPlanStates"
+												v-model="item.actionPlan"
+												:action-plan="item.actionPlan"
+												:defined-activities="[''+index, 'sdsd']"/>
+											</b-card>
+									</b-modal>
 								
-								<vue-radio v-model="item.qualification" label="Calificación" :name="`items${item.id}`" :error="form.errorsFor('item.qualification')" :options="qualifications"></vue-radio>
-								
+								</div>
+								<div class="text-muted small text-nowrap">
+									
+									<vue-radio v-model="item.qualification" label="Calificación" :name="`items${item.id}`" :error="form.errorsFor(`items.${index}`)" :options="qualifications"></vue-radio>
+									
+								</div>
 							</div>
 						</div>
-					</div>
 					</b-card-body>
 				<!-- </perfect-scrollbar> -->
 				</b-card>
@@ -99,10 +90,6 @@ export default {
 		contract: {type: Object,
 			default() {
 				return {
-			/* 		actionPlan: {
-						activities: [],
-						activitiesRemoved: []
-					} */
 				}
 			}
 		},
@@ -130,8 +117,8 @@ export default {
 	methods: {
 		//Guardar las calificaciones y validarlas en el backend con un request nuevo
 		submit(e) {
-			//Cambiar a form
 			this.loading = true;
+			// console.log(this.form);
 			this.form
 			.submit(e.target.action)
 			.then(response => {

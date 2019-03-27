@@ -5,9 +5,9 @@ namespace App\Http\Controllers\LegalAspects;
 use Illuminate\Http\Request;
 use App\Vuetable\Facades\Vuetable;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\LegalApects\Contracts\ContractRequest;
-use App\Http\Requests\LegalApects\Contracts\ContractCompleteInfoRequest;
-use App\Http\Requests\LegalApects\Contracts\ListCheckItemsContractRequest;
+use App\Http\Requests\LegalAspects\Contracts\ContractRequest;
+use App\Http\Requests\LegalAspects\Contracts\ContractCompleteInfoRequest;
+use App\Http\Requests\LegalAspects\Contracts\ListCheckItemsContractRequest;
 use App\Models\LegalAspects\ContractLesseeInformation;
 use App\Models\LegalAspects\SectionCategoryItems;
 use App\Models\LegalAspects\Qualifications;
@@ -144,7 +144,7 @@ class ContractLesseeController extends Controller
         //         $user->itemsCalificatedContract()->sync($item);
         //     }
         // }
-        die($request);
+        \Log::info($request);
     }
 
     /**

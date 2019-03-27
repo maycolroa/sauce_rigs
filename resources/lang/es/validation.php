@@ -221,6 +221,7 @@ return [
       'objectives.*.subobjectives.*.items.*.ratings.*.value' => 'Valor',
       'objectives.*.subobjectives.*.items.*.observations.*.description' => 'Descripcón',
       'interviewees.*.name' => 'Nombre'
+      'items.*' => 'Calificación'
     ],
 
 ];
