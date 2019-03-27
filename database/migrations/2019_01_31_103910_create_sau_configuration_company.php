@@ -20,6 +20,8 @@ class CreateSauConfigurationCompany extends Migration
             $table->text('value');
             $table->text('observation')->nullable();
             $table->timestamps();
+
+            $table->foreign('company_id')->references('id')->on('sau_companies')->onDelete('cascade');
         });
     }
 

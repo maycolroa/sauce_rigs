@@ -23,10 +23,18 @@ class ListCheckItemsContractRequest extends FormRequest
      */
     public function rules()
     {
-        $id = $this->input('id');
-
+        // $id = $this->input('id');
+        // var_dump($this->items[0]);
+        // dd($this->items[0]->name);
         $rules = [
-            'items.*.qualification' => 'required',
+            'items.*' => [
+                // 'required',
+                function ($attribute, $value, $fail) {
+                    if (!isset(json_decode($value)->qualification)) {
+                        $fail('La calificación es obligatoria');
+                    }
+                }
+            ]
         ];
         
         return $rules;
