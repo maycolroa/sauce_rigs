@@ -14,6 +14,7 @@ class DeleteColumnListCheckIdActionPlan extends Migration
     public function up()
     {
         Schema::table('sau_ct_action_plan_default', function (Blueprint $table) {
+            $table->dropForeign('sau_ct_item_description_action_plan_list_check_item_id_foreign');
             $table->dropColumn('list_check_item_id');
         });
     }
