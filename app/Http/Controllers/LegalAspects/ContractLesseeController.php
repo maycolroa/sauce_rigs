@@ -76,7 +76,7 @@ class ContractLesseeController extends Controller
         }
 
         $user->companies()->sync(Session::get('company_id'));
-        $role_id = Role::where('name', '=', $request->role)->pluck("id");
+        $role_id = Role::where('name', '=', $request->role)->withoutGlobalScopes()->pluck("id");
         $user->syncRoles([$role_id[0]]);
         $contractLesseeInformation->company_id = Session::get('company_id');
         $contractLesseeInformation->nit = $request->nit;
