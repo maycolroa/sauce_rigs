@@ -14,7 +14,7 @@ class AddColumnRiskCtInformation extends Migration
     public function up()
     {
         Schema::table('sau_ct_information_contract_lessee', function (Blueprint $table) {
-            $table->integer('high_risk_work')->after('number_workers');
+            $table->integer('high_risk_work')->after('number_workers')->default(0);
             $table->string('social_reason')->after('high_risk_work');
         });
     }

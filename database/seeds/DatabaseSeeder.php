@@ -18,6 +18,6 @@ class DatabaseSeeder extends Seeder
         $this->call(MakeAllPermissionsSeeder::class);
         $this->call(DmQualificationsSeeder::class);
         $this->call(MakeCustomPermissionsSeeder::class);
-        $this->call(CreateRoleMasterSeeder::class);
+        $this->call(CreateRoleSuperAdminSeeder::class);
     }
 }

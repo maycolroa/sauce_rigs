@@ -1,6 +1,6 @@
 <template>
   	<div>
-    	<h4 class="font-weight-bold mb-4">Gestión de contratistas</h4>
+    	<h4 class="font-weight-bold mb-4">Contratistas</h4>
     	<div class="col-md">
 			<b-card no-body>
 				<b-card-header class="with-elements">
@@ -11,7 +11,7 @@
 								<router-link tag="a" href="javascript:void(0)" class="card-body media align-items-center text-dark" :to="{name:'legalaspects-contracts-create'}">
 									<i class="lnr lnr-user display-4 d-block text-primary"></i>
 									<span class="media-body d-block ml-3">
-										<span class="text-big font-weight-bolder">Crear contratista - arrendatario</span>
+										<span class="text-big font-weight-bolder">Crear contratista o arrendatario</span>
 										<br>
 										<small class="text-muted">Creación de los usuarios para contratistas y/o arrendatarios.</small>
 									</span>
@@ -19,7 +19,7 @@
 							</div>
 							
 							<div class="d-flex col-sm-6 col-md-4 col-lg-6 align-items-center">
-								<router-link tag="a" href="javascript:void(0)" class="card-body media align-items-center text-dark" :to="{name:'legalaspects-contracts-create'}">
+								<router-link tag="a" href="javascript:void(0)" class="card-body media align-items-center text-dark" :to="{name:'legalaspects-contracts-list-check-items'}">
 									<i class="lnr lnr-list display-4 d-block text-primary"></i>
 									<span class="media-body d-block ml-3">
 										<span class="text-big font-weight-bolder">Administración de las listas de chequeo</span>
@@ -28,16 +28,18 @@
 									</span>
 								</router-link>
 							</div>
+
 							<div class="d-flex col-sm-6 col-md-4 col-lg-6 align-items-center">
 								<router-link tag="a" href="javascript:void(0)" class="card-body media align-items-center text-dark" :to="{name:'legalaspects-contracts-create'}">
 									<i class="lnr lnr-pencil display-4 d-block text-primary"></i>
 									<span class="media-body d-block ml-3">
-										<span class="text-big font-weight-bolder">Realizar listas de chequeo</span>
+										<span class="text-big font-weight-bolder">Calificar listas de chequeo</span>
 										<br>
 										<small class="text-muted">Creación de tus listas de chequeo para tus arrendatarios.</small>
 									</span>
 								</router-link>
 							</div>
+
 							<div class="d-flex col-sm-6 col-md-4 col-lg-6 align-items-center">
 								<router-link tag="a" href="javascript:void(0)" class="card-body media align-items-center text-dark" :to="{name:'legalaspects-contracts-create'}">
 									<i class="lnr lnr-users display-4 d-block text-primary"></i>
@@ -48,6 +50,51 @@
 									</span>
 								</router-link>
 							</div>
+
+							<div class="d-flex col-sm-6 col-md-4 col-lg-6 align-items-center">
+								<router-link tag="a" href="javascript:void(0)" class="card-body media align-items-center text-dark" :to="{name:'legalaspects-contracts-complete-information', params: {id: 35}}">
+									<i class="lnr lnr-list display-4 d-block text-primary"></i>
+									<span class="media-body d-block ml-3">
+										<span class="text-big font-weight-bolder">Completar formulario del contratista</span>
+										<br>
+										<small class="text-muted">Completar información por el contratista o arrendatario ingresado por primera vez a la plataforma</small>
+									</span>
+								</router-link>
+							</div>
+
+							<div class="d-flex col-sm-6 col-md-4 col-lg-6 align-items-center">
+								<router-link tag="a" href="javascript:void(0)" class="card-body media align-items-center text-dark" :to="{name:'legalaspects-typesrating'}">
+									<i class="lnr lnr-layers display-4 d-block text-primary"></i>
+									<span class="media-body d-block ml-3">
+										<span class="text-big font-weight-bolder">Administración de los tipos de calificación</span>
+										<br>
+										<small class="text-muted">Ver, editar y administrar los tipos de calificaciones de las evaluaciones.</small>
+									</span>
+								</router-link>
+							</div>
+							
+							<div class="d-flex col-sm-6 col-md-4 col-lg-6 align-items-center">
+								<router-link tag="a" href="javascript:void(0)" class="card-body media align-items-center text-dark" :to="{name:'legalaspects-evaluations'}">
+									<i class="lnr lnr-magnifier display-4 d-block text-primary"></i>
+									<span class="media-body d-block ml-3">
+										<span class="text-big font-weight-bolder">Administración de las evaluaciones</span>
+										<br>
+										<small class="text-muted">Ver, editar y administrar las evaluaciones de tus contratistas y/o arrendatarios.</small>
+									</span>
+								</router-link>
+							</div>
+							
+							<div class="d-flex col-sm-6 col-md-4 col-lg-6 align-items-center">
+								<router-link tag="a" href="javascript:void(0)" class="card-body media align-items-center text-dark" :to="{name:'legalaspects-upload-files'}">
+									<i class="lnr lnr-upload display-4 d-block text-primary"></i>
+									<span class="media-body d-block ml-3">
+										<span class="text-big font-weight-bolder">Subida de archivos</span>
+										<br>
+										<small class="text-muted">Subida de archivos</small>
+									</span>
+								</router-link>
+							</div>
+
 						</div>
 						<!-- <b-btn :to="{name:'legalaspects-contracts-create'}" variant="primary">Crear Usuario</b-btn>
 						<b-btn :to="{name:'legalaspects-contracts-create'}" variant="primary">Lista de Chequeo</b-btn>-->
@@ -63,9 +110,9 @@
 import Alerts from "@/utils/Alerts.js";
 
 export default {
-	name: "users",
+	name: "legal-aspects",
 	metaInfo: {
-		title: "Usuarios"
+		title: "Contratistas"
 	},
   	methods: {
 		exportUsers() {

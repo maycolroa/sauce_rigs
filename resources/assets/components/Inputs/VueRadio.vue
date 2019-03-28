@@ -21,7 +21,7 @@ export default {
         disabled: { type: Boolean, default: false },
         checked: { type: [String, Number], default: '' },
         label: {type: String},
-        options: {type: Array, required: true},
+        options: {type: [Array, Object], required: true},
         error: {type: String, default: null},
     },
     computed: {

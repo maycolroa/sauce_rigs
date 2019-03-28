@@ -18,10 +18,14 @@ class Role extends LaratrustRole
     ];
 
     public function multiselect(){
-      return [
-        'name' => $this->name,
-        'value' => $this->id
-      ];
+		return [
+			'name' => $this->name,
+			'value' => $this->id
+		];
+	}
+	
+	public function users(){
+        return $this->belongsToMany('App\User', 'sau_users');
     }
 
     public function module()

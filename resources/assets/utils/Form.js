@@ -110,7 +110,11 @@ export default class Form {
         })
         .catch(error => {
           //console.log(error.response);
-          if(error.response.data.message == 'The given data was invalid.'){
+          if (error.response.status == 500 && error.response.data.error != 'Internal Error')
+          {
+            Alerts.error('Error', error.response.data.error);
+          }
+          else if(error.response.data.message == 'The given data was invalid.'){
             Alerts.error('Error en los datos', 'Los datos ingresados no son validos');  
           }
           else{
