@@ -84,6 +84,17 @@
 								</router-link>
 							</div>
 							
+							<div class="d-flex col-sm-6 col-md-4 col-lg-6 align-items-center">
+								<router-link tag="a" href="javascript:void(0)" class="card-body media align-items-center text-dark" :to="{name:'legalaspects-upload-files'}">
+									<i class="lnr lnr-list display-4 d-block text-primary"></i>
+									<span class="media-body d-block ml-3">
+										<span class="text-big font-weight-bolder">Subida de archivos</span>
+										<br>
+										<small class="text-muted">Subida de archivos</small>
+									</span>
+								</router-link>
+							</div>
+
 						</div>
 						<!-- <b-btn :to="{name:'legalaspects-contracts-create'}" variant="primary">Crear Usuario</b-btn>
 						<b-btn :to="{name:'legalaspects-contracts-create'}" variant="primary">Lista de Chequeo</b-btn>-->

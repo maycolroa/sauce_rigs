@@ -83,7 +83,27 @@ export default [
 				path: 'evaluations/evaluate/:id',
 				component: () =>
 				import('@/views/LegalAspects/evaluations/evaluate')
-			}
+			},
+			{
+				name: 'legalaspects-upload-files',
+				path: 'upload-files',
+				component: () => import('@/views/LegalAspects/contracts/uploadFiles/index')
+			},
+			{
+				name: 'legalaspects-upload-files-create',
+				path: 'upload-files/create',
+				component: () => import('@/views/LegalAspects/contracts/uploadFiles/create')
+      },
+      {
+        name: 'legalaspects-upload-files-edit',
+        path: 'upload-files/edit/:id',
+        component: () => import('@/views/LegalAspects/contracts/uploadFiles/edit')
+      },
+      {
+        name: 'legalaspects-upload-files-view',
+        path: 'upload-files/view/:id',
+        component: () => import('@/views/LegalAspects/contracts/uploadFiles/view')
+      }
 		]
 	}
 ];

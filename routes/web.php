@@ -146,7 +146,10 @@ Route::middleware(['auth'])->group(function () {
 			Route::get('contracts/qualifications', 'LegalAspects\ContractLesseeController@qualifications');
 			Route::get('contracts/data', 'LegalAspects\ContractLesseeController@data');
 			Route::post('contracts/saveQualificationItems', 'LegalAspects\ContractLesseeController@saveQualificationItems');
-			Route::ApiResource('contracts', 'LegalAspects\ContractLesseeController');
+      Route::ApiResource('contracts', 'LegalAspects\ContractLesseeController');
+      Route::post('fileUpload/data', 'LegalAspects\FileUploadController@data');
+      Route::get('fileUpload/download/{fileUpload}', 'LegalAspects\FileUploadController@download');
+      Route::ApiResource('fileUpload', 'LegalAspects\FileUploadController');
 		});
 
     //Aspectos Legales
