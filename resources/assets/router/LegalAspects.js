@@ -30,7 +30,27 @@ export default [
 				name: 'legalaspects-contracts-list-check-items',
 				path: 'contracts/list-check-items',
 				component: () => import('@/views/LegalAspects/contracts/contract/listCheckItems')
-			}
+			},
+			{
+				name: 'legalaspects-upload-files',
+				path: 'upload-files',
+				component: () => import('@/views/LegalAspects/contracts/uploadFiles/index')
+			},
+			{
+				name: 'legalaspects-upload-files-create',
+				path: 'upload-files/create',
+				component: () => import('@/views/LegalAspects/contracts/uploadFiles/create')
+      },
+      {
+        name: 'legalaspects-upload-files-edit',
+        path: 'upload-files/edit/:id',
+        component: () => import('@/views/LegalAspects/contracts/uploadFiles/edit')
+      },
+      {
+        name: 'legalaspects-upload-files-view',
+        path: 'upload-files/view/:id',
+        component: () => import('@/views/LegalAspects/contracts/uploadFiles/view')
+      }
 		]
 	}
 ];

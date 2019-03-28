@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateCtItemDescriptionActionPlan extends Migration
+class ChangeNameItemDescriptionActionPlan extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +13,7 @@ class CreateCtItemDescriptionActionPlan extends Migration
      */
     public function up()
     {
-        Schema::create('ct_item_description_action_plan', function (Blueprint $table) {
-            $table->increments('id');
-            $table->text('description');
-            $table->string('state');
-        });
+      Schema::rename('sau_ct_item_description_action_plan', 'sau_ct_action_plan_default');
     }
 
     /**
@@ -27,6 +23,6 @@ class CreateCtItemDescriptionActionPlan extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('ct_item_description_action_plan');
+      Schema::rename('sau_ct_action_plan_default', 'sau_ct_item_description_action_plan');
     }
-}
+} 
