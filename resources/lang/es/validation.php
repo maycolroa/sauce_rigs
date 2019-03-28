@@ -220,8 +220,8 @@ return [
       'objectives.*.subobjectives.*.items.*.description' => 'Descripción',
       'objectives.*.subobjectives.*.items.*.ratings.*.value' => 'Valor',
       'objectives.*.subobjectives.*.items.*.observations.*.description' => 'Descripcón',
-      'interviewees.*.name' => 'Nombre'
-      'items.*' => 'Calificación'
+      'interviewees.*.name' => 'Nombre',
+      'items.*' => 'Calificación',
       'days_alert_expiration_date_action_plan' => 'Días de alerta',
     ],
 

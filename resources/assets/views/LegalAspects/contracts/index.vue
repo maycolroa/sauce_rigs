@@ -18,7 +18,7 @@
 								</router-link>
 							</div>
 							
-							<div class="d-flex col-sm-6 col-md-4 col-lg-6 align-items-center">
+							<!-- <div class="d-flex col-sm-6 col-md-4 col-lg-6 align-items-center">
 								<router-link tag="a" href="javascript:void(0)" class="card-body media align-items-center text-dark" :to="{name:'legalaspects-contracts-list-check-items'}">
 									<i class="lnr lnr-list display-4 d-block text-primary"></i>
 									<span class="media-body d-block ml-3">
@@ -27,10 +27,10 @@
 										<small class="text-muted">Ver, editar y administrar las listas de chequeo de tus contratistas y/o arrendatarios.</small>
 									</span>
 								</router-link>
-							</div>
+							</div> -->
 
 							<div class="d-flex col-sm-6 col-md-4 col-lg-6 align-items-center">
-								<router-link tag="a" href="javascript:void(0)" class="card-body media align-items-center text-dark" :to="{name:'legalaspects-contracts-create'}">
+								<router-link tag="a" href="javascript:void(0)" class="card-body media align-items-center text-dark" :to="{name:'legalaspects-contracts-list-check-items'}">
 									<i class="lnr lnr-pencil display-4 d-block text-primary"></i>
 									<span class="media-body d-block ml-3">
 										<span class="text-big font-weight-bolder">Calificar listas de chequeo</span>
@@ -40,7 +40,7 @@
 								</router-link>
 							</div>
 
-							<div class="d-flex col-sm-6 col-md-4 col-lg-6 align-items-center">
+							<!-- <div class="d-flex col-sm-6 col-md-4 col-lg-6 align-items-center">
 								<router-link tag="a" href="javascript:void(0)" class="card-body media align-items-center text-dark" :to="{name:'legalaspects-contracts-create'}">
 									<i class="lnr lnr-users display-4 d-block text-primary"></i>
 									<span class="media-body d-block ml-3">
@@ -49,10 +49,10 @@
 										<small class="text-muted">Ver, editar y administrar tus usuarios contratistas o arrendatarios.</small>
 									</span>
 								</router-link>
-							</div>
+							</div> -->
 
 							<div class="d-flex col-sm-6 col-md-4 col-lg-6 align-items-center">
-								<router-link tag="a" href="javascript:void(0)" class="card-body media align-items-center text-dark" :to="{name:'legalaspects-contracts-complete-information', params: {id: 35}}">
+								<router-link tag="a" href="javascript:void(0)" class="card-body media align-items-center text-dark" :to="{name:'legalaspects-contracts-complete-information', params: {id: 3}}">
 									<i class="lnr lnr-list display-4 d-block text-primary"></i>
 									<span class="media-body d-block ml-3">
 										<span class="text-big font-weight-bolder">Completar formulario del contratista</span>

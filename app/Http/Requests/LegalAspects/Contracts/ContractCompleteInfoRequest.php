@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Requests\LegalApects\Contracts;
+namespace App\Http\Requests\LegalAspects\Contracts;
 
 use Illuminate\Foundation\Http\FormRequest;
 
