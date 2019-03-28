@@ -145,15 +145,15 @@ Route::middleware(['auth'])->group(function () {
 		Route::prefix('legalAspects')->group(function () {
 			Route::get('contracts/qualifications', 'LegalAspects\ContractLesseeController@qualifications');
 			Route::get('contracts/data', 'LegalAspects\ContractLesseeController@data');
-			Route::post('contracts/saveQualificationItems', 'LegalAspects\ContractLesseeController@saveQualificationItems');
+      Route::post('contracts/saveQualificationItems', 'LegalAspects\ContractLesseeController@saveQualificationItems');
+      
       Route::ApiResource('contracts', 'LegalAspects\ContractLesseeController');
+      Route::ApiResource('contract', 'LegalAspects\ContractLesseeController');
+
       Route::post('fileUpload/data', 'LegalAspects\FileUploadController@data');
       Route::get('fileUpload/download/{fileUpload}', 'LegalAspects\FileUploadController@download');
       Route::ApiResource('fileUpload', 'LegalAspects\FileUploadController');
-		});
 
-    //Aspectos Legales
-    Route::prefix('legalAspects')->group(function () {
       Route::post('typeRating/data', 'LegalAspects\TypeRatingController@data');
       Route::post('typeRating/AllTypesRating', 'LegalAspects\TypeRatingController@getAllTypesRating');
       Route::ApiResource('typeRating', 'LegalAspects\TypeRatingController');
@@ -161,9 +161,7 @@ Route::middleware(['auth'])->group(function () {
       Route::post('evaluation/data', 'LegalAspects\EvaluationController@data');
       Route::put('evaluation/evaluate/{evaluation}', 'LegalAspects\EvaluationController@evaluate');
       Route::ApiResource('evaluation', 'LegalAspects\EvaluationController');
-
-      Route::ApiResource('contract', 'LegalAspects\ContractLesseeController');
-    });
+		});
 
 
     //Return view for spa
