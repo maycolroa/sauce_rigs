@@ -47,6 +47,24 @@ class EvaluationController extends Controller
         ->join('sau_users', 'sau_users.id', 'sau_ct_evaluations.creator_user_id');
 
         return Vuetable::of($evaluations)
+                    ->addColumn('legalaspects-evaluations-edit', function ($evaluation) {
+                        if ($evaluation->evaluation_date)
+                            return false;
+
+                        return true;
+                    })
+                    ->addColumn('legalaspects-evaluations-evaluate', function ($evaluation) {
+                        if ($evaluation->evaluation_date || !$this->verifyPermissionEvaluate($evaluation->id))
+                            return false;
+
+                        return true;
+                    })
+                    ->addColumn('control_delete', function ($evaluation) {
+                        if ($evaluation->evaluation_date)
+                            return false;
+
+                        return true;
+                    })
                     ->make();
     }
 

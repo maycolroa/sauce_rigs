@@ -10,14 +10,17 @@
 
     <v-server-table :url="config.configuration.urlData" :columns="columns" :options="options" ref="vuetable" :key="keyVuetable">
       <template slot="controlls" slot-scope="props">
-        <div>
+        <div class="align-middle text-center">
           
-          <b-btn v-for="(button, index) in controllsPush" :key="index" 
+          <template v-for="(button, index) in controllsPush">
+          <b-btn :key="index" 
+          v-if="checkView(button, props.row)"
           :variant="button.config.color + ' ' + (button.config.borderless ? 'borderless' : '') + ' ' + (button.config.icon ? 'icon-btn' : '')" 
           class="btn-xs"
           @click.prevent="pushButton(button,props.row)"><i :class="button.config.icon"></i></b-btn>
+          </template>
           
-          <b-btn v-if="controllsBase.includes('delete')" variant="outline-danger borderless icon-btn" class="btn-xs" @click.prevent="confirmRemove(props.row)"><i class="ion ion-md-close"></i></b-btn>
+          <b-btn v-if="controllsBase.includes('delete') && checkViewDelete(props.row)" variant="outline-danger borderless icon-btn" class="btn-xs" @click.prevent="confirmRemove(props.row)"><i class="ion ion-md-close"></i></b-btn>
         </div>
       </template>
      }
@@ -332,6 +335,20 @@ export default {
     },
     hideModalConfirmationRemove(){
       this.$refs.modalConfirmationRemove.hide();
+    },
+    checkView(button, row) {
+      if(row[button.data.routePush.name] != undefined) {
+         return row[button.data.routePush.name]
+      }
+
+      return true
+    },
+    checkViewDelete(row) {
+      if(row['control_delete'] != undefined) {
+         return row['control_delete']
+      }
+
+      return true
     }
   }
 }
