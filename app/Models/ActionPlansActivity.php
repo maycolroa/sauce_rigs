@@ -18,12 +18,13 @@ class ActionPlansActivity extends Model
         'execution_date',
         'expiration_date',
         'state',
-        'editable'
+        'editable',
+        'company_id'
     ];
 
     //the attribute define the table for scope company execute
-    public $scope_table_for_company_table = 'sau_company_user';
-
+    //public $scope_table_for_company_table = 'sau_company_user';
+    
     public function responsible()
     {
         return $this->belongsTo('App\User','responsible_id');

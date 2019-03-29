@@ -144,8 +144,7 @@
                                   <b-form-feedback class="d-block" v-if="form.errorsFor(`objectives.${index}.subobjectives`)" style="padding-bottom: 10px;">
                                       {{ form.errorsFor(`objectives.${index}.subobjectives`) }}
                                   </b-form-feedback>
-                                  <perfect-scrollbar :options="{ wheelPropagation: true }" class="mb-4" style="height: 400px; padding-right: 15px; width: 100%;">
-                                      <template v-for="(subobjective, index2) in objetive.subobjectives">
+                                      <template v-for="(subobjective, index2) in objetive.subobjectives" style="padding-right: 15px;">
                                           <b-card no-body class="mb-2 border-secondary" :key="subobjective.key" style="width: 100%;">
                                           <b-card-header class="bg-secondary">
                                               <b-row>
@@ -184,8 +183,7 @@
                                                   <b-form-feedback class="d-block" v-if="form.errorsFor(`objectives.${index}.subobjectives.${index2}.items`)" style="padding-bottom: 10px;">
                                                       {{ form.errorsFor(`objectives.${index}.subobjectives.${index2}.items`) }}
                                                   </b-form-feedback>
-                                                  <perfect-scrollbar :options="{ wheelPropagation: true }" class="mb-4" style="height: 300px; padding-right: 15px; width: 100%;">
-                                                  <div class="table-responsive">
+                                                  <div class="table-responsive" style="padding-right: 15px;">
                                                     <table class="table table-bordered table-hover" v-if="subobjective.items.length > 0">
                                                       <thead class="bg-secondary" style="color: white;">
                                                         <tr>
@@ -221,13 +219,11 @@
                                                       </tbody>
                                                     </table>
                                                   </div>
-                                                  </perfect-scrollbar>
                                                 </b-form-row>
                                               </b-card-body>
                                           </b-collapse>
                                           </b-card>
                                       </template>
-                                  </perfect-scrollbar>
                               </b-form-row>
                               </b-card-body>
                           </b-collapse>
@@ -270,8 +266,7 @@
                                   <vue-textarea :disabled="true" class="col-md-12" v-model="form.objectives[index].description" label="Descripción" name="description" placeholder="Descripción" rows="1"></vue-textarea>
                                 </b-form-row>
                                 <b-form-row style="padding-top: 15px;">
-                                  <perfect-scrollbar :options="{ wheelPropagation: true }" class="mb-4" style="height: 400px; padding-right: 15px; width: 100%;">
-                                      <template v-for="(subobjective, index2) in objetive.subobjectives">
+                                      <template v-for="(subobjective, index2) in objetive.subobjectives" style="padding-right: 15px;">
                                           <b-card no-body class="mb-2 border-secondary" :key="subobjective.key" style="width: 100%;">
                                           <b-card-header class="bg-secondary">
                                               <b-row>
@@ -293,8 +288,7 @@
                                                   <vue-textarea :disabled="true" class="col-md-12" v-model="form.objectives[index].subobjectives[index2].description" label="Descripción" name="description" placeholder="Descripción" rows="1"></vue-textarea>
                                                 </b-form-row>
                                                 <b-form-row style="padding-top: 15px;">
-                                                  <perfect-scrollbar :options="{ wheelPropagation: true }" class="mb-4" style="height: 300px; padding-right: 15px; width: 100%;">
-                                                  <div class="table-responsive">
+                                                  <div class="table-responsive" style="padding-right: 15px;">
                                                     <table class="table table-bordered table-hover">
                                                       <thead class="bg-secondary" style="color: white;">
                                                         <tr>
@@ -346,13 +340,11 @@
                                                       </tbody>
                                                     </table>
                                                   </div>
-                                                  </perfect-scrollbar>
                                                 </b-form-row>
                                               </b-card-body>
                                           </b-collapse>
                                           </b-card>
                                       </template>
-                                  </perfect-scrollbar>
                               </b-form-row>
                               </b-card-body>
                           </b-collapse>

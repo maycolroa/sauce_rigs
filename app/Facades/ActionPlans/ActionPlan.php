@@ -16,7 +16,9 @@ use App\Administrative\EmployeeHeadquarter;
 use App\Administrative\EmployeeArea;
 use App\Administrative\EmployeeProcess;
 use App\Facades\Mail\Facades\NotificationMail;
+use App\Facades\Configuration;
 use Exception;
+use Session;
 
 
 class ActionPlan
@@ -27,7 +29,7 @@ class ActionPlan
      *
      * @var String
      */
-    private $states = ['Pendiente', 'Ejecutada', 'No aplica'];
+    private $states;
 
     /**
      * Prefix that will be used to create the validation rules
@@ -140,6 +142,11 @@ class ActionPlan
      * @var Integer
      */
     private $daysAlertExpirationDate;
+
+    public function __construct()
+    {
+        $this->states = Configuration::getConfiguration('action_plans_states');
+    }
 
     /**
      * Process of the main register that contains all the activities
@@ -496,6 +503,7 @@ class ActionPlan
             $tmp['state'] = $value->activity->state;
             $tmp['oldState'] = $value->activity->state;
             $tmp['editable'] = $value->activity->editable;
+            $tmp['company_id'] = $value->activity->company_id;
 
             array_push($data['activities'], $tmp);
         }
@@ -543,6 +551,13 @@ class ActionPlan
         if (empty($this->user))
             throw new \Exception('A valid user has not been entered.');
 
+        if (!empty($this->company))
+            $company_id = $this->company;
+        else if (Session::get('company_id'))
+            $company_id = Session::get('company_id');
+        else
+            throw new \Exception('A valid company has not been entered.');
+
         /**********************************************************************/
 
         foreach ($this->activities['activities'] as $itemA)
@@ -560,6 +575,7 @@ class ActionPlan
             $activity->execution_date = ($itemA['execution_date']) ? (Carbon::createFromFormat('D M d Y', $itemA['execution_date']))->format('Ymd') : null;
             $activity->expiration_date = (Carbon::createFromFormat('D M d Y', $itemA['expiration_date']))->format('Ymd');
             $activity->state = $itemA['state'];
+            $activity->company_id = $company_id;
             $activity->save();
             
             if(isset($itemA['oldState']) && ($itemA['oldState'] != $itemA['state']))
@@ -567,7 +583,8 @@ class ActionPlan
 
             if($itemA['id'] == "")
             {
-                array_push($this->activitiesNew, $itemA);
+                if ($itemA['state'] == 'Pendiente')
+                    array_push($this->activitiesNew, $itemA);
 
                 $activity->activityModule()->create([
                     'module_id' => $this->module->id,
@@ -738,7 +755,7 @@ class ActionPlan
                 ->join('sau_modules', 'sau_modules.id', 'sau_action_plans_activity_module.module_id')
                 //->join('sau_applications', 'sau_applications.id', 'sau_modules.application_id')
                 ->join('sau_users', 'sau_users.id', 'sau_action_plans_activities.responsible_id')
-                ->join('sau_company_user', 'sau_company_user.user_id', 'sau_users.id')
+                //->join('sau_company_user', 'sau_company_user.user_id', 'sau_users.id')
                 ->where('sau_action_plans_activities.state', 'Pendiente')
                 ->whereRaw("CURDATE() = DATE_ADD(sau_action_plans_activities.expiration_date, INTERVAL -$this->daysAlertExpirationDate DAY)");
 
