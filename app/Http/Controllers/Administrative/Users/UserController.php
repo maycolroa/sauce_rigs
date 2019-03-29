@@ -12,7 +12,6 @@ use App\Jobs\Administrative\Users\UserExportJob;
 use Session;
 use Illuminate\Support\Facades\Auth;
 use DB;
-use App\Facades\Mail\Facades\NotificationMail;
 
 class UserController extends Controller
 {
@@ -153,6 +152,7 @@ class UserController extends Controller
             $user->companies()->detach();
             $user->syncRoles([]); // Eliminar datos de relaciones
             $user->syncPermissions([]); // Eliminar datos de relaciones
+            $user->contractInformation()->detach(); // Eliminar relación de contratista o arrendatario
 
             if(!$user->delete())
             {

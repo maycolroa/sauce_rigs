@@ -10,8 +10,8 @@
 
                     <b-form-row>
                         <vue-input :disabled="viewOnly" class="col-md-6" v-model="form.document" label="Documento" type="text" name="document" :error="form.errorsFor('document')" placeholder="Documento"></vue-input>
-                        <vue-ajax-advanced-select :disabled="viewOnly" class="col-md-6" v-model="form.role_id" :error="form.errorsFor('role_id')" :selected-object="form.multiselect_role" name="role_id" label="Rol predefinido" placeholder="Seleccione el rol predefinido" :url="rolesDataUrl">
-                        </vue-ajax-advanced-select>
+                        <vue-advanced-select :disabled="viewOnly" class="col-md-6" v-model="form.role" :error="form.errorsFor('role')" name="role" label="Rol predefinido" placeholder="Seleccione el rol predefinido" :options="form.role_list">
+                        </vue-advanced-select>
                     </b-form-row>
             	</b-card>
 				<b-card border-variant="primary" title="Datos empresariales" class="mb-3 box-shadow-none">
@@ -21,6 +21,10 @@
                     </b-form-row>
 					<b-form-row>
 						<vue-input :disabled="viewOnly" class="col-md-6" v-model="form.social_reason" label="Razón social" type="text" name="social_reason" :error="form.errorsFor('social_reason')" placeholder="Razón social"></vue-input>
+						<vue-advanced-select v-if="form.role == 'Contratista'" :disabled="viewOnly" class="col-md-6" v-model="form.classification" :error="form.errorsFor('classification')" name="classification" label="Clasificación" placeholder="Seleccione una clasificación" :options="form.classification_list">
+                        </vue-advanced-select>
+					</b-form-row>
+					<b-form-row>
 						<vue-checkbox :disabled="viewOnly" class="col-md-6" v-model="form.high_risk" label="¿Trabajo de alto riesgo?" name="high_risk" :error="form.errorsFor('high_risk')" :options="['si']"></vue-checkbox>
 					</b-form-row>
             	</b-card>
@@ -36,14 +40,15 @@
 </template>
 
 <script>
-import VueAjaxAdvancedSelect from "@/components/Inputs/VueAjaxAdvancedSelect.vue";
+
+import VueAdvancedSelect from "@/components/Inputs/VueAdvancedSelect.vue";
 import VueInput from "@/components/Inputs/VueInput.vue";
 import VueCheckbox from "@/components/Inputs/VueCheckbox.vue";
 import Form from "@/utils/Form.js";
 
 export default {
 	components: {
-		VueAjaxAdvancedSelect,
+		VueAdvancedSelect,
 		VueInput,
 		VueCheckbox
 	},
@@ -53,18 +58,27 @@ export default {
 		cancelUrl: { type: [String, Object], required: true },
 		isEdit: { type: Boolean, default: false },
 		viewOnly: { type: Boolean, default: false },
-		rolesDataUrl: { type: String, default: "" },
 		contract: {
 			default() {
 				return {
 					name: '',
 					email: '',
 					document: '',
-					role_id: '',
+					role: '',
+					role_list: [
+						{ name: 'Arrendatario', value: 'Arrendatario'},
+						{ name: 'Contratista', value: 'Contratista'}
+					],
 					name_business: '',
 					nit: '',
+					classification: '',
+					classification_list: [
+						{ name:'Unidad de producción agropecuaria', value:'upa' },
+						{ name:'Empresa', value:'empresa' }
+					],
 					social_reason: '',
-					high_risk: ''
+					high_risk: '',
+					password: ''
 				};
 			}
 		}

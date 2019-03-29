@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class AddForeingSauConfigurationCompany extends Migration
+class AddColumnSauCtInformationContract extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,8 @@ class AddForeingSauConfigurationCompany extends Migration
      */
     public function up()
     {
-        Schema::table('sau_configuration_company', function (Blueprint $table) {
-            $table->foreign('company_id')->references('id')->on('sau_companies');
+        Schema::table('sau_ct_information_contract_lessee', function (Blueprint $table) {
+            $table->string('classification', 50)->after('nit')->nullable();
         });
     }
 
@@ -25,8 +25,8 @@ class AddForeingSauConfigurationCompany extends Migration
      */
     public function down()
     {
-        Schema::table('sau_configuration_company', function (Blueprint $table) {
-            $table->dropForeign('sau_configuration_company_company_id_foreign');
+        Schema::table('sau_ct_information_contract_lessee', function (Blueprint $table) {
+            $table->dropColumn('classification');
         });
     }
 }
