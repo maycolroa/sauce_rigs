@@ -17,6 +17,7 @@ class CreateCtQualifications extends Migration
             $table->increments('id');
             $table->string('name', 20);
             $table->text('description');
+            $table->integer('fulfillment');
             $table->timestamps();
         });
     }

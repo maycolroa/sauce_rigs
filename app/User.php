@@ -58,7 +58,11 @@ class User extends Authenticatable
     }
 
     public function companies(){
-      return $this->belongsToMany('App\Administrative\Company','sau_company_user');
+      	return $this->belongsToMany('App\Administrative\Company','sau_company_user');
+    }
+
+    public function generatePasswordUser(){
+          return $this->hasMany('App\Models\Administrative\GeneratePasswordUser','sau_generate_password_user');
     }
 
     public function actionPlanResponsibles()
@@ -78,11 +82,22 @@ class User extends Authenticatable
           'value' => $this->id
         ];
     }
-    
-    public function generatePasswordUser()
-    {
-      return $this->hasMany('App\Models\Administrative\GeneratePasswordUser','sau_generate_password_user');
+
+    public function contractInformation(){
+      	return $this->belongsToMany('App\Models\LegalAspects\UserContractLesseeDetail','sau_user_information_contract_lessee', 'user_id', 'information_id');
     }
+
+    public function contractInfo(){
+      	return $this->belongsToMany('App\Models\LegalAspects\ContractLesseeInformation','sau_user_information_contract_lessee', 'user_id', 'information_id');
+    }
+    
+    public function roleUser(){
+      	return $this->belongsToMany('App\Models\Role','sau_role_user');
+	}
+
+	public function itemsCalificatedContract(){
+      	return $this->belongsToMany('App\Models\LegalAspects\SectionCategoryItems','sau_ct_item_qualification_contract');
+	}
 
     /**
      * Get all user permissions.

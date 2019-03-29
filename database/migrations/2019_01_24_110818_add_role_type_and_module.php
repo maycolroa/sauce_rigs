@@ -17,7 +17,7 @@ class AddRoleTypeAndModule extends Migration
             $table->string('type_role', 20)->after('company_id')->default('estatico');
             $table->unsignedInteger('module_id')->after('type_role')->nullable();
             
-            $table->foreign('module_id')->references('id')->on('sau_modules');
+            $table->foreign('module_id')->references('id')->on('sau_modules')->onDelete('cascade');
         });
     }
 

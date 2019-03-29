@@ -7,6 +7,7 @@ use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Traits\ResponseTrait;
+use App\User;
 use Session;
 use DB;
 
@@ -30,7 +31,7 @@ class LoginController extends Controller
      *
      * @var string
      */
-    protected $redirectTo = '/';
+    // protected $redirectTo = '/';
 
     /**
      * Create a new controller instance.
@@ -60,6 +61,7 @@ class LoginController extends Controller
                 {
                     Session::put('company_id', $val->pivot->company_id);
                     return $this->respondHttp200();
+                    // return $this->redirectTo();
                 }
             }
             
@@ -68,5 +70,30 @@ class LoginController extends Controller
         }
 
         return $this->respondWithError(['errors'=>['email'=>'Email o Contraseña incorrecto']], 422);
+    }
+
+    protected function redirectTo()
+    {
+        $user_role = Auth::user()->roleUser;
+        if ($user_role[0]->name == "Contratista" || $user_role[0]->name == "Arrendatario") {
+            $user_contract_info = Auth::user()->contractInfo;
+            if ($user_contract_info[0]->SG_SST_name == null || $user_contract_info[0]->address == null || $user_contract_info[0]->arl == null || $user_contract_info[0]->economic_activity_of_company == null || $user_contract_info[0]->environmental_management_name == null || $user_contract_info[0]->legal_representative_name == null || $user_contract_info[0]->number_workers == null || $user_contract_info[0]->phone == null) {
+                return redirect('/legalaspects/contracts');
+            }
+            return $this->respondHttp200();
+        }
+        // return $this->respondHttp500();
+        // \Log::info($role->name);
+        // switch ($role) {
+        //     case 'Contratista':
+        //             
+        //         break;
+        //     case 'Arrendatario':
+        //             return '/legalaspects';
+        //         break;
+        //     default:
+        //             return '/legalaspects';
+        //         break;
+        // }
     }
 }

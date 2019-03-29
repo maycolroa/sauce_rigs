@@ -20,7 +20,7 @@ class CreateCtFiles extends Migration
             $table->timestamp('expires_date');
             $table->timestamps();
 
-            $table->foreign('information_id')->references('id')->on('sau_ct_information_contract_lessee');
+            $table->foreign('information_id')->references('id')->on('sau_ct_information_contract_lessee')->onDelete('cascade');
         });
     }
 

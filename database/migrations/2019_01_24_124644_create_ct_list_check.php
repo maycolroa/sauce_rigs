@@ -22,7 +22,7 @@ class CreateCtListCheck extends Migration
             $table->timestamp('execution_date');
             $table->timestamps();
 
-            $table->foreign('company_id')->references('id')->on('sau_companies');
+            $table->foreign('company_id')->references('id')->on('sau_companies')->onDelete('cascade');
         });
     }
 

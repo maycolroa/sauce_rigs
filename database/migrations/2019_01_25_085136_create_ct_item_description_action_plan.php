@@ -13,13 +13,10 @@ class CreateCtItemDescriptionActionPlan extends Migration
      */
     public function up()
     {
-        Schema::create('sau_ct_item_description_action_plan', function (Blueprint $table) {
+        Schema::create('ct_item_description_action_plan', function (Blueprint $table) {
             $table->increments('id');
-            $table->unsignedInteger('list_check_item_id');
             $table->text('description');
             $table->string('state');
-            
-            $table->foreign('list_check_item_id')->references('id')->on('sau_ct_list_check_items');
         });
     }
 
@@ -30,6 +27,6 @@ class CreateCtItemDescriptionActionPlan extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('sau_ct_item_description_action_plan');
+        Schema::dropIfExists('ct_item_description_action_plan');
     }
 }

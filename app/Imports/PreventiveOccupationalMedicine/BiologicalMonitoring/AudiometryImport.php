@@ -128,9 +128,6 @@ class AudiometryImport implements ToCollection
         $sql = Employee::where('identification', $row[0]);
         $sql->company_scope = $this->company_id;
         $employee = $sql->first();
-        \Log::info($employee);
-        \Log::info($row[0]);
-        \Log::info($sql->toSql());
         if ($employee)
         {
             return $employee->id;

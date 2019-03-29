@@ -21,7 +21,7 @@ class CreateCtListCheckItems extends Migration
             $table->timestamp('execution_date');
             $table->timestamps();
 
-            $table->foreign('list_check_id')->references('id')->on('sau_ct_list_check');
+            $table->foreign('list_check_id')->references('id')->on('sau_ct_list_check')->onDelete('cascade');
         });
     }
 
