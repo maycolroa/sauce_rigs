@@ -577,7 +577,8 @@ class ActionPlan
 
             if($itemA['id'] == "")
             {
-                array_push($this->activitiesNew, $itemA);
+                if ($itemA['state'] == 'Pendiente')
+                    array_push($this->activitiesNew, $itemA);
 
                 $activity->activityModule()->create([
                     'module_id' => $this->module->id,
