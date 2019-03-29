@@ -16,6 +16,7 @@ use App\Administrative\EmployeeHeadquarter;
 use App\Administrative\EmployeeArea;
 use App\Administrative\EmployeeProcess;
 use App\Facades\Mail\Facades\NotificationMail;
+use App\Facades\Configuration;
 use Exception;
 use Session;
 
@@ -28,7 +29,7 @@ class ActionPlan
      *
      * @var String
      */
-    private $states = ['Pendiente', 'Ejecutada', 'No aplica'];
+    private $states;
 
     /**
      * Prefix that will be used to create the validation rules
@@ -141,6 +142,11 @@ class ActionPlan
      * @var Integer
      */
     private $daysAlertExpirationDate;
+
+    public function __construct()
+    {
+        $this->states = Configuration::getConfiguration('action_plans_states');
+    }
 
     /**
      * Process of the main register that contains all the activities
