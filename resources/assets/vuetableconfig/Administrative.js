@@ -464,5 +464,29 @@ export default [
       urlData: '/administration/employee/data',
       filterColumns: true,
     }
+  },
+  {
+    name: 'administrative-actionplans',
+    fields: [
+      { name: 'sau_action_plans_activities.id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true },
+      { name: 'sau_action_plans_activities.description', data: 'description', title: 'Descripcion', sortable: true, searchable: true, detail: false, key: false },
+      { name: 'responsible', data: 'responsible', title: 'Responsable', sortable: true, searchable: false, detail: false, key: false },
+      { name: 'sau_action_plans_activities.expiration_date', data: 'expiration_date', title: 'Fecha Vencimiento', sortable: true, searchable: true, detail: false, key: false },
+      { name: 'sau_action_plans_activities.execution_date', data: 'execution_date', title: 'Fecha Ejecución', sortable: true, searchable: true, detail: false, key: false },
+      { name: 'state_activity', data: 'state_activity', title: 'Estado', sortable: true, searchable: false, detail: false, key: false },
+      { name: 'sau_modules.display_name', data: 'display_name', title: 'Módulo', sortable: true, searchable: true, detail: false, key: false },
+    ],
+    'controlls': [{
+      type: 'push',
+      buttons: []
+    },
+    {
+      type: 'base',
+      buttons: [],
+    }],
+    configuration: {
+      urlData: '/administration/actionplan/data',
+      filterColumns: true,
+    }
   }
 ];

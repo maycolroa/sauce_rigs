@@ -122,6 +122,8 @@ Route::middleware(['auth'])->group(function () {
           });
         });
       });
+
+      Route::post('actionplan/data', 'Administrative\ActionPlans\ActionPlanController@data');
     });
 
     //Seguridad Industrial
