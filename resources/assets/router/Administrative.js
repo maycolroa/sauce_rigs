@@ -313,6 +313,14 @@ export default [{
           component: () =>
             import('@/views/Administrative/actionplans/index')
         }
-      ])
+      ]),
+      ...middleware({ 'check-permission': 'actionPlans_u' }, [
+        {
+          name: 'administrative-actionplans-edit',
+          path: 'actionplans/edit/:id',
+          component: () =>
+            import('@/views/Administrative/actionplans/edit')
+        }
+      ]),
     ]
   }]

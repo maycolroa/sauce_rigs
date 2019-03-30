@@ -475,10 +475,22 @@ export default [
       { name: 'sau_action_plans_activities.execution_date', data: 'execution_date', title: 'Fecha Ejecución', sortable: true, searchable: true, detail: false, key: false },
       { name: 'state_activity', data: 'state_activity', title: 'Estado', sortable: true, searchable: false, detail: false, key: false },
       { name: 'sau_modules.display_name', data: 'display_name', title: 'Módulo', sortable: true, searchable: true, detail: false, key: false },
+      { name: '', data: 'controlls', title: 'Controles', sortable: false, searchable: false, detail: false, key: false },
     ],
     'controlls': [{
       type: 'push',
-      buttons: []
+      buttons: [{
+        config: {
+          color: 'outline-success',
+          borderless: true,
+          icon: 'ion ion-md-create',
+        },
+        data: {
+          routePush: { name: 'administrative-actionplans-edit' },
+          id: 'id',
+        },
+        permission: 'actionPlans_u'
+      }]
     },
     {
       type: 'base',

@@ -1,16 +1,16 @@
 <template>
     <div class="col-md-12">
-        <blockquote class="blockquote text-center">
+        <blockquote class="blockquote text-center" v-if="!isEditItem">
             <p class="mb-0">Actividades del plan de acción</p>
         </blockquote>
         <b-form-row>
-            <div class="col-md-12" v-if="!viewOnly">
+            <div class="col-md-12" v-if="!viewOnly && !isEditItem">
             <div class="float-right" style="padding-top: 10px;">
                 <b-btn variant="primary" @click.prevent="addActiviy()"><span class="ion ion-md-add-circle"></span>&nbsp;&nbsp;Agregar Actividad</b-btn>
             </div>
             </div>
         </b-form-row>
-        <b-form-row v-if="actionPlan.activities.length > 0">
+        <b-form-row v-if="actionPlan.activities.length > 0 && !isEditItem">
             <vue-input class="col-md-12" v-model="search" label="Buscar Actividad" type="text" name="search" placeholder="Buscar Actividad" append='<span class="fas fa-search"></span>'></vue-input>
         </b-form-row>
         <b-form-row style="padding-top: 15px;">
@@ -27,7 +27,7 @@
                                 <span class="collapse-icon"></span>
                                 </b-btn>
                                 <b-btn @click.prevent="removeActivity(index)" 
-                                v-if="!viewOnly && activity.editable != 'NO'"
+                                v-if="!viewOnly && activity.editable != 'NO' && activity.edit_all && !isEditItem"
                                 size="sm" 
                                 variant="secondary icon-btn borderless"
                                 v-b-tooltip.top title="Eliminar Actividad">
@@ -41,12 +41,12 @@
                     <b-collapse :id="`accordion${activity.key}-1`" visible :accordion="`accordion-${prefixIndex}`">
                         <b-card-body>
                             <b-form-row>
-                                <vue-textarea :disabled="viewOnly || activity.editable == 'NO'" class="col-md-12" v-model="activity.description" label="Descripción" name="description" placeholder="Descripción" :error="form.errorsFor(`${prefixIndex}actionPlan.activities.${index}.description`)"></vue-textarea>
-                                <vue-ajax-advanced-select :disabled="viewOnly" class="col-md-12" v-model="activity.responsible_id" :selected-object="activity.multiselect_responsible" name="responsible_id" label="Responsable" placeholder="Seleccione el responsable" :url="userDataUrl" :error="form.errorsFor(`${prefixIndex}actionPlan.activities.${index}.responsible_id`)">
+                                <vue-textarea :disabled="viewOnly || activity.editable == 'NO' || !activity.edit_all" class="col-md-12" v-model="activity.description" label="Descripción" name="description" placeholder="Descripción" :error="form.errorsFor(`${prefixIndex}actionPlan.activities.${index}.description`)"></vue-textarea>
+                                <vue-ajax-advanced-select :disabled="viewOnly || !activity.edit_all" class="col-md-12" v-model="activity.responsible_id" :selected-object="activity.multiselect_responsible" name="responsible_id" label="Responsable" placeholder="Seleccione el responsable" :url="userDataUrl" :error="form.errorsFor(`${prefixIndex}actionPlan.activities.${index}.responsible_id`)">
                                     </vue-ajax-advanced-select>
                             </b-form-row>
                             <b-form-row>
-                                <vue-datepicker :disabled="viewOnly" class="col-md-4" v-model="activity.expiration_date" label="Fecha de vencimiento" placeholder="Seleccione la fecha de vencimiento" name="expiration_date" :disabled-dates="disabledExpirationDate(index)" :error="form.errorsFor(`${prefixIndex}actionPlan.activities.${index}.expiration_date`)">
+                                <vue-datepicker :disabled="viewOnly || !activity.edit_all" class="col-md-4" v-model="activity.expiration_date" label="Fecha de vencimiento" placeholder="Seleccione la fecha de vencimiento" name="expiration_date" :disabled-dates="disabledExpirationDate(index)" :error="form.errorsFor(`${prefixIndex}actionPlan.activities.${index}.expiration_date`)">
                                     </vue-datepicker>
                                 <vue-datepicker :disabled="viewOnly || activity.expiration_date == ''" class="col-md-4" v-model="activity.execution_date" label="Fecha de ejecución" placeholder="Seleccione la fecha de ejecución" name="execution_date" :disabled-dates="disabledExecutionDate(index)" :error="form.errorsFor(`${prefixIndex}actionPlan.activities.${index}.execution_date`)">
                                     </vue-datepicker>
@@ -81,6 +81,7 @@ export default {
     },
     props: {
         isEdit: { type: Boolean, default: false },
+        isEditItem: { type: Boolean, default: false },
         viewOnly: { type: Boolean, default: false },    
         form: { type: Object, required: true },
         prefixIndex: { type: String, default: ''},
@@ -117,7 +118,7 @@ export default {
     mounted() {
         if (!this.viewOnly && !this.isEdit)
         {
-            console.log(this.definedActivities);
+            //console.log(this.definedActivities);
             _.forIn(this.definedActivities, (value, key) => {
                 this.actionPlan.activities.push({
                     key: new Date().getTime() + Math.floor(Math.random() * 1000),
@@ -127,9 +128,10 @@ export default {
                     execution_date: '',
                     expiration_date: '',
                     state: '',
-                    editable: 'NO'
+                    editable: 'NO',
+                    edit_all: true
                 }) 
-                console.log(this.actionPlan.activities);
+                //console.log(this.actionPlan.activities);
             });
         }
     },
@@ -153,7 +155,7 @@ export default {
     },
     methods: {
         addActiviy() {
-            console.log(this.definedActivities);
+            //console.log(this.definedActivities);
             this.actionPlan.activities.push({
                 key: new Date().getTime(),
                 id: '',
@@ -162,7 +164,8 @@ export default {
                 execution_date: '',
                 expiration_date: '',
                 state: '',
-                editable: ''
+                editable: '',
+                edit_all: true
             })
         },
         removeActivity(index) {

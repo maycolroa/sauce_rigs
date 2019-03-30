@@ -127,6 +127,7 @@ Route::middleware(['auth'])->group(function () {
       });
 
       Route::post('actionplan/data', 'Administrative\ActionPlans\ActionPlanController@data');
+      Route::ApiResource('actionplan', 'Administrative\ActionPlans\ActionPlanController');
     });
 
     //Seguridad Industrial

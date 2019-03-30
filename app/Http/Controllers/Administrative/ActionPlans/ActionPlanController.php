@@ -7,8 +7,10 @@ use App\Http\Controllers\Controller;
 use App\Vuetable\Facades\Vuetable;
 use App\Models\ActionPlansActivity;
 use Illuminate\Support\Facades\Auth;
-
+use App\Facades\ActionPlans\Facades\ActionPlan;
+use App\Http\Requests\Administrative\ActionPlans\ActionPlanRequest;
 use Session;
+use DB;
 
 class ActionPlanController extends Controller
 {
@@ -20,7 +22,7 @@ class ActionPlanController extends Controller
         $this->middleware('auth');
         //$this->middleware('permission:actionPlans_c', ['only' => 'store']);
         $this->middleware('permission:actionPlans_r');
-        //$this->middleware('permission:actionPlans_u', ['only' => 'update']);
+        $this->middleware('permission:actionPlans_u', ['only' => 'update']);
         //$this->middleware('permission:actionPlans_d', ['only' => 'destroy']);
     }
 
@@ -59,5 +61,57 @@ class ActionPlanController extends Controller
 
         return Vuetable::of($activities)
                     ->make();
+    }
+
+     /**
+     * Display the specified resource.
+     *
+     * @param int $id
+     * @return \Illuminate\Http\Response
+     */
+    public function show($id)
+    {
+        try
+        {
+            return $this->respondHttp200([
+                'data' => ActionPlan::prepareActivityDataComponent($id)
+            ]);
+        } catch(Exception $e){
+            $this->respondHttp500();
+        }
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param App\Http\Requests\Administrative\ActionPlans\ActionPlanRequest $request
+     * @param ActionPlansActivity $actionplan
+     * @return \Illuminate\Http\Response
+     */
+    public function update(ActionPlanRequest $request, ActionPlansActivity $actionplan)
+    {
+        try
+        {
+            DB::beginTransaction();
+
+            ActionPlan::
+                    user(Auth::user())
+                ->module('actionPlans')
+                ->url(url('/'))
+                ->model($actionplan)
+                ->activities($request->get('actionPlan'))
+                ->save()
+                ->sendMail();
+
+            DB::commit();
+
+        } catch(Exception $e){
+            DB::rollback();
+            $this->respondHttp500();
+        }
+        
+        return $this->respondHttp200([
+            'message' => 'Se actualizo la actividad'
+        ]);
     }
 }
