@@ -21,7 +21,6 @@ use DB;
 
 class EvaluationController extends Controller
 {
-    private $typesRating = [];
     /**
      * Display a listing of the resource.
      *
@@ -65,14 +64,14 @@ class EvaluationController extends Controller
                 return $this->respondHttp500();
             }
 
-            if ($request->get('types_rating') && COUNT($request->get('types_rating')) > 0)
+            if ($request->get('evaluators_id') && COUNT($request->get('evaluators_id')) > 0)
             {
-                foreach ($request->get('types_rating') as $rating)
-                {   
-                    array_push($this->typesRating, $rating['type_rating_id']);
-                }
+                $evaluation->evaluators()->sync($this->getDataFromMultiselect($request->get('evaluators_id')));
+            }
 
-                $evaluation->ratingsTypes()->sync($this->typesRating);
+            if ($request->get('interviewees') && COUNT($request->get('interviewees')) > 0)
+            {
+                $evaluation->interviewees()->createMany($request->get('interviewees'));
             }
 
             $this->saveObjectives($evaluation, $request->get('objectives'));
@@ -372,10 +371,10 @@ class EvaluationController extends Controller
 
         foreach ($ratings as $rating)
         {   
-            if (in_array($rating['type_rating_id'], $this->typesRating))
-                $ids[$rating['type_rating_id']] = [
-                    'apply' => $rating['apply']
-                ];
+            $ids[$rating['type_rating_id']] = [
+                'value' => $rating['value'] ? $rating['value'] : NULL,
+                'apply' => $rating['apply']
+            ];
         }
 
         $item->ratingsTypes()->sync($ids);

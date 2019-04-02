@@ -1,9 +1,11 @@
 <template>
     <div class="col-md-12">
         <blockquote class="blockquote text-center">
-            <p class="mb-0">Tipos de calificacón habilitadas para la evaluación</p>
+            <p class="mb-0">Tipos de calificación habilitadas para la evaluación</p>
         </blockquote>
-
+        <b-form-feedback class="d-block" v-if="form.errorsFor(`types_rating`)" style="padding-bottom: 10px;">
+            {{ form.errorsFor(`types_rating`) }}
+        </b-form-feedback>
         <b-row>
             <b-col v-for="(type, index) in data" :key="index">
                 <vue-checkbox-simple :disabled="viewOnly" class="col-md-12" :label="type.name" v-model="data[index].apply" :checked="data[index].apply" name="evaluation_type_rating" checked-value="SI" unchecked-value="NO" @input="updateValue"></vue-checkbox-simple>
@@ -43,8 +45,8 @@ export default {
             _.forIn(this.typesRating, (value, key) => {
                 this.data.push({
                     id: value.id,
+                    type_rating_id: value.id,
                     name: value.name,
-                    text: value.name,
                     apply: 'NO'
                 })
             });

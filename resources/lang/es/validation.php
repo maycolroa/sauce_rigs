@@ -223,6 +223,7 @@ return [
       'interviewees.*.name' => 'Nombre',
       'items.*' => 'Calificación',
       'days_alert_expiration_date_action_plan' => 'Días de alerta',
+      'types_rating' => 'Tipos de calificación',
     ],
 
 ];
