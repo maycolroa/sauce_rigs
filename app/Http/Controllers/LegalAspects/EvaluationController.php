@@ -102,21 +102,21 @@ class EvaluationController extends Controller
         try
         {
             $evaluation = Evaluation::findOrFail($id);
-            $evaluation->multiselect_information_contract_lessee_id = $evaluation->contract->multiselect();
-            $evaluators_id = [];
+            $types = [];
 
-            foreach ($evaluation->evaluators as $key => $value)
+            foreach ($evaluation->ratingsTypes as $rating)
             {
-                array_push($evaluators_id, $value->multiselect());
+                array_push($types, [
+                    'id' => $rating->id,
+                    'type_rating_id' => $rating->id,
+                    'name' => $rating->name,
+                    'apply' => 'SI'
+                ]);
             }
-
-            $evaluation->evaluators_id = $evaluators_id;
-            $evaluation->multiselect_evaluators_id = $evaluators_id;
-            $evaluation->interviewees;
+            $evaluation->types_rating = $types;
 
             $types_rating = TypeRating::get();
             $types = [];
-            $report = [];
 
             foreach ($types_rating as $key => $value)
             {
@@ -125,12 +125,6 @@ class EvaluationController extends Controller
                     'type_rating_id' => $value->id,
                     'apply' => 'NO',
                     'value' => ''
-                ];
-
-                $report[$value->id] = [
-                    'total' => 0,
-                    'total_c' => 0,
-                    'percentage' =>0
                 ];
             }
 
@@ -141,7 +135,6 @@ class EvaluationController extends Controller
                 foreach ($objective->subobjectives as $subobjective)
                 {
                     $subobjective->key = Carbon::now()->timestamp + rand(1,10000);
-                    $clone_report = $report;
 
                     foreach ($subobjective->items as $item)
                     {
@@ -155,38 +148,18 @@ class EvaluationController extends Controller
                             {
                                 $clone_types[$rating->id]['item_id'] = $item->id;
                                 $clone_types[$rating->id]['apply'] = $rating->pivot->apply;
-                                $clone_types[$rating->id]['value'] = $rating->pivot->value;
-
-                                if ($evaluation->evaluation_date)
-                                {
-                                    if ($rating->pivot->apply == 'SI')
-                                    {
-                                        $clone_report[$rating->id]['total'] += 1;
-
-                                        if ($rating->pivot->value == 'SI')
-                                            $clone_report[$rating->id]['total_c'] += 1;
-
-                                        $clone_report[$rating->id]['percentage'] = round(($clone_report[$rating->id]['total_c'] / $clone_report[$rating->id]['total']) * 100, 1);
-                                    }
-                                }
                             }
                         }
 
                         $item->ratings = $clone_types;
-                        $item->observations;
                     }
-                    
-                    if ($evaluation->evaluation_date)
-                        $subobjective->report = $clone_report;
                 }
             }
 
             $evaluation->delete = [
-                'interviewees' => [],
                 'objectives' => [],
                 'subobjectives' => [],
-                'items' => [],
-                'observations' => []
+                'items' => []
             ];
 
             return $this->respondHttp200([

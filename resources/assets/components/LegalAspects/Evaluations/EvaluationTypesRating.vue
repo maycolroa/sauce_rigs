@@ -24,7 +24,7 @@ export default {
         VueCheckboxSimple
     },
     props: {
-        value: {type: [Array], default:[]},
+        value: {type: [Array]},
         form: { type: Object, required: true },
         isEdit: { type: Boolean, default: false },
         viewOnly: { type: Boolean, default: false },
@@ -40,8 +40,8 @@ export default {
             data: []
         }
     },
-    mounted() {
-        setTimeout(() => {
+    watch: {
+        typesRating() {
             _.forIn(this.typesRating, (value, key) => {
                 this.data.push({
                     id: value.id,
@@ -49,6 +49,15 @@ export default {
                     name: value.name,
                     apply: 'NO'
                 })
+            });
+
+            this.updateValue()
+        }
+    },
+    mounted() {
+        setTimeout(() => {
+            this.data.map((f) => {
+                f.apply = _.find(this.value, { type_rating_id: f.type_rating_id }) ? 'SI' : 'NO'
             });
         }, 3000)
     },

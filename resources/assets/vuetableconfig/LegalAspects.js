@@ -62,6 +62,7 @@ export default [
                     color: 'outline-success',
                     borderless: true,
                     icon: 'ion ion-md-create',
+                    title: 'Editar'
                 },
                 data: {
                     routePush: { name: 'legalaspects-evaluations-edit' },
@@ -72,6 +73,7 @@ export default [
                     color: 'outline-info',
                     borderless: true,
                     icon: 'ion ion-md-eye',
+                    title: 'Ver'
                 },
                 data: {
                     routePush: { name: 'legalaspects-evaluations-view' },
@@ -82,6 +84,7 @@ export default [
                     color: 'outline-success',
                     borderless: true,
                     icon: 'ion ion-md-clipboard',
+                    title: 'Realizar Evaluación'
                 },
                 data: {
                     routePush: { name: 'legalaspects-evaluations-evaluate' },
