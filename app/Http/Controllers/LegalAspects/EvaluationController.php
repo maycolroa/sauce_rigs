@@ -38,33 +38,9 @@ class EvaluationController extends Controller
     */
     public function data(Request $request)
     {
-        $evaluations = Evaluation::selectRaw(
-            'sau_ct_evaluations.*,
-             DATE(sau_ct_evaluations.created_at) as date,
-             sau_ct_information_contract_lessee.nit as nit,
-             sau_users.name as creator'
-        )->join('sau_ct_information_contract_lessee', 'sau_ct_information_contract_lessee.id', 'sau_ct_evaluations.information_contract_lessee_id')
-        ->join('sau_users', 'sau_users.id', 'sau_ct_evaluations.creator_user_id');
+        $evaluations = Evaluation::select('*');
 
         return Vuetable::of($evaluations)
-                    ->addColumn('legalaspects-evaluations-edit', function ($evaluation) {
-                        if ($evaluation->evaluation_date)
-                            return false;
-
-                        return true;
-                    })
-                    ->addColumn('legalaspects-evaluations-evaluate', function ($evaluation) {
-                        if ($evaluation->evaluation_date || !$this->verifyPermissionEvaluate($evaluation->id))
-                            return false;
-
-                        return true;
-                    })
-                    ->addColumn('control_delete', function ($evaluation) {
-                        if ($evaluation->evaluation_date)
-                            return false;
-
-                        return true;
-                    })
                     ->make();
     }
 
