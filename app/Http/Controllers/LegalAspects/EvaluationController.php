@@ -189,22 +189,14 @@ class EvaluationController extends Controller
                 return $this->respondHttp500();
             }
 
-            if ($request->get('evaluators_id') && COUNT($request->get('evaluators_id')) > 0)
+            if ($request->get('types_rating') && COUNT($request->get('types_rating')) > 0)
             {
-                $evaluation->evaluators()->sync($this->getDataFromMultiselect($request->get('evaluators_id')));
-            }
-            else
-            {
-                $evaluation->evaluators()->sync([]);
-            }
-
-            if ($request->get('interviewees') && COUNT($request->get('interviewees')) > 0)
-            {
-                foreach ($request->get('interviewees') as $interviewee)
-                {    
-                    $id = isset($interviewee['id']) ? $interviewee['id'] : NULL;
-                    $evaluation->interviewees()->updateOrCreate(['id'=>$id], $interviewee);
+                foreach ($request->get('types_rating') as $rating)
+                {   
+                    array_push($this->typesRating, $rating['type_rating_id']);
                 }
+
+                $evaluation->ratingsTypes()->sync($this->typesRating);
             }
 
             $this->saveObjectives($evaluation, $request->get('objectives'));
@@ -355,10 +347,7 @@ class EvaluationController extends Controller
     }
 
     private function deleteData($data)
-    {
-        if (COUNT($data['interviewees']) > 0)
-            Interviewee::destroy($data['interviewees']);
-
+    {    
         if (COUNT($data['objectives']) > 0)
             Objective::destroy($data['objectives']);
 
@@ -367,9 +356,6 @@ class EvaluationController extends Controller
 
         if (COUNT($data['items']) > 0)
             Item::destroy($data['items']);
-
-        if (COUNT($data['observations']) > 0)
-            Observation::destroy($data['observations']);
     }
 
     public function verifyPermissionEvaluate($id)

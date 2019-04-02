@@ -59,6 +59,7 @@ export default {
             this.data.map((f) => {
                 f.apply = _.find(this.value, { type_rating_id: f.type_rating_id }) ? 'SI' : 'NO'
             });
+            
         }, 3000)
     },
     methods: {
