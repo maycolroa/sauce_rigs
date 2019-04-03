@@ -172,7 +172,7 @@ class ContractLesseeController extends Controller
         $keyword = "%{$request->keyword}%";
         $contracts = ContractLesseeInformation::selectRaw("
             sau_ct_information_contract_lessee.id as id,
-            sau_ct_information_contract_lessee.nit as nit
+            CONCAT(sau_ct_information_contract_lessee.nit, ' - ',sau_ct_information_contract_lessee.social_reason) as nit
         ")
         ->where(function ($query) use ($keyword) {
             $query->orWhere('nit', 'like', $keyword);

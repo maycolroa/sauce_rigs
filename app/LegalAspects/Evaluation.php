@@ -27,4 +27,9 @@ class Evaluation extends Model
     {
         return $this->hasMany(Objective::class, 'evaluation_id');
     }
+
+    public function evaluationContracts()
+    {
+        return $this->hasMany(EvaluationContract::class, 'evaluation_id');
+    }
 }

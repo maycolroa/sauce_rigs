@@ -288,6 +288,11 @@ class EvaluationController extends Controller
      */
     public function destroy(Evaluation $evaluation)
     {
+        if (count($evaluation->evaluationContracts) > 0)
+        {
+            return $this->respondWithError('No se puede eliminar la evaluación porque ya existen evaluaciones realizadas asociadas a ella');
+        }
+
         if(!$evaluation->delete())
         {
             return $this->respondHttp500();

@@ -27,7 +27,7 @@ class ContractLessee extends Model
     public function multiselect()
     {
         return [
-            'name' => $this->nit,
+            'name' => "{$this->nit} - {$this->social_reason}",
             'value' => $this->id
         ];
     }
