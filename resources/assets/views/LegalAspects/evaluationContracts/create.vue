@@ -7,14 +7,12 @@
     <div class="col-md">
       <b-card no-body>
         <b-card-body>
-            <form-evaluation-component
-                :url="`/legalAspects/evaluation/evaluate/${this.$route.params.id}`"
-                method="PUT"
+            <form-evaluation-contract-component
+                :url="`/legalAspects/evaluationContract`"
+                method="POST"
                 :evaluation="data"
-                :types-evaluation="typesEvaluation"
                 :types-rating="typesRating"
-                :is-evaluation="true"
-                :view-only="true"
+                userDataUrl="/selects/users"
                 :cancel-url="{ name: 'legalaspects-evaluations'}"/>
         </b-card-body>
       </b-card>
@@ -23,28 +21,27 @@
 </template>
  
 <script>
-import FormEvaluationComponent from '@/components/LegalAspects/Evaluations/FormEvaluationComponent.vue';
+import FormEvaluationContractComponent from '@/components/LegalAspects/EvaluationContracts/FormEvaluationContractComponent.vue';
 import Alerts from '@/utils/Alerts.js';
 import GlobalMethods from '@/utils/GlobalMethods.js';
 
 export default {
-  name: 'legalaspects-evaluations-evaluate',
+  name: 'legalaspects-evaluations-contratc-create',
   metaInfo: {
     title: 'Evaluaciones - Evaluar'
   },
   components:{
-    FormEvaluationComponent
+    FormEvaluationContractComponent
   },
   data () {
     return {
       data: [],
-      typesEvaluation: [],
       typesRating: []
     }
   },
   created(){
 
-    axios.get(`/legalAspects/evaluation/${this.$route.params.id}`)
+    axios.get(`/legalAspects/evaluationContract/getData/${this.$route.params.id}`)
     .then(response => {
         this.data = response.data.data;
     })
@@ -53,7 +50,6 @@ export default {
         this.$router.go(-1);
     });
 
-    this.fetchSelect('typesEvaluation', '/radios/ctTypesEvaluation')
     this.fetchSelect('typesRating', '/legalAspects/typeRating/AllTypesRating')
   },
   methods: {

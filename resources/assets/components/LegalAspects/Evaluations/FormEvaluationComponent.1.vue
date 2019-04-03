@@ -377,7 +377,7 @@ import { FormWizard, TabContent, WizardStep } from "vue-form-wizard";
 import InformationGeneral from '@/components/LegalAspects/ContractLessee/InformationGeneral.vue';
 import VueTextarea from "@/components/Inputs/VueTextarea.vue";
 import VueCheckboxSimple from "@/components/Inputs/VueCheckboxSimple.vue";
-import ModalObservations from "./ModalObservations.vue"
+import ModalObservations from "../EvaluationContracts/ModalObservations.vue"
 import Alerts from '@/utils/Alerts.js';
 
 export default {
