@@ -6,7 +6,7 @@
 				<b-card-header header-tag="h6" class="with-elements">
 					<div class="card-header-title">Lista de items | {{ name }}</div>
 					<div class="card-header-elements ml-auto">
-					<b-btn variant="default" class="btn-xs md-btn-flat">Show more</b-btn>
+					<!-- <b-btn variant="default" class="btn-xs md-btn-flat">Show more</b-btn> -->
 					</div>
 				</b-card-header>
 				<!-- <perfect-scrollbar style="height: 350px"> -->
@@ -17,25 +17,27 @@
 							<div class="media align-items-center mt-3">
 								<div class="media-body ml-2">
 									<b-btn v-if="item.qualification == 2" variant="primary" v-b-modal="`modals-default-${index+1}`">Plan de acción</b-btn>
-									
-									<b-modal :id="`modals-default-${index+1}`"  cancel-title="Cancelar" ok-title="Aceptar" size="lg">
-										
+									<span class="lnr lnr-file-add display-5 d-block"></span>
+									<b-modal :id="`modals-default-${index+1}`" v-model="item.qualification == 2" cancel-title="Cancelar" ok-title="Aceptar" size="lg">
+										<!-- <div v-if="items != undefined">
+											{{ item.activities[0] }}
+										</div> -->
 											
 										<div slot="modal-title">
 											Plan de acción <span class="font-weight-light">Contratistas</span><br>
 											<small class="text-muted">Crea planes de acción para tu justificación</small>
 										</div>
 											<!-- border-variant="secondary" -->
-											<b-card bg-variant="transparent"  title="" class="mb-3 box-shadow-none">
-												<action-plan-component v-if="item.qualification == 2"
-												:is-edit="isEdit"
-												:view-only="viewOnly"
-												:form="form"
-												:prefix-index="`items.${index}.`"
-												:action-plan-states="actionPlanStates"
-												v-model="item.actionPlan"
-												:action-plan="item.actionPlan"
-												:defined-activities="[''+index, 'sdsd']"/>
+											<b-card  bg-variant="transparent"  title="" class="mb-3 box-shadow-none">
+													<action-plan-component
+													:is-edit="isEdit"
+													:view-only="viewOnly"
+													:form="form"
+													:prefix-index="`items.${index}.`"
+													:action-plan-states="actionPlanStates"
+													v-model="item.actionPlan"
+													:action-plan="item.actionPlan"
+													:defined-activities="item.activities_defined"/>
 											</b-card>
 									</b-modal>
 								
@@ -89,16 +91,13 @@ export default {
 		name: { type: String, required: true },
 		contract: {type: Object,
 			default() {
-				return {
-				}
+				return {}
 			}
 		},
 		actionPlanStates: {
 			type: Array,
 			default: function() {
-				return [
-					{ name: 'Pendiete', value: 'Pendiente'}
-				];
+				return [];
 			}
 		}
 	},
@@ -128,7 +127,7 @@ export default {
 			.catch(error => {
 				this.loading = false;
 			});
-		},
+		}
 	}
 };
 </script>

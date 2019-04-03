@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class AddColumnSauCtInformationContract extends Migration
+class AddColumnFulfillmentSauCtQualifications extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,8 @@ class AddColumnSauCtInformationContract extends Migration
      */
     public function up()
     {
-        Schema::table('sau_ct_information_contract_lessee', function (Blueprint $table) {
-            $table->string('classification', 50)->after('type')->nullable();
+        Schema::table('sau_ct_qualifications', function (Blueprint $table) {
+            $table->integer('fulfillment')->after('description');
         });
     }
 
@@ -25,8 +25,8 @@ class AddColumnSauCtInformationContract extends Migration
      */
     public function down()
     {
-        Schema::table('sau_ct_information_contract_lessee', function (Blueprint $table) {
-            $table->dropColumn('classification');
+        Schema::table('sau_ct_qualifications', function (Blueprint $table) {
+            $table->dropColumn('fulfillment');
         });
     }
 }

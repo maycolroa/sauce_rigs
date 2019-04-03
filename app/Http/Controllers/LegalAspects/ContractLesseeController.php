@@ -42,22 +42,31 @@ class ContractLesseeController extends Controller
             $sql = SectionCategoryItems::select(
                 'sau_ct_section_category_items.*',
                 'sau_ct_standard_classification.standard_name as name'
+                // 'sau_ct_action_plan_default.*'
             )
             ->join('sau_ct_items_standard', 'sau_ct_items_standard.item_id', 'sau_ct_section_category_items.id')
             ->join('sau_ct_standard_classification', 'sau_ct_standard_classification.id', 'sau_ct_items_standard.standard_id');
+            // ->join('sau_ct_action_items_contract', 'sau_ct_action_items_contract.item_id', 'sau_ct_section_category_items.id')
+            // ->join('sau_ct_action_plan_default', 'sau_ct_action_plan_default.id', 'sau_ct_action_items_contract.action_plan_id');
+            // ->groupBy('sau_ct_section_category_items.item_name');
             if ($user->contractInfo[0]->classification == "upa" && $user->contractInfo[0]->number_workers <= 10 && $user->contractInfo[0]->risk_class == "Clase de riesgo I, II y III") {
-                return $sql->where('sau_ct_standard_classification.standard_name', '=', '3 estandares')->get();
+                $items = $sql->where('sau_ct_standard_classification.standard_name', '=', '3 estandares')->get();
             } else if ($user->contractInfo[0]->classification == "empresa" && $user->contractInfo[0]->number_workers <= 10 && $user->contractInfo[0]->risk_class == "Clase de riesgo I, II y III") {
-                return $sql->where('sau_ct_standard_classification.standard_name', '=', '7 estandares')->get();
+                $items = $sql->where('sau_ct_standard_classification.standard_name', '=', '7 estandares')->get();
             } else if ($user->contractInfo[0]->classification == "empresa" && $user->contractInfo[0]->number_workers > 10 && $user->contractInfo[0]->number_workers <= 50 && $user->contractInfo[0]->risk_class == "Clase de riesgo I, II y III") {
-                return $sql->where('sau_ct_standard_classification.standard_name', '=', '21 estandares')->get();
+                $items = $sql->where('sau_ct_standard_classification.standard_name', '=', '21 estandares')->get();
             } else if ($user->contractInfo[0]->classification == "empresa" && $user->contractInfo[0]->number_workers > 10 && $user->contractInfo[0]->number_workers <= 50 && $user->contractInfo[0]->risk_class == "Clase de riesgo IV y V") {
-                return $sql->where('sau_ct_standard_classification.standard_name', '=', '60 estandares')->get();
+                $items = $sql->where('sau_ct_standard_classification.standard_name', '=', '60 estandares')->get();
             } else if ($user->contractInfo[0]->classification == "upa" && $user->contractInfo[0]->number_workers <= 10 && $user->contractInfo[0]->risk_class == "Clase de riesgo IV y V") {
-                return $sql->where('sau_ct_standard_classification.standard_name', '=', '60 estandares')->get();
+                $items = $sql->where('sau_ct_standard_classification.standard_name', '=', '60 estandares')->get();
             } else if ($user->contractInfo[0]->classification == "empresa" && $user->contractInfo[0]->number_workers > 50) {
-                return $sql->where('sau_ct_standard_classification.standard_name', '=', '60 estandares')->get();
+                $items = $sql->where('sau_ct_standard_classification.standard_name', '=', '60 estandares')->get();
             }
+            $items->transform(function($item, $index){
+                $item['activities_defined'] = $item->activities()->pluck("description");
+                return $item;
+            });
+            return $items;
         } else {
             return $this->respondHttp500([
                 'message' => 'El usuario auntenticado no tiene una información de contratistas'

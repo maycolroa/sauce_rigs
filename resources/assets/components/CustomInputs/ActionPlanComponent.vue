@@ -117,7 +117,6 @@ export default {
     mounted() {
         if (!this.viewOnly && !this.isEdit)
         {
-            console.log(this.definedActivities);
             _.forIn(this.definedActivities, (value, key) => {
                 this.actionPlan.activities.push({
                     key: new Date().getTime() + Math.floor(Math.random() * 1000),
@@ -128,8 +127,7 @@ export default {
                     expiration_date: '',
                     state: '',
                     editable: 'NO'
-                }) 
-                console.log(this.actionPlan.activities);
+                })
             });
         }
     },
@@ -149,11 +147,28 @@ export default {
                 this.$emit("input", this.actionPlan);
             },
             deep: true
-        }
+        },
+        // definedActivities()
+        // {
+        //     if (!this.viewOnly && !this.isEdit)
+        //     {
+        //         _.forIn(this.definedActivities, (value, key) => {
+        //             this.actionPlan.activities.push({
+        //                 key: new Date().getTime() + Math.floor(Math.random() * 1000),
+        //                 id: '',
+        //                 description: value,
+        //                 responsible_id: '',
+        //                 execution_date: '',
+        //                 expiration_date: '',
+        //                 state: '',
+        //                 editable: 'NO'
+        //             })
+        //         });
+        //     }
+        // }
     },
     methods: {
         addActiviy() {
-            console.log(this.definedActivities);
             this.actionPlan.activities.push({
                 key: new Date().getTime(),
                 id: '',

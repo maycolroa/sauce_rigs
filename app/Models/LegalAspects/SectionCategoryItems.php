@@ -8,7 +8,7 @@ class SectionCategoryItems extends Model
 {
     protected $table = 'sau_ct_section_category_items';
 
-    public function users(){
-        return $this->belongsToMany('App\User', 'sau_users');
+    public function activities(){
+        return $this->belongsToMany('App\Models\LegalAspects\ActionPlanDefault', 'sau_ct_action_items_contract', 'item_id', 'action_plan_id');
     }
 }
