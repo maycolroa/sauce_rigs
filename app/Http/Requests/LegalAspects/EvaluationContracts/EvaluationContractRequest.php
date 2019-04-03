@@ -39,6 +39,13 @@ class EvaluationContractRequest extends FormRequest
             }
         }
 
+        if ($this->has('delete'))
+        {
+            $this->merge([
+                'delete' => json_decode($this->input('delete'), true)
+            ]);
+        }
+
         return $this->all();
     }
 

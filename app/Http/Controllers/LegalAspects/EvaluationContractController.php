@@ -122,6 +122,11 @@ class EvaluationContractController extends Controller
             $evaluationContract->evaluators_id = [];
             $evaluationContract->interviewees = [];
             $evaluationContract->evaluation = $this->getEvaluation($id);
+        
+            $evaluationContract->delete = [
+                'interviewees' => [],
+                'observations' => []
+            ];
 
             return $this->respondHttp200([
                 'data' => $evaluationContract,
@@ -175,11 +180,6 @@ class EvaluationContractController extends Controller
                 }
             }
         }
-
-        $evaluation->delete = [
-            'interviewees' => [],
-            'observations' => []
-        ];
 
         return $evaluation;
     }
