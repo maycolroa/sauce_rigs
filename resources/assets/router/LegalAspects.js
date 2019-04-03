@@ -82,7 +82,7 @@ export default [
 				name: 'legalaspects-evaluations-evaluate',
 				path: 'evaluations/evaluate/:id',
 				component: () =>
-				import('@/views/LegalAspects/evaluations/evaluate')
+				import('@/views/LegalAspects/evaluationContracts/create')
 			},
 			{
 				name: 'legalaspects-upload-files',

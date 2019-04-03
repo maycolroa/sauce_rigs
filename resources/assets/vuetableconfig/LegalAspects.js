@@ -52,10 +52,7 @@ export default [
             { name: 'sau_ct_evaluations.id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true },
             { name: 'sau_ct_evaluations.name', data: 'name', title: 'Nombre', sortable: true, searchable: true, detail: false, key: false },
             { name: 'sau_ct_evaluations.type', data: 'type', title: 'Tipo', sortable: true, searchable: true, detail: false, key: false },
-            { name: 'sau_ct_information_contract_lessee.nit', data: 'nit', title: 'Contratista', sortable: true, searchable: true, detail: false, key: false },
-            { name: 'date', data: 'date', title: 'Fecha creación', sortable: true, searchable: false, detail: false, key: false },
-            { name: 'creator', data: 'creator', title: 'Creador', sortable: true, searchable: false, detail: false, key: false },
-            { name: 'evaluation_date', data: 'evaluation_date', title: 'Fecha evaluación', sortable: true, searchable: true, detail: false, key: false },
+            { name: 'sau_ct_evaluations.created_at', data: 'created_at', title: 'Fecha creación', sortable: true, searchable: true, detail: false, key: false },
             { name: '', data: 'controlls', title: 'Controles', sortable: false, searchable: false, detail: false, key: false },
         ],
         'controlls': [{
@@ -65,6 +62,7 @@ export default [
                     color: 'outline-success',
                     borderless: true,
                     icon: 'ion ion-md-create',
+                    title: 'Editar'
                 },
                 data: {
                     routePush: { name: 'legalaspects-evaluations-edit' },
@@ -75,6 +73,7 @@ export default [
                     color: 'outline-info',
                     borderless: true,
                     icon: 'ion ion-md-eye',
+                    title: 'Ver'
                 },
                 data: {
                     routePush: { name: 'legalaspects-evaluations-view' },
@@ -85,6 +84,7 @@ export default [
                     color: 'outline-success',
                     borderless: true,
                     icon: 'ion ion-md-clipboard',
+                    title: 'Realizar Evaluación'
                 },
                 data: {
                     routePush: { name: 'legalaspects-evaluations-evaluate' },

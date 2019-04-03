@@ -21,7 +21,6 @@ use DB;
 
 class EvaluationController extends Controller
 {
-    private $typesRating = [];
     /**
      * Display a listing of the resource.
      *
@@ -65,14 +64,14 @@ class EvaluationController extends Controller
                 return $this->respondHttp500();
             }
 
-            if ($request->get('types_rating') && COUNT($request->get('types_rating')) > 0)
+            if ($request->get('evaluators_id') && COUNT($request->get('evaluators_id')) > 0)
             {
-                foreach ($request->get('types_rating') as $rating)
-                {   
-                    array_push($this->typesRating, $rating['type_rating_id']);
-                }
+                $evaluation->evaluators()->sync($this->getDataFromMultiselect($request->get('evaluators_id')));
+            }
 
-                $evaluation->ratingsTypes()->sync($this->typesRating);
+            if ($request->get('interviewees') && COUNT($request->get('interviewees')) > 0)
+            {
+                $evaluation->interviewees()->createMany($request->get('interviewees'));
             }
 
             $this->saveObjectives($evaluation, $request->get('objectives'));
@@ -102,21 +101,21 @@ class EvaluationController extends Controller
         try
         {
             $evaluation = Evaluation::findOrFail($id);
-            $types = [];
+            $evaluation->multiselect_information_contract_lessee_id = $evaluation->contract->multiselect();
+            $evaluators_id = [];
 
-            foreach ($evaluation->ratingsTypes as $rating)
+            foreach ($evaluation->evaluators as $key => $value)
             {
-                array_push($types, [
-                    'id' => $rating->id,
-                    'type_rating_id' => $rating->id,
-                    'name' => $rating->name,
-                    'apply' => 'SI'
-                ]);
+                array_push($evaluators_id, $value->multiselect());
             }
-            $evaluation->types_rating = $types;
+
+            $evaluation->evaluators_id = $evaluators_id;
+            $evaluation->multiselect_evaluators_id = $evaluators_id;
+            $evaluation->interviewees;
 
             $types_rating = TypeRating::get();
             $types = [];
+            $report = [];
 
             foreach ($types_rating as $key => $value)
             {
@@ -125,6 +124,12 @@ class EvaluationController extends Controller
                     'type_rating_id' => $value->id,
                     'apply' => 'NO',
                     'value' => ''
+                ];
+
+                $report[$value->id] = [
+                    'total' => 0,
+                    'total_c' => 0,
+                    'percentage' =>0
                 ];
             }
 
@@ -135,6 +140,7 @@ class EvaluationController extends Controller
                 foreach ($objective->subobjectives as $subobjective)
                 {
                     $subobjective->key = Carbon::now()->timestamp + rand(1,10000);
+                    $clone_report = $report;
 
                     foreach ($subobjective->items as $item)
                     {
@@ -148,18 +154,38 @@ class EvaluationController extends Controller
                             {
                                 $clone_types[$rating->id]['item_id'] = $item->id;
                                 $clone_types[$rating->id]['apply'] = $rating->pivot->apply;
+                                $clone_types[$rating->id]['value'] = $rating->pivot->value;
+
+                                if ($evaluation->evaluation_date)
+                                {
+                                    if ($rating->pivot->apply == 'SI')
+                                    {
+                                        $clone_report[$rating->id]['total'] += 1;
+
+                                        if ($rating->pivot->value == 'SI')
+                                            $clone_report[$rating->id]['total_c'] += 1;
+
+                                        $clone_report[$rating->id]['percentage'] = round(($clone_report[$rating->id]['total_c'] / $clone_report[$rating->id]['total']) * 100, 1);
+                                    }
+                                }
                             }
                         }
 
                         $item->ratings = $clone_types;
+                        $item->observations;
                     }
+                    
+                    if ($evaluation->evaluation_date)
+                        $subobjective->report = $clone_report;
                 }
             }
 
             $evaluation->delete = [
+                'interviewees' => [],
                 'objectives' => [],
                 'subobjectives' => [],
-                'items' => []
+                'items' => [],
+                'observations' => []
             ];
 
             return $this->respondHttp200([
@@ -189,14 +215,22 @@ class EvaluationController extends Controller
                 return $this->respondHttp500();
             }
 
-            if ($request->get('types_rating') && COUNT($request->get('types_rating')) > 0)
+            if ($request->get('evaluators_id') && COUNT($request->get('evaluators_id')) > 0)
             {
-                foreach ($request->get('types_rating') as $rating)
-                {   
-                    array_push($this->typesRating, $rating['type_rating_id']);
-                }
+                $evaluation->evaluators()->sync($this->getDataFromMultiselect($request->get('evaluators_id')));
+            }
+            else
+            {
+                $evaluation->evaluators()->sync([]);
+            }
 
-                $evaluation->ratingsTypes()->sync($this->typesRating);
+            if ($request->get('interviewees') && COUNT($request->get('interviewees')) > 0)
+            {
+                foreach ($request->get('interviewees') as $interviewee)
+                {    
+                    $id = isset($interviewee['id']) ? $interviewee['id'] : NULL;
+                    $evaluation->interviewees()->updateOrCreate(['id'=>$id], $interviewee);
+                }
             }
 
             $this->saveObjectives($evaluation, $request->get('objectives'));
@@ -337,17 +371,20 @@ class EvaluationController extends Controller
 
         foreach ($ratings as $rating)
         {   
-            if (in_array($rating['type_rating_id'], $this->typesRating))
-                $ids[$rating['type_rating_id']] = [
-                    'apply' => $rating['apply']
-                ];
+            $ids[$rating['type_rating_id']] = [
+                'value' => $rating['value'] ? $rating['value'] : NULL,
+                'apply' => $rating['apply']
+            ];
         }
 
         $item->ratingsTypes()->sync($ids);
     }
 
     private function deleteData($data)
-    {    
+    {
+        if (COUNT($data['interviewees']) > 0)
+            Interviewee::destroy($data['interviewees']);
+
         if (COUNT($data['objectives']) > 0)
             Objective::destroy($data['objectives']);
 
@@ -356,6 +393,9 @@ class EvaluationController extends Controller
 
         if (COUNT($data['items']) > 0)
             Item::destroy($data['items']);
+
+        if (COUNT($data['observations']) > 0)
+            Observation::destroy($data['observations']);
     }
 
     public function verifyPermissionEvaluate($id)

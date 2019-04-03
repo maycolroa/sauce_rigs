@@ -17,7 +17,7 @@
 							<div class="media align-items-center mt-3">
 								<div class="media-body ml-2">
 									<b-btn v-if="item.qualification == 2" variant="primary" v-b-modal="`modals-default-${index+1}`">Plan de acción</b-btn>
-									<span class="lnr lnr-file-add display-5 d-block"></span>
+									<span class="lnr lnr-file-add display-4 d-block"></span>
 									<b-modal :id="`modals-default-${index+1}`" v-model="item.qualification == 2" cancel-title="Cancelar" ok-title="Aceptar" size="lg">
 										<!-- <div v-if="items != undefined">
 											{{ item.activities[0] }}

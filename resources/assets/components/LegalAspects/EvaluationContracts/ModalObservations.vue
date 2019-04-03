@@ -15,7 +15,7 @@
                     <b-card no-body>
                         <b-card-body>
                             <b-form-row>
-                                <div class="col-md-12" v-if="isEvaluation">
+                                <div class="col-md-12" v-if="!viewOnly">
                                 <div class="float-right">
                                     <b-btn variant="primary" @click.prevent="addObservation()"><span class="ion ion-md-add-circle"></span>&nbsp;&nbsp;Agregar</b-btn>
                                 </div>
@@ -26,15 +26,15 @@
                                 <perfect-scrollbar :options="{ wheelPropagation: true }" class="mb-4" style="height: 300px; padding-right: 15px; width: 100%;">
                                     <template v-for="(item, index) in value">
                                         <div :key="index">
-                                            <b-form-row v-if="isEvaluation">
+                                            <b-form-row v-if="!viewOnly">
                                                 <div class="col-md-12">
                                                     <div class="float-right">
-                                                        <b-btn v-if="isEvaluation" variant="outline-primary icon-btn borderless" size="sm" v-b-tooltip.top title="Eliminar Observación" @click.prevent="removeObservation(index)"><span class="ion ion-md-close-circle"></span></b-btn>
+                                                        <b-btn v-if="!viewOnly" variant="outline-primary icon-btn borderless" size="sm" v-b-tooltip.top title="Eliminar Observación" @click.prevent="removeObservation(index)"><span class="ion ion-md-close-circle"></span></b-btn>
                                                     </div>
                                                 </div>
                                             </b-form-row>
                                             <b-form-row>
-                                                <vue-textarea :disabled="!isEvaluation" class="col-md-12" v-model="item.description" label="Descripción" name="description" placeholder="Descripción" rows="3" :error="form.errorsFor(`${prefixIndex}.${index}.description`)"></vue-textarea>
+                                                <vue-textarea :disabled="viewOnly" class="col-md-12" v-model="item.description" label="Descripción" name="description" placeholder="Descripción" rows="3" :error="form.errorsFor(`${prefixIndex}.${index}.description`)"></vue-textarea>
                                             </b-form-row>
                                             <hr class="border-light container-m--x mt-0 mb-4">
                                         </div>
@@ -73,9 +73,10 @@ export default {
     },
     props: {
         value: {type: [Array], default:[]},
-        isEvaluation: { type: Boolean, default: false },
+        viewOnly: { type: Boolean, default: false },
         prefixIndex: { type: String, default: ''},
         form: { type: Object, required: true },
+        itemId: { type: Number, required: true },
     },
     data () {
         return {}
@@ -89,7 +90,8 @@ export default {
         },
         addObservation() {
             this.value.push({
-                description: ''
+                description: '',
+                item_id: this.itemId
             })
         },
         removeObservation(index) {

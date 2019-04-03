@@ -15,11 +15,6 @@ class Item extends Model
 
     public function ratingsTypes()
     {
-        return $this->belongsToMany(TypeRating::class, 'sau_ct_item_type_rating')->withPivot('apply', 'value');
-    }
-
-    public function observations()
-    {
-        return $this->hasMany(Observation::class, 'item_id');
+        return $this->belongsToMany(TypeRating::class, 'sau_ct_item_type_rating')->withPivot('apply');
     }
 }
