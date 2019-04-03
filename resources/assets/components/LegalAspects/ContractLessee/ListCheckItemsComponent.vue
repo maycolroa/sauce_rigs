@@ -16,8 +16,8 @@
 							<span class="text-muted">{{ item.criterion_description}}</span>
 							<div class="media align-items-center mt-3">
 								<div class="media-body ml-2">
-									<b-btn v-if="item.qualification == 2" variant="primary" v-b-modal="`modals-default-${index+1}`">Plan de acción</b-btn>
-									<span class="lnr lnr-file-add display-4 d-block"></span>
+									<b-btn v-if="item.qualification == 2" variant="primary" v-b-modal="`modals-default-${index+1}`"><span class="lnr lnr-book"></span> Plan de acción</b-btn>
+									<b-btn v-b-modal="`modals-file-${index+1}`"><span class="lnr lnr-paperclip"></span> Adjuntar archivos</b-btn>
 									<b-modal :id="`modals-default-${index+1}`" v-model="item.qualification == 2" cancel-title="Cancelar" ok-title="Aceptar" size="lg">
 										<!-- <div v-if="items != undefined">
 											{{ item.activities[0] }}
@@ -25,7 +25,7 @@
 											
 										<div slot="modal-title">
 											Plan de acción <span class="font-weight-light">Contratistas</span><br>
-											<small class="text-muted">Crea planes de acción para tu justificación</small>
+											<small class="text-muted">Crea planes de acción para tu justificación.</small>
 										</div>
 											<!-- border-variant="secondary" -->
 											<b-card  bg-variant="transparent"  title="" class="mb-3 box-shadow-none">
@@ -39,6 +39,22 @@
 													:action-plan="item.actionPlan"
 													:defined-activities="item.activities_defined"/>
 											</b-card>
+									</b-modal>
+									<b-modal :id="`modals-file-${index+1}`"  cancel-title="Cancelar" ok-title="Aceptar" size="lg" @hide="prueba">
+										<!-- <div v-if="items != undefined">
+											{{ item.activities[0] }}
+										</div> -->
+											
+										<div slot="modal-title">
+											Subir Archivo <span class="font-weight-light">Contratistas</span><br>
+											<small class="text-muted">Selecciona archivos pdf's para este item.</small>
+										</div>
+
+										<form-upload-file-list-item-component
+										:is-edit="isEdit"
+										:view-only="viewOnly"
+										v-model="item.files"/>
+											
 									</b-modal>
 								
 								</div>
@@ -72,6 +88,8 @@ import VueCheckbox from "@/components/Inputs/VueCheckbox.vue";
 import VueRadio from "@/components/Inputs/VueRadio.vue";
 import ActionPlanComponent from '@/components/CustomInputs/ActionPlanComponent.vue';
 import Form from "@/utils/Form.js";
+import FormUploadFileListItemComponent from '@/components/LegalAspects/ContractLessee/FormUploadFileListItemComponent.vue';
+
 
 export default {
 	components: {
@@ -79,7 +97,8 @@ export default {
 		VueInput,
 		VueCheckbox,
 		VueRadio,
-		ActionPlanComponent
+		ActionPlanComponent,
+		FormUploadFileListItemComponent
 	},
 	props: {
 		url: { type: String },
@@ -105,6 +124,7 @@ export default {
 		'contract.items'(newVal) {
 			this.loading = false;
 			this.form = Form.makeFrom(this.contract, this.method);
+			// console.log(this.form.items);
 		}
 	},
 	data() {
@@ -127,6 +147,9 @@ export default {
 			.catch(error => {
 				this.loading = false;
 			});
+		},
+		prueba(){
+			console.log(this.form.items);
 		}
 	}
 };
