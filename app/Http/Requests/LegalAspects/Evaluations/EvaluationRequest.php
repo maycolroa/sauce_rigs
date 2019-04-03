@@ -26,10 +26,6 @@ class EvaluationRequest extends FormRequest
 
     public function sanitize()
     {
-        /*$this->merge([
-            'objectives' => json_decode($this->input('objectives'), true)
-        ]);*/
-
         if ($this->has('objectives'))
         {
             foreach ($this->input('objectives') as $key => $value)
@@ -39,11 +35,11 @@ class EvaluationRequest extends FormRequest
             }
         }
 
-        if ($this->has('interviewees'))
+        if ($this->has('types_rating'))
         {
-            foreach ($this->input('interviewees') as $key => $value)
+            foreach ($this->input('types_rating') as $key => $value)
             {
-                $data['interviewees'][$key] = json_decode($value, true);
+                $data['types_rating'][$key] = json_decode($value, true);
                 $this->merge($data);
             }
         }
@@ -70,10 +66,7 @@ class EvaluationRequest extends FormRequest
         return [
             'name' => 'required|string|unique:sau_ct_evaluations,name,'.$id.',id,company_id,'.Session::get('company_id'),
             'type' => 'required',
-            'evaluators_id' => 'required|array',
-            'information_contract_lessee_id' => 'required|exists:sau_ct_information_contract_lessee,id',
-            'interviewees' => 'nullable|array',
-            'interviewees.*.name' => 'required',
+            'types_rating' => 'required|array',
             'objectives' => 'required|array',
             'objectives.*.description' => 'required',
             'objectives.*.subobjectives' => 'required|array',

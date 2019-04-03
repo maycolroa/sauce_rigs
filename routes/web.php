@@ -125,6 +125,9 @@ Route::middleware(['auth'])->group(function () {
           });
         });
       });
+
+      Route::post('actionplan/data', 'Administrative\ActionPlans\ActionPlanController@data');
+      Route::ApiResource('actionplan', 'Administrative\ActionPlans\ActionPlanController');
     });
 
     //Seguridad Industrial
@@ -161,6 +164,10 @@ Route::middleware(['auth'])->group(function () {
       Route::post('evaluation/data', 'LegalAspects\EvaluationController@data');
       Route::put('evaluation/evaluate/{evaluation}', 'LegalAspects\EvaluationController@evaluate');
       Route::ApiResource('evaluation', 'LegalAspects\EvaluationController');
+
+      Route::post('evaluationContract/data', 'LegalAspects\EvaluationContractController@data');
+      Route::get('evaluationContract/getData/{evaluationContract}', 'LegalAspects\EvaluationContractController@getData');
+      Route::ApiResource('evaluationContract', 'LegalAspects\EvaluationContractController');
 		});
 
 

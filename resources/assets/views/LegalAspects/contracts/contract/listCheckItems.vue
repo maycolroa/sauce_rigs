@@ -46,9 +46,7 @@ export default {
 		axios.get("/legalAspects/contracts/data")
 		.then(response => {
 			this.contract.items = response.data;
-/* 			console.log(response.data); */
 			this.name = response.data[0].name
-			// console.log(this.data);
 		})
 		.catch(error => {
 			Alerts.error('Error', 'Se ha generado un error en el proceso al cargar los items, por favor contacte con el administrador');
@@ -57,12 +55,15 @@ export default {
 		//axios para obtener las calificaciones
 		axios.get("/legalAspects/contracts/qualifications")
 		.then(response => {
-			// console.log("Entrando a la peticion");
+			// let qualifications = response.data;
+			// array.forEach(qualifications => {
+				
+			// });
 			this.qualifications = response.data;
-			// console.log(this.qualifications);
 		})
 		.catch(error => {
 			Alerts.error('Error', 'Se ha generado un error en el proceso al cargar las calificaciones, por favor contacte con el administrador');
+			this.$router.go(-1);
 		});
 	},
 }

@@ -68,7 +68,7 @@ return [
     */
 
     'trim' => [
-        'recent' => 60,
+        'recent' => 2880,
         'failed' => 10080,
         'monitored' => 10080,
     ],
@@ -120,6 +120,7 @@ return [
                 'balance' => 'auto',
                 'processes' => 10,
                 'tries' => 3,
+                'timeout' => 900,
             ],
         ],
 

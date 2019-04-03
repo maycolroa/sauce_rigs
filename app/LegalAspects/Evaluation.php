@@ -14,25 +14,13 @@ class Evaluation extends Model
     protected $fillable = [
         'name',
         'type',
-        'evaluation_date',
-        'information_contract_lessee_id',
         'company_id',
         'creator_user_id'
     ];
 
-    public function contract()
+    public function ratingsTypes()
     {
-        return $this->belongsTo(ContractLessee::class, 'information_contract_lessee_id');
-    }
-
-    public function evaluators()
-    {
-        return $this->belongsToMany('App\User', 'sau_ct_evaluation_user');
-    }
-
-    public function interviewees()
-    {
-        return $this->hasMany(Interviewee::class, 'evaluation_id');
+        return $this->belongsToMany(TypeRating::class, 'sau_ct_evaluation_type_rating');
     }
 
     public function objectives()

@@ -16,7 +16,9 @@ use App\Administrative\EmployeeHeadquarter;
 use App\Administrative\EmployeeArea;
 use App\Administrative\EmployeeProcess;
 use App\Facades\Mail\Facades\NotificationMail;
+use App\Facades\Configuration;
 use Exception;
+use Session;
 
 
 class ActionPlan
@@ -27,7 +29,7 @@ class ActionPlan
      *
      * @var String
      */
-    private $states = ['Pendiente', 'Ejecutada', 'No aplica'];
+    private $states;
 
     /**
      * Prefix that will be used to create the validation rules
@@ -140,6 +142,11 @@ class ActionPlan
      * @var Integer
      */
     private $daysAlertExpirationDate;
+
+    public function __construct()
+    {
+        $this->states = Configuration::getConfiguration('action_plans_states');
+    }
 
     /**
      * Process of the main register that contains all the activities
@@ -496,11 +503,79 @@ class ActionPlan
             $tmp['state'] = $value->activity->state;
             $tmp['oldState'] = $value->activity->state;
             $tmp['editable'] = $value->activity->editable;
+            $tmp['company_id'] = $value->activity->company_id;
+            $tmp['edit_all'] = $this->checkEditAll($value->activity);
 
             array_push($data['activities'], $tmp);
         }
 
         return $data;
+    }
+
+    /**
+     * returns the information of the activity of the action plan 
+     * in the format necessary for the Vue component
+     *
+     * @return Array
+     */
+    public function prepareActivityDataComponent($activity)
+    {
+        if (is_numeric($activity))
+        {
+            $activity = ActionPlansActivity::find($activity);
+
+            if (!$activity)
+                throw new \Exception('activity not found');
+        }
+        else if (!$activity instanceof ActionPlansActivity)
+        {
+            throw new \Exception('activity not found');
+        }
+
+        $data['actionPlan'] = [
+            'activities' => [],
+            'activitiesRemoved' => []
+        ];
+
+        if ($activity)
+        {
+            $tmp = [];
+            $tmp['key'] = Carbon::now()->timestamp + rand(1,10000);
+            $tmp['id'] = $activity->id;
+            $tmp['description'] = $activity->description;
+            $tmp['responsible_id'] = $activity->responsible_id;
+            $tmp['multiselect_responsible'] = $activity->responsible->multiselect();
+            $tmp['user_id'] = $activity->user_id;
+            $tmp['execution_date'] = ($activity->execution_date) ? (Carbon::createFromFormat('Y-m-d', $activity->execution_date))->format('D M d Y') : '';
+            $tmp['expiration_date'] = (Carbon::createFromFormat('Y-m-d', $activity->expiration_date))->format('D M d Y');
+            $tmp['state'] = $activity->state;
+            $tmp['oldState'] = $activity->state;
+            $tmp['editable'] = $activity->editable;
+            $tmp['company_id'] = $activity->company_id;
+            $tmp['edit_all'] = $this->checkEditAll($activity);
+
+            array_push($data['actionPlan']['activities'], $tmp);
+        }
+
+        return $data;
+    }
+
+    /**
+     * Verify if the activity was created by the user in session or can see it by assignment
+     *
+     * @param App\Models\ActionPlansActivity $activity
+     * @return booleam
+     */
+    private function checkEditAll($activity)
+    {
+        if (Auth::user()->hasRole('Superadmin'))
+            return true;
+
+        else if ($activity->user_id == Auth::user()->id)
+            return true;
+
+        else 
+            return false;
     }
 
     /**
@@ -525,6 +600,51 @@ class ActionPlan
     }
 
     /**
+     * Edit the activity of the one action plan
+     * 
+     * @return $this
+     */
+    public function updateActivity()
+    {
+        if (empty($this->activities))
+            throw new \Exception('No valid activities have been entered');
+
+        if (empty($this->module))
+            throw new \Exception('The id of the module that performed the action was not entered');
+
+        if (empty($this->model))
+            throw new \Exception('A valid model was not entered');
+
+        if (empty($this->user))
+            throw new \Exception('A valid user has not been entered.');
+
+        if (!empty($this->company))
+            $company_id = $this->company;
+        else if (Session::get('company_id'))
+            $company_id = Session::get('company_id');
+        else
+            throw new \Exception('A valid company has not been entered.');
+
+        /**********************************************************************/
+
+        foreach ($this->activities['activities'] as $itemA)
+        {   
+            $model->description = $itemA['description'];
+            $model->responsible_id = $itemA['responsible_id'];
+            $model->execution_date = ($itemA['execution_date']) ? (Carbon::createFromFormat('D M d Y', $itemA['execution_date']))->format('Ymd') : null;
+            $model->expiration_date = (Carbon::createFromFormat('D M d Y', $itemA['expiration_date']))->format('Ymd');
+            $model->state = $itemA['state'];
+            $model->company_id = $company_id;
+            $model->save();
+            
+            if(isset($itemA['oldState']) && ($itemA['oldState'] != $itemA['state']))
+                array_push($this->activitiesReady, $itemA);
+        }
+
+        return $this;
+    }
+
+    /**
      * Stores the activities of the action plan
      * 
      * @return $this
@@ -543,6 +663,13 @@ class ActionPlan
         if (empty($this->user))
             throw new \Exception('A valid user has not been entered.');
 
+        if (!empty($this->company))
+            $company_id = $this->company;
+        else if (Session::get('company_id'))
+            $company_id = Session::get('company_id');
+        else
+            throw new \Exception('A valid company has not been entered.');
+
         /**********************************************************************/
 
         foreach ($this->activities['activities'] as $itemA)
@@ -560,6 +687,7 @@ class ActionPlan
             $activity->execution_date = ($itemA['execution_date']) ? (Carbon::createFromFormat('D M d Y', $itemA['execution_date']))->format('Ymd') : null;
             $activity->expiration_date = (Carbon::createFromFormat('D M d Y', $itemA['expiration_date']))->format('Ymd');
             $activity->state = $itemA['state'];
+            $activity->company_id = $company_id;
             $activity->save();
             
             if(isset($itemA['oldState']) && ($itemA['oldState'] != $itemA['state']))
@@ -567,7 +695,8 @@ class ActionPlan
 
             if($itemA['id'] == "")
             {
-                array_push($this->activitiesNew, $itemA);
+                if ($itemA['state'] == 'Pendiente')
+                    array_push($this->activitiesNew, $itemA);
 
                 $activity->activityModule()->create([
                     'module_id' => $this->module->id,
@@ -598,8 +727,8 @@ class ActionPlan
         if (empty($this->user))
             throw new \Exception('A valid user has not been entered.');
 
-        if (empty($this->creationDate))
-            throw new \Exception('A valid creation date has not been entered.');
+        /*if (empty($this->creationDate))
+            throw new \Exception('A valid creation date has not been entered.');*/
 
         if (empty($this->url))
             throw new \Exception('A valid url has not been entered.');
@@ -738,7 +867,7 @@ class ActionPlan
                 ->join('sau_modules', 'sau_modules.id', 'sau_action_plans_activity_module.module_id')
                 //->join('sau_applications', 'sau_applications.id', 'sau_modules.application_id')
                 ->join('sau_users', 'sau_users.id', 'sau_action_plans_activities.responsible_id')
-                ->join('sau_company_user', 'sau_company_user.user_id', 'sau_users.id')
+                //->join('sau_company_user', 'sau_company_user.user_id', 'sau_users.id')
                 ->where('sau_action_plans_activities.state', 'Pendiente')
                 ->whereRaw("CURDATE() = DATE_ADD(sau_action_plans_activities.expiration_date, INTERVAL -$this->daysAlertExpirationDate DAY)");
 

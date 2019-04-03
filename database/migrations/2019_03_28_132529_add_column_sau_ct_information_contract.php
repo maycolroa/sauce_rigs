@@ -14,7 +14,7 @@ class AddColumnSauCtInformationContract extends Migration
     public function up()
     {
         Schema::table('sau_ct_information_contract_lessee', function (Blueprint $table) {
-            $table->string('classification', 50)->after('nit')->nullable();
+            $table->string('classification', 50)->after('type')->nullable();
         });
     }
 

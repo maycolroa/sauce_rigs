@@ -128,4 +128,17 @@ trait PermissionTrait
 
         return $data;
     }
+
+    public function getIdsModulePermissions()
+    {
+        $permissions = $this->getModulePermissions();
+        $data = [];
+        
+        if (COUNT($permissions) > 0)
+        {
+            $data = array_keys($permissions);
+        }
+
+        return $data;
+    }
 }

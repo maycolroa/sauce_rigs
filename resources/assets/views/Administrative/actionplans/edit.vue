@@ -1,50 +1,49 @@
 <template>
   <div>
     <h4 class="font-weight-bold mb-4">
-       <span class="text-muted font-weight-light">Evaluaciones /</span> Evaluar
+       <span class="text-muted font-weight-light">Planes de acción /</span> Editar
     </h4>
 
     <div class="col-md">
       <b-card no-body>
         <b-card-body>
-            <form-evaluation-component
-                :url="`/legalAspects/evaluation/evaluate/${this.$route.params.id}`"
+            <form-action-plans-component
+                :url="`/administration/actionplan/${this.$route.params.id}`"
                 method="PUT"
-                :evaluation="data"
-                :types-evaluation="typesEvaluation"
-                :types-rating="typesRating"
-                :is-evaluation="true"
-                :view-only="true"
-                :cancel-url="{ name: 'legalaspects-evaluations'}"/>
+                :actionPlan="data"
+                :cancel-url="{ name: 'administrative-actionplans'}"
+                :action-plan-states="actionPlanStates"/>
         </b-card-body>
       </b-card>
     </div>
   </div>
 </template>
- 
+
 <script>
-import FormEvaluationComponent from '@/components/LegalAspects/Evaluations/FormEvaluationComponent.vue';
+import FormActionPlansComponent from '@/components/Administrative/ActionPlans/FormActionPlansComponent.vue';
 import Alerts from '@/utils/Alerts.js';
 import GlobalMethods from '@/utils/GlobalMethods.js';
 
 export default {
-  name: 'legalaspects-evaluations-evaluate',
+  name: 'administrative-actionplans-edit',
   metaInfo: {
-    title: 'Evaluaciones - Evaluar'
+    title: 'Planes de acción - Editar'
   },
   components:{
-    FormEvaluationComponent
+    FormActionPlansComponent
   },
   data () {
     return {
-      data: [],
-      typesEvaluation: [],
-      typesRating: []
+      data: {
+        actionPlan: {
+          activities: []
+        }
+      },
+      actionPlanStates: []
     }
   },
   created(){
-
-    axios.get(`/legalAspects/evaluation/${this.$route.params.id}`)
+    axios.get(`/administration/actionplan/${this.$route.params.id}`)
     .then(response => {
         this.data = response.data.data;
     })
@@ -53,8 +52,7 @@ export default {
         this.$router.go(-1);
     });
 
-    this.fetchSelect('typesEvaluation', '/radios/ctTypesEvaluation')
-    this.fetchSelect('typesRating', '/legalAspects/typeRating/AllTypesRating')
+    this.fetchSelect('actionPlanStates', '/selects/actionPlanStates')
   },
   methods: {
     fetchSelect(key, url)

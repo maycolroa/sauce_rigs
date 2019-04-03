@@ -305,6 +305,22 @@ export default [{
           component: () =>
             import('@/views/Administrative/configurations/index')
         }
-      ])
+      ]),
+      ...middleware({ 'check-permission': 'actionPlans_r' }, [
+        {
+          name: 'administrative-actionplans',
+          path: 'actionplans',
+          component: () =>
+            import('@/views/Administrative/actionplans/index')
+        }
+      ]),
+      ...middleware({ 'check-permission': 'actionPlans_u' }, [
+        {
+          name: 'administrative-actionplans-edit',
+          path: 'actionplans/edit/:id',
+          component: () =>
+            import('@/views/Administrative/actionplans/edit')
+        }
+      ]),
     ]
   }]

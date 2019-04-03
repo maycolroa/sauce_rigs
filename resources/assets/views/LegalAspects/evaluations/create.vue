@@ -13,8 +13,7 @@
                 method="POST"
                 :cancel-url="{ name: 'legalaspects-evaluations'}"
                 :types-evaluation="typesEvaluation"
-                :types-rating="typesRating"
-                userDataUrl="/selects/users"/>
+                :types-rating="typesRating"/>
         </b-card-body>
       </b-card>
     </div>

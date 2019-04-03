@@ -22,6 +22,11 @@ class SauConfigurationSeeder extends Seeder
                 'key' => 'biologicalmonitoring_audiometries_select_exposition_level',
                 'value' => '["85 a 95 dB","No realizada","Menos de 80 dB","80 a 84.9 dB"]',
                 'observation' => 'select para Nivel de exposicion de audiometrias'
+            ],
+            [
+                'key' => 'action_plans_states',
+                'value' => '["Pendiente","Ejecutada"]',
+                'observation' => 'select para los estados de los planes de acción'
             ]
         ];
 
