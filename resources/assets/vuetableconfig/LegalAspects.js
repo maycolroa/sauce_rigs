@@ -217,5 +217,25 @@ export default [
           urlData: '/legalAspects/evaluationContract/data',
           filterColumns: true,
       }
-  },
+    },
+    {
+        name: 'legalaspects-evaluations-contracts-histories',
+        fields: [
+            { name: 'sau_ct_evaluation_contract_histories.id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true },
+            { name: 'sau_users.name', data: 'name', title: 'Responsable', sortable: true, searchable: true, detail: false, key: false },
+            { name: 'sau_ct_evaluation_contract_histories.created_at', data: 'created_at', title: 'Fecha', sortable: true, searchable: false, detail: false, key: false },
+        ],
+        'controlls': [{
+                type: 'push',
+                buttons: []
+            },
+            {
+                type: 'base',
+                buttons: [],
+            }],
+        configuration: {
+            urlData: '/legalAspects/evaluationContractHistory/data',
+            filterColumns: true,
+        }
+    },
 ]

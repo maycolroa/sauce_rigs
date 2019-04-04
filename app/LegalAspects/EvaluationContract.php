@@ -47,4 +47,9 @@ class EvaluationContract extends Model
     {
         return $this->hasMany(EvaluationItemRating::class, 'evaluation_id');
     }
+
+    public function histories()
+    {
+        return $this->hasMany(EvaluationContractHistory::class, 'evaluation_id');
+    }
 }

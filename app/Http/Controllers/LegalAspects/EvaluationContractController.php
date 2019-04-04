@@ -138,6 +138,10 @@ class EvaluationContractController extends Controller
             }
 
             $this->saveResults($evaluationContract, $request->get('evaluation'));
+            
+            $evaluationContract->histories()->create([
+                'user_id' => Auth::user()->id
+            ]);
 
             $this->deleteData($request->get('delete'));
 
@@ -145,8 +149,8 @@ class EvaluationContractController extends Controller
 
         } catch (\Exception $e) {
             DB::rollback();
-            //return $this->respondHttp500();
-            return $e->getMessage();
+            return $this->respondHttp500();
+            //return $e->getMessage();
         }
 
         return $this->respondHttp200([

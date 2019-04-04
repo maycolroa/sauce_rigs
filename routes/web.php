@@ -168,6 +168,8 @@ Route::middleware(['auth'])->group(function () {
       Route::post('evaluationContract/data', 'LegalAspects\EvaluationContractController@data');
       Route::get('evaluationContract/getData/{evaluationContract}', 'LegalAspects\EvaluationContractController@getData');
       Route::ApiResource('evaluationContract', 'LegalAspects\EvaluationContractController');
+
+      Route::post('evaluationContractHistory/data', 'LegalAspects\EvaluationContractHistoryController@data');
 		});
 
 

@@ -204,6 +204,24 @@
                 </div>
             </tab-content>
 
+            <tab-content title="Historial" v-if="viewOnly">
+                <div class="col-md-12">
+                    <blockquote class="blockquote text-center">
+                        <p class="mb-0">Fechas de modificaciones</p>
+                    </blockquote>
+                    <div class="col-md">
+                        <b-card no-body>
+                            <b-card-body>
+                                <vue-table
+                                    configName="legalaspects-evaluations-contracts-histories"
+                                    :modelId="form.id ? form.id : -1"
+                                    ></vue-table>
+                            </b-card-body>
+                        </b-card>
+                    </div>
+                </div>
+            </tab-content>
+
             <template slot="footer" slot-scope="props">
                 <b-btn variant="default" @click="$router.go(-1)" :disabled="loading">{{ viewOnly ? "Atras" : "Cancelar"}}</b-btn>
                 <b-btn v-on:click="props.prevTab" :disabled="loading" variant="default">Anterior</b-btn>
