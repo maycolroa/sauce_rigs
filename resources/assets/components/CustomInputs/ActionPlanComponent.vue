@@ -118,7 +118,6 @@ export default {
     mounted() {
         if (!this.viewOnly && !this.isEdit)
         {
-            //console.log(this.definedActivities);
             _.forIn(this.definedActivities, (value, key) => {
                 this.actionPlan.activities.push({
                     key: new Date().getTime() + Math.floor(Math.random() * 1000),
@@ -131,7 +130,6 @@ export default {
                     editable: 'NO',
                     edit_all: true
                 }) 
-                //console.log(this.actionPlan.activities);
             });
         }
     },
@@ -155,7 +153,6 @@ export default {
     },
     methods: {
         addActiviy() {
-            //console.log(this.definedActivities);
             this.actionPlan.activities.push({
                 key: new Date().getTime(),
                 id: '',
