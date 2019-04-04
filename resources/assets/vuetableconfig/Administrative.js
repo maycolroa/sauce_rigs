@@ -426,12 +426,12 @@ export default [
   {
     name: 'administrative-employees',
     fields: [
-      { name: 'sau_employees_employees.id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true },
-      { name: 'sau_employees_employees.identification', data: 'identification', title: 'Identificación', sortable: true, searchable: true, detail: false, key: false },
-      { name: 'sau_employees_employees.name', data: 'name', title: 'Nombre', sortable: true, searchable: true, detail: false, key: false },
+      { name: 'sau_employees.id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true },
+      { name: 'sau_employees.identification', data: 'identification', title: 'Identificación', sortable: true, searchable: true, detail: false, key: false },
+      { name: 'sau_employees.name', data: 'name', title: 'Nombre', sortable: true, searchable: true, detail: false, key: false },
       { name: 'sex_detail', data: 'sex_detail', title: 'Sexo', sortable: false, searchable: false, detail: false, key: false },
-      { name: 'sau_employees_employees.email', data: 'email', title: 'Email', sortable: true, searchable: true, detail: false, key: false },
-      { name: 'sau_employees_employees.income_date', data: 'income_date', title: 'Fecha de Ingreso', sortable: true, searchable: true, detail: false, key: false },
+      { name: 'sau_employees.email', data: 'email', title: 'Email', sortable: true, searchable: true, detail: false, key: false },
+      { name: 'sau_employees.income_date', data: 'income_date', title: 'Fecha de Ingreso', sortable: true, searchable: true, detail: false, key: false },
       /*{ name: 'cargo', data: 'cargo', title: 'Cargo', sortable: true, searchable: true, detail: false, key: false },
       { name: 'regional', data: 'regional', title: 'Regional', sortable: true, searchable: true, detail: false, key: false },
       { name: 'sede', data: 'sede', title: 'Sede', sortable: true, searchable: true, detail: false, key: false },
