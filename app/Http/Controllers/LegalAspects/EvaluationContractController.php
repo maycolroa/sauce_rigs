@@ -9,10 +9,7 @@ use App\Http\Requests\LegalAspects\EvaluationContracts\EvaluationContractRequest
 use Illuminate\Support\Facades\Auth;
 use App\LegalAspects\Evaluation;
 use App\LegalAspects\EvaluationContract;
-use App\LegalAspects\TypeRating;
 use App\LegalAspects\Interviewee;
-use App\LegalAspects\Objective;
-use App\LegalAspects\Subobjective;
 use App\LegalAspects\Item;
 use App\LegalAspects\Observation;
 use Carbon\Carbon;
