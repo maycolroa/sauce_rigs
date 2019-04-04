@@ -17,6 +17,7 @@ export default [
           color: 'outline-success',
           borderless: true,
           icon: 'ion ion-md-create',
+          title: 'Editar'
         },
         data: {
           routePush: { name: 'administrative-users-edit' },
@@ -28,6 +29,7 @@ export default [
           color: 'outline-info',
           borderless: true,
           icon: 'ion ion-md-eye',
+          title: 'Ver'
         },
         data: {
           routePush: { name: 'administrative-users-view' },
@@ -65,6 +67,7 @@ export default [
           color: 'outline-success',
           borderless: true,
           icon: 'ion ion-md-create',
+          title: 'Editar'
         },
         data: {
           routePush: { name: 'administrative-roles-edit' },
@@ -76,6 +79,7 @@ export default [
           color: 'outline-info',
           borderless: true,
           icon: 'ion ion-md-eye',
+          title: 'Ver'
         },
         data: {
           routePush: { name: 'administrative-roles-view' },
@@ -115,6 +119,7 @@ export default [
           color: 'outline-success',
           borderless: true,
           icon: 'ion ion-md-create',
+          title: 'Editar'
         },
         data: {
           routePush: { name: 'administrative-positions-edit' },
@@ -126,6 +131,7 @@ export default [
           color: 'outline-info',
           borderless: true,
           icon: 'ion ion-md-eye',
+          title: 'Ver'
         },
         data: {
           routePush: { name: 'administrative-positions-view' },
@@ -165,6 +171,7 @@ export default [
           color: 'outline-success',
           borderless: true,
           icon: 'ion ion-md-create',
+          title: 'Editar'
         },
         data: {
           routePush: { name: 'administrative-regionals-edit' },
@@ -176,6 +183,7 @@ export default [
           color: 'outline-info',
           borderless: true,
           icon: 'ion ion-md-eye',
+          title: 'Ver'
         },
         data: {
           routePush: { name: 'administrative-regionals-view' },
@@ -215,6 +223,7 @@ export default [
           color: 'outline-success',
           borderless: true,
           icon: 'ion ion-md-create',
+          title: 'Editar'
         },
         data: {
           routePush: { name: 'administrative-businesses-edit' },
@@ -226,6 +235,7 @@ export default [
           color: 'outline-info',
           borderless: true,
           icon: 'ion ion-md-eye',
+          title: 'Ver'
         },
         data: {
           routePush: { name: 'administrative-businesses-view' },
@@ -266,6 +276,7 @@ export default [
           color: 'outline-success',
           borderless: true,
           icon: 'ion ion-md-create',
+          title: 'Editar'
         },
         data: {
           routePush: { name: 'administrative-headquarters-edit' },
@@ -277,6 +288,7 @@ export default [
           color: 'outline-info',
           borderless: true,
           icon: 'ion ion-md-eye',
+          title: 'Ver'
         },
         data: {
           routePush: { name: 'administrative-headquarters-view' },
@@ -319,6 +331,7 @@ export default [
           color: 'outline-success',
           borderless: true,
           icon: 'ion ion-md-create',
+          title: 'Editar'
         },
         data: {
           routePush: { name: 'administrative-areas-edit' },
@@ -330,6 +343,7 @@ export default [
           color: 'outline-info',
           borderless: true,
           icon: 'ion ion-md-eye',
+          title: 'Ver'
         },
         data: {
           routePush: { name: 'administrative-areas-view' },
@@ -371,6 +385,7 @@ export default [
           color: 'outline-success',
           borderless: true,
           icon: 'ion ion-md-create',
+          title: 'Editar'
         },
         data: {
           routePush: { name: 'administrative-processes-edit' },
@@ -382,6 +397,7 @@ export default [
           color: 'outline-info',
           borderless: true,
           icon: 'ion ion-md-eye',
+          title: 'Ver'
         },
         data: {
           routePush: { name: 'administrative-processes-view' },
@@ -429,6 +445,7 @@ export default [
           color: 'outline-success',
           borderless: true,
           icon: 'ion ion-md-create',
+          title: 'Editar'
         },
         data: {
           routePush: { name: 'administrative-employees-edit' },
@@ -440,6 +457,7 @@ export default [
           color: 'outline-info',
           borderless: true,
           icon: 'ion ion-md-eye',
+          title: 'Ver'
         },
         data: {
           routePush: { name: 'administrative-employees-view' },
@@ -484,6 +502,7 @@ export default [
           color: 'outline-success',
           borderless: true,
           icon: 'ion ion-md-create',
+          title: 'Editar'
         },
         data: {
           routePush: { name: 'administrative-actionplans-edit' },
