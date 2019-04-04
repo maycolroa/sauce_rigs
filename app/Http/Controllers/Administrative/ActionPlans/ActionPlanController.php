@@ -54,9 +54,11 @@ class ActionPlanController extends Controller
             
         if (!Auth::user()->hasRole('Superadmin'))
         {
-            $activities->whereIn('sau_action_plans_activity_module.module_id', $this->getIdsModulePermissions());
+            $activities->where(function ($subquery) {
+                $subquery->whereIn('sau_action_plans_activity_module.module_id', $this->getIdsModulePermissions());
 
-            $activities->orWhere('sau_action_plans_activities.responsible_id', Auth::user()->id);
+                $subquery->orWhere('sau_action_plans_activities.responsible_id', Auth::user()->id);
+            });
         }
 
         return Vuetable::of($activities)

@@ -160,7 +160,8 @@ export default {
         },
         params: {
           filters: this.filters,
-          modelId: this.modelId
+          modelId: this.modelId,
+          tables: {}
         }
       };
 
@@ -187,6 +188,12 @@ export default {
       options.headings= {};
       fields.map((f) => {
           options.headings[f.data] = f.title;
+      });
+
+      options.params.tables= {};
+      fields.map((f) => {
+          if (f.searchable)
+            options.params.tables[f.data] = f.name;
       });
 
       //set prop filter conlumns in opions vuetable

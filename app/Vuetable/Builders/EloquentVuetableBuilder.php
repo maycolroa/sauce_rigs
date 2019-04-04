@@ -35,7 +35,7 @@ class EloquentVuetableBuilder
 
     public function __construct(Request $request, $query)
     {
-        request()->only(['query', 'limit', 'page', 'orderBy', 'ascending', 'byColumn', 'fields']);
+        request()->only(['query', 'limit', 'page', 'orderBy', 'ascending', 'byColumn', 'fields', 'tables']);
         $this->request = $request;
         $this->query = $query;
     }
@@ -49,13 +49,14 @@ class EloquentVuetableBuilder
         $ascending = $this->request->input('ascending');
         $byColumn = $this->request->input('byColumn');
         $fields = $this->request->input('fields');
+        $tables = $this->request->input('tables');
 
         $data = $this->query;
 
         if (isset($query) && $query) {
             $data = $byColumn == 1 ?
-                $this->filterByColumn($data, $query) :
-                $this->filter($data, $query, $fields);
+                $this->filterByColumn($data, $query, $tables) :
+                $this->filter($data, $query, $fields, $tables);
         }
 
         $count = $data->count();
@@ -84,10 +85,11 @@ class EloquentVuetableBuilder
      * @param  $data, \Illuminate\Database\Eloquent\Model $query
      * @return \Illuminate\Database\Eloquent\Model
      */
-    protected function filterByColumn($data, $queries)
+    protected function filterByColumn($data, $queries, $tables)
     {
-        return $data->where(function ($q) use ($queries) {
+        return $data->where(function ($q) use ($queries, $tables) {
             foreach ($queries as $field => $query) {
+                $field = isset($tables[$field]) ? $tables[$field] : $field;
                 if (is_string($query)) {
                     $q->where($field, 'LIKE', "%{$query}%");
                 } else {
@@ -108,8 +110,9 @@ class EloquentVuetableBuilder
      */
     protected function filter($data, $query, $fields)
     {
-        return $data->where(function ($q) use ($query, $fields) {
+        return $data->where(function ($q) use ($query, $fields, $tables) {
             foreach ($fields as $index => $field) {
+                $field = isset($tables[$field]) ? $tables[$field] : $field;
                 $method = $index ? 'orWhere' : 'where';
                 $q->{$method}($field, 'LIKE', "%{$query}%");
 
