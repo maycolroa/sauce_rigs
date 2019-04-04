@@ -162,12 +162,13 @@ Route::middleware(['auth'])->group(function () {
       Route::ApiResource('typeRating', 'LegalAspects\TypeRatingController');
 
       Route::post('evaluation/data', 'LegalAspects\EvaluationController@data');
-      Route::put('evaluation/evaluate/{evaluation}', 'LegalAspects\EvaluationController@evaluate');
       Route::ApiResource('evaluation', 'LegalAspects\EvaluationController');
 
       Route::post('evaluationContract/data', 'LegalAspects\EvaluationContractController@data');
       Route::get('evaluationContract/getData/{evaluationContract}', 'LegalAspects\EvaluationContractController@getData');
       Route::ApiResource('evaluationContract', 'LegalAspects\EvaluationContractController');
+
+      Route::post('evaluationContractHistory/data', 'LegalAspects\EvaluationContractHistoryController@data');
 		});
 
 

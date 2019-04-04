@@ -85,6 +85,24 @@ export default [
 				import('@/views/LegalAspects/evaluationContracts/create')
 			},
 			{
+				name: 'legalaspects-evaluations-contracts',
+				path: 'evaluations/contracts/:id',
+				component: () =>
+				import('@/views/LegalAspects/evaluationContracts/index')
+			},
+			{
+				name: 'legalaspects-evaluations-contracts-view',
+				path: 'evaluations/contracts/view/:id',
+				component: () =>
+				import('@/views/LegalAspects/evaluationContracts/view')
+			},
+			{
+				name: 'legalaspects-evaluations-contracts-edit',
+				path: 'evaluations/contracts/edit/:id',
+				component: () =>
+				import('@/views/LegalAspects/evaluationContracts/edit')
+			},
+			{
 				name: 'legalaspects-upload-files',
 				path: 'upload-files',
 				component: () => import('@/views/LegalAspects/contracts/uploadFiles/index')

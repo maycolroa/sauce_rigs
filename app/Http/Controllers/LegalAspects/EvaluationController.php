@@ -6,7 +6,6 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Vuetable\Facades\Vuetable;
 use App\Http\Requests\LegalAspects\Evaluations\EvaluationRequest;
-use App\Http\Requests\LegalAspects\Evaluations\EvaluateRequest;
 use Illuminate\Support\Facades\Auth;
 use App\LegalAspects\Evaluation;
 use App\LegalAspects\TypeRating;
@@ -14,7 +13,6 @@ use App\LegalAspects\Interviewee;
 use App\LegalAspects\Objective;
 use App\LegalAspects\Subobjective;
 use App\LegalAspects\Item;
-use App\LegalAspects\Observation;
 use Carbon\Carbon;
 use Session;
 use DB;
@@ -217,77 +215,18 @@ class EvaluationController extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
-     *
-     * @param  App\Http\Requests\LegalAspects\TypesRating\EvaluateRequest $request
-     * @param  App\LegalAspects\Evaluation $evaluation
-     * @return \Illuminate\Http\Response
-     */
-    public function evaluate(EvaluateRequest $request, Evaluation $evaluation)
-    {
-        if (!$this->verifyPermissionEvaluate($evaluation->id))
-            return $this->respondWithError('No tiene permitido realizar esta evaluación');
-        
-        DB::beginTransaction();
-
-        try
-        {
-            $evaluation->evaluation_date = date('Y-m-d');
-
-            if(!$evaluation->update()){
-                return $this->respondHttp500();
-            }
-
-            foreach ($request->get('objectives') as $objective)
-            {
-                foreach ($objective['subobjectives'] as $subobjective)
-                {
-                    foreach ($subobjective['items'] as $item)
-                    {
-                        $itemModel = Item::find($item['id']);
-                        
-                        foreach ($item['ratings'] as $rating)
-                        {
-                            $value = NULL;
-
-                            if ($rating['apply'] == 'SI')
-                                $value = $rating['value'];
-
-                            $itemModel->ratingsTypes()->updateExistingPivot($rating['type_rating_id'], ['value'=>$value]);
-                        }
-
-                        foreach ($item['observations'] as $observation)
-                        {
-                            $id = isset($observation['id']) ? $observation['id'] : NULL;
-                            $itemModel->observations()->updateOrCreate(['id'=>$id], $observation);
-                        }
-                    }
-                }
-            }
-
-            $this->deleteData($request->get('delete'));
-
-            DB::commit();
-
-        } catch (\Exception $e) {
-            DB::rollback();
-            return $this->respondHttp500();
-            //return $e->getMessage();
-        }
-
-        return $this->respondHttp200([
-            'message' => 'Se realizo la evaluación'
-        ]);
-    }
-
-    /**
      * Remove the specified resource from storage.
      *
-     * @param  App\LegalAspects\TypeRating $typeRating
+     * @param  App\LegalAspects\Evaluation $evaluation
      * @return \Illuminate\Http\Response
      */
     public function destroy(Evaluation $evaluation)
     {
+        if (count($evaluation->evaluationContracts) > 0)
+        {
+            return $this->respondWithError('No se puede eliminar la evaluación porque ya existen evaluaciones realizadas asociadas a ella');
+        }
+
         if(!$evaluation->delete())
         {
             return $this->respondHttp500();
@@ -356,26 +295,5 @@ class EvaluationController extends Controller
 
         if (COUNT($data['items']) > 0)
             Item::destroy($data['items']);
-    }
-
-    public function verifyPermissionEvaluate($id)
-    {
-        $evaluation = Evaluation::findOrFail($id);
-
-        if ($evaluation)
-        {
-            $evaluators_id = [];
-            array_push($evaluators_id, $evaluation->creator_user_id);
-
-            foreach ($evaluation->evaluators as $key => $value)
-            {
-                array_push($evaluators_id, $value->id);
-            }
-
-            if (in_array(Auth::user()->id, $evaluators_id))
-                return true;
-        }
-
-        return false;
     }
 }

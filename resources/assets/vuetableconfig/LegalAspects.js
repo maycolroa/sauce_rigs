@@ -13,6 +13,7 @@ export default [
                 color: 'outline-success',
                 borderless: true,
                 icon: 'ion ion-md-create',
+                title: 'Editar'
             },
             data: {
                 routePush: { name: 'legalaspects-typesrating-edit' },
@@ -23,6 +24,7 @@ export default [
                 color: 'outline-info',
                 borderless: true,
                 icon: 'ion ion-md-eye',
+                title: 'Ver'
             },
             data: {
                 routePush: { name: 'legalaspects-typesrating-view' },
@@ -90,7 +92,18 @@ export default [
                     routePush: { name: 'legalaspects-evaluations-evaluate' },
                     id: 'id',
                 },
-            }]
+            }, {
+              config: {
+                  color: 'outline-info',
+                  borderless: true,
+                  icon: 'ion ion-md-list',
+                  title: 'Ver Evaluaciones Realizadas'
+              },
+              data: {
+                  routePush: { name: 'legalaspects-evaluations-contracts' },
+                  id: 'id',
+              },
+          }]
         },
         {
             type: 'base',
@@ -126,6 +139,7 @@ export default [
             color: 'outline-success',
             borderless: true,
             icon: 'ion ion-md-create',
+            title: 'Editar'
           },
           data: {
             routePush: { name: 'legalaspects-upload-files-edit' },
@@ -136,6 +150,7 @@ export default [
             color: 'outline-info',
             borderless: true,
             icon: 'ion ion-md-eye',
+            title: 'Ver'
           },
           data: {
             routePush: { name: 'legalaspects-upload-files-view' },
@@ -158,5 +173,69 @@ export default [
         urlData: '/legalAspects/fileUpload/data',
         filterColumns: true,
       }
-    }
+    }, 
+    {
+      name: 'legalaspects-evaluations-contracts',
+      fields: [
+          { name: 'sau_ct_evaluation_contract.id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true },
+          { name: 'sau_ct_information_contract_lessee.nit', data: 'nit', title: 'NIT', sortable: true, searchable: true, detail: false, key: false },
+          { name: 'sau_ct_information_contract_lessee.social_reason', data: 'social_reason', title: 'Razón Social', sortable: true, searchable: true, detail: false, key: false },
+          { name: 'sau_ct_evaluation_contract.evaluation_date', data: 'evaluation_date', title: 'Fecha evaluación', sortable: true, searchable: true, detail: false, key: false },
+          { name: '', data: 'controlls', title: 'Controles', sortable: false, searchable: false, detail: false, key: false },
+      ],
+      'controlls': [{
+            type: 'push',
+            buttons: [{
+            config: {
+                color: 'outline-success',
+                borderless: true,
+                icon: 'ion ion-md-create',
+                title: 'Editar'
+            },
+            data: {
+                routePush: { name: 'legalaspects-evaluations-contracts-edit' },
+                id: 'id',
+            },
+            }, {
+            config: {
+                color: 'outline-info',
+                borderless: true,
+                icon: 'ion ion-md-eye',
+                title: 'Ver'
+            },
+            data: {
+                routePush: { name: 'legalaspects-evaluations-contracts-view' },
+                id: 'id',
+            },
+            }]
+        },
+        {
+            type: 'base',
+            buttons: [],
+        }],
+      configuration: {
+          urlData: '/legalAspects/evaluationContract/data',
+          filterColumns: true,
+      }
+    },
+    {
+        name: 'legalaspects-evaluations-contracts-histories',
+        fields: [
+            { name: 'sau_ct_evaluation_contract_histories.id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true },
+            { name: 'sau_users.name', data: 'name', title: 'Responsable', sortable: true, searchable: true, detail: false, key: false },
+            { name: 'sau_ct_evaluation_contract_histories.created_at', data: 'created_at', title: 'Fecha', sortable: true, searchable: false, detail: false, key: false },
+        ],
+        'controlls': [{
+                type: 'push',
+                buttons: []
+            },
+            {
+                type: 'base',
+                buttons: [],
+            }],
+        configuration: {
+            urlData: '/legalAspects/evaluationContractHistory/data',
+            filterColumns: true,
+        }
+    },
 ]

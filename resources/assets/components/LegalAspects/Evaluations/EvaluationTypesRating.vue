@@ -41,7 +41,9 @@ export default {
         }
     },
     watch: {
-        typesRating() {
+    },
+    mounted() {
+        setTimeout(() => {
             _.forIn(this.typesRating, (value, key) => {
                 this.data.push({
                     id: value.id,
@@ -50,17 +52,15 @@ export default {
                     apply: 'NO'
                 })
             });
+        }, 2000)
 
-            this.updateValue()
-        }
-    },
-    mounted() {
         setTimeout(() => {
             this.data.map((f) => {
                 f.apply = _.find(this.value, { type_rating_id: f.type_rating_id }) ? 'SI' : 'NO'
             });
-            
-        }, 3000)
+        }, 2000)
+        
+        this.updateValue()
     },
     methods: {
         updateValue() {
