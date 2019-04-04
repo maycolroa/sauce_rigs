@@ -312,16 +312,21 @@ export default {
         form: Form.makeFrom(this.evaluation, this.method),
         contractDataUrl: '/selects/contractors',
         contractor_information: {
-          nit: '',
-          type: '',
-          business_name: '',
-          phone: '',
-          address: '',
-          legal_representative_name: '',
-          SG_SST_name: '',
-          number_workers: '',
-          high_risk_work: '',
-          social_reason: ''
+            nit: '',
+            classification: '',
+            type: '',
+            business_name: '',
+            phone: '',
+            address: '',
+            legal_representative_name: '',
+            environmental_management_name: '',
+            economic_activity_of_company: '',
+            arl: '',
+            SG_SST_name: '',
+            risk_class: '',
+            number_workers: '',
+            high_risk_work: '',
+            social_reason: ''
         }
     };
   },
