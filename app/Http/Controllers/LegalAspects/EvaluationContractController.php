@@ -330,7 +330,7 @@ class EvaluationContractController extends Controller
 
                     foreach ($clone as $index => $rating)
                     {
-                        $clone[$index]['value'] = $values[$index];
+                        $clone[$index]['value'] = isset($values[$index]) ? $values[$index] : NULL;
 
                         if ($rating['apply'] == 'SI')
                         {
