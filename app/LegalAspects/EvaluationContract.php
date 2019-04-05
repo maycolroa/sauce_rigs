@@ -52,4 +52,19 @@ class EvaluationContract extends Model
     {
         return $this->hasMany(EvaluationContractHistory::class, 'evaluation_id');
     }
+
+    /**
+     * filters checks through the given date
+     * @param  Illuminate\Database\Eloquent\Builder $query
+     * @param  array $dates
+     * @return Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeBetweenDate($query, $dates)
+    {
+        if (COUNT($dates) == 2)
+        {
+            $query->whereBetween('sau_ct_evaluation_contract.evaluation_date', $dates);
+            return $query;
+        }
+    }
 }

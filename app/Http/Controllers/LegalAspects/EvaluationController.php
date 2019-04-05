@@ -37,8 +37,35 @@ class EvaluationController extends Controller
     */
     public function data(Request $request)
     {
-        $evaluations = Evaluation::select('*');
+        $evaluations = Evaluation::select(
+            'sau_ct_evaluations.*')
+            ->join('sau_ct_objectives', 'sau_ct_objectives.evaluation_id', 'sau_ct_evaluations.id')
+            ->join('sau_ct_subobjectives', 'sau_ct_subobjectives.objective_id', 'sau_ct_objectives.id')
+            ->groupBy('sau_ct_evaluations.id');
 
+        $filters = $request->get('filters');
+
+        if (isset($filters["evaluationsObjectives"]))
+          $evaluations->inObjectives($this->getValuesForMultiselect($filters["evaluationsObjectives"]), $filters['filtersType']['evaluationsObjectives']);
+
+        if (isset($filters["evaluationsSubobjectives"]))
+          $evaluations->inSubobjectives($this->getValuesForMultiselect($filters["evaluationsSubobjectives"]), $filters['filtersType']['evaluationsSubobjectives']);
+
+        if (isset($filters["dateRange"]) && $filters["dateRange"])
+        {
+            $dates_request = explode('/', $filters["dateRange"]);
+            $dates = [];
+
+            if (COUNT($dates_request) == 2)
+            {
+                array_push($dates, (Carbon::createFromFormat('D M d Y',$dates_request[0]))->format('Ymd'));
+                array_push($dates, (Carbon::createFromFormat('D M d Y',$dates_request[1]))->format('Ymd'));
+            }
+            
+            $evaluations->join('sau_ct_evaluation_contract', 'sau_ct_evaluation_contract.evaluation_id', 'sau_ct_evaluations.id');
+            $evaluations->betweenDate($dates);
+        }
+            
         return Vuetable::of($evaluations)
                     ->make();
     }
@@ -295,5 +322,44 @@ class EvaluationController extends Controller
 
         if (COUNT($data['items']) > 0)
             Item::destroy($data['items']);
+    }
+
+    /**
+     * Returns an array for a select type input
+     *
+     * @param Request $request
+     * @return Array
+     */
+
+    public function multiselectObjectives(Request $request)
+    {
+        $objectives = Evaluation::selectRaw(
+            "GROUP_CONCAT(sau_ct_objectives.id) as ids,
+             sau_ct_objectives.description as name")
+        ->join('sau_ct_objectives', 'sau_ct_objectives.evaluation_id', 'sau_ct_evaluations.id')
+        ->groupBy('sau_ct_objectives.description')
+        ->pluck('ids', 'name');
+    
+        return $this->multiSelectFormat($objectives);
+    }
+
+    /**
+     * Returns an array for a select type input
+     *
+     * @param Request $request
+     * @return Array
+     */
+
+    public function multiselectSubobjectives(Request $request)
+    {
+        $subobjectives = Evaluation::selectRaw(
+            "GROUP_CONCAT(sau_ct_subobjectives.id) as ids,
+             sau_ct_subobjectives.description as name")
+        ->join('sau_ct_objectives', 'sau_ct_objectives.evaluation_id', 'sau_ct_evaluations.id')
+        ->join('sau_ct_subobjectives', 'sau_ct_subobjectives.objective_id', 'sau_ct_objectives.id')
+        ->groupBy('sau_ct_subobjectives.description')
+        ->pluck('ids', 'name');
+    
+        return $this->multiSelectFormat($subobjectives);
     }
 }

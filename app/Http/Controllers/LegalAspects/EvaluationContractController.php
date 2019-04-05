@@ -40,10 +40,30 @@ class EvaluationContractController extends Controller
                 'sau_ct_information_contract_lessee.social_reason as social_reason',
                 'sau_ct_information_contract_lessee.nit as nit'
             )
-            ->join('sau_ct_information_contract_lessee', 'sau_ct_information_contract_lessee.id', 'sau_ct_evaluation_contract.contract_id');
+            ->join('sau_ct_information_contract_lessee', 'sau_ct_information_contract_lessee.id', 'sau_ct_evaluation_contract.contract_id')
+            ->join('sau_ct_evaluations', 'sau_ct_evaluations.id', 'sau_ct_evaluation_contract.evaluation_id')
+            ->join('sau_ct_objectives', 'sau_ct_objectives.evaluation_id', 'sau_ct_evaluations.id')
+            ->join('sau_ct_subobjectives', 'sau_ct_subobjectives.objective_id', 'sau_ct_objectives.id')
+            ->groupBy('sau_ct_evaluation_contract.id');
 
         if ($request->has('modelId') && $request->get('modelId'))
             $evaluation_contracts->where('sau_ct_evaluation_contract.evaluation_id', '=', $request->get('modelId'));
+
+        $filters = $request->get('filters');
+
+        if (isset($filters["dateRange"]) && $filters["dateRange"])
+        {
+            $dates_request = explode('/', $filters["dateRange"]);
+            $dates = [];
+
+            if (COUNT($dates_request) == 2)
+            {
+                array_push($dates, (Carbon::createFromFormat('D M d Y',$dates_request[0]))->format('Ymd'));
+                array_push($dates, (Carbon::createFromFormat('D M d Y',$dates_request[1]))->format('Ymd'));
+            }
+            
+            $evaluation_contracts->betweenDate($dates);
+        }
 
         return Vuetable::of($evaluation_contracts)
                     ->make();

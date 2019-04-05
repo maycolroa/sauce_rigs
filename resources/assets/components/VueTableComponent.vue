@@ -4,7 +4,8 @@
           <b-col cols="1">
               <filter-general 
                   v-model="filters" 
-                  :configName="configNameFilter" />
+                  :configName="configNameFilter"
+                  :modelId="modelId" />
           </b-col>
       </b-row>
 

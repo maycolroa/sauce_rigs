@@ -71,6 +71,11 @@ Route::middleware(['auth'])->group(function () {
         Route::post('tagsWarningSignage', 'IndustrialSecure\TagController@multiselectWarningSignage');
         Route::post('actionPlanStates', 'MultiSelectRadioController@actionPlanStates');
         Route::post('contractors', 'LegalAspects\ContractLesseeController@multiselect'); 
+
+        Route::prefix('evaluations')->group(function () {
+          Route::post('objectives', 'LegalAspects\EvaluationController@multiselectObjectives');
+          Route::post('subobjectives', 'LegalAspects\EvaluationController@multiselectSubobjectives');
+        });
     });
 
     Route::prefix('radios')->group(function () {

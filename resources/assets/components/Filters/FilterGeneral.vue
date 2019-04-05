@@ -59,7 +59,8 @@ export default {
         isDisabled: {
             type: Boolean,
             default: false
-        }
+        },
+        modelId: {type: [Number, String], default: null}
     },
     data () {
         return {
@@ -118,7 +119,21 @@ export default {
                     name: 'date_range',
                     active: false,
                     ready: false
-                }
+                },
+                evaluationsObjectives: {
+                    label: 'Objetivos',
+                    name: 'evaluationsObjectives',
+                    data: [],
+                    active: false,
+                    ready: false
+                },
+                evaluationsSubobjectives: {
+                    label: 'Subobjetivos',
+                    name: 'evaluationsSubobjectives',
+                    data: [],
+                    active: false,
+                    ready: false
+                },
             },
             filtersSelected: {
                 regionals: [],
@@ -129,6 +144,8 @@ export default {
                 positions: [],
                 years: [],
                 dateRange: '',
+                evaluationsObjectives: [],
+                evaluationsSubobjectives: [],
                 filtersType: {
                     regionals: 'IN',
                     headquarters: 'IN',
@@ -136,7 +153,9 @@ export default {
                     processes: 'IN',
                     businesses: 'IN',
                     positions: 'IN',
-                    years: 'IN'
+                    years: 'IN',
+                    evaluationsObjectives: 'IN',
+                    evaluationsSubobjectives: 'IN'
                 }
             }
         }
@@ -227,11 +246,18 @@ export default {
         'filtersSelected.dateRange'() {
             this.updateFilterTable('dateRange')
         },
+        'filtersSelected.evaluationsObjectives'() {
+            this.updateFilterTable('evaluationsObjectives')
+        },
+        'filtersSelected.evaluationsSubobjectives'() {
+            this.updateFilterTable('evaluationsSubobjectives')
+        },
     },
     methods: {
         fetchFilterSelect(key, url)
         {
-            GlobalMethods.getDataMultiselect(url)
+            let paramId = this.modelId ? { modelId: this.modelId } : {}
+            GlobalMethods.getDataMultiselect(url, paramId)
             .then(response => {
                 this.filters[key].data = response;
             })
