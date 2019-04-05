@@ -352,7 +352,7 @@ class EvaluationContractController extends Controller
                     {
                         $clone[$index]['value'] = isset($values[$index]) ? $values[$index] : NULL;
 
-                        if ($rating['apply'] == 'SI')
+                        if ($rating['apply'] == 'SI' && $clone[$index]['value'])
                         {
                             $clone_report[$index]['total'] += 1;
 
