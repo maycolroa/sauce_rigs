@@ -13,6 +13,7 @@ use App\LegalAspects\Interviewee;
 use App\LegalAspects\Objective;
 use App\LegalAspects\Subobjective;
 use App\LegalAspects\Item;
+use App\Jobs\LegalAspects\Evaluations\EvaluationExportJob;
 use Carbon\Carbon;
 use Session;
 use DB;
@@ -361,5 +362,23 @@ class EvaluationController extends Controller
         ->pluck('ids', 'name');
     
         return $this->multiSelectFormat($subobjectives);
+    }
+
+    /**
+     * Export resources from storage.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function export()
+    {
+        try
+        {
+            EvaluationExportJob::dispatch(Auth::user(), Session::get('company_id'));
+        
+            return $this->respondHttp200();
+        } catch(Exception $e) {
+            return $this->respondHttp500();
+        }
     }
 }

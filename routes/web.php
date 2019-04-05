@@ -167,6 +167,7 @@ Route::middleware(['auth'])->group(function () {
       Route::ApiResource('typeRating', 'LegalAspects\TypeRatingController');
 
       Route::post('evaluation/data', 'LegalAspects\EvaluationController@data');
+      Route::post('evaluation/export', 'LegalAspects\EvaluationController@export');
       Route::ApiResource('evaluation', 'LegalAspects\EvaluationController');
 
       Route::post('evaluationContract/data', 'LegalAspects\EvaluationContractController@data');
