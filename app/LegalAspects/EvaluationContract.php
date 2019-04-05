@@ -15,7 +15,8 @@ class EvaluationContract extends Model
         'evaluation_date',
         'evaluation_id',
         'contract_id',
-        'company_id'
+        'company_id',
+        'evaluator_id'
     ];
 
     public function evaluation()

@@ -83,7 +83,8 @@ class EvaluationContractController extends Controller
         {
             $evaluation_contract = new EvaluationContract($request->all());
             $evaluation_contract->company_id = Session::get('company_id');
-            $evaluation_contract->evaluation_date = date('Y-m-d');
+            $evaluation_contract->evaluation_date = date('Y-m-d H:i:s');
+            $evaluation_contract->evaluator_id = Auth::user()->id;
 
             if(!$evaluation_contract->save()){
                 return $this->respondHttp500();
