@@ -12,10 +12,12 @@ class EvaluationExcel implements WithMultipleSheets
     use Exportable;
 
     protected $company_id;
+    protected $filters;
     
-    public function __construct($company_id)
+    public function __construct($company_id, $filters)
     {
         $this->company_id = $company_id;
+        $this->filters = $filters;
     }
 
     /**
@@ -25,8 +27,8 @@ class EvaluationExcel implements WithMultipleSheets
     {
         $sheets = [];
 
-        $sheets[] = new EvaluationsListExcel($this->company_id);
-        $sheets[] = new EvaluationsExecutesExcel($this->company_id);
+        $sheets[] = new EvaluationsListExcel($this->company_id, $this->filters);
+        $sheets[] = new EvaluationsExecutesExcel($this->company_id, $this->filters);
 
         return $sheets;
     }

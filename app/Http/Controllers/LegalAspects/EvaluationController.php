@@ -59,10 +59,10 @@ class EvaluationController extends Controller
 
             if (COUNT($dates_request) == 2)
             {
-                array_push($dates, (Carbon::createFromFormat('D M d Y',$dates_request[0]))->format('Ymd'));
-                array_push($dates, (Carbon::createFromFormat('D M d Y',$dates_request[1]))->format('Ymd'));
+                array_push($dates, (Carbon::createFromFormat('D M d Y',$dates_request[0]))->format('Y-m-d 00:00:00'));
+                array_push($dates, (Carbon::createFromFormat('D M d Y',$dates_request[1]))->format('Y-m-d 23:59:59'));
             }
-            
+
             $evaluations->join('sau_ct_evaluation_contract', 'sau_ct_evaluation_contract.evaluation_id', 'sau_ct_evaluations.id');
             $evaluations->betweenDate($dates);
         }
@@ -367,14 +367,37 @@ class EvaluationController extends Controller
     /**
      * Export resources from storage.
      *
-     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function export()
+    public function export(Request $request)
     {
         try
         {
-            EvaluationExportJob::dispatch(Auth::user(), Session::get('company_id'));
+            $objectives = $this->getValuesForMultiselect($request->evaluationsObjectives);
+            $subobjectives = $this->getValuesForMultiselect($request->evaluationsSubobjectives);
+            $dates = [];
+            $filtersType = $request->filtersType;
+
+            if (isset($request->dateRange) && $request->dateRange)
+            {
+                $dates_request = explode('/', $request->dateRange);
+
+                if (COUNT($dates_request) == 2)
+                {
+                    array_push($dates, (Carbon::createFromFormat('D M d Y',$dates_request[0]))->format('Y-m-d 00:00:00'));
+                    array_push($dates, (Carbon::createFromFormat('D M d Y',$dates_request[1]))->format('Y-m-d 23:59:59'));
+                }
+                
+            }
+
+            $filters = [
+                'objectives' => $objectives,
+                'subobjectives' => $subobjectives,
+                'dates' => $dates,
+                'filtersType' => $filtersType
+            ];
+
+            EvaluationExportJob::dispatch(Auth::user(), Session::get('company_id'), $filters);
         
             return $this->respondHttp200();
         } catch(Exception $e) {

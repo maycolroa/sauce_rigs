@@ -23,6 +23,7 @@
         <b-card-body>
              <vue-table
                 configName="legalaspects-evaluations"
+                @filtersUpdate="setFilters"
                 ></vue-table>
         </b-card-body>
     </b-card>
@@ -38,9 +39,18 @@ export default {
   metaInfo: {
     title: 'Evaluaciones'
   },
+  data () {
+    return {
+      filters: []
+    }
+  },
   methods: {
+    setFilters(value)
+    {
+      this.filters = value
+    },
     exportEvaluations() {
-      axios.post('/legalAspects/evaluation/export')
+      axios.post('/legalAspects/evaluation/export', this.filters)
         .then(response => {
           Alerts.warning('Información', 'Se inicio la exportación, se le notificara a su correo electronico cuando finalice el proceso.');
         }).catch(error => {

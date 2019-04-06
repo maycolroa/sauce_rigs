@@ -23,14 +23,16 @@ class EvaluationsExecutesExcel implements FromCollection, WithHeadings, WithMapp
     use RegistersEventListeners;
 
     protected $company_id;
+    protected $filters;
     protected $evaluators;
     protected $interviewees;
     protected $qualifications;
     protected $ratings;
 
-    public function __construct($company_id)
+    public function __construct($company_id, $filters)
     {
       $this->company_id = $company_id;
+      $this->filters = $filters;
 
       $evaluators = EvaluationContract::selectRaw('
         sau_ct_evaluation_contract.id as id, 
@@ -93,7 +95,14 @@ class EvaluationsExecutesExcel implements FromCollection, WithHeadings, WithMapp
             $q->on('sau_ct_item_observations.item_id', '=', 'sau_ct_items.id')
               ->on('sau_ct_evaluation_contract.id', '=', 'sau_ct_item_observations.evaluation_id');
         })
-        ->join('sau_users', 'sau_users.id', 'sau_ct_evaluation_contract.evaluator_id');
+        ->join('sau_users', 'sau_users.id', 'sau_ct_evaluation_contract.evaluator_id')
+        ->inObjectives($this->filters['objectives'], $this->filters['filtersType']['evaluationsObjectives'])
+        ->inObjectives($this->filters['subobjectives'], $this->filters['filtersType']['evaluationsSubobjectives']);
+
+        if (COUNT($this->filters["dates"]) > 0)
+        {            
+          $evaluations->betweenDate($this->filters["dates"]);
+        }
         //->orderBy('name, objective, subobjective, item', 'ASC');
 
       $evaluations->company_scope = $this->company_id;

@@ -21,10 +21,12 @@ class EvaluationsListExcel implements FromQuery, WithMapping, WithHeadings, With
     use RegistersEventListeners;
 
     protected $company_id;
+    protected $filters;
 
-    public function __construct($company_id)
+    public function __construct($company_id, $filters)
     {
       $this->company_id = $company_id;
+      $this->filters = $filters;
     }
 
     public function query()
@@ -41,7 +43,17 @@ class EvaluationsListExcel implements FromQuery, WithMapping, WithHeadings, With
         ->join('sau_users', 'sau_users.id', 'sau_ct_evaluations.creator_user_id')
         ->join('sau_ct_objectives', 'sau_ct_objectives.evaluation_id', 'sau_ct_evaluations.id')
         ->join('sau_ct_subobjectives', 'sau_ct_subobjectives.objective_id', 'sau_ct_objectives.id')
-        ->join('sau_ct_items', 'sau_ct_items.subobjective_id', 'sau_ct_subobjectives.id');
+        ->join('sau_ct_items', 'sau_ct_items.subobjective_id', 'sau_ct_subobjectives.id')
+        ->inObjectives($this->filters['objectives'], $this->filters['filtersType']['evaluationsObjectives'])
+        ->inObjectives($this->filters['subobjectives'], $this->filters['filtersType']['evaluationsSubobjectives'])
+        ->groupBy('name', 'type', 'user_creator', 'created_at', 'objective', 'subobjective', 'item')
+        ->orderBy('name');
+
+        if (COUNT($this->filters["dates"]) > 0)
+        {            
+            $evaluations->join('sau_ct_evaluation_contract', 'sau_ct_evaluation_contract.evaluation_id', 'sau_ct_evaluations.id');
+            $evaluations->betweenDate($this->filters["dates"]);
+        }
 
       $evaluations->company_scope = $this->company_id;
 

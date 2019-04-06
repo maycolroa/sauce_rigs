@@ -17,16 +17,18 @@ class EvaluationExportJob implements ShouldQueue
 
     protected $user;
     protected $company_id;
+    protected $filters;
 
     /**
      * Create a new job instance.
      *
      * @return void
      */
-    public function __construct($user, $company_id)
+    public function __construct($user, $company_id, $filters)
     {
       $this->user = $user;
       $this->company_id = $company_id;
+      $this->filters = $filters;
     }
 
     /**
@@ -37,7 +39,7 @@ class EvaluationExportJob implements ShouldQueue
     public function handle()
     {
       $nameExcel = 'export/1/evaluaciones_'.date("YmdHis").'.xlsx';
-      Excel::store(new EvaluationExcel($this->company_id),$nameExcel,'public',\Maatwebsite\Excel\Excel::XLSX);
+      Excel::store(new EvaluationExcel($this->company_id, $this->filters),$nameExcel,'public',\Maatwebsite\Excel\Excel::XLSX);
       
       $paramUrl = base64_encode($nameExcel);
       
