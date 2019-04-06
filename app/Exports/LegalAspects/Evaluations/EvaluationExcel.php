@@ -5,6 +5,7 @@ namespace App\Exports\LegalAspects\Evaluations;
 use Maatwebsite\Excel\Concerns\Exportable;
 use Maatwebsite\Excel\Concerns\WithMultipleSheets;
 use App\Exports\LegalAspects\Evaluations\EvaluationsListExcel;
+use App\Exports\LegalAspects\Evaluations\EvaluationsExecutesExcel;
 
 class EvaluationExcel implements WithMultipleSheets
 {
@@ -25,6 +26,7 @@ class EvaluationExcel implements WithMultipleSheets
         $sheets = [];
 
         $sheets[] = new EvaluationsListExcel($this->company_id);
+        $sheets[] = new EvaluationsExecutesExcel($this->company_id);
 
         return $sheets;
     }
