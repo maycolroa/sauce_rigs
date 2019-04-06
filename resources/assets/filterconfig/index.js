@@ -1,7 +1,9 @@
 import PreventiveLaboralMedicine from './PreventiveOccupationalMedicine.js'
+import LegalAspects from './LegalAspects.js'
 
 const config = []
-        .concat(PreventiveLaboralMedicine);
+        .concat(PreventiveLaboralMedicine)
+        .concat(LegalAspects);
 
 export default class FilterConfig {
     static get(method){
@@ -10,4 +12,4 @@ export default class FilterConfig {
         })[0];
         return configSelect;
     }
-}
+} 

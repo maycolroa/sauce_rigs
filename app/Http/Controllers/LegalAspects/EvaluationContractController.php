@@ -40,10 +40,30 @@ class EvaluationContractController extends Controller
                 'sau_ct_information_contract_lessee.social_reason as social_reason',
                 'sau_ct_information_contract_lessee.nit as nit'
             )
-            ->join('sau_ct_information_contract_lessee', 'sau_ct_information_contract_lessee.id', 'sau_ct_evaluation_contract.contract_id');
+            ->join('sau_ct_information_contract_lessee', 'sau_ct_information_contract_lessee.id', 'sau_ct_evaluation_contract.contract_id')
+            ->join('sau_ct_evaluations', 'sau_ct_evaluations.id', 'sau_ct_evaluation_contract.evaluation_id')
+            ->join('sau_ct_objectives', 'sau_ct_objectives.evaluation_id', 'sau_ct_evaluations.id')
+            ->join('sau_ct_subobjectives', 'sau_ct_subobjectives.objective_id', 'sau_ct_objectives.id')
+            ->groupBy('sau_ct_evaluation_contract.id');
 
         if ($request->has('modelId') && $request->get('modelId'))
             $evaluation_contracts->where('sau_ct_evaluation_contract.evaluation_id', '=', $request->get('modelId'));
+
+        $filters = $request->get('filters');
+
+        if (isset($filters["dateRange"]) && $filters["dateRange"])
+        {
+            $dates_request = explode('/', $filters["dateRange"]);
+            $dates = [];
+
+            if (COUNT($dates_request) == 2)
+            {
+                array_push($dates, (Carbon::createFromFormat('D M d Y',$dates_request[0]))->format('Y-m-d 00:00:00'));
+                array_push($dates, (Carbon::createFromFormat('D M d Y',$dates_request[1]))->format('Y-m-d 23:59:59'));
+            }
+            
+            $evaluation_contracts->betweenDate($dates);
+        }
 
         return Vuetable::of($evaluation_contracts)
                     ->make();
@@ -63,7 +83,8 @@ class EvaluationContractController extends Controller
         {
             $evaluation_contract = new EvaluationContract($request->all());
             $evaluation_contract->company_id = Session::get('company_id');
-            $evaluation_contract->evaluation_date = date('Y-m-d');
+            $evaluation_contract->evaluation_date = date('Y-m-d H:i:s');
+            $evaluation_contract->evaluator_id = Auth::user()->id;
 
             if(!$evaluation_contract->save()){
                 return $this->respondHttp500();
@@ -332,7 +353,7 @@ class EvaluationContractController extends Controller
                     {
                         $clone[$index]['value'] = isset($values[$index]) ? $values[$index] : NULL;
 
-                        if ($rating['apply'] == 'SI')
+                        if ($rating['apply'] == 'SI' && $clone[$index]['value'])
                         {
                             $clone_report[$index]['total'] += 1;
 

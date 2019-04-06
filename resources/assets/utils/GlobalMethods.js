@@ -42,9 +42,9 @@ export default class GlobalMethods {
     });
   }
 
-  static getDataMultiselect(url){
+  static getDataMultiselect(url, params = {}){
     return new Promise((resolve, reject) => {
-      axios.post(url)
+      axios.post(url, params)
       .then(response => {
         resolve(response.data);
       })

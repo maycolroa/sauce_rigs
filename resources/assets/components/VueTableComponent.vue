@@ -4,7 +4,8 @@
           <b-col cols="1">
               <filter-general 
                   v-model="filters" 
-                  :configName="configNameFilter" />
+                  :configName="configNameFilter"
+                  :modelId="modelId" />
           </b-col>
       </b-row>
 
@@ -96,7 +97,10 @@ export default {
     filters: {
         handler(val){
             if (this.tableReady)
+            {
               Vue.nextTick( () => this.$refs.vuetable.refresh() )
+              this.$emit("filtersUpdate", this.filters);
+            }
         },
         deep: true
     },
