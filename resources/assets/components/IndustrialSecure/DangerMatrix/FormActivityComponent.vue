@@ -18,7 +18,7 @@
                       </vue-advanced-select>
       </b-form-row>
       <b-form-row style="padding-top: 15px;">
-        <perfect-scrollbar :options="{ wheelPropagation: true }" class="mb-4" style="height: 600px; padding-right: 15px; width: 100%;">
+        <!-- <perfect-scrollbar :options="{ wheelPropagation: true }" class="mb-4" style="height: 600px; padding-right: 15px; width: 100%;"> -->
           <template v-for="(danger, index) in activity.dangers">
             <b-card no-body class="mb-2 border-secondary" :key="danger.key" style="width: 100%;" v-show="showDander(danger.danger.name)">
               <b-card-header class="bg-secondary">
@@ -62,7 +62,7 @@
               </b-collapse>
             </b-card>
           </template>
-        </perfect-scrollbar>
+        <!-- </perfect-scrollbar> -->
       </b-form-row>
     </b-form>
 </template>
