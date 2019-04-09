@@ -379,6 +379,7 @@ class DangerMatrixController extends Controller
                     
                     $danger->dm_activity_id = $activity->id;
                     $danger->danger_id = $itemD['danger_id'];
+                    $danger->danger_description = $itemD['danger_description'];
                     $danger->danger_generated = $itemD['danger_generated'];
                     $danger->possible_consequences_danger = $possible_consequences_danger->implode(',');
                     $danger->generating_source = $itemD['generating_source'];

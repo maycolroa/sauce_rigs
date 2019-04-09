@@ -13,12 +13,15 @@
                 <b-form-row>
                   <vue-ajax-advanced-select @selectedName="emitDangerName" :disabled="viewOnly" class="col-md-6" v-model="danger.danger_id" :selected-object="danger.multiselect_danger" name="danger_id" :error="form.errorsFor(`activities.${indexActivity}.dangers.${indexDanger}.danger_id`)" label="Peligro" placeholder="Seleccione el peligro" :url="dangersDataUrl">
                       </vue-ajax-advanced-select>
-                  <vue-advanced-select :disabled="viewOnly" class="col-md-6" v-model="danger.danger_generated" :multiple="false" :options="dangerGenerated" :hide-selected="false" name="danger_generated" :error="form.errorsFor(`activities.${indexActivity}.dangers.${indexDanger}.danger_generated`)" label="Peligro Generado" placeholder="Seleccione el peligro generado">
-                      </vue-advanced-select>
+                  <vue-textarea :disabled="viewOnly" class="col-md-6" v-model="danger.danger_description" label="Descripción del peligro" name="danger_description" :error="form.errorsFor(`activities.${indexActivity}.dangers.${indexDanger}.danger_description`)"  placeholder="Descripción del peligro"></vue-textarea>
                 </b-form-row>
                 <b-form-row>
+                  <vue-advanced-select :disabled="viewOnly" class="col-md-6" v-model="danger.danger_generated" :multiple="false" :options="dangerGenerated" :hide-selected="false" name="danger_generated" :error="form.errorsFor(`activities.${indexActivity}.dangers.${indexDanger}.danger_generated`)" label="Peligro Generado" placeholder="Seleccione el peligro generado">
+                      </vue-advanced-select>
                   <vue-ajax-advanced-select :disabled="viewOnly" class="col-md-6" v-model="danger.possible_consequences_danger" name="possible_consequences_danger" :error="form.errorsFor(`activities.${indexActivity}.dangers.${indexDanger}.possible_consequences_danger`)" label="Posibles consecuencias del peligro" placeholder="Seleccione las posibles consecuencias del peligro" :url="tagsPossibleConsequencesDangerDataUrl" :multiple="true" :allowEmpty="true" :taggable="true">
                       </vue-ajax-advanced-select>
+                </b-form-row>
+                <b-form-row>
                   <vue-textarea :disabled="viewOnly" class="col-md-6" v-model="danger.generating_source" label="Fuente generadora" name="generating_source" :error="form.errorsFor(`activities.${indexActivity}.dangers.${indexDanger}.generating_source`)"  placeholder="Fuente generadora"></vue-textarea>
                 </b-form-row>
               </b-card>
@@ -208,6 +211,7 @@ export default {
             id: '',
             dm_activity_id: '',
             danger_id: '',
+            danger_description: '',
             danger_generated: '',
             possible_consequences_danger: '',
             generating_source: '',
