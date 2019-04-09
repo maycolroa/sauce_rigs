@@ -12,7 +12,8 @@ class EmployeeProcess extends Model
     protected $table = 'sau_employees_processes';
 
     protected $fillable = [
-        'name'
+        'name',
+        'types'
     ];
 
     //the attribute define the table for scope company execute

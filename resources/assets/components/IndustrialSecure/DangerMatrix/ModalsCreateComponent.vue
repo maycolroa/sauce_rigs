@@ -1,14 +1,14 @@
 <template>
     <div>
         <div>
-            <b-btn v-if="auth.can['activities_c']" class="btn-modals" variant="primary" @click="showFilterModal('activity')">Crear Proceso</b-btn>&nbsp;&nbsp;
+            <b-btn v-if="auth.can['activities_c']" class="btn-modals" variant="primary" @click="showFilterModal('activity')">Crear Actividad</b-btn>&nbsp;&nbsp;
             <b-btn v-if="auth.can['dangers_c']" class="btn-modals" variant="primary" @click="showFilterModal('danger')">Crear Peligro</b-btn>
             &nbsp;&nbsp;
             <b-btn v-if="confLocation.regional == 'SI' && auth.can['regionals_c']" class="btn-modals" variant="primary" @click="showFilterModal('regional')">Crear Regional</b-btn>
             &nbsp;&nbsp;
             <b-btn v-if="confLocation.headquarter == 'SI' && auth.can['headquarters_c']" class="btn-modals" variant="primary" @click="showFilterModal('headquarter')">Crear Sede</b-btn>
             &nbsp;&nbsp;
-            <b-btn v-if="confLocation.process == 'SI' && auth.can['processes_c']" class="btn-modals" variant="primary" @click="showFilterModal('process')">Crear Macroproceso</b-btn>
+            <b-btn v-if="confLocation.process == 'SI' && auth.can['processes_c']" class="btn-modals" variant="primary" @click="showFilterModal('process')">Crear Proceso</b-btn>
             &nbsp;&nbsp;
             <b-btn v-if="confLocation.area == 'SI' && auth.can['areas_c']" class="btn-modals" variant="primary" @click="showFilterModal('area')">Crear Área</b-btn>
         </div>
@@ -16,7 +16,7 @@
         <!-- Modal Activity -->
         <b-modal ref="activity" :hideFooter="true" id="modals-top" size="lg" class="modal-top">
             <div slot="modal-title">
-                Crear Proceso
+                Crear Actividad
             </div>
 
             <div class="row" style="padding-bottom: 10px;">
@@ -131,7 +131,7 @@
         <!-- Modal Proceso -->
         <b-modal ref="process" :hideFooter="true" id="modals-top" size="lg" class="modal-top">
             <div slot="modal-title">
-                Crear Macroproceso
+                Crear Proceso
             </div>
 
             <div class="row" style="padding-bottom: 10px;">

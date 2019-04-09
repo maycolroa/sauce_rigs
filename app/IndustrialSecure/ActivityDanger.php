@@ -13,6 +13,7 @@ class ActivityDanger extends Model
     protected $fillable = [
         'dm_activity_id',
         'danger_id',
+        'danger_description',
         'danger_generated',
         'possible_consequences_danger',
         'generating_source',

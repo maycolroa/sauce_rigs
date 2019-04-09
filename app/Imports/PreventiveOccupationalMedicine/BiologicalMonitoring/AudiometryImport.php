@@ -152,7 +152,7 @@ class AudiometryImport implements ToCollection
                         'centro_costo'      => $row[6],
                         'regional'          => $row[7],
                         'sede'              => $row[8],
-                        'macroproceso'      => $row[9],
+                        'proceso'           => $row[9],
                         'area'              => $row[10],
                         'fecha_ingreso'     => $fecha_ingreso
                     ],
@@ -167,7 +167,7 @@ class AudiometryImport implements ToCollection
                         'regional'         => 'required',
                         'sede'             => 'required',
                         'area'             => 'required',
-                        'macroproceso'     => 'required',
+                        'proceso'          => 'required',
                         'fecha_ingreso'    => 'required|date',
                     ]);
 

@@ -80,7 +80,7 @@ export default {
                     ready: false
                 },
                 processes: {
-                    label: 'Macroprocesos',
+                    label: 'Procesos',
                     name: 'processes',
                     data: [],
                     active: false,

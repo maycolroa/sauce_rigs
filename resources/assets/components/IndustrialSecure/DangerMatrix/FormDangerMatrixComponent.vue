@@ -26,9 +26,15 @@
       <b-form-row>
         <vue-input :disabled="viewOnly" class="col-md-6" v-model="form.name" label="Nombre" type="text" name="name" :error="form.errorsFor('name')" placeholder="Nombre"></vue-input>
 
-        <div class="col-md-6" v-if="!viewOnly">
+        <vue-ajax-advanced-select :disabled="viewOnly" class="col-md-6" v-model="form.competitors_id" :selected-object="form.multiselect_competitors_id" name="competitors_id" label="Participantes" placeholder="Seleccione los participantes" :url="userDataUrl" :error="form.errorsFor('competitors_id')" :multiple="true" :allowEmpty="true">
+          </vue-ajax-advanced-select>
+
+      </b-form-row>
+
+      <b-form-row>
+        <div class="col-md-12" v-if="!viewOnly">
           <div class="float-right" style="padding-top: 20px;">
-            <b-btn variant="primary" @click.prevent="addActiviy()"><span class="ion ion-md-add-circle"></span>&nbsp;&nbsp;Agregar Proceso</b-btn>
+            <b-btn variant="primary" @click.prevent="addActiviy()"><span class="ion ion-md-add-circle"></span>&nbsp;&nbsp;Agregar Actividad</b-btn>
           </div>
         </div>
       </b-form-row>
@@ -40,12 +46,12 @@
                 v-for="(activity, index) in form.activities"
                 :key="activity.key">
                 <template slot="title">
-                  <strong>{{ form.activities[index].activity.name ? form.activities[index].activity.name : `Nuevo Proceso ${index + 1}` }}</strong> 
+                  <strong>{{ form.activities[index].activity.name ? form.activities[index].activity.name : `Nuevo Actividad ${index + 1}` }}</strong> 
                   <b-btn @click.prevent="removeActivity(index)" 
                     v-if="form.activities.length > 1 && !viewOnly"
                     size="sm" 
                     variant="outline-primary icon-btn borderless"
-                    v-b-tooltip.top title="Eliminar Proceso">
+                    v-b-tooltip.top title="Eliminar Actividad">
                     <span class="ion ion-md-close-circle"></span>
                   </b-btn>
                 </template>
@@ -108,6 +114,7 @@ import FormActivityComponent from '@/components/IndustrialSecure/DangerMatrix/Fo
 import ModalsCreateComponent from '@/components/IndustrialSecure/DangerMatrix/ModalsCreateComponent.vue';
 import LocationLevelComponent from '@/components/CustomInputs/LocationLevelComponent.vue';
 import VueTextarea from "@/components/Inputs/VueTextarea.vue";
+import VueAjaxAdvancedSelect from "@/components/Inputs/VueAjaxAdvancedSelect.vue";
 
 export default {
   components: {
@@ -115,7 +122,8 @@ export default {
     FormActivityComponent,
     ModalsCreateComponent,
     LocationLevelComponent,
-    VueTextarea
+    VueTextarea,
+    VueAjaxAdvancedSelect
   },
   props: {
     url: { type: String },
@@ -123,6 +131,7 @@ export default {
     cancelUrl: { type: [String, Object], required: true },
     isEdit: { type: Boolean, default: false },
     viewOnly: { type: Boolean, default: false },
+    userDataUrl: { type: String, default: "" },
     typeActivities: {
       type: Array,
       default: function() {
@@ -163,6 +172,7 @@ export default {
               employee_process_id: ''
             },
             name: '',
+            competitors_id: '',
             activities: [
               {
                 key: new Date().getTime(),
