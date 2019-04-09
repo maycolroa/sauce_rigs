@@ -31,14 +31,14 @@
               <b-card bg-variant="transparent" border-variant="secondary" title="Tipo y número de expuestos" class="mb-3 box-shadow-none">
                 <b-form-row>
                   <vue-input :disabled="viewOnly" class="col-md-6" v-model="danger.collaborators_quantity" label="Colaboradores" type="number" name="collaborators_quantity" :error="form.errorsFor(`activities.${indexActivity}.dangers.${indexDanger}.collaborators_quantity`)" placeholder="0"></vue-input>
-                  <vue-input :disabled="viewOnly" class="col-md-6" v-model="danger.esd_quantity" label="ESD" type="number" name="esd_quantity" :error="form.errorsFor(`activities.${indexActivity}.dangers.${indexDanger}.esd_quantity`)" placeholder="0"></vue-input>
+                  <vue-input :disabled="viewOnly" class="col-md-6" v-model="danger.esd_quantity" label="Contratistas" type="number" name="esd_quantity" :error="form.errorsFor(`activities.${indexActivity}.dangers.${indexDanger}.esd_quantity`)" placeholder="0"></vue-input>
                 </b-form-row>
                 <b-form-row>
                   <vue-input :disabled="viewOnly" class="col-md-6" v-model="danger.visitor_quantity" label="Visitantes" type="number" name="visitor_quantity" :error="form.errorsFor(`activities.${indexActivity}.dangers.${indexDanger}.visitor_quantity`)" placeholder="0"></vue-input>
                   <vue-input :disabled="viewOnly" class="col-md-6" v-model="danger.student_quantity" label="Estudiantes" type="number" name="student_quantity" :error="form.errorsFor(`activities.${indexActivity}.dangers.${indexDanger}.student_quantity`)" placeholder="0"></vue-input>
                 </b-form-row>
                 <b-form-row>
-                  <vue-input :disabled="viewOnly" class="col-md-6" v-model="danger.esc_quantity" label="ESC" type="number" name="esc_quantity" :error="form.errorsFor(`activities.${indexActivity}.dangers.${indexDanger}.esc_quantity`)" placeholder="0"></vue-input>
+                  <vue-input :disabled="viewOnly" class="col-md-6" v-model="danger.esc_quantity" label="Arrendatarios" type="number" name="esc_quantity" :error="form.errorsFor(`activities.${indexActivity}.dangers.${indexDanger}.esc_quantity`)" placeholder="0"></vue-input>
                 </b-form-row>
               </b-card>
             </tab-content>
