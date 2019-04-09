@@ -103,6 +103,12 @@ export default [
 				import('@/views/LegalAspects/evaluationContracts/edit')
 			},
 			{
+				name: 'legalaspects-evaluations-report',
+				path: 'evaluations/report',
+				component: () =>
+				import('@/views/LegalAspects/evaluationContracts/report')
+			},
+			{
 				name: 'legalaspects-upload-files',
 				path: 'upload-files',
 				component: () => import('@/views/LegalAspects/contracts/uploadFiles/index')
