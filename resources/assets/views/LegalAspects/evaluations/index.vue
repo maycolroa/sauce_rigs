@@ -10,6 +10,7 @@
         <b-card-header class="with-elements">
           <div class="card-title-elements"> 
             <b-btn :to="{name:'legalaspects-evaluations-create'}" variant="primary">Crear Evaluación</b-btn>
+            <b-btn :to="{name:'legalaspects-evaluations-report'}" variant="primary">Ver Reportes</b-btn>
           </div>
           <div class="card-title-elements ml-md-auto">
             <b-dd variant="default" :right="isRTL">

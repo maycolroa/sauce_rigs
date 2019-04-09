@@ -31,7 +31,8 @@ class Vuetable
     {
         $request = app('request');
 
-        if (get_class($query) != \Illuminate\Database\Eloquent\Builder::class) {
+        if (get_class($query) != \Illuminate\Database\Eloquent\Builder::class &&
+        get_class($query) != \Illuminate\Database\Query\Builder::class) {
             throw new \Exception('Unsupported builder type');
         }
 

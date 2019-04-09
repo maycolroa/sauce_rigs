@@ -240,4 +240,30 @@ export default [
             filterColumns: true,
         }
     },
+    {
+        name: 'legalaspects-evaluations-reports',
+        fields: [
+            { name: 'subobjective', data: 'subobjective', title: 'ID', sortable: false, searchable: false, detail: false, key: true },
+            { name: 'objective', data: 'objective', title: 'Objetivo', sortable: true, searchable: false, detail: false, key: false },
+            { name: 'subobjective', data: 'subobjective', title: 'Subobjetivo', sortable: true, searchable: false, detail: false, key: false },
+            { name: 't_evaluations', data: 't_evaluations', title: '# Evaluaciones', sortable: true, searchable: false, detail: false, key: false },
+            { name: 't_cumple', data: 't_cumple', title: '# Cumplimietos', sortable: true, searchable: false, detail: false, key: false },
+            { name: 't_no_cumple', data: 't_no_cumple', title: '# No Cumplimientos', sortable: true, searchable: false, detail: false, key: false },
+            { name: 'p_cumple', data: 'p_cumple', title: '% Cumplimiento', sortable: true, searchable: false, detail: false, key: false },
+            { name: 'p_no_cumple', data: 'p_no_cumple', title: '% No Cumplimiento', sortable: true, searchable: false, detail: false, key: false }
+        ],
+        'controlls': [{
+                type: 'push',
+                buttons: []
+            },
+            {
+                type: 'base',
+                buttons: [],
+            }],
+        configuration: {
+            urlData: '/legalAspects/evaluationContract/report',
+            filterColumns: false,
+            configNameFilter: 'legalaspects-evaluations'
+        }
+    },
 ]

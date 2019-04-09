@@ -12,6 +12,7 @@ use App\LegalAspects\EvaluationContract;
 use App\LegalAspects\Interviewee;
 use App\LegalAspects\Item;
 use App\LegalAspects\Observation;
+use App\Jobs\LegalAspects\Evaluations\EvaluationContractReportExportJob;
 use Carbon\Carbon;
 use Session;
 use DB;
@@ -381,5 +382,194 @@ class EvaluationContractController extends Controller
 
         if (COUNT($data['observations']) > 0)
             Observation::destroy($data['observations']);
+    }
+
+    public function report(Request $request)
+    {
+        $whereObjectives = '';
+        $whereSubojectives = '';
+        $whereDates = '';
+        
+        $filters = $request->get('filters');
+
+        if (isset($filters["evaluationsObjectives"]))
+            $whereObjectives = $this->scopeQueryReport('o', $this->getValuesForMultiselect($filters["evaluationsObjectives"]), $filters['filtersType']['evaluationsObjectives']);
+
+        if (isset($filters["evaluationsSubobjectives"]))
+            $whereSubojectives = $this->scopeQueryReport('s', $this->getValuesForMultiselect($filters["evaluationsSubobjectives"]), $filters['filtersType']['evaluationsSubobjectives']);
+
+        if (isset($filters["dateRange"]) && $filters["dateRange"])
+        {
+            $dates_request = explode('/', $filters["dateRange"]);
+            $dates = [];
+
+            if (COUNT($dates_request) == 2)
+            {
+                array_push($dates, (Carbon::createFromFormat('D M d Y',$dates_request[0]))->format('Y-m-d 00:00:00'));
+                array_push($dates, (Carbon::createFromFormat('D M d Y',$dates_request[1]))->format('Y-m-d 23:59:59'));
+
+                $whereDates = " AND ec.evaluation_date BETWEEN '".$dates[0]."' AND '".$dates[1]."'";
+            }
+        }
+
+        $evaluations = DB::table(DB::raw("(SELECT 
+            t.*,
+            (t_evaluations - t_no_cumple) AS t_cumple,
+            CONCAT(ROUND( ((t_evaluations - t_no_cumple) * 100) / t_evaluations, 1), '%') AS p_cumple,
+            CONCAT(ROUND( (t_no_cumple * 100) / t_evaluations, 1), '%') AS p_no_cumple 
+            FROM (
+            
+                SELECT 
+                    GROUP_CONCAT(DISTINCT s.id) as id,
+                    o.description as objective,
+                    s.description as subobjective,
+                    COUNT(DISTINCT ec.id) as t_evaluations,
+                    SUM(
+                    (
+                        SELECT IF(COUNT(IF(eir.value='NO',1, NULL)) > 0, 1, 0) as t_no_cumple
+                            FROM sau_ct_items i
+                            LEFT JOIN sau_ct_evaluation_item_rating eir ON eir.item_id = i.id
+                            WHERE eir.evaluation_id = ec.id AND i.subobjective_id = s.id
+                    )) AS t_no_cumple
+                
+                    FROM sau_ct_evaluation_contract ec
+                    INNER JOIN sau_ct_evaluations e ON e.id = ec.evaluation_id
+                    INNER JOIN sau_ct_objectives o ON o.evaluation_id = e.id
+                    INNER JOIN sau_ct_subobjectives s ON s.objective_id = o.id
+                
+                    WHERE ec.company_id = ".Session::get('company_id'). $whereDates . $whereObjectives . $whereSubojectives ."
+                    GROUP BY objective, subobjective
+                ) AS t
+            ) AS t"));
+    
+        return Vuetable::of($evaluations)
+            ->make();
+    }
+
+    private function scopeQueryReport($table, $data, $typeSearch)
+    {
+        $ids = [];
+        $query = '';
+
+        foreach ($data as $key => $value)
+        {
+            $ids[] = $value;
+        }
+
+        if(COUNT($ids) > 0)
+        {
+            $ids = implode(",", $ids);
+
+            if ($typeSearch == 'IN')
+                $query = " AND $table.id IN ($ids)";
+
+            else if ($typeSearch == 'NOT IN')
+                $query = " AND $table.id NOT IN ($ids)";
+        }
+
+        return $query;
+    }
+
+    /**
+     * Export resources from storage.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function exportReport(Request $request)
+    {
+        try
+        {
+            $objectives = $this->getValuesForMultiselect($request->evaluationsObjectives);
+            $subobjectives = $this->getValuesForMultiselect($request->evaluationsSubobjectives);
+            $dates = [];
+            $filtersType = $request->filtersType;
+
+            if (isset($request->dateRange) && $request->dateRange)
+            {
+                $dates_request = explode('/', $request->dateRange);
+
+                if (COUNT($dates_request) == 2)
+                {
+                    array_push($dates, (Carbon::createFromFormat('D M d Y',$dates_request[0]))->format('Y-m-d 00:00:00'));
+                    array_push($dates, (Carbon::createFromFormat('D M d Y',$dates_request[1]))->format('Y-m-d 23:59:59'));
+                }
+                
+            }
+
+            $filters = [
+                'objectives' => $objectives,
+                'subobjectives' => $subobjectives,
+                'dates' => $dates,
+                'filtersType' => $filtersType
+            ];
+
+            EvaluationContractReportExportJob::dispatch(Auth::user(), Session::get('company_id'), $filters);
+        
+            return $this->respondHttp200();
+        } catch(Exception $e) {
+            return $this->respondHttp500();
+        }
+    }
+
+    public function getTotales(Request $request)
+    {
+        $whereDates = '';
+
+        $objectives = $this->getValuesForMultiselect($request->evaluationsObjectives);
+        $subobjectives = $this->getValuesForMultiselect($request->evaluationsSubobjectives);
+        $filtersType = $request->filtersType;
+
+        $whereObjectives = $this->scopeQueryReport('o', $objectives, $filtersType['evaluationsObjectives']);
+        $whereSubojectives = $this->scopeQueryReport('s', $subobjectives, $filtersType['evaluationsSubobjectives']);
+
+        if (isset($request->dateRange) && $request->dateRange)
+        {
+            $dates_request = explode('/', $request->dateRange);
+            $dates = [];
+
+            if (COUNT($dates_request) == 2)
+            {
+                array_push($dates, (Carbon::createFromFormat('D M d Y',$dates_request[0]))->format('Y-m-d 00:00:00'));
+                array_push($dates, (Carbon::createFromFormat('D M d Y',$dates_request[1]))->format('Y-m-d 23:59:59'));
+
+                $whereDates = " AND ec.evaluation_date BETWEEN '".$dates[0]."' AND '".$dates[1]."'";
+            }
+        }
+
+        $evaluations = DB::table(DB::raw("(SELECT 
+            SUM(t_evaluations) AS evaluations,
+            SUM(t_no_cumple) as t_no_cumple,
+            (SUM(t_evaluations) - SUM(t_no_cumple)) AS t_cumple,
+            CONCAT(ROUND( ((SUM(t_evaluations) - SUM(t_no_cumple)) * 100) / SUM(t_evaluations), 1), '%') AS p_cumple,
+            CONCAT(ROUND( (SUM(t_no_cumple) * 100) / SUM(t_evaluations), 1), '%') AS p_no_cumple 
+            FROM (
+            
+                SELECT 
+                    GROUP_CONCAT(DISTINCT s.id) as id,
+                    o.description as objective,
+                    s.description as subobjective,
+                    COUNT(DISTINCT ec.id) as t_evaluations,
+                    SUM(
+                    (
+                        SELECT IF(COUNT(IF(eir.value='NO',1, NULL)) > 0, 1, 0) as t_no_cumple
+                            FROM sau_ct_items i
+                            LEFT JOIN sau_ct_evaluation_item_rating eir ON eir.item_id = i.id
+                            WHERE eir.evaluation_id = ec.id AND i.subobjective_id = s.id
+                    )) AS t_no_cumple
+                
+                    FROM sau_ct_evaluation_contract ec
+                    INNER JOIN sau_ct_evaluations e ON e.id = ec.evaluation_id
+                    INNER JOIN sau_ct_objectives o ON o.evaluation_id = e.id
+                    INNER JOIN sau_ct_subobjectives s ON s.objective_id = o.id
+                
+                    WHERE ec.company_id = ".Session::get('company_id'). $whereDates . $whereObjectives . $whereSubojectives ."
+                    GROUP BY objective, subobjective
+                ) AS t
+            ) AS t"))
+            ->first();
+    
+        return $this->respondHttp200([
+            'data' => $evaluations
+        ]);
     }
 }
