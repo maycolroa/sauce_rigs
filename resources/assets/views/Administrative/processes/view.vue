@@ -1,7 +1,7 @@
 <template>
   <div>
     <h4 class="font-weight-bold mb-4">
-       <span class="text-muted font-weight-light">Macroprocesos /</span> Ver
+       <span class="text-muted font-weight-light">Procesos /</span> Ver
     </h4>
 
     <div class="col-md">
@@ -25,7 +25,7 @@ import Alerts from '@/utils/Alerts.js';
 export default {
   name: 'administrative-processes-edit',
   metaInfo: {
-    title: 'Macroprocesos - Ver'
+    title: 'Procesos - Ver'
   },
   components:{
     AdministrativeProcessForm

@@ -81,7 +81,7 @@ class VuetableColumnManager
             ['name' => 'sau_users.name', 'data'=> 'supervisor', 'title'=> 'Supervisor', 'sortable'=> true, 'searchable'=> true, 'detail'=> false, 'key'=> false ],
         ];
 
-        $colums = array_merge($colums, $this->getColumnsLocations(['process' => 'Macroproceso']));
+        $colums = array_merge($colums, $this->getColumnsLocations());
         $colums = array_merge($colums, [
             ['name' => '', 'data'=> 'controlls', 'title'=> 'Controles', 'sortable'=> false, 'searchable'=> false, 'detail'=> false, 'key'=> false ],
         ]);
