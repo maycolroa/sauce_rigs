@@ -184,7 +184,9 @@ export default {
                 })
         }
 
-        this.setMultiselectValue();
+        setTimeout(() => {
+            this.setMultiselectValue();
+        }, 3000)
     },
     computed:{
         state(){

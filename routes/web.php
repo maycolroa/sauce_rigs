@@ -69,6 +69,7 @@ Route::middleware(['auth'])->group(function () {
         Route::post('tagsEpp', 'IndustrialSecure\TagController@multiselectEpp');
         Route::post('tagsPossibleConsequencesDanger', 'IndustrialSecure\TagController@multiselectPossibleConsequencesDanger');
         Route::post('tagsWarningSignage', 'IndustrialSecure\TagController@multiselectWarningSignage');
+        Route::post('tagsTypeProcess', 'TagController@multiselectTypeProcess');
         Route::post('actionPlanStates', 'MultiSelectRadioController@actionPlanStates');
         Route::post('contractors', 'LegalAspects\ContractLesseeController@multiselect'); 
 

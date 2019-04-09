@@ -17,6 +17,27 @@ class ProcessRequest extends FormRequest
         return true;
     }
 
+    public function validator($factory)
+    {
+        return $factory->make(
+            $this->sanitize(), $this->container->call([$this, 'rules']), $this->messages()
+        );
+    }
+
+    public function sanitize()
+    {
+        if ($this->has('types'))
+        {
+            foreach ($this->input('types') as $key => $value)
+            {
+                $data['types'][$key] = json_decode($value, true);
+                $this->merge($data);
+            }
+        }
+
+        return $this->all();
+    }
+
     /**
      * Get the validation rules that apply to the request.
      *
