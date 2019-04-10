@@ -51,7 +51,7 @@ export default [{
           import('@/views/PreventiveOccupationalMedicine/biologicalmonitoring/audiometry/report')
       }
     ]), 
-    ...middleware({ 'check-permission': 'biologicalMonitoring_audiometry_r' }, [
+    ...middleware({ 'check-permission': 'biologicalMonitoring_audiometry_informs_r' }, [
       {
         name: 'biologicalmonitoring-audiometry-informs',
         path: 'biologicalmonitoring/audiometry/informs',
@@ -59,7 +59,7 @@ export default [{
           import('@/views/PreventiveOccupationalMedicine/biologicalmonitoring/audiometry/informs')
       }
     ]), 
-    ...middleware({ 'check-permission': 'biologicalMonitoring_audiometry_r' }, [
+    ...middleware({ 'check-permission': 'biologicalMonitoring_audiometry_inform_individual_r' }, [
       {
         name: 'biologicalmonitoring-audiometry-informs-individual',
         path: 'biologicalmonitoring/audiometry/informs/individual',
