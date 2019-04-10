@@ -11,6 +11,7 @@
           <div class="card-title-elements"> 
             <b-btn :to="{name:'legalaspects-evaluations-create'}" variant="primary">Crear Evaluación</b-btn>
             <b-btn :to="{name:'legalaspects-evaluations-report'}" variant="primary">Ver Reportes</b-btn>
+            <b-btn :to="{name:'legalaspects-typesrating'}" variant="primary">Administrar Tipos de calificación</b-btn>
           </div>
           <div class="card-title-elements ml-md-auto">
             <b-dd variant="default" :right="isRTL">
