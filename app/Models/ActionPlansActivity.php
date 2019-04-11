@@ -39,4 +39,73 @@ class ActionPlansActivity extends Model
     {
         return $this->hasOne(ActionPlansActivityModule::class, 'activity_id');
     }
+
+    /**
+     * filters checks through the given responsibles
+     * @param  Illuminate\Database\Eloquent\Builder $query
+     * @param  array $responsibles
+     * @return Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeInResponsibles($query, $responsibles, $typeSearch = 'IN')
+    {
+        if (COUNT($responsibles) > 0)
+        {
+            if ($typeSearch == 'IN')
+                $query->whereIn('sau_action_plans_activities.responsible_id', $responsibles);
+
+            else if ($typeSearch == 'NOT IN')
+                $query->whereNotIn('sau_action_plans_activities.responsible_id', $responsibles);
+        }
+
+        return $query;
+    }
+
+    /**
+     * filters checks through the given states
+     * @param  Illuminate\Database\Eloquent\Builder $query
+     * @param  array $states
+     * @return Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeInStates($query, $states, $typeSearch = 'IN')
+    {
+        if (COUNT($states) > 0)
+        {
+            if ($typeSearch == 'IN')
+                $query->whereIn('sau_action_plans_activities.state', $states);
+
+            else if ($typeSearch == 'NOT IN')
+                $query->whereNotIn('sau_action_plans_activities.state', $states);
+        }
+
+        return $query;
+    }
+
+    /**
+     * filters checks through the given modules
+     * @param  Illuminate\Database\Eloquent\Builder $query
+     * @param  array $modules
+     * @return Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeInModules($query, $modules, $typeSearch = 'IN')
+    {
+        $ids = [];
+
+        foreach ($modules as $key => $value)
+        {
+            $ids[] = $value;
+        }
+
+        if(COUNT($ids) > 0)
+        {
+            $ids = explode(",", implode(",", $ids));
+
+            if ($typeSearch == 'IN')
+                $query->whereIn('sau_modules.id', $ids);
+
+            else if ($typeSearch == 'NOT IN')
+                $query->whereNotIn('sau_modules.id', $ids);
+        }
+
+        return $query;
+    }
 }

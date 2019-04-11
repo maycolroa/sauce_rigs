@@ -134,6 +134,27 @@ export default {
                     active: false,
                     ready: false
                 },
+                responsibles: {
+                    label: 'Responsables',
+                    name: 'responsibles',
+                    data: [],
+                    active: false,
+                    ready: false
+                },
+                modules: {
+                    label: 'Módulos',
+                    name: 'modules',
+                    data: [],
+                    active: false,
+                    ready: false
+                },
+                states: {
+                    label: 'Estados',
+                    name: 'states',
+                    data: [],
+                    active: false,
+                    ready: false
+                },
             },
             filtersSelected: {
                 regionals: [],
@@ -146,6 +167,9 @@ export default {
                 dateRange: '',
                 evaluationsObjectives: [],
                 evaluationsSubobjectives: [],
+                responsibles: [],
+                modules: [],
+                states: [],
                 filtersType: {
                     regionals: 'IN',
                     headquarters: 'IN',
@@ -155,7 +179,10 @@ export default {
                     positions: 'IN',
                     years: 'IN',
                     evaluationsObjectives: 'IN',
-                    evaluationsSubobjectives: 'IN'
+                    evaluationsSubobjectives: 'IN',
+                    responsibles: 'IN',
+                    modules: 'IN',
+                    states: 'IN'
                 }
             }
         }
@@ -251,6 +278,15 @@ export default {
         },
         'filtersSelected.evaluationsSubobjectives'() {
             this.updateFilterTable('evaluationsSubobjectives')
+        },
+        'filtersSelected.responsibles'() {
+            this.updateFilterTable('responsibles')
+        },
+        'filtersSelected.modules'() {
+            this.updateFilterTable('modules')
+        },
+        'filtersSelected.states'() {
+            this.updateFilterTable('states')
         },
     },
     methods: {

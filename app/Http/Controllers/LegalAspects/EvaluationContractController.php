@@ -414,9 +414,8 @@ class EvaluationContractController extends Controller
 
         $evaluations = DB::table(DB::raw("(SELECT 
             t.*,
-            (t_evaluations - t_no_cumple) AS t_cumple,
-            CONCAT(ROUND( ((t_evaluations - t_no_cumple) * 100) / t_evaluations, 1), '%') AS p_cumple,
-            CONCAT(ROUND( (t_no_cumple * 100) / t_evaluations, 1), '%') AS p_no_cumple 
+            CONCAT(ROUND( (t_cumple * 100) / (t_cumple + t_no_cumple), 1), '%') AS p_cumple,
+            CONCAT(ROUND( (t_no_cumple * 100) / (t_cumple + t_no_cumple), 1), '%') AS p_no_cumple 
             FROM (
             
                 SELECT 
@@ -424,18 +423,28 @@ class EvaluationContractController extends Controller
                     o.description as objective,
                     s.description as subobjective,
                     COUNT(DISTINCT ec.id) as t_evaluations,
-                    SUM(
-                    (
-                        SELECT IF(COUNT(IF(eir.value='NO',1, NULL)) > 0, 1, 0) as t_no_cumple
-                            FROM sau_ct_items i
-                            LEFT JOIN sau_ct_evaluation_item_rating eir ON eir.item_id = i.id
-                            WHERE eir.evaluation_id = ec.id AND i.subobjective_id = s.id
-                    )) AS t_no_cumple
+                    SUM(IF(eir.value = 'NO', 1, 0)) AS t_no_cumple,
+                    SUM(IF(eir.value = 'SI', 1,
+                            IF(eir.value IS NULL AND eir.item_id IS NOT NULL, 1,
+                                IF(eir.value IS NULL AND eir.item_id IS NULL,
+                                    (SELECT 
+                                            COUNT(etr.type_rating_id)
+                                        FROM
+                                            sau_ct_evaluation_type_rating etr
+                                        WHERE
+                                            etr.evaluation_id = e.id
+                                    )
+                                , 0)
+                            )
+                        )
+                    ) AS t_cumple
                 
                     FROM sau_ct_evaluation_contract ec
                     INNER JOIN sau_ct_evaluations e ON e.id = ec.evaluation_id
                     INNER JOIN sau_ct_objectives o ON o.evaluation_id = e.id
                     INNER JOIN sau_ct_subobjectives s ON s.objective_id = o.id
+                    INNER JOIN sau_ct_items i ON i.subobjective_id = s.id
+                    LEFT JOIN sau_ct_evaluation_item_rating eir ON eir.item_id = i.id AND eir.evaluation_id = ec.id
                 
                     WHERE ec.company_id = ".Session::get('company_id'). $whereDates . $whereObjectives . $whereSubojectives ."
                     GROUP BY objective, subobjective
@@ -539,9 +548,9 @@ class EvaluationContractController extends Controller
         $evaluations = DB::table(DB::raw("(SELECT 
             SUM(t_evaluations) AS evaluations,
             SUM(t_no_cumple) as t_no_cumple,
-            (SUM(t_evaluations) - SUM(t_no_cumple)) AS t_cumple,
-            CONCAT(ROUND( ((SUM(t_evaluations) - SUM(t_no_cumple)) * 100) / SUM(t_evaluations), 1), '%') AS p_cumple,
-            CONCAT(ROUND( (SUM(t_no_cumple) * 100) / SUM(t_evaluations), 1), '%') AS p_no_cumple 
+            SUM(t_cumple) AS t_cumple,
+            CONCAT(ROUND( (SUM(t_cumple) * 100) / SUM(t_cumple + t_no_cumple), 1), '%') AS p_cumple,
+            CONCAT(ROUND( (SUM(t_no_cumple) * 100) / SUM(t_cumple + t_no_cumple), 1), '%') AS p_no_cumple 
             FROM (
             
                 SELECT 
@@ -549,18 +558,28 @@ class EvaluationContractController extends Controller
                     o.description as objective,
                     s.description as subobjective,
                     COUNT(DISTINCT ec.id) as t_evaluations,
-                    SUM(
-                    (
-                        SELECT IF(COUNT(IF(eir.value='NO',1, NULL)) > 0, 1, 0) as t_no_cumple
-                            FROM sau_ct_items i
-                            LEFT JOIN sau_ct_evaluation_item_rating eir ON eir.item_id = i.id
-                            WHERE eir.evaluation_id = ec.id AND i.subobjective_id = s.id
-                    )) AS t_no_cumple
+                    SUM(IF(eir.value = 'NO', 1, 0)) AS t_no_cumple,
+                    SUM(IF(eir.value = 'SI', 1,
+                            IF(eir.value IS NULL AND eir.item_id IS NOT NULL, 1,
+                                IF(eir.value IS NULL AND eir.item_id IS NULL,
+                                    (SELECT 
+                                            COUNT(etr.type_rating_id)
+                                        FROM
+                                            sau_ct_evaluation_type_rating etr
+                                        WHERE
+                                            etr.evaluation_id = e.id
+                                    )
+                                , 0)
+                            )
+                        )
+                    ) AS t_cumple
                 
                     FROM sau_ct_evaluation_contract ec
                     INNER JOIN sau_ct_evaluations e ON e.id = ec.evaluation_id
                     INNER JOIN sau_ct_objectives o ON o.evaluation_id = e.id
                     INNER JOIN sau_ct_subobjectives s ON s.objective_id = o.id
+                    INNER JOIN sau_ct_items i ON i.subobjective_id = s.id
+                    LEFT JOIN sau_ct_evaluation_item_rating eir ON eir.item_id = i.id AND eir.evaluation_id = ec.id
                 
                     WHERE ec.company_id = ".Session::get('company_id'). $whereDates . $whereObjectives . $whereSubojectives ."
                     GROUP BY objective, subobjective

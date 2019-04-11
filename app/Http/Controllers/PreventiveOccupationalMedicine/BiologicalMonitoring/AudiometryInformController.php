@@ -17,7 +17,8 @@ class AudiometryInformController extends Controller
     function __construct()
     {
         $this->middleware('auth');
-        $this->middleware('permission:biologicalMonitoring_audiometry_r');
+        $this->middleware('permission:biologicalMonitoring_audiometry_informs_r', ['only' => 'data']);
+        $this->middleware('permission:biologicalMonitoring_audiometry_inform_individual_r', ['only' => 'dataIndividual']);
     }
 
     /**

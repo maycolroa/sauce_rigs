@@ -45,7 +45,8 @@ Route::middleware(['auth'])->group(function () {
 
     Route::prefix('selects')->group(function () {
         Route::post('employees', 'Administrative\EmployeesController@multiselect');  
-        Route::post('users', 'Administrative\Users\UserController@multiselect');  
+        Route::post('users', 'Administrative\Users\UserController@multiselect');
+        Route::post('usersAll', 'Administrative\Users\UserController@multiselectAll');  
         Route::post('multiselect', 'ApplicationController@multiselect');
         Route::post('roles', 'Administrative\Roles\RoleController@multiselect');
         Route::post('modulesGroup', 'ApplicationController@multiselectGroupModules');
@@ -71,6 +72,7 @@ Route::middleware(['auth'])->group(function () {
         Route::post('tagsWarningSignage', 'IndustrialSecure\TagController@multiselectWarningSignage');
         Route::post('tagsTypeProcess', 'TagController@multiselectTypeProcess');
         Route::post('actionPlanStates', 'MultiSelectRadioController@actionPlanStates');
+        Route::post('actionPlanModules', 'Administrative\ActionPlans\ActionPlanController@actionPlanModules');
         Route::post('contractors', 'LegalAspects\ContractLesseeController@multiselect'); 
 
         Route::prefix('evaluations')->group(function () {
@@ -133,6 +135,7 @@ Route::middleware(['auth'])->group(function () {
       });
 
       Route::post('actionplan/data', 'Administrative\ActionPlans\ActionPlanController@data');
+      Route::post('actionplan/export', 'Administrative\ActionPlans\ActionPlanController@export');
       Route::ApiResource('actionplan', 'Administrative\ActionPlans\ActionPlanController');
     });
 

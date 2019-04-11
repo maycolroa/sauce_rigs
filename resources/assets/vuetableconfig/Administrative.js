@@ -518,6 +518,7 @@ export default [
     configuration: {
       urlData: '/administration/actionplan/data',
       filterColumns: true,
+      configNameFilter: 'administrative-actionplans'
     }
   }
 ];
