@@ -231,13 +231,6 @@ a[x-apple-data-detectors=true] {
               <!--[if (!mso)&(!IE)]><!--><div style="border-top: 0px solid transparent; border-left: 0px solid transparent; border-bottom: 2px solid #f0635f; border-right: 0px solid transparent; padding-top:50px; padding-bottom:30px; padding-right: 0px; padding-left: 0px;"><!--<![endif]-->
 
 
-                    <div align="left" class="img-container left autowidth" style="padding-right: 0px;  padding-left: 0px;">
-<!--[if mso]><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr style="line-height:0px;line-height:0px;"><td style="padding-right: 0px; padding-left: 0px;" align="left"><![endif]-->
-  <img class="left autowidth" align="left" border="0" src="assets/img/pages/email-logo.png" alt="Image" title="Image" style="outline: none;text-decoration: none;-ms-interpolation-mode: bicubic;clear: both;display: block !important;border: 0;height: auto;float: none;width: 100%;max-width: 158px" width="158">
-<!--[if mso]></td></tr></table><![endif]-->
-</div>
-
-
               <!--[if (!mso)&(!IE)]><!--></div><!--<![endif]-->
               </div>
             </div>
@@ -258,7 +251,7 @@ a[x-apple-data-detectors=true] {
                     <div class="">
 	<!--[if mso]><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="padding-right: 0px; padding-left: 0px; padding-top: 0px; padding-bottom: 15px;"><![endif]-->
 	<div style="color:#555555;line-height:180%;font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif; padding-right: 0px; padding-left: 0px; padding-top: 0px; padding-bottom: 15px;">
-		<div style="font-size:12px;line-height:22px;color:#555555;font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif;text-align:left;"><p style="margin: 0;font-size: 12px;line-height: 22px"><span style="font-size: 18px; line-height: 32px;">Hi Mike</span>,<br><span style="font-size: 14px; line-height: 25px;">To reset your password, please click the button below:</span><br></p></div>
+		<div style="font-size:12px;line-height:22px;color:#555555;font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif;text-align:left;"><p style="margin: 0;font-size: 12px;line-height: 22px"><span style="font-size: 18px; line-height: 32px;">Hola</span>,<br><span style="font-size: 14px; line-height: 25px;">para restablecer tu contraseña, haz clic en el siguiente botón:</span><br></p></div>
 	</div>
 	<!--[if mso]></td></tr></table><![endif]-->
 </div>
@@ -267,8 +260,8 @@ a[x-apple-data-detectors=true] {
 
 <div align="left" class="button-container left" style="padding-right: 0px; padding-left: 0px; padding-top:0px; padding-bottom:25px;">
   <!--[if mso]><table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-spacing: 0; border-collapse: collapse; mso-table-lspace:0pt; mso-table-rspace:0pt;"><tr><td style="padding-right: 0px; padding-left: 0px; padding-top:0px; padding-bottom:25px;" align="left"><v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" xmlns:w="urn:schemas-microsoft-com:office:word" href="http://example.com/" style="height:36pt; v-text-anchor:middle; width:126pt;" arcsize="9%" strokecolor="#f0635f" fillcolor="#f0635f"><w:anchorlock/><v:textbox inset="0,0,0,0"><center style="color:#ffffff; font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif; font-size:16px;"><![endif]-->
-    <a href="http://example.com/" target="_blank" style="display: block;text-decoration: none;-webkit-text-size-adjust: none;text-align: center;color: #ffffff; background-color: #f0635f; border-radius: 4px; -webkit-border-radius: 4px; -moz-border-radius: 4px; max-width: 168px; width: 128px;width: auto; border-top: 0px solid transparent; border-right: 0px solid transparent; border-bottom: 0px solid transparent; border-left: 0px solid transparent; padding-top: 8px; padding-right: 20px; padding-bottom: 8px; padding-left: 20px; font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif;mso-border-alt: none">
-      <span style="font-size:16px;line-height:32px;"><span style="font-size: 14px; line-height: 28px;" data-mce-style="font-size: 14px;">Reset Password</span></span>
+    <a href="{{ $link }}" target="_blank" style="display: block;text-decoration: none;-webkit-text-size-adjust: none;text-align: center;color: #ffffff; background-color: #f0635f; border-radius: 4px; -webkit-border-radius: 4px; -moz-border-radius: 4px; max-width: 168px; width: 128px;width: auto; border-top: 0px solid transparent; border-right: 0px solid transparent; border-bottom: 0px solid transparent; border-left: 0px solid transparent; padding-top: 8px; padding-right: 20px; padding-bottom: 8px; padding-left: 20px; font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif;mso-border-alt: none">
+      <span style="font-size:16px;line-height:32px;"><span style="font-size: 14px; line-height: 28px;" data-mce-style="font-size: 14px;">Restablecer contraseña</span></span>
     </a>
   <!--[if mso]></center></v:textbox></v:roundrect></td></tr></table><![endif]-->
 </div>
@@ -278,7 +271,7 @@ a[x-apple-data-detectors=true] {
                     <div class="">
 	<!--[if mso]><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="padding-right: 0px; padding-left: 0px; padding-top: 0px; padding-bottom: 15px;"><![endif]-->
 	<div style="color:#555555;line-height:180%;font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif; padding-right: 0px; padding-left: 0px; padding-top: 0px; padding-bottom: 15px;">
-		<div style="font-size:12px;line-height:22px;color:#555555;font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif;text-align:left;"><p style="margin: 0;font-size: 12px;line-height: 22px"><span style="font-size: 14px; line-height: 25px;">This link will be active for 24 hours from the time this email was sent.</span></p></div>
+		<div style="font-size:12px;line-height:22px;color:#555555;font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif;text-align:left;"><p style="margin: 0;font-size: 12px;line-height: 22px"><span style="font-size: 14px; line-height: 25px;">Este enlace estará activo durante 1 hora desde el momento en que se envió este correo electrónico.</span></p></div>
 	</div>
 	<!--[if mso]></td></tr></table><![endif]-->
 </div>
@@ -287,7 +280,7 @@ a[x-apple-data-detectors=true] {
                     <div class="">
 	<!--[if mso]><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="padding-right: 0px; padding-left: 0px; padding-top: 0px; padding-bottom: 0px;"><![endif]-->
 	<div style="color:#555555;line-height:180%;font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif; padding-right: 0px; padding-left: 0px; padding-top: 0px; padding-bottom: 0px;">
-		<div style="font-size:12px;line-height:22px;color:#555555;font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif;text-align:left;"><p style="margin: 0;font-size: 12px;line-height: 22px"><span style="font-size: 14px; line-height: 25px;">If you did not request to reset your password, please ignore this email and your account will not be affected.</span></p></div>
+		<div style="font-size:12px;line-height:22px;color:#555555;font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif;text-align:left;"><p style="margin: 0;font-size: 12px;line-height: 22px"><span style="font-size: 14px; line-height: 25px;">Si no solicitó restablecer su contraseña, ignore este correo electrónico y su cuenta no se verá afectada.</span></p></div>
 	</div>
 	<!--[if mso]></td></tr></table><![endif]-->
 </div>
@@ -313,7 +306,7 @@ a[x-apple-data-detectors=true] {
                     <div class="">
 	<!--[if mso]><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="padding-right: 0px; padding-left: 0px; padding-top: 0px; padding-bottom: 0px;"><![endif]-->
 	<div style="color:#bbbbbb;line-height:150%;font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif; padding-right: 0px; padding-left: 0px; padding-top: 0px; padding-bottom: 0px;">
-		<div style="font-size:12px;line-height:18px;color:#bbbbbb;font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif;text-align:left;"><p style="margin: 0;font-size: 14px;line-height: 21px;text-align: center"><span style="font-size: 12px; line-height: 18px;">Appwork&#160;©</span></p><p style="margin: 0;font-size: 14px;line-height: 21px;text-align: center"><span style="font-size: 12px; line-height: 18px;"><a style="color:#bbbbbb;color:#bbbbbb;text-decoration: underline;" href="http://example.com" target="_blank" rel="noopener">example.com</a></span></p></div>
+		<div style="font-size:12px;line-height:18px;color:#bbbbbb;font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif;text-align:left;"><p style="margin: 0;font-size: 14px;line-height: 21px;text-align: center"><span style="font-size: 12px; line-height: 18px;">&#160;</span></p><p style="margin: 0;font-size: 14px;line-height: 21px;text-align: center"><span style="font-size: 12px; line-height: 18px;"><a style="color:#bbbbbb;color:#bbbbbb;text-decoration: underline;" href="http://example.com" target="_blank" rel="noopener"></a></span></p></div>
 	</div>
 	<!--[if mso]></td></tr></table><![endif]-->
 </div>
