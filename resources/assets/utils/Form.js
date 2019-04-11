@@ -91,9 +91,9 @@ export default class Form {
    * @param  {string} url
    * @return {Promise}
    */
-  submit(url, isLogin = false) {
+  submit(url, isLogin = false, data = null) {
     return new Promise((resolve, reject) => {
-      axios.post(url, this.data())
+      axios.post(url, data == null ? this.data(): data)
         .then(response => {
           this.formSubmitSucceded(response);
 

@@ -1,7 +1,7 @@
 <template>
   	<div>
 		<h4 class="font-weight-bold mb-4">
-			<span class="text-muted font-weight-light">Contratistas /</span> Lista de items
+			<span class="text-muted font-weight-light">Contratistas /</span> Lista de estándares mínimos
 		</h4>
 
 

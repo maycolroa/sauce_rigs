@@ -45,7 +45,7 @@ class FileUploadController extends Controller
         $nameFile = base64_encode(Auth::user()->id . now()) .'.'. $file->extension();
 
         
-        $file->storeAs('legalAspects/files/', $nameFile,'public');
+        $file->storeAs('legalAspects/files/', $nameFile,'s3');
 
         $fileUpload->file = $nameFile;
         $fileUpload->user_id = Auth::user()->id;
@@ -101,11 +101,11 @@ class FileUploadController extends Controller
 
       if($request->file != $fileUpload->file){
         $file = $request->file;
-        Storage::disk('public')->delete('legalAspects/files/'. $fileUpload->file);
+        Storage::disk('s3')->delete('legalAspects/files/'. $fileUpload->file);
         $nameFile = base64_encode(Auth::user()->id . now()) .'.'. $file->extension();
 
         
-        $file->storeAs('legalAspects/files/', $nameFile,'public');
+        $file->storeAs('legalAspects/files/', $nameFile,'s3');
 
         $fileUpload->file = $nameFile;
       }
@@ -139,7 +139,7 @@ class FileUploadController extends Controller
     public function destroy(FileUpload $fileUpload)
     {
       try{
-        Storage::disk('public')->delete('legalAspects/files/'. $fileUpload->file);
+        Storage::disk('s3')->delete('legalAspects/files/'. $fileUpload->file);
         $fileUpload->delete();
           return $this->respondHttp200([
             'message' => 'Se elimino el archivo correctamente'
@@ -161,6 +161,6 @@ class FileUploadController extends Controller
      */
     public function download(FileUpload $fileUpload)
     {
-      return Storage::disk('public')->download('legalAspects/files/'. $fileUpload->file);
+      return Storage::disk('s3')->download('legalAspects/files/'. $fileUpload->file);
     }
 }
