@@ -24,9 +24,10 @@ Vue.mixin({
 import Login from './components/Administrative/Auth/LoginComponent.vue';
 import MailResetPassword from './components/Administrative/Auth/MailResetPasswordComponent.vue';
 import GeneratePassword from './components/Administrative/Auth/GeneratePasswordComponent.vue';
+import PasswordReset from './components/Administrative/Auth/PasswordResetComponent.vue';
 
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
-  components: { Login,MailResetPassword,GeneratePassword }
+  components: { Login,MailResetPassword,GeneratePassword,PasswordReset }
 })
