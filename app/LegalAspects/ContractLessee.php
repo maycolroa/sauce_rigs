@@ -37,4 +37,9 @@ class ContractLessee extends Model
             'value' => $this->id
         ];
     }
+
+    public function usersContract()
+    {
+        return $this->belongsToMany('App\User', 'sau_user_information_contract_lessee', 'information_id');
+    }
 }

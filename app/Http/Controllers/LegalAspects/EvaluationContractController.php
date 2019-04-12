@@ -13,6 +13,7 @@ use App\LegalAspects\Interviewee;
 use App\LegalAspects\Item;
 use App\LegalAspects\Observation;
 use App\Jobs\LegalAspects\Evaluations\EvaluationContractReportExportJob;
+use App\Jobs\LegalAspects\Evaluations\EvaluationSendNotificationJob;
 use Carbon\Carbon;
 use Session;
 use DB;
@@ -107,6 +108,8 @@ class EvaluationContractController extends Controller
 
             DB::commit();
 
+            $this->sendNotification($evaluation_contract->id);
+
         } catch (\Exception $e) {
             DB::rollback();
             return $this->respondHttp500();
@@ -165,6 +168,8 @@ class EvaluationContractController extends Controller
             $this->deleteData($request->get('delete'));
 
             DB::commit();
+
+            $this->sendNotification($evaluationContract->id);
 
         } catch (\Exception $e) {
             DB::rollback();
@@ -590,5 +595,10 @@ class EvaluationContractController extends Controller
         return $this->respondHttp200([
             'data' => $evaluations
         ]);
+    }
+
+    private function sendNotification($id)
+    {
+        EvaluationSendNotificationJob::dispatch(Session::get('company_id'), $id);
     }
 }
