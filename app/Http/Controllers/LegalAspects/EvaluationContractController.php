@@ -40,16 +40,23 @@ class EvaluationContractController extends Controller
         $evaluation_contracts = EvaluationContract::select(
                 'sau_ct_evaluation_contract.*',
                 'sau_ct_information_contract_lessee.social_reason as social_reason',
-                'sau_ct_information_contract_lessee.nit as nit'
+                'sau_ct_information_contract_lessee.nit as nit',
+                'sau_users.name as name'
             )
+            ->join('sau_users', 'sau_users.id', 'sau_ct_evaluation_contract.evaluator_id')
             ->join('sau_ct_information_contract_lessee', 'sau_ct_information_contract_lessee.id', 'sau_ct_evaluation_contract.contract_id')
-            ->join('sau_ct_evaluations', 'sau_ct_evaluations.id', 'sau_ct_evaluation_contract.evaluation_id')
+            /*->join('sau_ct_evaluations', 'sau_ct_evaluations.id', 'sau_ct_evaluation_contract.evaluation_id')
             ->join('sau_ct_objectives', 'sau_ct_objectives.evaluation_id', 'sau_ct_evaluations.id')
             ->join('sau_ct_subobjectives', 'sau_ct_subobjectives.objective_id', 'sau_ct_objectives.id')
-            ->groupBy('sau_ct_evaluation_contract.id');
+            ->groupBy('sau_ct_evaluation_contract.id')*/;
 
         if ($request->has('modelId') && $request->get('modelId'))
             $evaluation_contracts->where('sau_ct_evaluation_contract.evaluation_id', '=', $request->get('modelId'));
+        else 
+        {
+            $evaluation_contracts->join('sau_user_information_contract_lessee', 'sau_user_information_contract_lessee.information_id', 'sau_ct_evaluation_contract.contract_id');
+            $evaluation_contracts->where('sau_user_information_contract_lessee.user_id', '=', Auth::user()->id);
+        }
 
         $filters = $request->get('filters');
 

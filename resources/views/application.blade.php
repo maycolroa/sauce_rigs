@@ -31,7 +31,7 @@
     </div>
 
     <script>
-        var authGlobal = @json(['can' => Auth::user()->can]);
+        var authGlobal = @json(['can' => Auth::user()->can, 'hasRole' => Auth::user()->hasRole]);
     </script>
     
     <script src="{{ mix('/app.js') }}"></script>
