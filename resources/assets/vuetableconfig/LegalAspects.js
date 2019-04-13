@@ -182,6 +182,7 @@ export default [
           { name: 'sau_ct_information_contract_lessee.nit', data: 'nit', title: 'NIT', sortable: true, searchable: true, detail: false, key: false },
           { name: 'sau_ct_information_contract_lessee.social_reason', data: 'social_reason', title: 'Razón social', sortable: true, searchable: true, detail: false, key: false },
           { name: 'sau_ct_evaluation_contract.evaluation_date', data: 'evaluation_date', title: 'Fecha evaluación', sortable: true, searchable: true, detail: false, key: false },
+          { name: 'sau_users.name', data: 'name', title: 'Calificador', sortable: true, searchable: true, detail: false, key: false },
           { name: '', data: 'controlls', title: 'Controles', sortable: false, searchable: false, detail: false, key: false },
       ],
       'controlls': [{
@@ -198,6 +199,39 @@ export default [
                 id: 'id',
             },
             }, {
+            config: {
+                color: 'outline-info',
+                borderless: true,
+                icon: 'ion ion-md-eye',
+                title: 'Ver'
+            },
+            data: {
+                routePush: { name: 'legalaspects-evaluations-contracts-view' },
+                id: 'id',
+            },
+            }]
+        },
+        {
+            type: 'base',
+            buttons: [],
+        }],
+      configuration: {
+          urlData: '/legalAspects/evaluationContract/data',
+          filterColumns: true,
+          configNameFilter: 'legalaspects-evaluations-contracts'
+      }
+    },
+    {
+      name: 'legalaspects-evaluations-lessee',
+      fields: [
+          { name: 'sau_ct_evaluation_contract.id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true },
+          { name: 'sau_ct_evaluation_contract.evaluation_date', data: 'evaluation_date', title: 'Fecha evaluación', sortable: true, searchable: true, detail: false, key: false },
+          { name: 'sau_users.name', data: 'name', title: 'Calificador', sortable: true, searchable: true, detail: false, key: false },
+          { name: '', data: 'controlls', title: 'Controles', sortable: false, searchable: false, detail: false, key: false },
+      ],
+      'controlls': [{
+            type: 'push',
+            buttons: [{
             config: {
                 color: 'outline-info',
                 borderless: true,

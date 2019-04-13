@@ -85,6 +85,12 @@ export default [
 				import('@/views/LegalAspects/evaluationContracts/create')
 			},
 			{
+				name: 'legalaspects-evaluations-lessee',
+				path: 'evaluations/contracts',
+				component: () =>
+				import('@/views/LegalAspects/evaluationContracts/index')
+			},
+			{
 				name: 'legalaspects-evaluations-contracts',
 				path: 'evaluations/contracts/:id',
 				component: () =>

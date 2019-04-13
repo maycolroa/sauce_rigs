@@ -7,6 +7,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Laratrust\Traits\LaratrustUserTrait;
 use App\Traits\CompanyTrait;
 use App\Models\Permission;
+use App\Models\Role;
 
 class User extends Authenticatable
 {
@@ -31,7 +32,7 @@ class User extends Authenticatable
     *
     * @var array
     */
-    protected $appends = ['all_permissions','can'];
+    protected $appends = ['all_permissions','can','hasRole'];
 
     //the attribute define the table for scope company execute
     public $scope_table_for_company_table = 'sau_roles';
@@ -125,6 +126,24 @@ class User extends Authenticatable
             }
         }
         return $permissions;
+    }
+
+    public function getHasRoleAttribute()
+    {
+        $roles = [];
+
+        foreach (Role::withoutGlobalScopes()->whereNull('sau_roles.company_id')->get() as $role)
+        {
+            $roles[$role->name] = false;
+        }
+        
+        foreach ($this->roleUser as $role)
+        {
+            if (!$role->company_id && isset($roles[$role->name]))
+                $roles[$role->name] = true;
+        }
+
+        return $roles;
     }
 
     /**
