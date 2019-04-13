@@ -365,16 +365,24 @@ class EvaluationContractController extends Controller
                     foreach ($clone as $index => $rating)
                     {
                         $clone[$index]['value'] = isset($values[$index]) ? $values[$index] : NULL;
+                        $clone_report[$index]['total'] += 1;
 
-                        if ($rating['apply'] == 'SI' && $clone[$index]['value'])
+                        if ($rating['apply'] == 'SI')
                         {
-                            $clone_report[$index]['total'] += 1;
-
-                            if ($clone[$index]['value'] == 'SI')
+                            if (!$clone[$index]['value'])
                                 $clone_report[$index]['total_c'] += 1;
-
-                            $clone_report[$index]['percentage'] = round(($clone_report[$index]['total_c'] / $clone_report[$index]['total']) * 100, 1);
+                            else 
+                            {
+                                if ($clone[$index]['value'] == 'SI')
+                                    $clone_report[$index]['total_c'] += 1;
+                            }
                         }
+                        else 
+                        {
+                            $clone_report[$index]['total_c'] += 1;
+                        }
+
+                        $clone_report[$index]['percentage'] = round(($clone_report[$index]['total_c'] / $clone_report[$index]['total']) * 100, 1);
                     }
 
                     $item->ratings = $clone;
