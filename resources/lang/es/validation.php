@@ -224,7 +224,13 @@ return [
       'items.*' => 'Calificación',
       'days_alert_expiration_date_action_plan' => 'Días de alerta',
       'types_rating' => 'Tipos de calificación',
-      'competitors_id' => 'Participantes'
+      'competitors_id' => 'Participantes',
+      'items.*.actionPlan.activities.*.execution_date' => 'Fecha de ejecución',
+      'items.*.actionPlan.activities.*.expiration_date' => 'Fecha de vencimiento',
+      'items.*.actionPlan.activities.*.responsible_id' => 'Responsable',
+      'items.*.actionPlan.activities.*.state' => 'Estado',
+      'items.*.files.*.name' => 'Nombre',
+      'items.*.files.*.file' => 'Archivo',
     ],
 
 ];

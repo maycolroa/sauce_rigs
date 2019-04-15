@@ -1,8 +1,8 @@
 <template>
     <div class="col-md-12">
-        <blockquote class="blockquote text-center" v-if="!isEditItem">
+        <!-- <blockquote class="blockquote text-center" v-if="!isEditItem">
             <p class="mb-0">Actividades del plan de acción</p>
-        </blockquote>
+        </blockquote> -->
         <b-form-row>
             <div class="col-md-12" v-if="!viewOnly && !isEditItem">
             <div class="float-right" style="padding-top: 10px;">
@@ -26,7 +26,7 @@
                                 <b-btn href="javascript:void(0)" v-b-toggle="'accordion' + activity.key+'-1'" variant="link">
                                 <span class="collapse-icon"></span>
                                 </b-btn>
-                                <b-btn @click.prevent="removeActivity(index)" 
+                                       <b-btn @click.prevent="removeActivity(index)" 
                                 v-if="!viewOnly && activity.editable != 'NO' && activity.edit_all && !isEditItem"
                                 size="sm" 
                                 variant="secondary icon-btn borderless"
@@ -116,7 +116,23 @@ export default {
 
     },
     mounted() {
-        
+        if (!this.viewOnly && !this.isEdit)
+        {
+            this.actionPlan.activities = [];
+             _.forIn(this.definedActivities, (value, key) => {
+                this.actionPlan.activities.push({
+                    key: new Date().getTime() + Math.floor(Math.random() * 1000),
+                    id: '',
+                    description: value,
+                    responsible_id: '',
+                    execution_date: '',
+                    expiration_date: '',
+                    state: '',
+                    editable: 'NO',
+                    edit_all: true
+                }) 
+            });
+        }
     },
     watch: {
         actionPlan()

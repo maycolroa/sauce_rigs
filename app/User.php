@@ -97,8 +97,9 @@ class User extends Authenticatable
 	}
 
 	public function itemsCalificatedContract(){
-      	return $this->belongsToMany('App\Models\LegalAspects\SectionCategoryItems','sau_ct_item_qualification_contract');
-	}
+      	return $this->belongsToMany('App\Models\LegalAspects\ItemQualificationContractDetail','sau_ct_item_qualification_contract');
+    }
+    
 
     /**
      * Get all user permissions.
