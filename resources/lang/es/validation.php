@@ -231,6 +231,7 @@ return [
       'items.*.actionPlan.activities.*.state' => 'Estado',
       'items.*.files.*.name' => 'Nombre',
       'items.*.files.*.file' => 'Archivo',
+      'file' => 'Archivo'
     ],
 
 ];

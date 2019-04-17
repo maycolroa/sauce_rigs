@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Requests\LegalApects;
+namespace App\Http\Requests\LegalAspects\Contracts;
 
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Foundation\Http\FormRequest;
 
 class FileUploadRequest extends FormRequest
@@ -23,10 +24,15 @@ class FileUploadRequest extends FormRequest
      */
     public function rules()
     {
-        return [
+        $rules = [
             "name" => "required",
-            "file" => "required|max:500000",
+            "file" => "required|max:20480",
             "expirationDate" => "nullable|date|after_or_equal:today"
         ];
+
+        if (!Auth::user()->hasRole('Arrendatario') && !Auth::user()->hasRole('Contratista'))
+            $rules['contract_id'] = 'required|array';
+
+        return $rules;
     }
 }
