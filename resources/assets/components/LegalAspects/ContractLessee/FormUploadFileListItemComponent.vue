@@ -43,7 +43,7 @@
 									</b-form-row>
 
 									<b-form-row>
-										<vue-file-simple :help-text="`Para descargar el archivo actual, haga click aqui`" v-if="!viewOnly" :disabled="viewOnly" class="col-md-12" v-model="files[index].file" label="Archivo" name="file" placeholder="Seleccione un archivo" :error="form.errorsFor(`${prefixIndex}files.${index}.file`)"></vue-file-simple>
+										<vue-file-simple :help-text="files[index].file_id ? `Para descargar el archivo actual, haga click <a href='/legalAspects/fileUpload/download/${files[index].file_id}' target='blank'>aqui</a> ` : null" :disabled="viewOnly" class="col-md-12" v-model="files[index].file" label="Archivo" name="file" placeholder="Seleccione un archivo" :error="form.errorsFor(`${prefixIndex}files.${index}.file`)"></vue-file-simple>
 									</b-form-row>
 									
 								</div>
@@ -62,6 +62,7 @@ import VueInput from "@/components/Inputs/VueInput.vue";
 import VueFileSimple from "@/components/Inputs/VueFileSimple.vue";
 import VueDatepicker from "@/components/Inputs/VueDatepicker.vue";
 import PerfectScrollbar from '@/vendor/libs/perfect-scrollbar/PerfectScrollbar';
+import Alerts from '@/utils/Alerts.js';
 
 export default {
 	components: {
@@ -75,6 +76,7 @@ export default {
 		viewOnly: { type: Boolean, default: false },
 		prefixIndex: { type: String, default: ''},
 		form: { type: Object, required: true },
+		itemId: { type: Number, required: 0 },
 		files: { 
 			type: Array,
 			default: function() {
@@ -89,6 +91,23 @@ export default {
 		}
 	},
 	mounted() {
+		axios.post('/legalAspects/contracts/validateFilesItem',
+        { item_id: this.itemId })
+        .then(response => {
+			if (response.data.length > 0){
+				 _.forIn(response.data, (value, key) => {
+                    this.files.push({
+                        name: value['name'],
+                        expirationDate: value['expirationDate'],
+						file: value['file'],
+						file_id: value['file_id']
+                    });
+                });
+			}
+		})
+        .catch(error => {
+            Alerts.error('Error', 'Se ha generado un error en el proceso al cargar los archivos que tendría guardados en los estándares, por favor contacte con el administrador');
+        });
 	},
 	data() {
 		return {

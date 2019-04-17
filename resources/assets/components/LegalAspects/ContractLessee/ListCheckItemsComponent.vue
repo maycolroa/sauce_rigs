@@ -35,6 +35,7 @@
 													:action-plan-states="actionPlanStates"
 													v-model="item.actionPlan"
 													:action-plan="item.actionPlan"
+													:item-id="item.id == undefined ? 0 : item.id"
 													:defined-activities="item.activities_defined"/>
 											</b-card>
 									</b-modal>
@@ -52,7 +53,7 @@
 										:view-only="viewOnly"
 										:form="form"
 										:prefix-index="`items.${index}.`"
-										:qualification="item.qualfication"
+										:item-id="item.id == undefined ? 0 : item.id"
 										v-model="item.files"/>
 											
 									</b-modal>
@@ -60,7 +61,7 @@
 								</div>
 								<div class="text-muted small text-nowrap">
 									
-									<vue-radio v-model="item.qualification" label="Calificación" :name="`items${item.id}`" :error="form.errorsFor(`items.${index}`)" :options="qualifications" @input="changeActionFiles(item.qualification, `${index}`)"></vue-radio>
+									<vue-radio v-model="item.qualification" label="Calificación" :name="`items${item.id}`" :error="form.errorsFor(`items.${index}`)" :options="qualifications" :checked="item.qualification" @input="changeActionFiles(item.qualification, `${index}`)"></vue-radio>
 									
 								</div>
 							</div>
@@ -163,7 +164,7 @@ export default {
 			})
 			.catch(error => {
 				this.loading = false;
-				// console.log(error);
+				console.log(error.errors);
 				// Alerts.error('Error', 'Debes calificar por lo menos un item para poder guardar la lista de estándares');
 			});
 		},
