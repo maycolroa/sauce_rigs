@@ -33,9 +33,9 @@
 								<router-link tag="a" href="javascript:void(0)" class="card-body media align-items-center text-dark" :to="{name:'legalaspects-contracts-list-check-items'}">
 									<i class="lnr lnr-pencil display-4 d-block text-primary"></i>
 									<span class="media-body d-block ml-3">
-										<span class="text-big font-weight-bolder">Calificar listas de chequeo</span>
+										<span class="text-big font-weight-bolder">Calificar lista de estándares mínimos</span>
 										<br>
-										<small class="text-muted">Creación de tus listas de chequeo para tus arrendatarios.</small>
+										<small class="text-muted">Calificación de tus lista de estándares mínimos.</small>
 									</span>
 								</router-link>
 							</div>

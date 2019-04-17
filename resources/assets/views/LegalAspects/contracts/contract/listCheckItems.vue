@@ -41,7 +41,7 @@ export default {
 			name: ''
 		}
 	},
-	created(){
+	mounted(){
 		//axios para obtener los items a calificar
 		axios.get("/legalAspects/contracts/data")
 		.then(response => {
@@ -52,6 +52,8 @@ export default {
 			Alerts.error('Error', 'Se ha generado un error en el proceso al cargar los items, por favor contacte con el administrador');
 			this.$router.go(-1);
 		});
+	},
+	created(){
 		//axios para obtener las calificaciones
 		axios.get("/legalAspects/contracts/qualifications")
 		.then(response => {

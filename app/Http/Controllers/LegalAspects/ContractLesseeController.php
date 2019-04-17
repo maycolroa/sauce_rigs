@@ -14,6 +14,9 @@ use App\Models\LegalAspects\SectionCategoryItems;
 use App\Models\LegalAspects\Qualifications;
 use App\Models\LegalAspects\ItemQualificationContractDetail;
 use App\Models\LegalAspects\FileUpload;
+use App\Models\ActionPlansActivity;
+use App\Models\ActionPlansActivityModule;
+use App\Models\Module;
 use App\User;
 use App\Models\Role;
 use App\Traits\UserTrait;
@@ -22,8 +25,10 @@ use DB;
 use Validator;
 use Carbon\Carbon;
 use App\Facades\ActionPlans\Facades\ActionPlan;
+use App\Facades\Mail\Facades\NotificationMail;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+
 
 class ContractLesseeController extends Controller
 {
@@ -66,10 +71,24 @@ class ContractLesseeController extends Controller
             } else if ($user->contractInfo[0]->classification == "empresa" && $user->contractInfo[0]->number_workers > 50) {
                 $items = $sql->where('sau_ct_standard_classification.standard_name', '=', '60 estandares')->get();
             }
+            //Añade las actividades definidas de cada item para los planes de acción
             $items->transform(function($item, $index){
                 $item['activities_defined'] = $item->activities()->pluck("description");
                 return $item;
             });
+
+            //Proceso de verificar si tiene calificaciones
+            $validate_items_calificated = ItemQualificationContractDetail::where('user_id', '=', $user->id)->get();
+            if ($validate_items_calificated) {
+                foreach ($validate_items_calificated as $value) {
+                    foreach ($items as $item) {
+                        if ($item['id'] == $value['item_id']) {
+                            $item['qualification'] = (string)$value['qualification_id'];
+                        }
+                    }
+                }
+            }
+
             return $items;
         } else {
             return $this->respondHttp500([
@@ -214,42 +233,46 @@ class ContractLesseeController extends Controller
                 }
                 $validate_files->delete();
                 foreach ($itemsCalificated as $item) {
-                    if (COUNT($item['files']) > 0) {
-                        $filesIdSync = [];
-                        foreach ($item['files'] as $i => $file) {
-                            $fileUpload = new FileUpload;
-                            $nameFile = base64_encode($user_id.$item['id'].now().$i).'.'.$file['file']->extension(); //Se crea el nombre del archivo
-                            $file['file']->storeAs('legalAspects/files/', $nameFile,'s3'); // Se guarda el archivo con el nombre especifico
-                            $fileUpload->contract_id = $contract_id;
-                            $fileUpload->name = $file['name'];
-                            $fileUpload->file = $nameFile;
-                            $fileUpload->expirationDate = $file['expirationDate'] == "" ? null : (Carbon::createFromFormat('D M d Y', $file['expirationDate']))->format('Ymd');
-                            $fileUpload->user_id = $user_id;
-                            if (!$fileUpload->save()) { return $this->respondHttp500(); }
-                            array_push($filesIdSync, $fileUpload->id);
+                    if(isset($item['files'])) {
+                        if (COUNT($item['files']) > 0) {
+                            $filesIdSync = [];
+                            foreach ($item['files'] as $i => $file) {
+                                $fileUpload = new FileUpload;
+                                $nameFile = base64_encode($user_id.$item['id'].now().$i).'.'.$file['file']->extension(); //Se crea el nombre del archivo
+                                $file['file']->storeAs('legalAspects/files/', $nameFile,'s3'); // Se guarda el archivo con el nombre especifico
+                                $fileUpload->contract_id = $contract_id;
+                                $fileUpload->name = $file['name'];
+                                $fileUpload->file = $nameFile;
+                                $fileUpload->expirationDate = $file['expirationDate'] == "" ? null : (Carbon::createFromFormat('D M d Y', $file['expirationDate']))->format('Ymd');
+                                $fileUpload->user_id = $user_id;
+                                if (!$fileUpload->save()) { return $this->respondHttp500(); }
+                                array_push($filesIdSync, $fileUpload->id);
+                            }
+                            $SectionCategoryItems = SectionCategoryItems::find($item['id']);
+                            $SectionCategoryItems->fileSyncInfo()->sync($filesIdSync);
                         }
-                        $SectionCategoryItems = SectionCategoryItems::find($item['id']);
-                        $SectionCategoryItems->fileSyncInfo()->sync($filesIdSync);
                     }
                 }
             } else {
                 foreach ($itemsCalificated as $item) {
-                    if (COUNT($item['files']) > 0) {
-                        $filesIdSync = [];
-                        foreach ($item['files'] as $i => $file) {
-                            $fileUpload = new FileUpload;
-                            $nameFile = base64_encode($user_id.$item['id'].now().$i).'.'.$file['file']->extension(); //Se crea el nombre del archivo
-                            $file['file']->storeAs('legalAspects/files/', $nameFile,'s3'); // Se guarda el archivo con el nombre especifico
-                            $fileUpload->contract_id = $contract_id;
-                            $fileUpload->name = $file['name'];
-                            $fileUpload->file = $nameFile;
-                            $fileUpload->expirationDate = $file['expirationDate'] == "" ? null : (Carbon::createFromFormat('D M d Y', $file['expirationDate']))->format('Ymd');
-                            $fileUpload->user_id = $user_id;
-                            if (!$fileUpload->save()) { return $this->respondHttp500(); }
-                            array_push($filesIdSync, $fileUpload->id);
+                    if(isset($item['files'])) {
+                        if (COUNT($item['files']) > 0) {
+                            $filesIdSync = [];
+                            foreach ($item['files'] as $i => $file) {
+                                $fileUpload = new FileUpload;
+                                $nameFile = base64_encode($user_id.$item['id'].now().$i).'.'.$file['file']->extension(); //Se crea el nombre del archivo
+                                $file['file']->storeAs('legalAspects/files/', $nameFile,'s3'); // Se guarda el archivo con el nombre especifico
+                                $fileUpload->contract_id = $contract_id;
+                                $fileUpload->name = $file['name'];
+                                $fileUpload->file = $nameFile;
+                                $fileUpload->expirationDate = $file['expirationDate'] == "" ? null : (Carbon::createFromFormat('D M d Y', $file['expirationDate']))->format('Ymd');
+                                $fileUpload->user_id = $user_id;
+                                if (!$fileUpload->save()) { return $this->respondHttp500(); }
+                                array_push($filesIdSync, $fileUpload->id);
+                            }
+                            $SectionCategoryItems = SectionCategoryItems::find($item['id']);
+                            $SectionCategoryItems->fileSyncInfo()->sync($filesIdSync);
                         }
-                        $SectionCategoryItems = SectionCategoryItems::find($item['id']);
-                        $SectionCategoryItems->fileSyncInfo()->sync($filesIdSync);
                     }
                 }
             }
@@ -260,23 +283,49 @@ class ContractLesseeController extends Controller
 
         //Proceso de planes de acción
         try {
-            //Pendiente preguntarle a ander yo como se cual plan de accion es de un contratista por la actividad definda
+            foreach ($itemsCalificated as $item) {
+                if (isset($item['actionPlan'])) {
+                    if (COUNT($item['actionPlan']['activities']) > 0) {
+                        $activities_no_defined = ActionPlansActivity::select('sau_action_plans_activity_module.item_id','sau_action_plans_activities.*')
+                        ->join('sau_action_plans_activity_module', 'sau_action_plans_activity_module.activity_id', 'sau_action_plans_activities.id')
+                        ->where('sau_action_plans_activity_module.item_id', '=', $item['id'])
+                        ->where('sau_action_plans_activities.editable', '=', '')->get();
+                        if (COUNT($activities_no_defined) > 0) {
+                            foreach ($activities_no_defined as $activity_no_defined ) {
+                                ActionPlansActivity::find($activity_no_defined['id'])->delete();
+                            }
+                        }
+                        foreach ($item['actionPlan']['activities'] as $action) {
+                            $actionPlansActivity = new ActionPlansActivity;
+                            $actionPlansActivity->description = $action['description'];
+                            $actionPlansActivity->responsible_id = $action['responsible_id'] == "" ? "1" : $action['responsible_id'];
+                            $actionPlansActivity->user_id = $user_id;
+                            $actionPlansActivity->execution_date = (Carbon::createFromFormat('D M d Y', $action['execution_date']))->format('Ymd');
+                            $actionPlansActivity->expiration_date = (Carbon::createFromFormat('D M d Y', $action['expiration_date']))->format('Ymd');
+                            $actionPlansActivity->state = $action['state'];
+                            $actionPlansActivity->editable = $action['editable'];
+                            $actionPlansActivity->company_id = Session::get('company_id');
+                            if (!$actionPlansActivity->save()) { return $this->respondHttp500(); }
+                            $actionPlansActivityModule = new ActionPlansActivityModule;
+                            $module = Module::where('name', '=', 'contracts')->first();
+                            $actionPlansActivityModule->module_id = $module->id;
+                            $actionPlansActivityModule->activity_id = $actionPlansActivity->id;
+                            $actionPlansActivityModule->item_id = $item['id'];
+                            $actionPlansActivityModule->item_table_name = "sau_ct_item_qualification_contract";
+                            if (!$actionPlansActivityModule->save()) { return $this->respondHttp500(); }
+                        }
+                    }
+                }
+            }
         } catch (\Throwable $th) {
-            //throw $th;
+            DB::rollback();
+            throw $th;
         }
-        
-        // $user = User::find(Auth::user()->id);
-        // $contract_id = $user->contractInfo[0]->id;
-        // foreach ($request->items_calificated as $items) {
-        //     foreach ($items as $item) {
-        //         $item['item_id'] = $item['id'];
-        //         $item['qualification_id'] = $item['qualification'];
-        //         $item['contract_id'] = $contract_id;
-        //         $user->itemsCalificatedContract()->sync($item);
-        //     }
-        // }
-        // \Log::info($request);
+
         DB::commit();
+        return $this->respondHttp200([
+            'message' => 'La lista de estándares ha sido guardada exitosamente.'
+        ]);
     }
 
     /**
@@ -321,6 +370,112 @@ class ContractLesseeController extends Controller
         ]);
     }
 
+     /**
+     * Display the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function validateFilesItem(Request $request){
+        $files = [];
+        $validate_files = FileUpload::select('sau_ct_file_upload_contracts_leesse.*', 'sau_ct_section_category_items.id AS item_id')
+        ->join('sau_ct_file_item_contract', 'sau_ct_file_upload_contracts_leesse.id', '=', 'sau_ct_file_item_contract.file_id')
+        ->join('sau_ct_section_category_items', 'sau_ct_file_item_contract.item_id', '=', 'sau_ct_section_category_items.id')
+        ->where('user_id', '=', Auth::user()->id);
+        if ($validate_files->get()) {
+            foreach ($validate_files->get() as $file) {
+                // \Log::info($request->item_id);
+                if ($file['item_id'] == $request->item_id){
+                    \Log::info(Storage::disk('s3')->find($file['file']));
+                    $data = [
+                        'name' => $file['name'],
+                        'expirationDate' => (Carbon::createFromFormat('Y-m-d', $file['expirationDate']))->format('D M d Y'),
+                        'file' => $file['file'],
+                        'file_id' => $file['id']
+                    ];
+                    array_push($files, $data);
+                }
+            }
+        }
+        return $files;
+    }
+
+    /**
+     * Display the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function validateActionPlanItem(Request $request){
+        //Proceso de verificar si tiene planes de acción
+        $activities = [];
+
+        foreach ($request->definedActivities as $activitie) {
+            $validate_items_action_plan = ItemQualificationContractDetail::select(
+                'sau_ct_item_qualification_contract.item_id',
+                'sau_action_plans_activities.*'
+            )
+            ->leftJoin('sau_action_plans_activity_module', function ($join) {
+                $join->on('sau_ct_item_qualification_contract.item_id', '=', 'sau_action_plans_activity_module.item_id');
+                $join->on('sau_action_plans_activity_module.item_table_name', '=', \DB::raw("'sau_ct_item_qualification_contract'"));
+            })
+            ->leftJoin('sau_action_plans_activities', 'sau_action_plans_activities.id', 'sau_action_plans_activity_module.activity_id')
+            ->where('sau_action_plans_activities.user_id', '=', Auth::user()->id);
+            $action_plan = $validate_items_action_plan->orderBy('sau_action_plans_activities.created_at', 'DESC')->where('sau_action_plans_activities.description', '=', $activitie)->first();
+
+            if ($action_plan) {
+                //planes de acción listarlos en los items
+                $data = [
+                    'description' => $activitie,
+                    'responsible_id'  => $action_plan['responsible_id'],
+                    'execution_date'  => (Carbon::createFromFormat('Y-m-d', $action_plan['execution_date']))->format('D M d Y'),
+                    'expiration_date' => (Carbon::createFromFormat('Y-m-d', $action_plan['expiration_date']))->format('D M d Y'),
+                    'state' => $action_plan['state'],
+                    'editable' => $action_plan['editable']
+                ];
+                array_push($activities, $data);
+            } else {
+                $data = [
+                    'description' => $activitie,
+                    'responsible_id'  => '',
+                    'execution_date'  => '',
+                    'expiration_date' => '',
+                    'state' => '',
+                    'editable' => 'NO'
+                ];
+                array_push($activities, $data);
+            }
+        }
+
+        $validate_items_action_plan = ItemQualificationContractDetail::select(
+            'sau_ct_item_qualification_contract.item_id',
+            'sau_action_plans_activities.*'
+        )
+        ->leftJoin('sau_action_plans_activity_module', function ($join) {
+            $join->on('sau_ct_item_qualification_contract.item_id', '=', 'sau_action_plans_activity_module.item_id');
+            $join->on('sau_action_plans_activity_module.item_table_name', '=', \DB::raw("'sau_ct_item_qualification_contract'"));
+        })
+        ->leftJoin('sau_action_plans_activities', 'sau_action_plans_activities.id', 'sau_action_plans_activity_module.activity_id')
+        ->where('sau_action_plans_activities.user_id', '=', Auth::user()->id)
+        ->where('sau_ct_item_qualification_contract.item_id', '=', $request->item_id)
+        ->where('sau_action_plans_activities.editable', '=', '');
+        if ($validate_items_action_plan->get()) {
+            foreach ($validate_items_action_plan->get() as $action) {
+                $data = [
+                    'description' => $action['description'],
+                    'responsible_id'  => $action['responsible_id'],
+                    'execution_date'  => (Carbon::createFromFormat('Y-m-d', $action['execution_date']))->format('D M d Y'),
+                    'expiration_date' => (Carbon::createFromFormat('Y-m-d', $action['expiration_date']))->format('D M d Y'),
+                    'state' => $action['state'],
+                    'editable' => $action['editable']
+                ];
+                array_push($activities, $data);
+            }
+        }
+    
+        return $activities;
+    }
+
     /**
      * Display the specified resource.
      *
@@ -329,7 +484,7 @@ class ContractLesseeController extends Controller
      */
     public function rulesListContract($request)
     {
-        // Como el request->items viene como string se pierden los archivos, entonces--
+        // Como el request->items viene como string se pierden los archivos, entonces..
         // Llegan los archivos por aparte y en el item se especifica cual "file" es de que "item"
         foreach ($request->items as $key => $value)
         {
@@ -350,9 +505,10 @@ class ContractLesseeController extends Controller
         $rules = [
             'items.*.actionPlan.activities.*.execution_date' => 'required',
             'items.*.actionPlan.activities.*.expiration_date' => 'required',
-            // 'items.*.actionPlan.activities.*.responsible_id' => 'required', Pendiente por que en local no se listan los responsables
+            // 'items.*.actionPlan.activities.*.responsible_id' => 'required', Pendiente por qué en local no se listan los responsables
             'items.*.actionPlan.activities.*.state' => 'required',
             'items.*.files.*.name' => 'required',
+            "items.*.files.*.expirationDate" => "nullable|date|after_or_equal:today",
             'items.*.files.*.file' => 'required|file|mimes:pdf'
         ];
 

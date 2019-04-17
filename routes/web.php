@@ -156,6 +156,8 @@ Route::middleware(['auth'])->group(function () {
 		//Aspectos Legales
 		Route::prefix('legalAspects')->group(function () {
 			Route::get('contracts/qualifications', 'LegalAspects\ContractLesseeController@qualifications');
+			Route::post('contracts/validateActionPlanItem', 'LegalAspects\ContractLesseeController@validateActionPlanItem');
+			Route::post('contracts/validateFilesItem', 'LegalAspects\ContractLesseeController@validateFilesItem');
 			Route::get('contracts/data', 'LegalAspects\ContractLesseeController@data');
       Route::post('contracts/saveQualificationItems', 'LegalAspects\ContractLesseeController@saveQualificationItems');
       

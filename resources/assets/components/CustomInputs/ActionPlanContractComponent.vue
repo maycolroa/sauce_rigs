@@ -69,6 +69,7 @@ import VueInput from "@/components/Inputs/VueInput.vue";
 import VueTextarea from "@/components/Inputs/VueTextarea.vue";
 import VueDatepicker from "@/components/Inputs/VueDatepicker.vue";
 import VueAdvancedSelect from "@/components/Inputs/VueAdvancedSelect.vue";
+import Alerts from '@/utils/Alerts.js';
 
 export default {
     components: {
@@ -85,6 +86,7 @@ export default {
         viewOnly: { type: Boolean, default: false },    
         form: { type: Object, required: true },
         prefixIndex: { type: String, default: ''},
+        itemId: { type: Number, required: 0 },
         actionPlanStates: {
             type: Array,
             default: function() {
@@ -116,22 +118,31 @@ export default {
 
     },
     mounted() {
-        if (!this.viewOnly && !this.isEdit)
-        {
+        if (!this.viewOnly && !this.isEdit) {
             this.actionPlan.activities = [];
-             _.forIn(this.definedActivities, (value, key) => {
-                this.actionPlan.activities.push({
-                    key: new Date().getTime() + Math.floor(Math.random() * 1000),
-                    id: '',
-                    description: value,
-                    responsible_id: '',
-                    execution_date: '',
-                    expiration_date: '',
-                    state: '',
-                    editable: 'NO',
-                    edit_all: true
-                }) 
-            });
+            axios.post('/legalAspects/contracts/validateActionPlanItem',
+            { definedActivities: this.definedActivities, item_id: this.itemId })
+            .then(response => {
+                if(response.data.length > 0){
+                    let activities = response.data;
+                    _.forIn(activities, (value, key) => {
+                        this.actionPlan.activities.push({
+                            key: new Date().getTime() + Math.floor(Math.random() * 1000),
+                            id: '',
+                            description: value['description'],
+                            responsible_id: value['responsible_id'],
+                            execution_date: value['execution_date'],
+                            expiration_date: value['expiration_date'],
+                            state: value['state'],
+                            editable: value['editable'],
+                            edit_all: true
+                        });
+                    });
+                }
+            })
+            .catch(error => {
+                Alerts.error('Error', 'Se ha generado un error en el proceso al cargar los planes acción que tendría guardados en los estándares, por favor contacte con el administrador');
+            });  
         }
     },
     watch: {
