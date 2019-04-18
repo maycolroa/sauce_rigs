@@ -209,6 +209,7 @@ return [
       'locations.employee_process_id' => 'Proceso',
       'changeHistory' => 'Detalle de cambios realizados',
       'days_alert_expiration_date_action_plan' => 'Días de alerta',
+      'days_alert_expiration_date_contract_file_upload' => 'Días de alerta',
       'evaluators_id' => 'Evaluadores',
       'type' => 'Tipo',
       'contract_id' => 'Contratista',
