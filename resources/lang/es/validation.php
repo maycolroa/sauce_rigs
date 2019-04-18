@@ -209,6 +209,7 @@ return [
       'locations.employee_process_id' => 'Proceso',
       'changeHistory' => 'Detalle de cambios realizados',
       'days_alert_expiration_date_action_plan' => 'Días de alerta',
+      'days_alert_expiration_date_contract_file_upload' => 'Días de alerta',
       'evaluators_id' => 'Evaluadores',
       'type' => 'Tipo',
       'contract_id' => 'Contratista',
@@ -224,7 +225,14 @@ return [
       'items.*' => 'Calificación',
       'days_alert_expiration_date_action_plan' => 'Días de alerta',
       'types_rating' => 'Tipos de calificación',
-      'competitors_id' => 'Participantes'
+      'competitors_id' => 'Participantes',
+      'items.*.actionPlan.activities.*.execution_date' => 'Fecha de ejecución',
+      'items.*.actionPlan.activities.*.expiration_date' => 'Fecha de vencimiento',
+      'items.*.actionPlan.activities.*.responsible_id' => 'Responsable',
+      'items.*.actionPlan.activities.*.state' => 'Estado',
+      'items.*.files.*.name' => 'Nombre',
+      'items.*.files.*.file' => 'Archivo',
+      'file' => 'Archivo'
     ],
 
 ];

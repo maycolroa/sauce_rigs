@@ -43,7 +43,8 @@ class ConfigurationsCompany
 
         $this->keys = [
             'location_level_form' => 'Nivel localización en formulario',
-            'days_alert_expiration_date_action_plan' => 'Días de alerta por fecha de vencimiento cercana para los planes de acción'
+            'days_alert_expiration_date_action_plan' => 'Días de alerta por fecha de vencimiento cercana para los planes de acción',
+            'days_alert_expiration_date_contract_file_upload' => 'Días de alerta por fecha de vencimiento cercana para los archivos cargados en el módulo de contratistas'
         ];
     }
 

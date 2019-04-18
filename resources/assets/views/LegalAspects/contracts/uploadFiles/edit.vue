@@ -11,6 +11,7 @@
             <legal-aspects-contracts-upload-file-form
                 :url="`/legalAspects/fileUpload/${this.$route.params.id}`"
                 method="PUT"
+                :is-edit="true"
                 :fileUpload="data"
                 :cancel-url="{ name: 'legalaspects-upload-files'}"/>
         </b-card-body>

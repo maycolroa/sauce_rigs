@@ -11,6 +11,7 @@
         <b-card-body>
             <vue-table
                 configName="legalAspects-fileUpload"
+                :customColumnsName="true" 
                 modelId="id"
                 ></vue-table>
         </b-card-body>

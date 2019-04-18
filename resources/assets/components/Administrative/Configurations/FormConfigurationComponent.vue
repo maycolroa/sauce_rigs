@@ -13,6 +13,12 @@
         <vue-input :disabled="!auth.can['configurations_c'] && !auth.can['configurations_u']" class="col-md-12" v-model="form.days_alert_expiration_date_action_plan" label="Días de alerta por fecha de vencimiento cercana para los plane de acción" type="number" name="days_alert_expiration_date_action_plan" :error="form.errorsFor('days_alert_expiration_date_action_plan')" placeholder="1"></vue-input>
     </b-form-row>
 
+    <hr class="border-light container-m--x mt-0 mb-4">
+    
+    <b-form-row>
+        <vue-input :disabled="!auth.can['configurations_c'] && !auth.can['configurations_u']" class="col-md-12" v-model="form.days_alert_expiration_date_contract_file_upload" label="Días de alerta por fecha de vencimiento cercana para los archivos cargados en el modulo de contratistas" type="number" name="days_alert_expiration_date_contract_file_upload" :error="form.errorsFor('days_alert_expiration_date_contract_file_upload')" placeholder="1"></vue-input>
+    </b-form-row>
+
     <div class="row float-right pt-10 pr-10">
       <template>
         <b-btn type="submit" :disabled="loading || (!auth.can['configurations_c'] && !auth.can['configurations_u'])" variant="primary">Guardar</b-btn>
@@ -44,7 +50,8 @@ export default {
       default() {
         return {
           location_level_form: '',
-          days_alert_expiration_date_action_plan: ''
+          days_alert_expiration_date_action_plan: '',
+          days_alert_expiration_date_contract_file_upload: ''
         };
       }
     }

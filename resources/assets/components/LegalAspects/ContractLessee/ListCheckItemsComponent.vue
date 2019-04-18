@@ -4,9 +4,10 @@
 			<b-form :action="url" @submit.prevent="submit" autocomplete="off">
 				<b-card border-variant="primary" no-body class="mb-4">
 				<b-card-header header-tag="h6" class="with-elements">
-					<div class="card-header-title">Lista de items | {{ name }}</div>
+					<div class="card-header-title">Lista de estándares mínimos | {{ name }}</div>
 					<div class="card-header-elements ml-auto">
-					<!-- <b-btn variant="default" class="btn-xs md-btn-flat">Show more</b-btn> -->
+					<!-- <b-btn variant="default" class="btn-xs md-btn-flat">Show more</b-btn>
+					     Aqui se debe poner el contador si es requerido -->
 					</div>
 				</b-card-header>
 				<!-- <perfect-scrollbar style="height: 350px"> -->
@@ -16,12 +17,9 @@
 							<span class="text-muted">{{ item.criterion_description}}</span>
 							<div class="media align-items-center mt-3">
 								<div class="media-body ml-2">
-									<b-btn v-if="item.qualification == 2" variant="primary" v-b-modal="`modals-default-${index+1}`"><span class="lnr lnr-book"></span> Plan de acción</b-btn>
-									<b-btn v-b-modal="`modals-file-${index+1}`"><span class="lnr lnr-paperclip"></span> Adjuntar archivos</b-btn>
-									<b-modal :id="`modals-default-${index+1}`" v-model="item.qualification == 2" cancel-title="Cancelar" ok-title="Aceptar" size="lg">
-										<!-- <div v-if="items != undefined">
-											{{ item.activities[0] }}
-										</div> -->
+
+									<b-btn v-if="item.qualification == 2"  @click="modalsActionIndex=index" variant="primary"><span class="lnr lnr-bookmark"></span> Plan de acción</b-btn>
+									<b-modal v-if="item.qualification == 2" v-model="item.qualification == 2 && index == modalsActionIndex" :id="`modals-default-${index+1}`" cancel-title="Cancelar" ok-title="Aceptar" size="lg" @hide="modalsActionIndex = null">
 											
 										<div slot="modal-title">
 											Plan de acción <span class="font-weight-light">Contratistas</span><br>
@@ -29,7 +27,7 @@
 										</div>
 											<!-- border-variant="secondary" -->
 											<b-card  bg-variant="transparent"  title="" class="mb-3 box-shadow-none">
-													<action-plan-component
+													<action-plan-contract-component
 													:is-edit="isEdit"
 													:view-only="viewOnly"
 													:form="form"
@@ -37,22 +35,25 @@
 													:action-plan-states="actionPlanStates"
 													v-model="item.actionPlan"
 													:action-plan="item.actionPlan"
+													:item-id="item.id == undefined ? 0 : item.id"
 													:defined-activities="item.activities_defined"/>
 											</b-card>
 									</b-modal>
-									<b-modal :id="`modals-file-${index+1}`"  cancel-title="Cancelar" ok-title="Aceptar" size="lg" @hide="prueba">
-										<!-- <div v-if="items != undefined">
-											{{ item.activities[0] }}
-										</div> -->
+
+									<b-btn v-if="item.qualification == 1" @click="modalsFilesIndex=index" variant="primary"><span class="lnr lnr-paperclip"></span> Adjuntar archivos</b-btn>
+									<b-modal v-if="item.qualification == 1" v-model="item.qualification == 1 && index == modalsFilesIndex" :id="`modals-file-${index+1}`"  cancel-title="Cancelar" ok-title="Aceptar" size="lg" @hide="modalsFilesIndex = null">
 											
 										<div slot="modal-title">
-											Subir Archivo <span class="font-weight-light">Contratistas</span><br>
+											Subir Archivos <span class="font-weight-light">Contratistas</span><br>
 											<small class="text-muted">Selecciona archivos pdf's para este item.</small>
 										</div>
 
 										<form-upload-file-list-item-component
 										:is-edit="isEdit"
 										:view-only="viewOnly"
+										:form="form"
+										:prefix-index="`items.${index}.`"
+										:item-id="item.id == undefined ? 0 : item.id"
 										v-model="item.files"/>
 											
 									</b-modal>
@@ -60,7 +61,7 @@
 								</div>
 								<div class="text-muted small text-nowrap">
 									
-									<vue-radio v-model="item.qualification" label="Calificación" :name="`items${item.id}`" :error="form.errorsFor(`items.${index}`)" :options="qualifications"></vue-radio>
+									<vue-radio v-model="item.qualification" label="Calificación" :name="`items${item.id}`" :error="form.errorsFor(`items.${index}`)" :options="qualifications" :checked="item.qualification" @input="changeActionFiles(item.qualification, `${index}`)"></vue-radio>
 									
 								</div>
 							</div>
@@ -86,10 +87,10 @@ import VueAdvancedSelect from "@/components/Inputs/VueAdvancedSelect.vue";
 import VueInput from "@/components/Inputs/VueInput.vue";
 import VueCheckbox from "@/components/Inputs/VueCheckbox.vue";
 import VueRadio from "@/components/Inputs/VueRadio.vue";
-import ActionPlanComponent from '@/components/CustomInputs/ActionPlanComponent.vue';
+import ActionPlanContractComponent from '@/components/CustomInputs/ActionPlanContractComponent.vue';
 import Form from "@/utils/Form.js";
 import FormUploadFileListItemComponent from '@/components/LegalAspects/ContractLessee/FormUploadFileListItemComponent.vue';
-
+import Alerts from '@/utils/Alerts.js';
 
 export default {
 	components: {
@@ -97,7 +98,7 @@ export default {
 		VueInput,
 		VueCheckbox,
 		VueRadio,
-		ActionPlanComponent,
+		ActionPlanContractComponent,
 		FormUploadFileListItemComponent
 	},
 	props: {
@@ -116,7 +117,10 @@ export default {
 		actionPlanStates: {
 			type: Array,
 			default: function() {
-				return [];
+				return [
+					{ name:'Pendiente', value:'Pendiente'},
+					{ name:'Ejecutada', value:'Ejecutada'}
+				];
 			}
 		}
 	},
@@ -124,32 +128,62 @@ export default {
 		'contract.items'(newVal) {
 			this.loading = false;
 			this.form = Form.makeFrom(this.contract, this.method);
-			// console.log(this.form.items);
 		}
 	},
 	data() {
 		return {
 			loading: this.isEdit,
-			form: Form.makeFrom(this.contract, this.method)
+			form: Form.makeFrom(this.contract, this.method),
+			modalsFilesIndex: null,
+			modalsActionIndex: null,
 		};
 	},
 	methods: {
-		//Guardar las calificaciones y validarlas en el backend con un request nuevo
+		
 		submit(e) {
+			let data = new FormData();
+        	this.form.items.forEach((element, index) => {
+			
+				if(typeof element.files !== 'undefined'){
+					if(element.files.length > 0){
+						element.filesIndex = `files_${index}`;
+						element.files.forEach(file => {
+							data.append(`files_${index}[]`, file.file);
+						});
+					}
+				}
+            	element = JSON.stringify(element);
+				data.append('items[]', element);
+				  
+			});
+	
 			this.loading = true;
-			// console.log(this.form);
-			this.form
-			.submit(e.target.action)
-			.then(response => {
+			this.form.submit(e.target.action, false, data).then(response => {
 				this.loading = false;
 				// this.$router.push({ name: "legalaspects-contracts" });
 			})
 			.catch(error => {
 				this.loading = false;
+				console.log(error.errors);
+				// Alerts.error('Error', 'Debes calificar por lo menos un item para poder guardar la lista de estándares');
 			});
 		},
-		prueba(){
-			console.log(this.form.items);
+		changeActionFiles(qualification, index){
+			this.modalsActionIndex = index;
+			if(qualification == 1) {
+				if (typeof this.form.items[index].actionPlan !== 'undefined') {
+					this.form.items[index].actionPlan.activities = [];
+					this.form.items[index].actionPlan.activitiesRemoved = [];
+				}
+			} else if(qualification == 2) {
+				this.form.items[index].files = [];
+			} else {
+				if (typeof this.form.items[index].actionPlan !== 'undefined') {
+					this.form.items[index].actionPlan.activities = [];
+					this.form.items[index].actionPlan.activitiesRemoved = [];
+				}
+				this.form.items[index].files = [];
+			}
 		}
 	}
 };

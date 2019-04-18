@@ -1,8 +1,8 @@
 <template>
     <div class="col-md-12">
-        <blockquote class="blockquote text-center" v-if="!isEditItem">
+        <!-- <blockquote class="blockquote text-center" v-if="!isEditItem">
             <p class="mb-0">Actividades del plan de acción</p>
-        </blockquote>
+        </blockquote> -->
         <b-form-row>
             <div class="col-md-12" v-if="!viewOnly && !isEditItem">
             <div class="float-right" style="padding-top: 10px;">
@@ -26,7 +26,7 @@
                                 <b-btn href="javascript:void(0)" v-b-toggle="'accordion' + activity.key+'-1'" variant="link">
                                 <span class="collapse-icon"></span>
                                 </b-btn>
-                                <b-btn @click.prevent="removeActivity(index)" 
+                                       <b-btn @click.prevent="removeActivity(index)" 
                                 v-if="!viewOnly && activity.editable != 'NO' && activity.edit_all && !isEditItem"
                                 size="sm" 
                                 variant="secondary icon-btn borderless"
@@ -69,6 +69,7 @@ import VueInput from "@/components/Inputs/VueInput.vue";
 import VueTextarea from "@/components/Inputs/VueTextarea.vue";
 import VueDatepicker from "@/components/Inputs/VueDatepicker.vue";
 import VueAdvancedSelect from "@/components/Inputs/VueAdvancedSelect.vue";
+import Alerts from '@/utils/Alerts.js';
 
 export default {
     components: {
@@ -85,6 +86,7 @@ export default {
         viewOnly: { type: Boolean, default: false },    
         form: { type: Object, required: true },
         prefixIndex: { type: String, default: ''},
+        itemId: { type: Number, required: 0 },
         actionPlanStates: {
             type: Array,
             default: function() {
@@ -116,7 +118,32 @@ export default {
 
     },
     mounted() {
-        
+        if (!this.viewOnly && !this.isEdit) {
+            this.actionPlan.activities = [];
+            axios.post('/legalAspects/contracts/validateActionPlanItem',
+            { definedActivities: this.definedActivities, item_id: this.itemId })
+            .then(response => {
+                if(response.data.length > 0){
+                    let activities = response.data;
+                    _.forIn(activities, (value, key) => {
+                        this.actionPlan.activities.push({
+                            key: new Date().getTime() + Math.floor(Math.random() * 1000),
+                            id: '',
+                            description: value['description'],
+                            responsible_id: value['responsible_id'],
+                            execution_date: value['execution_date'],
+                            expiration_date: value['expiration_date'],
+                            state: value['state'],
+                            editable: value['editable'],
+                            edit_all: true
+                        });
+                    });
+                }
+            })
+            .catch(error => {
+                Alerts.error('Error', 'Se ha generado un error en el proceso al cargar los planes acción que tendría guardados en los estándares, por favor contacte con el administrador');
+            });  
+        }
     },
     watch: {
         actionPlan()

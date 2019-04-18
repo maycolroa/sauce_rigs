@@ -1,7 +1,7 @@
 <template>
   	<div>
 		<h4 class="font-weight-bold mb-4">
-			<span class="text-muted font-weight-light">Contratistas /</span> Lista de items
+			<span class="text-muted font-weight-light">Contratistas /</span> Lista de estándares mínimos
 		</h4>
 
 
@@ -41,7 +41,7 @@ export default {
 			name: ''
 		}
 	},
-	created(){
+	mounted(){
 		//axios para obtener los items a calificar
 		axios.get("/legalAspects/contracts/data")
 		.then(response => {
@@ -52,6 +52,8 @@ export default {
 			Alerts.error('Error', 'Se ha generado un error en el proceso al cargar los items, por favor contacte con el administrador');
 			this.$router.go(-1);
 		});
+	},
+	created(){
 		//axios para obtener las calificaciones
 		axios.get("/legalAspects/contracts/qualifications")
 		.then(response => {
