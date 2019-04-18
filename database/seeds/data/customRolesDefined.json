@@ -1,0 +1,22 @@
+[
+    {
+        "application": "legalAspects",
+        "modules": [
+            {
+                "name": "contracts",
+                "roles": [
+                    {
+                        "name": "Contratista",
+                        "display_name": "Contratista",
+                        "description": "Rol Definido creado automáticamente"
+                    },
+                    {
+                        "name": "Arrendatario",
+                        "display_name": "Arrendatario",
+                        "description": "Rol Definido creado automáticamente"
+                    }
+                ]
+            }
+        ]
+    }  
+]
