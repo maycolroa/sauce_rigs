@@ -32,7 +32,7 @@ class FileUploadController extends Controller
         $files = FileUpload::selectRaw(
             'sau_ct_file_upload_contracts_leesse.*,
              sau_users.name as user_name,
-             GROUP_CONCAT(CONCAT(sau_ct_information_contract_lessee.nit, " - ", sau_ct_information_contract_lessee.social_reason)) AS social_reason'
+             GROUP_CONCAT(sau_ct_information_contract_lessee.social_reason ORDER BY social_reason ASC) AS social_reason'
           )
           ->join('sau_users','sau_users.id','sau_ct_file_upload_contracts_leesse.user_id')
           ->join('sau_ct_file_upload_contract','sau_ct_file_upload_contract.file_upload_id','sau_ct_file_upload_contracts_leesse.id')
