@@ -5,7 +5,7 @@ namespace App\Console\Commands;
 use Illuminate\Console\Command;
 use App\Facades\ConfigurationsCompany\Facades\ConfigurationsCompany;
 use App\Facades\Mail\Facades\NotificationMail;
-use App\Models\LegalAspects\FileUpload;
+use App\Models\LegalAspects\Contracts\FileUpload;
 use App\Traits\ContractTrait;
 use Carbon\Carbon;
 
@@ -61,7 +61,7 @@ class DaysAlertExpirationDateContractFilesUpload extends Command
             $files->company_scope = $value['company_id'];
             $files = $files->get();
 
-            if (!empty($files))
+            if ($files->count() > 0)
             {
                 $recipients = $this->getUsersMasterContract($value['company_id']);
 
@@ -92,7 +92,8 @@ class DaysAlertExpirationDateContractFilesUpload extends Command
                 'Fecha Actualización' => Carbon::createFromFormat('Y-m-d H:i:s', $file->updated_at)->toFormattedDateString()
             ]);
         }
-
+        \Log::info('AQIOooooooooooooooooooooooooooo');
+        \Log::info($result);
         return $result;
     }
 }

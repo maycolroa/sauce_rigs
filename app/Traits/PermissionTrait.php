@@ -3,9 +3,9 @@
 namespace App\Traits;
 
 use Illuminate\Support\Facades\Auth;
-use App\Administrative\License;
-use App\Models\Permission;
-use App\Models\Module;
+use App\Models\General\License;
+use App\Models\General\Permission;
+use App\Models\General\Module;
 use Exception;
 
 trait PermissionTrait

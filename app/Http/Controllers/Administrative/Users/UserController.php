@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use App\Vuetable\Facades\Vuetable;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Administrative\Users\UserRequest;
-use App\User;
+use App\Models\Administrative\Users\User;
 use App\Traits\UserTrait;
 use App\Jobs\Administrative\Users\UserExportJob;
 use Session;

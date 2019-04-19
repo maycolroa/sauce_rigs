@@ -2,7 +2,7 @@
 
 namespace App\Exports\Administrative\ActionPlans;
 
-use App\Models\ActionPlansActivity;
+use App\Models\Administrative\ActionPlans\ActionPlansActivity;
 use Maatwebsite\Excel\Concerns\FromQuery;
 use Maatwebsite\Excel\Concerns\WithMapping;
 use Maatwebsite\Excel\Concerns\WithHeadings;

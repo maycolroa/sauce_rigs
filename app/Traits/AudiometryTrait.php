@@ -2,7 +2,7 @@
 
 namespace App\Traits;
 
-use App\PreventiveOccupationalMedicine\BiologicalMonitoring\Audiometry;
+use App\Models\PreventiveOccupationalMedicine\BiologicalMonitoring\Audiometry;
 use DB;
 use Exception;
 

@@ -6,10 +6,10 @@ use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Database\Eloquent\Collection;
 use App\Facades\Mail\NotificationGeneralMail;
-use App\User;
-use App\Models\LogMail;
-use App\Models\Module;
-use App\Administrative\Employee;
+use App\Models\Administrative\Users\User;
+use App\Models\General\LogMail;
+use App\Models\General\Module;
+use App\Models\Administrative\Employees\Employee;
 use Route;
 use Exception;
 

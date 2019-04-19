@@ -1,9 +1,9 @@
 <?php
 
 use Illuminate\Database\Seeder;
-use App\Models\Application;
-use App\Models\Module;
-use App\Models\Role;
+use App\Models\General\Application;
+use App\Models\General\Module;
+use App\Models\Administrative\Roles\Role;
 
 class MakeCustomRolesDefinedSeeder extends Seeder
 {

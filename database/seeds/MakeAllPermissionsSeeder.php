@@ -1,8 +1,8 @@
 <?php
 
 use Illuminate\Database\Seeder;
-use App\Models\Module;
-use App\Models\Permission;
+use App\Models\General\Module;
+use App\Models\General\Permission;
 
 class MakeAllPermissionsSeeder extends Seeder
 {

@@ -3,7 +3,7 @@
 namespace App\Facades\ConfigurationsCompany;
 
 use Illuminate\Support\Facades\App;
-use App\Models\ConfigurationCompany;
+use App\Models\Administrative\Configurations\ConfigurationCompany;
 use Exception;
 use Session;
 
