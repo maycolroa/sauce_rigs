@@ -1,49 +1,48 @@
 <template>
   <div>
     <h4 class="font-weight-bold mb-4">
-       <span class="text-muted font-weight-light">Evaluaciones /</span> Editar
+       <span class="text-muted font-weight-light">Evaluaciones Realizadas/</span> Editar
     </h4>
 
     <div class="col-md">
       <b-card no-body>
         <b-card-body>
-            <form-evaluation-component
-                :url="`/legalAspects/evaluation/${this.$route.params.id}`"
+            <form-evaluation-contract-component
+                :url="`/legalAspects/evaluationContract/${this.$route.params.id}`"
                 method="PUT"
                 :evaluation="data"
                 :is-edit="true"
-                :cancel-url="{ name: 'legalaspects-evaluations'}"
-                :types-evaluation="typesEvaluation"
                 :types-rating="typesRating"
-                userDataUrl="/selects/users"/>
+                userDataUrl="/selects/users"
+                :cancel-url="{ name: 'legalaspects-evaluations-contracts'}"/>
         </b-card-body>
       </b-card>
     </div>
   </div>
 </template>
-
+ 
 <script>
-import FormEvaluationComponent from '@/components/LegalAspects/Evaluations/FormEvaluationComponent.vue';
+import FormEvaluationContractComponent from '@/components/LegalAspects/Contracts/EvaluationContracts/FormEvaluationContractComponent.vue';
 import Alerts from '@/utils/Alerts.js';
 import GlobalMethods from '@/utils/GlobalMethods.js';
 
 export default {
-  name: 'legalaspects-evaluations-edit',
+  name: 'legalaspects-evaluations-contratcs-edit',
   metaInfo: {
-    title: 'Evaluaciones - Editar'
+    title: 'Evaluaciones Realizadas - Editar'
   },
   components:{
-    FormEvaluationComponent
+    FormEvaluationContractComponent
   },
   data () {
     return {
       data: [],
-      typesEvaluation: [],
       typesRating: []
     }
   },
   created(){
-    axios.get(`/legalAspects/evaluation/${this.$route.params.id}`)
+
+    axios.get(`/legalAspects/evaluationContract/${this.$route.params.id}`)
     .then(response => {
         this.data = response.data.data;
     })
@@ -52,7 +51,6 @@ export default {
         this.$router.go(-1);
     });
 
-    this.fetchSelect('typesEvaluation', '/radios/ctTypesEvaluation')
     this.fetchSelect('typesRating', '/legalAspects/typeRating/AllTypesRating')
   },
   methods: {

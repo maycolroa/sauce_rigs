@@ -245,7 +245,7 @@ import VueTextarea from "@/components/Inputs/VueTextarea.vue";
 import VueCheckboxSimple from "@/components/Inputs/VueCheckboxSimple.vue";
 import Alerts from '@/utils/Alerts.js';
 import EvaluationTypesRating from '../Evaluations/EvaluationTypesRating.vue';
-import InformationGeneral from '@/components/LegalAspects/ContractLessee/InformationGeneral.vue';
+import InformationGeneral from '@/components/LegalAspects/Contracts/ContractLessee/InformationGeneral.vue';
 import ModalObservations from "./ModalObservations.vue"
 import Loading from "@/components/Inputs/Loading.vue";
 

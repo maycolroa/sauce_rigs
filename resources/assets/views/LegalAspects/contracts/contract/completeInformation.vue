@@ -19,7 +19,7 @@
 </template>
 
 <script>
-import FormContractCompleteInfo from '@/components/LegalAspects/ContractLessee/FormContractCompleteInfoComponent.vue';
+import FormContractCompleteInfo from '@/components/LegalAspects/Contracts/ContractLessee/FormContractCompleteInfoComponent.vue';
 
 export default {
 	name: 'legal-aspects-contracts-complete-information',

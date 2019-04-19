@@ -26,7 +26,7 @@ class EvaluationContract extends Model
 
     public function contract()
     {
-        return $this->belongsTo(ContractLessee::class, 'contract_id');
+        return $this->belongsTo(ContractLesseeInformation::class, 'contract_id');
     }
 
     public function evaluators()

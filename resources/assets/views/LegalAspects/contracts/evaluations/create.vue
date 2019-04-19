@@ -1,55 +1,45 @@
 <template>
   <div>
     <h4 class="font-weight-bold mb-4">
-       <span class="text-muted font-weight-light">Evaluaciones /</span> Ver
+       <span class="text-muted font-weight-light">Evaluaciones /</span> Crear
     </h4>
+
 
     <div class="col-md">
       <b-card no-body>
         <b-card-body>
             <form-evaluation-component
-                :evaluation="data"
+                url="/legalAspects/evaluation"
+                method="POST"
+                :cancel-url="{ name: 'legalaspects-evaluations'}"
                 :types-evaluation="typesEvaluation"
-                :types-rating="typesRating"
-                :view-only="true"
-                :cancel-url="{ name: 'legalaspects-evaluations'}"/>
+                :types-rating="typesRating"/>
         </b-card-body>
       </b-card>
     </div>
   </div>
 </template>
- 
+
 <script>
-import FormEvaluationComponent from '@/components/LegalAspects/Evaluations/FormEvaluationComponent.vue';
+import FormEvaluationComponent from '@/components/LegalAspects/Contracts/Evaluations/FormEvaluationComponent.vue';
 import Alerts from '@/utils/Alerts.js';
 import GlobalMethods from '@/utils/GlobalMethods.js';
 
 export default {
-  name: 'legalaspects-evaluations-view',
+  name: 'legalaspects-evaluations-create',
   metaInfo: {
-    title: 'Evaluaciones - Ver'
+    title: 'Evaluaciones - Crear'
   },
   components:{
     FormEvaluationComponent
   },
-  data () {
+  data(){
     return {
-      data: [],
       typesEvaluation: [],
       typesRating: []
     }
   },
   created(){
-
-    axios.get(`/legalAspects/evaluation/${this.$route.params.id}`)
-    .then(response => {
-        this.data = response.data.data;
-    })
-    .catch(error => {
-        Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
-        this.$router.go(-1);
-    });
-
     this.fetchSelect('typesEvaluation', '/radios/ctTypesEvaluation')
     this.fetchSelect('typesRating', '/legalAspects/typeRating/AllTypesRating')
   },

@@ -26,6 +26,6 @@ class FileUpload extends Model
 
     public function contracts()
     {
-        return $this->belongsToMany(ContractLessee::class,'sau_ct_file_upload_contract', 'file_upload_id', 'contract_id');
+        return $this->belongsToMany(ContractLesseeInformation::class,'sau_ct_file_upload_contract', 'file_upload_id', 'contract_id');
     }
 }

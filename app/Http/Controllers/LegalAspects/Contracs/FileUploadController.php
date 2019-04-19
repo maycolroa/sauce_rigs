@@ -71,7 +71,7 @@ class FileUploadController extends Controller
         $file = $request->file;
         $nameFile = base64_encode(Auth::user()->id . now()) .'.'. $file->extension();
         
-        $file->storeAs('legalAspects/files/', $nameFile,'public');
+        $file->storeAs('legalAspects/files/', $nameFile,'s3');
 
         $fileUpload->file = $nameFile;
         $fileUpload->user_id = Auth::user()->id;
@@ -162,9 +162,9 @@ class FileUploadController extends Controller
         if($request->file != $fileUpload->file)
         {
           $file = $request->file;
-          Storage::disk('public')->delete('legalAspects/files/'. $fileUpload->file);
+          Storage::disk('s3')->delete('legalAspects/files/'. $fileUpload->file);
           $nameFile = base64_encode(Auth::user()->id . now()) .'.'. $file->extension();
-          $file->storeAs('legalAspects/files/', $nameFile,'public');
+          $file->storeAs('legalAspects/files/', $nameFile,'s3');
           $fileUpload->file = $nameFile;
         }
         
@@ -216,7 +216,7 @@ class FileUploadController extends Controller
           return $this->respondWithError('No tiene permitido eliminar este archivo');
         }
 
-        Storage::disk('public')->delete('legalAspects/files/'. $fileUpload->file);
+        Storage::disk('s3')->delete('legalAspects/files/'. $fileUpload->file);
         
         if(!$fileUpload->delete())
         {
@@ -241,7 +241,7 @@ class FileUploadController extends Controller
      */
     public function download(FileUpload $fileUpload)
     {
-      return Storage::disk('public')->download('legalAspects/files/'. $fileUpload->file);
+      return Storage::disk('s3')->download('legalAspects/files/'. $fileUpload->file);
     }
 
     private function checkPermissionUserInFile($user_id, $contract_id)

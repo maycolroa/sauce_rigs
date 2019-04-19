@@ -3,13 +3,15 @@
 namespace App\Models\LegalAspects\Contracts;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Traits\CompanyTrait;
 
 class ContractLesseeInformation extends Model
 {
+    use CompanyTrait;
+
     protected $table = 'sau_ct_information_contract_lessee';
 
     protected $fillable = [
-        'id',
         'company_id',
         'nit',
         'type',
@@ -35,14 +37,15 @@ class ContractLesseeInformation extends Model
         return $this->belongsToMany('App\Models\Administrative\Users\User', 'sau_users');
     }
 
-    public function usersContract(){
-        return $this->belongsToMany('App\Models\Administrative\Users\User', 'sau_user_information_contract_lessee');
+    public function usersContract()
+    {
+        return $this->belongsToMany('App\Models\Administrative\Users\User', 'sau_user_information_contract_lessee', 'information_id');
     }
 
     public function multiselect()
     {
         return [
-            'name' => $this->nit,
+            'name' => "{$this->nit} - {$this->social_reason}",
             'value' => $this->id
         ];
     }

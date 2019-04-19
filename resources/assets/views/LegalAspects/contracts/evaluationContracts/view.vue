@@ -1,17 +1,15 @@
 <template>
   <div>
     <h4 class="font-weight-bold mb-4">
-       <span class="text-muted font-weight-light">Evaluaciones Realizadas/</span> Editar
+       <span class="text-muted font-weight-light">Evaluaciones Realizadas/</span> Ver
     </h4>
 
     <div class="col-md">
       <b-card no-body>
         <b-card-body>
             <form-evaluation-contract-component
-                :url="`/legalAspects/evaluationContract/${this.$route.params.id}`"
-                method="PUT"
                 :evaluation="data"
-                :is-edit="true"
+                :view-only="true"
                 :types-rating="typesRating"
                 userDataUrl="/selects/users"
                 :cancel-url="{ name: 'legalaspects-evaluations-contracts'}"/>
@@ -22,14 +20,14 @@
 </template>
  
 <script>
-import FormEvaluationContractComponent from '@/components/LegalAspects/EvaluationContracts/FormEvaluationContractComponent.vue';
+import FormEvaluationContractComponent from '@/components/LegalAspects/Contracts/EvaluationContracts/FormEvaluationContractComponent.vue';
 import Alerts from '@/utils/Alerts.js';
 import GlobalMethods from '@/utils/GlobalMethods.js';
 
 export default {
-  name: 'legalaspects-evaluations-contratcs-edit',
+  name: 'legalaspects-evaluations-contratcs-view',
   metaInfo: {
-    title: 'Evaluaciones Realizadas - Editar'
+    title: 'Evaluaciones Realizadas - Ver'
   },
   components:{
     FormEvaluationContractComponent

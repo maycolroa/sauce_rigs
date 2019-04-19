@@ -1,18 +1,17 @@
 <template>
   <div>
     <h4 class="font-weight-bold mb-4">
-       <span class="text-muted font-weight-light">Evaluaciones /</span> Evaluar
+       <span class="text-muted font-weight-light">Evaluaciones /</span> Ver
     </h4>
 
     <div class="col-md">
       <b-card no-body>
         <b-card-body>
-            <form-evaluation-contract-component
-                :url="`/legalAspects/evaluationContract`"
-                method="POST"
+            <form-evaluation-component
                 :evaluation="data"
+                :types-evaluation="typesEvaluation"
                 :types-rating="typesRating"
-                userDataUrl="/selects/users"
+                :view-only="true"
                 :cancel-url="{ name: 'legalaspects-evaluations'}"/>
         </b-card-body>
       </b-card>
@@ -21,27 +20,28 @@
 </template>
  
 <script>
-import FormEvaluationContractComponent from '@/components/LegalAspects/EvaluationContracts/FormEvaluationContractComponent.vue';
+import FormEvaluationComponent from '@/components/LegalAspects/Contracts/Evaluations/FormEvaluationComponent.vue';
 import Alerts from '@/utils/Alerts.js';
 import GlobalMethods from '@/utils/GlobalMethods.js';
 
 export default {
-  name: 'legalaspects-evaluations-contratc-create',
+  name: 'legalaspects-evaluations-view',
   metaInfo: {
-    title: 'Evaluaciones - Evaluar'
+    title: 'Evaluaciones - Ver'
   },
   components:{
-    FormEvaluationContractComponent
+    FormEvaluationComponent
   },
   data () {
     return {
       data: [],
+      typesEvaluation: [],
       typesRating: []
     }
   },
   created(){
 
-    axios.get(`/legalAspects/evaluationContract/getData/${this.$route.params.id}`)
+    axios.get(`/legalAspects/evaluation/${this.$route.params.id}`)
     .then(response => {
         this.data = response.data.data;
     })
@@ -50,6 +50,7 @@ export default {
         this.$router.go(-1);
     });
 
+    this.fetchSelect('typesEvaluation', '/radios/ctTypesEvaluation')
     this.fetchSelect('typesRating', '/legalAspects/typeRating/AllTypesRating')
   },
   methods: {
