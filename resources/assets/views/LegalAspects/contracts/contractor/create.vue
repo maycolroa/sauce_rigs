@@ -19,7 +19,7 @@
 </template>
 
 <script>
-import FormContract from '@/components/LegalAspects/ContractLessee/FormContractComponent.vue';
+import FormContract from '@/components/LegalAspects/Contracts/ContractLessee/FormContractComponent.vue';
 
 export default {
 	name: 'legal-aspects-contracts-create',

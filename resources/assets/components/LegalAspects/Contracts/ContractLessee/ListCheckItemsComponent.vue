@@ -89,7 +89,7 @@ import VueCheckbox from "@/components/Inputs/VueCheckbox.vue";
 import VueRadio from "@/components/Inputs/VueRadio.vue";
 import ActionPlanContractComponent from '@/components/CustomInputs/ActionPlanContractComponent.vue';
 import Form from "@/utils/Form.js";
-import FormUploadFileListItemComponent from '@/components/LegalAspects/ContractLessee/FormUploadFileListItemComponent.vue';
+import FormUploadFileListItemComponent from '@/components/LegalAspects/Contracts/ContractLessee/FormUploadFileListItemComponent.vue';
 import Alerts from '@/utils/Alerts.js';
 
 export default {

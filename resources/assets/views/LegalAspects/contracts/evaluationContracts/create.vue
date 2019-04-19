@@ -1,18 +1,19 @@
 <template>
   <div>
     <h4 class="font-weight-bold mb-4">
-       <span class="text-muted font-weight-light">Evaluaciones Realizadas/</span> Ver
+       <span class="text-muted font-weight-light">Evaluaciones /</span> Evaluar
     </h4>
 
     <div class="col-md">
       <b-card no-body>
         <b-card-body>
             <form-evaluation-contract-component
+                :url="`/legalAspects/evaluationContract`"
+                method="POST"
                 :evaluation="data"
-                :view-only="true"
                 :types-rating="typesRating"
                 userDataUrl="/selects/users"
-                :cancel-url="{ name: 'legalaspects-evaluations-contracts'}"/>
+                :cancel-url="{ name: 'legalaspects-evaluations'}"/>
         </b-card-body>
       </b-card>
     </div>
@@ -20,14 +21,14 @@
 </template>
  
 <script>
-import FormEvaluationContractComponent from '@/components/LegalAspects/EvaluationContracts/FormEvaluationContractComponent.vue';
+import FormEvaluationContractComponent from '@/components/LegalAspects/Contracts/EvaluationContracts/FormEvaluationContractComponent.vue';
 import Alerts from '@/utils/Alerts.js';
 import GlobalMethods from '@/utils/GlobalMethods.js';
 
 export default {
-  name: 'legalaspects-evaluations-contratcs-view',
+  name: 'legalaspects-evaluations-contratc-create',
   metaInfo: {
-    title: 'Evaluaciones Realizadas - Ver'
+    title: 'Evaluaciones - Evaluar'
   },
   components:{
     FormEvaluationContractComponent
@@ -40,7 +41,7 @@ export default {
   },
   created(){
 
-    axios.get(`/legalAspects/evaluationContract/${this.$route.params.id}`)
+    axios.get(`/legalAspects/evaluationContract/getData/${this.$route.params.id}`)
     .then(response => {
         this.data = response.data.data;
     })

@@ -19,7 +19,7 @@
 </template>
 
 <script>
-import FormTypeRatingComponent from '@/components/LegalAspects/TypesRating/FormTypeRatingComponent.vue';
+import FormTypeRatingComponent from '@/components/LegalAspects/Contracts/TypesRating/FormTypeRatingComponent.vue';
 import Alerts from '@/utils/Alerts.js';
 
 export default {
