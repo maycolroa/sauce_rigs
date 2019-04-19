@@ -7,7 +7,7 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
-use App\PreventiveOccupationalMedicine\BiologicalMonitoring\Audiometry;
+use App\Models\PreventiveOccupationalMedicine\BiologicalMonitoring\Audiometry;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\PreventiveOccupationalMedicine\BiologicalMonitoring\AudiometryExcel;
 use App\Facades\Mail\Facades\NotificationMail;

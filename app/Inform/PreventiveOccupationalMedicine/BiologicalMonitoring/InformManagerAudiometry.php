@@ -2,8 +2,8 @@
 
 namespace App\Inform\PreventiveOccupationalMedicine\BiologicalMonitoring;
 
-use App\PreventiveOccupationalMedicine\BiologicalMonitoring\Audiometry;
-use App\Administrative\Employee;
+use App\Models\PreventiveOccupationalMedicine\BiologicalMonitoring\Audiometry;
+use App\Models\Administrative\Employees\Employee;
 
 class InformManagerAudiometry
 {

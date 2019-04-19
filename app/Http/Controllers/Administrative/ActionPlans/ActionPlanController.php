@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Administrative\ActionPlans;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Vuetable\Facades\Vuetable;
-use App\Models\ActionPlansActivity;
+use App\Models\Administrative\ActionPlans\ActionPlansActivity;
 use Illuminate\Support\Facades\Auth;
 use App\Facades\ActionPlans\Facades\ActionPlan;
 use App\Http\Requests\Administrative\ActionPlans\ActionPlanRequest;

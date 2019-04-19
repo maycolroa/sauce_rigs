@@ -1,8 +1,8 @@
 <?php
 
 use Illuminate\Database\Seeder;
-use App\Administrative\Configurations\IndustrialSecure\DangerMatrix\Qualification;
-use App\Administrative\Configurations\IndustrialSecure\DangerMatrix\QualificationType;
+use App\Models\IndustrialSecure\DangerMatrix\Qualification;
+use App\Models\IndustrialSecure\DangerMatrix\QualificationType;
 
 class DmQualificationsSeeder extends Seeder
 {

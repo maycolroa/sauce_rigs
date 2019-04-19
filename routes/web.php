@@ -21,10 +21,10 @@ Route::get('/password/generate/{token}', 'Auth\GeneratePasswordController@genera
 Route::post('/password/generate/{id}', 'Auth\GeneratePasswordController@updatePassword');
 
 Route::middleware(['auth'])->group(function () { 
-    Route::get('appWithModules', 'ApplicationController@appsWhithModules');
-    Route::get('getCompanies', 'ApplicationController@getCompanies');
-    Route::post('changeCompany', 'ApplicationController@changeCompany');
-    Route::post('vuetableCustomColumns', 'ApplicationController@vuetableCustomColumns');
+    Route::get('appWithModules', 'General\ApplicationController@appsWhithModules');
+    Route::get('getCompanies', 'General\ApplicationController@getCompanies');
+    Route::post('changeCompany', 'General\ApplicationController@changeCompany');
+    Route::post('vuetableCustomColumns', 'General\ApplicationController@vuetableCustomColumns');
 
     Route::get('templates/audiometryimport','PreventiveOccupationalMedicine\BiologicalMonitoring\AudiometryController@downloadTemplateImport');
 
@@ -44,48 +44,48 @@ Route::middleware(['auth'])->group(function () {
     });
 
     Route::prefix('selects')->group(function () {
-        Route::post('employees', 'Administrative\EmployeesController@multiselect');  
+        Route::post('employees', 'Administrative\Employees\EmployeesController@multiselect');  
         Route::post('users', 'Administrative\Users\UserController@multiselect');
         Route::post('usersAll', 'Administrative\Users\UserController@multiselectAll');  
-        Route::post('multiselect', 'ApplicationController@multiselect');
+        Route::post('multiselect', 'General\ApplicationController@multiselect');
         Route::post('roles', 'Administrative\Roles\RoleController@multiselect');
-        Route::post('modulesGroup', 'ApplicationController@multiselectGroupModules');
+        Route::post('modulesGroup', 'General\ApplicationController@multiselectGroupModules');
         Route::post('permissions', 'Administrative\Roles\RoleController@multiselectPermissions');
-        Route::post('areas', 'Administrative\EmployeeAreaController@multiselect');  
+        Route::post('areas', 'Administrative\Areas\EmployeeAreaController@multiselect');  
         Route::post('years/audiometry', 'PreventiveOccupationalMedicine\BiologicalMonitoring\AudiometryController@multiselectYears');  
-        Route::post('regionals', 'Administrative\EmployeeRegionalController@multiselect');
-        Route::post('headquarters', 'Administrative\EmployeeHeadquarterController@multiselect');  
-        Route::post('sexs', 'MultiSelectRadioController@sexs');  
-        Route::post('processes', 'Administrative\EmployeeProcessController@multiselect');
-        Route::post('positions', 'Administrative\EmployeePositionController@multiselect');
-        Route::post('businesses', 'Administrative\EmployeeBusinessController@multiselect');
-        Route::post('eps', 'ApplicationController@multiselectEps');
+        Route::post('regionals', 'Administrative\Regionals\EmployeeRegionalController@multiselect');
+        Route::post('headquarters', 'Administrative\Headquarters\EmployeeHeadquarterController@multiselect');  
+        Route::post('sexs', 'General\MultiSelectRadioController@sexs');  
+        Route::post('processes', 'Administrative\Processes\EmployeeProcessController@multiselect');
+        Route::post('positions', 'Administrative\Positions\EmployeePositionController@multiselect');
+        Route::post('businesses', 'Administrative\Businesses\EmployeeBusinessController@multiselect');
+        Route::post('eps', 'General\ApplicationController@multiselectEps');
         Route::post('multiselectBar', 'PreventiveOccupationalMedicine\BiologicalMonitoring\AudiometryInformController@multiselectBar');
         Route::post('multiselectBarPercentage', 'PreventiveOccupationalMedicine\BiologicalMonitoring\AudiometryInformController@multiselectBarPercentage');
-        Route::post('dmActivities', 'IndustrialSecure\ActivityController@multiselect');
-        Route::post('dmDangers', 'IndustrialSecure\DangerController@multiselect');
-        Route::post('dmGeneratedDangers', 'MultiSelectRadioController@dmGeneratedDangers');
-        Route::post('tagsAdministrativeControls', 'IndustrialSecure\TagController@multiselectAdministrativeControls');
-        Route::post('tagsEngineeringControls', 'IndustrialSecure\TagController@multiselectEngineeringControls');
-        Route::post('tagsEpp', 'IndustrialSecure\TagController@multiselectEpp');
-        Route::post('tagsPossibleConsequencesDanger', 'IndustrialSecure\TagController@multiselectPossibleConsequencesDanger');
-        Route::post('tagsWarningSignage', 'IndustrialSecure\TagController@multiselectWarningSignage');
-        Route::post('tagsTypeProcess', 'TagController@multiselectTypeProcess');
-        Route::post('actionPlanStates', 'MultiSelectRadioController@actionPlanStates');
+        Route::post('dmActivities', 'IndustrialSecure\Activities\ActivityController@multiselect');
+        Route::post('dmDangers', 'IndustrialSecure\Dangers\DangerController@multiselect');
+        Route::post('dmGeneratedDangers', 'General\MultiSelectRadioController@dmGeneratedDangers');
+        Route::post('tagsAdministrativeControls', 'IndustrialSecure\Tags\TagController@multiselectAdministrativeControls');
+        Route::post('tagsEngineeringControls', 'IndustrialSecure\Tags\TagController@multiselectEngineeringControls');
+        Route::post('tagsEpp', 'IndustrialSecure\Tags\TagController@multiselectEpp');
+        Route::post('tagsPossibleConsequencesDanger', 'IndustrialSecure\Tags\TagController@multiselectPossibleConsequencesDanger');
+        Route::post('tagsWarningSignage', 'IndustrialSecure\Tags\TagController@multiselectWarningSignage');
+        Route::post('tagsTypeProcess', 'General\TagController@multiselectTypeProcess');
+        Route::post('actionPlanStates', 'General\MultiSelectRadioController@actionPlanStates');
         Route::post('actionPlanModules', 'Administrative\ActionPlans\ActionPlanController@actionPlanModules');
-        Route::post('contractors', 'LegalAspects\ContractLesseeController@multiselect'); 
+        Route::post('contractors', 'LegalAspects\Contracs\ContractLesseeController@multiselect'); 
 
         Route::prefix('evaluations')->group(function () {
-          Route::post('objectives', 'LegalAspects\EvaluationController@multiselectObjectives');
-          Route::post('subobjectives', 'LegalAspects\EvaluationController@multiselectSubobjectives');
+          Route::post('objectives', 'LegalAspects\Contracs\EvaluationController@multiselectObjectives');
+          Route::post('subobjectives', 'LegalAspects\Contracs\EvaluationController@multiselectSubobjectives');
         });
     });
 
     Route::prefix('radios')->group(function () {
-      Route::post('dmTypeActivities', 'MultiSelectRadioController@dmTypeActivities');
-      Route::post('siNo', 'MultiSelectRadioController@siNo');
-      Route::post('conf/locationLevelForm', 'Administrative\ConfigurationController@radioLocationLevels');
-      Route::post('ctTypesEvaluation', 'MultiSelectRadioController@ctTypesEvaluation');
+      Route::post('dmTypeActivities', 'General\MultiSelectRadioController@dmTypeActivities');
+      Route::post('siNo', 'General\MultiSelectRadioController@siNo');
+      Route::post('conf/locationLevelForm', 'Administrative\Configurations\ConfigurationController@radioLocationLevels');
+      Route::post('ctTypesEvaluation', 'General\MultiSelectRadioController@ctTypesEvaluation');
     });
 
     //Administrativo
@@ -97,41 +97,35 @@ Route::middleware(['auth'])->group(function () {
 			Route::post('role/data', 'Administrative\Roles\RoleController@data');
 			Route::ApiResource('role', 'Administrative\Roles\RoleController');
 
-			Route::post('position/data', 'Administrative\EmployeePositionController@data');
-			Route::ApiResource('position', 'Administrative\EmployeePositionController');
+			Route::post('position/data', 'Administrative\Positions\EmployeePositionController@data');
+			Route::ApiResource('position', 'Administrative\Positions\EmployeePositionController');
 
-			Route::post('regional/data', 'Administrative\EmployeeRegionalController@data');
-			Route::ApiResource('regional', 'Administrative\EmployeeRegionalController');
+			Route::post('regional/data', 'Administrative\Regionals\EmployeeRegionalController@data');
+			Route::ApiResource('regional', 'Administrative\Regionals\EmployeeRegionalController');
 
-			Route::post('business/data', 'Administrative\EmployeeBusinessController@data');
-			Route::ApiResource('business', 'Administrative\EmployeeBusinessController');
+			Route::post('business/data', 'Administrative\Businesses\EmployeeBusinessController@data');
+			Route::ApiResource('business', 'Administrative\Businesses\EmployeeBusinessController');
 
-			Route::post('headquarter/data', 'Administrative\EmployeeHeadquarterController@data');
-			Route::ApiResource('headquarter', 'Administrative\EmployeeHeadquarterController');
+			Route::post('headquarter/data', 'Administrative\Headquarters\EmployeeHeadquarterController@data');
+			Route::ApiResource('headquarter', 'Administrative\Headquarters\EmployeeHeadquarterController');
 
-			Route::post('area/data', 'Administrative\EmployeeAreaController@data');
-			Route::ApiResource('area', 'Administrative\EmployeeAreaController');
+			Route::post('area/data', 'Administrative\Areas\EmployeeAreaController@data');
+			Route::ApiResource('area', 'Administrative\Areas\EmployeeAreaController');
 
-			Route::post('process/data', 'Administrative\EmployeeProcessController@data');
-			Route::ApiResource('process', 'Administrative\EmployeeProcessController');
+			Route::post('process/data', 'Administrative\Processes\EmployeeProcessController@data');
+			Route::ApiResource('process', 'Administrative\Processes\EmployeeProcessController');
 
-			Route::post('employee/data', 'Administrative\EmployeesController@data');
-			Route::ApiResource('employee', 'Administrative\EmployeesController');
+			Route::post('employee/data', 'Administrative\Employees\EmployeesController@data');
+			Route::ApiResource('employee', 'Administrative\Employees\EmployeesController');
 
-      Route::post('configuration', 'Administrative\ConfigurationController@store');
-      Route::get('configuration/view', 'Administrative\ConfigurationController@show');
+      Route::post('configuration', 'Administrative\Configurations\ConfigurationController@store');
+      Route::get('configuration/view', 'Administrative\Configurations\ConfigurationController@show');
 					
 
       Route::prefix('configurations')->group(function () {
         Route::post('locationLevelForms/getConfModule', 'Administrative\Configurations\LocationLevelFormController@getConfModule');
 				Route::post('locationLevelForms/data', 'Administrative\Configurations\LocationLevelFormController@data');
 				Route::ApiResource('locationLevelForms', 'Administrative\Configurations\LocationLevelFormController');
-
-        Route::prefix('industrialSecurity')->group(function () {
-          Route::prefix('dangersMatrix')->group(function () {
-            Route::post('getQualificationsComponent', 'Administrative\Configurations\IndustrialSecure\DangerMatrix\QualificationController@getQualificationsComponent');
-          });
-        });
       });
 
       Route::post('actionplan/data', 'Administrative\ActionPlans\ActionPlanController@data');
@@ -141,52 +135,53 @@ Route::middleware(['auth'])->group(function () {
 
     //Seguridad Industrial
     Route::prefix('industrialSecurity')->group(function () {
-      Route::post('activity/data', 'IndustrialSecure\ActivityController@data');
-      Route::ApiResource('activity', 'IndustrialSecure\ActivityController');
+      Route::post('activity/data', 'IndustrialSecure\Activities\ActivityController@data');
+      Route::ApiResource('activity', 'IndustrialSecure\Activities\ActivityController');
 
-      Route::post('danger/data', 'IndustrialSecure\DangerController@data');
-      Route::ApiResource('danger', 'IndustrialSecure\DangerController');
+      Route::post('danger/data', 'IndustrialSecure\Dangers\DangerController@data');
+      Route::ApiResource('danger', 'IndustrialSecure\Dangers\DangerController');
 
-      Route::post('dangersMatrix/data', 'IndustrialSecure\DangerMatrixController@data');
-      Route::ApiResource('dangersMatrix', 'IndustrialSecure\DangerMatrixController');
+      Route::post('dangersMatrix/data', 'IndustrialSecure\DangerMatrix\DangerMatrixController@data');
+      Route::post('dangersMatrix/getQualificationsComponent', 'IndustrialSecure\DangerMatrix\QualificationController@getQualificationsComponent');
+      Route::ApiResource('dangersMatrix', 'IndustrialSecure\DangerMatrix\DangerMatrixController');
 
-      Route::post('dangersMatrixHistory/data', 'IndustrialSecure\DangerMatrixHistoryController@data');
+      Route::post('dangersMatrixHistory/data', 'IndustrialSecure\DangerMatrix\DangerMatrixHistoryController@data');
 		});
 		
 		//Aspectos Legales
 		Route::prefix('legalAspects')->group(function () {
-			Route::get('contracts/qualifications', 'LegalAspects\ContractLesseeController@qualifications');
-			Route::post('contracts/validateActionPlanItem', 'LegalAspects\ContractLesseeController@validateActionPlanItem');
-			Route::post('contracts/validateFilesItem', 'LegalAspects\ContractLesseeController@validateFilesItem');
-			Route::get('contracts/data', 'LegalAspects\ContractLesseeController@data');
-      Route::post('contracts/saveQualificationItems', 'LegalAspects\ContractLesseeController@saveQualificationItems');
+			Route::get('contracts/qualifications', 'LegalAspects\Contracs\ContractLesseeController@qualifications');
+			Route::post('contracts/validateActionPlanItem', 'LegalAspects\Contracs\ContractLesseeController@validateActionPlanItem');
+			Route::post('contracts/validateFilesItem', 'LegalAspects\Contracs\ContractLesseeController@validateFilesItem');
+			Route::get('contracts/data', 'LegalAspects\Contracs\ContractLesseeController@data');
+      Route::post('contracts/saveQualificationItems', 'LegalAspects\Contracs\ContractLesseeController@saveQualificationItems');
       
-      Route::ApiResource('contracts', 'LegalAspects\ContractLesseeController');
-      Route::ApiResource('contract', 'LegalAspects\ContractLesseeController');
+      Route::ApiResource('contracts', 'LegalAspects\Contracs\ContractLesseeController');
+      Route::ApiResource('contract', 'LegalAspects\Contracs\ContractLesseeController');
 
-      Route::post('fileUpload/data', 'LegalAspects\FileUploadController@data');
-      Route::get('fileUpload/download/{fileUpload}', 'LegalAspects\FileUploadController@download');
-      Route::ApiResource('fileUpload', 'LegalAspects\FileUploadController');
+      Route::post('fileUpload/data', 'LegalAspects\Contracs\FileUploadController@data');
+      Route::get('fileUpload/download/{fileUpload}', 'LegalAspects\Contracs\FileUploadController@download');
+      Route::ApiResource('fileUpload', 'LegalAspects\Contracs\FileUploadController');
 
-      Route::post('typeRating/data', 'LegalAspects\TypeRatingController@data');
-      Route::post('typeRating/AllTypesRating', 'LegalAspects\TypeRatingController@getAllTypesRating');
-      Route::ApiResource('typeRating', 'LegalAspects\TypeRatingController');
+      Route::post('typeRating/data', 'LegalAspects\Contracs\TypeRatingController@data');
+      Route::post('typeRating/AllTypesRating', 'LegalAspects\Contracs\TypeRatingController@getAllTypesRating');
+      Route::ApiResource('typeRating', 'LegalAspects\Contracs\TypeRatingController');
 
-      Route::post('evaluation/data', 'LegalAspects\EvaluationController@data');
-      Route::post('evaluation/export', 'LegalAspects\EvaluationController@export');
-      Route::ApiResource('evaluation', 'LegalAspects\EvaluationController');
+      Route::post('evaluation/data', 'LegalAspects\Contracs\EvaluationController@data');
+      Route::post('evaluation/export', 'LegalAspects\Contracs\EvaluationController@export');
+      Route::ApiResource('evaluation', 'LegalAspects\Contracs\EvaluationController');
 
-      Route::post('evaluationContract/data', 'LegalAspects\EvaluationContractController@data');
-      Route::get('evaluationContract/getData/{evaluationContract}', 'LegalAspects\EvaluationContractController@getData');
-      Route::post('evaluationContract/report', 'LegalAspects\EvaluationContractController@report');
-      Route::post('evaluationContract/exportReport', 'LegalAspects\EvaluationContractController@exportReport');
-      Route::post('evaluationContract/getTotales', 'LegalAspects\EvaluationContractController@getTotales');
-      Route::ApiResource('evaluationContract', 'LegalAspects\EvaluationContractController');
+      Route::post('evaluationContract/data', 'LegalAspects\Contracs\EvaluationContractController@data');
+      Route::get('evaluationContract/getData/{evaluationContract}', 'LegalAspects\Contracs\EvaluationContractController@getData');
+      Route::post('evaluationContract/report', 'LegalAspects\Contracs\EvaluationContractController@report');
+      Route::post('evaluationContract/exportReport', 'LegalAspects\Contracs\EvaluationContractController@exportReport');
+      Route::post('evaluationContract/getTotales', 'LegalAspects\Contracs\EvaluationContractController@getTotales');
+      Route::ApiResource('evaluationContract', 'LegalAspects\Contracs\EvaluationContractController');
 
-      Route::post('evaluationContractHistory/data', 'LegalAspects\EvaluationContractHistoryController@data');
+      Route::post('evaluationContractHistory/data', 'LegalAspects\Contracs\EvaluationContractHistoryController@data');
 		});
 
 
     //Return view for spa
-    Route::get('/{any}', 'ApplicationController@index')->where('any', '.*');
+    Route::get('/{any}', 'General\ApplicationController@index')->where('any', '.*');
 });

@@ -2,8 +2,8 @@
 
 namespace App\Traits;
 
-use App\LegalAspects\ContractLessee;
-use App\User;
+use App\Models\LegalAspects\Contracts\ContractLessee;
+use App\Models\Administrative\Users\User;
 
 trait ContractTrait
 {

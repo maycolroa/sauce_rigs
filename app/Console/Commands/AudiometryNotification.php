@@ -4,12 +4,12 @@ namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 
-use App\PreventiveOccupationalMedicine\BiologicalMonitoring\Audiometry;
+use App\Models\PreventiveOccupationalMedicine\BiologicalMonitoring\Audiometry;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\PreventiveOccupationalMedicine\BiologicalMonitoring\AudiometryExcel;
 use App\Facades\Mail\Facades\NotificationMail;
 use Illuminate\Database\Eloquent\Collection;
-use App\User;
+use App\Models\Administrative\Users\User;
 
 class AudiometryNotification extends Command
 {

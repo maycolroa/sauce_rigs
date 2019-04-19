@@ -2,7 +2,7 @@
 
 namespace App\Exports\PreventiveOccupationalMedicine\BiologicalMonitoring;
 
-use App\Administrative\EmployeeEPS;
+use App\Models\Administrative\Employees\EmployeeEPS;
 use Maatwebsite\Excel\Concerns\FromQuery;
 use Maatwebsite\Excel\Concerns\WithMapping;
 use Maatwebsite\Excel\Concerns\WithHeadings;

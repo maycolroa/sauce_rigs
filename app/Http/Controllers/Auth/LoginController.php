@@ -7,7 +7,7 @@ use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Traits\ResponseTrait;
-use App\User;
+use App\Models\Administrative\Users\User;
 use Session;
 use DB;
 

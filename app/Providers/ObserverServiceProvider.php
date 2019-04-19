@@ -4,7 +4,7 @@ namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use App\Observers\PreventiveOccupationalMedicine\BiologicalMonitoring\AudiometryObserver;
-use App\PreventiveOccupationalMedicine\BiologicalMonitoring\Audiometry;
+use App\Models\PreventiveOccupationalMedicine\BiologicalMonitoring\Audiometry;
 
 class ObserverServiceProvider extends ServiceProvider
 {

@@ -3,10 +3,10 @@
 namespace App\Traits;
 
 use App\SecApplication;
-use App\User;
+use App\Models\Administrative\Users\User;
 use App\Http\Requests\Administrative\Users\UserRequest;
 use App\UserLog;
-use App\Models\Administrative\GeneratePasswordUser;
+use App\Models\Administrative\Users\GeneratePasswordUser;
 use Illuminate\Support\Facades\Session;
 use App\Facades\Mail\Facades\NotificationMail;
 

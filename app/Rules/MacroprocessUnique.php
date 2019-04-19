@@ -3,7 +3,7 @@
 namespace App\Rules;
 
 use Illuminate\Contracts\Validation\Rule;
-use App\Administrative\EmployeeRegional;
+use App\Models\Administrative\Regionals\EmployeeRegional;
 
 class MacroprocessUnique implements Rule
 {
