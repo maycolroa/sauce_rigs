@@ -322,6 +322,26 @@ class ContractLesseeController extends Controller
         }
 
         DB::commit();
+
+        $users = User::select('sau_users.*')
+        ->join('sau_company_user', 'sau_users.id', 'sau_company_user.user_id')
+        ->where('sau_company_user.company_id', '=', Session::get('company_id'))->get();
+
+        foreach ($users as $user) {
+            if(!($user->contractInfo)){
+                \Log::info($user);
+            }
+        }
+
+        // NotificationMail::
+        //     subject('Notificación de usuario en sauce')
+        //     ->message('Te damos la bienvenida a la plataforma, se ha generado un nuevo usuario para este correo, para establecer tu nueva contraseña, por favor dar click al siguiente enlace.')
+        //     ->recipients($user)
+        //     ->buttons([['text'=>'Establecer contraseña', 'url'=>url("/password/generate/".base64_encode($generatePasswordUser->token))]])
+        //     ->module('users')
+        //     ->subcopy('Este link sólo se puede utilizar una vez')
+        //     ->send();
+
         return $this->respondHttp200([
             'message' => 'La lista de estándares ha sido guardada exitosamente.'
         ]);
@@ -385,7 +405,7 @@ class ContractLesseeController extends Controller
             foreach ($validate_files->get() as $file) {
                 // \Log::info($request->item_id);
                 if ($file['item_id'] == $request->item_id){
-                    \Log::info(Storage::disk('s3')->find($file['file']));
+                    // \Log::info(Storage::disk('s3')->find($file['file']));
                     $data = [
                         'name' => $file['name'],
                         'expirationDate' => (Carbon::createFromFormat('Y-m-d', $file['expirationDate']))->format('D M d Y'),
