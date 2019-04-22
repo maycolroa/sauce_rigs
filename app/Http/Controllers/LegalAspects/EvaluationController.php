@@ -6,7 +6,6 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Vuetable\Facades\Vuetable;
 use App\Http\Requests\LegalAspects\Evaluations\EvaluationRequest;
-use App\Http\Requests\LegalAspects\Evaluations\EvaluateRequest;
 use Illuminate\Support\Facades\Auth;
 use App\LegalAspects\Evaluation;
 use App\LegalAspects\TypeRating;
@@ -14,7 +13,7 @@ use App\LegalAspects\Interviewee;
 use App\LegalAspects\Objective;
 use App\LegalAspects\Subobjective;
 use App\LegalAspects\Item;
-use App\LegalAspects\Observation;
+use App\Jobs\LegalAspects\Evaluations\EvaluationExportJob;
 use Carbon\Carbon;
 use Session;
 use DB;
@@ -39,8 +38,35 @@ class EvaluationController extends Controller
     */
     public function data(Request $request)
     {
-        $evaluations = Evaluation::select('*');
+        $evaluations = Evaluation::select(
+            'sau_ct_evaluations.*')
+            ->join('sau_ct_objectives', 'sau_ct_objectives.evaluation_id', 'sau_ct_evaluations.id')
+            ->join('sau_ct_subobjectives', 'sau_ct_subobjectives.objective_id', 'sau_ct_objectives.id')
+            ->groupBy('sau_ct_evaluations.id');
 
+        $filters = $request->get('filters');
+
+        if (isset($filters["evaluationsObjectives"]))
+          $evaluations->inObjectives($this->getValuesForMultiselect($filters["evaluationsObjectives"]), $filters['filtersType']['evaluationsObjectives']);
+
+        if (isset($filters["evaluationsSubobjectives"]))
+          $evaluations->inSubobjectives($this->getValuesForMultiselect($filters["evaluationsSubobjectives"]), $filters['filtersType']['evaluationsSubobjectives']);
+
+        if (isset($filters["dateRange"]) && $filters["dateRange"])
+        {
+            $dates_request = explode('/', $filters["dateRange"]);
+            $dates = [];
+
+            if (COUNT($dates_request) == 2)
+            {
+                array_push($dates, (Carbon::createFromFormat('D M d Y',$dates_request[0]))->format('Y-m-d 00:00:00'));
+                array_push($dates, (Carbon::createFromFormat('D M d Y',$dates_request[1]))->format('Y-m-d 23:59:59'));
+            }
+
+            $evaluations->join('sau_ct_evaluation_contract', 'sau_ct_evaluation_contract.evaluation_id', 'sau_ct_evaluations.id');
+            $evaluations->betweenDate($dates);
+        }
+            
         return Vuetable::of($evaluations)
                     ->make();
     }
@@ -217,77 +243,18 @@ class EvaluationController extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
-     *
-     * @param  App\Http\Requests\LegalAspects\TypesRating\EvaluateRequest $request
-     * @param  App\LegalAspects\Evaluation $evaluation
-     * @return \Illuminate\Http\Response
-     */
-    public function evaluate(EvaluateRequest $request, Evaluation $evaluation)
-    {
-        if (!$this->verifyPermissionEvaluate($evaluation->id))
-            return $this->respondWithError('No tiene permitido realizar esta evaluación');
-        
-        DB::beginTransaction();
-
-        try
-        {
-            $evaluation->evaluation_date = date('Y-m-d');
-
-            if(!$evaluation->update()){
-                return $this->respondHttp500();
-            }
-
-            foreach ($request->get('objectives') as $objective)
-            {
-                foreach ($objective['subobjectives'] as $subobjective)
-                {
-                    foreach ($subobjective['items'] as $item)
-                    {
-                        $itemModel = Item::find($item['id']);
-                        
-                        foreach ($item['ratings'] as $rating)
-                        {
-                            $value = NULL;
-
-                            if ($rating['apply'] == 'SI')
-                                $value = $rating['value'];
-
-                            $itemModel->ratingsTypes()->updateExistingPivot($rating['type_rating_id'], ['value'=>$value]);
-                        }
-
-                        foreach ($item['observations'] as $observation)
-                        {
-                            $id = isset($observation['id']) ? $observation['id'] : NULL;
-                            $itemModel->observations()->updateOrCreate(['id'=>$id], $observation);
-                        }
-                    }
-                }
-            }
-
-            $this->deleteData($request->get('delete'));
-
-            DB::commit();
-
-        } catch (\Exception $e) {
-            DB::rollback();
-            return $this->respondHttp500();
-            //return $e->getMessage();
-        }
-
-        return $this->respondHttp200([
-            'message' => 'Se realizo la evaluación'
-        ]);
-    }
-
-    /**
      * Remove the specified resource from storage.
      *
-     * @param  App\LegalAspects\TypeRating $typeRating
+     * @param  App\LegalAspects\Evaluation $evaluation
      * @return \Illuminate\Http\Response
      */
     public function destroy(Evaluation $evaluation)
     {
+        if (count($evaluation->evaluationContracts) > 0)
+        {
+            return $this->respondWithError('No se puede eliminar la evaluación porque ya existen evaluaciones realizadas asociadas a ella');
+        }
+
         if(!$evaluation->delete())
         {
             return $this->respondHttp500();
@@ -358,24 +325,83 @@ class EvaluationController extends Controller
             Item::destroy($data['items']);
     }
 
-    public function verifyPermissionEvaluate($id)
+    /**
+     * Returns an array for a select type input
+     *
+     * @param Request $request
+     * @return Array
+     */
+
+    public function multiselectObjectives(Request $request)
     {
-        $evaluation = Evaluation::findOrFail($id);
+        $objectives = Evaluation::selectRaw(
+            "GROUP_CONCAT(sau_ct_objectives.id) as ids,
+             sau_ct_objectives.description as name")
+        ->join('sau_ct_objectives', 'sau_ct_objectives.evaluation_id', 'sau_ct_evaluations.id')
+        ->groupBy('sau_ct_objectives.description')
+        ->pluck('ids', 'name');
+    
+        return $this->multiSelectFormat($objectives);
+    }
 
-        if ($evaluation)
+    /**
+     * Returns an array for a select type input
+     *
+     * @param Request $request
+     * @return Array
+     */
+
+    public function multiselectSubobjectives(Request $request)
+    {
+        $subobjectives = Evaluation::selectRaw(
+            "GROUP_CONCAT(sau_ct_subobjectives.id) as ids,
+             sau_ct_subobjectives.description as name")
+        ->join('sau_ct_objectives', 'sau_ct_objectives.evaluation_id', 'sau_ct_evaluations.id')
+        ->join('sau_ct_subobjectives', 'sau_ct_subobjectives.objective_id', 'sau_ct_objectives.id')
+        ->groupBy('sau_ct_subobjectives.description')
+        ->pluck('ids', 'name');
+    
+        return $this->multiSelectFormat($subobjectives);
+    }
+
+    /**
+     * Export resources from storage.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function export(Request $request)
+    {
+        try
         {
-            $evaluators_id = [];
-            array_push($evaluators_id, $evaluation->creator_user_id);
+            $objectives = $this->getValuesForMultiselect($request->evaluationsObjectives);
+            $subobjectives = $this->getValuesForMultiselect($request->evaluationsSubobjectives);
+            $dates = [];
+            $filtersType = $request->filtersType;
 
-            foreach ($evaluation->evaluators as $key => $value)
+            if (isset($request->dateRange) && $request->dateRange)
             {
-                array_push($evaluators_id, $value->id);
+                $dates_request = explode('/', $request->dateRange);
+
+                if (COUNT($dates_request) == 2)
+                {
+                    array_push($dates, (Carbon::createFromFormat('D M d Y',$dates_request[0]))->format('Y-m-d 00:00:00'));
+                    array_push($dates, (Carbon::createFromFormat('D M d Y',$dates_request[1]))->format('Y-m-d 23:59:59'));
+                }
+                
             }
 
-            if (in_array(Auth::user()->id, $evaluators_id))
-                return true;
-        }
+            $filters = [
+                'objectives' => $objectives,
+                'subobjectives' => $subobjectives,
+                'dates' => $dates,
+                'filtersType' => $filtersType
+            ];
 
-        return false;
+            EvaluationExportJob::dispatch(Auth::user(), Session::get('company_id'), $filters);
+        
+            return $this->respondHttp200();
+        } catch(Exception $e) {
+            return $this->respondHttp500();
+        }
     }
 }

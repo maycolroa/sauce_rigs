@@ -45,7 +45,8 @@ Route::middleware(['auth'])->group(function () {
 
     Route::prefix('selects')->group(function () {
         Route::post('employees', 'Administrative\EmployeesController@multiselect');  
-        Route::post('users', 'Administrative\Users\UserController@multiselect');  
+        Route::post('users', 'Administrative\Users\UserController@multiselect');
+        Route::post('usersAll', 'Administrative\Users\UserController@multiselectAll');  
         Route::post('multiselect', 'ApplicationController@multiselect');
         Route::post('roles', 'Administrative\Roles\RoleController@multiselect');
         Route::post('modulesGroup', 'ApplicationController@multiselectGroupModules');
@@ -69,8 +70,15 @@ Route::middleware(['auth'])->group(function () {
         Route::post('tagsEpp', 'IndustrialSecure\TagController@multiselectEpp');
         Route::post('tagsPossibleConsequencesDanger', 'IndustrialSecure\TagController@multiselectPossibleConsequencesDanger');
         Route::post('tagsWarningSignage', 'IndustrialSecure\TagController@multiselectWarningSignage');
+        Route::post('tagsTypeProcess', 'TagController@multiselectTypeProcess');
         Route::post('actionPlanStates', 'MultiSelectRadioController@actionPlanStates');
+        Route::post('actionPlanModules', 'Administrative\ActionPlans\ActionPlanController@actionPlanModules');
         Route::post('contractors', 'LegalAspects\ContractLesseeController@multiselect'); 
+
+        Route::prefix('evaluations')->group(function () {
+          Route::post('objectives', 'LegalAspects\EvaluationController@multiselectObjectives');
+          Route::post('subobjectives', 'LegalAspects\EvaluationController@multiselectSubobjectives');
+        });
     });
 
     Route::prefix('radios')->group(function () {
@@ -127,6 +135,7 @@ Route::middleware(['auth'])->group(function () {
       });
 
       Route::post('actionplan/data', 'Administrative\ActionPlans\ActionPlanController@data');
+      Route::post('actionplan/export', 'Administrative\ActionPlans\ActionPlanController@export');
       Route::ApiResource('actionplan', 'Administrative\ActionPlans\ActionPlanController');
     });
 
@@ -164,12 +173,17 @@ Route::middleware(['auth'])->group(function () {
       Route::ApiResource('typeRating', 'LegalAspects\TypeRatingController');
 
       Route::post('evaluation/data', 'LegalAspects\EvaluationController@data');
-      Route::put('evaluation/evaluate/{evaluation}', 'LegalAspects\EvaluationController@evaluate');
+      Route::post('evaluation/export', 'LegalAspects\EvaluationController@export');
       Route::ApiResource('evaluation', 'LegalAspects\EvaluationController');
 
       Route::post('evaluationContract/data', 'LegalAspects\EvaluationContractController@data');
       Route::get('evaluationContract/getData/{evaluationContract}', 'LegalAspects\EvaluationContractController@getData');
+      Route::post('evaluationContract/report', 'LegalAspects\EvaluationContractController@report');
+      Route::post('evaluationContract/exportReport', 'LegalAspects\EvaluationContractController@exportReport');
+      Route::post('evaluationContract/getTotales', 'LegalAspects\EvaluationContractController@getTotales');
       Route::ApiResource('evaluationContract', 'LegalAspects\EvaluationContractController');
+
+      Route::post('evaluationContractHistory/data', 'LegalAspects\EvaluationContractHistoryController@data');
 		});
 
 

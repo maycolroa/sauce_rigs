@@ -50,4 +50,9 @@ class DangerMatrix extends Model
     {
         return $this->hasMany(ChangeHistory::class, 'danger_matrix_id');
     }
+
+    public function competitors()
+    {
+        return $this->belongsToMany('App\User', 'sau_dm_competitors', 'danger_matrix_id');
+    }
 }

@@ -23,6 +23,7 @@
                 cancel-url="{{route('login')}}"
                 method="POST">
             </mail-reset-password> 
+            <notifications group="auth"/>
     </div>
     <script src="{{ mix('/auth.js') }}"></script>
     </body>

@@ -94,6 +94,26 @@
                         "description": "Una o más fatalidades: Por accidente o enfermedad ocupacional."
                     }
                 ]
+            }, {
+                "description": "Nivel de Probabilidad",
+                "values": [
+                    {
+                        "value": "No ha ocurrido en el sector Hospitalario",
+                        "description": ""
+                    }, {
+                        "value": "Ha ocurrido en el sector Hospitalario",
+                        "description": ""
+                    }, {
+                        "value": "Alguna vez ha ocurrido en el Hospital en el último año",
+                        "description": ""
+                    }, {
+                        "value": "Sucede varias veces en el último año y en diferentes procesos (en el Hospital)",
+                        "description": ""
+                    }, {
+                        "value": "Sucede varias veces en el último año en el mismo proceso",
+                        "description": ""
+                    }
+                ]
             }
         ]
     }

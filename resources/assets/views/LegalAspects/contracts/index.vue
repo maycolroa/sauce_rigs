@@ -61,19 +61,8 @@
 									</span>
 								</router-link>
 							</div>
-
-							<div class="d-flex col-sm-6 col-md-4 col-lg-6 align-items-center">
-								<router-link tag="a" href="javascript:void(0)" class="card-body media align-items-center text-dark" :to="{name:'legalaspects-typesrating'}">
-									<i class="lnr lnr-layers display-4 d-block text-primary"></i>
-									<span class="media-body d-block ml-3">
-										<span class="text-big font-weight-bolder">Administración de los tipos de calificación</span>
-										<br>
-										<small class="text-muted">Ver, editar y administrar los tipos de calificaciones de las evaluaciones.</small>
-									</span>
-								</router-link>
-							</div>
 							
-							<div class="d-flex col-sm-6 col-md-4 col-lg-6 align-items-center">
+							<div class="d-flex col-sm-6 col-md-4 col-lg-6 align-items-center" v-if="!auth.hasRole['Arrendatario'] && !auth.hasRole['Contratista']">
 								<router-link tag="a" href="javascript:void(0)" class="card-body media align-items-center text-dark" :to="{name:'legalaspects-evaluations'}">
 									<i class="lnr lnr-magnifier display-4 d-block text-primary"></i>
 									<span class="media-body d-block ml-3">
@@ -95,6 +84,16 @@
 								</router-link>
 							</div>
 
+							<div class="d-flex col-sm-6 col-md-4 col-lg-6 align-items-center" v-if="auth.hasRole['Arrendatario'] || auth.hasRole['Contratista']">
+								<router-link tag="a" href="javascript:void(0)" class="card-body media align-items-center text-dark" :to="{name:'legalaspects-evaluations-lessee'}">
+									<i class="lnr lnr-magnifier display-4 d-block text-primary"></i>
+									<span class="media-body d-block ml-3">
+										<span class="text-big font-weight-bolder">Ver mis evaluaciones</span>
+										<br>
+										<small class="text-muted">Ver las evaluaciones realizadas por mi contratante</small>
+									</span>
+								</router-link>
+							</div>
 						</div>
 						<!-- <b-btn :to="{name:'legalaspects-contracts-create'}" variant="primary">Crear Usuario</b-btn>
 						<b-btn :to="{name:'legalaspects-contracts-create'}" variant="primary">Lista de Chequeo</b-btn>-->

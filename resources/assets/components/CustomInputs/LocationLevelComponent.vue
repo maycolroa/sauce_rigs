@@ -31,7 +31,7 @@ export default {
         labelRegional: { type: String, default: 'Regional' },
         labelHeadquarter: { type: String, default: 'Sede' },
         labelArea: { type: String, default: 'Área' },
-        labelProcess: { type: String, default: 'Macroproceso' },
+        labelProcess: { type: String, default: 'Proceso' },
         locationLevel: {
             default() {
                 return {

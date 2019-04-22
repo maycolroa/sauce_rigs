@@ -17,7 +17,8 @@ class AudiometryInformController extends Controller
     function __construct()
     {
         $this->middleware('auth');
-        $this->middleware('permission:biologicalMonitoring_audiometry_r');
+        $this->middleware('permission:biologicalMonitoring_audiometry_informs_r', ['only' => 'data']);
+        $this->middleware('permission:biologicalMonitoring_audiometry_inform_individual_r', ['only' => 'dataIndividual']);
     }
 
     /**
@@ -76,7 +77,7 @@ class AudiometryInformController extends Controller
         $select = [
             'Regionales' => 'employee_regional_id',
             'Sedes' => 'employee_headquarter_id',
-            'Macroprocesos' => 'employee_process_id',
+            'Procesos' => 'employee_process_id',
             'Áreas' => 'employee_area_id',
             'Centro de Costos' => 'employee_business_id',
             'Cargos' => 'employee_position_id'

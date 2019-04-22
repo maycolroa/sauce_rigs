@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Vuetable\Facades\Vuetable;
 use App\Administrative\EmployeeProcess;
 use App\Http\Requests\Administrative\Processes\ProcessRequest;
+use App\Administrative\TagsProcess;
 use Session;
 use DB;
 
@@ -68,7 +69,13 @@ class EmployeeProcessController extends Controller
 
         try
         { 
-            $process = new EmployeeProcess($request->all());
+            /**CREA LOS TAGS */
+            $types = $this->tagsPrepare($request->types);
+            $this->tagsSave($types, TagsProcess::class);
+
+            $process = new EmployeeProcess();
+            $process->name = $request->name;
+            $process->types = $types->implode(',');
             $process->save();
 
             $process->headquarters()->sync($this->getDataFromMultiselect($request->get('employee_headquarter_id')));
@@ -77,7 +84,8 @@ class EmployeeProcessController extends Controller
 
         } catch (\Exception $e) {
             DB::rollback();
-            return $this->respondHttp500();
+            return $e->getMessage();
+            //return $this->respondHttp500();
         }
 
         return $this->respondHttp200([
@@ -133,7 +141,12 @@ class EmployeeProcessController extends Controller
 
         try
         { 
-            $process->fill($request->all());
+            /**CREA LOS TAGS */
+            $types = $this->tagsPrepare($request->types);
+            $this->tagsSave($types, TagsProcess::class);
+            
+            $process->name = $request->name;
+            $process->types = $types->implode(',');
             $process->update();
 
             $process->headquarters()->sync($this->getDataFromMultiselect($request->get('employee_headquarter_id')));

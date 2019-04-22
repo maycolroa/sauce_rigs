@@ -1,6 +1,5 @@
 <template>
     <b-form-group class="class" :label="label">
-        <b-card no-body class="demo-vertical-spacing-sm mt-2">
             <b-radio-group
                 :name="name" 
                 :state="state" 
@@ -11,7 +10,6 @@
             <b-form-invalid-feedback v-if="error" :force-show="true">
                 {{error}}
             </b-form-invalid-feedback>
-        </b-card>
     </b-form-group>
 </template>
 <script>

@@ -819,7 +819,7 @@ class ActionPlan
             array_push($list, 'Sede: '.$this->headquarter);
 
         if ($this->process)
-            array_push($list, 'Macroproceso: '.$this->process);
+            array_push($list, 'Proceso: '.$this->process);
 
         if ($this->area)
             array_push($list, 'Área: '.$this->area);

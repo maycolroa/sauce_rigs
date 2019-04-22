@@ -81,9 +81,10 @@
                 </b-form-row>
             </tab-content>
 
-            <tab-content title="Evaluación" v-if="form.evaluation != undefined">
-                <div class="col-md-12">
-                <blockquote class="blockquote text-left pb-10" style="padding-bottom: 5px; padding-top:5px;">
+            <tab-content title="Evaluación">
+                <loading :display="form.evaluation == undefined"/>
+                <div class="col-md-12" v-if="form.evaluation != undefined">
+                <blockquote class="blockquote text-left pb-10" style="padding-bottom: 5px; padding-top:5px;" v-if="viewOnly">
                     <p class="mb-0"><b>Fecha de evaluación:</b> {{ evaluation.evaluation_date ? evaluation.evaluation_date : 'Sin evaluar'}}</p>
                 </blockquote>
                 <blockquote class="blockquote text-center">
@@ -165,7 +166,7 @@
                                                                     <vue-radio v-if="!viewOnly" :checked="form.evaluation.objectives[index].subobjectives[index2].items[index3].ratings[type.id].value" class="col-md-12" v-model="form.evaluation.objectives[index].subobjectives[index2].items[index3].ratings[type.id].value" :options="[{'text':'SI','value':'SI'},{'text':'NO','value':'NO'}]" :name="`value${item.id}${type.id}`" label="" :error="form.errorsFor(`evaluation.objectives.${index}.subobjectives.${index2}.items.${index3}.ratings.${type.id}.value`)"></vue-radio>
 
                                                                     <template v-if="viewOnly">
-                                                                        {{ form.evaluation.objectives[index].subobjectives[index2].items[index3].ratings[type.id].value }}
+                                                                        {{ form.evaluation.objectives[index].subobjectives[index2].items[index3].ratings[type.id].value ? form.evaluation.objectives[index].subobjectives[index2].items[index3].ratings[type.id].value : 'N/A' }}
                                                                     </template>
 
                                                                     </template>
@@ -179,6 +180,12 @@
                                                                 </template>
                                                             </tr>
                                                             </template>
+                                                            <tr v-if="viewOnly">
+                                                                <td colspan="2">Porcentaje de cumplimiento</td>
+                                                                <td v-for="(report, indexR) in subobjective.report" :key="indexR" class="bg-secondary text-white align-middle text-center">
+                                                                    {{report.percentage}}%
+                                                                </td>
+                                                            </tr>
                                                         </tbody>
                                                         </table>
                                                     </div>
@@ -197,8 +204,26 @@
                 </div>
             </tab-content>
 
+            <tab-content title="Historial" v-if="viewOnly">
+                <div class="col-md-12">
+                    <blockquote class="blockquote text-center">
+                        <p class="mb-0">Fechas de modificaciones</p>
+                    </blockquote>
+                    <div class="col-md">
+                        <b-card no-body>
+                            <b-card-body>
+                                <vue-table
+                                    configName="legalaspects-evaluations-contracts-histories"
+                                    :modelId="form.id ? form.id : -1"
+                                    ></vue-table>
+                            </b-card-body>
+                        </b-card>
+                    </div>
+                </div>
+            </tab-content>
+
             <template slot="footer" slot-scope="props">
-                <b-btn variant="default" :to="cancelUrl" :disabled="loading">{{ viewOnly ? "Atras" : "Cancelar"}}</b-btn>
+                <b-btn variant="default" @click="$router.go(-1)" :disabled="loading">{{ viewOnly ? "Atras" : "Cancelar"}}</b-btn>
                 <b-btn v-on:click="props.prevTab" :disabled="loading" variant="default">Anterior</b-btn>
                 <b-btn v-on:click="props.nextTab" :disabled="loading || props.isLastStep" variant="default">Siguiente</b-btn>
                 <b-btn type="submit" :disabled="loading" variant="primary" v-if="!viewOnly">Finalizar</b-btn>
@@ -222,6 +247,7 @@ import Alerts from '@/utils/Alerts.js';
 import EvaluationTypesRating from '../Evaluations/EvaluationTypesRating.vue';
 import InformationGeneral from '@/components/LegalAspects/ContractLessee/InformationGeneral.vue';
 import ModalObservations from "./ModalObservations.vue"
+import Loading from "@/components/Inputs/Loading.vue";
 
 export default {
   components: {
@@ -236,7 +262,8 @@ export default {
     VueCheckboxSimple,
     EvaluationTypesRating,
     InformationGeneral,
-    ModalObservations
+    ModalObservations,
+    Loading
   },
   props: {
     url: { type: String },
@@ -268,7 +295,7 @@ export default {
   mounted() {
         setTimeout(() => {
             this.$refs.wizardFormEvaluation.activateAll();
-        }, 3000)
+        }, 4000)
   },
   watch: {
     evaluation() {
@@ -285,16 +312,21 @@ export default {
         form: Form.makeFrom(this.evaluation, this.method),
         contractDataUrl: '/selects/contractors',
         contractor_information: {
-          nit: '',
-          type: '',
-          business_name: '',
-          phone: '',
-          address: '',
-          legal_representative_name: '',
-          SG_SST_name: '',
-          number_workers: '',
-          high_risk_work: '',
-          social_reason: ''
+            nit: '',
+            classification: '',
+            type: '',
+            business_name: '',
+            phone: '',
+            address: '',
+            legal_representative_name: '',
+            environmental_management_name: '',
+            economic_activity_of_company: '',
+            arl: '',
+            SG_SST_name: '',
+            risk_class: '',
+            number_workers: '',
+            high_risk_work: '',
+            social_reason: ''
         }
     };
   },
@@ -305,7 +337,7 @@ export default {
         .submit(e.target.action)
         .then(response => {
           this.loading = false;
-          this.$router.push({ name: "legalaspects-evaluations" });
+          this.$router.back()
         })
         .catch(error => {
           this.loading = false;

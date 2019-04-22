@@ -9,6 +9,7 @@
       <b-card no-body>
         <b-card-header class="with-elements">
           <div class="card-title-elements"> 
+            <b-btn :to="{name:'legalaspects-evaluations'}" variant="secondary">Regresar</b-btn>
             <b-btn :to="{name:'legalaspects-typesrating-create'}" variant="primary">Crear tipo de calificación</b-btn>
           </div>
         </b-card-header>

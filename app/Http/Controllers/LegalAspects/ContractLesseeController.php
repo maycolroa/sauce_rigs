@@ -9,6 +9,7 @@ use App\Http\Requests\LegalAspects\Contracts\ContractRequest;
 use App\Http\Requests\LegalAspects\Contracts\ContractCompleteInfoRequest;
 use App\Http\Requests\LegalAspects\Contracts\ListCheckItemsContractRequest;
 use App\Models\LegalAspects\ContractLesseeInformation;
+use App\LegalAspects\ContractLessee;
 use App\Models\LegalAspects\SectionCategoryItems;
 use App\Models\LegalAspects\Qualifications;
 use App\Models\LegalAspects\ItemQualificationContractDetail;
@@ -376,9 +377,9 @@ class ContractLesseeController extends Controller
     public function multiselect(Request $request)
     {
         $keyword = "%{$request->keyword}%";
-        $contracts = ContractLesseeInformation::selectRaw("
+        $contracts = ContractLessee::selectRaw("
             sau_ct_information_contract_lessee.id as id,
-            sau_ct_information_contract_lessee.nit as nit
+            CONCAT(sau_ct_information_contract_lessee.nit, ' - ',sau_ct_information_contract_lessee.social_reason) as nit
         ")
         ->where(function ($query) use ($keyword) {
             $query->orWhere('nit', 'like', $keyword);

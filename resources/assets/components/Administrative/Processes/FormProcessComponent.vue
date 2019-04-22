@@ -3,10 +3,12 @@
   <b-form :action="url" @submit.prevent="submit" autocomplete="off">
     <b-form-row>
       <vue-input :disabled="viewOnly" class="col-md-6" v-model="form.name" label="Nombre" type="text" name="name" :error="form.errorsFor('name')" placeholder="Nombre"></vue-input>
-      <vue-ajax-advanced-select :disabled="viewOnly" class="col-md-6" v-model="form.employee_regional_id" :error="form.errorsFor('employee_regional_id')" :selected-object="form.multiselect_regional" name="employee_regional_id" label="Regional" placeholder="Seleccione la regional" :url="regionalsDataUrl">
-          </vue-ajax-advanced-select>
+      <vue-ajax-advanced-select :disabled="viewOnly" class="col-md-6" v-model="form.types" name="types" :error="form.errorsFor('types')" label="Tipo de proceso" placeholder="Seleccione los tipos de procesos" :url="tagsTypesDataUrl" :multiple="true" :allowEmpty="true" :taggable="true">
+        </vue-ajax-advanced-select>
     </b-form-row>
     <b-form-row>
+      <vue-ajax-advanced-select :disabled="viewOnly" class="col-md-6" v-model="form.employee_regional_id" :error="form.errorsFor('employee_regional_id')" :selected-object="form.multiselect_regional" name="employee_regional_id" label="Regional" placeholder="Seleccione la regional" :url="regionalsDataUrl">
+          </vue-ajax-advanced-select>
        <vue-ajax-advanced-select :disabled="viewOnly || !form.employee_regional_id" class="col-md-6" v-model="form.employee_headquarter_id" :error="form.errorsFor('employee_headquarter_id')"  name="employee_headquarter_id" label="Sedes" placeholder="Seleccione las sedes" :url="headquartersDataUrl" :parameters="{regional: form.employee_regional_id }" :emptyAll="empty.headquarter" @updateEmpty="updateEmptyKey('headquarter')" :multiple="true" :allowEmpty="true" :selected-object="form.multiselect_employee_headquarter_id">
           </vue-ajax-advanced-select>
     </b-form-row>
@@ -44,6 +46,7 @@ export default {
       default() {
         return {
             name: '',
+            types: '',
             employee_regional_id: '',
             employee_headquarter_id: '',
         };
@@ -71,6 +74,7 @@ export default {
         headquarter: false
       },
       disableWacth: this.disableWacthSelectInCreated,
+      tagsTypesDataUrl: '/selects/tagsTypeProcess',
     };
   },
   methods: {

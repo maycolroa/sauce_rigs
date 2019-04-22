@@ -95,6 +95,17 @@ class DangerMatrixController extends Controller
         try
         {
             $dangerMatrix = DangerMatrix::findOrFail($id);
+
+            $competitors_id = [];
+
+            foreach ($dangerMatrix->competitors as $key => $value)
+            {
+                array_push($competitors_id, $value->multiselect());
+            }
+
+            $dangerMatrix->competitors_id = $competitors_id;
+            $dangerMatrix->multiselect_competitors_id = $competitors_id;
+
             $dangerMatrix->activitiesRemoved = [];
             $dangerMatrix->locations = $this->prepareDataLocationForm($dangerMatrix);
             $dangerMatrix->changeHistory = '';
@@ -218,6 +229,7 @@ class DangerMatrixController extends Controller
 
         $rules = [
             'name' => 'required|string|unique:sau_dangers_matrix,name,'.$id.',id,company_id,'.Session::get('company_id'),
+            'competitors_id' => 'required|array',
             'activities' => 'required|array',
             'activities.*.activity_id' => 'required|exists:sau_dm_activities,id',
             'activities.*.type_activity' => 'required',
@@ -302,6 +314,8 @@ class DangerMatrixController extends Controller
                 return $this->respondHttp500();
             }
 
+            $dangerMatrix->competitors()->sync($this->getDataFromMultiselect($request->get('competitors_id')));
+
             if($this->updateModelLocationForm($dangerMatrix, $request->get('locations')))
             {
                 return $this->respondHttp500();
@@ -379,6 +393,7 @@ class DangerMatrixController extends Controller
                     
                     $danger->dm_activity_id = $activity->id;
                     $danger->danger_id = $itemD['danger_id'];
+                    $danger->danger_description = $itemD['danger_description'];
                     $danger->danger_generated = $itemD['danger_generated'];
                     $danger->possible_consequences_danger = $possible_consequences_danger->implode(',');
                     $danger->generating_source = $itemD['generating_source'];

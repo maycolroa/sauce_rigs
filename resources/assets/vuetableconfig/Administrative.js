@@ -3,11 +3,11 @@ export default [
     name: 'administrative-users',
     fields: [
       { name: 'sau_users.id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true },
-      { name: 'sau_users.name', data: 'name', title: 'Nombre', sortable: true, searchable: false, detail: false, key: false },
+      { name: 'sau_users.name', data: 'name', title: 'Nombre', sortable: true, searchable: true, detail: false, key: false },
       { name: 'sau_users.email', data: 'email', title: 'Email', sortable: true, searchable: true, detail: false, key: false },
       { name: 'sau_users.document', data: 'document', title: 'Documento', sortable: true, searchable: true, detail: false, key: false },
       { name: 'sau_users.document_type', data: 'document_type', title: 'Tipo de Documento', sortable: true, searchable: true, detail: false, key: false },
-      { name: 'role', data: 'role', title: 'Rol', sortable: false, searchable: false, detail: false, key: false },
+      { name: 'sau_roles.name', data: 'role', title: 'Rol', sortable: true, searchable: true, detail: false, key: false },
       { name: '', data: 'controlls', title: 'Controles', sortable: false, searchable: false, detail: false, key: false },
     ],
     'controlls': [{
@@ -17,6 +17,7 @@ export default [
           color: 'outline-success',
           borderless: true,
           icon: 'ion ion-md-create',
+          title: 'Editar'
         },
         data: {
           routePush: { name: 'administrative-users-edit' },
@@ -28,6 +29,7 @@ export default [
           color: 'outline-info',
           borderless: true,
           icon: 'ion ion-md-eye',
+          title: 'Ver'
         },
         data: {
           routePush: { name: 'administrative-users-view' },
@@ -65,6 +67,7 @@ export default [
           color: 'outline-success',
           borderless: true,
           icon: 'ion ion-md-create',
+          title: 'Editar'
         },
         data: {
           routePush: { name: 'administrative-roles-edit' },
@@ -76,6 +79,7 @@ export default [
           color: 'outline-info',
           borderless: true,
           icon: 'ion ion-md-eye',
+          title: 'Ver'
         },
         data: {
           routePush: { name: 'administrative-roles-view' },
@@ -115,6 +119,7 @@ export default [
           color: 'outline-success',
           borderless: true,
           icon: 'ion ion-md-create',
+          title: 'Editar'
         },
         data: {
           routePush: { name: 'administrative-positions-edit' },
@@ -126,6 +131,7 @@ export default [
           color: 'outline-info',
           borderless: true,
           icon: 'ion ion-md-eye',
+          title: 'Ver'
         },
         data: {
           routePush: { name: 'administrative-positions-view' },
@@ -165,6 +171,7 @@ export default [
           color: 'outline-success',
           borderless: true,
           icon: 'ion ion-md-create',
+          title: 'Editar'
         },
         data: {
           routePush: { name: 'administrative-regionals-edit' },
@@ -176,6 +183,7 @@ export default [
           color: 'outline-info',
           borderless: true,
           icon: 'ion ion-md-eye',
+          title: 'Ver'
         },
         data: {
           routePush: { name: 'administrative-regionals-view' },
@@ -215,6 +223,7 @@ export default [
           color: 'outline-success',
           borderless: true,
           icon: 'ion ion-md-create',
+          title: 'Editar'
         },
         data: {
           routePush: { name: 'administrative-businesses-edit' },
@@ -226,6 +235,7 @@ export default [
           color: 'outline-info',
           borderless: true,
           icon: 'ion ion-md-eye',
+          title: 'Ver'
         },
         data: {
           routePush: { name: 'administrative-businesses-view' },
@@ -255,8 +265,8 @@ export default [
     name: 'administrative-headquarters',
     fields: [
       { name: 'sau_employees_headquarters.id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true },
-      { name: 'sau_employees_headquarters.name', data: 'name', title: 'Nombre', sortable: true, searchable: false, detail: false, key: false },
-      { name: 'regional', data: 'regional', title: 'Regional', sortable: true, searchable: false, detail: false, key: false },
+      { name: 'sau_employees_headquarters.name', data: 'name', title: 'Nombre', sortable: true, searchable: true, detail: false, key: false },
+      { name: 'sau_employees_regionals.name', data: 'regional', title: 'Regional', sortable: true, searchable: true, detail: false, key: false },
       { name: '', data: 'controlls', title: 'Controles', sortable: false, searchable: false, detail: false, key: false },
     ],
     'controlls': [{
@@ -266,6 +276,7 @@ export default [
           color: 'outline-success',
           borderless: true,
           icon: 'ion ion-md-create',
+          title: 'Editar'
         },
         data: {
           routePush: { name: 'administrative-headquarters-edit' },
@@ -277,6 +288,7 @@ export default [
           color: 'outline-info',
           borderless: true,
           icon: 'ion ion-md-eye',
+          title: 'Ver'
         },
         data: {
           routePush: { name: 'administrative-headquarters-view' },
@@ -306,10 +318,10 @@ export default [
     name: 'administrative-areas',
     fields: [
       { name: 'sau_employees_areas.id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true },
-      { name: 'sau_employees_areas.name', data: 'name', title: 'Nombre', sortable: true, searchable: false, detail: false, key: false },
-      { name: 'proceso', data: 'proceso', title: 'Macroprocesos', sortable: true, searchable: false, detail: false, key: false },
-      { name: 'sede', data: 'sede', title: 'Sede', sortable: true, searchable: false, detail: false, key: false },
-      { name: 'regional', data: 'regional', title: 'Regional', sortable: true, searchable: false, detail: false, key: false },
+      { name: 'sau_employees_areas.name', data: 'name', title: 'Nombre', sortable: true, searchable: true, detail: false, key: false },
+      { name: 'sau_employees_processes.name', data: 'proceso', title: 'Procesos', sortable: true, searchable: true, detail: false, key: false },
+      { name: 'sau_employees_headquarters.name', data: 'sede', title: 'Sede', sortable: true, searchable: true, detail: false, key: false },
+      { name: 'sau_employees_regionals.name', data: 'regional', title: 'Regional', sortable: true, searchable: true, detail: false, key: false },
       { name: '', data: 'controlls', title: 'Controles', sortable: false, searchable: false, detail: false, key: false },
     ],
     'controlls': [{
@@ -319,6 +331,7 @@ export default [
           color: 'outline-success',
           borderless: true,
           icon: 'ion ion-md-create',
+          title: 'Editar'
         },
         data: {
           routePush: { name: 'administrative-areas-edit' },
@@ -330,6 +343,7 @@ export default [
           color: 'outline-info',
           borderless: true,
           icon: 'ion ion-md-eye',
+          title: 'Ver'
         },
         data: {
           routePush: { name: 'administrative-areas-view' },
@@ -359,9 +373,9 @@ export default [
     name: 'administrative-processes',
     fields: [
       { name: 'sau_employees_processes.id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true },
-      { name: 'sau_employees_processes.name', data: 'name', title: 'Nombre', sortable: true, searchable: false, detail: false, key: false },
-      { name: 'sede', data: 'sede', title: 'Sedes', sortable: true, searchable: false, detail: false, key: false },
-      { name: 'regional', data: 'regional', title: 'Regional', sortable: true, searchable: false, detail: false, key: false },
+      { name: 'sau_employees_processes.name', data: 'name', title: 'Nombre', sortable: true, searchable: true, detail: false, key: false },
+      { name: 'sau_employees_headquarters.name', data: 'sede', title: 'Sedes', sortable: true, searchable: true, detail: false, key: false },
+      { name: 'sau_employees_regionals.name', data: 'regional', title: 'Regional', sortable: true, searchable: true, detail: false, key: false },
       { name: '', data: 'controlls', title: 'Controles', sortable: false, searchable: false, detail: false, key: false },
     ],
     'controlls': [{
@@ -371,6 +385,7 @@ export default [
           color: 'outline-success',
           borderless: true,
           icon: 'ion ion-md-create',
+          title: 'Editar'
         },
         data: {
           routePush: { name: 'administrative-processes-edit' },
@@ -382,6 +397,7 @@ export default [
           color: 'outline-info',
           borderless: true,
           icon: 'ion ion-md-eye',
+          title: 'Ver'
         },
         data: {
           routePush: { name: 'administrative-processes-view' },
@@ -410,12 +426,12 @@ export default [
   {
     name: 'administrative-employees',
     fields: [
-      { name: 'sau_employees_employees.id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true },
-      { name: 'sau_employees_employees.identification', data: 'identification', title: 'Identificación', sortable: true, searchable: true, detail: false, key: false },
-      { name: 'sau_employees_employees.name', data: 'name', title: 'Nombre', sortable: true, searchable: true, detail: false, key: false },
+      { name: 'sau_employees.id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true },
+      { name: 'sau_employees.identification', data: 'identification', title: 'Identificación', sortable: true, searchable: true, detail: false, key: false },
+      { name: 'sau_employees.name', data: 'name', title: 'Nombre', sortable: true, searchable: true, detail: false, key: false },
       { name: 'sex_detail', data: 'sex_detail', title: 'Sexo', sortable: false, searchable: false, detail: false, key: false },
-      { name: 'sau_employees_employees.email', data: 'email', title: 'Email', sortable: true, searchable: true, detail: false, key: false },
-      { name: 'sau_employees_employees.income_date', data: 'income_date', title: 'Fecha de Ingreso', sortable: true, searchable: true, detail: false, key: false },
+      { name: 'sau_employees.email', data: 'email', title: 'Email', sortable: true, searchable: true, detail: false, key: false },
+      { name: 'sau_employees.income_date', data: 'income_date', title: 'Fecha de Ingreso', sortable: true, searchable: true, detail: false, key: false },
       /*{ name: 'cargo', data: 'cargo', title: 'Cargo', sortable: true, searchable: true, detail: false, key: false },
       { name: 'regional', data: 'regional', title: 'Regional', sortable: true, searchable: true, detail: false, key: false },
       { name: 'sede', data: 'sede', title: 'Sede', sortable: true, searchable: true, detail: false, key: false },
@@ -429,6 +445,7 @@ export default [
           color: 'outline-success',
           borderless: true,
           icon: 'ion ion-md-create',
+          title: 'Editar'
         },
         data: {
           routePush: { name: 'administrative-employees-edit' },
@@ -440,6 +457,7 @@ export default [
           color: 'outline-info',
           borderless: true,
           icon: 'ion ion-md-eye',
+          title: 'Ver'
         },
         data: {
           routePush: { name: 'administrative-employees-view' },
@@ -470,10 +488,10 @@ export default [
     fields: [
       { name: 'sau_action_plans_activities.id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true },
       { name: 'sau_action_plans_activities.description', data: 'description', title: 'Descripcion', sortable: true, searchable: true, detail: false, key: false },
-      { name: 'responsible', data: 'responsible', title: 'Responsable', sortable: true, searchable: false, detail: false, key: false },
+      { name: 'sau_users.name', data: 'responsible', title: 'Responsable', sortable: true, searchable: true, detail: false, key: false },
       { name: 'sau_action_plans_activities.expiration_date', data: 'expiration_date', title: 'Fecha Vencimiento', sortable: true, searchable: true, detail: false, key: false },
       { name: 'sau_action_plans_activities.execution_date', data: 'execution_date', title: 'Fecha Ejecución', sortable: true, searchable: true, detail: false, key: false },
-      { name: 'state_activity', data: 'state_activity', title: 'Estado', sortable: true, searchable: false, detail: false, key: false },
+      { name: 'sau_action_plans_activities.state', data: 'state_activity', title: 'Estado', sortable: true, searchable: true, detail: false, key: false },
       { name: 'sau_modules.display_name', data: 'display_name', title: 'Módulo', sortable: true, searchable: true, detail: false, key: false },
       { name: '', data: 'controlls', title: 'Controles', sortable: false, searchable: false, detail: false, key: false },
     ],
@@ -484,6 +502,7 @@ export default [
           color: 'outline-success',
           borderless: true,
           icon: 'ion ion-md-create',
+          title: 'Editar'
         },
         data: {
           routePush: { name: 'administrative-actionplans-edit' },
@@ -499,6 +518,7 @@ export default [
     configuration: {
       urlData: '/administration/actionplan/data',
       filterColumns: true,
+      configNameFilter: 'administrative-actionplans'
     }
   }
 ];

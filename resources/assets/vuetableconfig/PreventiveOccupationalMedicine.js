@@ -23,6 +23,7 @@ export default [
           color:'outline-success',
           borderless: true,
           icon:'ion ion-md-create',
+          title: 'Editar'
         },
         data:{
           routePush: {name: 'biologicalmonitoring-audiometry-edit'},
@@ -34,6 +35,7 @@ export default [
           color:'outline-info',
           borderless: true,
           icon:'ion ion-md-eye',
+          title: 'Ver'
         },
         data:{
           routePush: {name: 'biologicalmonitoring-audiometry-view'},
@@ -45,6 +47,7 @@ export default [
           color:'outline-success',
           borderless: true,
           icon:'fas fa-chart-line',
+          title: 'Ver Reporte'
         },
         data:{
           routePush: {name: 'biologicalmonitoring-audiometry-report'},
@@ -94,6 +97,7 @@ export default [
           color:'outline-success',
           borderless: true,
           icon:'ion ion-md-create',
+          title: 'Editar'
         },
         data:{
           routePush: {name: 'biologicalmonitoring-audiometry-edit'},
@@ -105,6 +109,7 @@ export default [
           color:'outline-info',
           borderless: true,
           icon:'ion ion-md-eye',
+          title: 'Ver'
         },
         data:{
           routePush: {name: 'biologicalmonitoring-audiometry-view'},
@@ -116,6 +121,7 @@ export default [
           color:'outline-success',
           borderless: true,
           icon:'fas fa-chart-line',
+          title: 'Ver Reporte'
         },
         data:{
           routePush: {name: 'biologicalmonitoring-audiometry-report'},

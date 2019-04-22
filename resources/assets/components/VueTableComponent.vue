@@ -4,7 +4,8 @@
           <b-col cols="1">
               <filter-general 
                   v-model="filters" 
-                  :configName="configNameFilter" />
+                  :configName="configNameFilter"
+                  :modelId="modelId" />
           </b-col>
       </b-row>
 
@@ -17,11 +18,11 @@
           v-if="checkView(button, props.row)"
           :variant="button.config.color + ' ' + (button.config.borderless ? 'borderless' : '') + ' ' + (button.config.icon ? 'icon-btn' : '')" 
           class="btn-xs"
-          v-b-popover.hover.focus.top="(button.config.title ? button.config.title : '')"
+          v-b-tooltip.top :title="(button.config.title ? button.config.title : '')"
           @click.prevent="pushButton(button,props.row)"><i :class="button.config.icon"></i></b-btn>
           </template>
           
-          <b-btn v-if="controllsBase.includes('delete') && checkViewDelete(props.row)" variant="outline-danger borderless icon-btn" class="btn-xs" v-b-popover.hover.focus.top="'Eliminar'" @click.prevent="confirmRemove(props.row)"><i class="ion ion-md-close"></i></b-btn>
+          <b-btn v-if="controllsBase.includes('delete') && checkViewDelete(props.row)" variant="outline-danger borderless icon-btn" class="btn-xs" v-b-tooltip.top title="Eliminar" @click.prevent="confirmRemove(props.row)"><i class="ion ion-md-close"></i></b-btn>
         </div>
       </template>
      }
@@ -96,7 +97,10 @@ export default {
     filters: {
         handler(val){
             if (this.tableReady)
+            {
               Vue.nextTick( () => this.$refs.vuetable.refresh() )
+              this.$emit("filtersUpdate", this.filters);
+            }
         },
         deep: true
     },
@@ -160,7 +164,8 @@ export default {
         },
         params: {
           filters: this.filters,
-          modelId: this.modelId
+          modelId: this.modelId,
+          tables: {}
         }
       };
 
@@ -187,6 +192,12 @@ export default {
       options.headings= {};
       fields.map((f) => {
           options.headings[f.data] = f.title;
+      });
+
+      options.params.tables= {};
+      fields.map((f) => {
+          if (f.searchable)
+            options.params.tables[f.data] = f.name;
       });
 
       //set prop filter conlumns in opions vuetable

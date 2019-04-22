@@ -2,18 +2,24 @@
     <b-row>
         <b-col>
             <b-form :action="url" @submit.prevent="submit" autocomplete="off">
-				      <b-card border-variant="primary" class="mb-3 box-shadow-none">
-                <b-form-row>
-                  <vue-input :disabled="viewOnly" class="col-md-6" v-model="form.name" label="Nombre" type="text" name="name" :error="form.errorsFor('name')" placeholder="Nombre"></vue-input>
-                  <vue-datepicker :disabled="viewOnly" class="col-md-6" v-model="form.expirationDate" label="Fecha de vencimiento" :full-month-name="true" placeholder="Seleccione la fecha de vencimiento" :error="form.errorsFor('expirationDate')" name="expirationDate" :disabled-dates="disabledDates">
-                  </vue-datepicker>
-                </b-form-row>
+				<b-card border-variant="primary" class="mb-3 box-shadow-none">
+					<b-form-row v-if="!auth.hasRole['Arrendatario'] && !auth.hasRole['Contratista']">
+						<vue-ajax-advanced-select :disabled="viewOnly" class="col-md-12" v-model="form.contract_id" :selected-object="form.multiselect_contract_id" name="contract_id" label="Contratistas" placeholder="Seleccione las contratistas" :url="contractDataUrl" :error="form.errorsFor('contract_id')" :multiple="true" :allowEmpty="true">
+                            </vue-ajax-advanced-select>
+					</b-form-row>
+
+					<b-form-row>
+						<vue-input :disabled="viewOnly" class="col-md-6" v-model="form.name" label="Nombre" type="text" name="name" :error="form.errorsFor('name')" placeholder="Nombre"></vue-input>
+						<vue-datepicker :disabled="viewOnly" class="col-md-6" v-model="form.expirationDate" label="Fecha de vencimiento" :full-month-name="true" placeholder="Seleccione la fecha de vencimiento" :error="form.errorsFor('expirationDate')" name="expirationDate" :disabled-dates="disabledDates">
+						</vue-datepicker>
+					</b-form-row>
 
                     <b-form-row>
-                        <vue-file-simple :help-text="`Para descargar el archivo actual, haga click <a href='/legalAspects/fileUpload/download/${this.$route.params.id}' target='blank'>aqui</a> `" v-if="!viewOnly" :disabled="viewOnly" class="col-md-12" v-model="form.file" label="Archivo" name="file" :error="form.errorsFor('file')" placeholder="Seleccione un archivo"></vue-file-simple>
+						<vue-file-simple v-if="isEdit || viewOnly" :help-text="`Para descargar el archivo actual, haga click <a href='/legalAspects/fileUpload/download/${this.$route.params.id}' target='blank'>aqui</a> `" :disabled="viewOnly" class="col-md-12" v-model="form.file" label="Archivo" name="file" :error="form.errorsFor('file')" placeholder="Seleccione un archivo"></vue-file-simple>
+						<vue-file-simple v-else :disabled="viewOnly" class="col-md-12" v-model="form.file" label="Archivo" name="file" :error="form.errorsFor('file')" placeholder="Seleccione un archivo"></vue-file-simple>
                     </b-form-row>
             	</b-card>
-				      <div class="row float-right pt-10 pr-10">
+				<div class="row float-right pt-10 pr-10">
                     <template>
                         <b-btn variant="default" :to="cancelUrl" :disabled="loading">{{ viewOnly ? "Atras" : "Cancelar"}}</b-btn>&nbsp;&nbsp;
                         <b-btn type="submit" :disabled="loading" variant="primary" v-if="!viewOnly">Finalizar</b-btn>
@@ -29,13 +35,15 @@
 import VueInput from "@/components/Inputs/VueInput.vue";
 import VueFileSimple from "@/components/Inputs/VueFileSimple.vue";
 import VueDatepicker from "@/components/Inputs/VueDatepicker.vue";
+import VueAjaxAdvancedSelect from "@/components/Inputs/VueAjaxAdvancedSelect.vue";
 import Form from "@/utils/Form.js";
 
 export default {
 	components: {
-    VueInput,
-    VueFileSimple,
-    VueDatepicker
+		VueInput,
+		VueFileSimple,
+		VueDatepicker,
+		VueAjaxAdvancedSelect
 	},
 	props: {
 		url: { type: String },
@@ -46,7 +54,8 @@ export default {
 		fileUpload: {
 			default() {
 				return {
-          id:'',
+					id:'',
+					contract_id: '',
 					name: '',
 					expirationDate: '',
 					file: ''
@@ -63,11 +72,11 @@ export default {
 	data() {
 		return {
 			loading: this.isEdit,
-      form: Form.makeFrom(this.fileUpload, this.method),
-      
-      disabledDates: {
-        to: new Date()
-      }
+			form: Form.makeFrom(this.fileUpload, this.method),
+			contractDataUrl: '/selects/contractors',
+			disabledDates: {
+				to: new Date()
+			}
 		};
 	},
 	methods: {

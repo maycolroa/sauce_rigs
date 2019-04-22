@@ -15,7 +15,8 @@
                 :danger-generated="dangerGenerated"
                 :si-no="siNo"
                 :qualifications="qualifications"
-                :action-plan-states="actionPlanStates"/>
+                :action-plan-states="actionPlanStates"
+                userDataUrl="/selects/users"/>
         </b-card-body>
       </b-card>
     </div>

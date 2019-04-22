@@ -1,7 +1,7 @@
 <template>
     <b-form autocomplete="off">
       <b-form-row>
-        <vue-ajax-advanced-select @selectedName="emitActivityName" :disabled="viewOnly" class="col-md-6" v-model="activity.activity_id" :selected-object="activity.multiselect_activity" name="activity_id" :error="form.errorsFor(`activities.${indexActivity}.activity_id`)" label="Proceso" placeholder="Seleccione el proceso" :url="activitiesDataUrl">
+        <vue-ajax-advanced-select @selectedName="emitActivityName" :disabled="viewOnly" class="col-md-6" v-model="activity.activity_id" :selected-object="activity.multiselect_activity" name="activity_id" :error="form.errorsFor(`activities.${indexActivity}.activity_id`)" label="Actividad" placeholder="Seleccione la actividad" :url="activitiesDataUrl">
           </vue-ajax-advanced-select>
         <vue-radio :disabled="viewOnly" :checked="activity.type_activity" class="col-md-6" v-model="activity.type_activity" :options="typeActivities" name="type_activity" :error="form.errorsFor(`activities.${indexActivity}.type_activity`)" label="Tipo de actividad">
           </vue-radio>
@@ -18,7 +18,7 @@
                       </vue-advanced-select>
       </b-form-row>
       <b-form-row style="padding-top: 15px;">
-        <perfect-scrollbar :options="{ wheelPropagation: true }" class="mb-4" style="height: 600px; padding-right: 15px; width: 100%;">
+        <!-- <perfect-scrollbar :options="{ wheelPropagation: true }" class="mb-4" style="height: 600px; padding-right: 15px; width: 100%;"> -->
           <template v-for="(danger, index) in activity.dangers">
             <b-card no-body class="mb-2 border-secondary" :key="danger.key" style="width: 100%;" v-show="showDander(danger.danger.name)">
               <b-card-header class="bg-secondary">
@@ -42,7 +42,7 @@
                   </b-col>
                 </b-row>
               </b-card-header>
-              <b-collapse :id="`accordion${danger.key}-1`" visible :accordion="`accordion-${indexActivity}`">
+              <b-collapse :id="`accordion${danger.key}-1`" :visible="!isEdit && !viewOnly" :accordion="`accordion-${indexActivity}`">
                 <b-card-body>
                   <form-danger-component
                     :is-edit="isEdit"
@@ -62,7 +62,7 @@
               </b-collapse>
             </b-card>
           </template>
-        </perfect-scrollbar>
+        <!-- </perfect-scrollbar> -->
       </b-form-row>
     </b-form>
 </template>
@@ -132,6 +132,7 @@ export default {
                 id: '',
                 dm_activity_id: '',
                 danger_id: '',
+                danger_description: '',
                 danger_generated: '',
                 possible_consequences_danger: '',
                 generating_source: '',
@@ -212,6 +213,7 @@ export default {
         id: '',
         dm_activity_id: '',
         danger_id: '',
+        danger_description: '',
         danger_generated: '',
         possible_consequences_danger: '',
         generating_source: '',

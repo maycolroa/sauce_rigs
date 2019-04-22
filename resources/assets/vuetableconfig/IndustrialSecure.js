@@ -13,6 +13,7 @@ export default [
             color: 'outline-success',
             borderless: true,
             icon: 'ion ion-md-create',
+            title: 'Editar'
         },
         data: {
             routePush: { name: 'industrialsecure-activities-edit' },
@@ -24,6 +25,7 @@ export default [
             color: 'outline-info',
             borderless: true,
             icon: 'ion ion-md-eye',
+            title: 'Ver'
         },
         data: {
             routePush: { name: 'industrialsecure-activities-view' },
@@ -63,6 +65,7 @@ export default [
             color: 'outline-success',
             borderless: true,
             icon: 'ion ion-md-create',
+            title: 'Editar'
         },
         data: {
             routePush: { name: 'industrialsecure-dangers-edit' },
@@ -74,6 +77,7 @@ export default [
             color: 'outline-info',
             borderless: true,
             icon: 'ion ion-md-eye',
+            title: 'Ver'
         },
         data: {
             routePush: { name: 'industrialsecure-dangers-view' },
@@ -109,6 +113,7 @@ export default [
             color: 'outline-success',
             borderless: true,
             icon: 'ion ion-md-create',
+            title: 'Editar'
         },
         data: {
             routePush: { name: 'industrialsecure-dangermatrix-edit' },
@@ -120,6 +125,7 @@ export default [
             color: 'outline-info',
             borderless: true,
             icon: 'ion ion-md-eye',
+            title: 'Ver'
         },
         data: {
             routePush: { name: 'industrialsecure-dangermatrix-view' },

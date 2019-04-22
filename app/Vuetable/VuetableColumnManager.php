@@ -25,7 +25,8 @@ class VuetableColumnManager
      */
     const TABLES = [
         'industrialsecuredangermatrix',
-        'administrativeroles'
+        'administrativeroles',
+        'legalAspectsfileUpload'
     ];
 
     protected $customColumnsName;
@@ -76,12 +77,12 @@ class VuetableColumnManager
     public function industrialsecuredangermatrix()
     {
         $colums = [
-            ['name' => 'sau_dm_activities.id', 'data'=> 'id', 'title'=> 'ID', 'sortable'=> false, 'searchable'=> false, 'detail'=> false, 'key'=> true ],
-            ['name' => 'sau_dm_activities.name', 'data'=> 'name', 'title'=> 'Nombre', 'sortable'=> true, 'searchable'=> false, 'detail'=> false, 'key'=> false ],
-            ['name' => 'supervisor', 'data'=> 'supervisor', 'title'=> 'Supervisor', 'sortable'=> true, 'searchable'=> false, 'detail'=> false, 'key'=> false ],
+            ['name' => 'sau_dangers_matrix.id', 'data'=> 'id', 'title'=> 'ID', 'sortable'=> false, 'searchable'=> false, 'detail'=> false, 'key'=> true ],
+            ['name' => 'sau_dangers_matrix.name', 'data'=> 'name', 'title'=> 'Nombre', 'sortable'=> true, 'searchable'=> true, 'detail'=> false, 'key'=> false ],
+            ['name' => 'sau_users.name', 'data'=> 'supervisor', 'title'=> 'Supervisor', 'sortable'=> true, 'searchable'=> true, 'detail'=> false, 'key'=> false ],
         ];
 
-        $colums = array_merge($colums, $this->getColumnsLocations(['process' => 'Macroproceso']));
+        $colums = array_merge($colums, $this->getColumnsLocations());
         $colums = array_merge($colums, [
             ['name' => '', 'data'=> 'controlls', 'title'=> 'Controles', 'sortable'=> false, 'searchable'=> false, 'detail'=> false, 'key'=> false ],
         ]);
@@ -121,22 +122,22 @@ class VuetableColumnManager
         
         if ($confLocation['regional'] == 'SI')
             array_push($colums, [
-                'name'=>'regional', 'data'=>'regional', 'title'=>$columnsHeader['regional'], 'sortable'=>true, 'searchable'=>false, 'detail'=>false, 'key'=>false
+                'name'=>'sau_employees_regionals.name', 'data'=>'regional', 'title'=>$columnsHeader['regional'], 'sortable'=>true, 'searchable'=>true, 'detail'=>false, 'key'=>false
             ]);
 
         if ($confLocation['headquarter'] == 'SI')
             array_push($colums, [
-                'name'=>'headquarter', 'data'=>'headquarter', 'title'=>$columnsHeader['headquarter'], 'sortable'=>true, 'searchable'=>false, 'detail'=>false, 'key'=>false
+                'name'=>'sau_employees_headquarters.name', 'data'=>'headquarter', 'title'=>$columnsHeader['headquarter'], 'sortable'=>true, 'searchable'=>true, 'detail'=>false, 'key'=>false
             ]);
 
         if ($confLocation['process'] == 'SI')
             array_push($colums, [
-                'name'=>'process', 'data'=>'process', 'title'=>$columnsHeader['process'], 'sortable'=>true, 'searchable'=>false, 'detail'=>false, 'key'=>false
+                'name'=>'sau_employees_processes.name', 'data'=>'process', 'title'=>$columnsHeader['process'], 'sortable'=>true, 'searchable'=>true, 'detail'=>false, 'key'=>false
             ]);
 
         if ($confLocation['area'] == 'SI')
             array_push($colums, [
-                'name'=>'area', 'data'=>'area', 'title'=>$columnsHeader['area'], 'sortable'=>true, 'searchable'=>false, 'detail'=>false, 'key'=>false
+                'name'=>'sau_employees_areas.name', 'data'=>'area', 'title'=>$columnsHeader['area'], 'sortable'=>true, 'searchable'=>true, 'detail'=>false, 'key'=>false
             ]);
 
         return $colums;
@@ -152,16 +153,48 @@ class VuetableColumnManager
         if (Auth::user()->hasPermission('roles_manage_defined'))
             $colums = [
                 ['name' => 'sau_roles.id', 'data'=> 'id', 'title'=> 'ID', 'sortable'=> false, 'searchable'=> false, 'detail'=> false, 'key'=> true ],
-                ['name' => 'sau_roles.name', 'data'=> 'name', 'title'=> 'Nombre', 'sortable'=> true, 'searchable'=> false, 'detail'=> false, 'key'=> false ],
+                ['name' => 'sau_roles.name', 'data'=> 'name', 'title'=> 'Nombre', 'sortable'=> true, 'searchable'=> true, 'detail'=> false, 'key'=> false ],
                 ['name' => 'sau_roles.description', 'data'=> 'description', 'title'=> 'Descripción', 'sortable'=> true, 'searchable'=> true, 'detail'=> false, 'key'=> false ],
                 ['name' => 'sau_roles.type_role', 'data'=> 'type_role', 'title'=> 'Tipo', 'sortable'=> true, 'searchable'=> true, 'detail'=> false, 'key'=> false ],
-                ['name' => 'sau_modules.display_name', 'data'=> 'display_name', 'title'=> 'Módulo', 'sortable'=> true, 'searchable'=> false, 'detail'=> false, 'key'=> false ]
+                ['name' => 'sau_modules.display_name', 'data'=> 'display_name', 'title'=> 'Módulo', 'sortable'=> true, 'searchable'=> true, 'detail'=> false, 'key'=> false ]
             ];
         else 
             $colums = [
                 ['name' => 'sau_roles.id', 'data'=> 'id', 'title'=> 'ID', 'sortable'=> false, 'searchable'=> false, 'detail'=> false, 'key'=> true ],
                 ['name' => 'sau_roles.name', 'data'=> 'name', 'title'=> 'Nombre', 'sortable'=> true, 'searchable'=> true, 'detail'=> false, 'key'=> false ],
                 ['name' => 'sau_roles.description', 'data'=> 'description', 'title'=> 'Descripción', 'sortable'=> true, 'searchable'=> true, 'detail'=> false, 'key'=> false ],
+            ];
+
+        $colums = array_merge($colums, [
+            ['name' => '', 'data'=> 'controlls', 'title'=> 'Controles', 'sortable'=> false, 'searchable'=> false, 'detail'=> false, 'key'=> false ],
+        ]);
+
+        return $colums;
+    }
+
+    /**
+     * returns the columns for the files upload
+     * 
+     * @return Array
+     */
+    public function legalAspectsfileUpload()
+    {
+        if (Auth::user()->hasRole('Arrendatario') || Auth::user()->hasRole('Contratista'))
+            $colums = [
+                ['name' => 'sau_ct_file_upload_contracts_leesse.id', 'data'=> 'id', 'title'=> 'ID', 'sortable'=> false, 'searchable'=> false, 'detail'=> false, 'key'=> true ],
+                ['name' => 'sau_ct_file_upload_contracts_leesse.name', 'data'=> 'name', 'title'=> 'Nombre', 'sortable'=> true, 'searchable'=> true, 'detail'=> false, 'key'=> false ],
+                ['name' => 'sau_users.name', 'data'=> 'user_name', 'title'=> 'Usuario Creador', 'sortable'=> true, 'searchable'=> true, 'detail'=> false, 'key'=> false ],
+                ['name' => 'sau_ct_file_upload_contracts_leesse.created_at', 'data'=> 'created_at', 'title'=> 'Fecha Creación', 'sortable'=> true, 'searchable'=> true, 'detail'=> false, 'key'=> false ],
+                ['name' => 'sau_ct_file_upload_contracts_leesse.updated_at', 'data'=> 'updated_at', 'title'=> 'Fecha Actualización', 'sortable'=> true, 'searchable'=> true, 'detail'=> false, 'key'=> false ]
+            ];
+        else 
+            $colums = [
+                ['name' => 'sau_ct_file_upload_contracts_leesse.id', 'data'=> 'id', 'title'=> 'ID', 'sortable'=> false, 'searchable'=> false, 'detail'=> false, 'key'=> true ],
+                ['name' => 'sau_ct_information_contract_lessee.social_reason', 'data'=> 'social_reason', 'title'=> 'Contratistas', 'sortable'=> true, 'searchable'=> true, 'detail'=> false, 'key'=> false ],
+                ['name' => 'sau_ct_file_upload_contracts_leesse.name', 'data'=> 'name', 'title'=> 'Nombre', 'sortable'=> true, 'searchable'=> true, 'detail'=> false, 'key'=> false ],
+                ['name' => 'sau_users.name', 'data'=> 'user_name', 'title'=> 'Usuario Creador', 'sortable'=> true, 'searchable'=> true, 'detail'=> false, 'key'=> false ],
+                ['name' => 'sau_ct_file_upload_contracts_leesse.created_at', 'data'=> 'created_at', 'title'=> 'Fecha Creación', 'sortable'=> true, 'searchable'=> true, 'detail'=> false, 'key'=> false ],
+                ['name' => 'sau_ct_file_upload_contracts_leesse.updated_at', 'data'=> 'updated_at', 'title'=> 'Fecha Actualización', 'sortable'=> true, 'searchable'=> true, 'detail'=> false, 'key'=> false ]
             ];
 
         $colums = array_merge($colums, [
