@@ -4,8 +4,8 @@ namespace App\Http\Controllers\Auth;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Models\Administrative\GeneratePasswordUser;
-use App\User;
+use App\Models\Administrative\Users\GeneratePasswordUser;
+use App\Models\Administrative\Users\User;
 
 class GeneratePasswordController extends Controller
 { 

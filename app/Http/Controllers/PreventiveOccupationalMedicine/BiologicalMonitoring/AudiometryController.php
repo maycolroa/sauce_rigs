@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use App\Vuetable\Facades\Vuetable;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\PreventiveOccupationalMedicine\BiologicalMonitoring\AudiometryRequest;
-use App\PreventiveOccupationalMedicine\BiologicalMonitoring\Audiometry;
+use App\Models\PreventiveOccupationalMedicine\BiologicalMonitoring\Audiometry;
 use Carbon\Carbon;
 use App\Jobs\PreventiveOccupationalMedicine\BiologicalMonitoring\AudiometryExportJob;
 use App\Jobs\PreventiveOccupationalMedicine\BiologicalMonitoring\AudiometryImportJob;

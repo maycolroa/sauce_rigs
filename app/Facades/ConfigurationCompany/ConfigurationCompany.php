@@ -3,7 +3,7 @@
 namespace App\Facades\ConfigurationsCompany;
 
 use Illuminate\Support\Facades\App;
-use App\Models\ConfigurationCompany;
+use App\Models\Administrative\Configurations\ConfigurationCompany;
 use Exception;
 use Session;
 
@@ -43,7 +43,8 @@ class ConfigurationsCompany
 
         $this->keys = [
             'location_level_form' => 'Nivel localización en formulario',
-            'days_alert_expiration_date_action_plan' => 'Días de alerta por fecha de vencimiento cercana para los planes de acción'
+            'days_alert_expiration_date_action_plan' => 'Días de alerta por fecha de vencimiento cercana para los planes de acción',
+            'days_alert_expiration_date_contract_file_upload' => 'Días de alerta por fecha de vencimiento cercana para los archivos cargados en el módulo de contratistas'
         ];
     }
 

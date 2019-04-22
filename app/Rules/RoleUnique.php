@@ -4,7 +4,7 @@ namespace App\Rules;
 
 use Illuminate\Contracts\Validation\Rule;
 use Illuminate\Support\Facades\Auth;
-use App\Models\Role;
+use App\Models\Administrative\Roles\Role;
 use Session;
 
 class RoleUnique implements Rule

@@ -6,8 +6,8 @@ use Illuminate\Http\Request;
 use App\Vuetable\Facades\Vuetable;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Administrative\Roles\RoleRequest;
-use App\Models\Role;
-use App\Models\Permission;
+use App\Models\Administrative\Roles\Role;
+use App\Models\General\Permission;
 use Illuminate\Support\Facades\Auth;
 use Session;
 

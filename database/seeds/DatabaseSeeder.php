@@ -19,5 +19,6 @@ class DatabaseSeeder extends Seeder
         $this->call(DmQualificationsSeeder::class);
         $this->call(MakeCustomPermissionsSeeder::class);
         $this->call(CreateRoleSuperAdminSeeder::class);
+        $this->call(MakeCustomRolesDefinedSeeder::class);
     }
 }

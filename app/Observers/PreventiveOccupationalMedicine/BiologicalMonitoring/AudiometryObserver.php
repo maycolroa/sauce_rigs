@@ -2,7 +2,7 @@
 
 namespace App\Observers\PreventiveOccupationalMedicine\BiologicalMonitoring;
 
-use App\PreventiveOccupationalMedicine\BiologicalMonitoring\Audiometry;
+use App\Models\PreventiveOccupationalMedicine\BiologicalMonitoring\Audiometry;
 
 class AudiometryObserver
 {

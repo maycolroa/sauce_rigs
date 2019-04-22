@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Database\Seeder;
-use App\Models\Configuration;
+use App\Models\General\Configuration;
 
 class SauConfigurationSeeder extends Seeder
 {

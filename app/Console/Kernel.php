@@ -14,7 +14,8 @@ class Kernel extends ConsoleKernel
      */
     protected $commands = [
         'App\Console\Commands\AudiometryNotification',
-        'App\Console\Commands\DaysAlertExpirationDateActionPlan'
+        'App\Console\Commands\DaysAlertExpirationDateActionPlan',
+        'App\Console\Commands\DaysAlertExpirationDateContractFilesUpload'
     ];
 
     /**
@@ -28,10 +29,16 @@ class Kernel extends ConsoleKernel
         $schedule->command('audiometry-notification')
         ->timezone('America/Bogota')
         ->dailyAt('00:00');
+
         $schedule->command('days-alert-expiration-date-action-plan')
         ->timezone('America/Bogota')
         ->dailyAt('01:00');
+
         $schedule->command('telescope:prune')->daily();
+
+        $schedule->command('days-alert-expiration-date-contract-files-upload')
+        ->timezone('America/Bogota')
+        ->dailyAt('01:00');
     }
 
     /**

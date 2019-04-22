@@ -2,8 +2,8 @@
 
 namespace App\Traits;
 
-use App\LegalAspects\ContractLessee;
-use App\User;
+use App\Models\LegalAspects\Contracts\ContractLesseeInformation;
+use App\Models\Administrative\Users\User;
 
 trait ContractTrait
 {
@@ -15,7 +15,7 @@ trait ContractTrait
         if ($company_id && !is_numeric($company_id))
             throw new \Exception('Company invalid');
 
-        $contract = ContractLessee::select(
+        $contract = ContractLesseeInformation::select(
                 'sau_user_information_contract_lessee.user_id')
             ->join('sau_user_information_contract_lessee', 'sau_user_information_contract_lessee.information_id', 'sau_ct_information_contract_lessee.id')
             ->where('sau_ct_information_contract_lessee.id', $contract_id);
@@ -43,7 +43,7 @@ trait ContractTrait
         if ($company_id && !is_numeric($company_id))
             throw new \Exception('Company invalid');
 
-        $contract = ContractLessee::select(
+        $contract = ContractLesseeInformation::select(
                 'sau_ct_information_contract_lessee.id AS id')
             ->join('sau_user_information_contract_lessee', 'sau_user_information_contract_lessee.information_id', 'sau_ct_information_contract_lessee.id')
             ->where('sau_user_information_contract_lessee.user_id', $user_id);

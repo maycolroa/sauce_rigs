@@ -23,7 +23,7 @@
 </template>
 
 <script>
-import ListCheckItems from '@/components/LegalAspects/ContractLessee/ListCheckItemsComponent.vue';
+import ListCheckItems from '@/components/LegalAspects/Contracts/ContractLessee/ListCheckItemsComponent.vue';
 import Alerts from '@/utils/Alerts.js';
 
 export default {

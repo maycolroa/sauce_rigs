@@ -1,9 +1,9 @@
 <?php
 
 use Illuminate\Database\Seeder;
-use App\Models\Application;
-use App\Models\Module;
-use App\Models\Permission;
+use App\Models\General\Application;
+use App\Models\General\Module;
+use App\Models\General\Permission;
 
 class MakeCustomPermissionsSeeder extends Seeder
 {

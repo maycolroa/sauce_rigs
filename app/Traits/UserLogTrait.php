@@ -3,7 +3,7 @@
 namespace App\Traits;
 
 use App\SecApplication;
-use App\User;
+use App\Models\Administrative\Users\User;
 use App\UserLog;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Session;

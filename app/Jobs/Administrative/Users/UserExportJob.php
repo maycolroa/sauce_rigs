@@ -7,7 +7,7 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
-use App\User;
+use App\Models\Administrative\Users\User;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\Administrative\Users\UsersExcel;
 use App\Facades\Mail\Facades\NotificationMail;

@@ -1,9 +1,9 @@
 <?php
 
 use Illuminate\Database\Seeder;
-use App\Models\Module;
-use App\Models\Role;
-use App\Models\Permission;
+use App\Models\General\Module;
+use App\Models\Administrative\Roles\Role;
+use App\Models\General\Permission;
 
 class CreateRoleSuperAdminSeeder extends Seeder
 {
