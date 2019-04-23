@@ -20,5 +20,9 @@ class DatabaseSeeder extends Seeder
         $this->call(MakeCustomPermissionsSeeder::class);
         $this->call(CreateRoleSuperAdminSeeder::class);
         $this->call(MakeCustomRolesDefinedSeeder::class);
+        $this->call(CtActionPlanDefaultSeeder::class);
+        $this->call(CtQualificationsSeeder::class);
+        $this->call(CtSectionCategoryItemsSeeder::class);
+        $this->call(CtStandardClassificationSeeder::class);
     }
 }
