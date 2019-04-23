@@ -27,7 +27,7 @@ class DeleteColumnFileUploadContracts extends Migration
     public function down()
     {
         Schema::table('sau_ct_file_upload_contracts_leesse', function (Blueprint $table) {
-            $table->unsignedInteger('contract_id')->after('id');
+            $table->unsignedInteger('contract_id')->after('id')->nullable();
             $table->foreign('contract_id')->references('id')->on('sau_ct_information_contract_lessee')->onDelete('cascade');
         });
     }
