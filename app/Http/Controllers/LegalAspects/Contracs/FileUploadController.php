@@ -32,12 +32,20 @@ class FileUploadController extends Controller
         $files = FileUpload::selectRaw(
             'sau_ct_file_upload_contracts_leesse.*,
              sau_users.name as user_name,
-             GROUP_CONCAT(sau_ct_information_contract_lessee.social_reason ORDER BY social_reason ASC) AS social_reason'
+             GROUP_CONCAT(sau_ct_information_contract_lessee.social_reason ORDER BY social_reason ASC) AS social_reason,
+             sau_ct_section_category_items.item_name AS item_name'
           )
           ->join('sau_users','sau_users.id','sau_ct_file_upload_contracts_leesse.user_id')
           ->join('sau_ct_file_upload_contract','sau_ct_file_upload_contract.file_upload_id','sau_ct_file_upload_contracts_leesse.id')
           ->join('sau_ct_information_contract_lessee', 'sau_ct_information_contract_lessee.id', 'sau_ct_file_upload_contract.contract_id')
-          ->groupBy('sau_ct_file_upload_contracts_leesse.id');
+          ->leftJoin('sau_ct_file_item_contract', 'sau_ct_file_item_contract.file_id', 'sau_ct_file_upload_contracts_leesse.id')
+          ->leftJoin('sau_ct_section_category_items', 'sau_ct_section_category_items.id', 'sau_ct_file_item_contract.item_id')
+          ->groupBy('sau_ct_file_upload_contracts_leesse.id', 'sau_ct_section_category_items.item_name');
+
+        $filters = $request->get('filters');
+
+        if (isset($filters["items"]))
+          $files->inItems($this->getValuesForMultiselect($filters["items"]), $filters['filtersType']['items']);
 
         if (Auth::user()->hasRole('Arrendatario') || Auth::user()->hasRole('Contratista'))
         {

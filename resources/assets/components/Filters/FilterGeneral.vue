@@ -16,7 +16,7 @@
                         <b-card-body>
                             <b-row>
                                 <template v-for="(item, index) in filters"> 
-                                    <b-col cols="6" :key="index" v-if="item.active && index != 'dateRange'"><vue-advanced-select  v-model="filtersSelected[index]" :multiple="true" :options="item.data" :searchable="true" :name="item.name" :label="item.label" :disabled="isDisabled" :filterTypeSearch="true" @updateFilterTypeSearch="setFilterTypeSearch($event, item.name)">
+                                    <b-col cols="12" :key="index" v-if="item.active && index != 'dateRange'"><vue-advanced-select  v-model="filtersSelected[index]" :multiple="true" :options="item.data" :searchable="true" :name="item.name" :label="item.label" :disabled="isDisabled" :filterTypeSearch="true" @updateFilterTypeSearch="setFilterTypeSearch($event, item.name)">
                                     </vue-advanced-select></b-col>
                                 </template>
                             </b-row>
@@ -155,6 +155,13 @@ export default {
                     active: false,
                     ready: false
                 },
+                items: {
+                    label: 'Items',
+                    name: 'items',
+                    data: [],
+                    active: false,
+                    ready: false
+                },
             },
             filtersSelected: {
                 regionals: [],
@@ -170,6 +177,7 @@ export default {
                 responsibles: [],
                 modules: [],
                 states: [],
+                items: [],
                 filtersType: {
                     regionals: 'IN',
                     headquarters: 'IN',
@@ -182,7 +190,8 @@ export default {
                     evaluationsSubobjectives: 'IN',
                     responsibles: 'IN',
                     modules: 'IN',
-                    states: 'IN'
+                    states: 'IN',
+                    items: 'IN'
                 }
             }
         }
@@ -287,6 +296,9 @@ export default {
         },
         'filtersSelected.states'() {
             this.updateFilterTable('states')
+        },
+        'filtersSelected.items'() {
+            this.updateFilterTable('items')
         },
     },
     methods: {

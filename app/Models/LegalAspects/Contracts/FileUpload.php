@@ -28,4 +28,24 @@ class FileUpload extends Model
     {
         return $this->belongsToMany(ContractLesseeInformation::class,'sau_ct_file_upload_contract', 'file_upload_id', 'contract_id');
     }
+
+    /**
+     * filters checks through the given items
+     * @param  Illuminate\Database\Eloquent\Builder $query
+     * @param  array $items
+     * @return Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeInItems($query, $items, $typeSearch = 'IN')
+    {
+        if (COUNT($items) > 0)
+        {
+            if ($typeSearch == 'IN')
+                $query->whereIn('sau_ct_section_category_items.id', $items);
+
+            else if ($typeSearch == 'NOT IN')
+                $query->whereNotIn('sau_ct_section_category_items.id', $items);
+        }
+
+        return $query;
+    }
 }

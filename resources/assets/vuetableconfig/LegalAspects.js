@@ -167,6 +167,7 @@ export default [
       configuration: {
         urlData: '/legalAspects/fileUpload/data',
         filterColumns: true,
+        configNameFilter: 'legalAspects-fileUpload'
       }
     }, 
     {
