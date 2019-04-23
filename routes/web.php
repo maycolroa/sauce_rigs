@@ -79,6 +79,10 @@ Route::middleware(['auth'])->group(function () {
           Route::post('objectives', 'LegalAspects\Contracs\EvaluationController@multiselectObjectives');
           Route::post('subobjectives', 'LegalAspects\Contracs\EvaluationController@multiselectSubobjectives');
         });
+
+        Route::prefix('contracts')->group(function () {
+          Route::post('sectionCategoryItems', 'LegalAspects\Contracs\SectionCategoryItemController@multiselect');
+        });
     });
 
     Route::prefix('radios')->group(function () {

@@ -22,5 +22,14 @@ export default [
           key: 'dateRange'
         }
       ]
-    }
+    },
+    {
+      name: 'legalAspects-fileUpload',
+      filters: [
+        {
+          url: '/selects/contracts/sectionCategoryItems',
+          key: 'items',
+        }
+      ]
+    },
 ];
