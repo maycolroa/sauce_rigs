@@ -90,7 +90,7 @@ class User extends Authenticatable
 
     public function contractInfo()
     {
-      	return $this->belongsToMany('App\Models\LegalAspects\Contracts\ContractLessee','sau_user_information_contract_lessee', 'user_id', 'information_id');
+      	return $this->belongsToMany('App\Models\LegalAspects\Contracts\ContractLesseeInformation','sau_user_information_contract_lessee', 'user_id', 'information_id');
     }
     
     public function roleUser(){
