@@ -72,7 +72,7 @@ class UserController extends Controller
             return $this->respondHttp500();
         }
 
-        $user->companies()->sync(Session::get('company_id'));
+        //$user->companies()->sync(Session::get('company_id'));
         $user->syncRoles([$request->get('role_id')]);
 
         return $this->respondHttp200([

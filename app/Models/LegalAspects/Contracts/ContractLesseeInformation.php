@@ -14,6 +14,8 @@ class ContractLesseeInformation extends Model
     protected $fillable = [
         'company_id',
         'nit',
+        'active',
+        'completed_registration',
         'type',
         'classification',
         'business_name',
@@ -27,17 +29,14 @@ class ContractLesseeInformation extends Model
         'risk_class',
         'number_workers',
         'high_risk_work',
-        'social_reason',
-        'created_at',
-        'updated_at'
+        'social_reason'
     ];
 
-
-    public function users(){
+    /*public function users(){
         return $this->belongsToMany('App\Models\Administrative\Users\User', 'sau_users');
-    }
+    }*/
 
-    public function usersContract()
+    public function users()
     {
         return $this->belongsToMany('App\Models\Administrative\Users\User', 'sau_user_information_contract_lessee', 'information_id');
     }

@@ -82,7 +82,17 @@ export default {
           this.form.submit(e.target.action, true)
           .then(response => {
               this.loading = false;
-              location.href = "/";
+
+              if (response.data.redirectTo != undefined)
+              {
+                //console.log(response.data.redirectTo)
+                location.href = response.data.redirectTo;
+              }
+              else 
+              {
+                //console.log(response)
+                location.href = "/";
+              }
           })
           .catch(error => {
                  this.loading = false;

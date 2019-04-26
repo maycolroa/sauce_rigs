@@ -20,7 +20,7 @@ class TelescopeServiceProvider extends TelescopeApplicationServiceProvider
     {
         parent::boot();
 
-        Telescope::auth(function ($request) {
+        /*Telescope::auth(function ($request) {
 
             if (isset($request->user()->id))
             {
@@ -39,7 +39,7 @@ class TelescopeServiceProvider extends TelescopeApplicationServiceProvider
                 throw new UnauthorizedHttpException('Unauthorized');
 
             return true;
-        });
+        });*/
     }
 
     /**

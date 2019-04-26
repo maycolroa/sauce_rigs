@@ -7,27 +7,16 @@
 					<div class="card-title-elements">
 						<div class="row no-gutters row-bordered row-border-light h-100">
 							
-							<div class="d-flex col-sm-6 col-md-4 col-lg-6 align-items-center">
-								<router-link tag="a" href="javascript:void(0)" class="card-body media align-items-center text-dark" :to="{name:'legalaspects-contracts-create'}">
+							<div class="d-flex col-sm-6 col-md-4 col-lg-6 align-items-center" v-if="!auth.hasRole['Arrendatario'] && !auth.hasRole['Contratista']">
+								<router-link tag="a" href="javascript:void(0)" class="card-body media align-items-center text-dark" :to="{name:'legalaspects-contractor'}">
 									<i class="lnr lnr-user display-4 d-block text-primary"></i>
 									<span class="media-body d-block ml-3">
-										<span class="text-big font-weight-bolder">Crear contratista o arrendatario</span>
+										<span class="text-big font-weight-bolder">Administrar contratistas</span>
 										<br>
-										<small class="text-muted">Creación de los usuarios para contratistas y/o arrendatarios.</small>
+										<small class="text-muted">Administrar tus contratistas y/o arrendatarios</small>
 									</span>
 								</router-link>
 							</div>
-							
-							<!-- <div class="d-flex col-sm-6 col-md-4 col-lg-6 align-items-center">
-								<router-link tag="a" href="javascript:void(0)" class="card-body media align-items-center text-dark" :to="{name:'legalaspects-contracts-list-check-items'}">
-									<i class="lnr lnr-list display-4 d-block text-primary"></i>
-									<span class="media-body d-block ml-3">
-										<span class="text-big font-weight-bolder">Administración de las listas de chequeo</span>
-										<br>
-										<small class="text-muted">Ver, editar y administrar las listas de chequeo de tus contratistas y/o arrendatarios.</small>
-									</span>
-								</router-link>
-							</div> -->
 
 							<div class="d-flex col-sm-6 col-md-4 col-lg-6 align-items-center">
 								<router-link tag="a" href="javascript:void(0)" class="card-body media align-items-center text-dark" :to="{name:'legalaspects-contracts-list-check-items'}">
@@ -39,17 +28,6 @@
 									</span>
 								</router-link>
 							</div>
-
-							<!-- <div class="d-flex col-sm-6 col-md-4 col-lg-6 align-items-center">
-								<router-link tag="a" href="javascript:void(0)" class="card-body media align-items-center text-dark" :to="{name:'legalaspects-contracts-create'}">
-									<i class="lnr lnr-users display-4 d-block text-primary"></i>
-									<span class="media-body d-block ml-3">
-										<span class="text-big font-weight-bolder">Administración de usuarios</span>
-										<br>
-										<small class="text-muted">Ver, editar y administrar tus usuarios contratistas o arrendatarios.</small>
-									</span>
-								</router-link>
-							</div> -->
 
 							<div class="d-flex col-sm-6 col-md-4 col-lg-6 align-items-center">
 								<router-link tag="a" href="javascript:void(0)" class="card-body media align-items-center text-dark" :to="{name:'legalaspects-contracts-complete-information', params: {id: 3}}">
@@ -68,7 +46,7 @@
 									<span class="media-body d-block ml-3">
 										<span class="text-big font-weight-bolder">Administración de las evaluaciones</span>
 										<br>
-										<small class="text-muted">Ver, editar y administrar las evaluaciones de tus contratistas y/o arrendatarios.</small>
+										<small class="text-muted">Administrar las evaluaciones de tus contratistas y/o arrendatarios.</small>
 									</span>
 								</router-link>
 							</div>
@@ -95,11 +73,8 @@
 								</router-link>
 							</div>
 						</div>
-						<!-- <b-btn :to="{name:'legalaspects-contracts-create'}" variant="primary">Crear Usuario</b-btn>
-						<b-btn :to="{name:'legalaspects-contracts-create'}" variant="primary">Lista de Chequeo</b-btn>-->
 					</div>
 				</b-card-header>
-				<!--<b-card-body><vue-table configName="administrative-users"></vue-table></b-card-body>-->
 			</b-card>
     	</div>
   	</div>
@@ -114,22 +89,6 @@ export default {
 		title: "Contratistas"
 	},
   	methods: {
-		exportUsers() {
-		axios
-			.post("/administration/users/export")
-			.then(response => {
-				Alerts.warning(
-					"Información",
-					"Se inicio la exportación, se le notificara a su correo electronico cuando finalice el proceso."
-				);
-			})
-			.catch(error => {
-				Alerts.error(
-					"Error",
-					"Se ha generado un error en el proceso, por favor contacte con el administrador"
-				);
-			});
-		}
   	}
 };
 </script>

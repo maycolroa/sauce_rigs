@@ -11,7 +11,9 @@
 					<form-contract 
 						url="/legalAspects/contracts"
 						method="POST"
-						:cancel-url="{ name: 'legalaspects-contracts'}"/>
+						:roles="roles"
+						:contract-classifications="contractClassifications"
+						:cancel-url="{ name: 'legalaspects-contractor'}"/>
 				</b-card-body>
 			</b-card>
 		</div>
@@ -20,14 +22,39 @@
 
 <script>
 import FormContract from '@/components/LegalAspects/Contracts/ContractLessee/FormContractComponent.vue';
+import Alerts from '@/utils/Alerts.js';
+import GlobalMethods from '@/utils/GlobalMethods.js';
 
 export default {
-	name: 'legal-aspects-contracts-create',
+	name: 'legalaspects-contractor-create',
 	metaInfo: {
 		title: 'Contratistas - Crear'
 	},
 	components:{
 		FormContract
+	},
+	data(){
+		return {
+			roles: [],
+			contractClassifications: []
+		}
+	},
+	created(){
+		this.fetchSelect('roles', '/selects/ctRoles')
+		this.fetchSelect('contractClassifications', '/selects/ctContractClassifications')
+	},
+	methods: {
+		fetchSelect(key, url)
+		{
+			GlobalMethods.getDataMultiselect(url)
+			.then(response => {
+				this[key] = response;
+			})
+			.catch(error => {
+				Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
+				this.$router.go(-1);
+			});
+		},
 	}
 }
 </script>

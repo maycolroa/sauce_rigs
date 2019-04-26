@@ -17,9 +17,28 @@ export default [
 				component: () => import('@/views/LegalAspects/contracts/index')
 			},
 			{
-				name: 'legalaspects-contracts-create',
-				path: 'contracts/create',
-				component: () => import('@/views/LegalAspects/contracts/contractor/create')
+				name: 'legalaspects-contractor',
+				path: 'contractor',
+				component: () =>
+				import('@/views/LegalAspects/contracts/contractor/index')
+			}, 
+			{
+				name: 'legalaspects-contractor-create',
+				path: 'contractor/create',
+				component: () =>
+				import('@/views/LegalAspects/contracts/contractor/create')
+			},
+			{
+				name: 'legalaspects-contractor-edit',
+				path: 'contractor/edit/:id',
+				component: () =>
+				import('@/views/LegalAspects/contracts/contractor/edit')
+			},
+			{
+				name: 'legalaspects-contractor-view',
+				path: 'contractor/view/:id',
+				component: () =>
+				import('@/views/LegalAspects/contracts/contractor/view')
 			},
 			{
 				name: 'legalaspects-contracts-complete-information',

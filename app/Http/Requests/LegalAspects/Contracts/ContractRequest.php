@@ -3,6 +3,7 @@
 namespace App\Http\Requests\LegalAspects\Contracts;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Session;
 
 class ContractRequest extends FormRequest
 {
@@ -25,31 +26,22 @@ class ContractRequest extends FormRequest
     {
         $id = $this->input('id');
 
-        if ($this->role == "Contratista") {
-            $rules = [
-                'name'      => 'required|string',
-                'email'     => 'required|email|unique:sau_users,email,' . $id . ',id',
-                'document'  => 'required|numeric',
-                'role'   => 'required',
-                'password'  => 'nullable|string|min:6',
-                'name_business' => 'required|string',
-                'nit' => 'required|numeric',
-                'classification' => 'required',
-                'social_reason' => 'required|string'
-            ];
-            return $rules;
-        }
-
         $rules = [
-            'name'      => 'required|string',
-            'email'     => 'required|email|unique:sau_users,email,' . $id . ',id',
-            'document'  => 'required|numeric',
-            'role'   => 'required',
-            'password'  => 'nullable|string|min:6',
-            'name_business' => 'required|string',
-            'nit' => 'required|numeric',
+            'type'      => 'required',
+            'business_name' => 'required|string',
+            'nit' => 'required|numeric|unique:sau_ct_information_contract_lessee,nit,' . $id . ',id,company_id,'.Session::get('company_id'),
             'social_reason' => 'required|string'
         ];
+
+        if (!$id)
+        {
+            $rules['name'] = 'required|string';
+            $rules['email'] = 'required|email|unique:sau_users,email';
+            $rules['document'] = 'required';
+        }
+
+        if ($this->type == "Contratista")
+            $rules['classification'] = 'required';
         
         return $rules;
     }

@@ -24,7 +24,7 @@ class User extends Authenticatable
     protected $table = 'sau_users';
 
     protected $fillable = [
-        'name', 'email', 'password','state', 'document', 'document_type', 'created_at', 'updated_at'
+        'name', 'email', 'password','active', 'state', 'document', 'document_type', 'created_at', 'updated_at'
     ];
 
     /**
@@ -84,22 +84,22 @@ class User extends Authenticatable
         ];
     }
 
-    public function contractInformation(){
+    /*public function contractInformation(){
       	return $this->belongsToMany('App\Models\LegalAspects\Contracts\UserContractLesseeDetail','sau_user_information_contract_lessee', 'user_id', 'information_id');
     }
 
     public function contractInfo()
     {
       	return $this->belongsToMany('App\Models\LegalAspects\Contracts\ContractLesseeInformation','sau_user_information_contract_lessee', 'user_id', 'information_id');
-    }
+    }*/
     
     public function roleUser(){
       	return $this->belongsToMany('App\Models\Administrative\Roles\Role','sau_role_user');
 	}
 
-	public function itemsCalificatedContract(){
+	/*public function itemsCalificatedContract(){
       	return $this->belongsToMany('App\Models\LegalAspects\Contracts\ItemQualificationContractDetail','sau_ct_item_qualification_contract');
-    }
+    }*/
     
 
     /**
