@@ -98,4 +98,20 @@ class MultiSelectRadioController extends Controller
         $data = ["Unidad de producción agropecuaria"=>"UPA", "Empresa"=>"Empresa"];
         return $this->multiSelectFormat(collect($data));
     }
+
+    /**
+     * Returns an arrangement with the risk classes
+     *
+     * @return Array
+     */
+    public function ctkindsRisks()
+    {
+        $data = [
+            "Clase de riesgo I, II, III" => "Clase de riesgo I, II, III",
+            "Clase de riesgo IV y V" => "Clase de riesgo IV y V",
+            "Cualquier clase de riesgo" => "Cualquier clase de riesgo"
+        ];
+
+        return $this->multiSelectFormat(collect($data));
+    }
 }

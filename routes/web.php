@@ -76,6 +76,7 @@ Route::middleware(['auth'])->group(function () {
         Route::post('contractors', 'LegalAspects\Contracs\ContractLesseeController@multiselect');
         Route::post('ctRoles', 'General\MultiSelectRadioController@ctRoles');
         Route::post('ctContractClassifications', 'General\MultiSelectRadioController@ctContractClassifications'); 
+        Route::post('ctkindsRisks', 'General\MultiSelectRadioController@ctkindsRisks'); 
 
         Route::prefix('evaluations')->group(function () {
           Route::post('objectives', 'LegalAspects\Contracs\EvaluationController@multiselectObjectives');
@@ -166,6 +167,7 @@ Route::middleware(['auth'])->group(function () {
       Route::ApiResource('contract', 'LegalAspects\Contracs\ContractLesseeController');*/
 
       Route::post('contracts/data', 'LegalAspects\Contracs\ContractLesseeController@data');
+      Route::get('contracts/getInformation', 'LegalAspects\Contracs\ContractLesseeController@getInformation');
       Route::ApiResource('contracts', 'LegalAspects\Contracs\ContractLesseeController');
 
       Route::post('fileUpload/data', 'LegalAspects\Contracs\FileUploadController@data');

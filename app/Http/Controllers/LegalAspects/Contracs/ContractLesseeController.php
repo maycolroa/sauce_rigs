@@ -5,6 +5,7 @@ namespace App\Http\Controllers\LegalAspects\Contracs;
 use Illuminate\Http\Request;
 use App\Vuetable\Facades\Vuetable;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 use App\Models\Administrative\Roles\Role;
 use App\Models\LegalAspects\Contracts\CompanyLimitCreated;
 use App\Models\LegalAspects\Contracts\ContractLesseeInformation;
@@ -104,6 +105,26 @@ class ContractLesseeController extends Controller
     }
 
     /**
+     * Display the specified resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function getInformation()
+    {
+        try
+        {
+            $contract = $this->getContractUser(Auth::user()->id);
+            $contract->isInformation = true;
+
+            return $this->respondHttp200([
+                'data' => $contract
+            ]);
+        } catch(Exception $e){
+            $this->respondHttp500();
+        }
+    }
+
+    /**
      * Update the specified resource in storage.
      *
      * @param App\Http\Requests\LegalAspects\Contracts\ContractRequest $request
@@ -126,6 +147,9 @@ class ContractLesseeController extends Controller
             
             if ($request->type == 'Arrendatario')
                 $contract->classification = NULL;
+
+            if ($request->has('isInformation'))
+                $contract->completed_registration = 'SI';
 
             if(!$contract->update()) {
                 return $this->respondHttp500();

@@ -41,9 +41,9 @@ export default [
 				import('@/views/LegalAspects/contracts/contractor/view')
 			},
 			{
-				name: 'legalaspects-contracts-complete-information',
-				path: 'contracts/complete-information/:id',
-				component: () => import('@/views/LegalAspects/contracts/contract/completeInformation')
+				name: 'legalaspects-contracts-information',
+				path: 'contracts/information',
+				component: () => import('@/views/LegalAspects/contracts/contract/information')
 			},
 			{
 				name: 'legalaspects-contracts-list-check-items',

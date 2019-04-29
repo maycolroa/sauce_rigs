@@ -71,7 +71,7 @@ class LoginController extends Controller
 
                             if ($contract->completed_registration == 'NO')
                                 return $this->respondHttp200([
-                                    'redirectTo' => 'legalaspects/contracts/complete-information/'.$contract->id
+                                    'redirectTo' => 'legalaspects/contracts/information'
                                 ]);
 
                             return $this->respondHttp200();
