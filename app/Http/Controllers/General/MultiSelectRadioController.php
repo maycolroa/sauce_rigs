@@ -24,8 +24,8 @@ class MultiSelectRadioController extends Controller
      */
     public function dmTypeActivities()
     {
-        $activities = ["Rutinaria"=>"Rutinaria", "No rutinaria"=>"No rutinaria"];
-        return $this->radioFormat(collect($activities));
+        $data = ["Rutinaria"=>"Rutinaria", "No rutinaria"=>"No rutinaria"];
+        return $this->radioFormat(collect($data));
     }
 
     /**
@@ -35,13 +35,13 @@ class MultiSelectRadioController extends Controller
      */
     public function dmGeneratedDangers()
     {
-        $dangers = [
+        $data = [
             "Sitio de trabajo" => "Sitio de trabajo", 
             "Vecindad" => "Vecindad",
             "Fuera del sitio de trabajo" => "Fuera del sitio de trabajo"
         ];
         
-        return $this->multiSelectFormat(collect($dangers));
+        return $this->multiSelectFormat(collect($data));
     }
 
     /**
@@ -51,8 +51,8 @@ class MultiSelectRadioController extends Controller
      */
     public function sexs()
     {
-        $sexs = ["Masculino"=>"M", "Femenino"=>"F"];
-        return $this->multiSelectFormat(collect($sexs));
+        $data = ["Masculino"=>"M", "Femenino"=>"F"];
+        return $this->multiSelectFormat(collect($data));
     }
 
     /**
@@ -62,8 +62,8 @@ class MultiSelectRadioController extends Controller
      */
     public function siNo()
     {
-        $options = ["SI"=>"SI", "NO"=>"NO"];
-        return $this->radioFormat(collect($options));
+        $data = ["SI"=>"SI", "NO"=>"NO"];
+        return $this->radioFormat(collect($data));
     }
 
     /**
@@ -73,7 +73,45 @@ class MultiSelectRadioController extends Controller
      */
     public function ctTypesEvaluation()
     {
-        $evaluations = ["Verificación"=>"Verificación", "Seguimiento"=>"Seguimiento", "Adicional"=>"Adicional"];
-        return $this->radioFormat(collect($evaluations));
+        $data = ["Verificación"=>"Verificación", "Seguimiento"=>"Seguimiento", "Adicional"=>"Adicional"];
+        return $this->radioFormat(collect($data));
+    }
+
+    /**
+     * Returns an arrangement with the roles defined
+     *
+     * @return Array
+     */
+    public function ctRoles()
+    {
+        $data = ["Arrendatario"=>"Arrendatario", "Contratista"=>"Contratista"];
+        return $this->multiSelectFormat(collect($data));
+    }
+
+    /**
+     * Returns an arrangement with the contract classifications
+     *
+     * @return Array
+     */
+    public function ctContractClassifications()
+    {
+        $data = ["Unidad de producción agropecuaria"=>"UPA", "Empresa"=>"Empresa"];
+        return $this->multiSelectFormat(collect($data));
+    }
+
+    /**
+     * Returns an arrangement with the risk classes
+     *
+     * @return Array
+     */
+    public function ctkindsRisks()
+    {
+        $data = [
+            "Clase de riesgo I, II, III" => "Clase de riesgo I, II, III",
+            "Clase de riesgo IV y V" => "Clase de riesgo IV y V",
+            "Cualquier clase de riesgo" => "Cualquier clase de riesgo"
+        ];
+
+        return $this->multiSelectFormat(collect($data));
     }
 }

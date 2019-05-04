@@ -73,7 +73,10 @@ Route::middleware(['auth'])->group(function () {
         Route::post('tagsTypeProcess', 'General\TagController@multiselectTypeProcess');
         Route::post('actionPlanStates', 'General\MultiSelectRadioController@actionPlanStates');
         Route::post('actionPlanModules', 'Administrative\ActionPlans\ActionPlanController@actionPlanModules');
-        Route::post('contractors', 'LegalAspects\Contracs\ContractLesseeController@multiselect'); 
+        Route::post('contractors', 'LegalAspects\Contracs\ContractLesseeController@multiselect');
+        Route::post('ctRoles', 'General\MultiSelectRadioController@ctRoles');
+        Route::post('ctContractClassifications', 'General\MultiSelectRadioController@ctContractClassifications'); 
+        Route::post('ctkindsRisks', 'General\MultiSelectRadioController@ctkindsRisks'); 
 
         Route::prefix('evaluations')->group(function () {
           Route::post('objectives', 'LegalAspects\Contracs\EvaluationController@multiselectObjectives');
@@ -154,14 +157,18 @@ Route::middleware(['auth'])->group(function () {
 		
 		//Aspectos Legales
 		Route::prefix('legalAspects')->group(function () {
-			Route::get('contracts/qualifications', 'LegalAspects\Contracs\ContractLesseeController@qualifications');
+			/*Route::get('contracts/qualifications', 'LegalAspects\Contracs\ContractLesseeController@qualifications');
 			Route::post('contracts/validateActionPlanItem', 'LegalAspects\Contracs\ContractLesseeController@validateActionPlanItem');
 			Route::post('contracts/validateFilesItem', 'LegalAspects\Contracs\ContractLesseeController@validateFilesItem');
 			Route::get('contracts/data', 'LegalAspects\Contracs\ContractLesseeController@data');
       Route::post('contracts/saveQualificationItems', 'LegalAspects\Contracs\ContractLesseeController@saveQualificationItems');
       
       Route::ApiResource('contracts', 'LegalAspects\Contracs\ContractLesseeController');
-      Route::ApiResource('contract', 'LegalAspects\Contracs\ContractLesseeController');
+      Route::ApiResource('contract', 'LegalAspects\Contracs\ContractLesseeController');*/
+
+      Route::post('contracts/data', 'LegalAspects\Contracs\ContractLesseeController@data');
+      Route::get('contracts/getInformation', 'LegalAspects\Contracs\ContractLesseeController@getInformation');
+      Route::ApiResource('contracts', 'LegalAspects\Contracs\ContractLesseeController');
 
       Route::post('fileUpload/data', 'LegalAspects\Contracs\FileUploadController@data');
       Route::get('fileUpload/download/{fileUpload}', 'LegalAspects\Contracs\FileUploadController@download');

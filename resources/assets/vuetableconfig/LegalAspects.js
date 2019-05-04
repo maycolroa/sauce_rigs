@@ -295,4 +295,50 @@ export default [
             configNameFilter: 'legalaspects-evaluations'
         }
     },
+    {
+        name: 'legalaspects-contractor',
+        fields: [
+            { name: 'sau_ct_information_contract_lessee.id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true },
+            { name: 'sau_ct_information_contract_lessee.nit', data: 'nit', title: 'Nit', sortable: true, searchable: true, detail: false, key: false },
+            { name: 'sau_ct_information_contract_lessee.social_reason', data: 'social_reason', title: 'Razón social', sortable: true, searchable: true, detail: false, key: false },
+            { name: 'sau_ct_information_contract_lessee.type', data: 'type', title: 'Tipo', sortable: true, searchable: true, detail: false, key: false },
+            { name: 'sau_ct_information_contract_lessee.high_risk_work', data: 'high_risk_work', title: '¿Alto riesgo?', sortable: true, searchable: true, detail: false, key: false },
+            { name: 'sau_ct_information_contract_lessee.active', data: 'active', title: '¿Activo?', sortable: true, searchable: true, detail: false, key: false },
+            { name: '', data: 'controlls', title: 'Controles', sortable: false, searchable: false, detail: false, key: false },
+        ],
+        'controlls': [{
+              type: 'push',
+              buttons: [{
+              config: {
+                  color: 'outline-success',
+                  borderless: true,
+                  icon: 'ion ion-md-create',
+                  title: 'Editar'
+              },
+              data: {
+                  routePush: { name: 'legalaspects-contractor-edit' },
+                  id: 'id',
+              },
+              }, {
+              config: {
+                  color: 'outline-info',
+                  borderless: true,
+                  icon: 'ion ion-md-eye',
+                  title: 'Ver'
+              },
+              data: {
+                  routePush: { name: 'legalaspects-contractor-view' },
+                  id: 'id',
+              },
+              }]
+          },
+          {
+            type: 'base',
+            buttons: [],
+          }],
+        configuration: {
+            urlData: '/legalAspects/contracts/data',
+            filterColumns: true,
+        }
+    }
 ]
