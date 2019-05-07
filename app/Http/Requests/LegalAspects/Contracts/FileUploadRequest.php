@@ -27,7 +27,7 @@ class FileUploadRequest extends FormRequest
         $rules = [
             "name" => "required",
             "file" => "required|max:20480",
-            "expirationDate" => "nullable|date|after_or_equal:today"
+            "expirationDate" => "nullable|date"//|after_or_equal:today"
         ];
 
         if (!Auth::user()->hasRole('Arrendatario') && !Auth::user()->hasRole('Contratista'))

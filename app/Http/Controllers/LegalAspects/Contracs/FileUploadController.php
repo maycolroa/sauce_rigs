@@ -294,4 +294,33 @@ class FileUploadController extends Controller
         ->module('contracts')
         ->send();
     }
+
+     /**
+     * Display the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function getFilesItem(Request $request)
+    {
+      $contract_id = $this->getContractIdUser(Auth::user()->id);
+
+      $files = FileUpload::select(
+        'sau_ct_file_upload_contracts_leesse.*'
+      )
+      ->join('sau_ct_file_upload_contract','sau_ct_file_upload_contract.file_upload_id','sau_ct_file_upload_contracts_leesse.id')
+      ->join('sau_ct_file_item_contract', 'sau_ct_file_item_contract.file_id', 'sau_ct_file_upload_contracts_leesse.id')
+      ->where('sau_ct_file_upload_contract.contract_id', $contract_id)
+      ->where('sau_ct_file_item_contract.item_id', $request->item_id)
+      ->get();
+      #->groupBy('sau_ct_file_upload_contracts_leesse.id', 'sau_ct_section_category_items.item_name');
+
+      $files->transform(function($file, $index){
+          $file->expirationDate = (Carbon::createFromFormat('Y-m-d', $file->expirationDate))->format('D M d Y');
+          $file->key = Carbon::now()->timestamp + rand(1,10000);
+          return $file;
+      });
+
+      return $files;
+  }
 }

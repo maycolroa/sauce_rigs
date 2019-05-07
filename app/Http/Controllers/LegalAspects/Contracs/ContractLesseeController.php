@@ -6,12 +6,19 @@ use Illuminate\Http\Request;
 use App\Vuetable\Facades\Vuetable;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 use App\Models\Administrative\Roles\Role;
 use App\Models\LegalAspects\Contracts\CompanyLimitCreated;
+use App\Models\LegalAspects\Contracts\FileUpload;
 use App\Models\LegalAspects\Contracts\ContractLesseeInformation;
+use App\Models\LegalAspects\Contracts\SectionCategoryItems;
+use App\Models\LegalAspects\Contracts\Qualifications;
+use App\Models\LegalAspects\Contracts\ItemQualificationContractDetail;
 use App\Http\Requests\LegalAspects\Contracts\ContractRequest;
+use App\Http\Requests\LegalAspects\Contracts\ListCheckItemsRequest;
 use App\Traits\ContractTrait;
 use App\Traits\UserTrait;
+use Carbon\Carbon;
 use Session;
 use DB;
 
@@ -231,5 +238,248 @@ class ContractLesseeController extends Controller
             return true;
 
         return false;
+    }
+
+    /**
+     * Display the specified resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function getListCheckItems()
+    {
+        try
+        {
+            $contract = $this->getContractUser(Auth::user()->id);
+
+            $sql = SectionCategoryItems::select(
+                'sau_ct_section_category_items.*',
+                'sau_ct_standard_classification.standard_name as name'
+            )
+            ->join('sau_ct_items_standard', 'sau_ct_items_standard.item_id', 'sau_ct_section_category_items.id')
+            ->join('sau_ct_standard_classification', 'sau_ct_standard_classification.id', 'sau_ct_items_standard.standard_id');
+
+            $items = [];
+
+            if ($contract->classification == 'UPA')
+            {
+                if ($contract->number_workers <= 10)
+                {
+                    if ($contract->risk_class == "Clase de riesgo I, II y III")
+                    {
+                        $items = $sql->where('sau_ct_standard_classification.standard_name', '=', '3 estandares')->get();
+                    }
+                    else if ($contract->risk_class == "Clase de riesgo IV y V")
+                    {
+                        $items = $sql->where('sau_ct_standard_classification.standard_name', '=', '60 estandares')->get();
+                    }
+                }
+            }
+            else if ($contract->classification == 'Empresa')
+            {
+                if ($contract->number_workers <= 10)
+                {
+                    if ($contract->risk_class == "Clase de riesgo I, II y III")
+                    {
+                        $items = $sql->where('sau_ct_standard_classification.standard_name', '=', '7 estandares')->get();
+                    }
+                }
+                else if ($contract->number_workers > 10 && $contract->number_workers <= 50)
+                {
+                    if ($contract->risk_class == "Clase de riesgo I, II y III")
+                    {
+                        $items = $sql->where('sau_ct_standard_classification.standard_name', '=', '21 estandares')->get();
+                    }
+                    else if ($contract->risk_class == "Clase de riesgo IV y V")
+                    {
+                        $items = $sql->where('sau_ct_standard_classification.standard_name', '=', '60 estandares')->get();
+                    }
+                }
+                else if ($contract->number_workers > 50)
+                {
+                    if ($contract->risk_class == "Cualquier clase de riesgo")
+                    {
+                        $items = $sql->where('sau_ct_standard_classification.standard_name', '=', '60 estandares')->get();
+                    }
+                }
+            }
+
+            $qualifications = Qualifications::pluck("name", "id");
+
+            //Obtiene los items calificados
+            $items_calificated = ItemQualificationContractDetail::
+                      where('contract_id', $contract->id)
+                    ->where('user_id', Auth::user()->id)
+                    ->pluck("qualification_id", "item_id");
+
+            $items->transform(function($item, $index) use ($qualifications, $items_calificated, $contract) {
+                //Añade las actividades definidas de cada item para los planes de acción
+                $item->activities_defined = $item->activities()->pluck("description");
+                $item->qualification = isset($items_calificated[$item->id]) ? $qualifications[$items_calificated[$item->id]] : '';
+                $item->files = [];
+
+                if ($item->qualification == 'C')
+                {
+                    $files = FileUpload::select(
+                                'sau_ct_file_upload_contracts_leesse.id AS id',
+                                'sau_ct_file_upload_contracts_leesse.name AS name',
+                                'sau_ct_file_upload_contracts_leesse.file AS file',
+                                'sau_ct_file_upload_contracts_leesse.expirationDate AS expirationDate'
+                            )
+                            ->join('sau_ct_file_upload_contract','sau_ct_file_upload_contract.file_upload_id','sau_ct_file_upload_contracts_leesse.id')
+                            ->join('sau_ct_file_item_contract', 'sau_ct_file_item_contract.file_id', 'sau_ct_file_upload_contracts_leesse.id')
+                            ->where('sau_ct_file_upload_contract.contract_id', $contract->id)
+                            ->where('sau_ct_file_item_contract.item_id', $item->id)
+                            ->get();
+
+                    if ($files)
+                    {
+                        $files->transform(function($file, $index) {
+                            $file->key = Carbon::now()->timestamp + rand(1,10000);
+                            $file->old_name = $file->file;
+                            $file->expirationDate = $file->expirationDate == null ? null : (Carbon::createFromFormat('Y-m-d',$file->expirationDate))->format('D M d Y');
+
+                            return $file;
+                        });
+
+                        $item->files = $files;
+                    }
+                }
+
+                return $item;
+            });
+
+            return $this->respondHttp200([
+                'data' => [
+                    'items' => $items,
+                    'delete' => [
+						'files' => []
+                    ]
+                ]
+            ]);
+        } catch(Exception $e){
+            $this->respondHttp500();
+        }
+    }
+
+    /**
+    * Display a listing of the resource.
+    *
+    * @return \Illuminate\Http\Response
+    */
+    public function qualifications()
+    {
+        $qualifications = Qualifications::pluck("description", "name");
+        return $qualifications;
+    }
+
+    /**
+     * Update the list Check
+     *
+     * @param App\Http\Requests\LegalAspects\Contracts\ContractRequest $request
+     * @param App\Models\LegalAspects\Contracts\ContractLesseeInformation $typeRating
+     * @return \Illuminate\Http\Response
+     */
+    public function saveQualificationItems(ListCheckItemsRequest $request)
+    {
+        DB::beginTransaction();
+
+        try
+        {
+            $qualifications = Qualifications::pluck("id", "name");
+            $contract = $this->getContractUser(Auth::user()->id);
+            
+            ItemQualificationContractDetail::
+                where('contract_id', $contract->id)
+                ->where('user_id', Auth::user()->id)
+                ->delete();
+
+            foreach ($request->items as $item)
+            {
+                if (isset($item['qualification']) && $item['qualification'])
+                {
+                    $itemQualification = new ItemQualificationContractDetail;
+                    $itemQualification->item_id = $item['id'];
+                    $itemQualification->qualification_id = $qualifications[$item['qualification']];
+                    $itemQualification->contract_id = $contract->id;
+                    $itemQualification->user_id = Auth::user()->id;
+
+                    if (!$itemQualification->save()) 
+                        return $this->respondHttp500();
+
+                    //Cumple y solo es aqui donde se cargan archivos
+                    if ($item['qualification'] == 'C')
+                    {
+                        if (isset($item['files']) && COUNT($item['files']) > 0)
+                        {
+                            $files_names_delete = [];
+
+                            foreach ($item['files'] as $keyF => $file) 
+                            {
+                                $create_file = true;
+
+                                if (isset($file['id']))
+                                {
+                                    $fileUpload = FileUpload::findOrFail($file['id']);
+
+                                    if ($file['old_name'] == $file['file'])
+                                        $create_file = false;
+                                    else
+                                        array_push($files_names_delete, $file['old_name']);
+                                }
+                                else
+                                {
+                                    $fileUpload = new FileUpload();
+                                    $fileUpload->user_id = Auth::user()->id;
+                                }
+
+                                if ($create_file)
+                                {
+                                    $file_tmp = $file['file'];
+                                    $nameFile = base64_encode(Auth::user()->id . now() . $keyF) .'.'. $file_tmp->extension();
+                                    $file_tmp->storeAs('legalAspects/files/', $nameFile, 'public');
+                                    $fileUpload->file = $nameFile;
+                                }
+
+                                $fileUpload->name = $file['name'];
+                                $fileUpload->expirationDate = $file['expirationDate'] == null ? null : (Carbon::createFromFormat('D M d Y', $file['expirationDate']))->format('Ymd');
+
+                                if (!$fileUpload->save())
+                                    return $this->respondHttp500();
+
+                                $fileUpload->contracts()->sync([$contract->id]);
+                                $fileUpload->items()->sync([$item['id']]);
+                            }
+
+                            //Borrar archivos reemplazados
+                            foreach ($files_names_delete as $keyf => $file)
+                            {
+                                Storage::disk('public')->delete('legalAspects/files/'. $file);
+                            }
+                        }
+                    }
+                }
+            }
+
+            //Borrar archivos y planes de accion que fueron removidos de los items
+            if ($request->has('delete'))
+            {
+                foreach ($request->delete['files'] as $keyF => $file)
+                {
+                    FileUpload::find($file['id'])->delete();
+                    Storage::disk('public')->delete('legalAspects/files/'. $file['old_name']);
+                }
+            }
+
+            DB::commit();
+
+        } catch (\Exception $e) {
+            DB::rollback();
+            return $e->getMessage();
+            return $this->respondHttp500();
+        }
+
+        return $this->respondHttp200([
+            'message' => 'La lista de estándares ha sido guardada exitosamente.'
+        ]);
     }
 }

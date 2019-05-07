@@ -8,14 +8,19 @@
 		<div class="col-md">
 			<b-card no-body>
 				<b-card-body>
-					<list-check-items
-						url="/legalAspects/contracts/saveQualificationItems"
-						method="POST"
-						:contract="contract"
-						:name="name"
-						:qualifications="qualifications"
-                		:view-only="false"					
-						:cancel-url="{ name: 'legalaspects-contracts'}"/>
+					<loading v-if="!ready" :display="!ready"/>
+					<template v-else>
+						<template v-if="items.length == 0">
+							<p class="mb-0">No hay estándares definidos para usted</p>
+						</template>
+						<list-check-items
+							v-else
+							:url="`/legalAspects/contracts/saveQualificationItems`"
+							method="POST"
+							:items="items"
+							:qualifications="qualifications"				
+							:cancel-url="{ name: 'legalaspects-contracts'}"/>
+					</template>
 				</b-card-body>
 			</b-card>
 		</div>
@@ -23,8 +28,9 @@
 </template>
 
 <script>
-import ListCheckItems from '@/components/LegalAspects/Contracts/ContractLessee/ListCheckItemsComponent.vue';
+import ListCheckItems from '@/components/LegalAspects/Contracts/ContractLessee/FormListCheckItemsComponent.vue';
 import Alerts from '@/utils/Alerts.js';
+import Loading from "@/components/Inputs/Loading.vue";
 
 export default {
 	name: 'legalaspects-contracts-list-check-items',
@@ -32,39 +38,35 @@ export default {
 		title: 'Contratistas - Lista de items'
 	},
 	components:{
-		ListCheckItems
+		ListCheckItems,
+		Loading
 	},
 	data () {
 		return {
-			contract: {items: []},
-			qualifications: {},
-			name: ''
+			items: [],
+			qualifications: [],
+			ready: false,
 		}
-	},
-	mounted(){
-		//axios para obtener los items a calificar
-		axios.get("/legalAspects/contracts/data")
-		.then(response => {
-			this.contract.items = response.data;
-			this.name = response.data[0].name
-		})
-		.catch(error => {
-			Alerts.error('Error', 'Se ha generado un error en el proceso al cargar los items, por favor contacte con el administrador');
-			this.$router.go(-1);
-		});
 	},
 	created(){
 		//axios para obtener las calificaciones
 		axios.get("/legalAspects/contracts/qualifications")
 		.then(response => {
-			// let qualifications = response.data;
-			// array.forEach(qualifications => {
-				
-			// });
 			this.qualifications = response.data;
 		})
 		.catch(error => {
 			Alerts.error('Error', 'Se ha generado un error en el proceso al cargar las calificaciones, por favor contacte con el administrador');
+			this.$router.go(-1);
+		});
+
+		//axios para obtener los items a calificar
+		axios.get("/legalAspects/contracts/getListCheckItems")
+		.then(response => {
+			this.items = response.data.data;
+			this.ready = true
+		})
+		.catch(error => {
+			Alerts.error('Error', 'Se ha generado un error en el proceso al cargar los items, por favor contacte con el administrador');
 			this.$router.go(-1);
 		});
 	},
