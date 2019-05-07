@@ -168,10 +168,14 @@ Route::middleware(['auth'])->group(function () {
 
       Route::post('contracts/data', 'LegalAspects\Contracs\ContractLesseeController@data');
       Route::get('contracts/getInformation', 'LegalAspects\Contracs\ContractLesseeController@getInformation');
+      Route::get('contracts/getListCheckItems', 'LegalAspects\Contracs\ContractLesseeController@getListCheckItems');
+      Route::get('contracts/qualifications', 'LegalAspects\Contracs\ContractLesseeController@qualifications');
+      Route::post('contracts/saveQualificationItems', 'LegalAspects\Contracs\ContractLesseeController@saveQualificationItems');
       Route::ApiResource('contracts', 'LegalAspects\Contracs\ContractLesseeController');
 
       Route::post('fileUpload/data', 'LegalAspects\Contracs\FileUploadController@data');
       Route::get('fileUpload/download/{fileUpload}', 'LegalAspects\Contracs\FileUploadController@download');
+      Route::post('fileUpload/getFilesItem', 'LegalAspects\Contracs\FileUploadController@getFilesItem');
       Route::ApiResource('fileUpload', 'LegalAspects\Contracs\FileUploadController');
 
       Route::post('typeRating/data', 'LegalAspects\Contracs\TypeRatingController@data');

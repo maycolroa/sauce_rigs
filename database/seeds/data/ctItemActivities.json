@@ -1,0 +1,187 @@
+[
+    {
+        "item_name": "Asignación de una persona que diseñe e implementa el SG-SST",
+        "activities": [
+            "Realizar contratación de profesional con perfil requerido de acuerdo a la Resolución 312 de 2019",
+            "Documentar carta de asignación de responsable"
+        ]
+    },
+    {
+        "item_name": "Asignación de responsabilidades en SST",
+        "activities": [
+            "Definir las responsabilidades frente al SG-SST para todos los cargos de la empresa"
+        ]
+    },
+    {
+        "item_name": "Asignación de recursos para el SG-SST",
+        "activities": [
+            "Definir los recursos técnicos, humanos y financieros para"
+        ]
+    },
+    {
+        "item_name": "Afiliación al SSSI",
+        "activities": [
+            "Afiliar a todo el personal a la seguridad social incluyendo a los trabajadores independientes, estudiantes en practica, trabajadores dependientes"
+        ]
+    },
+    {
+        "item_name": "Identificación de trabajadores que se dediquen en forma permanente a actividades de alto riesgo y cotización de pensión especial",
+        "activities": [
+            "Identificar trabajadores de al riesgo de acuerdo al Decreto 2090 de 2003",
+            "Realizar aportes a la seguridad social de acuerdo a lo establecido para trabajadores de alto riesgo"
+        ]
+    },
+    {
+        "item_name": "Conformación y funcionamiento del COPASST",
+        "activities": [
+            "Realizar convocatoria para la conformación del COPASST",
+            "Realizar elección y conformación. Documentar acta de conformación",
+            "Documentar acta de reunión mensual"
+        ]
+    },
+    {
+        "item_name": "Capacitación de los integrantes del COPASST",
+        "activities": [
+            "Capacitar al COPASST para garantizar la ejecución de sus funciones"
+        ]
+    },
+    {
+        "item_name": "Conformación y funcionamiento del Comité de Convivencia Laboral",
+        "activities": [
+            "Realizar elección y conformación. Documentar acta de conformación",
+            "Documentar acta de reunión trimestral"
+        ]
+    },
+    {
+        "item_name": "Programa de capacitación anual",
+        "activities": [
+            "Documentar el plan de capacitación de acuerdo a los peligros de la identificación de peligros, evaluación y valoración de riesgos",
+            "Ejecutar el plan de capacitación de acuerdo a lo definido en este"
+        ]
+    },
+    {
+        "item_name": "Inducción y reinducción en SST",
+        "activities": [
+            "Documentar contenido de la inducción",
+            "Realizar inducción para nuevos ingresos"
+        ]
+    },
+    {
+        "item_name": "Curso virtual de capacitación de 50 horas en SST",
+        "activities": [
+            "Realizar curso de 50 horas (responsable del SG-SST)"
+        ]
+    },
+    {
+        "item_name": "Política de SST",
+        "activities": [
+            "Documentar la política del SG-SST garantizando que de cumplimiento a los requisitos",
+            "Firmar y fechar la política del SG-SST",
+            "Evaluar la política del SG-SST",
+            "Divulgar la política del SG-SST al COPASST"
+        ]
+    },
+    {
+        "item_name": "Objetivos de SST",
+        "activities": [
+            "Definir los objetivos de acuerdo a las prioridades de la empresa",
+            "Firmar los objetivos del SG-SST",
+            "Divulgar los objetivos del SG-SST"
+        ]
+    },
+    {
+        "item_name": "Evaluación Inicial del SG-SST",
+        "activities": [
+            "Realizar evaluación inicial del SG-SST"
+        ]
+    },
+    {
+        "item_name": "Plan anual de trabajo",
+        "activities": [
+            "Diseñar el plan de trabajo anual",
+            "Ejecutar el plan de trabajo anual",
+            "Documentar acciones correctivas por los no cumplimientos al plan de trabajo"
+        ]
+    },
+    {
+        "item_name": "Archivo y retención documental del SG-SST",
+        "activities": [
+            "Documentar un procedimiento de archivo y retención documental"
+        ]
+    },
+    {
+        "item_name": "Rendición de cuentas",
+        "activities": [
+            "Definir los mecánismos para la rendición de cuentas",
+            "Rendir cuentas frente al cumplimiento de las responsabilidades del SG-SST"
+        ]
+    },
+    {
+        "item_name": "Matriz Legal",
+        "activities": [
+            "Documentar la matriz de requisitos legales en SST",
+            "Actualizar la matriz de requisitos legales"
+        ]
+    },
+    {
+        "item_name": "Mecánismos de comunicación",
+        "activities": [
+            "Definir mecánismos de comunicación"
+        ]
+    },
+    {
+        "item_name": "Identificación y evaluación para la adquisición de bienes y servicios",
+        "activities": [
+            "Documentar un procedimiento para la identificación y evaluación de las especificaciones en SST de las compras o adquisiciones"
+        ]
+    },
+    {
+        "item_name": "Evaluación y selección de proveedores y contratistas",
+        "activities": [
+            "Documentar un manual para la administración de contratistas y proveedores"
+        ]
+    },
+    {
+        "item_name": "Gestión del Cambio",
+        "activities": [
+            "Documentar procedimiento de gestión del cambio"
+        ]
+    },
+    {
+        "item_name": "Descripción sociodemografica y diagnóstico de las condiciones de salud de los trabajadores",
+        "activities": [
+            "Documentar o actualizar la descripción sociodemográfica"
+        ]
+    },
+    {
+        "item_name": "Actividades de medicina del trabajo y de prevención y promoción de la salud",
+        "activities": [
+            "Definir las estrategias de medicina del trabajo y medicina preventiva de acuerdo al diagnóstico de condiciones de salud"
+        ]
+    },
+    {
+        "item_name": "Perfiles de cargo",
+        "activities": [
+            "Comunicar los perfiles de cargo y demás información necesaria para realizar los exámenes medicos a la IPS que los realiza"
+        ]
+    },
+    {
+        "item_name": "Evaluaciones médicas ocupacionales",
+        "activities": [
+            "Documentar el profesiograma o perfil ocupacional de los cargos de la empresa especificando la frecuencia",
+            "Comunicar a los trabajadores el resultado de las evaluaciones médicas ocupacionales"
+        ]
+    },
+    {
+        "item_name": "Custodia de las historias clínicas",
+        "activities": [
+            "Solicitar certificado de custodía de historias clinicas a proveedor o IPS que realiza los exámenes médicos ocupacionales"
+        ]
+    },
+    {
+        "item_name": "Restricciones y recomendaciones médico laborales",
+        "activities": [
+            "Documentar"
+        ]
+    }
+]

@@ -1,0 +1,223 @@
+<template>
+    <b-form :action="url" @submit.prevent="submit" autocomplete="off">
+		<b-card border-variant="primary" no-body class="mb-4">
+			<b-card-header header-tag="h6" class="with-elements">
+				<div class="card-header-title">Lista de estándares mínimos | {{ form.items[0].name }}</div>
+			</b-card-header>
+			<b-card-body>
+				<div class="rounded ui-bordered p-3 mb-3"  v-for="(item, index) in form.items" :key="item.id">
+					<p class="my-1">{{ index + 1 }} - {{ item.item_name }}</p>
+					<span class="text-muted">{{ item.criterion_description}}</span>
+					<div class="media align-items-center mt-3">
+						<div class="media-body ml-2">
+
+							<!-- NO CUMPLE -->
+							<b-btn v-if="item.qualification == 'NC'" @click="showModal(`modalPlan${index}`)" variant="primary"><span class="lnr lnr-bookmark"></span> Plan de acción</b-btn>
+
+							<b-modal :ref="`modalPlan${index}`" :hideFooter="true" :id="`modals-default-${index+1}`" class="modal-top" size="lg">
+								<div slot="modal-title">
+									Plan de acción <span class="font-weight-light">Contratistas</span><br>
+									<small class="text-muted">Crea planes de acción para tu justificación.</small>
+								</div>
+
+								<b-card  bg-variant="transparent"  title="" class="mb-3 box-shadow-none">
+									<action-plan-component
+										:is-edit="true"
+										:form="form"
+										:prefix-index="`items.${index}.`"
+										:action-plan-states="actionPlanStates"
+										v-model="item.actionPlan"
+										:action-plan="item.actionPlan"/>
+								</b-card>
+								<br>
+								<div class="row float-right pt-12 pr-12y">
+									<b-btn variant="primary" @click="hideModal(`modalPlan${index}`)">Cerrar</b-btn>
+								</div>
+							</b-modal>
+							<!------------------------------->
+
+							<!--CUMPLE -->
+							<b-btn v-if="item.qualification == 'C'" @click="showModal(`modalFile${index}`)" variant="primary"><span class="lnr lnr-bookmark"></span> Adjuntar archivos</b-btn>
+
+							<b-modal v-if="item.qualification == 'C'" :ref="`modalFile${index}`" :hideFooter="true" :id="`modals-file-${index+1}`" class="modal-top" size="lg">
+								<div slot="modal-title">
+									Subir Archivos <span class="font-weight-light">Contratistas</span><br>
+									<small class="text-muted">Selecciona archivos pdf's para este item.</small>
+								</div>
+
+								<b-card  bg-variant="transparent"  title="" class="mb-3 box-shadow-none">
+									<form-upload-file-list-item-component
+										:form="form"
+										:prefix-index="`items.${index}.`"
+										v-model="form.items[index].files"
+										@removeFile="pushRemoveFile"/>
+								</b-card>
+								<br>
+								<div class="row float-right pt-12 pr-12y">
+									<b-btn variant="primary" @click="hideModal(`modalFile${index}`)">Cerrar</b-btn>
+								</div>
+							</b-modal>
+							<!------------------------------->
+						</div>
+						<div class="text-muted small text-nowrap">	
+								<vue-radio v-model="item.qualification" label="Calificación" :name="`items${item.id}`" :error="form.errorsFor(`items.${index}`)" :options="qualifications" :checked="item.qualification" @input="changeActionFiles(item.qualification, `${index}`)"></vue-radio>
+						</div>
+					</div>
+				</div>
+			</b-card-body>
+		</b-card>
+		<br><br>
+		<div class="row float-right pt-10 pr-10">
+			<template>
+				<b-btn variant="default" :to="cancelUrl" :disabled="loading">Atras</b-btn>&nbsp;&nbsp;
+				<b-btn type="submit" :disabled="loading" variant="primary">Guardar</b-btn>
+			</template>
+		</div>
+	</b-form>
+</template>
+
+<script>
+
+import VueAdvancedSelect from "@/components/Inputs/VueAdvancedSelect.vue";
+import VueInput from "@/components/Inputs/VueInput.vue";
+import VueCheckbox from "@/components/Inputs/VueCheckbox.vue";
+import VueRadio from "@/components/Inputs/VueRadio.vue";
+import ActionPlanComponent from '@/components/CustomInputs/ActionPlanComponent.vue';
+import Form from "@/utils/Form.js";
+import FormUploadFileListItemComponent from '@/components/LegalAspects/Contracts/ContractLessee/FormUploadFileListItemComponent.vue';
+import Alerts from '@/utils/Alerts.js';
+
+export default {
+	components: {
+		VueAdvancedSelect,
+		VueInput,
+		VueCheckbox,
+		VueRadio,
+		ActionPlanComponent,
+		FormUploadFileListItemComponent
+	},
+	props: {
+		url: { type: String },
+		method: { type: String },
+		cancelUrl: { type: [String, Object], required: true },
+		isEdit: { type: Boolean, default: false },
+		viewOnly: { type: Boolean, default: false },
+		qualifications: {
+			type: [Array, Object],
+			default: function() {
+				return [];
+			}
+		},
+		actionPlanStates: {
+			type: Array,
+			default: function() {
+				return [
+					{ name:'Pendiente', value:'Pendiente'},
+					{ name:'Ejecutada', value:'Ejecutada'}
+				];
+			}
+		},
+		items: {
+			type: [Array, Object],
+			default: function() {
+				return {
+					items: [],
+					delete: {
+						files: []
+					}
+				};
+			}
+		},
+	},
+	watch: {
+		items() {
+			this.loading = false;
+			this.form = Form.makeFrom(this.items, this.method);
+		}
+	},
+	data() {
+		return {
+			loading: this.isEdit,
+			form: Form.makeFrom(this.items, this.method),
+		};
+	},
+	methods: {
+		showModal(ref) {
+			this.$refs[ref][0].show()
+		},
+		hideModal(ref) {
+			this.$refs[ref][0].hide()
+		},
+		pushRemoveFile(value)
+		{
+      this.form.delete.files.push(value)
+    },
+		changeActionFiles(qualification, index)
+		{
+			if (qualification == 'C')
+			{
+				if (typeof this.form.items[index].actionPlan !== 'undefined')
+				{
+					this.form.items[index].actionPlan.activities = [];
+					this.form.items[index].actionPlan.activitiesRemoved = [];
+				}
+			}
+			else if (qualification == 'NC')
+			{
+				this.form.items[index].files.forEach((file, index) => {
+					if (file.id !== undefined)
+						this.form.delete.files.push(file)
+				});
+
+				this.form.items[index].files = [];
+			}
+			else
+			{
+				if (typeof this.form.items[index].actionPlan !== 'undefined')
+				{
+					this.form.items[index].actionPlan.activities = [];
+					this.form.items[index].actionPlan.activitiesRemoved = [];
+				}
+
+				this.form.items[index].files.forEach((file, index) => {
+					if (file.id !== undefined)
+						this.form.delete.files.push(file)
+				});
+
+				this.form.items[index].files = [];
+			}
+		},
+		submit(e) {
+			this.loading = true;
+			let data = new FormData();
+			data.append('delete', JSON.stringify(this.form.delete));
+
+			this.form.items.forEach((element, index) => {
+				if(typeof element.files !== 'undefined')
+				{
+					if(element.files.length > 0)
+					{
+						element.filesIndex = `files_${index}`;
+						element.files.forEach((file, index2) => {
+							data.append(`files_${index}[${index2}]`, file.file);
+						});
+					}
+				}
+				
+				element = JSON.stringify(element);
+				data.append('items[]', element);
+			});
+
+			this.form
+				.submit(e.target.action, false, data)
+				.then(response => {
+					this.loading = false;
+					this.$router.push({ name: "legalaspects-contracts" });
+				})
+				.catch(error => {
+					this.loading = false;
+				});
+		}
+	}
+};
+</script>

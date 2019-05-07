@@ -16,12 +16,9 @@ class FileUpload extends Model
     //the attribute define the table for scope company execute
     public $scope_table_for_company_table = 'sau_ct_information_contract_lessee';
 
-    public function itemInfo(){
-        return $this->belongsToMany(SectionCategoryItems::class,'sau_ct_file_item_contract', 'item_id', 'file_id');
-    }
-
-    public function itemSyncInfo(){
-        return $this->belongsToMany(FileUploadItemsDetail::class,'sau_ct_file_item_contract', 'item_id', 'file_id');
+    public function items()
+    {
+        return $this->belongsToMany(SectionCategoryItems::class, 'sau_ct_file_item_contract', 'file_id', 'item_id');
     }
 
     public function contracts()

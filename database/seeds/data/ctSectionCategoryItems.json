@@ -278,13 +278,13 @@
                         "percentage_weight" : 2
                     },
                     {
-                        "item_name" : "Investigación de incidentes, accidentes de trabajo y enfermedases cuando sean diagnósticadas como laborales",
+                        "item_name" : "Investigación de incidentes, accidentes de trabajo y enfermedades cuando sean diagnósticadas como laborales",
                         "criterion_description" : "Investigar los incidentes, y todos los accidentes de trabajo y las enfermedades cuando sean diagnosticadas como laborales, con la participación del COPASST, determinando las causas básicas e inmediatas y la posibilidad de que se presenten nuevos casos.",
                         "verification_mode" : "Verificar por medio de un muestreo si se investigan los incidentes, accidentes de trabajo y las enfermedades laborales con la participación del COPASST, y si se definieron acciones para otros trabajadores potencialmente expuestos. \r\nConstatar que la investigación se haya realizado dentro de los quince (15) días siguientes a su ocurrencia a través del equipo investigador y evidenciar que se hayan remitido los informes de las investigaciones de accidente de trabajo grave o mortal o una enfermedad laboral mortal. \r\nEn caso de haber accidente grave o se produzca la muerte verificar la participación de un profesional con licencia en Seguridad y Salud en el Trabajo en la investigación (propio o contratado), así como del Comité Paritario de SST",
                         "percentage_weight" : 2
                     },
                     {
-                        "item_name" : "Registro y análisis estadístico de accidentes de traabjo y enfermedades laborales",
+                        "item_name" : "Registro y análisis estadístico de accidentes de trabajo y enfermedades laborales",
                         "criterion_description" : "Llegar registro estadístico de los accidentes de trabajo así como de las enfermedades laborales que se presentan; se analiza este registro y las conclusiones derivadas del estudio son usadas para el mejoramiento del Sistema de Gestión de Seguridad y Salud en el Trabajo.",
                         "verification_mode" : "Solicitar el registro estadístico actualizado de lo corrido del año y el año inmediatamente anterior al de la visita, así como la evidencia que contiene el análisis y las conclusiones derivadas del estudio que son usadas para el mejoramiento del SG-SST.",
                         "percentage_weight" : 1
@@ -307,7 +307,7 @@
                         "percentage_weight" : 1
                     },
                     {
-                        "item_name" : "Proporción de accidentes de trabjao mortales",
+                        "item_name" : "Proporción de accidentes de trabajo mortales",
                         "criterion_description" : "Medir a mortalidad por accidentes como mínimo una vez al año y realizar la clasificación del origen del peligro/riesgo que los generó (físicos, químicos, biológicos, de seguridad, públicos, psicosociales, entre otros)",
                         "verification_mode" : "Solicitar los resultados de la medición para lo corrido del año y/o el año inmediatamente anterior y constatar el comportamiento de  la mortalidad y la relacion del evento con los peligros/riesgos identificados.",
                         "percentage_weight" : 1

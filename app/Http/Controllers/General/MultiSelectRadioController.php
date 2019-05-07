@@ -107,7 +107,7 @@ class MultiSelectRadioController extends Controller
     public function ctkindsRisks()
     {
         $data = [
-            "Clase de riesgo I, II, III" => "Clase de riesgo I, II, III",
+            "Clase de riesgo I, II y III" => "Clase de riesgo I, II y III",
             "Clase de riesgo IV y V" => "Clase de riesgo IV y V",
             "Cualquier clase de riesgo" => "Cualquier clase de riesgo"
         ];
