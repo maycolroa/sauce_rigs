@@ -8,7 +8,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Maatwebsite\Excel\Facades\Excel;
-use App\Exports\LegalAspects\Evaluations\Contracts\EvaluationContractNotificationExcel;
+use App\Exports\LegalAspects\Contracts\Evaluations\EvaluationContractNotificationExcel;
 use App\Facades\Mail\Facades\NotificationMail;
 use App\Models\LegalAspects\Contracts\EvaluationContract;
 use App\Models\Administrative\Users\User;
