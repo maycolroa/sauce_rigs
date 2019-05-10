@@ -8,6 +8,7 @@ export default [
       { name: 'sau_users.document', data: 'document', title: 'Documento', sortable: true, searchable: true, detail: false, key: false },
       { name: 'sau_users.document_type', data: 'document_type', title: 'Tipo de Documento', sortable: true, searchable: true, detail: false, key: false },
       { name: 'sau_roles.name', data: 'role', title: 'Rol', sortable: true, searchable: true, detail: false, key: false },
+      { name: 'sau_users.active', data: 'active', title: '¿Activo?', sortable: true, searchable: true, detail: false, key: false },
       { name: '', data: 'controlls', title: 'Controles', sortable: false, searchable: false, detail: false, key: false },
     ],
     'controlls': [{

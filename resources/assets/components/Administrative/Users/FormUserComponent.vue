@@ -14,6 +14,7 @@
     <b-form-row>
       <vue-ajax-advanced-select :disabled="viewOnly" class="col-md-6" v-model="form.role_id" :error="form.errorsFor('role_id')" :selected-object="form.multiselect_role" name="role_id" label="Rol" placeholder="Seleccione el rol del usuario" :url="rolesDataUrl">
           </vue-ajax-advanced-select>
+      <vue-checkbox-simple v-if="isEdit || viewOnly" style="padding-top: 20px;" :disabled="viewOnly" class="col-md-6" v-model="form.active" label="¿Activo?" :checked="form.active" name="active" checked-value="SI" unchecked-value="NO"></vue-checkbox-simple>
     </b-form-row>
 
     <div class="row float-right pt-10 pr-10">
@@ -28,12 +29,14 @@
 <script>
 import VueAjaxAdvancedSelect from "@/components/Inputs/VueAjaxAdvancedSelect.vue";
 import VueInput from "@/components/Inputs/VueInput.vue";
+import VueCheckboxSimple from "@/components/Inputs/VueCheckboxSimple.vue";
 import Form from "@/utils/Form.js";
 
 export default {
   components: {
     VueAjaxAdvancedSelect,
-    VueInput
+    VueInput,
+    VueCheckboxSimple
   },
   props: {
     url: { type: String },
