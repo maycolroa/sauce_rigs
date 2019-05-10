@@ -687,6 +687,7 @@ class ActionPlan
             $activity->execution_date = ($itemA['execution_date']) ? (Carbon::createFromFormat('D M d Y', $itemA['execution_date']))->format('Ymd') : null;
             $activity->expiration_date = (Carbon::createFromFormat('D M d Y', $itemA['expiration_date']))->format('Ymd');
             $activity->state = $itemA['state'];
+            $activity->editable = (isset($itemA['editable']) && $itemA['editable']) ? $itemA['editable'] : 'SI';
             $activity->company_id = $company_id;
             $activity->save();
             

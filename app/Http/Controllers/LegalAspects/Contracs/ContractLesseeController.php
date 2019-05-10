@@ -16,6 +16,8 @@ use App\Models\LegalAspects\Contracts\Qualifications;
 use App\Models\LegalAspects\Contracts\ItemQualificationContractDetail;
 use App\Http\Requests\LegalAspects\Contracts\ContractRequest;
 use App\Http\Requests\LegalAspects\Contracts\ListCheckItemsRequest;
+use App\Jobs\LegalAspects\Contracts\ListCheck\ListCheckContractExportJob;
+use App\Facades\ActionPlans\Facades\ActionPlan;
 use App\Traits\ContractTrait;
 use App\Traits\UserTrait;
 use Carbon\Carbon;
@@ -308,7 +310,6 @@ class ContractLesseeController extends Controller
             //Obtiene los items calificados
             $items_calificated = ItemQualificationContractDetail::
                       where('contract_id', $contract->id)
-                    ->where('user_id', Auth::user()->id)
                     ->pluck("qualification_id", "item_id");
 
             $items->transform(function($item, $index) use ($qualifications, $items_calificated, $contract) {
@@ -316,6 +317,10 @@ class ContractLesseeController extends Controller
                 $item->activities_defined = $item->activities()->pluck("description");
                 $item->qualification = isset($items_calificated[$item->id]) ? $qualifications[$items_calificated[$item->id]] : '';
                 $item->files = [];
+                $item->actionPlan = [
+                    "activities" => [],
+                    "activitiesRemoved" => []
+                ];
 
                 if ($item->qualification == 'C')
                 {
@@ -343,6 +348,10 @@ class ContractLesseeController extends Controller
 
                         $item->files = $files;
                     }
+                }
+                else if ($item->qualification == 'NC')
+                {
+                    $item->actionPlan = ActionPlan::model($item)->prepareDataComponent();
                 }
 
                 return $item;
@@ -388,10 +397,14 @@ class ContractLesseeController extends Controller
             $qualifications = Qualifications::pluck("id", "name");
             $contract = $this->getContractUser(Auth::user()->id);
             
-            ItemQualificationContractDetail::
-                where('contract_id', $contract->id)
-                ->where('user_id', Auth::user()->id)
-                ->delete();
+            ItemQualificationContractDetail::where('contract_id', $contract->id)->delete();
+
+            //Se inician los atributos necesarios que seran estaticos para todas las actividades
+            // De esta forma se evitar la asignacion innecesaria una y otra vez 
+            ActionPlan::
+                    user(Auth::user())
+                ->module('contracts')
+                ->url(url('/administrative/actionplans'));
 
             foreach ($request->items as $item)
             {
@@ -401,7 +414,6 @@ class ContractLesseeController extends Controller
                     $itemQualification->item_id = $item['id'];
                     $itemQualification->qualification_id = $qualifications[$item['qualification']];
                     $itemQualification->contract_id = $contract->id;
-                    $itemQualification->user_id = Auth::user()->id;
 
                     if (!$itemQualification->save()) 
                         return $this->respondHttp500();
@@ -457,10 +469,16 @@ class ContractLesseeController extends Controller
                             }
                         }
                     }
+
+                    /**Planes de acción*/
+                    ActionPlan::
+                          model(SectionCategoryItems::find($item['id']))
+                        ->activities($item['actionPlan'])
+                        ->save();
                 }
             }
 
-            //Borrar archivos y planes de accion que fueron removidos de los items
+            //Borrar archivos que fueron removidos de los items
             if ($request->has('delete'))
             {
                 foreach ($request->delete['files'] as $keyF => $file)
@@ -470,7 +488,11 @@ class ContractLesseeController extends Controller
                 }
             }
 
+            ActionPlan::sendMail();
+
             DB::commit();
+
+            $this->sendNotification($contract);
 
         } catch (\Exception $e) {
             DB::rollback();
@@ -481,5 +503,10 @@ class ContractLesseeController extends Controller
         return $this->respondHttp200([
             'message' => 'La lista de estándares ha sido guardada exitosamente.'
         ]);
+    }
+
+    private function sendNotification($contract)
+    {
+        ListCheckContractExportJob::dispatch(Session::get('company_id'), $contract);
     }
 }

@@ -14,7 +14,7 @@
 							<!-- NO CUMPLE -->
 							<b-btn v-if="item.qualification == 'NC'" @click="showModal(`modalPlan${index}`)" variant="primary"><span class="lnr lnr-bookmark"></span> Plan de acción</b-btn>
 
-							<b-modal :ref="`modalPlan${index}`" :hideFooter="true" :id="`modals-default-${index+1}`" class="modal-top" size="lg">
+							<b-modal v-if="item.qualification == 'NC'" :ref="`modalPlan${index}`" :hideFooter="true" :id="`modals-default-${index+1}`" class="modal-top" size="lg">
 								<div slot="modal-title">
 									Plan de acción <span class="font-weight-light">Contratistas</span><br>
 									<small class="text-muted">Crea planes de acción para tu justificación.</small>
@@ -158,12 +158,30 @@ export default {
 			{
 				if (typeof this.form.items[index].actionPlan !== 'undefined')
 				{
+					this.form.items[index].actionPlan.activities.forEach((action, index) => {
+						if (action.id != '')
+							this.form.items[index].actionPlan.activitiesRemoved.push(action)
+					});
+
 					this.form.items[index].actionPlan.activities = [];
-					this.form.items[index].actionPlan.activitiesRemoved = [];
 				}
 			}
 			else if (qualification == 'NC')
 			{
+				this.form.items[index].activities_defined.forEach((action, index) => {
+					this.form.items[index].actionPlan.activities.push({
+							key: new Date().getTime(),
+							id: '',
+							description: action,
+							responsible_id: '',
+							execution_date: '',
+							expiration_date: '',
+							state: '',
+							editable: 'NO',
+							edit_all: true
+            })
+				});
+
 				this.form.items[index].files.forEach((file, index) => {
 					if (file.id !== undefined)
 						this.form.delete.files.push(file)
@@ -175,8 +193,12 @@ export default {
 			{
 				if (typeof this.form.items[index].actionPlan !== 'undefined')
 				{
+					this.form.items[index].actionPlan.activities.forEach((action, index) => {
+						if (action.id != '')
+							this.form.items[index].actionPlan.activitiesRemoved.push(action)
+					});
+					
 					this.form.items[index].actionPlan.activities = [];
-					this.form.items[index].actionPlan.activitiesRemoved = [];
 				}
 
 				this.form.items[index].files.forEach((file, index) => {
