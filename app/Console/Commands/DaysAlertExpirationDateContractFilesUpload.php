@@ -92,8 +92,8 @@ class DaysAlertExpirationDateContractFilesUpload extends Command
                 'Fecha Actualización' => Carbon::createFromFormat('Y-m-d H:i:s', $file->updated_at)->toFormattedDateString()
             ]);
         }
-        \Log::info('AQIOooooooooooooooooooooooooooo');
-        \Log::info($result);
+        //\Log::info('AQIOooooooooooooooooooooooooooo');
+        //\Log::info($result);
         return $result;
     }
 }
