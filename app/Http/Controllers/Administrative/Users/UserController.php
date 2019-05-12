@@ -149,10 +149,10 @@ class UserController extends Controller
                 return $this->respondWithError('No se puede eliminar el usuario porque hay registros asociados a él');
             }
 
-            $user->companies()->detach();
+            //$user->companies()->detach();
             $user->syncRoles([]); // Eliminar datos de relaciones
             $user->syncPermissions([]); // Eliminar datos de relaciones
-            $user->contractInformation()->detach(); // Eliminar relación de contratista o arrendatario
+            //$user->contractInformation()->detach(); // Eliminar relación de contratista o arrendatario
 
             if(!$user->delete())
             {

@@ -53,36 +53,52 @@ class LoginController extends Controller
             {
                 $companies = Auth::user()->companies()->withoutGlobalScopes()->get();
 
-                foreach ($companies as $val)
+                if ($companies->count() > 0)
                 {
-                    $license = DB::table('sau_licenses')
-                            ->whereRaw('company_id = ? 
-                                        AND ? BETWEEN started_at AND ended_at', 
-                                        [$val->pivot->company_id, date('Y-m-d')])
-                            ->first();
-
-                    if ($license)
+                    foreach ($companies as $val)
                     {
-                        Session::put('company_id', $val->pivot->company_id);
+                        $license = DB::table('sau_licenses')
+                                ->whereRaw('company_id = ? 
+                                            AND ? BETWEEN started_at AND ended_at', 
+                                            [$val->pivot->company_id, date('Y-m-d')])
+                                ->first();
 
-                        if (Auth::user()->hasRole('Arrendatario') || Auth::user()->hasRole('Contratista'))
+                        if ($license)
                         {
-                            $contract = $this->getContractUser(Auth::user()->id);
+                            Session::put('company_id', $val->pivot->company_id);
 
-                            if ($contract->completed_registration == 'NO')
-                                return $this->respondHttp200([
-                                    'redirectTo' => 'legalaspects/contracts/information'
-                                ]);
+                            if (Auth::user()->hasRole('Arrendatario') || Auth::user()->hasRole('Contratista'))
+                            {
+                                $contract = $this->getContractUser(Auth::user()->id);
+
+                                if ($contract->active == 'SI')
+                                {
+                                    if ($contract->completed_registration == 'NO')
+                                        return $this->respondHttp200([
+                                            'redirectTo' => 'legalaspects/contracts/information'
+                                        ]);
+
+                                    return $this->respondHttp200();
+                                }
+                                else 
+                                {
+                                    Auth::logout();
+                                    return $this->respondWithError(['errors'=>['email'=>'Estimado Usuario su contratista se encuentra inhabilitada para poder ingresar al sistema']], 422);
+                                }
+                            }
 
                             return $this->respondHttp200();
                         }
-
-                        return $this->respondHttp200();
                     }
+                    
+                    Auth::logout();
+                    return $this->respondWithError(['errors'=>['email'=>'Estimado Usuario debe renovar su licencia para poder ingresar al sistema']], 422);
                 }
-                
-                Auth::logout();
-                return $this->respondWithError(['errors'=>['email'=>'Estimado Usuario debe renovar su licencia para poder ingresar al sistema']], 422);
+                else 
+                {
+                    Auth::logout();
+                    return $this->respondWithError(['errors'=>['email'=>'Estimado Usuario no posee una compañia activa para poder ingresar al sistema']], 422);
+                }
             }
             else 
             {
