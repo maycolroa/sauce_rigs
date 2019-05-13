@@ -11,6 +11,8 @@ class Company extends Model
     
     protected $table = 'sau_companies';
 
+    protected $fillable = ['name', 'active'];
+
     public function users()
     {
         return $this->belongsToMany('App\Models\Administrative\Users\User','sau_company_user');

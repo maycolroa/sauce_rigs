@@ -495,11 +495,15 @@ class ActionPlan
             $tmp['key'] = Carbon::now()->timestamp + rand(1,10000);
             $tmp['id'] = $value->activity->id;
             $tmp['description'] = $value->activity->description;
+            $tmp['oldDescription'] = $value->activity->description;
             $tmp['responsible_id'] = $value->activity->responsible_id;
+            $tmp['oldResponsible_id'] = $value->activity->responsible_id;
             $tmp['multiselect_responsible'] = $value->activity->responsible->multiselect();
             $tmp['user_id'] = $value->activity->user_id;
             $tmp['execution_date'] = ($value->activity->execution_date) ? (Carbon::createFromFormat('Y-m-d', $value->activity->execution_date))->format('D M d Y') : '';
+            $tmp['oldExecution_date'] = ($value->activity->execution_date) ? (Carbon::createFromFormat('Y-m-d', $value->activity->execution_date))->format('D M d Y') : '';
             $tmp['expiration_date'] = (Carbon::createFromFormat('Y-m-d', $value->activity->expiration_date))->format('D M d Y');
+            $tmp['oldExpiration_date'] = (Carbon::createFromFormat('Y-m-d', $value->activity->expiration_date))->format('D M d Y');
             $tmp['state'] = $value->activity->state;
             $tmp['oldState'] = $value->activity->state;
             $tmp['editable'] = $value->activity->editable;
@@ -543,11 +547,15 @@ class ActionPlan
             $tmp['key'] = Carbon::now()->timestamp + rand(1,10000);
             $tmp['id'] = $activity->id;
             $tmp['description'] = $activity->description;
+            $tmp['oldDescription'] = $activity->description;
             $tmp['responsible_id'] = $activity->responsible_id;
+            $tmp['oldResponsible_id'] = $activity->responsible_id;
             $tmp['multiselect_responsible'] = $activity->responsible->multiselect();
             $tmp['user_id'] = $activity->user_id;
             $tmp['execution_date'] = ($activity->execution_date) ? (Carbon::createFromFormat('Y-m-d', $activity->execution_date))->format('D M d Y') : '';
+            $tmp['oldExecution_date'] = ($activity->execution_date) ? (Carbon::createFromFormat('Y-m-d', $activity->execution_date))->format('D M d Y') : '';;
             $tmp['expiration_date'] = (Carbon::createFromFormat('Y-m-d', $activity->expiration_date))->format('D M d Y');
+            $tmp['oldExpiration_date'] = (Carbon::createFromFormat('Y-m-d', $activity->expiration_date))->format('D M d Y');
             $tmp['state'] = $activity->state;
             $tmp['oldState'] = $activity->state;
             $tmp['editable'] = $activity->editable;
@@ -604,7 +612,7 @@ class ActionPlan
      * 
      * @return $this
      */
-    public function updateActivity()
+    /*public function updateActivity()
     {
         if (empty($this->activities))
             throw new \Exception('No valid activities have been entered');
@@ -627,7 +635,7 @@ class ActionPlan
 
         /**********************************************************************/
 
-        foreach ($this->activities['activities'] as $itemA)
+        /*foreach ($this->activities['activities'] as $itemA)
         {   
             $model->description = $itemA['description'];
             $model->responsible_id = $itemA['responsible_id'];
@@ -642,7 +650,7 @@ class ActionPlan
         }
 
         return $this;
-    }
+    }*/
 
     /**
      * Stores the activities of the action plan
@@ -691,8 +699,21 @@ class ActionPlan
             $activity->company_id = $company_id;
             $activity->save();
             
-            if(isset($itemA['oldState']) && ($itemA['oldState'] != $itemA['state']))
-                array_push($this->activitiesReady, $itemA);
+            if(isset($itemA['oldState']))
+            {
+                if (($itemA['oldDescription'] != $itemA['description']) ||
+                    ($itemA['oldExpiration_date'] != $itemA['expiration_date']) ||
+                    ($itemA['oldExecution_date'] != $itemA['execution_date']) ||
+                    ($itemA['oldState'] != $itemA['state'])
+                   )
+                {
+                    array_push($this->activitiesReady, $itemA);
+                }
+
+                if ($itemA['oldResponsible_id'] != $itemA['responsible_id'])
+                    if ($itemA['state'] == 'Pendiente')
+                        array_push($this->activitiesNew, $itemA);
+            }
 
             if($itemA['id'] == "")
             {
@@ -791,10 +812,10 @@ class ActionPlan
             if($supervisor->email != null)
             {
                 NotificationMail::
-                    subject('Actividades Realizadas')
+                    subject('Actividades Actualizadas')
                     ->view('actionplan.activities')
                     ->recipients($supervisor)
-                    ->message('El usuario '.$this->user->name.' ha cambiado el estado de las siguientes actividades:')
+                    ->message('El usuario '.$this->user->name.' ha cambiado la información de las siguientes actividades:')
                     ->module('actionPlans')
                     ->table($this->prepareDataTable($value->toArray(), $this->module->display_name))
                     ->list($this->prepareListItemMainEmail($supervisor->name), 'ul')

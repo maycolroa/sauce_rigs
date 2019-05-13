@@ -164,7 +164,7 @@ class ContractLesseeController extends Controller
                 return $this->respondHttp500();
             }
 
-            $users = $this->getUsersContract($contract->id);
+            /*$users = $this->getUsersContract($contract->id);
 
             foreach ($users as $user)
             {
@@ -175,7 +175,7 @@ class ContractLesseeController extends Controller
                     $user->active = 'NO';
                     $user->save();
                 }
-            }
+            }*/
 
             DB::commit();
 

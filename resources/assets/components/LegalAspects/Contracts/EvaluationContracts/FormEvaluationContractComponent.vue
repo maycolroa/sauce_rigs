@@ -345,7 +345,7 @@ export default {
     },
     fetchContractor()
     {
-        axios.get(`/legalAspects/contract/${this.form.contract_id}`)
+        axios.get(`/legalAspects/contracts/${this.form.contract_id}`)
         .then(response => {
             this.contractor_information = response.data.data
         })

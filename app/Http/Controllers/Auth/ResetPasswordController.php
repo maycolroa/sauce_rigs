@@ -7,6 +7,7 @@ use Illuminate\Foundation\Auth\ResetsPasswords;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Auth\Events\PasswordReset;
+use App\Traits\ContractTrait;
 use Session;
 use DB;
 
@@ -24,6 +25,7 @@ class ResetPasswordController extends Controller
     */
 
     use ResetsPasswords;
+    use ContractTrait;
 
     /**
      * Where to redirect users after resetting their password.
@@ -61,30 +63,43 @@ class ResetPasswordController extends Controller
 
         $this->guard()->login($user);
 
-        /*if (Auth::attempt(['email' => $user->email, 'password' => $password]))
-        {*/
+        if (Auth::user()->active == 'SI')
+        {
             $companies = Auth::user()->companies()->withoutGlobalScopes()->get();
-
-            foreach ($companies as $val)
+            
+            if ($companies->count() > 0)
             {
-                $license = DB::table('sau_licenses')
-                        ->whereRaw('company_id = ? 
-                                    AND ? BETWEEN started_at AND ended_at', 
-                                    [$val->pivot->company_id, date('Y-m-d')])
-                        ->first();
-
-                if ($license)
+                foreach ($companies as $val)
                 {
-                    Session::put('company_id', $val->pivot->company_id);
-                    //return $this->respondHttp200();
-                    //return $this->redirectTo('/');
+                    $license = DB::table('sau_licenses')
+                            ->whereRaw('company_id = ? 
+                                        AND ? BETWEEN started_at AND ended_at', 
+                                        [$val->pivot->company_id, date('Y-m-d')])
+                            ->first();
+
+                    if ($license)
+                    {
+                        //Session::put('company_id', $val->pivot->company_id);
+                        //return $this->respondHttp200();
+                        //return $this->redirectTo('/');
+
+                        if (Auth::user()->hasRole('Arrendatario') || Auth::user()->hasRole('Contratista'))
+                        {
+                            $contract = $this->getContractUser(Auth::user()->id);
+
+                            if ($contract->active == 'SI')
+                            {
+                                Session::put('company_id', $val->pivot->company_id);
+                            }
+                        }
+
+                        Session::put('company_id', $val->pivot->company_id);
+                    }
                 }
             }
+        }
 
-            if (!Session::get('company_id'))
-                Auth::logout();
-            //return $this->redirectTo('/');
-            //return $this->respondWithError(['errors'=>['email'=>'Estimado Usuario debe renovar su licencia para poder ingresar al sistema']], 422);
-        //}
+        if (!Session::get('company_id'))
+            Auth::logout();
     }
 }

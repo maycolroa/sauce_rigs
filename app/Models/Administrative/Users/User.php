@@ -59,7 +59,7 @@ class User extends Authenticatable
     }
 
     public function companies(){
-      	return $this->belongsToMany('App\Models\General\Company','sau_company_user');
+      	return $this->belongsToMany('App\Models\General\Company','sau_company_user')->where('active', 'SI');
     }
 
     public function generatePasswordUser(){

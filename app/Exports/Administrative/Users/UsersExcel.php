@@ -30,7 +30,7 @@ class UsersExcel implements FromCollection, WithHeadings, WithMapping, ShouldAut
         return [
           $users->name,
           $users->email,
-          $users->state,
+          $users->active,
           $users->document,
           $users->document_type,
           $users->role,
@@ -44,7 +44,7 @@ class UsersExcel implements FromCollection, WithHeadings, WithMapping, ShouldAut
         return [
           'Nombre',
           'Email',
-          'Estado',
+          '¿Activo?',
           'Documento',
           'Tipo de Documento',
           'Rol',
