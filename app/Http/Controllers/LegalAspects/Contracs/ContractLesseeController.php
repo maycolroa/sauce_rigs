@@ -22,6 +22,7 @@ use App\Traits\ContractTrait;
 use App\Traits\UserTrait;
 use Carbon\Carbon;
 use Session;
+use Validator;
 use DB;
 
 class ContractLesseeController extends Controller
@@ -390,6 +391,16 @@ class ContractLesseeController extends Controller
      */
     public function saveQualificationItems(ListCheckItemsRequest $request)
     {
+        Validator::make($request->all(), [
+            "items.*.files.*.file" => [
+                function ($attribute, $value, $fail)
+                {
+                    if (!is_string($value) && $value->getClientMimeType() != 'application/pdf')
+                        $fail('Archivo debe ser un pdf');
+                },
+            ]
+        ])->validate();
+
         DB::beginTransaction();
 
         try
@@ -448,7 +459,7 @@ class ContractLesseeController extends Controller
                                 {
                                     $file_tmp = $file['file'];
                                     $nameFile = base64_encode(Auth::user()->id . now() . $keyF) .'.'. $file_tmp->extension();
-                                    $file_tmp->storeAs('legalAspects/files/', $nameFile, 's3');
+                                    $file_tmp->storeAs('legalAspects/files/', $nameFile, 'public');
                                     $fileUpload->file = $nameFile;
                                 }
 
@@ -465,7 +476,7 @@ class ContractLesseeController extends Controller
                             //Borrar archivos reemplazados
                             foreach ($files_names_delete as $keyf => $file)
                             {
-                                Storage::disk('s3')->delete('legalAspects/files/'. $file);
+                                Storage::disk('public')->delete('legalAspects/files/'. $file);
                             }
                         }
                     }
@@ -484,7 +495,7 @@ class ContractLesseeController extends Controller
                 foreach ($request->delete['files'] as $keyF => $file)
                 {
                     FileUpload::find($file['id'])->delete();
-                    Storage::disk('s3')->delete('legalAspects/files/'. $file['old_name']);
+                    Storage::disk('public')->delete('legalAspects/files/'. $file['old_name']);
                 }
             }
 
