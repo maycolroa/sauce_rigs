@@ -158,7 +158,7 @@ export default {
 			{
 				if (typeof this.form.items[index].actionPlan !== 'undefined')
 				{
-					this.form.items[index].actionPlan.activities.forEach((action, index) => {
+					this.form.items[index].actionPlan.activities.forEach((action, index2) => {
 						if (action.id != '')
 							this.form.items[index].actionPlan.activitiesRemoved.push(action)
 					});
@@ -168,7 +168,7 @@ export default {
 			}
 			else if (qualification == 'NC')
 			{
-				this.form.items[index].activities_defined.forEach((action, index) => {
+				this.form.items[index].activities_defined.forEach((action, index2) => {
 					this.form.items[index].actionPlan.activities.push({
 							key: new Date().getTime(),
 							id: '',
@@ -182,7 +182,7 @@ export default {
             })
 				});
 
-				this.form.items[index].files.forEach((file, index) => {
+				this.form.items[index].files.forEach((file, index2) => {
 					if (file.id !== undefined)
 						this.form.delete.files.push(file)
 				});
@@ -193,7 +193,7 @@ export default {
 			{
 				if (typeof this.form.items[index].actionPlan !== 'undefined')
 				{
-					this.form.items[index].actionPlan.activities.forEach((action, index) => {
+					this.form.items[index].actionPlan.activities.forEach((action, index2) => {
 						if (action.id != '')
 							this.form.items[index].actionPlan.activitiesRemoved.push(action)
 					});
@@ -201,7 +201,7 @@ export default {
 					this.form.items[index].actionPlan.activities = [];
 				}
 
-				this.form.items[index].files.forEach((file, index) => {
+				this.form.items[index].files.forEach((file, index2) => {
 					if (file.id !== undefined)
 						this.form.delete.files.push(file)
 				});

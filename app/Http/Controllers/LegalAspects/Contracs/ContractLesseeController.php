@@ -47,7 +47,8 @@ class ContractLesseeController extends Controller
     */
     public function data(Request $request)
     {
-        $contracts = ContractLesseeInformation::select('*');
+        $contracts = ContractLesseeInformation::select('*')
+                    ->leftJoin('sau_ct_list_check_resumen', 'sau_ct_list_check_resumen.contract_id', 'sau_ct_information_contract_lessee.id');
 
         return Vuetable::of($contracts)
             ->make();
