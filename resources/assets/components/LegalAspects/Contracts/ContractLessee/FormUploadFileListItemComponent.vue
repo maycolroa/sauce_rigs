@@ -1,7 +1,7 @@
 <template>
 	<div class="col-md-12">
 		<b-form-row>
-			<div class="col-md-12">
+			<div class="col-md-12" v-if="!viewOnly">
 				<div class="float-right" style="padding-top: 10px;">
 					<b-btn variant="primary" @click.prevent="addFile()"><span class="ion ion-md-add-circle"></span> Añadir archivo</b-btn>
 				</div>
@@ -21,6 +21,7 @@
 												<span class="collapse-icon"></span>
 											</b-btn>
 											<b-btn @click.prevent="removeFile(index)"
+												v-if="!viewOnly"
 												size="sm" 
 												variant="secondary icon-btn borderless"
 												v-b-tooltip.top title="Eliminar Archivo">
@@ -36,13 +37,13 @@
 								<div class="rounded ui-bordered p-3 mb-3">
 				
 									<b-form-row>
-										<vue-input class="col-md-6" v-model="value[index].name" label="Nombre" type="text" name="name"  placeholder="Nombre" :error="form.errorsFor(`${prefixIndex}files.${index}.name`)"></vue-input>
-										<vue-datepicker class="col-md-6" v-model="value[index].expirationDate" label="Fecha de vencimiento" :full-month-name="true" placeholder="Seleccione la fecha de vencimiento"  name="expirationDate" :disabled-dates="disabledDates">
+										<vue-input :disabled="viewOnly" class="col-md-6" v-model="value[index].name" label="Nombre" type="text" name="name"  placeholder="Nombre" :error="form.errorsFor(`${prefixIndex}files.${index}.name`)"></vue-input>
+										<vue-datepicker :disabled="viewOnly" class="col-md-6" v-model="value[index].expirationDate" label="Fecha de vencimiento" :full-month-name="true" placeholder="Seleccione la fecha de vencimiento"  name="expirationDate" :disabled-dates="disabledDates">
 										</vue-datepicker>
 									</b-form-row>
 
 									<b-form-row>
-										<vue-file-simple :help-text="value[index].id ? `Para descargar el archivo actual, haga click <a href='/legalAspects/fileUpload/download/${value[index].id}' target='blank'>aqui</a> ` : null" class="col-md-12" v-model="value[index].file" label="Archivo" name="file" placeholder="Seleccione un archivo" :error="form.errorsFor(`${prefixIndex}files.${index}.file`)"></vue-file-simple>
+										<vue-file-simple :disabled="viewOnly" :help-text="value[index].id ? `Para descargar el archivo actual, haga click <a href='/legalAspects/fileUpload/download/${value[index].id}' target='blank'>aqui</a> ` : null" class="col-md-12" v-model="value[index].file" label="Archivo" name="file" placeholder="Seleccione un archivo" :error="form.errorsFor(`${prefixIndex}files.${index}.file`)"></vue-file-simple>
 									</b-form-row>
 									
 								</div>
@@ -71,6 +72,7 @@ export default {
 		PerfectScrollbar
 	},
 	props: {
+		viewOnly: { type: Boolean, default: false },
 		prefixIndex: { type: String, default: ''},
 		form: { type: Object, required: true },
 		value: {type: [Array], default:[]},

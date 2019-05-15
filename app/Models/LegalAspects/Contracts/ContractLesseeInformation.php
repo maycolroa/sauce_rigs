@@ -43,7 +43,12 @@ class ContractLesseeInformation extends Model
 
     public function listCheckResumen()
     {
-        return $this->hasMany(LiskCheckResumen::class, 'contract_id');
+        return $this->hasMany(ListCheckResumen::class, 'contract_id');
+    }
+
+    public function listCheckHistory()
+    {
+        return $this->hasMany(ListCheckChangeHistory::class, 'contract_id');
     }
 
     public function multiselect()

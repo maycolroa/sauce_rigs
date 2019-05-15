@@ -51,6 +51,11 @@ export default [
 				component: () => import('@/views/LegalAspects/contracts/contract/listCheckItems')
 			},
 			{
+				name: 'legalaspects-contracts-view-list-check',
+				path: 'contracts/view-list-check/:id',
+				component: () => import('@/views/LegalAspects/contracts/contract/listCheckItems')
+			},
+			{
 				name: 'legalaspects-typesrating',
 				path: 'typesrating',
 				component: () =>

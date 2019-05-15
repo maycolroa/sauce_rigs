@@ -4,7 +4,7 @@ namespace App\Models\LegalAspects\Contracts;
 
 use Illuminate\Database\Eloquent\Model;
 
-class LiskCheckResumen extends Model
+class ListCheckResumen extends Model
 {
     protected $table = 'sau_ct_list_check_resumen';
 
