@@ -41,6 +41,11 @@ class ContractLesseeInformation extends Model
         return $this->belongsToMany('App\Models\Administrative\Users\User', 'sau_user_information_contract_lessee', 'information_id');
     }
 
+    public function listCheckResumen()
+    {
+        return $this->hasMany(LiskCheckResumen::class, 'contract_id');
+    }
+
     public function multiselect()
     {
         return [
