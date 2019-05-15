@@ -488,6 +488,10 @@ class ContractLesseeController extends Controller
 
             $contract->listCheckResumen()->updateOrCreate(['contract_id'=>$contract->id], $totales);
 
+            $contract->listCheckHistory()->create([
+                'user_id' => Auth::user()->id
+            ]);
+
             DB::commit();
 
             $this->sendNotification($contract);
