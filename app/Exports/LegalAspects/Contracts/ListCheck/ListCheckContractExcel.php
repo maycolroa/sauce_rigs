@@ -118,12 +118,12 @@ class ListCheckContractExcel implements FromCollection, WithMapping, WithHeading
 
             $totales['t']++;
 
-            \Log::info($totales);
+            #\Log::info($totales);
 
             return $item;
         });
 
-        \Log::info($totales);
+        #\Log::info($totales);
 
         if ($items->count() > 0)
         {

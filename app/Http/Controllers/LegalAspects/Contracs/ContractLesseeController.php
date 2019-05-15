@@ -178,6 +178,8 @@ class ContractLesseeController extends Controller
                 }
             }*/
 
+            $this->reloadLiskCheckResumen($contract);
+
             DB::commit();
 
         } catch (\Exception $e) {
@@ -253,58 +255,7 @@ class ContractLesseeController extends Controller
         try
         {
             $contract = $this->getContractUser(Auth::user()->id);
-
-            $sql = SectionCategoryItems::select(
-                'sau_ct_section_category_items.*',
-                'sau_ct_standard_classification.standard_name as name'
-            )
-            ->join('sau_ct_items_standard', 'sau_ct_items_standard.item_id', 'sau_ct_section_category_items.id')
-            ->join('sau_ct_standard_classification', 'sau_ct_standard_classification.id', 'sau_ct_items_standard.standard_id');
-
-            $items = [];
-
-            if ($contract->classification == 'UPA')
-            {
-                if ($contract->number_workers <= 10)
-                {
-                    if ($contract->risk_class == "Clase de riesgo I, II y III")
-                    {
-                        $items = $sql->where('sau_ct_standard_classification.standard_name', '=', '3 estandares')->get();
-                    }
-                    else if ($contract->risk_class == "Clase de riesgo IV y V")
-                    {
-                        $items = $sql->where('sau_ct_standard_classification.standard_name', '=', '60 estandares')->get();
-                    }
-                }
-            }
-            else if ($contract->classification == 'Empresa')
-            {
-                if ($contract->number_workers <= 10)
-                {
-                    if ($contract->risk_class == "Clase de riesgo I, II y III")
-                    {
-                        $items = $sql->where('sau_ct_standard_classification.standard_name', '=', '7 estandares')->get();
-                    }
-                }
-                else if ($contract->number_workers > 10 && $contract->number_workers <= 50)
-                {
-                    if ($contract->risk_class == "Clase de riesgo I, II y III")
-                    {
-                        $items = $sql->where('sau_ct_standard_classification.standard_name', '=', '21 estandares')->get();
-                    }
-                    else if ($contract->risk_class == "Clase de riesgo IV y V")
-                    {
-                        $items = $sql->where('sau_ct_standard_classification.standard_name', '=', '60 estandares')->get();
-                    }
-                }
-                else if ($contract->number_workers > 50)
-                {
-                    if ($contract->risk_class == "Cualquier clase de riesgo")
-                    {
-                        $items = $sql->where('sau_ct_standard_classification.standard_name', '=', '60 estandares')->get();
-                    }
-                }
-            }
+            $items = $this->getStandardItemsContract($contract);
 
             $qualifications = Qualifications::pluck("name", "id");
 
@@ -313,58 +264,65 @@ class ContractLesseeController extends Controller
                       where('contract_id', $contract->id)
                     ->pluck("qualification_id", "item_id");
 
-            $items->transform(function($item, $index) use ($qualifications, $items_calificated, $contract) {
-                //Añade las actividades definidas de cada item para los planes de acción
-                $item->activities_defined = $item->activities()->pluck("description");
-                $item->qualification = isset($items_calificated[$item->id]) ? $qualifications[$items_calificated[$item->id]] : '';
-                $item->files = [];
-                $item->actionPlan = [
-                    "activities" => [],
-                    "activitiesRemoved" => []
-                ];
+            if (COUNT($items) > 0)
+            {
+                $items->transform(function($item, $index) use ($qualifications, $items_calificated, $contract) {
+                    //Añade las actividades definidas de cada item para los planes de acción
+                    $item->activities_defined = $item->activities()->pluck("description");
+                    $item->qualification = isset($items_calificated[$item->id]) ? $qualifications[$items_calificated[$item->id]] : '';
+                    $item->files = [];
+                    $item->actionPlan = [
+                        "activities" => [],
+                        "activitiesRemoved" => []
+                    ];
 
-                if ($item->qualification == 'C')
-                {
-                    $files = FileUpload::select(
-                                'sau_ct_file_upload_contracts_leesse.id AS id',
-                                'sau_ct_file_upload_contracts_leesse.name AS name',
-                                'sau_ct_file_upload_contracts_leesse.file AS file',
-                                'sau_ct_file_upload_contracts_leesse.expirationDate AS expirationDate'
-                            )
-                            ->join('sau_ct_file_upload_contract','sau_ct_file_upload_contract.file_upload_id','sau_ct_file_upload_contracts_leesse.id')
-                            ->join('sau_ct_file_item_contract', 'sau_ct_file_item_contract.file_id', 'sau_ct_file_upload_contracts_leesse.id')
-                            ->where('sau_ct_file_upload_contract.contract_id', $contract->id)
-                            ->where('sau_ct_file_item_contract.item_id', $item->id)
-                            ->get();
-
-                    if ($files)
+                    if ($item->qualification == 'C')
                     {
-                        $files->transform(function($file, $index) {
-                            $file->key = Carbon::now()->timestamp + rand(1,10000);
-                            $file->old_name = $file->file;
-                            $file->expirationDate = $file->expirationDate == null ? null : (Carbon::createFromFormat('Y-m-d',$file->expirationDate))->format('D M d Y');
+                        $files = FileUpload::select(
+                                    'sau_ct_file_upload_contracts_leesse.id AS id',
+                                    'sau_ct_file_upload_contracts_leesse.name AS name',
+                                    'sau_ct_file_upload_contracts_leesse.file AS file',
+                                    'sau_ct_file_upload_contracts_leesse.expirationDate AS expirationDate'
+                                )
+                                ->join('sau_ct_file_upload_contract','sau_ct_file_upload_contract.file_upload_id','sau_ct_file_upload_contracts_leesse.id')
+                                ->join('sau_ct_file_item_contract', 'sau_ct_file_item_contract.file_id', 'sau_ct_file_upload_contracts_leesse.id')
+                                ->where('sau_ct_file_upload_contract.contract_id', $contract->id)
+                                ->where('sau_ct_file_item_contract.item_id', $item->id)
+                                ->get();
 
-                            return $file;
-                        });
+                        if ($files)
+                        {
+                            $files->transform(function($file, $index) {
+                                $file->key = Carbon::now()->timestamp + rand(1,10000);
+                                $file->old_name = $file->file;
+                                $file->expirationDate = $file->expirationDate == null ? null : (Carbon::createFromFormat('Y-m-d',$file->expirationDate))->format('D M d Y');
 
-                        $item->files = $files;
+                                return $file;
+                            });
+
+                            $item->files = $files;
+                        }
                     }
-                }
-                else if ($item->qualification == 'NC')
-                {
-                    $item->actionPlan = ActionPlan::model($item)->prepareDataComponent();
-                }
+                    else if ($item->qualification == 'NC')
+                    {
+                        $item->actionPlan = ActionPlan::model($item)->prepareDataComponent();
+                    }
 
-                return $item;
-            });
+                    return $item;
+                });
 
-            return $this->respondHttp200([
-                'data' => [
+                $data = [
                     'items' => $items,
                     'delete' => [
 						'files' => []
                     ]
-                ]
+                ];
+            }
+            else
+                $data = [];
+
+            return $this->respondHttp200([
+                'data' => $data
             ]);
         } catch(Exception $e){
             $this->respondHttp500();
@@ -417,8 +375,19 @@ class ContractLesseeController extends Controller
                 ->module('contracts')
                 ->url(url('/administrative/actionplans'));
 
+            $totales = [
+                'total_standard' => 0,
+                'total_c' => 0,
+                'total_nc' => 0,
+                'total_sc' => 0,
+                'total_p_c' => 0,
+                'total_p_nc' => 0
+            ];
+
             foreach ($request->items as $item)
             {
+                $totales['total_standard']++;
+
                 if (isset($item['qualification']) && $item['qualification'])
                 {
                     $itemQualification = new ItemQualificationContractDetail;
@@ -432,6 +401,8 @@ class ContractLesseeController extends Controller
                     //Cumple y solo es aqui donde se cargan archivos
                     if ($item['qualification'] == 'C')
                     {
+                        $totales['total_c']++;
+
                         if (isset($item['files']) && COUNT($item['files']) > 0)
                         {
                             $files_names_delete = [];
@@ -458,7 +429,7 @@ class ContractLesseeController extends Controller
                                 if ($create_file)
                                 {
                                     $file_tmp = $file['file'];
-                                    $nameFile = base64_encode(Auth::user()->id . now() . $keyF) .'.'. $file_tmp->extension();
+                                    $nameFile = base64_encode(Auth::user()->id . now() . rand(1,10000) . $keyF) .'.'. $file_tmp->extension();
                                     $file_tmp->storeAs('legalAspects/files/', $nameFile, 'public');
                                     $fileUpload->file = $nameFile;
                                 }
@@ -480,12 +451,19 @@ class ContractLesseeController extends Controller
                             }
                         }
                     }
+                    else
+                        $totales['total_nc']++;
 
                     /**Planes de acción*/
                     ActionPlan::
                           model(SectionCategoryItems::find($item['id']))
                         ->activities($item['actionPlan'])
                         ->save();
+                }
+                else
+                {
+                    $totales['total_nc']++;
+                    $totales['total_sc']++;
                 }
             }
 
@@ -500,6 +478,14 @@ class ContractLesseeController extends Controller
             }
 
             ActionPlan::sendMail();
+
+            if (COUNT($request->items) > 0)
+            {
+                $totales['total_p_c'] = round(($totales['total_c'] / $totales['total_standard']) * 100, 1);
+                $totales['total_p_nc'] = round(($totales['total_nc'] / $totales['total_standard']) * 100, 1);
+            }
+
+            $contract->listCheckResumen()->updateOrCreate(['contract_id'=>$contract->id], $totales);
 
             DB::commit();
 
