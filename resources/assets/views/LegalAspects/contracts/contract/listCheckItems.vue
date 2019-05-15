@@ -17,9 +17,10 @@
 							v-else
 							:url="`/legalAspects/contracts/saveQualificationItems`"
 							method="POST"
+							:view-only="(this.$route.params.id ? true : false)"
 							:items="items"
 							:qualifications="qualifications"				
-							:cancel-url="{ name: 'legalaspects-contracts'}"/>
+							:cancel-url="{ name: (this.$route.params.id ? 'legalaspects-contractor' : 'legalaspects-contracts')}"/>
 					</template>
 				</b-card-body>
 			</b-card>
@@ -60,7 +61,7 @@ export default {
 		});
 
 		//axios para obtener los items a calificar
-		axios.get("/legalAspects/contracts/getListCheckItems")
+		axios.post("/legalAspects/contracts/getListCheckItems", { id: this.$route.params.id })
 		.then(response => {
 			this.items = response.data.data;
 			this.ready = true

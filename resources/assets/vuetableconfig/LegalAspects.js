@@ -315,28 +315,39 @@ export default [
         'controlls': [{
               type: 'push',
               buttons: [{
-              config: {
-                  color: 'outline-success',
-                  borderless: true,
-                  icon: 'ion ion-md-create',
-                  title: 'Editar'
-              },
-              data: {
-                  routePush: { name: 'legalaspects-contractor-edit' },
-                  id: 'id',
-              },
+                config: {
+                    color: 'outline-success',
+                    borderless: true,
+                    icon: 'ion ion-md-create',
+                    title: 'Editar'
+                },
+                data: {
+                    routePush: { name: 'legalaspects-contractor-edit' },
+                    id: 'id',
+                },
               }, {
-              config: {
-                  color: 'outline-info',
-                  borderless: true,
-                  icon: 'ion ion-md-eye',
-                  title: 'Ver'
-              },
-              data: {
-                  routePush: { name: 'legalaspects-contractor-view' },
-                  id: 'id',
-              },
-              }]
+                config: {
+                    color: 'outline-info',
+                    borderless: true,
+                    icon: 'ion ion-md-eye',
+                    title: 'Ver'
+                },
+                data: {
+                    routePush: { name: 'legalaspects-contractor-view' },
+                    id: 'id',
+                },
+              }, {
+                config: {
+                    color: 'outline-info',
+                    borderless: true,
+                    icon: 'ion ion-md-list',
+                    title: 'Ver Lista de estándares mínimos'
+                },
+                data: {
+                    routePush: { name: 'legalaspects-contracts-view-list-check' },
+                    id: 'id',
+                },
+            }]
           },
           {
             type: 'base',

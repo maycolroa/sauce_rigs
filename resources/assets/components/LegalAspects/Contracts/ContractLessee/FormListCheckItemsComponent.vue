@@ -22,7 +22,8 @@
 
 								<b-card  bg-variant="transparent"  title="" class="mb-3 box-shadow-none">
 									<action-plan-component
-										:is-edit="true"
+										:is-edit="!viewOnly"
+										:view-only="viewOnly"
 										:form="form"
 										:prefix-index="`items.${index}.`"
 										:action-plan-states="actionPlanStates"
@@ -48,6 +49,7 @@
 								<b-card  bg-variant="transparent"  title="" class="mb-3 box-shadow-none">
 									<form-upload-file-list-item-component
 										:form="form"
+										:view-only="viewOnly"
 										:prefix-index="`items.${index}.`"
 										v-model="form.items[index].files"
 										@removeFile="pushRemoveFile"/>
@@ -60,7 +62,7 @@
 							<!------------------------------->
 						</div>
 						<div class="text-muted small text-nowrap">	
-								<vue-radio v-model="item.qualification" label="Calificación" :name="`items${item.id}`" :error="form.errorsFor(`items.${index}`)" :options="qualifications" :checked="item.qualification" @input="changeActionFiles(item.qualification, `${index}`)"></vue-radio>
+								<vue-radio :disabled="viewOnly" v-model="item.qualification" label="Calificación" :name="`items${item.id}`" :error="form.errorsFor(`items.${index}`)" :options="qualifications" :checked="item.qualification" @input="changeActionFiles(item.qualification, `${index}`)"></vue-radio>
 						</div>
 					</div>
 				</div>

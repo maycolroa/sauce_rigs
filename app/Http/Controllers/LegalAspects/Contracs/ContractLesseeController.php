@@ -47,10 +47,25 @@ class ContractLesseeController extends Controller
     */
     public function data(Request $request)
     {
-        $contracts = ContractLesseeInformation::select('*')
+        $contracts = ContractLesseeInformation::select(
+                    'sau_ct_information_contract_lessee.*',
+                    'sau_ct_list_check_resumen.total_standard AS total_standard',
+                    'sau_ct_list_check_resumen.total_c AS total_c',
+                    'sau_ct_list_check_resumen.total_nc AS total_nc',
+                    'sau_ct_list_check_resumen.total_sc AS total_sc',
+                    'sau_ct_list_check_resumen.total_p_c AS total_p_c',
+                    'sau_ct_list_check_resumen.total_p_nc AS total_p_nc'
+                    )
                     ->leftJoin('sau_ct_list_check_resumen', 'sau_ct_list_check_resumen.contract_id', 'sau_ct_information_contract_lessee.id');
 
         return Vuetable::of($contracts)
+            ->addColumn('legalaspects-contracts-view-list-check', function ($contract) {
+                
+                if ($contract->type == 'Contratista')
+                    return true;
+
+                return false;
+            })
             ->make();
     }
 
@@ -251,11 +266,15 @@ class ContractLesseeController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function getListCheckItems()
+    public function getListCheckItems(Request $request)
     {
         try
         {
-            $contract = $this->getContractUser(Auth::user()->id);
+            if ($request->has('id') && $request->id)
+                $contract = ContractLesseeInformation::findOrFail($request->id);
+            else 
+                $contract = $this->getContractUser(Auth::user()->id);
+
             $items = $this->getStandardItemsContract($contract);
 
             $qualifications = Qualifications::pluck("name", "id");
