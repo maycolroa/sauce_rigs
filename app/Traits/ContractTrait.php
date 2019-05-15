@@ -192,7 +192,7 @@ trait ContractTrait
                 foreach ($files as $file)
                 {
                     FileUpload::find($file->id)->delete();
-                    Storage::disk('public')->delete('legalAspects/files/'. $file->file);
+                    Storage::disk('s3')->delete('legalAspects/files/'. $file->file);
                 }
             } 
             else if ($item->name == 'NC')
