@@ -471,6 +471,8 @@ class ContractLesseeController extends Controller
                             }
                         }
                     }
+                    else if ($item['qualification'] == 'NA')
+                        $totales['total_c']++;
                     else
                         $totales['total_nc']++;
 

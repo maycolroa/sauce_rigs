@@ -230,7 +230,7 @@ trait ContractTrait
                 
                 $totales['total_standard']++;
 
-                if ($item->qualification == 'C')
+                if ($item->qualification == 'C' || $item->qualification == 'NA')
                 {
                     $totales['total_c']++;
                 }
