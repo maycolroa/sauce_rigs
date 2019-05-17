@@ -332,6 +332,7 @@ class ContractLesseeController extends Controller
                 });
 
                 $data = [
+                    'id' => $contract->id,
                     'items' => $items,
                     'delete' => [
 						'files' => []
