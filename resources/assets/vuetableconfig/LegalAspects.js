@@ -254,7 +254,7 @@ export default [
         fields: [
             { name: 'sau_ct_evaluation_contract_histories.id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true },
             { name: 'sau_users.name', data: 'name', title: 'Responsable', sortable: true, searchable: true, detail: false, key: false },
-            { name: 'sau_ct_evaluation_contract_histories.created_at', data: 'created_at', title: 'Fecha', sortable: true, searchable: false, detail: false, key: false },
+            { name: 'sau_ct_evaluation_contract_histories.created_at', data: 'created_at', title: 'Fecha', sortable: true, searchable: true, detail: false, key: false },
         ],
         'controlls': [{
                 type: 'push',
@@ -355,6 +355,19 @@ export default [
           }],
         configuration: {
             urlData: '/legalAspects/contracts/data',
+            filterColumns: true,
+        }
+    },
+    {
+        name: 'legalaspects-contractor-list-check-history',
+        fields: [
+            { name: 'sau_ct_lisk_check_change_histories.id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true },
+            { name: 'sau_users.name', data: 'name', title: 'Responsable', sortable: true, searchable: false, detail: false, key: false },
+            { name: 'sau_ct_lisk_check_change_histories.created_at', data: 'created_at', title: 'Fecha', sortable: true, searchable: false, detail: false, key: false }
+        ],
+        'controlls': [],
+        configuration: {
+            urlData: '/legalAspects/contractsListCheckHistory/data',
             filterColumns: true,
         }
     }

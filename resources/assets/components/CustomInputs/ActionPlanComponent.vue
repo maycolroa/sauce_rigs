@@ -139,7 +139,7 @@ export default {
     methods: {
         addActiviy() {
             this.actionPlan.activities.push({
-                key: new Date().getTime(),
+                key: new Date().getTime() + Math.round(Math.random() * 10000),
                 id: '',
                 description: '',
                 responsible_id: '',

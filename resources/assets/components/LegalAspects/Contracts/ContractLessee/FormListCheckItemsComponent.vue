@@ -1,8 +1,30 @@
 <template>
     <b-form :action="url" @submit.prevent="submit" autocomplete="off">
+		<element-fixed-component>
+		  <list-check-items-resumen-component :items="form.items"/>
+		</element-fixed-component>
+		
 		<b-card border-variant="primary" no-body class="mb-4">
 			<b-card-header header-tag="h6" class="with-elements">
-				<div class="card-header-title">Lista de estándares mínimos | {{ form.items[0].name }}</div>
+				<div class="card-header-title">Lista de estándares mínimos | {{ form.items[0].name }} | <b-btn variant="primary" size="sm" @click="$refs.modalHistorial.show()" ><span class="ion ion-md-eye"></span> Ver historial de cambios </b-btn></div>
+
+					<b-modal ref="modalHistorial" :hideFooter="true" id="modals-historial" class="modal-top" size="lg">
+						<div slot="modal-title">
+							Historial de cambios realizados
+						</div>
+
+						<b-card  bg-variant="transparent"  title="" class="mb-3 box-shadow-none">
+							<vue-table
+									configName="legalaspects-contractor-list-check-history"
+									:modelId="form.id ? form.id : -1"
+									></vue-table>
+						</b-card>
+						<br>
+						<div class="row float-right pt-12 pr-12y">
+							<b-btn variant="primary" @click="$refs.modalHistorial.hide()">Cerrar</b-btn>
+						</div>
+					</b-modal>
+
 			</b-card-header>
 			<b-card-body>
 				<div class="rounded ui-bordered p-3 mb-3"  v-for="(item, index) in form.items" :key="item.id">
@@ -69,10 +91,10 @@
 			</b-card-body>
 		</b-card>
 		<br><br>
-		<div class="row float-right pt-10 pr-10">
+		<div class="row float-right pt-10 pr-10" style="padding-bottom: 40px;">
 			<template>
 				<b-btn variant="default" :to="cancelUrl" :disabled="loading">Atras</b-btn>&nbsp;&nbsp;
-				<b-btn type="submit" :disabled="loading" variant="primary">Guardar</b-btn>
+				<b-btn type="submit" v-if="!viewOnly" :disabled="loading" variant="primary">Guardar</b-btn>
 			</template>
 		</div>
 	</b-form>
@@ -87,7 +109,9 @@ import VueRadio from "@/components/Inputs/VueRadio.vue";
 import ActionPlanComponent from '@/components/CustomInputs/ActionPlanComponent.vue';
 import Form from "@/utils/Form.js";
 import FormUploadFileListItemComponent from '@/components/LegalAspects/Contracts/ContractLessee/FormUploadFileListItemComponent.vue';
+import ListCheckItemsResumenComponent from '@/components/LegalAspects/Contracts/ContractLessee/ListCheckItemsResumenComponent.vue';
 import Alerts from '@/utils/Alerts.js';
+import ElementFixedComponent from '@/components/ElementFixedComponent.vue';
 
 export default {
 	components: {
@@ -96,7 +120,9 @@ export default {
 		VueCheckbox,
 		VueRadio,
 		ActionPlanComponent,
-		FormUploadFileListItemComponent
+		FormUploadFileListItemComponent,
+		ListCheckItemsResumenComponent,
+		ElementFixedComponent
 	},
 	props: {
 		url: { type: String },
@@ -123,6 +149,7 @@ export default {
 			type: [Array, Object],
 			default: function() {
 				return {
+					id: -1,
 					items: [],
 					delete: {
 						files: []
@@ -172,7 +199,7 @@ export default {
 			{
 				this.form.items[index].activities_defined.forEach((action, index2) => {
 					this.form.items[index].actionPlan.activities.push({
-							key: new Date().getTime(),
+							key: new Date().getTime() + Math.round(Math.random() * 10000),
 							id: '',
 							description: action,
 							responsible_id: '',
