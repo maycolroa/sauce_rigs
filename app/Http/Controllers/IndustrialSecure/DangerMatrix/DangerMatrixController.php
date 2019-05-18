@@ -8,6 +8,7 @@ use App\Vuetable\Facades\Vuetable;
 use App\Models\IndustrialSecure\DangerMatrix\DangerMatrix;
 use App\Models\IndustrialSecure\DangerMatrix\DangerMatrixActivity;
 use App\Models\IndustrialSecure\DangerMatrix\ActivityDanger;
+use App\Models\IndustrialSecure\DangerMatrix\QualificationCompany;
 use App\Models\IndustrialSecure\DangerMatrix\QualificationDanger;
 use App\Models\IndustrialSecure\DangerMatrix\TagsAdministrativeControls;
 use App\Models\IndustrialSecure\DangerMatrix\TagsEngineeringControls;
@@ -17,6 +18,7 @@ use App\Models\IndustrialSecure\DangerMatrix\TagsWarningSignage;
 use App\Models\IndustrialSecure\DangerMatrix\ChangeHistory;
 use Illuminate\Support\Facades\Auth;
 use App\Facades\ActionPlans\Facades\ActionPlan;
+use App\Traits\DangerMatrixTrait;
 use Carbon\Carbon;
 use Session;
 use Validator;
@@ -24,6 +26,8 @@ use DB;
 
 class DangerMatrixController extends Controller
 {
+    use DangerMatrixTrait;
+
     /**
      * creates and instance and middlewares are checked
      */
@@ -424,6 +428,11 @@ class DangerMatrixController extends Controller
 
                     QualificationDanger::where('activity_danger_id', $danger->id)->delete();
 
+                    $conf = QualificationCompany::select('qualification_id')->first();
+
+                    if ($conf && $conf->qualification)
+                        $conf = $conf->qualification->name;
+
                     foreach ($itemD['qualifications'] as $itemQ)
                     {
                         $qualification = new QualificationDanger();
@@ -431,8 +440,27 @@ class DangerMatrixController extends Controller
                         $qualification->type_id = $itemQ['type_id'];
                         $qualification->value_id = $itemQ['value_id'];
 
-                        if(!$qualification->save()){
+                        if ($conf == 'Tipo 1')
+                        {
+                            if ($itemQ['description'] == 'NRI')
+                                $nri = $itemQ['value_id'];
+
+                            if ($itemQ['description'] == 'Nivel de Probabilidad')
+                                $ndp = $itemQ['value_id'];
+                        }
+
+                        if (!$qualification->save())
                             return $this->respondHttp500();
+                    }
+
+                    if ($conf == 'Tipo 1')
+                    {
+                        $matriz_calification = $this->getMatrixCalification($conf);
+
+                        if (isset($matriz_calification[$nri]) && isset($matriz_calification[$nri][$ndp]))
+                        {
+                            $danger->qualification = $matriz_calification[$nri][$ndp];
+                            $danger->save();
                         }
                     }
 
@@ -463,6 +491,7 @@ class DangerMatrixController extends Controller
             DB::commit();
 
         } catch (\Exception $e) {
+            \Log::info($e);
             //$msg = $e->getMessage();
             DB::rollback();
             return $this->respondHttp500();

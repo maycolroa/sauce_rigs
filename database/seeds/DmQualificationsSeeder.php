@@ -39,36 +39,55 @@ class DmQualificationsSeeder extends Seeder
 
                             foreach ($item['types'] as $type)
                             {
-                                if (isset($type['description']) && isset($type['values']))
+                                if (isset($type['description']) && isset($type['type_input']))
                                 {
-                                    if (COUNT($type['values']) > 0)
+                                    if ($type['type_input'] == 'select')
                                     {
-                                        $qualificationType = $qualification->types()->updateOrCreate([
-                                                'description' => $type['description']
-                                            ], [
-                                                'description' => $type['description']
-                                            ]);
-
-                                        foreach ($type['values'] as $value)
+                                        if (COUNT($type['values']) > 0)
                                         {
-                                            if (isset($value['description']) && isset($value['value']))
+                                            $qualificationType = $qualification->types()->updateOrCreate([
+                                                    'description' => $type['description']
+                                                ], [
+                                                    'description' => $type['description'],
+                                                    'type_input' => $type['type_input'],
+                                                    'readonly' => $type['readonly']
+                                                ]);
+
+                                            foreach ($type['values'] as $value)
                                             {
-                                                $qualificationType->values()->updateOrCreate([
-                                                        'value' => $value['value']
-                                                    ], [
-                                                        'value' => $value['value'],
-                                                        'description' => $value['description']
-                                                    ]);
-                                            }
-                                            else
-                                            {
-                                                $this->command->info('Valor de calificación omitido por formato invalido: '. json_encode($value));
+                                                if (isset($value['description']) && isset($value['value']))
+                                                {
+                                                    $qualificationType->values()->updateOrCreate([
+                                                            'value' => $value['value']
+                                                        ], [
+                                                            'value' => $value['value'],
+                                                            'description' => $value['description']
+                                                        ]);
+                                                }
+                                                else
+                                                {
+                                                    $this->command->info('Valor de calificación omitido por formato invalido: '. json_encode($value));
+                                                }
                                             }
                                         }
+                                        else 
+                                        {
+                                            $this->command->info('Tipo de calificación omitida por no tener valores de calificaciones asociadas: '. json_encode($type));
+                                        }
                                     }
-                                    else 
+                                    else if ($type['type_input'] == 'text')
                                     {
-                                        $this->command->info('Tipo de calificación omitida por no tener valores de calificaciones asociadas: '. json_encode($type));
+                                        $qualificationType = $qualification->types()->updateOrCreate([
+                                            'description' => $type['description']
+                                        ], [
+                                            'description' => $type['description'],
+                                            'type_input' => $type['type_input'],
+                                            'readonly' => $type['readonly']
+                                        ]);
+                                    }
+                                    else
+                                    {
+                                        $this->command->info('Tipo de calificación omitida por tipo de input invalido: '. json_encode($type));
                                     }
                                 }
                                 else

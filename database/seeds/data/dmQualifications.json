@@ -1,9 +1,11 @@
 [
     {
-        "name": "Tipo uno",
+        "name": "Tipo 1",
         "types": [
             {
                 "description": "NR Personas",
+                "type_input": "select",
+                "readonly": "NO",
                 "values": [
                     {
                         "value": "0",
@@ -27,6 +29,8 @@
                 ]
             }, {
                 "description": "NR Económico",
+                "type_input": "select",
+                "readonly": "NO",
                 "values": [
                     {
                         "value": "0",
@@ -50,6 +54,8 @@
                 ]
             }, {
                 "description": "NR Imagen",
+                "type_input": "select",
+                "readonly": "NO",
                 "values": [
                     {
                         "value": "0",
@@ -73,29 +79,12 @@
                 ]
             }, {
                 "description": "NRI",
-                "values": [
-                    {
-                        "value": "0",
-                        "description": "Ninguna Lesión."
-                    }, {
-                        "value": "1",
-                        "description": "Lesión leve (primeros auxilios): Atención en lugar de trabajo y no afecta el rendimiento laboral ni causa incapacidad."
-                    }, {
-                        "value": "2",
-                        "description": "Lesión menor sin incapacidad: (incluye casos de primeros auxilios y enfermedades ocupacionales que requieren de tratamiento médico). No afectan el rendimiento laboral ni causan incapacidad."
-                    }, {
-                        "value": "3",
-                        "description": "Incapacidad temporal > 1 día: (lesiones que producen tiempo perdido): Afectan el rendimiento laboral, como la limitación a ciertas actividades o requiere unos días para recuperarse completamente (casos con tiempo perdido). Efectos menores reversibles en la salud, por ejemplo: irritación en la piel, intoxicación por alimentos, traumas (> a 1 día - < a 30 días)."
-                    }, {
-                        "value": "4",
-                        "description": "Incapacidad permanente parcial o invalidez: Afectan el desempeño laboral por largo tiempo, como una ausencia prolongada al trabajo (> a 30 días). Daños irreversibles en la salud con inhabilitación seria sin pérdida de la vida; por ejemplo: lesiones lumbares crónicas, lesiones por trauma acumulativo, dermatitis por sensibilización, asma ocupacional, amputaciones."
-                    }, {
-                        "value": "5",
-                        "description": "Una o más fatalidades: Por accidente o enfermedad ocupacional."
-                    }
-                ]
+                "type_input": "text",
+                "readonly": "SI"
             }, {
                 "description": "Nivel de Probabilidad",
+                "type_input": "select",
+                "readonly": "NO",
                 "values": [
                     {
                         "value": "No ha ocurrido en el sector Hospitalario",
