@@ -8,8 +8,9 @@
     <div class="col-md">
       <b-card no-body>
         <b-card-header class="with-elements">
-          <div class="card-title-elements" v-if="auth.can['dangerMatrix_c']">
-            <b-btn :to="{name:'industrialsecure-dangermatrix-create'}" variant="primary">Crear Matriz de Peligros</b-btn>
+          <div class="card-title-elements">
+            <b-btn v-if="auth.can['dangerMatrix_c']" :to="{name:'industrialsecure-dangermatrix-create'}" variant="primary">Crear Matriz de Peligros</b-btn>
+            <b-btn v-if="auth.can['dangerMatrix_r']" :to="{name:'industrialsecure-dangermatrix-report'}" variant="primary">Reporte</b-btn>
           </div>
         </b-card-header>
         <b-card-body>

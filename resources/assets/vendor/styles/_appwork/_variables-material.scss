@@ -28,11 +28,12 @@ $indigo:       #6610f2 !default;
 $purple:       #6f42c1 !default;
 $pink:         #e83e8c !default;
 $red:          #d9534f !default;
-$orange:       #FEB744 !default;
+//$orange:       #FEB744 !default;
 $yellow:       #FFD950 !default;
 $green:        #02BC77 !default;
 $teal:         #20c997 !default;
 $cyan:         #28c3d7 !default;
+$orange:       #ef7b38 !default;
 
 $theme-colors: (
   "primary":   $indigo,
@@ -41,7 +42,10 @@ $theme-colors: (
   "info":      $cyan,
   "warning":   $yellow,
   "danger":    $red,
-  "dark":      $gray-900
+  "dark":      $gray-900,
+  "indigo":    $indigo,
+  "purple":    $purple,
+  "orange":    $orange
 ) !default;
 
 $body-color:       #4E5155 !default; //#4a4a4a

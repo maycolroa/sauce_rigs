@@ -15,4 +15,9 @@ class QualificationDanger extends Model
     ];
 
     public $timestamps = false;
+
+    public function typeQualification()
+    {
+        return $this->belongsTo(QualificationType::class, 'type_id');
+    }
 }

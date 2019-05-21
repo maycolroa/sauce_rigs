@@ -20,13 +20,33 @@
         </div>
 
         <b-form-row>
-            <vue-advanced-select 
-                v-for="(item, index) in data"
-                :key="index" 
-                v-model="item.value_id"
-                :disabled="viewOnly" class="col-md-6" :multiple="false" :options="item.values" :hide-selected="false" name="qualification" :label="item.description" :btnLabelPopover="createHelp(item.help)" placeholder="Seleccione la calificación"
-                :error="form.errorsFor(`activities.${indexActivity}.dangers.${indexDanger}.qualifications.${index}.value_id`)" >
-                    </vue-advanced-select>
+            <template v-for="(item, index) in data">
+                <vue-input 
+                    :key="index"
+                    :ref="item.description"
+                    v-if="item.type_input == 'text'" 
+                    :disabled="item.readonly == 'SI' || viewOnly" 
+                    class="col-md-6" v-model="item.value_id" :label="item.description" type="text" name="qualification" 
+                    :error="form.errorsFor(`activities.${indexActivity}.dangers.${indexDanger}.qualifications.${index}.value_id`)" 
+                    :placeholder="item.description">
+                </vue-input>
+
+                <vue-advanced-select 
+                    :key="index"
+                    :ref="item.description"
+                    v-if="item.type_input == 'select'" 
+                    v-model="item.value_id"
+                    :disabled="item.readonly == 'SI' || viewOnly" class="col-md-6" :multiple="false" :options="item.values" :hide-selected="false" name="qualification" :label="item.description" :btnLabelPopover="createHelp(item.help)" placeholder="Seleccione la calificación"
+                    :error="form.errorsFor(`activities.${indexActivity}.dangers.${indexDanger}.qualifications.${index}.value_id`)" >
+                        </vue-advanced-select>
+            </template>
+
+            <template v-if="data.length > 0 && qualifications.type == 'Tipo 1'">
+                <vue-input  
+                    :disabled="true" class="col-md-6" v-model="calification" label="Calificación" type="text" name="qualification" 
+                    placeholder="Calificación">
+                </vue-input>
+            </template>
         </b-form-row>
     </div>
 </template>
@@ -35,9 +55,11 @@
 
 <script>
 import VueAdvancedSelect from "@/components/Inputs/VueAdvancedSelect.vue";
+import VueInput from "@/components/Inputs/VueInput.vue";
 
 export default {
     components: {
+        VueInput,
         VueAdvancedSelect
     },
     props: {
@@ -58,6 +80,8 @@ export default {
         data: {
             handler(val){
                 this.$emit('input', this.data)
+                this.updateData()
+                this.updateCalification()
             },
             deep: true
         }
@@ -65,6 +89,8 @@ export default {
     data() {
         return {
             data: [],
+            casillas: [],
+            calification: '',
             ready: false
         }
     },
@@ -74,10 +100,10 @@ export default {
         setTimeout(() => {
             this.fetchData()
         }, 3000)
-    }, 
+    },
     methods: {
         fetchData() {
-            _.forIn(this.qualifications, (value, key) => {
+            _.forIn(this.qualifications.data, (value, key) => {
                 let value_id = ''
 
                 if (this.qualificationsData && this.qualificationsData[value.type_id] != undefined)
@@ -85,14 +111,22 @@ export default {
 
                 this.data.push({
                     "description": value.description,
+                    "type_input": value.type_input,
+                    "readonly": value.readonly,
                     "help": value.help,
                     "type_id": value.type_id,
                     "value_id": value_id,
                     "values": value.values
                 })
+
+                this.$set(this.casillas, value.description, key)
             });
 
             this.ready = true
+
+            setTimeout(() => {
+                this.updateCalification()
+            }, 2000)
         },
         createHelp(help) {
             if (help)
@@ -105,6 +139,42 @@ export default {
             }
             
             return {}
+        },
+        updateData() {
+
+            if (this.qualifications.type == 'Tipo 1')
+            {
+                if (this.$refs["NR Personas"] != undefined && this.$refs["NR Económico"] != undefined && this.$refs["NR Imagen"] != undefined)
+                {
+                    if (this.data[this.casillas['NR Personas']].value_id && this.data[this.casillas['NR Económico']].value_id && this.data[this.casillas['NR Imagen']].value_id)
+                    {
+                        this.data[this.casillas['NRI']].value_id = Math.max(this.data[this.casillas['NR Personas']].value_id, this.data[this.casillas['NR Económico']].value_id, this.data[this.casillas['NR Imagen']].value_id)
+                    }
+                    else
+                        this.data[this.casillas['NRI']].value_id = ''
+                }
+            }
+        },
+        updateCalification() {
+
+            if (this.qualifications.type == 'Tipo 1')
+            {
+                if (this.$refs["NRI"] != undefined && this.$refs["Nivel de Probabilidad"] != undefined)
+                {
+                    if (this.data[this.casillas['NRI']].value_id && this.data[this.casillas['Nivel de Probabilidad']].value_id)
+                    {
+                        let nri = this.data[this.casillas['NRI']].value_id
+                        let ndp = this.data[this.casillas['Nivel de Probabilidad']].value_id
+
+                        if (this.qualifications.matriz_calification[nri] != undefined && this.qualifications.matriz_calification[nri][ndp] != undefined)
+                        {
+                            this.calification = this.qualifications.matriz_calification[nri][ndp].label
+                        }
+                        else
+                            this.calification = '' 
+                    }
+                }
+            }
         }
     }
 };

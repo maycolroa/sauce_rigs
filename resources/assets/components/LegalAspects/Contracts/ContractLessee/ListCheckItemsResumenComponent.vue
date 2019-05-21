@@ -1,6 +1,7 @@
 <template>
     <div>
         Total: {{ total_standard }} | #Cumple: {{ total_c }} ({{ total_p_c }}%) | #No Cumple: {{ total_nc }} ({{ total_p_nc }}%) | #No Calificados: {{ total_sc }}
+        <b-progress :value="barProgress" show-progress striped animated height="0.75rem"/>
     </div>
 </template>
 
@@ -21,6 +22,11 @@ export default {
                 this.calculateResumen()
             },
             deep: true
+        }
+    },
+    computed: {
+        barProgress() {
+            return Math.round(((this.total_standard - this.total_sc) / this.total_standard) * 100);
         }
     },
     data () {

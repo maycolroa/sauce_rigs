@@ -164,5 +164,41 @@ export default [
         urlData: '/industrialSecurity/dangersMatrixHistory/data',
         filterColumns: true,
     }
+},
+{
+    name: 'industrialsecure-dangermatrix-report',
+    fields: [
+        { name: 'sau_dangers_matrix.id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true },
+        { name: 'sau_dm_dangers.name', data: 'name', title: 'Peligro', sortable: true, searchable: true, detail: false, key: false },
+        { name: 'sau_dm_activity_danger.danger_description', data: 'danger_description', title: 'Descripción', sortable: true, searchable: true, detail: false, key: false },
+        { name: 'sau_dangers_matrix.name', data: 'matrix', title: 'Matriz', sortable: true, searchable: true, detail: false, key: false },
+        { name: '', data: 'controlls', title: 'Controles', sortable: false, searchable: false, detail: false, key: false },
+    ],
+    'controlls': [
+        {
+            type: 'push',
+            buttons: [{
+                config: {
+                    color: 'outline-info',
+                    borderless: true,
+                    icon: 'ion ion-md-eye',
+                    title: 'Ver'
+                },
+                data: {
+                    routePush: { name: 'industrialsecure-dangermatrix-view' },
+                    id: 'id',
+                },
+                permission: 'dangerMatrix_r'
+            }]
+        },
+        {
+            type: 'base',
+            buttons: [],
+        }
+    ],
+    configuration: {
+        urlData: '/industrialSecurity/dangersMatrix/reportDangerTable',
+        filterColumns: true,
+    }
 }
 ];

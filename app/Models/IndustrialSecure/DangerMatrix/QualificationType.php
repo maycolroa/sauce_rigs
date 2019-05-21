@@ -10,7 +10,9 @@ class QualificationType extends Model
 
     protected $fillable = [
         'qualification_id',
-        'description'
+        'description',
+        'type_input',
+        'readonly'
     ];
     
     public function values()
