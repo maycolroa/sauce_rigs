@@ -78,7 +78,12 @@ export default {
       return VueTableConfig.get(this.configName);
     }},
     viewIndex: { type: Boolean, default: true },
-    modelId: {type: [Number, String], default: null}
+    modelId: {type: [Number, String], default: null},
+    params: {type: Object, default: function()
+      {
+        return {}
+      }
+    },
   },
   components:{
     FilterGeneral
@@ -170,6 +175,10 @@ export default {
       };
 
       var fields = this.config.fields;
+      
+      _.forIn(this.params, (value, key) => {
+          this.$set(options.params, key, value)
+      });
 
       var fieldsFilter = fields.filter((f) => {
           return f.searchable;

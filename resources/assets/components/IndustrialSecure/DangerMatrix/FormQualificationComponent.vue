@@ -168,7 +168,7 @@ export default {
 
                         if (this.qualifications.matriz_calification[nri] != undefined && this.qualifications.matriz_calification[nri][ndp] != undefined)
                         {
-                            this.calification = this.qualifications.matriz_calification[nri][ndp]
+                            this.calification = this.qualifications.matriz_calification[nri][ndp].label
                         }
                         else
                             this.calification = '' 

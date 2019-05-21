@@ -459,7 +459,7 @@ class DangerMatrixController extends Controller
 
                         if (isset($matriz_calification[$nri]) && isset($matriz_calification[$nri][$ndp]))
                         {
-                            $danger->qualification = $matriz_calification[$nri][$ndp];
+                            $danger->qualification = $matriz_calification[$nri][$ndp]['label'];
                             $danger->save();
                         }
                     }
