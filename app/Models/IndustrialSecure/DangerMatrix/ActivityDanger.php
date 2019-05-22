@@ -50,4 +50,23 @@ class ActivityDanger extends Model
         return $this->hasMany(QualificationDanger::class, 'activity_danger_id');
     }
 
+    /**
+     * filters checks through the given dangers
+     * @param  Illuminate\Database\Eloquent\Builder $query
+     * @param  array $dangers
+     * @return Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeInDangers($query, $dangers, $typeSearch = 'IN')
+    {
+        if (COUNT($dangers) > 0)
+        {
+            if ($typeSearch == 'IN')
+                $query->whereIn('sau_dm_activity_danger.danger_id', $dangers);
+
+            else if ($typeSearch == 'NOT IN')
+                $query->whereNotIn('sau_dm_activity_danger.danger_id', $dangers);
+        }
+
+        return $query;
+    }
 }

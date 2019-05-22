@@ -4,7 +4,15 @@
             <span class="text-muted font-weight-light">Matriz de Peligros /</span> Reporte
         </h4>
         <loading :display="isLoading"/>
-        <template v-if="!isLoading">
+        <div v-show="!isLoading">
+            <b-row align-h="end">
+                <b-col cols="1">
+                    <filter-danger-matrix-report 
+                        v-model="filters" 
+                        configName="industrialsecure-dangermatrix-report" 
+                        :isDisabled="isLoading"/>
+                </b-col>
+            </b-row>
             <b-row>
                 <b-col>
                     <b-card border-variant="secondary" title="" class="mb-3 box-shadow-none">
@@ -42,7 +50,7 @@
                     </b-card>
                 </b-col>
             </b-row>
-        </template>
+        </div>
         <div class="row float-right pt-10 pr-15">
             <template>
                 <b-btn variant="default" :to="{name: 'industrialsecure-dangermatrix'}">Atras</b-btn>
@@ -56,6 +64,7 @@
 import Alerts from '@/utils/Alerts.js';
 import GlobalMethods from '@/utils/GlobalMethods.js';
 import Loading from "@/components/Inputs/Loading.vue";
+import FilterDangerMatrixReport from '@/components/Filters/FilterDangerMatrixReport.vue';
 
 export default {
     name: 'industrialsecure-dangermatrix-report',
@@ -63,7 +72,8 @@ export default {
         title: 'Matriz de Peligros - Reporte'
     },
     components:{
-        Loading
+        Loading,
+        FilterDangerMatrixReport
     },
     data () {
         return {
@@ -149,6 +159,10 @@ export default {
                 this.$set(this.paramsTable, 'row', row)
                 this.$set(this.paramsTable, 'col', col)
                 this.$set(this.paramsTable, 'label', label)
+                
+                _.forIn(this.filters, (value, key) => {
+                    this.$set(this.paramsTable, key, value)
+                });
                 
                 this.titleTable = `Peligros ${label} de (${row} - ${col})`
                 this.showTableDanger = true
