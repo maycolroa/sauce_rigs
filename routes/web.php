@@ -64,6 +64,7 @@ Route::middleware(['auth'])->group(function () {
         Route::post('multiselectBarPercentage', 'PreventiveOccupationalMedicine\BiologicalMonitoring\AudiometryInformController@multiselectBarPercentage');
         Route::post('dmActivities', 'IndustrialSecure\Activities\ActivityController@multiselect');
         Route::post('dmDangers', 'IndustrialSecure\Dangers\DangerController@multiselect');
+        Route::post('dmDangerMatrix', 'IndustrialSecure\DangerMatrix\DangerMatrixController@multiselect');
         Route::post('dmGeneratedDangers', 'General\MultiSelectRadioController@dmGeneratedDangers');
         Route::post('tagsAdministrativeControls', 'IndustrialSecure\Tags\TagController@multiselectAdministrativeControls');
         Route::post('tagsEngineeringControls', 'IndustrialSecure\Tags\TagController@multiselectEngineeringControls');

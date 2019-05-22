@@ -503,5 +503,36 @@ class DangerMatrixController extends Controller
         ]);
     }
 
-    
+    /**
+     * Returns an array for a select type input
+     *
+     * @param Request $request
+     * @return Array
+     */
+
+    public function multiselect(Request $request)
+    {
+        if($request->has('keyword'))
+        {
+            $keyword = "%{$request->keyword}%";
+            $danger_matrix = DangerMatrix::select("id", "name")
+                ->where(function ($query) use ($keyword) {
+                    $query->orWhere('name', 'like', $keyword);
+                })
+                ->take(30)->pluck('id', 'name');
+
+            return $this->respondHttp200([
+                'options' => $this->multiSelectFormat($danger_matrix)
+            ]);
+        }
+        else
+        {
+            $danger_matrix = DangerMatrix::selectRaw("
+                sau_dangers_matrix.id as id,
+                sau_dangers_matrix.name as name
+            ")->pluck('id', 'name');
+        
+            return $this->multiSelectFormat($danger_matrix);
+        }
+    }
 }

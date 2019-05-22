@@ -14,13 +14,6 @@ class LocationLevelFormController extends Controller
      */
     public function getConfModule(Request $request)
     {
-      $data = [];
-
-      if ($request->has('application') && $request->has('module'))
-      {
-        $data = $this->getLocationFormConfModule($request->get('application'), $request->get('module'));
-      }
-
-      return $data;
+      return $this->getLocationFormConfModule();
     }
 }

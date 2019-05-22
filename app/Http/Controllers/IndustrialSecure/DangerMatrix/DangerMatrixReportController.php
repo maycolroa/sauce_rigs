@@ -45,13 +45,31 @@ class DangerMatrixReportController extends Controller
             $matriz_calification = $this->getMatrixCalification($conf);
             $data = $matriz_calification;
 
-            $dangersMatrix = DangerMatrix::select('*')->get();
+            /** FIltros */
+            $regionals = $this->getValuesForMultiselect($request->regionals);
+            $headquarters = $this->getValuesForMultiselect($request->headquarters);
+            $areas = $this->getValuesForMultiselect($request->areas);
+            $processes = $this->getValuesForMultiselect($request->processes);
+            $dangers = $this->getValuesForMultiselect($request->dangers);
+            $matrix = $this->getValuesForMultiselect($request->matrix);
+            $filtersType = $request->filtersType;
+            /***********************************************/
+
+            $dangersMatrix = DangerMatrix::select('*')
+                ->inRegionals($regionals, isset($filtersType['regionals']) ? $filtersType['regionals'] : 'IN')
+                ->inHeadquarters($headquarters, isset($filtersType['headquarters']) ? $filtersType['headquarters'] : 'IN')
+                ->inAreas($areas, isset($filtersType['areas']) ? $filtersType['areas'] : 'IN')
+                ->inProcesses($processes, isset($filtersType['processes']) ? $filtersType['processes'] : 'IN')
+                ->inMatrix($matrix, isset($filtersType['matrix']) ? $filtersType['matrix'] : 'IN')
+                ->get();
 
             foreach ($dangersMatrix as $keyMatrix => $itemMatrix)
             {
                 foreach ($itemMatrix->activities as $keyActivity => $itemActivity)
                 {
-                    foreach ($itemActivity->dangers as $keyDanger => $itemDanger)
+                    $activity_dangers = $itemActivity->dangers()->inDangers($dangers, isset($filtersType['dangers']) ? $filtersType['dangers'] : 'IN')->get();
+
+                    foreach ($activity_dangers as $keyDanger => $itemDanger)
                     {
                         $nri = -1;
                         $ndp = -1;
@@ -86,6 +104,16 @@ class DangerMatrixReportController extends Controller
     */
     public function reportDangerTable(Request $request)
     {
+        /** FIltros */
+        $regionals = $this->getValuesForMultiselect($request->regionals);
+        $headquarters = $this->getValuesForMultiselect($request->headquarters);
+        $areas = $this->getValuesForMultiselect($request->areas);
+        $processes = $this->getValuesForMultiselect($request->processes);
+        $dangers = $this->getValuesForMultiselect($request->dangers);
+        $matrix = $this->getValuesForMultiselect($request->matrix);
+        $filtersType = $request->filtersType;
+        /***********************************************/
+
         $dangers = DangerMatrix::select(
             'sau_dangers_matrix.id AS id',
             'sau_dm_dangers.name AS name',
@@ -97,6 +125,12 @@ class DangerMatrixReportController extends Controller
         ->join('sau_dm_dangers', 'sau_dm_dangers.id', 'sau_dm_activity_danger.danger_id')
         ->join('sau_dm_qualification_danger', 'sau_dm_qualification_danger.activity_danger_id', 'sau_dm_activity_danger.id')
         ->join('sau_dm_qualification_types', 'sau_dm_qualification_types.id', 'sau_dm_qualification_danger.type_id')
+        ->inRegionals($regionals, isset($filtersType['regionals']) ? $filtersType['regionals'] : 'IN')
+        ->inHeadquarters($headquarters, isset($filtersType['headquarters']) ? $filtersType['headquarters'] : 'IN')
+        ->inAreas($areas, isset($filtersType['areas']) ? $filtersType['areas'] : 'IN')
+        ->inProcesses($processes, isset($filtersType['processes']) ? $filtersType['processes'] : 'IN')
+        ->inMatrix($matrix, isset($filtersType['matrix']) ? $filtersType['matrix'] : 'IN')
+        ->inDangers($dangers, isset($filtersType['dangers']) ? $filtersType['dangers'] : 'IN')
         ->where('sau_dm_activity_danger.qualification', $request->label)
         ->where('sau_dm_qualification_types.description', 'NRI')
         ->where('sau_dm_qualification_danger.value_id', $request->row);
