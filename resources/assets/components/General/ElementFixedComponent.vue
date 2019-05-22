@@ -34,7 +34,7 @@ export default {
         handleScroll: function (event) {
             
             let header = this.$refs.myFooter
-            let sticky = header.offsetTop
+            let sticky = this.coordenadas.y
 
             if (window.pageYOffset > sticky) {
                 header.classList.add("sticky");
@@ -43,8 +43,16 @@ export default {
             }
         }
     },
+    data() {
+		return {
+			coordenadas: ''
+		};
+	},
     created: function () {
         window.addEventListener('scroll', this.handleScroll);
+    },
+    mounted: function () {
+        this.coordenadas = this.$refs.myFooter.getBoundingClientRect()
     },
     destroyed: function () {
         window.removeEventListener('scroll', this.handleScroll);

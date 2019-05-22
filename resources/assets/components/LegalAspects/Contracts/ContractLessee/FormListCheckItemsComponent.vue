@@ -111,7 +111,7 @@ import Form from "@/utils/Form.js";
 import FormUploadFileListItemComponent from '@/components/LegalAspects/Contracts/ContractLessee/FormUploadFileListItemComponent.vue';
 import ListCheckItemsResumenComponent from '@/components/LegalAspects/Contracts/ContractLessee/ListCheckItemsResumenComponent.vue';
 import Alerts from '@/utils/Alerts.js';
-import ElementFixedComponent from '@/components/ElementFixedComponent.vue';
+import ElementFixedComponent from '@/components/General/ElementFixedComponent.vue';
 
 export default {
 	components: {
