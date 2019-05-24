@@ -11,18 +11,19 @@
           <div class="card-title-elements" v-if="auth.can['users_c']">
             <b-btn :to="{name:'administrative-users-create'}" variant="primary">Crear Usuario</b-btn>
           </div>
-          <div class="card-title-elements ml-md-auto" v-if="auth.can['users_r']">
+          <!-- <div class="card-title-elements ml-md-auto" v-if="auth.can['users_r']">
             <b-dd variant="default" :right="isRTL">
             <template slot="button-content">
               <span class='fas fa-cogs'></span>
             </template>
             <b-dd-item @click="exportUsers()"><i class="fas fa-download"></i> &nbsp;Exportar</b-dd-item>
           </b-dd>
-          </div>
+          </div>-->
         </b-card-header>
         <b-card-body>
              <vue-table
                 configName="administrative-users"
+                :customColumnsName="true"
                 v-if="auth.can['users_r']"
                 ></vue-table>
         </b-card-body>

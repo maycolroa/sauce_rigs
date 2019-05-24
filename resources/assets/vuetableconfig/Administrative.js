@@ -2,14 +2,7 @@ export default [
   {
     name: 'administrative-users',
     fields: [
-      { name: 'sau_users.id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true },
-      { name: 'sau_users.name', data: 'name', title: 'Nombre', sortable: true, searchable: true, detail: false, key: false },
-      { name: 'sau_users.email', data: 'email', title: 'Email', sortable: true, searchable: true, detail: false, key: false },
-      { name: 'sau_users.document', data: 'document', title: 'Documento', sortable: true, searchable: true, detail: false, key: false },
-      { name: 'sau_users.document_type', data: 'document_type', title: 'Tipo de Documento', sortable: true, searchable: true, detail: false, key: false },
-      { name: 'sau_roles.name', data: 'role', title: 'Rol', sortable: true, searchable: true, detail: false, key: false },
-      { name: 'sau_users.active', data: 'active', title: '¿Activo?', sortable: true, searchable: true, detail: false, key: false },
-      { name: '', data: 'controlls', title: 'Controles', sortable: false, searchable: false, detail: false, key: false },
+      { name: 'sau_users.id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true }
     ],
     'controlls': [{
       type: 'push',
@@ -41,7 +34,7 @@ export default [
     },
     {
       type: 'base',
-      buttons: [{
+      buttons: [/*{
         name: 'delete',
         data: {
           action: '/administration/users/',
@@ -49,7 +42,7 @@ export default [
           messageConfirmation: 'Esta seguro de borrar el usuario del __name__'
         },
         permission: 'users_d'
-      }],
+      */],
     }],
     configuration: {
       urlData: '/administration/users/data',

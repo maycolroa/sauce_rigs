@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Administrative\Users;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Auth;
 use App\Facades\Configuration;
 
 class UserRequest extends FormRequest
@@ -30,9 +31,11 @@ class UserRequest extends FormRequest
             'name'      => 'required|string',
             'email'     => 'required|email|unique:sau_users,email,' . $id . ',id',
             'document'  => 'required|numeric',
-            'role_id'   => 'required',
             'password'  => 'nullable|string|min:6'
         ];
+
+        if (!Auth::user()->hasRole('Arrendatario') && !Auth::user()->hasRole('Contratista') && $this->input('edit_role') == 'true')
+            $rules['role_id'] = 'required';
         
         return $rules;
     }

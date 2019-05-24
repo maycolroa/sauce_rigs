@@ -181,18 +181,18 @@ class ContractLesseeController extends Controller
                 return $this->respondHttp500();
             }
 
-            /*$users = $this->getUsersContract($contract->id);
+            $users = $this->getUsersContract($contract->id);
 
             foreach ($users as $user)
             {
                 $user->syncRoles([$this->getIdRole($contract->type)]);
 
-                if ($contract->active == 'NO')
+                /*if ($contract->active == 'NO')
                 {
                     $user->active = 'NO';
                     $user->save();
-                }
-            }*/
+                }*/
+            }
 
             $this->reloadLiskCheckResumen($contract);
 

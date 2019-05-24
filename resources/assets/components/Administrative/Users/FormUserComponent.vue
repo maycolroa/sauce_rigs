@@ -12,8 +12,10 @@
     </b-form-row>
 
     <b-form-row>
-      <vue-ajax-advanced-select :disabled="viewOnly" class="col-md-6" v-model="form.role_id" :error="form.errorsFor('role_id')" :selected-object="form.multiselect_role" name="role_id" label="Rol" placeholder="Seleccione el rol del usuario" :url="rolesDataUrl">
-          </vue-ajax-advanced-select>
+      <template v-if="!auth.hasRole['Arrendatario'] && !auth.hasRole['Contratista'] && form.edit_role">
+        <vue-ajax-advanced-select :disabled="viewOnly" class="col-md-6" v-model="form.role_id" :error="form.errorsFor('role_id')" :selected-object="form.multiselect_role" name="role_id" label="Rol" placeholder="Seleccione el rol del usuario" :url="rolesDataUrl">
+            </vue-ajax-advanced-select>
+      </template>
       <vue-checkbox-simple v-if="isEdit || viewOnly" style="padding-top: 20px;" :disabled="viewOnly" class="col-md-6" v-model="form.active" label="¿Activo?" :checked="form.active" name="active" checked-value="SI" unchecked-value="NO"></vue-checkbox-simple>
     </b-form-row>
 
@@ -52,7 +54,8 @@ export default {
             email: '',
             password: '',
             document: '',
-            role_id: ''
+            role_id: '',
+            edit_role: true
         };
       }
     }
