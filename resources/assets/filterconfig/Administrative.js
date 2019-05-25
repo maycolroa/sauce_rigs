@@ -3,7 +3,7 @@ export default [
       name: 'administrative-actionplans',
       filters: [
         {
-            url: '/selects/usersAll',
+            url: '/selects/responsiblesFilter',
             key: 'responsibles',
         },
         {

@@ -20,19 +20,21 @@ class ActionPlanExportJob implements ShouldQueue
     protected $filters;
     protected $isSuperAdmin;
     protected $all_permissions;
+    protected $isContract;
 
     /**
      * Create a new job instance.
      *
      * @return void
      */
-    public function __construct($user, $company_id, $filters, $isSuperAdmin, $all_permissions)
+    public function __construct($user, $company_id, $filters, $isSuperAdmin, $all_permissions, $isContract)
     {
       $this->user = $user;
       $this->company_id = $company_id;
       $this->filters = $filters;
       $this->isSuperAdmin = $isSuperAdmin;
       $this->all_permissions = $all_permissions;
+      $this->isContract = $isContract;
     }
 
     /**
@@ -43,7 +45,7 @@ class ActionPlanExportJob implements ShouldQueue
     public function handle()
     {
       $nameExcel = 'export/1/planes_de_accion_'.date("YmdHis").'.xlsx';
-      Excel::store(new ActionPlanExcel($this->user, $this->company_id, $this->filters, $this->isSuperAdmin, $this->all_permissions),$nameExcel,'public',\Maatwebsite\Excel\Excel::XLSX);
+      Excel::store(new ActionPlanExcel($this->user, $this->company_id, $this->filters, $this->isSuperAdmin, $this->all_permissions, $this->isContract),$nameExcel,'public',\Maatwebsite\Excel\Excel::XLSX);
       
       $paramUrl = base64_encode($nameExcel);
       

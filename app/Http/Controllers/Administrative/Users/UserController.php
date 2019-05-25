@@ -230,34 +230,33 @@ class UserController extends Controller
         }
     }
 
-    public function multiselect(Request $request){
-        return $this->getUsers($request);
-    }
-
-    public function multiselectAll(Request $request){
-        return $this->getUsers($request, true);
-    }
-
-    private function getUsers($request, $all = false)
+    public function multiselect(Request $request)
     {
+        $users = User::selectRaw("
+                    sau_users.id as id,
+                    CONCAT(sau_users.document, ' - ', sau_users.name) as name
+                ");
+
+        if (Auth::user()->hasRole('Arrendatario') || Auth::user()->hasRole('Contratista'))
+        {
+            $users->join('sau_user_information_contract_lessee', 'sau_user_information_contract_lessee.user_id', 'sau_users.id')
+                  ->where('sau_user_information_contract_lessee.information_id', $this->getContractIdUser(Auth::user()->id));
+        }
+        else
+        {
+            $users->join('sau_role_user', 'sau_role_user.user_id', 'sau_users.id')
+                  ->join('sau_roles', 'sau_roles.id', 'sau_role_user.role_id');
+        }
+
         if($request->has('keyword'))
         {
             $keyword = "%{$request->keyword}%";
-            $users = User::selectRaw("
-                sau_users.id as id,
-                CONCAT(sau_users.document, ' - ', sau_users.name) as name
-            ")
-            ->join('sau_role_user', 'sau_role_user.user_id', 'sau_users.id')
-            ->join('sau_roles', 'sau_roles.id', 'sau_role_user.role_id')
-            ->where(function ($query) use ($keyword) {
-                $query->orWhere('sau_users.document', 'like', $keyword)
-                ->orWhere('sau_users.name', 'like', $keyword);
-            });
 
-            if (!$all)
-                $users->where('sau_users.id', '<>', Auth::user()->id);
-
-            $users = $users->take(30)->pluck('id', 'name');
+            $users = $users->where(function ($query) use ($keyword) {
+                        $query->orWhere('sau_users.document', 'like', $keyword)
+                        ->orWhere('sau_users.name', 'like', $keyword);
+                    })
+                    ->take(30)->pluck('id', 'name');
 
             return $this->respondHttp200([
                 'options' => $this->multiSelectFormat($users)
@@ -265,18 +264,8 @@ class UserController extends Controller
         }
         else
         {
-            $users = User::selectRaw("
-                sau_users.id as id,
-                CONCAT(sau_users.document, ' - ', sau_users.name) as name
-            ")
-            ->join('sau_role_user', 'sau_role_user.user_id', 'sau_users.id')
-            ->join('sau_roles', 'sau_roles.id', 'sau_role_user.role_id');
-
-            if (!$all)
-                $users->where('sau_users.id', '<>', Auth::user()->id);
-
             $users = $users->pluck('id', 'name');
-            
+
             return $this->multiSelectFormat($users);
         }
     }
