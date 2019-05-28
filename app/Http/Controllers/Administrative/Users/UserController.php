@@ -7,6 +7,7 @@ use App\Vuetable\Facades\Vuetable;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Administrative\Users\UserRequest;
 use App\Models\Administrative\Users\User;
+use App\Models\Administrative\Roles\Role;
 use App\Traits\UserTrait;
 use App\Traits\ContractTrait;
 use App\Jobs\Administrative\Users\UserExportJob;
@@ -119,13 +120,17 @@ class UserController extends Controller
             
         try
         {
-            $roles = $user->roles;
+            $role = Role::withoutGlobalScopes()
+                ->join('sau_role_user', 'sau_role_user.role_id', 'sau_roles.id')
+                ->where('sau_roles.company_id', Session::get('company_id'))
+                ->where('sau_role_user.user_id', $user->id)
+                ->first();
 
-            foreach ($roles as $key => $value) {
-                $user->multiselect_role = $value->multiselect();
-                $user->role_id = $value->id;
-                $user->old_role_id = $value->id;
-                break;
+            if ($role)
+            {
+                $user->multiselect_role = $role->multiselect();
+                $user->role_id = $role->id;
+                $user->old_role_id = $role->id;
             }
 
             if (!$user->role_id)
