@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Administrative\Users\UserRequest;
 use App\Models\Administrative\Users\User;
 use App\Traits\UserTrait;
+use App\Traits\ContractTrait;
 use App\Jobs\Administrative\Users\UserExportJob;
 use Session;
 use Illuminate\Support\Facades\Auth;
@@ -16,6 +17,7 @@ use DB;
 class UserController extends Controller
 {
     use UserTrait;
+    use ContractTrait;
 
     /**
      * creates and instance and middlewares are checked
@@ -26,7 +28,7 @@ class UserController extends Controller
         $this->middleware('permission:users_c', ['only' => 'store']);
         $this->middleware('permission:users_r', ['except' =>'multiselect']);
         $this->middleware('permission:users_u', ['only' => 'update']);
-        $this->middleware('permission:users_d', ['only' => 'destroy']);
+        //$this->middleware('permission:users_d', ['only' => 'destroy']);
     }
     
     /**
@@ -45,16 +47,34 @@ class UserController extends Controller
     * @return \Illuminate\Http\Response
     */
    public function data(Request $request)
-   {
-        $users = User::select(
-            'sau_users.*',
-            'sau_roles.name as role'
-        )
-        ->join('sau_role_user', 'sau_role_user.user_id', 'sau_users.id')
-        ->join('sau_roles', 'sau_roles.id', 'sau_role_user.role_id')
-        ->where('sau_users.id', '<>', Auth::user()->id);
+   {    
+        if (Auth::user()->hasRole('Arrendatario') || Auth::user()->hasRole('Contratista'))
+        {
+            $users = User::select('sau_users.*')
+                ->join('sau_user_information_contract_lessee', 'sau_user_information_contract_lessee.user_id', 'sau_users.id')
+                ->where('sau_user_information_contract_lessee.information_id', $this->getContractIdUser(Auth::user()->id));
+        }
+        else
+        {
+            $users = User::select(
+                'sau_users.*',
+                'sau_roles.name as role'
+            )
+            ->withoutGlobalScopes()
+            ->join('sau_company_user', 'sau_company_user.user_id', 'sau_users.id')
+            ->join('sau_role_user', 'sau_role_user.user_id', 'sau_users.id')
+            ->join('sau_roles', 'sau_roles.id', 'sau_role_user.role_id')
+            ->where('sau_company_user.company_id', Session::get('company_id'))
+            ->whereRaw('(sau_roles.company_id = '.Session::get('company_id').' OR (sau_roles.company_id IS NULL AND sau_roles.name IN("Contratista", "Arrendatario") ) )');
+        }
 
        return Vuetable::of($users)
+                ->addColumn('administrative-users-edit', function ($user) {
+                    return $user->id != Auth::user()->id; 
+                })
+                /*->addColumn('control_delete', function ($user) {
+                    return $user->id != Auth::user()->id; 
+                })*/
                 ->make();
    }
 
@@ -72,8 +92,14 @@ class UserController extends Controller
             return $this->respondHttp500();
         }
 
-        //$user->companies()->sync(Session::get('company_id'));
-        $user->syncRoles([$request->get('role_id')]);
+        if (Auth::user()->hasRole('Arrendatario') || Auth::user()->hasRole('Contratista'))
+        {
+            $user->syncRoles([Auth::user()->roleUser[0]]);
+            $contract = $this->getContractUser(Auth::user()->id);
+            $contract->users()->attach($user);
+        }
+        else
+            $user->syncRoles([$request->get('role_id')]);
 
         return $this->respondHttp200([
             'message' => 'Se creo el usuario'
@@ -98,8 +124,14 @@ class UserController extends Controller
             foreach ($roles as $key => $value) {
                 $user->multiselect_role = $value->multiselect();
                 $user->role_id = $value->id;
+                $user->old_role_id = $value->id;
                 break;
             }
+
+            if (!$user->role_id)
+                $user->edit_role = false;
+            else
+                $user->edit_role = true;
             
             return $this->respondHttp200([
                 'data' => $user,
@@ -125,7 +157,14 @@ class UserController extends Controller
           return $this->respondHttp500();
         }
 
-        $user->syncRoles([$request->get('role_id')]);
+        if (!Auth::user()->hasRole('Arrendatario') && !Auth::user()->hasRole('Contratista'))
+        {
+            if ($request->get('edit_role') == 'true')
+            {
+                $user->roles()->detach($request->get('old_role_id'));
+                $user->roles()->attach($request->get('role_id'));
+            }
+        }
         
         return $this->respondHttp200([
             'message' => 'Se actualizo el usuario'
@@ -140,7 +179,7 @@ class UserController extends Controller
      */
     public function destroy(User $user)
     {
-        DB::beginTransaction();
+        /*DB::beginTransaction();
 
         try
         {
@@ -169,7 +208,7 @@ class UserController extends Controller
             DB::rollback();
             \Log::error($e->getMessage());
             return $this->respondHttp500();
-        }
+        }*/
     }
 
     /**
@@ -191,34 +230,33 @@ class UserController extends Controller
         }
     }
 
-    public function multiselect(Request $request){
-        return $this->getUsers($request);
-    }
-
-    public function multiselectAll(Request $request){
-        return $this->getUsers($request, true);
-    }
-
-    private function getUsers($request, $all = false)
+    public function multiselect(Request $request)
     {
+        $users = User::selectRaw("
+                    sau_users.id as id,
+                    CONCAT(sau_users.document, ' - ', sau_users.name) as name
+                ");
+
+        if (Auth::user()->hasRole('Arrendatario') || Auth::user()->hasRole('Contratista'))
+        {
+            $users->join('sau_user_information_contract_lessee', 'sau_user_information_contract_lessee.user_id', 'sau_users.id')
+                  ->where('sau_user_information_contract_lessee.information_id', $this->getContractIdUser(Auth::user()->id));
+        }
+        else
+        {
+            $users->join('sau_role_user', 'sau_role_user.user_id', 'sau_users.id')
+                  ->join('sau_roles', 'sau_roles.id', 'sau_role_user.role_id');
+        }
+
         if($request->has('keyword'))
         {
             $keyword = "%{$request->keyword}%";
-            $users = User::selectRaw("
-                sau_users.id as id,
-                CONCAT(sau_users.document, ' - ', sau_users.name) as name
-            ")
-            ->join('sau_role_user', 'sau_role_user.user_id', 'sau_users.id')
-            ->join('sau_roles', 'sau_roles.id', 'sau_role_user.role_id')
-            ->where(function ($query) use ($keyword) {
-                $query->orWhere('sau_users.document', 'like', $keyword)
-                ->orWhere('sau_users.name', 'like', $keyword);
-            });
 
-            if (!$all)
-                $users->where('sau_users.id', '<>', Auth::user()->id);
-
-            $users = $users->take(30)->pluck('id', 'name');
+            $users = $users->where(function ($query) use ($keyword) {
+                        $query->orWhere('sau_users.document', 'like', $keyword)
+                        ->orWhere('sau_users.name', 'like', $keyword);
+                    })
+                    ->take(30)->pluck('id', 'name');
 
             return $this->respondHttp200([
                 'options' => $this->multiSelectFormat($users)
@@ -226,18 +264,8 @@ class UserController extends Controller
         }
         else
         {
-            $users = User::selectRaw("
-                sau_users.id as id,
-                CONCAT(sau_users.document, ' - ', sau_users.name) as name
-            ")
-            ->join('sau_role_user', 'sau_role_user.user_id', 'sau_users.id')
-            ->join('sau_roles', 'sau_roles.id', 'sau_role_user.role_id');
-
-            if (!$all)
-                $users->where('sau_users.id', '<>', Auth::user()->id);
-
             $users = $users->pluck('id', 'name');
-            
+
             return $this->multiSelectFormat($users);
         }
     }
