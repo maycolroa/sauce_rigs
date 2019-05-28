@@ -4,11 +4,15 @@ namespace App\Http\Controllers\LegalAspects\Contracs;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 use App\Models\LegalAspects\Contracts\SectionCategoryItems;
+use App\Traits\ContractTrait;
 use Session;
 
 class SectionCategoryItemController extends Controller
 {
+    use ContractTrait;
+
     /**
      * Display a listing of the resource.
      *
@@ -27,18 +31,12 @@ class SectionCategoryItemController extends Controller
      */
     public function multiselect(Request $request)
     {
-        if($request->has('keyword'))
+        if (Auth::user()->hasRole('Arrendatario') || Auth::user()->hasRole('Contratista'))
         {
-            $keyword = "%{$request->keyword}%";
-            $items = SectionCategoryItems::select("id", "item_name AS name")
-                ->where(function ($query) use ($keyword) {
-                    $query->orWhere('item_name', 'like', $keyword);
-                })
-                ->take(30)->pluck('id', 'name');
-
-            return $this->respondHttp200([
-                'options' => $this->multiSelectFormat($items)
-            ]);
+            $contract = $this->getContractUser(Auth::user()->id);
+            $items = $this->getStandardItemsContract($contract);
+            $items = COUNT($items) > 0 ? $items->pluck('id', 'item_name') : [];
+            return $this->multiSelectFormat($items);
         }
         else
         {
