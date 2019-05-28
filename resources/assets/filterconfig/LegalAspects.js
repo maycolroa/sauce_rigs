@@ -5,13 +5,19 @@ export default [
         {
           url: '/selects/evaluations/objectives',
           key: 'evaluationsObjectives',
+          type: 'select',
+          label: 'Objetivos'
         },
         {
           url: '/selects/evaluations/subobjectives',
           key: 'evaluationsSubobjectives',
+          type: 'select',
+          label: 'Subobjetivos'
         },
         {
-          key: 'dateRange'
+          key: 'dateRange',
+          type: 'dateRange',
+          label: 'Rango de fecha',
         }
       ]
     },
@@ -19,7 +25,9 @@ export default [
       name: 'legalaspects-evaluations-contracts',
       filters: [
         {
-          key: 'dateRange'
+          key: 'dateRange',
+          type: 'dateRange',
+          label: 'Rango de fecha',
         }
       ]
     },
@@ -29,6 +37,8 @@ export default [
         {
           url: '/selects/contracts/sectionCategoryItems',
           key: 'items',
+          type: 'select',
+          label: 'Items'
         }
       ]
     },

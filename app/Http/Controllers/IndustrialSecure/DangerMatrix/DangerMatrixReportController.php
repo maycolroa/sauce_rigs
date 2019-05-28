@@ -60,14 +60,14 @@ class DangerMatrixReportController extends Controller
                 ->inHeadquarters($headquarters, isset($filtersType['headquarters']) ? $filtersType['headquarters'] : 'IN')
                 ->inAreas($areas, isset($filtersType['areas']) ? $filtersType['areas'] : 'IN')
                 ->inProcesses($processes, isset($filtersType['processes']) ? $filtersType['processes'] : 'IN')
-                ->inMatrix($matrix, isset($filtersType['matrix']) ? $filtersType['matrix'] : 'IN')
+                ->inMatrix($matrix, $filtersType['matrix'])
                 ->get();
 
             foreach ($dangersMatrix as $keyMatrix => $itemMatrix)
             {
                 foreach ($itemMatrix->activities as $keyActivity => $itemActivity)
                 {
-                    $activity_dangers = $itemActivity->dangers()->inDangers($dangers, isset($filtersType['dangers']) ? $filtersType['dangers'] : 'IN')->get();
+                    $activity_dangers = $itemActivity->dangers()->inDangers($dangers, $filtersType['dangers'])->get();
 
                     foreach ($activity_dangers as $keyDanger => $itemDanger)
                     {
@@ -129,8 +129,8 @@ class DangerMatrixReportController extends Controller
         ->inHeadquarters($headquarters, isset($filtersType['headquarters']) ? $filtersType['headquarters'] : 'IN')
         ->inAreas($areas, isset($filtersType['areas']) ? $filtersType['areas'] : 'IN')
         ->inProcesses($processes, isset($filtersType['processes']) ? $filtersType['processes'] : 'IN')
-        ->inMatrix($matrix, isset($filtersType['matrix']) ? $filtersType['matrix'] : 'IN')
-        ->inDangers($dangers, isset($filtersType['dangers']) ? $filtersType['dangers'] : 'IN')
+        ->inMatrix($matrix, $filtersType['matrix'])
+        ->inDangers($dangers, $filtersType['dangers'])
         ->where('sau_dm_activity_danger.qualification', $request->label)
         ->where('sau_dm_qualification_types.description', 'NRI')
         ->where('sau_dm_qualification_danger.value_id', $request->row);

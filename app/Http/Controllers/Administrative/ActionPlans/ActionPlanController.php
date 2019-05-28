@@ -74,7 +74,7 @@ class ActionPlanController extends Controller
             {
                 $contract = $this->getContractUser(Auth::user()->id);
                 $users = $this->getUsersContract($contract->id);
-                $users_list = [];
+                $users_list = [Auth::user()->id];
 
                 foreach ($users as $user)
                 {
@@ -161,11 +161,30 @@ class ActionPlanController extends Controller
 
         if (!Auth::user()->hasRole('Superadmin'))
         {
-            $modules->where(function ($subquery) {
-                $subquery->whereIn('sau_action_plans_activity_module.module_id', $this->getIdsModulePermissions());
+            if (Auth::user()->hasRole('Arrendatario') || Auth::user()->hasRole('Contratista'))
+            {
+                $contract = $this->getContractUser(Auth::user()->id);
+                $users = $this->getUsersContract($contract->id);
+                $users_list = [Auth::user()->id];
 
-                $subquery->orWhere('sau_action_plans_activities.responsible_id', Auth::user()->id);
-            });
+                foreach ($users as $user)
+                {
+                    array_push($users_list, $user->id);
+                }
+
+                $modules->where(function ($subquery) use ($users_list) {
+                    $subquery->whereIn('sau_action_plans_activities.responsible_id', $users_list);
+                });
+            }
+            else
+            {
+                $modules->where(function ($subquery) {
+
+                    $subquery->whereIn('sau_action_plans_activity_module.module_id', $this->getIdsModulePermissions());
+
+                    $subquery->orWhere('sau_action_plans_activities.responsible_id', Auth::user()->id);
+                });
+            }
         }
 
         $modules = $modules->groupBy('sau_modules.display_name')->pluck('ids', 'name');

@@ -1,19 +1,25 @@
 export default [
-    {
-      name: 'administrative-actionplans',
-      filters: [
-        {
-            url: '/selects/responsiblesFilter',
-            key: 'responsibles',
-        },
-        {
-            url: '/selects/actionPlanModules',
-            key: 'modules',
-        },
-        {
-            url: '/selects/actionPlanStates',
-            key: 'states',
-        }
-      ]
-    }
+  {
+    name: 'administrative-actionplans',
+    filters: [
+      {
+        url: '/selects/responsiblesFilter',
+        key: 'responsibles',
+        type: 'select',
+        label: 'Responsables'
+      },
+      {
+        url: '/selects/actionPlanModules',
+        key: 'modules',
+        type: 'select',
+        label: 'Módulos'
+      },
+      {
+        url: '/selects/actionPlanStates',
+        key: 'states',
+        type: 'select',
+        label: 'Estados'
+      }
+    ]
+  }
 ];

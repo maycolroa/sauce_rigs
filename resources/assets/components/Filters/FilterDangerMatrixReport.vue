@@ -14,11 +14,13 @@
                 <div class="col-md">
                     <b-card no-body>
                         <b-card-body>
-                            <b-row>
-                                <template v-for="(item, index) in filters"> 
-                                    <b-col cols="12" :key="index" v-if="item.active"><vue-advanced-select  v-model="filtersSelected[index]" :multiple="true" :options="item.data" :searchable="true" :name="item.name" :label="item.label" :disabled="isDisabled" :filterTypeSearch="true" @updateFilterTypeSearch="setFilterTypeSearch($event, item.name)">
-                                    </vue-advanced-select></b-col>
-                                </template>
+                            <b-row v-for="(item, index) in filters" :key="index">
+                                <b-col>
+                                    <vue-advanced-select
+                                        v-if="item.type == 'select'"
+                                        v-model="filtersSelected[index]" :multiple="true" :options="item.data" :searchable="true" :name="item.key" :label="item.label" :disabled="isDisabled" :filterTypeSearch="true" @updateFilterTypeSearch="setFilterTypeSearch($event, item.key)">
+                                    </vue-advanced-select>
+                                </b-col>
                             </b-row>
                         </b-card-body>
                     </b-card>
@@ -60,65 +62,10 @@ export default {
     },
     data () {
         return {
-            filters: {
-                regionals: {
-                    label: 'Regionales',
-                    name: 'regionals',
-                    data: [],
-                    active: false,
-                    ready: false
-                },
-                headquarters: {
-                    label: 'Sedes',
-                    name: 'headquarters',
-                    data: [],
-                    active: false,
-                    ready: false
-                },
-                processes: {
-                    label: 'Procesos',
-                    name: 'processes',
-                    data: [],
-                    active: false,
-                    ready: false
-                },
-                areas: {
-                    label: 'Áreas',
-                    name: 'areas',
-                    data: [],
-                    active: false,
-                    ready: false
-                },
-                dangers: {
-                    label: 'Peligros',
-                    name: 'dangers',
-                    data: [],
-                    active: false,
-                    ready: false
-                },
-                matrix: {
-                    label: 'Matriz de peligros',
-                    name: 'matrix',
-                    data: [],
-                    active: false,
-                    ready: false
-                }
-            },
+            ready: false,
+            filters: {},
             filtersSelected: {
-                regionals: [],
-                headquarters: [],
-                areas: [],
-                processes: [],
-                dangers: [],
-                matrix: [],
-                filtersType: {
-                    regionals: 'IN', 
-                    headquarters: 'IN',
-                    areas: 'IN',
-                    processes: 'IN',
-                    dangers: 'IN',
-                    matrix: 'IN'
-                }
+                filtersType: {}
             }
         }
     },
@@ -144,13 +91,24 @@ export default {
                         if (item.key == 'areas' && inputs.area == 'NO')
                             continue;
 
-                        if (this.filters[item.key] != undefined)
+                        this.$set(this.filters, item.key, item)
+                        
+                        if (item.type == 'select')
                         {
-                            this.filters[item.key].active = true
-
+                            this.$set(this.filters[item.key], 'data', [])
+                            this.$set(this.filtersSelected, item.key, [])
+                            this.$set(this.filtersSelected.filtersType, item.key, 'IN')
                             this.fetchFilterSelect(item.key, item.url)
                         }
+                        else if (item.type == 'dateRange')
+                        {
+                            this.$set(this.filtersSelected, item.key, '')
+                        }
                     }
+
+                    setTimeout(() => {
+                        this.ready = true
+                    }, 3000)
                 }
             })
             .catch(error => {
@@ -164,42 +122,13 @@ export default {
     computed: {
     },
     watch: {
-        'filters.regionals.data'() {
-            this.updateFilterData('regionals')
-        },
-        'filters.headquarters.data'() {
-            this.updateFilterData('headquarters')
-        },
-        'filters.areas.data'() {
-            this.updateFilterData('areas')
-        },
-        'filters.processes.data'() {
-            this.updateFilterData('processes')
-        },
-        'filters.dangers.data'() {
-            this.updateFilterData('dangers')
-        },
-        'filters.matrix.data'() {
-            this.updateFilterData('matrix')
-        },
-        'filtersSelected.regionals'() {
-            this.updateFilterTable('regionals')
-        },
-        'filtersSelected.headquarters'() {
-            this.updateFilterTable('headquarters')
-        },
-        'filtersSelected.areas'() {
-            this.updateFilterTable('areas')
-        },
-        'filtersSelected.processes'() {
-            this.updateFilterTable('processes')
-        },
-        'filtersSelected.dangers'() {
-            this.updateFilterTable('dangers')
-        },
-        'filtersSelected.matrix'() {
-            this.updateFilterTable('matrix')
-        },
+        filtersSelected: {
+            handler(val) {
+                if (this.ready)
+                    this.emitFilters()
+            },
+            deep: true
+        }
     },
     methods: {
         fetchFilterSelect(key, url)
@@ -213,16 +142,9 @@ export default {
                 Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
             });
         },
-        updateFilterData(key)
+        emitFilters(key)
         {
-            setTimeout(() => {
-                this.filters[key].ready = true
-            }, 1000)
-        },
-        updateFilterTable(key)
-        {
-            if (this.filters[key].ready)
-                this.$emit('input', this.filtersSelected)
+            this.$emit('input', this.filtersSelected)
         },
         showFilterModal () {
             this.$refs.filterModal.show()

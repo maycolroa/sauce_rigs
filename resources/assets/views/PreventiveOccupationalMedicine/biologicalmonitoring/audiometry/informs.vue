@@ -494,6 +494,7 @@ export default {
     created(){
         this.fetchSelect('selectBar', '/selects/multiselectBar')
         this.fetchSelect('selectBarPercentage', '/selects/multiselectBarPercentage')
+        this.fetch()
     },
     computed: {
         exposedPopulationData: function() {
