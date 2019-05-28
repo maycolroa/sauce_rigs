@@ -157,7 +157,36 @@ export default [
 				name: 'legalaspects-upload-files-view',
 				path: 'upload-files/view/:id',
 				component: () => import('@/views/LegalAspects/contracts/uploadFiles/view')
-			}
+			},
+			{
+				name: 'legalaspects-legalmatrix',
+				path: 'legalmatrix',
+				component: () => import('@/views/LegalAspects/legalMatrix/index')
+			},
+			{
+				name: 'legalaspects-lm-interest',
+				path: 'lm/interests',
+				component: () =>
+				import('@/views/LegalAspects/legalMatrix/interests/index')
+			}, 
+			{
+				name: 'legalaspects-lm-interest-create',
+				path: 'lm/interests/create',
+				component: () =>
+				import('@/views/LegalAspects/legalMatrix/interests/create')
+			},
+			{
+				name: 'legalaspects-lm-interest-edit',
+				path: 'lm/interests/edit/:id',
+				component: () =>
+				import('@/views/LegalAspects/legalMatrix/interests/edit')
+			},
+			{
+				name: 'legalaspects-lm-interest-view',
+				path: 'lm/interests/view/:id',
+				component: () =>
+				import('@/views/LegalAspects/legalMatrix/interests/view')
+			},
 		]
 	}
 ];

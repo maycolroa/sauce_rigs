@@ -95,6 +95,10 @@
             {
                 "name": "contracts",
                 "display_name": "Contratistas"
+            },
+            {
+                "name": "legalMatrix",
+                "display_name": "Matriz Legal"
             }
         ]
     }    
