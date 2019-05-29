@@ -88,6 +88,8 @@ export default {
                             continue;
                         if (item.key == 'processes' && inputs.process == 'NO')
                             continue;
+                        if (item.key == 'macroprocesses' && inputs.process == 'NO')
+                            continue;
                         if (item.key == 'areas' && inputs.area == 'NO')
                             continue;
 

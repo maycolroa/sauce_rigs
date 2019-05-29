@@ -11,7 +11,8 @@
                 url="/administration/configuration"
                 method="POST"
                 :configuration="data"
-                :locationLevels="locationLevels"/>
+                :locationLevels="locationLevels"
+                :si-no="siNo"/>
         </b-card-body>
       </b-card>
     </div>
@@ -34,12 +35,14 @@ export default {
   data(){
     return {
       data: [],
-      locationLevels: []
+      locationLevels: [],
+      siNo: []
     }
   },
   created(){
     this.fetchSelect('locationLevels', '/radios/conf/locationLevelForm')
-    
+    this.fetchSelect('siNo', '/radios/siNo')
+
     axios.get('/administration/configuration/view')
     .then(response => {
         this.data = response.data.data;

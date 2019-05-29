@@ -121,7 +121,7 @@
               </b-card>
             </tab-content>
 
-            <tab-content title="Plan de acción">
+            <tab-content title="Plan de acción" v-if="configuration.show_action_plans != undefined && configuration.show_action_plans == 'SI'">
               <b-card bg-variant="transparent" border-variant="secondary" title="" class="mb-3 box-shadow-none">
                 <action-plan-component
                   :is-edit="isEdit"
@@ -202,6 +202,12 @@ export default {
     },
     actionPlanStates: {
       type: Array,
+      default: function() {
+        return [];
+      }
+    },
+    configuration: {
+      type: [Array, Object],
       default: function() {
         return [];
       }

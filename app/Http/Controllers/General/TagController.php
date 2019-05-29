@@ -30,5 +30,14 @@ class TagController extends Controller
                 'options' => $this->multiSelectFormat($tags)
             ]);
         }
+        else
+        {
+            $tags = TagsProcess::selectRaw("
+                sau_tags_processes.id as id,
+                sau_tags_processes.name as name
+            ")->pluck('name', 'name');
+        
+            return $this->multiSelectFormat($tags);
+        }
     }
 }

@@ -57,6 +57,7 @@
                     :index-activity="indexActivity"
                     :index-danger="index"
                     @dangerName="updateDangerNamePanel"
+                    :configuration="configuration"
                   />
                 </b-card-body>
               </b-collapse>
@@ -115,6 +116,12 @@ export default {
     },
     actionPlanStates: {
       type: Array,
+      default: function() {
+        return [];
+      }
+    },
+    configuration: {
+      type: [Array, Object],
       default: function() {
         return [];
       }
