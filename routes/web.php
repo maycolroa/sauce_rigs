@@ -206,6 +206,9 @@ Route::middleware(['auth'])->group(function () {
 
         Route::post('riskAspect/data', 'LegalAspects\LegalMatrix\RiskAspectController@data');
         Route::ApiResource('riskAspect', 'LegalAspects\LegalMatrix\RiskAspectController');
+
+        Route::post('sstRisk/data', 'LegalAspects\LegalMatrix\SstRiskController@data');
+        Route::ApiResource('sstRisk', 'LegalAspects\LegalMatrix\SstRiskController');
       });
 		});
 

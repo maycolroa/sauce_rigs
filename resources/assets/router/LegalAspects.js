@@ -211,6 +211,30 @@ export default [
 				component: () =>
 				import('@/views/LegalAspects/legalMatrix/riskAspects/view')
 			},
+			{
+				name: 'legalaspects-lm-sstrisk',
+				path: 'lm/sstrisk',
+				component: () =>
+				import('@/views/LegalAspects/legalMatrix/sstRisk/index')
+			}, 
+			{
+				name: 'legalaspects-lm-sstrisk-create',
+				path: 'lm/sstrisks/create',
+				component: () =>
+				import('@/views/LegalAspects/legalMatrix/sstRisk/create')
+			},
+			{
+				name: 'legalaspects-lm-sstrisk-edit',
+				path: 'lm/sstrisks/edit/:id',
+				component: () =>
+				import('@/views/LegalAspects/legalMatrix/sstRisk/edit')
+			},
+			{
+				name: 'legalaspects-lm-sstrisk-view',
+				path: 'lm/sstrisks/view/:id',
+				component: () =>
+				import('@/views/LegalAspects/legalMatrix/sstRisk/view')
+			},
 		]
 	}
 ];

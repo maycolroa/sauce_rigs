@@ -5,12 +5,12 @@ namespace App\Http\Controllers\LegalAspects\LegalMatrix;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Vuetable\Facades\Vuetable;
-use App\Models\LegalAspects\LegalMatrix\RiskAspect;
-use App\Http\Requests\LegalAspects\LegalMatrix\RiskAspectRequest;
+use App\Models\LegalAspects\LegalMatrix\SstRisk;
+use App\Http\Requests\LegalAspects\LegalMatrix\SstRiskRequest;
 use Session;
 
-class RiskAspectController extends Controller
-{
+class SstRiskController extends Controller
+{ 
     /**
      * creates and instance and middlewares are checked
      */
@@ -40,9 +40,9 @@ class RiskAspectController extends Controller
     */
     public function data(Request $request)
     {
-        $risk_aspects = RiskAspect::select('*');
+        $sst_risks = SstRisk::select('*');
 
-        return Vuetable::of($risk_aspects)
+        return Vuetable::of($sst_risks)
                     ->make();
     }
 
@@ -52,11 +52,11 @@ class RiskAspectController extends Controller
      * @param  App\Http\Requests\IndustrialSecure\Activities\ActivityRequest  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(RiskAspectRequest $request)
+    public function store(SstRiskRequest $request)
     {
-        $risk_aspect = new RiskAspect($request->all());
+        $sst_risk = new SstRisk($request->all());
         
-        if(!$risk_aspect->save()){
+        if(!$sst_risk->save()){
             return $this->respondHttp500();
         }
 
@@ -75,10 +75,10 @@ class RiskAspectController extends Controller
     {
         try
         {
-            $risk_aspect = RiskAspect::findOrFail($id);
+            $sst_risk = SstRisk::findOrFail($id);
 
             return $this->respondHttp200([
-                'data' => $risk_aspect,
+                'data' => $sst_risk,
             ]);
         } catch(Exception $e){
             $this->respondHttp500();
@@ -92,11 +92,11 @@ class RiskAspectController extends Controller
      * @param  Activity  $activity
      * @return \Illuminate\Http\Response
      */
-    public function update(RiskAspectRequest $request, RiskAspect $riskAspect)
+    public function update(SstRiskRequest $request, SstRisk $sstRisk)
     {
-        $riskAspect->fill($request->all());
+        $sstRisk->fill($request->all());
         
-        if(!$riskAspect->update()){
+        if(!$sstRisk->update()){
           return $this->respondHttp500();
         }
         
@@ -111,9 +111,9 @@ class RiskAspectController extends Controller
      * @param  Activity  $activity
      * @return \Illuminate\Http\Response
      */
-    public function destroy(RiskAspect $riskAspect)
+    public function destroy(SstRisk $sstRisk)
     {
-        if(!$riskAspect->delete())
+        if(!$sstRisk->delete())
         {
             return $this->respondHttp500();
         }
