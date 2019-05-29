@@ -419,5 +419,54 @@ export default [
             urlData: '/legalAspects/legalMatrix/interest/data',
             filterColumns: true,
         }
+    },
+    {
+        name: 'legalaspects-lm-riskaspect',
+        fields: [
+            { name: 'sau_lm_risks_aspects.id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true },
+            { name: 'sau_lm_risks_aspects.name', data: 'name', title: 'Nombre', sortable: true, searchable: true, detail: false, key: false },
+            { name: '', data: 'controlls', title: 'Controles', sortable: false, searchable: false, detail: false, key: false },
+        ],
+        'controlls': [{
+            type: 'push',
+            buttons: [{
+                config: {
+                    color: 'outline-success',
+                    borderless: true,
+                    icon: 'ion ion-md-create',
+                    title: 'Editar'
+                },
+                data: {
+                    routePush: { name: 'legalaspects-lm-riskaspect-edit' },
+                    id: 'id',
+                },
+            }, {
+                config: {
+                    color: 'outline-info',
+                    borderless: true,
+                    icon: 'ion ion-md-eye',
+                    title: 'Ver'
+                },
+                data: {
+                    routePush: { name: 'legalaspects-lm-riskaspect-view' },
+                    id: 'id',
+                },
+            }]
+        },
+        {
+            type: 'base',
+            buttons: [{
+            name: 'delete',
+            data: {
+                action: '/legalAspects/legalMatrix/riskAspect/',
+                id: 'id',
+                messageConfirmation: 'Esta seguro de borrar el Riesgo/Aspecto ambiental __name__'
+            },
+            }],
+        }],
+        configuration: {
+            urlData: '/legalAspects/legalMatrix/riskAspect/data',
+            filterColumns: true,
+        }
     }
 ]

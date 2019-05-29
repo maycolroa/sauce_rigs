@@ -5,11 +5,11 @@ namespace App\Http\Controllers\LegalAspects\LegalMatrix;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Vuetable\Facades\Vuetable;
-use App\Models\LegalAspects\LegalMatrix\Interest;
-use App\Http\Requests\LegalAspects\LegalMatrix\InterestRequest;
+use App\Models\LegalAspects\LegalMatrix\RiskAspect;
+use App\Http\Requests\LegalAspects\LegalMatrix\RiskAspectRequest;
 use Session;
 
-class InterestController extends Controller
+class RiskAspectController extends Controller
 {
     /**
      * creates and instance and middlewares are checked
@@ -40,9 +40,9 @@ class InterestController extends Controller
     */
     public function data(Request $request)
     {
-        $interests = Interest::select('*');
+        $risk_aspects = RiskAspect::select('*');
 
-        return Vuetable::of($interests)
+        return Vuetable::of($risk_aspects)
                     ->make();
     }
 
@@ -52,16 +52,16 @@ class InterestController extends Controller
      * @param  App\Http\Requests\IndustrialSecure\Activities\ActivityRequest  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(InterestRequest $request)
+    public function store(RiskAspectRequest $request)
     {
-        $interest = new Interest($request->all());
+        $risk_aspect = new RiskAspect($request->all());
         
-        if(!$interest->save()){
+        if(!$risk_aspect->save()){
             return $this->respondHttp500();
         }
 
         return $this->respondHttp200([
-            'message' => 'Se creo el interes'
+            'message' => 'Se creo el Riesgo/Aspecto ambiental'
         ]);
     }
 
@@ -75,10 +75,10 @@ class InterestController extends Controller
     {
         try
         {
-            $interest = Interest::findOrFail($id);
+            $risk_aspect = RiskAspect::findOrFail($id);
 
             return $this->respondHttp200([
-                'data' => $interest,
+                'data' => $risk_aspect,
             ]);
         } catch(Exception $e){
             $this->respondHttp500();
@@ -92,16 +92,16 @@ class InterestController extends Controller
      * @param  Activity  $activity
      * @return \Illuminate\Http\Response
      */
-    public function update(InterestRequest $request, Interest $interest)
+    public function update(RiskAspectRequest $request, RiskAspect $risk_aspect)
     {
-        $interest->fill($request->all());
+        $risk_aspect->fill($request->all());
         
-        if(!$interest->update()){
+        if(!$risk_aspect->update()){
           return $this->respondHttp500();
         }
         
         return $this->respondHttp200([
-            'message' => 'Se actualizo el interes'
+            'message' => 'Se actualizo el Riesgo/Aspecto ambiental'
         ]);
     }
 
@@ -111,15 +111,15 @@ class InterestController extends Controller
      * @param  Activity  $activity
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Interest $interest)
+    public function destroy(RiskAspect $riskAspect)
     {
-        if(!$interest->delete())
+        if(!$riskAspect->delete())
         {
             return $this->respondHttp500();
         }
         
         return $this->respondHttp200([
-            'message' => 'Se elimino el intereses'
+            'message' => 'Se elimino el Riesgo/Aspecto ambiental'
         ]);
     }
 

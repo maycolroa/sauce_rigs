@@ -200,9 +200,12 @@ Route::middleware(['auth'])->group(function () {
       Route::post('evaluationContractHistory/data', 'LegalAspects\Contracs\EvaluationContractHistoryController@data');
 
       Route::prefix('legalMatrix')->group(function () {
-        
+
         Route::post('interest/data', 'LegalAspects\LegalMatrix\InterestController@data');
         Route::ApiResource('interest', 'LegalAspects\LegalMatrix\InterestController');
+
+        Route::post('riskAspect/data', 'LegalAspects\LegalMatrix\RiskAspectController@data');
+        Route::ApiResource('riskAspect', 'LegalAspects\LegalMatrix\RiskAspectController');
       });
 		});
 

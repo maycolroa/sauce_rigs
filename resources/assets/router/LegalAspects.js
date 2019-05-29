@@ -187,6 +187,30 @@ export default [
 				component: () =>
 				import('@/views/LegalAspects/legalMatrix/interests/view')
 			},
+			{
+				name: 'legalaspects-lm-riskaspect',
+				path: 'lm/riskaspects',
+				component: () =>
+				import('@/views/LegalAspects/legalMatrix/riskAspects/index')
+			}, 
+			{
+				name: 'legalaspects-lm-riskaspect-create',
+				path: 'lm/riskaspects/create',
+				component: () =>
+				import('@/views/LegalAspects/legalMatrix/riskAspects/create')
+			},
+			{
+				name: 'legalaspects-lm-riskaspect-edit',
+				path: 'lm/riskaspects/edit/:id',
+				component: () =>
+				import('@/views/LegalAspects/legalMatrix/riskAspects/edit')
+			},
+			{
+				name: 'legalaspects-lm-riskaspect-view',
+				path: 'lm/riskaspects/view/:id',
+				component: () =>
+				import('@/views/LegalAspects/legalMatrix/riskAspects/view')
+			},
 		]
 	}
 ];
