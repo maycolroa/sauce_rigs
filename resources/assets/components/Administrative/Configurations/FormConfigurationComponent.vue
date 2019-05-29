@@ -2,20 +2,20 @@
 
   <b-form :action="url" @submit.prevent="submit" autocomplete="off">
 
-    <b-form-row>
+    <b-form-row v-if="auth.can['dangerMatrix_r']">
       <vue-radio :disabled="!auth.can['configurations_c'] && !auth.can['configurations_u']" :checked="form.location_level_form" class="col-md-12" v-model="form.location_level_form" :options="locationLevels" name="location_level_form" :error="form.errorsFor('location_level_form')" label="Nivel localización en formulario">
         </vue-radio>
     </b-form-row>
 
     <hr class="border-light container-m--x mt-0 mb-4">
     
-    <b-form-row>
+    <b-form-row v-if="auth.can['actionPlans_r']">
         <vue-input :disabled="!auth.can['configurations_c'] && !auth.can['configurations_u']" class="col-md-12" v-model="form.days_alert_expiration_date_action_plan" label="Días de alerta por fecha de vencimiento cercana para los plane de acción" type="number" name="days_alert_expiration_date_action_plan" :error="form.errorsFor('days_alert_expiration_date_action_plan')" placeholder="1"></vue-input>
     </b-form-row>
 
     <hr class="border-light container-m--x mt-0 mb-4">
     
-    <b-form-row>
+    <b-form-row v-if="auth.can['contracts_r']">
         <vue-input :disabled="!auth.can['configurations_c'] && !auth.can['configurations_u']" class="col-md-12" v-model="form.days_alert_expiration_date_contract_file_upload" label="Días de alerta por fecha de vencimiento cercana para los archivos cargados en el modulo de contratistas" type="number" name="days_alert_expiration_date_contract_file_upload" :error="form.errorsFor('days_alert_expiration_date_contract_file_upload')" placeholder="1"></vue-input>
     </b-form-row>
 
