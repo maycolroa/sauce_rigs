@@ -48,7 +48,8 @@
                 <b-form-row>
                   <vue-ajax-advanced-select :disabled="viewOnly" class="col-md-6" v-model="danger.existing_controls_engineering_controls"  name="existing_controls_engineering_controls" :error="form.errorsFor(`activities.${indexActivity}.dangers.${indexDanger}.existing_controls_engineering_controls`)" label="Controles de ingenieria" placeholder="Seleccione los controles de ingenieria" :url="tagsEngineeringControlsDataUrl" :multiple="true" :allowEmpty="true" :taggable="true">
                     </vue-ajax-advanced-select>
-                  <vue-textarea :disabled="viewOnly" class="col-md-6" v-model="danger.existing_controls_substitution" label="Sustitución" name="existing_controls_substitution" :error="form.errorsFor(`activities.${indexActivity}.dangers.${indexDanger}.existing_controls_substitution`)" placeholder="Sustitución"></vue-textarea>
+                  <vue-ajax-advanced-select :disabled="viewOnly" class="col-md-6" v-model="danger.existing_controls_substitution"  name="existing_controls_substitution" :error="form.errorsFor(`activities.${indexActivity}.dangers.${indexDanger}.existing_controls_substitution`)" label="Sustitución" placeholder="Seleccione las sutituciones" :url="tagsSubstitutionDataUrl" :multiple="true" :allowEmpty="true" :taggable="true">
+                    </vue-ajax-advanced-select>
                 </b-form-row>
                 <b-form-row>
                   <vue-ajax-advanced-select :disabled="viewOnly" class="col-md-6" v-model="danger.existing_controls_warning_signage" name="existing_controls_warning_signage" label="Señalización, Advertencia" :error="form.errorsFor(`activities.${indexActivity}.dangers.${indexDanger}.existing_controls_warning_signage`)" placeholder="Seleccione las señalización, advertencia" :url="tagsWarningSignageDataUrl" :multiple="true" :allowEmpty="true" :taggable="true">
@@ -92,7 +93,7 @@
                 </b-form-row>
                 <hr class="border-light container-m--x mt-0 mb-4">
                 <b-form-row>
-                  <vue-radio :disabled="viewOnly" :checked="danger.risk_acceptability" class="col-md-6" v-model="danger.risk_acceptability" :options="siNo" name="risk_acceptability" :error="form.errorsFor(`activities.${indexActivity}.dangers.${indexDanger}.risk_acceptability`)" label="Aceptabilidad del riesgo">
+                  <vue-radio :disabled="true" :checked="danger.legal_requirements" class="col-md-6" v-model="danger.risk_acceptability" :options="siNo" name="risk_acceptability" :error="form.errorsFor(`activities.${indexActivity}.dangers.${indexDanger}.risk_acceptability`)" label="Aceptabilidad del riesgo">
                     </vue-radio>
                 </b-form-row>
               </b-card>
@@ -102,7 +103,8 @@
               <b-card bg-variant="transparent" border-variant="secondary" title="" class="mb-3 box-shadow-none">
                 <b-form-row>
                   <vue-textarea :disabled="viewOnly" class="col-md-6" v-model="danger.intervention_measures_elimination" label="Eliminación" name="intervention_measures_elimination" :error="form.errorsFor(`activities.${indexActivity}.dangers.${indexDanger}.intervention_measures_elimination`)" placeholder="Eliminación"></vue-textarea>
-                  <vue-textarea :disabled="viewOnly" class="col-md-6" v-model="danger.intervention_measures_substitution" label="Sustitución" name="intervention_measures_substitution" :error="form.errorsFor(`activities.${indexActivity}.dangers.${indexDanger}.intervention_measures_substitution`)" placeholder="Sustitución"></vue-textarea>
+                  <vue-ajax-advanced-select :disabled="viewOnly" class="col-md-6" v-model="danger.intervention_measures_substitution"  name="intervention_measures_substitution" :error="form.errorsFor(`activities.${indexActivity}.dangers.${indexDanger}.intervention_measures_substitution`)" label="Sustitución" placeholder="Seleccione las sutituciones" :url="tagsSubstitutionDataUrl" :multiple="true" :allowEmpty="true" :taggable="true">
+                    </vue-ajax-advanced-select>
                 </b-form-row>
                 <b-form-row>
                   <vue-ajax-advanced-select :disabled="viewOnly" class="col-md-6" v-model="danger.intervention_measures_engineering_controls"  name="intervention_measures_engineering_controls" :error="form.errorsFor(`activities.${indexActivity}.dangers.${indexDanger}.intervention_measures_engineering_controls`)" label="Controles de ingenieria" placeholder="Seleccione los controles de ingenieria" :url="tagsEngineeringControlsDataUrl" :multiple="true" :allowEmpty="true" :taggable="true">
@@ -261,7 +263,8 @@ export default {
       tagsEngineeringControlsDataUrl: '/selects/tagsEngineeringControls',
       tagsWarningSignageDataUrl: '/selects/tagsWarningSignage',
       tagsAdministrativeControlsDataUrl: '/selects/tagsAdministrativeControls',
-      tagsEppDataUrl: '/selects/tagsEpp'
+      tagsEppDataUrl: '/selects/tagsEpp',
+      tagsSubstitutionDataUrl: '/selects/tagsSubstitution'
     };
   },
   methods: {

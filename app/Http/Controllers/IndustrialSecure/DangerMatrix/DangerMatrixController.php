@@ -15,6 +15,8 @@ use App\Models\IndustrialSecure\DangerMatrix\TagsEngineeringControls;
 use App\Models\IndustrialSecure\DangerMatrix\TagsEpp;
 use App\Models\IndustrialSecure\DangerMatrix\TagsPossibleConsequencesDanger;
 use App\Models\IndustrialSecure\DangerMatrix\TagsWarningSignage;
+use App\Models\IndustrialSecure\DangerMatrix\TagsSubstitution;
+use App\Models\IndustrialSecure\DangerMatrix\TagsParticipant;
 use App\Models\IndustrialSecure\DangerMatrix\ChangeHistory;
 use Illuminate\Support\Facades\Auth;
 use App\Facades\ActionPlans\Facades\ActionPlan;
@@ -99,16 +101,6 @@ class DangerMatrixController extends Controller
         try
         {
             $dangerMatrix = DangerMatrix::findOrFail($id);
-
-            $competitors_id = [];
-
-            foreach ($dangerMatrix->competitors as $key => $value)
-            {
-                array_push($competitors_id, $value->multiselect());
-            }
-
-            $dangerMatrix->competitors_id = $competitors_id;
-            $dangerMatrix->multiselect_competitors_id = $competitors_id;
 
             $dangerMatrix->activitiesRemoved = [];
             $dangerMatrix->locations = $this->prepareDataLocationForm($dangerMatrix);
@@ -226,6 +218,15 @@ class DangerMatrixController extends Controller
             $request->merge($data3);
         }
 
+        if ($request->has('participants') && $request->get('participants'))
+        {
+            foreach ($request->get('participants') as $key => $value)
+            {
+                $data4['participants'][$key] = json_decode($value, true);
+                $request->merge($data4);
+            }
+        }
+
         $id = null;
 
         if ($dangerMatrix)
@@ -233,7 +234,7 @@ class DangerMatrixController extends Controller
 
         $rules = [
             'name' => 'required|string|unique:sau_dangers_matrix,name,'.$id.',id,company_id,'.Session::get('company_id'),
-            'competitors_id' => 'required|array',
+            'participants' => 'nullable|array',
             'activities' => 'required|array',
             'activities.*.activity_id' => 'required|exists:sau_dm_activities,id',
             'activities.*.type_activity' => 'required',
@@ -248,7 +249,7 @@ class DangerMatrixController extends Controller
             'activities.*.dangers.*.student_quantity' => 'required|integer|min:0',
             'activities.*.dangers.*.esc_quantity' => 'required|integer|min:0',
             'activities.*.dangers.*.existing_controls_engineering_controls' => 'nullable|array',
-            'activities.*.dangers.*.existing_controls_substitution' => 'nullable',
+            'activities.*.dangers.*.existing_controls_substitution' => 'nullable|array',
             'activities.*.dangers.*.existing_controls_warning_signage' => 'nullable|array',
             'activities.*.dangers.*.existing_controls_administrative_controls' => 'nullable|array',
             'activities.*.dangers.*.existing_controls_epp' => 'nullable|array',
@@ -257,7 +258,7 @@ class DangerMatrixController extends Controller
             'activities.*.dangers.*.objectives_goals' => 'required|in:SI,NO',
             'activities.*.dangers.*.risk_acceptability' => 'required|in:SI,NO',
             'activities.*.dangers.*.intervention_measures_elimination' => 'nullable',
-            'activities.*.dangers.*.intervention_measures_substitution' => 'nullable',
+            'activities.*.dangers.*.intervention_measures_substitution' => 'nullable|array',
             'activities.*.dangers.*.intervention_measures_engineering_controls' => 'nullable|array',
             'activities.*.dangers.*.intervention_measures_warning_signage' => 'nullable|array',
             'activities.*.dangers.*.intervention_measures_administrative_controls' => 'nullable|array',
@@ -313,12 +314,14 @@ class DangerMatrixController extends Controller
             }
 
             $dangerMatrix->name = $request->get('name');
+
+            $participants = $this->tagsPrepare($request->get('participants'));
+            $this->tagsSave($participants, TagsParticipant::class);
+            $dangerMatrix->participants = $participants->implode(',');
             
             if(!$dangerMatrix->save()){
                 return $this->respondHttp500();
             }
-
-            $dangerMatrix->competitors()->sync($this->getDataFromMultiselect($request->get('competitors_id')));
 
             if($this->updateModelLocationForm($dangerMatrix, $request->get('locations')))
             {
@@ -375,9 +378,11 @@ class DangerMatrixController extends Controller
                     //TAGS
                     $possible_consequences_danger = $this->tagsPrepare($itemD['possible_consequences_danger']);
                     $existing_controls_engineering_controls = $this->tagsPrepare($itemD['existing_controls_engineering_controls']);
+                    $existing_controls_substitution = $this->tagsPrepare($itemD['existing_controls_substitution']);
                     $existing_controls_warning_signage = $this->tagsPrepare($itemD['existing_controls_warning_signage']);
                     $existing_controls_administrative_controls = $this->tagsPrepare($itemD['existing_controls_administrative_controls']);
                     $existing_controls_epp = $this->tagsPrepare($itemD['existing_controls_epp']);
+                    $intervention_measures_substitution = $this->tagsPrepare($itemD['intervention_measures_substitution']);
                     $intervention_measures_engineering_controls = $this->tagsPrepare($itemD['intervention_measures_engineering_controls']);
                     $intervention_measures_warning_signage = $this->tagsPrepare($itemD['intervention_measures_warning_signage']);
                     $intervention_measures_administrative_controls = $this->tagsPrepare($itemD['intervention_measures_administrative_controls']);
@@ -385,9 +390,11 @@ class DangerMatrixController extends Controller
 
                     $this->tagsSave($possible_consequences_danger, TagsPossibleConsequencesDanger::class);
                     $this->tagsSave($existing_controls_engineering_controls, TagsEngineeringControls::class);
+                    $this->tagsSave($existing_controls_substitution, TagsSubstitution::class);
                     $this->tagsSave($existing_controls_warning_signage, TagsWarningSignage::class);
                     $this->tagsSave($existing_controls_administrative_controls, TagsAdministrativeControls::class);
                     $this->tagsSave($existing_controls_epp, TagsEpp::class);
+                    $this->tagsSave($intervention_measures_substitution, TagsSubstitution::class);
                     $this->tagsSave($intervention_measures_engineering_controls, TagsEngineeringControls::class);
                     $this->tagsSave($intervention_measures_warning_signage, TagsWarningSignage::class);
                     $this->tagsSave($intervention_measures_administrative_controls, TagsAdministrativeControls::class);
@@ -407,7 +414,7 @@ class DangerMatrixController extends Controller
                     $danger->student_quantity = $itemD['student_quantity'];
                     $danger->esc_quantity = $itemD['esc_quantity'];
                     $danger->existing_controls_engineering_controls = $existing_controls_engineering_controls->implode(',');
-                    $danger->existing_controls_substitution = $itemD['existing_controls_substitution'];
+                    $danger->existing_controls_substitution = $existing_controls_substitution->implode(',');
                     $danger->existing_controls_warning_signage = $existing_controls_warning_signage->implode(',');
                     $danger->existing_controls_administrative_controls = $existing_controls_administrative_controls->implode(',');
                     $danger->existing_controls_epp = $existing_controls_epp->implode(',');
@@ -416,7 +423,7 @@ class DangerMatrixController extends Controller
                     $danger->objectives_goals = $itemD['objectives_goals'];
                     $danger->risk_acceptability = $itemD['risk_acceptability'];
                     $danger->intervention_measures_elimination = $itemD['intervention_measures_elimination'];
-                    $danger->intervention_measures_substitution = $itemD['intervention_measures_substitution'];
+                    $danger->intervention_measures_substitution = $intervention_measures_substitution->implode(',');
                     $danger->intervention_measures_engineering_controls = $intervention_measures_engineering_controls->implode(',');
                     $danger->intervention_measures_warning_signage = $intervention_measures_warning_signage->implode(',');
                     $danger->intervention_measures_administrative_controls = $intervention_measures_administrative_controls->implode(',');

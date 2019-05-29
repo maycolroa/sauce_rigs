@@ -3,7 +3,7 @@
   <b-form :action="url" @submit.prevent="submit" autocomplete="off">
     <b-form-row>
       <vue-input :disabled="viewOnly" class="col-md-6" v-model="form.name" label="Nombre" type="text" name="name" :error="form.errorsFor('name')" placeholder="Nombre"></vue-input>
-      <vue-ajax-advanced-select :disabled="viewOnly" class="col-md-6" v-model="form.types" name="types" :error="form.errorsFor('types')" label="Tipo de proceso" placeholder="Seleccione los tipos de procesos" :url="tagsTypesDataUrl" :multiple="true" :allowEmpty="true" :taggable="true">
+      <vue-ajax-advanced-select :disabled="viewOnly" class="col-md-6" v-model="form.types" name="types" :error="form.errorsFor('types')" label="Macroproceso" placeholder="Seleccione los macroprocesos" :url="tagsTypesDataUrl" :multiple="true" :allowEmpty="true" :taggable="true">
         </vue-ajax-advanced-select>
     </b-form-row>
     <b-form-row>

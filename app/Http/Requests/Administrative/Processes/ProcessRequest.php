@@ -26,7 +26,7 @@ class ProcessRequest extends FormRequest
 
     public function sanitize()
     {
-        if ($this->has('types'))
+        if ($this->has('types') && $this->input('types'))
         {
             foreach ($this->input('types') as $key => $value)
             {

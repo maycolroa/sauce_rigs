@@ -26,8 +26,8 @@
       <b-form-row>
         <vue-input :disabled="viewOnly" class="col-md-6" v-model="form.name" label="Nombre" type="text" name="name" :error="form.errorsFor('name')" placeholder="Nombre"></vue-input>
 
-        <vue-ajax-advanced-select :disabled="viewOnly" class="col-md-6" v-model="form.competitors_id" :selected-object="form.multiselect_competitors_id" name="competitors_id" label="Participantes" placeholder="Seleccione los participantes" :url="userDataUrl" :error="form.errorsFor('competitors_id')" :multiple="true" :allowEmpty="true">
-          </vue-ajax-advanced-select>
+        <vue-ajax-advanced-select :disabled="viewOnly" class="col-md-6" v-model="form.participants"  name="participants" :error="form.errorsFor(`participants`)" label="Participantes" placeholder="Seleccione los participantes" url="/selects/tagsParticipants" :multiple="true" :allowEmpty="true" :taggable="true">
+                    </vue-ajax-advanced-select>
 
       </b-form-row>
 
@@ -172,7 +172,7 @@ export default {
               employee_process_id: ''
             },
             name: '',
-            competitors_id: '',
+            participants: '',
             activities: [
               {
                 key: new Date().getTime(),
