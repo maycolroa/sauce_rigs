@@ -19,6 +19,7 @@ class DangerMatrix extends Model
         'employee_headquarter_id',
         'employee_area_id',
         'employee_process_id',
+        'participants'
     ];
      
     public function activities()
@@ -49,11 +50,6 @@ class DangerMatrix extends Model
     public function histories()
     {
         return $this->hasMany(ChangeHistory::class, 'danger_matrix_id');
-    }
-
-    public function competitors()
-    {
-        return $this->belongsToMany('App\Models\Administrative\Users\User', 'sau_dm_competitors', 'danger_matrix_id');
     }
 
     /**
