@@ -42,7 +42,8 @@ class ConfigurationController extends Controller
 
         foreach ($request as $key => $value)
         {
-            ConfigurationsCompany::key($key)->value($value)->save();
+            if ($value)
+                ConfigurationsCompany::key($key)->value($value)->save();
         }
 
         return $this->respondHttp200([

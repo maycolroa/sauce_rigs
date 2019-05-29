@@ -27,8 +27,8 @@ class ConfigurationRequest extends FormRequest
         $id = $this->input('id');
         
         return [
-            'location_level_form' => 'required',
-            'days_alert_expiration_date_action_plan' => 'required|min:0'
+            'location_level_form' => 'nullable',
+            'days_alert_expiration_date_action_plan' => 'nullable|min:0'
         ];
     }
 }
