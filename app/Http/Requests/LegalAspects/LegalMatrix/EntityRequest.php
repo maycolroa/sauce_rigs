@@ -4,7 +4,7 @@ namespace App\Http\Requests\LegalAspects\LegalMatrix;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class SstRiskRequest extends FormRequest
+class EntityRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -26,7 +26,7 @@ class SstRiskRequest extends FormRequest
         $id = $this->input('id');
 
         return [
-            'name' => 'required|string|unique:sau_lm_sst_risks,name,'.$id.',id',
+            'name' => 'required|string|unique:sau_lm_entities,name,'.$id.',id',
         ];
     }
 }
