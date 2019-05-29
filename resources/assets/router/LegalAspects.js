@@ -157,7 +157,84 @@ export default [
 				name: 'legalaspects-upload-files-view',
 				path: 'upload-files/view/:id',
 				component: () => import('@/views/LegalAspects/contracts/uploadFiles/view')
-			}
+			},
+			{
+				name: 'legalaspects-legalmatrix',
+				path: 'legalmatrix',
+				component: () => import('@/views/LegalAspects/legalMatrix/index')
+			},
+			{
+				name: 'legalaspects-lm-interest',
+				path: 'lm/interests',
+				component: () =>
+				import('@/views/LegalAspects/legalMatrix/interests/index')
+			}, 
+			{
+				name: 'legalaspects-lm-interest-create',
+				path: 'lm/interests/create',
+				component: () =>
+				import('@/views/LegalAspects/legalMatrix/interests/create')
+			},
+			{
+				name: 'legalaspects-lm-interest-edit',
+				path: 'lm/interests/edit/:id',
+				component: () =>
+				import('@/views/LegalAspects/legalMatrix/interests/edit')
+			},
+			{
+				name: 'legalaspects-lm-interest-view',
+				path: 'lm/interests/view/:id',
+				component: () =>
+				import('@/views/LegalAspects/legalMatrix/interests/view')
+			},
+			{
+				name: 'legalaspects-lm-riskaspect',
+				path: 'lm/riskaspects',
+				component: () =>
+				import('@/views/LegalAspects/legalMatrix/riskAspects/index')
+			}, 
+			{
+				name: 'legalaspects-lm-riskaspect-create',
+				path: 'lm/riskaspects/create',
+				component: () =>
+				import('@/views/LegalAspects/legalMatrix/riskAspects/create')
+			},
+			{
+				name: 'legalaspects-lm-riskaspect-edit',
+				path: 'lm/riskaspects/edit/:id',
+				component: () =>
+				import('@/views/LegalAspects/legalMatrix/riskAspects/edit')
+			},
+			{
+				name: 'legalaspects-lm-riskaspect-view',
+				path: 'lm/riskaspects/view/:id',
+				component: () =>
+				import('@/views/LegalAspects/legalMatrix/riskAspects/view')
+			},
+			{
+				name: 'legalaspects-lm-sstrisk',
+				path: 'lm/sstrisk',
+				component: () =>
+				import('@/views/LegalAspects/legalMatrix/sstRisk/index')
+			}, 
+			{
+				name: 'legalaspects-lm-sstrisk-create',
+				path: 'lm/sstrisks/create',
+				component: () =>
+				import('@/views/LegalAspects/legalMatrix/sstRisk/create')
+			},
+			{
+				name: 'legalaspects-lm-sstrisk-edit',
+				path: 'lm/sstrisks/edit/:id',
+				component: () =>
+				import('@/views/LegalAspects/legalMatrix/sstRisk/edit')
+			},
+			{
+				name: 'legalaspects-lm-sstrisk-view',
+				path: 'lm/sstrisks/view/:id',
+				component: () =>
+				import('@/views/LegalAspects/legalMatrix/sstRisk/view')
+			},
 		]
 	}
 ];

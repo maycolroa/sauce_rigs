@@ -370,5 +370,152 @@ export default [
             urlData: '/legalAspects/contractsListCheckHistory/data',
             filterColumns: true,
         }
+    },
+    {
+        name: 'legalaspects-lm-interests',
+        fields: [
+            { name: 'sau_lm_interests.id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true },
+            { name: 'sau_lm_interests.name', data: 'name', title: 'Nombre', sortable: true, searchable: true, detail: false, key: false },
+            { name: '', data: 'controlls', title: 'Controles', sortable: false, searchable: false, detail: false, key: false },
+        ],
+        'controlls': [{
+            type: 'push',
+            buttons: [{
+                config: {
+                    color: 'outline-success',
+                    borderless: true,
+                    icon: 'ion ion-md-create',
+                    title: 'Editar'
+                },
+                data: {
+                    routePush: { name: 'legalaspects-lm-interest-edit' },
+                    id: 'id',
+                },
+            }, {
+                config: {
+                    color: 'outline-info',
+                    borderless: true,
+                    icon: 'ion ion-md-eye',
+                    title: 'Ver'
+                },
+                data: {
+                    routePush: { name: 'legalaspects-lm-interest-view' },
+                    id: 'id',
+                },
+            }]
+        },
+        {
+            type: 'base',
+            buttons: [{
+            name: 'delete',
+            data: {
+                action: '/legalAspects/legalMatrix/interest/',
+                id: 'id',
+                messageConfirmation: 'Esta seguro de borrar el interes __name__'
+            },
+            }],
+        }],
+        configuration: {
+            urlData: '/legalAspects/legalMatrix/interest/data',
+            filterColumns: true,
+        }
+    },
+    {
+        name: 'legalaspects-lm-riskaspect',
+        fields: [
+            { name: 'sau_lm_risks_aspects.id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true },
+            { name: 'sau_lm_risks_aspects.name', data: 'name', title: 'Nombre', sortable: true, searchable: true, detail: false, key: false },
+            { name: '', data: 'controlls', title: 'Controles', sortable: false, searchable: false, detail: false, key: false },
+        ],
+        'controlls': [{
+            type: 'push',
+            buttons: [{
+                config: {
+                    color: 'outline-success',
+                    borderless: true,
+                    icon: 'ion ion-md-create',
+                    title: 'Editar'
+                },
+                data: {
+                    routePush: { name: 'legalaspects-lm-riskaspect-edit' },
+                    id: 'id',
+                },
+            }, {
+                config: {
+                    color: 'outline-info',
+                    borderless: true,
+                    icon: 'ion ion-md-eye',
+                    title: 'Ver'
+                },
+                data: {
+                    routePush: { name: 'legalaspects-lm-riskaspect-view' },
+                    id: 'id',
+                },
+            }]
+        },
+        {
+            type: 'base',
+            buttons: [{
+            name: 'delete',
+            data: {
+                action: '/legalAspects/legalMatrix/riskAspect/',
+                id: 'id',
+                messageConfirmation: 'Esta seguro de borrar el Riesgo/Aspecto ambiental __name__'
+            },
+            }],
+        }],
+        configuration: {
+            urlData: '/legalAspects/legalMatrix/riskAspect/data',
+            filterColumns: true,
+        }
+    },
+    {
+        name: 'legalaspects-lm-sstrisk',
+        fields: [
+            { name: 'sau_lm_sst_risks.id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true },
+            { name: 'sau_lm_sst_risks.name', data: 'name', title: 'Nombre', sortable: true, searchable: true, detail: false, key: false },
+            { name: '', data: 'controlls', title: 'Controles', sortable: false, searchable: false, detail: false, key: false },
+        ],
+        'controlls': [{
+            type: 'push',
+            buttons: [{
+                config: {
+                    color: 'outline-success',
+                    borderless: true,
+                    icon: 'ion ion-md-create',
+                    title: 'Editar'
+                },
+                data: {
+                    routePush: { name: 'legalaspects-lm-sstrisk-edit' },
+                    id: 'id',
+                },
+            }, {
+                config: {
+                    color: 'outline-info',
+                    borderless: true,
+                    icon: 'ion ion-md-eye',
+                    title: 'Ver'
+                },
+                data: {
+                    routePush: { name: 'legalaspects-lm-sstrisk-view' },
+                    id: 'id',
+                },
+            }]
+        },
+        {
+            type: 'base',
+            buttons: [{
+            name: 'delete',
+            data: {
+                action: '/legalAspects/legalMatrix/sstRisk/',
+                id: 'id',
+                messageConfirmation: 'Esta seguro de borrar el Riesgo SST l __name__'
+            },
+            }],
+        }],
+        configuration: {
+            urlData: '/legalAspects/legalMatrix/sstRisk/data',
+            filterColumns: true,
+        }
     }
 ]
