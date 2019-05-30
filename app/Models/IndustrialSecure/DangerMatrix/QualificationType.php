@@ -12,6 +12,7 @@ class QualificationType extends Model
         'qualification_id',
         'description',
         'type_input',
+        'grouped',
         'readonly'
     ];
     
