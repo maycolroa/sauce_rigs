@@ -5,7 +5,7 @@
       <span class="app-brand-logo logo bg-primary">
         <div class="ui-w-30 rounded-circle align-middle text-circle">{{ firstCharAppName }}</div>
       </span>
-      <a href="/" class="app-brand-text logo sidenav-text font-weight-normal ml-2"> {{ appName }} </a>
+      <router-link :to="{ name: routeAppName}" class="app-brand-text logo sidenav-text font-weight-normal ml-2"> {{ appName }} </router-link>
       <a href="javascript:void(0)" class="layout-sidenav-toggle sidenav-link text-large ml-auto" @click="toggleSidenav()">
         <i class="ion ion-md-menu align-middle"></i>
       </a>

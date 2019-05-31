@@ -1,7 +1,7 @@
 <template>
 <div>
   <sidenav :data="data"/>
-  <router-view />
+  <router-view :apps="data"/>
 </div>
 </template>
 <script>

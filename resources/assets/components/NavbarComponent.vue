@@ -1,7 +1,7 @@
 <template>
   <b-navbar toggleable="lg" :variant="getLayoutNavbarBg()" class="layout-navbar align-items-lg-center container-p-x">
 
-    <b-navbar-brand to="/" class="app-brand demo d-lg-none py-0 mr-4">
+    <b-navbar-brand :to="{ name: routeAppName}" class="app-brand demo d-lg-none py-0 mr-4">
       <span class="app-brand-logo logo bg-primary">
         <div class="ui-w-30 rounded-circle align-middle text-circle">S</div>
       </span>
