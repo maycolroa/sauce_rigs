@@ -464,9 +464,9 @@ class DangerMatrixController extends Controller
                     {
                         $matriz_calification = $this->getMatrixCalification($conf);
 
-                        if (isset($matriz_calification[$nri]) && isset($matriz_calification[$nri][$ndp]))
+                        if (isset($matriz_calification[$ndp]) && isset($matriz_calification[$ndp][$nri]))
                         {
-                            $danger->qualification = $matriz_calification[$nri][$ndp]['label'];
+                            $danger->qualification = $matriz_calification[$ndp][$nri]['label'];
                             $danger->save();
                         }
                     }

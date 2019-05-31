@@ -21,6 +21,12 @@ export default [
           label: 'Procesos'
         },
         {
+          url: '/selects/tagsTypeProcess',
+          key: 'macroprocesses',
+          type: 'select',
+          label: 'Macroprocesos'
+        },
+        {
           url: '/selects/areas',
           key: 'areas',
           type: 'select',

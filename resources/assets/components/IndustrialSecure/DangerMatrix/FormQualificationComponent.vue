@@ -36,7 +36,7 @@
                     :ref="item.description"
                     v-if="item.type_input == 'select'" 
                     v-model="item.value_id"
-                    :disabled="item.readonly == 'SI' || viewOnly" class="col-md-6" :multiple="false" :options="item.values" :hide-selected="false" name="qualification" :label="item.description" :btnLabelPopover="createHelp(item.help)" placeholder="Seleccione la calificación"
+                    :disabled="item.readonly == 'SI' || viewOnly" class="col-md-6" :multiple="false" :options="getOptions(item.grouped, item.values)" :hide-selected="false" name="qualification" :label="item.description" :btnLabelPopover="createHelp(item.grouped, item.help)" placeholder="Seleccione la calificación"
                     :error="form.errorsFor(`activities.${indexActivity}.dangers.${indexDanger}.qualifications.${index}.value_id`)" >
                         </vue-advanced-select>
             </template>
@@ -112,6 +112,7 @@ export default {
                 this.data.push({
                     "description": value.description,
                     "type_input": value.type_input,
+                    "grouped": value.grouped,
                     "readonly": value.readonly,
                     "help": value.help,
                     "type_id": value.type_id,
@@ -128,13 +129,60 @@ export default {
                 this.updateCalification()
             }, 2000)
         },
-        createHelp(help) {
-            if (help)
+        getOptions(grouped, data)
+        {
+            if (this.qualifications.type == 'Tipo 1')
             {
-                return {
-                    title: "Descripción de las calificaciones",
-                    icon: 'fas fa-info',
-                    content: help
+                if (grouped == 'SI')
+                {
+                    if (this.$refs["Nivel de Probabilidad"] != undefined)
+                    {
+                        if (this.data[this.casillas['Nivel de Probabilidad']].value_id)
+                        {
+                            return data[this.data[this.casillas['Nivel de Probabilidad']].value_id]
+                        }
+                    }
+                    
+                    return []
+                }
+                else
+                {
+                    return data
+                }
+            }
+
+            return []
+        },
+        createHelp(grouped, help)
+        {
+            if (this.qualifications.type == 'Tipo 1')
+            {
+                if (help)
+                {
+                    if (grouped == 'SI')
+                    {
+                        if (this.$refs["Nivel de Probabilidad"] != undefined)
+                        {
+                            if (this.data[this.casillas['Nivel de Probabilidad']].value_id)
+                            {
+                                return {
+                                    title: "Descripción de las calificaciones",
+                                    icon: 'fas fa-info',
+                                    content: help[this.data[this.casillas['Nivel de Probabilidad']].value_id]
+                                }
+                            }
+                        }
+
+                        return {}
+                    }
+                    else
+                    {
+                        return {
+                            title: "Descripción de las calificaciones",
+                            icon: 'fas fa-info',
+                            content: help
+                        }
+                    }
                 }
             }
             
@@ -159,16 +207,16 @@ export default {
 
             if (this.qualifications.type == 'Tipo 1')
             {
-                if (this.$refs["NRI"] != undefined && this.$refs["Nivel de Probabilidad"] != undefined)
+                if (this.$refs["Nivel de Probabilidad"] != undefined && this.$refs["NRI"] != undefined)
                 {
-                    if (this.data[this.casillas['NRI']].value_id && this.data[this.casillas['Nivel de Probabilidad']].value_id)
+                    if (this.data[this.casillas['Nivel de Probabilidad']].value_id && this.data[this.casillas['NRI']].value_id)
                     {
-                        let nri = this.data[this.casillas['NRI']].value_id
                         let ndp = this.data[this.casillas['Nivel de Probabilidad']].value_id
+                        let nri = this.data[this.casillas['NRI']].value_id
 
-                        if (this.qualifications.matriz_calification[nri] != undefined && this.qualifications.matriz_calification[nri][ndp] != undefined)
+                        if (this.qualifications.matriz_calification[ndp] != undefined && this.qualifications.matriz_calification[ndp][nri] != undefined)
                         {
-                            this.calification = this.qualifications.matriz_calification[nri][ndp].label
+                            this.calification = this.qualifications.matriz_calification[ndp][nri].label
                         }
                         else
                             this.calification = '' 

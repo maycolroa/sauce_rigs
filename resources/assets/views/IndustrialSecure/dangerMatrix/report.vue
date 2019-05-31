@@ -20,7 +20,6 @@
                             <table class="table table-bordered mb-0">
                                 <thead>
                                     <tr>
-                                        <th class="text-center">#</th>
                                         <th v-for="(header, index) in headers" :key="index" class="text-center align-middle">
                                             {{ header }}
                                         </th>
@@ -28,9 +27,8 @@
                                 </thead>
                                 <tbody>
                                     <tr v-for="(row, index) in information" :key="index">
-                                        <th class="text-center align-middle" scope="row">{{ row.key }}</th>
-                                        <td v-for="(col, index2) in row.data" :key="index2" :class="`bg-${col.color}`">
-                                            <b-btn @click="fetchTable(row.key, index2, col.label, col.count)" style="width: 100%;" :variant="col.color">{{ col.label }} <b-badge variant="light">{{ col.count }}</b-badge></b-btn>
+                                        <td v-for="(col, index2) in row" :key="index2" :class="`bg-${col.color}`">
+                                            <b-btn @click="fetchTable(col.row, col.col, col.label, col.count)" style="width: 100%;" :variant="col.color">{{ col.label }} <b-badge variant="light">{{ col.count }}</b-badge></b-btn>
                                         </td>
                                     </tr>
                                 </tbody>
@@ -93,13 +91,7 @@ export default {
         headers() {
             if (Object.keys(this.data).length > 0)
             {
-                let headers = [];
-
-                _.forIn(this.data[Object.keys(this.data)[0]], (value, key) => {
-                    headers.push(key);
-                });
-
-                return headers;
+                return this.data.headers;
             }
 
             return [];
@@ -107,17 +99,7 @@ export default {
         information() {
             if (Object.keys(this.data).length > 0)
             {
-                let information = []
-
-                Object.keys(this.data).sort().reverse()
-                    .forEach(key => {
-                        information.push( {
-                            'key': key, 
-                            'data': this.data[key]
-                        })
-                    })
-
-                return information
+                return this.data.data
             }
 
             return []
@@ -141,7 +123,7 @@ export default {
 
                 axios.post('/industrialSecurity/dangersMatrix/report', this.filters)
                 .then(response => {
-                    this.data = response.data;
+                    this.data = response.data.data;
                     this.isLoading = false;
                 })
                 .catch(error => {

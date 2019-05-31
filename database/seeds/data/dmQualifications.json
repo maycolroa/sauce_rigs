@@ -3,106 +3,435 @@
         "name": "Tipo 1",
         "types": [
             {
-                "description": "NR Personas",
+                "description": "Nivel de Probabilidad",
                 "type_input": "select",
+                "grouped": "NO",
                 "readonly": "NO",
                 "values": [
                     {
-                        "value": "0",
-                        "description": "Ninguna Lesión."
+                        "group_by": null,
+                        "value": "No ha ocurrido en el sector Hospitalario",
+                        "description": ""
                     }, {
-                        "value": "1",
-                        "description": "Lesión leve (primeros auxilios): Atención en lugar de trabajo y no afecta el rendimiento laboral ni causa incapacidad."
+                        "group_by": null,
+                        "value": "Ha ocurrido en el sector Hospitalario",
+                        "description": ""
                     }, {
-                        "value": "2",
-                        "description": "Lesión menor sin incapacidad: (incluye casos de primeros auxilios y enfermedades ocupacionales que requieren de tratamiento médico). No afectan el rendimiento laboral ni causan incapacidad."
+                        "group_by": null,
+                        "value": "Alguna vez ha ocurrido en el Hospital en el último año",
+                        "description": ""
                     }, {
-                        "value": "3",
-                        "description": "Incapacidad temporal > 1 día: (lesiones que producen tiempo perdido): Afectan el rendimiento laboral, como la limitación a ciertas actividades o requiere unos días para recuperarse completamente (casos con tiempo perdido). Efectos menores reversibles en la salud, por ejemplo: irritación en la piel, intoxicación por alimentos, traumas (> a 1 día - < a 30 días)."
+                        "group_by": null,
+                        "value": "Sucede varias veces en el último año y en diferentes procesos (en el Hospital)",
+                        "description": ""
                     }, {
+                        "group_by": null,
+                        "value": "Sucede varias veces en el último año en el mismo proceso",
+                        "description": ""
+                    }
+                ]
+            },
+            {
+                "description": "NR Personas",
+                "type_input": "select",
+                "grouped": "SI",
+                "readonly": "NO",
+                "values": [
+                    {
+                        "group_by": "No ha ocurrido en el sector Hospitalario",
+                        "value": "8",
+                        "description": "Una o más fatalidades"
+                    }, 
+                    {
+                        "group_by": "No ha ocurrido en el sector Hospitalario",
                         "value": "4",
-                        "description": "Incapacidad permanente parcial o invalidez: Afectan el desempeño laboral por largo tiempo, como una ausencia prolongada al trabajo (> a 30 días). Daños irreversibles en la salud con inhabilitación seria sin pérdida de la vida; por ejemplo: lesiones lumbares crónicas, lesiones por trauma acumulativo, dermatitis por sensibilización, asma ocupacional, amputaciones."
-                    }, {
+                        "description": "Incapacidad permanente parcial o invalidez"
+                    }, 
+                    {
+                        "group_by": "No ha ocurrido en el sector Hospitalario",
+                        "value": "3",
+                        "description": "Incapacidad temporal > a 1 día"
+                    }, 
+                    {
+                        "group_by": "No ha ocurrido en el sector Hospitalario",
+                        "value": "2",
+                        "description": "Lesión menor sin incapacidad"
+                    },
+                    {
+                        "group_by": "No ha ocurrido en el sector Hospitalario",
+                        "value": "1",
+                        "description": "Lesión Leve (primeros auxilios)"
+                    },
+                    {
+                        "group_by": "Ha ocurrido en el sector Hospitalario",
+                        "value": "10",
+                        "description": "Una o más fatalidades"
+                    }, 
+                    {
+                        "group_by": "Ha ocurrido en el sector Hospitalario",
+                        "value": "8",
+                        "description": "Incapacidad permanente parcial o invalidez"
+                    }, 
+                    {
+                        "group_by": "Ha ocurrido en el sector Hospitalario",
+                        "value": "6",
+                        "description": "Incapacidad temporal > a 1 día"
+                    }, 
+                    {
+                        "group_by": "Ha ocurrido en el sector Hospitalario",
+                        "value": "3",
+                        "description": "Lesión menor sin incapacidad"
+                    },
+                    {
+                        "group_by": "Ha ocurrido en el sector Hospitalario",
+                        "value": "2",
+                        "description": "Lesión Leve (primeros auxilios)"
+                    },
+                    {
+                        "group_by": "Alguna vez ha ocurrido en el Hospital en el último año",
+                        "value": "15",
+                        "description": "Una o más fatalidades"
+                    }, 
+                    {
+                        "group_by": "Alguna vez ha ocurrido en el Hospital en el último año",
+                        "value": "12",
+                        "description": "Incapacidad permanente parcial o invalidez"
+                    }, 
+                    {
+                        "group_by": "Alguna vez ha ocurrido en el Hospital en el último año",
+                        "value": "9",
+                        "description": "Incapacidad temporal > a 1 día"
+                    }, 
+                    {
+                        "group_by": "Alguna vez ha ocurrido en el Hospital en el último año",
+                        "value": "6",
+                        "description": "Lesión menor sin incapacidad"
+                    },
+                    {
+                        "group_by": "Alguna vez ha ocurrido en el Hospital en el último año",
+                        "value": "3",
+                        "description": "Lesión Leve (primeros auxilios)"
+                    },
+                    {
+                        "group_by": "Sucede varias veces en el último año y en diferentes procesos (en el Hospital)",
+                        "value": "20",
+                        "description": "Una o más fatalidades"
+                    }, 
+                    {
+                        "group_by": "Sucede varias veces en el último año y en diferentes procesos (en el Hospital)",
+                        "value": "16",
+                        "description": "Incapacidad permanente parcial o invalidez"
+                    }, 
+                    {
+                        "group_by": "Sucede varias veces en el último año y en diferentes procesos (en el Hospital)",
+                        "value": "12",
+                        "description": "Incapacidad temporal > a 1 día"
+                    }, 
+                    {
+                        "group_by": "Sucede varias veces en el último año y en diferentes procesos (en el Hospital)",
+                        "value": "7",
+                        "description": "Lesión menor sin incapacidad"
+                    },
+                    {
+                        "group_by": "Sucede varias veces en el último año y en diferentes procesos (en el Hospital)",
+                        "value": "4",
+                        "description": "Lesión Leve (primeros auxilios)"
+                    },
+                    {
+                        "group_by": "Sucede varias veces en el último año en el mismo proceso",
+                        "value": "25",
+                        "description": "Una o más fatalidades"
+                    }, 
+                    {
+                        "group_by": "Sucede varias veces en el último año en el mismo proceso",
+                        "value": "20",
+                        "description": "Incapacidad permanente parcial o invalidez"
+                    }, 
+                    {
+                        "group_by": "Sucede varias veces en el último año en el mismo proceso",
+                        "value": "15",
+                        "description": "Incapacidad temporal > a 1 día"
+                    }, 
+                    {
+                        "group_by": "Sucede varias veces en el último año en el mismo proceso",
+                        "value": "10",
+                        "description": "Lesión menor sin incapacidad"
+                    },
+                    {
+                        "group_by": "Sucede varias veces en el último año en el mismo proceso",
                         "value": "5",
-                        "description": "Una o más fatalidades: Por accidente o enfermedad ocupacional."
+                        "description": "Lesión Leve (primeros auxilios)"
                     }
                 ]
             }, {
                 "description": "NR Económico",
                 "type_input": "select",
+                "grouped": "SI",
                 "readonly": "NO",
                 "values": [
                     {
-                        "value": "0",
-                        "description": "Ninguna Lesión."
-                    }, {
-                        "value": "1",
-                        "description": "Lesión leve (primeros auxilios): Atención en lugar de trabajo y no afecta el rendimiento laboral ni causa incapacidad."
-                    }, {
-                        "value": "2",
-                        "description": "Lesión menor sin incapacidad: (incluye casos de primeros auxilios y enfermedades ocupacionales que requieren de tratamiento médico). No afectan el rendimiento laboral ni causan incapacidad."
-                    }, {
-                        "value": "3",
-                        "description": "Incapacidad temporal > 1 día: (lesiones que producen tiempo perdido): Afectan el rendimiento laboral, como la limitación a ciertas actividades o requiere unos días para recuperarse completamente (casos con tiempo perdido). Efectos menores reversibles en la salud, por ejemplo: irritación en la piel, intoxicación por alimentos, traumas (> a 1 día - < a 30 días)."
-                    }, {
+                        "group_by": "No ha ocurrido en el sector Hospitalario",
+                        "value": "8",
+                        "description": "Muy grave, mayor a 30 días de estancia (mayor a $21.001 millones)"
+                    }, 
+                    {
+                        "group_by": "No ha ocurrido en el sector Hospitalario",
                         "value": "4",
-                        "description": "Incapacidad permanente parcial o invalidez: Afectan el desempeño laboral por largo tiempo, como una ausencia prolongada al trabajo (> a 30 días). Daños irreversibles en la salud con inhabilitación seria sin pérdida de la vida; por ejemplo: lesiones lumbares crónicas, lesiones por trauma acumulativo, dermatitis por sensibilización, asma ocupacional, amputaciones."
-                    }, {
+                        "description": "Grave, entre 17 y 30 días de estancia ($11.901 y $21.000)"
+                    }, 
+                    {
+                        "group_by": "No ha ocurrido en el sector Hospitalario",
+                        "value": "3",
+                        "description": "Severo, entre 8 y 17 días de estancia ($5.601 y $11.900 millones)"
+                    }, 
+                    {
+                        "group_by": "No ha ocurrido en el sector Hospitalario",
+                        "value": "2",
+                        "description": "Importante, entre 2 y 8 días de estancia ($1.401 y $5.600 millones)"
+                    },
+                    {
+                        "group_by": "No ha ocurrido en el sector Hospitalario",
+                        "value": "1",
+                        "description": "Leve, entre 0.5 y 2 días de estancia ($350 y $1.400 millones)"
+                    },
+                    {
+                        "group_by": "Ha ocurrido en el sector Hospitalario",
+                        "value": "10",
+                        "description": "Muy grave, mayor a 30 días de estancia (mayor a $21.001 millones)"
+                    }, 
+                    {
+                        "group_by": "Ha ocurrido en el sector Hospitalario",
+                        "value": "8",
+                        "description": "Grave, entre 17 y 30 días de estancia ($11.901 y $21.000)"
+                    }, 
+                    {
+                        "group_by": "Ha ocurrido en el sector Hospitalario",
+                        "value": "6",
+                        "description": "Severo, entre 8 y 17 días de estancia ($5.601 y $11.900 millones)"
+                    }, 
+                    {
+                        "group_by": "Ha ocurrido en el sector Hospitalario",
+                        "value": "3",
+                        "description": "Importante, entre 2 y 8 días de estancia ($1.401 y $5.600 millones)"
+                    },
+                    {
+                        "group_by": "Ha ocurrido en el sector Hospitalario",
+                        "value": "2",
+                        "description": "Leve, entre 0.5 y 2 días de estancia ($350 y $1.400 millones)"
+                    },
+                    {
+                        "group_by": "Alguna vez ha ocurrido en el Hospital en el último año",
+                        "value": "15",
+                        "description": "Muy grave, mayor a 30 días de estancia (mayor a $21.001 millones)"
+                    }, 
+                    {
+                        "group_by": "Alguna vez ha ocurrido en el Hospital en el último año",
+                        "value": "12",
+                        "description": "Grave, entre 17 y 30 días de estancia ($11.901 y $21.000)"
+                    }, 
+                    {
+                        "group_by": "Alguna vez ha ocurrido en el Hospital en el último año",
+                        "value": "9",
+                        "description": "Severo, entre 8 y 17 días de estancia ($5.601 y $11.900 millones)"
+                    }, 
+                    {
+                        "group_by": "Alguna vez ha ocurrido en el Hospital en el último año",
+                        "value": "6",
+                        "description": "Importante, entre 2 y 8 días de estancia ($1.401 y $5.600 millones)"
+                    },
+                    {
+                        "group_by": "Alguna vez ha ocurrido en el Hospital en el último año",
+                        "value": "3",
+                        "description": "Leve, entre 0.5 y 2 días de estancia ($350 y $1.400 millones)"
+                    },
+                    {
+                        "group_by": "Sucede varias veces en el último año y en diferentes procesos (en el Hospital)",
+                        "value": "20",
+                        "description": "Muy grave, mayor a 30 días de estancia (mayor a $21.001 millones)"
+                    }, 
+                    {
+                        "group_by": "Sucede varias veces en el último año y en diferentes procesos (en el Hospital)",
+                        "value": "16",
+                        "description": "Grave, entre 17 y 30 días de estancia ($11.901 y $21.000)"
+                    }, 
+                    {
+                        "group_by": "Sucede varias veces en el último año y en diferentes procesos (en el Hospital)",
+                        "value": "12",
+                        "description": "Severo, entre 8 y 17 días de estancia ($5.601 y $11.900 millones)"
+                    }, 
+                    {
+                        "group_by": "Sucede varias veces en el último año y en diferentes procesos (en el Hospital)",
+                        "value": "7",
+                        "description": "Importante, entre 2 y 8 días de estancia ($1.401 y $5.600 millones)"
+                    },
+                    {
+                        "group_by": "Sucede varias veces en el último año y en diferentes procesos (en el Hospital)",
+                        "value": "4",
+                        "description": "Leve, entre 0.5 y 2 días de estancia ($350 y $1.400 millones)"
+                    },
+                    {
+                        "group_by": "Sucede varias veces en el último año en el mismo proceso",
+                        "value": "25",
+                        "description": "Muy grave, mayor a 30 días de estancia (mayor a $21.001 millones)"
+                    }, 
+                    {
+                        "group_by": "Sucede varias veces en el último año en el mismo proceso",
+                        "value": "20",
+                        "description": "Grave, entre 17 y 30 días de estancia ($11.901 y $21.000)"
+                    }, 
+                    {
+                        "group_by": "Sucede varias veces en el último año en el mismo proceso",
+                        "value": "15",
+                        "description": "Severo, entre 8 y 17 días de estancia ($5.601 y $11.900 millones)"
+                    }, 
+                    {
+                        "group_by": "Sucede varias veces en el último año en el mismo proceso",
+                        "value": "10",
+                        "description": "Importante, entre 2 y 8 días de estancia ($1.401 y $5.600 millones)"
+                    },
+                    {
+                        "group_by": "Sucede varias veces en el último año en el mismo proceso",
                         "value": "5",
-                        "description": "Una o más fatalidades: Por accidente o enfermedad ocupacional."
+                        "description": "Leve, entre 0.5 y 2 días de estancia ($350 y $1.400 millones)"
                     }
                 ]
             }, {
                 "description": "NR Imagen",
                 "type_input": "select",
+                "grouped": "SI",
                 "readonly": "NO",
                 "values": [
                     {
-                        "value": "0",
-                        "description": "Ninguna Lesión."
-                    }, {
-                        "value": "1",
-                        "description": "Lesión leve (primeros auxilios): Atención en lugar de trabajo y no afecta el rendimiento laboral ni causa incapacidad."
-                    }, {
-                        "value": "2",
-                        "description": "Lesión menor sin incapacidad: (incluye casos de primeros auxilios y enfermedades ocupacionales que requieren de tratamiento médico). No afectan el rendimiento laboral ni causan incapacidad."
-                    }, {
-                        "value": "3",
-                        "description": "Incapacidad temporal > 1 día: (lesiones que producen tiempo perdido): Afectan el rendimiento laboral, como la limitación a ciertas actividades o requiere unos días para recuperarse completamente (casos con tiempo perdido). Efectos menores reversibles en la salud, por ejemplo: irritación en la piel, intoxicación por alimentos, traumas (> a 1 día - < a 30 días)."
-                    }, {
+                        "group_by": "No ha ocurrido en el sector Hospitalario",
+                        "value": "8",
+                        "description": "Impacto internacional"
+                    }, 
+                    {
+                        "group_by": "No ha ocurrido en el sector Hospitalario",
                         "value": "4",
-                        "description": "Incapacidad permanente parcial o invalidez: Afectan el desempeño laboral por largo tiempo, como una ausencia prolongada al trabajo (> a 30 días). Daños irreversibles en la salud con inhabilitación seria sin pérdida de la vida; por ejemplo: lesiones lumbares crónicas, lesiones por trauma acumulativo, dermatitis por sensibilización, asma ocupacional, amputaciones."
-                    }, {
+                        "description": "Impacto nacional"
+                    }, 
+                    {
+                        "group_by": "No ha ocurrido en el sector Hospitalario",
+                        "value": "3",
+                        "description": "Impacto regional Departamento"
+                    }, 
+                    {
+                        "group_by": "No ha ocurrido en el sector Hospitalario",
+                        "value": "2",
+                        "description": "Impacto local Ciudad y  área Metropolitana"
+                    },
+                    {
+                        "group_by": "No ha ocurrido en el sector Hospitalario",
+                        "value": "1",
+                        "description": "Impacto interno HPTU"
+                    },
+                    {
+                        "group_by": "Ha ocurrido en el sector Hospitalario",
+                        "value": "10",
+                        "description": "Impacto internacional"
+                    }, 
+                    {
+                        "group_by": "Ha ocurrido en el sector Hospitalario",
+                        "value": "8",
+                        "description": "Impacto nacional"
+                    }, 
+                    {
+                        "group_by": "Ha ocurrido en el sector Hospitalario",
+                        "value": "6",
+                        "description": "Impacto regional Departamento"
+                    }, 
+                    {
+                        "group_by": "Ha ocurrido en el sector Hospitalario",
+                        "value": "3",
+                        "description": "Impacto local Ciudad y  área Metropolitana"
+                    },
+                    {
+                        "group_by": "Ha ocurrido en el sector Hospitalario",
+                        "value": "2",
+                        "description": "Impacto interno HPTU"
+                    },
+                    {
+                        "group_by": "Alguna vez ha ocurrido en el Hospital en el último año",
+                        "value": "15",
+                        "description": "Impacto internacional"
+                    }, 
+                    {
+                        "group_by": "Alguna vez ha ocurrido en el Hospital en el último año",
+                        "value": "12",
+                        "description": "Impacto nacional"
+                    }, 
+                    {
+                        "group_by": "Alguna vez ha ocurrido en el Hospital en el último año",
+                        "value": "9",
+                        "description": "Impacto regional Departamento"
+                    }, 
+                    {
+                        "group_by": "Alguna vez ha ocurrido en el Hospital en el último año",
+                        "value": "6",
+                        "description": "Impacto local Ciudad y  área Metropolitana"
+                    },
+                    {
+                        "group_by": "Alguna vez ha ocurrido en el Hospital en el último año",
+                        "value": "3",
+                        "description": "Impacto interno HPTU"
+                    },
+                    {
+                        "group_by": "Sucede varias veces en el último año y en diferentes procesos (en el Hospital)",
+                        "value": "20",
+                        "description": "Impacto internacional"
+                    }, 
+                    {
+                        "group_by": "Sucede varias veces en el último año y en diferentes procesos (en el Hospital)",
+                        "value": "16",
+                        "description": "Impacto nacional"
+                    }, 
+                    {
+                        "group_by": "Sucede varias veces en el último año y en diferentes procesos (en el Hospital)",
+                        "value": "12",
+                        "description": "Impacto regional Departamento"
+                    }, 
+                    {
+                        "group_by": "Sucede varias veces en el último año y en diferentes procesos (en el Hospital)",
+                        "value": "7",
+                        "description": "Impacto local Ciudad y  área Metropolitana"
+                    },
+                    {
+                        "group_by": "Sucede varias veces en el último año y en diferentes procesos (en el Hospital)",
+                        "value": "4",
+                        "description": "Impacto interno HPTU"
+                    },
+                    {
+                        "group_by": "Sucede varias veces en el último año en el mismo proceso",
+                        "value": "25",
+                        "description": "Impacto internacional"
+                    }, 
+                    {
+                        "group_by": "Sucede varias veces en el último año en el mismo proceso",
+                        "value": "20",
+                        "description": "Impacto nacional"
+                    }, 
+                    {
+                        "group_by": "Sucede varias veces en el último año en el mismo proceso",
+                        "value": "15",
+                        "description": "Impacto regional Departamento"
+                    }, 
+                    {
+                        "group_by": "Sucede varias veces en el último año en el mismo proceso",
+                        "value": "10",
+                        "description": "Impacto local Ciudad y  área Metropolitana"
+                    },
+                    {
+                        "group_by": "Sucede varias veces en el último año en el mismo proceso",
                         "value": "5",
-                        "description": "Una o más fatalidades: Por accidente o enfermedad ocupacional."
+                        "description": "Impacto interno HPTU"
                     }
                 ]
             }, {
                 "description": "NRI",
                 "type_input": "text",
+                "grouped": null,
                 "readonly": "SI"
-            }, {
-                "description": "Nivel de Probabilidad",
-                "type_input": "select",
-                "readonly": "NO",
-                "values": [
-                    {
-                        "value": "No ha ocurrido en el sector Hospitalario",
-                        "description": ""
-                    }, {
-                        "value": "Ha ocurrido en el sector Hospitalario",
-                        "description": ""
-                    }, {
-                        "value": "Alguna vez ha ocurrido en el Hospital en el último año",
-                        "description": ""
-                    }, {
-                        "value": "Sucede varias veces en el último año y en diferentes procesos (en el Hospital)",
-                        "description": ""
-                    }, {
-                        "value": "Sucede varias veces en el último año en el mismo proceso",
-                        "description": ""
-                    }
-                ]
             }
         ]
     }

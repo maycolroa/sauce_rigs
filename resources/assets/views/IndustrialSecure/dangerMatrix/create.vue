@@ -17,7 +17,8 @@
                 :si-no="siNo"
                 :qualifications="qualifications"
                 :action-plan-states="actionPlanStates"
-                userDataUrl="/selects/users"/>
+                userDataUrl="/selects/users"
+                :configuration="configuration"/>
         </b-card-body>
       </b-card>
     </div>
@@ -43,7 +44,8 @@ export default {
       dangerGenerated: [],
       siNo: [],
       qualifications: [],
-      actionPlanStates: []
+      actionPlanStates: [],
+      configuration: []
     }
   },
   created(){
@@ -52,6 +54,15 @@ export default {
     this.fetchSelect('siNo', '/radios/siNo')
     this.fetchSelect('qualifications', '/industrialSecurity/dangersMatrix/getQualificationsComponent')
     this.fetchSelect('actionPlanStates', '/selects/actionPlanStates')
+
+    axios.get('/administration/configuration/view')
+    .then(response => {
+        this.configuration = response.data.data;
+    })
+    .catch(error => {
+        Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
+        this.$router.go(-1);
+    });
   },
   methods: {
     fetchSelect(key, url)

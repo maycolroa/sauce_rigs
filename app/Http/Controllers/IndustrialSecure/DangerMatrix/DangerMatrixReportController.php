@@ -30,9 +30,6 @@ class DangerMatrixReportController extends Controller
      */
     public function report(Request $request)
     {
-        /*$regionals = $this->getValuesForMultiselect($request->regionals);
-        $filtersType = $request->filtersType;*/
-
         $data = [];
 
         $conf = QualificationCompany::select('qualification_id')->first();
@@ -50,16 +47,19 @@ class DangerMatrixReportController extends Controller
             $headquarters = $this->getValuesForMultiselect($request->headquarters);
             $areas = $this->getValuesForMultiselect($request->areas);
             $processes = $this->getValuesForMultiselect($request->processes);
+            $macroprocesses = $this->getValuesForMultiselect($request->macroprocesses);
             $dangers = $this->getValuesForMultiselect($request->dangers);
             $matrix = $this->getValuesForMultiselect($request->matrix);
             $filtersType = $request->filtersType;
             /***********************************************/
 
-            $dangersMatrix = DangerMatrix::select('*')
+            $dangersMatrix = DangerMatrix::select('sau_dangers_matrix.*')
+                ->leftJoin('sau_employees_processes', 'sau_employees_processes.id', 'sau_dangers_matrix.employee_process_id')
                 ->inRegionals($regionals, isset($filtersType['regionals']) ? $filtersType['regionals'] : 'IN')
                 ->inHeadquarters($headquarters, isset($filtersType['headquarters']) ? $filtersType['headquarters'] : 'IN')
                 ->inAreas($areas, isset($filtersType['areas']) ? $filtersType['areas'] : 'IN')
                 ->inProcesses($processes, isset($filtersType['processes']) ? $filtersType['processes'] : 'IN')
+                ->inMacroprocesses($macroprocesses, isset($filtersType['macroprocesses']) ? $filtersType['macroprocesses'] : 'IN')
                 ->inMatrix($matrix, $filtersType['matrix'])
                 ->get();
 
@@ -87,14 +87,41 @@ class DangerMatrixReportController extends Controller
                         }
 
                         if ($conf == 'Tipo 1')
-                            if (isset($data[$nri]) && isset($data[$nri][$ndp]))
-                                $data[$nri][$ndp]['count']++;
+                            if (isset($data[$ndp]) && isset($data[$ndp][$nri]))
+                                $data[$ndp][$nri]['count']++;
                     }
+                }
+            }
+
+            $matriz = [];
+            $headers = array_keys($data);
+            $count = isset($data['Ha ocurrido en el sector Hospitalario']) ? COUNT($data['Ha ocurrido en el sector Hospitalario']) : 0;
+
+            for ($i=0; $i < $count; $i++)
+            { 
+                $y = 0;
+
+                foreach ($data as $key => $value)
+                {
+                    $x = 0;
+
+                    foreach ($value as $key2 => $value2)
+                    { 
+                        $matriz[$x][$y] = array_merge($data[$key][$key2], ["row"=>$key, "col"=>$key2]);
+                        $x++;
+                    }
+
+                    $y++;
                 }
             }
         }
         
-        return $this->respondHttp200($data);
+        return $this->respondHttp200([
+            "data" => [
+                "data" => $matriz,
+                "headers" => $headers
+            ]
+        ]);
     }
 
     /**
@@ -109,6 +136,7 @@ class DangerMatrixReportController extends Controller
         $headquarters = $this->getValuesForMultiselect($request->headquarters);
         $areas = $this->getValuesForMultiselect($request->areas);
         $processes = $this->getValuesForMultiselect($request->processes);
+        $macroprocesses = $this->getValuesForMultiselect($request->macroprocesses);
         $dangers = $this->getValuesForMultiselect($request->dangers);
         $matrix = $this->getValuesForMultiselect($request->matrix);
         $filtersType = $request->filtersType;
@@ -118,21 +146,24 @@ class DangerMatrixReportController extends Controller
             'sau_dangers_matrix.id AS id',
             'sau_dm_dangers.name AS name',
             'sau_dm_activity_danger.danger_description AS danger_description',
-            'sau_dangers_matrix.name AS matrix'
+            'sau_dangers_matrix.name AS matrix',
+            'sau_employees_processes.types as types'
         )
         ->join('sau_danger_matrix_activity', 'sau_danger_matrix_activity.danger_matrix_id', 'sau_dangers_matrix.id')
         ->join('sau_dm_activity_danger', 'sau_dm_activity_danger.dm_activity_id', 'sau_danger_matrix_activity.id')
         ->join('sau_dm_dangers', 'sau_dm_dangers.id', 'sau_dm_activity_danger.danger_id')
         ->join('sau_dm_qualification_danger', 'sau_dm_qualification_danger.activity_danger_id', 'sau_dm_activity_danger.id')
         ->join('sau_dm_qualification_types', 'sau_dm_qualification_types.id', 'sau_dm_qualification_danger.type_id')
+        ->leftJoin('sau_employees_processes', 'sau_employees_processes.id', 'sau_dangers_matrix.employee_process_id')
         ->inRegionals($regionals, isset($filtersType['regionals']) ? $filtersType['regionals'] : 'IN')
         ->inHeadquarters($headquarters, isset($filtersType['headquarters']) ? $filtersType['headquarters'] : 'IN')
         ->inAreas($areas, isset($filtersType['areas']) ? $filtersType['areas'] : 'IN')
         ->inProcesses($processes, isset($filtersType['processes']) ? $filtersType['processes'] : 'IN')
+        ->inMacroprocesses($macroprocesses, isset($filtersType['macroprocesses']) ? $filtersType['macroprocesses'] : 'IN')
         ->inMatrix($matrix, $filtersType['matrix'])
         ->inDangers($dangers, $filtersType['dangers'])
         ->where('sau_dm_activity_danger.qualification', $request->label)
-        ->where('sau_dm_qualification_types.description', 'NRI')
+        ->where('sau_dm_qualification_types.description', 'Nivel de Probabilidad')
         ->where('sau_dm_qualification_danger.value_id', $request->row);
 
         return Vuetable::of($dangers)

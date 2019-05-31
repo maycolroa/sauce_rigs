@@ -69,6 +69,7 @@
                   :form="form"
                   :index-activity="index"
                   @activityName="updateActivityNameTab"
+                  :configuration="configuration"
                 />
             </b-tab>
           </b-tabs>
@@ -158,6 +159,12 @@ export default {
     },
     actionPlanStates: {
       type: Array,
+      default: function() {
+        return [];
+      }
+    },
+    configuration: {
+      type: [Array, Object],
       default: function() {
         return [];
       }

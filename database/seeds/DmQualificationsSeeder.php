@@ -50,6 +50,7 @@ class DmQualificationsSeeder extends Seeder
                                                 ], [
                                                     'description' => $type['description'],
                                                     'type_input' => $type['type_input'],
+                                                    'grouped' => $type['grouped'],
                                                     'readonly' => $type['readonly']
                                                 ]);
 
@@ -58,8 +59,10 @@ class DmQualificationsSeeder extends Seeder
                                                 if (isset($value['description']) && isset($value['value']))
                                                 {
                                                     $qualificationType->values()->updateOrCreate([
-                                                            'value' => $value['value']
+                                                            'group_by' => $value['group_by'],
+                                                            'value' => $value['value'],
                                                         ], [
+                                                            'group_by' => $value['group_by'],
                                                             'value' => $value['value'],
                                                             'description' => $value['description']
                                                         ]);

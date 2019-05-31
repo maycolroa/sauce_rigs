@@ -142,6 +142,35 @@ class DangerMatrix extends Model
     }
 
     /**
+     * filters checks through the given macroprocesses
+     * @param  Illuminate\Database\Eloquent\Builder $query
+     * @param  array $macroprocesses
+     * @return Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeInMacroprocesses($query, $macroprocesses, $typeSearch = 'IN')
+    {
+        $regexp = [];
+
+        foreach ($macroprocesses as $key => $value)
+        {
+            $regexp[] = "((^|,)($value)(,|$))";
+        }
+
+        if (COUNT($regexp) > 0)
+        {
+            $regexp = implode("|", $regexp);
+
+            if ($typeSearch == 'IN')
+                $query->where('sau_employees_processes.types', 'REGEXP', $regexp);
+
+            else if ($typeSearch == 'NOT IN')
+                $query->where('sau_employees_processes.types', 'NOT REGEXP', $regexp);
+        }
+
+        return $query;
+    }
+
+    /**
      * filters checks through the given matrix
      * @param  Illuminate\Database\Eloquent\Builder $query
      * @param  array $matrix

@@ -10,6 +10,7 @@ class QualificationValues extends Model
 
     protected $fillable = [
         'qualification_type_id',
+        'group_by',
         'value',
         'description'
     ];
