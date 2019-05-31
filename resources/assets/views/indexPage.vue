@@ -1,23 +1,47 @@
 <template>
-  <div class="authentication-wrapper authentication-2 px-4">
-    <div class="authentication-inner py-5">
+  <div>
+    <div class="row">
+      <div class="col-md-6" v-for="(item, index) in data" :key="index">
 
-      <!-- Logo -->
-      <div class="d-flex justify-content-center align-items-center">
-        <img class="ui-w-200 rounded-circle" src="~@/icons/Sauce.png">
+        <b-card class="mb-4">
+          <router-link :to="{ name: index}" class="text-dark cursor-pointer item-app-navbar">
+            <center>
+              <div class="my-2 mx-2 text-center">
+                <img class="ui-w-60" :src="`/images/${item.image}.png`" alt="">
+                <div class="text-center font-weight-bold pt-1">
+                  {{ item.display_name }}
+                </div>
+              </div>
+            </center>
+          </router-link>
+        </b-card>
+
       </div>
-      <!-- / Logo -->
-      
     </div>
   </div>
 </template>
 
-<!-- Page -->
-<style src="@/vendor/styles/bootstrap.scss" lang="scss"></style>
-<style src="@/vendor/styles/appwork.scss" lang="scss"></style>
-<style src="@/vendor/styles/theme-cotton.scss" lang="scss"></style>
-<style src="@/vendor/styles/colors.scss" lang="scss"></style>
-<style src="@/vendor/styles/uikit.scss" lang="scss"></style>
-<style src="@/vendor/libs/vue-notification/vue-notification.scss" lang="scss"></style>
-<style src="@/app.scss" lang="scss"></style>
-<style src="@/vendor/styles/pages/authentication.scss" lang="scss"></style>
+<script>
+  export default {
+    props: {
+      apps: {
+        type: [Object, Array],
+        required: true,
+        default: function() {
+          return [];
+        }
+      }
+    },
+    computed: {
+      data() {
+        if (Object.keys(this.apps).length > 0)
+        {
+          return this.apps;
+        }
+
+        return [];
+      }
+    }
+  }
+</script>
+
