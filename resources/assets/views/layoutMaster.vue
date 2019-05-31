@@ -6,7 +6,7 @@
 
       <div class="layout-content">
         <div class="router-transitions container-fluid flex-grow-1 container-p-y">
-          <router-view />
+          <router-view :apps="data"/>
         </div>
       </div>
     </div>
