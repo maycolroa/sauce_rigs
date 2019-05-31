@@ -1,10 +1,12 @@
 <template>
     <b-form-group class="class" :label="label">
         <b-check-group 
+            :stacked="vertical"
             :name="name" 
             :state="state" 
             :options="options" 
             :disabled="disabled" 
+            :checked="checked"
             @input="updateChecked($event)"/>
     </b-form-group>
 </template>
@@ -16,6 +18,8 @@ export default {
         label: {type: String},
         options: {type: Array, required: true},
         error: {type: String, default: null},
+        vertical: { type: Boolean, default: false },
+        checked: { type: [String, Number, Boolean, Array] },
     },
     computed: {
         state(){

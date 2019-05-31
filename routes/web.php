@@ -202,6 +202,9 @@ Route::middleware(['auth'])->group(function () {
       Route::prefix('legalMatrix')->group(function () {
 
         Route::post('interest/data', 'LegalAspects\LegalMatrix\InterestController@data');
+        Route::post('interest/saveInterests', 'LegalAspects\LegalMatrix\InterestController@saveInterests');
+        Route::get('interest/listInterests', 'LegalAspects\LegalMatrix\InterestController@listInterests');
+        Route::get('interest/myInterests', 'LegalAspects\LegalMatrix\InterestController@myInterests');
         Route::ApiResource('interest', 'LegalAspects\LegalMatrix\InterestController');
 
         Route::post('riskAspect/data', 'LegalAspects\LegalMatrix\RiskAspectController@data');
@@ -212,6 +215,8 @@ Route::middleware(['auth'])->group(function () {
 
         Route::post('entity/data', 'LegalAspects\LegalMatrix\EntityController@data');
         Route::ApiResource('entity', 'LegalAspects\LegalMatrix\EntityController');
+
+
       });
 		});
 

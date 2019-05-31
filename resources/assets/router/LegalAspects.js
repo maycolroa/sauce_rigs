@@ -188,6 +188,12 @@ export default [
 				import('@/views/LegalAspects/legalMatrix/interests/view')
 			},
 			{
+				name: 'legalaspects-lm-interest-myinterests',
+				path: 'lm/interests/myinterests',
+				component: () =>
+				import('@/views/LegalAspects/legalMatrix/interests/myInterests')
+			},
+			{
 				name: 'legalaspects-lm-riskaspect',
 				path: 'lm/riskaspects',
 				component: () =>

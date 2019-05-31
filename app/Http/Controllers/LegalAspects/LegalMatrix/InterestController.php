@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Vuetable\Facades\Vuetable;
 use App\Models\LegalAspects\LegalMatrix\Interest;
+use App\Models\General\Company;
 use App\Http\Requests\LegalAspects\LegalMatrix\InterestRequest;
 use Session;
 
@@ -121,6 +122,58 @@ class InterestController extends Controller
         return $this->respondHttp200([
             'message' => 'Se elimino el intereses'
         ]);
+    }
+
+    public function saveInterests(Request $request)
+    {
+        if ($request->has('values'))
+        {
+            $company = Company::find(Session::get('company_id'));
+            $company->interests()->sync($request->get('values'));
+        }
+        
+        return $this->respondHttp200([
+            'message' => 'Se creo el interes'
+        ]);
+    }
+
+    public function listInterests()
+    {
+        try
+        {
+            $interests = Interest::select(
+                    'sau_lm_interests.id as id',
+                    'sau_lm_interests.name as name'
+                )
+                ->pluck('id', 'name');
+            
+            return $this->respondHttp200([
+                'data' => $this->radioFormat($interests)
+            ]);
+        } 
+        catch(Exception $e)
+        {
+            $this->respondHttp500();
+        }
+    }
+
+    public function myInterests()
+    {
+        try
+        {
+            $company = Company::find(Session::get('company_id'));
+            $values = $company->interests()->pluck('sau_lm_interests.id');
+            
+            return $this->respondHttp200([
+                'data' => [
+                    "values"=> $values
+                ]
+            ]);
+        } 
+        catch(Exception $e)
+        {
+            $this->respondHttp500();
+        }
     }
 
     /**
