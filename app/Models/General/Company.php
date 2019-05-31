@@ -7,7 +7,7 @@ use App\Traits\CompanyTrait;
 
 class Company extends Model
 {
-    use CompanyTrait;
+    //use CompanyTrait;
     
     protected $table = 'sau_companies';
 
@@ -21,5 +21,10 @@ class Company extends Model
     public function licenses()
     {
         return $this->hasMany(License::class);
+    }
+
+    public function interests()
+    {
+        return $this->belongsToMany('App\Models\LegalAspects\LegalMatrix\Interest', 'sau_lm_company_interest');
     }
 }
