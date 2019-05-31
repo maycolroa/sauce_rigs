@@ -3,7 +3,6 @@
 namespace App\Http\Requests\LegalAspects\LegalMatrix;
 
 use Illuminate\Foundation\Http\FormRequest;
-use Session;
 
 class InterestRequest extends FormRequest
 {

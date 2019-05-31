@@ -213,7 +213,7 @@ export default [
 			},
 			{
 				name: 'legalaspects-lm-sstrisk',
-				path: 'lm/sstrisk',
+				path: 'lm/sstrisks',
 				component: () =>
 				import('@/views/LegalAspects/legalMatrix/sstRisk/index')
 			}, 
@@ -234,6 +234,30 @@ export default [
 				path: 'lm/sstrisks/view/:id',
 				component: () =>
 				import('@/views/LegalAspects/legalMatrix/sstRisk/view')
+			},
+			{
+				name: 'legalaspects-lm-entity',
+				path: 'lm/entities',
+				component: () =>
+				import('@/views/LegalAspects/legalMatrix/entities/index')
+			}, 
+			{
+				name: 'legalaspects-lm-entity-create',
+				path: 'lm/entities/create',
+				component: () =>
+				import('@/views/LegalAspects/legalMatrix/entities/create')
+			},
+			{
+				name: 'legalaspects-lm-entity-edit',
+				path: 'lm/entities/edit/:id',
+				component: () =>
+				import('@/views/LegalAspects/legalMatrix/entities/edit')
+			},
+			{
+				name: 'legalaspects-lm-entity-view',
+				path: 'lm/entities/view/:id',
+				component: () =>
+				import('@/views/LegalAspects/legalMatrix/entities/view')
 			},
 		]
 	}
