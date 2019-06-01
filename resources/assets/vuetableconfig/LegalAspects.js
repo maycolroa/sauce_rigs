@@ -509,7 +509,7 @@ export default [
             data: {
                 action: '/legalAspects/legalMatrix/sstRisk/',
                 id: 'id',
-                messageConfirmation: 'Esta seguro de borrar el Riesgo SST l __name__'
+                messageConfirmation: 'Esta seguro de borrar el Riesgo SST __name__'
             },
             }],
         }],
@@ -558,7 +558,7 @@ export default [
             data: {
                 action: '/legalAspects/legalMatrix/entity/',
                 id: 'id',
-                messageConfirmation: 'Esta seguro de borrar la entidad l __name__'
+                messageConfirmation: 'Esta seguro de borrar la entidad __name__'
             },
             }],
         }],
