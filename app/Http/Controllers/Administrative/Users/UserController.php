@@ -6,12 +6,15 @@ use Illuminate\Http\Request;
 use App\Vuetable\Facades\Vuetable;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Administrative\Users\UserRequest;
+use App\Http\Requests\Administrative\Users\ChangePasswordRequest;
 use App\Models\Administrative\Users\User;
 use App\Models\Administrative\Roles\Role;
 use App\Traits\UserTrait;
 use App\Traits\ContractTrait;
 use App\Jobs\Administrative\Users\UserExportJob;
 use Session;
+use Validator;
+use Hash;
 use Illuminate\Support\Facades\Auth;
 use DB;
 
@@ -273,5 +276,28 @@ class UserController extends Controller
 
             return $this->multiSelectFormat($users);
         }
+    }
+
+    public function changePassword(ChangePasswordRequest $request)
+    {
+        Validator::make($request->all(), [
+            "old_password" => [
+                function ($attribute, $value, $fail)
+                {
+                    if(!Hash::check($value, Auth::User()->password))
+                        $fail('La contraseña actual no coincide con la registrada en el sistema');
+                },
+            ]
+        ])->validate();
+
+        Auth::user()->fill($request->all());
+        
+        if(!Auth::user()->update()){
+          return $this->respondHttp500();
+        }
+        
+        return $this->respondHttp200([
+            'message' => 'Se cambio la contraseña'
+        ]);
     }
 }

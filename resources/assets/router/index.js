@@ -4,6 +4,7 @@ import { middleware } from 'vue-router-middleware'
 import Meta from 'vue-meta'
 import LayoutMaster from '@/views/layoutMaster'
 import IndexPage from '@/views/indexPage'
+import ChangePassword from '@/views/Administrative/users/changePassword'
 
 import globals from '@/globals'
 
@@ -32,6 +33,11 @@ const router = new Router({
             path: '',
             name: '',
             component: IndexPage
+          },
+          {
+            path: 'changepassword',
+            name: 'changepassword',
+            component: ChangePassword
           },
         ]
           .concat(Administrative) 

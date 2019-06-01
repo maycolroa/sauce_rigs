@@ -1,7 +1,7 @@
 <template>
   <b-navbar toggleable="lg" :variant="getLayoutNavbarBg()" class="layout-navbar align-items-lg-center container-p-x">
 
-    <b-navbar-brand to="/" class="app-brand demo d-lg-none py-0 mr-4">
+    <b-navbar-brand :to="{ name: routeAppName}" class="app-brand demo d-lg-none py-0 mr-4">
       <span class="app-brand-logo logo bg-primary">
         <div class="ui-w-30 rounded-circle align-middle text-circle">S</div>
       </span>
@@ -104,6 +104,8 @@
 
           <!-- <b-dd-item><i class="ion ion-ios-person text-lightest"></i> &nbsp; Mi Perfil</b-dd-item>
           <b-dd-divider /> -->
+
+          <b-dd-item :to="{ name: 'changepassword'}"><i class="fas fa-key text-danger"></i> &nbsp; Cambiar contraseña</b-dd-item>
           <b-dd-item href="/logout"><i class="ion ion-ios-log-out text-danger"></i> &nbsp; Cerrar sesión</b-dd-item>
         </b-nav-item-dropdown>
       </b-navbar-nav>
