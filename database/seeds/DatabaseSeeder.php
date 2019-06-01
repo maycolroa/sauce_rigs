@@ -25,5 +25,6 @@ class DatabaseSeeder extends Seeder
         $this->call(CtSectionCategoryItemsSeeder::class);
         $this->call(CtStandardClassificationSeeder::class);
         $this->call(ctItemActivitiesSeeder::class);
+        $this->call(LmLawsTypesSeeder::class);
     }
 }
