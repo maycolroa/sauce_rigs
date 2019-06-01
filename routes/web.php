@@ -101,7 +101,8 @@ Route::middleware(['auth'])->group(function () {
     //Administrativo
     Route::prefix('administration')->group(function () {
 			Route::post('users/data', 'Administrative\Users\UserController@data');
-			Route::post('users/export', 'Administrative\Users\UserController@export');
+      Route::post('users/export', 'Administrative\Users\UserController@export');
+      Route::post('users/changePassword', 'Administrative\Users\UserController@changePassword');
 			Route::ApiResource('users', 'Administrative\Users\UserController');
 
 			Route::post('role/data', 'Administrative\Roles\RoleController@data');
