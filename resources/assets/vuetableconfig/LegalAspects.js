@@ -351,7 +351,22 @@ export default [
           },
           {
             type: 'base',
-            buttons: [],
+            buttons: [
+                {
+                    name: 'retrySendMail',
+                    config: {
+                        color: 'outline-danger',
+                        borderless: true,
+                        icon: 'ion ion-ios-mail',
+                        title: 'Reenviar correo de bienvenida'
+                    },
+                    data: {
+                        action: '/legalAspects/contracts/retrySendMail/',
+                        id: 'id',
+                        messageConfirmation: 'Esta seguro de reenviar el correo de bienvenida a __social_reason__'
+                    },
+                }
+            ],
           }],
         configuration: {
             urlData: '/legalAspects/contracts/data',

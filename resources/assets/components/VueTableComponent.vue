@@ -21,6 +21,26 @@
           v-b-tooltip.top :title="(button.config.title ? button.config.title : '')"
           @click.prevent="pushButton(button,props.row)"><i :class="button.config.icon"></i></b-btn>
           </template>
+
+          <template v-for="(button, index) in controllsBaseBtn">
+            <div :key="`${index}${button.name}`">
+              <b-btn 
+                v-if="checkViewBtnBase(button, props.row)"
+                :variant="button.config.color + ' ' + (button.config.borderless ? 'borderless' : '') + ' ' + (button.config.icon ? 'icon-btn' : '')" 
+                class="btn-xs"
+                v-b-tooltip.top :title="(button.config.title ? button.config.title : '')"
+                @click.prevent="confirmBtnBase(props.row, button.name)"><i :class="button.config.icon"></i></b-btn>
+
+              <!-- modal confirmation for delete -->
+              <b-modal :ref="`modalBtnBase-${button.name}`" class="modal-slide" hide-header hide-footer>
+                <p class="text-center text-big mb-4">
+                  {{messageConfirmationBtnBase}}.
+                </p>
+                <b-btn block variant="primary" @click="executeBtnBase(`modalBtnBase-${button.name}`)">Aceptar</b-btn>
+                <b-btn block variant="default" @click="hideModal(`modalBtnBase-${button.name}`)">Cancelar</b-btn>
+              </b-modal>
+            </div>
+          </template>
           
           <b-btn v-if="controllsBase.includes('delete') && checkViewDelete(props.row)" variant="outline-danger borderless icon-btn" class="btn-xs" v-b-tooltip.top title="Eliminar" @click.prevent="confirmRemove(props.row)"><i class="ion ion-md-close"></i></b-btn>
         </div>
@@ -92,6 +112,8 @@ export default {
     return{
       messageConfirmationRemove:'',
       actionRemove:'',
+      messageConfirmationBtnBase: '',
+      actionBtnBase:'',
       component: null,
       filters: [],
       tableReady: false,
@@ -265,6 +287,20 @@ export default {
           return true
       });
       return controlls;
+    },
+    controllsBaseBtn(){
+      let controlls = this.config.controlls
+      .filter(c => {
+        return c.type == 'base'
+      })[0]
+      .buttons.filter(c => {
+        if (c.permission)
+          return auth.can[c.permission] && c.name != 'delete'
+        else 
+          return c.name != 'delete'
+      });
+
+      return controlls;
     }
   },
   mounted() {
@@ -370,7 +406,59 @@ export default {
       }
 
       return true
-    }
+    },
+    checkViewBtnBase(button, row) {
+      if(row[button.name] != undefined) {
+         return row[button.name]
+      }
+
+      return true
+    },
+		hideModal(ref) {
+			this.$refs[ref][0].hide()
+    },
+    confirmBtnBase (row, name) {
+      let controll = VueTableConfig.getControllBase(this.config.controlls, name);
+
+      let id = row[controll.data.id];
+
+      this.actionBtnBase = controll.data.action+id;
+
+      this.messageConfirmationBtnBase = (controll.data.messageConfirmation.split("__")).map((e,i) => {
+        if((i % 2) == 1){
+          return row[e];
+        }
+        else{
+          return e;
+        }
+      }).join('');
+
+      this.$refs['modalBtnBase-'+name][0].show()
+    },
+    executeBtnBase(ref){
+      axios.post(this.actionBtnBase)
+      .then(response => {
+        this.$refs.vuetable.refresh(); 
+        
+        Alerts.success('Exito',response.data.messsage);
+      })
+      .catch(error => {
+        if (error.response.status == 500 && error.response.data.error != 'Internal Error')
+        {
+          Alerts.error('Error', error.response.data.error);
+        }
+        else if (error.response.status == 403)
+        {
+          Alerts.error('Permiso Denegado', 'No tiene permitido realizar esta acción');
+        }
+        else
+        {
+          Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
+        }
+      });
+
+      this.$refs[ref][0].hide()
+    },
   }
 }
 </script>

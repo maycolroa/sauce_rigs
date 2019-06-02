@@ -533,4 +533,19 @@ class ContractLesseeController extends Controller
     {
         ListCheckContractExportJob::dispatch(Session::get('company_id'), $contract);
     }
+
+    public function retrySendMail(ContractLesseeInformation $contract)
+    {
+        $users = $this->getUsersContract($contract->id);
+        
+        if ($users->count() > 0)
+        {
+            if ($this->resendMail($users[0]))
+                return $this->respondHttp200([
+                    'message' => 'Se reenvio el correo'
+                ]);
+        }
+
+        return $this->respondHttp500();
+    }
 }
