@@ -10,7 +10,7 @@
             <form-change-password
                 :url="`/administration/users/changePassword`"
                 method="POST"
-                :cancel-url="{ name: ''}"/>
+                :cancel-url="{ path: '/'}"/>
         </b-card-body>
       </b-card>
     </div>

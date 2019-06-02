@@ -49,7 +49,11 @@ class GeneratePasswordController extends Controller
         $user->password = $request->password;
         $user->save();
 
-        $userPass = GeneratePasswordUser::where('user_id', $id)->first();
+        $userPass = GeneratePasswordUser::
+                  where('user_id', $id)
+                ->where('state', 'without use')
+                ->first();
+                
         $userPass->state = 'used';
         $userPass->save();
 

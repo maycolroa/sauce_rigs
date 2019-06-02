@@ -178,6 +178,7 @@ Route::middleware(['auth'])->group(function () {
       Route::get('contracts/qualifications', 'LegalAspects\Contracs\ContractLesseeController@qualifications');
       Route::post('contracts/saveQualificationItems', 'LegalAspects\Contracs\ContractLesseeController@saveQualificationItems');
       Route::post('contractsListCheckHistory/data', 'LegalAspects\Contracs\ListCheckHistoryController@data');
+      Route::post('contracts/retrySendMail/{contract}', 'LegalAspects\Contracs\ContractLesseeController@retrySendMail');
       Route::ApiResource('contracts', 'LegalAspects\Contracs\ContractLesseeController');
 
       Route::post('fileUpload/data', 'LegalAspects\Contracs\FileUploadController@data');
