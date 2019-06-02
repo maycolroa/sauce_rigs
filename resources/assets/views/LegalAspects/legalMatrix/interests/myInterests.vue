@@ -12,7 +12,7 @@
 						v-if="ready"
 						url="/legalAspects/legalMatrix/interest/saveInterests"
                 		method="POST"
-                		:cancel-url="{ name: 'legalaspects-lm-interest'}"
+                		:cancel-url="{ name: 'legalaspects-legalmatrix'}"
 						:interest="data"
 						:options="options"/>
 				</b-card-body>
