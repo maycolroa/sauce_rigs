@@ -89,6 +89,10 @@ Route::middleware(['auth'])->group(function () {
         Route::prefix('contracts')->group(function () {
           Route::post('sectionCategoryItems', 'LegalAspects\Contracs\SectionCategoryItemController@multiselect');
         });
+
+        Route::prefix('legalMatrix')->group(function () {
+          Route::post('interests', 'LegalAspects\LegalMatrix\InterestController@multiselect');
+        });
     });
 
     Route::prefix('radios')->group(function () {
@@ -207,7 +211,6 @@ Route::middleware(['auth'])->group(function () {
 
         Route::post('interest/data', 'LegalAspects\LegalMatrix\InterestController@data');
         Route::post('interest/saveInterests', 'LegalAspects\LegalMatrix\InterestController@saveInterests');
-        Route::get('interest/listInterests', 'LegalAspects\LegalMatrix\InterestController@listInterests');
         Route::get('interest/myInterests', 'LegalAspects\LegalMatrix\InterestController@myInterests');
         Route::ApiResource('interest', 'LegalAspects\LegalMatrix\InterestController');
 
