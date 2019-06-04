@@ -24,7 +24,7 @@ class User extends Authenticatable
     protected $table = 'sau_users';
 
     protected $fillable = [
-        'name', 'email', 'password','active', 'state', 'document', 'document_type', 'created_at', 'updated_at'
+        'name', 'email', 'password','active', 'state', 'document', 'document_type', 'default_module_url', 'module_id', 'created_at', 'updated_at'
     ];
 
     /**
@@ -82,6 +82,11 @@ class User extends Authenticatable
           'name' => "{$this->document} - {$this->name}",
           'value' => $this->id
         ];
+    }
+
+    public function defaultModule()
+    {
+        return $this->belongsTo('App\Models\General\Module', 'module_id');
     }
 
     /*public function contractInformation(){

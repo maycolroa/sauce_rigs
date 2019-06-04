@@ -7,8 +7,10 @@ use App\Vuetable\Facades\Vuetable;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Administrative\Users\UserRequest;
 use App\Http\Requests\Administrative\Users\ChangePasswordRequest;
+use App\Http\Requests\Administrative\Users\DefaultModuleRequest;
 use App\Models\Administrative\Users\User;
 use App\Models\Administrative\Roles\Role;
+use App\Models\General\Module;
 use App\Traits\UserTrait;
 use App\Traits\ContractTrait;
 use App\Jobs\Administrative\Users\UserExportJob;
@@ -298,6 +300,39 @@ class UserController extends Controller
         
         return $this->respondHttp200([
             'message' => 'Se cambio la contraseña'
+        ]);
+    }
+
+    public function myDefaultModule()
+    {
+        try
+        {
+            return $this->respondHttp200([
+                'data' => [
+                    "module_id" => Auth::user()->module_id,
+                    "multiselect_module" => Auth::user()->defaultModule ? Auth::user()->defaultModule->multiselect() : ''
+                ]
+            ]);
+        } 
+        catch(Exception $e)
+        {
+            $this->respondHttp500();
+        }
+    }
+
+    public function defaultModule(DefaultModuleRequest $request)
+    {
+        $module = Module::findOrFail($request->module_id);
+
+        Auth::user()->default_module_url = $module->application->name.'/'.$module->name;
+        Auth::user()->module_id = $module->id;
+
+        if(!Auth::user()->update()){
+            return $this->respondHttp500();
+        }
+
+        return $this->respondHttp200([
+            'message' => 'Se actualizo su módulo favorito'
         ]);
     }
 }

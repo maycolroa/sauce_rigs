@@ -5,6 +5,7 @@ import Meta from 'vue-meta'
 import LayoutMaster from '@/views/layoutMaster'
 import IndexPage from '@/views/indexPage'
 import ChangePassword from '@/views/Administrative/users/changePassword'
+import DefaultModule from '@/views/Administrative/users/defaultModule'
 
 import globals from '@/globals'
 
@@ -38,6 +39,11 @@ const router = new Router({
             path: 'changepassword',
             name: 'changepassword',
             component: ChangePassword
+          },
+          {
+            path: 'defaultmodule',
+            name: 'defaultmodule',
+            component: DefaultModule
           },
         ]
           .concat(Administrative) 
