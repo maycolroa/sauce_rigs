@@ -19,7 +19,8 @@ class ActionPlansActivity extends Model
         'expiration_date',
         'state',
         'editable',
-        'company_id'
+        'company_id',
+        'observation'
     ];
 
     //the attribute define the table for scope company execute
