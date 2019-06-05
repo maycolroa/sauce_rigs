@@ -92,6 +92,13 @@ Route::middleware(['auth'])->group(function () {
 
         Route::prefix('legalMatrix')->group(function () {
           Route::post('interests', 'LegalAspects\LegalMatrix\InterestController@multiselect');
+          Route::post('years', 'LegalAspects\LegalMatrix\LawController@lmYears');
+          Route::post('applySystem', 'General\MultiSelectRadioController@lmApplySystem');
+          Route::post('riskAspects', 'LegalAspects\LegalMatrix\RiskAspectController@multiselect');
+          Route::post('sstRisks', 'LegalAspects\LegalMatrix\SstRiskController@multiselect');
+          Route::post('entities', 'LegalAspects\LegalMatrix\EntityController@multiselect');
+          Route::post('lawsTypes', 'LegalAspects\LegalMatrix\LawTypeController@multiselect');
+          Route::post('repealed', 'General\MultiSelectRadioController@lmRepealed');
         });
     });
 
@@ -223,7 +230,8 @@ Route::middleware(['auth'])->group(function () {
         Route::post('entity/data', 'LegalAspects\LegalMatrix\EntityController@data');
         Route::ApiResource('entity', 'LegalAspects\LegalMatrix\EntityController');
 
-
+        Route::post('law/data', 'LegalAspects\LegalMatrix\LawController@data');
+        Route::ApiResource('law', 'LegalAspects\LegalMatrix\LawController');
       });
 		});
 
