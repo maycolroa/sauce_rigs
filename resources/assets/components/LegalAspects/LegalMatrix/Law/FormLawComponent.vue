@@ -1,0 +1,250 @@
+<template>
+
+  <b-form :action="url" @submit.prevent="submit" autocomplete="off">
+
+    <b-card no-body class="mb-2 border-secondary" style="width: 100%;">
+      <b-card-header class="bg-secondary">
+        <b-row>
+          <b-col cols="11" class="d-flex justify-content-between text-white"> General </b-col>
+          <b-col cols="1">
+            <div class="float-right">
+              <b-button-group>
+                <b-btn href="javascript:void(0)" v-b-toggle="'accordion-general'" variant="link">
+                  <span class="collapse-icon"></span>
+                </b-btn>
+              </b-button-group>
+            </div>
+          </b-col>
+        </b-row>
+      </b-card-header>
+      <b-collapse :id="`accordion-general`" visible :accordion="`accordion-master`">
+        <b-card-body>
+          <b-form-row>
+            <vue-input :disabled="viewOnly" class="col-md-6" v-model="form.name" label="Nombre" type="text" name="name" :error="form.errorsFor('name')" placeholder="Nombre"></vue-input>
+            <vue-input :disabled="viewOnly" class="col-md-6" v-model="form.law_number" label="Nùmero" type="number" name="law_number" :error="form.errorsFor('law_number')" placeholder="Nùmero"></vue-input>
+          </b-form-row>
+          <b-form-row>
+            <vue-advanced-select :disabled="viewOnly" class="col-md-6" v-model="form.apply_system" :multiple="false" :options="applySystems" :hide-selected="false" name="apply_system" :error="form.errorsFor('apply_system')" label="Sistema que aplica" placeholder="Seleccione el sistema que aplica">
+              </vue-advanced-select>
+            <vue-advanced-select :disabled="viewOnly" class="col-md-6" v-model="form.law_year" :multiple="false" :options="years" :hide-selected="false" name="law_year" :error="form.errorsFor('law_year')" label="Año" placeholder="Seleccione el año">
+              </vue-advanced-select>
+          </b-form-row>
+          <b-form-row>
+            <vue-textarea :disabled="viewOnly" class="col-md-6" v-model="form.description" label="Descripción" name="description" placeholder="Descripción" :error="form.errorsFor('description')" rows="2"></vue-textarea>
+            <vue-textarea :disabled="viewOnly" class="col-md-6" v-model="form.observations" label="Observaciones" name="observations" placeholder="Observaciones" :error="form.errorsFor('observations')" rows="2"></vue-textarea>
+          </b-form-row>
+          <b-form-row>
+            <vue-ajax-advanced-select :disabled="viewOnly" class="col-md-6" v-model="form.law_type_id" :error="form.errorsFor('law_type_id')" :selected-object="form.multiselect_law_type" name="law_type_id" label="Tipo de norma" placeholder="Seleccione el tipo de norma" :url="lawTypeDataUrl">
+              </vue-ajax-advanced-select>
+            <vue-ajax-advanced-select :disabled="viewOnly" class="col-md-6" v-model="form.risk_aspect_id" :error="form.errorsFor('risk_aspect_id')" :selected-object="form.multiselect_risk_aspect" name="risk_aspect_id" label="Riesgo/Aspecto Ambiental" placeholder="Seleccione el Riesgo/Aspecto Ambiental" :url="riskAspectDataUrl">
+              </vue-ajax-advanced-select>
+          </b-form-row>
+          <b-form-row>
+            <vue-ajax-advanced-select :disabled="viewOnly" class="col-md-6" v-model="form.entity_id" :error="form.errorsFor('entity_id')" :selected-object="form.multiselect_entity" name="entity_id" label="Ente" placeholder="Seleccione el ente" :url="entityDataUrl">
+              </vue-ajax-advanced-select>
+            <vue-ajax-advanced-select :disabled="viewOnly" class="col-md-6" v-model="form.sst_risk_id" :error="form.errorsFor('sst_risk_id')" :selected-object="form.multiselect_sst_risk" name="sst_risk_id" label="Riesgo SST" placeholder="Seleccione el riesgo sst" :url="sstRiskDataUrl">
+              </vue-ajax-advanced-select>
+          </b-form-row>
+          <b-form-row>
+            <vue-advanced-select :disabled="viewOnly" class="col-md-6" v-model="form.repealed" :multiple="false" :options="repealed" :hide-selected="false" name="repealed" :error="form.errorsFor('repealed')" label="Derogada" placeholder="Seleccione una opciòn">
+              </vue-advanced-select>
+						<vue-file-simple v-if="isEdit || viewOnly" :help-text="`Para descargar el archivo actual, haga click <a href='/legalAspects/fileUpload/download/${this.$route.params.id}' target='blank'>aqui</a> `" :disabled="viewOnly" class="col-md-6" v-model="form.file" label="Archivo" name="file" :error="form.errorsFor('file')" placeholder="Seleccione un archivo"></vue-file-simple>
+						<vue-file-simple v-else :disabled="viewOnly" class="col-md-6" v-model="form.file" label="Archivo" name="file" :error="form.errorsFor('file')" placeholder="Seleccione un archivo"></vue-file-simple>
+          </b-form-row>
+        </b-card-body>
+      </b-collapse>
+    </b-card>
+
+    <b-card no-body class="mb-2 border-secondary" style="width: 100%;">
+      <b-card-header class="bg-secondary">
+          <b-row>
+            <b-col cols="11" class="d-flex justify-content-between text-white"> Artìculos </b-col>
+            <b-col cols="1">
+                <div class="float-right">
+                  <b-button-group>
+                    <b-btn href="javascript:void(0)" v-b-toggle="'accordion-articles'" variant="link">
+                      <span class="collapse-icon"></span>
+                    </b-btn>
+                  </b-button-group>
+                </div>
+            </b-col>
+          </b-row>
+      </b-card-header>
+      <b-collapse :id="`accordion-articles`" visible :accordion="`accordion-master`">
+        <b-card-body>
+          <div class="col-md-12">
+            <blockquote class="blockquote text-center">
+              <p class="mb-0">Artìculos de la norma</p>
+            </blockquote>
+            <b-form-row>
+              <div class="col-md-12" v-if="!viewOnly">
+                <div class="float-right" style="padding-top: 10px;">
+                  <b-btn variant="primary" @click.prevent="addActicle()"><span class="ion ion-md-add-circle"></span>&nbsp;&nbsp;Agregar Artìculo</b-btn>
+                </div>
+              </div>
+            </b-form-row>
+            <b-form-row style="padding-top: 15px;">
+              <b-form-feedback class="d-block" v-if="form.errorsFor(`articles`)" style="padding-bottom: 10px;">
+                {{ form.errorsFor(`articles`) }}
+              </b-form-feedback>
+              <perfect-scrollbar :options="{ wheelPropagation: true }" class="mb-4" style="height: 500px; padding-right: 15px; width: 100%;">
+                <template v-for="(article, index) in form.articles">
+                  <b-card no-body class="mb-2 border-secondary" :key="article.key" style="width: 100%;">
+                    <b-card-header class="bg-secondary">
+                      <b-row>
+                        <b-col cols="10" class="d-flex justify-content-between text-white"> {{ form.articles[index].description ? form.articles[index].description : `Nuevo Artìculo ${index + 1}` }}</b-col>
+                        <b-col cols="2">
+                          <div class="float-right">
+                            <b-button-group>
+                              <b-btn href="javascript:void(0)" v-b-toggle="'accordion' + article.key+'-1'" variant="link">
+                                <span class="collapse-icon"></span>
+                              </b-btn>
+                              <b-btn @click.prevent="removeArticle(index)" 
+                                v-if="!viewOnly"
+                                size="sm" 
+                                variant="secondary icon-btn borderless"
+                                v-b-tooltip.top title="Eliminar Articulo">
+                                  <span class="ion ion-md-close-circle"></span>
+                              </b-btn>
+                            </b-button-group>
+                          </div>
+                        </b-col>
+                      </b-row>
+                    </b-card-header>
+                    <b-collapse :id="`accordion${article.key}-1`" visible :accordion="`accordion-123`">
+                      <b-card-body>
+
+                        <b-form-row>
+                          <vue-textarea :disabled="viewOnly" class="col-md-12" v-model="form.articles[index].description" label="Descripción" name="description" placeholder="Descripción" :error="form.errorsFor(`objectives.${index}.description`)" rows="1"></vue-textarea>
+                        </b-form-row>
+
+                      </b-card-body>
+                    </b-collapse>
+                  </b-card>
+                </template>
+              </perfect-scrollbar>
+            </b-form-row>
+          </div>
+        </b-card-body>
+      </b-collapse>
+    </b-card>
+
+    <div class="row float-right pt-10 pr-10" style="padding-top: 20px;">
+      <template>
+        <b-btn variant="default" :to="cancelUrl" :disabled="loading">{{ viewOnly ? "Atras" : "Cancelar"}}</b-btn>&nbsp;&nbsp;
+        <b-btn type="submit" :disabled="loading" variant="primary" v-if="!viewOnly">Finalizar</b-btn>
+      </template>
+    </div>
+  </b-form>
+</template>
+
+<script>
+import VueInput from "@/components/Inputs/VueInput.vue";
+import VueAdvancedSelect from "@/components/Inputs/VueAdvancedSelect.vue";
+import VueAjaxAdvancedSelect from "@/components/Inputs/VueAjaxAdvancedSelect.vue";
+import PerfectScrollbar from '@/vendor/libs/perfect-scrollbar/PerfectScrollbar';
+import Form from "@/utils/Form.js";
+import VueFileSimple from "@/components/Inputs/VueFileSimple.vue";
+import VueTextarea from "@/components/Inputs/VueTextarea.vue";
+import Alerts from '@/utils/Alerts.js';
+
+export default {
+  components: {
+    VueInput,
+    VueAdvancedSelect,
+    VueAjaxAdvancedSelect,
+    PerfectScrollbar,
+    VueTextarea,
+    VueFileSimple
+  },
+  props: {
+    url: { type: String },
+    method: { type: String },
+    cancelUrl: { type: [String, Object], required: true },
+    isEdit: { type: Boolean, default: false },
+    viewOnly: { type: Boolean, default: false },
+    lawTypeDataUrl: { type: String, default: "" },
+    riskAspectDataUrl: { type: String, default: "" },
+    entityDataUrl: { type: String, default: "" },
+    sstRiskDataUrl: { type: String, default: "" },
+    applySystems: {
+      type: Array,
+      default: function() {
+        return [];
+      }
+    },
+    years: {
+      type: Array,
+      default: function() {
+        return [];
+      }
+    },
+    repealed: {
+      type: Array,
+      default: function() {
+        return [];
+      }
+    },
+    evaluation: {
+      default() {
+        return {
+          name: '',
+          law_number: '',
+          apply_system: '',
+          law_year: '',
+          law_type_id: '',
+          description: '',
+          observations: '',
+          risk_aspect_id: '',
+          entity_id: '',
+          sst_risk_id: '',
+          repealed: '',
+          file: '',
+          articles: [
+          ]
+        };
+      }
+    }
+  },
+  watch: {
+    evaluation() {
+      this.loading = false;
+      this.form = Form.makeFrom(this.evaluation, this.method);
+    }
+  },
+  data() {
+    return {
+        loading: this.isEdit,
+        form: Form.makeFrom(this.evaluation, this.method)
+    };
+  },
+  methods: {
+    submit(e) {
+      this.loading = true;
+      this.form
+        .submit(e.target.action)
+        .then(response => {
+          this.loading = false;
+          this.$router.push({ name: "legalaspects-lm-law" });
+        })
+        .catch(error => {
+          this.loading = false;
+        });
+    },
+    addActicle() {
+        this.form.articles.push({
+            key: new Date().getTime(),
+            description: '',
+        })
+    },
+    removeArticle(index)
+    {
+      if (this.form.articles[index].id != undefined)
+        this.form.delete.articles.push(this.form.articles[index].id)
+
+      this.form.articles.splice(index, 1)
+    },
+    
+  }
+};
+</script>

@@ -114,4 +114,27 @@ class MultiSelectRadioController extends Controller
 
         return $this->multiSelectFormat(collect($data));
     }
+
+    public function lmApplySystem()
+    {
+        $data = [
+            "SST" => "SST", 
+            "Ambiental" => "Ambiental"
+        ];
+        
+        return $this->multiSelectFormat(collect($data));
+    }
+
+    public function lmRepealed()
+    {
+        $data = [
+            "SI" => "SI", 
+            "NO" => "NO",
+            "Parcial" => "Parcial"
+        ];
+        
+        return $this->multiSelectFormat(collect($data));
+    }
+
+    
 }

@@ -89,6 +89,17 @@ Route::middleware(['auth'])->group(function () {
         Route::prefix('contracts')->group(function () {
           Route::post('sectionCategoryItems', 'LegalAspects\Contracs\SectionCategoryItemController@multiselect');
         });
+
+        Route::prefix('legalMatrix')->group(function () {
+          Route::post('interests', 'LegalAspects\LegalMatrix\InterestController@multiselect');
+          Route::post('years', 'LegalAspects\LegalMatrix\LawController@lmYears');
+          Route::post('applySystem', 'General\MultiSelectRadioController@lmApplySystem');
+          Route::post('riskAspects', 'LegalAspects\LegalMatrix\RiskAspectController@multiselect');
+          Route::post('sstRisks', 'LegalAspects\LegalMatrix\SstRiskController@multiselect');
+          Route::post('entities', 'LegalAspects\LegalMatrix\EntityController@multiselect');
+          Route::post('lawsTypes', 'LegalAspects\LegalMatrix\LawTypeController@multiselect');
+          Route::post('repealed', 'General\MultiSelectRadioController@lmRepealed');
+        });
     });
 
     Route::prefix('radios')->group(function () {
@@ -207,7 +218,6 @@ Route::middleware(['auth'])->group(function () {
 
         Route::post('interest/data', 'LegalAspects\LegalMatrix\InterestController@data');
         Route::post('interest/saveInterests', 'LegalAspects\LegalMatrix\InterestController@saveInterests');
-        Route::get('interest/listInterests', 'LegalAspects\LegalMatrix\InterestController@listInterests');
         Route::get('interest/myInterests', 'LegalAspects\LegalMatrix\InterestController@myInterests');
         Route::ApiResource('interest', 'LegalAspects\LegalMatrix\InterestController');
 
@@ -220,7 +230,8 @@ Route::middleware(['auth'])->group(function () {
         Route::post('entity/data', 'LegalAspects\LegalMatrix\EntityController@data');
         Route::ApiResource('entity', 'LegalAspects\LegalMatrix\EntityController');
 
-
+        Route::post('law/data', 'LegalAspects\LegalMatrix\LawController@data');
+        Route::ApiResource('law', 'LegalAspects\LegalMatrix\LawController');
       });
 		});
 

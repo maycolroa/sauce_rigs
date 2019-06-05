@@ -265,6 +265,30 @@ export default [
 				component: () =>
 				import('@/views/LegalAspects/legalMatrix/entities/view')
 			},
+			{
+				name: 'legalaspects-lm-law',
+				path: 'lm/laws',
+				component: () =>
+				import('@/views/LegalAspects/legalMatrix/laws/index')
+			}, 
+			{
+				name: 'legalaspects-lm-law-create',
+				path: 'lm/laws/create',
+				component: () =>
+				import('@/views/LegalAspects/legalMatrix/laws/create')
+			},
+			{
+				name: 'legalaspects-lm-law-edit',
+				path: 'lm/laws/edit/:id',
+				component: () =>
+				import('@/views/LegalAspects/legalMatrix/laws/edit')
+			},
+			{
+				name: 'legalaspects-lm-law-view',
+				path: 'lm/laws/view/:id',
+				component: () =>
+				import('@/views/LegalAspects/legalMatrix/laws/view')
+			},
 		]
 	}
 ];

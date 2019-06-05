@@ -581,5 +581,54 @@ export default [
             urlData: '/legalAspects/legalMatrix/entity/data',
             filterColumns: true,
         }
+    },
+    {
+        name: 'legalaspects-lm-laws',
+        fields: [
+            { name: 'sau_lm_laws.id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true },
+            { name: 'sau_lm_laws.name', data: 'name', title: 'Nombre', sortable: true, searchable: true, detail: false, key: false },
+            { name: '', data: 'controlls', title: 'Controles', sortable: false, searchable: false, detail: false, key: false },
+        ],
+        'controlls': [{
+            type: 'push',
+            buttons: [{
+                config: {
+                    color: 'outline-success',
+                    borderless: true,
+                    icon: 'ion ion-md-create',
+                    title: 'Editar'
+                },
+                data: {
+                    routePush: { name: 'legalaspects-lm-law-edit' },
+                    id: 'id',
+                },
+            }, {
+                config: {
+                    color: 'outline-info',
+                    borderless: true,
+                    icon: 'ion ion-md-eye',
+                    title: 'Ver'
+                },
+                data: {
+                    routePush: { name: 'legalaspects-lm-law-view' },
+                    id: 'id',
+                },
+            }]
+        },
+        {
+            type: 'base',
+            buttons: [{
+            name: 'delete',
+            data: {
+                action: '/legalAspects/legalMatrix/law/',
+                id: 'id',
+                messageConfirmation: 'Esta seguro de borrar la norma __name__'
+            },
+            }],
+        }],
+        configuration: {
+            urlData: '/legalAspects/legalMatrix/law/data',
+            filterColumns: true,
+        }
     }
 ]

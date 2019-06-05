@@ -234,7 +234,17 @@ return [
       'items.*.files.*.name' => 'Nombre',
       'items.*.files.*.file' => 'Archivo',
       'file' => 'Archivo',
-      'old_password' => 'Contraseña Anterior'
+      'old_password' => 'Contraseña Anterior',
+      'law_number' => 'Nùmero',
+      'apply_system'=> 'Sistema que aplica',
+      'law_year' => 'Año',
+      'description' => 'Descripciòn',
+      'observations' => 'Observaciones',
+      'law_type_id' => 'Tipo de norma',
+      'risk_aspect_id' => 'Riesgo/Aspecto Ambiental',
+      'entity_id' => 'Entidad',
+      'sst_risk_id' => 'Riesgo SST',
+      'repealed' => 'Derogada'
     ],
 
 ];

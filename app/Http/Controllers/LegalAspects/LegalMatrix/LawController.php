@@ -5,11 +5,11 @@ namespace App\Http\Controllers\LegalAspects\LegalMatrix;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Vuetable\Facades\Vuetable;
-use App\Models\LegalAspects\LegalMatrix\RiskAspect;
-use App\Http\Requests\LegalAspects\LegalMatrix\RiskAspectRequest;
+use App\Models\LegalAspects\LegalMatrix\Law;
+use App\Http\Requests\LegalAspects\LegalMatrix\LawRequest;
 use Session;
 
-class RiskAspectController extends Controller
+class LawController extends Controller
 {
     /**
      * creates and instance and middlewares are checked
@@ -40,28 +40,28 @@ class RiskAspectController extends Controller
     */
     public function data(Request $request)
     {
-        $risk_aspects = RiskAspect::select('*');
+        $laws = Law::select('*');
 
-        return Vuetable::of($risk_aspects)
+        return Vuetable::of($laws)
                     ->make();
     }
 
     /**
      * Store a newly created resource in storage.
      *
-     * @param  App\Http\Requests\IndustrialSecure\Activities\ActivityRequest  $request
+     * @param  App\Http\Requests\LegalAspects\LegalMatrix\LawRequest $request
      * @return \Illuminate\Http\Response
      */
-    public function store(RiskAspectRequest $request)
+    public function store(LawRequest $request)
     {
-        $risk_aspect = new RiskAspect($request->all());
+        $law = new Law($request->except('file'));
         
-        if(!$risk_aspect->save()){
+        if(!$law->save()){
             return $this->respondHttp500();
         }
 
         return $this->respondHttp200([
-            'message' => 'Se creo el Riesgo/Aspecto ambiental'
+            'message' => 'Se creo la norma'
         ]);
     }
 
@@ -75,10 +75,10 @@ class RiskAspectController extends Controller
     {
         try
         {
-            $risk_aspect = RiskAspect::findOrFail($id);
+            $law = Law::findOrFail($id);
 
             return $this->respondHttp200([
-                'data' => $risk_aspect,
+                'data' => $law,
             ]);
         } catch(Exception $e){
             $this->respondHttp500();
@@ -88,62 +88,50 @@ class RiskAspectController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  App\Http\Requests\IndustrialSecure\Activities\ActivityRequest  $request
-     * @param  Activity  $activity
+     * @param  App\Http\Requests\IndustrialSecure\Activities\LawRequest $request
+     * @param  Law $law
      * @return \Illuminate\Http\Response
      */
-    public function update(RiskAspectRequest $request, RiskAspect $riskAspect)
+    public function update(LawRequest $request, Law $law)
     {
-        $riskAspect->fill($request->all());
+        $law->fill($request->all());
         
-        if(!$riskAspect->update()){
+        if(!$law->update()){
           return $this->respondHttp500();
         }
         
         return $this->respondHttp200([
-            'message' => 'Se actualizo el Riesgo/Aspecto ambiental'
+            'message' => 'Se actualizo la norma'
         ]);
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  Activity  $activity
+     * @param  Law $law
      * @return \Illuminate\Http\Response
      */
-    public function destroy(RiskAspect $riskAspect)
+    public function destroy(Law $law)
     {
-        if(!$riskAspect->delete())
+        if(!$law->delete())
         {
             return $this->respondHttp500();
         }
         
         return $this->respondHttp200([
-            'message' => 'Se elimino el Riesgo/Aspecto ambiental'
+            'message' => 'Se elimino la norma'
         ]);
     }
 
-    /**
-     * Returns an array for a select type input
-     *
-     * @param Request $request
-     * @return Array
-     */
-
-    public function multiselect(Request $request)
+    public function lmYears()
     {
-        if($request->has('keyword'))
-        {
-            $keyword = "%{$request->keyword}%";
-            $risk_aspects = RiskAspect::select("id", "name")
-                ->where(function ($query) use ($keyword) {
-                    $query->orWhere('name', 'like', $keyword);
-                })
-                ->take(30)->pluck('id', 'name');
+        $years = [];
 
-            return $this->respondHttp200([
-                'options' => $this->multiSelectFormat($risk_aspects)
-            ]);
+        for ($i = 1901; $i <= Date('Y'); $i++)
+        {     
+            $years[$i] = $i;            
         }
+
+        return $this->multiSelectFormat(collect($years));
     }
 }

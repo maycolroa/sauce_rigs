@@ -130,29 +130,20 @@ class SstRiskController extends Controller
      * @return Array
      */
 
-    /*public function multiselect(Request $request)
+    public function multiselect(Request $request)
     {
         if($request->has('keyword'))
         {
             $keyword = "%{$request->keyword}%";
-            $activities = Activity::select("id", "name")
+            $sst_risks = SstRisk::select("id", "name")
                 ->where(function ($query) use ($keyword) {
                     $query->orWhere('name', 'like', $keyword);
                 })
                 ->take(30)->pluck('id', 'name');
 
             return $this->respondHttp200([
-                'options' => $this->multiSelectFormat($activities)
+                'options' => $this->multiSelectFormat($sst_risks)
             ]);
         }
-        else
-        {
-            $activities = Activity::selectRaw("
-                sau_dm_activities.id as id,
-                sau_dm_activities.name as name
-            ")->pluck('id', 'name');
-        
-            return $this->multiSelectFormat($activities);
-        }
-    }*/
+    }
 }
