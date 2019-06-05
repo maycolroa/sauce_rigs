@@ -78,7 +78,7 @@ class LoginController extends Controller
                                             'redirectTo' => 'legalaspects/contracts/information'
                                         ]);
 
-                                    return $this->respondHttp200();
+                                    return $this->defaultUrl();
                                 }
                                 else 
                                 {
@@ -87,7 +87,7 @@ class LoginController extends Controller
                                 }
                             }
 
-                            return $this->respondHttp200();
+                            return $this->defaultUrl();
                         }
                     }
                     
@@ -108,5 +108,15 @@ class LoginController extends Controller
         }
 
         return $this->respondWithError(['errors'=>['email'=>'Email o Contraseña incorrecto']], 422);
+    }
+
+    private function defaultUrl()
+    {
+        if (Auth::user()->default_module_url)
+            return $this->respondHttp200([
+                'redirectTo' => Auth::user()->default_module_url
+            ]);
+
+        return $this->respondHttp200();
     }
 }

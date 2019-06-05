@@ -86,6 +86,12 @@
 						<div class="text-muted small text-nowrap">	
 								<vue-radio :disabled="viewOnly" v-model="item.qualification" label="Calificación" :name="`items${item.id}`" :error="form.errorsFor(`items.${index}`)" :options="qualifications" :checked="item.qualification" @input="changeActionFiles(item.qualification, `${index}`)"></vue-radio>
 						</div>
+						
+					</div>
+					<div v-if="existError(`items.${index}.`)">
+							<b-form-feedback class="d-block" style="padding-bottom: 10px;">
+                Este item contiene errores en sus datos
+              </b-form-feedback>
 					</div>
 				</div>
 			</b-card-body>
@@ -237,6 +243,24 @@ export default {
 
 				this.form.items[index].files = [];
 			}
+		},
+		existError(index) {
+			let keys = Object.keys(this.form.errors.errors)
+			let result = false
+
+			if (keys.length > 0)
+			{
+				for (let i = 0; i < keys.length; i++)
+				{
+					if (keys[i].indexOf(index) > -1)
+					{
+						result = true
+						break
+					}
+				}
+			}
+
+			return result
 		},
 		submit(e) {
 			this.loading = true;

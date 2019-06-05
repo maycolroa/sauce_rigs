@@ -59,7 +59,8 @@ class EloquentVuetableBuilder
                 $this->filter($data, $query, $fields, $tables);
         }
 
-        $count = $data->count();
+        //$count = $data->count();
+        $count = COUNT($data->get());
         
         $data->take($limit)
             ->skip($limit * ($page - 1));

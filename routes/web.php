@@ -114,6 +114,8 @@ Route::middleware(['auth'])->group(function () {
 			Route::post('users/data', 'Administrative\Users\UserController@data');
       Route::post('users/export', 'Administrative\Users\UserController@export');
       Route::post('users/changePassword', 'Administrative\Users\UserController@changePassword');
+      Route::get('users/myDefaultModule', 'Administrative\Users\UserController@myDefaultModule');
+      Route::post('users/defaultModule', 'Administrative\Users\UserController@defaultModule');
 			Route::ApiResource('users', 'Administrative\Users\UserController');
 
 			Route::post('role/data', 'Administrative\Roles\RoleController@data');

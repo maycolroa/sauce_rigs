@@ -18,7 +18,8 @@
                 :si-no="siNo"
                 :qualifications="qualifications"
                 :action-plan-states="actionPlanStates"
-                userDataUrl="/selects/users"/>
+                userDataUrl="/selects/users"
+                :configuration="configuration"/>
         </b-card-body>
       </b-card>
     </div>
@@ -45,10 +46,20 @@ export default {
       siNo: [],
       qualifications: [],
       actionPlanStates: [],
-      data: []
+      data: [],
+      configuration: []
     }
   },
   created(){
+    axios.get('/administration/configuration/view')
+    .then(response => {
+        this.configuration = response.data.data;
+    })
+    .catch(error => {
+        Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
+        this.$router.go(-1);
+    });
+
     axios.get(`/industrialSecurity/dangersMatrix/${this.$route.params.id}`)
     .then(response => {
         this.data = response.data.data;

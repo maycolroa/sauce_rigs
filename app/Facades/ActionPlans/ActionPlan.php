@@ -506,6 +506,8 @@ class ActionPlan
             $tmp['oldExpiration_date'] = (Carbon::createFromFormat('Y-m-d', $value->activity->expiration_date))->format('D M d Y');
             $tmp['state'] = $value->activity->state;
             $tmp['oldState'] = $value->activity->state;
+            $tmp['observation'] = $value->activity->observation;
+            $tmp['oldObservation'] = $value->activity->observation;
             $tmp['editable'] = $value->activity->editable;
             $tmp['company_id'] = $value->activity->company_id;
             $tmp['edit_all'] = $this->checkEditAll($value->activity);
@@ -558,6 +560,8 @@ class ActionPlan
             $tmp['oldExpiration_date'] = (Carbon::createFromFormat('Y-m-d', $activity->expiration_date))->format('D M d Y');
             $tmp['state'] = $activity->state;
             $tmp['oldState'] = $activity->state;
+            $tmp['observation'] = $activity->observation;
+            $tmp['oldObservation'] = $activity->observation;
             $tmp['editable'] = $activity->editable;
             $tmp['company_id'] = $activity->company_id;
             $tmp['edit_all'] = $this->checkEditAll($activity);
@@ -697,6 +701,7 @@ class ActionPlan
             $activity->state = $itemA['state'];
             $activity->editable = (isset($itemA['editable']) && $itemA['editable']) ? $itemA['editable'] : 'SI';
             $activity->company_id = $company_id;
+            $activity->observation = $itemA['observation'];
             $activity->save();
             
             if(isset($itemA['oldState']))
@@ -704,7 +709,8 @@ class ActionPlan
                 if (($itemA['oldDescription'] != $itemA['description']) ||
                     ($itemA['oldExpiration_date'] != $itemA['expiration_date']) ||
                     ($itemA['oldExecution_date'] != $itemA['execution_date']) ||
-                    ($itemA['oldState'] != $itemA['state'])
+                    ($itemA['oldState'] != $itemA['state']) ||
+                    ($itemA['oldObservation'] != $itemA['observation'])
                    )
                 {
                     array_push($this->activitiesReady, $itemA);
