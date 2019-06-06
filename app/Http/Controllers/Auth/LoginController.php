@@ -114,7 +114,7 @@ class LoginController extends Controller
     {
         if (Auth::user()->default_module_url)
             return $this->respondHttp200([
-                'redirectTo' => Auth::user()->default_module_url
+                'redirectTo' => strtolower(Auth::user()->default_module_url)
             ]);
 
         return $this->respondHttp200();

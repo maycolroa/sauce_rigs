@@ -10,11 +10,12 @@
         <b-card-header class="with-elements">
           <div class="card-title-elements"> 
             <b-btn :to="{name:'legalaspects-evaluations'}" variant="secondary">Regresar</b-btn>
-            <b-btn :to="{name:'legalaspects-typesrating-create'}" variant="primary">Crear tipo de calificación</b-btn>
+            <b-btn v-if="auth.can['contracts_typesQualification_c']" :to="{name:'legalaspects-typesrating-create'}" variant="primary">Crear tipo de calificación</b-btn>
           </div>
         </b-card-header>
         <b-card-body>
              <vue-table
+                v-if="auth.can['contracts_typesQualification_r']"
                 configName="legalaspects-typesrating"
                 ></vue-table>
         </b-card-body>

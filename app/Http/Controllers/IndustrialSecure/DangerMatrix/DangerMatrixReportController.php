@@ -19,7 +19,7 @@ class DangerMatrixReportController extends Controller
     function __construct()
     {
         $this->middleware('auth');
-        $this->middleware('permission:dangerMatrix_r');
+        $this->middleware('permission:dangerMatrix_r|dangerMatrix_view_report');
     }
 
     /**

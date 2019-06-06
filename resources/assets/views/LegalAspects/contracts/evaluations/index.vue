@@ -9,11 +9,11 @@
       <b-card no-body>
         <b-card-header class="with-elements">
           <div class="card-title-elements"> 
-            <b-btn :to="{name:'legalaspects-evaluations-create'}" variant="primary">Crear Evaluación</b-btn>
-            <b-btn :to="{name:'legalaspects-evaluations-report'}" variant="primary">Ver Reportes</b-btn>
-            <b-btn :to="{name:'legalaspects-typesrating'}" variant="primary">Administrar Tipos de calificación</b-btn>
+            <b-btn v-if="auth.can['contracts_evaluations_c']" :to="{name:'legalaspects-evaluations-create'}" variant="primary">Crear Evaluación</b-btn>
+            <b-btn v-if="auth.can['contracts_evaluations_report_view']" :to="{name:'legalaspects-evaluations-report'}" variant="primary">Ver Reportes</b-btn>
+            <b-btn v-if="auth.can['contracts_typesQualification_r']" :to="{name:'legalaspects-typesrating'}" variant="primary">Administrar Tipos de calificación</b-btn>
           </div>
-          <div class="card-title-elements ml-md-auto">
+          <div class="card-title-elements ml-md-auto" v-if="auth.can['contracts_evaluations_export']">
             <b-dd variant="default" :right="isRTL">
               <template slot="button-content">
                 <span class='fas fa-cogs'></span>
@@ -24,6 +24,7 @@
         </b-card-header>
         <b-card-body>
              <vue-table
+                v-if="auth.can['contracts_evaluations_r']"
                 configName="legalaspects-evaluations"
                 @filtersUpdate="setFilters"
                 ></vue-table>

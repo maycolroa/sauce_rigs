@@ -20,6 +20,19 @@ use DB;
 
 class EvaluationController extends Controller
 {
+    /**
+     * creates and instance and middlewares are checked
+     */
+    function __construct()
+    {
+        $this->middleware('auth');
+        $this->middleware('permission:contracts_evaluations_c', ['only' => 'store']);
+        $this->middleware('permission:contracts_evaluations_r');
+        $this->middleware('permission:contracts_evaluations_u', ['only' => 'update']);
+        $this->middleware('permission:contracts_evaluations_d', ['only' => 'destroy']);
+        $this->middleware('permission:contracts_evaluations_export', ['only' => 'export']);
+    }
+
     private $typesRating = [];
     /**
      * Display a listing of the resource.

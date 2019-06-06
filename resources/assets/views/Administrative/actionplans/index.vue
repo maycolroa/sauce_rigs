@@ -8,7 +8,7 @@
     <div class="col-md">
       <b-card no-body>
         <b-card-header class="with-elements">
-          <div class="card-title-elements ml-md-auto">
+          <div class="card-title-elements ml-md-auto" v-if="auth.can['actionPlans_export']">
             <b-dd variant="default" :right="isRTL">
               <template slot="button-content">
                 <span class='fas fa-cogs'></span>
