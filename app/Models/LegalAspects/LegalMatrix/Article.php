@@ -12,12 +12,17 @@ class Article extends Model
         'name',
         'description',
         'law_id',
-        'repealed',
+        'repelead',
         'sequence'
     ];
 
     public function law()
     {
         return $this->belongsTo(Law::class);
+    }
+
+    public function interests()
+    {
+        return $this->belongsToMany(Interest::class, 'sau_lm_article_interest');
     }
 }

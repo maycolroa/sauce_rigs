@@ -17,7 +17,9 @@
                 riskAspectDataUrl="/selects/legalMatrix/riskAspects"
                 entityDataUrl="/selects/legalMatrix/entities"
                 sstRiskDataUrl="/selects/legalMatrix/sstRisks"
-                :repealed="repealed"/>
+                urlDataInterests="/selects/legalMatrix/interests"
+                :repealed="repealed"
+                :si-no="siNo"/>
         </b-card-body>
       </b-card>
     </div>
@@ -42,7 +44,8 @@ export default {
       data: [],
       applySystems: [],
       years: [],
-      repealed: []
+      repealed: [],
+      siNo: []
     }
   },
   created(){
@@ -58,6 +61,7 @@ export default {
     this.fetchSelect('applySystems', '/selects/legalMatrix/applySystem')
     this.fetchSelect('years', '/selects/legalMatrix/years')
     this.fetchSelect('repealed', '/selects/legalMatrix/repealed')
+    this.fetchSelect('siNo', '/radios/siNo')
   },
   methods: {
     fetchSelect(key, url)

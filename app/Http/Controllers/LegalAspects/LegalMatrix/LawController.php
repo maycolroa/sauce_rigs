@@ -8,7 +8,9 @@ use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
 use App\Vuetable\Facades\Vuetable;
 use App\Models\LegalAspects\LegalMatrix\Law;
+use App\Models\LegalAspects\LegalMatrix\Article;
 use App\Http\Requests\LegalAspects\LegalMatrix\LawRequest;
+use Carbon\Carbon;
 use Session;
 use Validator;
 use DB;
@@ -44,7 +46,17 @@ class LawController extends Controller
     */
     public function data(Request $request)
     {
-        $laws = Law::select('*');
+        $laws = Law::select(
+                'sau_lm_laws.*',
+                'sau_lm_laws_types.name AS law_type',
+                'sau_lm_risks_aspects.name AS risk_apect',
+                'sau_lm_entities.name AS entity',
+                'sau_lm_sst_risks.name AS sst_risk'
+            )
+            ->join('sau_lm_laws_types', 'sau_lm_laws_types.id', 'sau_lm_laws.law_type_id')
+            ->join('sau_lm_risks_aspects', 'sau_lm_risks_aspects.id', 'sau_lm_laws.risk_aspect_id')
+            ->join('sau_lm_entities', 'sau_lm_entities.id', 'sau_lm_laws.entity_id')
+            ->join('sau_lm_sst_risks', 'sau_lm_sst_risks.id', 'sau_lm_laws.sst_risk_id');
 
         return Vuetable::of($laws)
                     ->make();
@@ -90,10 +102,11 @@ class LawController extends Controller
                 }
             }
 
+            $this->saveArticles($law, $request->get('articles'));
+
             DB::commit();
 
         } catch (\Exception $e) {
-            \Log::info($e);
             DB::rollback();
             return $this->respondHttp500();
         }
@@ -114,10 +127,26 @@ class LawController extends Controller
         try
         {
             $law = Law::findOrFail($id);
+            $law->old_file = $law->file;
             $law->multiselect_law_type = $law->lawType->multiselect();
             $law->multiselect_risk_aspect = $law->riskAspect->multiselect();
             $law->multiselect_entity = $law->entity->multiselect();
             $law->multiselect_sst_risk = $law->sstRisk->multiselect();
+            $law->delete = [];
+
+            foreach ($law->articles as $key => $article)
+            {   
+                $article->key = Carbon::now()->timestamp + rand(1,10000);
+                $interests = [];
+
+                foreach ($article->interests as $key => $interest)
+                {
+                    array_push($interests, $interest->multiselect());
+                }
+
+                $article->interests_id = $interests;
+                $article->multiselect_interests = $interests;
+            }
 
             return $this->respondHttp200([
                 'data' => $law,
@@ -136,12 +165,47 @@ class LawController extends Controller
      */
     public function update(LawRequest $request, Law $law)
     {
-        $law->fill($request->except('file'));
-        
-        if(!$law->update()){
-          return $this->respondHttp500();
+        Validator::make($request->all(), [
+            "file" => [
+                function ($attribute, $value, $fail)
+                {
+                    if ($value && !is_string($value) && $value->getClientMimeType() != 'application/pdf')
+                        $fail('Archivo debe ser un pdf');
+                },
+            ]
+        ])->validate();
+
+        DB::beginTransaction();
+
+        try
+        {
+            $law->fill($request->except('file'));
+
+            if ($request->file != $law->file)
+            {
+                $file = $request->file;
+                Storage::disk('public')->delete('legalAspects/legalMatrix/'. $law->file);
+                $nameFile = base64_encode(Auth::user()->id . now() . rand(1,10000)) .'.'. $file->extension();
+                $file->storeAs('legalAspects/legalMatrix/', $nameFile, 'public');
+                $law->file = $nameFile;
+            }
+
+            if (!$law->update()) {
+                return $this->respondHttp500();
+            }
+
+            $this->saveArticles($law, $request->get('articles'));
+                
+            if ($request->has('delete') && COUNT($request->delete) > 0)
+                Article::destroy($request->delete);
+
+            DB::commit();
+
+        } catch (\Exception $e) {
+            DB::rollback();
+            return $this->respondHttp500();
         }
-        
+
         return $this->respondHttp200([
             'message' => 'Se actualizo la norma'
         ]);
@@ -155,10 +219,12 @@ class LawController extends Controller
      */
     public function destroy(Law $law)
     {
+        $file = $law->file;
+
         if(!$law->delete())
-        {
             return $this->respondHttp500();
-        }
+
+        Storage::disk('public')->delete('legalAspects/legalMatrix/'. $file);
         
         return $this->respondHttp200([
             'message' => 'Se elimino la norma'
@@ -175,5 +241,20 @@ class LawController extends Controller
         }
 
         return $this->multiSelectFormat(collect($years));
+    }
+
+    public function download(Law $law)
+    {
+      return Storage::disk('public')->download('legalAspects/legalMatrix/'. $law->file);
+    }
+
+    private function saveArticles($law, $articles)
+    {
+        foreach ($articles as $article)
+        {
+            $id = isset($article['id']) ? $article['id'] : NULL;
+            $articleNew = $law->articles()->updateOrCreate(['id'=>$id], $article);
+            $articleNew->interests()->sync($this->getValuesForMultiselect($article['interests_id']));
+        }
     }
 }

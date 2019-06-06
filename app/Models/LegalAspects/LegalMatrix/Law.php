@@ -42,4 +42,9 @@ class Law extends Model
     {
         return $this->belongsTo(SstRisk::class);
     }
+
+    public function articles()
+    {
+        return $this->hasMany(Article::class, 'law_id');
+    }
 }

@@ -238,13 +238,17 @@ return [
       'law_number' => 'Nùmero',
       'apply_system'=> 'Sistema que aplica',
       'law_year' => 'Año',
-      'description' => 'Descripciòn',
+      'description' => 'Descripción',
       'observations' => 'Observaciones',
       'law_type_id' => 'Tipo de norma',
       'risk_aspect_id' => 'Riesgo/Aspecto Ambiental',
       'entity_id' => 'Entidad',
       'sst_risk_id' => 'Riesgo SST',
-      'repealed' => 'Derogada'
+      'repealed' => 'Derogada',
+      'articles.*.description' => 'Descripción',
+      'articles.*.repelead' => 'Derogado',
+      'articles.*.interests_id' => 'Intereses',
+      'articles' => 'Artículos'
     ],
 
 ];

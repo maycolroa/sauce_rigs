@@ -232,6 +232,7 @@ Route::middleware(['auth'])->group(function () {
         Route::post('entity/data', 'LegalAspects\LegalMatrix\EntityController@data');
         Route::ApiResource('entity', 'LegalAspects\LegalMatrix\EntityController');
 
+        Route::get('law/download/{law}', 'LegalAspects\LegalMatrix\LawController@download');
         Route::post('law/data', 'LegalAspects\LegalMatrix\LawController@data');
         Route::ApiResource('law', 'LegalAspects\LegalMatrix\LawController');
       });
