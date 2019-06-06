@@ -1,18 +1,25 @@
 <template>
   <div>
     <h4 class="font-weight-bold mb-4">
-       <span class="text-muted font-weight-light">Intereses /</span> Editar
+       <span class="text-muted font-weight-light">Normas /</span> Editar
     </h4>
 
     <div class="col-md">
       <b-card no-body>
         <b-card-body>
-            <form-interest-component
-                :url="`/legalAspects/legalMatrix/interest/${this.$route.params.id}`"
+            <form-law-component
+                :url="`/legalAspects/legalMatrix/law/${this.$route.params.id}`"
                 method="PUT"
-                :interest="data"
+                :law="data"
                 :is-edit="true"
-                :cancel-url="{ name: 'legalaspects-lm-interest'}"/>
+                :cancel-url="{ name: 'legalaspects-lm-law'}"
+                :apply-systems="applySystems"
+                :years="years"
+                lawTypeDataUrl="/selects/legalMatrix/lawsTypes"
+                riskAspectDataUrl="/selects/legalMatrix/riskAspects"
+                entityDataUrl="/selects/legalMatrix/entities"
+                sstRiskDataUrl="/selects/legalMatrix/sstRisks"
+                :repealed="repealed"/>
         </b-card-body>
       </b-card>
     </div>
@@ -20,24 +27,28 @@
 </template>
 
 <script>
-import FormInterestComponent from '@/components/LegalAspects/LegalMatrix/Interest/FormInterestComponent.vue';
+import FormLawComponent from '@/components/LegalAspects/LegalMatrix/Law/FormLawComponent.vue';
 import Alerts from '@/utils/Alerts.js';
+import GlobalMethods from '@/utils/GlobalMethods.js';
 
 export default {
-  name: 'legalaspects-lm-interest-edit',
+  name: 'legalaspects-lm-law-edit',
   metaInfo: {
-    title: 'Intereses - Editar'
+    title: 'Normas - Editar'
   },
   components:{
-    FormInterestComponent
+    FormLawComponent
   },
   data () {
     return {
       data: [],
+      applySystems: [],
+      years: [],
+      repealed: []
     }
   },
   created(){
-    axios.get(`/legalAspects/legalMatrix/interest/${this.$route.params.id}`)
+    axios.get(`/legalAspects/legalMatrix/law/${this.$route.params.id}`)
     .then(response => {
         this.data = response.data.data;
     })
@@ -45,6 +56,23 @@ export default {
         Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
         this.$router.go(-1);
     });
+
+    this.fetchSelect('applySystems', '/selects/legalMatrix/applySystem')
+    this.fetchSelect('years', '/selects/legalMatrix/years')
+    this.fetchSelect('repealed', '/selects/legalMatrix/repealed')
   },
+  methods: {
+    fetchSelect(key, url)
+    {
+        GlobalMethods.getDataMultiselect(url)
+        .then(response => {
+            this[key] = response;
+        })
+        .catch(error => {
+            Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
+            this.$router.go(-1);
+        });
+    },
+  }
 }
 </script>
