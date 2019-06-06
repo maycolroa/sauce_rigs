@@ -26,7 +26,7 @@
           <b-form-row>
             <vue-advanced-select :disabled="viewOnly" class="col-md-6" v-model="form.apply_system" :multiple="false" :options="applySystems" :hide-selected="false" name="apply_system" :error="form.errorsFor('apply_system')" label="Sistema que aplica" placeholder="Seleccione el sistema que aplica">
               </vue-advanced-select>
-            <vue-advanced-select :disabled="viewOnly" class="col-md-6" v-model="form.law_year" :multiple="false" :options="years" :hide-selected="false" name="law_year" :error="form.errorsFor('law_year')" label="Año" placeholder="Seleccione el año">
+            <vue-advanced-select :disabled="viewOnly" class="col-md-6" v-model="form.law_year" :multiple="false" :options="years" :hide-selected="false" name="law_year" :error="form.errorsFor('law_year')" label="Año" placeholder="Seleccione el año" :searchable="true">
               </vue-advanced-select>
           </b-form-row>
           <b-form-row>
@@ -185,7 +185,7 @@ export default {
         return [];
       }
     },
-    evaluation: {
+    law: {
       default() {
         return {
           name: '',
@@ -207,15 +207,15 @@ export default {
     }
   },
   watch: {
-    evaluation() {
+    law() {
       this.loading = false;
-      this.form = Form.makeFrom(this.evaluation, this.method);
+      this.form = Form.makeFrom(this.law, this.method);
     }
   },
   data() {
     return {
         loading: this.isEdit,
-        form: Form.makeFrom(this.evaluation, this.method)
+        form: Form.makeFrom(this.law, this.method)
     };
   },
   methods: {

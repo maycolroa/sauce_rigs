@@ -11,4 +11,12 @@ class Entity extends Model
     protected $fillable = [
         'name',
     ];
+
+    public function multiselect()
+    {
+        return [
+            'name' => $this->name,
+            'value' => $this->id
+        ];
+    }
 }
