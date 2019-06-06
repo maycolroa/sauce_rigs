@@ -145,5 +145,15 @@ class RiskAspectController extends Controller
                 'options' => $this->multiSelectFormat($risk_aspects)
             ]);
         }
+        else
+        {
+            $risk_aspects = RiskAspect::select(
+                'sau_lm_risks_aspects.id as id',
+                'sau_lm_risks_aspects.name as name'
+            )
+            ->pluck('id', 'name');
+        
+            return $this->multiSelectFormat($risk_aspects);
+        }
     }
 }

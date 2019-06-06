@@ -145,5 +145,15 @@ class SstRiskController extends Controller
                 'options' => $this->multiSelectFormat($sst_risks)
             ]);
         }
+        else
+        {
+            $sst_risks = SstRisk::select(
+                'sau_lm_sst_risks.id as id',
+                'sau_lm_sst_risks.name as name'
+            )
+            ->pluck('id', 'name');
+        
+            return $this->multiSelectFormat($sst_risks);
+        }
     }
 }

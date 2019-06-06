@@ -42,4 +42,57 @@ export default [
         }
       ]
     },
+    {
+      name: 'legalAspects-legalMatrix-law-crud',
+      filters: [
+        {
+          url: '/selects/legalMatrix/lawsTypes',
+          key: 'lawTypes',
+          type: 'select',
+          label: 'Tipo de norma'
+        },
+        {
+          url: '/selects/legalMatrix/riskAspects',
+          key: 'riskAspects',
+          type: 'select',
+          label: 'Riesgo/Aspecto Ambiental'
+        },
+        {
+          url: '/selects/legalMatrix/entities',
+          key: 'entities',
+          type: 'select',
+          label: 'Entes'
+        },
+        {
+          url: '/selects/legalMatrix/sstRisks',
+          key: 'sstRisks',
+          type: 'select',
+          label: 'Riesgos SST'
+        },
+        {
+          url: '/selects/legalMatrix/applySystem',
+          key: 'applySystem',
+          type: 'select',
+          label: 'Sistema aplica'
+        },
+        {
+          url: '/selects/legalMatrix/lawNumbers',
+          key: 'lawNumbers',
+          type: 'select',
+          label: 'Número de norma'
+        },
+        {
+          url: '/selects/legalMatrix/lawYears',
+          key: 'lawYears',
+          type: 'select',
+          label: 'Años'
+        },
+        {
+          url: '/selects/legalMatrix/repealed',
+          key: 'repealed',
+          type: 'select',
+          label: 'Derogada'
+        }
+      ]
+    },
 ];

@@ -48,7 +48,7 @@ class LawRequest extends FormRequest
 
         return [
             'name' => 'required|string|unique:sau_lm_laws,name,'.$id.',id',
-            'law_number' => 'required|integer|min:1',
+            'law_number' => 'required',
             'apply_system' => 'required',
             'law_year' => 'required|integer',
             'law_type_id' => 'required|exists:sau_lm_laws_types,id',

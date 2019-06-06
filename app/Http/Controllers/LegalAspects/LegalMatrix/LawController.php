@@ -49,7 +49,7 @@ class LawController extends Controller
         $laws = Law::select(
                 'sau_lm_laws.*',
                 'sau_lm_laws_types.name AS law_type',
-                'sau_lm_risks_aspects.name AS risk_apect',
+                'sau_lm_risks_aspects.name AS risk_aspect',
                 'sau_lm_entities.name AS entity',
                 'sau_lm_sst_risks.name AS sst_risk'
             )
@@ -57,6 +57,20 @@ class LawController extends Controller
             ->join('sau_lm_risks_aspects', 'sau_lm_risks_aspects.id', 'sau_lm_laws.risk_aspect_id')
             ->join('sau_lm_entities', 'sau_lm_entities.id', 'sau_lm_laws.entity_id')
             ->join('sau_lm_sst_risks', 'sau_lm_sst_risks.id', 'sau_lm_laws.sst_risk_id');
+
+        $filters = $request->get('filters');
+
+        if (COUNT($filters) > 0)
+        {
+            $laws->inLawTypes($this->getValuesForMultiselect($filters["lawTypes"]), $filters['filtersType']['lawTypes']);
+            $laws->inRiskAspects($this->getValuesForMultiselect($filters["riskAspects"]), $filters['filtersType']['riskAspects']);
+            $laws->inEntities($this->getValuesForMultiselect($filters["entities"]), $filters['filtersType']['entities']);
+            $laws->inSstRisks($this->getValuesForMultiselect($filters["sstRisks"]), $filters['filtersType']['sstRisks']);
+            $laws->inApplySystem($this->getValuesForMultiselect($filters["applySystem"]), $filters['filtersType']['applySystem']);
+            $laws->inLawNumbers($this->getValuesForMultiselect($filters["lawNumbers"]), $filters['filtersType']['lawNumbers']);
+            $laws->inLawYears($this->getValuesForMultiselect($filters["lawYears"]), $filters['filtersType']['lawYears']);
+            $laws->inRepealed($this->getValuesForMultiselect($filters["repealed"]), $filters['filtersType']['repealed']);
+        }
 
         return Vuetable::of($laws)
                     ->make();
@@ -256,5 +270,25 @@ class LawController extends Controller
             $articleNew = $law->articles()->updateOrCreate(['id'=>$id], $article);
             $articleNew->interests()->sync($this->getValuesForMultiselect($article['interests_id']));
         }
+    }
+
+    public function lmLawYears(Request $request)
+    {
+        $lawYears = Law::selectRaw(
+            'DISTINCT(sau_lm_laws.law_year) as law_year'
+        )
+        ->pluck('law_year', 'law_year');
+    
+        return $this->multiSelectFormat($lawYears);
+    }
+
+    public function lmLawNumbers(Request $request)
+    {
+        $lawNumbers = Law::selectRaw(
+            'DISTINCT(sau_lm_laws.law_number) as law_number'
+        )
+        ->pluck('law_number', 'law_number');
+    
+        return $this->multiSelectFormat($lawNumbers);
     }
 }
