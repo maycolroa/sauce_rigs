@@ -1,5 +1,6 @@
 import LayoutModules from "@/views/layoutModules";
 import Home from "@/views/home";
+import { middleware } from 'vue-router-middleware'
 
 export default [
 	{
@@ -16,148 +17,198 @@ export default [
 				path: 'contracts',
 				component: () => import('@/views/LegalAspects/contracts/index')
 			},
-			{
-				name: 'legalaspects-contractor',
-				path: 'contractor',
-				component: () =>
-				import('@/views/LegalAspects/contracts/contractor/index')
-			}, 
-			{
-				name: 'legalaspects-contractor-create',
-				path: 'contractor/create',
-				component: () =>
-				import('@/views/LegalAspects/contracts/contractor/create')
-			},
-			{
-				name: 'legalaspects-contractor-edit',
-				path: 'contractor/edit/:id',
-				component: () =>
-				import('@/views/LegalAspects/contracts/contractor/edit')
-			},
-			{
-				name: 'legalaspects-contractor-view',
-				path: 'contractor/view/:id',
-				component: () =>
-				import('@/views/LegalAspects/contracts/contractor/view')
-			},
-			{
-				name: 'legalaspects-contracts-information',
-				path: 'contracts/information',
-				component: () => import('@/views/LegalAspects/contracts/contract/information')
-			},
-			{
-				name: 'legalaspects-contracts-list-check-items',
-				path: 'contracts/list-check-items',
-				component: () => import('@/views/LegalAspects/contracts/contract/listCheckItems')
-			},
-			{
-				name: 'legalaspects-contracts-view-list-check',
-				path: 'contracts/view-list-check/:id',
-				component: () => import('@/views/LegalAspects/contracts/contract/listCheckItems')
-			},
-			{
-				name: 'legalaspects-typesrating',
-				path: 'typesrating',
-				component: () =>
-				import('@/views/LegalAspects/contracts/typesrating/index')
-			}, 
-			{
-				name: 'legalaspects-typesrating-create',
-				path: 'typesrating/create',
-				component: () =>
-				import('@/views/LegalAspects/contracts/typesrating/create')
-			},
-			{
-				name: 'legalaspects-typesrating-edit',
-				path: 'typesrating/edit/:id',
-				component: () =>
-				import('@/views/LegalAspects/contracts/typesrating/edit')
-			},
-			{
-				name: 'legalaspects-typesrating-view',
-				path: 'typesrating/view/:id',
-				component: () =>
-				import('@/views/LegalAspects/contracts/typesrating/view')
-			},
-			{
-				name: 'legalaspects-evaluations',
-				path: 'evaluations',
-				component: () =>
-				import('@/views/LegalAspects/contracts/evaluations/index')
-			}, 
-			{
-				name: 'legalaspects-evaluations-create',
-				path: 'evaluations/create',
-				component: () => import('@/views/LegalAspects/contracts/evaluations/create')
-			},
-			{
-				name: 'legalaspects-evaluations-edit',
-				path: 'evaluations/edit/:id',
-				component: () =>
-				import('@/views/LegalAspects/contracts/evaluations/edit')
-			},
-			{
-				name: 'legalaspects-evaluations-view',
-				path: 'evaluations/view/:id',
-				component: () =>
-				import('@/views/LegalAspects/contracts/evaluations/view')
-			},
-			{
-				name: 'legalaspects-evaluations-evaluate',
-				path: 'evaluations/evaluate/:id',
-				component: () =>
-				import('@/views/LegalAspects/contracts/evaluationContracts/create')
-			},
-			{
-				name: 'legalaspects-evaluations-lessee',
-				path: 'evaluations/contracts',
-				component: () =>
-				import('@/views/LegalAspects/contracts/evaluationContracts/index')
-			},
-			{
-				name: 'legalaspects-evaluations-contracts',
-				path: 'evaluations/contracts/:id',
-				component: () =>
-				import('@/views/LegalAspects/contracts/evaluationContracts/index')
-			},
-			{
-				name: 'legalaspects-evaluations-contracts-view',
-				path: 'evaluations/contracts/view/:id',
-				component: () =>
-				import('@/views/LegalAspects/contracts/evaluationContracts/view')
-			},
-			{
-				name: 'legalaspects-evaluations-contracts-edit',
-				path: 'evaluations/contracts/edit/:id',
-				component: () =>
-				import('@/views/LegalAspects/contracts/evaluationContracts/edit')
-			},
-			{
-				name: 'legalaspects-evaluations-report',
-				path: 'evaluations/report',
-				component: () =>
-				import('@/views/LegalAspects/contracts/evaluationContracts/report')
-			},
-			{
-				name: 'legalaspects-upload-files',
-				path: 'upload-files',
-				component: () => import('@/views/LegalAspects/contracts/uploadFiles/index')
-			},
-			{
-				name: 'legalaspects-upload-files-create',
-				path: 'upload-files/create',
-				component: () => import('@/views/LegalAspects/contracts/uploadFiles/create')
-			},
-			{
-				name: 'legalaspects-upload-files-edit',
-				path: 'upload-files/edit/:id',
-				component: () => import('@/views/LegalAspects/contracts/uploadFiles/edit')
-			},
-			{
-				name: 'legalaspects-upload-files-view',
-				path: 'upload-files/view/:id',
-				component: () => import('@/views/LegalAspects/contracts/uploadFiles/view')
-			},
+			...middleware({ 'check-permission': 'contracts_r' }, [
+				{
+					name: 'legalaspects-contractor',
+					path: 'contractor',
+					component: () =>
+					import('@/views/LegalAspects/contracts/contractor/index')
+				}
+			]),
+			...middleware({ 'check-permission': 'contracts_c' }, [
+				{
+					name: 'legalaspects-contractor-create',
+					path: 'contractor/create',
+					component: () =>
+					import('@/views/LegalAspects/contracts/contractor/create')
+				}
+			]),
+			...middleware({ 'check-permission': 'contracts_u' }, [
+				{
+					name: 'legalaspects-contractor-edit',
+					path: 'contractor/edit/:id',
+					component: () =>
+					import('@/views/LegalAspects/contracts/contractor/edit')
+				}
+			]),
+			...middleware({ 'check-permission': 'contracts_r' }, [
+				{
+					name: 'legalaspects-contractor-view',
+					path: 'contractor/view/:id',
+					component: () =>
+					import('@/views/LegalAspects/contracts/contractor/view')
+				}
+			]),
+			...middleware({ 'check-permission': 'contracts_myInformation' }, [
+				{
+					name: 'legalaspects-contracts-information',
+					path: 'contracts/information',
+					component: () => import('@/views/LegalAspects/contracts/contract/information')
+				}
+			]),
+			...middleware({ 'check-permission': 'contracts_view_list_standards' }, [
+				{
+					name: 'legalaspects-contracts-list-check-items',
+					path: 'contracts/list-check-items',
+					component: () => import('@/views/LegalAspects/contracts/contract/listCheckItems')
+				}
+			]),
+			...middleware({ 'check-permission': 'contracts_view_list_standards' }, [
+				{
+					name: 'legalaspects-contracts-view-list-check',
+					path: 'contracts/view-list-check/:id',
+					component: () => import('@/views/LegalAspects/contracts/contract/listCheckItems')
+				}
+			]),
+			...middleware({ 'check-permission': 'contracts_typesQualification_r' }, [
+				{
+					name: 'legalaspects-typesrating',
+					path: 'typesrating',
+					component: () =>
+					import('@/views/LegalAspects/contracts/typesrating/index')
+				}
+			]),
+			...middleware({ 'check-permission': 'contracts_typesQualification_c' }, [
+				{
+					name: 'legalaspects-typesrating-create',
+					path: 'typesrating/create',
+					component: () =>
+					import('@/views/LegalAspects/contracts/typesrating/create')
+				}
+			]),
+			...middleware({ 'check-permission': 'contracts_typesQualification_u' }, [
+				{
+					name: 'legalaspects-typesrating-edit',
+					path: 'typesrating/edit/:id',
+					component: () =>
+					import('@/views/LegalAspects/contracts/typesrating/edit')
+				}
+			]),
+			...middleware({ 'check-permission': 'contracts_typesQualification_r' }, [
+				{
+					name: 'legalaspects-typesrating-view',
+					path: 'typesrating/view/:id',
+					component: () =>
+					import('@/views/LegalAspects/contracts/typesrating/view')
+				}
+			]),
+			...middleware({ 'check-permission': 'contracts_evaluations_r' }, [
+				{
+					name: 'legalaspects-evaluations',
+					path: 'evaluations',
+					component: () =>
+					import('@/views/LegalAspects/contracts/evaluations/index')
+				}
+			]),
+			...middleware({ 'check-permission': 'contracts_evaluations_c' }, [
+				{
+					name: 'legalaspects-evaluations-create',
+					path: 'evaluations/create',
+					component: () => import('@/views/LegalAspects/contracts/evaluations/create')
+				}
+			]),
+			...middleware({ 'check-permission': 'contracts_evaluations_u' }, [
+				{
+					name: 'legalaspects-evaluations-edit',
+					path: 'evaluations/edit/:id',
+					component: () =>
+					import('@/views/LegalAspects/contracts/evaluations/edit')
+				},
+			]),
+			...middleware({ 'check-permission': 'contracts_evaluations_r' }, [
+				{
+					name: 'legalaspects-evaluations-view',
+					path: 'evaluations/view/:id',
+					component: () =>
+					import('@/views/LegalAspects/contracts/evaluations/view')
+				}
+			]),
+			...middleware({ 'check-permission': 'contracts_evaluations_perform_evaluation' }, [
+				{
+					name: 'legalaspects-evaluations-evaluate',
+					path: 'evaluations/evaluate/:id',
+					component: () =>
+					import('@/views/LegalAspects/contracts/evaluationContracts/create')
+				}
+			]),
+			...middleware({ 'check-permission': 'contracts_evaluations_view_evaluations_made' }, [
+				{
+					name: 'legalaspects-evaluations-lessee',
+					path: 'evaluations/contracts',
+					component: () =>
+					import('@/views/LegalAspects/contracts/evaluationContracts/index')
+				},
+			]),
+			...middleware({ 'check-permission': 'contracts_evaluations_view_evaluations_made' }, [
+				{
+					name: 'legalaspects-evaluations-contracts',
+					path: 'evaluations/contracts/:id',
+					component: () =>
+					import('@/views/LegalAspects/contracts/evaluationContracts/index')
+				}
+			]),
+			...middleware({ 'check-permission': 'contracts_evaluations_view_evaluations_made' }, [
+				{
+					name: 'legalaspects-evaluations-contracts-view',
+					path: 'evaluations/contracts/view/:id',
+					component: () =>
+					import('@/views/LegalAspects/contracts/evaluationContracts/view')
+				}
+			]),
+			...middleware({ 'check-permission': 'contracts_evaluations_edit_evaluations_made' }, [
+				{
+					name: 'legalaspects-evaluations-contracts-edit',
+					path: 'evaluations/contracts/edit/:id',
+					component: () =>
+					import('@/views/LegalAspects/contracts/evaluationContracts/edit')
+				}
+			]),
+			...middleware({ 'check-permission': 'contracts_evaluations_report_view' }, [
+				{
+					name: 'legalaspects-evaluations-report',
+					path: 'evaluations/report',
+					component: () =>
+					import('@/views/LegalAspects/contracts/evaluationContracts/report')
+				}
+			]),
+			...middleware({ 'check-permission': 'contracts_uploadFiles_r' }, [
+				{
+					name: 'legalaspects-upload-files',
+					path: 'upload-files',
+					component: () => import('@/views/LegalAspects/contracts/uploadFiles/index')
+				}
+			]),
+			...middleware({ 'check-permission': 'contracts_uploadFiles_c' }, [
+				{
+					name: 'legalaspects-upload-files-create',
+					path: 'upload-files/create',
+					component: () => import('@/views/LegalAspects/contracts/uploadFiles/create')
+				}
+			]),
+			...middleware({ 'check-permission': 'contracts_uploadFiles_u' }, [
+				{
+					name: 'legalaspects-upload-files-edit',
+					path: 'upload-files/edit/:id',
+					component: () => import('@/views/LegalAspects/contracts/uploadFiles/edit')
+				}
+			]),
+			...middleware({ 'check-permission': 'contracts_uploadFiles_r' }, [
+				{
+					name: 'legalaspects-upload-files-view',
+					path: 'upload-files/view/:id',
+					component: () => import('@/views/LegalAspects/contracts/uploadFiles/view')
+				}
+			]),
 			{
 				name: 'legalaspects-legalmatrix',
 				path: 'legalmatrix',

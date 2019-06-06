@@ -21,6 +21,18 @@ class FileUploadController extends Controller
     use ContractTrait;
     
     /**
+     * creates and instance and middlewares are checked
+     */
+    function __construct()
+    {
+        $this->middleware('auth');
+        $this->middleware('permission:contracts_uploadFiles_c', ['only' => 'store']);
+        $this->middleware('permission:contracts_uploadFiles_r');
+        $this->middleware('permission:contracts_uploadFiles_u', ['only' => 'update']);
+        $this->middleware('permission:contracts_uploadFiles_d', ['only' => 'destroy']);
+    }
+
+    /**
     * Display a listing of the resource.
     *
     * @return \Illuminate\Http\Response

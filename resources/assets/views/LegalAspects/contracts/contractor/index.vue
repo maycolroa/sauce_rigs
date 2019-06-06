@@ -8,12 +8,13 @@
     <div class="col-md">
       <b-card no-body>
         <b-card-header class="with-elements">
-          <div class="card-title-elements"> 
+          <div class="card-title-elements" v-if="auth.can['contracts_c']"> 
             <b-btn :to="{name:'legalaspects-contractor-create'}" variant="primary">Crear contratista o arrendatario</b-btn>
           </div>
         </b-card-header>
         <b-card-body>
              <vue-table
+                v-if="auth.can['contracts_r']"
                 configName="legalaspects-contractor"
                 ></vue-table>
         </b-card-body>

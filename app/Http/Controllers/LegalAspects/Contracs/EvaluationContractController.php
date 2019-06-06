@@ -21,6 +21,19 @@ use DB;
 class EvaluationContractController extends Controller
 {
     /**
+     * creates and instance and middlewares are checked
+     */
+    function __construct()
+    {
+        $this->middleware('auth');
+        $this->middleware('permission:contracts_evaluations_perform_evaluation', ['only' => 'store']);
+        $this->middleware('permission:contracts_evaluations_view_evaluations_made', ['except' => ['report', 'getTotales', 'exportReport', 'store', 'getData']] );
+        $this->middleware('permission:contracts_evaluations_edit_evaluations_made', ['only' => 'update']);
+        $this->middleware('permission:contracts_evaluations_report_view', ['only' => ['report', 'getTotales']]);
+        $this->middleware('permission:contracts_evaluations_report_export', ['only' => 'exportReport']);
+    }
+
+    /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response

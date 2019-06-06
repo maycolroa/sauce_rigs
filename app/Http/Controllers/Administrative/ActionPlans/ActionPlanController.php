@@ -28,6 +28,7 @@ class ActionPlanController extends Controller
         //$this->middleware('permission:actionPlans_c', ['only' => 'store']);
         $this->middleware('permission:actionPlans_r');
         $this->middleware('permission:actionPlans_u', ['only' => 'update']);
+        $this->middleware('permission:actionPlans_export', ['only' => 'export']);
         //$this->middleware('permission:actionPlans_d', ['only' => 'destroy']);
     }
 

@@ -10,6 +10,15 @@
                         "display_name": "Administrar Roles Definidos"
                     }
                 ]
+            },
+            {
+                "name": "actionPlans",
+                "permissions": [
+                    {
+                        "name": "actionPlans_export",
+                        "display_name": "Planes de acción - exportar"
+                    }
+                ]
             }
         ]
     },
@@ -30,5 +39,113 @@
                 ]
             }
         ]
-    }    
+    },
+    {
+        "application": "industrialSecure",
+        "modules": [
+            {
+                "name": "dangerMatrix",
+                "permissions": [
+                    {
+                        "name": "dangerMatrix_view_report",
+                        "display_name": "Matriz de peligro - ver reporte"
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "application": "legalAspects",
+        "modules": [
+            {
+                "name": "contracts",
+                "permissions": [
+                    {
+                        "name": "contracts_resend_welcome_email",
+                        "display_name": "Contratistas - reenviar correo de bienvenida"
+                    },
+                    {
+                        "name": "contracts_view_list_standards",
+                        "display_name": "Contratistas - ver lista de estándares mínimos"
+                    },
+                    {
+                        "name": "contracts_typesQualification_c",
+                        "display_name": "Contratistas/Tipos de calificación - crear"
+                    },
+                    {
+                        "name": "contracts_typesQualification_r",
+                        "display_name": "Contratistas/Tipos de calificación - ver"
+                    },
+                    {
+                        "name": "contracts_typesQualification_u",
+                        "display_name": "Contratistas/Tipos de calificación - editar"
+                    },
+                    {
+                        "name": "contracts_typesQualification_d",
+                        "display_name": "Contratistas/Tipos de calificación - eliminar"
+                    },
+                    {
+                        "name": "contracts_evaluations_c",
+                        "display_name": "Contratistas/Evaluaciones - crear"
+                    },
+                    {
+                        "name": "contracts_evaluations_r",
+                        "display_name": "Contratistas/Evaluaciones - ver"
+                    },
+                    {
+                        "name": "contracts_evaluations_u",
+                        "display_name": "Contratistas/Evaluaciones - editar"
+                    },
+                    {
+                        "name": "contracts_evaluations_d",
+                        "display_name": "Contratistas/Evaluaciones - eliminar"
+                    },
+                    {
+                        "name": "contracts_evaluations_export",
+                        "display_name": "Contratistas/Evaluaciones - exportar"
+                    },
+                    {
+                        "name": "contracts_evaluations_perform_evaluation",
+                        "display_name": "Contratistas/Evaluaciones - realizar evaluación"
+                    },
+                    {
+                        "name": "contracts_evaluations_view_evaluations_made",
+                        "display_name": "Contratistas/Evaluaciones - ver evaluaciones realizadas"
+                    },
+                    {
+                        "name": "contracts_evaluations_edit_evaluations_made",
+                        "display_name": "Contratistas/Evaluaciones - editar evaluaciones realizadas"
+                    },
+                    {
+                        "name": "contracts_evaluations_report_view",
+                        "display_name": "Contratistas/Evaluaciones - ver reportes"
+                    },
+                    {
+                        "name": "contracts_evaluations_report_export",
+                        "display_name": "Contratistas/Evaluaciones - exportar reportes"
+                    },
+                    {
+                        "name": "contracts_uploadFiles_c",
+                        "display_name": "Contratistas/Subida de archivos - crear"
+                    },
+                    {
+                        "name": "contracts_uploadFiles_r",
+                        "display_name": "Contratistas/Subida de archivos - ver"
+                    },
+                    {
+                        "name": "contracts_uploadFiles_u",
+                        "display_name": "Contratistas/Subida de archivos - editar"
+                    },
+                    {
+                        "name": "contracts_uploadFiles_d",
+                        "display_name": "Contratistas/Subida de archivos - eliminar"
+                    },
+                    {
+                        "name": "contracts_myInformation",
+                        "display_name": "Contratistas/Mi información"
+                    }
+                ]
+            }
+        ]
+    }
 ]

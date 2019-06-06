@@ -19,6 +19,7 @@ export default [
                 routePush: { name: 'legalaspects-typesrating-edit' },
                 id: 'id',
             },
+            permission: 'contracts_typesQualification_u'
             }, {
             config: {
                 color: 'outline-info',
@@ -30,6 +31,7 @@ export default [
                 routePush: { name: 'legalaspects-typesrating-view' },
                 id: 'id',
             },
+            permission: 'contracts_typesQualification_r'
             }]
         },
         {
@@ -41,6 +43,7 @@ export default [
                 id: 'id',
                 messageConfirmation: 'Esta seguro de borrar el tipo de calificación __name__'
             },
+            permission: 'contracts_typesQualification_d'
             }],
         }],
         configuration: {
@@ -70,6 +73,7 @@ export default [
                     routePush: { name: 'legalaspects-evaluations-edit' },
                     id: 'id',
                 },
+                permission: 'contracts_evaluations_u'
             }, {
                 config: {
                     color: 'outline-info',
@@ -81,6 +85,7 @@ export default [
                     routePush: { name: 'legalaspects-evaluations-view' },
                     id: 'id',
                 },
+                permission: 'contracts_evaluations_r'
             }, {
                 config: {
                     color: 'outline-success',
@@ -92,6 +97,7 @@ export default [
                     routePush: { name: 'legalaspects-evaluations-evaluate' },
                     id: 'id',
                 },
+                permission: 'contracts_evaluations_perform_evaluation'
             }, {
               config: {
                   color: 'outline-info',
@@ -103,6 +109,7 @@ export default [
                   routePush: { name: 'legalaspects-evaluations-contracts' },
                   id: 'id',
               },
+              permission: 'contracts_evaluations_view_evaluations_made'
           }]
         },
         {
@@ -114,6 +121,7 @@ export default [
                 id: 'id',
                 messageConfirmation: 'Esta seguro de borrar la evaluación __name__'
             },
+            permission: 'contracts_evaluations_d'
             }],
         }],
         configuration: {
@@ -139,7 +147,8 @@ export default [
           data: {
             routePush: { name: 'legalaspects-upload-files-edit' },
             id: 'id',
-          }
+          },
+          permission: 'contracts_uploadFiles_u'
         }, {
           config: {
             color: 'outline-info',
@@ -150,7 +159,8 @@ export default [
           data: {
             routePush: { name: 'legalaspects-upload-files-view' },
             id: 'id',
-          }
+          },
+          permission: 'contracts_uploadFiles_r'
         }]
       },
       {
@@ -161,7 +171,8 @@ export default [
             action: '/legalAspects/fileUpload/',
             id: 'id',
             messageConfirmation: 'Esta seguro de borrar el archivo del __name__'
-          }
+          },
+          permission: 'contracts_uploadFiles_d'
         }],
       }],
       configuration: {
@@ -193,6 +204,7 @@ export default [
                 routePush: { name: 'legalaspects-evaluations-contracts-edit' },
                 id: 'id',
             },
+            permission: 'contracts_evaluations_edit_evaluations_made'
             }, {
             config: {
                 color: 'outline-info',
@@ -204,6 +216,7 @@ export default [
                 routePush: { name: 'legalaspects-evaluations-contracts-view' },
                 id: 'id',
             },
+            permission: 'contracts_evaluations_view_evaluations_made'
             }]
         },
         {
@@ -237,6 +250,7 @@ export default [
                 routePush: { name: 'legalaspects-evaluations-contracts-view' },
                 id: 'id',
             },
+            permission: 'contracts_evaluations_view_evaluations_made'
             }]
         },
         {
@@ -325,6 +339,7 @@ export default [
                     routePush: { name: 'legalaspects-contractor-edit' },
                     id: 'id',
                 },
+                permission: 'contracts_u'
               }, {
                 config: {
                     color: 'outline-info',
@@ -336,6 +351,7 @@ export default [
                     routePush: { name: 'legalaspects-contractor-view' },
                     id: 'id',
                 },
+                permission: 'contracts_r'
               }, {
                 config: {
                     color: 'outline-info',
@@ -347,6 +363,7 @@ export default [
                     routePush: { name: 'legalaspects-contracts-view-list-check' },
                     id: 'id',
                 },
+                permission: 'contracts_view_list_standards'
             }]
           },
           {
@@ -365,6 +382,7 @@ export default [
                         id: 'id',
                         messageConfirmation: 'Esta seguro de reenviar el correo de bienvenida a __social_reason__'
                     },
+                    permission: 'contracts_resend_welcome_email'
                 }
             ],
           }],

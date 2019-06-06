@@ -107,7 +107,7 @@ export default [{
             import('@/views/IndustrialSecure/dangerMatrix/view')
         }
       ]),
-      ...middleware({ 'check-permission': 'dangerMatrix_r' }, [
+      ...middleware({ 'check-permission': 'dangerMatrix_view_report' }, [
         {
           name: 'industrialsecure-dangermatrix-report',
           path: 'dangermatrix/report',

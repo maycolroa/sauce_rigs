@@ -25,6 +25,14 @@ class MakeAllPermissionsSeeder extends Seeder
                 ['_d', ' - eliminar']
             ];
 
+            $exception_permissions = [
+                'configurations_u',
+                'configurations_d',
+                'actionPlans_c',
+                'actionPlans_d',
+                'contracts_d'
+            ];
+
             $modules = Module::all();
 
             foreach ($modules as $module)
@@ -35,20 +43,23 @@ class MakeAllPermissionsSeeder extends Seeder
                 {
                     $permission_name = $module->name.$permission[0];
 
-                    $permission_exist = Permission::where('name', $permission_name)->first();
+                    if (!in_array($permission_name, $exception_permissions))
+                    {
+                        $permission_exist = Permission::where('name', $permission_name)->first();
 
-                    if (!$permission_exist)
-                    {
-                        Permission::create([
-                            'name' => $permission_name,
-                            'display_name' => $module->display_name.$permission[1],
-                            'description' => $module->display_name.$permission[1],
-                            'module_id' => $module->id
-                        ]);
-                    }
-                    else
-                    {
-                        $this->command->info("Permiso $permission_name ya existe");
+                        if (!$permission_exist)
+                        {
+                            Permission::create([
+                                'name' => $permission_name,
+                                'display_name' => $module->display_name.$permission[1],
+                                'description' => $module->display_name.$permission[1],
+                                'module_id' => $module->id
+                            ]);
+                        }
+                        else
+                        {
+                            $this->command->info("Permiso $permission_name ya existe");
+                        }
                     }
                 }
             }

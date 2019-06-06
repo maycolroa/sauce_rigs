@@ -31,6 +31,18 @@ class ContractLesseeController extends Controller
     use ContractTrait;
 
     /**
+     * creates and instance and middlewares are checked
+     */
+    function __construct()
+    {
+        $this->middleware('auth');
+        $this->middleware('permission:contracts_c', ['only' => 'store']);
+        $this->middleware('permission:contracts_r', ['except' => ['getInformation', 'multiselect', 'getListCheckItems', 'qualifications', 'saveQualificationItems', 'update']] );
+        $this->middleware('permission:contracts_u|contracts_myInformation', ['only' => 'update']);
+        $this->middleware('permission:contracts_myInformation', ['only' => 'getInformation']);
+    }
+
+    /**
      * Display index.
      *
      * @return \Illuminate\Http\Response

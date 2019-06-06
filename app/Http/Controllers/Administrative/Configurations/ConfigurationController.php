@@ -16,7 +16,7 @@ class ConfigurationController extends Controller
     function __construct()
     {
         $this->middleware('auth');
-        $this->middleware('permission:configurations_c|configurations_u', ['only' => 'store']);
+        $this->middleware('permission:configurations_c', ['only' => 'store']);
         $this->middleware('permission:configurations_r');
     }
 
