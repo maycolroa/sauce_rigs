@@ -48,8 +48,10 @@
           <b-form-row>
             <vue-advanced-select :disabled="viewOnly" class="col-md-6" v-model="form.repealed" :multiple="false" :options="repealed" :hide-selected="false" name="repealed" :error="form.errorsFor('repealed')" label="Derogada" placeholder="Seleccione una opciòn">
               </vue-advanced-select>
-						<vue-file-simple v-if="isEdit || viewOnly" :help-text="`Para descargar el archivo actual, haga click <a href='/legalAspects/fileUpload/download/${this.$route.params.id}' target='blank'>aqui</a> `" :disabled="viewOnly" class="col-md-6" v-model="form.file" label="Archivo" name="file" :error="form.errorsFor('file')" placeholder="Seleccione un archivo"></vue-file-simple>
-						<vue-file-simple v-else :disabled="viewOnly" class="col-md-6" v-model="form.file" label="Archivo" name="file" :error="form.errorsFor('file')" placeholder="Seleccione un archivo"></vue-file-simple>
+            <template v-if="isEdit || viewOnly">
+						  <vue-file-simple :help-text="form.old_file ? `Para descargar el archivo actual, haga click <a href='/legalAspects/legalMatrix/law/download/${this.$route.params.id}' target='blank'>aqui</a> `: null" :disabled="viewOnly" class="col-md-6" v-model="form.file" label="Archivo (*.pdf)" name="file" :error="form.errorsFor('file')" placeholder="Seleccione un archivo"></vue-file-simple>
+            </template>
+						<vue-file-simple v-else :disabled="viewOnly" class="col-md-6" v-model="form.file" label="Archivo (*.pdf)" name="file" :error="form.errorsFor('file')" placeholder="Seleccione un archivo"></vue-file-simple>
           </b-form-row>
         </b-card-body>
       </b-collapse>
@@ -92,7 +94,7 @@
                   <b-card no-body class="mb-2 border-secondary" :key="article.key" style="width: 100%;">
                     <b-card-header class="bg-secondary">
                       <b-row>
-                        <b-col cols="10" class="d-flex justify-content-between text-white"> {{ form.articles[index].description ? form.articles[index].description : `Nuevo Artìculo ${index + 1}` }}</b-col>
+                        <b-col cols="10" class="d-flex justify-content-between text-white"> {{ form.articles[index].description ? (form.articles[index].description.length > 200 ? `${form.articles[index].description.substring(0, 200)}...` : form.articles[index].description) : `Nuevo Artìculo ${index + 1}` }}</b-col>
                         <b-col cols="2">
                           <div class="float-right">
                             <b-button-group>
@@ -111,11 +113,17 @@
                         </b-col>
                       </b-row>
                     </b-card-header>
-                    <b-collapse :id="`accordion${article.key}-1`" visible :accordion="`accordion-123`">
+                    <b-collapse :id="`accordion${article.key}-1`" :visible="!isEdit && !viewOnly" :accordion="`accordion-123`">
                       <b-card-body>
 
                         <b-form-row>
-                          <vue-textarea :disabled="viewOnly" class="col-md-12" v-model="form.articles[index].description" label="Descripción" name="description" placeholder="Descripción" :error="form.errorsFor(`objectives.${index}.description`)" rows="1"></vue-textarea>
+                          <vue-textarea :disabled="viewOnly" class="col-md-12" v-model="form.articles[index].description" label="Descripción" name="description" placeholder="Descripción" :error="form.errorsFor(`articles.${index}.description`)" rows="3"></vue-textarea>
+                        </b-form-row>
+                        <b-form-row>
+                          <vue-radio :disabled="viewOnly" :checked="form.articles[index].repelead" class="col-md-3" v-model="form.articles[index].repelead" :options="siNo" :name="`repelead${index}`" :error="form.errorsFor(`articles.${index}.repelead`)" label="Derogado">
+                            </vue-radio>
+                          <vue-ajax-advanced-select :disabled="viewOnly" class="col-md-9" v-model="form.articles[index].interests_id" name="interests_id" label="Intereses" placeholder="Seleccione los intereses" :url="urlDataInterests" :multiple="true" :allowEmpty="true" :error="form.errorsFor(`articles.${index}.interests_id`)" :selected-object="form.articles[index].multiselect_interests">
+                            </vue-ajax-advanced-select>
                         </b-form-row>
 
                       </b-card-body>
@@ -146,6 +154,7 @@ import PerfectScrollbar from '@/vendor/libs/perfect-scrollbar/PerfectScrollbar';
 import Form from "@/utils/Form.js";
 import VueFileSimple from "@/components/Inputs/VueFileSimple.vue";
 import VueTextarea from "@/components/Inputs/VueTextarea.vue";
+import VueRadio from "@/components/Inputs/VueRadio.vue";
 import Alerts from '@/utils/Alerts.js';
 
 export default {
@@ -155,6 +164,7 @@ export default {
     VueAjaxAdvancedSelect,
     PerfectScrollbar,
     VueTextarea,
+    VueRadio,
     VueFileSimple
   },
   props: {
@@ -167,6 +177,7 @@ export default {
     riskAspectDataUrl: { type: String, default: "" },
     entityDataUrl: { type: String, default: "" },
     sstRiskDataUrl: { type: String, default: "" },
+    urlDataInterests: { type: String, default: "" },
     applySystems: {
       type: Array,
       default: function() {
@@ -180,6 +191,12 @@ export default {
       }
     },
     repealed: {
+      type: Array,
+      default: function() {
+        return [];
+      }
+    },
+    siNo: {
       type: Array,
       default: function() {
         return [];
@@ -200,8 +217,7 @@ export default {
           sst_risk_id: '',
           repealed: '',
           file: '',
-          articles: [
-          ]
+          articles: []
         };
       }
     }
@@ -233,14 +249,17 @@ export default {
     },
     addActicle() {
         this.form.articles.push({
-            key: new Date().getTime(),
+            key: new Date().getTime() + Math.round(Math.random() * 10000),
             description: '',
+            repelead: '',
+            sequence: 1,
+            interests_id: []
         })
     },
     removeArticle(index)
     {
       if (this.form.articles[index].id != undefined)
-        this.form.delete.articles.push(this.form.articles[index].id)
+        this.form.delete.push(this.form.articles[index].id)
 
       this.form.articles.splice(index, 1)
     },

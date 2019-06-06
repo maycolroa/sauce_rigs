@@ -16,6 +16,27 @@ class LawRequest extends FormRequest
         return true;
     }
 
+    public function validator($factory)
+    {
+        return $factory->make(
+            $this->sanitize(), $this->container->call([$this, 'rules']), $this->messages()
+        );
+    }
+
+    public function sanitize()
+    {
+        if ($this->has('articles'))
+        {
+            foreach ($this->input('articles') as $key => $value)
+            {
+                $data['articles'][$key] = json_decode($value, true);
+                $this->merge($data);
+            }
+        }
+
+        return $this->all();
+    }
+
     /**
      * Get the validation rules that apply to the request.
      *
@@ -38,6 +59,10 @@ class LawRequest extends FormRequest
             'sst_risk_id' => 'required|exists:sau_lm_sst_risks,id',
             'repealed' => 'required',
             'file' => 'nullable|max:20480',
+            'articles' => 'required|array',
+            'articles.*.description' => 'required',
+            'articles.*.repelead' => 'required',
+            'articles.*.interests_id' => 'required|array'
         ];
     }
 }

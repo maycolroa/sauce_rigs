@@ -97,7 +97,7 @@ export default {
   mounted() {
       setTimeout(() => {
           this.setMultiselectValue();
-      }, 2000)
+      }, 3000)
   },
   methods: {
     limitText(count) {
