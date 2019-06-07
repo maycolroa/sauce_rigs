@@ -70,6 +70,13 @@ class ContractLesseeController extends Controller
                     )
                     ->leftJoin('sau_ct_list_check_resumen', 'sau_ct_list_check_resumen.contract_id', 'sau_ct_information_contract_lessee.id');
 
+        $filters = $request->get('filters');
+
+        if (COUNT($filters) > 0)
+        {
+            $contracts->rangePercentageCumple($filters["rangePC"]);
+        }
+
         return Vuetable::of($contracts)
             ->addColumn('legalaspects-contracts-view-list-check', function ($contract) {
                 

@@ -58,4 +58,33 @@ class ContractLesseeInformation extends Model
             'value' => $this->id
         ];
     }
+
+    /**
+     * filters checks through the given range
+     * @param  Illuminate\Database\Eloquent\Builder $query
+     * @param  array $ranges
+     * @return Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeRangePercentageCumple($query, $range)
+    {
+        if ($range != '')
+        {
+            $range = explode('/', $range);
+            
+            if ($range[0] != '' && $range[1] != '')
+            {
+                $query->whereBetween('sau_ct_list_check_resumen.total_p_c', $range);
+            }
+            else if ($range[0] != '' && $range[1] == '')
+            {
+                $query->where('sau_ct_list_check_resumen.total_p_c', '>=', $range[0]);
+            }
+            else if ($range[0] == '' && $range[1] != '')
+            {
+                $query->where('sau_ct_list_check_resumen.total_p_c', '<=', $range[1]);
+            }
+        }
+
+        return $query;
+    }
 }

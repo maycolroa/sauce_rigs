@@ -25,6 +25,11 @@
                                         v-if="item.type == 'dateRange'"
                                         v-model="filtersSelected[index]" class="col-md-12" :label="item.label" :name="item.key" :disabled="isDisabled">
                                     </vue-datepicker-range>
+
+                                    <vue-input-range
+                                        v-if="item.type == 'numberRange'"
+                                        v-model="filtersSelected[index]" class="col-md-12" :label="item.label" :name="item.key" :disabled="isDisabled">
+                                    </vue-input-range>
                                 </b-col>
                             </b-row>
                         </b-card-body>
@@ -44,6 +49,7 @@ import Alerts from '@/utils/Alerts.js';
 import GlobalMethods from '@/utils/GlobalMethods.js';
 import VueAdvancedSelect from "@/components/Inputs/VueAdvancedSelect.vue";
 import VueDatepickerRange from "@/components/Inputs/VueDatepickerRange.vue";
+import VueInputRange from "@/components/Inputs/VueInputRange.vue";
 import { SweetModal, SweetModalTab } from 'sweet-modal-vue'
 import FilterConfig from '@/filterconfig/';
 
@@ -51,6 +57,7 @@ export default {
     components:{
         VueAdvancedSelect,
         VueDatepickerRange,
+        VueInputRange,
         SweetModal,
         SweetModalTab
     },
@@ -90,7 +97,7 @@ export default {
                     this.$set(this.filtersSelected.filtersType, item.key, 'IN')
                     this.fetchFilterSelect(item.key, item.url)
                 }
-                else if (item.type == 'dateRange')
+                else if (item.type == 'dateRange' || item.type == 'numberRange')
                 {
                     this.$set(this.filtersSelected, item.key, '')
                 }

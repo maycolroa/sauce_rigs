@@ -213,6 +213,7 @@ export default {
 							expiration_date: '',
 							state: '',
 							editable: 'NO',
+							observation: '',
 							edit_all: true
             })
 				});

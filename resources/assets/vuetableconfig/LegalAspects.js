@@ -389,6 +389,7 @@ export default [
         configuration: {
             urlData: '/legalAspects/contracts/data',
             filterColumns: true,
+            configNameFilter: 'legalaspects-contractor'
         }
     },
     {

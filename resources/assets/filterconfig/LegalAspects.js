@@ -95,4 +95,14 @@ export default [
         }
       ]
     },
+    {
+      name: 'legalaspects-contractor',
+      filters: [
+        {
+          key: 'rangePC',
+          type: 'numberRange',
+          label: 'Rango de cumplimiento (%)',
+        }
+      ]
+    }
 ];
