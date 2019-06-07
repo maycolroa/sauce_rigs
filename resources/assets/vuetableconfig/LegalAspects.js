@@ -609,7 +609,8 @@ export default [
             { name: 'sau_lm_laws.law_number', data: 'law_number', title: 'Número', sortable: true, searchable: true, detail: false, key: false },
             { name: 'sau_lm_laws.law_year', data: 'law_year', title: 'Año', sortable: true, searchable: true, detail: false, key: false },
             { name: 'sau_lm_laws.description', data: 'description', title: 'Descripción', sortable: true, searchable: true, detail: false, key: false },
-            { name: 'sau_lm_sst_risks.name', data: 'sst_risk', title: 'Riesgo (SST / Ambiental)', sortable: true, searchable: true, detail: false, key: false },
+            { name: 'sau_lm_risks_aspects.name', data: 'risk_aspect', title: 'Riesgo/Aspecto Ambiental', sortable: true, searchable: true, detail: false, key: false },
+            { name: 'sau_lm_sst_risks.name', data: 'sst_risk', title: 'Riesgo SST', sortable: true, searchable: true, detail: false, key: false },
             { name: 'sau_lm_entities.name', data: 'entity', title: 'Ente', sortable: true, searchable: true, detail: false, key: false },
             { name: 'sau_lm_laws.apply_system', data: 'apply_system', title: 'Sistema Aplica', sortable: true, searchable: true, detail: false, key: false },
             { name: 'sau_lm_laws.repealed', data: 'repealed', title: 'Derogada', sortable: true, searchable: true, detail: false, key: false },
@@ -655,6 +656,7 @@ export default [
         configuration: {
             urlData: '/legalAspects/legalMatrix/law/data',
             filterColumns: true,
+            configNameFilter: 'legalAspects-legalMatrix-law-crud'
         }
     }
 ]

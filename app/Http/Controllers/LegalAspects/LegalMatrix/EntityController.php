@@ -145,5 +145,15 @@ class EntityController extends Controller
                 'options' => $this->multiSelectFormat($entities)
             ]);
         }
+        else
+        {
+            $entities = Entity::select(
+                'sau_lm_entities.id as id',
+                'sau_lm_entities.name as name'
+            )
+            ->pluck('id', 'name');
+        
+            return $this->multiSelectFormat($entities);
+        }
     }
 }

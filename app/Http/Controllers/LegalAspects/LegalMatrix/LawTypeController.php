@@ -45,5 +45,15 @@ class LawTypeController extends Controller
                 'options' => $this->multiSelectFormat($lawtypes)
             ]);
         }
+        else
+        {
+            $lawtypes = LawType::select(
+                'sau_lm_laws_types.id as id',
+                'sau_lm_laws_types.name as name'
+            )
+            ->pluck('id', 'name');
+        
+            return $this->multiSelectFormat($lawtypes);
+        }
     }
 }

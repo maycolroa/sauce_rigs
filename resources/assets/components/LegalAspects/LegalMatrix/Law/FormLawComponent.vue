@@ -21,7 +21,7 @@
         <b-card-body>
           <b-form-row>
             <vue-input :disabled="viewOnly" class="col-md-6" v-model="form.name" label="Nombre" type="text" name="name" :error="form.errorsFor('name')" placeholder="Nombre"></vue-input>
-            <vue-input :disabled="viewOnly" class="col-md-6" v-model="form.law_number" label="Nùmero" type="number" name="law_number" :error="form.errorsFor('law_number')" placeholder="Nùmero"></vue-input>
+            <vue-input :disabled="viewOnly" class="col-md-6" v-model="form.law_number" label="Nùmero" type="text" name="law_number" :error="form.errorsFor('law_number')" placeholder="Nùmero"></vue-input>
           </b-form-row>
           <b-form-row>
             <vue-advanced-select :disabled="viewOnly" class="col-md-6" v-model="form.apply_system" :multiple="false" :options="applySystems" :hide-selected="false" name="apply_system" :error="form.errorsFor('apply_system')" label="Sistema que aplica" placeholder="Seleccione el sistema que aplica">
