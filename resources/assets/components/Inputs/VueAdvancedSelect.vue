@@ -31,7 +31,7 @@
                 deselect-label="Puede quitar este valor"
                 :class="state"
                 track-by="name"
-                @input="updateValue"
+                @input="updateValue($event, true)"
                 :allow-empty="true"
                 :multiple="multiple"
                 :close-on-select="closeOnSelectState"
@@ -103,7 +103,7 @@ export default {
     limitText(count) {
       return `y ${count} mas`;
     },
-    updateValue() {
+    updateValue(event, onChange = false) {
       let value = this.multiple ? this.selectValue : (this.selectValue ? this.selectValue.value : '');
 
       this.$emit("input", value);
@@ -112,6 +112,9 @@ export default {
       {
         this.$emit("selectedName", this.selectValue ? this.selectValue.name : '');
       }
+
+      if (onChange)
+        this.$emit("change");
     },
     setMultiselectValue() {
       if (this.value && this.options.length > 0) {

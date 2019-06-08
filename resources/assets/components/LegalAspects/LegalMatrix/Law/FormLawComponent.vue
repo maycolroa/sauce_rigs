@@ -120,10 +120,12 @@
                           <vue-textarea :disabled="viewOnly" class="col-md-12" v-model="form.articles[index].description" label="Descripción" name="description" placeholder="Descripción" :error="form.errorsFor(`articles.${index}.description`)" rows="3"></vue-textarea>
                         </b-form-row>
                         <b-form-row>
+                          <vue-ajax-advanced-select :disabled="viewOnly" class="col-md-6" v-model="form.articles[index].interests_id" name="interests_id" label="Intereses" placeholder="Seleccione los intereses" :url="urlDataInterests" :multiple="true" :allowEmpty="true" :error="form.errorsFor(`articles.${index}.interests_id`)" :selected-object="form.articles[index].multiselect_interests">
+                            </vue-ajax-advanced-select>
                           <vue-radio :disabled="viewOnly" :checked="form.articles[index].repelead" class="col-md-3" v-model="form.articles[index].repelead" :options="siNo" :name="`repelead${index}`" :error="form.errorsFor(`articles.${index}.repelead`)" label="Derogado">
                             </vue-radio>
-                          <vue-ajax-advanced-select :disabled="viewOnly" class="col-md-9" v-model="form.articles[index].interests_id" name="interests_id" label="Intereses" placeholder="Seleccione los intereses" :url="urlDataInterests" :multiple="true" :allowEmpty="true" :error="form.errorsFor(`articles.${index}.interests_id`)" :selected-object="form.articles[index].multiselect_interests">
-                            </vue-ajax-advanced-select>
+                          <vue-advanced-select :disabled="viewOnly" class="col-md-3" v-model="form.articles[index].new_sequence" :options="sequenceOptions" name="sequence" label="Secuencia" @change="updateOrder(index)">
+                            </vue-advanced-select>
                         </b-form-row>
 
                       </b-card-body>
@@ -228,6 +230,17 @@ export default {
       this.form = Form.makeFrom(this.law, this.method);
     }
   },
+  computed: {
+    sequenceOptions() {
+      let options = []
+
+      for (let index = 1; index <= this.form.articles.length; index++) {
+        options.push({name: index, value: index})
+      }
+
+      return options
+    }
+  },
   data() {
     return {
         loading: this.isEdit,
@@ -252,7 +265,8 @@ export default {
             key: new Date().getTime() + Math.round(Math.random() * 10000),
             description: '',
             repelead: '',
-            sequence: 1,
+            sequence: this.form.articles.length + 1,
+            new_sequence: this.form.articles.length + 1,
             interests_id: []
         })
     },
@@ -263,7 +277,27 @@ export default {
 
       this.form.articles.splice(index, 1)
     },
-    
+    updateOrder(index) {
+      
+      if (this.form.articles[index].new_sequence > this.form.articles[index].sequence)
+      {
+        for (let i = (index + 1); i < this.form.articles[index].new_sequence; i++) {
+          this.form.articles[i].new_sequence -= 1 
+          this.form.articles[i].sequence -= 1 
+        }
+      }
+      else if (this.form.articles[index].new_sequence < this.form.articles[index].sequence)
+      {
+        for (let i = (index - 1); i >= (this.form.articles[index].new_sequence - 1); i--) {
+          this.form.articles[i].new_sequence += 1 
+          this.form.articles[i].sequence += 1 
+        }
+      }
+
+      this.form.articles[index].sequence = this.form.articles[index].new_sequence
+
+      this.form.articles.sort((a, b) => (a.sequence > b.sequence) ? 1 : -1)
+    }
   }
 };
 </script>

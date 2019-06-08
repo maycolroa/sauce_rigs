@@ -45,7 +45,7 @@ class Law extends Model
 
     public function articles()
     {
-        return $this->hasMany(Article::class, 'law_id');
+        return $this->hasMany(Article::class, 'law_id')->orderBy('sau_lm_articles.sequence');
     }
 
     /**

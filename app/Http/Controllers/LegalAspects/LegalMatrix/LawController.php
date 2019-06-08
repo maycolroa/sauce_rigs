@@ -151,6 +151,7 @@ class LawController extends Controller
             foreach ($law->articles as $key => $article)
             {   
                 $article->key = Carbon::now()->timestamp + rand(1,10000);
+                $article->new_sequence = $article->sequence;
                 $interests = [];
 
                 foreach ($article->interests as $key => $interest)
