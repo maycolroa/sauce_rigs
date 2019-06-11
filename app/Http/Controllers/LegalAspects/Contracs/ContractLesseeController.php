@@ -17,6 +17,7 @@ use App\Models\LegalAspects\Contracts\ItemQualificationContractDetail;
 use App\Http\Requests\LegalAspects\Contracts\ContractRequest;
 use App\Http\Requests\LegalAspects\Contracts\ListCheckItemsRequest;
 use App\Jobs\LegalAspects\Contracts\ListCheck\ListCheckContractExportJob;
+use App\Jobs\LegalAspects\Contracts\Contractor\ContractorExportJob;
 use App\Facades\ActionPlans\Facades\ActionPlan;
 use App\Traits\ContractTrait;
 use App\Traits\UserTrait;
@@ -40,6 +41,7 @@ class ContractLesseeController extends Controller
         $this->middleware('permission:contracts_r', ['except' => ['getInformation', 'multiselect', 'getListCheckItems', 'qualifications', 'saveQualificationItems', 'update']] );
         $this->middleware('permission:contracts_u|contracts_myInformation', ['only' => 'update']);
         $this->middleware('permission:contracts_myInformation', ['only' => 'getInformation']);
+        $this->middleware('permission:contracts_export', ['only' => 'export']);
     }
 
     /**
@@ -566,5 +568,22 @@ class ContractLesseeController extends Controller
         }
 
         return $this->respondHttp500();
+    }
+
+    /**
+     * Export resources from storage.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function export(Request $request)
+    {
+        try
+        {
+            ContractorExportJob::dispatch(Auth::user(), Session::get('company_id'), $request->all());
+        
+            return $this->respondHttp200();
+        } catch(Exception $e) {
+            return $this->respondHttp500();
+        }
     }
 }

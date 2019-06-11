@@ -194,6 +194,7 @@ Route::middleware(['auth'])->group(function () {
       Route::post('contracts/saveQualificationItems', 'LegalAspects\Contracs\ContractLesseeController@saveQualificationItems');
       Route::post('contractsListCheckHistory/data', 'LegalAspects\Contracs\ListCheckHistoryController@data');
       Route::post('contracts/retrySendMail/{contract}', 'LegalAspects\Contracs\ContractLesseeController@retrySendMail');
+      Route::post('contracts/export', 'LegalAspects\Contracs\ContractLesseeController@export');
       Route::ApiResource('contracts', 'LegalAspects\Contracs\ContractLesseeController');
 
       Route::post('fileUpload/data', 'LegalAspects\Contracs\FileUploadController@data');

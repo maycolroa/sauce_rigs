@@ -61,6 +61,10 @@
                 "name": "contracts",
                 "permissions": [
                     {
+                        "name": "contracts_export",
+                        "display_name": "Contratistas - exportar"
+                    },
+                    {
                         "name": "contracts_resend_welcome_email",
                         "display_name": "Contratistas - reenviar correo de bienvenida"
                     },
