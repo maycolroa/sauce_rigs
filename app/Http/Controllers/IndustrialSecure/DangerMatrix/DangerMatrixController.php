@@ -234,7 +234,7 @@ class DangerMatrixController extends Controller
             $id = $dangerMatrix->id;
 
         $rules = [
-            'name' => 'required|string|unique:sau_dangers_matrix,name,'.$id.',id,company_id,'.Session::get('company_id'),
+            'name' => 'nullable|string|unique:sau_dangers_matrix,name,'.$id.',id,company_id,'.Session::get('company_id'),
             'participants' => 'nullable|array',
             'activities' => 'required|array',
             'activities.*.activity_id' => 'required|exists:sau_dm_activities,id',
