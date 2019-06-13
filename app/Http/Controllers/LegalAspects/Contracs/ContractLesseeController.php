@@ -238,18 +238,31 @@ class ContractLesseeController extends Controller
      */
     public function multiselect(Request $request)
     {
-        $keyword = "%{$request->keyword}%";
-        $contracts = ContractLesseeInformation::selectRaw("
-            sau_ct_information_contract_lessee.id as id,
-            CONCAT(sau_ct_information_contract_lessee.nit, ' - ',sau_ct_information_contract_lessee.social_reason) as nit
-        ")
-        ->where(function ($query) use ($keyword) {
-            $query->orWhere('nit', 'like', $keyword);
-        })
-        ->take(30)->pluck('id', 'nit');
-        return $this->respondHttp200([
-            'options' => $this->multiSelectFormat($contracts)
-        ]);
+        if($request->has('keyword'))
+        {
+            $keyword = "%{$request->keyword}%";
+            $contracts = ContractLesseeInformation::selectRaw("
+                sau_ct_information_contract_lessee.id as id,
+                CONCAT(sau_ct_information_contract_lessee.nit, ' - ',sau_ct_information_contract_lessee.social_reason) as nit
+            ")
+            ->where(function ($query) use ($keyword) {
+                $query->orWhere('nit', 'like', $keyword);
+            })
+            ->take(30)->pluck('id', 'nit');
+
+            return $this->respondHttp200([
+                'options' => $this->multiSelectFormat($contracts)
+            ]);
+        }
+        else
+        {
+            $contracts = ContractLesseeInformation::selectRaw("
+                sau_ct_information_contract_lessee.id as id,
+                CONCAT(sau_ct_information_contract_lessee.nit, ' - ',sau_ct_information_contract_lessee.social_reason) as nit
+            ")->pluck('id', 'nit');
+        
+            return $this->multiSelectFormat($contracts);
+        }
     }
 
     private function getIdRole($role)

@@ -35,10 +35,27 @@ export default [
       name: 'legalAspects-fileUpload',
       filters: [
         {
+          url: '/selects/contractors',
+          key: 'contracts',
+          type: 'select',
+          label: 'Contratistas',
+          permission: 'contracts_r'
+        },
+        {
           url: '/selects/contracts/sectionCategoryItems',
           key: 'items',
           type: 'select',
           label: 'Items'
+        },
+        {
+          key: 'dateCreate',
+          type: 'dateRange',
+          label: 'Fecha de creación',
+        },
+        {
+          key: 'dateUpdate',
+          type: 'dateRange',
+          label: 'Fecha de actualización',
         }
       ]
     },
