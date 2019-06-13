@@ -659,5 +659,46 @@ export default [
             filterColumns: true,
             configNameFilter: 'legalAspects-legalMatrix-law-crud'
         }
+    },
+    {
+        name: 'legalaspects-lm-laws-qualify',
+        fields: [
+            { name: 'sau_lm_laws.id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true },
+            { name: 'sau_lm_laws.name', data: 'name', title: 'Nombre', sortable: true, searchable: true, detail: false, key: false },
+            { name: 'sau_lm_laws_types.name', data: 'law_type', title: 'Tipo Norma', sortable: true, searchable: true, detail: false, key: false },
+            { name: 'sau_lm_laws.law_number', data: 'law_number', title: 'Número', sortable: true, searchable: true, detail: false, key: false },
+            { name: 'sau_lm_laws.law_year', data: 'law_year', title: 'Año', sortable: true, searchable: true, detail: false, key: false },
+            { name: 'sau_lm_laws.description', data: 'description', title: 'Descripción', sortable: true, searchable: true, detail: false, key: false },
+            { name: 'sau_lm_risks_aspects.name', data: 'risk_aspect', title: 'Riesgo/Aspecto Ambiental', sortable: true, searchable: true, detail: false, key: false },
+            { name: 'sau_lm_sst_risks.name', data: 'sst_risk', title: 'Riesgo SST', sortable: true, searchable: true, detail: false, key: false },
+            { name: 'sau_lm_entities.name', data: 'entity', title: 'Ente', sortable: true, searchable: true, detail: false, key: false },
+            { name: 'sau_lm_laws.apply_system', data: 'apply_system', title: 'Sistema Aplica', sortable: true, searchable: true, detail: false, key: false },
+            { name: 'sau_lm_laws.repealed', data: 'repealed', title: 'Derogada', sortable: true, searchable: true, detail: false, key: false },
+            { name: '', data: 'controlls', title: 'Controles', sortable: false, searchable: false, detail: false, key: false },
+        ],
+        'controlls': [{
+            type: 'push',
+            buttons: [{
+                config: {
+                    color: 'outline-success',
+                    borderless: true,
+                    icon: 'ion ion-md-clipboard',
+                    title: 'Calificar'
+                },
+                data: {
+                    routePush: { name: 'legalaspects-lm-law-qualify-view' },
+                    id: 'id',
+                },
+            }]
+        },
+        {
+            type: 'base',
+            buttons: [],
+        }],
+        configuration: {
+            urlData: '/legalAspects/legalMatrix/law/data',
+            filterColumns: true,
+            configNameFilter: 'legalAspects-legalMatrix-law-qualify'
+        }
     }
 ]
