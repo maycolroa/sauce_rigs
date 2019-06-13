@@ -49,6 +49,10 @@
                     {
                         "name": "dangerMatrix_view_report",
                         "display_name": "Matriz de peligro - ver reporte"
+                    },
+                    {
+                        "name": "dangerMatrix_export",
+                        "display_name": "Matriz de peligro - exportar"
                     }
                 ]
             }
@@ -60,6 +64,10 @@
             {
                 "name": "contracts",
                 "permissions": [
+                    {
+                        "name": "contracts_export",
+                        "display_name": "Contratistas - exportar"
+                    },
                     {
                         "name": "contracts_resend_welcome_email",
                         "display_name": "Contratistas - reenviar correo de bienvenida"

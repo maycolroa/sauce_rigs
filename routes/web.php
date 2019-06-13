@@ -171,6 +171,7 @@ Route::middleware(['auth'])->group(function () {
       Route::post('dangersMatrix/getQualificationsComponent', 'IndustrialSecure\DangerMatrix\QualificationController@getQualificationsComponent');
       Route::post('dangersMatrix/report', 'IndustrialSecure\DangerMatrix\DangerMatrixReportController@report');
       Route::post('dangersMatrix/reportDangerTable', 'IndustrialSecure\DangerMatrix\DangerMatrixReportController@reportDangerTable');
+      Route::get('dangersMatrix/download/{dangersMatrix}', 'IndustrialSecure\DangerMatrix\DangerMatrixController@download');
       Route::ApiResource('dangersMatrix', 'IndustrialSecure\DangerMatrix\DangerMatrixController');
 
       Route::post('dangersMatrixHistory/data', 'IndustrialSecure\DangerMatrix\DangerMatrixHistoryController@data');
@@ -194,6 +195,7 @@ Route::middleware(['auth'])->group(function () {
       Route::post('contracts/saveQualificationItems', 'LegalAspects\Contracs\ContractLesseeController@saveQualificationItems');
       Route::post('contractsListCheckHistory/data', 'LegalAspects\Contracs\ListCheckHistoryController@data');
       Route::post('contracts/retrySendMail/{contract}', 'LegalAspects\Contracs\ContractLesseeController@retrySendMail');
+      Route::post('contracts/export', 'LegalAspects\Contracs\ContractLesseeController@export');
       Route::ApiResource('contracts', 'LegalAspects\Contracs\ContractLesseeController');
 
       Route::post('fileUpload/data', 'LegalAspects\Contracs\FileUploadController@data');

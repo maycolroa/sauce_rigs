@@ -12,9 +12,13 @@ trait LocationFormTrait
      *
      * @return Array
      */
-    protected function getLocationFormConfModule()
-    {
-        $locationLevelForm = ConfigurationsCompany::findByKey('location_level_form');
+    protected function getLocationFormConfModule($company_id = NULL)
+    {        
+        if ($company_id)
+            $locationLevelForm = ConfigurationsCompany::company($company_id)->findByKey('location_level_form');
+        else
+            $locationLevelForm = ConfigurationsCompany::findByKey('location_level_form');
+
         $data = [];
 
         if ($locationLevelForm)

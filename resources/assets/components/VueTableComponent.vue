@@ -22,6 +22,15 @@
           @click.prevent="pushButton(button,props.row)"><i :class="button.config.icon"></i></b-btn>
           </template>
 
+          <template v-for="(button, index) in controllsDownload">
+            <b-btn :key="`${index}${button.name}`" 
+            v-if="checkViewBtnBase(button, props.row)"
+            :variant="button.config.color + ' ' + (button.config.borderless ? 'borderless' : '') + ' ' + (button.config.icon ? 'icon-btn' : '')" 
+            class="btn-xs"
+            v-b-tooltip.top :title="(button.config.title ? button.config.title : '')"
+            @click.prevent="downloadButton(button, props.row)"><i :class="button.config.icon"></i></b-btn>
+          </template>
+
           <template v-for="(button, index) in controllsBaseBtn">
             <div :key="`${index}${button.name}`">
               <b-btn 
@@ -301,7 +310,24 @@ export default {
       });
 
       return controlls;
-    }
+    },
+    controllsDownload(){
+      let controlls = this.config.controlls.filter(c => {
+        return c.type == 'download'
+      })[0]
+      
+      if (controlls)
+      {
+        controlls = controlls.buttons.filter(c => {
+                      if (c.permission)
+                        return auth.can[c.permission]
+                      else 
+                        return true
+                    });
+      }
+
+      return controlls;
+    },
   },
   mounted() {
     if(this.loader()){
@@ -459,6 +485,23 @@ export default {
 
       this.$refs[ref][0].hide()
     },
+    downloadButton (button, row) {
+      
+      if (button.data.action != undefined){
+          let id = row[button.data.id];
+          let actionDownload = button.data.action+id;
+
+          axios.get(actionDownload)
+            .then(response => {
+              Alerts.warning('Información', 'Se inicio la exportación, se le notificara a su correo electronico cuando finalice el proceso.');
+            }).catch(error => {
+              Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
+            });
+      }
+      else{
+        throw "not define data valid for action download";
+      }
+    }
   }
 }
 </script>

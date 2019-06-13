@@ -145,6 +145,23 @@ export default [
         },
         permission: 'dangerMatrix_d'
         }],
+    },
+    {
+        type: 'download',
+        buttons: [{
+            name: 'downloadMatrix',
+            config: {
+                color: 'outline-success',
+                borderless: true,
+                icon: 'ion ion-md-cloud-download',
+                title: 'Exportar'
+            },
+            data: {
+                action: '/industrialSecurity/dangersMatrix/download/',
+                id: 'id'
+            },
+            permission: 'dangerMatrix_export'
+        }],
     }],
     configuration: {
         urlData: '/industrialSecurity/dangersMatrix/data',
