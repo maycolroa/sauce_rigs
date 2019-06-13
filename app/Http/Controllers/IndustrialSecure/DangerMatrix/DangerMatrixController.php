@@ -18,6 +18,7 @@ use App\Models\IndustrialSecure\DangerMatrix\TagsWarningSignage;
 use App\Models\IndustrialSecure\DangerMatrix\TagsSubstitution;
 use App\Models\IndustrialSecure\DangerMatrix\TagsParticipant;
 use App\Models\IndustrialSecure\DangerMatrix\ChangeHistory;
+use App\Jobs\IndustrialSecure\DangerMatrix\DangerMatrixExportJob;
 use Illuminate\Support\Facades\Auth;
 use App\Facades\ActionPlans\Facades\ActionPlan;
 use App\Traits\DangerMatrixTrait;
@@ -540,6 +541,18 @@ class DangerMatrixController extends Controller
             ")->pluck('id', 'name');
         
             return $this->multiSelectFormat($danger_matrix);
+        }
+    }
+
+    public function download(DangerMatrix $dangersMatrix)
+    {
+        try
+        {
+            DangerMatrixExportJob::dispatch(Auth::user(), Session::get('company_id'), $dangersMatrix->id);
+
+            return $this->respondHttp200();
+        } catch(Exception $e) {
+            return $this->respondHttp500();
         }
     }
 }
