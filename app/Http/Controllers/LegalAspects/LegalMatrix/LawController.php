@@ -46,7 +46,9 @@ class LawController extends Controller
     */
     public function data(Request $request)
     {
-        $laws = Law::select(
+        if ($request->has('qualify'))
+        {
+            $laws = Law::select(
                 'sau_lm_laws.*',
                 'sau_lm_laws_types.name AS law_type',
                 'sau_lm_risks_aspects.name AS risk_aspect',
@@ -56,7 +58,26 @@ class LawController extends Controller
             ->join('sau_lm_laws_types', 'sau_lm_laws_types.id', 'sau_lm_laws.law_type_id')
             ->join('sau_lm_risks_aspects', 'sau_lm_risks_aspects.id', 'sau_lm_laws.risk_aspect_id')
             ->join('sau_lm_entities', 'sau_lm_entities.id', 'sau_lm_laws.entity_id')
-            ->join('sau_lm_sst_risks', 'sau_lm_sst_risks.id', 'sau_lm_laws.sst_risk_id');
+            ->join('sau_lm_sst_risks', 'sau_lm_sst_risks.id', 'sau_lm_laws.sst_risk_id')
+            ->join('sau_lm_articles', 'sau_lm_articles.law_id', 'sau_lm_laws.id')
+            ->join('sau_lm_article_interest', 'sau_lm_article_interest.article_id', 'sau_lm_articles.id')
+            ->join('sau_lm_company_interest','sau_lm_company_interest.interest_id', 'sau_lm_article_interest.interest_id')
+            ->groupBy('sau_lm_laws.id');
+        }
+        else 
+        {
+            $laws = Law::select(
+                    'sau_lm_laws.*',
+                    'sau_lm_laws_types.name AS law_type',
+                    'sau_lm_risks_aspects.name AS risk_aspect',
+                    'sau_lm_entities.name AS entity',
+                    'sau_lm_sst_risks.name AS sst_risk'
+                )
+                ->join('sau_lm_laws_types', 'sau_lm_laws_types.id', 'sau_lm_laws.law_type_id')
+                ->join('sau_lm_risks_aspects', 'sau_lm_risks_aspects.id', 'sau_lm_laws.risk_aspect_id')
+                ->join('sau_lm_entities', 'sau_lm_entities.id', 'sau_lm_laws.entity_id')
+                ->join('sau_lm_sst_risks', 'sau_lm_sst_risks.id', 'sau_lm_laws.sst_risk_id');
+        }
 
         $filters = $request->get('filters');
 

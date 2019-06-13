@@ -340,6 +340,18 @@ export default [
 				component: () =>
 				import('@/views/LegalAspects/legalMatrix/laws/view')
 			},
+			{
+				name: 'legalaspects-lm-law-qualify',
+				path: 'lm/lawsQualify',
+				component: () =>
+				import('@/views/LegalAspects/legalMatrix/laws/indexQualify')
+			},
+			{
+				name: 'legalaspects-lm-law-qualify-view',
+				path: 'lm/lawsQualify/view/:id',
+				component: () =>
+				import('@/views/LegalAspects/legalMatrix/laws/viewQualify')
+			},
 		]
 	}
 ];

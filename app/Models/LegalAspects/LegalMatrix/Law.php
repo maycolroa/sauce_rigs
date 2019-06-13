@@ -3,9 +3,12 @@
 namespace App\Models\LegalAspects\LegalMatrix;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Traits\CompanyTrait;
 
 class Law extends Model
 {
+    use CompanyTrait;
+
     protected $table = 'sau_lm_laws';
 
     protected $fillable = [
@@ -22,6 +25,8 @@ class Law extends Model
         'repealed',
         'file'
     ];
+
+    public $scope_table_for_company_table = 'sau_lm_company_interest';
 
     public function lawType()
     {

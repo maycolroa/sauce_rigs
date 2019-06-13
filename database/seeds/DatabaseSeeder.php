@@ -26,5 +26,6 @@ class DatabaseSeeder extends Seeder
         $this->call(CtStandardClassificationSeeder::class);
         $this->call(ctItemActivitiesSeeder::class);
         $this->call(LmLawsTypesSeeder::class);
+        $this->call(LmFulfillmentValuesSeeder::class);
     }
 }
