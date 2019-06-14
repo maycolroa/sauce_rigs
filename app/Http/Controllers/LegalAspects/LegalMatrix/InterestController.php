@@ -7,7 +7,9 @@ use App\Http\Controllers\Controller;
 use App\Vuetable\Facades\Vuetable;
 use App\Models\LegalAspects\LegalMatrix\Interest;
 use App\Models\General\Company;
+use App\Models\Administrative\Users\User;
 use App\Http\Requests\LegalAspects\LegalMatrix\InterestRequest;
+use App\Facades\Mail\Facades\NotificationMail;
 use Session;
 
 class InterestController extends Controller
@@ -131,6 +133,23 @@ class InterestController extends Controller
             $company = Company::find(Session::get('company_id'));
             $company->interests()->sync($request->get('values'));
         }
+
+        $users= User::withoutGlobalScopes()
+            ->join('sau_company_user', 'sau_company_user.user_id', 'sau_users.id')
+            ->join('sau_role_user', 'sau_role_user.user_id', 'sau_users.id')
+            ->join('sau_roles', 'sau_roles.id', 'sau_role_user.role_id')
+            ->where('sau_company_user.company_id', Session::get('company_id'))
+            ->whereRaw('(sau_roles.company_id = '.Session::get('company_id').' OR (sau_roles.company_id IS NULL AND sau_roles.name IN("Superadmin") ) )')
+            ->get();
+
+        NotificationMail::
+            subject('Matriz Legal - Configuración de intereses exitosa
+            ')
+            ->recipients($users)
+            ->message("La configuración de intereses para la Matriz Legal de la empresa $company->name ha terminado con éxito.")
+            ->buttons([['text'=>'Ir a Matriz Legal', 'url'=>url("/legalaspects/lm/interests/myinterests")]])
+            ->module('legalMatrix')
+            ->send();
         
         return $this->respondHttp200([
             'message' => 'Se creo el interes'
