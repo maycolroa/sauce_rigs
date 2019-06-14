@@ -56,8 +56,15 @@ class FileUploadController extends Controller
 
         $filters = $request->get('filters');
 
-        if (isset($filters["items"]))
+        if (COUNT($filters) > 0)
+        {
+          if (isset($filters['contracts']))
+            $files->inContracts($this->getValuesForMultiselect($filters["contracts"]), $filters['filtersType']['contracts']);
+
           $files->inItems($this->getValuesForMultiselect($filters["items"]), $filters['filtersType']['items']);
+          $files->betweenCreated($filters["dateCreate"]);
+          $files->betweenUpdated($filters["dateUpdate"]);
+        }
 
         if (Auth::user()->hasRole('Arrendatario') || Auth::user()->hasRole('Contratista'))
         {

@@ -129,7 +129,7 @@ class LawController extends Controller
             {
                 $file_tmp = $request->file;
                 $nameFile = base64_encode(Auth::user()->id . now() . rand(1,10000)) .'.'. $file_tmp->extension();
-                $file_tmp->storeAs('legalAspects/legalMatrix/', $nameFile, 'public');
+                $file_tmp->storeAs('legalAspects/legalMatrix/', $nameFile, 's3');
                 $law->file = $nameFile;
 
                 if(!$law->update()){
@@ -220,9 +220,9 @@ class LawController extends Controller
             if ($request->file != $law->file)
             {
                 $file = $request->file;
-                Storage::disk('public')->delete('legalAspects/legalMatrix/'. $law->file);
+                Storage::disk('s3')->delete('legalAspects/legalMatrix/'. $law->file);
                 $nameFile = base64_encode(Auth::user()->id . now() . rand(1,10000)) .'.'. $file->extension();
-                $file->storeAs('legalAspects/legalMatrix/', $nameFile, 'public');
+                $file->storeAs('legalAspects/legalMatrix/', $nameFile, 's3');
                 $law->file = $nameFile;
             }
 
@@ -260,7 +260,7 @@ class LawController extends Controller
         if(!$law->delete())
             return $this->respondHttp500();
 
-        Storage::disk('public')->delete('legalAspects/legalMatrix/'. $file);
+        Storage::disk('s3')->delete('legalAspects/legalMatrix/'. $file);
         
         return $this->respondHttp200([
             'message' => 'Se elimino la norma'
@@ -281,7 +281,7 @@ class LawController extends Controller
 
     public function download(Law $law)
     {
-      return Storage::disk('public')->download('legalAspects/legalMatrix/'. $law->file);
+      return Storage::disk('s3')->download('legalAspects/legalMatrix/'. $law->file);
     }
 
     private function saveArticles($law, $articles)

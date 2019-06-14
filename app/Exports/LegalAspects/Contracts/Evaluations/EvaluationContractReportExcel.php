@@ -7,6 +7,7 @@ use Maatwebsite\Excel\Concerns\WithMapping;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithTitle;
 use Maatwebsite\Excel\Concerns\WithEvents;
+use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
 use Maatwebsite\Excel\Concerns\WithColumnFormatting;
 use Maatwebsite\Excel\Concerns\RegistersEventListeners;
@@ -18,7 +19,7 @@ Sheet::macro('styleCells', function (Sheet $sheet, string $cellRange, array $sty
   $sheet->getDelegate()->getStyle($cellRange)->applyFromArray($style);
 });
 
-class EvaluationContractReportExcel implements FromCollection, WithMapping, WithHeadings, WithTitle, WithEvents, WithColumnFormatting
+class EvaluationContractReportExcel implements FromCollection, WithMapping, WithHeadings, WithTitle, WithEvents, WithColumnFormatting, ShouldAutoSize
 {
     use RegistersEventListeners;
 

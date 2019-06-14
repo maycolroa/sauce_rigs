@@ -88,6 +88,10 @@ export default {
             {
                 let item = this.config.filters[i]
 
+                if (item.permission != undefined && item.permission)
+                    if (!auth.can[item.permission])
+                        continue;
+
                 this.$set(this.filters, item.key, item)
 
                 if (item.type == 'select')

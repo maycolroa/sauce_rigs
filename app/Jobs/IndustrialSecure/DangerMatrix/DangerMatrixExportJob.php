@@ -43,7 +43,7 @@ class DangerMatrixExportJob implements ShouldQueue
       
       $paramUrl = base64_encode($nameExcel);
       
-      /*NotificationMail::
+      NotificationMail::
         subject('Exportación de matriz de peligros')
         ->recipients($this->user)
         ->message('Se ha generado una exportación de matriz de peligros.')
@@ -51,6 +51,6 @@ class DangerMatrixExportJob implements ShouldQueue
         ->buttons([['text'=>'Descargar', 'url'=>url("/export/{$paramUrl}")]])
         ->module('dangerMatrix')
         ->event('Job: DangerMatrixExportJob')
-        ->send();*/
+        ->send();
     }
 }
