@@ -8,7 +8,7 @@ use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithMapping;
 use Maatwebsite\Excel\Concerns\WithTitle;
-
+use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 use Maatwebsite\Excel\Concerns\WithEvents;
 use Maatwebsite\Excel\Concerns\RegistersEventListeners;
 use Maatwebsite\Excel\Events\AfterSheet;
@@ -18,7 +18,7 @@ Sheet::macro('styleCells', function (Sheet $sheet, string $cellRange, array $sty
   $sheet->getDelegate()->getStyle($cellRange)->applyFromArray($style);
 });
 
-class EvaluationsExecutesExcel implements FromCollection, WithHeadings, WithMapping, WithEvents, WithTitle
+class EvaluationsExecutesExcel implements FromCollection, WithHeadings, WithMapping, WithEvents, WithTitle, ShouldAutoSize
 {
     use RegistersEventListeners;
 

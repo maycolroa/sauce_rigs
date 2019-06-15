@@ -7,9 +7,10 @@ use Maatwebsite\Excel\Concerns\WithMapping;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithTitle;
 use Maatwebsite\Excel\Concerns\WithEvents;
-use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
+use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 use Maatwebsite\Excel\Concerns\WithColumnFormatting;
 use Maatwebsite\Excel\Concerns\RegistersEventListeners;
+use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
 use Maatwebsite\Excel\Events\AfterSheet;
 use \Maatwebsite\Excel\Sheet;
 use App\Models\LegalAspects\Contracts\Qualifications;
@@ -21,7 +22,7 @@ Sheet::macro('styleCells', function (Sheet $sheet, string $cellRange, array $sty
   $sheet->getDelegate()->getStyle($cellRange)->applyFromArray($style);
 });
 
-class ListCheckContractExcel implements FromCollection, WithMapping, WithHeadings, WithTitle, WithEvents, WithColumnFormatting
+class ListCheckContractExcel implements FromCollection, WithMapping, WithHeadings, WithTitle, WithEvents, WithColumnFormatting, ShouldAutoSize
 {
     use RegistersEventListeners;
 

@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Collection;
 use Maatwebsite\Excel\Concerns\WithMapping;
 use Maatwebsite\Excel\Concerns\WithColumnFormatting;
 use Carbon\Carbon;
-
+use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 use Maatwebsite\Excel\Concerns\WithEvents;
 use Maatwebsite\Excel\Concerns\RegistersEventListeners;
 use Maatwebsite\Excel\Events\AfterSheet;
@@ -20,7 +20,7 @@ Sheet::macro('styleCells', function (Sheet $sheet, string $cellRange, array $sty
   $sheet->getDelegate()->getStyle($cellRange)->applyFromArray($style);
 });
 
-class AudiometryExcel implements FromCollection, WithHeadings, WithMapping, WithColumnFormatting, WithEvents
+class AudiometryExcel implements FromCollection, WithHeadings, WithMapping, WithColumnFormatting, WithEvents, ShouldAutoSize
 {
   use RegistersEventListeners;
 

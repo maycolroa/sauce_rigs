@@ -10,8 +10,9 @@ use Maatwebsite\Excel\Concerns\WithTitle;
 use Maatwebsite\Excel\Concerns\WithEvents;
 use Maatwebsite\Excel\Concerns\RegistersEventListeners;
 use Maatwebsite\Excel\Events\AfterSheet;
+use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 
-class AudiometryImportEpsTemplateExcel implements FromQuery, WithMapping, WithHeadings, WithTitle, WithEvents
+class AudiometryImportEpsTemplateExcel implements FromQuery, WithMapping, WithHeadings, WithTitle, WithEvents, ShouldAutoSize
 {
     use RegistersEventListeners;
 

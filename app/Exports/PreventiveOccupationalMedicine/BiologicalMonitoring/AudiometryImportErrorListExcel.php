@@ -8,13 +8,14 @@ use Maatwebsite\Excel\Concerns\WithEvents;
 use Maatwebsite\Excel\Concerns\RegistersEventListeners;
 use Maatwebsite\Excel\Events\AfterSheet;
 use Maatwebsite\Excel\Concerns\WithTitle;
+use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 use \Maatwebsite\Excel\Sheet;
 
 Sheet::macro('styleCells', function (Sheet $sheet, string $cellRange, array $style) {
   $sheet->getDelegate()->getStyle($cellRange)->applyFromArray($style);
 });
 
-class AudiometryImportErrorListExcel implements FromView, WithEvents, WithTitle
+class AudiometryImportErrorListExcel implements FromView, WithEvents, WithTitle, ShouldAutoSize
 {
   use RegistersEventListeners;
 
