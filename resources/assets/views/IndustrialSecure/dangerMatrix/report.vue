@@ -6,6 +6,9 @@
         <loading :display="isLoading"/>
         <div v-show="!isLoading">
             <b-row align-h="end">
+                <b-col>
+                    <b-btn v-if="auth.can['dangerMatrix_export_report']" @click="exportReport()" variant="primary"><i class="fas fa-download"></i> &nbsp; Exportar Reporte</b-btn>
+                </b-col>
                 <b-col cols="1">
                     <filter-danger-matrix-report 
                         v-model="filters" 
@@ -82,6 +85,7 @@ export default {
             titleTable: '',
             paramsTable: {},
             data: [],
+            typeParams: 'filters'
         }
     },
     created(){
@@ -146,7 +150,8 @@ export default {
                     this.$set(this.paramsTable, key, value)
                 });
                 
-                this.titleTable = `Peligros ${label} de (${row} - ${col})`
+                this.titleTable = `Peligros ${label} de (${row})`
+                this.typeParams = 'paramsTable'
                 this.showTableDanger = true
             }
         },
@@ -156,6 +161,15 @@ export default {
             this.titleTable = ''
             this.paramsTable = {}
             this.keyTableDanger = new Date().getTime() + Math.round(Math.random() * 10000)
+            this.typeParams = 'filters'
+        },
+        exportReport() {
+            axios.post('/industrialSecurity/dangersMatrix/reportExport', this[this.typeParams])
+                .then(response => {
+                    Alerts.warning('Información', 'Se inicio la exportación, se le notificara a su correo electronico cuando finalice el proceso.');
+                }).catch(error => {
+                    Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
+                });
         }
     }
 }

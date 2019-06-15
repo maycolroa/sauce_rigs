@@ -53,6 +53,10 @@
                     {
                         "name": "dangerMatrix_export",
                         "display_name": "Matriz de peligro - exportar"
+                    },
+                    {
+                        "name": "dangerMatrix_export_report",
+                        "display_name": "Matriz de peligro - exportar reporte"
                     }
                 ]
             }

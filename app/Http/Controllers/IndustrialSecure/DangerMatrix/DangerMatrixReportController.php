@@ -3,11 +3,14 @@
 namespace App\Http\Controllers\IndustrialSecure\DangerMatrix;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
 use App\Vuetable\Facades\Vuetable;
 use App\Models\IndustrialSecure\DangerMatrix\QualificationCompany;
 use App\Models\IndustrialSecure\DangerMatrix\DangerMatrix;
+use App\Jobs\IndustrialSecure\DangerMatrix\DangerMatrixReportExportJob;
 use App\Traits\DangerMatrixTrait;
+use Session;
 
 class DangerMatrixReportController extends Controller
 {
@@ -168,5 +171,32 @@ class DangerMatrixReportController extends Controller
 
         return Vuetable::of($dangers)
                     ->make();
+    }
+
+    public function reportExport(Request $request)
+    {
+        try
+        {
+            /** FIltros */
+            $filters = [
+                "regionals" => $this->getValuesForMultiselect($request->regionals),
+                "headquarters" => $this->getValuesForMultiselect($request->headquarters),
+                "areas" => $this->getValuesForMultiselect($request->areas),
+                "processes" => $this->getValuesForMultiselect($request->processes),
+                "macroprocesses" => $this->getValuesForMultiselect($request->macroprocesses),
+                "dangers" => $this->getValuesForMultiselect($request->dangers),
+                "matrix" => $this->getValuesForMultiselect($request->matrix),
+                "row" => $request->row,
+                "col" => $request->col,
+                "label" => $request->label,
+                "filtersType" => $request->filtersType
+            ];
+
+            DangerMatrixReportExportJob::dispatch(Auth::user(), Session::get('company_id'), $filters);
+
+            return $this->respondHttp200();
+        } catch(Exception $e) {
+            return $this->respondHttp500();
+        }
     }
 }
