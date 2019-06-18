@@ -75,6 +75,7 @@ class AudiometryNotification extends Command
                 foreach ($data as $key => $value)
                 {
                     $recipients = User::select('sau_users.email')
+                                ->active()
                                 ->join('sau_company_user', 'sau_company_user.user_id', 'sau_users.id')
                                 ->where('sau_company_user.company_id', $key)->get();
                     

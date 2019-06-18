@@ -36,7 +36,7 @@ trait ContractTrait
         if ($contract)
         {
             $users_id = $contract->toArray();
-            $users = User::whereIn('id', $users_id)->get();
+            $users = User::active()->whereIn('id', $users_id)->get();
         }
 
         return $users;
@@ -90,8 +90,8 @@ trait ContractTrait
         if (!is_numeric($company_id))
             throw new \Exception('Company invalid');
             
-        $users = User::
-              join('sau_company_user', 'sau_company_user.user_id', 'sau_users.id')
+        $users = User::active()
+            ->join('sau_company_user', 'sau_company_user.user_id', 'sau_users.id')
             ->leftJoin('sau_user_information_contract_lessee', 'sau_user_information_contract_lessee.user_id', 'sau_users.id')
             ->where('sau_company_user.company_id', $company_id)
             ->whereNull('sau_user_information_contract_lessee.information_id')
