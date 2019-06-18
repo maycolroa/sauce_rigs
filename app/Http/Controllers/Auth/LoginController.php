@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Traits\ResponseTrait;
 use App\Traits\ContractTrait;
 use App\Models\Administrative\Users\User;
+use Carbon\Carbon;
 use Session;
 use DB;
 
@@ -74,9 +75,15 @@ class LoginController extends Controller
                                 if ($contract->active == 'SI')
                                 {
                                     if ($contract->completed_registration == 'NO')
+                                    {
+                                        Auth::user()->update([
+                                            'last_login_at' => Carbon::now()->toDateTimeString()
+                                        ]);
+                                        
                                         return $this->respondHttp200([
                                             'redirectTo' => 'legalaspects/contracts/information'
                                         ]);
+                                    }
 
                                     return $this->defaultUrl();
                                 }
@@ -112,6 +119,10 @@ class LoginController extends Controller
 
     private function defaultUrl()
     {
+        Auth::user()->update([
+            'last_login_at' => Carbon::now()->toDateTimeString()
+        ]);
+
         if (Auth::user()->default_module_url)
             return $this->respondHttp200([
                 'redirectTo' => strtolower(Auth::user()->default_module_url)

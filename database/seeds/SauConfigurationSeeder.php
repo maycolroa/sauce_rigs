@@ -27,6 +27,16 @@ class SauConfigurationSeeder extends Seeder
                 'key' => 'action_plans_states',
                 'value' => '["Pendiente","Ejecutada"]',
                 'observation' => 'select para los estados de los planes de acción'
+            ],
+            [
+                'key' => 'days_alert_user_suspension',
+                'value' => '60',
+                'observation' => 'Cantidad de días para consultar si un usuario no ha iniciado sesión y enviar la notificación de alerta de suspensión'
+            ],
+            [
+                'key' => 'days_user_suspension',
+                'value' => '67',
+                'observation' => 'SI el usuario no ha iniciado sesion en esta cantidad de dias sera supendido'
             ]
         ];
 
