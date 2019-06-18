@@ -24,7 +24,7 @@ class User extends Authenticatable
     protected $table = 'sau_users';
 
     protected $fillable = [
-        'name', 'email', 'password','active', 'state', 'document', 'document_type', 'default_module_url', 'module_id', 'created_at', 'updated_at'
+        'name', 'email', 'password','active', 'state', 'document', 'document_type', 'default_module_url', 'module_id', 'last_login_at', 'created_at', 'updated_at'
     ];
 
     /**
@@ -162,5 +162,15 @@ class User extends Authenticatable
     public function sendPasswordResetNotification($token)
     {
         $this->notify(new \App\Notifications\MailResetPasswordNotification($token));
+    }
+
+    public function scopeActive($query, $active = true)
+    {
+        if ($active)
+            $query->where('sau_users.active', 'SI');
+        else
+            $query->where('sau_users.active', 'NO');
+
+        return $query;
     }
 }

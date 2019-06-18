@@ -25,7 +25,7 @@ class ConfigurationServices
         if(gettype($value) == "object" || gettype($value) == 'array'){
           return $value;
         }else{
-          $configuration[0]->value;
+          return $configuration[0]->value;
         }
     }
 }

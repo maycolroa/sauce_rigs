@@ -23,6 +23,7 @@ class DangerMatrixReportController extends Controller
     {
         $this->middleware('auth');
         $this->middleware('permission:dangerMatrix_r|dangerMatrix_view_report');
+        $this->middleware('permission:dangerMatrix_export_report', ['only' => 'reportExport']);
     }
 
     /**

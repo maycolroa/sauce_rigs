@@ -15,7 +15,9 @@ class Kernel extends ConsoleKernel
     protected $commands = [
         'App\Console\Commands\AudiometryNotification',
         'App\Console\Commands\DaysAlertExpirationDateActionPlan',
-        'App\Console\Commands\DaysAlertExpirationDateContractFilesUpload'
+        'App\Console\Commands\DaysAlertExpirationDateContractFilesUpload',
+        'App\Console\Commands\CheckLastLoginNotification',
+        'App\Console\Commands\DisableUsers'
     ];
 
     /**
@@ -37,6 +39,14 @@ class Kernel extends ConsoleKernel
         $schedule->command('telescope:prune')->daily();
 
         $schedule->command('days-alert-expiration-date-contract-files-upload')
+        ->timezone('America/Bogota')
+        ->dailyAt('01:00');
+
+        $schedule->command('checkLastLoginNotification')
+        ->timezone('America/Bogota')
+        ->dailyAt('01:00');
+
+        $schedule->command('disableUsers')
         ->timezone('America/Bogota')
         ->dailyAt('01:00');
     }
