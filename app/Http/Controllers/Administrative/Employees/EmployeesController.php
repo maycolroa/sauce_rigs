@@ -181,4 +181,15 @@ class EmployeesController extends Controller
             'options' => $this->multiSelectFormat($employees)
         ]);
     }
+
+    public function multiselectDeal(Request $request)
+    {
+        $deals = Employee::select(
+                    "sau_employees.deal AS deal"
+                )
+                ->whereNotNull('sau_employees.deal')
+                ->pluck('deal', 'deal');
+            
+        return $this->multiSelectFormat($deals);
+    }
 }

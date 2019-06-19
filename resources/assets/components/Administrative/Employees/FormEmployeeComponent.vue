@@ -41,7 +41,8 @@
     </b-form-row>
 
     <b-form-row>
-      <vue-ajax-advanced-select :disabled="viewOnly" class="col-md-12" v-model="form.employee_eps_id" :error="form.errorsFor('employee_eps_id')" :selected-object="form.multiselect_eps" name="employee_eps_id" label="EPS" placeholder="Seleccione el eps" :url="epsDataUrl">
+      <vue-input :disabled="viewOnly" class="col-md-6" v-model="form.deal" label="Negocio" type="text" name="deal" :error="form.errorsFor('deal')" placeholder="Negocio"></vue-input>
+      <vue-ajax-advanced-select :disabled="viewOnly" class="col-md-6" v-model="form.employee_eps_id" :error="form.errorsFor('employee_eps_id')" :selected-object="form.multiselect_eps" name="employee_eps_id" label="EPS" placeholder="Seleccione el eps" :url="epsDataUrl">
           </vue-ajax-advanced-select>
     </b-form-row>
 
@@ -103,7 +104,8 @@ export default {
             employee_process_id: '',
             employee_position_id: '',
             employee_business_id: '',
-            employee_eps_id: ''
+            employee_eps_id: '',
+            deal:''
         };
       }
     }

@@ -52,7 +52,7 @@ class AudiometryImport implements ToCollection
                 {  
                     if ($key > 0) //Saltar cabecera
                     {
-                        if (COUNT($row) == 43)
+                        if (COUNT($row) == 44)
                         {
                             $employee_id = $this->checkEmployee($row);
 
@@ -154,7 +154,8 @@ class AudiometryImport implements ToCollection
                         'sede'              => $row[8],
                         'proceso'           => $row[9],
                         'area'              => $row[10],
-                        'fecha_ingreso'     => $fecha_ingreso
+                        'fecha_ingreso'     => $fecha_ingreso,
+                        'negocio'           => $row[13]
                     ],
                     [
                         'identificacion'   => 'required|numeric',
@@ -200,6 +201,7 @@ class AudiometryImport implements ToCollection
                         'employee_eps_id' => $eps->id,
                         'income_date' => $fecha_ingreso,
                         'company_id' => $this->company_id,
+                        'deal' => $row[13]
                     ]);
 
                     return $employee->id;
@@ -340,7 +342,7 @@ class AudiometryImport implements ToCollection
 
     private function createAudiometry($row, $employee_id)
     {
-        $fecha = $this->validateDate($row[13]);
+        $fecha = $this->validateDate($row[14]);
 
         $NUMBERS_AVAILABLE_RESULTS = "0,5,10,15,20,25,30,35,40,45,50,55,60,65,70,75,80,85,90,95,100,105,110,115,120";
         $EPP = implode(",", Configuration::getConfiguration('biologicalmonitoring_audiometries_select_epp'));
@@ -349,36 +351,36 @@ class AudiometryImport implements ToCollection
         $validator = Validator::make(
             [
                 'fecha'                     => $fecha,
-                'eventos_previos'           => $row[14],
+                'eventos_previos'           => $row[15],
                 'empleado'                  => $employee_id,
-                'epp'                       => array_map('trim', explode(",", $row[15])),
-                'nivel_exposicion'          =>  $row[16],
-                'aereo_derecha_500'         =>  $row[17],
-                'aereo_derecha_1000'        =>  $row[18],
-                'aereo_derecha_2000'        =>  $row[19],
-                'aereo_derecha_3000'        =>  $row[20],
-                'aereo_derecha_4000'        =>  $row[21],
-                'aereo_derecha_6000'        =>  $row[22],
-                'aereo_derecha_8000'        =>  $row[23],
-                'aereo_izquierda_500'       =>  $row[24],
-                'aereo_izquierda_1000'      =>  $row[25],
-                'aereo_izquierda_2000'      =>  $row[26],
-                'aereo_izquierda_3000'      =>  $row[27],
-                'aereo_izquierda_4000'      =>  $row[28],
-                'aereo_izquierda_6000'      =>  $row[29],
-                'aereo_izquierda_8000'      =>  $row[30],
-                'oseo_derecha_500'          =>  $row[31],
-                'oseo_derecha_1000'         =>  $row[32],
-                'oseo_derecha_2000'         =>  $row[33],
-                'oseo_derecha_3000'         =>  $row[34],
-                'oseo_derecha_4000'         =>  $row[35],
-                'oseo_izquierda_500'        =>  $row[36],
-                'oseo_izquierda_1000'       =>  $row[37],
-                'oseo_izquierda_2000'       =>  $row[38],
-                'oseo_izquierda_3000'       =>  $row[39],
-                'oseo_izquierda_4000'       =>  $row[40],
-                'recomendaciones_generales' =>  $row[41],
-                'observaciones_generales'   =>  $row[42],
+                'epp'                       => array_map('trim', explode(",", $row[16])),
+                'nivel_exposicion'          =>  $row[17],
+                'aereo_derecha_500'         =>  $row[18],
+                'aereo_derecha_1000'        =>  $row[19],
+                'aereo_derecha_2000'        =>  $row[20],
+                'aereo_derecha_3000'        =>  $row[21],
+                'aereo_derecha_4000'        =>  $row[22],
+                'aereo_derecha_6000'        =>  $row[23],
+                'aereo_derecha_8000'        =>  $row[24],
+                'aereo_izquierda_500'       =>  $row[25],
+                'aereo_izquierda_1000'      =>  $row[26],
+                'aereo_izquierda_2000'      =>  $row[27],
+                'aereo_izquierda_3000'      =>  $row[28],
+                'aereo_izquierda_4000'      =>  $row[29],
+                'aereo_izquierda_6000'      =>  $row[30],
+                'aereo_izquierda_8000'      =>  $row[31],
+                'oseo_derecha_500'          =>  $row[32],
+                'oseo_derecha_1000'         =>  $row[33],
+                'oseo_derecha_2000'         =>  $row[34],
+                'oseo_derecha_3000'         =>  $row[35],
+                'oseo_derecha_4000'         =>  $row[36],
+                'oseo_izquierda_500'        =>  $row[37],
+                'oseo_izquierda_1000'       =>  $row[38],
+                'oseo_izquierda_2000'       =>  $row[39],
+                'oseo_izquierda_3000'       =>  $row[40],
+                'oseo_izquierda_4000'       =>  $row[41],
+                'recomendaciones_generales' =>  $row[42],
+                'observaciones_generales'   =>  $row[43],
             ],
             [
                 'fecha'                     => ['required','date','before_or_equal:today', new AudiometryDate(null, $employee_id, $fecha)],
@@ -431,36 +433,36 @@ class AudiometryImport implements ToCollection
         {
             Audiometry::create([
                 'date'               => $fecha,
-                'previews_events'    => $row[14],
+                'previews_events'    => $row[15],
                 'employee_id'        => $employee_id,
-                'epp'                => $row[15],
-                'exposition_level'   => $row[16],
-                'air_right_500'      => $row[17],
-                'air_right_1000'     => $row[18],
-                'air_right_2000'     => $row[19],
-                'air_right_3000'     => $row[20],
-                'air_right_4000'     => $row[21],
-                'air_right_6000'     => $row[22],
-                'air_right_8000'     => $row[23],
-                'air_left_500'       => $row[24],
-                'air_left_1000'      => $row[25],
-                'air_left_2000'      => $row[26],
-                'air_left_3000'      => $row[27],
-                'air_left_4000'      => $row[28],
-                'air_left_6000'      => $row[29],
-                'air_left_8000'      => $row[30],
-                'osseous_right_500'  => $row[31],
-                'osseous_right_1000' => $row[32],
-                'osseous_right_2000' => $row[33],
-                'osseous_right_3000' => $row[34],
-                'osseous_right_4000' => $row[35],
-                'osseous_left_500'   => $row[36],
-                'osseous_left_1000'  => $row[37],
-                'osseous_left_2000'  => $row[38],
-                'osseous_left_3000'  => $row[39],
-                'osseous_left_4000'  => $row[40],
-                'recommendations'    => $row[41],
-                'observation'        => $row[42],
+                'epp'                => $row[16],
+                'exposition_level'   => $row[17],
+                'air_right_500'      => $row[18],
+                'air_right_1000'     => $row[19],
+                'air_right_2000'     => $row[20],
+                'air_right_3000'     => $row[21],
+                'air_right_4000'     => $row[22],
+                'air_right_6000'     => $row[23],
+                'air_right_8000'     => $row[24],
+                'air_left_500'       => $row[25],
+                'air_left_1000'      => $row[26],
+                'air_left_2000'      => $row[27],
+                'air_left_3000'      => $row[28],
+                'air_left_4000'      => $row[29],
+                'air_left_6000'      => $row[30],
+                'air_left_8000'      => $row[31],
+                'osseous_right_500'  => $row[32],
+                'osseous_right_1000' => $row[33],
+                'osseous_right_2000' => $row[34],
+                'osseous_right_3000' => $row[35],
+                'osseous_right_4000' => $row[36],
+                'osseous_left_500'   => $row[37],
+                'osseous_left_1000'  => $row[38],
+                'osseous_left_2000'  => $row[39],
+                'osseous_left_3000'  => $row[40],
+                'osseous_left_4000'  => $row[41],
+                'recommendations'    => $row[42],
+                'observation'        => $row[43],
             ]);
         }
     }

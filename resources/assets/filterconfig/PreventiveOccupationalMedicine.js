@@ -27,6 +27,12 @@ export default [
           label: 'Áreas'
         },
         {
+          url: '/selects/employeesDeal',
+          key: 'deals',
+          type: 'select',
+          label: 'Negocios'
+        },
+        {
           url: '/selects/positions',
           key: 'positions',
           type: 'select',

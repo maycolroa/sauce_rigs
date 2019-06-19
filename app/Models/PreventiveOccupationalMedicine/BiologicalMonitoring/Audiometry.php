@@ -273,4 +273,24 @@ class Audiometry extends Model
             return $query;
         }
     }
+
+    /**
+     * filters checks through the given deals
+     * @param  Illuminate\Database\Eloquent\Builder $query
+     * @param  array $deals
+     * @return Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeInDeals($query, $deals, $typeSearch = 'IN')
+    {
+        if (COUNT($deals) > 0)
+        {
+            if ($typeSearch == 'IN')
+                $query->whereIn('sau_employees.deal', $deals);
+
+            else if ($typeSearch == 'NOT IN')
+                $query->whereNotIn('sau_employees.deal', $deals);
+        }
+
+        return $query;
+    }
 }
