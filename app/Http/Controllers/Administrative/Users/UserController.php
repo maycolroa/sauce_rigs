@@ -245,7 +245,7 @@ class UserController extends Controller
         $users = User::selectRaw("
                     sau_users.id as id,
                     CONCAT(sau_users.document, ' - ', sau_users.name) as name
-                ");
+                ")->active();
 
         if (Auth::user()->hasRole('Arrendatario') || Auth::user()->hasRole('Contratista'))
         {

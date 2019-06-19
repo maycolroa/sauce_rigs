@@ -108,7 +108,7 @@ class EmployeesController extends Controller
             $employee->multiselect_area = $employee->area->multiselect(); 
             $employee->multiselect_proceso = $employee->process->multiselect(); 
             $employee->multiselect_cargo = $employee->position->multiselect(); 
-            $employee->multiselect_centro_costo = $employee->business->multiselect(); 
+            $employee->multiselect_centro_costo = $employee->business ? $employee->business->multiselect() : []; 
             $employee->multiselect_eps = $employee->eps->multiselect(); 
 
             return $this->respondHttp200([

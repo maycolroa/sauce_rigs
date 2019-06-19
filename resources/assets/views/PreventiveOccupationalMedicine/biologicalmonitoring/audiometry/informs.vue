@@ -14,7 +14,7 @@
 
         <b-row>
             <b-col>
-                <b-card border-variant="primary" title="Derecha Aéreo PTA" class="mb-3 box-shadow-none">
+                <b-card border-variant="primary" title="Estado Audición Derecho" class="mb-3 box-shadow-none">
                     <chart-pie 
                         :chart-data="airRightPtaPie"
                         title="Informes PTA"
@@ -23,32 +23,12 @@
                 </b-card>
             </b-col>
             <b-col>
-                <b-card border-variant="primary" title="Izquierda Aéreo PTA" class="mb-3 box-shadow-none">
+                <b-card border-variant="primary" title="Estado Audición Izquierdo" class="mb-3 box-shadow-none">
                     <chart-pie 
                         :chart-data="airLeftPtaPie"
                         title="Informes PTA"
                         color-line="blue"
                         ref="airLeftPtaPie"/>
-                </b-card>
-            </b-col>
-        </b-row>
-
-        <b-row>
-            <b-col>
-                <b-card border-variant="primary" title="Población Expuesta" class="mb-3 box-shadow-none">
-                    <b-row>
-                        <b-col><vue-advanced-select :disabled="isLoading" v-model="exposedPopulationSelected" :options="selectBar" :searchable="true" name="exposedPopulationSelected">
-                            </vue-advanced-select></b-col>
-                    </b-row>
-                    <b-row align-h="end">
-                        <b-col cols="4">
-                            <b>Total Expuestos {{ exposedPopulationData.datasets.count }} </b>
-                        </b-col>
-                    </b-row>
-                    <chart-bar 
-                        :chart-data="exposedPopulationData"
-                        title="Población Expuesta"
-                        ref="exposedPopulation"/>
                 </b-card>
             </b-col>
         </b-row>
@@ -114,6 +94,26 @@
                         :chart-data="exposedPopulationaudiologicalConditionData"
                         title="DX Audiometrias"
                         ref="exposedPopulationaudiologicalCondition"/>
+                </b-card>
+            </b-col>
+        </b-row>
+
+        <b-row>
+            <b-col>
+                <b-card border-variant="primary" title="Población Expuesta" class="mb-3 box-shadow-none">
+                    <b-row>
+                        <b-col><vue-advanced-select :disabled="isLoading" v-model="exposedPopulationSelected" :options="selectBar" :searchable="true" name="exposedPopulationSelected">
+                            </vue-advanced-select></b-col>
+                    </b-row>
+                    <b-row align-h="end">
+                        <b-col cols="4">
+                            <b>Total Expuestos {{ exposedPopulationData.datasets.count }} </b>
+                        </b-col>
+                    </b-row>
+                    <chart-bar 
+                        :chart-data="exposedPopulationData"
+                        title="Población Expuesta"
+                        ref="exposedPopulation"/>
                 </b-card>
             </b-col>
         </b-row>

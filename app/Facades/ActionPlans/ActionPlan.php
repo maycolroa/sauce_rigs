@@ -779,9 +779,9 @@ class ActionPlan
 
         foreach($groupResponsible as $data => $value)
         {
-            $responsible = User::findOrFail($data);
+            $responsible = User::active()->find($data);
 
-            if($responsible->email != null)
+            if($responsible && $responsible->email != null)
             {
                 NotificationMail::
                     subject('Nuevas Actividades')
@@ -813,9 +813,9 @@ class ActionPlan
 
         foreach($groupSupervisor as $data => $value)
         {
-            $supervisor = User::findOrFail($data);
+            $supervisor = User::active()->find($data);
 
-            if($supervisor->email != null)
+            if($supervisor && $supervisor->email != null)
             {
                 NotificationMail::
                     subject('Actividades Actualizadas')
@@ -906,17 +906,17 @@ class ActionPlan
 
         foreach($groupResponsible as $data => $value)
         {
-            $responsible = User::findOrFail($data);
+            $responsible = User::active()->find($data);
 
             $groupSupervisor = $value->groupBy('user_id');
 
             foreach($groupSupervisor as $dataS => $valueS)
             {
-                $supervisor = User::findOrFail($dataS);
+                $supervisor = User::active()->find($dataS);
 
                 //$url = url(strtolower('/'.$value[0]->application_name.'/'.$value[0]->module_name));
 
-                if($supervisor->email != null)
+                if($responsible && $supervisor && $supervisor->email != null)
                 {
                     //$module = Module::find($dataS);
 
@@ -937,7 +937,7 @@ class ActionPlan
                 }
             }
 
-            if($responsible->email != null)
+            if($responsible && $responsible->email != null)
             {
                 NotificationMail::
                     subject('Actividades Próximas a Vencerse')

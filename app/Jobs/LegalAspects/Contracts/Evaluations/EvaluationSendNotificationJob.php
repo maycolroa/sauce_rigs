@@ -48,7 +48,7 @@ class EvaluationSendNotificationJob implements ShouldQueue
       if ($evaluationContract)
       {
         $recipients = $evaluationContract->toArray();
-        $recipients = User::whereIn('id', $recipients)->get();
+        $recipients = User::active()->whereIn('id', $recipients)->get();
         
         if (!empty($recipients))
         {
