@@ -74,8 +74,8 @@ class AudiometryController extends Controller
         if (isset($filters["processes"]))
           $audiometry->inProcesses($this->getValuesForMultiselect($filters["processes"]), $filters['filtersType']['processes']);
 
-        if (isset($filters["businesses"]))
-          $audiometry->inBusinesses($this->getValuesForMultiselect($filters["businesses"]), $filters['filtersType']['businesses']);
+        /*if (isset($filters["businesses"]))
+          $audiometry->inBusinesses($this->getValuesForMultiselect($filters["businesses"]), $filters['filtersType']['businesses']);*/
 
         if (isset($filters["positions"]))
           $audiometry->inPositions($this->getValuesForMultiselect($filters["positions"]), $filters['filtersType']['positions']);

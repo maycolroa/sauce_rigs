@@ -39,7 +39,7 @@ class EmployeeRequest extends FormRequest
             'employee_area_id' => 'required|exists:sau_employees_areas,id',
             'employee_process_id' => 'required|exists:sau_employees_processes,id',
             'employee_position_id' => 'required|exists:sau_employees_positions,id',
-            'employee_business_id' => 'required|exists:sau_employees_businesses,id',
+            'employee_business_id' => 'nullable|exists:sau_employees_businesses,id',
             'employee_eps_id' => 'required|exists:sau_employees_eps,id',
         ];
     }

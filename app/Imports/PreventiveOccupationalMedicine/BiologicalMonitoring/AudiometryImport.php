@@ -163,7 +163,7 @@ class AudiometryImport implements ToCollection
                         'email'            => 'required|email|unique:sau_employees,email,null,id,company_id,'.$this->company_id,
                         'fecha_nacimiento' => 'nullable|date',
                         'cargo'            => 'required',
-                        'centro_costo'     => 'required',
+                        'centro_costo'     => 'nullable',
                         'regional'         => 'required',
                         'sede'             => 'required',
                         'area'             => 'required',
@@ -266,12 +266,17 @@ class AudiometryImport implements ToCollection
 
     private function checkBusiness($name)
     {
-        $business = EmployeeBusiness::query();
-        $business->company_scope = $this->company_id;
-        $business = $business->firstOrCreate(['name' => $name], 
-                                            ['name' => $name, 'company_id' => $this->company_id]);
+        if ($name)
+        {
+            $business = EmployeeBusiness::query();
+            $business->company_scope = $this->company_id;
+            $business = $business->firstOrCreate(['name' => $name], 
+                                                ['name' => $name, 'company_id' => $this->company_id]);
 
-        return $business->id;
+            return $business->id;
+        }
+
+        return NULL;
     }
 
     private function checkHeadquarter($regional_id, $headquarter)

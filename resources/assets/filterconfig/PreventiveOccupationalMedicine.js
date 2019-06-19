@@ -27,12 +27,6 @@ export default [
           label: 'Áreas'
         },
         {
-          url: '/selects/businesses',
-          key: 'businesses',
-          type: 'select',
-          label: 'Centros de costo'
-        },
-        {
           url: '/selects/positions',
           key: 'positions',
           type: 'select',
