@@ -228,4 +228,44 @@ class Employee extends Model
 
         return $query;
     }
+
+    /**
+     * filters checks through the given names
+     * @param  Illuminate\Database\Eloquent\Builder $query
+     * @param  array $names
+     * @return Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeInNames($query, $names, $typeSearch = 'IN')
+    {
+        if (COUNT($names) > 0)
+        {
+            if ($typeSearch == 'IN')
+                $query->whereIn('sau_employees.name', $names);
+
+            else if ($typeSearch == 'NOT IN')
+                $query->whereNotIn('sau_employees.name', $names);
+        }
+
+        return $query;
+    }
+
+    /**
+     * filters checks through the given identifications
+     * @param  Illuminate\Database\Eloquent\Builder $query
+     * @param  array $identifications
+     * @return Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeInIdentifications($query, $identifications, $typeSearch = 'IN')
+    {
+        if (COUNT($identifications) > 0)
+        {
+            if ($typeSearch == 'IN')
+                $query->whereIn('sau_employees.identification', $identifications);
+
+            else if ($typeSearch == 'NOT IN')
+                $query->whereNotIn('sau_employees.identification', $identifications);
+        }
+
+        return $query;
+    }
 }

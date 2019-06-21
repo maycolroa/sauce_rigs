@@ -46,6 +46,8 @@ Route::middleware(['auth'])->group(function () {
     Route::prefix('selects')->group(function () {
         Route::post('employees', 'Administrative\Employees\EmployeesController@multiselect');
         Route::post('employeesDeal', 'Administrative\Employees\EmployeesController@multiselectDeal');  
+        Route::post('employeesNames', 'Administrative\Employees\EmployeesController@multiselectNames');
+        Route::post('employeesIdentifications', 'Administrative\Employees\EmployeesController@multiselectIdentifications');
         Route::post('users', 'Administrative\Users\UserController@multiselect');
         Route::post('responsiblesFilter', 'Administrative\ActionPlans\ActionPlanController@multiselectResponsiblesFilter');  
         Route::post('multiselect', 'General\ApplicationController@multiselect');
@@ -53,7 +55,9 @@ Route::middleware(['auth'])->group(function () {
         Route::post('modulesGroup', 'General\ApplicationController@multiselectGroupModules');
         Route::post('permissions', 'Administrative\Roles\RoleController@multiselectPermissions');
         Route::post('areas', 'Administrative\Areas\EmployeeAreaController@multiselect');  
-        Route::post('years/audiometry', 'PreventiveOccupationalMedicine\BiologicalMonitoring\AudiometryController@multiselectYears');  
+        Route::post('years/audiometry', 'PreventiveOccupationalMedicine\BiologicalMonitoring\AudiometryController@multiselectYears');
+        Route::post('audiometry/severityGradeLeft', 'PreventiveOccupationalMedicine\BiologicalMonitoring\AudiometryController@multiselectSeverityGradeLeft');
+        Route::post('audiometry/severityGradeRight', 'PreventiveOccupationalMedicine\BiologicalMonitoring\AudiometryController@multiselectSeverityGradeRight');  
         Route::post('regionals', 'Administrative\Regionals\EmployeeRegionalController@multiselect');
         Route::post('headquarters', 'Administrative\Headquarters\EmployeeHeadquarterController@multiselect');  
         Route::post('sexs', 'General\MultiSelectRadioController@sexs');  

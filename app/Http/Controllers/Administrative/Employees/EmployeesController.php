@@ -184,12 +184,34 @@ class EmployeesController extends Controller
 
     public function multiselectDeal(Request $request)
     {
-        $deals = Employee::select(
-                    "sau_employees.deal AS deal"
+        $deals = Employee::selectRaw(
+                    "DISTINCT sau_employees.deal AS deal"
                 )
                 ->whereNotNull('sau_employees.deal')
                 ->pluck('deal', 'deal');
             
         return $this->multiSelectFormat($deals);
+    }
+
+    public function multiselectIdentifications(Request $request)
+    {
+        $identifications = Employee::selectRaw(
+                    "DISTINCT sau_employees.identification AS identification"
+                )
+                ->whereNotNull('sau_employees.identification')
+                ->pluck('identification', 'identification');
+            
+        return $this->multiSelectFormat($identifications);
+    }
+
+    public function multiselectNames(Request $request)
+    {
+        $names = Employee::selectRaw(
+                    "DISTINCT sau_employees.name AS name"
+                )
+                ->whereNotNull('sau_employees.name')
+                ->pluck('name', 'name');
+            
+        return $this->multiSelectFormat($names);
     }
 }
