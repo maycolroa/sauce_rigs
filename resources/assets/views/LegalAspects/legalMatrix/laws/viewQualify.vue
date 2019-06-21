@@ -11,6 +11,8 @@
                 :url="`/legalAspects/legalMatrix/law/${this.$route.params.id}`"
                 method="PUT"
                 :law="data"
+                :qualifications="qualifications"
+                :action-plan-states="actionPlanStates"
                 :is-edit="true"
                 :cancel-url="{ name: 'legalaspects-lm-law-qualify'}"/>
         </b-card-body>
@@ -27,7 +29,7 @@ import GlobalMethods from '@/utils/GlobalMethods.js';
 export default {
   name: 'legalaspects-lm-law-qualify-edit',
   metaInfo: {
-    title: 'Normas - Calificar'
+    title: 'Calificar Normas'
   },
   components:{
     FormLawQualifyComponent
@@ -35,10 +37,15 @@ export default {
   data () {
     return {
       data: [],
+      qualifications: [],
+      actionPlanStates: []
     }
   },
   created(){
-    axios.get(`/legalAspects/legalMatrix/law/${this.$route.params.id}`)
+    this.fetchSelect('qualifications', '/selects/legalMatrix/articlesQualifications')
+    this.fetchSelect('actionPlanStates', '/selects/actionPlanStates')
+
+    axios.get(`/legalAspects/legalMatrix/law/qualify/${this.$route.params.id}`)
     .then(response => {
         this.data = response.data.data;
     })

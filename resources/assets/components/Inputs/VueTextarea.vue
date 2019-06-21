@@ -10,7 +10,8 @@
                 :placeholder="placeholder" 
                 :name="name"
                 :disabled="disabled"
-                @input="updateValue($event)" 
+                @input="updateValue($event)"
+                @blur.native="onBlur" 
                 :rows="rows" />
     </b-form-group>
 </template>
@@ -44,7 +45,10 @@ export default {
   methods: {
     updateValue(value) {
       this.$emit('input', value);
-    } 
+    },
+    onBlur() {
+      this.$emit('onBlur');
+    }
   }
 
 }

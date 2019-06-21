@@ -16,6 +16,7 @@
             :disabled="disabled"
             :autocomplete="autocomplete ? 'off' : ''"
             @input="updateValue($event)"
+            @blur.native="onBlur" 
             />
             
         </b-input-group>
@@ -63,6 +64,9 @@ export default {
   methods: {
     updateValue(value) {
       this.$emit('input', value);
+    },
+    onBlur() {
+      this.$emit('onBlur');
     } 
   }
 

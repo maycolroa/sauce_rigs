@@ -10,6 +10,8 @@ use App\Models\General\Company;
 use App\Models\Administrative\Users\User;
 use App\Http\Requests\LegalAspects\LegalMatrix\InterestRequest;
 use App\Facades\Mail\Facades\NotificationMail;
+use App\Jobs\LegalAspects\LegalMatrix\ConfigureInterestsJob;
+use App\Jobs\LegalAspects\LegalMatrix\SyncQualificationsCompaniesJob;
 use Session;
 
 class InterestController extends Controller
@@ -120,6 +122,8 @@ class InterestController extends Controller
         {
             return $this->respondHttp500();
         }
+
+        SyncQualificationsCompaniesJob::dispatch();
         
         return $this->respondHttp200([
             'message' => 'Se elimino el intereses'
@@ -128,32 +132,17 @@ class InterestController extends Controller
 
     public function saveInterests(Request $request)
     {
-        if ($request->has('values'))
+        try
         {
-            $company = Company::find(Session::get('company_id'));
-            $company->interests()->sync($request->get('values'));
-        }
-
-        $users= User::withoutGlobalScopes()
-            ->join('sau_company_user', 'sau_company_user.user_id', 'sau_users.id')
-            ->join('sau_role_user', 'sau_role_user.user_id', 'sau_users.id')
-            ->join('sau_roles', 'sau_roles.id', 'sau_role_user.role_id')
-            ->where('sau_company_user.company_id', Session::get('company_id'))
-            ->whereRaw('(sau_roles.company_id = '.Session::get('company_id').' OR (sau_roles.company_id IS NULL AND sau_roles.name IN("Superadmin") ) )')
-            ->get();
-
-        NotificationMail::
-            subject('Matriz Legal - Configuración de intereses exitosa
-            ')
-            ->recipients($users)
-            ->message("La configuración de intereses para la Matriz Legal de la empresa $company->name ha terminado con éxito.")
-            ->buttons([['text'=>'Ir a Matriz Legal', 'url'=>url("/legalaspects/lm/interests/myinterests")]])
-            ->module('legalMatrix')
-            ->send();
+            ConfigureInterestsJob::dispatch(Session::get('company_id'), $request->get('values'));
         
-        return $this->respondHttp200([
-            'message' => 'Se creo el interes'
-        ]);
+            return $this->respondHttp200([
+                'message' => 'Al culminar el proceso de configuracion de sus intereses recibira una notificacion en su correo electronico'
+            ]);
+
+        } catch(Exception $e) {
+            return $this->respondHttp500();
+        }
     }
 
     public function myInterests()

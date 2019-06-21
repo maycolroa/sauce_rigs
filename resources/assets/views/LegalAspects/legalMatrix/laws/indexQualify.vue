@@ -24,7 +24,7 @@ import Alerts from '@/utils/Alerts.js';
 export default {
   name: 'legalaspects-lm-laws-qualify',
   metaInfo: {
-    title: 'Normas'
+    title: 'Calificar Normas'
   }
 }
 </script>

@@ -106,6 +106,7 @@ Route::middleware(['auth'])->group(function () {
           Route::post('entities', 'LegalAspects\LegalMatrix\EntityController@multiselect');
           Route::post('lawsTypes', 'LegalAspects\LegalMatrix\LawTypeController@multiselect');
           Route::post('repealed', 'General\MultiSelectRadioController@lmRepealed');
+          Route::post('articlesQualifications', 'LegalAspects\LegalMatrix\LawController@articlesQualificationsMultiselect');
         });
     });
 
@@ -242,7 +243,10 @@ Route::middleware(['auth'])->group(function () {
         Route::post('entity/data', 'LegalAspects\LegalMatrix\EntityController@data');
         Route::ApiResource('entity', 'LegalAspects\LegalMatrix\EntityController');
 
+        Route::get('law/downloadArticleQualify/{articleFulfillment}', 'LegalAspects\LegalMatrix\LawController@downloadArticleQualify');
         Route::get('law/download/{law}', 'LegalAspects\LegalMatrix\LawController@download');
+        Route::get('law/qualify/{law}', 'LegalAspects\LegalMatrix\LawController@getArticlesQualification');
+        Route::post('law/saveArticlesQualification', 'LegalAspects\LegalMatrix\LawController@saveArticlesQualification');
         Route::post('law/data', 'LegalAspects\LegalMatrix\LawController@data');
         Route::ApiResource('law', 'LegalAspects\LegalMatrix\LawController');
       });
