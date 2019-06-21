@@ -9,7 +9,11 @@ use App\Http\Controllers\Controller;
 use App\Vuetable\Facades\Vuetable;
 use App\Models\LegalAspects\LegalMatrix\Law;
 use App\Models\LegalAspects\LegalMatrix\Article;
+use App\Models\LegalAspects\LegalMatrix\FulfillmentValues;
 use App\Http\Requests\LegalAspects\LegalMatrix\LawRequest;
+use App\Models\LegalAspects\LegalMatrix\ArticleFulfillment;
+use App\Jobs\LegalAspects\LegalMatrix\SyncQualificationsCompaniesJob;
+use App\Traits\LegalMatrixTrait;
 use Carbon\Carbon;
 use Session;
 use Validator;
@@ -17,6 +21,8 @@ use DB;
 
 class LawController extends Controller
 {
+    use LegalMatrixTrait;
+
     /**
      * creates and instance and middlewares are checked
      */
@@ -141,6 +147,8 @@ class LawController extends Controller
 
             DB::commit();
 
+            SyncQualificationsCompaniesJob::dispatch();
+
         } catch (\Exception $e) {
             DB::rollback();
             return $this->respondHttp500();
@@ -233,9 +241,22 @@ class LawController extends Controller
             $this->saveArticles($law, $request->get('articles'));
                 
             if ($request->has('delete') && COUNT($request->delete) > 0)
+            {
+                foreach ($request->delete as $keyA => $article_id)
+                {
+                    $qualifications = ArticleFulfillment::withoutGlobalScopes()
+                        ->where('article_id', $article_id)
+                        ->get();
+
+                    $this->deleteQualifications($qualifications);
+                }
+
                 Article::destroy($request->delete);
+            }
 
             DB::commit();
+
+            SyncQualificationsCompaniesJob::dispatch();
 
         } catch (\Exception $e) {
             DB::rollback();
@@ -257,10 +278,19 @@ class LawController extends Controller
     {
         $file = $law->file;
 
+        foreach ($law->articles as $keyA => $article)
+        {
+            $qualifications = ArticleFulfillment::withoutGlobalScopes()
+                ->where('article_id', $article->id)
+                ->get();
+
+            $this->deleteQualifications($qualifications);
+        }
+
         if(!$law->delete())
             return $this->respondHttp500();
 
-        Storage::disk('public')->delete('legalAspects/legalMatrix/'. $file);
+        Storage::disk('s3')->delete('legalAspects/legalMatrix/'. $file);
         
         return $this->respondHttp200([
             'message' => 'Se elimino la norma'
@@ -281,7 +311,7 @@ class LawController extends Controller
 
     public function download(Law $law)
     {
-      return Storage::disk('public')->download('legalAspects/legalMatrix/'. $law->file);
+      return Storage::disk('s3')->download('legalAspects/legalMatrix/'. $law->file);
     }
 
     private function saveArticles($law, $articles)
@@ -312,5 +342,163 @@ class LawController extends Controller
         ->pluck('law_number', 'law_number');
     
         return $this->multiSelectFormat($lawNumbers);
+    }
+
+    /**
+     * Returns an array for a select type input
+     *
+     * @param Request $request
+     * @return Array
+     */
+
+    public function articlesQualificationsMultiselect(Request $request)
+    {
+        if($request->has('keyword'))
+        {
+            $keyword = "%{$request->keyword}%";
+            $values = FulfillmentValues::select("id", "name")
+                ->where(function ($query) use ($keyword) {
+                    $query->orWhere('name', 'like', $keyword);
+                })
+                ->take(30)->pluck('id', 'name');
+
+            return $this->respondHttp200([
+                'options' => $this->multiSelectFormat($values)
+            ]);
+        }
+        else
+        {
+            $values = FulfillmentValues::select(
+                'sau_lm_fulfillment_values.id as id',
+                'sau_lm_fulfillment_values.name as name'
+            )
+            ->pluck('id', 'name');
+        
+            return $this->multiSelectFormat($values);
+        }
+    }
+
+    /**
+     * Display the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function getArticlesQualification(Law $law)
+    {
+        try
+        {
+            $law->lawType;
+            $law->riskAspect;
+            $law->entity;
+            $law->sstRisk;
+
+            $articles = Article::select('sau_lm_articles.*')
+                ->join('sau_lm_article_interest', 'sau_lm_article_interest.article_id', 'sau_lm_articles.id')
+                ->join('sau_lm_company_interest','sau_lm_company_interest.interest_id', 'sau_lm_article_interest.interest_id')
+                ->groupBy('sau_lm_articles.id')
+                ->where('sau_lm_articles.law_id', $law->id)
+                ->get();
+
+            $qualifications = ArticleFulfillment::all();
+            $qualifications = $qualifications->groupBy('article_id')->toArray();
+
+            $articles = $articles->filter(function ($article, $key) use ($qualifications) {
+                return isset($qualifications[$article->id]);
+            });
+
+            $articles->transform(function($article, $index) use ($qualifications) {
+                $article->key = Carbon::now()->timestamp + rand(1,10000);
+                $interests = [];
+
+                foreach ($article->interests as $key => $interest)
+                {
+                    array_push($interests, $interest->name);
+                }
+
+                $article->interests_string = implode(', ', $interests);
+
+                $article->qualify = '';
+                $article->qualification_id = $qualifications[$article->id][0]['id'];
+                $article->fulfillment_value_id = $qualifications[$article->id][0]['fulfillment_value_id'];
+                $article->observations = $qualifications[$article->id][0]['observations'];
+                $article->file = $qualifications[$article->id][0]['file'];
+                $article->old_file = $qualifications[$article->id][0]['file'];
+                $article->responsible = $qualifications[$article->id][0]['responsible'];
+                $article->qualify = $article->fulfillment_value_id ? FulfillmentValues::find($article->fulfillment_value_id)->name : '';
+                $article->actionPlan = [
+                    "activities" => [],
+                    "activitiesRemoved" => []
+                ];
+
+                return $article;
+            });
+            
+            $law->articles = $articles;
+
+            return $this->respondHttp200([
+                'data' => $law,
+            ]);
+
+        } catch(Exception $e){
+            return $this->respondHttp500();
+        }
+    }
+
+    public function saveArticlesQualification(Request $request)
+    {
+        try
+        {
+            $data = [];
+
+            $qualification = ArticleFulfillment::find($request->qualification_id);
+            $qualification->fulfillment_value_id = $request->fulfillment_value_id != "null" ? $request->fulfillment_value_id : NULL;
+            $qualification->observations = $request->observations != "null" ? $request->observations : NULL;
+            $qualification->responsible = $request->responsible != "null" ? $request->responsible : NULL;
+
+            if ($qualification->fulfillment_value_id)
+            {
+                $qualify = FulfillmentValues::find($qualification->fulfillment_value_id);
+
+                if ($qualify->name != 'No cumple')
+                {
+                    if ($request->file != "null" && $request->file != $qualification->file)
+                    {
+                        $file = $request->file;
+                        Storage::disk('s3')->delete('legalAspects/legalMatrix/'. $qualification->file);
+                        $nameFile = base64_encode(Auth::user()->id . now() . rand(1,10000)) .'.'. $file->extension();
+                        $file->storeAs('legalAspects/legalMatrix/', $nameFile, 's3');
+                        $qualification->file = $nameFile;
+                        $data['file'] = $nameFile;
+                        $data['old_file'] = $nameFile;
+                    }
+                }
+                else
+                {
+                    if ($qualification->file)
+                    {
+                        Storage::disk('s3')->delete('legalAspects/legalMatrix/'. $qualification->file);
+                        $qualification->file = NUlL;
+                        $data['file'] = NULL;
+                        $data['old_file'] = NULL;
+                    }
+                }
+            }
+
+            if (!$qualification->save())
+                return $this->respondHttp500();
+
+            return $this->respondHttp200([
+                'data' => $data
+            ]);
+
+        } catch (Exception $e){
+            return $this->respondHttp500();
+        }
+    }
+
+    public function downloadArticleQualify(ArticleFulfillment $articleFulfillment)
+    {
+      return Storage::disk('s3')->download('legalAspects/legalMatrix/'. $articleFulfillment->file);
     }
 }

@@ -49,7 +49,9 @@ export default {
 		GlobalMethods.getDataMultiselect(`/selects/legalMatrix/interests`)
         .then(response => {
 			this.options = response;
-			this.ready = true
+			setTimeout(() => {
+				this.ready = true
+			}, 3000)
         })
         .catch(error => {
             Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
@@ -59,7 +61,9 @@ export default {
 		axios.get(`/legalAspects/legalMatrix/interest/myInterests`)
 		.then(response => {
 			this.data = response.data.data;
-			this.ready = true
+			setTimeout(() => {
+				this.ready = true
+			}, 3000)
 		})
 		.catch(error => {
 			Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');

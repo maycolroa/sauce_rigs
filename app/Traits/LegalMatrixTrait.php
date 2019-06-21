@@ -1,0 +1,97 @@
+<?php
+
+namespace App\Traits;
+
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Database\Eloquent\Collection;
+use App\Models\Administrative\Users\User;
+use App\Models\LegalAspects\LegalMatrix\Article;
+use App\Models\LegalAspects\LegalMatrix\ArticleFulfillment;
+use App\Models\LegalAspects\LegalMatrix\FulfillmentValues;
+
+trait LegalMatrixTrait
+{
+    public function getArticlesCompany($company_id = null)
+    {
+        if ($company_id && !is_numeric($company_id))
+            throw new \Exception('Company invalid');
+
+        $articles = Article::select('sau_lm_articles.*')
+            ->join('sau_lm_article_interest', 'sau_lm_article_interest.article_id', 'sau_lm_articles.id')
+            ->join('sau_lm_company_interest','sau_lm_company_interest.interest_id', 'sau_lm_article_interest.interest_id')
+            ->groupBy('sau_lm_articles.id');
+
+        if ($company_id)
+            $articles->company_scope = $company_id;
+
+        return $articles->get();
+    }
+
+    public function syncQualificationsCompany($company_id)
+    {
+        if ($company_id && !is_numeric($company_id))
+            throw new \Exception('Company invalid');
+
+        $articles = $this->getArticlesCompany($company_id);
+        $ids_article = [];
+
+        foreach ($articles as $key => $value)
+        {
+            $qualification = ArticleFulfillment::query();
+            $qualification->company_scope = $company_id;
+
+            $qualification = $qualification->firstOrCreate(
+                ['article_id' => $value->id],
+                ['article_id' => $value->id, 'company_id' => $company_id]
+            );
+
+            array_push($ids_article, $value->id);
+        }
+
+        if (COUNT($ids_article) > 0)
+        {
+            $articlesDelete = ArticleFulfillment::whereNotIn('article_id', $ids_article);
+            $articlesDelete->company_scope = $company_id;
+            $articlesDelete = $articlesDelete->get();
+
+            $this->deleteQualifications($articlesDelete);
+        }
+    }
+
+    public function deleteQualifications($qualifications)
+    {
+        if (!$qualifications instanceof Collection)
+            throw new \Exception('Qualifications format invalid');
+
+        foreach ($qualifications as $keyQ => $qualification)
+        {
+            if ($qualification->fulfillment_value_id)
+            {
+                $qualify = FulfillmentValues::find($qualification->fulfillment_value_id);
+
+                if ($qualify->name != 'No cumple')
+                {
+                    Storage::disk('s3')->delete('legalAspects/legalMatrix/'. $qualification->file);
+                }
+                else
+                {
+                    //Borrar plan de accion
+                }
+            }
+            
+            $qualification->delete();
+        }
+    }
+
+    public function syncQualificationsCompanies()
+    {
+        $companies = ArticleFulfillment::selectRaw('DISTINCT company_id AS company_id')
+                ->withoutGlobalScopes()
+                ->get();
+
+        foreach ($companies as $key => $value)
+        {
+            $this->syncQualificationsCompany($value->company_id);
+        }
+    }
+}
