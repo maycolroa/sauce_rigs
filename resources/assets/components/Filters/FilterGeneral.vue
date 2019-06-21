@@ -1,8 +1,10 @@
 <template>
     <div>
-        <div style="padding: 10px;">
-            <b-btn variant="secondary icon-btn" @click="showFilterModal()"><span class="fas fa-filter"></span></b-btn>
-        </div>
+        <b-row align-h="end" style="padding: 10px;" v-if="modal">
+            <b-col cols="1">
+                <b-btn variant="secondary icon-btn" @click="showFilterModal()"><span class="fas fa-filter"></span></b-btn>
+            </b-col>
+        </b-row>
 
         <!-- Modal template -->
         <b-modal ref="filterModal" :hideFooter="true" id="modals-top" size="lg" class="modal-top">
@@ -15,7 +17,7 @@
                     <b-card no-body>
                         <b-card-body>
                             <b-row v-for="(item, index) in filters" :key="index">
-                                <b-col>
+                                <b-col v-if="item.header == undefined">
                                     <vue-advanced-select
                                         v-if="item.type == 'select'"
                                         v-model="filtersSelected[index]" :multiple="true" :options="item.data" :searchable="true" :name="item.key" :label="item.label" :disabled="isDisabled" :filterTypeSearch="true" @updateFilterTypeSearch="setFilterTypeSearch($event, item.key)">
@@ -41,6 +43,27 @@
                 <b-btn variant="primary" @click="hideFilterModal()">Cerrar</b-btn>
             </div>
         </b-modal>
+
+        <div class="row" v-if="header">
+            <template v-for="(item, index) in filters">
+                <div class="col-md-6" v-if="item.header != undefined" :key="index">
+                    <vue-advanced-select
+                        v-if="item.type == 'select'"
+                        v-model="filtersSelected[index]" :multiple="true" :options="item.data" :searchable="true" :name="item.key" :label="item.label" :disabled="isDisabled" :filterTypeSearch="true" @updateFilterTypeSearch="setFilterTypeSearch($event, item.key)">
+                    </vue-advanced-select>
+
+                    <vue-datepicker-range 
+                        v-if="item.type == 'dateRange'"
+                        v-model="filtersSelected[index]" class="col-md-12" :label="item.label" :name="item.key" :disabled="isDisabled">
+                    </vue-datepicker-range>
+
+                    <vue-input-range
+                        v-if="item.type == 'numberRange'"
+                        v-model="filtersSelected[index]" class="col-md-12" :label="item.label" :name="item.key" :disabled="isDisabled">
+                    </vue-input-range>
+                </div>
+            </template>
+        </div>
     </div>
 </template>
 
@@ -75,6 +98,8 @@ export default {
     data () {
         return {
             ready: false,
+            header: false,
+            modal: false,
             filters: {},
             filtersSelected: {
                 filtersType: {}
@@ -91,6 +116,11 @@ export default {
                 if (item.permission != undefined && item.permission)
                     if (!auth.can[item.permission])
                         continue;
+
+                if (item.header == undefined)
+                    this.modal = true
+                else
+                    this.header = true
 
                 this.$set(this.filters, item.key, item)
 

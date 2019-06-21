@@ -1,7 +1,7 @@
 <template>
   <div>
-      <b-row align-h="end" v-if="configNameFilter">
-          <b-col cols="1">
+      <b-row v-if="configNameFilter">
+          <b-col>
               <filter-general 
                   v-model="filters" 
                   :configName="configNameFilter"

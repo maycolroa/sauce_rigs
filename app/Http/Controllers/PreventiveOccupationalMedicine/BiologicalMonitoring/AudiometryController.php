@@ -62,39 +62,32 @@ class AudiometryController extends Controller
 
         $filters = $request->get('filters');
 
-        if (isset($filters["regionals"]))
-          $audiometry->inRegionals($this->getValuesForMultiselect($filters["regionals"]), $filters['filtersType']['regionals']);
-
-        if (isset($filters["headquarters"]))
-          $audiometry->inHeadquarters($this->getValuesForMultiselect($filters["headquarters"]), $filters['filtersType']['headquarters']);
-
-        if (isset($filters["areas"]))
-          $audiometry->inAreas($this->getValuesForMultiselect($filters["areas"]), $filters['filtersType']['areas']);
-
-        if (isset($filters["processes"]))
-          $audiometry->inProcesses($this->getValuesForMultiselect($filters["processes"]), $filters['filtersType']['processes']);
-
-        /*if (isset($filters["businesses"]))
-          $audiometry->inBusinesses($this->getValuesForMultiselect($filters["businesses"]), $filters['filtersType']['businesses']);*/
-
-        if (isset($filters["positions"]))
-          $audiometry->inPositions($this->getValuesForMultiselect($filters["positions"]), $filters['filtersType']['positions']);
-
-        if (isset($filters["years"]))
-          $audiometry->inYears($this->getValuesForMultiselect($filters["years"]), $filters['filtersType']['years']);
-
-        if (isset($filters["dateRange"]) && $filters["dateRange"])
+        if (COUNT($filters) > 0)
         {
-            $dates_request = explode('/', $filters["dateRange"]);
-            $dates = [];
+          $audiometry->inRegionals($this->getValuesForMultiselect($filters["regionals"]), $filters['filtersType']['regionals']);
+          $audiometry->inHeadquarters($this->getValuesForMultiselect($filters["headquarters"]), $filters['filtersType']['headquarters']);
+          $audiometry->inAreas($this->getValuesForMultiselect($filters["areas"]), $filters['filtersType']['areas']);
+          $audiometry->inProcesses($this->getValuesForMultiselect($filters["processes"]), $filters['filtersType']['processes']);
+          $audiometry->inPositions($this->getValuesForMultiselect($filters["positions"]), $filters['filtersType']['positions']);
+          $audiometry->inDeals($this->getValuesForMultiselect($filters["deals"]), $filters['filtersType']['deals']);
+          $audiometry->inYears($this->getValuesForMultiselect($filters["years"]), $filters['filtersType']['years']);
+          $audiometry->inRegionals($this->getValuesForMultiselect($filters["regionalsHeader"]), $filters['filtersType']['regionalsHeader']);
+          $audiometry->inNames($this->getValuesForMultiselect($filters["names"]), $filters['filtersType']['names']);
+          $audiometry->inIdentifications($this->getValuesForMultiselect($filters["identifications"]), $filters['filtersType']['identifications']);
+          $audiometry->inSeverityGradeLeft($this->getValuesForMultiselect($filters["severity_grade_left"]), $filters['filtersType']['severity_grade_left']);
+          $audiometry->inSeverityGradeRight($this->getValuesForMultiselect($filters["severity_grade_right"]), $filters['filtersType']['severity_grade_right']);
+          //$audiometry->inBusinesses($this->getValuesForMultiselect($filters["businesses"]), $filters['filtersType']['businesses']);
 
-            if (COUNT($dates_request) == 2)
-            {
-                array_push($dates, (Carbon::createFromFormat('D M d Y',$dates_request[0]))->format('Ymd'));
-                array_push($dates, (Carbon::createFromFormat('D M d Y',$dates_request[1]))->format('Ymd'));
-            }
+          $dates_request = explode('/', $filters["dateRange"]);
+          $dates = [];
+
+          if (COUNT($dates_request) == 2)
+          {
+            array_push($dates, (Carbon::createFromFormat('D M d Y',$dates_request[0]))->format('Ymd'));
+            array_push($dates, (Carbon::createFromFormat('D M d Y',$dates_request[1]))->format('Ymd'));
+          }
             
-            $audiometry->betweenDate($dates);
+          $audiometry->betweenDate($dates);
         }
 
        return Vuetable::of($audiometry)
@@ -251,5 +244,39 @@ class AudiometryController extends Controller
     public function downloadTemplateImport()
     {
       return Excel::download(new AudiometryImportTemplate, 'PlantillaImportacionAudiometria.xlsx');
+    }
+
+    /**
+     * Returns an arrangement with the severity_grade_air_left_pta
+     *
+     * @return Array
+     */
+    public function multiselectSeverityGradeLeft()
+    {
+      $data = Audiometry::selectRaw(
+              "DISTINCT sau_bm_audiometries.severity_grade_air_left_pta AS severity_grade_air_left_pta"
+          )
+          ->join('sau_employees','sau_employees.id','sau_bm_audiometries.employee_id')
+          ->whereNotNull('sau_bm_audiometries.severity_grade_air_left_pta')
+          ->pluck('severity_grade_air_left_pta', 'severity_grade_air_left_pta');
+
+      return $this->multiSelectFormat($data);
+    }
+
+    /**
+     * Returns an arrangement with the severity_grade_air_right_pta
+     *
+     * @return Array
+     */
+    public function multiselectSeverityGradeRight()
+    {
+      $data = Audiometry::selectRaw(
+              "DISTINCT sau_bm_audiometries.severity_grade_air_right_pta AS severity_grade_air_right_pta"
+          )
+          ->join('sau_employees','sau_employees.id','sau_bm_audiometries.employee_id')
+          ->whereNotNull('sau_bm_audiometries.severity_grade_air_right_pta')
+          ->pluck('severity_grade_air_right_pta', 'severity_grade_air_right_pta');
+
+      return $this->multiSelectFormat($data);
     }
 }

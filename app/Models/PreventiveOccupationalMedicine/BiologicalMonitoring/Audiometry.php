@@ -273,4 +273,104 @@ class Audiometry extends Model
             return $query;
         }
     }
+
+    /**
+     * filters checks through the given deals
+     * @param  Illuminate\Database\Eloquent\Builder $query
+     * @param  array $deals
+     * @return Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeInDeals($query, $deals, $typeSearch = 'IN')
+    {
+        if (COUNT($deals) > 0)
+        {
+            if ($typeSearch == 'IN')
+                $query->whereIn('sau_employees.deal', $deals);
+
+            else if ($typeSearch == 'NOT IN')
+                $query->whereNotIn('sau_employees.deal', $deals);
+        }
+
+        return $query;
+    }
+
+    /**
+     * filters checks through the given names
+     * @param  Illuminate\Database\Eloquent\Builder $query
+     * @param  array $names
+     * @return Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeInNames($query, $names, $typeSearch = 'IN')
+    {
+        if (COUNT($names) > 0)
+        {
+            if ($typeSearch == 'IN')
+                $query->whereIn('sau_employees.name', $names);
+
+            else if ($typeSearch == 'NOT IN')
+                $query->whereNotIn('sau_employees.name', $names);
+        }
+
+        return $query;
+    }
+
+    /**
+     * filters checks through the given identifications
+     * @param  Illuminate\Database\Eloquent\Builder $query
+     * @param  array $identifications
+     * @return Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeInIdentifications($query, $identifications, $typeSearch = 'IN')
+    {
+        if (COUNT($identifications) > 0)
+        {
+            if ($typeSearch == 'IN')
+                $query->whereIn('sau_employees.identification', $identifications);
+
+            else if ($typeSearch == 'NOT IN')
+                $query->whereNotIn('sau_employees.identification', $identifications);
+        }
+
+        return $query;
+    }
+
+    /**
+     * filters checks through the given SeverityGradeLeft
+     * @param  Illuminate\Database\Eloquent\Builder $query
+     * @param  array $severityGradeLeft
+     * @return Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeInSeverityGradeLeft($query, $severityGradeLeft, $typeSearch = 'IN')
+    {
+        if (COUNT($severityGradeLeft) > 0)
+        {
+            if ($typeSearch == 'IN')
+                $query->whereIn('sau_bm_audiometries.severity_grade_air_left_pta', $severityGradeLeft);
+
+            else if ($typeSearch == 'NOT IN')
+                $query->whereNotIn('sau_bm_audiometries.severity_grade_air_left_pta', $severityGradeLeft);
+        }
+
+        return $query;
+    }
+
+    /**
+     * filters checks through the given SeverityGradeRight
+     * @param  Illuminate\Database\Eloquent\Builder $query
+     * @param  array $severityGradeRight
+     * @return Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeInSeverityGradeRight($query, $severityGradeRight, $typeSearch = 'IN')
+    {
+        if (COUNT($severityGradeRight) > 0)
+        {
+            if ($typeSearch == 'IN')
+                $query->whereIn('sau_bm_audiometries.severity_grade_air_right_pta', $severityGradeRight);
+
+            else if ($typeSearch == 'NOT IN')
+                $query->whereNotIn('sau_bm_audiometries.severity_grade_air_right_pta', $severityGradeRight);
+        }
+
+        return $query;
+    }
 }

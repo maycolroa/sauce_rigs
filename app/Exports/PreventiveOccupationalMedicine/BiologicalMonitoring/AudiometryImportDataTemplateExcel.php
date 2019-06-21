@@ -53,7 +53,7 @@ class AudiometryImportDataTemplateExcel implements FromCollection, WithHeadings,
     public function headings(): array
     {
         return [
-          'Identificacion',
+          'Identificación',
           'Nombre',
           'Sexo (M, F)',
           'Email',
@@ -66,6 +66,7 @@ class AudiometryImportDataTemplateExcel implements FromCollection, WithHeadings,
           'Área',
           'EPS (Los posibles valores se encuentran en la pestaña “EPS”, se debe ingresar el codigo de la EPS)',
           'Fecha Ingreso Empresa',
+          'Negocio',
           'Fecha',
           'Eventos Previos',
           'EPP (Copa, Inserción, Moldeable)',
@@ -105,8 +106,7 @@ class AudiometryImportDataTemplateExcel implements FromCollection, WithHeadings,
             'A' => NumberFormat::FORMAT_NUMBER,
             'E' => NumberFormat::FORMAT_DATE_DDMMYYYY,
             'M' => NumberFormat::FORMAT_DATE_DDMMYYYY,
-            'N' => NumberFormat::FORMAT_DATE_DDMMYYYY,
-            'R' => NumberFormat::FORMAT_NUMBER,
+            'O' => NumberFormat::FORMAT_DATE_DDMMYYYY,
             'S' => NumberFormat::FORMAT_NUMBER,
             'T' => NumberFormat::FORMAT_NUMBER,
             'U' => NumberFormat::FORMAT_NUMBER,
@@ -129,7 +129,8 @@ class AudiometryImportDataTemplateExcel implements FromCollection, WithHeadings,
             'AL' => NumberFormat::FORMAT_NUMBER,
             'AM' => NumberFormat::FORMAT_NUMBER,
             'AN' => NumberFormat::FORMAT_NUMBER,
-            'AO' => NumberFormat::FORMAT_NUMBER
+            'AO' => NumberFormat::FORMAT_NUMBER,
+            'AP' => NumberFormat::FORMAT_NUMBER
         ];
     }
 
@@ -154,7 +155,7 @@ class AudiometryImportDataTemplateExcel implements FromCollection, WithHeadings,
       );
 
       $event->sheet->styleCells(
-        'A1:Q1',
+        'A1:R1',
           [
             'fill' => [
                 'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_GRADIENT_LINEAR,
@@ -170,7 +171,7 @@ class AudiometryImportDataTemplateExcel implements FromCollection, WithHeadings,
       );
 
       $event->sheet->styleCells(
-        'R1:X1',
+        'S1:Y1',
           [
             'fill' => [
                 'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_GRADIENT_LINEAR,
@@ -186,7 +187,7 @@ class AudiometryImportDataTemplateExcel implements FromCollection, WithHeadings,
       );
 
       $event->sheet->styleCells(
-        'Y1:AE1',
+        'Z1:AF1',
           [
             'fill' => [
                 'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_GRADIENT_LINEAR,
@@ -202,7 +203,7 @@ class AudiometryImportDataTemplateExcel implements FromCollection, WithHeadings,
       );
 
       $event->sheet->styleCells(
-        'AF1:AJ1',
+        'AG1:AK1',
           [
             'fill' => [
                 'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_GRADIENT_LINEAR,
@@ -218,7 +219,7 @@ class AudiometryImportDataTemplateExcel implements FromCollection, WithHeadings,
       );
 
       $event->sheet->styleCells(
-        'AK1:AO1',
+        'AL1:AP1',
           [
             'fill' => [
                 'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_GRADIENT_LINEAR,
@@ -234,7 +235,7 @@ class AudiometryImportDataTemplateExcel implements FromCollection, WithHeadings,
       );
 
       $event->sheet->styleCells(
-        'AP1:AQ1',
+        'AQ1:AR1',
           [
             'fill' => [
                 'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_GRADIENT_LINEAR,

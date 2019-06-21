@@ -3,14 +3,12 @@
         <h4 class="font-weight-bold mb-4">
             <span class="text-muted font-weight-light">Audiometrias /</span> Informes
         </h4>
-        <b-row align-h="end">
-            <b-col cols="1">
-                <filter-general 
-                    v-model="filters" 
-                    configName="biologicalmonitoring-audiometry" 
-                    :isDisabled="isLoading"/>
-            </b-col>
-        </b-row>
+        <div>
+            <filter-general 
+                v-model="filters" 
+                configName="biologicalmonitoring-audiometry-informs" 
+                :isDisabled="isLoading"/>
+        </div>
 
         <b-row>
             <b-col>
