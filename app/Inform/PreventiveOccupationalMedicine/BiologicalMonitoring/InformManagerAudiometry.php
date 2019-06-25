@@ -314,7 +314,7 @@ class InformManagerAudiometry
         {
             $percentage_x_category[$value->name] = $value->count;
             array_push($total, [
-                $value->name, $value->count, round( ($value->count/ $this->totalEmployee) * 100, 1)
+                $value->name, $value->count, round( ($value->count/ $this->totalEmployee) * 100, 1).'%'
             ]);
         }
 
@@ -334,7 +334,7 @@ class InformManagerAudiometry
         {
             $percentage_x_category[$value->name] = $value->count;
             array_push($total, [
-                $value->name, $value->count, round( ($value->count/ $this->totalEmployee) * 100, 1)
+                $value->name, $value->count, round( ($value->count/ $this->totalEmployee) * 100, 1).'%'
             ]);
         }
 

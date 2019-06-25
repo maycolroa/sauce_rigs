@@ -71,7 +71,6 @@ class AudiometryController extends Controller
           $audiometry->inPositions($this->getValuesForMultiselect($filters["positions"]), $filters['filtersType']['positions']);
           $audiometry->inDeals($this->getValuesForMultiselect($filters["deals"]), $filters['filtersType']['deals']);
           $audiometry->inYears($this->getValuesForMultiselect($filters["years"]), $filters['filtersType']['years']);
-          $audiometry->inRegionals($this->getValuesForMultiselect($filters["regionalsHeader"]), $filters['filtersType']['regionalsHeader']);
           $audiometry->inNames($this->getValuesForMultiselect($filters["names"]), $filters['filtersType']['names']);
           $audiometry->inIdentifications($this->getValuesForMultiselect($filters["identifications"]), $filters['filtersType']['identifications']);
           $audiometry->inSeverityGradeLeft($this->getValuesForMultiselect($filters["severity_grade_left"]), $filters['filtersType']['severity_grade_left']);

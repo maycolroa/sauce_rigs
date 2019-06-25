@@ -220,10 +220,21 @@
                             <b>Total Expuestos {{ exposedPopulationData.datasets.count }} </b>
                         </b-col>
                     </b-row>
-                    <chart-bar 
-                        :chart-data="exposedPopulationData"
-                        title="Población Expuesta"
-                        ref="exposedPopulation"/>
+                    <b-row>
+                        <div class="col-md-6" style="padding-bottom: 15px;">
+                            <chart-bar 
+                                :chart-data="exposedPopulationData"
+                                title="Población Expuesta"
+                                ref="exposedPopulation"/>
+                        </div>
+                        <div class="col-md-6">
+                            <chart-pie 
+                                :chart-data="exposedPopulationData"
+                                title="Población Expuesta"
+                                color-line="red"
+                                ref="exposedPopulationPie"/>
+                        </div>
+                    </b-row>
                 </b-card>
             </b-col>
         </b-row>

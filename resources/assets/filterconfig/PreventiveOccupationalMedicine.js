@@ -3,12 +3,6 @@ export default [
       name: 'biologicalmonitoring-audiometry',
       filters: [
         {
-          url: '/selects/regionals',
-          key: 'regionals',
-          type: 'select',
-          label: 'Regionales'
-        },
-        {
           url: '/selects/headquarters',
           key: 'headquarters',
           type: 'select',
@@ -25,12 +19,6 @@ export default [
           key: 'areas',
           type: 'select',
           label: 'Áreas'
-        },
-        {
-          url: '/selects/employeesDeal',
-          key: 'deals',
-          type: 'select',
-          label: 'Negocios'
         },
         {
           url: '/selects/positions',
@@ -51,9 +39,16 @@ export default [
         },
         {
           url: '/selects/regionals',
-          key: 'regionalsHeader',
+          key: 'regionals',
           type: 'select',
           label: 'Regionales',
+          header: true
+        },
+        {
+          url: '/selects/employeesDeal',
+          key: 'deals',
+          type: 'select',
+          label: 'Negocios',
           header: true
         },
         {
@@ -90,12 +85,6 @@ export default [
       name: 'biologicalmonitoring-audiometry-informs',
       filters: [
         {
-          url: '/selects/regionals',
-          key: 'regionals',
-          type: 'select',
-          label: 'Regionales'
-        },
-        {
           url: '/selects/headquarters',
           key: 'headquarters',
           type: 'select',
@@ -114,12 +103,6 @@ export default [
           label: 'Áreas'
         },
         {
-          url: '/selects/employeesDeal',
-          key: 'deals',
-          type: 'select',
-          label: 'Negocios'
-        },
-        {
           url: '/selects/positions',
           key: 'positions',
           type: 'select',
@@ -135,7 +118,21 @@ export default [
           key: 'dateRange',
           type: 'dateRange',
           label: 'Rango de fecha',
-        }
+        },
+        {
+          url: '/selects/regionals',
+          key: 'regionals',
+          type: 'select',
+          label: 'Regionales',
+          header: true
+        },
+        {
+          url: '/selects/employeesDeal',
+          key: 'deals',
+          type: 'select',
+          label: 'Negocios',
+          header: true
+        },
       ]
     }
 ];
