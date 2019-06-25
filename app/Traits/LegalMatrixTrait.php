@@ -8,6 +8,7 @@ use App\Models\Administrative\Users\User;
 use App\Models\LegalAspects\LegalMatrix\Article;
 use App\Models\LegalAspects\LegalMatrix\ArticleFulfillment;
 use App\Models\LegalAspects\LegalMatrix\FulfillmentValues;
+use DB;
 
 trait LegalMatrixTrait
 {
@@ -85,9 +86,9 @@ trait LegalMatrixTrait
 
     public function syncQualificationsCompanies()
     {
-        $companies = ArticleFulfillment::selectRaw('DISTINCT company_id AS company_id')
-                ->withoutGlobalScopes()
-                ->get();
+        $companies = DB::table('sau_lm_company_interest')
+            ->selectRaw('DISTINCT company_id AS company_id')
+            ->get();
 
         foreach ($companies as $key => $value)
         {
