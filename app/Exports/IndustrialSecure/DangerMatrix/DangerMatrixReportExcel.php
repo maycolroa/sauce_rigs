@@ -13,6 +13,7 @@ use \Maatwebsite\Excel\Sheet;
 use App\Models\IndustrialSecure\DangerMatrix\QualificationCompany;
 use App\Models\IndustrialSecure\DangerMatrix\DangerMatrix;
 use App\Traits\DangerMatrixTrait;
+use App\Traits\LocationFormTrait;
 
 Sheet::macro('styleCells', function (Sheet $sheet, string $cellRange, array $style) {
   $sheet->getDelegate()->getStyle($cellRange)->applyFromArray($style);
@@ -22,15 +23,18 @@ class DangerMatrixReportExcel implements FromView, WithEvents, WithTitle
 {
     use RegistersEventListeners;
     use DangerMatrixTrait;
+    use LocationFormTrait;
 
     protected $company_id;
     protected $filters;
     protected $data;
+    protected $confLocation;
 
     public function __construct($company_id, $filters)
     {
       $this->company_id = $company_id;
       $this->filters = $filters;
+      $this->confLocation = $this->getLocationFormConfModule($this->company_id);
 
       $data = [];
       $title_table = '';
@@ -53,8 +57,8 @@ class DangerMatrixReportExcel implements FromView, WithEvents, WithTitle
             ->inHeadquarters($this->filters['headquarters'], isset($this->filters['filtersType']['headquarters']) ? $this->filters['filtersType']['headquarters'] : 'IN')
             ->inAreas($this->filters['areas'], isset($this->filters['filtersType']['areas']) ? $this->filters['filtersType']['areas'] : 'IN')
             ->inProcesses($this->filters['processes'], isset($this->filters['filtersType']['processes']) ? $this->filters['filtersType']['processes'] : 'IN')
-            ->inMacroprocesses($this->filters['macroprocesses'], isset($this->filters['filtersType']['macroprocesses']) ? $this->filters['filtersType']['macroprocesses'] : 'IN')
-            ->inMatrix($this->filters['matrix'], $this->filters['filtersType']['matrix']);
+            ->inMacroprocesses($this->filters['macroprocesses'], isset($this->filters['filtersType']['macroprocesses']) ? $this->filters['filtersType']['macroprocesses'] : 'IN');
+            //->inMatrix($this->filters['matrix'], $this->filters['filtersType']['matrix']);
 
         $dangersMatrix->company_scope = $this->company_id;
         $dangersMatrix = $dangersMatrix->get();
@@ -117,7 +121,10 @@ class DangerMatrixReportExcel implements FromView, WithEvents, WithTitle
               'sau_dangers_matrix.id AS id',
               'sau_dm_dangers.name AS name',
               'sau_dm_activity_danger.danger_description AS danger_description',
-              'sau_dangers_matrix.name AS matrix',
+              'sau_employees_regionals.name as regional',
+              'sau_employees_headquarters.name as headquarter',
+              'sau_employees_processes.name as process',
+              'sau_employees_areas.name as area',
               'sau_employees_processes.types as types'
           )
           ->join('sau_danger_matrix_activity', 'sau_danger_matrix_activity.danger_matrix_id', 'sau_dangers_matrix.id')
@@ -125,13 +132,16 @@ class DangerMatrixReportExcel implements FromView, WithEvents, WithTitle
           ->join('sau_dm_dangers', 'sau_dm_dangers.id', 'sau_dm_activity_danger.danger_id')
           ->join('sau_dm_qualification_danger', 'sau_dm_qualification_danger.activity_danger_id', 'sau_dm_activity_danger.id')
           ->join('sau_dm_qualification_types', 'sau_dm_qualification_types.id', 'sau_dm_qualification_danger.type_id')
+          ->leftJoin('sau_employees_regionals', 'sau_employees_regionals.id', 'sau_dangers_matrix.employee_regional_id')
+          ->leftJoin('sau_employees_headquarters', 'sau_employees_headquarters.id', 'sau_dangers_matrix.employee_headquarter_id')
           ->leftJoin('sau_employees_processes', 'sau_employees_processes.id', 'sau_dangers_matrix.employee_process_id')
+          ->leftJoin('sau_employees_areas', 'sau_employees_areas.id', 'sau_dangers_matrix.employee_area_id')
           ->inRegionals($this->filters['regionals'], isset($this->filters['filtersType']['regionals']) ? $this->filters['filtersType']['regionals'] : 'IN')
             ->inHeadquarters($this->filters['headquarters'], isset($this->filters['filtersType']['headquarters']) ? $this->filters['filtersType']['headquarters'] : 'IN')
             ->inAreas($this->filters['areas'], isset($this->filters['filtersType']['areas']) ? $this->filters['filtersType']['areas'] : 'IN')
             ->inProcesses($this->filters['processes'], isset($this->filters['filtersType']['processes']) ? $this->filters['filtersType']['processes'] : 'IN')
             ->inMacroprocesses($this->filters['macroprocesses'], isset($this->filters['filtersType']['macroprocesses']) ? $this->filters['filtersType']['macroprocesses'] : 'IN')
-          ->inMatrix($this->filters['matrix'], $this->filters['filtersType']['matrix'])
+          //->inMatrix($this->filters['matrix'], $this->filters['filtersType']['matrix'])
           ->inDangers($this->filters['dangers'], $this->filters['filtersType']['dangers'])
           ->where('sau_dm_activity_danger.qualification', $this->filters['label'])
           ->where('sau_dm_qualification_types.description', 'Nivel de Probabilidad')
@@ -151,7 +161,8 @@ class DangerMatrixReportExcel implements FromView, WithEvents, WithTitle
           ],
           "data2" => [
             "title" => $title_table,
-            "data" => $data_table
+            "data" => $data_table,
+            "confLocation" => $this->confLocation
           ]
       ];
     }
