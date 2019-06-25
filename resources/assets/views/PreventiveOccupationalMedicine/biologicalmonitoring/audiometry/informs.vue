@@ -36,18 +36,41 @@
                     <b-row>
                         <b-col><vue-advanced-select :disabled="isLoading" v-model="exposedPopulationCuatSelected" :options="selectBar" :searchable="true" name="exposedPopulationCuatSelected">
                             </vue-advanced-select></b-col>
-                        <b-col><vue-advanced-select :disabled="isLoading" v-model="exposedPopulationCuatPercentageSelected" :options="selectBarPercentage" :searchable="true" name="exposedPopulationCuatPercentageSelected">
-                            </vue-advanced-select></b-col>
                     </b-row>
                     <b-row align-h="end">
                         <b-col cols="6">
-                            <b>Total Expuestos con CUAT {{ exposedPopulationCuatData.datasets.count }} </b>
+                            <b>Total Expuestos con CUAT {{ exposedPopulationCuatData.percentage_x_category.datasets.count }} </b>
                         </b-col>
                     </b-row>
-                    <chart-bar 
-                        :chart-data="exposedPopulationCuatData"
-                        title="Población Expuesta con CUAT"
-                        ref="exposedPopulationCuat"/>
+                    <b-row>
+                        <div class="col-md-6" style="padding-bottom: 15px;">
+                            <div class="table-responsive" v-if="exposedPopulationCuatData.total.length > 0">
+                                <table class="table table-bordered mb-0">
+                                    <thead>
+                                        <tr>
+                                            <th class="text-center align-middle">Descripción</th>
+                                            <th class="text-center align-middle">Total</th>
+                                            <th class="text-center align-middle">% Respecto a la población</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr v-for="(row, index) in exposedPopulationCuatData.total" :key="`cuat-${index}`">
+                                            <td v-for="(col, index2) in row" :key="`cuat2-${index2}`" :class="index2 != 0 ? 'text-center align-middle' : 'align-middle'">
+                                                {{ col }}
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <chart-pie 
+                                :chart-data="exposedPopulationCuatData.percentage_x_category"
+                                title="Población Expuesta con CUAT"
+                                color-line="blue"
+                                ref="exposedPopulationCuat"/>
+                        </div>
+                    </b-row>
                 </b-card>
             </b-col>
         </b-row>
@@ -57,18 +80,41 @@
                     <b-row>
                         <b-col><vue-advanced-select :disabled="isLoading" v-model="exposedPopulationCuapSelected" :options="selectBar" :searchable="true" name="exposedPopulationCuapSelected">
                             </vue-advanced-select></b-col>
-                        <b-col><vue-advanced-select :disabled="isLoading" v-model="exposedPopulationCuapPercentageSelected" :options="selectBarPercentage" :searchable="true" name="exposedPopulationCuapPercentageSelected">
-                            </vue-advanced-select></b-col>
                     </b-row>
                     <b-row align-h="end">
                         <b-col cols="6">
-                            <b>Total Expuestos con CUAP {{ exposedPopulationCuapData.datasets.count }} </b>
+                            <b>Total Expuestos con CUAP {{ exposedPopulationCuapData.percentage_x_category.datasets.count }} </b>
                         </b-col>
                     </b-row>
-                    <chart-bar 
-                        :chart-data="exposedPopulationCuapData"
-                        title="Población Expuesta con CUAP"
-                        ref="exposedPopulationCuap"/>
+                    <b-row>
+                        <div class="col-md-6" style="padding-bottom: 15px;">
+                            <div class="table-responsive" v-if="exposedPopulationCuapData.total.length > 0">
+                                <table class="table table-bordered mb-0">
+                                    <thead>
+                                        <tr>
+                                            <th class="text-center align-middle">Descripción</th>
+                                            <th class="text-center align-middle">Total</th>
+                                            <th class="text-center align-middle">% Respecto a la población</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr v-for="(row, index) in exposedPopulationCuapData.total" :key="`cuap-${index}`">
+                                            <td v-for="(col, index2) in row" :key="`cuap2-${index2}`" :class="index2 != 0 ? 'text-center align-middle' : 'align-middle'">
+                                                {{ col }}
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <chart-pie 
+                                :chart-data="exposedPopulationCuapData.percentage_x_category"
+                                title="Población Expuesta con CUAP"
+                                color-line="red"
+                                ref="exposedPopulationCuap"/>
+                        </div>
+                    </b-row>
                 </b-card>
             </b-col>
         </b-row>
@@ -78,20 +124,86 @@
                     <b-row>
                         <b-col><vue-advanced-select :disabled="isLoading" v-model="exposedPopulationaudiologicalConditionSelected" :options="selectBar" :searchable="true" name="exposedPopulationaudiologicalConditionSelected">
                             </vue-advanced-select></b-col>
-                        <b-col><vue-advanced-select :disabled="isLoading" v-model="exposedPopulationaudiologicalConditionPercentageSelected" :options="selectBarPercentage" :searchable="true" name="exposedPopulationaudiologicalConditionPercentageSelected">
-                            </vue-advanced-select></b-col>
                     </b-row>
-                    <b-row align-h="end">
-                        <b-col cols="4">
-                            <b>Total Normal {{ exposedPopulationaudiologicalConditionData.datasets.count.Normal }} </b>
-                            <br>
-                            <b>Total Alterada {{ exposedPopulationaudiologicalConditionData.datasets.count.Alterada }} </b>
+                    <b-row>
+                        <b-col class="text-center" style="padding-bottom: 15px;">
+                            <b>Diagnóstico Normal</b>
                         </b-col>
                     </b-row>
-                    <chart-bar-multiple
-                        :chart-data="exposedPopulationaudiologicalConditionData"
-                        title="DX Audiometrias"
-                        ref="exposedPopulationaudiologicalCondition"/>
+                    <b-row align-h="end">
+                        <b-col cols="6">
+                            <b>Total Normal {{ exposedPopulationaudiologicalConditionData.normal.percentage_x_category.datasets.count }} </b>
+                        </b-col>
+                    </b-row>
+                    <b-row>
+                        <div class="col-md-6" style="padding-bottom: 15px;">
+                            <div class="table-responsive" v-if="exposedPopulationaudiologicalConditionData.normal.total.length > 0">
+                                <table class="table table-bordered mb-0">
+                                    <thead>
+                                        <tr>
+                                            <th class="text-center align-middle">Descripción</th>
+                                            <th class="text-center align-middle">Total</th>
+                                            <th class="text-center align-middle">% Respecto a la población</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr v-for="(row, index) in exposedPopulationaudiologicalConditionData.normal.total" :key="`dx-normal-${index}`">
+                                            <td v-for="(col, index2) in row" :key="`dx2-normal-${index2}`" :class="index2 != 0 ? 'text-center align-middle' : 'align-middle'">
+                                                {{ col }}
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <chart-pie 
+                                :chart-data="exposedPopulationaudiologicalConditionData.normal.percentage_x_category"
+                                title="DX Audiometrias - Diagnóstico Normal"
+                                color-line="red"
+                                ref="exposedPopulationaudiologicalConditionNormal"/>
+                        </div>
+                    </b-row>
+
+                    <b-row>
+                        <b-col class="text-center" style="padding-bottom: 15px;">
+                            <b>Diagnóstico Alterado</b>
+                        </b-col>
+                    </b-row>
+                    <b-row align-h="end">
+                        <b-col cols="6">
+                            <b>Total Alterado {{ exposedPopulationaudiologicalConditionData.alterada.percentage_x_category.datasets.count }} </b>
+                        </b-col>
+                    </b-row>
+                    <b-row>
+                        <div class="col-md-6" style="padding-bottom: 15px;">
+                            <div class="table-responsive" v-if="exposedPopulationaudiologicalConditionData.alterada.total.length > 0">
+                                <table class="table table-bordered mb-0">
+                                    <thead>
+                                        <tr>
+                                            <th class="text-center align-middle">Descripción</th>
+                                            <th class="text-center align-middle">Total</th>
+                                            <th class="text-center align-middle">% Respecto a la población</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr v-for="(row, index) in exposedPopulationaudiologicalConditionData.alterada.total" :key="`dx-alterada-${index}`">
+                                            <td v-for="(col, index2) in row" :key="`dx2-alterada-${index2}`" :class="index2 != 0 ? 'text-center align-middle' : 'align-middle'">
+                                                {{ col }}
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <chart-pie 
+                                :chart-data="exposedPopulationaudiologicalConditionData.alterada.percentage_x_category"
+                                title="DX Audiometrias - Diagnóstico Alterado"
+                                color-line="red"
+                                ref="exposedPopulationaudiologicalConditionAlterada"/>
+                        </div>
+                    </b-row>
                 </b-card>
             </b-col>
         </b-row>
@@ -130,7 +242,6 @@ import GlobalMethods from '@/utils/GlobalMethods.js';
 import VueAdvancedSelect from "@/components/Inputs/VueAdvancedSelect.vue";
 import ChartPie from '@/components/ECharts/ChartPie.vue';
 import ChartBar from '@/components/ECharts/ChartBar.vue';
-import ChartBarMultiple from '@/components/ECharts/ChartBarMultiple.vue';
 import FilterGeneral from '@/components/Filters/FilterGeneral.vue';
 
 export default {
@@ -142,14 +253,12 @@ export default {
         VueAdvancedSelect,
         ChartPie,
         ChartBar,
-        ChartBarMultiple,
         FilterGeneral
     },
     data () {
         return {
             filters: [],
             selectBar: [],
-            selectBarPercentage: [],
             isLoading: false,
 
             airLeftPtaPie: {
@@ -177,7 +286,7 @@ export default {
                     labels: [],
                     datasets: []
                 },
-                employee_business_id: {
+                deal: {
                     labels: [],
                     datasets: []
                 },
@@ -189,84 +298,42 @@ export default {
             exposedPopulationSelected: 'employee_regional_id',
             exposedPopulationCuat: {
                 employee_regional_id: {
-                    total: {
-                        labels: [],
-                        datasets: []
-                    },
-                    percentage_x_employee: {
-                        labels: [],
-                        datasets: []
-                    },
+                    total: [],
                     percentage_x_category: {
                         labels: [],
                         datasets: []
                     }
                 },
                 employee_headquarter_id: {
-                    total: {
-                        labels: [],
-                        datasets: []
-                    },
-                    percentage_x_employee: {
-                        labels: [],
-                        datasets: []
-                    },
+                    total: [],
                     percentage_x_category: {
                         labels: [],
                         datasets: []
                     }
                 },
                 employee_area_id: {
-                    total: {
-                        labels: [],
-                        datasets: []
-                    },
-                    percentage_x_employee: {
-                        labels: [],
-                        datasets: []
-                    },
+                    total: [],
                     percentage_x_category: {
                         labels: [],
                         datasets: []
                     }
                 },
                 employee_process_id: {
-                    total: {
-                        labels: [],
-                        datasets: []
-                    },
-                    percentage_x_employee: {
-                        labels: [],
-                        datasets: []
-                    },
+                    total: [],
                     percentage_x_category: {
                         labels: [],
                         datasets: []
                     }
                 },
-                employee_business_id: {
-                    total: {
-                        labels: [],
-                        datasets: []
-                    },
-                    percentage_x_employee: {
-                        labels: [],
-                        datasets: []
-                    },
+                deal: {
+                    total: [],
                     percentage_x_category: {
                         labels: [],
                         datasets: []
                     }
                 },
                 employee_position_id: {
-                    total: {
-                        labels: [],
-                        datasets: []
-                    },
-                    percentage_x_employee: {
-                        labels: [],
-                        datasets: []
-                    },
+                    total: [],
                     percentage_x_category: {
                         labels: [],
                         datasets: []
@@ -274,87 +341,44 @@ export default {
                 }
             },
             exposedPopulationCuatSelected: 'employee_regional_id',
-            exposedPopulationCuatPercentageSelected: 'total',
             exposedPopulationCuap: {
                 employee_regional_id: {
-                    total: {
-                        labels: [],
-                        datasets: []
-                    },
-                    percentage_x_employee: {
-                        labels: [],
-                        datasets: []
-                    },
+                    total: [],
                     percentage_x_category: {
                         labels: [],
                         datasets: []
                     }
                 },
                 employee_headquarter_id: {
-                    total: {
-                        labels: [],
-                        datasets: []
-                    },
-                    percentage_x_employee: {
-                        labels: [],
-                        datasets: []
-                    },
+                    total: [],
                     percentage_x_category: {
                         labels: [],
                         datasets: []
                     }
                 },
                 employee_area_id: {
-                    total: {
-                        labels: [],
-                        datasets: []
-                    },
-                    percentage_x_employee: {
-                        labels: [],
-                        datasets: []
-                    },
+                    total: [],
                     percentage_x_category: {
                         labels: [],
                         datasets: []
                     }
                 },
                 employee_process_id: {
-                    total: {
-                        labels: [],
-                        datasets: []
-                    },
-                    percentage_x_employee: {
-                        labels: [],
-                        datasets: []
-                    },
+                    total: [],
                     percentage_x_category: {
                         labels: [],
                         datasets: []
                     }
                 },
-                employee_business_id: {
-                    total: {
-                        labels: [],
-                        datasets: []
-                    },
-                    percentage_x_employee: {
-                        labels: [],
-                        datasets: []
-                    },
+                deal: {
+                    total: [],
                     percentage_x_category: {
                         labels: [],
                         datasets: []
                     }
                 },
                 employee_position_id: {
-                    total: {
-                        labels: [],
-                        datasets: []
-                    },
-                    percentage_x_employee: {
-                        labels: [],
-                        datasets: []
-                    },
+                    total: [],
                     percentage_x_category: {
                         labels: [],
                         datasets: []
@@ -362,136 +386,133 @@ export default {
                 }
             },
             exposedPopulationCuapSelected: 'employee_regional_id',
-            exposedPopulationCuapPercentageSelected: 'total',
             exposedPopulationaudiologicalCondition: {
                 employee_regional_id: {
-                    total: {
-                        labels: [],
-                        datasets: {
-                            count: []
+                    normal: {
+                        total: [],
+                        percentage_x_category: {
+                            labels: [],
+                            datasets: {
+                                count: []
+                            }
                         }
                     },
-                    percentage_x_employee: {
-                        labels: [],
-                        datasets: {
-                            count: []
-                        }
-                    },
-                    percentage_x_category: {
-                        labels: [],
-                        datasets: {
-                            count: []
-                        }
+                    alterada: {
+                        total: [],
+                        percentage_x_category: {
+                            labels: [],
+                            datasets: {
+                                count: []
+                            }
+                        } 
                     }
                 },
                 employee_headquarter_id: {
-                    total: {
-                        labels: [],
-                        datasets: {
-                            count: []
+                    normal: {
+                        total: [],
+                        percentage_x_category: {
+                            labels: [],
+                            datasets: {
+                                count: []
+                            }
                         }
                     },
-                    percentage_x_employee: {
-                        labels: [],
-                        datasets: {
-                            count: []
-                        }
-                    },
-                    percentage_x_category: {
-                        labels: [],
-                        datasets: {
-                            count: []
-                        }
+                    alterada: {
+                        total: [],
+                        percentage_x_category: {
+                            labels: [],
+                            datasets: {
+                                count: []
+                            }
+                        } 
                     }
                 },
                 employee_area_id: {
-                    total: {
-                        labels: [],
-                        datasets: {
-                            count: []
+                    normal: {
+                        total: [],
+                        percentage_x_category: {
+                            labels: [],
+                            datasets: {
+                                count: []
+                            }
                         }
                     },
-                    percentage_x_employee: {
-                        labels: [],
-                        datasets: {
-                            count: []
-                        }
-                    },
-                    percentage_x_category: {
-                        labels: [],
-                        datasets: {
-                            count: []
-                        }
+                    alterada: {
+                        total: [],
+                        percentage_x_category: {
+                            labels: [],
+                            datasets: {
+                                count: []
+                            }
+                        } 
                     }
                 },
                 employee_process_id: {
-                    total: {
-                        labels: [],
-                        datasets: {
-                            count: []
+                    normal: {
+                        total: [],
+                        percentage_x_category: {
+                            labels: [],
+                            datasets: {
+                                count: []
+                            }
                         }
                     },
-                    percentage_x_employee: {
-                        labels: [],
-                        datasets: {
-                            count: []
-                        }
-                    },
-                    percentage_x_category: {
-                        labels: [],
-                        datasets: {
-                            count: []
-                        }
+                    alterada: {
+                        total: [],
+                        percentage_x_category: {
+                            labels: [],
+                            datasets: {
+                                count: []
+                            }
+                        } 
                     }
                 },
-                employee_business_id: {
-                    total: {
-                        labels: [],
-                        datasets: {
-                            count: []
+                deal: {
+                    normal: {
+                        total: [],
+                        percentage_x_category: {
+                            labels: [],
+                            datasets: {
+                                count: []
+                            }
                         }
                     },
-                    percentage_x_employee: {
-                        labels: [],
-                        datasets: {
-                            count: []
-                        }
-                    },
-                    percentage_x_category: {
-                        labels: [],
-                        datasets: {
-                            count: []
-                        }
+                    alterada: {
+                        total: [],
+                        percentage_x_category: {
+                            labels: [],
+                            datasets: {
+                                count: []
+                            }
+                        } 
                     }
                 },
                 employee_position_id: {
-                    total: {
-                        labels: [],
-                        datasets: {
-                            count: []
+                    normal: {
+                        total: [],
+                        percentage_x_category: {
+                            labels: [],
+                            datasets: {
+                                count: []
+                            }
                         }
                     },
-                    percentage_x_employee: {
-                        labels: [],
-                        datasets: {
-                            count: []
-                        }
-                    },
-                    percentage_x_category: {
-                        labels: [],
-                        datasets: {
-                            count: []
-                        }
+                    alterada: {
+                        total: [],
+                        percentage_x_category: {
+                            labels: [],
+                            datasets: {
+                                count: []
+                            }
+                        } 
                     }
                 }
             },
             exposedPopulationaudiologicalConditionSelected: 'employee_regional_id',
-            exposedPopulationaudiologicalConditionPercentageSelected: 'total',
         }
     },
     created(){
         this.fetchSelect('selectBar', '/selects/multiselectBar')
-        this.fetchSelect('selectBarPercentage', '/selects/multiselectBarPercentage')
         this.fetch()
     },
     computed: {
@@ -499,13 +520,13 @@ export default {
             return this.exposedPopulation[this.exposedPopulationSelected]
         },
         exposedPopulationCuatData: function() {
-            return this.exposedPopulationCuat[this.exposedPopulationCuatSelected][this.exposedPopulationCuatPercentageSelected]
+            return this.exposedPopulationCuat[this.exposedPopulationCuatSelected]
         },
         exposedPopulationCuapData: function() {
-            return this.exposedPopulationCuap[this.exposedPopulationCuapSelected][this.exposedPopulationCuapPercentageSelected]
+            return this.exposedPopulationCuap[this.exposedPopulationCuapSelected]
         },
         exposedPopulationaudiologicalConditionData: function() {
-            return this.exposedPopulationaudiologicalCondition[this.exposedPopulationaudiologicalConditionSelected][this.exposedPopulationaudiologicalConditionPercentageSelected]
+            return this.exposedPopulationaudiologicalCondition[this.exposedPopulationaudiologicalConditionSelected]
         }
     },
     watch: {
@@ -532,7 +553,7 @@ export default {
         {
             if (!this.isLoading)
             {
-                console.log('buscando...')
+                //console.log('buscando...')
                 this.isLoading = true;
 
                 axios.post('/biologicalmonitoring/audiometry/informs', this.filters)

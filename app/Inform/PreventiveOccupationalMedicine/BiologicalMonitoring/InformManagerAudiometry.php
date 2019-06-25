@@ -30,13 +30,12 @@ class InformManagerAudiometry
         ['sau_employees_headquarters', 'employee_headquarter_id'],
         ['sau_employees_areas', 'employee_area_id'],
         ['sau_employees_processes', 'employee_process_id'],
-        ['sau_employees_businesses', 'employee_business_id'],
+        ['sau_employees', 'deal'],
         ['sau_employees_positions', 'employee_position_id']
     ];
 
     const TYPE_PERCENTAGE = [
         'total' => [],
-        'percentage_x_employee' => [],
         'percentage_x_category' => []
     ];
 
@@ -48,7 +47,7 @@ class InformManagerAudiometry
     protected $headquarters;
     protected $areas;
     protected $processes;
-    protected $businesses;
+    protected $deals;
     protected $positions;
     protected $years;
     protected $dateRange;
@@ -59,13 +58,13 @@ class InformManagerAudiometry
      * create an instance and set the attribute class
      * @param array $regionals
      */
-    function __construct($regionals = [], $headquarters = [], $areas = [], $processes = [], $businesses = [], $positions = [], $years = [], $dateRange = [], $filtersType = [])
+    function __construct($regionals = [], $headquarters = [], $areas = [], $processes = [], $deals = [], $positions = [], $years = [], $dateRange = [], $filtersType = [])
     {
         $this->regionals = $regionals;
         $this->headquarters = $headquarters;
         $this->areas = $areas;
         $this->processes = $processes;
-        $this->businesses = $businesses;
+        $this->deals = $deals;
         $this->positions = $positions;
         $this->years = $years;
         $this->dateRange = $dateRange;
@@ -127,11 +126,12 @@ class InformManagerAudiometry
         ->inHeadquarters($this->headquarters, $this->filtersType['headquarters'])
         ->inAreas($this->areas, $this->filtersType['areas'])
         ->inProcesses($this->processes, $this->filtersType['processes'])
-        ->inBusinesses($this->businesses, $this->filtersType['businesses'])
+        ->inDeals($this->deals, $this->filtersType['deals'])
         ->inPositions($this->positions, $this->filtersType['positions'])
         ->inYears($this->years, $this->filtersType['years'])
         ->betweenDate($this->dateRange)
         ->where($column, '<>', '')
+        ->where('sau_bm_audiometries.base_type', 'Base')
         ->groupBy($column)
         ->pluck('count', $column);
 
@@ -163,18 +163,33 @@ class InformManagerAudiometry
      */
     public function exposedPopulationForColumn($table, $column)
     {
-        $exposedPopulation = Employee::selectRaw($table.".name as name,
-            COUNT(sau_employees.id) as count
-        ")
-        ->join($table, $table.'.id','sau_employees.'.$column)
-        ->inRegionals($this->regionals, $this->filtersType['regionals'])
-        ->inHeadquarters($this->headquarters, $this->filtersType['headquarters'])
-        ->inAreas($this->areas, $this->filtersType['areas'])
-        ->inProcesses($this->processes, $this->filtersType['processes'])
-        ->inBusinesses($this->businesses, $this->filtersType['businesses'])
-        ->inPositions($this->positions, $this->filtersType['positions'])
-        ->groupBy($table.'.name')
-        ->pluck('count', 'name');
+        $exposedPopulation = Audiometry::join('sau_employees','sau_employees.id','sau_bm_audiometries.employee_id');
+
+        if ($table != 'sau_employees')
+        {
+            $exposedPopulation->selectRaw($table.".name as name,
+                COUNT(sau_employees.id) as count
+            ")
+            ->join($table, $table.'.id','sau_employees.'.$column)
+            ->groupBy($table.'.name');
+        }
+        else
+        {
+            $exposedPopulation->selectRaw($table.".".$column." as name,
+                COUNT(sau_employees.id) as count
+            ")
+            ->groupBy($table.'.'.$column);
+        }
+
+        $exposedPopulation = $exposedPopulation
+            ->inRegionals($this->regionals, $this->filtersType['regionals'])
+            ->inHeadquarters($this->headquarters, $this->filtersType['headquarters'])
+            ->inAreas($this->areas, $this->filtersType['areas'])
+            ->inProcesses($this->processes, $this->filtersType['processes'])
+            ->inDeals($this->deals, $this->filtersType['deals'])
+            ->inPositions($this->positions, $this->filtersType['positions'])
+            ->where('sau_bm_audiometries.base_type', 'Base')
+            ->pluck('count', 'name');
 
         return $this->buildDataChart($exposedPopulation);
     }
@@ -206,53 +221,64 @@ class InformManagerAudiometry
             $informData[$column[1]] = $this::TYPE_PERCENTAGE;
             $result_total = $this->exposedPopulationForState($column[0], $column[1], $state);
             
-            $informData[$column[1]]['total'] = $result_total;
-            $informData[$column[1]]['percentage_x_employee'] = $this->percentageDataset($result_total->toArray(), $this->totalEmployee);
-            $informData[$column[1]]['percentage_x_category'] = $this->percentageDataset($result_total->toArray());
+            $informData[$column[1]]['total'] = $this->addPercentageEmployee($result_total);
+            $informData[$column[1]]['percentage_x_category'] = $this->buildDataChart($result_total);
         }
 
         return $informData;
     }
 
-    private function percentageDataset($data, $totalData = null)
+    private function addPercentageEmployee($data)
     {
-        if (!$totalData)
-            $total = $data['datasets']['count'];
-        else 
-            $total = $totalData;
-        
-        $data['datasets']['type'] = 'percentage';
+        $result = [];
 
-        foreach ($data['datasets']['data'] as $key => $value)
+        if (COUNT($data) > 0)
         {
-            $data['datasets']['data'][$key]['value'] = round(
-                ($data['datasets']['data'][$key]['value'] / $total) * 100
-            , 1);
+            foreach ($data as $key => $value)
+            {
+                array_push($result,[
+                    $key, $value, round( ($value / $this->totalEmployee) * 100, 1)
+                ]);
+            }
         }
 
-        return $data;
+        return $result;
     }
 
     private function exposedPopulationForState($table, $column, $state)
     {
-        $audiometryState = Audiometry::selectRaw($table.".name as name,
-            COUNT(sau_employees.id) as count
-        ")
-        ->join('sau_employees','sau_employees.id','sau_bm_audiometries.employee_id')
-        ->join($table, $table.'.id','sau_employees.'.$column)
-        ->inRegionals($this->regionals, $this->filtersType['regionals'])
-        ->inHeadquarters($this->headquarters, $this->filtersType['headquarters'])
-        ->inAreas($this->areas, $this->filtersType['areas'])
-        ->inProcesses($this->processes, $this->filtersType['processes'])
-        ->inBusinesses($this->businesses, $this->filtersType['businesses'])
-        ->inPositions($this->positions, $this->filtersType['positions'])
-        ->inYears($this->years, $this->filtersType['years'])
-        ->betweenDate($this->dateRange)
-        ->where('sau_bm_audiometries.base_state', '=', $state)
-        ->groupBy($table.'.name')
-        ->pluck('count', 'name');
+        $audiometryState = Audiometry::join('sau_employees','sau_employees.id','sau_bm_audiometries.employee_id');
 
-        return $this->buildDataChart($audiometryState);
+        if ($table != 'sau_employees')
+        {
+            $audiometryState->selectRaw($table.".name as name,
+                COUNT(sau_employees.id) as count
+            ")
+            ->join($table, $table.'.id','sau_employees.'.$column)
+            ->groupBy($table.'.name');
+        }
+        else
+        {
+            $audiometryState->selectRaw($table.".".$column." as name,
+                COUNT(sau_employees.id) as count
+            ")
+            ->groupBy($table.'.'.$column);
+        }
+
+        $audiometryState = $audiometryState
+            ->inRegionals($this->regionals, $this->filtersType['regionals'])
+            ->inHeadquarters($this->headquarters, $this->filtersType['headquarters'])
+            ->inAreas($this->areas, $this->filtersType['areas'])
+            ->inProcesses($this->processes, $this->filtersType['processes'])
+            ->inDeals($this->deals, $this->filtersType['deals'])
+            ->inPositions($this->positions, $this->filtersType['positions'])
+            ->inYears($this->years, $this->filtersType['years'])
+            ->betweenDate($this->dateRange)
+            ->where('sau_bm_audiometries.base_state', '=', $state)
+            ->where('sau_bm_audiometries.base_type', 'Base')
+            ->pluck('count', 'name');
+
+        return $audiometryState;
     }
     
     /**
@@ -265,73 +291,110 @@ class InformManagerAudiometry
         $informData = [];
 
         foreach ($columns as $column) {
-            $informData[$column[1]] = $this::TYPE_PERCENTAGE;
+            //$informData[$column[1]] = $this::TYPE_PERCENTAGE;
             $result_total = $this->exposedPopulationaudiologicalConditionForColumns($column[0], $column[1]);
-            
-            $informData[$column[1]]['total'] = $result_total;
-            $informData[$column[1]]['percentage_x_employee'] = $this->percentageMultiDataset($result_total->toArray(), true);
-            $informData[$column[1]]['percentage_x_category'] = $this->percentageMultiDataset($result_total->toArray());
+            $informData[$column[1]] = $this->prepareDataexposedPopulationaudiologicalCondition($result_total);
         }
     
         return $informData;
     }
 
-    private function percentageMultiDataset($data, $totalData = false)
-    {        
-        foreach ($data['datasets']['data'] as $key => $value)
-        {
-            if ($value['name'] !== '')
-            {
-                if (!$totalData)
-                    $total = $data['datasets']['count'][$value['name']];
-                else 
-                    $total = array_sum($data['datasets']['count']);
+    private function prepareDataexposedPopulationaudiologicalCondition($data)
+    {
+        $result = [];
 
-                foreach ($value['data'] as $key2 => $value2)
-                { 
-                    if ($total > 0)
-                        $data['datasets']['data'][$key]['data'][$key2]['value'] = round(
-                            ($data['datasets']['data'][$key]['data'][$key2]['value'] / $total) * 100
-                        , 1);
-                    else
-                        $data['datasets']['data'][$key]['data'][$key2]['value'] = 0;
-                        
-                    $data['datasets']['data'][$key]['label']['normal']['formatter'] = "{c}%";
-                }
-            }
+        $normal = $data->filter(function ($value, $key) {
+            return $value->serie == 'Normal';
+        });
+        
+        $total = [];
+        $percentage_x_category = [];
+
+        foreach ($normal as $key => $value)
+        {
+            $percentage_x_category[$value->name] = $value->count;
+            array_push($total, [
+                $value->name, $value->count, round( ($value->count/ $this->totalEmployee) * 100, 1)
+            ]);
         }
 
-        return $data;
+        $result["normal"] = [
+            'total' => $total,
+            'percentage_x_category' => $this->buildDataChart($percentage_x_category)
+        ];
+
+        $alterada = $data->filter(function ($value, $key) {
+            return $value->serie == 'Alterada';
+        });
+
+        $total = [];
+        $percentage_x_category = [];
+
+        foreach ($alterada as $key => $value)
+        {
+            $percentage_x_category[$value->name] = $value->count;
+            array_push($total, [
+                $value->name, $value->count, round( ($value->count/ $this->totalEmployee) * 100, 1)
+            ]);
+        }
+
+        $result["alterada"] = [
+            'total' => $total,
+            'percentage_x_category' => $this->buildDataChart($percentage_x_category)
+        ];
+
+        return $result;
     }
     
     private function exposedPopulationaudiologicalConditionForColumns($table, $column)
     {
-        $audiometryCoditions = Audiometry::selectRaw($table.".name as name,
-            COUNT(sau_employees.id) as count,
-            IF(
-                severity_grade_air_left_4000='Audición normal' AND
-                severity_grade_air_left_6000='Audición normal' AND
-                severity_grade_air_left_8000='Audición normal' AND
-                severity_grade_air_right_4000='Audición normal' AND
-                severity_grade_air_right_6000='Audición normal' AND
-                severity_grade_air_right_8000='Audición normal'
-            ,'Normal', 'Alterada') as 'serie'
-        ")
-        ->join('sau_employees','sau_employees.id','sau_bm_audiometries.employee_id')
-        ->join($table, $table.'.id','sau_employees.'.$column)
-        ->inRegionals($this->regionals, $this->filtersType['regionals'])
-        ->inHeadquarters($this->headquarters, $this->filtersType['headquarters'])
-        ->inAreas($this->areas, $this->filtersType['areas'])
-        ->inProcesses($this->processes, $this->filtersType['processes'])
-        ->inBusinesses($this->businesses, $this->filtersType['businesses'])
-        ->inPositions($this->positions, $this->filtersType['positions'])
-        ->inYears($this->years, $this->filtersType['years'])
-        ->betweenDate($this->dateRange)
-        ->groupBy($table.'.name', 'serie')
-        ->get();
+        $audiometryCoditions = Audiometry::join('sau_employees','sau_employees.id','sau_bm_audiometries.employee_id');
 
-        $barSeries = ['Normal', 'Alterada'];
-        return $this->buildMultiBarDataChart($audiometryCoditions, $barSeries);
+        if ($table != 'sau_employees')
+        {
+            $audiometryCoditions->selectRaw($table.".name as name,
+                COUNT(sau_employees.id) as count,
+                IF(
+                    severity_grade_air_left_4000='Audición normal' AND
+                    severity_grade_air_left_6000='Audición normal' AND
+                    severity_grade_air_left_8000='Audición normal' AND
+                    severity_grade_air_right_4000='Audición normal' AND
+                    severity_grade_air_right_6000='Audición normal' AND
+                    severity_grade_air_right_8000='Audición normal'
+                ,'Normal', 'Alterada') as 'serie'
+            ")
+            ->join($table, $table.'.id','sau_employees.'.$column)
+            ->groupBy($table.'.name', 'serie');
+        }
+        else
+        {
+            $audiometryCoditions->selectRaw($table.".".$column." as name,
+                COUNT(sau_employees.id) as count,
+                IF(
+                    severity_grade_air_left_4000='Audición normal' AND
+                    severity_grade_air_left_6000='Audición normal' AND
+                    severity_grade_air_left_8000='Audición normal' AND
+                    severity_grade_air_right_4000='Audición normal' AND
+                    severity_grade_air_right_6000='Audición normal' AND
+                    severity_grade_air_right_8000='Audición normal'
+                ,'Normal', 'Alterada') as 'serie'
+            ")
+            ->groupBy($table.'.'.$column, 'serie');
+        }
+
+        $audiometryCoditions = $audiometryCoditions
+            ->inRegionals($this->regionals, $this->filtersType['regionals'])
+            ->inHeadquarters($this->headquarters, $this->filtersType['headquarters'])
+            ->inAreas($this->areas, $this->filtersType['areas'])
+            ->inProcesses($this->processes, $this->filtersType['processes'])
+            ->inDeals($this->deals, $this->filtersType['deals'])
+            ->inPositions($this->positions, $this->filtersType['positions'])
+            ->inYears($this->years, $this->filtersType['years'])
+            ->betweenDate($this->dateRange)
+            ->where('sau_bm_audiometries.base_type', 'Base')
+            ->get();
+
+        return $audiometryCoditions;
     }
 
     /**
@@ -362,110 +425,20 @@ class InformManagerAudiometry
     }
 
     /**
-     * takes the raw data collection and builds
-     * a new collection with the right structure for the multibar
-     * chart data
-     * @param  collection $rawData
-     * @return collection
-     */
-    protected function buildMultiBarDataChart($rawData, $barSeries)
-    {
-        $labels = [];
-        $data = [];
-        $total = [];
-        $series = [];
-        $max_value = 0;
-        $total_divisor = 0;
-
-        foreach ($barSeries as $value)
-        {
-            $series[$value] = [];
-            $total[$value] = 0;
-        }
-
-        foreach ($rawData as $item)
-        {
-            if (!isset($labels[$item->name]))    
-                $labels[$item->name] = $item->name;
-
-            $series[$item->serie][$item->name] = ['name' => $item->name, 'value' => $item->count];
-
-            foreach ($barSeries as $value)
-            {
-                if (!isset($series[$value][$item->name]))
-                {
-                    $series[$value][$item->name] = ['name' => $item->name, 'value' => 0];
-                }
-            }
-
-            $total[$item->serie] += $item->count;
-
-            if ($item->count > $max_value)
-                $max_value = $item->count;
-        }
-
-        foreach ($series as $key => $value) 
-        {
-            $info = [
-                "name" => $key,
-                "type" => 'bar',
-                "data" => array_values($value),
-                "label" => [
-                    "normal" => [
-                        "show" => true,
-                        "position" => "right",
-                        "color" => "black",
-                        "formatter" => "{c}"
-                    ]
-                ]
-            ];
-
-            array_push($data, $info);
-            $total_divisor = COUNT($value);
-        }
-
-        /**Divisor de series */
-        $data_divisor = [];
-
-        for ($i=0; $i < $total_divisor; $i++)
-        { 
-            array_push($data_divisor, $max_value);
-        }
-
-        $divisor = [
-            "name" => '',
-            "type" => 'bar',
-            "barWidth" => 3,
-            "data" => $data_divisor
-        ];
-
-        array_push($data, $divisor);
-        /************************* */
-
-        return collect([
-            'labels' => array_values($labels),
-            'datasets' => [
-                'data' => $data,
-                'count' => $total,
-                'series' => $barSeries
-            ]
-        ]);
-    }
-
-    /**
      * Return the total amount of exposed population
      *
      * @return void
      */
     private function getTotalEmployee()
     {
-        $exposedPopulation = Employee::
-              inRegionals($this->regionals, $this->filtersType['regionals'])
+        $exposedPopulation = Audiometry::join('sau_employees','sau_employees.id','sau_bm_audiometries.employee_id')
+            ->inRegionals($this->regionals, $this->filtersType['regionals'])
             ->inHeadquarters($this->headquarters, $this->filtersType['headquarters'])
             ->inAreas($this->areas, $this->filtersType['areas'])
             ->inProcesses($this->processes, $this->filtersType['processes'])
-            ->inBusinesses($this->businesses, $this->filtersType['businesses'])
+            ->inDeals($this->deals, $this->filtersType['deals'])
             ->inPositions($this->positions, $this->filtersType['positions'])
+            ->where('sau_bm_audiometries.base_type', 'Base')
             ->count();
 
         return $exposedPopulation;

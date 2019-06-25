@@ -43,7 +43,7 @@ class AudiometryInformController extends Controller
         $headquarters = $this->getValuesForMultiselect($request->headquarters);
         $areas = $this->getValuesForMultiselect($request->areas);
         $processes = $this->getValuesForMultiselect($request->processes);
-        $businesses = $this->getValuesForMultiselect($request->businesses);
+        $deals = $this->getValuesForMultiselect($request->deals);
         $positions = $this->getValuesForMultiselect($request->positions);
         $years = $this->getValuesForMultiselect($request->years);
         $dates = [];
@@ -61,7 +61,7 @@ class AudiometryInformController extends Controller
             
         }
         
-        $informManager = new InformManagerAudiometry($regionals, $headquarters, $areas, $processes, $businesses, $positions, $years, $dates, $filtersType);
+        $informManager = new InformManagerAudiometry($regionals, $headquarters, $areas, $processes, $deals, $positions, $years, $dates, $filtersType);
         
         return $this->respondHttp200($informManager->getInformData());
     }
@@ -79,25 +79,8 @@ class AudiometryInformController extends Controller
             'Sedes' => 'employee_headquarter_id',
             'Procesos' => 'employee_process_id',
             'Áreas' => 'employee_area_id',
-            'Centro de Costos' => 'employee_business_id',
+            'Negocios' => 'deal',
             'Cargos' => 'employee_position_id'
-        ];
-    
-        return $this->multiSelectFormat(collect($select));
-    }
-
-    /**
-     * Returns an array for a select type input
-     *
-     * @return Array
-     */
-
-    public function multiselectBarPercentage()
-    {
-        $select = [
-            'Total' => 'total',
-            '% respecto a la población' => 'percentage_x_employee',
-            '% respecto a la categoría' => 'percentage_x_category'
         ];
     
         return $this->multiSelectFormat(collect($select));
