@@ -237,7 +237,7 @@ class InformManagerAudiometry
             foreach ($data as $key => $value)
             {
                 array_push($result,[
-                    $key, $value, round( ($value / $this->totalEmployee) * 100, 1)
+                    $key, $value, round( ($value / $this->totalEmployee) * 100, 1).'%'
                 ]);
             }
         }
