@@ -53,7 +53,7 @@ class DangerMatrixReportController extends Controller
             $processes = $this->getValuesForMultiselect($request->processes);
             $macroprocesses = $this->getValuesForMultiselect($request->macroprocesses);
             $dangers = $this->getValuesForMultiselect($request->dangers);
-            $matrix = $this->getValuesForMultiselect($request->matrix);
+            //$matrix = $this->getValuesForMultiselect($request->matrix);
             $filtersType = $request->filtersType;
             /***********************************************/
 
@@ -64,7 +64,7 @@ class DangerMatrixReportController extends Controller
                 ->inAreas($areas, isset($filtersType['areas']) ? $filtersType['areas'] : 'IN')
                 ->inProcesses($processes, isset($filtersType['processes']) ? $filtersType['processes'] : 'IN')
                 ->inMacroprocesses($macroprocesses, isset($filtersType['macroprocesses']) ? $filtersType['macroprocesses'] : 'IN')
-                ->inMatrix($matrix, $filtersType['matrix'])
+                //->inMatrix($matrix, $filtersType['matrix'])
                 ->get();
 
             foreach ($dangersMatrix as $keyMatrix => $itemMatrix)
@@ -142,7 +142,7 @@ class DangerMatrixReportController extends Controller
         $processes = $this->getValuesForMultiselect($request->processes);
         $macroprocesses = $this->getValuesForMultiselect($request->macroprocesses);
         $dangers = $this->getValuesForMultiselect($request->dangers);
-        $matrix = $this->getValuesForMultiselect($request->matrix);
+        //$matrix = $this->getValuesForMultiselect($request->matrix);
         $filtersType = $request->filtersType;
         /***********************************************/
 
@@ -150,7 +150,10 @@ class DangerMatrixReportController extends Controller
             'sau_dangers_matrix.id AS id',
             'sau_dm_dangers.name AS name',
             'sau_dm_activity_danger.danger_description AS danger_description',
-            'sau_dangers_matrix.name AS matrix',
+            'sau_employees_regionals.name as regional',
+            'sau_employees_headquarters.name as headquarter',
+            'sau_employees_processes.name as process',
+            'sau_employees_areas.name as area',
             'sau_employees_processes.types as types'
         )
         ->join('sau_danger_matrix_activity', 'sau_danger_matrix_activity.danger_matrix_id', 'sau_dangers_matrix.id')
@@ -158,13 +161,16 @@ class DangerMatrixReportController extends Controller
         ->join('sau_dm_dangers', 'sau_dm_dangers.id', 'sau_dm_activity_danger.danger_id')
         ->join('sau_dm_qualification_danger', 'sau_dm_qualification_danger.activity_danger_id', 'sau_dm_activity_danger.id')
         ->join('sau_dm_qualification_types', 'sau_dm_qualification_types.id', 'sau_dm_qualification_danger.type_id')
+        ->leftJoin('sau_employees_regionals', 'sau_employees_regionals.id', 'sau_dangers_matrix.employee_regional_id')
+        ->leftJoin('sau_employees_headquarters', 'sau_employees_headquarters.id', 'sau_dangers_matrix.employee_headquarter_id')
         ->leftJoin('sau_employees_processes', 'sau_employees_processes.id', 'sau_dangers_matrix.employee_process_id')
+        ->leftJoin('sau_employees_areas', 'sau_employees_areas.id', 'sau_dangers_matrix.employee_area_id')
         ->inRegionals($regionals, isset($filtersType['regionals']) ? $filtersType['regionals'] : 'IN')
         ->inHeadquarters($headquarters, isset($filtersType['headquarters']) ? $filtersType['headquarters'] : 'IN')
         ->inAreas($areas, isset($filtersType['areas']) ? $filtersType['areas'] : 'IN')
         ->inProcesses($processes, isset($filtersType['processes']) ? $filtersType['processes'] : 'IN')
         ->inMacroprocesses($macroprocesses, isset($filtersType['macroprocesses']) ? $filtersType['macroprocesses'] : 'IN')
-        ->inMatrix($matrix, $filtersType['matrix'])
+        //->inMatrix($matrix, $filtersType['matrix'])
         ->inDangers($dangers, $filtersType['dangers'])
         ->where('sau_dm_activity_danger.qualification', $request->label)
         ->where('sau_dm_qualification_types.description', 'Nivel de Probabilidad')
@@ -186,7 +192,7 @@ class DangerMatrixReportController extends Controller
                 "processes" => $this->getValuesForMultiselect($request->processes),
                 "macroprocesses" => $this->getValuesForMultiselect($request->macroprocesses),
                 "dangers" => $this->getValuesForMultiselect($request->dangers),
-                "matrix" => $this->getValuesForMultiselect($request->matrix),
+                //"matrix" => $this->getValuesForMultiselect($request->matrix),
                 "row" => $request->row,
                 "col" => $request->col,
                 "label" => $request->label,

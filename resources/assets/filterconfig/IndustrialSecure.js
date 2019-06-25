@@ -37,12 +37,6 @@ export default [
           key: 'dangers',
           type: 'select',
           label: 'Peligros'
-        },
-        {
-          url: '/selects/dmDangerMatrix',
-          key: 'matrix',
-          type: 'select',
-          label: 'Matriz de peligros'
         }
       ]
     }

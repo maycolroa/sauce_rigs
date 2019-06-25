@@ -46,6 +46,7 @@
                         <vue-table
                             ref="tableDanger"
                             configName="industrialsecure-dangermatrix-report"
+                            :customColumnsName="true"
                             :params="paramsTable"
                             ></vue-table>
                     </b-card>

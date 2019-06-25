@@ -26,15 +26,46 @@
             </tr>
             <tr></tr>
             <tr>
-                <td colspan="8">Peligro</td>
-                <td colspan="5">Descripción</td>
-                <td colspan="2">Matriz</td>
+                <td colspan="7">Peligro</td>
+                <td colspan="4">Descripción</td>
+
+                @if ($data['data2']['confLocation']['regional'] == 'SI')
+                    <td colspan="1">Regional</td>
+                @endif
+                
+                @if ($data['data2']['confLocation']['headquarter'] == 'SI')
+                    <td colspan="1">Sede</td>
+                @endif
+
+                @if ($data['data2']['confLocation']['process'] == 'SI')
+                    <td colspan="1">Proceso</td>
+                @endif
+
+                @if ($data['data2']['confLocation']['area'] == 'SI')
+                    <td colspan="1">Área</td>
+                @endif
+
             </tr>
             @foreach($data['data2']['data'] as $row)
                 <tr>
-                    <td rowspan="3" colspan="8">{{ $row->name }}</td>
-                    <td rowspan="3" colspan="5">{{ $row->danger_description }}</td>
-                    <td rowspan="3" colspan="2">{{ $row->matrix }}</td>
+                    <td rowspan="3" colspan="7">{{ $row->name }}</td>
+                    <td rowspan="3" colspan="4">{{ $row->danger_description }}</td>
+
+                    @if ($data['data2']['confLocation']['regional'] == 'SI')
+                        <td rowspan="3" colspan="1">{{ $row->regional }}</td>
+                    @endif
+                    
+                    @if ($data['data2']['confLocation']['headquarter'] == 'SI')
+                        <td rowspan="3" colspan="1">{{ $row->headquarter }}</td>
+                    @endif
+
+                    @if ($data['data2']['confLocation']['process'] == 'SI')
+                        <td rowspan="3" colspan="1">{{ $row->process }}</td>
+                    @endif
+
+                    @if ($data['data2']['confLocation']['area'] == 'SI')
+                        <td rowspan="3" colspan="1">{{ $row->area }}</td>
+                    @endif
                 </tr>
                 <tr></tr>
                 <tr></tr>
