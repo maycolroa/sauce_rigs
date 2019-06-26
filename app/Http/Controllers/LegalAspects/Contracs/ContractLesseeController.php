@@ -359,7 +359,12 @@ class ContractLesseeController extends Controller
                     }
                     else if ($item->qualification == 'NC')
                     {
-                        $item->actionPlan = ActionPlan::model($item)->prepareDataComponent();
+                        $model_activity = ItemQualificationContractDetail::
+                                  where('contract_id', $contract->id)
+                                ->where('item_id', $item->id)
+                                ->first();
+
+                        $item->actionPlan = ActionPlan::model($model_activity)->prepareDataComponent();
                     }
 
                     return $item;
@@ -421,7 +426,7 @@ class ContractLesseeController extends Controller
             $qualifications = Qualifications::pluck("id", "name");
             $contract = $this->getContractUser(Auth::user()->id);
             
-            ItemQualificationContractDetail::where('contract_id', $contract->id)->delete();
+            //ItemQualificationContractDetail::where('contract_id', $contract->id)->delete();
 
             //Se inician los atributos necesarios que seran estaticos para todas las actividades
             // De esta forma se evitar la asignacion innecesaria una y otra vez 
@@ -445,10 +450,9 @@ class ContractLesseeController extends Controller
 
                 if (isset($item['qualification']) && $item['qualification'])
                 {
-                    $itemQualification = new ItemQualificationContractDetail;
-                    $itemQualification->item_id = $item['id'];
-                    $itemQualification->qualification_id = $qualifications[$item['qualification']];
-                    $itemQualification->contract_id = $contract->id;
+                    $itemQualification = ItemQualificationContractDetail::updateOrCreate(
+                        ['contract_id' => $contract->id, 'item_id' => $item['id']], 
+                        ['contract_id' => $contract->id, 'item_id' => $item['id'], 'qualification_id' => $qualifications[$item['qualification']]]);
 
                     if (!$itemQualification->save()) 
                         return $this->respondHttp500();
@@ -513,7 +517,7 @@ class ContractLesseeController extends Controller
 
                     /**Planes de acción*/
                     ActionPlan::
-                          model(SectionCategoryItems::find($item['id']))
+                          model($itemQualification)
                         ->activities($item['actionPlan'])
                         ->save();
                 }

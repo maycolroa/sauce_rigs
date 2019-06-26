@@ -169,8 +169,11 @@ trait ContractTrait
 
         $contract->listCheckResumen()->delete();
 
-        $items_delete = ItemQualificationContractDetail::
-                  join('sau_ct_qualifications', 'sau_ct_qualifications.id', 'sau_ct_item_qualification_contract.qualification_id')
+        $items_delete = ItemQualificationContractDetail::select(
+                    'sau_ct_item_qualification_contract.*',
+                    'sau_ct_qualifications.name AS name'
+                )
+                ->join('sau_ct_qualifications', 'sau_ct_qualifications.id', 'sau_ct_item_qualification_contract.qualification_id')
                 ->where('contract_id', $contract->id)
                 ->whereNotIn('item_id', $items_delete)
                 ->get();
@@ -197,13 +200,10 @@ trait ContractTrait
             } 
             else if ($item->name == 'NC')
             {
-                ActionPlan::model(SectionCategoryItems::find($item->item_id))->modelDeleteAll();
+                ActionPlan::model($item)->modelDeleteAll();
             }
 
-            ItemQualificationContractDetail::
-                  where('contract_id', $contract->id)
-                ->where('item_id', $item->item_id)
-                ->delete();
+            ItemQualificationContractDetail::find($item->id)->delete();
         }
 
         if (COUNT($items) > 0)
