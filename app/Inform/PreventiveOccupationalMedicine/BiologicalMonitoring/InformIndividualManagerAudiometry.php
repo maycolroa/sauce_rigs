@@ -83,6 +83,7 @@ class InformIndividualManagerAudiometry
         $data['position'] = isset($this->employee->position) ? $this->employee->position->name : '-';
         $data['business'] = isset($this->employee->business) ? $this->employee->business->name : '-';
         $data['eps'] = isset($this->employee->eps) ? ($this->employee->eps->code.' - '.$this->employee->eps->name) : '-';
+        $data['deal'] = $this->employee->deal;
 
         return collect($data);
     }

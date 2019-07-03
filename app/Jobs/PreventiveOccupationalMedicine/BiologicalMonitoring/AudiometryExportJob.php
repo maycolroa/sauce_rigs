@@ -18,16 +18,18 @@ class AudiometryExportJob implements ShouldQueue
 
     protected $user;
     protected $company_id;
+    protected $filters;
 
     /**
      * Create a new job instance.
      *
      * @return void
      */
-    public function __construct($user, $company_id)
+    public function __construct($user, $company_id, $filters)
     {
       $this->user = $user;
       $this->company_id = $company_id;
+      $this->filters = $filters;
     }
 
     /**
@@ -43,7 +45,18 @@ class AudiometryExportJob implements ShouldQueue
         'sau_employees.name as employee_name'
       )
       ->join('sau_employees','sau_employees.id','sau_bm_audiometries.employee_id')
-      ->join('sau_employees_regionals','sau_employees_regionals.id','sau_employees.employee_regional_id');
+      ->inRegionals($this->filters["regionals"], $this->filters['filtersType']['regionals'])
+      ->inHeadquarters($this->filters["headquarters"], $this->filters['filtersType']['headquarters'])
+      ->inAreas($this->filters["areas"], $this->filters['filtersType']['areas'])
+      ->inProcesses($this->filters["processes"], $this->filters['filtersType']['processes'])
+      ->inPositions($this->filters["positions"], $this->filters['filtersType']['positions'])
+      ->inDeals($this->filters["deals"], $this->filters['filtersType']['deals'])
+      ->inYears($this->filters["years"], $this->filters['filtersType']['years'])
+      ->inNames($this->filters["names"], $this->filters['filtersType']['names'])
+      ->inIdentifications($this->filters["identifications"], $this->filters['filtersType']['identifications'])
+      ->inSeverityGradeLeft($this->filters["severity_grade_left"], $this->filters['filtersType']['severity_grade_left'])
+      ->inSeverityGradeRight($this->filters["severity_grade_right"], $this->filters['filtersType']['severity_grade_right'])
+      ->betweenDate($this->filters["dates"]);
 
       $audiometries->company_scope = $this->company_id;
 

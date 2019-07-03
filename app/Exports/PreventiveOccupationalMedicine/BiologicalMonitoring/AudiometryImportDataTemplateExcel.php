@@ -95,7 +95,7 @@ class AudiometryImportDataTemplateExcel implements FromCollection, WithHeadings,
           'OI 2000',
           'OI 3000',
           'OI 4000',
-          'Recomendaciones Generales',
+          'Conducta Tomada',
           'Observaciones Generales'
         ];
     }

@@ -379,7 +379,7 @@ class AudiometryImport implements ToCollection
                 'oseo_izquierda_2000'       =>  $row[39],
                 'oseo_izquierda_3000'       =>  $row[40],
                 'oseo_izquierda_4000'       =>  $row[41],
-                'recomendaciones_generales' =>  $row[42],
+                'conducta_tomada'           =>  $row[42],
                 'observaciones_generales'   =>  $row[43],
             ],
             [
@@ -413,7 +413,7 @@ class AudiometryImport implements ToCollection
                 'oseo_derecha_2000'         => "nullable|in:$NUMBERS_AVAILABLE_RESULTS|integer|digits_between:0,120",
                 'oseo_derecha_3000'         => "nullable|in:$NUMBERS_AVAILABLE_RESULTS|integer|digits_between:0,120",
                 'oseo_derecha_4000'         => "nullable|in:$NUMBERS_AVAILABLE_RESULTS|integer|digits_between:0,120",
-                'recomendaciones_generales' => 'nullable',
+                'conducta_tomada'           => 'nullable',
                 'observaciones_generales'   => 'nullable',
             ],
             [

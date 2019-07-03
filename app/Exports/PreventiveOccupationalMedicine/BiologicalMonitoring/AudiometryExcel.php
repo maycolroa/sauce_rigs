@@ -109,7 +109,7 @@ class AudiometryExcel implements FromCollection, WithHeadings, WithMapping, With
           'Eventos Previos',
           'Nivel de exposición (Disometría)',
           'EPP',
-          'Recomendaciones',
+          'Conducta Tomada',
           'Observación',
           'Aéreo Izquierda 500 Hz',
           'Aéreo Izquierda 1000 Hz',
