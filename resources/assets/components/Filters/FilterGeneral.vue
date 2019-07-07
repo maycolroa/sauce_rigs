@@ -2,7 +2,10 @@
     <div>
         <b-row align-h="end" style="padding: 10px;" v-if="modal">
             <b-col cols="1">
-                <b-btn variant="secondary icon-btn" @click="showFilterModal()"><span class="fas fa-filter"></span></b-btn>
+                <b-btn variant="secondary icon-btn" @click="showFilterModal()" v-b-tooltip.top title="Abrir Filtros"><span class="fas fa-filter"></span></b-btn>
+            </b-col>
+             <b-col cols="1">
+                <b-btn variant="secondary icon-btn" @click="cleanFilters()" v-b-tooltip.top title="Limpiar Filtros"><span class="fas fa-broom"></span></b-btn>
             </b-col>
         </b-row>
 
@@ -20,17 +23,19 @@
                                 <b-col v-if="item.header == undefined">
                                     <vue-advanced-select
                                         v-if="item.type == 'select'"
-                                        v-model="filtersSelected[index]" :multiple="true" :options="item.data" :searchable="true" :name="item.key" :label="item.label" :disabled="isDisabled" :filterTypeSearch="true" @updateFilterTypeSearch="setFilterTypeSearch($event, item.key)">
+                                        :ref="item.key"
+                                        v-model="filtersSelected[index]" :multiple="true" :options="item.data" :searchable="true" :name="item.key" :label="item.label" :disabled="isDisabled || !ready" :filterTypeSearch="true" @updateFilterTypeSearch="setFilterTypeSearch($event, item.key)"
+                                        :filter-type-search-value="filtersSelected.filtersType[index]">
                                     </vue-advanced-select>
 
                                     <vue-datepicker-range 
                                         v-if="item.type == 'dateRange'"
-                                        v-model="filtersSelected[index]" class="col-md-12" :label="item.label" :name="item.key" :disabled="isDisabled">
+                                        v-model="filtersSelected[index]" class="col-md-12" :label="item.label" :name="item.key" :disabled="isDisabled || !ready">
                                     </vue-datepicker-range>
 
                                     <vue-input-range
                                         v-if="item.type == 'numberRange'"
-                                        v-model="filtersSelected[index]" class="col-md-12" :label="item.label" :name="item.key" :disabled="isDisabled">
+                                        v-model="filtersSelected[index]" class="col-md-12" :label="item.label" :name="item.key" :disabled="isDisabled || !ready">
                                     </vue-input-range>
                                 </b-col>
                             </b-row>
@@ -49,17 +54,19 @@
                 <div class="col-md-6" v-if="item.header != undefined" :key="index">
                     <vue-advanced-select
                         v-if="item.type == 'select'"
-                        v-model="filtersSelected[index]" :multiple="true" :options="item.data" :searchable="true" :name="item.key" :label="item.label" :disabled="isDisabled" :filterTypeSearch="true" @updateFilterTypeSearch="setFilterTypeSearch($event, item.key)">
+                        :ref="item.key"
+                        v-model="filtersSelected[index]" :multiple="true" :options="item.data" :searchable="true" :name="item.key" :label="item.label" :disabled="isDisabled || !ready" :filterTypeSearch="true" @updateFilterTypeSearch="setFilterTypeSearch($event, item.key)"
+                        :filter-type-search-value="filtersSelected.filtersType[index]">
                     </vue-advanced-select>
 
                     <vue-datepicker-range 
                         v-if="item.type == 'dateRange'"
-                        v-model="filtersSelected[index]" class="col-md-12" :label="item.label" :name="item.key" :disabled="isDisabled">
+                        v-model="filtersSelected[index]" class="col-md-12" :label="item.label" :name="item.key" :disabled="isDisabled || !ready">
                     </vue-datepicker-range>
 
                     <vue-input-range
                         v-if="item.type == 'numberRange'"
-                        v-model="filtersSelected[index]" class="col-md-12" :label="item.label" :name="item.key" :disabled="isDisabled">
+                        v-model="filtersSelected[index]" class="col-md-12" :label="item.label" :name="item.key" :disabled="isDisabled || !ready">
                     </vue-input-range>
                 </div>
             </template>
@@ -143,6 +150,7 @@ export default {
         }
     },
     mounted() {
+        this.getStateFilters()
     },
     computed: {
     },
@@ -167,8 +175,9 @@ export default {
                 Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
             });
         },
-        emitFilters(key)
+        emitFilters()
         {
+            this.setStateFilters()
             this.$emit('input', this.filtersSelected)
         },
         showFilterModal () {
@@ -179,6 +188,98 @@ export default {
         },
         setFilterTypeSearch(event, key) {
             this.filtersSelected.filtersType[key] = event
+        },
+        setStateFilters()
+        {
+            let data = {
+                url: this.$route.path,
+                filters: this.filtersSelected
+            }
+
+            axios.post(`/setStateFilters`, data)
+                .then(response => {
+                })
+                .catch(error => {
+                    Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
+                    this.$router.go(-1);
+                });
+        },
+        getStateFilters()
+        {
+            axios.post(`/getStateFilters`, { url: this.$route.path })
+                .then(response => {
+
+                    if (response.data)
+                    {
+                        this.ready = false
+
+                        _.forIn(response.data, (value, key) => {
+
+                            if (key != 'filtersType')
+                            {
+                                if (typeof value === 'string')
+                                {
+                                    this.filtersSelected[key] = value
+                                }
+                                else
+                                {
+                                    _.forIn(value, (item, keyItem) => {
+                                        this.filtersSelected[key].push({ name: item.name, value: item.value })
+                                    })
+                                }
+
+                                if (this.$refs[key])
+                                    this.$refs[key][0].refreshData()
+                            }
+                            else
+                            {
+                                _.forIn(value, (item, keyItem) => {
+                                    this.filtersSelected.filtersType[keyItem] = item
+                                })
+                            }
+                        })
+
+                        setTimeout(() => {
+                            this.$emit('input', this.filtersSelected)
+                            this.ready = true
+                        }, 4000)
+                    }
+                })
+                .catch(error => {
+                    Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
+                    //this.$router.go(-1);
+                });
+        },
+        cleanFilters()
+        {
+            this.ready = false
+
+            _.forIn(this.filtersSelected, (value, key) => {
+                
+                if (key != 'filtersType')
+                {
+                    if (typeof value === 'string')
+                    {
+                        this.filtersSelected[key] = ''
+                    }
+                    else
+                    {
+                        this.filtersSelected[key].splice(0)
+                    }
+                }
+                else
+                {
+                    _.forIn(value, (item, keyItem) => {
+                        this.filtersSelected.filtersType[keyItem] = 'IN'
+                    })
+                }
+
+            });
+
+            setTimeout(() => {
+                this.emitFilters()
+                this.ready = true
+            }, 2000)
         }
     }
 }

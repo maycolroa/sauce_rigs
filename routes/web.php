@@ -25,6 +25,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('getCompanies', 'General\ApplicationController@getCompanies');
     Route::post('changeCompany', 'General\ApplicationController@changeCompany');
     Route::post('vuetableCustomColumns', 'General\ApplicationController@vuetableCustomColumns');
+    Route::post('setStateFilters', 'General\ApplicationController@setStateFilters');
+    Route::post('getStateFilters', 'General\ApplicationController@getStateFilters');
 
     Route::get('templates/audiometryimport','PreventiveOccupationalMedicine\BiologicalMonitoring\AudiometryController@downloadTemplateImport');
 
@@ -186,15 +188,6 @@ Route::middleware(['auth'])->group(function () {
 		
 		//Aspectos Legales
 		Route::prefix('legalAspects')->group(function () {
-			/*Route::get('contracts/qualifications', 'LegalAspects\Contracs\ContractLesseeController@qualifications');
-			Route::post('contracts/validateActionPlanItem', 'LegalAspects\Contracs\ContractLesseeController@validateActionPlanItem');
-			Route::post('contracts/validateFilesItem', 'LegalAspects\Contracs\ContractLesseeController@validateFilesItem');
-			Route::get('contracts/data', 'LegalAspects\Contracs\ContractLesseeController@data');
-      Route::post('contracts/saveQualificationItems', 'LegalAspects\Contracs\ContractLesseeController@saveQualificationItems');
-      
-      Route::ApiResource('contracts', 'LegalAspects\Contracs\ContractLesseeController');
-      Route::ApiResource('contract', 'LegalAspects\Contracs\ContractLesseeController');*/
-
       Route::post('contracts/data', 'LegalAspects\Contracs\ContractLesseeController@data');
       Route::get('contracts/getInformation', 'LegalAspects\Contracs\ContractLesseeController@getInformation');
       Route::post('contracts/getListCheckItems', 'LegalAspects\Contracs\ContractLesseeController@getListCheckItems');
