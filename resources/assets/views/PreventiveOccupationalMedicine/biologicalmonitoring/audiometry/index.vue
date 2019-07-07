@@ -23,6 +23,7 @@
                 :configName="configNameTable"
                 :viewIndex="viewIndex"
                 :modelId="employeeId"
+                @filtersUpdate="setFilters"
                 v-if="auth.can['biologicalMonitoring_audiometry_r']"
                 ></vue-table>
         </b-card-body>
@@ -60,9 +61,18 @@ export default {
     employeeId: {type: [Number, String], default: null},
     configNameTable: {type: String, default: 'biologicalmonitoring-audiometry'},
   },
+  data () {
+    return {
+      filters: []
+    }
+  },
   methods: {
+    setFilters(value)
+    {
+      this.filters = value
+    },
     exportAudiometry(){
-      axios.post('/biologicalmonitoring/audiometry/export')
+      axios.post('/biologicalmonitoring/audiometry/export', this.filters)
       .then(response => {
         Alerts.warning('Información', 'Se inicio la exportación, se le notificara a su correo electronico cuando finalice el proceso.');
       }).catch(error => {

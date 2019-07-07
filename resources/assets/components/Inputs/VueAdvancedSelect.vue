@@ -8,7 +8,7 @@
               </b-col>
               <b-col v-if="filterTypeSearch" align-self="end">
                 <div class="float-right radioSearch" style="padding-bottom: 0px; padding-right: 0px;padding-left: 0px;">
-                  <vue-radio checked="IN" v-model="filterTypeSearchValue" :options="[{'text':'=', 'value':'IN'}, {'text':'≠', 'value':'NOT IN'}]"  label="" :name="`${name}_filterTypeSearch`" @input="updateFilterTypeSearch">
+                  <vue-radio :checked="filterTypeSearchValue" v-model="filterTypeSearchValueResult" :options="[{'text':'=', 'value':'IN'}, {'text':'≠', 'value':'NOT IN'}]"  label="" :name="`${name}_filterTypeSearch`" @input="updateFilterTypeSearch">
                   </vue-radio>
                 </div>
               </b-col>
@@ -77,7 +77,8 @@ export default {
     limit: { type: Number, default: 5 },
     closeOnSelect: {type: Boolean, default: true},
     taggable: {type: Boolean, default: false},
-    filterTypeSearch: { type: Boolean, default: false }
+    filterTypeSearch: { type: Boolean, default: false },
+    filterTypeSearchValue: { type: String, default: "IN" },
   },
   components: {
     Multiselect,
@@ -86,7 +87,7 @@ export default {
   data() {
     return {
       selectValue: [],
-      filterTypeSearchValue: 'IN'
+      filterTypeSearchValueResult: 'IN'
     };
   },
   watch: {
@@ -161,6 +162,10 @@ export default {
     updateFilterTypeSearch(value)
     {
         this.$emit('updateFilterTypeSearch', value);
+    },
+    refreshData()
+    {
+      this.setMultiselectValue()
     }
   },
   computed: {

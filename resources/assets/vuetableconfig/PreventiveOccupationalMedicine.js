@@ -8,6 +8,8 @@ export default [
         {name : 'sau_bm_audiometries.severity_grade_air_left_pta', data:'severity_grade_air_left_pta', title : 'Grado de severidad aereo izquierdo PTA',sortable: true, searchable : true, detail : false, key : false},
         {name : 'sau_employees.identification', data:'identification', title : 'Identificación empleado',sortable: true, searchable : true, detail : false, key : false},
         {name : 'sau_employees.name', data:'name', title : 'Nombre empleado',sortable: true, searchable : true, detail : false, key : false},
+        {name : 'sau_employees_regionals.name', data:'regional', title: 'Regional', sortable: true, searchable: true, detail: false, key: false},
+        {name : 'sau_employees.deal', data:'deal', title: 'Negocio', sortable: true, searchable: true, detail: false, key: false},
         {name : 'base_si_no', data:'base_si_no', title : 'Base', sortable: false, searchable : false, detail : false, key : false},
         {name : 'base_state', data:'base_state', title : 'Tipo Base', sortable: true, searchable : true, detail : false, key : false},
         {name : '', data:'controlls', title : 'Controles',sortable: false, searchable : false, detail : false, key : false},
@@ -50,6 +52,18 @@ export default [
           id: 'id',
         },
         permission: 'biologicalMonitoring_audiometry_r'
+      },{
+        config: {
+          color:'outline-info',
+          borderless: true,
+          icon:'ion ion-md-clipboard',
+          title: 'Ver Informe Individual'
+        },
+        data:{
+          routePush: {name: 'biologicalmonitoring-audiometry-informs-individual'},
+          id: 'employee_id',
+        },
+        permission: 'biologicalMonitoring_audiometry_inform_individual_r'
       }]
     },
     {
@@ -137,8 +151,7 @@ export default [
     configuration: {
         urlData: '/biologicalmonitoring/audiometry/data',
         filterColumns: true,
-        detailComponent: '/PreventiveOccupationalMedicine/BiologicalMonitoring/Audiometry/DetailVuetableAudiometryComponent.vue',
-        configNameFilter: 'biologicalmonitoring-audiometry'
+        detailComponent: '/PreventiveOccupationalMedicine/BiologicalMonitoring/Audiometry/DetailVuetableAudiometryComponent.vue'
     }
 }
 

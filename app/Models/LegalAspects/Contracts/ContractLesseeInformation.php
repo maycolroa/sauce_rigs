@@ -69,7 +69,7 @@ class ContractLesseeInformation extends Model
     {
         if ($range != '')
         {
-            $range = explode('/', $range);
+            $range = explode('_', $range);
             
             if ($range[0] != '' && $range[1] != '')
             {

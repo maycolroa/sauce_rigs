@@ -76,6 +76,11 @@ export default {
   components:{
       Datepicker
   },
+  watch: {
+    value() {
+      this.refreshData();
+    }
+  },
   computed:{
       inputclass(){
         return this.error ? (this.disabled ? 'is-invalid disabled-class': 'is-invalid') :  (this.disabled ? 'disabled-class' : null);
@@ -136,6 +141,20 @@ export default {
     updateValue(value) {
       if (this.date_ini && this.date_end)
         this.$emit('input', this.date_ini.toDateString() +'/'+ this.date_end.toDateString());
+    },
+    refreshData() {
+      let data = this.value.split('/')
+      
+      if (data.length == 2)
+      {
+        this.date_ini = new Date(data[0])
+        this.date_end = new Date(data[1])
+      }
+      else
+      {
+        this.date_ini = ''
+        this.date_end = ''
+      }
     }
   }
 }

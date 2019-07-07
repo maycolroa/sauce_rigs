@@ -220,4 +220,26 @@ class ApplicationController extends Controller
       $columnsManager = new VuetableColumnManager($request->get('customColumnsName'));
       return $this->respondHttp200($columnsManager->getColumnsData());
     }
+
+    public function setStateFilters(Request $request)
+    {
+      $key = 'filter_'.Session::get('company_id').'_'.$request->url;
+
+      Session::forget($key);
+      Session::put($key, $request->filters);
+
+      \Log::info(Session::get($key));
+
+      return $this->respondHttp200([
+        'data' => 'ok'
+      ]);
+    }
+
+    public function getStateFilters(Request $request)
+    {
+      $key = 'filter_'.Session::get('company_id').'_'.$request->url;
+      \Log::info(Session::get($key));
+      
+      return Session::get($key);
+    }
 }

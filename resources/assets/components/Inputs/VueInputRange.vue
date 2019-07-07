@@ -82,13 +82,37 @@ export default {
           return this.textBlock ? 'd-flex justify-content-between align-items-end' : '';
       },
   },
+  watch: {
+    value() {
+      this.refreshData();
+    }
+  },
   methods: {
     updateValue() {
       if (this.ini || this.end)
-        this.$emit('input', this.ini +'/'+ this.end);
+        this.$emit('input', this.ini +'_'+ this.end);
       else
         this.$emit('input', '');
-    } 
+    },
+    refreshData() {
+      let data = this.value.split('_')
+
+      if (data.length == 1)
+      {
+        this.ini = data[0]
+        this.end = ''
+      }
+      else if (data.length == 2)
+      {
+        this.ini = data[0]
+        this.end = data[1]
+      }
+      else
+      {
+        this.ini = ''
+        this.end = ''
+      }
+    }
   }
 }
 </script>

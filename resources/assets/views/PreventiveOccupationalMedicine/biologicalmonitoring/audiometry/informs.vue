@@ -127,7 +127,7 @@
                     </b-row>
                     <b-row>
                         <b-col class="text-center" style="padding-bottom: 15px;">
-                            <b>Diagnóstico Normal</b>
+                            <h4>Diagnóstico Normal</h4>
                         </b-col>
                     </b-row>
                     <b-row align-h="end">
@@ -167,7 +167,7 @@
 
                     <b-row>
                         <b-col class="text-center" style="padding-bottom: 15px;">
-                            <b>Diagnóstico Alterado</b>
+                            <h4>Diagnóstico Alterado</h4>
                         </b-col>
                     </b-row>
                     <b-row align-h="end">

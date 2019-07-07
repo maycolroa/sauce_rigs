@@ -188,6 +188,8 @@ class InformManagerAudiometry
             ->inProcesses($this->processes, $this->filtersType['processes'])
             ->inDeals($this->deals, $this->filtersType['deals'])
             ->inPositions($this->positions, $this->filtersType['positions'])
+            ->inYears($this->years, $this->filtersType['years'])
+            ->betweenDate($this->dateRange)
             ->where('sau_bm_audiometries.base_type', 'Base')
             ->pluck('count', 'name');
 

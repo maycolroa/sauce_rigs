@@ -70,7 +70,7 @@
           <vue-advanced-select :disabled="viewOnly" class="col-md-6" v-model="form.epp" :error="form.errorsFor('epp')" :multiple="true" :options="epp" name="epp" label="Elementos de protección personal" placeholder="Seleccione los elementos de protección personal">
           </vue-advanced-select>
         </b-form-row>
-        <vue-textarea :disabled="viewOnly" v-model="form.recommendations" label="Recomendaciones generales" :error="form.errorsFor('recommendations')" name="recommendations" placeholder="Recomendaciones generales"></vue-textarea>
+        <vue-textarea :disabled="viewOnly" v-model="form.recommendations" label="Conducta Tomada" :error="form.errorsFor('recommendations')" name="recommendations" placeholder="Conducta Tomada"></vue-textarea>
 
         <vue-textarea :disabled="viewOnly" v-model="form.observation" label="Observación general" :error="form.errorsFor('observation')" name="observation" placeholder="Observación general"></vue-textarea>
       </tab-content>

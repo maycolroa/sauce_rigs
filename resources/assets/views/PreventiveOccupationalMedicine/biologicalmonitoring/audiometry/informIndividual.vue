@@ -10,7 +10,7 @@
             <b-row>
                 <b-col>
                     <b-card bg-variant="transparent" border-variant="dark" title="" class="mb-3 box-shadow-none">
-                        <vue-ajax-advanced-select class="col-md-12" v-model="employee_id"  name="employee_id" label="Empleado" placeholder="Seleccione el empleado" :url="employeesDataUrl">
+                        <vue-ajax-advanced-select class="col-md-12" v-model="employee_id"  name="employee_id" label="Empleado" placeholder="Seleccione el empleado" :url="employeesDataUrl" :selected-object="selectedObject">
                             </vue-ajax-advanced-select>
                     </b-card>
                 </b-col>
@@ -82,6 +82,7 @@ export default {
         return {
             isLoading: false,
             employee_id: '-1',
+            selectedObject: null,
             employeesDataUrl: '/selects/employees',
             employee_information: {
                 identification: '',
@@ -113,7 +114,30 @@ export default {
     },
     watch:{
         employee_id () {
-            this.fetch()
+            if (!this.isLoading)
+                this.fetch()
+        }
+    },
+    mounted() {
+        if (this.$route.params.id)
+        {
+            this.isLoading = true;
+            this.employee_id = this.$route.params.id
+            
+            axios.post('/biologicalmonitoring/audiometry/informs/individual', {
+                employee_id: this.$route.params.id
+            })
+            .then(data => {
+                this.selectedObject = { name: `${data.data.employee_information.identification} - ${data.data.employee_information.name}`, value: this.$route.params.id }
+                this.update(data);
+                setTimeout(() => {
+                    this.isLoading = false;
+                }, 3000)
+            })
+            .catch(error => {
+                this.isLoading = false;
+                Alerts.error('Error', 'Hubo un problema recolectando la información');
+            });
         }
     },
     methods: {
@@ -129,7 +153,6 @@ export default {
                 this.isLoading = false;
             })
             .catch(error => {
-                console.log(error);
                 this.isLoading = false;
                 Alerts.error('Error', 'Hubo un problema recolectando la información');
             });

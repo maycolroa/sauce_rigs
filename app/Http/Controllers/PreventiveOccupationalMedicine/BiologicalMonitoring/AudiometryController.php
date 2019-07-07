@@ -51,9 +51,12 @@ class AudiometryController extends Controller
        $audiometry = Audiometry::select(
            'sau_bm_audiometries.*',
            'sau_employees.identification as identification',
-           'sau_employees.name as name'
-        )->join('sau_employees','sau_employees.id','sau_bm_audiometries.employee_id')
-        /*->join('sau_employees_regionals','sau_employees_regionals.id','sau_employees.employee_regional_id')*/;
+           'sau_employees.name as name',
+           'sau_employees.deal as deal',
+           'sau_employees_regionals.name AS regional'
+        )
+        ->join('sau_employees','sau_employees.id','sau_bm_audiometries.employee_id')
+        ->join('sau_employees_regionals','sau_employees_regionals.id','sau_employees.employee_regional_id');
         
         if ($request->has('modelId') && $request->get('modelId'))
         {
@@ -191,19 +194,54 @@ class AudiometryController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function export()
+    public function export(Request $request)
     {
-      try{
-        AudiometryExportJob::dispatch(Auth::user(), Session::get('company_id'));
+      try
+      {
+        $regionals = $this->getValuesForMultiselect($request->regionals);
+        $headquarters = $this->getValuesForMultiselect($request->headquarters);
+        $processes = $this->getValuesForMultiselect($request->processes);
+        $areas = $this->getValuesForMultiselect($request->areas);
+        $positions = $this->getValuesForMultiselect($request->positions);
+        $deals = $this->getValuesForMultiselect($request->deals);
+        $years = $this->getValuesForMultiselect($request->years);
+        $names = $this->getValuesForMultiselect($request->names);
+        $identifications = $this->getValuesForMultiselect($request->identifications);
+        $severity_grade_left = $this->getValuesForMultiselect($request->severity_grade_left);
+        $severity_grade_right = $this->getValuesForMultiselect($request->severity_grade_right);
+        $filtersType = $request->filtersType;
+
+        $dates = [];
+        $dates_request = explode('/', $request->dateRange);
+
+        if (COUNT($dates_request) == 2)
+        {
+            array_push($dates, (Carbon::createFromFormat('D M d Y', $dates_request[0]))->format('Ymd'));
+            array_push($dates, (Carbon::createFromFormat('D M d Y', $dates_request[1]))->format('Ymd'));
+        }
+
+        $filters = [
+            'regionals' => $regionals,
+            'headquarters' => $headquarters,
+            'processes' => $processes,
+            'areas' => $areas,
+            'positions' => $positions,
+            'deals' => $deals,
+            'years' => $years,
+            'names' => $names,
+            'identifications' => $identifications,
+            'severity_grade_left' => $severity_grade_left,
+            'severity_grade_right' => $severity_grade_right,
+            'dates' => $dates,
+            'filtersType' => $filtersType
+        ];
+
+        AudiometryExportJob::dispatch(Auth::user(), Session::get('company_id'), $filters);
       
         return $this->respondHttp200();
-      }catch(Exception $e){
+      } catch(Exception $e) {
         return $this->respondHttp500();
       }
-
-      
-
-      
     }
 
     /**
