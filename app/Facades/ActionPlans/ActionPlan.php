@@ -684,7 +684,7 @@ class ActionPlan
 
         /**********************************************************************/
 
-        foreach ($this->activities['activities'] as $itemA)
+        foreach ($this->activities['activities'] as $keyItem => $itemA)
         {   
             if ($itemA['id'] == '')
             {   
@@ -732,6 +732,8 @@ class ActionPlan
                     'item_table_name' => $this->model->getTable()
                 ]);
             }
+            
+            $this->activities['activities'][$keyItem]['id'] = $activity->id;
         }
         
         foreach ($this->activities['activitiesRemoved'] as $itemA)
@@ -742,7 +744,19 @@ class ActionPlan
                 $activity->delete();
         }
 
+        $this->activities['activitiesRemoved'] = [];
+
         return $this;
+    }
+
+    /**
+     * Returns an array with the activities for action plans.
+     *
+     * @return Array
+     */
+    public function getActivities()
+    {
+        return $this->activities;
     }
 
     /**

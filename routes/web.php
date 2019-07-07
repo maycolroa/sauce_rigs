@@ -85,6 +85,7 @@ Route::middleware(['auth'])->group(function () {
         Route::post('ctRoles', 'General\MultiSelectRadioController@ctRoles');
         Route::post('ctContractClassifications', 'General\MultiSelectRadioController@ctContractClassifications'); 
         Route::post('ctkindsRisks', 'General\MultiSelectRadioController@ctkindsRisks'); 
+        Route::post('siNo', 'General\MultiSelectRadioController@siNoSelect');
 
         Route::prefix('evaluations')->group(function () {
           Route::post('objectives', 'LegalAspects\Contracs\EvaluationController@multiselectObjectives');
@@ -107,6 +108,7 @@ Route::middleware(['auth'])->group(function () {
           Route::post('lawsTypes', 'LegalAspects\LegalMatrix\LawTypeController@multiselect');
           Route::post('repealed', 'General\MultiSelectRadioController@lmRepealed');
           Route::post('articlesQualifications', 'LegalAspects\LegalMatrix\LawController@articlesQualificationsMultiselect');
+          Route::post('filterInterests', 'LegalAspects\LegalMatrix\LawController@filterInterestsMultiselect');
         });
     });
 

@@ -13,6 +13,8 @@
                 :law="data"
                 :qualifications="qualifications"
                 :action-plan-states="actionPlanStates"
+                :si-no="siNo"
+                :filter-interests-options="filterInterestsOptions"
                 :is-edit="true"
                 :cancel-url="{ name: 'legalaspects-lm-law-qualify'}"/>
         </b-card-body>
@@ -38,12 +40,24 @@ export default {
     return {
       data: [],
       qualifications: [],
-      actionPlanStates: []
+      actionPlanStates: [],
+      siNo: [],
+      filterInterestsOptions: []
     }
   },
   created(){
     this.fetchSelect('qualifications', '/selects/legalMatrix/articlesQualifications')
     this.fetchSelect('actionPlanStates', '/selects/actionPlanStates')
+    this.fetchSelect('siNo', '/selects/siNo')
+
+    axios.post('/selects/legalMatrix/filterInterests', { id: this.$route.params.id })
+    .then(response => {
+        this.filterInterestsOptions = response.data;
+    })
+    .catch(error => {
+        Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
+        this.$router.go(-1);
+    });
 
     axios.get(`/legalAspects/legalMatrix/law/qualify/${this.$route.params.id}`)
     .then(response => {
