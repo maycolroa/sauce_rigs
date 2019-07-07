@@ -165,7 +165,15 @@ export default {
     },
     refreshData()
     {
-      this.setMultiselectValue()
+      if (this.value)
+        this.setMultiselectValue()
+    },
+    cleanData()
+    {
+      this.selectValue = this.multiple ? this.selectValue.splice(0) : ''
+      
+      if (!this.multiple)
+        this.$emit("selectedName", '');
     }
   },
   computed: {

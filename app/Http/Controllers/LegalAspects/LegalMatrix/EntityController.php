@@ -113,6 +113,11 @@ class EntityController extends Controller
      */
     public function destroy(Entity $entity)
     {
+        if (COUNT($entity->laws) > 0)
+        {
+            return $this->respondWithError('No se puede eliminar la entidad porque hay registros asociados a ella');
+        }
+
         if(!$entity->delete())
         {
             return $this->respondHttp500();

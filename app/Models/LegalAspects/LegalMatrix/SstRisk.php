@@ -19,4 +19,9 @@ class SstRisk extends Model
             'value' => $this->id
         ];
     }
+
+    public function laws()
+    {
+        return $this->hasMany(Law::class, 'sst_risk_id');
+    }
 }

@@ -212,4 +212,24 @@ class Law extends Model
 
         return $query;
     }
+
+    /**
+     * filters checks through the given responsibles
+     * @param  Illuminate\Database\Eloquent\Builder $query
+     * @param  array $responsibles
+     * @return Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeInResponsibles($query, $responsibles, $typeSearch = 'IN')
+    {
+        if (COUNT($responsibles) > 0)
+        {
+            if ($typeSearch == 'IN')
+                $query->whereIn('sau_lm_articles_fulfillment.responsible', $responsibles);
+
+            else if ($typeSearch == 'NOT IN')
+                $query->whereNotIn('sau_lm_articles_fulfillment.responsible', $responsibles);
+        }
+
+        return $query;
+    }
 }

@@ -19,4 +19,9 @@ class Entity extends Model
             'value' => $this->id
         ];
     }
+
+    public function laws()
+    {
+        return $this->hasMany(Law::class, 'entity_id');
+    }
 }

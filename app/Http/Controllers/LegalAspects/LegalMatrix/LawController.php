@@ -71,6 +71,7 @@ class LawController extends Controller
             ->join('sau_lm_articles', 'sau_lm_articles.law_id', 'sau_lm_laws.id')
             ->join('sau_lm_article_interest', 'sau_lm_article_interest.article_id', 'sau_lm_articles.id')
             ->join('sau_lm_company_interest','sau_lm_company_interest.interest_id', 'sau_lm_article_interest.interest_id')
+            ->join('sau_lm_articles_fulfillment','sau_lm_articles_fulfillment.article_id', 'sau_lm_articles.id')
             ->groupBy('sau_lm_laws.id');
         }
         else 
@@ -100,6 +101,9 @@ class LawController extends Controller
             $laws->inLawNumbers($this->getValuesForMultiselect($filters["lawNumbers"]), $filters['filtersType']['lawNumbers']);
             $laws->inLawYears($this->getValuesForMultiselect($filters["lawYears"]), $filters['filtersType']['lawYears']);
             $laws->inRepealed($this->getValuesForMultiselect($filters["repealed"]), $filters['filtersType']['repealed']);
+
+            if ($request->has('qualify'))
+                $laws->inResponsibles($this->getValuesForMultiselect($filters["responsibles"]), $filters['filtersType']['responsibles']);
         }
 
         return Vuetable::of($laws)
@@ -347,6 +351,17 @@ class LawController extends Controller
         return $this->multiSelectFormat($lawNumbers);
     }
 
+    public function lmLawResponsibles(Request $request)
+    {
+        $lawResponsibles = ArticleFulfillment::selectRaw(
+            'DISTINCT(sau_lm_articles_fulfillment.responsible) as responsible'
+        )
+        ->whereNotNull('sau_lm_articles_fulfillment.responsible')
+        ->pluck('responsible', 'responsible');
+    
+        return $this->multiSelectFormat($lawResponsibles);
+    }
+
     /**
      * Returns an array for a select type input
      *
@@ -461,7 +476,7 @@ class LawController extends Controller
         {
             DB::beginTransaction();
 
-            $data = $request->all();
+            $data = $request->except('articles');
 
             $qualification = ArticleFulfillment::find($request->qualification_id);
             $qualification->fulfillment_value_id = $request->fulfillment_value_id ? $request->fulfillment_value_id : NULL;
@@ -483,13 +498,23 @@ class LawController extends Controller
                 {
                     if ($request->file != $qualification->file)
                     {
-                        $file = $request->file;
-                        Storage::disk('s3')->delete('legalAspects/legalMatrix/'. $qualification->file);
-                        $nameFile = base64_encode(Auth::user()->id . now() . rand(1,10000)) .'.'. $file->extension();
-                        $file->storeAs('legalAspects/legalMatrix/', $nameFile, 's3');
-                        $qualification->file = $nameFile;
-                        $data['file'] = $nameFile;
-                        $data['old_file'] = $nameFile;
+                        if ($request->file)
+                        {
+                            $file = $request->file;
+                            Storage::disk('s3')->delete('legalAspects/legalMatrix/'. $qualification->file);
+                            $nameFile = base64_encode(Auth::user()->id . now() . rand(1,10000)) .'.'. $file->extension();
+                            $file->storeAs('legalAspects/legalMatrix/', $nameFile, 's3');
+                            $qualification->file = $nameFile;
+                            $data['file'] = $nameFile;
+                            $data['old_file'] = $nameFile;
+                        }
+                        else
+                        {
+                            Storage::disk('s3')->delete('legalAspects/legalMatrix/'. $qualification->file);
+                            $qualification->file = NUlL;
+                            $data['file'] = NULL;
+                            $data['old_file'] = NULL;
+                        }
                     }
                 }
                 else
@@ -508,14 +533,14 @@ class LawController extends Controller
                     model($qualification)
                     ->activities($request->actionPlan)
                     ->save();
+
+                $data['actionPlan'] = ActionPlan::getActivities();
             }
 
             if (!$qualification->save())
                 return $this->respondHttp500();
 
             ActionPlan::sendMail();
-
-            $data['actionPlan'] = ActionPlan::getActivities();
 
             DB::commit();
 
