@@ -67,6 +67,17 @@ class MultiSelectRadioController extends Controller
     }
 
     /**
+     * Returns an arrangement with the si/no
+     *
+     * @return Array
+     */
+    public function siNoSelect()
+    {
+        $data = ["SI"=>"SI", "NO"=>"NO"];
+        return $this->multiSelectFormat(collect($data));
+    }
+
+    /**
      * Returns an arrangement with the type evaluation
      *
      * @return Array

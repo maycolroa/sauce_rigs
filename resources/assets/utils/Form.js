@@ -49,6 +49,15 @@ export default class Form {
   }
 
   /**
+   * Reset the errors data
+   *
+   * @return {void}
+   */
+  resetError() {
+    this.errors.clear();
+  }
+
+  /**
    * Return the form data
    *
    * @return {Object}

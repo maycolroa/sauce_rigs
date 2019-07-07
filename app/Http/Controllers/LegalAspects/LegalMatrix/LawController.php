@@ -10,10 +10,13 @@ use App\Vuetable\Facades\Vuetable;
 use App\Models\LegalAspects\LegalMatrix\Law;
 use App\Models\LegalAspects\LegalMatrix\Article;
 use App\Models\LegalAspects\LegalMatrix\FulfillmentValues;
-use App\Http\Requests\LegalAspects\LegalMatrix\LawRequest;
 use App\Models\LegalAspects\LegalMatrix\ArticleFulfillment;
+use App\Models\LegalAspects\LegalMatrix\CompanyIntetest;
 use App\Jobs\LegalAspects\LegalMatrix\SyncQualificationsCompaniesJob;
 use App\Traits\LegalMatrixTrait;
+use App\Facades\ActionPlans\Facades\ActionPlan;
+use App\Http\Requests\LegalAspects\LegalMatrix\LawRequest;
+use App\Http\Requests\LegalAspects\LegalMatrix\SaveArticlesQualificationRequest;
 use Carbon\Carbon;
 use Session;
 use Validator;
@@ -398,6 +401,7 @@ class LawController extends Controller
                 ->join('sau_lm_company_interest','sau_lm_company_interest.interest_id', 'sau_lm_article_interest.interest_id')
                 ->groupBy('sau_lm_articles.id')
                 ->where('sau_lm_articles.law_id', $law->id)
+                ->orderBy('sau_lm_articles.sequence')
                 ->get();
 
             $qualifications = ArticleFulfillment::all();
@@ -416,6 +420,7 @@ class LawController extends Controller
                     array_push($interests, $interest->name);
                 }
 
+                $article->interests_list = $interests;
                 $article->interests_string = implode(', ', $interests);
 
                 $article->qualify = '';
@@ -431,6 +436,11 @@ class LawController extends Controller
                     "activitiesRemoved" => []
                 ];
 
+                if ($article->qualify == 'No cumple')
+                {
+                    $article->actionPlan = ActionPlan::model(ArticleFulfillment::find($article->qualification_id))->prepareDataComponent();
+                }
+
                 return $article;
             });
             
@@ -445,16 +455,25 @@ class LawController extends Controller
         }
     }
 
-    public function saveArticlesQualification(Request $request)
+    public function saveArticlesQualification(SaveArticlesQualificationRequest $request)
     {
         try
         {
-            $data = [];
+            DB::beginTransaction();
+
+            $data = $request->all();
 
             $qualification = ArticleFulfillment::find($request->qualification_id);
-            $qualification->fulfillment_value_id = $request->fulfillment_value_id != "null" ? $request->fulfillment_value_id : NULL;
-            $qualification->observations = $request->observations != "null" ? $request->observations : NULL;
-            $qualification->responsible = $request->responsible != "null" ? $request->responsible : NULL;
+            $qualification->fulfillment_value_id = $request->fulfillment_value_id ? $request->fulfillment_value_id : NULL;
+            $qualification->observations = $request->observations ? $request->observations : NULL;
+            $qualification->responsible = $request->responsible ? $request->responsible : NULL;
+
+             //Se inician los atributos necesarios que seran estaticos para todas las actividades
+            // De esta forma se evitar la asignacion innecesaria una y otra vez 
+            ActionPlan::
+                    user(Auth::user())
+                ->module('legalMatrix')
+                ->url(url('/administrative/actionplans'));
 
             if ($qualification->fulfillment_value_id)
             {
@@ -462,7 +481,7 @@ class LawController extends Controller
 
                 if ($qualify->name != 'No cumple')
                 {
-                    if ($request->file != "null" && $request->file != $qualification->file)
+                    if ($request->file != $qualification->file)
                     {
                         $file = $request->file;
                         Storage::disk('s3')->delete('legalAspects/legalMatrix/'. $qualification->file);
@@ -483,16 +502,29 @@ class LawController extends Controller
                         $data['old_file'] = NULL;
                     }
                 }
+
+                /**Planes de acción*/
+                ActionPlan::
+                    model($qualification)
+                    ->activities($request->actionPlan)
+                    ->save();
             }
 
             if (!$qualification->save())
                 return $this->respondHttp500();
+
+            ActionPlan::sendMail();
+
+            $data['actionPlan'] = ActionPlan::getActivities();
+
+            DB::commit();
 
             return $this->respondHttp200([
                 'data' => $data
             ]);
 
         } catch (Exception $e){
+            DB::rollback();
             return $this->respondHttp500();
         }
     }
@@ -500,5 +532,46 @@ class LawController extends Controller
     public function downloadArticleQualify(ArticleFulfillment $articleFulfillment)
     {
       return Storage::disk('s3')->download('legalAspects/legalMatrix/'. $articleFulfillment->file);
+    }
+
+    public function filterInterestsMultiselect(Request $request)
+    {
+        try
+        {
+            $articles = Article::select('sau_lm_articles.*')
+                ->join('sau_lm_article_interest', 'sau_lm_article_interest.article_id', 'sau_lm_articles.id')
+                ->join('sau_lm_company_interest','sau_lm_company_interest.interest_id', 'sau_lm_article_interest.interest_id')
+                ->groupBy('sau_lm_articles.id')
+                ->where('sau_lm_articles.law_id', $request->id)
+                ->orderBy('sau_lm_articles.sequence')
+                ->get();
+
+            $qualifications = ArticleFulfillment::all();
+            $qualifications = $qualifications->groupBy('article_id')->toArray();
+
+            $articles = $articles->filter(function ($article, $key) use ($qualifications) {
+                return isset($qualifications[$article->id]);
+            });
+
+            $company_interest = CompanyIntetest::pluck('interest_id', 'interest_id');
+
+            $options = [];
+
+            foreach ($articles as $key => $article)
+            {
+                foreach ($article->interests as $key => $interest)
+                {
+                    if (isset($company_interest[$interest->id]))
+                        array_push($options, $interest->name);
+                }
+            }
+
+            $options = array_unique($options);
+
+            return $this->multiSelectFormat($options);
+
+        } catch(Exception $e){
+            return $this->respondHttp500();
+        }
     }
 }
