@@ -21,7 +21,7 @@
         <b-card-body>
           <b-form-row>
             <vue-input :disabled="viewOnly" class="col-md-6" v-model="form.name" label="Nombre" type="text" name="name" :error="form.errorsFor('name')" placeholder="Nombre"></vue-input>
-            <vue-input :disabled="viewOnly" class="col-md-6" v-model="form.law_number" label="Nùmero" type="text" name="law_number" :error="form.errorsFor('law_number')" placeholder="Nùmero"></vue-input>
+            <vue-input :disabled="viewOnly" class="col-md-6" v-model="form.law_number" label="Número" type="text" name="law_number" :error="form.errorsFor('law_number')" placeholder="Número"></vue-input>
           </b-form-row>
           <b-form-row>
             <vue-advanced-select :disabled="viewOnly" class="col-md-6" v-model="form.apply_system" :multiple="false" :options="applySystems" :hide-selected="false" name="apply_system" :error="form.errorsFor('apply_system')" label="Sistema que aplica" placeholder="Seleccione el sistema que aplica">
@@ -60,7 +60,7 @@
     <b-card no-body class="mb-2 border-secondary" style="width: 100%;">
       <b-card-header class="bg-secondary">
           <b-row>
-            <b-col cols="11" class="d-flex justify-content-between text-white"> Artìculos </b-col>
+            <b-col cols="11" class="d-flex justify-content-between text-white"> Artículos </b-col>
             <b-col cols="1">
                 <div class="float-right">
                   <b-button-group>
@@ -76,12 +76,12 @@
         <b-card-body>
           <div class="col-md-12">
             <blockquote class="blockquote text-center">
-              <p class="mb-0">Artìculos de la norma</p>
+              <p class="mb-0">Artículos de la norma</p>
             </blockquote>
             <b-form-row>
               <div class="col-md-12" v-if="!viewOnly">
                 <div class="float-right" style="padding-top: 10px;">
-                  <b-btn variant="primary" @click.prevent="addActicle()"><span class="ion ion-md-add-circle"></span>&nbsp;&nbsp;Agregar Artìculo</b-btn>
+                  <b-btn variant="primary" @click.prevent="addActicle()"><span class="ion ion-md-add-circle"></span>&nbsp;&nbsp;Agregar Artículo</b-btn>
                 </div>
               </div>
             </b-form-row>
@@ -94,7 +94,7 @@
                   <b-card no-body class="mb-2 border-secondary" :key="article.key" style="width: 100%;">
                     <b-card-header class="bg-secondary">
                       <b-row>
-                        <b-col cols="10" class="d-flex justify-content-between text-white"> {{ form.articles[index].description ? (form.articles[index].description.length > 200 ? `${form.articles[index].description.substring(0, 200)}...` : form.articles[index].description) : `Nuevo Artìculo ${index + 1}` }}</b-col>
+                        <b-col cols="10" class="d-flex justify-content-between text-white"> {{ form.articles[index].description ? (form.articles[index].description.length > 200 ? `${form.articles[index].description.substring(0, 200)}...` : form.articles[index].description) : `Nuevo Artículo ${index + 1}` }}</b-col>
                         <b-col cols="2">
                           <div class="float-right">
                             <b-button-group>
@@ -105,7 +105,7 @@
                                 v-if="!viewOnly"
                                 size="sm" 
                                 variant="secondary icon-btn borderless"
-                                v-b-tooltip.top title="Eliminar Articulo">
+                                v-b-tooltip.top title="Eliminar Artículo">
                                   <span class="ion ion-md-close-circle"></span>
                               </b-btn>
                             </b-button-group>

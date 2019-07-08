@@ -147,5 +147,14 @@ class MultiSelectRadioController extends Controller
         return $this->multiSelectFormat(collect($data));
     }
 
-    
+    public function lmStates()
+    {
+        $data = [
+            "Sin calificar" => "Sin calificar", 
+            "En proceso" => "En proceso",
+            "Terminada" => "Terminada"
+        ];
+        
+        return $this->multiSelectFormat(collect($data));
+    }
 }

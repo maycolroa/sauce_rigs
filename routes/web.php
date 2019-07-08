@@ -103,6 +103,7 @@ Route::middleware(['auth'])->group(function () {
           Route::post('years', 'LegalAspects\LegalMatrix\LawController@lmYears');
           Route::post('lawYears', 'LegalAspects\LegalMatrix\LawController@lmLawYears');
           Route::post('lawNumbers', 'LegalAspects\LegalMatrix\LawController@lmLawNumbers');
+          Route::post('responsibles', 'LegalAspects\LegalMatrix\LawController@lmLawResponsibles');
           Route::post('applySystem', 'General\MultiSelectRadioController@lmApplySystem');
           Route::post('riskAspects', 'LegalAspects\LegalMatrix\RiskAspectController@multiselect');
           Route::post('sstRisks', 'LegalAspects\LegalMatrix\SstRiskController@multiselect');
@@ -111,6 +112,7 @@ Route::middleware(['auth'])->group(function () {
           Route::post('repealed', 'General\MultiSelectRadioController@lmRepealed');
           Route::post('articlesQualifications', 'LegalAspects\LegalMatrix\LawController@articlesQualificationsMultiselect');
           Route::post('filterInterests', 'LegalAspects\LegalMatrix\LawController@filterInterestsMultiselect');
+          Route::post('states', 'General\MultiSelectRadioController@lmStates');
         });
     });
 

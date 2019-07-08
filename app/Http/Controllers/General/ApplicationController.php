@@ -228,7 +228,7 @@ class ApplicationController extends Controller
       Session::forget($key);
       Session::put($key, $request->filters);
 
-      \Log::info(Session::get($key));
+      //\Log::info(Session::get($key));
 
       return $this->respondHttp200([
         'data' => 'ok'
@@ -238,7 +238,7 @@ class ApplicationController extends Controller
     public function getStateFilters(Request $request)
     {
       $key = 'filter_'.Session::get('company_id').'_'.$request->url;
-      \Log::info(Session::get($key));
+      //\Log::info(Session::get($key));
       
       return Session::get($key);
     }

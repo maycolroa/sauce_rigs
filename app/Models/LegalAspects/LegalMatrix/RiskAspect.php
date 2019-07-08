@@ -19,4 +19,9 @@ class RiskAspect extends Model
             'value' => $this->id
         ];
     }
+
+    public function laws()
+    {
+        return $this->hasMany(Law::class, 'risk_aspect_id');
+    }
 }

@@ -64,7 +64,7 @@
 
                 <b-card  bg-variant="transparent"  title="" class="mb-3 box-shadow-none">
                   <b-form-row>
-                    <vue-advanced-select :disabled="viewOnly" class="col-md-6" :key="`qualification-${resetQualificationAll}`" v-model="fulfillment_value_id" :multiple="false" :options="qualifications" name="fulfillment_value_id" label="Calificación" @selectedName="updateQualifyAll"></vue-advanced-select>
+                    <vue-advanced-select ref="qualificationAll" :disabled="viewOnly" class="col-md-6" v-model="fulfillment_value_id" :multiple="false" :options="qualifications" name="fulfillment_value_id" label="Calificación" @selectedName="updateQualifyAll"></vue-advanced-select>
                     <vue-input :disabled="viewOnly" class="col-md-6" v-model="responsible" label="Responsable" type="text" name="responsible" placeholder="Responsable"></vue-input>
                   </b-form-row>
                   <b-form-row>
@@ -152,10 +152,14 @@
                         <b-form-row>
                           <vue-input @onBlur="saveArticleQualification(index)" :disabled="viewOnly" class="col-md-6" v-model="form.articles[index].responsible" label="Responsable" type="text" name="responsible" :error="form.errorsFor('responsible')" placeholder="Responsable"></vue-input>
                        
-                        <vue-advanced-select @input="saveArticleQualification(index)" @selectedName="updateQualify($event, index)" :disabled="viewOnly" class="col-md-6" v-model="form.articles[index].fulfillment_value_id" :multiple="false" :options="qualifications" name="fulfillment_value_id" label="Calificación"></vue-advanced-select>
+                        <vue-advanced-select :ref="`qualification${index}`" @input="saveArticleQualification(index)" @selectedName="updateQualify($event, index)" :disabled="viewOnly" class="col-md-6" v-model="form.articles[index].fulfillment_value_id" :multiple="false" :options="qualifications" name="fulfillment_value_id" label="Calificación"></vue-advanced-select>
                       </b-form-row>
                       <b-form-row> 
                         <vue-file-simple v-if="article.qualify && article.qualify != 'No cumple'" :help-text="form.articles[index].old_file ? `Para descargar el archivo actual, haga click <a href='/legalAspects/legalMatrix/law/downloadArticleQualify/${form.articles[index].qualification_id}' target='blank'>aqui</a> `: null" :disabled="viewOnly" class="col-md-6" @input="saveArticleQualification(index)" accept=".pdf" v-model="form.articles[index].file" label="Archivo (*.pdf)" name="file" :error="form.errorsFor('file')" placeholder="Seleccione un archivo"></vue-file-simple>
+
+                        <div style="padding-top: 25px;">
+                          <b-btn v-if="form.articles[index].file" @click="deleteFile(index)" variant="primary"><span class="ion ion-md-close-circle"></span> Eliminar Archivo</b-btn>
+                        </div>
 
                           <!-- NO CUMPLE -->
                           <b-btn v-if="article.qualify == 'No cumple'" @click="showModal(`modalPlan${index}`)" variant="primary"><span class="lnr lnr-bookmark"></span> Plan de acción</b-btn>
@@ -327,8 +331,7 @@ export default {
         fulfillment_value_id: '',
         responsible: '',
         observations: '',
-        qualifyName: '',
-        resetQualificationAll: false
+        qualifyName: ''
     };
   },
   methods: {
@@ -395,6 +398,11 @@ export default {
 
 			return result
     },
+    deleteFile(index)
+    {
+      this.form.articles[index].file = null;
+      this.saveArticleQualification(index) 
+    },
     saveAllArticles()
     {
       if (this.fulfillment_value_id != '')
@@ -404,10 +412,20 @@ export default {
             if (this.showArticle(article))
             {
               article.fulfillment_value_id = this.fulfillment_value_id
-              article.observations = this.observations
-              article.responsible = this.responsible
+
+              if (this.observations)
+                article.observations = this.observations
+
+              if (this.responsible)
+                article.responsible = this.responsible
+                
               article.qualify = this.qualifyName
-              this.saveArticleQualification(key)  
+
+              this.$nextTick(() => {
+                this.$refs[`qualification${key}`][0].refreshData()
+              })
+
+              //this.saveArticleQualification(key)  
             }
         });
 
@@ -415,8 +433,8 @@ export default {
         this.fulfillment_value_id = ''
         this.observations = ''
         this.responsible = ''
-        this.qualify = ''
-        this.resetQualificationAll = !this.resetQualificationAll
+        this.qualifyName = ''
+        this.$refs.qualificationAll.cleanData()
       }
       else
       {
@@ -430,7 +448,7 @@ export default {
         this.loading = true;
         let article = this.form.articles[index]
 
-        if (article.fulfillment_value_id != 3)
+        if (article.fulfillment_value_id != 3)//No cumple
         {
           if (typeof article.actionPlan !== 'undefined')
           {

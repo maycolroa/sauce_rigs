@@ -8,6 +8,7 @@ use App\Models\Administrative\Users\User;
 use App\Models\LegalAspects\LegalMatrix\Article;
 use App\Models\LegalAspects\LegalMatrix\ArticleFulfillment;
 use App\Models\LegalAspects\LegalMatrix\FulfillmentValues;
+use App\Facades\ActionPlans\Facades\ActionPlan;
 use DB;
 
 trait LegalMatrixTrait
@@ -76,7 +77,7 @@ trait LegalMatrixTrait
                 }
                 else
                 {
-                    //Borrar plan de accion
+                    ActionPlan::company($qualification->company_id)->model($qualification)->modelDeleteAll();
                 }
             }
             

@@ -162,6 +162,18 @@ export default [
           key: 'repealed',
           type: 'select',
           label: 'Derogada'
+        },
+        {
+          url: '/selects/legalMatrix/responsibles',
+          key: 'responsibles',
+          type: 'select',
+          label: 'Responsables'
+        },
+        {
+          url: '/selects/legalMatrix/states',
+          key: 'states',
+          type: 'select',
+          label: 'Estado de evaluación'
         }
       ]
     },

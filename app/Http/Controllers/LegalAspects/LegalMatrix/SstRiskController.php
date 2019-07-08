@@ -61,7 +61,7 @@ class SstRiskController extends Controller
         }
 
         return $this->respondHttp200([
-            'message' => 'Se creo el Riesgo/Aspecto ambiental'
+            'message' => 'Se creo el Riesgo SST'
         ]);
     }
 
@@ -101,7 +101,7 @@ class SstRiskController extends Controller
         }
         
         return $this->respondHttp200([
-            'message' => 'Se actualizo el Riesgo/Aspecto ambiental'
+            'message' => 'Se actualizo el Riesgo SST'
         ]);
     }
 
@@ -113,13 +113,18 @@ class SstRiskController extends Controller
      */
     public function destroy(SstRisk $sstRisk)
     {
+        if (COUNT($sstRisk->laws) > 0)
+        {
+            return $this->respondWithError('No se puede eliminar el Riesgo SST porque hay registros asociados a él');
+        }
+
         if(!$sstRisk->delete())
         {
             return $this->respondHttp500();
         }
         
         return $this->respondHttp200([
-            'message' => 'Se elimino el Riesgo/Aspecto ambiental'
+            'message' => 'Se elimino el Riesgo SST'
         ]);
     }
 

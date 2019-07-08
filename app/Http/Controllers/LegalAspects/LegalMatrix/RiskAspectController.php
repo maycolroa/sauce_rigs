@@ -61,7 +61,7 @@ class RiskAspectController extends Controller
         }
 
         return $this->respondHttp200([
-            'message' => 'Se creo el Riesgo/Aspecto ambiental'
+            'message' => 'Se creo el Riesgo/Aspecto Ambiental'
         ]);
     }
 
@@ -101,7 +101,7 @@ class RiskAspectController extends Controller
         }
         
         return $this->respondHttp200([
-            'message' => 'Se actualizo el Riesgo/Aspecto ambiental'
+            'message' => 'Se actualizo el Riesgo/Aspecto Ambiental'
         ]);
     }
 
@@ -113,13 +113,18 @@ class RiskAspectController extends Controller
      */
     public function destroy(RiskAspect $riskAspect)
     {
+        if (COUNT($riskAspect->laws) > 0)
+        {
+            return $this->respondWithError('No se puede eliminar el Riesgo/Aspecto Ambiental porque hay registros asociados a él');
+        }
+
         if(!$riskAspect->delete())
         {
             return $this->respondHttp500();
         }
         
         return $this->respondHttp200([
-            'message' => 'Se elimino el Riesgo/Aspecto ambiental'
+            'message' => 'Se elimino el Riesgo/Aspecto Ambiental'
         ]);
     }
 

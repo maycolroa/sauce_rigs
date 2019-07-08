@@ -9,7 +9,7 @@
                 <b-col>
                     <b-btn v-if="auth.can['dangerMatrix_export_report']" @click="exportReport()" variant="primary"><i class="fas fa-download"></i> &nbsp; Exportar Reporte</b-btn>
                 </b-col>
-                <b-col cols="1">
+                <b-col cols="3">
                     <filter-danger-matrix-report 
                         v-model="filters" 
                         configName="industrialsecure-dangermatrix-report" 
