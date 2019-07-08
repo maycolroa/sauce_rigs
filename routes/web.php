@@ -112,6 +112,7 @@ Route::middleware(['auth'])->group(function () {
           Route::post('repealed', 'General\MultiSelectRadioController@lmRepealed');
           Route::post('articlesQualifications', 'LegalAspects\LegalMatrix\LawController@articlesQualificationsMultiselect');
           Route::post('filterInterests', 'LegalAspects\LegalMatrix\LawController@filterInterestsMultiselect');
+          Route::post('states', 'General\MultiSelectRadioController@lmStates');
         });
     });
 

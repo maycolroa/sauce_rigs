@@ -57,12 +57,14 @@ class LawController extends Controller
     {
         if ($request->has('qualify'))
         {
-            $laws = Law::select(
-                'sau_lm_laws.*',
-                'sau_lm_laws_types.name AS law_type',
-                'sau_lm_risks_aspects.name AS risk_aspect',
-                'sau_lm_entities.name AS entity',
-                'sau_lm_sst_risks.name AS sst_risk'
+            $laws = Law::selectRaw(
+                'sau_lm_laws.*,
+                 sau_lm_laws_types.name AS law_type,
+                 sau_lm_risks_aspects.name AS risk_aspect,
+                 sau_lm_entities.name AS entity,
+                 sau_lm_sst_risks.name AS sst_risk,
+                 SUM(IF(sau_lm_articles_fulfillment.fulfillment_value_id IS NOT NULL, 1, 0)) qualify,
+                 SUM(IF(sau_lm_articles_fulfillment.fulfillment_value_id IS NULL, 1, 0)) no_qualify'
             )
             ->join('sau_lm_laws_types', 'sau_lm_laws_types.id', 'sau_lm_laws.law_type_id')
             ->join('sau_lm_risks_aspects', 'sau_lm_risks_aspects.id', 'sau_lm_laws.risk_aspect_id')
@@ -72,6 +74,7 @@ class LawController extends Controller
             ->join('sau_lm_article_interest', 'sau_lm_article_interest.article_id', 'sau_lm_articles.id')
             ->join('sau_lm_company_interest','sau_lm_company_interest.interest_id', 'sau_lm_article_interest.interest_id')
             ->join('sau_lm_articles_fulfillment','sau_lm_articles_fulfillment.article_id', 'sau_lm_articles.id')
+            ->where('sau_lm_articles_fulfillment.company_id', Session::get('company_id'))
             ->groupBy('sau_lm_laws.id');
         }
         else 
@@ -103,7 +106,10 @@ class LawController extends Controller
             $laws->inRepealed($this->getValuesForMultiselect($filters["repealed"]), $filters['filtersType']['repealed']);
 
             if ($request->has('qualify'))
+            {
                 $laws->inResponsibles($this->getValuesForMultiselect($filters["responsibles"]), $filters['filtersType']['responsibles']);
+                $laws->inState($this->getValuesForMultiselect($filters["states"]), $filters['filtersType']['states']);
+            }
         }
 
         return Vuetable::of($laws)

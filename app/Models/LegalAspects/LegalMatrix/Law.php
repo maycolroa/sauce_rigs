@@ -232,4 +232,53 @@ class Law extends Model
 
         return $query;
     }
+
+    /**
+     * filters checks through the given states
+     * @param  Illuminate\Database\Eloquent\Builder $query
+     * @param  array $states
+     * @return Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeInState($query, $states, $typeSearch = 'IN')
+    {
+        if (COUNT($states) > 0)
+        {
+            $items = [];
+
+            if ($typeSearch == 'IN')
+            {
+                foreach ($states as $key => $value)
+                {
+                    if ($value == 'Sin calificar')
+                        array_push($items, '(SUM(IF(sau_lm_articles_fulfillment.fulfillment_value_id IS NOT NULL, 1, 0)) = 0)');
+
+                    else if ($value == 'En proceso')
+                        array_push($items, '( SUM(IF(sau_lm_articles_fulfillment.fulfillment_value_id IS NOT NULL, 1, 0)) > 0 AND SUM(IF(sau_lm_articles_fulfillment.fulfillment_value_id IS NULL, 1, 0)) > 0 )');
+
+                    else if ($value == 'Terminada')
+                        array_push($items, '( SUM(IF(sau_lm_articles_fulfillment.fulfillment_value_id IS NULL, 1, 0)) = 0 )');
+                }
+
+                $query->havingRaw(implode(" OR ", $items));
+            }
+            else if ($typeSearch == 'NOT IN')
+            {
+                foreach ($states as $key => $value)
+                {
+                    if ($value == 'Sin calificar')
+                        array_push($items, '(SUM(IF(sau_lm_articles_fulfillment.fulfillment_value_id IS NOT NULL, 1, 0)) != 0)');
+
+                    else if ($value == 'En proceso')
+                        array_push($items, '( SUM(IF(sau_lm_articles_fulfillment.fulfillment_value_id IS NOT NULL, 1, 0)) = 0 OR SUM(IF(sau_lm_articles_fulfillment.fulfillment_value_id IS NULL, 1, 0)) = 0 )');
+
+                    else if ($value == 'Terminada')
+                        array_push($items, '( SUM(IF(sau_lm_articles_fulfillment.fulfillment_value_id IS NULL, 1, 0)) != 0 )');
+                }
+
+                $query->havingRaw(implode(" AND ", $items));
+            }
+        }
+
+        return $query;
+    }
 }

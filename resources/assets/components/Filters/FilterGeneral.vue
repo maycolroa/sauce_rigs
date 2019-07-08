@@ -1,12 +1,10 @@
 <template>
     <div>
         <b-row align-h="end" style="padding: 10px;" v-if="modal">
-            <b-col cols="1">
-                <b-btn variant="secondary icon-btn" @click="showFilterModal()" v-b-tooltip.top title="Abrir Filtros"><span class="fas fa-filter"></span></b-btn>
-            </b-col>
-             <b-col cols="1">
+            <center>
+                <b-btn variant="primary icon-btn" @click="showFilterModal()" v-b-tooltip.top title="Abrir Filtros"><span class="fas fa-filter"></span></b-btn>&nbsp;&nbsp;
                 <b-btn variant="secondary icon-btn" @click="cleanFilters()" v-b-tooltip.top title="Limpiar Filtros"><span class="fas fa-broom"></span></b-btn>
-            </b-col>
+            </center>
         </b-row>
 
         <!-- Modal template -->
@@ -247,7 +245,7 @@ export default {
                 })
                 .catch(error => {
                     Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
-                    //this.$router.go(-1);
+                    this.$router.go(-1);
                 });
         },
         cleanFilters()

@@ -168,6 +168,12 @@ export default [
           key: 'responsibles',
           type: 'select',
           label: 'Responsables'
+        },
+        {
+          url: '/selects/legalMatrix/states',
+          key: 'states',
+          type: 'select',
+          label: 'Estado de evaluación'
         }
       ]
     },
