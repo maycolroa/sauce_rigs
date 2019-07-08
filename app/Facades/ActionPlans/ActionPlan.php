@@ -608,7 +608,16 @@ class ActionPlan
           ->first();
 
         if ($activities)
-            ActionPlansActivity::whereIn('id', explode(",", $activities->ids))->delete();
+        {
+            if (!empty($this->company))
+            {
+                $data = ActionPlansActivity::whereIn('id', explode(",", $activities->ids));
+                $data->company_scope = $this->company;
+                $data->delete();
+            }
+            else 
+                ActionPlansActivity::whereIn('id', explode(",", $activities->ids))->delete();
+        }
     }
 
     /**
