@@ -9,6 +9,7 @@ use App\Facades\Configuration;
 use Illuminate\Support\Facades\Auth;
 use Session;
 use App\Models\General\License;
+use App\Models\General\FiltersState;
 use DB;
 use App\Models\Administrative\Employees\EmployeeEPS;
 use App\Vuetable\VuetableColumnManager;
@@ -223,12 +224,17 @@ class ApplicationController extends Controller
 
     public function setStateFilters(Request $request)
     {
-      $key = 'filter_'.Session::get('company_id').'_'.$request->url;
-
-      Session::forget($key);
-      Session::put($key, $request->filters);
-
-      //\Log::info(Session::get($key));
+      FiltersState::updateOrCreate(
+          [
+            'user_id' => Auth::user()->id, 
+            'url' => $request->url
+          ],
+          [
+            'user_id' => Auth::user()->id,
+            'company_id' => Session::get('company_id'),
+            'url' => $request->url,
+            'data' => json_encode($request->get('filters'))
+          ]);
 
       return $this->respondHttp200([
         'data' => 'ok'
@@ -237,9 +243,11 @@ class ApplicationController extends Controller
 
     public function getStateFilters(Request $request)
     {
-      $key = 'filter_'.Session::get('company_id').'_'.$request->url;
-      //\Log::info(Session::get($key));
+      $filters = FiltersState::where('user_id', Auth::user()->id)->where('url', $request->url)->first();
+
+      if ($filters)
+        $filters = json_decode($filters->data, true);
       
-      return Session::get($key);
+      return $filters;
     }
 }

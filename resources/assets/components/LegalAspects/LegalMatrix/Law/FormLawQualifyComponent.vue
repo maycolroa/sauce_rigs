@@ -137,7 +137,7 @@
                             <b>Última modificación: </b><span class="font-weight-light">{{ article.updated_at }}</span>
                           </div>
                           <div class="text-center col-md-6">
-                            <b>Derogada: </b><span class="font-weight-light">{{ article.repelead }}</span>
+                            <b>Derogado: </b><span class="font-weight-light">{{ article.repelead }}</span>
                           </div>
                         </b-form-row>
                         <b-form-row>
