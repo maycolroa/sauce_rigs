@@ -2,7 +2,7 @@
     <div>
         <b-row align-h="end" style="padding: 10px;" v-if="modal">
             <center>
-                <b-btn variant="primary icon-btn" @click="showFilterModal()" v-b-tooltip.top title="Abrir Filtros"><span class="fas fa-filter"></span></b-btn>&nbsp;&nbsp;
+                <b-btn :variant="`${colorIcon} icon-btn`" @click="showFilterModal()" v-b-tooltip.top title="Abrir Filtros"><span class="fas fa-filter"></span></b-btn>&nbsp;&nbsp;
                 <b-btn variant="secondary icon-btn" @click="cleanFilters()" v-b-tooltip.top title="Limpiar Filtros"><span class="fas fa-broom"></span></b-btn>
             </center>
         </b-row>
@@ -151,6 +151,29 @@ export default {
         this.getStateFilters()
     },
     computed: {
+        colorIcon()
+        {
+            let color = 'secondary'
+
+            _.forIn(this.filtersSelected, (value, key) => {
+                
+                if (key != 'filtersType')
+                {
+                    if (typeof value === 'string')
+                    {
+                        if (value != '')
+                            color = 'primary'
+                    }
+                    else
+                    {
+                        if (this.filtersSelected[key].length > 0)
+                            color = 'primary'
+                    }
+                }
+            });
+
+            return color
+        }
     },
     watch: {
         filtersSelected: {

@@ -174,6 +174,15 @@ trait UtilsTrait
     }
 
     /**
+     * returns the PayU payment site url located in the .env file
+     * @return string
+     */
+    protected function diskStorageFiles()
+    {
+        return $this->getValueFromEnvFile('DISK_STORAGE_FILES');
+    }
+
+    /**
      * returns a value located in the .env file
      * by its key
      *
@@ -185,7 +194,7 @@ trait UtilsTrait
     {
         $value = env($parameter);
         if (!$value) {
-            throw new Exception('Parameter not found in .env file');
+            throw new Exception('Parameter '.$parameter.' not found in .env file');
         }
         return $value;
     }
