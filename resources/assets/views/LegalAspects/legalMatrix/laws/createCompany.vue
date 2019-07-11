@@ -11,13 +11,14 @@
             <form-law-component
                 url="/legalAspects/legalMatrix/law"
                 method="POST"
+                :custom="true"
                 :years="years"
                 lawTypeDataUrl="/selects/legalMatrix/lawsTypes"
                 riskAspectDataUrl="/selects/legalMatrix/riskAspects"
                 entityDataUrl="/selects/legalMatrix/entities"
                 sstRiskDataUrl="/selects/legalMatrix/sstRisks"
-                urlDataInterests="/selects/legalMatrix/interests"
-                systemApplyUrl="/selects/legalMatrix/systemApplySystem"
+                urlDataInterests="/selects/legalMatrix/interestsCompany"
+                systemApplyUrl="/selects/legalMatrix/systemApplyCompany"
                 :repealed="repealed"
                 :si-no="siNo"/>
         </b-card-body>

@@ -613,7 +613,7 @@ export default [
             { name: 'sau_lm_risks_aspects.name', data: 'risk_aspect', title: 'Riesgo/Aspecto Ambiental', sortable: true, searchable: true, detail: false, key: false },
             { name: 'sau_lm_sst_risks.name', data: 'sst_risk', title: 'Riesgo SST', sortable: true, searchable: true, detail: false, key: false },
             { name: 'sau_lm_entities.name', data: 'entity', title: 'Ente', sortable: true, searchable: true, detail: false, key: false },
-            { name: 'sau_lm_laws.apply_system', data: 'apply_system', title: 'Sistema Aplica', sortable: true, searchable: true, detail: false, key: false },
+            { name: 'sau_lm_system_apply.name', data: 'system_apply', title: 'Sistema Aplica', sortable: true, searchable: true, detail: false, key: false },
             { name: 'sau_lm_laws.repealed', data: 'repealed', title: 'Derogada', sortable: true, searchable: true, detail: false, key: false },
             { name: '', data: 'controlls', title: 'Controles', sortable: false, searchable: false, detail: false, key: false },
         ],
@@ -657,7 +657,66 @@ export default [
         configuration: {
             urlData: '/legalAspects/legalMatrix/law/data',
             filterColumns: true,
-            configNameFilter: 'legalAspects-legalMatrix-law-crud'
+            configNameFilter: 'legalAspects-legalMatrix-laws'
+        }
+    },
+    {
+        name: 'legalaspects-lm-laws-company',
+        fields: [
+            { name: 'sau_lm_laws.id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true },
+            { name: 'sau_lm_laws.name', data: 'name', title: 'Nombre', sortable: true, searchable: true, detail: false, key: false },
+            { name: 'sau_lm_laws_types.name', data: 'law_type', title: 'Tipo Norma', sortable: true, searchable: true, detail: false, key: false },
+            { name: 'sau_lm_laws.law_number', data: 'law_number', title: 'Número', sortable: true, searchable: true, detail: false, key: false },
+            { name: 'sau_lm_laws.law_year', data: 'law_year', title: 'Año', sortable: true, searchable: true, detail: false, key: false },
+            { name: 'sau_lm_laws.description', data: 'description', title: 'Descripción', sortable: true, searchable: true, detail: false, key: false },
+            { name: 'sau_lm_risks_aspects.name', data: 'risk_aspect', title: 'Riesgo/Aspecto Ambiental', sortable: true, searchable: true, detail: false, key: false },
+            { name: 'sau_lm_sst_risks.name', data: 'sst_risk', title: 'Riesgo SST', sortable: true, searchable: true, detail: false, key: false },
+            { name: 'sau_lm_entities.name', data: 'entity', title: 'Ente', sortable: true, searchable: true, detail: false, key: false },
+            { name: 'sau_lm_system_apply.name', data: 'system_apply', title: 'Sistema Aplica', sortable: true, searchable: true, detail: false, key: false },
+            { name: 'sau_lm_laws.repealed', data: 'repealed', title: 'Derogada', sortable: true, searchable: true, detail: false, key: false },
+            { name: '', data: 'controlls', title: 'Controles', sortable: false, searchable: false, detail: false, key: false },
+        ],
+        'controlls': [{
+            type: 'push',
+            buttons: [{
+                config: {
+                    color: 'outline-success',
+                    borderless: true,
+                    icon: 'ion ion-md-create',
+                    title: 'Editar'
+                },
+                data: {
+                    routePush: { name: 'legalaspects-lm-law-company-edit' },
+                    id: 'id',
+                },
+            }, {
+                config: {
+                    color: 'outline-info',
+                    borderless: true,
+                    icon: 'ion ion-md-eye',
+                    title: 'Ver'
+                },
+                data: {
+                    routePush: { name: 'legalaspects-lm-law-company-view' },
+                    id: 'id',
+                },
+            }]
+        },
+        {
+            type: 'base',
+            buttons: [{
+            name: 'delete',
+            data: {
+                action: '/legalAspects/legalMatrix/law/',
+                id: 'id',
+                messageConfirmation: 'Esta seguro de borrar la norma __name__'
+            },
+            }],
+        }],
+        configuration: {
+            urlData: '/legalAspects/legalMatrix/law/data',
+            filterColumns: true,
+            configNameFilter: 'legalAspects-legalMatrix-laws-company'
         }
     },
     {
@@ -672,7 +731,7 @@ export default [
             { name: 'sau_lm_risks_aspects.name', data: 'risk_aspect', title: 'Riesgo/Aspecto Ambiental', sortable: true, searchable: true, detail: false, key: false },
             { name: 'sau_lm_sst_risks.name', data: 'sst_risk', title: 'Riesgo SST', sortable: true, searchable: true, detail: false, key: false },
             { name: 'sau_lm_entities.name', data: 'entity', title: 'Ente', sortable: true, searchable: true, detail: false, key: false },
-            { name: 'sau_lm_laws.apply_system', data: 'apply_system', title: 'Sistema Aplica', sortable: true, searchable: true, detail: false, key: false },
+            { name: 'sau_lm_system_apply.name', data: 'system_apply', title: 'Sistema Aplica', sortable: true, searchable: true, detail: false, key: false },
             { name: 'sau_lm_laws.repealed', data: 'repealed', title: 'Derogada', sortable: true, searchable: true, detail: false, key: false },
             { name: '', data: 'controlls', title: 'Controles', sortable: false, searchable: false, detail: false, key: false },
         ],
@@ -699,6 +758,104 @@ export default [
             urlData: '/legalAspects/legalMatrix/law/data',
             filterColumns: true,
             configNameFilter: 'legalAspects-legalMatrix-law-qualify'
+        }
+    },
+    {
+        name: 'legalaspects-lm-system-apply',
+        fields: [
+            { name: 'sau_lm_system_apply.id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true },
+            { name: 'sau_lm_system_apply.name', data: 'name', title: 'Nombre', sortable: true, searchable: true, detail: false, key: false },
+            { name: '', data: 'controlls', title: 'Controles', sortable: false, searchable: false, detail: false, key: false },
+        ],
+        'controlls': [{
+            type: 'push',
+            buttons: [{
+                config: {
+                    color: 'outline-success',
+                    borderless: true,
+                    icon: 'ion ion-md-create',
+                    title: 'Editar'
+                },
+                data: {
+                    routePush: { name: 'legalaspects-lm-system-apply-edit' },
+                    id: 'id',
+                },
+            }, {
+                config: {
+                    color: 'outline-info',
+                    borderless: true,
+                    icon: 'ion ion-md-eye',
+                    title: 'Ver'
+                },
+                data: {
+                    routePush: { name: 'legalaspects-lm-system-apply-view' },
+                    id: 'id',
+                },
+            }]
+        },
+        {
+            type: 'base',
+            buttons: [{
+            name: 'delete',
+            data: {
+                action: '/legalAspects/legalMatrix/systemApply/',
+                id: 'id',
+                messageConfirmation: 'Esta seguro de borrar el sistema que aplica __name__'
+            },
+            }],
+        }],
+        configuration: {
+            urlData: '/legalAspects/legalMatrix/systemApply/data',
+            filterColumns: true,
+        }
+    },
+    {
+        name: 'legalaspects-lm-system-apply-company',
+        fields: [
+            { name: 'sau_lm_system_apply.id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true },
+            { name: 'sau_lm_system_apply.name', data: 'name', title: 'Nombre', sortable: true, searchable: true, detail: false, key: false },
+            { name: '', data: 'controlls', title: 'Controles', sortable: false, searchable: false, detail: false, key: false },
+        ],
+        'controlls': [{
+            type: 'push',
+            buttons: [{
+                config: {
+                    color: 'outline-success',
+                    borderless: true,
+                    icon: 'ion ion-md-create',
+                    title: 'Editar'
+                },
+                data: {
+                    routePush: { name: 'legalaspects-lm-system-apply-company-edit' },
+                    id: 'id',
+                },
+            }, {
+                config: {
+                    color: 'outline-info',
+                    borderless: true,
+                    icon: 'ion ion-md-eye',
+                    title: 'Ver'
+                },
+                data: {
+                    routePush: { name: 'legalaspects-lm-system-apply-company-view' },
+                    id: 'id',
+                },
+            }]
+        },
+        {
+            type: 'base',
+            buttons: [{
+            name: 'delete',
+            data: {
+                action: '/legalAspects/legalMatrix/systemApply/',
+                id: 'id',
+                messageConfirmation: 'Esta seguro de borrar el sistema que aplica __name__'
+            },
+            }],
+        }],
+        configuration: {
+            urlData: '/legalAspects/legalMatrix/systemApply/data',
+            filterColumns: true,
         }
     }
 ]

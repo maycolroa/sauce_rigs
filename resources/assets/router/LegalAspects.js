@@ -341,6 +341,30 @@ export default [
 				import('@/views/LegalAspects/legalMatrix/laws/view')
 			},
 			{
+				name: 'legalaspects-lm-law-company',
+				path: 'lm/lawsCompany',
+				component: () =>
+				import('@/views/LegalAspects/legalMatrix/laws/indexCompany')
+			}, 
+			{
+				name: 'legalaspects-lm-law-company-create',
+				path: 'lm/lawsCompany/create',
+				component: () =>
+				import('@/views/LegalAspects/legalMatrix/laws/createCompany')
+			},
+			{
+				name: 'legalaspects-lm-law-company-edit',
+				path: 'lm/lawsCompany/edit/:id',
+				component: () =>
+				import('@/views/LegalAspects/legalMatrix/laws/editCompany')
+			},
+			{
+				name: 'legalaspects-lm-law-company-view',
+				path: 'lm/lawsCompany/view/:id',
+				component: () =>
+				import('@/views/LegalAspects/legalMatrix/laws/view')
+			},
+			{
 				name: 'legalaspects-lm-law-qualify',
 				path: 'lm/lawsQualify',
 				component: () =>
@@ -352,6 +376,54 @@ export default [
 				component: () =>
 				import('@/views/LegalAspects/legalMatrix/laws/viewQualify')
 			},
+			{
+				name: 'legalaspects-lm-system-apply',
+				path: 'lm/systemApply',
+				component: () =>
+				import('@/views/LegalAspects/legalMatrix/systemApply/index')
+			}, 
+			{
+				name: 'legalaspects-lm-system-apply-create',
+				path: 'lm/systemApply/create',
+				component: () =>
+				import('@/views/LegalAspects/legalMatrix/systemApply/create')
+			},
+			{
+				name: 'legalaspects-lm-system-apply-edit',
+				path: 'lm/systemApply/edit/:id',
+				component: () =>
+				import('@/views/LegalAspects/legalMatrix/systemApply/edit')
+			},
+			{
+				name: 'legalaspects-lm-system-apply-view',
+				path: 'lm/systemApply/view/:id',
+				component: () =>
+				import('@/views/LegalAspects/legalMatrix/systemApply/view')
+			},
+			{
+				name: 'legalaspects-lm-system-apply-company',
+				path: 'lm/systemApplyCompany',
+				component: () =>
+				import('@/views/LegalAspects/legalMatrix/systemApply/indexCompany')
+			}, 
+			{
+				name: 'legalaspects-lm-system-apply-company-create',
+				path: 'lm/systemApplyCompany/create',
+				component: () =>
+				import('@/views/LegalAspects/legalMatrix/systemApply/createCompany')
+			},
+			{
+				name: 'legalaspects-lm-system-apply-company-edit',
+				path: 'lm/systemApplyCompany/edit/:id',
+				component: () =>
+				import('@/views/LegalAspects/legalMatrix/systemApply/edit')
+			},
+			{
+				name: 'legalaspects-lm-system-apply-company-view',
+				path: 'lm/systemApplyCompany/view/:id',
+				component: () =>
+				import('@/views/LegalAspects/legalMatrix/systemApply/view')
+			}
 		]
 	}
 ];

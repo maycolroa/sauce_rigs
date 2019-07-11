@@ -47,13 +47,13 @@ class LawRequest extends FormRequest
         $id = $this->input('id');
 
         return [
-            'name' => 'required|string|unique:sau_lm_laws,name,'.$id.',id',
+            'name' => 'required|string',//|unique:sau_lm_laws,name,'.$id.',id',
             'law_number' => 'required',
-            'apply_system' => 'required',
+            'system_apply_id' => 'required',
             'law_year' => 'required|integer',
             'law_type_id' => 'required|exists:sau_lm_laws_types,id',
             'description' => 'required',
-            'observations' => 'required',
+            //'observations' => 'required',
             'risk_aspect_id' => 'required|exists:sau_lm_risks_aspects,id',
             'entity_id' => 'required|exists:sau_lm_entities,id',
             'sst_risk_id' => 'required|exists:sau_lm_sst_risks,id',
@@ -61,7 +61,7 @@ class LawRequest extends FormRequest
             'file' => 'nullable|max:20480',
             'articles' => 'required|array',
             'articles.*.description' => 'required',
-            'articles.*.repelead' => 'required',
+            'articles.*.repealed' => 'required',
             'articles.*.interests_id' => 'required|array'
         ];
     }

@@ -15,7 +15,7 @@ class Article extends Model
         'name',
         'description',
         'law_id',
-        'repelead',
+        'repealed',
         'sequence'
     ];
 

@@ -20,7 +20,7 @@
                     <div><b>Ente:</b> {{ law.entity ? law.entity.name : '' }}</div>
                 </b-col>
                 <b-col class="text-center">                   
-                    <div><b>Sistema que aplica:</b> {{ law.apply_system }}</div>
+                    <div><b>Sistema que aplica:</b> {{ law.system_apply ? law.system_apply.name : '' }}</div>
                     <div><b>Observaciones:</b> {{ law.observations }}</div>
                     <div><b>Fecha de creación:</b> {{ law.created_at }}</div>
                     <div><b>Riesgo SST:</b> {{ law.sst_risk ? law.sst_risk.name : '' }}</div>
@@ -41,7 +41,7 @@ export default {
         return {
             name: '',
             law_number: '',
-            apply_system: '',
+            system_apply: { name: "" },
             law_year: '',
             law_type: { name: "" },
             description: '',

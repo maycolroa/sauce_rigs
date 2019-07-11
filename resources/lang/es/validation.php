@@ -248,7 +248,8 @@ return [
       'articles.*.description' => 'Descripción',
       'articles.*.repelead' => 'Derogado',
       'articles.*.interests_id' => 'Intereses',
-      'articles' => 'Artículos'
+      'articles' => 'Artículos',
+      'system_apply_id' => 'Sistema que aplica'
     ],
 
 ];

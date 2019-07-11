@@ -60,7 +60,7 @@ export default [
       ]
     },
     {
-      name: 'legalAspects-legalMatrix-law-crud',
+      name: 'legalAspects-legalMatrix-laws',
       filters: [
         {
           url: '/selects/legalMatrix/lawsTypes',
@@ -87,19 +87,72 @@ export default [
           label: 'Riesgos SST'
         },
         {
-          url: '/selects/legalMatrix/applySystem',
-          key: 'applySystem',
+          url: '/selects/legalMatrix/systemApplySystem',
+          key: 'systemApply',
           type: 'select',
-          label: 'Sistema aplica'
+          label: 'Sistema que aplica'
         },
         {
-          url: '/selects/legalMatrix/lawNumbers',
+          url: '/selects/legalMatrix/lawNumbersSystem',
           key: 'lawNumbers',
           type: 'select',
           label: 'Número de norma'
         },
         {
-          url: '/selects/legalMatrix/lawYears',
+          url: '/selects/legalMatrix/lawYearsSystem',
+          key: 'lawYears',
+          type: 'select',
+          label: 'Años'
+        },
+        {
+          url: '/selects/legalMatrix/repealed',
+          key: 'repealed',
+          type: 'select',
+          label: 'Derogada'
+        }
+      ]
+    },
+    {
+      name: 'legalAspects-legalMatrix-laws-company',
+      filters: [
+        {
+          url: '/selects/legalMatrix/lawsTypes',
+          key: 'lawTypes',
+          type: 'select',
+          label: 'Tipo de norma'
+        },
+        {
+          url: '/selects/legalMatrix/riskAspects',
+          key: 'riskAspects',
+          type: 'select',
+          label: 'Riesgo/Aspecto Ambiental'
+        },
+        {
+          url: '/selects/legalMatrix/entities',
+          key: 'entities',
+          type: 'select',
+          label: 'Entes'
+        },
+        {
+          url: '/selects/legalMatrix/sstRisks',
+          key: 'sstRisks',
+          type: 'select',
+          label: 'Riesgos SST'
+        },
+        {
+          url: '/selects/legalMatrix/systemApplyCompany',
+          key: 'systemApply',
+          type: 'select',
+          label: 'Sistema que aplica'
+        },
+        {
+          url: '/selects/legalMatrix/lawNumbersCompany',
+          key: 'lawNumbers',
+          type: 'select',
+          label: 'Número de norma'
+        },
+        {
+          url: '/selects/legalMatrix/lawYearsCompany',
           key: 'lawYears',
           type: 'select',
           label: 'Años'
@@ -140,10 +193,10 @@ export default [
           label: 'Riesgos SST'
         },
         {
-          url: '/selects/legalMatrix/applySystem',
-          key: 'applySystem',
+          url: '/selects/legalMatrix/systemApply',
+          key: 'systemApply',
           type: 'select',
-          label: 'Sistema aplica'
+          label: 'Sistema que aplica'
         },
         {
           url: '/selects/legalMatrix/lawNumbers',
