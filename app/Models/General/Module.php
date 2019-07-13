@@ -22,7 +22,7 @@ class Module extends Model
 
     public function licenses()
     {
-        return $this->belongsToMany(License::class,'sau_license_module');
+        return $this->belongsToMany('App\Models\System\Licenses\License', 'sau_license_module');
     }
 
     public function multiselect()

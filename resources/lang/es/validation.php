@@ -249,7 +249,10 @@ return [
       'articles.*.repelead' => 'Derogado',
       'articles.*.interests_id' => 'Intereses',
       'articles' => 'Artículos',
-      'system_apply_id' => 'Sistema que aplica'
+      'system_apply_id' => 'Sistema que aplica',
+      'started_at' => 'Fecha Inicio',
+      'ended_at' => 'Fecha Fin',
+      'company_id' => 'Compañia'
     ],
 
 ];

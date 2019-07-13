@@ -62,9 +62,9 @@ class LoginController extends Controller
                                 ->whereRaw('company_id = ? 
                                             AND ? BETWEEN started_at AND ended_at', 
                                             [$val->pivot->company_id, date('Y-m-d')])
-                                ->first();
+                                ->get();
 
-                        if ($license)
+                        if (COUNT($license) > 0)
                         {
                             Session::put('company_id', $val->pivot->company_id);
 

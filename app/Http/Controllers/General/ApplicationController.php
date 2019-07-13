@@ -8,7 +8,8 @@ use Illuminate\Http\Request;
 use App\Facades\Configuration;
 use Illuminate\Support\Facades\Auth;
 use Session;
-use App\Models\General\License;
+//use App\Models\General\License;
+use App\Models\General\Company;
 use App\Models\General\FiltersState;
 use DB;
 use App\Models\Administrative\Employees\EmployeeEPS;
@@ -249,5 +250,31 @@ class ApplicationController extends Controller
         $filters = json_decode($filters->data, true);
       
       return $filters;
+    }
+
+    public function multiselectCompanies(Request $request)
+    {
+        if($request->has('keyword'))
+        {
+            $keyword = "%{$request->keyword}%";
+            $companies = Company::select("id", "name")
+                ->where(function ($query) use ($keyword) {
+                    $query->orWhere('name', 'like', $keyword);
+                })
+                ->take(30)->pluck('id', 'name');
+
+            return $this->respondHttp200([
+                'options' => $this->multiSelectFormat($companies)
+            ]);
+        }
+        else
+        {
+            $companies = Company::selectRaw("
+                sau_companies.id as id,
+                sau_companies.name as name
+            ")->pluck('id', 'name');
+        
+            return $this->multiSelectFormat($companies);
+        }
     }
 }

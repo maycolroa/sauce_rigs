@@ -88,6 +88,7 @@ Route::middleware(['auth'])->group(function () {
         Route::post('ctContractClassifications', 'General\MultiSelectRadioController@ctContractClassifications'); 
         Route::post('ctkindsRisks', 'General\MultiSelectRadioController@ctkindsRisks'); 
         Route::post('siNo', 'General\MultiSelectRadioController@siNoSelect');
+        Route::post('companies', 'General\ApplicationController@multiselectCompanies');
 
         Route::prefix('evaluations')->group(function () {
           Route::post('objectives', 'LegalAspects\Contracs\EvaluationController@multiselectObjectives');
@@ -257,7 +258,16 @@ Route::middleware(['auth'])->group(function () {
         Route::post('law/data', 'LegalAspects\LegalMatrix\LawController@data');
         Route::ApiResource('law', 'LegalAspects\LegalMatrix\LawController');
       });
-		});
+    });
+    
+    //Sistema
+    Route::prefix('system')->group(function () {
+
+      Route::post('license/history/data', 'System\Licenses\LicenseHistoryController@data');
+      Route::post('license/data', 'System\Licenses\LicenseController@data');
+      Route::ApiResource('license', 'System\Licenses\LicenseController');
+      
+    });
 
 
     //Return view for spa

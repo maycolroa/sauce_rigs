@@ -25,9 +25,9 @@
       <b-navbar-nav class="align-items-lg-center">
         <!-- Search -->
         <label class="nav-item navbar-text navbar-search-box p-0 active">
-          <i class="ion ion-ios-search navbar-icon align-middle"></i>
+          <i class="ion navbar-icon align-middle"></i>
           <span class="navbar-search-input pl-2">
-            <input type="text" class="form-control navbar-text mx-2" placeholder="Buscar..." style="width:200px">
+            <input type="text" readonly class="form-control navbar-text mx-2" placeholder="" style="width:200px">
           </span>
         </label>
       </b-navbar-nav>

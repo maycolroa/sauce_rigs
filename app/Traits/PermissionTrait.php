@@ -3,8 +3,9 @@
 namespace App\Traits;
 
 use Illuminate\Support\Facades\Auth;
-use App\Models\General\License;
+use App\Models\System\Licenses\License;
 use App\Models\General\Permission;
+use App\Models\General\Application;
 use App\Models\General\Module;
 use Exception;
 
@@ -18,14 +19,29 @@ trait PermissionTrait
     public function getModulePermissions()
     {
         //Obtiene los module_id de todas las licencias activas
-        $license = License::whereRaw('? BETWEEN started_at AND ended_at', [date('Y-m-d')])
-                ->first();
+        $licenses = License::whereRaw('? BETWEEN started_at AND ended_at', [date('Y-m-d')])->get();
 
         $modules = [];
 
-        foreach ($license->modules as $module)
+        foreach ($licenses as $license)
         {
-            array_push($modules, $module->id);
+            foreach ($license->modules as $module)
+            {
+                array_push($modules, $module->id);
+            }
+        }
+
+        if (Auth::user()->checkRoleDefined('Superadmin'))
+        {
+            $app = Application::where('name', 'system')->first();
+
+            if ($app)
+            {
+                foreach ($app->modules as $module)
+                {
+                    array_push($modules, $module->id);
+                }
+            }
         }
         
         //Obtiene todos los permisos de esos module_id
