@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Mail;
 use Illuminate\Database\Eloquent\Collection;
 use App\Facades\Mail\NotificationGeneralMail;
 use App\Models\Administrative\Users\User;
-use App\Models\General\LogMail;
+use App\Models\System\LogMails\LogMail;
 use App\Models\General\Module;
 use App\Models\Administrative\Employees\Employee;
 use Route;
@@ -414,7 +414,7 @@ class NotificationMail
             
             Mail::to($this->recipients)->queue($message);
 
-            $this->createLog();
+            $this->createLog((new NotificationGeneralMail($this->prepareData()))->render());
             $this->restart();
         }
         catch (\Exception $e) {
@@ -466,7 +466,7 @@ class NotificationMail
      *
      * @return void
      */
-    private function createLog()
+    private function createLog($body)
     {
         $log = new LogMail();
 
@@ -495,7 +495,8 @@ class NotificationMail
         $log->module_id = $this->module->id;
         $log->event = $event;
         $log->subject = $this->subject;
-        $log->message = isset($this->message) ? $this->message : '';
+        //$log->message = isset($this->message) ? $this->message : '';
+        $log->message = $body;
         $log->created_at = date("Y-m-d H:i:s");
         $log->save();
     }

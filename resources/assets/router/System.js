@@ -42,6 +42,22 @@ export default [{
           component: () =>
             import('@/views/System/licenses/view')
         }
+      ]),
+      ...middleware({ 'check-permission': 'logMails_r' }, [
+        {
+          name: 'system-logmails',
+          path: 'logmails',
+          component: () =>
+            import('@/views/System/logMails/index')
+        }
+      ]), 
+      ...middleware({ 'check-permission': 'logMails_r' }, [
+        {
+          name: 'system-logmails-view',
+          path: 'logmails/view/:id',
+          component: () =>
+            import('@/views/System/logMails/view')
+        }
       ])
     ]
   }]

@@ -17,7 +17,7 @@ class Module extends Model
 
     public function logMails()
     {
-        return $this->hasMany(LogMail::class);
+        return $this->hasMany('App\Models\System\LogMails\LogMail');
     }
 
     public function licenses()

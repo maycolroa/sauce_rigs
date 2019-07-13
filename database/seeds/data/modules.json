@@ -108,6 +108,10 @@
             {
                 "name": "licenses",
                 "display_name": "Licencias"
+            },
+            {
+                "name": "logMails",
+                "display_name": "Supervisar Correos"
             }
         ]
     }

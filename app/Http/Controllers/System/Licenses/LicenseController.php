@@ -171,8 +171,10 @@ class LicenseController extends Controller
      * @param  License  $license
      * @return \Illuminate\Http\Response
      */
-    public function destroy(License $license)
+    public function destroy($id)
     {
+        $license = License::system()->findOrFail($id);
+        
         if(!$license->delete())
         {
             return $this->respondHttp500();

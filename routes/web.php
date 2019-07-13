@@ -266,6 +266,9 @@ Route::middleware(['auth'])->group(function () {
       Route::post('license/history/data', 'System\Licenses\LicenseHistoryController@data');
       Route::post('license/data', 'System\Licenses\LicenseController@data');
       Route::ApiResource('license', 'System\Licenses\LicenseController');
+
+      Route::post('logMail/data', 'System\LogMails\LogMailController@data');
+      Route::ApiResource('logMail', 'System\LogMails\LogMailController');
       
     });
 

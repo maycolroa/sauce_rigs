@@ -68,4 +68,41 @@ export default [
             filterColumns: true,
         }
     },
+    {
+        name: 'system-logmails',
+        fields: [
+            { name: 'sau_log_mails.id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true },
+            { name: 'sau_modules.name', data: 'module', title: 'Módulo', sortable: true, searchable: true, detail: false, key: false },
+            { name: 'sau_log_mails.event', data: 'event', title: 'Evento', sortable: true, searchable: true, detail: false, key: false },
+            { name: 'sau_log_mails.subject', data: 'subject', title: 'Asunto', sortable: true, searchable: true, detail: false, key: false },
+            { name: 'sau_log_mails.created_at', data: 'created_at', title: 'Fecha', sortable: true, searchable: true, detail: false, key: false },
+            { event: 'sau_log_mails.recipients', data: 'recipients', title: 'Destinatarios', sortable: true, searchable: true, detail: false, key: false },
+            { name: '', data: 'controlls', title: 'Controles', sortable: false, searchable: false, detail: false, key: false },
+        ],
+        'controlls': [
+            {
+                type: 'push',
+                buttons: [{
+                    config: {
+                        color: 'outline-info',
+                        borderless: true,
+                        icon: 'ion ion-md-eye',
+                        title: 'Ver'
+                    },
+                    data: {
+                        routePush: { name: 'system-logmails-view' },
+                        id: 'id',
+                    },
+                    permission: 'logMails_r'
+                }]
+            },
+            {
+                type: 'base',
+                buttons: [],
+            }],
+        configuration: {
+            urlData: '/system/logMail/data',
+            filterColumns: true,
+        }
+    }
 ]

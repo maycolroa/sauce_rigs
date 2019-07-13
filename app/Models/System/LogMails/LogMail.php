@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models\General;
+namespace App\Models\System\LogMails;
 
 use Illuminate\Database\Eloquent\Model;
 
@@ -12,6 +12,6 @@ class LogMail extends Model
 
     public function module()
     {
-        return $this->belongsTo(Module::class);
+        return $this->belongsTo('App\Models\General\Module');
     }
 }
