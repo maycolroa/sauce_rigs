@@ -14,7 +14,8 @@ class License extends Model
     protected $fillable = [
         'started_at',
         'ended_at',
-        'company_id'
+        'company_id',
+        'notified'
     ];
 
     public function company()
@@ -35,5 +36,10 @@ class License extends Model
     public function histories()
     {
         return $this->hasMany(LicenseHistory::class, 'license_id');
+    }
+
+    public function scopeNotNotified($query)
+    {
+        return $query->where('notified', 'NO');
     }
 }

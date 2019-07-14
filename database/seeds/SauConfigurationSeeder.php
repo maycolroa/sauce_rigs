@@ -37,6 +37,16 @@ class SauConfigurationSeeder extends Seeder
                 'key' => 'days_user_suspension',
                 'value' => '67',
                 'observation' => 'SI el usuario no ha iniciado sesion en esta cantidad de dias sera supendido'
+            ],
+            [
+                'key' => 'days_alert_expired_license',
+                'value' => '30',
+                'observation' => 'Cantidad de días para consultar si una licencia esta próxima a vencerse y enviar la notificación de alerta'
+            ],
+            [
+                'key' => 'admin_license_notification_email',
+                'value' => 'carolina.madrid@rigs.com.co',
+                'observation' => 'Administrador al que se notificara sobre las licencias próximas a vencer'
             ]
         ];
 
