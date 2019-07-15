@@ -29,6 +29,19 @@ export default class GlobalMethods {
     });
   }
 
+  static getAllModulesMultiselectGroup(){
+    return new Promise((resolve, reject) => {
+      axios.post('/selects/allModulesGroup')
+      .then(response => {
+        resolve(response.data);
+      })
+      .catch(error => {
+          Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
+          reject(error);
+      });
+    });
+  }
+
   static getPermissionsMultiselect(select){
     return new Promise((resolve, reject) => {
       axios.post('/selects/permissions')

@@ -4,6 +4,7 @@ namespace App\Models\LegalAspects\LegalMatrix;
 
 use Illuminate\Database\Eloquent\Model;
 use App\Traits\CompanyTrait;
+use Session;
 
 class Article extends Model
 {
@@ -29,5 +30,14 @@ class Article extends Model
     public function interests()
     {
         return $this->belongsToMany(Interest::class, 'sau_lm_article_interest');
+    }
+
+    public function scopeAlls($query, $company_id = null)
+    {
+        if (!$company_id)
+            $company_id = Session::get('company_id');
+
+        return $query->where('sau_lm_laws.company_id', $company_id)
+                     ->orWhereNull('sau_lm_laws.company_id');
     }
 }

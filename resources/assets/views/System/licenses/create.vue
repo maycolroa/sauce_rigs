@@ -39,7 +39,7 @@ export default {
     }
   },
   created(){
-    GlobalMethods.getModulesMultiselectGroup()
+    GlobalMethods.getAllModulesMultiselectGroup()
     .then(response => {
         this.modules = response;
     })

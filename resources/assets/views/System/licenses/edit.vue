@@ -50,7 +50,7 @@ export default {
         this.$router.go(-1);
     });
 
-    GlobalMethods.getModulesMultiselectGroup()
+    GlobalMethods.getAllModulesMultiselectGroup()
     .then(response => {
         this.modules = response;
     })

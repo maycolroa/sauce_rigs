@@ -360,7 +360,7 @@ class LawController extends Controller
         return $this->lmLawYears($request, 'company');
     }
 
-    public function lmLawYears(Request $request, $scope = 'all')
+    public function lmLawYears(Request $request, $scope = 'alls')
     {
         $lawYears = Law::selectRaw(
             'DISTINCT(sau_lm_laws.law_year) as law_year'
@@ -381,7 +381,7 @@ class LawController extends Controller
         return $this->lmLawNumbers($request, 'company');
     }
 
-    public function lmLawNumbers(Request $request, $scope = 'all')
+    public function lmLawNumbers(Request $request, $scope = 'alls')
     {
         $lawNumbers = Law::selectRaw(
             'DISTINCT(sau_lm_laws.law_number) as law_number'

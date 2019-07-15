@@ -8,17 +8,6 @@
 						<div class="row no-gutters row-bordered row-border-light h-100">
 							
 							<div class="d-flex col-sm-6 col-md-4 col-lg-6 align-items-center">
-								<router-link tag="a" href="javascript:void(0)" class="card-body media align-items-center text-dark" :to="{name:'legalaspects-lm-interest'}">
-									<i class="lnr lnr-list display-4 d-block text-primary"></i>
-									<span class="media-body d-block ml-3">
-										<span class="text-big font-weight-bolder">Administrar intereses</span>
-										<br>
-										<small class="text-muted">Administrar intereses del sistema</small>
-									</span>
-								</router-link>
-							</div>
-
-							<div class="d-flex col-sm-6 col-md-4 col-lg-6 align-items-center">
 								<router-link tag="a" href="javascript:void(0)" class="card-body media align-items-center text-dark" :to="{name:'legalaspects-lm-riskaspect'}">
 									<i class="lnr lnr-cloud-sync display-4 d-block text-primary"></i>
 									<span class="media-body d-block ml-3">
@@ -41,6 +30,17 @@
 							</div>
 
 							<div class="d-flex col-sm-6 col-md-4 col-lg-6 align-items-center">
+								<router-link tag="a" href="javascript:void(0)" class="card-body media align-items-center text-dark" :to="{name:'legalaspects-lm-system-apply' }">
+									<i class="lnr lnr-layers display-4 d-block text-primary"></i>
+									<span class="media-body d-block ml-3">
+										<span class="text-big font-weight-bolder">Administrar Sistemas que Aplican</span>
+										<br>
+										<small class="text-muted">Administrar Sistemas que Aplican</small>
+									</span>
+								</router-link>
+							</div>
+
+							<div class="d-flex col-sm-6 col-md-4 col-lg-6 align-items-center">
 								<router-link tag="a" href="javascript:void(0)" class="card-body media align-items-center text-dark" :to="{name:'legalaspects-lm-entity'}">
 									<i class="lnr lnr-apartment display-4 d-block text-primary"></i>
 									<span class="media-body d-block ml-3">
@@ -52,12 +52,12 @@
 							</div>
 
 							<div class="d-flex col-sm-6 col-md-4 col-lg-6 align-items-center">
-								<router-link tag="a" href="javascript:void(0)" class="card-body media align-items-center text-dark" :to="{name:'legalaspects-lm-interest-myinterests'}">
-									<i class="lnr lnr-star display-4 d-block text-primary"></i>
+								<router-link tag="a" href="javascript:void(0)" class="card-body media align-items-center text-dark" :to="{name:'legalaspects-lm-interest'}">
+									<i class="lnr lnr-list display-4 d-block text-primary"></i>
 									<span class="media-body d-block ml-3">
-										<span class="text-big font-weight-bolder">Establecer mis intereses</span>
+										<span class="text-big font-weight-bolder">Administrar intereses</span>
 										<br>
-										<small class="text-muted">Establecer mis intereses</small>
+										<small class="text-muted">Administrar intereses del sistema</small>
 									</span>
 								</router-link>
 							</div>
@@ -72,6 +72,28 @@
 									</span>
 								</router-link>
 							</div> 
+
+							<div class="d-flex col-sm-6 col-md-4 col-lg-6 align-items-center">
+								<router-link tag="a" href="javascript:void(0)" class="card-body media align-items-center text-dark" :to="{name:'legalaspects-lm-interest-myinterests'}">
+									<i class="lnr lnr-star display-4 d-block text-primary"></i>
+									<span class="media-body d-block ml-3">
+										<span class="text-big font-weight-bolder">Establecer mis intereses</span>
+										<br>
+										<small class="text-muted">Establecer mis intereses</small>
+									</span>
+								</router-link>
+							</div>
+
+							<div class="d-flex col-sm-6 col-md-4 col-lg-6 align-items-center">
+								<router-link tag="a" href="javascript:void(0)" class="card-body media align-items-center text-dark" :to="{name:'legalaspects-lm-system-apply-company' }">
+									<i class="lnr lnr-layers display-4 d-block text-primary"></i>
+									<span class="media-body d-block ml-3">
+										<span class="text-big font-weight-bolder">Administrar mis Sistemas que Aplican</span>
+										<br>
+										<small class="text-muted">Administrar Sistemas que Aplican de mi compañia</small>
+									</span>
+								</router-link>
+							</div>
 
 							<div class="d-flex col-sm-6 col-md-4 col-lg-6 align-items-center">
 								<router-link tag="a" href="javascript:void(0)" class="card-body media align-items-center text-dark" :to="{name:'legalaspects-lm-law-company' }">
@@ -91,28 +113,6 @@
 										<span class="text-big font-weight-bolder">Calificar Normas</span>
 										<br>
 										<small class="text-muted">Calificar Normas segùn mis intereses</small>
-									</span>
-								</router-link>
-							</div>
-
-							<div class="d-flex col-sm-6 col-md-4 col-lg-6 align-items-center">
-								<router-link tag="a" href="javascript:void(0)" class="card-body media align-items-center text-dark" :to="{name:'legalaspects-lm-system-apply' }">
-									<i class="lnr lnr-layers display-4 d-block text-primary"></i>
-									<span class="media-body d-block ml-3">
-										<span class="text-big font-weight-bolder">Administrar Sistemas que Aplican</span>
-										<br>
-										<small class="text-muted">Administrar Sistemas que Aplican</small>
-									</span>
-								</router-link>
-							</div>
-
-							<div class="d-flex col-sm-6 col-md-4 col-lg-6 align-items-center">
-								<router-link tag="a" href="javascript:void(0)" class="card-body media align-items-center text-dark" :to="{name:'legalaspects-lm-system-apply-company' }">
-									<i class="lnr lnr-layers display-4 d-block text-primary"></i>
-									<span class="media-body d-block ml-3">
-										<span class="text-big font-weight-bolder">Administrar mis Sistemas que Aplican</span>
-										<br>
-										<small class="text-muted">Administrar Sistemas que Aplican de mi compañia</small>
 									</span>
 								</router-link>
 							</div>

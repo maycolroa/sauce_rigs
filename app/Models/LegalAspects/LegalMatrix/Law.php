@@ -69,9 +69,12 @@ class Law extends Model
         return $query->whereNull('sau_lm_laws.company_id');
     }
 
-    public function scopeAll($query)
+    public function scopeAlls($query, $company_id = null)
     {
-        return $query->where('sau_lm_laws.company_id', Session::get('company_id'))
+        if (!$company_id)
+            $company_id = Session::get('company_id');
+
+        return $query->where('sau_lm_laws.company_id', $company_id)
                      ->orWhereNull('sau_lm_laws.company_id');
     }
 

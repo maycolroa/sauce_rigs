@@ -151,6 +151,22 @@ class ApplicationController extends Controller
     public function multiselectGroupModules()
     {
       $data = $this->getAppsModules();
+      return $this->multiselectGroupCreateFormat($data);
+    }
+
+    /**
+     * Returns an array for a group-type input
+     *
+     * @return Array
+     */
+    public function multiselectGroupAllModules()
+    {
+      $data = $this->getAllAppsModules();
+      return $this->multiselectGroupCreateFormat($data);
+    }
+
+    private function multiselectGroupCreateFormat($data)
+    {
       $result = [];
 
       foreach($data as $keyApp => $valueApp)
