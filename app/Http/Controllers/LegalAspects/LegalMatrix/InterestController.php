@@ -197,4 +197,42 @@ class InterestController extends Controller
             return $this->radioFormat($interests);
         }
     }
+
+    /**
+     * Returns an array for a select type input
+     *
+     * @param Request $request
+     * @return Array
+     */
+
+    public function multiselectCompany(Request $request)
+    {
+        if($request->has('keyword'))
+        {
+            $keyword = "%{$request->keyword}%";
+            $interests = Interest::select("id", "name")
+                ->join('sau_lm_company_interest', 'sau_lm_company_interest.interest_id', 'sau_lm_interests.id')
+                ->where('sau_lm_company_interest.company_id', Session::get('company_id'))
+                ->where(function ($query) use ($keyword) {
+                    $query->orWhere('name', 'like', $keyword);
+                })
+                ->take(30)->pluck('id', 'name');
+
+            return $this->respondHttp200([
+                'options' => $this->multiSelectFormat($interests)
+            ]);
+        }
+        else
+        {
+            $interests = Interest::select(
+                'sau_lm_interests.id as id',
+                'sau_lm_interests.name as name'
+            )
+            ->join('sau_lm_company_interest', 'sau_lm_company_interest.interest_id', 'sau_lm_interests.id')
+            ->where('sau_lm_company_interest.company_id', Session::get('company_id'))
+            ->pluck('id', 'name');
+        
+            return $this->radioFormat($interests);
+        }
+    }
 }

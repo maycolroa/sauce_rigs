@@ -101,5 +101,18 @@
                 "display_name": "Matriz Legal"
             }
         ]
-    }    
+    },
+    {
+        "application": "system",
+        "modules": [
+            {
+                "name": "licenses",
+                "display_name": "Licencias"
+            },
+            {
+                "name": "logMails",
+                "display_name": "Supervisar Correos"
+            }
+        ]
+    }
 ]

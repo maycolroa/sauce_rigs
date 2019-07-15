@@ -59,6 +59,7 @@ class LawController extends Controller
         {
             $laws = Law::selectRaw(
                 'sau_lm_laws.*,
+                 sau_lm_system_apply.name AS system_apply,
                  sau_lm_laws_types.name AS law_type,
                  sau_lm_risks_aspects.name AS risk_aspect,
                  sau_lm_entities.name AS entity,
@@ -66,6 +67,7 @@ class LawController extends Controller
                  SUM(IF(sau_lm_articles_fulfillment.fulfillment_value_id IS NOT NULL, 1, 0)) qualify,
                  SUM(IF(sau_lm_articles_fulfillment.fulfillment_value_id IS NULL, 1, 0)) no_qualify'
             )
+            ->join('sau_lm_system_apply', 'sau_lm_system_apply.id', 'sau_lm_laws.system_apply_id')
             ->join('sau_lm_laws_types', 'sau_lm_laws_types.id', 'sau_lm_laws.law_type_id')
             ->join('sau_lm_risks_aspects', 'sau_lm_risks_aspects.id', 'sau_lm_laws.risk_aspect_id')
             ->join('sau_lm_entities', 'sau_lm_entities.id', 'sau_lm_laws.entity_id')
@@ -77,19 +79,26 @@ class LawController extends Controller
             ->where('sau_lm_articles_fulfillment.company_id', Session::get('company_id'))
             ->groupBy('sau_lm_laws.id');
         }
-        else 
+        else
         {
             $laws = Law::select(
-                    'sau_lm_laws.*',
-                    'sau_lm_laws_types.name AS law_type',
-                    'sau_lm_risks_aspects.name AS risk_aspect',
-                    'sau_lm_entities.name AS entity',
-                    'sau_lm_sst_risks.name AS sst_risk'
-                )
-                ->join('sau_lm_laws_types', 'sau_lm_laws_types.id', 'sau_lm_laws.law_type_id')
-                ->join('sau_lm_risks_aspects', 'sau_lm_risks_aspects.id', 'sau_lm_laws.risk_aspect_id')
-                ->join('sau_lm_entities', 'sau_lm_entities.id', 'sau_lm_laws.entity_id')
-                ->join('sau_lm_sst_risks', 'sau_lm_sst_risks.id', 'sau_lm_laws.sst_risk_id');
+                'sau_lm_laws.*',
+                'sau_lm_system_apply.name AS system_apply',
+                'sau_lm_laws_types.name AS law_type',
+                'sau_lm_risks_aspects.name AS risk_aspect',
+                'sau_lm_entities.name AS entity',
+                'sau_lm_sst_risks.name AS sst_risk'
+            )
+            ->join('sau_lm_system_apply', 'sau_lm_system_apply.id', 'sau_lm_laws.system_apply_id')
+            ->join('sau_lm_laws_types', 'sau_lm_laws_types.id', 'sau_lm_laws.law_type_id')
+            ->join('sau_lm_risks_aspects', 'sau_lm_risks_aspects.id', 'sau_lm_laws.risk_aspect_id')
+            ->join('sau_lm_entities', 'sau_lm_entities.id', 'sau_lm_laws.entity_id')
+            ->join('sau_lm_sst_risks', 'sau_lm_sst_risks.id', 'sau_lm_laws.sst_risk_id');
+
+            if ($request->has('custom'))
+                $laws->company();
+            else
+                $laws->system();
         }
 
         $filters = $request->get('filters');
@@ -100,7 +109,7 @@ class LawController extends Controller
             $laws->inRiskAspects($this->getValuesForMultiselect($filters["riskAspects"]), $filters['filtersType']['riskAspects']);
             $laws->inEntities($this->getValuesForMultiselect($filters["entities"]), $filters['filtersType']['entities']);
             $laws->inSstRisks($this->getValuesForMultiselect($filters["sstRisks"]), $filters['filtersType']['sstRisks']);
-            $laws->inApplySystem($this->getValuesForMultiselect($filters["applySystem"]), $filters['filtersType']['applySystem']);
+            $laws->inSystemApply($this->getValuesForMultiselect($filters["systemApply"]), $filters['filtersType']['systemApply']);
             $laws->inLawNumbers($this->getValuesForMultiselect($filters["lawNumbers"]), $filters['filtersType']['lawNumbers']);
             $laws->inLawYears($this->getValuesForMultiselect($filters["lawYears"]), $filters['filtersType']['lawYears']);
             $laws->inRepealed($this->getValuesForMultiselect($filters["repealed"]), $filters['filtersType']['repealed']);
@@ -140,9 +149,11 @@ class LawController extends Controller
         {
             $law = new Law($request->except('file'));
             
-            if(!$law->save()){
+            if ($request->custom == 'true')
+                $law->company_id = Session::get('company_id');
+
+            if (!$law->save())
                 return $this->respondHttp500();
-            }
 
             if ($request->file)
             {
@@ -183,11 +194,13 @@ class LawController extends Controller
         try
         {
             $law = Law::findOrFail($id);
+            $law->custom = $law->company_id ? true : false;  
             $law->old_file = $law->file;
             $law->multiselect_law_type = $law->lawType->multiselect();
             $law->multiselect_risk_aspect = $law->riskAspect->multiselect();
             $law->multiselect_entity = $law->entity->multiselect();
             $law->multiselect_sst_risk = $law->sstRisk->multiselect();
+            $law->multiselect_system_apply = $law->systemApply->multiselect();
             $law->delete = [];
 
             foreach ($law->articles as $key => $article)
@@ -337,21 +350,43 @@ class LawController extends Controller
         }
     }
 
-    public function lmLawYears(Request $request)
+    public function lmLawYearsSystem(Request $request)
+    {
+        return $this->lmLawYears($request, 'system');
+    }
+
+    public function lmLawYearsCompany(Request $request)
+    {
+        return $this->lmLawYears($request, 'company');
+    }
+
+    public function lmLawYears(Request $request, $scope = 'alls')
     {
         $lawYears = Law::selectRaw(
             'DISTINCT(sau_lm_laws.law_year) as law_year'
         )
+        ->$scope()
         ->pluck('law_year', 'law_year');
     
         return $this->multiSelectFormat($lawYears);
     }
 
-    public function lmLawNumbers(Request $request)
+    public function lawNumbersSystem(Request $request)
+    {
+        return $this->lmLawNumbers($request, 'system');
+    }
+
+    public function lawNumbersCompany(Request $request)
+    {
+        return $this->lmLawNumbers($request, 'company');
+    }
+
+    public function lmLawNumbers(Request $request, $scope = 'alls')
     {
         $lawNumbers = Law::selectRaw(
             'DISTINCT(sau_lm_laws.law_number) as law_number'
         )
+        ->$scope()
         ->pluck('law_number', 'law_number');
     
         return $this->multiSelectFormat($lawNumbers);
@@ -416,6 +451,7 @@ class LawController extends Controller
             $law->riskAspect;
             $law->entity;
             $law->sstRisk;
+            $law->systemApply;
 
             $articles = Article::select('sau_lm_articles.*')
                 ->join('sau_lm_article_interest', 'sau_lm_article_interest.article_id', 'sau_lm_articles.id')

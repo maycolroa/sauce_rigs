@@ -40,5 +40,11 @@
         "name": "legalAspects",
         "display_name": "Aspectos Legales",
         "image": "LegalAspects"
+    },
+    {
+        "id": 8,
+        "name": "system",
+        "display_name": "Sistema",
+        "image": "System"
     }
 ]

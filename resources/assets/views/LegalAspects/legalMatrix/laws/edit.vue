@@ -12,14 +12,13 @@
                 method="PUT"
                 :law="data"
                 :is-edit="true"
-                :cancel-url="{ name: 'legalaspects-lm-law'}"
-                :apply-systems="applySystems"
                 :years="years"
                 lawTypeDataUrl="/selects/legalMatrix/lawsTypes"
                 riskAspectDataUrl="/selects/legalMatrix/riskAspects"
                 entityDataUrl="/selects/legalMatrix/entities"
                 sstRiskDataUrl="/selects/legalMatrix/sstRisks"
                 urlDataInterests="/selects/legalMatrix/interests"
+                systemApplyUrl="/selects/legalMatrix/systemApplySystem"
                 :repealed="repealed"
                 :si-no="siNo"/>
         </b-card-body>
@@ -44,7 +43,6 @@ export default {
   data () {
     return {
       data: [],
-      applySystems: [],
       years: [],
       repealed: [],
       siNo: []
@@ -60,7 +58,6 @@ export default {
         this.$router.go(-1);
     });
     
-    this.fetchSelect('applySystems', '/selects/legalMatrix/applySystem')
     this.fetchSelect('years', '/selects/legalMatrix/years')
     this.fetchSelect('repealed', '/selects/legalMatrix/repealed')
     this.fetchSelect('siNo', '/radios/siNo')

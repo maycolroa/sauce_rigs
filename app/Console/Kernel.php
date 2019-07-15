@@ -17,7 +17,9 @@ class Kernel extends ConsoleKernel
         'App\Console\Commands\DaysAlertExpirationDateActionPlan',
         'App\Console\Commands\DaysAlertExpirationDateContractFilesUpload',
         'App\Console\Commands\CheckLastLoginNotification',
-        'App\Console\Commands\DisableUsers'
+        'App\Console\Commands\DisableUsers',
+        'App\Console\Commands\DaysAlertExpiredLicense',
+        'App\Console\Commands\NotifyUpdateLaws'
     ];
 
     /**
@@ -29,26 +31,36 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         $schedule->command('audiometry-notification')
-        ->timezone('America/Bogota')
-        ->dailyAt('00:00');
+            ->timezone('America/Bogota')
+            ->dailyAt('00:00');
 
         $schedule->command('days-alert-expiration-date-action-plan')
-        ->timezone('America/Bogota')
-        ->dailyAt('01:00');
+            ->timezone('America/Bogota')
+            ->dailyAt('01:00');
 
         $schedule->command('telescope:prune')->daily();
 
         $schedule->command('days-alert-expiration-date-contract-files-upload')
-        ->timezone('America/Bogota')
-        ->dailyAt('01:00');
+            ->timezone('America/Bogota')
+            ->dailyAt('01:00');
 
         $schedule->command('checkLastLoginNotification')
-        ->timezone('America/Bogota')
-        ->dailyAt('01:00');
+            ->timezone('America/Bogota')
+            ->dailyAt('01:00');
 
         $schedule->command('disableUsers')
-        ->timezone('America/Bogota')
-        ->dailyAt('01:00');
+            ->timezone('America/Bogota')
+            ->dailyAt('01:00');
+
+        $schedule->command('days-alert-expired-license')
+            ->weekly()
+            ->sundays()
+            ->timezone('America/Bogota')
+            ->at('01:00');
+
+        $schedule->command('NotifyUpdateLaws')
+            ->timezone('America/Bogota')
+            ->dailyAt('01:00');
     }
 
     /**

@@ -153,6 +153,13 @@ class User extends Authenticatable
         return $roles;
     }
 
+    public function checkRoleDefined($role)
+    {
+        $roles = $this->getHasRoleAttribute();
+
+        return $roles[$role];
+    }
+
     /**
      * Send the password reset notification.
      *

@@ -17,6 +17,7 @@ import LegalAspects from './LegalAspects.js'
 import MeasurementMonitoring from './MeasurementMonitoring.js'
 import PreventiveOccupationalMedicine from './PreventiveOccupationalMedicine.js'
 import TrainingQualification from './TrainingQualification.js'
+import System from './System.js'
 
 Vue.use(Router)
 Vue.use(Meta)
@@ -53,6 +54,7 @@ const router = new Router({
           .concat(MeasurementMonitoring)
           .concat(PreventiveOccupationalMedicine)
           .concat(TrainingQualification)    
+          .concat(System)    
       }
     ])
   ]

@@ -1,0 +1,187 @@
+<?php
+
+namespace App\Http\Controllers\System\Licenses;
+
+use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use App\Vuetable\Facades\Vuetable;
+use Illuminate\Support\Facades\Auth;
+use App\Models\System\Licenses\License;
+use App\Http\Requests\System\Licenses\LicenseRequest;
+use Carbon\Carbon;
+use Session;
+use DB;
+
+class LicenseController extends Controller
+{
+    /**
+     * creates and instance and middlewares are checked
+     */
+    function __construct()
+    {
+        $this->middleware('auth');
+        $this->middleware('permission:licenses_c', ['only' => 'store']);
+        $this->middleware('permission:licenses_r');
+        $this->middleware('permission:licenses_u', ['only' => 'update']);
+        $this->middleware('permission:licenses_d', ['only' => 'destroy']);
+    }
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function index()
+    {
+        return view('application');
+    }
+
+    /**
+    * Display a listing of the resource.
+    *
+    * @return \Illuminate\Http\Response
+    */
+    public function data(Request $request)
+    {
+        $licenses = License::system()
+                ->selectRaw(
+                    'sau_licenses.*,
+                     COUNT(sau_licenses.id) AS modules,
+                     sau_companies.name AS company'
+                )
+                ->join('sau_companies', 'sau_companies.id', 'sau_licenses.company_id')
+                ->join('sau_license_module', 'sau_license_module.license_id', 'sau_licenses.id')
+                ->groupBy('sau_licenses.id');
+
+        return Vuetable::of($licenses)
+                    ->make();
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  App\Http\Requests\System\Licenses\LicenseRequest  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function store(LicenseRequest $request)
+    {
+        DB::beginTransaction();
+
+        try
+        {
+            $license = new License($request->all());
+            $license->started_at = (Carbon::createFromFormat('D M d Y', $request->started_at))->format('Ymd');
+            $license->ended_at = (Carbon::createFromFormat('D M d Y', $request->ended_at))->format('Ymd');
+            
+            if (!$license->save())
+                return $this->respondHttp500();
+
+            $license->modules()->sync($this->getDataFromMultiselect($request->get('module_id')));
+
+            $license->histories()->create([
+                'user_id' => Auth::user()->id
+            ]);
+
+            DB::commit();
+
+        } catch(\Exception $e) {
+            DB::rollback();
+            return $this->respondHttp500();
+        }
+
+        return $this->respondHttp200([
+            'message' => 'Se creo la licencia'
+        ]);
+    }
+
+    /**
+     * Display the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function show($id)
+    {
+        try
+        {
+            $license = License::system()->findOrFail($id);
+            $license->multiselect_company = $license->company->multiselect();
+            $license->started_at = (Carbon::createFromFormat('Y-m-d', $license->started_at))->format('D M d Y');
+            $license->ended_at = (Carbon::createFromFormat('Y-m-d', $license->ended_at))->format('D M d Y');
+
+            $modules = [];
+
+            foreach ($license->modules as $key => $value)
+            {               
+                array_push($modules, $value->multiselect());
+            }
+
+            $license->module_id = $modules;
+
+            return $this->respondHttp200([
+                'data' => $license,
+            ]);
+        } catch(Exception $e){
+            $this->respondHttp500();
+        }
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  App\Http\Requests\System\Licenses\LicenseRequest  $request
+     * @param  License  $license
+     * @return \Illuminate\Http\Response
+     */
+    public function update(LicenseRequest $request, $id)
+    {
+        DB::beginTransaction();
+
+        try
+        {
+            $license = License::system()->findOrFail($id);
+            $license->fill($request->all());
+            $license->started_at = (Carbon::createFromFormat('D M d Y', $request->started_at))->format('Ymd');
+            $license->ended_at = (Carbon::createFromFormat('D M d Y', $request->ended_at))->format('Ymd');
+            
+            if (!$license->update())
+                return $this->respondHttp500();
+
+            $license->modules()->sync($this->getDataFromMultiselect($request->get('module_id')));
+
+            $license->histories()->create([
+                'user_id' => Auth::user()->id
+            ]);
+            
+            DB::commit();
+
+        } catch(\Exception $e) {
+            DB::rollback();
+            return $this->respondHttp500();
+        }
+        
+        return $this->respondHttp200([
+            'message' => 'Se actualizo la licencia'
+        ]);
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  License  $license
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy($id)
+    {
+        $license = License::system()->findOrFail($id);
+        
+        if(!$license->delete())
+        {
+            return $this->respondHttp500();
+        }
+        
+        return $this->respondHttp200([
+            'message' => 'Se elimino la licencia'
+        ]);
+    }
+}

@@ -19,8 +19,10 @@ trait LegalMatrixTrait
             throw new \Exception('Company invalid');
 
         $articles = Article::select('sau_lm_articles.*')
+            ->join('sau_lm_laws', 'sau_lm_laws.id', 'sau_lm_articles.law_id')
             ->join('sau_lm_article_interest', 'sau_lm_article_interest.article_id', 'sau_lm_articles.id')
             ->join('sau_lm_company_interest','sau_lm_company_interest.interest_id', 'sau_lm_article_interest.interest_id')
+            ->alls($company_id)
             ->groupBy('sau_lm_articles.id');
 
         if ($company_id)
@@ -57,6 +59,7 @@ trait LegalMatrixTrait
             $articlesDelete = $articlesDelete->get();
 
             $this->deleteQualifications($articlesDelete);
+            $this->deleteQualificationsDuplicates($company_id);
         }
     }
 
@@ -82,6 +85,34 @@ trait LegalMatrixTrait
             }
             
             $qualification->delete();
+        }
+    }
+
+    private function deleteQualificationsDuplicates($company_id)
+    {
+        $articlesDelete = ArticleFulfillment::selectRaw('GROUP_CONCAT(id) AS data')
+            ->groupBy('article_id')
+            ->havingRaw('COUNT(id) > 1');
+
+        $articlesDelete->company_scope = $company_id;
+        $articlesDelete = $articlesDelete->get();
+
+        $ids = [];
+
+        foreach ($articlesDelete as $key => $value)
+        {
+            $aux = explode(",", $value->data, 2);
+            array_push($ids, $aux[1]);
+        }
+
+        if (COUNT($ids) > 0)
+        {
+            $ids = explode(",", implode(",", $ids));
+            $articlesDelete = ArticleFulfillment::whereIn('id', $ids);
+            $articlesDelete->company_scope = $company_id;
+            $articlesDelete = $articlesDelete->get();
+            
+            $this->deleteQualifications($articlesDelete);
         }
     }
 

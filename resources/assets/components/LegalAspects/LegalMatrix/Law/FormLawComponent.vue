@@ -24,8 +24,8 @@
             <vue-input :disabled="viewOnly" class="col-md-6" v-model="form.law_number" label="Número" type="text" name="law_number" :error="form.errorsFor('law_number')" placeholder="Número"></vue-input>
           </b-form-row>
           <b-form-row>
-            <vue-advanced-select :disabled="viewOnly" class="col-md-6" v-model="form.apply_system" :multiple="false" :options="applySystems" :hide-selected="false" name="apply_system" :error="form.errorsFor('apply_system')" label="Sistema que aplica" placeholder="Seleccione el sistema que aplica">
-              </vue-advanced-select>
+            <vue-ajax-advanced-select :disabled="viewOnly" class="col-md-6" v-model="form.system_apply_id" :error="form.errorsFor('system_apply_id')" :selected-object="form.multiselect_system_apply" name="system_apply_id" label="Sistema que aplica" placeholder="Seleccione el sistema que aplica" :url="systemApplyUrl">
+              </vue-ajax-advanced-select>
             <vue-advanced-select :disabled="viewOnly" class="col-md-6" v-model="form.law_year" :multiple="false" :options="years" :hide-selected="false" name="law_year" :error="form.errorsFor('law_year')" label="Año" placeholder="Seleccione el año" :searchable="true">
               </vue-advanced-select>
           </b-form-row>
@@ -122,7 +122,7 @@
                         <b-form-row>
                           <vue-ajax-advanced-select :disabled="viewOnly" class="col-md-6" v-model="form.articles[index].interests_id" name="interests_id" label="Intereses" placeholder="Seleccione los intereses" :url="urlDataInterests" :multiple="true" :allowEmpty="true" :error="form.errorsFor(`articles.${index}.interests_id`)" :selected-object="form.articles[index].multiselect_interests">
                             </vue-ajax-advanced-select>
-                          <vue-radio :disabled="viewOnly" :checked="form.articles[index].repelead" class="col-md-3" v-model="form.articles[index].repelead" :options="siNo" :name="`repelead${index}`" :error="form.errorsFor(`articles.${index}.repelead`)" label="Derogado">
+                          <vue-radio :disabled="viewOnly" :checked="form.articles[index].repealed" class="col-md-3" v-model="form.articles[index].repealed" :options="siNo" :name="`repealed${index}`" :error="form.errorsFor(`articles.${index}.repealed`)" label="Derogado">
                             </vue-radio>
                           <vue-advanced-select :disabled="viewOnly" class="col-md-3" v-model="form.articles[index].new_sequence" :options="sequenceOptions" name="sequence" label="Secuencia" @change="updateOrder(index)">
                             </vue-advanced-select>
@@ -141,7 +141,7 @@
 
     <div class="row float-right pt-10 pr-10" style="padding-top: 20px;">
       <template>
-        <b-btn variant="default" :to="cancelUrl" :disabled="loading">{{ viewOnly ? "Atras" : "Cancelar"}}</b-btn>&nbsp;&nbsp;
+        <b-btn variant="default" @click="$router.go(-1)" :disabled="loading">{{ viewOnly ? "Atras" : "Cancelar"}}</b-btn>&nbsp;&nbsp;
         <b-btn type="submit" :disabled="loading" variant="primary" v-if="!viewOnly">Finalizar</b-btn>
       </template>
     </div>
@@ -172,7 +172,6 @@ export default {
   props: {
     url: { type: String },
     method: { type: String },
-    cancelUrl: { type: [String, Object], required: true },
     isEdit: { type: Boolean, default: false },
     viewOnly: { type: Boolean, default: false },
     lawTypeDataUrl: { type: String, default: "" },
@@ -180,12 +179,8 @@ export default {
     entityDataUrl: { type: String, default: "" },
     sstRiskDataUrl: { type: String, default: "" },
     urlDataInterests: { type: String, default: "" },
-    applySystems: {
-      type: Array,
-      default: function() {
-        return [];
-      }
-    },
+    systemApplyUrl: { type: String, default: "" },
+    custom: { type: Boolean, default: false },
     years: {
       type: Array,
       default: function() {
@@ -207,9 +202,10 @@ export default {
     law: {
       default() {
         return {
+          custom: this.custom,
           name: '',
           law_number: '',
-          apply_system: '',
+          system_apply_id: '',
           law_year: '',
           law_type_id: '',
           description: '',
@@ -254,7 +250,7 @@ export default {
         .submit(e.target.action)
         .then(response => {
           this.loading = false;
-          this.$router.push({ name: "legalaspects-lm-law" });
+          this.$router.go(-1);
         })
         .catch(error => {
           this.loading = false;
@@ -264,7 +260,7 @@ export default {
         this.form.articles.push({
             key: new Date().getTime() + Math.round(Math.random() * 10000),
             description: '',
-            repelead: '',
+            repealed: '',
             sequence: this.form.articles.length + 1,
             new_sequence: this.form.articles.length + 1,
             interests_id: []

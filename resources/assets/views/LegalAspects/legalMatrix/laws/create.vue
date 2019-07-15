@@ -11,14 +11,13 @@
             <form-law-component
                 url="/legalAspects/legalMatrix/law"
                 method="POST"
-                :cancel-url="{ name: 'legalaspects-lm-law'}"
-                :apply-systems="applySystems"
                 :years="years"
                 lawTypeDataUrl="/selects/legalMatrix/lawsTypes"
                 riskAspectDataUrl="/selects/legalMatrix/riskAspects"
                 entityDataUrl="/selects/legalMatrix/entities"
                 sstRiskDataUrl="/selects/legalMatrix/sstRisks"
                 urlDataInterests="/selects/legalMatrix/interests"
+                systemApplyUrl="/selects/legalMatrix/systemApplySystem"
                 :repealed="repealed"
                 :si-no="siNo"/>
         </b-card-body>
@@ -42,14 +41,12 @@ export default {
   },
   data(){
     return {
-      applySystems: [],
       years: [],
       repealed: [],
       siNo: []
     }
   },
   created(){
-    this.fetchSelect('applySystems', '/selects/legalMatrix/applySystem')
     this.fetchSelect('years', '/selects/legalMatrix/years')
     this.fetchSelect('repealed', '/selects/legalMatrix/repealed')
     this.fetchSelect('siNo', '/radios/siNo')

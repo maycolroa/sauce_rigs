@@ -4,6 +4,7 @@ namespace App\Models\LegalAspects\LegalMatrix;
 
 use Illuminate\Database\Eloquent\Model;
 use App\Traits\CompanyTrait;
+use Session;
 
 class Law extends Model
 {
@@ -14,7 +15,7 @@ class Law extends Model
     protected $fillable = [
         'name',
         'law_number',
-        'apply_system',
+        'system_apply_id',
         'law_year',
         'law_type_id',
         'description',
@@ -48,9 +49,33 @@ class Law extends Model
         return $this->belongsTo(SstRisk::class);
     }
 
+    public function systemApply()
+    {
+        return $this->belongsTo(SystemApply::class);
+    }
+
     public function articles()
     {
         return $this->hasMany(Article::class, 'law_id')->orderBy('sau_lm_articles.sequence');
+    }
+
+    public function scopeCompany($query)
+    {
+        return $query->where('sau_lm_laws.company_id', Session::get('company_id'));
+    }
+
+    public function scopeSystem($query)
+    {
+        return $query->whereNull('sau_lm_laws.company_id');
+    }
+
+    public function scopeAlls($query, $company_id = null)
+    {
+        if (!$company_id)
+            $company_id = Session::get('company_id');
+
+        return $query->where('sau_lm_laws.company_id', $company_id)
+                     ->orWhereNull('sau_lm_laws.company_id');
     }
 
     /**
@@ -134,20 +159,20 @@ class Law extends Model
     }
 
     /**
-     * filters checks through the given applySystem
+     * filters checks through the given systemApply
      * @param  Illuminate\Database\Eloquent\Builder $query
-     * @param  array $applySystem
+     * @param  array $systemApply
      * @return Illuminate\Database\Eloquent\Builder
      */
-    public function scopeInApplySystem($query, $applySystem, $typeSearch = 'IN')
+    public function scopeInSystemApply($query, $systemApply, $typeSearch = 'IN')
     {
-        if (COUNT($applySystem) > 0)
+        if (COUNT($systemApply) > 0)
         {
             if ($typeSearch == 'IN')
-                $query->whereIn('sau_lm_laws.apply_system', $applySystem);
+                $query->whereIn('sau_lm_laws.system_apply_id', $systemApply);
 
             else if ($typeSearch == 'NOT IN')
-                $query->whereNotIn('sau_lm_laws.apply_system', $applySystem);
+                $query->whereNotIn('sau_lm_laws.system_apply_id', $systemApply);
         }
 
         return $query;

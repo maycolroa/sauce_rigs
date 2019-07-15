@@ -271,7 +271,7 @@ export default {
         return {
           name: '',
           law_number: '',
-          apply_system: '',
+          system_apply_id: '',
           law_year: '',
           law_type_id: '',
           description: '',

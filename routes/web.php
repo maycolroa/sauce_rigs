@@ -55,6 +55,7 @@ Route::middleware(['auth'])->group(function () {
         Route::post('multiselect', 'General\ApplicationController@multiselect');
         Route::post('roles', 'Administrative\Roles\RoleController@multiselect');
         Route::post('modulesGroup', 'General\ApplicationController@multiselectGroupModules');
+        Route::post('allModulesGroup', 'General\ApplicationController@multiselectGroupAllModules');
         Route::post('permissions', 'Administrative\Roles\RoleController@multiselectPermissions');
         Route::post('areas', 'Administrative\Areas\EmployeeAreaController@multiselect');  
         Route::post('years/audiometry', 'PreventiveOccupationalMedicine\BiologicalMonitoring\AudiometryController@multiselectYears');
@@ -88,6 +89,7 @@ Route::middleware(['auth'])->group(function () {
         Route::post('ctContractClassifications', 'General\MultiSelectRadioController@ctContractClassifications'); 
         Route::post('ctkindsRisks', 'General\MultiSelectRadioController@ctkindsRisks'); 
         Route::post('siNo', 'General\MultiSelectRadioController@siNoSelect');
+        Route::post('companies', 'General\ApplicationController@multiselectCompanies');
 
         Route::prefix('evaluations')->group(function () {
           Route::post('objectives', 'LegalAspects\Contracs\EvaluationController@multiselectObjectives');
@@ -100,11 +102,9 @@ Route::middleware(['auth'])->group(function () {
 
         Route::prefix('legalMatrix')->group(function () {
           Route::post('interests', 'LegalAspects\LegalMatrix\InterestController@multiselect');
+          Route::post('interestsCompany', 'LegalAspects\LegalMatrix\InterestController@multiselectCompany');
           Route::post('years', 'LegalAspects\LegalMatrix\LawController@lmYears');
-          Route::post('lawYears', 'LegalAspects\LegalMatrix\LawController@lmLawYears');
-          Route::post('lawNumbers', 'LegalAspects\LegalMatrix\LawController@lmLawNumbers');
           Route::post('responsibles', 'LegalAspects\LegalMatrix\LawController@lmLawResponsibles');
-          Route::post('applySystem', 'General\MultiSelectRadioController@lmApplySystem');
           Route::post('riskAspects', 'LegalAspects\LegalMatrix\RiskAspectController@multiselect');
           Route::post('sstRisks', 'LegalAspects\LegalMatrix\SstRiskController@multiselect');
           Route::post('entities', 'LegalAspects\LegalMatrix\EntityController@multiselect');
@@ -113,6 +113,15 @@ Route::middleware(['auth'])->group(function () {
           Route::post('articlesQualifications', 'LegalAspects\LegalMatrix\LawController@articlesQualificationsMultiselect');
           Route::post('filterInterests', 'LegalAspects\LegalMatrix\LawController@filterInterestsMultiselect');
           Route::post('states', 'General\MultiSelectRadioController@lmStates');
+          Route::post('systemApply', 'LegalAspects\LegalMatrix\SystemApplyController@multiselect');
+          Route::post('systemApplySystem', 'LegalAspects\LegalMatrix\SystemApplyController@multiselectSystem');
+          Route::post('systemApplyCompany', 'LegalAspects\LegalMatrix\SystemApplyController@multiselectCompany');
+          Route::post('lawNumbers', 'LegalAspects\LegalMatrix\LawController@lmLawNumbers');
+          Route::post('lawNumbersSystem', 'LegalAspects\LegalMatrix\LawController@lawNumbersSystem');
+          Route::post('lawNumbersCompany', 'LegalAspects\LegalMatrix\LawController@lawNumbersCompany');
+          Route::post('lawYears', 'LegalAspects\LegalMatrix\LawController@lmLawYears');
+          Route::post('lawYearsSystem', 'LegalAspects\LegalMatrix\LawController@lmLawYearsSystem');
+          Route::post('lawYearsCompany', 'LegalAspects\LegalMatrix\LawController@lmLawYearsCompany');
         });
     });
 
@@ -240,6 +249,9 @@ Route::middleware(['auth'])->group(function () {
         Route::post('entity/data', 'LegalAspects\LegalMatrix\EntityController@data');
         Route::ApiResource('entity', 'LegalAspects\LegalMatrix\EntityController');
 
+        Route::post('systemApply/data', 'LegalAspects\LegalMatrix\SystemApplyController@data');
+        Route::ApiResource('systemApply', 'LegalAspects\LegalMatrix\SystemApplyController');
+
         Route::get('law/downloadArticleQualify/{articleFulfillment}', 'LegalAspects\LegalMatrix\LawController@downloadArticleQualify');
         Route::get('law/download/{law}', 'LegalAspects\LegalMatrix\LawController@download');
         Route::get('law/qualify/{law}', 'LegalAspects\LegalMatrix\LawController@getArticlesQualification');
@@ -247,7 +259,19 @@ Route::middleware(['auth'])->group(function () {
         Route::post('law/data', 'LegalAspects\LegalMatrix\LawController@data');
         Route::ApiResource('law', 'LegalAspects\LegalMatrix\LawController');
       });
-		});
+    });
+    
+    //Sistema
+    Route::prefix('system')->group(function () {
+
+      Route::post('license/history/data', 'System\Licenses\LicenseHistoryController@data');
+      Route::post('license/data', 'System\Licenses\LicenseController@data');
+      Route::ApiResource('license', 'System\Licenses\LicenseController');
+
+      Route::post('logMail/data', 'System\LogMails\LogMailController@data');
+      Route::ApiResource('logMail', 'System\LogMails\LogMailController');
+      
+    });
 
 
     //Return view for spa

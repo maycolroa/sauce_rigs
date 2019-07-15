@@ -20,11 +20,19 @@ class Company extends Model
 
     public function licenses()
     {
-        return $this->hasMany(License::class);
+        return $this->hasMany('App\Models\System\Licenses\License');
     }
 
     public function interests()
     {
         return $this->belongsToMany('App\Models\LegalAspects\LegalMatrix\Interest', 'sau_lm_company_interest');
+    }
+
+    public function multiselect()
+    {
+        return [
+          'name' => $this->name,
+          'value' => $this->id
+        ];
     }
 }
