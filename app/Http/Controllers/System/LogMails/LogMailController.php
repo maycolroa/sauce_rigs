@@ -38,13 +38,13 @@ class LogMailController extends Controller
     */
     public function data(Request $request)
     {
-        $mails = LogMail::select(
-                    'sau_log_mails.*',
-                    'sau_modules.display_name AS module'
+        $mails = LogMail::selectRaw(
+                    'sau_log_mails.*,
+                     IF(LENGTH(sau_log_mails.recipients) > 50, CONCAT(SUBSTRING(sau_log_mails.recipients, 1, 50), "..."), sau_log_mails.recipients) AS recipients,
+                     sau_modules.display_name AS module'
                 )
                 ->join('sau_modules', 'sau_modules.id', 'sau_log_mails.module_id')
-                //->join('sau_license_module', 'sau_license_module.license_id', 'sau_licenses.id')
-                ;
+                ->orderBy('sau_log_mails.created_at', 'DESC');
 
         return Vuetable::of($mails)
                     ->make();

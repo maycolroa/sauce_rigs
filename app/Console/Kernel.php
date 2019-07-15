@@ -18,7 +18,8 @@ class Kernel extends ConsoleKernel
         'App\Console\Commands\DaysAlertExpirationDateContractFilesUpload',
         'App\Console\Commands\CheckLastLoginNotification',
         'App\Console\Commands\DisableUsers',
-        'App\Console\Commands\DaysAlertExpiredLicense'
+        'App\Console\Commands\DaysAlertExpiredLicense',
+        'App\Console\Commands\NotifyUpdateLaws'
     ];
 
     /**
@@ -57,6 +58,9 @@ class Kernel extends ConsoleKernel
             ->timezone('America/Bogota')
             ->at('01:00');
 
+        $schedule->command('NotifyUpdateLaws')
+            ->timezone('America/Bogota')
+            ->dailyAt('01:00');
     }
 
     /**
