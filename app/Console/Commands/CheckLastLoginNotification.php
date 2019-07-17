@@ -56,6 +56,7 @@ class CheckLastLoginNotification extends Command
                 ->buttons([['text'=>'Ir al sitio', 'url'=>url("/login")]])
                 ->module('users')
                 ->event('Tarea programada: CheckLastLoginNotification')
+                ->company(1)
                 ->send();
 
             sleep(10);

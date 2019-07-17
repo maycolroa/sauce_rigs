@@ -41,10 +41,20 @@ class LogMailController extends Controller
         $mails = LogMail::selectRaw(
                     'sau_log_mails.*,
                      IF(LENGTH(sau_log_mails.recipients) > 50, CONCAT(SUBSTRING(sau_log_mails.recipients, 1, 50), "..."), sau_log_mails.recipients) AS recipients,
-                     sau_modules.display_name AS module'
+                     sau_modules.display_name AS module,
+                     sau_companies.name AS company'
                 )
                 ->join('sau_modules', 'sau_modules.id', 'sau_log_mails.module_id')
+                ->leftJoin('sau_companies', 'sau_companies.id', 'sau_log_mails.company_id')
                 ->orderBy('sau_log_mails.created_at', 'DESC');
+
+        $filters = $request->get('filters');
+
+        if (COUNT($filters) > 0)
+        {
+            $mails->inCompanies($this->getValuesForMultiselect($filters["companies"]), $filters['filtersType']['companies']);
+            $mails->inModules($this->getValuesForMultiselect($filters["modules"]), $filters['filtersType']['modules']);
+        }
 
         return Vuetable::of($mails)
                     ->make();

@@ -311,6 +311,7 @@ class FileUploadController extends Controller
         ->message($message)
         ->buttons([['text'=>'Llevarme al sitio', 'url'=>url("/legalaspects/upload-files/view/{$fileUpload->id}")]])
         ->module('contracts')
+        ->company(Session::get('company_id'))
         ->send();
     }
 

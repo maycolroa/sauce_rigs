@@ -8,6 +8,7 @@ use App\Models\General\Permission;
 use App\Models\General\Application;
 use App\Models\General\Module;
 use Exception;
+use Session;
 
 trait PermissionTrait
 {
@@ -16,7 +17,7 @@ trait PermissionTrait
      *
      * @return Array
      */
-    public function getModulePermissions()
+    public function getModulePermissions($job = false)
     {
         //Obtiene los module_id de todas las licencias activas
         $licenses = License::whereRaw('? BETWEEN started_at AND ended_at', [date('Y-m-d')])->get();
@@ -31,7 +32,7 @@ trait PermissionTrait
             }
         }
 
-        if (Auth::user()->checkRoleDefined('Superadmin'))
+        if (!$job && Auth::user()->checkRoleDefined('Superadmin'))
         {
             $app = Application::where('name', 'system')->first();
 
@@ -147,7 +148,7 @@ trait PermissionTrait
 
     public function getIdsModulePermissions()
     {
-        $permissions = $this->getModulePermissions();
+        $permissions = $this->getModulePermissions(true);
         $data = [];
         
         if (COUNT($permissions) > 0)

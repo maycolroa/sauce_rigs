@@ -98,6 +98,7 @@ class NotifyUpdateLaws extends Command
                         ->event('Tarea programada: NotifyUpdateLaws')
                         ->with(['company'=>$value->name])
                         ->list($list, 'ul')
+                        ->company($value->company_id)
                         ->send();
                 }
             }

@@ -73,6 +73,7 @@ class AudiometryExportJob implements ShouldQueue
         ->buttons([['text'=>'Descargar', 'url'=>url("/export/{$paramUrl}")]])
         ->module('biologicalMonitoring/audiometry')
         ->event('Job: AudiometryExportJob')
+        ->company($this->company_id)
         ->send();
     }
 }

@@ -58,7 +58,7 @@ class Kernel extends ConsoleKernel
             ->timezone('America/Bogota')
             ->at('01:00');
 
-        $schedule->command('NotifyUpdateLaws')
+        $schedule->command('notify-update-laws')
             ->timezone('America/Bogota')
             ->dailyAt('01:00');
     }

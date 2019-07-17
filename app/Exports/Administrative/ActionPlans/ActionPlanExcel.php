@@ -60,6 +60,7 @@ class ActionPlanExcel implements FromQuery, WithMapping, WithHeadings, WithTitle
       {
         if ($this->isContract)
         {
+          \Log::info("wwdwdw");
             $contract = $this->getContractUser($this->user->id, $this->company_id);
             $users = $this->getUsersContract($contract->id, $this->company_id);
             $users_list = [];

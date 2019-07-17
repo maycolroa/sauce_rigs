@@ -60,6 +60,7 @@ class ConfigureInterestsJob implements ShouldQueue
             ->buttons([['text'=>'Ir a Matriz Legal', 'url'=>url("/legalaspects/lm/interests/myinterests")]])
             ->module('legalMatrix')
             ->event('Job: ConfigureInterestsJob')
+            ->company($this->company_id)
             ->send();
       }
     }

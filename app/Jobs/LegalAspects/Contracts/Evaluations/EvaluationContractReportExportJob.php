@@ -51,6 +51,7 @@ class EvaluationContractReportExportJob implements ShouldQueue
         ->buttons([['text'=>'Descargar', 'url'=>url("/export/{$paramUrl}")]])
         ->module('contracts')
         ->event('Job: EvaluationContractReportExportJob')
+        ->company($this->company_id)
         ->send();
     }
 }

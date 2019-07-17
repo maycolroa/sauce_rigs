@@ -92,6 +92,7 @@ class AudiometryNotification extends Command
                         ->buttons([['text'=>'Descargar', 'url'=>url("/export/{$paramUrl}")]])
                         ->module('biologicalMonitoring/audiometry')
                         ->event('Tarea programada: AudiometryNotification')
+                        ->company($key)
                         ->send();
                 }
             }

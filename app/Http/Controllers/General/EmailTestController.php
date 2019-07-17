@@ -76,6 +76,8 @@ class EmailTestController extends Controller
                  * Donde # es el orden en que fue enviado el parametro
                  * */
             ->with(['a'=>'ad', 'message'=>'qkdmq', 'c'=>'wwd'])
+                //Recibe el ID de la compañia
+            ->company(1)
                 // Envia el correo
             ->send()
         );

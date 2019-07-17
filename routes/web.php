@@ -54,6 +54,7 @@ Route::middleware(['auth'])->group(function () {
         Route::post('responsiblesFilter', 'Administrative\ActionPlans\ActionPlanController@multiselectResponsiblesFilter');  
         Route::post('multiselect', 'General\ApplicationController@multiselect');
         Route::post('roles', 'Administrative\Roles\RoleController@multiselect');
+        Route::post('modules', 'General\ApplicationController@multiselectModules');
         Route::post('modulesGroup', 'General\ApplicationController@multiselectGroupModules');
         Route::post('allModulesGroup', 'General\ApplicationController@multiselectGroupAllModules');
         Route::post('permissions', 'Administrative\Roles\RoleController@multiselectPermissions');

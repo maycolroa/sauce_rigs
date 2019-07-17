@@ -85,6 +85,7 @@ class DaysAlertExpiredLicense extends Command
                 ->module('licenses')
                 ->event('Tarea programada: DaysAlertExpiredLicense')
                 ->table($data)
+                ->company(1)
                 ->send();
         }
     }

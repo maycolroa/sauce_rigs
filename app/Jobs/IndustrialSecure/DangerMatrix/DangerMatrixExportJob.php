@@ -51,6 +51,7 @@ class DangerMatrixExportJob implements ShouldQueue
         ->buttons([['text'=>'Descargar', 'url'=>url("/export/{$paramUrl}")]])
         ->module('dangerMatrix')
         ->event('Job: DangerMatrixExportJob')
+        ->company($this->company_id)
         ->send();
     }
 }

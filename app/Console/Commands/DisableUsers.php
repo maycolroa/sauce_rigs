@@ -57,6 +57,7 @@ class DisableUsers extends Command
                 ->message('Estimado usuario '.$user->name.' su usuario ha sido suspendido por inactividad.')
                 ->module('users')
                 ->event('Tarea programada: DisableUsers')
+                ->company(1)
                 ->send();
 
             sleep(10);
