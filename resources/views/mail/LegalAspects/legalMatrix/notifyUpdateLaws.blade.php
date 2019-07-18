@@ -1,7 +1,7 @@
 @component('mail::message')
 
 @if(isset($mail->with['company']))
-<h2>Estimados integrantes de {{ $mail->with['company'] }}</h2>
+<h2>{{ $mail->with['company'] }}</h2>
 @endif
 
 @if(isset($mail->message))
@@ -11,19 +11,19 @@
 @if(isset($mail->list))
 @if($mail->list_order == 'ul')
 <ul>
-@foreach($mail->list as $item)
-<li>{{ $item }}</li>
+@foreach($mail->list as $index => $item)
+<li><a href="{{ $mail->with['urls'][$index] }}" target="_blank">{{ $item }}</a></li>
 @endforeach
 </ul>
 @elseif ($mail->list_order == 'ol')
 <ol>
-@foreach($mail->list as $item)
-<li>{{ $item }}</li>
+@foreach($mail->list as $index => $item)
+<li><a href="{{ $mail->with['urls'][$index] }}" target="_blank">{{ $item }}</a></li>
 @endforeach
 </ol>
 @else
-@foreach($mail->list as $item)
-{{ $item }} <br>
+@foreach($mail->list as $index => $item)
+<a href="{{ $mail->with['urls'][$index] }}" target="_blank">{{ $item }}</a> <br>
 @endforeach
 
 @endif
