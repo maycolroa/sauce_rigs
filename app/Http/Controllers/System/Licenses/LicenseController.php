@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Vuetable\Facades\Vuetable;
 use Illuminate\Support\Facades\Auth;
 use App\Models\System\Licenses\License;
+use App\Models\General\ModuleDependence;
 use App\Http\Requests\System\Licenses\LicenseRequest;
 use Carbon\Carbon;
 use Session;
@@ -46,11 +47,13 @@ class LicenseController extends Controller
         $licenses = License::system()
                 ->selectRaw(
                     'sau_licenses.*,
-                     COUNT(sau_licenses.id) AS modules,
+                     GROUP_CONCAT(" ", sau_modules.display_name ORDER BY sau_modules.display_name) AS modules,
                      sau_companies.name AS company'
                 )
                 ->join('sau_companies', 'sau_companies.id', 'sau_licenses.company_id')
                 ->join('sau_license_module', 'sau_license_module.license_id', 'sau_licenses.id')
+                ->join('sau_modules', 'sau_modules.id', 'sau_license_module.module_id')
+                ->where('sau_modules.main', 'SI')
                 ->groupBy('sau_licenses.id');
 
         return Vuetable::of($licenses)
@@ -76,7 +79,9 @@ class LicenseController extends Controller
             if (!$license->save())
                 return $this->respondHttp500();
 
-            $license->modules()->sync($this->getDataFromMultiselect($request->get('module_id')));
+            $modules_main = $this->getDataFromMultiselect($request->get('module_id'));
+            $modules = ModuleDependence::whereIn('module_id', $modules_main)->pluck('module_dependence_id')->toArray();
+            $license->modules()->sync(array_merge($modules_main, $modules));
 
             $license->histories()->create([
                 'user_id' => Auth::user()->id
@@ -111,7 +116,7 @@ class LicenseController extends Controller
 
             $modules = [];
 
-            foreach ($license->modules as $key => $value)
+            foreach ($license->modules()->main()->get() as $key => $value)
             {               
                 array_push($modules, $value->multiselect());
             }
@@ -140,14 +145,22 @@ class LicenseController extends Controller
         try
         {
             $license = License::system()->findOrFail($id);
+            $old_company = $license->company_id;
+            $old_ended = $license->ended_at;
+
             $license->fill($request->all());
-            $license->started_at = (Carbon::createFromFormat('D M d Y', $request->started_at))->format('Ymd');
-            $license->ended_at = (Carbon::createFromFormat('D M d Y', $request->ended_at))->format('Ymd');
+            $license->started_at = (Carbon::createFromFormat('D M d Y', $request->started_at))->format('Y-m-d');
+            $license->ended_at = (Carbon::createFromFormat('D M d Y', $request->ended_at))->format('Y-m-d');
+
+            if ($old_company != $license->company_id || $old_ended != $license->ended_at)
+                $license->notified = 'NO';
             
             if (!$license->update())
                 return $this->respondHttp500();
 
-            $license->modules()->sync($this->getDataFromMultiselect($request->get('module_id')));
+            $modules_main = $this->getDataFromMultiselect($request->get('module_id'));
+            $modules = ModuleDependence::whereIn('module_id', $modules_main)->pluck('module_dependence_id')->toArray();
+            $license->modules()->sync(array_merge($modules_main, $modules));
 
             $license->histories()->create([
                 'user_id' => Auth::user()->id

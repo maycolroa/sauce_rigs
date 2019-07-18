@@ -7,7 +7,7 @@ export default [
             { name: 'sau_licenses.started_at', data: 'started_at', title: 'Fecha Inicio', sortable: true, searchable: true, detail: false, key: false },
             { name: 'sau_licenses.ended_at', data: 'ended_at', title: 'Fecha Fin', sortable: true, searchable: true, detail: false, key: false },
             { name: 'sau_licenses.created_at', data: 'created_at', title: 'Fecha Creación', sortable: true, searchable: true, detail: false, key: false },
-            { name: 'modules', data: 'modules', title: '#Módulos', sortable: true, searchable: false, detail: false, key: false },
+            { name: 'modules', data: 'modules', title: 'Módulos', sortable: true, searchable: false, detail: false, key: false },
             { name: '', data: 'controlls', title: 'Controles', sortable: false, searchable: false, detail: false, key: false },
         ],
         'controlls': [{

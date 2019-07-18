@@ -72,6 +72,7 @@ class LogMailController extends Controller
         {
             $mail = LogMail::findOrFail($id);
             $mail->module;
+            $mail->company;
 
             return $this->respondHttp200([
                 'data' => $mail,

@@ -46,15 +46,18 @@ export default {
         Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
         this.$router.go(-1);
     });
-
-    GlobalMethods.getAllModulesMultiselectGroup()
-    .then(response => {
-        this.modules = response;
-    })
-    .catch(error => {
-        Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
-        this.$router.go(-1);
-    });
+  },
+  mounted() {
+    setTimeout(() => {
+      GlobalMethods.getLicenseModulesMultiselectGroup()
+      .then(response => {
+          this.modules = response;
+      })
+      .catch(error => {
+          Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
+          this.$router.go(-1);
+      });
+    }, 2000)
   },
 }
 </script>

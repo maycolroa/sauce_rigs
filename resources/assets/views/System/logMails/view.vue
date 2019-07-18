@@ -13,6 +13,7 @@
               <b-card bg-variant="transparent" border-variant="dark" title="" class="mb-3 box-shadow-none">
                   <b-row>
                     <b-col>
+                        <div><b>Compañia:</b> {{ data.company ? data.company.name : ''}}</div>
                         <div><b>Módulo:</b> {{ data.module ? data.module.display_name : ''}}</div>
                         <div><b>Evento:</b> {{ data.event }}</div>
                     </b-col>

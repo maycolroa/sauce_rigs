@@ -160,9 +160,9 @@ class ApplicationController extends Controller
      *
      * @return Array
      */
-    public function multiselectGroupAllModules()
+    public function multiselectGroupLicenseModules()
     {
-      $data = $this->getAllAppsModules();
+      $data = $this->getLicenseAppsModules();
       return $this->multiselectGroupCreateFormat($data);
     }
 

@@ -39,7 +39,7 @@ export default {
     }
   },
   created(){
-    GlobalMethods.getAllModulesMultiselectGroup()
+    GlobalMethods.getLicenseModulesMultiselectGroup()
     .then(response => {
         this.modules = response;
     })

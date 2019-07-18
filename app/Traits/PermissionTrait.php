@@ -165,9 +165,9 @@ trait PermissionTrait
      *
      * @return array
      */
-    public function getAllAppsModules()
+    public function getLicenseAppsModules()
     {
-        $modules = Module::get();
+        $modules = Module::main()->get();
         $arr_sub_mod = [];
 
         foreach ($modules as $mod)
