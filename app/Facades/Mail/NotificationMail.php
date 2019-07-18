@@ -103,6 +103,13 @@ class NotificationMail
      */
     private $event;
 
+    /**
+     * Id of the company
+     *
+     * @var Integer
+     */
+    private $company;
+
     public function __construct()
     {
  
@@ -396,6 +403,22 @@ class NotificationMail
     }
 
     /**
+     * Set the id of the company
+     *
+     * @param Integer $company
+     * @return $this
+     */
+    public function company($company)
+    {
+        if (!is_numeric($company))
+            throw new \Exception('Invalid company format');
+
+        $this->company = $company;
+
+        return $this;
+    }
+
+    /**
      * Send the mail
      *
      * @return booleam
@@ -408,6 +431,9 @@ class NotificationMail
         if (empty($this->module))
             throw new \Exception('The id of the module that performed the action was not entered');
 
+        if (empty($this->company))
+            throw new \Exception('The id of the company that performed the action was not entered');
+
         try { 
             $message = (new NotificationGeneralMail($this->prepareData()))
                 ->onQueue('emails');
@@ -418,7 +444,7 @@ class NotificationMail
             $this->restart();
         }
         catch (\Exception $e) {
-          //dd($e);
+          //zzzdd($e);
             throw new \Exception('An error occurred while sending the mail');
         }
 
@@ -492,6 +518,7 @@ class NotificationMail
             $log->recipients = implode(',', $array);
         }
         
+        $log->company_id = $this->company;
         $log->module_id = $this->module->id;
         $log->event = $event;
         $log->subject = $this->subject;
@@ -533,5 +560,6 @@ class NotificationMail
         $this->table = [];
         $this->subcopy = '';
         $this->with = [];
+        $this->company = '';
     }
 }

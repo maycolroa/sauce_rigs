@@ -1,0 +1,48 @@
+[
+    {
+        "module": "biologicalMonitoring/audiometry",
+        "dependencies": [
+            "users",
+            "roles",
+            "positions",
+            "regionals",
+            "headquarters",
+            "processes",
+            "areas",
+            "businesses",
+            "employees"
+        ]
+    },
+    {
+        "module": "dangerMatrix",
+        "dependencies": [
+            "users",
+            "roles",
+            "regionals",
+            "headquarters",
+            "processes",
+            "areas",
+            "activities",
+            "dangers",
+            "configurations",
+            "actionPlans"
+        ]
+    },
+    {
+        "module": "contracts",
+        "dependencies": [
+            "users",
+            "roles",
+            "configurations",
+            "actionPlans"
+        ]
+    },
+    {
+        "module": "legalMatrix",
+        "dependencies": [
+            "users",
+            "roles",
+            "actionPlans"
+        ]
+    }
+]

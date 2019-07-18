@@ -45,13 +45,21 @@ class ModulesSeeder extends Seeder
                                         "name" 	         => $item["name"],
                                         "display_name" 	 => $item["display_name"],
                                         "application_id" => $app->id,
+                                        "main"           => $item["main"],
                                         "created_at" 	 => date("Y-m-d H:i:s")
                                     ];
                 
                                     Module::create($data);
                                 }
                                 else 
-                                    $this->command->info("Elemento ".$item["name"]." duplicado");
+                                {
+                                    //$this->command->info("Elemento ".$item["name"]." duplicado");
+                                    $mod->update([
+                                        "name" 	         => $item["name"],
+                                        "display_name" 	 => $item["display_name"],
+                                        "main"           => $item["main"]
+                                    ]);
+                                }
                             }
                             else
                                 $this->command->info('Elemento omitido por formato invalido: '. json_encode($item));

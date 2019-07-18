@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Auth;
 use Session;
 //use App\Models\General\License;
 use App\Models\General\Company;
+use App\Models\General\Module;
 use App\Models\General\FiltersState;
 use DB;
 use App\Models\Administrative\Employees\EmployeeEPS;
@@ -159,9 +160,9 @@ class ApplicationController extends Controller
      *
      * @return Array
      */
-    public function multiselectGroupAllModules()
+    public function multiselectGroupLicenseModules()
     {
-      $data = $this->getAllAppsModules();
+      $data = $this->getLicenseAppsModules();
       return $this->multiselectGroupCreateFormat($data);
     }
 
@@ -291,6 +292,35 @@ class ApplicationController extends Controller
             ")->pluck('id', 'name');
         
             return $this->multiSelectFormat($companies);
+        }
+    }
+
+    public function multiselectModules(Request $request)
+    {
+        if($request->has('keyword'))
+        {
+            $keyword = "%{$request->keyword}%";
+            $modules = Module::select("id", "display_name")
+                ->where(function ($query) use ($keyword) {
+                    $query->orWhere('display_name', 'like', $keyword);
+                })
+                ->orderBy('display_name')
+                ->take(30)->pluck('id', 'display_name');
+
+            return $this->respondHttp200([
+                'options' => $this->multiSelectFormat($modules)
+            ]);
+        }
+        else
+        {
+            $modules = Module::selectRaw("
+                sau_modules.id as id,
+                sau_modules.display_name as display_name
+            ")
+            ->orderBy('display_name')
+            ->pluck('id', 'display_name');
+        
+            return $this->multiSelectFormat($modules);
         }
     }
 }

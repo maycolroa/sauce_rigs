@@ -796,6 +796,11 @@ class ActionPlan
      */
     private function sendMailNew()
     {
+        if (!empty($this->company))
+            $company_id = $this->company;
+        else if (Session::get('company_id'))
+            $company_id = Session::get('company_id');
+
         $this->activitiesNew = collect($this->activitiesNew);
 
         $groupResponsible = $this->activitiesNew->groupBy('responsible_id');
@@ -818,6 +823,7 @@ class ActionPlan
                     ->buttons([
                         ['text'=>'Llevarme al sitio', 'url'=>$this->url]
                     ])
+                    ->company($company_id)
                     ->send();
             }
         }
@@ -830,6 +836,11 @@ class ActionPlan
      */
     private function sendMailReady()
     {
+        if (!empty($this->company))
+            $company_id = $this->company;
+        else if (Session::get('company_id'))
+            $company_id = Session::get('company_id');
+
         $this->activitiesReady = collect($this->activitiesReady);
 
         $groupSupervisor = $this->activitiesReady->groupBy('user_id');
@@ -852,6 +863,7 @@ class ActionPlan
                     ->buttons([
                         ['text'=>'Llevarme al sitio', 'url'=>$this->url]
                     ])
+                    ->company($company_id)
                     ->send();
             }
         }
@@ -956,6 +968,7 @@ class ActionPlan
                         /*->buttons([
                             ['text'=>'Llevarme al sitio', 'url'=>$url]
                         ])*/
+                        ->company($this->company)
                         ->send();
                 }
             }
@@ -975,6 +988,7 @@ class ActionPlan
                     /*->buttons([
                         ['text'=>'Llevarme al sitio', 'url'=>$url]
                     ])*/
+                    ->company($this->company)
                     ->send();
             }
         }

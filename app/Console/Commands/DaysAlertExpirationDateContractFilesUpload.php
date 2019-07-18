@@ -73,6 +73,7 @@ class DaysAlertExpirationDateContractFilesUpload extends Command
                     ->module('contracts')
                     ->event('Tarea programada: DaysAlertExpirationDateContractFilesUpload')
                     ->table($this->prepareDataTable($files))
+                    ->company($value['company_id'])
                     ->send();
             }
         }

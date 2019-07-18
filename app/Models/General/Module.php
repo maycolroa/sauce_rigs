@@ -25,11 +25,21 @@ class Module extends Model
         return $this->belongsToMany('App\Models\System\Licenses\License', 'sau_license_module');
     }
 
+    public function dependencies()
+    {
+        return $this->belongsToMany(Module::class, 'sau_module_dependencies', 'module_id', 'module_dependence_id');
+    }
+
     public function multiselect()
     {
         return [
           'name' => $this->display_name,
           'value' => $this->id
         ];
+    }
+
+    public function scopeMain($query)
+    {
+        return $query->where("sau_modules.main", "SI");
     }
 }

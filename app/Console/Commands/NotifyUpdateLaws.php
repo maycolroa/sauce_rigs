@@ -54,7 +54,8 @@ class NotifyUpdateLaws extends Command
             $end = Carbon::now()->addDays(-1)->format('Y-m-d 23:59:59');
 
             $laws = Law::selectRaw(
-                    'SUBSTRING(sau_lm_laws.description, 1, 50) AS description,
+                    'sau_lm_laws.id AS id,
+                     SUBSTRING(sau_lm_laws.description, 1, 50) AS description,
                      sau_lm_laws.law_number,
                      sau_lm_laws.law_year,
                      sau_lm_laws_types.name AS type'
@@ -74,9 +75,12 @@ class NotifyUpdateLaws extends Command
             if (COUNT($laws) > 0)
             {
                 $list = [];
+                $urls = [];
 
                 foreach ($laws as $law)
                 {
+                    $url = url("/legalaspects/lm/lawsQualify/view/{$law->id}");
+                    array_push($urls, $url);
                     array_push($list, $law->type.' '.$law->law_number.' de '.$law->law_year.': '.$law->description.'...');
                 }
 
@@ -93,11 +97,12 @@ class NotifyUpdateLaws extends Command
                         ->view('LegalAspects.legalMatrix.notifyUpdateLaws')
                         ->recipients($recipients)
                         ->message('Las siguientes normas fueron modificadas: ')
-                        ->buttons([['text'=>'Ir al sitio', 'url'=>url("/legalaspects/legalmatrix")]])
+                        ->buttons([['text'=>'Ir al sitio', 'url'=>url("/legalaspects/lm/lawsQualify")]])
                         ->module('legalMatrix')
                         ->event('Tarea programada: NotifyUpdateLaws')
-                        ->with(['company'=>$value->name])
+                        ->with(['company'=>$value->name, 'urls'=>$urls])
                         ->list($list, 'ul')
+                        ->company($value->company_id)
                         ->send();
                 }
             }

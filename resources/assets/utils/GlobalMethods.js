@@ -29,9 +29,9 @@ export default class GlobalMethods {
     });
   }
 
-  static getAllModulesMultiselectGroup(){
+  static getLicenseModulesMultiselectGroup(){
     return new Promise((resolve, reject) => {
-      axios.post('/selects/allModulesGroup')
+      axios.post('/selects/linceseModulesGroup')
       .then(response => {
         resolve(response.data);
       })

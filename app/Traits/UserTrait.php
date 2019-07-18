@@ -36,6 +36,7 @@ trait UserTrait
                 ->buttons([['text'=>'Establecer contraseña', 'url'=>url("/password/generate/".base64_encode($generatePasswordUser->token))]])
                 ->module('users')
                 ->subcopy('Este link sólo se puede utilizar una vez')
+                ->company(Session::get('company_id'))
                 ->send();
         }
         
@@ -66,6 +67,7 @@ trait UserTrait
             ->buttons([['text'=>'Establecer contraseña', 'url'=>url("/password/generate/".base64_encode($generatePasswordUser->token))]])
             ->module('contracts')
             ->subcopy('Este link sólo se puede utilizar una vez')
+            ->company(Session::get('company_id'))
             ->send();
 
         return true;

@@ -7,7 +7,7 @@ export default [
             { name: 'sau_licenses.started_at', data: 'started_at', title: 'Fecha Inicio', sortable: true, searchable: true, detail: false, key: false },
             { name: 'sau_licenses.ended_at', data: 'ended_at', title: 'Fecha Fin', sortable: true, searchable: true, detail: false, key: false },
             { name: 'sau_licenses.created_at', data: 'created_at', title: 'Fecha Creación', sortable: true, searchable: true, detail: false, key: false },
-            { name: 'modules', data: 'modules', title: '#Módulos', sortable: true, searchable: false, detail: false, key: false },
+            { name: 'modules', data: 'modules', title: 'Módulos', sortable: true, searchable: false, detail: false, key: false },
             { name: '', data: 'controlls', title: 'Controles', sortable: false, searchable: false, detail: false, key: false },
         ],
         'controlls': [{
@@ -72,6 +72,7 @@ export default [
         name: 'system-logmails',
         fields: [
             { name: 'sau_log_mails.id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true },
+            { name: 'sau_companies.name', data: 'company', title: 'Compañia', sortable: true, searchable: true, detail: false, key: false },
             { name: 'sau_modules.name', data: 'module', title: 'Módulo', sortable: true, searchable: true, detail: false, key: false },
             { name: 'sau_log_mails.event', data: 'event', title: 'Evento', sortable: true, searchable: true, detail: false, key: false },
             { name: 'sau_log_mails.subject', data: 'subject', title: 'Asunto', sortable: true, searchable: true, detail: false, key: false },
@@ -103,6 +104,7 @@ export default [
         configuration: {
             urlData: '/system/logMail/data',
             filterColumns: true,
+            configNameFilter: 'system-logmails'
         }
     }
 ]

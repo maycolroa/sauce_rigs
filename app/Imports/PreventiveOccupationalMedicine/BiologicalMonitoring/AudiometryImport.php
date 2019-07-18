@@ -85,6 +85,7 @@ class AudiometryImport implements ToCollection
                         ->message('El proceso de importación de todos los registros de audiometrias finalizo correctamente')
                         ->module('biologicalMonitoring/audiometry')
                         ->event('Job: AudiometryImportJob')
+                        ->company($this->company_id)
                         ->send();
                 }
                 else
@@ -102,6 +103,7 @@ class AudiometryImport implements ToCollection
                         ->buttons([['text'=>'Descargar', 'url'=>url("/export/{$paramUrl}")]])
                         ->module('biologicalMonitoring/audiometry')
                         ->event('Job: AudiometryImportJob')
+                        ->company($this->company_id)
                         ->send();
                 }
                 
@@ -114,6 +116,7 @@ class AudiometryImport implements ToCollection
                     ->message($e->getMessage())
                     ->module('biologicalMonitoring/audiometry')
                     ->event('Job: AudiometryImportJob')
+                    ->company($this->company_id)
                     ->send();
             }
 

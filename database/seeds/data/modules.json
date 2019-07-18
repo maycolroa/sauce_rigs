@@ -4,47 +4,58 @@
         "modules": [
             {
                 "name": "users",
-                "display_name": "Usuarios"
+                "display_name": "Usuarios",
+                "main": "NO"
             },
             {
                 "name": "roles",
-                "display_name": "Roles"
+                "display_name": "Roles",
+                "main": "NO"
             },
             {
                 "name": "positions",
-                "display_name": "Cargos"
+                "display_name": "Cargos",
+                "main": "NO"
             },
             {
                 "name": "regionals",
-                "display_name": "Regionales"
+                "display_name": "Regionales",
+                "main": "NO"
             },
             {
                 "name": "businesses",
-                "display_name": "Centro de costos"
+                "display_name": "Centro de costos",
+                "main": "NO"
             },
             {
                 "name": "headquarters",
-                "display_name": "Sedes"
+                "display_name": "Sedes",
+                "main": "NO"
             },
             {
                 "name": "areas",
-                "display_name": "Áreas"
+                "display_name": "Áreas",
+                "main": "NO"
             },
             {
                 "name": "processes",
-                "display_name": "Macroprocesos"
+                "display_name": "Procesos",
+                "main": "NO"
             },
             {
                 "name": "employees",
-                "display_name": "Empleados"
+                "display_name": "Empleados",
+                "main": "NO"
             },
             {
                 "name": "configurations",
-                "display_name": "Configuraciones"
+                "display_name": "Configuraciones",
+                "main": "NO"
             },
             {
                 "name": "actionPlans",
-                "display_name": "Planes de acción"
+                "display_name": "Planes de acción",
+                "main": "NO"
             }
         ]
     },
@@ -53,15 +64,18 @@
         "modules": [
             {
                 "name": "activities",
-                "display_name": "SI - Procesos"
+                "display_name": "Actividades",
+                "main": "NO"
             },
             {
                 "name": "dangers",
-                "display_name": "Peligros"
+                "display_name": "Peligros",
+                "main": "NO"
             },
             {
                 "name": "dangerMatrix",
-                "display_name": "Matriz de peligros"
+                "display_name": "Matriz de peligros",
+                "main": "SI"
             }
         ]
     },
@@ -75,7 +89,8 @@
         "modules": [
             {
                 "name": "biologicalMonitoring/audiometry",
-                "display_name": "Monitoreo Biológico/Audiometría"
+                "display_name": "Monitoreo Biológico/Audiometría",
+                "main": "SI"
             }
         ]
     },
@@ -94,11 +109,13 @@
         "modules": [
             {
                 "name": "contracts",
-                "display_name": "Contratistas"
+                "display_name": "Contratistas",
+                "main": "SI"
             },
             {
                 "name": "legalMatrix",
-                "display_name": "Matriz Legal"
+                "display_name": "Matriz Legal",
+                "main": "SI"
             }
         ]
     },
@@ -107,11 +124,13 @@
         "modules": [
             {
                 "name": "licenses",
-                "display_name": "Licencias"
+                "display_name": "Licencias",
+                "main": "NO"
             },
             {
                 "name": "logMails",
-                "display_name": "Supervisar Correos"
+                "display_name": "Supervisar Correos",
+                "main": "NO"
             }
         ]
     }
