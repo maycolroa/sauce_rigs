@@ -10,6 +10,7 @@
         <b-card-body>
             <form-interest-component
                 url="/legalAspects/legalMatrix/interest"
+                :custom="true"
                 method="POST"/>
         </b-card-body>
       </b-card>
@@ -22,7 +23,7 @@ import FormInterestComponent from '@/components/LegalAspects/LegalMatrix/Interes
 import Alerts from '@/utils/Alerts.js';
 
 export default {
-  name: 'legalaspects-lm-interest-create',
+  name: 'legalaspects-lm-interest-company-create',
   metaInfo: {
     title: 'Intereses - Crear'
   },

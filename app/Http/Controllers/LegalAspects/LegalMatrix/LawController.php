@@ -59,6 +59,7 @@ class LawController extends Controller
         {
             $laws = Law::selectRaw(
                 'sau_lm_laws.*,
+                 IF(LENGTH(sau_lm_laws.description) > 50, CONCAT(SUBSTRING(sau_lm_laws.description, 1, 50), "..."), sau_lm_laws.description) AS description,
                  sau_lm_system_apply.name AS system_apply,
                  sau_lm_laws_types.name AS law_type,
                  sau_lm_risks_aspects.name AS risk_aspect,
@@ -81,13 +82,14 @@ class LawController extends Controller
         }
         else
         {
-            $laws = Law::select(
-                'sau_lm_laws.*',
-                'sau_lm_system_apply.name AS system_apply',
-                'sau_lm_laws_types.name AS law_type',
-                'sau_lm_risks_aspects.name AS risk_aspect',
-                'sau_lm_entities.name AS entity',
-                'sau_lm_sst_risks.name AS sst_risk'
+            $laws = Law::selectRaw(
+                'sau_lm_laws.*,
+                 IF(LENGTH(sau_lm_laws.description) > 50, CONCAT(SUBSTRING(sau_lm_laws.description, 1, 50), "..."), sau_lm_laws.description) AS description,
+                 sau_lm_system_apply.name AS system_apply,
+                 sau_lm_laws_types.name AS law_type,
+                 sau_lm_risks_aspects.name AS risk_aspect,
+                 sau_lm_entities.name AS entity,
+                 sau_lm_sst_risks.name AS sst_risk'
             )
             ->join('sau_lm_system_apply', 'sau_lm_system_apply.id', 'sau_lm_laws.system_apply_id')
             ->join('sau_lm_laws_types', 'sau_lm_laws_types.id', 'sau_lm_laws.law_type_id')

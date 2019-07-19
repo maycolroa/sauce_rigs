@@ -1,7 +1,7 @@
 <template>
   <div>
     <h4 class="font-weight-bold mb-4">
-      Temas SST
+      Mis Intereses
     </h4>
 
 
@@ -9,12 +9,13 @@
       <b-card no-body>
         <b-card-header class="with-elements">
           <div class="card-title-elements"> 
-            <b-btn :to="{name:'legalaspects-lm-sstrisk-create'}" variant="primary">Crear Tema SST</b-btn>
+            <b-btn :to="{name:'legalaspects-lm-interest-company-create'}" variant="primary">Crear interes</b-btn>
           </div>
         </b-card-header>
         <b-card-body>
              <vue-table
-                configName="legalaspects-lm-sstrisk"
+                configName="legalaspects-lm-interests-company"
+                :params="{ custom : true }"
                 ></vue-table>
         </b-card-body>
     </b-card>
@@ -26,9 +27,9 @@
 import Alerts from '@/utils/Alerts.js';
 
 export default {
-  name: 'lm-sstrisk',
+  name: 'lm-interests-company',
   metaInfo: {
-    title: 'Temas SST'
+    title: 'Mis Intereses'
   }
 }
 </script>

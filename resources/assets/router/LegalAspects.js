@@ -239,6 +239,30 @@ export default [
 				import('@/views/LegalAspects/legalMatrix/interests/view')
 			},
 			{
+				name: 'legalaspects-lm-interest-company',
+				path: 'lm/interestsCompany',
+				component: () =>
+				import('@/views/LegalAspects/legalMatrix/interests/indexCompany')
+			}, 
+			{
+				name: 'legalaspects-lm-interest-company-create',
+				path: 'lm/interestsCompany/create',
+				component: () =>
+				import('@/views/LegalAspects/legalMatrix/interests/createCompany')
+			},
+			{
+				name: 'legalaspects-lm-interest-company-edit',
+				path: 'lm/interestsCompany/edit/:id',
+				component: () =>
+				import('@/views/LegalAspects/legalMatrix/interests/edit')
+			},
+			{
+				name: 'legalaspects-lm-interest-company-view',
+				path: 'lm/interestsCompany/view/:id',
+				component: () =>
+				import('@/views/LegalAspects/legalMatrix/interests/view')
+			},
+			{
 				name: 'legalaspects-lm-interest-myinterests',
 				path: 'lm/interests/myinterests',
 				component: () =>

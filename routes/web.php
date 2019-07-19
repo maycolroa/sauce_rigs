@@ -104,6 +104,7 @@ Route::middleware(['auth'])->group(function () {
         Route::prefix('legalMatrix')->group(function () {
           Route::post('interests', 'LegalAspects\LegalMatrix\InterestController@multiselect');
           Route::post('interestsCompany', 'LegalAspects\LegalMatrix\InterestController@multiselectCompany');
+          Route::post('interestsSystem', 'LegalAspects\LegalMatrix\InterestController@multiselectSystem');
           Route::post('years', 'LegalAspects\LegalMatrix\LawController@lmYears');
           Route::post('responsibles', 'LegalAspects\LegalMatrix\LawController@lmLawResponsibles');
           Route::post('riskAspects', 'LegalAspects\LegalMatrix\RiskAspectController@multiselect');

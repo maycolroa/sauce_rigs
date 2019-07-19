@@ -42,7 +42,7 @@
           <b-form-row>
             <vue-ajax-advanced-select :disabled="viewOnly" class="col-md-6" v-model="form.entity_id" :error="form.errorsFor('entity_id')" :selected-object="form.multiselect_entity" name="entity_id" label="Ente" placeholder="Seleccione el ente" :url="entityDataUrl">
               </vue-ajax-advanced-select>
-            <vue-ajax-advanced-select :disabled="viewOnly" class="col-md-6" v-model="form.sst_risk_id" :error="form.errorsFor('sst_risk_id')" :selected-object="form.multiselect_sst_risk" name="sst_risk_id" label="Riesgo SST" placeholder="Seleccione el riesgo sst" :url="sstRiskDataUrl">
+            <vue-ajax-advanced-select :disabled="viewOnly" class="col-md-6" v-model="form.sst_risk_id" :error="form.errorsFor('sst_risk_id')" :selected-object="form.multiselect_sst_risk" name="sst_risk_id" label="Tema SST" placeholder="Seleccione el tema sst" :url="sstRiskDataUrl">
               </vue-ajax-advanced-select>
           </b-form-row>
           <b-form-row>

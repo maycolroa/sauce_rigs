@@ -22,9 +22,9 @@
 								<router-link tag="a" href="javascript:void(0)" class="card-body media align-items-center text-dark" :to="{name:'legalaspects-lm-sstrisk'}">
 									<i class="lnr lnr-lighter display-4 d-block text-primary"></i>
 									<span class="media-body d-block ml-3">
-										<span class="text-big font-weight-bolder">Administrar Riesgos SST</span>
+										<span class="text-big font-weight-bolder">Administrar Temas SST</span>
 										<br>
-										<small class="text-muted">Administrar Riesgos SST del sistema</small>
+										<small class="text-muted">Administrar Temas SST del sistema</small>
 									</span>
 								</router-link>
 							</div>
@@ -55,7 +55,7 @@
 								<router-link tag="a" href="javascript:void(0)" class="card-body media align-items-center text-dark" :to="{name:'legalaspects-lm-interest'}">
 									<i class="lnr lnr-list display-4 d-block text-primary"></i>
 									<span class="media-body d-block ml-3">
-										<span class="text-big font-weight-bolder">Administrar intereses</span>
+										<span class="text-big font-weight-bolder">Administrar Intereses</span>
 										<br>
 										<small class="text-muted">Administrar intereses del sistema</small>
 									</span>
@@ -77,7 +77,7 @@
 								<router-link tag="a" href="javascript:void(0)" class="card-body media align-items-center text-dark" :to="{name:'legalaspects-lm-interest-myinterests'}">
 									<i class="lnr lnr-star display-4 d-block text-primary"></i>
 									<span class="media-body d-block ml-3">
-										<span class="text-big font-weight-bolder">Establecer mis intereses</span>
+										<span class="text-big font-weight-bolder">Establecer mis Intereses</span>
 										<br>
 										<small class="text-muted">Establecer mis intereses</small>
 									</span>
@@ -91,6 +91,17 @@
 										<span class="text-big font-weight-bolder">Administrar mis Sistemas que Aplican</span>
 										<br>
 										<small class="text-muted">Administrar Sistemas que Aplican de mi compañia</small>
+									</span>
+								</router-link>
+							</div>
+
+							<div class="d-flex col-sm-6 col-md-4 col-lg-6 align-items-center">
+								<router-link tag="a" href="javascript:void(0)" class="card-body media align-items-center text-dark" :to="{name:'legalaspects-lm-interest-company'}">
+									<i class="lnr lnr-list display-4 d-block text-primary"></i>
+									<span class="media-body d-block ml-3">
+										<span class="text-big font-weight-bolder">Administrar mis Intereses</span>
+										<br>
+										<small class="text-muted">Administrar Intereses de mi compañia</small>
 									</span>
 								</router-link>
 							</div>

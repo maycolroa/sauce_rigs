@@ -243,7 +243,7 @@ return [
       'law_type_id' => 'Tipo de norma',
       'risk_aspect_id' => 'Riesgo/Aspecto Ambiental',
       'entity_id' => 'Entidad',
-      'sst_risk_id' => 'Riesgo SST',
+      'sst_risk_id' => 'Tema SST',
       'repealed' => 'Derogada',
       'articles.*.description' => 'Descripción',
       'articles.*.repelead' => 'Derogado',

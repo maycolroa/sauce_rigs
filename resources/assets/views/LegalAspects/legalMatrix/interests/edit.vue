@@ -11,8 +11,7 @@
                 :url="`/legalAspects/legalMatrix/interest/${this.$route.params.id}`"
                 method="PUT"
                 :interest="data"
-                :is-edit="true"
-                :cancel-url="{ name: 'legalaspects-lm-interest'}"/>
+                :is-edit="true"/>
         </b-card-body>
       </b-card>
     </div>

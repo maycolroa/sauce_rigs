@@ -23,7 +23,7 @@
                     <div><b>Sistema que aplica:</b> {{ law.system_apply ? law.system_apply.name : '' }}</div>
                     <div><b>Observaciones:</b> {{ law.observations }}</div>
                     <div><b>Fecha de creación:</b> {{ law.created_at }}</div>
-                    <div><b>Riesgo SST:</b> {{ law.sst_risk ? law.sst_risk.name : '' }}</div>
+                    <div><b>Tema SST:</b> {{ law.sst_risk ? law.sst_risk.name : '' }}</div>
                     <div><b>Derogada:</b> {{ law.repealed }}</div>
                 </b-col>
             </b-row>

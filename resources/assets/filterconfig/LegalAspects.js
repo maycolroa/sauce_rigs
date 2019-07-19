@@ -84,7 +84,7 @@ export default [
           url: '/selects/legalMatrix/sstRisks',
           key: 'sstRisks',
           type: 'select',
-          label: 'Riesgos SST'
+          label: 'Temas SST'
         },
         {
           url: '/selects/legalMatrix/systemApplySystem',
@@ -137,7 +137,7 @@ export default [
           url: '/selects/legalMatrix/sstRisks',
           key: 'sstRisks',
           type: 'select',
-          label: 'Riesgos SST'
+          label: 'Temas SST'
         },
         {
           url: '/selects/legalMatrix/systemApplyCompany',
@@ -190,7 +190,7 @@ export default [
           url: '/selects/legalMatrix/sstRisks',
           key: 'sstRisks',
           type: 'select',
-          label: 'Riesgos SST'
+          label: 'Temas SST'
         },
         {
           url: '/selects/legalMatrix/systemApply',
