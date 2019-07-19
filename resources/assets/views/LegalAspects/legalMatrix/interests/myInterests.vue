@@ -46,7 +46,7 @@ export default {
 	},
 	created(){
 
-		GlobalMethods.getDataMultiselect(`/selects/legalMatrix/interestsSystem`)
+		GlobalMethods.getDataMultiselect(`/radios/legalMatrix/interestsSystem`)
         .then(response => {
 			this.options = response;
 			setTimeout(() => {

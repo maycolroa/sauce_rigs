@@ -306,4 +306,24 @@ class Law extends Model
 
         return $query;
     }
+
+    /**
+     * filters checks through the given interests
+     * @param  Illuminate\Database\Eloquent\Builder $query
+     * @param  array $interests
+     * @return Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeInInterests($query, $interests, $typeSearch = 'IN')
+    {
+        if (COUNT($interests) > 0)
+        {
+            if ($typeSearch == 'IN')
+                $query->whereIn('sau_lm_article_interest.interest_id', $interests);
+
+            else if ($typeSearch == 'NOT IN')
+                $query->whereNotIn('sau_lm_article_interest.interest_id', $interests);
+        }
+
+        return $query;
+    }
 }

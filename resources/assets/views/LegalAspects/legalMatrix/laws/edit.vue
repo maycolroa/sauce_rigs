@@ -17,7 +17,7 @@
                 riskAspectDataUrl="/selects/legalMatrix/riskAspects"
                 entityDataUrl="/selects/legalMatrix/entities"
                 sstRiskDataUrl="/selects/legalMatrix/sstRisks"
-                urlDataInterests="/selects/legalMatrix/interests"
+                urlDataInterests="/selects/legalMatrix/interestsSystem"
                 systemApplyUrl="/selects/legalMatrix/systemApplySystem"
                 :repealed="repealed"
                 :si-no="siNo"/>

@@ -223,6 +223,12 @@ export default [
           label: 'Responsables'
         },
         {
+          url: '/selects/legalMatrix/interests',
+          key: 'interests',
+          type: 'select',
+          label: 'Intereses'
+        },
+        {
           url: '/selects/legalMatrix/states',
           key: 'states',
           type: 'select',

@@ -223,7 +223,26 @@ class InterestController extends Controller
             ->$scope()
             ->pluck('id', 'name');
         
-            return $this->radioFormat($interests);
+            return $this->multiSelectFormat($interests);
         }
+    }
+
+    /**
+     * Returns an array for a select type input
+     *
+     * @param Request $request
+     * @return Array
+     */
+
+    public function radioSystem(Request $request)
+    {
+        $interests = Interest::select(
+            'sau_lm_interests.id as id',
+            'sau_lm_interests.name as name'
+        )
+        ->system()
+        ->pluck('id', 'name');
+    
+        return $this->radioFormat($interests);
     }
 }
