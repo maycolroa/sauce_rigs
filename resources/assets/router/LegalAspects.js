@@ -214,240 +214,316 @@ export default [
 				path: 'legalmatrix',
 				component: () => import('@/views/LegalAspects/legalMatrix/index')
 			},
-			{
-				name: 'legalaspects-lm-interest',
-				path: 'lm/interests',
-				component: () =>
-				import('@/views/LegalAspects/legalMatrix/interests/index')
-			}, 
-			{
-				name: 'legalaspects-lm-interest-create',
-				path: 'lm/interests/create',
-				component: () =>
-				import('@/views/LegalAspects/legalMatrix/interests/create')
-			},
-			{
-				name: 'legalaspects-lm-interest-edit',
-				path: 'lm/interests/edit/:id',
-				component: () =>
-				import('@/views/LegalAspects/legalMatrix/interests/edit')
-			},
-			{
-				name: 'legalaspects-lm-interest-view',
-				path: 'lm/interests/view/:id',
-				component: () =>
-				import('@/views/LegalAspects/legalMatrix/interests/view')
-			},
-			{
-				name: 'legalaspects-lm-interest-company',
-				path: 'lm/interestsCompany',
-				component: () =>
-				import('@/views/LegalAspects/legalMatrix/interests/indexCompany')
-			}, 
-			{
-				name: 'legalaspects-lm-interest-company-create',
-				path: 'lm/interestsCompany/create',
-				component: () =>
-				import('@/views/LegalAspects/legalMatrix/interests/createCompany')
-			},
-			{
-				name: 'legalaspects-lm-interest-company-edit',
-				path: 'lm/interestsCompany/edit/:id',
-				component: () =>
-				import('@/views/LegalAspects/legalMatrix/interests/edit')
-			},
-			{
-				name: 'legalaspects-lm-interest-company-view',
-				path: 'lm/interestsCompany/view/:id',
-				component: () =>
-				import('@/views/LegalAspects/legalMatrix/interests/view')
-			},
-			{
-				name: 'legalaspects-lm-interest-myinterests',
-				path: 'lm/interests/myinterests',
-				component: () =>
-				import('@/views/LegalAspects/legalMatrix/interests/myInterests')
-			},
-			{
-				name: 'legalaspects-lm-riskaspect',
-				path: 'lm/riskaspects',
-				component: () =>
-				import('@/views/LegalAspects/legalMatrix/riskAspects/index')
-			}, 
-			{
-				name: 'legalaspects-lm-riskaspect-create',
-				path: 'lm/riskaspects/create',
-				component: () =>
-				import('@/views/LegalAspects/legalMatrix/riskAspects/create')
-			},
-			{
-				name: 'legalaspects-lm-riskaspect-edit',
-				path: 'lm/riskaspects/edit/:id',
-				component: () =>
-				import('@/views/LegalAspects/legalMatrix/riskAspects/edit')
-			},
-			{
-				name: 'legalaspects-lm-riskaspect-view',
-				path: 'lm/riskaspects/view/:id',
-				component: () =>
-				import('@/views/LegalAspects/legalMatrix/riskAspects/view')
-			},
-			{
-				name: 'legalaspects-lm-sstrisk',
-				path: 'lm/sstrisks',
-				component: () =>
-				import('@/views/LegalAspects/legalMatrix/sstRisk/index')
-			}, 
-			{
-				name: 'legalaspects-lm-sstrisk-create',
-				path: 'lm/sstrisks/create',
-				component: () =>
-				import('@/views/LegalAspects/legalMatrix/sstRisk/create')
-			},
-			{
-				name: 'legalaspects-lm-sstrisk-edit',
-				path: 'lm/sstrisks/edit/:id',
-				component: () =>
-				import('@/views/LegalAspects/legalMatrix/sstRisk/edit')
-			},
-			{
-				name: 'legalaspects-lm-sstrisk-view',
-				path: 'lm/sstrisks/view/:id',
-				component: () =>
-				import('@/views/LegalAspects/legalMatrix/sstRisk/view')
-			},
-			{
-				name: 'legalaspects-lm-entity',
-				path: 'lm/entities',
-				component: () =>
-				import('@/views/LegalAspects/legalMatrix/entities/index')
-			}, 
-			{
-				name: 'legalaspects-lm-entity-create',
-				path: 'lm/entities/create',
-				component: () =>
-				import('@/views/LegalAspects/legalMatrix/entities/create')
-			},
-			{
-				name: 'legalaspects-lm-entity-edit',
-				path: 'lm/entities/edit/:id',
-				component: () =>
-				import('@/views/LegalAspects/legalMatrix/entities/edit')
-			},
-			{
-				name: 'legalaspects-lm-entity-view',
-				path: 'lm/entities/view/:id',
-				component: () =>
-				import('@/views/LegalAspects/legalMatrix/entities/view')
-			},
-			{
-				name: 'legalaspects-lm-law',
-				path: 'lm/laws',
-				component: () =>
-				import('@/views/LegalAspects/legalMatrix/laws/index')
-			}, 
-			{
-				name: 'legalaspects-lm-law-create',
-				path: 'lm/laws/create',
-				component: () =>
-				import('@/views/LegalAspects/legalMatrix/laws/create')
-			},
-			{
-				name: 'legalaspects-lm-law-edit',
-				path: 'lm/laws/edit/:id',
-				component: () =>
-				import('@/views/LegalAspects/legalMatrix/laws/edit')
-			},
-			{
-				name: 'legalaspects-lm-law-view',
-				path: 'lm/laws/view/:id',
-				component: () =>
-				import('@/views/LegalAspects/legalMatrix/laws/view')
-			},
-			{
-				name: 'legalaspects-lm-law-company',
-				path: 'lm/lawsCompany',
-				component: () =>
-				import('@/views/LegalAspects/legalMatrix/laws/indexCompany')
-			}, 
-			{
-				name: 'legalaspects-lm-law-company-create',
-				path: 'lm/lawsCompany/create',
-				component: () =>
-				import('@/views/LegalAspects/legalMatrix/laws/createCompany')
-			},
-			{
-				name: 'legalaspects-lm-law-company-edit',
-				path: 'lm/lawsCompany/edit/:id',
-				component: () =>
-				import('@/views/LegalAspects/legalMatrix/laws/editCompany')
-			},
-			{
-				name: 'legalaspects-lm-law-company-view',
-				path: 'lm/lawsCompany/view/:id',
-				component: () =>
-				import('@/views/LegalAspects/legalMatrix/laws/view')
-			},
-			{
-				name: 'legalaspects-lm-law-qualify',
-				path: 'lm/lawsQualify',
-				component: () =>
-				import('@/views/LegalAspects/legalMatrix/laws/indexQualify')
-			},
-			{
-				name: 'legalaspects-lm-law-qualify-view',
-				path: 'lm/lawsQualify/view/:id',
-				component: () =>
-				import('@/views/LegalAspects/legalMatrix/laws/viewQualify')
-			},
-			{
-				name: 'legalaspects-lm-system-apply',
-				path: 'lm/systemApply',
-				component: () =>
-				import('@/views/LegalAspects/legalMatrix/systemApply/index')
-			}, 
-			{
-				name: 'legalaspects-lm-system-apply-create',
-				path: 'lm/systemApply/create',
-				component: () =>
-				import('@/views/LegalAspects/legalMatrix/systemApply/create')
-			},
-			{
-				name: 'legalaspects-lm-system-apply-edit',
-				path: 'lm/systemApply/edit/:id',
-				component: () =>
-				import('@/views/LegalAspects/legalMatrix/systemApply/edit')
-			},
-			{
-				name: 'legalaspects-lm-system-apply-view',
-				path: 'lm/systemApply/view/:id',
-				component: () =>
-				import('@/views/LegalAspects/legalMatrix/systemApply/view')
-			},
-			{
-				name: 'legalaspects-lm-system-apply-company',
-				path: 'lm/systemApplyCompany',
-				component: () =>
-				import('@/views/LegalAspects/legalMatrix/systemApply/indexCompany')
-			}, 
-			{
-				name: 'legalaspects-lm-system-apply-company-create',
-				path: 'lm/systemApplyCompany/create',
-				component: () =>
-				import('@/views/LegalAspects/legalMatrix/systemApply/createCompany')
-			},
-			{
-				name: 'legalaspects-lm-system-apply-company-edit',
-				path: 'lm/systemApplyCompany/edit/:id',
-				component: () =>
-				import('@/views/LegalAspects/legalMatrix/systemApply/edit')
-			},
-			{
-				name: 'legalaspects-lm-system-apply-company-view',
-				path: 'lm/systemApplyCompany/view/:id',
-				component: () =>
-				import('@/views/LegalAspects/legalMatrix/systemApply/view')
-			}
+			...middleware({ 'check-permission': 'interests_r' }, [
+				{
+					name: 'legalaspects-lm-interest',
+					path: 'lm/interests',
+					component: () =>
+					import('@/views/LegalAspects/legalMatrix/interests/index')
+				}, 
+			]),
+			...middleware({ 'check-permission': 'interests_c' }, [
+				{
+					name: 'legalaspects-lm-interest-create',
+					path: 'lm/interests/create',
+					component: () =>
+					import('@/views/LegalAspects/legalMatrix/interests/create')
+				},
+			]),
+			...middleware({ 'check-permission': 'interests_u' }, [
+				{
+					name: 'legalaspects-lm-interest-edit',
+					path: 'lm/interests/edit/:id',
+					component: () =>
+					import('@/views/LegalAspects/legalMatrix/interests/edit')
+				},
+			]),
+			...middleware({ 'check-permission': 'interests_r' }, [
+				{
+					name: 'legalaspects-lm-interest-view',
+					path: 'lm/interests/view/:id',
+					component: () =>
+					import('@/views/LegalAspects/legalMatrix/interests/view')
+				},
+			]),
+			...middleware({ 'check-permission': 'interestsCustom_r' }, [
+				{
+					name: 'legalaspects-lm-interest-company',
+					path: 'lm/interestsCompany',
+					component: () =>
+					import('@/views/LegalAspects/legalMatrix/interests/indexCompany')
+				}, 
+			]),
+			...middleware({ 'check-permission': 'interestsCustom_c' }, [
+				{
+					name: 'legalaspects-lm-interest-company-create',
+					path: 'lm/interestsCompany/create',
+					component: () =>
+					import('@/views/LegalAspects/legalMatrix/interests/createCompany')
+				},
+			]),
+			...middleware({ 'check-permission': 'interestsCustom_u' }, [
+				{
+					name: 'legalaspects-lm-interest-company-edit',
+					path: 'lm/interestsCompany/edit/:id',
+					component: () =>
+					import('@/views/LegalAspects/legalMatrix/interests/edit')
+				},
+			]),
+			...middleware({ 'check-permission': 'interestsCustom_r' }, [
+				{
+					name: 'legalaspects-lm-interest-company-view',
+					path: 'lm/interestsCompany/view/:id',
+					component: () =>
+					import('@/views/LegalAspects/legalMatrix/interests/view')
+				},
+			]),
+			...middleware({ 'check-permission': 'interests_config' }, [
+				{
+					name: 'legalaspects-lm-interest-myinterests',
+					path: 'lm/interests/myinterests',
+					component: () =>
+					import('@/views/LegalAspects/legalMatrix/interests/myInterests')
+				},
+			]),
+			...middleware({ 'check-permission': 'risksAspects_r' }, [
+				{
+					name: 'legalaspects-lm-riskaspect',
+					path: 'lm/riskaspects',
+					component: () =>
+					import('@/views/LegalAspects/legalMatrix/riskAspects/index')
+				}, 
+			]),
+			...middleware({ 'check-permission': 'risksAspects_c' }, [
+				{
+					name: 'legalaspects-lm-riskaspect-create',
+					path: 'lm/riskaspects/create',
+					component: () =>
+					import('@/views/LegalAspects/legalMatrix/riskAspects/create')
+				},
+			]),
+			...middleware({ 'check-permission': 'risksAspects_u' }, [
+				{
+					name: 'legalaspects-lm-riskaspect-edit',
+					path: 'lm/riskaspects/edit/:id',
+					component: () =>
+					import('@/views/LegalAspects/legalMatrix/riskAspects/edit')
+				},
+			]),
+			...middleware({ 'check-permission': 'risksAspects_r' }, [
+				{
+					name: 'legalaspects-lm-riskaspect-view',
+					path: 'lm/riskaspects/view/:id',
+					component: () =>
+					import('@/views/LegalAspects/legalMatrix/riskAspects/view')
+				},
+			]),
+			...middleware({ 'check-permission': 'sstRisks_r' }, [
+				{
+					name: 'legalaspects-lm-sstrisk',
+					path: 'lm/sstrisks',
+					component: () =>
+					import('@/views/LegalAspects/legalMatrix/sstRisk/index')
+				}, 
+			]),
+			...middleware({ 'check-permission': 'sstRisks_c' }, [
+				{
+					name: 'legalaspects-lm-sstrisk-create',
+					path: 'lm/sstrisks/create',
+					component: () =>
+					import('@/views/LegalAspects/legalMatrix/sstRisk/create')
+				},
+			]),
+			...middleware({ 'check-permission': 'sstRisks_u' }, [
+				{
+					name: 'legalaspects-lm-sstrisk-edit',
+					path: 'lm/sstrisks/edit/:id',
+					component: () =>
+					import('@/views/LegalAspects/legalMatrix/sstRisk/edit')
+				},
+			]),
+			...middleware({ 'check-permission': 'sstRisks_r' }, [
+				{
+					name: 'legalaspects-lm-sstrisk-view',
+					path: 'lm/sstrisks/view/:id',
+					component: () =>
+					import('@/views/LegalAspects/legalMatrix/sstRisk/view')
+				},
+			]),
+			...middleware({ 'check-permission': 'entities_r' }, [
+				{
+					name: 'legalaspects-lm-entity',
+					path: 'lm/entities',
+					component: () =>
+					import('@/views/LegalAspects/legalMatrix/entities/index')
+				}, 
+			]),
+			...middleware({ 'check-permission': 'entities_c' }, [
+				{
+					name: 'legalaspects-lm-entity-create',
+					path: 'lm/entities/create',
+					component: () =>
+					import('@/views/LegalAspects/legalMatrix/entities/create')
+				},
+			]),
+			...middleware({ 'check-permission': 'entities_u' }, [
+				{
+					name: 'legalaspects-lm-entity-edit',
+					path: 'lm/entities/edit/:id',
+					component: () =>
+					import('@/views/LegalAspects/legalMatrix/entities/edit')
+				},
+			]),
+			...middleware({ 'check-permission': 'entities_r' }, [
+				{
+					name: 'legalaspects-lm-entity-view',
+					path: 'lm/entities/view/:id',
+					component: () =>
+					import('@/views/LegalAspects/legalMatrix/entities/view')
+				},
+			]),
+			...middleware({ 'check-permission': 'laws_r' }, [
+				{
+					name: 'legalaspects-lm-law',
+					path: 'lm/laws',
+					component: () =>
+					import('@/views/LegalAspects/legalMatrix/laws/index')
+				}, 
+			]),
+			...middleware({ 'check-permission': 'laws_c' }, [
+				{
+					name: 'legalaspects-lm-law-create',
+					path: 'lm/laws/create',
+					component: () =>
+					import('@/views/LegalAspects/legalMatrix/laws/create')
+				},
+			]),
+			...middleware({ 'check-permission': 'laws_u' }, [
+				{
+					name: 'legalaspects-lm-law-edit',
+					path: 'lm/laws/edit/:id',
+					component: () =>
+					import('@/views/LegalAspects/legalMatrix/laws/edit')
+				},
+			]),
+			...middleware({ 'check-permission': 'laws_r' }, [
+				{
+					name: 'legalaspects-lm-law-view',
+					path: 'lm/laws/view/:id',
+					component: () =>
+					import('@/views/LegalAspects/legalMatrix/laws/view')
+				},
+			]),
+			...middleware({ 'check-permission': 'lawsCustom_r' }, [
+				{
+					name: 'legalaspects-lm-law-company',
+					path: 'lm/lawsCompany',
+					component: () =>
+					import('@/views/LegalAspects/legalMatrix/laws/indexCompany')
+				}, 
+			]),
+			...middleware({ 'check-permission': 'lawsCustom_c' }, [
+				{
+					name: 'legalaspects-lm-law-company-create',
+					path: 'lm/lawsCompany/create',
+					component: () =>
+					import('@/views/LegalAspects/legalMatrix/laws/createCompany')
+				},
+			]),
+			...middleware({ 'check-permission': 'lawsCustom_u' }, [
+				{
+					name: 'legalaspects-lm-law-company-edit',
+					path: 'lm/lawsCompany/edit/:id',
+					component: () =>
+					import('@/views/LegalAspects/legalMatrix/laws/editCompany')
+				},
+			]),
+			...middleware({ 'check-permission': 'lawsCustom_r' }, [
+				{
+					name: 'legalaspects-lm-law-company-view',
+					path: 'lm/lawsCompany/view/:id',
+					component: () =>
+					import('@/views/LegalAspects/legalMatrix/laws/view')
+				},
+			]),
+			...middleware({ 'check-permission': 'laws_qualify' }, [
+				{
+					name: 'legalaspects-lm-law-qualify',
+					path: 'lm/lawsQualify',
+					component: () =>
+					import('@/views/LegalAspects/legalMatrix/laws/indexQualify')
+				},
+				{
+					name: 'legalaspects-lm-law-qualify-view',
+					path: 'lm/lawsQualify/view/:id',
+					component: () =>
+					import('@/views/LegalAspects/legalMatrix/laws/viewQualify')
+				}
+			]),
+			...middleware({ 'check-permission': 'systemApply_r' }, [
+				{
+					name: 'legalaspects-lm-system-apply',
+					path: 'lm/systemApply',
+					component: () =>
+					import('@/views/LegalAspects/legalMatrix/systemApply/index')
+				}, 
+			]),
+			...middleware({ 'check-permission': 'systemApply_c' }, [
+				{
+					name: 'legalaspects-lm-system-apply-create',
+					path: 'lm/systemApply/create',
+					component: () =>
+					import('@/views/LegalAspects/legalMatrix/systemApply/create')
+				},
+			]),
+			...middleware({ 'check-permission': 'systemApply_u' }, [
+				{
+					name: 'legalaspects-lm-system-apply-edit',
+					path: 'lm/systemApply/edit/:id',
+					component: () =>
+					import('@/views/LegalAspects/legalMatrix/systemApply/edit')
+				},
+			]),
+			...middleware({ 'check-permission': 'systemApply_r' }, [
+				{
+					name: 'legalaspects-lm-system-apply-view',
+					path: 'lm/systemApply/view/:id',
+					component: () =>
+					import('@/views/LegalAspects/legalMatrix/systemApply/view')
+				},
+			]),
+			...middleware({ 'check-permission': 'systemApplyCustom_r' }, [
+				{
+					name: 'legalaspects-lm-system-apply-company',
+					path: 'lm/systemApplyCompany',
+					component: () =>
+					import('@/views/LegalAspects/legalMatrix/systemApply/indexCompany')
+				}, 
+			]),
+			...middleware({ 'check-permission': 'systemApplyCustom_c' }, [
+				{
+					name: 'legalaspects-lm-system-apply-company-create',
+					path: 'lm/systemApplyCompany/create',
+					component: () =>
+					import('@/views/LegalAspects/legalMatrix/systemApply/createCompany')
+				},
+			]),
+			...middleware({ 'check-permission': 'systemApplyCustom_u' }, [
+				{
+					name: 'legalaspects-lm-system-apply-company-edit',
+					path: 'lm/systemApplyCompany/edit/:id',
+					component: () =>
+					import('@/views/LegalAspects/legalMatrix/systemApply/edit')
+				},
+			]),
+			...middleware({ 'check-permission': 'systemApplyCustom_r' }, [
+				{
+					name: 'legalaspects-lm-system-apply-company-view',
+					path: 'lm/systemApplyCompany/view/:id',
+					component: () =>
+					import('@/views/LegalAspects/legalMatrix/systemApply/view')
+				}
+			]),
 		]
 	}
 ];

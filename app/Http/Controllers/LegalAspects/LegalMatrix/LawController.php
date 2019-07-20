@@ -32,10 +32,11 @@ class LawController extends Controller
     function __construct()
     {
         $this->middleware('auth');
-        /*$this->middleware('permission:activities_c', ['only' => 'store']);
-        $this->middleware('permission:activities_r', ['except' =>'multiselect']);
-        $this->middleware('permission:activities_u', ['only' => 'update']);
-        $this->middleware('permission:activities_d', ['only' => 'destroy']);*/
+        $this->middleware('permission:laws_c|lawsCustom_c', ['only' => 'store']);
+        $this->middleware('permission:laws_r|lawsCustom_r');
+        $this->middleware('permission:laws_u|lawsCustom_u', ['only' => 'update']);
+        $this->middleware('permission:laws_d|lawsCustom_d', ['only' => 'destroy']);
+        $this->middleware('permission:laws_qualify', ['only' => ['getArticlesQualification', 'saveArticlesQualification']]);
     }
 
     /**

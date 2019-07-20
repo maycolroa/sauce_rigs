@@ -425,6 +425,7 @@ export default [
                     routePush: { name: 'legalaspects-lm-interest-edit' },
                     id: 'id',
                 },
+                permission: 'interests_u'
             }, {
                 config: {
                     color: 'outline-info',
@@ -436,6 +437,7 @@ export default [
                     routePush: { name: 'legalaspects-lm-interest-view' },
                     id: 'id',
                 },
+                permission: 'interests_r'
             }]
         },
         {
@@ -447,6 +449,7 @@ export default [
                 id: 'id',
                 messageConfirmation: 'Esta seguro de borrar el interes __name__'
             },
+            permission: 'interests_d'
             }],
         }],
         configuration: {
@@ -474,6 +477,7 @@ export default [
                     routePush: { name: 'legalaspects-lm-interest-company-edit' },
                     id: 'id',
                 },
+                permission: 'interestsCustom_u'
             }, {
                 config: {
                     color: 'outline-info',
@@ -485,6 +489,7 @@ export default [
                     routePush: { name: 'legalaspects-lm-interest-company-view' },
                     id: 'id',
                 },
+                permission: 'interestsCustom_r'
             }]
         },
         {
@@ -496,6 +501,7 @@ export default [
                 id: 'id',
                 messageConfirmation: 'Esta seguro de borrar el interes __name__'
             },
+            permission: 'interestsCustom_d'
             }],
         }],
         configuration: {
@@ -523,6 +529,7 @@ export default [
                     routePush: { name: 'legalaspects-lm-riskaspect-edit' },
                     id: 'id',
                 },
+                permission: 'risksAspects_u'
             }, {
                 config: {
                     color: 'outline-info',
@@ -534,6 +541,7 @@ export default [
                     routePush: { name: 'legalaspects-lm-riskaspect-view' },
                     id: 'id',
                 },
+                permission: 'risksAspects_r'
             }]
         },
         {
@@ -545,6 +553,7 @@ export default [
                 id: 'id',
                 messageConfirmation: 'Esta seguro de borrar el Riesgo/Aspecto ambiental __name__'
             },
+            permission: 'risksAspects_d'
             }],
         }],
         configuration: {
@@ -572,6 +581,7 @@ export default [
                     routePush: { name: 'legalaspects-lm-sstrisk-edit' },
                     id: 'id',
                 },
+                permission: 'sstRisks_u'
             }, {
                 config: {
                     color: 'outline-info',
@@ -583,6 +593,7 @@ export default [
                     routePush: { name: 'legalaspects-lm-sstrisk-view' },
                     id: 'id',
                 },
+                permission: 'sstRisks_r'
             }]
         },
         {
@@ -594,6 +605,7 @@ export default [
                 id: 'id',
                 messageConfirmation: 'Esta seguro de borrar el Tema SST __name__'
             },
+            permission: 'sstRisks_d'
             }],
         }],
         configuration: {
@@ -621,6 +633,7 @@ export default [
                     routePush: { name: 'legalaspects-lm-entity-edit' },
                     id: 'id',
                 },
+                permission: 'entities_u'
             }, {
                 config: {
                     color: 'outline-info',
@@ -632,6 +645,7 @@ export default [
                     routePush: { name: 'legalaspects-lm-entity-view' },
                     id: 'id',
                 },
+                permission: 'entities_r'
             }]
         },
         {
@@ -643,6 +657,7 @@ export default [
                 id: 'id',
                 messageConfirmation: 'Esta seguro de borrar la entidad __name__'
             },
+            permission: 'entities_d'
             }],
         }],
         configuration: {
@@ -679,6 +694,7 @@ export default [
                     routePush: { name: 'legalaspects-lm-law-edit' },
                     id: 'id',
                 },
+                permission: 'laws_u'
             }, {
                 config: {
                     color: 'outline-info',
@@ -690,6 +706,7 @@ export default [
                     routePush: { name: 'legalaspects-lm-law-view' },
                     id: 'id',
                 },
+                permission: 'laws_r'
             }]
         },
         {
@@ -701,6 +718,7 @@ export default [
                 id: 'id',
                 messageConfirmation: 'Esta seguro de borrar la norma __name__'
             },
+            permission: 'laws_d'
             }],
         }],
         configuration: {
@@ -738,6 +756,7 @@ export default [
                     routePush: { name: 'legalaspects-lm-law-company-edit' },
                     id: 'id',
                 },
+                permission: 'lawsCustom_u'
             }, {
                 config: {
                     color: 'outline-info',
@@ -749,6 +768,7 @@ export default [
                     routePush: { name: 'legalaspects-lm-law-company-view' },
                     id: 'id',
                 },
+                permission: 'lawsCustom_r'
             }]
         },
         {
@@ -760,6 +780,7 @@ export default [
                 id: 'id',
                 messageConfirmation: 'Esta seguro de borrar la norma __name__'
             },
+            permission: 'lawsCustom_d'
             }],
         }],
         configuration: {
@@ -797,6 +818,7 @@ export default [
                     routePush: { name: 'legalaspects-lm-law-qualify-view' },
                     id: 'id',
                 },
+                permission: 'laws_qualify'
             }]
         },
         {
@@ -829,6 +851,7 @@ export default [
                     routePush: { name: 'legalaspects-lm-system-apply-edit' },
                     id: 'id',
                 },
+                permission: 'systemApply_u'
             }, {
                 config: {
                     color: 'outline-info',
@@ -840,6 +863,7 @@ export default [
                     routePush: { name: 'legalaspects-lm-system-apply-view' },
                     id: 'id',
                 },
+                permission: 'systemApply_r'
             }]
         },
         {
@@ -851,6 +875,7 @@ export default [
                 id: 'id',
                 messageConfirmation: 'Esta seguro de borrar el sistema que aplica __name__'
             },
+            permission: 'systemApply_d'
             }],
         }],
         configuration: {
@@ -878,6 +903,7 @@ export default [
                     routePush: { name: 'legalaspects-lm-system-apply-company-edit' },
                     id: 'id',
                 },
+                permission: 'systemApplyCustom_u'
             }, {
                 config: {
                     color: 'outline-info',
@@ -889,6 +915,7 @@ export default [
                     routePush: { name: 'legalaspects-lm-system-apply-company-view' },
                     id: 'id',
                 },
+                permission: 'systemApplyCustom_r'
             }]
         },
         {
@@ -900,6 +927,7 @@ export default [
                 id: 'id',
                 messageConfirmation: 'Esta seguro de borrar el sistema que aplica __name__'
             },
+            permission: 'systemApplyCustom_d'
             }],
         }],
         configuration: {

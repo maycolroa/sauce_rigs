@@ -17,10 +17,10 @@ class SstRiskController extends Controller
     function __construct()
     {
         $this->middleware('auth');
-        /*$this->middleware('permission:activities_c', ['only' => 'store']);
-        $this->middleware('permission:activities_r', ['except' =>'multiselect']);
-        $this->middleware('permission:activities_u', ['only' => 'update']);
-        $this->middleware('permission:activities_d', ['only' => 'destroy']);*/
+        $this->middleware('permission:sstRisks_c', ['only' => 'store']);
+        $this->middleware('permission:sstRisks_r', ['except' =>'multiselect']);
+        $this->middleware('permission:sstRisks_u', ['only' => 'update']);
+        $this->middleware('permission:sstRisks_d', ['only' => 'destroy']);
     }
 
     /**

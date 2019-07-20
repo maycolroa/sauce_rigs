@@ -17,10 +17,10 @@ class SystemApplyController extends Controller
     function __construct()
     {
         $this->middleware('auth');
-        /*$this->middleware('permission:activities_c', ['only' => 'store']);
-        $this->middleware('permission:activities_r', ['except' =>'multiselect']);
-        $this->middleware('permission:activities_u', ['only' => 'update']);
-        $this->middleware('permission:activities_d', ['only' => 'destroy']);*/
+        $this->middleware('permission:systemApply_c|systemApplyCustom_c', ['only' => 'store']);
+        $this->middleware('permission:systemApply_r|systemApplyCustom_r', ['except' => ['multiselect', 'multiselectSystem', 'multiselectCompany']]);
+        $this->middleware('permission:systemApply_u|systemApplyCustom_u', ['only' => 'update']);
+        $this->middleware('permission:systemApply_d|systemApplyCustom_d', ['only' => 'destroy']);
     }
 
     /**

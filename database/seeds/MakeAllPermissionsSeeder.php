@@ -33,7 +33,11 @@ class MakeAllPermissionsSeeder extends Seeder
                 'contracts_d',
                 'logMails_c',
                 'logMails_u',
-                'logMails_d'
+                'logMails_d',
+                'legalMatrix_c',
+                'legalMatrix_r',
+                'legalMatrix_u',
+                'legalMatrix_d'
             ];
 
             $modules = Module::all();
