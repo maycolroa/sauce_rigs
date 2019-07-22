@@ -50,6 +50,11 @@ Vue.mixin({
       
       return ''
     }
+  },
+  methods: {
+    keywordCheck(key, defaultValue) {
+      return this.keywords[key] != undefined ? this.keywords[key] : defaultValue
+    }
   }
 })
 

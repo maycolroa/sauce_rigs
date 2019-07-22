@@ -32,6 +32,8 @@
 
     <script>
         var authGlobal = @json(['can' => Auth::user()->can, 'hasRole' => Auth::user()->hasRole]);
+
+        var keywords = @json(Auth::user()->keywords);
     </script>
     
     <script src="{{ mix('/app.js') }}"></script>

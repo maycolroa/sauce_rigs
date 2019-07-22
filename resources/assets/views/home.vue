@@ -11,7 +11,7 @@
                                     <div class="my-2 mx-2 text-center">
                                         <div class="text-center">
                                             <span class="text-big font-weight-bolder">
-                                                {{ item.display_name }} / {{ subItem.display_name }} 
+                                                {{ item.display_name }} / {{ keywordCheck(subItem.name, subItem.display_name) }} 
                                             </span>
                                         </div>
                                     </div>
@@ -26,7 +26,7 @@
                                 <div class="my-2 mx-2 text-center">
                                     <div class="text-center">
                                         <span class="text-big font-weight-bolder">
-                                            {{ item.display_name }} 
+                                            {{ keywordCheck(item.name, item.display_name) }} 
                                         </span>
                                     </div>
                                 </div>

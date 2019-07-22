@@ -28,6 +28,11 @@ if (typeof authGlobal !== 'undefined')
   window.auth = authGlobal
 else
   window.auth = {}
+
+if (typeof keywords !== 'undefined')
+  window.keywords = keywords
+else
+  window.keywords = {}
 /**
  * Echo exposes an expressive API for subscribing to channels and listening
  * for events that are broadcast by Laravel. Echo and event broadcasting

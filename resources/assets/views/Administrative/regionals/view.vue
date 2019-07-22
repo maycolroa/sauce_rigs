@@ -1,7 +1,7 @@
 <template>
   <div>
     <h4 class="font-weight-bold mb-4">
-       <span class="text-muted font-weight-light">Regionales /</span> Ver
+       <span class="text-muted font-weight-light">{{ keywordCheck('regionals', 'Regionales') }} /</span> Ver
     </h4>
 
     <div class="col-md">
@@ -22,9 +22,11 @@ import AdministrativeRegionalForm from '@/components/Administrative/Regionals/Fo
 import Alerts from '@/utils/Alerts.js';
 
 export default {
-  name: 'administrative-regionals-edit',
-  metaInfo: {
-    title: 'Regionales - Ver'
+  name: 'administrative-regionals-view',
+  metaInfo() {
+    return {
+      title: `${this.keywordCheck('regionals', 'Regionales')} - Ver`
+    }
   },
   components:{
     AdministrativeRegionalForm

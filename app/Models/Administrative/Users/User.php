@@ -7,7 +7,10 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Laratrust\Traits\LaratrustUserTrait;
 use App\Traits\CompanyTrait;
 use App\Models\General\Permission;
+use App\Models\General\Keyword;
 use App\Models\Administrative\Roles\Role;
+use Session;
+use DB;
 
 class User extends Authenticatable
 {
@@ -32,7 +35,7 @@ class User extends Authenticatable
     *
     * @var array
     */
-    protected $appends = ['all_permissions','can','hasRole'];
+    protected $appends = ['all_permissions','can','hasRole','keywords'];
 
     //the attribute define the table for scope company execute
     public $scope_table_for_company_table = 'sau_roles';
@@ -179,5 +182,25 @@ class User extends Authenticatable
             $query->where('sau_users.active', 'NO');
 
         return $query;
+    }
+
+    public function getKeywordsAttribute()
+    {
+        $company_id = Session::get('company_id');
+        $keywords = DB::table(DB::raw(
+                        "(SELECT
+                            k.name AS name,
+                            IF (c.display_name IS NULL, k.display_name, c.display_name) AS display_name
+                        FROM
+                            sau_keywords k
+                        LEFT JOIN sau_keyword_company c ON c.keyword_id = k.id AND 
+                            (
+                                c.company_id = $company_id OR c.company_id IS NULL
+                            )) AS t"
+                        )
+                    )
+                    ->pluck('display_name', 'name');
+
+        return $keywords;
     }
 }

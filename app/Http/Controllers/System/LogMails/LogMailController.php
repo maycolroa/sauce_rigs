@@ -45,8 +45,7 @@ class LogMailController extends Controller
                      sau_companies.name AS company'
                 )
                 ->join('sau_modules', 'sau_modules.id', 'sau_log_mails.module_id')
-                ->leftJoin('sau_companies', 'sau_companies.id', 'sau_log_mails.company_id')
-                ->orderBy('sau_log_mails.created_at', 'DESC');
+                ->leftJoin('sau_companies', 'sau_companies.id', 'sau_log_mails.company_id');
 
         $filters = $request->get('filters');
 

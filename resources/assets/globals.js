@@ -67,6 +67,10 @@ export default function () {
 
     get auth() {
       return auth
+    },
+
+    get keywords() {
+      return keywords
     }
   }
 }

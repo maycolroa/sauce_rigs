@@ -28,5 +28,6 @@ class DatabaseSeeder extends Seeder
         $this->call(LmLawsTypesSeeder::class);
         $this->call(LmFulfillmentValuesSeeder::class);
         $this->call(ModulesDependenciesSeeder::class);
+        $this->call(MakeKeywordsSeeder::class);
     }
 }

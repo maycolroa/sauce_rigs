@@ -2,6 +2,7 @@
 
 namespace App\Traits;
 
+use Illuminate\Support\Facades\Auth;
 use Exception;
 use Session;
 use DateTime;
@@ -278,5 +279,13 @@ trait UtilsTrait
     {
         $d = DateTime::createFromFormat($format, $date);
         return $d && $d->format($format) == $date;
+    }
+
+    public function keywordCheck($key, $defaultValue = '', $user = null)
+    {
+        if (!$user)
+            $user = Auth::user();
+            
+        return isset($user->keywords[$key]) ? $user->keywords[$key] : $defaultValue;
     }
 }
