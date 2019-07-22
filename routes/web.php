@@ -104,6 +104,7 @@ Route::middleware(['auth'])->group(function () {
         Route::prefix('legalMatrix')->group(function () {
           Route::post('interests', 'LegalAspects\LegalMatrix\InterestController@multiselect');
           Route::post('interestsCompany', 'LegalAspects\LegalMatrix\InterestController@multiselectCompany');
+          Route::post('interestsSystem', 'LegalAspects\LegalMatrix\InterestController@multiselectSystem');
           Route::post('years', 'LegalAspects\LegalMatrix\LawController@lmYears');
           Route::post('responsibles', 'LegalAspects\LegalMatrix\LawController@lmLawResponsibles');
           Route::post('riskAspects', 'LegalAspects\LegalMatrix\RiskAspectController@multiselect');
@@ -131,6 +132,10 @@ Route::middleware(['auth'])->group(function () {
       Route::post('siNo', 'General\MultiSelectRadioController@siNo');
       Route::post('conf/locationLevelForm', 'Administrative\Configurations\ConfigurationController@radioLocationLevels');
       Route::post('ctTypesEvaluation', 'General\MultiSelectRadioController@ctTypesEvaluation');
+      
+      Route::prefix('legalMatrix')->group(function () {
+        Route::post('interestsSystem', 'LegalAspects\LegalMatrix\InterestController@radioSystem');
+      });
     });
 
     //Administrativo

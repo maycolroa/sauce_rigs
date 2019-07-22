@@ -32,10 +32,11 @@ class LawController extends Controller
     function __construct()
     {
         $this->middleware('auth');
-        /*$this->middleware('permission:activities_c', ['only' => 'store']);
-        $this->middleware('permission:activities_r', ['except' =>'multiselect']);
-        $this->middleware('permission:activities_u', ['only' => 'update']);
-        $this->middleware('permission:activities_d', ['only' => 'destroy']);*/
+        $this->middleware('permission:laws_c|lawsCustom_c', ['only' => 'store']);
+        $this->middleware('permission:laws_r|lawsCustom_r');
+        $this->middleware('permission:laws_u|lawsCustom_u', ['only' => 'update']);
+        $this->middleware('permission:laws_d|lawsCustom_d', ['only' => 'destroy']);
+        $this->middleware('permission:laws_qualify', ['only' => ['getArticlesQualification', 'saveArticlesQualification']]);
     }
 
     /**
@@ -59,6 +60,7 @@ class LawController extends Controller
         {
             $laws = Law::selectRaw(
                 'sau_lm_laws.*,
+                 IF(LENGTH(sau_lm_laws.description) > 50, CONCAT(SUBSTRING(sau_lm_laws.description, 1, 50), "..."), sau_lm_laws.description) AS description,
                  sau_lm_system_apply.name AS system_apply,
                  sau_lm_laws_types.name AS law_type,
                  sau_lm_risks_aspects.name AS risk_aspect,
@@ -81,13 +83,14 @@ class LawController extends Controller
         }
         else
         {
-            $laws = Law::select(
-                'sau_lm_laws.*',
-                'sau_lm_system_apply.name AS system_apply',
-                'sau_lm_laws_types.name AS law_type',
-                'sau_lm_risks_aspects.name AS risk_aspect',
-                'sau_lm_entities.name AS entity',
-                'sau_lm_sst_risks.name AS sst_risk'
+            $laws = Law::selectRaw(
+                'sau_lm_laws.*,
+                 IF(LENGTH(sau_lm_laws.description) > 50, CONCAT(SUBSTRING(sau_lm_laws.description, 1, 50), "..."), sau_lm_laws.description) AS description,
+                 sau_lm_system_apply.name AS system_apply,
+                 sau_lm_laws_types.name AS law_type,
+                 sau_lm_risks_aspects.name AS risk_aspect,
+                 sau_lm_entities.name AS entity,
+                 sau_lm_sst_risks.name AS sst_risk'
             )
             ->join('sau_lm_system_apply', 'sau_lm_system_apply.id', 'sau_lm_laws.system_apply_id')
             ->join('sau_lm_laws_types', 'sau_lm_laws_types.id', 'sau_lm_laws.law_type_id')
@@ -117,6 +120,7 @@ class LawController extends Controller
             if ($request->has('qualify'))
             {
                 $laws->inResponsibles($this->getValuesForMultiselect($filters["responsibles"]), $filters['filtersType']['responsibles']);
+                $laws->inInterests($this->getValuesForMultiselect($filters["interests"]), $filters['filtersType']['interests']);
                 $laws->inState($this->getValuesForMultiselect($filters["states"]), $filters['filtersType']['states']);
             }
         }

@@ -157,6 +157,163 @@
                         "display_name": "Contratistas/Mi información"
                     }
                 ]
+            },
+            {
+                "name": "legalMatrix",
+                "permissions": [
+                    {
+                        "name": "risksAspects_c",
+                        "display_name": "Matriz Legal/Riesgos Ambientales - crear"
+                    },
+                    {
+                        "name": "risksAspects_r",
+                        "display_name": "Matriz Legal/Riesgos Ambientales - ver"
+                    },
+                    {
+                        "name": "risksAspects_u",
+                        "display_name": "Matriz Legal/Riesgos Ambientales - editar"
+                    },
+                    {
+                        "name": "risksAspects_d",
+                        "display_name": "Matriz Legal/Riesgos Ambientales - eliminar"
+                    },
+                    {
+                        "name": "sstRisks_c",
+                        "display_name": "Matriz Legal/Temas SST - crear"
+                    },
+                    {
+                        "name": "sstRisks_r",
+                        "display_name": "Matriz Legal/Temas SST - ver"
+                    },
+                    {
+                        "name": "sstRisks_u",
+                        "display_name": "Matriz Legal/Temas SST - editar"
+                    },
+                    {
+                        "name": "sstRisks_d",
+                        "display_name": "Matriz Legal/Temas SST - eliminar"
+                    },
+                    {
+                        "name": "systemApply_c",
+                        "display_name": "Matriz Legal/Sistemas que Aplican - crear"
+                    },
+                    {
+                        "name": "systemApply_r",
+                        "display_name": "Matriz Legal/Sistemas que Aplican - ver"
+                    },
+                    {
+                        "name": "systemApply_u",
+                        "display_name": "Matriz Legal/Sistemas que Aplican - editar"
+                    },
+                    {
+                        "name": "systemApply_d",
+                        "display_name": "Matriz Legal/Sistemas que Aplican - eliminar"
+                    },
+                    {
+                        "name": "entities_c",
+                        "display_name": "Matriz Legal/Entidades - crear"
+                    },
+                    {
+                        "name": "entities_r",
+                        "display_name": "Matriz Legal/Entidades - ver"
+                    },
+                    {
+                        "name": "entities_u",
+                        "display_name": "Matriz Legal/Entidades - editar"
+                    },
+                    {
+                        "name": "entities_d",
+                        "display_name": "Matriz Legal/Entidades - eliminar"
+                    },
+                    {
+                        "name": "interests_c",
+                        "display_name": "Matriz Legal/Intereses - crear"
+                    },
+                    {
+                        "name": "interests_r",
+                        "display_name": "Matriz Legal/Intereses - ver"
+                    },
+                    {
+                        "name": "interests_u",
+                        "display_name": "Matriz Legal/Intereses - editar"
+                    },
+                    {
+                        "name": "interests_d",
+                        "display_name": "Matriz Legal/Intereses - eliminar"
+                    },
+                    {
+                        "name": "laws_c",
+                        "display_name": "Matriz Legal/Normas - crear"
+                    },
+                    {
+                        "name": "laws_r",
+                        "display_name": "Matriz Legal/Normas - ver"
+                    },
+                    {
+                        "name": "laws_u",
+                        "display_name": "Matriz Legal/Normas - editar"
+                    },
+                    {
+                        "name": "laws_d",
+                        "display_name": "Matriz Legal/Normas - eliminar"
+                    },
+                    {
+                        "name": "laws_qualify",
+                        "display_name": "Matriz Legal/Normas - calificar"
+                    },
+                    {
+                        "name": "interests_config",
+                        "display_name": "Matriz Legal/Intereses - establecer mis intereses"
+                    },
+                    {
+                        "name": "systemApplyCustom_c",
+                        "display_name": "Matriz Legal/Mis Sistemas que Aplican - crear"
+                    },
+                    {
+                        "name": "systemApplyCustom_r",
+                        "display_name": "Matriz Legal/Mis Sistemas que Aplican - ver"
+                    },
+                    {
+                        "name": "systemApplyCustom_u",
+                        "display_name": "Matriz Legal/Mis Sistemas que Aplican - editar"
+                    },
+                    {
+                        "name": "systemApplyCustom_d",
+                        "display_name": "Matriz Legal/Mis Sistemas que Aplican - eliminar"
+                    },
+                    {
+                        "name": "interestsCustom_c",
+                        "display_name": "Matriz Legal/Mis Intereses - crear"
+                    },
+                    {
+                        "name": "interestsCustom_r",
+                        "display_name": "Matriz Legal/Mis Intereses - ver"
+                    },
+                    {
+                        "name": "interestsCustom_u",
+                        "display_name": "Matriz Legal/Mis Intereses - editar"
+                    },
+                    {
+                        "name": "interestsCustom_d",
+                        "display_name": "Matriz Legal/Mis Intereses - eliminar"
+                    },
+                    {
+                        "name": "lawsCustom_c",
+                        "display_name": "Matriz Legal/Mis Normas - crear"
+                    },
+                    {
+                        "name": "lawsCustom_r",
+                        "display_name": "Matriz Legal/Mis Normas - ver"
+                    },
+                    {
+                        "name": "lawsCustom_u",
+                        "display_name": "Matriz Legal/Mis Normas - editar"
+                    },
+                    {
+                        "name": "lawsCustom_d",
+                        "display_name": "Matriz Legal/Mis Normas - eliminar"
+                    }
+                ]
             }
         ]
     }

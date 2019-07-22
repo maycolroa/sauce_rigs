@@ -22,10 +22,11 @@ class InterestController extends Controller
     function __construct()
     {
         $this->middleware('auth');
-        /*$this->middleware('permission:activities_c', ['only' => 'store']);
-        $this->middleware('permission:activities_r', ['except' =>'multiselect']);
-        $this->middleware('permission:activities_u', ['only' => 'update']);
-        $this->middleware('permission:activities_d', ['only' => 'destroy']);*/
+        $this->middleware('permission:interests_c|interestsCustom_c', ['only' => 'store']);
+        $this->middleware('permission:interests_r|interestsCustom_r', ['except' => ['multiselect', 'multiselectSystem', 'multiselectCompany', 'saveInterests', 'myInterests', 'radioSystem']]);
+        $this->middleware('permission:interests_u|interestsCustom_u', ['only' => 'update']);
+        $this->middleware('permission:interests_d|interestsCustom_d', ['only' => 'destroy']);
+        $this->middleware('permission:interests_config', ['only' => ['saveInterests', 'myInterests', 'radioSystem']]);
     }
 
     /**
@@ -45,7 +46,10 @@ class InterestController extends Controller
     */
     public function data(Request $request)
     {
-        $interests = Interest::select('*');
+        if ($request->has('custom'))
+            $interests = Interest::company()->select('*');
+        else
+            $interests = Interest::system()->select('*');
 
         return Vuetable::of($interests)
                     ->make();
@@ -60,9 +64,17 @@ class InterestController extends Controller
     public function store(InterestRequest $request)
     {
         $interest = new Interest($request->all());
+
+        if ($request->custom == 'true')
+            $interest->company_id = Session::get('company_id');
         
-        if(!$interest->save()){
+        if (!$interest->save())
             return $this->respondHttp500();
+
+        if ($request->custom == 'true')
+        {
+            $company = Company::find(Session::get('company_id'));
+            $company->interests()->attach($interest->id);
         }
 
         return $this->respondHttp200([
@@ -81,6 +93,7 @@ class InterestController extends Controller
         try
         {
             $interest = Interest::findOrFail($id);
+            $interest->custom = $interest->company_id ? true : false;  
 
             return $this->respondHttp200([
                 'data' => $interest,
@@ -118,12 +131,17 @@ class InterestController extends Controller
      */
     public function destroy(Interest $interest)
     {
-        if(!$interest->delete())
+        if (COUNT($interest->articles) > 0)
+        {
+            return $this->respondWithError('No se puede eliminar el interés porque hay registros asociados a el');
+        }
+
+        if (!$interest->delete())
         {
             return $this->respondHttp500();
         }
 
-        SyncQualificationsCompaniesJob::dispatch();
+        //SyncQualificationsCompaniesJob::dispatch();
         
         return $this->respondHttp200([
             'message' => 'Se elimino el intereses'
@@ -150,7 +168,7 @@ class InterestController extends Controller
         try
         {
             $company = Company::find(Session::get('company_id'));
-            $values = $company->interests()->pluck('sau_lm_interests.id');
+            $values = $company->interests()->system()->pluck('sau_lm_interests.id');
             
             return $this->respondHttp200([
                 'data' => [
@@ -164,6 +182,16 @@ class InterestController extends Controller
         }
     }
 
+    public function multiselectSystem(Request $request)
+    {
+        return $this->multiselect($request, 'system');
+    }
+
+    public function multiselectCompany(Request $request)
+    {
+        return $this->multiselect($request, 'company');
+    }
+
     /**
      * Returns an array for a select type input
      *
@@ -171,12 +199,13 @@ class InterestController extends Controller
      * @return Array
      */
 
-    public function multiselect(Request $request)
+    public function multiselect(Request $request, $scope = 'alls')
     {
         if($request->has('keyword'))
         {
             $keyword = "%{$request->keyword}%";
             $interests = Interest::select("id", "name")
+                ->$scope()
                 ->where(function ($query) use ($keyword) {
                     $query->orWhere('name', 'like', $keyword);
                 })
@@ -192,9 +221,10 @@ class InterestController extends Controller
                 'sau_lm_interests.id as id',
                 'sau_lm_interests.name as name'
             )
+            ->$scope()
             ->pluck('id', 'name');
         
-            return $this->radioFormat($interests);
+            return $this->multiSelectFormat($interests);
         }
     }
 
@@ -205,34 +235,15 @@ class InterestController extends Controller
      * @return Array
      */
 
-    public function multiselectCompany(Request $request)
+    public function radioSystem(Request $request)
     {
-        if($request->has('keyword'))
-        {
-            $keyword = "%{$request->keyword}%";
-            $interests = Interest::select("id", "name")
-                ->join('sau_lm_company_interest', 'sau_lm_company_interest.interest_id', 'sau_lm_interests.id')
-                ->where('sau_lm_company_interest.company_id', Session::get('company_id'))
-                ->where(function ($query) use ($keyword) {
-                    $query->orWhere('name', 'like', $keyword);
-                })
-                ->take(30)->pluck('id', 'name');
-
-            return $this->respondHttp200([
-                'options' => $this->multiSelectFormat($interests)
-            ]);
-        }
-        else
-        {
-            $interests = Interest::select(
-                'sau_lm_interests.id as id',
-                'sau_lm_interests.name as name'
-            )
-            ->join('sau_lm_company_interest', 'sau_lm_company_interest.interest_id', 'sau_lm_interests.id')
-            ->where('sau_lm_company_interest.company_id', Session::get('company_id'))
-            ->pluck('id', 'name');
-        
-            return $this->radioFormat($interests);
-        }
+        $interests = Interest::select(
+            'sau_lm_interests.id as id',
+            'sau_lm_interests.name as name'
+        )
+        ->system()
+        ->pluck('id', 'name');
+    
+        return $this->radioFormat($interests);
     }
 }

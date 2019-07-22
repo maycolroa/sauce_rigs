@@ -1,21 +1,22 @@
 <template>
   <div>
     <h4 class="font-weight-bold mb-4">
-      Intereses
+      Mis Intereses
     </h4>
 
 
     <div class="col-md">
       <b-card no-body>
-        <b-card-header class="with-elements" v-if="auth.can['interests_c']">
+        <b-card-header class="with-elements" v-if="auth.can['interestsCustom_c']">
           <div class="card-title-elements"> 
-            <b-btn :to="{name:'legalaspects-lm-interest-create'}" variant="primary">Crear interes</b-btn>
+            <b-btn :to="{name:'legalaspects-lm-interest-company-create'}" variant="primary">Crear interes</b-btn>
           </div>
         </b-card-header>
         <b-card-body>
              <vue-table
-                v-if="auth.can['interests_r']"
-                configName="legalaspects-lm-interests"
+                v-if="auth.can['interestsCustom_r']"
+                configName="legalaspects-lm-interests-company"
+                :params="{ custom : true }"
                 ></vue-table>
         </b-card-body>
     </b-card>
@@ -27,9 +28,9 @@
 import Alerts from '@/utils/Alerts.js';
 
 export default {
-  name: 'lm-interests',
+  name: 'lm-interests-company',
   metaInfo: {
-    title: 'Intereses'
+    title: 'Mis Intereses'
   }
 }
 </script>

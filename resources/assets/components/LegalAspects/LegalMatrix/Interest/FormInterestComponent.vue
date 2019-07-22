@@ -7,7 +7,7 @@
 
     <div class="row float-right pt-10 pr-10">
       <template>
-        <b-btn variant="default" :to="cancelUrl" :disabled="loading">{{ viewOnly ? "Atras" : "Cancelar"}}</b-btn>&nbsp;&nbsp;
+        <b-btn variant="default" @click="$router.go(-1)" :disabled="loading">{{ viewOnly ? "Atras" : "Cancelar"}}</b-btn>&nbsp;&nbsp;
         <b-btn type="submit" :disabled="loading" variant="primary" v-if="!viewOnly">Finalizar</b-btn>
       </template>
     </div>
@@ -25,13 +25,14 @@ export default {
   props: {
     url: { type: String },
     method: { type: String },
-    cancelUrl: { type: [String, Object], required: true },
     isEdit: { type: Boolean, default: false },
     viewOnly: { type: Boolean, default: false },
+    custom: { type: Boolean, default: false },
     interest: {
       default() {
         return {
-            name: ''
+            name: '',
+            custom: this.custom
         };
       }
     }
@@ -55,7 +56,7 @@ export default {
         .submit(e.target.action)
         .then(response => {
           this.loading = false;
-          this.$router.push({ name: "legalaspects-lm-interest" });
+          this.$router.go(-1);
         })
         .catch(error => {
           this.loading = false;

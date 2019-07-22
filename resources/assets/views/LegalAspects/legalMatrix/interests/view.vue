@@ -9,8 +9,7 @@
         <b-card-body>
             <form-interest-component
                 :interest="data"
-                :view-only="true"
-                :cancel-url="{ name: 'legalaspects-lm-interest'}"/>
+                :view-only="true"/>
         </b-card-body>
       </b-card>
     </div>

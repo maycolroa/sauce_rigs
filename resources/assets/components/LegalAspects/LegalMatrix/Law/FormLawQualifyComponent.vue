@@ -106,7 +106,7 @@
                             <b-modal :ref="`modalArticle${index}`" :hideFooter="true" :id="`modals-default-${index+1}`" class="modal-top" size="lg">
                               <div slot="modal-title">
                                 Última modificación: <span class="font-weight-light">{{ article.updated_at }}</span><br>
-                                Derogada: <span class="font-weight-light">{{ article.repelead }}</span>
+                                Derogado: <span class="font-weight-light">{{ article.repealed }}</span>
                               </div>
 
                               <b-card  bg-variant="transparent"  title="" class="mb-3 box-shadow-none">
@@ -137,7 +137,7 @@
                             <b>Última modificación: </b><span class="font-weight-light">{{ article.updated_at }}</span>
                           </div>
                           <div class="text-center col-md-6">
-                            <b>Derogado: </b><span class="font-weight-light">{{ article.repelead }}</span>
+                            <b>Derogado: </b><span class="font-weight-light">{{ article.repealed }}</span>
                           </div>
                         </b-form-row>
                         <b-form-row>
@@ -359,7 +359,7 @@ export default {
 
       if (this.filterRepealed != '')
       {
-        resultRepealed = article.repelead.toLowerCase().indexOf(this.filterRepealed.toLowerCase()) !== -1 ? true : false
+        resultRepealed = article.repealed.toLowerCase().indexOf(this.filterRepealed.toLowerCase()) !== -1 ? true : false
       }
 
       if (this.filterInterests.length > 0)

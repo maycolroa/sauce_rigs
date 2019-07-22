@@ -15,7 +15,7 @@
                 		:cancel-url="{ name: 'legalaspects-legalmatrix'}"
 						:interest="data"
 						:options="options"
-						urlDataInterests="/selects/legalMatrix/interests"/>
+						urlDataInterests="/selects/legalMatrix/interestsSystem"/>
 				</b-card-body>
 			</b-card>
 		</div>
@@ -46,7 +46,7 @@ export default {
 	},
 	created(){
 
-		GlobalMethods.getDataMultiselect(`/selects/legalMatrix/interests`)
+		GlobalMethods.getDataMultiselect(`/radios/legalMatrix/interestsSystem`)
         .then(response => {
 			this.options = response;
 			setTimeout(() => {

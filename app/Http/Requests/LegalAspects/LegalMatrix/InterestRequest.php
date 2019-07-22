@@ -3,6 +3,7 @@
 namespace App\Http\Requests\LegalAspects\LegalMatrix;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Session;
 
 class InterestRequest extends FormRequest
 {
@@ -25,8 +26,13 @@ class InterestRequest extends FormRequest
     {
         $id = $this->input('id');
 
-        return [
-            'name' => 'required|string|unique:sau_lm_interests,name,'.$id.',id',
-        ];
+        $rules = [];
+
+        if ($this->input('custom'))
+            $rules['name'] = 'required|unique:sau_lm_interests,name,'.$id.',id,company_id,'.Session::get('company_id');
+        else
+            $rules['name'] = 'required|unique:sau_lm_interests,name,'.$id.',id';
+
+        return $rules;
     }
 }

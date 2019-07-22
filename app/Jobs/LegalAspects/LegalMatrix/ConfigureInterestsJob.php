@@ -10,6 +10,7 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use App\Facades\Mail\Facades\NotificationMail;
 use App\Models\General\Company;
 use App\Models\Administrative\Users\User;
+use App\Models\LegalAspects\LegalMatrix\Interest;
 use App\Traits\LegalMatrixTrait;
 
 class ConfigureInterestsJob implements ShouldQueue
@@ -38,7 +39,9 @@ class ConfigureInterestsJob implements ShouldQueue
     public function handle()
     {
       $company = Company::find($this->company_id);
-      $company->interests()->sync($this->interests);
+      $company_interests = Interest::where('company_id', $this->company_id)->pluck('id')->toArray();
+      $interests = array_merge($this->interests, $company_interests);
+      $company->interests()->sync($interests);
 
       $this->syncQualificationsCompany($this->company_id);
 

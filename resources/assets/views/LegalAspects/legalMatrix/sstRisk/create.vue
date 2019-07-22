@@ -1,7 +1,7 @@
 <template>
   <div>
     <h4 class="font-weight-bold mb-4">
-       <span class="text-muted font-weight-light">Riesgos SST /</span> Crear
+       <span class="text-muted font-weight-light">Temas SST /</span> Crear
     </h4>
 
 
@@ -25,7 +25,7 @@ import Alerts from '@/utils/Alerts.js';
 export default {
   name: 'legalaspects-lm-sstrisk-create',
   metaInfo: {
-    title: 'Riesgos SST - Crear'
+    title: 'Temas SST - Crear'
   },
   components:{
     FormSstRiskComponent
