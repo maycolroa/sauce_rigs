@@ -69,6 +69,8 @@ Route::middleware(['auth'])->group(function () {
         Route::post('positions', 'Administrative\Positions\EmployeePositionController@multiselect');
         Route::post('businesses', 'Administrative\Businesses\EmployeeBusinessController@multiselect');
         Route::post('eps', 'General\ApplicationController@multiselectEps');
+        Route::post('afp', 'General\ApplicationController@multiselectAfp');
+        Route::post('arl', 'General\ApplicationController@multiselectArl');
         Route::post('multiselectBar', 'PreventiveOccupationalMedicine\BiologicalMonitoring\AudiometryInformController@multiselectBar');
         Route::post('multiselectBarPercentage', 'PreventiveOccupationalMedicine\BiologicalMonitoring\AudiometryInformController@multiselectBarPercentage');
         Route::post('dmActivities', 'IndustrialSecure\Activities\ActivityController@multiselect');
