@@ -5,6 +5,8 @@ namespace App\Providers;
 use Illuminate\Support\ServiceProvider;
 use App\Observers\PreventiveOccupationalMedicine\BiologicalMonitoring\AudiometryObserver;
 use App\Models\PreventiveOccupationalMedicine\BiologicalMonitoring\Audiometry;
+use App\Observers\LegalAspects\LegalMatrix\ArticleObserver;
+use App\Models\LegalAspects\LegalMatrix\Article;
 
 class ObserverServiceProvider extends ServiceProvider
 {
@@ -16,6 +18,7 @@ class ObserverServiceProvider extends ServiceProvider
     public function boot()
     {
       Audiometry::observe(AudiometryObserver::class);
+      Article::observe(ArticleObserver::class);
     }
 
     /**

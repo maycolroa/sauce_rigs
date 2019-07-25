@@ -98,6 +98,13 @@
                         <b-col cols="2">
                           <div class="float-right">
                             <b-button-group>
+                              <b-btn @click="showModal(`modalArticle${index}`)" 
+                                v-if="viewOnly"
+                                size="sm" 
+                                variant="secondary icon-btn borderless"
+                                v-b-tooltip.top title="Ver historial de cambios">
+                                  <span class="ion ion-md-eye"></span>
+                              </b-btn>
                               <b-btn href="javascript:void(0)" v-b-toggle="'accordion' + article.key+'-1'" variant="link">
                                 <span class="collapse-icon"></span>
                               </b-btn>
@@ -109,6 +116,23 @@
                                   <span class="ion ion-md-close-circle"></span>
                               </b-btn>
                             </b-button-group>
+
+                            <b-modal :ref="`modalArticle${index}`" :hideFooter="true" :id="`modals-default-${index+1}`" class="modal-top" size="lg">
+                              <div slot="modal-title">
+                                Historial de cambios realizados
+                              </div>
+
+                              <b-card  bg-variant="transparent"  title="" class="mb-3 box-shadow-none">
+                                <vue-table
+                                  configName="legalaspects-lm-article-histories"
+                                  :modelId="form.articles[index].id ? form.articles[index].id : -1"
+                                  ></vue-table>
+                              </b-card>
+                              <br>
+                              <div class="row float-right pt-12 pr-12y">
+                                <b-btn variant="primary" @click="hideModal(`modalArticle${index}`)">Cerrar</b-btn>
+                              </div>
+                            </b-modal>
                           </div>
                         </b-col>
                       </b-row>
@@ -293,7 +317,13 @@ export default {
       this.form.articles[index].sequence = this.form.articles[index].new_sequence
 
       this.form.articles.sort((a, b) => (a.sequence > b.sequence) ? 1 : -1)
-    }
+    },
+    showModal(ref) {
+			this.$refs[ref][0].show()
+		},
+		hideModal(ref) {
+			this.$refs[ref][0].hide()
+		},
   }
 };
 </script>

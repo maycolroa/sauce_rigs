@@ -272,6 +272,8 @@ Route::middleware(['auth'])->group(function () {
         Route::post('law/saveArticlesQualification', 'LegalAspects\LegalMatrix\LawController@saveArticlesQualification');
         Route::post('law/data', 'LegalAspects\LegalMatrix\LawController@data');
         Route::ApiResource('law', 'LegalAspects\LegalMatrix\LawController');
+
+        Route::post('articleHistory/data', 'LegalAspects\LegalMatrix\ArticleHistoryController@data');
       });
     });
     
