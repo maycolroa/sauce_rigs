@@ -37,6 +37,27 @@
                         "display_name": "Monitoreo Biológico/Audiometría - Ver informe individual"
                     }
                 ]
+            },
+            {
+                "name": "reinstatements",
+                "permissions": [
+                    {
+                        "name": "reinc_restrictions_c",
+                        "display_name": "Reincorporaciones/Restricciones - crear"
+                    },
+                    {
+                        "name": "reinc_restrictions_r",
+                        "display_name": "Reincorporaciones/Restricciones - ver"
+                    },
+                    {
+                        "name": "reinc_restrictions_u",
+                        "display_name": "Reincorporaciones/Restricciones - editar"
+                    },
+                    {
+                        "name": "reinc_restrictions_d",
+                        "display_name": "Reincorporaciones/Restricciones - eliminar"
+                    }
+                ]
             }
         ]
     },

@@ -42,7 +42,13 @@ Route::middleware(['auth'])->group(function () {
       	//Route::post('audiometry/reportPta', 'PreventiveOccupationalMedicine\BiologicalMonitoring\AudiometryController@reportPta');
       	Route::ApiResource('audiometry', 'PreventiveOccupationalMedicine\BiologicalMonitoring\AudiometryController');   
       	Route::post('audiometry/informs', 'PreventiveOccupationalMedicine\BiologicalMonitoring\AudiometryInformController@data');
-      	Route::post('audiometry/informs/individual', 'PreventiveOccupationalMedicine\BiologicalMonitoring\AudiometryInformController@dataIndividual');
+        Route::post('audiometry/informs/individual', 'PreventiveOccupationalMedicine\BiologicalMonitoring\AudiometryInformController@dataIndividual');
+        
+        Route::prefix('reinstatements')->group(function () {
+  
+          Route::post('restriction/data', 'PreventiveOccupationalMedicine\Reinstatements\RestrictionController@data');
+          Route::ApiResource('restriction', 'PreventiveOccupationalMedicine\Reinstatements\RestrictionController');
+        });
     });
 
     Route::prefix('selects')->group(function () {

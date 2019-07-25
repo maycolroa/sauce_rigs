@@ -91,6 +91,11 @@
                 "name": "biologicalMonitoring/audiometry",
                 "display_name": "Monitoreo Biológico/Audiometría",
                 "main": "SI"
+            },
+            {
+                "name": "reinstatements",
+                "display_name": "Reincorporaciones",
+                "main": "SI"
             }
         ]
     },

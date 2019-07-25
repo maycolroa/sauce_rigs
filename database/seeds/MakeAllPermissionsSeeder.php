@@ -37,7 +37,11 @@ class MakeAllPermissionsSeeder extends Seeder
                 'legalMatrix_c',
                 'legalMatrix_r',
                 'legalMatrix_u',
-                'legalMatrix_d'
+                'legalMatrix_d',
+                'reinstatements_c',
+                'reinstatements_r',
+                'reinstatements_u',
+                'reinstatements_d'
             ];
 
             $modules = Module::all();

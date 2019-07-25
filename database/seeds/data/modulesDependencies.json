@@ -44,5 +44,19 @@
             "roles",
             "actionPlans"
         ]
+    },
+    {
+        "module": "reinstatements",
+        "dependencies": [
+            "users",
+            "roles",
+            "positions",
+            "regionals",
+            "headquarters",
+            "processes",
+            "areas",
+            "businesses",
+            "employees"
+        ]
     }
 ]

@@ -66,6 +66,43 @@ export default [{
         component: () =>
           import('@/views/PreventiveOccupationalMedicine/biologicalmonitoring/audiometry/informIndividual')
       }
-    ])
+    ]),
+    {
+      name: 'preventiveoccupationalmedicine-reinstatements',
+      path: 'reinstatements',
+      component: () => import('@/views/PreventiveOccupationalMedicine/reinstatements/index')
+    },
+    ...middleware({ 'check-permission': 'reinc_restrictions_r' }, [
+      {
+        name: 'reinstatements-restrictions',
+        path: 'reinstatements/restrictions',
+        component: () =>
+            import('@/views/PreventiveOccupationalMedicine/reinstatements/restrictions/index')
+      }
+    ]), 
+    ...middleware({ 'check-permission': 'reinc_restrictions_c' }, [
+      {
+        name: 'reinstatements-restrictions-create',
+        path: 'reinstatements/restrictions/create',
+        component: () =>
+          import('@/views/PreventiveOccupationalMedicine/reinstatements/restrictions/create')
+      }
+    ]), 
+    ...middleware({ 'check-permission': 'reinc_restrictions_u' }, [
+      {
+        name: 'reinstatements-restrictions-edit',
+        path: 'reinstatements/restrictions/edit/:id',
+        component: () =>
+          import('@/views/PreventiveOccupationalMedicine/reinstatements/restrictions/edit')
+      }
+    ]), 
+    ...middleware({ 'check-permission': 'reinc_restrictions_r' }, [
+      {
+        name: 'reinstatements-restrictions-view',
+        path: 'reinstatements/restrictions/view/:id',
+        component: () =>
+          import('@/views/PreventiveOccupationalMedicine/reinstatements/restrictions/view')
+      }
+    ]), 
   ]
 }]
