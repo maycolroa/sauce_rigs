@@ -56,6 +56,11 @@
                 "name": "actionPlans",
                 "display_name": "Planes de acción",
                 "main": "NO"
+            },
+            {
+                "name": "logos",
+                "display_name": "Configurar Logo",
+                "main": "NO"
             }
         ]
     },
@@ -90,6 +95,11 @@
             {
                 "name": "biologicalMonitoring/audiometry",
                 "display_name": "Monitoreo Biológico/Audiometría",
+                "main": "SI"
+            },
+            {
+                "name": "reinstatements",
+                "display_name": "Reincorporaciones",
                 "main": "SI"
             }
         ]

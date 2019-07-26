@@ -14,6 +14,8 @@ use App\Models\General\Module;
 use App\Models\General\FiltersState;
 use DB;
 use App\Models\Administrative\Employees\EmployeeEPS;
+use App\Models\Administrative\Employees\EmployeeAFP;
+use App\Models\Administrative\Employees\EmployeeARL;
 use App\Vuetable\VuetableColumnManager;
 
 class ApplicationController extends Controller
@@ -225,6 +227,80 @@ class ApplicationController extends Controller
             ")->pluck('id', 'name');
         
             return $this->multiSelectFormat($eps);
+        }
+    }
+
+    /**
+     * Returns an array for a select type afp
+     *
+     * @param Request $request
+     * @return Array
+     */
+
+    public function multiselectAfs(Request $request)
+    {
+        if($request->has('keyword'))
+        {
+            $keyword = "%{$request->keyword}%";
+            $afp = EmployeeAFP::selectRaw("
+                    sau_employees_afp.id as id,
+                    CONCAT(sau_employees_afp.code, ' - ', sau_employees_afp.name) as name
+                ")
+                ->where(function ($query) use ($keyword) {
+                    $query->orWhere('name', 'like', $keyword);
+                    $query->orWhere('code', 'like', $keyword);
+                })
+                ->take(30)->pluck('id', 'name');
+
+            return $this->respondHttp200([
+                'options' => $this->multiSelectFormat($afp)
+            ]);
+        }
+        else
+        {
+            $afp = EmployeeAFP::selectRaw("
+                sau_employees_afp.id as id,
+                CONCAT(sau_employees_afp.code, ' - ', sau_employees_afp.name) as name
+            ")->pluck('id', 'name');
+        
+            return $this->multiSelectFormat($afp);
+        }
+    }
+
+    /**
+     * Returns an array for a select type arl
+     *
+     * @param Request $request
+     * @return Array
+     */
+
+    public function multiselectArl(Request $request)
+    {
+        if($request->has('keyword'))
+        {
+            $keyword = "%{$request->keyword}%";
+            $arl = EmployeeARL::selectRaw("
+                    sau_employees_arl.id as id,
+                    CONCAT(sau_employees_arl.code, ' - ', sau_employees_arl.name) as name
+                ")
+                ->where(function ($query) use ($keyword) {
+                    $query->orWhere('name', 'like', $keyword);
+                    $query->orWhere('code', 'like', $keyword);
+                })
+                ->take(30)->pluck('id', 'name');
+
+            return $this->respondHttp200([
+                'options' => $this->multiSelectFormat($arl)
+            ]);
+        }
+        else
+        {
+            $arl = EmployeeARL::selectRaw("
+                sau_employees_arl.id as id,
+                CONCAT(sau_employees_arl.code, ' - ', sau_employees_arl.name) as name
+            ")->pluck('id', 'name');
+        
+            return $this->multiSelectFormat($arl);
         }
     }
 

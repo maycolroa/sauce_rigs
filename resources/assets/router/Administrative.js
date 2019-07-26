@@ -322,5 +322,13 @@ export default [{
             import('@/views/Administrative/actionplans/edit')
         }
       ]),
+      ...middleware({ 'check-permission': 'logos_r' }, [
+        {
+          name: 'administrative-logos',
+          path: 'logos',
+          component: () =>
+            import('@/views/Administrative/logos/index')
+        }
+      ]),
     ]
   }]

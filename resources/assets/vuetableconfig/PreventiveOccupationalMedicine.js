@@ -153,6 +153,58 @@ export default [
         filterColumns: true,
         detailComponent: '/PreventiveOccupationalMedicine/BiologicalMonitoring/Audiometry/DetailVuetableAudiometryComponent.vue'
     }
-}
+},
+{
+  name: 'reinstatements-restrictions',
+  fields: [
+      { name: 'sau_reinc_restrictions.id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true },
+      { name: 'sau_reinc_restrictions.name', data: 'name', title: 'Nombre', sortable: true, searchable: true, detail: false, key: false },
+      { name: '', data: 'controlls', title: 'Controles', sortable: false, searchable: false, detail: false, key: false },
+  ],
+  'controlls': [{
+      type: 'push',
+      buttons: [{
+          config: {
+              color: 'outline-success',
+              borderless: true,
+              icon: 'ion ion-md-create',
+              title: 'Editar'
+          },
+          data: {
+              routePush: { name: 'reinstatements-restrictions-edit' },
+              id: 'id',
+          },
+          permission: 'reinc_restrictions_u'
+      }, {
+          config: {
+              color: 'outline-info',
+              borderless: true,
+              icon: 'ion ion-md-eye',
+              title: 'Ver'
+          },
+          data: {
+              routePush: { name: 'reinstatements-restrictions-view' },
+              id: 'id',
+          },
+          permission: 'reinc_restrictions_r'
+      }]
+  },
+  {
+      type: 'base',
+      buttons: [{
+      name: 'delete',
+      data: {
+          action: '/biologicalmonitoring/reinstatements/restriction/',
+          id: 'id',
+          messageConfirmation: 'Esta seguro de borrar la Restricción __name__'
+      },
+      permission: 'reinc_restrictions_d'
+      }],
+  }],
+  configuration: {
+      urlData: '/biologicalmonitoring/reinstatements/restriction/data',
+      filterColumns: true,
+  }
+},
 
 ];

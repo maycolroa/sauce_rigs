@@ -42,7 +42,13 @@ Route::middleware(['auth'])->group(function () {
       	//Route::post('audiometry/reportPta', 'PreventiveOccupationalMedicine\BiologicalMonitoring\AudiometryController@reportPta');
       	Route::ApiResource('audiometry', 'PreventiveOccupationalMedicine\BiologicalMonitoring\AudiometryController');   
       	Route::post('audiometry/informs', 'PreventiveOccupationalMedicine\BiologicalMonitoring\AudiometryInformController@data');
-      	Route::post('audiometry/informs/individual', 'PreventiveOccupationalMedicine\BiologicalMonitoring\AudiometryInformController@dataIndividual');
+        Route::post('audiometry/informs/individual', 'PreventiveOccupationalMedicine\BiologicalMonitoring\AudiometryInformController@dataIndividual');
+        
+        Route::prefix('reinstatements')->group(function () {
+  
+          Route::post('restriction/data', 'PreventiveOccupationalMedicine\Reinstatements\RestrictionController@data');
+          Route::ApiResource('restriction', 'PreventiveOccupationalMedicine\Reinstatements\RestrictionController');
+        });
     });
 
     Route::prefix('selects')->group(function () {
@@ -69,6 +75,8 @@ Route::middleware(['auth'])->group(function () {
         Route::post('positions', 'Administrative\Positions\EmployeePositionController@multiselect');
         Route::post('businesses', 'Administrative\Businesses\EmployeeBusinessController@multiselect');
         Route::post('eps', 'General\ApplicationController@multiselectEps');
+        Route::post('afp', 'General\ApplicationController@multiselectAfp');
+        Route::post('arl', 'General\ApplicationController@multiselectArl');
         Route::post('multiselectBar', 'PreventiveOccupationalMedicine\BiologicalMonitoring\AudiometryInformController@multiselectBar');
         Route::post('multiselectBarPercentage', 'PreventiveOccupationalMedicine\BiologicalMonitoring\AudiometryInformController@multiselectBarPercentage');
         Route::post('dmActivities', 'IndustrialSecure\Activities\ActivityController@multiselect');
@@ -184,6 +192,10 @@ Route::middleware(['auth'])->group(function () {
       Route::post('actionplan/data', 'Administrative\ActionPlans\ActionPlanController@data');
       Route::post('actionplan/export', 'Administrative\ActionPlans\ActionPlanController@export');
       Route::ApiResource('actionplan', 'Administrative\ActionPlans\ActionPlanController');
+
+      Route::get('logo/download', 'Administrative\Logos\LogoController@download');
+      Route::get('logo/view', 'Administrative\Logos\LogoController@show');
+      Route::post('logo', 'Administrative\Logos\LogoController@store');
     });
 
     //Seguridad Industrial
@@ -264,6 +276,8 @@ Route::middleware(['auth'])->group(function () {
         Route::post('law/saveArticlesQualification', 'LegalAspects\LegalMatrix\LawController@saveArticlesQualification');
         Route::post('law/data', 'LegalAspects\LegalMatrix\LawController@data');
         Route::ApiResource('law', 'LegalAspects\LegalMatrix\LawController');
+
+        Route::post('articleHistory/data', 'LegalAspects\LegalMatrix\ArticleHistoryController@data');
       });
     });
     

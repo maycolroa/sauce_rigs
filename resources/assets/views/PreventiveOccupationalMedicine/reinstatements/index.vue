@@ -1,0 +1,39 @@
+<template>
+  	<div>
+    	<h4 class="font-weight-bold mb-4">Matriz Legal</h4>
+    	<div class="col-md">
+			<b-card no-body>
+				<b-card-header class="with-elements">
+					<div class="card-title-elements">
+						<div class="row no-gutters row-bordered row-border-light h-100">
+							
+							<div class="d-flex col-sm-6 col-md-4 col-lg-6 align-items-center" v-if="auth.can['reinc_restrictions_r']">
+								<router-link tag="a" href="javascript:void(0)" class="card-body media align-items-center text-dark" :to="{name:'reinstatements-restrictions'}">
+									<i class="lnr lnr-cross-circle display-4 d-block text-primary"></i>
+									<span class="media-body d-block ml-3">
+										<span class="text-big font-weight-bolder">Administrar Restricciones</span>
+										<br>
+										<small class="text-muted">Administrar Restricciones de mi compañia</small>
+									</span>
+								</router-link>
+							</div>
+						</div>
+					</div>
+				</b-card-header>
+			</b-card>
+    	</div>
+  	</div>
+</template>
+
+<script>
+import Alerts from "@/utils/Alerts.js";
+
+export default {
+	name: "biologicalmonitoring-reinstatements",
+	metaInfo: {
+		title: "Reincorporaciones"
+	},
+  	methods: {
+  	}
+};
+</script>

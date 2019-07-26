@@ -32,6 +32,11 @@ class Article extends Model
         return $this->belongsToMany(Interest::class, 'sau_lm_article_interest');
     }
 
+    public function histories()
+    {
+        return $this->hasMany(ArticleHistory::class, 'article_id');
+    }
+
     public function scopeAlls($query, $company_id = null)
     {
         if (!$company_id)
