@@ -62,7 +62,7 @@ class EmployeeRegionalController extends Controller
         }
 
         return $this->respondHttp200([
-            'message' => 'Se creo la regional'
+            'message' => 'Se creo el registro'
         ]);
     }
 
@@ -102,7 +102,7 @@ class EmployeeRegionalController extends Controller
         }
         
         return $this->respondHttp200([
-            'message' => 'Se actualizo la regional'
+            'message' => 'Se actualizo el registro'
         ]);
     }
 
@@ -116,7 +116,7 @@ class EmployeeRegionalController extends Controller
     {
         if (count($regional->employees) > 0 || count($regional->headquarters) > 0 || count($regional->dangerMatrices) > 0)
         {
-            return $this->respondWithError('No se puede eliminar la regional porque hay registros asociados a ella');
+            return $this->respondWithError('No se puede eliminar el registro porque hay otros registros asociados a el');
         }
 
         if(!$regional->delete())
@@ -125,7 +125,7 @@ class EmployeeRegionalController extends Controller
         }
         
         return $this->respondHttp200([
-            'message' => 'Se elimino la regional'
+            'message' => 'Se elimino el registro'
         ]);
     }
 

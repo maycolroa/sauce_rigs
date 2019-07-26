@@ -1,7 +1,7 @@
 <template>
   <div>
     <h4 class="font-weight-bold mb-4">
-      Regionales
+      {{ keywordCheck('regionals', 'Regionales') }}
     </h4>
 
 
@@ -9,7 +9,7 @@
       <b-card no-body>
         <b-card-header class="with-elements">
           <div class="card-title-elements" v-if="auth.can['regionals_c']">
-            <b-btn :to="{name:'administrative-regionals-create'}" variant="primary">Crear Regional</b-btn>
+            <b-btn :to="{name:'administrative-regionals-create'}" variant="primary">Crear {{ keywordCheck('regional', 'Regional') }}</b-btn>
           </div>
         </b-card-header>
         <b-card-body>
@@ -28,8 +28,10 @@ import Alerts from '@/utils/Alerts.js';
 
 export default {
   name: 'regionals',
-  metaInfo: {
-    title: 'Regionales'
+  metaInfo() {
+    return {
+      title: `${this.keywordCheck('regionals', 'Regionales')}`
+    }
   }
 }
 </script>

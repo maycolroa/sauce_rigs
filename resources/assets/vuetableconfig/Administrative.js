@@ -193,7 +193,7 @@ export default [
         data: {
           action: '/administration/regional/',
           id: 'id',
-          messageConfirmation: 'Esta seguro de borrar la regional __name__'
+          messageConfirmation: 'Esta seguro de borrar el registro __name__'
         },
         permission: 'regionals_d'
       }],

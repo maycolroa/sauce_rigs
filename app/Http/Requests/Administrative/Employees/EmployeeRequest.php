@@ -3,10 +3,13 @@
 namespace App\Http\Requests\Administrative\Employees;
 
 use Illuminate\Foundation\Http\FormRequest;
+use App\Traits\UtilsTrait;
 use Session;
 
 class EmployeeRequest extends FormRequest
 {
+    use UtilsTrait;
+
     /**
      * Determine if the user is authorized to make this request.
      *
@@ -41,6 +44,13 @@ class EmployeeRequest extends FormRequest
             'employee_position_id' => 'required|exists:sau_employees_positions,id',
             'employee_business_id' => 'nullable|exists:sau_employees_businesses,id',
             'employee_eps_id' => 'required|exists:sau_employees_eps,id',
+        ];
+    }
+
+    public function messages()
+    {
+        return [
+            'employee_regional_id.required' => 'El campo '.$this->keywordCheck('regional').' es obligatorio.'
         ];
     }
 }
