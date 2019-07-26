@@ -192,6 +192,10 @@ Route::middleware(['auth'])->group(function () {
       Route::post('actionplan/data', 'Administrative\ActionPlans\ActionPlanController@data');
       Route::post('actionplan/export', 'Administrative\ActionPlans\ActionPlanController@export');
       Route::ApiResource('actionplan', 'Administrative\ActionPlans\ActionPlanController');
+
+      Route::get('logo/download', 'Administrative\Logos\LogoController@download');
+      Route::get('logo/view', 'Administrative\Logos\LogoController@show');
+      Route::post('logo', 'Administrative\Logos\LogoController@store');
     });
 
     //Seguridad Industrial

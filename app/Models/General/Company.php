@@ -11,7 +11,7 @@ class Company extends Model
     
     protected $table = 'sau_companies';
 
-    protected $fillable = ['name', 'active'];
+    protected $fillable = ['name', 'active', 'logo'];
 
     public function users()
     {

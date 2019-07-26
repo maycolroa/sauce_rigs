@@ -41,7 +41,9 @@ class MakeAllPermissionsSeeder extends Seeder
                 'reinstatements_c',
                 'reinstatements_r',
                 'reinstatements_u',
-                'reinstatements_d'
+                'reinstatements_d',
+                'logos_u',
+                'logos_d',
             ];
 
             $modules = Module::all();
