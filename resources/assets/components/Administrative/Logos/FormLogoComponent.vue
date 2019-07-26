@@ -11,11 +11,11 @@
             </div>
         </div>
         <b-form-row> 
-            <vue-file-simple :help-text="form.old_logo ? `Para descargar el logo actual, haga click <a href='/administration/logo/download' target='blank'>aqui</a> `: null" :disabled="viewOnly" class="col-md-12" @input="submit" accept=".png" v-model="form.logo" label="Logo (*.png)" name="logo" :error="form.errorsFor('logo')" placeholder="Seleccione una imagen"></vue-file-simple>
+            <vue-file-simple :help-text="form.old_logo ? `Para descargar el logo actual, haga click <a href='/administration/logo/download' target='blank'>aqui</a> `: null" :disabled="!auth.can['logos_c']" class="col-md-12" @input="submit" accept=".png" v-model="form.logo" label="Logo (*.png)" name="logo" :error="form.errorsFor('logo')" placeholder="Seleccione una imagen"></vue-file-simple>
         </b-form-row>
         <b-row align-h="center">
             <b-col cols="2">
-                <b-btn v-if="form.logo" @click="deleteFile" variant="primary"><span class="ion ion-md-close-circle"></span> Eliminar Logo</b-btn>
+                <b-btn v-if="auth.can['logos_c'] && form.logo" @click="deleteFile" variant="primary"><span class="ion ion-md-close-circle"></span> Eliminar Logo</b-btn>
             </b-col>
         </b-row>
     </b-form>
