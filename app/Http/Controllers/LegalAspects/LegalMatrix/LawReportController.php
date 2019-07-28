@@ -1,0 +1,87 @@
+<?php
+
+namespace App\Http\Controllers\LegalAspects\LegalMatrix;
+
+use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use App\Inform\LegalAspects\LegalMatrix\ReportManagerLaw;
+use App\Jobs\LegalAspects\LegalMatrix\Reports\ReportLawExportJob;
+use Session;
+
+class LawReportController extends Controller
+{
+    /**
+     * creates and instance and middlewares are checked
+     */
+    function __construct()
+    {
+        $this->middleware('auth');
+        $this->middleware('permission:laws_report_r', ['only' => 'data']);
+        $this->middleware('permission:laws_report_export', ['only' => 'export']);
+    }
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function index()
+    {
+        return view('application');
+    }
+
+    /**
+     * returns the inform data according to
+     * multiple conditions, like filters
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function data(Request $request)
+    {
+        $lawTypes = $this->getValuesForMultiselect($request->lawTypes);
+        $riskAspects = $this->getValuesForMultiselect($request->riskAspects);
+        $entities = $this->getValuesForMultiselect($request->entities);
+        $sstRisks = $this->getValuesForMultiselect($request->sstRisks);
+        $systemApply = $this->getValuesForMultiselect($request->systemApply);
+        $lawNumbers = $this->getValuesForMultiselect($request->lawNumbers);
+        $lawYears = $this->getValuesForMultiselect($request->lawYears);
+        $repealed = $this->getValuesForMultiselect($request->repealed);
+        $responsibles = $this->getValuesForMultiselect($request->responsibles);
+        $interests = $this->getValuesForMultiselect($request->interests);
+        $states = $this->getValuesForMultiselect($request->states);
+        $filtersType = $request->filtersType;
+        
+        $reportManager = new ReportManagerLaw($lawTypes, $riskAspects, $entities, $sstRisks, $systemApply, $lawNumbers, $lawYears, $repealed, $responsibles, $interests, $states, $filtersType);
+        
+        return $this->respondHttp200($reportManager->getInformData());
+    }
+
+    public function export(Request $request)
+    {
+        try
+        {
+            /** FIltros */
+            $filters = [
+                "lawTypes" => $this->getValuesForMultiselect($request->lawTypes),
+                "riskAspects" => $this->getValuesForMultiselect($request->riskAspects),
+                "entities" => $this->getValuesForMultiselect($request->entities),
+                "sstRisks" => $this->getValuesForMultiselect($request->sstRisks),
+                "systemApply" => $this->getValuesForMultiselect($request->systemApply),
+                "lawNumbers" => $this->getValuesForMultiselect($request->lawNumbers),
+                "lawYears" => $this->getValuesForMultiselect($request->lawYears),
+                "repealed" => $this->getValuesForMultiselect($request->repealed),
+                "responsibles" => $this->getValuesForMultiselect($request->responsibles),
+                "interests" => $this->getValuesForMultiselect($request->interests),
+                "states" => $this->getValuesForMultiselect($request->states),
+                "filtersType" => $request->filtersType
+            ];
+
+            ReportLawExportJob::dispatch(Auth::user(), Session::get('company_id'), $filters);
+
+            return $this->respondHttp200();
+        } catch(Exception $e) {
+            return $this->respondHttp500();
+        }
+    }
+}

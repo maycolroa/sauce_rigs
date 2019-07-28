@@ -152,7 +152,7 @@ class SystemApplyController extends Controller
      * @return Array
      */
 
-    public function multiselect(Request $request, $scope = 'all')
+    public function multiselect(Request $request, $scope = 'alls')
     {
         if($request->has('keyword'))
         {

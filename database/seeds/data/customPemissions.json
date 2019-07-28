@@ -333,6 +333,14 @@
                     {
                         "name": "lawsCustom_d",
                         "display_name": "Matriz Legal/Mis Normas - eliminar"
+                    },
+                    {
+                        "name": "laws_report_r",
+                        "display_name": "Matriz Legal/Reporte - ver"
+                    },
+                    {
+                        "name": "laws_report_export",
+                        "display_name": "Matriz Legal/Reporte - exportar"
                     }
                 ]
             }
