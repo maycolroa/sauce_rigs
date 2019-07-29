@@ -275,6 +275,8 @@ Route::middleware(['auth'])->group(function () {
         Route::get('law/qualify/{law}', 'LegalAspects\LegalMatrix\LawController@getArticlesQualification');
         Route::post('law/saveArticlesQualification', 'LegalAspects\LegalMatrix\LawController@saveArticlesQualification');
         Route::post('law/data', 'LegalAspects\LegalMatrix\LawController@data');
+        Route::post('law/report', 'LegalAspects\LegalMatrix\LawReportController@data');
+        Route::post('law/report/export', 'LegalAspects\LegalMatrix\LawReportController@export');
         Route::ApiResource('law', 'LegalAspects\LegalMatrix\LawController');
 
         Route::post('articleHistory/data', 'LegalAspects\LegalMatrix\ArticleHistoryController@data');

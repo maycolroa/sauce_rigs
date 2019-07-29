@@ -1,6 +1,6 @@
 <template>
     <div>
-        <div style="height: 300px; overflow:auto;">
+        <div>
             <vue-echart :options="barOptions"
                 ref="barMutiple"
                 :auto-resize="true"
@@ -95,10 +95,10 @@ export default {
         let bar = this.$refs.barMutiple
         bar.hideLoading();
 
-        if ((this.chartData.datasets.data[0].data.length * 60) > 300)
-            this.height = this.chartData.datasets.data[0].data.length * 60
+        if ((this.chartData.datasets.data[0].data.length * 100) > 400)
+            this.height = this.chartData.datasets.data[0].data.length * 100
         else 
-            this.height = 300
+            this.height = 400
     }
   },
   mounted(){

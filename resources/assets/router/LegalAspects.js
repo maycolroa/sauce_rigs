@@ -524,6 +524,14 @@ export default [
 					import('@/views/LegalAspects/legalMatrix/systemApply/view')
 				}
 			]),
+			...middleware({ 'check-permission': 'laws_report_r' }, [
+				{
+					name: 'legalaspects-lm-law-report',
+					path: 'lm/laws/report',
+					component: () =>
+					import('@/views/LegalAspects/legalMatrix/reports/index')
+				}
+			]),
 		]
 	}
 ];

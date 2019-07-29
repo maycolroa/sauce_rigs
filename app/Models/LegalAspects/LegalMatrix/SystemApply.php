@@ -37,7 +37,7 @@ class SystemApply extends Model
         return $query->whereNull('sau_lm_system_apply.company_id');
     }
 
-    public function scopeAll($query)
+    public function scopeAlls($query)
     {
         return $query->where('sau_lm_system_apply.company_id', Session::get('company_id'))
                      ->orWhereNull('sau_lm_system_apply.company_id');
