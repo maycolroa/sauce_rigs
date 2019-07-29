@@ -58,6 +58,30 @@ export default [{
           component: () =>
             import('@/views/System/logMails/view')
         }
-      ])
+      ]),
+      ...middleware({ 'check-permission': 'labels_r' }, [
+        {
+          name: 'system-labels',
+          path: 'labels',
+          component: () =>
+            import('@/views/System/labels/index')
+        }
+      ]), 
+      ...middleware({ 'check-permission': 'labels_u' }, [
+        {
+          name: 'system-labels-edit',
+          path: 'labels/edit/:id',
+          component: () =>
+            import('@/views/System/labels/edit')
+        }
+      ]),
+      ...middleware({ 'check-permission': 'labels_r' }, [
+        {
+          name: 'system-labels-view',
+          path: 'labels/view/:id',
+          component: () =>
+            import('@/views/System/labels/view')
+        }
+      ]),
     ]
   }]

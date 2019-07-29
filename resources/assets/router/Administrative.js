@@ -330,5 +330,37 @@ export default [{
             import('@/views/Administrative/logos/index')
         }
       ]),
+      ...middleware({ 'check-permission': 'customLabels_r' }, [
+        {
+          name: 'administrative-customlabels',
+          path: 'customlabels',
+          component: () =>
+            import('@/views/Administrative/labels/index')
+        }
+      ]), 
+      ...middleware({ 'check-permission': 'customLabels_c' }, [
+        {
+          name: 'administrative-customlabels-create',
+          path: 'customlabels/create',
+          component: () =>
+            import('@/views/Administrative/labels/create')
+        }
+      ]), 
+      ...middleware({ 'check-permission': 'customLabels_u' }, [
+        {
+          name: 'administrative-customlabels-edit',
+          path: 'customlabels/edit/:id',
+          component: () =>
+            import('@/views/Administrative/labels/edit')
+        }
+      ]),
+      ...middleware({ 'check-permission': 'customLabels_r' }, [
+        {
+          name: 'administrative-customlabels-view',
+          path: 'customlabels/view/:id',
+          component: () =>
+            import('@/views/Administrative/labels/view')
+        }
+      ]),
     ]
   }]

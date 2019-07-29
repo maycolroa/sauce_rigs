@@ -61,6 +61,11 @@
                 "name": "logos",
                 "display_name": "Configurar Logo",
                 "main": "NO"
+            },
+            {
+                "name": "customLabels",
+                "display_name": "Configurar Etiquetas",
+                "main": "NO"
             }
         ]
     },
@@ -140,6 +145,11 @@
             {
                 "name": "logMails",
                 "display_name": "Supervisar Correos",
+                "main": "NO"
+            },
+            {
+                "name": "labels",
+                "display_name": "Administrar Labels",
                 "main": "NO"
             }
         ]
