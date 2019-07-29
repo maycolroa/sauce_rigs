@@ -54,12 +54,12 @@ class EmployeesController extends Controller
         ->join('sau_employees_areas', 'sau_employees_areas.id', 'sau_employees.employee_area_id')*/;
 
         return Vuetable::of($employees)
-                ->addColumn('sex_detail', function ($employee) {
+                /*->addColumn('sex_detail', function ($employee) {
                     if (!$employee->sex)
                         return '-';
                         
                     return $employee->sex == 'M' ? 'Masculino' : 'Femenino';
-                })
+                })*/
                 ->make();
     }
 

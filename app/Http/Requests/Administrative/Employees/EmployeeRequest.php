@@ -34,7 +34,7 @@ class EmployeeRequest extends FormRequest
             'identification' => 'required|string|unique:sau_employees,identification,'.$id.',id,company_id,'.Session::get('company_id'),
             'name' => 'required|string',
             'date_of_birth' => 'nullable|date',
-            'sex' => 'required|string|in:M,F',
+            'sex' => 'required|string|in:Masculino,Femenino',
             'email' => 'required|email|unique:sau_employees,email,'.$id.',id,company_id,'.Session::get('company_id'),
             'income_date' => 'required|date',
             'employee_regional_id' => 'required|exists:sau_employees_regionals,id',
