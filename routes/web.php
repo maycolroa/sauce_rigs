@@ -280,6 +280,7 @@ Route::middleware(['auth'])->group(function () {
         Route::ApiResource('law', 'LegalAspects\LegalMatrix\LawController');
 
         Route::post('articleHistory/data', 'LegalAspects\LegalMatrix\ArticleHistoryController@data');
+        Route::post('articleFulfillmentHistory/data', 'LegalAspects\LegalMatrix\ArticleFulfillmentHistoryController@data');
       });
     });
     

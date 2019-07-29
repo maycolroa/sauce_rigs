@@ -34,4 +34,10 @@ class ArticleFulfillment extends Model
     {
         return $this->belongsTo(FulfillmentValues::class);
     }
+
+    public function histories()
+    {
+        return $this->hasMany(ArticleFulfillmentHistory::class, 'fulfillment_id');
+    }
+
 }

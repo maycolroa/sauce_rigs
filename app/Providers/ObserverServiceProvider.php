@@ -7,6 +7,8 @@ use App\Observers\PreventiveOccupationalMedicine\BiologicalMonitoring\Audiometry
 use App\Models\PreventiveOccupationalMedicine\BiologicalMonitoring\Audiometry;
 use App\Observers\LegalAspects\LegalMatrix\ArticleObserver;
 use App\Models\LegalAspects\LegalMatrix\Article;
+use App\Observers\LegalAspects\LegalMatrix\ArticleFulfillmentObserver;
+use App\Models\LegalAspects\LegalMatrix\ArticleFulfillment;
 
 class ObserverServiceProvider extends ServiceProvider
 {
@@ -19,6 +21,7 @@ class ObserverServiceProvider extends ServiceProvider
     {
       Audiometry::observe(AudiometryObserver::class);
       Article::observe(ArticleObserver::class);
+      ArticleFulfillment::observe(ArticleFulfillmentObserver::class);
     }
 
     /**
