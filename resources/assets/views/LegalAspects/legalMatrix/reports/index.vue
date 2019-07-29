@@ -25,8 +25,26 @@
                                 <div><b>Número de Artículos:</b> {{resumenFulfillment.total_articles}}</div>
                             </b-col>
                             <b-col>
-                                <div><b>Puntuación:</b> {{resumenFulfillment.punctuation}}</div>
-                                <div><b>Porcentaje de Cumplimiento:</b> {{resumenFulfillment.percentage_fulfillment}}</div>
+                                <div><b>Total de artículos que aplican para el cumplimiento:</b> {{resumenFulfillment.articles_t}}
+
+                                    <div class="float-right" style="padding-right: 10px;">
+                                        <b-btn v-b-popover.hover.focus.left="helps.articles_t.text" :title="helps.articles_t.title" variant="secondary" class="btn-circle-micro"><span class="fas fa-info"></span></b-btn>
+                                    </div>
+                                </div>
+                                <div><b># Artículos Cumplimiento:</b> {{resumenFulfillment.articles_c}} 
+                                
+                                    <div class="float-right" style="padding-right: 10px;">
+                                        <b-btn v-b-popover.hover.focus.left="helps.articles_c.text" :title="helps.articles_c.title" variant="primary" class="btn-circle-micro"><span class="fas fa-info"></span></b-btn>
+                                    </div>
+                                </div>
+                                <div><b># Artículos Incumplimiento:</b> {{resumenFulfillment.articles_nc}}
+
+                                    <div class="float-right" style="padding-right: 10px;">
+                                        <b-btn v-b-popover.hover.focus.left="helps.articles_nc.text" :title="helps.articles_nc.title" variant="secondary" class="btn-circle-micro"><span class="fas fa-info"></span></b-btn>
+                                    </div>
+                                </div>
+                                <div><b>% Artículos Cumplimiento:</b> {{resumenFulfillment.percentage_c}}</div>
+                                <div><b>% Artículos Incumplimiento:</b> {{resumenFulfillment.percentage_nc}}</div>
                             </b-col>
                         </b-row>
                     </b-card>
@@ -100,8 +118,25 @@ export default {
             resumenFulfillment: {
                 total_laws: '',
                 total_articles: '',
-                punctuation: '',
-                percentage_fulfillment: ''
+                articles_t: '',
+                articles_c: '',
+                articles_nc: '',
+                percentage_c: '',
+                percentage_nc: ''
+            },
+            helps: {
+                articles_t: {
+                    title: 'Artículos que aplican',
+                    text: '1. Parcial\n2. En estudio\n3. No cumple\n4. Cumple\n5. Sin calificar',
+                },
+                articles_c: {
+                    title: 'Artículos / Puntos',
+                    text: '1. Parcial (0.5)\n2. Cumple (1)\n',
+                },
+                articles_nc: {
+                    title: 'Artículos / Puntos',
+                    text: '1. Parcial (0.5)\n2. En estudio (1)\n3. No cumple (1)\n4. Sin calificar(1)',
+                }
             }
         }
     },

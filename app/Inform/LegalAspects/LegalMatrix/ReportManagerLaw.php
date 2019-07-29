@@ -51,7 +51,9 @@ class ReportManagerLaw
     protected $filtersType;
     protected $totalLaws;
     protected $totalArticles = 0;
-    protected $punctuation = 0;
+    protected $articles_t = 0;
+    protected $articles_c = 0;
+    protected $articles_nc = 0;
 
     /**
      * create an instance and set the attribute class
@@ -128,8 +130,10 @@ class ReportManagerLaw
         foreach ($laws as $key => $value)
         {
             $qualifications[$value->qualify][$value->system_apply] = $value->count;
-            $this->totalArticles += ($value->count * $this->table_fulfillment[$value->qualify]["count"]);
-            $this->punctuation += ($value->count * $this->table_fulfillment[$value->qualify]["qualify"]);
+            
+            $this->totalArticles++;
+            $this->articles_t += ($value->count * $this->table_fulfillment[$value->qualify]["count"]);
+            $this->articles_c += ($value->count * $this->table_fulfillment[$value->qualify]["qualify"]);
         }
 
         $fulfillments = FulfillmentValues::get();
@@ -242,13 +246,16 @@ class ReportManagerLaw
 
     private function resumenFulfillment()
     {
-        $percentage_fulfillment = ($this->totalArticles > 0) ? round( ($this->punctuation / $this->totalArticles) * 100, 1).'%' : 0;
+        $percentage_fulfillment = ($this->articles_t > 0) ? round( ($this->articles_c / $this->articles_t) * 100, 1) : 0;
 
         return [
             "total_laws" => $this->totalLaws,
             "total_articles" => $this->totalArticles,
-            "punctuation" => $this->punctuation,
-            "percentage_fulfillment" => $percentage_fulfillment
+            "articles_t" => $this->articles_t,
+            "articles_c" => $this->articles_c,
+            "articles_nc" => ($this->articles_t - $this->articles_c),
+            "percentage_c" => $percentage_fulfillment.'%',
+            "percentage_nc" => (100 - $percentage_fulfillment).'%',
         ];
     }
 
