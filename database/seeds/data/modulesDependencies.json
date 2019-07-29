@@ -57,7 +57,8 @@
             "areas",
             "businesses",
             "employees",
-            "logos"
+            "logos",
+            "customLabels"
         ]
     }
 ]

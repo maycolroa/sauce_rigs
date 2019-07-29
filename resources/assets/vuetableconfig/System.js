@@ -106,5 +106,50 @@ export default [
             filterColumns: true,
             configNameFilter: 'system-logmails'
         }
+    },
+    {
+        name: 'system-labels',
+        fields: [
+            { name: 'sau_keywords.id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true },
+            { name: 'sau_keywords.name', data: 'name', title: 'Key', sortable: true, searchable: true, detail: false, key: false },
+            { name: 'sau_keywords.display_name', data: 'display_name', title: 'Descripción', sortable: true, searchable: true, detail: false, key: false },
+            { name: '', data: 'controlls', title: 'Controles', sortable: false, searchable: false, detail: false, key: false },
+        ],
+        'controlls': [{
+            type: 'push',
+            buttons: [{
+            config: {
+                color: 'outline-success',
+                borderless: true,
+                icon: 'ion ion-md-create',
+                title: 'Editar'
+            },
+            data: {
+                routePush: { name: 'system-labels-edit' },
+                id: 'id',
+            },
+            permission: 'labels_u'
+            }, {
+            config: {
+                color: 'outline-info',
+                borderless: true,
+                icon: 'ion ion-md-eye',
+                title: 'Ver'
+            },
+            data: {
+                routePush: { name: 'system-labels-view' },
+                id: 'id',
+            },
+            permission: 'labels_r'
+            }]
+        },
+        {
+            type: 'base',
+            buttons: [],
+        }],
+        configuration: {
+            urlData: '/system/label/data',
+            filterColumns: true,
+        }
     }
 ]

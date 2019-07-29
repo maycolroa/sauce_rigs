@@ -55,7 +55,7 @@ class AudiometryImportDataTemplateExcel implements FromCollection, WithHeadings,
         return [
           'Identificación',
           'Nombre',
-          'Sexo (M, F)',
+          'Sexo (Masculino, Femenino)',
           'Email',
           'Fecha Nacimiento',
           'Cargo',

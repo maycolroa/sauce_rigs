@@ -133,6 +133,10 @@ Route::middleware(['auth'])->group(function () {
           Route::post('lawYearsSystem', 'LegalAspects\LegalMatrix\LawController@lmLawYearsSystem');
           Route::post('lawYearsCompany', 'LegalAspects\LegalMatrix\LawController@lmLawYearsCompany');
         });
+
+        Route::prefix('system')->group(function () {
+          Route::post('labels', 'System\Labels\LabelController@multiselect');
+        });
     });
 
     Route::prefix('radios')->group(function () {
@@ -196,6 +200,9 @@ Route::middleware(['auth'])->group(function () {
       Route::get('logo/download', 'Administrative\Logos\LogoController@download');
       Route::get('logo/view', 'Administrative\Logos\LogoController@show');
       Route::post('logo', 'Administrative\Logos\LogoController@store');
+
+      Route::post('label/data', 'Administrative\Labels\LabelController@data');
+      Route::ApiResource('label', 'Administrative\Labels\LabelController'); 
     });
 
     //Seguridad Industrial
@@ -293,7 +300,9 @@ Route::middleware(['auth'])->group(function () {
 
       Route::post('logMail/data', 'System\LogMails\LogMailController@data');
       Route::ApiResource('logMail', 'System\LogMails\LogMailController');
-      
+
+      Route::post('label/data', 'System\Labels\LabelController@data');
+      Route::ApiResource('label', 'System\Labels\LabelController');   
     });
 
 
