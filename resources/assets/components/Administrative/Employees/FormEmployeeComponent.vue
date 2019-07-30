@@ -112,7 +112,6 @@ export default {
   },
   watch: {
     employee() {
-      this.loading = false;
       this.form = Form.makeFrom(this.employee, this.method);
     },
     'form.employee_regional_id'() {
@@ -134,7 +133,7 @@ export default {
   },
   data() {
     return {
-      loading: this.isEdit,
+      loading: false,
       form: Form.makeFrom(this.employee, this.method),
       empty: {
         headquarter: false,

@@ -7,12 +7,17 @@
     <div class="col-md">
       <b-card no-body>
         <b-card-body>
-            <administrative-employee-form
-                :sexs="sexs"
-                :employee="data"
-                :disable-wacth-select-in-created="true"
-                :view-only="true"
-                :cancel-url="{ name: 'administrative-employees'}"/>
+          <loading :display="!ready"/>
+          <div v-if="ready">
+            <template v-if="form == 'default'">
+              <administrative-employee-form
+                  :sexs="sexs"
+                  :employee="data"
+                  :disable-wacth-select-in-created="true"
+                  :view-only="true"
+                  :cancel-url="{ name: 'administrative-employees'}"/>
+            </template>
+          </div>
         </b-card-body>
       </b-card>
     </div>
@@ -23,6 +28,7 @@
 import AdministrativeEmployeeForm from '@/components/Administrative/Employees/FormEmployeeComponent.vue';
 import Alerts from '@/utils/Alerts.js';
 import GlobalMethods from '@/utils/GlobalMethods.js';
+import Loading from "@/components/Inputs/Loading.vue";
 
 export default {
   name: 'administrative-employees-edit',
@@ -30,23 +36,36 @@ export default {
     title: 'Empleados - Ver'
   },
   components:{
-    AdministrativeEmployeeForm
+    AdministrativeEmployeeForm,
+    Loading
   },
   data () {
     return {
       data: [],
-      sexs: []
+      sexs: [],
+      ready: false,
+      form: ''
     }
   },
   created(){
-    axios.get(`/administration/employee/${this.$route.params.id}`)
-    .then(response => {
-        this.data = response.data.data;
-    })
-    .catch(error => {
-        Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
-        this.$router.go(-1);
-    });
+    axios.post(`/configurableForm/formModel`, {key: 'form_employee'})
+		.then(response => {
+			this.form = response.data;
+      
+      axios.get(`/administration/employee/${this.$route.params.id}`)
+      .then(response2 => {
+          this.data = response2.data.data;
+          this.ready = true
+      })
+      .catch(error => {
+          Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
+          this.$router.go(-1);
+      });
+		})
+		.catch(error => {
+			Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
+			this.$router.go(-1);
+		});
 
     GlobalMethods.getDataMultiselect('/selects/sexs')
     .then(response => {

@@ -7,21 +7,26 @@
     <div class="col-md">
       <b-card no-body>
         <b-card-body>
-            <administrative-employee-form 
-                :url="`/administration/employee/${this.$route.params.id}`"
-                method="PUT"
-                :disable-wacth-select-in-created="true"
-                :sexs="sexs"
-                regionals-data-url="/selects/regionals"
-                headquarters-data-url="/selects/headquarters"
-                areas-data-url="/selects/areas"
-                processes-data-url="/selects/processes"
-                positions-data-url="/selects/positions"
-                businesses-data-url="/selects/businesses"
-                eps-data-url="/selects/eps"
-                :employee="data"
-                :is-edit="true"
-                :cancel-url="{ name: 'administrative-employees'}"/>
+          <loading :display="!ready"/>
+          <div v-if="ready">
+            <template v-if="form == 'default'">
+              <administrative-employee-form 
+                  :url="`/administration/employee/${this.$route.params.id}`"
+                  method="PUT"
+                  :disable-wacth-select-in-created="true"
+                  :sexs="sexs"
+                  regionals-data-url="/selects/regionals"
+                  headquarters-data-url="/selects/headquarters"
+                  areas-data-url="/selects/areas"
+                  processes-data-url="/selects/processes"
+                  positions-data-url="/selects/positions"
+                  businesses-data-url="/selects/businesses"
+                  eps-data-url="/selects/eps"
+                  :employee="data"
+                  :is-edit="true"
+                  :cancel-url="{ name: 'administrative-employees'}"/>
+            </template>
+          </div>
         </b-card-body>
       </b-card>
     </div>
@@ -30,6 +35,7 @@
 
 <script>
 import AdministrativeEmployeeForm from '@/components/Administrative/Employees/FormEmployeeComponent.vue';
+import Loading from "@/components/Inputs/Loading.vue";
 import Alerts from '@/utils/Alerts.js';
 import GlobalMethods from '@/utils/GlobalMethods.js';
 
@@ -39,23 +45,36 @@ export default {
     title: 'Empleados - Editar'
   },
   components:{
-    AdministrativeEmployeeForm
+    AdministrativeEmployeeForm,
+    Loading
   },
   data () {
     return {
       data: [],
-      sexs: []
+      sexs: [],
+      ready: false,
+      form: ''
     }
   },
   created(){
-    axios.get(`/administration/employee/${this.$route.params.id}`)
-    .then(response => {
-        this.data = response.data.data;
-    })
-    .catch(error => {
-        Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
-        this.$router.go(-1);
-    });
+    axios.post(`/configurableForm/formModel`, {key: 'form_employee'})
+		.then(response => {
+			this.form = response.data;
+      
+      axios.get(`/administration/employee/${this.$route.params.id}`)
+      .then(response2 => {
+          this.data = response2.data.data;
+          this.ready = true
+      })
+      .catch(error => {
+          Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
+          this.$router.go(-1);
+      });
+		})
+		.catch(error => {
+			Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
+			this.$router.go(-1);
+		});
 
     GlobalMethods.getDataMultiselect('/selects/sexs')
     .then(response => {
