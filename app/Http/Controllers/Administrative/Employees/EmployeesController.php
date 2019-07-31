@@ -42,24 +42,26 @@ class EmployeesController extends Controller
     public function data(Request $request)
     {
         $employees = Employee::select(
-            'sau_employees.*'/*,
-            'sau_employees_positions.name as cargo',
+            'sau_employees.*',
+            'sau_employees_positions.name as position',
             'sau_employees_regionals.name as regional',
-            'sau_employees_headquarters.name as sede',
-            'sau_employees_areas.name as area'*/
+            'sau_employees_headquarters.name as headquarter',
+            'sau_employees_processes.name as process',
+            'sau_employees_businesses.name as business',
+            'sau_employees_eps.name as eps',
+            'sau_employees_afp.name as afp',
+            'sau_employees_arl.name as arl'
         )
-        /*->join('sau_employees_positions', 'sau_employees_positions.id', 'sau_employees.employee_position_id')
+        ->join('sau_employees_positions', 'sau_employees_positions.id', 'sau_employees.employee_position_id')
         ->join('sau_employees_regionals', 'sau_employees_regionals.id', 'sau_employees.employee_regional_id')
         ->join('sau_employees_headquarters', 'sau_employees_headquarters.id', 'sau_employees.employee_headquarter_id')
-        ->join('sau_employees_areas', 'sau_employees_areas.id', 'sau_employees.employee_area_id')*/;
+        ->join('sau_employees_processes', 'sau_employees_processes.id', 'sau_employees.employee_process_id')
+        ->leftJoin('sau_employees_businesses', 'sau_employees_businesses.id', 'sau_employees.employee_business_id')
+        ->leftJoin('sau_employees_eps', 'sau_employees_eps.id', 'sau_employees.employee_eps_id')
+        ->leftJoin('sau_employees_afp', 'sau_employees_afp.id', 'sau_employees.employee_afp_id')
+        ->leftJoin('sau_employees_arl', 'sau_employees_arl.id', 'sau_employees.employee_arl_id');
 
         return Vuetable::of($employees)
-                /*->addColumn('sex_detail', function ($employee) {
-                    if (!$employee->sex)
-                        return '-';
-                        
-                    return $employee->sex == 'M' ? 'Masculino' : 'Femenino';
-                })*/
                 ->make();
     }
 

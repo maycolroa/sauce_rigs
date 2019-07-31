@@ -15,6 +15,7 @@
         <b-card-body>
              <vue-table
                 configName="administrative-employees"
+                :customColumnsName="true"
                 v-if="auth.can['employees_r']"
                 ></vue-table>
         </b-card-body>
