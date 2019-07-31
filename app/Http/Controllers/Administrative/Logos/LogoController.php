@@ -60,17 +60,17 @@ class LogoController extends Controller
             if ($request->logo)
             {
                 $file = $request->logo;
-                Storage::disk('s3')->delete('administrative/logos/'. $company->logo);
+                Storage::disk('public')->delete('administrative/logos/'. $company->logo);
                 $nameFile = base64_encode(Auth::user()->id . now() . rand(1,10000)) .'.'. $file->extension();
-                $file->storeAs('administrative/logos/', $nameFile, 's3');
+                $file->storeAs('administrative/logos/', $nameFile, 'public');
                 $company->logo = $nameFile;
                 $data['logo'] = $nameFile;
                 $data['old_logo'] = $nameFile;
-                $data['logo_path'] = Storage::disk('s3')->url('administrative/logos/'. $nameFile);
+                $data['logo_path'] = Storage::disk('public')->url('administrative/logos/'. $nameFile);
             }
             else
             {
-                Storage::disk('s3')->delete('administrative/logos/'. $company->logo);
+                Storage::disk('public')->delete('administrative/logos/'. $company->logo);
                 $company->logo = NUlL;
                 $data['logo'] = NULL;
                 $data['old_logo'] = NULL;
@@ -97,7 +97,7 @@ class LogoController extends Controller
         {
             $company = Company::select('logo')->find(Session::get('company_id'));
             $company->old_logo = $company->logo;
-            $company->logo_path = Storage::disk('s3')->url('administrative/logos/'. $company->logo);
+            $company->logo_path = Storage::disk('public')->url('administrative/logos/'. $company->logo);
 
             return $this->respondHttp200([
                 'data' => $company
@@ -110,6 +110,6 @@ class LogoController extends Controller
     public function download()
     {
         $company = Company::find(Session::get('company_id'));
-        return Storage::disk('s3')->download('administrative/logos/'. $company->logo);
+        return Storage::disk('public')->download('administrative/logos/'. $company->logo);
     }
 }
