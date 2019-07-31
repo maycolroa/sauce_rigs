@@ -26,7 +26,12 @@ class Employee extends Model
       'employee_headquarter_id',
       'employee_process_id',
       'employee_business_id',
-      'deal'
+      'deal',
+      'employee_afp_id',
+      'employee_arl_id',
+      'contract_numbers',
+      'last_contract_date',
+      'contract_type'
   ];
 
     public function audiometries(){
@@ -42,7 +47,7 @@ class Employee extends Model
 
     public function setSexAttribute($value)
     {
-      $this->attributes['sex'] = strtoupper($value);
+      $this->attributes['sex'] = ucfirst($value);
     }
 
     public function regional()
@@ -68,6 +73,16 @@ class Employee extends Model
     public function eps()
     {
         return $this->belongsTo(EmployeeEPS::class, 'employee_eps_id');
+    }
+
+    public function afp()
+    {
+        return $this->belongsTo(EmployeeAFP::class, 'employee_afp_id');
+    }
+
+    public function arl()
+    {
+        return $this->belongsTo(EmployeeARL::class, 'employee_arl_id');
     }
 
     public function business()

@@ -30,6 +30,7 @@ Route::middleware(['auth'])->group(function () {
 
     Route::prefix('configurableForm')->group(function () {
       Route::post('formModel', 'General\ConfigurableFormControlle@formModel');
+      Route::post('selectOptions', 'General\ConfigurableFormControlle@selectOptions');
     });
 
     Route::get('templates/audiometryimport','PreventiveOccupationalMedicine\BiologicalMonitoring\AudiometryController@downloadTemplateImport');

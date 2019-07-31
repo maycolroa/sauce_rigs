@@ -29,18 +29,20 @@
     <b-form-row>
       <vue-ajax-advanced-select :disabled="viewOnly || !form.employee_headquarter_id" class="col-md-6" v-model="form.employee_process_id" :error="form.errorsFor('employee_process_id')" :selected-object="form.multiselect_proceso" name="employee_process_id" label="Proceso" placeholder="Seleccione el proceso" :url="processesDataUrl" :parameters="{headquarter: form.employee_headquarter_id }" :emptyAll="empty.process" @updateEmpty="updateEmptyKey('process')">
       </vue-ajax-advanced-select>
-      <vue-ajax-advanced-select :disabled="viewOnly" class="col-md-6" v-model="form.employee_position_id" :error="form.errorsFor('employee_position_id')" :selected-object="form.multiselect_cargo" name="employee_position_id" label="Cargo" placeholder="Seleccione el cargo" :url="positionsDataUrl">
+      <vue-ajax-advanced-select :disabled="viewOnly || !form.employee_process_id" class="col-md-6" v-model="form.employee_area_id" :error="form.errorsFor('employee_area_id')" :selected-object="form.multiselect_area" name="employee_area_id" label="Área" placeholder="Seleccione el área" :url="areasDataUrl" :parameters="{process: form.employee_process_id, headquarter: form.employee_headquarter_id }" :emptyAll="empty.area" @updateEmpty="updateEmptyKey('area')">
           </vue-ajax-advanced-select>
     </b-form-row>
 
     <b-form-row>
+      <vue-ajax-advanced-select :disabled="viewOnly" class="col-md-6" v-model="form.employee_position_id" :error="form.errorsFor('employee_position_id')" :selected-object="form.multiselect_cargo" name="employee_position_id" label="Cargo" placeholder="Seleccione el cargo" :url="positionsDataUrl">
+          </vue-ajax-advanced-select>
       <vue-ajax-advanced-select :disabled="viewOnly" class="col-md-6" v-model="form.employee_business_id" :error="form.errorsFor('employee_business_id')" :selected-object="form.multiselect_centro_costo" name="employee_business_id" label="Centro de costo" placeholder="Seleccione el centro de costo" :url="businessesDataUrl">
           </vue-ajax-advanced-select>
-          <vue-ajax-advanced-select :disabled="viewOnly" class="col-md-6" v-model="form.employee_eps_id" :error="form.errorsFor('employee_eps_id')" :selected-object="form.multiselect_eps" name="employee_eps_id" label="EPS" placeholder="Seleccione el eps" :url="epsDataUrl">
-      </vue-ajax-advanced-select>
     </b-form-row>
       
     <b-form-row>
+      <vue-ajax-advanced-select :disabled="viewOnly" class="col-md-6" v-model="form.employee_eps_id" :error="form.errorsFor('employee_eps_id')" :selected-object="form.multiselect_eps" name="employee_eps_id" label="EPS" placeholder="Seleccione el eps" :url="epsDataUrl">
+      </vue-ajax-advanced-select>
       <vue-ajax-advanced-select :disabled="viewOnly" class="col-md-6" v-model="form.employee_afp_id" :error="form.errorsFor('employee_afp_id')" :selected-object="form.multiselect_afp" name="employee_afp_id" label="AFP" placeholder="Seleccione el afp" :url="afpDataUrl">
       </vue-ajax-advanced-select>
     </b-form-row>    
@@ -105,6 +107,7 @@ export default {
             employee_position_id: '',
             employee_business_id: '',
             employee_eps_id: '',
+            employee_afp_id: '',
             deal:''
         };
       }

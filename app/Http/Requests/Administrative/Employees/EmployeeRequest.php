@@ -3,13 +3,11 @@
 namespace App\Http\Requests\Administrative\Employees;
 
 use Illuminate\Foundation\Http\FormRequest;
-use App\Traits\UtilsTrait;
 use App\Traits\EmployeeTrait;
 use Session;
 
 class EmployeeRequest extends FormRequest
 {
-    use UtilsTrait;
     use EmployeeTrait;
 
     /**

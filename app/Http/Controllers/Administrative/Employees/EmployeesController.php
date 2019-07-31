@@ -78,6 +78,9 @@ class EmployeesController extends Controller
         if ($employee->date_of_birth)
             $employee->date_of_birth = (Carbon::createFromFormat('D M d Y',$employee->date_of_birth))->format('Ymd');
 
+        if ($employee->last_contract_date)
+            $employee->last_contract_date = (Carbon::createFromFormat('D M d Y',$employee->last_contract_date))->format('Ymd');
+
         if(!$employee->save()){
             return $this->respondHttp500();
         }
@@ -101,15 +104,20 @@ class EmployeesController extends Controller
             $employee->income_date = (Carbon::createFromFormat('Y-m-d',$employee->income_date))->format('D M d Y');
 
             if ($employee->date_of_birth)
-            $employee->date_of_birth = (Carbon::createFromFormat('Y-m-d',$employee->date_of_birth))->format('D M d Y');
+                $employee->date_of_birth = (Carbon::createFromFormat('Y-m-d',$employee->date_of_birth))->format('D M d Y');
+
+            if ($employee->last_contract_date)
+                $employee->last_contract_date = (Carbon::createFromFormat('Y-m-d',$employee->last_contract_date))->format('D M d Y');
 
             $employee->multiselect_regional = $employee->regional->multiselect(); 
             $employee->multiselect_sede = $employee->headquarter->multiselect(); 
-            $employee->multiselect_area = $employee->area->multiselect(); 
             $employee->multiselect_proceso = $employee->process->multiselect(); 
+            $employee->multiselect_area = $employee->area ? $employee->area->multiselect() : []; 
             $employee->multiselect_cargo = $employee->position->multiselect(); 
             $employee->multiselect_centro_costo = $employee->business ? $employee->business->multiselect() : []; 
-            $employee->multiselect_eps = $employee->eps->multiselect(); 
+            $employee->multiselect_eps = $employee->eps ? $employee->eps->multiselect() : [];
+            $employee->multiselect_afp = $employee->afp ? $employee->afp->multiselect() : []; 
+            $employee->multiselect_arl = $employee->arl ? $employee->arl->multiselect() : []; 
 
             return $this->respondHttp200([
                 'data' => $employee,
@@ -133,6 +141,9 @@ class EmployeesController extends Controller
 
         if ($employee->date_of_birth)
             $employee->date_of_birth = (Carbon::createFromFormat('D M d Y',$employee->date_of_birth))->format('Ymd');
+
+        if ($employee->last_contract_date)
+            $employee->last_contract_date = (Carbon::createFromFormat('D M d Y',$employee->last_contract_date))->format('Ymd');
 
         if(!$employee->update()){
             return $this->respondHttp500();

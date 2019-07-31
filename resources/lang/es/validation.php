@@ -254,7 +254,9 @@ return [
       'ended_at' => 'Fecha Fin',
       'company_id' => 'Compañia',
       'display_name' => 'Descripción',
-      'keyword_id' => 'Etiqueta'
+      'keyword_id' => 'Etiqueta',
+      'contract_numbers' => 'Número de contratos',
+      'contract_type' => 'Tipo de contrato'
     ],
 
 ];

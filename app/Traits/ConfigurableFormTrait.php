@@ -7,6 +7,8 @@ use Exception;
 
 trait ConfigurableFormTrait
 {
+    use UtilsTrait;
+
     /**
      * returns the configuration
      *
@@ -17,14 +19,30 @@ trait ConfigurableFormTrait
         try
         {     
             if ($company_id)
-                $locationLevelForm = ConfigurationsCompany::company($company_id)->findByKey($key);
+                $data = ConfigurationsCompany::company($company_id)->findByKey($key);
             else
-                $locationLevelForm = ConfigurationsCompany::findByKey($key);
+                $data = ConfigurationsCompany::findByKey($key);
 
-            return $locationLevelForm;
+            return $data;
 
         } catch( Exception $e) {
             return 'default';
+        }
+    }
+
+    protected function getSelectOptions($key, $company_id = NULL)
+    {
+        try
+        {     
+            if ($company_id)
+                $data = ConfigurationsCompany::company($company_id)->findByKey($key);
+            else
+                $data = ConfigurationsCompany::findByKey($key);
+
+            return $this->multiSelectFormat($data);
+
+        } catch( Exception $e) {
+            return [];
         }
     }
 }

@@ -29,32 +29,34 @@
     <b-form-row>
       <vue-ajax-advanced-select :disabled="viewOnly || !form.employee_headquarter_id" class="col-md-6" v-model="form.employee_process_id" :error="form.errorsFor('employee_process_id')" :selected-object="form.multiselect_proceso" name="employee_process_id" label="Proceso" placeholder="Seleccione el proceso" :url="processesDataUrl" :parameters="{headquarter: form.employee_headquarter_id }" :emptyAll="empty.process" @updateEmpty="updateEmptyKey('process')">
       </vue-ajax-advanced-select>
-      <vue-ajax-advanced-select :disabled="viewOnly" class="col-md-6" v-model="form.employee_position_id" :error="form.errorsFor('employee_position_id')" :selected-object="form.multiselect_cargo" name="employee_position_id" label="Cargo" placeholder="Seleccione el cargo" :url="positionsDataUrl">
+      <vue-ajax-advanced-select :disabled="viewOnly || !form.employee_process_id" class="col-md-6" v-model="form.employee_area_id" :error="form.errorsFor('employee_area_id')" :selected-object="form.multiselect_area" name="employee_area_id" label="Área" placeholder="Seleccione el área" :url="areasDataUrl" :parameters="{process: form.employee_process_id, headquarter: form.employee_headquarter_id }" :emptyAll="empty.area" @updateEmpty="updateEmptyKey('area')">
           </vue-ajax-advanced-select>
     </b-form-row>
 
     <b-form-row>
+      <vue-ajax-advanced-select :disabled="viewOnly" class="col-md-6" v-model="form.employee_position_id" :error="form.errorsFor('employee_position_id')" :selected-object="form.multiselect_cargo" name="employee_position_id" label="Cargo" placeholder="Seleccione el cargo" :url="positionsDataUrl">
+          </vue-ajax-advanced-select>
       <vue-ajax-advanced-select :disabled="viewOnly" class="col-md-6" v-model="form.employee_business_id" :error="form.errorsFor('employee_business_id')" :selected-object="form.multiselect_centro_costo" name="employee_business_id" label="Centro de costo" placeholder="Seleccione el centro de costo" :url="businessesDataUrl">
           </vue-ajax-advanced-select>
-          <vue-ajax-advanced-select :disabled="viewOnly" class="col-md-6" v-model="form.employee_eps_id" :error="form.errorsFor('employee_eps_id')" :selected-object="form.multiselect_eps" name="employee_eps_id" label="EPS" placeholder="Seleccione el eps" :url="epsDataUrl">
-      </vue-ajax-advanced-select>
     </b-form-row>
       
     <b-form-row>
-      <vue-ajax-advanced-select :disabled="viewOnly" class="col-md-6" v-model="form.employee_afp_id" :error="form.errorsFor('employee_afp_id')" :selected-object="form.multiselect_afp" name="employee_afp_id" label="AFP" placeholder="Seleccione el afp" :url="afpDataUrl">
+      <vue-ajax-advanced-select :disabled="viewOnly" class="col-md-6" v-model="form.employee_eps_id" :error="form.errorsFor('employee_eps_id')" :selected-object="form.multiselect_eps" name="employee_eps_id" label="EPS" placeholder="Seleccione el eps" :url="epsDataUrl">
       </vue-ajax-advanced-select>
-      <vue-ajax-advanced-select :disabled="viewOnly" class="col-md-6" v-model="form.employee_arl_id" :error="form.errorsFor('employee_arl_id')" :selected-object="form.multiselect_arl" name="employee_arl_id" label="ARL" placeholder="Seleccione el arl" :url="arlDataUrl">
+      <vue-ajax-advanced-select :disabled="viewOnly" class="col-md-6" v-model="form.employee_afp_id" :error="form.errorsFor('employee_afp_id')" :selected-object="form.multiselect_afp" name="employee_afp_id" label="AFP" placeholder="Seleccione el afp" :url="afpDataUrl">
       </vue-ajax-advanced-select>   
     </b-form-row>  
 
     <b-form-row>
-      <vue-input :disabled="viewOnly" class="col-md-6" v-model="form.contract_numbers" label="Numero de contratos" type="number" name="contract_numbers" :error="form.errorsFor('contract_numbers')" placeholder="Numero de contratos"></vue-input>
-      <vue-datepicker :disabled="viewOnly" class="col-md-6" v-model="form.last_contract_date" label="Fecha de ultimo contrato" :full-month-name="true" placeholder="Seleccione la fecha de ultimo contrato" :error="form.errorsFor('last_contract_date')" name="last_contract_date" :disabled-dates="disabledDates">
-          </vue-datepicker>      
+      <vue-ajax-advanced-select :disabled="viewOnly" class="col-md-6" v-model="form.employee_arl_id" :error="form.errorsFor('employee_arl_id')" :selected-object="form.multiselect_arl" name="employee_arl_id" label="ARL" placeholder="Seleccione el arl" :url="arlDataUrl">
+      </vue-ajax-advanced-select>
+      <vue-input :disabled="viewOnly" class="col-md-6" v-model="form.contract_numbers" label="Número de contratos" type="number" name="contract_numbers" :error="form.errorsFor('contract_numbers')" placeholder="Números de contratos"></vue-input>     
     </b-form-row>
 
     <b-form-row>
-      <vue-advanced-select :disabled="viewOnly" class="col-md-6" v-model="form.contract_type" :error="form.errorsFor('contract_type')" :multiple="false" :options="contracTypes" :hide-selected="false" name="contract_type" label="Tipo de contrato" placeholder="Seleccione el tipo de contrato">
+      <vue-datepicker :disabled="viewOnly" class="col-md-6" v-model="form.last_contract_date" label="Fecha de último contrato" :full-month-name="true" placeholder="Seleccione la fecha de último contrato" :error="form.errorsFor('last_contract_date')" name="last_contract_date" :disabled-dates="disabledDates">
+          </vue-datepicker> 
+      <vue-advanced-select :disabled="viewOnly" class="col-md-6" v-model="form.contract_type" :error="form.errorsFor('contract_type')" :multiple="false" :options="contractTypes" :hide-selected="false" name="contract_type" label="Tipo de contrato" placeholder="Seleccione el tipo de contrato">
           </vue-advanced-select>
     </b-form-row>
 

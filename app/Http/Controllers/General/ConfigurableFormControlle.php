@@ -14,4 +14,9 @@ class ConfigurableFormControlle extends Controller
     {
         return $this->getFormModel($request->key);
     }
+
+    public function selectOptions(Request $request)
+    {
+        return $this->getSelectOptions($request->key);
+    }
 }
