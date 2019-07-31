@@ -237,7 +237,7 @@ class ApplicationController extends Controller
      * @return Array
      */
 
-    public function multiselectAfs(Request $request)
+    public function multiselectAfp(Request $request)
     {
         if($request->has('keyword'))
         {

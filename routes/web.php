@@ -28,6 +28,11 @@ Route::middleware(['auth'])->group(function () {
     Route::post('setStateFilters', 'General\ApplicationController@setStateFilters');
     Route::post('getStateFilters', 'General\ApplicationController@getStateFilters');
 
+    Route::prefix('configurableForm')->group(function () {
+      Route::post('formModel', 'General\ConfigurableFormControlle@formModel');
+      Route::post('selectOptions', 'General\ConfigurableFormControlle@selectOptions');
+    });
+
     Route::get('templates/audiometryimport','PreventiveOccupationalMedicine\BiologicalMonitoring\AudiometryController@downloadTemplateImport');
 
 	//Cerrar sesión 

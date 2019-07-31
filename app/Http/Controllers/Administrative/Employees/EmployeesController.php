@@ -42,24 +42,26 @@ class EmployeesController extends Controller
     public function data(Request $request)
     {
         $employees = Employee::select(
-            'sau_employees.*'/*,
-            'sau_employees_positions.name as cargo',
+            'sau_employees.*',
+            'sau_employees_positions.name as position',
             'sau_employees_regionals.name as regional',
-            'sau_employees_headquarters.name as sede',
-            'sau_employees_areas.name as area'*/
+            'sau_employees_headquarters.name as headquarter',
+            'sau_employees_processes.name as process',
+            'sau_employees_businesses.name as business',
+            'sau_employees_eps.name as eps',
+            'sau_employees_afp.name as afp',
+            'sau_employees_arl.name as arl'
         )
-        /*->join('sau_employees_positions', 'sau_employees_positions.id', 'sau_employees.employee_position_id')
+        ->join('sau_employees_positions', 'sau_employees_positions.id', 'sau_employees.employee_position_id')
         ->join('sau_employees_regionals', 'sau_employees_regionals.id', 'sau_employees.employee_regional_id')
         ->join('sau_employees_headquarters', 'sau_employees_headquarters.id', 'sau_employees.employee_headquarter_id')
-        ->join('sau_employees_areas', 'sau_employees_areas.id', 'sau_employees.employee_area_id')*/;
+        ->join('sau_employees_processes', 'sau_employees_processes.id', 'sau_employees.employee_process_id')
+        ->leftJoin('sau_employees_businesses', 'sau_employees_businesses.id', 'sau_employees.employee_business_id')
+        ->leftJoin('sau_employees_eps', 'sau_employees_eps.id', 'sau_employees.employee_eps_id')
+        ->leftJoin('sau_employees_afp', 'sau_employees_afp.id', 'sau_employees.employee_afp_id')
+        ->leftJoin('sau_employees_arl', 'sau_employees_arl.id', 'sau_employees.employee_arl_id');
 
         return Vuetable::of($employees)
-                /*->addColumn('sex_detail', function ($employee) {
-                    if (!$employee->sex)
-                        return '-';
-                        
-                    return $employee->sex == 'M' ? 'Masculino' : 'Femenino';
-                })*/
                 ->make();
     }
 
@@ -77,6 +79,9 @@ class EmployeesController extends Controller
 
         if ($employee->date_of_birth)
             $employee->date_of_birth = (Carbon::createFromFormat('D M d Y',$employee->date_of_birth))->format('Ymd');
+
+        if ($employee->last_contract_date)
+            $employee->last_contract_date = (Carbon::createFromFormat('D M d Y',$employee->last_contract_date))->format('Ymd');
 
         if(!$employee->save()){
             return $this->respondHttp500();
@@ -101,15 +106,20 @@ class EmployeesController extends Controller
             $employee->income_date = (Carbon::createFromFormat('Y-m-d',$employee->income_date))->format('D M d Y');
 
             if ($employee->date_of_birth)
-            $employee->date_of_birth = (Carbon::createFromFormat('Y-m-d',$employee->date_of_birth))->format('D M d Y');
+                $employee->date_of_birth = (Carbon::createFromFormat('Y-m-d',$employee->date_of_birth))->format('D M d Y');
+
+            if ($employee->last_contract_date)
+                $employee->last_contract_date = (Carbon::createFromFormat('Y-m-d',$employee->last_contract_date))->format('D M d Y');
 
             $employee->multiselect_regional = $employee->regional->multiselect(); 
             $employee->multiselect_sede = $employee->headquarter->multiselect(); 
-            $employee->multiselect_area = $employee->area->multiselect(); 
             $employee->multiselect_proceso = $employee->process->multiselect(); 
+            $employee->multiselect_area = $employee->area ? $employee->area->multiselect() : []; 
             $employee->multiselect_cargo = $employee->position->multiselect(); 
             $employee->multiselect_centro_costo = $employee->business ? $employee->business->multiselect() : []; 
-            $employee->multiselect_eps = $employee->eps->multiselect(); 
+            $employee->multiselect_eps = $employee->eps ? $employee->eps->multiselect() : [];
+            $employee->multiselect_afp = $employee->afp ? $employee->afp->multiselect() : []; 
+            $employee->multiselect_arl = $employee->arl ? $employee->arl->multiselect() : []; 
 
             return $this->respondHttp200([
                 'data' => $employee,
@@ -133,6 +143,9 @@ class EmployeesController extends Controller
 
         if ($employee->date_of_birth)
             $employee->date_of_birth = (Carbon::createFromFormat('D M d Y',$employee->date_of_birth))->format('Ymd');
+
+        if ($employee->last_contract_date)
+            $employee->last_contract_date = (Carbon::createFromFormat('D M d Y',$employee->last_contract_date))->format('Ymd');
 
         if(!$employee->update()){
             return $this->respondHttp500();
