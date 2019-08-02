@@ -46,4 +46,9 @@ class EmployeeHeadquarter extends Model
             'value' => $this->id
         ];
     }
+
+    public function users()
+    {
+        return $this->belongsToMany('App\Models\Administrative\Users\User', 'sau_reinc_user_headquarter');
+    }
 }
