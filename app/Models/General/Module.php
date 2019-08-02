@@ -32,8 +32,11 @@ class Module extends Model
 
     public function multiselect()
     {
+        $display_name = explode("/", $this->display_name);
+        $display_name = COUNT($display_name) > 1 ? $display_name[1] : $display_name[0];
+
         return [
-          'name' => $this->display_name,
+          'name' => $display_name,
           'value' => $this->id
         ];
     }
