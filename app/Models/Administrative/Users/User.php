@@ -6,6 +6,7 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Laratrust\Traits\LaratrustUserTrait;
 use App\Traits\CompanyTrait;
+use App\Traits\PermissionTrait;
 use App\Models\General\Permission;
 use App\Models\General\Keyword;
 use App\Models\Administrative\Roles\Role;
@@ -17,6 +18,7 @@ class User extends Authenticatable
     use LaratrustUserTrait;
     use Notifiable;
     use CompanyTrait;
+    use PermissionTrait;
 
     /**
      * The attributes that are mass assignable.
@@ -127,9 +129,17 @@ class User extends Authenticatable
      */
     public function getCanAttribute()
     {
+        $modules = $this->getModulePermissions();
+        $permission_enabled = [];
+
+        foreach ($modules as $key => $value)
+        {
+            $permission_enabled = array_merge($permission_enabled,  array_values($value));
+        }
+
         $permissions = [];
         foreach (Permission::all() as $permission) {
-            if ($this->can($permission->name)) {
+            if (in_array($permission->name, $permission_enabled)) {
                 $permissions[$permission->name] = true;
             } else {
                 $permissions[$permission->name] = false;
