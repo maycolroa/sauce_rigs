@@ -3,10 +3,23 @@
 namespace App\Models\Administrative\Employees;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Scopes\HeadquartersScope;
 use App\Traits\CompanyTrait;
 
 class Employee extends Model
 {
+     /**
+     * The "booting" method of the model.
+     *
+     * @return void
+     */
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::addGlobalScope(new HeadquartersScope);
+    }
+
     use CompanyTrait;
 
     protected $table = 'sau_employees';

@@ -203,4 +203,9 @@ class User extends Authenticatable
 
         return $keywords;
     }
+
+    public function headquarters()
+    {
+        return $this->belongsToMany('App\Models\Administrative\Headquarters\EmployeeHeadquarter', 'sau_reinc_user_headquarter');
+    }
 }
