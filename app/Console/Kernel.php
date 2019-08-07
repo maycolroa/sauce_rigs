@@ -19,7 +19,9 @@ class Kernel extends ConsoleKernel
         'App\Console\Commands\CheckLastLoginNotification',
         'App\Console\Commands\DisableUsers',
         'App\Console\Commands\DaysAlertExpiredLicense',
-        'App\Console\Commands\NotifyUpdateLaws'
+        'App\Console\Commands\NotifyUpdateLaws',
+        'App\Console\Commands\ReincSendMail',
+        'App\Console\Commands\ReincNotificationNextFollowUp'
     ];
 
     /**
@@ -61,6 +63,14 @@ class Kernel extends ConsoleKernel
         $schedule->command('notify-update-laws')
             ->timezone('America/Bogota')
             ->dailyAt('01:00');
+
+        /*$schedule->command('reinc-send-mail')
+            ->timezone('America/Bogota')
+            ->dailyAt('22:00');
+
+        $schedule->command('reinc-notification-next-follow-up')
+            ->timezone('America/Bogota')
+            ->dailyAt('01:00');*/
     }
 
     /**
