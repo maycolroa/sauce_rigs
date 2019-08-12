@@ -1,5 +1,6 @@
 <template>
-    <b-form-group class="class" :label="label">
+    <b-form-group class="class text-center" :label="label">
+        <center>
             <b-radio-group
                 :name="name" 
                 :state="state" 
@@ -10,6 +11,7 @@
             <b-form-invalid-feedback v-if="error" :force-show="true">
                 {{error}}
             </b-form-invalid-feedback>
+        </center>
     </b-form-group>
 </template>
 <script>

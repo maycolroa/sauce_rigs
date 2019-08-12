@@ -47,6 +47,36 @@ class SauConfigurationSeeder extends Seeder
                 'key' => 'admin_license_notification_email',
                 'value' => 'carolina.madrid@rigs.com.co',
                 'observation' => 'Administrador al que se notificara sobre las licencias próximas a vencer'
+            ],
+            [
+                'key' => 'reinc_select_disease_origin',
+                'value' => '["Enfermedad Laboral","Enfermedad General","Accidente de Trabajo","Maternidad"]',
+                'observation' => 'Reincorporaciones - Opciones de Tipo de Evento'
+            ],
+            [
+                'key' => 'reinc_select_lateralities',
+                'value' => '["Derecho","Izquierdo","Derecho e izquierdo","NA"]',
+                'observation' => 'Reincorporaciones - Opciones de Lateralidad'
+            ],
+            [
+                'key' => 'reinc_select_origin_advisors',
+                'value' => '["ARL","EPS","Médico de la empresa"]',
+                'observation' => 'Reincorporaciones - Procedencia de las recomendaciones'
+            ],
+            [
+                'key' => 'reinc_select_medical_conclusions',
+                'value' => '["Estable","Mejorando","Empeorando","Sin información médica"]',
+                'observation' => 'Reincorporaciones - Conclusión Seguimiento Médico'
+            ],
+            [
+                'key' => 'reinc_select_labor_conclusions',
+                'value' => '["Leve","Moderado","Severo"]',
+                'observation' => 'Reincorporaciones - Conclusión Seguimiento Laboral'
+            ],
+            [
+                'key' => 'reinc_select_emitter_origin',
+                'value' => '["ARL","EPS","AFP","JUNTA REGIONAL","JUNTA NACIONAL","Sin Información"]',
+                'observation' => 'Reincorporaciones - Entidad que Califica Origen'
             ]
         ];
 

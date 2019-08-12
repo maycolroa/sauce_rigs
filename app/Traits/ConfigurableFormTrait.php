@@ -3,6 +3,7 @@
 namespace App\Traits;
 
 use App\Facades\ConfigurationsCompany\Facades\ConfigurationsCompany;
+use App\Facades\Configuration;
 use Exception;
 
 trait ConfigurableFormTrait
@@ -24,8 +25,8 @@ trait ConfigurableFormTrait
                 $data = ConfigurationsCompany::findByKey($key);
 
             return $data;
-
-        } catch( Exception $e) {
+            
+        } catch (Exception $e) {
             return 'default';
         }
     }
@@ -41,7 +42,20 @@ trait ConfigurableFormTrait
 
             return $this->multiSelectFormat($data);
 
-        } catch( Exception $e) {
+        } catch (Exception $e) {
+            return $this->getDefaultSelectOptions($key);
+        }
+    }
+
+    private function getDefaultSelectOptions($key)
+    {
+        try
+        {     
+            $data = Configuration::getConfiguration($key);
+
+            return $this->multiSelectFormat($data);
+
+        } catch (Exception $e) {
             return [];
         }
     }

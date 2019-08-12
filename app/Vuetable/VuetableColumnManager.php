@@ -31,7 +31,8 @@ class VuetableColumnManager
         'industrialsecuredangermatrix',
         'industrialsecuredangermatrixreport',
         'legalAspectsfileUpload',
-        'administrativeemployees'
+        'administrativeemployees',
+        'reinstatementschecks'
     ];
 
     protected $customColumnsName;
@@ -323,6 +324,47 @@ class VuetableColumnManager
                 ['name' => 'sau_employees_eps.name', 'data'=> 'eps', 'title'=> 'EPS', 'sortable'=> true, 'searchable'=> true, 'detail'=> false, 'key'=> false ],
                 ['name' => 'sau_employees_afp.name', 'data'=> 'afp', 'title'=> 'AFP', 'sortable'=> true, 'searchable'=> true, 'detail'=> false, 'key'=> false ],
                 ['name' => 'sau_employees_arl.name', 'data'=> 'arl', 'title'=> 'ARL', 'sortable'=> true, 'searchable'=> true, 'detail'=> false, 'key'=> false ]
+            ];
+        }
+
+        $colums = array_merge($colums, [
+            ['name' => '', 'data'=> 'controlls', 'title'=> 'Controles', 'sortable'=> false, 'searchable'=> false, 'detail'=> false, 'key'=> false ],
+        ]);
+
+        return $colums;
+    }
+
+    /**
+     * returns the columns for the danger matrix
+     * 
+     * @return Array
+     */
+    public function reinstatementschecks()
+    {
+        $formModel = $this->getFormModel('table_checks');
+
+        if ($formModel == 'default')
+        { 
+            $colums = [
+                ['name' => 'sau_checks.id', 'data'=> 'id', 'title'=> 'ID', 'sortable'=> false, 'searchable'=> false, 'detail'=> false, 'key'=> true ],
+                ['name' => 'sau_reinc_cie10_codes.code', 'data'=> 'code', 'title'=> 'Código CIE 10', 'sortable'=> true, 'searchable'=> true, 'detail'=> false, 'key'=> false ],
+                ['name' => 'sau_checks.disease_origin', 'data'=> 'disease_origin', 'title'=> 'Tipo de Evento', 'sortable'=> true, 'searchable'=> true, 'detail'=> false, 'key'=> false ],
+                ['name' => 'sau_employees_regionals.name', 'data'=> 'regional', 'title'=> $this->keywordCheck('regional'), 'sortable'=> true, 'searchable'=> true, 'detail'=> false, 'key'=> false ],
+                ['name' => 'sau_employees.name', 'data'=> 'name', 'title'=> 'Trabajador', 'sortable'=> true, 'searchable'=> true, 'detail'=> false, 'key'=> false ],
+                ['name' => 'sau_checks.state', 'data'=> 'state', 'title'=> 'Estado del Reporte', 'sortable'=> true, 'searchable'=> true, 'detail'=> false, 'key'=> false ],
+            ];
+        }
+        else if ($formModel == 'misionEmpresarial')
+        { 
+            $colums = [
+                ['name' => 'sau_checks.id', 'data'=> 'id', 'title'=> 'ID', 'sortable'=> false, 'searchable'=> false, 'detail'=> false, 'key'=> true ],
+                ['name' => 'sau_reinc_cie10_codes.code', 'data'=> 'code', 'title'=> 'Código CIE 10', 'sortable'=> true, 'searchable'=> true, 'detail'=> false, 'key'=> false ],
+                ['name' => 'sau_checks.disease_origin', 'data'=> 'disease_origin', 'title'=> 'Tipo de Evento', 'sortable'=> true, 'searchable'=> true, 'detail'=> false, 'key'=> false ],
+                ['name' => 'sau_employees_regionals.name', 'data'=> 'regional', 'title'=> $this->keywordCheck('regional'), 'sortable'=> true, 'searchable'=> true, 'detail'=> false, 'key'=> false ],
+                ['name' => 'sau_employees.name', 'data'=> 'name', 'title'=> 'Trabajador', 'sortable'=> true, 'searchable'=> true, 'detail'=> false, 'key'=> false ],
+                ['name' => 'sau_checks.state', 'data'=> 'state', 'title'=> 'Estado del Reporte', 'sortable'=> true, 'searchable'=> true, 'detail'=> false, 'key'=> false ],
+                ['name' => 'sau_checks.next_date_tracking', 'data'=> 'next_date_tracking', 'title'=> 'Próximo Seguimiento', 'sortable'=> true, 'searchable'=> true, 'detail'=> false, 'key'=> false ],
+                ['name' => 'sau_checks.deadline', 'data'=> 'deadline', 'title'=> 'Fecha de Cierre', 'sortable'=> true, 'searchable'=> true, 'detail'=> false, 'key'=> false ]
             ];
         }
 

@@ -56,6 +56,22 @@
                     {
                         "name": "reinc_restrictions_d",
                         "display_name": "Reincorporaciones/Restricciones - eliminar"
+                    },
+                    {
+                        "name": "reinc_checks_c",
+                        "display_name": "Reincorporaciones/Reportes - crear"
+                    },
+                    {
+                        "name": "reinc_checks_r",
+                        "display_name": "Reincorporaciones/Reportes - ver"
+                    },
+                    {
+                        "name": "reinc_checks_u",
+                        "display_name": "Reincorporaciones/Reportes - editar"
+                    },
+                    {
+                        "name": "reinc_checks_d",
+                        "display_name": "Reincorporaciones/Reportes - eliminar"
                     }
                 ]
             }

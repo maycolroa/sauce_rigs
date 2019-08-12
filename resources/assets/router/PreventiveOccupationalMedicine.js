@@ -104,5 +104,37 @@ export default [{
           import('@/views/PreventiveOccupationalMedicine/reinstatements/restrictions/view')
       }
     ]), 
+    ...middleware({ 'check-permission': 'reinc_checks_r' }, [
+      {
+        name: 'reinstatements-checks',
+        path: 'reinstatements/checks',
+        component: () =>
+            import('@/views/PreventiveOccupationalMedicine/reinstatements/checks/index')
+      }
+    ]), 
+    ...middleware({ 'check-permission': 'reinc_checks_c' }, [
+      {
+        name: 'reinstatements-checks-create',
+        path: 'reinstatements/checks/create',
+        component: () =>
+          import('@/views/PreventiveOccupationalMedicine/reinstatements/checks/create')
+      }
+    ]), 
+    ...middleware({ 'check-permission': 'reinc_checks_u' }, [
+      {
+        name: 'reinstatements-checks-edit',
+        path: 'reinstatements/checks/edit/:id',
+        component: () =>
+          import('@/views/PreventiveOccupationalMedicine/reinstatements/checks/edit')
+      }
+    ]), 
+    ...middleware({ 'check-permission': 'reinc_checks_r' }, [
+      {
+        name: 'reinstatements-checks-view',
+        path: 'reinstatements/checks/view/:id',
+        component: () =>
+          import('@/views/PreventiveOccupationalMedicine/reinstatements/checks/view')
+      }
+    ]), 
   ]
 }]

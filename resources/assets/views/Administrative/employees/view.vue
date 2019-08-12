@@ -76,7 +76,7 @@ export default {
       
       if (this.form == 'misionEmpresarial')
       {
-        axios.post(`/configurableForm/selectOptions`, {key: 'form_employee_contract_types'})
+        axios.post(`/configurableForm/selectOptions`, {key: 'employee_select_contract_types'})
         .then(response3 => {
           this.contractTypes = response3.data;
         })

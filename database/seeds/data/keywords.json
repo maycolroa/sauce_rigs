@@ -14,5 +14,9 @@
     {
         "name": "headquarters",
         "display_name": "Sedes"
+    },
+    {
+        "name": "eps",
+        "display_name": "EPS"
     }
 ]
