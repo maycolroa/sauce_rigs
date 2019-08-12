@@ -155,6 +155,7 @@ return [
         App\Facades\ActionPlans\ActionPlanServiceProvider::class,
         App\Facades\ConfigurationsCompany\ConfigurationsCompanyServiceProvider::class,
         App\Facades\StorageFiles\StorageFileServiceProvider::class,
+        App\Facades\Check\CheckManagerServiceProvider::class,
 
         /*
          * Application Service Providers...
@@ -223,6 +224,7 @@ return [
         'ActionPlan' => App\Facades\ActionPlans\ActionPlan::class,
         'ConfigurationsCompany' => App\Facades\ConfigurationsCompany\ConfigurationsCompany::class,
         'StorageFile' => App\Facades\StorageFiles\StorageFile::class,
+        'CheckManager' => App\Facades\Check\CheckManager::class,
     ],
 
 ];

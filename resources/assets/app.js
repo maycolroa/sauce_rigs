@@ -52,7 +52,7 @@ Vue.mixin({
     }
   },
   methods: {
-    keywordCheck(key, defaultValue) {
+    keywordCheck(key, defaultValue = '') {
       return this.keywords[key] != undefined ? this.keywords[key] : defaultValue
     }
   }

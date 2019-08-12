@@ -38,10 +38,10 @@ class MakeKeywordsSeeder extends Seeder
                     {
                         Keyword::create($item);
                     }
-                    else
+                    /*else
                     {
                         $keyword->update($item);
-                    }
+                    }*/
                 }
                 else
                 {

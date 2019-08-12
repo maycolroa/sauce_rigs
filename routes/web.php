@@ -53,6 +53,13 @@ Route::middleware(['auth'])->group(function () {
   
           Route::post('restriction/data', 'PreventiveOccupationalMedicine\Reinstatements\RestrictionController@data');
           Route::ApiResource('restriction', 'PreventiveOccupationalMedicine\Reinstatements\RestrictionController');
+
+          Route::get('check/downloadOriginFile/{check}', 'PreventiveOccupationalMedicine\Reinstatements\CheckController@downloadOriginFile');
+          Route::get('check/downloadPclFile/{check}', 'PreventiveOccupationalMedicine\Reinstatements\CheckController@downloadPclFile');
+          Route::post('check/data', 'PreventiveOccupationalMedicine\Reinstatements\CheckController@data');
+          Route::ApiResource('check', 'PreventiveOccupationalMedicine\Reinstatements\CheckController');
+
+          Route::ApiResource('cie10', 'PreventiveOccupationalMedicine\Reinstatements\Cie10Controller')->only('show');
         });
     });
 
@@ -82,6 +89,8 @@ Route::middleware(['auth'])->group(function () {
         Route::post('eps', 'General\ApplicationController@multiselectEps');
         Route::post('afp', 'General\ApplicationController@multiselectAfp');
         Route::post('arl', 'General\ApplicationController@multiselectArl');
+        Route::post('cie10', 'PreventiveOccupationalMedicine\Reinstatements\Cie10Controller@multiselect');
+        Route::post('restrictions', 'PreventiveOccupationalMedicine\Reinstatements\RestrictionController@multiselect');
         Route::post('multiselectBar', 'PreventiveOccupationalMedicine\BiologicalMonitoring\AudiometryInformController@multiselectBar');
         Route::post('multiselectBarPercentage', 'PreventiveOccupationalMedicine\BiologicalMonitoring\AudiometryInformController@multiselectBarPercentage');
         Route::post('dmActivities', 'IndustrialSecure\Activities\ActivityController@multiselect');

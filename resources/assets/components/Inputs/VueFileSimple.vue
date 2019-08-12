@@ -13,6 +13,7 @@
             :name="name"
             :disabled="disabled"
             @input="updateValue($event)"
+            :key="key"
             />
             
         </b-input-group>
@@ -26,6 +27,8 @@
 </template>
 
 <script>
+import Alerts from '@/utils/Alerts.js';
+
 export default {
   props: {
     error: {type: String, default: null},
@@ -39,7 +42,8 @@ export default {
     disabled: { type: Boolean, default: false },
     textBlock: {type: String},
     actionBlock: {type: String},
-    helpText: {type: String}
+    helpText: {type: String},
+    maxFileSize: { type: Number, default: 10000000 },
   },
   watch:{
 
@@ -57,10 +61,34 @@ export default {
           return this.textBlock ? 'd-flex justify-content-between align-items-end' : '';
       },
   },
+  data(){
+    return {
+      key: true,
+    }
+  },
   methods: {
-    updateValue(value) {
+    updateValue(value) 
+    {
+      if (this.accept != 'text')
+      {
+        if (!value.name.endsWith(this.accept))
+          return this.emitError(`Tipo de archivo inválido: La extensión del archivo debe ser ${this.accept}`)
+      }
+      
+      if (value.size > this.maxFileSize) 
+      {
+        return this.emitError(`Archivo muy pesado: El tamaño del archivo no puede superar ${this.maxFileSize/1000000}MB.`)
+      }
+
       this.$emit('input', value);
-    } 
+    },
+    emitError(message)
+    {
+      Alerts.error('Error', message);
+      this.key = !this.key
+      this.$emit('input', '');
+      return;
+    }
   }
 
 }
