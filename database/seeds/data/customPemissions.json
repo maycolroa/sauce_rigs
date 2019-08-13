@@ -72,6 +72,14 @@
                     {
                         "name": "reinc_checks_d",
                         "display_name": "Reincorporaciones/Reportes - eliminar"
+                    },
+                    {
+                        "name": "reinc_checks_manage_tracings",
+                        "display_name": "Reincorporaciones/Reportes - administrar seguimientos"
+                    },
+                    {
+                        "name": "reinc_checks_view_last_tracing",
+                        "display_name": "Reincorporaciones/Reportes - ver último seguimiento"
                     }
                 ]
             }

@@ -198,12 +198,14 @@ class CheckController extends Controller
             'laborMonitorings',
             'tracings' => function ($query) use ($authUser) {
                 
-                if ($authUser->can('view_last_tracing')) {
+                /*if (!$authUser->checkRoleDefined('Superadmin') && $authUser->can('reinc_checks_view_last_tracing')) {
                     $query->with('madeBy')->orderBy('created_at', 'desc')->limit(1);
                 }
                 else {
                     $query->with('madeBy')->orderBy('created_at', 'desc');
-                }
+                }*/
+                
+                $query->with('madeBy')->orderBy('created_at', 'desc');
             }
         ]);
 
