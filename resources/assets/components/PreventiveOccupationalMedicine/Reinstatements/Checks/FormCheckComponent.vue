@@ -207,7 +207,7 @@
             <div class="col-md-12">
               <tracing-inserter
                 :disabled="viewOnly"
-                :editable-tracings="editableTracings"
+                :editable-tracings="auth.can['reinc_checks_manage_tracings']"
                 :old-tracings="check.oldTracings"
                 ref="tracingInserter"
               >
@@ -269,7 +269,6 @@ export default {
     epsDataUrl: { type: String, default: "" },
     restrictionsDataUrl: { type: String, default: "" },
     disableWacthSelectInCreated: { type: Boolean, default: false},
-    editableTracings: { type: Boolean, default: false },
     diseaseOrigins: {
       type: Array,
       default: function() {
@@ -453,6 +452,11 @@ export default {
       this.form.relocated = 'NO';
       this.form.indefinite_recommendations = 'SI';
     }
+
+    setTimeout(() => {
+      this.disableWacth = false
+    }, 3000)
+    
   },
   data() {
     return {

@@ -213,7 +213,7 @@ export default [
   ],
   'controlls': [{
       type: 'push',
-      buttons: [/*{
+      buttons: [{
           config: {
               color: 'outline-success',
               borderless: true,
@@ -225,7 +225,7 @@ export default [
               id: 'id',
           },
           permission: 'reinc_checks_u'
-      }, */{
+      }, {
           config: {
               color: 'outline-info',
               borderless: true,
@@ -241,7 +241,7 @@ export default [
   },
   {
       type: 'base',
-      buttons: [/*{
+      buttons: [{
       name: 'delete',
       data: {
           action: '/biologicalmonitoring/reinstatements/check/',
@@ -249,7 +249,7 @@ export default [
           messageConfirmation: 'Esta seguro de borrar el reporte __name__'
       },
       permission: 'reinc_checks_d'
-      }*/],
+      }],
   }],
   configuration: {
       urlData: '/biologicalmonitoring/reinstatements/check/data',
