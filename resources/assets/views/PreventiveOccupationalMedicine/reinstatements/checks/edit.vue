@@ -1,7 +1,7 @@
 <template>
   <div>
     <h4 class="font-weight-bold mb-4">
-       <span class="text-muted font-weight-light">Empleados /</span> Editar
+       <span class="text-muted font-weight-light">Reportes /</span> Editar
     </h4>
 
     <div class="col-md">
@@ -10,59 +10,28 @@
           <loading :display="!ready"/>
           <div v-if="ready">
             <template v-if="form == 'default'">
-              <form-employee
-                  :url="`/administration/employee/${this.$route.params.id}`"
+              <form-check
+                  :url="`/biologicalmonitoring/reinstatements/check/${this.$route.params.id}`"
                   method="PUT"
+                  :check="data"
                   :disable-wacth-select-in-created="true"
-                  :sexs="sexs"
+                  employees-data-url="/selects/employees"
+                  :disease-origins="diseaseOrigins"
+                  :lateralities="lateralities"
+                  cie10-codes-data-url="/selects/cie10"
+                  :si-no="siNo"
+                  :origin-advisors="originAdvisors"
                   regionals-data-url="/selects/regionals"
                   headquarters-data-url="/selects/headquarters"
                   areas-data-url="/selects/areas"
                   processes-data-url="/selects/processes"
                   positions-data-url="/selects/positions"
-                  businesses-data-url="/selects/businesses"
-                  eps-data-url="/selects/eps"
-                  :employee="data"
+                  restrictions-data-url="/selects/restrictions"
+                  :medical-conclusions="medicalConclusions"
+                  :labor-conclusions="laborConclusions"
+                  :origin-emitters="originEmitters"
                   :is-edit="true"
-                  :cancel-url="{ name: 'administrative-employees'}"/>
-            </template>
-            <template v-if="form == 'vivaAir'">
-              <form-employee-viva-air 
-                  :url="`/administration/employee/${this.$route.params.id}`"
-                  method="PUT"
-                  :disable-wacth-select-in-created="true"
-                  :sexs="sexs"
-                  regionals-data-url="/selects/regionals"
-                  headquarters-data-url="/selects/headquarters"
-                  areas-data-url="/selects/areas"
-                  processes-data-url="/selects/processes"
-                  positions-data-url="/selects/positions"
-                  businesses-data-url="/selects/businesses"
-                  eps-data-url="/selects/eps"
-                  afp-data-url="/selects/afp"
-                  :employee="data"
-                  :is-edit="true"
-                  :cancel-url="{ name: 'administrative-employees'}"/>
-            </template>
-            <template v-if="form == 'misionEmpresarial'">
-              <form-employee-empresarial
-                  :url="`/administration/employee/${this.$route.params.id}`"
-                  method="PUT"
-                  :disable-wacth-select-in-created="true"
-                  :sexs="sexs"
-                  :contract-types="contractTypes"
-                  regionals-data-url="/selects/regionals"
-                  headquarters-data-url="/selects/headquarters"
-                  areas-data-url="/selects/areas"
-                  processes-data-url="/selects/processes"
-                  positions-data-url="/selects/positions"
-                  businesses-data-url="/selects/businesses"
-                  eps-data-url="/selects/eps"
-                  afp-data-url="/selects/afp"
-                  arl-data-url="/selects/arl"
-                  :employee="data"
-                  :is-edit="true"
-                  :cancel-url="{ name: 'administrative-employees'}"/>
+                  :cancel-url="{ name: 'reinstatements-checks'}"/>
             </template>
           </div>
         </b-card-body>
@@ -72,51 +41,52 @@
 </template>
 
 <script>
-import FormEmployee from '@/components/Administrative/Employees/FormEmployeeComponent.vue';
-import FormEmployeeVivaAir from '@/components/Administrative/Employees/FormEmployeeVivaAirComponent.vue';
-import FormEmployeeEmpresarial from '@/components/Administrative/Employees/FormEmployeeEmpresarialComponent.vue';
+import FormCheck from '@/components/PreventiveOccupationalMedicine/Reinstatements/Checks/FormCheckComponent.vue';
 import Loading from "@/components/Inputs/Loading.vue";
 import Alerts from '@/utils/Alerts.js';
 import GlobalMethods from '@/utils/GlobalMethods.js';
 
 export default {
-  name: 'administrative-employees-edit',
+  name: 'reinstatements-checks-edit',
   metaInfo: {
-    title: 'Empleados - Editar'
+    title: 'Reportes - Editar'
   },
   components:{
-    FormEmployee,
-    FormEmployeeVivaAir,
-    FormEmployeeEmpresarial,
+    FormCheck,
     Loading
   },
   data () {
     return {
       data: [],
-      sexs: [],
-      contractTypes: [],
       ready: false,
-      form: ''
+      form: '',
+      diseaseOrigins: [],
+      lateralities: [],
+      siNo: [],
+      originAdvisors: [],
+      medicalConclusions: [],
+      laborConclusions: [],
+      originEmitters: []
     }
   },
   created(){
-    axios.post(`/configurableForm/formModel`, {key: 'form_employee'})
+    axios.post(`/configurableForm/formModel`, {key: 'form_check'})
 		.then(response => {
       this.form = response.data;
       
       if (this.form == 'misionEmpresarial')
       {
-        axios.post(`/configurableForm/selectOptions`, {key: 'employee_select_contract_types'})
+        /*axios.post(`/configurableForm/selectOptions`, {key: 'employee_select_contract_types'})
         .then(response3 => {
           this.contractTypes = response3.data;
         })
         .catch(error => {
           Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
           this.$router.go(-1);
-        });
+        });*/
       }
       
-      axios.get(`/administration/employee/${this.$route.params.id}`)
+      axios.get(`/biologicalmonitoring/reinstatements/check/${this.$route.params.id}`)
       .then(response2 => {
           this.data = response2.data.data;
           this.ready = true
@@ -131,7 +101,13 @@ export default {
 			this.$router.go(-1);
 		});
 
-    this.fetchSelect('sexs', '/selects/sexs')
+    this.fetchOptions('diseaseOrigins', 'reinc_select_disease_origin')
+    this.fetchOptions('lateralities', 'reinc_select_lateralities')
+    this.fetchOptions('originAdvisors', 'reinc_select_origin_advisors')
+    this.fetchOptions('medicalConclusions', 'reinc_select_medical_conclusions')
+    this.fetchOptions('laborConclusions', 'reinc_select_labor_conclusions')
+    this.fetchOptions('originEmitters', 'reinc_select_emitter_origin')
+    this.fetchSelect('siNo', '/radios/siNo')
   },
   methods: {
 		fetchSelect(key, url)
@@ -145,6 +121,17 @@ export default {
 				this.$router.go(-1);
 			});
 		},
+    fetchOptions(key, search)
+    {
+      axios.post(`/configurableForm/selectOptions`, {key: search})
+        .then(response => {
+          this[key] = response.data;
+        })
+        .catch(error => {
+          Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
+          this.$router.go(-1);
+        });
+    }
 	}
 }
 </script>

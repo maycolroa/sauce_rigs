@@ -102,6 +102,26 @@ class Check extends Model
         return $this->belongsTo('App\Models\Administrative\Employees\Employee', 'employee_id');
     }
 
+    public function relocatedRegional()
+    {
+        return $this->belongsTo('App\Models\Administrative\Regionals\EmployeeRegional', 'relocated_regional_id');
+    }
+
+    public function relocatedHeadquarter()
+    {
+        return $this->belongsTo('App\Models\Administrative\Headquarters\EmployeeHeadquarter', 'relocated_headquarter_id');
+    }
+
+    public function relocatedProcess()
+    {
+        return $this->belongsTo('App\Models\Administrative\Areas\EmployeeArea', 'relocated_process_id');
+    }
+
+    public function relocatedPosition()
+    {
+        return $this->belongsTo('App\Models\Administrative\Positions\EmployeePosition', 'relocated_position_id');
+    }
+
     /**
      * returns the cie 10 code model related to this check
      * @return App\Models\PreventiveOccupationalMedicine\Reinstatements\Cie10Code

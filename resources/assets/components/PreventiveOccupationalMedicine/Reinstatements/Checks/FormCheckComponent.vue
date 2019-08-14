@@ -452,6 +452,11 @@ export default {
       this.form.relocated = 'NO';
       this.form.indefinite_recommendations = 'SI';
     }
+
+    setTimeout(() => {
+      this.disableWacth = false
+    }, 3000)
+    
   },
   data() {
     return {
