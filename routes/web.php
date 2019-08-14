@@ -34,6 +34,7 @@ Route::middleware(['auth'])->group(function () {
     });
 
     Route::get('templates/audiometryimport','PreventiveOccupationalMedicine\BiologicalMonitoring\AudiometryController@downloadTemplateImport');
+    Route::get('templates/employeeimport','Administrative\Employees\EmployeesController@downloadTemplateImport');
 
 	//Cerrar sesión 
 	Route::get('/logout', 'Auth\LoginController@logout')->name('logout');
@@ -194,6 +195,7 @@ Route::middleware(['auth'])->group(function () {
 			Route::post('process/data', 'Administrative\Processes\EmployeeProcessController@data');
 			Route::ApiResource('process', 'Administrative\Processes\EmployeeProcessController');
 
+      Route::post('employee/import', 'Administrative\Employees\EmployeesController@import');
 			Route::post('employee/data', 'Administrative\Employees\EmployeesController@data');
 			Route::ApiResource('employee', 'Administrative\Employees\EmployeesController');
 
