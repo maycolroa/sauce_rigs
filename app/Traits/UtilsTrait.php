@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Auth;
 use Exception;
 use Session;
 use DateTime;
+use DB;
 
 trait UtilsTrait
 {
@@ -287,5 +288,24 @@ trait UtilsTrait
             $user = Auth::user();
             
         return isset($user->keywords[$key]) ? $user->keywords[$key] : $defaultValue;
+    }
+
+    public function keywordCheckQueue($key, $company_id)
+    {
+        $keywords = DB::table(DB::raw(
+            "(SELECT
+                k.name AS name,
+                IF (c.display_name IS NULL, k.display_name, c.display_name) AS display_name
+            FROM
+                sau_keywords k
+            LEFT JOIN sau_keyword_company c ON c.keyword_id = k.id AND 
+                (
+                    c.company_id = $company_id OR c.company_id IS NULL
+                )) AS t"
+            )
+        )
+        ->pluck('display_name', 'name');
+            
+        return isset($keywords[$key]) ? $keywords[$key] : $defaultValue;
     }
 }

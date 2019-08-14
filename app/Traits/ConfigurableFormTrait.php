@@ -31,7 +31,7 @@ trait ConfigurableFormTrait
         }
     }
 
-    protected function getSelectOptions($key, $company_id = NULL)
+    protected function getSelectOptions($key, $multiselect = true, $company_id = NULL)
     {
         try
         {     
@@ -40,20 +40,20 @@ trait ConfigurableFormTrait
             else
                 $data = ConfigurationsCompany::findByKey($key);
 
-            return $this->multiSelectFormat($data);
+            return $multiselect ? $this->multiSelectFormat($data) : $data;
 
         } catch (Exception $e) {
-            return $this->getDefaultSelectOptions($key);
+            return $this->getDefaultSelectOptions($key, $multiselect);
         }
     }
 
-    private function getDefaultSelectOptions($key)
+    private function getDefaultSelectOptions($key, $multiselect)
     {
         try
         {     
             $data = Configuration::getConfiguration($key);
 
-            return $this->multiSelectFormat($data);
+            return $multiselect ? $this->multiSelectFormat($data) : $data;
 
         } catch (Exception $e) {
             return [];

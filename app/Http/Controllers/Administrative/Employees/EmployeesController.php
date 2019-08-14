@@ -7,6 +7,10 @@ use App\Http\Controllers\Controller;
 use App\Vuetable\Facades\Vuetable;
 use App\Models\Administrative\Employees\Employee;
 use App\Http\Requests\Administrative\Employees\EmployeeRequest;
+use App\Exports\Administrative\Employees\EmployeeImportTemplate;
+use App\Jobs\Administrative\Employees\EmpployeeImportJob;
+use Illuminate\Support\Facades\Auth;
+use Maatwebsite\Excel\Facades\Excel;
 use Carbon\Carbon;
 use Session;
 
@@ -18,7 +22,7 @@ class EmployeesController extends Controller
     function __construct()
     {
         $this->middleware('auth');
-        $this->middleware('permission:employees_c', ['only' => 'store']);
+        $this->middleware('permission:employees_c', ['only' => ['store', 'import', 'downloadTemplateImport']]);
         $this->middleware('permission:employees_r', ['except' =>'multiselect']);
         $this->middleware('permission:employees_u', ['only' => 'update']);
         $this->middleware('permission:employees_d', ['only' => 'destroy']);
@@ -226,5 +230,30 @@ class EmployeesController extends Controller
                 ->pluck('name', 'name');
             
         return $this->multiSelectFormat($names);
+    }
+
+    public function downloadTemplateImport()
+    {
+      return Excel::download(new EmployeeImportTemplate(Session::get('company_id')), 'PlantillaImportacionEmpleados.xlsx');
+    }
+
+    /**
+     * import.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function import(Request $request)
+    {
+      try
+      {
+        EmpployeeImportJob::dispatch($request->file, Session::get('company_id'), Auth::user());
+      
+        return $this->respondHttp200();
+
+      } catch(Exception $e)
+      {
+        return $this->respondHttp500();
+      }
     }
 }
