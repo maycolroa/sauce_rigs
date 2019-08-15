@@ -57,6 +57,9 @@ class CheckController extends Controller
                 ->join('sau_employees', 'sau_employees.id', 'sau_reinc_checks.employee_id')
                 ->leftJoin('sau_employees_regionals', 'sau_employees_regionals.id', 'sau_employees.employee_regional_id');
 
+        if ($request->has('modelId') && $request->get('modelId'))
+            $checks->where('sau_reinc_checks.employee_id', '=', $request->get('modelId'));
+
         return Vuetable::of($checks)
                     ->addColumn('reinstatements-checks-edit', function ($check) {
 

@@ -1,6 +1,33 @@
 <template>
 
   <b-form :action="url" @submit.prevent="submit" autocomplete="off">
+     <b-row v-if="employeeDetail.id">
+      <b-col>
+        <b-card bg-variant="transparent" border-variant="dark" title="" class="mb-3 box-shadow-none">
+          <center>
+            <b-btn variant="primary" size="md" @click="$refs.modalHistorial.show()" ><span class="ion ion-md-eye"></span> Ver otros reportes relacionados con {{ employeeDetail.name }}</b-btn>
+          </center>
+
+					<b-modal ref="modalHistorial" :hideFooter="true" id="modals-historial" class="modal-top" size="lg">
+						<div slot="modal-title">
+							Otros reportes relacionados con {{ employeeDetail.name }}
+						</div>
+
+						<b-card  bg-variant="transparent"  title="" class="mb-3 box-shadow-none">
+							<vue-table
+                configName="reinstatements-checks-form"
+                :customColumnsName="true"
+                :modelId="employeeDetail.id"
+                ></vue-table>
+						</b-card>
+						<br>
+						<div class="row float-right pt-12 pr-12y">
+							<b-btn variant="primary" @click="$refs.modalHistorial.hide()">Cerrar</b-btn>
+						</div>
+					</b-modal>
+        </b-card>
+      </b-col>
+    </b-row>                                    
     <b-row>
       <b-col>
         <b-card bg-variant="transparent" border-variant="dark" title="" class="mb-3 box-shadow-none">

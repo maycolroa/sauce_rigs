@@ -32,7 +32,8 @@ class VuetableColumnManager
         'industrialsecuredangermatrixreport',
         'legalAspectsfileUpload',
         'administrativeemployees',
-        'reinstatementschecks'
+        'reinstatementschecks',
+        'reinstatementschecksform'
     ];
 
     protected $customColumnsName;
@@ -373,5 +374,16 @@ class VuetableColumnManager
         ]);
 
         return $colums;
+    }
+
+
+    /**
+     * returns the columns for the danger matrix
+     * 
+     * @return Array
+     */
+    public function reinstatementschecksform()
+    {
+        return $this->reinstatementschecks();
     }
 }

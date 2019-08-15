@@ -256,5 +256,55 @@ export default [
       filterColumns: true,
   }
 },
+{
+  name: 'reinstatements-checks-form',
+  fields: [
+      { name: 'sau_reinc_checks.id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true },
+  ],
+  'controlls': [{
+      type: 'push',
+      buttons: [{
+          config: {
+              color: 'outline-success',
+              borderless: true,
+              icon: 'ion ion-md-create',
+              title: 'Editar'
+          },
+          data: {
+              routePush: { name: 'reinstatements-checks-edit' },
+              id: 'id',
+          },
+          permission: 'reinc_checks_u'
+      }, {
+          config: {
+              color: 'outline-info',
+              borderless: true,
+              icon: 'ion ion-md-eye',
+              title: 'Ver'
+          },
+          data: {
+              routePush: { name: 'reinstatements-checks-view' },
+              id: 'id',
+          },
+          permission: 'reinc_checks_r'
+      }]
+  },
+  {
+      type: 'base',
+      buttons: [{
+      name: 'delete',
+      data: {
+          action: '/biologicalmonitoring/reinstatements/check/',
+          id: 'id',
+          messageConfirmation: 'Esta seguro de borrar el reporte __name__'
+      },
+      permission: 'reinc_checks_d'
+      }],
+  }],
+  configuration: {
+      urlData: '/biologicalmonitoring/reinstatements/check/data',
+      filterColumns: true,
+  }
+},
 
 ];
