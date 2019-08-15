@@ -209,6 +209,8 @@
                 :disabled="viewOnly"
                 :editable-tracings="auth.can['reinc_checks_manage_tracings']"
                 :old-tracings="check.oldTracings"
+                :si-no="siNo"
+                :check-id="check.id"
                 ref="tracingInserter"
               >
               </tracing-inserter>

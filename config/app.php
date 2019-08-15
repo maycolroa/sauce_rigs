@@ -168,7 +168,8 @@ return [
         App\Providers\HorizonServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
         Maatwebsite\Excel\ExcelServiceProvider::class,
-        App\Providers\ObserverServiceProvider::class
+        App\Providers\ObserverServiceProvider::class,
+        Barryvdh\DomPDF\ServiceProvider::class,
 
     ],
 
@@ -225,6 +226,7 @@ return [
         'ConfigurationsCompany' => App\Facades\ConfigurationsCompany\ConfigurationsCompany::class,
         'StorageFile' => App\Facades\StorageFiles\StorageFile::class,
         'CheckManager' => App\Facades\Check\CheckManager::class,
+        'PDF' => Barryvdh\DomPDF\Facade::class,
     ],
 
 ];

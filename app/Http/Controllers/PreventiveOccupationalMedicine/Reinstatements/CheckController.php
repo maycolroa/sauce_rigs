@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Vuetable\Facades\Vuetable;
 use App\Facades\Check\Facades\CheckManager;
+use App\Models\General\Company;
 use App\Models\PreventiveOccupationalMedicine\Reinstatements\Check;
 use App\Http\Requests\PreventiveOccupationalMedicine\Reinstatements\CheckRequest;
 use Illuminate\Support\Facades\Auth;
@@ -13,6 +14,7 @@ use Illuminate\Support\Facades\Storage;
 use Carbon\Carbon;
 use Session;
 use DB;
+use PDF;
 
 class CheckController extends Controller
 { 
@@ -299,5 +301,45 @@ class CheckController extends Controller
             $date = (Carbon::createFromFormat('Y-m-d', $date))->format('D M d Y');
 
         return $date;
+    }
+
+    public function generateTracing(Request $request)
+    {
+        $check = Check::selectRaw(
+           'sau_employees.name AS name,
+            sau_employees.identification AS identification,
+            sau_employees_positions.name AS position,
+            sau_reinc_cie10_codes.description AS diagnosis,
+            sau_reinc_checks.disease_origin AS disease_origin,
+            sau_reinc_checks.start_recommendations AS start_recommendations,
+            sau_reinc_checks.end_recommendations AS end_recommendations,
+            DATEDIFF(sau_reinc_checks.end_recommendations, sau_reinc_checks.start_recommendations) AS time_different,
+            sau_reinc_checks.indefinite_recommendations AS indefinite_recommendations,
+            sau_reinc_checks.monitoring_recommendations AS monitoring_recommendations,
+            sau_employees_headquarters.name AS headquarter'
+        )
+        ->join('sau_employees', 'sau_employees.id', 'sau_reinc_checks.employee_id')
+        ->leftJoin('sau_employees_headquarters', 'sau_employees_headquarters.id', 'sau_employees.employee_headquarter_id')
+        ->leftJoin('sau_reinc_cie10_codes', 'sau_reinc_cie10_codes.id', 'sau_reinc_checks.cie10_code_id')
+        ->leftJoin('sau_employees_positions', 'sau_employees_positions.id', 'sau_employees.employee_position_id')
+        ->where('sau_reinc_checks.id', $request->check_id)
+        ->first();
+
+        $company = Company::select('logo')->where('id', Session::get('company_id'))->first();
+        $new_date_tracing = $request->new_date_tracing ? (Carbon::createFromFormat('D M d Y', $request->new_date_tracing))->format('Y-m-d') : '';
+
+        $data = [
+            'has_tracing' => $request->has_tracing,
+            'new_date_tracing' => $new_date_tracing,
+            'tracing_description' => $request->tracing_description,
+            'check' => $check,
+            'logo' => ($company && $company->logo) ? $company->logo : null
+        ];
+
+        PDF::setOptions(['dpi' => 150, 'defaultFont' => 'sans-serif']);
+        
+        $pdf = PDF::loadView('pdf.tracing', $data);
+
+        return $pdf->stream('pdf.pdf');
     }
 }
