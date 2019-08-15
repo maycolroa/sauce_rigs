@@ -17,7 +17,7 @@
 							<vue-table
                 configName="reinstatements-checks-form"
                 :customColumnsName="true"
-                :modelId="employeeDetail.id"
+                :params="{ employee_id: employeeDetail.id, current_check_id: check.id }"
                 ></vue-table>
 						</b-card>
 						<br>
