@@ -3,6 +3,13 @@
         <h5 class="col-md-12 text-center">Seguimiento</h5>
         <div v-if="!disabled" class="tracing">
             <vue-textarea class="col-md-12" v-model="newTracing" label="Nuevo Seguimiento" name="new_tracing"></vue-textarea>
+            <tracing-generate-pdf-button
+                v-if="checkId"
+                :tracing-description="newTracing"
+                :si-no="siNo"
+                :check-id="checkId"
+            />
+            <br>
         </div>
         <div v-if="showButtonTracings" class="col-md-12 text-center">
             <center><b-btn variant="primary" @click.prevent="oldTracingsHidden = !oldTracingsHidden">{{ oldTracingsHidden ? 'Mostrar seguimientos pasados' : 'Ocultar seguimientos pasados' }}</b-btn></center>
@@ -16,6 +23,12 @@
                 :disabled="disabled"
             >
             </vue-textarea>
+            <tracing-generate-pdf-button
+                :tracing="tracing"
+                :tracing-description="tracing.description"
+                :si-no="siNo"
+                :check-id="checkId"
+            />
         </div>
         <h5 v-if="showNoTracingsRegisteredLabel" class="col-md-12 text-center">No hay seguimientos registrados</h5>
     </div>
@@ -23,6 +36,7 @@
 
 <script>
 import VueTextarea from "@/components/Inputs/VueTextarea.vue";
+import TracingGeneratePdfButton from './TracingGeneratePdfButton.vue';
 
 export default {
     props: {
@@ -38,10 +52,21 @@ export default {
         },
         editableTracings: {
             type: Boolean, default: false
-        }
+        },
+        siNo: {
+            type: Array,
+            default: function() {
+                return [];
+            }
+        },
+        checkId: { 
+            type: Number, 
+            default: 0
+        },
     },
     components: {
-        VueTextarea
+        VueTextarea,
+        TracingGeneratePdfButton
     },
     computed: {
         showOldTracings() {
