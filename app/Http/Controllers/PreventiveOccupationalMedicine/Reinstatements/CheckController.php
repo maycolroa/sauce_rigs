@@ -11,6 +11,7 @@ use App\Models\PreventiveOccupationalMedicine\Reinstatements\Check;
 use App\Http\Requests\PreventiveOccupationalMedicine\Reinstatements\CheckRequest;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use App\Traits\ConfigurableFormTrait;
 use Carbon\Carbon;
 use Session;
 use DB;
@@ -18,6 +19,8 @@ use PDF;
 
 class CheckController extends Controller
 { 
+    use ConfigurableFormTrait;
+
     /**
      * creates and instance and middlewares are checked
      */
@@ -346,6 +349,74 @@ class CheckController extends Controller
         
         $pdf = PDF::loadView('pdf.tracing', $data);
 
-        return $pdf->stream('pdf.pdf');
+        return $pdf->stream('seguimiento.pdf');
     }
+
+    public function generateLetter(Request $request)
+    {
+        $check = Check::selectRaw(
+           'sau_reinc_checks.detail as check_detail,
+            sau_reinc_checks.start_recommendations AS start_recommendations,
+            DATEDIFF(sau_reinc_checks.end_recommendations, sau_reinc_checks.start_recommendations) AS time_different,
+            sau_reinc_checks.indefinite_recommendations AS indefinite_recommendations,
+            sau_employees_regionals.name as regional,
+            sau_employees_headquarters.name AS headquarter,
+            sau_employees.name AS name,
+            sau_employees.identification AS identification,
+            sau_reinc_checks.origin_recommendations as origin_recommendations,
+            sau_employees_positions.name AS position'
+        )
+        ->join('sau_employees', 'sau_employees.id', '=', 'sau_reinc_checks.employee_id')
+        ->leftJoin('sau_employees_regionals', 'sau_employees_regionals.id', '=', 'sau_employees.employee_regional_id')
+        ->leftJoin('sau_employees_headquarters', 'sau_employees_headquarters.id', '=', 'sau_employees.employee_headquarter_id')
+        ->leftJoin('sau_employees_positions', 'sau_employees_positions.id', '=', 'sau_employees.employee_position_id')
+        ->where('sau_reinc_checks.id', $request->check_id)
+        ->first();
+            
+        $company = Company::select('logo')->where('id', Session::get('company_id'))->first();
+        
+        \Log::info($check);
+
+        $data = [
+            'to' => $request->to,
+            'from' => $request->from,
+            'subject' => $request->subject, 
+            'user' => Auth::user()->name,
+            'check' => $check,
+            'firm' => $request->firm,
+            'recommendations' => $this->replaceLast(',', ' y ', $request->selectedRecommendations),
+            'logo' => ($company && $company->logo) ? $company->logo : null
+        ];
+
+        PDF::setOptions(['dpi' => 150, 'defaultFont' => 'sans-serif']);
+
+        $formModel = $this->getFormModel('reinc_letter_recomendatios');
+
+        if ($formModel == 'default')
+        { 
+            $pdf = PDF::loadView('pdf.letter', $data);
+        }
+        else if ($formModel == 'vivaAir')
+        {
+            $pdf = PDF::loadView('pdf.letterVivaAir', $data);
+        }
+        else if($formModel == 'reditos')
+        {
+            $pdf = PDF::loadView('pdf.letterReditos', $data);
+        }
+
+        return $pdf->stream('recomendaciones.pdf');
+    
+    }
+
+    private function replaceLast($buscar, $remplazar, $texto)
+    {
+        $pos = strrpos($texto, $buscar);
+        
+        if($pos !== false)
+            $texto = substr_replace($texto, $remplazar, $pos, strlen($buscar));
+        
+        return $texto;
+    }
+
 }
