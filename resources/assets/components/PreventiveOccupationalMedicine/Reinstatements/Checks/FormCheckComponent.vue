@@ -17,7 +17,7 @@
 							<vue-table
                 configName="reinstatements-checks-form"
                 :customColumnsName="true"
-                :modelId="employeeDetail.id"
+                :params="{ employee_id: employeeDetail.id, current_check_id: check.id }"
                 ></vue-table>
 						</b-card>
 						<br>
@@ -208,9 +208,8 @@
                   <h5 class="col-md-12">Controversia 1</h5>
                   <vue-datepicker :disabled="viewOnly" class="col-md-6" v-model="form.date_controversy_pcl_1" label="Fecha calificación primera controversia" :full-month-name="true" :error="form.errorsFor('date_controversy_pcl_1')" name="date_controversy_pcl_1">
                         </vue-datepicker>
-
-                  <vue-advanced-select :disabled="viewOnly" class="col-md-6" v-model="form.emitter_controversy_pcl_1" :error="form.errorsFor('emitter_controversy_pcl_1')" :multiple="false" :options="originEmitters" :hide-selected="false" name="emitter_controversy_pcl_1" label="Entidad que Califica la primera controversia" placeholder="Seleccione una opción">
-                    </vue-advanced-select>
+                        
+                  <vue-input :disabled="viewOnly" class="col-md-6" v-model="form.emitter_controversy_pcl_1" label="Entidad que Califica la primera controversia" type="text" name="emitter_controversy_pcl_1" :error="form.errorsFor('emitter_controversy_pcl_1')"></vue-input>
                 </b-form-row>
 
                 <b-form-row v-show="showcontroversy_pcl2" style="padding-top: 15px;">
@@ -218,8 +217,7 @@
                   <vue-datepicker :disabled="viewOnly" class="col-md-6" v-model="form.date_controversy_pcl_2" label="Fecha calificación segunda controversia" :full-month-name="true" :error="form.errorsFor('date_controversy_pcl_2')" name="date_controversy_pcl_2">
                         </vue-datepicker>
 
-                  <vue-advanced-select :disabled="viewOnly" class="col-md-6" v-model="form.emitter_controversy_pcl_2" :error="form.errorsFor('emitter_controversy_pcl_2')" :multiple="false" :options="originEmitters" :hide-selected="false" name="emitter_controversy_pcl_2" label="Entidad que Califica la segunda controversia" placeholder="Seleccione una opción">
-                    </vue-advanced-select>
+                  <vue-input :disabled="viewOnly" class="col-md-6" v-model="form.emitter_controversy_pcl_2" label="Entidad que Califica la segunda controversia" type="text" name="emitter_controversy_pcl_2" :error="form.errorsFor('emitter_controversy_pcl_2')"></vue-input>
                 </b-form-row>
 
               </b-form-row>
