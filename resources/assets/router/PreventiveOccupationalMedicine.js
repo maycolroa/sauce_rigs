@@ -136,5 +136,13 @@ export default [{
           import('@/views/PreventiveOccupationalMedicine/reinstatements/checks/view')
       }
     ]), 
+    ...middleware({ 'check-permission': 'reinc_checks_r' }, [
+      {
+        name: 'reinstatements-checks-letter',
+        path: 'reinstatements/checks/letter/:id',
+        component: () =>
+          import('@/views/PreventiveOccupationalMedicine/reinstatements/checks/letter')
+      }
+    ]), 
   ]
 }]

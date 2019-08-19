@@ -237,7 +237,18 @@ export default [
               id: 'id',
           },
           permission: 'reinc_checks_r'
-      }]
+      }, {
+        config: {
+            color: 'outline-success',
+            borderless: true,
+            icon: 'ion ion-md-clipboard',
+            title: 'Generar Carta'
+        },
+        data: {
+            routePush: { name: 'reinstatements-checks-letter' },
+            id: 'id',
+        }
+    }]
   },
   {
       type: 'base',
@@ -287,7 +298,18 @@ export default [
               id: 'id',
           },
           permission: 'reinc_checks_r'
-      }]
+      },{
+        config: {
+            color: 'outline-success',
+            borderless: true,
+            icon: 'ion ion-md-clipboard',
+            title: 'Generar Carta'
+        },
+        data: {
+            routePush: { name: 'reinstatements-checks-letter' },
+            id: 'id',
+        }
+    }]
   },
   {
       type: 'base',

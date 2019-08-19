@@ -29,8 +29,8 @@
     <br/><br/>
     <b>Asunto: {{$subject}}</b>
     <br/><br/>
-    <p>Una vez analizado el estado de salud, de <b>{{$check->worker_name}}</b>, identificada con <b>c.c. {{$check->worker_identification}}</b>, cargo: <b>{{$check->worker_position}}</b>, asignada a {{$check->worker_regional}}, nos permitimos comentarle que:</p>
-    <p>De acuerdo a lo establecido los artículos 7 y 8 de la Ley 776/2002, nos permitimos dar algunas sugerencias con el fin de contribuir en la recuperación del estado de salud y lograr el mejor desempeño laboral posible de <b>{{$check->worker_name}}:</b></p>
+    <p>Una vez analizado el estado de salud, de <b>{{$check->name}}</b>, identificada con <b>c.c. {{$check->identification}}</b>, cargo: <b>{{$check->position}}</b>, asignada a {{$check->regional}}, nos permitimos comentarle que:</p>
+    <p>De acuerdo a lo establecido los artículos 7 y 8 de la Ley 776/2002, nos permitimos dar algunas sugerencias con el fin de contribuir en la recuperación del estado de salud y lograr el mejor desempeño laboral posible de <b>{{$check->name}}:</b></p>
 
     <br/>
     @if ($check->check_detail)
