@@ -283,6 +283,21 @@ class Check extends Model
         return $query;
     }
 
+    public function scopeInDiseaseOrigin($query, $diseaseOrigin, $typeSearch = 'IN')
+    {
+        if (COUNT($diseaseOrigin) > 0)
+        {
+            if ($typeSearch == 'IN')
+                $query->whereIn('sau_reinc_checks.disease_origin', $diseaseOrigin);
+
+            else if ($typeSearch == 'NOT IN')
+                $query->whereNotIn('sau_reinc_checks.disease_origin', $diseaseOrigin);
+        }
+
+        return $query;
+    }
+
+
     public function scopeInYears($query, $years, $typeSearch = 'IN')
     {
         if (COUNT($years) > 0)
@@ -373,4 +388,58 @@ class Check extends Model
         return $query;
     }
 
+    /**
+     * filters checks through the given businesses
+     * @param  Illuminate\Database\Eloquent\Builder $query
+     * @param  array $businesses
+     * @return Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeInBusinesses($query, $businesses, $typeSearch = 'IN')
+    {
+        if (COUNT($businesses) > 0)
+        {
+            if ($typeSearch == 'IN')
+                $query->whereIn('sau_employees.employee_business_id', $businesses);
+
+            else if ($typeSearch == 'NOT IN')
+                $query->whereNotIn('sau_employees.employee_business_id', $businesses);
+        }
+
+        return $query;
+    }
+
+    /**
+     * filters checks through the given names
+     * @param  Illuminate\Database\Eloquent\Builder $query
+     * @param  array $names
+     * @return Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeInNames($query, $names, $typeSearch = 'IN')
+    {
+        if (COUNT($names) > 0)
+        {
+            if ($typeSearch == 'IN')
+                $query->whereIn('sau_employees.name', $names);
+
+            else if ($typeSearch == 'NOT IN')
+                $query->whereNotIn('sau_employees.name', $names);
+        }
+
+        return $query;
+    }
+
+    /**
+     * filters checks through the given date
+     * @param  Illuminate\Database\Eloquent\Builder $query
+     * @param  array $dates
+     * @return Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeBetweenDate($query, $dates)
+    {
+        if (COUNT($dates) == 2)
+        {
+            $query->whereBetween('sau_reinc_checks.created_at', $dates);
+            return $query;
+        }
+    }
 }

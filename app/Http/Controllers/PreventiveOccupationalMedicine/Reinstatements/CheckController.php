@@ -68,6 +68,29 @@ class CheckController extends Controller
         if ($request->employee_id)
             $checks->where('sau_reinc_checks.employee_id', '=', $request->employee_id);
 
+        $filters = $request->get('filters');
+
+        if (COUNT($filters) > 0)
+        {
+            $checks->inNames($this->getValuesForMultiselect($filters["names"]), $filters['filtersType']['names']);
+            $checks->inRegionals($this->getValuesForMultiselect($filters["regionals"]), $filters['filtersType']['regionals']);
+            $checks->inBusinesses($this->getValuesForMultiselect($filters["businesses"]), $filters['filtersType']['businesses']);
+            $checks->inNextFollowDays($this->getValuesForMultiselect($filters["nextFollowDays"]), $filters['filtersType']['nextFollowDays']);
+            $checks->inDiseaseOrigin($this->getValuesForMultiselect($filters["diseaseOrigin"]), $filters['filtersType']['diseaseOrigin']);
+
+            $dates_request = explode('/', $filters["dateRange"]);
+
+            $dates = [];
+
+            if (COUNT($dates_request) == 2)
+            {
+                array_push($dates, (Carbon::createFromFormat('D M d Y',$dates_request[0]))->format('Ymd'));
+                array_push($dates, (Carbon::createFromFormat('D M d Y',$dates_request[1]))->format('Ymd'));
+            }
+                
+            $checks->betweenDate($dates);
+        }
+
         return Vuetable::of($checks)
                     ->addColumn('reinstatements-checks-edit', function ($check) {
 
@@ -443,4 +466,27 @@ class CheckController extends Controller
         return $texto;
     }
 
+    public function multiselectDiseaseOrigin(Request $request)
+    {
+        return $this->getSelectOptions("reinc_select_disease_origin");
+    }
+
+    /**
+     * returns the days remaining for the next follow-up of the reports
+     * @return collection
+     */
+    public function multiselectNextFollowDays(Request $request)
+    {
+        $checks = Check::selectRaw('next_date_tracking, DATEDIFF(next_date_tracking, CURDATE()) as day')
+                    ->join('sau_employees', 'sau_employees.id', '=', 'sau_reinc_checks.employee_id')
+                    ->whereRaw('next_date_tracking >= CURDATE()')
+                    ->groupBy('next_date_tracking')
+                    ->orderBy('day');
+        
+        $data = $checks->pluck('next_date_tracking', 'day')->toArray();
+        $data['Vencidas'] = 'Vencidas';
+        $data['No Aplica'] = 'No Aplica';
+
+        return $this->multiSelectFormat(collect($data));
+    }
 }
