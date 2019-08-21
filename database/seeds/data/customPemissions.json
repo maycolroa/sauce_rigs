@@ -82,6 +82,27 @@
                         "display_name": "Reincorporaciones/Reportes - ver último seguimiento"
                     }
                 ]
+            },
+            {
+                "name": "absenteeism",
+                "permissions": [
+                    {
+                        "name": "absen_informs_c",
+                        "display_name": "Ausentismo/Informes - crear"
+                    },
+                    {
+                        "name": "absen_informs_r",
+                        "display_name": "Ausentismo/Informes - ver"
+                    },
+                    {
+                        "name": "absen_informs_u",
+                        "display_name": "Ausentismo/Informes - editar"
+                    },
+                    {
+                        "name": "absen_informs_d",
+                        "display_name": "Ausentismo/Informes - eliminar"
+                    }                    
+                ]
             }
         ]
     },

@@ -45,7 +45,11 @@ class MakeAllPermissionsSeeder extends Seeder
                 'logos_u',
                 'logos_d',
                 'labels_c',
-                'labels_d'
+                'labels_d',
+                'absenteeism_c',
+                'absenteeism_r',
+                'absenteeism_u',
+                'absenteeism_d',
             ];
 
             $modules = Module::all();

@@ -65,6 +65,10 @@ Route::middleware(['auth'])->group(function () {
           Route::ApiResource('cie10', 'PreventiveOccupationalMedicine\Reinstatements\Cie10Controller')->only('show');
         });
     });
+    Route::prefix('absenteeism')->group(function () {
+      Route::post('report/data', 'PreventiveOccupationalMedicine\absenteeism\ReportController@data');
+      Route::ApiResource('report', 'PreventiveOccupationalMedicine\absenteeism\ReportController');
+    });
 
     Route::prefix('selects')->group(function () {
         Route::post('employees', 'Administrative\Employees\EmployeesController@multiselect');

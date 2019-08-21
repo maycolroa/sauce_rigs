@@ -143,6 +143,11 @@ export default [{
         component: () =>
           import('@/views/PreventiveOccupationalMedicine/reinstatements/checks/letter')
       }
-    ]), 
+    ]),
+    {
+    name: 'preventiveoccupationalmedicine-absenteeism',
+      path: 'absenteeism',
+      component: () => import('@/views/PreventiveOccupationalMedicine/absenteeism/index')
+    } 
   ]
 }]
