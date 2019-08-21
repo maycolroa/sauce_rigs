@@ -1,7 +1,7 @@
 <template>
   <div>
     <h4 class="font-weight-bold mb-4">
-      Actividades
+      Reportes
     </h4>
 
 
@@ -29,7 +29,7 @@ import Alerts from '@/utils/Alerts.js';
 export default {
   name: 'activities',
   metaInfo: {
-    title: 'Actividades'
+    title: 'Reportes'
   }
 }
 </script>
