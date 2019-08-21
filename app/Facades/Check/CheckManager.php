@@ -65,18 +65,18 @@ class CheckManager
      * @param  User   $madeByUser
      * @return boolean
      */
-    public function saveTracing(Check $check, $tracingDescription, User $madeByUser, $tracingsToUpdate = [])
+    public function saveTracing($class, Check $check, $tracingDescription, User $madeByUser, $tracingsToUpdate = [])
     {
         try
         {
-            $this->handleTracingUpdates($madeByUser, $tracingsToUpdate);
+            $this->handleTracingUpdates($class, $madeByUser, $tracingsToUpdate);
 
             if (!$tracingDescription)
                 return true;
 
-            $tracing = new Tracing([
+            $tracing = (new ReflectionClass($class))->newInstanceArgs([[
                 'description' => $tracingDescription
-            ]);
+            ]]);
 
             $tracing->check_id = $check->id;
             $tracing->user_id = $madeByUser->id;
@@ -94,7 +94,7 @@ class CheckManager
      * @param  array  $tracingsToUpdate
      * @return void
      */
-    public function handleTracingUpdates(User $madeByUser, $tracingsToUpdate = [])
+    public function handleTracingUpdates($class, User $madeByUser, $tracingsToUpdate = [])
     {
         if (!is_array($tracingsToUpdate))
             return;
@@ -103,7 +103,7 @@ class CheckManager
         {
             $tracing = json_decode($tracing);
 
-            $oldTracing = Tracing::where('id', $tracing->id)->first();
+            $oldTracing = (new ReflectionClass($class))->newInstanceArgs([])->where('id', $tracing->id)->first();
 
             if (!$oldTracing)
                 continue;
@@ -193,7 +193,7 @@ class CheckManager
      */
     public function getProcessRules(CheckRequest $request)
     {
-        if ($this->formModel == 'default')
+        if ($this->formModel == 'default' || $this->formModel == 'vivaAir')
         {
             return [
                 'start_recommendations' => new RequiredIfHasRecommendations($request->has_recommendations),

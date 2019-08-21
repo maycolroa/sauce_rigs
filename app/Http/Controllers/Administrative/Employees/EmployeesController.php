@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Auth;
 use Maatwebsite\Excel\Facades\Excel;
 use Carbon\Carbon;
 use Session;
+use Datetime;
 
 class EmployeesController extends Controller
 {
@@ -107,7 +108,10 @@ class EmployeesController extends Controller
         try
         {
             $employee = Employee::findOrFail($id);
+            $employee->antiquity = $this->timeDifference($employee->income_date);
+
             $employee->income_date = (Carbon::createFromFormat('Y-m-d',$employee->income_date))->format('D M d Y');
+            $employee->age = $employee->date_of_birth ? $this->timeDifference((Carbon::createFromFormat('Y-m-d',$employee->date_of_birth))->toDateString()) : '';
 
             if ($employee->date_of_birth)
                 $employee->date_of_birth = (Carbon::createFromFormat('Y-m-d',$employee->date_of_birth))->format('D M d Y');
@@ -255,5 +259,20 @@ class EmployeesController extends Controller
       {
         return $this->respondHttp500();
       }
+    }
+
+    private function timeDifference($startDate, $endDate = null)
+    {
+        $start = new DateTime($startDate);
+        $end;
+
+        if ($endDate == null)
+            $end = new DateTime();
+        else
+            $start = new DateTime($endDate);
+
+        $interval = $start->diff($end);
+
+        return $interval->format('%y años %m meses y %d dias');
     }
 }
