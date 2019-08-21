@@ -61,6 +61,7 @@ Route::middleware(['auth'])->group(function () {
           Route::get('check/downloadPclFile/{check}', 'PreventiveOccupationalMedicine\Reinstatements\CheckController@downloadPclFile');
           Route::post('check/data', 'PreventiveOccupationalMedicine\Reinstatements\CheckController@data');
           Route::ApiResource('check', 'PreventiveOccupationalMedicine\Reinstatements\CheckController');
+          Route::post('check/switchStatus/{check}', 'PreventiveOccupationalMedicine\Reinstatements\CheckController@toggleState');
 
           Route::ApiResource('cie10', 'PreventiveOccupationalMedicine\Reinstatements\Cie10Controller')->only('show');
         });
