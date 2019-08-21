@@ -46,9 +46,11 @@
                   <div><b>Fecha de nacimiento:</b> {{ dateBirth }}</div>
                   <div><b>Sexo:</b> {{ employeeDetail.sex }}</div>
                   <div><b>Fecha de ingreso:</b> {{ incomeDate }}</div>
-                  <div><b>Cargo:</b> {{ employeeDetail.position ? employeeDetail.position.name : '' }}</div>
+                  <div><b>Antigüedad:</b> {{ employeeDetail.antiquity }}</div>
+                  <div><b>Edad:</b> {{ employeeDetail.age }}</div>
               </b-col>
               <b-col>
+                  <div><b>Cargo:</b> {{ employeeDetail.position ? employeeDetail.position.name : '' }}</div>
                   <div><b>Centro de costos:</b> {{ employeeDetail.business ? employeeDetail.business.name : '' }}</div>
                   <div><b>{{ keywordCheck('regional') }}:</b> {{ employeeDetail.regional ? employeeDetail.regional.name : ''}}</div>
                   <div><b>{{ keywordCheck('headquarter') }}:</b> {{ employeeDetail.headquarter ? employeeDetail.headquarter.name : '' }}</div>
