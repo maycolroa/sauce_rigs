@@ -58,6 +58,7 @@
                   <div><b>Proceso:</b> {{ employeeDetail.process ? employeeDetail.process.name : '' }}</div>
                   <div v-if="employeeDetail.area"><b>Área:</b> {{ employeeDetail.area.name }}</div>
                   <div><b>EPS:</b> {{ employeeDetail.eps ? `${employeeDetail.eps.code} - ${employeeDetail.eps.name}` : '' }}</div>
+                  <div><b>AFP:</b> {{ employeeDetail.afp ? `${employeeDetail.afp.code} - ${employeeDetail.afp.name}` : '' }}</div>
               </b-col>
           </b-row>
         </b-card>
@@ -77,6 +78,12 @@
           <b-form-row>
             <vue-input :disabled="true" class="col-md-6" v-model="cie10CodeDetail.system" label="Sistema" type="text" name="system"></vue-input>
             <vue-input :disabled="true" class="col-md-6" v-model="cie10CodeDetail.category" label="Categoría" type="text" name="category"></vue-input>
+          </b-form-row>
+          <b-form-row>
+            <vue-advanced-select :disabled="viewOnly" class="col-md-6" v-model="form.sve_associated" :error="form.errorsFor('sve_associated')" :multiple="false" :options="sveAssociated" :hide-selected="false" name="sve_associated" label="SVE Asociado" placeholder="Seleccione una opción">
+                </vue-advanced-select>
+            <vue-advanced-select :disabled="viewOnly" class="col-md-6" v-model="form.medical_certificate_ueac" :error="form.errorsFor('medical_certificate_ueac')" :multiple="false" :options="medicalCertificateUeac" :hide-selected="false" name="medical_certificate_ueac" label="Certificado médico UEAC - (Licencia / Permiso de Vuelo)" placeholder="Seleccione una opción">
+                </vue-advanced-select>
           </b-form-row>
           <b-form-row>
             <vue-advanced-select :disabled="viewOnly" class="col-md-6 offset-md-3" v-model="form.laterality" :error="form.errorsFor('laterality')" :multiple="false" :options="lateralities" :hide-selected="false" name="laterality" label="Lateralidad" placeholder="Seleccione una opción">
@@ -116,6 +123,8 @@
                   </vue-ajax-advanced-select>
               <vue-ajax-advanced-select :disabled="viewOnly || !form.relocated_headquarter_id" class="col-md-3" v-model="form.relocated_process_id" name="relocated_process_id" label="Proceso Actualizado" placeholder="Seleccione una opción" :url="processesDataUrl" :selected-object="form.relocated_process_multiselect" :parameters="{headquarter: form.relocated_headquarter_id }" :emptyAll="empty.process" @updateEmpty="updateEmptyKey('process')">
                   </vue-ajax-advanced-select>
+              <vue-advanced-select :disabled="viewOnly" class="col-md-12" v-model="form.relocated_type" :error="form.errorsFor('relocated_type')" :multiple="false" :options="relocatedTypes" :hide-selected="false" name="relocated_type" label="Tipo de reintegro" placeholder="Seleccione una opción">
+                </vue-advanced-select>
             </b-form-row>
             <b-form-row>
               <vue-textarea :disabled="viewOnly" class="col-md-12" v-model="form.detail" label="Detalle" name="detail" :error="form.errorsFor('detail')" placeholder=""></vue-textarea>
@@ -234,12 +243,32 @@
           <b-form-row>
             <div class="col-md-12">
               <tracing-inserter
+                label="Notas Médicas"
                 :disabled="viewOnly"
                 :editable-tracings="auth.can['reinc_checks_manage_tracings']"
                 :old-tracings="check.oldTracings"
                 :si-no="siNo"
                 :check-id="check.id"
                 ref="tracingInserter"
+              >
+              </tracing-inserter>
+            </div>
+          </b-form-row>
+
+          <div class="col-md-12" style="padding-left: 15px; padding-right: 15px; padding-top: 15px;">
+            <hr class="border-dark container-m--x mt-0 mb-4">
+          </div>
+
+          <b-form-row>
+            <div class="col-md-12">
+              <tracing-inserter
+                label="Notas Laborales"
+                :generate-pdf="false"
+                :disabled="viewOnly"
+                :editable-tracings="auth.can['reinc_checks_manage_tracings']"
+                :old-tracings="check.oldLaborNotes"
+                :si-no="siNo"
+                ref="laborNotesInserter"
               >
               </tracing-inserter>
             </div>
@@ -341,6 +370,24 @@ export default {
         return [];
       }
     },
+    sveAssociated: {
+      type: Array,
+      default: function() {
+        return [];
+      }
+    },
+    medicalCertificateUeac: {
+      type: Array,
+      default: function() {
+        return [];
+      }
+    },
+    relocatedTypes: {
+      type: Array,
+      default: function() {
+        return [];
+      }
+    },
     check: {
       default() {
         return {
@@ -383,7 +430,7 @@ export default {
           emitter_controversy_origin_2: '',
           emitter_controversy_pcl_1: '',
           emitter_controversy_pcl_2: '',
-          malady_origin: '',
+          malady_origin: '',                                 
           eps_favorability_concept: '',
           case_classification: '',
           relocated_date: '',
@@ -403,7 +450,9 @@ export default {
           new_tracing: '',
           oldTracings: [],
           medical_monitorings: [],
-          labor_monitorings: []
+          labor_monitorings: [],
+          new_labor_notes: '',
+          oldLaborNotes: [],
         };
       }
     }
@@ -520,7 +569,9 @@ export default {
       this.form.labor_monitorings = this.$refs.laborMonitoring.getMonitoringList();
       this.form.new_tracing = this.$refs.tracingInserter.getNewTracing();
       this.form.oldTracings = this.$refs.tracingInserter.getOldTracings();
-      
+      this.form.new_labor_notes = this.$refs.laborNotesInserter.getNewTracing();
+      this.form.oldLaborNotes = this.$refs.laborNotesInserter.getOldTracings();
+
       this.loading = true;
       this.form
         .submit(e.target.action)
@@ -554,7 +605,7 @@ export default {
             this.form.relocated_process_id = this.employeeDetail.employee_process_id
 
             if (this.$refs.tableEmployee !== undefined)
-              this.$refs.tableEmployee.refresh()
+                  this.$refs.tableEmployee.refresh()
           }
 
           this.isLoading = false;
