@@ -14,7 +14,7 @@
       <vue-input class="col-md-12" v-model="form.firm" label="Firma" type="text" name="firm" :error="form.errorsFor('firm')" placeholder=""></vue-input>
     </b-form-row>
     <b-form-row>
-      <vue-checkbox style="padding-top: 20px;" class="col-md-12" v-model="form.selectedRecomendations" :checked="form.selectedRecomendations" label="Recomendaciones" name="selectedRecomendations" :options="['Laborales', 'Extralaborales']" :vertical="false"></vue-checkbox>
+      <vue-checkbox style="padding-top: 20px;" class="col-md-12" v-model="form.selectedRecomendations" label="Recomendaciones" name="selectedRecomendations" :options="['Laborales', 'Extralaborales']" :vertical="false"></vue-checkbox>
     </b-form-row>
 
 
