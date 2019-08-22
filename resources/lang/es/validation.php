@@ -284,6 +284,8 @@ return [
       'pcl' => 'Calificación PCL',
       'entity_rating_pcl' => 'entidad que califica PCL',
       'monitoring' => 'seguimiento',
+      'sve_associated' => 'SVE Asociado',
+      'medical_certificate_ueac' => 'Certificado médico UEAC',
     ],
 
 ];

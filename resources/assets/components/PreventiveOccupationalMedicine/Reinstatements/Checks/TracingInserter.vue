@@ -1,10 +1,10 @@
 <template>
     <div class="tracing-inserter">
-        <h5 class="col-md-12 text-center">Seguimiento</h5>
+        <h5 class="col-md-12 text-center">{{ label }}</h5>
         <div v-if="!disabled" class="tracing">
-            <vue-textarea class="col-md-12" v-model="newTracing" label="Nuevo Seguimiento" name="new_tracing"></vue-textarea>
+            <vue-textarea class="col-md-12" v-model="newTracing" label="Nuevo Registro" name="new_tracing"></vue-textarea>
             <tracing-generate-pdf-button
-                v-if="checkId"
+                v-if="generatePdf && checkId"
                 :tracing-description="newTracing"
                 :si-no="siNo"
                 :check-id="checkId"
@@ -12,7 +12,7 @@
             <br>
         </div>
         <div v-if="showButtonTracings" class="col-md-12 text-center">
-            <center><b-btn variant="primary" @click.prevent="oldTracingsHidden = !oldTracingsHidden">{{ oldTracingsHidden ? 'Mostrar seguimientos pasados' : 'Ocultar seguimientos pasados' }}</b-btn></center>
+            <center><b-btn variant="primary" @click.prevent="oldTracingsHidden = !oldTracingsHidden">{{ oldTracingsHidden ? 'Mostrar registros pasados' : 'Ocultar registros pasados' }}</b-btn></center>
         </div>
         <div v-show="showOldTracings" class="tracing" v-for="(tracing, key) in tracings" :key="key">
             <vue-textarea
@@ -20,17 +20,18 @@
                 class="col-md-12"
                 v-model="tracing.description"
                 :label="`${tracing.made_by} / ${tracing.updated_at}`"
-                :disabled="disabled"
+                :disabled="disabled || !editableTracings"
             >
             </vue-textarea>
             <tracing-generate-pdf-button
+                v-if="generatePdf"
                 :tracing="tracing"
                 :tracing-description="tracing.description"
                 :si-no="siNo"
                 :check-id="checkId"
             />
         </div>
-        <h5 v-if="showNoTracingsRegisteredLabel" class="col-md-12 text-center">No hay seguimientos registrados</h5>
+        <h5 v-if="showNoTracingsRegisteredLabel" class="col-md-12 text-center">No hay información registrada</h5>
     </div>
 </template>
 
@@ -40,6 +41,10 @@ import TracingGeneratePdfButton from './TracingGeneratePdfButton.vue';
 
 export default {
     props: {
+        label: {
+            type: String,
+            default: 'Seguimiento'
+        },
         oldTracings: {
             type: Array,
             default() {
@@ -62,6 +67,10 @@ export default {
         checkId: { 
             type: Number, 
             default: 0
+        },
+        generatePdf: {
+            type: Boolean,
+            default: true
         },
     },
     components: {

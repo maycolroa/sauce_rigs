@@ -177,6 +177,15 @@ class Check extends Model
     }
 
     /**
+     * each check has multiple tracings
+     * @return App\Models\PreventiveOccupationalMedicine\Reinstatements\Tracing
+     */
+    public function laborNotes()
+    {
+        return $this->hasMany(LaborNotes::class, 'check_id');
+    }
+
+    /**
      * verifies if the check is open
      * @return boolean
      */

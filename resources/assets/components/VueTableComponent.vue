@@ -501,6 +501,9 @@ export default {
       else{
         throw "not define data valid for action download";
       }
+    },
+    refresh() {
+      Vue.nextTick( () => this.$refs.vuetable.refresh() )
     }
   }
 }

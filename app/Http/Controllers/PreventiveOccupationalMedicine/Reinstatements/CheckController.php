@@ -62,11 +62,11 @@ class CheckController extends Controller
                 ->join('sau_employees', 'sau_employees.id', 'sau_reinc_checks.employee_id')
                 ->leftJoin('sau_employees_regionals', 'sau_employees_regionals.id', 'sau_employees.employee_regional_id');
 
-        if ($request->current_check_id && $request->employee_id)
-        {
-            $checks->where('sau_reinc_checks.employee_id', '=', $request->employee_id);
+        if ($request->current_check_id)
             $checks->where('sau_reinc_checks.id', '<>', $request->current_check_id);
-        }
+
+        if ($request->employee_id)
+            $checks->where('sau_reinc_checks.employee_id', '=', $request->employee_id);
 
         $filters = $request->get('filters');
 
@@ -131,7 +131,13 @@ class CheckController extends Controller
                 return $this->respondHttp500();
             }
 
-            if (!CheckManager::saveTracing($check, $request->new_tracing, Auth::user()))
+            if (!CheckManager::saveTracing('App\Models\PreventiveOccupationalMedicine\Reinstatements\Tracing', $check, $request->new_tracing, Auth::user()))
+            {
+                $check->delete();
+                return $this->respondHttp500();
+            }
+
+            if (!CheckManager::saveTracing('App\Models\PreventiveOccupationalMedicine\Reinstatements\LaborNotes', $check, $request->new_labor_notes, Auth::user()))
             {
                 $check->delete();
                 return $this->respondHttp500();
@@ -194,8 +200,11 @@ class CheckController extends Controller
 
             if (!CheckManager::saveLaborMonitoring($check, $request->labor_monitorings, true))
                 return $this->respondHttp500();
+                
+            if (!CheckManager::saveTracing('App\Models\PreventiveOccupationalMedicine\Reinstatements\Tracing', $check, $request->new_tracing, Auth::user(), $request->oldTracings))
+                return $this->respondHttp500();
 
-            if (!CheckManager::saveTracing($check, $request->new_tracing, Auth::user(), $request->oldTracings))
+            if (!CheckManager::saveTracing('App\Models\PreventiveOccupationalMedicine\Reinstatements\LaborNotes', $check, $request->new_labor_notes, Auth::user(), $request->oldLaborNotes))
                 return $this->respondHttp500();
 
             DB::commit();
@@ -258,6 +267,9 @@ class CheckController extends Controller
                 }*/
                 
                 $query->with('madeBy')->orderBy('created_at', 'desc');
+            },
+            'laborNotes' => function ($query) {
+                $query->with('madeBy')->orderBy('created_at', 'desc');
             }
         ]);
 
@@ -313,6 +325,20 @@ class CheckController extends Controller
         }
 
         $check->oldTracings = $oldTracings;
+
+        $oldLaborNotes = [];
+
+        foreach ($check->laborNotes as $tracing)
+        {
+            array_push($oldLaborNotes, [
+                'id' => $tracing->id,
+                'description' => $tracing->description,
+                'made_by' => $tracing->madeBy->name,
+                'updated_at' => $tracing->updated_at->toDateString()
+            ]);
+        }
+
+        $check->oldLaborNotes = $oldLaborNotes;
 
         return $check;
     }
@@ -397,8 +423,6 @@ class CheckController extends Controller
         ->first();
             
         $company = Company::select('logo')->where('id', Session::get('company_id'))->first();
-        
-        \Log::info($check);
 
         $data = [
             'to' => $request->to,
