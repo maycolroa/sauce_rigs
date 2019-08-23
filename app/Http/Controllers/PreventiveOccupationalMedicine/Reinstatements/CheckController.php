@@ -493,4 +493,29 @@ class CheckController extends Controller
 
         return $this->multiSelectFormat(collect($data));
     }
+
+
+    /**
+     * toggles the check state between open and close
+     * @param  Check  $check
+     * @return \Illuminate\Http\Response
+     */
+    public function toggleState(Request $request, Check $check)
+    {
+        $newState = $check->state == "ABIERTO" ? "CERRADO" : "ABIERTO";
+        $data = ['state' => $newState];
+
+        if ($request->has('deadline'))
+            $data['deadline'] = $request->get('deadline');
+        else
+            $data['deadline'] = null;
+
+        if (!$check->update($data)) {
+            return $this->respondHttp500();
+        }
+        
+        return $this->respondHttp200([
+            'message' => 'Se cambio el estado del reporte'
+        ]);
+    }
 }

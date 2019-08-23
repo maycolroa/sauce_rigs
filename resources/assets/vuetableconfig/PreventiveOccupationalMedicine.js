@@ -253,6 +253,21 @@ export default [
   {
       type: 'base',
       buttons: [{
+        name: 'switchStatus',
+        config: {
+            color: 'outline-danger',
+            borderless: true,
+            icon: 'fas fa-sync',
+            title: 'Cambiar estado'
+        },
+        data: {
+            action: '/biologicalmonitoring/reinstatements/check/switchStatus/',
+            id: 'id',
+            messageConfirmation: '¿Está seguro que desea cambiar el estado del elemento seleccionado?'
+        },
+          permission: 'reinc_checks_u'
+      },        
+      {
       name: 'delete',
       data: {
           action: '/biologicalmonitoring/reinstatements/check/',
@@ -315,14 +330,31 @@ export default [
   {
       type: 'base',
       buttons: [{
-      name: 'delete',
-      data: {
-          action: '/biologicalmonitoring/reinstatements/check/',
-          id: 'id',
-          messageConfirmation: 'Esta seguro de borrar el reporte __name__'
+        name: 'switchStatus',
+        config: {
+            color: 'outline-danger',
+            borderless: true,
+            icon: 'fas fa-sync',
+            title: 'Cambiar estado'
+        },
+        data: {
+            action: '/biologicalmonitoring/reinstatements/check/switchStatus',
+            id: 'id',
+            messageConfirmation: '¿Está seguro que desea cambiar el estado del elemento seleccionado?'
+        },
+          permission: 'reinc_checks_u'
+      },        
+        {
+        name: 'delete',
+        data: {
+            action: '/biologicalmonitoring/reinstatements/check/',
+            id: 'id',
+            messageConfirmation: 'Esta seguro de borrar el reporte __name__'
+        },
+        permission: 'reinc_checks_d'
       },
-      permission: 'reinc_checks_d'
-      }],
+      
+    ],
   }],
   configuration: {
       urlData: '/biologicalmonitoring/reinstatements/check/data',
