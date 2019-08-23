@@ -42,6 +42,26 @@
                   :relocated-types="relocatedTypes"
                   :cancel-url="{ name: 'reinstatements-checks'}"/>
               </template>
+              <template v-if="form == 'misionEmpresarial'">
+                <form-check-empresarial
+                  url="/biologicalmonitoring/reinstatements/check"
+                  method="POST"
+                  :check="data"
+                  :view-only="true"
+                  :disease-origins="diseaseOrigins"
+                  :lateralities="lateralities"
+                  :si-no="siNo"
+                  :origin-advisors="originAdvisors"
+                  :medical-conclusions="medicalConclusions"
+                  :labor-conclusions="laborConclusions"
+                  :origin-emitters="originEmitters"
+                  :sve-associated="sveAssociated"
+                  :medical-certificate-ueac="medicalCertificateUeac"
+                  :relocated-types="relocatedTypes"
+                  :eps-favorability-concept="epsFavorabilityConcept"
+                  :case-classification="caseClassification"
+                  :cancel-url="{ name: 'reinstatements-checks'}"/>
+              </template>
             </div>
         </b-card-body>
       </b-card>
@@ -52,6 +72,7 @@
 <script>
 import FormCheck from '@/components/PreventiveOccupationalMedicine/Reinstatements/Checks/FormCheckComponent.vue';
 import FormCheckVivaAir from '@/components/PreventiveOccupationalMedicine/Reinstatements/Checks/FormCheckVivaAirComponent.vue';
+import FormCheckEmpresarial from '@/components/PreventiveOccupationalMedicine/Reinstatements/Checks/FormCheckEmpresarialComponent.vue';
 import Loading from "@/components/Inputs/Loading.vue";
 import Alerts from '@/utils/Alerts.js';
 import GlobalMethods from '@/utils/GlobalMethods.js';
@@ -64,6 +85,7 @@ export default {
   components:{
     FormCheck,
     FormCheckVivaAir,
+    FormCheckEmpresarial,
     Loading
   },
   data () {
@@ -80,7 +102,9 @@ export default {
       originEmitters: [],
       sveAssociated: [],
       medicalCertificateUeac: [],
-      relocatedTypes: []
+      relocatedTypes: [],
+      epsFavorabilityConcept: [],
+      caseClassification: []
     }
   },
   created(){
@@ -93,6 +117,12 @@ export default {
         this.fetchOptions('sveAssociated', 'reinc_select_sve_associated')
         this.fetchOptions('medicalCertificateUeac', 'reinc_select_medical_certificate_ueac')
         this.fetchOptions('relocatedTypes', 'reinc_select_relocated_types')
+      }
+
+      if (this.form == 'misionEmpresarial')
+      {
+        this.fetchOptions('epsFavorabilityConcept', 'reinc_select_eps_favorability_concept')
+        this.fetchOptions('caseClassification', 'reinc_select_case_classification')
       }
       
       axios.get(`/biologicalmonitoring/reinstatements/check/${this.$route.params.id}`)
