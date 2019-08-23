@@ -312,24 +312,6 @@ class Check extends Model
         return $query;
     }
 
-    /**
-     * filters checks through one specified company
-     * according to the company of the specified $user
-     *
-     * only if the user cannot manage companies
-     * 
-     * @param  Illuminate\Database\Eloquent\Builder $query
-     * @param  App\User $user
-     * @return Illuminate\Database\Eloquent\Builder
-     */
-    /*public function scopeBelongsToCompany($query, User $user)
-    {
-        if ($user->can('manage_companies')) {
-            return $query;
-        }
-        return $query->where('reinc_checks.sec_company_id', $user->sec_company_id);
-    }*/
-
     /*public function setCreatedAtAttribute($value)
     {
         if(isset($value))
@@ -403,6 +385,26 @@ class Check extends Model
 
             else if ($typeSearch == 'NOT IN')
                 $query->whereNotIn('sau_employees.employee_business_id', $businesses);
+        }
+
+        return $query;
+    }
+
+    /**
+     * filters checks through the given identifications
+     * @param  Illuminate\Database\Eloquent\Builder $query
+     * @param  array $identifications
+     * @return Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeInIdentifications($query, $identifications, $typeSearch = 'IN')
+    {
+        if (COUNT($identifications) > 0)
+        {
+            if ($typeSearch == 'IN')
+                $query->whereIn('sau_employees.identification', $identifications);
+
+            else if ($typeSearch == 'NOT IN')
+                $query->whereNotIn('sau_employees.identification', $identifications);
         }
 
         return $query;
