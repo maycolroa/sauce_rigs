@@ -56,6 +56,7 @@ class CheckController extends Controller
                     'sau_reinc_checks.disease_origin AS disease_origin',
                     'sau_employees_regionals.name AS regional',
                     'sau_reinc_checks.state AS state',
+                    'sau_employees.identification AS identification',
                     'sau_employees.name AS name'
                 )
                 ->join('sau_reinc_cie10_codes', 'sau_reinc_cie10_codes.id', 'sau_reinc_checks.cie10_code_id')
@@ -72,12 +73,15 @@ class CheckController extends Controller
 
         if (COUNT($filters) > 0)
         {
+            $checks->inIdentifications($this->getValuesForMultiselect($filters["identifications"]), $filters['filtersType']['identifications']);
             $checks->inNames($this->getValuesForMultiselect($filters["names"]), $filters['filtersType']['names']);
             $checks->inRegionals($this->getValuesForMultiselect($filters["regionals"]), $filters['filtersType']['regionals']);
             $checks->inBusinesses($this->getValuesForMultiselect($filters["businesses"]), $filters['filtersType']['businesses']);
-            $checks->inNextFollowDays($this->getValuesForMultiselect($filters["nextFollowDays"]), $filters['filtersType']['nextFollowDays']);
             $checks->inDiseaseOrigin($this->getValuesForMultiselect($filters["diseaseOrigin"]), $filters['filtersType']['diseaseOrigin']);
 
+            if (isset($filters["nextFollowDays"]))
+                $checks->inNextFollowDays($this->getValuesForMultiselect($filters["nextFollowDays"]), $filters['filtersType']['nextFollowDays']);
+                
             $dates_request = explode('/', $filters["dateRange"]);
 
             $dates = [];

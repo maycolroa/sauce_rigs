@@ -342,7 +342,7 @@ class VuetableColumnManager
      */
     public function reinstatementschecks()
     {
-        $formModel = $this->getFormModel('table_checks');
+        $formModel = $this->getFormModel('table_check');
 
         if ($formModel == 'default')
         { 
@@ -351,6 +351,7 @@ class VuetableColumnManager
                 ['name' => 'sau_reinc_cie10_codes.code', 'data'=> 'code', 'title'=> 'Código CIE 10', 'sortable'=> true, 'searchable'=> true, 'detail'=> false, 'key'=> false ],
                 ['name' => 'sau_checks.disease_origin', 'data'=> 'disease_origin', 'title'=> 'Tipo de Evento', 'sortable'=> true, 'searchable'=> true, 'detail'=> false, 'key'=> false ],
                 ['name' => 'sau_employees_regionals.name', 'data'=> 'regional', 'title'=> $this->keywordCheck('regional'), 'sortable'=> true, 'searchable'=> true, 'detail'=> false, 'key'=> false ],
+                ['name' => 'sau_employees.identification', 'data'=> 'identification', 'title'=> 'Identificación', 'sortable'=> true, 'searchable'=> true, 'detail'=> false, 'key'=> false ],
                 ['name' => 'sau_employees.name', 'data'=> 'name', 'title'=> 'Trabajador', 'sortable'=> true, 'searchable'=> true, 'detail'=> false, 'key'=> false ],
                 ['name' => 'sau_checks.state', 'data'=> 'state', 'title'=> 'Estado del Reporte', 'sortable'=> true, 'searchable'=> true, 'detail'=> false, 'key'=> false ],
             ];
@@ -362,6 +363,7 @@ class VuetableColumnManager
                 ['name' => 'sau_reinc_cie10_codes.code', 'data'=> 'code', 'title'=> 'Código CIE 10', 'sortable'=> true, 'searchable'=> true, 'detail'=> false, 'key'=> false ],
                 ['name' => 'sau_checks.disease_origin', 'data'=> 'disease_origin', 'title'=> 'Tipo de Evento', 'sortable'=> true, 'searchable'=> true, 'detail'=> false, 'key'=> false ],
                 ['name' => 'sau_employees_regionals.name', 'data'=> 'regional', 'title'=> $this->keywordCheck('regional'), 'sortable'=> true, 'searchable'=> true, 'detail'=> false, 'key'=> false ],
+                ['name' => 'sau_employees.identification', 'data'=> 'identification', 'title'=> 'Identificación', 'sortable'=> true, 'searchable'=> true, 'detail'=> false, 'key'=> false ],
                 ['name' => 'sau_employees.name', 'data'=> 'name', 'title'=> 'Trabajador', 'sortable'=> true, 'searchable'=> true, 'detail'=> false, 'key'=> false ],
                 ['name' => 'sau_checks.state', 'data'=> 'state', 'title'=> 'Estado del Reporte', 'sortable'=> true, 'searchable'=> true, 'detail'=> false, 'key'=> false ],
                 ['name' => 'sau_checks.next_date_tracking', 'data'=> 'next_date_tracking', 'title'=> 'Próximo Seguimiento', 'sortable'=> true, 'searchable'=> true, 'detail'=> false, 'key'=> false ],

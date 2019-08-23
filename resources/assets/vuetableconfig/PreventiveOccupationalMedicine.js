@@ -265,7 +265,7 @@ export default [
   configuration: {
       urlData: '/biologicalmonitoring/reinstatements/check/data',
       filterColumns: true,
-      configNameFilter: 'reinstatements-checks',
+      //configNameFilter: 'reinstatements-checks',
   }
 },
 {
