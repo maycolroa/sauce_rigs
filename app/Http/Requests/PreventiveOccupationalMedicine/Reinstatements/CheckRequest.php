@@ -39,7 +39,8 @@ class CheckRequest extends FormRequest
     {
         return [
             //'employee_regional_id.required' => 'El campo '.$this->keywordCheck('regional').' es obligatorio.'
-            'disease_origin.required' => 'El campo es obligatorio.'
+            'disease_origin.required' => 'El campo es obligatorio.',
+            'created_at.required' => 'El campo Fecha de inicio es obligatorio.'
         ];
     }
 }
