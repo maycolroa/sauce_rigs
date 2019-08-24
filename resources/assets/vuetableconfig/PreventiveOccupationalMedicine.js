@@ -251,8 +251,9 @@ export default [
     }]
   },
   {
-      type: 'base',
-      buttons: [{
+    type: 'form',
+    buttons: [
+      {
         name: 'switchStatus',
         config: {
             color: 'outline-danger',
@@ -261,21 +262,27 @@ export default [
             title: 'Cambiar estado'
         },
         data: {
-            action: '/biologicalmonitoring/reinstatements/check/switchStatus/',
-            id: 'id',
-            messageConfirmation: '¿Está seguro que desea cambiar el estado del elemento seleccionado?'
+            action: '/biologicalmonitoring/reinstatements/check/switchStatus',
+            id: 'id'
         },
-          permission: 'reinc_checks_u'
-      },        
-      {
-      name: 'delete',
-      data: {
-          action: '/biologicalmonitoring/reinstatements/check/',
-          id: 'id',
-          messageConfirmation: 'Esta seguro de borrar el reporte __name__'
+        permission: 'reinc_checks_u'
+      }
+    ],
+  },
+  {
+      type: 'base',
+      buttons: [      
+        {
+        name: 'delete',
+        data: {
+            action: '/biologicalmonitoring/reinstatements/check/',
+            id: 'id',
+            messageConfirmation: 'Esta seguro de borrar el reporte __name__'
+        },
+        permission: 'reinc_checks_d'
       },
-      permission: 'reinc_checks_d'
-      }],
+      
+    ],
   }],
   configuration: {
       urlData: '/biologicalmonitoring/reinstatements/check/data',
@@ -328,8 +335,9 @@ export default [
     }]
   },
   {
-      type: 'base',
-      buttons: [{
+    type: 'form',
+    buttons: [
+      {
         name: 'switchStatus',
         config: {
             color: 'outline-danger',
@@ -342,8 +350,13 @@ export default [
             id: 'id',
             messageConfirmation: '¿Está seguro que desea cambiar el estado del elemento seleccionado?'
         },
-          permission: 'reinc_checks_u'
-      },        
+        permission: 'reinc_checks_u'
+      }
+    ],
+  },
+  {
+      type: 'base',
+      buttons: [      
         {
         name: 'delete',
         data: {

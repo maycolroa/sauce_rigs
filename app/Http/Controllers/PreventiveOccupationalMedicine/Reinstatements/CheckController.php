@@ -52,6 +52,7 @@ class CheckController extends Controller
     {
         $checks = Check::select(
                     'sau_reinc_checks.id AS id',
+                    'sau_reinc_checks.deadline AS deadline',
                     'sau_reinc_cie10_codes.code AS code',
                     'sau_reinc_checks.disease_origin AS disease_origin',
                     'sau_employees_regionals.name AS regional',
@@ -88,8 +89,8 @@ class CheckController extends Controller
 
             if (COUNT($dates_request) == 2)
             {
-                array_push($dates, (Carbon::createFromFormat('D M d Y',$dates_request[0]))->format('Ymd'));
-                array_push($dates, (Carbon::createFromFormat('D M d Y',$dates_request[1]))->format('Ymd'));
+                array_push($dates, $this->formatDateToSave($dates_request[0]));
+                array_push($dates, $this->formatDateToSave($dates_request[1]));
             }
                 
             $checks->betweenDate($dates);
@@ -277,21 +278,21 @@ class CheckController extends Controller
             }
         ]);
 
-        $check->start_recommendations = $this->formatDate($check->start_recommendations);
-        $check->end_recommendations = $this->formatDate($check->end_recommendations);
-        $check->monitoring_recommendations = $this->formatDate($check->monitoring_recommendations);
-        $check->process_origin_done_date = $this->formatDate($check->process_origin_done_date);
-        $check->process_pcl_done_date = $this->formatDate($check->process_pcl_done_date);
-        $check->date_controversy_origin_1 = $this->formatDate($check->date_controversy_origin_1);
-        $check->date_controversy_origin_2 = $this->formatDate($check->date_controversy_origin_2);
-        $check->date_controversy_pcl_1 = $this->formatDate($check->date_controversy_pcl_1);
-        $check->date_controversy_pcl_2 = $this->formatDate($check->date_controversy_pcl_2);
-        $check->relocated_date = $this->formatDate($check->relocated_date);
-        $check->start_restrictions = $this->formatDate($check->start_restrictions);
-        $check->end_restrictions = $this->formatDate($check->end_restrictions);
-        $check->incapacitated_last_extension = $this->formatDate($check->incapacitated_last_extension);
-        $check->deadline = $this->formatDate($check->deadline);
-        $check->next_date_tracking = $this->formatDate($check->next_date_tracking);
+        $check->start_recommendations = $this->formatDateToForm($check->start_recommendations);
+        $check->end_recommendations = $this->formatDateToForm($check->end_recommendations);
+        $check->monitoring_recommendations = $this->formatDateToForm($check->monitoring_recommendations);
+        $check->process_origin_done_date = $this->formatDateToForm($check->process_origin_done_date);
+        $check->process_pcl_done_date = $this->formatDateToForm($check->process_pcl_done_date);
+        $check->date_controversy_origin_1 = $this->formatDateToForm($check->date_controversy_origin_1);
+        $check->date_controversy_origin_2 = $this->formatDateToForm($check->date_controversy_origin_2);
+        $check->date_controversy_pcl_1 = $this->formatDateToForm($check->date_controversy_pcl_1);
+        $check->date_controversy_pcl_2 = $this->formatDateToForm($check->date_controversy_pcl_2);
+        $check->relocated_date = $this->formatDateToForm($check->relocated_date);
+        $check->start_restrictions = $this->formatDateToForm($check->start_restrictions);
+        $check->end_restrictions = $this->formatDateToForm($check->end_restrictions);
+        $check->incapacitated_last_extension = $this->formatDateToForm($check->incapacitated_last_extension);
+        $check->deadline = $this->formatDateToForm($check->deadline);
+        $check->next_date_tracking = $this->formatDateToForm($check->next_date_tracking);
 
         $check->old_process_origin_file = $check->process_origin_file;
         $check->old_process_pcl_file = $check->process_pcl_file;
@@ -305,12 +306,12 @@ class CheckController extends Controller
         $check->relocated_position_multiselect = $check->relocatedPosition ? $check->relocatedPosition->multiselect() : [];
 
         $check->medicalMonitorings->transform(function($medicalMonitoring, $index) {
-            $medicalMonitoring->set_at = $this->formatDate($medicalMonitoring->set_at);
+            $medicalMonitoring->set_at = $this->formatDateToForm($medicalMonitoring->set_at);
             return $medicalMonitoring;
         });
 
         $check->laborMonitorings->transform(function($laborMonitoring, $index) {
-            $laborMonitoring->set_at = $this->formatDate($laborMonitoring->set_at);
+            $laborMonitoring->set_at = $this->formatDateToForm($laborMonitoring->set_at);
             return $laborMonitoring;
         });
 
@@ -355,14 +356,6 @@ class CheckController extends Controller
     public function downloadPclFile(Check $check)
     {
       return Storage::disk('public')->download('preventiveOccupationalMedicine/reinstatements/files/'.Session::get('company_id').'/'.$check->process_pcl_file);
-    }
-
-    private function formatDate($date)
-    {
-        if ($date)
-            $date = (Carbon::createFromFormat('Y-m-d', $date))->format('D M d Y');
-
-        return $date;
     }
 
     public function generateTracing(Request $request)
@@ -502,12 +495,12 @@ class CheckController extends Controller
      */
     public function toggleState(Request $request, Check $check)
     {
-        $newState = $check->state == "ABIERTO" ? "CERRADO" : "ABIERTO";
+        $newState = $check->isOpen() ? "CERRADO" : "ABIERTO";
         $data = ['state' => $newState];
 
-        if ($request->has('deadline'))
-            $data['deadline'] = $request->get('deadline');
-        else
+        if ($request->has('deadline') && $check->isOpen())
+            $data['deadline'] = $this->formatDateToSave($request->get('deadline'));
+        else 
             $data['deadline'] = null;
 
         if (!$check->update($data)) {

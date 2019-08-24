@@ -33,4 +33,17 @@ export default class VueTableConfig {
       })[0];
       return controllSelected;
     }
+
+    static getControllForm(configControlls,controll){
+      let controllSelected = configControlls
+      .filter(f => {
+        return f.type == 'form';
+      })
+      .map(b => {
+        return b.buttons.filter(f => {
+          return f.name == controll
+        })[0];
+      })[0];
+      return controllSelected;
+    }
 }

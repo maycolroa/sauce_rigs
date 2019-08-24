@@ -3,6 +3,7 @@
 namespace App\Traits;
 
 use Illuminate\Support\Facades\Auth;
+use Carbon\Carbon;
 use Exception;
 use Session;
 use DateTime;
@@ -307,5 +308,21 @@ trait UtilsTrait
         ->pluck('display_name', 'name');
             
         return isset($keywords[$key]) ? $keywords[$key] : $defaultValue;
+    }
+
+    public function formatDateToSave($date)
+    {
+        if ($date)
+            $date = (Carbon::createFromFormat('D M d Y', $date))->format('Y-m-d');
+
+        return $date;
+    }
+
+    public function formatDateToForm($date)
+    {
+        if ($date)
+            $date = (Carbon::createFromFormat('Y-m-d', $date))->format('D M d Y');
+
+        return $date;
     }
 }
