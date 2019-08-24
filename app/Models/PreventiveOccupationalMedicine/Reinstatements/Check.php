@@ -5,6 +5,7 @@ namespace App\Models\PreventiveOccupationalMedicine\Reinstatements;
 use App\Traits\CompanyTrait;
 use App\Scopes\HeadquartersScope;
 use Illuminate\Database\Eloquent\Model;
+use Carbon\Carbon;
 use Exception;
 
 class Check extends Model
@@ -91,6 +92,7 @@ class Check extends Model
         'sve_associated',
         'medical_certificate_ueac',
         'relocated_type',
+        'created_at'
     ];
 
     /**
@@ -312,13 +314,16 @@ class Check extends Model
         return $query;
     }
 
-    /*public function setCreatedAtAttribute($value)
+    public function getCreatedAtAttribute($timestamp)
     {
-        if(isset($value))
-        {
-            $this->attributes['created_at'] = $value;
-        }
-    }*/
+        return Carbon::parse($timestamp)->format('D M d Y');
+    }
+
+    public function setCreatedAtAttribute($value)
+    {
+        if (isset($value))
+            $this->attributes['created_at'] = (Carbon::createFromFormat('D M d Y', $value))->format('Y-m-d 00:00:00');
+    }
 
     public function scopeInNextFollowDays($query, $nextFollowDays, $typeSearch = 'IN')
     {

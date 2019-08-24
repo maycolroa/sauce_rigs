@@ -17,6 +17,7 @@ use App\Rules\Reinstatements\RequiredIfHasRecommendations;
 use App\Rules\Reinstatements\RequiredIfHasRestrictions;
 use App\Rules\Reinstatements\RequiredIfInProcessIsNo;
 use App\Rules\Reinstatements\EndRestrictionsBePresent;
+use App\Rules\Reinstatements\RequiredIfHasIncapacitated;
 use App\Traits\ConfigurableFormTrait;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Log;
@@ -456,7 +457,8 @@ class CheckManager
             'end_restrictions',
             'incapacitated_last_extension',
             'deadline',
-            'next_date_tracking'
+            'next_date_tracking',
+            'relocated_date'
         ];
 
         foreach ($attrs as $attr)
