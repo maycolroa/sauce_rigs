@@ -77,6 +77,8 @@
                   :sve-associated="sveAssociated"
                   :medical-certificate-ueac="medicalCertificateUeac"
                   :relocated-types="relocatedTypes"
+                  :eps-favorability-concept="epsFavorabilityConcept"
+                  :case-classification="caseClassification"
                   :cancel-url="{ name: 'reinstatements-checks'}"/>
               </template>
             </div>
@@ -118,7 +120,9 @@ export default {
       originEmitters: [],
       sveAssociated: [],
       medicalCertificateUeac: [],
-      relocatedTypes: []
+      relocatedTypes: [],
+      epsFavorabilityConcept: [],
+      caseClassification: []
     }
   },
   created(){
@@ -131,6 +135,12 @@ export default {
         this.fetchOptions('sveAssociated', 'reinc_select_sve_associated')
         this.fetchOptions('medicalCertificateUeac', 'reinc_select_medical_certificate_ueac')
         this.fetchOptions('relocatedTypes', 'reinc_select_relocated_types')
+      }
+
+      if (this.form == 'misionEmpresarial')
+      {
+        this.fetchOptions('epsFavorabilityConcept', 'reinc_select_eps_favorability_concept')
+        this.fetchOptions('caseClassification', 'reinc_select_case_classification')
       }
 
 			this.ready = true
