@@ -32,7 +32,7 @@
           </template>
 
           <template v-for="(button, index) in controllsBaseBtn">
-            <div :key="`${index}${button.name}`">
+            <span :key="`${index}${button.name}`">
               <b-btn 
                 v-if="checkViewBtnBase(button, props.row)"
                 :variant="button.config.color + ' ' + (button.config.borderless ? 'borderless' : '') + ' ' + (button.config.icon ? 'icon-btn' : '')" 
@@ -43,12 +43,36 @@
               <!-- modal confirmation for delete -->
               <b-modal :ref="`modalBtnBase-${button.name}`" class="modal-slide" hide-header hide-footer>
                 <p class="text-center text-big mb-4">
-                  {{messageConfirmationBtnBase}}.
+                  {{messageConfirmationBtnBase}}
                 </p>
                 <b-btn block variant="primary" @click="executeBtnBase(`modalBtnBase-${button.name}`)">Aceptar</b-btn>
                 <b-btn block variant="default" @click="hideModal(`modalBtnBase-${button.name}`)">Cancelar</b-btn>
               </b-modal>
-            </div>
+            </span>
+          </template>
+
+          <template v-for="(button, index) in controllsForms">
+            <span :key="`${index}${button.name}`">
+              <b-btn 
+                v-if="checkViewBtnBase(button, props.row)"
+                :variant="button.config.color + ' ' + (button.config.borderless ? 'borderless' : '') + ' ' + (button.config.icon ? 'icon-btn' : '')" 
+                class="btn-xs"
+                v-b-tooltip.top :title="(button.config.title ? button.config.title : '')"
+                @click.prevent="openModalForm(props.row, button.name)"><i :class="button.config.icon"></i></b-btn>
+
+              <!-- modal confirmation for delete -->
+              <b-modal :ref="`modalBtnForm-${button.name}-${props.row.id}`" size="lg" class="modal-top" hide-header hide-footer>
+                <b-card bg-variant="transparent" title="" class="mb-3 box-shadow-none">
+                  <template v-if="button.name == 'switchStatus'">
+                    <form-check-swith
+                      :url="`/biologicalmonitoring/reinstatements/check/switchStatus/${props.row.id}`"
+                      :check="props.row"
+                      @closeModal="hideModal(`modalBtnForm-${button.name}-${props.row.id}`, true)"
+                    />
+                  </template>
+                </b-card>
+              </b-modal>
+            </span>
           </template>
           
           <b-btn v-if="controllsBase.includes('delete') && checkViewDelete(props.row)" variant="outline-danger borderless icon-btn" class="btn-xs" v-b-tooltip.top title="Eliminar" @click.prevent="confirmRemove(props.row)"><i class="ion ion-md-close"></i></b-btn>
@@ -95,6 +119,7 @@ import {ServerTable, ClientTable, Event} from 'vue-tables-2';
 import VueTableConfig from '@/vuetableconfig/';
 import Alerts from '@/utils/Alerts.js';
 import FilterGeneral from '@/components/Filters/FilterGeneral.vue';
+import FormCheckSwith from '@/components/PreventiveOccupationalMedicine/Reinstatements/Checks/FormCheckSwithComponent.vue';
 
 Vue.use(ServerTable)
 
@@ -115,7 +140,8 @@ export default {
     },
   },
   components:{
-    FilterGeneral
+    FilterGeneral,
+    FormCheckSwith
   },
   data(){
     return{
@@ -123,6 +149,7 @@ export default {
       actionRemove:'',
       messageConfirmationBtnBase: '',
       actionBtnBase:'',
+      actionBtnForm:'',
       component: null,
       filters: [],
       tableReady: false,
@@ -328,6 +355,23 @@ export default {
 
       return controlls;
     },
+    controllsForms(){
+      let controlls = this.config.controlls.filter(c => {
+        return c.type == 'form'
+      })[0]
+      
+      if (controlls)
+      {
+        controlls = controlls.buttons.filter(c => {
+                      if (c.permission)
+                        return auth.can[c.permission]
+                      else 
+                        return true
+                    });
+      }
+
+      return controlls;
+    },
   },
   mounted() {
     if(this.loader()){
@@ -440,8 +484,11 @@ export default {
 
       return true
     },
-		hideModal(ref) {
-			this.$refs[ref][0].hide()
+		hideModal(ref, refresh = false) {
+      this.$refs[ref][0].hide()
+      
+      if (refresh)
+        this.refresh()
     },
     confirmBtnBase (row, name) {
       let controll = VueTableConfig.getControllBase(this.config.controlls, name);
@@ -460,6 +507,14 @@ export default {
       }).join('');
 
       this.$refs['modalBtnBase-'+name][0].show()
+    },
+    openModalForm (row, name) {
+      let controll = VueTableConfig.getControllForm(this.config.controlls, name);
+
+      let id = row[controll.data.id];
+
+      this.actionBtnForm = controll.data.action+id;
+      this.$refs[`modalBtnForm-${name}-${row.id}`][0].show()
     },
     executeBtnBase(ref){
       axios.post(this.actionBtnBase)
@@ -501,6 +556,9 @@ export default {
       else{
         throw "not define data valid for action download";
       }
+    },
+    refresh() {
+      Vue.nextTick( () => this.$refs.vuetable.refresh() )
     }
   }
 }

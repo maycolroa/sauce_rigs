@@ -49,15 +49,20 @@
                   <div><b>Fecha de ingreso:</b> {{ incomeDate }}</div>
                   <div><b>Antigüedad:</b> {{ employeeDetail.antiquity }}</div>
                   <div><b>Edad:</b> {{ employeeDetail.age }}</div>
-              </b-col>
-              <b-col>
                   <div><b>Cargo:</b> {{ employeeDetail.position ? employeeDetail.position.name : '' }}</div>
                   <div><b>Centro de costos:</b> {{ employeeDetail.business ? employeeDetail.business.name : '' }}</div>
+              </b-col>
+              <b-col>
                   <div><b>{{ keywordCheck('regional') }}:</b> {{ employeeDetail.regional ? employeeDetail.regional.name : ''}}</div>
                   <div><b>{{ keywordCheck('headquarter') }}:</b> {{ employeeDetail.headquarter ? employeeDetail.headquarter.name : '' }}</div>
                   <div><b>Proceso:</b> {{ employeeDetail.process ? employeeDetail.process.name : '' }}</div>
                   <div v-if="employeeDetail.area"><b>Área:</b> {{ employeeDetail.area.name }}</div>
                   <div><b>EPS:</b> {{ employeeDetail.eps ? `${employeeDetail.eps.code} - ${employeeDetail.eps.name}` : '' }}</div>
+                  <div><b>AFP:</b> {{ employeeDetail.afp ? `${employeeDetail.afp.code} - ${employeeDetail.afp.name}` : '' }}</div>
+                  <div><b>ARL:</b> {{ employeeDetail.arl ? `${employeeDetail.arl.code} - ${employeeDetail.arl.name}` : '' }}</div>
+                  <div><b>Números de contrato:</b> {{ employeeDetail.contract_numbers }}</div>
+                  <div><b>Fecha último contrato:</b> {{ employeeDetail.last_contract_date }}</div>
+                  <div><b>Tipo contrato:</b> {{ employeeDetail.contract_type }}</div>
               </b-col>
           </b-row>
         </b-card>
@@ -68,7 +73,11 @@
       <b-col>
         <b-card bg-variant="transparent" border-variant="dark" title="" class="mb-3 box-shadow-none">
           <b-form-row>
-            <vue-advanced-select :disabled="viewOnly" class="col-md-6 offset-md-3" v-model="form.disease_origin" :error="form.errorsFor('disease_origin')" :multiple="false" :options="diseaseOrigins" :hide-selected="false" name="disease_origin" label="Tipo de Evento" placeholder="Seleccione una opción">
+            <vue-datepicker :disabled="viewOnly" class="col-md-4" v-model="form.created_at" label="Fecha de inicio" :full-month-name="true" placeholder="Fecha de inicio" :error="form.errorsFor('created_at')" name="created_at">
+                </vue-datepicker>
+            <vue-advanced-select :disabled="viewOnly" class="col-md-4" v-model="form.disease_origin" :error="form.errorsFor('disease_origin')" :multiple="false" :options="diseaseOrigins" :hide-selected="false" name="disease_origin" label="Origen enfermedad" placeholder="Seleccione una opción">
+                </vue-advanced-select>
+            <vue-advanced-select :disabled="viewOnly" class="col-md-4" v-model="form.eps_favorability_concept" :error="form.errorsFor('eps_favorability_concept')" :multiple="false" :options="epsFavorabilityConcept" :hide-selected="false" name="eps_favorability_concept" label="Concepto de favorabilidad EPS" placeholder="Seleccione una opción">
                 </vue-advanced-select>
           </b-form-row>
           <b-form-row>
@@ -116,6 +125,8 @@
                   </vue-ajax-advanced-select>
               <vue-ajax-advanced-select :disabled="viewOnly || !form.relocated_headquarter_id" class="col-md-3" v-model="form.relocated_process_id" name="relocated_process_id" label="Proceso Actualizado" placeholder="Seleccione una opción" :url="processesDataUrl" :selected-object="form.relocated_process_multiselect" :parameters="{headquarter: form.relocated_headquarter_id }" :emptyAll="empty.process" @updateEmpty="updateEmptyKey('process')">
                   </vue-ajax-advanced-select>
+              <vue-datepicker :disabled="viewOnly" class="col-md-4" v-model="form.relocated_date" label="Fecha de reubicación" :full-month-name="true" placeholder="Fecha de reubicación" :error="form.errorsFor('relocated_date')" name="relocated_date">
+                </vue-datepicker>
             </b-form-row>
             <b-form-row>
               <vue-textarea :disabled="viewOnly" class="col-md-12" v-model="form.detail" label="Detalle" name="detail" :error="form.errorsFor('detail')" placeholder=""></vue-textarea>
@@ -130,7 +141,30 @@
             <vue-radio :disabled="viewOnly" :checked="form.has_restrictions" class="col-md-6 offset-md-3" v-model="form.has_restrictions" :options="siNo" name="has_restrictions" :error="form.errorsFor('has_restrictions')" label="¿Tiene Restricción?"></vue-radio>
           </b-form-row>
           <b-form-row v-show="form.has_restrictions == 'SI'">
+            <vue-datepicker :disabled="viewOnly" class="col-md-4" v-model="form.start_restrictions" label="Fecha inicio restricción" :full-month-name="true" placeholder="Fecha inicio restricción" :error="form.errorsFor('start_restrictions')" name="start_restrictions"></vue-datepicker>
+            <vue-radio :disabled="viewOnly" :checked="form.indefinite_restrictions" class="col-md-4" v-model="form.indefinite_restrictions" :options="siNo" name="indefinite_restrictions" :error="form.errorsFor('indefinite_restrictions')" label="¿Restricción indefinida?"></vue-radio>
+            <vue-datepicker v-show="form.indefinite_restrictions == 'NO'" :disabled="viewOnly" class="col-md-4" v-model="form.end_restrictions" label="Fecha fin restricción" :full-month-name="true" placeholder="Fecha fin restricción" :error="form.errorsFor('end_restrictions')" name="end_restrictions"></vue-datepicker>
             <vue-ajax-advanced-select :disabled="viewOnly" class="col-md-6 offset-md-3" v-model="form.restriction_id" :error="form.errorsFor('restriction_id')" :selected-object="form.multiselect_restriction" name="restriction_id" label="Parte del cuerpo afectada" placeholder="Seleccione una opción" :url="restrictionsDataUrl"> </vue-ajax-advanced-select>
+          </b-form-row>
+
+          <div class="col-md-12" style="padding-left: 15px; padding-right: 15px;">
+            <hr class="border-dark container-m--x mt-0 mb-4">
+          </div>
+
+          <b-form-row>
+            <vue-radio :disabled="viewOnly" :checked="form.has_incapacitated" class="col-md-6 offset-md-3" v-model="form.has_incapacitated" :options="siNo" name="has_incapacitated" :error="form.errorsFor('has_incapacitated')" label="¿Incapacitado?"></vue-radio>
+          </b-form-row>
+           <b-form-row v-show="form.has_incapacitated == 'SI'">
+            <vue-input :disabled="viewOnly" class="col-md-4 offset-md-2" v-model="form.incapacitated_days" label="Números de dias" type="number" name="incapacitated_days"></vue-input>
+            <vue-datepicker :disabled="viewOnly" class="col-md-4" v-model="form.incapacitated_last_extension" label="Última prórroga" :full-month-name="true" placeholder="Última prórroga" :error="form.errorsFor('incapacitated_last_extension')" name="incapacitated_last_extension"></vue-datepicker>
+          </b-form-row>
+
+          <div class="col-md-12" style="padding-left: 15px; padding-right: 15px;">
+            <hr class="border-dark container-m--x mt-0 mb-4">
+          </div>
+
+          <b-form-row>
+            <vue-advanced-select :disabled="viewOnly" class="col-md-4 offset-md-4" v-model="form.case_classification" :error="form.errorsFor('case_classification')" :multiple="false" :options="caseClassification" :hide-selected="false" name="case_classification" label="Clasificación del caso" placeholder="Seleccione una opción"> </vue-advanced-select>
           </b-form-row>
 
           <div class="col-md-12" style="padding-left: 15px; padding-right: 15px;">
@@ -138,17 +172,10 @@
           </div>
           
           <b-form-row>
-            <div class="col-md-6">
+            <div class="col-md-12">
                 <monitoring-selector :disabled="viewOnly" :options="medicalConclusions" ref="medicalMonitoring" :monitoring-registered="check.medical_monitorings">
                     <template slot="monitoring-label">Fecha Seguimiento Médico</template>
                     <template slot="conclusion-label">Conclusión Seguimiento Médico</template>
-                </monitoring-selector>
-            </div>
-
-            <div class="col-md-6">
-                <monitoring-selector :disabled="viewOnly" :options="laborConclusions" ref="laborMonitoring" :monitoring-registered="check.labor_monitorings">
-                    <template slot="monitoring-label">Fecha Seguimiento Laboral</template>
-                    <template slot="conclusion-label">Conclusión Seguimiento Laboral</template>
                 </monitoring-selector>
             </div>
           </b-form-row>
@@ -203,7 +230,8 @@
 
                 <vue-input :disabled="viewOnly" class="col-md-6" v-show="showPcl" v-model="form.pcl" label="Calificación PCL" type="number" name="pcl" :error="form.errorsFor('pcl')"></vue-input>
 
-                <vue-input :disabled="viewOnly" class="col-md-6 offset-md-6" v-show="showPcl" v-model="form.entity_rating_pcl" label="Entidad que califica PCL" type="text" name="entity_rating_pcl" :error="form.errorsFor('entity_rating_pcl')"></vue-input>
+                <vue-advanced-select v-show="showPcl" :disabled="viewOnly" class="col-md-6 offset-md-6" v-model="form.entity_rating_pcl" :error="form.errorsFor('entity_rating_pcl')" :multiple="false" :options="originEmitters" :hide-selected="false" name="entity_rating_pcl" label="Entidad que califica PCL" placeholder="Seleccione una opción">
+                    </vue-advanced-select>
 
                 <vue-file-simple v-show="form.in_process_pcl == 'NO' && form.process_pcl_done == 'SI'" :help-text="form.old_process_pcl_file ? `Para descargar el archivo actual, haga click <a href='/biologicalmonitoring/reinstatements/check/downloadPclFile/${form.id}' target='blank'>aqui</a> `: null" :disabled="viewOnly" accept=".pdf" class="col-md-12" v-model="form.process_pcl_file" label="Adjuntar PDF" name="process_pcl_file" :error="form.errorsFor('process_pcl_file')" placeholder="Seleccione un archivo"></vue-file-simple>
 
@@ -341,9 +369,22 @@ export default {
         return [];
       }
     },
+    epsFavorabilityConcept: {
+      type: Array,
+      default: function() {
+        return [];
+      }
+    },
+    caseClassification: {
+      type: Array,
+      default: function() {
+        return [];
+      }
+    },
     check: {
       default() {
         return {
+          created_at: '',
           employee_id: '',
           disease_origin: '',
           has_recommendations: '',
@@ -481,6 +522,7 @@ export default {
     {
       this.form.relocated = 'NO';
       this.form.indefinite_recommendations = 'SI';
+      this.form.indefinite_restrictions = 'SI';
     }
 
     setTimeout(() => {
@@ -511,13 +553,7 @@ export default {
         return;
       }
 
-      if (!this.$refs.laborMonitoring.monitoringListIsValid()) {
-        Alerts.error('Error', 'Hay un campo vacío en la lista de monitoreo laboral');
-        return;
-      }
-
       this.form.medical_monitorings = this.$refs.medicalMonitoring.getMonitoringList();
-      this.form.labor_monitorings = this.$refs.laborMonitoring.getMonitoringList();
       this.form.new_tracing = this.$refs.tracingInserter.getNewTracing();
       this.form.oldTracings = this.$refs.tracingInserter.getOldTracings();
       

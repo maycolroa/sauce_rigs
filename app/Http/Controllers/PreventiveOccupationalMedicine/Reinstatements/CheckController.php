@@ -52,20 +52,48 @@ class CheckController extends Controller
     {
         $checks = Check::select(
                     'sau_reinc_checks.id AS id',
+                    'sau_reinc_checks.deadline AS deadline',
                     'sau_reinc_cie10_codes.code AS code',
                     'sau_reinc_checks.disease_origin AS disease_origin',
                     'sau_employees_regionals.name AS regional',
                     'sau_reinc_checks.state AS state',
+                    'sau_employees.identification AS identification',
                     'sau_employees.name AS name'
                 )
                 ->join('sau_reinc_cie10_codes', 'sau_reinc_cie10_codes.id', 'sau_reinc_checks.cie10_code_id')
                 ->join('sau_employees', 'sau_employees.id', 'sau_reinc_checks.employee_id')
                 ->leftJoin('sau_employees_regionals', 'sau_employees_regionals.id', 'sau_employees.employee_regional_id');
 
-        if ($request->current_check_id && $request->employee_id)
-        {
-            $checks->where('sau_reinc_checks.employee_id', '=', $request->employee_id);
+        if ($request->current_check_id)
             $checks->where('sau_reinc_checks.id', '<>', $request->current_check_id);
+
+        if ($request->employee_id)
+            $checks->where('sau_reinc_checks.employee_id', '=', $request->employee_id);
+
+        $filters = $request->get('filters');
+
+        if (COUNT($filters) > 0)
+        {
+            $checks->inIdentifications($this->getValuesForMultiselect($filters["identifications"]), $filters['filtersType']['identifications']);
+            $checks->inNames($this->getValuesForMultiselect($filters["names"]), $filters['filtersType']['names']);
+            $checks->inRegionals($this->getValuesForMultiselect($filters["regionals"]), $filters['filtersType']['regionals']);
+            $checks->inBusinesses($this->getValuesForMultiselect($filters["businesses"]), $filters['filtersType']['businesses']);
+            $checks->inDiseaseOrigin($this->getValuesForMultiselect($filters["diseaseOrigin"]), $filters['filtersType']['diseaseOrigin']);
+
+            if (isset($filters["nextFollowDays"]))
+                $checks->inNextFollowDays($this->getValuesForMultiselect($filters["nextFollowDays"]), $filters['filtersType']['nextFollowDays']);
+                
+            $dates_request = explode('/', $filters["dateRange"]);
+
+            $dates = [];
+
+            if (COUNT($dates_request) == 2)
+            {
+                array_push($dates, $this->formatDateToSave($dates_request[0]));
+                array_push($dates, $this->formatDateToSave($dates_request[1]));
+            }
+                
+            $checks->betweenDate($dates);
         }
 
         return Vuetable::of($checks)
@@ -108,7 +136,13 @@ class CheckController extends Controller
                 return $this->respondHttp500();
             }
 
-            if (!CheckManager::saveTracing($check, $request->new_tracing, Auth::user()))
+            if (!CheckManager::saveTracing('App\Models\PreventiveOccupationalMedicine\Reinstatements\Tracing', $check, $request->new_tracing, Auth::user()))
+            {
+                $check->delete();
+                return $this->respondHttp500();
+            }
+
+            if (!CheckManager::saveTracing('App\Models\PreventiveOccupationalMedicine\Reinstatements\LaborNotes', $check, $request->new_labor_notes, Auth::user()))
             {
                 $check->delete();
                 return $this->respondHttp500();
@@ -171,8 +205,11 @@ class CheckController extends Controller
 
             if (!CheckManager::saveLaborMonitoring($check, $request->labor_monitorings, true))
                 return $this->respondHttp500();
+                
+            if (!CheckManager::saveTracing('App\Models\PreventiveOccupationalMedicine\Reinstatements\Tracing', $check, $request->new_tracing, Auth::user(), $request->oldTracings))
+                return $this->respondHttp500();
 
-            if (!CheckManager::saveTracing($check, $request->new_tracing, Auth::user(), $request->oldTracings))
+            if (!CheckManager::saveTracing('App\Models\PreventiveOccupationalMedicine\Reinstatements\LaborNotes', $check, $request->new_labor_notes, Auth::user(), $request->oldLaborNotes))
                 return $this->respondHttp500();
 
             DB::commit();
@@ -235,24 +272,27 @@ class CheckController extends Controller
                 }*/
                 
                 $query->with('madeBy')->orderBy('created_at', 'desc');
+            },
+            'laborNotes' => function ($query) {
+                $query->with('madeBy')->orderBy('created_at', 'desc');
             }
         ]);
 
-        $check->start_recommendations = $this->formatDate($check->start_recommendations);
-        $check->end_recommendations = $this->formatDate($check->end_recommendations);
-        $check->monitoring_recommendations = $this->formatDate($check->monitoring_recommendations);
-        $check->process_origin_done_date = $this->formatDate($check->process_origin_done_date);
-        $check->process_pcl_done_date = $this->formatDate($check->process_pcl_done_date);
-        $check->date_controversy_origin_1 = $this->formatDate($check->date_controversy_origin_1);
-        $check->date_controversy_origin_2 = $this->formatDate($check->date_controversy_origin_2);
-        $check->date_controversy_pcl_1 = $this->formatDate($check->date_controversy_pcl_1);
-        $check->date_controversy_pcl_2 = $this->formatDate($check->date_controversy_pcl_2);
-        $check->relocated_date = $this->formatDate($check->relocated_date);
-        $check->start_restrictions = $this->formatDate($check->start_restrictions);
-        $check->end_restrictions = $this->formatDate($check->end_restrictions);
-        $check->incapacitated_last_extension = $this->formatDate($check->incapacitated_last_extension);
-        $check->deadline = $this->formatDate($check->deadline);
-        $check->next_date_tracking = $this->formatDate($check->next_date_tracking);
+        $check->start_recommendations = $this->formatDateToForm($check->start_recommendations);
+        $check->end_recommendations = $this->formatDateToForm($check->end_recommendations);
+        $check->monitoring_recommendations = $this->formatDateToForm($check->monitoring_recommendations);
+        $check->process_origin_done_date = $this->formatDateToForm($check->process_origin_done_date);
+        $check->process_pcl_done_date = $this->formatDateToForm($check->process_pcl_done_date);
+        $check->date_controversy_origin_1 = $this->formatDateToForm($check->date_controversy_origin_1);
+        $check->date_controversy_origin_2 = $this->formatDateToForm($check->date_controversy_origin_2);
+        $check->date_controversy_pcl_1 = $this->formatDateToForm($check->date_controversy_pcl_1);
+        $check->date_controversy_pcl_2 = $this->formatDateToForm($check->date_controversy_pcl_2);
+        $check->relocated_date = $this->formatDateToForm($check->relocated_date);
+        $check->start_restrictions = $this->formatDateToForm($check->start_restrictions);
+        $check->end_restrictions = $this->formatDateToForm($check->end_restrictions);
+        $check->incapacitated_last_extension = $this->formatDateToForm($check->incapacitated_last_extension);
+        $check->deadline = $this->formatDateToForm($check->deadline);
+        $check->next_date_tracking = $this->formatDateToForm($check->next_date_tracking);
 
         $check->old_process_origin_file = $check->process_origin_file;
         $check->old_process_pcl_file = $check->process_pcl_file;
@@ -266,12 +306,12 @@ class CheckController extends Controller
         $check->relocated_position_multiselect = $check->relocatedPosition ? $check->relocatedPosition->multiselect() : [];
 
         $check->medicalMonitorings->transform(function($medicalMonitoring, $index) {
-            $medicalMonitoring->set_at = $this->formatDate($medicalMonitoring->set_at);
+            $medicalMonitoring->set_at = $this->formatDateToForm($medicalMonitoring->set_at);
             return $medicalMonitoring;
         });
 
         $check->laborMonitorings->transform(function($laborMonitoring, $index) {
-            $laborMonitoring->set_at = $this->formatDate($laborMonitoring->set_at);
+            $laborMonitoring->set_at = $this->formatDateToForm($laborMonitoring->set_at);
             return $laborMonitoring;
         });
 
@@ -291,6 +331,20 @@ class CheckController extends Controller
 
         $check->oldTracings = $oldTracings;
 
+        $oldLaborNotes = [];
+
+        foreach ($check->laborNotes as $tracing)
+        {
+            array_push($oldLaborNotes, [
+                'id' => $tracing->id,
+                'description' => $tracing->description,
+                'made_by' => $tracing->madeBy->name,
+                'updated_at' => $tracing->updated_at->toDateString()
+            ]);
+        }
+
+        $check->oldLaborNotes = $oldLaborNotes;
+
         return $check;
     }
 
@@ -302,14 +356,6 @@ class CheckController extends Controller
     public function downloadPclFile(Check $check)
     {
       return Storage::disk('public')->download('preventiveOccupationalMedicine/reinstatements/files/'.Session::get('company_id').'/'.$check->process_pcl_file);
-    }
-
-    private function formatDate($date)
-    {
-        if ($date)
-            $date = (Carbon::createFromFormat('Y-m-d', $date))->format('D M d Y');
-
-        return $date;
     }
 
     public function generateTracing(Request $request)
@@ -374,8 +420,6 @@ class CheckController extends Controller
         ->first();
             
         $company = Company::select('logo')->where('id', Session::get('company_id'))->first();
-        
-        \Log::info($check);
 
         $data = [
             'to' => $request->to,
@@ -419,4 +463,52 @@ class CheckController extends Controller
         return $texto;
     }
 
+    public function multiselectDiseaseOrigin(Request $request)
+    {
+        return $this->getSelectOptions("reinc_select_disease_origin");
+    }
+
+    /**
+     * returns the days remaining for the next follow-up of the reports
+     * @return collection
+     */
+    public function multiselectNextFollowDays(Request $request)
+    {
+        $checks = Check::selectRaw('next_date_tracking, DATEDIFF(next_date_tracking, CURDATE()) as day')
+                    ->join('sau_employees', 'sau_employees.id', '=', 'sau_reinc_checks.employee_id')
+                    ->whereRaw('next_date_tracking >= CURDATE()')
+                    ->groupBy('next_date_tracking')
+                    ->orderBy('day');
+        
+        $data = $checks->pluck('next_date_tracking', 'day')->toArray();
+        $data['Vencidas'] = 'Vencidas';
+        $data['No Aplica'] = 'No Aplica';
+
+        return $this->multiSelectFormat(collect($data));
+    }
+
+
+    /**
+     * toggles the check state between open and close
+     * @param  Check  $check
+     * @return \Illuminate\Http\Response
+     */
+    public function toggleState(Request $request, Check $check)
+    {
+        $newState = $check->isOpen() ? "CERRADO" : "ABIERTO";
+        $data = ['state' => $newState];
+
+        if ($request->has('deadline') && $check->isOpen())
+            $data['deadline'] = $this->formatDateToSave($request->get('deadline'));
+        else 
+            $data['deadline'] = null;
+
+        if (!$check->update($data)) {
+            return $this->respondHttp500();
+        }
+        
+        return $this->respondHttp200([
+            'message' => 'Se cambio el estado del reporte'
+        ]);
+    }
 }

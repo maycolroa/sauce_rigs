@@ -31,6 +31,56 @@
                   :origin-emitters="originEmitters"
                   :cancel-url="{ name: 'reinstatements-checks'}"/>
               </template>
+              <template v-if="form == 'vivaAir'">
+                <form-check-viva-air
+                  url="/biologicalmonitoring/reinstatements/check"
+                  method="POST"
+                  employees-data-url="/selects/employees"
+                  :disease-origins="diseaseOrigins"
+                  :lateralities="lateralities"
+                  cie10-codes-data-url="/selects/cie10"
+                  :si-no="siNo"
+                  :origin-advisors="originAdvisors"
+                  regionals-data-url="/selects/regionals"
+                  headquarters-data-url="/selects/headquarters"
+                  areas-data-url="/selects/areas"
+                  processes-data-url="/selects/processes"
+                  positions-data-url="/selects/positions"
+                  restrictions-data-url="/selects/restrictions"
+                  :medical-conclusions="medicalConclusions"
+                  :labor-conclusions="laborConclusions"
+                  :origin-emitters="originEmitters"
+                  :sve-associated="sveAssociated"
+                  :medical-certificate-ueac="medicalCertificateUeac"
+                  :relocated-types="relocatedTypes"
+                  :cancel-url="{ name: 'reinstatements-checks'}"/>
+              </template>
+              <template v-if="form == 'misionEmpresarial'">
+                <form-check-empresarial
+                  url="/biologicalmonitoring/reinstatements/check"
+                  method="POST"
+                  employees-data-url="/selects/employees"
+                  :disease-origins="diseaseOrigins"
+                  :lateralities="lateralities"
+                  cie10-codes-data-url="/selects/cie10"
+                  :si-no="siNo"
+                  :origin-advisors="originAdvisors"
+                  regionals-data-url="/selects/regionals"
+                  headquarters-data-url="/selects/headquarters"
+                  areas-data-url="/selects/areas"
+                  processes-data-url="/selects/processes"
+                  positions-data-url="/selects/positions"
+                  restrictions-data-url="/selects/restrictions"
+                  :medical-conclusions="medicalConclusions"
+                  :labor-conclusions="laborConclusions"
+                  :origin-emitters="originEmitters"
+                  :sve-associated="sveAssociated"
+                  :medical-certificate-ueac="medicalCertificateUeac"
+                  :relocated-types="relocatedTypes"
+                  :eps-favorability-concept="epsFavorabilityConcept"
+                  :case-classification="caseClassification"
+                  :cancel-url="{ name: 'reinstatements-checks'}"/>
+              </template>
             </div>
         </b-card-body>
       </b-card>
@@ -40,6 +90,8 @@
 
 <script>
 import FormCheck from '@/components/PreventiveOccupationalMedicine/Reinstatements/Checks/FormCheckComponent.vue';
+import FormCheckVivaAir from '@/components/PreventiveOccupationalMedicine/Reinstatements/Checks/FormCheckVivaAirComponent.vue';
+import FormCheckEmpresarial from '@/components/PreventiveOccupationalMedicine/Reinstatements/Checks/FormCheckEmpresarialComponent.vue';
 import Loading from "@/components/Inputs/Loading.vue";
 import Alerts from '@/utils/Alerts.js';
 import GlobalMethods from '@/utils/GlobalMethods.js';
@@ -51,6 +103,8 @@ export default {
   },
   components:{
     FormCheck,
+    FormCheckVivaAir,
+    FormCheckEmpresarial,
     Loading
   },
   data(){
@@ -63,7 +117,12 @@ export default {
       originAdvisors: [],
       medicalConclusions: [],
       laborConclusions: [],
-      originEmitters: []
+      originEmitters: [],
+      sveAssociated: [],
+      medicalCertificateUeac: [],
+      relocatedTypes: [],
+      epsFavorabilityConcept: [],
+      caseClassification: []
     }
   },
   created(){
@@ -71,16 +130,17 @@ export default {
 		.then(response => {
       this.form = response.data;
       
+      if (this.form == 'vivaAir')
+      {
+        this.fetchOptions('sveAssociated', 'reinc_select_sve_associated')
+        this.fetchOptions('medicalCertificateUeac', 'reinc_select_medical_certificate_ueac')
+        this.fetchOptions('relocatedTypes', 'reinc_select_relocated_types')
+      }
+
       if (this.form == 'misionEmpresarial')
       {
-        /*axios.post(`/configurableForm/selectOptions`, {key: 'employee_select_contract_types'})
-        .then(response => {
-          this.contractTypes = response.data;
-        })
-        .catch(error => {
-          Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
-          this.$router.go(-1);
-        });*/
+        this.fetchOptions('epsFavorabilityConcept', 'reinc_select_eps_favorability_concept')
+        this.fetchOptions('caseClassification', 'reinc_select_case_classification')
       }
 
 			this.ready = true

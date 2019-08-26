@@ -134,5 +134,51 @@ export default [
           header: true
         },
       ]
+    },
+    {
+      name: 'reinstatements-checks',
+      filters: [
+        {
+          url: '/selects/employeesIdentifications',
+          key: 'identifications',
+          type: 'select',
+          label: 'Identificación'
+        }, 
+        {
+          url: '/selects/employeesNames',
+          key: 'names',
+          type: 'select',
+          label: 'Nombres'
+        },
+        {
+          url: '/selects/regionals',
+          key: 'regionals',
+          type: 'select',
+          label: 'Regionales'
+        },
+        {
+          url: '/selects/businesses',
+          key: 'businesses',
+          type: 'select',
+          label: 'Centro de costos'
+        },
+        {
+          url: '/selects/diseaseOrigin',
+          key: 'diseaseOrigin',
+          type: 'select',
+          label: 'Origen de enfermedad'
+        }, 
+        {
+          url: '/selects/nextFollowDays',
+          key: 'nextFollowDays',
+          type: 'select',
+          label: 'Próximo seguimiento (Dias)'
+        }, 
+        {
+          key: 'dateRange',
+          type: 'dateRange',
+          label: 'Rango de fecha',
+        },
+      ]
     }
 ];

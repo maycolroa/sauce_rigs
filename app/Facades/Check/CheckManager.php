@@ -16,6 +16,7 @@ use App\Rules\Reinstatements\ProcessPclDoneMustBePresent;
 use App\Rules\Reinstatements\RequiredIfHasRecommendations;
 use App\Rules\Reinstatements\RequiredIfHasRestrictions;
 use App\Rules\Reinstatements\RequiredIfInProcessIsNo;
+use App\Rules\Reinstatements\EndRestrictionsBePresent;
 use App\Traits\ConfigurableFormTrait;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Log;
@@ -65,18 +66,18 @@ class CheckManager
      * @param  User   $madeByUser
      * @return boolean
      */
-    public function saveTracing(Check $check, $tracingDescription, User $madeByUser, $tracingsToUpdate = [])
+    public function saveTracing($class, Check $check, $tracingDescription, User $madeByUser, $tracingsToUpdate = [])
     {
         try
         {
-            $this->handleTracingUpdates($madeByUser, $tracingsToUpdate);
+            $this->handleTracingUpdates($class, $madeByUser, $tracingsToUpdate);
 
             if (!$tracingDescription)
                 return true;
 
-            $tracing = new Tracing([
+            $tracing = (new ReflectionClass($class))->newInstanceArgs([[
                 'description' => $tracingDescription
-            ]);
+            ]]);
 
             $tracing->check_id = $check->id;
             $tracing->user_id = $madeByUser->id;
@@ -94,7 +95,7 @@ class CheckManager
      * @param  array  $tracingsToUpdate
      * @return void
      */
-    public function handleTracingUpdates(User $madeByUser, $tracingsToUpdate = [])
+    public function handleTracingUpdates($class, User $madeByUser, $tracingsToUpdate = [])
     {
         if (!is_array($tracingsToUpdate))
             return;
@@ -103,7 +104,7 @@ class CheckManager
         {
             $tracing = json_decode($tracing);
 
-            $oldTracing = Tracing::where('id', $tracing->id)->first();
+            $oldTracing = (new ReflectionClass($class))->newInstanceArgs([])->where('id', $tracing->id)->first();
 
             if (!$oldTracing)
                 continue;
@@ -193,32 +194,43 @@ class CheckManager
      */
     public function getProcessRules(CheckRequest $request)
     {
-        if ($this->formModel == 'default')
+        //Default, VivaAir
+        $rules = [
+            'start_recommendations' => new RequiredIfHasRecommendations($request->has_recommendations),
+            'indefinite_recommendations' => new RequiredIfHasRecommendations($request->has_recommendations),
+            'relocated' => new RequiredIfHasRecommendations($request->has_recommendations),
+            'monitoring_recommendations' => new RequiredIfHasRecommendations($request->has_recommendations),
+            'origin_recommendations' => new RequiredIfHasRecommendations($request->has_recommendations),
+
+            'restriction_id' => new RequiredIfHasRestrictions($request->has_restrictions),
+
+            'process_origin_done' => new RequiredIfInProcessIsNo($request->in_process_origin, 'calificación de origen'),
+            'process_pcl_done' => new RequiredIfInProcessIsNo($request->in_process_pcl, 'PCL'),
+
+            'end_recommendations' => new EndRecommendationsBePresent($request->has_recommendations, $request->indefinite_recommendations),
+
+            'start_recommendations' => new StartRecomendation($request->indefinite_recommendations, $request->end_recommendations, $request->has_recommendations),
+            'monitoring_recommendations' => new MonitoringRecomendation($request->indefinite_recommendations, $request->start_recommendations, $request->end_recommendations, $request->has_recommendations),
+
+            'process_origin_done_date' => new ProcessOriginDoneMustBePresent($request->in_process_origin, $request->process_origin_done),
+            'emitter_origin' => new ProcessOriginDoneMustBePresent($request->in_process_origin, $request->process_origin_done, true),
+            'process_pcl_done_date' => new ProcessPclDoneMustBePresent($request->in_process_pcl, $request->process_pcl_done),
+            'pcl' => new ProcessPclDoneMustBePresent($request->in_process_pcl, $request->process_pcl_done, true),
+            'entity_rating_pcl' => new ProcessPclDoneMustBePresent($request->in_process_pcl, $request->process_pcl_done, true)
+        ];
+
+        if ($this->formModel == 'misionEmpresarial')
         {
-            return [
-                'start_recommendations' => new RequiredIfHasRecommendations($request->has_recommendations),
-                'indefinite_recommendations' => new RequiredIfHasRecommendations($request->has_recommendations),
-                'relocated' => new RequiredIfHasRecommendations($request->has_recommendations),
-                'monitoring_recommendations' => new RequiredIfHasRecommendations($request->has_recommendations),
-                'origin_recommendations' => new RequiredIfHasRecommendations($request->has_recommendations),
-
-                'restriction_id' => new RequiredIfHasRestrictions($request->has_restrictions),
-
-                'process_origin_done' => new RequiredIfInProcessIsNo($request->in_process_origin, 'calificación de origen'),
-                'process_pcl_done' => new RequiredIfInProcessIsNo($request->in_process_pcl, 'PCL'),
-
-                'end_recommendations' => new EndRecommendationsBePresent($request->has_recommendations, $request->indefinite_recommendations),
-
-                'start_recommendations' => new StartRecomendation($request->indefinite_recommendations, $request->end_recommendations, $request->has_recommendations),
-                'monitoring_recommendations' => new MonitoringRecomendation($request->indefinite_recommendations, $request->start_recommendations, $request->end_recommendations, $request->has_recommendations),
-
-                'process_origin_done_date' => new ProcessOriginDoneMustBePresent($request->in_process_origin, $request->process_origin_done),
-                'emitter_origin' => new ProcessOriginDoneMustBePresent($request->in_process_origin, $request->process_origin_done, true),
-                'process_pcl_done_date' => new ProcessPclDoneMustBePresent($request->in_process_pcl, $request->process_pcl_done),
-                'pcl' => new ProcessPclDoneMustBePresent($request->in_process_pcl, $request->process_pcl_done, true),
-                'entity_rating_pcl' => new ProcessPclDoneMustBePresent($request->in_process_pcl, $request->process_pcl_done, true)
-            ];
+            $rules = array_merge($rules, [
+                'start_restrictions' => new RequiredIfHasRestrictions($request->has_restrictions),
+                'indefinite_restrictions' => new RequiredIfHasRestrictions($request->has_restrictions),
+                'end_restrictions' => new EndRestrictionsBePresent($request->has_restrictions, $request->indefinite_restrictions),
+                'incapacitated_days' => new RequiredIfHasIncapacitated($request->has_incapacitated),
+                'incapacitated_last_extension' => new RequiredIfHasIncapacitated($request->has_incapacitated),
+            ]);
         }
+
+        return $rules;
     }
 
     /**

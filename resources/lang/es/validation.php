@@ -289,6 +289,12 @@ return [
       'user' => 'Usuario',
       'site' => 'Sitio',
       'user_id' => 'Usuario',
+      'sve_associated' => 'SVE Asociado',
+      'medical_certificate_ueac' => 'Certificado médico UEAC',
+      'eps_favorability_concept' => 'Concepto de favorabilidad EPS',
+      'has_incapacitated' => 'incapacitado',
+      'case_classification' => 'Clasificación del caso',
+      'indefinite_restrictions' => 'restricción indefinida',
     ],
 
 ];
