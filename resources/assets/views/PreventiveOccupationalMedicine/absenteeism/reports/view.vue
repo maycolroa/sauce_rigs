@@ -1,16 +1,16 @@
 <template>
   <div>
     <h4 class="font-weight-bold mb-4">
-       <span class="text-muted font-weight-light">Reportes /</span> Ver
+       <span class="text-muted font-weight-light">Informes /</span> Ver
     </h4>
 
     <div class="col-md">
       <b-card no-body>
         <b-card-body>
-            <preventive-occupational-medicine-absenteeism-report-form
+            <report-form
                 :report="data"
                 :view-only="true"
-                :cancel-url="{ name: 'preventiveoccupationalmedicine-absenteeism-reports'}"/>
+                :cancel-url="{ name: 'absenteeism-reports'}"/>
         </b-card-body>
       </b-card>
     </div>
@@ -18,24 +18,24 @@
 </template>
  
 <script>
-import PreventiveOccupationalMedicineAbsenteeismReportForm from '@/components/PreventiveOccupationalMedicine/Absenteeism/Reports/FormReportComponent.vue';
+import ReportForm from '@/components/PreventiveOccupationalMedicine/Absenteeism/Reports/FormReportComponent.vue';
 import Alerts from '@/utils/Alerts.js';
 
 export default {
-  name: 'preventiveoccupationalmedicine-absenteeism-report-view',
+  name: 'absenteeism-reports-view',
   metaInfo: {
-    title: 'Ausentismo - Ver'
+    title: 'Informes - Ver'
   },
   components:{
-    PreventiveOccupationalMedicineAbsenteeismReportForm
+    ReportForm
   },
   data () {
     return {
-      data: [],
+      data: []
     }
   },
   created(){
-    axios.get(`/preventiveOccupationalMedicine/absenteeism/report/${this.$route.params.id}`)
+    axios.get(`/biologicalmonitoring/absenteeism/report/${this.$route.params.id}`)
     .then(response => {
         this.data = response.data.data;
     })

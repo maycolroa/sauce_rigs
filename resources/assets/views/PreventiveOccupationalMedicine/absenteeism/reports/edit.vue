@@ -1,18 +1,18 @@
 <template>
   <div>
     <h4 class="font-weight-bold mb-4">
-       <span class="text-muted font-weight-light">Actividades /</span> Editar
+       <span class="text-muted font-weight-light">Informes /</span> Editar
     </h4>
 
     <div class="col-md">
       <b-card no-body>
         <b-card-body>
-            <industrial-secure-activity-form
-                :url="`/industrialSecurity/activity/${this.$route.params.id}`"
-                method="PUT"
-                :activity="data"
+            <report-form
+                :url="`/biologicalmonitoring/absenteeism/report/${this.$route.params.id}`"
+                 method="PUT"
+                :report="data"
                 :is-edit="true"
-                :cancel-url="{ name: 'industrialsecure-activities'}"/>
+                :cancel-url="{ name: 'absenteeism-reports'}"/>
         </b-card-body>
       </b-card>
     </div>
@@ -20,16 +20,16 @@
 </template>
 
 <script>
-import IndustrialSecureActivityForm from '@/components/IndustrialSecure/Activities/FormActivityComponent.vue';
+import ReportForm from '@/components/PreventiveOccupationalMedicine/Absenteeism/Reports/FormReportComponent.vue';
 import Alerts from '@/utils/Alerts.js';
 
 export default {
-  name: 'industrialsecure-activities-edit',
+  name: 'absenteeism-reports-edit',
   metaInfo: {
-    title: 'Actividades - Editar'
+    title: 'Informes - Editar'
   },
   components:{
-    IndustrialSecureActivityForm
+    ReportForm
   },
   data () {
     return {
@@ -37,7 +37,7 @@ export default {
     }
   },
   created(){
-    axios.get(`/industrialSecurity/activity/${this.$route.params.id}`)
+    axios.get(`/biologicalmonitoring/absenteeism/report/${this.$route.params.id}`)
     .then(response => {
         this.data = response.data.data;
     })

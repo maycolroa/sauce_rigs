@@ -5,32 +5,23 @@ namespace App\Http\Controllers\PreventiveOccupationalMedicine\Absenteeism;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Vuetable\Facades\Vuetable;
-#use App\Facades\Check\Facades\CheckManager;
-use App\Models\General\Company;
-#use App\Models\PreventiveOccupationalMedicine\Reinstatements\Check;
-#use App\Http\Requests\PreventiveOccupationalMedicine\Reinstatements\CheckRequest;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Storage;
-use App\Traits\ConfigurableFormTrait;
-use Carbon\Carbon;
+use App\Models\PreventiveOccupationalMedicine\Absenteeism\Report;
+use App\Http\Requests\PreventiveOccupationalMedicine\Absenteeism\ReportRequest;
 use Session;
 use DB;
-use PDF;
 
 class ReportController extends Controller
 { 
-    use ConfigurableFormTrait;
-
     /**
      * creates and instance and middlewares are checked
      */
     function __construct()
     {
         $this->middleware('auth');
-        $this->middleware('permission:absen_informs_c', ['only' => 'store']);
-        $this->middleware('permission:absen_informs_r');
-        $this->middleware('permission:absen_informs_u', ['only' => 'update']);
-        $this->middleware('permission:absen_informs_d', ['only' => 'destroy']);
+        $this->middleware('permission:absen_reports_c', ['only' => 'store']);
+        $this->middleware('permission:absen_reports_r');
+        $this->middleware('permission:absen_reports_u', ['only' => 'update']);
+        $this->middleware('permission:absen_reports_d', ['only' => 'destroy']);
     }
 
     /**
@@ -50,80 +41,10 @@ class ReportController extends Controller
     */
     public function data(Request $request)
     {
-        $checks = Check::select(
-                    'sau_reinc_checks.id AS id',
-                    'sau_reinc_cie10_codes.code AS code',
-                    'sau_reinc_checks.disease_origin AS disease_origin',
-                    'sau_employees_regionals.name AS regional',
-                    'sau_reinc_checks.state AS state',
-                    'sau_employees.name AS name'
-                )
-                ->join('sau_reinc_cie10_codes', 'sau_reinc_cie10_codes.id', 'sau_reinc_checks.cie10_code_id')
-                ->join('sau_employees', 'sau_employees.id', 'sau_reinc_checks.employee_id')
-                ->leftJoin('sau_employees_regionals', 'sau_employees_regionals.id', 'sau_employees.employee_regional_id');
-
-        if ($request->current_check_id && $request->employee_id)
-        {
-            $checks->where('sau_reinc_checks.employee_id', '=', $request->employee_id);
-            $checks->where('sau_reinc_checks.id', '<>', $request->current_check_id);
-        }
-
-        return Vuetable::of($checks)
-                    ->addColumn('reinstatements-checks-edit', function ($check) {
-
-                        return $check->isOpen();
-                    })
-                    ->make();
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  App\Http\Requests\PreventiveOccupationalMedicine\Reinstatements\CheckRequest  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(CheckRequest $request)
-    {
-        $this->validate($request, CheckManager::getProcessRules($request));
+        $reports = Report::select('*');
         
-        try
-        {
-            DB::beginTransaction();
-
-            $check = new Check(CheckManager::checkNullAttrs($request, Session::get('company_id')));
-            $check->company_id = Session::get('company_id');
-
-            if (!$check->save())
-                return $this->respondHttp500();
-
-            if (!CheckManager::saveMedicalMonitoring($check, $request->medical_monitorings))
-            {
-                $check->delete();
-                return $this->respondHttp500();
-            }
-
-            if (!CheckManager::saveLaborMonitoring($check, $request->labor_monitorings))
-            {
-                $check->delete();
-                return $this->respondHttp500();
-            }
-
-            if (!CheckManager::saveTracing($check, $request->new_tracing, Auth::user()))
-            {
-                $check->delete();
-                return $this->respondHttp500();
-            }
-
-            DB::commit();
-
-        } catch (Exception $e){
-            DB::rollback();
-            return $this->respondHttp500();
-        }
-
-        return $this->respondHttp200([
-            'message' => 'Se creo el formulario'
-        ]);
+        return Vuetable::of($reports)
+                    ->make();
     }
 
     /**
@@ -136,287 +57,117 @@ class ReportController extends Controller
     {
         try
         {
-            $check = Check::findOrFail($id);
+            $report = Report::findOrFail($id);
 
+            $user_id = [];
+
+            foreach ($report->users as $key => $value)
+            {
+              array_push($user_id, $value->multiselect());
+            }
+            
+            $report->user_id = $user_id;
+            $report->multiselect_user_id = $user_id;
+        
             return $this->respondHttp200([
-                'data' => $this->getCheckView($check)
+                'data' => $report,
             ]);
+            
         } catch(Exception $e){
             $this->respondHttp500();
         }
     }
 
     /**
-     * Update the specified resource in storage.
+     * Store a newly created resource in storage.
      *
-     * @param  App\Http\Requests\PreventiveOccupationalMedicine\Reinstatements\CheckRequest  $request
-     * @param  Check  $check
+     * @param  App\Http\Requests\PreventiveOccupationalMedicine\Absenteeism\ReportRequest  $request
      * @return \Illuminate\Http\Response
      */
-    public function update(CheckRequest $request, Check $check)
+    public function store(ReportRequest $request)
     {
-        $this->validate($request, CheckManager::getProcessRules($request));
-        
+        DB::beginTransaction();
+
         try
         {
-            DB::beginTransaction();
 
-            $check->fill(CheckManager::checkNullAttrs($request, Session::get('company_id')));
-            
-            if (!$check->save())
-                return $this->respondHttp500();
+            $report = new Report($request->all());
+            $report->company_id = Session::get('company_id');
+            $report->type=1;
+            $report->es_bsc=0;
 
-            if (!CheckManager::saveMedicalMonitoring($check, $request->medical_monitorings, true))
+            if(!$report->save()){
                 return $this->respondHttp500();
+            }
 
-            if (!CheckManager::saveLaborMonitoring($check, $request->labor_monitorings, true))
-                return $this->respondHttp500();
-
-            if (!CheckManager::saveTracing($check, $request->new_tracing, Auth::user(), $request->oldTracings))
-                return $this->respondHttp500();
+            if ($request->get('user_id') && COUNT($request->get('user_id')) > 0)
+            {
+                $report->users()->sync($this->getDataFromMultiselect($request->get('user_id')));
+            }
 
             DB::commit();
 
-        } catch (Exception $e){
+        } catch (\Exception $e) {
             DB::rollback();
+            //return $e->getMessage();
+            return $this->respondHttp500();
+        }
+        
+        return $this->respondHttp200([
+            'message' => 'Se creo el informe'
+        ]);
+    }
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  App\Http\Requests\PreventiveOccupationalMedicine\Absenteeism\ReportRequest  $request
+     * @param  Report  $report
+     * @return \Illuminate\Http\Response
+     */
+    public function update(ReportRequest $request, Report $report)
+    {
+        DB::beginTransaction();
+
+        try{
+
+            $report->fill($request->all());
+            
+            if(!$report->update()){
+                return $this->respondHttp500();
+            }
+
+            if ($request->get('user_id') && COUNT($request->get('user_id')) > 0)
+            {
+                $report->users()->sync($this->getDataFromMultiselect($request->get('user_id')));
+            }
+
+            DB::commit();
+
+        }
+        catch(\Exception $e) {
+            DB::rollback();
+            //return $e->getMessage();
             return $this->respondHttp500();
         }
 
         return $this->respondHttp200([
-            'message' => 'Se actualizo el formulario'
-        ]);       
+            'message' => 'Se actualizo el informe'
+        ]);
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  Check  $check
+     * @param  Report  $report
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Check $check)
+    public function destroy(Report $report)
     {
-        if (!$check->delete())
+        if (!$report->delete())
             return $this->respondHttp500();
         
         return $this->respondHttp200([
-            'message' => 'Se elimino el formulario'
+            'message' => 'Se elimino el informe'
         ]);
     }
-
-    /**
-     * this method must be used ONLY for the show and edit method
-     * of this class.
-     *
-     * this method builds all the parameters that an instance of check
-     * must have in order to work the form in the view
-     *
-     * and the return the form view specifying the parameter "isShow"
-     * according to the show or edit view
-     * 
-     * @param  boolean $isShow
-     * @return \Illuminate\Http\Response
-     */
-    private function getCheckView(Check $check)
-    {
-        $authUser = Auth::user();
-
-        $check->load([
-            'employee',
-            'cie10Code',
-            'medicalMonitorings',
-            'laborMonitorings',
-            'tracings' => function ($query) use ($authUser) {
-                
-                /*if (!$authUser->checkRoleDefined('Superadmin') && $authUser->can('reinc_checks_view_last_tracing')) {
-                    $query->with('madeBy')->orderBy('created_at', 'desc')->limit(1);
-                }
-                else {
-                    $query->with('madeBy')->orderBy('created_at', 'desc');
-                }*/
-                
-                $query->with('madeBy')->orderBy('created_at', 'desc');
-            }
-        ]);
-
-        $check->start_recommendations = $this->formatDate($check->start_recommendations);
-        $check->end_recommendations = $this->formatDate($check->end_recommendations);
-        $check->monitoring_recommendations = $this->formatDate($check->monitoring_recommendations);
-        $check->process_origin_done_date = $this->formatDate($check->process_origin_done_date);
-        $check->process_pcl_done_date = $this->formatDate($check->process_pcl_done_date);
-        $check->date_controversy_origin_1 = $this->formatDate($check->date_controversy_origin_1);
-        $check->date_controversy_origin_2 = $this->formatDate($check->date_controversy_origin_2);
-        $check->date_controversy_pcl_1 = $this->formatDate($check->date_controversy_pcl_1);
-        $check->date_controversy_pcl_2 = $this->formatDate($check->date_controversy_pcl_2);
-        $check->relocated_date = $this->formatDate($check->relocated_date);
-        $check->start_restrictions = $this->formatDate($check->start_restrictions);
-        $check->end_restrictions = $this->formatDate($check->end_restrictions);
-        $check->incapacitated_last_extension = $this->formatDate($check->incapacitated_last_extension);
-        $check->deadline = $this->formatDate($check->deadline);
-        $check->next_date_tracking = $this->formatDate($check->next_date_tracking);
-
-        $check->old_process_origin_file = $check->process_origin_file;
-        $check->old_process_pcl_file = $check->process_pcl_file;
-
-        $check->multiselect_employee = $check->employee->multiselect();
-        $check->multiselect_cie10Code = $check->cie10Code->multiselect();
-        $check->multiselect_restriction = $check->restriction ? $check->restriction->multiselect() : [];
-        $check->relocated_regional_multiselect = $check->relocatedRegional ? $check->relocatedRegional->multiselect() : [];
-        $check->relocated_headquarter_multiselect = $check->relocatedHeadquarter ? $check->relocatedHeadquarter->multiselect() : [];
-        $check->relocated_process_multiselect = $check->relocatedProcess ? $check->relocatedProcess->multiselect() : [];
-        $check->relocated_position_multiselect = $check->relocatedPosition ? $check->relocatedPosition->multiselect() : [];
-
-        $check->medicalMonitorings->transform(function($medicalMonitoring, $index) {
-            $medicalMonitoring->set_at = $this->formatDate($medicalMonitoring->set_at);
-            return $medicalMonitoring;
-        });
-
-        $check->laborMonitorings->transform(function($laborMonitoring, $index) {
-            $laborMonitoring->set_at = $this->formatDate($laborMonitoring->set_at);
-            return $laborMonitoring;
-        });
-
-        $check->new_tracing = '';
-
-        $oldTracings = [];
-
-        foreach ($check->tracings as $tracing)
-        {
-            array_push($oldTracings, [
-                'id' => $tracing->id,
-                'description' => $tracing->description,
-                'made_by' => $tracing->madeBy->name,
-                'updated_at' => $tracing->updated_at->toDateString()
-            ]);
-        }
-
-        $check->oldTracings = $oldTracings;
-
-        return $check;
-    }
-
-    public function downloadOriginFile(Check $check)
-    {
-      return Storage::disk('public')->download('preventiveOccupationalMedicine/reinstatements/files/'.Session::get('company_id').'/'.$check->process_origin_file);
-    }
-
-    public function downloadPclFile(Check $check)
-    {
-      return Storage::disk('public')->download('preventiveOccupationalMedicine/reinstatements/files/'.Session::get('company_id').'/'.$check->process_pcl_file);
-    }
-
-    private function formatDate($date)
-    {
-        if ($date)
-            $date = (Carbon::createFromFormat('Y-m-d', $date))->format('D M d Y');
-
-        return $date;
-    }
-
-    public function generateTracing(Request $request)
-    {
-        $check = Check::selectRaw(
-           'sau_employees.name AS name,
-            sau_employees.identification AS identification,
-            sau_employees_positions.name AS position,
-            sau_reinc_cie10_codes.description AS diagnosis,
-            sau_reinc_checks.disease_origin AS disease_origin,
-            sau_reinc_checks.start_recommendations AS start_recommendations,
-            sau_reinc_checks.end_recommendations AS end_recommendations,
-            DATEDIFF(sau_reinc_checks.end_recommendations, sau_reinc_checks.start_recommendations) AS time_different,
-            sau_reinc_checks.indefinite_recommendations AS indefinite_recommendations,
-            sau_reinc_checks.monitoring_recommendations AS monitoring_recommendations,
-            sau_employees_headquarters.name AS headquarter'
-        )
-        ->join('sau_employees', 'sau_employees.id', 'sau_reinc_checks.employee_id')
-        ->leftJoin('sau_employees_headquarters', 'sau_employees_headquarters.id', 'sau_employees.employee_headquarter_id')
-        ->leftJoin('sau_reinc_cie10_codes', 'sau_reinc_cie10_codes.id', 'sau_reinc_checks.cie10_code_id')
-        ->leftJoin('sau_employees_positions', 'sau_employees_positions.id', 'sau_employees.employee_position_id')
-        ->where('sau_reinc_checks.id', $request->check_id)
-        ->first();
-
-        $company = Company::select('logo')->where('id', Session::get('company_id'))->first();
-        $new_date_tracing = $request->new_date_tracing ? (Carbon::createFromFormat('D M d Y', $request->new_date_tracing))->format('Y-m-d') : '';
-
-        $data = [
-            'has_tracing' => $request->has_tracing,
-            'new_date_tracing' => $new_date_tracing,
-            'tracing_description' => $request->tracing_description,
-            'check' => $check,
-            'logo' => ($company && $company->logo) ? $company->logo : null
-        ];
-
-        PDF::setOptions(['dpi' => 150, 'defaultFont' => 'sans-serif']);
-        
-        $pdf = PDF::loadView('pdf.tracing', $data);
-
-        return $pdf->stream('seguimiento.pdf');
-    }
-
-    public function generateLetter(Request $request)
-    {
-        $check = Check::selectRaw(
-           'sau_reinc_checks.detail as check_detail,
-            sau_reinc_checks.start_recommendations AS start_recommendations,
-            DATEDIFF(sau_reinc_checks.end_recommendations, sau_reinc_checks.start_recommendations) AS time_different,
-            sau_reinc_checks.indefinite_recommendations AS indefinite_recommendations,
-            sau_employees_regionals.name as regional,
-            sau_employees_headquarters.name AS headquarter,
-            sau_employees.name AS name,
-            sau_employees.identification AS identification,
-            sau_reinc_checks.origin_recommendations as origin_recommendations,
-            sau_employees_positions.name AS position'
-        )
-        ->join('sau_employees', 'sau_employees.id', '=', 'sau_reinc_checks.employee_id')
-        ->leftJoin('sau_employees_regionals', 'sau_employees_regionals.id', '=', 'sau_employees.employee_regional_id')
-        ->leftJoin('sau_employees_headquarters', 'sau_employees_headquarters.id', '=', 'sau_employees.employee_headquarter_id')
-        ->leftJoin('sau_employees_positions', 'sau_employees_positions.id', '=', 'sau_employees.employee_position_id')
-        ->where('sau_reinc_checks.id', $request->check_id)
-        ->first();
-            
-        $company = Company::select('logo')->where('id', Session::get('company_id'))->first();
-        
-        \Log::info($check);
-
-        $data = [
-            'to' => $request->to,
-            'from' => $request->from,
-            'subject' => $request->subject, 
-            'user' => Auth::user()->name,
-            'check' => $check,
-            'firm' => $request->firm,
-            'recommendations' => $this->replaceLast(',', ' y ', $request->selectedRecommendations),
-            'logo' => ($company && $company->logo) ? $company->logo : null
-        ];
-
-        PDF::setOptions(['dpi' => 150, 'defaultFont' => 'sans-serif']);
-
-        $formModel = $this->getFormModel('reinc_letter_recomendatios');
-
-        if ($formModel == 'default')
-        { 
-            $pdf = PDF::loadView('pdf.letter', $data);
-        }
-        else if ($formModel == 'vivaAir')
-        {
-            $pdf = PDF::loadView('pdf.letterVivaAir', $data);
-        }
-        else if($formModel == 'reditos')
-        {
-            $pdf = PDF::loadView('pdf.letterReditos', $data);
-        }
-
-        return $pdf->stream('recomendaciones.pdf');
-    
-    }
-
-    private function replaceLast($buscar, $remplazar, $texto)
-    {
-        $pos = strrpos($texto, $buscar);
-        
-        if($pos !== false)
-            $texto = substr_replace($texto, $remplazar, $pos, strlen($buscar));
-        
-        return $texto;
-    }
-
 }

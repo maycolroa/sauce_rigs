@@ -328,5 +328,57 @@ export default [
       filterColumns: true,
   }
 },
+{
+  name: 'absenteeism-reports',
+  fields: [
+      { name: 'sau_absen_reports.id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true },
+      { name: 'sau_absen_reports.name_show', data: 'name_show', title: 'Nombre', sortable: true, searchable: true, detail: false, key: false },
+      { name: '', data: 'controlls', title: 'Controles', sortable: false, searchable: false, detail: false, key: false },
+  ],
+  'controlls': [{
+      type: 'push',
+      buttons: [{
+          config: {
+              color: 'outline-success',
+              borderless: true,
+              icon: 'ion ion-md-create',
+              title: 'Editar'
+          },
+          data: {
+              routePush: { name: 'absenteeism-reports-edit' },
+              id: 'id',
+          },
+          permission: 'absen_reports_u'
+      }, {
+          config: {
+              color: 'outline-info',
+              borderless: true,
+              icon: 'ion ion-md-eye',
+              title: 'Ver'
+          },
+          data: {
+              routePush: { name: 'absenteeism-reports-view' },
+              id: 'id',
+          },
+          permission: 'absen_reports_r'
+      }]
+  },
+  {
+      type: 'base',
+      buttons: [{
+      name: 'delete',
+      data: {
+          action: '/biologicalmonitoring/absenteeism/report/',
+          id: 'id',
+          messageConfirmation: 'Esta seguro de borrar el reporte __name__'
+      },
+      permission: 'absen_reports_d'
+      }],
+  }],
+  configuration: {
+      urlData: '/biologicalmonitoring/absenteeism/report/data',
+      filterColumns: true,
+  }
+},
 
 ];

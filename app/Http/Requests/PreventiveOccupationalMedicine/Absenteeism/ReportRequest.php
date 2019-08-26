@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Http\Requests\PreventiveOccupationalMedicine\Reinstatements;
+namespace App\Http\Requests\PreventiveOccupationalMedicine\Absenteeism;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Session;
 
-class RestrictionRequest extends FormRequest
+class ReportRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -27,7 +27,11 @@ class RestrictionRequest extends FormRequest
         $id = $this->input('id');
 
         return [
-            'state' => 'required|string|unique:sau_reinc_restrictions,state,'.$id.',id,company_id,'.Session::get('company_id'),
+            'name_show' => 'required|unique:sau_absen_reports,name_show,'.$id.',id,company_id,'.Session::get('company_id'),
+            'name_report' => 'required',
+            'user' => 'required',
+            'site' => 'required',
+            'user_id' => 'required'
         ];
     }
 }

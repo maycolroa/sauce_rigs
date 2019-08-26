@@ -284,6 +284,11 @@ return [
       'pcl' => 'Calificación PCL',
       'entity_rating_pcl' => 'entidad que califica PCL',
       'monitoring' => 'seguimiento',
+      'name_show' => 'Nombre para mostrar',
+      'name_report' => 'Nombre del reporte',
+      'user' => 'Usuario',
+      'site' => 'Sitio',
+      'user_id' => 'Usuario',
     ],
 
 ];

@@ -7,13 +7,13 @@
 					<div class="card-title-elements">
 						<div class="row no-gutters row-bordered row-border-light h-100">
 							
-							<div class="d-flex col-sm-6 col-md-4 col-lg-6 align-items-center" v-if="auth.can['absen_informs_r']">
-								<router-link tag="a" href="javascript:void(0)" class="card-body media align-items-center text-dark" :to="{name:'absenteeism-report'}">
-									<i class="lnr lnr-list display-4 d-block text-primary"></i>
+							<div class="d-flex col-sm-6 col-md-4 col-lg-6 align-items-center" v-if="auth.can['absen_reports_r']">
+								<router-link tag="a" href="javascript:void(0)" class="card-body media align-items-center text-dark" :to="{name:'absenteeism-reports'}">
+									<i class="lnr lnr-chart-bars display-4 d-block text-primary"></i>
 									<span class="media-body d-block ml-3">
-										<span class="text-big font-weight-bolder">Admin Reportes</span>
+										<span class="text-big font-weight-bolder">Informes</span>
 										<br>
-										<small class="text-muted">Reportes de mi compañia</small>
+										<small class="text-muted">Informes de mi compañia</small>
 									</span>
 								</router-link>
 							</div>
