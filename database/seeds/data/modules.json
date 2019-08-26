@@ -106,6 +106,11 @@
                 "name": "reinstatements",
                 "display_name": "Reincorporaciones",
                 "main": "SI"
+            },
+            {
+                "name": "absenteeism",
+                "display_name": "Ausentismo",
+                "main": "SI"
             }
         ]
     },

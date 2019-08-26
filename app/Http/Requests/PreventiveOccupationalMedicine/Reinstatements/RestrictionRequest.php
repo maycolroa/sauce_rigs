@@ -27,7 +27,7 @@ class RestrictionRequest extends FormRequest
         $id = $this->input('id');
 
         return [
-            'name' => 'required|string|unique:sau_reinc_restrictions,name,'.$id.',id,company_id,'.Session::get('company_id'),
+            'state' => 'required|string|unique:sau_reinc_restrictions,state,'.$id.',id,company_id,'.Session::get('company_id'),
         ];
     }
 }
