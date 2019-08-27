@@ -49,7 +49,7 @@ export default {
   },
   data() {
     return {
-      loading: this.isEdit,
+      loading: false,
       form: Form.makeFrom(this.check, this.method),
     };
   },

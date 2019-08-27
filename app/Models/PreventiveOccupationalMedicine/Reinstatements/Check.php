@@ -322,7 +322,16 @@ class Check extends Model
     public function setCreatedAtAttribute($value)
     {
         if (isset($value))
-            $this->attributes['created_at'] = (Carbon::createFromFormat('D M d Y', $value))->format('Y-m-d 00:00:00');
+        {
+            try
+            {
+                $this->attributes['created_at'] = (Carbon::createFromFormat('D M d Y', $value))->format('Y-m-d 00:00:00');
+            }
+            catch (\Exception $e) {
+                $this->attributes['created_at'] = $value;
+            }
+        }
+            
     }
 
     public function scopeInNextFollowDays($query, $nextFollowDays, $typeSearch = 'IN')
