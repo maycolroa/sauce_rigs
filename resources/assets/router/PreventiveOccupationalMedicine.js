@@ -143,7 +143,7 @@ export default [{
         component: () =>
           import('@/views/PreventiveOccupationalMedicine/reinstatements/checks/letter')
       }
-    ]), 
+    ]),
     ...middleware({ 'check-permission': 'biologicalMonitoring_musculoskeletalAnalysis_r' }, [
       {
         name: 'biologicalmonitoring-musculoskeletalanalysis',
@@ -152,5 +152,42 @@ export default [{
             import('@/views/PreventiveOccupationalMedicine/biologicalmonitoring/musculoskeletalAnalysis/index')
       }
     ]), 
+    {
+      name: 'preventiveoccupationalmedicine-absenteeism',
+      path: 'absenteeism',
+      component: () => import('@/views/PreventiveOccupationalMedicine/absenteeism/index')
+    },
+    ...middleware({ 'check-permission': 'absen_reports_r' }, [
+      {
+        name: 'absenteeism-reports',
+        path: 'absenteeism/reports',
+        component: () =>
+            import('@/views/PreventiveOccupationalMedicine/absenteeism/reports/index')
+      }
+    ]), 
+    ...middleware({ 'check-permission': 'absen_reports_c' }, [
+      {
+        name: 'absenteeism-reports-create',
+        path: 'absenteeism/reports/create',
+        component: () =>
+          import('@/views/PreventiveOccupationalMedicine/absenteeism/reports/create')
+      }
+    ]), 
+    ...middleware({ 'check-permission': 'absen_reports_r' }, [
+      {
+        name: 'absenteeism-reports-view',
+        path: 'absenteeism/reports/view/:id',
+        component: () =>
+          import('@/views/PreventiveOccupationalMedicine/absenteeism/reports/view')
+      }
+    ]), 
+    ...middleware({ 'check-permission': 'absen_reports_u' }, [
+      {
+        name: 'absenteeism-reports-edit',
+        path: 'absenteeism/reports/edit/:id',
+        component: () =>
+          import('@/views/PreventiveOccupationalMedicine/absenteeism/reports/edit')
+      }
+    ])
   ]
 }]

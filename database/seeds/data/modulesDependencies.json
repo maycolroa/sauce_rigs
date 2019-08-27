@@ -74,5 +74,12 @@
             "logos",
             "customLabels"
         ]
+    },
+    {
+        "module": "absenteeism",
+        "dependencies": [
+            "users",
+            "roles"
+        ]
     }
 ]
