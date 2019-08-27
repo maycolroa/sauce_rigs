@@ -80,6 +80,10 @@
                     {
                         "name": "reinc_checks_view_last_tracing",
                         "display_name": "Reincorporaciones/Reportes - ver último seguimiento"
+                    },
+                    {
+                        "name": "reinc_checks_export",
+                        "display_name": "Reincorporaciones/Reportes - exportar"
                     }
                 ]
             },
