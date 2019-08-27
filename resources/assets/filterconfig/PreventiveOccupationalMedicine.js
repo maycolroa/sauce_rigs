@@ -204,6 +204,12 @@ export default [
           type: 'select',
           label: 'Consolidado Riesgo Personal (Criterio)',
           header:true
+        },
+        {
+          key: 'dateRange',
+          type: 'dateRange',
+          label: 'Rango de fecha',
+          header:true
         }
       ]
     }

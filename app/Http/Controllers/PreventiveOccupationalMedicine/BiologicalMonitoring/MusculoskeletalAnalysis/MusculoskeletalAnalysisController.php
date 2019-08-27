@@ -60,6 +60,17 @@ class MusculoskeletalAnalysisController extends Controller
           $data->inConsolidatedPersonalRiskCriterion($this->getValuesForMultiselect($filters["consolidatedPersonalRiskCriterion"]), $filters['filtersType']['consolidatedPersonalRiskCriterion']);
           $data->inBranchOffice($this->getValuesForMultiselect($filters["branchOffice"]), $filters['filtersType']['branchOffice']);
           $data->inCompanies($this->getValuesForMultiselect($filters["companies"]), $filters['filtersType']['companies']);
+
+          $dates_request = explode('/', $filters["dateRange"]);
+          $dates = [];
+
+          if (COUNT($dates_request) == 2)
+          {
+            array_push($dates, (Carbon::createFromFormat('D M d Y',$dates_request[0]))->format('Y-m-d'));
+            array_push($dates, (Carbon::createFromFormat('D M d Y',$dates_request[1]))->format('Y-m-d'));
+          }
+            
+          $data->betweenDate($dates);
         }
 
         return Vuetable::of($data)

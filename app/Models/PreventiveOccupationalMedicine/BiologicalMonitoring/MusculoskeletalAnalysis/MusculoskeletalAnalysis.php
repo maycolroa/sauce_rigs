@@ -195,4 +195,19 @@ class MusculoskeletalAnalysis extends Model
 
         return $query;
     }
+
+    /**
+     * filters checks through the given date
+     * @param  Illuminate\Database\Eloquent\Builder $query
+     * @param  array $dates
+     * @return Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeBetweenDate($query, $dates)
+    {
+        if (COUNT($dates) == 2)
+        {
+            $query->whereBetween('sau_bm_musculoskeletal_analysis.date', $dates);
+            return $query;
+        }
+    }
 }
