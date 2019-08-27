@@ -61,10 +61,10 @@ class EmployeeImportDataTemplateExcel implements FromCollection, WithHeadings, W
       $columns = [
         'Identificación',
         'Nombre',
-        'Fecha Nacimiento',
+        'Fecha Nacimiento (YYYY-MM-DD)',
         'Sexo (Masculino, Femenino)',
         'Email',
-        'Fecha de Ingreso',
+        'Fecha de Ingreso (YYYY-MM-DD)',
         $this->keywordCheckQueue('regional', $this->company_id),
         $this->keywordCheckQueue('headquarter', $this->company_id),
         'Proceso',
