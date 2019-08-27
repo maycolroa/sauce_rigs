@@ -295,6 +295,8 @@ return [
       'has_incapacitated' => 'incapacitado',
       'case_classification' => 'Clasificación del caso',
       'indefinite_restrictions' => 'restricción indefinida',
+      'incapacitated_last_extension' => 'última prórroga',
+      'end_restrictions' => 'fecha fin restricción',
     ],
 
 ];

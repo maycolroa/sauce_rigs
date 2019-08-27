@@ -1,8 +1,8 @@
 <template>
     <div>
-        <b-row align-h="end" style="padding: 10px;" v-if="modal">
+        <b-row align-h="end" style="padding: 10px;">
             <center>
-                <b-btn :variant="`${colorIcon} icon-btn`" @click="showFilterModal()" v-b-tooltip.top title="Abrir Filtros"><span class="fas fa-filter"></span></b-btn>&nbsp;&nbsp;
+                <b-btn v-if="modal" :variant="`${colorIcon} icon-btn`" @click="showFilterModal()" v-b-tooltip.top title="Abrir Filtros"><span class="fas fa-filter"></span></b-btn>&nbsp;&nbsp;
                 <b-btn variant="secondary icon-btn" @click="cleanFilters()" v-b-tooltip.top title="Limpiar Filtros"><span class="fas fa-broom"></span></b-btn>
             </center>
         </b-row>
@@ -49,7 +49,9 @@
 
         <div class="row" v-if="header">
             <template v-for="(item, index) in filters">
-                <div class="col-md-6" v-if="item.header != undefined" :key="index">
+                <div v-if="item.header != undefined" 
+                    :class="(item.type == 'dateRange' || item.type == 'numberRange') ? 'col-md-12' : 'col-md-6'" 
+                    :key="index">
                     <vue-advanced-select
                         v-if="item.type == 'select'"
                         :ref="item.key"

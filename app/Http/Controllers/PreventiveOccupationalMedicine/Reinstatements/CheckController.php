@@ -53,6 +53,7 @@ class CheckController extends Controller
         $checks = Check::select(
                     'sau_reinc_checks.id AS id',
                     'sau_reinc_checks.deadline AS deadline',
+                    'sau_reinc_checks.next_date_tracking AS next_date_tracking',
                     'sau_reinc_cie10_codes.code AS code',
                     'sau_reinc_checks.disease_origin AS disease_origin',
                     'sau_employees_regionals.name AS regional',

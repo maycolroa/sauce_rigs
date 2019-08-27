@@ -103,6 +103,11 @@
                 "main": "SI"
             },
             {
+                "name": "biologicalMonitoring/musculoskeletalAnalysis",
+                "display_name": "Monitoreo Biológico/Análisis Osteomuscular",
+                "main": "SI"
+            },
+            {
                 "name": "reinstatements",
                 "display_name": "Reincorporaciones",
                 "main": "SI"
