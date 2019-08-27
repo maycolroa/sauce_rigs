@@ -8,8 +8,9 @@
     <div class="col-md">
       <b-card no-body>
         <b-card-header class="with-elements">
-          <div class="card-title-elements" v-if="auth.can['reinc_checks_c']">
-            <b-btn :to="{name:'reinstatements-checks-create'}" variant="primary">Crear Reporte</b-btn>
+          <div class="card-title-elements">
+            <b-btn v-if="auth.can['reinc_checks_c']" :to="{name:'reinstatements-checks-create'}" variant="primary">Crear Reporte</b-btn>
+            <b-btn v-if="auth.can['reinc_checks_export']" variant="primary" @click="exportData()" v-b-tooltip.top title="Exportar"><i class="fas fa-download"></i></b-btn>
           </div>
         </b-card-header>
         <b-card-body>
@@ -64,7 +65,15 @@ export default {
     fetch()
     {
       this.$refs.tableCheck.refresh()
-    }
+    },
+    exportData(){
+      axios.post('/biologicalmonitoring/reinstatements/check/export', this.filters)
+      .then(response => {
+        Alerts.warning('Información', 'Se inicio la exportación, se le notificara a su correo electronico cuando finalice el proceso.');
+      }).catch(error => {
+        Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
+      });
+    },
   }
 }
 </script>
