@@ -10,6 +10,7 @@
           <div class="card-title-elements">
             <b-btn v-if="auth.can['biologicalMonitoring_musculoskeletalAnalysis_c']" variant="primary" @click="importMessage()" v-b-tooltip.top title="Importar"><i class="fas fa-upload"></i></b-btn>
             <input id="fileInputImport" type="file" style="display:none" v-on:input="importFile"/>
+            <b-btn v-if="auth.can['biologicalMonitoring_musculoskeletalAnalysis_c']" :to="{name:'biologicalmonitoring-musculoskeletalanalysis-informs'}" variant="primary">Ver Informes</b-btn>
           </div>
         </b-card-header>
         <b-card-body>
