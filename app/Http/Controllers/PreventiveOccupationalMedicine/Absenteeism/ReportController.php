@@ -5,6 +5,7 @@ namespace App\Http\Controllers\PreventiveOccupationalMedicine\Absenteeism;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Vuetable\Facades\Vuetable;
+use Illuminate\Support\Facades\Auth;
 use App\Models\PreventiveOccupationalMedicine\Absenteeism\Report;
 use App\Http\Requests\PreventiveOccupationalMedicine\Absenteeism\ReportRequest;
 use Session;
@@ -41,7 +42,16 @@ class ReportController extends Controller
     */
     public function data(Request $request)
     {
-        $reports = Report::select('*');
+        if(Auth::user()->can('absen_reports_c')){
+            $reports = Report::select('*');
+        }
+        else{
+            $reports = Report::select(
+                'sau_absen_reports.*'
+            )
+            ->join('sau_absen_report_user', 'sau_absen_report_user.report_id', 'sau_absen_reports.id')
+            ->where('sau_absen_report_user.user_id', Auth::user()->id);
+        }
         
         return Vuetable::of($reports)
                     ->make();

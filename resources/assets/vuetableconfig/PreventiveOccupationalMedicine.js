@@ -382,31 +382,43 @@ export default [
       { name: '', data: 'controlls', title: 'Controles', sortable: false, searchable: false, detail: false, key: false },
   ],
   'controlls': [{
-      type: 'push',
-      buttons: [{
-          config: {
-              color: 'outline-success',
-              borderless: true,
-              icon: 'ion ion-md-create',
-              title: 'Editar'
-          },
-          data: {
-              routePush: { name: 'absenteeism-reports-edit' },
-              id: 'id',
-          },
-          permission: 'absen_reports_u'
-      }, {
+        type: 'push',
+        buttons: [{
+            config: {
+                color: 'outline-success',
+                borderless: true,
+                icon: 'ion ion-md-create',
+                title: 'Editar'
+            },
+            data: {
+                routePush: { name: 'absenteeism-reports-edit' },
+                id: 'id',
+            },
+            permission: 'absen_reports_u'
+        }, {
+            config: {
+                color: 'outline-info',
+                borderless: true,
+                icon: 'ion ion-md-eye',
+                title: 'Ver'
+            },
+            data: {
+                routePush: { name: 'absenteeism-reports-view' },
+                id: 'id',
+            },
+            permission: 'absen_reports_r'
+        },{
           config: {
               color: 'outline-info',
               borderless: true,
-              icon: 'ion ion-md-eye',
-              title: 'Ver'
+              icon: 'ion ion-md-person-add',
+              title: 'Agregar usuarios al reporte'
           },
           data: {
-              routePush: { name: 'absenteeism-reports-view' },
+              routePush: { name: 'absenteeism-reports-user-add' },
               id: 'id',
           },
-          permission: 'absen_reports_r'
+          permission: 'absen_reports_admin_user'
       }]
   },
   {

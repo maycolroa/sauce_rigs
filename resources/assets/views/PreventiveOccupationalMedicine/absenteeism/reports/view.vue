@@ -6,11 +6,11 @@
 
     <div class="col-md">
       <b-card no-body>
-        <b-card-body>
-            <report-form
-                :report="data"
-                :view-only="true"
-                :cancel-url="{ name: 'absenteeism-reports'}"/>
+        <b-card-body><!--
+          <div class="col-md-12">
+            <iframe src="{{ $url }}" class="col-md-12" height="800" frameborder="0" id="iframeInforme"></iframe>
+          </div>
+            <iframe :src="queryComplete" frameborder="0"></iframe>-->
         </b-card-body>
       </b-card>
     </div>
@@ -18,31 +18,23 @@
 </template>
  
 <script>
-import ReportForm from '@/components/PreventiveOccupationalMedicine/Absenteeism/Reports/FormReportComponent.vue';
+
 import Alerts from '@/utils/Alerts.js';
 
 export default {
   name: 'absenteeism-reports-view',
   metaInfo: {
     title: 'Informes - Ver'
-  },
-  components:{
-    ReportForm
-  },
+  }/*,
   data () {
     return {
-      data: []
+      query: ''
     }
   },
-  created(){
-    axios.get(`/biologicalmonitoring/absenteeism/report/${this.$route.params.id}`)
-    .then(response => {
-        this.data = response.data.data;
-    })
-    .catch(error => {
-        Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
-        this.$router.go(-1);
-    });
-  },
+  computed: {
+    queryComplete () {
+      return this.query;
+    }
+  }*/
 }
 </script>
