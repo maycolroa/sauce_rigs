@@ -37,7 +37,7 @@ class User extends Authenticatable
     *
     * @var array
     */
-    protected $appends = ['all_permissions','can','hasRole','keywords'];
+    protected $appends = [/*'all_permissions',*/'can','hasRole','keywords'];
 
     //the attribute define the table for scope company execute
     public $scope_table_for_company_table = 'sau_roles';
@@ -117,10 +117,10 @@ class User extends Authenticatable
      *
      * @return bool
      */
-    public function getAllPermissionsAttribute()
+    /*public function getAllPermissionsAttribute()
     {
         return $this->allPermissions();
-    }
+    }*/
     
      /**
      * Get all user permissions in a flat array.
@@ -129,41 +129,47 @@ class User extends Authenticatable
      */
     public function getCanAttribute()
     {
-        $modules = $this->getModulePermissions();
-        $permission_enabled = [];
-
-        foreach ($modules as $key => $value)
+        if (Session::get('company_id'))
         {
-            $permission_enabled = array_merge($permission_enabled,  array_values($value));
-        }
+            $modules = $this->getModulePermissions();
+            $permission_enabled = [];
 
-        $permissions = [];
-        foreach (Permission::all() as $permission) {
-            if (in_array($permission->name, $permission_enabled)) {
-                $permissions[$permission->name] = true;
-            } else {
-                $permissions[$permission->name] = false;
+            foreach ($modules as $key => $value)
+            {
+                $permission_enabled = array_merge($permission_enabled,  array_values($value));
             }
+
+            $permissions = [];
+            foreach (Permission::all() as $permission) {
+                if (in_array($permission->name, $permission_enabled)) {
+                    $permissions[$permission->name] = true;
+                } else {
+                    $permissions[$permission->name] = false;
+                }
+            }
+            return $permissions;
         }
-        return $permissions;
     }
 
     public function getHasRoleAttribute()
     {
-        $roles = [];
-
-        foreach (Role::withoutGlobalScopes()->whereNull('sau_roles.company_id')->get() as $role)
+        if (Session::get('company_id'))
         {
-            $roles[$role->name] = false;
-        }
-        
-        foreach ($this->roleUser as $role)
-        {
-            if (!$role->company_id && isset($roles[$role->name]))
-                $roles[$role->name] = true;
-        }
+            $roles = [];
 
-        return $roles;
+            foreach (Role::withoutGlobalScopes()->whereNull('sau_roles.company_id')->get() as $role)
+            {
+                $roles[$role->name] = false;
+            }
+            
+            foreach ($this->roleUser as $role)
+            {
+                if (!$role->company_id && isset($roles[$role->name]))
+                    $roles[$role->name] = true;
+            }
+
+            return $roles;
+        }
     }
 
     public function checkRoleDefined($role)
@@ -196,22 +202,25 @@ class User extends Authenticatable
 
     public function getKeywordsAttribute()
     {
-        $company_id = Session::get('company_id');
-        $keywords = DB::table(DB::raw(
-                        "(SELECT
-                            k.name AS name,
-                            IF (c.display_name IS NULL, k.display_name, c.display_name) AS display_name
-                        FROM
-                            sau_keywords k
-                        LEFT JOIN sau_keyword_company c ON c.keyword_id = k.id AND 
-                            (
-                                c.company_id = $company_id OR c.company_id IS NULL
-                            )) AS t"
+        if (Session::get('company_id'))
+        {
+            $company_id = Session::get('company_id');
+            $keywords = DB::table(DB::raw(
+                            "(SELECT
+                                k.name AS name,
+                                IF (c.display_name IS NULL, k.display_name, c.display_name) AS display_name
+                            FROM
+                                sau_keywords k
+                            LEFT JOIN sau_keyword_company c ON c.keyword_id = k.id AND 
+                                (
+                                    c.company_id = $company_id OR c.company_id IS NULL
+                                )) AS t"
+                            )
                         )
-                    )
-                    ->pluck('display_name', 'name');
+                        ->pluck('display_name', 'name');
 
-        return $keywords;
+            return $keywords;
+        }
     }
 
     public function headquarters()

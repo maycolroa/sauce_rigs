@@ -144,8 +144,24 @@ export default [{
           import('@/views/PreventiveOccupationalMedicine/reinstatements/checks/letter')
       }
     ]),
+    ...middleware({ 'check-permission': 'biologicalMonitoring_musculoskeletalAnalysis_r' }, [
+      {
+        name: 'biologicalmonitoring-musculoskeletalanalysis',
+        path: 'biologicalmonitoring/musculoskeletalanalysis',
+        component: () =>
+            import('@/views/PreventiveOccupationalMedicine/biologicalmonitoring/musculoskeletalAnalysis/index')
+      }
+    ]), 
+    ...middleware({ 'check-permission': 'biologicalMonitoring_musculoskeletalAnalysis_r' }, [
+      {
+        name: 'biologicalmonitoring-musculoskeletalanalysis-informs',
+        path: 'biologicalmonitoring/musculoskeletalanalysis/informs',
+        component: () =>
+          import('@/views/PreventiveOccupationalMedicine/biologicalmonitoring/musculoskeletalAnalysis/informs')
+      }
+    ]), 
     {
-    name: 'preventiveoccupationalmedicine-absenteeism',
+      name: 'preventiveoccupationalmedicine-absenteeism',
       path: 'absenteeism',
       component: () => import('@/views/PreventiveOccupationalMedicine/absenteeism/index')
     },

@@ -9,6 +9,7 @@ use App\Facades\Check\Facades\CheckManager;
 use App\Models\General\Company;
 use App\Models\PreventiveOccupationalMedicine\Reinstatements\Check;
 use App\Http\Requests\PreventiveOccupationalMedicine\Reinstatements\CheckRequest;
+use App\Jobs\PreventiveOccupationalMedicine\Reinstatements\CheckExportJob;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use App\Traits\ConfigurableFormTrait;
@@ -31,6 +32,7 @@ class CheckController extends Controller
         $this->middleware('permission:reinc_checks_r');
         $this->middleware('permission:reinc_checks_u', ['only' => 'update']);
         $this->middleware('permission:reinc_checks_d', ['only' => 'destroy']);
+        $this->middleware('permission:reinc_checks_export', ['only' => 'export']);
     }
 
     /**
@@ -53,6 +55,7 @@ class CheckController extends Controller
         $checks = Check::select(
                     'sau_reinc_checks.id AS id',
                     'sau_reinc_checks.deadline AS deadline',
+                    'sau_reinc_checks.next_date_tracking AS next_date_tracking',
                     'sau_reinc_cie10_codes.code AS code',
                     'sau_reinc_checks.disease_origin AS disease_origin',
                     'sau_employees_regionals.name AS regional',
@@ -510,5 +513,51 @@ class CheckController extends Controller
         return $this->respondHttp200([
             'message' => 'Se cambio el estado del reporte'
         ]);
+    }
+
+    /**
+     * Export resources from storage.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function export(Request $request)
+    {
+      try
+      {
+        $identifications = $this->getValuesForMultiselect($request->identifications);
+        $names = $this->getValuesForMultiselect($request->names);
+        $regionals = $this->getValuesForMultiselect($request->regionals);
+        $businesses = $this->getValuesForMultiselect($request->businesses);
+        $diseaseOrigin = $this->getValuesForMultiselect($request->diseaseOrigin);
+        $nextFollowDays = $request->has('nextFollowDays') ? $this->getValuesForMultiselect($request->nextFollowDays) : null;
+        $filtersType = $request->filtersType;
+
+        $dates = [];
+        $dates_request = explode('/', $request->dateRange);
+
+        if (COUNT($dates_request) == 2)
+        {
+            array_push($dates, (Carbon::createFromFormat('D M d Y', $dates_request[0]))->format('Y-m-d'));
+            array_push($dates, (Carbon::createFromFormat('D M d Y', $dates_request[1]))->format('Y-m-d'));
+        }
+
+        $filters = [
+            'identifications' => $identifications,
+            'names' => $names,
+            'regionals' => $regionals,
+            'businesses' => $businesses,
+            'diseaseOrigin' => $diseaseOrigin,
+            'nextFollowDays' => $nextFollowDays,
+            'dates' => $dates,
+            'filtersType' => $filtersType
+        ];
+
+        CheckExportJob::dispatch(Auth::user(), Session::get('company_id'), $filters);
+      
+        return $this->respondHttp200();
+      } catch(Exception $e) {
+        return $this->respondHttp500();
+      }
     }
 }

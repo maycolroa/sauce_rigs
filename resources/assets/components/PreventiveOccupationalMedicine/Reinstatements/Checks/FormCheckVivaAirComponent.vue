@@ -1,10 +1,12 @@
 <template>
 
-  <b-form :action="url" @submit.prevent="submit" autocomplete="off">
-     <b-row v-if="employeeDetail.id">
+  <b-form :action="url" @submit.prevent="submit" autocomplete="off">                                  
+    <b-row>
       <b-col>
         <b-card bg-variant="transparent" border-variant="dark" title="" class="mb-3 box-shadow-none">
-          <center>
+          <vue-ajax-advanced-select class="col-md-12" :disabled="viewOnly" v-model="form.employee_id"  name="employee_id" label="Empleado" placeholder="Seleccione el empleado" :url="employeesDataUrl" :selected-object="form.multiselect_employee" :error="form.errorsFor('employee_id')">
+                </vue-ajax-advanced-select>
+          <center v-if="employeeDetail.id">
             <b-btn variant="primary" size="md" @click="$refs.modalHistorial.show()" ><span class="ion ion-md-eye"></span> Ver otros reportes relacionados con {{ employeeDetail.name }}</b-btn>
           </center>
 
@@ -26,14 +28,6 @@
 							<b-btn variant="primary" @click="$refs.modalHistorial.hide()">Cerrar</b-btn>
 						</div>
 					</b-modal>
-        </b-card>
-      </b-col>
-    </b-row>                                    
-    <b-row>
-      <b-col>
-        <b-card bg-variant="transparent" border-variant="dark" title="" class="mb-3 box-shadow-none">
-            <vue-ajax-advanced-select class="col-md-12" :disabled="viewOnly" v-model="form.employee_id"  name="employee_id" label="Empleado" placeholder="Seleccione el empleado" :url="employeesDataUrl" :selected-object="form.multiselect_employee" :error="form.errorsFor('employee_id')">
-                </vue-ajax-advanced-select>
         </b-card>
       </b-col>
     </b-row>

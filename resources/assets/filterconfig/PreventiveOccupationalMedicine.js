@@ -180,5 +180,37 @@ export default [
           label: 'Rango de fecha',
         },
       ]
+    },
+    {
+      name: 'biologicalmonitoring-musculoskeletalAnalysis',
+      filters: [ 
+        {
+          url: '/selects/branchOffice',
+          key: 'branchOffice',
+          type: 'select',
+          label: 'Sucursales',
+          header:true
+        },
+        {
+          url: '/selects/bm_musculoskeletalCompany',
+          key: 'companies',
+          type: 'select',
+          label: 'Compañias',
+          header:true
+        },
+        {
+          url: '/selects/consolidatedPersonalRiskCriterion',
+          key: 'consolidatedPersonalRiskCriterion',
+          type: 'select',
+          label: 'Consolidado Riesgo Personal (Criterio)',
+          header:true
+        },
+        {
+          key: 'dateRange',
+          type: 'dateRange',
+          label: 'Rango de fecha',
+          header:true
+        }
+      ]
     }
 ];

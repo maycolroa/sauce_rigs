@@ -6,17 +6,11 @@
 
                     <template v-if="item['subModules'] != undefined"> <!--Sub Modulos -->
                         <template>
-                            <router-link class="text-dark cursor-pointer item-app-navbar" :to="{ name: (item.name+'-'+subItem.name) }" v-for="(subItem, subIndex) in item.subModules" :key="subIndex"> 
-                                <center>
-                                    <div class="my-2 mx-2 text-center">
-                                        <div class="text-center">
-                                            <span class="text-big font-weight-bolder">
-                                                {{ item.display_name }} / {{ keywordCheck(subItem.name, subItem.display_name) }} 
-                                            </span>
-                                        </div>
-                                    </div>
-                                </center>
-                            </router-link>
+                            <center>
+                                <b-dd variant="default" class="text-dark text-center font-weight-bolder" :text="item.display_name" :right="isRTL">
+                                    <b-dd-item :to="{ name: (item.name+'-'+subItem.name) }" v-for="(subItem, subIndex) in item.subModules" :key="subIndex">{{ keywordCheck(subItem.name, subItem.display_name) }} </b-dd-item>
+                                </b-dd>
+                            </center>
                         </template>
                     </template>
 
@@ -25,7 +19,7 @@
                             <center>
                                 <div class="my-2 mx-2 text-center">
                                     <div class="text-center">
-                                        <span class="text-big font-weight-bolder">
+                                        <span class="text-big">
                                             {{ keywordCheck(item.name, item.display_name) }} 
                                         </span>
                                     </div>
