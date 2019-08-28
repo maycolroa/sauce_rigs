@@ -1,13 +1,16 @@
 <template>
 
   <b-form :action="url" @submit.prevent="submit" autocomplete="off">
-    <b-form-row>
+    <b-form-row v-show="!isAdd">
       <vue-input :disabled="viewOnly" class="col-md-12" v-model="form.name_show" label="Nombre para mostrar" type="text" name="name_show" :error="form.errorsFor('name_show')"></vue-input>
       <vue-input :disabled="viewOnly" class="col-md-12" v-model="form.name_report" label="Nombre del reporte" type="text" name="name_report" :error="form.errorsFor('name_report')"></vue-input>
       <vue-input :disabled="viewOnly" class="col-md-12" v-model="form.user" label="Usuario" type="text" name="user" :error="form.errorsFor('user')"></vue-input>
       <vue-input :disabled="viewOnly" class="col-md-12" v-model="form.site" label="Sitio" type="text" name="site" :error="form.errorsFor('site')"></vue-input>
       <vue-ajax-advanced-select :disabled="viewOnly" class="col-md-12" v-model="form.user_id" :selected-object="form.multiselect_user_id" name="user_id" label="Usuarios" placeholder="Seleccione uno o mas usuarios" :url="userDataUrl" :error="form.errorsFor('user_id')" :multiple="true" :allowEmpty="true"> </vue-ajax-advanced-select>      
       <vue-checkbox-simple :disabled="viewOnly" class="col-md-12" v-model="form.state" label="¿Activo?" :checked="form.state" name="state" checked-value=1 unchecked-value=0></vue-checkbox-simple>
+    </b-form-row>
+    <b-form-row v-show="isAdd">
+      <vue-ajax-advanced-select :disabled="viewOnly" class="col-md-12" v-model="form.user_id" :selected-object="form.multiselect_user_id" name="user_id" label="Usuarios" placeholder="Seleccione uno o mas usuarios" :url="userDataUrl" :error="form.errorsFor('user_id')" :multiple="true" :allowEmpty="true"> </vue-ajax-advanced-select>      
     </b-form-row>
 
     <div class="row float-right pt-10 pr-10">
@@ -36,6 +39,7 @@ export default {
     method: { type: String },
     cancelUrl: { type: [String, Object], required: true },
     isEdit: { type: Boolean, default: false },
+    isAdd: { type: Boolean, default: false },
     viewOnly: { type: Boolean, default: false },
     report: {
       default() {

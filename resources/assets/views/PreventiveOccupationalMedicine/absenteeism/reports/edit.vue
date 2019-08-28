@@ -1,7 +1,7 @@
 <template>
   <div>
     <h4 class="font-weight-bold mb-4">
-       <span class="text-muted font-weight-light">Informes /</span> Editar
+       <span class="text-muted font-weight-light">Informes /</span> {{ auth.can['absen_reports_admin_user'] && !auth.can['absen_reports_c'] ? "Editar usuarios" : "Editar"}}
     </h4>
 
     <div class="col-md">
@@ -12,7 +12,8 @@
                  method="PUT"
                 :report="data"
                 :is-edit="true"
-                :cancel-url="{ name: 'absenteeism-reports'}"/>
+                :cancel-url="{ name: 'absenteeism-reports'}"
+                :is-add="auth.can['absen_reports_admin_user'] && !auth.can['absen_reports_c']"/>
         </b-card-body>
       </b-card>
     </div>
@@ -24,7 +25,7 @@ import ReportForm from '@/components/PreventiveOccupationalMedicine/Absenteeism/
 import Alerts from '@/utils/Alerts.js';
 
 export default {
-  name: 'absenteeism-reports-edit',
+  name: 'absenteeism-reports-user-add',
   metaInfo: {
     title: 'Informes - Editar'
   },

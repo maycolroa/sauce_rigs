@@ -45,6 +45,7 @@
     "vue-echarts": "^3.0.4",
     "vue-flatpickr-component": "^7.0.0",
     "vue-form-wizard": "^0.8.4",
+    "vue-friendly-iframe": "^0.13.0",
     "vue-gallery": "^1.4.0",
     "vue-input-tag": "^1.0.3",
     "vue-jstree": "^2.1.6",

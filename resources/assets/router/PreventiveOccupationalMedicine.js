@@ -196,6 +196,14 @@ export default [{
         component: () =>
           import('@/views/PreventiveOccupationalMedicine/absenteeism/reports/edit')
       }
+    ]),
+    ...middleware({ 'check-permission': 'absen_reports_admin_user' }, [
+      {
+        name: 'absenteeism-reports-user-add',
+        path: 'absenteeism/reports/user-add/:id',
+        component: () =>
+          import('@/views/PreventiveOccupationalMedicine/absenteeism/reports/edit')
+      }
     ])
   ]
 }]
