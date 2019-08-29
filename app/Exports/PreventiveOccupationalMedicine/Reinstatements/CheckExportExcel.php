@@ -4,7 +4,11 @@ namespace App\Exports\PreventiveOccupationalMedicine\Reinstatements;
 
 use Maatwebsite\Excel\Concerns\Exportable;
 use Maatwebsite\Excel\Concerns\WithMultipleSheets;
+use App\Exports\PreventiveOccupationalMedicine\Reinstatements\CheckExcel;
+use App\Exports\PreventiveOccupationalMedicine\Reinstatements\CheckVivaAirExcel;
+use App\Exports\PreventiveOccupationalMedicine\Reinstatements\CheckEmpresarialExcel;
 use App\Exports\PreventiveOccupationalMedicine\Reinstatements\MonitoringsExcel;
+use App\Exports\PreventiveOccupationalMedicine\Reinstatements\TracingExcel;
 use App\Traits\ConfigurableFormTrait;
 
 class CheckExportExcel implements WithMultipleSheets
@@ -26,20 +30,30 @@ class CheckExportExcel implements WithMultipleSheets
      */
     public function sheets(): array
     {
-        $formModel = $this->getFormModel('form_employee', $this->company_id);
+        $formModel = $this->getFormModel('form_check', $this->company_id);
         
-        $sheets = [];
-
-        //$sheets[] = new EmployeeImportDataTemplateExcel(collect([]), $formModel, $this->company_id);
-        $sheets[] = new MonitoringsExcel($this->data['medicalMonitorings'], 'Seguimientos Medicos');
-
-        if ($formModel == 'vivaAir')
+        $sheets = [];      
+        
+        if ($formModel == 'default')
         {
-            
+            $sheets[] = new CheckExcel($this->company_id, $this->data['checks']);
+            $sheets[] = new MonitoringsExcel($this->data['medicalMonitorings'], 'Seguimientos Medicos');
+            $sheets[] = new MonitoringsExcel($this->data['laborMonitorings'], 'Seguimientos Laborales');
+            $sheets[] = new TracingExcel($this->data['tracings'], 'Seguimientos');
+        }
+        else if ($formModel == 'vivaAir')
+        {
+            $sheets[] = new CheckVivaAirExcel($this->company_id, $this->data['checks']);
+            $sheets[] = new MonitoringsExcel($this->data['medicalMonitorings'], 'Seguimientos Medicos');
+            $sheets[] = new MonitoringsExcel($this->data['laborMonitorings'], 'Seguimientos Laborales');
+            $sheets[] = new TracingExcel($this->data['tracings'], 'Notas Médicas');
+            $sheets[] = new TracingExcel($this->data['laborNotes'], 'Notas Laborales');
         }
         else if ($formModel == 'misionEmpresarial')
         {
-            
+            $sheets[] = new CheckEmpresarialExcel($this->company_id, $this->data['checks']);
+            $sheets[] = new MonitoringsExcel($this->data['medicalMonitorings'], 'Seguimientos Medicos');
+            $sheets[] = new TracingExcel($this->data['tracings'], 'Seguimientos');
         }
 
         return $sheets;

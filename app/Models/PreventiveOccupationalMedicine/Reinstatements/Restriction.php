@@ -24,8 +24,8 @@ class Restriction extends Model
         ];
     }
 
-    public function employees()
+    public function checks()
     {
-        return $this->hasMany('App\Models\Administrative\Employees\Employee', 'restriction_id');
+        return $this->hasMany(Check::class, 'restriction_id');
     }
 }
