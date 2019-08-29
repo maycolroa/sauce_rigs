@@ -114,7 +114,8 @@ class RestrictionController extends Controller
      */
     public function destroy(Restriction $restriction)
     {
-        /*if (COUNT($restriction->employees) > 0)
+        //Falta probar esto
+        /*if (COUNT($restriction->checks) > 0)
         {
             return $this->respondWithError('No se puede eliminar la Restricción porque hay registros asociados a él');
         }*/

@@ -39,65 +39,88 @@ class CheckExportJob implements ShouldQueue
      */
     public function handle()
     {
-      $checks = Check::select('sau_reinc_checks.*')/*with([
-        'employee' => function ($query) {
-            $query->with('regional', 'eps', 'position', 'business');
-        },
-        'cie10Code',
-        'restriction',
-        'medicalMonitorings',
-        'laborMonitorings',
-        'tracings.madeBy'
-      ])*/
-      ->join('sau_employees', 'sau_employees.id', 'sau_reinc_checks.employee_id')
-      ->inIdentifications($this->filters['identifications'], $this->filters['filtersType']['identifications'])
-      ->inNames($this->filters['names'], $this->filters['filtersType']['names'])
-      ->inRegionals($this->filters['regionals'], $this->filters['filtersType']['regionals'])
-      ->inBusinesses($this->filters['businesses'], $this->filters['filtersType']['businesses'])
-      ->inDiseaseOrigin($this->filters['diseaseOrigin'], $this->filters['filtersType']['diseaseOrigin'])
-      ->betweenDate($this->filters["dates"]);
-
-      if ($this->filters["nextFollowDays"])
-              $checks->inNextFollowDays($this->filters["nextFollowDays"], $this->filters['filtersType']['nextFollowDays']);
-
-      $checks->user = $this->user->id;
-      $checks->company_scope = $this->company_id;
-
-      \Log::info($checks->toSql());
-      \Log::info("----------------------------------------------------------");
-      \Log::info("----------------------------------------------------------");
-
-      $checks = $checks->get();
-      $dataMedicalMonitorings = collect([]);
-
-      foreach ($checks as $check)
+      try
       {
-          //\Log::info($check->id);
+        $checks = Check::select('sau_reinc_checks.*')
+        ->join('sau_employees', 'sau_employees.id', 'sau_reinc_checks.employee_id')
+        ->inIdentifications($this->filters['identifications'], $this->filters['filtersType']['identifications'])
+        ->inNames($this->filters['names'], $this->filters['filtersType']['names'])
+        ->inRegionals($this->filters['regionals'], $this->filters['filtersType']['regionals'])
+        ->inBusinesses($this->filters['businesses'], $this->filters['filtersType']['businesses'])
+        ->inDiseaseOrigin($this->filters['diseaseOrigin'], $this->filters['filtersType']['diseaseOrigin'])
+        ->betweenDate($this->filters["dates"]);
+
+        if ($this->filters["nextFollowDays"])
+                $checks->inNextFollowDays($this->filters["nextFollowDays"], $this->filters['filtersType']['nextFollowDays']);
+
+        $checks->user = $this->user->id;
+        $checks->company_scope = $this->company_id;
+
+        $checks = $checks->get();
+        $dataMedicalMonitorings = collect([]);
+        $dataLaborMonitorings = collect([]);
+        $dataTracings = collect([]);
+        $dataLaborNotes = collect([]);
+
+        foreach ($checks as $check)
+        {
           foreach ($check->medicalMonitorings as $medicalMonitoring)
           {
             $dataMedicalMonitorings->push($medicalMonitoring);
           }
+
+          foreach ($check->laborMonitorings as $laborMonitorings)
+          {
+            $dataLaborMonitorings->push($laborMonitorings);
+          }
+
+          foreach ($check->tracings as $tracing)
+          {
+            $dataTracings->push($tracing);
+          }
+
+          foreach ($check->laborNotes as $note)
+          {
+            $dataLaborNotes->push($note);
+          }
+        }
+
+        $data = collect([]);
+        $data->put('checks', $checks);
+        $data->put('medicalMonitorings', $dataMedicalMonitorings);
+        $data->put('laborMonitorings', $dataLaborMonitorings);
+        $data->put('tracings', $dataTracings);
+        $data->put('laborNotes', $dataLaborNotes);
+
+        $nameExcel = 'export/1/reincorporaciones_reportes_'.date("YmdHis").'.xlsx';
+        Excel::store(new CheckExportExcel($this->company_id, $data), $nameExcel, 'public',\Maatwebsite\Excel\Excel::XLSX);
+        
+        $paramUrl = base64_encode($nameExcel);
+        
+        NotificationMail::
+          subject('Reincorporaciones: Exportación de los reportes')
+          ->recipients($this->user)
+          ->message('Se ha generado una exportación de reportes.')
+          ->subcopy('Este link es valido por 24 horas')
+          ->buttons([['text'=>'Descargar', 'url'=>url("/export/{$paramUrl}")]])
+          ->module('reinstatements')
+          ->event('Job: CheckExportJob')
+          ->company($this->company_id)
+          ->send();
+
+      } catch (\Exception $e)
+      {
+        \Log::info($e);
+          NotificationMail::
+              subject('Reincorporaciones: Exportación de los reportes')
+              ->recipients($this->user)
+              ->message('Se produjo un error durante el proceso de importación de los reportes. Contacte con el administrador')
+              //->message($e->getMessage())
+              ->module('reinstatements')
+              ->event('Job: CheckExportJob')
+              ->company($this->company_id)
+              ->send();
       }
 
-      $data = collect([]);
-      $data->put('medicalMonitorings', $dataMedicalMonitorings);
-      
-      //\Log::info($dataMedicalMonitorings);
-
-      $nameExcel = 'export/1/reincorporaciones_reportes_'.date("YmdHis").'.xlsx';
-      Excel::store(new CheckExportExcel($this->company_id, $data), $nameExcel, 'public',\Maatwebsite\Excel\Excel::XLSX);
-      
-      $paramUrl = base64_encode($nameExcel);
-      
-      NotificationMail::
-        subject('Reincorporaciones: Exportación de los reportes')
-        ->recipients($this->user)
-        ->message('Se ha generado una exportación de reportes.')
-        ->subcopy('Este link es valido por 24 horas')
-        ->buttons([['text'=>'Descargar', 'url'=>url("/export/{$paramUrl}")]])
-        ->module('reinstatements')
-        ->event('Job: CheckExportJob')
-        ->company($this->company_id)
-        ->send();
     }
 }
