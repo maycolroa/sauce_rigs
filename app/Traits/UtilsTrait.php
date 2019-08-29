@@ -325,4 +325,13 @@ trait UtilsTrait
 
         return $date;
     }
+
+    function isThot()
+    {
+        if (strpos(url()->current(), 'bi.thotstrategy') === FALSE) {
+            return false;
+    }
+
+        return true;
+    }
 }

@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\PreventiveOccupationalMedicine\Absenteeism\Report;
 use App\Http\Requests\PreventiveOccupationalMedicine\Absenteeism\ReportRequest;
 use Session;
+use Config;
 use DB;
 
 class ReportController extends Controller
@@ -78,7 +79,8 @@ class ReportController extends Controller
             
             $report->user_id = $user_id;
             $report->multiselect_user_id = $user_id;
-        
+            $report->url= $report->getTableauCode()->generateReportURL();
+            
             return $this->respondHttp200([
                 'data' => $report,
             ]);
