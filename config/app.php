@@ -229,4 +229,10 @@ return [
         'PDF' => Barryvdh\DomPDF\Facade::class,
     ],
 
+    /**
+     * La ip del servidor de los informes
+     */
+
+    'server_ip' => ['tableau.thotstrategy.com','reports.rigs.com.co'],
+
 ];
