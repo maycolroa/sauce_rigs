@@ -204,6 +204,20 @@ export default [{
         component: () =>
           import('@/views/PreventiveOccupationalMedicine/absenteeism/reports/edit')
       }
+    ]),
+    ...middleware({ 'check-permission': 'absen_uploadFiles_r' }, [
+      {
+        name: 'absenteeism-upload-files',
+        path: 'upload-files',
+					component: () => import('@/views/PreventiveOccupationalMedicine/absenteeism/uploadFiles/index')
+      }
+    ]),
+    ...middleware({ 'check-permission': 'absen_uploadFiles_c' }, [
+      {
+        name: 'absenteeism-upload-files-create',
+        path: 'upload-files/create',
+					component: () => import('@/views/PreventiveOccupationalMedicine/absenteeism/uploadFiles/create')
+      }
     ])
   ]
 }]

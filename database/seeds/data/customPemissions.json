@@ -109,7 +109,16 @@
                     {
                         "name": "absen_reports_admin_user",
                         "display_name": "Ausentismo/Informes - adiministrar usuarios"
+                    },
+                    {
+                        "name": "absen_uploadFiles_r",
+                        "display_name": "Ausentismo/Subida de archivos - ver"
+                    },
+                    {
+                        "name": "absen_uploadFiles_c",
+                        "display_name": "Ausentismo/Subida de archivos - crear"
                     }
+
 
                 ]
             }
