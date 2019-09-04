@@ -117,6 +117,14 @@
                     {
                         "name": "absen_uploadFiles_c",
                         "display_name": "Ausentismo/Subida de archivos - crear"
+                    },
+                    {
+                        "name": "absen_uploadFiles_u",
+                        "display_name": "Ausentismo/Subida de archivos - editar"
+                    },
+                    {
+                        "name": "absen_uploadFiles_d",
+                        "display_name": "Ausentismo/Subida de archivos - eliminar"
                     }
 
 

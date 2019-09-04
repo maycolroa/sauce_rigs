@@ -9,7 +9,10 @@
           </div>
         </b-card-header>
         <b-card-body>
-           
+           <vue-table
+                v-if="auth.can['absen_uploadFiles_r']"
+                configName="absenteeism-fileUpload"
+                ></vue-table>
         </b-card-body>
     </b-card>
   </div>
@@ -20,7 +23,7 @@
 import Alerts from "@/utils/Alerts.js";
 
 export default {
-	name: "upload-files",
+	name: "absenteeism-upload-files",
 	metaInfo: {
 		title: "Subida de Archivos"
 	},

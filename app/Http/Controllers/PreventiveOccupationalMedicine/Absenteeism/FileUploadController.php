@@ -14,6 +14,7 @@ use App\Vuetable\Facades\Vuetable;
 use Illuminate\Database\Eloquent\Collection;
 use App\Facades\Mail\Facades\NotificationMail;
 use Session;
+use Validator;
 use DB;
 
 class FileUploadController extends Controller
@@ -39,47 +40,17 @@ class FileUploadController extends Controller
     */
     public function data(Request $request)
     {
-        $contract_id = null;
+        //$contract_id = null;
 
         $files = FileUpload::selectRaw(
-            'sau_ct_file_upload_contracts_leesse.*,
-             sau_users.name as user_name,
-             GROUP_CONCAT(sau_ct_information_contract_lessee.social_reason ORDER BY social_reason ASC) AS social_reason,
-             sau_ct_section_category_items.item_name AS item_name'
-          )
-          ->join('sau_users','sau_users.id','sau_ct_file_upload_contracts_leesse.user_id')
-          ->join('sau_ct_file_upload_contract','sau_ct_file_upload_contract.file_upload_id','sau_ct_file_upload_contracts_leesse.id')
-          ->join('sau_ct_information_contract_lessee', 'sau_ct_information_contract_lessee.id', 'sau_ct_file_upload_contract.contract_id')
-          ->leftJoin('sau_ct_file_item_contract', 'sau_ct_file_item_contract.file_id', 'sau_ct_file_upload_contracts_leesse.id')
-          ->leftJoin('sau_ct_section_category_items', 'sau_ct_section_category_items.id', 'sau_ct_file_item_contract.item_id')
-          ->groupBy('sau_ct_file_upload_contracts_leesse.id', 'sau_ct_section_category_items.item_name');
-
-        $filters = $request->get('filters');
-
-        if (COUNT($filters) > 0)
-        {
-          if (isset($filters['contracts']))
-            $files->inContracts($this->getValuesForMultiselect($filters["contracts"]), $filters['filtersType']['contracts']);
-
-          $files->inItems($this->getValuesForMultiselect($filters["items"]), $filters['filtersType']['items']);
-          $files->betweenCreated($filters["dateCreate"]);
-          $files->betweenUpdated($filters["dateUpdate"]);
-        }
-
-        if (Auth::user()->hasRole('Arrendatario') || Auth::user()->hasRole('Contratista'))
-        {
-          $contract_id = $this->getContractIdUser(Auth::user()->id);
-          $files->where('sau_ct_information_contract_lessee.id', $contract_id);
-        }
-        
-        return Vuetable::of($files)
-            ->addColumn('legalaspects-upload-files-edit', function ($file) use ($contract_id) {
-              return $this->checkPermissionUserInFile($file->user_id, $contract_id);
-            })
-            ->addColumn('control_delete', function ($file) use ($contract_id) {
-              return $this->checkPermissionUserInFile($file->user_id, $contract_id);
-            })
-            ->make();
+            'sau_absen_file_upload.*,
+            sau_users.name as user_name'
+        )
+        ->join('sau_users', 'sau_users.id', 'sau_absen_file_upload.user_id');
+      //->where('sau_users.id', Auth::user()->id);
+          
+          return Vuetable::of($files)
+                    ->make();
     }
 
     /**
@@ -90,15 +61,29 @@ class FileUploadController extends Controller
      */
     public function store(FileUploadRequest $request)
     {
-      DB::beginTransaction();
+     
+      /*Validator::make($request->all(), [
+        "file" => [
+            function ($attribute, $value, $fail)
+            {
+                if (($value && !is_string($value) && $value->getClientMimeType() != 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet') && 
+                    ($value && !is_string($value) && $value->getClientMimeType() != 'application/zip') &&
+                    ($value && !is_string($value) && $value->getClientMimeType() != 'application/vnd.ms-excel'))
+                    $fail('Archivo debe ser un zip o un Excel');
+            },
+        ]
+    ])->validate();*/
+    
+    DB::beginTransaction();
 
       try
       {
         $fileUpload = new FileUpload();
         $file = $request->file;
+        
         $nameFile = base64_encode(Auth::user()->id . now()) .'.'. $file->extension();
         
-        $file->storeAs('legalAspects/files/', $nameFile,'local');
+        $file->storeAs('absenteeism/files/', $nameFile,'local');
 
         $fileUpload->file = $nameFile;
         $fileUpload->user_id = Auth::user()->id;
@@ -109,7 +94,7 @@ class FileUploadController extends Controller
         {
           return $this->respondHttp500();
         }
-
+                
         DB::commit();
 
       }
@@ -135,17 +120,6 @@ class FileUploadController extends Controller
       try
       {
         $fileUpload = FileUpload::findOrFail($id);
-        $fileUpload->expirationDate = $fileUpload->expirationDate == null ? null : (Carbon::createFromFormat('Y-m-d',$fileUpload->expirationDate))->format('D M d Y');
-
-        $contract_id = [];
-
-        foreach ($fileUpload->contracts as $key => $value)
-        {
-          array_push($contract_id, $value->multiselect());
-        }
-
-        $fileUpload->contract_id = $contract_id;
-        $fileUpload->multiselect_contract_id = $contract_id;
 
         return $this->respondHttp200([
             'data' => $fileUpload,
@@ -169,41 +143,24 @@ class FileUploadController extends Controller
 
       try
       {
-        $contract_id = $this->getContractIdUser(Auth::user()->id);
-
-        if (!$this->checkPermissionUserInFile($fileUpload->user_id, $contract_id))
-        {
-          return $this->respondWithError('No tiene permitido editar este archivo');
-        }
-
+        
         if($request->file != $fileUpload->file)
         {
           $file = $request->file;
-          Storage::disk('s3')->delete('legalAspects/files/'. $fileUpload->file);
+          Storage::disk('local')->delete('abasenteeism/files/'. $fileUpload->file);
           $nameFile = base64_encode(Auth::user()->id . now()) .'.'. $file->extension();
-          $file->storeAs('legalAspects/files/', $nameFile,'s3');
+          $file->storeAs('absenteeism/files/', $nameFile,'local');
           $fileUpload->file = $nameFile;
         }
         
         $fileUpload->name = $request->name;
-        $fileUpload->expirationDate = $request->expirationDate == null ? null : (Carbon::createFromFormat('D M d Y', $request->expirationDate))->format('Ymd');
         
         if(!$fileUpload->save()) {
           return $this->respondHttp500();
         }
 
-        if ($request->get('contract_id') && COUNT($request->get('contract_id')) > 0)
-        {
-          $fileUpload->contracts()->sync($this->getDataFromMultiselect($request->get('contract_id')));
-        }
-        else 
-        {
-          $fileUpload->contracts()->sync($this->getContractsIds());
-        }
-
         DB::commit();
 
-        $this->sendNotification($fileUpload, 'actualizado');
       }
       catch(\Exception $e) {
         DB::rollback();
@@ -226,14 +183,8 @@ class FileUploadController extends Controller
     {
       try
       {
-        $contract_id = $this->getContractIdUser(Auth::user()->id);
-
-        if (!$this->checkPermissionUserInFile($fileUpload->user_id, $contract_id))
-        {
-          return $this->respondWithError('No tiene permitido eliminar este archivo');
-        }
-
-        Storage::disk('s3')->delete('legalAspects/files/'. $fileUpload->file);
+       
+        Storage::disk('local')->delete('absenteeism/files/'. $fileUpload->file);
         
         if(!$fileUpload->delete())
         {
@@ -258,7 +209,7 @@ class FileUploadController extends Controller
      */
     public function download(FileUpload $fileUpload)
     {
-      return Storage::disk('s3')->download('legalAspects/files/'. $fileUpload->file);
+      return Storage::disk('local')->download('absenteeism/files/'. $fileUpload->file);
     }
 
     private function checkPermissionUserInFile($user_id, $contract_id)
@@ -304,33 +255,4 @@ class FileUploadController extends Controller
         ->company(Session::get('company_id'))
         ->send();
     }
-
-     /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function getFilesItem(Request $request)
-    {
-      $contract_id = $this->getContractIdUser(Auth::user()->id);
-
-      $files = FileUpload::select(
-        'sau_ct_file_upload_contracts_leesse.*'
-      )
-      ->join('sau_ct_file_upload_contract','sau_ct_file_upload_contract.file_upload_id','sau_ct_file_upload_contracts_leesse.id')
-      ->join('sau_ct_file_item_contract', 'sau_ct_file_item_contract.file_id', 'sau_ct_file_upload_contracts_leesse.id')
-      ->where('sau_ct_file_upload_contract.contract_id', $contract_id)
-      ->where('sau_ct_file_item_contract.item_id', $request->item_id)
-      ->get();
-      #->groupBy('sau_ct_file_upload_contracts_leesse.id', 'sau_ct_section_category_items.item_name');
-
-      $files->transform(function($file, $index){
-          $file->expirationDate = (Carbon::createFromFormat('Y-m-d', $file->expirationDate))->format('D M d Y');
-          $file->key = Carbon::now()->timestamp + rand(1,10000);
-          return $file;
-      });
-
-      return $files;
-  }
 }

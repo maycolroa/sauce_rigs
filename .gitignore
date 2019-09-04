@@ -10,6 +10,7 @@
 /storage/logs
 /storage/app/public
 /storage/app/talend_jobs
+/storage/app/absenteeism
 /vendor
 /.idea
 /.vscode

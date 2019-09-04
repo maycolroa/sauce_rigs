@@ -75,6 +75,10 @@ Route::middleware(['auth'])->group(function () {
         Route::prefix('absenteeism')->group(function () {
           Route::post('report/data', 'PreventiveOccupationalMedicine\Absenteeism\ReportController@data');
           Route::ApiResource('report', 'PreventiveOccupationalMedicine\Absenteeism\ReportController');
+          
+          Route::post('fileUpload/data', 'PreventiveOccupationalMedicine\Absenteeism\FileUploadController@data');
+          Route::ApiResource('fileUpload', 'PreventiveOccupationalMedicine\Absenteeism\FileUploadController');
+          Route::get('fileUpload/download/{fileUpload}', 'PreventiveOccupationalMedicine\Absenteeism\FileUploadController@download');
         });
     });
     

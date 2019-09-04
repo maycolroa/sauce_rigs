@@ -8,10 +8,10 @@
     <div class="col-md">
       <b-card no-body>
         <b-card-body>
-            <!--<upload-file-form
-                url="/absenteeism/fileUpload"
+            <upload-file-form
+                url="/biologicalmonitoring/absenteeism/fileUpload"
                 method="POST"
-                :cancel-url="{ name: 'absenteeism-upload-files'}"/>-->
+                :cancel-url="{ name: 'absenteeism-upload-files'}"/>
         </b-card-body>
       </b-card>
     </div>
