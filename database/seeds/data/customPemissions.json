@@ -84,6 +84,10 @@
                     {
                         "name": "reinc_checks_export",
                         "display_name": "Reincorporaciones/Reportes - exportar"
+                    },
+                    {
+                        "name": "reinc_checks_informs",
+                        "display_name": "Reincorporaciones/Reportes - informes"
                     }
                 ]
             },

@@ -14,12 +14,13 @@ use Maatwebsite\Excel\Concerns\WithEvents;
 use Maatwebsite\Excel\Concerns\RegistersEventListeners;
 use Maatwebsite\Excel\Events\AfterSheet;
 use \Maatwebsite\Excel\Sheet;
+use Carbon\Carbon;
 
 Sheet::macro('styleCells', function (Sheet $sheet, string $cellRange, array $style) {
   $sheet->getDelegate()->getStyle($cellRange)->applyFromArray($style);
 });
 
-class MonitoringsExcel implements FromCollection, WithHeadings, WithMapping, WithColumnFormatting, WithEvents, WithTitle, ShouldAutoSize
+class TracingExcel implements FromCollection, WithHeadings, WithMapping, WithColumnFormatting, WithEvents, WithTitle, ShouldAutoSize
 {
     use RegistersEventListeners;
 
@@ -44,8 +45,9 @@ class MonitoringsExcel implements FromCollection, WithHeadings, WithMapping, Wit
     {
       return [
         $data->check_id,
-        $data->set_at,
-        $data->conclusion
+        $data->description,
+        $data->madeBy->name,
+        Carbon::createFromFormat('Y-m-d H:i:s', $data->created_at)->format('Y-m-d')
       ];
     }
 
@@ -53,8 +55,9 @@ class MonitoringsExcel implements FromCollection, WithHeadings, WithMapping, Wit
     {
         return [
             'ID Reporte',
-            'Fecha '.$this->title,
-            'Conclusión '.$this->title
+            'Descripción',
+            'Hecho por',
+            'Fecha de ingreso'
         ];
     }
 
@@ -62,14 +65,14 @@ class MonitoringsExcel implements FromCollection, WithHeadings, WithMapping, Wit
     {
         return [
             'A' => NumberFormat::FORMAT_NUMBER,
-            'B' => NumberFormat::FORMAT_DATE_DDMMYYYY,
+            'D' => NumberFormat::FORMAT_DATE_DDMMYYYY,
         ];
     }
 
     public static function afterSheet(AfterSheet $event)
     {
       $event->sheet->styleCells(
-        'A1:C1',
+        'A1:D1',
           [
             'alignment' => [
               'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT,
