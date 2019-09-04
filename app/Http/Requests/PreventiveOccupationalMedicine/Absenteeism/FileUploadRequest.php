@@ -26,7 +26,7 @@ class FileUploadRequest extends FormRequest
     {
         $rules = [
             "name" => "required",
-            "file" => "required|max:20480|mimes:xls,xlsx,zip"
+            "file" => "required|file|max:20480"
         ];
 
         return $rules;

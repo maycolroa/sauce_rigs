@@ -10,16 +10,12 @@ use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Storage;
 use App\Vuetable\Facades\Vuetable;
-//use App\Traits\ContractTrait;
-use Illuminate\Database\Eloquent\Collection;
-use App\Facades\Mail\Facades\NotificationMail;
 use Session;
 use Validator;
 use DB;
 
 class FileUploadController extends Controller
 {
-    //use ContractTrait;
     
     /**
      * creates and instance and middlewares are checked
@@ -42,13 +38,12 @@ class FileUploadController extends Controller
     {
         //$contract_id = null;
 
-        $files = FileUpload::selectRaw(
-            'sau_absen_file_upload.*,
-            sau_users.name as user_name'
+        $files = FileUpload::select(
+            'sau_absen_file_upload.*',
+            'sau_users.name as user_name'
         )
         ->join('sau_users', 'sau_users.id', 'sau_absen_file_upload.user_id');
-      //->where('sau_users.id', Auth::user()->id);
-          
+      
           return Vuetable::of($files)
                     ->make();
     }
@@ -62,7 +57,7 @@ class FileUploadController extends Controller
     public function store(FileUploadRequest $request)
     {
      
-      /*Validator::make($request->all(), [
+      Validator::make($request->all(), [
         "file" => [
             function ($attribute, $value, $fail)
             {
@@ -72,7 +67,7 @@ class FileUploadController extends Controller
                     $fail('Archivo debe ser un zip o un Excel');
             },
         ]
-    ])->validate();*/
+    ])->validate();
     
     DB::beginTransaction();
 
@@ -83,7 +78,8 @@ class FileUploadController extends Controller
         
         $nameFile = base64_encode(Auth::user()->id . now()) .'.'. $file->extension();
         
-        $file->storeAs('absenteeism/files/', $nameFile,'local');
+        $file->storeAs('absenteeism/files/', $nameFile,'public');
+        $file->storeAs('absenteeism/files/', $nameFile,'s3');
 
         $fileUpload->file = $nameFile;
         $fileUpload->user_id = Auth::user()->id;
@@ -147,9 +143,11 @@ class FileUploadController extends Controller
         if($request->file != $fileUpload->file)
         {
           $file = $request->file;
-          Storage::disk('local')->delete('abasenteeism/files/'. $fileUpload->file);
+          Storage::disk('public')->delete('abasenteeism/files/'. $fileUpload->file);
+          Storage::disk('s3')->delete('abasenteeism/files/'. $fileUpload->file);
           $nameFile = base64_encode(Auth::user()->id . now()) .'.'. $file->extension();
-          $file->storeAs('absenteeism/files/', $nameFile,'local');
+          $file->storeAs('absenteeism/files/', $nameFile,'public');
+          $file->storeAs('absenteeism/files/', $nameFile,'s3');
           $fileUpload->file = $nameFile;
         }
         
@@ -184,7 +182,8 @@ class FileUploadController extends Controller
       try
       {
        
-        Storage::disk('local')->delete('absenteeism/files/'. $fileUpload->file);
+        Storage::disk('public')->delete('absenteeism/files/'. $fileUpload->file);
+        Storage::disk('s3')->delete('absenteeism/files/'. $fileUpload->file);
         
         if(!$fileUpload->delete())
         {
@@ -209,50 +208,7 @@ class FileUploadController extends Controller
      */
     public function download(FileUpload $fileUpload)
     {
-      return Storage::disk('local')->download('absenteeism/files/'. $fileUpload->file);
+      return Storage::disk('public')->download('absenteeism/files/'. $fileUpload->file);
     }
 
-    private function checkPermissionUserInFile($user_id, $contract_id)
-    {
-      if (Auth::user()->hasRole('Arrendatario') || Auth::user()->hasRole('Contratista'))
-      {
-        if ($this->getContractIdUser($user_id) == $contract_id)
-          return true;
-        else
-          return false;
-      }
-
-      return true;
-    }
-
-    private function sendNotification($fileUpload, $type_action = 'creado')
-    {
-      if (Auth::user()->hasRole('Arrendatario') || Auth::user()->hasRole('Contratista'))
-      {
-        $subject = "Contratistas - Archivo Cargado";
-        $message = "Un(a) arrendatario/contratista ha $type_action un archivo, para porder verlo haga click en el botón que se encuentra abajo";
-        $recipients = $this->getUsersMasterContract(Session::get('company_id'));
-      }
-      else 
-      {
-        $subject = "Contratistas - Archivo Compartido";
-        $message = "Se ha $type_action un archivo compartido con su contratista, para porder verlo haga click en el botón que se encuentra abajo";
-
-        $recipients = new Collection();
-
-        foreach ($fileUpload->contracts as $contract)
-        {
-          $recipients = $recipients->merge($this->getUsersContract($contract->id));
-        }
-      }
-      
-      NotificationMail::
-        subject($subject)
-        ->recipients($recipients)
-        ->message($message)
-        ->buttons([['text'=>'Llevarme al sitio', 'url'=>url("/legalaspects/upload-files/view/{$fileUpload->id}")]])
-        ->module('contracts')
-        ->company(Session::get('company_id'))
-        ->send();
-    }
 }
