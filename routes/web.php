@@ -125,14 +125,19 @@ Route::middleware(['auth'])->group(function () {
         Route::post('tagsTypeProcess', 'General\TagController@multiselectTypeProcess');
         Route::post('tagsSubstitution', 'IndustrialSecure\Tags\TagController@multiselectSubstitution');
         Route::post('tagsParticipants', 'IndustrialSecure\Tags\TagController@multiselectParticipants');
+        Route::post('tagsDangerDescription', 'IndustrialSecure\Tags\TagController@multiselectDangerDescription');
         Route::post('actionPlanStates', 'General\MultiSelectRadioController@actionPlanStates');
         Route::post('actionPlanModules', 'Administrative\ActionPlans\ActionPlanController@actionPlanModules');
         Route::post('contractors', 'LegalAspects\Contracs\ContractLesseeController@multiselect');
         Route::post('ctRoles', 'General\MultiSelectRadioController@ctRoles');
         Route::post('ctContractClassifications', 'General\MultiSelectRadioController@ctContractClassifications'); 
         Route::post('ctkindsRisks', 'General\MultiSelectRadioController@ctkindsRisks'); 
-        Route::post('siNo', 'General\MultiSelectRadioController@siNoSelect');
+        Route::post('siNo', 'General\MultiSelectRmultiselectYearsadioController@siNoSelect');
         Route::post('companies', 'General\ApplicationController@multiselectCompanies');
+        Route::post('reincYears', 'PreventiveOccupationalMedicine\Reinstatements\CheckController@multiselectYears');
+        Route::post('reincSveAssociateds', 'PreventiveOccupationalMedicine\Reinstatements\CheckController@multiselectSveAssociateds');
+        Route::post('reincMedicalCertificates', 'PreventiveOccupationalMedicine\Reinstatements\CheckController@multiselectMedicalCertificates');
+        Route::post('reincRelocatedTypes', 'PreventiveOccupationalMedicine\Reinstatements\CheckController@multiselectRelocatedTypes');
 
         Route::prefix('evaluations')->group(function () {
           Route::post('objectives', 'LegalAspects\Contracs\EvaluationController@multiselectObjectives');

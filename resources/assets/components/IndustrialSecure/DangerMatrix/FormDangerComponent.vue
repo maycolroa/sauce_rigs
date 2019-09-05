@@ -13,7 +13,8 @@
                 <b-form-row>
                   <vue-ajax-advanced-select @selectedName="emitDangerName" :disabled="viewOnly" class="col-md-6" v-model="danger.danger_id" :selected-object="danger.multiselect_danger" name="danger_id" :error="form.errorsFor(`activities.${indexActivity}.dangers.${indexDanger}.danger_id`)" label="Peligro" placeholder="Seleccione el peligro" :url="dangersDataUrl">
                       </vue-ajax-advanced-select>
-                  <vue-textarea :disabled="viewOnly" class="col-md-6" v-model="danger.danger_description" label="Descripción del peligro" name="danger_description" :error="form.errorsFor(`activities.${indexActivity}.dangers.${indexDanger}.danger_description`)"  placeholder="Descripción del peligro"></vue-textarea>
+                  <vue-ajax-advanced-select :disabled="viewOnly" class="col-md-6" v-model="danger.danger_description" name="danger_description" :error="form.errorsFor(`activities.${indexActivity}.dangers.${indexDanger}.danger_description`)" label="Descripción del peligro" placeholder="Seleccione la descripción del peligro" :url="tagsDangerDescriptionDataUrl" :multiple="true" :allowEmpty="true" :taggable="true">
+                    </vue-ajax-advanced-select>
                 </b-form-row>
                 <b-form-row>
                   <vue-advanced-select :disabled="viewOnly" class="col-md-6" v-model="danger.danger_generated" :multiple="false" :options="dangerGenerated" :hide-selected="false" name="danger_generated" :error="form.errorsFor(`activities.${indexActivity}.dangers.${indexDanger}.danger_generated`)" label="Peligro Generado" placeholder="Seleccione el peligro generado">
@@ -219,7 +220,6 @@ export default {
             id: '',
             dm_activity_id: '',
             danger_id: '',
-            danger_description: '',
             danger_generated: '',
             possible_consequences_danger: '',
             generating_source: '',
@@ -270,7 +270,8 @@ export default {
       tagsWarningSignageDataUrl: '/selects/tagsWarningSignage',
       tagsAdministrativeControlsDataUrl: '/selects/tagsAdministrativeControls',
       tagsEppDataUrl: '/selects/tagsEpp',
-      tagsSubstitutionDataUrl: '/selects/tagsSubstitution'
+      tagsSubstitutionDataUrl: '/selects/tagsSubstitution',
+      tagsDangerDescriptionDataUrl: '/selects/tagsDangerDescription'
     };
   },
   methods: {

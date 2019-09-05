@@ -48,10 +48,20 @@ class CheckExportJob implements ShouldQueue
         ->inRegionals($this->filters['regionals'], $this->filters['filtersType']['regionals'])
         ->inBusinesses($this->filters['businesses'], $this->filters['filtersType']['businesses'])
         ->inDiseaseOrigin($this->filters['diseaseOrigin'], $this->filters['filtersType']['diseaseOrigin'])
+        ->inYears($this->filters['years'], $this->filters['filtersType']['years'])
         ->betweenDate($this->filters["dates"]);
 
         if ($this->filters["nextFollowDays"])
-                $checks->inNextFollowDays($this->filters["nextFollowDays"], $this->filters['filtersType']['nextFollowDays']);
+          $checks->inNextFollowDays($this->filters["nextFollowDays"], $this->filters['filtersType']['nextFollowDays']);
+
+        if ($this->filters["sveAssociateds"])
+          $checks->inSveAssociateds($this->filters["sveAssociateds"], $this->filters['filtersType']['sveAssociateds']);
+
+        if ($this->filters["medicalCertificates"])
+          $checks->inMedicalCertificates($this->filters["medicalCertificates"], $this->filters['filtersType']['medicalCertificates']);
+
+        if ($this->filters["relocatedTypes"])
+          $checks->inRelocatedTypes($this->filters["relocatedTypes"], $this->filters['filtersType']['relocatedTypes']);
 
         $checks->user = $this->user->id;
         $checks->company_scope = $this->company_id;
@@ -110,7 +120,7 @@ class CheckExportJob implements ShouldQueue
 
       } catch (\Exception $e)
       {
-        \Log::info($e);
+        //\Log::info($e);
           NotificationMail::
               subject('Reincorporaciones: Exportación de los reportes')
               ->recipients($this->user)

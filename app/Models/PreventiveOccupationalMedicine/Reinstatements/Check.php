@@ -449,4 +449,64 @@ class Check extends Model
             return $query;
         }
     }
+
+    /**
+     * filters checks through the given sveAssociateds
+     * @param  Illuminate\Database\Eloquent\Builder $query
+     * @param  array $sveAssociateds
+     * @return Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeInSveAssociateds($query, $sveAssociateds, $typeSearch = 'IN')
+    {
+        if (COUNT($sveAssociateds) > 0)
+        {
+            if ($typeSearch == 'IN')
+                $query->whereIn('sau_reinc_checks.sve_associated', $sveAssociateds);
+
+            else if ($typeSearch == 'NOT IN')
+                $query->whereNotIn('sau_reinc_checks.sve_associated', $sveAssociateds);
+        }
+
+        return $query;
+    }
+
+    /**
+     * filters checks through the given medicalCertificates
+     * @param  Illuminate\Database\Eloquent\Builder $query
+     * @param  array $medicalCertificates
+     * @return Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeInMedicalCertificates($query, $medicalCertificates, $typeSearch = 'IN')
+    {
+        if (COUNT($medicalCertificates) > 0)
+        {
+            if ($typeSearch == 'IN')
+                $query->whereIn('sau_reinc_checks.medical_certificate_ueac', $medicalCertificates);
+
+            else if ($typeSearch == 'NOT IN')
+                $query->whereNotIn('sau_reinc_checks.medical_certificate_ueac', $medicalCertificates);
+        }
+
+        return $query;
+    }
+
+    /**
+     * filters checks through the given relocatedTypes
+     * @param  Illuminate\Database\Eloquent\Builder $query
+     * @param  array $relocatedTypes
+     * @return Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeInRelocatedTypes($query, $relocatedTypes, $typeSearch = 'IN')
+    {
+        if (COUNT($relocatedTypes) > 0)
+        {
+            if ($typeSearch == 'IN')
+                $query->whereIn('sau_reinc_checks.relocated_type', $relocatedTypes);
+
+            else if ($typeSearch == 'NOT IN')
+                $query->whereNotIn('sau_reinc_checks.relocated_type', $relocatedTypes);
+        }
+
+        return $query;
+    }
 }
