@@ -213,5 +213,245 @@ export default [
         urlData: '/industrialSecurity/dangersMatrix/reportDangerTable',
         filterColumns: true,
     }
-}
+},
+{
+    name: 'industrialsecure-dangermatrix-tags-administrative-controls',
+    fields: [
+        { name: 'sau_tags_administrative_controls.id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true },
+        { name: 'sau_tags_administrative_controls.name', data: 'name', title: 'Nombre', sortable: true, searchable: true, detail: false, key: false },
+        { name: '', data: 'controlls', title: 'Controles', sortable: false, searchable: false, detail: false, key: false }
+    ],
+    'controlls': [
+        {
+            type: 'push',
+            buttons: [],
+        },
+        {
+            type: 'base',
+            buttons: [{
+            name: 'delete',
+            data: {
+                action: '/industrialSecurity/tags/administrativeControls/',
+                id: 'id',
+                messageConfirmation: 'Esta seguro de borrar el tag __name__'
+            },
+            permission: 'dangerMatrix_c'
+            }],
+        },
+    ],
+    configuration: {
+        urlData: '/industrialSecurity/tags/administrativeControls/data',
+        filterColumns: true,
+    }
+},
+{
+    name: 'industrialsecure-dangermatrix-tags-engineering-controls',
+    fields: [
+        { name: 'sau_tags_engineering_controls.id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true },
+        { name: 'sau_tags_engineering_controls.name', data: 'name', title: 'Nombre', sortable: true, searchable: true, detail: false, key: false },
+        { name: '', data: 'controlls', title: 'Controles', sortable: false, searchable: false, detail: false, key: false }
+    ],
+    'controlls': [
+        {
+            type: 'push',
+            buttons: [],
+        },
+        {
+            type: 'base',
+            buttons: [{
+            name: 'delete',
+            data: {
+                action: '/industrialSecurity/tags/engineeringControls/',
+                id: 'id',
+                messageConfirmation: 'Esta seguro de borrar el tag __name__'
+            },
+            permission: 'dangerMatrix_c'
+            }],
+        },
+    ],
+    configuration: {
+        urlData: '/industrialSecurity/tags/engineeringControls/data',
+        filterColumns: true,
+    }
+},
+{
+    name: 'industrialsecure-dangermatrix-tags-possible-consequences-danger',
+    fields: [
+        { name: 'sau_tags_possible_consequences_danger.id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true },
+        { name: 'sau_tags_possible_consequences_danger.name', data: 'name', title: 'Nombre', sortable: true, searchable: true, detail: false, key: false },
+        { name: '', data: 'controlls', title: 'Controles', sortable: false, searchable: false, detail: false, key: false }
+    ],
+    'controlls': [
+        {
+            type: 'push',
+            buttons: [],
+        },
+        {
+            type: 'base',
+            buttons: [{
+            name: 'delete',
+            data: {
+                action: '/industrialSecurity/tags/possibleConsequencesDanger/',
+                id: 'id',
+                messageConfirmation: 'Esta seguro de borrar el tag __name__'
+            },
+            permission: 'dangerMatrix_c'
+            }],
+        },
+    ],
+    configuration: {
+        urlData: '/industrialSecurity/tags/possibleConsequencesDanger/data',
+        filterColumns: true,
+    }
+},
+{
+    name: 'industrialsecure-dangermatrix-tags-substitutions',
+    fields: [
+        { name: 'sau_tags_substitutions.id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true },
+        { name: 'sau_tags_substitutions.name', data: 'name', title: 'Nombre', sortable: true, searchable: true, detail: false, key: false },
+        { name: '', data: 'controlls', title: 'Controles', sortable: false, searchable: false, detail: false, key: false }
+    ],
+    'controlls': [
+        {
+            type: 'push',
+            buttons: [],
+        },
+        {
+            type: 'base',
+            buttons: [{
+            name: 'delete',
+            data: {
+                action: '/industrialSecurity/tags/substitution/',
+                id: 'id',
+                messageConfirmation: 'Esta seguro de borrar el tag __name__'
+            },
+            permission: 'dangerMatrix_c'
+            }],
+        },
+    ],
+    configuration: {
+        urlData: '/industrialSecurity/tags/substitution/data',
+        filterColumns: true,
+    }
+},
+{
+    name: 'industrialsecure-dangermatrix-tags-warning-signage',
+    fields: [
+        { name: 'sau_tags_warning_signage.id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true },
+        { name: 'sau_tags_warning_signage.name', data: 'name', title: 'Nombre', sortable: true, searchable: true, detail: false, key: false },
+        { name: '', data: 'controlls', title: 'Controles', sortable: false, searchable: false, detail: false, key: false }
+    ],
+    'controlls': [
+        {
+            type: 'push',
+            buttons: [],
+        },
+        {
+            type: 'base',
+            buttons: [{
+            name: 'delete',
+            data: {
+                action: '/industrialSecurity/tags/warningSignage/',
+                id: 'id',
+                messageConfirmation: 'Esta seguro de borrar el tag __name__'
+            },
+            permission: 'dangerMatrix_c'
+            }],
+        },
+    ],
+    configuration: {
+        urlData: '/industrialSecurity/tags/warningSignage/data',
+        filterColumns: true,
+    }
+},
+{
+    name: 'industrialsecure-dangermatrix-tags-epp',
+    fields: [
+        { name: 'sau_tags_epp.id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true },
+        { name: 'sau_tags_epp.name', data: 'name', title: 'Nombre', sortable: true, searchable: true, detail: false, key: false },
+        { name: '', data: 'controlls', title: 'Controles', sortable: false, searchable: false, detail: false, key: false }
+    ],
+    'controlls': [
+        {
+            type: 'push',
+            buttons: [],
+        },
+        {
+            type: 'base',
+            buttons: [{
+            name: 'delete',
+            data: {
+                action: '/industrialSecurity/tags/epp/',
+                id: 'id',
+                messageConfirmation: 'Esta seguro de borrar el tag __name__'
+            },
+            permission: 'dangerMatrix_c'
+            }],
+        },
+    ],
+    configuration: {
+        urlData: '/industrialSecurity/tags/epp/data',
+        filterColumns: true,
+    }
+},
+{
+    name: 'industrialsecure-dangermatrix-tags-participants',
+    fields: [
+        { name: 'sau_tags_participantsx.id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true },
+        { name: 'sau_tags_participants.name', data: 'name', title: 'Nombre', sortable: true, searchable: true, detail: false, key: false },
+        { name: '', data: 'controlls', title: 'Controles', sortable: false, searchable: false, detail: false, key: false }
+    ],
+    'controlls': [
+        {
+            type: 'push',
+            buttons: [],
+        },
+        {
+            type: 'base',
+            buttons: [{
+            name: 'delete',
+            data: {
+                action: '/industrialSecurity/tags/participants/',
+                id: 'id',
+                messageConfirmation: 'Esta seguro de borrar el tag __name__'
+            },
+            permission: 'dangerMatrix_c'
+            }],
+        },
+    ],
+    configuration: {
+        urlData: '/industrialSecurity/tags/participants/data',
+        filterColumns: true,
+    }
+},
+{
+    name: 'industrialsecure-dangermatrix-tags-danger-description',
+    fields: [
+        { name: 'sau_tags_danger_description.id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true },
+        { name: 'sau_tags_danger_description.name', data: 'name', title: 'Nombre', sortable: true, searchable: true, detail: false, key: false },
+        { name: '', data: 'controlls', title: 'Controles', sortable: false, searchable: false, detail: false, key: false }
+    ],
+    'controlls': [
+        {
+            type: 'push',
+            buttons: [],
+        },
+        {
+            type: 'base',
+            buttons: [{
+            name: 'delete',
+            data: {
+                action: '/industrialSecurity/tags/dangerDescription/',
+                id: 'id',
+                messageConfirmation: 'Esta seguro de borrar el tag __name__'
+            },
+            permission: 'dangerMatrix_c'
+            }],
+        },
+    ],
+    configuration: {
+        urlData: '/industrialSecurity/tags/dangerDescription/data',
+        filterColumns: true,
+    }
+},
 ];

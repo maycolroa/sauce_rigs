@@ -114,6 +114,78 @@ export default [{
           component: () =>
             import('@/views/IndustrialSecure/dangerMatrix/report')
         }
+      ]),
+      ...middleware({ 'check-permission': 'dangerMatrix_c' }, [
+        {
+          name: 'industrialsecure-dangermatrix-tags',
+          path: 'dangermatrix/tags',
+          component: () =>
+            import('@/views/IndustrialSecure/dangerMatrix/tags')
+        }
+      ]),
+      ...middleware({ 'check-permission': 'dangerMatrix_c' }, [
+        {
+          name: 'industrialsecure-dangermatrix-tags-administrative-controls',
+          path: 'dangermatrix/tags/administrativecontrols',
+          component: () =>
+            import('@/views/IndustrialSecure/dangerMatrix/indexTags')
+        }
+      ]),
+      ...middleware({ 'check-permission': 'dangerMatrix_c' }, [
+        {
+          name: 'industrialsecure-dangermatrix-tags-engineering-controls',
+          path: 'dangermatrix/tags/engineeringcontrols',
+          component: () =>
+            import('@/views/IndustrialSecure/dangerMatrix/indexTags')
+        }
+      ]),
+      ...middleware({ 'check-permission': 'dangerMatrix_c' }, [
+        {
+          name: 'industrialsecure-dangermatrix-tags-possible-consequences-danger',
+          path: 'dangermatrix/tagspossibleconsequencesdanger',
+          component: () =>
+            import('@/views/IndustrialSecure/dangerMatrix/indexTags')
+        }
+      ]),
+      ...middleware({ 'check-permission': 'dangerMatrix_c' }, [
+        {
+          name: 'industrialsecure-dangermatrix-tags-substitutions',
+          path: 'dangermatrix/tags/substitutions',
+          component: () =>
+            import('@/views/IndustrialSecure/dangerMatrix/indexTags')
+        }
+      ]),
+      ...middleware({ 'check-permission': 'dangerMatrix_c' }, [
+        {
+          name: 'industrialsecure-dangermatrix-tags-warning-signage',
+          path: 'dangermatrix/tags/warningsignage',
+          component: () =>
+            import('@/views/IndustrialSecure/dangerMatrix/indexTags')
+        }
+      ]),
+      ...middleware({ 'check-permission': 'dangerMatrix_c' }, [
+        {
+          name: 'industrialsecure-dangermatrix-tags-epp',
+          path: 'dangermatrix/tags/epp',
+          component: () =>
+            import('@/views/IndustrialSecure/dangerMatrix/indexTags')
+        }
+      ]),
+      ...middleware({ 'check-permission': 'dangerMatrix_c' }, [
+        {
+          name: 'industrialsecure-dangermatrix-tags-participants',
+          path: 'dangermatrix/tags/participants',
+          component: () =>
+            import('@/views/IndustrialSecure/dangerMatrix/indexTags')
+        }
+      ]),
+      ...middleware({ 'check-permission': 'dangerMatrix_c' }, [
+        {
+          name: 'industrialsecure-dangermatrix-tags-danger-description',
+          path: 'dangermatrix/tags/dangerdescription',
+          component: () =>
+            import('@/views/IndustrialSecure/dangerMatrix/indexTags')
+        }
       ])
     ]
   }]

@@ -17,12 +17,10 @@
 
                         <b-row>
                             <b-col>
-                                <b-card border-variant="primary" title="" class="mb-3 box-shadow-none">
-                                    <headers
-                                        :data="headers"
-                                        ref="headers"
-                                    />
-                                </b-card>
+                                <headers
+                                    :data="headers"
+                                    ref="headers"
+                                />
                             </b-col>
                         </b-row>
 

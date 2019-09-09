@@ -723,6 +723,7 @@ class InformManagerCheck
         if ($totalValue == 0) {
             return 'N/A';
         }
-        return ($value / $totalValue) * 100;
+
+        return round(($value / $totalValue) * 100, 1);
     }
 }
