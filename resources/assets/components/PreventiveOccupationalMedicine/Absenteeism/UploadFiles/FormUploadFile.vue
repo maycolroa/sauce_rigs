@@ -4,17 +4,26 @@
             <b-form :action="url" @submit.prevent="submit" autocomplete="off">
 				<b-card border-variant="primary" class="mb-3 box-shadow-none">
                     
-					<b-form-row>
+					<b-form-row v-if="!talend">
 						<vue-input :disabled="viewOnly" class="col-md-6" v-model="form.name" label="Nombre" type="text" name="name" :error="form.errorsFor('name')" placeholder="Nombre"></vue-input>
-						<vue-file-simple v-if="isEdit || viewOnly" :help-text="`Para descargar el archivo actual, haga click <a href='/biologicalmonitoring/absenteeism/fileUpload/download/${this.$route.params.id}' target='blank'>aqui</a> `" :disabled="viewOnly" class="col-md-6" v-model="form.file" :maxFileSize=20000000 label="Archivo" name="file" :error="form.errorsFor('file')" placeholder="Seleccione un archivo"></vue-file-simple>
-						<vue-file-simple v-else :disabled="viewOnly" class="col-md-6" v-model="form.file" :maxFileSize=20000000 label="Archivo" name="file" :error="form.errorsFor('file')" placeholder="Seleccione un archivo"></vue-file-simple>
+						<vue-input v-show="viewOnly" :disabled="viewOnly" class="col-md-6" v-model="form.created_at" label="Fecha de Subida" type="text" name="created_at" :error="form.errorsFor('created_at')"></vue-input>
+						<vue-input v-show="viewOnly" :disabled="viewOnly" class="col-md-6" v-model="form.user_name" label="Usuario" type="text" name="user_name" :error="form.errorsFor('user_name')"></vue-input>
+						<vue-file-simple v-show="!viewOnly" :disabled="viewOnly" class="col-md-6" v-model="form.file" :maxFileSize=20000000 label="Archivo" name="file" :error="form.errorsFor('file')" placeholder="Seleccione un archivo"></vue-file-simple>
                     </b-form-row>
-            	</b-card>
+					
+					<b-form-row v-else>
+						<vue-file-simple accept=".zip" class="col-md-6" v-model="form.file" label="Archivo" name="file" :error="form.errorsFor('file')" placeholder="Seleccione un archivo zip con el talend"></vue-file-simple>
+                    </b-form-row>
+            	
+				</b-card>
 
 				<div class="row float-right pt-10 pr-10">
                     <template>
-                        <b-btn variant="default" :to="cancelUrl" :disabled="loading">{{ viewOnly ? "Atras" : "Cancelar"}}</b-btn>&nbsp;&nbsp;
-                        <b-btn type="submit" :disabled="loading" variant="primary" v-if="!viewOnly">Finalizar</b-btn>
+                
+				        <b-btn v-show="viewOnly" variant="primary" :href="`/biologicalmonitoring/absenteeism/fileUpload/download/${this.$route.params.id}`" target="blank" v-b-tooltip.top title="Descargar Archivo"><i class="fas fa-cloud-download-alt"></i></b-btn>&nbsp;&nbsp;
+				
+						<b-btn variant="default" :to="cancelUrl" :disabled="loading">{{ viewOnly ? "Atras" : "Cancelar"}}</b-btn>&nbsp;&nbsp;
+						<b-btn type="submit" :disabled="loading" variant="primary" v-show="!viewOnly">Finalizar</b-btn>
                     </template>
                 </div>
             </b-form>
@@ -37,8 +46,8 @@ export default {
 		url: { type: String },
 		method: { type: String },
 		cancelUrl: { type: [String, Object], required: true },
-		isEdit: { type: Boolean, default: false },
 		viewOnly: { type: Boolean, default: false },
+		talend: { type: Boolean, default: false },
 		fileUpload: {
 			default() {
 				return {
@@ -56,7 +65,7 @@ export default {
 	},
 	data() {
 		return {
-			loading: this.isEdit,
+			loading: false,
 			form: Form.makeFrom(this.fileUpload, this.method),
 		};
 	},

@@ -80,6 +80,9 @@ Route::middleware(['auth'])->group(function () {
           Route::post('fileUpload/data', 'PreventiveOccupationalMedicine\Absenteeism\FileUploadController@data');
           Route::ApiResource('fileUpload', 'PreventiveOccupationalMedicine\Absenteeism\FileUploadController');
           Route::get('fileUpload/download/{fileUpload}', 'PreventiveOccupationalMedicine\Absenteeism\FileUploadController@download');
+
+          Route::post('talendUpload', 'PreventiveOccupationalMedicine\Absenteeism\FileUploadController@storeTalend');
+          Route::post('talendUpload/data', 'PreventiveOccupationalMedicine\Absenteeism\FileUploadController@dataTalend');
         });
     });
     

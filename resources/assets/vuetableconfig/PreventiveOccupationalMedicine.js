@@ -548,38 +548,30 @@ export default [
   fields: [
       { name: 'sau_absen_file_upload.id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true },
       { name: 'sau_absen_file_upload.name', data: 'name', title: 'Nombre del archivo', sortable: true, searchable: true, detail: false, key: false },
-      { name: 'sau_users.name', data: 'user_name', title: 'Usuario', sortable: true, searchable: true, detail: false, key: false },
-      { name: 'sau_absen_file_upload.created_at', data: 'created_at', title: 'Fecha de creacion', sortable: true, searchable: true, detail: false, key: false },
+      //{ name: 'sau_users.name', data: 'user_name', title: 'Usuario', sortable: true, searchable: true, detail: false, key: false },
+      //{ name: 'sau_absen_file_upload.created_at', data: 'created_at', title: 'Fecha de creacion', sortable: true, searchable: true, detail: false, key: false },
       { name: '', data: 'controlls', title: 'Controles', sortable: false, searchable: false, detail: false, key: false },
   ],
   'controlls': [{
         type: 'push',
         buttons: [{
             config: {
-                color: 'outline-success',
+                color: 'outline-info',
                 borderless: true,
-                icon: 'ion ion-md-create',
-                title: 'Editar'
+                icon: 'ion ion-md-eye',
+                title: 'Ver'
             },
             data: {
-                routePush: { name: 'absenteeism-upload-files-edit' },
+                routePush: { name: 'absenteeism-upload-files-view' },
                 id: 'id',
             },
-            permission: 'absen_uploadFiles_u'
+            permission: 'absen_uploadFiles_r'
         }
       ]
   },
   {
       type: 'base',
-      buttons: [{
-      name: 'delete',
-      data: {
-          action: '/biologicalmonitoring/absenteeism/fileUpload/',
-          id: 'id',
-          messageConfirmation: 'Esta seguro de borrar el archivo __name__'
-      },
-      permission: 'absen_uploadFiles_d'
-      }],
+      buttons: [],
   }],
   configuration: {
       urlData: '/biologicalmonitoring/absenteeism/fileUpload/data',

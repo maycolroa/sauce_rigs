@@ -129,6 +129,10 @@
                     {
                         "name": "absen_uploadFiles_d",
                         "display_name": "Ausentismo/Subida de archivos - eliminar"
+                    },
+                    {
+                        "name": "absen_uploadTalend_c",
+                        "display_name": "Ausentismo/Subida de talend - crear"
                     }
 
 

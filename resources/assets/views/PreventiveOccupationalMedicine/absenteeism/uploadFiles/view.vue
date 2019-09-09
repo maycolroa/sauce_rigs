@@ -8,12 +8,12 @@
     <div class="col-md">
       <b-card no-body>
         <b-card-body>
-            <legal-aspects-contracts-upload-file-form
-                :url="`/legalAspects/fileUpload/${this.$route.params.id}`"
+            <upload-file-form
+                :url="`/biologicalmonitoring/absenteeism/fileUpload/${this.$route.params.id}`"
                 method="PUT"
                 :view-only="true"
                 :fileUpload="data"
-                :cancel-url="{ name: 'legalaspects-upload-files'}"/>
+                :cancel-url="{ name: 'absenteeism-upload-files'}"/>
         </b-card-body>
       </b-card>
     </div>
@@ -21,16 +21,16 @@
 </template>
 
 <script>
-import LegalAspectsContractsUploadFileForm from '@/components/LegalAspects/Contracts/UploadFiles/FormUploadFile.vue';
+import UploadFileForm from '@/components/PreventiveOccupationalMedicine/Absenteeism/UploadFiles/FormUploadFile.vue';
 import GlobalMethods from '@/utils/GlobalMethods.js';
 
 export default {
-  name: 'contracts-upload-files',
+  name: 'absenteeism-upload-files-view',
   metaInfo: {
-    title: 'Contratista - Subir Archivos'
+    title: 'Ausentismo - Subir Archivos'
   },
   components:{
-    LegalAspectsContractsUploadFileForm
+    UploadFileForm
   },
   data(){
     return {
@@ -38,7 +38,7 @@ export default {
     }
   },
   created(){
-    axios.get(`/legalAspects/fileUpload/${this.$route.params.id}`)
+    axios.get(`/biologicalmonitoring/absenteeism/fileUpload/${this.$route.params.id}`)
     .then(response => {
         this.data = response.data.data;
     })
