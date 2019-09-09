@@ -17,6 +17,7 @@ use App\Models\IndustrialSecure\DangerMatrix\TagsPossibleConsequencesDanger;
 use App\Models\IndustrialSecure\DangerMatrix\TagsWarningSignage;
 use App\Models\IndustrialSecure\DangerMatrix\TagsSubstitution;
 use App\Models\IndustrialSecure\DangerMatrix\TagsParticipant;
+use App\Models\IndustrialSecure\DangerMatrix\TagsDangerDescription;
 use App\Models\IndustrialSecure\DangerMatrix\ChangeHistory;
 use App\Jobs\IndustrialSecure\DangerMatrix\DangerMatrixExportJob;
 use Illuminate\Support\Facades\Auth;
@@ -378,6 +379,7 @@ class DangerMatrixController extends Controller
                     
                     //TAGS
                     $possible_consequences_danger = $this->tagsPrepare($itemD['possible_consequences_danger']);
+                    $danger_description = $this->tagsPrepare($itemD['danger_description']);
                     $existing_controls_engineering_controls = $this->tagsPrepare($itemD['existing_controls_engineering_controls']);
                     $existing_controls_substitution = $this->tagsPrepare($itemD['existing_controls_substitution']);
                     $existing_controls_warning_signage = $this->tagsPrepare($itemD['existing_controls_warning_signage']);
@@ -390,6 +392,7 @@ class DangerMatrixController extends Controller
                     $intervention_measures_epp = $this->tagsPrepare($itemD['intervention_measures_epp']);
 
                     $this->tagsSave($possible_consequences_danger, TagsPossibleConsequencesDanger::class);
+                    $this->tagsSave($danger_description, TagsDangerDescription::class);
                     $this->tagsSave($existing_controls_engineering_controls, TagsEngineeringControls::class);
                     $this->tagsSave($existing_controls_substitution, TagsSubstitution::class);
                     $this->tagsSave($existing_controls_warning_signage, TagsWarningSignage::class);
@@ -405,7 +408,7 @@ class DangerMatrixController extends Controller
                     
                     $danger->dm_activity_id = $activity->id;
                     $danger->danger_id = $itemD['danger_id'];
-                    $danger->danger_description = $itemD['danger_description'];
+                    $danger->danger_description = $danger_description->implode(',');
                     $danger->danger_generated = $itemD['danger_generated'];
                     $danger->possible_consequences_danger = $possible_consequences_danger->implode(',');
                     $danger->generating_source = $itemD['generating_source'];

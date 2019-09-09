@@ -126,6 +126,7 @@ Route::middleware(['auth'])->group(function () {
         Route::post('tagsTypeProcess', 'General\TagController@multiselectTypeProcess');
         Route::post('tagsSubstitution', 'IndustrialSecure\Tags\TagController@multiselectSubstitution');
         Route::post('tagsParticipants', 'IndustrialSecure\Tags\TagController@multiselectParticipants');
+        Route::post('tagsDangerDescription', 'IndustrialSecure\Tags\TagController@multiselectDangerDescription');
         Route::post('actionPlanStates', 'General\MultiSelectRadioController@actionPlanStates');
         Route::post('actionPlanModules', 'Administrative\ActionPlans\ActionPlanController@actionPlanModules');
         Route::post('contractors', 'LegalAspects\Contracs\ContractLesseeController@multiselect');
@@ -134,6 +135,10 @@ Route::middleware(['auth'])->group(function () {
         Route::post('ctkindsRisks', 'General\MultiSelectRadioController@ctkindsRisks'); 
         Route::post('siNo', 'General\MultiSelectRadioController@siNoSelect');
         Route::post('companies', 'General\ApplicationController@multiselectCompanies');
+        Route::post('reincYears', 'PreventiveOccupationalMedicine\Reinstatements\CheckController@multiselectYears');
+        Route::post('reincSveAssociateds', 'PreventiveOccupationalMedicine\Reinstatements\CheckController@multiselectSveAssociateds');
+        Route::post('reincMedicalCertificates', 'PreventiveOccupationalMedicine\Reinstatements\CheckController@multiselectMedicalCertificates');
+        Route::post('reincRelocatedTypes', 'PreventiveOccupationalMedicine\Reinstatements\CheckController@multiselectRelocatedTypes');
 
         Route::prefix('evaluations')->group(function () {
           Route::post('objectives', 'LegalAspects\Contracs\EvaluationController@multiselectObjectives');
@@ -258,6 +263,25 @@ Route::middleware(['auth'])->group(function () {
       Route::ApiResource('dangersMatrix', 'IndustrialSecure\DangerMatrix\DangerMatrixController');
 
       Route::post('dangersMatrixHistory/data', 'IndustrialSecure\DangerMatrix\DangerMatrixHistoryController@data');
+
+      Route::prefix('tags')->group(function () {
+        Route::post('administrativeControls/data', 'IndustrialSecure\Tags\AdministrativeControlsController@data');
+        Route::ApiResource('administrativeControls', 'IndustrialSecure\Tags\AdministrativeControlsController')->only('destroy');
+        Route::post('engineeringControls/data', 'IndustrialSecure\Tags\EngineeringControlsController@data');
+        Route::ApiResource('engineeringControls', 'IndustrialSecure\Tags\EngineeringControlsController')->only('destroy');
+        Route::post('epp/data', 'IndustrialSecure\Tags\EppController@data');
+        Route::ApiResource('epp', 'IndustrialSecure\Tags\EppController')->only('destroy');
+        Route::post('possibleConsequencesDanger/data', 'IndustrialSecure\Tags\PossibleConsequencesDangerController@data');
+        Route::ApiResource('possibleConsequencesDanger', 'IndustrialSecure\Tags\PossibleConsequencesDangerController')->only('destroy');
+        Route::post('warningSignage/data', 'IndustrialSecure\Tags\WarningSignageController@data');
+        Route::ApiResource('warningSignage', 'IndustrialSecure\Tags\WarningSignageController')->only('destroy');
+        Route::post('substitution/data', 'IndustrialSecure\Tags\SubstitutionController@data');
+        Route::ApiResource('substitution', 'IndustrialSecure\Tags\SubstitutionController')->only('destroy');
+        Route::post('participants/data', 'IndustrialSecure\Tags\ParticipantsController@data');
+        Route::ApiResource('participants', 'IndustrialSecure\Tags\ParticipantsController')->only('destroy');
+        Route::post('dangerDescription/data', 'IndustrialSecure\Tags\DangerDescriptionController@data');
+        Route::ApiResource('dangerDescription', 'IndustrialSecure\Tags\DangerDescriptionController')->only('destroy');
+      });
 		});
 		
 		//Aspectos Legales

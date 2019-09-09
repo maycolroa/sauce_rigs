@@ -167,7 +167,31 @@ export default [
           key: 'diseaseOrigin',
           type: 'select',
           label: 'Origen de enfermedad'
-        }, 
+        },
+        {
+          url: '/selects/reincYears',
+          key: 'years',
+          type: 'select',
+          label: 'Años'
+        },
+        {
+          url: '/selects/reincSveAssociateds',
+          key: 'sveAssociateds',
+          type: 'select',
+          label: 'SVE Asociados'
+        },
+        {
+          url: '/selects/reincMedicalCertificates',
+          key: 'medicalCertificates',
+          type: 'select',
+          label: 'Certificado médico UEAC'
+        },
+        {
+          url: '/selects/reincRelocatedTypes',
+          key: 'relocatedTypes',
+          type: 'select',
+          label: 'Tipos de reintegro'
+        },
         {
           url: '/selects/nextFollowDays',
           key: 'nextFollowDays',

@@ -11,6 +11,7 @@
           <div class="card-title-elements">
             <b-btn v-if="auth.can['dangerMatrix_c']" :to="{name:'industrialsecure-dangermatrix-create'}" variant="primary">Crear Matriz de Peligros</b-btn>
             <b-btn v-if="auth.can['dangerMatrix_view_report']" :to="{name:'industrialsecure-dangermatrix-report'}" variant="primary">Reporte</b-btn>
+            <b-btn v-if="auth.can['dangerMatrix_c']" :to="{name:'industrialsecure-dangermatrix-tags'}" variant="primary">Administrar Tags</b-btn>
           </div>
         </b-card-header>
         <b-card-body>

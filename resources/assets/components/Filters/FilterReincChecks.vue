@@ -125,7 +125,11 @@ export default {
                     let item = this.config.filters[i]
 
                     if (item.key == 'nextFollowDays' && this.form != 'misionEmpresarial')
-                            continue;
+                        continue;
+                    
+                    if ((item.key == 'sveAssociateds' || item.key == 'medicalCertificates' || item.key == 'relocatedTypes') 
+                        && this.form != 'vivaAir')
+                        continue;
 
                     if (item.permission != undefined && item.permission)
                         if (!auth.can[item.permission])

@@ -82,9 +82,19 @@ class CheckController extends Controller
             $checks->inRegionals($this->getValuesForMultiselect($filters["regionals"]), $filters['filtersType']['regionals']);
             $checks->inBusinesses($this->getValuesForMultiselect($filters["businesses"]), $filters['filtersType']['businesses']);
             $checks->inDiseaseOrigin($this->getValuesForMultiselect($filters["diseaseOrigin"]), $filters['filtersType']['diseaseOrigin']);
+            $checks->inYears($this->getValuesForMultiselect($filters["years"]), $filters['filtersType']['years']);
 
             if (isset($filters["nextFollowDays"]))
                 $checks->inNextFollowDays($this->getValuesForMultiselect($filters["nextFollowDays"]), $filters['filtersType']['nextFollowDays']);
+
+            if (isset($filters["sveAssociateds"]))
+                $checks->inSveAssociateds($this->getValuesForMultiselect($filters["sveAssociateds"]), $filters['filtersType']['sveAssociateds']);
+
+            if (isset($filters["medicalCertificates"]))
+                $checks->inMedicalCertificates($this->getValuesForMultiselect($filters["medicalCertificates"]), $filters['filtersType']['medicalCertificates']);
+
+            if (isset($filters["relocatedTypes"]))
+                $checks->inRelocatedTypes($this->getValuesForMultiselect($filters["relocatedTypes"]), $filters['filtersType']['relocatedTypes']);
                 
             $dates_request = explode('/', $filters["dateRange"]);
 
@@ -471,6 +481,21 @@ class CheckController extends Controller
         return $this->getSelectOptions("reinc_select_disease_origin");
     }
 
+    public function multiselectSveAssociateds(Request $request)
+    {
+        return $this->getSelectOptions("reinc_select_sve_associated");
+    }
+
+    public function multiselectMedicalCertificates(Request $request)
+    {
+        return $this->getSelectOptions("reinc_select_medical_certificate_ueac");
+    }
+
+    public function multiselectRelocatedTypes(Request $request)
+    {
+        return $this->getSelectOptions("reinc_select_relocated_types");
+    }
+
     /**
      * returns the days remaining for the next follow-up of the reports
      * @return collection
@@ -490,6 +515,21 @@ class CheckController extends Controller
         return $this->multiSelectFormat(collect($data));
     }
 
+    /**
+     * returns the days remaining for the next follow-up of the reports
+     * @return collection
+     */
+    public function multiselectYears()
+    {
+        $checks = Check::selectRaw(
+            'DISTINCT YEAR(sau_reinc_checks.created_at) AS year'
+        )
+        ->orderBy('year')
+        ->get()
+        ->pluck('year', 'year');
+
+      return $this->multiSelectFormat($checks);
+    }
 
     /**
      * toggles the check state between open and close
@@ -530,7 +570,11 @@ class CheckController extends Controller
         $regionals = $this->getValuesForMultiselect($request->regionals);
         $businesses = $this->getValuesForMultiselect($request->businesses);
         $diseaseOrigin = $this->getValuesForMultiselect($request->diseaseOrigin);
+        $years = $this->getValuesForMultiselect($request->years);
         $nextFollowDays = $request->has('nextFollowDays') ? $this->getValuesForMultiselect($request->nextFollowDays) : null;
+        $sveAssociateds = $request->has('sveAssociateds') ? $this->getValuesForMultiselect($request->sveAssociateds) : null;
+        $medicalCertificates = $request->has('medicalCertificates') ? $this->getValuesForMultiselect($request->medicalCertificates) : null;
+        $relocatedTypes = $request->has('relocatedTypes') ? $this->getValuesForMultiselect($request->relocatedTypes) : null;
         $filtersType = $request->filtersType;
 
         $dates = [];
@@ -548,7 +592,11 @@ class CheckController extends Controller
             'regionals' => $regionals,
             'businesses' => $businesses,
             'diseaseOrigin' => $diseaseOrigin,
+            'years' => $years,
             'nextFollowDays' => $nextFollowDays,
+            'sveAssociateds' => $sveAssociateds,
+            'medicalCertificates' => $medicalCertificates,
+            'relocatedTypes' => $relocatedTypes,
             'dates' => $dates,
             'filtersType' => $filtersType
         ];

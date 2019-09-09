@@ -11,6 +11,7 @@ use App\Models\IndustrialSecure\DangerMatrix\TagsPossibleConsequencesDanger;
 use App\Models\IndustrialSecure\DangerMatrix\TagsWarningSignage;
 use App\Models\IndustrialSecure\DangerMatrix\TagsSubstitution;
 use App\Models\IndustrialSecure\DangerMatrix\TagsParticipant;
+use App\Models\IndustrialSecure\DangerMatrix\TagsDangerDescription;
 
 class TagController extends Controller
 {
@@ -179,6 +180,32 @@ class TagController extends Controller
             return $this->respondHttp200([
                 'options' => $this->multiSelectFormat($tags)
             ]);
+        }
+    }
+
+    public function multiselectDangerDescription(Request $request)
+    {
+        if($request->has('keyword'))
+        {
+            $keyword = "%{$request->keyword}%";
+            $tags = TagsDangerDescription::select("id", "name")
+                ->where(function ($query) use ($keyword) {
+                    $query->orWhere('name', 'like', $keyword);
+                })
+                ->take(30)->pluck('id', 'name');
+
+            return $this->respondHttp200([
+                'options' => $this->multiSelectFormat($tags)
+            ]);
+        }
+        else
+        {
+            $tags = TagsDangerDescription::selectRaw("
+                sau_tags_danger_description.id as id,
+                sau_tags_danger_description.name as name
+            ")->pluck('name', 'name');
+        
+            return $this->multiSelectFormat($tags);
         }
     }
 }

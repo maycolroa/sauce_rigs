@@ -37,6 +37,12 @@ export default [
           key: 'dangers',
           type: 'select',
           label: 'Peligros'
+        },
+        {
+          url: '/selects/tagsDangerDescription',
+          key: 'dangerDescription',
+          type: 'select',
+          label: 'Descripción del peligro'
         }
       ]
     }

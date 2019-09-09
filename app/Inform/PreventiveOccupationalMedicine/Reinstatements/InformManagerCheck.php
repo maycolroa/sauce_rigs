@@ -46,14 +46,19 @@ class InformManagerCheck
     protected $diseaseOrigin;
     protected $nextFollowDays;
     protected $dateRange;
+    protected $years;
+    protected $sveAssociateds;
+    protected $medicalCertificates;
+    protected $relocatedTypes;
     protected $filtersType;
-    protected $totalCheck;
+    protected $formModel;
+    protected $totalChecks;
 
     /**
      * create an instance and set the attribute class
      * @param array $identifications
      */
-    function __construct($identifications = [], $names = [], $regionals = [], $businesses = [], $diseaseOrigin = [], $nextFollowDays = [], $dateRange = [], $filtersType = [])
+    function __construct($identifications = [], $names = [], $regionals = [], $businesses = [], $diseaseOrigin = [], $nextFollowDays = [], $dateRange = [], $years = [], $sveAssociateds = [], $medicalCertificates = [], $relocatedTypes = [], $filtersType = [])
     {
         $this->identifications = $identifications;
         $this->names = $names;
@@ -62,8 +67,13 @@ class InformManagerCheck
         $this->diseaseOrigin = $diseaseOrigin;
         $this->nextFollowDays = $nextFollowDays;
         $this->dateRange = $dateRange;
+        $this->years = $years;
+        $this->sveAssociateds = $sveAssociateds;
+        $this->medicalCertificates = $medicalCertificates;
+        $this->relocatedTypes = $relocatedTypes;
         $this->filtersType = $filtersType;
-        //$this->totalCheck = $this->getTotalEmployee();
+        $this->formModel = $this->getFormModel('form_check');
+        $this->totalChecks = $this->getTotalChecks();
     }
 
     /**
@@ -88,14 +98,12 @@ class InformManagerCheck
     }
 
     /**
-     * return the headers reports pie data for the view
-     * @return object
+     * Return the total amount of exposed population
+     *
+     * @return void
      */
-    public function headers()
+    private function getTotalChecks()
     {
-        $yesState = 'SI';
-        $noState = 'NO';
-
         $totalChecks = Check::countDistinctEmployeeId()
         ->isOpen()
         ->join('sau_employees', 'sau_employees.id', 'sau_reinc_checks.employee_id')
@@ -104,15 +112,30 @@ class InformManagerCheck
         ->inRegionals($this->regionals, $this->filtersType['regionals'])
         ->inBusinesses($this->businesses, $this->filtersType['businesses'])
         ->inDiseaseOrigin($this->diseaseOrigin, $this->filtersType['diseaseOrigin'])
+        ->inYears($this->years, $this->filtersType['years'])
         ->betweenDate($this->dateRange);
 
         if ($this->nextFollowDays)
             $totalChecks->inNextFollowDays($this->nextFollowDays, $this->filtersType['nextFollowDays']);
 
+        if ($this->sveAssociateds)
+            $totalChecks->inSveAssociateds($this->sveAssociateds, $this->filtersType['sveAssociateds']);
+
+        if ($this->medicalCertificates)
+            $totalChecks->inMedicalCertificates($this->medicalCertificates, $this->filtersType['medicalCertificates']);
+
+        if ($this->relocatedTypes)
+            $totalChecks->inRelocatedTypes($this->relocatedTypes, $this->filtersType['relocatedTypes']);
+
         $totalChecks = $totalChecks->secureCount();
 
-        $checksWithRecommendations = Check::countDistinctEmployeeId()
-        ->where('has_recommendations', $yesState)
+        return $totalChecks;
+    }
+
+    private function executeQueryHeader($condition)
+    {
+        $data = Check::countDistinctEmployeeId()
+        ->where($condition)
         ->isOpen()
         ->join('sau_employees', 'sau_employees.id', 'sau_reinc_checks.employee_id')
         ->inIdentifications($this->identifications, $this->filtersType['identifications'])
@@ -120,423 +143,220 @@ class InformManagerCheck
         ->inRegionals($this->regionals, $this->filtersType['regionals'])
         ->inBusinesses($this->businesses, $this->filtersType['businesses'])
         ->inDiseaseOrigin($this->diseaseOrigin, $this->filtersType['diseaseOrigin'])
+        ->inYears($this->years, $this->filtersType['years'])
         ->betweenDate($this->dateRange);
 
         if ($this->nextFollowDays)
-            $checksWithRecommendations->inNextFollowDays($this->nextFollowDays, $this->filtersType['nextFollowDays']);
+            $data->inNextFollowDays($this->nextFollowDays, $this->filtersType['nextFollowDays']);
+            
+        if ($this->sveAssociateds)
+            $data->inSveAssociateds($this->sveAssociateds, $this->filtersType['sveAssociateds']);
 
-        $checksWithRecommendations = $checksWithRecommendations->secureCount();
+        if ($this->medicalCertificates)
+            $data->inMedicalCertificates($this->medicalCertificates, $this->filtersType['medicalCertificates']);
 
-        $checksWithoutRecommendations = Check::countDistinctEmployeeId()
-        ->where('has_recommendations', $noState)
-        ->isOpen()
-        ->join('sau_employees', 'sau_employees.id', 'sau_reinc_checks.employee_id')
-        ->inIdentifications($this->identifications, $this->filtersType['identifications'])
-        ->inNames($this->names, $this->filtersType['names'])
-        ->inRegionals($this->regionals, $this->filtersType['regionals'])
-        ->inBusinesses($this->businesses, $this->filtersType['businesses'])
-        ->inDiseaseOrigin($this->diseaseOrigin, $this->filtersType['diseaseOrigin'])
-        ->betweenDate($this->dateRange);
+        if ($this->relocatedTypes)
+            $data->inRelocatedTypes($this->relocatedTypes, $this->filtersType['relocatedTypes']);
 
-        if ($this->nextFollowDays)
-            $checksWithoutRecommendations->inNextFollowDays($this->nextFollowDays, $this->filtersType['nextFollowDays']);
+        $data = $data->secureCount();
 
-        $checksWithoutRecommendations = $checksWithoutRecommendations->secureCount();
+        return $data;
+    }
 
-        $checksWithIndefiniteRecommendations = Check::countDistinctEmployeeId()
-        ->where([
-            ['has_recommendations', $yesState],
-            ['indefinite_recommendations', $yesState]
-        ])
-        ->isOpen()
-        ->join('sau_employees', 'sau_employees.id', 'sau_reinc_checks.employee_id')
-        ->inIdentifications($this->identifications, $this->filtersType['identifications'])
-        ->inNames($this->names, $this->filtersType['names'])
-        ->inRegionals($this->regionals, $this->filtersType['regionals'])
-        ->inBusinesses($this->businesses, $this->filtersType['businesses'])
-        ->inDiseaseOrigin($this->diseaseOrigin, $this->filtersType['diseaseOrigin'])
-        ->betweenDate($this->dateRange);
-
-        if ($this->nextFollowDays)
-            $checksWithIndefiniteRecommendations->inNextFollowDays($this->nextFollowDays, $this->filtersType['nextFollowDays']);
-
-        $checksWithIndefiniteRecommendations = $checksWithIndefiniteRecommendations->secureCount();
-
-        $checksWithRelocated = Check::countDistinctEmployeeId()
-        ->where([
-            ['has_recommendations', $yesState],
-            ['relocated', $yesState]
-        ])
-        ->isOpen()
-        ->join('sau_employees', 'sau_employees.id', 'sau_reinc_checks.employee_id')
-        ->inIdentifications($this->identifications, $this->filtersType['identifications'])
-        ->inNames($this->names, $this->filtersType['names'])
-        ->inRegionals($this->regionals, $this->filtersType['regionals'])
-        ->inBusinesses($this->businesses, $this->filtersType['businesses'])
-        ->inDiseaseOrigin($this->diseaseOrigin, $this->filtersType['diseaseOrigin'])
-        ->betweenDate($this->dateRange);
-
-        if ($this->nextFollowDays)
-            $checksWithRelocated->inNextFollowDays($this->nextFollowDays, $this->filtersType['nextFollowDays']);
-
-        $checksWithRelocated = $checksWithRelocated->secureCount();
-
-        $checksInProcessOrigin = Check::countDistinctEmployeeId()
-        ->where('in_process_origin', $yesState)
-        ->isOpen()
-        ->join('sau_employees', 'sau_employees.id', 'sau_reinc_checks.employee_id')
-        ->inIdentifications($this->identifications, $this->filtersType['identifications'])
-        ->inNames($this->names, $this->filtersType['names'])
-        ->inRegionals($this->regionals, $this->filtersType['regionals'])
-        ->inBusinesses($this->businesses, $this->filtersType['businesses'])
-        ->inDiseaseOrigin($this->diseaseOrigin, $this->filtersType['diseaseOrigin'])
-        ->betweenDate($this->dateRange);
-
-        if ($this->nextFollowDays)
-            $checksInProcessOrigin->inNextFollowDays($this->nextFollowDays, $this->filtersType['nextFollowDays']);
-
-        $checksInProcessOrigin = $checksInProcessOrigin->secureCount();
-
-        $checksInProcessPcl = Check::countDistinctEmployeeId()
-        ->where('in_process_pcl', $yesState)
-        ->isOpen()
-        ->join('sau_employees', 'sau_employees.id', 'sau_reinc_checks.employee_id')
-        ->inIdentifications($this->identifications, $this->filtersType['identifications'])
-        ->inNames($this->names, $this->filtersType['names'])
-        ->inRegionals($this->regionals, $this->filtersType['regionals'])
-        ->inBusinesses($this->businesses, $this->filtersType['businesses'])
-        ->inDiseaseOrigin($this->diseaseOrigin, $this->filtersType['diseaseOrigin'])
-        ->betweenDate($this->dateRange);
-
-        if ($this->nextFollowDays)
-            $checksInProcessPcl->inNextFollowDays($this->nextFollowDays, $this->filtersType['nextFollowDays']);
-
-        $checksInProcessPcl = $checksInProcessPcl->secureCount();
-
-        $checksWithoutRestrictions = Check::countDistinctEmployeeId()
-        ->where('has_restrictions', $noState)
-        ->isOpen()
-        ->join('sau_employees', 'sau_employees.id', 'sau_reinc_checks.employee_id')
-        ->inIdentifications($this->identifications, $this->filtersType['identifications'])
-        ->inNames($this->names, $this->filtersType['names'])
-        ->inRegionals($this->regionals, $this->filtersType['regionals'])
-        ->inBusinesses($this->businesses, $this->filtersType['businesses'])
-        ->inDiseaseOrigin($this->diseaseOrigin, $this->filtersType['diseaseOrigin'])
-        ->betweenDate($this->dateRange);
-
-        if ($this->nextFollowDays)
-            $checksWithoutRestrictions->inNextFollowDays($this->nextFollowDays, $this->filtersType['nextFollowDays']);
-
-        $checksWithoutRestrictions = $checksWithoutRestrictions->secureCount();
-
-        $checksDiseaseOrigin = Check::countDistinctEmployeeId()
-        ->where('disease_origin', 'Enfermedad Laboral')
-        ->isOpen()
-        ->join('sau_employees', 'sau_employees.id', 'sau_reinc_checks.employee_id')
-        ->inIdentifications($this->identifications, $this->filtersType['identifications'])
-        ->inNames($this->names, $this->filtersType['names'])
-        ->inRegionals($this->regionals, $this->filtersType['regionals'])
-        ->inBusinesses($this->businesses, $this->filtersType['businesses'])
-        ->inDiseaseOrigin($this->diseaseOrigin, $this->filtersType['diseaseOrigin'])
-        ->betweenDate($this->dateRange);
-
-        if ($this->nextFollowDays)
-            $checksDiseaseOrigin->inNextFollowDays($this->nextFollowDays, $this->filtersType['nextFollowDays']);
-
-        $checksDiseaseOrigin = $checksDiseaseOrigin->secureCount();
-
-        $checksQualifiedARLOrigin = Check::countDistinctEmployeeId()
-        ->where('emitter_origin', 'ARL')
-        ->isOpen()
-        ->join('sau_employees', 'sau_employees.id', 'sau_reinc_checks.employee_id')
-        ->inIdentifications($this->identifications, $this->filtersType['identifications'])
-        ->inNames($this->names, $this->filtersType['names'])
-        ->inRegionals($this->regionals, $this->filtersType['regionals'])
-        ->inBusinesses($this->businesses, $this->filtersType['businesses'])
-        ->inDiseaseOrigin($this->diseaseOrigin, $this->filtersType['diseaseOrigin'])
-        ->betweenDate($this->dateRange);
-
-        if ($this->nextFollowDays)
-            $checksQualifiedARLOrigin->inNextFollowDays($this->nextFollowDays, $this->filtersType['nextFollowDays']);
-
-        $checksQualifiedARLOrigin = $checksQualifiedARLOrigin->secureCount();
-
-        $checksQualifiedEPSOrigin = Check::countDistinctEmployeeId()
-        ->where('emitter_origin', 'EPS')
-        ->isOpen()
-        ->join('sau_employees', 'sau_employees.id', 'sau_reinc_checks.employee_id')
-        ->inIdentifications($this->identifications, $this->filtersType['identifications'])
-        ->inNames($this->names, $this->filtersType['names'])
-        ->inRegionals($this->regionals, $this->filtersType['regionals'])
-        ->inBusinesses($this->businesses, $this->filtersType['businesses'])
-        ->inDiseaseOrigin($this->diseaseOrigin, $this->filtersType['diseaseOrigin'])
-        ->betweenDate($this->dateRange);
-
-        if ($this->nextFollowDays)
-            $checksQualifiedEPSOrigin->inNextFollowDays($this->nextFollowDays, $this->filtersType['nextFollowDays']);
-
-        $checksQualifiedEPSOrigin = $checksQualifiedEPSOrigin->secureCount();
-
-        $checksQualifiedAFPOrigin = Check::countDistinctEmployeeId()
-        ->where('emitter_origin', 'AFP')
-        ->isOpen()
-        ->join('sau_employees', 'sau_employees.id', 'sau_reinc_checks.employee_id')
-        ->inIdentifications($this->identifications, $this->filtersType['identifications'])
-        ->inNames($this->names, $this->filtersType['names'])
-        ->inRegionals($this->regionals, $this->filtersType['regionals'])
-        ->inBusinesses($this->businesses, $this->filtersType['businesses'])
-        ->inDiseaseOrigin($this->diseaseOrigin, $this->filtersType['diseaseOrigin'])
-        ->betweenDate($this->dateRange);
-
-        if ($this->nextFollowDays)
-            $checksQualifiedAFPOrigin->inNextFollowDays($this->nextFollowDays, $this->filtersType['nextFollowDays']);
-
-        $checksQualifiedAFPOrigin = $checksQualifiedAFPOrigin->secureCount();
-
-        $checksQualifiedRegionalBoardOrigin = Check::countDistinctEmployeeId()
-        ->where('emitter_origin', 'JUNTA REGIONAL')
-        ->isOpen()
-        ->join('sau_employees', 'sau_employees.id', 'sau_reinc_checks.employee_id')
-        ->inIdentifications($this->identifications, $this->filtersType['identifications'])
-        ->inNames($this->names, $this->filtersType['names'])
-        ->inRegionals($this->regionals, $this->filtersType['regionals'])
-        ->inBusinesses($this->businesses, $this->filtersType['businesses'])
-        ->inDiseaseOrigin($this->diseaseOrigin, $this->filtersType['diseaseOrigin'])
-        ->betweenDate($this->dateRange);
-
-        if ($this->nextFollowDays)
-            $checksQualifiedRegionalBoardOrigin->inNextFollowDays($this->nextFollowDays, $this->filtersType['nextFollowDays']);
-
-        $checksQualifiedRegionalBoardOrigin = $checksQualifiedRegionalBoardOrigin->secureCount();
-
-        $checksQualifiedNationalBoardOrigin = Check::countDistinctEmployeeId()
-        ->where('emitter_origin', 'JUNTA NACIONAL')
-        ->isOpen()
-        ->join('sau_employees', 'sau_employees.id', 'sau_reinc_checks.employee_id')
-        ->inIdentifications($this->identifications, $this->filtersType['identifications'])
-        ->inNames($this->names, $this->filtersType['names'])
-        ->inRegionals($this->regionals, $this->filtersType['regionals'])
-        ->inBusinesses($this->businesses, $this->filtersType['businesses'])
-        ->inDiseaseOrigin($this->diseaseOrigin, $this->filtersType['diseaseOrigin'])
-        ->betweenDate($this->dateRange);
-
-        if ($this->nextFollowDays)
-            $checksQualifiedNationalBoardOrigin->inNextFollowDays($this->nextFollowDays, $this->filtersType['nextFollowDays']);
-
-        $checksQualifiedNationalBoardOrigin = $checksQualifiedNationalBoardOrigin->secureCount();
-
-        $checksQualifiedOtherEntitiesOrigin = Check::countDistinctEmployeeId()
-        ->where('emitter_origin', 'Sin Información')
-        ->isOpen()
-        ->join('sau_employees', 'sau_employees.id', 'sau_reinc_checks.employee_id')
-        ->inIdentifications($this->identifications, $this->filtersType['identifications'])
-        ->inNames($this->names, $this->filtersType['names'])
-        ->inRegionals($this->regionals, $this->filtersType['regionals'])
-        ->inBusinesses($this->businesses, $this->filtersType['businesses'])
-        ->inDiseaseOrigin($this->diseaseOrigin, $this->filtersType['diseaseOrigin'])
-        ->betweenDate($this->dateRange);
-
-        if ($this->nextFollowDays)
-            $checksQualifiedOtherEntitiesOrigin->inNextFollowDays($this->nextFollowDays, $this->filtersType['nextFollowDays']);
-
-        $checksQualifiedOtherEntitiesOrigin = $checksQualifiedOtherEntitiesOrigin->secureCount();
-
-        $checksQualifiedArlPcl = Check::countDistinctEmployeeId()
-        ->where('entity_rating_pcl', 'ARL')
-        ->isOpen()
-        ->join('sau_employees', 'sau_employees.id', 'sau_reinc_checks.employee_id')
-        ->inIdentifications($this->identifications, $this->filtersType['identifications'])
-        ->inNames($this->names, $this->filtersType['names'])
-        ->inRegionals($this->regionals, $this->filtersType['regionals'])
-        ->inBusinesses($this->businesses, $this->filtersType['businesses'])
-        ->inDiseaseOrigin($this->diseaseOrigin, $this->filtersType['diseaseOrigin'])
-        ->betweenDate($this->dateRange);
-
-        if ($this->nextFollowDays)
-            $checksQualifiedArlPcl->inNextFollowDays($this->nextFollowDays, $this->filtersType['nextFollowDays']);
-
-        $checksQualifiedArlPcl = $checksQualifiedArlPcl->secureCount();
-
-        $checksQualifiedEpsPcl = Check::countDistinctEmployeeId()
-        ->where('entity_rating_pcl', 'EPS')
-        ->isOpen()
-        ->join('sau_employees', 'sau_employees.id', 'sau_reinc_checks.employee_id')
-        ->inIdentifications($this->identifications, $this->filtersType['identifications'])
-        ->inNames($this->names, $this->filtersType['names'])
-        ->inRegionals($this->regionals, $this->filtersType['regionals'])
-        ->inBusinesses($this->businesses, $this->filtersType['businesses'])
-        ->inDiseaseOrigin($this->diseaseOrigin, $this->filtersType['diseaseOrigin'])
-        ->betweenDate($this->dateRange);
-
-        if ($this->nextFollowDays)
-            $checksQualifiedEpsPcl->inNextFollowDays($this->nextFollowDays, $this->filtersType['nextFollowDays']);
-
-        $checksQualifiedEpsPcl = $checksQualifiedEpsPcl->secureCount();
-
-        $checksQualifiedAfpPcl = Check::countDistinctEmployeeId()
-        ->where('entity_rating_pcl', 'AFP')
-        ->isOpen()
-        ->join('sau_employees', 'sau_employees.id', 'sau_reinc_checks.employee_id')
-        ->inIdentifications($this->identifications, $this->filtersType['identifications'])
-        ->inNames($this->names, $this->filtersType['names'])
-        ->inRegionals($this->regionals, $this->filtersType['regionals'])
-        ->inBusinesses($this->businesses, $this->filtersType['businesses'])
-        ->inDiseaseOrigin($this->diseaseOrigin, $this->filtersType['diseaseOrigin'])
-        ->betweenDate($this->dateRange);
-
-        if ($this->nextFollowDays)
-            $checksQualifiedAfpPcl->inNextFollowDays($this->nextFollowDays, $this->filtersType['nextFollowDays']);
-
-        $checksQualifiedAfpPcl = $checksQualifiedAfpPcl->secureCount();
-
-        $checksQualifiedRegionalBoardPCL = Check::countDistinctEmployeeId()
-        ->where('entity_rating_pcl', 'JUNTA REGIONAL')
-        ->isOpen()
-        ->join('sau_employees', 'sau_employees.id', 'sau_reinc_checks.employee_id')
-        ->inIdentifications($this->identifications, $this->filtersType['identifications'])
-        ->inNames($this->names, $this->filtersType['names'])
-        ->inRegionals($this->regionals, $this->filtersType['regionals'])
-        ->inBusinesses($this->businesses, $this->filtersType['businesses'])
-        ->inDiseaseOrigin($this->diseaseOrigin, $this->filtersType['diseaseOrigin'])
-        ->betweenDate($this->dateRange);
-
-        if ($this->nextFollowDays)
-            $checksQualifiedRegionalBoardPCL->inNextFollowDays($this->nextFollowDays, $this->filtersType['nextFollowDays']);
-
-        $checksQualifiedRegionalBoardPCL = $checksQualifiedRegionalBoardPCL->secureCount();
-
-        $checksQualifiedNationalBoardPCL = Check::countDistinctEmployeeId()
-        ->where('entity_rating_pcl', 'JUNTA NACIONAL')
-        ->isOpen()
-        ->join('sau_employees', 'sau_employees.id', 'sau_reinc_checks.employee_id')
-        ->inIdentifications($this->identifications, $this->filtersType['identifications'])
-        ->inNames($this->names, $this->filtersType['names'])
-        ->inRegionals($this->regionals, $this->filtersType['regionals'])
-        ->inBusinesses($this->businesses, $this->filtersType['businesses'])
-        ->inDiseaseOrigin($this->diseaseOrigin, $this->filtersType['diseaseOrigin'])
-        ->betweenDate($this->dateRange);
-
-        if ($this->nextFollowDays)
-            $checksQualifiedNationalBoardPCL->inNextFollowDays($this->nextFollowDays, $this->filtersType['nextFollowDays']);
-
-        $checksQualifiedNationalBoardPCL = $checksQualifiedNationalBoardPCL->secureCount();
-
-        $checksQualifiedOtherEntitiesPCL = Check::countDistinctEmployeeId()
-        ->where('entity_rating_pcl', 'Sin Información')
-        ->isOpen()
-        ->join('sau_employees', 'sau_employees.id', 'sau_reinc_checks.employee_id')
-        ->inIdentifications($this->identifications, $this->filtersType['identifications'])
-        ->inNames($this->names, $this->filtersType['names'])
-        ->inRegionals($this->regionals, $this->filtersType['regionals'])
-        ->inBusinesses($this->businesses, $this->filtersType['businesses'])
-        ->inDiseaseOrigin($this->diseaseOrigin, $this->filtersType['diseaseOrigin'])
-        ->betweenDate($this->dateRange);
-
-        if ($this->nextFollowDays)
-            $checksQualifiedOtherEntitiesPCL->inNextFollowDays($this->nextFollowDays, $this->filtersType['nextFollowDays']);
-
-        $checksQualifiedOtherEntitiesPCL = $checksQualifiedOtherEntitiesPCL->secureCount();
-
-        return [
+    /**
+     * return the headers reports pie data for the view
+     * @return object
+     */
+    public function headers()
+    {        
+        $result = [
             'checksWithRecommendations' => [
                 'label' => 'Porcentaje reportes con recomendaciones',
-                'value' => $this->percentage($checksWithRecommendations, $totalChecks),
+                'value' => $this->percentage(
+                    $this->executeQueryHeader([
+                        ['has_recommendations', 'SI']
+                    ])
+                    , $this->totalChecks),
                 'type' => 'percentage'
             ],
             'checksWithIndefiniteRecommendations' => [
                 'label' => 'Porcentaje reportes con recomendaciones indefinidas',
-                'value' => $this->percentage($checksWithIndefiniteRecommendations, $totalChecks),
+                'value' => $this->percentage(
+                    $this->executeQueryHeader([
+                        ['has_recommendations', 'SI'],
+                        ['indefinite_recommendations', 'SI']
+                    ])
+                    , $this->totalChecks),
                 'type' => 'percentage'
             ],
             'checksWithRelocated' => [
                 'label' => 'Porcentaje reportes con reubicación laboral',
-                'value' => $this->percentage($checksWithRelocated, $totalChecks),
+                'value' => $this->percentage(
+                    $this->executeQueryHeader([
+                        ['has_recommendations', 'SI'],
+                        ['relocated', 'SI']
+                    ])
+                    , $this->totalChecks),
                 'type' => 'percentage'
             ],
             'checksInProcessOrigin' => [
                 'label' => 'Número de reportes en proceso calificación de origen',
-                'value' => $checksInProcessOrigin
+                'value' => $this->executeQueryHeader([
+                        ['in_process_origin', 'SI']
+                    ])
             ],
             'checksInProcessPcl' => [
                 'label' => 'Número de reportes en proceso calificación de pérdida',
-                'value' => $checksInProcessPcl
+                'value' => $this->executeQueryHeader([
+                    ['in_process_pcl', 'SI']
+                ])
             ],
             'checksWithoutRecommendations' => [
                 'label' => 'Porcentaje reportes sin recomendaciones',
-                'value' => $this->percentage($checksWithoutRecommendations, $totalChecks),
+                'value' => $this->percentage(
+                    $this->executeQueryHeader([
+                        ['has_recommendations', 'NO']
+                    ])
+                    , $this->totalChecks),
                 'type' => 'percentage'
             ],
             'checksWithoutRestrictions' => [
                 'label' => 'Porcentaje reportes sin restricciones',
-                'value' => $this->percentage($checksWithoutRestrictions, $totalChecks),
+                'value' => $this->percentage(
+                    $this->executeQueryHeader([
+                        ['has_restrictions', 'NO']
+                    ])
+                    , $this->totalChecks),
                 'type' => 'percentage'
             ],
             'checksDiseaseOrigin' => [
                 'label' => 'Porcentaje reportes por enfermedad laboral',
-                'value' => $this->percentage($checksDiseaseOrigin, $totalChecks),
+                'value' => $this->percentage(
+                    $this->executeQueryHeader([
+                        ['disease_origin', 'Enfermedad Laboral']
+                    ])
+                    , $this->totalChecks),
                 'type' => 'percentage'
             ],
             'checksQualifiedARLOrigin' => [
                 'label' => 'Porcentaje reportes calificados por Origen por ARL',
-                'value' => $this->percentage($checksQualifiedARLOrigin, $totalChecks),
+                'value' => $this->percentage(
+                    $this->executeQueryHeader([
+                        ['emitter_origin', 'ARL']
+                    ])
+                    , $this->totalChecks),
                 'type' => 'percentage'
             ],
             'checksQualifiedEPSOrigin' => [
                 'label' => 'Porcentaje reportes calificados por Origen por EPS',
-                'value' => $this->percentage($checksQualifiedEPSOrigin, $totalChecks),
+                'value' => $this->percentage(
+                    $this->executeQueryHeader([
+                        ['emitter_origin', 'EPS']
+                    ])
+                    , $this->totalChecks),
                 'type' => 'percentage'
             ],
             'checksQualifiedAFPOrigin' => [
                 'label' => 'Porcentaje reportes calificados por Origen por AFP',
-                'value' => $this->percentage($checksQualifiedAFPOrigin, $totalChecks),
+                'value' => $this->percentage(
+                    $this->executeQueryHeader([
+                        ['emitter_origin', 'AFP']
+                    ])
+                    , $this->totalChecks),
                 'type' => 'percentage'
             ],
             'checksQualifiedRegionalBoardOrigin' => [
                 'label' => 'Porcentaje reportes calificados por Origen por Junta Regional',
-                'value' => $this->percentage($checksQualifiedRegionalBoardOrigin, $totalChecks),
+                'value' => $this->percentage(
+                    $this->executeQueryHeader([
+                        ['emitter_origin', 'JUNTA REGIONAL']
+                    ])
+                    , $this->totalChecks),
                 'type' => 'percentage'
             ],
             'checksQualifiedNationalBoardOrigin' => [
                 'label' => 'Porcentaje reportes calificados por Origen por Junta Nacional',
-                'value' => $this->percentage($checksQualifiedNationalBoardOrigin, $totalChecks),
+                'value' => $this->percentage(
+                    $this->executeQueryHeader([
+                        ['emitter_origin', 'JUNTA NACIONAL']
+                    ])
+                    , $this->totalChecks),
                 'type' => 'percentage'
             ],
             'checksQualifiedOtherEntitiesOrigin' => [
                 'label' => 'Porcentaje reportes calificados por Origen por Otras Entidades',
-                'value' => $this->percentage($checksQualifiedOtherEntitiesOrigin, $totalChecks),
-                'type' => 'percentage'
-            ],
-            'checksQualifiedArlPcl' => [
-                'label' => 'Porcentaje reportes calificados por PCL por ARL',
-                'value' => $this->percentage($checksQualifiedArlPcl, $totalChecks),
-                'type' => 'percentage'
-            ],
-            'checksQualifiedEpsPcl' => [
-                'label' => 'Porcentaje reportes calificados por PCL por EPS',
-                'value' => $this->percentage($checksQualifiedEpsPcl, $totalChecks),
-                'type' => 'percentage'
-            ],
-            'checksQualifiedAfpPcl' => [
-                'label' => 'Porcentaje reportes calificados por PCL por AFP',
-                'value' => $this->percentage($checksQualifiedAfpPcl, $totalChecks),
-                'type' => 'percentage'
-            ],
-            'checksQualifiedRegionalBoardPCL' => [
-                'label' => 'Porcentaje reportes calificados por PCL por Junta Regional',
-                'value' => $this->percentage($checksQualifiedRegionalBoardPCL, $totalChecks),
-                'type' => 'percentage'
-            ],
-            'checksQualifiedNationalBoardPCL' => [
-                'label' => 'Porcentaje reportes calificados por PCL por Junta Nacional',
-                'value' => $this->percentage($checksQualifiedNationalBoardPCL, $totalChecks),
-                'type' => 'percentage'
-            ],
-            'checksQualifiedOtherEntitiesPCL' => [
-                'label' => 'Porcentaje reportes calificados por PCL por Otras Entidades',
-                'value' => $this->percentage($checksQualifiedOtherEntitiesPCL, $totalChecks),
+                'value' => $this->percentage(
+                    $this->executeQueryHeader([
+                        ['emitter_origin', 'Sin Información']
+                    ])
+                    , $this->totalChecks),
                 'type' => 'percentage'
             ]
         ];
+
+        if ($this->formModel == 'misionEmpresarial')
+        {
+            $result = array_merge($result, 
+                [
+                    'checksQualifiedArlPcl' => [
+                        'label' => 'Porcentaje reportes calificados por PCL por ARL',
+                        'value' => $this->percentage(
+                            $this->executeQueryHeader([
+                                ['entity_rating_pcl', 'ARL']
+                            ])
+                            , $this->totalChecks),
+                        'type' => 'percentage'
+                    ],
+                    'checksQualifiedEpsPcl' => [
+                        'label' => 'Porcentaje reportes calificados por PCL por EPS',
+                        'value' => $this->percentage(
+                            $this->executeQueryHeader([
+                                ['entity_rating_pcl', 'EPS']
+                            ])
+                            , $this->totalChecks),
+                        'type' => 'percentage'
+                    ],
+                    'checksQualifiedAfpPcl' => [
+                        'label' => 'Porcentaje reportes calificados por PCL por AFP',
+                        'value' => $this->percentage(
+                            $this->executeQueryHeader([
+                                ['entity_rating_pcl', 'AFP']
+                            ])
+                            , $this->totalChecks),
+                        'type' => 'percentage'
+                    ],
+                    'checksQualifiedRegionalBoardPCL' => [
+                        'label' => 'Porcentaje reportes calificados por PCL por Junta Regional',
+                        'value' => $this->percentage(
+                            $this->executeQueryHeader([
+                                ['entity_rating_pcl', 'JUNTA REGIONAL']
+                            ])
+                            , $this->totalChecks),
+                        'type' => 'percentage'
+                    ],
+                    'checksQualifiedNationalBoardPCL' => [
+                        'label' => 'Porcentaje reportes calificados por PCL por Junta Nacional',
+                        'value' => $this->percentage(
+                            $this->executeQueryHeader([
+                                ['entity_rating_pcl', 'JUNTA NACIONAL']
+                            ])
+                            , $this->totalChecks),
+                        'type' => 'percentage'
+                    ],
+                    'checksQualifiedOtherEntitiesPCL' => [
+                        'label' => 'Porcentaje reportes calificados por PCL por Otras Entidades',
+                        'value' => $this->percentage(
+                            $this->executeQueryHeader([
+                                ['entity_rating_pcl', 'Sin Información']
+                            ])
+                            , $this->totalChecks),
+                        'type' => 'percentage'
+                    ]
+                ]
+            );
+        }
+
+        return $result;
     }
 
     /**
@@ -574,11 +394,21 @@ class InformManagerCheck
         ->inRegionals($this->regionals, $this->filtersType['regionals'])
         ->inBusinesses($this->businesses, $this->filtersType['businesses'])
         ->inDiseaseOrigin($this->diseaseOrigin, $this->filtersType['diseaseOrigin'])
+        ->inYears($this->years, $this->filtersType['years'])
         ->betweenDate($this->dateRange)
         ->groupBy('month');
 
         if ($this->nextFollowDays)
             $checksPerMonth->inNextFollowDays($this->nextFollowDays, $this->filtersType['nextFollowDays']);
+
+        if ($this->sveAssociateds)
+            $checksPerMonth->inSveAssociateds($this->sveAssociateds, $this->filtersType['sveAssociateds']);
+
+        if ($this->medicalCertificates)
+            $checksPerMonth->inMedicalCertificates($this->medicalCertificates, $this->filtersType['medicalCertificates']);
+
+        if ($this->relocatedTypes)
+            $checksPerMonth->inRelocatedTypes($this->relocatedTypes, $this->filtersType['relocatedTypes']);
 
         $checksPerMonth = $checksPerMonth->pluck('count_per_month', 'month');
 
@@ -634,11 +464,21 @@ class InformManagerCheck
         ->inRegionals($this->regionals, $this->filtersType['regionals'])
         ->inBusinesses($this->businesses, $this->filtersType['businesses'])
         ->inDiseaseOrigin($this->diseaseOrigin, $this->filtersType['diseaseOrigin'])
+        ->inYears($this->years, $this->filtersType['years'])
         ->betweenDate($this->dateRange)
         ->groupBy('year');
 
         if ($this->nextFollowDays)
             $checksPerYear->inNextFollowDays($this->nextFollowDays, $this->filtersType['nextFollowDays']);
+
+        if ($this->sveAssociateds)
+            $checksPerYear->inSveAssociateds($this->sveAssociateds, $this->filtersType['sveAssociateds']);
+
+        if ($this->medicalCertificates)
+            $checksPerYear->inMedicalCertificates($this->medicalCertificates, $this->filtersType['medicalCertificates']);
+
+        if ($this->relocatedTypes)
+            $checksPerYear->inRelocatedTypes($this->relocatedTypes, $this->filtersType['relocatedTypes']);
 
         $checksPerYear = $checksPerYear->pluck('count_per_year', 'year');
 
@@ -689,12 +529,22 @@ class InformManagerCheck
         ->inRegionals($this->regionals, $this->filtersType['regionals'])
         ->inBusinesses($this->businesses, $this->filtersType['businesses'])
         ->inDiseaseOrigin($this->diseaseOrigin, $this->filtersType['diseaseOrigin'])
+        ->inYears($this->years, $this->filtersType['years'])
         ->betweenDate($this->dateRange)
         ->where($column, '<>', '')
         ->groupBy($column);
 
         if ($this->nextFollowDays)
             $data->inNextFollowDays($this->nextFollowDays, $this->filtersType['nextFollowDays']);
+
+        if ($this->sveAssociateds)
+            $data->inSveAssociateds($this->sveAssociateds, $this->filtersType['sveAssociateds']);
+
+        if ($this->medicalCertificates)
+            $data->inMedicalCertificates($this->medicalCertificates, $this->filtersType['medicalCertificates']);
+
+        if ($this->relocatedTypes)
+            $data->inRelocatedTypes($this->relocatedTypes, $this->filtersType['relocatedTypes']);
 
         $data = $data->pluck('count', $column);
 
@@ -748,12 +598,22 @@ class InformManagerCheck
         ->inRegionals($this->regionals, $this->filtersType['regionals'])
         ->inBusinesses($this->businesses, $this->filtersType['businesses'])
         ->inDiseaseOrigin($this->diseaseOrigin, $this->filtersType['diseaseOrigin'])
+        ->inYears($this->years, $this->filtersType['years'])
         ->betweenDate($this->dateRange)
         ->where('sau_reinc_checks.disease_origin', $disease_origin)
         ->groupBy('sau_reinc_cie10_codes.category');
 
         if ($this->nextFollowDays)
             $checksPerCie10Code->inNextFollowDays($this->nextFollowDays, $this->filtersType['nextFollowDays']);
+
+        if ($this->sveAssociateds)
+            $checksPerCie10Code->inSveAssociateds($this->sveAssociateds, $this->filtersType['sveAssociateds']);
+
+        if ($this->medicalCertificates)
+            $checksPerCie10Code->inMedicalCertificates($this->medicalCertificates, $this->filtersType['medicalCertificates']);
+
+        if ($this->relocatedTypes)
+            $checksPerCie10Code->inRelocatedTypes($this->relocatedTypes, $this->filtersType['relocatedTypes']);
 
         $checksPerCie10Code = $checksPerCie10Code->pluck('count_per_cie10_code', 'cie10_code_category');
 
@@ -804,11 +664,21 @@ class InformManagerCheck
         ->inRegionals($this->regionals, $this->filtersType['regionals'])
         ->inBusinesses($this->businesses, $this->filtersType['businesses'])
         ->inDiseaseOrigin($this->diseaseOrigin, $this->filtersType['diseaseOrigin'])
+        ->inYears($this->years, $this->filtersType['years'])
         ->betweenDate($this->dateRange)
         ->groupBy($table.'.name');
 
         if ($this->nextFollowDays)
             $checksPerColumn->inNextFollowDays($this->nextFollowDays, $this->filtersType['nextFollowDays']);
+
+        if ($this->sveAssociateds)
+            $checksPerColumn->inSveAssociateds($this->sveAssociateds, $this->filtersType['sveAssociateds']);
+
+        if ($this->medicalCertificates)
+            $checksPerColumn->inMedicalCertificates($this->medicalCertificates, $this->filtersType['medicalCertificates']);
+
+        if ($this->relocatedTypes)
+            $checksPerColumn->inRelocatedTypes($this->relocatedTypes, $this->filtersType['relocatedTypes']);
 
         $checksPerColumn = $checksPerColumn->pluck('count', 'name');
 
@@ -853,6 +723,7 @@ class InformManagerCheck
         if ($totalValue == 0) {
             return 'N/A';
         }
-        return ($value / $totalValue) * 100;
+
+        return round(($value / $totalValue) * 100, 1);
     }
 }
