@@ -113,7 +113,28 @@
                     {
                         "name": "absen_reports_admin_user",
                         "display_name": "Ausentismo/Informes - adiministrar usuarios"
+                    },
+                    {
+                        "name": "absen_uploadFiles_r",
+                        "display_name": "Ausentismo/Subida de archivos - ver"
+                    },
+                    {
+                        "name": "absen_uploadFiles_c",
+                        "display_name": "Ausentismo/Subida de archivos - crear"
+                    },
+                    {
+                        "name": "absen_uploadFiles_u",
+                        "display_name": "Ausentismo/Subida de archivos - editar"
+                    },
+                    {
+                        "name": "absen_uploadFiles_d",
+                        "display_name": "Ausentismo/Subida de archivos - eliminar"
+                    },
+                    {
+                        "name": "absen_uploadTalend_c",
+                        "display_name": "Ausentismo/Subida de talend - crear"
                     }
+
 
                 ]
             }

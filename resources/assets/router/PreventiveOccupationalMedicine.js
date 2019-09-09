@@ -212,6 +212,35 @@ export default [{
         component: () =>
           import('@/views/PreventiveOccupationalMedicine/absenteeism/reports/edit')
       }
+    ]),
+    ...middleware({ 'check-permission': 'absen_uploadFiles_r' }, [
+      {
+        name: 'absenteeism-upload-files',
+        path: 'absenteeism/upload-files',
+					component: () => import('@/views/PreventiveOccupationalMedicine/absenteeism/uploadFiles/index')
+      }
+    ]),
+    ...middleware({ 'check-permission': 'absen_uploadFiles_c' }, [
+      {
+        name: 'absenteeism-upload-files-create',
+        path: 'absenteeism/upload-files/create',
+					component: () => import('@/views/PreventiveOccupationalMedicine/absenteeism/uploadFiles/create')
+      }
+    ]), 
+    ...middleware({ 'check-permission': 'absen_uploadFiles_r' }, [
+      {
+        name: 'absenteeism-upload-files-view',
+        path: 'absenteeism/upload-files/view/:id',
+        component: () =>
+          import('@/views/PreventiveOccupationalMedicine/absenteeism/uploadFiles/view')
+      }
+    ]),
+    ...middleware({ 'check-permission': 'absen_uploadTalend_c' }, [
+      {
+        name: 'absenteeism-upload-files-talend',
+        path: 'absenteeism/upload-files/talend',
+					component: () => import('@/views/PreventiveOccupationalMedicine/absenteeism/uploadFiles/talend')
+      }
     ])
   ]
 }]
