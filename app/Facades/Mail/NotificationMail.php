@@ -9,6 +9,7 @@ use App\Facades\Mail\NotificationGeneralMail;
 use App\Models\Administrative\Users\User;
 use App\Models\System\LogMails\LogMail;
 use App\Models\General\Module;
+use App\Models\System\Licenses\License;
 use App\Models\Administrative\Employees\Employee;
 use Route;
 use Exception;
@@ -434,6 +435,12 @@ class NotificationMail
         if (empty($this->company))
             throw new \Exception('The id of the company that performed the action was not entered');
 
+        if (!$this->checkLicense())
+        {
+            $this->restart();
+            return false; //No tiene licencia activa para el modulo por lo que se omite el envio del correo
+        }
+
         try { 
             $message = (new NotificationGeneralMail($this->prepareData()))
                 ->onQueue('emails');
@@ -561,5 +568,23 @@ class NotificationMail
         $this->subcopy = '';
         $this->with = [];
         $this->company = '';
+    }
+
+    /**
+     * Returns true if the company that sends the mail has an active license 
+     * for the module from which the request is made
+     *
+     * @return Booleam
+     */
+    private function checkLicense()
+    {
+        $licenses = License::
+              join('sau_license_module', 'sau_license_module.license_id', 'sau_licenses.id')
+            ->whereRaw('? BETWEEN started_at AND ended_at', [date('Y-m-d')])
+            ->where('sau_license_module.module_id', $this->module->id);
+
+        $licenses->company_scope = $this->company;
+
+        return $licenses->exists();
     }
 }

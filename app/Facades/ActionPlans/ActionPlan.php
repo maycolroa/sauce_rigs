@@ -15,6 +15,7 @@ use App\Models\Administrative\Regionals\EmployeeRegional;
 use App\Models\Administrative\Headquarters\EmployeeHeadquarter;
 use App\Models\Administrative\Areas\EmployeeArea;
 use App\Models\Administrative\Processes\EmployeeProcess;
+use App\Models\System\Licenses\License;
 use App\Facades\Mail\Facades\NotificationMail;
 use App\Facades\Configuration;
 use Exception;
@@ -932,6 +933,7 @@ class ActionPlan
                 ->join('sau_users', 'sau_users.id', 'sau_action_plans_activities.responsible_id')
                 //->join('sau_company_user', 'sau_company_user.user_id', 'sau_users.id')
                 ->where('sau_action_plans_activities.state', 'Pendiente')
+                ->whereIn('sau_action_plans_activity_module.module_id', $this->getModules())
                 ->whereRaw("CURDATE() = DATE_ADD(sau_action_plans_activities.expiration_date, INTERVAL -$this->daysAlertExpirationDate DAY)");
 
         $activities->company_scope = $this->company;
@@ -992,5 +994,23 @@ class ActionPlan
                     ->send();
             }
         }
+    }
+
+    /**
+     * Returns the IDs of the modules where the company 
+     * that sends the mail has an active license
+     *
+     * @return Booleam
+     */
+    private function getModules()
+    {
+        $licenses = License::selectRaw('DISTINCT module_id AS module_id')
+            ->join('sau_license_module', 'sau_license_module.license_id', 'sau_licenses.id')
+            ->whereRaw('? BETWEEN started_at AND ended_at', [date('Y-m-d')])
+            ->orderBy('module_id');
+
+        $licenses->company_scope = $this->company;
+
+        return $licenses->pluck('module_id')->toArray();
     }
 }
