@@ -45,7 +45,7 @@ class SauConfigurationSeeder extends Seeder
             ],
             [
                 'key' => 'admin_license_notification_email',
-                'value' => 'carolina.madrid@rigs.com.co',
+                'value' => 'carolina.madrid@rigs.com.co,caladsantiago@thotstrategy.com',
                 'observation' => 'Administrador al que se notificara sobre las licencias próximas a vencer'
             ],
             [
