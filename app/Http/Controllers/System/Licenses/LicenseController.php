@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\System\Licenses\License;
 use App\Models\General\ModuleDependence;
 use App\Http\Requests\System\Licenses\LicenseRequest;
+use App\Jobs\System\Licenses\NotifyLicenseRenewalJob;
 use Carbon\Carbon;
 use Session;
 use DB;
@@ -88,6 +89,8 @@ class LicenseController extends Controller
             ]);
 
             DB::commit();
+
+            NotifyLicenseRenewalJob::dispatch($license->company_id, $modules_main);
 
         } catch(\Exception $e) {
             DB::rollback();

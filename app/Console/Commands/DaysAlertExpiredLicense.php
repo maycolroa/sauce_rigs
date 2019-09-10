@@ -54,7 +54,15 @@ class DaysAlertExpiredLicense extends Command
         ])->get();
 
         if (!$licenses->isEmpty()) {
-            $emailToNotify = Configuration::getConfiguration('admin_license_notification_email');
+            
+            $emailAdmins = Configuration::getConfiguration('admin_license_notification_email');
+            $emailAdmins = explode(",", $emailAdmins);
+            $recipients = Employee::where('id', -1)->get();
+
+            foreach ($emailAdmins as $key => $value)
+            {
+                $recipients->push(new Employee(['email'=>$value]));
+            }
 
             $data = [];
 
@@ -80,9 +88,9 @@ class DaysAlertExpiredLicense extends Command
             NotificationMail::
                 subject('Vencimiento de Licencias Próximo')
                 ->view('notification')
-                ->recipients(new Employee(['email'=>$emailToNotify]))
+                ->recipients($recipients)
                 ->message('Las siguientes licencias están próximas a vencerse: ')
-                ->module('licenses')
+                ->module('users')
                 ->event('Tarea programada: DaysAlertExpiredLicense')
                 ->table($data)
                 ->company(1)
