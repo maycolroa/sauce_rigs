@@ -31,6 +31,18 @@
             @click.prevent="downloadButton(button, props.row)"><i :class="button.config.icon"></i></b-btn>
           </template>
 
+          <template v-for="(button, index) in controllsSimpleDownload">
+            <b-btn
+            v-if="checkViewBtnBase(button, props.row)" 
+            :key="`${index}${button.name}`" 
+            :variant="button.config.color + ' ' + (button.config.borderless ? 'borderless' : '') + ' ' + (button.config.icon ? 'icon-btn' : '')" 
+            class="btn-xs"
+            v-b-tooltip.top :title="(button.config.title ? button.config.title : '')"
+            :href="button.data.action+props.row[button.data.id]"
+            target="blank"
+            ><i :class="button.config.icon"></i></b-btn>
+          </template>
+
           <template v-for="(button, index) in controllsBaseBtn">
             <span :key="`${index}${button.name}`">
               <b-btn 
@@ -354,6 +366,22 @@ export default {
       }
 
       return controlls;
+    },
+    controllsSimpleDownload(){
+      let controlls = this.config.controlls.filter(c => {
+        return c.type == 'simpleDownload'
+      })[0]
+      
+      if (controlls)
+      {
+        controlls = controlls.buttons.filter(c => {
+                      if (c.permission)
+                        return auth.can[c.permission]
+                      else 
+                        return true
+                    });
+      }
+          return controlls;
     },
     controllsForms(){
       let controlls = this.config.controlls.filter(c => {
