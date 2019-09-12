@@ -186,6 +186,14 @@ export default [{
           component: () =>
             import('@/views/IndustrialSecure/dangerMatrix/indexTags')
         }
+      ]),
+      ...middleware({ 'check-permission': 'dangerMatrix_view_report' }, [
+        {
+          name: 'industrialsecure-dangermatrix-report-history',
+          path: 'dangermatrix/report/history',
+          component: () =>
+            import('@/views/IndustrialSecure/dangerMatrix/reportHistory')
+        }
       ])
     ]
   }]
