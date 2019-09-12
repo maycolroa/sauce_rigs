@@ -212,7 +212,7 @@ export default [
           url: '/selects/branchOffice',
           key: 'branchOffice',
           type: 'select',
-          label: 'Sucursales',
+          label: 'Regional o Planta',
           header:true
         },
         {
