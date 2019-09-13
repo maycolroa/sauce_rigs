@@ -1,6 +1,6 @@
 <template>
   	<div>
-    	<h4 class="font-weight-bold mb-4">Tags</h4>
+    	<h4 class="font-weight-bold mb-4">Maestro</h4>
     	<div class="col-md">
 			<b-card no-body>
 				<b-card-header class="with-elements">

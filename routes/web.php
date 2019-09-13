@@ -147,6 +147,8 @@ Route::middleware(['auth'])->group(function () {
         Route::post('reincSveAssociateds', 'PreventiveOccupationalMedicine\Reinstatements\CheckController@multiselectSveAssociateds');
         Route::post('reincMedicalCertificates', 'PreventiveOccupationalMedicine\Reinstatements\CheckController@multiselectMedicalCertificates');
         Route::post('reincRelocatedTypes', 'PreventiveOccupationalMedicine\Reinstatements\CheckController@multiselectRelocatedTypes');
+        Route::post('dmReportMultiselect', 'IndustrialSecure\DangerMatrix\DangerMatrixReportHistoryController@multiselect');
+        Route::post('dmReportMonths', 'IndustrialSecure\DangerMatrix\DangerMatrixReportHistoryController@multiselect');
 
         Route::prefix('evaluations')->group(function () {
           Route::post('objectives', 'LegalAspects\Contracs\EvaluationController@multiselectObjectives');
@@ -267,6 +269,8 @@ Route::middleware(['auth'])->group(function () {
       Route::post('dangersMatrix/report', 'IndustrialSecure\DangerMatrix\DangerMatrixReportController@report');
       Route::post('dangersMatrix/reportDangerTable', 'IndustrialSecure\DangerMatrix\DangerMatrixReportController@reportDangerTable');
       Route::post('dangersMatrix/reportExport ', 'IndustrialSecure\DangerMatrix\DangerMatrixReportController@reportExport');
+      Route::post('dangersMatrix/reportHistory', 'IndustrialSecure\DangerMatrix\DangerMatrixReportHistoryController@report');
+      Route::post('dangersMatrix/reportHistoryExport ', 'IndustrialSecure\DangerMatrix\DangerMatrixReportHistoryController@reportExport');
       Route::get('dangersMatrix/download/{dangersMatrix}', 'IndustrialSecure\DangerMatrix\DangerMatrixController@download');
       Route::ApiResource('dangersMatrix', 'IndustrialSecure\DangerMatrix\DangerMatrixController');
 

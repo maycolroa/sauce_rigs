@@ -45,5 +45,59 @@ export default [
           label: 'Descripción del peligro'
         }
       ]
+    },
+    {
+      name: 'industrialsecure-dangermatrix-report-history',
+      filters: [
+        {
+          url: '/selects/dmReportMultiselect',
+          key: 'regionals',
+          type: 'select',
+          label: 'Regionales',
+          column: 'regional'
+        },
+        {
+          url: '/selects/dmReportMultiselect',
+          key: 'headquarters',
+          type: 'select',
+          label: 'Sedes',
+          column: 'headquarter'
+        },
+        {
+          url: '/selects/dmReportMultiselect',
+          key: 'processes',
+          type: 'select',
+          label: 'Procesos',
+          column: 'process'
+        },
+        {
+          url: '/selects/dmReportMultiselect',
+          key: 'macroprocesses',
+          type: 'select',
+          label: 'Macroprocesos',
+          column: 'macroprocess'
+        },
+        {
+          url: '/selects/dmReportMultiselect',
+          key: 'areas',
+          type: 'select',
+          label: 'Áreas',
+          column: 'area'
+        },
+        {
+          url: '/selects/dmReportMultiselect',
+          key: 'dangers',
+          type: 'select',
+          label: 'Peligros',
+          column: 'danger'
+        },
+        {
+          url: '/selects/dmReportMultiselect',
+          key: 'dangerDescription',
+          type: 'select',
+          label: 'Descripción del peligro',
+          column: 'danger_description'
+        }
+      ]
     }
 ];

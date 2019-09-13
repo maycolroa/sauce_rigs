@@ -1,0 +1,233 @@
+<?php
+
+namespace App\Http\Controllers\IndustrialSecure\DangerMatrix;
+
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\Controller;
+use App\Jobs\IndustrialSecure\DangerMatrix\DangerMatrixReportHistoryExportJob;
+use Session;
+use App\Models\IndustrialSecure\DangerMatrix\QualificationHistory;
+use App\Models\IndustrialSecure\DangerMatrix\ReportHistory;
+
+class DangerMatrixReportHistoryController extends Controller
+{
+    /**
+     * creates and instance and middlewares are checked
+     */
+    function __construct()
+    {
+        $this->middleware('auth');
+        $this->middleware('permission:dangerMatrix_r|dangerMatrix_view_report');
+        $this->middleware('permission:dangerMatrix_export_report', ['only' => 'reportExport']);
+    }
+
+    /**
+     * returns the inform data according to
+     * multiple conditions, like filters
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function report(Request $request)
+    {
+        /** FIltros */
+        $regionals = $this->getValuesForMultiselect($request->regionals);
+        $headquarters = $this->getValuesForMultiselect($request->headquarters);
+        $areas = $this->getValuesForMultiselect($request->areas);
+        $processes = $this->getValuesForMultiselect($request->processes);
+        $macroprocesses = $this->getValuesForMultiselect($request->macroprocesses);
+        $dangers = $this->getValuesForMultiselect($request->dangers);
+        $dangerDescription = $this->getValuesForMultiselect($request->dangerDescription);
+        $filtersType = $request->filtersType;
+        /***********************************************/
+
+        $dangersMatrix = ReportHistory::select('sau_dm_report_histories.*')
+            ->inRegionals($regionals, isset($filtersType['regionals']) ? $filtersType['regionals'] : 'IN')
+            ->inHeadquarters($headquarters, isset($filtersType['headquarters']) ? $filtersType['headquarters'] : 'IN')
+            ->inAreas($areas, isset($filtersType['areas']) ? $filtersType['areas'] : 'IN')
+            ->inProcesses($processes, isset($filtersType['processes']) ? $filtersType['processes'] : 'IN')
+            ->inMacroprocesses($macroprocesses, isset($filtersType['macroprocesses']) ? $filtersType['macroprocesses'] : 'IN')
+            ->inDangers($dangers, $filtersType['dangers'])
+            ->inDangerDescription($dangerDescription, $filtersType['dangerDescription'])
+            ->where("year", $request->year)
+            ->where("month", $request->month)
+            ->get();
+
+        $conf = '';
+
+        if ($dangersMatrix->count() > 0)
+        {
+            $conf = $dangersMatrix[0]->type_configuration;
+        }
+
+        $matriz_calification = QualificationHistory::
+              where("year", $request->year)
+            ->where("month", $request->month)
+            ->where("type_configuration", $conf)
+            ->first();
+
+        if ($matriz_calification)
+            $matriz_calification = json_decode($matriz_calification->value, true);
+
+        $data = $matriz_calification ? $matriz_calification : [];
+
+        foreach ($dangersMatrix as $keyDanger => $itemDanger)
+        {
+            $nri = -1;
+            $ndp = -1;
+
+            $qualifications = json_decode($itemDanger->qualification, true);
+
+            foreach ($qualifications as $keyQ => $itemQ)
+            {
+                if ($conf == 'Tipo 1')
+                {
+                    if ($itemQ["name"] == 'NRI')
+                        $nri = $itemQ["value"];
+
+                    if ($itemQ["name"] == 'Nivel de Probabilidad')
+                        $ndp = $itemQ["value"];
+                }
+            }
+
+            if ($conf == 'Tipo 1')
+                if (isset($data[$ndp]) && isset($data[$ndp][$nri]))
+                    $data[$ndp][$nri]['count']++;
+        }
+
+        $matriz = [];
+        $headers = array_keys($data);
+        $count = isset($data['Ha ocurrido en el sector Hospitalario']) ? COUNT($data['Ha ocurrido en el sector Hospitalario']) : 0;
+
+        for ($i=0; $i < $count; $i++)
+        { 
+            $y = 0;
+
+            foreach ($data as $key => $value)
+            {
+                $x = 0;
+
+                foreach ($value as $key2 => $value2)
+                { 
+                    $matriz[$x][$y] = array_merge($data[$key][$key2], ["row"=>$key, "col"=>$key2]);
+                    $x++;
+                }
+
+                $y++;
+            }
+        }
+        
+        return $this->respondHttp200([
+            "data" => [
+                "data" => $matriz,
+                "headers" => $headers
+            ]
+        ]);
+    }
+
+    public function reportExport(Request $request)
+    {
+        try
+        {
+            /** FIltros */
+            $filters = [
+                "regionals" => $this->getValuesForMultiselect($request->regionals),
+                "headquarters" => $this->getValuesForMultiselect($request->headquarters),
+                "areas" => $this->getValuesForMultiselect($request->areas),
+                "processes" => $this->getValuesForMultiselect($request->processes),
+                "macroprocesses" => $this->getValuesForMultiselect($request->macroprocesses),
+                "dangers" => $this->getValuesForMultiselect($request->dangers),
+                "dangerDescription" => $this->getValuesForMultiselect($request->dangerDescription),
+                "filtersType" => $request->filtersType,
+                "year" => $request->year,
+                "month" => $request->month,
+            ];
+
+            DangerMatrixReportHistoryExportJob::dispatch(Auth::user(), Session::get('company_id'), $filters);
+
+            return $this->respondHttp200();
+        } catch(Exception $e) {
+            return $this->respondHttp500();
+        }
+    }
+
+    /**
+     * Returns an array for a select type input
+     *
+     * @param Request $request
+     * @return Array
+     */
+
+    public function multiselect(Request $request)
+    {
+        if ($request->has('column') && $request->get('column') != '')
+        {
+            if($request->has('keyword'))
+            {
+                $column = $request->column;
+
+                $keyword = "%{$request->keyword}%";
+                $data = ReportHistory::selectRaw("DISTINCT $column")
+                ->where(function ($query) use ($keyword, $column) {
+                    $query->orWhere($column, 'like', $keyword);
+                })
+                ->orderBy($column);
+
+                if ($request->has('year'))
+                    $data->where('year', $request->year);
+                
+                if ($request->has('month'))
+                    $data->where('month', $request->month);
+
+                $data = $data->take(30)->pluck($column, $column);
+
+                if ($column == 'month')
+                {
+                    $new_data = [];
+
+                    foreach ($data as $value)
+                    {
+                        $new_data[trans("months.$value")] = $value;
+                    }
+
+                    $data = collect($new_data);
+                }
+
+                return $this->respondHttp200([
+                    'options' => $this->multiSelectFormat($data)
+                ]);
+            }
+            else
+            {
+                $column = $request->column;
+
+                $keyword = "%{$request->keyword}%";
+                $data = ReportHistory::selectRaw("DISTINCT $column");
+
+                if ($request->has('year'))
+                    $data->where('year', $request->year);
+                
+                if ($request->has('month'))
+                    $data->where('month', $request->month);
+
+                $data = $data->pluck($column, $column);
+
+                if ($column == 'month')
+                {
+                    $new_data = [];
+
+                    foreach ($data as $value)
+                    {
+                        $new_data[trans("months.$value")] = $value;
+                    }
+
+                    $data = collect($new_data);
+                }
+
+                return $this->multiSelectFormat($data);
+            }
+        }
+
+        return [];
+    }
+}
