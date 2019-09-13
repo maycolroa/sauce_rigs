@@ -70,6 +70,7 @@ Route::middleware(['auth'])->group(function () {
 
         Route::post('musculoskeletalAnalysis/informs', 'PreventiveOccupationalMedicine\BiologicalMonitoring\MusculoskeletalAnalysis\MusculoskeletalAnalysisInformController@data');
         Route::post('musculoskeletalAnalysis/import', 'PreventiveOccupationalMedicine\BiologicalMonitoring\MusculoskeletalAnalysis\MusculoskeletalAnalysisController@import');
+        Route::post('musculoskeletalAnalysis/export', 'PreventiveOccupationalMedicine\BiologicalMonitoring\MusculoskeletalAnalysis\MusculoskeletalAnalysisController@export');
         Route::post('musculoskeletalAnalysis/data', 'PreventiveOccupationalMedicine\BiologicalMonitoring\MusculoskeletalAnalysis\MusculoskeletalAnalysisController@data');
         Route::ApiResource('musculoskeletalAnalysis', 'PreventiveOccupationalMedicine\BiologicalMonitoring\MusculoskeletalAnalysis\MusculoskeletalAnalysisController');   
 
