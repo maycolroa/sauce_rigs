@@ -9,6 +9,7 @@
         <b-card-header class="with-elements">
           <div class="card-title-elements">
             <b-btn v-if="auth.can['biologicalMonitoring_musculoskeletalAnalysis_c']" variant="primary" @click="importMessage()" v-b-tooltip.top title="Importar"><i class="fas fa-upload"></i></b-btn>
+            <b-btn v-if="auth.can['biologicalMonitoring_musculoskeletalAnalysis_r']" variant="primary" @click="exportData()" v-b-tooltip.top title="Exportar"><i class="fas fa-download"></i></b-btn>
             <input id="fileInputImport" type="file" style="display:none" v-on:input="importFile"/>
             <b-btn v-if="auth.can['biologicalMonitoring_musculoskeletalAnalysis_c']" :to="{name:'biologicalmonitoring-musculoskeletalanalysis-informs'}" variant="primary">Ver Informes</b-btn>
           </div>
@@ -17,6 +18,7 @@
              <vue-table
                 configName="biologicalmonitoring-musculoskeletalAnalysis"
                 v-if="auth.can['biologicalMonitoring_musculoskeletalAnalysis_r']"
+                @filtersUpdate="setFilters"
                 ></vue-table>
         </b-card-body>
     </b-card>
@@ -48,7 +50,24 @@ export default {
   metaInfo: {
     title: 'Análisis Osteomuscular'
   },
+  data () {
+    return {
+      filters: []
+    }
+  },
   methods: {
+    setFilters(value)
+    {
+      this.filters = value
+    },
+    exportData(){
+      axios.post('/biologicalmonitoring/musculoskeletalAnalysis/export', this.filters)
+      .then(response => {
+        Alerts.warning('Información', 'Se inicio la exportación, se le notificara a su correo electronico cuando finalice el proceso.');
+      }).catch(error => {
+        Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
+      });
+    },
     importFile(e){
       var formData = new FormData();
       var imagefile = e.target.files;

@@ -7,6 +7,7 @@ use App\Vuetable\Facades\Vuetable;
 use App\Http\Controllers\Controller;
 use App\Models\PreventiveOccupationalMedicine\BiologicalMonitoring\MusculoskeletalAnalysis\MusculoskeletalAnalysis;
 use App\Jobs\PreventiveOccupationalMedicine\BiologicalMonitoring\MusculoskeletalAnalysis\MusculoskeletalAnalysisImportJob;
+use App\Jobs\PreventiveOccupationalMedicine\BiologicalMonitoring\MusculoskeletalAnalysis\MusculoskeletalAnalysisExportJob;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
 use Session;
@@ -44,13 +45,7 @@ class MusculoskeletalAnalysisController extends Controller
    public function data(Request $request)
    {
        $data = MusculoskeletalAnalysis::select(
-         'sau_bm_musculoskeletal_analysis.*',
-          DB::raw("CASE WHEN LENGTH(recommendations) > 50 THEN CONCAT(SUBSTRING(recommendations, 1, 50),'...') ELSE recommendations END AS recommendations"),
-          DB::raw("CASE WHEN LENGTH(observations) > 50 THEN CONCAT(SUBSTRING(observations, 1, 50),'...') ELSE observations END AS observations"),
-          DB::raw("CASE WHEN LENGTH(restrictions) > 50 THEN CONCAT(SUBSTRING(restrictions, 1, 50),'...') ELSE restrictions END AS restrictions"),
-          DB::raw("CASE WHEN LENGTH(description_medical_exam) > 50 THEN CONCAT(SUBSTRING(description_medical_exam, 1, 50),'...') ELSE description_medical_exam END AS description_medical_exam"),
-          DB::raw("CASE WHEN LENGTH(symptom) > 50 THEN CONCAT(SUBSTRING(symptom, 1, 50),'...') ELSE symptom END AS symptom"),
-          DB::raw("CASE WHEN LENGTH(symptomatology_observations) > 50 THEN CONCAT(SUBSTRING(symptomatology_observations, 1, 50),'...') ELSE symptomatology_observations END AS symptomatology_observations")
+         'sau_bm_musculoskeletal_analysis.*'
         );
 
         $filters = $request->get('filters');
@@ -191,5 +186,45 @@ class MusculoskeletalAnalysisController extends Controller
       ->pluck('company', 'company');
 
       return $this->multiSelectFormat($data);
+    }
+
+    /**
+     * Export resources from storage.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function export(Request $request)
+    {
+      try
+      {
+        $consolidatedPersonalRiskCriterion = $this->getValuesForMultiselect($request->consolidatedPersonalRiskCriterion);
+        $branchOffice = $this->getValuesForMultiselect($request->branchOffice);
+        $companies = $this->getValuesForMultiselect($request->companies);
+        $filtersType = $request->filtersType;
+
+        $dates = [];
+        $dates_request = explode('/', $request->dateRange);
+
+        if (COUNT($dates_request) == 2)
+        {
+            array_push($dates, (Carbon::createFromFormat('D M d Y', $dates_request[0]))->format('Y-m-d'));
+            array_push($dates, (Carbon::createFromFormat('D M d Y', $dates_request[1]))->format('Y-m-d'));
+        }
+
+        $filters = [
+            'consolidatedPersonalRiskCriterion' => $consolidatedPersonalRiskCriterion,
+            'branchOffice' => $branchOffice,
+            'companies' => $companies,
+            'dates' => $dates,
+            'filtersType' => $filtersType
+        ];
+
+        MusculoskeletalAnalysisExportJob::dispatch(Auth::user(), Session::get('company_id'), $filters);
+      
+        return $this->respondHttp200();
+      } catch(Exception $e) {
+        return $this->respondHttp500();
+      }
     }
 }
