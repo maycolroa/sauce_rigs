@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
 use App\Inform\PreventiveOccupationalMedicine\BiologicalMonitoring\MusculoskeletalAnalysis\InformManagerMusculoskeletalAnalysis;
+use App\Inform\PreventiveOccupationalMedicine\BiologicalMonitoring\MusculoskeletalAnalysis\InformIndividualManagerMusculoskeletalAnalysis;
 
 class MusculoskeletalAnalysisInformController extends Controller
 {
@@ -57,6 +58,21 @@ class MusculoskeletalAnalysisInformController extends Controller
         }
         
         $informManager = new InformManagerMusculoskeletalAnalysis($consolidatedPersonalRiskCriterion, $branchOffice, $companies, $dates, $filtersType);
+        
+        return $this->respondHttp200($informManager->getInformData());
+    }
+
+    /**
+     * returns the inform data according to
+     * multiple conditions, like filters
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function dataIndividual(Request $request)
+    {
+        $id = $request->patient_identification;
+        
+        $informManager = new InformIndividualManagerMusculoskeletalAnalysis($id);
         
         return $this->respondHttp200($informManager->getInformData());
     }

@@ -12,6 +12,7 @@
             <b-btn v-if="auth.can['biologicalMonitoring_musculoskeletalAnalysis_r']" variant="primary" @click="exportData()" v-b-tooltip.top title="Exportar"><i class="fas fa-download"></i></b-btn>
             <input id="fileInputImport" type="file" style="display:none" v-on:input="importFile"/>
             <b-btn v-if="auth.can['biologicalMonitoring_musculoskeletalAnalysis_c']" :to="{name:'biologicalmonitoring-musculoskeletalanalysis-informs'}" variant="primary">Ver Informes</b-btn>
+            <b-btn v-if="auth.can['biologicalMonitoring_musculoskeletalAnalysis_c']" :to="{name:'biologicalmonitoring-musculoskeletalanalysis-reportindividual'}" variant="primary">Reporte Individual</b-btn>
           </div>
         </b-card-header>
         <b-card-body>

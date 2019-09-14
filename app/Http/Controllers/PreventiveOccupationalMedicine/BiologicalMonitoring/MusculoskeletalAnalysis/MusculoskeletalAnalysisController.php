@@ -91,7 +91,17 @@ class MusculoskeletalAnalysisController extends Controller
      */
     public function show($id)
     {
-      
+      $musculoskeletalAnalysis = MusculoskeletalAnalysis::findOrFail($id);
+
+      try
+      { 
+        return $this->respondHttp200([
+          'data' => $musculoskeletalAnalysis,
+        ]);
+        
+      } catch(Exception $e) {
+        $this->respondHttp500();
+      }
     }
 
 
@@ -186,6 +196,43 @@ class MusculoskeletalAnalysisController extends Controller
       ->pluck('company', 'company');
 
       return $this->multiSelectFormat($data);
+    }
+
+    /**
+     * Returns an arrangement with the last 5 years
+     *
+     * @return Array
+     */
+    public function multiselectPacient(Request $request)
+    {
+      if($request->has('keyword'))
+      {
+        $keyword = "%{$request->keyword}%";
+        $data = MusculoskeletalAnalysis::select(
+          DB::raw('DISTINCT CAST(patient_identification AS SIGNED) AS id'),
+          DB::raw('CONCAT(patient_identification, " - ", name) AS name')
+          )
+          ->where(function ($query) use ($keyword) {
+              $query->orWhere('name', 'like', $keyword);
+              $query->orWhere('patient_identification', 'like', $keyword);
+          })
+          ->take(30)->orderBy('id')->pluck('id', 'name');
+
+        return $this->respondHttp200([
+            'options' => $this->multiSelectFormat($data)
+        ]);
+      }
+      else
+      {
+        $data = MusculoskeletalAnalysis::select(
+          DB::raw('DISTINCT CAST(patient_identification AS SIGNED) AS id'),
+          'name'
+        )
+        ->orderBy('id')
+        ->pluck('name', 'id');
+  
+        return $this->multiSelectFormat($data);
+      }
     }
 
     /**
