@@ -1,0 +1,113 @@
+<template>
+  <div>
+    <h4 class="font-weight-bold mb-4">
+       <span class="text-muted font-weight-light">Análisis Osteomuscular /</span> Reporte Individual
+    </h4>
+
+    <div class="col-md">
+      <b-card no-body>
+        <b-card-body>
+            <b-row>
+                <b-col>
+                    <b-card bg-variant="transparent" border-variant="dark" title="" class="mb-3 box-shadow-none">
+                        <vue-ajax-advanced-select class="col-md-12" v-model="patient_identification"  name="patient_identification" label="Paciente" placeholder="Seleccione el paciente" :url="patienteDataUrl">
+                            </vue-ajax-advanced-select>
+                    </b-card>
+                </b-col>
+            </b-row>
+            <b-row>
+                <b-col>
+                    <b-card no-body class="mb-2 border-secondary" :key="key" style="width: 100%;" template v-for="(item, key) in dataAnalysis">
+                        <b-card-header class="bg-secondary">
+                            <b-row>
+                                <b-col cols="10" class="d-flex justify-content-between text-white"> Fecha: {{ item.date }}</b-col>
+                                <b-col cols="2">
+                                    <div class="float-right">
+                                        <b-button-group>
+                                            <b-btn href="javascript:void(0)" v-b-toggle="`accordion-${key}`" variant="link">
+                                                <span class="collapse-icon"></span>
+                                            </b-btn>
+                                        </b-button-group>
+                                    </div>
+                                </b-col>
+                            </b-row>
+                        </b-card-header>
+                        <b-collapse :id="`accordion-${key}`" visible :accordion="`accordion`">
+                            <b-card-body>
+                                <musculoskeletal-analysis-form
+                                    :analisy="item"
+                                    :view-only="true"
+                                    :in-form="false"
+                                    :cancel-url="{ name: 'biologicalmonitoring-musculoskeletalanalysis'}"/>
+                            </b-card-body>
+                        </b-collapse>
+                    </b-card>
+                </b-col>
+            </b-row>
+        </b-card-body>
+      </b-card>
+    </div>
+
+    <div class="row float-right pt-10 pr-10">
+        <template>
+            <b-btn variant="default" :to="{name: 'biologicalmonitoring-musculoskeletalanalysis'}">Atras</b-btn>
+        </template>
+    </div>
+  </div>
+</template>
+
+<script>
+import VueAjaxAdvancedSelect from "@/components/Inputs/VueAjaxAdvancedSelect.vue";
+import MusculoskeletalAnalysisForm from '@/components/PreventiveOccupationalMedicine/BiologicalMonitoring/MusculoskeletalAnalysis/MusculoskeletalAnalysisForm.vue';
+import Alerts from '@/utils/Alerts.js';
+
+export default {
+    name: 'biologicalmonitoring-musculoskeletalanalysis-report-individual',
+    metaInfo: {
+        title: 'Análisis Osteomuscular - Reporte Individual'
+    },
+    components:{
+        VueAjaxAdvancedSelect,
+        MusculoskeletalAnalysisForm
+    },
+    data () {
+        return {
+            isLoading: false,
+            patient_identification: '-1',
+            patienteDataUrl: '/selects/bm_musculoskeletalPacient',
+            dataAnalysis: []
+        }
+    },
+    watch:{
+        patient_identification () {
+            if (!this.isLoading)
+                this.fetch()
+        }
+    },
+    methods: {
+        fetch()
+        {
+            this.isLoading = true;
+
+            axios.post('/biologicalmonitoring/musculoskeletalAnalysis/reportIndividual', {
+                patient_identification: this.patient_identification
+            })
+            .then(data => {
+                this.update(data);
+                this.isLoading = false;
+            })
+            .catch(error => {
+                this.isLoading = false;
+                Alerts.error('Error', 'Hubo un problema recolectando la información');
+            });
+        },
+        update(data) {
+            _.forIn(data.data, (value, key) => {
+                if (this[key]) {
+                    this[key] = value;
+                }
+            });
+        }
+    }
+}
+</script>

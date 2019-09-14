@@ -168,6 +168,14 @@ export default [{
           import('@/views/PreventiveOccupationalMedicine/biologicalmonitoring/musculoskeletalAnalysis/informs')
       }
     ]), 
+    ...middleware({ 'check-permission': 'biologicalMonitoring_musculoskeletalAnalysis_r' }, [
+      {
+        name: 'biologicalmonitoring-musculoskeletalanalysis-reportindividual',
+        path: 'biologicalmonitoring/musculoskeletalanalysis/reportindividual',
+        component: () =>
+          import('@/views/PreventiveOccupationalMedicine/biologicalmonitoring/musculoskeletalAnalysis/reportIndividual')
+      }
+    ]),
     {
       name: 'preventiveoccupationalmedicine-absenteeism',
       path: 'absenteeism',
