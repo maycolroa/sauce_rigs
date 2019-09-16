@@ -16,8 +16,19 @@
         <vue-ajax-advanced-select :disabled="viewOnly" class="col-md-6" v-model="form.role_id" :error="form.errorsFor('role_id')" :selected-object="form.multiselect_role" name="role_id" label="Rol" placeholder="Seleccione el rol del usuario" :url="rolesDataUrl">
             </vue-ajax-advanced-select>
       </template>
-      <vue-checkbox-simple v-if="isEdit || viewOnly" style="padding-top: 20px;" :disabled="viewOnly" class="col-md-6" v-model="form.active" label="¿Activo?" :checked="form.active" name="active" checked-value="SI" unchecked-value="NO"></vue-checkbox-simple>
+      <vue-checkbox-simple v-if="isEdit || viewOnly" style="padding-top: 30px;" :disabled="viewOnly" class="col-md-6" v-model="form.active" label="¿Activo?" :checked="form.active" name="active" checked-value="SI" unchecked-value="NO"></vue-checkbox-simple>
     </b-form-row>
+
+    <template v-if="Object.keys(filtersConfig).length > 0 && form.role_id">
+      <b-form-row v-if="filtersConfig[form.role_id]['reinstatements'] == 'SI'">
+        <vue-ajax-advanced-select :disabled="viewOnly" class="col-md-12" v-model="form.filter_headquarter" :error="form.errorsFor('filter_headquarter')" :selected-object="form.multiselect_filter_headquarter" name="filter_headquarter" label="Sedes (Opcional)" placeholder="Seleccione las sedes" :url="headquartersDataUrl" :allowEmpty="true" :multiple="true" text-block="Sedes mediante las cuales sera filtrada la información que podra visualizar el usuario en el módulo de Reincorporaciones">
+            </vue-ajax-advanced-select>
+      </b-form-row>
+      <b-form-row v-if="filtersConfig[form.role_id]['legalMatrix'] == 'SI'">
+        <vue-ajax-advanced-select :disabled="viewOnly" class="col-md-12" v-model="form.filter_system_apply" :error="form.errorsFor('filter_system_apply')" :selected-object="form.multiselect_filter_system_apply" name="filter_system_apply" label="Sistemas que aplican (Opcional)" placeholder="Seleccione los sistemas" :url="systemApplyDataUrl" :allowEmpty="true" :multiple="true" text-block="Sistemas que aplican mediante los cuales sera filtrada la información que podra visualizar el usuario en el módulo de Matriz Legal">
+            </vue-ajax-advanced-select>
+      </b-form-row>
+    </template>
 
     <div class="row float-right pt-10 pr-10">
       <template>
@@ -47,6 +58,11 @@ export default {
     isEdit: { type: Boolean, default: false },
     viewOnly: { type: Boolean, default: false },
     rolesDataUrl: { type: String, default: "" },
+    headquartersDataUrl: { type: String, default: "" },
+    systemApplyDataUrl: { type: String, default: "" },
+    filtersConfig: { type: Object, default() {
+        return {};
+    }},
     user: {
       default() {
         return {
@@ -55,7 +71,9 @@ export default {
             password: '',
             document: '',
             role_id: '',
-            edit_role: true
+            edit_role: true,
+            filter_headquarter: [],
+            filter_system_apply: []
         };
       }
     }
@@ -74,12 +92,22 @@ export default {
   },
   methods: {
     submit(e) {
+
+      if (Object.keys(this.filtersConfig).length > 0 && this.form.role_id)
+      {
+        if (this.filtersConfig[this.form.role_id]['reinstatements'] == 'NO')
+          this.form.filter_headquarter.splice(0)
+
+        if (this.filtersConfig[this.form.role_id]['legalMatrix'] == 'NO')
+          this.form.filter_system_apply.splice(0)
+      }
+
       this.loading = true;
       this.form
         .submit(e.target.action)
         .then(response => {
           this.loading = false;
-          this.$router.push({ name: "administrative-users" });
+          //this.$router.push({ name: "administrative-users" });
         })
         .catch(error => {
           this.loading = false;

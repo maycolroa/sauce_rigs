@@ -7,9 +7,12 @@
     <div class="col-md">
       <b-card no-body>
         <b-card-body>
+          <loading :display="!ready"/>
             <administrative-user-form
+                v-if="ready"
                 :user="data"
                 :view-only="true"
+                :filters-config="filtersConfig"
                 :cancel-url="{ name: 'administrative-users'}"/>
         </b-card-body>
       </b-card>
@@ -19,6 +22,7 @@
 
 <script>
 import AdministrativeUserForm from '@/components/Administrative/Users/FormUserComponent.vue';
+import Loading from "@/components/Inputs/Loading.vue";
 import Alerts from '@/utils/Alerts.js';
 
 export default {
@@ -27,11 +31,14 @@ export default {
     title: 'Usuarios - Ver'
   },
   components:{
-    AdministrativeUserForm
+    AdministrativeUserForm,
+    Loading
   },
   data () {
     return {
       data: [],
+      ready: false,
+      filtersConfig: {}
     }
   },
   created(){
@@ -42,6 +49,16 @@ export default {
     .catch(error => {
         Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
         this.$router.go(-1);
+    });
+
+    axios.post(`/administration/users/filtersConfig`)
+		.then(response => {
+      this.filtersConfig = response.data;
+			this.ready = true
+		})
+		.catch(error => {
+			Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
+			this.$router.go(-1);
     });
   },
 }

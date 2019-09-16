@@ -74,7 +74,7 @@ class CheckExcel implements FromCollection, WithHeadings, WithMapping, WithColum
       {
         $regional = EmployeeRegional::query();
         $regional->company_scope = $this->company_id;
-        $regional = $regional->find($employee->employee_position_id)->name;
+        $regional = $regional->find($employee->employee_regional_id)->name;
       }
 
       if ($data->restriction_id)

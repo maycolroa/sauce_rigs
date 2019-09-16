@@ -145,23 +145,25 @@ class EmployeeHeadquarterController extends Controller
     {
         if($request->has('keyword'))
         {
+            $keyword = "%{$request->keyword}%";
+            $headquarters = EmployeeHeadquarter::selectRaw(
+                "sau_employees_headquarters.id as id,
+                sau_employees_headquarters.name as name")
+            ->join('sau_employees_regionals', 'sau_employees_regionals.id', 'sau_employees_headquarters.employee_regional_id')
+            ->where(function ($query) use ($keyword) {
+                $query->orWhere('sau_employees_headquarters.name', 'like', $keyword);
+            });
+
             if ($request->has('regional') && $request->get('regional') != '')
             {
-                $keyword = "%{$request->keyword}%";
-                $headquarters = EmployeeHeadquarter::selectRaw(
-                    "sau_employees_headquarters.id as id,
-                    sau_employees_headquarters.name as name")
-                ->join('sau_employees_regionals', 'sau_employees_regionals.id', 'sau_employees_headquarters.employee_regional_id')
-                ->where('employee_regional_id', $request->get('regional'))
-                ->where(function ($query) use ($keyword) {
-                    $query->orWhere('sau_employees_headquarters.name', 'like', $keyword);
-                })
-                ->take(30)->pluck('id', 'name');
-
-                return $this->respondHttp200([
-                    'options' => $this->multiSelectFormat($headquarters)
-                ]);
+                $headquarters->where('employee_regional_id', $request->get('regional'));
             }
+
+            $headquarters = $headquarters->take(30)->pluck('id', 'name');
+
+            return $this->respondHttp200([
+                'options' => $this->multiSelectFormat($headquarters)
+            ]);
         }
         else
         {

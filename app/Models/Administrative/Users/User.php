@@ -225,6 +225,11 @@ class User extends Authenticatable
 
     public function headquarters()
     {
-        return $this->belongsToMany('App\Models\Administrative\Headquarters\EmployeeHeadquarter', 'sau_reinc_user_headquarter');
+        return $this->belongsToMany('App\Models\Administrative\Headquarters\EmployeeHeadquarter', 'sau_reinc_user_headquarter')->withPivot('company_id');
+    }
+
+    public function systemsApply()
+    {
+        return $this->belongsToMany('App\Models\LegalAspects\LegalMatrix\SystemApply', 'sau_lm_user_system_apply')->withPivot('company_id');
     }
 }

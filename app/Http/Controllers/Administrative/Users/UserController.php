@@ -13,6 +13,7 @@ use App\Models\Administrative\Roles\Role;
 use App\Models\General\Module;
 use App\Traits\UserTrait;
 use App\Traits\ContractTrait;
+use App\Traits\PermissionTrait;
 use App\Jobs\Administrative\Users\UserExportJob;
 use Session;
 use Validator;
@@ -24,6 +25,7 @@ class UserController extends Controller
 {
     use UserTrait;
     use ContractTrait;
+    use PermissionTrait;
 
     /**
      * creates and instance and middlewares are checked
@@ -56,14 +58,26 @@ class UserController extends Controller
    {    
         if (Auth::user()->hasRole('Arrendatario') || Auth::user()->hasRole('Contratista'))
         {
-            $users = User::select('sau_users.*')
+            $users = User::select(
+                    'sau_users.id AS id',
+                    'sau_users.name AS name',
+                    'sau_users.email AS email',
+                    'sau_users.document AS document',
+                    'sau_users.document_type AS document_type',
+                    'sau_users.active AS active'
+                )
                 ->join('sau_user_information_contract_lessee', 'sau_user_information_contract_lessee.user_id', 'sau_users.id')
                 ->where('sau_user_information_contract_lessee.information_id', $this->getContractIdUser(Auth::user()->id));
         }
         else
         {
             $users = User::select(
-                'sau_users.*',
+                'sau_users.id AS id',
+                'sau_users.name AS name',
+                'sau_users.email AS email',
+                'sau_users.document AS document',
+                'sau_users.document_type AS document_type',
+                'sau_users.active AS active',
                 'sau_roles.name as role'
             )
             ->withoutGlobalScopes()
@@ -92,25 +106,63 @@ class UserController extends Controller
      */
     public function store(UserRequest $request)
     {
-        $user = $this->createUser($request);
- 
-        if ($user == $this->respondHttp500() || $user == null) {
+        DB::beginTransaction();
+
+        try
+        { 
+            $user = $this->createUser($request);
+    
+            if ($user == $this->respondHttp500() || $user == null) {
+                return $this->respondHttp500();
+            }
+
+            if (Auth::user()->hasRole('Arrendatario') || Auth::user()->hasRole('Contratista'))
+            {
+                $user->syncRoles([Auth::user()->roleUser[0]]);
+                $contract = $this->getContractUser(Auth::user()->id);
+                $contract->users()->attach($user);
+            }
+            else
+                $user->syncRoles([$request->get('role_id')]);
+
+            if ($request->has('filter_headquarter'))
+            {
+                $data = $this->builderArrayFilter($this->getDataFromMultiselect($request->filter_headquarter));
+
+                if (COUNT($data) > 0)
+                    $user->headquarters()->sync($data);
+            }
+
+            if ($request->has('filter_system_apply'))
+            {
+                $data = $this->builderArrayFilter($this->getDataFromMultiselect($request->filter_system_apply));
+
+                if (COUNT($data) > 0)
+                    $user->systemsApply()->sync($data);
+            }
+
+            DB::commit();
+
+        } catch (\Exception $e) {
+            DB::rollback();
             return $this->respondHttp500();
         }
-
-        if (Auth::user()->hasRole('Arrendatario') || Auth::user()->hasRole('Contratista'))
-        {
-            $user->syncRoles([Auth::user()->roleUser[0]]);
-            $contract = $this->getContractUser(Auth::user()->id);
-            $contract->users()->attach($user);
-        }
-        else
-            $user->syncRoles([$request->get('role_id')]);
 
         return $this->respondHttp200([
             'message' => 'Se creo el usuario'
         ]);
-        
+    }
+
+    private function builderArrayFilter($data)
+    {
+        $result = [];
+
+        foreach ($data as $value)
+        {
+            $result[$value] = ['company_id' => Session::get('company_id')];
+        }
+
+        return $result;
     }
 
     /**
@@ -142,6 +194,28 @@ class UserController extends Controller
                 $user->edit_role = false;
             else
                 $user->edit_role = true;
+
+            $headquarters = [];
+
+            foreach ($user->headquarters as $key => $value)
+            {   
+                if ($value->pivot->company_id == Session::get('company_id'))
+                    array_push($headquarters, $value->multiselect());
+            }
+
+            $user->multiselect_filter_headquarter = $headquarters;
+            $user->filter_headquarter = $headquarters;
+
+            $systemsApply = [];
+
+            foreach ($user->systemsApply as $key => $value)
+            {                
+                if ($value->pivot->company_id == Session::get('company_id'))
+                    array_push($systemsApply, $value->multiselect());
+            }
+
+            $user->multiselect_filter_system_apply = $systemsApply;
+            $user->filter_system_apply = $systemsApply;
             
             return $this->respondHttp200([
                 'data' => $user,
@@ -161,24 +235,66 @@ class UserController extends Controller
      */
     public function update(UserRequest $request, User $user)
     {
-        $user->fill($request->all());
-        
-        if(!$user->update()){
-          return $this->respondHttp500();
-        }
+        DB::beginTransaction();
 
-        if (!Auth::user()->hasRole('Arrendatario') && !Auth::user()->hasRole('Contratista'))
-        {
-            if ($request->get('edit_role') == 'true')
+        try
+        { 
+            $user->fill($request->all());
+            
+            if(!$user->update())
+                return $this->respondHttp500();
+
+            if (!Auth::user()->hasRole('Arrendatario') && !Auth::user()->hasRole('Contratista'))
             {
-                $user->roles()->detach($request->get('old_role_id'));
-                $user->roles()->attach($request->get('role_id'));
+                if ($request->get('edit_role') == 'true')
+                {
+                    $user->roles()->detach($request->get('old_role_id'));
+                    $user->roles()->attach($request->get('role_id'));
+                }
             }
+
+            if ($request->has('filter_headquarter'))
+            {
+                $data = $this->builderArrayFilter($this->getDataFromMultiselect($request->filter_headquarter));
+
+                if (COUNT($data) > 0)
+                    $user->headquarters()->sync($data);
+                else
+                    $this->deleteFilter('sau_reinc_user_headquarter', $user->id);
+            }
+            else
+                $this->deleteFilter('sau_reinc_user_headquarter', $user->id);
+
+            if ($request->has('filter_system_apply'))
+            {
+                $data = $this->builderArrayFilter($this->getDataFromMultiselect($request->filter_system_apply));
+
+                if (COUNT($data) > 0)
+                    $user->systemsApply()->sync($data);
+                else
+                    $this->deleteFilter('sau_lm_user_system_apply', $user->id);
+            }
+            else
+                $this->deleteFilter('sau_lm_user_system_apply', $user->id);
+
+            DB::commit();
+
+        } catch (\Exception $e) {
+            DB::rollback();
+            return $this->respondHttp500();
         }
         
         return $this->respondHttp200([
             'message' => 'Se actualizo el usuario'
         ]);
+    }
+
+    private function deleteFilter($table, $user_id)
+    {
+        DB::table($table)
+            ->where('company_id', Session::get('company_id'))
+            ->where('user_id', $user_id)
+            ->delete();
     }
 
     /**
@@ -334,5 +450,47 @@ class UserController extends Controller
         return $this->respondHttp200([
             'message' => 'Se actualizo su módulo favorito'
         ]);
+    }
+
+    /**
+     * Undocumented function
+     *
+     * @return Array
+     */
+    public function filtersConfig()
+    {
+        $roles = Role::get();
+        $modules = Module::whereIn('name', ['legalMatrix', 'reinstatements'])->get();
+        $mods_license = [];
+        $data = [];
+
+        foreach ($modules as $module)
+        {
+            $mods_license[$module->id] = $this->checkLicense(Session::get('company_id'), $module->id);
+        }
+
+        foreach ($roles as $role)
+        {
+            $mods = [];
+
+            foreach ($modules as $module)
+            {
+                $result = 'NO';
+
+                if ($mods_license[$module->id])
+                {
+                    if ($this->checkRolePermissionInModule($role->id, $module->id))
+                    {
+                        $result = 'SI';
+                    }
+                }
+
+                $mods[$module->name] = $result;
+            }
+
+            $data[$role->id] = $mods;
+        }
+
+        return $data;
     }
 }

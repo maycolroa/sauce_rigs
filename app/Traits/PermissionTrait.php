@@ -218,4 +218,38 @@ trait PermissionTrait
 
         return $data;
     }
+
+    /**
+     * Returns true if the company that sends the mail has an active license 
+     * for the module from which the request is made
+     *
+     * @return Booleam
+     */
+    private function checkLicense($company_id, $module_id)
+    {
+        $licenses = License::
+              join('sau_license_module', 'sau_license_module.license_id', 'sau_licenses.id')
+            ->whereRaw('? BETWEEN started_at AND ended_at', [date('Y-m-d')])
+            ->where('sau_license_module.module_id', $module_id);
+
+        $licenses->company_scope = $company_id;
+
+        return $licenses->exists();
+    }
+
+    /**
+     * Returns true if the company that sends the mail has an active license 
+     * for the module from which the request is made
+     *
+     * @return Booleam
+     */
+    private function checkRolePermissionInModule($role_id, $module_id)
+    {
+        $permissions = Permission::
+              join('sau_permission_role', 'sau_permission_role.permission_id', 'sau_permissions.id')
+            ->where('sau_permissions.module_id', $module_id)
+            ->where('sau_permission_role.role_id', $role_id);
+
+        return $permissions->exists();
+    }
 }
