@@ -459,7 +459,7 @@ class UserController extends Controller
      */
     public function filtersConfig()
     {
-        $roles = Role::get();
+        $roles = Role::conditionGeneral()->get();
         $modules = Module::whereIn('name', ['legalMatrix', 'reinstatements'])->get();
         $mods_license = [];
         $data = [];
