@@ -11,7 +11,8 @@
                 </b-col>
                 <b-col cols="3">
                     <filter-danger-matrix-report-history
-                        :key="`filter-${isLoading}`"
+                        ref="filter"
+                        :key="`filter-${keyFilter}`"
                         v-model="filters" 
                         configName="industrialsecure-dangermatrix-report-history" 
                         :isDisabled="isLoading"
@@ -87,7 +88,8 @@ export default {
             empty: {
                 month: false
             },
-            urlMultiselect: '/selects/dmReportMultiselect'
+            urlMultiselect: '/selects/dmReportMultiselect',
+            keyFilter: true
         }
     },
     created(){
@@ -123,7 +125,11 @@ export default {
         },
         'month'() {
             if (this.year && this.month)
+            {
+                this.keyFilter = !this.keyFilter
+                this.$refs.filter.cleanFilters()
                 this.fetch()
+            }
         }
     },
     methods: {
