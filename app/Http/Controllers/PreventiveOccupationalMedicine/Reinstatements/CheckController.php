@@ -183,7 +183,9 @@ class CheckController extends Controller
     {
         try
         {
-            $check = Check::findOrFail($id);
+            $check = Check::select('sau_reinc_checks.*')
+                ->join('sau_employees', 'sau_employees.id', 'sau_reinc_checks.employee_id')
+                ->findOrFail($id);
 
             return $this->respondHttp200([
                 'data' => $this->getCheckView($check)
@@ -200,8 +202,12 @@ class CheckController extends Controller
      * @param  Check  $check
      * @return \Illuminate\Http\Response
      */
-    public function update(CheckRequest $request, Check $check)
+    public function update(CheckRequest $request, $id)
     {
+        $check = Check::select('sau_reinc_checks.*')
+                ->join('sau_employees', 'sau_employees.id', 'sau_reinc_checks.employee_id')
+                ->findOrFail($id);
+
         $this->validate($request, CheckManager::getProcessRules($request));
         
         try
@@ -243,8 +249,12 @@ class CheckController extends Controller
      * @param  Check  $check
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Check $check)
+    public function destroy($id)
     {
+        $check = Check::select('sau_reinc_checks.*')
+                ->join('sau_employees', 'sau_employees.id', 'sau_reinc_checks.employee_id')
+                ->findOrFail($id);
+
         if (!$check->delete())
             return $this->respondHttp500();
         
@@ -361,14 +371,22 @@ class CheckController extends Controller
         return $check;
     }
 
-    public function downloadOriginFile(Check $check)
+    public function downloadOriginFile($id)
     {
-      return Storage::disk('public')->download('preventiveOccupationalMedicine/reinstatements/files/'.Session::get('company_id').'/'.$check->process_origin_file);
+        $check = Check::select('sau_reinc_checks.*')
+                ->join('sau_employees', 'sau_employees.id', 'sau_reinc_checks.employee_id')
+                ->findOrFail($id);
+
+        return Storage::disk('public')->download('preventiveOccupationalMedicine/reinstatements/files/'.Session::get('company_id').'/'.$check->process_origin_file);
     }
 
-    public function downloadPclFile(Check $check)
+    public function downloadPclFile($id)
     {
-      return Storage::disk('public')->download('preventiveOccupationalMedicine/reinstatements/files/'.Session::get('company_id').'/'.$check->process_pcl_file);
+        $check = Check::select('sau_reinc_checks.*')
+                ->join('sau_employees', 'sau_employees.id', 'sau_reinc_checks.employee_id')
+                ->findOrFail($id);
+
+        return Storage::disk('public')->download('preventiveOccupationalMedicine/reinstatements/files/'.Session::get('company_id').'/'.$check->process_pcl_file);
     }
 
     public function generateTracing(Request $request)
@@ -524,6 +542,7 @@ class CheckController extends Controller
         $checks = Check::selectRaw(
             'DISTINCT YEAR(sau_reinc_checks.created_at) AS year'
         )
+        ->join('sau_employees', 'sau_employees.id', 'sau_reinc_checks.employee_id')
         ->orderBy('year')
         ->get()
         ->pluck('year', 'year');
@@ -536,8 +555,12 @@ class CheckController extends Controller
      * @param  Check  $check
      * @return \Illuminate\Http\Response
      */
-    public function toggleState(Request $request, Check $check)
+    public function toggleState(Request $request, $id)
     {
+        $check = Check::select('sau_reinc_checks.*')
+                ->join('sau_employees', 'sau_employees.id', 'sau_reinc_checks.employee_id')
+                ->findOrFail($id);
+
         $newState = $check->isOpen() ? "CERRADO" : "ABIERTO";
         $data = ['state' => $newState];
 

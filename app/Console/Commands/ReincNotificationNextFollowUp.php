@@ -6,6 +6,7 @@ use Illuminate\Console\Command;
 use App\Models\Administrative\Users\User;
 use App\Models\PreventiveOccupationalMedicine\Reinstatements\Check;
 use App\Facades\Mail\Facades\NotificationMail;
+use DB;
 
 class ReincNotificationNextFollowUp extends Command
 {
@@ -40,57 +41,63 @@ class ReincNotificationNextFollowUp extends Command
      */
     public function handle()
     {
-        $users = User::select('sau_users.email')
-                    ->active()
-                    ->join('sau_company_user', 'sau_company_user.user_id', 'sau_users.id')
-                    ->where('sau_company_user.company_id', $company->id)
-                    ->with('headquarters')
-                    ->get();
+        $companies = DB::table('sau_reinc_checks')
+            ->selectRaw('DISTINCT company_id AS id')
+            ->get();
 
-        $users->map(function($user) use ($company)
+        foreach ($companies as $company)
         {
-            $data = Check::select(
-                'sau_reinc_checks.disease_origin', 
-                'sau_reinc_checks.next_date_tracking', 
-                'sau_employees.identification', 
-                'sau_employees.name'
+            $users = User::select('sau_users.*')
+                        ->active()
+                        ->join('sau_company_user', 'sau_company_user.user_id', 'sau_users.id')
+                        ->where('sau_company_user.company_id', $company->id)
+                        ->get();
+
+            $users->map(function($user) use ($company)
+            {
+                $data = Check::select(
+                    'sau_reinc_checks.disease_origin', 
+                    'sau_reinc_checks.next_date_tracking', 
+                    'sau_employees.identification', 
+                    'sau_employees.name'
                 )
                 ->join('sau_employees', 'sau_employees.id', 'sau_reinc_checks.employee_id')
-                ->where('sau_reinc_checks.state', 'ABIERTO')
+                ->isOpen()
                 ->whereRaw('CURDATE() = DATE_ADD(sau_reinc_checks.next_date_tracking, INTERVAL -3 DAY)');
-    
-            $data->user = $user->id;
-            $data->company_scope = $company->id;
-            $data = $data->get();
+        
+                $data->user = $user->id;
+                $data->company_scope = $company->id;
+                $data = $data->get();
 
-            if (COUNT($data) > 0)
-            {
-                $table = [];
+                if (COUNT($data) > 0)
+                {
+                    $table = [];
 
-                        foreach ($data as $value)
-                        {
-                            array_push($table, [
-                                'Identificacion' => $value->identification,
-                                'Nombre' => $value->name,
-                                'Origen de enfermedad' => $value->disease_origin,
-                                'Proximo seguimiento' => $value->next_day_tracking
-                            ]);
-                        }
+                            foreach ($data as $value)
+                            {
+                                array_push($table, [
+                                    'Identificacion' => $value->identification,
+                                    'Nombre' => $value->name,
+                                    'Origen de enfermedad' => $value->disease_origin,
+                                    'Proximo seguimiento' => $value->next_day_tracking
+                                ]);
+                            }
 
-                        NotificationMail::
-                            subject('Reincorporaciones: Reportes con próximos seguimientos')
-                            ->view('notification')
-                            ->recipients($user)
-                            ->message('Listado de personas con reportes que estan a 3 dias para su próximo seguimmiento ')
-                            ->module('reinstatements')
-                            ->event('Tarea programada: ReincNotificationNextFollowUp')
-                            ->table($table)
-                            ->company($company->id)
-                            ->send();
+                            NotificationMail::
+                                subject('Reincorporaciones: Reportes con próximos seguimientos')
+                                ->view('notification')
+                                ->recipients($user)
+                                ->message('Listado de personas con reportes que estan a 3 dias para su próximo seguimmiento ')
+                                ->module('reinstatements')
+                                ->event('Tarea programada: ReincNotificationNextFollowUp')
+                                ->table($table)
+                                ->company($company->id)
+                                ->send();
 
-                        \Log::info($data);
-                \Log::info($data);
-            }
-        });
+                            \Log::info($data);
+                    \Log::info($data);
+                }
+            });
+        }
     }
 }
