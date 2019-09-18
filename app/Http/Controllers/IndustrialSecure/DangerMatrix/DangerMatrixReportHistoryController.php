@@ -202,7 +202,9 @@ class DangerMatrixReportHistoryController extends Controller
                 $column = $request->column;
 
                 $keyword = "%{$request->keyword}%";
-                $data = ReportHistory::selectRaw("DISTINCT $column");
+                $data = ReportHistory::selectRaw("DISTINCT $column")
+                ->where($column, "<>", "")
+                ->whereNotNull($column);
 
                 if ($request->has('year'))
                     $data->where('year', $request->year);
@@ -219,6 +221,19 @@ class DangerMatrixReportHistoryController extends Controller
                     foreach ($data as $value)
                     {
                         $new_data[trans("months.$value")] = $value;
+                    }
+
+                    $data = collect($new_data);
+                }
+
+                if ($request->has('tag') && $request->tag)
+                {
+                    $data = array_unique(explode(",", implode(",", $data->toArray())));
+                    $new_data = [];
+
+                    foreach ($data as $value)
+                    {
+                        $new_data[$value] = $value;
                     }
 
                     $data = collect($new_data);
