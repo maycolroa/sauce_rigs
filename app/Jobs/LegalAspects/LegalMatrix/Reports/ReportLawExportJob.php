@@ -39,7 +39,7 @@ class ReportLawExportJob implements ShouldQueue
     public function handle()
     {
       $nameExcel = 'export/1/matriz_legal_reporte_'.date("YmdHis").'.xlsx';
-      Excel::store(new ReportLawExcel($this->company_id, $this->filters),$nameExcel,'public',\Maatwebsite\Excel\Excel::XLSX);
+      Excel::store(new ReportLawExcel($this->company_id, $this->user, $this->filters),$nameExcel,'public',\Maatwebsite\Excel\Excel::XLSX);
       
       $paramUrl = base64_encode($nameExcel);
       

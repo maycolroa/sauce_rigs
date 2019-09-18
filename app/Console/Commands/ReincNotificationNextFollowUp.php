@@ -93,9 +93,6 @@ class ReincNotificationNextFollowUp extends Command
                                 ->table($table)
                                 ->company($company->id)
                                 ->send();
-
-                            \Log::info($data);
-                    \Log::info($data);
                 }
             });
         }
