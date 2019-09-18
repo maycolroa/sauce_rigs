@@ -106,7 +106,7 @@ export default {
                             this.$set(this.filters[item.key], 'data', [])
                             this.$set(this.filtersSelected, item.key, [])
                             this.$set(this.filtersSelected.filtersType, item.key, 'IN')
-                            this.fetchFilterSelect(item.key, item.url, item.column)
+                            this.fetchFilterSelect(item.key, item.url, item.column, item.tag)
                         }
                         else if (item.type == 'dateRange')
                         {
@@ -164,9 +164,9 @@ export default {
         }
     },
     methods: {
-        fetchFilterSelect(key, url, column)
+        fetchFilterSelect(key, url, column, tag)
         {
-            let postData = Object.assign({}, {column: column}, {year: this.year}, {month: this.month});
+            let postData = Object.assign({}, {column: column}, {tag: tag}, {year: this.year}, {month: this.month});
             GlobalMethods.getDataMultiselect(url, postData)
             .then(response => {
                 this.filters[key].data = response;

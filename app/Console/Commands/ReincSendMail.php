@@ -48,11 +48,10 @@ class ReincSendMail extends Command
 
         foreach ($companies as $company)
         {
-            $users = User::select('sau_users.email')
+            $users = User::select('sau_users.*')
                             ->active()
                             ->join('sau_company_user', 'sau_company_user.user_id', 'sau_users.id')
                             ->where('sau_company_user.company_id', $company->id)
-                            ->with('headquarters')
                             ->get();
 
             $users->map(function($user) use ($company)
@@ -66,6 +65,7 @@ class ReincSendMail extends Command
                     DB::raw('MIN(sau_reinc_medical_monitorings.set_at) AS medical_monitoring'),
                     DB::raw('MIN(sau_reinc_labor_monitorings.set_at) AS laboral_monitoring')
                 )
+                ->isOpen()
                 ->join('sau_employees', 'sau_employees.id', 'sau_reinc_checks.employee_id')
                 ->leftJoin('sau_reinc_medical_monitorings', 'sau_reinc_medical_monitorings.check_id', 'sau_reinc_checks.id')
                 ->leftJoin('sau_reinc_labor_monitorings', 'sau_reinc_labor_monitorings.check_id', 'sau_reinc_checks.id')
@@ -121,12 +121,10 @@ class ReincSendMail extends Command
                             ->company($company->id)
                             ->send();
 
-                        \Log::info($data);
+                        //\Log::info($data);
                     }     
                 });
         }
-
-        //$users = User::where('sec_company_id', $this->getValueFromEnvFile('COMPANY_ID'))->with('headquarters')->get();
     }
 
     public static function getSqlWithBinding(Builder $query): string 

@@ -1,7 +1,9 @@
 @component('mail::message')
 
-@if(isset($mail->with['company']))
-<h2>{{ $mail->with['company'] }}</h2>
+@if(isset($mail->with['user']))
+<h2>Hola {{ $mail->with['user'] }}</h2>
+@else
+<h2>Hola</h2>
 @endif
 
 @if(isset($mail->message))
