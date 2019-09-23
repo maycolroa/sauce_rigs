@@ -36,7 +36,7 @@
 							<!-- NO CUMPLE -->
 							<b-btn v-if="item.qualification == 'NC'" @click="showModal(`modalPlan${index}`)" variant="primary"><span class="lnr lnr-bookmark"></span> Plan de acción</b-btn>
 
-							<b-modal v-if="item.qualification == 'NC'" :ref="`modalPlan${index}`" :hideFooter="true" :id="`modals-default-${index+1}`" class="modal-top" size="lg" @hidden="saveQualification(index)">
+							<b-modal v-if="item.qualification == 'NC'" :ref="`modalPlan${index}`" :hideFooter="true" :id="`modals-default-${index+1}`" class="modal-top" size="lg">
 								<div slot="modal-title">
 									Plan de acción <span class="font-weight-light">Contratistas</span><br>
 									<small class="text-muted">Crea planes de acción para tu justificación.</small>
@@ -62,7 +62,7 @@
 							<!--CUMPLE -->
 							<b-btn v-if="item.qualification == 'C'" @click="showModal(`modalFile${index}`)" variant="primary"><span class="lnr lnr-bookmark"></span> Adjuntar archivos</b-btn>
 
-							<b-modal v-if="item.qualification == 'C'" :ref="`modalFile${index}`" :hideFooter="true" :id="`modals-file-${index+1}`" class="modal-top" size="lg" @hidden="saveQualification(index)">
+							<b-modal v-if="item.qualification == 'C'" :ref="`modalFile${index}`" :hideFooter="true" :id="`modals-file-${index+1}`" class="modal-top" size="lg">
 								<div slot="modal-title">
 									Subir Archivos <span class="font-weight-light">Contratistas</span><br>
 									<small class="text-muted">Selecciona archivos pdf's para este item.</small>
@@ -100,6 +100,7 @@
 		<div class="row float-right pt-10 pr-10" style="padding-bottom: 40px;">
 			<template>
 				<b-btn variant="default" :to="cancelUrl" :disabled="loading">Atras</b-btn>&nbsp;&nbsp;
+				<b-btn type="submit" v-if="!viewOnly" :disabled="loading" variant="primary">Guardar</b-btn>
 			</template>
 		</div>
 	</b-form>
@@ -166,13 +167,13 @@ export default {
 	watch: {
 		items() {
 			this.loading = false;
-			this.form = Form.makeFrom(this.items, this.method, false, false);
+			this.form = Form.makeFrom(this.items, this.method);
 		}
 	},
 	data() {
 		return {
 			loading: this.isEdit,
-			form: Form.makeFrom(this.items, this.method, false, false),
+			form: Form.makeFrom(this.items, this.method),
 		};
 	},
 	methods: {
@@ -243,8 +244,6 @@ export default {
 
 				this.form.items[index].files = [];
 			}
-
-			this.saveQualification(index)
 		},
 		existError(index) {
 			let keys = Object.keys(this.form.errors.errors)
@@ -264,53 +263,37 @@ export default {
 
 			return result
 		},
-		saveQualification(index)
-    {
-        this.loading = true;
-        let item = this.form.items[index]
-        
-				let data = new FormData();
-				data.append('id', item.id);
-				data.append('category_id', item.category_id);
-				data.append('item_name', item.item_name);
-				data.append('criterion_description', item.criterion_description);
-				data.append('verification_mode', item.verification_mode);
-				data.append('percentage_weight', item.percentage_weight);
-				data.append('created_at', item.created_at);
-				data.append('updated_at', item.updated_at);
-				data.append('name', item.name);
-				data.append('activities_defined', JSON.stringify(item.activities_defined));
-				data.append('qualification', item.qualification);
-				data.append('files', JSON.stringify(item.files));
-				data.append('actionPlan', JSON.stringify(item.actionPlan));
-				data.append(`items[${index}]`, JSON.stringify({ files: item.files, actionPlan: item.actionPlan }));
-				data.append('delete', JSON.stringify(this.form.delete));
+		submit(e) {
+			this.loading = true;
+			let data = new FormData();
+			data.append('delete', JSON.stringify(this.form.delete));
 
-				if(typeof item.files !== 'undefined')
+			this.form.items.forEach((element, index) => {
+				if(typeof element.files !== 'undefined')
 				{
-					if(item.files.length > 0)
+					if(element.files.length > 0)
 					{
-						item.files.forEach((file, keyFile) => {
-							data.append(`files_binary[${keyFile}]`, file.file);
+						element.filesIndex = `files_${index}`;
+						element.files.forEach((file, index2) => {
+							data.append(`files_${index}[${index2}]`, file.file);
 						});
 					}
 				}
+				
+				element = JSON.stringify(element);
+				data.append('items[]', element);
+			});
 
-        this.form.resetError()
-        this.form
-          .submit(this.url, false, data)
-          .then(response => {
-            _.forIn(response.data.data, (value, key) => {
-              item[key] = value
-            })
-
-            this.loading = false;
-            
-          })
-          .catch(error => {
-            this.loading = false;
-          });
-    }
+			this.form
+				.submit(e.target.action, false, data)
+				.then(response => {
+					this.loading = false;
+					this.$router.push({ name: "legalaspects-contracts" });
+				})
+				.catch(error => {
+					this.loading = false;
+				});
+		}
 	}
 };
 </script>
