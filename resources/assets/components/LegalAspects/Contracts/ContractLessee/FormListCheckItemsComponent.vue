@@ -266,7 +266,9 @@ export default {
 		},
 		saveQualification(index)
     {
-        this.loading = true;
+			if (!this.viewOnly)
+      {
+				this.loading = true;
         let item = this.form.items[index]
         
 				let data = new FormData();
@@ -310,7 +312,8 @@ export default {
           .catch(error => {
             this.loading = false;
           });
-    }
+			}
+		}
 	}
 };
 </script>

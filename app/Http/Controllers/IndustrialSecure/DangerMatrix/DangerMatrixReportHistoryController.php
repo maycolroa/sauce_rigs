@@ -226,7 +226,7 @@ class DangerMatrixReportHistoryController extends Controller
                     $data = collect($new_data);
                 }
 
-                if ($request->has('tag') && $request->tag)
+                if ($request->has('tag') && $request->tag == "true")
                 {
                     $data = array_unique(explode(",", implode(",", $data->toArray())));
                     $new_data = [];
