@@ -161,6 +161,11 @@ Route::middleware(['auth'])->group(function () {
           Route::post('sectionCategoryItems', 'LegalAspects\Contracs\SectionCategoryItemController@multiselect');
         });
 
+        Route::prefix('industrialSecurity')->group(function () {
+          Route::post('conditions', 'IndustrialSecure\Inspections\ConditionReportController@multiselectConditions');
+          Route::post('rates', 'General\MultiSelectRadioController@inspectRates');
+        });
+
         Route::prefix('legalMatrix')->group(function () {
           Route::post('interests', 'LegalAspects\LegalMatrix\InterestController@multiselect');
           Route::post('interestsCompany', 'LegalAspects\LegalMatrix\InterestController@multiselectCompany');
@@ -278,6 +283,16 @@ Route::middleware(['auth'])->group(function () {
       Route::ApiResource('dangersMatrix', 'IndustrialSecure\DangerMatrix\DangerMatrixController');
 
       Route::post('dangersMatrixHistory/data', 'IndustrialSecure\DangerMatrix\DangerMatrixHistoryController@data');
+    
+      Route::prefix('inspections')->group(function () {
+
+        Route::ApiResource('conditionsReports', 'IndustrialSecure\Inspections\ConditionReportController');
+        Route::post('conditionsReports/data', 'IndustrialSecure\Inspections\ConditionReportController@data');
+        Route::post('conditionsReports/export', 'IndustrialSecure\Inspections\ConditionReportController@export');
+        Route::post('conditionsReports/image', 'IndustrialSecure\Inspections\ConditionReportController@storeImage');
+        Route::post('conditionsReports/image/download', 'IndustrialSecure\Inspections\ConditionReportController@downloadImage');
+      
+      });
 
       Route::prefix('tags')->group(function () {
         Route::post('administrativeControls/data', 'IndustrialSecure\Tags\AdministrativeControlsController@data');

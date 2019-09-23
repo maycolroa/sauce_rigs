@@ -454,4 +454,64 @@ export default [
         filterColumns: true,
     }
 },
+{
+    name: 'inspections-conditionsReports',
+    fields: [
+        { name: 'sau_inspect_conditions_reports.id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true },
+        { name: 'sau_employees_headquarters.name', data: 'headquarter', title: 'Sede', sortable: true, searchable: true, detail: false, key: false },
+        { name: 'sau_users.name', data: 'user_name', title: 'Usuario', sortable: true, searchable: true, detail: false, key: false },
+        { name: 'sau_inspect_conditions.description', data: 'condition', title: 'Condicion', sortable: true, searchable: true, detail: false, key: false },
+        { name: 'sau_inspect_conditions_type.description', data: 'type', title: 'Tipo de condicion', sortable: true, searchable: true, detail: false, key: false },
+        { name: 'sau_inspect_conditions_reports.rate', data: 'rate', title: 'Severidad', sortable: true, searchable: true, detail: false, key: false },
+        { name: 'sau_inspect_conditions_reports.created_at', data: 'created_at', title: 'Fecha de creacion', sortable: true, searchable: true, detail: false, key: false },
+        { name: '', data: 'controlls', title: 'Controles', sortable: false, searchable: false, detail: false, key: false }
+    ],
+    'controlls': [
+        {
+            type: 'push',
+            buttons: [{
+                config: {
+                    color: 'outline-success',
+                    borderless: true,
+                    icon: 'ion ion-md-create',
+                    title: 'Editar'
+                },
+                data: {
+                    routePush: { name: 'inspections-conditionsReports-edit' },
+                    id: 'id',
+                },
+                permission: 'inspect_conditionsReports_u'
+                },
+                {
+                config: {
+                    color: 'outline-info',
+                    borderless: true,
+                    icon: 'ion ion-md-eye',
+                    title: 'Ver'
+                },
+                data: {
+                    routePush: { name: 'inspections-conditionsReports-view' },
+                    id: 'id',
+                },
+                permission: 'inspect_conditionsReports_r'
+            }],
+        },
+        {
+            type: 'base',
+            buttons: [{
+            name: 'delete',
+            data: {
+                action: '/industrialSecurity/inspections/conditionsReports/',
+                id: 'id',
+                messageConfirmation: 'Esta seguro de borrar el reporte'
+            },
+            permission: 'inspect_conditionsReports_d'
+            }],
+        },
+    ],
+    configuration: {
+        urlData: '/industrialSecurity/inspections/conditionsReports/data',
+        filterColumns: true,
+    }
+},
 ];
