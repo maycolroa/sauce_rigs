@@ -159,6 +159,23 @@
                         "display_name": "Matriz de peligro - exportar reporte"
                     }
                 ]
+            },
+            {
+                "name": "inspections",
+                "permissions": [
+                    {
+                        "name": "inspect_conditionsReports_r",
+                        "display_name": "Inspecciones - ver reportes condiciones"
+                    },
+                    {
+                        "name": "inspect_conditionsReports_u",
+                        "display_name": "Inspecciones - editar reportes condiciones"
+                    },
+                    {
+                        "name": "inspect_conditionsReports_d",
+                        "display_name": "Inspecciones - eliminar reportes condiciones"
+                    }
+                ]
             }
         ]
     },

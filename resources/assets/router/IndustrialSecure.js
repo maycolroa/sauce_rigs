@@ -186,6 +186,36 @@ export default [{
           component: () =>
             import('@/views/IndustrialSecure/dangerMatrix/indexTags')
         }
+      ]),
+      {
+        name: 'industrialsecure-inspections',
+        path: 'inspections',
+        component: () => import('@/views/IndustrialSecure/inspections/index')
+      },
+      ...middleware({ 'check-permission': 'inspect_conditionsReports_r' }, [
+        {
+          name: 'inspections-conditionsReports',
+          path: 'inspections/conditionsReports',
+          component: () =>
+              import('@/views/IndustrialSecure/inspections/conditionsReports/index')
+        }
+      ]),
+      ...middleware({ 'check-permission': 'inspect_conditionsReports_r' }, [
+        {
+          name: 'inspections-conditionsReports-view',
+          path: 'inspections/conditionsReports/view',
+          component: () =>
+              import('@/views/IndustrialSecure/inspections/conditionsReports/view')
+        }
+      ]),
+      ...middleware({ 'check-permission': 'inspect_conditionsReports_u' }, [
+        {
+          name: 'inspections-conditionsReports-edit',
+          path: 'inspections/conditionsReports/edit',
+          component: () =>
+              import('@/views/IndustrialSecure/inspections/conditionsReports/edit')
+        }
       ])
+
     ]
   }]
