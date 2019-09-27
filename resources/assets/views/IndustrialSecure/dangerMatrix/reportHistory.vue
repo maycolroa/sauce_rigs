@@ -41,7 +41,7 @@
                                 <tbody>
                                     <tr v-for="(row, index) in information" :key="index">
                                         <td v-for="(col, index2) in row" :key="index2" :class="`bg-${col.color}`">
-                                            <b-btn @click="fetchTable(col.row, col.col, col.label, col.count)" style="width: 100%;" :variant="col.color">{{ col.label }} <b-badge variant="light">{{ col.count }}</b-badge></b-btn>
+                                            <b-btn style="width: 100%;" :variant="col.color">{{ col.label }} <b-badge variant="light">{{ col.count }}</b-badge></b-btn>
                                         </td>
                                     </tr>
                                 </tbody>

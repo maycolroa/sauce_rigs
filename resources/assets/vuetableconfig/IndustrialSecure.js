@@ -514,4 +514,79 @@ export default [
         filterColumns: true,
     }
 },
+{
+    name: 'dangerousconditions-inspections',
+    fields: [
+        { name: 'sau_ph_inspections.id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true },
+        { name: 'sau_ph_inspections.name', data: 'name', title: 'Nombre', sortable: true, searchable: true, detail: false, key: false },
+        { name: 'sau_ph_inspections.state', data: 'state', title: '¿Activa?', sortable: true, searchable: true, detail: false, key: false },
+        { name: 'sau_ph_inspections.created_at', data: 'created_at', title: 'Fecha de creación', sortable: true, searchable: true, detail: false, key: false },
+        { name: '', data: 'controlls', title: 'Controles', sortable: false, searchable: false, detail: false, key: false },
+    ],
+    'controlls': [{
+          type: 'push',
+          buttons: [{
+            config: {
+                color: 'outline-success',
+                borderless: true,
+                icon: 'ion ion-md-create',
+                title: 'Editar'
+            },
+            data: {
+                routePush: { name: 'dangerousconditions-inspections-edit' },
+                id: 'id',
+            },
+            permission: 'ph_inspections_u'
+          }, {
+            config: {
+                color: 'outline-info',
+                borderless: true,
+                icon: 'ion ion-md-eye',
+                title: 'Ver'
+            },
+            data: {
+                routePush: { name: 'dangerousconditions-inspections-view' },
+                id: 'id',
+            },
+            permission: 'ph_inspections_r'
+          }, {
+            config: {
+                color: 'outline-success',
+                borderless: true,
+                icon: 'ion ion-md-create',
+                title: 'Clonar'
+            },
+            data: {
+                routePush: { name: 'dangerousconditions-inspections-clone' },
+                id: 'id',
+            },
+            permission: 'ph_inspections_c'
+          },]
+      },
+      {
+        type: 'base',
+        buttons: [
+            {
+                name: 'switchStatus',
+                config: {
+                    color: 'outline-danger',
+                    borderless: true,
+                    icon: 'fas fa-sync',
+                    title: 'Cambiar Estado'
+                },
+                data: {
+                    action: '/industrialSecurity/dangerousConditions/inspection/switchStatus/',
+                    id: 'id',
+                    messageConfirmation: 'Esta seguro de querer cambiar el estado de __name__'
+                },
+                permission: 'ph_inspections_u'
+            }
+        ],
+      }],
+    configuration: {
+        urlData: '/industrialSecurity/dangerousConditions/inspection/data',
+        filterColumns: true,
+        //configNameFilter: 'legalaspects-contractor'
+    }
+},
 ];
