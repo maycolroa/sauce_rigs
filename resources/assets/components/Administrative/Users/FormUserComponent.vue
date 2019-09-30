@@ -107,7 +107,7 @@ export default {
         .submit(e.target.action)
         .then(response => {
           this.loading = false;
-          //this.$router.push({ name: "administrative-users" });
+          this.$router.push({ name: "administrative-users" });
         })
         .catch(error => {
           this.loading = false;
