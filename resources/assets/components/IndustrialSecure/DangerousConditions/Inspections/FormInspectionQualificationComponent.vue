@@ -108,6 +108,52 @@
                                           <b-btn variant="primary" @click="hideModal(`modalPlan${index}-${index2}`)">Cerrar</b-btn>
                                         </div>
                                       </b-modal>
+
+                                       <!-- Imagenes -->
+                                      <b-btn v-if="!viewOnly" @click="showModal(`modalImages${index}-${index2}`)" variant="outline-success icon-btn borderless" size="xs" v-b-tooltip.top title="Ver Imagenes"><span class="ion ion-md-image"></span></b-btn>
+
+                                      <b-modal :ref="`modalImages${index}-${index2}`" :hideFooter="true" :id="`modals-default-${index+1}${index2}`" class="modal-top" size="lg">
+                                        <div slot="modal-title">
+                                          Imagenes
+                                        </div>
+
+                                        <b-card bg-variant="transparent"  title="" class="mb-3 box-shadow-none">
+                                          <b-row style="padding-bottom: 35px;">
+                                            <b-col>
+                                              <blockquote class="blockquote text-center">
+                                                <p class="mb-0">Imagen 1</p>
+                                              </blockquote>
+                                              <form-image
+                                                :url="`/industrialSecurity/dangerousConditions/inspection/qualification/saveImage`"
+                                                :urlDownload="`/industrialSecurity/dangerousConditions/inspection/qualification/downloadImage/${item.id_item_qualification}/photo_1`"
+                                                column="photo_1"
+                                                :id="item.id_item_qualification"
+                                                :image="item.photo_1"
+                                                :path="item.path_1"
+                                                :old="item.old_1"/>
+                                            </b-col>
+                                          </b-row>
+                                          <b-row>
+                                            <b-col>
+                                              <blockquote class="blockquote text-center">
+                                                <p class="mb-0">Imagen 2</p>
+                                              </blockquote>
+                                              <form-image
+                                                :url="`/industrialSecurity/dangerousConditions/inspection/qualification/saveImage`"
+                                                :urlDownload="`/industrialSecurity/dangerousConditions/inspection/qualification/downloadImage/${item.id_item_qualification}/photo_2`"
+                                                column="photo_2"
+                                                :id="item.id_item_qualification"
+                                                :image="item.photo_2"
+                                                :path="item.path_2"
+                                                :old="item.old_2"/>
+                                            </b-col>
+                                          </b-row>
+                                        </b-card>
+                                        <br>
+                                        <div class="row float-right pt-12 pr-12y">
+                                          <b-btn variant="primary" @click="hideModal(`modalImages${index}-${index2}`)">Cerrar</b-btn>
+                                        </div>
+                                      </b-modal>
                                     </td>
                                     <td style="padding: 0px;">
                                       <vue-textarea :disabled="true" class="col-md-12" v-model="form.themes[index].items[index2].description" label="" name="description" placeholder="Descripción" rows="1"></vue-textarea>
@@ -157,6 +203,7 @@ import VueTextarea from "@/components/Inputs/VueTextarea.vue";
 import ActionPlanComponent from '@/components/CustomInputs/ActionPlanComponent.vue';
 import Alerts from '@/utils/Alerts.js';
 import InformationGeneral from "./InformationGeneral.vue";
+import FormImage from '../FormImageComponent.vue';
 
 export default {
   components: {
@@ -165,7 +212,8 @@ export default {
     PerfectScrollbar,
     VueTextarea,
     ActionPlanComponent,
-    InformationGeneral
+    InformationGeneral,
+    FormImage
   },
   props: {
     url: { type: String },

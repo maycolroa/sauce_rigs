@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Vuetable\Facades\Vuetable;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 use App\Models\IndustrialSecure\DangerousConditions\Inspections\Inspection;
 use App\Models\IndustrialSecure\DangerousConditions\Inspections\InspectionSection;
 use App\Models\IndustrialSecure\DangerousConditions\Inspections\InspectionSectionItem;
@@ -16,6 +17,7 @@ use App\Models\Administrative\Areas\EmployeeArea;
 use App\Http\Requests\IndustrialSecure\DangerousConditions\Inspections\SaveQualificationRequest;
 use App\Facades\ActionPlans\Facades\ActionPlan;
 use Carbon\Carbon;
+use Validator;
 use Session;
 use DB;
 
@@ -129,6 +131,12 @@ class InspectionQualificationController extends Controller
                     $itemRow->put('description', $item->item_name);
                     $itemRow->put('qualification', $item->qualification);
                     $itemRow->put('find', $item->find);
+                    $itemRow->put('photo_1', $item->photo_1);
+                    $itemRow->put('old_1', $item->photo_1);
+                    $itemRow->put('path_1', Storage::disk('public')->url('industrialSecure/dangerousConditions/inspections/images/'. $item->photo_1));
+                    $itemRow->put('photo_2', $item->photo_2);
+                    $itemRow->put('old_2', $item->photo_2);
+                    $itemRow->put('path_2', Storage::disk('public')->url('industrialSecure/dangerousConditions/inspections/images/'. $item->photo_2));
                     $itemRow->put('actionPlan', ActionPlan::model($item)->prepareDataComponent());
                     $items->push($itemRow);
                 }
@@ -186,5 +194,63 @@ class InspectionQualificationController extends Controller
             DB::rollback();
             return $this->respondHttp500();
         }
+    }
+
+    public function saveImage(Request $request)
+    {
+        Validator::make($request->all(), [
+            "image" => [
+                function ($attribute, $value, $fail)
+                {
+                    if ($value && !is_string($value) && 
+                        $value->getClientMimeType() != 'image/png' && 
+                        $value->getClientMimeType() != 'image/jpg' &&
+                        $value->getClientMimeType() != 'image/jpeg')
+
+                        $fail('Imagen debe ser PNG ó JPG ó JPEG');
+                },
+            ]
+        ])->validate();
+
+        $qualification = InspectionItemsQualificationAreaLocation::findOrFail($request->id);
+        $data = $request->all();
+        $picture = $request->column;
+
+        if ($request->image != $qualification->$picture)
+        {
+            if ($request->image)
+            {
+                $file = $request->image;
+                Storage::disk('public')->delete('industrialSecure/dangerousConditions/inspections/images/'. $qualification->$picture);
+                $nameFile = base64_encode(Auth::user()->id . now() . rand(1,10000)) .'.'. $file->extension();
+                $file->storeAs('industrialSecure/dangerousConditions/inspections/images/', $nameFile, 'public');
+                $qualification->$picture = $nameFile;
+                $data['image'] = $nameFile;
+                $data['old'] = $nameFile;
+                $data['path'] = Storage::disk('public')->url('industrialSecure/dangerousConditions/inspections/images/'. $nameFile);
+            }
+            else
+            {
+                Storage::disk('public')->delete('industrialSecure/dangerousConditions/inspections/images/'. $qualification->$picture);
+                $qualification->$picture = NULL;
+                $data['image'] = "";
+                $data['old'] = NULL;
+                $data['path'] = NULL;
+            }
+        }
+
+        if (!$qualification->update())
+            return $this->respondHttp500();
+
+        return $this->respondHttp200([
+            'data' => $data
+        ]);
+    }
+
+    public function downloadImage($id, $column)
+    {
+        $qualification = InspectionItemsQualificationAreaLocation::findOrFail($id);
+
+        return Storage::disk('public')->download('industrialSecure/dangerousConditions/inspections/images/'. $qualification->$column);
     }
 }
