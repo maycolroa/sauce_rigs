@@ -43,6 +43,18 @@
         ]
     },
     {
+        "module": "dangerousConditions",
+        "dependencies": [
+            "users",
+            "roles",
+            "regionals",
+            "processes",
+            "areas",
+            "headquarters",
+            "actionPlans"
+        ]
+    },
+    {
         "module": "contracts",
         "dependencies": [
             "users",

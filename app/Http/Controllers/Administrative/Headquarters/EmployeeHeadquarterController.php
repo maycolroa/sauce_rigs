@@ -156,7 +156,12 @@ class EmployeeHeadquarterController extends Controller
 
             if ($request->has('regional') && $request->get('regional') != '')
             {
-                $headquarters->where('employee_regional_id', $request->get('regional'));
+                $regional = $request->get('regional');
+                
+                if (is_numeric($regional))
+                    $headquarters->where('employee_regional_id', $request->get('regional'));
+                else
+                    $headquarters->whereIn('employee_regional_id', $this->getValuesForMultiselect($regional));
             }
 
             $headquarters = $headquarters->take(30)->pluck('id', 'name');

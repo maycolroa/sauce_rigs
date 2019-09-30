@@ -194,6 +194,98 @@ export default [{
           component: () =>
             import('@/views/IndustrialSecure/dangerMatrix/reportHistory')
         }
-      ])
+      ]),
+      {
+        name: 'industrialsecure-dangerousconditions',
+        path: 'dangerousconditions',
+        component: () =>
+            import('@/views/IndustrialSecure/dangerousConditions/index')
+      },
+      ...middleware({ 'check-permission': 'ph_inspections_r' }, [
+        {
+          name: 'dangerousconditions-inspections',
+          path: 'dangerousconditions/inspections',
+          component: () =>
+              import('@/views/IndustrialSecure/dangerousConditions/inspections/index')
+        }
+      ]),
+      ...middleware({ 'check-permission': 'ph_inspections_c' }, [
+        {
+          name: 'dangerousconditions-inspections-create',
+          path: 'dangerousconditions/inspections/create',
+          component: () =>
+              import('@/views/IndustrialSecure/dangerousConditions/inspections/create')
+        }
+      ]),
+      ...middleware({ 'check-permission': 'ph_inspections_r' }, [
+        {
+          name: 'dangerousconditions-inspections-view',
+          path: 'dangerousconditions/inspections/view/:id',
+          component: () =>
+              import('@/views/IndustrialSecure/dangerousConditions/inspections/view')
+        }
+      ]),
+      ...middleware({ 'check-permission': 'ph_inspections_u' }, [
+        {
+          name: 'dangerousconditions-inspections-edit',
+          path: 'dangerousconditions/inspections/edit/:id',
+          component: () =>
+              import('@/views/IndustrialSecure/dangerousConditions/inspections/edit')
+        }
+      ]),
+      ...middleware({ 'check-permission': 'ph_inspections_c' }, [
+        {
+          name: 'dangerousconditions-inspections-clone',
+          path: 'dangerousconditions/inspections/clone',
+          component: () =>
+              import('@/views/IndustrialSecure/dangerousConditions/inspections/clone')
+        }
+      ]),
+      ...middleware({ 'check-permission': 'ph_inspections_r' }, [
+        {
+          name: 'dangerousconditions-inspections-qualification',
+          path: 'dangerousconditions/inspections/qualification/:id',
+          component: () =>
+              import('@/views/IndustrialSecure/dangerousConditions/inspections/indexQualification')
+        }
+      ]),
+      ...middleware({ 'check-permission': 'ph_inspections_r' }, [
+        {
+          name: 'dangerousconditions-inspections-qualification-view',
+          path: 'dangerousconditions/inspections/qualification/view/:id',
+          component: () =>
+              import('@/views/IndustrialSecure/dangerousConditions/inspections/viewQualification')
+        }
+      ]),
+      /*{
+        name: 'industrialsecure-inspections',
+        path: 'inspections',
+        component: () => import('@/views/IndustrialSecure/inspections/index')
+      },
+      ...middleware({ 'check-permission': 'inspect_conditionsReports_r' }, [
+        {
+          name: 'inspections-conditionsReports',
+          path: 'inspections/conditionsReports',
+          component: () =>
+              import('@/views/IndustrialSecure/inspections/conditionsReports/index')
+        }
+      ]),
+      ...middleware({ 'check-permission': 'inspect_conditionsReports_r' }, [
+        {
+          name: 'inspections-conditionsReports-view',
+          path: 'inspections/conditionsReports/view',
+          component: () =>
+              import('@/views/IndustrialSecure/inspections/conditionsReports/view')
+        }
+      ]),
+      ...middleware({ 'check-permission': 'inspect_conditionsReports_u' }, [
+        {
+          name: 'inspections-conditionsReports-edit',
+          path: 'inspections/conditionsReports/edit',
+          component: () =>
+              import('@/views/IndustrialSecure/inspections/conditionsReports/edit')
+        }
+      ])*/
+
     ]
   }]

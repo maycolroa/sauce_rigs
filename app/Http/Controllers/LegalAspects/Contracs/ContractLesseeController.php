@@ -423,10 +423,11 @@ class ContractLesseeController extends Controller
 
         try
         {
+            \Log::info($request->all());
+            $data = $request->except(['items', 'files_binary']);
+
             $qualifications = Qualifications::pluck("id", "name");
             $contract = $this->getContractUser(Auth::user()->id);
-            
-            //ItemQualificationContractDetail::where('contract_id', $contract->id)->delete();
 
             //Se inician los atributos necesarios que seran estaticos para todas las actividades
             // De esta forma se evitar la asignacion innecesaria una y otra vez 
@@ -435,97 +436,78 @@ class ContractLesseeController extends Controller
                 ->module('contracts')
                 ->url(url('/administrative/actionplans'));
 
-            $totales = [
-                'total_standard' => 0,
-                'total_c' => 0,
-                'total_nc' => 0,
-                'total_sc' => 0,
-                'total_p_c' => 0,
-                'total_p_nc' => 0
-            ];
-
-            foreach ($request->items as $item)
+            if ($request->has('qualification') && $request->qualification)
             {
-                $totales['total_standard']++;
+                $itemQualification = ItemQualificationContractDetail::updateOrCreate(
+                    ['contract_id' => $contract->id, 'item_id' => $request->id], 
+                    ['contract_id' => $contract->id, 'item_id' => $request->id, 'qualification_id' => $qualifications[$request->qualification]]);
 
-                if (isset($item['qualification']) && $item['qualification'])
+                if (!$itemQualification->save()) 
+                    return $this->respondHttp500();
+
+                //Cumple y solo es aqui donde se cargan archivos
+                if ($request->qualification == 'C')
                 {
-                    $itemQualification = ItemQualificationContractDetail::updateOrCreate(
-                        ['contract_id' => $contract->id, 'item_id' => $item['id']], 
-                        ['contract_id' => $contract->id, 'item_id' => $item['id'], 'qualification_id' => $qualifications[$item['qualification']]]);
-
-                    if (!$itemQualification->save()) 
-                        return $this->respondHttp500();
-
-                    //Cumple y solo es aqui donde se cargan archivos
-                    if ($item['qualification'] == 'C')
+                    if ($request->has('files') && COUNT($request->files) > 0)
                     {
-                        $totales['total_c']++;
+                        $files_names_delete = [];
 
-                        if (isset($item['files']) && COUNT($item['files']) > 0)
+                        foreach ($request->get('files') as $keyF => $file) 
                         {
-                            $files_names_delete = [];
+                            $create_file = true;
 
-                            foreach ($item['files'] as $keyF => $file) 
+                            if (isset($file['id']))
                             {
-                                $create_file = true;
+                                $fileUpload = FileUpload::findOrFail($file['id']);
 
-                                if (isset($file['id']))
-                                {
-                                    $fileUpload = FileUpload::findOrFail($file['id']);
-
-                                    if ($file['old_name'] == $file['file'])
-                                        $create_file = false;
-                                    else
-                                        array_push($files_names_delete, $file['old_name']);
-                                }
+                                if ($file['old_name'] == $file['file'])
+                                    $create_file = false;
                                 else
-                                {
-                                    $fileUpload = new FileUpload();
-                                    $fileUpload->user_id = Auth::user()->id;
-                                }
-
-                                if ($create_file)
-                                {
-                                    $file_tmp = $file['file'];
-                                    $nameFile = base64_encode(Auth::user()->id . now() . rand(1,10000) . $keyF) .'.'. $file_tmp->extension();
-                                    $file_tmp->storeAs('legalAspects/files/', $nameFile, 's3');
-                                    $fileUpload->file = $nameFile;
-                                }
-
-                                $fileUpload->name = $file['name'];
-                                $fileUpload->expirationDate = $file['expirationDate'] == null ? null : (Carbon::createFromFormat('D M d Y', $file['expirationDate']))->format('Ymd');
-
-                                if (!$fileUpload->save())
-                                    return $this->respondHttp500();
-
-                                $fileUpload->contracts()->sync([$contract->id]);
-                                $fileUpload->items()->sync([$item['id']]);
+                                    array_push($files_names_delete, $file['old_name']);
                             }
-
-                            //Borrar archivos reemplazados
-                            foreach ($files_names_delete as $keyf => $file)
+                            else
                             {
-                                Storage::disk('s3')->delete('legalAspects/files/'. $file);
+                                $fileUpload = new FileUpload();
+                                $fileUpload->user_id = Auth::user()->id;
                             }
+
+                            if ($create_file)
+                            {
+                                $file_tmp = $file['file'];
+                                $nameFile = base64_encode(Auth::user()->id . now() . rand(1,10000) . $keyF) .'.'. $file_tmp->extension();
+                                $file_tmp->storeAs('legalAspects/files/', $nameFile, 'public');
+                                $fileUpload->file = $nameFile;
+                                $data['files'][$keyF]['file'] = $nameFile;
+                                $data['files'][$keyF]['old_name'] = $nameFile;
+                            }
+
+                            $fileUpload->name = $file['name'];
+                            $fileUpload->expirationDate = $file['expirationDate'] == null ? null : (Carbon::createFromFormat('D M d Y', $file['expirationDate']))->format('Ymd');
+
+                            if (!$fileUpload->save())
+                                return $this->respondHttp500();
+                                
+                            $data['files'][$keyF]['id'] = $fileUpload->id;
+
+                            $fileUpload->contracts()->sync([$contract->id]);
+                            $fileUpload->items()->sync([$request->id]);
+                        }
+
+                        //Borrar archivos reemplazados
+                        foreach ($files_names_delete as $keyf => $file)
+                        {
+                            Storage::disk('public')->delete('legalAspects/files/'. $file);
                         }
                     }
-                    else if ($item['qualification'] == 'NA')
-                        $totales['total_c']++;
-                    else
-                        $totales['total_nc']++;
+                }
 
-                    /**Planes de acción*/
-                    ActionPlan::
-                          model($itemQualification)
-                        ->activities($item['actionPlan'])
-                        ->save();
-                }
-                else
-                {
-                    $totales['total_nc']++;
-                    $totales['total_sc']++;
-                }
+                /**Planes de acción*/
+                ActionPlan::
+                        model($itemQualification)
+                    ->activities($request->actionPlan)
+                    ->save();
+
+                $data['actionPlan'] = ActionPlan::getActivities();
             }
 
             //Borrar archivos que fueron removidos de los items
@@ -533,38 +515,30 @@ class ContractLesseeController extends Controller
             {
                 foreach ($request->delete['files'] as $keyF => $file)
                 {
-                    FileUpload::find($file['id'])->delete();
-                    Storage::disk('s3')->delete('legalAspects/files/'. $file['old_name']);
+                    $file_delete = FileUpload::find($file['id']);
+
+                    if ($file_delete)
+                    {
+                        $file_delete->delete();
+                        Storage::disk('public')->delete('legalAspects/files/'. $file['old_name']);
+                    }
                 }
             }
 
             ActionPlan::sendMail();
 
-            if (COUNT($request->items) > 0)
-            {
-                $totales['total_p_c'] = round(($totales['total_c'] / $totales['total_standard']) * 100, 1);
-                $totales['total_p_nc'] = round(($totales['total_nc'] / $totales['total_standard']) * 100, 1);
-            }
-
-            $contract->listCheckResumen()->updateOrCreate(['contract_id'=>$contract->id], $totales);
-
-            $contract->listCheckHistory()->create([
-                'user_id' => Auth::user()->id
-            ]);
-
             DB::commit();
 
-            $this->sendNotification($contract);
+            return $this->respondHttp200([
+                'data' => $data
+            ]);
+
+            //$this->sendNotification($contract);
 
         } catch (\Exception $e) {
             DB::rollback();
-            //return $e->getMessage();
             return $this->respondHttp500();
         }
-
-        return $this->respondHttp200([
-            'message' => 'La lista de estándares ha sido guardada exitosamente.'
-        ]);
     }
 
     private function sendNotification($contract)

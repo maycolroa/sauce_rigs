@@ -127,9 +127,9 @@ export default {
       this.emptySelect('employee_area_id', 'area')
     },
     'form.employee_process_id'() {
-      this.emptySelect('employee_areas_id', 'areas')
+      this.emptySelect('employee_area_id', 'area')
     },
-    'form.employee_areas_id'() {
+    'form.employee_area_id'() {
       if (this.disableWacth)
         this.disableWacth = false
     }

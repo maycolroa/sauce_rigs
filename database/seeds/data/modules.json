@@ -86,6 +86,11 @@
                 "name": "dangerMatrix",
                 "display_name": "Matriz de peligros",
                 "main": "SI"
+            },
+            {
+                "name": "dangerousConditions",
+                "display_name": "Condiciones peligrosas",
+                "main": "SI"
             }
         ]
     },

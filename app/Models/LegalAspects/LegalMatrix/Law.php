@@ -4,11 +4,24 @@ namespace App\Models\LegalAspects\LegalMatrix;
 
 use Illuminate\Database\Eloquent\Model;
 use App\Traits\CompanyTrait;
+use App\Scopes\SystemApplyScope;
 use Session;
 
 class Law extends Model
 {
     use CompanyTrait;
+
+     /**
+     * The "booting" method of the model.
+     *
+     * @return void
+     */
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::addGlobalScope(new SystemApplyScope);
+    }
 
     protected $table = 'sau_lm_laws';
 

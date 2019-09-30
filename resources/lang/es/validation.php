@@ -297,6 +297,10 @@ return [
       'indefinite_restrictions' => 'restricción indefinida',
       'incapacitated_last_extension' => 'última prórroga',
       'end_restrictions' => 'fecha fin restricción',
+      'themes' => 'Temas',
+      'themes.*.name' => 'Nombre',
+      'themes.*.items' => 'Items',
+      'themes.*.items.*.description' => 'Descripción',
     ],
 
 ];

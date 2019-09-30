@@ -30,33 +30,61 @@ class ListCheckItemsRequest extends FormRequest
 
     public function sanitize()
     {    
+        if ($this->has('files'))
+        {
+            $this->merge([
+                'files' => json_decode($this->input('files'), true)
+            ]);
+        }
+
         if ($this->has('items'))
         {
             foreach ($this->input('items') as $key => $value)
             {
                 $data['items'][$key] = json_decode($value, true);
-
-                if (isset($data['items'][$key]['filesIndex']))
-                {
-                    $filesIndex = $data['items'][$key]['filesIndex'];
-
-                    if ($this->has($filesIndex))
-                    {
-                        foreach ($this->$filesIndex as $index => $file)
-                        {
-                            $data['items'][$key]['files'][$index]['file'] = $file;
-                        }
-                    }
-                }
-
                 $this->merge($data);
+
+                if ($this->has('files_binary') && COUNT($this->files_binary) > 0)
+                {
+                    foreach ($this->files_binary as $key2 => $value)
+                    {
+                        $info = [
+                            'id' => isset($this->input('files')[$key2]['id']) ? $this->input('files')[$key2]['id'] : null,
+                            'key' => $this->input('files')[$key2]['key'],
+                            'name' => $this->input('files')[$key2]['name'],
+                            'old_name' => isset($this->input('files')[$key2]['old_name']) ? $this->input('files')[$key2]['old_name'] : null,
+                            'expirationDate' => $this->input('files')[$key2]['expirationDate'],
+                            'file' => $value
+                        ];
+
+                        $data['files'][$key2] = $info;
+                        $data2['items'][$key]['files'][$key2] = $info;
+                    }
+
+                    $this->merge($data);
+                    $this->merge($data2);
+                }
             }
+        }
+
+        if ($this->has('actionPlan'))
+        {
+            $this->merge([
+                'actionPlan' => json_decode($this->input('actionPlan'), true)
+            ]);
         }
 
         if ($this->has('delete'))
         {
             $this->merge([
                 'delete' => json_decode($this->input('delete'), true)
+            ]);
+        }
+
+        if ($this->has('activities_defined'))
+        {
+            $this->merge([
+                'activities_defined' => json_decode($this->input('activities_defined'), true)
             ]);
         }
 
@@ -71,8 +99,8 @@ class ListCheckItemsRequest extends FormRequest
     public function rules()
     {
         $rules = [
-            "items.*.files.*.name" => "required_if:items.*.qualification,C",
-            "items.*.files.*.file" => "required_if:items.*.qualification,C|max:20480",
+            "items.*.files.*.name" => "required_if:qualification,C",
+            "items.*.files.*.file" => "required_if:qualification,C|max:20480",
             "items.*.files.*.expirationDate" => "nullable|date"
         ];
 

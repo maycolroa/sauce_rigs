@@ -54,49 +54,106 @@ export default [
           key: 'regionals',
           type: 'select',
           label: 'Regionales',
-          column: 'regional'
+          column: 'regional',
+          tag: false
         },
         {
           url: '/selects/dmReportMultiselect',
           key: 'headquarters',
           type: 'select',
           label: 'Sedes',
-          column: 'headquarter'
+          column: 'headquarter',
+          tag: false
         },
         {
           url: '/selects/dmReportMultiselect',
           key: 'processes',
           type: 'select',
           label: 'Procesos',
-          column: 'process'
+          column: 'process',
+          tag: false
         },
         {
           url: '/selects/dmReportMultiselect',
           key: 'macroprocesses',
           type: 'select',
           label: 'Macroprocesos',
-          column: 'macroprocess'
+          column: 'macroprocess',
+          tag: true
         },
         {
           url: '/selects/dmReportMultiselect',
           key: 'areas',
           type: 'select',
           label: 'Áreas',
-          column: 'area'
+          column: 'area',
+          tag: false
         },
         {
           url: '/selects/dmReportMultiselect',
           key: 'dangers',
           type: 'select',
           label: 'Peligros',
-          column: 'danger'
+          column: 'danger',
+          tag: false
         },
         {
           url: '/selects/dmReportMultiselect',
           key: 'dangerDescription',
           type: 'select',
           label: 'Descripción del peligro',
-          column: 'danger_description'
+          column: 'danger_description',
+          tag: true
+        }
+      ]
+    },
+    {
+      name: 'dangerousconditions-inspections',
+      filters: [
+        {
+          url: '/selects/headquarters',
+          key: 'headquarters',
+          type: 'select',
+          label: 'Sedes'
+        },
+        {
+          url: '/selects/areas',
+          key: 'areas',
+          type: 'select',
+          label: 'Áreas'
+        },
+        {
+          key: 'dateRange',
+          type: 'dateRange',
+          label: 'Fecha de creación',
+        }
+      ]
+    },
+    {
+      name: 'dangerousconditions-inspections-qualification',
+      filters: [
+        {
+          url: '/selects/headquarters',
+          key: 'headquarters',
+          type: 'select',
+          label: 'Sedes'
+        },
+        {
+          url: '/selects/areas',
+          key: 'areas',
+          type: 'select',
+          label: 'Áreas'
+        },
+        {
+          url: '/selects/users',
+          key: 'qualifiers',
+          type: 'select',
+          label: 'Calificador'
+        },
+        {
+          key: 'dateRange',
+          type: 'dateRange',
+          label: 'Fecha de calificación',
         }
       ]
     }

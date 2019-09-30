@@ -159,6 +159,47 @@
                         "display_name": "Matriz de peligro - exportar reporte"
                     }
                 ]
+            },
+            {
+                "name": "dangerousConditions",
+                "permissions": [
+                    {
+                        "name": "ph_inspections_c",
+                        "display_name": "Condiciones Peligrosas/Inspecciones - crear"
+                    },
+                    {
+                        "name": "ph_inspections_r",
+                        "display_name": "Condiciones Peligrosas/Inspecciones - ver"
+                    },
+                    {
+                        "name": "ph_inspections_u",
+                        "display_name": "Condiciones Peligrosas/Inspecciones - editar"
+                    },
+                    {
+                        "name": "ph_inspections_d",
+                        "display_name": "Condiciones Peligrosas/Inspecciones - cambiar estado"
+                    },
+                    {
+                        "name": "ph_inspections_export",
+                        "display_name": "Condiciones Peligrosas/Inspecciones - exportar"
+                    },
+                    {
+                        "name": "ph_reports_r",
+                        "display_name": "Condiciones Peligrosas/Reportes - ver"
+                    },
+                    {
+                        "name": "ph_reports_u",
+                        "display_name": "Condiciones Peligrosas/Reportes - editar"
+                    },
+                    {
+                        "name": "ph_reports_d",
+                        "display_name": "Condiciones Peligrosas/Reportes - eliminar"
+                    },
+                    {
+                        "name": "ph_reports_export",
+                        "display_name": "Condiciones Peligrosas/Reportes - exportar"
+                    }
+                ]
             }
         ]
     },

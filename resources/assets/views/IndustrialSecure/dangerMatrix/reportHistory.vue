@@ -11,7 +11,8 @@
                 </b-col>
                 <b-col cols="3">
                     <filter-danger-matrix-report-history
-                        :key="`filter-${isLoading}`"
+                        ref="filter"
+                        :key="`filter-${keyFilter}`"
                         v-model="filters" 
                         configName="industrialsecure-dangermatrix-report-history" 
                         :isDisabled="isLoading"
@@ -40,7 +41,7 @@
                                 <tbody>
                                     <tr v-for="(row, index) in information" :key="index">
                                         <td v-for="(col, index2) in row" :key="index2" :class="`bg-${col.color}`">
-                                            <b-btn @click="fetchTable(col.row, col.col, col.label, col.count)" style="width: 100%;" :variant="col.color">{{ col.label }} <b-badge variant="light">{{ col.count }}</b-badge></b-btn>
+                                            <b-btn style="width: 100%;" :variant="col.color">{{ col.label }} <b-badge variant="light">{{ col.count }}</b-badge></b-btn>
                                         </td>
                                     </tr>
                                 </tbody>
@@ -87,7 +88,8 @@ export default {
             empty: {
                 month: false
             },
-            urlMultiselect: '/selects/dmReportMultiselect'
+            urlMultiselect: '/selects/dmReportMultiselect',
+            keyFilter: true
         }
     },
     created(){
@@ -123,7 +125,11 @@ export default {
         },
         'month'() {
             if (this.year && this.month)
+            {
+                this.keyFilter = !this.keyFilter
+                this.$refs.filter.cleanFilters()
                 this.fetch()
+            }
         }
     },
     methods: {

@@ -23,11 +23,13 @@ class ReportLawExcel implements FromQuery, WithMapping, WithHeadings, WithTitle,
 
     protected $company_id;
     protected $filters;
+    protected $user;
 
-    public function __construct($company_id, $filters)
+    public function __construct($company_id, $user, $filters)
     {
       $this->company_id = $company_id;
       $this->filters = $filters;
+      $this->user = $user;
     }
 
     public function query()
@@ -67,6 +69,7 @@ class ReportLawExcel implements FromQuery, WithMapping, WithHeadings, WithTitle,
       ->groupBy('id');
 
       $laws->company_scope = $this->company_id;
+      $laws->user = $this->user->id;
 
       return $laws;
     }
