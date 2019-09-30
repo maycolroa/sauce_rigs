@@ -27,10 +27,10 @@ class CreateSauPhInspectionItemsQualificationAreaLocationTable extends Migration
 
             $table->unique(['item_id','employee_headquarter_id','employee_area_id','qualification_date'],'items_qualifications_headquarters_areas_date');
             $table->foreign('employee_headquarter_id','headquarter_id_foreign')->references('id')->on('sau_employees_headquarters')->onDelete('cascade');
-            $table->foreign('employee_area_id','area_id_foreign')->references('id')->on('sau_employees_areas')->onDelete('cascade');
-            $table->foreign('qualification_id','qualification_id_foreign')->references('id')->on('sau_ct_qualifications')->onDelete('cascade');
-            $table->foreign('item_id','item_id_foreign')->references('id')->on('sau_ph_inspection_section_items')->onDelete('cascade');
-            $table->foreign('qualifier_id','qualifier_id_foreign')->references('id')->on('sau_users')->onDelete('cascade');
+            $table->foreign('employee_area_id','employee_area_id_foreign')->references('id')->on('sau_employees_areas')->onDelete('cascade');
+            $table->foreign('qualification_id','sau_qualification_id_foreign')->references('id')->on('sau_ct_qualifications')->onDelete('cascade');
+            $table->foreign('item_id','sau_item_id_foreign')->references('id')->on('sau_ph_inspection_section_items')->onDelete('cascade');
+            $table->foreign('qualifier_id','sau_qualifier_id_foreign')->references('id')->on('sau_users')->onDelete('cascade');
             
         });
     }
