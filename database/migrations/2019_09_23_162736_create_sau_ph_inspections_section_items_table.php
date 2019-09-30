@@ -13,13 +13,13 @@ class CreateSauPhInspectionsSectionItemsTable extends Migration
      */
     public function up()
     {
-        Schema::create('sau_ph_inspections_section_items', function (Blueprint $table) {
+        Schema::create('sau_ph_inspection_section_items', function (Blueprint $table) {
             $table->increments('id');
             $table->text('description');
             $table->integer('inspection_section_id')->unsigned();
             $table->timestamps();
 
-            $table->foreign('inspection_section_id')->references('id')->on('sau_ph_inspections_sections')->onUpdate('cascade')->onDelete('cascade');
+            $table->foreign('inspection_section_id')->references('id')->on('sau_ph_inspection_sections')->onUpdate('cascade')->onDelete('cascade');
         });
     }
 
@@ -30,6 +30,6 @@ class CreateSauPhInspectionsSectionItemsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('sau_ph_inspections_section_items');
+        Schema::dropIfExists('sau_ph_inspection_section_items');
     }
 }

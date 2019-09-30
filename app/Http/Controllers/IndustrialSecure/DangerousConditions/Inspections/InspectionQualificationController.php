@@ -61,9 +61,9 @@ class InspectionQualificationController extends Controller
             ->join('sau_employees_headquarters', 'sau_employees_headquarters.id', 'sau_ph_inspection_items_qualification_area_location.employee_headquarter_id')
             ->join('sau_employees_areas', 'sau_employees_areas.id', 'sau_ph_inspection_items_qualification_area_location.employee_area_id')
             ->join('sau_users', 'sau_users.id', 'sau_ph_inspection_items_qualification_area_location.qualifier_id')
-            ->join('sau_ph_inspections_section_items', 'sau_ph_inspections_section_items.id', 'sau_ph_inspection_items_qualification_area_location.item_id')
-            ->join('sau_ph_inspections_sections','sau_ph_inspections_sections.id', 'sau_ph_inspections_section_items.inspection_section_id')
-            ->where('sau_ph_inspections_sections.inspection_id', $request->inspectionId);
+            ->join('sau_ph_inspection_section_items', 'sau_ph_inspection_section_items.id', 'sau_ph_inspection_items_qualification_area_location.item_id')
+            ->join('sau_ph_inspection_sections','sau_ph_inspection_sections.id', 'sau_ph_inspection_section_items.inspection_section_id')
+            ->where('sau_ph_inspection_sections.inspection_id', $request->inspectionId);
 
         $filters = $request->get('filters');
 
@@ -99,13 +99,13 @@ class InspectionQualificationController extends Controller
             $inspectionsReady = InspectionItemsQualificationAreaLocation::select(
                     'sau_ph_inspection_items_qualification_area_location.*',
                     DB::raw('CONCAT(sau_ct_qualifications.name, " (",  sau_ct_qualifications.description, ")") AS qualification'),
-                    'sau_ph_inspections_section_items.description AS item_name',
-                    'sau_ph_inspections_sections.name AS section_name',
-                    'sau_ph_inspections_sections.id AS section_id'
+                    'sau_ph_inspection_section_items.description AS item_name',
+                    'sau_ph_inspection_sections.name AS section_name',
+                    'sau_ph_inspection_sections.id AS section_id'
                 )
                 ->leftJoin('sau_ct_qualifications', 'sau_ct_qualifications.id', 'sau_ph_inspection_items_qualification_area_location.qualification_id')
-                ->join('sau_ph_inspections_section_items', 'sau_ph_inspections_section_items.id', 'sau_ph_inspection_items_qualification_area_location.item_id')
-                ->join('sau_ph_inspections_sections', 'sau_ph_inspections_sections.id', 'sau_ph_inspections_section_items.inspection_section_id')
+                ->join('sau_ph_inspection_section_items', 'sau_ph_inspection_section_items.id', 'sau_ph_inspection_items_qualification_area_location.item_id')
+                ->join('sau_ph_inspection_sections', 'sau_ph_inspection_sections.id', 'sau_ph_inspection_section_items.inspection_section_id')
                 ->where('sau_ph_inspection_items_qualification_area_location.employee_headquarter_id', $qualification->employee_headquarter_id)
                 ->where('sau_ph_inspection_items_qualification_area_location.employee_area_id', $qualification->employee_area_id)
                 ->where('sau_ph_inspection_items_qualification_area_location.qualification_date', $qualification->qualification_date)

@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class InspectionSectionItem extends Model
 {
-    public $table = 'sau_ph_inspections_section_items';
+    public $table = 'sau_ph_inspection_section_items';
 
     protected $fillable = [
         'description',

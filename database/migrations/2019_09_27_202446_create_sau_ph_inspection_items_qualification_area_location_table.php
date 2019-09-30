@@ -29,7 +29,7 @@ class CreateSauPhInspectionItemsQualificationAreaLocationTable extends Migration
             $table->foreign('employee_headquarter_id','headquarter_id_foreign')->references('id')->on('sau_employees_headquarters')->onDelete('cascade');
             $table->foreign('employee_area_id','area_id_foreign')->references('id')->on('sau_employees_areas')->onDelete('cascade');
             $table->foreign('qualification_id','qualification_id_foreign')->references('id')->on('sau_ct_qualifications')->onDelete('cascade');
-            $table->foreign('item_id','item_id_foreign')->references('id')->on('sau_ph_inspections_section_items')->onDelete('cascade');
+            $table->foreign('item_id','item_id_foreign')->references('id')->on('sau_ph_inspection_section_items')->onDelete('cascade');
             $table->foreign('qualifier_id','qualifier_id_foreign')->references('id')->on('sau_users')->onDelete('cascade');
             
         });

@@ -13,7 +13,7 @@ class CreateSauPhInspectionsSectionsTable extends Migration
      */
     public function up()
     {
-        Schema::create('sau_ph_inspections_sections', function (Blueprint $table) {
+        Schema::create('sau_ph_inspection_sections', function (Blueprint $table) {
             $table->increments('id');
             $table->string('name');
             $table->unsignedInteger('inspection_id');
@@ -30,6 +30,6 @@ class CreateSauPhInspectionsSectionsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('sau_ph_inspections_sections');
+        Schema::dropIfExists('sau_ph_inspection_sections');
     }
 }
