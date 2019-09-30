@@ -1,0 +1,142 @@
+<?php
+
+namespace App\Models\IndustrialSecure\DangerousConditions\Inspections;
+
+use Illuminate\Database\Eloquent\Model;
+
+class InspectionItemsQualificationAreaLocation extends Model
+{
+    protected $table = "sau_ph_inspection_items_qualification_area_location";
+
+    protected $fillable = [
+        'item_id',
+        'qualification_id',
+        'employee_headquarter_id',	
+        'employee_area_id',	
+        'qualifier_id',	
+        'find',
+        'qualification_date',
+        'photo_1',
+        'photo_2'
+    ];
+
+    public $timestamps = false;
+
+    public function item()
+    {
+        return $this->belongsTo(InspectionSectionItem::class, 'item_id');
+    }
+
+    public function area()
+    {
+        return $this->belongsTo('App\Models\Administrative\Areas\EmployeeArea', 'employee_area_id');
+    }
+
+    public function headquarter()
+    {
+        return $this->belongsTo('App\Models\Administrative\Headquarters\EmployeeHeadquarter', 'employee_headquarter_id');
+    }
+
+    public function qualifier()
+    {
+        return $this->belongsTo('App\Models\Administrative\Users\User', 'qualifier_id');
+    }
+
+    public function qualification()
+    {
+        return $this->belongsTo('App\Models\LegalAspects\Contracts\Qualifications', 'sau_ct_qualifications');
+    }
+    
+    public function image($imageNumber, $imageName = null)
+    {
+        if ($imageName == null) {
+            return $this->attributes["photo_{$imageNumber}"];
+        }
+
+        $this->attributes["photo_{$imageNumber}"] = $imageName;
+    }
+
+    /**
+     * filters checks through the given headquarters
+     * @param  Illuminate\Database\Eloquent\Builder $query
+     * @param  array $headquarters
+     * @return Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeInHeadquarters($query, $headquarters, $typeSearch = 'IN')
+    {
+        $ids = [];
+
+        foreach ($headquarters as $key => $value)
+        {
+            $ids[] = $value;
+        }
+
+        if (COUNT($ids) > 0)
+        {
+            $ids = explode(",", implode(",", $ids));
+
+            if ($typeSearch == 'IN')
+                $query->whereIn('sau_ph_inspection_items_qualification_area_location.employee_headquarter_id', $ids);
+
+            else if ($typeSearch == 'NOT IN')
+                $query->whereNotIn('sau_ph_inspection_items_qualification_area_location.employee_headquarter_id', $ids);
+        }
+
+        return $query;
+    }
+
+    /**
+     * filters checks through the given areas
+     * @param  Illuminate\Database\Eloquent\Builder $query
+     * @param  array $areas
+     * @return Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeInAreas($query, $areas, $typeSearch = 'IN')
+    {
+        if (COUNT($areas) > 0)
+        {
+            if ($typeSearch == 'IN')
+                $query->whereIn('sau_ph_inspection_items_qualification_area_location.employee_area_id', $areas);
+
+            else if ($typeSearch == 'NOT IN')
+                $query->whereNotIn('sau_ph_inspection_items_qualification_area_location.employee_area_id', $areas);
+        }
+
+        return $query;
+    }
+
+    /**
+     * filters checks through the given qualifiers
+     * @param  Illuminate\Database\Eloquent\Builder $query
+     * @param  array $qualifiers
+     * @return Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeInQualifiers($query, $qualifiers, $typeSearch = 'IN')
+    {
+        if (COUNT($qualifiers) > 0)
+        {
+            if ($typeSearch == 'IN')
+                $query->whereIn('sau_ph_inspection_items_qualification_area_location.qualifier_id', $qualifiers);
+
+            else if ($typeSearch == 'NOT IN')
+                $query->whereNotIn('sau_ph_inspection_items_qualification_area_location.qualifier_id', $qualifiers);
+        }
+
+        return $query;
+    }
+
+    /**
+     * filters checks through the given date
+     * @param  Illuminate\Database\Eloquent\Builder $query
+     * @param  array $dates
+     * @return Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeBetweenDate($query, $dates)
+    {
+        if (COUNT($dates) == 2)
+        {
+            $query->whereBetween('sau_ph_inspection_items_qualification_area_location.qualification_date', $dates);
+            return $query;
+        }
+    }
+}

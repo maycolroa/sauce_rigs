@@ -519,6 +519,8 @@ export default [
     fields: [
         { name: 'sau_ph_inspections.id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true },
         { name: 'sau_ph_inspections.name', data: 'name', title: 'Nombre', sortable: true, searchable: true, detail: false, key: false },
+        { name: 'sau_employees_headquarters.name', data: 'sede', title: 'Sedes', sortable: true, searchable: true, detail: false, key: false },
+        { name: 'sau_employees_areas.name', data: 'area', title: 'Àreas', sortable: true, searchable: true, detail: false, key: false },
         { name: 'sau_ph_inspections.state', data: 'state', title: '¿Activa?', sortable: true, searchable: true, detail: false, key: false },
         { name: 'sau_ph_inspections.created_at', data: 'created_at', title: 'Fecha de creación', sortable: true, searchable: true, detail: false, key: false },
         { name: '', data: 'controlls', title: 'Controles', sortable: false, searchable: false, detail: false, key: false },
@@ -561,7 +563,19 @@ export default [
                 id: 'id',
             },
             permission: 'ph_inspections_c'
-          },]
+          },{
+            config: {
+                color: 'outline-info',
+                borderless: true,
+                icon: 'ion ion-md-list',
+                title: 'Calificadas'
+            },
+            data: {
+                routePush: { name: 'dangerousconditions-inspections-qualification' },
+                id: 'id',
+            },
+            permission: 'ph_inspections_r'
+        }]
       },
       {
         type: 'base',
@@ -586,7 +600,43 @@ export default [
     configuration: {
         urlData: '/industrialSecurity/dangerousConditions/inspection/data',
         filterColumns: true,
-        //configNameFilter: 'legalaspects-contractor'
+        configNameFilter: 'dangerousconditions-inspections'
+    }
+},
+{
+    name: 'dangerousconditions-inspections-qualification',
+    fields: [
+        { name: 'sau_ph_inspection_items_qualification_area_location.id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true },
+        { name: 'sau_employees_headquarters.name', data: 'headquarter', title: 'Sede', sortable: true, searchable: true, detail: false, key: false },
+        { name: 'sau_employees_areas.name', data: 'area', title: 'Area', sortable: true, searchable: true, detail: false, key: false },
+        { name: 'sau_users.name', data: 'qualificator', title: 'Calificador', sortable: true, searchable: true, detail: false, key: false },
+        { name: 'sau_ph_inspection_items_qualification_area_location.qualification_date', data: 'qualification_date', title: 'Fecha Calificación', sortable: true, searchable: true, detail: false, key: false },
+        { name: '', data: 'controlls', title: 'Controles', sortable: false, searchable: false, detail: false, key: false },
+    ],
+    'controlls': [{
+          type: 'push',
+          buttons: [{
+            config: {
+                color: 'outline-info',
+                borderless: true,
+                icon: 'ion ion-md-eye',
+                title: 'Ver'
+            },
+            data: {
+                routePush: { name: 'dangerousconditions-inspections-qualification-view' },
+                id: 'id',
+            },
+            permission: 'ph_inspections_r'
+          }]
+      },
+      {
+        type: 'base',
+        buttons: [],
+      }],
+    configuration: {
+        urlData: '/industrialSecurity/dangerousConditions/inspection/qualification/data',
+        filterColumns: true,
+        configNameFilter: 'dangerousconditions-inspections-qualification'
     }
 },
 ];

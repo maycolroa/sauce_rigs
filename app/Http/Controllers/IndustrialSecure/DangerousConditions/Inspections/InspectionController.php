@@ -25,7 +25,7 @@ class InspectionController extends Controller
     {
         $this->middleware('auth');
         $this->middleware('permission:ph_inspections_c', ['only' => 'store']);
-        $this->middleware('permission:ph_inspections_r', ['except' =>'multiselect']);
+        $this->middleware('permission:ph_inspections_r');
         $this->middleware('permission:ph_inspections_u', ['only' => 'update']);
         $this->middleware('permission:ph_inspections_d', ['only' => 'destroy']);
     }
@@ -47,7 +47,36 @@ class InspectionController extends Controller
     */
     public function data(Request $request)
     {
-        $inspections = Inspection::select('*');
+        $inspections = Inspection::select(
+                'sau_ph_inspections.*',
+                DB::raw('GROUP_CONCAT(DISTINCT sau_employees_headquarters.name ORDER BY sau_employees_headquarters.name ASC) AS sede'),
+                DB::raw('GROUP_CONCAT(DISTINCT sau_employees_areas.name ORDER BY sau_employees_areas.name ASC) AS area')
+            )
+            ->leftJoin('sau_ph_inspection_headquarter', 'sau_ph_inspection_headquarter.inspection_id', 'sau_ph_inspections.id')
+            ->leftJoin('sau_ph_inspection_area', 'sau_ph_inspection_area.inspection_id', 'sau_ph_inspections.id')
+            ->leftJoin('sau_employees_headquarters', 'sau_employees_headquarters.id', 'sau_ph_inspection_headquarter.employee_headquarter_id')
+            ->leftJoin('sau_employees_areas', 'sau_employees_areas.id', 'sau_ph_inspection_area.employee_area_id')
+            ->groupBy('sau_ph_inspections.id', 'sau_ph_inspections.name');
+
+        $filters = $request->get('filters');
+
+        if (COUNT($filters) > 0)
+        {
+            $inspections->inHeadquarters($this->getValuesForMultiselect($filters["headquarters"]), $filters['filtersType']['headquarters']);
+            $inspections->inAreas($this->getValuesForMultiselect($filters["areas"]), $filters['filtersType']['areas']);
+
+            $dates_request = explode('/', $filters["dateRange"]);
+
+            $dates = [];
+
+            if (COUNT($dates_request) == 2)
+            {
+                array_push($dates, $this->formatDateToSave($dates_request[0]));
+                array_push($dates, $this->formatDateToSave($dates_request[1]));
+            }
+                
+            $inspections->betweenDate($dates);
+        }
 
         return Vuetable::of($inspections)
                     ->make();

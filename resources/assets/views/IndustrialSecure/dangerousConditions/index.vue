@@ -57,9 +57,9 @@
 import Alerts from "@/utils/Alerts.js";
 
 export default {
-	name: "inspections",
+	name: "dangerousConditions",
 	metaInfo: {
-		title: "Inspecciones y seguridad"
+		title: "Condiciones Peligrosas"
 	},
   	methods: {
   	}

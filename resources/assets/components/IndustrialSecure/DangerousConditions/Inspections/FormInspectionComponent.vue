@@ -111,38 +111,33 @@
                           <b-form-feedback class="d-block" v-if="form.errorsFor(`themes.${index}.items`)" style="padding-bottom: 10px;">
                             {{ form.errorsFor(`themes.${index}.items`) }}
                           </b-form-feedback>
-                          <template v-for="(item, index2) in theme.items" style="padding-right: 15px;">
-                            <b-card no-body class="mb-2 border-secondary" :key="item.key" style="width: 100%;">
-                              <b-card-header class="bg-secondary">
-                                <b-row>
-                                  <b-col cols="10" class="d-flex justify-content-between text-white"> {{ form.themes[index].items[index2].description ? form.themes[index].items[index2].description : `Nuevo Item ${index2 + 1}` }}</b-col>
-                                  <b-col cols="2">
-                                    <div class="float-right">
-                                      <b-button-group>
-                                        <b-btn href="javascript:void(0)" v-b-toggle="'accordion' + item.key+'-1'" variant="link">
-                                          <span class="collapse-icon"></span>
-                                        </b-btn>
-                                        <b-btn @click.prevent="removeItem(index, index2)" 
-                                          v-if="!viewOnly"
-                                          size="sm" 
-                                          variant="secondary icon-btn borderless"
-                                          v-b-tooltip.top title="Eliminar Item">
-                                            <span class="ion ion-md-close-circle"></span>
-                                        </b-btn>
-                                      </b-button-group>
-                                    </div>
-                                  </b-col>
-                                </b-row>
-                              </b-card-header>
-                              <b-collapse :id="`accordion${item.key}-1`" visible :accordion="`accordion-1234`">
-                                <b-card-body>
-                                  <b-form-row>
-                                    <vue-textarea :disabled="viewOnly" class="col-md-12" v-model="form.themes[index].items[index2].description" label="Descripción" name="description" placeholder="Descripción" :error="form.errorsFor(`themes.${index}.items.${index2}.description`)" rows="1"></vue-textarea>
-                                  </b-form-row>
-                                 </b-card-body>
-                              </b-collapse>
-                            </b-card>
-                          </template>
+                          <div class="table-responsive" style="padding-right: 15px;">
+                            <table class="table table-bordered table-hover" v-if="theme.items.length > 0">
+                              <thead class="bg-secondary" style="color: white;">
+                                <tr>
+                                  <th scope="col" class="align-middle" v-if="!viewOnly">#</th>
+                                  <th scope="col" class="align-middle">Descripción</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                <template v-for="(item, index2) in theme.items">
+                                  <tr :key="index2">
+                                    <td class="align-middle" v-if="!viewOnly">
+                                      <b-btn @click.prevent="removeItem(index, index2)" 
+                                        size="xs" 
+                                        variant="outline-primary icon-btn borderless"
+                                        v-b-tooltip.top title="Eliminar Item">
+                                        <span class="ion ion-md-close-circle"></span>
+                                      </b-btn>
+                                    </td>
+                                    <td style="padding: 0px;">
+                                      <vue-textarea :disabled="viewOnly" class="col-md-12" v-model="form.themes[index].items[index2].description" label="" name="description" placeholder="Descripción" :error="form.errorsFor(`themes.${index}.items.${index2}.description`)" rows="1"></vue-textarea>
+                                    </td>
+                                  </tr>
+                                </template>
+                              </tbody>
+                            </table>
+                          </div>
                         </b-form-row>
                       </b-card-body>
                     </b-collapse>

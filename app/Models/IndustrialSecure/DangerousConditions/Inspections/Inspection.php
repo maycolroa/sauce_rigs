@@ -55,4 +55,68 @@ class Inspection extends Model
     {
         return $this->belongsToMany('App\Models\Administrative\Areas\EmployeeArea', 'sau_ph_inspection_area');
     }
+
+    /**
+     * filters checks through the given headquarters
+     * @param  Illuminate\Database\Eloquent\Builder $query
+     * @param  array $headquarters
+     * @return Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeInHeadquarters($query, $headquarters, $typeSearch = 'IN')
+    {
+        $ids = [];
+
+        foreach ($headquarters as $key => $value)
+        {
+            $ids[] = $value;
+        }
+
+        if (COUNT($ids) > 0)
+        {
+            $ids = explode(",", implode(",", $ids));
+
+            if ($typeSearch == 'IN')
+                $query->whereIn('sau_ph_inspection_headquarter.employee_headquarter_id', $ids);
+
+            else if ($typeSearch == 'NOT IN')
+                $query->whereNotIn('sau_ph_inspection_headquarter.employee_headquarter_id', $ids);
+        }
+
+        return $query;
+    }
+
+    /**
+     * filters checks through the given areas
+     * @param  Illuminate\Database\Eloquent\Builder $query
+     * @param  array $areas
+     * @return Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeInAreas($query, $areas, $typeSearch = 'IN')
+    {
+        if (COUNT($areas) > 0)
+        {
+            if ($typeSearch == 'IN')
+                $query->whereIn('sau_ph_inspection_area.employee_area_id', $areas);
+
+            else if ($typeSearch == 'NOT IN')
+                $query->whereNotIn('sau_ph_inspection_area.employee_area_id', $areas);
+        }
+
+        return $query;
+    }
+
+    /**
+     * filters checks through the given date
+     * @param  Illuminate\Database\Eloquent\Builder $query
+     * @param  array $dates
+     * @return Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeBetweenDate($query, $dates)
+    {
+        if (COUNT($dates) == 2)
+        {
+            $query->whereBetween('sau_ph_inspections.created_at', $dates);
+            return $query;
+        }
+    }
 }
