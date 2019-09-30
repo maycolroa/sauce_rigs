@@ -7,6 +7,11 @@
     <div class="col-md">
       <b-card no-body>
         <b-card-body>
+            <b-row align-h="end" style="padding-bottom: 15px;">
+                <b-col cols="1">
+                    <b-btn variant="default" :to="{name: 'biologicalmonitoring-musculoskeletalanalysis'}">Atras</b-btn>
+                </b-col>
+            </b-row>
             <b-row>
                 <b-col>
                     <b-card bg-variant="transparent" border-variant="dark" title="" class="mb-3 box-shadow-none">
@@ -44,14 +49,13 @@
                     </b-card>
                 </b-col>
             </b-row>
+            <b-row class="float-right">
+                <b-col>
+                    <b-btn variant="default" :to="{name: 'biologicalmonitoring-musculoskeletalanalysis'}">Atras</b-btn>
+                </b-col>
+            </b-row>
         </b-card-body>
       </b-card>
-    </div>
-
-    <div class="row float-right pt-10 pr-10">
-        <template>
-            <b-btn variant="default" :to="{name: 'biologicalmonitoring-musculoskeletalanalysis'}">Atras</b-btn>
-        </template>
     </div>
   </div>
 </template>
