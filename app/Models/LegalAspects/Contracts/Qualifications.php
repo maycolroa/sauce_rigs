@@ -11,6 +11,7 @@ class Qualifications extends Model
     protected $fillable = [
         'name',
         'description',
-        'fulfillment'
+        'fulfillment',
+        'state'
     ];
 }

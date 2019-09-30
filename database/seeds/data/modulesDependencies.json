@@ -43,7 +43,7 @@
         ]
     },
     {
-        "module": "inspections",
+        "module": "dangerousConditions",
         "dependencies": [
             "users",
             "roles",

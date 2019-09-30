@@ -283,14 +283,25 @@ Route::middleware(['auth'])->group(function () {
       Route::ApiResource('dangersMatrix', 'IndustrialSecure\DangerMatrix\DangerMatrixController');
 
       Route::post('dangersMatrixHistory/data', 'IndustrialSecure\DangerMatrix\DangerMatrixHistoryController@data');
-    
-      Route::prefix('inspections')->group(function () {
+
+      Route::prefix('dangerousConditions')->group(function () {
+        Route::post('inspection/switchStatus/{inspection}', 'IndustrialSecure\DangerousConditions\Inspections\InspectionController@toggleState');
+        Route::post('inspection/data', 'IndustrialSecure\DangerousConditions\Inspections\InspectionController@data');
+        Route::ApiResource('inspection', 'IndustrialSecure\DangerousConditions\Inspections\InspectionController');
+
+        Route::get('inspection/qualification/downloadImage/{id}/{column}', 'IndustrialSecure\DangerousConditions\Inspections\InspectionQualificationController@downloadImage');
+        Route::post('inspection/qualification/saveImage', 'IndustrialSecure\DangerousConditions\Inspections\InspectionQualificationController@saveImage');
+        Route::post('inspection/qualification/saveQualification', 'IndustrialSecure\DangerousConditions\Inspections\InspectionQualificationController@saveQualification');
+        Route::post('inspection/qualification/data', 'IndustrialSecure\DangerousConditions\Inspections\InspectionQualificationController@data');
+        Route::ApiResource('inspection/qualification', 'IndustrialSecure\DangerousConditions\Inspections\InspectionQualificationController');
+
+      /*Route::prefix('inspections')->group(function () {
 
         Route::ApiResource('conditionsReports', 'IndustrialSecure\Inspections\ConditionReportController');
         Route::post('conditionsReports/data', 'IndustrialSecure\Inspections\ConditionReportController@data');
         Route::post('conditionsReports/export', 'IndustrialSecure\Inspections\ConditionReportController@export');
         Route::post('conditionsReports/image', 'IndustrialSecure\Inspections\ConditionReportController@storeImage');
-        Route::post('conditionsReports/image/download', 'IndustrialSecure\Inspections\ConditionReportController@downloadImage');
+        Route::post('conditionsReports/image/download', 'IndustrialSecure\Inspections\ConditionReportController@downloadImage');*/
       
       });
 

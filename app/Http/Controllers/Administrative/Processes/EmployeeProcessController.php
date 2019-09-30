@@ -205,11 +205,18 @@ class EmployeeProcessController extends Controller
                     sau_employees_processes.name as name")
                 ->join('sau_headquarter_process', 'sau_headquarter_process.employee_process_id', 'sau_employees_processes.id')
                 ->join('sau_employees_headquarters', 'sau_employees_headquarters.id', 'sau_headquarter_process.employee_headquarter_id')
-                ->where('sau_headquarter_process.employee_headquarter_id', $request->get('headquarter'))
                 ->where(function ($query) use ($keyword) {
                     $query->orWhere('sau_employees_headquarters.name', 'like', $keyword);
-                })
-                ->take(30)->pluck('id', 'name');
+                });
+
+                $headquarter = $request->get('headquarter');
+                
+                if (is_numeric($headquarter))
+                    $processes->where('sau_headquarter_process.employee_headquarter_id', $headquarter);
+                else
+                    $processes->whereIn('sau_headquarter_process.employee_headquarter_id', $this->getValuesForMultiselect($headquarter));
+
+                $processes = $processes->take(30)->pluck('id', 'name');
 
                 return $this->respondHttp200([
                     'options' => $this->multiSelectFormat($processes)

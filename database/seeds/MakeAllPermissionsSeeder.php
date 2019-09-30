@@ -50,6 +50,10 @@ class MakeAllPermissionsSeeder extends Seeder
                 'absenteeism_r',
                 'absenteeism_u',
                 'absenteeism_d',
+                'dangerousConditions_c',
+                'dangerousConditions_r',
+                'dangerousConditions_u',
+                'dangerousConditions_d'
             ];
 
             $modules = Module::all();

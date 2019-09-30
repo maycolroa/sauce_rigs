@@ -223,12 +223,25 @@ class EmployeeAreaController extends Controller
                     sau_employees_areas.name as name")
                 ->join('sau_process_area', 'sau_process_area.employee_area_id', 'sau_employees_areas.id')
                 ->join('sau_employees_processes', 'sau_employees_processes.id', 'sau_process_area.employee_process_id')
-                ->where('employee_process_id', $request->get('process'))
-                ->where('employee_headquarter_id', $request->get('headquarter'))
                 ->where(function ($query) use ($keyword) {
                     $query->orWhere('sau_employees_processes.name', 'like', $keyword);
-                })
-                ->take(30)->pluck('id', 'name');
+                });
+
+                $headquarter = $request->get('headquarter');
+                
+                if (is_numeric($headquarter))
+                    $areas->where('employee_headquarter_id', $headquarter);
+                else
+                    $areas->whereIn('employee_headquarter_id', $this->getValuesForMultiselect($headquarter));
+                
+                $process = $request->get('process');
+
+                if (is_numeric($process))
+                    $areas->where('employee_process_id', $process);
+                else
+                    $areas->whereIn('employee_process_id', $this->getValuesForMultiselect($process));
+
+                $areas = $areas->take(30)->pluck('id', 'name');
 
                 return $this->respondHttp200([
                     'options' => $this->multiSelectFormat($areas)

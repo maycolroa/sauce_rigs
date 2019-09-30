@@ -106,5 +106,55 @@ export default [
           tag: true
         }
       ]
+    },
+    {
+      name: 'dangerousconditions-inspections',
+      filters: [
+        {
+          url: '/selects/headquarters',
+          key: 'headquarters',
+          type: 'select',
+          label: 'Sedes'
+        },
+        {
+          url: '/selects/areas',
+          key: 'areas',
+          type: 'select',
+          label: 'Áreas'
+        },
+        {
+          key: 'dateRange',
+          type: 'dateRange',
+          label: 'Fecha de creación',
+        }
+      ]
+    },
+    {
+      name: 'dangerousconditions-inspections-qualification',
+      filters: [
+        {
+          url: '/selects/headquarters',
+          key: 'headquarters',
+          type: 'select',
+          label: 'Sedes'
+        },
+        {
+          url: '/selects/areas',
+          key: 'areas',
+          type: 'select',
+          label: 'Áreas'
+        },
+        {
+          url: '/selects/users',
+          key: 'qualifiers',
+          type: 'select',
+          label: 'Calificador'
+        },
+        {
+          key: 'dateRange',
+          type: 'dateRange',
+          label: 'Fecha de calificación',
+        }
+      ]
     }
 ];
