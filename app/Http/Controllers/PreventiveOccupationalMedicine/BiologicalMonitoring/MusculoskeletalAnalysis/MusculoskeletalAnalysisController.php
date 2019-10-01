@@ -5,9 +5,12 @@ namespace App\Http\Controllers\PreventiveOccupationalMedicine\BiologicalMonitori
 use Illuminate\Http\Request;
 use App\Vuetable\Facades\Vuetable;
 use App\Http\Controllers\Controller;
+use App\Models\Administrative\Users\User;
+use App\Models\PreventiveOccupationalMedicine\BiologicalMonitoring\MusculoskeletalAnalysis\Tracing;
 use App\Models\PreventiveOccupationalMedicine\BiologicalMonitoring\MusculoskeletalAnalysis\MusculoskeletalAnalysis;
 use App\Jobs\PreventiveOccupationalMedicine\BiologicalMonitoring\MusculoskeletalAnalysis\MusculoskeletalAnalysisImportJob;
 use App\Jobs\PreventiveOccupationalMedicine\BiologicalMonitoring\MusculoskeletalAnalysis\MusculoskeletalAnalysisExportJob;
+use App\Inform\PreventiveOccupationalMedicine\BiologicalMonitoring\MusculoskeletalAnalysis\InformIndividualManagerMusculoskeletalAnalysis;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
 use Session;
@@ -273,5 +276,75 @@ class MusculoskeletalAnalysisController extends Controller
       } catch(Exception $e) {
         return $this->respondHttp500();
       }
+    }
+
+    public function saveTracing(Request $request)
+    {
+      try
+      {
+        DB::beginTransaction();
+
+        if (!$this->saveTracingPrivate($request->identification, $request->new_tracing, Auth::user(), $request->oldTracings))
+          return $this->respondHttp500();
+
+        DB::commit();
+
+      } catch (Exception $e){
+          DB::rollback();
+          return $this->respondHttp500();
+      }
+
+      $informManager = new InformIndividualManagerMusculoskeletalAnalysis($request->identification);  
+      return $this->respondHttp200($informManager->getInformData(['oldTracings']));
+    }
+
+    private function saveTracingPrivate($identification, $tracingDescription, User $madeByUser, $tracingsToUpdate = [])
+    {
+        try
+        {
+            $this->handleTracingUpdates($madeByUser, $tracingsToUpdate);
+
+            if (!$tracingDescription)
+                return true;
+
+            $tracing = new Tracing();
+            $tracing->company_id = Session::get('company_id');
+            $tracing->description = $tracingDescription;
+            $tracing->identification = $identification;
+            $tracing->user_id = $madeByUser->id;
+
+            return $tracing->save();
+
+        } catch (Exception $e) {
+            \Log::error("{$e->getMessage()} \n {$e->getTraceAsString()}");
+            return false;
+        }
+    }
+
+    /**
+     * updates old tracings if necessary
+     * @param  array  $tracingsToUpdate
+     * @return void
+     */
+    public function handleTracingUpdates(User $madeByUser, $tracingsToUpdate = [])
+    {
+        if (!is_array($tracingsToUpdate))
+            return;
+
+        foreach ($tracingsToUpdate as $tracing)
+        {
+            $oldTracing = Tracing::where('id', $tracing["id"])->first();
+
+            if (!$oldTracing)
+                continue;
+
+            if ($tracing["description"] != $oldTracing->description)  
+            {
+                $oldTracing->update([
+                    'description' => $tracing["description"],
+                    'user_id' => $madeByUser->id
+                ]);
+            }
+        }
     }
 }

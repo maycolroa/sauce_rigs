@@ -3,6 +3,7 @@
 namespace App\Inform\PreventiveOccupationalMedicine\BiologicalMonitoring\MusculoskeletalAnalysis;
 
 use App\Models\PreventiveOccupationalMedicine\BiologicalMonitoring\MusculoskeletalAnalysis\MusculoskeletalAnalysis;
+use App\Models\PreventiveOccupationalMedicine\BiologicalMonitoring\MusculoskeletalAnalysis\Tracing;
 
 class InformIndividualManagerMusculoskeletalAnalysis
 {
@@ -16,7 +17,8 @@ class InformIndividualManagerMusculoskeletalAnalysis
      * @var array
      */
     const INFORMS = [
-        'dataAnalysis'
+        'dataAnalysis',
+        'oldTracings'
     ];
 
     /**
@@ -69,5 +71,28 @@ class InformIndividualManagerMusculoskeletalAnalysis
         ->get();
 
         return $data;
+    }
+
+    /**
+     * Returns the reports of pta for column.
+     * @return collection
+     */
+    private function oldTracings()
+    {
+        $tracings = Tracing::where('identification', $this->id)->get();
+
+        $oldTracings = [];
+
+        foreach ($tracings as $tracing)
+        {
+            array_push($oldTracings, [
+                'id' => $tracing->id,
+                'description' => $tracing->description,
+                'made_by' => $tracing->madeBy->name,
+                'updated_at' => $tracing->updated_at->toDateString()
+            ]);
+        }
+
+        return $oldTracings;
     }
 }
