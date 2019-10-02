@@ -47,7 +47,7 @@ class MailResetPasswordNotification extends Notification
 
         return (new MailMessage)
                     ->view('mail.resetpassword', ['link' => $link])
-                    ->from('aplicativos@rigs.com.co')
+                    ->from('info@thotstrategy.com')
                     ->subject('SAUCE - Restablecer contraseña');
     }
 

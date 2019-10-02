@@ -67,55 +67,55 @@
             <vue-input :disabled="viewOnly" class="col-md-4" v-model="form.abdominal_perimeter" label="Perímetro Abdominal" type="text" name="abdominal_perimeter" :error="form.errorsFor('abdominal_perimeter')" placeholder="Perímetro Abdominal"></vue-input>
             <vue-input :disabled="viewOnly" class="col-md-4" v-model="form.abdominal_perimeter_classification" label="Clas. Peri. Adominal" type="text" name="abdominal_perimeter_classification" :error="form.errorsFor('abdominal_perimeter_classification')" placeholder="Clas. Peri. Adominal"></vue-input>
         </b-form-row>
-        <b-form-row>
+        <b-form-row v-if="!viewOnly || (viewOnly && form.diagnostic_code_1 && form.diagnostic_1)">
             <vue-input :disabled="viewOnly" class="col-md-4" v-model="form.diagnostic_code_1" label="Cód Diagnóstico 1" type="text" name="diagnostic_code_1" :error="form.errorsFor('diagnostic_code_1')" placeholder="Cód Diagnóstico 1"></vue-input>
             <vue-textarea :disabled="viewOnly" class="col-md-8" v-model="form.diagnostic_1" label="Diagnóstico 1" :error="form.errorsFor('diagnostic_1')" name="diagnostic_1" placeholder="Diagnóstico 1"></vue-textarea>
         </b-form-row>
-        <b-form-row>
+        <b-form-row v-if="!viewOnly || (viewOnly && form.diagnostic_code_2 && form.diagnostic_2)">
             <vue-input :disabled="viewOnly" class="col-md-4" v-model="form.diagnostic_code_2" label="Cód Diagnóstico 2" type="text" name="diagnostic_code_2" :error="form.errorsFor('diagnostic_code_2')" placeholder="Cód Diagnóstico 2"></vue-input>
             <vue-textarea :disabled="viewOnly" class="col-md-8" v-model="form.diagnostic_2" label="Diagnóstico 2" :error="form.errorsFor('diagnostic_2')" name="diagnostic_2" placeholder="Diagnóstico 2"></vue-textarea>
         </b-form-row>
-        <b-form-row>
+        <b-form-row v-if="!viewOnly || (viewOnly && form.diagnostic_code_3 && form.diagnostic_3)">
             <vue-input :disabled="viewOnly" class="col-md-4" v-model="form.diagnostic_code_3" label="Cód Diagnóstico 3" type="text" name="diagnostic_code_3" :error="form.errorsFor('diagnostic_code_3')" placeholder="Cód Diagnóstico 3"></vue-input>
             <vue-textarea :disabled="viewOnly" class="col-md-8" v-model="form.diagnostic_3" label="Diagnóstico 3" :error="form.errorsFor('diagnostic_3')" name="diagnostic_3" placeholder="Diagnóstico 3"></vue-textarea>
         </b-form-row>
-        <b-form-row>
+        <b-form-row v-if="!viewOnly || (viewOnly && form.diagnostic_code_4 && form.diagnostic_4)">
             <vue-input :disabled="viewOnly" class="col-md-4" v-model="form.diagnostic_code_3" label="Cód Diagnóstico 4" type="text" name="diagnostic_code_4" :error="form.errorsFor('diagnostic_code_4')" placeholder="Cód Diagnóstico 4"></vue-input>
             <vue-textarea :disabled="viewOnly" class="col-md-8" v-model="form.diagnostic_4" label="Diagnóstico 4" :error="form.errorsFor('diagnostic_4')" name="diagnostic_4" placeholder="Diagnóstico 4"></vue-textarea>
         </b-form-row>
-        <b-form-row>
+        <b-form-row v-if="!viewOnly || (viewOnly && form.diagnostic_code_5 && form.diagnostic_5)">
             <vue-input :disabled="viewOnly" class="col-md-4" v-model="form.diagnostic_code_5" label="Cód Diagnóstico 5" type="text" name="diagnostic_code_5" :error="form.errorsFor('diagnostic_code_5')" placeholder="Cód Diagnóstico 5"></vue-input>
             <vue-textarea :disabled="viewOnly" class="col-md-8" v-model="form.diagnostic_5" label="Diagnóstico 5" :error="form.errorsFor('diagnostic_5')" name="diagnostic_5" placeholder="Diagnóstico 5"></vue-textarea>
         </b-form-row>
-        <b-form-row>
+        <b-form-row v-if="!viewOnly || (viewOnly && form.diagnostic_code_6 && form.diagnostic_6)">
             <vue-input :disabled="viewOnly" class="col-md-4" v-model="form.diagnostic_code_6" label="Cód Diagnóstico 6" type="text" name="diagnostic_code_6" :error="form.errorsFor('diagnostic_code_6')" placeholder="Cód Diagnóstico 6"></vue-input>
             <vue-textarea :disabled="viewOnly" class="col-md-8" v-model="form.diagnostic_6" label="Diagnóstico 6" :error="form.errorsFor('diagnostic_6')" name="diagnostic_6" placeholder="Diagnóstico 6"></vue-textarea>
         </b-form-row>
-        <b-form-row>
+        <b-form-row v-if="!viewOnly || (viewOnly && form.diagnostic_code_7 && form.diagnostic_7)">
             <vue-input :disabled="viewOnly" class="col-md-4" v-model="form.diagnostic_code_7" label="Cód Diagnóstico 7" type="text" name="diagnostic_code_7" :error="form.errorsFor('diagnostic_code_7')" placeholder="Cód Diagnóstico 7"></vue-input>
             <vue-textarea :disabled="viewOnly" class="col-md-8" v-model="form.diagnostic_7" label="Diagnóstico 7" :error="form.errorsFor('diagnostic_7')" name="diagnostic_7" placeholder="Diagnóstico 7"></vue-textarea>
         </b-form-row>
-        <b-form-row>
+        <b-form-row v-if="!viewOnly || (viewOnly && form.diagnostic_code_8 && form.diagnostic_8)">
             <vue-input :disabled="viewOnly" class="col-md-4" v-model="form.diagnostic_code_8" label="Cód Diagnóstico 8" type="text" name="diagnostic_code_8" :error="form.errorsFor('diagnostic_code_8')" placeholder="Cód Diagnóstico 8"></vue-input>
             <vue-textarea :disabled="viewOnly" class="col-md-8" v-model="form.diagnostic_8" label="Diagnóstico 8" :error="form.errorsFor('diagnostic_8')" name="diagnostic_8" placeholder="Diagnóstico 8"></vue-textarea>
         </b-form-row>
-        <b-form-row>
+        <b-form-row v-if="!viewOnly || (viewOnly && form.diagnostic_code_9 && form.diagnostic_9)">
             <vue-input :disabled="viewOnly" class="col-md-4" v-model="form.diagnostic_code_9" label="Cód Diagnóstico 9" type="text" name="diagnostic_code_9" :error="form.errorsFor('diagnostic_code_9')" placeholder="Cód Diagnóstico 9"></vue-input>
             <vue-textarea :disabled="viewOnly" class="col-md-8" v-model="form.diagnostic_9" label="Diagnóstico 9" :error="form.errorsFor('diagnostic_9')" name="diagnostic_9" placeholder="Diagnóstico 9"></vue-textarea>
         </b-form-row>
-        <b-form-row>
+        <b-form-row v-if="!viewOnly || (viewOnly && form.diagnostic_code_10 && form.diagnostic_10)">
             <vue-input :disabled="viewOnly" class="col-md-4" v-model="form.diagnostic_code_10" label="Cód Diagnóstico 10" type="text" name="diagnostic_code_10" :error="form.errorsFor('diagnostic_code_10')" placeholder="Cód Diagnóstico 10"></vue-input>
             <vue-textarea :disabled="viewOnly" class="col-md-8" v-model="form.diagnostic_10" label="Diagnóstico 10" :error="form.errorsFor('diagnostic_10')" name="diagnostic_10" placeholder="Diagnóstico 10"></vue-textarea>
         </b-form-row>
-        <b-form-row>
+        <b-form-row v-if="!viewOnly || (viewOnly && form.diagnostic_code_11 && form.diagnostic_11)">
             <vue-input :disabled="viewOnly" class="col-md-4" v-model="form.diagnostic_code_11" label="Cód Diagnóstico 11" type="text" name="diagnostic_code_11" :error="form.errorsFor('diagnostic_code_11')" placeholder="Cód Diagnóstico 11"></vue-input>
             <vue-textarea :disabled="viewOnly" class="col-md-8" v-model="form.diagnostic_11" label="Diagnóstico 11" :error="form.errorsFor('diagnostic_11')" name="diagnostic_11" placeholder="Diagnóstico 11"></vue-textarea>
         </b-form-row>
-        <b-form-row>
+        <b-form-row v-if="!viewOnly || (viewOnly && form.diagnostic_code_12 && form.diagnostic_12)">
             <vue-input :disabled="viewOnly" class="col-md-4" v-model="form.diagnostic_code_12" label="Cód Diagnóstico 12" type="text" name="diagnostic_code_12" :error="form.errorsFor('diagnostic_code_12')" placeholder="Cód Diagnóstico 12"></vue-input>
             <vue-textarea :disabled="viewOnly" class="col-md-8" v-model="form.diagnostic_12" label="Diagnóstico 12" :error="form.errorsFor('diagnostic_12')" name="diagnostic_12" placeholder="Diagnóstico 12"></vue-textarea>
         </b-form-row>
-        <b-form-row>
+        <b-form-row v-if="!viewOnly || (viewOnly && form.diagnostic_code_13 && form.diagnostic_13)">
             <vue-input :disabled="viewOnly" class="col-md-4" v-model="form.diagnostic_code_13" label="Cód Diagnóstico 13" type="text" name="diagnostic_code_13" :error="form.errorsFor('diagnostic_code_13')" placeholder="Cód Diagnóstico 13"></vue-input>
             <vue-textarea :disabled="viewOnly" class="col-md-8" v-model="form.diagnostic_13" label="Diagnóstico 13" :error="form.errorsFor('diagnostic_13')" name="diagnostic_13" placeholder="Diagnóstico 13"></vue-textarea>
         </b-form-row>

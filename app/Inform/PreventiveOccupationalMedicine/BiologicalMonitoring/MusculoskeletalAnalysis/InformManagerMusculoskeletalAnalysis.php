@@ -3,6 +3,7 @@
 namespace App\Inform\PreventiveOccupationalMedicine\BiologicalMonitoring\MusculoskeletalAnalysis;
 
 use App\Models\PreventiveOccupationalMedicine\BiologicalMonitoring\MusculoskeletalAnalysis\MusculoskeletalAnalysis;
+use DB;
 
 class InformManagerMusculoskeletalAnalysis
 {
@@ -95,7 +96,22 @@ class InformManagerMusculoskeletalAnalysis
      */
     private function imcClassification()
     {
-        return $this->getReportPerColumn('imc_lassification');
+        $data = MusculoskeletalAnalysis::select(
+            DB::raw("IF(imc_lassification LIKE 'delgadez%', 'Delgadez', (
+                IF(imc_lassification LIKE 'obeso%', 'Obeso', imc_lassification)
+              )
+            ) AS imc_lassification_group"),
+            DB::raw("COUNT(patient_identification) AS count")
+        )
+        ->inConsolidatedPersonalRiskCriterion($this->consolidatedPersonalRiskCriterion, $this->filtersType['consolidatedPersonalRiskCriterion'])
+        ->inBranchOffice($this->branchOffice, $this->filtersType['branchOffice'])
+        ->inCompanies($this->companies, $this->filtersType['companies'])
+        ->betweenDate($this->dateRange)
+        ->where('imc_lassification', '<>', '')
+        ->groupBy('imc_lassification_group')
+        ->pluck('count', 'imc_lassification_group');
+
+        return $this->buildDataChart($data);
     }
 
     /**

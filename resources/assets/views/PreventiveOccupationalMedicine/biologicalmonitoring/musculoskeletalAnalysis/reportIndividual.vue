@@ -7,6 +7,11 @@
     <div class="col-md">
       <b-card no-body>
         <b-card-body>
+            <b-row align-h="end" style="padding-bottom: 15px;">
+                <b-col cols="1">
+                    <b-btn variant="default" :to="{name: 'biologicalmonitoring-musculoskeletalanalysis'}">Atras</b-btn>
+                </b-col>
+            </b-row>
             <b-row>
                 <b-col>
                     <b-card bg-variant="transparent" border-variant="dark" title="" class="mb-3 box-shadow-none">
@@ -44,14 +49,29 @@
                     </b-card>
                 </b-col>
             </b-row>
+            <b-form-row v-if="patient_identification">
+                <div class="col-md-12" style="padding-bottom: 20px;">
+                    <tracing-inserter
+                        :key="keyTrancing"
+                        :disabled="false"
+                        :old-tracings="oldTracings"
+                        ref="tracingInserter"
+                    >
+                    </tracing-inserter>
+                </div>
+                <div class="col-md-12">
+                    <center>
+                        <b-btn type="submit" :disabled="isLoading" variant="primary" @click.prevent="saveTracing">Guardar Seguimiento</b-btn>
+                    </center>
+                </div>
+            </b-form-row>
+            <b-row class="float-right">
+                <b-col>
+                    <b-btn variant="default" :to="{name: 'biologicalmonitoring-musculoskeletalanalysis'}">Atras</b-btn>
+                </b-col>
+            </b-row>
         </b-card-body>
       </b-card>
-    </div>
-
-    <div class="row float-right pt-10 pr-10">
-        <template>
-            <b-btn variant="default" :to="{name: 'biologicalmonitoring-musculoskeletalanalysis'}">Atras</b-btn>
-        </template>
     </div>
   </div>
 </template>
@@ -59,6 +79,7 @@
 <script>
 import VueAjaxAdvancedSelect from "@/components/Inputs/VueAjaxAdvancedSelect.vue";
 import MusculoskeletalAnalysisForm from '@/components/PreventiveOccupationalMedicine/BiologicalMonitoring/MusculoskeletalAnalysis/MusculoskeletalAnalysisForm.vue';
+import TracingInserter from '@/components/PreventiveOccupationalMedicine/BiologicalMonitoring/MusculoskeletalAnalysis/TracingInserter.vue';
 import Alerts from '@/utils/Alerts.js';
 
 export default {
@@ -68,20 +89,27 @@ export default {
     },
     components:{
         VueAjaxAdvancedSelect,
-        MusculoskeletalAnalysisForm
+        MusculoskeletalAnalysisForm,
+        TracingInserter
     },
     data () {
         return {
             isLoading: false,
-            patient_identification: '-1',
+            patient_identification: '',
             patienteDataUrl: '/selects/bm_musculoskeletalPacient',
-            dataAnalysis: []
+            dataAnalysis: [],
+            new_tracing: '',
+            oldTracings: [],
+            keyTrancing: true
         }
     },
     watch:{
         patient_identification () {
             if (!this.isLoading)
                 this.fetch()
+        },
+        oldTracings() {
+            this.keyTrancing = !this.keyTrancing
         }
     },
     methods: {
@@ -106,6 +134,26 @@ export default {
                 if (this[key]) {
                     this[key] = value;
                 }
+            });
+        },
+        saveTracing() {
+
+            this.isLoading = true;
+
+            axios.post('/biologicalmonitoring/musculoskeletalAnalysis/saveTracing', {
+                identification: this.patient_identification,
+                new_tracing: this.$refs.tracingInserter.getNewTracing(),
+                oldTracings: this.$refs.tracingInserter.getOldTracings()
+            })
+            .then(data => {
+                this.oldTracings = data.data.oldTracings;
+                this.$refs.tracingInserter.refresh()
+                this.isLoading = false;
+                Alerts.success('Exito', 'Seguimientos actualizados');
+            })
+            .catch(error => {
+                this.isLoading = false;
+                Alerts.error('Error', 'Hubo un problema almacenando la información');
             });
         }
     }
