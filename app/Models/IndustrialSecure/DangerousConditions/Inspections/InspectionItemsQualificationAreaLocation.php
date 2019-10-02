@@ -139,4 +139,19 @@ class InspectionItemsQualificationAreaLocation extends Model
             return $query;
         }
     }
+
+    /**
+     * filters checks through the given date
+     * @param  Illuminate\Database\Eloquent\Builder $query
+     * @param  array $dates
+     * @return Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeBetweenInspectionDate($query, $dates)
+    {
+        if (COUNT($dates) == 2)
+        {
+            $query->whereBetween('sau_ph_inspections.created_at', $dates);
+            return $query;
+        }
+    }
 }
