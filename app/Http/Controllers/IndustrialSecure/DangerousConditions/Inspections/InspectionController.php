@@ -12,7 +12,9 @@ use App\Models\Administrative\Headquarters\EmployeeHeadquarter;
 use App\Models\Administrative\Processes\EmployeeProcess;
 use App\Models\Administrative\Areas\EmployeeArea;
 use App\Http\Requests\IndustrialSecure\DangerousConditions\Inspections\InspectionRequest;
+use App\Jobs\IndustrialSecure\DangerousConditions\Inspections\InspectionExportJob;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 use Session;
 use DB;
 
@@ -343,5 +345,40 @@ class InspectionController extends Controller
         ->toArray();
     
         return $areas;
+    }
+
+    public function export(Request $request)
+    {
+      try
+      {
+        $headquarters = $this->getValuesForMultiselect($request->headquarters);
+        $areas = $this->getValuesForMultiselect($request->areas);
+        //$names = $this->getValuesForMultiselect($request->names);
+        $filtersType = $request->filtersType;
+
+        $dates = [];
+        $dates_request = explode('/', $request->dateRange);
+
+        if (COUNT($dates_request) == 2)
+        {
+            array_push($dates, (Carbon::createFromFormat('D M d Y', $dates_request[0]))->format('Y-m-d'));
+            array_push($dates, (Carbon::createFromFormat('D M d Y', $dates_request[1]))->format('Y-m-d'));
+        }
+
+        $filters = [
+            'headquarters' => $headquarters,
+            'areas' => $areas,
+            //'names' => $names,
+            'dates' => $dates,
+            'filtersType' => $filtersType
+        ];
+
+        InspectionExportJob::dispatch(Auth::user(), Session::get('company_id'), $filters);
+      
+        return $this->respondHttp200();
+
+      } catch(Exception $e) {
+        return $this->respondHttp500();
+      }
     }
 }
