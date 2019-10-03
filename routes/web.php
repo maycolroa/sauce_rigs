@@ -165,6 +165,7 @@ Route::middleware(['auth'])->group(function () {
           Route::post('conditions', 'IndustrialSecure\Inspections\ConditionReportController@multiselectConditions');
           Route::post('rates', 'General\MultiSelectRadioController@inspectRates');
         });
+        Route::post('themes', 'IndustrialSecure\DangerousConditions\Inspections\InspectionController@multiselectThemes');
 
         Route::prefix('legalMatrix')->group(function () {
           Route::post('interests', 'LegalAspects\LegalMatrix\InterestController@multiselect');
@@ -295,6 +296,8 @@ Route::middleware(['auth'])->group(function () {
         Route::post('inspection/qualification/data', 'IndustrialSecure\DangerousConditions\Inspections\InspectionQualificationController@data');
         Route::ApiResource('inspection/qualification', 'IndustrialSecure\DangerousConditions\Inspections\InspectionQualificationController');
         Route::post('inspection/export', 'IndustrialSecure\DangerousConditions\Inspections\InspectionController@export');
+        Route::post('inspection/report', 'IndustrialSecure\DangerousConditions\Inspections\InspectionReportController@data');
+        Route::post('inspection/report/getTotals', 'IndustrialSecure\DangerousConditions\Inspections\InspectionReportController@getTotals');
 
       /*Route::prefix('inspections')->group(function () {
 

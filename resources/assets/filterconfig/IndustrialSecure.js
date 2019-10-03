@@ -156,5 +156,33 @@ export default [
           label: 'Fecha de calificación',
         }
       ]
+    },
+    {
+      name: 'dangerousconditions-inspections-report',
+      filters: [
+        {
+          url: '/selects/headquarters',
+          key: 'headquarters',
+          type: 'select',
+          label: 'Sedes'
+        },
+        {
+          url: '/selects/areas',
+          key: 'areas',
+          type: 'select',
+          label: 'Áreas'
+        },
+        {
+          url: '/selects/themes',
+          key: 'themes',
+          type: 'select',
+          label: 'Temas',
+        },
+        {
+          key: 'dateRange',
+          type: 'dateRange',
+          label: 'Fecha',
+        }
+      ]
     }
 ];

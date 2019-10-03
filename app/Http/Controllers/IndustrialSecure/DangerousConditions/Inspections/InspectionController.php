@@ -381,4 +381,16 @@ class InspectionController extends Controller
         return $this->respondHttp500();
       }
     }
+
+    public function multiselectThemes()
+    {
+        $themes = Inspection::selectRaw(
+          "GROUP_CONCAT(sau_ph_inspection_sections.id) as ids,
+          sau_ph_inspection_sections.name as name")
+        ->join('sau_ph_inspection_sections', 'sau_ph_inspection_sections.inspection_id', 'sau_ph_inspections.id')
+        ->groupBy('sau_ph_inspection_sections.name')
+        ->pluck('ids', 'name');
+
+      return $this->multiSelectFormat($themes);
+    }
 }
