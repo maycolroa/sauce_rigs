@@ -8,6 +8,7 @@ use App\Vuetable\Facades\Vuetable;
 use Illuminate\Support\Facades\Auth;
 use App\Models\IndustrialSecure\DangerousConditions\Inspections\InspectionItemsQualificationAreaLocation;
 use App\Models\IndustrialSecure\DangerousConditions\Inspections\Inspection;
+use App\Jobs\IndustrialSecure\DangerousConditions\Inspections\InspectionReportExportJob;
 use App\Models\General\Module;
 use Carbon\Carbon;
 use Validator;
@@ -235,5 +236,43 @@ class InspectionReportController extends Controller
         return $this->respondHttp200([
             'data' => $result
         ]);
+    }
+
+    public function export(Request $request)
+    {
+      try
+        {
+          $headquarters = $this->getValuesForMultiselect($request->headquarters);
+          $areas = $this->getValuesForMultiselect($request->areas);
+          $themes = $this->getValuesForMultiselect($request->themes);
+          $filtersType = $request->filtersType;
+          $dates = [];
+  
+          if (isset($request->dateRange) && $request->dateRange)
+          {
+              $dates_request = explode('/', $request->dateRange);
+  
+              if (COUNT($dates_request) == 2)
+              {
+                  array_push($dates, (Carbon::createFromFormat('D M d Y',$dates_request[0]))->format('Y-m-d 00:00:00'));
+                  array_push($dates, (Carbon::createFromFormat('D M d Y',$dates_request[1]))->format('Y-m-d 23:59:59'));
+              }
+          }
+
+            $filters = [
+                'headquarters' => $headquarters,
+                'areas' => $areas,
+                'themes' => $themes,
+                'dates' => $dates,
+                'filtersType' => $filtersType,
+                'table' => $request->table
+            ];
+
+            InspectionReportExportJob::dispatch(Auth::user(), Session::get('company_id'), $filters);
+        
+            return $this->respondHttp200();
+        } catch(Exception $e) {
+            return $this->respondHttp500();
+        }
     }
 }

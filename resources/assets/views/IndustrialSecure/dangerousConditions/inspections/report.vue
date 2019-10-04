@@ -94,12 +94,13 @@ export default {
             this.updateTotales()
         },
         exportReport() {
-            /*axios.post('/legalAspects/evaluationContract/exportReport', this.filters)
+            let postData = Object.assign({}, {table: this.table}, this.filters);
+            axios.post('/industrialSecurity/dangerousConditions/inspection/exportReport', postData)
                 .then(response => {
                     Alerts.warning('Información', 'Se inicio la exportación, se le notificara a su correo electronico cuando finalice el proceso.');
                 }).catch(error => {
                     Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
-                });*/
+                });
         },
         updateTotales()
         {

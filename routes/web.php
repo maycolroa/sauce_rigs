@@ -298,6 +298,7 @@ Route::middleware(['auth'])->group(function () {
         Route::post('inspection/export', 'IndustrialSecure\DangerousConditions\Inspections\InspectionController@export');
         Route::post('inspection/report', 'IndustrialSecure\DangerousConditions\Inspections\InspectionReportController@data');
         Route::post('inspection/report/getTotals', 'IndustrialSecure\DangerousConditions\Inspections\InspectionReportController@getTotals');
+        Route::post('inspection/exportReport', 'IndustrialSecure\DangerousConditions\Inspections\InspectionReportController@export');
 
       /*Route::prefix('inspections')->group(function () {
 

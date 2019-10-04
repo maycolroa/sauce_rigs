@@ -1,0 +1,240 @@
+<?php
+
+namespace App\Exports\IndustrialSecure\DangerousConditions\Inspections;
+
+use App\Models\IndustrialSecure\DangerousConditions\Inspections\InspectionItemsQualificationAreaLocation;
+use App\Models\General\Module;
+use Maatwebsite\Excel\Concerns\FromCollection;
+use Maatwebsite\Excel\Concerns\WithMapping;
+use Maatwebsite\Excel\Concerns\WithHeadings;
+use Maatwebsite\Excel\Concerns\WithTitle;
+use Maatwebsite\Excel\Concerns\WithEvents;
+use Maatwebsite\Excel\Concerns\ShouldAutoSize;
+use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
+use Maatwebsite\Excel\Concerns\WithColumnFormatting;
+use Maatwebsite\Excel\Concerns\RegistersEventListeners;
+use Maatwebsite\Excel\Events\AfterSheet;
+use \Maatwebsite\Excel\Sheet;
+use DB;
+
+Sheet::macro('styleCells', function (Sheet $sheet, string $cellRange, array $style) {
+  $sheet->getDelegate()->getStyle($cellRange)->applyFromArray($style);
+});
+
+class InspectionReportExcel implements FromCollection, WithMapping, WithHeadings, WithTitle, WithEvents, WithColumnFormatting, ShouldAutoSize
+{
+    use RegistersEventListeners;
+
+    protected $company_id;
+    protected $filters;
+    protected $table;
+
+    public function __construct($company_id, $filters)
+    {
+      $this->company_id = $company_id;
+      $this->filters = $filters;
+      $this->table = $this->filters['table'];
+    }
+
+    public function collection()
+    {
+      $module_id = Module::where('name', 'dangerousConditions')->first()->id;
+
+      if ($this->table == "with_theme" )
+        $column = 's.name as section';
+      else
+        $column = 'l.name as headquarter';
+
+      $consultas = InspectionItemsQualificationAreaLocation::select(
+          'a.name as area',
+          'l.name as headquarter',
+          "{$column}",
+          DB::raw('(
+            select count(distinct i2.id) from sau_ph_inspection_items_qualification_area_location iq2
+            inner join sau_ph_inspection_section_items it2 on iq2.item_id = it2.id
+            inner join sau_ph_inspection_sections s2 on it2.inspection_section_id = s2.id
+            inner join sau_ph_inspections i2 on s2.inspection_id = i2.id
+            where iq2.employee_headquarter_id = sau_ph_inspection_items_qualification_area_location.employee_headquarter_id and iq2.employee_area_id = sau_ph_inspection_items_qualification_area_location.employee_area_id
+            ) as numero_inspecciones'),
+          DB::raw('count(sau_ph_inspection_items_qualification_area_location.qualification_id) as numero_items'),
+          DB::raw('count(IF(q.fulfillment = 1, q.id, null)) as numero_items_cumplimiento'),
+          DB::raw('count(IF(q.fulfillment = 0, q.id, null)) as numero_items_no_cumplimiento'),
+          DB::raw("sum(
+            (SELECT IF(COUNT(IF(iap2.state=\"Pendiente\",0, NULL)) > 0, 1, 0) 
+            FROM sau_action_plans_activities iap2 
+            inner join sau_action_plans_activity_module iam2 on iam2.activity_id = iap2.id
+            WHERE 
+            iam2.item_table_name = 'sau_ph_inspection_items_qualification_area_location' and 
+            iam2.module_id = {$module_id} and
+            iam2.item_id = sau_ph_inspection_items_qualification_area_location.id)
+            )AS numero_planes_no_ejecutados"),
+          DB::raw("sum(
+            (SELECT IF(COUNT(true), 1, 0) as actividades_totales
+            FROM sau_action_plans_activities iap2 
+            inner join sau_action_plans_activity_module iam2 on iam2.activity_id = iap2.id
+            WHERE 
+            iam2.item_table_name = 'sau_ph_inspection_items_qualification_area_location' and 
+            iam2.module_id = {$module_id} and
+            iam2.item_id = sau_ph_inspection_items_qualification_area_location.id)
+            )AS actividades_totales")
+        )
+        ->join('sau_ph_inspection_section_items as it','sau_ph_inspection_items_qualification_area_location.item_id', 'it.id')
+        ->join('sau_ph_inspection_sections as s','it.inspection_section_id', 's.id')
+        ->join('sau_ph_inspections as i','s.inspection_id', 'i.id')
+        ->join('sau_employees_areas as a','a.id', 'sau_ph_inspection_items_qualification_area_location.employee_area_id')
+        ->join('sau_employees_headquarters as l','l.id', 'sau_ph_inspection_items_qualification_area_location.employee_headquarter_id')
+        ->join('sau_ct_qualifications as q','q.id', 'sau_ph_inspection_items_qualification_area_location.qualification_id')
+        ->where('i.company_id', $this->company_id)
+        ->inHeadquarters($this->filters['headquarters'], $this->filters['filtersType']['headquarters'])
+        ->inAreas($this->filters['areas'], $this->filters['filtersType']['areas'])
+        ->betweenDate($this->filters["dates"])
+        ->inThemes($this->filters["themes"], $this->filters['filtersType']['themes'], 's');
+
+        if ($this->table == "with_theme")
+          $consultas->groupBy('area', 'headquarter', 'numero_inspecciones', 'section');
+        else
+          $consultas->groupBy('area', 'headquarter', 'numero_inspecciones');
+
+      $consultas = $consultas->get();
+
+      $consultas->transform(function($item, $key) {
+        
+        $item->porcentaje_items_cumplimiento = ($item->numero_items > 0) ? round(($item->numero_items_cumplimiento / $item->numero_items) * 100, 1)."%" : '0%';
+
+        $item->porcentaje_items_no_cumplimiento = ($item->numero_items > 0) ? round(($item->numero_items_no_cumplimiento / $item->numero_items) * 100, 1)."%" : '0%';
+
+        $item->numero_planes_ejecutados = $item->actividades_totales - $item->numero_planes_no_ejecutados;
+
+        return $item;
+      });
+        
+      /*$result = collect([]);
+
+      $totales = new \stdClass();
+      $totales->objective = '';
+      $totales->subobjective = 'TOTALES';
+      $totales->t_evaluations = 0;
+      $totales->t_cumple = 0;
+      $totales->t_no_cumple = 0;
+      $totales->p_cumple = 0;
+      $totales->p_no_cumple = 0;
+
+      foreach ($evaluations->get() as $value)
+      {
+        $result->push($value);
+
+        $totales->t_evaluations = $totales->t_evaluations + $value->t_evaluations;
+        $totales->t_cumple = $totales->t_cumple + $value->t_cumple;
+        $totales->t_no_cumple = $totales->t_no_cumple + $value->t_no_cumple;
+      }
+
+      if ($totales->t_evaluations > 0)
+      {
+        $totales->p_cumple = $totales->t_cumple / ($totales->t_cumple + $totales->t_no_cumple);
+        $totales->p_no_cumple = $totales->t_no_cumple / ($totales->t_cumple + $totales->t_no_cumple);
+        $result->push($totales);
+      }*/
+
+      return $consultas;
+    }
+
+    public function map($data): array
+    {
+      $result = [
+        $data->headquarter,
+        $data->area
+      ];
+
+      if ($this->table == "with_theme")
+        array_push($result, $data->section);
+
+      $result = array_merge($result, [
+        (string)$data->numero_inspecciones,
+        (string)$data->numero_items_cumplimiento,
+        (string)$data->numero_items_no_cumplimiento,
+        $data->porcentaje_items_cumplimiento,
+        $data->porcentaje_items_no_cumplimiento,
+        (string)$data->numero_planes_ejecutados,
+        (string)$data->numero_planes_no_ejecutados,
+      ]);
+
+      return $result;
+    }
+
+    public function headings(): array
+    {
+      $columns = [
+        'Sede',
+        'Área'
+      ];
+
+      if ($this->table == "with_theme")
+        array_push($columns, 'Tema');
+
+      $columns = array_merge($columns, [
+        '# Inspecciones',
+        '# Items No Cumplimiento',
+        '# Items Cumplimiento',
+        '% Items Cumplimiento',
+        '% Items No Cumplimiento',
+        '# Planes de Acción Realizados',
+        '# Planes de Acción No Realizados'
+      ]);
+
+      return $columns;
+    }
+
+    public function columnFormats(): array
+    {
+      if ($this->table == "with_theme")
+      {
+        return [
+          'D' => NumberFormat::FORMAT_NUMBER,
+          'E' => NumberFormat::FORMAT_NUMBER,
+          'F' => NumberFormat::FORMAT_NUMBER,
+          'G' => NumberFormat::FORMAT_PERCENTAGE_00,
+          'H' => NumberFormat::FORMAT_PERCENTAGE_00,
+          'I' => NumberFormat::FORMAT_NUMBER,
+          'J' => NumberFormat::FORMAT_NUMBER,
+        ];
+      }
+      else
+      {
+        return [
+          'C' => NumberFormat::FORMAT_NUMBER,
+          'D' => NumberFormat::FORMAT_NUMBER,
+          'E' => NumberFormat::FORMAT_NUMBER,
+          'F' => NumberFormat::FORMAT_PERCENTAGE_00,
+          'G' => NumberFormat::FORMAT_PERCENTAGE_00,
+          'H' => NumberFormat::FORMAT_NUMBER,
+          'I' => NumberFormat::FORMAT_NUMBER,
+        ];
+      }
+    }
+
+    public static function afterSheet(AfterSheet $event)
+    {
+      $event->sheet->styleCells(
+        'A1:J1',
+          [
+            'alignment' => [
+              'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT,
+              'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
+            ],
+            'font' => [
+               'name' => 'Arial', 
+               'bold' => true,
+            ]
+          ]
+      );
+    }
+
+    /**
+     * @return string
+    */
+    public function title(): string
+    {
+        return 'Inspecciones - Reporte';
+    }
+}
+
