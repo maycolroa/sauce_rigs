@@ -639,4 +639,34 @@ export default [
         configNameFilter: 'dangerousconditions-inspections-qualification'
     }
 },
+{
+    name: 'dangerousconditions-inspections-report',
+    fields: [
+        { name: 'sau_ph_inspection_items_qualification_area_location.id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true },
+        { name: 'sau_employees_headquarters.name', data: 'headquarter', title: 'Sede', sortable: true, searchable: false, detail: false, key: false },
+        { name: 'sau_employees_areas.name', data: 'area', title: 'Area', sortable: true, searchable: false, detail: false, key: false },
+        { name: 'section', data: 'section', title: 'Temas', sortable: true, searchable: false, detail: false, key: false },
+        { name: 'numero_inspecciones', data: 'numero_inspecciones', title: '# Inspecciones', sortable: true, searchable: false, detail: false, key: false },
+        { name: 'numero_items_cumplimiento', data: 'numero_items_cumplimiento', title: '# Items Cumplimiento', sortable: true, searchable: false, detail: false, key: false },
+        { name: 'numero_items_no_cumplimiento', data: 'numero_items_no_cumplimiento', title: '# Items No Cumplimiento', sortable: true, searchable: false, detail: false, key: false },
+        { name: 'porcentaje_items_cumplimiento', data: 'porcentaje_items_cumplimiento', title: '% Items Cumplimiento', sortable: true, searchable: false, detail: false, key: false },
+        { name: 'porcentaje_items_no_cumplimiento', data: 'porcentaje_items_no_cumplimiento', title: '% Items No Cumplimiento', sortable: true, searchable: false, detail: false, key: false },
+        { name: 'numero_planes_ejecutados', data: 'numero_planes_ejecutados', title: '# Planes de Acción Realizados', sortable: true, searchable: false, detail: false, key: false },
+        { name: 'numero_planes_no_ejecutados', data: 'numero_planes_no_ejecutados', title: '# Planes de Acción No Realizados', sortable: true, searchable: false, detail: false, key: false },
+    ],
+    'controlls': [{
+        type: 'push',
+        buttons: []
+    },
+    {
+        type: 'base',
+        buttons: [],
+    }],
+
+    configuration: {
+        urlData: '/industrialSecurity/dangerousConditions/inspection/report',
+        filterColumns: false,
+        configNameFilter: 'dangerousconditions-inspections-report'
+    }
+},
 ];

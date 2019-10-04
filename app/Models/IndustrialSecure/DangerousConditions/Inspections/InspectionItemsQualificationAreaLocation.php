@@ -154,4 +154,33 @@ class InspectionItemsQualificationAreaLocation extends Model
             return $query;
         }
     }
+
+    /**
+     * filters checks through the given themes
+     * @param  Illuminate\Database\Eloquent\Builder $query
+     * @param  array $themes
+     * @return Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeInThemes($query, $themes, $typeSearch = 'IN', $alias = 'sau_ph_inspection_sections')
+    {
+        $ids = [];
+
+        foreach ($themes as $key => $value)
+        {
+            $ids[] = $value;
+        }
+
+        if (COUNT($ids) > 0)
+        {
+            $ids = explode(",", implode(",", $ids));
+
+            if ($typeSearch == 'IN')
+                $query->whereIn("{$alias}.id", $ids);
+
+            else if ($typeSearch == 'NOT IN')
+                $query->whereNotIn("{$alias}.id", $ids);
+        }
+
+        return $query;
+    }
 }
