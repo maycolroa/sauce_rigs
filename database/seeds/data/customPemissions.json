@@ -184,8 +184,16 @@
                         "display_name": "Condiciones Peligrosas/Inspecciones - exportar"
                     },
                     {
-                        "name": "ph_inspections_report",
-                        "display_name": "Condiciones Peligrosas/Inspecciones - exportar"
+                        "name": "ph_inspections_report_view",
+                        "display_name": "Condiciones Peligrosas/Inspecciones - ver reportes"
+                    },
+                    {
+                        "name": "ph_inspections_report_export",
+                        "display_name": "Condiciones Peligrosas/Inspecciones - exportar reportes"
+                    },
+                    {
+                        "name": "ph_reports_c",
+                        "display_name": "Condiciones Peligrosas/Reportes - crear"
                     },
                     {
                         "name": "ph_reports_r",
@@ -202,6 +210,14 @@
                     {
                         "name": "ph_reports_export",
                         "display_name": "Condiciones Peligrosas/Reportes - exportar"
+                    },
+                    {
+                        "name": "ph_reports_informs_view",
+                        "display_name": "Condiciones Peligrosas/Reportes - ver informes"
+                    },
+                    {
+                        "name": "ph_reports_qualifications",
+                        "display_name": "Condiciones Peligrosas/Reportes - calificar"
                     }
                 ]
             }

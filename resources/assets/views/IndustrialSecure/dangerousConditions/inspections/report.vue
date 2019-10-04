@@ -9,7 +9,7 @@
             <b-card-header class="with-elements">
                 <div class="card-title-elements"> 
                     <b-btn :to="{name:'dangerousconditions-inspections'}" variant="secondary">Regresar</b-btn>
-                    <b-btn variant="primary" @click="exportReport()" v-b-tooltip.top title="Exportar"><i class="fas fa-download"></i></b-btn>
+                    <b-btn v-if="auth.can['ph_inspections_report_export']" variant="primary" @click="exportReport()" v-b-tooltip.top title="Exportar"><i class="fas fa-download"></i></b-btn>
                 </div>
             </b-card-header>
             <b-card-body>

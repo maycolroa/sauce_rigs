@@ -162,8 +162,8 @@ Route::middleware(['auth'])->group(function () {
         });
 
         Route::prefix('industrialSecurity')->group(function () {
-          Route::post('conditions', 'IndustrialSecure\Inspections\ConditionReportController@multiselectConditions');
-          Route::post('rates', 'General\MultiSelectRadioController@inspectRates');
+          Route::post('conditions', 'IndustrialSecure\DangerousConditions\Reports\ReportController@multiselectConditions');
+          Route::post('rates', 'General\MultiSelectRadioController@phRates');
         });
         Route::post('themes', 'IndustrialSecure\DangerousConditions\Inspections\InspectionController@multiselectThemes');
 
@@ -299,15 +299,11 @@ Route::middleware(['auth'])->group(function () {
         Route::post('inspection/report', 'IndustrialSecure\DangerousConditions\Inspections\InspectionReportController@data');
         Route::post('inspection/report/getTotals', 'IndustrialSecure\DangerousConditions\Inspections\InspectionReportController@getTotals');
         Route::post('inspection/exportReport', 'IndustrialSecure\DangerousConditions\Inspections\InspectionReportController@export');
-
-      /*Route::prefix('inspections')->group(function () {
-
-        Route::ApiResource('conditionsReports', 'IndustrialSecure\Inspections\ConditionReportController');
-        Route::post('conditionsReports/data', 'IndustrialSecure\Inspections\ConditionReportController@data');
-        Route::post('conditionsReports/export', 'IndustrialSecure\Inspections\ConditionReportController@export');
-        Route::post('conditionsReports/image', 'IndustrialSecure\Inspections\ConditionReportController@storeImage');
-        Route::post('conditionsReports/image/download', 'IndustrialSecure\Inspections\ConditionReportController@downloadImage');*/
       
+        Route::ApiResource('report', 'IndustrialSecure\DangerousConditions\Reports\ReportController');
+        Route::post('inspection/data', 'IndustrialSecure\DangerousConditions\Reports\ReportController@data');
+        Route::post('inspection/qualification/saveImage', 'IndustrialSecure\DangerousConditions\Reports\ReportController@saveImage');
+        Route::post('inspection/qualification/saveQualification', 'IndustrialSecure\DangerousConditions\Reports\ReportController@saveQualification');
       });
 
       Route::prefix('tags')->group(function () {

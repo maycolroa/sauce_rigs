@@ -1,7 +1,7 @@
 <template>
   <div>
     <h4 class="font-weight-bold mb-4">
-      Inspecciones
+       <span class="text-muted font-weight-light">Reportes</span>
     </h4>
 
 
@@ -9,15 +9,14 @@
       <b-card no-body>
         <b-card-header class="with-elements">
           <div class="card-title-elements" v-if="auth.can['ph_inspections_c']">
-            <b-btn :to="{name:'dangerousconditions-inspections-create'}" variant="primary">Crear Inspección</b-btn>
-            <b-btn v-if="auth.can['ph_inspections_report_view']" :to="{name:'dangerousconditions-inspection-report'}" variant="primary">Ver Reportes</b-btn>
-            <b-btn v-if="auth.can['ph_inspections_export']" variant="primary" @click="exportData()" v-b-tooltip.top title="Exportar"><i class="fas fa-download"></i></b-btn>
+            <b-btn v-if="auth.can['ph_reports_c']" :to="{name:'dangerousconditions-reports-create'}" variant="primary">Crear Reporte</b-btn>
+            <b-btn v-if="auth.can['ph_reports_export']" variant="primary" @click="exportData()" v-b-tooltip.top title="Exportar"><i class="fas fa-download"></i></b-btn>
           </div>
         </b-card-header>
         <b-card-body>
              <vue-table
-                configName="dangerousconditions-inspections"
-                v-if="auth.can['ph_inspections_r']"
+                configName="dangerousconditions-report"
+                v-if="auth.can['ph_reports_r']"
                 @filtersUpdate="setFilters"
                 ></vue-table>
         </b-card-body>
@@ -30,11 +29,11 @@
 import Alerts from '@/utils/Alerts.js';
 
 export default {
-  name: 'dangerousConditions-inspections',
+  name: 'dangerousconditions-reports',
   metaInfo: {
-    title: 'Inspecciones'
+    title: 'Condiciones Peligrosas - Reportes'
   },
-  data () {
+   data () {
     return {
       filters: []
     }
@@ -45,7 +44,7 @@ export default {
       this.filters = value
     },
     exportData(){
-      axios.post('/industrialSecurity/dangerousConditions/inspection/export', this.filters)
+      axios.post('/industrialSecurity/dangerousConditions/report/export', this.filters)
       .then(response => {
         Alerts.warning('Información', 'Se inicio la exportación, se le notificara a su correo electronico cuando finalice el proceso.');
       }).catch(error => {

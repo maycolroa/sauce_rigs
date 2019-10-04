@@ -148,7 +148,7 @@ class MultiSelectRadioController extends Controller
         return $this->multiSelectFormat(collect($data));
     }
 
-    public function inspectRates()
+    public function phRates()
     {
         $data = [
             "Bajo" => "Bajo", 

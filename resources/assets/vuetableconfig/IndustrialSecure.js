@@ -669,4 +669,74 @@ export default [
         configNameFilter: 'dangerousconditions-inspections-report'
     }
 },
+{
+    name: 'dangerousconditions-report',
+    fields: [
+        { name: 'sau_ph_report.id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true },
+        { name: 'sau_employees_headquarters.name', data: 'headquarter', title: 'Sede', sortable: true, searchable: true, detail: false, key: false },
+        { name: 'sau_users.name', data: 'user', title: 'Usuario', sortable: true, searchable: true, detail: false, key: false },
+        { name: 'sau_ph_conditions.description', data: 'condition', title: 'Condición', sortable: true, searchable: true, detail: false, key: false },
+        { name: 'sau_ph_conditions_types.description', data: 'type', title: 'Tipo de condición', sortable: true, searchable: true, detail: false, key: false },
+        { name: 'sau_ph_report.rate', data: 'rate', title: 'Severidad', sortable: true, searchable: true, detail: false, key: false },
+        { name: 'sau_ph_report.created_at', data: 'created_at', title: 'Fecha de creación', sortable: true, searchable: true, detail: false, key: false },
+        { name: '', data: 'controlls', title: 'Controles', sortable: false, searchable: false, detail: false, key: false },
+    ],
+    'controlls': [{
+          type: 'push',
+          buttons: [{
+            config: {
+                color: 'outline-success',
+                borderless: true,
+                icon: 'ion ion-md-create',
+                title: 'Editar'
+            },
+            data: {
+                routePush: { name: 'dangerousconditions-reports-edit' },
+                id: 'id',
+            },
+            permission: 'ph_reports_u'
+          }, {
+            config: {
+                color: 'outline-info',
+                borderless: true,
+                icon: 'ion ion-md-eye',
+                title: 'Ver'
+            },
+            data: {
+                routePush: { name: 'dangerousconditions-reports-view' },
+                id: 'id',
+            },
+            permission: 'ph_reports_r'
+          },{
+            config: {
+                color: 'outline-info',
+                borderless: true,
+                icon: 'ion ion-md-list',
+                title: 'Calificar'
+            },
+            data: {
+                routePush: { name: 'dangerousconditions-reports-qualifications' },
+                id: 'id',
+            },
+            permission: 'ph_reports_r'
+        }]
+      },
+      {
+        type: 'base',
+        buttons: [{
+        name: 'delete',
+        data: {
+            action: '/industrialSecurity/dangerousConditions/report/',
+            id: 'id',
+            messageConfirmation: 'Esta seguro de borrar el reporte'
+        },
+        permission: 'ph_reports_r'
+        }],
+    }],
+    configuration: {
+        urlData: '/industrialSecurity/dangerousConditions/inspection/data',
+        filterColumns: true,
+        configNameFilter: 'dangerousconditions-inspections'
+    }
+},
 ];
