@@ -5,15 +5,17 @@ namespace App\Http\Controllers\IndustrialSecure\DangerousConditions\Reports;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Vuetable\Facades\Vuetable;
+use Illuminate\Support\Facades\Storage;
+use App\Models\General\Module;
 use App\Models\IndustrialSecure\DangerousConditions\Reports\Report;
 use App\Models\IndustrialSecure\DangerousConditions\Reports\Condition;
-use App\Models\Administrative\Headquarters\EmployeeHeadquarter;
-use App\Models\Administrative\Processes\EmployeeProcess;
-use App\Models\Administrative\Areas\EmployeeArea;
+use App\Models\IndustrialSecure\DangerousConditions\Reports\ConditionType;
 use App\Http\Requests\IndustrialSecure\DangerousConditions\Reports\ReportRequest;
+use App\Http\Requests\IndustrialSecure\DangerousConditions\Reports\SaveQualificationRequest;
 use App\Jobs\IndustrialSecure\DangerousConditions\Reports\ReportExportJob;
-use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
+use App\Facades\ActionPlans\Facades\ActionPlan;
+use Validator;
 use Session;
 use DB;
 
@@ -29,6 +31,8 @@ class ReportController extends Controller
         $this->middleware('permission:ph_reports_r');
         $this->middleware('permission:ph_reports_u', ['only' => 'update']);
         $this->middleware('permission:ph_reports_d', ['only' => 'destroy']);
+        $this->middleware('permission:ph_reports_export', ['only' => 'export']);
+        $this->middleware('permission:ph_reports_qualifications', ['only' => ['saveImage', 'downloadImage', 'saveQualification']]);
     }
 
     /**
@@ -62,25 +66,29 @@ class ReportController extends Controller
         ->join('sau_ph_conditions_types', 'sau_ph_conditions_types.id', 'sau_ph_conditions.condition_type_id')
         ->join('sau_employees_headquarters', 'sau_employees_headquarters.id', 'sau_ph_reports.employee_headquarter_id');
 
-        /*$filters = $request->get('filters');
+        $filters = $request->get('filters');
 
         if (COUNT($filters) > 0)
         {
-            $inspections->inHeadquarters($this->getValuesForMultiselect($filters["headquarters"]), $filters['filtersType']['headquarters']);
-            $inspections->inAreas($this->getValuesForMultiselect($filters["areas"]), $filters['filtersType']['areas']);
+            $reports->inConditions($this->getValuesForMultiselect($filters["conditions"]), $filters['filtersType']['conditions']);
+            $reports->inConditionTypes($this->getValuesForMultiselect($filters["conditionTypes"]), $filters['filtersType']['conditionTypes']);
+            $reports->betweenDate($this->formatDatetimeToBetweenFilter($filters["dateRange"]));
 
-            $dates_request = explode('/', $filters["dateRange"]);
+            $states = $this->getValuesForMultiselect($filters["states"]);
 
-            $dates = [];
-
-            if (COUNT($dates_request) == 2)
+            if (COUNT($states) > 0)
             {
-                array_push($dates, $this->formatDateToSave($dates_request[0]));
-                array_push($dates, $this->formatDateToSave($dates_request[1]));
+                $module_id = Module::where('name', 'dangerousConditions')->first()->id;
+
+                $reports
+                ->join('sau_action_plans_activity_module', 'sau_action_plans_activity_module.item_id', 'sau_ph_reports.id')
+                ->join('sau_action_plans_activities', 'sau_action_plans_activities.id', 'sau_action_plans_activity_module.activity_id')
+                ->where('item_table_name', 'sau_ph_reports')
+                ->where('sau_action_plans_activity_module.module_id', $module_id)
+                ->inStates($states, $filters['filtersType']['states'])
+                ->groupBy('sau_ph_reports.id', 'headquarter', 'sau_ph_reports.created_at', 'user', 'condition', 'type', 'sau_ph_reports.rate');
             }
-                
-            $inspections->betweenDate($dates);
-        }*/
+        }
 
         return Vuetable::of($reports)
                     ->make();
@@ -130,11 +138,19 @@ class ReportController extends Controller
         {
             $report = Report::findOrFail($id);
 
+            $report->user;
             $report->multiselect_regional = $report->regional ? $report->regional->multiselect() : []; 
             $report->multiselect_sede = $report->headquarter ? $report->headquarter->multiselect() : []; 
             $report->multiselect_proceso = $report->process ? $report->process->multiselect() : []; 
             $report->multiselect_area = $report->area ? $report->area->multiselect() : [];
             $report->multiselect_condition = $report->condition ? $report->condition->multiselect() : [];
+            $report->old_1 = $report->image_1;
+            $report->path_1 = Storage::disk('public')->url('industrialSecure/dangerousConditions/reports/images/'. $report->image_1);
+            $report->old_2 = $report->image_2;
+            $report->path_2 = Storage::disk('public')->url('industrialSecure/dangerousConditions/reports/images/'. $report->image_2);
+            $report->old_3 = $report->image_3;
+            $report->path_3 = Storage::disk('public')->url('industrialSecure/dangerousConditions/reports/images/'. $report->image_3);
+            $report->actionPlan = ActionPlan::model($report)->prepareDataComponent();
 
             return $this->respondHttp200([
                 'data' => $report,
@@ -183,8 +199,19 @@ class ReportController extends Controller
      */
     public function destroy(Report $report)
     {
-        if(!$report->delete())
-        {
+        DB::beginTransaction();
+
+        try
+        { 
+            ActionPlan::model($report)->modelDeleteAll();
+
+            if (!$report->delete())
+                return $this->respondHttp500();
+
+            DB::commit();
+
+        } catch (\Exception $e) {
+            DB::rollback();
             return $this->respondHttp500();
         }
         
@@ -197,29 +224,21 @@ class ReportController extends Controller
     {
       try
       {
-        $headquarters = $this->getValuesForMultiselect($request->headquarters);
-        $areas = $this->getValuesForMultiselect($request->areas);
-        //$names = $this->getValuesForMultiselect($request->names);
+        $conditions = $this->getValuesForMultiselect($request->conditions);
+        $conditionTypes = $this->getValuesForMultiselect($request->conditionTypes);
+        $states = $this->getValuesForMultiselect($request->states);
+        $dates = $this->formatDatetimeToBetweenFilter($request->dateRange);
         $filtersType = $request->filtersType;
 
-        $dates = [];
-        $dates_request = explode('/', $request->dateRange);
-
-        if (COUNT($dates_request) == 2)
-        {
-            array_push($dates, (Carbon::createFromFormat('D M d Y', $dates_request[0]))->format('Y-m-d'));
-            array_push($dates, (Carbon::createFromFormat('D M d Y', $dates_request[1]))->format('Y-m-d'));
-        }
-
         $filters = [
-            'headquarters' => $headquarters,
-            'areas' => $areas,
-            //'names' => $names,
+            'conditions' => $conditions,
+            'conditionTypes' => $conditionTypes,
+            'states' => $states,
             'dates' => $dates,
             'filtersType' => $filtersType
         ];
 
-        InspectionExportJob::dispatch(Auth::user(), Session::get('company_id'), $filters);
+        ReportExportJob::dispatch(Auth::user(), Session::get('company_id'), $filters);
       
         return $this->respondHttp200();
 
@@ -251,6 +270,110 @@ class ReportController extends Controller
             ")->pluck('id', 'description');
         
             return $this->multiSelectFormat($conditions);
+        }
+    }
+
+    public function multiselectConditionTypes(Request $request)
+    {
+        $conditions = ConditionType::selectRaw("
+            sau_ph_conditions_types.id as id,
+            sau_ph_conditions_types.description as description
+        ")->pluck('id', 'description');
+    
+        return $this->multiSelectFormat($conditions);
+        
+    }
+
+    public function saveImage(Request $request)
+    {
+        Validator::make($request->all(), [
+            "image" => [
+                function ($attribute, $value, $fail)
+                {
+                    if ($value && !is_string($value) && 
+                        $value->getClientMimeType() != 'image/png' && 
+                        $value->getClientMimeType() != 'image/jpg' &&
+                        $value->getClientMimeType() != 'image/jpeg')
+
+                        $fail('Imagen debe ser PNG ó JPG ó JPEG');
+                },
+            ]
+        ])->validate();
+
+        $report = Report::findOrFail($request->id);
+        $data = $request->all();
+        $picture = $request->column;
+
+        if ($request->image != $report->$picture)
+        {
+            if ($request->image)
+            {
+                $file = $request->image;
+                Storage::disk('public')->delete('industrialSecure/dangerousConditions/reports/images/'. $report->$picture);
+                $nameFile = base64_encode(Auth::user()->id . now() . rand(1,10000)) .'.'. $file->extension();
+                $file->storeAs('industrialSecure/dangerousConditions/reports/images/', $nameFile, 'public');
+                $report->$picture = $nameFile;
+                $data['image'] = $nameFile;
+                $data['old'] = $nameFile;
+                $data['path'] = Storage::disk('public')->url('industrialSecure/dangerousConditions/reports/images/'. $nameFile);
+            }
+            else
+            {
+                Storage::disk('public')->delete('industrialSecure/dangerousConditions/reports/images/'. $report->$picture);
+                $report->$picture = NULL;
+                $data['image'] = "";
+                $data['old'] = NULL;
+                $data['path'] = NULL;
+            }
+        }
+
+        if (!$report->update())
+            return $this->respondHttp500();
+
+        return $this->respondHttp200([
+            'data' => $data
+        ]);
+    }
+
+    public function downloadImage($id, $column)
+    {
+        $report = Report::findOrFail($id);
+
+        return Storage::disk('public')->download('industrialSecure/dangerousConditions/reports/images/'. $report->$column);
+    }
+
+    public function saveQualification(SaveQualificationRequest $request)
+    {
+        try
+        {
+            DB::beginTransaction();
+
+            $data = $request->all();
+
+            $report = Report::findOrFail($request->id);
+
+            ActionPlan::
+                    user(Auth::user())
+                ->module('dangerousConditions')
+                ->url(url('/administrative/actionplans'))
+                ->model($report)
+                ->activities($request->actionPlan)
+                ->save();
+
+            $data['actionPlan'] = ActionPlan::getActivities();
+
+            ActionPlan::sendMail();
+
+            DB::commit();
+
+            return $this->respondHttp200([
+                'data' => $data
+            ]);
+
+        } catch (Exception $e){
+            \Log::info($e->getMessage());
+            DB::rollback();
+            return $this->respondHttp500();
         }
     }
 }

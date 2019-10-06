@@ -326,6 +326,21 @@ trait UtilsTrait
         return $date;
     }
 
+    public function formatDatetimeToBetweenFilter($dates)
+    {
+        $dates = explode('/', $dates);
+
+        $result = [];
+
+        if (COUNT($dates) == 2)
+        {
+            array_push($result, (Carbon::createFromFormat('D M d Y', $dates[0]))->format('Y-m-d 00:00:00'));
+            array_push($result, (Carbon::createFromFormat('D M d Y', $dates[1]))->format('Y-m-d 23:59:59'));
+        }
+
+        return $result;
+    }
+
     function isThot()
     {
         if (strpos(url()->current(), 'bi.thotstrategy') === FALSE) {

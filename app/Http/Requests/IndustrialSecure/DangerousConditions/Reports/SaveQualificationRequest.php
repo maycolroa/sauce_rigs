@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Requests\IndustrialSecure\DangerousConditions\Inspections;
+namespace App\Http\Requests\IndustrialSecure\DangerousConditions\Reports;
 
 use Illuminate\Foundation\Http\FormRequest;
 use App\Facades\ActionPlans\Facades\ActionPlan;
@@ -35,20 +35,6 @@ class SaveQualificationRequest extends FormRequest
             ]);
         }
 
-        if ($this->has('themes'))
-        {
-            \Log::info($this->input('themes'));
-            foreach ($this->input('themes') as $keyTheme => $value)
-            {
-                \Log::info($value);
-                foreach ($value as $keyItem => $activities)
-                {
-                    $data['themes'][$keyTheme]['items'][$keyItem] = json_decode($activities, true);
-                    $this->merge($data);
-                }
-            }
-        }
-
         return $this->all();
     }
 
@@ -61,7 +47,7 @@ class SaveQualificationRequest extends FormRequest
     {
         $rules = [];
 
-        $rulesActionPlan = ActionPlan::prefixIndex('themes.*.items.*.')->getRules();
+        $rulesActionPlan = ActionPlan::getRules();
         $rules = array_merge($rules, $rulesActionPlan['rules']);
         $this->messages = $rulesActionPlan['messages'];
 

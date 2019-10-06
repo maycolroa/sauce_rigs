@@ -17,7 +17,7 @@
                     <b-card bg-variant="transparent" border-variant="dark" title="Totales" class="mb-3 box-shadow-none">
                         <b-row>
                             <b-col>
-                                <div><b>Inspecciones:</b> {{ information.inspections }}</div>
+                                <div><b># Inspecciones:</b> {{ information.inspections }}</div>
                                 <div><b># Cumplimientos:</b> {{information.t_cumple}}</div>
                                 <div><b># No Cumplimientos:</b> {{information.t_no_cumple}}</div>
                             </b-col>
@@ -38,6 +38,7 @@
                 </div>
                 <vue-table
                     ref="tableReport"
+                    v-if="auth.can['ph_inspections_r']"
                     configName="dangerousconditions-inspections-report"
                     @filtersUpdate="setFilters"
                     :params="{table: table}"
@@ -72,7 +73,7 @@ export default {
                 pa_realizados: 0,
                 pa_no_realizados: 0
             },
-            table: 'without_theme',
+            table: 'with_theme',
             options: [
 					{ name:'Con Tema', value:'with_theme'},
 					{ name:'Sin Tema', value:'without_theme'}

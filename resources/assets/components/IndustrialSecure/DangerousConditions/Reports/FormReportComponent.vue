@@ -7,8 +7,6 @@
         </vue-advanced-select>
       <vue-ajax-advanced-select :disabled="viewOnly" class="col-md-6" v-model="form.condition_id" :error="form.errorsFor('condition_id')" :selected-object="form.multiselect_condition" name="condition_id" label="Condición" placeholder="Seleccione la condición" :url="conditionsDataUrl">
           </vue-ajax-advanced-select>
-      
-      
     </b-form-row>
 
     <b-form-row>
@@ -19,7 +17,7 @@
     <b-form-row> 
       <vue-ajax-advanced-select :disabled="viewOnly" class="col-md-6" v-model="form.employee_regional_id" :error="form.errorsFor('employee_regional_id')" :selected-object="form.multiselect_regional" name="employee_regional_id" :label="keywordCheck('regional')" :placeholder="`Seleccione la ${this.keywordCheck('regional')}`" :url="regionalsDataUrl">
           </vue-ajax-advanced-select>
-      <vue-ajax-advanced-select :disabled="viewOnly || !form.employee_regional_id" class="col-md-6" v-model="form.employee_headquarter_id" :error="form.errorsFor('employee_headquarter_id')" :selected-object="form.multiselect_sede" name="employee_headquarter_id" label="Sede" placeholder="`Seleccione la sede`" :url="headquartersDataUrl" :parameters="{regional: form.employee_regional_id }" :emptyAll="empty.headquarter" @updateEmpty="updateEmptyKey('headquarter')">
+      <vue-ajax-advanced-select :disabled="viewOnly || !form.employee_regional_id" class="col-md-6" v-model="form.employee_headquarter_id" :error="form.errorsFor('employee_headquarter_id')" :selected-object="form.multiselect_sede" name="employee_headquarter_id" label="Sede" placeholder="Seleccione la sede" :url="headquartersDataUrl" :parameters="{regional: form.employee_regional_id }" :emptyAll="empty.headquarter" @updateEmpty="updateEmptyKey('headquarter')">
           </vue-ajax-advanced-select>
    </b-form-row>
 

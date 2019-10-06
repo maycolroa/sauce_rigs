@@ -15,6 +15,7 @@
         <b-card-body>
               <vue-table
                 configName="dangerousconditions-inspections-qualification"
+                v-if="auth.can['ph_inspections_r']"
                 :params="{inspectionId: `${this.$route.params.id}`}"
                 ></vue-table>
         </b-card-body>
@@ -30,12 +31,6 @@ export default {
   name: 'dangerousconditions-inspections-qualification',
   metaInfo: {
     title: 'Inspecciones - Calificadas'
-  },
-  components:{
-  },
-  data(){
-    return {
-    }
   }
 }
 </script>

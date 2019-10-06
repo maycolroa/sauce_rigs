@@ -163,7 +163,9 @@ Route::middleware(['auth'])->group(function () {
 
         Route::prefix('industrialSecurity')->group(function () {
           Route::post('conditions', 'IndustrialSecure\DangerousConditions\Reports\ReportController@multiselectConditions');
+          Route::post('conditionTypes', 'IndustrialSecure\DangerousConditions\Reports\ReportController@multiselectConditionTypes');
           Route::post('rates', 'General\MultiSelectRadioController@phRates');
+          Route::post('inspections', 'IndustrialSecure\DangerousConditions\Inspections\InspectionController@multiselectInspection');
         });
         Route::post('themes', 'IndustrialSecure\DangerousConditions\Inspections\InspectionController@multiselectThemes');
 
@@ -301,9 +303,11 @@ Route::middleware(['auth'])->group(function () {
         Route::post('inspection/exportReport', 'IndustrialSecure\DangerousConditions\Inspections\InspectionReportController@export');
       
         Route::ApiResource('report', 'IndustrialSecure\DangerousConditions\Reports\ReportController');
-        Route::post('inspection/data', 'IndustrialSecure\DangerousConditions\Reports\ReportController@data');
-        Route::post('inspection/qualification/saveImage', 'IndustrialSecure\DangerousConditions\Reports\ReportController@saveImage');
-        Route::post('inspection/qualification/saveQualification', 'IndustrialSecure\DangerousConditions\Reports\ReportController@saveQualification');
+        Route::post('report/export', 'IndustrialSecure\DangerousConditions\Reports\ReportController@export');
+        Route::post('report/data', 'IndustrialSecure\DangerousConditions\Reports\ReportController@data');
+        Route::post('report/saveImage', 'IndustrialSecure\DangerousConditions\Reports\ReportController@saveImage');
+        Route::post('report/saveQualification', 'IndustrialSecure\DangerousConditions\Reports\ReportController@saveQualification');
+        Route::get('report/downloadImage/{id}/{column}', 'IndustrialSecure\DangerousConditions\Reports\ReportController@downloadImage');
       });
 
       Route::prefix('tags')->group(function () {

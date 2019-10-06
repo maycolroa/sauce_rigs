@@ -50,12 +50,11 @@ export default {
             rates: []
         }
     },
-    created(){
-        this.fetchSelect('rates', '/selects/industrialSecurity/rates')
-        
+    created(){        
         axios.get(`/industrialSecurity/dangerousConditions/report/${this.$route.params.id}`)
         .then(response => {
             this.data = response.data.data;
+            this.fetchSelect('rates', '/selects/industrialSecurity/rates')
         })
         .catch(error => {
             Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');

@@ -8,8 +8,8 @@
     <div class="col-md">
       <b-card no-body>
         <b-card-header class="with-elements">
-          <div class="card-title-elements" v-if="auth.can['ph_inspections_c']">
-            <b-btn :to="{name:'dangerousconditions-inspections-create'}" variant="primary">Crear Inspección</b-btn>
+          <div class="card-title-elements">
+            <b-btn v-if="auth.can['ph_inspections_c']" :to="{name:'dangerousconditions-inspections-create'}" variant="primary">Crear Inspección</b-btn>
             <b-btn v-if="auth.can['ph_inspections_report_view']" :to="{name:'dangerousconditions-inspection-report'}" variant="primary">Ver Reportes</b-btn>
             <b-btn v-if="auth.can['ph_inspections_export']" variant="primary" @click="exportData()" v-b-tooltip.top title="Exportar"><i class="fas fa-download"></i></b-btn>
           </div>
