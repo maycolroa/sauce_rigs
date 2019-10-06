@@ -239,6 +239,7 @@ return [
       'apply_system'=> 'Sistema que aplica',
       'law_year' => 'Año',
       'description' => 'Descripción',
+      'observation' => 'Observación',
       'observations' => 'Observaciones',
       'law_type_id' => 'Tipo de norma',
       'risk_aspect_id' => 'Riesgo/Aspecto Ambiental',
@@ -301,6 +302,8 @@ return [
       'themes.*.name' => 'Nombre',
       'themes.*.items' => 'Items',
       'themes.*.items.*.description' => 'Descripción',
+      'rate' => 'Severidad',
+      'condition_id' => 'Codición'
     ],
 
 ];

@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Exports\IndustrialSecure\DangerousConditions\Inspections;
+namespace App\Exports\IndustrialSecure\DangerousConditions\Reports;
 
-use App\Models\IndustrialSecure\DangerousConditions\Inspections\InspectionItemsQualificationAreaLocation;
+use App\Models\IndustrialSecure\DangerousConditions\Reports\Report;
 use App\Models\Administrative\ActionPlans\ActionPlansActivity;
 use App\Models\General\Module;
 use Maatwebsite\Excel\Concerns\FromQuery;
@@ -35,21 +35,18 @@ class ActivitiesExcel implements FromQuery, WithMapping, WithHeadings, WithTitle
         $this->filters = $filters;
         $this->module_id = Module::where('name', 'dangerousConditions')->first()->id;
 
-        $inspectionsReady = InspectionItemsQualificationAreaLocation::select(
-            'sau_ph_inspection_items_qualification_area_location.id AS id'
+        $reports = Report::select(
+            'sau_ph_reports.id AS id'
         )
-        ->join('sau_ph_inspection_section_items', 'sau_ph_inspection_section_items.id', 'sau_ph_inspection_items_qualification_area_location.item_id')
-        ->join('sau_ph_inspection_sections','sau_ph_inspection_sections.id',  'sau_ph_inspection_section_items.inspection_section_id')
-        ->join('sau_ph_inspections','sau_ph_inspection_sections.inspection_id', 'sau_ph_inspections.id')
-        ->inInspections($this->filters['inspections'], $this->filters['filtersType']['inspections'])
-        ->inHeadquarters($this->filters['headquarters'], $this->filters['filtersType']['headquarters'])
-        ->inAreas($this->filters['areas'], $this->filters['filtersType']['areas'])
-        ->betweenInspectionDate($this->filters["dates"])
-        ->where('sau_ph_inspections.company_id', $this->company_id)
-        ->pluck('id')
-        ->toArray();
+        ->join('sau_ph_conditions', 'sau_ph_conditions.id', 'sau_ph_reports.condition_id')
+        ->inConditions($this->filters['conditions'], $this->filters['filtersType']['conditions'])
+        ->inConditionTypes($this->filters['conditionTypes'], $this->filters['filtersType']['conditionTypes'])
+        ->betweenDate($this->filters["dates"]);
 
-        $this->items_id = $inspectionsReady;
+        $reports->company_scope = $this->company_id;
+        $reports = $reports->pluck('id')->toArray();
+
+        $this->items_id = $reports;
     }
 
     public function query()
@@ -62,7 +59,8 @@ class ActivitiesExcel implements FromQuery, WithMapping, WithHeadings, WithTitle
         )
         ->join('sau_action_plans_activity_module', 'sau_action_plans_activity_module.activity_id', 'sau_action_plans_activities.id')
         ->join('sau_users', 'sau_users.id', 'sau_action_plans_activities.responsible_id')
-        ->where('item_table_name', 'sau_ph_inspection_items_qualification_area_location')
+        ->inStates($this->filters['states'], $this->filters['filtersType']['states'])
+        ->where('item_table_name', 'sau_ph_reports')
         ->where('sau_action_plans_activity_module.module_id', $this->module_id)
         ->whereIn('sau_action_plans_activity_module.item_id', $this->items_id);
 

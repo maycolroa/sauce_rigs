@@ -520,7 +520,7 @@ export default [
         { name: 'sau_ph_inspections.id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true },
         { name: 'sau_ph_inspections.name', data: 'name', title: 'Nombre', sortable: true, searchable: true, detail: false, key: false },
         { name: 'sau_employees_headquarters.name', data: 'sede', title: 'Sedes', sortable: true, searchable: true, detail: false, key: false },
-        { name: 'sau_employees_areas.name', data: 'area', title: 'Àreas', sortable: true, searchable: true, detail: false, key: false },
+        { name: 'sau_employees_areas.name', data: 'area', title: 'Áreas', sortable: true, searchable: true, detail: false, key: false },
         { name: 'sau_ph_inspections.state', data: 'state', title: '¿Activa?', sortable: true, searchable: true, detail: false, key: false },
         { name: 'sau_ph_inspections.created_at', data: 'created_at', title: 'Fecha de creación', sortable: true, searchable: true, detail: false, key: false },
         { name: '', data: 'controlls', title: 'Controles', sortable: false, searchable: false, detail: false, key: false },
@@ -608,7 +608,7 @@ export default [
     fields: [
         { name: 'sau_ph_inspection_items_qualification_area_location.id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true },
         { name: 'sau_employees_headquarters.name', data: 'headquarter', title: 'Sede', sortable: true, searchable: true, detail: false, key: false },
-        { name: 'sau_employees_areas.name', data: 'area', title: 'Area', sortable: true, searchable: true, detail: false, key: false },
+        { name: 'sau_employees_areas.name', data: 'area', title: 'Área', sortable: true, searchable: true, detail: false, key: false },
         { name: 'sau_users.name', data: 'qualificator', title: 'Calificador', sortable: true, searchable: true, detail: false, key: false },
         { name: 'sau_ph_inspection_items_qualification_area_location.qualification_date', data: 'qualification_date', title: 'Fecha Calificación', sortable: true, searchable: true, detail: false, key: false },
         { name: '', data: 'controlls', title: 'Controles', sortable: false, searchable: false, detail: false, key: false },
@@ -644,7 +644,7 @@ export default [
     fields: [
         { name: 'sau_ph_inspection_items_qualification_area_location.id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true },
         { name: 'sau_employees_headquarters.name', data: 'headquarter', title: 'Sede', sortable: true, searchable: false, detail: false, key: false },
-        { name: 'sau_employees_areas.name', data: 'area', title: 'Area', sortable: true, searchable: false, detail: false, key: false },
+        { name: 'sau_employees_areas.name', data: 'area', title: 'Área', sortable: true, searchable: false, detail: false, key: false },
         { name: 'section', data: 'section', title: 'Temas', sortable: true, searchable: false, detail: false, key: false },
         { name: 'numero_inspecciones', data: 'numero_inspecciones', title: '# Inspecciones', sortable: true, searchable: false, detail: false, key: false },
         { name: 'numero_items_cumplimiento', data: 'numero_items_cumplimiento', title: '# Items Cumplimiento', sortable: true, searchable: false, detail: false, key: false },
@@ -667,6 +667,76 @@ export default [
         urlData: '/industrialSecurity/dangerousConditions/inspection/report',
         filterColumns: false,
         configNameFilter: 'dangerousconditions-inspections-report'
+    }
+},
+{
+    name: 'dangerousconditions-report',
+    fields: [
+        { name: 'sau_ph_report.id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true },
+        { name: 'sau_employees_headquarters.name', data: 'headquarter', title: 'Sede', sortable: true, searchable: true, detail: false, key: false },
+        { name: 'sau_users.name', data: 'user', title: 'Usuario', sortable: true, searchable: true, detail: false, key: false },
+        { name: 'sau_ph_conditions.description', data: 'condition', title: 'Condición', sortable: true, searchable: true, detail: false, key: false },
+        { name: 'sau_ph_conditions_types.description', data: 'type', title: 'Tipo de condición', sortable: true, searchable: true, detail: false, key: false },
+        { name: 'sau_ph_report.rate', data: 'rate', title: 'Severidad', sortable: true, searchable: true, detail: false, key: false },
+        { name: 'sau_ph_report.created_at', data: 'created_at', title: 'Fecha de creación', sortable: true, searchable: true, detail: false, key: false },
+        { name: '', data: 'controlls', title: 'Controles', sortable: false, searchable: false, detail: false, key: false },
+    ],
+    'controlls': [{
+          type: 'push',
+          buttons: [{
+            config: {
+                color: 'outline-success',
+                borderless: true,
+                icon: 'ion ion-md-create',
+                title: 'Editar'
+            },
+            data: {
+                routePush: { name: 'dangerousconditions-reports-edit' },
+                id: 'id',
+            },
+            permission: 'ph_reports_u'
+          }, {
+            config: {
+                color: 'outline-info',
+                borderless: true,
+                icon: 'ion ion-md-eye',
+                title: 'Ver'
+            },
+            data: {
+                routePush: { name: 'dangerousconditions-reports-view' },
+                id: 'id',
+            },
+            permission: 'ph_reports_r'
+          },{
+            config: {
+                color: 'outline-info',
+                borderless: true,
+                icon: 'ion ion-md-list',
+                title: 'Calificar'
+            },
+            data: {
+                routePush: { name: 'dangerousconditions-reports-qualifications' },
+                id: 'id',
+            },
+            permission: 'ph_reports_r'
+        }]
+      },
+      {
+        type: 'base',
+        buttons: [{
+        name: 'delete',
+        data: {
+            action: '/industrialSecurity/dangerousConditions/report/',
+            id: 'id',
+            messageConfirmation: 'Esta seguro de borrar el reporte'
+        },
+        permission: 'ph_reports_r'
+        }],
+    }],
+    configuration: {
+        urlData: '/industrialSecurity/dangerousConditions/report/data',
+        filterColumns: true,
+        configNameFilter: 'dangerousconditions-report'
     }
 },
 ];

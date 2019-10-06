@@ -111,6 +111,12 @@ export default [
       name: 'dangerousconditions-inspections',
       filters: [
         {
+          url: '/selects/industrialSecurity/inspections',
+          key: 'inspections',
+          type: 'select',
+          label: 'Nombres'
+        },
+        {
           url: '/selects/headquarters',
           key: 'headquarters',
           type: 'select',
@@ -182,6 +188,34 @@ export default [
           key: 'dateRange',
           type: 'dateRange',
           label: 'Fecha',
+        }
+      ]
+    },
+    {
+      name: 'dangerousconditions-report',
+      filters: [
+        {
+          url: '/selects/industrialSecurity/conditions',
+          key: 'conditions',
+          type: 'select',
+          label: 'Codición'
+        },
+        {
+          url: '/selects/industrialSecurity/conditionTypes',
+          key: 'conditionTypes',
+          type: 'select',
+          label: 'Tipo Condición'
+        },
+        {
+          url: '/selects/actionPlanStates',
+          key: 'states',
+          type: 'select',
+          label: 'Estados'
+        },
+        {
+          key: 'dateRange',
+          type: 'dateRange',
+          label: 'Fecha de creación',
         }
       ]
     }

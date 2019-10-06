@@ -119,4 +119,24 @@ class Inspection extends Model
             return $query;
         }
     }
+
+    /**
+     * filters checks through the given inspections
+     * @param  Illuminate\Database\Eloquent\Builder $query
+     * @param  array $inspections
+     * @return Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeInInspections($query, $inspections, $typeSearch = 'IN')
+    {
+        if (COUNT($inspections) > 0)
+        {
+            if ($typeSearch == 'IN')
+                $query->whereIn('sau_ph_inspections.id', $inspections);
+
+            else if ($typeSearch == 'NOT IN')
+                $query->whereNotIn('sau_ph_inspections.id', $inspections);
+        }
+
+        return $query;
+    }
 }

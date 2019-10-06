@@ -55,6 +55,13 @@ export default {
             form: Form.makeFrom(this.logo, this.method, false, false)
         };
     },
+    watch: {
+        image() {
+            this.form.image = this.image
+            this.form.path = this.path
+            this.form.old = this.old
+        }
+    },
     mounted() {
         this.form.image = this.image
         this.form.path = this.path

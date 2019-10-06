@@ -1,7 +1,7 @@
 <template>
   <div>
     <h4 class="font-weight-bold mb-4">
-       <span class="text-muted font-weight-light">Condiciones Peligrosas /</span> Ver
+       <span class="text-muted font-weight-light">Reportes/</span> Editar
     </h4>
 
     <div class="col-md">
@@ -9,11 +9,12 @@
         <b-card-body>
             <b-row>
                 <b-col>
-                    <conditions-reports 
+                    <form-report
+                        :url="`/industrialSecurity/dangerousConditions/report/${this.$route.params.id}`"
+                        method="PUT" 
                         :report="data"
-                        :view-only="true"
-                        :cancel-url="{ name: 'inspections-conditionsReports'}"
-                        :action-plan-states="actionPlanStates"
+                        :is-edit="true"
+                        :cancel-url="{ name: 'dangerousconditions-reports'}"
                         :rates="rates"
                         :disable-wacth-select-in-created="true"
                         regionals-data-url="/selects/regionals"
@@ -31,37 +32,34 @@
 </template>
 
 <script>
-import ConditionsReports from '@/components/IndustrialSecure/Inspections/FormConditionsReports.vue';
+import FormReport from '@/components/IndustrialSecure/DangerousConditions/Reports/FormReportComponent.vue';
 import Alerts from '@/utils/Alerts.js';
 import GlobalMethods from '@/utils/GlobalMethods.js';
 
 export default {
-    name: 'inspections-conditions-reports',
+    name: 'dangerousconditions-reports-edit',
     metaInfo: {
-        title: 'Condiciones Peligrosas - Ver'
+        title: 'Reportes - Editar'
     },
     components:{
-        ConditionsReports
+        FormReport
     },     
     data () {
         return {
             data: [],
-            actionPlanStates: [],
             rates: []
         }
     },
-    created(){
-        axios.get(`/industrialSecurity/inspections/conditionsReports/${this.$route.params.id}`)
+    created(){        
+        axios.get(`/industrialSecurity/dangerousConditions/report/${this.$route.params.id}`)
         .then(response => {
             this.data = response.data.data;
+            this.fetchSelect('rates', '/selects/industrialSecurity/rates')
         })
         .catch(error => {
             Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
             this.$router.go(-1);
         });
-
-        this.fetchSelect('actionPlanStates', '/selects/actionPlanStates')
-        this.fetchSelect('rates', '/selects/industrialSecurity/rates')
     },
     methods: {
         fetchSelect(key, url)

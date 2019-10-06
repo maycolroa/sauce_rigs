@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models\IndustrialSecure\Inspections;
+namespace App\Models\IndustrialSecure\DangerousConditions\Reports;
 
 use Illuminate\Database\Eloquent\Model;
 use Carbon\Carbon;
@@ -8,20 +8,11 @@ use Exception;
 
 class Condition extends Model
 {
-    public $timestamps = false;
-
-    /**
-     * tabla relacionada con el modelo
-     * @var string
-     */
-    protected $table='sau_inspect_conditions';
-
-    /**
-     * atributos permitidos en massive assignment
-     * @var array
-     */
+    protected $table='sau_ph_conditions';
+   
     protected $fillable=[
-        'description'
+        'description',
+        'condition_type_id'
     ];
 
     /**
@@ -39,7 +30,7 @@ class Condition extends Model
      */
     public function reports()
     {
-        return $this->hasMany(ConditionReport::class, 'condition_id');
+        return $this->hasMany(Report::class, 'condition_id');
     }
 
     public function multiselect()
