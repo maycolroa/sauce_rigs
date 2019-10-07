@@ -46,6 +46,7 @@ class InspectionListExcel implements FromQuery, WithMapping, WithHeadings, WithT
         ->leftJoin('sau_ph_inspection_area', 'sau_ph_inspection_area.inspection_id', 'sau_ph_inspections.id')
         ->leftJoin('sau_employees_headquarters', 'sau_employees_headquarters.id', 'sau_ph_inspection_headquarter.employee_headquarter_id')
         ->leftJoin('sau_employees_areas', 'sau_employees_areas.id', 'sau_ph_inspection_area.employee_area_id')
+        ->inInspections($this->filters['inspections'], $this->filters['filtersType']['inspections'])
         ->inHeadquarters($this->filters['headquarters'], $this->filters['filtersType']['headquarters'])
         ->inAreas($this->filters['areas'], $this->filters['filtersType']['areas'])
         ->betweenDate($this->filters["dates"])

@@ -24,12 +24,13 @@ class InspectionController extends Controller
      * creates and instance and middlewares are checked
      */
     function __construct()
-    {
+    { 
         $this->middleware('auth');
         $this->middleware('permission:ph_inspections_c', ['only' => 'store']);
         $this->middleware('permission:ph_inspections_r');
-        $this->middleware('permission:ph_inspections_u', ['only' => 'update']);
+        $this->middleware('permission:ph_inspections_u', ['only' => ['update', 'toggleState']]);
         $this->middleware('permission:ph_inspections_d', ['only' => 'destroy']);
+        $this->middleware('permission:ph_inspections_export', ['only' => 'export']);
     }
 
     /**
@@ -64,6 +65,7 @@ class InspectionController extends Controller
 
         if (COUNT($filters) > 0)
         {
+            $inspections->inInspections($this->getValuesForMultiselect($filters["inspections"]), $filters['filtersType']['inspections']);
             $inspections->inHeadquarters($this->getValuesForMultiselect($filters["headquarters"]), $filters['filtersType']['headquarters']);
             $inspections->inAreas($this->getValuesForMultiselect($filters["areas"]), $filters['filtersType']['areas']);
 
@@ -351,9 +353,9 @@ class InspectionController extends Controller
     {
       try
       {
+        $inspections = $this->getValuesForMultiselect($request->inspections);
         $headquarters = $this->getValuesForMultiselect($request->headquarters);
         $areas = $this->getValuesForMultiselect($request->areas);
-        //$names = $this->getValuesForMultiselect($request->names);
         $filtersType = $request->filtersType;
 
         $dates = [];
@@ -366,9 +368,9 @@ class InspectionController extends Controller
         }
 
         $filters = [
+            'inspections' => $inspections,
             'headquarters' => $headquarters,
             'areas' => $areas,
-            //'names' => $names,
             'dates' => $dates,
             'filtersType' => $filtersType
         ];
@@ -392,5 +394,17 @@ class InspectionController extends Controller
         ->pluck('ids', 'name');
 
       return $this->multiSelectFormat($themes);
+    }
+
+    public function multiselectInspection()
+    {
+        $inspections = Inspection::select(
+          "sau_ph_inspections.id as id",
+          "sau_ph_inspections.name as name"
+        )
+        ->orderBy('name')
+        ->pluck('id', 'name');
+
+      return $this->multiSelectFormat($inspections);
     }
 }

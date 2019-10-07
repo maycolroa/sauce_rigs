@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models\IndustrialSecure\Inspections;
+namespace App\Models\IndustrialSecure\DangerousConditions\Reports;
 
 use Illuminate\Database\Eloquent\Model;
 use Carbon\Carbon;
@@ -12,7 +12,7 @@ class ConditionType extends Model
      * tabla relacionada con el modelo
      * @var string
      */
-    protected $table = 'sau_inspect_conditions_types';
+    protected $table = 'sau_ph_conditions_types';
 
     /**
      * atributos permitidos en massive assignment
@@ -30,6 +30,4 @@ class ConditionType extends Model
     {
         return $this->hasMany(Condition::class)->where([['id', '<>', '98'],['id', '<>', '114']]);
     }
-
-    public $timestamps=false;
 }

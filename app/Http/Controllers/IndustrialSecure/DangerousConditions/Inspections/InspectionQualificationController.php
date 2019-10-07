@@ -169,6 +169,7 @@ class InspectionQualificationController extends Controller
             DB::beginTransaction();
 
             $data = $request->except('themes');
+            $data['id_item_qualification'] = (int) $data['id_item_qualification'];
 
             $qualification = InspectionItemsQualificationAreaLocation::findOrFail($request->id_item_qualification);
 

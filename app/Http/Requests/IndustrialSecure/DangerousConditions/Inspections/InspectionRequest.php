@@ -56,6 +56,10 @@ class InspectionRequest extends FormRequest
 
         return [
             'name' => 'required|string|unique:sau_ph_inspections,name,'.$id.',id,company_id,'.Session::get('company_id'),
+            'employee_regional_id' => 'required',
+            'employee_headquarter_id' => 'required',
+            'employee_area_id' => 'required',
+            'employee_process_id' => 'required',
             'themes' => 'required|array',
             'themes.*.name' => 'required',
             'themes.*.items' => 'required|array',

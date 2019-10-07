@@ -27,6 +27,7 @@ class InspectionReportController extends Controller
         $this->middleware('permission:ph_inspections_r');
         //$this->middleware('permission:ph_inspections_u', ['only' => 'update']);
         //$this->middleware('permission:ph_inspections_d', ['only' => 'destroy']);
+        $this->middleware('permission:ph_inspections_report_export', ['only' => 'export']);
     }
 
     /**

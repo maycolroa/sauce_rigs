@@ -56,6 +56,7 @@ class QualificationsExcel implements FromQuery, WithMapping, WithHeadings, WithT
         ->join('sau_employees_headquarters', 'sau_ph_inspection_items_qualification_area_location.employee_headquarter_id', 'sau_employees_headquarters.id')
         ->join('sau_employees_areas', 'sau_ph_inspection_items_qualification_area_location.employee_area_id', 'sau_employees_areas.id')
         ->join('sau_users', 'sau_ph_inspection_items_qualification_area_location.qualifier_id', 'sau_users.id')
+        ->inInspections($this->filters['inspections'], $this->filters['filtersType']['inspections'])
         ->inHeadquarters($this->filters['headquarters'], $this->filters['filtersType']['headquarters'])
         ->inAreas($this->filters['areas'], $this->filters['filtersType']['areas'])
         ->betweenInspectionDate($this->filters["dates"])
