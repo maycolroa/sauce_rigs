@@ -309,7 +309,7 @@ export default [{
           name: 'dangerousconditions-reports-informs',
           path: 'dangerousconditions/reports/informs',
           component: () =>
-              import('@/views/IndustrialSecure/dangerousConditions/reports/inform')
+              import('@/views/IndustrialSecure/dangerousConditions/reports/informs')
         }
       ])
     ]
