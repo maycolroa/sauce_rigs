@@ -152,7 +152,12 @@ class InterestController extends Controller
     {
         try
         {
-            ConfigureInterestsJob::dispatch(Session::get('company_id'), $request->get('values'));
+            if ($request->has('values'))
+                $values = $request->get('values');
+            else 
+                $values = [];
+
+            ConfigureInterestsJob::dispatch(Session::get('company_id'), $values);
         
             return $this->respondHttp200([
                 'message' => 'Al culminar el proceso de configuración de sus intereses recibirá una notificación en su correo electrónico'

@@ -161,9 +161,10 @@ class LawController extends Controller
 
             if ($request->file)
             {
+                $path = ($request->custom != 'true') ? 'laws/' : "laws/".Session::get('company_id')."/";
                 $file_tmp = $request->file;
                 $nameFile = base64_encode(Auth::user()->id . now() . rand(1,10000)) .'.'. $file_tmp->extension();
-                $file_tmp->storeAs('legalAspects/legalMatrix/', $nameFile, 's3');
+                $file_tmp->storeAs($path, $nameFile, 's3_MLegal');
                 $law->file = $nameFile;
 
                 if(!$law->update()){
@@ -257,10 +258,11 @@ class LawController extends Controller
 
             if ($request->file != $law->file)
             {
+                $path = (!$law->company_id) ? 'laws/' : "laws/".Session::get('company_id')."/";
                 $file = $request->file;
-                Storage::disk('s3')->delete('legalAspects/legalMatrix/'. $law->file);
+                Storage::disk('s3_MLegal')->delete($path.$law->file);
                 $nameFile = base64_encode(Auth::user()->id . now() . rand(1,10000)) .'.'. $file->extension();
-                $file->storeAs('legalAspects/legalMatrix/', $nameFile, 's3');
+                $file->storeAs($path, $nameFile, 's3_MLegal');
                 $law->file = $nameFile;
             }
 
@@ -320,7 +322,9 @@ class LawController extends Controller
         if(!$law->delete())
             return $this->respondHttp500();
 
-        Storage::disk('s3')->delete('legalAspects/legalMatrix/'. $file);
+        $path = (!$law->company_id) ? 'laws/' : "laws/".Session::get('company_id')."/";
+
+        Storage::disk('s3_MLegal')->delete($path.$file);
         
         return $this->respondHttp200([
             'message' => 'Se elimino la norma'
@@ -341,7 +345,8 @@ class LawController extends Controller
 
     public function download(Law $law)
     {
-      return Storage::disk('s3')->download('legalAspects/legalMatrix/'. $law->file);
+        $path = (!$law->company_id) ? 'laws/' : "laws/".Session::get('company_id')."/";
+        return Storage::disk('s3_MLegal')->download($path.$law->file);
     }
 
     private function saveArticles($law, $articles)
@@ -536,6 +541,8 @@ class LawController extends Controller
                 ->module('legalMatrix')
                 ->url(url('/administrative/actionplans'));
 
+            $path = 'fulfillments/'.Session::get('company_id')."/";
+
             if ($qualification->fulfillment_value_id)
             {
                 $qualify = FulfillmentValues::find($qualification->fulfillment_value_id);
@@ -547,31 +554,31 @@ class LawController extends Controller
                         if ($request->file)
                         {
                             $file = $request->file;
-                            Storage::disk('s3')->delete('legalAspects/legalMatrix/'. $qualification->file);
+                            Storage::disk('s3_MLegal')->delete($path. $qualification->file);
                             $nameFile = base64_encode(Auth::user()->id . now() . rand(1,10000)) .'.'. $file->extension();
-                            $file->storeAs('legalAspects/legalMatrix/', $nameFile, 's3');
+                            $file->storeAs($path, $nameFile, 's3_MLegal');
                             $qualification->file = $nameFile;
                             $data['file'] = $nameFile;
                             $data['old_file'] = $nameFile;
                         }
                         else
                         {
-                            Storage::disk('s3')->delete('legalAspects/legalMatrix/'. $qualification->file);
+                            /*Storage::disk('s3_MLegal')->delete($path. $qualification->file);
                             $qualification->file = NUlL;
                             $data['file'] = NULL;
-                            $data['old_file'] = NULL;
+                            $data['old_file'] = NULL;*/
                         }
                     }
                 }
                 else
                 {
-                    if ($qualification->file)
+                    /*if ($qualification->file)
                     {
-                        Storage::disk('s3')->delete('legalAspects/legalMatrix/'. $qualification->file);
+                        Storage::disk('s3_MLegal')->delete($path. $qualification->file);
                         $qualification->file = NUlL;
                         $data['file'] = NULL;
                         $data['old_file'] = NULL;
-                    }
+                    }*/
                 }
 
                 /**Planes de acción*/
@@ -602,7 +609,8 @@ class LawController extends Controller
 
     public function downloadArticleQualify(ArticleFulfillment $articleFulfillment)
     {
-      return Storage::disk('s3')->download('legalAspects/legalMatrix/'. $articleFulfillment->file);
+        $path = 'fulfillments/'.Session::get('company_id')."/";
+        return Storage::disk('s3_MLegal')->download($path.$articleFulfillment->file);
     }
 
     public function filterInterestsMultiselect(Request $request)

@@ -1,0 +1,177 @@
+<template>
+    <div>
+        <h4 class="font-weight-bold mb-4">
+            <span class="text-muted font-weight-light">Reportes /</span> Informes
+        </h4>
+       <b-row>
+            <b-col>
+                <b-card border-variant="primary" title="Sedes con más reportes" class="mb-3 box-shadow-none">
+                    <chart-bar 
+                        :chart-data="report_per_headquarter"
+                        title="Sedes con más reportes"
+                        color-line="red"
+                        ref="report_per_headquarter"/>
+                </b-card>
+            </b-col>
+            <b-col>
+                <b-card border-variant="primary" title="Áreas con más reportes" class="mb-3 box-shadow-none">
+                    <chart-bar 
+                        :chart-data="report_per_area"
+                        title="Áreas con más reportes"
+                        color-line="red"
+                        ref="report_per_area"/>
+                </b-card>
+            </b-col>
+        </b-row>
+
+        <b-row>
+            <b-col>
+                <b-card border-variant="primary" title="Sedes y Áreas con más reportes" class="mb-3 box-shadow-none">
+                    <chart-bar 
+                        :chart-data="report_per_headquarter_area"
+                        title="Sedes y Áreas con más reportes"
+                        color-line="red"
+                        ref="report_per_area"/>
+                </b-card>
+            </b-col>
+        </b-row>
+
+        <b-row>
+            <b-col>
+                <b-card border-variant="primary" title="Usuarios con más reportes" class="mb-3 box-shadow-none">
+                    <chart-bar 
+                        :chart-data="report_per_user"
+                        title="Usuarios con más reportes"
+                        color-line="red"
+                        ref="report_per_user"/>
+                </b-card>
+            </b-col>
+        </b-row>
+
+        <b-row>
+            <vue-advanced-select @input="conditionHeadquarter" class="col-md-12" v-model="headquarter_selected" :multiple="false" :options="options_headquarter" :hide-selected="false" name="headquarter_selected"  label="Condición más reportada por sede" placeholder="Seleccione la Sede">
+            </vue-advanced-select>
+        </b-row>
+
+        <b-row>
+            <div><b>Condición:</b> {{ result.condition }}</div>
+        </b-row>
+
+        <b-row>
+            <div><b>Número de reportes:</b> {{ result.reports }}</div>
+        </b-row>
+
+        <div class="row float-right pt-10 pr-10" style="padding-top: 20px;">
+            <template>
+                <b-btn variant="default" :to="{name: 'dangerousconditions-reports'}" :disabled="loading">Atras</b-btn>
+            </template>
+        </div>
+    </div>
+</template>
+
+<script>
+import Alerts from '@/utils/Alerts.js';
+import ChartBar from '@/components/ECharts/ChartBar.vue';
+import VueAdvancedSelect from "@/components/Inputs/VueAdvancedSelect.vue";
+import GlobalMethods from '@/utils/GlobalMethods.js';
+
+export default {
+    name: 'reports-informs',
+    metaInfo: {
+        title: 'Reportes - Informes'
+    },
+    components:{
+        ChartBar,
+        VueAdvancedSelect,
+        GlobalMethods
+    },
+    data () {
+        return {
+            filters: [],
+            isLoading: false,
+
+            report_per_headquarter: {
+                labels: [],
+                datasets: []
+            },
+            report_per_area: {
+                labels: [],
+                datasets: []
+            },
+            report_per_user: {
+                labels: [],
+                datasets: []
+            },
+            report_per_headquarter_area: {
+                labels: [],
+                datasets: []
+            },
+            options_headquarter: [],
+            headquarter_selected: '',
+            result: {
+                reports: 0, 
+                condition: ''
+            }
+
+        }
+    },
+    created(){
+        this.fetch()
+
+       GlobalMethods.getDataMultiselect('/selects/headquarters')
+            .then(response => {
+                this.options_headquarter = response;
+            })
+            .catch(error => {
+                Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
+                this.$router.go(-1);
+            });
+    },
+    methods: {
+        conditionHeadquarter()
+        {
+            if (!this.isLoading)
+            {
+                this.isLoading = true;
+
+                axios.post('/industrialSecurity/dangerousConditions/report/conditionHeadquarter', {id: this.headquarter_selected})
+                .then(data => {
+                    this.result = data.data;
+                    this.isLoading = false;
+                })
+                .catch(error => {
+                    console.log(error);
+                    this.isLoading = false;
+                    Alerts.error('Error', 'Hubo un problema recolectando la información');
+                });
+            }
+        },
+        fetch()
+        {
+            if (!this.isLoading)
+            {
+                //console.log('buscando...')
+                this.isLoading = true;
+
+                axios.post('/industrialSecurity/dangerousConditions/report/informs', this.filters)
+                .then(data => {
+                    this.update(data);
+                    this.isLoading = false;
+                })
+                .catch(error => {
+                    console.log(error);
+                    this.isLoading = false;
+                    Alerts.error('Error', 'Hubo un problema recolectando la información');
+                });
+            }
+        },
+        update(data) {
+            _.forIn(data.data, (value, key) => {
+                if (this[key]) {
+                    this[key] = value;
+                }
+            });
+        }
+    }
+}
+</script>

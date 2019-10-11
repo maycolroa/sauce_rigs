@@ -11,6 +11,7 @@
         <b-card-header class="with-elements">
           <div class="card-title-elements" v-if="auth.can['ph_inspections_c']">
             <b-btn v-if="auth.can['ph_reports_c']" :to="{name:'dangerousconditions-reports-create'}" variant="primary">Crear Reporte</b-btn>
+            <b-btn v-if="auth.can['ph_reports_informs_view']" :to="{name:'dangerousconditions-reports-informs'}" variant="primary">Ver Informes</b-btn>
             <b-btn v-if="auth.can['ph_reports_export']" variant="primary" @click="exportData()" v-b-tooltip.top title="Exportar"><i class="fas fa-download"></i></b-btn>
           </div>
         </b-card-header>

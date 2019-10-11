@@ -16,6 +16,26 @@
                         "description": "Rol Definido creado automáticamente"
                     }
                 ]
+            },
+            {
+                "name": "legalMatrix",
+                "roles": [
+                    {
+                        "name": "Administrador",
+                        "display_name": "Administrador",
+                        "description": "Rol administrador para los clientes"
+                    },
+                    {
+                        "name": "Matriz Legal - Usuario Normal",
+                        "display_name": "Matriz Legal - Usuario Normal",
+                        "description": "Puede ver y calificar leyes"
+                    },
+                    {
+                        "name": "Matriz Legal - Usuario Visor",
+                        "display_name": "Matriz Legal - Usuario Visor",
+                        "description": "Solo puede ver las leyes y sus calificaciones mas no calificar."
+                    }
+                ]
             }
         ]
     }  
