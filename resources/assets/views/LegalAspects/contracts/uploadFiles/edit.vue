@@ -1,9 +1,10 @@
 <template>
   <div>
-    <h4 class="font-weight-bold mb-4">
-       Subir Archivo
-    </h4>
-
+    <header-module
+			title="CONTRATISTAS"
+			subtitle="EDITAR ARCHIVO"
+			url="legalaspects-upload-files"
+		/>
 
     <div class="col-md">
       <b-card no-body>

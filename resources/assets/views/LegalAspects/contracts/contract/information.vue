@@ -1,9 +1,10 @@
 <template>
   	<div>
-		<h4 class="font-weight-bold mb-4">
-			<span class="text-muted font-weight-light">Contratistas /</span> Información
-		</h4>
-
+		<header-module
+			title="CONTRATISTAS"
+			subtitle="MI INFORMACIÓN"
+			url="legalaspects-contracts"
+		/>
 
 		<div class="col-md">
 			<b-card no-body>

@@ -1,8 +1,10 @@
 <template>
   <div>
-    <h4 class="font-weight-bold mb-4">
-       <span class="text-muted font-weight-light">Tipos de calificaciones /</span> Ver
-    </h4>
+    <header-module
+			title="CONTRATISTAS"
+			subtitle="VER CALIFICACIÓN"
+			url="legalaspects-typesrating"
+		/>
 
     <div class="col-md">
       <b-card no-body>

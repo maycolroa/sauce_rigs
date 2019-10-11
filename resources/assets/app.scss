@@ -190,3 +190,60 @@ table.b-table>tfoot>tr>th.sorting {
   line-height: 2.00;
   border-radius: 70px;
 }
+
+
+html body .background-login {
+  background-size: cover !important;
+  background-position: center !important;
+  background-repeat: no-repeat !important;
+  width: 100%;
+  height: 100%;
+  z-index: -99;
+  position: fixed;
+}
+
+html body .background-login {
+  background-image: url("../assets/images/Sauce-ML Fondo Home.png");
+}
+
+html body .background-system {
+  background-size: cover !important;
+  background-position: center !important;
+  background-repeat: no-repeat !important;
+  width: 100%;
+  height: 100%;
+  z-index: -99;
+  position: fixed;
+}
+
+html body .background-system {
+  background-image: url("../assets/images/Sauce-ML Fondo Matriz Legal.png");
+}
+
+.title-module {
+	font-size: 1.813rem;
+	font-family: sans-serif;
+    letter-spacing: 5px;
+    color: #f44b52;
+	padding-left: 10px;
+}
+.subtitle-module {
+	font-size: 1rem;
+}
+.filete-module {
+	width: 300px; 
+	padding-right: 0px;
+}
+.border-divider {
+	border-color: #f44b52;
+	border-top: 5px solid;
+}
+.imgHidden {
+    display: none;
+}
+.text-dark[href]:hover {
+	color: #f44b52 !important;
+}
+.col-item {
+	min-height: 200px;
+}

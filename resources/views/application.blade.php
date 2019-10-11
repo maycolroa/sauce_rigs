@@ -27,6 +27,7 @@
 </head>
 <body>
     <div id="app">
+        <div class="background-system"></div>
         <router-view/>
     </div>
 

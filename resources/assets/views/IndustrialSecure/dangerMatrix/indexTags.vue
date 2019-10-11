@@ -1,8 +1,10 @@
 <template>
   <div>
-    <h4 class="font-weight-bold mb-4">
-       <span class="text-muted font-weight-light">Tags/{{ title }}</span>
-    </h4>
+    <header-module
+      title="MATRIZ DE PELIGROS"
+      :subtitle="`TAGS / ${title}`"
+      url="industrialsecure-dangermatrix-tags"
+    />
 
     <div class="col-md">
       <b-card no-body>

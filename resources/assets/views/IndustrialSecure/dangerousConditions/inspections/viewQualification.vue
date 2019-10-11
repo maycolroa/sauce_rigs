@@ -1,8 +1,10 @@
 <template>
   <div>
-    <h4 class="font-weight-bold mb-4">
-       <span class="text-muted font-weight-light">Inspecciones /</span> Calificaciones Ver
-    </h4>
+    <header-module
+      title="CONDICIONES PELIGROSAS"
+      subtitle="VER INSPECCIÓN CALIFICADA"
+      url="dangerousconditions-inspections-qualification"
+    />
 
     <div class="col-md">
       <b-card no-body>

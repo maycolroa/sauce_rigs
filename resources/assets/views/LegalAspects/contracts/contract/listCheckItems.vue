@@ -1,8 +1,10 @@
 <template>
   	<div>
-		<h4 class="font-weight-bold mb-4">
-			<span class="text-muted font-weight-light">Contratistas /</span> Lista de estándares mínimos
-		</h4>
+		<header-module
+			title="CONTRATISTAS"
+			subtitle="LISTA DE ESTÁNDARES MÍNIMOS"
+			:url="{ name: (this.$route.params.id ? 'legalaspects-contractor' : 'legalaspects-contracts')}"
+		/>
 
 
 		<div class="col-md">

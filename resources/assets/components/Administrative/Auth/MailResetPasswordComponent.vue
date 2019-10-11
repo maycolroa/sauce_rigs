@@ -6,7 +6,7 @@
         <div class="p-4 p-sm-5">
           <!-- Logo -->
             <div class="d-flex justify-content-center align-items-center">
-                <img class="ui-w-120 rounded-circle" src="~@/icons/Sauce.png">
+                <img style="width: 300px; height: 80px;" src="~@/images/Sauce-ML Logo RiGS Principal.png">
             </div>
          <!-- / Logo -->
             

@@ -1,5 +1,5 @@
 import LayoutModules from "@/views/layoutModules";
-import Home from "@/views/home";
+import Home from "@/views/LegalAspects/home";
 import { middleware } from 'vue-router-middleware'
 
 export default [

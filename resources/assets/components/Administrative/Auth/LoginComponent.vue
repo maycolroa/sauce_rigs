@@ -3,10 +3,16 @@
     <div class="authentication-inner py-5">
 
       <!-- Logo -->
-      <div class="d-flex justify-content-center align-items-center">
-        <img class="ui-w-200 rounded-circle" src="~@/icons/Sauce.png">
+      <div class="d-flex justify-content-center align-items-center" style="padding-bottom: 20px;">
+        <img style="width: 400px; height: 100px;" src="~@/images/Sauce-ML Logo RiGS Principal.png">
       </div>
       <!-- / Logo -->
+      <div style="width: 400px;">
+      <p>Únete y conoce esta herramienta para gestionar los procesos de seguridad y salud en su empresa</p>
+      </div>
+
+      <hr class="border-dark mt-0 mb-4" style="padding-bottom: 30px;">
+
 
       <!-- Form -->
       <form class="my-3" :action="loginAction" @submit.prevent="submit">
@@ -24,12 +30,10 @@
           type="password"
           placeholder="Contraseña"
           :error="form.errorsFor('password')"
-          text-block="¿Olvidaste tu contraseña?"
-          :action-block="passwordResetAction"
         ></vue-input>
         <div class="d-flex justify-content-between align-items-center m-0">
-          <b-check name="rememberMe" v-model="form.rememberMe" class="m-0">Recuerdame</b-check>
-          <b-btn type="submit" variant="primary" :disabled="loading">Ingresar</b-btn>
+          <b-check name="rememberMe" v-model="form.rememberMe" class="m-0">Recuérdame<br><a :href="passwordResetAction" class="d-block" style="color: #5d605e;">¿Olvidaste tu contraseña?</a></b-check>
+          <b-btn type="submit" variant="primary" :disabled="loading">Iniciar sesión</b-btn>
         </div>
       </form>
       <!-- / Form -->
@@ -54,7 +58,7 @@ import Form from '@/utils/Form.js';
 export default {
   components: {
     VueInput,
-    VueCheckbox,
+    VueCheckbox
   },
   props: {
     loginAction: {type: String, required: true},

@@ -18,11 +18,13 @@
 
     </head>
     <body>
+        <div class="background-login"></div>
     <div id="app">
         <mail-reset-password action="{{ route('password.email') }}"
                 cancel-url="{{route('login')}}"
                 method="POST">
             </mail-reset-password> 
+            <footerlogin></footerlogin>
             <notifications group="auth"/>
     </div>
     <script src="{{ mix('/auth.js') }}"></script>

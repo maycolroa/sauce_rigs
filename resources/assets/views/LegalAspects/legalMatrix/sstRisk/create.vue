@@ -1,9 +1,10 @@
 <template>
   <div>
-    <h4 class="font-weight-bold mb-4">
-       <span class="text-muted font-weight-light">Temas SST /</span> Crear
-    </h4>
-
+    <header-module
+      title="MATRIZ LEGAL"
+      subtitle="CREAR TEMA SST"
+      url="legalaspects-lm-sstrisk"
+    />
 
     <div class="col-md">
       <b-card no-body>

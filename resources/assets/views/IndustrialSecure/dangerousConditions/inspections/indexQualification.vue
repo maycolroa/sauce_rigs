@@ -1,17 +1,13 @@
 <template>
   <div>
-    <h4 class="font-weight-bold mb-4">
-       <span class="text-muted font-weight-light">Inspecciones /</span> Calificadas
-    </h4>
-
+    <header-module
+      title="CONDICIONES PELIGROSAS"
+      subtitle="INSPECCIONES CALIFICADAS"
+      url="dangerousconditions-inspections"
+    />
 
     <div class="col-md">
       <b-card no-body>
-        <b-card-header class="with-elements">
-          <div class="card-title-elements"> 
-            <b-btn :to="{name:'dangerousconditions-inspections'}" variant="secondary">Regresar</b-btn>
-          </div>
-        </b-card-header>
         <b-card-body>
               <vue-table
                 configName="dangerousconditions-inspections-qualification"

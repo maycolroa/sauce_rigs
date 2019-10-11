@@ -1,8 +1,10 @@
 <template>
     <div>
-        <h4 class="font-weight-bold mb-4">
-            <span class="text-muted font-weight-light">Matriz de Peligros /</span> Reporte Historico
-        </h4>
+        <header-module
+            title="MATRIZ DE PELIGROS"
+            subtitle="REPORTE HISTORICO"
+            url="industrialsecure-dangermatrix-report"
+        />
         <loading :display="isLoading"/>
         <div v-show="!isLoading">
             <b-row align-h="end">

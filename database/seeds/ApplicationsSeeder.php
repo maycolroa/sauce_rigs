@@ -44,7 +44,14 @@ class ApplicationsSeeder extends Seeder
                         Application::create($item);
                     }
                     else
-                        $this->command->info("Elemento ".$value["name"]." duplicado");
+                    {
+                        //$this->command->info("Elemento ".$value["name"]." duplicado");
+                        $app->update([
+                            "name" 	        => $value["name"],
+                            "display_name" 	=> $value["display_name"],
+                            "image" 		=> $value["image"]
+                        ]);
+                    }
                 }
                 else
                 {

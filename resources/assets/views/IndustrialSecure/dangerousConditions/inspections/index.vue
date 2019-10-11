@@ -1,9 +1,10 @@
 <template>
   <div>
-    <h4 class="font-weight-bold mb-4">
-      Inspecciones
-    </h4>
-
+    <header-module
+      title="CONDICIONES PELIGROSAS"
+      subtitle="ADMINISTRAR INSPECCIONES"
+      url="industrialsecure-dangerousconditions"
+    />
 
     <div class="col-md">
       <b-card no-body>

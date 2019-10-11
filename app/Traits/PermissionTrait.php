@@ -108,6 +108,7 @@ trait PermissionTrait
                     $data[$app->name]["id"]           = $app->id;
                     $data[$app->name]["display_name"] = $app->display_name;
                     $data[$app->name]["image"]        = $app->image;
+                    $data[$app->name]["banner"]       = $this->checkBanner($app->image);
                     $data[$app->name]["modules"]      = [];
                 }
 
@@ -182,7 +183,8 @@ trait PermissionTrait
                 $data[$app->name]["id"]           = $app->id;
                 $data[$app->name]["display_name"] = $app->display_name;
                 $data[$app->name]["image"]        = $app->image;
-                $data[$app->name]["modules"]      = [];
+                $data[$app->name]["banner"]       = $this->checkBanner($app->image);
+                $data[$app->name]["modules"]      = []; 
             }
 
             $subMod_name = explode("/", $mod->name);
@@ -217,6 +219,15 @@ trait PermissionTrait
         }
 
         return $data;
+    }
+
+    public function checkBanner($image)
+    {
+        if (file_exists( public_path() . "/images/{$image}_banner.png")) {
+            return "/images/{$image}_banner.png";
+        } else {
+            return null;
+        }     
     }
 
     /**

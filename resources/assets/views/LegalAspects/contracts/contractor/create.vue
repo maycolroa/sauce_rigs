@@ -1,9 +1,10 @@
 <template>
   	<div>
-		<h4 class="font-weight-bold mb-4">
-			<span class="text-muted font-weight-light">Contratistas /</span> Crear
-		</h4>
-
+		<header-module
+			title="CONTRATISTAS"
+			subtitle="CREAR CONTRATISTA"
+			url="legalaspects-contractor"
+		/>
 
 		<div class="col-md">
 			<b-card no-body>

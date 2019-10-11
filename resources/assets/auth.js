@@ -22,6 +22,7 @@ Vue.mixin({
 });
 
 import Login from './components/Administrative/Auth/LoginComponent.vue';
+import Footerlogin from './components/LayoutFooter.vue';
 import MailResetPassword from './components/Administrative/Auth/MailResetPasswordComponent.vue';
 import GeneratePassword from './components/Administrative/Auth/GeneratePasswordComponent.vue';
 import PasswordReset from './components/Administrative/Auth/PasswordResetComponent.vue';
@@ -29,5 +30,5 @@ import PasswordReset from './components/Administrative/Auth/PasswordResetCompone
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
-  components: { Login,MailResetPassword,GeneratePassword,PasswordReset }
+  components: { Footerlogin,Login,MailResetPassword,GeneratePassword,PasswordReset }
 })

@@ -1,8 +1,10 @@
 <template>
   <div>
-    <h4 class="font-weight-bold mb-4">
-       <span class="text-muted font-weight-light">Evaluaciones /</span> Evaluar
-    </h4>
+    <header-module
+        title="CONTRATISTAS"
+        subtitle="EVALUAR"
+        url="legalaspects-evaluations"
+    />
 
     <div class="col-md">
       <b-card no-body>

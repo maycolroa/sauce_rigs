@@ -1,6 +1,9 @@
 <template>
   	<div>
-    	<h4 class="font-weight-bold mb-4">Condiciones Peligrosas</h4>
+    	<header-module
+			title="CONDICIONES PELIGROSAS"
+			url="industrialsecure"
+		/>
     	<div class="col-md">
 			<b-card no-body>
 				<b-card-header class="with-elements">

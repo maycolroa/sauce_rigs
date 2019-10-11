@@ -19,12 +19,14 @@
 
     </head>
     <body>
+        <div class="background-login"></div>
     <div id="app">
         <password-reset
             action="{{ route('password.request') }}"
             method="POST"
             token="{{ $token }}">
         </password-reset>
+        <footerlogin></footerlogin>
         <notifications group="auth"/>
         
     </div>

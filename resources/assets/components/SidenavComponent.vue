@@ -3,7 +3,7 @@
     <!-- Brand logo -->
     <div class="app-brand logo" v-if="orientation !== 'horizontal'">
       <span class="app-brand-logo logo bg-primary">
-        <div class="ui-w-30 rounded-circle align-middle text-circle">{{ firstCharAppName }}</div>
+        <img class="ui-w-30 rounded-circle align-middle text-circle" :src="`/images/${iconApp}_icon.png`" alt="Kitten">
       </span>
       <router-link :to="{ name: routeAppName}" class="app-brand-text logo sidenav-text font-weight-normal ml-2"> {{ appName }} </router-link>
       <a href="javascript:void(0)" class="layout-sidenav-toggle sidenav-link text-large ml-auto" @click="toggleSidenav()">
@@ -31,11 +31,13 @@
         </template>
       </template>
     </div>
+    <layoutFooterSidenav/>
   </sidenav>
 </template>
 
 <script>
 import { Sidenav, SidenavRouterLink, SidenavMenu, SidenavHeader, SidenavBlock, SidenavDivider } from '@/vendor/libs/sidenav'
+import LayoutFooterSidenav from './LayoutFooterSidenav.vue';
 
 export default {
   components: {
@@ -44,7 +46,8 @@ export default {
     SidenavMenu,
     SidenavHeader,
     SidenavBlock,
-    SidenavDivider
+    SidenavDivider,
+    LayoutFooterSidenav
   },
 
   props: {
@@ -82,6 +85,9 @@ export default {
     },
     appName: function () {
         return this.data[this.routeAppName] != undefined ? this.data[this.routeAppName].display_name : ''
+    },
+    iconApp: function () {
+        return this.data[this.routeAppName] != undefined ? this.data[this.routeAppName].image : ''
     },
     firstCharAppName: function () {
       return this.appName.substr(0,1).toUpperCase()
