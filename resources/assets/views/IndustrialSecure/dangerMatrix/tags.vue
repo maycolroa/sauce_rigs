@@ -1,6 +1,10 @@
 <template>
   	<div>
-    	<h4 class="font-weight-bold mb-4">Maestro</h4>
+		<header-module
+			title="MATRIZ DE PELIGROS"
+			subtitle="MAESTRO"
+			url="industrialsecure-dangermatrix"
+		/>
     	<div class="col-md">
 			<b-card no-body>
 				<b-card-header class="with-elements">

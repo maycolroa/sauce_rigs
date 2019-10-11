@@ -8,7 +8,7 @@
     {
         "id": 2,
         "name": "industrialSecure",
-        "display_name": "Seguridad Industrial",
+        "display_name": "Seguridad",
         "image": "IndustrialSecure"
     },
     {
@@ -26,7 +26,7 @@
     {
         "id": 5,
         "name": "trainingQualification",
-        "display_name": "Formación y Capacitación",
+        "display_name": "Capacitación",
         "image": "TrainingQualification"
     },
     {

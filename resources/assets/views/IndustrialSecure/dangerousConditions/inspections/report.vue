@@ -1,14 +1,15 @@
 <template>
   <div>
-    <h4 class="font-weight-bold mb-4">
-       <span class="text-muted font-weight-light">Inspecciones /</span> Reportes
-    </h4>
+    <header-module
+      title="CONDICIONES PELIGROSAS"
+      subtitle="REPORTE DE INSPECCIONES"
+      url="dangerousconditions-inspections"
+    />
 
     <div class="col-md">
         <b-card no-body>
             <b-card-header class="with-elements">
                 <div class="card-title-elements"> 
-                    <b-btn :to="{name:'dangerousconditions-inspections'}" variant="secondary">Regresar</b-btn>
                     <b-btn v-if="auth.can['ph_inspections_report_export']" variant="primary" @click="exportReport()" v-b-tooltip.top title="Exportar"><i class="fas fa-download"></i></b-btn>
                 </div>
             </b-card-header>

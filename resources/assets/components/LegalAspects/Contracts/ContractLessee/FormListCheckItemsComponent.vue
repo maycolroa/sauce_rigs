@@ -184,8 +184,8 @@ export default {
 		},
 		pushRemoveFile(value)
 		{
-      this.form.delete.files.push(value)
-    },
+			this.form.delete.files.push(value)
+		},
 		changeActionFiles(qualification, index)
 		{
 			if (qualification == 'C')
@@ -199,6 +199,8 @@ export default {
 
 					this.form.items[index].actionPlan.activities = [];
 				}
+
+				this.saveQualification(index)
 			}
 			else if (qualification == 'NC')
 			{
@@ -214,7 +216,7 @@ export default {
 							editable: 'NO',
 							observation: '',
 							edit_all: true
-            })
+            		})
 				});
 
 				this.form.items[index].files.forEach((file, index2) => {
@@ -223,6 +225,11 @@ export default {
 				});
 
 				this.form.items[index].files = [];
+
+				if (this.form.items[index].actionPlan.activities.length > 0)
+					this.showModal(`modalFile${index}`)
+				else
+					this.saveQualification(index)
 			}
 			else
 			{
@@ -242,9 +249,9 @@ export default {
 				});
 
 				this.form.items[index].files = [];
-			}
 
-			this.saveQualification(index)
+				this.saveQualification(index)
+			}
 		},
 		existError(index) {
 			let keys = Object.keys(this.form.errors.errors)

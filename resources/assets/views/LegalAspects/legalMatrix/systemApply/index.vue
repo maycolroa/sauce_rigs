@@ -1,9 +1,10 @@
 <template>
   <div>
-    <h4 class="font-weight-bold mb-4">
-      Sistemas que Aplican
-    </h4>
-
+    <header-module
+      title="MATRIZ LEGAL"
+      subtitle="ADMINISTRAR SISTEMAS"
+      url="legalaspects-legalmatrix"
+    />
 
     <div class="col-md">
       <b-card no-body>

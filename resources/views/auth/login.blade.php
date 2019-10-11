@@ -19,12 +19,14 @@
 
     </head>
     <body>
+        <div class="background-login"></div>
     <div id="app">
     
         <login login-action="{{ route('login') }}"
                 login-method="POST"
                 password-reset-action="{{ action('Auth\ForgotPasswordController@showLinkRequestForm') }}" >
             </login> 
+        <footerlogin></footerlogin>
             <notifications group="auth"/>
     </div>
     <script src="{{ mix('/auth.js') }}"></script>

@@ -1,8 +1,10 @@
 <template>
     <div>
-        <h4 class="font-weight-bold mb-4">
-            <span class="text-muted font-weight-light">Matriz Legal /</span> Reporte
-        </h4>
+        <header-module
+            title="MATRIZ LEGAL"
+            subtitle="REPORTE"
+            url="legalaspects-legalmatrix"
+        />
         <loading :display="isLoading"/>
         <div v-show="!isLoading">
             <b-row align-h="end">

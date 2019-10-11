@@ -19,12 +19,14 @@
 
     </head>
     <body>
+        <div class="background-login"></div>
     <div id="app">
         <generate-password
             action="{{ action('Auth\GeneratePasswordController@updatePassword', ['id' => $user_id]) }}"
             method="POST"
             state="{{ $state }}">
         </generate-password>
+        <footerlogin></footerlogin>
         <notifications group="auth"/>
         
     </div>

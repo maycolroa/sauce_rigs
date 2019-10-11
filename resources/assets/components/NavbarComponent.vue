@@ -1,10 +1,8 @@
 <template>
-  <b-navbar toggleable="lg" :variant="getLayoutNavbarBg()" class="layout-navbar align-items-lg-center container-p-x">
+  <b-navbar toggleable="lg" :variant="getLayoutNavbarBg()" class="layout-navbar align-items-lg-center container-p-x" style="left: 0px;">
 
     <b-navbar-brand :to="{ name: routeAppName}" class="app-brand demo d-lg-none py-0 mr-4">
-      <span class="app-brand-logo logo bg-primary">
-        <div class="ui-w-30 rounded-circle align-middle text-circle">S</div>
-      </span>
+      <img class="ui-w-30 rounded-circle align-middle text-circle" src="~@/images/Sauce-MLMesa de trabajo 73@2x.png" alt="Kitten">
       <span class="app-brand-text logo font-weight-normal ml-2"> {{ appName }} </span>
     </b-navbar-brand>
 
@@ -75,9 +73,15 @@
             <template v-for="(item, index) in apps">
               <b-col :key="index" v-if="item.modules.length > 0">
                 <router-link :to="{ name: index}" v-on:click.native="toggleApp()" class="text-dark cursor-pointer item-app-navbar">
-                <div class="my-2 mx-2 text-center">
+                <div class="my-2 mx-2 text-center" :ref="`${item.image}`" @mouseover="changeClassImage(item.image, `${item.image}_hover`)">
                   <img class="ui-w-60" :src="`/images/${item.image}.png`" alt="">
                   <div class="text-center font-weight-bold pt-1">
+                    {{ item.display_name }}
+                  </div>
+                </div>
+                <div class="my-2 mx-2 text-center imgHidden" :ref="`${item.image}_hover`" @mouseleave="changeClassImage(`${item.image}_hover`, item.image)">
+                  <img class="ui-w-60" :src="`/images/${item.image}_hover.png`" alt="">
+                  <div class="text-center font-weight-bold pt-1" style="text-decoration: underline rgb(244, 75, 82); text-underline-position: under;">
                     {{ item.display_name }}
                   </div>
                 </div>
@@ -95,9 +99,7 @@
         <b-nav-item-dropdown :right="!isRTL" class="">
           <template slot="button-content">
             <span class="d-inline-flex flex-lg-row-reverse align-items-center align-middle">
-              <span class="app-brand-logo logo bg-primary">
-                <div class="ui-w-30 rounded-circle align-middle text-circle">S</div>
-              </span>
+              <img class="ui-w-30 rounded-circle align-middle text-circle" src="~@/images/Sauce-MLMesa de trabajo 73@2x.png" alt="Kitten">
             </span>
             
           </template>
@@ -113,6 +115,12 @@
     </b-collapse>
   </b-navbar>
 </template>
+
+<style>
+.imgHidden {
+    display: none;
+}
+</style>
 
 <script>
 import Alerts from '@/utils/Alerts.js';
@@ -139,6 +147,10 @@ export default {
       }
     },
   methods: {
+    changeClassImage(image, imageHover) {
+      this.$refs[image][0].classList.add("imgHidden");
+      this.$refs[imageHover][0].classList.remove("imgHidden");
+    },
     toggleSidenav() {
       this.layoutHelpers.toggleCollapsed();
     },

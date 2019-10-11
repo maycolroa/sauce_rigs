@@ -1,9 +1,10 @@
 <template>
   <div>
-    <h4 class="font-weight-bold mb-4">
-      Normas
-    </h4>
-
+    <header-module
+      title="MATRIZ LEGAL"
+      subtitle="ADMINISTRAR NORMAS"
+      url="legalaspects-legalmatrix"
+    />
 
     <div class="col-md">
       <b-card no-body>
@@ -22,7 +23,6 @@
     </div>
   </div>
 </template>
-
 <script>
 import Alerts from '@/utils/Alerts.js';
 

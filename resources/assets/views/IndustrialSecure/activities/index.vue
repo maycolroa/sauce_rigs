@@ -1,9 +1,10 @@
 <template>
   <div>
-    <h4 class="font-weight-bold mb-4">
-      Actividades
-    </h4>
-
+    <header-module
+      title="MATRIZ DE PELIGROS"
+      subtitle="ADMINISTRAR ACTIVIDAD"
+      url="industrialsecure"
+    />
 
     <div class="col-md">
       <b-card no-body>

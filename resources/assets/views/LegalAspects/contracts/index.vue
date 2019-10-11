@@ -1,6 +1,9 @@
 <template>
   	<div>
-    	<h4 class="font-weight-bold mb-4">Contratistas</h4>
+		<header-module
+			title="CONTRATISTAS"
+			url="legalaspects"
+		/>
     	<div class="col-md">
 			<b-card no-body>
 				<b-card-header class="with-elements">

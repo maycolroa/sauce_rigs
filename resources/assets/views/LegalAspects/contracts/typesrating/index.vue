@@ -1,15 +1,15 @@
 <template>
   <div>
-    <h4 class="font-weight-bold mb-4">
-      Tipos de calificaciones
-    </h4>
-
+    <header-module
+			title="CONTRATISTAS"
+			subtitle="ADMINISTRAR TIPOS DE CALIFICACIONES"
+			url="legalaspects-evaluations"
+		/>
 
     <div class="col-md">
       <b-card no-body>
         <b-card-header class="with-elements">
           <div class="card-title-elements"> 
-            <b-btn :to="{name:'legalaspects-evaluations'}" variant="secondary">Regresar</b-btn>
             <b-btn v-if="auth.can['contracts_typesQualification_c']" :to="{name:'legalaspects-typesrating-create'}" variant="primary">Crear tipo de calificación</b-btn>
           </div>
         </b-card-header>

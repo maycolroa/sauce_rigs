@@ -1,9 +1,10 @@
 <template>
   <div>
-    <h4 class="font-weight-bold mb-4">
-       <span class="text-muted font-weight-light">Sistemas que Aplican /</span> Crear
-    </h4>
-
+    <header-module
+      title="MATRIZ LEGAL"
+      subtitle="VER SISTEMA"
+      url="legalaspects-lm-system-apply-company"
+    />
 
     <div class="col-md">
       <b-card no-body>

@@ -59,6 +59,7 @@ Vue.mixin({
 })
 
 Vue.component('vue-table', require('./components/VueTableComponent.vue'));
+Vue.component('header-module', require('./views/headerModule.vue'));
 
 /* eslint-disable no-new */
 new Vue({

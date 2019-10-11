@@ -1,9 +1,10 @@
 <template>
   <div>
-    <h4 class="font-weight-bold mb-4">
-      Matriz de Peligros
-    </h4>
-
+    <header-module
+      title="MATRIZ DE PELIGROS"
+      subtitle="ADMINISTRAR MATRICES"
+      url="industrialsecure"
+    />
 
     <div class="col-md">
       <b-card no-body>

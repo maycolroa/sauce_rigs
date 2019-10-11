@@ -1,9 +1,10 @@
 <template>
   <div>
-    <h4 class="font-weight-bold mb-4">
-       <span class="text-muted font-weight-light">Reportes</span>
-    </h4>
-
+    <header-module
+      title="CONDICIONES PELIGROSAS"
+      subtitle="ADMINISTRAR REPORTES"
+      url="industrialsecure-dangerousconditions"
+    />
 
     <div class="col-md">
       <b-card no-body>

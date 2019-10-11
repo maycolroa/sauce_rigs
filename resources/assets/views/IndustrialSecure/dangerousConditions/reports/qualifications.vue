@@ -1,8 +1,10 @@
 <template>
   <div>
-    <h4 class="font-weight-bold mb-4">
-       <span class="text-muted font-weight-light">Reportes /</span> Calificar
-    </h4>
+    <header-module
+      title="CONDICIONES PELIGROSAS"
+      subtitle="CALIFICAR REPORTE"
+      url="dangerousconditions-reports"
+    />
 
     <div class="col-md">
       <b-card no-body>

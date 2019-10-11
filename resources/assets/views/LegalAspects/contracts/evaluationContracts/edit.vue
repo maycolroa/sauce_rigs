@@ -1,8 +1,10 @@
 <template>
   <div>
-    <h4 class="font-weight-bold mb-4">
-       <span class="text-muted font-weight-light">Evaluaciones Realizadas/</span> Editar
-    </h4>
+    <header-module
+        title="CONTRATISTAS"
+        subtitle="EDITAR EVALUACIÓN REALIZADA"
+        url="legalaspects-evaluations-contracts"
+    />
 
     <div class="col-md">
       <b-card no-body>

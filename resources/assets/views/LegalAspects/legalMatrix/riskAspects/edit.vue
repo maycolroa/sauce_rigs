@@ -1,8 +1,10 @@
 <template>
   <div>
-    <h4 class="font-weight-bold mb-4">
-       <span class="text-muted font-weight-light">Riesgos/Aspectos Ambientales /</span> Editar
-    </h4>
+    <header-module
+      title="MATRIZ LEGAL"
+      subtitle="EDITAR TEMA AMBIENTAL"
+      url="legalaspects-lm-riskaspect"
+    />
 
     <div class="col-md">
       <b-card no-body>

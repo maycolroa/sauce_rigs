@@ -1,8 +1,10 @@
 <template>
   <div>
-    <h4 class="font-weight-bold mb-4">
-       <span class="text-muted font-weight-light">Actividades /</span> Editar
-    </h4>
+    <header-module
+      title="MATRIZ DE PELIGROS"
+      subtitle="EDITAR ACTIVIDAD"
+      url="industrialsecure-activities"
+    />
 
     <div class="col-md">
       <b-card no-body>

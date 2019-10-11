@@ -1,8 +1,10 @@
 <template>
   <div>
-    <h4 class="font-weight-bold mb-4">
-       <span class="text-muted font-weight-light">Peligros /</span> Editar
-    </h4>
+    <header-module
+      title="MATRIZ DE PELIGRO"
+      subtitle="EDITAR PELIGRO"
+      url="industrialsecure-dangers"
+    />
 
     <div class="col-md">
       <b-card no-body>

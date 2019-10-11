@@ -1,6 +1,11 @@
 <template>
   <div>
-    <h4 class="font-weight-bold mb-4">Subida de archivos</h4>
+    <header-module
+			title="CONTRATISTAS"
+			subtitle="ADMINISTRAR ARCHIVOS"
+			url="legalaspects-contracts"
+		/>
+    
     <div class="col-md">
       <b-card no-body>
         <b-card-header class="with-elements">

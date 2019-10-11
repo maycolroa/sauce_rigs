@@ -1,8 +1,10 @@
 <template>
   <div>
-    <h4 class="font-weight-bold mb-4">
-       <span class="text-muted font-weight-light">Normas /</span> Editar
-    </h4>
+    <header-module
+      title="MATRIZ LEGAL"
+      subtitle="EDITAR NORMA"
+      url="legalaspects-lm-law-company"
+    />
 
     <div class="col-md">
       <b-card no-body>

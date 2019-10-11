@@ -1,9 +1,10 @@
 <template>
   <div>
-    <h4 class="font-weight-bold mb-4">
-      Evaluaciones
-    </h4>
-
+    <header-module
+			title="CONTRATISTAS"
+			subtitle="ADMINISTRAR EVALUACIONES"
+			url="legalaspects-contracts"
+		/>
 
     <div class="col-md">
       <b-card no-body>
