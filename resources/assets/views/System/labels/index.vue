@@ -3,7 +3,7 @@
     <header-module
       title="SISTEMA"
       subtitle="ADMINISTRAR LABELS"
-      url="system-labels"
+      url="system"
     />
 
     <div class="col-md">

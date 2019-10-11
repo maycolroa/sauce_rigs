@@ -3,7 +3,6 @@
     <header-module
         title="CONTRATISTAS"
         subtitle="VER EVALUACIÓN REALIZADA"
-        url="legalaspects-evaluations-contracts"
     />
 
     <div class="col-md">
