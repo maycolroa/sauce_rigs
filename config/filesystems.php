@@ -64,6 +64,15 @@ return [
             'url' => env('AWS_URL'),
         ],
 
+        's3_MLegal' => [
+            'driver' => 's3',
+            'key' => 'AKIAIBCDHEHC7FMUWIXQ',
+            'secret' => '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',
+            'region' => 'us-east-1',
+            'bucket' => 'matrizlegal',
+            'url' => env('AWS_URL'),
+        ],
+
     ],
 
 ];

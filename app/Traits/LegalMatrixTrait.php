@@ -52,15 +52,15 @@ trait LegalMatrixTrait
             array_push($ids_article, $value->id);
         }
 
-        if (COUNT($ids_article) > 0)
-        {
-            $articlesDelete = ArticleFulfillment::whereNotIn('article_id', $ids_article);
+        /*if (COUNT($ids_article) > 0)
+        {*/
+            /*$articlesDelete = ArticleFulfillment::whereNotIn('article_id', $ids_article);
             $articlesDelete->company_scope = $company_id;
             $articlesDelete = $articlesDelete->get();
 
-            $this->deleteQualifications($articlesDelete);
+            $this->deleteQualifications($articlesDelete);*/
             $this->deleteQualificationsDuplicates($company_id);
-        }
+        //}
     }
 
     public function deleteQualifications($qualifications)
@@ -76,7 +76,8 @@ trait LegalMatrixTrait
 
                 if ($qualify->name != 'No cumple')
                 {
-                    Storage::disk('s3')->delete('legalAspects/legalMatrix/'. $qualification->file);
+                    $path = "fulfillments/".$qualification->company_id."/";
+                    Storage::disk('s3_MLegal')->delete($path.$qualification->file);
                 }
                 else
                 {
