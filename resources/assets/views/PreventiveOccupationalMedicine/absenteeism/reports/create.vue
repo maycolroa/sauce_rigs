@@ -1,9 +1,10 @@
 <template>
   <div>
-    <h4 class="font-weight-bold mb-4">
-       <span class="text-muted font-weight-light">Informes /</span> Crear
-    </h4>
-
+    <header-module
+      title="AUSENTISMO"
+      subtitle="CREAR INFORME"
+      url="absenteeism-reports"
+    />
 
     <div class="col-md">
       <b-card no-body>

@@ -1,8 +1,10 @@
 <template>
     <div>
-        <h4 class="font-weight-bold mb-4">
-            <span class="text-muted font-weight-light">Audiometrias /</span> Informes
-        </h4>
+        <header-module
+            title="AUDIOMETRIAS"
+            subtitle="INFORMES"
+            url="biologicalmonitoring-audiometry"
+        />
         <div>
             <filter-general 
                 v-model="filters" 

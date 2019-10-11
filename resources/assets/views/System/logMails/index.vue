@@ -1,9 +1,10 @@
 <template>
   <div>
-    <h4 class="font-weight-bold mb-4">
-      Supervisar Correos
-    </h4>
-
+    <header-module
+      title="SISTEMA"
+      subtitle="SUPERVISAR CORREOS"
+      url="system"
+    />
 
     <div class="col-md">
       <b-card no-body>

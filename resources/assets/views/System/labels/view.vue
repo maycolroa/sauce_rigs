@@ -1,8 +1,10 @@
 <template>
   <div>
-    <h4 class="font-weight-bold mb-4">
-       <span class="text-muted font-weight-light">Labels /</span> Ver
-    </h4>
+    <header-module
+      title="SISTEMA"
+      subtitle="VER LABEL"
+      url="system-labels"
+    />
 
     <div class="col-md">
       <b-card no-body>

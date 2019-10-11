@@ -1,8 +1,10 @@
 <template>
   <div>
-    <h4 class="font-weight-bold mb-4">
-       Subir Talend
-    </h4>
+    <header-module
+      title="AUSENTISMO"
+      subtitle="SUBIR TALEND"
+      url="absenteeism-upload-files"
+    />
 
     <div class="col-md">
       <b-card no-body>

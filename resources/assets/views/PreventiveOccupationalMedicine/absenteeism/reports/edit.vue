@@ -1,8 +1,10 @@
 <template>
   <div>
-    <h4 class="font-weight-bold mb-4">
-       <span class="text-muted font-weight-light">Informes /</span> {{ auth.can['absen_reports_admin_user'] && !auth.can['absen_reports_c'] ? "Editar usuarios" : "Editar"}}
-    </h4>
+    <header-module
+      title="AUSENTISMO"
+      :subtitle="auth.can['absen_reports_admin_user'] && !auth.can['absen_reports_c'] ? 'EDITAR USUARIOS' : 'EDITAR INFORME'"
+      url="absenteeism-reports"
+    />
 
     <div class="col-md">
       <b-card no-body>

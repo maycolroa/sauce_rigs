@@ -1,8 +1,10 @@
 <template>
     <div>
-        <h4 class="font-weight-bold mb-4">
-            <span class="text-muted font-weight-light">Análisis Osteomuscular /</span> Informes
-        </h4>
+        <header-module
+            title="ANÁLISIS OSTEOMUSCULAR"
+            subtitle="INFORMES"
+            url="biologicalmonitoring-musculoskeletalanalysis"
+        />
         <div>
             <filter-general 
                 v-model="filters" 

@@ -1,8 +1,10 @@
 <template>
   <div>
-    <h4 class="font-weight-bold mb-4">
-       <span class="text-muted font-weight-light">Generando carta</span>
-    </h4>
+    <header-module
+      title="REINCORPORACIONES"
+      subtitle="GENERAR CARTA"
+      url="reinstatements-checks"
+    />
 
     <div class="col-md">
       <b-card no-body>

@@ -1,8 +1,10 @@
 <template>
   <div>
-    <h4 class="font-weight-bold mb-4">
-       <span class="text-muted font-weight-light">Análisis Osteomuscular /</span> Reporte Individual
-    </h4>
+    <header-module
+        title="ANÁLISIS OSTEOMUSCULAR"
+        subtitle="REPORTE INDIVIDUAL"
+        url="biologicalmonitoring-musculoskeletalanalysis"
+    />
 
     <div class="col-md">
       <b-card no-body>
