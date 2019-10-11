@@ -2,7 +2,7 @@
   <div>
     <header-module
       title="MATRIZ DE PELIGROS"
-      subtitle="ADMINISTRAR ACTIVIDAD"
+      subtitle="ADMINISTRAR ACTIVIDADES"
       url="industrialsecure"
     />
 

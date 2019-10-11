@@ -3,7 +3,7 @@
 		<header-module
 			title="CONTRATISTAS"
 			subtitle="LISTA DE ESTÁNDARES MÍNIMOS"
-			:url="{ name: (this.$route.params.id ? 'legalaspects-contractor' : 'legalaspects-contracts')}"
+			:url="(this.$route.params.id ? 'legalaspects-contractor' : 'legalaspects-contracts')"
 		/>
 
 

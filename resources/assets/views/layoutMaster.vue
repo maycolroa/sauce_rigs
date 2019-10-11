@@ -27,10 +27,8 @@
               </b-col>
               <b-col>
                 <div class="row">
-                  <div class="col-md-12 text-right"  style="padding-top: 30px; padding-bottom: 30px;">
-                    <router-link :to="{ path: '/' }" class="text-dark cursor-pointer item-app-navbar">
+                  <div class="col-md-12 text-right text-dark cursor-pointer item-app-navbar" style="padding-top: 30px; padding-bottom: 30px;" @click="redirectHome">
                       Volver atrás <img class="ui-w-50" src="~@/images/Sauce-ML Boton Volver Atras.png">
-                    </router-link>
                   </div>
                 </div>
                 <router-view style="min-height: 70%;" :apps="data"/>
@@ -126,6 +124,9 @@ export default {
       this.layoutHelpers.destroy()
     },
     methods: {
+      redirectHome() {
+        window.location = '/'
+      },
       isHomeFunction() {
         if (this.$route.path != undefined)
         {
