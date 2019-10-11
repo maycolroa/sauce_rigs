@@ -3,7 +3,7 @@
   <b-form :action="url" @submit.prevent="submit" autocomplete="off">
 
     <b-form-row>
-      <vue-advanced-select :disabled="viewOnly" class="col-md-6" v-model="form.rate" :multiple="false" :options="rates" :hide-selected="false" name="rate" :error="form.errorsFor('rate')" label="Severidad" placeholder="Seleccione el gado de severidad">
+      <vue-advanced-select :disabled="viewOnly" class="col-md-6" v-model="form.rate" :multiple="false" :options="rates" :hide-selected="false" name="rate" :error="form.errorsFor('rate')" label="Severidad" placeholder="Seleccione el grado de severidad">
         </vue-advanced-select>
       <vue-ajax-advanced-select :disabled="viewOnly" class="col-md-6" v-model="form.condition_id" :error="form.errorsFor('condition_id')" :selected-object="form.multiselect_condition" name="condition_id" label="Condición" placeholder="Seleccione la condición" :url="conditionsDataUrl">
           </vue-ajax-advanced-select>

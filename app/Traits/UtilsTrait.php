@@ -3,6 +3,7 @@
 namespace App\Traits;
 
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\File;
 use Carbon\Carbon;
 use Exception;
 use Session;
@@ -341,12 +342,18 @@ trait UtilsTrait
         return $result;
     }
 
-    function isThot()
+    public function isThot()
     {
         if (strpos(url()->current(), 'bi.thotstrategy') === FALSE) {
             return false;
     }
 
         return true;
+    }
+
+    public function makeDirectory($directory)
+    {
+        if (!File::exists($directory))
+            File::makeDirectory($directory, 0777, true);
     }
 }
