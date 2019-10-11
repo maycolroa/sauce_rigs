@@ -1,8 +1,10 @@
 <template>
   <div>
-    <h4 class="font-weight-bold mb-4">
-       <span class="text-muted font-weight-light">Roles /</span> Crear
-    </h4>
+    <header-module
+      title="ADMINNISTRATIVO"
+      subtitle="CREAR ROL"
+      url="administrative-roles"
+    />
 
 
     <div class="col-md">

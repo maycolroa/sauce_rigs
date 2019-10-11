@@ -1,8 +1,10 @@
 <template>
   <div>
-    <h4 class="font-weight-bold mb-4">
-       <span class="text-muted font-weight-light">Empleados /</span> Ver
-    </h4>
+    <header-module
+      title="ADMINNISTRATIVO"
+      subtitle="VER EMPLEADOS"
+      url="administrative-employees"
+    />
 
     <div class="col-md">
       <b-card no-body>

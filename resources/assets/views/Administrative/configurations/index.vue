@@ -1,8 +1,10 @@
 <template>
   <div>
-    <h4 class="font-weight-bold mb-4">
-       Configuraciones
-    </h4>
+    <header-module
+      title="ADMINNISTRATIVO"
+      subtitle="CONFIGURACIONES"
+      url="administrative"
+    />
 
     <div class="col-md">
       <b-card no-body>

@@ -1,8 +1,10 @@
 <template>
   <div>
-    <h4 class="font-weight-bold mb-4">
-       <span class="text-muted font-weight-light">Cetro de Costos /</span> Crear
-    </h4>
+    <header-module
+      title="ADMINNISTRATIVO"
+      subtitle="CREAR CENTRO DE COSTOS"
+      url="administrative-businesses"
+    />
 
 
     <div class="col-md">

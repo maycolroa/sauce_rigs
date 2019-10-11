@@ -1,8 +1,10 @@
 <template>
   <div>
-    <h4 class="font-weight-bold mb-4">
-      Usuarios
-    </h4>
+    <header-module
+      title="ADMINNISTRATIVO"
+      subtitle="ADMINISTRAR USUARIOS"
+      url="administrative"
+    />
 
 
     <div class="col-md">

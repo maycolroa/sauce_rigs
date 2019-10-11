@@ -1,8 +1,8 @@
 <template>
   <div>
-    <h4 class="font-weight-bold mb-4">
-       <span class="text-muted font-weight-light">Cambiar Contraseña </span>
-    </h4>
+    <header-module
+      title="CAMBIAR CONTRASEÑA"
+    />
 
     <div class="col-md">
       <b-card no-body>

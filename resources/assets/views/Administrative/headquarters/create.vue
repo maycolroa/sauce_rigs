@@ -1,8 +1,10 @@
 <template>
   <div>
-    <h4 class="font-weight-bold mb-4">
-       <span class="text-muted font-weight-light">Sedes /</span> Crear
-    </h4>
+    <header-module
+      title="ADMINNISTRATIVO"
+      subtitle="CREAR SEDES"
+      url="administrative-headquarters"
+    />
 
 
     <div class="col-md">
