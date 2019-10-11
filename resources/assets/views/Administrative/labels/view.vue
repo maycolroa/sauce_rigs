@@ -1,8 +1,10 @@
 <template>
   <div>
-    <h4 class="font-weight-bold mb-4">
-       <span class="text-muted font-weight-light">Configurar Etiqueta /</span> Ver
-    </h4>
+    <header-module
+      title="ADMINNISTRATIVO"
+      subtitle="VER ETIQUETA"
+      url="administrative-customlabels"
+    />
 
     <div class="col-md">
       <b-card no-body>

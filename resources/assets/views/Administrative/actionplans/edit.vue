@@ -1,8 +1,10 @@
 <template>
   <div>
-    <h4 class="font-weight-bold mb-4">
-       <span class="text-muted font-weight-light">Planes de acción /</span> Editar
-    </h4>
+    <header-module
+      title="ADMINNISTRATIVO"
+      subtitle="EDITAR PLAN DE ACCIÓN"
+      url="administrative-actionplans"
+    />
 
     <div class="col-md">
       <b-card no-body>

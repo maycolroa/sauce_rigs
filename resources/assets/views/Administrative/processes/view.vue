@@ -1,8 +1,10 @@
 <template>
   <div>
-    <h4 class="font-weight-bold mb-4">
-       <span class="text-muted font-weight-light">Procesos /</span> Ver
-    </h4>
+    <header-module
+      title="ADMINNISTRATIVO"
+      subtitle="VER PROCESO"
+      url="administrative-processes"
+    />
 
     <div class="col-md">
       <b-card no-body>

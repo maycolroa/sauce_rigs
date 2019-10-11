@@ -1,8 +1,10 @@
 <template>
   <div>
-    <h4 class="font-weight-bold mb-4">
-       <span class="text-muted font-weight-light">Sedes /</span> Ver
-    </h4>
+    <header-module
+      title="ADMINNISTRATIVO"
+      subtitle="VER SEDES"
+      url="administrative-headquarters"
+    />
 
     <div class="col-md">
       <b-card no-body>

@@ -1,8 +1,10 @@
 <template>
   <div>
-    <h4 class="font-weight-bold mb-4">
-       <span class="text-muted font-weight-light">Roles /</span> Editar
-    </h4>
+    <header-module
+      title="ADMINNISTRATIVO"
+      subtitle="EDITAR ROL"
+      url="administrative-roles"
+    />
 
     <div class="col-md">
       <b-card no-body>

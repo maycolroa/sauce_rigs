@@ -1,9 +1,10 @@
 <template>
   <div>
-    <h4 class="font-weight-bold mb-4">
-       <span class="text-muted font-weight-light">{{ keywordCheck('regionals', 'Regionales') }} /</span> Crear
-    </h4>
-
+    <header-module
+      title="ADMINNISTRATIVO"
+      :subtitle="`CREAR ${keywordCheck('regionals', 'Regionales')}`"
+      url="administrative-regionals"
+    />
 
     <div class="col-md">
       <b-card no-body>

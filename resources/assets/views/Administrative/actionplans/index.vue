@@ -1,8 +1,10 @@
 <template>
   <div>
-    <h4 class="font-weight-bold mb-4">
-      Planes de Acción
-    </h4>
+    <header-module
+      title="ADMINNISTRATIVO"
+      subtitle="ADMINISTRAR PLANES DE ACCIÓN"
+      url="administrative"
+    />
 
 
     <div class="col-md">
