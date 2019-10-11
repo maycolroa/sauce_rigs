@@ -2,7 +2,7 @@
 <div>
   <div class="layout-wrapper layout-2">
     <div class="layout-inner">
-      <div class="layout-container" :style="{ 'padding-left': paddingLayoutContainer + 'px' }" id="layout-master-page">
+      <div class="layout-container" id="layout-master-page">
         <Navbar :data="data"/>
 
         <div class="layout-content">
@@ -11,7 +11,7 @@
           </div>
           <div v-show="isMainApp" class="router-transitions container-fluid flex-grow-1" style="padding-top: 0px; padding-left: 0px;">
             <b-row style="min-height: 95vh">
-              <b-col cols="2" style="background-color: #f44b52">
+              <b-col cols="2" style="background-color: #f44b52" class="d-none d-sm-none d-md-block d-lg-block">
                 <!--<template v-if="banner">
                   <img style="width: 94%; height: 100%;" :src="banner">
                 </template>
@@ -96,7 +96,7 @@ export default {
     },
     computed: {
       paddingLayoutContainer() {
-        return this.isHomeFunction() ? '0' : '250'
+        return this.isHomeFunction() ? '250' : '0'
       },
       isHome() {
         return this.isHomeFunction()

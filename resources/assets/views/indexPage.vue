@@ -2,23 +2,23 @@
   <div>
     <div class="row">
       <!-- Logo -->
-      <div class="col-md-4 offset-md-4">
-        <img style="width: 400px; height: 80px;" src="~@/images/Sauce-ML Logo RiGS Principal.png">
+      <div class="col-md-6 offset-md-2" style="max-height: 300px; max-width: 450px;">
+        <img class="img-fluid" src="~@/images/Sauce-ML Logo RiGS Principal.png">
       </div>
       <!-- / Logo -->
     </div>
     <div class="row">
-      <div class="col-md-4 offset-md-4" style="padding-left: 50px; padding-right: 50px;">
+      <div class="col-md-5 offset-md-2" style="padding-left: 50px; padding-right: 50px;">
       <p>Únete y conoce esta herramienta para gestionar los procesos de seguridad y salud en su empresa</p>
       </div>
     </div>
     <div class="row">
-      <div class="col-md-4 offset-md-4">
+      <div class="col-md-5 offset-md-2">
         <hr class="border-dark mt-0 mb-4" style="padding-bottom: 10px;">
       </div>
     </div>
     <div class="row">
-      <div class="col-md-6 offset-md-3">
+      <div class="col-md-7 offset-md-1">
         <template v-for="(item_row, key_row) in data">
           <div class="row" :key="`second-${key_row}`" v-if="key_row > 0">
             <div class="col-md-12">
