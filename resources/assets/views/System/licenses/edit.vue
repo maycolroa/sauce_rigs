@@ -1,8 +1,10 @@
 <template>
   <div>
-    <h4 class="font-weight-bold mb-4">
-       <span class="text-muted font-weight-light">Licencias /</span> Editar
-    </h4>
+    <header-module
+      title="SISTEMA"
+      subtitle="EDITAR LICENCIA"
+      url="system-licenses"
+    />
 
     <div class="col-md">
       <b-card no-body>

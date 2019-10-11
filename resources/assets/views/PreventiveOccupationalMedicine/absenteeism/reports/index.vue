@@ -1,9 +1,10 @@
 <template>
   <div>
-    <h4 class="font-weight-bold mb-4">
-      Informes
-    </h4>
-
+    <header-module
+      title="AUSENTISMO"
+      subtitle="ADMINISTRAR INFORMES"
+      url="preventiveoccupationalmedicine-absenteeism"
+    />
 
     <div class="col-md">
       <b-card no-body>

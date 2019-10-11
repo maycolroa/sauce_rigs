@@ -1,6 +1,9 @@
 <template>
   	<div>
-    	<h4 class="font-weight-bold mb-4">Ausentismo</h4>
+		<header-module
+			title="AUSENTISMO"
+			url="preventiveoccupationalmedicine"
+		/>
     	<div class="col-md">
 			<b-card no-body>
 				<b-card-header class="with-elements">

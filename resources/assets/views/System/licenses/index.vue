@@ -1,9 +1,10 @@
 <template>
   <div>
-    <h4 class="font-weight-bold mb-4">
-      Licencias
-    </h4>
-
+    <header-module
+      title="SISTEMA"
+      subtitle="ADMINISTRAR LICENCIAS"
+      url="system"
+    />
 
     <div class="col-md">
       <b-card no-body>

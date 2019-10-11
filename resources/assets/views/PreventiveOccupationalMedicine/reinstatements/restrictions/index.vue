@@ -1,9 +1,10 @@
 <template>
   <div>
-    <h4 class="font-weight-bold mb-4">
-      Restricciones
-    </h4>
-
+    <header-module
+      title="REINCORPORACIONES"
+      subtitle="ADMINISTAR RESTRICCIONES"
+      url="preventiveoccupationalmedicine-reinstatements"
+    />
 
     <div class="col-md">
       <b-card no-body>

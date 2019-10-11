@@ -1,8 +1,10 @@
 <template>
   <div>
-    <h4 class="font-weight-bold mb-4">
-       <span class="text-muted font-weight-light">Supervisar Correos /</span> Ver
-    </h4>
+    <header-module
+      title="SISTEMA"
+      subtitle="VER CORREO"
+      url="system-logmails"
+    />
 
     <div class="col-md">
       <b-card no-body>

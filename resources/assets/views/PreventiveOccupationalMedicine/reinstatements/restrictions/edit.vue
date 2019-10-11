@@ -1,8 +1,10 @@
 <template>
   <div>
-    <h4 class="font-weight-bold mb-4">
-       <span class="text-muted font-weight-light">Restricciones /</span> Editar
-    </h4>
+    <header-module
+      title="REINCORPORACIONES"
+      subtitle="EDITAR RESTRICCIÓN"
+      url="reinstatements-restrictions"
+    />
 
     <div class="col-md">
       <b-card no-body>

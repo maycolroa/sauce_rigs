@@ -1,8 +1,10 @@
 <template>
   <div>
-    <h4 class="font-weight-bold mb-4">
-       <span class="text-muted font-weight-light">Audiometrias /</span> Informe Individual
-    </h4>
+    <header-module
+        title="AUDIOMETRIAS"
+        subtitle="INFORME INDIVIDUAL"
+        url="biologicalmonitoring-audiometry"
+    />
 
     <div class="col-md">
       <b-card no-body>

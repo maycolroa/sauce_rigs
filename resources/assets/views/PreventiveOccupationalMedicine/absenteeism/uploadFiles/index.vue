@@ -1,6 +1,11 @@
 <template>
   <div>
-    <h4 class="font-weight-bold mb-4">Subida de archivos</h4>
+    <header-module
+      title="AUSENTISMO"
+      subtitle="ADMINISTRAR ARCHIVOS"
+      url="preventiveoccupationalmedicine-absenteeism"
+    />
+
     <div class="col-md">
       <b-card no-body>
         <b-card-header class="with-elements">

@@ -1,8 +1,10 @@
 <template>
   <div>
-    <h4 class="font-weight-bold mb-4">
-      Análisis Osteomuscular
-    </h4>
+    <header-module
+      title="ANÁLISIS OSTEOMUSCULAR"
+      subtitle="ADMINISTRAR ANÁLISIS"
+      url="preventiveoccupationalmedicine"
+    />
 
     <div class="col-md">
       <b-card no-body>

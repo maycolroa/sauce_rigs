@@ -1,9 +1,10 @@
 <template>
   <div>
-    <h4 class="font-weight-bold mb-4">
-       Subir Archivo
-    </h4>
-
+    <header-module
+      title="AUSENTISMO"
+      subtitle="EDITAR ARCHIVO"
+      url="absenteeism-upload-files"
+    />
 
     <div class="col-md">
       <b-card no-body>
