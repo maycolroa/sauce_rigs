@@ -423,7 +423,7 @@ class ContractLesseeController extends Controller
 
         try
         {
-            \Log::info($request->all());
+            //\Log::info($request->all());
             $data = $request->except(['items', 'files_binary']);
 
             $qualifications = Qualifications::pluck("id", "name");

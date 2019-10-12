@@ -166,7 +166,8 @@
     <div class="row float-right pt-10 pr-10" style="padding-top: 20px;">
       <template>
         <b-btn variant="default" @click="$router.go(-1)" :disabled="loading">{{ viewOnly ? "Atras" : "Cancelar"}}</b-btn>&nbsp;&nbsp;
-        <b-btn type="submit" :disabled="loading" variant="primary" v-if="!viewOnly">Finalizar</b-btn>
+        <b-btn @click="submit(false)" :disabled="loading" variant="primary" v-if="!viewOnly">Guardar y continuar</b-btn>&nbsp;&nbsp;
+        <b-btn @click="submit" :disabled="loading" variant="primary" v-if="!viewOnly">Finalizar</b-btn>
       </template>
     </div>
   </b-form>
@@ -226,6 +227,7 @@ export default {
     law: {
       default() {
         return {
+          id:'',
           custom: this.custom,
           name: '',
           law_number: '',
@@ -239,7 +241,8 @@ export default {
           sst_risk_id: '',
           repealed: '',
           file: '',
-          articles: []
+          articles: [],
+          delete: []
         };
       }
     }
@@ -268,13 +271,33 @@ export default {
     };
   },
   methods: {
-    submit(e) {
+    submit(redirect = true) {
       this.loading = true;
+
+      let url = this.url;
+
+      if (this.method == 'POST')
+      {
+        if (this.form.id)
+          this.form.updateMethod('PUT')
+
+        url = !this.form.id ? this.url : `${this.url}/${this.form.id }`;
+      }
+
       this.form
-        .submit(e.target.action)
+        .submit(url)
         .then(response => {
           this.loading = false;
-          this.$router.go(-1);
+
+          if (redirect)
+            this.$router.go(-1);
+          else
+          {
+            _.forIn(response.data.data, (value, key) => {
+              this.form[key] = value
+            })
+          }
+
         })
         .catch(error => {
           this.loading = false;
