@@ -792,6 +792,7 @@ export default [
     {
         name: 'legalaspects-lm-laws-qualify',
         fields: [
+            { name: '', data: 'controlls', title: 'Controles', sortable: false, searchable: false, detail: false, key: false },
             { name: 'sau_lm_laws.id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true },
             { name: 'sau_lm_laws.name', data: 'name', title: 'Nombre', sortable: true, searchable: true, detail: false, key: false },
             { name: 'sau_lm_laws_types.name', data: 'law_type', title: 'Tipo Norma', sortable: true, searchable: true, detail: false, key: false },
@@ -803,7 +804,6 @@ export default [
             { name: 'sau_lm_entities.name', data: 'entity', title: 'Ente', sortable: true, searchable: true, detail: false, key: false },
             { name: 'sau_lm_system_apply.name', data: 'system_apply', title: 'Sistema Aplica', sortable: true, searchable: true, detail: false, key: false },
             { name: 'sau_lm_laws.repealed', data: 'repealed', title: 'Derogada', sortable: true, searchable: true, detail: false, key: false },
-            { name: '', data: 'controlls', title: 'Controles', sortable: false, searchable: false, detail: false, key: false },
         ],
         'controlls': [{
             type: 'push',
@@ -812,7 +812,7 @@ export default [
                     color: 'outline-success',
                     borderless: true,
                     icon: 'ion ion-md-clipboard',
-                    title: 'Calificar'
+                    title: 'Evaluar'
                 },
                 data: {
                     routePush: { name: 'legalaspects-lm-law-qualify-view' },
@@ -834,9 +834,9 @@ export default [
     {
         name: 'legalaspects-lm-system-apply',
         fields: [
+            { name: '', data: 'controlls', title: 'Controles', sortable: false, searchable: false, detail: false, key: false },
             { name: 'sau_lm_system_apply.id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true },
             { name: 'sau_lm_system_apply.name', data: 'name', title: 'Nombre', sortable: true, searchable: true, detail: false, key: false },
-            { name: '', data: 'controlls', title: 'Controles', sortable: false, searchable: false, detail: false, key: false },
         ],
         'controlls': [{
             type: 'push',

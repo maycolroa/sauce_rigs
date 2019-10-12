@@ -2,7 +2,7 @@
   <div>
     <header-module
       title="MATRIZ LEGAL"
-      subtitle="CALIFICAR NORMA"
+      subtitle="EVALUAR NORMA"
       url="legalaspects-lm-law-qualify"
     />
 
@@ -33,7 +33,7 @@ import GlobalMethods from '@/utils/GlobalMethods.js';
 export default {
   name: 'legalaspects-lm-law-qualify-edit',
   metaInfo: {
-    title: 'Calificar Normas'
+    title: 'Evaluar Normas'
   },
   components:{
     FormLawQualifyComponent

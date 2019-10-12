@@ -2,7 +2,7 @@
   <div>
     <header-module
       title="MATRIZ LEGAL"
-      subtitle="CALIFICAR NORMAS"
+      subtitle="EVALUAR NORMAS"
       url="legalaspects-legalmatrix"
     />
 
@@ -26,7 +26,7 @@ import Alerts from '@/utils/Alerts.js';
 export default {
   name: 'legalaspects-lm-laws-qualify',
   metaInfo: {
-    title: 'Calificar Normas'
+    title: 'Evaluar Normas'
   }
 }
 </script>
