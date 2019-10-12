@@ -5,11 +5,11 @@
                 <b-col cols="6">
                     <router-link :to="{ name: 'legalaspects-contracts'}" class="text-dark cursor-pointer item-app-navbar">
                         <center>
-                            <div style="font-size: 30px;" class="my-2 mx-2 text-center font-weight-bold" ref="contracts" @mouseover="changeClassImage('contracts', 'contracts_hover')">
-                                <img class="ui-w-100" src="/images/contracts.png" alt=""> CONTRATISTAS
+                            <div style="font-size: 20px;" class="my-2 mx-2 text-center font-weight-bold" ref="contracts" @mouseover="changeClassImage('contracts', 'contracts_hover')">
+                                <img class="ui-w-80" src="/images/contracts.png" alt=""> CONTRATISTAS
                             </div>
-                            <div style="font-size: 30px; text-decoration: underline rgb(244, 75, 82); text-underline-position: under;" class="my-2 mx-2 text-center font-weight-bold imgHidden" ref="contracts_hover" @mouseleave="changeClassImage('contracts_hover', 'contracts')">
-                                <img class="ui-w-100" src="/images/contracts_hover.png" alt=""> CONTRATISTAS
+                            <div style="font-size: 20px; text-decoration: underline rgb(244, 75, 82); text-underline-position: under;" class="my-2 mx-2 text-center font-weight-bold imgHidden" ref="contracts_hover" @mouseleave="changeClassImage('contracts_hover', 'contracts')">
+                                <img class="ui-w-80" src="/images/contracts_hover.png" alt=""> CONTRATISTAS
                             </div>
                         </center>
                     </router-link>
@@ -26,11 +26,11 @@
                 <b-col cols="6">
                     <router-link :to="{ name: 'legalaspects-legalmatrix'}" class="text-dark cursor-pointer item-app-navbar">
                         <center>
-                            <div style="font-size: 30px;" class="my-2 mx-2 text-center font-weight-bold" ref="legalmatrix" @mouseover="changeClassImage('legalmatrix', 'legalmatrix_hover')">
-                                <img class="ui-w-100" src="/images/legalmatrix.png" alt=""> MATRIZ LEGAL
+                            <div style="font-size: 20px;" class="my-2 mx-2 text-center font-weight-bold" ref="legalmatrix" @mouseover="changeClassImage('legalmatrix', 'legalmatrix_hover')">
+                                <img class="ui-w-80" src="/images/legalmatrix.png" alt=""> MATRIZ LEGAL
                             </div>
-                            <div style="font-size: 30px; text-decoration: underline rgb(244, 75, 82); text-underline-position: under;" class="my-2 mx-2 text-center font-weight-bold imgHidden" ref="legalmatrix_hover" @mouseleave="changeClassImage('legalmatrix_hover', 'legalmatrix')">
-                                <img class="ui-w-100" src="/images/legalmatrix_hover.png" alt=""> MATRIZ LEGAL
+                            <div style="font-size: 20px; text-decoration: underline rgb(244, 75, 82); text-underline-position: under;" class="my-2 mx-2 text-center font-weight-bold imgHidden" ref="legalmatrix_hover" @mouseleave="changeClassImage('legalmatrix_hover', 'legalmatrix')">
+                                <img class="ui-w-80" src="/images/legalmatrix_hover.png" alt=""> MATRIZ LEGAL
                             </div>
                         </center>
                     </router-link>

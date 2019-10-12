@@ -72,7 +72,7 @@ export default [
           url: '/selects/legalMatrix/riskAspects',
           key: 'riskAspects',
           type: 'select',
-          label: 'Riesgo/Aspecto Ambiental'
+          label: 'Temas Ambientales'
         },
         {
           url: '/selects/legalMatrix/entities',
@@ -90,7 +90,7 @@ export default [
           url: '/selects/legalMatrix/systemApplySystem',
           key: 'systemApply',
           type: 'select',
-          label: 'Sistema que aplica'
+          label: 'Sistemas'
         },
         {
           url: '/selects/legalMatrix/lawNumbersSystem',
@@ -125,7 +125,7 @@ export default [
           url: '/selects/legalMatrix/riskAspects',
           key: 'riskAspects',
           type: 'select',
-          label: 'Riesgo/Aspecto Ambiental'
+          label: 'Temas Ambientales'
         },
         {
           url: '/selects/legalMatrix/entities',
@@ -143,7 +143,7 @@ export default [
           url: '/selects/legalMatrix/systemApplyCompany',
           key: 'systemApply',
           type: 'select',
-          label: 'Sistema que aplica'
+          label: 'Sistemas'
         },
         {
           url: '/selects/legalMatrix/lawNumbersCompany',
@@ -178,7 +178,7 @@ export default [
           url: '/selects/legalMatrix/riskAspects',
           key: 'riskAspects',
           type: 'select',
-          label: 'Riesgo/Aspecto Ambiental'
+          label: 'Temas Ambientales'
         },
         {
           url: '/selects/legalMatrix/entities',
@@ -196,7 +196,7 @@ export default [
           url: '/selects/legalMatrix/systemApply',
           key: 'systemApply',
           type: 'select',
-          label: 'Sistema que aplica'
+          label: 'Sistemas'
         },
         {
           url: '/selects/legalMatrix/lawNumbers',

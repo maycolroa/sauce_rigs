@@ -9,7 +9,7 @@
           </b-col>
       </b-row>
 
-    <v-server-table :url="config.configuration.urlData" :columns="columns" :options="options" ref="vuetable" :key="keyVuetable">
+    <v-server-table class="vuetable-master" :url="config.configuration.urlData" :columns="columns" :options="options" ref="vuetable" :key="keyVuetable" @row-click="onRowClick">
       <template slot="controlls" slot-scope="props">
         <div class="align-middle text-center">
           
@@ -115,11 +115,23 @@
   </div>
 </template>
 <style scope>
-  .table-with-detail thead th:not(:first-of-type) {
+  /*.table-with-detail thead th:not(:first-of-type) {
     min-width: 100px;
   }
   .table-without-detail thead th {
     min-width: 100px;
+  }*/
+  .table-with-detail tbody td {
+    white-space: nowrap;
+  }
+  .table-without-detail tbody td {
+    white-space: nowrap;
+  }
+  .VueTables__limit {
+    float: left;
+  }
+  .vuetable-master {
+    font-size: 12px;
   }
 </style>
 
@@ -209,7 +221,7 @@ export default {
         columnsDropdown: true,
         pagination: { chunk: 5 },
         perPage: 10,
-        perPageValues: [],
+        perPageValues: [10, 25, 50, 100],
         serverMultiSorting: false,
         sortIcon: {
           is: 'fa-sort',
@@ -235,7 +247,8 @@ export default {
           filterBy:"Filtrar por {column}",
           loading:'Cargando...',
           defaultOption:'Select {column}',
-          columns:'Columnas'
+          columns:'Columnas',
+          limit: 'Registros'
         },
         params: {
           filters: this.filters,
@@ -428,6 +441,10 @@ export default {
     }
   },
   methods: {
+    onRowClick: function(row) {
+      console.log(row)
+      this.$emit("rowClick", row.row);
+    },
     pushButton (button, row) {
 
       if(button.data.routePush.name != undefined){

@@ -13,6 +13,7 @@
                 v-if="auth.can['laws_qualify']"
                 configName="legalaspects-lm-laws-qualify"
                 :params="{ qualify : true }"
+                @rowClick="redirectQualify"
                 ></vue-table>
         </b-card-body>
     </b-card>
@@ -27,6 +28,12 @@ export default {
   name: 'legalaspects-lm-laws-qualify',
   metaInfo: {
     title: 'Calificar Normas'
+  },
+  methods: {
+    redirectQualify(row) {
+      let id = row.id;
+      this.$router.push({name: 'legalaspects-lm-law-qualify-view', params : { id }});
+    }
   }
 }
 </script>

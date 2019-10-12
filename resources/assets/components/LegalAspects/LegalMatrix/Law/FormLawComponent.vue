@@ -36,7 +36,7 @@
           <b-form-row>
             <vue-ajax-advanced-select :disabled="viewOnly" class="col-md-6" v-model="form.law_type_id" :error="form.errorsFor('law_type_id')" :selected-object="form.multiselect_law_type" name="law_type_id" label="Tipo de norma" placeholder="Seleccione el tipo de norma" :url="lawTypeDataUrl">
               </vue-ajax-advanced-select>
-            <vue-ajax-advanced-select :disabled="viewOnly" class="col-md-6" v-model="form.risk_aspect_id" :error="form.errorsFor('risk_aspect_id')" :selected-object="form.multiselect_risk_aspect" name="risk_aspect_id" label="Riesgo/Aspecto Ambiental" placeholder="Seleccione el Riesgo/Aspecto Ambiental" :url="riskAspectDataUrl">
+            <vue-ajax-advanced-select :disabled="viewOnly" class="col-md-6" v-model="form.risk_aspect_id" :error="form.errorsFor('risk_aspect_id')" :selected-object="form.multiselect_risk_aspect" name="risk_aspect_id" label="Tema Ambiental" placeholder="Seleccione el tema ambiental" :url="riskAspectDataUrl">
               </vue-ajax-advanced-select>
           </b-form-row>
           <b-form-row>
