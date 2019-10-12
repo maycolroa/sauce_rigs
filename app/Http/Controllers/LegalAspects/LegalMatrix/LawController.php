@@ -151,6 +151,8 @@ class LawController extends Controller
 
         try
         {
+            $data = $request->all();
+            
             $law = new Law($request->except('file'));
             
             if ($request->custom == 'true')
@@ -170,9 +172,14 @@ class LawController extends Controller
                 if(!$law->update()){
                     return $this->respondHttp500();
                 }
+
+                $data['file'] = $law->file;
+                $data['old_file'] = $law->file;
             }
 
-            $this->saveArticles($law, $request->get('articles'));
+            $data['id'] = $law->id;
+            $data['articles'] = $this->saveArticles($law, $request->get('articles'));
+            $data['delete'] = [];
 
             DB::commit();
 
@@ -182,6 +189,10 @@ class LawController extends Controller
             DB::rollback();
             return $this->respondHttp500();
         }
+
+        return $this->respondHttp200([
+            'data' => $data
+        ]);
 
         return $this->respondHttp200([
             'message' => 'Se creo la norma'
@@ -256,6 +267,8 @@ class LawController extends Controller
         {
             $law->fill($request->except('file'));
 
+            $data = $request->except(['multiselect_law_type', 'multiselect_risk_aspect', 'multiselect_entity', 'multiselect_sst_risk', 'multiselect_system_apply']);
+
             if ($request->file != $law->file)
             {
                 $path = (!$law->company_id) ? 'laws/' : "laws/".Session::get('company_id')."/";
@@ -264,13 +277,17 @@ class LawController extends Controller
                 $nameFile = base64_encode(Auth::user()->id . now() . rand(1,10000)) .'.'. $file->extension();
                 $file->storeAs($path, $nameFile, 's3_MLegal');
                 $law->file = $nameFile;
+
+                $data['file'] = $law->file;
+                $data['old_file'] = $law->file;
             }
 
             if (!$law->update()) {
                 return $this->respondHttp500();
             }
 
-            $this->saveArticles($law, $request->get('articles'));
+            $data['articles'] = $this->saveArticles($law, $request->get('articles'));
+            $data['delete'] = [];
                 
             if ($request->has('delete') && COUNT($request->delete) > 0)
             {
@@ -294,6 +311,10 @@ class LawController extends Controller
             DB::rollback();
             return $this->respondHttp500();
         }
+
+        return $this->respondHttp200([
+            'data' => $data
+        ]);
 
         return $this->respondHttp200([
             'message' => 'Se actualizo la norma'
@@ -351,12 +372,15 @@ class LawController extends Controller
 
     private function saveArticles($law, $articles)
     {
-        foreach ($articles as $article)
+        foreach ($articles as $key => $article)
         {
             $id = isset($article['id']) ? $article['id'] : NULL;
             $articleNew = $law->articles()->updateOrCreate(['id'=>$id], $article);
             $articleNew->interests()->sync($this->getValuesForMultiselect($article['interests_id']));
+            $articles[$key]['id'] = $articleNew->id;
         }
+
+        return $articles;
     }
 
     public function lmLawYearsSystem(Request $request)

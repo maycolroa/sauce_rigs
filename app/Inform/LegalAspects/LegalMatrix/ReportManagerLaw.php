@@ -131,7 +131,7 @@ class ReportManagerLaw
         {
             $qualifications[$value->qualify][$value->system_apply] = $value->count;
             
-            $this->totalArticles++;
+            $this->totalArticles += $value->count;
             $this->articles_t += ($value->count * $this->table_fulfillment[$value->qualify]["count"]);
             $this->articles_c += ($value->count * $this->table_fulfillment[$value->qualify]["qualify"]);
         }
