@@ -55,7 +55,7 @@ class DaysAlertExpirationDateContractFilesUpload extends Command
                 ->join('sau_users','sau_users.id','sau_ct_file_upload_contracts_leesse.user_id')
                 ->join('sau_ct_file_upload_contract','sau_ct_file_upload_contract.file_upload_id','sau_ct_file_upload_contracts_leesse.id')
                 ->join('sau_ct_information_contract_lessee', 'sau_ct_information_contract_lessee.id', 'sau_ct_file_upload_contract.contract_id')
-                ->whereRaw("CURDATE() = DATE_FORMAT(DATE_ADD(sau_ct_file_upload_contracts_leesse.expirationDate, INTERVAL -".$value['value']." DAY), '%Y-%m-%d')")
+                ->whereRaw("CURDATE() = DATE_ADD(sau_ct_file_upload_contracts_leesse.expirationDate, INTERVAL -".$value['value']." DAY)")
                 ->groupBy('sau_ct_file_upload_contracts_leesse.id');
             
             $files->company_scope = $value['company_id'];
