@@ -44,7 +44,7 @@ class DisableUsers extends Command
         $days_suspension = Configuration::getConfiguration('days_user_suspension');
 
         $users = User::active()
-            ->whereRaw("DATEDIFF(CURDATE(), sau_users.last_login_at) >= ".$days_suspension)
+            ->whereRaw("DATEDIFF(CURDATE(), DATE_FORMAT(sau_users.last_login_at, '%Y-%m-%d')) >= ".$days_suspension)
             ->get();
 
         foreach ($users as $key => $user)
