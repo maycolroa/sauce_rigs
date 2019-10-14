@@ -11,7 +11,7 @@
         <!-- Form -->
         <!-- <form class="my-3" :action="loginAction" @submit.prevent="submit"> -->
         <form class="my-3" :action="action" @submit.prevent="submit">
-            <h1 v-if="state != 'without use'">Este link ya no se puede volver a reutilizar por qué ya fue utilizado.</h1>
+            <h1 v-if="state != 'without use'">Este link ya fue utilizado.</h1>
             <div v-else>
                 <vue-input v-model="form.password"
                 label="Nueva contraseña"

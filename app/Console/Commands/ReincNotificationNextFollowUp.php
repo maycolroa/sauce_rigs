@@ -22,7 +22,7 @@ class ReincNotificationNextFollowUp extends Command
      *
      * @var string
      */
-    protected $description = 'Envía una notificación a los empleados de la empresa con los reportes que estén a 3 días del próximo seguimiento';
+    protected $description = 'Envía una notificación a los usuarios de la empresa con los reportes que estén a 3 días del próximo seguimiento';
 
     /**
      * Create a new command instance.

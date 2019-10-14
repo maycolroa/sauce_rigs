@@ -29,7 +29,7 @@
           :error="form.errorsFor('password')"
         ></vue-input>
         <vue-input v-model="form.password_confirmation"
-          label="Contraseña"
+          label="Confirmar Contraseña"
           name="password_confirmation"
           type="password"
           placeholder="Confirmar Contraseña"
