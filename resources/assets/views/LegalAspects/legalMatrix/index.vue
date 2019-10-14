@@ -260,17 +260,17 @@
                       	<img class="ui-w-80" src="/images/Sauce-ML Ico Calificar Normas.png" alt="" >
 
                       	<div class="font-weight-bold pt-1">
-	                        Calificar normas	
+	                        Evaluar normas	
                       	</div>
-						<small class="text-muted">Calificar normas</small>
+						<small class="text-muted">Evaluar normas</small>
                     </div>
                     <div class="my-2 mx-2 imgHidden" ref="custom_law_qualify_hover" @mouseleave="changeClassImage('custom_law_qualify_hover', 'custom_law_qualify')">
                       	<img class="ui-w-80" src="/images/Sauce-ML Ico Calificar Normas Over.png" alt="">
 
                       	<div class="font-weight-bold pt-1">
-	                        Calificar normas	
+	                        Evaluar normas	
                       	</div>
-						<small class="text-muted">Calificar normas</small>
+						<small class="text-muted">Evaluar normas</small>
 						<div style="padding-top: 10px;">
 							<hr class="border-divider mt-0 mb-4">
 						</div>

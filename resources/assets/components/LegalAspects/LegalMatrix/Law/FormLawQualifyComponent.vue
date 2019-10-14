@@ -55,11 +55,11 @@
                       </vue-advanced-select>
             </b-form-row>
             <blockquote class="blockquote text-center">
-              <p class="mb-0">Artículos de la norma | <b-btn variant="primary" size="sm" @click="$refs.modalQualificationAll.show()" ><span class="ion ion-md-clipboard"></span> Calificar todos </b-btn></p>
+              <p class="mb-0">Artículos de la norma | <b-btn variant="primary" size="sm" @click="$refs.modalQualificationAll.show()" ><span class="ion ion-md-clipboard"></span> Evaluar todos </b-btn></p>
 
               <b-modal ref="modalQualificationAll" :hideFooter="true" id="modals-qualification-all" class="modal-top" size="lg">
                 <div slot="modal-title">
-                  Calificar todos los artículos de esta ley...
+                  Evaluar todos los artículos de esta ley...
                 </div>
 
                 <b-card  bg-variant="transparent"  title="" class="mb-3 box-shadow-none">
@@ -189,7 +189,7 @@
 
                           <b-modal v-if="article.qualify == 'No cumple'" :ref="`modalPlan${index}`" :hideFooter="true" :id="`modals-default-${index+1}`" class="modal-top" size="lg" @hidden="saveArticleQualification(index)">
                             <div slot="modal-title">
-                              Plan de acción <span class="font-weight-light">Calificar Normas</span><br>
+                              Plan de acción <span class="font-weight-light">Evaluar Normas</span><br>
                               <small class="text-muted">Crea planes de acción para tu justificación.</small>
                             </div>
 

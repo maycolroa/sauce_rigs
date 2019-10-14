@@ -13,7 +13,7 @@
             </b-row>
             <b-row>
                 <b-col class="text-center">
-                    <div><b>Riesgo Ambiental:</b> {{ law.risk_aspect ? law.risk_aspect.name : ''}}</div>
+                    <div><b>Tema Ambiental:</b> {{ law.risk_aspect ? law.risk_aspect.name : ''}}</div>
                     <div><b>Tipo de norma:</b> {{ law.law_type ? law.law_type.name : ''}}</div>
                     <div><b>Número de norma:</b> {{ law.law_number }}</div>
                     <div><b>Año de norma:</b> {{ law.law_year }}</div>

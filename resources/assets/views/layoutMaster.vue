@@ -11,24 +11,22 @@
           </div>
           <div v-show="isMainApp" class="router-transitions container-fluid flex-grow-1" style="padding-top: 0px; padding-left: 0px;">
             <b-row style="min-height: 95vh">
-              <b-col cols="2" style="background-color: #f44b52" class="d-none d-sm-none d-md-block d-lg-block">
+              <b-col cols="1" style="background-color: #f44b52" class="d-none d-sm-none d-md-block d-lg-block">
                 <!--<template v-if="banner">
                   <img style="width: 94%; height: 100%;" :src="banner">
                 </template>
                 <template v-else>-->
                 <template>
-                  <div style="padding-top: 30px;" v-show="appImage">
-                    <center>
-                      <img :src="`/images/${appImage}_hover.png`" style="width:85%; height: 100%;">
-                    </center>
+                  <div style="padding-top: 30px; padding-left: 10px;" v-show="appImage">
+                      <img :src="`/images/${appImage}_hover.png`" style="width:100%; height: 100%;">
                   </div>
                   <div class="verticaltext_content"><br>{{ appName }}</div>
                 </template>
               </b-col>
               <b-col>
                 <div class="row">
-                  <div class="col-md-12 text-right text-dark cursor-pointer item-app-navbar" style="padding-top: 30px; padding-bottom: 30px;" @click="redirectHome">
-                      Volver atrás <img class="ui-w-50" src="~@/images/Sauce-ML Boton Volver Atras.png">
+                  <div class="col-md-12 text-right text-dark" style="padding-top: 30px; padding-bottom: 30px;">
+                      <span class="cursor-pointer item-app-navbar" @click="redirectHome">Volver atrás <img class="ui-w-50" src="~@/images/Sauce-ML Boton Volver Atras.png"></span>
                   </div>
                 </div>
                 <router-view style="min-height: 70%;" :apps="data"/>
@@ -55,17 +53,19 @@
   -ms-transform: rotate(-90deg);
   -o-transform: rotate(-90deg);
   filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=3);
-  left: -200px;
-  top: 310px;
+  left: -205px;
+  top: 250px;
   position: absolute;
   color: #FFF;
   text-transform: uppercase;
   width: 600px;
-  height: 180px;
-  font-size: 40px;                 
+  height: 170px;
+  font-size: 20px;                 
   font-family: sans-serif;
+  letter-spacing: 5px;
   text-align: center;
   vertical-align: middle;
+  padding-right: 100px;
 }
 </style>
 <script>

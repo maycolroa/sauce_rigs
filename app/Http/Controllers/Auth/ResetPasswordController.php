@@ -8,6 +8,7 @@ use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Auth\Events\PasswordReset;
 use App\Traits\ContractTrait;
+use Carbon\Carbon;
 use Session;
 use DB;
 
@@ -63,6 +64,8 @@ class ResetPasswordController extends Controller
 
         $this->guard()->login($user);
 
+        $valid = false;
+
         if (Auth::user()->active == 'SI')
         {
             $companies = Auth::user()->companies()->withoutGlobalScopes()->get();
@@ -82,6 +85,7 @@ class ResetPasswordController extends Controller
                         //Session::put('company_id', $val->pivot->company_id);
                         //return $this->respondHttp200();
                         //return $this->redirectTo('/');
+                        Session::put('company_id', $val->pivot->company_id);
 
                         if (Auth::user()->hasRole('Arrendatario') || Auth::user()->hasRole('Contratista'))
                         {
@@ -89,17 +93,42 @@ class ResetPasswordController extends Controller
 
                             if ($contract->active == 'SI')
                             {
-                                Session::put('company_id', $val->pivot->company_id);
+                                Auth::user()->update([
+                                    'last_login_at' => Carbon::now()->toDateTimeString()
+                                ]);
+
+                                $valid = true;
+                            }
+                            else //Contratista inhabilitada
+                            {
+                                Auth::logout();
                             }
                         }
+                        else
+                        {
+                            Auth::user()->update([
+                                'last_login_at' => Carbon::now()->toDateTimeString()
+                            ]);
 
-                        Session::put('company_id', $val->pivot->company_id);
+                            $valid = true;
+                        }
                     }
                 }
+                
+                if (!$valid) //Sin licencia
+                    Auth::logout();
+            }
+            else //Sin compañia activa
+            {
+                Auth::logout();
             }
         }
+        else //usuario inhabilitado
+        {
+            Auth::logout();
+        }
 
-        if (!Session::get('company_id'))
+        if (!Session::get('company_id') || !$valid)
             Auth::logout();
     }
 }

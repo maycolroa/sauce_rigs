@@ -242,7 +242,7 @@ return [
       'observation' => 'Observación',
       'observations' => 'Observaciones',
       'law_type_id' => 'Tipo de norma',
-      'risk_aspect_id' => 'Riesgo/Aspecto Ambiental',
+      'risk_aspect_id' => 'Tema Ambiental',
       'entity_id' => 'Entidad',
       'sst_risk_id' => 'Tema SST',
       'repealed' => 'Derogada',

@@ -2,7 +2,7 @@
   <div>
     <header-module
       title="MATRIZ LEGAL"
-      subtitle="CALIFICAR NORMAS"
+      subtitle="EVALUAR NORMAS"
       url="legalaspects-legalmatrix"
     />
 
@@ -13,6 +13,7 @@
                 v-if="auth.can['laws_qualify']"
                 configName="legalaspects-lm-laws-qualify"
                 :params="{ qualify : true }"
+                @rowClick="redirectQualify"
                 ></vue-table>
         </b-card-body>
     </b-card>
@@ -26,7 +27,13 @@ import Alerts from '@/utils/Alerts.js';
 export default {
   name: 'legalaspects-lm-laws-qualify',
   metaInfo: {
-    title: 'Calificar Normas'
+    title: 'Evaluar Normas'
+  },
+  methods: {
+    redirectQualify(row) {
+      let id = row.id;
+      this.$router.push({name: 'legalaspects-lm-law-qualify-view', params : { id }});
+    }
   }
 }
 </script>

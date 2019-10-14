@@ -44,7 +44,7 @@ class CheckLastLoginNotification extends Command
         $days_suspension = Configuration::getConfiguration('days_user_suspension');
 
         $users = User::active()
-            ->whereRaw("CURDATE() = DATE_ADD(sau_users.last_login_at, INTERVAL +".$days_alert." DAY)")
+            ->whereRaw("CURDATE() = DATE_FORMAT(DATE_ADD(sau_users.last_login_at, INTERVAL +".$days_alert." DAY), '%Y-%m-%d')")
             ->get();
 
         foreach ($users as $key => $user)
