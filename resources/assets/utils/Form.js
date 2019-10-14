@@ -39,6 +39,16 @@ export default class Form {
   }
 
   /**
+   * Update de form method with the passed data
+   *
+   * @param  {string} method
+   * @return {void}
+   */
+  updateMethod(method) {
+    this.method = method;
+  }
+
+  /**
    * Reset the form data
    *
    * @return {void}

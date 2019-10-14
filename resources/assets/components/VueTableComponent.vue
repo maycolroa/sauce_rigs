@@ -442,7 +442,6 @@ export default {
   },
   methods: {
     onRowClick: function(row) {
-      console.log(row)
       this.$emit("rowClick", row.row);
     },
     pushButton (button, row) {
