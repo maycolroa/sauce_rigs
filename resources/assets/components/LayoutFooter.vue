@@ -1,10 +1,10 @@
 <template>
   <nav class="layout-footer footer">
-    <div class="container-fluid flex-wrap justify-content-between text-center container-p-x" style="padding-top: 50px;">
+    <div class="container-fluid flex-wrap justify-content-between text-center container-p-x" style="padding-top: 10px;">
       <center>
         <span style="padding-right: 150px;">Desarrollado por</span>
         <br>
-        <img style="width: 250px; height: 60px;" src="~@/images/Rigs-thot-gris.png">
+        <img style="width: 300px; height:100px;" src="~@/images/Rigs-thot-gris.png">
       </center>
     </div>
   </nav>

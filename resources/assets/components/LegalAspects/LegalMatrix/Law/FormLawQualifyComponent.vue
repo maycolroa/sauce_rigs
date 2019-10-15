@@ -82,7 +82,6 @@
               <b-form-feedback class="d-block" v-if="form.errorsFor(`articles`)" style="padding-bottom: 10px;">
                 {{ form.errorsFor(`articles`) }}
               </b-form-feedback>
-              <perfect-scrollbar :options="{ wheelPropagation: true }" class="mb-4" style="height: 500px; padding-right: 15px; width: 100%;">
                 <template v-for="(article, index) in form.articles">
                   <b-card no-body class="mb-2 border-secondary" :key="article.key" style="width: 100%;" v-show="showArticle(article)">
                     <b-card-header class="bg-secondary">
@@ -103,9 +102,6 @@
                                 variant="secondary icon-btn borderless"
                                 v-b-tooltip.top title="Ver artículo completo">
                                   <span class="fas fa-book-open"></span>
-                              </b-btn>
-                              <b-btn href="javascript:void(0)" v-b-toggle="'accordion' + article.key+'-1'" variant="link" style="padding-left: 8px;">
-                                <span class="collapse-icon"></span>
                               </b-btn>
                             </b-button-group>
 
@@ -153,7 +149,6 @@
                         </b-col>
                       </b-row>
                     </b-card-header>
-                    <b-collapse :id="`accordion${article.key}-1`" :visible="!isEdit && !viewOnly" :accordion="`accordion-123`">
                       <b-card-body>
                         <b-form-row>
                           <div class="text-center col-md-6">
@@ -216,10 +211,8 @@
                           </div>
                         </b-form-row>
                       </b-card-body>
-                    </b-collapse>
                   </b-card>
                 </template>
-              </perfect-scrollbar>
             </b-form-row>
           </div>
         </b-card-body>
