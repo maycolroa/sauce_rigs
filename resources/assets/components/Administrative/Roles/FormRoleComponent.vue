@@ -40,7 +40,7 @@
           <template  v-for="(item, index) in form.permissions_asignates">
             <b-card no-body class="mb-2 border-secondary" v-if="item != undefined && Object.keys(item.permissions).length > 0" :key="index">
               <b-card-header class="bg-secondary">
-                <a class="d-flex justify-content-between text-white" href="javascript:void(0)" v-b-toggle="'accordion' + index+'-1'"> {{ item.name }} <div class="collapse-icon"></div> </a>
+                <a class="d-flex justify-content-between text-dark" href="javascript:void(0)" v-b-toggle="'accordion' + index+'-1'"> {{ item.name }} <div class="collapse-icon"></div> </a>
               </b-card-header>
               <b-collapse :id="`accordion${index}-1`" visible :accordion="`accordion${index}`">
                 <b-card-body>

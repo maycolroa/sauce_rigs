@@ -13,44 +13,53 @@ trait LocationFormTrait
      * @return Array
      */
     protected function getLocationFormConfModule($company_id = NULL)
-    {        
-        if ($company_id)
-            $locationLevelForm = ConfigurationsCompany::company($company_id)->findByKey('location_level_form');
-        else
-            $locationLevelForm = ConfigurationsCompany::findByKey('location_level_form');
+    {   
+        try
+        {   
+            $data = [];
 
-        $data = [];
+            if ($company_id)
+                $locationLevelForm = ConfigurationsCompany::company($company_id)->findByKey('location_level_form');
+            else
+                $locationLevelForm = ConfigurationsCompany::findByKey('location_level_form');
 
-        if ($locationLevelForm)
-        {
-            if ($locationLevelForm == 'Regional')
+            if ($locationLevelForm)
             {
-                $data["regional"] = "SI";
-                $data["headquarter"] = "NO";
-                $data["process"] = "NO";
-                $data["area"] = "NO";
+                if ($locationLevelForm == 'Regional')
+                {
+                    $data["regional"] = "SI";
+                    $data["headquarter"] = "NO";
+                    $data["process"] = "NO";
+                    $data["area"] = "NO";
+                }
+                else if ($locationLevelForm == 'Sede')
+                {
+                    $data["regional"] = "SI";
+                    $data["headquarter"] = "SI";
+                    $data["process"] = "NO";
+                    $data["area"] = "NO";
+                }
+                else if ($locationLevelForm == 'Proceso')
+                {
+                    $data["regional"] = "SI";
+                    $data["headquarter"] = "SI";
+                    $data["process"] = "SI";
+                    $data["area"] = "NO";
+                }
+                else if ($locationLevelForm == 'Área')
+                {
+                    $data["regional"] = "SI";
+                    $data["headquarter"] = "SI";
+                    $data["process"] = "SI";
+                    $data["area"] = "SI";
+                }
             }
-            else if ($locationLevelForm == 'Sede')
-            {
-                $data["regional"] = "SI";
-                $data["headquarter"] = "SI";
-                $data["process"] = "NO";
-                $data["area"] = "NO";
-            }
-            else if ($locationLevelForm == 'Proceso')
-            {
-                $data["regional"] = "SI";
-                $data["headquarter"] = "SI";
-                $data["process"] = "SI";
-                $data["area"] = "NO";
-            }
-            else if ($locationLevelForm == 'Área')
-            {
-                $data["regional"] = "SI";
-                $data["headquarter"] = "SI";
-                $data["process"] = "SI";
-                $data["area"] = "SI";
-            }
+
+        } catch (Exception $e) {
+            $data["regional"] = "SI";
+            $data["headquarter"] = "SI";
+            $data["process"] = "SI";
+            $data["area"] = "SI";
         }
     
         return $data;

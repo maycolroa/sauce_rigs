@@ -5,7 +5,7 @@
     <b-card no-body class="mb-2 border-secondary" style="width: 100%;">
       <b-card-header class="bg-secondary">
         <b-row>
-          <b-col cols="11" class="d-flex justify-content-between text-white"> General </b-col>
+          <b-col cols="11" class="d-flex justify-content-between"> General </b-col>
           <b-col cols="1">
             <div class="float-right">
               <b-button-group>
@@ -31,7 +31,7 @@
     <b-card no-body class="mb-2 border-secondary" style="width: 100%;">
       <b-card-header class="bg-secondary">
           <b-row>
-            <b-col cols="11" class="d-flex justify-content-between text-white"> Objetivos </b-col>
+            <b-col cols="11" class="d-flex justify-content-between"> Objetivos </b-col>
             <b-col cols="1">
                 <div class="float-right">
                   <b-button-group>
@@ -74,7 +74,7 @@
                   <b-card no-body class="mb-2 border-secondary" :key="objetive.key" style="width: 100%;">
                     <b-card-header class="bg-secondary">
                       <b-row>
-                        <b-col cols="10" class="d-flex justify-content-between text-white"> {{ form.objectives[index].description ? form.objectives[index].description : `Nuevo objetivo ${index + 1}` }}</b-col>
+                        <b-col cols="10" class="d-flex justify-content-between"> {{ form.objectives[index].description ? form.objectives[index].description : `Nuevo objetivo ${index + 1}` }}</b-col>
                         <b-col cols="2">
                           <div class="float-right">
                             <b-button-group>
@@ -113,7 +113,7 @@
                             <b-card no-body class="mb-2 border-secondary" :key="subobjective.key" style="width: 100%;">
                               <b-card-header class="bg-secondary">
                                 <b-row>
-                                  <b-col cols="10" class="d-flex justify-content-between text-white"> {{ form.objectives[index].subobjectives[index2].description ? form.objectives[index].subobjectives[index2].description : `Nuevo Subobjetivo ${index2 + 1}` }}</b-col>
+                                  <b-col cols="10" class="d-flex justify-content-between"> {{ form.objectives[index].subobjectives[index2].description ? form.objectives[index].subobjectives[index2].description : `Nuevo Subobjetivo ${index2 + 1}` }}</b-col>
                                   <b-col cols="2">
                                     <div class="float-right">
                                       <b-button-group>
@@ -150,7 +150,7 @@
                                     </b-form-feedback>
                                     <div class="table-responsive" style="padding-right: 15px;">
                                       <table class="table table-bordered table-hover" v-if="subobjective.items.length > 0">
-                                        <thead class="bg-secondary" style="color: white;">
+                                        <thead class="bg-secondary">
                                           <tr>
                                             <th scope="col" class="align-middle" v-if="!viewOnly">#</th>
                                             <th scope="col" class="align-middle">Descripción</th>

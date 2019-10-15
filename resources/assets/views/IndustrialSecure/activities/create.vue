@@ -1,6 +1,7 @@
 <template>
   <div>
     <header-module
+      v-if="!modal"
       title="MATRIZ DE PELIGROS"
       subtitle="CREAR ACTIVIDAD"
       url="industrialsecure-activities"
