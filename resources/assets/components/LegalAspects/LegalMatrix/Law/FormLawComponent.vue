@@ -307,7 +307,7 @@ export default {
         this.form.articles.push({
             key: new Date().getTime() + Math.round(Math.random() * 10000),
             description: '',
-            repealed: '',
+            repealed: 'NO',
             sequence: this.form.articles.length + 1,
             new_sequence: this.form.articles.length + 1,
             interests_id: []
