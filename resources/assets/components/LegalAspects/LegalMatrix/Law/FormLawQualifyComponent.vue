@@ -176,7 +176,7 @@
                         <vue-file-simple v-if="article.qualify && article.qualify != 'No cumple'" :help-text="form.articles[index].old_file ? `Para descargar el archivo actual, haga click <a href='/legalAspects/legalMatrix/law/downloadArticleQualify/${form.articles[index].qualification_id}' target='blank'>aqui</a> `: null" :disabled="viewOnly" class="col-md-6" @input="saveArticleQualification(index)" accept=".pdf" v-model="form.articles[index].file" label="Archivo (*.pdf)" name="file" :error="form.errorsFor('file')" placeholder="Seleccione un archivo"></vue-file-simple>
 
                         <div style="padding-top: 25px;">
-                          <b-btn v-if="form.articles[index].file" @click="deleteFile(index)" variant="primary"><span class="ion ion-md-close-circle"></span> Eliminar Archivo</b-btn>
+                          <b-btn v-if="article.qualify && article.qualify != 'No cumple' && form.articles[index].file" @click="deleteFile(index)" variant="primary"><span class="ion ion-md-close-circle"></span> Eliminar Archivo</b-btn>
                         </div>
 
                           <!-- NO CUMPLE -->
