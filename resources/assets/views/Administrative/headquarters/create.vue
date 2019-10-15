@@ -1,6 +1,7 @@
 <template>
   <div>
     <header-module
+      v-if="!modal"
       title="ADMINNISTRATIVO"
       subtitle="CREAR SEDES"
       url="administrative-headquarters"

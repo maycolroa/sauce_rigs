@@ -1,6 +1,7 @@
 <template>
   <div>
     <header-module
+      v-if="viewIndex"
       title="AUDIOMETRIAS"
       subtitle="ADMINISTRAR AUDIOMETRIAS"
       url="preventiveoccupationalmedicine"
