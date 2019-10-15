@@ -5,7 +5,7 @@
     <b-card no-body class="mb-2 border-secondary" style="width: 100%;">
       <b-card-header class="bg-secondary">
         <b-row>
-          <b-col cols="11" class="d-flex justify-content-between text-white"> General </b-col>
+          <b-col cols="11" class="d-flex justify-content-between"> General </b-col>
           <b-col cols="1">
             <div class="float-right">
               <b-button-group>
@@ -60,7 +60,7 @@
     <b-card no-body class="mb-2 border-secondary" style="width: 100%;">
       <b-card-header class="bg-secondary">
           <b-row>
-            <b-col cols="11" class="d-flex justify-content-between text-white"> Artículos </b-col>
+            <b-col cols="11" class="d-flex justify-content-between"> Artículos </b-col>
             <b-col cols="1">
                 <div class="float-right">
                   <b-button-group>
@@ -94,7 +94,7 @@
                   <b-card no-body class="mb-2 border-secondary" :key="article.key" style="width: 100%;">
                     <b-card-header class="bg-secondary">
                       <b-row>
-                        <b-col cols="10" class="d-flex justify-content-between text-white"> {{ form.articles[index].description ? (form.articles[index].description.length > 200 ? `${form.articles[index].description.substring(0, 200)}...` : form.articles[index].description) : `Nuevo Artículo ${index + 1}` }}</b-col>
+                        <b-col cols="10" class="d-flex justify-content-between"> {{ form.articles[index].description ? (form.articles[index].description.length > 200 ? `${form.articles[index].description.substring(0, 200)}...` : form.articles[index].description) : `Nuevo Artículo ${index + 1}` }}</b-col>
                         <b-col cols="2">
                           <div class="float-right">
                             <b-button-group>

@@ -1,6 +1,7 @@
 <template>
   <div>
     <header-module
+      v-if="!modal"
       title="ADMINNISTRATIVO"
       subtitle="CREAR PROCESO"
       url="administrative-processes"

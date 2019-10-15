@@ -19,7 +19,7 @@
                     <b-card no-body class="mb-2 border-secondary" :key="activity.key" style="width: 100%;" v-show="showActivity(activity.description)">
                     <b-card-header class="bg-secondary">
                         <b-row>
-                        <b-col cols="10" class="d-flex justify-content-between text-white"> Actividad #{{ index + 1 }}</b-col>
+                        <b-col cols="10" class="d-flex justify-content-between"> Actividad #{{ index + 1 }}</b-col>
                         <b-col cols="2">
                             <div class="float-right">
                             <b-button-group>

@@ -23,7 +23,7 @@
             <b-card no-body class="mb-2 border-secondary" :key="danger.key" style="width: 100%;" v-show="showDander(danger.danger.name)">
               <b-card-header class="bg-secondary">
                 <b-row>
-                  <b-col cols="10" class="d-flex justify-content-between text-white"> {{ danger.danger.name ? danger.danger.name : `Nuevo Peligro ${index + 1}` }}</b-col>
+                  <b-col cols="10" class="d-flex justify-content-between"> {{ danger.danger.name ? danger.danger.name : `Nuevo Peligro ${index + 1}` }}</b-col>
                   <b-col cols="2">
                     <div class="float-right">
                       <b-button-group>

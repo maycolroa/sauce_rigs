@@ -5,7 +5,7 @@
     <b-card no-body class="mb-2 border-secondary" style="width: 100%;">
       <b-card-header class="bg-secondary">
         <b-row>
-          <b-col cols="11" class="d-flex justify-content-between text-white"> Información General </b-col>
+          <b-col cols="11" class="d-flex justify-content-between"> Información General </b-col>
           <b-col cols="1">
             <div class="float-right">
               <b-button-group>
@@ -28,7 +28,7 @@
     <b-card no-body class="mb-2 border-secondary" style="width: 100%;">
       <b-card-header class="bg-secondary">
           <b-row>
-            <b-col cols="11" class="d-flex justify-content-between text-white"> Temas </b-col>
+            <b-col cols="11" class="d-flex justify-content-between"> Temas </b-col>
             <b-col cols="1">
                 <div class="float-right">
                   <b-button-group>
@@ -52,7 +52,7 @@
                   <b-card no-body class="mb-2 border-secondary" :key="theme.key" style="width: 100%;">
                     <b-card-header class="bg-secondary">
                       <b-row>
-                        <b-col cols="10" class="d-flex justify-content-between text-white"> {{ form.themes[index].name ? form.themes[index].name : `Nombre del tema ${index + 1}` }}</b-col>
+                        <b-col cols="10" class="d-flex justify-content-between"> {{ form.themes[index].name ? form.themes[index].name : `Nombre del tema ${index + 1}` }}</b-col>
                         <b-col cols="2">
                           <div class="float-right">
                             <b-button-group>
@@ -72,7 +72,7 @@
                         <b-form-row style="padding-top: 15px;">
                           <div class="table-responsive" style="padding-right: 15px;">
                             <table class="table table-bordered table-hover" v-if="theme.items.length > 0">
-                              <thead class="bg-secondary" style="color: white;">
+                              <thead class="bg-secondary">
                                 <tr>
                                   <th scope="col" class="align-middle" v-if="!viewOnly">#</th>
                                   <th scope="col" class="align-middle">Descripción</th>

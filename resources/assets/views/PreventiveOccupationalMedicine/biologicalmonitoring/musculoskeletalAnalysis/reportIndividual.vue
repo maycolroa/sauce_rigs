@@ -27,7 +27,7 @@
                     <b-card no-body class="mb-2 border-secondary" :key="key" style="width: 100%;" template v-for="(item, key) in dataAnalysis">
                         <b-card-header class="bg-secondary">
                             <b-row>
-                                <b-col cols="10" class="d-flex justify-content-between text-white"> Fecha: {{ item.date }}</b-col>
+                                <b-col cols="10" class="d-flex justify-content-between"> Fecha: {{ item.date }}</b-col>
                                 <b-col cols="2">
                                     <div class="float-right">
                                         <b-button-group>

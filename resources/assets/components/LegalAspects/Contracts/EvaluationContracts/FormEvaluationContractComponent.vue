@@ -44,7 +44,7 @@
                     <b-card no-body class="mb-2 border-secondary" style="width: 100%;" v-if="form.interviewees && form.interviewees.length > 0">
                         <b-card-header class="bg-secondary">
                             <b-row>
-                                <b-col cols="10" class="d-flex justify-content-between text-white"> Entrevistados </b-col>
+                                <b-col cols="10" class="d-flex justify-content-between"> Entrevistados </b-col>
                                 <b-col cols="2">
                                     <div class="float-right">
                                         <b-button-group>
@@ -96,7 +96,7 @@
                             <b-card no-body class="mb-2 border-secondary" :key="objetive.key" style="width: 100%;">
                             <b-card-header class="bg-secondary">
                                 <b-row>
-                                    <b-col cols="10" class="d-flex justify-content-between text-white"> {{ form.evaluation.objectives[index].description }}</b-col>
+                                    <b-col cols="10" class="d-flex justify-content-between"> {{ form.evaluation.objectives[index].description }}</b-col>
                                     <b-col cols="2">
                                         <div class="float-right">
                                         <b-button-group>
@@ -118,7 +118,7 @@
                                             <b-card no-body class="mb-2 border-secondary" :key="subobjective.key" style="width: 100%;">
                                             <b-card-header class="bg-secondary">
                                                 <b-row>
-                                                    <b-col cols="10" class="d-flex justify-content-between text-white"> {{ form.evaluation.objectives[index].subobjectives[index2].description }}</b-col>
+                                                    <b-col cols="10" class="d-flex justify-content-between"> {{ form.evaluation.objectives[index].subobjectives[index2].description }}</b-col>
                                                     <b-col cols="2">
                                                         <div class="float-right">
                                                         <b-button-group>
@@ -138,7 +138,7 @@
                                                     <b-form-row style="padding-top: 15px;">
                                                     <div class="table-responsive" style="padding-right: 15px;">
                                                         <table class="table table-bordered table-hover">
-                                                        <thead class="bg-secondary" style="color: white;">
+                                                        <thead class="bg-secondary">
                                                             <tr>
                                                             <th scope="col" class="align-middle text-center">#</th>
                                                             <th scope="col" class="align-middle">Descripción</th>
@@ -182,7 +182,7 @@
                                                             </template>
                                                             <tr v-if="viewOnly">
                                                                 <td colspan="2">Porcentaje de cumplimiento</td>
-                                                                <td v-for="(report, indexR) in subobjective.report" :key="indexR" class="bg-secondary text-white align-middle text-center">
+                                                                <td v-for="(report, indexR) in subobjective.report" :key="indexR" class="bg-secondary align-middle text-center">
                                                                     {{report.percentage}}%
                                                                 </td>
                                                             </tr>

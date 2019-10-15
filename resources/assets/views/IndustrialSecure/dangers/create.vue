@@ -1,6 +1,7 @@
 <template>
   <div>
     <header-module
+      v-if="!modal"
       title="MATRIZ DE PELIGRO"
       subtitle="CREAR PELIGRO"
       url="industrialsecure-dangers"
