@@ -54,6 +54,7 @@ class ReportManagerLaw
     protected $articles_t = 0;
     protected $articles_c = 0;
     protected $articles_nc = 0;
+    protected $articles_partial = 0;
 
     /**
      * create an instance and set the attribute class
@@ -134,10 +135,15 @@ class ReportManagerLaw
             $this->totalArticles += $value->count;
             $this->articles_t += ($value->count * $this->table_fulfillment[$value->qualify]["count"]);
             $this->articles_c += ($value->count * $this->table_fulfillment[$value->qualify]["qualify"]);
+
+            if ($value->qualify == 'Parcial') 
+                $this->articles_partial += ($value->count * $this->table_fulfillment[$value->qualify]["qualify"]);
         }
 
-        $fulfillments = FulfillmentValues::get();
-        $system_apply = SystemApply::alls()->get();
+        $values_fulfillments = $laws->pluck('qualify')->unique();
+
+        $fulfillments = FulfillmentValues::whereIn('name', $values_fulfillments)->get();
+        $system_apply = SystemApply::inSystemApply($this->systemApply, $this->filtersType['systemApply'])->get();
         $data = collect([]);
         $barSeries = $system_apply->pluck('name')->toArray();
 
@@ -246,16 +252,18 @@ class ReportManagerLaw
 
     private function resumenFulfillment()
     {
+        $articles_nc = ($this->articles_t - $this->articles_c - $this->articles_partial);
         $percentage_fulfillment = ($this->articles_t > 0) ? round( ($this->articles_c / $this->articles_t) * 100, 1) : 0;
+        $percentage_no_fulfillment = ($this->articles_t > 0) ? round( ($articles_nc / $this->articles_t) * 100, 1) : 0;
 
         return [
             "total_laws" => $this->totalLaws,
             "total_articles" => $this->totalArticles,
             "articles_t" => $this->articles_t,
             "articles_c" => $this->articles_c,
-            "articles_nc" => ($this->articles_t - $this->articles_c),
+            "articles_nc" => $articles_nc,
             "percentage_c" => $percentage_fulfillment.'%',
-            "percentage_nc" => (100 - $percentage_fulfillment).'%',
+            "percentage_nc" => $percentage_no_fulfillment.'%',
         ];
     }
 

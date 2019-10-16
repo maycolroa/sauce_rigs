@@ -137,7 +137,7 @@ export default {
                 },
                 articles_nc: {
                     title: 'Artículos / Puntos',
-                    text: '1. Parcial (0.5)\n2. En estudio (1)\n3. No cumple (1)\n4. Sin calificar(1)',
+                    text: '1. En estudio (1)\n2. No cumple (1)\n3. Sin calificar(1)',
                 }
             }
         }
