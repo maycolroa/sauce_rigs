@@ -820,9 +820,9 @@ export default [
     {
         name: 'legalaspects-lm-system-apply',
         fields: [
-            { name: '', data: 'controlls', title: 'Controles', sortable: false, searchable: false, detail: false, key: false },
             { name: 'sau_lm_system_apply.id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true },
             { name: 'sau_lm_system_apply.name', data: 'name', title: 'Nombre', sortable: true, searchable: true, detail: false, key: false },
+            { name: '', data: 'controlls', title: 'Controles', sortable: false, searchable: false, detail: false, key: false },
         ],
         'controlls': [{
             type: 'push',
