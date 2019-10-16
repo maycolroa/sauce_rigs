@@ -1,8 +1,10 @@
 <template>
     <div>
-        <h4 class="font-weight-bold mb-4">
-            <span class="text-muted font-weight-light">Reportes /</span> Informes
-        </h4>
+        <header-module
+            title="CONDICIONES PELIGROSAS"
+            subtitle="REPORTE INFORMES"
+            url="dangerousconditions-reports"
+        />
        <b-row>
             <b-col>
                 <b-card border-variant="primary" title="Sedes con más reportes" class="mb-3 box-shadow-none">

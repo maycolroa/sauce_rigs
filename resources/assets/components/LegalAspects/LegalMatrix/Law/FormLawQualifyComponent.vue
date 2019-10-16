@@ -82,15 +82,15 @@
               <b-form-feedback class="d-block" v-if="form.errorsFor(`articles`)" style="padding-bottom: 10px;">
                 {{ form.errorsFor(`articles`) }}
               </b-form-feedback>
-                <template v-for="(article, index) in form.articles">
+                <template v-for="(article, index) in articlesToDisplay">
                   <b-card no-body class="mb-2 border-secondary" :key="article.key" style="width: 100%;" v-show="showArticle(article)">
                     <b-card-header class="bg-secondary">
                       <b-row>
-                        <b-col cols="10" class="d-flex justify-content-between"> {{ form.articles[index].description ? (form.articles[index].description.length > 200 ? `${form.articles[index].description.substring(0, 200)}...` : form.articles[index].description) : `Nuevo Artìculo ${index + 1}` }}</b-col>
+                        <b-col cols="10" class="d-flex justify-content-between"> {{ article.description ? (article.description.length > 200 ? `${article.description.substring(0, 200)}...` : article.description) : `Nuevo Artìculo ${index + 1}` }}</b-col>
                         <b-col cols="2">
                           <div class="float-right">
                             <b-button-group>
-                              <b-btn @click="showModalHistory(form.articles[index].qualification_id)" 
+                              <b-btn @click="showModalHistory(article.qualification_id)" 
                                 size="sm" 
                                 variant="secondary icon-btn borderless"
                                 v-b-tooltip.top title="Ver historial de cambios">
@@ -137,7 +137,7 @@
                               <b-card  bg-variant="transparent"  title="" class="mb-3 box-shadow-none">
                                 <vue-table
                                   configName="legalaspects-lm-article-fulfillment-histories"
-                                  :modelId="form.articles[index].qualification_id ? form.articles[index].qualification_id : -1"
+                                  :modelId="article.qualification_id ? article.qualification_id : -1"
                                   ></vue-table>
                               </b-card>
                               <br>
@@ -165,18 +165,18 @@
                         </b-form-row>
                         <hr class="border-light container-m--x mt-0 mb-4">
                         <b-form-row>
-                          <vue-textarea @onBlur="saveArticleQualification(index)" :disabled="viewOnly" class="col-md-12" v-model="form.articles[index].observations" label="Observaciones" name="observations" placeholder="Observaciones" :error="form.errorsFor(`observations`)" rows="3"></vue-textarea>
+                          <vue-textarea @onBlur="saveArticleQualification(index)" :disabled="viewOnly" class="col-md-12" v-model="article.observations" label="Observaciones" name="observations" placeholder="Observaciones" :error="form.errorsFor(`observations`)" rows="3"></vue-textarea>
                         </b-form-row>
                         <b-form-row>
-                          <vue-input @onBlur="saveArticleQualification(index)" :disabled="viewOnly" class="col-md-6" v-model="form.articles[index].responsible" label="Responsable" type="text" name="responsible" :error="form.errorsFor('responsible')" placeholder="Responsable"></vue-input>
+                          <vue-input @onBlur="saveArticleQualification(index)" :disabled="viewOnly" class="col-md-6" v-model="article.responsible" label="Responsable" type="text" name="responsible" :error="form.errorsFor('responsible')" placeholder="Responsable"></vue-input>
                        
-                        <vue-advanced-select :ref="`qualification${index}`" @input="saveArticleQualification(index)" @selectedName="updateQualify($event, index)" :disabled="viewOnly" class="col-md-6" v-model="form.articles[index].fulfillment_value_id" :multiple="false" :options="qualifications" name="fulfillment_value_id" label="Calificación"></vue-advanced-select>
+                        <vue-advanced-select :ref="`qualification${index}`" @input="saveArticleQualification(index)" @selectedName="updateQualify($event, index)" :disabled="viewOnly" class="col-md-6" v-model="article.fulfillment_value_id" :multiple="false" :options="qualifications" name="fulfillment_value_id" label="Calificación"></vue-advanced-select>
                       </b-form-row>
                       <b-form-row> 
-                        <vue-file-simple v-if="article.qualify && article.qualify != 'No cumple'" :help-text="form.articles[index].old_file ? `Para descargar el archivo actual, haga click <a href='/legalAspects/legalMatrix/law/downloadArticleQualify/${form.articles[index].qualification_id}' target='blank'>aqui</a> `: null" :disabled="viewOnly" class="col-md-6" @input="saveArticleQualification(index)" accept=".pdf" v-model="form.articles[index].file" label="Archivo (*.pdf)" name="file" :error="form.errorsFor('file')" placeholder="Seleccione un archivo"></vue-file-simple>
+                        <vue-file-simple v-if="article.qualify && article.qualify != 'No cumple'" :help-text="article.old_file ? `Para descargar el archivo actual, haga click <a href='/legalAspects/legalMatrix/law/downloadArticleQualify/${article.qualification_id}' target='blank'>aqui</a> `: null" :disabled="viewOnly" class="col-md-6" @input="saveArticleQualification(index)" accept=".pdf" v-model="article.file" label="Archivo (*.pdf)" name="file" :error="form.errorsFor('file')" placeholder="Seleccione un archivo"></vue-file-simple>
 
                         <div style="padding-top: 25px;">
-                          <b-btn v-if="article.qualify && article.qualify != 'No cumple' && form.articles[index].file" @click="deleteFile(index)" variant="primary"><span class="ion ion-md-close-circle"></span> Eliminar Archivo</b-btn>
+                          <b-btn v-if="article.qualify && article.qualify != 'No cumple' && article.file" @click="deleteFile(index)" variant="primary"><span class="ion ion-md-close-circle"></span> Eliminar Archivo</b-btn>
                         </div>
 
                           <!-- NO CUMPLE -->
@@ -214,6 +214,14 @@
                   </b-card>
                 </template>
             </b-form-row>
+          </div>
+          <div class="col-md-12">
+            <center>
+              <b-btn variant="primary"
+                v-if="(articlesToDisplay.length > 0) && (form.articles.length > limitShowArticles)"
+                @click.prevent="showMore" 
+                :disabled="loading">Ver mas</b-btn>
+            </center>
           </div>
         </b-card-body>
       </b-collapse>
@@ -342,6 +350,15 @@ export default {
       }
 
       return options;
+    },
+    articlesToDisplay() {
+
+      if (this.form.articles)
+      {
+        return this.form.articles.slice(0, this.limitShowArticles);
+      }
+      
+      return []
     }
   },
    data() {
@@ -356,10 +373,22 @@ export default {
         responsible: '',
         observations: '',
         qualifyName: '',
-        idHistory: ''
+        idHistory: '',
+        limitShowArticles: 20
     };
   },
   methods: {
+    showMore() {
+      this.ready = false;
+      this.loading = true;
+
+      this.limitShowArticles += 20;
+
+      setTimeout(() => {
+          this.ready = true;
+          this.loading = false;
+      }, 5000)
+    },
     showModalHistory(id) {
       this.idHistory = id
     },
