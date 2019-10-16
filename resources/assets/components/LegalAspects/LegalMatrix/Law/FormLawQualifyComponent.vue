@@ -90,7 +90,7 @@
                         <b-col cols="2">
                           <div class="float-right">
                             <b-button-group>
-                              <b-btn @click="showModal(`modalArticleFulfillment${index}`)" 
+                              <b-btn @click="showModalHistory(form.articles[index].qualification_id)" 
                                 size="sm" 
                                 variant="secondary icon-btn borderless"
                                 v-b-tooltip.top title="Ver historial de cambios">
@@ -129,7 +129,7 @@
                               </div>
                             </b-modal>
 
-                            <b-modal :ref="`modalArticleFulfillment${index}`" :hideFooter="true" :id="`modals-default-fulfillment-${index+1}`" class="modal-top" size="lg">
+                            <!-- <b-modal :ref="`modalArticleFulfillment${index}`" :hideFooter="true" :id="`modals-default-fulfillment-${index+1}`" class="modal-top" size="lg">
                               <div slot="modal-title">
                                 Historial de cambios realizados
                               </div>
@@ -144,7 +144,7 @@
                               <div class="row float-right pt-12 pr-12y">
                                 <b-btn variant="primary" @click="hideModal(`modalArticleFulfillment${index}`)">Cerrar</b-btn>
                               </div>
-                            </b-modal>
+                            </b-modal> -->
                           </div>
                         </b-col>
                       </b-row>
@@ -219,6 +219,12 @@
       </b-collapse>
     </b-card>
 
+    <show-history-qualify
+      v-if="idHistory"
+      :id="idHistory"
+      @close-modal-history="closeModalHistory"
+    />
+
     <div class="row float-right pt-10 pr-10" style="padding-top: 20px;">
       <template>
         <b-btn variant="default" :to="cancelUrl" :disabled="loading">{{ viewOnly ? "Atras" : "Cancelar"}}</b-btn>&nbsp;&nbsp;
@@ -239,6 +245,7 @@ import VueRadio from "@/components/Inputs/VueRadio.vue";
 import Alerts from '@/utils/Alerts.js';
 import InformationGeneral from "./InformationGeneral.vue";
 import ActionPlanComponent from '@/components/CustomInputs/ActionPlanComponent.vue';
+import ShowHistoryQualify from "./ShowHistoryQualifyComponent.vue";
 
 export default {
   components: {
@@ -250,7 +257,8 @@ export default {
     VueRadio,
     VueFileSimple,
     InformationGeneral,
-    ActionPlanComponent
+    ActionPlanComponent,
+    ShowHistoryQualify
   },
   props: {
     url: { type: String },
@@ -347,10 +355,17 @@ export default {
         fulfillment_value_id: '',
         responsible: '',
         observations: '',
-        qualifyName: ''
+        qualifyName: '',
+        idHistory: ''
     };
   },
   methods: {
+    showModalHistory(id) {
+      this.idHistory = id
+    },
+    closeModalHistory() {
+      this.idHistory = ''
+    },
     showModal(ref) {
 			this.$refs[ref][0].show()
 		},
