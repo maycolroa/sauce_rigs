@@ -221,7 +221,7 @@ class LawController extends Controller
 
             foreach ($law->articles as $key => $article)
             {   
-                $article->key = Carbon::now()->timestamp + rand(1,10000);
+                $article->key = (rand(1,20000) + Carbon::now()->timestamp + rand(1,10000) + Carbon::now()->timestamp) * rand(1,20);
                 $article->new_sequence = $article->sequence;
                 $interests = [];
 
@@ -502,7 +502,7 @@ class LawController extends Controller
             });
 
             $articles->transform(function($article, $index) use ($qualifications) {
-                $article->key = Carbon::now()->timestamp + rand(1,10000);
+                $article->key = (rand(1,20000) + Carbon::now()->timestamp + rand(1,10000) + Carbon::now()->timestamp) * rand(1,20);
                 $interests = [];
 
                 foreach ($article->interests as $key => $interest)
