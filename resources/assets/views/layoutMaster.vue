@@ -6,10 +6,10 @@
         <Navbar :data="data"/>
 
         <div class="layout-content">
-          <div v-show="!isMainApp" class="router-transitions container-fluid flex-grow-1 container-p-y">
+          <div v-if="!isMainApp" class="router-transitions container-fluid flex-grow-1 container-p-y">
             <router-view :apps="data"/>
           </div>
-          <div v-show="isMainApp" class="router-transitions container-fluid flex-grow-1" style="padding-top: 0px; padding-left: 0px;">
+          <div v-if="isMainApp" class="router-transitions container-fluid flex-grow-1" style="padding-top: 0px; padding-left: 0px;">
             <b-row style="min-height: 95vh">
               <b-col cols="1" style="background-color: #f44b52" class="d-none d-sm-none d-md-block d-lg-block">
                 <!--<template v-if="banner">
@@ -17,7 +17,7 @@
                 </template>
                 <template v-else>-->
                 <template>
-                  <div style="padding-top: 30px; padding-left: 10px;" v-show="appImage">
+                  <div style="padding-top: 30px; padding-left: 10px;" v-if="appImage">
                       <img :src="`/images/${appImage}_hover.png`" style="width:100%; height: 100%;">
                   </div>
                   <div class="verticaltext_content"><br>{{ appName }}</div>
@@ -41,8 +41,8 @@
     <div class="layout-overlay" @click="closeSidenav"></div>
     <notifications group="app"/>
   </div>
-  <layoutFooter v-show="isHome"/>
-  <layoutFooterSystem v-show="!isHome && !isMainApp"/>
+  <layoutFooter v-if="isHome"/>
+  <layoutFooterSystem v-if="!isHome && !isMainApp"/>
 </div>
 </template>
 
