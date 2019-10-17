@@ -45,10 +45,10 @@
             <span class="d-lg-none align-middle">&nbsp; </span>
           </template>
 
-          <b-list-group flush>
-            <template v-for="(item, index) in company.data">
-              <b-list-group-item href="javascript:void(0)" class="media d-flex align-items-center"
-                 :key="index" v-if="index != company.selected" @click="changeCompany(index)">
+          <b-list-group flush style="max-height: 300px; overflow-y: scroll;">
+            <template v-for="(item, index) in companiesData">
+              <b-list-group-item href="javascript:void(0)" class="media d-flex align-items-center" style="min-height: 40px;"
+                 :key="index" v-if="item.id != company.selected" @click="changeCompany(item.id)">
                 <div class="ui-icon ui-icon-sm ion bg-primary border-0 text-white"> {{ item.name.substr(0,1).toUpperCase() }} </div>
                 <div class="media-body line-height-condenced ml-3">
                   <div class="text-dark">{{ item.name }}</div>
@@ -209,6 +209,20 @@ export default {
       },
       companyName: function () {
         return this.company.data[this.company.selected] != undefined ? this.company.data[this.company.selected].name : ''
+      },
+      companiesData() {
+        let data = [];
+
+        if (this.company.selected) 
+        {
+          _.forIn(this.company.data, (value, key) => {
+              data.push(value);
+          })
+
+          data.sort((a, b) => (a.name > b.name) ? 1 : -1)
+        }
+
+        return data;
       }
   }
 };
