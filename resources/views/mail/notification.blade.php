@@ -37,10 +37,4 @@
 @endcomponent
 @endif
 
-@if(isset($mail->subcopy))
-@component('mail::subcopy')
-    {{ $mail->subcopy }}
-@endcomponent
-@endif
-
 @endcomponent

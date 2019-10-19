@@ -55,7 +55,8 @@
 
 .container-p-y {
   &:not([class^="pt-"]):not([class*=" pt-"]) {
-    padding-top: $container-padding-y !important;
+    //padding-top: $container-padding-y !important;
+    padding-top: 5px !important;
   }
   &:not([class^="pb-"]):not([class*=" pb-"]) {
     padding-bottom: $container-padding-y !important;

@@ -437,6 +437,7 @@ html:not(.layout-footer-fixed) .layout-content {
   .layout-fixed-offcanvas.layout-navbar-fixed:not(.layout-collapsed) {
     .layout-2 .layout-navbar {
       left: $sidenav-width;
+      max-height: 32px;
     }
 
     &.layout-reversed .layout-2 .layout-navbar {
@@ -467,6 +468,7 @@ html:not(.layout-footer-fixed) .layout-content {
   .layout-fixed.layout-navbar-fixed.layout-collapsed {
     .layout-2 .layout-navbar {
       left: $sidenav-collapsed-width;
+      max-height: 32px;
     }
 
     &.layout-reversed .layout-2 .layout-navbar {

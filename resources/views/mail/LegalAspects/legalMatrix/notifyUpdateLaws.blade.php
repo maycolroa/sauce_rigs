@@ -14,18 +14,18 @@
 @if($mail->list_order == 'ul')
 <ul>
 @foreach($mail->list as $index => $item)
-<li><a href="{{ $mail->with['urls'][$index] }}" target="_blank">{{ $item }}</a></li>
+<li><a href="{{ $mail->with['urls'][$index] }}" target="_blank">{!! nl2br($item) !!}</a></li>
 @endforeach
 </ul>
 @elseif ($mail->list_order == 'ol')
 <ol>
 @foreach($mail->list as $index => $item)
-<li><a href="{{ $mail->with['urls'][$index] }}" target="_blank">{{ $item }}</a></li>
+<li><a href="{{ $mail->with['urls'][$index] }}" target="_blank">{!! nl2br($item) !!}</a></li>
 @endforeach
 </ol>
 @else
 @foreach($mail->list as $index => $item)
-<a href="{{ $mail->with['urls'][$index] }}" target="_blank">{{ $item }}</a> <br>
+<a href="{{ $mail->with['urls'][$index] }}" target="_blank">{!! nl2br($item) !!}</a> <br>
 @endforeach
 
 @endif
