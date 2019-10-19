@@ -9,6 +9,8 @@
         <meta name="csrf-token" content="{{ csrf_token() }}">
 
         <title>{{ config('app.name', 'Laravel') }}</title>
+
+        <link rel="icon" type="image/png" href="{{ asset('images/Favicon-Sauce-512-px.png') }}"/>
    
         <!-- Main font -->
         <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,500,500i,700,700i,900" rel="stylesheet">
