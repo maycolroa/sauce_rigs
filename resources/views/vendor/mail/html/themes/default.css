@@ -30,7 +30,9 @@ blockquote {
 }
 
 a {
-    color: #3869D4;
+    color: #74787E;
+    cursor: pointer;
+    text-decoration: none;
 }
 
 a img {
@@ -103,7 +105,7 @@ img {
 /* Header */
 
 .header {
-    padding: 25px 0;
+    padding: 0px;
     text-align: center;
 }
 
@@ -118,9 +120,9 @@ img {
 /* Body */
 
 .body {
-    background-color: #FFFFFF;
-    border-bottom: 1px solid #EDEFF2;
-    border-top: 1px solid #EDEFF2;
+    background-repeat: no-repeat;
+    background-size: 100%;
+    background-position: center center;
     margin: 0;
     padding: 0;
     width: 100%;
@@ -133,22 +135,35 @@ img {
     background-color: #FFFFFF;
     margin: 0 auto;
     padding: 0;
-    width: 570px;
+    width: 670px;
     -premailer-cellpadding: 0;
     -premailer-cellspacing: 0;
-    -premailer-width: 570px;
+    -premailer-width: 670px;
+}
+
+/*Information*/
+.info {
+    background-color: #fde9eb;
+    width: 70%;
+}
+
+.info p {
+    font-size: 14px;
+    line-height: 1.5em;
+    text-align: left;
+    padding-left: 40px;
 }
 
 /* Subcopy */
 
 .subcopy {
-    border-top: 1px solid #EDEFF2;
     margin-top: 25px;
     padding-top: 25px;
 }
 
 .subcopy p {
-    font-size: 12px;
+    font-size: 10px;
+    text-align: center;
 }
 
 /* Footer */
@@ -167,6 +182,7 @@ img {
     color: #AEAEAE;
     font-size: 12px;
     text-align: center;
+    margin-bottom: 0px;
 }
 
 /* Tables */
@@ -214,12 +230,16 @@ img {
 }
 
 .button {
-    border-radius: 3px;
     box-shadow: 0 2px 3px rgba(0, 0, 0, 0.16);
     color: #FFF;
     display: inline-block;
     text-decoration: none;
     -webkit-text-size-adjust: none;
+    border-radius: 10px 10px;
+    box-shadow: 0px 10px 20px;
+    text-transform: uppercase;
+    font-size: 14px;
+    cursor: pointer;
 }
 
 .button-blue {
@@ -228,6 +248,11 @@ img {
     border-right: 18px solid #3097D1;
     border-bottom: 10px solid #3097D1;
     border-left: 18px solid #3097D1;
+    border-radius: 10px 10px;
+    box-shadow: 5px 5px 10px;
+    font-size: 14px;
+    text-transform: uppercase;
+    cursor: pointer;
 }
 
 .button-green {
@@ -236,6 +261,11 @@ img {
     border-right: 18px solid #2ab27b;
     border-bottom: 10px solid #2ab27b;
     border-left: 18px solid #2ab27b;
+    border-radius: 10px 10px;
+    box-shadow: 5px 5px 10px;
+    font-size: 14px;
+    text-transform: uppercase;
+    cursor: pointer;
 }
 
 .button-red {
@@ -244,6 +274,11 @@ img {
     border-right: 18px solid #f0635f;
     border-bottom: 10px solid #f0635f;
     border-left: 18px solid #f0635f;
+    border-radius: 10px 10px;
+    box-shadow: 5px 5px 10px #9e5756;
+    font-size: 14px;
+    text-transform: uppercase;
+    cursor: pointer;
 }
 
 /* Panels */

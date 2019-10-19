@@ -90,7 +90,7 @@ class NotifyUpdateLaws extends Command
                     {
                         $url = url("/legalaspects/lm/lawsQualify/view/{$law->id}");
                         array_push($urls, $url);
-                        array_push($list, $law->type.' '.$law->law_number.' de '.$law->law_year.': '.$law->description.'...');
+                        array_push($list, '<b>'.$law->type.' '.$law->law_number.' de '.$law->law_year.':</b> '.$law->description.'...');
                     }
 
                     NotificationMail::
@@ -98,7 +98,7 @@ class NotifyUpdateLaws extends Command
                         ->view('LegalAspects.legalMatrix.notifyUpdateLaws')
                         ->recipients($user)
                         ->message('Las siguientes normas fueron modificadas: ')
-                        ->buttons([['text'=>'Ir al sitio', 'url'=>url("/legalaspects/lm/lawsQualify")]])
+                        ->buttons([['text'=>'Llevarme a Matriz Legal', 'url'=>url("/legalaspects/lm/lawsQualify")]])
                         ->module('legalMatrix')
                         ->event('Tarea programada: NotifyUpdateLaws')
                         ->with(['user'=>$user->name, 'urls'=>$urls])
