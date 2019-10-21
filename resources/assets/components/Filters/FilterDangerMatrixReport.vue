@@ -2,8 +2,11 @@
     <div>
         <div style="padding: 10px;">
             <center>
-                <b-btn :variant="`${colorIcon} icon-btn`" @click="showFilterModal()" v-b-tooltip.top title="Abrir Filtros"><span class="fas fa-filter"></span></b-btn>&nbsp;&nbsp;
-                <b-btn variant="secondary icon-btn" @click="cleanFilters()" v-b-tooltip.top title="Limpiar Filtros"><span class="fas fa-broom"></span></b-btn>
+                <b-btn class="icon-btn" @click="showFilterModal()" v-b-tooltip.top title="Abrir Filtros"><img :src="colorIcon" class="img-fluid"/></b-btn>&nbsp;&nbsp;
+                <b-btn variant="secondary icon-btn" @click="cleanFilters()" v-b-tooltip.top title="Limpiar Filtros">
+                    <img src="/images/LimpiarFiltros.png" class="img-fluid" ref="clear" @mouseover="changeClassImage('clear', 'clear_hover')"/>
+                    <img src="/images/LimpiarFiltros_hover.png" class="img-fluid imgHidden" ref="clear_hover" @mouseleave="changeClassImage('clear_hover', 'clear')"/>
+                </b-btn>
             </center>
         </div>
 
@@ -131,7 +134,7 @@ export default {
     computed: {
         colorIcon()
         {
-            let color = 'secondary'
+            let color = '/images/Filtrar.png'
 
             _.forIn(this.filtersSelected, (value, key) => {
                 
@@ -140,12 +143,12 @@ export default {
                     if (typeof value === 'string')
                     {
                         if (value != '')
-                            color = 'primary'
+                            color = '/images/Filtrar_hover.png'
                     }
                     else
                     {
                         if (this.filtersSelected[key].length > 0)
-                            color = 'primary'
+                            color = '/images/Filtrar_hover.png'
                     }
                 }
             });
@@ -279,6 +282,10 @@ export default {
                 this.emitFilters()
                 this.ready = true
             }, 2000)
+        },
+        changeClassImage(image, imageHover) {
+            this.$refs[image].classList.add("imgHidden");
+            this.$refs[imageHover].classList.remove("imgHidden");
         }
     }
 }
