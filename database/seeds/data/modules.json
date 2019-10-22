@@ -192,6 +192,12 @@
                 "display_name": "Administrar Labels",
                 "main": "NO",
                 "logo": null
+            },
+            {
+                "name": "companies",
+                "display_name": "Compañias",
+                "main": "NO",
+                "logo": null
             }
         ]
     }

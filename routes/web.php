@@ -412,6 +412,10 @@ Route::middleware(['auth'])->group(function () {
 
       Route::post('label/data', 'System\Labels\LabelController@data');
       Route::ApiResource('label', 'System\Labels\LabelController');   
+
+      Route::post('company/data', 'System\Companies\CompanyController@data');
+      Route::ApiResource('company', 'System\Companies\CompanyController');  
+      Route::put('company/switchStatus/{company}', 'System\Companies\CompanyController@toggleState');
     });
 
 
