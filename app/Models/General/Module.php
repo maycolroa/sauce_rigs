@@ -45,4 +45,9 @@ class Module extends Model
     {
         return $query->where("sau_modules.main", "SI");
     }
+
+    public function isMain()
+    {
+        return $this->main == 'SI';
+    }
 }

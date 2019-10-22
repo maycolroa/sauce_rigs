@@ -136,7 +136,7 @@ class NotificationMail
             
             $recipients = $recipients->filter(function ($value, $key) {
                 if (($value instanceof User || $value instanceof Employee) && 
-                preg_match('/^[_a-z0-9-]+(.[_a-z0-9-]+)*@[a-z0-9-]+(.[a-z0-9-]+)*(.[a-z]{2,4})$/', $value->email) )
+                preg_match('/^[_a-zA-Z0-9-]+(.[_a-zA-Z0-9-]+)*@[a-zA-Z0-9-]+(.[a-zA-Z0-9-]+)*(.[a-zA-Z]{2,4})$/', $value->email) )
                     return true;
                 else 
                     return false;
@@ -147,7 +147,7 @@ class NotificationMail
         }
 
         if (($recipients instanceof User || $recipients instanceof Employee) && 
-                !preg_match('/^[_a-z0-9-]+(.[_a-z0-9-]+)*@[a-z0-9-]+(.[a-z0-9-]+)*(.[a-z]{2,4})$/', $recipients->email) )
+                !preg_match('/^[_a-zA-Z0-9-]+(.[_a-zA-Z0-9-]+)*@[a-zA-Z0-9-]+(.[a-zA-Z0-9-]+)*(.[a-zA-Z]{2,4})$/', $recipients->email) )
             throw new \Exception('Incorrect email format');
         
         $this->recipients = $recipients;
@@ -470,6 +470,10 @@ class NotificationMail
         $data->view = $this->view;
         $data->subject = $this->subject;
 
+        $data->module = $this->module;
+        $module = explode('/', $this->module->display_name);
+        $data->module->display_name = count($module) > 1 ? $module[1] : $module[0];
+        
         if (!empty($this->message))
             $data->message = $this->message;
 
@@ -587,4 +591,15 @@ class NotificationMail
 
         return $licenses->exists();
     }
+
+    /*private function checkHeader()
+    {
+        $header = null;
+
+        if ($this->module->isMain())
+        {
+            $header =
+        }
+        return $header;
+    }*/
 }
