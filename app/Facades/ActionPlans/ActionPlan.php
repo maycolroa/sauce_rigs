@@ -9,6 +9,7 @@ use App\Traits\UtilsTrait;
 use Carbon\Carbon;
 use App\Models\Administrative\Users\User;
 use App\Models\General\Module;
+use App\Models\General\Team;
 use App\Models\Administrative\ActionPlans\ActionPlansActivity;
 use App\Models\Administrative\ActionPlans\ActionPlansActivityModule;
 use App\Models\Administrative\Regionals\EmployeeRegional;
@@ -581,7 +582,9 @@ class ActionPlan
      */
     private function checkEditAll($activity)
     {
-        if (Auth::user()->hasRole('Superadmin'))
+        $team = Team::where('name', Session::get('company_id'))->first();
+
+        if (Auth::user()->hasRole('Superadmin', $team))
             return true;
 
         else if ($activity->user_id == Auth::user()->id)

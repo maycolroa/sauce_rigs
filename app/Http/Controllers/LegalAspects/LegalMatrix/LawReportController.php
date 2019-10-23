@@ -4,10 +4,8 @@ namespace App\Http\Controllers\LegalAspects\LegalMatrix;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use App\Inform\LegalAspects\LegalMatrix\ReportManagerLaw;
 use App\Jobs\LegalAspects\LegalMatrix\Reports\ReportLawExportJob;
-use Session;
 
 class LawReportController extends Controller
 {
@@ -16,9 +14,10 @@ class LawReportController extends Controller
      */
     function __construct()
     {
+        parent::__construct();
         $this->middleware('auth');
-        $this->middleware('permission:laws_report_r', ['only' => 'data']);
-        $this->middleware('permission:laws_report_export', ['only' => 'export']);
+        $this->middleware("permission:laws_report_r, {$this->team}", ['only' => 'data']);
+        $this->middleware("permission:laws_report_export, {$this->team}", ['only' => 'export']);
     }
 
     /**
@@ -77,7 +76,7 @@ class LawReportController extends Controller
                 "filtersType" => $request->filtersType
             ];
 
-            ReportLawExportJob::dispatch(Auth::user(), Session::get('company_id'), $filters);
+            ReportLawExportJob::dispatch($this->user, $this->company, $filters);
 
             return $this->respondHttp200();
         } catch(Exception $e) {

@@ -5,10 +5,8 @@ namespace App\Http\Controllers\System\Labels;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Vuetable\Facades\Vuetable;
-use Illuminate\Support\Facades\Auth;
 use App\Models\General\Keyword;
 use App\Http\Requests\System\Labels\LabelRequest;
-use Session;
 
 class LabelController extends Controller
 {
@@ -17,9 +15,10 @@ class LabelController extends Controller
      */
     function __construct()
     {
+        parent::__construct();
         $this->middleware('auth');
-        $this->middleware('permission:labels_r', ['except' =>'multiselect']);
-        $this->middleware('permission:labels_u', ['only' => 'update']);
+        $this->middleware("permission:labels_r, {$this->team}", ['except' =>'multiselect']);
+        $this->middleware("permission:labels_u, {$this->team}", ['only' => 'update']);
     }
 
     /**
@@ -74,7 +73,6 @@ class LabelController extends Controller
      */
     public function update(LabelRequest $request, Keyword $label)
     {
-        
         $label->fill($request->all());
         
         if (!$label->update())

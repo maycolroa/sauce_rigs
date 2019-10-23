@@ -6,7 +6,6 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Administrative\Configuration\ConfigurationRequest;
 use App\Facades\ConfigurationsCompany\Facades\ConfigurationsCompany;
-use Session;
 
 class ConfigurationController extends Controller
 {
@@ -15,9 +14,10 @@ class ConfigurationController extends Controller
      */
     function __construct()
     {
+        parent::__construct();
         $this->middleware('auth');
-        $this->middleware('permission:configurations_c', ['only' => 'store']);
-        $this->middleware('permission:configurations_r');
+        $this->middleware("permission:configurations_c, {$this->team}", ['only' => 'store']);
+        $this->middleware("permission:configurations_r, {$this->team}");
     }
 
     /**

@@ -4,7 +4,6 @@ namespace App\Http\Controllers\LegalAspects\LegalMatrix;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
 use App\Vuetable\Facades\Vuetable;
 use App\Models\LegalAspects\LegalMatrix\Law;
@@ -18,7 +17,6 @@ use App\Facades\ActionPlans\Facades\ActionPlan;
 use App\Http\Requests\LegalAspects\LegalMatrix\LawRequest;
 use App\Http\Requests\LegalAspects\LegalMatrix\SaveArticlesQualificationRequest;
 use Carbon\Carbon;
-use Session;
 use Validator;
 use DB;
 
@@ -31,12 +29,13 @@ class LawController extends Controller
      */
     function __construct()
     {
+        parent::__construct();
         $this->middleware('auth');
-        $this->middleware('permission:laws_c|lawsCustom_c', ['only' => 'store']);
-        $this->middleware('permission:laws_r|lawsCustom_r');
-        $this->middleware('permission:laws_u|lawsCustom_u', ['only' => 'update']);
-        $this->middleware('permission:laws_d|lawsCustom_d', ['only' => 'destroy']);
-        $this->middleware('permission:laws_qualify', ['only' => ['getArticlesQualification', 'saveArticlesQualification']]);
+        $this->middleware("permission:laws_c|lawsCustom_c, {$this->team}", ['only' => 'store']);
+        $this->middleware("permission:laws_r|lawsCustom_r, {$this->team}");
+        $this->middleware("permission:laws_u|lawsCustom_u, {$this->team}", ['only' => 'update']);
+        $this->middleware("permission:laws_d|lawsCustom_d, {$this->team}", ['only' => 'destroy']);
+        $this->middleware("permission:laws_qualify, {$this->team}", ['only' => ['getArticlesQualification', 'saveArticlesQualification']]);
     }
 
     /**
@@ -78,7 +77,7 @@ class LawController extends Controller
             ->join('sau_lm_article_interest', 'sau_lm_article_interest.article_id', 'sau_lm_articles.id')
             ->join('sau_lm_company_interest','sau_lm_company_interest.interest_id', 'sau_lm_article_interest.interest_id')
             ->join('sau_lm_articles_fulfillment','sau_lm_articles_fulfillment.article_id', 'sau_lm_articles.id')
-            ->where('sau_lm_articles_fulfillment.company_id', Session::get('company_id'))
+            ->where('sau_lm_articles_fulfillment.company_id', $this->company)
             ->groupBy('sau_lm_laws.id');
         }
         else
@@ -156,16 +155,16 @@ class LawController extends Controller
             $law = new Law($request->except('file'));
             
             if ($request->custom == 'true')
-                $law->company_id = Session::get('company_id');
+                $law->company_id = $this->company;
 
             if (!$law->save())
                 return $this->respondHttp500();
 
             if ($request->file)
             {
-                $path = ($request->custom != 'true') ? 'laws/' : "laws/".Session::get('company_id')."/";
+                $path = ($request->custom != 'true') ? 'laws/' : "laws/".$this->company."/";
                 $file_tmp = $request->file;
-                $nameFile = base64_encode(Auth::user()->id . now() . rand(1,10000)) .'.'. $file_tmp->extension();
+                $nameFile = base64_encode($this->user->id . now() . rand(1,10000)) .'.'. $file_tmp->extension();
                 $file_tmp->storeAs($path, $nameFile, 's3_MLegal');
                 $law->file = $nameFile;
 
@@ -271,10 +270,10 @@ class LawController extends Controller
 
             if ($request->file != $law->file)
             {
-                $path = (!$law->company_id) ? 'laws/' : "laws/".Session::get('company_id')."/";
+                $path = (!$law->company_id) ? 'laws/' : "laws/".$this->company."/";
                 $file = $request->file;
                 Storage::disk('s3_MLegal')->delete($path.$law->file);
-                $nameFile = base64_encode(Auth::user()->id . now() . rand(1,10000)) .'.'. $file->extension();
+                $nameFile = base64_encode($this->user->id . now() . rand(1,10000)) .'.'. $file->extension();
                 $file->storeAs($path, $nameFile, 's3_MLegal');
                 $law->file = $nameFile;
 
@@ -343,7 +342,7 @@ class LawController extends Controller
         if(!$law->delete())
             return $this->respondHttp500();
 
-        $path = (!$law->company_id) ? 'laws/' : "laws/".Session::get('company_id')."/";
+        $path = (!$law->company_id) ? 'laws/' : "laws/".$this->company."/";
 
         Storage::disk('s3_MLegal')->delete($path.$file);
         
@@ -366,7 +365,7 @@ class LawController extends Controller
 
     public function download(Law $law)
     {
-        $path = (!$law->company_id) ? 'laws/' : "laws/".Session::get('company_id')."/";
+        $path = (!$law->company_id) ? 'laws/' : "laws/".$this->company."/";
         return Storage::disk('s3_MLegal')->download($path.$law->file);
     }
 
@@ -561,11 +560,11 @@ class LawController extends Controller
              //Se inician los atributos necesarios que seran estaticos para todas las actividades
             // De esta forma se evitar la asignacion innecesaria una y otra vez 
             ActionPlan::
-                    user(Auth::user())
+                    user($this->user)
                 ->module('legalMatrix')
                 ->url(url('/administrative/actionplans'));
 
-            $path = 'fulfillments/'.Session::get('company_id')."/";
+            $path = 'fulfillments/'.$this->company."/";
 
             if ($qualification->fulfillment_value_id)
             {
@@ -579,7 +578,7 @@ class LawController extends Controller
                         {
                             $file = $request->file;
                             Storage::disk('s3_MLegal')->delete($path. $qualification->file);
-                            $nameFile = base64_encode(Auth::user()->id . now() . rand(1,10000)) .'.'. $file->extension();
+                            $nameFile = base64_encode($this->user->id . now() . rand(1,10000)) .'.'. $file->extension();
                             $file->storeAs($path, $nameFile, 's3_MLegal');
                             $qualification->file = $nameFile;
                             $data['file'] = $nameFile;
@@ -633,7 +632,7 @@ class LawController extends Controller
 
     public function downloadArticleQualify(ArticleFulfillment $articleFulfillment)
     {
-        $path = 'fulfillments/'.Session::get('company_id')."/";
+        $path = 'fulfillments/'.$this->company."/";
         return Storage::disk('s3_MLegal')->download($path.$articleFulfillment->file);
     }
 

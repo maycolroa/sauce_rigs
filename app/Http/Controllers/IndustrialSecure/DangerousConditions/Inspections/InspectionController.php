@@ -14,8 +14,6 @@ use App\Models\Administrative\Areas\EmployeeArea;
 use App\Http\Requests\IndustrialSecure\DangerousConditions\Inspections\InspectionRequest;
 use App\Jobs\IndustrialSecure\DangerousConditions\Inspections\InspectionExportJob;
 use Carbon\Carbon;
-use Illuminate\Support\Facades\Auth;
-use Session;
 use DB;
 
 class InspectionController extends Controller
@@ -25,12 +23,13 @@ class InspectionController extends Controller
      */
     function __construct()
     { 
+        parent::__construct();
         $this->middleware('auth');
-        $this->middleware('permission:ph_inspections_c', ['only' => 'store']);
-        $this->middleware('permission:ph_inspections_r');
-        $this->middleware('permission:ph_inspections_u', ['only' => ['update', 'toggleState']]);
-        $this->middleware('permission:ph_inspections_d', ['only' => 'destroy']);
-        $this->middleware('permission:ph_inspections_export', ['only' => 'export']);
+        $this->middleware("permission:ph_inspections_c, {$this->team}", ['only' => 'store']);
+        $this->middleware("permission:ph_inspections_r, {$this->team}");
+        $this->middleware("permission:ph_inspections_u, {$this->team}", ['only' => ['update', 'toggleState']]);
+        $this->middleware("permission:ph_inspections_d, {$this->team}", ['only' => 'destroy']);
+        $this->middleware("permission:ph_inspections_export, {$this->team}", ['only' => 'export']);
     }
 
     /**
@@ -99,7 +98,7 @@ class InspectionController extends Controller
         try
         {
             $inspection = new Inspection($request->all());
-            $inspection->company_id = Session::get('company_id');
+            $inspection->company_id = $this->company;
             
             if (!$inspection->save())
                 return $this->respondHttp500();
@@ -219,7 +218,7 @@ class InspectionController extends Controller
             DB::commit();
 
         } catch (\Exception $e) {
-            \Log::info($e->getMessage());
+            //\Log::info($e->getMessage());
             DB::rollback();
             return $this->respondHttp500();
         }
@@ -375,7 +374,7 @@ class InspectionController extends Controller
             'filtersType' => $filtersType
         ];
 
-        InspectionExportJob::dispatch(Auth::user(), Session::get('company_id'), $filters);
+        InspectionExportJob::dispatch($this->user, $this->company, $filters);
       
         return $this->respondHttp200();
 

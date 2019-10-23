@@ -7,9 +7,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Storage;
 //use App\Http\Requests\Administrative\Configuration\ConfigurationRequest;
 use App\Models\General\Company;
-use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
-use Session;
 use Validator;
 
 class LogoController extends Controller
@@ -19,9 +17,10 @@ class LogoController extends Controller
      */
     function __construct()
     {
+        parent::__construct();
         $this->middleware('auth');
-        $this->middleware('permission:logos_c', ['only' => 'store']);
-        $this->middleware('permission:logos_r');
+        $this->middleware("permission:logos_c, {$this->team}", ['only' => 'store']);
+        $this->middleware("permission:logos_r, {$this->team}");
     }
 
     /**
@@ -52,7 +51,7 @@ class LogoController extends Controller
             ]
         ])->validate();
 
-        $company = Company::find(Session::get('company_id'));
+        $company = Company::find($this->company);
         $data = $request->all();
 
         if ($request->logo != $company->logo)
@@ -61,7 +60,7 @@ class LogoController extends Controller
             {
                 $file = $request->logo;
                 Storage::disk('public')->delete('administrative/logos/'. $company->logo);
-                $nameFile = base64_encode(Auth::user()->id . now() . rand(1,10000)) .'.'. $file->extension();
+                $nameFile = base64_encode($this->user->id . now() . rand(1,10000)) .'.'. $file->extension();
                 $file->storeAs('administrative/logos/', $nameFile, 'public');
                 $company->logo = $nameFile;
                 $data['logo'] = $nameFile;
@@ -95,7 +94,7 @@ class LogoController extends Controller
     {
         try
         {
-            $company = Company::select('logo')->find(Session::get('company_id'));
+            $company = Company::select('logo')->find($this->company);
             $company->old_logo = $company->logo;
             $company->logo_path = Storage::disk('public')->url('administrative/logos/'. $company->logo);
 
@@ -109,7 +108,7 @@ class LogoController extends Controller
 
     public function download()
     {
-        $company = Company::find(Session::get('company_id'));
+        $company = Company::find($this->company);
         return Storage::disk('public')->download('administrative/logos/'. $company->logo);
     }
 }

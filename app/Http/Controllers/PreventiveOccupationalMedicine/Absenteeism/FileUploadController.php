@@ -8,11 +8,9 @@ use App\Http\Requests\PreventiveOccupationalMedicine\Absenteeism\FileUploadReque
 use App\Http\Requests\PreventiveOccupationalMedicine\Absenteeism\TalendUploadRequest;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Storage;
 use App\Vuetable\Facades\Vuetable;
-use Session;
 use Validator;
 use DB;
 
@@ -24,11 +22,12 @@ class FileUploadController extends Controller
      */
     function __construct()
     {
+        parent::__construct();
         $this->middleware('auth');
-        $this->middleware('permission:absen_uploadFiles_c', ['only' => 'store']);
-        $this->middleware('permission:absen_uploadFiles_r');
-        $this->middleware('permission:absen_uploadFiles_u', ['only' => 'update']);
-        $this->middleware('permission:absen_uploadFiles_d', ['only' => 'destroy']);
+        $this->middleware("permission:absen_uploadFiles_c, {$this->team}", ['only' => 'store']);
+        $this->middleware("permission:absen_uploadFiles_r, {$this->team}");
+        $this->middleware("permission:absen_uploadFiles_u, {$this->team}", ['only' => 'update']);
+        $this->middleware("permission:absen_uploadFiles_d, {$this->team}", ['only' => 'destroy']);
     }
 
     /**
@@ -59,7 +58,7 @@ class FileUploadController extends Controller
     {
       
       
-      if($talend=TalendUpload::find(Session::get('company_id'))){
+      if($talend=TalendUpload::find($this->company)){
 
         Validator::make($request->all(), [
         "file" => [
@@ -80,13 +79,13 @@ class FileUploadController extends Controller
         $fileUpload = new FileUpload();
         $file = $request->file;
         
-        $nameFile = base64_encode(Auth::user()->id . now()) .'.'. $file->extension();
+        $nameFile = base64_encode($this->user->id . now()) .'.'. $file->extension();
         
         $file->storeAs('absenteeism/files/', $nameFile,'public');
         $file->storeAs('absenteeism/files/', $nameFile,'s3');
 
         $fileUpload->file = $nameFile;
-        $fileUpload->user_id = Auth::user()->id;
+        $fileUpload->user_id = $this->user->id;
         $fileUpload->name = $request->name;
         
       
@@ -161,7 +160,7 @@ class FileUploadController extends Controller
           $file = $request->file;
           Storage::disk('public')->delete('abasenteeism/files/'. $fileUpload->file);
           Storage::disk('s3')->delete('abasenteeism/files/'. $fileUpload->file);
-          $nameFile = base64_encode(Auth::user()->id . now()) .'.'. $file->extension();
+          $nameFile = base64_encode($this->user->id . now()) .'.'. $file->extension();
           $file->storeAs('absenteeism/files/', $nameFile,'public');
           $file->storeAs('absenteeism/files/', $nameFile,'s3');
           $fileUpload->file = $nameFile;
@@ -234,7 +233,7 @@ class FileUploadController extends Controller
     */
     public function dataTalend(Request $request)
     {
-      $talend=TalendUpload::find(Session::get('company_id'));
+      $talend=TalendUpload::find($this->company);
         /*$talend = TalendUpload::select(
             'sau_absen_talends.*')->first();
       \Log::info($talend);*/
@@ -268,13 +267,13 @@ class FileUploadController extends Controller
         $talendUpload = new TalendUpload();
         $file = $request->file;
         
-        $nameFile = base64_encode(Auth::user()->id . now()) .'.'. $file->extension();
+        $nameFile = base64_encode($this->user->id . now()) .'.'. $file->extension();
         
         $file->storeAs('absenteeism/files/', $nameFile,'public');
         //$file->storeAs('absenteeism/files/', $nameFile,'s3');
 
         $talendUpload->file = $nameFile;
-        $talendUpload->company_id  = Session::get('company_id');
+        $talendUpload->company_id  = $this->company;
         $talendUpload->route = "storage/app/absenteeism/files/";
         
       

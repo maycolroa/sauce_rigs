@@ -7,6 +7,7 @@ use App\Models\System\Licenses\License;
 use App\Models\General\Permission;
 use App\Models\General\Application;
 use App\Models\General\Module;
+use App\Models\General\Team;
 use Exception;
 use Session;
 
@@ -17,8 +18,13 @@ trait PermissionTrait
      *
      * @return Array
      */
-    public function getModulePermissions($job = false)
+    public function getModulePermissions($company = null, $user = null)
     {
+        //Equipo donde se debe realizar la verificacion de permisos
+        $company = $company ? $company : Session::get('company_id');
+        $user = $user ? $user : Auth::user();
+        $team = Team::where('name', $company)->first();
+
         //Obtiene los module_id de todas las licencias activas
         $licenses = License::whereRaw('? BETWEEN started_at AND ended_at', [date('Y-m-d')])->get();
 
@@ -32,7 +38,7 @@ trait PermissionTrait
             }
         }
 
-        if (!$job && Auth::user()->checkRoleDefined('Superadmin'))
+        if ($user->hasRole('Superadmin', $team))
         {
             $app = Application::where('name', 'system')->first();
 
@@ -54,9 +60,10 @@ trait PermissionTrait
         ];
 
         //Devuelve un array con true/false para cada verificacion de permiso para el usuario en sesion
-        list($validate, $allValidations) = Auth::user()->ability(
+        list($validate, $allValidations) = $user->ability(
             null,
             array_keys($permissions->pluck('id', 'name')->toArray()),
+            $team,
             $options
         );
 
@@ -149,7 +156,7 @@ trait PermissionTrait
 
     public function getIdsModulePermissions()
     {
-        $permissions = $this->getModulePermissions(true);
+        $permissions = $this->getModulePermissions();
         $data = [];
         
         if (COUNT($permissions) > 0)

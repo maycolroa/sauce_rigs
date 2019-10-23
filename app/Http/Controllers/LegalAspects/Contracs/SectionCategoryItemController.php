@@ -4,14 +4,18 @@ namespace App\Http\Controllers\LegalAspects\Contracs;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Auth;
 use App\Models\LegalAspects\Contracts\SectionCategoryItems;
 use App\Traits\ContractTrait;
-use Session;
 
 class SectionCategoryItemController extends Controller
 {
     use ContractTrait;
+
+    function __construct()
+    {
+        parent::__construct();
+        //$this->middleware("permission:users_d, {$this->company}", ['only' => 'destroy']);
+    }
 
     /**
      * Display a listing of the resource.
@@ -31,9 +35,9 @@ class SectionCategoryItemController extends Controller
      */
     public function multiselect(Request $request)
     {
-        if (Auth::user()->hasRole('Arrendatario') || Auth::user()->hasRole('Contratista'))
+        if ($this->user->hasRole('Arrendatario', $this->team) || $this->user->hasRole('Contratista', $this->team))
         {
-            $contract = $this->getContractUser(Auth::user()->id);
+            $contract = $this->getContractUser($this->user->id);
             $items = $this->getStandardItemsContract($contract);
             $items = COUNT($items) > 0 ? $items->pluck('id', 'item_name') : [];
             return $this->multiSelectFormat($items);

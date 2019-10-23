@@ -5,13 +5,11 @@ namespace App\Http\Controllers\System\Licenses;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Vuetable\Facades\Vuetable;
-use Illuminate\Support\Facades\Auth;
 use App\Models\System\Licenses\License;
 use App\Models\General\ModuleDependence;
 use App\Http\Requests\System\Licenses\LicenseRequest;
 use App\Jobs\System\Licenses\NotifyLicenseRenewalJob;
 use Carbon\Carbon;
-use Session;
 use DB;
 
 class LicenseController extends Controller
@@ -21,11 +19,12 @@ class LicenseController extends Controller
      */
     function __construct()
     {
+        parent::__construct();
         $this->middleware('auth');
-        $this->middleware('permission:licenses_c', ['only' => 'store']);
-        $this->middleware('permission:licenses_r');
-        $this->middleware('permission:licenses_u', ['only' => 'update']);
-        $this->middleware('permission:licenses_d', ['only' => 'destroy']);
+        $this->middleware("permission:licenses_c, {$this->team}", ['only' => 'store']);
+        $this->middleware("permission:licenses_r, {$this->team}");
+        $this->middleware("permission:licenses_u, {$this->team}", ['only' => 'update']);
+        $this->middleware("permission:licenses_d, {$this->team}", ['only' => 'destroy']);
     }
 
     /**
@@ -85,7 +84,7 @@ class LicenseController extends Controller
             $license->modules()->sync(array_merge($modules_main, $modules));
 
             $license->histories()->create([
-                'user_id' => Auth::user()->id
+                'user_id' => $this->user->id
             ]);
 
             DB::commit();
@@ -166,7 +165,7 @@ class LicenseController extends Controller
             $license->modules()->sync(array_merge($modules_main, $modules));
 
             $license->histories()->create([
-                'user_id' => Auth::user()->id
+                'user_id' => $this->user->id
             ]);
             
             DB::commit();

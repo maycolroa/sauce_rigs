@@ -48,20 +48,20 @@ export default {
       filtersConfig: {}
     }
   },
-  created(){
-    axios.get(`/administration/users/${this.$route.params.id}`)
-    .then(response => {
-        this.data = response.data.data;
-    })
-    .catch(error => {
-        Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
-        this.$router.go(-1);
-    });
-    
+  created(){    
     axios.post(`/administration/users/filtersConfig`)
 		.then(response => {
       this.filtersConfig = response.data;
-			this.ready = true
+
+      axios.get(`/administration/users/${this.$route.params.id}`)
+      .then(response2 => {
+          this.data = response2.data.data;
+          this.ready = true
+      })
+      .catch(error => {
+          Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
+          this.$router.go(-1);
+      });
 		})
 		.catch(error => {
 			Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');

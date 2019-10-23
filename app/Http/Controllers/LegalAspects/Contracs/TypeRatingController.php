@@ -7,7 +7,6 @@ use App\Http\Controllers\Controller;
 use App\Vuetable\Facades\Vuetable;
 use App\Models\LegalAspects\Contracts\TypeRating;
 use App\Http\Requests\LegalAspects\Contracts\TypeRatingRequest;
-use Session;
 
 class TypeRatingController extends Controller
 {
@@ -16,11 +15,12 @@ class TypeRatingController extends Controller
      */
     function __construct()
     {
+        parent::__construct();
         $this->middleware('auth');
-        $this->middleware('permission:contracts_typesQualification_c', ['only' => 'store']);
-        $this->middleware('permission:contracts_typesQualification_r', ['except' =>'getAllTypesRating']);
-        $this->middleware('permission:contracts_typesQualification_u', ['only' => 'update']);
-        $this->middleware('permission:contracts_typesQualification_d', ['only' => 'destroy']);
+        $this->middleware("permission:contracts_typesQualification_c, {$this->team}", ['only' => 'store']);
+        $this->middleware("permission:contracts_typesQualification_r, {$this->team}", ['except' =>'getAllTypesRating']);
+        $this->middleware("permission:contracts_typesQualification_u, {$this->team}", ['only' => 'update']);
+        $this->middleware("permission:contracts_typesQualification_d, {$this->team}", ['only' => 'destroy']);
     }
 
     /**
@@ -55,7 +55,7 @@ class TypeRatingController extends Controller
     public function store(TypeRatingRequest $request)
     {
         $rating = new TypeRating($request->all());
-        $rating->company_id = Session::get('company_id');
+        $rating->company_id = $this->company;
         
         if(!$rating->save()){
             return $this->respondHttp500();

@@ -13,10 +13,8 @@ use App\Models\IndustrialSecure\DangerousConditions\Reports\ConditionType;
 use App\Http\Requests\IndustrialSecure\DangerousConditions\Reports\ReportRequest;
 use App\Http\Requests\IndustrialSecure\DangerousConditions\Reports\SaveQualificationRequest;
 use App\Jobs\IndustrialSecure\DangerousConditions\Reports\ReportExportJob;
-use Illuminate\Support\Facades\Auth;
 use App\Facades\ActionPlans\Facades\ActionPlan;
 use Validator;
-use Session;
 use DB;
 
 class ReportController extends Controller
@@ -26,13 +24,14 @@ class ReportController extends Controller
      */
     function __construct()
     {
+        parent::__construct();
         $this->middleware('auth');
-        $this->middleware('permission:ph_reports_c', ['only' => 'store']);
-        $this->middleware('permission:ph_reports_r');
-        $this->middleware('permission:ph_reports_u', ['only' => 'update']);
-        $this->middleware('permission:ph_reports_d', ['only' => 'destroy']);
-        $this->middleware('permission:ph_reports_export', ['only' => 'export']);
-        $this->middleware('permission:ph_reports_qualifications', ['only' => ['saveImage', 'downloadImage', 'saveQualification']]);
+        $this->middleware("permission:ph_reports_c, {$this->team}", ['only' => 'store']);
+        $this->middleware("permission:ph_reports_r, {$this->team}");
+        $this->middleware("permission:ph_reports_u, {$this->team}", ['only' => 'update']);
+        $this->middleware("permission:ph_reports_d, {$this->team}", ['only' => 'destroy']);
+        $this->middleware("permission:ph_reports_export, {$this->team}", ['only' => 'export']);
+        $this->middleware("permission:ph_reports_qualifications, {$this->team}", ['only' => ['saveImage', 'downloadImage', 'saveQualification']]);
     }
 
     /**
@@ -107,8 +106,8 @@ class ReportController extends Controller
         try
         {
             $report = new Report($request->all());
-            $report->company_id = Session::get('company_id');
-            $report->user_id = Auth::user()->id;
+            $report->company_id = $this->company;
+            $report->user_id = $this->user->id;
             
             if (!$report->save())
                 return $this->respondHttp500();
@@ -116,7 +115,7 @@ class ReportController extends Controller
             DB::commit();
 
         } catch (\Exception $e) {
-            \Log::info($e->getMessage());
+            //\Log::info($e->getMessage());
             DB::rollback();
             return $this->respondHttp500();
         }
@@ -181,7 +180,7 @@ class ReportController extends Controller
             DB::commit();
 
         } catch (\Exception $e) {
-            \Log::info($e->getMessage());
+            //\Log::info($e->getMessage());
             DB::rollback();
             return $this->respondHttp500();
         }
@@ -238,7 +237,7 @@ class ReportController extends Controller
             'filtersType' => $filtersType
         ];
 
-        ReportExportJob::dispatch(Auth::user(), Session::get('company_id'), $filters);
+        ReportExportJob::dispatch($this->user, $this->company, $filters);
       
         return $this->respondHttp200();
 
@@ -310,7 +309,7 @@ class ReportController extends Controller
             {
                 $file = $request->image;
                 Storage::disk('public')->delete('industrialSecure/dangerousConditions/reports/images/'. $report->$picture);
-                $nameFile = base64_encode(Auth::user()->id . now() . rand(1,10000)) .'.'. $file->extension();
+                $nameFile = base64_encode($this->user->id . now() . rand(1,10000)) .'.'. $file->extension();
                 $file->storeAs('industrialSecure/dangerousConditions/reports/images/', $nameFile, 'public');
                 $report->$picture = $nameFile;
                 $data['image'] = $nameFile;
@@ -353,7 +352,7 @@ class ReportController extends Controller
             $report = Report::findOrFail($request->id);
 
             ActionPlan::
-                    user(Auth::user())
+                    user($this->user)
                 ->module('dangerousConditions')
                 ->url(url('/administrative/actionplans'))
                 ->model($report)
@@ -371,7 +370,7 @@ class ReportController extends Controller
             ]);
 
         } catch (Exception $e){
-            \Log::info($e->getMessage());
+            //\Log::info($e->getMessage());
             DB::rollback();
             return $this->respondHttp500();
         }

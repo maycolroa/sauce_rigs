@@ -5,11 +5,9 @@ namespace App\Http\Controllers\Administrative\Labels;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Vuetable\Facades\Vuetable;
-use Illuminate\Support\Facades\Auth;
 use App\Models\General\Keyword;
 use App\Models\Administrative\Labels\KeywordCompany;
 use App\Http\Requests\Administrative\Labels\LabelRequest;
-use Session;
 use DB;
 
 class LabelController extends Controller
@@ -19,11 +17,12 @@ class LabelController extends Controller
      */
     function __construct()
     {
+        parent::__construct();
         $this->middleware('auth');
-        $this->middleware('permission:customLabels_c', ['only' => 'store']);
-        $this->middleware('permission:customLabels_r', ['except' =>'multiselect']);
-        $this->middleware('permission:customLabels_u', ['only' => 'update']);
-        $this->middleware('permission:customLabels_d', ['only' => 'destroy']);
+        $this->middleware("permission:customLabels_c, {$this->team}", ['only' => 'store']);
+        $this->middleware("permission:customLabels_r, {$this->team}", ['except' =>'multiselect']);
+        $this->middleware("permission:customLabels_u, {$this->team}", ['only' => 'update']);
+        $this->middleware("permission:customLabels_d, {$this->team}", ['only' => 'destroy']);
     }
 
     /**
@@ -63,7 +62,7 @@ class LabelController extends Controller
     public function store(LabelRequest $request)
     {
         $label = new KeywordCompany($request->all());
-        $label->company_id = Session::get('company_id');
+        $label->company_id = $this->company;
         
         KeywordCompany::where('keyword_id', $label->keyword_id)->delete();
 
@@ -113,7 +112,7 @@ class LabelController extends Controller
             KeywordCompany::where('keyword_id', $id)->delete();
 
             $label = new KeywordCompany($request->all());
-            $label->company_id = Session::get('company_id');
+            $label->company_id = $this->company;
             
             if(!$label->save()){
                 return $this->respondHttp500();

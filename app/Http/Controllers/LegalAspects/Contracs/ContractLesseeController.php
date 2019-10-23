@@ -5,7 +5,6 @@ namespace App\Http\Controllers\LegalAspects\Contracs;
 use Illuminate\Http\Request;
 use App\Vuetable\Facades\Vuetable;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use App\Models\Administrative\Roles\Role;
 use App\Models\LegalAspects\Contracts\CompanyLimitCreated;
@@ -23,7 +22,6 @@ use App\Facades\ActionPlans\Facades\ActionPlan;
 use App\Traits\ContractTrait;
 use App\Traits\UserTrait;
 use Carbon\Carbon;
-use Session;
 use Validator;
 use DB;
 
@@ -37,12 +35,13 @@ class ContractLesseeController extends Controller
      */
     function __construct()
     {
+        parent::__construct();
         $this->middleware('auth');
-        $this->middleware('permission:contracts_c', ['only' => 'store']);
-        $this->middleware('permission:contracts_r', ['except' => ['getInformation', 'multiselect', 'getListCheckItems', 'qualifications', 'saveQualificationItems', 'update']] );
-        $this->middleware('permission:contracts_u|contracts_myInformation', ['only' => 'update']);
-        $this->middleware('permission:contracts_myInformation', ['only' => 'getInformation']);
-        $this->middleware('permission:contracts_export', ['only' => 'export']);
+        $this->middleware("permission:contracts_c, {$this->team}", ['only' => 'store']);
+        $this->middleware("permission:contracts_r, {$this->team}", ['except' => ['getInformation', 'multiselect', 'getListCheckItems', 'qualifications', 'saveQualificationItems', 'update']] );
+        $this->middleware("permission:contracts_u|contracts_myInformation, {$this->team}", ['only' => 'update']);
+        $this->middleware("permission:contracts_myInformation, {$this->team}", ['only' => 'getInformation']);
+        $this->middleware("permission:contracts_export, {$this->team}", ['only' => 'export']);
     }
 
     /**
@@ -101,7 +100,7 @@ class ContractLesseeController extends Controller
                 return $this->respondWithError('Límite alcanzado..!! No puede crear más contratistas o arrendatarios hasta que inhabilite alguno de ellos.');
 
             $contract = new ContractLesseeInformation($request->all());
-            $contract->company_id = Session::get('company_id');
+            $contract->company_id = $this->company;
 
             if (!$contract->save())
                 return $this->respondHttp500();
@@ -115,7 +114,7 @@ class ContractLesseeController extends Controller
                 return $this->respondHttp500();
             }
 
-            $user->syncRoles([$this->getIdRole($request->type)]);
+            $user->attachRole($this->getIdRole($request->type), $this->team);
             $contract->users()->sync($user);
 
             DB::commit();
@@ -170,7 +169,7 @@ class ContractLesseeController extends Controller
     {
         try
         {
-            $contract = $this->getContractUser(Auth::user()->id);
+            $contract = $this->getContractUser($this->user->id);
             $contract->isInformation = true;
 
             return $this->respondHttp200([
@@ -220,7 +219,7 @@ class ContractLesseeController extends Controller
 
             foreach ($users as $user)
             {
-                $user->syncRoles([$this->getIdRole($contract->type)]);
+                $user->syncRoles([$this->getIdRole($contract->type)], $this->team);
 
                 /*if ($contract->active == 'NO')
                 {
@@ -281,8 +280,7 @@ class ContractLesseeController extends Controller
 
     private function getIdRole($role)
     {
-        $role = Role::withoutGlobalScopes()->select('id')
-            ->where('type_role', 'Definido')
+        $role = Role::defined()
             ->where('name', $role)
             ->first();
 
@@ -321,7 +319,7 @@ class ContractLesseeController extends Controller
             if ($request->has('id') && $request->id)
                 $contract = ContractLesseeInformation::findOrFail($request->id);
             else 
-                $contract = $this->getContractUser(Auth::user()->id);
+                $contract = $this->getContractUser($this->user->id);
 
             $items = $this->getStandardItemsContract($contract);
 
@@ -441,12 +439,12 @@ class ContractLesseeController extends Controller
             $data = $request->except(['items', 'files_binary']);
 
             $qualifications = Qualifications::pluck("id", "name");
-            $contract = $this->getContractUser(Auth::user()->id);
+            $contract = $this->getContractUser($this->user->id);
 
             //Se inician los atributos necesarios que seran estaticos para todas las actividades
             // De esta forma se evitar la asignacion innecesaria una y otra vez 
             ActionPlan::
-                    user(Auth::user())
+                    user($this->user)
                 ->module('contracts')
                 ->url(url('/administrative/actionplans'));
 
@@ -482,13 +480,13 @@ class ContractLesseeController extends Controller
                             else
                             {
                                 $fileUpload = new FileUpload();
-                                $fileUpload->user_id = Auth::user()->id;
+                                $fileUpload->user_id = $this->user->id;
                             }
 
                             if ($create_file)
                             {
                                 $file_tmp = $file['file'];
-                                $nameFile = base64_encode(Auth::user()->id . now() . rand(1,10000) . $keyF) .'.'. $file_tmp->extension();
+                                $nameFile = base64_encode($this->user->id . now() . rand(1,10000) . $keyF) .'.'. $file_tmp->extension();
                                 $file_tmp->storeAs('legalAspects/files/', $nameFile, 'public');
                                 $fileUpload->file = $nameFile;
                                 $data['files'][$keyF]['file'] = $nameFile;
@@ -557,7 +555,7 @@ class ContractLesseeController extends Controller
 
     private function sendNotification($contract)
     {
-        ListCheckContractExportJob::dispatch(Session::get('company_id'), $contract);
+        ListCheckContractExportJob::dispatch($this->company, $contract);
     }
 
     public function retrySendMail(ContractLesseeInformation $contract)
@@ -584,7 +582,7 @@ class ContractLesseeController extends Controller
     {
         try
         {
-            ContractorExportJob::dispatch(Auth::user(), Session::get('company_id'), $request->all());
+            ContractorExportJob::dispatch($this->user, $this->company, $request->all());
         
             return $this->respondHttp200();
         } catch(Exception $e) {

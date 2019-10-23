@@ -6,7 +6,6 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Vuetable\Facades\Vuetable;
 use App\Models\IndustrialSecure\DangerMatrix\ChangeHistory;
-use Session;
 
 class DangerMatrixHistoryController extends Controller
 {

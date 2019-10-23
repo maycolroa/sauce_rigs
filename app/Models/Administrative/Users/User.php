@@ -7,6 +7,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Laratrust\Traits\LaratrustUserTrait;
 use App\Traits\CompanyTrait;
 use App\Traits\PermissionTrait;
+use App\Models\General\Team;
 use App\Models\General\Permission;
 use App\Models\General\Keyword;
 use App\Models\Administrative\Roles\Role;
@@ -37,10 +38,10 @@ class User extends Authenticatable
     *
     * @var array
     */
-    protected $appends = [/*'all_permissions',*/'can','hasRole','keywords'];
+    //protected $appends = [/*'all_permissions','can','hasRole','keywords'*/];
 
     //the attribute define the table for scope company execute
-    public $scope_table_for_company_table = 'sau_roles';
+    public $scope_table_for_company_table = 'sau_company_user';
 
     /**
      * The attributes that should be hidden for arrays.
@@ -93,23 +94,10 @@ class User extends Authenticatable
     {
         return $this->belongsTo('App\Models\General\Module', 'module_id');
     }
-
-    /*public function contractInformation(){
-      	return $this->belongsToMany('App\Models\LegalAspects\Contracts\UserContractLesseeDetail','sau_user_information_contract_lessee', 'user_id', 'information_id');
-    }
-
-    public function contractInfo()
-    {
-      	return $this->belongsToMany('App\Models\LegalAspects\Contracts\ContractLesseeInformation','sau_user_information_contract_lessee', 'user_id', 'information_id');
-    }*/
     
     public function roleUser(){
       	return $this->belongsToMany('App\Models\Administrative\Roles\Role','sau_role_user');
 	}
-
-	/*public function itemsCalificatedContract(){
-      	return $this->belongsToMany('App\Models\LegalAspects\Contracts\ItemQualificationContractDetail','sau_ct_item_qualification_contract');
-    }*/
     
 
     /**
@@ -127,57 +115,65 @@ class User extends Authenticatable
      *
      * @return array
      */
-    public function getCanAttribute()
+    public function getCan()
     {
-        if (Session::get('company_id'))
+        $modules = $this->getModulePermissions();
+        $permission_enabled = [];
+
+        foreach ($modules as $key => $value)
         {
-            $modules = $this->getModulePermissions();
-            $permission_enabled = [];
-
-            foreach ($modules as $key => $value)
-            {
-                $permission_enabled = array_merge($permission_enabled,  array_values($value));
-            }
-
-            $permissions = [];
-            foreach (Permission::all() as $permission) {
-                if (in_array($permission->name, $permission_enabled)) {
-                    $permissions[$permission->name] = true;
-                } else {
-                    $permissions[$permission->name] = false;
-                }
-            }
-            return $permissions;
+            $permission_enabled = array_merge($permission_enabled,  array_values($value));
         }
+
+        $permissions = [];
+        
+        foreach (Permission::all() as $permission) {
+            if (in_array($permission->name, $permission_enabled)) {
+                $permissions[$permission->name] = true;
+            } else {
+                $permissions[$permission->name] = false;
+            }
+        }
+
+        return $permissions;
     }
 
-    public function getHasRoleAttribute()
+    public function getHasRole()
     {
-        if (Session::get('company_id'))
+        $team = Team::where('name', Session::get('company_id'))->first();
+
+        $roles = [];
+
+        foreach (Role::defined()->get() as $role)
         {
-            $roles = [];
-
-            foreach (Role::withoutGlobalScopes()->whereNull('sau_roles.company_id')->get() as $role)
-            {
-                $roles[$role->name] = false;
-            }
-            
-            foreach ($this->roleUser as $role)
-            {
-                if (!$role->company_id && isset($roles[$role->name]))
-                    $roles[$role->name] = true;
-            }
-
-            return $roles;
+            $roles[$role->name] = $this->hasRole($role->name, $team);
         }
+
+        return $roles;
     }
 
-    public function checkRoleDefined($role)
+    public function multiselectRoles($team)
+    {
+        $roles = collect([]);
+
+        foreach (Role::alls(true)->get() as $role)
+        {
+            if ($this->hasRole($role->name, $team))
+                $roles->push([
+                    'name' => $role->name,
+                    'value' => $role->id
+                ]);
+        }
+
+        return $roles;
+    }
+
+    /*public function checkRoleDefined($role)
     {
         $roles = $this->getHasRoleAttribute();
 
         return $roles[$role];
-    }
+    }*/
 
     /**
      * Send the password reset notification.

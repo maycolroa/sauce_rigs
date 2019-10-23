@@ -45,7 +45,7 @@ class MakeCustomRolesDefinedSeeder extends Seeder
                                     {
                                         if (isset($role["name"]) && isset($role["display_name"]))
                                         {   
-                                            $role_exist = Role::withoutGlobalScopes()->where('name', $role["name"])->where('type_role', 'Definido')->where('module_id', $mod->id)->first();
+                                            $role_exist = Role::where('name', $role["name"])->where('type_role', 'Definido')->where('module_id', $mod->id)->first();
 
                                             if (!$role_exist)
                                             {

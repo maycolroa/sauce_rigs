@@ -5,7 +5,6 @@ namespace App\Http\Controllers\IndustrialSecure\DangerousConditions\Inspections;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Vuetable\Facades\Vuetable;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use App\Models\IndustrialSecure\DangerousConditions\Inspections\Inspection;
 use App\Models\IndustrialSecure\DangerousConditions\Inspections\InspectionSection;
@@ -18,7 +17,6 @@ use App\Http\Requests\IndustrialSecure\DangerousConditions\Inspections\SaveQuali
 use App\Facades\ActionPlans\Facades\ActionPlan;
 use Carbon\Carbon;
 use Validator;
-use Session;
 use DB;
 
 class InspectionQualificationController extends Controller
@@ -28,9 +26,10 @@ class InspectionQualificationController extends Controller
      */
     function __construct()
     {
+        parent::__construct();
         $this->middleware('auth');
         //$this->middleware('permission:ph_inspections_c', ['only' => 'store']);
-        $this->middleware('permission:ph_inspections_r');
+        $this->middleware("permission:ph_inspections_r, {$this->team}");
         //$this->middleware('permission:ph_inspections_u', ['only' => 'update']);
         //$this->middleware('permission:ph_inspections_d', ['only' => 'destroy']);
     }
@@ -174,7 +173,7 @@ class InspectionQualificationController extends Controller
             $qualification = InspectionItemsQualificationAreaLocation::findOrFail($request->id_item_qualification);
 
             ActionPlan::
-                    user(Auth::user())
+                    user($this->user)
                 ->module('dangerousConditions')
                 ->url(url('/administrative/actionplans'))
                 ->model($qualification)
@@ -223,7 +222,7 @@ class InspectionQualificationController extends Controller
             {
                 $file = $request->image;
                 Storage::disk('public')->delete('industrialSecure/dangerousConditions/inspections/images/'. $qualification->$picture);
-                $nameFile = base64_encode(Auth::user()->id . now() . rand(1,10000)) .'.'. $file->extension();
+                $nameFile = base64_encode($this->user->id . now() . rand(1,10000)) .'.'. $file->extension();
                 $file->storeAs('industrialSecure/dangerousConditions/inspections/images/', $nameFile, 'public');
                 $qualification->$picture = $nameFile;
                 $data['image'] = $nameFile;

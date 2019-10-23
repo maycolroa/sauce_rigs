@@ -4,7 +4,6 @@ namespace App\Http\Controllers\IndustrialSecure\DangerousConditions\Reports;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
 use App\Inform\IndustrialSecure\DangerousConditions\Reports\InformManagerReport;
 
@@ -15,8 +14,9 @@ class ReportInformController extends Controller
      */
     function __construct()
     {
+        parent::__construct();
         $this->middleware('auth');
-        $this->middleware('permission:ph_reports_informs_view', ['only' => 'data']);
+        $this->middleware("permission:ph_reports_informs_view, {$this->team}", ['only' => 'data']);
         //$this->middleware('permission:biologicalMonitoring_audiometry_inform_individual_r', ['only' => 'dataIndividual']);
     }
 

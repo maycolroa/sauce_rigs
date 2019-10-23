@@ -4,7 +4,8 @@ namespace App\Http\Requests\Administrative\Users;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
-use App\Facades\Configuration;
+use App\Models\General\Team;
+use Session;
 
 class UserRequest extends FormRequest
 {
@@ -34,7 +35,9 @@ class UserRequest extends FormRequest
             'password'  => 'nullable|string|min:6'
         ];
 
-        if (!Auth::user()->hasRole('Arrendatario') && !Auth::user()->hasRole('Contratista') && $this->input('edit_role') == 'true')
+        $team = Team::where('name', Session::get('company_id'))->first()->id;
+
+        if (!Auth::user()->hasRole('Arrendatario', $team) && !Auth::user()->hasRole('Contratista', $team) && $this->input('edit_role') == 'true')
             $rules['role_id'] = 'required';
         
         return $rules;

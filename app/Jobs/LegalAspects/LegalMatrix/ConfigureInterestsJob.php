@@ -45,13 +45,9 @@ class ConfigureInterestsJob implements ShouldQueue
 
       $this->syncQualificationsCompany($this->company_id);
 
-      $users = User::withoutGlobalScopes()
-            ->join('sau_company_user', 'sau_company_user.user_id', 'sau_users.id')
-            ->join('sau_role_user', 'sau_role_user.user_id', 'sau_users.id')
-            ->join('sau_roles', 'sau_roles.id', 'sau_role_user.role_id')
-            ->where('sau_company_user.company_id', $this->company_id)
-            ->whereRaw('(sau_roles.company_id = '.$this->company_id.' OR (sau_roles.company_id IS NULL AND sau_roles.name IN("Superadmin") ) )')
-            ->get();
+      $users = User::active()->join('sau_company_user', 'sau_company_user.user_id', 'sau_users.id');
+      $users->company_scope = $this->company_id;
+      $users = $users->get();
 
       if (!empty($users))
       {

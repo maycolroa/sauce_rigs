@@ -11,9 +11,7 @@ use App\Models\PreventiveOccupationalMedicine\BiologicalMonitoring\Musculoskelet
 use App\Jobs\PreventiveOccupationalMedicine\BiologicalMonitoring\MusculoskeletalAnalysis\MusculoskeletalAnalysisImportJob;
 use App\Jobs\PreventiveOccupationalMedicine\BiologicalMonitoring\MusculoskeletalAnalysis\MusculoskeletalAnalysisExportJob;
 use App\Inform\PreventiveOccupationalMedicine\BiologicalMonitoring\MusculoskeletalAnalysis\InformIndividualManagerMusculoskeletalAnalysis;
-use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
-use Session;
 use DB;
 
 class MusculoskeletalAnalysisController extends Controller
@@ -23,9 +21,10 @@ class MusculoskeletalAnalysisController extends Controller
      */
     function __construct()
     {
+        parent::__construct();
         $this->middleware('auth');
         //$this->middleware('permission:biologicalMonitoring_musculoskeletalAnalysis_c', ['only' => ['store', 'import', 'downloadTemplateImport']]);
-        $this->middleware('permission:biologicalMonitoring_musculoskeletalAnalysis_r');
+        $this->middleware("permission:biologicalMonitoring_musculoskeletalAnalysis_r, {$this->team}");
         //$this->middleware('permission:biologicalMonitoring_musculoskeletalAnalysis_u', ['only' => 'update']);
         //$this->middleware('permission:biologicalMonitoring_musculoskeletalAnalysis_d', ['only' => 'destroy']);
     }
@@ -141,7 +140,7 @@ class MusculoskeletalAnalysisController extends Controller
     {
       try
       {
-        MusculoskeletalAnalysisImportJob::dispatch($request->file, Session::get('company_id'), Auth::user());
+        MusculoskeletalAnalysisImportJob::dispatch($request->file, $this->company, $this->user);
       
         return $this->respondHttp200();
       } catch(Exception $e)
@@ -270,7 +269,7 @@ class MusculoskeletalAnalysisController extends Controller
             'filtersType' => $filtersType
         ];
 
-        MusculoskeletalAnalysisExportJob::dispatch(Auth::user(), Session::get('company_id'), $filters);
+        MusculoskeletalAnalysisExportJob::dispatch($this->user, $this->company, $filters);
       
         return $this->respondHttp200();
       } catch(Exception $e) {
@@ -284,7 +283,7 @@ class MusculoskeletalAnalysisController extends Controller
       {
         DB::beginTransaction();
 
-        if (!$this->saveTracingPrivate($request->identification, $request->new_tracing, Auth::user(), $request->oldTracings))
+        if (!$this->saveTracingPrivate($request->identification, $request->new_tracing, $this->user, $request->oldTracings))
           return $this->respondHttp500();
 
         DB::commit();
@@ -308,7 +307,7 @@ class MusculoskeletalAnalysisController extends Controller
                 return true;
 
             $tracing = new Tracing();
-            $tracing->company_id = Session::get('company_id');
+            $tracing->company_id = $this->company;
             $tracing->description = $tracingDescription;
             $tracing->identification = $identification;
             $tracing->user_id = $madeByUser->id;

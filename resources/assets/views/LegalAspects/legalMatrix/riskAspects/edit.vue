@@ -28,7 +28,7 @@ import Alerts from '@/utils/Alerts.js';
 export default {
   name: 'legalaspects-lm-riskaspect-edit',
   metaInfo: {
-    title: 'Riesgos/Aspectos Ambientales - Editar'
+    title: 'Temas Ambientales - Editar'
   },
   components:{
     FormRiskAspectComponent

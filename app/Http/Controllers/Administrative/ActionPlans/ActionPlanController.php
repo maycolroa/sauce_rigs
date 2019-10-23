@@ -7,12 +7,10 @@ use App\Http\Controllers\Controller;
 use App\Vuetable\Facades\Vuetable;
 use App\Models\Administrative\Users\User;
 use App\Models\Administrative\ActionPlans\ActionPlansActivity;
-use Illuminate\Support\Facades\Auth;
 use App\Facades\ActionPlans\Facades\ActionPlan;
 use App\Http\Requests\Administrative\ActionPlans\ActionPlanRequest;
 use App\Jobs\Administrative\ActionPlans\ActionPlanExportJob;
 use App\Traits\ContractTrait;
-use Session;
 use DB;
 
 class ActionPlanController extends Controller
@@ -24,12 +22,13 @@ class ActionPlanController extends Controller
      */
     function __construct()
     {
+        parent::__construct();
         $this->middleware('auth');
-        //$this->middleware('permission:actionPlans_c', ['only' => 'store']);
-        $this->middleware('permission:actionPlans_r');
-        $this->middleware('permission:actionPlans_u', ['only' => 'update']);
-        $this->middleware('permission:actionPlans_export', ['only' => 'export']);
-        //$this->middleware('permission:actionPlans_d', ['only' => 'destroy']);
+        //$this->middleware("permission:actionPlans_c, {$this->team}", ['only' => 'store']);
+        $this->middleware("permission:actionPlans_r, {$this->team}");
+        $this->middleware("permission:actionPlans_u, {$this->team}", ['only' => 'update']);
+        $this->middleware("permission:actionPlans_export, {$this->team}", ['only' => 'export']);
+        //$this->middleware("permission:actionPlans_d, {$this->team}", ['only' => 'destroy']);
     }
 
     /**
@@ -69,13 +68,13 @@ class ActionPlanController extends Controller
         if (isset($filters["states"]))
             $activities->inStates($this->getValuesForMultiselect($filters["states"]), $filters['filtersType']['states']);
             
-        if (!Auth::user()->hasRole('Superadmin'))
+        if (!$this->user->hasRole('Superadmin', $this->team))
         {
-            if (Auth::user()->hasRole('Arrendatario') || Auth::user()->hasRole('Contratista'))
+            if ($this->user->hasRole('Arrendatario', $this->team) || $this->user->hasRole('Contratista', $this->team))
             {
-                $contract = $this->getContractUser(Auth::user()->id);
+                $contract = $this->getContractUser($this->user->id);
                 $users = $this->getUsersContract($contract->id);
-                $users_list = [Auth::user()->id];
+                $users_list = [$this->user->id];
 
                 foreach ($users as $user)
                 {
@@ -91,7 +90,7 @@ class ActionPlanController extends Controller
                 $activities->where(function ($subquery) {
                     $subquery->whereIn('sau_action_plans_activity_module.module_id', $this->getIdsModulePermissions());
 
-                    $subquery->orWhere('sau_action_plans_activities.responsible_id', Auth::user()->id);
+                    $subquery->orWhere('sau_action_plans_activities.responsible_id', $this->user->id);
                 });
             }
         }
@@ -132,7 +131,7 @@ class ActionPlanController extends Controller
             DB::beginTransaction();
 
             ActionPlan::
-                    user(Auth::user())
+                    user($this->user)
                 ->module('actionPlans')
                 ->url(url('/'))
                 ->model($actionplan)
@@ -160,13 +159,13 @@ class ActionPlanController extends Controller
             ->join('sau_action_plans_activity_module', 'sau_action_plans_activity_module.activity_id', 'sau_action_plans_activities.id')
             ->join('sau_modules', 'sau_modules.id', 'sau_action_plans_activity_module.module_id');
 
-        if (!Auth::user()->hasRole('Superadmin'))
+        if (!$this->user->hasRole('Superadmin', $this->team))
         {
-            if (Auth::user()->hasRole('Arrendatario') || Auth::user()->hasRole('Contratista'))
+            if ($this->user->hasRole('Arrendatario', $this->team) || $this->user->hasRole('Contratista', $this->team))
             {
-                $contract = $this->getContractUser(Auth::user()->id);
+                $contract = $this->getContractUser($this->user->id);
                 $users = $this->getUsersContract($contract->id);
-                $users_list = [Auth::user()->id];
+                $users_list = [$this->user->id];
 
                 foreach ($users as $user)
                 {
@@ -183,7 +182,7 @@ class ActionPlanController extends Controller
 
                     $subquery->whereIn('sau_action_plans_activity_module.module_id', $this->getIdsModulePermissions());
 
-                    $subquery->orWhere('sau_action_plans_activities.responsible_id', Auth::user()->id);
+                    $subquery->orWhere('sau_action_plans_activities.responsible_id', $this->user->id);
                 });
             }
         }
@@ -217,10 +216,10 @@ class ActionPlanController extends Controller
 
             $isContract = false;
 
-            if (Auth::user()->hasRole('Arrendatario') || Auth::user()->hasRole('Contratista'))
+            if ($this->user->hasRole('Arrendatario', $this->team) || $this->user->hasRole('Contratista', $this->team))
                 $isContract = true;
 
-            ActionPlanExportJob::dispatch(Auth::user(), Session::get('company_id'), $filters, Auth::user()->hasRole('Superadmin'), $this->getIdsModulePermissions(), $isContract);
+            ActionPlanExportJob::dispatch($this->user, $this->company, $filters, $this->user->hasRole('Superadmin', $this->team), $this->getIdsModulePermissions(), $isContract);
         
             return $this->respondHttp200();
         } catch(Exception $e) {
@@ -235,19 +234,14 @@ class ActionPlanController extends Controller
                     CONCAT(sau_users.document, ' - ', sau_users.name) as name
                 ");
 
-        if (Auth::user()->hasRole('Arrendatario') || Auth::user()->hasRole('Contratista'))
+        if ($this->user->hasRole('Arrendatario', $this->team) || $this->user->hasRole('Contratista', $this->team))
         {
             $users->join('sau_user_information_contract_lessee', 'sau_user_information_contract_lessee.user_id', 'sau_users.id')
-                  ->where('sau_user_information_contract_lessee.information_id', $this->getContractIdUser(Auth::user()->id));
+                  ->where('sau_user_information_contract_lessee.information_id', $this->getContractIdUser($this->user->id));
         }
         else
         {
-            $users->withoutGlobalScopes()
-                ->join('sau_company_user', 'sau_company_user.user_id', 'sau_users.id')
-                ->join('sau_role_user', 'sau_role_user.user_id', 'sau_users.id')
-                ->join('sau_roles', 'sau_roles.id', 'sau_role_user.role_id')
-                ->where('sau_company_user.company_id', Session::get('company_id'))
-                ->whereRaw('(sau_roles.company_id = '.Session::get('company_id').' OR (sau_roles.company_id IS NULL AND sau_roles.name IN("Contratista", "Arrendatario") ) )');
+            $users->join('sau_company_user', 'sau_company_user.user_id', 'sau_users.id');
         }
 
         $users = $users->pluck('id', 'name');

@@ -10,11 +10,9 @@ use App\Models\General\Company;
 use App\Models\PreventiveOccupationalMedicine\Reinstatements\Check;
 use App\Http\Requests\PreventiveOccupationalMedicine\Reinstatements\CheckRequest;
 use App\Jobs\PreventiveOccupationalMedicine\Reinstatements\CheckExportJob;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use App\Traits\ConfigurableFormTrait;
 use Carbon\Carbon;
-use Session;
 use DB;
 use PDF;
 
@@ -27,12 +25,13 @@ class CheckController extends Controller
      */
     function __construct()
     {
+        parent::__construct();
         $this->middleware('auth');
-        $this->middleware('permission:reinc_checks_c', ['only' => 'store']);
-        $this->middleware('permission:reinc_checks_r');
-        $this->middleware('permission:reinc_checks_u', ['only' => 'update']);
-        $this->middleware('permission:reinc_checks_d', ['only' => 'destroy']);
-        $this->middleware('permission:reinc_checks_export', ['only' => 'export']);
+        $this->middleware("permission:reinc_checks_c, {$this->team}", ['only' => 'store']);
+        $this->middleware("permission:reinc_checks_r, {$this->team}");
+        $this->middleware("permission:reinc_checks_u, {$this->team}", ['only' => 'update']);
+        $this->middleware("permission:reinc_checks_d, {$this->team}", ['only' => 'destroy']);
+        $this->middleware("permission:reinc_checks_export, {$this->team}", ['only' => 'export']);
     }
 
     /**
@@ -131,8 +130,8 @@ class CheckController extends Controller
         {
             DB::beginTransaction();
 
-            $check = new Check(CheckManager::checkNullAttrs($request, Session::get('company_id')));
-            $check->company_id = Session::get('company_id');
+            $check = new Check(CheckManager::checkNullAttrs($request, $this->company));
+            $check->company_id = $this->company;
 
             if (!$check->save())
                 return $this->respondHttp500();
@@ -149,13 +148,13 @@ class CheckController extends Controller
                 return $this->respondHttp500();
             }
 
-            if (!CheckManager::saveTracing('App\Models\PreventiveOccupationalMedicine\Reinstatements\Tracing', $check, $request->new_tracing, Auth::user()))
+            if (!CheckManager::saveTracing('App\Models\PreventiveOccupationalMedicine\Reinstatements\Tracing', $check, $request->new_tracing, $this->user))
             {
                 $check->delete();
                 return $this->respondHttp500();
             }
 
-            if (!CheckManager::saveTracing('App\Models\PreventiveOccupationalMedicine\Reinstatements\LaborNotes', $check, $request->new_labor_notes, Auth::user()))
+            if (!CheckManager::saveTracing('App\Models\PreventiveOccupationalMedicine\Reinstatements\LaborNotes', $check, $request->new_labor_notes, $this->user))
             {
                 $check->delete();
                 return $this->respondHttp500();
@@ -214,7 +213,7 @@ class CheckController extends Controller
         {
             DB::beginTransaction();
 
-            $check->fill(CheckManager::checkNullAttrs($request, Session::get('company_id')));
+            $check->fill(CheckManager::checkNullAttrs($request, $this->company));
             
             if (!$check->save())
                 return $this->respondHttp500();
@@ -225,10 +224,10 @@ class CheckController extends Controller
             if (!CheckManager::saveLaborMonitoring($check, $request->labor_monitorings, true))
                 return $this->respondHttp500();
                 
-            if (!CheckManager::saveTracing('App\Models\PreventiveOccupationalMedicine\Reinstatements\Tracing', $check, $request->new_tracing, Auth::user(), $request->oldTracings))
+            if (!CheckManager::saveTracing('App\Models\PreventiveOccupationalMedicine\Reinstatements\Tracing', $check, $request->new_tracing, $this->user, $request->oldTracings))
                 return $this->respondHttp500();
 
-            if (!CheckManager::saveTracing('App\Models\PreventiveOccupationalMedicine\Reinstatements\LaborNotes', $check, $request->new_labor_notes, Auth::user(), $request->oldLaborNotes))
+            if (!CheckManager::saveTracing('App\Models\PreventiveOccupationalMedicine\Reinstatements\LaborNotes', $check, $request->new_labor_notes, $this->user, $request->oldLaborNotes))
                 return $this->respondHttp500();
 
             DB::commit();
@@ -278,7 +277,7 @@ class CheckController extends Controller
      */
     private function getCheckView(Check $check)
     {
-        $authUser = Auth::user();
+        $authUser = $this->user;
 
         $check->load([
             'employee',
@@ -377,7 +376,7 @@ class CheckController extends Controller
                 ->join('sau_employees', 'sau_employees.id', 'sau_reinc_checks.employee_id')
                 ->findOrFail($id);
 
-        return Storage::disk('public')->download('preventiveOccupationalMedicine/reinstatements/files/'.Session::get('company_id').'/'.$check->process_origin_file);
+        return Storage::disk('public')->download('preventiveOccupationalMedicine/reinstatements/files/'.$this->company.'/'.$check->process_origin_file);
     }
 
     public function downloadPclFile($id)
@@ -386,7 +385,7 @@ class CheckController extends Controller
                 ->join('sau_employees', 'sau_employees.id', 'sau_reinc_checks.employee_id')
                 ->findOrFail($id);
 
-        return Storage::disk('public')->download('preventiveOccupationalMedicine/reinstatements/files/'.Session::get('company_id').'/'.$check->process_pcl_file);
+        return Storage::disk('public')->download('preventiveOccupationalMedicine/reinstatements/files/'.$this->company.'/'.$check->process_pcl_file);
     }
 
     public function generateTracing(Request $request)
@@ -411,7 +410,7 @@ class CheckController extends Controller
         ->where('sau_reinc_checks.id', $request->check_id)
         ->first();
 
-        $company = Company::select('logo')->where('id', Session::get('company_id'))->first();
+        $company = Company::select('logo')->where('id', $this->company)->first();
         $new_date_tracing = $request->new_date_tracing ? (Carbon::createFromFormat('D M d Y', $request->new_date_tracing))->format('Y-m-d') : '';
 
         $data = [
@@ -450,13 +449,13 @@ class CheckController extends Controller
         ->where('sau_reinc_checks.id', $request->check_id)
         ->first();
             
-        $company = Company::select('logo')->where('id', Session::get('company_id'))->first();
+        $company = Company::select('logo')->where('id', $this->company)->first();
 
         $data = [
             'to' => $request->to,
             'from' => $request->from,
             'subject' => $request->subject, 
-            'user' => Auth::user()->name,
+            'user' => $this->user->name,
             'check' => $check,
             'firm' => $request->firm,
             'recommendations' => $this->replaceLast(',', ' y ', $request->selectedRecommendations),
@@ -624,7 +623,7 @@ class CheckController extends Controller
             'filtersType' => $filtersType
         ];
 
-        CheckExportJob::dispatch(Auth::user(), Session::get('company_id'), $filters);
+        CheckExportJob::dispatch($this->user, $this->company, $filters);
       
         return $this->respondHttp200();
       } catch(Exception $e) {

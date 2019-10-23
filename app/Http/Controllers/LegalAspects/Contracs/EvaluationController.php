@@ -6,7 +6,6 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Vuetable\Facades\Vuetable;
 use App\Http\Requests\LegalAspects\Contracts\EvaluationRequest;
-use Illuminate\Support\Facades\Auth;
 use App\Models\LegalAspects\Contracts\Evaluation;
 use App\Models\LegalAspects\Contracts\TypeRating;
 use App\Models\LegalAspects\Contracts\Interviewee;
@@ -15,7 +14,6 @@ use App\Models\LegalAspects\Contracts\Subobjective;
 use App\Models\LegalAspects\Contracts\Item;
 use App\Jobs\LegalAspects\Contracts\Evaluations\EvaluationExportJob;
 use Carbon\Carbon;
-use Session;
 use DB;
 
 class EvaluationController extends Controller
@@ -25,12 +23,13 @@ class EvaluationController extends Controller
      */
     function __construct()
     {
+        parent::__construct();
         $this->middleware('auth');
-        $this->middleware('permission:contracts_evaluations_c', ['only' => 'store']);
-        $this->middleware('permission:contracts_evaluations_r');
-        $this->middleware('permission:contracts_evaluations_u', ['only' => 'update']);
-        $this->middleware('permission:contracts_evaluations_d', ['only' => 'destroy']);
-        $this->middleware('permission:contracts_evaluations_export', ['only' => 'export']);
+        $this->middleware("permission:contracts_evaluations_c, {$this->team}", ['only' => 'store']);
+        $this->middleware("permission:contracts_evaluations_r, {$this->team}");
+        $this->middleware("permission:contracts_evaluations_u, {$this->team}", ['only' => 'update']);
+        $this->middleware("permission:contracts_evaluations_d, {$this->team}", ['only' => 'destroy']);
+        $this->middleware("permission:contracts_evaluations_export, {$this->team}", ['only' => 'export']);
     }
 
     private $typesRating = [];
@@ -97,8 +96,8 @@ class EvaluationController extends Controller
         try
         {
             $evaluation = new Evaluation($request->all());
-            $evaluation->company_id = Session::get('company_id');
-            $evaluation->creator_user_id = Auth::user()->id;
+            $evaluation->company_id = $this->company;
+            $evaluation->creator_user_id = $this->user->id;
 
             if(!$evaluation->save()){
                 return $this->respondHttp500();
@@ -410,7 +409,7 @@ class EvaluationController extends Controller
                 'filtersType' => $filtersType
             ];
 
-            EvaluationExportJob::dispatch(Auth::user(), Session::get('company_id'), $filters);
+            EvaluationExportJob::dispatch($this->user, $this->company, $filters);
         
             return $this->respondHttp200();
         } catch(Exception $e) {

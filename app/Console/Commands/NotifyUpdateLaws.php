@@ -52,9 +52,10 @@ class NotifyUpdateLaws extends Command
         {
             $users = User::select('sau_users.*')
                         ->active()
-                        ->join('sau_company_user', 'sau_company_user.user_id', 'sau_users.id')
-                        ->where('sau_company_user.company_id', $company->id)
-                        ->get();
+                        ->join('sau_company_user', 'sau_company_user.user_id', 'sau_users.id');
+
+            $users->company_scope = $company->id;
+            $users = $users->get();
 
             $users->map(function($user) use ($company)
             {

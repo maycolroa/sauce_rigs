@@ -4,7 +4,6 @@ namespace App\Http\Controllers\PreventiveOccupationalMedicine\BiologicalMonitori
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
 use App\Inform\PreventiveOccupationalMedicine\BiologicalMonitoring\MusculoskeletalAnalysis\InformManagerMusculoskeletalAnalysis;
 use App\Inform\PreventiveOccupationalMedicine\BiologicalMonitoring\MusculoskeletalAnalysis\InformIndividualManagerMusculoskeletalAnalysis;
@@ -16,8 +15,9 @@ class MusculoskeletalAnalysisInformController extends Controller
      */
     function __construct()
     {
+        parent::__construct();
         $this->middleware('auth');
-        $this->middleware('permission:biologicalMonitoring_musculoskeletalAnalysis_r', ['only' => 'data']);
+        $this->middleware("permission:biologicalMonitoring_musculoskeletalAnalysis_r, {$this->team}", ['only' => 'data']);
     }
 
     /**

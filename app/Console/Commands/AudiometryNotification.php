@@ -76,24 +76,29 @@ class AudiometryNotification extends Command
                 {
                     $recipients = User::select('sau_users.email')
                                 ->active()
-                                ->join('sau_company_user', 'sau_company_user.user_id', 'sau_users.id')
-                                ->where('sau_company_user.company_id', $key)->get();
+                                ->join('sau_company_user', 'sau_company_user.user_id', 'sau_users.id');
+
+                    $recipients->company_scope = $key;
+                    $recipients = $recipients->get();
                     
-                    $nameExcel = 'export/1/audiometrias_notificacion_'.date("YmdHis").'.xlsx';
-                    Excel::store(new AudiometryExcel(new Collection($value)),$nameExcel,'public',\Maatwebsite\Excel\Excel::XLSX);
-                    
-                    $paramUrl = base64_encode($nameExcel);
-                
-                    NotificationMail::
-                        subject('Notificación de las audiometrias')
-                        ->recipients($recipients)
-                        ->message('Lista de empleados que sufrierón una degradación en los resultados de sus audiometrias para el dia de ayer')
-                        ->subcopy('Este link es valido por 24 horas')
-                        ->buttons([['text'=>'Descargar', 'url'=>url("/export/{$paramUrl}")]])
-                        ->module('biologicalMonitoring/audiometry')
-                        ->event('Tarea programada: AudiometryNotification')
-                        ->company($key)
-                        ->send();
+                    if (!empty($recipients))
+                    {
+                        $nameExcel = 'export/1/audiometrias_notificacion_'.date("YmdHis").'.xlsx';
+                        Excel::store(new AudiometryExcel(new Collection($value)),$nameExcel,'public',\Maatwebsite\Excel\Excel::XLSX);
+                        
+                        $paramUrl = base64_encode($nameExcel);
+
+                        NotificationMail::
+                            subject('Notificación de las audiometrias')
+                            ->recipients($recipients)
+                            ->message('Lista de empleados que sufrierón una degradación en los resultados de sus audiometrias para el dia de ayer')
+                            ->subcopy('Este link es valido por 24 horas')
+                            ->buttons([['text'=>'Descargar', 'url'=>url("/export/{$paramUrl}")]])
+                            ->module('biologicalMonitoring/audiometry')
+                            ->event('Tarea programada: AudiometryNotification')
+                            ->company($key)
+                            ->send();
+                    }
                 }
             }
         }
