@@ -5,67 +5,80 @@
             {
                 "name": "users",
                 "display_name": "Usuarios",
-                "main": "NO"
+                "main": "NO",
+                "logo": null
             },
             {
                 "name": "roles",
                 "display_name": "Roles",
-                "main": "NO"
+                "main": "NO",
+                "logo": null
             },
             {
                 "name": "positions",
                 "display_name": "Cargos",
-                "main": "NO"
+                "main": "NO",
+                "logo": null
             },
             {
                 "name": "regionals",
                 "display_name": "Regionales",
-                "main": "NO"
+                "main": "NO",
+                "logo": null
             },
             {
                 "name": "businesses",
                 "display_name": "Centro de costos",
-                "main": "NO"
+                "main": "NO",
+                "logo": null
             },
             {
                 "name": "headquarters",
                 "display_name": "Sedes",
-                "main": "NO"
+                "main": "NO",
+                "logo": null
             },
             {
                 "name": "areas",
                 "display_name": "Áreas",
-                "main": "NO"
+                "main": "NO",
+                "logo": null
             },
             {
                 "name": "processes",
                 "display_name": "Procesos",
-                "main": "NO"
+                "main": "NO",
+                "logo": null
             },
             {
                 "name": "employees",
                 "display_name": "Empleados",
-                "main": "NO"
+                "main": "NO",
+                "logo": null
             },
             {
                 "name": "configurations",
                 "display_name": "Configuraciones",
-                "main": "NO"
+                "main": "NO",
+                "logo": null
             },
             {
                 "name": "actionPlans",
                 "display_name": "Planes de acción",
-                "main": "NO"
+                "main": "NO",
+                "logo": null
             },
             {
                 "name": "logos",
                 "display_name": "Configurar Logo",
-                "main": "NO"
+                "main": "NO",
+                "logo": null
             },
             {
                 "name": "customLabels",
                 "display_name": "Configurar Etiquetas",
-                "main": "NO"
+                "main": "NO",
+                "logo": null
             }
         ]
     },
@@ -75,22 +88,26 @@
             {
                 "name": "activities",
                 "display_name": "Actividades",
-                "main": "NO"
+                "main": "NO",
+                "logo": null
             },
             {
                 "name": "dangers",
                 "display_name": "Peligros",
-                "main": "NO"
+                "main": "NO",
+                "logo": null
             },
             {
                 "name": "dangerMatrix",
                 "display_name": "Matriz de peligros",
-                "main": "SI"
+                "main": "SI",
+                "logo": null
             },
             {
                 "name": "dangerousConditions",
                 "display_name": "Condiciones peligrosas",
-                "main": "SI"
+                "main": "SI",
+                "logo": null
             }
         ]
     },
@@ -105,22 +122,26 @@
             {
                 "name": "biologicalMonitoring/audiometry",
                 "display_name": "Monitoreo Biológico/Audiometría",
-                "main": "SI"
+                "main": "SI",
+                "logo": null
             },
             {
                 "name": "biologicalMonitoring/musculoskeletalAnalysis",
                 "display_name": "Monitoreo Biológico/Análisis Osteomuscular",
-                "main": "SI"
+                "main": "SI",
+                "logo": null
             },
             {
                 "name": "reinstatements",
                 "display_name": "Reincorporaciones",
-                "main": "SI"
+                "main": "SI",
+                "logo": null
             },
             {
                 "name": "absenteeism",
                 "display_name": "Ausentismo",
-                "main": "SI"
+                "main": "SI",
+                "logo": null
             }
         ]
     },
@@ -140,12 +161,14 @@
             {
                 "name": "contracts",
                 "display_name": "Contratistas",
-                "main": "SI"
+                "main": "SI",
+                "logo": "contracts.png"
             },
             {
                 "name": "legalMatrix",
                 "display_name": "Matriz Legal",
-                "main": "SI"
+                "main": "SI",
+                "logo": "legalmatrix.png"
             }
         ]
     },
@@ -155,17 +178,26 @@
             {
                 "name": "licenses",
                 "display_name": "Licencias",
-                "main": "NO"
+                "main": "NO",
+                "logo": null
             },
             {
                 "name": "logMails",
                 "display_name": "Supervisar Correos",
-                "main": "NO"
+                "main": "NO",
+                "logo": null
             },
             {
                 "name": "labels",
                 "display_name": "Administrar Labels",
-                "main": "NO"
+                "main": "NO",
+                "logo": null
+            },
+            {
+                "name": "companies",
+                "display_name": "Compañias",
+                "main": "NO",
+                "logo": null
             }
         ]
     }

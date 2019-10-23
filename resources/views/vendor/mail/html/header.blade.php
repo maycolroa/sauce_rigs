@@ -10,7 +10,12 @@
                     </td>
                     <td style="width: 50%; padding: 10px">
                         <center>
-                            {{ $slot }}
+                            <div style="font-family: sans-serif; font-size: 30px; text-decoration: underline; text-underline-position: under; color: #faf5f5; text-transform: uppercase;">
+                                @isset($logo) 
+                                    <img src="{{ 'https://sauce.rigs.com.co/images/'.$logo }}" style="width: 80px !important;vertical-align: middle;"> 
+                                @endisset
+                                 {{ $title }}
+                            </div>
                         </center>
                     </td>
                 </tr>

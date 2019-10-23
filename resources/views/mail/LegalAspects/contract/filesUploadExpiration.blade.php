@@ -1,4 +1,4 @@
-@component('mail::message')
+@component('mail::message', ['module' => $mail->module])
 
 <h2>Hola</h2>
 

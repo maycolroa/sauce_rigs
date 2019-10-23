@@ -39,6 +39,11 @@ a img {
     border: none;
 }
 
+b {
+    text-decoration: underline;
+    color: #f0635f;
+}
+
 /* Typography */
 
 h1 {

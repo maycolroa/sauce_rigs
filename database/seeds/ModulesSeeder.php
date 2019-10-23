@@ -44,6 +44,7 @@ class ModulesSeeder extends Seeder
                                     $data = [
                                         "name" 	         => $item["name"],
                                         "display_name" 	 => $item["display_name"],
+                                        "logo"           => $item["logo"],
                                         "application_id" => $app->id,
                                         "main"           => $item["main"],
                                         "created_at" 	 => date("Y-m-d H:i:s")
@@ -57,6 +58,7 @@ class ModulesSeeder extends Seeder
                                     $mod->update([
                                         "name" 	         => $item["name"],
                                         "display_name" 	 => $item["display_name"],
+                                        "logo"           => $item["logo"],
                                         "main"           => $item["main"]
                                     ]);
                                 }

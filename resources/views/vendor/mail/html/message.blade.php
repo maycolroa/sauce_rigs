@@ -2,6 +2,18 @@
     {{-- Header --}}
     @slot('header')
         @component('mail::header')
+            @isset($module)
+                @if($module->isMain())
+                    @if($module->logo)
+                        @slot('logo')
+                            {{ $module->logo }}
+                        @endslot
+                    @endif
+                    @slot('title')
+                     {{ $module->display_name }}
+                    @endslot
+                @endif
+            @endisset
         @endcomponent
     @endslot
 
