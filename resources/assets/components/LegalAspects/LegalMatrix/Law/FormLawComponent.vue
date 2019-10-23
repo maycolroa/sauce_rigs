@@ -85,6 +85,17 @@
                 </div>
               </div>
             </b-form-row>
+            <b-form-row>
+              <div class="col-md-12" v-if="!viewOnly && form.articles && form.articles.length > 0">
+                <div class="col-md-12">
+                  <vue-ajax-advanced-select :disabled="viewOnly" class="col-md-12" v-model="add_interests" name="add_interests" label="Agregar intereses a todos los artículos" placeholder="Seleccione los intereses" :url="urlDataInterests" :multiple="true" :allowEmpty="true">
+                    </vue-ajax-advanced-select>
+                </div>
+                <div class="col-md-12">
+                  <center><b-btn variant="primary" @click.prevent="addInterests()" :disabled="loading">Agregar Intereses</b-btn></center>
+                </div>
+              </div>
+            </b-form-row>
             <b-form-row style="padding-top: 15px;">
               <b-form-feedback class="d-block" v-if="form.errorsFor(`articles`)" style="padding-bottom: 10px;">
                 {{ form.errorsFor(`articles`) }}
@@ -242,7 +253,7 @@ export default {
           repealed: '',
           file: '',
           articles: [],
-          delete: []
+          delete: [],
         };
       }
     }
@@ -267,7 +278,8 @@ export default {
   data() {
     return {
         loading: this.isEdit,
-        form: Form.makeFrom(this.law, this.method)
+        form: Form.makeFrom(this.law, this.method),
+        add_interests: []
     };
   },
   methods: {
@@ -310,7 +322,8 @@ export default {
             repealed: 'NO',
             sequence: this.form.articles.length + 1,
             new_sequence: this.form.articles.length + 1,
-            interests_id: []
+            interests_id: [],
+            multiselect_interests: []
         })
     },
     removeArticle(index)
@@ -346,7 +359,44 @@ export default {
 		},
 		hideModal(ref) {
 			this.$refs[ref][0].hide()
-		},
+    },
+    findValue(interests, search) {
+
+      let list = [];
+    
+      _.forIn(interests, (interest, key) => {
+        list.push(interest.value);
+      });
+
+      return list.includes(search);
+    },
+    addInterests()
+    {
+      if (this.add_interests.length > 0)
+      {
+        this.loading = true;
+
+        _.forIn(this.form.articles, (article, key) => {
+
+            _.forIn(this.add_interests, (interest2, key3) => {
+
+              if (!this.findValue(article.interests_id, interest2.value))
+              {
+                article.interests_id.push({
+                  name: interest2.name,
+                  value: interest2.value
+                });
+              }
+            });
+
+            article.multiselect_interests = article.interests_id;
+        });
+
+        this.add_interests.splice(0);
+
+        this.loading = false;
+      }
+    },
   }
 };
 </script>
