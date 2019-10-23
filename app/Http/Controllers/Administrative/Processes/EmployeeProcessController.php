@@ -18,11 +18,12 @@ class EmployeeProcessController extends Controller
      */
     function __construct()
     {
+        parent::__construct();
         $this->middleware('auth');
-        $this->middleware('permission:processes_c', ['only' => 'store']);
-        $this->middleware('permission:processes_r', ['except' =>'multiselect']);
-        $this->middleware('permission:processes_u', ['only' => 'update']);
-        $this->middleware('permission:processes_d', ['only' => 'destroy']);
+        $this->middleware("permission:processes_c, {$this->team}", ['only' => 'store']);
+        $this->middleware("permission:processes_r, {$this->team}", ['except' =>'multiselect']);
+        $this->middleware("permission:processes_u, {$this->team}", ['only' => 'update']);
+        $this->middleware("permission:processes_d, {$this->team}", ['only' => 'destroy']);
     }
     
     /**

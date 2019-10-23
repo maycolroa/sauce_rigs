@@ -7,7 +7,6 @@ use App\Http\Controllers\Controller;
 use App\Vuetable\Facades\Vuetable;
 use App\Models\IndustrialSecure\Activities\Activity;
 use App\Http\Requests\IndustrialSecure\Activities\ActivityRequest;
-use Session;
 
 class ActivityController extends Controller
 {
@@ -16,11 +15,12 @@ class ActivityController extends Controller
      */
     function __construct()
     {
+        parent::__construct();
         $this->middleware('auth');
-        $this->middleware('permission:activities_c', ['only' => 'store']);
-        $this->middleware('permission:activities_r', ['except' =>'multiselect']);
-        $this->middleware('permission:activities_u', ['only' => 'update']);
-        $this->middleware('permission:activities_d', ['only' => 'destroy']);
+        $this->middleware("permission:activities_c, {$this->team}", ['only' => 'store']);
+        $this->middleware("permission:activities_r, {$this->team}", ['except' =>'multiselect']);
+        $this->middleware("permission:activities_u, {$this->team}", ['only' => 'update']);
+        $this->middleware("permission:activities_d, {$this->team}", ['only' => 'destroy']);
     }
 
     /**
@@ -55,7 +55,7 @@ class ActivityController extends Controller
     public function store(ActivityRequest $request)
     {
         $activity = new Activity($request->all());
-        $activity->company_id = Session::get('company_id');
+        $activity->company_id = $this->company;
         
         if(!$activity->save()){
             return $this->respondHttp500();

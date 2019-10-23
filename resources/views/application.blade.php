@@ -34,7 +34,7 @@
     </div>
 
     <script>
-        var authGlobal = @json(['can' => Auth::user()->can, 'hasRole' => Auth::user()->hasRole]);
+        var authGlobal = @json(['can' => Auth::user()->getCan(), 'hasRole' => Auth::user()->getHasRole()]);
 
         var keywords = @json(Auth::user()->keywords);
     </script>

@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Traits\ResponseTrait;
 use App\Traits\ContractTrait;
 use App\Models\Administrative\Users\User;
+use App\Models\General\Team;
 use Carbon\Carbon;
 use Session;
 use DB;
@@ -67,8 +68,9 @@ class LoginController extends Controller
                         if (COUNT($license) > 0)
                         {
                             Session::put('company_id', $val->pivot->company_id);
-
-                            if (Auth::user()->hasRole('Arrendatario') || Auth::user()->hasRole('Contratista'))
+                            $team = Team::where('name', Session::get('company_id'))->first()->id;
+                            
+                            if (Auth::user()->hasRole('Arrendatario', $team) || Auth::user()->hasRole('Contratista', $team))
                             {
                                 $contract = $this->getContractUser(Auth::user()->id);
 

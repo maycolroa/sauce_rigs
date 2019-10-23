@@ -20,11 +20,9 @@ use App\Models\IndustrialSecure\DangerMatrix\TagsParticipant;
 use App\Models\IndustrialSecure\DangerMatrix\TagsDangerDescription;
 use App\Models\IndustrialSecure\DangerMatrix\ChangeHistory;
 use App\Jobs\IndustrialSecure\DangerMatrix\DangerMatrixExportJob;
-use Illuminate\Support\Facades\Auth;
 use App\Facades\ActionPlans\Facades\ActionPlan;
 use App\Traits\DangerMatrixTrait;
 use Carbon\Carbon;
-use Session;
 use Validator;
 use DB;
 
@@ -37,11 +35,12 @@ class DangerMatrixController extends Controller
      */
     function __construct()
     {
+        parent::__construct();
         $this->middleware('auth');
-        $this->middleware('permission:dangerMatrix_c', ['only' => 'store']);
-        $this->middleware('permission:dangerMatrix_r');
-        $this->middleware('permission:dangerMatrix_u', ['only' => 'update']);
-        $this->middleware('permission:dangerMatrix_d', ['only' => 'destroy']);
+        $this->middleware("permission:dangerMatrix_c, {$this->team}", ['only' => 'store']);
+        $this->middleware("permission:dangerMatrix_r, {$this->team}");
+        $this->middleware("permission:dangerMatrix_u, {$this->team}", ['only' => 'update']);
+        $this->middleware("permission:dangerMatrix_d, {$this->team}", ['only' => 'destroy']);
     }
 
     /**
@@ -235,7 +234,7 @@ class DangerMatrixController extends Controller
             $id = $dangerMatrix->id;
 
         $rules = [
-            'name' => 'nullable|string|unique:sau_dangers_matrix,name,'.$id.',id,company_id,'.Session::get('company_id'),
+            'name' => 'nullable|string|unique:sau_dangers_matrix,name,'.$id.',id,company_id,'.$this->company,
             'participants' => 'nullable|array',
             'activities' => 'required|array',
             'activities.*.activity_id' => 'required|exists:sau_dm_activities,id',
@@ -303,7 +302,7 @@ class DangerMatrixController extends Controller
                 $msg = 'Se actualizo la matriz de peligro';
 
                 $dangerMatrix->histories()->create([
-                    'user_id' => Auth::user()->id,
+                    'user_id' => $this->user->id,
                     'description' => $request->get('changeHistory')
                 ]);
             }
@@ -311,8 +310,8 @@ class DangerMatrixController extends Controller
             {
                 $msg = 'Se creo la matriz de peligro';
                 $dangerMatrix = new DangerMatrix();
-                $dangerMatrix->company_id = Session::get('company_id');
-                $dangerMatrix->user_id = Auth::user()->id;
+                $dangerMatrix->company_id = $this->company;
+                $dangerMatrix->user_id = $this->user->id;
             }
 
             $dangerMatrix->name = $request->get('name');
@@ -344,7 +343,7 @@ class DangerMatrixController extends Controller
             //Se inician los atributos necesarios que seran estaticos para todas las actividades
             // De esta forma se evitar la asignacion innecesaria una y otra vez 
             ActionPlan::
-                    user(Auth::user())
+                    user($this->user)
                 ->module('dangerMatrix')
                 ->regional($dangerMatrix->regional ? $dangerMatrix->regional->name : null)
                 ->headquarter($dangerMatrix->headquarter ? $dangerMatrix->headquarter->name : null)
@@ -502,7 +501,7 @@ class DangerMatrixController extends Controller
             DB::commit();
 
         } catch (\Exception $e) {
-            \Log::info($e);
+            //\Log::info($e);
             //$msg = $e->getMessage();
             DB::rollback();
             return $this->respondHttp500();
@@ -551,7 +550,7 @@ class DangerMatrixController extends Controller
     {
         try
         {
-            DangerMatrixExportJob::dispatch(Auth::user(), Session::get('company_id'), $dangersMatrix->id);
+            DangerMatrixExportJob::dispatch($this->user, $this->company, $dangersMatrix->id);
 
             return $this->respondHttp200();
         } catch(Exception $e) {

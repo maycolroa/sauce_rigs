@@ -9,10 +9,8 @@ use App\Models\Administrative\Employees\Employee;
 use App\Http\Requests\Administrative\Employees\EmployeeRequest;
 use App\Exports\Administrative\Employees\EmployeeImportTemplate;
 use App\Jobs\Administrative\Employees\EmpployeeImportJob;
-use Illuminate\Support\Facades\Auth;
 use Maatwebsite\Excel\Facades\Excel;
 use Carbon\Carbon;
-use Session;
 use Datetime;
 
 class EmployeesController extends Controller
@@ -22,11 +20,12 @@ class EmployeesController extends Controller
      */
     function __construct()
     {
+        parent::__construct();
         $this->middleware('auth');
-        $this->middleware('permission:employees_c', ['only' => ['store', 'import', 'downloadTemplateImport']]);
-        $this->middleware('permission:employees_r', ['except' =>'multiselect']);
-        $this->middleware('permission:employees_u', ['only' => 'update']);
-        $this->middleware('permission:employees_d', ['only' => 'destroy']);
+        $this->middleware("permission:employees_c, {$this->team}", ['only' => ['store', 'import', 'downloadTemplateImport']]);
+        $this->middleware("permission:employees_r, {$this->team}", ['except' =>'multiselect']);
+        $this->middleware("permission:employees_u, {$this->team}", ['only' => 'update']);
+        $this->middleware("permission:employees_d, {$this->team}", ['only' => 'destroy']);
     }
 
     /**
@@ -79,7 +78,7 @@ class EmployeesController extends Controller
     public function store(EmployeeRequest $request)
     {
         $employee = new Employee($request->all());
-        $employee->company_id = Session::get('company_id');
+        $employee->company_id = $this->company;
         $employee->income_date = (Carbon::createFromFormat('D M d Y',$employee->income_date))->format('Ymd');
 
         if ($employee->date_of_birth)
@@ -251,7 +250,7 @@ class EmployeesController extends Controller
     {
       try
       {
-        EmpployeeImportJob::dispatch($request->file, Session::get('company_id'), Auth::user());
+        EmpployeeImportJob::dispatch($request->file, $this->company, $this->user);
       
         return $this->respondHttp200();
 

@@ -7,7 +7,6 @@ use App\Http\Controllers\Controller;
 use App\Vuetable\Facades\Vuetable;
 use App\Models\Administrative\Headquarters\EmployeeHeadquarter;
 use App\Http\Requests\Administrative\Headquarters\HeadquarterRequest;
-use Session;
 
 class EmployeeHeadquarterController extends Controller
 {
@@ -16,11 +15,12 @@ class EmployeeHeadquarterController extends Controller
      */
     function __construct()
     {
+        parent::__construct();
         $this->middleware('auth');
-        $this->middleware('permission:headquarters_c', ['only' => 'store']);
-        $this->middleware('permission:headquarters_r', ['except' =>'multiselect']);
-        $this->middleware('permission:headquarters_u', ['only' => 'update']);
-        $this->middleware('permission:headquarters_d', ['only' => 'destroy']);
+        $this->middleware("permission:headquarters_c, {$this->team}", ['only' => 'store']);
+        $this->middleware("permission:headquarters_r, {$this->team}", ['except' =>'multiselect']);
+        $this->middleware("permission:headquarters_u, {$this->team}", ['only' => 'update']);
+        $this->middleware("permission:headquarters_d, {$this->team}", ['only' => 'destroy']);
     }
 
     /**

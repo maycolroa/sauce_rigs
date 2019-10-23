@@ -7,7 +7,6 @@ use App\Http\Controllers\Controller;
 use App\Vuetable\Facades\Vuetable;
 use App\Models\LegalAspects\LegalMatrix\RiskAspect;
 use App\Http\Requests\LegalAspects\LegalMatrix\RiskAspectRequest;
-use Session;
 
 class RiskAspectController extends Controller
 {
@@ -16,11 +15,12 @@ class RiskAspectController extends Controller
      */
     function __construct()
     {
+        parent::__construct();
         $this->middleware('auth');
-        $this->middleware('permission:risksAspects_c', ['only' => 'store']);
-        $this->middleware('permission:risksAspects_r', ['except' =>'multiselect']);
-        $this->middleware('permission:risksAspects_u', ['only' => 'update']);
-        $this->middleware('permission:risksAspects_d', ['only' => 'destroy']);
+        $this->middleware("permission:risksAspects_c, {$this->team}", ['only' => 'store']);
+        $this->middleware("permission:risksAspects_r, {$this->team}", ['except' =>'multiselect']);
+        $this->middleware("permission:risksAspects_u, {$this->team}", ['only' => 'update']);
+        $this->middleware("permission:risksAspects_d, {$this->team}", ['only' => 'destroy']);
     }
 
     /**

@@ -12,8 +12,6 @@ use App\Jobs\PreventiveOccupationalMedicine\BiologicalMonitoring\AudiometryExpor
 use App\Jobs\PreventiveOccupationalMedicine\BiologicalMonitoring\AudiometryImportJob;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\PreventiveOccupationalMedicine\BiologicalMonitoring\AudiometryImportTemplate;
-use Illuminate\Support\Facades\Auth;
-use Session;
 use App\Traits\AudiometryTrait;
 
 class AudiometryController extends Controller
@@ -23,11 +21,12 @@ class AudiometryController extends Controller
      */
     function __construct()
     {
+        parent::__construct();
         $this->middleware('auth');
-        $this->middleware('permission:biologicalMonitoring_audiometry_c', ['only' => ['store', 'import', 'downloadTemplateImport']]);
-        $this->middleware('permission:biologicalMonitoring_audiometry_r');
-        $this->middleware('permission:biologicalMonitoring_audiometry_u', ['only' => 'update']);
-        $this->middleware('permission:biologicalMonitoring_audiometry_d', ['only' => 'destroy']);
+        $this->middleware("permission:biologicalMonitoring_audiometry_c, {$this->team}", ['only' => ['store', 'import', 'downloadTemplateImport']]);
+        $this->middleware("permission:biologicalMonitoring_audiometry_r, {$this->team}");
+        $this->middleware("permission:biologicalMonitoring_audiometry_u, {$this->team}", ['only' => 'update']);
+        $this->middleware("permission:biologicalMonitoring_audiometry_d, {$this->team}", ['only' => 'destroy']);
     }
 
     use AudiometryTrait;
@@ -236,7 +235,7 @@ class AudiometryController extends Controller
             'filtersType' => $filtersType
         ];
 
-        AudiometryExportJob::dispatch(Auth::user(), Session::get('company_id'), $filters);
+        AudiometryExportJob::dispatch($this->user, $this->company, $filters);
       
         return $this->respondHttp200();
       } catch(Exception $e) {
@@ -253,7 +252,7 @@ class AudiometryController extends Controller
     public function import(Request $request)
     {
       try{
-       AudiometryImportJob::dispatch($request->file, Session::get('company_id'), Auth::user());
+       AudiometryImportJob::dispatch($request->file, $this->company, $this->user);
       
        return $this->respondHttp200();
       }catch(Exception $e){

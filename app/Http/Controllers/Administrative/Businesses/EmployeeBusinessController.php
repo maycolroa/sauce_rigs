@@ -7,7 +7,6 @@ use App\Http\Controllers\Controller;
 use App\Vuetable\Facades\Vuetable;
 use App\Models\Administrative\Business\EmployeeBusiness;
 use App\Http\Requests\Administrative\Businesses\BusinessRequest;
-use Session;
 
 class EmployeeBusinessController extends Controller
 {
@@ -16,11 +15,12 @@ class EmployeeBusinessController extends Controller
      */
     function __construct()
     {
+        parent::__construct();
         $this->middleware('auth');
-        $this->middleware('permission:businesses_c', ['only' => 'store']);
-        $this->middleware('permission:businesses_r', ['except' =>'multiselect']);
-        $this->middleware('permission:businesses_u', ['only' => 'update']);
-        $this->middleware('permission:businesses_d', ['only' => 'destroy']);
+        $this->middleware("permission:businesses_c, {$this->team}", ['only' => 'store']);
+        $this->middleware("permission:businesses_r, {$this->team}", ['except' =>'multiselect']);
+        $this->middleware("permission:businesses_u, {$this->team}", ['only' => 'update']);
+        $this->middleware("permission:businesses_d, {$this->team}", ['only' => 'destroy']);
     }
 
     /**
@@ -55,7 +55,7 @@ class EmployeeBusinessController extends Controller
     public function store(BusinessRequest $request)
     {
         $business = new EmployeeBusiness($request->all());
-        $business->company_id = Session::get('company_id');
+        $business->company_id = $this->company;
         
         if(!$business->save()){
             return $this->respondHttp500();

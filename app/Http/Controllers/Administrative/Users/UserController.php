@@ -11,14 +11,13 @@ use App\Http\Requests\Administrative\Users\DefaultModuleRequest;
 use App\Models\Administrative\Users\User;
 use App\Models\Administrative\Roles\Role;
 use App\Models\General\Module;
+use App\Models\General\Team;
 use App\Traits\UserTrait;
 use App\Traits\ContractTrait;
 use App\Traits\PermissionTrait;
 use App\Jobs\Administrative\Users\UserExportJob;
-use Session;
 use Validator;
 use Hash;
-use Illuminate\Support\Facades\Auth;
 use DB;
 
 class UserController extends Controller
@@ -32,11 +31,12 @@ class UserController extends Controller
      */
     function __construct()
     {
+        parent::__construct();
         $this->middleware('auth');
-        $this->middleware('permission:users_c', ['only' => 'store']);
-        $this->middleware('permission:users_r', ['except' =>'multiselect']);
-        $this->middleware('permission:users_u', ['only' => 'update']);
-        //$this->middleware('permission:users_d', ['only' => 'destroy']);
+        $this->middleware("permission:users_c, {$this->team}", ['only' => 'store']);
+        $this->middleware("permission:users_r, {$this->team}", ['except' =>'multiselect']);
+        $this->middleware("permission:users_u, {$this->team}", ['only' => 'update']);
+        //$this->middleware("permission:users_d, {$this->team}", ['only' => 'destroy']);
     }
     
     /**
@@ -56,7 +56,7 @@ class UserController extends Controller
     */
    public function data(Request $request)
    {    
-        if (Auth::user()->hasRole('Arrendatario') || Auth::user()->hasRole('Contratista'))
+        if ($this->user->hasRole('Arrendatario', $this->team) || $this->user->hasRole('Contratista', $this->team))
         {
             $users = User::select(
                     'sau_users.id AS id',
@@ -67,10 +67,12 @@ class UserController extends Controller
                     'sau_users.active AS active'
                 )
                 ->join('sau_user_information_contract_lessee', 'sau_user_information_contract_lessee.user_id', 'sau_users.id')
-                ->where('sau_user_information_contract_lessee.information_id', $this->getContractIdUser(Auth::user()->id));
+                ->where('sau_user_information_contract_lessee.information_id', $this->getContractIdUser($this->user->id));
         }
         else
         {
+            $team = $this->team;
+            
             $users = User::select(
                 'sau_users.id AS id',
                 'sau_users.name AS name',
@@ -78,19 +80,30 @@ class UserController extends Controller
                 'sau_users.document AS document',
                 'sau_users.document_type AS document_type',
                 'sau_users.active AS active',
-                'sau_roles.name as role'
+                DB::raw('GROUP_CONCAT(sau_roles.name) AS role')
             )
-            ->withoutGlobalScopes()
             ->join('sau_company_user', 'sau_company_user.user_id', 'sau_users.id')
-            ->join('sau_role_user', 'sau_role_user.user_id', 'sau_users.id')
-            ->join('sau_roles', 'sau_roles.id', 'sau_role_user.role_id')
-            ->where('sau_company_user.company_id', Session::get('company_id'))
-            ->whereRaw('(sau_roles.company_id = '.Session::get('company_id').' OR (sau_roles.company_id IS NULL AND sau_roles.name IN("Contratista", "Arrendatario") ) )');
+            ->leftJoin('sau_role_user', function($q) use ($team) { 
+                $q->on('sau_role_user.user_id', '=', 'sau_users.id')
+                  ->on('sau_role_user.team_id', '=', DB::raw($team));
+            })
+            ->leftJoin('sau_roles', 'sau_roles.id', 'sau_role_user.role_id')
+            ->groupBy('sau_users.id');
         }
 
        return Vuetable::of($users)
                 ->addColumn('administrative-users-edit', function ($user) {
-                    return $user->id != Auth::user()->id; 
+                    $isSuper = $this->user->hasRole('Superadmin', $this->team);
+
+                    if ($user->id != $this->user->id)
+                    {
+                        if ($isSuper)
+                            return true;
+                        else 
+                            return !$user->hasRole('Superadmin', $this->team);
+                    }
+
+                    return false; 
                 })
                 /*->addColumn('control_delete', function ($user) {
                     return $user->id != Auth::user()->id; 
@@ -116,14 +129,20 @@ class UserController extends Controller
                 return $this->respondHttp500();
             }
 
-            if (Auth::user()->hasRole('Arrendatario') || Auth::user()->hasRole('Contratista'))
+            if ($this->user->hasRole('Arrendatario', $this->team) || $this->user->hasRole('Contratista', $this->team))
             {
-                $user->syncRoles([Auth::user()->roleUser[0]]);
-                $contract = $this->getContractUser(Auth::user()->id);
+                $role = $this->user->hasRole('Arrendatario', $this->team) ? 'Arrendatario' : 'Contratista';
+                $role = Role::defined()->where($role)->first();
+
+                $user->attachRole($role, $this->team);
+                $contract = $this->getContractUser($this->user->id);
                 $contract->users()->attach($user);
             }
             else
-                $user->syncRoles([$request->get('role_id')]);
+            {
+                $roles = $this->getDataFromMultiselect($request->role_id);
+                $user->attachRoles($roles, $this->team);
+            }
 
             if ($request->has('filter_headquarter'))
             {
@@ -159,7 +178,7 @@ class UserController extends Controller
 
         foreach ($data as $value)
         {
-            $result[$value] = ['company_id' => Session::get('company_id')];
+            $result[$value] = ['company_id' => $this->company];
         }
 
         return $result;
@@ -177,29 +196,20 @@ class UserController extends Controller
             
         try
         {
-            $role = Role::withoutGlobalScopes()
-                ->join('sau_role_user', 'sau_role_user.role_id', 'sau_roles.id')
-                ->where('sau_roles.company_id', Session::get('company_id'))
-                ->where('sau_role_user.user_id', $user->id)
-                ->first();
-
-            if ($role)
-            {
-                $user->multiselect_role = $role->multiselect();
-                $user->role_id = $role->id;
-                $user->old_role_id = $role->id;
-            }
-
-            if (!$user->role_id)
+            if ($user->hasRole('Arrendatario', $this->team) || $user->hasRole('Contratista', $this->team))
                 $user->edit_role = false;
             else
+            {
                 $user->edit_role = true;
+                $user->role_id = $user->multiselectRoles($this->team);
+                $user->multiselect_role = $user->role_id;
+            }
 
             $headquarters = [];
 
             foreach ($user->headquarters as $key => $value)
             {   
-                if ($value->pivot->company_id == Session::get('company_id'))
+                if ($value->pivot->company_id == $this->company)
                     array_push($headquarters, $value->multiselect());
             }
 
@@ -210,7 +220,7 @@ class UserController extends Controller
 
             foreach ($user->systemsApply as $key => $value)
             {                
-                if ($value->pivot->company_id == Session::get('company_id'))
+                if ($value->pivot->company_id == $this->company)
                     array_push($systemsApply, $value->multiselect());
             }
 
@@ -241,15 +251,15 @@ class UserController extends Controller
         { 
             $user->fill($request->all());
             
-            if(!$user->update())
+            if (!$user->update())
                 return $this->respondHttp500();
 
-            if (!Auth::user()->hasRole('Arrendatario') && !Auth::user()->hasRole('Contratista'))
+            if (!$user->hasRole('Arrendatario', $this->team) || !$user->hasRole('Contratista', $this->team))
             {
                 if ($request->get('edit_role') == 'true')
                 {
-                    $user->roles()->detach($request->get('old_role_id'));
-                    $user->roles()->attach($request->get('role_id'));
+                    $roles = $this->getDataFromMultiselect($request->role_id);
+                    $user->syncRoles($roles, $this->team);
                 }
             }
 
@@ -292,7 +302,7 @@ class UserController extends Controller
     private function deleteFilter($table, $user_id)
     {
         DB::table($table)
-            ->where('company_id', Session::get('company_id'))
+            ->where('company_id', $this->company)
             ->where('user_id', $user_id)
             ->delete();
     }
@@ -347,7 +357,7 @@ class UserController extends Controller
     {
         try
         {
-            UserExportJob::dispatch(Auth::user(), Session::get('company_id'));
+            UserExportJob::dispatch($this->user, $this->company);
           
             return $this->respondHttp200();
         } 
@@ -363,15 +373,14 @@ class UserController extends Controller
                     CONCAT(sau_users.document, ' - ', sau_users.name) as name
                 ")->active();
 
-        if (Auth::user()->hasRole('Arrendatario') || Auth::user()->hasRole('Contratista'))
+        if ($this->user->hasRole('Arrendatario', $this->team) || $this->user->hasRole('Contratista', $this->team))
         {
             $users->join('sau_user_information_contract_lessee', 'sau_user_information_contract_lessee.user_id', 'sau_users.id')
-                  ->where('sau_user_information_contract_lessee.information_id', $this->getContractIdUser(Auth::user()->id));
+                  ->where('sau_user_information_contract_lessee.information_id', $this->getContractIdUser($this->user->id));
         }
         else
         {
-            $users->join('sau_role_user', 'sau_role_user.user_id', 'sau_users.id')
-                  ->join('sau_roles', 'sau_roles.id', 'sau_role_user.role_id');
+            $users->join('sau_company_user', 'sau_company_user.user_id', 'sau_users.id');
         }
 
         if($request->has('keyword'))
@@ -402,15 +411,15 @@ class UserController extends Controller
             "old_password" => [
                 function ($attribute, $value, $fail)
                 {
-                    if(!Hash::check($value, Auth::User()->password))
+                    if(!Hash::check($value, $this->user->password))
                         $fail('La contraseña actual no coincide con la registrada en el sistema');
                 },
             ]
         ])->validate();
 
-        Auth::user()->fill($request->all());
+        $this->user->fill($request->all());
         
-        if(!Auth::user()->update()){
+        if(!$this->user->update()){
           return $this->respondHttp500();
         }
         
@@ -425,8 +434,8 @@ class UserController extends Controller
         {
             return $this->respondHttp200([
                 'data' => [
-                    "module_id" => Auth::user()->module_id,
-                    "multiselect_module" => Auth::user()->defaultModule ? Auth::user()->defaultModule->multiselect() : ''
+                    "module_id" => $this->user->module_id,
+                    "multiselect_module" => $this->user->defaultModule ? $this->user->defaultModule->multiselect() : ''
                 ]
             ]);
         } 
@@ -440,10 +449,10 @@ class UserController extends Controller
     {
         $module = Module::findOrFail($request->module_id);
 
-        Auth::user()->default_module_url = $module->application->name.'/'.$module->name;
-        Auth::user()->module_id = $module->id;
+        $this->user->default_module_url = $module->application->name.'/'.$module->name;
+        $this->user->module_id = $module->id;
 
-        if(!Auth::user()->update()){
+        if(!$this->user->update()){
             return $this->respondHttp500();
         }
 
@@ -459,14 +468,16 @@ class UserController extends Controller
      */
     public function filtersConfig()
     {
-        $roles = Role::conditionGeneral()->get();
+        //$includeSuper = $this->user->hasRole('Superadmin', $this->company) ? true : false;
+
+        $roles = Role::alls(true)->get();
         $modules = Module::whereIn('name', ['legalMatrix', 'reinstatements'])->get();
         $mods_license = [];
         $data = [];
 
         foreach ($modules as $module)
         {
-            $mods_license[$module->id] = $this->checkLicense(Session::get('company_id'), $module->id);
+            $mods_license[$module->id] = $this->checkLicense($this->company, $module->id);
         }
 
         foreach ($roles as $role)

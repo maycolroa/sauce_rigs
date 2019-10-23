@@ -10,7 +10,7 @@
       <b-card no-body>
         <b-card-header class="with-elements" v-if="auth.can['risksAspects_c']">
           <div class="card-title-elements"> 
-            <b-btn :to="{name:'legalaspects-lm-riskaspect-create'}" variant="primary">Crear Riesgo/Aspecto ambiental</b-btn>
+            <b-btn :to="{name:'legalaspects-lm-riskaspect-create'}" variant="primary">Crear Tema Ambiental</b-btn>
           </div>
         </b-card-header>
         <b-card-body>
@@ -30,7 +30,7 @@ import Alerts from '@/utils/Alerts.js';
 export default {
   name: 'lm-riskaspect',
   metaInfo: {
-    title: 'Riesgos/Aspectos Ambientales'
+    title: 'Temas Ambientales'
   }
 }
 </script>

@@ -9,8 +9,10 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use App\Models\Administrative\Users\User;
 use App\Models\General\Module;
+use App\Models\General\Team;
 use App\Facades\Mail\Facades\NotificationMail;
 use App\Facades\Configuration;
+use DB;
 
 class NotifyLicenseRenewalJob implements ShouldQueue
 {
@@ -37,14 +39,19 @@ class NotifyLicenseRenewalJob implements ShouldQueue
      */
     public function handle()
     {
+        $team = Team::where('name', $this->company_id)->first();
+
         $recipients = User::select('sau_users.email')
             ->active()
             ->join('sau_company_user', 'sau_company_user.user_id', 'sau_users.id')
-            ->join('sau_role_user', 'sau_role_user.user_id', 'sau_users.id')
+            ->join('sau_role_user', function($q) use ($team) { 
+                $q->on('sau_role_user.user_id', '=', 'sau_users.id')
+                  ->on('sau_role_user.team_id', '=', DB::raw($team->id));
+            })
             ->join('sau_roles', 'sau_roles.id', 'sau_role_user.role_id')
             ->join('sau_permission_role', 'sau_permission_role.role_id', 'sau_roles.id')
             ->join('sau_permissions', 'sau_permissions.id', 'sau_permission_role.permission_id')
-            ->where('sau_company_user.company_id', $this->company_id)
+            //->where('sau_company_user.company_id', $this->company_id)
             //->where('sau_roles.company_id', $this->company_id)
             ->whereIn('sau_permissions.module_id', $this->modules)
             ->groupBy('sau_users.id', 'sau_users.email', 'sau_roles.display_name');

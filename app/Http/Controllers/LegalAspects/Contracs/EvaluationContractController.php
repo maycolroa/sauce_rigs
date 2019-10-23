@@ -6,7 +6,6 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Vuetable\Facades\Vuetable;
 use App\Http\Requests\LegalAspects\Contracts\EvaluationContractRequest;
-use Illuminate\Support\Facades\Auth;
 use App\Models\LegalAspects\Contracts\Evaluation;
 use App\Models\LegalAspects\Contracts\EvaluationContract;
 use App\Models\LegalAspects\Contracts\Interviewee;
@@ -15,7 +14,6 @@ use App\Models\LegalAspects\Contracts\Observation;
 use App\Jobs\LegalAspects\Contracts\Evaluations\EvaluationContractReportExportJob;
 use App\Jobs\LegalAspects\Contracts\Evaluations\EvaluationSendNotificationJob;
 use Carbon\Carbon;
-use Session;
 use DB;
 
 class EvaluationContractController extends Controller
@@ -25,12 +23,13 @@ class EvaluationContractController extends Controller
      */
     function __construct()
     {
+        parent::__construct();
         $this->middleware('auth');
-        $this->middleware('permission:contracts_evaluations_perform_evaluation', ['only' => 'store']);
-        $this->middleware('permission:contracts_evaluations_view_evaluations_made', ['except' => ['report', 'getTotales', 'exportReport', 'store', 'getData']] );
-        $this->middleware('permission:contracts_evaluations_edit_evaluations_made', ['only' => 'update']);
-        $this->middleware('permission:contracts_evaluations_report_view', ['only' => ['report', 'getTotales']]);
-        $this->middleware('permission:contracts_evaluations_report_export', ['only' => 'exportReport']);
+        $this->middleware("permission:contracts_evaluations_perform_evaluation, {$this->team}", ['only' => 'store']);
+        $this->middleware("permission:contracts_evaluations_view_evaluations_made, {$this->team}", ['except' => ['report', 'getTotales', 'exportReport', 'store', 'getData']] );
+        $this->middleware("permission:contracts_evaluations_edit_evaluations_made, {$this->team}", ['only' => 'update']);
+        $this->middleware("permission:contracts_evaluations_report_view, {$this->team}", ['only' => ['report', 'getTotales']]);
+        $this->middleware("permission:contracts_evaluations_report_export, {$this->team}", ['only' => 'exportReport']);
     }
 
     /**
@@ -68,7 +67,7 @@ class EvaluationContractController extends Controller
         else 
         {
             $evaluation_contracts->join('sau_user_information_contract_lessee', 'sau_user_information_contract_lessee.information_id', 'sau_ct_evaluation_contract.contract_id');
-            $evaluation_contracts->where('sau_user_information_contract_lessee.user_id', '=', Auth::user()->id);
+            $evaluation_contracts->where('sau_user_information_contract_lessee.user_id', '=', $this->user->id);
         }
 
         $filters = $request->get('filters');
@@ -104,9 +103,9 @@ class EvaluationContractController extends Controller
         try
         {
             $evaluation_contract = new EvaluationContract($request->all());
-            $evaluation_contract->company_id = Session::get('company_id');
+            $evaluation_contract->company_id = $this->company;
             $evaluation_contract->evaluation_date = date('Y-m-d H:i:s');
-            $evaluation_contract->evaluator_id = Auth::user()->id;
+            $evaluation_contract->evaluator_id = $this->user->id;
 
             if(!$evaluation_contract->save()){
                 return $this->respondHttp500();
@@ -182,7 +181,7 @@ class EvaluationContractController extends Controller
             $this->saveResults($evaluationContract, $request->get('evaluation'));
             
             $evaluationContract->histories()->create([
-                'user_id' => Auth::user()->id
+                'user_id' => $this->user->id
             ]);
 
             $this->deleteData($request->get('delete'));
@@ -479,7 +478,7 @@ class EvaluationContractController extends Controller
                     INNER JOIN sau_ct_items i ON i.subobjective_id = s.id
                     LEFT JOIN sau_ct_evaluation_item_rating eir ON eir.item_id = i.id AND eir.evaluation_id = ec.id
                 
-                    WHERE ec.company_id = ".Session::get('company_id'). $whereDates . $whereObjectives . $whereSubojectives ."
+                    WHERE ec.company_id = ".$this->company. $whereDates . $whereObjectives . $whereSubojectives ."
                     GROUP BY objective, subobjective
                 ) AS t
             ) AS t"));
@@ -545,7 +544,7 @@ class EvaluationContractController extends Controller
                 'filtersType' => $filtersType
             ];
 
-            EvaluationContractReportExportJob::dispatch(Auth::user(), Session::get('company_id'), $filters);
+            EvaluationContractReportExportJob::dispatch($this->user, $this->company, $filters);
         
             return $this->respondHttp200();
         } catch(Exception $e) {
@@ -614,7 +613,7 @@ class EvaluationContractController extends Controller
                     INNER JOIN sau_ct_items i ON i.subobjective_id = s.id
                     LEFT JOIN sau_ct_evaluation_item_rating eir ON eir.item_id = i.id AND eir.evaluation_id = ec.id
                 
-                    WHERE ec.company_id = ".Session::get('company_id'). $whereDates . $whereObjectives . $whereSubojectives ."
+                    WHERE ec.company_id = ".$this->company. $whereDates . $whereObjectives . $whereSubojectives ."
                     GROUP BY objective, subobjective
                 ) AS t
             ) AS t"))
@@ -627,6 +626,6 @@ class EvaluationContractController extends Controller
 
     private function sendNotification($id)
     {
-        EvaluationSendNotificationJob::dispatch(Session::get('company_id'), $id);
+        EvaluationSendNotificationJob::dispatch($this->company, $id);
     }
 }

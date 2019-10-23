@@ -6,14 +6,12 @@ use App\Models\LegalAspects\Contracts\FileUpload;
 use App\Http\Requests\LegalAspects\Contracts\FileUploadRequest;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Storage;
 use App\Vuetable\Facades\Vuetable;
 use App\Traits\ContractTrait;
 use Illuminate\Database\Eloquent\Collection;
 use App\Facades\Mail\Facades\NotificationMail;
-use Session;
 use DB;
 
 class FileUploadController extends Controller
@@ -25,11 +23,12 @@ class FileUploadController extends Controller
      */
     function __construct()
     {
+        parent::__construct();
         $this->middleware('auth');
-        $this->middleware('permission:contracts_uploadFiles_c', ['only' => 'store']);
-        $this->middleware('permission:contracts_uploadFiles_r');
-        $this->middleware('permission:contracts_uploadFiles_u', ['only' => 'update']);
-        $this->middleware('permission:contracts_uploadFiles_d', ['only' => 'destroy']);
+        $this->middleware("permission:contracts_uploadFiles_c, {$this->team}", ['only' => 'store']);
+        $this->middleware("permission:contracts_uploadFiles_r, {$this->team}");
+        $this->middleware("permission:contracts_uploadFiles_u, {$this->team}", ['only' => 'update']);
+        $this->middleware("permission:contracts_uploadFiles_d, {$this->team}", ['only' => 'destroy']);
     }
 
     /**
@@ -66,9 +65,9 @@ class FileUploadController extends Controller
           $files->betweenUpdated($filters["dateUpdate"]);
         }
 
-        if (Auth::user()->hasRole('Arrendatario') || Auth::user()->hasRole('Contratista'))
+        if ($this->user->hasRole('Arrendatario', $this->company) || $this->user->hasRole('Contratista', $this->company))
         {
-          $contract_id = $this->getContractIdUser(Auth::user()->id);
+          $contract_id = $this->getContractIdUser($this->user->id);
           $files->where('sau_ct_information_contract_lessee.id', $contract_id);
         }
         
@@ -96,12 +95,12 @@ class FileUploadController extends Controller
       {
         $fileUpload = new FileUpload();
         $file = $request->file;
-        $nameFile = base64_encode(Auth::user()->id . now()) .'.'. $file->extension();
+        $nameFile = base64_encode($this->user->id . now()) .'.'. $file->extension();
         
         $file->storeAs('legalAspects/files/', $nameFile,'s3');
 
         $fileUpload->file = $nameFile;
-        $fileUpload->user_id = Auth::user()->id;
+        $fileUpload->user_id = $this->user->id;
         $fileUpload->name = $request->name;
         $fileUpload->expirationDate = $request->expirationDate == null ? null : (Carbon::createFromFormat('D M d Y', $request->expirationDate))->format('Ymd');
       
@@ -116,7 +115,7 @@ class FileUploadController extends Controller
         }
         else 
         {
-          $fileUpload->contracts()->sync([$this->getContractIdUser(Auth::user()->id)]);
+          $fileUpload->contracts()->sync([$this->getContractIdUser($this->user->id)]);
         }
 
         DB::commit();
@@ -125,7 +124,7 @@ class FileUploadController extends Controller
       }
       catch(\Exception $e) {
         DB::rollback();
-        //return $e->getMessage();
+        //\Log::info($e->getMessage());
         return $this->respondHttp500();
       }
 
@@ -179,7 +178,7 @@ class FileUploadController extends Controller
 
       try
       {
-        $contract_id = $this->getContractIdUser(Auth::user()->id);
+        $contract_id = $this->getContractIdUser($this->user->id);
 
         if (!$this->checkPermissionUserInFile($fileUpload->user_id, $contract_id))
         {
@@ -190,7 +189,7 @@ class FileUploadController extends Controller
         {
           $file = $request->file;
           Storage::disk('s3')->delete('legalAspects/files/'. $fileUpload->file);
-          $nameFile = base64_encode(Auth::user()->id . now()) .'.'. $file->extension();
+          $nameFile = base64_encode($this->user->id . now()) .'.'. $file->extension();
           $file->storeAs('legalAspects/files/', $nameFile,'s3');
           $fileUpload->file = $nameFile;
         }
@@ -236,7 +235,7 @@ class FileUploadController extends Controller
     {
       try
       {
-        $contract_id = $this->getContractIdUser(Auth::user()->id);
+        $contract_id = $this->getContractIdUser($this->user->id);
 
         if (!$this->checkPermissionUserInFile($fileUpload->user_id, $contract_id))
         {
@@ -273,7 +272,7 @@ class FileUploadController extends Controller
 
     private function checkPermissionUserInFile($user_id, $contract_id)
     {
-      if (Auth::user()->hasRole('Arrendatario') || Auth::user()->hasRole('Contratista'))
+      if ($this->user->hasRole('Arrendatario', $this->company) || $this->user->hasRole('Contratista', $this->company))
       {
         if ($this->getContractIdUser($user_id) == $contract_id)
           return true;
@@ -286,11 +285,11 @@ class FileUploadController extends Controller
 
     private function sendNotification($fileUpload, $type_action = 'creado')
     {
-      if (Auth::user()->hasRole('Arrendatario') || Auth::user()->hasRole('Contratista'))
+      if ($this->user->hasRole('Arrendatario', $this->company) || $this->user->hasRole('Contratista', $this->company))
       {
         $subject = "Contratistas - Archivo Cargado";
         $message = "Un(a) arrendatario/contratista ha $type_action un archivo, para porder verlo haga click en el botón que se encuentra abajo";
-        $recipients = $this->getUsersMasterContract(Session::get('company_id'));
+        $recipients = $this->getUsersMasterContract($this->company);
       }
       else 
       {
@@ -311,7 +310,7 @@ class FileUploadController extends Controller
         ->message($message)
         ->buttons([['text'=>'Llevarme al sitio', 'url'=>url("/legalaspects/upload-files/view/{$fileUpload->id}")]])
         ->module('contracts')
-        ->company(Session::get('company_id'))
+        ->company($this->company)
         ->send();
     }
 
@@ -323,7 +322,7 @@ class FileUploadController extends Controller
      */
     public function getFilesItem(Request $request)
     {
-      $contract_id = $this->getContractIdUser(Auth::user()->id);
+      $contract_id = $this->getContractIdUser($this->user->id);
 
       $files = FileUpload::select(
         'sau_ct_file_upload_contracts_leesse.*'

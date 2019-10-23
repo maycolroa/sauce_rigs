@@ -17,9 +17,10 @@ class DangerMatrixReportHistoryController extends Controller
      */
     function __construct()
     {
+        parent::__construct();
         $this->middleware('auth');
-        $this->middleware('permission:dangerMatrix_r|dangerMatrix_view_report');
-        $this->middleware('permission:dangerMatrix_export_report', ['only' => 'reportExport']);
+        $this->middleware("permission:dangerMatrix_r|dangerMatrix_view_report, {$this->team}");
+        $this->middleware("permission:dangerMatrix_export_report, {$this->team}", ['only' => 'reportExport']);
     }
 
     /**
@@ -143,7 +144,7 @@ class DangerMatrixReportHistoryController extends Controller
                 "month" => $request->month,
             ];
 
-            DangerMatrixReportHistoryExportJob::dispatch(Auth::user(), Session::get('company_id'), $filters);
+            DangerMatrixReportHistoryExportJob::dispatch($this->user, $this->company, $filters);
 
             return $this->respondHttp200();
         } catch(Exception $e) {

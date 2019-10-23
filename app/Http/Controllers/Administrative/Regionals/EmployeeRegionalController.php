@@ -7,7 +7,6 @@ use App\Http\Controllers\Controller;
 use App\Vuetable\Facades\Vuetable;
 use App\Models\Administrative\Regionals\EmployeeRegional;
 use App\Http\Requests\Administrative\Regionals\RegionalRequest;
-use Session;
 
 class EmployeeRegionalController extends Controller
 {
@@ -16,11 +15,12 @@ class EmployeeRegionalController extends Controller
      */
     function __construct()
     {
+        parent::__construct();
         $this->middleware('auth');
-        $this->middleware('permission:regionals_c', ['only' => 'store']);
-        $this->middleware('permission:regionals_r', ['except' =>'multiselect']);
-        $this->middleware('permission:regionals_u', ['only' => 'update']);
-        $this->middleware('permission:regionals_d', ['only' => 'destroy']);
+        $this->middleware("permission:regionals_c, {$this->team}", ['only' => 'store']);
+        $this->middleware("permission:regionals_r, {$this->team}", ['except' =>'multiselect']);
+        $this->middleware("permission:regionals_u, {$this->team}", ['only' => 'update']);
+        $this->middleware("permission:regionals_d, {$this->team}", ['only' => 'destroy']);
     }
 
     /**
@@ -55,7 +55,7 @@ class EmployeeRegionalController extends Controller
     public function store(RegionalRequest $request)
     {
         $regional = new EmployeeRegional($request->all());
-        $regional->company_id = Session::get('company_id');
+        $regional->company_id = $this->company;
         
         if(!$regional->save()){
             return $this->respondHttp500();

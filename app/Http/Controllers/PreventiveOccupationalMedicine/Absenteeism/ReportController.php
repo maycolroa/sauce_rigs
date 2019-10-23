@@ -5,10 +5,8 @@ namespace App\Http\Controllers\PreventiveOccupationalMedicine\Absenteeism;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Vuetable\Facades\Vuetable;
-use Illuminate\Support\Facades\Auth;
 use App\Models\PreventiveOccupationalMedicine\Absenteeism\Report;
 use App\Http\Requests\PreventiveOccupationalMedicine\Absenteeism\ReportRequest;
-use Session;
 use Config;
 use DB;
 
@@ -19,11 +17,12 @@ class ReportController extends Controller
      */
     function __construct()
     {
+        parent::__construct();
         $this->middleware('auth');
-        $this->middleware('permission:absen_reports_c', ['only' => 'store']);
-        $this->middleware('permission:absen_reports_r');
-        $this->middleware('permission:absen_reports_u', ['only' => 'update']);
-        $this->middleware('permission:absen_reports_d', ['only' => 'destroy']);
+        $this->middleware("permission:absen_reports_c, {$this->team}", ['only' => 'store']);
+        $this->middleware("permission:absen_reports_r, {$this->team}");
+        $this->middleware("permission:absen_reports_u, {$this->team}", ['only' => 'update']);
+        $this->middleware("permission:absen_reports_d, {$this->team}", ['only' => 'destroy']);
     }
 
     /**
@@ -43,7 +42,7 @@ class ReportController extends Controller
     */
     public function data(Request $request)
     {
-        if(Auth::user()->can('absen_reports_c')){
+        if($this->user->can('absen_reports_c', $this->team)){
             $reports = Report::select('*');
         }
         else{
@@ -51,7 +50,7 @@ class ReportController extends Controller
                 'sau_absen_reports.*'
             )
             ->join('sau_absen_report_user', 'sau_absen_report_user.report_id', 'sau_absen_reports.id')
-            ->where('sau_absen_report_user.user_id', Auth::user()->id);
+            ->where('sau_absen_report_user.user_id', $this->user->id);
         }
         
         return Vuetable::of($reports)
@@ -104,7 +103,7 @@ class ReportController extends Controller
         {
 
             $report = new Report($request->all());
-            $report->company_id = Session::get('company_id');
+            $report->company_id = $this->company;
             $report->type=1;
             $report->es_bsc=0;
 

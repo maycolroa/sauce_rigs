@@ -7,7 +7,6 @@ use App\Http\Controllers\Controller;
 use App\Vuetable\Facades\Vuetable;
 use App\Models\LegalAspects\LegalMatrix\SstRisk;
 use App\Http\Requests\LegalAspects\LegalMatrix\SstRiskRequest;
-use Session;
 
 class SstRiskController extends Controller
 { 
@@ -16,11 +15,12 @@ class SstRiskController extends Controller
      */
     function __construct()
     {
+        parent::__construct();
         $this->middleware('auth');
-        $this->middleware('permission:sstRisks_c', ['only' => 'store']);
-        $this->middleware('permission:sstRisks_r', ['except' =>'multiselect']);
-        $this->middleware('permission:sstRisks_u', ['only' => 'update']);
-        $this->middleware('permission:sstRisks_d', ['only' => 'destroy']);
+        $this->middleware("permission:sstRisks_c, {$this->team}", ['only' => 'store']);
+        $this->middleware("permission:sstRisks_r, {$this->team}", ['except' =>'multiselect']);
+        $this->middleware("permission:sstRisks_u, {$this->team}", ['only' => 'update']);
+        $this->middleware("permission:sstRisks_d, {$this->team}", ['only' => 'destroy']);
     }
 
     /**

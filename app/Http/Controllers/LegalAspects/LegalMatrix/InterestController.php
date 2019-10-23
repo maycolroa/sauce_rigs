@@ -12,7 +12,6 @@ use App\Http\Requests\LegalAspects\LegalMatrix\InterestRequest;
 use App\Facades\Mail\Facades\NotificationMail;
 use App\Jobs\LegalAspects\LegalMatrix\ConfigureInterestsJob;
 use App\Jobs\LegalAspects\LegalMatrix\SyncQualificationsCompaniesJob;
-use Session;
 
 class InterestController extends Controller
 {
@@ -21,12 +20,13 @@ class InterestController extends Controller
      */
     function __construct()
     {
+        parent::__construct();
         $this->middleware('auth');
-        $this->middleware('permission:interests_c|interestsCustom_c', ['only' => 'store']);
-        $this->middleware('permission:interests_r|interestsCustom_r', ['except' => ['multiselect', 'multiselectSystem', 'multiselectCompany', 'saveInterests', 'myInterests', 'radioSystem']]);
-        $this->middleware('permission:interests_u|interestsCustom_u', ['only' => 'update']);
-        $this->middleware('permission:interests_d|interestsCustom_d', ['only' => 'destroy']);
-        $this->middleware('permission:interests_config', ['only' => ['saveInterests', 'myInterests', 'radioSystem']]);
+        $this->middleware("permission:interests_c|interestsCustom_c, {$this->team}", ['only' => 'store']);
+        $this->middleware("permission:interests_r|interestsCustom_r, {$this->team}", ['except' => ['multiselect', 'multiselectSystem', 'multiselectCompany', 'saveInterests', 'myInterests', 'radioSystem']]);
+        $this->middleware("permission:interests_u|interestsCustom_u, {$this->team}", ['only' => 'update']);
+        $this->middleware("permission:interests_d|interestsCustom_d, {$this->team}", ['only' => 'destroy']);
+        $this->middleware("permission:interests_config, {$this->team}", ['only' => ['saveInterests', 'myInterests', 'radioSystem']]);
     }
 
     /**
@@ -66,14 +66,14 @@ class InterestController extends Controller
         $interest = new Interest($request->all());
 
         if ($request->custom == 'true')
-            $interest->company_id = Session::get('company_id');
+            $interest->company_id = $this->company;
         
         if (!$interest->save())
             return $this->respondHttp500();
 
         if ($request->custom == 'true')
         {
-            $company = Company::find(Session::get('company_id'));
+            $company = Company::find($this->company);
             $company->interests()->attach($interest->id);
         }
 
@@ -157,7 +157,7 @@ class InterestController extends Controller
             else 
                 $values = [];
 
-            ConfigureInterestsJob::dispatch(Session::get('company_id'), $values);
+            ConfigureInterestsJob::dispatch($this->company, $values);
         
             return $this->respondHttp200([
                 'message' => 'Al culminar el proceso de configuración de sus intereses recibirá una notificación en su correo electrónico'
@@ -172,7 +172,7 @@ class InterestController extends Controller
     {
         try
         {
-            $company = Company::find(Session::get('company_id'));
+            $company = Company::find($this->company);
             $values = $company->interests()->system()->pluck('sau_lm_interests.id');
             
             return $this->respondHttp200([

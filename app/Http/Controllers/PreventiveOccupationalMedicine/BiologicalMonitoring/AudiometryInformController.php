@@ -4,7 +4,6 @@ namespace App\Http\Controllers\PreventiveOccupationalMedicine\BiologicalMonitori
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
 use App\Inform\PreventiveOccupationalMedicine\BiologicalMonitoring\InformManagerAudiometry;
 use App\Inform\PreventiveOccupationalMedicine\BiologicalMonitoring\InformIndividualManagerAudiometry;
@@ -16,9 +15,10 @@ class AudiometryInformController extends Controller
      */
     function __construct()
     {
+        parent::__construct();
         $this->middleware('auth');
-        $this->middleware('permission:biologicalMonitoring_audiometry_informs_r', ['only' => 'data']);
-        $this->middleware('permission:biologicalMonitoring_audiometry_inform_individual_r', ['only' => 'dataIndividual']);
+        $this->middleware("permission:biologicalMonitoring_audiometry_informs_r, {$this->team}", ['only' => 'data']);
+        $this->middleware("permission:biologicalMonitoring_audiometry_inform_individual_r, {$this->team}", ['only' => 'dataIndividual']);
     }
 
     /**

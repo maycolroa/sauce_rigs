@@ -5,14 +5,12 @@ namespace App\Http\Controllers\IndustrialSecure\DangerousConditions\Inspections;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Vuetable\Facades\Vuetable;
-use Illuminate\Support\Facades\Auth;
 use App\Models\IndustrialSecure\DangerousConditions\Inspections\InspectionItemsQualificationAreaLocation;
 use App\Models\IndustrialSecure\DangerousConditions\Inspections\Inspection;
 use App\Jobs\IndustrialSecure\DangerousConditions\Inspections\InspectionReportExportJob;
 use App\Models\General\Module;
 use Carbon\Carbon;
 use Validator;
-use Session;
 use DB;
 
 class InspectionReportController extends Controller
@@ -22,12 +20,13 @@ class InspectionReportController extends Controller
      */
     function __construct()
     {
+        parent::__construct();
         $this->middleware('auth');
         //$this->middleware('permission:ph_inspections_c', ['only' => 'store']);
-        $this->middleware('permission:ph_inspections_r');
+        $this->middleware("permission:ph_inspections_r, {$this->team}");
         //$this->middleware('permission:ph_inspections_u', ['only' => 'update']);
         //$this->middleware('permission:ph_inspections_d', ['only' => 'destroy']);
-        $this->middleware('permission:ph_inspections_report_export', ['only' => 'export']);
+        $this->middleware("permission:ph_inspections_report_export, {$this->team}", ['only' => 'export']);
     }
 
     /**
@@ -93,7 +92,7 @@ class InspectionReportController extends Controller
         ->join('sau_employees_areas as a','a.id', 'sau_ph_inspection_items_qualification_area_location.employee_area_id')
         ->join('sau_employees_headquarters as l','l.id', 'sau_ph_inspection_items_qualification_area_location.employee_headquarter_id')
         ->join('sau_ct_qualifications as q','q.id', 'sau_ph_inspection_items_qualification_area_location.qualification_id')
-        ->where('i.company_id', Session::get('company_id'));
+        ->where('i.company_id', $this->company);
 
         if ($request->table == "with_theme" )
           $consultas->groupBy('area', 'headquarter', 'numero_inspecciones', 'section');
@@ -200,7 +199,7 @@ class InspectionReportController extends Controller
              ->inAreas($areas, $filtersType['areas'])
              ->inThemes($themes, $filtersType['themes'], 's')
              ->betweenDate($dates)
-             ->where('i.company_id', Session::get('company_id'))
+             ->where('i.company_id', $this->company)
              ->groupBy('employee_area_id', 'employee_headquarter_id', 'numero_inspecciones')
              ->get(); 
 
@@ -269,7 +268,7 @@ class InspectionReportController extends Controller
                 'table' => $request->table
             ];
 
-            InspectionReportExportJob::dispatch(Auth::user(), Session::get('company_id'), $filters);
+            InspectionReportExportJob::dispatch($this->user, $this->company, $filters);
         
             return $this->respondHttp200();
         } catch(Exception $e) {

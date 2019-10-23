@@ -7,7 +7,6 @@ use App\Http\Controllers\Controller;
 use App\Vuetable\Facades\Vuetable;
 use App\Models\LegalAspects\LegalMatrix\Entity;
 use App\Http\Requests\LegalAspects\LegalMatrix\EntityRequest;
-use Session;
 
 class EntityController extends Controller
 {
@@ -16,11 +15,12 @@ class EntityController extends Controller
      */
     function __construct()
     {
+        parent::__construct();
         $this->middleware('auth');
-        $this->middleware('permission:entities_c', ['only' => 'store']);
-        $this->middleware('permission:entities_r', ['except' =>'multiselect']);
-        $this->middleware('permission:entities_u', ['only' => 'update']);
-        $this->middleware('permission:entities_d', ['only' => 'destroy']);
+        $this->middleware("permission:entities_c, {$this->team}", ['only' => 'store']);
+        $this->middleware("permission:entities_r, {$this->team}", ['except' =>'multiselect']);
+        $this->middleware("permission:entities_u, {$this->team}", ['only' => 'update']);
+        $this->middleware("permission:entities_d, {$this->team}", ['only' => 'destroy']);
     }
 
     /**

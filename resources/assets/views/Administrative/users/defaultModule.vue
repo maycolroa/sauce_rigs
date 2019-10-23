@@ -1,8 +1,5 @@
 <template>
   <div>
-    <h4 class="font-weight-bold mb-4">
-       <span class="text-muted font-weight-light">Módulo Favorito</span>
-    </h4>
     <header-module
       title="MÓDULO FAVORITO"
     />

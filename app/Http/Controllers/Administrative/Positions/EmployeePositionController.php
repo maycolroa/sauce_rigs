@@ -7,7 +7,6 @@ use App\Http\Controllers\Controller;
 use App\Vuetable\Facades\Vuetable;
 use App\Models\Administrative\Positions\EmployeePosition;
 use App\Http\Requests\Administrative\Positions\PositionRequest;
-use Session;
 
 class EmployeePositionController extends Controller
 {
@@ -16,11 +15,12 @@ class EmployeePositionController extends Controller
      */
     function __construct()
     {
+        parent::__construct();
         $this->middleware('auth');
-        $this->middleware('permission:positions_c', ['only' => 'store']);
-        $this->middleware('permission:positions_r', ['except' =>'multiselect']);
-        $this->middleware('permission:positions_u', ['only' => 'update']);
-        $this->middleware('permission:positions_d', ['only' => 'destroy']);
+        $this->middleware("permission:positions_c, {$this->team}", ['only' => 'store']);
+        $this->middleware("permission:positions_r, {$this->team}", ['except' =>'multiselect']);
+        $this->middleware("permission:positions_u, {$this->team}", ['only' => 'update']);
+        $this->middleware("permission:positions_d, {$this->team}", ['only' => 'destroy']);
     }
 
     /**
@@ -55,7 +55,7 @@ class EmployeePositionController extends Controller
     public function store(PositionRequest $request)
     {
         $position = new EmployeePosition($request->all());
-        $position->company_id = Session::get('company_id');
+        $position->company_id = $this->company;
         
         if(!$position->save()){
             return $this->respondHttp500();

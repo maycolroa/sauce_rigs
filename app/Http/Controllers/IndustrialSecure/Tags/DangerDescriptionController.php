@@ -6,7 +6,6 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Vuetable\Facades\Vuetable;
 use App\Models\IndustrialSecure\DangerMatrix\TagsDangerDescription;
-use Session;
 
 class DangerDescriptionController extends Controller
 {
@@ -15,8 +14,9 @@ class DangerDescriptionController extends Controller
      */
     function __construct()
     {
+        parent::__construct();
         $this->middleware('auth');
-        $this->middleware('permission:dangerMatrix_c');
+        $this->middleware("permission:dangerMatrix_c, {$this->team}");
     }
 
     /**

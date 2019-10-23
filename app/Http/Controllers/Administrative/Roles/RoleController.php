@@ -8,8 +8,6 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Administrative\Roles\RoleRequest;
 use App\Models\Administrative\Roles\Role;
 use App\Models\General\Permission;
-use Illuminate\Support\Facades\Auth;
-use Session;
 
 class RoleController extends Controller
 {
@@ -18,11 +16,12 @@ class RoleController extends Controller
      */
     function __construct()
     {
+        parent::__construct();
         $this->middleware('auth');
-        $this->middleware('permission:roles_c', ['only' => 'store']);
-        $this->middleware('permission:roles_r', ['except' =>['multiselect', 'multiselectPermissions']]);
-        $this->middleware('permission:roles_u', ['only' => 'update']);
-        $this->middleware('permission:roles_d', ['only' => 'destroy']);
+        $this->middleware("permission:roles_c, {$this->team}", ['only' => 'store']);
+        $this->middleware("permission:roles_r, {$this->team}", ['except' =>['multiselect', 'multiselectPermissions']]);
+        $this->middleware("permission:roles_u, {$this->team}", ['only' => 'update']);
+        $this->middleware("permission:roles_d, {$this->team}", ['only' => 'destroy']);
     }
 
     /**
@@ -42,7 +41,7 @@ class RoleController extends Controller
     */
    public function data(Request $request)
    {
-        if (Auth::user()->hasPermission('roles_manage_defined'))
+        if ($this->user->can('roles_manage_defined', $this->team))
 
             $roles = Role::select(
                 'sau_roles.id as id',
@@ -52,7 +51,7 @@ class RoleController extends Controller
                 'sau_modules.display_name as display_name'
             )
             ->leftJoin('sau_modules', 'sau_modules.id', 'sau_roles.module_id')
-            ->conditionController();
+            ->alls();
         else 
         
             $roles = Role::select(
@@ -60,7 +59,7 @@ class RoleController extends Controller
                 'sau_roles.name as name',
                 'sau_roles.description as description'
             )
-            ->conditionController();
+            ->company();
 
        return Vuetable::of($roles)
                 ->make();
@@ -85,7 +84,7 @@ class RoleController extends Controller
             $role->module_id = $request->get('module_id');
         }
         else
-            $role->company_id = Session::get('company_id');
+            $role->company_id = $this->company;
         
         if(!$role->save())
         {
@@ -121,15 +120,13 @@ class RoleController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Role $role)
     {
-        $role = Role::conditionController()->findOrFail($id);
-        
-        if ($role->module)
-            $role->multiselect_module = $role->module->multiselect();
-        
         try
         {
+            if ($role->module)
+                $role->multiselect_module = $role->module->multiselect();
+
             $permissions = $role->permissions;
             $multiselect = [];
             $data = [];
@@ -168,9 +165,9 @@ class RoleController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(RoleRequest $request, $id)
+    public function update(RoleRequest $request, Role $role)
     {
-        $role = Role::conditionController()->findOrFail($id);
+        //$role = Role::conditionController()->findOrFail($id);
 
         $role->name = $request->get('name');
         $role->display_name = $request->get('name');
@@ -212,9 +209,9 @@ class RoleController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Role $role)
     {
-        $role = Role::conditionController()->findOrFail($id);
+        //$role = Role::conditionController()->findOrFail($id);
 
         $role->users()->sync([]); // Eliminar datos de relaciones
         $role->permissions()->sync([]); // Eliminar datos de relaciones
@@ -239,8 +236,10 @@ class RoleController extends Controller
      */
     public function multiselect(Request $request)
     {
+        $includeSuper = $this->user->hasRole('Superadmin', $this->team) ? true : false;
+
         $keyword = "%{$request->keyword}%";
-        $roles = Role::conditionGeneral()->select("id", "name")
+        $roles = Role::form($includeSuper)->select("id", "name")
             ->where(function ($query) use ($keyword) {
                 $query->orWhere('name', 'like', $keyword);
              })

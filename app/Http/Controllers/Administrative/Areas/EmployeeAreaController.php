@@ -7,7 +7,6 @@ use App\Http\Controllers\Controller;
 use App\Vuetable\Facades\Vuetable;
 use App\Models\Administrative\Areas\EmployeeArea;
 use App\Http\Requests\Administrative\Areas\AreaRequest;
-use Session;
 use DB;
 
 class EmployeeAreaController extends Controller
@@ -17,11 +16,12 @@ class EmployeeAreaController extends Controller
      */
     function __construct()
     {
+        parent::__construct();
         $this->middleware('auth');
-        $this->middleware('permission:areas_c', ['only' => 'store']);
-        $this->middleware('permission:areas_r', ['except' =>'multiselect']);
-        $this->middleware('permission:areas_u', ['only' => 'update']);
-        $this->middleware('permission:areas_d', ['only' => 'destroy']);
+        $this->middleware("permission:areas_c, {$this->team}", ['only' => 'store']);
+        $this->middleware("permission:areas_r, {$this->team}", ['except' =>'multiselect']);
+        $this->middleware("permission:areas_u, {$this->team}", ['only' => 'update']);
+        $this->middleware("permission:areas_d, {$this->team}", ['only' => 'destroy']);
     }
 
     /**

@@ -4,7 +4,6 @@ namespace App\Http\Controllers\PreventiveOccupationalMedicine\Reinstatements;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
 use App\Inform\PreventiveOccupationalMedicine\Reinstatements\InformManagerCheck;
 
@@ -15,8 +14,9 @@ class CheckInformController extends Controller
      */
     function __construct()
     {
+        parent::__construct();
         $this->middleware('auth');
-        $this->middleware('permission:reinc_checks_informs', ['only' => 'data']);
+        $this->middleware("permission:reinc_checks_informs, {$this->team}", ['only' => 'data']);
     }
 
     /**

@@ -7,7 +7,6 @@ use App\Http\Controllers\Controller;
 use App\Vuetable\Facades\Vuetable;
 use App\Models\IndustrialSecure\Dangers\Danger;
 use App\Http\Requests\IndustrialSecure\Dangers\DangerRequest;
-use Session;
 
 class DangerController extends Controller
 {
@@ -16,11 +15,12 @@ class DangerController extends Controller
      */
     function __construct()
     {
+        parent::__construct();
         $this->middleware('auth');
-        $this->middleware('permission:dangers_c', ['only' => 'store']);
-        $this->middleware('permission:dangers_r', ['except' =>'multiselect']);
-        $this->middleware('permission:dangers_u', ['only' => 'update']);
-        $this->middleware('permission:dangers_d', ['only' => 'destroy']);
+        $this->middleware("permission:dangers_c, {$this->team}", ['only' => 'store']);
+        $this->middleware("permission:dangers_r, {$this->team}", ['except' =>'multiselect']);
+        $this->middleware("permission:dangers_u, {$this->team}", ['only' => 'update']);
+        $this->middleware("permission:dangers_d, {$this->team}", ['only' => 'destroy']);
     }
 
     /**
@@ -55,7 +55,7 @@ class DangerController extends Controller
     public function store(DangerRequest $request)
     {
         $danger = new Danger($request->all());
-        $danger->company_id = Session::get('company_id');
+        $danger->company_id = $this->company;
         
         if(!$danger->save()){
             return $this->respondHttp500();

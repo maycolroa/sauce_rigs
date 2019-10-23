@@ -8,6 +8,7 @@ use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Auth\Events\PasswordReset;
 use App\Traits\ContractTrait;
+use App\Models\General\Team;
 use Carbon\Carbon;
 use Session;
 use DB;
@@ -86,8 +87,9 @@ class ResetPasswordController extends Controller
                         //return $this->respondHttp200();
                         //return $this->redirectTo('/');
                         Session::put('company_id', $val->pivot->company_id);
+                        $team = Team::where('name', Session::get('company_id'))->first()->id;
 
-                        if (Auth::user()->hasRole('Arrendatario') || Auth::user()->hasRole('Contratista'))
+                        if (Auth::user()->hasRole('Arrendatario', $team) || Auth::user()->hasRole('Contratista', $team))
                         {
                             $contract = $this->getContractUser(Auth::user()->id);
 

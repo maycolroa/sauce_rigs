@@ -24,8 +24,8 @@ class CreateRoleSuperAdminSeeder extends Seeder
 
             if ($module)
             {
-                $role = Role::withoutGlobalScopes()
-                    ->updateOrCreate(['name' => 'Superadmin', 'type_role' => 'Definido'], 
+                $role = Role::
+                    updateOrCreate(['name' => 'Superadmin', 'type_role' => 'Definido'], 
                         [
                             'name' => 'Superadmin',
                             'display_name' => 'Superadmin',

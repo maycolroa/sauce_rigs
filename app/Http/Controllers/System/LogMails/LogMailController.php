@@ -7,7 +7,6 @@ use App\Http\Controllers\Controller;
 use App\Vuetable\Facades\Vuetable;
 use App\Models\System\LogMails\LogMail;
 use Carbon\Carbon;
-use Session;
 use DB;
 
 class LogMailController extends Controller
@@ -17,8 +16,9 @@ class LogMailController extends Controller
      */
     function __construct()
     {
+        parent::__construct();
         $this->middleware('auth');
-        $this->middleware('permission:logMails_r');
+        $this->middleware("permission:logMails_r, {$this->team}");
     }
 
     /**
@@ -77,7 +77,7 @@ class LogMailController extends Controller
                 'data' => $mail,
             ]);
         } catch(Exception $e){
-            $this->respondHttp500();
+            return $this->respondHttp500();
         }
     }
 }

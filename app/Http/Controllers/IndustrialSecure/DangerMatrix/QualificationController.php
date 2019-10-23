@@ -7,7 +7,6 @@ use App\Http\Controllers\Controller;
 use App\Models\IndustrialSecure\DangerMatrix\Qualification;
 use App\Models\IndustrialSecure\DangerMatrix\QualificationCompany;
 use App\Traits\DangerMatrixTrait;
-use Session;
 
 class QualificationController extends Controller
 {

@@ -7,7 +7,6 @@ use App\Http\Controllers\Controller;
 use App\Vuetable\Facades\Vuetable;
 use App\Models\PreventiveOccupationalMedicine\Reinstatements\Restriction;
 use App\Http\Requests\PreventiveOccupationalMedicine\Reinstatements\RestrictionRequest;
-use Session;
 
 class RestrictionController extends Controller
 { 
@@ -16,11 +15,12 @@ class RestrictionController extends Controller
      */
     function __construct()
     {
+        parent::__construct();
         $this->middleware('auth');
-        $this->middleware('permission:reinc_restrictions_c', ['only' => 'store']);
-        $this->middleware('permission:reinc_restrictions_r', ['except' =>'multiselect']);
-        $this->middleware('permission:reinc_restrictions_u', ['only' => 'update']);
-        $this->middleware('permission:reinc_restrictions_d', ['only' => 'destroy']);
+        $this->middleware("permission:reinc_restrictions_c, {$this->team}", ['only' => 'store']);
+        $this->middleware("permission:reinc_restrictions_r, {$this->team}", ['except' =>'multiselect']);
+        $this->middleware("permission:reinc_restrictions_u, {$this->team}", ['only' => 'update']);
+        $this->middleware("permission:reinc_restrictions_d, {$this->team}", ['only' => 'destroy']);
     }
 
     /**
@@ -55,7 +55,7 @@ class RestrictionController extends Controller
     public function store(RestrictionRequest $request)
     {
         $restriction = new Restriction($request->all());
-        $restriction->company_id = Session::get('company_id');
+        $restriction->company_id = $this->company;
         
         if(!$restriction->save()){
             return $this->respondHttp500();
@@ -115,15 +115,11 @@ class RestrictionController extends Controller
     public function destroy(Restriction $restriction)
     {
         //Falta probar esto
-        /*if (COUNT($restriction->checks) > 0)
-        {
+        if (COUNT($restriction->checks) > 0)
             return $this->respondWithError('No se puede eliminar la Restricción porque hay registros asociados a él');
-        }*/
 
-        if(!$restriction->delete())
-        {
+        if (!$restriction->delete())
             return $this->respondHttp500();
-        }
         
         return $this->respondHttp200([
             'message' => 'Se elimino la Restricción'

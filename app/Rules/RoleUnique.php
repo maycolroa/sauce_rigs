@@ -3,7 +3,6 @@
 namespace App\Rules;
 
 use Illuminate\Contracts\Validation\Rule;
-use Illuminate\Support\Facades\Auth;
 use App\Models\Administrative\Roles\Role;
 use Session;
 
@@ -36,9 +35,9 @@ class RoleUnique implements Rule
         if ($value != null)
         {
             if ($this->type_role && $this->type_role == 'Definido')
-                $role = Role::withoutGlobalScopes()->where('id', '!=', $this->id)->where('name', $value)->whereNull('company_id')->first();
+                $role = Role::where('id', '!=', $this->id)->where('name', $value)->whereNull('company_id')->first();
             else 
-               $role = Role::where('id', '!=', $this->id)->where('name', $value)->first();
+               $role = Role::where('id', '!=', $this->id)->where('company_id', Session::get('company_id'))->where('name', $value)->first();
 
             if ($role)
                 return false;

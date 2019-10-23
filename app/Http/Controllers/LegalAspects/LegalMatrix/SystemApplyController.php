@@ -7,7 +7,6 @@ use App\Http\Controllers\Controller;
 use App\Vuetable\Facades\Vuetable;
 use App\Models\LegalAspects\LegalMatrix\SystemApply;
 use App\Http\Requests\LegalAspects\LegalMatrix\SystemApplyRequest;
-use Session;
 
 class SystemApplyController extends Controller
 { 
@@ -16,11 +15,12 @@ class SystemApplyController extends Controller
      */
     function __construct()
     {
+        parent::__construct();
         $this->middleware('auth');
-        $this->middleware('permission:systemApply_c|systemApplyCustom_c', ['only' => 'store']);
-        $this->middleware('permission:systemApply_r|systemApplyCustom_r', ['except' => ['multiselect', 'multiselectSystem', 'multiselectCompany']]);
-        $this->middleware('permission:systemApply_u|systemApplyCustom_u', ['only' => 'update']);
-        $this->middleware('permission:systemApply_d|systemApplyCustom_d', ['only' => 'destroy']);
+        $this->middleware("permission:systemApply_c|systemApplyCustom_c, {$this->team}", ['only' => 'store']);
+        $this->middleware("permission:systemApply_r|systemApplyCustom_r, {$this->team}", ['except' => ['multiselect', 'multiselectSystem', 'multiselectCompany']]);
+        $this->middleware("permission:systemApply_u|systemApplyCustom_u, {$this->team}", ['only' => 'update']);
+        $this->middleware("permission:systemApply_d|systemApplyCustom_d, {$this->team}", ['only' => 'destroy']);
     }
 
     /**
@@ -60,7 +60,7 @@ class SystemApplyController extends Controller
         $system_apply = new SystemApply($request->all());
 
         if ($request->custom == 'true')
-            $system_apply->company_id = Session::get('company_id');
+            $system_apply->company_id = $this->company;
         
         if(!$system_apply->save()){
             return $this->respondHttp500();

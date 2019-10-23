@@ -7,7 +7,9 @@ use Illuminate\Support\Facades\Gate;
 use Laravel\Telescope\IncomingEntry;
 use Laravel\Telescope\TelescopeApplicationServiceProvider;
 use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
+use App\Models\General\Team;
 use DB;
+use Session;
 
 class TelescopeServiceProvider extends TelescopeApplicationServiceProvider
 {
@@ -22,16 +24,11 @@ class TelescopeServiceProvider extends TelescopeApplicationServiceProvider
 
         Telescope::auth(function ($request) {
 
-            if (isset($request->user()->id))
+            if (isset($request->user()->id) && Session::get('company_id'))
             {
-                $result = DB::table('sau_roles')
-                            ->join('sau_role_user', 'sau_role_user.role_id', 'sau_roles.id')
-                            ->where('sau_role_user.user_id', $request->user()->id)
-                            ->where('sau_roles.name', 'Superadmin')
-                            ->whereNull('sau_roles.company_id')
-                            ->exists();
+                $team = Team::where('name', Session::get('company_id'))->first();
 
-                if (!$result) {
+                if (!$request->user()->hasRole('Superadmin', $team)) {
                     throw new UnauthorizedHttpException('Unauthorized');
                 }
             }

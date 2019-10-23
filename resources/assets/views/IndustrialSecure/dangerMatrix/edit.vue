@@ -1,8 +1,5 @@
 <template>
   <div>
-    <h4 class="font-weight-bold mb-4">
-       <span class="text-muted font-weight-light">Matriz de Peligros /</span> Editar
-    </h4>
     <header-module
       title="MATRIZ DE PELIGROS"
       subtitle="EDITAR MATRIZ"

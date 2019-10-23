@@ -65,16 +65,19 @@ class DaysAlertExpirationDateContractFilesUpload extends Command
             {
                 $recipients = $this->getUsersMasterContract($value['company_id']);
 
-                NotificationMail::
-                    subject('Contratistas - Archivos Próximos a Vencerse')
-                    ->view('LegalAspects.contract.filesUploadExpiration')
-                    ->recipients($recipients)
-                    ->message('Los siguientes archivos están próximos a vencerse: ')
-                    ->module('contracts')
-                    ->event('Tarea programada: DaysAlertExpirationDateContractFilesUpload')
-                    ->table($this->prepareDataTable($files))
-                    ->company($value['company_id'])
-                    ->send();
+                if (!empty($recipients))
+                {
+                    NotificationMail::
+                        subject('Contratistas - Archivos Próximos a Vencerse')
+                        ->view('LegalAspects.contract.filesUploadExpiration')
+                        ->recipients($recipients)
+                        ->message('Los siguientes archivos están próximos a vencerse: ')
+                        ->module('contracts')
+                        ->event('Tarea programada: DaysAlertExpirationDateContractFilesUpload')
+                        ->table($this->prepareDataTable($files))
+                        ->company($value['company_id'])
+                        ->send();
+                }
             }
         }
     }

@@ -2,7 +2,9 @@
 
 namespace App\Vuetable;
 
+use Session;
 use Exception;
+use App\Models\General\Team;
 use App\Traits\LocationFormTrait;
 use App\Traits\ConfigurableFormTrait;
 use Illuminate\Support\Facades\Auth;
@@ -11,6 +13,10 @@ class VuetableColumnManager
 {
     use LocationFormTrait;
     use ConfigurableFormTrait;
+
+    protected $team;
+    protected $company;
+    protected $user;
 
     /**
      * defines the availables tables
@@ -28,10 +34,10 @@ class VuetableColumnManager
     const TABLES = [
         'administrativeusers',
         'administrativeroles',
+        'administrativeemployees',
         'industrialsecuredangermatrix',
         'industrialsecuredangermatrixreport',
         'legalAspectsfileUpload',
-        'administrativeemployees',
         'reinstatementschecks',
         'reinstatementschecksform'
     ];
@@ -45,6 +51,9 @@ class VuetableColumnManager
     function __construct($customColumnsName)
     {
         $this->customColumnsName = str_replace('-', '', $customColumnsName);
+        $this->team = Team::where('name', Session::get('company_id'))->first();
+        $this->company = Session::get('company_id');
+        $this->user = Auth::user();
     }
 
     /**
@@ -177,7 +186,7 @@ class VuetableColumnManager
      */
     public function administrativeroles()
     {
-        if (Auth::user()->hasPermission('roles_manage_defined'))
+        if ($this->user->can('roles_manage_defined', $this->team))
             $colums = [
                 ['name' => 'sau_roles.id', 'data'=> 'id', 'title'=> 'ID', 'sortable'=> false, 'searchable'=> false, 'detail'=> false, 'key'=> true ],
                 ['name' => 'sau_roles.name', 'data'=> 'name', 'title'=> 'Nombre', 'sortable'=> true, 'searchable'=> true, 'detail'=> false, 'key'=> false ],
@@ -206,7 +215,7 @@ class VuetableColumnManager
      */
     public function legalAspectsfileUpload()
     {
-        if (Auth::user()->hasRole('Arrendatario') || Auth::user()->hasRole('Contratista'))
+        if ($this->user->hasRole('Arrendatario', $this->team) || $this->user->hasRole('Contratista', $this->team))
             $colums = [
                 ['name' => 'sau_ct_file_upload_contracts_leesse.id', 'data'=> 'id', 'title'=> 'ID', 'sortable'=> false, 'searchable'=> false, 'detail'=> false, 'key'=> true ],
                 ['name' => 'sau_ct_file_upload_contracts_leesse.name', 'data'=> 'name', 'title'=> 'Nombre', 'sortable'=> true, 'searchable'=> true, 'detail'=> false, 'key'=> false ],
@@ -240,7 +249,7 @@ class VuetableColumnManager
      */
     public function administrativeusers()
     {
-        if (Auth::user()->hasRole('Arrendatario') || Auth::user()->hasRole('Contratista'))
+        if ($this->user->hasRole('Arrendatario', $this->team) || $this->user->hasRole('Contratista', $this->team))
             $colums = [
                 ['name' => 'sau_users.id', 'data'=> 'id', 'title'=> 'ID', 'sortable'=> false, 'searchable'=> false, 'detail'=> false, 'key'=> true ],
                 ['name' => 'sau_users.name', 'data'=> 'name', 'title'=> 'Nombre', 'sortable'=> true, 'searchable'=> true, 'detail'=> false, 'key'=> false ],
