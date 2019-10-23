@@ -51,6 +51,11 @@ class ContractLesseeInformation extends Model
         return $this->hasMany(ListCheckChangeHistory::class, 'contract_id');
     }
 
+    public function highRiskType()
+    {
+        return $this->belongsToMany(HighRiskType::class, 'sau_ct_contract_high_risk_type', 'contract_id');
+    }
+
     public function multiselect()
     {
         return [

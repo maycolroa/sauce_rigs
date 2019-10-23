@@ -14,7 +14,7 @@
                                 @isset($logo) 
                                     <img src="{{ 'https://sauce.rigs.com.co/images/'.$logo }}" style="width: 80px !important;vertical-align: middle;"> 
                                 @endisset
-                                 {{ $title }}
+                                 {{ $title ?? '' }}
                             </div>
                         </center>
                     </td>
