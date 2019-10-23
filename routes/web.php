@@ -160,6 +160,7 @@ Route::middleware(['auth'])->group(function () {
 
         Route::prefix('contracts')->group(function () {
           Route::post('sectionCategoryItems', 'LegalAspects\Contracs\SectionCategoryItemController@multiselect');
+          Route::post('highRisk', 'LegalAspects\Contracs\ContractLesseeController@multiselectHighRisk');
         });
 
         Route::prefix('industrialSecurity')->group(function () {

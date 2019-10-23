@@ -32,7 +32,8 @@ class ContractRequest extends FormRequest
                 'type'      => 'required',
                 'business_name' => 'required|string',
                 'nit' => 'required|numeric|unique:sau_ct_information_contract_lessee,nit,' . $id . ',id,company_id,'.Session::get('company_id'),
-                'social_reason' => 'required|string'
+                'social_reason' => 'required|string',
+                'high_risk_work' => 'required'
             ];
 
             if (!$id)
