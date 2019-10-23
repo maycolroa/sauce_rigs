@@ -160,6 +160,7 @@ Route::middleware(['auth'])->group(function () {
 
         Route::prefix('contracts')->group(function () {
           Route::post('sectionCategoryItems', 'LegalAspects\Contracs\SectionCategoryItemController@multiselect');
+          Route::post('highRisk', 'LegalAspects\Contracs\ContractLesseeController@multiselectHighRisk');
         });
 
         Route::prefix('industrialSecurity')->group(function () {
@@ -412,6 +413,10 @@ Route::middleware(['auth'])->group(function () {
 
       Route::post('label/data', 'System\Labels\LabelController@data');
       Route::ApiResource('label', 'System\Labels\LabelController');   
+
+      Route::post('company/data', 'System\Companies\CompanyController@data');
+      Route::ApiResource('company', 'System\Companies\CompanyController');  
+      Route::put('company/switchStatus/{company}', 'System\Companies\CompanyController@toggleState');
     });
 
 

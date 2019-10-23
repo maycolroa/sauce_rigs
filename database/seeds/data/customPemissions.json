@@ -17,6 +17,10 @@
                     {
                         "name": "actionPlans_export",
                         "display_name": "Planes de acción - exportar"
+                    },
+                    {
+                        "name": "actionPlans_receive_notifications",
+                        "display_name": "Planes de acción - recibir notificaciones"
                     }
                 ]
             }
@@ -35,6 +39,19 @@
                     {
                         "name": "biologicalMonitoring_audiometry_inform_individual_r",
                         "display_name": "Monitoreo Biológico/Audiometría - Ver informe individual"
+                    },
+                    {
+                        "name": "biologicalMonitoring_audiometry_receive_notifications",
+                        "display_name": "Monitoreo Biológico/Audiometría - recibir notificaciones"
+                    }
+                ]
+            },
+            {
+                "name": "biologicalMonitoring/musculoskeletalAnalysis",
+                "permissions": [
+                    {
+                        "name": "biologicalMonitoring_musculoskeletalAnalysis_receive_notifications",
+                        "display_name": "Monitoreo Biológico/Análisis Osteomuscular - recibir notificaciones"
                     }
                 ]
             },
@@ -88,6 +105,10 @@
                     {
                         "name": "reinc_checks_informs",
                         "display_name": "Reincorporaciones/Reportes - informes"
+                    },
+                    {
+                        "name": "reinc_receive_notifications",
+                        "display_name": "Reincorporaciones - recibir notificaciones"
                     }
                 ]
             },
@@ -133,9 +154,11 @@
                     {
                         "name": "absen_uploadTalend_c",
                         "display_name": "Ausentismo/Subida de talend - crear"
+                    },
+                    {
+                        "name": "absen_receive_notifications",
+                        "display_name": "Ausentismo - recibir notificaciones"
                     }
-
-
                 ]
             }
         ]
@@ -157,6 +180,10 @@
                     {
                         "name": "dangerMatrix_export_report",
                         "display_name": "Matriz de peligro - exportar reporte"
+                    },
+                    {
+                        "name": "dangerMatrix_receive_notifications",
+                        "display_name": "Matriz de peligro - recibir notificaciones"
                     }
                 ]
             },
@@ -218,6 +245,10 @@
                     {
                         "name": "ph_reports_qualifications",
                         "display_name": "Condiciones Peligrosas/Reportes - calificar"
+                    },
+                    {
+                        "name": "ph_receive_notifications",
+                        "display_name": "Condiciones Peligrosas - recibir notificaciones"
                     }
                 ]
             }
@@ -316,6 +347,10 @@
                     {
                         "name": "contracts_myInformation",
                         "display_name": "Contratistas/Mi información"
+                    },
+                    {
+                        "name": "contracts_receive_notifications",
+                        "display_name": "Contratistas - recibir notificaciones"
                     }
                 ]
             },
@@ -481,6 +516,10 @@
                     {
                         "name": "laws_report_export",
                         "display_name": "Matriz Legal/Reporte - exportar"
+                    },
+                    {
+                        "name": "legalMatrix_receive_notifications",
+                        "display_name": "Matriz Legal - recibir notificaciones"
                     }
                 ]
             }

@@ -25,11 +25,7 @@
 					<b-form-row>
 						<vue-advanced-select v-if="form.type == 'Contratista'" :disabled="viewOnly" class="col-md-6" v-model="form.classification" :error="form.errorsFor('classification')" name="classification" label="Clasificación" placeholder="Seleccione una clasificación" :options="contractClassifications">
                         </vue-advanced-select>
-						<vue-radio :disabled="viewOnly" :checked="form.high_risk_work" class="col-md-6 offset-md-3" v-model="form.high_risk_work" :options="siNo" name="high_risk_work" :error="form.errorsFor('high_risk_work')" label="¿La empresa realiza trabajos de alto riesgo?"></vue-radio>
-					</b-form-row>
-					<b-form-row v-show="form.high_risk_work == 'SI'">
-						<vue-ajax-advanced-select :disabled="viewOnly" class="col-md-6 offset-md-3" v-model="form.high_risk_type_id" :error="form.errorsFor('high_risk_type_id')" :selected-object="form.multiselect_high_risk_type" :multiple="true" :allowEmpty="true" name="high_risk_type_id" label="Tipos de riesgos" placeholder="Seleccione los tipos de riesgos" :url="highRiskTypeUrl">
-						</vue-ajax-advanced-select>
+						<vue-checkbox-simple style="padding-top: 30px;" :disabled="viewOnly" class="col-md-6" v-model="form.high_risk_work" label="¿Trabajo de alto riesgo?" :checked="form.high_risk_work" name="high_risk_work" checked-value="SI" unchecked-value="NO"></vue-checkbox-simple>
 					</b-form-row>
 					<b-form-row v-if="isEdit || viewOnly">
 						<vue-checkbox-simple style="padding-top: 20px;" :disabled="viewOnly" class="col-md-6" v-model="form.active" label="¿Activo?" :checked="form.active" name="active" checked-value="SI" unchecked-value="NO"></vue-checkbox-simple>
@@ -49,19 +45,15 @@
 <script>
 
 import VueAdvancedSelect from "@/components/Inputs/VueAdvancedSelect.vue";
-import VueAjaxAdvancedSelect from "@/components/Inputs/VueAjaxAdvancedSelect.vue";
 import VueInput from "@/components/Inputs/VueInput.vue";
 import VueCheckboxSimple from "@/components/Inputs/VueCheckboxSimple.vue";
-import VueRadio from "@/components/Inputs/VueRadio.vue";
 import Form from "@/utils/Form.js";
 
 export default {
 	components: {
 		VueAdvancedSelect,
-		VueAjaxAdvancedSelect,
 		VueInput,
-		VueCheckboxSimple,
-		VueRadio
+		VueCheckboxSimple
 	},
 	props: {
 		url: { type: String },
@@ -69,7 +61,6 @@ export default {
 		cancelUrl: { type: [String, Object], required: true },
 		isEdit: { type: Boolean, default: false },
 		viewOnly: { type: Boolean, default: false },
-		highRiskTypeUrl: { type: String, default: "" },
 		roles: {
 			type: Array,
 			default: function() {
@@ -77,12 +68,6 @@ export default {
 			}
 		},
 		contractClassifications: {
-			type: Array,
-			default: function() {
-				return [];
-			}
-		},
-		siNo: {
 			type: Array,
 			default: function() {
 				return [];
@@ -99,8 +84,7 @@ export default {
 					nit: '',
 					classification: '',
 					social_reason: '',
-					high_risk_work: '',
-					high_risk_type_id: []
+					high_risk_work: ''
 				};
 			}
 		}

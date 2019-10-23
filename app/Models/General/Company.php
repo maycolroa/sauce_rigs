@@ -35,4 +35,13 @@ class Company extends Model
           'value' => $this->id
         ];
     }
+
+    /**
+     * verifies if the check is open
+     * @return boolean
+     */
+    public function isActive()
+    {
+        return $this->active == 'SI';
+    }
 }

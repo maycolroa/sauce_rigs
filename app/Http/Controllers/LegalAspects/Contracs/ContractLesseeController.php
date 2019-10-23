@@ -11,7 +11,8 @@ use App\Models\LegalAspects\Contracts\CompanyLimitCreated;
 use App\Models\LegalAspects\Contracts\FileUpload;
 use App\Models\LegalAspects\Contracts\ContractLesseeInformation;
 use App\Models\LegalAspects\Contracts\SectionCategoryItems;
-use App\Models\LegalAspects\Contracts\Qualifications;
+use App\Models\LegalAspects\Contracts\Qualifications;;
+use App\Models\LegalAspects\Contracts\HighRiskType;
 use App\Models\LegalAspects\Contracts\ItemQualificationContractDetail;
 use App\Http\Requests\LegalAspects\Contracts\ContractRequest;
 use App\Http\Requests\LegalAspects\Contracts\ListCheckItemsRequest;
@@ -101,12 +102,11 @@ class ContractLesseeController extends Controller
             $contract = new ContractLesseeInformation($request->all());
             $contract->company_id = $this->company;
 
-            if (!$request->high_risk_work)
-                $contract->high_risk_work = 'NO';
-
-            if(!$contract->save()) {
+            if (!$contract->save())
                 return $this->respondHttp500();
-            }
+
+            $risks = ($request->high_risk_work == 'SI') ? $this->getDataFromMultiselect($request->high_risk_type_id) : [];
+            $contract->highRiskType()->sync($risks);
 
             $user = $this->createUser($request);
 
@@ -121,7 +121,7 @@ class ContractLesseeController extends Controller
 
         } catch (\Exception $e) {
             DB::rollback();
-            //return $e->getMessage();
+            \Log::info($e->getMessage());
             return $this->respondHttp500();
         }
 
@@ -141,6 +141,16 @@ class ContractLesseeController extends Controller
         try
         {
             $contract = ContractLesseeInformation::findOrFail($id);
+
+            $high_risk_type_id = [];
+
+            foreach ($contract->highRiskType as $key => $value)
+            {                
+                array_push($high_risk_type_id, $value->multiselect());
+            }
+
+            $contract->multiselect_high_risk_type = $high_risk_type_id;
+            $contract->high_risk_type_id = $high_risk_type_id;
 
             return $this->respondHttp200([
                 'data' => $contract,
@@ -195,11 +205,15 @@ class ContractLesseeController extends Controller
                 $contract->classification = NULL;
 
             if ($request->has('isInformation'))
-                $contract->completed_registration = 'SI';
-
-            if(!$contract->update()) {
-                return $this->respondHttp500();
+                $contract->completed_registration = 'SI';            
+            else
+            {
+                $risks = ($request->high_risk_work == 'SI') ? $this->getDataFromMultiselect($request->high_risk_type_id) : [];
+                $contract->highRiskType()->sync($risks);
             }
+
+            if (!$contract->update())
+                return $this->respondHttp500();
 
             $users = $this->getUsersContract($contract->id);
 
@@ -573,6 +587,33 @@ class ContractLesseeController extends Controller
             return $this->respondHttp200();
         } catch(Exception $e) {
             return $this->respondHttp500();
+        }
+    }
+
+    public function multiselectHighRisk(Request $request)
+    {
+        if($request->has('keyword'))
+        {
+            $keyword = "%{$request->keyword}%";
+            $highrisk = HighRiskType::select("id", "name")
+                ->where(function ($query) use ($keyword) {
+                    $query->orWhere('name', 'like', $keyword);
+                })
+                ->take(30)->pluck('id', 'name');
+
+            return $this->respondHttp200([
+                'options' => $this->multiSelectFormat($highrisk)
+            ]);
+        }
+        else
+        {
+            $highrisk = HighRiskType::select(
+                'sau_ct_high_risk_types.id as id',
+                'sau_ct_high_risk_types.name as name'
+            )
+            ->pluck('id', 'name');
+        
+            return $this->multiSelectFormat($highrisk);
         }
     }
 }

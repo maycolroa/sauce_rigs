@@ -83,5 +83,37 @@ export default [{
             import('@/views/System/labels/view')
         }
       ]),
+      ...middleware({ 'check-permission': 'companies_r' }, [
+        {
+          name: 'system-companies',
+          path: 'companies',
+          component: () =>
+            import('@/views/System/companies/index')
+        }
+      ]), 
+      ...middleware({ 'check-permission': 'companies_c' }, [
+        {
+          name: 'system-companies-create',
+          path: 'companies/create',
+          component: () =>
+            import('@/views/System/companies/create')
+        }
+      ]), 
+      ...middleware({ 'check-permission': 'companies_u' }, [
+        {
+          name: 'system-companies-edit',
+          path: 'companies/edit/:id',
+          component: () =>
+            import('@/views/System/companies/edit')
+        }
+      ]),
+      ...middleware({ 'check-permission': 'companies_r' }, [
+        {
+          name: 'system-companies-view',
+          path: 'companies/view/:id',
+          component: () =>
+            import('@/views/System/companies/view')
+        }
+      ]),
     ]
   }]

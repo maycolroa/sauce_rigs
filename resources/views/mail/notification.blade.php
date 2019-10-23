@@ -1,4 +1,4 @@
-@component('mail::message')
+@component('mail::message', ['module' => $mail->module])
 
 @if(isset($mail->message))
     {{ $mail->message }}
