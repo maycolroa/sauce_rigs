@@ -114,7 +114,7 @@ class ContractLesseeController extends Controller
                 return $this->respondHttp500();
             }
 
-            $user->attachRole($this->getIdRole($request->type), $this->company);
+            $user->attachRole($this->getIdRole($request->type), $this->team);
             $contract->users()->sync($user);
 
             DB::commit();
@@ -219,7 +219,7 @@ class ContractLesseeController extends Controller
 
             foreach ($users as $user)
             {
-                $user->syncRoles([$this->getIdRole($contract->type)], $this->company);
+                $user->syncRoles([$this->getIdRole($contract->type)], $this->team);
 
                 /*if ($contract->active == 'NO')
                 {
