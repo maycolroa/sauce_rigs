@@ -7,7 +7,6 @@ use App\Http\Controllers\Controller;
 use App\Vuetable\Facades\Vuetable;
 use App\Models\General\Company;
 use App\Http\Requests\System\Companies\CompanyRequest;
-use Session;
 
 class CompanyController extends Controller
 {
@@ -16,11 +15,12 @@ class CompanyController extends Controller
      */
     function __construct()
     {
+        parent::__construct();
         $this->middleware('auth');
-        $this->middleware('permission:companies_c', ['only' => 'store']);
-        $this->middleware('permission:companies_r', ['except' =>'multiselect']);
-        $this->middleware('permission:companies_u', ['only' => 'update']);
-        $this->middleware('permission:companies_d', ['only' => 'destroy']);
+        $this->middleware("permission:companies_c, {$this->team}", ['only' => 'store']);
+        $this->middleware("permission:companies_r, {$this->team}", ['except' =>'multiselect']);
+        $this->middleware("permission:companies_u, {$this->team}", ['only' => 'update']);
+        $this->middleware("permission:companies_d, {$this->team}", ['only' => 'destroy']);
     }
 
     /**
@@ -44,7 +44,7 @@ class CompanyController extends Controller
 
         return Vuetable::of($companies)
             ->addColumn('switchStatus', function ($company) {
-                return $company->id != Session::get('company_id'); 
+                return $company->id != $this->company; 
             })
             ->make();
     }
