@@ -72,6 +72,7 @@ class UserController extends Controller
         else
         {
             $team = $this->team;
+            $role = Role::defined()->where('name', 'Superadmin')->first();
             
             $users = User::select(
                 'sau_users.id AS id',
@@ -89,6 +90,12 @@ class UserController extends Controller
             })
             ->leftJoin('sau_roles', 'sau_roles.id', 'sau_role_user.role_id')
             ->groupBy('sau_users.id');
+
+            $isSuper = $this->user->hasRole('Superadmin', $this->team);
+
+            if (!$isSuper)
+                $users->where('sau_role_user.role_id', '<>', $role->id)
+                      ->orWhereNull('sau_role_user.role_id');
         }
 
        return Vuetable::of($users)

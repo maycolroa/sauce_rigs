@@ -6,7 +6,10 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Vuetable\Facades\Vuetable;
 use App\Models\General\Company;
+use App\Models\General\Team;
 use App\Http\Requests\System\Companies\CompanyRequest;
+use DB;
+use App\Jobs\System\Companies\SyncUsersSuperadminJob;
 
 class CompanyController extends Controller
 {
@@ -57,9 +60,29 @@ class CompanyController extends Controller
      */
     public function store(CompanyRequest $request)
     {
-        $company = new Company($request->all());
+        DB::beginTransaction();
         
-        if(!$company->save()){
+        try
+        {
+            $company = new Company($request->all());
+        
+            if (!$company->save())
+                return $this->respondHttp500();
+
+            $team = new Team();
+            $team->id = $company->id;
+            $team->name = $company->id;
+            $team->display_name = $company->name;
+            $team->description = "Equipo ".$company->name;
+            $team->save();
+
+            DB::commit();
+
+            SyncUsersSuperadminJob::dispatch();
+
+        } catch (\Exception $e) {
+            //\Log::info($e->getMessage());
+            DB::rollback();
             return $this->respondHttp500();
         }
 
@@ -97,12 +120,37 @@ class CompanyController extends Controller
      */
     public function update(CompanyRequest $request, Company $company)
     {
-        $company->fill($request->all());
-        
-        if(!$company->update()){
-          return $this->respondHttp500();
+        DB::beginTransaction();
+
+        try
+        {
+            $company->fill($request->all());
+            
+            if(!$company->update())
+                return $this->respondHttp500();
+
+            $team = Team::updateOrCreate(
+                [
+                    'name' => $company->id,
+                ], 
+                [
+                    'id' => $company->id,
+                    'name' => $company->id,
+                    'display_name' => $company->name,
+                    'description' => "Equipo ".$company->name
+                ]
+            );
+                
+            DB::commit();
+
+            SyncUsersSuperadminJob::dispatch();
+
+        } catch (\Exception $e) {
+            \Log::info($e->getMessage());
+            DB::rollback();
+            return $this->respondHttp500();
         }
-        
+
         return $this->respondHttp200([
             'message' => 'Se actualizo la compañia'
         ]);
@@ -127,7 +175,7 @@ class CompanyController extends Controller
     public function toggleState(Company $company)
     {
         $newState = $company->isActive() ? "NO" : "SI";
-        $data = ['state' => $newState];
+        $data = ['active' => $newState];
 
         if (!$company->update($data)) {
             return $this->respondHttp500();
