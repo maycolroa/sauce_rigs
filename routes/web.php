@@ -418,7 +418,7 @@ Route::middleware(['auth'])->group(function () {
 
       Route::post('company/data', 'System\Companies\CompanyController@data');
       Route::ApiResource('company', 'System\Companies\CompanyController');  
-      Route::put('company/switchStatus/{company}', 'System\Companies\CompanyController@toggleState');
+      Route::post('company/switchStatus/{company}', 'System\Companies\CompanyController@toggleState');
     });
 
 

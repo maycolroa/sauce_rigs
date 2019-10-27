@@ -24,7 +24,7 @@ class TelescopeServiceProvider extends TelescopeApplicationServiceProvider
 
         Telescope::auth(function ($request) {
 
-            if (isset($request->user()->id) && Session::get('company_id'))
+            /*if (isset($request->user()->id) && Session::get('company_id'))
             {
                 $team = Team::where('name', Session::get('company_id'))->first();
 
@@ -33,7 +33,7 @@ class TelescopeServiceProvider extends TelescopeApplicationServiceProvider
                 }
             }
             else
-                throw new UnauthorizedHttpException('Unauthorized');
+                throw new UnauthorizedHttpException('Unauthorized');*/
 
             return true;
         });

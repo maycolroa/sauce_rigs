@@ -200,7 +200,7 @@ export default [
                         title: 'Cambiar Estado'
                     },
                     data: {
-                        action: '/system/companies/switchStatus',
+                        action: '/system/company/switchStatus/',
                         id: 'id',
                         messageConfirmation: 'Esta seguro de querer cambiar el estado de __name__'
                     },
