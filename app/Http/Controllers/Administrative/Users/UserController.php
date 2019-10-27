@@ -16,6 +16,7 @@ use App\Traits\UserTrait;
 use App\Traits\ContractTrait;
 use App\Traits\PermissionTrait;
 use App\Jobs\Administrative\Users\UserExportJob;
+use App\Jobs\System\Companies\SyncUsersSuperadminJob;
 use Validator;
 use Hash;
 use DB;
@@ -169,6 +170,8 @@ class UserController extends Controller
 
             DB::commit();
 
+            SyncUsersSuperadminJob::dispatch();
+
         } catch (\Exception $e) {
             DB::rollback();
             return $this->respondHttp500();
@@ -295,6 +298,8 @@ class UserController extends Controller
                 $this->deleteFilter('sau_lm_user_system_apply', $user->id);
 
             DB::commit();
+
+            SyncUsersSuperadminJob::dispatch();
 
         } catch (\Exception $e) {
             DB::rollback();

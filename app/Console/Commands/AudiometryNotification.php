@@ -74,14 +74,18 @@ class AudiometryNotification extends Command
             {
                 foreach ($data as $key => $value)
                 {
-                    $recipients = User::select('sau_users.email')
+                    $recipients = User::select('sau_users.*')
                                 ->active()
                                 ->join('sau_company_user', 'sau_company_user.user_id', 'sau_users.id');
 
                     $recipients->company_scope = $key;
                     $recipients = $recipients->get();
+
+                    $recipients = $recipients->filter(function ($recipient, $index) use ($key) {
+                        return $recipient->can('biologicalMonitoring_audiometry_receive_notifications', $key);
+                    });
                     
-                    if (!empty($recipients))
+                    if (!$recipients->isEmpty())
                     {
                         $nameExcel = 'export/1/audiometrias_notificacion_'.date("YmdHis").'.xlsx';
                         Excel::store(new AudiometryExcel(new Collection($value)),$nameExcel,'public',\Maatwebsite\Excel\Excel::XLSX);
@@ -91,7 +95,7 @@ class AudiometryNotification extends Command
                         NotificationMail::
                             subject('Notificación de las audiometrias')
                             ->recipients($recipients)
-                            ->message('Lista de empleados que sufrierón una degradación en los resultados de sus audiometrias para el dia de ayer')
+                            ->message('Lista de empleados que sufrierón una degradación en los resultados de sus audiometrias para el dia de ayer.')
                             ->subcopy('Este link es valido por 24 horas')
                             ->buttons([['text'=>'Descargar', 'url'=>url("/export/{$paramUrl}")]])
                             ->module('biologicalMonitoring/audiometry')

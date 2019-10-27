@@ -9,7 +9,6 @@ use App\Models\LegalAspects\LegalMatrix\Interest;
 use App\Models\General\Company;
 use App\Models\Administrative\Users\User;
 use App\Http\Requests\LegalAspects\LegalMatrix\InterestRequest;
-use App\Facades\Mail\Facades\NotificationMail;
 use App\Jobs\LegalAspects\LegalMatrix\ConfigureInterestsJob;
 use App\Jobs\LegalAspects\LegalMatrix\SyncQualificationsCompaniesJob;
 
