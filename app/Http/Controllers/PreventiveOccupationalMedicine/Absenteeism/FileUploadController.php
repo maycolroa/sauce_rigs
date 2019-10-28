@@ -2,21 +2,18 @@
 
 namespace App\Http\Controllers\PreventiveOccupationalMedicine\Absenteeism;
 
-use App\Models\PreventiveOccupationalMedicine\Absenteeism\FileUpload;
-use App\Models\PreventiveOccupationalMedicine\Absenteeism\TalendUpload;
-use App\Http\Requests\PreventiveOccupationalMedicine\Absenteeism\FileUploadRequest;
-use App\Http\Requests\PreventiveOccupationalMedicine\Absenteeism\TalendUploadRequest;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
-use Carbon\Carbon;
 use Illuminate\Support\Facades\Storage;
 use App\Vuetable\Facades\Vuetable;
+use App\Http\Controllers\Controller;
+use App\Models\PreventiveOccupationalMedicine\Absenteeism\Talend;
+use App\Models\PreventiveOccupationalMedicine\Absenteeism\FileUpload;
+use App\Http\Requests\PreventiveOccupationalMedicine\Absenteeism\FileUploadRequest;
+use App\Jobs\PreventiveOccupationalMedicine\Absenteeism\FileUpload\ProcessFileUploadJob;
 use Validator;
-use DB;
 
 class FileUploadController extends Controller
 {
-    
     /**
      * creates and instance and middlewares are checked
      */
@@ -24,10 +21,10 @@ class FileUploadController extends Controller
     {
         parent::__construct();
         $this->middleware('auth');
-        $this->middleware("permission:absen_uploadFiles_c, {$this->team}", ['only' => 'store']);
+        //$this->middleware("permission:absen_uploadFiles_c, {$this->team}", ['only' => 'store']);
         $this->middleware("permission:absen_uploadFiles_r, {$this->team}");
-        $this->middleware("permission:absen_uploadFiles_u, {$this->team}", ['only' => 'update']);
-        $this->middleware("permission:absen_uploadFiles_d, {$this->team}", ['only' => 'destroy']);
+        //$this->middleware("permission:absen_uploadFiles_u, {$this->team}", ['only' => 'update']);
+        //$this->middleware("permission:absen_uploadFiles_d, {$this->team}", ['only' => 'destroy']);
     }
 
     /**
@@ -37,15 +34,16 @@ class FileUploadController extends Controller
     */
     public function data(Request $request)
     {
-
-        $files = FileUpload::select(
-            'sau_absen_file_upload.*',
-            'sau_users.name as user_name'
-        )
-        ->join('sau_users', 'sau_users.id', 'sau_absen_file_upload.user_id');
-      
-          return Vuetable::of($files)
-                    ->make();
+      $files = FileUpload::select(
+          'sau_absen_file_upload.*',
+          'sau_absen_talends.name AS talend_name',
+          'sau_users.name AS user_name'
+      )
+      ->join('sau_absen_talends', 'sau_absen_talends.id', 'sau_absen_file_upload.talend_id')
+      ->join('sau_users', 'sau_users.id', 'sau_absen_file_upload.user_id');
+    
+      return Vuetable::of($files)
+                  ->make();
     }
 
     /**
@@ -56,60 +54,49 @@ class FileUploadController extends Controller
      */
     public function store(FileUploadRequest $request)
     {
-      
-      
-      if($talend=TalendUpload::find($this->company)){
+      if (!Talend::active()->first())
+        return $this->respondWithError('Aun no tiene permitido cargar archivos');
 
-        Validator::make($request->all(), [
+      Validator::make($request->all(), [
         "file" => [
             function ($attribute, $value, $fail)
             {
-                if (($value && !is_string($value) && $value->getClientMimeType() != 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet') && 
-                    ($value && !is_string($value) && $value->getClientMimeType() != 'application/zip') &&
-                    ($value && !is_string($value) && $value->getClientMimeType() != 'application/vnd.ms-excel'))
-                    $fail('Archivo debe ser un zip o un Excel');
+              if ($value && !is_string($value) && 
+                $value->getClientMimeType() != 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' && 
+                $value->getClientMimeType() != 'application/zip' &&
+                $value->getClientMimeType() != 'application/vnd.ms-excel')
+                  $fail('Archivo debe ser un Zip o un Excel');
             },
         ]
-    ])->validate();
-    
-    DB::beginTransaction();
+      ])->validate();
 
       try
       {
-        $fileUpload = new FileUpload();
-        $file = $request->file;
-        
-        $nameFile = base64_encode($this->user->id . now()) .'.'. $file->extension();
-        
-        $file->storeAs('absenteeism/files/', $nameFile,'public');
-        $file->storeAs('absenteeism/files/', $nameFile,'s3');
-
-        $fileUpload->file = $nameFile;
+        $fileUpload = new FileUpload($request->except('file'));
+        $fileUpload->company_id = $this->company;
         $fileUpload->user_id = $this->user->id;
-        $fileUpload->name = $request->name;
+        $fileUpload->path = $fileUpload->path_base();
+
+        $file = $request->file;
+        $nameFile = base64_encode($this->user->id . now()) .'.'. $file->extension();
+        $file->storeAs($fileUpload->path_client(false), $nameFile, 'public');
+        $file->storeAs($fileUpload->path_client(false), $nameFile, 's3');
+        $fileUpload->file = $nameFile;
         
       
-        if(!$fileUpload->save())
-        {
+        if (!$fileUpload->save())
           return $this->respondHttp500();
-        }
-                
-        DB::commit();
 
+        ProcessFileUploadJob::dispatch($this->user, $this->company, $fileUpload, $fileUpload->talend);
       }
       catch(\Exception $e) {
-        DB::rollback();
-        //return $e->getMessage();
+        \Log::info($e->getMessage());
         return $this->respondHttp500();
       }
 
       return $this->respondHttp200([
         'message' => 'Se subio el archivo correctamente'
       ]);
-      }
-      else{
-        return $this->respondHttp500();
-      }
     }
 
     /**
@@ -119,27 +106,7 @@ class FileUploadController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function show($id)
-    {
-        try
-      {
-
-        $file = FileUpload::select(
-          'sau_absen_file_upload.*',
-          'sau_users.name as user_name'
-      )
-      ->join('sau_users', 'sau_users.id', 'sau_absen_file_upload.user_id')
-      ->where('sau_absen_file_upload.id', $id)->first();
-      
-        return $this->respondHttp200([
-            'data' => $file,
-        ]);
-
-      } catch(Exception $e) {
-        $this->respondHttp500();
-      }
-      
-      
-    }
+    { }
 
     /**
      * Update the specified resource in storage.
@@ -149,42 +116,7 @@ class FileUploadController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function update(FileUploadRequest $request, FileUpload $fileUpload)
-    {
-      DB::beginTransaction();
-
-      try
-      {
-        
-        if($request->file != $fileUpload->file)
-        {
-          $file = $request->file;
-          Storage::disk('public')->delete('abasenteeism/files/'. $fileUpload->file);
-          Storage::disk('s3')->delete('abasenteeism/files/'. $fileUpload->file);
-          $nameFile = base64_encode($this->user->id . now()) .'.'. $file->extension();
-          $file->storeAs('absenteeism/files/', $nameFile,'public');
-          $file->storeAs('absenteeism/files/', $nameFile,'s3');
-          $fileUpload->file = $nameFile;
-        }
-        
-        $fileUpload->name = $request->name;
-        
-        if(!$fileUpload->save()) {
-          return $this->respondHttp500();
-        }
-
-        DB::commit();
-
-      }
-      catch(\Exception $e) {
-        DB::rollback();
-        //return $e->getMessage();
-        return $this->respondHttp500();
-      }
-
-      return $this->respondHttp200([
-        'message' => 'Se actualizo el archivo correctamente'
-      ]);
-    }
+    { }
 
     /**
      * Remove the specified resource from storage.
@@ -193,27 +125,7 @@ class FileUploadController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function destroy(FileUpload $fileUpload)
-    {
-      try
-      {
-       
-        Storage::disk('public')->delete('absenteeism/files/'. $fileUpload->file);
-        Storage::disk('s3')->delete('absenteeism/files/'. $fileUpload->file);
-        
-        if(!$fileUpload->delete())
-        {
-          return $this->respondHttp500();
-        }
-        
-        return $this->respondHttp200([
-          'message' => 'Se elimino el archivo correctamente'
-        ]);
-        
-      }
-      catch(\Exception $e) {
-        return $this->respondHttp500();
-      }
-    }
+    { }
 
     /**
      * Remove the specified resource from storage.
@@ -223,77 +135,6 @@ class FileUploadController extends Controller
      */
     public function download(FileUpload $fileUpload)
     {
-      return Storage::disk('s3')->download('absenteeism/files/'. $fileUpload->file);
+      return Storage::disk('s3')->download($fileUpload->path_donwload());
     }
-
-    /**
-    * Display a listing of the resource.
-    *
-    * @return \Illuminate\Http\Response
-    */
-    public function dataTalend(Request $request)
-    {
-      $talend=TalendUpload::find($this->company);
-        /*$talend = TalendUpload::select(
-            'sau_absen_talends.*')->first();
-      \Log::info($talend);*/
-            return $this->respondHttp200([
-              'data' => $talend
-          ]);
-    }
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function storeTalend(TalendUploadRequest $request)
-    {
-     
-      Validator::make($request->all(), [
-        "file" => [
-            function ($attribute, $value, $fail)
-            {
-                if ( ($value && !is_string($value) && $value->getClientMimeType() != 'application/zip'))
-                    $fail('Archivo debe ser un zip');
-            },
-        ]
-    ])->validate();
-    
-    DB::beginTransaction();
-
-      try
-      {
-        $talendUpload = new TalendUpload();
-        $file = $request->file;
-        
-        $nameFile = base64_encode($this->user->id . now()) .'.'. $file->extension();
-        
-        $file->storeAs('absenteeism/files/', $nameFile,'public');
-        //$file->storeAs('absenteeism/files/', $nameFile,'s3');
-
-        $talendUpload->file = $nameFile;
-        $talendUpload->company_id  = $this->company;
-        $talendUpload->route = "storage/app/absenteeism/files/";
-        
-      
-        if(!$talendUpload->save())
-        {
-          return $this->respondHttp500();
-        }
-                
-        DB::commit();
-
-      }
-      catch(\Exception $e) {
-        DB::rollback();
-        //return $e->getMessage();
-        return $this->respondHttp500();
-      }
-
-      return $this->respondHttp200([
-        'message' => 'Se subio el archivo correctamente'
-      ]);
-    }
-
 }

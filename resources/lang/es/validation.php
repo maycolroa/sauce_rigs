@@ -306,6 +306,7 @@ return [
       'condition_id' => 'Codición',
       'users.*.user_id' => 'Usuario',
       'users.*.role_id' => 'Rol',
+      'talend_id' => 'Tipo'
     ],
 
 ];
