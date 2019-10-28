@@ -21,7 +21,7 @@ class TalendController extends Controller
         parent::__construct();
         $this->middleware('auth');
         $this->middleware("permission:absen_uploadTalend_c, {$this->team}", ['only' => 'store']);
-        $this->middleware("permission:absen_uploadTalend_r, {$this->team}", ['except' =>'multiselect']);
+        $this->middleware("permission:absen_uploadTalend_r, {$this->team}", ['except' =>'multiselect', 'talendExist']);
         $this->middleware("permission:absen_uploadTalend_u, {$this->team}", ['only' => 'update']);
         $this->middleware("permission:absen_uploadTalend_d, {$this->team}", ['only' => 'toggleState']);
     }
@@ -67,20 +67,27 @@ class TalendController extends Controller
             ]
         ])->validate();
 
-        $talend = new Talend($request->except('file'));
-        $talend->company_id = $this->company;
-        $talend->path = $talend->path_base();
+        try
+        {
+            $talend = new Talend($request->except('file'));
+            $talend->company_id = $this->company;
+            $talend->path = $talend->path_base();
 
-        $file_tmp = $request->file;
-        $file_tmp->storeAs($talend->path_client(false), $file_tmp->getClientOriginalName());
+            $file_tmp = $request->file;
+            $file_tmp->storeAs($talend->path_client(false), $file_tmp->getClientOriginalName());
 
-        $talend->file = $file_tmp->getClientOriginalName();
-        $talend->file_original_name = pathinfo($file_tmp->getClientOriginalName(), PATHINFO_FILENAME);
-        
-        if (!$talend->save())
-            return $this->respondHttp500();
+            $talend->file = $file_tmp->getClientOriginalName();
+            $talend->file_original_name = pathinfo($file_tmp->getClientOriginalName(), PATHINFO_FILENAME);
+            
+            if (!$talend->save())
+                return $this->respondHttp500();
 
-        ExtractTalendZipFileJob::dispatch($talend);
+            ExtractTalendZipFileJob::dispatch($talend);
+        }
+        catch(\Exception $e) {
+          \Log::info($e->getMessage());
+          return $this->respondHttp500();
+        }
 
         return $this->respondHttp200([
             'message' => 'Se cargo el talend'
@@ -187,25 +194,46 @@ class TalendController extends Controller
         if($request->has('keyword'))
         {
             $keyword = "%{$request->keyword}%";
-            $restrictions = Restriction::select("id", "name")
+            $talends = Talend::active()->select("id", "name")
                 ->where(function ($query) use ($keyword) {
                     $query->orWhere('name', 'like', $keyword);
                 })
                 ->take(30)->pluck('id', 'name');
 
             return $this->respondHttp200([
-                'options' => $this->multiSelectFormat($restrictions)
+                'options' => $this->multiSelectFormat($talends)
             ]);
         }
         else
         {
-            $restrictions = Restriction::select(
-                'sau_reinc_restrictions.id as id',
-                'sau_reinc_restrictions.name as name'
+            $talends = Talend::active()->select(
+                'sau_absen_talends.id as id',
+                'sau_absen_talends.name as name'
             )
             ->pluck('id', 'name');
         
-            return $this->multiSelectFormat($restrictions);
+            return $this->multiSelectFormat($talends);
+        }
+    }
+
+    /**
+     * Display the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function talendExist(Request $request)
+    {
+        try
+        {
+            $talend = Talend::active()->first();
+
+            return $this->respondHttp200([
+                'data' => $talend ? true : false
+            ]);
+
+        } catch(Exception $e){
+            $this->respondHttp500();
         }
     }
 }
