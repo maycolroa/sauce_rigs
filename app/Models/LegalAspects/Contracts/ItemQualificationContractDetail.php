@@ -11,7 +11,8 @@ class ItemQualificationContractDetail extends Model
     protected $fillable = [
         'item_id',
         'qualification_id',
-        'contract_id'
+        'contract_id',
+        'observations'
     ];
 
     public function contract()

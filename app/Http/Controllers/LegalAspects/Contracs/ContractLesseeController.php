@@ -329,13 +329,18 @@ class ContractLesseeController extends Controller
             $items_calificated = ItemQualificationContractDetail::
                       where('contract_id', $contract->id)
                     ->pluck("qualification_id", "item_id");
+            
+            $items_observations = ItemQualificationContractDetail::
+                     where('contract_id', $contract->id)
+                    ->pluck("observations", "item_id");
 
             if (COUNT($items) > 0)
             {
-                $items->transform(function($item, $index) use ($qualifications, $items_calificated, $contract) {
+                $items->transform(function($item, $index) use ($qualifications, $items_calificated, $contract, $items_observations) {
                     //Añade las actividades definidas de cada item para los planes de acción
                     $item->activities_defined = $item->activities()->pluck("description");
                     $item->qualification = isset($items_calificated[$item->id]) ? $qualifications[$items_calificated[$item->id]] : '';
+                    $item->observations = isset($items_observations[$item->id]) ? $items_observations[$item->id] : '';
                     $item->files = [];
                     $item->actionPlan = [
                         "activities" => [],
@@ -452,7 +457,7 @@ class ContractLesseeController extends Controller
             {
                 $itemQualification = ItemQualificationContractDetail::updateOrCreate(
                     ['contract_id' => $contract->id, 'item_id' => $request->id], 
-                    ['contract_id' => $contract->id, 'item_id' => $request->id, 'qualification_id' => $qualifications[$request->qualification]]);
+                    ['contract_id' => $contract->id, 'item_id' => $request->id, 'qualification_id' => $qualifications[$request->qualification], 'observations' => $request->observations]);
 
                 if (!$itemQualification->save()) 
                     return $this->respondHttp500();

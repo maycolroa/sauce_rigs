@@ -85,8 +85,10 @@
 						</div>
 						<div class="text-muted small text-nowrap">	
 								<vue-radio :disabled="viewOnly" v-model="item.qualification" label="Calificación" :name="`items${item.id}`" :error="form.errorsFor(`items.${index}`)" :options="qualifications" :checked="item.qualification" @input="changeActionFiles(item.qualification, `${index}`)"></vue-radio>
-						</div>
-						
+						</div>						
+					</div>
+					<div class="col-md-12">
+						<vue-textarea @onBlur="saveQualification(`${index}`)" :disabled="viewOnly" class="col-md-12" v-model="item.observations" label="Observaciones" name="observations" placeholder="Observaciones" :error="form.errorsFor(`observations`)"></vue-textarea>
 					</div>
 					<div v-if="existError(`items.${index}.`)">
 							<b-form-feedback class="d-block" style="padding-bottom: 10px;">
@@ -111,6 +113,7 @@ import VueAdvancedSelect from "@/components/Inputs/VueAdvancedSelect.vue";
 import VueInput from "@/components/Inputs/VueInput.vue";
 import VueCheckbox from "@/components/Inputs/VueCheckbox.vue";
 import VueRadio from "@/components/Inputs/VueRadio.vue";
+import VueTextarea from "@/components/Inputs/VueTextarea.vue";
 import ActionPlanComponent from '@/components/CustomInputs/ActionPlanComponent.vue';
 import Form from "@/utils/Form.js";
 import FormUploadFileListItemComponent from '@/components/LegalAspects/Contracts/ContractLessee/FormUploadFileListItemComponent.vue';
@@ -124,6 +127,7 @@ export default {
 		VueInput,
 		VueCheckbox,
 		VueRadio,
+		VueTextarea,
 		ActionPlanComponent,
 		FormUploadFileListItemComponent,
 		ListCheckItemsResumenComponent,
@@ -288,6 +292,7 @@ export default {
 				data.append('created_at', item.created_at);
 				data.append('updated_at', item.updated_at);
 				data.append('name', item.name);
+				data.append('observations', item.observations);
 				data.append('activities_defined', JSON.stringify(item.activities_defined));
 				data.append('qualification', item.qualification);
 				data.append('files', JSON.stringify(item.files));
