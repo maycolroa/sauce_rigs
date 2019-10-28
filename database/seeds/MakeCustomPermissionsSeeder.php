@@ -57,7 +57,12 @@ class MakeCustomPermissionsSeeder extends Seeder
                                                 ]);
                                             }
                                             else
-                                                $this->command->info("Permiso ".$permission['name']." ya existe");
+                                                $permission_exist->update([
+                                                    'name' => $permission['name'],
+                                                    'display_name' => $permission['display_name'],
+                                                    'description' => $permission['display_name'],
+                                                    'module_id' => $mod->id
+                                                ]);
                                         }
                                         else
                                             $this->command->info('Elemento omitido por formato invalido: '. json_encode($permission));

@@ -815,20 +815,23 @@ class ActionPlan
 
             if($responsible && $responsible->email != null)
             {
-                NotificationMail::
-                    subject('Nuevas Actividades')
-                    ->view('actionplan.activities')
-                    ->recipients($responsible)
-                    ->message('Se han asignado las siguientes actividades para usted.')
-                    ->module('actionPlans')
-                    ->table($this->prepareDataTable($value->toArray(), $this->module->display_name))
-                    ->list($this->prepareListItemMainEmail($this->user->name), 'ul')
-                    ->with(['responsible'=>$responsible->name])
-                    ->buttons([
-                        ['text'=>'Llevarme al sitio', 'url'=>$this->url]
-                    ])
-                    ->company($company_id)
-                    ->send();
+                if ($responsible->can('actionPlans_receive_notifications', $company_id))
+                {
+                    NotificationMail::
+                        subject('Nuevas Actividades')
+                        ->view('actionplan.activities')
+                        ->recipients($responsible)
+                        ->message('Se han asignado las siguientes actividades para usted.')
+                        ->module('actionPlans')
+                        ->table($this->prepareDataTable($value->toArray(), $this->module->display_name))
+                        ->list($this->prepareListItemMainEmail($this->user->name), 'ul')
+                        ->with(['responsible'=>$responsible->name])
+                        ->buttons([
+                            ['text'=>'Llevarme al sitio', 'url'=>$this->url]
+                        ])
+                        ->company($company_id)
+                        ->send();
+                }
             }
         }
     }
@@ -855,20 +858,23 @@ class ActionPlan
 
             if($supervisor && $supervisor->email != null)
             {
-                NotificationMail::
-                    subject('Actividades Actualizadas')
-                    ->view('actionplan.activities')
-                    ->recipients($supervisor)
-                    ->message('El usuario '.$this->user->name.' ha cambiado la información de las siguientes actividades:')
-                    ->module('actionPlans')
-                    ->table($this->prepareDataTable($value->toArray(), $this->module->display_name))
-                    ->list($this->prepareListItemMainEmail($supervisor->name), 'ul')
-                    ->with(['responsible'=>$supervisor->name])
-                    ->buttons([
-                        ['text'=>'Llevarme al sitio', 'url'=>$this->url]
-                    ])
-                    ->company($company_id)
-                    ->send();
+                if ($supervisor->can('actionPlans_receive_notifications', $company_id))
+                {
+                    NotificationMail::
+                        subject('Actividades Actualizadas')
+                        ->view('actionplan.activities')
+                        ->recipients($supervisor)
+                        ->message('El usuario '.$this->user->name.' ha cambiado la información de las siguientes actividades:')
+                        ->module('actionPlans')
+                        ->table($this->prepareDataTable($value->toArray(), $this->module->display_name))
+                        ->list($this->prepareListItemMainEmail($supervisor->name), 'ul')
+                        ->with(['responsible'=>$supervisor->name])
+                        ->buttons([
+                            ['text'=>'Llevarme al sitio', 'url'=>$this->url]
+                        ])
+                        ->company($company_id)
+                        ->send();
+                }
             }
         }
     }
@@ -960,14 +966,39 @@ class ActionPlan
                 {
                     //$module = Module::find($dataS);
 
+                    if ($supervisor->can('actionPlans_receive_notifications', $this->company))
+                    {
+                        NotificationMail::
+                            subject('Actividades Próximas a Vencerse')
+                            ->view('actionplan.activities')
+                            ->recipients($supervisor)
+                            ->message('Las siguientes actividades están próximas a vencerse: ')
+                            ->module('actionPlans')
+                            ->event('Tarea programada: DaysAlertExpirationDateActionPlan')
+                            ->table($this->prepareDataTable($valueS->toArray(), null, 'Y-m-d'))
+                            //->list($this->prepareListItemMainEmail(), 'ul')
+                            ->with(['responsible'=>$responsible->name])
+                            /*->buttons([
+                                ['text'=>'Llevarme al sitio', 'url'=>$url]
+                            ])*/
+                            ->company($this->company)
+                            ->send();
+                    }
+                }
+            }
+
+            if($responsible && $responsible->email != null)
+            {
+                if ($responsible->can('actionPlans_receive_notifications', $this->company))
+                {
                     NotificationMail::
                         subject('Actividades Próximas a Vencerse')
                         ->view('actionplan.activities')
-                        ->recipients($supervisor)
+                        ->recipients($responsible)
                         ->message('Las siguientes actividades están próximas a vencerse: ')
                         ->module('actionPlans')
                         ->event('Tarea programada: DaysAlertExpirationDateActionPlan')
-                        ->table($this->prepareDataTable($valueS->toArray(), null, 'Y-m-d'))
+                        ->table($this->prepareDataTable($value->toArray(), null, 'Y-m-d'))
                         //->list($this->prepareListItemMainEmail(), 'ul')
                         ->with(['responsible'=>$responsible->name])
                         /*->buttons([
@@ -976,25 +1007,6 @@ class ActionPlan
                         ->company($this->company)
                         ->send();
                 }
-            }
-
-            if($responsible && $responsible->email != null)
-            {
-                NotificationMail::
-                    subject('Actividades Próximas a Vencerse')
-                    ->view('actionplan.activities')
-                    ->recipients($responsible)
-                    ->message('Las siguientes actividades están próximas a vencerse: ')
-                    ->module('actionPlans')
-                    ->event('Tarea programada: DaysAlertExpirationDateActionPlan')
-                    ->table($this->prepareDataTable($value->toArray(), null, 'Y-m-d'))
-                    //->list($this->prepareListItemMainEmail(), 'ul')
-                    ->with(['responsible'=>$responsible->name])
-                    /*->buttons([
-                        ['text'=>'Llevarme al sitio', 'url'=>$url]
-                    ])*/
-                    ->company($this->company)
-                    ->send();
             }
         }
     }

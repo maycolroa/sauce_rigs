@@ -37,10 +37,13 @@ class ListCheckContractExportJob implements ShouldQueue
      */
     public function handle()
     {
-      
         $recipients = $this->getUsersMasterContract($this->company_id);
+
+        $recipients = $recipients->filter(function ($recipient, $index) {
+          return $recipient->can('contracts_receive_notifications', $this->company_id);
+        });
         
-        if (!empty($recipients))
+        if (!$recipients->isEmpty())
         {
           $nameExcel = 'export/1/lista_estandares_minimos_'.date("YmdHis").'.xlsx';
           Excel::store(new ListCheckContractExcel($this->contract),$nameExcel,'public',\Maatwebsite\Excel\Excel::XLSX);

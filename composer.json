@@ -18,7 +18,8 @@
         "maddhatter/markdown-table": "^1.0",
         "pda/pheanstalk": "^3.0",
         "predis/predis": "^1.1",
-        "santigarcor/laratrust": "5.2.*"
+        "santigarcor/laratrust": "5.2.*",
+        "symfony/process": "^4.3"
     },
     "require-dev": {
         "filp/whoops": "^2.0",

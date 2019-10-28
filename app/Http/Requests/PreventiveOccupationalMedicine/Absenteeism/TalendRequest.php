@@ -2,10 +2,10 @@
 
 namespace App\Http\Requests\PreventiveOccupationalMedicine\Absenteeism;
 
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Foundation\Http\FormRequest;
+use Session;
 
-class TalendUploadRequest extends FormRequest
+class TalendRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,10 +24,11 @@ class TalendUploadRequest extends FormRequest
      */
     public function rules()
     {
-        $rules = [
-            "file"        => "required|file|max:20480|mimes:zip"
+        $id = $this->input('id');
+        
+        return [
+            'name' => 'required|unique:sau_absen_talends,name,'.$id.',id,company_id,'.Session::get('company_id'),
+            'file' => 'required|max:20480'
         ];
-
-        return $rules;
     }
 }

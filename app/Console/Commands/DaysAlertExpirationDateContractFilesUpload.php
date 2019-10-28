@@ -48,6 +48,8 @@ class DaysAlertExpirationDateContractFilesUpload extends Command
 
         foreach ($companies as $key => $value)
         {
+            $company_id = $value['company_id'];
+
             $files = FileUpload::select(
                     'sau_ct_file_upload_contracts_leesse.*',
                     'sau_users.name as user_name'
@@ -58,14 +60,18 @@ class DaysAlertExpirationDateContractFilesUpload extends Command
                 ->whereRaw("CURDATE() = DATE_ADD(sau_ct_file_upload_contracts_leesse.expirationDate, INTERVAL -".$value['value']." DAY)")
                 ->groupBy('sau_ct_file_upload_contracts_leesse.id');
             
-            $files->company_scope = $value['company_id'];
+            $files->company_scope = $company_id;
             $files = $files->get();
 
             if ($files->count() > 0)
             {
-                $recipients = $this->getUsersMasterContract($value['company_id']);
+                $recipients = $this->getUsersMasterContract($company_id);
 
-                if (!empty($recipients))
+                $recipients = $recipients->filter(function ($recipient, $index) use ($company_id) {
+                    return $recipient->can('contracts_receive_notifications', $company_id);
+                });
+
+                if (!$recipients->isEmpty())
                 {
                     NotificationMail::
                         subject('Contratistas - Archivos Próximos a Vencerse')
@@ -75,7 +81,7 @@ class DaysAlertExpirationDateContractFilesUpload extends Command
                         ->module('contracts')
                         ->event('Tarea programada: DaysAlertExpirationDateContractFilesUpload')
                         ->table($this->prepareDataTable($files))
-                        ->company($value['company_id'])
+                        ->company($company_id)
                         ->send();
                 }
             }

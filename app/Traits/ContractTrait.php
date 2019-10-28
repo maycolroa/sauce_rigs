@@ -85,17 +85,23 @@ trait ContractTrait
         return $contract ? $contract->id : NULL;
     }
 
-    public function getUsersMasterContract($company_id)
+    public function getUsersMasterContract($company_id = null)
     {
-        if (!is_numeric($company_id))
+        if ($company_id && !is_numeric($company_id))
             throw new \Exception('Company invalid');
             
-        $users = User::active()
+        $users = User::select('sau_users.*')
+            ->active()
             ->join('sau_company_user', 'sau_company_user.user_id', 'sau_users.id')
             ->leftJoin('sau_user_information_contract_lessee', 'sau_user_information_contract_lessee.user_id', 'sau_users.id')
             //->where('sau_company_user.company_id', $company_id)
-            ->whereNull('sau_user_information_contract_lessee.information_id')
-            ->get();
+            ->whereNull('sau_user_information_contract_lessee.information_id');
+            //->get();
+
+        if ($company_id)
+            $users->company_scope = $company_id;
+
+        $users = $users->get();
 
         return $users;
     }

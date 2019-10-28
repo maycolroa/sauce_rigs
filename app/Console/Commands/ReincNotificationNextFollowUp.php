@@ -54,6 +54,10 @@ class ReincNotificationNextFollowUp extends Command
             $users->company_scope = $company->id;
             $users = $users->get();
 
+            $users = $users->filter(function ($user, $index) use ($company) {
+                return $user->can('reinc_receive_notifications', $company->id);
+            });
+
             $users->map(function($user) use ($company)
             {
                 $data = Check::select(
