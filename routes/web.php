@@ -200,6 +200,8 @@ Route::middleware(['auth'])->group(function () {
 
         Route::prefix('system')->group(function () {
           Route::post('labels', 'System\Labels\LabelController@multiselect');
+          Route::post('usersCompany', 'System\Companies\CompanyController@multiselectUsers');
+          Route::post('rolesCompany', 'System\Companies\CompanyController@multiselectRoles');
         });
     });
 

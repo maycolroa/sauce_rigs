@@ -5,6 +5,8 @@ namespace App\Http\Controllers\System\Companies;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Vuetable\Facades\Vuetable;
+use App\Models\Administrative\Users\User;
+use App\Models\Administrative\Roles\Role;
 use App\Models\General\Company;
 use App\Models\General\Team;
 use App\Http\Requests\System\Companies\CompanyRequest;
@@ -102,6 +104,8 @@ class CompanyController extends Controller
         try
         {
             $company = Company::findOrFail($id);
+            $company->users = [];
+            $company->delete = [];
 
             return $this->respondHttp200([
                 'data' => $company,
@@ -140,6 +144,28 @@ class CompanyController extends Controller
                     'description' => "Equipo ".$company->name
                 ]
             );
+
+            if ($request->has('users') && COUNT($request->users) > 0)
+            {
+                foreach ($request->users as $key => $value)
+                {
+                    $user = User::find($value['user_id']);
+
+                    if ($user)
+                    {
+                        $user->companies()->attach($company->id);
+
+                        $roles = $this->getValuesForMultiselect($value['role_id']);
+                        $roles = Role::whereIn('id', $roles)->get();
+
+                        if (COUNT($roles) > 0)
+                        {
+                            $team = Team::where('name', $company->id)->first();
+                            $user->attachRoles($roles, $team);
+                        }
+                    }
+                }
+            }
                 
             DB::commit();
 
@@ -218,4 +244,33 @@ class CompanyController extends Controller
             return $this->multiSelectFormat($activities);
         }
     }*/
+
+    public function multiselectUsers(Request $request)
+    {
+        $users_ids = User::withoutGlobalScopes()
+                ->select('sau_users.*')
+                ->join('sau_company_user', 'sau_company_user.user_id', 'sau_users.id')
+                ->where('sau_company_user.company_id', $request->id)
+                ->pluck('id')
+                ->toArray();
+
+        $users = User::select(
+                    "sau_users.id AS id",
+                    DB::raw("CONCAT(sau_users.document, ' - ', sau_users.name) AS name")
+                )
+                ->active()
+                ->whereNotIn('sau_users.id', $users_ids)
+                ->pluck('id', 'name');
+                
+        return $this->multiSelectFormat($users);
+    }
+
+    public function multiselectRoles(Request $request)
+    {
+        $roles = Role::form(false, $request->id)
+                    ->select("id", "name")
+                    ->pluck('id', 'name');
+
+        return $this->multiSelectFormat($roles);
+    }
 }

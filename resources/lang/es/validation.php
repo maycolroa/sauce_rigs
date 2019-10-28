@@ -303,7 +303,9 @@ return [
       'themes.*.items' => 'Items',
       'themes.*.items.*.description' => 'Descripción',
       'rate' => 'Severidad',
-      'condition_id' => 'Codición'
+      'condition_id' => 'Codición',
+      'users.*.user_id' => 'Usuario',
+      'users.*.role_id' => 'Rol',
     ],
 
 ];
