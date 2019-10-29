@@ -34,7 +34,7 @@ class ExtractTalendZipFileJob implements ShouldQueue
     {   
         $process = new Process([
             'unzip', '-qo', $this->talend->path_from_extract(),  //-qo Extraer y sobreescribir archivo
-            '-d', $this->talend->path_to_extract() //-d en el directorio indicado
+            '-d', $this->talend->path_client() //-d en el directorio indicado
         ]);
 
         $process->run();

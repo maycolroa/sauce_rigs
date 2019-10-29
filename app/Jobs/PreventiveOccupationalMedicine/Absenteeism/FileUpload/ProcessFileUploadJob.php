@@ -51,18 +51,29 @@ class ProcessFileUploadJob implements ShouldQueue
      */
     public function handle()
     {   
-        
         try
         {
+            \Log::info("Inicio de analizis de archivo con id: {$this->file->id}\n");
+            \Log::info("Archivo sh: {$this->talend->path_sh()}\n");
+            \Log::info("Ruta de archivo: {$this->file->path}\n");
+            \Log::info("Archivo: {$this->file->file}\n");
+
             $this->file->update(['state' => 'Procesando']);
 
-            $process = new Process([
+            /*$process = new Process([
                 'sh', $this->talend->path_sh(),
-                $this->file->path_client(), //Ruta archivo
+                $this->file->path, //Ruta archivo
                 $this->file->file //Archivo
-            ]);
+            ]);*/
+
+            $command = "sh {$this->talend->path_sh()} '{$this->file->path}' '{$this->file->file}'";
+            \Log::info($command);
+            $process = Process::fromShellCommandline($command);
 
             $process->run();
+
+            \Log::info("Salida del talend: \n");
+            \Log::info($process->getOutput());
 
             // executes after the command finishes
             if ($process->isSuccessful())
@@ -84,7 +95,7 @@ class ProcessFileUploadJob implements ShouldQueue
             NotificationMail::
                 subject('Ausentismo - carga de archivo')
                 ->recipients($this->user)
-                ->message("El proceso de carga de archivo solicitado ha culminado obteniendo el siguiente resultado: {$result}")
+                ->message("El proceso de carga de archivo solicitado ha culminado obteniendo el siguiente resultado: <span style='font-weight: bold;'>{$result}</span>")
                 ->module('absenteeism')
                 ->event('Job: ProcessFileUploadJob')
                 ->company($this->company_id)
@@ -101,5 +112,7 @@ class ProcessFileUploadJob implements ShouldQueue
                 ->company($this->company_id)
                 ->send();
         }
+
+        \Log::info("Fin de analizis de archivo con id: {$this->file->id}\n");
     }
 }
