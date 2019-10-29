@@ -10,6 +10,7 @@ use App\Models\PreventiveOccupationalMedicine\Absenteeism\Talend;
 use App\Models\PreventiveOccupationalMedicine\Absenteeism\FileUpload;
 use App\Http\Requests\PreventiveOccupationalMedicine\Absenteeism\FileUploadRequest;
 use App\Jobs\PreventiveOccupationalMedicine\Absenteeism\FileUpload\ProcessFileUploadJob;
+use Carbon\Carbon;
 use Validator;
 
 class FileUploadController extends Controller
@@ -62,9 +63,9 @@ class FileUploadController extends Controller
             function ($attribute, $value, $fail)
             {
               if ($value && !is_string($value) && 
-                $value->getClientMimeType() != 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' && 
-                $value->getClientMimeType() != 'application/zip' &&
-                $value->getClientMimeType() != 'application/vnd.ms-excel')
+                $value->getClientMimeType() !== 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' && 
+                $value->getClientMimeType() !== 'application/zip' &&
+                $value->getClientMimeType() !== 'application/vnd.ms-excel')
                   $fail('Archivo debe ser un Zip o un Excel');
             },
         ]
@@ -75,12 +76,14 @@ class FileUploadController extends Controller
         $fileUpload = new FileUpload($request->except('file'));
         $fileUpload->company_id = $this->company;
         $fileUpload->user_id = $this->user->id;
-        $fileUpload->path = $fileUpload->path_base();
+
+        $new_folder = Carbon::now()->format('Ymd_His');
+        $fileUpload->path = "{$fileUpload->path_client()}/{$new_folder}/";
 
         $file = $request->file;
-        $nameFile = base64_encode($this->user->id . now()) .'.'. $file->extension();
-        $file->storeAs($fileUpload->path_client(false), $nameFile, 'public');
-        $file->storeAs($fileUpload->path_client(false), $nameFile, 's3');
+        $nameFile = base64_encode($this->user->id . now()) .'.'. $file->getClientOriginalExtension();
+        $file->storeAs("{$fileUpload->path_client(false)}/{$new_folder}/", $nameFile, 'public');
+        $file->storeAs("{$fileUpload->path_client(false)}/{$new_folder}/", $nameFile, 's3');
         $fileUpload->file = $nameFile;
         
       

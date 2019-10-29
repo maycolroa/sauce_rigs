@@ -60,10 +60,10 @@ class Talend extends Model
         return "{$this->path_client()}/{$this->file}";
     }
 
-    public function path_to_extract()
+    /*public function path_to_extract()
     {
         return "{$this->path_client()}/{$this->file_original_name}";
-    }
+    }*/
 
     public function path_sh()
     {

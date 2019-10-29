@@ -2,11 +2,11 @@
 	<b-form :action="url" @submit.prevent="submit" autocomplete="off">
 		<b-form-row>
 			<vue-input :disabled="viewOnly" class="col-md-6" v-model="form.name" label="Nombre" type="text" name="name" :error="form.errorsFor('name')" placeholder="Nombre"></vue-input>
-			<vue-ajax-advanced-select :disabled="viewOnly" class="col-md-6" v-model="form.talend_id" :error="form.errorsFor('talend_id')" :selected-object="form.multiselect_talend" name="talend_id" label="Tipo" placeholder="Seleccione el tipo de archivo" :url="talendsDataUrl"></vue-ajax-advanced-select>
+			<vue-file-simple :help-text="form.old_file ? `Para descargar el archivo actual, haga click <a href='/biologicalmonitoring/absenteeism/fileUpload/download/${form.id}' target='blank'>aqui</a> `: null" :disabled="viewOnly" class="col-md-6" v-model="form.file" label="Archivo (*.xls | *.xlsx | *.zip)" name="file" :error="form.errorsFor('file')" placeholder="Seleccione un archivo"></vue-file-simple>
 		</b-form-row>
 
 		<b-form-row>
-			<vue-file-simple :help-text="form.old_file ? `Para descargar el archivo actual, haga click <a href='/biologicalmonitoring/absenteeism/fileUpload/download/${form.id}' target='blank'>aqui</a> `: null" :disabled="viewOnly" class="col-md-12" v-model="form.file" label="Archivo (*.xls | *.xlsx | *.zip)" name="file" :error="form.errorsFor('file')" placeholder="Seleccione un archivo"></vue-file-simple>
+			<vue-ajax-advanced-select :disabled="viewOnly" class="col-md-12" v-model="form.talend_id" :error="form.errorsFor('talend_id')" :selected-object="form.multiselect_talend" name="talend_id" label="Tipo" placeholder="Seleccione el tipo de archivo" :url="talendsDataUrl"></vue-ajax-advanced-select>
 		</b-form-row>
 
 		<div class="row float-right pt-10 pr-10">

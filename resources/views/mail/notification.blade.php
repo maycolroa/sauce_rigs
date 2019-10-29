@@ -1,7 +1,7 @@
 @component('mail::message', ['module' => $mail->module])
 
 @if(isset($mail->message))
-    {{ $mail->message }}
+    {!! nl2br($mail->message) !!}
 @endif
 
 @if(isset($mail->list))
