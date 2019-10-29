@@ -79,6 +79,7 @@ class FileUploadController extends Controller
 
         $new_folder = Carbon::now()->format('Ymd_His');
         $fileUpload->path = "{$fileUpload->path_client()}/{$new_folder}/";
+        $this->makeDirectory($fileUpload->path);
 
         $file = $request->file;
         $nameFile = base64_encode($this->user->id . now()) .'.'. $file->getClientOriginalExtension();
