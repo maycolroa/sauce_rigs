@@ -105,6 +105,13 @@ class NotificationMail
     private $event;
 
     /**
+     * Store the paths of the files that will be attached
+     *
+     * @var array
+     */
+    private $attach = [];
+
+    /**
      * Id of the company
      *
      * @var Integer
@@ -420,6 +427,31 @@ class NotificationMail
     }
 
     /**
+     * Edit the mail subject
+     *
+     * @param string $attach
+     * @param array $attach
+     * @return $this
+     */
+    public function attach($attach)
+    {
+        if (is_string($attach) && $attach)
+        {
+            array_push($this->attach, $attach);
+        }
+        else if (is_array($attach) && !empty($data))
+        {
+            foreach ($attach as $key => $path)
+            {
+                if (is_string($path) && $path)
+                    array_push($this->attach, $path);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
      * Send the mail
      *
      * @return booleam
@@ -469,6 +501,7 @@ class NotificationMail
         $data->recipients = $this->recipients;
         $data->view = $this->view;
         $data->subject = $this->subject;
+        $data->attach = $this->attach;
 
         $data->module = $this->module;
         $module = explode('/', $this->module->display_name);

@@ -29,7 +29,7 @@ class NotificationGeneralMail extends Mailable
      */
     public function build()
     {
-      if($this->mail->view == 'notification'){
+      /*if($this->mail->view == 'notification'){
         return $this->subject($this->mail->subject)
                     ->markdown('mail.'.$this->mail->view)
                     ->with(['mail' => $this->mail]);
@@ -38,6 +38,20 @@ class NotificationGeneralMail extends Mailable
         return $this->subject($this->mail->subject)
                     ->markdown('mail.'.$this->mail->view)
                     ->with(['mail' => $this->mail]);
+      }*/
+
+      $mail = $this->subject($this->mail->subject)
+                    ->markdown('mail.'.$this->mail->view)
+                    ->with(['mail' => $this->mail]);
+
+      if (COUNT($this->mail->attach) > 0)
+      {
+        foreach ($this->mail->attach as $key => $path)
+        {
+          $mail->attach($path);
+        }
       }
+
+      return $mail;
     }
 }
