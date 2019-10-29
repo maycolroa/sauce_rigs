@@ -189,6 +189,7 @@ export default [
           { name: 'sau_ct_information_contract_lessee.social_reason', data: 'social_reason', title: 'Razón social', sortable: true, searchable: true, detail: false, key: false },
           { name: 'sau_ct_evaluation_contract.evaluation_date', data: 'evaluation_date', title: 'Fecha evaluación', sortable: true, searchable: true, detail: false, key: false },
           { name: 'sau_users.name', data: 'name', title: 'Calificador', sortable: true, searchable: true, detail: false, key: false },
+          { name: 'sau_ct_evaluation_contract.state', data: 'state', title: 'Estado', sortable: true, searchable: true, detail: false, key: false },
           { name: '', data: 'controlls', title: 'Controles', sortable: false, searchable: false, detail: false, key: false },
       ],
       'controlls': [{

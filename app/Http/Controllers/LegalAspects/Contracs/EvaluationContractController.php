@@ -127,10 +127,12 @@ class EvaluationContractController extends Controller
 
             DB::commit();
 
-            $this->sendNotification($evaluation_contract->id);
+            if ($evaluation_contract->ready())
+                $this->sendNotification($evaluation_contract->id);
 
         } catch (\Exception $e) {
             DB::rollback();
+            \Log::info($e->getMessage());
             return $this->respondHttp500();
             //return $e->getMessage();
         }
@@ -188,12 +190,13 @@ class EvaluationContractController extends Controller
 
             DB::commit();
 
-            $this->sendNotification($evaluationContract->id);
+            if ($evaluationContract->ready())
+                $this->sendNotification($evaluationContract->id);
 
         } catch (\Exception $e) {
             DB::rollback();
+            \Log::info($e->getMessage());
             return $this->respondHttp500();
-            //return $e->getMessage();
         }
 
         return $this->respondHttp200([
@@ -215,6 +218,9 @@ class EvaluationContractController extends Controller
                     
                     foreach ($item['ratings'] as $rating)
                     {
+                        $value = $rating['apply'] == 'NO' ? null : ($rating['value'] ? $rating['value'] : 'pending');
+                        $rating['value'] = $value;
+
                         $evaluationContract->results()->updateOrCreate(['item_id'=>$itemModel->id, 'type_rating_id'=>$rating['type_rating_id']], $rating);
                     }
 
@@ -226,6 +232,13 @@ class EvaluationContractController extends Controller
                 }
             }
         }
+
+        $state = $evaluationContract->results()->where('sau_ct_evaluation_item_rating.value', 'pending')->get();
+
+        if (COUNT($state) > 0)
+            $evaluationContract->update(['state' => 'En proceso']);
+        else
+            $evaluationContract->update(['state' => 'Terminada']);
     }
 
     /**
@@ -385,7 +398,7 @@ class EvaluationContractController extends Controller
                                 $clone_report[$index]['total_c'] += 1;
                             else 
                             {
-                                if ($clone[$index]['value'] == 'SI')
+                                if ($clone[$index]['value'] == 'SI' || $clone[$index]['value'] == 'N/A')
                                     $clone_report[$index]['total_c'] += 1;
                             }
                         }
@@ -455,8 +468,8 @@ class EvaluationContractController extends Controller
                     o.description as objective,
                     s.description as subobjective,
                     COUNT(DISTINCT ec.id) as t_evaluations,
-                    SUM(IF(eir.value = 'NO', 1, 0)) AS t_no_cumple,
-                    SUM(IF(eir.value = 'SI', 1,
+                    SUM(IF(eir.value = 'NO' OR eir.value = 'pending', 1, 0)) AS t_no_cumple,
+                    SUM(IF(eir.value = 'SI' OR eir.value = 'N/A' , 1,
                             IF(eir.value IS NULL AND eir.item_id IS NOT NULL, 1,
                                 IF(eir.value IS NULL AND eir.item_id IS NULL,
                                     (SELECT 
@@ -590,8 +603,8 @@ class EvaluationContractController extends Controller
                     o.description as objective,
                     s.description as subobjective,
                     COUNT(DISTINCT ec.id) as t_evaluations,
-                    SUM(IF(eir.value = 'NO', 1, 0)) AS t_no_cumple,
-                    SUM(IF(eir.value = 'SI', 1,
+                    SUM(IF(eir.value = 'NO' OR eir.value = 'pending', 1, 0)) AS t_no_cumple,
+                    SUM(IF(eir.value = 'SI' OR eir.value = 'N/A', 1,
                             IF(eir.value IS NULL AND eir.item_id IS NOT NULL, 1,
                                 IF(eir.value IS NULL AND eir.item_id IS NULL,
                                     (SELECT 

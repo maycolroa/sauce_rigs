@@ -63,7 +63,7 @@ class EvaluationContractRequest extends FormRequest
             'contract_id' => 'required|exists:sau_ct_information_contract_lessee,id',
             'interviewees' => 'nullable|array',
             'interviewees.*.name' => 'required',
-            'evaluation.objectives.*.subobjectives.*.items.*.ratings.*.value' => 'required_if:evaluation.objectives.*.subobjectives.*.items.*.ratings.*.apply,SI',
+            //'evaluation.objectives.*.subobjectives.*.items.*.ratings.*.value' => 'required_if:evaluation.objectives.*.subobjectives.*.items.*.ratings.*.apply,SI',
             'evaluation.objectives.*.subobjectives.*.items.*.observations.*.description' => 'required'
         ];
     }

@@ -16,7 +16,8 @@ class EvaluationContract extends Model
         'evaluation_id',
         'contract_id',
         'company_id',
-        'evaluator_id'
+        'evaluator_id',
+        'state'
     ];
 
     public function evaluation()
@@ -52,6 +53,11 @@ class EvaluationContract extends Model
     public function histories()
     {
         return $this->hasMany(EvaluationContractHistory::class, 'evaluation_id');
+    }
+
+    public function ready()
+    {
+        return $this->state == 'Terminada' ? true : false;
     }
 
     /**

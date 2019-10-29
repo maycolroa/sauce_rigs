@@ -136,6 +136,9 @@ class EvaluationsExecutesExcel implements FromCollection, WithHeadings, WithMapp
           ($this->qualifications[$key.$rating->id] ? 
               $this->qualifications[$key.$rating->id] : 'N/A')
           : 'N/A';
+
+        $value = str_replace('pending', 'NO', $value);
+
         array_push($values, $value);
       }
 

@@ -163,10 +163,10 @@
 
                                                                     <template v-if="form.evaluation.objectives[index].subobjectives[index2].items[index3].ratings[type.id].apply == 'SI'">
 
-                                                                    <vue-radio v-if="!viewOnly" :checked="form.evaluation.objectives[index].subobjectives[index2].items[index3].ratings[type.id].value" class="col-md-12" v-model="form.evaluation.objectives[index].subobjectives[index2].items[index3].ratings[type.id].value" :options="[{'text':'SI','value':'SI'},{'text':'NO','value':'NO'}]" :name="`value${item.id}${type.id}`" label="" :error="form.errorsFor(`evaluation.objectives.${index}.subobjectives.${index2}.items.${index3}.ratings.${type.id}.value`)"></vue-radio>
+                                                                    <vue-radio v-if="!viewOnly" :checked="form.evaluation.objectives[index].subobjectives[index2].items[index3].ratings[type.id].value" class="col-md-12" v-model="form.evaluation.objectives[index].subobjectives[index2].items[index3].ratings[type.id].value" :options="[{'text':'SI','value':'SI'},{'text':'NO','value':'NO'},{'text':'N/A','value': 'N/A'}]" :name="`value${item.id}${type.id}`" label="" :error="form.errorsFor(`evaluation.objectives.${index}.subobjectives.${index2}.items.${index3}.ratings.${type.id}.value`)"></vue-radio>
 
                                                                     <template v-if="viewOnly">
-                                                                        {{ form.evaluation.objectives[index].subobjectives[index2].items[index3].ratings[type.id].value ? form.evaluation.objectives[index].subobjectives[index2].items[index3].ratings[type.id].value : 'N/A' }}
+                                                                        {{ form.evaluation.objectives[index].subobjectives[index2].items[index3].ratings[type.id].value ? (form.evaluation.objectives[index].subobjectives[index2].items[index3].ratings[type.id].value == 'pending' ? 'NO' : orm.evaluation.objectives[index].subobjectives[index2].items[index3].ratings[type.id].value) : 'N/A' }}
                                                                     </template>
 
                                                                     </template>
