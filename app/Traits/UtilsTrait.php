@@ -354,6 +354,9 @@ trait UtilsTrait
     public function makeDirectory($directory)
     {
         if (!File::exists($directory))
+        {
             File::makeDirectory($directory, 0777, true);
+            chmod($directory, 0777);
+        }
     }
 }
