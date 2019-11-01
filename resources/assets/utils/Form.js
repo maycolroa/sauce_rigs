@@ -21,6 +21,7 @@ export default class Form {
     this.clearAfterResponse = clearAfterResponse;
     this.errors = new FormErrors();
     this.showMessage = showMessage
+    this.files_binary = [];
   }
 
   static makeFrom(data, method = 'post', clearAfterResponse = false, showMessage = true) {
@@ -91,6 +92,14 @@ export default class Form {
       else {
         data.append(field, this[field] == null ? '' : this[field]);
       }
+    }
+
+    if (this.files_binary.length > 0) {
+      this.files_binary.forEach(file => {
+        if (file.value) {
+          data.append(`files_binary[${file.key}]`, file.value);
+        }
+      });
     }
 
     if (this.method != 'post') {
@@ -178,5 +187,16 @@ export default class Form {
     if (errors.response.status == 422) {
       this.errors.record(errors.response.data.errors);
     }
+  }
+
+  clearFilesBinary() {
+    this.files_binary.splice(0);
+  }
+
+  addFileBinary(key, file) {
+    this.files_binary.push({
+      key: key,
+      value: file
+    });
   }
 }

@@ -152,7 +152,9 @@
                                                             <tr :key="index3">
                                                                 <td class="align-middle">
                                                                     <center>
-                                                                    <modal-observations v-model="form.evaluation.objectives[index].subobjectives[index2].items[index3].observations" :item-id="item.id" :view-only="viewOnly" @removeObservation="pushRemoveObservation" :form="form" :prefixIndex="`evaluation.objectives.${index}.subobjectives.${index2}.items.${index3}.observations`"/></center>
+                                                                    <modal-observations v-model="form.evaluation.objectives[index].subobjectives[index2].items[index3].observations" :item-id="item.id" :view-only="viewOnly" @removeObservation="pushRemoveObservation" :form="form" :prefixIndex="`evaluation.objectives.${index}.subobjectives.${index2}.items.${index3}.observations`"/>
+                                                                    <modal-file v-model="form.evaluation.objectives[index].subobjectives[index2].items[index3].files" :item-id="item.id" :view-only="viewOnly" @removeFile="pushRemoveFile" :form="form" :prefixIndex="`evaluation.objectives.${index}.subobjectives.${index2}.items.${index3}.files`"/>
+                                                                    </center>
                                                                 </td>
                                                                 <td style="padding: 0px;">
                                                                 <vue-textarea :disabled="true" class="col-md-12" v-model="form.evaluation.objectives[index].subobjectives[index2].items[index3].description" label="" name="description" placeholder="Descripción"  rows="1"></vue-textarea>
@@ -166,7 +168,7 @@
                                                                     <vue-radio v-if="!viewOnly" :checked="form.evaluation.objectives[index].subobjectives[index2].items[index3].ratings[type.id].value" class="col-md-12" v-model="form.evaluation.objectives[index].subobjectives[index2].items[index3].ratings[type.id].value" :options="[{'text':'SI','value':'SI'},{'text':'NO','value':'NO'},{'text':'N/A','value': 'N/A'}]" :name="`value${item.id}${type.id}`" label="" :error="form.errorsFor(`evaluation.objectives.${index}.subobjectives.${index2}.items.${index3}.ratings.${type.id}.value`)"></vue-radio>
 
                                                                     <template v-if="viewOnly">
-                                                                        {{ form.evaluation.objectives[index].subobjectives[index2].items[index3].ratings[type.id].value ? (form.evaluation.objectives[index].subobjectives[index2].items[index3].ratings[type.id].value == 'pending' ? 'NO' : orm.evaluation.objectives[index].subobjectives[index2].items[index3].ratings[type.id].value) : 'N/A' }}
+                                                                        {{ form.evaluation.objectives[index].subobjectives[index2].items[index3].ratings[type.id].value ? (form.evaluation.objectives[index].subobjectives[index2].items[index3].ratings[type.id].value == 'pending' ? 'NO' : form.evaluation.objectives[index].subobjectives[index2].items[index3].ratings[type.id].value) : 'N/A' }}
                                                                     </template>
 
                                                                     </template>
@@ -247,6 +249,7 @@ import Alerts from '@/utils/Alerts.js';
 import EvaluationTypesRating from '../Evaluations/EvaluationTypesRating.vue';
 import InformationGeneral from '@/components/LegalAspects/Contracts/ContractLessee/InformationGeneral.vue';
 import ModalObservations from "./ModalObservations.vue"
+import ModalFile from "./ModalFile.vue"
 import Loading from "@/components/Inputs/Loading.vue";
 
 export default {
@@ -263,6 +266,7 @@ export default {
     EvaluationTypesRating,
     InformationGeneral,
     ModalObservations,
+    ModalFile,
     Loading
   },
   props: {
@@ -333,6 +337,19 @@ export default {
   methods: {
     submit(e) {
       this.loading = true;
+
+      this.form.clearFilesBinary();
+
+      this.form.evaluation.objectives.forEach((objetive, keyObj) => {
+          objetive.subobjectives.forEach((subobjetive, keySubObj) => {
+              subobjetive.items.forEach((item, keyItem) => {
+                  item.files.forEach((file, keyFile) => {
+                      this.form.addFileBinary(`${keyObj}_${keySubObj}_${keyItem}_${keyFile}`, file.file)
+                  });
+              });
+          });
+      });
+                        
       this.form
         .submit(e.target.action)
         .then(response => {
@@ -369,6 +386,10 @@ export default {
     pushRemoveObservation(value)
     {
       this.form.delete.observations.push(value)
+    },
+    pushRemoveFile(value)
+    {
+      this.form.delete.files.push(value)
     }
   }
 };

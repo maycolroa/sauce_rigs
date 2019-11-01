@@ -45,6 +45,11 @@ class EvaluationContract extends Model
         return $this->hasMany(Observation::class, 'evaluation_id');
     }
 
+    public function files()
+    {
+        return $this->hasMany(EvaluationFile::class, 'evaluation_id');
+    }
+
     public function results()
     {
         return $this->hasMany(EvaluationItemRating::class, 'evaluation_id');

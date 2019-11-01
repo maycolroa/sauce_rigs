@@ -5,16 +5,19 @@ namespace App\Http\Controllers\LegalAspects\Contracs;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Vuetable\Facades\Vuetable;
+use Illuminate\Support\Facades\Storage;
 use App\Http\Requests\LegalAspects\Contracts\EvaluationContractRequest;
 use App\Models\LegalAspects\Contracts\Evaluation;
 use App\Models\LegalAspects\Contracts\EvaluationContract;
 use App\Models\LegalAspects\Contracts\Interviewee;
 use App\Models\LegalAspects\Contracts\Item;
 use App\Models\LegalAspects\Contracts\Observation;
+use App\Models\LegalAspects\Contracts\EvaluationFile;
 use App\Jobs\LegalAspects\Contracts\Evaluations\EvaluationContractReportExportJob;
 use App\Jobs\LegalAspects\Contracts\Evaluations\EvaluationSendNotificationJob;
 use Carbon\Carbon;
 use DB;
+use Validator;
 
 class EvaluationContractController extends Controller
 {
@@ -98,6 +101,16 @@ class EvaluationContractController extends Controller
      */
     public function store(EvaluationContractRequest $request)
     {
+        Validator::make($request->all(), [
+            "evaluation.objectives.*.subobjectives.*.items.*.files.*.file" => [
+                function ($attribute, $value, $fail)
+                {
+                    if (!is_string($value) && $value->getClientMimeType() != 'application/pdf')
+                        $fail('Archivo debe ser un pdf');
+                },
+            ]
+        ])->validate();
+
         DB::beginTransaction();
 
         try
@@ -152,6 +165,16 @@ class EvaluationContractController extends Controller
      */
     public function update(EvaluationContractRequest $request, EvaluationContract $evaluationContract)
     {
+        Validator::make($request->all(), [
+            "evaluation.objectives.*.subobjectives.*.items.*.files.*.file" => [
+                function ($attribute, $value, $fail)
+                {
+                    if (!is_string($value) && $value->getClientMimeType() != 'application/pdf')
+                        $fail('Archivo debe ser un pdf');
+                },
+            ]
+        ])->validate();
+        
         DB::beginTransaction();
 
         try
@@ -229,6 +252,49 @@ class EvaluationContractController extends Controller
                         $id = isset($observation['id']) ? $observation['id'] : NULL;
                         $evaluationContract->observations()->updateOrCreate(['id'=>$id], $observation);
                     }
+
+                    if ($item['files'] && COUNT($item['files']) > 0)
+                    {
+                        $files_names_delete = [];
+
+                        foreach ($item['files'] as $keyF => $file) 
+                        {
+                            $create_file = true;
+
+                            if (isset($file['id']))
+                            {
+                                $fileUpload = EvaluationFile::findOrFail($file['id']);
+
+                                if ($file['old_name'] == $file['file'])
+                                    $create_file = false;
+                                else
+                                    array_push($files_names_delete, $file['old_name']);
+                            }
+                            else
+                            {
+                                $fileUpload = new EvaluationFile();
+                                $fileUpload->item_id = $itemModel->id;
+                                $fileUpload->evaluation_id = $evaluationContract->id;
+                            }
+
+                            if ($create_file)
+                            {
+                                $file_tmp = $file['file'];
+                                $nameFile = base64_encode($this->user->id . now() . rand(1,10000) . $keyF) .'.'. $file_tmp->extension();
+                                $file_tmp->storeAs($fileUpload->path_client(false), $nameFile, 'public');
+                                $fileUpload->file = $nameFile;
+                            }
+
+                            if (!$fileUpload->save())
+                                return $this->respondHttp500();
+                        }
+
+                        //Borrar archivos reemplazados
+                        foreach ($files_names_delete as $keyf => $file)
+                        {
+                            Storage::disk('public')->delete($fileUpload->path_client(false)."/".$file);
+                        }
+                    }
                 }
             }
         }
@@ -271,7 +337,8 @@ class EvaluationContractController extends Controller
 
             $evaluationContract->delete = [
                 'interviewees' => [],
-                'observations' => []
+                'observations' => [],
+                'files' => []
             ];
 
             return $this->respondHttp200([
@@ -301,7 +368,8 @@ class EvaluationContractController extends Controller
         
             $evaluationContract->delete = [
                 'interviewees' => [],
-                'observations' => []
+                'observations' => [],
+                'files' => []
             ];
 
             return $this->respondHttp200([
@@ -353,6 +421,7 @@ class EvaluationContractController extends Controller
 
                     $item->ratings = $item_types;
                     $item->observations = [];
+                    $item->files = [];
                 }
             }
         }
@@ -383,6 +452,16 @@ class EvaluationContractController extends Controller
                 foreach ($subobjective->items as $item)
                 {
                     $item->observations = $evaluationContract->observations()->where('item_id', $item->id)->get();
+                    $files = $evaluationContract->files()->where('item_id', $item->id)->get();
+                    
+                    $files->transform(function($file, $indexFile) {
+                        $file->key = Carbon::now()->timestamp + rand(1,10000);
+                        $file->old_name = $file->file;
+
+                        return $file;
+                    });
+
+                    $item->files = $files;
 
                     $values = $evaluationContract->results()->where('item_id', $item->id)->pluck('value', 'type_rating_id');
                     $clone = $item->ratings;
@@ -427,6 +506,20 @@ class EvaluationContractController extends Controller
 
         if (COUNT($data['observations']) > 0)
             Observation::destroy($data['observations']);
+        
+        if (COUNT($data['files']) > 0)
+        {
+            foreach ($data['files'] as $keyF => $file)
+            {
+                $file_delete = EvaluationFile::find($file);
+
+                if ($file_delete)
+                {
+                    Storage::disk('public')->delete($file_delete->path_client(false)."/".$file_delete->file);
+                    $file_delete->delete();
+                }
+            }
+        }
     }
 
     public function report(Request $request)
@@ -640,5 +733,10 @@ class EvaluationContractController extends Controller
     private function sendNotification($id)
     {
         EvaluationSendNotificationJob::dispatch($this->company, $id);
+    }
+
+    public function downloadFile(EvaluationFile $evaluationFile)
+    {
+        return Storage::disk('public')->download($evaluationFile->path_donwload());
     }
 }
