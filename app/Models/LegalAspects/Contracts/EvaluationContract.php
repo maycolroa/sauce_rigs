@@ -16,7 +16,8 @@ class EvaluationContract extends Model
         'evaluation_id',
         'contract_id',
         'company_id',
-        'evaluator_id'
+        'evaluator_id',
+        'state'
     ];
 
     public function evaluation()
@@ -44,6 +45,11 @@ class EvaluationContract extends Model
         return $this->hasMany(Observation::class, 'evaluation_id');
     }
 
+    public function files()
+    {
+        return $this->hasMany(EvaluationFile::class, 'evaluation_id');
+    }
+
     public function results()
     {
         return $this->hasMany(EvaluationItemRating::class, 'evaluation_id');
@@ -52,6 +58,11 @@ class EvaluationContract extends Model
     public function histories()
     {
         return $this->hasMany(EvaluationContractHistory::class, 'evaluation_id');
+    }
+
+    public function ready()
+    {
+        return $this->state == 'Terminada' ? true : false;
     }
 
     /**

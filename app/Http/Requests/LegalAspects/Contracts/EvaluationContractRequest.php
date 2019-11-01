@@ -46,6 +46,24 @@ class EvaluationContractRequest extends FormRequest
             ]);
         }
 
+        if ($this->has('files_binary') && COUNT($this->files_binary) > 0)
+        {
+            $data = $this->all();
+
+            foreach ($this->files_binary as $key => $value)
+            {
+                $allKeys = explode("_", $key);
+                $keyObj = $allKeys[0];
+                $keySubObj = $allKeys[1];
+                $keyItem = $allKeys[2];
+                $keyFile = $allKeys[3];
+
+                $data['evaluation']['objectives'][$keyObj]['subobjectives'][$keySubObj]['items'][$keyItem]['files'][$keyFile]['file'] = $value;
+            }
+
+            $this->merge($data);
+        }
+
         return $this->all();
     }
 
@@ -63,8 +81,9 @@ class EvaluationContractRequest extends FormRequest
             'contract_id' => 'required|exists:sau_ct_information_contract_lessee,id',
             'interviewees' => 'nullable|array',
             'interviewees.*.name' => 'required',
-            'evaluation.objectives.*.subobjectives.*.items.*.ratings.*.value' => 'required_if:evaluation.objectives.*.subobjectives.*.items.*.ratings.*.apply,SI',
-            'evaluation.objectives.*.subobjectives.*.items.*.observations.*.description' => 'required'
+            //'evaluation.objectives.*.subobjectives.*.items.*.ratings.*.value' => 'required_if:evaluation.objectives.*.subobjectives.*.items.*.ratings.*.apply,SI',
+            'evaluation.objectives.*.subobjectives.*.items.*.observations.*.description' => 'required',
+            'evaluation.objectives.*.subobjectives.*.items.*.files.*.file' => 'max:20480'
         ];
     }
 

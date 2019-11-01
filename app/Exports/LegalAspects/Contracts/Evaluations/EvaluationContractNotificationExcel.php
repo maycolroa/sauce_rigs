@@ -132,6 +132,9 @@ class EvaluationContractNotificationExcel implements FromCollection, WithHeading
           ($this->qualifications[$key.$rating->id] ? 
               $this->qualifications[$key.$rating->id] : 'N/A')
           : 'N/A';
+
+        $value = str_replace('pending', 'NO', $value);
+        
         array_push($values, $value);
       }
 
