@@ -159,6 +159,7 @@ Route::middleware(['auth'])->group(function () {
         Route::prefix('evaluations')->group(function () {
           Route::post('objectives', 'LegalAspects\Contracs\EvaluationController@multiselectObjectives');
           Route::post('subobjectives', 'LegalAspects\Contracs\EvaluationController@multiselectSubobjectives');
+          Route::post('qualificationTypes', 'LegalAspects\Contracs\TypeRatingController@multiselect');
         });
 
         Route::prefix('absenteeism')->group(function () {

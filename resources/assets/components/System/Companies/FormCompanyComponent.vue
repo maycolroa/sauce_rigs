@@ -24,9 +24,9 @@
             </div>
           </b-form-row>
           <b-form-row>
-            <vue-advanced-select class="col-md-6" v-model="form.users[index].user_id" :error="form.errorsFor(`users.${index}.user_id`)" name="user" label="Usuario" placeholder="Seleccione un usuario" :options="usersOptions">
+            <vue-advanced-select class="col-md-6" v-model="form.users[index].user_id" :error="form.errorsFor(`users.${index}.user_id`)" name="user" label="Usuario" placeholder="Seleccione un usuario" :options="usersOptions"  :searchable="true">
               </vue-advanced-select>
-              <vue-advanced-select class="col-md-6" v-model="form.users[index].role_id" :error="form.errorsFor(`users.${index}.role_id`)" name="role" label="Rol" placeholder="Seleccione un rol" :options="rolesOptions" :multiple="true">
+              <vue-advanced-select class="col-md-6" v-model="form.users[index].role_id" :error="form.errorsFor(`users.${index}.role_id`)" name="role" label="Rol" placeholder="Seleccione un rol" :options="rolesOptions" :multiple="true"  :searchable="true">
               </vue-advanced-select>
           </b-form-row>
         </div>

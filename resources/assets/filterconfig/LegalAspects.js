@@ -22,6 +22,34 @@ export default [
       ]
     },
     {
+      name: 'legalaspects-evaluations-report',
+      filters: [
+        {
+          url: '/selects/evaluations/objectives',
+          key: 'evaluationsObjectives',
+          type: 'select',
+          label: 'Objetivos'
+        },
+        {
+          url: '/selects/evaluations/subobjectives',
+          key: 'evaluationsSubobjectives',
+          type: 'select',
+          label: 'Subobjetivos'
+        },
+        {
+          url: '/selects/evaluations/qualificationTypes',
+          key: 'qualificationTypes',
+          type: 'select',
+          label: 'Tipo de calificación'
+        },
+        {
+          key: 'dateRange',
+          type: 'dateRange',
+          label: 'Rango de fecha',
+        }
+      ]
+    },
+    {
       name: 'legalaspects-evaluations-contracts',
       filters: [
         {
@@ -243,7 +271,8 @@ export default [
           key: 'rangePC',
           type: 'numberRange',
           label: 'Rango de cumplimiento (%)',
-        }
+        },
+        
       ]
     }
 ];
