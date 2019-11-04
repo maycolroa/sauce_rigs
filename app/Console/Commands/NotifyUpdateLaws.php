@@ -57,6 +57,10 @@ class NotifyUpdateLaws extends Command
             $users->company_scope = $company->id;
             $users = $users->get();
 
+            $users = $users->filter(function ($user, $index) use ($company) {
+                return $user->can('legalMatrix_receive_notifications', $company->id);
+            });
+
             $users->map(function($user) use ($company)
             {
                 $ini = Carbon::now()->addDays(-1)->format('Y-m-d 00:00:00');

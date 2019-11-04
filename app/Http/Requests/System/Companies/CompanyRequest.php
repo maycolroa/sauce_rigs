@@ -17,6 +17,27 @@ class CompanyRequest extends FormRequest
         return true;
     }
 
+    public function validator($factory)
+    {
+        return $factory->make(
+            $this->sanitize(), $this->container->call([$this, 'rules']), $this->messages()
+        );
+    }
+
+    public function sanitize()
+    {
+        if ($this->has('users'))
+        {
+            foreach ($this->input('users') as $key => $value)
+            {
+                $data['users'][$key] = json_decode($value, true);
+                $this->merge($data);
+            }
+        }
+
+        return $this->all();
+    }
+
     /**
      * Get the validation rules that apply to the request.
      *
@@ -27,7 +48,10 @@ class CompanyRequest extends FormRequest
         $id = $this->input('id');
 
         return [
-            'name' => 'required|string|unique:sau_companies,name,'.$id.',id'
+            'name' => 'required|string|unique:sau_companies,name,'.$id.',id',
+            'users' => 'nullable|array',
+            'users.*.user_id' => 'required',
+            'users.*.role_id' => 'required'
         ];
     }
 }

@@ -289,7 +289,7 @@ class FileUploadController extends Controller
       {
         $subject = "Contratistas - Archivo Cargado";
         $message = "Un(a) arrendatario/contratista ha $type_action un archivo, para porder verlo haga click en el botón que se encuentra abajo";
-        $recipients = $this->getUsersMasterContract($this->company);
+        $recipients = $this->getUsersMasterContract();
       }
       else 
       {
@@ -303,15 +303,22 @@ class FileUploadController extends Controller
           $recipients = $recipients->merge($this->getUsersContract($contract->id));
         }
       }
-      
-      NotificationMail::
-        subject($subject)
-        ->recipients($recipients)
-        ->message($message)
-        ->buttons([['text'=>'Llevarme al sitio', 'url'=>url("/legalaspects/upload-files/view/{$fileUpload->id}")]])
-        ->module('contracts')
-        ->company($this->company)
-        ->send();
+
+      $recipients = $recipients->filter(function ($recipient, $index) {
+        return $recipient->can('contracts_receive_notifications', $this->company);
+      });
+
+      if (!$recipients->isEmpty())
+      {
+        NotificationMail::
+          subject($subject)
+          ->recipients($recipients)
+          ->message($message)
+          ->buttons([['text'=>'Llevarme al sitio', 'url'=>url("/legalaspects/upload-files/view/{$fileUpload->id}")]])
+          ->module('contracts')
+          ->company($this->company)
+          ->send();
+      }
     }
 
      /**

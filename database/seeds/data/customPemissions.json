@@ -137,23 +137,23 @@
                     },
                     {
                         "name": "absen_uploadFiles_r",
-                        "display_name": "Ausentismo/Subida de archivos - ver"
-                    },
-                    {
-                        "name": "absen_uploadFiles_c",
-                        "display_name": "Ausentismo/Subida de archivos - crear"
-                    },
-                    {
-                        "name": "absen_uploadFiles_u",
-                        "display_name": "Ausentismo/Subida de archivos - editar"
-                    },
-                    {
-                        "name": "absen_uploadFiles_d",
-                        "display_name": "Ausentismo/Subida de archivos - eliminar"
+                        "display_name": "Ausentismo/Administrar archivos"
                     },
                     {
                         "name": "absen_uploadTalend_c",
-                        "display_name": "Ausentismo/Subida de talend - crear"
+                        "display_name": "Ausentismo/Administrar talends - crear"
+                    },
+                    {
+                        "name": "absen_uploadTalend_r",
+                        "display_name": "Ausentismo/Administrar talends - ver"
+                    },
+                    {
+                        "name": "absen_uploadTalend_u",
+                        "display_name": "Ausentismo/Administrar talends - editar"
+                    },
+                    {
+                        "name": "absen_uploadTalend_d",
+                        "display_name": "Ausentismo/Administrar talends - cambiar estado"
                     },
                     {
                         "name": "absen_receive_notifications",

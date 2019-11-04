@@ -79,6 +79,11 @@ class EmailTestController extends Controller
                 //Recibe el ID de la compañia
             ->company(1)
                 // Envia el correo
+            ->attach($attach)
+                /** Recibe un arreglo simple o un string con las rutas de los archivos
+                *  $attach = ['/path_1', '/path_2', '/path_3']
+                *  $attach = '/path_1'
+                */
             ->send()
         );
 

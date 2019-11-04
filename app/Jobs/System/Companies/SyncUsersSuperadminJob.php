@@ -61,7 +61,5 @@ class SyncUsersSuperadminJob implements ShouldQueue
                 }
             }
         }
-
-        \Log::info($users);
     }
 }

@@ -2,7 +2,6 @@
 
 namespace App\Http\Requests\PreventiveOccupationalMedicine\Absenteeism;
 
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Foundation\Http\FormRequest;
 
 class FileUploadRequest extends FormRequest
@@ -24,11 +23,10 @@ class FileUploadRequest extends FormRequest
      */
     public function rules()
     {
-        $rules = [
+        return [
             "name" => "required",
-            "file" => "required|file|max:20480"
+            'file' => 'required|max:20480',
+            'talend_id' => 'required'
         ];
-
-        return $rules;
     }
 }

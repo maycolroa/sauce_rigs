@@ -80,12 +80,15 @@ Route::middleware(['auth'])->group(function () {
           Route::post('report/data', 'PreventiveOccupationalMedicine\Absenteeism\ReportController@data');
           Route::ApiResource('report', 'PreventiveOccupationalMedicine\Absenteeism\ReportController');
           
+          Route::get('fileUpload/download/{fileUpload}', 'PreventiveOccupationalMedicine\Absenteeism\FileUploadController@download');
           Route::post('fileUpload/data', 'PreventiveOccupationalMedicine\Absenteeism\FileUploadController@data');
           Route::ApiResource('fileUpload', 'PreventiveOccupationalMedicine\Absenteeism\FileUploadController');
-          Route::get('fileUpload/download/{fileUpload}', 'PreventiveOccupationalMedicine\Absenteeism\FileUploadController@download');
 
-          Route::post('talendUpload', 'PreventiveOccupationalMedicine\Absenteeism\FileUploadController@storeTalend');
-          Route::post('talendUpload/data', 'PreventiveOccupationalMedicine\Absenteeism\FileUploadController@dataTalend');
+          Route::post('talendUpload/talendExist', 'PreventiveOccupationalMedicine\Absenteeism\TalendController@talendExist');
+          Route::post('talendUpload/switchStatus/{talendUpload}', 'PreventiveOccupationalMedicine\Absenteeism\TalendController@toggleState');
+          Route::get('talendUpload/download/{talendUpload}', 'PreventiveOccupationalMedicine\Absenteeism\TalendController@download');
+          Route::post('talendUpload/data', 'PreventiveOccupationalMedicine\Absenteeism\TalendController@data');
+          Route::ApiResource('talendUpload', 'PreventiveOccupationalMedicine\Absenteeism\TalendController');
         });
     });
     
@@ -159,6 +162,10 @@ Route::middleware(['auth'])->group(function () {
           Route::post('qualificationTypes', 'LegalAspects\Contracs\TypeRatingController@multiselect');
         });
 
+        Route::prefix('absenteeism')->group(function () {
+          Route::post('talends', 'PreventiveOccupationalMedicine\Absenteeism\TalendController@multiselect');
+        });
+
         Route::prefix('contracts')->group(function () {
           Route::post('sectionCategoryItems', 'LegalAspects\Contracs\SectionCategoryItemController@multiselect');
           Route::post('highRisk', 'LegalAspects\Contracs\ContractLesseeController@multiselectHighRisk');
@@ -199,6 +206,8 @@ Route::middleware(['auth'])->group(function () {
 
         Route::prefix('system')->group(function () {
           Route::post('labels', 'System\Labels\LabelController@multiselect');
+          Route::post('usersCompany', 'System\Companies\CompanyController@multiselectUsers');
+          Route::post('rolesCompany', 'System\Companies\CompanyController@multiselectRoles');
         });
     });
 

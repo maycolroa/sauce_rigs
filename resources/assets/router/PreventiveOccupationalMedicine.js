@@ -228,26 +228,43 @@ export default [{
 					component: () => import('@/views/PreventiveOccupationalMedicine/absenteeism/uploadFiles/index')
       }
     ]),
-    ...middleware({ 'check-permission': 'absen_uploadFiles_c' }, [
+    ...middleware({ 'check-permission': 'absen_uploadFiles_r' }, [
       {
         name: 'absenteeism-upload-files-create',
         path: 'absenteeism/upload-files/create',
 					component: () => import('@/views/PreventiveOccupationalMedicine/absenteeism/uploadFiles/create')
       }
     ]), 
-    ...middleware({ 'check-permission': 'absen_uploadFiles_r' }, [
+    ...middleware({ 'check-permission': 'absen_uploadTalend_r' }, [
       {
-        name: 'absenteeism-upload-files-view',
-        path: 'absenteeism/upload-files/view/:id',
+        name: 'absenteeism-talends',
+        path: 'absenteeism/talends',
         component: () =>
-          import('@/views/PreventiveOccupationalMedicine/absenteeism/uploadFiles/view')
+            import('@/views/PreventiveOccupationalMedicine/absenteeism/talends/index')
       }
     ]),
     ...middleware({ 'check-permission': 'absen_uploadTalend_c' }, [
       {
-        name: 'absenteeism-upload-files-talend',
-        path: 'absenteeism/upload-files/talend',
-					component: () => import('@/views/PreventiveOccupationalMedicine/absenteeism/uploadFiles/talend')
+        name: 'absenteeism-talends-create',
+        path: 'absenteeism/talends/create',
+        component: () =>
+          import('@/views/PreventiveOccupationalMedicine/absenteeism/talends/create')
+      }
+    ]), 
+    ...middleware({ 'check-permission': 'absen_uploadTalend_u' }, [
+      {
+        name: 'absenteeism-talends-edit',
+        path: 'absenteeism/talends/edit/:id',
+        component: () =>
+          import('@/views/PreventiveOccupationalMedicine/absenteeism/talends/edit')
+      }
+    ]), 
+    ...middleware({ 'check-permission': 'absen_uploadTalend_r' }, [
+      {
+        name: 'absenteeism-talends-view',
+        path: 'absenteeism/talends/view/:id',
+        component: () =>
+          import('@/views/PreventiveOccupationalMedicine/absenteeism/talends/view')
       }
     ])
   ]

@@ -43,7 +43,7 @@ export default {
     textBlock: {type: String},
     actionBlock: {type: String},
     helpText: {type: String},
-    maxFileSize: { type: Number, default: 10000000 },
+    maxFileSize: { type: Number, default: 20000000 },
   },
   watch:{
 
