@@ -40,6 +40,10 @@ class EvaluationContractReportExcel implements FromCollection, WithMapping, With
 
       $whereSubojectives = $this->scopeQueryReport('s', $this->filters["subobjectives"], $this->filters['filtersType']['evaluationsSubobjectives']);
 
+      $whereQualificationTypes = $this->scopeQueryReport('eir', $this->filters["qualificationTypes"], $this->filters['filtersType']['qualificationTypes'], 'type_rating_id');
+          
+      $subWhereQualificationTypes = $this->scopeQueryReport('etr', $this->filters["qualificationTypes"], $this->filters['filtersType']['qualificationTypes'], 'type_rating_id');
+
       if (COUNT($this->filters["dates"]) > 0)
       {
         $whereDates = ' AND ec.evaluation_date BETWEEN "'.$this->filters['dates'][0].'" AND "'.$this->filters['dates'][1].'"';
@@ -65,7 +69,7 @@ class EvaluationContractReportExcel implements FromCollection, WithMapping, With
                                     FROM
                                         sau_ct_evaluation_type_rating etr
                                     WHERE
-                                        etr.evaluation_id = e.id
+                                        etr.evaluation_id = e.id {$subWhereQualificationTypes}
                                 )
                             , 0)
                         )
@@ -79,7 +83,7 @@ class EvaluationContractReportExcel implements FromCollection, WithMapping, With
                 INNER JOIN sau_ct_items i ON i.subobjective_id = s.id
                 LEFT JOIN sau_ct_evaluation_item_rating eir ON eir.item_id = i.id AND eir.evaluation_id = ec.id
             
-                WHERE ec.company_id = ".$this->company_id. $whereDates . $whereObjectives . $whereSubojectives ."
+                WHERE ec.company_id = ".$this->company_id. $whereDates . $whereObjectives . $whereSubojectives . $whereQualificationTypes ."
                 GROUP BY objective, subobjective
             ) AS t
         ) AS t"))
@@ -176,7 +180,7 @@ class EvaluationContractReportExcel implements FromCollection, WithMapping, With
         return 'Evaluaciones - Reporte';
     }
 
-    private function scopeQueryReport($table, $data, $typeSearch)
+    private function scopeQueryReport($table, $data, $typeSearch, $primary = 'id')
     {
       $ids = [];
       $query = '';
@@ -191,10 +195,10 @@ class EvaluationContractReportExcel implements FromCollection, WithMapping, With
           $ids = implode(",", $ids);
 
           if ($typeSearch == 'IN')
-              $query = " AND $table.id IN ($ids)";
+              $query = " AND $table.$primary IN ($ids)";
 
           else if ($typeSearch == 'NOT IN')
-              $query = " AND $table.id NOT IN ($ids)";
+              $query = " AND $table.$primary NOT IN ($ids)";
       }
 
       return $query;

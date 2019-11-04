@@ -307,7 +307,7 @@ export default [
         configuration: {
             urlData: '/legalAspects/evaluationContract/report',
             filterColumns: false,
-            configNameFilter: 'legalaspects-evaluations'
+            configNameFilter: 'legalaspects-evaluations-report'
         }
     },
     {

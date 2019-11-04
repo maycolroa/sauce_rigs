@@ -134,4 +134,16 @@ class TypeRatingController extends Controller
         $types = TypeRating::get();
         return $types;
     }
+
+    public function multiselect(Request $request)
+    {
+        
+        $qualificationtypes = TypeRating::select(
+            'sau_ct_types_ratings.id as id',
+            'sau_ct_types_ratings.name as name'
+        )
+        ->pluck('id', 'name');
+    
+        return $this->multiSelectFormat($qualificationtypes);
+    }
 }
