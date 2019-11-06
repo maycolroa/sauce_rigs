@@ -20,16 +20,18 @@ class NotifyLicenseRenewalJob implements ShouldQueue
 
     protected $company_id;
     protected $modules;
+    protected $mails;
 
     /**
      * Create a new job instance.
      *
      * @return void
      */
-    public function __construct($company_id, $modules)
+    public function __construct($company_id, $modules, $mails)
     {
       $this->company_id = $company_id;
       $this->modules = $modules;
+      $this->mails = $mails;
     }
 
     /**
@@ -59,12 +61,17 @@ class NotifyLicenseRenewalJob implements ShouldQueue
         $recipients->company_scope = $this->company_id;
         $recipients = $recipients->get();
 
-        if (COUNT($recipients) > 0)
+        if (COUNT($recipients) > 0 || COUNT($this->mails) > 0)
         {
             $emailAdmins = Configuration::getConfiguration('admin_license_notification_email');
             $emailAdmins = explode(",", $emailAdmins);
 
             foreach ($emailAdmins as $key => $value)
+            {
+                $recipients->push(new User(['email'=>$value]));
+            }
+
+            foreach ($this->mails as $key => $value)
             {
                 $recipients->push(new User(['email'=>$value]));
             }

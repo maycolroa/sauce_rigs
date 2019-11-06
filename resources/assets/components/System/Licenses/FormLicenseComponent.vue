@@ -16,6 +16,11 @@
           </vue-advanced-select-group>
     </b-form-row>
 
+    <b-form-row v-if="!viewOnly">
+      <vue-advanced-select class="col-md-12" v-model="form.add_email" name="add_email" :error="form.errorsFor(`add_email`)" label="Correos que seran notificados" placeholder="Selecione correos" :options="[]" :multiple="true" :allowEmpty="true" :taggable="true" :searchable="true" :limit="50">
+      </vue-advanced-select>
+    </b-form-row>
+
     <b-form-row v-if="viewOnly">
       <div class="col-md-12">
         <h4 class="font-weight-bold mb-1">
@@ -41,6 +46,7 @@
 
 <script>
 import VueAjaxAdvancedSelect from "@/components/Inputs/VueAjaxAdvancedSelect.vue";
+import VueAdvancedSelect from "@/components/Inputs/VueAdvancedSelect.vue";
 import VueAdvancedSelectGroup from "@/components/Inputs/VueAdvancedSelectGroup.vue";
 import VueDatepicker from "@/components/Inputs/VueDatepicker.vue";
 import Form from "@/utils/Form.js";
@@ -49,6 +55,7 @@ export default {
   components: {
     VueAjaxAdvancedSelect,
     VueAdvancedSelectGroup,
+    VueAdvancedSelect,
     VueDatepicker
   },
   props: {
@@ -58,6 +65,7 @@ export default {
     isEdit: { type: Boolean, default: false },
     viewOnly: { type: Boolean, default: false },
     companiesDataUrl: { type: String, default: "" },
+    UsersDataUrl: { type: String, default: "" },
     modules: {
       type: Array,
       default: function() {
@@ -70,7 +78,8 @@ export default {
           started_at: '',
           ended_at: '',
           company_id: '',
-          module_id: ''
+          module_id: '',
+          add_email: [],
         };
       }
     }
