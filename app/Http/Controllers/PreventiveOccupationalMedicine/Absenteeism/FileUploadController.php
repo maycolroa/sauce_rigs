@@ -62,10 +62,8 @@ class FileUploadController extends Controller
         "file" => [
             function ($attribute, $value, $fail)
             {
-              if ($value && !is_string($value) && 
-                $value->getClientMimeType() !== 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' && 
-                $value->getClientMimeType() !== 'application/zip' &&
-                $value->getClientMimeType() !== 'application/vnd.ms-excel')
+              $ext = strtolower($value->getClientOriginalExtension());
+              if ($value && !is_string($value) && $ext != 'xlsx' && $ext != 'xls' && $ext != 'zip')
                   $fail('Archivo debe ser un Zip o un Excel');
             },
         ]
@@ -82,7 +80,7 @@ class FileUploadController extends Controller
         $this->makeDirectory($fileUpload->path);
 
         $file = $request->file;
-        $nameFile = base64_encode($this->user->id . now()) .'.'. $file->getClientOriginalExtension();
+        $nameFile = base64_encode($this->user->id . now()) .'.'. strtolower($file->getClientOriginalExtension());
         $file->storeAs("{$fileUpload->path_client(false)}/{$new_folder}/", $nameFile, 'public');
         $file->storeAs("{$fileUpload->path_client(false)}/{$new_folder}/", $nameFile, 's3');
         $fileUpload->file = $nameFile;
