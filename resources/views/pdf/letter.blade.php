@@ -49,7 +49,12 @@
         
     @endif
     <br/><br/><br/><br/><br/><br/><br/>
-    <p><b>{{$user}}</b></p>
+    <p><b>{{$user->name}}</b>
+    <br>
+    <b>{{$user->medical_record ? "Registro Médico: " . $user->medical_record : ''}}</b>
+    <br>
+    <b>{{$user->sst_license ? "Licencia SST: " . $user->sst_license : ''}}</b></p>
+    <p></p>
 
 </body>
 </html>

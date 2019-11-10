@@ -10,8 +10,9 @@
       <b-card no-body>
         <b-card-body>
           <loading :display="!ready"/>
-            <administrative-user-form
-                v-if="ready"
+          <div v-if="ready">
+            <template v-if="form == 'default'">
+              <form-user
                 :url="`/administration/users/${this.$route.params.id}`"
                 method="PUT"
                 roles-data-url="/selects/roles"
@@ -21,6 +22,20 @@
                 :filters-config="filtersConfig"
                 :is-edit="true"
                 :cancel-url="{ name: 'administrative-users'}"/>
+            </template>
+            <template v-if="form == 'hptu'">
+              <form-user-hptu
+                :url="`/administration/users/${this.$route.params.id}`"
+                method="PUT"
+                roles-data-url="/selects/roles"
+                headquartersDataUrl="/selects/headquarters"
+                systemApplyDataUrl="/selects/legalMatrix/systemApply"
+                :user="data"
+                :filters-config="filtersConfig"
+                :is-edit="true"
+                :cancel-url="{ name: 'administrative-users'}"/>
+            </template>
+          </div>
         </b-card-body>
       </b-card>
     </div>
@@ -28,7 +43,8 @@
 </template>
 
 <script>
-import AdministrativeUserForm from '@/components/Administrative/Users/FormUserComponent.vue';
+import FormUser from '@/components/Administrative/Users/FormUserComponent.vue';
+import FormUserHptu from '@/components/Administrative/Users/FormUserHptuComponent.vue';
 import Loading from "@/components/Inputs/Loading.vue";
 import Alerts from '@/utils/Alerts.js';
 
@@ -38,31 +54,42 @@ export default {
     title: 'Usuarios - Editar'
   },
   components:{
-    AdministrativeUserForm,
+    FormUser,
+    FormUserHptu,
     Loading
   },
   data () {
     return {
+      form: '',
       data: [],
       ready: false,
       filtersConfig: {}
     }
   },
   created(){    
-    axios.post(`/administration/users/filtersConfig`)
+    axios.post(`/configurableForm/formModel`, {key: 'form_user'})
 		.then(response => {
-      this.filtersConfig = response.data;
+      this.form = response.data;
 
-      axios.get(`/administration/users/${this.$route.params.id}`)
+      axios.post(`/administration/users/filtersConfig`)
       .then(response2 => {
-          this.data = response2.data.data;
-          this.ready = true
+        this.filtersConfig = response2.data;
+
+        axios.get(`/administration/users/${this.$route.params.id}`)
+        .then(response3 => {
+            this.data = response3.data.data;
+            this.ready = true
+        })
+        .catch(error => {
+            Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
+            this.$router.go(-1);
+        });
       })
       .catch(error => {
-          Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
-          this.$router.go(-1);
+        Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
+        this.$router.go(-1);
       });
-		})
+    })
 		.catch(error => {
 			Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
 			this.$router.go(-1);

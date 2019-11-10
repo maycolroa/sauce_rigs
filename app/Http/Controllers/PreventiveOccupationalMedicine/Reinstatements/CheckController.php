@@ -455,7 +455,7 @@ class CheckController extends Controller
             'to' => $request->to,
             'from' => $request->from,
             'subject' => $request->subject, 
-            'user' => $this->user->name,
+            'user' => $this->user,
             'check' => $check,
             'firm' => $request->firm,
             'recommendations' => $this->replaceLast(',', ' y ', $request->selectedRecommendations),

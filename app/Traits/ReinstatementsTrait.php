@@ -70,6 +70,15 @@ trait ReinstatementsTrait
                 'case_classification' => "required",
             ]);
         }
+        else if ($formModel == 'hptu')
+        {
+            $rules = array_merge($rules, [
+                'type_controversy_origin_1' => 'nullable',
+                'type_controversy_origin_2' => 'nullable',
+                'punctuation_controversy_plc_1' => "nullable|numeric|min:0|max:100",
+                'punctuation_controversy_plc_2' => 'nullable|numeric|min:0|max:100',
+            ]);
+        }
 
         return $rules;
     }

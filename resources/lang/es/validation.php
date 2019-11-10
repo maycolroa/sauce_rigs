@@ -298,6 +298,8 @@ return [
       'indefinite_restrictions' => 'restricción indefinida',
       'incapacitated_last_extension' => 'última prórroga',
       'end_restrictions' => 'fecha fin restricción',
+      'punctuation_controversy_plc_1' => 'Calificación',
+      'punctuation_controversy_plc_2' => 'Calificación',
       'themes' => 'Temas',
       'themes.*.name' => 'Nombre',
       'themes.*.items' => 'Items',

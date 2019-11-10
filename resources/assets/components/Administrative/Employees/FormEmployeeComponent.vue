@@ -13,6 +13,11 @@
           </vue-advanced-select>
     </b-form-row>
 
+     <b-form-row>
+      <vue-input :disabled="viewOnly" class="col-md-6" v-model="form.mobile" label="Celular" type="number" name="mobile" :error="form.errorsFor('mobile')" placeholder="Celular"></vue-input>
+      <vue-input :disabled="viewOnly" class="col-md-6" v-model="form.extension" label="Extensión" type="number" name="extension" :error="form.errorsFor('extension')" placeholder="Extensión"></vue-input>
+    </b-form-row>
+
     <b-form-row>
       <vue-input :disabled="viewOnly" class="col-md-6" v-model="form.email" label="Email" type="text" name="email" :error="form.errorsFor('email')" placeholder="Email"></vue-input>
       <vue-datepicker :disabled="viewOnly" class="col-md-6" v-model="form.income_date" label="Fecha de Ingreso" :full-month-name="true" placeholder="Seleccione la fecha de ingreso" :error="form.errorsFor('income_date')" name="income_date" :disabled-dates="disabledDates">
@@ -105,7 +110,9 @@ export default {
             employee_position_id: '',
             employee_business_id: '',
             employee_eps_id: '',
-            deal:''
+            deal:'',
+            extension: '',
+            mobile: ''
         };
       }
     }

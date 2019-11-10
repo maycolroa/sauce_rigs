@@ -32,6 +32,28 @@
                   :origin-emitters="originEmitters"
                   :cancel-url="{ name: 'reinstatements-checks'}"/>
               </template>
+              <template v-if="form == 'hptu'">
+                <form-check-hptu
+                  url="/biologicalmonitoring/reinstatements/check"
+                  method="POST"
+                  employees-data-url="/selects/employees"
+                  :disease-origins="diseaseOrigins"
+                  :lateralities="lateralities"
+                  cie10-codes-data-url="/selects/cie10"
+                  :si-no="siNo"
+                  :origin-advisors="originAdvisors"
+                  regionals-data-url="/selects/regionals"
+                  headquarters-data-url="/selects/headquarters"
+                  areas-data-url="/selects/areas"
+                  processes-data-url="/selects/processes"
+                  positions-data-url="/selects/positions"
+                  restrictions-data-url="/selects/restrictions"
+                  :medical-conclusions="medicalConclusions"
+                  :labor-conclusions="laborConclusions"
+                  :origin-emitters="originEmitters"
+                  :type-qualification-controversy="typeQualificationControversy"
+                  :cancel-url="{ name: 'reinstatements-checks'}"/>
+              </template>
               <template v-if="form == 'vivaAir'">
                 <form-check-viva-air
                   url="/biologicalmonitoring/reinstatements/check"
@@ -87,10 +109,11 @@
       </b-card>
     </div>
   </div>
-</template>
+</template> 
 
 <script>
 import FormCheck from '@/components/PreventiveOccupationalMedicine/Reinstatements/Checks/FormCheckComponent.vue';
+import FormCheckHptu from '@/components/PreventiveOccupationalMedicine/Reinstatements/Checks/FormCheckHptuComponent.vue';
 import FormCheckVivaAir from '@/components/PreventiveOccupationalMedicine/Reinstatements/Checks/FormCheckVivaAirComponent.vue';
 import FormCheckEmpresarial from '@/components/PreventiveOccupationalMedicine/Reinstatements/Checks/FormCheckEmpresarialComponent.vue';
 import Loading from "@/components/Inputs/Loading.vue";
@@ -104,6 +127,7 @@ export default {
   },
   components:{
     FormCheck,
+    FormCheckHptu,
     FormCheckVivaAir,
     FormCheckEmpresarial,
     Loading
@@ -123,7 +147,8 @@ export default {
       medicalCertificateUeac: [],
       relocatedTypes: [],
       epsFavorabilityConcept: [],
-      caseClassification: []
+      caseClassification: [],
+      typeQualificationControversy: []
     }
   },
   created(){
@@ -142,6 +167,11 @@ export default {
       {
         this.fetchOptions('epsFavorabilityConcept', 'reinc_select_eps_favorability_concept')
         this.fetchOptions('caseClassification', 'reinc_select_case_classification')
+      }
+      
+      if (this.form == 'hptu')
+      {
+        this.fetchOptions('typeQualificationControversy', 'reinc_select_type_qualification_controversy')
       }
 
 			this.ready = true
