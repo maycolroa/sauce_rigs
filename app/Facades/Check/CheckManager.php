@@ -197,10 +197,9 @@ class CheckManager
     {
         //Default, VivaAir
         $rules = [
-            'start_recommendations' => new RequiredIfHasRecommendations($request->has_recommendations),
+            'start_recommendations' => [new RequiredIfHasRecommendations($request->has_recommendations), new StartRecomendation($request->indefinite_recommendations, $request->end_recommendations, $request->has_recommendations)],
             'indefinite_recommendations' => new RequiredIfHasRecommendations($request->has_recommendations),
             'relocated' => new RequiredIfHasRecommendations($request->has_recommendations),
-            'monitoring_recommendations' => new RequiredIfHasRecommendations($request->has_recommendations),
             'origin_recommendations' => new RequiredIfHasRecommendations($request->has_recommendations),
 
             'restriction_id' => new RequiredIfHasRestrictions($request->has_restrictions),
@@ -210,15 +209,19 @@ class CheckManager
 
             'end_recommendations' => new EndRecommendationsBePresent($request->has_recommendations, $request->indefinite_recommendations),
 
-            'start_recommendations' => new StartRecomendation($request->indefinite_recommendations, $request->end_recommendations, $request->has_recommendations),
-            'monitoring_recommendations' => new MonitoringRecomendation($request->indefinite_recommendations, $request->start_recommendations, $request->end_recommendations, $request->has_recommendations),
-
             'process_origin_done_date' => new ProcessOriginDoneMustBePresent($request->in_process_origin, $request->process_origin_done),
             'emitter_origin' => new ProcessOriginDoneMustBePresent($request->in_process_origin, $request->process_origin_done, true),
             'process_pcl_done_date' => new ProcessPclDoneMustBePresent($request->in_process_pcl, $request->process_pcl_done),
             'pcl' => new ProcessPclDoneMustBePresent($request->in_process_pcl, $request->process_pcl_done, true),
             'entity_rating_pcl' => new ProcessPclDoneMustBePresent($request->in_process_pcl, $request->process_pcl_done, true)
         ];
+
+        if ($this->formModel != 'hptu')
+        {
+            $rules = array_merge($rules, [
+                'monitoring_recommendations' => [new RequiredIfHasRecommendations($request->has_recommendations), new MonitoringRecomendation($request->indefinite_recommendations, $request->start_recommendations, $request->end_recommendations, $request->has_recommendations)],
+            ]);
+        }
 
         if ($this->formModel == 'misionEmpresarial')
         {

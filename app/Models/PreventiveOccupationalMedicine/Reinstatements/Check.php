@@ -92,7 +92,11 @@ class Check extends Model
         'sve_associated',
         'medical_certificate_ueac',
         'relocated_type',
-        'created_at'
+        'created_at',
+        'type_controversy_origin_1',
+        'type_controversy_origin_2',
+        'punctuation_controversy_plc_1',
+        'punctuation_controversy_plc_2'
     ];
 
     /**
@@ -454,7 +458,7 @@ class Check extends Model
     {
         if (COUNT($dates) == 2)
         {
-            $query->whereBetween('sau_reinc_checks.created_at', $dates);
+            $query->whereBetween('sau_reinc_checks.updated_at', $dates);
             return $query;
         }
     }

@@ -44,7 +44,9 @@ class Employee extends Model
       'employee_arl_id',
       'contract_numbers',
       'last_contract_date',
-      'contract_type'
+      'contract_type',
+      'mobile',
+      'extension'
   ];
 
     public function audiometries(){

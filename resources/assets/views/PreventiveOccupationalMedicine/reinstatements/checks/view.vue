@@ -26,6 +26,22 @@
                   :origin-emitters="originEmitters"
                   :cancel-url="{ name: 'reinstatements-checks'}"/>
               </template>
+              <template v-if="form == 'hptu'">
+                <form-check-hptu
+                  url="/biologicalmonitoring/reinstatements/check"
+                  method="POST"
+                  :check="data"
+                  :view-only="true"
+                  :disease-origins="diseaseOrigins"
+                  :lateralities="lateralities"
+                  :si-no="siNo"
+                  :origin-advisors="originAdvisors"
+                  :medical-conclusions="medicalConclusions"
+                  :labor-conclusions="laborConclusions"
+                  :origin-emitters="originEmitters"
+                  :type-qualification-controversy="typeQualificationControversy"
+                  :cancel-url="{ name: 'reinstatements-checks'}"/>
+              </template>
               <template v-if="form == 'vivaAir'">
                 <form-check-viva-air
                   url="/biologicalmonitoring/reinstatements/check"
@@ -73,6 +89,7 @@
  
 <script>
 import FormCheck from '@/components/PreventiveOccupationalMedicine/Reinstatements/Checks/FormCheckComponent.vue';
+import FormCheckHptu from '@/components/PreventiveOccupationalMedicine/Reinstatements/Checks/FormCheckHptuComponent.vue';
 import FormCheckVivaAir from '@/components/PreventiveOccupationalMedicine/Reinstatements/Checks/FormCheckVivaAirComponent.vue';
 import FormCheckEmpresarial from '@/components/PreventiveOccupationalMedicine/Reinstatements/Checks/FormCheckEmpresarialComponent.vue';
 import Loading from "@/components/Inputs/Loading.vue";
@@ -86,6 +103,7 @@ export default {
   },
   components:{
     FormCheck,
+    FormCheckHptu,
     FormCheckVivaAir,
     FormCheckEmpresarial,
     Loading
@@ -106,7 +124,8 @@ export default {
       medicalCertificateUeac: [],
       relocatedTypes: [],
       epsFavorabilityConcept: [],
-      caseClassification: []
+      caseClassification: [],
+      typeQualificationControversy: []
     }
   },
   created(){
@@ -125,6 +144,11 @@ export default {
       {
         this.fetchOptions('epsFavorabilityConcept', 'reinc_select_eps_favorability_concept')
         this.fetchOptions('caseClassification', 'reinc_select_case_classification')
+      }
+
+      if (this.form == 'hptu')
+      {
+        this.fetchOptions('typeQualificationControversy', 'reinc_select_type_qualification_controversy')
       }
       
       axios.get(`/biologicalmonitoring/reinstatements/check/${this.$route.params.id}`)

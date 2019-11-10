@@ -65,13 +65,18 @@
                                 <b-card border-variant="primary" title="Reportes por origen de enfermedad" class="mb-3 box-shadow-none">
                                     <b-row align-h="end">
                                         <b-col cols="2">
-                                            <b>Total reportes: {{ disease_origin_reports_pie.datasets.count }} </b>
+                                            <b>Total reportes: {{ disease_origin_reports_pie.chart.datasets.count }} </b>
                                         </b-col>
                                     </b-row>
                                     <b-row>
                                         <b-col>
+                                            <table-report
+                                                :rows="disease_origin_reports_pie.table"
+                                            />
+                                        </b-col>
+                                        <b-col>
                                             <chart-pie 
-                                                :chart-data="disease_origin_reports_pie"
+                                                :chart-data="disease_origin_reports_pie.chart"
                                                 title="Origen de enfermedad"
                                                 color-line="red"
                                                 ref="disease_origin_reports_pie"/>
@@ -85,13 +90,18 @@
                                 <b-card border-variant="primary" title="Reportes por Regional" class="mb-3 box-shadow-none">
                                     <b-row align-h="end">
                                         <b-col cols="2">
-                                            <b>Total reportes: {{ cases_per_regional_pie.datasets.count }} </b>
+                                            <b>Total reportes: {{ cases_per_regional_pie.chart.datasets.count }} </b>
                                         </b-col>
                                     </b-row>
                                     <b-row>
                                         <b-col>
+                                            <table-report
+                                                :rows="cases_per_regional_pie.table"
+                                            />
+                                        </b-col>
+                                        <b-col>
                                             <chart-pie 
-                                                :chart-data="cases_per_regional_pie"
+                                                :chart-data="cases_per_regional_pie.chart"
                                                 title="Reportes por Regional"
                                                 color-line="red"
                                                 ref="cases_per_regional_pie"/>
@@ -105,13 +115,18 @@
                                 <b-card border-variant="primary" title="Reportes por Sedes" class="mb-3 box-shadow-none">
                                     <b-row align-h="end">
                                         <b-col cols="2">
-                                            <b>Total reportes: {{ cases_per_headquarter_pie.datasets.count }} </b>
+                                            <b>Total reportes: {{ cases_per_headquarter_pie.chart.datasets.count }} </b>
                                         </b-col>
                                     </b-row>
                                     <b-row>
                                         <b-col>
+                                            <table-report
+                                                :rows="cases_per_headquarter_pie.table"
+                                            />
+                                        </b-col>
+                                        <b-col>
                                             <chart-pie 
-                                                :chart-data="cases_per_headquarter_pie"
+                                                :chart-data="cases_per_headquarter_pie.chart"
                                                 title="Reportes por Sedes"
                                                 color-line="red"
                                                 ref="cases_per_headquarter_pie"/>
@@ -122,16 +137,46 @@
                         </b-row>
                         <b-row>
                             <b-col>
-                                <b-card border-variant="primary" title="Reportes por Centro de Costos" class="mb-3 box-shadow-none">
+                                <b-card border-variant="primary" title="Reportes por Proceso" class="mb-3 box-shadow-none">
                                     <b-row align-h="end">
                                         <b-col cols="2">
-                                            <b>Total reportes: {{ cases_per_business_pie.datasets.count }} </b>
+                                            <b>Total reportes: {{ cases_per_process_pie.chart.datasets.count }} </b>
                                         </b-col>
                                     </b-row>
                                     <b-row>
                                         <b-col>
+                                            <table-report
+                                                :rows="cases_per_process_pie.table"
+                                            />
+                                        </b-col>
+                                        <b-col>
                                             <chart-pie 
-                                                :chart-data="cases_per_business_pie"
+                                                :chart-data="cases_per_process_pie.chart"
+                                                title="Reportes por Procesos"
+                                                color-line="red"
+                                                ref="cases_per_process_pie"/>
+                                        </b-col>
+                                    </b-row>
+                                </b-card>
+                            </b-col>
+                        </b-row>
+                        <b-row>
+                            <b-col>
+                                <b-card border-variant="primary" title="Reportes por Centro de Costos" class="mb-3 box-shadow-none">
+                                    <b-row align-h="end">
+                                        <b-col cols="2">
+                                            <b>Total reportes: {{ cases_per_business_pie.chart.datasets.count }} </b>
+                                        </b-col>
+                                    </b-row>
+                                    <b-row>
+                                        <b-col>
+                                            <table-report
+                                                :rows="cases_per_business_pie.table"
+                                            />
+                                        </b-col>
+                                        <b-col>
+                                            <chart-pie 
+                                                :chart-data="cases_per_business_pie.chart"
                                                 title="Reportes por Centro de Costos"
                                                 color-line="red"
                                                 ref="cases_per_business_pie"/>
@@ -145,13 +190,18 @@
                                 <b-card border-variant="primary" title="Reportes por SVE Asociados" class="mb-3 box-shadow-none">
                                     <b-row align-h="end">
                                         <b-col cols="2">
-                                            <b>Total reportes: {{ cases_per_sve_associateds_pie.datasets.count }} </b>
+                                            <b>Total reportes: {{ cases_per_sve_associateds_pie.chart.datasets.count }} </b>
                                         </b-col>
                                     </b-row>
                                     <b-row>
                                         <b-col>
+                                            <table-report
+                                                :rows="cases_per_sve_associateds_pie.table"
+                                            />
+                                        </b-col>
+                                        <b-col>
                                             <chart-pie 
-                                                :chart-data="cases_per_sve_associateds_pie"
+                                                :chart-data="cases_per_sve_associateds_pie.chart"
                                                 title="Reportes por SVE Asociados"
                                                 color-line="red"
                                                 ref="cases_per_sve_associateds_pie"/>
@@ -165,13 +215,18 @@
                                 <b-card border-variant="primary" title="Reportes por Certificado médico UEAC" class="mb-3 box-shadow-none">
                                     <b-row align-h="end">
                                         <b-col cols="2">
-                                            <b>Total reportes: {{ cases_per_medical_certificates_pie.datasets.count }} </b>
+                                            <b>Total reportes: {{ cases_per_medical_certificates_pie.chart.datasets.count }} </b>
                                         </b-col>
                                     </b-row>
                                     <b-row>
                                         <b-col>
+                                            <table-report
+                                                :rows="cases_per_medical_certificates_pie.table"
+                                            />
+                                        </b-col>
+                                        <b-col>
                                             <chart-pie 
-                                                :chart-data="cases_per_medical_certificates_pie"
+                                                :chart-data="cases_per_medical_certificates_pie.chart"
                                                 title="Reportes por Certificado médico UEAC"
                                                 color-line="red"
                                                 ref="cases_per_medical_certificates_pie"/>
@@ -263,6 +318,7 @@ import ChartPie from '@/components/ECharts/ChartPie.vue';
 import ChartBar from '@/components/ECharts/ChartBar.vue';
 import FilterReincChecks from '@/components/Filters/FilterReincChecks.vue';
 import Headers from './Headers.vue';
+import TableReport from './TableReport.vue';
 
 export default {
     name: 'reinstatements-informs',
@@ -271,6 +327,7 @@ export default {
     },
     components:{
         Headers,
+        TableReport,
         ChartPie,
         ChartBar,
         FilterReincChecks
@@ -298,28 +355,53 @@ export default {
                 datasets: []
             },
             disease_origin_reports_pie: {
-                labels: [],
-                datasets: []
+                table: [],
+                chart: {
+                    labels: [],
+                    datasets: []
+                }
             },
             cases_per_regional_pie: {
-                labels: [],
-                datasets: []
+                table: [],
+                chart: {
+                    labels: [],
+                    datasets: []
+                }
             },
             cases_per_headquarter_pie: {
-                labels: [],
-                datasets: []
+                table: [],
+                chart: {
+                    labels: [],
+                    datasets: []
+                }
+            },
+            cases_per_process_pie: {
+                table: [],
+                chart: {
+                    labels: [],
+                    datasets: []
+                }
             },
             cases_per_business_pie: {
-                labels: [],
-                datasets: []
+                table: [],
+                chart: {
+                    labels: [],
+                    datasets: []
+                }
             },
             cases_per_sve_associateds_pie: {
-                labels: [],
-                datasets: []
+                table: [],
+                chart: {
+                    labels: [],
+                    datasets: []
+                }
             },
             cases_per_medical_certificates_pie: {
-                labels: [],
-                datasets: []
+                table: [],
+                chart: {
+                    labels: [],
+                    datasets: []
+                }
             },
             cases_per_cie_10_per_EG_pie: {
                 labels: [],

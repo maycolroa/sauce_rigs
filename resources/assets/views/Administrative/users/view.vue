@@ -10,12 +10,22 @@
       <b-card no-body>
         <b-card-body>
           <loading :display="!ready"/>
-            <administrative-user-form
-                v-if="ready"
+          <div v-if="ready">
+            <template v-if="form == 'default'">
+              <form-user
                 :user="data"
                 :view-only="true"
                 :filters-config="filtersConfig"
                 :cancel-url="{ name: 'administrative-users'}"/>
+            </template>
+            <template v-if="form == 'hptu'">
+              <form-user-hptu
+                :user="data"
+                :view-only="true"
+                :filters-config="filtersConfig"
+                :cancel-url="{ name: 'administrative-users'}"/>
+            </template>
+          </div>
         </b-card-body>
       </b-card>
     </div>
@@ -23,7 +33,8 @@
 </template>
 
 <script>
-import AdministrativeUserForm from '@/components/Administrative/Users/FormUserComponent.vue';
+import FormUser from '@/components/Administrative/Users/FormUserComponent.vue';
+import FormUserHptu from '@/components/Administrative/Users/FormUserHptuComponent.vue';
 import Loading from "@/components/Inputs/Loading.vue";
 import Alerts from '@/utils/Alerts.js';
 
@@ -33,31 +44,42 @@ export default {
     title: 'Usuarios - Ver'
   },
   components:{
-    AdministrativeUserForm,
+    FormUser,
+    FormUserHptu,
     Loading
   },
   data () {
     return {
+      form: '',
       data: [],
       ready: false,
       filtersConfig: {}
     }
   },
   created(){
-    axios.get(`/administration/users/${this.$route.params.id}`)
-    .then(response => {
-        this.data = response.data.data;
-    })
-    .catch(error => {
+    axios.post(`/configurableForm/formModel`, {key: 'form_user'})
+		.then(response => {
+      this.form = response.data;
+
+      axios.post(`/administration/users/filtersConfig`)
+      .then(response2 => {
+        this.filtersConfig = response2.data;
+
+        axios.get(`/administration/users/${this.$route.params.id}`)
+        .then(response3 => {
+            this.data = response3.data.data;
+            this.ready = true
+        })
+        .catch(error => {
+            Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
+            this.$router.go(-1);
+        });
+      })
+      .catch(error => {
         Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
         this.$router.go(-1);
-    });
-
-    axios.post(`/administration/users/filtersConfig`)
-		.then(response => {
-      this.filtersConfig = response.data;
-			this.ready = true
-		})
+      });
+    })
 		.catch(error => {
 			Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
 			this.$router.go(-1);

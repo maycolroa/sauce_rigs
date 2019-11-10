@@ -27,6 +27,7 @@ class InformManagerCheck
         'disease_origin_reports_pie',
         'cases_per_regional_pie',
         'cases_per_headquarter_pie',
+        'cases_per_process_pie',
         'cases_per_business_pie',
         'cases_per_sve_associateds_pie',
         'cases_per_medical_certificates_pie',
@@ -132,11 +133,10 @@ class InformManagerCheck
         return $totalChecks;
     }
 
-    private function executeQueryHeader($condition)
+    private function executeQueryCheckClose()
     {
-        $data = Check::countDistinctEmployeeId()
-        ->where($condition)
-        ->isOpen()
+        $data = Check::selectRaw("COUNT(employee_id) AS count")
+        ->isOpen(false)
         ->join('sau_employees', 'sau_employees.id', 'sau_reinc_checks.employee_id')
         ->inIdentifications($this->identifications, $this->filtersType['identifications'])
         ->inNames($this->names, $this->filtersType['names'])
@@ -163,6 +163,39 @@ class InformManagerCheck
         return $data;
     }
 
+    private function executeQueryHeader($condition = null)
+    {
+        $data = Check::countDistinctEmployeeId()
+        ->isOpen()
+        ->join('sau_employees', 'sau_employees.id', 'sau_reinc_checks.employee_id')
+        ->inIdentifications($this->identifications, $this->filtersType['identifications'])
+        ->inNames($this->names, $this->filtersType['names'])
+        ->inRegionals($this->regionals, $this->filtersType['regionals'])
+        ->inBusinesses($this->businesses, $this->filtersType['businesses'])
+        ->inDiseaseOrigin($this->diseaseOrigin, $this->filtersType['diseaseOrigin'])
+        ->inYears($this->years, $this->filtersType['years'])
+        ->betweenDate($this->dateRange);
+
+        if ($condition)
+            $data->where($condition);
+
+        if ($this->nextFollowDays)
+            $data->inNextFollowDays($this->nextFollowDays, $this->filtersType['nextFollowDays']);
+            
+        if ($this->sveAssociateds)
+            $data->inSveAssociateds($this->sveAssociateds, $this->filtersType['sveAssociateds']);
+
+        if ($this->medicalCertificates)
+            $data->inMedicalCertificates($this->medicalCertificates, $this->filtersType['medicalCertificates']);
+
+        if ($this->relocatedTypes)
+            $data->inRelocatedTypes($this->relocatedTypes, $this->filtersType['relocatedTypes']);
+
+        $data = $data->secureCount();
+
+        return $data;
+    }
+
     /**
      * return the headers reports pie data for the view
      * @return object
@@ -170,6 +203,14 @@ class InformManagerCheck
     public function headers()
     {        
         $result = [
+            'checkOpen' => [
+                'label' => 'Número de reportes abiertos',
+                'value' => $this->executeQueryHeader()
+            ],
+            'checkClose' => [
+                'label' => 'Número de reportes cerrados',
+                'value' => $this->executeQueryCheckClose()
+            ],
             'checksWithRecommendations' => [
                 'label' => 'Porcentaje reportes con recomendaciones',
                 'value' => $this->percentage(
@@ -548,7 +589,7 @@ class InformManagerCheck
 
         $data = $data->pluck('count', $column);
 
-        return $this->buildDataChart($data);
+        return $this->buildTableChartData($data);
     }
 
     /**
@@ -642,6 +683,15 @@ class InformManagerCheck
      * Returns the reports of right air pta.
      * @return collection
      */
+    public function cases_per_process_pie()
+    {
+        return $this->cases_per_column_employee_pie('sau_employees_processes', 'employee_process_id');
+    }
+
+    /**
+     * Returns the reports of right air pta.
+     * @return collection
+     */
     public function cases_per_business_pie()
     {
         return $this->cases_per_column_employee_pie('sau_employees_businesses', 'employee_business_id');
@@ -682,7 +732,7 @@ class InformManagerCheck
 
         $checksPerColumn = $checksPerColumn->pluck('count', 'name');
 
-        return $this->buildDataChart($checksPerColumn);
+        return $this->buildTableChartData($checksPerColumn);
     }
 
     /**
@@ -710,6 +760,29 @@ class InformManagerCheck
                 'count' => $total
             ]
         ]);
+    }
+
+    private function buildTable($data)
+    {
+        $result = [];
+
+        foreach ($data as $key => $value)
+        {
+            array_push($result, [
+                $key, $value
+            ]);
+        }
+
+        return $result;
+    }
+
+    private function buildTableChartData($data)
+    {
+        $result = collect([]);
+        $result->put('table', $this->buildTable($data));
+        $result->put('chart', $this->buildDataChart($data));
+
+        return $result;
     }
 
     /**
