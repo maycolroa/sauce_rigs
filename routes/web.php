@@ -372,6 +372,7 @@ Route::middleware(['auth'])->group(function () {
 
       Route::get('evaluationContract/downloadFile/{evaluationFile}', 'LegalAspects\Contracs\EvaluationContractController@downloadFile');
       Route::post('evaluationContract/data', 'LegalAspects\Contracs\EvaluationContractController@data');
+      Route::get('evaluationContract/download/{evaluationContract}', 'LegalAspects\Contracs\EvaluationContractController@download');
       Route::get('evaluationContract/getData/{evaluationContract}', 'LegalAspects\Contracs\EvaluationContractController@getData');
       Route::post('evaluationContract/report', 'LegalAspects\Contracs\EvaluationContractController@report');
       Route::post('evaluationContract/exportReport', 'LegalAspects\Contracs\EvaluationContractController@exportReport');

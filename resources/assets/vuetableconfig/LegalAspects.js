@@ -223,7 +223,24 @@ export default [
         {
             type: 'base',
             buttons: [],
+        },
+        {
+        type: 'download',
+        buttons: [{
+            name: 'downloadMatrix',
+            config: {
+                color: 'outline-success',
+                borderless: true,
+                icon: 'ion ion-md-cloud-download',
+                title: 'Exportar'
+            },
+            data: {
+                action: '/legalAspects/evaluationContract/download/',
+                id: 'id'
+            },
+            permission: 'contracts_evaluations_export'
         }],
+    }],
       configuration: {
           urlData: '/legalAspects/evaluationContract/data',
           filterColumns: true,

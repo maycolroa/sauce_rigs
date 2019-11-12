@@ -28,11 +28,13 @@ class EvaluationsExecutesExcel implements FromCollection, WithHeadings, WithMapp
     protected $interviewees;
     protected $qualifications;
     protected $ratings;
+    protected $evaluation_contract_id;
 
-    public function __construct($company_id, $filters)
+    public function __construct($company_id, $filters, $evaluation_contract_id = NULL)
     {
       $this->company_id = $company_id;
       $this->filters = $filters;
+      $this->evaluation_contract_id = $evaluation_contract_id;
 
       $evaluators = EvaluationContract::selectRaw('
         sau_ct_evaluation_contract.id as id, 
@@ -40,6 +42,8 @@ class EvaluationsExecutesExcel implements FromCollection, WithHeadings, WithMapp
         ->join('sau_ct_evaluation_user', 'sau_ct_evaluation_user.evaluation_id', 'sau_ct_evaluation_contract.id')
         ->join('sau_users', 'sau_users.id', 'sau_ct_evaluation_user.user_id')
         ->groupBy('sau_ct_evaluation_contract.id');
+
+      $this->checkId($evaluators);
 
       $evaluators->company_scope = $company_id;
       $this->evaluators = $evaluators->pluck('evaluators', 'id');
@@ -50,6 +54,8 @@ class EvaluationsExecutesExcel implements FromCollection, WithHeadings, WithMapp
         ->join('sau_ct_interviewees', 'sau_ct_interviewees.evaluation_id', 'sau_ct_evaluation_contract.id')
         ->groupBy('sau_ct_evaluation_contract.id');
 
+      $this->checkId($interviewees);
+
       $interviewees->company_scope = $company_id;
       $this->interviewees = $interviewees->pluck('interviewees', 'id');
 
@@ -57,6 +63,8 @@ class EvaluationsExecutesExcel implements FromCollection, WithHeadings, WithMapp
         CONCAT(sau_ct_evaluation_contract.id, "_", sau_ct_evaluation_item_rating.item_id, "_", sau_ct_evaluation_item_rating.type_rating_id) AS indice,
         sau_ct_evaluation_item_rating.value')
         ->join('sau_ct_evaluation_item_rating', 'sau_ct_evaluation_item_rating.evaluation_id', 'sau_ct_evaluation_contract.id');
+
+      $this->checkId($qualifications);
 
       $qualifications->company_scope = $company_id;
       $this->qualifications = $qualifications->pluck('value', 'indice');
@@ -95,15 +103,22 @@ class EvaluationsExecutesExcel implements FromCollection, WithHeadings, WithMapp
             $q->on('sau_ct_item_observations.item_id', '=', 'sau_ct_items.id')
               ->on('sau_ct_evaluation_contract.id', '=', 'sau_ct_item_observations.evaluation_id');
         })
-        ->join('sau_users', 'sau_users.id', 'sau_ct_evaluation_contract.evaluator_id')
-        ->inObjectives($this->filters['objectives'], $this->filters['filtersType']['evaluationsObjectives'])
-        ->inObjectives($this->filters['subobjectives'], $this->filters['filtersType']['evaluationsSubobjectives']);
+        ->join('sau_users', 'sau_users.id', 'sau_ct_evaluation_contract.evaluator_id');
 
-        if (COUNT($this->filters["dates"]) > 0)
-        {            
-          $evaluations->betweenDate($this->filters["dates"]);
+        if (COUNT($this->filters) > 0)
+        {
+          $evaluations->inObjectives($this->filters['objectives'], $this->filters['filtersType']['evaluationsObjectives']);
+          $evaluations->inObjectives($this->filters['subobjectives'], $this->filters['filtersType']['evaluationsSubobjectives']);
+
+          if (COUNT($this->filters["dates"]) > 0)
+          {            
+            $evaluations->betweenDate($this->filters["dates"]);
+          }
         }
+        
         //->orderBy('name, objective, subobjective, item', 'ASC');
+
+      $this->checkId($evaluations);
 
       $evaluations->company_scope = $this->company_id;
 
@@ -194,6 +209,12 @@ class EvaluationsExecutesExcel implements FromCollection, WithHeadings, WithMapp
     public function title(): string
     {
         return 'Evaluaciones calificadas';
+    }
+
+    private function checkId($query)
+    {
+      if ($this->evaluation_contract_id)
+        return $query->where('sau_ct_evaluation_contract.id', $this->evaluation_contract_id);
     }
 }
 

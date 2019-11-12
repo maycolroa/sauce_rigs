@@ -3,6 +3,7 @@
 namespace App\Exports\LegalAspects\Contracts\Evaluations;
 
 use App\Models\LegalAspects\Contracts\Evaluation;
+use App\Models\LegalAspects\Contracts\EvaluationContract;
 use Maatwebsite\Excel\Concerns\FromQuery;
 use Maatwebsite\Excel\Concerns\WithMapping;
 use Maatwebsite\Excel\Concerns\WithHeadings;
@@ -23,11 +24,13 @@ class EvaluationsListExcel implements FromQuery, WithMapping, WithHeadings, With
 
     protected $company_id;
     protected $filters;
+    protected $evaluation_contract_id;
 
-    public function __construct($company_id, $filters)
+    public function __construct($company_id, $filters, $evaluation_contract_id = NULL)
     {
       $this->company_id = $company_id;
       $this->filters = $filters;
+      $this->evaluation_contract_id = $evaluation_contract_id;
     }
 
     public function query()
@@ -45,15 +48,27 @@ class EvaluationsListExcel implements FromQuery, WithMapping, WithHeadings, With
         ->join('sau_ct_objectives', 'sau_ct_objectives.evaluation_id', 'sau_ct_evaluations.id')
         ->join('sau_ct_subobjectives', 'sau_ct_subobjectives.objective_id', 'sau_ct_objectives.id')
         ->join('sau_ct_items', 'sau_ct_items.subobjective_id', 'sau_ct_subobjectives.id')
-        ->inObjectives($this->filters['objectives'], $this->filters['filtersType']['evaluationsObjectives'])
-        ->inObjectives($this->filters['subobjectives'], $this->filters['filtersType']['evaluationsSubobjectives'])
         ->groupBy('name', 'type', 'user_creator', 'created_at', 'objective', 'subobjective', 'item')
         ->orderBy('name');
 
-        if (COUNT($this->filters["dates"]) > 0)
-        {            
-            $evaluations->join('sau_ct_evaluation_contract', 'sau_ct_evaluation_contract.evaluation_id', 'sau_ct_evaluations.id');
-            $evaluations->betweenDate($this->filters["dates"]);
+        if (COUNT($this->filters) > 0)
+        {
+          $evaluations->inObjectives($this->filters['objectives'], $this->filters['filtersType']['evaluationsObjectives']);
+          $evaluations->inObjectives($this->filters['subobjectives'], $this->filters['filtersType']['evaluationsSubobjectives']);
+
+          if (COUNT($this->filters["dates"]) > 0)
+          {            
+              $evaluations->join('sau_ct_evaluation_contract', 'sau_ct_evaluation_contract.evaluation_id', 'sau_ct_evaluations.id');
+              $evaluations->betweenDate($this->filters["dates"]);
+          }
+        }
+
+        if ($this->evaluation_contract_id)
+        {
+          $evaluationContract = EvaluationContract::where('id', $this->evaluation_contract_id);
+          $evaluationContract->company_scope = $this->company_id;
+          $evaluationContract = $evaluationContract->first();
+          $evaluations->where('sau_ct_evaluations.id', $evaluationContract->evaluation_id);
         }
 
       $evaluations->company_scope = $this->company_id;

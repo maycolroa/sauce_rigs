@@ -13,11 +13,13 @@ class EvaluationExcel implements WithMultipleSheets
 
     protected $company_id;
     protected $filters;
+    protected $evaluation_contract_id;
     
-    public function __construct($company_id, $filters)
+    public function __construct($company_id, $filters, $evaluation_contract_id = NULL)
     {
         $this->company_id = $company_id;
         $this->filters = $filters;
+        $this->evaluation_contract_id = $evaluation_contract_id;
     }
 
     /**
@@ -27,8 +29,8 @@ class EvaluationExcel implements WithMultipleSheets
     {
         $sheets = [];
 
-        $sheets[] = new EvaluationsListExcel($this->company_id, $this->filters);
-        $sheets[] = new EvaluationsExecutesExcel($this->company_id, $this->filters);
+        $sheets[] = new EvaluationsListExcel($this->company_id, $this->filters, $this->evaluation_contract_id);
+        $sheets[] = new EvaluationsExecutesExcel($this->company_id, $this->filters, $this->evaluation_contract_id);
 
         return $sheets;
     }
