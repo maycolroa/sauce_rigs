@@ -56,6 +56,11 @@ class ContractLesseeInformation extends Model
         return $this->belongsToMany(HighRiskType::class, 'sau_ct_contract_high_risk_type', 'contract_id');
     }
 
+    public function responsibles()
+    {
+        return $this->belongsToMany('App\Models\Administrative\Users\User', 'sau_ct_contract_responsibles', 'contract_id');
+    }
+
     public function multiselect()
     {
         return [

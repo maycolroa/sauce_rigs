@@ -8,6 +8,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use App\Models\Administrative\Users\User;
+use App\Models\General\Company;
 use App\Models\General\Module;
 use App\Models\General\Team;
 use App\Facades\Mail\Facades\NotificationMail;
@@ -42,6 +43,7 @@ class NotifyLicenseRenewalJob implements ShouldQueue
     public function handle()
     {
         $team = Team::where('name', $this->company_id)->first();
+        $company = Company::find($this->company_id);
 
         $recipients = User::select('sau_users.email')
             ->active()
@@ -87,7 +89,7 @@ class NotifyLicenseRenewalJob implements ShouldQueue
             NotificationMail::
                 subject('Renovación de Licencia')
                 ->recipients($recipients)
-                ->message("Se ha renovado la licencia de su compañia para los siguientes módulos: {$modules}")
+                ->message("Se ha renovado la licencia de la compañia {$company->name} para los siguientes módulos: {$modules}")
                 ->module('users')
                 ->event('Job: NotifyLicenseRenewalJob')
                 ->company($this->company_id)

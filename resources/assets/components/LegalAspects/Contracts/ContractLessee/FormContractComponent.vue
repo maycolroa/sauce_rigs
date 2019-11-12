@@ -34,6 +34,10 @@
 					<b-form-row v-if="isEdit || viewOnly">
 						<vue-checkbox-simple style="padding-top: 20px;" :disabled="viewOnly" class="col-md-6" v-model="form.active" label="¿Activo?" :checked="form.active" name="active" checked-value="SI" unchecked-value="NO"></vue-checkbox-simple>
 					</b-form-row>
+					<b-form-row>
+						<vue-advanced-select :disabled="viewOnly" class="col-md-12" v-model="form.users_responsibles" :selected-object="form.multiselect_users_responsibles" :error="form.errorsFor('users_responsibles')" name="users_responsibles" label="Responsable de la contratista" placeholder="Seleccione el responsable de la contratista" :options="usersResponsibles" :multiple="true">
+						</vue-advanced-select>
+					</b-form-row>
             	</b-card>
 				<div class="row float-right pt-10 pr-10">
                     <template>
@@ -82,6 +86,12 @@ export default {
 				return [];
 			}
 		},
+		usersResponsibles: {
+			type: Array,
+			default: function() {
+				return [];
+			}
+		},
 		siNo: {
 			type: Array,
 			default: function() {
@@ -100,7 +110,8 @@ export default {
 					classification: '',
 					social_reason: '',
 					high_risk_work: '',
-					high_risk_type_id: []
+					high_risk_type_id: [],
+					users_responsibles: []
 				};
 			}
 		}

@@ -89,11 +89,15 @@ class LicenseController extends Controller
 
             DB::commit();
 
-            $mails = $this->getDataFromMultiselect($request->get('add_email'));
+            $mails = [];
+
+            if ($request->has('add_email'))
+                $mails = $this->getDataFromMultiselect($request->get('add_email'));
 
             NotifyLicenseRenewalJob::dispatch($license->company_id, $modules_main, $mails);
 
         } catch(\Exception $e) {
+            \Log::info($e);
             DB::rollback();
             return $this->respondHttp500();
         }

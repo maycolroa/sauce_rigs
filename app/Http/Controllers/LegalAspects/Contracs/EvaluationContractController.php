@@ -14,6 +14,7 @@ use App\Models\LegalAspects\Contracts\Item;
 use App\Models\LegalAspects\Contracts\Observation;
 use App\Models\LegalAspects\Contracts\EvaluationFile;
 use App\Jobs\LegalAspects\Contracts\Evaluations\EvaluationContractReportExportJob;
+use App\Jobs\LegalAspects\Contracts\Evaluations\EvaluationExportJob;
 use App\Jobs\LegalAspects\Contracts\Evaluations\EvaluationSendNotificationJob;
 use Carbon\Carbon;
 use DB;
@@ -751,5 +752,17 @@ class EvaluationContractController extends Controller
     public function downloadFile(EvaluationFile $evaluationFile)
     {
         return Storage::disk('public')->download($evaluationFile->path_donwload());
+    }
+
+    public function download(EvaluationContract $evaluationContract)
+    {
+        try
+        {
+            EvaluationExportJob::dispatch($this->user, $this->company, [], $evaluationContract->id);
+
+            return $this->respondHttp200();
+        } catch(Exception $e) {
+            return $this->respondHttp500();
+        }
     }
 }

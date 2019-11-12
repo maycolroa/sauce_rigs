@@ -117,6 +117,9 @@ class ContractLesseeController extends Controller
             $user->attachRole($this->getIdRole($request->type), $this->team);
             $contract->users()->sync($user);
 
+            $responsibles = $this->getDataFromMultiselect($request->users_responsibles);
+            $contract->responsibles()->sync($responsibles);
+
             DB::commit();
 
         } catch (\Exception $e) {
@@ -151,6 +154,16 @@ class ContractLesseeController extends Controller
 
             $contract->multiselect_high_risk_type = $high_risk_type_id;
             $contract->high_risk_type_id = $high_risk_type_id;
+
+            $users_responsibles = [];
+
+            foreach ($contract->responsibles as $key => $value)
+            {                
+                array_push($users_responsibles, $value->multiselect());
+            }
+
+            $contract->multiselect_users_responsibles = $users_responsibles;
+            $contract->users_responsibles = $users_responsibles;
 
             return $this->respondHttp200([
                 'data' => $contract,
@@ -210,6 +223,9 @@ class ContractLesseeController extends Controller
             {
                 $risks = ($request->high_risk_work == 'SI') ? $this->getDataFromMultiselect($request->high_risk_type_id) : [];
                 $contract->highRiskType()->sync($risks);
+
+                $responsibles = $this->getDataFromMultiselect($request->users_responsibles);
+                $contract->responsibles()->sync($responsibles);
             }
 
             if (!$contract->update())
@@ -546,11 +562,11 @@ class ContractLesseeController extends Controller
 
             DB::commit();
 
+            //$this->sendNotification($contract);
+
             return $this->respondHttp200([
                 'data' => $data
-            ]);
-
-            //$this->sendNotification($contract);
+            ]);  
 
         } catch (\Exception $e) {
             DB::rollback();
@@ -620,5 +636,14 @@ class ContractLesseeController extends Controller
         
             return $this->multiSelectFormat($highrisk);
         }
+    }
+
+    public function multiselectUsers(Request $request)
+    {
+        $users = $this->getUsersMasterContract($this->company);
+        $users = $users->pluck('id', 'name');
+
+        return $this->multiSelectFormat($users);
+
     }
 }
