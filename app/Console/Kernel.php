@@ -22,7 +22,8 @@ class Kernel extends ConsoleKernel
         'App\Console\Commands\NotifyUpdateLaws',
         'App\Console\Commands\ReincSendMail',
         'App\Console\Commands\ReincNotificationNextFollowUp',
-        'App\Console\Commands\DmReportHistory'
+        'App\Console\Commands\DmReportHistory',
+        'App\Console\Commands\NotifyUpdateListCheckContract'
     ];
 
     /**
@@ -76,6 +77,10 @@ class Kernel extends ConsoleKernel
         $schedule->command('reinc-notification-next-follow-up')
             ->timezone('America/Bogota')
             ->dailyAt('01:00');
+
+        $schedule->command('notify-update-list-check-contract')
+            ->timezone('America/Bogota')
+            ->dailyAt('02:00');
     }
 
     /**

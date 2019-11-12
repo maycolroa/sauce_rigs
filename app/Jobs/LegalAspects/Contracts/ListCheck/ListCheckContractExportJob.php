@@ -37,7 +37,8 @@ class ListCheckContractExportJob implements ShouldQueue
      */
     public function handle()
     {
-        $recipients = $this->getUsersMasterContract($this->company_id);
+        //$recipients = $this->getUsersMasterContract($this->company_id);
+        $recipients = $this->contract->responsibles;
 
         $recipients = $recipients->filter(function ($recipient, $index) {
           return $recipient->can('contracts_receive_notifications', $this->company_id);

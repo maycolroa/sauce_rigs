@@ -68,6 +68,10 @@ class User extends Authenticatable
       	return $this->belongsToMany('App\Models\General\Company','sau_company_user')->where('active', 'SI');
     }
 
+    public function contractResponsibles(){
+        return $this->belongsToMany('App\Models\LegalAspects\Contracts\ContractLesseeInformation','sau_ct_contract_responsibles', 'user_id');
+    }
+
     public function generatePasswordUser(){
           return $this->hasMany('App\Models\Administrative\Users\GeneratePasswordUser','sau_generate_password_user');
     }
