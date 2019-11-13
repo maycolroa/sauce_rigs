@@ -170,6 +170,7 @@ return [
         Maatwebsite\Excel\ExcelServiceProvider::class,
         App\Providers\ObserverServiceProvider::class,
         Barryvdh\DomPDF\ServiceProvider::class,
+        Bugsnag\BugsnagLaravel\BugsnagServiceProvider::class
 
     ],
 

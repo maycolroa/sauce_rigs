@@ -47,6 +47,7 @@
     43 => 'Maatwebsite\\Excel\\ExcelServiceProvider',
     44 => 'App\\Providers\\ObserverServiceProvider',
     45 => 'Barryvdh\\DomPDF\\ServiceProvider',
+    46 => 'Bugsnag\\BugsnagLaravel\\BugsnagServiceProvider',
   ),
   'eager' => 
   array (
@@ -82,6 +83,7 @@
     29 => 'Maatwebsite\\Excel\\ExcelServiceProvider',
     30 => 'App\\Providers\\ObserverServiceProvider',
     31 => 'Barryvdh\\DomPDF\\ServiceProvider',
+    32 => 'Bugsnag\\BugsnagLaravel\\BugsnagServiceProvider',
   ),
   'deferred' => 
   array (
