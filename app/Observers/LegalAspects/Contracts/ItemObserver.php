@@ -16,15 +16,11 @@ class ItemObserver
      */
     public function deleting(Item $item)
     {
-        \Log::info("entre al observador de item: ".$item->id);
         $itemsEvaluations = EvaluationContractItem::where('sau_ct_evaluation_contract_items.item_id', $item->id)->get();
 
         foreach ($itemsEvaluations as $itemEvaluation) 
         {
-            \Log::info("borrando al observador de item");
             ActionPlan::company($item->subobjective->objective->evaluation->company_id)->model($itemEvaluation)->modelDeleteAll();
         }
-
-        \Log::info("saliendo al observador de item");
     }
 }
