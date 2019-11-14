@@ -154,8 +154,30 @@
                                                                     <center>
                                                                     <modal-observations v-model="form.evaluation.objectives[index].subobjectives[index2].items[index3].observations" :item-id="item.id" :view-only="viewOnly" @removeObservation="pushRemoveObservation" :form="form" :prefixIndex="`evaluation.objectives.${index}.subobjectives.${index2}.items.${index3}.observations`"/>
                                                                     <modal-file v-model="form.evaluation.objectives[index].subobjectives[index2].items[index3].files" :item-id="item.id" :view-only="viewOnly" @removeFile="pushRemoveFile" :form="form" :prefixIndex="`evaluation.objectives.${index}.subobjectives.${index2}.items.${index3}.files`"/>
+                                                                    <b-btn @click="showModal(`modalPlan${index}-${index2}-${index3}`)" variant="outline-info icon-btn borderless" size="xs" v-b-tooltip.top title="Ver plan de acción"><span class="ion ion-md-paper"></span></b-btn>
                                                                     </center>
-                                                                </td>
+                                                                    <b-modal :ref="`modalPlan${index}-${index2}-${index3}`" :hideFooter="true" :id="`modals-default-${index+1}${index2}${index3}`" class="modal-top" size="lg">
+                                                                    <div slot="modal-title">
+                                                                      Plan de acción<br>
+                                                                      <small class="text-muted">Crea planes de acción.</small>
+                                                                    </div>
+
+                                                                    <b-card bg-variant="transparent"  title="" class="mb-3 box-shadow-none">
+                                                                      <action-plan-component
+                                                                        :is-edit="!viewOnly"
+                                                                        :view-only="viewOnly"
+                                                                        :form="form"
+                                                                        :prefix-index="`evaluation.objectives.${index}.subobjectives.${index2}.items.${index3}.actionPlan`"
+                                                                        :action-plan-states="actionPlanStates"
+                                                                        v-model="form.evaluation.objectives[index].subobjectives[index2].items[index3].actionPlan"
+                                                                        :action-plan="form.evaluation.objectives[index].subobjectives[index2].items[index3].actionPlan"/>
+                                                                    </b-card>
+                                                                    <br>
+                                                                    <div class="row float-right pt-12 pr-12y">
+                                                                      <b-btn variant="primary" @click="hideModal(`modalPlan${index}-${index2}-${index3}`)">Cerrar</b-btn>
+                                                                    </div>
+                                                                  </b-modal>
+                                                                </td>                  
                                                                 <td style="padding: 0px;">
                                                                 <vue-textarea :disabled="true" class="col-md-12" v-model="form.evaluation.objectives[index].subobjectives[index2].items[index3].description" label="" name="description" placeholder="Descripción"  rows="1"></vue-textarea>
                                                                 </td>
@@ -251,6 +273,7 @@ import InformationGeneral from '@/components/LegalAspects/Contracts/ContractLess
 import ModalObservations from "./ModalObservations.vue"
 import ModalFile from "./ModalFile.vue"
 import Loading from "@/components/Inputs/Loading.vue";
+import ActionPlanComponent from '@/components/CustomInputs/ActionPlanComponent.vue';
 
 export default {
   components: {
@@ -267,7 +290,8 @@ export default {
     InformationGeneral,
     ModalObservations,
     ModalFile,
-    Loading
+    Loading,
+    ActionPlanComponent
   },
   props: {
     url: { type: String },
@@ -277,6 +301,12 @@ export default {
     isEdit: { type: Boolean, default: false },
     viewOnly: { type: Boolean, default: false },
     typesRating: {
+      type: Array,
+      default: function() {
+        return [];
+      }
+    },
+    actionPlanStates: {
       type: Array,
       default: function() {
         return [];
@@ -390,7 +420,13 @@ export default {
     pushRemoveFile(value)
     {
       this.form.delete.files.push(value)
-    }
+    },
+    showModal(ref) {
+        this.$refs[ref][0].show()
+    },
+    hideModal(ref) {
+        this.$refs[ref][0].hide()
+    },
   }
 };
 </script>

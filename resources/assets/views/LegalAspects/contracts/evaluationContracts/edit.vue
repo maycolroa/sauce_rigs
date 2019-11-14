@@ -15,7 +15,8 @@
                 :is-edit="true"
                 :types-rating="typesRating"
                 userDataUrl="/selects/users"
-                :cancel-url="{ name: 'legalaspects-evaluations-contracts'}"/>
+                :cancel-url="{ name: 'legalaspects-evaluations-contracts'}"
+                :action-plan-states="actionPlanStates"/>
         </b-card-body>
       </b-card>
     </div>
@@ -38,7 +39,8 @@ export default {
   data () {
     return {
       data: [],
-      typesRating: []
+      typesRating: [],
+      actionPlanStates: []
     }
   },
   created(){
@@ -53,6 +55,7 @@ export default {
     });
 
     this.fetchSelect('typesRating', '/legalAspects/typeRating/AllTypesRating')
+    this.fetchSelect('actionPlanStates', '/selects/actionPlanStates')
   },
   methods: {
     fetchSelect(key, url)

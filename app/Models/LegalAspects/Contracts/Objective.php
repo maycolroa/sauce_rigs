@@ -17,4 +17,9 @@ class Objective extends Model
     {
         return $this->hasMany(Subobjective::class, 'objective_id');
     }
+
+    public function evaluation()
+    {
+        return $this->belongsTo(Evaluation::class, 'evaluation_id');
+    }
 }

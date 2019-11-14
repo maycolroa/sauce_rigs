@@ -17,4 +17,9 @@ class Item extends Model
     {
         return $this->belongsToMany(TypeRating::class, 'sau_ct_item_type_rating')->withPivot('apply');
     }
+
+    public function subobjective()
+    {
+        return $this->belongsTo(Subobjective::class, 'subobjective_id');
+    }
 }
