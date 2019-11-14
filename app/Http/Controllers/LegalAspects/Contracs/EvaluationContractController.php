@@ -5,6 +5,7 @@ namespace App\Http\Controllers\LegalAspects\Contracs;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Vuetable\Facades\Vuetable;
+use App\Facades\ActionPlans\Facades\ActionPlan;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Requests\LegalAspects\Contracts\EvaluationContractRequest;
 use App\Models\LegalAspects\Contracts\Evaluation;
@@ -13,6 +14,7 @@ use App\Models\LegalAspects\Contracts\Interviewee;
 use App\Models\LegalAspects\Contracts\Item;
 use App\Models\LegalAspects\Contracts\Observation;
 use App\Models\LegalAspects\Contracts\EvaluationFile;
+use App\Models\LegalAspects\Contracts\EvaluationContractItem;
 use App\Jobs\LegalAspects\Contracts\Evaluations\EvaluationContractReportExportJob;
 use App\Jobs\LegalAspects\Contracts\Evaluations\EvaluationExportJob;
 use App\Jobs\LegalAspects\Contracts\Evaluations\EvaluationSendNotificationJob;
@@ -232,6 +234,11 @@ class EvaluationContractController extends Controller
     {
         $evaluationContract->results()->delete();
 
+        ActionPlan::
+                user($this->user)
+            ->module('contracts')
+            ->url(url('/administrative/actionplans'));
+
         foreach ($evaluation['objectives'] as $objective)
         {
             foreach ($objective['subobjectives'] as $subobjective)
@@ -296,6 +303,21 @@ class EvaluationContractController extends Controller
                             Storage::disk('public')->delete($fileUpload->path_client(false)."/".$file);
                         }
                     }
+
+                    $itemEvaluation = EvaluationContractItem::firstOrCreate(
+                        [
+                            'evaluation_id' => $evaluationContract->id,
+                            'item_id' => $item['id']
+                        ], 
+                        [
+                            'evaluation_id' => $evaluationContract->id,
+                            'item_id' => $item['id']
+                        ]);
+
+                    ActionPlan::
+                        model($itemEvaluation)
+                        ->activities($item['actionPlan'])
+                        ->save();
                 }
             }
         }
@@ -306,6 +328,8 @@ class EvaluationContractController extends Controller
             $evaluationContract->update(['state' => 'En proceso']);
         else
             $evaluationContract->update(['state' => 'Terminada']);
+
+        ActionPlan::sendMail();
     }
 
     /**
@@ -423,6 +447,11 @@ class EvaluationContractController extends Controller
                     $item->ratings = $item_types;
                     $item->observations = [];
                     $item->files = [];
+
+                    $item->actionPlan = [
+                        "activities" => [],
+                        "activitiesRemoved" => []
+                    ];
                 }
             }
         }
@@ -491,6 +520,9 @@ class EvaluationContractController extends Controller
                     }
 
                     $item->ratings = $clone;
+
+                    $evaluationContractItem = EvaluationContractItem::where('evaluation_id', $evaluationContract->id)->where('item_id',  $item->id)->first();
+                    $item->actionPlan = ActionPlan::model($evaluationContractItem)->prepareDataComponent();
                 }
 
                 $subobjective->report = $clone_report;

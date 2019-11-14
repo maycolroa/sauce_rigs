@@ -17,4 +17,9 @@ class Subobjective extends Model
     {
         return $this->hasMany(Item::class, 'subobjective_id');
     }
+
+    public function objective()
+    {
+        return $this->belongsTo(Objective::class, 'objective_id');
+    }
 }

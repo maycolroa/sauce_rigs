@@ -245,6 +245,7 @@ class EvaluationController extends Controller
 
         } catch (\Exception $e) {
             DB::rollback();
+            //\Log::info($e->getMessage());
             return $this->respondHttp500();
             //return $e->getMessage();
         }
@@ -334,7 +335,12 @@ class EvaluationController extends Controller
             Subobjective::destroy($data['subobjectives']);
 
         if (COUNT($data['items']) > 0)
-            Item::destroy($data['items']);
+        {
+            foreach ($data['items'] as $value) 
+            {
+                Item::find($value)->delete();
+            }
+        }  
     }
 
     /**

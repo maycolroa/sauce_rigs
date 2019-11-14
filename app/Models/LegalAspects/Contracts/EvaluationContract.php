@@ -65,6 +65,12 @@ class EvaluationContract extends Model
         return $this->state == 'Terminada' ? true : false;
     }
 
+    public function items()
+    {
+        return $this->hasMany(EvaluationContractItem::class, 'evaluation_id');
+    }
+
+
     /**
      * filters checks through the given objectives
      * @param  Illuminate\Database\Eloquent\Builder $query
