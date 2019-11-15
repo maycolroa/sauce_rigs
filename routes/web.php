@@ -98,6 +98,7 @@ Route::middleware(['auth'])->group(function () {
         Route::post('employeesNames', 'Administrative\Employees\EmployeesController@multiselectNames');
         Route::post('employeesIdentifications', 'Administrative\Employees\EmployeesController@multiselectIdentifications');
         Route::post('users', 'Administrative\Users\UserController@multiselect');
+        Route::post('usersOtherCompany', 'Administrative\Users\UserController@multiselectUsers');
         Route::post('responsiblesFilter', 'Administrative\ActionPlans\ActionPlanController@multiselectResponsiblesFilter');  
         Route::post('multiselect', 'General\ApplicationController@multiselect');
         Route::post('roles', 'Administrative\Roles\RoleController@multiselect');
@@ -231,6 +232,7 @@ Route::middleware(['auth'])->group(function () {
       Route::post('users/changePassword', 'Administrative\Users\UserController@changePassword');
       Route::get('users/myDefaultModule', 'Administrative\Users\UserController@myDefaultModule');
       Route::post('users/defaultModule', 'Administrative\Users\UserController@defaultModule');
+      Route::post('users/addUserOtherCompany', 'Administrative\Users\UserController@addUserOtherCompany');
 			Route::ApiResource('users', 'Administrative\Users\UserController');
 
 			Route::post('role/data', 'Administrative\Roles\RoleController@data');

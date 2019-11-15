@@ -17,6 +17,7 @@ use App\Traits\ContractTrait;
 use App\Traits\PermissionTrait;
 use App\Jobs\Administrative\Users\UserExportJob;
 use App\Jobs\System\Companies\SyncUsersSuperadminJob;
+use App\Http\Requests\Administrative\Users\UserOtherCompanyRequest;
 use Validator;
 use Hash;
 use DB;
@@ -515,5 +516,59 @@ class UserController extends Controller
         }
 
         return $data;
+    }
+
+    public function multiselectUsers()
+    {
+        $users_ids = User::select('sau_users.*')
+                ->join('sau_company_user', 'sau_company_user.user_id', 'sau_users.id')
+                ->pluck('id')
+                ->toArray();
+
+        $companies_ids = User::withoutGlobalScopes()
+                ->selectRaw('DISTINCT sau_company_user.company_id AS id')
+                ->join('sau_company_user', 'sau_company_user.user_id', 'sau_users.id')
+                ->where('sau_company_user.user_id', $this->user->id)
+                ->where('sau_company_user.company_id', '<>', $this->company)
+                ->pluck('id')
+                ->toArray();
+
+        \Log::info($companies_ids);
+
+        $users = User::select(
+                    "sau_users.id AS id",
+                    DB::raw("CONCAT(sau_users.document, ' - ', sau_users.name) AS name")
+                )
+                ->active()
+                ->withoutGlobalScopes()
+                ->join('sau_company_user', 'sau_company_user.user_id', 'sau_users.id')
+                ->whereNotIn('sau_users.id', $users_ids)
+                ->whereIn('sau_company_user.company_id', $companies_ids)
+                ->groupBy('id')
+                ->pluck('id', 'name');
+                
+        return $this->multiSelectFormat($users);
+    }
+
+    public function addUserOtherCompany(UserOtherCompanyRequest $request)
+    {
+         foreach ($request->users as $key => $value)
+                {
+                    $user = User::find($value['user_id']);
+
+                    if ($user)
+                    {
+                        $user->companies()->attach($this->company);
+
+                        $roles = $this->getValuesForMultiselect($value['role_id']);
+                        $roles = Role::whereIn('id', $roles)->get();
+
+                        if (COUNT($roles) > 0)
+                        {
+                            $team = Team::where('name', $this->company)->first();
+                            $user->attachRoles($roles, $team);
+                        }
+                    }
+                }
     }
 }
