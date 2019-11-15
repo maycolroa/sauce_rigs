@@ -12,6 +12,15 @@
                 ]
             },
             {
+                "name": "users",
+                "permissions": [
+                    {
+                        "name": "users_add_company",
+                        "display_name": "Agregar usuarios de otras compañias"
+                    }
+                ]
+            },
+            {
                 "name": "actionPlans",
                 "permissions": [
                     {

@@ -13,8 +13,6 @@ use App\Observers\LegalAspects\Contracts\ItemQualificationContractDetailObserver
 use App\Models\LegalAspects\Contracts\ItemQualificationContractDetail;
 use App\Models\LegalAspects\Contracts\Item AS EvaluationContractItem;
 use App\Observers\LegalAspects\Contracts\ItemObserver AS EvaluationContractItemObserver;
-use App\Models\LegalAspects\Contracts\Evaluation;
-use App\Observers\LegalAspects\Contracts\EvaluationObserver;
 
 class ObserverServiceProvider extends ServiceProvider
 {
@@ -30,7 +28,6 @@ class ObserverServiceProvider extends ServiceProvider
       ArticleFulfillment::observe(ArticleFulfillmentObserver::class);
       ItemQualificationContractDetail::observe(ItemQualificationContractDetailObserver::class);
       EvaluationContractItem::observe(EvaluationContractItemObserver::class);
-      Evaluation::observe(EvaluationObserver::class);
     }
 
     /**

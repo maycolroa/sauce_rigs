@@ -13,6 +13,9 @@
           <div class="card-title-elements" v-if="auth.can['users_c']">
             <b-btn :to="{name:'administrative-users-create'}" variant="primary">Crear Usuario</b-btn>
           </div>
+          <div class="card-title-elements" v-if="auth.can['users_add_company']">
+            <b-btn :to="{name:'administrative-users-add-other-company'}" variant="primary">Agregar usuarios de otra compañia</b-btn>
+          </div>
           <!-- <div class="card-title-elements ml-md-auto" v-if="auth.can['users_r']">
             <b-dd variant="default" :right="isRTL">
             <template slot="button-content">

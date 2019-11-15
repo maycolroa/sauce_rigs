@@ -43,6 +43,14 @@ export default [{
             import('@/views/Administrative/users/view')
         }
       ]),
+      ...middleware({ 'check-permission': 'users_add_company' }, [
+        {
+          name: 'administrative-users-add-other-company',
+          path: 'users/addOtherCompany',
+          component: () =>
+            import('@/views/Administrative/users/addUserOtherCompany')
+        }
+      ]),
       ...middleware({ 'check-permission': 'roles_r' }, [
         {
           name: 'administrative-roles',
