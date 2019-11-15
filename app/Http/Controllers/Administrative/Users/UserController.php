@@ -533,42 +533,60 @@ class UserController extends Controller
                 ->pluck('id')
                 ->toArray();
 
-        \Log::info($companies_ids);
+        $users = [];
 
-        $users = User::select(
-                    "sau_users.id AS id",
-                    DB::raw("CONCAT(sau_users.document, ' - ', sau_users.name) AS name")
-                )
-                ->active()
-                ->withoutGlobalScopes()
-                ->join('sau_company_user', 'sau_company_user.user_id', 'sau_users.id')
-                ->whereNotIn('sau_users.id', $users_ids)
-                ->whereIn('sau_company_user.company_id', $companies_ids)
-                ->groupBy('id')
-                ->pluck('id', 'name');
+        if (COUNT($users_ids) > 0 && COUNT($companies_ids) > 0)
+        {
+            $users = User::select(
+                        "sau_users.id AS id",
+                        DB::raw("CONCAT(sau_users.document, ' - ', sau_users.name) AS name")
+                    )
+                    ->active()
+                    ->withoutGlobalScopes()
+                    ->join('sau_company_user', 'sau_company_user.user_id', 'sau_users.id')
+                    ->whereNotIn('sau_users.id', $users_ids)
+                    ->whereIn('sau_company_user.company_id', $companies_ids)
+                    ->groupBy('id')
+                    ->pluck('id', 'name');
+        }
                 
         return $this->multiSelectFormat($users);
     }
 
     public function addUserOtherCompany(UserOtherCompanyRequest $request)
     {
-         foreach ($request->users as $key => $value)
+        DB::beginTransaction();
+
+        try
+        {
+            foreach ($request->users as $key => $value)
+            {
+                $user = User::find($value['user_id']);
+
+                if ($user)
                 {
-                    $user = User::find($value['user_id']);
+                    $user->companies()->attach($this->company);
 
-                    if ($user)
+                    $roles = $this->getValuesForMultiselect($value['role_id']);
+                    $roles = Role::whereIn('id', $roles)->get();
+
+                    if (COUNT($roles) > 0)
                     {
-                        $user->companies()->attach($this->company);
-
-                        $roles = $this->getValuesForMultiselect($value['role_id']);
-                        $roles = Role::whereIn('id', $roles)->get();
-
-                        if (COUNT($roles) > 0)
-                        {
-                            $team = Team::where('name', $this->company)->first();
-                            $user->attachRoles($roles, $team);
-                        }
+                        $team = Team::where('name', $this->company)->first();
+                        $user->attachRoles($roles, $team);
                     }
                 }
+            }
+
+            DB::commit();
+
+        } catch (\Exception $e) {
+            DB::rollback();
+            return $this->respondHttp500();
+        }
+
+        return $this->respondHttp200([
+            'message' => 'Se agregarón los usuarios'
+        ]);
     }
 }
