@@ -117,6 +117,13 @@ export default [
 					component: () => import('@/views/LegalAspects/contracts/evaluations/create')
 				}
 			]),
+			...middleware({ 'check-permission': 'contracts_evaluations_c' }, [
+				{
+					name: 'legalaspects-evaluations-clone',
+					path: 'evaluations/clone',
+					component: () => import('@/views/LegalAspects/contracts/evaluations/clone')
+				}
+			]),
 			...middleware({ 'check-permission': 'contracts_evaluations_u' }, [
 				{
 					name: 'legalaspects-evaluations-edit',

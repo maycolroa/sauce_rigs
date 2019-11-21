@@ -86,7 +86,19 @@ export default [
                     id: 'id',
                 },
                 permission: 'contracts_evaluations_r'
-            }, {
+            },{
+                config: {
+                    color: 'outline-success',
+                    borderless: true,
+                    icon: 'ion ion-md-create',
+                    title: 'Clonar Evaluación'
+                },
+                data: {
+                    routePush: { name: 'legalaspects-evaluations-clone' },
+                    id: 'id',
+                },
+                permission: 'contracts_evaluations_c'
+              },{
                 config: {
                     color: 'outline-success',
                     borderless: true,
