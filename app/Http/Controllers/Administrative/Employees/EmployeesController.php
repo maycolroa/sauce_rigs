@@ -237,7 +237,7 @@ class EmployeesController extends Controller
 
     public function downloadTemplateImport()
     {
-      return Excel::download(new EmployeeImportTemplate(Session::get('company_id')), 'PlantillaImportacionEmpleados.xlsx');
+      return Excel::download(new EmployeeImportTemplate($this->company), 'PlantillaImportacionEmpleados.xlsx');
     }
 
     /**

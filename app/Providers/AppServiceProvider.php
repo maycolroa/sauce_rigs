@@ -26,8 +26,12 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
-      $this->app->singleton('configuration_service', function () {
-        return new ConfigurationServices();
-      });
+        $this->app->alias('bugsnag.multi', \Illuminate\Contracts\Logging\Log::class);
+        $this->app->alias('bugsnag.multi', \Psr\Log\LoggerInterface::class);
+
+        $this->app->singleton('configuration_service', function () {
+            return new ConfigurationServices();
+        });
+
     }
 }
