@@ -32,6 +32,7 @@
                   :medical-conclusions="medicalConclusions"
                   :labor-conclusions="laborConclusions"
                   :origin-emitters="originEmitters"
+                  tracing-others-url="/biologicalmonitoring/reinstatements/check/tracingOthers"
                   :is-edit="true"
                   :cancel-url="{ name: 'reinstatements-checks'}"/>
             </template>
@@ -57,6 +58,7 @@
                   :labor-conclusions="laborConclusions"
                   :origin-emitters="originEmitters"
                   :type-qualification-controversy="typeQualificationControversy"
+                  tracing-others-url="/biologicalmonitoring/reinstatements/check/tracingOthers"
                   :is-edit="true"
                   :cancel-url="{ name: 'reinstatements-checks'}"/>
               </template>
@@ -84,6 +86,7 @@
                   :sve-associated="sveAssociated"
                   :medical-certificate-ueac="medicalCertificateUeac"
                   :relocated-types="relocatedTypes"
+                  tracing-others-url="/biologicalmonitoring/reinstatements/check/tracingOthers"
                   :is-edit="true"
                   :cancel-url="{ name: 'reinstatements-checks'}"/>
             </template>
@@ -112,6 +115,7 @@
                   :relocated-types="relocatedTypes"
                   :eps-favorability-concept="epsFavorabilityConcept"
                   :case-classification="caseClassification"
+                  tracing-others-url="/biologicalmonitoring/reinstatements/check/tracingOthers"
                   :is-edit="true"
                   :cancel-url="{ name: 'reinstatements-checks'}"/>
               </template>

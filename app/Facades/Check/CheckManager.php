@@ -7,6 +7,7 @@ use App\Models\Administrative\Employees\Employee;
 use App\Models\PreventiveOccupationalMedicine\Reinstatements\Check;
 use App\Models\PreventiveOccupationalMedicine\Reinstatements\Cie10Code;
 use App\Models\PreventiveOccupationalMedicine\Reinstatements\Tracing;
+use App\Models\PreventiveOccupationalMedicine\Reinstatements\CheckFile;
 use App\Http\Requests\PreventiveOccupationalMedicine\Reinstatements\CheckRequest;
 use App\Rules\Reinstatements\EndRecommendationsBePresent;
 use App\Rules\Reinstatements\StartRecomendation;
@@ -21,9 +22,11 @@ use App\Rules\Reinstatements\RequiredIfHasIncapacitated;
 use App\Traits\ConfigurableFormTrait;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 use Carbon\Carbon;
 use ReflectionClass;
 use Exception;
+use DB;
 
 class CheckManager
 {
@@ -484,6 +487,122 @@ class CheckManager
             $value = (Carbon::createFromFormat('D M d Y', $value))->format('Y-m-d');
 
         return $value;
+    }
+
+    public function saveFiles(Check $check, $request, User $madeByUser)
+    {
+        $directory = "preventiveOccupationalMedicine/reinstatements/files/{$check->company_id}";
+            
+        try
+        {
+            if ($request->has('files') && COUNT($request->files) > 0)
+            {
+                $files_names_delete = [];
+
+                foreach ($request->get('files') as $keyF => $file) 
+                {
+                    $create_file = true;
+
+                    if (isset($file['id']))
+                    {
+                        $fileUpload = CheckFile::findOrFail($file['id']);
+
+                        if ($file['old_name'] == $file['file'])
+                            $create_file = false;
+                        else
+                            array_push($files_names_delete, $file['old_name']);
+                    }
+                    else
+                    {
+                        $fileUpload = new CheckFile();
+                        $fileUpload->check_id = $check->id;
+                        $fileUpload->user_id = $madeByUser->id;
+                    }
+
+                    if ($create_file)
+                    {
+                        $file_tmp = $file['file'];
+                        $nameFile = base64_encode($madeByUser->id . now() . rand(1,10000) . $keyF) .'.'. $file_tmp->extension();
+                        $file_tmp->storeAs($directory, $nameFile, 'public');
+                        $fileUpload->file = $nameFile;
+                        $fileUpload->file_name = $file_tmp->getClientOriginalName();
+                    }
+
+                    if (!$fileUpload->save())
+                        return false;
+                }
+
+                //Borrar archivos reemplazados
+                foreach ($files_names_delete as $keyf => $file)
+                {
+                    Storage::disk('public')->delete($directory."/".$file);
+                }
+            }
+
+            return true;
+
+        } catch (Exception $e) {
+            $this->handleError($e);
+            return false;
+        }
+    }
+
+    public function getTracingOthers($employee_id, $check_id, $table)
+    {
+        $checks = Check::select(
+                "{$table}.id AS id",
+                "{$table}.description AS descripcion",
+                "{$table}.updated_at AS updated_at",
+                'sau_users.name AS name',
+                DB::raw('CONCAT(sau_reinc_cie10_codes.code, " - ", sau_reinc_cie10_codes.description) AS diagnostico'),
+                'sau_reinc_checks.disease_origin AS disease_origin'
+            )
+            ->join('sau_employees', 'sau_employees.id', 'sau_reinc_checks.employee_id')
+            ->join($table, "{$table}.check_id", 'sau_reinc_checks.id' )
+            ->join('sau_users', 'sau_users.id', "{$table}.user_id")
+            ->join('sau_reinc_cie10_codes', 'sau_reinc_cie10_codes.id', 'sau_reinc_checks.cie10_code_id')
+            ->isOpen()
+            ->where('sau_reinc_checks.employee_id', $employee_id)
+            ->where("{$table}.check_id", '<>', $check_id)
+            ->orderBy("{$table}.created_at", 'desc')
+            ->get();
+
+        $oldTracings = [];
+
+        foreach ($checks as $check) {
+
+            array_push($oldTracings, [
+
+                'id' => $check->id,
+                'description' => $check->descripcion,
+                'made_by' => $check->name,
+                'updated_at' => $check->updated_at->toDateString(),
+                'disease_origin' => $check->disease_origin,
+                'diagnosis' => $check->diagnostico
+
+            ]);
+        }
+
+        return $oldTracings;
+    }
+
+    public function deleteData($check, $data)
+    {
+        $directory = "preventiveOccupationalMedicine/reinstatements/files/{$check->company_id}";
+
+        if (COUNT($data['files']) > 0)
+        {
+            foreach ($data['files'] as $keyF => $file)
+            {
+                $file_delete = CheckFile::find($file);
+
+                if ($file_delete)
+                {
+                    Storage::disk('public')->delete($directory."/".$file_delete->file);
+                    $file_delete->delete();
+                }
+            }
+        }
     }
     
 }

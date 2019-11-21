@@ -137,6 +137,11 @@ class Check extends Model
         return $this->belongsTo(Cie10Code::class, 'cie10_code_id');
     }
 
+    public function files()
+    {
+        return $this->hasMany(CheckFile::class, 'check_id');
+    }
+
     /**
      * returns the regional model related to this check
      * @return App\Models\Administrative\Regionals\Regional
@@ -208,7 +213,7 @@ class Check extends Model
      */
     public function scopeByState($query, $state)
     {
-        return $query->where('state', $state);
+        return $query->where('sau_reinc_checks.state', $state);
     }
 
     /**

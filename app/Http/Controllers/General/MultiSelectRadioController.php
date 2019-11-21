@@ -51,7 +51,7 @@ class MultiSelectRadioController extends Controller
      */
     public function sexs()
     {
-        $data = ["Masculino"=>"Masculino", "Femenino"=>"Femenino"];
+        $data = ["Masculino"=>"Masculino", "Femenino"=>"Femenino", "Sin Sexo"=>"Sin Sexo"];
         return $this->multiSelectFormat(collect($data));
     }
 

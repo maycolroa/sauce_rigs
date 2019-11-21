@@ -8,6 +8,7 @@ use App\Vuetable\Facades\Vuetable;
 use App\Facades\Check\Facades\CheckManager;
 use App\Models\General\Company;
 use App\Models\PreventiveOccupationalMedicine\Reinstatements\Check;
+use App\Models\PreventiveOccupationalMedicine\Reinstatements\CheckFile;
 use App\Http\Requests\PreventiveOccupationalMedicine\Reinstatements\CheckRequest;
 use App\Jobs\PreventiveOccupationalMedicine\Reinstatements\CheckExportJob;
 use Illuminate\Support\Facades\Storage;
@@ -160,6 +161,12 @@ class CheckController extends Controller
                 return $this->respondHttp500();
             }
 
+            if (!CheckManager::saveFiles($check, $request, $this->user)) 
+            {
+                $check->delete();
+                return $this->respondHttp500();
+            }
+
             DB::commit();
 
         } catch (Exception $e){
@@ -229,6 +236,11 @@ class CheckController extends Controller
 
             if (!CheckManager::saveTracing('App\Models\PreventiveOccupationalMedicine\Reinstatements\LaborNotes', $check, $request->new_labor_notes, $this->user, $request->oldLaborNotes))
                 return $this->respondHttp500();
+
+            if (!CheckManager::saveFiles($check, $request, $this->user))
+                return $this->respondHttp500();
+
+            CheckManager::deleteData($check, $request->get('delete'));
 
             DB::commit();
 
@@ -367,6 +379,21 @@ class CheckController extends Controller
 
         $check->oldLaborNotes = $oldLaborNotes;
 
+        $files = $check->files;
+                    
+        $files->transform(function($file, $indexFile) {
+            $file->key = Carbon::now()->timestamp + rand(1,10000);
+            $file->old_name = $file->file;
+
+            return $file;
+        });
+
+        $check->files = $files;
+
+        $check->delete = [
+            'files' => []
+        ];
+
         return $check;
     }
 
@@ -386,6 +413,17 @@ class CheckController extends Controller
                 ->findOrFail($id);
 
         return Storage::disk('public')->download('preventiveOccupationalMedicine/reinstatements/files/'.$this->company.'/'.$check->process_pcl_file);
+    }
+
+    public function downloadFile(CheckFile $file)
+    {
+        $check = Check::select('sau_reinc_checks.*')
+                ->join('sau_employees', 'sau_employees.id', 'sau_reinc_checks.employee_id')
+                ->findOrFail($file->check_id);
+
+        $directory = "preventiveOccupationalMedicine/reinstatements/files/{$check->company_id}/{$file->file}";
+
+        return Storage::disk('public')->download($directory);
     }
 
     public function generateTracing(Request $request)
@@ -629,5 +667,14 @@ class CheckController extends Controller
       } catch(Exception $e) {
         return $this->respondHttp500();
       }
+    }
+
+    public function tracingOthers(Request $request)
+    {
+        $tracingOthers = CheckManager::getTracingOthers($request->employee_id, $request->check_id, $request->table);
+
+        return $this->respondHttp200([
+            'data' => $tracingOthers
+        ]);
     }
 }

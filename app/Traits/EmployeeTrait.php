@@ -17,7 +17,7 @@ trait EmployeeTrait
             'identification' => 'required|string|unique:sau_employees,identification,'.$params['id'].',id,company_id,'.$params['company_id'],
             'name' => 'required|string',
             'date_of_birth' => 'nullable|date',
-            'sex' => 'required|string|in:Masculino,Femenino',
+            'sex' => 'required|string|in:Masculino,Femenino,Sin Sexo',
             'email' => 'nullable|email|unique:sau_employees,email,'.$params['id'].',id,company_id,'.$params['company_id'],
             'income_date' => 'required|date',
             'employee_regional_id' => 'required|exists:sau_employees_regionals,id',
