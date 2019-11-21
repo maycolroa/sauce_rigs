@@ -140,8 +140,8 @@ class ConfigurationsCompany
 
         $configurations = ConfigurationCompany::select('company_id', 'value')->where('key', $key)->withoutGlobalScopes()->get();
 
-        if ($configurations->count() == 0)
-            throw new Exception('Parameter not found in configuration company table');
+        /*if ($configurations->count() == 0)
+            throw new Exception('Parameter not found in configuration company table');*/
         
         $data = [];
 
