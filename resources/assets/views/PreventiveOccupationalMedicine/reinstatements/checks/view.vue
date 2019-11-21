@@ -24,6 +24,7 @@
                   :medical-conclusions="medicalConclusions"
                   :labor-conclusions="laborConclusions"
                   :origin-emitters="originEmitters"
+                  tracing-others-url="/biologicalmonitoring/reinstatements/check/tracingOthers"
                   :cancel-url="{ name: 'reinstatements-checks'}"/>
               </template>
               <template v-if="form == 'hptu'">
@@ -40,6 +41,7 @@
                   :labor-conclusions="laborConclusions"
                   :origin-emitters="originEmitters"
                   :type-qualification-controversy="typeQualificationControversy"
+                  tracing-others-url="/biologicalmonitoring/reinstatements/check/tracingOthers"
                   :cancel-url="{ name: 'reinstatements-checks'}"/>
               </template>
               <template v-if="form == 'vivaAir'">
@@ -58,6 +60,7 @@
                   :sve-associated="sveAssociated"
                   :medical-certificate-ueac="medicalCertificateUeac"
                   :relocated-types="relocatedTypes"
+                  tracing-others-url="/biologicalmonitoring/reinstatements/check/tracingOthers"
                   :cancel-url="{ name: 'reinstatements-checks'}"/>
               </template>
               <template v-if="form == 'misionEmpresarial'">
@@ -78,6 +81,7 @@
                   :relocated-types="relocatedTypes"
                   :eps-favorability-concept="epsFavorabilityConcept"
                   :case-classification="caseClassification"
+                  tracing-others-url="/biologicalmonitoring/reinstatements/check/tracingOthers"
                   :cancel-url="{ name: 'reinstatements-checks'}"/>
               </template>
             </div>

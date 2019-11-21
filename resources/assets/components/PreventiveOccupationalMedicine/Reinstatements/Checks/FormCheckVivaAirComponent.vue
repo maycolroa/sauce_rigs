@@ -235,6 +235,22 @@
           </div>
 
           <b-form-row>
+            <div class="col-md-12" style="padding-bottom: 20px;">
+              <center>
+                <files-multiple 
+                  v-model="form.files"
+                  :view-only="viewOnly"
+                  ref="filesCheck"
+                  @removeFile="pushRemoveFile"/>
+              </center>
+            </div>
+          </b-form-row>
+
+          <div class="col-md-12" style="padding-left: 15px; padding-right: 15px;">
+            <hr class="border-dark container-m--x mt-0 mb-4">
+          </div>
+
+          <b-form-row>
             <div class="col-md-12">
               <tracing-inserter
                 label="Notas Médicas"
@@ -246,6 +262,21 @@
                 ref="tracingInserter"
               >
               </tracing-inserter>
+            </div>
+          </b-form-row>
+
+          <div class="col-md-12" style="padding-left: 15px; padding-right: 15px;">
+            <hr class="border-dark container-m--x mt-0 mb-4">
+          </div>
+
+          <b-form-row>
+            <div class="col-md-12">
+              <tracing-other-check
+                :old-tracings="tracingOtherReport"
+                ref="tracingInserterOther"
+                label="Notas Médicas"
+              >
+              </tracing-other-check>
             </div>
           </b-form-row>
 
@@ -265,6 +296,21 @@
                 ref="laborNotesInserter"
               >
               </tracing-inserter>
+            </div>
+          </b-form-row>
+
+          <div class="col-md-12" style="padding-left: 15px; padding-right: 15px; padding-top: 15px;">
+            <hr class="border-dark container-m--x mt-0 mb-4">
+          </div>
+
+          <b-form-row>
+            <div class="col-md-12">
+              <tracing-other-check
+                :old-tracings="laborNotesOtherReport"
+                ref="laborNotesInserterOther"
+                label="Notas Laborales"
+              >
+              </tracing-other-check>
             </div>
           </b-form-row>
           
@@ -293,6 +339,8 @@ import VueFileSimple from "@/components/Inputs/VueFileSimple.vue";
 import Form from "@/utils/Form.js";
 import Alerts from '@/utils/Alerts.js';
 import TracingInserter from './TracingInserter.vue';
+import TracingOtherCheck from './TracingOtherCheck.vue';
+import FilesMultiple from './FilesMultiple.vue';
 
 export default {
   components: {
@@ -304,7 +352,9 @@ export default {
     VueTextarea,
     MonitoringSelector,
     VueFileSimple,
-    TracingInserter
+    TracingInserter,
+    TracingOtherCheck,
+    FilesMultiple
   },
   props: {
     url: { type: String },
@@ -321,6 +371,7 @@ export default {
     cie10CodesDataUrl: { type: String, default: "" },
     epsDataUrl: { type: String, default: "" },
     restrictionsDataUrl: { type: String, default: "" },
+    tracingOthersUrl: { type: String, default: "" },
     disableWacthSelectInCreated: { type: Boolean, default: false},
     diseaseOrigins: {
       type: Array,
@@ -447,6 +498,7 @@ export default {
           labor_monitorings: [],
           new_labor_notes: '',
           oldLaborNotes: [],
+          files: []
         };
       }
     }
@@ -457,6 +509,8 @@ export default {
     },
     'form.employee_id' () {
       this.updateDetails(`/administration/employee/${this.form.employee_id}`, 'employeeDetail')
+      this.updateTracingOtherReport('sau_reinc_tracings', 'tracingOtherReport');
+      this.updateTracingOtherReport('sau_reinc_labor_notes', 'laborNotesOtherReport');
     },
     'form.cie10_code_id': function() {
       this.updateDetails(`/biologicalmonitoring/reinstatements/cie10/${this.form.cie10_code_id}`, 'cie10CodeDetail');
@@ -518,7 +572,11 @@ export default {
       this.updateDetails(`/biologicalmonitoring/reinstatements/cie10/${this.form.cie10_code_id}`, 'cie10CodeDetail');
     
     if (this.form.employee_id)
+    {
       this.updateDetails(`/administration/employee/${this.form.employee_id}`, 'employeeDetail')
+      this.updateTracingOtherReport('sau_reinc_tracings', 'tracingOtherReport');
+      this.updateTracingOtherReport('sau_reinc_labor_notes', 'laborNotesOtherReport');
+    }
 
     if (!this.isEdit && !this.viewOnly)
     {
@@ -545,10 +603,21 @@ export default {
         process: false
       },
       disableWacth: this.disableWacthSelectInCreated,
+      tracingOtherReport: [],
+      laborNotesOtherReport: []
     };
   },
   methods: {
     submit(e) {
+
+      this.loading = true;
+
+      this.form.clearFilesBinary();
+
+      this.form.files.forEach((file, keyFile) => {
+        this.form.addFileBinary(`${keyFile}`, file.file)
+      });
+
       if (!this.$refs.medicalMonitoring.monitoringListIsValid()) {
         Alerts.error('Error', 'Hay un campo vacío en la lista de monitoreo médico');
         return;
@@ -566,7 +635,6 @@ export default {
       this.form.new_labor_notes = this.$refs.laborNotesInserter.getNewTracing();
       this.form.oldLaborNotes = this.$refs.laborNotesInserter.getOldTracings();
 
-      this.loading = true;
       this.form
         .submit(e.target.action)
         .then(response => {
@@ -609,6 +677,21 @@ export default {
           this.$router.go(-1);
       });
     },
+    updateTracingOtherReport(table, key)
+    {
+      if (this.form.employee_id)
+      {
+        axios.post(this.tracingOthersUrl, {employee_id: this.form.employee_id, check_id: this.form.id, table: table})
+          .then(response => {
+              if (response.data)
+                this[key] = response.data.data;
+          })
+          .catch(error => {
+            Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
+            this.$router.go(-1);
+          });
+      }
+    },
     formatDate(param)
     {
       let date = ''
@@ -629,6 +712,10 @@ export default {
         this.empty[keyEmpty] = true
         this.form[keySelect] = ''
       }
+    },
+    pushRemoveFile(value)
+    {
+      this.form.delete.files.push(value)
     },
   }
 };
