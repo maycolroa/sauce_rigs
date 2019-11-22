@@ -122,7 +122,7 @@ class EvaluationContractController extends Controller
             $evaluation_contract->company_id = $this->company;
             $evaluation_contract->evaluation_date = date('Y-m-d H:i:s');
             $evaluation_contract->evaluator_id = $this->user->id;
-
+            
             if(!$evaluation_contract->save()){
                 return $this->respondHttp500();
             }
@@ -389,6 +389,7 @@ class EvaluationContractController extends Controller
             $evaluationContract->evaluation_id = $id;
             $evaluationContract->evaluators_id = [];
             $evaluationContract->interviewees = [];
+            $evaluationContract->observation = '';
             $evaluationContract->evaluation = $this->getEvaluation($id);
         
             $evaluationContract->delete = [
