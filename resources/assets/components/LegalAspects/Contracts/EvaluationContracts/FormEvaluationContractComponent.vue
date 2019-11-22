@@ -228,6 +228,16 @@
                 </div>
             </tab-content>
 
+            <tab-content title="Observación">
+                <b-row>
+                    <b-col>
+                        <b-card bg-variant="transparent" border-variant="dark" title="" class="mb-3 box-shadow-none">
+                            <vue-textarea class="col-md-12" :disabled="viewOnly" v-model="form.observation" label="Observación (Opcional)" name="observation" placeholder="Observación" help-text="La información plasmada en este campo se adjuntara en el correo que se le enviara al contratista al culminar la evaluación." rows="4"></vue-textarea>
+                            </b-card>
+                    </b-col>
+                </b-row>
+            </tab-content>
+
             <tab-content title="Historial" v-if="viewOnly">
                 <div class="col-md-12">
                     <blockquote class="blockquote text-center">
@@ -319,6 +329,7 @@ export default {
             evaluation_id: '',
             evaluators_id: '',
             interviewees: [],
+            observation: '',
             evaluation: {
                 objectives: []
             }

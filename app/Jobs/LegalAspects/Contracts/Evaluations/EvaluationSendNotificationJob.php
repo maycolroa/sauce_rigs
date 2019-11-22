@@ -8,7 +8,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Maatwebsite\Excel\Facades\Excel;
-use App\Exports\LegalAspects\Contracts\Evaluations\EvaluationContractNotificationExcel;
+use App\Exports\LegalAspects\Contracts\Evaluations\EvaluationContractExcel;
 use App\Facades\Mail\Facades\NotificationMail;
 use App\Models\LegalAspects\Contracts\EvaluationContract;
 use App\Models\Administrative\Users\User;
@@ -57,7 +57,7 @@ class EvaluationSendNotificationJob implements ShouldQueue
         if (!$recipients->isEmpty())
         {
           $nameExcel = 'export/1/evaluaciones_resultados_'.date("YmdHis").'.xlsx';
-          Excel::store(new EvaluationContractNotificationExcel($this->company_id, $this->id),$nameExcel,'public',\Maatwebsite\Excel\Excel::XLSX);
+          Excel::store(new EvaluationContractExcel($this->company_id, $this->id),$nameExcel,'public',\Maatwebsite\Excel\Excel::XLSX);
           
           $paramUrl = base64_encode($nameExcel);
           

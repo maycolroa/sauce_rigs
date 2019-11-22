@@ -13,6 +13,10 @@
                 @input="updateValue($event)"
                 @blur.native="onBlur" 
                 :rows="rows" />
+
+           <b-form-text v-if="helpText">
+            {{ helpText }}
+           </b-form-text>
     </b-form-group>
 </template>
 
@@ -28,6 +32,7 @@ export default {
     disabled: { type: Boolean, default: false },
     textBlock: {type: String},
     actionBlock: {type: String},
+    helpText: {type: String}
   },
   computed:{
       state(){
