@@ -182,15 +182,25 @@
 
                   <vue-advanced-select :disabled="viewOnly" class="col-md-6" v-model="form.emitter_controversy_origin_1" :error="form.errorsFor('emitter_controversy_origin_1')" :multiple="false" :options="originEmitters" :hide-selected="false" name="emitter_controversy_origin_1" label="Entidad que Califica la primera controversia" placeholder="Seleccione una opción">
                     </vue-advanced-select>
+
+                  <vue-advanced-select :disabled="viewOnly" class="col-md-6" v-model="form.qualification_controversy_1" :error="form.errorsFor('qualification_controversy_1')" :multiple="false" :options="clasificationOrigin" :hide-selected="false" name="qualification_controversy_1" label="Clasificación de origen la primera controversia" placeholder="Seleccione una opción">
+                    </vue-advanced-select>
+
+                  <vue-radio :disabled="viewOnly" :checked="form.is_firm_controversy_1" class="col-md-6" v-model="form.is_firm_controversy_1" :options="siNo" name="is_firm_controversy_1" :error="form.errorsFor('is_firm_controversy_1')" label="¿Es firme la controversia?"></vue-radio>
+
                 </b-form-row>
 
-                <b-form-row v-show="showcontroversy_origin2" style="padding-top: 15px;">
+                <b-form-row v-show="form.is_firm_controversy_1 == 'NO'" style="padding-top: 15px;">
                   <h5 class="col-md-12">Controversia 2</h5>
                   <vue-datepicker :disabled="viewOnly" class="col-md-6" v-model="form.date_controversy_origin_2" label="Fecha calificación segunda controversia" :full-month-name="true" :error="form.errorsFor('date_controversy_origin_2')" name="date_controversy_origin_2">
                         </vue-datepicker>
 
                   <vue-advanced-select :disabled="viewOnly" class="col-md-6" v-model="form.emitter_controversy_origin_2" :error="form.errorsFor('emitter_controversy_origin_2')" :multiple="false" :options="originEmitters" :hide-selected="false" name="emitter_controversy_origin_2" label="Entidad que Califica la segunda controversia" placeholder="Seleccione una opción">
                     </vue-advanced-select>
+
+                  <vue-advanced-select :disabled="viewOnly" class="col-md-6" v-model="form.qualification_controversy_2" :error="form.errorsFor('qualification_controversy_2')" :multiple="false" :options="clasificationOrigin" :hide-selected="false" name="qualification_controversy_2" label="Clasificación de origen la segunda controversia" placeholder="Seleccione una opción">
+                    </vue-advanced-select>
+
                 </b-form-row>
                 
               </b-form-row>
@@ -216,14 +226,21 @@
                         </vue-datepicker>
                         
                   <vue-input :disabled="viewOnly" class="col-md-6" v-model="form.emitter_controversy_pcl_1" label="Entidad que Califica la primera controversia" type="text" name="emitter_controversy_pcl_1" :error="form.errorsFor('emitter_controversy_pcl_1')"></vue-input>
+
+                  <vue-input :disabled="viewOnly" class="col-md-6" v-model="form.punctuation_controversy_plc_1" label="Calificación" type="number" name="punctuation_controversy_plc_1" :error="form.errorsFor('punctuation_controversy_plc_1')"></vue-input> 
+
+                  <vue-radio :disabled="viewOnly" :checked="form.is_firm_controversy_pcl_1" class="col-md-6" v-model="form.is_firm_controversy_pcl_1" :options="siNo" name="is_firm_controversy_pcl_1" :error="form.errorsFor('is_firm_controversy_pcl_1')" label="¿Es firme la controversia?"></vue-radio>
+
                 </b-form-row>
 
-                <b-form-row v-show="showcontroversy_pcl2" style="padding-top: 15px;">
+                <b-form-row v-show="form.is_firm_controversy_pcl_1 == 'NO'" style="padding-top: 15px;">
                   <h5 class="col-md-12">Controversia 2</h5>
                   <vue-datepicker :disabled="viewOnly" class="col-md-6" v-model="form.date_controversy_pcl_2" label="Fecha calificación segunda controversia" :full-month-name="true" :error="form.errorsFor('date_controversy_pcl_2')" name="date_controversy_pcl_2">
                         </vue-datepicker>
 
                   <vue-input :disabled="viewOnly" class="col-md-6" v-model="form.emitter_controversy_pcl_2" label="Entidad que Califica la segunda controversia" type="text" name="emitter_controversy_pcl_2" :error="form.errorsFor('emitter_controversy_pcl_2')"></vue-input>
+
+                  <vue-input :disabled="viewOnly" class="col-md-6" v-model="form.punctuation_controversy_plc_2" label="Calificación" type="number" name="punctuation_controversy_plc_2" :error="form.errorsFor('punctuation_controversy_plc_2')"></vue-input>
                 </b-form-row>
 
               </b-form-row>
@@ -433,6 +450,12 @@ export default {
         return [];
       }
     },
+    clasificationOrigin: {
+      type: Array,
+      default: function() {
+        return [];
+      }
+    },
     check: {
       default() {
         return {
@@ -473,8 +496,14 @@ export default {
           date_controversy_pcl_2: '',
           emitter_controversy_origin_1: '',
           emitter_controversy_origin_2: '',
+          qualification_controversy_1: '',
+          qualification_controversy_2: '',
+          is_firm_controversy_1: '',
+          is_firm_controversy_pcl_1: '',
           emitter_controversy_pcl_1: '',
           emitter_controversy_pcl_2: '',
+          punctuation_controversy_plc_1: '',
+          punctuation_controversy_plc_2: '',
           malady_origin: '',                                 
           eps_favorability_concept: '',
           case_classification: '',
@@ -582,6 +611,8 @@ export default {
     {
       this.form.relocated = 'NO';
       this.form.indefinite_recommendations = 'SI';
+      this.form.is_firm_controversy_1 = 'SI';
+      this.form.is_firm_controversy_pcl_1 = 'SI';
     }
 
     setTimeout(() => {

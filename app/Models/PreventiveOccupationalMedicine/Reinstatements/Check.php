@@ -96,7 +96,11 @@ class Check extends Model
         'type_controversy_origin_1',
         'type_controversy_origin_2',
         'punctuation_controversy_plc_1',
-        'punctuation_controversy_plc_2'
+        'punctuation_controversy_plc_2',
+        'qualification_controversy_1',
+        'is_firm_controversy_1',
+        'qualification_controversy_2',
+        'is_firm_controversy_pcl_1'
     ];
 
     /**

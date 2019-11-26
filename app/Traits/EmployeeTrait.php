@@ -29,7 +29,7 @@ trait EmployeeTrait
             'employee_eps_id' => 'nullable|exists:sau_employees_eps,id',
             'employee_afp_id' => 'nullable|exists:sau_employees_afp,id',
             'mobile' => 'nullable|numeric',
-            'extension' => 'nullable|numeric'
+            'extension' => 'nullable'
         ];
 
         if ($formModel == 'misionEmpresarial')
