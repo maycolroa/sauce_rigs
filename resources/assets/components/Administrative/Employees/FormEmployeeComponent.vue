@@ -15,7 +15,7 @@
 
      <b-form-row>
       <vue-input :disabled="viewOnly" class="col-md-6" v-model="form.mobile" label="Celular" type="number" name="mobile" :error="form.errorsFor('mobile')" placeholder="Celular"></vue-input>
-      <vue-input :disabled="viewOnly" class="col-md-6" v-model="form.extension" label="Extensión" type="number" name="extension" :error="form.errorsFor('extension')" placeholder="Extensión"></vue-input>
+      <vue-input :disabled="viewOnly" class="col-md-6" v-model="form.extension" label="Teléfono" type="text" name="extension" :error="form.errorsFor('extension')" placeholder="Teléfono"></vue-input>
     </b-form-row>
 
     <b-form-row>

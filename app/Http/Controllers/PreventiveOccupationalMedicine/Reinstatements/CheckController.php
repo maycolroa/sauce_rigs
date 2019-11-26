@@ -363,6 +363,8 @@ class CheckController extends Controller
             ]);
         }
 
+        $check->new_labor_notes = '';
+
         $check->oldTracings = $oldTracings;
 
         $oldLaborNotes = [];

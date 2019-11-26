@@ -177,9 +177,15 @@
 
                   <vue-advanced-select :disabled="viewOnly" class="col-md-6" v-model="form.type_controversy_origin_1" :error="form.errorsFor('type_controversy_origin_1')" :multiple="false" :options="typeQualificationControversy" :hide-selected="false" name="type_controversy_origin_1" label="Tipo de calificacion de la primera controversia" placeholder="Seleccione una opción">
                     </vue-advanced-select>
+
+                  <vue-advanced-select :disabled="viewOnly" class="col-md-6" v-model="form.qualification_controversy_1" :error="form.errorsFor('qualification_controversy_1')" :multiple="false" :options="clasificationOrigin" :hide-selected="false" name="qualification_controversy_1" label="Clasificación de origen la primera controversia" placeholder="Seleccione una opción">
+                    </vue-advanced-select>
+
+                    <vue-radio :disabled="viewOnly" :checked="form.is_firm_controversy_1" class="col-md-6" v-model="form.is_firm_controversy_1" :options="siNo" name="is_firm_controversy_1" :error="form.errorsFor('is_firm_controversy_1')" label="¿Es firme la controversia?"></vue-radio>
+
                 </b-form-row>
 
-                <b-form-row v-show="showcontroversy_origin2" style="padding-top: 15px;">
+                <b-form-row v-show="form.is_firm_controversy_1 == 'NO'" style="padding-top: 15px;">
                   <h5 class="col-md-12">Controversia 2</h5>
                   <vue-datepicker :disabled="viewOnly" class="col-md-6" v-model="form.date_controversy_origin_2" label="Fecha calificación segunda controversia" :full-month-name="true" :error="form.errorsFor('date_controversy_origin_2')" name="date_controversy_origin_2">
                         </vue-datepicker>
@@ -189,6 +195,10 @@
 
                   <vue-advanced-select :disabled="viewOnly" class="col-md-6" v-model="form.type_controversy_origin_2" :error="form.errorsFor('type_controversy_origin_2')" :multiple="false" :options="typeQualificationControversy" :hide-selected="false" name="type_controversy_origin_2" label="Tipo de calificacion de la primera controversia" placeholder="Seleccione una opción">
                     </vue-advanced-select>
+
+                  <vue-advanced-select :disabled="viewOnly" class="col-md-6" v-model="form.qualification_controversy_2" :error="form.errorsFor('qualification_controversy_2')" :multiple="false" :options="clasificationOrigin" :hide-selected="false" name="qualification_controversy_2" label="Clasificación de origen la segunda controversia" placeholder="Seleccione una opción">
+                    </vue-advanced-select>
+
                 </b-form-row>
                 
               </b-form-row>
@@ -216,9 +226,12 @@
                   <vue-input :disabled="viewOnly" class="col-md-6" v-model="form.emitter_controversy_pcl_1" label="Entidad que Califica la primera controversia" type="text" name="emitter_controversy_pcl_1" :error="form.errorsFor('emitter_controversy_pcl_1')"></vue-input>
 
                   <vue-input :disabled="viewOnly" class="col-md-6" v-model="form.punctuation_controversy_plc_1" label="Calificación" type="number" name="punctuation_controversy_plc_1" :error="form.errorsFor('punctuation_controversy_plc_1')"></vue-input>
+
+                  <vue-radio :disabled="viewOnly" :checked="form.is_firm_controversy_pcl_1" class="col-md-6" v-model="form.is_firm_controversy_pcl_1" :options="siNo" name="is_firm_controversy_pcl_1" :error="form.errorsFor('is_firm_controversy_pcl_1')" label="¿Es firme la controversia?"></vue-radio>
+
                 </b-form-row>
 
-                <b-form-row v-show="showcontroversy_pcl2" style="padding-top: 15px;">
+                <b-form-row v-show="form.is_firm_controversy_pcl_1 == 'NO'" style="padding-top: 15px;">
                   <h5 class="col-md-12">Controversia 2</h5>
                   <vue-datepicker :disabled="viewOnly" class="col-md-6" v-model="form.date_controversy_pcl_2" label="Fecha calificación segunda controversia" :full-month-name="true" :error="form.errorsFor('date_controversy_pcl_2')" name="date_controversy_pcl_2">
                         </vue-datepicker>
@@ -275,6 +288,40 @@
               <tracing-other-check
                 :old-tracings="tracingOtherReport"
                 ref="tracingInserterOther"
+              >
+              </tracing-other-check>
+            </div>
+          </b-form-row>
+
+          <div class="col-md-12" style="padding-left: 15px; padding-right: 15px;">
+            <hr class="border-dark container-m--x mt-0 mb-4">
+          </div>
+
+          <b-form-row>
+            <div class="col-md-12">
+              <tracing-inserter
+                label="Notas Laborales"
+                :generate-pdf="false"
+                :disabled="viewOnly"
+                :editable-tracings="auth.can['reinc_checks_manage_tracings']"
+                :old-tracings="check.oldLaborNotes"
+                :si-no="siNo"
+                ref="laborNotesInserter"
+              >
+              </tracing-inserter>
+            </div>
+          </b-form-row>
+
+          <div class="col-md-12" style="padding-left: 15px; padding-right: 15px; padding-top: 15px;">
+            <hr class="border-dark container-m--x mt-0 mb-4">
+          </div>
+
+          <b-form-row>
+            <div class="col-md-12">
+              <tracing-other-check
+                :old-tracings="laborNotesOtherReport"
+                ref="laborNotesInserterOther"
+                label="Notas Laborales"
               >
               </tracing-other-check>
             </div>
@@ -387,6 +434,12 @@ export default {
         return [];
       }
     },
+    clasificationOrigin: {
+      type: Array,
+      default: function() {
+        return [];
+      }
+    },
     check: {
       default() {
         return {
@@ -427,6 +480,10 @@ export default {
           date_controversy_pcl_2: '',
           emitter_controversy_origin_1: '',
           emitter_controversy_origin_2: '',
+          qualification_controversy_1: '',
+          qualification_controversy_2: '',
+          is_firm_controversy_1: '',
+          is_firm_controversy_pcl_1: '',
           type_controversy_origin_1: '',
           type_controversy_origin_2: '',
           emitter_controversy_pcl_1: '',
@@ -454,6 +511,8 @@ export default {
           oldTracings: [],
           medical_monitorings: [],
           labor_monitorings: [],
+          new_labor_notes: '',
+          oldLaborNotes: [],
           files: []
         };
       }
@@ -466,6 +525,7 @@ export default {
     'form.employee_id' () {
       this.updateDetails(`/administration/employee/${this.form.employee_id}`, 'employeeDetail')
       this.updateTracingOtherReport('sau_reinc_tracings', 'tracingOtherReport');
+      this.updateTracingOtherReport('sau_reinc_labor_notes', 'laborNotesOtherReport');
     },
     'form.cie10_code_id': function() {
       this.updateDetails(`/biologicalmonitoring/reinstatements/cie10/${this.form.cie10_code_id}`, 'cie10CodeDetail');
@@ -530,12 +590,15 @@ export default {
     {
       this.updateDetails(`/administration/employee/${this.form.employee_id}`, 'employeeDetail')
       this.updateTracingOtherReport('sau_reinc_tracings', 'tracingOtherReport');
+      this.updateTracingOtherReport('sau_reinc_labor_notes', 'laborNotesOtherReport');
     }
 
     if (!this.isEdit && !this.viewOnly)
     {
       this.form.relocated = 'NO';
       this.form.indefinite_recommendations = 'SI';
+      this.form.is_firm_controversy_1 = 'SI';
+      this.form.is_firm_controversy_pcl_1 = 'SI';
     }
 
     setTimeout(() => {
@@ -558,6 +621,7 @@ export default {
       },
       disableWacth: this.disableWacthSelectInCreated,
       tracingOtherReport: [],
+      laborNotesOtherReport: []
     };
   },
   methods: {
@@ -585,6 +649,8 @@ export default {
       this.form.labor_monitorings = this.$refs.laborMonitoring.getMonitoringList();
       this.form.new_tracing = this.$refs.tracingInserter.getNewTracing();
       this.form.oldTracings = this.$refs.tracingInserter.getOldTracings();
+      this.form.new_labor_notes = this.$refs.laborNotesInserter.getNewTracing();
+      this.form.oldLaborNotes = this.$refs.laborNotesInserter.getOldTracings();
       
       this.form
         .submit(e.target.action)

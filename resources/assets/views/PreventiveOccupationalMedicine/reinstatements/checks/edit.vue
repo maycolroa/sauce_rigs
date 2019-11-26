@@ -33,6 +33,7 @@
                   :labor-conclusions="laborConclusions"
                   :origin-emitters="originEmitters"
                   tracing-others-url="/biologicalmonitoring/reinstatements/check/tracingOthers"
+                  :clasification-origin="clasificationOrigin"
                   :is-edit="true"
                   :cancel-url="{ name: 'reinstatements-checks'}"/>
             </template>
@@ -59,6 +60,7 @@
                   :origin-emitters="originEmitters"
                   :type-qualification-controversy="typeQualificationControversy"
                   tracing-others-url="/biologicalmonitoring/reinstatements/check/tracingOthers"
+                  :clasification-origin="clasificationOrigin"
                   :is-edit="true"
                   :cancel-url="{ name: 'reinstatements-checks'}"/>
               </template>
@@ -86,6 +88,7 @@
                   :sve-associated="sveAssociated"
                   :medical-certificate-ueac="medicalCertificateUeac"
                   :relocated-types="relocatedTypes"
+                  :clasification-origin="clasificationOrigin"
                   tracing-others-url="/biologicalmonitoring/reinstatements/check/tracingOthers"
                   :is-edit="true"
                   :cancel-url="{ name: 'reinstatements-checks'}"/>
@@ -116,6 +119,7 @@
                   :eps-favorability-concept="epsFavorabilityConcept"
                   :case-classification="caseClassification"
                   tracing-others-url="/biologicalmonitoring/reinstatements/check/tracingOthers"
+                  :clasification-origin="clasificationOrigin"
                   :is-edit="true"
                   :cancel-url="{ name: 'reinstatements-checks'}"/>
               </template>
@@ -164,7 +168,8 @@ export default {
       relocatedTypes: [],
       epsFavorabilityConcept: [],
       caseClassification: [],
-      typeQualificationControversy: []
+      typeQualificationControversy: [],
+      clasificationOrigin: []
     }
   },
   created(){
@@ -212,6 +217,7 @@ export default {
     this.fetchOptions('laborConclusions', 'reinc_select_labor_conclusions')
     this.fetchOptions('originEmitters', 'reinc_select_emitter_origin')
     this.fetchSelect('siNo', '/radios/siNo')
+    this.fetchOptions('clasificationOrigin', 'reinc_select_qualifications_origin_controversy')
   },
   methods: {
 		fetchSelect(key, url)

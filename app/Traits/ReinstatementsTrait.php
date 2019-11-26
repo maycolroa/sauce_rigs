@@ -47,7 +47,9 @@ trait ReinstatementsTrait
             'process_pcl_file' => 'max:10000',
             'date_controversy_pcl_1'=> 'nullable|date',
             'date_controversy_pcl_2'=> 'nullable|date',
-            'new_tracing' => 'nullable|string'
+            'new_tracing' => 'nullable|string',
+            'punctuation_controversy_plc_1' => "nullable|numeric|min:0|max:100",
+            'punctuation_controversy_plc_2' => 'nullable|numeric|min:0|max:100',
         ];
         
         if ($formModel == 'vivaAir')
@@ -74,9 +76,7 @@ trait ReinstatementsTrait
         {
             $rules = array_merge($rules, [
                 'type_controversy_origin_1' => 'nullable',
-                'type_controversy_origin_2' => 'nullable',
-                'punctuation_controversy_plc_1' => "nullable|numeric|min:0|max:100",
-                'punctuation_controversy_plc_2' => 'nullable|numeric|min:0|max:100',
+                'type_controversy_origin_2' => 'nullable'
             ]);
         }
 
