@@ -79,14 +79,20 @@ class CheckManager
             if (!$tracingDescription)
                 return true;
 
-            $tracing = (new ReflectionClass($class))->newInstanceArgs([[
-                'description' => $tracingDescription
-            ]]);
+            foreach ($tracingDescription as $tracing)
+            {
+                $tracing = json_decode($tracing);
 
-            $tracing->check_id = $check->id;
-            $tracing->user_id = $madeByUser->id;
+                $newTracing = (new ReflectionClass($class))->newInstanceArgs([[
+                    'description' => $tracing->description
+                ]]);
 
-            return $tracing->save();
+                $newTracing->check_id = $check->id;
+                $newTracing->user_id = $madeByUser->id;
+                $newTracing->save();
+            }
+
+            return true;
 
         } catch (Exception $e) {
             $this->handleError($e);
