@@ -47,7 +47,6 @@ trait ReinstatementsTrait
             'process_pcl_file' => 'max:10000',
             'date_controversy_pcl_1'=> 'nullable|date',
             'date_controversy_pcl_2'=> 'nullable|date',
-            'new_tracing' => 'nullable|string',
             'punctuation_controversy_plc_1' => "nullable|numeric|min:0|max:100",
             'punctuation_controversy_plc_2' => 'nullable|numeric|min:0|max:100',
         ];
@@ -55,7 +54,6 @@ trait ReinstatementsTrait
         if ($formModel == 'vivaAir')
         {
             $rules = array_merge($rules, [
-                'new_labor_notes' => 'nullable|string',
                 'sve_associated' => 'required',
                 'medical_certificate_ueac' => 'required',
             ]);

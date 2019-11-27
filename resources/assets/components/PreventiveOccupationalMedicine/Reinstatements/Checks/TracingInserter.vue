@@ -2,16 +2,30 @@
     <div class="tracing-inserter">
         <h5 class="col-md-12 text-center">{{ label }}</h5>
         <div v-if="!disabled" class="tracing">
-            <vue-textarea class="col-md-12" v-model="newTracing" label="Nuevo Registro" name="new_tracing"></vue-textarea>
-            <tracing-generate-pdf-button
-                v-if="generatePdf && checkId"
-                :tracing-description="newTracing"
-                :si-no="siNo"
-                :check-id="checkId"
-            />
+            <template v-for="(tracing, index) in newTracing">
+                <div :key="tracing.key">
+                    <b-form-row>
+                        <div class="col-md-12" v-if="!disabled">
+                            <div class="float-right">
+                                <b-btn variant="outline-primary icon-btn borderless" size="sm" v-b-tooltip.top title="Eliminar" @click.prevent="remove(index)"><span class="ion ion-md-close-circle"></span></b-btn>
+                            </div>
+                        </div>
+                    </b-form-row>
+                    <vue-textarea class="col-md-12" v-model="tracing.description" label="Nuevo Registro" name="new_tracing"></vue-textarea>
+                    <tracing-generate-pdf-button
+                        v-if="generatePdf && checkId"
+                        :tracing-description="tracing.description"
+                        :si-no="siNo"
+                        :check-id="checkId"
+                    />
+                </div>
+            </template>
+            <div class="col-md-12 text-center" style="padding-top: 15px;">
+                <center><b-btn variant="primary" @click.prevent="add">Agregar</b-btn></center>
+            </div>
             <br>
         </div>
-        <div v-if="showButtonTracings" class="col-md-12 text-center">
+        <div v-if="showButtonTracings" class="col-md-12 text-center" style="padding-bottom: 10px;">
             <center><b-btn variant="primary" @click.prevent="oldTracingsHidden = !oldTracingsHidden">{{ oldTracingsHidden ? 'Mostrar registros pasados' : 'Ocultar registros pasados' }}</b-btn></center>
         </div>
         <div v-show="showOldTracings" class="tracing" v-for="(tracing, key) in tracings" :key="key">
@@ -29,6 +43,7 @@
                 :tracing-description="tracing.description"
                 :si-no="siNo"
                 :check-id="checkId"
+                style="padding-bottom: 10px;"
             />
         </div>
         <h5 v-if="showNoTracingsRegisteredLabel" class="col-md-12 text-center">No hay información registrada</h5>
@@ -96,7 +111,7 @@ export default {
     },
     data () {
         return {
-            newTracing: '',
+            newTracing: [],
             oldTracingsHidden: true,
             tracings: []
         };
@@ -107,6 +122,15 @@ export default {
         },
         getOldTracings() {
             return this.editableTracings ? this.tracings : [];
+        },
+        add() {
+            this.newTracing.push({
+                key: new Date().getTime() + Math.round(Math.random() * 10000),
+                description: ''
+            });
+        },
+        remove(index) {
+            this.newTracing.splice(index, 1);
         }
     },
     created() {
