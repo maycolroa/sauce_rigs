@@ -68,6 +68,15 @@ Route::middleware(['auth'])->group(function () {
           Route::get('check/downloadFile/{file}', 'PreventiveOccupationalMedicine\Reinstatements\CheckController@downloadFile');
 
           Route::ApiResource('cie10', 'PreventiveOccupationalMedicine\Reinstatements\Cie10Controller')->only('show');
+
+          Route::post('diseaseOrigin/data', 'PreventiveOccupationalMedicine\Reinstatements\DiseaseOriginController@data');
+          Route::ApiResource('diseaseOrigin', 'PreventiveOccupationalMedicine\Reinstatements\DiseaseOriginController');
+
+          Route::post('originAdvisor/data', 'PreventiveOccupationalMedicine\Reinstatements\OriginAdvisorController@data');
+          Route::ApiResource('originAdvisor', 'PreventiveOccupationalMedicine\Reinstatements\OriginAdvisorController');
+          
+          Route::post('laborConclusion/data', 'PreventiveOccupationalMedicine\Reinstatements\LaborConclusionController@data');
+          Route::ApiResource('laborConclusion', 'PreventiveOccupationalMedicine\Reinstatements\LaborConclusionController');
         });
         
         Route::post('musculoskeletalAnalysis/reportIndividual', 'PreventiveOccupationalMedicine\BiologicalMonitoring\MusculoskeletalAnalysis\MusculoskeletalAnalysisInformController@dataIndividual');

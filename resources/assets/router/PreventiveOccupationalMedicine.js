@@ -266,6 +266,102 @@ export default [{
         component: () =>
           import('@/views/PreventiveOccupationalMedicine/absenteeism/talends/view')
       }
-    ])
+    ]),
+    ...middleware({ 'check-permission': 'reinc_disease_origin_r' }, [
+        {
+          name: 'reinstatements-disease-origin',
+          path: 'reinstatements/diseaseOrigin',
+          component: () =>
+          import('@/views/PreventiveOccupationalMedicine/reinstatements/diseaseOrigin/index')
+        }, 
+      ]),
+      ...middleware({ 'check-permission': 'reinc_disease_origin_c' }, [
+        {
+          name: 'reinstatements-disease-origin-create',
+          path: 'reinstatements/diseaseOrigin/create',
+          component: () =>
+          import('@/views/PreventiveOccupationalMedicine/reinstatements/diseaseOrigin/create')
+        },
+      ]),
+      ...middleware({ 'check-permission': 'reinc_disease_origin_u' }, [
+        {
+          name: 'reinstatements-disease-origin-edit',
+          path: 'reinstatements/diseaseOrigin/edit/:id',
+          component: () =>
+          import('@/views/PreventiveOccupationalMedicine/reinstatements/diseaseOrigin/edit')
+        },
+      ]),
+      ...middleware({ 'check-permission': 'reinc_disease_origin_r' }, [
+        {
+          name: 'reinstatements-disease-origin-view',
+          path: 'reinstatements/diseaseOrigin/view/:id',
+          component: () =>
+          import('@/views/PreventiveOccupationalMedicine/reinstatements/diseaseOrigin/view')
+        }
+      ]),,
+    ...middleware({ 'check-permission': 'reinc_origin_advisor_r' }, [
+        {
+          name: 'reinstatements-origin-advisor',
+          path: 'reinstatements/originAdvisor',
+          component: () =>
+          import('@/views/PreventiveOccupationalMedicine/reinstatements/originAdvisor/index')
+        }, 
+      ]),
+      ...middleware({ 'check-permission': 'reinc_origin_advisor_c' }, [
+        {
+          name: 'reinstatements-origin-advisor-create',
+          path: 'reinstatements/originAdvisor/create',
+          component: () =>
+          import('@/views/PreventiveOccupationalMedicine/reinstatements/originAdvisor/create')
+        },
+      ]),
+      ...middleware({ 'check-permission': 'reinc_origin_advisor_u' }, [
+        {
+          name: 'reinstatements-origin-advisor-edit',
+          path: 'reinstatements/originAdvisor/edit/:id',
+          component: () =>
+          import('@/views/PreventiveOccupationalMedicine/reinstatements/originAdvisor/edit')
+        },
+      ]),
+      ...middleware({ 'check-permission': 'reinc_origin_advisor_r' }, [
+        {
+          name: 'reinstatements-origin-advisor-view',
+          path: 'reinstatements/originAdvisor/view/:id',
+          component: () =>
+          import('@/views/PreventiveOccupationalMedicine/reinstatements/originAdvisor/view')
+        }
+      ]),,
+    ...middleware({ 'check-permission': 'reinc_labor_conclusion_r' }, [
+        {
+          name: 'reinstatements-labor-conclusions',
+          path: 'reinstatements/laborConclusions',
+          component: () =>
+          import('@/views/PreventiveOccupationalMedicine/reinstatements/laborConclusions/index')
+        }, 
+      ]),
+      ...middleware({ 'check-permission': 'reinc_labor_conclusion_c' }, [
+        {
+          name: 'reinstatements-labor-conclusions-create',
+          path: 'reinstatements/laborConclusions/create',
+          component: () =>
+          import('@/views/PreventiveOccupationalMedicine/reinstatements/laborConclusions/create')
+        },
+      ]),
+      ...middleware({ 'check-permission': 'reinc_labor_conclusion_u' }, [
+        {
+          name: 'reinstatements-labor-conclusions-edit',
+          path: 'reinstatements/laborConclusions/edit/:id',
+          component: () =>
+          import('@/views/PreventiveOccupationalMedicine/reinstatements/laborConclusions/edit')
+        },
+      ]),
+      ...middleware({ 'check-permission': 'reinc_labor_conclusion_r' }, [
+        {
+          name: 'reinstatements-labor-conclusions-view',
+          path: 'reinstatements/laborConclusions/view/:id',
+          component: () =>
+          import('@/views/PreventiveOccupationalMedicine/reinstatements/laborConclusions/view')
+        }
+      ])
   ]
 }]
