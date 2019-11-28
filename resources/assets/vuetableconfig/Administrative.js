@@ -141,7 +141,7 @@ export default [
         data: {
           action: '/administration/position/',
           id: 'id',
-          messageConfirmation: 'Esta seguro de borrar el cargo __name__'
+          messageConfirmation: 'Esta seguro de borrar el registro __name__'
         },
         permission: 'positions_d'
       }],
@@ -245,7 +245,7 @@ export default [
         data: {
           action: '/administration/business/',
           id: 'id',
-          messageConfirmation: 'Esta seguro de borrar el centro de costo __name__'
+          messageConfirmation: 'Esta seguro de borrar el registro __name__'
         },
         permission: 'businesses_d'
       }],
@@ -298,7 +298,7 @@ export default [
         data: {
           action: '/administration/headquarter/',
           id: 'id',
-          messageConfirmation: 'Esta seguro de borrar la sede __name__'
+          messageConfirmation: 'Esta seguro de borrar el registro __name__'
         },
         permission: 'headquarters_d'
       }],
@@ -353,7 +353,7 @@ export default [
         data: {
           action: '/administration/area/',
           id: 'id',
-          messageConfirmation: 'Esta seguro de borrar el área __name__'
+          messageConfirmation: 'Esta seguro de borrar el registro __name__'
         },
         permission: 'areas_d'
       }],
@@ -407,7 +407,7 @@ export default [
         data: {
           action: '/administration/process/',
           id: 'id',
-          messageConfirmation: 'Esta seguro de borrar el proceso __name__'
+          messageConfirmation: 'Esta seguro de borrar el registro __name__'
         },
         permission: 'processes_d'
       }],
@@ -457,7 +457,7 @@ export default [
         data: {
           action: '/administration/employee/',
           id: 'id',
-          messageConfirmation: 'Esta seguro de borrar el empleado __name__'
+          messageConfirmation: 'Esta seguro de borrar el registro __name__'
         },
         permission: 'employees_d'
       }],

@@ -1,7 +1,7 @@
 <template>
   <div>
     <header-module
-      title="ADMINNISTRATIVO"
+      title="ADMINISTRATIVO"
       subtitle="CREAR ROL"
       url="administrative-roles"
     />

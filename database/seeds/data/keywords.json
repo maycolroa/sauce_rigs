@@ -16,7 +16,63 @@
         "display_name": "Sedes"
     },
     {
+        "name": "process",
+        "display_name": "Proceso"
+    },
+    {
+        "name": "processes",
+        "display_name": "Procesos"
+    },
+    {
+        "name": "area",
+        "display_name": "Área"
+    },
+    {
+        "name": "areas",
+        "display_name": "Áreas"
+    },
+    {
+        "name": "position",
+        "display_name": "Cargo"
+    },
+    {
+        "name": "positions",
+        "display_name": "Cargos"
+    },
+    {
+        "name": "businesses",
+        "display_name": "Centro de costos"
+    },
+    {
+        "name": "employee",
+        "display_name": "Empleado"
+    },
+    {
+        "name": "employees",
+        "display_name": "Empleados"
+    },
+    {
         "name": "eps",
         "display_name": "EPS"
+    },
+    {
+        "name": "afp",
+        "display_name": "AFP"
+    },
+    {
+        "name": "arl",
+        "display_name": "ARL"
+    },
+    {
+        "name": "tracings",
+        "display_name": "Seguimientos"
+    },
+    {
+        "name": "labor_notes",
+        "display_name": "Notas Laborales"
+    },
+    {
+        "name": "disease_origin",
+        "display_name": "Tipo de Evento"
     }
 ]

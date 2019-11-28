@@ -1,8 +1,8 @@
 <template>
   <div>
     <header-module
-      title="ADMINNISTRATIVO"
-      subtitle="VER ÁREA"
+      title="ADMINISTRATIVO"
+      :subtitle="`VER ${keywordCheck('area')}`"
       url="administrative-areas"
     />
 
@@ -26,8 +26,10 @@ import Alerts from '@/utils/Alerts.js';
 
 export default {
   name: 'administrative-areas-edit',
-  metaInfo: {
-    title: 'Áreas - Ver'
+  metaInfo() {
+    return {
+      title: `${this.keywordCheck('areas')} - Ver`
+    }
   },
   components:{
     AdministrativeAreaForm

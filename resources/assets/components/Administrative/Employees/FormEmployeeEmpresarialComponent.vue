@@ -25,35 +25,35 @@
     </b-form-row>
 
     <b-form-row>
-      <vue-ajax-advanced-select :disabled="viewOnly" class="col-md-6" v-model="form.employee_regional_id" :error="form.errorsFor('employee_regional_id')" :selected-object="form.multiselect_regional" name="employee_regional_id" :label="keywordCheck('regional', 'Regional')" :placeholder="`Seleccione la ${this.keywordCheck('regional', 'Regional')}`" :url="regionalsDataUrl">
+      <vue-ajax-advanced-select :disabled="viewOnly" class="col-md-6" v-model="form.employee_regional_id" :error="form.errorsFor('employee_regional_id')" :selected-object="form.multiselect_regional" name="employee_regional_id" :label="keywordCheck('regional')" placeholder="Seleccione una opción" :url="regionalsDataUrl">
           </vue-ajax-advanced-select>
-      <vue-ajax-advanced-select :disabled="viewOnly || !form.employee_regional_id" class="col-md-6" v-model="form.employee_headquarter_id" :error="form.errorsFor('employee_headquarter_id')" :selected-object="form.multiselect_sede" name="employee_headquarter_id" label="Sede" placeholder="Seleccione la sede" :url="headquartersDataUrl" :parameters="{regional: form.employee_regional_id }" :emptyAll="empty.headquarter" @updateEmpty="updateEmptyKey('headquarter')">
+      <vue-ajax-advanced-select :disabled="viewOnly || !form.employee_regional_id" class="col-md-6" v-model="form.employee_headquarter_id" :error="form.errorsFor('employee_headquarter_id')" :selected-object="form.multiselect_sede" name="employee_headquarter_id" :label="keywordCheck('headquarter')" placeholder="Seleccione una opción" :url="headquartersDataUrl" :parameters="{regional: form.employee_regional_id }" :emptyAll="empty.headquarter" @updateEmpty="updateEmptyKey('headquarter')">
           </vue-ajax-advanced-select>
     </b-form-row>
 
     <b-form-row>
-      <vue-ajax-advanced-select :disabled="viewOnly || !form.employee_headquarter_id" class="col-md-6" v-model="form.employee_process_id" :error="form.errorsFor('employee_process_id')" :selected-object="form.multiselect_proceso" name="employee_process_id" label="Proceso" placeholder="Seleccione el proceso" :url="processesDataUrl" :parameters="{headquarter: form.employee_headquarter_id }" :emptyAll="empty.process" @updateEmpty="updateEmptyKey('process')">
+      <vue-ajax-advanced-select :disabled="viewOnly || !form.employee_headquarter_id" class="col-md-6" v-model="form.employee_process_id" :error="form.errorsFor('employee_process_id')" :selected-object="form.multiselect_proceso" name="employee_process_id" :label="keywordCheck('process')" placeholder="Seleccione una opción" :url="processesDataUrl" :parameters="{headquarter: form.employee_headquarter_id }" :emptyAll="empty.process" @updateEmpty="updateEmptyKey('process')">
       </vue-ajax-advanced-select>
-      <vue-ajax-advanced-select :disabled="viewOnly || !form.employee_process_id" class="col-md-6" v-model="form.employee_area_id" :error="form.errorsFor('employee_area_id')" :selected-object="form.multiselect_area" name="employee_area_id" label="Área" placeholder="Seleccione el área" :url="areasDataUrl" :parameters="{process: form.employee_process_id, headquarter: form.employee_headquarter_id }" :emptyAll="empty.area" @updateEmpty="updateEmptyKey('area')">
+      <vue-ajax-advanced-select :disabled="viewOnly || !form.employee_process_id" class="col-md-6" v-model="form.employee_area_id" :error="form.errorsFor('employee_area_id')" :selected-object="form.multiselect_area" name="employee_area_id" :label="keywordCheck('area')" placeholder="Seleccione una opción" :url="areasDataUrl" :parameters="{process: form.employee_process_id, headquarter: form.employee_headquarter_id }" :emptyAll="empty.area" @updateEmpty="updateEmptyKey('area')">
           </vue-ajax-advanced-select>
     </b-form-row>
 
     <b-form-row>
-      <vue-ajax-advanced-select :disabled="viewOnly" class="col-md-6" v-model="form.employee_position_id" :error="form.errorsFor('employee_position_id')" :selected-object="form.multiselect_cargo" name="employee_position_id" label="Cargo" placeholder="Seleccione el cargo" :url="positionsDataUrl">
+      <vue-ajax-advanced-select :disabled="viewOnly" class="col-md-6" v-model="form.employee_position_id" :error="form.errorsFor('employee_position_id')" :selected-object="form.multiselect_cargo" name="employee_position_id" :label="keywordCheck('position')" placeholder="Seleccione una opción" :url="positionsDataUrl">
           </vue-ajax-advanced-select>
-      <vue-ajax-advanced-select :disabled="viewOnly" class="col-md-6" v-model="form.employee_business_id" :error="form.errorsFor('employee_business_id')" :selected-object="form.multiselect_centro_costo" name="employee_business_id" label="Centro de costo" placeholder="Seleccione el centro de costo" :url="businessesDataUrl">
+      <vue-ajax-advanced-select :disabled="viewOnly" class="col-md-6" v-model="form.employee_business_id" :error="form.errorsFor('employee_business_id')" :selected-object="form.multiselect_centro_costo" name="employee_business_id" :label="keywordCheck('businesses')" placeholder="Seleccione una opción" :url="businessesDataUrl">
           </vue-ajax-advanced-select>
     </b-form-row>
       
     <b-form-row>
-      <vue-ajax-advanced-select :disabled="viewOnly" class="col-md-6" v-model="form.employee_eps_id" :error="form.errorsFor('employee_eps_id')" :selected-object="form.multiselect_eps" name="employee_eps_id" label="EPS" placeholder="Seleccione el eps" :url="epsDataUrl">
+      <vue-ajax-advanced-select :disabled="viewOnly" class="col-md-6" v-model="form.employee_eps_id" :error="form.errorsFor('employee_eps_id')" :selected-object="form.multiselect_eps" name="employee_eps_id" :label="keywordCheck('eps')" placeholder="Seleccione una opción" :url="epsDataUrl">
       </vue-ajax-advanced-select>
-      <vue-ajax-advanced-select :disabled="viewOnly" class="col-md-6" v-model="form.employee_afp_id" :error="form.errorsFor('employee_afp_id')" :selected-object="form.multiselect_afp" name="employee_afp_id" label="AFP" placeholder="Seleccione el afp" :url="afpDataUrl">
+      <vue-ajax-advanced-select :disabled="viewOnly" class="col-md-6" v-model="form.employee_afp_id" :error="form.errorsFor('employee_afp_id')" :selected-object="form.multiselect_afp" name="employee_afp_id" :label="keywordCheck('afp')" placeholder="Seleccione una opción" :url="afpDataUrl">
       </vue-ajax-advanced-select>   
     </b-form-row>  
 
     <b-form-row>
-      <vue-ajax-advanced-select :disabled="viewOnly" class="col-md-6" v-model="form.employee_arl_id" :error="form.errorsFor('employee_arl_id')" :selected-object="form.multiselect_arl" name="employee_arl_id" label="ARL" placeholder="Seleccione el arl" :url="arlDataUrl">
+      <vue-ajax-advanced-select :disabled="viewOnly" class="col-md-6" v-model="form.employee_arl_id" :error="form.errorsFor('employee_arl_id')" :selected-object="form.multiselect_arl" name="employee_arl_id" :label="keywordCheck('arl')" placeholder="Seleccione una opción" :url="arlDataUrl">
       </vue-ajax-advanced-select>
       <vue-input :disabled="viewOnly" class="col-md-6" v-model="form.contract_numbers" label="Número de contratos" type="number" name="contract_numbers" :error="form.errorsFor('contract_numbers')" placeholder="Números de contratos"></vue-input>     
     </b-form-row>

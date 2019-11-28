@@ -200,27 +200,25 @@ class User extends Authenticatable
         return $query;
     }
 
-    public function getKeywordsAttribute()
+    public function getKeywords($company = null)
     {
-        if (Session::get('company_id'))
-        {
-            $company_id = Session::get('company_id');
-            $keywords = DB::table(DB::raw(
-                            "(SELECT
-                                k.name AS name,
-                                IF (c.display_name IS NULL, k.display_name, c.display_name) AS display_name
-                            FROM
-                                sau_keywords k
-                            LEFT JOIN sau_keyword_company c ON c.keyword_id = k.id AND 
-                                (
-                                    c.company_id = $company_id OR c.company_id IS NULL
-                                )) AS t"
-                            )
-                        )
-                        ->pluck('display_name', 'name');
+        $company = $company ? $company : Session::get('company_id');
 
-            return $keywords;
-        }
+        $keywords = DB::table(DB::raw(
+                        "(SELECT
+                            k.name AS name,
+                            IF (c.display_name IS NULL, k.display_name, c.display_name) AS display_name
+                        FROM
+                            sau_keywords k
+                        LEFT JOIN sau_keyword_company c ON c.keyword_id = k.id AND 
+                            (
+                                c.company_id = $company OR c.company_id IS NULL
+                            )) AS t"
+                        )
+                    )
+                    ->pluck('display_name', 'name');
+
+        return $keywords;
     }
 
     public function headquarters()

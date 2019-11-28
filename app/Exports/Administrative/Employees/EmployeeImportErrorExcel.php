@@ -33,16 +33,16 @@ class EmployeeImportErrorExcel implements WithMultipleSheets
         $sheets = [];
         
         $sheets[] = new EmployeeImportDataTemplateExcel($this->data, $this->formModel, $this->company_id);
-        $sheets[] = new AudiometryImportEpsTemplateExcel();
+        $sheets[] = new AudiometryImportEpsTemplateExcel($this->company_id);
 
         if ($this->formModel == 'vivaAir')
         {
-            $sheets[] = new AfpTemplateExcel();
+            $sheets[] = new AfpTemplateExcel($this->company_id);
         }
         else if ($this->formModel == 'misionEmpresarial')
         {
-            $sheets[] = new AfpTemplateExcel();
-            $sheets[] = new ArlTemplateExcel();
+            $sheets[] = new AfpTemplateExcel($this->company_id);
+            $sheets[] = new ArlTemplateExcel($this->company_id);
         }
         
         $sheets[] = new AudiometryImportErrorListExcel($this->errors);

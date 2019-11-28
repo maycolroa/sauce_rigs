@@ -1,7 +1,7 @@
 <template>
   <div>
     <header-module
-      title="ADMINNISTRATIVO"
+      title="ADMINISTRATIVO"
       subtitle="EDITAR ETIQUETA"
       url="administrative-customlabels"
     />

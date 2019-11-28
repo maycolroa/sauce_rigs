@@ -1,8 +1,8 @@
 <template>
   <div>
     <header-module
-      title="ADMINNISTRATIVO"
-      subtitle="CREAR CARGO"
+      title="ADMINISTRATIVO"
+      :subtitle="`CREAR ${keywordCheck('position')}`"
       url="administrative-positions"
     />
 
@@ -26,15 +26,13 @@ import Alerts from '@/utils/Alerts.js';
 
 export default {
   name: 'administrative-positions-create',
-  metaInfo: {
-    title: 'Cargos - Crear'
+  metaInfo() {
+    return {
+      title: `${this.keywordCheck('positions')} - Crear`
+    }
   },
   components:{
     AdministrativePositionForm
-  },
-  data(){
-    return {
-    }
   }
 }
 </script>

@@ -1,8 +1,8 @@
 <template>
   <div>
     <header-module
-      title="ADMINNISTRATIVO"
-      subtitle="VER SEDES"
+      title="ADMINISTRATIVO"
+      :subtitle="`VER ${keywordCheck('headquarter')}`"
       url="administrative-headquarters"
     />
 
@@ -25,8 +25,10 @@ import Alerts from '@/utils/Alerts.js';
 
 export default {
   name: 'administrative-headquarters-edit',
-  metaInfo: {
-    title: 'Sedes - Ver'
+  metaInfo() {
+    return {
+      title: `${this.keywordCheck('headquarters')} - Ver`
+    }
   },
   components:{
     AdministrativeHeadquarterForm

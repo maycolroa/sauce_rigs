@@ -28,12 +28,14 @@ class EmployeeImportDataTemplateExcel implements FromCollection, WithHeadings, W
     protected $data;
     protected $formModel;
     protected $company_id;
+    protected $keywords;
 
     public function __construct($data, $formModel, $company_id)
     {
       $this->data = $data;
       $this->formModel = $formModel;
       $this->company_id = $company_id;
+      $this->keywords = $this->getKeywordQueue($this->company_id);
     }
 
     /**
@@ -65,34 +67,34 @@ class EmployeeImportDataTemplateExcel implements FromCollection, WithHeadings, W
         'Sexo (Masculino, Femenino, Sin Sexo)',
         'Email',
         'Fecha de Ingreso (YYYY-MM-DD)',
-        $this->keywordCheckQueue('regional', $this->company_id),
-        $this->keywordCheckQueue('headquarter', $this->company_id),
-        'Proceso',
-        'Área',
-        'Cargo',
-        'Centro de Costo'
+        $this->keywords['regional'],
+        $this->keywords['headquarter'],
+        $this->keywords['process'],
+        $this->keywords['area'],
+        $this->keywords['position'],
+        $this->keywords['businesses']
       ];
 
       if ($this->formModel == 'default')
       {
         return array_merge($columns, [
           'Negocio',
-          'EPS (Los posibles valores se encuentran en la pestaña “EPS”, se debe ingresar el codigo de la EPS)',
+          "{$this->keywords['eps']} (Los posibles valores se encuentran en la pestaña '{$this->keywords['eps']}', se debe ingresar el codigo de la {$this->keywords['eps']})"
         ]);
       }
       else if ($this->formModel == 'vivaAir')
       {
         return array_merge($columns, [
-          'EPS (Los posibles valores se encuentran en la pestaña “EPS”, se debe ingresar el codigo de la EPS)',
-          'AFP (Los posibles valores se encuentran en la pestaña “AFP”, se debe ingresar el codigo de la AFP)',
+          "{$this->keywords['eps']} (Los posibles valores se encuentran en la pestaña '{$this->keywords['eps']}', se debe ingresar el codigo de la {$this->keywords['eps']})",
+          "{$this->keywords['afp']} (Los posibles valores se encuentran en la pestaña '{$this->keywords['afp']}', se debe ingresar el codigo de la {$this->keywords['afp']})"
         ]);
       }
       else if ($this->formModel == 'misionEmpresarial')
       {
         return array_merge($columns, [
-          'EPS (Los posibles valores se encuentran en la pestaña “EPS”, se debe ingresar el codigo de la EPS)',
-          'AFP (Los posibles valores se encuentran en la pestaña “AFP”, se debe ingresar el codigo de la AFP)',
-          'ARL (Los posibles valores se encuentran en la pestaña “ARL”, se debe ingresar el codigo de la ARL)',
+          "{$this->keywords['eps']} (Los posibles valores se encuentran en la pestaña '{$this->keywords['eps']}', se debe ingresar el codigo de la {$this->keywords['eps']})",
+          "{$this->keywords['afp']} (Los posibles valores se encuentran en la pestaña '{$this->keywords['afp']}', se debe ingresar el codigo de la {$this->keywords['afp']})",
+          "{$this->keywords['arl']} (Los posibles valores se encuentran en la pestaña '{$this->keywords['arl']}', se debe ingresar el codigo de la {$this->keywords['arl']})",
           'Número de contratos',
           'Fecha de último contrato',
           'Tipo de contrato (Termino fijo, Termino indefinido, Obra labor, Prestación de servicios)'

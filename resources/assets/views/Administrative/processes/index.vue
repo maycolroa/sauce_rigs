@@ -1,8 +1,8 @@
 <template>
   <div>
     <header-module
-      title="ADMINNISTRATIVO"
-      subtitle="ADMINISTRAR PROCESOS"
+      title="ADMINISTRATIVO"
+      :subtitle="`ADMINISTRAR ${keywordCheck('processes')}`"
       url="administrative"
     />
 
@@ -11,7 +11,7 @@
       <b-card no-body>
         <b-card-header class="with-elements">
           <div class="card-title-elements" v-if="auth.can['processes_c']">
-            <b-btn :to="{name:'administrative-processes-create'}" variant="primary">Crear Proceso</b-btn>
+            <b-btn :to="{name:'administrative-processes-create'}" variant="primary">Crear {{ keywordCheck('process') }}</b-btn>
           </div>
         </b-card-header>
         <b-card-body>
@@ -30,8 +30,10 @@ import Alerts from '@/utils/Alerts.js';
 
 export default {
   name: 'processes',
-  metaInfo: {
-    title: 'Procesos'
+  metaInfo() {
+    return {
+      title: `${this.keywordCheck('processes')}`
+    }
   }
 }
 </script>

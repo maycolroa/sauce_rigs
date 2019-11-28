@@ -9,15 +9,15 @@
                     <div><b>Edad:</b> {{employee.age}}</div>
                     <div><b>Sexo:</b> {{employee.sex}}</div>
                     <div><b>Fecha de ingreso:</b> {{employee.income_date}}</div>
-                    <div><b>Cargo:</b> {{employee.position}}</div>
+                    <div><b>{{ keywordCheck('position') }}:</b> {{employee.position}}</div>
                 </b-col>
                 <b-col>
-                    <div><b>Regional:</b> {{employee.regional}}</div>
-                    <div><b>Sede:</b> {{employee.headquarter}}</div>
-                    <div><b>Proceso:</b> {{employee.process}}</div>
-                    <div><b>Área:</b> {{employee.area}}</div>
+                    <div><b>{{ keywordCheck('regional') }}:</b> {{employee.regional}}</div>
+                    <div><b>{{ keywordCheck('headquarter') }}:</b> {{employee.headquarter}}</div>
+                    <div><b>{{ keywordCheck('process') }}:</b> {{employee.process}}</div>
+                    <div><b>{{ keywordCheck('area') }}:</b> {{employee.area}}</div>
                     <div><b>Negocio:</b> {{employee.deal}}</div>
-                    <div><b>EPS:</b> {{employee.eps}}</div>
+                    <div><b>{{ keywordCheck('eps') }}:</b> {{employee.eps}}</div>
                 </b-col>
             </b-row>
         </b-card>

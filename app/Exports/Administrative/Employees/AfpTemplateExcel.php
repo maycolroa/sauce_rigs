@@ -11,10 +11,19 @@ use Maatwebsite\Excel\Concerns\WithEvents;
 use Maatwebsite\Excel\Concerns\RegistersEventListeners;
 use Maatwebsite\Excel\Events\AfterSheet;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
+use App\Traits\UtilsTrait;
 
 class AfpTemplateExcel implements FromQuery, WithMapping, WithHeadings, WithTitle, WithEvents, ShouldAutoSize
 {
     use RegistersEventListeners;
+    use UtilsTrait;
+
+    protected $keywords;
+
+    public function __construct($company_id)
+    {
+      $this->keywords = $this->getKeywordQueue($company_id);
+    }
 
     /**
     * @var eps $eps
@@ -40,7 +49,7 @@ class AfpTemplateExcel implements FromQuery, WithMapping, WithHeadings, WithTitl
     */
     public function title(): string
     {
-        return 'AFP';
+        return $this->keywords['afp'];
     }
 
     public function query()

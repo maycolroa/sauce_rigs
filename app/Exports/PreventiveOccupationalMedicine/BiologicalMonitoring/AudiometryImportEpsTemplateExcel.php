@@ -11,10 +11,19 @@ use Maatwebsite\Excel\Concerns\WithEvents;
 use Maatwebsite\Excel\Concerns\RegistersEventListeners;
 use Maatwebsite\Excel\Events\AfterSheet;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
+use App\Traits\UtilsTrait;
 
 class AudiometryImportEpsTemplateExcel implements FromQuery, WithMapping, WithHeadings, WithTitle, WithEvents, ShouldAutoSize
 {
     use RegistersEventListeners;
+    use UtilsTrait;
+
+    protected $keywords;
+
+    public function __construct($company_id)
+    {
+      $this->keywords = $this->getKeywordQueue($company_id);
+    }
 
     /**
     * @var eps $eps
@@ -40,7 +49,7 @@ class AudiometryImportEpsTemplateExcel implements FromQuery, WithMapping, WithHe
     */
     public function title(): string
     {
-        return 'EPS';
+      return $this->keywords['eps'];
     }
 
     public function query()

@@ -15,7 +15,7 @@ class SauConfigurationSeeder extends Seeder
         $data = [
             [
                 'key' => 'biologicalmonitoring_audiometries_select_epp',
-                'value' => '["Copa", "Moldeable", "Inserción"]',
+                'value' => '["Copa","Moldeable","Inserción","Ninguno","Otro"]',
                 'observation' => 'Select para EPP de audiometrias'
             ],
             [

@@ -2,8 +2,8 @@
   <div>
     <header-module
       v-if="!modal"
-      title="ADMINNISTRATIVO"
-      subtitle="CREAR SEDES"
+      title="ADMINISTRATIVO"
+      :subtitle="`CREAR ${keywordCheck('headquarter')}`"
       url="administrative-headquarters"
     />
 
@@ -29,18 +29,16 @@ import Alerts from '@/utils/Alerts.js';
 
 export default {
   name: 'administrative-positions-create',
-  metaInfo: {
-    title: 'Sedes - Crear'
+  metaInfo() {
+    return {
+      title: `${this.keywordCheck('headquarters')} - Crear`
+    }
   },
   components:{
     AdministrativeHeadquarterForm
   },
   props: {
     modal: { type: Boolean, default: false },
-  },
-  data(){
-    return {
-    }
   }
 }
 </script>

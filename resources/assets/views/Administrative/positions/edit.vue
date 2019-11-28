@@ -1,8 +1,8 @@
 <template>
   <div>
     <header-module
-      title="ADMINNISTRATIVO"
-      subtitle="EDITAR CARGO"
+      title="ADMINISTRATIVO"
+      :subtitle="`EDITAR ${keywordCheck('position')}`"
       url="administrative-positions"
     />
 
@@ -27,8 +27,10 @@ import Alerts from '@/utils/Alerts.js';
 
 export default {
   name: 'administrative-positions-edit',
-  metaInfo: {
-    title: 'Cargos - Editar'
+  metaInfo() {
+    return {
+      title: `${this.keywordCheck('positions')} - Editar`
+    }
   },
   components:{
     AdministrativePositionForm

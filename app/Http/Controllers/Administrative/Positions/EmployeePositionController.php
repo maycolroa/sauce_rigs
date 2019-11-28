@@ -62,7 +62,7 @@ class EmployeePositionController extends Controller
         }
 
         return $this->respondHttp200([
-            'message' => 'Se creo el cargo'
+            'message' => 'Se creo el registro'
         ]);
     }
 
@@ -102,7 +102,7 @@ class EmployeePositionController extends Controller
         }
         
         return $this->respondHttp200([
-            'message' => 'Se actualizo el cargo'
+            'message' => 'Se actualizo el registro'
         ]);
     }
 
@@ -116,7 +116,7 @@ class EmployeePositionController extends Controller
     {
         if (count($position->employees) > 0)
         {
-            return $this->respondWithError('No se puede eliminar el cargo porque hay empleados asociados a él');
+            return $this->respondWithError('No se puede eliminar el registro porque hay otros registros asociados a el');
         }
 
         if(!$position->delete())
@@ -125,7 +125,7 @@ class EmployeePositionController extends Controller
         }
         
         return $this->respondHttp200([
-            'message' => 'Se elimino el cargo'
+            'message' => 'Se elimino el registro'
         ]);
     }
 

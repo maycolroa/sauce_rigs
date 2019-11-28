@@ -1,7 +1,7 @@
 <template>
   <div>
     <header-module
-      title="ADMINNISTRATIVO"
+      title="ADMINISTRATIVO"
       subtitle="CONFIGURACIONES"
       url="administrative"
     />

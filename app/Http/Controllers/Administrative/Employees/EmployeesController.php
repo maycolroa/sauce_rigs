@@ -92,7 +92,7 @@ class EmployeesController extends Controller
         }
 
         return $this->respondHttp200([
-            'message' => 'Se creo el empleado'
+            'message' => 'Se creo el registro'
         ]);
     }
 
@@ -159,7 +159,7 @@ class EmployeesController extends Controller
         }
 
         return $this->respondHttp200([
-            'message' => 'Se actualizo el empleado'
+            'message' => 'Se actualizo el registro'
         ]);
     }
 
@@ -173,7 +173,7 @@ class EmployeesController extends Controller
     {
         if (count($employee->audiometries) > 0)
         {
-            return $this->respondWithError('No se puede eliminar el empleado porque hay registros asociados a él');
+            return $this->respondWithError('No se puede eliminar el registro porque hay otros registros asociados a el');
         }
 
         if(!$employee->delete())
@@ -182,7 +182,7 @@ class EmployeesController extends Controller
         }
         
         return $this->respondHttp200([
-            'message' => 'Se elimino el empleado'
+            'message' => 'Se elimino el registro'
         ]);
     }
 

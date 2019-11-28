@@ -38,6 +38,7 @@ class EmployeeImport implements ToCollection
     private $afp_data = [];
     private $arl_data = [];
     private $contract_types = [];
+    protected $keywords;
 
     public function __construct($company_id, $user)
     {
@@ -47,6 +48,7 @@ class EmployeeImport implements ToCollection
       $this->eps_data = EmployeeEPS::pluck('id', 'code');
       $this->afp_data = EmployeeAFP::pluck('id', 'code');
       $this->arl_data = EmployeeARL::pluck('id', 'code');
+      $this->keywords = $this->getKeywordQueue($this->company_id);
     }
 
     public function collection(Collection $rows)
@@ -207,7 +209,16 @@ class EmployeeImport implements ToCollection
             ];
         }
 
-        $validator = Validator::make($data, $rules);
+        $validator = Validator::make($data, $rules, 
+        [
+            'regional.required' => 'El campo '.$this->keywords['regional'].' es obligatorio.',
+            'sede.required' => 'El campo '.$this->keywords['headquarter'].' es obligatorio.',
+            'proceso.required' => 'El campo '.$this->keywords['process'].' es obligatorio.',
+            'cargo.required' => 'El campo '.$this->keywords['position'].' es obligatorio.',
+            'eps.exists' => 'El campo '.$this->keywords['eps'].' es incorrecto.',
+            'afp.exists' => 'El campo '.$this->keywords['afp'].' es incorrecto.',
+            'arl.exists' => 'El campo '.$this->keywords['arl'].' es incorrecto.',
+        ]);
 
         if ($validator->fails())
         {

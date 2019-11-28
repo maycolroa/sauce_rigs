@@ -1,8 +1,8 @@
 <template>
   <div>
     <header-module
-      title="ADMINNISTRATIVO"
-      subtitle="VER EMPLEADOS"
+      title="ADMINISTRATIVO"
+      :subtitle="`VER ${keywordCheck('employee')}`"
       url="administrative-employees"
     />
 
@@ -53,8 +53,10 @@ import Loading from "@/components/Inputs/Loading.vue";
 
 export default {
   name: 'administrative-employees-edit',
-  metaInfo: {
-    title: 'Empleados - Ver'
+  metaInfo() {
+    return {
+      title: `${this.keywordCheck('employees')} - Ver`
+    }
   },
   components:{
     FormEmployee,

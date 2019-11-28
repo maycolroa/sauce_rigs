@@ -1,7 +1,7 @@
 <template>
   <div>
     <header-module
-      title="ADMINNISTRATIVO"
+      title="ADMINISTRATIVO"
       :subtitle="`EDITAR ${keywordCheck('regionals', 'Regionales')}`"
       url="administrative-regionals"
     />
