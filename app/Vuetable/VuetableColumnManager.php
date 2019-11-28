@@ -17,6 +17,7 @@ class VuetableColumnManager
     protected $team;
     protected $company;
     protected $user;
+    protected $keywords;
 
     /**
      * defines the availables tables
@@ -54,6 +55,7 @@ class VuetableColumnManager
         $this->team = Team::where('name', Session::get('company_id'))->first();
         $this->company = Session::get('company_id');
         $this->user = Auth::user();
+        $this->keywords = $this->user->getKeywords();
     }
 
     /**
@@ -138,10 +140,10 @@ class VuetableColumnManager
         $confLocation = $this->getLocationFormConfModule();
 
         $columnsHeader = [
-            'regional' => 'Regional',
-            'headquarter' => 'Sede',
-            'area' => 'Área',
-            'process' => 'Proceso'
+            'regional' => $this->keywords['regional'],
+            'headquarter' => $this->keywords['headquarter'],
+            'area' => $this->keywords['area'],
+            'process' => $this->keywords['process']
         ];
 
         if (isset($headers['regional']) && $headers['regional'])
@@ -291,25 +293,25 @@ class VuetableColumnManager
             ['name' => 'sau_employees.name', 'data'=> 'name', 'title'=> 'Nombre', 'sortable'=> true, 'searchable'=> true, 'detail'=> false, 'key'=> false ],
             ['name' => 'sau_employees.sex', 'data'=> 'sex', 'title'=> 'Sexo', 'sortable'=> true, 'searchable'=> true, 'detail'=> false, 'key'=> false ],
             ['name' => 'sau_employees.income_date', 'data'=> 'income_date', 'title'=> 'Fecha de Ingreso', 'sortable'=> true, 'searchable'=> true, 'detail'=> false, 'key'=> false ],
-            ['name' => 'sau_employees_positions.name', 'data'=> 'position', 'title'=> 'Cargo', 'sortable'=> true, 'searchable'=> true, 'detail'=> false, 'key'=> false ],
-            ['name' => 'sau_employees_regionals.name', 'data'=> 'regional', 'title'=> $this->keywordCheck('regional'), 'sortable'=> true, 'searchable'=> true, 'detail'=> false, 'key'=> false ],
-            ['name' => 'sau_employees_headquarters.name', 'data'=> 'headquarter', 'title'=> $this->keywordCheck('headquarter'), 'sortable'=> true, 'searchable'=> true, 'detail'=> false, 'key'=> false ],
-            ['name' => 'sau_employees_processes.name', 'data'=> 'process', 'title'=> 'Proceso', 'sortable'=> true, 'searchable'=> true, 'detail'=> false, 'key'=> false ],
-            ['name' => 'sau_employees_businesses.name', 'data'=> 'business', 'title'=> 'Centro de costos', 'sortable'=> true, 'searchable'=> true, 'detail'=> false, 'key'=> false ],
-            ['name' => 'sau_employees_eps.name', 'data'=> 'eps', 'title'=> 'EPS', 'sortable'=> true, 'searchable'=> true, 'detail'=> false, 'key'=> false ]
+            ['name' => 'sau_employees_positions.name', 'data'=> 'position', 'title'=> $this->keywords['position'], 'sortable'=> true, 'searchable'=> true, 'detail'=> false, 'key'=> false ],
+            ['name' => 'sau_employees_regionals.name', 'data'=> 'regional', 'title'=> $this->keywords['regional'], 'sortable'=> true, 'searchable'=> true, 'detail'=> false, 'key'=> false ],
+            ['name' => 'sau_employees_headquarters.name', 'data'=> 'headquarter', 'title'=> $this->keywords['headquarter'], 'sortable'=> true, 'searchable'=> true, 'detail'=> false, 'key'=> false ],
+            ['name' => 'sau_employees_processes.name', 'data'=> 'process', 'title'=> $this->keywords['process'], 'sortable'=> true, 'searchable'=> true, 'detail'=> false, 'key'=> false ],
+            ['name' => 'sau_employees_businesses.name', 'data'=> 'business', 'title'=> $this->keywords['businesses'], 'sortable'=> true, 'searchable'=> true, 'detail'=> false, 'key'=> false ],
+            ['name' => 'sau_employees_eps.name', 'data'=> 'eps', 'title'=> $this->keywords['eps'], 'sortable'=> true, 'searchable'=> true, 'detail'=> false, 'key'=> false ]
         ];
         
         if ($formModel == 'vivaAir')
         { 
             $colums = array_merge($colums, [
-                ['name' => 'sau_employees_afp.name', 'data'=> 'afp', 'title'=> 'AFP', 'sortable'=> true, 'searchable'=> true, 'detail'=> false, 'key'=> false ]
+                ['name' => 'sau_employees_afp.name', 'data'=> 'afp', 'title'=> $this->keywords['afp'], 'sortable'=> true, 'searchable'=> true, 'detail'=> false, 'key'=> false ]
             ]);
         }
         else if ($formModel == 'misionEmpresarial')
         {
             $colums = array_merge($colums, [
-                ['name' => 'sau_employees_afp.name', 'data'=> 'afp', 'title'=> 'AFP', 'sortable'=> true, 'searchable'=> true, 'detail'=> false, 'key'=> false ],
-                ['name' => 'sau_employees_arl.name', 'data'=> 'arl', 'title'=> 'ARL', 'sortable'=> true, 'searchable'=> true, 'detail'=> false, 'key'=> false ]
+                ['name' => 'sau_employees_afp.name', 'data'=> 'afp', 'title'=> $this->keywords['afp'], 'sortable'=> true, 'searchable'=> true, 'detail'=> false, 'key'=> false ],
+                ['name' => 'sau_employees_arl.name', 'data'=> 'arl', 'title'=> $this->keywords['arl'], 'sortable'=> true, 'searchable'=> true, 'detail'=> false, 'key'=> false ]
             ]);
         }
 
@@ -332,10 +334,10 @@ class VuetableColumnManager
         $colums = [
             ['name' => 'sau_checks.id', 'data'=> 'id', 'title'=> 'ID', 'sortable'=> false, 'searchable'=> false, 'detail'=> false, 'key'=> true ],
             ['name' => 'sau_reinc_cie10_codes.code', 'data'=> 'code', 'title'=> 'Código CIE 10', 'sortable'=> true, 'searchable'=> true, 'detail'=> false, 'key'=> false ],
-            ['name' => 'sau_checks.disease_origin', 'data'=> 'disease_origin', 'title'=> 'Tipo de Evento', 'sortable'=> true, 'searchable'=> true, 'detail'=> false, 'key'=> false ],
-            ['name' => 'sau_employees_regionals.name', 'data'=> 'regional', 'title'=> $this->keywordCheck('regional'), 'sortable'=> true, 'searchable'=> true, 'detail'=> false, 'key'=> false ],
+            ['name' => 'sau_checks.disease_origin', 'data'=> 'disease_origin', 'title'=> $this->keywords['disease_origin'], 'sortable'=> true, 'searchable'=> true, 'detail'=> false, 'key'=> false ],
+            ['name' => 'sau_employees_regionals.name', 'data'=> 'regional', 'title'=> $this->keywords['regional'], 'sortable'=> true, 'searchable'=> true, 'detail'=> false, 'key'=> false ],
             ['name' => 'sau_employees.identification', 'data'=> 'identification', 'title'=> 'Identificación', 'sortable'=> true, 'searchable'=> true, 'detail'=> false, 'key'=> false ],
-            ['name' => 'sau_employees.name', 'data'=> 'name', 'title'=> 'Trabajador', 'sortable'=> true, 'searchable'=> true, 'detail'=> false, 'key'=> false ],
+            ['name' => 'sau_employees.name', 'data'=> 'name', 'title'=> $this->keywords['employee'], 'sortable'=> true, 'searchable'=> true, 'detail'=> false, 'key'=> false ],
             ['name' => 'sau_checks.state', 'data'=> 'state', 'title'=> 'Estado del Reporte', 'sortable'=> true, 'searchable'=> true, 'detail'=> false, 'key'=> false],
             ['name' => 'sau_checks.deadline', 'data'=> 'deadline', 'title'=> 'Fecha de Cierre', 'sortable'=> true, 'searchable'=> true, 'detail'=> false, 'key'=> false ]
         ];

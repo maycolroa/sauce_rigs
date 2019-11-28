@@ -4,6 +4,7 @@ namespace App\Http\Requests\Administrative\Processes;
 
 use Illuminate\Foundation\Http\FormRequest;
 use App\Rules\MacroprocessUnique;
+use Illuminate\Support\Facades\Auth;
 
 class ProcessRequest extends FormRequest
 {
@@ -51,6 +52,16 @@ class ProcessRequest extends FormRequest
             'name' => ['required','string',new MacroprocessUnique($id)],
             'employee_regional_id' => 'required|exists:sau_employees_regionals,id',
             'employee_headquarter_id' => 'required|array'
+        ];
+    }
+
+    public function messages()
+    {
+        $keywords = Auth::user()->getKeywords();
+        
+        return [
+            'employee_regional_id.required' => 'El campo '.$keywords['regional'].' es obligatorio.',
+            'employee_headquarter_id.required' => 'El campo '.$keywords['headquarter'].' es obligatorio.'
         ];
     }
 }

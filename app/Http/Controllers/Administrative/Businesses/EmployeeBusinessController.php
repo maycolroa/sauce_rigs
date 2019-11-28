@@ -62,7 +62,7 @@ class EmployeeBusinessController extends Controller
         }
 
         return $this->respondHttp200([
-            'message' => 'Se creo el centro de costo'
+            'message' => 'Se creo el registro'
         ]);
     }
 
@@ -102,7 +102,7 @@ class EmployeeBusinessController extends Controller
         }
         
         return $this->respondHttp200([
-            'message' => 'Se actualizo el centro de costo'
+            'message' => 'Se actualizo el registro'
         ]);
     }
 
@@ -116,7 +116,7 @@ class EmployeeBusinessController extends Controller
     {
         if (count($business->employees) > 0)
         {
-            return $this->respondWithError('No se puede eliminar el centro de costo porque hay empleados asociados a él');
+            return $this->respondWithError('No se puede eliminar el registro porque hay otros registros asociados a el');
         }
 
         if(!$business->delete())
@@ -125,7 +125,7 @@ class EmployeeBusinessController extends Controller
         }
         
         return $this->respondHttp200([
-            'message' => 'Se elimino el centro de costo'
+            'message' => 'Se elimino el registro'
         ]);
     }
 

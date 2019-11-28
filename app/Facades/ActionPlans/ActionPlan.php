@@ -882,20 +882,27 @@ class ActionPlan
     private function prepareListItemMainEmail($supervisor)
     {
         $list = [];
+
+        if (!empty($this->company))
+            $company_id = $this->company;
+        else if (Session::get('company_id'))
+            $company_id = Session::get('company_id');
+
+        $keywords = $this->getKeywordQueue($company_id);
         
         array_push($list, 'Usuario Supervisor: '.$supervisor);
 
         if ($this->regional)
-            array_push($list, 'Regional: '.$this->regional);
+            array_push($list, $keywords['regional'].': '.$this->regional);
 
         if ($this->headquarter)
-            array_push($list, 'Sede: '.$this->headquarter);
+            array_push($list, $keywords['headquarter'].': '.$this->headquarter);
 
         if ($this->process)
-            array_push($list, 'Proceso: '.$this->process);
+            array_push($list, $keywords['process'].': '.$this->process);
 
         if ($this->area)
-            array_push($list, 'Área: '.$this->area);
+            array_push($list, $keywords['area'].': '.$this->area);
 
         if ($this->creationDate)
             array_push($list, 'Fecha de creación: '.$this->creationDate);

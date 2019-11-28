@@ -1,8 +1,8 @@
 <template>
   <div>
     <header-module
-      title="ADMINNISTRATIVO"
-      subtitle="ADMINISTRAR EMPLEADOS"
+      title="ADMINISTRATIVO"
+      :subtitle="`ADMINISTRAR ${keywordCheck('employees')}`"
       url="administrative"
     />
 
@@ -11,7 +11,7 @@
       <b-card no-body>
         <b-card-header class="with-elements">
           <div class="card-title-elements" v-if="auth.can['employees_c']">
-            <b-btn :to="{name:'administrative-employees-create'}" variant="primary">Crear Empleado</b-btn>
+            <b-btn :to="{name:'administrative-employees-create'}" variant="primary">Crear {{ keywordCheck('employee') }}</b-btn>
             <b-btn v-if="auth.can['employees_c']" variant="primary" @click="importMessage()" v-b-tooltip.top title="Importar"><i class="fas fa-upload"></i></b-btn>
             <input id="fileInputImport" type="file" style="display:none" v-on:input="importAudiometry"/>
             <b-btn v-if="auth.can['employees_c']" variant="primary" href="/templates/employeeimport" target="blank" v-b-tooltip.top title="Generar Plantilla"><i class="fas fa-file-alt"></i></b-btn>
@@ -51,8 +51,10 @@ import Alerts from '@/utils/Alerts.js';
 
 export default {
   name: 'employees',
-  metaInfo: {
-    title: 'Empleados'
+  metaInfo() {
+    return {
+      title: `${this.keywordCheck('employees')}`
+    }
   },
   methods: {
     importAudiometry(e){

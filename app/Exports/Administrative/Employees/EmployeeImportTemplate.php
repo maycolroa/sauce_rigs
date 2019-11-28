@@ -33,16 +33,16 @@ class EmployeeImportTemplate implements WithMultipleSheets
         $sheets = [];
 
         $sheets[] = new EmployeeImportDataTemplateExcel(collect([]), $formModel, $this->company_id);
-        $sheets[] = new AudiometryImportEpsTemplateExcel();
+        $sheets[] = new AudiometryImportEpsTemplateExcel($this->company_id);
 
         if ($formModel == 'vivaAir')
         {
-            $sheets[] = new AfpTemplateExcel();
+            $sheets[] = new AfpTemplateExcel($this->company_id);
         }
         else if ($formModel == 'misionEmpresarial')
         {
-            $sheets[] = new AfpTemplateExcel();
-            $sheets[] = new ArlTemplateExcel();
+            $sheets[] = new AfpTemplateExcel($this->company_id);
+            $sheets[] = new ArlTemplateExcel($this->company_id);
         }
 
         return $sheets;

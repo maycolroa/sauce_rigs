@@ -1,8 +1,8 @@
 <template>
   <div>
     <header-module
-      title="ADMINNISTRATIVO"
-      subtitle="EDITAR EMPLEADOS"
+      title="ADMINISTRATIVO"
+      :subtitle="`EDITAR ${keywordCheck('employee')}`"
       url="administrative-employees"
     />
 
@@ -83,8 +83,10 @@ import GlobalMethods from '@/utils/GlobalMethods.js';
 
 export default {
   name: 'administrative-employees-edit',
-  metaInfo: {
-    title: 'Empleados - Editar'
+  metaInfo() {
+    return {
+      title: `${this.keywordCheck('employees')} - Editar`
+    }
   },
   components:{
     FormEmployee,

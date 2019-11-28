@@ -292,7 +292,7 @@ trait UtilsTrait
         return isset($user->keywords[$key]) ? $user->keywords[$key] : $defaultValue;
     }
 
-    public function keywordCheckQueue($key, $company_id)
+    public function getKeywordQueue($company_id)
     {
         $keywords = DB::table(DB::raw(
             "(SELECT
@@ -308,7 +308,7 @@ trait UtilsTrait
         )
         ->pluck('display_name', 'name');
             
-        return isset($keywords[$key]) ? $keywords[$key] : $defaultValue;
+        return $keywords;
     }
 
     public function formatDateToSave($date)

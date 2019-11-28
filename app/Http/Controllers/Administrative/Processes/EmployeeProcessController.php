@@ -90,7 +90,7 @@ class EmployeeProcessController extends Controller
         }
 
         return $this->respondHttp200([
-            'message' => 'Se creo el proceso'
+            'message' => 'Se creo el registro'
         ]);
     }
 
@@ -160,7 +160,7 @@ class EmployeeProcessController extends Controller
         }
 
         return $this->respondHttp200([
-            'message' => 'Se actualizo el proceso'
+            'message' => 'Se actualizo el registro'
         ]);
     }
 
@@ -174,7 +174,7 @@ class EmployeeProcessController extends Controller
     {
         if (count($process->employees) > 0 || count($process->areas) > 0 || count($process->dangerMatrices) > 0)
         {
-            return $this->respondWithError('No se puede eliminar el proceso porque hay registros asociados a él');
+            return $this->respondWithError('No se puede eliminar el registro porque hay otros registros asociados a el');
         }
 
         if(!$process->delete())
@@ -183,7 +183,7 @@ class EmployeeProcessController extends Controller
         }
         
         return $this->respondHttp200([
-            'message' => 'Se elimino el proceso'
+            'message' => 'Se elimino el registro'
         ]);
     }
 

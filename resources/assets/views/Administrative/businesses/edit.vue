@@ -1,8 +1,8 @@
 <template>
   <div>
     <header-module
-      title="ADMINNISTRATIVO"
-      subtitle="EDITAR CENTRO DE COSTOS"
+      title="ADMINISTRATIVO"
+      :subtitle="`EDITAR ${keywordCheck('businesses')}`"
       url="administrative-businesses"
     />
 
@@ -27,8 +27,10 @@ import Alerts from '@/utils/Alerts.js';
 
 export default {
   name: 'administrative-businesses-edit',
-  metaInfo: {
-    title: 'Centro de Costos - Editar'
+  metaInfo() {
+    return {
+      title: `${this.keywordCheck('businesses')} - Editar`
+    }
   },
   components:{
     AdministrativeBusinessForm

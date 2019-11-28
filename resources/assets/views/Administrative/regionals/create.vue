@@ -2,7 +2,7 @@
   <div>
     <header-module
       v-if="!modal"
-      title="ADMINNISTRATIVO"
+      title="ADMINISTRATIVO"
       :subtitle="`CREAR ${keywordCheck('regionals', 'Regionales')}`"
       url="administrative-regionals"
     />

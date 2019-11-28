@@ -75,7 +75,15 @@ class ConfigurationController extends Controller
      */
     public function radioLocationLevels()
     {
-      $options = ["Regional"=>"Regional", "Sede"=>"Sede", "Proceso"=>"Proceso", "Área"=>"Área"];
-      return $this->radioFormat(collect($options));
+        $keywords = $this->user->getKeywords();
+
+        $options = [
+            $keywords['regional'] => "Regional", 
+            $keywords['headquarter'] => "Sede",
+            $keywords['process'] => "Proceso",
+            $keywords['area'] => "Área"
+        ];
+
+        return $this->radioFormat(collect($options));
     }
 }

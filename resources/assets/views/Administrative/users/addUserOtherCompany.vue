@@ -1,7 +1,7 @@
 <template>
   <div>
     <header-module
-      title="ADMINNISTRATIVO"
+      title="ADMINISTRATIVO"
       subtitle="AGREGAR USUARIOS DE OTRA COMPAÑIA"
       url="administrative-users"
     />

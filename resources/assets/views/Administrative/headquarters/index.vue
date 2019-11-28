@@ -1,8 +1,8 @@
 <template>
   <div>
     <header-module
-      title="ADMINNISTRATIVO"
-      subtitle="ADMINISTRAR SEDES"
+      title="ADMINISTRATIVO"
+      :subtitle="`ADMINISTRAR ${keywordCheck('headquarters')}`"
       url="administrative"
     />
 
@@ -11,7 +11,7 @@
       <b-card no-body>
         <b-card-header class="with-elements">
           <div class="card-title-elements" v-if="auth.can['headquarters_c']">
-            <b-btn :to="{name:'administrative-headquarters-create'}" variant="primary">Crear Sede</b-btn>
+            <b-btn :to="{name:'administrative-headquarters-create'}" variant="primary">Crear {{ keywordCheck('headquarter') }}</b-btn>
           </div>
         </b-card-header>
         <b-card-body>
@@ -30,8 +30,10 @@ import Alerts from '@/utils/Alerts.js';
 
 export default {
   name: 'headquarters',
-  metaInfo: {
-    title: 'Sedes'
+  metaInfo() {
+    return {
+      title: `${this.keywordCheck('headquarters')}`
+    }
   }
 }
 </script>

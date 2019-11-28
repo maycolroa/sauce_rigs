@@ -2,8 +2,8 @@
   <div>
     <header-module
       v-if="!modal"
-      title="ADMINNISTRATIVO"
-      subtitle="CREAR PROCESO"
+      title="ADMINISTRATIVO"
+      :subtitle="`CREAR ${keywordCheck('process')}`"
       url="administrative-processes"
     />
 
@@ -30,18 +30,16 @@ import Alerts from '@/utils/Alerts.js';
 
 export default {
   name: 'administrative-processes-create',
-  metaInfo: {
-    title: 'Procesos - Crear'
+  metaInfo() {
+    return {
+      title: `${this.keywordCheck('processes')} - Crear`
+    }
   },
   components:{
     AdministrativeProcessForm
   },
   props: {
     modal: { type: Boolean, default: false },
-  },
-  data(){
-    return {
-    }
   }
 }
 </script>

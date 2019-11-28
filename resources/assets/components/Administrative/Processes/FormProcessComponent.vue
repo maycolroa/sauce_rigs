@@ -7,9 +7,9 @@
         </vue-ajax-advanced-select>
     </b-form-row>
     <b-form-row>
-      <vue-ajax-advanced-select :disabled="viewOnly" class="col-md-6" v-model="form.employee_regional_id" :error="form.errorsFor('employee_regional_id')" :selected-object="form.multiselect_regional" name="employee_regional_id" label="Regional" placeholder="Seleccione la regional" :url="regionalsDataUrl">
+      <vue-ajax-advanced-select :disabled="viewOnly" class="col-md-6" v-model="form.employee_regional_id" :error="form.errorsFor('employee_regional_id')" :selected-object="form.multiselect_regional" name="employee_regional_id" :label="keywordCheck('regional')" placeholder="Seleccione una opción" :url="regionalsDataUrl">
           </vue-ajax-advanced-select>
-       <vue-ajax-advanced-select :disabled="viewOnly || !form.employee_regional_id" class="col-md-6" v-model="form.employee_headquarter_id" :error="form.errorsFor('employee_headquarter_id')"  name="employee_headquarter_id" label="Sedes" placeholder="Seleccione las sedes" :url="headquartersDataUrl" :parameters="{regional: form.employee_regional_id }" :emptyAll="empty.headquarter" @updateEmpty="updateEmptyKey('headquarter')" :multiple="true" :allowEmpty="true" :selected-object="form.multiselect_employee_headquarter_id">
+       <vue-ajax-advanced-select :disabled="viewOnly || !form.employee_regional_id" class="col-md-6" v-model="form.employee_headquarter_id" :error="form.errorsFor('employee_headquarter_id')"  name="employee_headquarter_id" :label="keywordCheck('headquarters')" placeholder="Seleccione las opciones" :url="headquartersDataUrl" :parameters="{regional: form.employee_regional_id }" :emptyAll="empty.headquarter" @updateEmpty="updateEmptyKey('headquarter')" :multiple="true" :allowEmpty="true" :selected-object="form.multiselect_employee_headquarter_id">
           </vue-ajax-advanced-select>
     </b-form-row>
 

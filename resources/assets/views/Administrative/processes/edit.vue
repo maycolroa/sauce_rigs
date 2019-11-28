@@ -1,8 +1,8 @@
 <template>
   <div>
     <header-module
-      title="ADMINNISTRATIVO"
-      subtitle="EDITAR PROCESO"
+      title="ADMINISTRATIVO"
+      :subtitle="`EDITAR ${keywordCheck('process')}`"
       url="administrative-processes"
     />
 
@@ -30,8 +30,10 @@ import Alerts from '@/utils/Alerts.js';
 
 export default {
   name: 'administrative-processes-edit',
-  metaInfo: {
-    title: 'Procesos - Editar'
+  metaInfo() {
+    return {
+      title: `${this.keywordCheck('processes')} - Editar`
+    }
   },
   components:{
     AdministrativeProcessForm

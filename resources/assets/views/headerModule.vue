@@ -1,8 +1,8 @@
 <template>
     <div class="row">
         <div class="col-md-8">
-            <span class="title-module">{{ title }}</span><br>
-            <span v-if="subtitle" class="title-module subtitle-module">{{ subtitle }}<br></span>
+            <span class="title-module">{{ title.toUpperCase() }}</span><br>
+            <span v-if="subtitle" class="title-module subtitle-module">{{ subtitle.toUpperCase() }}<br></span>
             <img class="filete-module" src="/images/Sauce-ML Filete.png">
         </div>
         <div class="col-md-4 text-right cursor-pointer" v-if="url">

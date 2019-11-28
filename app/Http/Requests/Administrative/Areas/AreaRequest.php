@@ -4,6 +4,7 @@ namespace App\Http\Requests\Administrative\Areas;
 
 use Illuminate\Foundation\Http\FormRequest;
 use App\Rules\AreaUnique;
+use Illuminate\Support\Facades\Auth;
 
 class AreaRequest extends FormRequest
 {
@@ -31,6 +32,17 @@ class AreaRequest extends FormRequest
             'employee_regional_id' => 'required|exists:sau_employees_regionals,id',
             'employee_headquarter_id' => 'required|exists:sau_employees_headquarters,id',
             'employee_process_id' => 'required|array'
+        ];
+    }
+
+    public function messages()
+    {
+        $keywords = Auth::user()->getKeywords();
+        
+        return [
+            'employee_regional_id.required' => 'El campo '.$keywords['regional'].' es obligatorio.',
+            'employee_headquarter_id.required' => 'El campo '.$keywords['headquarter'].' es obligatorio.',
+            'employee_process_id.required' => 'El campo '.$keywords['process'].' es obligatorio.',
         ];
     }
 }

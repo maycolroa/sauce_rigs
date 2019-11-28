@@ -65,7 +65,7 @@ class EmployeeHeadquarterController extends Controller
         }
 
         return $this->respondHttp200([
-            'message' => 'Se creo la sede'
+            'message' => 'Se creo el registro'
         ]);
     }
 
@@ -107,7 +107,7 @@ class EmployeeHeadquarterController extends Controller
         }
         
         return $this->respondHttp200([
-            'message' => 'Se actualizo la sede'
+            'message' => 'Se actualizo el registro'
         ]);
     }
 
@@ -121,7 +121,7 @@ class EmployeeHeadquarterController extends Controller
     {
         if (count($headquarter->employees) > 0 || count($headquarter->processes) > 0 || count($headquarter->dangerMatrices) > 0)
         {
-            return $this->respondWithError('No se puede eliminar la sede porque hay registros asociadas a ella');
+            return $this->respondWithError('No se puede eliminar el registro porque hay otros registros asociados a el');
         }
 
         if(!$headquarter->delete())
@@ -130,7 +130,7 @@ class EmployeeHeadquarterController extends Controller
         }
         
         return $this->respondHttp200([
-            'message' => 'Se elimino la sede'
+            'message' => 'Se elimino el registro'
         ]);
     }
 

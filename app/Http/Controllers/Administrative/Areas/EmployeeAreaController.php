@@ -95,7 +95,7 @@ class EmployeeAreaController extends Controller
         }
 
         return $this->respondHttp200([
-            'message' => 'Se creo el área'
+            'message' => 'Se creo el registro'
         ]);
     }
 
@@ -177,7 +177,7 @@ class EmployeeAreaController extends Controller
         }
 
         return $this->respondHttp200([
-            'message' => 'Se actualizo el área'
+            'message' => 'Se actualizo el registro'
         ]);
     }
 
@@ -191,7 +191,7 @@ class EmployeeAreaController extends Controller
     {
         if (count($area->employees) > 0 || count($area->dangerMatrices) > 0)
         {
-            return $this->respondWithError('No se puede eliminar el área porque hay registros asociados a ella');
+            return $this->respondWithError('No se puede eliminar el registro porque hay otros registros asociados a el');
         }
 
         if(!$area->delete())
@@ -200,7 +200,7 @@ class EmployeeAreaController extends Controller
         }
         
         return $this->respondHttp200([
-            'message' => 'Se elimino el área'
+            'message' => 'Se elimino el registro'
         ]);
     }
 
