@@ -535,5 +535,159 @@ export default [
       urlData: '/biologicalmonitoring/absenteeism/talendUpload/data',
       filterColumns: true
   }
-}
+},
+{
+  name: 'reinstatements-disease-origin',
+  fields: [
+      { name: 'sau_reinc_disease_origin.id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true },
+      { name: 'sau_reinc_disease_origin.name', data: 'name', title: 'Nombre', sortable: true, searchable: true, detail: false, key: false },
+      { name: '', data: 'controlls', title: 'Controles', sortable: false, searchable: false, detail: false, key: false },
+    ],
+    'controlls': [{
+        type: 'push',
+        buttons: [{
+            config: {
+                color: 'outline-success',
+                borderless: true,
+                icon: 'ion ion-md-create',
+                title: 'Editar'
+            },
+            data: {
+                routePush: { name: 'reinstatements-disease-origin-edit' },
+                id: 'id',
+            },
+            permission: 'reinc_disease_origin_u'
+        }, {
+            config: {
+                color: 'outline-info',
+                borderless: true,
+                icon: 'ion ion-md-eye',
+                title: 'Ver'
+            },
+            data: {
+                routePush: { name: 'reinstatements-disease-origin-view' },
+                id: 'id',
+            },
+            permission: 'reinc_disease_origin_r'
+        }]
+    },
+    {
+        type: 'base',
+        buttons: [{
+        name: 'delete',
+        data: {
+            action: '/biologicalmonitoring/reinstatements/diseaseOrigin/',
+            id: 'id',
+            messageConfirmation: 'Esta seguro de borrar el Tipo de evento __name__'
+        },
+        permission: 'reinc_disease_origin_d'
+        }],
+    }],
+    configuration: {
+        urlData: '/biologicalmonitoring/reinstatements/diseaseOrigin/data',
+        filterColumns: true,
+    }
+},{
+  name: 'reinstatements-origin-advisor',
+  fields: [
+      { name: 'sau_reinc_origin_advisor.id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true },
+      { name: 'sau_reinc_origin_advisor.name', data: 'name', title: 'Nombre', sortable: true, searchable: true, detail: false, key: false },
+      { name: '', data: 'controlls', title: 'Controles', sortable: false, searchable: false, detail: false, key: false },
+    ],
+    'controlls': [{
+        type: 'push',
+        buttons: [{
+            config: {
+                color: 'outline-success',
+                borderless: true,
+                icon: 'ion ion-md-create',
+                title: 'Editar'
+            },
+            data: {
+                routePush: { name: 'reinstatements-origin-advisor-edit' },
+                id: 'id',
+            },
+            permission: 'reinc_origin_advisor_u'
+        }, {
+            config: {
+                color: 'outline-info',
+                borderless: true,
+                icon: 'ion ion-md-eye',
+                title: 'Ver'
+            },
+            data: {
+                routePush: { name: 'reinstatements-origin-advisor-view' },
+                id: 'id',
+            },
+            permission: 'reinc_origin_advisor_r'
+        }]
+    },
+    {
+        type: 'base',
+        buttons: [{
+        name: 'delete',
+        data: {
+            action: '/biologicalmonitoring/reinstatements/originAdvisor/',
+            id: 'id',
+            messageConfirmation: 'Esta seguro de borrar la Procedencia de recomendaciones __name__'
+        },
+        permission: 'reinc_origin_advisor_d'
+        }],
+    }],
+    configuration: {
+        urlData: '/biologicalmonitoring/reinstatements/originAdvisor/data',
+        filterColumns: true,
+    }
+},{
+  name: 'reinstatements-labor-conclusions',
+  fields: [
+      { name: 'sau_reinc_labor_conclusions.id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true },
+      { name: 'sau_reinc_labor_conclusions.name', data: 'name', title: 'Nombre', sortable: true, searchable: true, detail: false, key: false },
+      { name: '', data: 'controlls', title: 'Controles', sortable: false, searchable: false, detail: false, key: false },
+    ],
+    'controlls': [{
+        type: 'push',
+        buttons: [{
+            config: {
+                color: 'outline-success',
+                borderless: true,
+                icon: 'ion ion-md-create',
+                title: 'Editar'
+            },
+            data: {
+                routePush: { name: 'reinstatements-labor-conclusions-edit' },
+                id: 'id',
+            },
+            permission: 'reinc_labor_conclusion_u'
+        }, {
+            config: {
+                color: 'outline-info',
+                borderless: true,
+                icon: 'ion ion-md-eye',
+                title: 'Ver'
+            },
+            data: {
+                routePush: { name: 'reinstatements-labor-conclusions-view' },
+                id: 'id',
+            },
+            permission: 'reinc_labor_conclusion_r'
+        }]
+    },
+    {
+        type: 'base',
+        buttons: [{
+        name: 'delete',
+        data: {
+            action: '/biologicalmonitoring/reinstatements/laborConclusion/',
+            id: 'id',
+            messageConfirmation: 'Esta seguro de borrar la Conclusión laboral __name__'
+        },
+        permission: 'reinc_labor_conclusion_d'
+        }],
+    }],
+    configuration: {
+        urlData: '/biologicalmonitoring/reinstatements/laborConclusion/data',
+        filterColumns: true,
+    }
+},
 ];

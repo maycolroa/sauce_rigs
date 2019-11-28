@@ -118,6 +118,54 @@
                     {
                         "name": "reinc_receive_notifications",
                         "display_name": "Reincorporaciones - recibir notificaciones"
+                    },
+                    {
+                        "name": "reinc_disease_origin_c",
+                        "display_name": "Reincorporaciones/Tipo de evento - crear"
+                    },
+                    {
+                        "name": "reinc_disease_origin_r",
+                        "display_name": "Reincorporaciones/Tipo de evento - ver"
+                    },
+                    {
+                        "name": "reinc_disease_origin_u",
+                        "display_name": "Reincorporaciones/Tipo de evento - editar"
+                    },
+                    {
+                        "name": "reinc_disease_origin_d",
+                        "display_name": "Reincorporaciones/Tipo de evento - eliminar"
+                    },
+                    {
+                        "name": "reinc_origin_advisor_c",
+                        "display_name": "Reincorporaciones/Procedencia de rcomendaciones - crear"
+                    },
+                    {
+                        "name": "reinc_origin_advisor_r",
+                        "display_name": "Reincorporaciones/Procedencia de rcomendaciones - ver"
+                    },
+                    {
+                        "name": "reinc_origin_advisor_u",
+                        "display_name": "Reincorporaciones/Procedencia de rcomendaciones - editar"
+                    },
+                    {
+                        "name": "reinc_origin_advisor_d",
+                        "display_name": "Reincorporaciones/Procedencia de rcomendaciones - eliminar"
+                    },
+                    {
+                        "name": "reinc_labor_conclusion_c",
+                        "display_name": "Reincorporaciones/Conclusiones laborales - crear"
+                    },
+                    {
+                        "name": "reinc_labor_conclusion_r",
+                        "display_name": "Reincorporaciones/Conclusiones laborales - ver"
+                    },
+                    {
+                        "name": "reinc_labor_conclusion_u",
+                        "display_name": "Reincorporaciones/Conclusiones laborales - editar"
+                    },
+                    {
+                        "name": "reinc_labor_conclusion_d",
+                        "display_name": "Reincorporaciones/Conclusiones laborales - eliminar"
                     }
                 ]
             },
