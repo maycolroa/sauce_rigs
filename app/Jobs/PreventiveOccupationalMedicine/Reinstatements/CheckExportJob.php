@@ -120,7 +120,7 @@ class CheckExportJob implements ShouldQueue
 
       } catch (\Exception $e)
       {
-        //\Log::info($e);
+        \Log::info($e);
           NotificationMail::
               subject('Reincorporaciones: Exportación de los reportes')
               ->recipients($this->user)

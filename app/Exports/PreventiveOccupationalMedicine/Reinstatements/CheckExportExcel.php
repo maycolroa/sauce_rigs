@@ -34,14 +34,7 @@ class CheckExportExcel implements WithMultipleSheets
         
         $sheets = [];      
         
-        if ($formModel == 'default')
-        {
-            $sheets[] = new CheckExcel($this->company_id, $this->data['checks']);
-            $sheets[] = new MonitoringsExcel($this->data['medicalMonitorings'], 'Seguimientos Medicos');
-            $sheets[] = new MonitoringsExcel($this->data['laborMonitorings'], 'Seguimientos Laborales');
-            $sheets[] = new TracingExcel($this->data['tracings'], 'Seguimientos');
-        }
-        else if ($formModel == 'vivaAir')
+        if ($formModel == 'vivaAir')
         {
             $sheets[] = new CheckVivaAirExcel($this->company_id, $this->data['checks']);
             $sheets[] = new MonitoringsExcel($this->data['medicalMonitorings'], 'Seguimientos Medicos');
@@ -53,6 +46,13 @@ class CheckExportExcel implements WithMultipleSheets
         {
             $sheets[] = new CheckEmpresarialExcel($this->company_id, $this->data['checks']);
             $sheets[] = new MonitoringsExcel($this->data['medicalMonitorings'], 'Seguimientos Medicos');
+            $sheets[] = new TracingExcel($this->data['tracings'], 'Seguimientos');
+        }
+        else
+        {
+            $sheets[] = new CheckExcel($this->company_id, $this->data['checks']);
+            $sheets[] = new MonitoringsExcel($this->data['medicalMonitorings'], 'Seguimientos Medicos');
+            $sheets[] = new MonitoringsExcel($this->data['laborMonitorings'], 'Seguimientos Laborales');
             $sheets[] = new TracingExcel($this->data['tracings'], 'Seguimientos');
         }
 

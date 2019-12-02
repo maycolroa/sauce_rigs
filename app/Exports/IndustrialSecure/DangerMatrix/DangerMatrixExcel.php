@@ -17,6 +17,7 @@ use Maatwebsite\Excel\Events\AfterSheet;
 use \Maatwebsite\Excel\Sheet;
 
 use App\Traits\LocationFormTrait;
+use App\Traits\UtilsTrait;
 
 Sheet::macro('styleCells', function (Sheet $sheet, string $cellRange, array $style) {
   $sheet->getDelegate()->getStyle($cellRange)->applyFromArray($style);
@@ -26,6 +27,7 @@ class DangerMatrixExcel implements FromCollection, WithHeadings, WithMapping, Wi
 {
     use RegistersEventListeners;
     use LocationFormTrait;
+    use UtilsTrait;
 
     protected $company_id;
     protected $danger_matrix_id;
@@ -33,12 +35,15 @@ class DangerMatrixExcel implements FromCollection, WithHeadings, WithMapping, Wi
     protected $qualifications;
     protected $qualificationsValues;
     protected $configurations;
+    protected $keywords;
 
     public function __construct($company_id, $danger_matrix_id)
     {
         $this->company_id = $company_id;
         $this->danger_matrix_id = $danger_matrix_id;
         $this->confLocation = $this->getLocationFormConfModule($this->company_id);
+        $this->keywords = $this->getKeywordQueue($this->company_id);
+
 
         $qualifications = QualificationCompany::query();
         $qualifications->company_scope = $this->company_id;
@@ -209,16 +214,16 @@ class DangerMatrixExcel implements FromCollection, WithHeadings, WithMapping, Wi
         $columns = ['Nombre'];
 
         if ($this->confLocation['regional'] == 'SI')
-            array_push($columns, 'Regional');
+            array_push($columns, $this->keywords['regional']);
 
         if ($this->confLocation['headquarter'] == 'SI')
-            array_push($columns, 'Sede');
+            array_push($columns, $this->keywords['headquarter']);
 
         if ($this->confLocation['process'] == 'SI')
-            array_push($columns, 'Proceso');
+            array_push($columns, $this->keywords['process']);
 
         if ($this->confLocation['area'] == 'SI')
-            array_push($columns, 'Área');
+            array_push($columns, $this->keywords['area']);
 
         $columns = array_merge($columns, [
             'Participantes',

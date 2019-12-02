@@ -7,19 +7,19 @@
         />
        <b-row>
             <b-col>
-                <b-card border-variant="primary" title="Sedes con más reportes" class="mb-3 box-shadow-none">
+                <b-card border-variant="primary" :title="`${keywordCheck('headquarters')} con más reportes`" class="mb-3 box-shadow-none">
                     <chart-bar 
                         :chart-data="report_per_headquarter"
-                        title="Sedes con más reportes"
+                        :title="`${keywordCheck('headquarters')} con más reportes`"
                         color-line="red"
                         ref="report_per_headquarter"/>
                 </b-card>
             </b-col>
             <b-col>
-                <b-card border-variant="primary" title="Áreas con más reportes" class="mb-3 box-shadow-none">
+                <b-card border-variant="primary" :title="`${keywordCheck('areas')} con más reportes`" class="mb-3 box-shadow-none">
                     <chart-bar 
                         :chart-data="report_per_area"
-                        title="Áreas con más reportes"
+                        :title="`${keywordCheck('areas')} con más reportes`"
                         color-line="red"
                         ref="report_per_area"/>
                 </b-card>
@@ -28,10 +28,10 @@
 
         <b-row>
             <b-col>
-                <b-card border-variant="primary" title="Sedes y Áreas con más reportes" class="mb-3 box-shadow-none">
+                <b-card border-variant="primary" :title="`${keywordCheck('headquarters')} y ${keywordCheck('areas')} con más reportes`" class="mb-3 box-shadow-none">
                     <chart-bar 
                         :chart-data="report_per_headquarter_area"
-                        title="Sedes y Áreas con más reportes"
+                        :title="`${keywordCheck('headquarters')} y ${keywordCheck('areas')} con más reportes`"
                         color-line="red"
                         ref="report_per_area"/>
                 </b-card>
@@ -51,7 +51,7 @@
         </b-row>
 
         <b-row>
-            <vue-advanced-select @input="conditionHeadquarter" class="col-md-12" v-model="headquarter_selected" :multiple="false" :options="options_headquarter" :hide-selected="false" name="headquarter_selected"  label="Condición más reportada por sede" placeholder="Seleccione la Sede">
+            <vue-advanced-select @input="conditionHeadquarter" class="col-md-12" v-model="headquarter_selected" :multiple="false" :options="options_headquarter" :hide-selected="false" name="headquarter_selected"  :label="`Condición más reportada por ${keywordCheck('headquarter')}`" placeholder="Seleccione una opción">
             </vue-advanced-select>
         </b-row>
 
@@ -65,7 +65,7 @@
 
         <div class="row float-right pt-10 pr-10" style="padding-top: 20px;">
             <template>
-                <b-btn variant="default" :to="{name: 'dangerousconditions-reports'}" :disabled="loading">Atras</b-btn>
+                <b-btn variant="default" :to="{name: 'dangerousconditions-reports'}" :disabled="isLoading">Atras</b-btn>
             </template>
         </div>
     </div>

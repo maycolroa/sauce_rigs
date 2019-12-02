@@ -59,7 +59,7 @@
           <vue-datepicker :disabled="viewOnly" class="col-md-6" v-model="form.date" label="Fecha" :full-month-name="true" placeholder="Seleccione la fecha" :error="form.errorsFor('date')" name="date" :disabled-dates="disabledDates">
           </vue-datepicker>
 
-          <vue-ajax-advanced-select :disabled="viewOnly" class="col-md-6" v-model="form.employee_id" :error="form.errorsFor('employee_id')" :selected-object="form.multiselect_employee" name="employee_id" label="Empleado" placeholder="Seleccione el empleado" :url="employeesDataUrl">
+          <vue-ajax-advanced-select :disabled="viewOnly" class="col-md-6" v-model="form.employee_id" :error="form.errorsFor('employee_id')" :selected-object="form.multiselect_employee" name="employee_id" :label="keywordCheck('employee')" placeholder="Seleccione una opción" :url="employeesDataUrl">
           </vue-ajax-advanced-select>
         </b-form-row>
         <vue-textarea :disabled="viewOnly" v-model="form.previews_events" label="Eventos previos" :error="form.errorsFor('previews_events')" name="previews_events" placeholder="Eventos previos"></vue-textarea>

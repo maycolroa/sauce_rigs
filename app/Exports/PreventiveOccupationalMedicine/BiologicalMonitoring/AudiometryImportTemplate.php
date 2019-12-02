@@ -11,8 +11,11 @@ class AudiometryImportTemplate implements WithMultipleSheets
 {
     use Exportable;
     
-    public function __construct()
+    protected $company_id;
+
+    public function __construct($company_id)
     {
+        $this->company_id = $company_id;
     }
 
     /**
@@ -22,8 +25,8 @@ class AudiometryImportTemplate implements WithMultipleSheets
     {
         $sheets = [];
 
-        $sheets[] = new AudiometryImportDataTemplateExcel(collect([]));
-        $sheets[] = new AudiometryImportEpsTemplateExcel();
+        $sheets[] = new AudiometryImportDataTemplateExcel(collect([]), $this->company_id);
+        $sheets[] = new AudiometryImportEpsTemplateExcel($this->company_id);
 
         return $sheets;
     }

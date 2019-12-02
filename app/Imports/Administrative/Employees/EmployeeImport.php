@@ -38,7 +38,7 @@ class EmployeeImport implements ToCollection
     private $afp_data = [];
     private $arl_data = [];
     private $contract_types = [];
-    protected $keywords;
+    private $keywords;
 
     public function __construct($company_id, $user)
     {

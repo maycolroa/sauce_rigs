@@ -16,6 +16,7 @@ use Maatwebsite\Excel\Concerns\RegistersEventListeners;
 use Maatwebsite\Excel\Events\AfterSheet;
 use \Maatwebsite\Excel\Sheet;
 use DB;
+use App\Traits\UtilsTrait;
 
 Sheet::macro('styleCells', function (Sheet $sheet, string $cellRange, array $style) {
   $sheet->getDelegate()->getStyle($cellRange)->applyFromArray($style);
@@ -24,16 +25,19 @@ Sheet::macro('styleCells', function (Sheet $sheet, string $cellRange, array $sty
 class InspectionReportExcel implements FromCollection, WithMapping, WithHeadings, WithTitle, WithEvents, WithColumnFormatting, ShouldAutoSize
 {
     use RegistersEventListeners;
+    use UtilsTrait;
 
     protected $company_id;
     protected $filters;
     protected $table;
+    protected $keywords;
 
     public function __construct($company_id, $filters)
     {
       $this->company_id = $company_id;
       $this->filters = $filters;
       $this->table = $this->filters['table'];
+      $this->keywords = $this->getKeywordQueue($this->company_id);
     }
 
     public function collection()
@@ -164,8 +168,8 @@ class InspectionReportExcel implements FromCollection, WithMapping, WithHeadings
     public function headings(): array
     {
       $columns = [
-        'Sede',
-        'Área'
+        $this->keywords['headquarter'],
+        $this->keywords['area'],
       ];
 
       if ($this->table == "with_theme")

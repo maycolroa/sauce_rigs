@@ -6,19 +6,19 @@ export default [
           url: '/selects/regionals',
           key: 'regionals',
           type: 'select',
-          label: 'Regionales'
+          label: 'regionals'
         },
         {
           url: '/selects/headquarters',
           key: 'headquarters',
           type: 'select',
-          label: 'Sedes'
+          label: 'headquarters'
         },
         {
           url: '/selects/processes',
           key: 'processes',
           type: 'select',
-          label: 'Procesos'
+          label: 'processes'
         },
         {
           url: '/selects/tagsTypeProcess',
@@ -30,7 +30,7 @@ export default [
           url: '/selects/areas',
           key: 'areas',
           type: 'select',
-          label: 'Áreas'
+          label: 'areas'
         },
         {
           url: '/selects/dmDangers',
@@ -53,7 +53,7 @@ export default [
           url: '/selects/dmReportMultiselect',
           key: 'regionals',
           type: 'select',
-          label: 'Regionales',
+          label: 'regionals',
           column: 'regional',
           tag: false
         },
@@ -61,7 +61,7 @@ export default [
           url: '/selects/dmReportMultiselect',
           key: 'headquarters',
           type: 'select',
-          label: 'Sedes',
+          label: 'headquarters',
           column: 'headquarter',
           tag: false
         },
@@ -69,7 +69,7 @@ export default [
           url: '/selects/dmReportMultiselect',
           key: 'processes',
           type: 'select',
-          label: 'Procesos',
+          label: 'processes',
           column: 'process',
           tag: false
         },
@@ -85,7 +85,7 @@ export default [
           url: '/selects/dmReportMultiselect',
           key: 'areas',
           type: 'select',
-          label: 'Áreas',
+          label: 'areas',
           column: 'area',
           tag: false
         },
@@ -120,13 +120,13 @@ export default [
           url: '/selects/headquarters',
           key: 'headquarters',
           type: 'select',
-          label: 'Sedes'
+          label: 'headquarters'
         },
         {
           url: '/selects/areas',
           key: 'areas',
           type: 'select',
-          label: 'Áreas'
+          label: 'areas'
         },
         {
           key: 'dateRange',
@@ -142,13 +142,13 @@ export default [
           url: '/selects/headquarters',
           key: 'headquarters',
           type: 'select',
-          label: 'Sedes'
+          label: 'headquarters'
         },
         {
           url: '/selects/areas',
           key: 'areas',
           type: 'select',
-          label: 'Áreas'
+          label: 'areas'
         },
         {
           url: '/selects/users',
@@ -170,13 +170,13 @@ export default [
           url: '/selects/headquarters',
           key: 'headquarters',
           type: 'select',
-          label: 'Sedes'
+          label: 'headquarters'
         },
         {
           url: '/selects/areas',
           key: 'areas',
           type: 'select',
-          label: 'Áreas'
+          label: 'areas'
         },
         {
           url: '/selects/themes',

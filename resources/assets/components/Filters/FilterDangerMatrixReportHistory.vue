@@ -25,7 +25,7 @@
                                     <vue-advanced-select
                                         v-if="item.type == 'select'"
                                         :ref="item.key"
-                                        v-model="filtersSelected[index]" :multiple="true" :options="item.data" :searchable="true" :name="item.key" :label="item.label" :disabled="isDisabled || !ready" :filterTypeSearch="true" @updateFilterTypeSearch="setFilterTypeSearch($event, item.key)"
+                                        v-model="filtersSelected[index]" :multiple="true" :options="item.data" :searchable="true" :name="item.key" :label="keywordCheck(item.label, item.label)" :disabled="isDisabled || !ready" :filterTypeSearch="true" @updateFilterTypeSearch="setFilterTypeSearch($event, item.key)"
                                         :filter-type-search-value="filtersSelected.filtersType[index]">
                                     </vue-advanced-select>
                                 </b-col>

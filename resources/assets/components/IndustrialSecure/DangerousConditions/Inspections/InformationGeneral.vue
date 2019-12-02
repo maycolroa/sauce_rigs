@@ -7,11 +7,11 @@
                   <div><b>Fecha Creación:</b> <br>{{ qualification.created_at }}</div>
                 </b-col>
                 <b-col class="text-left">
-                  <div><b>Sede:</b> <br>{{ qualification.headquarter }}</div>
+                  <div><b>{{ keywordCheck('headquarter') }}:</b> <br>{{ qualification.headquarter }}</div>
                   <div><b>Fecha Calificación:</b> <br>{{ qualification.qualification_date }}</div>
                 </b-col>
                 <b-col class="text-left">
-                  <div><b>Área:</b> <br>{{ qualification.area }}</div>
+                  <div><b>{{ keywordCheck('area') }}:</b> <br>{{ qualification.area }}</div>
                   <div><b>Responsable:</b> <br>{{ qualification.qualifier }}</div>
                 </b-col>
             </b-row>

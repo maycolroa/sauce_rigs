@@ -2,7 +2,7 @@
   <div>
     <header-module
       title="REINCORPORACIONES"
-      subtitle="CREAR TIPO DE EVENTO"
+      :subtitle="`CREAR ${keywordCheck('disease_origin')}`"
       url="reinstatements-disease-origin"
     />
 
@@ -25,15 +25,13 @@ import Alerts from '@/utils/Alerts.js';
 
 export default {
   name: 'reinstatements-disease-origin-create',
-  metaInfo: {
-    title: 'Tipo de evento - Crear'
+  metaInfo() {
+    return {
+      title: `${this.keywordCheck('disease_origin')} - Crear`
+    }
   },
   components:{
     FormDiseaseOriginComponent
-  },
-  data(){
-    return {
-    }
   }
 }
 </script>

@@ -279,7 +279,7 @@ class AudiometryController extends Controller
 
     public function downloadTemplateImport()
     {
-      return Excel::download(new AudiometryImportTemplate, 'PlantillaImportacionAudiometria.xlsx');
+      return Excel::download(new AudiometryImportTemplate($this->company), 'PlantillaImportacionAudiometria.xlsx');
     }
 
     /**

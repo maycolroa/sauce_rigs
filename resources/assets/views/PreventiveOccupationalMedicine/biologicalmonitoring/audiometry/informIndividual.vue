@@ -12,7 +12,7 @@
             <b-row>
                 <b-col>
                     <b-card bg-variant="transparent" border-variant="dark" title="" class="mb-3 box-shadow-none">
-                        <vue-ajax-advanced-select class="col-md-12" v-model="employee_id"  name="employee_id" label="Empleado" placeholder="Seleccione el empleado" :url="employeesDataUrl" :selected-object="selectedObject">
+                        <vue-ajax-advanced-select class="col-md-12" v-model="employee_id"  name="employee_id" :label="keywordCheck('employee')" placeholder="Seleccione una opción" :url="employeesDataUrl" :selected-object="selectedObject">
                             </vue-ajax-advanced-select>
                     </b-card>
                 </b-col>

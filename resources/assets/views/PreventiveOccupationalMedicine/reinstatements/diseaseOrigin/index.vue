@@ -2,7 +2,7 @@
   <div>
     <header-module
       title="REINCORPORACIONES"
-      subtitle="ADMINISTRAR TIPO DE EVENTO"
+      :subtitle="`ADMINISTRAR ${keywordCheck('disease_origin')}`"
       url="preventiveoccupationalmedicine-reinstatements"
     />
 
@@ -10,7 +10,7 @@
       <b-card no-body>
         <b-card-header class="with-elements" v-if="auth.can['reinc_disease_origin_c']">
           <div class="card-title-elements"> 
-            <b-btn :to="{name:'reinstatements-disease-origin-create'}" variant="primary">Crear Tipo de evento</b-btn>
+            <b-btn :to="{name:'reinstatements-disease-origin-create'}" variant="primary">Crear {{ keywordCheck('disease_origin') }}</b-btn>
           </div>
         </b-card-header>
         <b-card-body>
@@ -29,8 +29,10 @@ import Alerts from '@/utils/Alerts.js';
 
 export default {
   name: 'reinstatements-disease-origin',
-  metaInfo: {
-    title: 'TIpo de evento'
+  metaInfo() {
+    return {
+        title: `${this.keywordCheck('disease_origin')}`
+    }
   }
 }
 </script>

@@ -22,22 +22,26 @@ use Maatwebsite\Excel\Facades\Excel;
 use Validator;
 use Exception;
 use App\Traits\AudiometryTrait;
+use App\Traits\UtilsTrait;
 
 class AudiometryImport implements ToCollection
 {
     use AudiometryTrait;
+    use UtilsTrait;
 
     private $company_id;
     private $user;
     private $errors = [];
     private $errors_data = [];
     private $sheet = 1;
-    private $key_row = 2;
+    private $key_row = 2; 
+    private $keywords;
 
     public function __construct($company_id, $user)
     {
       $this->user = $user;
       $this->company_id = $company_id;
+      $this->keywords = $this->getKeywordQueue($this->company_id);
     }
 
     public function collection(Collection $rows)
@@ -91,7 +95,7 @@ class AudiometryImport implements ToCollection
                 else
                 {
                     $nameExcel = 'export/1/audiometrias_errors_'.date("YmdHis").'.xlsx';
-                    Excel::store(new AudiometryImportErrorExcel(collect($this->errors_data), $this->errors), $nameExcel, 'public',\Maatwebsite\Excel\Excel::XLSX);
+                    Excel::store(new AudiometryImportErrorExcel(collect($this->errors_data), $this->errors, $this->company_id), $nameExcel, 'public',\Maatwebsite\Excel\Excel::XLSX);
                     
                     $paramUrl = base64_encode($nameExcel);
             
@@ -174,6 +178,16 @@ class AudiometryImport implements ToCollection
                         'proceso'          => 'required',
                         'fecha_ingreso'    => 'required|date',
                     ]);
+
+                $validator = Validator::make($data, $rules, 
+                [
+                    'cargo.required' => 'El campo '.$this->keywords['position'].' es obligatorio.',
+                    'centro_costo.required' => 'El campo '.$this->keywords['businesses'].' es obligatorio.',
+                    'regional.required' => 'El campo '.$this->keywords['regional'].' es obligatorio.',
+                    'sede.required' => 'El campo '.$this->keywords['headquarter'].' es obligatorio.',
+                    'area.required' => 'El campo '.$this->keywords['area'].' es obligatorio.',
+                    'proceso.required' => 'El campo '.$this->keywords['process'].' es obligatorio.',
+                ]);
 
                 if ($validator->fails())
                 {
@@ -420,7 +434,9 @@ class AudiometryImport implements ToCollection
                 'observaciones_generales'   => 'nullable',
             ],
             [
-                'epp.*.in' => 'epp es inválido.',
+                'epp.*.in' => 'epp es inválido.',                
+                'empleado.required' => 'El campo '.$this->keywords['employee'].' es obligatorio.',
+
             ]);
 
         if ($validator->fails())

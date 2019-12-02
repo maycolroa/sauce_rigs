@@ -14,6 +14,7 @@ use Maatwebsite\Excel\Concerns\WithEvents;
 use Maatwebsite\Excel\Concerns\RegistersEventListeners;
 use Maatwebsite\Excel\Events\AfterSheet;
 use \Maatwebsite\Excel\Sheet;
+use App\Traits\UtilsTrait;
 
 Sheet::macro('styleCells', function (Sheet $sheet, string $cellRange, array $style) {
   $sheet->getDelegate()->getStyle($cellRange)->applyFromArray($style);
@@ -22,12 +23,15 @@ Sheet::macro('styleCells', function (Sheet $sheet, string $cellRange, array $sty
 class AudiometryImportDataTemplateExcel implements FromCollection, WithHeadings, WithMapping, WithColumnFormatting, WithEvents, WithTitle, ShouldAutoSize
 {
     use RegistersEventListeners;
+    use UtilsTrait;
 
     protected $data;
+    protected $keywords;
 
-    public function __construct($data)
+    public function __construct($data, $company_id)
     {
       $this->data = $data;
+      $this->keywords = $this->getKeywordQueue($company_id);
     }
 
     /**
@@ -58,18 +62,18 @@ class AudiometryImportDataTemplateExcel implements FromCollection, WithHeadings,
           'Sexo (Masculino, Femenino)',
           'Email',
           'Fecha Nacimiento (YYYY-MM-DD)',
-          'Cargo',
-          'Centro de Costo',
-          'Regional',
-          'Sede',
-          'Proceso',
-          'Área',
-          'EPS (Los posibles valores se encuentran en la pestaña “EPS”, se debe ingresar el codigo de la EPS)',
+          $this->keywords['position'],
+          $this->keywords['businesses'],
+          $this->keywords['regional'],
+          $this->keywords['headquarter'],
+          $this->keywords['process'],
+          $this->keywords['area'],
+          "{$this->keywords['eps']} (Los posibles valores se encuentran en la pestaña '{$this->keywords['eps']}', se debe ingresar el codigo de la {$this->keywords['eps']})",
           'Fecha Ingreso Empresa (YYYY-MM-DD)',
           'Negocio',
           'Fecha (YYYY-MM-DD)',
           'Eventos Previos',
-          'EPP (Copa, Inserción, Moldeable)',
+          'EPP (Copa, Inserción, Moldeable, Ninguno, Otro)',
           'Nivel Exposición – Disometría (85 a 95 dB, No realizada, Menos de 80 dB, 80 a 84.9 dB)',
           'AD 500',
           'AD 1000',

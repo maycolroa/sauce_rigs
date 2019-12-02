@@ -14,11 +14,13 @@ class AudiometryImportErrorExcel implements WithMultipleSheets
 
     protected $errors;
     protected $data;
+    protected $company_id;
     
-    public function __construct($data, $errors)
+    public function __construct($data, $errors, $company_id)
     {
         $this->data = $data;
         $this->errors = $errors;
+        $this->company_id = $company_id;
     }
 
     /**
@@ -28,8 +30,8 @@ class AudiometryImportErrorExcel implements WithMultipleSheets
     {
         $sheets = [];
 
-        $sheets[] = new AudiometryImportDataTemplateExcel($this->data);
-        $sheets[] = new AudiometryImportEpsTemplateExcel();
+        $sheets[] = new AudiometryImportDataTemplateExcel($this->data, $this->company_id);
+        $sheets[] = new AudiometryImportEpsTemplateExcel($this->company_id);
         $sheets[] = new AudiometryImportErrorListExcel($this->errors);
 
         return $sheets;

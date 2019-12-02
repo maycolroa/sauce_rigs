@@ -36,9 +36,9 @@
 								<router-link tag="a" href="javascript:void(0)" class="card-body media align-items-center text-dark" :to="{name:'reinstatements-disease-origin'}">
 									<i class="lnr lnr-list display-4 d-block text-primary"></i>
 									<span class="media-body d-block ml-3">
-										<span class="text-big font-weight-bolder">Administrar Tipos de eventos</span>
+										<span class="text-big font-weight-bolder">Administrar {{ keywordCheck('disease_origin') }}</span>
 										<br>
-										<small class="text-muted">Administrar Tipos de eventos</small>
+										<small class="text-muted">Administrar {{ keywordCheck('disease_origin') }}</small>
 									</span>
 								</router-link>
 							</div>
