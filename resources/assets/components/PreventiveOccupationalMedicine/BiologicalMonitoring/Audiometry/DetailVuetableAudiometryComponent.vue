@@ -4,13 +4,13 @@
           <b-row>
             <b-col md="6">
               <div v-if="row.date"><b>Fecha:</b> {{row.date}}</div>
-              <div v-if="row.employee_name"><b>Nombre Empleado:</b> {{row.employee_name}}</div>
+              <div v-if="row.employee_name"><b>Nombre {{ keywordCheck('employee') }}:</b> {{row.employee_name}}</div>
               <div v-if="row.exposition_level"><b>Nivel exposicion(Disometría):</b> {{row.exposition_level}}</div>
               <div v-if="row.recommendations"><b>Recomendaciones Generales:</b> {{row.recommendations.length > 70 ? row.recommendations.substring(0, 70) + '...' : row.recommendations}}</div>
               <div v-if="row.updated_at"><b>Fecha Actualización:</b> {{row.updated_at}}</div>
             </b-col>
             <b-col md="6">
-              <div v-if="row.employee_name"><b>Identificación Empleado:</b> {{row.employee_name}}</div>
+              <div v-if="row.employee_name"><b>Identificación {{ keywordCheck('employee') }}:</b> {{row.employee_name}}</div>
               <div v-if="row.previews_events"><b>Eventos Previos:</b> {{row.previews_events}}</div>
               <div v-if="row.epp"><b>EPP:</b> {{row.epp}}</div>
               <div v-if="row.base_type"><b>Base:</b> {{ row.base_type == 'Base' ? 'Si' : 'No'}} <template  v-if="row.base"> - <router-link :to="{ path: `/preventiveoccupationalmedicine/biologicalmonitoring/audiometry/view/${row.base}` }">Ver Audiometria</router-link></template></div>

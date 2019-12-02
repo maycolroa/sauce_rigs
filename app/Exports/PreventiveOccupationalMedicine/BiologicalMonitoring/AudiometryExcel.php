@@ -104,8 +104,8 @@ class AudiometryExcel implements FromCollection, WithHeadings, WithMapping, With
     {
         return [
           'Fecha',
-          'Identificación empleado',
-          'Nombre empleado',
+          'Identificación',
+          'Nombre',
           'Eventos Previos',
           'Nivel de exposición (Disometría)',
           'EPP',

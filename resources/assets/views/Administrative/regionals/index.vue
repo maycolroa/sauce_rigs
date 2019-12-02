@@ -11,7 +11,7 @@
       <b-card no-body>
         <b-card-header class="with-elements">
           <div class="card-title-elements" v-if="auth.can['regionals_c']">
-            <b-btn :to="{name:'administrative-regionals-create'}" variant="primary">Crear {{ keywordCheck('regional', 'Regional') }}</b-btn>
+            <b-btn :to="{name:'administrative-regionals-create'}" variant="primary">Crear {{ keywordCheck('regional') }}</b-btn>
           </div>
         </b-card-header>
         <b-card-body>

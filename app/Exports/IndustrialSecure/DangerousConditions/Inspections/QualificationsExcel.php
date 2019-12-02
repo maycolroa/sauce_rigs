@@ -13,6 +13,7 @@ use Maatwebsite\Excel\Concerns\RegistersEventListeners;
 use Maatwebsite\Excel\Events\AfterSheet;
 use \Maatwebsite\Excel\Sheet;
 use DB;
+use App\Traits\UtilsTrait;
 
 Sheet::macro('styleCells', function (Sheet $sheet, string $cellRange, array $style) {
   $sheet->getDelegate()->getStyle($cellRange)->applyFromArray($style);
@@ -21,14 +22,17 @@ Sheet::macro('styleCells', function (Sheet $sheet, string $cellRange, array $sty
 class QualificationsExcel implements FromQuery, WithMapping, WithHeadings, WithTitle, WithEvents, ShouldAutoSize
 {
     use RegistersEventListeners;
+    use UtilsTrait;
 
     protected $company_id;
     protected $filters;
+    protected $keywords;
 
     public function __construct($company_id, $filters)
     {
       $this->company_id = $company_id;
       $this->filters = $filters;
+      $this->keywords = $this->getKeywordQueue($this->company_id);
     }
 
     public function query()
@@ -93,8 +97,8 @@ class QualificationsExcel implements FromQuery, WithMapping, WithHeadings, WithT
             'Nombre Inspección',
             'Fecha de creación Inspección',
             '¿Inspección Activa?',
-            'Sede',
-            'Área',
+            $this->keywords['headquarter'],
+            $this->keywords['area'],
             'Nombre Tema',
             'Descripción item',
             'Calificación',

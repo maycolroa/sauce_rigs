@@ -74,5 +74,9 @@
     {
         "name": "disease_origin",
         "display_name": "Tipo de Evento"
+    },
+    {
+        "name": "detail_recommendations",
+        "display_name": "Detalle Recomendaciones"
     }
 ]

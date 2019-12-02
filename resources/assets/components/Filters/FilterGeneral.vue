@@ -25,18 +25,18 @@
                                     <vue-advanced-select
                                         v-if="item.type == 'select'"
                                         :ref="item.key"
-                                        v-model="filtersSelected[index]" :multiple="true" :options="item.data" :searchable="true" :name="item.key" :label="item.label" :disabled="isDisabled || !ready" :filterTypeSearch="true" @updateFilterTypeSearch="setFilterTypeSearch($event, item.key)"
+                                        v-model="filtersSelected[index]" :multiple="true" :options="item.data" :searchable="true" :name="item.key" :label="keywordCheck(item.label, item.label)" :disabled="isDisabled || !ready" :filterTypeSearch="true" @updateFilterTypeSearch="setFilterTypeSearch($event, item.key)"
                                         :filter-type-search-value="filtersSelected.filtersType[index]">
                                     </vue-advanced-select>
 
                                     <vue-datepicker-range 
                                         v-if="item.type == 'dateRange'"
-                                        v-model="filtersSelected[index]" class="col-md-12" :label="item.label" :name="item.key" :disabled="isDisabled || !ready">
+                                        v-model="filtersSelected[index]" class="col-md-12" :label="keywordCheck(item.label, item.label)" :name="item.key" :disabled="isDisabled || !ready">
                                     </vue-datepicker-range>
 
                                     <vue-input-range
                                         v-if="item.type == 'numberRange'"
-                                        v-model="filtersSelected[index]" class="col-md-12" :label="item.label" :name="item.key" :disabled="isDisabled || !ready">
+                                        v-model="filtersSelected[index]" class="col-md-12" :label="keywordCheck(item.label, item.label)" :name="item.key" :disabled="isDisabled || !ready">
                                     </vue-input-range>
                                 </b-col>
                             </b-row>
@@ -58,18 +58,18 @@
                     <vue-advanced-select
                         v-if="item.type == 'select'"
                         :ref="item.key"
-                        v-model="filtersSelected[index]" :multiple="true" :options="item.data" :searchable="true" :name="item.key" :label="item.label" :disabled="isDisabled || !ready" :filterTypeSearch="true" @updateFilterTypeSearch="setFilterTypeSearch($event, item.key)"
+                        v-model="filtersSelected[index]" :multiple="true" :options="item.data" :searchable="true" :name="item.key" :label="keywordCheck(item.label, item.label)" :disabled="isDisabled || !ready" :filterTypeSearch="true" @updateFilterTypeSearch="setFilterTypeSearch($event, item.key)"
                         :filter-type-search-value="filtersSelected.filtersType[index]">
                     </vue-advanced-select>
 
                     <vue-datepicker-range 
                         v-if="item.type == 'dateRange'"
-                        v-model="filtersSelected[index]" class="col-md-12" :label="item.label" :name="item.key" :disabled="isDisabled || !ready">
+                        v-model="filtersSelected[index]" class="col-md-12" :label="keywordCheck(item.label, item.label)" :name="item.key" :disabled="isDisabled || !ready">
                     </vue-datepicker-range>
 
                     <vue-input-range
                         v-if="item.type == 'numberRange'"
-                        v-model="filtersSelected[index]" class="col-md-12" :label="item.label" :name="item.key" :disabled="isDisabled || !ready">
+                        v-model="filtersSelected[index]" class="col-md-12" :label="keywordCheck(item.label, item.label)" :name="item.key" :disabled="isDisabled || !ready">
                     </vue-input-range>
                 </div>
             </template>

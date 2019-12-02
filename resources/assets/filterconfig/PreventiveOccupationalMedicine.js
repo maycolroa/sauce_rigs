@@ -6,25 +6,25 @@ export default [
           url: '/selects/headquarters',
           key: 'headquarters',
           type: 'select',
-          label: 'Sedes'
+          label: 'headquarters'
         },
         {
           url: '/selects/processes',
           key: 'processes',
           type: 'select',
-          label: 'Procesos'
+          label: 'processes'
         },
         {
           url: '/selects/areas',
           key: 'areas',
           type: 'select',
-          label: 'Áreas'
+          label: 'areas'
         },
         {
           url: '/selects/positions',
           key: 'positions',
           type: 'select',
-          label: 'Cargo'
+          label: 'positions'
         },
         {
           url: '/selects/years/audiometry',
@@ -41,7 +41,7 @@ export default [
           url: '/selects/regionals',
           key: 'regionals',
           type: 'select',
-          label: 'Regionales',
+          label: 'regionals',
           header: true
         },
         {
@@ -88,25 +88,25 @@ export default [
           url: '/selects/headquarters',
           key: 'headquarters',
           type: 'select',
-          label: 'Sedes'
+          label: 'headquarters'
         },
         {
           url: '/selects/processes',
           key: 'processes',
           type: 'select',
-          label: 'Procesos'
+          label: 'processes'
         },
         {
           url: '/selects/areas',
           key: 'areas',
           type: 'select',
-          label: 'Áreas'
+          label: 'areas'
         },
         {
           url: '/selects/positions',
           key: 'positions',
           type: 'select',
-          label: 'Cargo'
+          label: 'positions'
         },
         {
           url: '/selects/years/audiometry',
@@ -123,7 +123,7 @@ export default [
           url: '/selects/regionals',
           key: 'regionals',
           type: 'select',
-          label: 'Regionales',
+          label: 'regionals',
           header: true
         },
         {
@@ -154,13 +154,13 @@ export default [
           url: '/selects/regionals',
           key: 'regionals',
           type: 'select',
-          label: 'Regionales'
+          label: 'regionals'
         },
         {
           url: '/selects/businesses',
           key: 'businesses',
           type: 'select',
-          label: 'Centro de costos'
+          label: 'businesses'
         },
         {
           url: '/selects/diseaseOrigin',

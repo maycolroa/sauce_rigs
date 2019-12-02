@@ -14,6 +14,7 @@ use Maatwebsite\Excel\Concerns\RegistersEventListeners;
 use Maatwebsite\Excel\Events\AfterSheet;
 use \Maatwebsite\Excel\Sheet;
 use DB;
+use App\Traits\UtilsTrait;
 
 Sheet::macro('styleCells', function (Sheet $sheet, string $cellRange, array $style) {
   $sheet->getDelegate()->getStyle($cellRange)->applyFromArray($style);
@@ -22,16 +23,19 @@ Sheet::macro('styleCells', function (Sheet $sheet, string $cellRange, array $sty
 class ReportListExcel implements FromQuery, WithMapping, WithHeadings, WithTitle, WithEvents, ShouldAutoSize
 {
     use RegistersEventListeners;
+    use UtilsTrait;
 
     protected $company_id;
     protected $filters;
     protected $module_id;
+    protected $keywords;
 
     public function __construct($company_id, $filters)
     {
       $this->company_id = $company_id;
       $this->filters = $filters;
       $this->module_id = Module::where('name', 'dangerousConditions')->first()->id;
+      $this->keywords = $this->getKeywordQueue($this->company_id);
 
     }
 
@@ -98,10 +102,10 @@ class ReportListExcel implements FromQuery, WithMapping, WithHeadings, WithTitle
     {
       return [
         'Código',
-        'Regional',
-        'Sede',
-        'Proceso',
-        'Área',
+        $this->keywords['regional'],
+        $this->keywords['headquarter'],
+        $this->keywords['process'],
+        $this->keywords['area'],
         'Severidad',
         'Observación',
         'Condición',

@@ -283,7 +283,7 @@ export default {
       //define header columns
       options.headings= {};
       fields.map((f) => {
-          options.headings[f.data] = f.title;
+          options.headings[f.data] = this.keywordCheck(f.title, f.title);
       });
 
       options.params.tables= {};

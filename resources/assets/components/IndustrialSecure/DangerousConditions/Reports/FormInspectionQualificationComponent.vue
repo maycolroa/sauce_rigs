@@ -13,10 +13,10 @@
             <div><b>Usuario que reporta:</b> <br>{{ report.user ? report.user.name : '-' }}</div>
           </b-col>
           <b-col class="text-left">
-            <div><b>Regional:</b> <br>{{ report.regional ? report.regional.name : '-' }}</div>
-            <div><b>Sede:</b> <br>{{ report.headquarter ? report.headquarter.name : '-' }}</div>
-            <div><b>Proceso:</b> <br>{{ report.process ? report.process.name : '-' }}</div>
-            <div><b>Área:</b> <br>{{ report.area ? report.area.name : '-' }}</div>
+            <div><b>{{ keywordCheck('regional') }}:</b> <br>{{ report.regional ? report.regional.name : '-' }}</div>
+            <div><b>{{ keywordCheck('headquarter') }}:</b> <br>{{ report.headquarter ? report.headquarter.name : '-' }}</div>
+            <div><b>{{ keywordCheck('process') }}:</b> <br>{{ report.process ? report.process.name : '-' }}</div>
+            <div><b>{{ keywordCheck('area') }}:</b> <br>{{ report.area ? report.area.name : '-' }}</div>
             <div style="padding-top: 20px;"><b-btn @click="showModal" variant="primary"><span class="ion ion-md-eye"></span> Ver plan de acción</b-btn></div>
             <div v-if="existError">
               <b-form-feedback class="d-block" style="padding-bottom: 10px;">

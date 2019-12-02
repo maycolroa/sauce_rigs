@@ -74,13 +74,16 @@ class AudiometryInformController extends Controller
 
     public function multiselectBar()
     {
+        $keywords = $this->user->getKeywords();
+
         $select = [
-            'Regionales' => 'employee_regional_id',
-            'Sedes' => 'employee_headquarter_id',
-            'Procesos' => 'employee_process_id',
-            'Áreas' => 'employee_area_id',
+            $keywords['regionals'] => "employee_regional_id", 
+            $keywords['headquarters'] => "employee_headquarter_id",
+            $keywords['processes'] => "employee_process_id",
+            $keywords['areas'] => "employee_area_id",
             'Negocios' => 'deal',
-            'Cargos' => 'employee_position_id'
+            $keywords['positions'] => "employee_position_id",
+
         ];
     
         return $this->multiSelectFormat(collect($select));

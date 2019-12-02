@@ -7,7 +7,7 @@
 
                     <vue-input :disabled="viewOnly" class="col-md-6" v-model="form.observation" label="Observación:" type="text" name="observation" :error="form.errorsFor('observation')" placeholder="Observación:"></vue-input>
                     
-                    <vue-ajax-advanced-select :disabled="viewOnly" class="col-md-6" v-model="form.regional_id" :error="form.errorsFor('regional_id')" :selected-object="form.multiselect_regional" name="regional_id" :label="keywordCheck('regional')" :placeholder="`Seleccione la ${this.keywordCheck('regional')}`" :url="regionalsDataUrl">
+                    <vue-ajax-advanced-select :disabled="viewOnly" class="col-md-6" v-model="form.regional_id" :error="form.errorsFor('regional_id')" :selected-object="form.multiselect_regional" name="regional_id" :label="keywordCheck('regional')" placeholder="Seleccione una opción" :url="regionalsDataUrl">
                     </vue-ajax-advanced-select>
 
                     <vue-ajax-advanced-select :disabled="viewOnly" class="col-md-6" v-model="form.condition_id" :error="form.errorsFor('condition_id')" :selected-object="form.multiselect_condition" name="condition_id" label="Condición" placeholder="`Seleccione la condición`" :url="conditionsDataUrl">
@@ -17,8 +17,8 @@
                     :disabled="viewOnly || !form.regional_id" class="col-md-6" 
                     v-model="form.headquarter_id" 
                     :error="form.errorsFor('headquarter_id')" 
-                    :selected-object="form.multiselect_sede" name="headquarter_id" label="Sede" 
-                    placeholder="`Seleccione la sede`" 
+                    :selected-object="form.multiselect_sede" name="headquarter_id" :label="keywordCheck('headquarter')"
+                    placeholder="Seleccione una opción" 
                     :url="headquartersDataUrl" 
                     :parameters="{regional: form.regional_id }" 
                     :emptyAll="empty.headquarter" 
@@ -29,7 +29,7 @@
                   <b-form-row>
                     <vue-input :disabled="true" class="col-md-6" v-model="form.user_name" label="Usuario que reporta:" type="text" name="user_name" :error="form.errorsFor('user_name')" placeholder="Usuario que reporta:"></vue-input>
 
-                    <vue-ajax-advanced-select :disabled="viewOnly || !form.headquarter_id" class="col-md-6" v-model="form.process_id" :error="form.errorsFor('process_id')" :selected-object="form.multiselect_proceso" name="process_id" label="Proceso" placeholder="Seleccione el proceso" :url="processesDataUrl" :parameters="{headquarter: form.headquarter_id }" :emptyAll="empty.process" @updateEmpty="updateEmptyKey('process')">
+                    <vue-ajax-advanced-select :disabled="viewOnly || !form.headquarter_id" class="col-md-6" v-model="form.process_id" :error="form.errorsFor('process_id')" :selected-object="form.multiselect_proceso" name="process_id" :label="keywordCheck('process')" placeholder="Seleccione una opción" :url="processesDataUrl" :parameters="{headquarter: form.headquarter_id }" :emptyAll="empty.process" @updateEmpty="updateEmptyKey('process')">
                     </vue-ajax-advanced-select>
                     
                   </b-form-row>
@@ -38,7 +38,7 @@
                     <vue-advanced-select :disabled="viewOnly" class="col-md-6" v-model="form.rate" :error="form.errorsFor('rate')" :multiple="false" :options="rates" :hide-selected="false" name="rate" label="Severidad" placeholder="`Seleccione la severidad`">
                     </vue-advanced-select>
 
-                    <vue-ajax-advanced-select :disabled="viewOnly || !form.process_id" class="col-md-6" v-model="form.area_id" :error="form.errorsFor('area_id')" :selected-object="form.multiselect_area" name="area_id" label="Área" placeholder="Seleccione el área" :url="areasDataUrl" :parameters="{process: form.process_id, headquarter: form.headquarter_id }" :emptyAll="empty.area" @updateEmpty="updateEmptyKey('area')">
+                    <vue-ajax-advanced-select :disabled="viewOnly || !form.process_id" class="col-md-6" v-model="form.area_id" :error="form.errorsFor('area_id')" :selected-object="form.multiselect_area" name="area_id" :label="keywordCheck('area')" placeholder="Seleccione una opción" :url="areasDataUrl" :parameters="{process: form.process_id, headquarter: form.headquarter_id }" :emptyAll="empty.area" @updateEmpty="updateEmptyKey('area')">
                     </vue-ajax-advanced-select>
                     
                   </b-form-row>

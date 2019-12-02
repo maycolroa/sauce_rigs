@@ -12,6 +12,7 @@ use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 use Maatwebsite\Excel\Concerns\RegistersEventListeners;
 use Maatwebsite\Excel\Events\AfterSheet;
 use \Maatwebsite\Excel\Sheet;
+use App\Traits\UtilsTrait;
 
 Sheet::macro('styleCells', function (Sheet $sheet, string $cellRange, array $style) {
   $sheet->getDelegate()->getStyle($cellRange)->applyFromArray($style);
@@ -20,14 +21,17 @@ Sheet::macro('styleCells', function (Sheet $sheet, string $cellRange, array $sty
 class MusculoskeletalAnalysisExcel implements FromQuery, WithMapping, WithHeadings, WithTitle, WithEvents, ShouldAutoSize
 {
     use RegistersEventListeners;
+    use UtilsTrait;
 
     protected $company_id;
     protected $filters;
+    protected $keywords;
 
     public function __construct($company_id, $filters)
     {
       $this->company_id = $company_id;
       $this->filters = $filters;
+      $this->keywords = $this->getKeywordQueue($this->company_id);
     }
 
     public function query()
@@ -148,9 +152,9 @@ class MusculoskeletalAnalysisExcel implements FromQuery, WithMapping, WithHeadin
             'Edad',
             'Teléfono',
             'Teléfono Alterno',
-            'EPS',
-            'AFP',
-            'Cargo',
+            $this->keywords['eps'],
+            $this->keywords['afp'],
+            $this->keywords['position'],
             'Antigüedad',
             'ESTADO',
             'Ant. ATEP-EP ',

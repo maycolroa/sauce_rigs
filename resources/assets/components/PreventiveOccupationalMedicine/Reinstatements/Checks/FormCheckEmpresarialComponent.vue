@@ -4,7 +4,7 @@
     <b-row>
       <b-col>
         <b-card bg-variant="transparent" border-variant="dark" title="" class="mb-3 box-shadow-none">
-          <vue-ajax-advanced-select class="col-md-12" :disabled="viewOnly" v-model="form.employee_id"  name="employee_id" label="Empleado" placeholder="Seleccione el empleado" :url="employeesDataUrl" :selected-object="form.multiselect_employee" :error="form.errorsFor('employee_id')">
+          <vue-ajax-advanced-select class="col-md-12" :disabled="viewOnly" v-model="form.employee_id"  name="employee_id" :label="keywordCheck('employee')" placeholder="Seleccione una opción" :url="employeesDataUrl" :selected-object="form.multiselect_employee" :error="form.errorsFor('employee_id')">
               </vue-ajax-advanced-select>
 
           <center v-if="employeeDetail.id">
@@ -44,17 +44,17 @@
                   <div><b>Fecha de ingreso:</b> {{ incomeDate }}</div>
                   <div><b>Antigüedad:</b> {{ employeeDetail.antiquity }}</div>
                   <div><b>Edad:</b> {{ employeeDetail.age }}</div>
-                  <div><b>Cargo:</b> {{ employeeDetail.position ? employeeDetail.position.name : '' }}</div>
-                  <div><b>Centro de costos:</b> {{ employeeDetail.business ? employeeDetail.business.name : '' }}</div>
+                 <div><b>{{ keywordCheck('position') }}:</b> {{ employeeDetail.position ? employeeDetail.position.name : '' }}</div>
+                  <div><b>{{ keywordCheck('businesses') }}:</b> {{ employeeDetail.business ? employeeDetail.business.name : '' }}</div>
               </b-col>
               <b-col>
                   <div><b>{{ keywordCheck('regional') }}:</b> {{ employeeDetail.regional ? employeeDetail.regional.name : ''}}</div>
                   <div><b>{{ keywordCheck('headquarter') }}:</b> {{ employeeDetail.headquarter ? employeeDetail.headquarter.name : '' }}</div>
-                  <div><b>Proceso:</b> {{ employeeDetail.process ? employeeDetail.process.name : '' }}</div>
-                  <div v-if="employeeDetail.area"><b>Área:</b> {{ employeeDetail.area.name }}</div>
-                  <div><b>EPS:</b> {{ employeeDetail.eps ? `${employeeDetail.eps.code} - ${employeeDetail.eps.name}` : '' }}</div>
-                  <div><b>AFP:</b> {{ employeeDetail.afp ? `${employeeDetail.afp.code} - ${employeeDetail.afp.name}` : '' }}</div>
-                  <div><b>ARL:</b> {{ employeeDetail.arl ? `${employeeDetail.arl.code} - ${employeeDetail.arl.name}` : '' }}</div>
+                   <div><b>{{ keywordCheck('process') }}:</b> {{ employeeDetail.process ? employeeDetail.process.name : '' }}</div>
+                  <div v-if="employeeDetail.area"><b>{{ keywordCheck('area') }}:</b> {{ employeeDetail.area.name }}</div>
+                  <div><b>{{ keywordCheck('eps') }}:</b> {{ employeeDetail.eps ? `${employeeDetail.eps.code} - ${employeeDetail.eps.name}` : '' }}</div>
+                  <div><b>{{ keywordCheck('afp') }}:</b> {{ employeeDetail.afp ? `${employeeDetail.afp.code} - ${employeeDetail.afp.name}` : '' }}</div>
+                  <div><b>{{ keywordCheck('arl') }}:</b> {{ employeeDetail.arl ? `${employeeDetail.arl.code} - ${employeeDetail.arl.name}` : '' }}</div>
                   <div><b>Números de contrato:</b> {{ employeeDetail.contract_numbers }}</div>
                   <div><b>Fecha último contrato:</b> {{ employeeDetail.last_contract_date }}</div>
                   <div><b>Tipo contrato:</b> {{ employeeDetail.contract_type }}</div>
@@ -70,7 +70,7 @@
           <b-form-row>
             <vue-datepicker :disabled="viewOnly" class="col-md-4" v-model="form.created_at" label="Fecha de inicio" :full-month-name="true" placeholder="Fecha de inicio" :error="form.errorsFor('created_at')" name="created_at">
                 </vue-datepicker>
-            <vue-advanced-select :disabled="viewOnly" class="col-md-4" v-model="form.disease_origin" :error="form.errorsFor('disease_origin')" :multiple="false" :options="diseaseOrigins" :hide-selected="false" name="disease_origin" label="Origen enfermedad" placeholder="Seleccione una opción">
+            <vue-advanced-select :disabled="viewOnly" class="col-md-4" v-model="form.disease_origin" :error="form.errorsFor('disease_origin')" :multiple="false" :options="diseaseOrigins" :hide-selected="false" name="disease_origin" :label="keywordCheck('disease_origin')" placeholder="Seleccione una opción">
                 </vue-advanced-select>
             <vue-advanced-select :disabled="viewOnly" class="col-md-4" v-model="form.eps_favorability_concept" :error="form.errorsFor('eps_favorability_concept')" :multiple="false" :options="epsFavorabilityConcept" :hide-selected="false" name="eps_favorability_concept" label="Concepto de favorabilidad EPS" placeholder="Seleccione una opción">
                 </vue-advanced-select>
@@ -112,19 +112,19 @@
                   </vue-advanced-select>
             </b-form-row>
             <b-form-row v-show="form.relocated == 'SI'">
-              <vue-ajax-advanced-select :disabled="viewOnly" class="col-md-3" v-model="form.relocated_position_id" name="relocated_position_id" label="Cargo Actualizado" placeholder="Seleccione una opción" :url="positionsDataUrl" :selected-object="form.relocated_position_multiselect">
+              <vue-ajax-advanced-select :disabled="viewOnly" class="col-md-3" v-model="form.relocated_position_id" name="relocated_position_id" :label="`${keywordCheck('position')} Actualizado`" placeholder="Seleccione una opción" :url="positionsDataUrl" :selected-object="form.relocated_position_multiselect">
                   </vue-ajax-advanced-select>
               <vue-ajax-advanced-select :disabled="viewOnly" class="col-md-3" v-model="form.relocated_regional_id" name="relocated_regional_id" :label="`${keywordCheck('regional')} Actualizada`" placeholder="Seleccione una opción" :url="regionalsDataUrl" :selected-object="form.relocated_regional_multiselect">
                   </vue-ajax-advanced-select>
               <vue-ajax-advanced-select :disabled="viewOnly || !form.relocated_regional_id" class="col-md-3" v-model="form.relocated_headquarter_id" name="relocated_headquarter_id" :label="`${keywordCheck('headquarter')} Actualizada`" placeholder="Seleccione una opción" :url="headquartersDataUrl" :selected-object="form.relocated_headquarter_multiselect" :parameters="{regional: form.relocated_regional_id }" :emptyAll="empty.headquarter" @updateEmpty="updateEmptyKey('headquarter')">
                   </vue-ajax-advanced-select>
-              <vue-ajax-advanced-select :disabled="viewOnly || !form.relocated_headquarter_id" class="col-md-3" v-model="form.relocated_process_id" name="relocated_process_id" label="Proceso Actualizado" placeholder="Seleccione una opción" :url="processesDataUrl" :selected-object="form.relocated_process_multiselect" :parameters="{headquarter: form.relocated_headquarter_id }" :emptyAll="empty.process" @updateEmpty="updateEmptyKey('process')">
+              <vue-ajax-advanced-select :disabled="viewOnly || !form.relocated_headquarter_id" class="col-md-3" v-model="form.relocated_process_id" name="relocated_process_id" :label="`${keywordCheck('process')} Actualizado`" placeholder="Seleccione una opción" :url="processesDataUrl" :selected-object="form.relocated_process_multiselect" :parameters="{headquarter: form.relocated_headquarter_id }" :emptyAll="empty.process" @updateEmpty="updateEmptyKey('process')">
                   </vue-ajax-advanced-select>
               <vue-datepicker :disabled="viewOnly" class="col-md-4" v-model="form.relocated_date" label="Fecha de reubicación" :full-month-name="true" placeholder="Fecha de reubicación" :error="form.errorsFor('relocated_date')" name="relocated_date">
                 </vue-datepicker>
             </b-form-row>
             <b-form-row>
-              <vue-textarea :disabled="viewOnly" class="col-md-12" v-model="form.detail" label="Detalle" name="detail" :error="form.errorsFor('detail')" placeholder=""></vue-textarea>
+              <vue-textarea :disabled="viewOnly" class="col-md-12" v-model="form.detail" :label="keywordCheck('detail_recommendations')" name="detail" :error="form.errorsFor('detail')" placeholder=""></vue-textarea>
             </b-form-row>
           </div>
 
@@ -293,6 +293,7 @@
           <b-form-row>
             <div class="col-md-12">
               <tracing-inserter
+                :label="keywordCheck('tracings')"
                 :disabled="viewOnly"
                 :editable-tracings="auth.can['reinc_checks_manage_tracings']"
                 :old-tracings="check.oldTracings"
@@ -309,6 +310,7 @@
               <tracing-other-check
                 :old-tracings="tracingOtherReport"
                 ref="tracingInserterOther"
+                :label="keywordCheck('tracings')"
               >
               </tracing-other-check>
             </div>
@@ -321,7 +323,7 @@
           <b-form-row>
             <div class="col-md-12">
               <tracing-inserter
-                label="Notas Laborales"
+                :label="keywordCheck('labor_notes')"
                 :generate-pdf="false"
                 :disabled="viewOnly"
                 :editable-tracings="auth.can['reinc_checks_manage_tracings']"
@@ -338,7 +340,7 @@
               <tracing-other-check
                 :old-tracings="laborNotesOtherReport"
                 ref="laborNotesInserterOther"
-                label="Notas Laborales"
+                :label="keywordCheck('labor_notes')"
               >
               </tracing-other-check>
             </div>

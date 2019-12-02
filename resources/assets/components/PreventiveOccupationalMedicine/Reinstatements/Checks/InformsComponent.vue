@@ -62,7 +62,7 @@
                         </b-row>
                         <b-row>
                             <b-col>
-                                <b-card border-variant="primary" title="Reportes por origen de enfermedad" class="mb-3 box-shadow-none">
+                                <b-card border-variant="primary" :title="`Reportes por ${keywordCheck('disease_origin')}`"  class="mb-3 box-shadow-none">
                                     <b-row align-h="end">
                                         <b-col cols="2">
                                             <b>Total reportes: {{ disease_origin_reports_pie.chart.datasets.count }} </b>
@@ -77,7 +77,7 @@
                                         <b-col>
                                             <chart-pie 
                                                 :chart-data="disease_origin_reports_pie.chart"
-                                                title="Origen de enfermedad"
+                                                :title="keywordCheck('disease_origin')"
                                                 color-line="red"
                                                 ref="disease_origin_reports_pie"/>
                                         </b-col>
@@ -87,7 +87,7 @@
                         </b-row>
                         <b-row>
                             <b-col>
-                                <b-card border-variant="primary" title="Reportes por Regional" class="mb-3 box-shadow-none">
+                                <b-card border-variant="primary" :title="`Reportes por ${keywordCheck('regional')}`" class="mb-3 box-shadow-none">
                                     <b-row align-h="end">
                                         <b-col cols="2">
                                             <b>Total reportes: {{ cases_per_regional_pie.chart.datasets.count }} </b>
@@ -102,7 +102,7 @@
                                         <b-col>
                                             <chart-pie 
                                                 :chart-data="cases_per_regional_pie.chart"
-                                                title="Reportes por Regional"
+                                                :title="`Reportes por ${keywordCheck('regional')}`"
                                                 color-line="red"
                                                 ref="cases_per_regional_pie"/>
                                         </b-col>
@@ -112,7 +112,7 @@
                         </b-row>
                         <b-row>
                             <b-col>
-                                <b-card border-variant="primary" title="Reportes por Sedes" class="mb-3 box-shadow-none">
+                                <b-card border-variant="primary" :title="`Reportes por ${keywordCheck('headquarter')}`" class="mb-3 box-shadow-none">
                                     <b-row align-h="end">
                                         <b-col cols="2">
                                             <b>Total reportes: {{ cases_per_headquarter_pie.chart.datasets.count }} </b>
@@ -127,7 +127,7 @@
                                         <b-col>
                                             <chart-pie 
                                                 :chart-data="cases_per_headquarter_pie.chart"
-                                                title="Reportes por Sedes"
+                                                :title="`Reportes por ${keywordCheck('headquarter')}`"
                                                 color-line="red"
                                                 ref="cases_per_headquarter_pie"/>
                                         </b-col>
@@ -137,7 +137,7 @@
                         </b-row>
                         <b-row>
                             <b-col>
-                                <b-card border-variant="primary" title="Reportes por Proceso" class="mb-3 box-shadow-none">
+                                <b-card border-variant="primary" :title="`Reportes por ${keywordCheck('process')}`" class="mb-3 box-shadow-none">
                                     <b-row align-h="end">
                                         <b-col cols="2">
                                             <b>Total reportes: {{ cases_per_process_pie.chart.datasets.count }} </b>
@@ -152,7 +152,7 @@
                                         <b-col>
                                             <chart-pie 
                                                 :chart-data="cases_per_process_pie.chart"
-                                                title="Reportes por Procesos"
+                                                :title="`Reportes por ${keywordCheck('process')}`"
                                                 color-line="red"
                                                 ref="cases_per_process_pie"/>
                                         </b-col>
@@ -162,7 +162,7 @@
                         </b-row>
                         <b-row>
                             <b-col>
-                                <b-card border-variant="primary" title="Reportes por Centro de Costos" class="mb-3 box-shadow-none">
+                                <b-card border-variant="primary" :title="`Reportes por ${keywordCheck('businesses')}`" class="mb-3 box-shadow-none">
                                     <b-row align-h="end">
                                         <b-col cols="2">
                                             <b>Total reportes: {{ cases_per_business_pie.chart.datasets.count }} </b>
@@ -177,7 +177,7 @@
                                         <b-col>
                                             <chart-pie 
                                                 :chart-data="cases_per_business_pie.chart"
-                                                title="Reportes por Centro de Costos"
+                                                :title="`Reportes por ${keywordCheck('businesses')}`"
                                                 color-line="red"
                                                 ref="cases_per_business_pie"/>
                                         </b-col>

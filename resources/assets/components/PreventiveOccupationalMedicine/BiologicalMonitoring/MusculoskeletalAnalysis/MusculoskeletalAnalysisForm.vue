@@ -6,17 +6,17 @@
         <b-form-row>
             <vue-input :disabled="viewOnly" class="col-md-4" v-model="form.patient_identification" label="Identificación" type="text" name="patient_identification" :error="form.errorsFor('patient_identification')" placeholder="Identificación"></vue-input>
             <vue-input :disabled="viewOnly" class="col-md-4" v-model="form.evaluation_type" label="Tipo de evaluación" type="text" name="evaluation_type" :error="form.errorsFor('evaluation_type')" placeholder="Tipo de evaluación"></vue-input>
-            <vue-input :disabled="viewOnly" class="col-md-4" v-model="form.eps" label="EPS" type="text" name="eps" :error="form.errorsFor('eps')" placeholder="EPS"></vue-input>
+            <vue-input :disabled="viewOnly" class="col-md-4" v-model="form.eps" :label="keywordCheck('eps')" type="text" name="eps" :error="form.errorsFor('eps')" placeholder="EPS"></vue-input>
         </b-form-row>
         <b-form-row>
             <vue-input :disabled="viewOnly" class="col-md-4" v-model="form.name" label="Nombre y Apellido" type="text" name="name" :error="form.errorsFor('name')" placeholder="Nombre y Apellido"></vue-input>
             <vue-input :disabled="viewOnly" class="col-md-4" v-model="form.evaluation_format" label="Formato evaluación" type="text" name="evaluation_format" :error="form.errorsFor('evaluation_format')" placeholder="Formato evaluación"></vue-input>
-            <vue-input :disabled="viewOnly" class="col-md-4" v-model="form.afp" label="AFP" type="text" name="afp" :error="form.errorsFor('afp')" placeholder="AFP"></vue-input>
+            <vue-input :disabled="viewOnly" class="col-md-4" v-model="form.afp" :label="keywordCheck('afp')" type="text" name="afp" :error="form.errorsFor('afp')" placeholder="AFP"></vue-input>
         </b-form-row>
         <b-form-row>
             <vue-input :disabled="viewOnly" class="col-md-4" v-model="form.deal" label="Negocio" type="text" name="deal" :error="form.errorsFor('deal')" placeholder="Negocio"></vue-input>
             <vue-input :disabled="viewOnly" class="col-md-4" v-model="form.age" label="Edad" type="text" name="age" :error="form.errorsFor('age')" placeholder="Edad"></vue-input>
-            <vue-input :disabled="viewOnly" class="col-md-4" v-model="form.position" label="Cargo" type="text" name="position" :error="form.errorsFor('position')" placeholder="Cargo"></vue-input>
+            <vue-input :disabled="viewOnly" class="col-md-4" v-model="form.position" :label="keywordCheck('position')" type="text" name="position" :error="form.errorsFor('position')" placeholder="Seleccione una opción"></vue-input>
         </b-form-row>
         <b-form-row>
             <vue-input :disabled="viewOnly" class="col-md-4" v-model="form.branch_office" label="Localidad" type="text" name="branch_office" :error="form.errorsFor('branch_office')" placeholder="Localidad"></vue-input>

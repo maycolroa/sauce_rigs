@@ -69,7 +69,7 @@
                                 </b-form-row>
                                 <b-form-row>
                                     <vue-input :disabled="viewOnly" class="col-md-6" v-model="form.interviewees[index].name" label="Nombre" type="text" name="name" :error="form.errorsFor(`interviewees.${index}.name`)" placeholder="Nombre"></vue-input>
-                                    <vue-input :disabled="viewOnly" class="col-md-6" v-model="form.interviewees[index].position" label="Cargo" type="text" name="position" :error="form.errorsFor(`interviewees.${index}.position`)" placeholder="Cargo"></vue-input>
+                                    <vue-input :disabled="viewOnly" class="col-md-6" v-model="form.interviewees[index].position" :label="keywordCheck('position')" type="text" name="position" :error="form.errorsFor(`interviewees.${index}.position`)" placeholder="Seleccione una opción"></vue-input>
                                 </b-form-row>
                                 <hr class="border-light container-m--x mt-0 mb-4">
                             </div>
