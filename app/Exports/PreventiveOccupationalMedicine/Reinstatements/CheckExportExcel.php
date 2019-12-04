@@ -18,11 +18,13 @@ class CheckExportExcel implements WithMultipleSheets
 
     protected $company_id;
     protected $data;
+    protected $keywords;
     
     public function __construct($company_id, $data)
     {
         $this->company_id = $company_id;
         $this->data = $data;
+        $this->keywords = $this->getKeywordQueue($this->company_id);
     }
 
     /**
@@ -39,21 +41,23 @@ class CheckExportExcel implements WithMultipleSheets
             $sheets[] = new CheckVivaAirExcel($this->company_id, $this->data['checks']);
             $sheets[] = new MonitoringsExcel($this->data['medicalMonitorings'], 'Seguimientos Medicos');
             $sheets[] = new MonitoringsExcel($this->data['laborMonitorings'], 'Seguimientos Laborales');
-            $sheets[] = new TracingExcel($this->data['tracings'], 'Notas Médicas');
-            $sheets[] = new TracingExcel($this->data['laborNotes'], 'Notas Laborales');
+            $sheets[] = new TracingExcel($this->data['tracings'], $this->keywords['tracings']);
+            $sheets[] = new TracingExcel($this->data['laborNotes'], $this->keywords['labor_notes']);
         }
         else if ($formModel == 'misionEmpresarial')
         {
             $sheets[] = new CheckEmpresarialExcel($this->company_id, $this->data['checks']);
             $sheets[] = new MonitoringsExcel($this->data['medicalMonitorings'], 'Seguimientos Medicos');
-            $sheets[] = new TracingExcel($this->data['tracings'], 'Seguimientos');
+            $sheets[] = new TracingExcel($this->data['tracings'], $this->keywords['tracings']);
+            $sheets[] = new TracingExcel($this->data['laborNotes'], $this->keywords['labor_notes']);
         }
         else
         {
             $sheets[] = new CheckExcel($this->company_id, $this->data['checks']);
             $sheets[] = new MonitoringsExcel($this->data['medicalMonitorings'], 'Seguimientos Medicos');
             $sheets[] = new MonitoringsExcel($this->data['laborMonitorings'], 'Seguimientos Laborales');
-            $sheets[] = new TracingExcel($this->data['tracings'], 'Seguimientos');
+            $sheets[] = new TracingExcel($this->data['tracings'], $this->keywords['tracings']);
+            $sheets[] = new TracingExcel($this->data['laborNotes'], $this->keywords['labor_notes']);
         }
 
         return $sheets;

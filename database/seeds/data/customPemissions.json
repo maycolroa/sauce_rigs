@@ -166,6 +166,22 @@
                     {
                         "name": "reinc_labor_conclusion_d",
                         "display_name": "Reincorporaciones/Conclusiones laborales - eliminar"
+                    },
+                    {
+                        "name": "reinc_medical_conclusion_c",
+                        "display_name": "Reincorporaciones/Conclusiones médicas - crear"
+                    },
+                    {
+                        "name": "reinc_medical_conclusion_r",
+                        "display_name": "Reincorporaciones/Conclusiones médicas - ver"
+                    },
+                    {
+                        "name": "reinc_medical_conclusion_u",
+                        "display_name": "Reincorporaciones/Conclusiones médicas - editar"
+                    },
+                    {
+                        "name": "reinc_medical_conclusion_d",
+                        "display_name": "Reincorporaciones/Conclusiones médicas - eliminar"
                     }
                 ]
             },

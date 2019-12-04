@@ -34,8 +34,8 @@
 
     <br/>
     @if ($check->check_detail)
-        <div style="border:solid black 1px;padding:0px 20px">
-            <pre style="font-family: sans-serif;">{{$check->check_detail}}</pre>
+        <div style="border: solid black 1px; padding: 0px 20px; text-align: justify; text-justify: inter-word; padding-top: 5px; padding-bottom: 5px;">
+            {!! nl2br($check->check_detail) !!}
         </div>
     @endif
     
@@ -44,7 +44,7 @@
         @if ($check->indefinite_recommendations != "NO")
             <p>Las anteriores recomendaciones son <b>indefinidas</b>.</p>
         @else
-            <p>Las anteriores recomendaciones son de <b>carácter temporal</b> por {{$check->time_different}} días a partir del {{$check->start_recommendations}} fecha de reintegro.</p>
+            <p>Las anteriores recomendaciones son de <b>carácter temporal</b> por {{$check->time_different}} días a partir del {{$check->start_recommendations}} hasta el {{$check->end_recommendations}} fecha de reintegro.</p>
         @endif
         
     @endif

@@ -330,8 +330,8 @@ export default [{
           component: () =>
           import('@/views/PreventiveOccupationalMedicine/reinstatements/originAdvisor/view')
         }
-      ]),,
-    ...middleware({ 'check-permission': 'reinc_labor_conclusion_r' }, [
+      ]),
+      ...middleware({ 'check-permission': 'reinc_labor_conclusion_r' }, [
         {
           name: 'reinstatements-labor-conclusions',
           path: 'reinstatements/laborConclusions',
@@ -361,6 +361,38 @@ export default [{
           path: 'reinstatements/laborConclusions/view/:id',
           component: () =>
           import('@/views/PreventiveOccupationalMedicine/reinstatements/laborConclusions/view')
+        }
+      ]),
+      ...middleware({ 'check-permission': 'reinc_medical_conclusion_r' }, [
+        {
+          name: 'reinstatements-medical-conclusions',
+          path: 'reinstatements/medicalConclusions',
+          component: () =>
+          import('@/views/PreventiveOccupationalMedicine/reinstatements/medicalConclusions/index')
+        }, 
+      ]),
+      ...middleware({ 'check-permission': 'reinc_medical_conclusion_c' }, [
+        {
+          name: 'reinstatements-medical-conclusions-create',
+          path: 'reinstatements/medicalConclusions/create',
+          component: () =>
+          import('@/views/PreventiveOccupationalMedicine/reinstatements/medicalConclusions/create')
+        },
+      ]),
+      ...middleware({ 'check-permission': 'reinc_medical_conclusion_u' }, [
+        {
+          name: 'reinstatements-medical-conclusions-edit',
+          path: 'reinstatements/medicalConclusions/edit/:id',
+          component: () =>
+          import('@/views/PreventiveOccupationalMedicine/reinstatements/medicalConclusions/edit')
+        },
+      ]),
+      ...middleware({ 'check-permission': 'reinc_medical_conclusion_r' }, [
+        {
+          name: 'reinstatements-medical-conclusions-view',
+          path: 'reinstatements/medicalConclusions/view/:id',
+          component: () =>
+          import('@/views/PreventiveOccupationalMedicine/reinstatements/medicalConclusions/view')
         }
       ])
   ]

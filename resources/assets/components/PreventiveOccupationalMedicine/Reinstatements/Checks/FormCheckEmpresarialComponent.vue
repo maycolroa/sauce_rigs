@@ -195,9 +195,14 @@
                 <vue-advanced-select v-show="showEmitterOrigin" :disabled="viewOnly" class="col-md-6" v-model="form.emitter_origin" :error="form.errorsFor('emitter_origin')" :multiple="false" :options="originEmitters" :hide-selected="false" name="emitter_origin" label="Entidad que Califica Origen" placeholder="Seleccione una opción">
                     </vue-advanced-select>
 
+                <vue-advanced-select v-show="showEmitterOrigin" :disabled="viewOnly" class="col-md-6" v-model="form.qualification_origin" :error="form.errorsFor('qualification_origin')" :multiple="false" :options="clasificationOrigin" :hide-selected="false" name="qualification_origin" label="Clasificación de origen" placeholder="Seleccione una opción">
+                  </vue-advanced-select>
+
                 <vue-file-simple v-show="form.in_process_origin == 'NO' && form.process_origin_done == 'SI'" :help-text="form.old_process_origin_file ? `Para descargar el archivo actual, haga click <a href='/biologicalmonitoring/reinstatements/check/downloadOriginFile/${form.id}' target='blank'>aqui</a> `: null" :disabled="viewOnly" accept=".pdf" class="col-md-12" v-model="form.process_origin_file" label="Adjuntar PDF" name="process_origin_file" :error="form.errorsFor('process_origin_file')" placeholder="Seleccione un archivo"></vue-file-simple>
 
-                <b-form-row style="padding-top: 15px;">
+                <vue-radio v-show="form.in_process_origin == 'SI' || form.process_origin_done == 'SI'" :disabled="viewOnly" :checked="form.is_firm_process_origin" class="col-md-6" v-model="form.is_firm_process_origin" :options="siNo" name="is_firm_process_origin" :error="form.errorsFor('is_firm_process_origin')" label="¿Es definitiva esta decisión?"></vue-radio>
+
+                <b-form-row v-show="form.is_firm_process_origin == 'NO'" style="padding-top: 15px;">
                   <h5 class="col-md-12">Controversia 1</h5>
                   <vue-datepicker :disabled="viewOnly" class="col-md-6" v-model="form.date_controversy_origin_1" label="Fecha calificación primera controversia" :full-month-name="true" :error="form.errorsFor('date_controversy_origin_1')" name="date_controversy_origin_1">
                         </vue-datepicker>
@@ -208,7 +213,7 @@
                   <vue-advanced-select :disabled="viewOnly" class="col-md-6" v-model="form.qualification_controversy_1" :error="form.errorsFor('qualification_controversy_1')" :multiple="false" :options="clasificationOrigin" :hide-selected="false" name="qualification_controversy_1" label="Clasificación de origen la primera controversia" placeholder="Seleccione una opción">
                     </vue-advanced-select>
 
-                  <vue-radio :disabled="viewOnly" :checked="form.is_firm_controversy_1" class="col-md-6" v-model="form.is_firm_controversy_1" :options="siNo" name="is_firm_controversy_1" :error="form.errorsFor('is_firm_controversy_1')" label="¿Es firme la controversia?"></vue-radio>
+                  <vue-radio :disabled="viewOnly" :checked="form.is_firm_controversy_1" class="col-md-6" v-model="form.is_firm_controversy_1" :options="siNo" name="is_firm_controversy_1" :error="form.errorsFor('is_firm_controversy_1')" label="¿Es definitiva esta decisión?"></vue-radio>
 
                 </b-form-row>
 
@@ -243,7 +248,9 @@
 
                 <vue-file-simple v-show="form.in_process_pcl == 'NO' && form.process_pcl_done == 'SI'" :help-text="form.old_process_pcl_file ? `Para descargar el archivo actual, haga click <a href='/biologicalmonitoring/reinstatements/check/downloadPclFile/${form.id}' target='blank'>aqui</a> `: null" :disabled="viewOnly" accept=".pdf" class="col-md-12" v-model="form.process_pcl_file" label="Adjuntar PDF" name="process_pcl_file" :error="form.errorsFor('process_pcl_file')" placeholder="Seleccione un archivo"></vue-file-simple>
 
-                <b-form-row style="padding-top: 15px;">
+                <vue-radio v-show="form.in_process_pcl == 'SI' || form.process_pcl_done == 'SI'" :disabled="viewOnly" :checked="form.is_firm_process_pcl" class="col-md-6" v-model="form.is_firm_process_pcl" :options="siNo" name="is_firm_process_pcl" :error="form.errorsFor('is_firm_process_pcl')" label="¿Es definitiva esta decisión?"></vue-radio>
+
+                <b-form-row v-show="form.is_firm_process_pcl == 'NO'" style="padding-top: 15px;">
                   <h5 class="col-md-12">Controversia 1</h5>
                   <vue-datepicker :disabled="viewOnly" class="col-md-6" v-model="form.date_controversy_pcl_1" label="Fecha calificación primera controversia" :full-month-name="true" :error="form.errorsFor('date_controversy_pcl_1')" name="date_controversy_pcl_1">
                         </vue-datepicker>
@@ -484,11 +491,14 @@ export default {
           process_origin_done: '',
           process_origin_done_date: '',
           emitter_origin: '',
+          qualification_origin: '',
+          is_firm_process_origin: '',
           in_process_pcl: '',
           process_pcl_done: '',
           process_pcl_done_date: '',
           pcl: '',
           entity_rating_pcl: '',
+          is_firm_process_pcl: '',
           process_origin_file: '',
           process_origin_file_name: '',
           process_pcl_file: '',
@@ -624,6 +634,8 @@ export default {
       this.form.indefinite_restrictions = 'SI';
       this.form.is_firm_controversy_1 = 'SI';
       this.form.is_firm_controversy_pcl_1 = 'SI';
+      this.is_firm_process_origin = 'SI';
+      this.is_firm_process_pcl = 'SI';
     }
 
     setTimeout(() => {
