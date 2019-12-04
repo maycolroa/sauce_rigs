@@ -18,10 +18,10 @@ class OriginAdvisorController extends Controller
     {
         parent::__construct();
         $this->middleware('auth');
-        $this->middleware("permission:reinc_disease_origin_c, {$this->team}", ['only' => 'store']);
-        $this->middleware("permission:reinc_disease_origin_r, {$this->team}", ['except' =>'multiselect']);
-        $this->middleware("permission:reinc_disease_origin_u, {$this->team}", ['only' => 'update']);
-        $this->middleware("permission:reinc_disease_origin_d, {$this->team}", ['only' => 'destroy']);
+        $this->middleware("permission:reinc_origin_advisor_c, {$this->team}", ['only' => 'store']);
+        $this->middleware("permission:reinc_origin_advisor_r, {$this->team}", ['except' =>'multiselect']);
+        $this->middleware("permission:reinc_origin_advisor_u, {$this->team}", ['only' => 'update']);
+        $this->middleware("permission:reinc_origin_advisor_d, {$this->team}", ['only' => 'destroy']);
     }
 
     /**

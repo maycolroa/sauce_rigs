@@ -689,5 +689,56 @@ export default [
         urlData: '/biologicalmonitoring/reinstatements/laborConclusion/data',
         filterColumns: true,
     }
+},{
+  name: 'reinstatements-medical-conclusions',
+  fields: [
+      { name: 'sau_reinc_medical_conclusions.id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true },
+      { name: 'sau_reinc_medical_conclusions.name', data: 'name', title: 'Nombre', sortable: true, searchable: true, detail: false, key: false },
+      { name: '', data: 'controlls', title: 'Controles', sortable: false, searchable: false, detail: false, key: false },
+    ],
+    'controlls': [{
+        type: 'push',
+        buttons: [{
+            config: {
+                color: 'outline-success',
+                borderless: true,
+                icon: 'ion ion-md-create',
+                title: 'Editar'
+            },
+            data: {
+                routePush: { name: 'reinstatements-medical-conclusions-edit' },
+                id: 'id',
+            },
+            permission: 'reinc_medical_conclusion_u'
+        }, {
+            config: {
+                color: 'outline-info',
+                borderless: true,
+                icon: 'ion ion-md-eye',
+                title: 'Ver'
+            },
+            data: {
+                routePush: { name: 'reinstatements-medical-conclusions-view' },
+                id: 'id',
+            },
+            permission: 'reinc_medical_conclusion_r'
+        }]
+    },
+    {
+        type: 'base',
+        buttons: [{
+        name: 'delete',
+        data: {
+            action: '/biologicalmonitoring/reinstatements/medicalConclusion/',
+            id: 'id',
+            messageConfirmation: 'Esta seguro de borrar la Conclusión médica __name__'
+        },
+        permission: 'reinc_medical_conclusion_d'
+        }],
+    }],
+    configuration: {
+        urlData: '/biologicalmonitoring/reinstatements/medicalConclusion/data',
+        filterColumns: true,
+    }
 },
 ];

@@ -77,6 +77,9 @@ Route::middleware(['auth'])->group(function () {
           
           Route::post('laborConclusion/data', 'PreventiveOccupationalMedicine\Reinstatements\LaborConclusionController@data');
           Route::ApiResource('laborConclusion', 'PreventiveOccupationalMedicine\Reinstatements\LaborConclusionController');
+
+          Route::post('medicalConclusion/data', 'PreventiveOccupationalMedicine\Reinstatements\MedicalConclusionController@data');
+          Route::ApiResource('medicalConclusion', 'PreventiveOccupationalMedicine\Reinstatements\MedicalConclusionController');
         });
         
         Route::post('musculoskeletalAnalysis/reportIndividual', 'PreventiveOccupationalMedicine\BiologicalMonitoring\MusculoskeletalAnalysis\MusculoskeletalAnalysisInformController@dataIndividual');

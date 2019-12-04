@@ -473,6 +473,7 @@ class CheckController extends Controller
         $check = Check::selectRaw(
            'sau_reinc_checks.detail as check_detail,
             sau_reinc_checks.start_recommendations AS start_recommendations,
+            sau_reinc_checks.end_recommendations AS end_recommendations,
             DATEDIFF(sau_reinc_checks.end_recommendations, sau_reinc_checks.start_recommendations) AS time_different,
             sau_reinc_checks.indefinite_recommendations AS indefinite_recommendations,
             sau_employees_regionals.name as regional,
@@ -513,6 +514,10 @@ class CheckController extends Controller
         else if ($formModel == 'vivaAir')
         {
             $pdf = PDF::loadView('pdf.letterVivaAir', $data);
+        }
+        else if ($formModel == 'hptu')
+        {
+            $pdf = PDF::loadView('pdf.letterHptu', $data);
         }
         else if($formModel == 'reditos')
         {

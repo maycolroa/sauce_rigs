@@ -15,12 +15,12 @@
     </style>
 </head>
 <body style="margin: 50px; margin-top: 0px;">
-<!-- Define header and footer blocks before your content -->
-@if ($logo)
-<div style="text-align: right"><img src="{{ public_path('storage/administrative/logos/').$logo }}" width="120px" height="120px"/></div>
-@endif
-<p>{{date('d/m/Y H:i:s')}}</p>
-<br/>
+    <!-- Define header and footer blocks before your content -->
+    @if ($logo)
+    <div style="text-align: right"><img src="{{ public_path('storage/administrative/logos/').$logo }}" width="120px" height="120px"/></div>
+    @endif
+    <p>{{date('d/m/Y H:i:s')}}</p>
+    <br/>
     <center><b>COMUNICACIÓN INTERNA</b></center>
     <br/><br/>
     <b>Para: {{ $to }}</b>
@@ -34,6 +34,9 @@
 
     <br/>
     @if ($check->check_detail)
+        <!--<div style="border:solid black 1px;padding:0px 20px;">
+            <pre style="font-family: sans-serif; text-align: justify; text-justify: inter-word;">{!! nl2br($check->check_detail) !!}</pre>
+        </div>-->
         <div style="border: solid black 1px; padding: 0px 20px; text-align: justify; text-justify: inter-word; padding-top: 5px; padding-bottom: 5px;">
             {!! nl2br($check->check_detail) !!}
         </div>
@@ -42,14 +45,19 @@
     @if ($check->start_recommendations)
         
         @if ($check->indefinite_recommendations != "NO")
-            <p>Las anteriores recomendaciones son <b>indefinidas</b> y emitidas por <b>{{$check->origin_recommendations}}</b>@if($recommendations), se deben tener en cuenta para actividades <b>{{ $recommendations }}</b>@endif.</p>
+            <p>Las anteriores recomendaciones son <b>indefinidas</b>.</p>
         @else
-            <p>Las anteriores recomendaciones son emitidas por <b>{{ $check->origin_recommendations }}</b>, @if($recommendations)se deben tener en cuenta para actividades <b>{{ $recommendations }}</b>,@endif de <b>carácter temporal</b> por {{$check->time_different}} días a partir del {{$check->start_recommendations}} hasta el {{$check->end_recommendations}}.</p>
+            <p>Las anteriores recomendaciones son de <b>carácter temporal</b> por {{$check->time_different}} días a partir del {{$check->start_recommendations}} hasta el {{$check->end_recommendations}} fecha de reintegro.</p>
         @endif
         
     @endif
     <br/><br/><br/><br/><br/><br/><br/>
-    <p><b>{{$firm}}</b></p>
+    <p><b>{{$user->name}}</b>
+    <br>
+    <b>{{$user->medical_record ? "Registro Médico: " . $user->medical_record : ''}}</b>
+    <br>
+    <b>{{$user->sst_license ? "Licencia SST: " . $user->sst_license : ''}}</b></p>
+    <p></p>
 
 </body>
 </html>

@@ -22,6 +22,7 @@ use App\Models\Administrative\Positions\EmployeePosition;
 use App\Models\Administrative\Business\EmployeeBusiness;
 use App\Models\Administrative\Regionals\EmployeeRegional;
 use App\Models\PreventiveOccupationalMedicine\Reinstatements\Restriction;
+use App\Traits\UtilsTrait;
 
 Sheet::macro('styleCells', function (Sheet $sheet, string $cellRange, array $style) {
   $sheet->getDelegate()->getStyle($cellRange)->applyFromArray($style);
@@ -30,14 +31,17 @@ Sheet::macro('styleCells', function (Sheet $sheet, string $cellRange, array $sty
 class CheckExcel implements FromCollection, WithHeadings, WithMapping, WithColumnFormatting, WithEvents, WithTitle, ShouldAutoSize
 {
     use RegistersEventListeners;
+    use UtilsTrait;
 
     protected $company_id;
     protected $data;
+    protected $keywords;
 
     public function __construct($company_id, $data)
     {
       $this->company_id = $company_id;
       $this->data = $data;
+      $this->keywords = $this->getKeywordQueue($this->company_id);
     }
 
     /**
@@ -120,6 +124,7 @@ class CheckExcel implements FromCollection, WithHeadings, WithMapping, WithColum
         $data->process_origin_done,
         $data->process_origin_done_date,
         $data->emitter_origin,
+        $data->qualification_origin,
         $data->in_process_pcl,
         $data->process_pcl_done,
         $data->process_pcl_done_date,
@@ -141,11 +146,11 @@ class CheckExcel implements FromCollection, WithHeadings, WithMapping, WithColum
         'Fecha de ingreso a la empresa',
         'Antigüedad',
         'Edad',
-        'Cargo',
-        'Centro de costos',
-        'Regional',
-        'EPS',
-        'Origen de enfermedad',
+        $this->keywords['position'],
+        $this->keywords['businesses'],
+        $this->keywords['regional'],
+        $this->keywords['eps'],
+        $this->keywords['disease_origin'],
         'Código CIE10',
         'Descripción CIE10',
         'Sistema',
@@ -158,13 +163,14 @@ class CheckExcel implements FromCollection, WithHeadings, WithMapping, WithColum
         '¿Reubidado?',
         'Fecha de seguimiento a recomendaciones',
         'Procedencia de las recomendaciones',
-        'Detalle',
+        $this->keywords['detail_recommendations'],
         '¿Tiene Restricción?',
         'Parte del cuerpo afectada',
         '¿En proceso de calificación de origen?',
         '¿Ya se hizo el proceso de calificación de origen?',
         'Fecha proceso calificación origen',
         'Entidad que Califica Origen',
+        'Clasificación de origen',
         '¿En proceso de PCL?',
         '¿Ya se hizo el proceso de PCL?',
         'Fecha proceso PCL',

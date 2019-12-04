@@ -100,7 +100,10 @@ class Check extends Model
         'qualification_controversy_1',
         'is_firm_controversy_1',
         'qualification_controversy_2',
-        'is_firm_controversy_pcl_1'
+        'is_firm_controversy_pcl_1',
+        'qualification_origin',
+        'is_firm_process_origin',
+        'is_firm_process_pcl'
     ];
 
     /**
