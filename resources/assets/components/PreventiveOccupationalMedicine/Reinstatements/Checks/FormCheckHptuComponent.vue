@@ -168,6 +168,9 @@
                 <vue-advanced-select v-show="showEmitterOrigin" :disabled="viewOnly" class="col-md-6" v-model="form.qualification_origin" :error="form.errorsFor('qualification_origin')" :multiple="false" :options="clasificationOrigin" :hide-selected="false" name="qualification_origin" label="Clasificación de origen" placeholder="Seleccione una opción">
                   </vue-advanced-select>
 
+                <vue-advanced-select v-show="showEmitterOrigin" :disabled="viewOnly" class="col-md-6" v-model="form.type_qualification_origin" :error="form.errorsFor('type_qualification_origin')" :multiple="false" :options="typeQualificationControversy" :hide-selected="false" name="type_qualification_origin" label="Tipo de calificacion" placeholder="Seleccione una opción">
+                  </vue-advanced-select>
+
                 <vue-file-simple v-show="form.in_process_origin == 'NO' && form.process_origin_done == 'SI'" :help-text="form.old_process_origin_file ? `Para descargar el archivo actual, haga click <a href='/biologicalmonitoring/reinstatements/check/downloadOriginFile/${form.id}' target='blank'>aqui</a> `: null" :disabled="viewOnly" accept=".pdf" class="col-md-12" v-model="form.process_origin_file" label="Adjuntar PDF" name="process_origin_file" :error="form.errorsFor('process_origin_file')" placeholder="Seleccione un archivo"></vue-file-simple>
 
                 <vue-radio v-show="form.in_process_origin == 'SI' || form.process_origin_done == 'SI'" :disabled="viewOnly" :checked="form.is_firm_process_origin" class="col-md-6" v-model="form.is_firm_process_origin" :options="siNo" name="is_firm_process_origin" :error="form.errorsFor('is_firm_process_origin')" label="¿Es definitiva esta decisión?"></vue-radio>
@@ -460,6 +463,7 @@ export default {
           process_origin_done_date: '',
           emitter_origin: '',
           qualification_origin: '',
+          type_qualification_origin: '',
           is_firm_process_origin: '',
           in_process_pcl: '',
           process_pcl_done: '',

@@ -103,7 +103,8 @@ class Check extends Model
         'is_firm_controversy_pcl_1',
         'qualification_origin',
         'is_firm_process_origin',
-        'is_firm_process_pcl'
+        'is_firm_process_pcl',
+        'type_qualification_origin'
     ];
 
     /**

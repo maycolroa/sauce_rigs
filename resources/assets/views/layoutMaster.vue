@@ -7,7 +7,7 @@
 
         <div class="layout-content">
           <div v-if="!isMainApp" class="router-transitions container-fluid flex-grow-1 container-p-y">
-            <router-view :apps="data"/>
+            <router-view :apps="data" style="overflow-y: -webkit-paged-y;"/>
           </div>
           <div v-if="isMainApp" class="router-transitions container-fluid flex-grow-1" style="padding-top: 0px; padding-left: 0px;">
             <b-row style="min-height: 95vh">
@@ -29,7 +29,7 @@
                       <span class="cursor-pointer item-app-navbar" @click="redirectHome">Volver atrás <img class="ui-w-50" src="~@/images/Sauce-ML Boton Volver Atras.png"></span>
                   </div>
                 </div>
-                <router-view style="min-height: 70%;" :apps="data"/>
+                <router-view style="min-height: 70%; overflow-y: -webkit-paged-y;" :apps="data"/>
                 <layoutFooterSystem/>
               </b-col>
             </b-row>

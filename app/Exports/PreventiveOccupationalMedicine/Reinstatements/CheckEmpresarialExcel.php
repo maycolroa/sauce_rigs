@@ -233,7 +233,7 @@ class CheckEmpresarialExcel implements FromCollection, WithHeadings, WithMapping
     public static function afterSheet(AfterSheet $event)
     {
       $event->sheet->styleCells(
-        'A1:BA1',
+        'A1:BB1',
           [
             'alignment' => [
               'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT,
