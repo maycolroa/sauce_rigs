@@ -64,7 +64,7 @@
 
                 <b-card  bg-variant="transparent"  title="" class="mb-3 box-shadow-none">
                   <b-form-row>
-                    <vue-advanced-select ref="qualificationAll" :disabled="viewOnly" class="col-md-6" v-model="fulfillment_value_id" :multiple="false" :options="qualifications" name="fulfillment_value_id" label="Calificación" @selectedName="updateQualifyAll"></vue-advanced-select>
+                    <vue-advanced-select ref="qualificationAll" :disabled="viewOnly" class="col-md-6" v-model="fulfillment_value_id" :multiple="false" :options="qualifications" name="fulfillment_value_id" label="Evaluación" @selectedName="updateQualifyAll"></vue-advanced-select>
                     <vue-input :disabled="viewOnly" class="col-md-6" v-model="responsible" label="Responsable" type="text" name="responsible" placeholder="Responsable"></vue-input>
                   </b-form-row>
                   <b-form-row>
@@ -165,12 +165,12 @@
                         </b-form-row>
                         <hr class="border-light container-m--x mt-0 mb-4">
                         <b-form-row>
-                          <vue-textarea @onBlur="saveArticleQualification(index)" :disabled="viewOnly" class="col-md-12" v-model="article.observations" label="Observaciones" name="observations" placeholder="Observaciones" :error="form.errorsFor(`observations`)" rows="3"></vue-textarea>
-                        </b-form-row>
-                        <b-form-row>
+                          <vue-advanced-select :ref="`qualification${index}`" @input="saveArticleQualification(index)" @selectedName="updateQualify($event, index)" :disabled="viewOnly" class="col-md-6" v-model="article.fulfillment_value_id" :multiple="false" :options="qualifications" name="fulfillment_value_id" label="Evaluación"></vue-advanced-select>
+
                           <vue-input @onBlur="saveArticleQualification(index)" :disabled="viewOnly" class="col-md-6" v-model="article.responsible" label="Responsable" type="text" name="responsible" :error="form.errorsFor('responsible')" placeholder="Responsable"></vue-input>
-                       
-                        <vue-advanced-select :ref="`qualification${index}`" @input="saveArticleQualification(index)" @selectedName="updateQualify($event, index)" :disabled="viewOnly" class="col-md-6" v-model="article.fulfillment_value_id" :multiple="false" :options="qualifications" name="fulfillment_value_id" label="Calificación"></vue-advanced-select>
+                      </b-form-row>
+                      <b-form-row>
+                          <vue-textarea @onBlur="saveArticleQualification(index)" :disabled="viewOnly" class="col-md-12" v-model="article.observations" label="Observaciones" name="observations" placeholder="Observaciones" :error="form.errorsFor(`observations`)" rows="3"></vue-textarea>
                       </b-form-row>
                       <b-form-row> 
                         <vue-file-simple v-if="article.qualify && article.qualify != 'No cumple'" :help-text="article.old_file ? `Para descargar el archivo actual, haga click <a href='/legalAspects/legalMatrix/law/downloadArticleQualify/${article.qualification_id}' target='blank'>aqui</a> `: null" :disabled="viewOnly" class="col-md-6" @input="saveArticleQualification(index)" accept=".pdf" v-model="article.file" label="Archivo (*.pdf)" name="file" :error="form.errorsFor('file')" placeholder="Seleccione un archivo"></vue-file-simple>
