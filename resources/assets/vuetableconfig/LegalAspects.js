@@ -234,25 +234,40 @@ export default [
         },
         {
             type: 'base',
-            buttons: [],
+            buttons: [
+            {
+                name: 'retrySendMail',
+                config: {
+                    color: 'outline-danger',
+                    borderless: true,
+                    icon: 'ion ion-ios-mail',
+                    title: 'Enviar evaluación'
+                },
+                data: {
+                    action: '/legalAspects/evaluationContract/sendNotification/',
+                    id: 'id',
+                    messageConfirmation: 'Esta seguro de enviar la evaluación'
+                },
+                permission: 'contracts_evaluations_perform_evaluation'
+            }],
         },
         {
-        type: 'download',
-        buttons: [{
-            name: 'downloadMatrix',
-            config: {
-                color: 'outline-success',
-                borderless: true,
-                icon: 'ion ion-md-cloud-download',
-                title: 'Exportar'
-            },
-            data: {
-                action: '/legalAspects/evaluationContract/download/',
-                id: 'id'
-            },
-            permission: 'contracts_evaluations_export'
+            type: 'download',
+            buttons: [{
+                name: 'downloadMatrix',
+                config: {
+                    color: 'outline-success',
+                    borderless: true,
+                    icon: 'ion ion-md-cloud-download',
+                    title: 'Exportar'
+                },
+                data: {
+                    action: '/legalAspects/evaluationContract/download/',
+                    id: 'id'
+                },
+                permission: 'contracts_evaluations_export'
+            }],
         }],
-    }],
       configuration: {
           urlData: '/legalAspects/evaluationContract/data',
           filterColumns: true,
