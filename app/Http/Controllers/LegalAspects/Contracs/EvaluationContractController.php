@@ -93,6 +93,9 @@ class EvaluationContractController extends Controller
         }
 
         return Vuetable::of($evaluation_contracts)
+                    ->addColumn('retrySendMail', function ($evaluation_contract) {
+                        return $evaluation_contract->ready();
+                    })
                     ->make();
     }
     
@@ -143,8 +146,8 @@ class EvaluationContractController extends Controller
 
             DB::commit();
 
-            if ($evaluation_contract->ready())
-                $this->sendNotification($evaluation_contract->id);
+            /*if ($evaluation_contract->ready())
+                $this->sendNotification($evaluation_contract->id);*/
 
         } catch (\Exception $e) {
             DB::rollback();
@@ -216,8 +219,8 @@ class EvaluationContractController extends Controller
 
             DB::commit();
 
-            if ($evaluationContract->ready())
-                $this->sendNotification($evaluationContract->id);
+            /*if ($evaluationContract->ready())
+                $this->sendNotification($evaluationContract->id);*/
 
         } catch (\Exception $e) {
             DB::rollback();
@@ -777,7 +780,7 @@ class EvaluationContractController extends Controller
         ]);
     }
 
-    private function sendNotification($id)
+    public function sendNotification($id)
     {
         EvaluationSendNotificationJob::dispatch($this->company, $id);
     }

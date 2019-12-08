@@ -394,7 +394,7 @@ Route::middleware(['auth'])->group(function () {
       Route::post('evaluationContract/exportReport', 'LegalAspects\Contracs\EvaluationContractController@exportReport');
       Route::post('evaluationContract/getTotales', 'LegalAspects\Contracs\EvaluationContractController@getTotales');
       Route::ApiResource('evaluationContract', 'LegalAspects\Contracs\EvaluationContractController');
-
+      Route::post('evaluationContract/sendNotification/{contract}', 'LegalAspects\Contracs\EvaluationContractController@sendNotification');
       Route::post('evaluationContractHistory/data', 'LegalAspects\Contracs\EvaluationContractHistoryController@data');
 
       Route::prefix('legalMatrix')->group(function () {
