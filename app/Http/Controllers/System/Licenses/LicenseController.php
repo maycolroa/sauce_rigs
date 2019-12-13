@@ -130,7 +130,6 @@ class LicenseController extends Controller
             }
 
             $license->module_id = $modules;
-            $license->add_email = [];
 
             return $this->respondHttp200([
                 'data' => $license,
@@ -177,7 +176,7 @@ class LicenseController extends Controller
             
             DB::commit();
             
-            $mails = $this->getDataFromMultiselect($request->get('add_email'));
+            $mails = $request->has('add_email') ? $this->getDataFromMultiselect($request->get('add_email')) : [];
 
             NotifyLicenseRenewalJob::dispatch($license->company_id, $modules_main, $mails);
 
