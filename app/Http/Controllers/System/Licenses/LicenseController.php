@@ -130,6 +130,7 @@ class LicenseController extends Controller
             }
 
             $license->module_id = $modules;
+            $license->add_email = [];
 
             return $this->respondHttp200([
                 'data' => $license,
