@@ -2,7 +2,7 @@
   <div>
     <header-module
 			title="CONTRATISTAS"
-			subtitle="ADMINISTRAR TIPOS DE CALIFICACIONES"
+			subtitle="ADMINISTRAR PROCESOS A EVALUAR"
 			url="legalaspects-evaluations"
 		/>
 
@@ -10,7 +10,7 @@
       <b-card no-body>
         <b-card-header class="with-elements">
           <div class="card-title-elements"> 
-            <b-btn v-if="auth.can['contracts_typesQualification_c']" :to="{name:'legalaspects-typesrating-create'}" variant="primary">Crear tipo de calificación</b-btn>
+            <b-btn v-if="auth.can['contracts_typesQualification_c']" :to="{name:'legalaspects-typesrating-create'}" variant="primary">Crear proceso a evaluar</b-btn>
           </div>
         </b-card-header>
         <b-card-body>
@@ -30,7 +30,7 @@ import Alerts from '@/utils/Alerts.js';
 export default {
   name: 'types-rating',
   metaInfo: {
-    title: 'Tipos de calificaciones'
+    title: 'Procesos a evaluar'
   }
 }
 </script>

@@ -1,7 +1,7 @@
 <template>
     <div class="col-md-12">
         <blockquote class="blockquote text-center">
-            <p class="mb-0">Tipos de calificación habilitadas para la evaluación</p>
+            <p class="mb-0">Procesos a evaluar habilitados para la evaluación</p>
         </blockquote>
         <b-form-feedback class="d-block" v-if="form.errorsFor(`types_rating`)" style="padding-bottom: 10px;">
             {{ form.errorsFor(`types_rating`) }}

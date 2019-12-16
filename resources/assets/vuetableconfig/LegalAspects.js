@@ -41,7 +41,7 @@ export default [
             data: {
                 action: '/legalAspects/typeRating/',
                 id: 'id',
-                messageConfirmation: 'Esta seguro de borrar el tipo de calificación __name__'
+                messageConfirmation: 'Esta seguro de borrar el proceso a evaluar __name__'
             },
             permission: 'contracts_typesQualification_d'
             }],
@@ -332,8 +332,8 @@ export default [
         name: 'legalaspects-evaluations-reports',
         fields: [
             { name: 'subobjective', data: 'subobjective', title: 'ID', sortable: false, searchable: false, detail: false, key: true },
-            { name: 'objective', data: 'objective', title: 'Objetivo', sortable: true, searchable: false, detail: false, key: false },
-            { name: 'subobjective', data: 'subobjective', title: 'Subobjetivo', sortable: true, searchable: false, detail: false, key: false },
+            { name: 'objective', data: 'objective', title: 'Tema', sortable: true, searchable: false, detail: false, key: false },
+            { name: 'subobjective', data: 'subobjective', title: 'Subtema', sortable: true, searchable: false, detail: false, key: false },
             { name: 't_evaluations', data: 't_evaluations', title: '# Evaluaciones', sortable: true, searchable: false, detail: false, key: false },
             { name: 't_cumple', data: 't_cumple', title: '# Cumplimietos', sortable: true, searchable: false, detail: false, key: false },
             { name: 't_no_cumple', data: 't_no_cumple', title: '# No Cumplimientos', sortable: true, searchable: false, detail: false, key: false },

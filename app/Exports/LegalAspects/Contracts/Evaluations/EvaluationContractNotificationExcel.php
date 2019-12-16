@@ -149,8 +149,8 @@ class EvaluationContractNotificationExcel implements FromCollection, WithHeading
         'Calificador',
         'Evaluadores',
         'Entrevistados',
-        'Objetivo',
-        'Subobjetivo',
+        'Tema',
+        'Subtema',
         'Item',
         'Observaciones'
       ];

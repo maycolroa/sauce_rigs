@@ -96,8 +96,8 @@ class EvaluationsListExcel implements FromQuery, WithMapping, WithHeadings, With
           'Tipo',
           'Usuario creador',
           'Fecha de creación',
-          'Objetivo',
-          'Subobjetivo',
+          'Tema',
+          'Subtema',
           'Item'
         ];
     }

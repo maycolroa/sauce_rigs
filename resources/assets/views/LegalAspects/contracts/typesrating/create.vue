@@ -2,7 +2,7 @@
   <div>
     <header-module
 			title="CONTRATISTAS"
-			subtitle="CREAR CALIFICACIÓN"
+			subtitle="CREAR PROCESO A EVALUAR"
 			url="legalaspects-typesrating"
 		/>
 
@@ -26,7 +26,7 @@ import Alerts from '@/utils/Alerts.js';
 export default {
   name: 'legalaspects-typesrating-create',
   metaInfo: {
-    title: 'Tipos de calificaciones - Crear'
+    title: 'Procesos a evaluar - Crear'
   },
   components:{
     FormTypeRatingComponent

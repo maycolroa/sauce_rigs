@@ -135,8 +135,8 @@ class EvaluationContractReportExcel implements FromCollection, WithMapping, With
     public function headings(): array
     {
         return [
-          'Objetivo',
-          'Subobjetivo',
+          'Tema',
+          'Subtema',
           'Evaluaciones',
           '#Cumplimiento',
           '#No Cumplimiento',

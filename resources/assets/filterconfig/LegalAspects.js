@@ -6,13 +6,13 @@ export default [
           url: '/selects/evaluations/objectives',
           key: 'evaluationsObjectives',
           type: 'select',
-          label: 'Objetivos'
+          label: 'Temas'
         },
         {
           url: '/selects/evaluations/subobjectives',
           key: 'evaluationsSubobjectives',
           type: 'select',
-          label: 'Subobjetivos'
+          label: 'Subtemas'
         },
         {
           key: 'dateRange',
@@ -28,13 +28,13 @@ export default [
           url: '/selects/evaluations/objectives',
           key: 'evaluationsObjectives',
           type: 'select',
-          label: 'Objetivos'
+          label: 'Temas'
         },
         {
           url: '/selects/evaluations/subobjectives',
           key: 'evaluationsSubobjectives',
           type: 'select',
-          label: 'Subobjetivos'
+          label: 'Subtemas'
         },
         {
           url: '/selects/evaluations/qualificationTypes',
