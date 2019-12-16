@@ -48,11 +48,11 @@ class ListCheckContractExcel implements FromCollection, WithMapping, WithHeading
         {
             if ($this->contract->number_workers <= 10)
             {
-                if ($this->contract->risk_class == "Clase de riesgo I, II y III")
+                if ($this->contract->risk_class == "Clase de riesgo I" || $this->contract->risk_class == "Clase de riesgo II" || $this->contract->risk_class == "Clase de riesgo III")
                 {
                     $items = $sql->where('sau_ct_standard_classification.standard_name', '=', '3 estandares')->get();
                 }
-                else if ($this->contract->risk_class == "Clase de riesgo IV y V")
+                else if ($this->contract->risk_class == "Clase de riesgo IV" || $this->contract->risk_class == "Clase de riesgo V")
                 {
                     $items = $sql->where('sau_ct_standard_classification.standard_name', '=', '60 estandares')->get();
                 }
@@ -62,28 +62,25 @@ class ListCheckContractExcel implements FromCollection, WithMapping, WithHeading
         {
             if ($this->contract->number_workers <= 10)
             {
-                if ($this->contract->risk_class == "Clase de riesgo I, II y III")
+                if ($this->contract->risk_class == "Clase de riesgo I" || $this->contract->risk_class == "Clase de riesgo II" || $this->contract->risk_class == "Clase de riesgo III")
                 {
                     $items = $sql->where('sau_ct_standard_classification.standard_name', '=', '7 estandares')->get();
                 }
             }
             else if ($this->contract->number_workers > 10 && $this->contract->number_workers <= 50)
             {
-                if ($this->contract->risk_class == "Clase de riesgo I, II y III")
+                if ($this->contract->risk_class == "Clase de riesgo I" || $this->contract->risk_class == "Clase de riesgo II" || $this->contract->risk_class == "Clase de riesgo III")
                 {
                     $items = $sql->where('sau_ct_standard_classification.standard_name', '=', '21 estandares')->get();
                 }
-                else if ($this->contract->risk_class == "Clase de riesgo IV y V")
+                else if ($this->contract->risk_class == "Clase de riesgo IV" || $this->contract->risk_class == "Clase de riesgo V")
                 {
                     $items = $sql->where('sau_ct_standard_classification.standard_name', '=', '60 estandares')->get();
                 }
             }
             else if ($this->contract->number_workers > 50)
             {
-                if ($this->contract->risk_class == "Cualquier clase de riesgo")
-                {
-                    $items = $sql->where('sau_ct_standard_classification.standard_name', '=', '60 estandares')->get();
-                }
+                $items = $sql->where('sau_ct_standard_classification.standard_name', '=', '60 estandares')->get();
             }
         }
 
