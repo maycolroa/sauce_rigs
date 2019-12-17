@@ -572,6 +572,9 @@ class EvaluationContractController extends Controller
         $whereSubojectives = '';
         $whereDates = '';
         $whereQualificationTypes = '';
+        $whereEvaluations = '';
+        $whereItems = '';
+        $whereContract = '';
         $subWhereQualificationTypes = '';
         
         $filters = $request->get('filters');
@@ -581,6 +584,15 @@ class EvaluationContractController extends Controller
 
         if (isset($filters["evaluationsSubobjectives"]))
             $whereSubojectives = $this->scopeQueryReport('s', $this->getValuesForMultiselect($filters["evaluationsSubobjectives"]), $filters['filtersType']['evaluationsSubobjectives']);
+
+        if (isset($filters["evaluationsEvaluations"]))
+            $whereEvaluations = $this->scopeQueryReport('e', $this->getValuesForMultiselect($filters["evaluationsEvaluations"]), $filters['filtersType']['evaluationsEvaluations']);
+
+        if (isset($filters["evaluationsItems"]))
+            $whereItems = $this->scopeQueryReport('i', $this->getValuesForMultiselect($filters["evaluationsItems"]), $filters['filtersType']['evaluationsItems']);
+
+        if (isset($filters["contracts"]))
+            $whereContract = $this->scopeQueryReport('ec', $this->getValuesForMultiselect($filters["contracts"]), $filters['filtersType']['contracts'], 'contract_id');
 
         if (isset($filters["qualificationTypes"]))
         {
@@ -636,7 +648,7 @@ class EvaluationContractController extends Controller
                     INNER JOIN sau_ct_items i ON i.subobjective_id = s.id
                     LEFT JOIN sau_ct_evaluation_item_rating eir ON eir.item_id = i.id AND eir.evaluation_id = ec.id
                 
-                    WHERE ec.company_id = ".$this->company. $whereDates . $whereObjectives . $whereSubojectives . $whereQualificationTypes ."
+                    WHERE ec.company_id = ".$this->company. $whereDates . $whereObjectives . $whereSubojectives . $whereQualificationTypes . $whereContract . $whereItems . $whereEvaluations ." 
                     GROUP BY objective, subobjective
                 ) AS t
             ) AS t"));
@@ -719,12 +731,18 @@ class EvaluationContractController extends Controller
         $objectives = $this->getValuesForMultiselect($request->evaluationsObjectives);
         $subobjectives = $this->getValuesForMultiselect($request->evaluationsSubobjectives);
         $qualificationTypes = $this->getValuesForMultiselect($request->qualificationTypes);
+        $evaluations = $this->getValuesForMultiselect($request->evaluationsEvaluations);
+        $items = $this->getValuesForMultiselect($request->evaluationsItems);
+        $contract = $this->getValuesForMultiselect($request->contracts);
         $filtersType = $request->filtersType;
 
         $whereObjectives = $this->scopeQueryReport('o', $objectives, $filtersType['evaluationsObjectives']);
         $whereSubojectives = $this->scopeQueryReport('s', $subobjectives, $filtersType['evaluationsSubobjectives']);
         $whereQualificationTypes = $this->scopeQueryReport('eir', $qualificationTypes, $filtersType['qualificationTypes'], 'type_rating_id');
         $subWhereQualificationTypes = $this->scopeQueryReport('etr', $qualificationTypes, $filtersType['qualificationTypes'], 'type_rating_id');
+        $whereEvaluations = $this->scopeQueryReport('e', $evaluations, $filtersType['evaluationsEvaluations']);
+        $whereItems = $this->scopeQueryReport('i', $items, $filtersType['evaluationsItems']);
+        $whereContract = $this->scopeQueryReport('ec', $contract, $filtersType['contracts'], 'contract_id');
 
         if (isset($request->dateRange) && $request->dateRange)
         {
@@ -776,7 +794,7 @@ class EvaluationContractController extends Controller
                     INNER JOIN sau_ct_items i ON i.subobjective_id = s.id
                     LEFT JOIN sau_ct_evaluation_item_rating eir ON eir.item_id = i.id AND eir.evaluation_id = ec.id
                 
-                    WHERE ec.company_id = ".$this->company. $whereDates . $whereObjectives . $whereSubojectives . $whereQualificationTypes ."
+                    WHERE ec.company_id = ".$this->company. $whereDates . $whereObjectives . $whereSubojectives . $whereQualificationTypes . $whereContract . $whereItems . $whereEvaluations ."
                     GROUP BY objective, subobjective
                 ) AS t
             ) AS t"))

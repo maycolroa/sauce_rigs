@@ -350,6 +350,23 @@ class EvaluationController extends Controller
      * @return Array
      */
 
+    public function multiselectEvaluations(Request $request)
+    {
+        $evaluations = Evaluation::selectRaw(
+            "sau_ct_evaluations.id as id,
+             sau_ct_evaluations.name as name")
+        ->pluck('id', 'name');
+    
+        return $this->multiSelectFormat($evaluations);
+    }
+
+    /**
+     * Returns an array for a select type input
+     *
+     * @param Request $request
+     * @return Array
+     */
+
     public function multiselectObjectives(Request $request)
     {
         $objectives = Evaluation::selectRaw(
@@ -380,6 +397,27 @@ class EvaluationController extends Controller
         ->pluck('ids', 'name');
     
         return $this->multiSelectFormat($subobjectives);
+    }
+
+    /**
+     * Returns an array for a select type input
+     *
+     * @param Request $request
+     * @return Array
+     */
+
+    public function multiselectItems(Request $request)
+    {
+        $items = Evaluation::selectRaw(
+            "GROUP_CONCAT(sau_ct_items.id) as ids,
+             sau_ct_items.description as name")
+        ->join('sau_ct_objectives', 'sau_ct_objectives.evaluation_id', 'sau_ct_evaluations.id')
+        ->join('sau_ct_subobjectives', 'sau_ct_subobjectives.objective_id', 'sau_ct_objectives.id')
+        ->join('sau_ct_items', 'sau_ct_items.subobjective_id', 'sau_ct_subobjectives.id')
+        ->groupBy('sau_ct_items.description')
+        ->pluck('ids', 'name');
+    
+        return $this->multiSelectFormat($items);
     }
 
     /**

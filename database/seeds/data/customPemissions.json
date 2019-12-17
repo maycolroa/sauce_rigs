@@ -347,19 +347,19 @@
                     },
                     {
                         "name": "contracts_typesQualification_c",
-                        "display_name": "Contratistas/Tipos de calificación - crear"
+                        "display_name": "Contratistas/Proceso a evaluar - crear"
                     },
                     {
                         "name": "contracts_typesQualification_r",
-                        "display_name": "Contratistas/Tipos de calificación - ver"
+                        "display_name": "Contratistas/Proceso a evaluar - ver"
                     },
                     {
                         "name": "contracts_typesQualification_u",
-                        "display_name": "Contratistas/Tipos de calificación - editar"
+                        "display_name": "Contratistas/Proceso a evaluar - editar"
                     },
                     {
                         "name": "contracts_typesQualification_d",
-                        "display_name": "Contratistas/Tipos de calificación - eliminar"
+                        "display_name": "Contratistas/Proceso a evaluar - eliminar"
                     },
                     {
                         "name": "contracts_evaluations_c",
