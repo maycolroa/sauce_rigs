@@ -690,8 +690,11 @@ class EvaluationContractController extends Controller
     {
         try
         {
+            $evaluations = $this->getValuesForMultiselect($request->evaluationsEvaluations);
             $objectives = $this->getValuesForMultiselect($request->evaluationsObjectives);
             $subobjectives = $this->getValuesForMultiselect($request->evaluationsSubobjectives);
+            $items = $this->getValuesForMultiselect($request->evaluationsItems);
+            $contracts = $this->getValuesForMultiselect($request->contracts);
             $qualificationTypes = $this->getValuesForMultiselect($request->qualificationTypes);
             $dates = [];
             $filtersType = $request->filtersType;
@@ -713,7 +716,10 @@ class EvaluationContractController extends Controller
                 'subobjectives' => $subobjectives,
                 'qualificationTypes' => $qualificationTypes,
                 'dates' => $dates,
-                'filtersType' => $filtersType
+                'filtersType' => $filtersType,
+                'evaluations' => $evaluations,
+                'items' => $items,
+                'contracts' => $contracts
             ];
 
             EvaluationContractReportExportJob::dispatch($this->user, $this->company, $filters);

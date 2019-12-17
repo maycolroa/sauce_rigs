@@ -44,6 +44,12 @@ class EvaluationContractReportExcel implements FromCollection, WithMapping, With
           
       $subWhereQualificationTypes = $this->scopeQueryReport('etr', $this->filters["qualificationTypes"], $this->filters['filtersType']['qualificationTypes'], 'type_rating_id');
 
+      $whereEvaluations = $this->scopeQueryReport('e',  $this->filters["evaluations"], $this->filters['filtersType']['evaluationsEvaluations']);
+
+      $whereItems = $this->scopeQueryReport('i',  $this->filters["items"],$this->filters['filtersType']['evaluationsItems']);
+
+      $whereContract = $this->scopeQueryReport('ec',  $this->filters["contracts"], $this->filters['filtersType']['contracts'], 'contract_id');
+
       if (COUNT($this->filters["dates"]) > 0)
       {
         $whereDates = ' AND ec.evaluation_date BETWEEN "'.$this->filters['dates'][0].'" AND "'.$this->filters['dates'][1].'"';
@@ -83,7 +89,7 @@ class EvaluationContractReportExcel implements FromCollection, WithMapping, With
                 INNER JOIN sau_ct_items i ON i.subobjective_id = s.id
                 LEFT JOIN sau_ct_evaluation_item_rating eir ON eir.item_id = i.id AND eir.evaluation_id = ec.id
             
-                WHERE ec.company_id = ".$this->company_id. $whereDates . $whereObjectives . $whereSubojectives . $whereQualificationTypes ."
+                WHERE ec.company_id = ".$this->company_id. $whereDates . $whereObjectives . $whereSubojectives . $whereQualificationTypes . $whereContract . $whereItems . $whereEvaluations ."
                 GROUP BY objective, subobjective
             ) AS t
         ) AS t"))
