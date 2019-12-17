@@ -31,7 +31,7 @@
     <b-card no-body class="mb-2 border-secondary" style="width: 100%;">
       <b-card-header class="bg-secondary">
           <b-row>
-            <b-col cols="11" class="d-flex justify-content-between"> Objetivos </b-col>
+            <b-col cols="11" class="d-flex justify-content-between"> Temas </b-col>
             <b-col cols="1">
                 <div class="float-right">
                   <b-button-group>
@@ -56,12 +56,12 @@
           </b-form-row>
           <div class="col-md-12">
             <blockquote class="blockquote text-center">
-              <p class="mb-0">Objetivos de la evaluación</p>
+              <p class="mb-0">Temas de la evaluación</p>
             </blockquote>
             <b-form-row>
               <div class="col-md-12" v-if="!viewOnly">
                 <div class="float-right" style="padding-top: 10px;">
-                  <b-btn variant="primary" @click.prevent="addObjetive()"><span class="ion ion-md-add-circle"></span>&nbsp;&nbsp;Agregar Objetivo</b-btn>
+                  <b-btn variant="primary" @click.prevent="addObjetive()"><span class="ion ion-md-add-circle"></span>&nbsp;&nbsp;Agregar Tema</b-btn>
                 </div>
               </div>
             </b-form-row>
@@ -74,7 +74,7 @@
                   <b-card no-body class="mb-2 border-secondary" :key="objetive.key" style="width: 100%;">
                     <b-card-header class="bg-secondary">
                       <b-row>
-                        <b-col cols="10" class="d-flex justify-content-between"> {{ form.objectives[index].description ? form.objectives[index].description : `Nuevo objetivo ${index + 1}` }}</b-col>
+                        <b-col cols="10" class="d-flex justify-content-between"> {{ form.objectives[index].description ? form.objectives[index].description : `Nuevo tema ${index + 1}` }}</b-col>
                         <b-col cols="2">
                           <div class="float-right">
                             <b-button-group>
@@ -85,7 +85,7 @@
                                 v-if="!viewOnly"
                                 size="sm" 
                                 variant="secondary icon-btn borderless"
-                                v-b-tooltip.top title="Eliminar Objetivo">
+                                v-b-tooltip.top title="Eliminar Tema">
                                   <span class="ion ion-md-close-circle"></span>
                               </b-btn>
                             </b-button-group>
@@ -101,7 +101,7 @@
                         <b-form-row>
                           <div class="col-md-12" v-if="!viewOnly">
                             <div class="float-right" style="padding-top: 10px;">
-                              <b-btn variant="primary" @click.prevent="addSubobjective(index)"><span class="ion ion-md-add-circle"></span>&nbsp;&nbsp;Agregar Subobjetivo</b-btn>
+                              <b-btn variant="primary" @click.prevent="addSubobjective(index)"><span class="ion ion-md-add-circle"></span>&nbsp;&nbsp;Agregar Subtema</b-btn>
                             </div>
                           </div>
                         </b-form-row>
@@ -113,7 +113,7 @@
                             <b-card no-body class="mb-2 border-secondary" :key="subobjective.key" style="width: 100%;">
                               <b-card-header class="bg-secondary">
                                 <b-row>
-                                  <b-col cols="10" class="d-flex justify-content-between"> {{ form.objectives[index].subobjectives[index2].description ? form.objectives[index].subobjectives[index2].description : `Nuevo Subobjetivo ${index2 + 1}` }}</b-col>
+                                  <b-col cols="10" class="d-flex justify-content-between"> {{ form.objectives[index].subobjectives[index2].description ? form.objectives[index].subobjectives[index2].description : `Nuevo Subtema ${index2 + 1}` }}</b-col>
                                   <b-col cols="2">
                                     <div class="float-right">
                                       <b-button-group>
@@ -124,7 +124,7 @@
                                           v-if="!viewOnly"
                                           size="sm" 
                                           variant="secondary icon-btn borderless"
-                                          v-b-tooltip.top title="Eliminar Subobjetivo">
+                                          v-b-tooltip.top title="Eliminar Subtema">
                                             <span class="ion ion-md-close-circle"></span>
                                         </b-btn>
                                       </b-button-group>

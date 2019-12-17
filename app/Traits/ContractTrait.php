@@ -121,11 +121,11 @@ trait ContractTrait
         {
             if ($contract->number_workers <= 10)
             {
-                if ($contract->risk_class == "Clase de riesgo I, II y III")
+                if ($contract->risk_class == "Clase de riesgo I" || $contract->risk_class == "Clase de riesgo II" || $contract->risk_class == "Clase de riesgo III")
                 {
                     $items = $sql->where('sau_ct_standard_classification.standard_name', '=', '3 estandares')->get();
                 }
-                else if ($contract->risk_class == "Clase de riesgo IV y V")
+                else if ($contract->risk_class == "Clase de riesgo IV" || $contract->risk_class == "Clase de riesgo V")
                 {
                     $items = $sql->where('sau_ct_standard_classification.standard_name', '=', '60 estandares')->get();
                 }
@@ -135,28 +135,25 @@ trait ContractTrait
         {
             if ($contract->number_workers <= 10)
             {
-                if ($contract->risk_class == "Clase de riesgo I, II y III")
+                if ($contract->risk_class == "Clase de riesgo I" || $contract->risk_class == "Clase de riesgo II" || $contract->risk_class == "Clase de riesgo III")
                 {
                     $items = $sql->where('sau_ct_standard_classification.standard_name', '=', '7 estandares')->get();
                 }
             }
             else if ($contract->number_workers > 10 && $contract->number_workers <= 50)
             {
-                if ($contract->risk_class == "Clase de riesgo I, II y III")
+                if ($contract->risk_class == "Clase de riesgo I" || $contract->risk_class == "Clase de riesgo II" || $contract->risk_class == "Clase de riesgo III")
                 {
                     $items = $sql->where('sau_ct_standard_classification.standard_name', '=', '21 estandares')->get();
                 }
-                else if ($contract->risk_class == "Clase de riesgo IV y V")
+                else if ($contract->risk_class == "Clase de riesgo IV" || $contract->risk_class == "Clase de riesgo V")
                 {
                     $items = $sql->where('sau_ct_standard_classification.standard_name', '=', '60 estandares')->get();
                 }
             }
             else if ($contract->number_workers > 50)
             {
-                if ($contract->risk_class == "Cualquier clase de riesgo")
-                {
-                    $items = $sql->where('sau_ct_standard_classification.standard_name', '=', '60 estandares')->get();
-                }
+                $items = $sql->where('sau_ct_standard_classification.standard_name', '=', '60 estandares')->get();            
             }
         }
 

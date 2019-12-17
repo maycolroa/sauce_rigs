@@ -88,7 +88,7 @@
                     <p class="mb-0"><b>Fecha de evaluación:</b> {{ evaluation.evaluation_date ? evaluation.evaluation_date : 'Sin evaluar'}}</p>
                 </blockquote>
                 <blockquote class="blockquote text-center">
-                    <p class="mb-0">Objetivos de la evaluación</p>
+                    <p class="mb-0">Temas de la evaluación</p>
                 </blockquote>
                 <b-form-row style="padding-top: 15px;">
                     <perfect-scrollbar :options="{ wheelPropagation: true }" class="mb-4" style="height: 500px; padding-right: 15px; width: 100%;">

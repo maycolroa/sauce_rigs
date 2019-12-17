@@ -12,7 +12,7 @@
           <div class="card-title-elements"> 
             <b-btn v-if="auth.can['contracts_evaluations_c']" :to="{name:'legalaspects-evaluations-create'}" variant="primary">Crear Evaluación</b-btn>
             <b-btn v-if="auth.can['contracts_evaluations_report_view']" :to="{name:'legalaspects-evaluations-report'}" variant="primary">Ver Reportes</b-btn>
-            <b-btn v-if="auth.can['contracts_typesQualification_r']" :to="{name:'legalaspects-typesrating'}" variant="primary">Administrar Tipos de calificación</b-btn>
+            <b-btn v-if="auth.can['contracts_typesQualification_r']" :to="{name:'legalaspects-typesrating'}" variant="primary">Administrar Procesos a Evaluar</b-btn>
           </div>
           <div class="card-title-elements ml-md-auto" v-if="auth.can['contracts_evaluations_export']">
             <b-dd variant="default" :right="isRTL">

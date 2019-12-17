@@ -526,7 +526,14 @@ class EvaluationContractController extends Controller
                     $item->ratings = $clone;
 
                     $evaluationContractItem = EvaluationContractItem::where('evaluation_id', $evaluationContract->id)->where('item_id',  $item->id)->first();
-                    $item->actionPlan = ActionPlan::model($evaluationContractItem)->prepareDataComponent();
+
+                    if ($evaluationContractItem)
+                        $item->actionPlan = ActionPlan::model($evaluationContractItem)->prepareDataComponent();
+                    else
+                        $item->actionPlan = [
+                            "activities" => [],
+                            "activitiesRemoved" => []
+                        ];
                 }
 
                 $subobjective->report = $clone_report;

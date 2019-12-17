@@ -2,7 +2,7 @@
   <div>
     <header-module
 			title="CONTRATISTAS"
-			subtitle="EDITAR CALIFICACIÓN"
+			subtitle="EDITAR PROCESO A EVALUAR"
 			url="legalaspects-typesrating"
 		/>
 
@@ -28,7 +28,7 @@ import Alerts from '@/utils/Alerts.js';
 export default {
   name: 'legalaspects-typesrating-edit',
   metaInfo: {
-    title: 'Tipos de calificaciones - Editar'
+    title: 'Procesos a evaluar - Editar'
   },
   components:{
     FormTypeRatingComponent
