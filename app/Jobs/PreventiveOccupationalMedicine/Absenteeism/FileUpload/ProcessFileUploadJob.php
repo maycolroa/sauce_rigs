@@ -24,9 +24,9 @@ class ProcessFileUploadJob implements ShouldQueue
     protected $talend;
 
     CONST states = [
-        0 => 'Corrido Fallido',
-        1 => 'Corrido Exitoso 100%',
-        2 => 'Corrido Parcialmente exitoso'
+        0 => 'corrido fallido',
+        1 => 'corrido exitoso 100%',
+        2 => 'corrido parcialmente exitoso'
     ];
 
     CONST result_talend = 'resultado_talend:';
@@ -78,11 +78,22 @@ class ProcessFileUploadJob implements ShouldQueue
             // executes after the command finishes
             if ($process->isSuccessful())
             {
-                $result = $process->getOutput();
-                $result = Str::substr($result, strpos($result, $this::result_talend) + 17, 1);
+                $output = strtolower($process->getOutput());
+                $result = Str::substr($output, strpos($output, $this::result_talend) + 17, 1);
 
-                if (isset($this::states[$result]))
-                    $result = $this::states[$result];
+                if ($result && $result == '1')
+                {
+                    foreach ($this::states as $key => $state)
+                    {
+                        if (strpos($output, $state) !== false)
+                        {
+                            $result = $state;
+                            break;
+                        }
+                        else
+                            $result = $this::states[0];
+                    }
+                }
                 else
                     $result = $this::states[0];
             }
