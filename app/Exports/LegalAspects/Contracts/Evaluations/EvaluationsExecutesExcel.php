@@ -108,7 +108,7 @@ class EvaluationsExecutesExcel implements FromCollection, WithHeadings, WithMapp
         if (COUNT($this->filters) > 0)
         {
           $evaluations->inObjectives($this->filters['objectives'], $this->filters['filtersType']['evaluationsObjectives']);
-          $evaluations->inObjectives($this->filters['subobjectives'], $this->filters['filtersType']['evaluationsSubobjectives']);
+          $evaluations->inSubobjectives($this->filters['subobjectives'], $this->filters['filtersType']['evaluationsSubobjectives']);
 
           if (COUNT($this->filters["dates"]) > 0)
           {            
@@ -128,6 +128,7 @@ class EvaluationsExecutesExcel implements FromCollection, WithHeadings, WithMapp
     public function map($data): array
     {
       $values = [
+        $data->evaluation_contract_id.$data->item_id,
         $data->name,
         $data->type,
         //$data->user_creator,
@@ -163,6 +164,7 @@ class EvaluationsExecutesExcel implements FromCollection, WithHeadings, WithMapp
     public function headings(): array
     {
       $columns = [
+        'Código evaluación',
         'Nombre',
         'Tipo',
         //'Usuario creador',

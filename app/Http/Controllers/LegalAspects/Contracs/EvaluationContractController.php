@@ -626,7 +626,7 @@ class EvaluationContractController extends Controller
                     s.description as subobjective,
                     COUNT(DISTINCT ec.id) as t_evaluations,
                     SUM(IF(eir.value = 'NO' OR eir.value = 'pending', 1, 0)) AS t_no_cumple,
-                    SUM(IF(eir.value = 'SI' OR eir.value = 'N/A' , 1,
+                    SUM(IF(eir.value = 'SI', 1,
                             IF(eir.value IS NULL AND eir.item_id IS NOT NULL, 1,
                                 IF(eir.value IS NULL AND eir.item_id IS NULL,
                                     (SELECT 
@@ -778,7 +778,7 @@ class EvaluationContractController extends Controller
                     s.description as subobjective,
                     COUNT(DISTINCT ec.id) as t_evaluations,
                     SUM(IF(eir.value = 'NO' OR eir.value = 'pending', 1, 0)) AS t_no_cumple,
-                    SUM(IF(eir.value = 'SI' OR eir.value = 'N/A', 1,
+                    SUM(IF(eir.value = 'SI', 1,
                             IF(eir.value IS NULL AND eir.item_id IS NOT NULL, 1,
                                 IF(eir.value IS NULL AND eir.item_id IS NULL,
                                     (SELECT 
