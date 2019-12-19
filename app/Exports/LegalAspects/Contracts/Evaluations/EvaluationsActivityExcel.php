@@ -28,11 +28,13 @@ class EvaluationsActivityExcel implements FromQuery, WithMapping, WithHeadings, 
     protected $filters;
     protected $items_id;
     protected $module_id;
+    protected $evaluation_contract_id;
 
-    public function __construct($company_id, $filters)
+    public function __construct($company_id, $filters, $evaluation_contract_id = NULL)
     {
         $this->company_id = $company_id;
         $this->filters = $filters;
+        $this->evaluation_contract_id = $evaluation_contract_id;
         $this->module_id = Module::where('name', 'contracts')->first()->id;
     }
 
@@ -61,12 +63,17 @@ class EvaluationsActivityExcel implements FromQuery, WithMapping, WithHeadings, 
         if (COUNT($this->filters) > 0)
         {
           $activities->inObjectives($this->filters['objectives'], $this->filters['filtersType']['evaluationsObjectives']);
-          $activities->inObjectives($this->filters['subobjectives'], $this->filters['filtersType']['evaluationsSubobjectives']);
+          $activities->inSubobjectives($this->filters['subobjectives'], $this->filters['filtersType']['evaluationsSubobjectives']);
 
           if (COUNT($this->filters["dates"]) > 0)
           {            
             $activities->betweenDate($this->filters["dates"]);
           }
+        }
+
+        if ($this->evaluation_contract_id)
+        {
+          $activities->where('sau_ct_evaluation_contract_items.evaluation_id', $this->evaluation_contract_id);
         }
 
         return $activities;
