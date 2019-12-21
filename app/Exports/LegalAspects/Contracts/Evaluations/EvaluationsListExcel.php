@@ -54,7 +54,7 @@ class EvaluationsListExcel implements FromQuery, WithMapping, WithHeadings, With
         if (COUNT($this->filters) > 0)
         {
           $evaluations->inObjectives($this->filters['objectives'], $this->filters['filtersType']['evaluationsObjectives']);
-          $evaluations->inObjectives($this->filters['subobjectives'], $this->filters['filtersType']['evaluationsSubobjectives']);
+          $evaluations->inSubobjectives($this->filters['subobjectives'], $this->filters['filtersType']['evaluationsSubobjectives']);
 
           if (COUNT($this->filters["dates"]) > 0)
           {            

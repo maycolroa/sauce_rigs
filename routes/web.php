@@ -172,8 +172,10 @@ Route::middleware(['auth'])->group(function () {
         Route::post('dmReportMonths', 'IndustrialSecure\DangerMatrix\DangerMatrixReportHistoryController@multiselect');
 
         Route::prefix('evaluations')->group(function () {
+          Route::post('evaluations', 'LegalAspects\Contracs\EvaluationController@multiselectEvaluations');
           Route::post('objectives', 'LegalAspects\Contracs\EvaluationController@multiselectObjectives');
           Route::post('subobjectives', 'LegalAspects\Contracs\EvaluationController@multiselectSubobjectives');
+          Route::post('items', 'LegalAspects\Contracs\EvaluationController@multiselectItems');
           Route::post('qualificationTypes', 'LegalAspects\Contracs\TypeRatingController@multiselect');
         });
 

@@ -31,6 +31,7 @@ class EvaluationExcel implements WithMultipleSheets
 
         $sheets[] = new EvaluationsListExcel($this->company_id, $this->filters, $this->evaluation_contract_id);
         $sheets[] = new EvaluationsExecutesExcel($this->company_id, $this->filters, $this->evaluation_contract_id);
+        $sheets[] = new EvaluationsActivityExcel($this->company_id, $this->filters, $this->evaluation_contract_id);
 
         return $sheets;
     }

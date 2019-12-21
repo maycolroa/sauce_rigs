@@ -24,6 +24,12 @@ export default [
     {
       name: 'legalaspects-evaluations-report',
       filters: [
+      {
+          url: '/selects/evaluations/evaluations',
+          key: 'evaluationsEvaluations',
+          type: 'select',
+          label: 'Evaluaciones'
+        },
         {
           url: '/selects/evaluations/objectives',
           key: 'evaluationsObjectives',
@@ -37,10 +43,22 @@ export default [
           label: 'Subtemas'
         },
         {
+          url: '/selects/evaluations/items',
+          key: 'evaluationsItems',
+          type: 'select',
+          label: 'Items'
+        },
+        {
           url: '/selects/evaluations/qualificationTypes',
           key: 'qualificationTypes',
           type: 'select',
-          label: 'Tipo de calificación'
+          label: 'Proceso a evaluar'
+        },
+        {
+          url: '/selects/contractors',
+          key: 'contracts',
+          type: 'select',
+          label: 'Contratistas'
         },
         {
           key: 'dateRange',

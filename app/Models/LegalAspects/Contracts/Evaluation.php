@@ -92,6 +92,86 @@ class Evaluation extends Model
     }
 
     /**
+     * filters checks through the given items
+     * @param  Illuminate\Database\Eloquent\Builder $query
+     * @param  array $items
+     * @return Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeInItems($query, $items, $typeSearch = 'IN')
+    {
+        $ids = [];
+
+        foreach ($items as $key => $value)
+        {
+            $ids[] = $value;
+        }
+
+        if(COUNT($ids) > 0)
+        {
+            $ids = explode(",", implode(",", $ids));
+
+            if ($typeSearch == 'IN')
+                $query->whereIn('sau_ct_items.id', $ids);
+
+            else if ($typeSearch == 'NOT IN')
+                $query->whereNotIn('sau_ct_items.id', $ids);
+        }
+
+        return $query;
+    }
+
+
+    /**
+     * filters checks through the given evaluations
+     * @param  Illuminate\Database\Eloquent\Builder $query
+     * @param  array $evaluations
+     * @return Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeInEvaluations($query, $evaluations, $typeSearch = 'IN')
+    {
+        $ids = [];
+
+        foreach ($evaluations as $key => $value)
+        {
+            $ids[] = $value;
+        }
+
+        if(COUNT($ids) > 0)
+        {
+            $ids = explode(",", implode(",", $ids));
+
+            if ($typeSearch == 'IN')
+                $query->whereIn('sau_ct_evaluations.id', $ids);
+
+            else if ($typeSearch == 'NOT IN')
+                $query->whereNotIn('sau_ct_evaluations.id', $ids);
+        }
+
+        return $query;
+    }
+
+    /**
+     * filters checks through the given contracts
+     * @param  Illuminate\Database\Eloquent\Builder $query
+     * @param  array $contracts
+     * @return Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeInContracts($query, $contracts, $typeSearch = 'IN')
+    {
+        if (COUNT($contracts) > 0)
+        {
+            if ($typeSearch == 'IN')
+                $query->whereIn('sau_ct_item_qualification_contract.contract_id', $contracts);
+
+            else if ($typeSearch == 'NOT IN')
+                $query->whereNotIn('sau_ct_item_qualification_contract.contract_id', $contracts);
+        }
+
+        return $query;
+    }
+
+
+    /**
      * filters checks through the given date
      * @param  Illuminate\Database\Eloquent\Builder $query
      * @param  array $dates
