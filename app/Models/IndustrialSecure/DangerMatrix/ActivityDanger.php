@@ -98,4 +98,22 @@ class ActivityDanger extends Model
 
         return $query;
     }
+
+    public function setDangerGeneratedAttribute($value)
+    {
+      if($value != null)
+      {
+        $danger_generated = [];
+
+        if (is_array($value)) //Formulario
+        {
+          foreach($value as $v)
+          {
+            array_push($danger_generated, $v["value"]);
+          }
+          
+          $this->attributes['danger_generated'] = implode(",", $danger_generated);
+        }
+      }
+    }
 }

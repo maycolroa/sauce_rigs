@@ -10,17 +10,21 @@ use Illuminate\Support\Facades\Storage;
 use App\Http\Requests\LegalAspects\Contracts\EvaluationContractRequest;
 use App\Models\LegalAspects\Contracts\Evaluation;
 use App\Models\LegalAspects\Contracts\EvaluationContract;
+use App\Models\LegalAspects\Contracts\ContractLesseeInformation;
 use App\Models\LegalAspects\Contracts\Interviewee;
 use App\Models\LegalAspects\Contracts\Item;
 use App\Models\LegalAspects\Contracts\Observation;
 use App\Models\LegalAspects\Contracts\EvaluationFile;
 use App\Models\LegalAspects\Contracts\EvaluationContractItem;
+use App\Models\General\Module;
+use App\Models\LegalAspects\Contracts\TypeRating;
 use App\Jobs\LegalAspects\Contracts\Evaluations\EvaluationContractReportExportJob;
 use App\Jobs\LegalAspects\Contracts\Evaluations\EvaluationExportJob;
 use App\Jobs\LegalAspects\Contracts\Evaluations\EvaluationSendNotificationJob;
 use Carbon\Carbon;
 use DB;
 use Validator;
+use PDF;
 
 class EvaluationContractController extends Controller
 {
@@ -832,4 +836,28 @@ class EvaluationContractController extends Controller
             return $this->respondHttp500();
         }
     }
+
+   /* public function downloadPdf(EvaluationContract $evaluationContract)
+    {
+        $evaluations = $this->getDataExportPdf($evaluationContract->id);
+
+        PDF::setOptions(['dpi' => 150, 'defaultFont' => 'sans-serif']);
+
+        $pdf = PDF::loadView('pdf.evaluationContract', ['evaluations' => $evaluations] );
+
+        return $pdf->stream('evaluacion.pdf');
+    }
+
+     public function getDataExportPdf($id)
+    {
+        $evaluationContract = EvaluationContract::findOrFail($id);
+        $evaluationContract->evaluators;
+        $evaluationContract->contract;
+        $evaluationContract->interviewees;
+        $evaluation_base = $this->getEvaluation($evaluationContract->evaluation_id);
+
+        $evaluationContract->evaluation = $this->setValuesEvaluation($evaluationContract, $evaluation_base);
+
+        return $evaluationContract;
+    }*/
 }

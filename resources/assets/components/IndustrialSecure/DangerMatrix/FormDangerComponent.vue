@@ -17,7 +17,7 @@
                     </vue-ajax-advanced-select>
                 </b-form-row>
                 <b-form-row>
-                  <vue-advanced-select :disabled="viewOnly" class="col-md-6" v-model="danger.danger_generated" :multiple="false" :options="dangerGenerated" :hide-selected="false" name="danger_generated" :error="form.errorsFor(`activities.${indexActivity}.dangers.${indexDanger}.danger_generated`)" label="Peligro Generado" placeholder="Seleccione el peligro generado">
+                  <vue-advanced-select :disabled="viewOnly" class="col-md-6" v-model="danger.danger_generated" :multiple="true" :options="dangerGenerated" :hide-selected="false" name="danger_generated" :error="form.errorsFor(`activities.${indexActivity}.dangers.${indexDanger}.danger_generated`)" label="Peligro Generado" placeholder="Seleccione el peligro generado">
                       </vue-advanced-select>
                   <vue-ajax-advanced-select :disabled="viewOnly" class="col-md-6" v-model="danger.possible_consequences_danger" name="possible_consequences_danger" :error="form.errorsFor(`activities.${indexActivity}.dangers.${indexDanger}.possible_consequences_danger`)" label="Posibles consecuencias del peligro" placeholder="Seleccione las posibles consecuencias del peligro" :url="tagsPossibleConsequencesDangerDataUrl" :multiple="true" :allowEmpty="true" :taggable="true">
                       </vue-ajax-advanced-select>
