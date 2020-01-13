@@ -501,7 +501,7 @@ class DangerMatrixController extends Controller
             DB::commit();
 
         } catch (\Exception $e) {
-            //\Log::info($e);
+            \Log::info($e->getMessage());
             //$msg = $e->getMessage();
             DB::rollback();
             return $this->respondHttp500();

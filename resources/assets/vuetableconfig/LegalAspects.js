@@ -267,7 +267,24 @@ export default [
                 },
                 permission: 'contracts_evaluations_export'
             }],
-        }],
+        },
+        {
+            type: 'simpleDownload',
+            buttons: [{
+            name: 'downloadFile',
+            config: {
+              color: 'outline-success',
+              borderless: true,
+              icon: 'fas fa-file-pdf',
+              title: 'Descargar Evaluación en PDF'
+            },
+            data: {
+              action: '/legalAspects/evaluationContract/downloadPdf/',
+              id: 'id'
+            },
+            permission: 'contracts_evaluations_export'
+            }],
+        },],
       configuration: {
           urlData: '/legalAspects/evaluationContract/data',
           filterColumns: true,
