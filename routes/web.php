@@ -323,6 +323,8 @@ Route::middleware(['auth'])->group(function () {
         Route::post('inspection/data', 'IndustrialSecure\DangerousConditions\Inspections\InspectionController@data');
         Route::ApiResource('inspection', 'IndustrialSecure\DangerousConditions\Inspections\InspectionController');
 
+        Route::get('inspection/downloadPdf/{id}', 'IndustrialSecure\DangerousConditions\Inspections\InspectionQualificationController@downloadPdf');
+        
         Route::get('inspection/qualification/downloadImage/{id}/{column}', 'IndustrialSecure\DangerousConditions\Inspections\InspectionQualificationController@downloadImage');
         Route::post('inspection/qualification/saveImage', 'IndustrialSecure\DangerousConditions\Inspections\InspectionQualificationController@saveImage');
         Route::post('inspection/qualification/saveQualification', 'IndustrialSecure\DangerousConditions\Inspections\InspectionQualificationController@saveQualification');
@@ -391,6 +393,7 @@ Route::middleware(['auth'])->group(function () {
       Route::get('evaluationContract/downloadFile/{evaluationFile}', 'LegalAspects\Contracs\EvaluationContractController@downloadFile');
       Route::post('evaluationContract/data', 'LegalAspects\Contracs\EvaluationContractController@data');
       Route::get('evaluationContract/download/{evaluationContract}', 'LegalAspects\Contracs\EvaluationContractController@download');
+      Route::get('evaluationContract/downloadPdf/{evaluationContract}', 'LegalAspects\Contracs\EvaluationContractController@downloadPdf');
       Route::get('evaluationContract/getData/{evaluationContract}', 'LegalAspects\Contracs\EvaluationContractController@getData');
       Route::post('evaluationContract/report', 'LegalAspects\Contracs\EvaluationContractController@report');
       Route::post('evaluationContract/exportReport', 'LegalAspects\Contracs\EvaluationContractController@exportReport');

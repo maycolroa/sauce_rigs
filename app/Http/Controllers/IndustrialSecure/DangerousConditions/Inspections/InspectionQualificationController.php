@@ -18,6 +18,7 @@ use App\Facades\ActionPlans\Facades\ActionPlan;
 use Carbon\Carbon;
 use Validator;
 use DB;
+use PDF;
 
 class InspectionQualificationController extends Controller
 {
@@ -93,72 +94,77 @@ class InspectionQualificationController extends Controller
     {
         try
         {
-            $qualification = InspectionItemsQualificationAreaLocation::findOrFail($id);
-
-            $inspectionsReady = InspectionItemsQualificationAreaLocation::select(
-                    'sau_ph_inspection_items_qualification_area_location.*',
-                    DB::raw('CONCAT(sau_ct_qualifications.name, " (",  sau_ct_qualifications.description, ")") AS qualification'),
-                    'sau_ph_inspection_section_items.description AS item_name',
-                    'sau_ph_inspection_sections.name AS section_name',
-                    'sau_ph_inspection_sections.id AS section_id'
-                )
-                ->leftJoin('sau_ct_qualifications', 'sau_ct_qualifications.id', 'sau_ph_inspection_items_qualification_area_location.qualification_id')
-                ->join('sau_ph_inspection_section_items', 'sau_ph_inspection_section_items.id', 'sau_ph_inspection_items_qualification_area_location.item_id')
-                ->join('sau_ph_inspection_sections', 'sau_ph_inspection_sections.id', 'sau_ph_inspection_section_items.inspection_section_id')
-                ->where('sau_ph_inspection_items_qualification_area_location.employee_headquarter_id', $qualification->employee_headquarter_id)
-                ->where('sau_ph_inspection_items_qualification_area_location.employee_area_id', $qualification->employee_area_id)
-                ->where('sau_ph_inspection_items_qualification_area_location.qualification_date', $qualification->qualification_date)
-                ->get();
-
-            $inspectionsReady = $inspectionsReady->groupBy('section_id');
-
-            $themes = collect([]);
-
-            foreach ($inspectionsReady as $themeKey => $itemsData)
-            {
-                $theme = collect([]);
-                $theme->put('key', Carbon::now()->timestamp + rand(1,10000));
-                $theme->put('name', $itemsData[0]->section_name);
-
-                $items = collect([]);
-                
-                foreach ($itemsData as $itemKey => $item)
-                {
-                    $itemRow = collect([]);
-                    $itemRow->put('key', Carbon::now()->timestamp + rand(1,10000));
-                    $itemRow->put('id_item_qualification', $item->id);
-                    $itemRow->put('description', $item->item_name);
-                    $itemRow->put('qualification', $item->qualification);
-                    $itemRow->put('find', $item->find);
-                    $itemRow->put('photo_1', $item->photo_1);
-                    $itemRow->put('old_1', $item->photo_1);
-                    $itemRow->put('path_1', Storage::disk('public')->url('industrialSecure/dangerousConditions/inspections/images/'. $item->photo_1));
-                    $itemRow->put('photo_2', $item->photo_2);
-                    $itemRow->put('old_2', $item->photo_2);
-                    $itemRow->put('path_2', Storage::disk('public')->url('industrialSecure/dangerousConditions/inspections/images/'. $item->photo_2));
-                    $itemRow->put('actionPlan', ActionPlan::model($item)->prepareDataComponent());
-                    $items->push($itemRow);
-                }
-                
-                $theme->put('items', $items);
-                $themes->push($theme);
-            }
-
-            $data = collect([]);
-            $data->put('inspection', $qualification->item->section->inspection->name);
-            $data->put('headquarter', $qualification->headquarter ? $qualification->headquarter->name : '');
-            $data->put('area', $qualification->area ? $qualification->area->name : '');
-            $data->put('created_at', (Carbon::createFromFormat('Y-m-d H:i:s', $qualification->item->section->inspection->created_at))->format('Y-m-d H:i:s'));
-            $data->put('qualification_date', $qualification->qualification_date);
-            $data->put('qualifier', $qualification->qualifier ? $qualification->qualifier->name : '');
-            $data->put('themes', $themes);
-
             return $this->respondHttp200([
-                'data' => $data,
+                'data' => $this->getInformationInspection($id),
             ]);
         } catch(Exception $e){
             $this->respondHttp500();
         }
+    }
+
+    public function getInformationInspection($id)
+    {
+        $qualification = InspectionItemsQualificationAreaLocation::findOrFail($id);
+
+        $inspectionsReady = InspectionItemsQualificationAreaLocation::select(
+                'sau_ph_inspection_items_qualification_area_location.*',
+                DB::raw('CONCAT(sau_ct_qualifications.name, " (",  sau_ct_qualifications.description, ")") AS qualification'),
+                'sau_ph_inspection_section_items.description AS item_name',
+                'sau_ph_inspection_sections.name AS section_name',
+                'sau_ph_inspection_sections.id AS section_id'
+            )
+            ->leftJoin('sau_ct_qualifications', 'sau_ct_qualifications.id', 'sau_ph_inspection_items_qualification_area_location.qualification_id')
+            ->join('sau_ph_inspection_section_items', 'sau_ph_inspection_section_items.id', 'sau_ph_inspection_items_qualification_area_location.item_id')
+            ->join('sau_ph_inspection_sections', 'sau_ph_inspection_sections.id', 'sau_ph_inspection_section_items.inspection_section_id')
+            ->where('sau_ph_inspection_items_qualification_area_location.employee_headquarter_id', $qualification->employee_headquarter_id)
+            ->where('sau_ph_inspection_items_qualification_area_location.employee_area_id', $qualification->employee_area_id)
+            ->where('sau_ph_inspection_items_qualification_area_location.qualification_date', $qualification->qualification_date)
+            ->get();
+
+        $inspectionsReady = $inspectionsReady->groupBy('section_id');
+
+        $themes = collect([]);
+
+        foreach ($inspectionsReady as $themeKey => $itemsData)
+        {
+            $theme = collect([]);
+            $theme->put('key', Carbon::now()->timestamp + rand(1,10000));
+            $theme->put('name', $itemsData[0]->section_name);
+
+            $items = collect([]);
+            
+            foreach ($itemsData as $itemKey => $item)
+            {
+                $itemRow = collect([]);
+                $itemRow->put('key', Carbon::now()->timestamp + rand(1,10000));
+                $itemRow->put('id_item_qualification', $item->id);
+                $itemRow->put('description', $item->item_name);
+                $itemRow->put('qualification', $item->qualification);
+                $itemRow->put('find', $item->find);
+                $itemRow->put('photo_1', $item->photo_1);
+                $itemRow->put('old_1', $item->photo_1);
+                $itemRow->put('path_1', Storage::disk('public')->url('industrialSecure/dangerousConditions/inspections/images/'. $item->photo_1));
+                $itemRow->put('photo_2', $item->photo_2);
+                $itemRow->put('old_2', $item->photo_2);
+                $itemRow->put('path_2', Storage::disk('public')->url('industrialSecure/dangerousConditions/inspections/images/'. $item->photo_2));
+                $itemRow->put('actionPlan', ActionPlan::model($item)->prepareDataComponent());
+                $items->push($itemRow);
+            }
+            
+            $theme->put('items', $items);
+            $themes->push($theme);
+        }
+
+        $data = collect([]);
+        $data->put('inspection', $qualification->item->section->inspection->name);
+        $data->put('headquarter', $qualification->headquarter ? $qualification->headquarter->name : '');
+        $data->put('area', $qualification->area ? $qualification->area->name : '');
+        $data->put('created_at', (Carbon::createFromFormat('Y-m-d H:i:s', $qualification->item->section->inspection->created_at))->format('Y-m-d H:i:s'));
+        $data->put('qualification_date', $qualification->qualification_date);
+        $data->put('qualifier', $qualification->qualifier ? $qualification->qualifier->name : '');
+        $data->put('themes', $themes);
+
+        return $data;
     }
 
     public function saveQualification(SaveQualificationRequest $request)
@@ -252,5 +258,27 @@ class InspectionQualificationController extends Controller
         $qualification = InspectionItemsQualificationAreaLocation::findOrFail($id);
 
         return Storage::disk('public')->download('industrialSecure/dangerousConditions/inspections/images/'. $qualification->$column);
+    }
+
+    public function downloadPdf($id)
+    {
+        $inspections = $this->getDataExportPdf($id);
+
+        PDF::setOptions(['dpi' => 150, 'defaultFont' => 'sans-serif']);
+
+        $pdf = PDF::loadView('pdf.inspectionsDangerousConditions', ['inspections' => $inspections] );
+
+        $pdf->setPaper('A4', 'landscape');
+
+        \Log::info($inspections);
+
+        return $pdf->download('inspeccion.pdf');
+    }
+
+    public function getDataExportPdf($id)
+    {
+        $inspection = $this->getInformationInspection($id);
+
+        return $inspection;
     }
 }

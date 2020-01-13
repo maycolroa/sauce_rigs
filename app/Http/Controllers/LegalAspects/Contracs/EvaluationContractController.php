@@ -837,7 +837,7 @@ class EvaluationContractController extends Controller
         }
     }
 
-   /* public function downloadPdf(EvaluationContract $evaluationContract)
+    public function downloadPdf(EvaluationContract $evaluationContract)
     {
         $evaluations = $this->getDataExportPdf($evaluationContract->id);
 
@@ -845,10 +845,12 @@ class EvaluationContractController extends Controller
 
         $pdf = PDF::loadView('pdf.evaluationContract', ['evaluations' => $evaluations] );
 
-        return $pdf->stream('evaluacion.pdf');
+        $pdf->setPaper('A4', 'landscape');
+
+        return $pdf->download('evaluacion.pdf');
     }
 
-     public function getDataExportPdf($id)
+    public function getDataExportPdf($id)
     {
         $evaluationContract = EvaluationContract::findOrFail($id);
         $evaluationContract->evaluators;
@@ -859,5 +861,5 @@ class EvaluationContractController extends Controller
         $evaluationContract->evaluation = $this->setValuesEvaluation($evaluationContract, $evaluation_base);
 
         return $evaluationContract;
-    }*/
+    }
 }

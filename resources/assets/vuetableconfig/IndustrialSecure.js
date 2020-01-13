@@ -630,6 +630,23 @@ export default [
           }]
       },
       {
+            type: 'simpleDownload',
+            buttons: [{
+            name: 'downloadFile',
+            config: {
+              color: 'outline-success',
+              borderless: true,
+              icon: 'fas fa-file-pdf',
+              title: 'Descargar inspección en PDF'
+            },
+            data: {
+              action: '/industrialSecurity/dangerousConditions/inspection/downloadPdf/',
+              id: 'id'
+            },
+            permission: 'ph_inspections_r'
+            }],
+      },
+      {
         type: 'base',
         buttons: [],
       }],
