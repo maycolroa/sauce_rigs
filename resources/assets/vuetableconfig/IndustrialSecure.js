@@ -122,6 +122,18 @@ export default [
         permission: 'dangerMatrix_u'
         }, {
         config: {
+            color: 'outline-success',
+            borderless: true,
+            icon: 'ion ion-ios-copy',
+            title: 'Clonar'
+        },
+        data: {
+            routePush: { name: 'industrialsecure-dangermatrix-clone' },
+            id: 'id',
+        },
+        permission: 'dangerMatrix_c'
+        }, {
+        config: {
             color: 'outline-info',
             borderless: true,
             icon: 'ion ion-md-eye',
@@ -555,7 +567,7 @@ export default [
             config: {
                 color: 'outline-success',
                 borderless: true,
-                icon: 'ion ion-md-create',
+                icon: 'ion ion-ios-copy',
                 title: 'Clonar'
             },
             data: {

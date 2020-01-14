@@ -90,7 +90,7 @@ export default [
                 config: {
                     color: 'outline-success',
                     borderless: true,
-                    icon: 'ion ion-md-create',
+                    icon: 'ion ion-ios-copy',
                     title: 'Clonar Evaluación'
                 },
                 data: {
@@ -256,7 +256,7 @@ export default [
             buttons: [{
                 name: 'downloadMatrix',
                 config: {
-                    color: 'outline-success',
+                    color: 'outline-danger',
                     borderless: true,
                     icon: 'ion ion-md-cloud-download',
                     title: 'Exportar'
