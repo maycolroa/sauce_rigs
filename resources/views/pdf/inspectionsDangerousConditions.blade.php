@@ -7,7 +7,8 @@
     <title>Document</title>
     <style>
         table {
-          font-family: arial, sans-serif;          width: 100%;
+          font-family: arial, sans-serif;          
+          width: 100%;
         }
 
         td, th {
