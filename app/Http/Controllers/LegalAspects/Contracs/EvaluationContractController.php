@@ -21,6 +21,7 @@ use App\Models\LegalAspects\Contracts\TypeRating;
 use App\Jobs\LegalAspects\Contracts\Evaluations\EvaluationContractReportExportJob;
 use App\Jobs\LegalAspects\Contracts\Evaluations\EvaluationExportJob;
 use App\Jobs\LegalAspects\Contracts\Evaluations\EvaluationSendNotificationJob;
+use App\Inform\LegalAspects\Contract\Evaluations\InformManagerEvaluationContract;
 use Carbon\Carbon;
 use DB;
 use Validator;
@@ -894,5 +895,59 @@ class EvaluationContractController extends Controller
         $evaluationContract->evaluation = $this->setValuesEvaluation($evaluationContract, $evaluation_base);
 
         return $evaluationContract;
+    }
+
+    public function multiselectBar()
+    {
+        $select = [
+            'Evaluaciones' => "evaluation", 
+            'Temas' => "objective",
+            'Subtemas' => "subobjective",
+            'Items' => "item",
+            'Proceso a evaluar' => "type_rating",
+            'Contratistas' => "contract",
+
+        ];
+    
+        return $this->multiSelectFormat(collect($select));
+    }
+
+    public function reportDinamicBar(Request $request)
+    {
+        $whereDates = '';
+
+        $objectives = $this->getValuesForMultiselect($request->evaluationsObjectives);
+        $subobjectives = $this->getValuesForMultiselect($request->evaluationsSubobjectives);
+        $qualificationTypes = $this->getValuesForMultiselect($request->qualificationTypes);
+        $evaluations = $this->getValuesForMultiselect($request->evaluationsEvaluations);
+        $items = $this->getValuesForMultiselect($request->evaluationsItems);
+        $contract = $this->getValuesForMultiselect($request->contracts);
+        $filtersType = $request->filtersType;
+
+        $whereObjectives = $this->scopeQueryReport('o', $objectives, $filtersType['evaluationsObjectives']);
+        $whereSubojectives = $this->scopeQueryReport('s', $subobjectives, $filtersType['evaluationsSubobjectives']);
+        $whereQualificationTypes = $this->scopeQueryReport('eir', $qualificationTypes, $filtersType['qualificationTypes'], 'type_rating_id');
+        $subWhereQualificationTypes = $this->scopeQueryReport('etr', $qualificationTypes, $filtersType['qualificationTypes'], 'type_rating_id');
+        $whereEvaluations = $this->scopeQueryReport('e', $evaluations, $filtersType['evaluationsEvaluations']);
+        $whereItems = $this->scopeQueryReport('i', $items, $filtersType['evaluationsItems']);
+        $whereContract = $this->scopeQueryReport('ec', $contract, $filtersType['contracts'], 'contract_id');
+
+        if (isset($request->dateRange) && $request->dateRange)
+        {
+            $dates_request = explode('/', $request->dateRange);
+            $dates = [];
+
+            if (COUNT($dates_request) == 2)
+            {
+                array_push($dates, (Carbon::createFromFormat('D M d Y',$dates_request[0]))->format('Y-m-d 00:00:00'));
+                array_push($dates, (Carbon::createFromFormat('D M d Y',$dates_request[1]))->format('Y-m-d 23:59:59'));
+
+                $whereDates = " AND ec.evaluation_date BETWEEN '".$dates[0]."' AND '".$dates[1]."'";
+            }
+        }
+
+        $report = new InformManagerEvaluationContract($this->company, $whereContract, $whereEvaluations, $whereObjectives, $whereSubojectives, $whereItems, $subWhereQualificationTypes, $whereDates);
+
+        return $this->respondHttp200($report->getInformData());
     }
 }
