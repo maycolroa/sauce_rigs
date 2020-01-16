@@ -3,6 +3,7 @@
 namespace App\Models\LegalAspects\Contracts;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
 
 class EvaluationFile extends Model
 {
@@ -33,5 +34,10 @@ class EvaluationFile extends Model
     public function path_donwload()
     {
         return "{$this->path_client(false)}/{$this->file}";
+    }
+
+    public function path_image()
+    {
+        return Storage::disk('public')->url($this->path_donwload());
     }
 }

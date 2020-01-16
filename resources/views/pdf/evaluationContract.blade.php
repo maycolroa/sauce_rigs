@@ -7,7 +7,9 @@
     <title>Document</title>
     <style>
         table {
-          font-family: arial, sans-serif;          width: 100%;
+          font-family: arial, 
+          sans-serif;          
+          width: 100%;
         }
 
         td, th {
@@ -38,7 +40,7 @@
 
     </style>
 </head>
-<body style="margin: 50px; margin-top: 0px;">
+<body style="margin: 20px; margin-top: 0px;">
     <div style="page-break-inside: avoid;">
         <h3> Fecha de Evaluación: {{$evaluations->evaluation_date}}</h3>
         <h3>Contratista: {{$evaluations->contract->social_reason}}</h3>
@@ -173,7 +175,19 @@
                                                                 @foreach($item->ratings as $rating)
                                                                 <td>{{$rating["value"] ? ($rating["value"] == 'pending' ? 'NO' : $rating["value"]) : 'N/A'}}</td>
                                                                 @endforeach
-                                                            </tr>                    
+                                                            </tr>
+                                                            @if(COUNT($item->files) > 0)
+                                                            
+                                                                @foreach($item->files_pdf as $row)
+                                                                    <tr>
+                                                                    @foreach($row as $col)
+                                                                        <td style="border-right: none;">
+                                                                            <img width="200" height="150" src="{{$col}}">
+                                                                        </td>
+                                                                    @endforeach
+                                                                    </tr>
+                                                                @endforeach
+                                                            @endif                   
                                                             @endforeach
                                                             <tr>
                                                                 <td>Porcentaje de cumplimiento</td>
@@ -198,7 +212,8 @@
         </thead>
     </table>
     </div>
-    <br><br>
+
+    <br><br><br>
 
     <div style="page-break-inside: avoid;">
         <table>
@@ -233,6 +248,8 @@
             </thead>
         </table>   
     </div>
+
+    <br><br>
 
     <div style="page-break-inside: avoid;">
         <table>

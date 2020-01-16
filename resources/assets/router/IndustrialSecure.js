@@ -91,6 +91,14 @@ export default [{
             import('@/views/IndustrialSecure/dangerMatrix/create')
         },
       ]),
+      ...middleware({ 'check-permission': 'dangerMatrix_c' }, [
+        {
+          name: 'industrialsecure-dangermatrix-clone',
+          path: 'dangermatrix/clone',
+          component: () =>
+            import('@/views/IndustrialSecure/dangerMatrix/clone')
+        },
+      ]),
       ...middleware({ 'check-permission': 'dangerMatrix_u' }, [
         {
           name: 'industrialsecure-dangermatrix-edit',

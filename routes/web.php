@@ -142,6 +142,7 @@ Route::middleware(['auth'])->group(function () {
         Route::post('diseaseOrigin', 'PreventiveOccupationalMedicine\Reinstatements\CheckController@multiselectDiseaseOrigin');
         Route::post('nextFollowDays', 'PreventiveOccupationalMedicine\Reinstatements\CheckController@multiselectNextFollowDays');
         Route::post('multiselectBar', 'PreventiveOccupationalMedicine\BiologicalMonitoring\AudiometryInformController@multiselectBar');
+        Route::post('multiselectBarEvaluations', 'LegalAspects\Contracs\EvaluationContractController@multiselectBar');
         Route::post('multiselectBarPercentage', 'PreventiveOccupationalMedicine\BiologicalMonitoring\AudiometryInformController@multiselectBarPercentage');
         Route::post('dmActivities', 'IndustrialSecure\Activities\ActivityController@multiselect');
         Route::post('dmDangers', 'IndustrialSecure\Dangers\DangerController@multiselect');
@@ -396,6 +397,7 @@ Route::middleware(['auth'])->group(function () {
       Route::get('evaluationContract/downloadPdf/{evaluationContract}', 'LegalAspects\Contracs\EvaluationContractController@downloadPdf');
       Route::get('evaluationContract/getData/{evaluationContract}', 'LegalAspects\Contracs\EvaluationContractController@getData');
       Route::post('evaluationContract/report', 'LegalAspects\Contracs\EvaluationContractController@report');
+      Route::post('evaluationContract/reportDinamic', 'LegalAspects\Contracs\EvaluationContractController@reportDinamicBar');
       Route::post('evaluationContract/exportReport', 'LegalAspects\Contracs\EvaluationContractController@exportReport');
       Route::post('evaluationContract/getTotales', 'LegalAspects\Contracs\EvaluationContractController@getTotales');
       Route::ApiResource('evaluationContract', 'LegalAspects\Contracs\EvaluationContractController');
