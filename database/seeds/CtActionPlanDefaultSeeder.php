@@ -57,7 +57,26 @@ class CtActionPlanDefaultSeeder extends Seeder
             'Documentar el profesiograma o perfil ocupacional de los cargos de la empresa especificando la frecuencia',
             'Comunicar a los trabajadores el resultado de las evaluaciones médicas ocupacionales',
             'Solicitar certificado de custodía de historias clinicas a proveedor o IPS que realiza los exámenes médicos ocupacionales',
-            'Documentar'
+            'Documentar procedimiento para la gestión y seguimiento de recomendaciones médicas y restricciones laborales',
+            'Divulgar la política a todo el personal',
+            'Documentar un programa de estilos de vida saludable',
+            'Diseñar campañas para la prevención del consumo de alcohol, tabado y drogas',
+            'Garantizar el suministro de agua potable, servicios sanitarios, mecanismos para disponer excretas y basuras',
+            'Disponer de los elementos necesarios para la disposición de residuos sólidos, líquidos y gaseosos',
+            'Reportar los accidentes de trabajo y enfermedades laborales a la ARL',
+            'Realizar reporte de los accidentes de trabajo a la EPS a la que se encuentre afiliado el trabajador',
+            'Realizar reporte de los accidentes graves y mortales a la Dirección Territorial del Ministerio de Trabajo',
+            'Investigar los incidentes de trabajo con la participación del COPASST',
+            'Investigar los accidentes de trabajo con la participación del COPASST',
+            'Investigar los accidentes graves y mortales con participación del COPASST y de profesional con licencia en SST con alcance de investigación de accidentes de trabajo',
+            'Registrar estádisticamente los accidentes de trabajo y enfermedades laborales',
+            'Realizar análisis del registro estadistico de accidentes de trabajo y enfermedades laborales',
+            'Realizar cálculo de indicador de frecuencia de accidentalidad',
+            'Realizar medición de indicadores de severidad de la accidentalidad',
+            'Realizar medición de la mortalidad de los accidentes de trabajo',
+            'Realizar medición de la prevalencia de la enfermedad laboral',
+            'Realizar medición de la incidencia de la enfermedad laboral',
+            'Medir el ausentismo global por incapacidades de origen laboral y común'
         ];
 
         DB::beginTransaction();

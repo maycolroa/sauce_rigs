@@ -879,8 +879,6 @@ class EvaluationContractController extends Controller
 
         $pdf->setPaper('A3', 'landscape');
 
-        \Log::info($evaluations->evaluation->objectives[1]->subobjectives[0]->items[0]);
-
         return $pdf->download('evaluacion.pdf');
     }
 
@@ -926,8 +924,8 @@ class EvaluationContractController extends Controller
 
         $whereObjectives = $this->scopeQueryReport('o', $objectives, $filtersType['evaluationsObjectives']);
         $whereSubojectives = $this->scopeQueryReport('s', $subobjectives, $filtersType['evaluationsSubobjectives']);
-        $whereQualificationTypes = $this->scopeQueryReport('eir', $qualificationTypes, $filtersType['qualificationTypes'], 'type_rating_id');
         $subWhereQualificationTypes = $this->scopeQueryReport('etr', $qualificationTypes, $filtersType['qualificationTypes'], 'type_rating_id');
+        $whereQualificationTypes = $this->scopeQueryReport('eir', $qualificationTypes, $filtersType['qualificationTypes'], 'type_rating_id');
         $whereEvaluations = $this->scopeQueryReport('e', $evaluations, $filtersType['evaluationsEvaluations']);
         $whereItems = $this->scopeQueryReport('i', $items, $filtersType['evaluationsItems']);
         $whereContract = $this->scopeQueryReport('ec', $contract, $filtersType['contracts'], 'contract_id');
@@ -946,7 +944,7 @@ class EvaluationContractController extends Controller
             }
         }
 
-        $report = new InformManagerEvaluationContract($this->company, $whereContract, $whereEvaluations, $whereObjectives, $whereSubojectives, $whereItems, $subWhereQualificationTypes, $whereDates);
+        $report = new InformManagerEvaluationContract($this->company, $whereContract, $whereEvaluations, $whereObjectives, $whereSubojectives, $whereItems, $whereQualificationTypes, $whereDates, $subWhereQualificationTypes);
 
         return $this->respondHttp200($report->getInformData());
     }
