@@ -61,20 +61,20 @@
                                 ref=""/>
                         </div>
                     </b-row>
-                    <!--<b-row>
+                    <b-row>
                         <b-col class="text-center" style="padding-bottom: 15px;">
-                            <h4>Cumplimiento de evaluaciones</h4>
+                            <h4>Porcentaje de Cumplimiento</h4>
                         </b-col>
                     </b-row>
                     <b-row>
                         <div class="col-md-12">
-                            <chart-bar 
+                            <chart-bar-compliance 
                                 :chart-data="complianceData"
-                                title="Cumplimiento por evaluación"
+                                title="Porcentaje de Cumplimiento"
                                 color-line="red"
                                 ref=""/>
                         </div>
-                    </b-row>-->
+                    </b-row>
                 </b-card>
             </b-col>
         </b-row>
@@ -86,6 +86,7 @@
 import Alerts from '@/utils/Alerts.js';
 import VueAdvancedSelect from "@/components/Inputs/VueAdvancedSelect.vue";
 import ChartBar from '@/components/ECharts/ChartBar.vue';
+import ChartBarCompliance from '@/components/ECharts/ChartBarCompliance.vue';
 import GlobalMethods from '@/utils/GlobalMethods.js';
 
 export default {
@@ -95,6 +96,7 @@ export default {
     },
     components:{
         VueAdvancedSelect,
+        ChartBarCompliance,
         ChartBar
     },
     data () {

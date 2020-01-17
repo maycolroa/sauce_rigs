@@ -78,7 +78,8 @@
             "Documentar la política del SG-SST garantizando que de cumplimiento a los requisitos",
             "Firmar y fechar la política del SG-SST",
             "Evaluar la política del SG-SST",
-            "Divulgar la política del SG-SST al COPASST"
+            "Divulgar la política del SG-SST al COPASST",
+            "Divulgar la política a todo el personal"
         ]
     },
     {
@@ -181,7 +182,85 @@
     {
         "item_name": "Restricciones y recomendaciones médico laborales",
         "activities": [
-            "Documentar"
+            "Documentar procedimiento para la gestión y seguimiento de recomendaciones médicas y restricciones laborales"
         ]
-    }
+    },
+    {
+        "item_name": "Estilos de vida y entorno saludable",
+        "activities": [
+            "Documentar un programa de estilos de vida saludable",
+            "Diseñar campañas para la prevención del consumo de alcohol, tabado y drogas"
+        ]
+    },
+    {
+        "item_name": "Servicios de higiene",
+        "activities": [
+            "Garantizar el suministro de agua potable, servicios sanitarios, mecanismos para disponer excretas y basuras"
+        ]
+    },
+    {
+        "item_name": "Manejo de residuos",
+        "activities": [
+            "Disponer de los elementos necesarios para la disposición de residuos sólidos, líquidos y gaseosos"
+        ]
+    },    
+    {
+        "item_name": "Reporte de accidentes de trabajo y enfermedades laborales",
+        "activities": [
+            "Reportar los accidentes de trabajo y enfermedades laborales a la ARL",
+            "Realizar reporte de los accidentes de trabajo a la EPS a la que se encuentre afiliado el trabajador",
+            "Realizar reporte de los accidentes graves y mortales a la Dirección Territorial del Ministerio de Trabajo"
+        ]
+    },
+    {
+        "item_name": "Investigación de incidentes, accidentes de trabajo y enfermedases cuando sean diagnósticadas como laborales",
+        "activities": [
+            "Investigar los incidentes de trabajo con la participación del COPASST",
+            "Investigar los accidentes de trabajo con la participación del COPASST",
+            "Investigar los accidentes graves y mortales con participación del COPASST y de profesional con licencia en SST con alcance de investigación de accidentes de trabajo"
+        ]
+    },
+    {
+        "item_name": "Registro y análisis estadístico de accidentes de traabjo y enfermedades laborales",
+        "activities": [
+            "Registrar estádisticamente los accidentes de trabajo y enfermedades laborales",
+            "Realizar análisis del registro estadistico de accidentes de trabajo y enfermedades laborales"
+        ]
+    },
+    {
+        "item_name": "Frecuencia de accidentalidad",
+        "activities": [
+            "Realizar cálculo de indicador de frecuencia de accidentalidad"
+        ]
+    },
+    {
+        "item_name": "Severidad de accidentalidad",
+        "activities": [
+            "Realizar medición de indicadores de severidad de la accidentalidad"
+        ]
+    },
+    {
+        "item_name": "Proporción de accidentes de trabjao mortales",
+        "activities": [
+            "Realizar medición de la mortalidad de los accidentes de trabajo"
+        ]
+    },
+    {
+        "item_name": "Prevalencia de la enfermedad laboral",
+        "activities": [
+            "Realizar medición de la prevalencia de la enfermedad laboral"
+        ]
+    },
+    {
+        "item_name": "Incidencia de la enfermedad laboral",
+        "activities": [
+            "Realizar medición de la incidencia de la enfermedad laboral"
+        ]
+    },
+    {
+        "item_name": "Ausentismo por causa médica",
+        "activities": [
+            "Medir el ausentismo global por incapacidades de origen laboral y común"
+        ]
+    },
 ]
