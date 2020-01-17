@@ -189,7 +189,7 @@
         "item_name": "Estilos de vida y entorno saludable",
         "activities": [
             "Documentar un programa de estilos de vida saludable",
-            "Diseñar campañas para la prevención del consumo de alcohol, tabado y drogas"
+            "Diseñar campañas para la prevención del consumo de alcohol, tabaco y drogas"
         ]
     },
     {
@@ -263,4 +263,48 @@
             "Medir el ausentismo global por incapacidades de origen laboral y común"
         ]
     },
+    {
+        "item_name": "Metodología para la identificación de peligros, evaluación y valoración de riesgos",
+        "activities": [
+            "Documentar el procedimiento para la identificación de peligros, evaluación y valoración de riesgos",
+            "Alinear la identificación de peligros, evaluación y valoración de riesgos de acuerdo a lo definido en la metodología descrita",
+        ]
+    },
+    {
+        "item_name": "Identificación de peligros y evaluación y valoración de riesgos con participación de todos los niveles de la empresa",
+        "activities": [
+            "Registrar la participación de los trabajadores en la identificación de peligros, evaluación y valoración de riesgos",
+            "Actualizar la identificación de peligros, evaluación y valoración de riesgos de acuerdo a los accidentes mortales y catastroficos",
+            "Realizar actualización anual de la identificación de peligros, evaluación y valoración de riesgos",
+        ]
+    },
+    {
+        "item_name": "Identificación de sustancias catalogadas como carcinogenas o con toxicidad aguda",
+        "activities": [
+            "Identificar las sustancias químicas cancerigenas utilizadas en el proceso",
+            "Priorizar en la identificación de peligros, evaluación y valoración de riesgos de los peligros químicos por la exposición a sustancias cancerigenas",
+        ]
+    },
+    {
+        "item_name": "Mediciones ambientales",
+        "activities": [
+            "Programar las mediciones ambientales necesarias en el plan de trabajo del SG-SST",
+            "Registrar los informes y resultados de las mediciones de higiene",
+            "Compartir con el COPASST los resultados de las evaluaciones ambientales",
+        ]
+    },
+    {
+        "item_name": "Medidas de prevención y control frente a peligros / riesgos identificados",
+        "activities": [
+            "Implementar las acciones de los peligros prioritariarios de acuerdo a la jerarquiización",
+            "Incluir las medidas de intervención en el plan de trabajo",
+        ]
+    },
+    {
+        "item_name": "Aplicación de medidas de prevención y control por parte de los trabajadores",
+        "activities": [
+            "Evidenciar el cumplimiento de las responsabilidades de los trabajadores (seguimiento comportamientos seguros, participación en capacitaciones, uso de EPP, etc)",
+        ]
+    },
+
 ]
