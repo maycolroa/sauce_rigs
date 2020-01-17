@@ -76,7 +76,7 @@ class CtActionPlanDefaultSeeder extends Seeder
             'Realizar medición de la mortalidad de los accidentes de trabajo',
             'Realizar medición de la prevalencia de la enfermedad laboral',
             'Realizar medición de la incidencia de la enfermedad laboral',
-            'Medir el ausentismo global por incapacidades de origen laboral y común'
+            'Medir el ausentismo global por incapacidades de origen laboral y común',
             'Documentar el procedimiento para la identificación de peligros, evaluación y valoración de riesgos',
             'Alinear la identificación de peligros, evaluación y valoración de riesgos de acuerdo a lo definido en la metodología descrita',
             'Registrar la participación de los trabajadores en la identificación de peligros, evaluación y valoración de riesgos',

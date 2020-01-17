@@ -50,7 +50,7 @@ class ctItemActivitiesSeeder extends Seeder
 
         } catch (\Exception $e) {
             DB::rollback();
-            //$this->command->info($e->getMessage());
+            $this->command->info($e->getMessage());
             $this->command->info('Ocurrio un error al ejecutar la clase ctItemActivitiesSeeder');
         }
     }
