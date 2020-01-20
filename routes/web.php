@@ -178,6 +178,8 @@ Route::middleware(['auth'])->group(function () {
           Route::post('subobjectives', 'LegalAspects\Contracs\EvaluationController@multiselectSubobjectives');
           Route::post('items', 'LegalAspects\Contracs\EvaluationController@multiselectItems');
           Route::post('qualificationTypes', 'LegalAspects\Contracs\TypeRatingController@multiselect');
+          Route::post('years', 'LegalAspects\Contracs\EvaluationContractController@multiselectYears');
+          Route::post('months', 'LegalAspects\Contracs\EvaluationContractController@multiselectMounts');
         });
 
         Route::prefix('absenteeism')->group(function () {

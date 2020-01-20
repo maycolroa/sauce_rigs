@@ -693,7 +693,7 @@ class EvaluationContractController extends Controller
             ->make();
     }
 
-    private function scopeQueryReport($table, $data, $typeSearch, $primary = 'id')
+    private function scopeQueryReport($table, $data, $typeSearch, $primary = 'id', $specialColumn = false)
     {
         $ids = [];
         $query = '';
@@ -708,10 +708,10 @@ class EvaluationContractController extends Controller
             $ids = implode(",", $ids);
 
             if ($typeSearch == 'IN')
-                $query = " AND $table.$primary IN ($ids)";
+                $query = !$specialColumn ? " AND $table.$primary IN ($ids)" : " AND $specialColumn($table.$primary) IN ($ids)";
 
             else if ($typeSearch == 'NOT IN')
-                $query = " AND $table.$primary NOT IN ($ids)";
+                $query = !$specialColumn ? " AND $table.$primary NOT IN ($ids)" : " AND $specialColumn($table.$primary) NOT IN ($ids)";
         }
 
         return $query;
@@ -920,6 +920,8 @@ class EvaluationContractController extends Controller
         $evaluations = $this->getValuesForMultiselect($request->evaluationsEvaluations);
         $items = $this->getValuesForMultiselect($request->evaluationsItems);
         $contract = $this->getValuesForMultiselect($request->contracts);
+        $years = $this->getValuesForMultiselect($request->years);
+        $months = $this->getValuesForMultiselect($request->months);
         $filtersType = $request->filtersType;
 
         $whereObjectives = $this->scopeQueryReport('o', $objectives, $filtersType['evaluationsObjectives']);
@@ -929,6 +931,8 @@ class EvaluationContractController extends Controller
         $whereEvaluations = $this->scopeQueryReport('e', $evaluations, $filtersType['evaluationsEvaluations']);
         $whereItems = $this->scopeQueryReport('i', $items, $filtersType['evaluationsItems']);
         $whereContract = $this->scopeQueryReport('ec', $contract, $filtersType['contracts'], 'contract_id');
+        $whereYear = $this->scopeQueryReport('ec', $years, 'IN', 'evaluation_date', 'YEAR');
+        $whereMonth = $this->scopeQueryReport('ec', $months, 'IN', 'evaluation_date', 'month');
 
         if (isset($request->dateRange) && $request->dateRange)
         {
@@ -944,8 +948,37 @@ class EvaluationContractController extends Controller
             }
         }
 
-        $report = new InformManagerEvaluationContract($this->company, $whereContract, $whereEvaluations, $whereObjectives, $whereSubojectives, $whereItems, $whereQualificationTypes, $whereDates, $subWhereQualificationTypes);
+        $report = new InformManagerEvaluationContract($this->company, $whereContract, $whereEvaluations, $whereObjectives, $whereSubojectives, $whereItems, $whereQualificationTypes, $whereDates, $subWhereQualificationTypes, $whereYear, $whereMonth);
 
         return $this->respondHttp200($report->getInformData());
+    }
+
+    public function multiselectYears()
+    {
+        $years = EvaluationContract::selectRaw(
+            'DISTINCT YEAR(sau_ct_evaluation_contract.created_at) AS year'
+        )
+        ->orderBy('year')
+        ->pluck('year', 'year');
+
+      return $this->multiSelectFormat($years);
+    }
+
+    public function multiselectMounts()
+    {
+        $months = EvaluationContract::selectRaw(
+            'DISTINCT month(sau_ct_evaluation_contract.created_at) AS month'
+        )
+        ->orderBy('month')
+        ->get();
+
+        $months = $months->map(function($item, $key){
+            return [
+                "label" => trans("months.$item->month"),
+                "month" => $item->month
+            ];
+        });
+
+        return $this->multiSelectFormat($months->pluck('month', 'label'));
     }
 }
