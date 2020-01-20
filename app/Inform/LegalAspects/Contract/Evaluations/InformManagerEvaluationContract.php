@@ -49,12 +49,14 @@ class InformManagerEvaluationContract
     protected $filtersType;
     protected $dates;
     protected $subWhereQualificationTypes;
+    protected $year;
+    protected $month;
 
     /**
      * create an instance and set the attribute class
      * @param array $regionals
      */
-    function __construct($company = '',$contract = '', $evaluations = '', $objectives = '', $subobjectives = '', $items = '', $type_ratings = '', $dates = '', $subWhereQualificationTypes = '')
+    function __construct($company = '',$contract = '', $evaluations = '', $objectives = '', $subobjectives = '', $items = '', $type_ratings = '', $dates = '', $subWhereQualificationTypes = '', $year = '', $month = '')
     {
         $this->company = $company;
         $this->contract = $contract;
@@ -65,6 +67,8 @@ class InformManagerEvaluationContract
         $this->type_ratings = $type_ratings;
         $this->dates = $dates;
         $this->subWhereQualificationTypes = $subWhereQualificationTypes;
+        $this->year = $year;
+        $this->month = $month;
     }
 
     /**
@@ -107,7 +111,7 @@ class InformManagerEvaluationContract
                     LEFT JOIN sau_ct_evaluation_item_rating eir ON eir.item_id = i.id AND eir.evaluation_id = ec.id
                     LEFT JOIN sau_ct_types_ratings tr ON tr.id = eir.type_rating_id
                 
-                    WHERE ".$column." <> '' AND ".$column." IS NOT NULL AND ec.company_id = ".$this->company. $this->dates . $this->objectives . $this->subobjectives . $this->type_ratings . $this->contract . $this->items . $this->evaluations ."
+                    WHERE ".$column." <> '' AND ".$column." IS NOT NULL AND ec.company_id = ".$this->company. $this->dates . $this->objectives . $this->subobjectives . $this->type_ratings . $this->contract . $this->items . $this->evaluations . $this->year . $this->month ."
                     GROUP BY category
             ) AS t"))
         ->pluck('count', 'category');
@@ -156,7 +160,7 @@ class InformManagerEvaluationContract
                     LEFT JOIN sau_ct_evaluation_item_rating eir ON eir.item_id = i.id AND eir.evaluation_id = ec.id
                     LEFT JOIN sau_ct_types_ratings tr ON tr.id = eir.type_rating_id
 
-                    WHERE ".$column." <> '' AND ".$column." IS NOT NULL AND ec.company_id = ".$this->company. $this->dates . $this->objectives . $this->subobjectives . $this->type_ratings . $this->contract . $this->items . $this->evaluations ." 
+                    WHERE ".$column." <> '' AND ".$column." IS NOT NULL AND ec.company_id = ".$this->company. $this->dates . $this->objectives . $this->subobjectives . $this->type_ratings . $this->contract . $this->items . $this->evaluations . $this->year . $this->month ." 
                     GROUP BY id, evaluation, objective, subobjective, item, contract, type_rating
                 ) AS t 
                 GROUP BY category
@@ -207,7 +211,7 @@ class InformManagerEvaluationContract
         foreach ($data as $key => $value)
         {
             $label = strlen($value->category) > 30 ? substr($value->category, 0, 30).'...' : substr($value->category, 0, 30);
-            \Log::info($label);
+
             $labels->push($label);
             $cumple->push($value->p_cumple);
             $no_cumple->push($value->p_no_cumple);

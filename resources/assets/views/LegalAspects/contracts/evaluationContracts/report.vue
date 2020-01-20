@@ -46,6 +46,10 @@
                     <b-row>
                         <b-col><vue-advanced-select :disabled="isLoading" v-model="evaluationsSelected" :options="selectBar" :searchable="true" name="evaluationsSelected">
                             </vue-advanced-select></b-col>
+                        <b-col><vue-advanced-select :disabled="isLoading" v-model="years" :options="yearsOptions" :searchable="true" name="years" placeholder="Años" :multiple="true">
+                            </vue-advanced-select></b-col>
+                        <b-col><vue-advanced-select :disabled="isLoading" v-model="months" :options="monthsOptions" :searchable="true" name="months" placeholder="Meses" :multiple="true">
+                        </vue-advanced-select></b-col>
                     </b-row>
                     <b-row>
                         <b-col class="text-center" style="padding-bottom: 15px;">
@@ -103,6 +107,8 @@ export default {
         return {
             filters: [],
             selectBar: [],
+            yearsOptions: [],
+            monthsOptions: [],
             isLoading: false,
             information: {
                 evaluations: 0,
@@ -112,6 +118,8 @@ export default {
                 p_no_cumple: '0%'
             },
             evaluationsSelected: 'evaluation',
+            years: '',
+            months: '',
             evaluations: {
                 evaluation: {
                     labels: [],
@@ -169,6 +177,8 @@ export default {
     created() {
         this.updateTotales()
         this.fetchSelect('selectBar', '/selects/multiselectBarEvaluations')
+        this.fetchSelect('yearsOptions', '/selects/evaluations/years')
+        this.fetchSelect('monthsOptions', '/selects/evaluations/months')
         this.fetch()
     },
     computed: {
@@ -177,6 +187,14 @@ export default {
         },
         complianceData: function() {
             return this.compliance[this.evaluationsSelected]
+        }
+    },
+    watch: {
+        years() {
+          this.fetch();
+        },
+        months() {
+            this.fetch();
         }
     },
     methods: {
@@ -223,7 +241,9 @@ export default {
                 //console.log('buscando...')
                 this.isLoading = true;
 
-                axios.post('/legalAspects/evaluationContract/reportDinamic', this.filters)
+                let postData = Object.assign({}, {years: this.years}, {months: this.months}, this.filters);
+
+                axios.post('/legalAspects/evaluationContract/reportDinamic', postData)
                 .then(data => {
                     this.update(data);
                     this.isLoading = false;

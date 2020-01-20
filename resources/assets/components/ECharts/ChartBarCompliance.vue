@@ -117,7 +117,7 @@ export default {
   },
   computed: {
     displayEmpty () {
-        return (this.chartData.datasets.data != undefined && this.chartData.datasets.data.length > 0) ? false : true
+        return (this.chartData.datasets.data != undefined && this.chartData.datasets.data[0].data.length > 0) ? false : true
     },
     barHeight() {
         return this.height
