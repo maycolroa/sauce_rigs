@@ -45,9 +45,16 @@ class ConfigureInterestsJob implements ShouldQueue
 
       $this->syncQualificationsCompany($this->company_id);
 
-      $users = User::active()->join('sau_company_user', 'sau_company_user.user_id', 'sau_users.id');
+      $users = User::active()->join('sau_company_user', 'sau_company_user.user_id', 'sau_users.id');      
+      
       $users->company_scope = $this->company_id;
+
       $users = $users->get();
+
+      $users = $users->filter(function ($user, $index) {
+          return $user->can('legalMatrix_receive_notifications', $this->company_id);
+        });
+
 
       if (!empty($users))
       {
