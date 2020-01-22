@@ -16,8 +16,8 @@ class Kernel extends ConsoleKernel
         'App\Console\Commands\AudiometryNotification',
         'App\Console\Commands\DaysAlertExpirationDateActionPlan',
         'App\Console\Commands\DaysAlertExpirationDateContractFilesUpload',
-        'App\Console\Commands\CheckLastLoginNotification',
-        'App\Console\Commands\DisableUsers',
+        /*'App\Console\Commands\CheckLastLoginNotification',
+        'App\Console\Commands\DisableUsers',*/
         'App\Console\Commands\DaysAlertExpiredLicense',
         'App\Console\Commands\NotifyUpdateLaws',
         'App\Console\Commands\ReincSendMail',
@@ -48,13 +48,13 @@ class Kernel extends ConsoleKernel
             ->timezone('America/Bogota')
             ->dailyAt('01:00');
 
-        $schedule->command('checkLastLoginNotification')
+        /*$schedule->command('checkLastLoginNotification')
             ->timezone('America/Bogota')
-            ->dailyAt('01:00');
+            ->dailyAt('01:00');*/
 
-        $schedule->command('disableUsers')
+        /*$schedule->command('disableUsers')
             ->timezone('America/Bogota')
-            ->dailyAt('01:00');
+            ->dailyAt('01:00');*/
 
         $schedule->command('days-alert-expired-license')
             ->weekly()

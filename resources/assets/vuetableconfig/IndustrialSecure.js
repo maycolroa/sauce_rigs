@@ -646,7 +646,7 @@ export default [
             buttons: [{
             name: 'downloadFile',
             config: {
-              color: 'outline-success',
+              color: 'outline-danger',
               borderless: true,
               icon: 'fas fa-file-pdf',
               title: 'Descargar inspección en PDF'

@@ -188,7 +188,7 @@
                 </b-form-row>
 
 
-                <b-form-row v-show="form.is_firm_controversy_1 == 'NO'" style="padding-top: 15px;">
+                <b-form-row v-show="form.is_firm_controversy_1 == 'NO'  && form.is_firm_process_origin == 'NO' " style="padding-top: 15px;">
                   <h5 class="col-md-12">Controversia 2</h5>
                   <vue-datepicker :disabled="viewOnly" class="col-md-6" v-model="form.date_controversy_origin_2" label="Fecha calificación segunda controversia" :full-month-name="true" :error="form.errorsFor('date_controversy_origin_2')" name="date_controversy_origin_2">
                         </vue-datepicker>
@@ -232,7 +232,7 @@
 
                 </b-form-row>
 
-                <b-form-row v-show="form.is_firm_controversy_pcl_1 == 'NO'" style="padding-top: 15px;">
+                <b-form-row v-show="form.is_firm_controversy_pcl_1 == 'NO' && form.is_firm_process_pcl == 'NO' " style="padding-top: 15px;">
                   <h5 class="col-md-12">Controversia 2</h5>
                   <vue-datepicker :disabled="viewOnly" class="col-md-6" v-model="form.date_controversy_pcl_2" label="Fecha calificación segunda controversia" :full-month-name="true" :error="form.errorsFor('date_controversy_pcl_2')" name="date_controversy_pcl_2">
                         </vue-datepicker>

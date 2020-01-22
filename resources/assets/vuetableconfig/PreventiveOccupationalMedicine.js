@@ -283,7 +283,24 @@ export default [
       },
       
     ],
-  }],
+  },
+  {
+      type: 'simpleDownload',
+      buttons: [{
+      name: 'downloadFile',
+      config: {
+        color: 'outline-danger',
+        borderless: true,
+        icon: 'fas fa-file-pdf',
+        title: 'Descargar Reporte en PDF'
+      },
+      data: {
+        action: '/biologicalmonitoring/reinstatements/check/downloadPdf/',
+        id: 'id'
+      },
+      permission: 'reinc_checks_export'
+      }],
+  },],
   configuration: {
       urlData: '/biologicalmonitoring/reinstatements/check/data',
       filterColumns: true

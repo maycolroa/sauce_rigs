@@ -256,7 +256,7 @@ export default [
             buttons: [{
                 name: 'downloadMatrix',
                 config: {
-                    color: 'outline-danger',
+                    color: 'outline-success',
                     borderless: true,
                     icon: 'ion ion-md-cloud-download',
                     title: 'Exportar'
@@ -273,7 +273,7 @@ export default [
             buttons: [{
             name: 'downloadFile',
             config: {
-              color: 'outline-success',
+              color: 'outline-danger',
               borderless: true,
               icon: 'fas fa-file-pdf',
               title: 'Descargar Evaluación en PDF'

@@ -16,6 +16,7 @@ use App\Traits\ConfigurableFormTrait;
 use Carbon\Carbon;
 use DB;
 use PDF;
+use Datetime;
 
 class CheckController extends Controller
 { 
@@ -683,5 +684,59 @@ class CheckController extends Controller
         return $this->respondHttp200([
             'data' => $tracingOthers
         ]);
+    }
+
+    public function downloadPdf($id)
+    {
+        $check = Check::select('sau_reinc_checks.*')
+                ->join('sau_employees', 'sau_employees.id', 'sau_reinc_checks.employee_id')
+                ->findOrFail($id);
+
+        $checks = $this->getCheckView($check);
+
+        $checks->employee->antiquity = $this->timeDifference($checks->employee->income_date);
+        $checks->employee->age = $checks->employee->date_of_birth ? $this->timeDifference((Carbon::createFromFormat('Y-m-d',$checks->employee->date_of_birth))->toDateString()) : '';
+
+        //\Log::info($checks);
+
+        PDF::setOptions(['dpi' => 150, 'defaultFont' => 'sans-serif']);
+
+        $formModel = $this->getFormModel('form_check');
+
+        if ($formModel == 'default')
+        { 
+            $pdf = PDF::loadView('pdf.reporteReinstatements', ['check' => $checks] );
+        }
+        else if ($formModel == 'misionEmpresarial')
+        {
+            $pdf = PDF::loadView('pdf.reportReinstatementsMisionEmpresarial', ['check' => $checks] );
+        }
+        else if ($formModel == 'hptu')
+        {
+            $pdf = PDF::loadView('pdf.reporteReinstatementsHptu', ['check' => $checks] );
+        }
+        else if($formModel == 'vivaAir')
+        {
+            $pdf = PDF::loadView('pdf.reporteReinstatementsVivaAir', ['check' => $checks] );
+        }
+
+        $pdf->setPaper('A3', 'landscape');
+
+        return $pdf->download('reporte.pdf');
+    }
+
+    private function timeDifference($startDate, $endDate = null)
+    {
+        $start = new DateTime($startDate);
+        $end;
+
+        if ($endDate == null)
+            $end = new DateTime();
+        else
+            $start = new DateTime($endDate);
+
+        $interval = $start->diff($end);
+
+        return $interval->format('%y años %m meses y %d dias');
     }
 }
