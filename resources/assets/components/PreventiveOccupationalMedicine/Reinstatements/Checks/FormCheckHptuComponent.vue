@@ -193,7 +193,7 @@
 
                 </b-form-row>
 
-                <b-form-row v-show="form.is_firm_controversy_1 == 'NO'" style="padding-top: 15px;">
+                <b-form-row v-show="form.is_firm_controversy_1 == 'NO' && form.is_firm_process_origin == 'NO' " style="padding-top: 15px;">
                   <h5 class="col-md-12">Controversia 2</h5>
                   <vue-datepicker :disabled="viewOnly" class="col-md-6" v-model="form.date_controversy_origin_2" label="Fecha calificación segunda controversia" :full-month-name="true" :error="form.errorsFor('date_controversy_origin_2')" name="date_controversy_origin_2">
                         </vue-datepicker>
@@ -201,7 +201,7 @@
                   <vue-advanced-select :disabled="viewOnly" class="col-md-6" v-model="form.emitter_controversy_origin_2" :error="form.errorsFor('emitter_controversy_origin_2')" :multiple="false" :options="originEmitters" :hide-selected="false" name="emitter_controversy_origin_2" label="Entidad que Califica la segunda controversia" placeholder="Seleccione una opción">
                     </vue-advanced-select>
 
-                  <vue-advanced-select :disabled="viewOnly" class="col-md-6" v-model="form.type_controversy_origin_2" :error="form.errorsFor('type_controversy_origin_2')" :multiple="false" :options="typeQualificationControversy" :hide-selected="false" name="type_controversy_origin_2" label="Tipo de calificacion de la primera controversia" placeholder="Seleccione una opción">
+                  <vue-advanced-select :disabled="viewOnly" class="col-md-6" v-model="form.type_controversy_origin_2" :error="form.errorsFor('type_controversy_origin_2')" :multiple="false" :options="typeQualificationControversy" :hide-selected="false" name="type_controversy_origin_2" label="Tipo de calificacion de la segunda controversia" placeholder="Seleccione una opción">
                     </vue-advanced-select>
 
                   <vue-advanced-select :disabled="viewOnly" class="col-md-6" v-model="form.qualification_controversy_2" :error="form.errorsFor('qualification_controversy_2')" :multiple="false" :options="clasificationOrigin" :hide-selected="false" name="qualification_controversy_2" label="Clasificación de origen la segunda controversia" placeholder="Seleccione una opción">
@@ -241,7 +241,7 @@
 
                 </b-form-row>
 
-                <b-form-row v-show="form.is_firm_controversy_pcl_1 == 'NO'" style="padding-top: 15px;">
+                <b-form-row v-show="form.is_firm_controversy_pcl_1 == 'NO' && form.is_firm_process_pcl == 'NO' " style="padding-top: 15px;">
                   <h5 class="col-md-12">Controversia 2</h5>
                   <vue-datepicker :disabled="viewOnly" class="col-md-6" v-model="form.date_controversy_pcl_2" label="Fecha calificación segunda controversia" :full-month-name="true" :error="form.errorsFor('date_controversy_pcl_2')" name="date_controversy_pcl_2">
                         </vue-datepicker>

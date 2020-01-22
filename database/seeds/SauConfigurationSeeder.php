@@ -30,12 +30,12 @@ class SauConfigurationSeeder extends Seeder
             ],
             [
                 'key' => 'days_alert_user_suspension',
-                'value' => '60',
+                'value' => '1000',
                 'observation' => 'Cantidad de días para consultar si un usuario no ha iniciado sesión y enviar la notificación de alerta de suspensión'
             ],
             [
                 'key' => 'days_user_suspension',
-                'value' => '67',
+                'value' => '1007',
                 'observation' => 'SI el usuario no ha iniciado sesion en esta cantidad de dias sera supendido'
             ],
             [
