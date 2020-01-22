@@ -524,6 +524,10 @@ class CheckController extends Controller
         {
             $pdf = PDF::loadView('pdf.letterReditos', $data);
         }
+        else if($formModel == 'manpower')
+        {
+            $pdf = PDF::loadView('pdf.letterManpower', $data);
+        }
 
         return $pdf->stream('recomendaciones.pdf');
     
