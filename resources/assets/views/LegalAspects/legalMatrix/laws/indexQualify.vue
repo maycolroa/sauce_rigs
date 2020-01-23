@@ -1,7 +1,7 @@
 <template>
   <div>
     <header-module
-      title="MATRIZ LEGAL"
+      title="MI MATRIZ LEGAL"
       subtitle="EVALUAR NORMAS"
       url="legalaspects-legalmatrix"
     />

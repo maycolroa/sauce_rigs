@@ -13,15 +13,15 @@ class Kernel extends ConsoleKernel
      * @var array
      */
     protected $commands = [
-        'App\Console\Commands\AudiometryNotification',
+        //'App\Console\Commands\AudiometryNotification',
         'App\Console\Commands\DaysAlertExpirationDateActionPlan',
         'App\Console\Commands\DaysAlertExpirationDateContractFilesUpload',
         /*'App\Console\Commands\CheckLastLoginNotification',
         'App\Console\Commands\DisableUsers',*/
         'App\Console\Commands\DaysAlertExpiredLicense',
-        'App\Console\Commands\NotifyUpdateLaws',
-        'App\Console\Commands\ReincSendMail',
-        'App\Console\Commands\ReincNotificationNextFollowUp',
+        //'App\Console\Commands\NotifyUpdateLaws',
+        //'App\Console\Commands\ReincSendMail',
+        //'App\Console\Commands\ReincNotificationNextFollowUp',
         'App\Console\Commands\DmReportHistory',
         'App\Console\Commands\NotifyUpdateListCheckContract'
     ];
@@ -34,9 +34,9 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        $schedule->command('audiometry-notification')
+        /*$schedule->command('audiometry-notification')
             ->timezone('America/Bogota')
-            ->dailyAt('00:00');
+            ->dailyAt('00:00');*/
 
         $schedule->command('days-alert-expiration-date-action-plan')
             ->timezone('America/Bogota')
@@ -62,21 +62,21 @@ class Kernel extends ConsoleKernel
             ->timezone('America/Bogota')
             ->at('01:00');
 
-        $schedule->command('notify-update-laws')
+        /*$schedule->command('notify-update-laws')
             ->timezone('America/Bogota')
-            ->dailyAt('01:00');
+            ->dailyAt('01:00');*/
         
         $schedule->command('dm-report-history')
             ->timezone('America/Bogota')
             ->cron('0 1 1 1-12/3 *');
 
-        $schedule->command('reinc-send-mail')
+        /*$schedule->command('reinc-send-mail')
             ->timezone('America/Bogota')
             ->dailyAt('22:00');
 
         $schedule->command('reinc-notification-next-follow-up')
             ->timezone('America/Bogota')
-            ->dailyAt('01:00');
+            ->dailyAt('01:00');*/
 
         $schedule->command('notify-update-list-check-contract')
             ->timezone('America/Bogota')

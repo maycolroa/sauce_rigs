@@ -1,5 +1,5 @@
 <template>
-  	<div>
+  <div>
 		<div class="row">
 			<div class="col-md-8">
 				<span class="title-module">MATRIZ</span><br>
@@ -14,6 +14,150 @@
 		</div>
 
 		<b-row>
+      <b-col cols="3" class="col-item" v-if="auth.can['interests_config']">
+                <router-link :to="{name:'legalaspects-lm-interest-myinterests'}" class="text-dark cursor-pointer item-app-navbar">
+                    <div class="my-2 mx-2" ref="config_interest" @mouseover="changeClassImage('config_interest', 'config_interest_hover')">
+                        <img class="ui-w-80" src="/images/Sauce-ML Ico Establecer mis intereses.png" alt="" >
+
+                        <div class="font-weight-bold pt-1">
+                          Establecer mis intereses  
+                        </div>
+            <small class="text-muted">Establecer mis intereses</small>
+                    </div>
+                    <div class="my-2 mx-2 imgHidden" ref="config_interest_hover" @mouseleave="changeClassImage('config_interest_hover', 'config_interest')">
+                        <img class="ui-w-80" src="/images/Sauce-ML Ico Establecer mis intereses Over.png" alt="">
+
+                        <div class="font-weight-bold pt-1">
+                          Establecer mis intereses  
+                        </div>
+            <small class="text-muted">Establecer mis intereses</small>
+            <div style="padding-top: 10px;">
+              <hr class="border-divider mt-0 mb-4">
+            </div>
+                    </div>
+                </router-link>
+      </b-col>
+
+      <b-col cols="3" class="col-item" v-if="auth.can['laws_qualify']">
+                <router-link :to="{name:'legalaspects-lm-law-qualify'}" class="text-dark cursor-pointer item-app-navbar">
+                    <div class="my-2 mx-2" ref="custom_law_qualify" @mouseover="changeClassImage('custom_law_qualify', 'custom_law_qualify_hover')">
+                        <img class="ui-w-80" src="/images/Sauce-ML Ico Calificar Normas.png" alt="" >
+
+                        <div class="font-weight-bold pt-1">
+                          Mi Matríz Legal 
+                        </div>
+            <small class="text-muted">Mi matríz legal</small>
+                    </div>
+                    <div class="my-2 mx-2 imgHidden" ref="custom_law_qualify_hover" @mouseleave="changeClassImage('custom_law_qualify_hover', 'custom_law_qualify')">
+                        <img class="ui-w-80" src="/images/Sauce-ML Ico Calificar Normas Over.png" alt="">
+
+                        <div class="font-weight-bold pt-1">
+                          Mi Matríz Legal 
+                        </div>
+            <small class="text-muted">Mi matríz legal</small>
+            <div style="padding-top: 10px;">
+              <hr class="border-divider mt-0 mb-4">
+            </div>
+                    </div>
+                </router-link>
+      </b-col>
+
+      <b-col cols="3" class="col-item" v-if="auth.can['laws_report_r']">
+                <router-link :to="{name:'legalaspects-lm-law-report'}" class="text-dark cursor-pointer item-app-navbar">
+                    <div class="my-2 mx-2" ref="custom_law_report" @mouseover="changeClassImage('custom_law_report', 'custom_law_report_hover')">
+                        <img class="ui-w-80" src="/images/Sauce-ML Ico Reporte.png" alt="" >
+
+                        <div class="font-weight-bold pt-1">
+                          Reporte 
+                        </div>
+            <small class="text-muted">Reporte de cumplimiento</small>
+                    </div>
+                    <div class="my-2 mx-2 imgHidden" ref="custom_law_report_hover" @mouseleave="changeClassImage('custom_law_report_hover', 'custom_law_report')">
+                        <img class="ui-w-80" src="/images/Sauce-ML Ico Reporte Over.png" alt="">
+
+                        <div class="font-weight-bold pt-1">
+                          Reporte 
+                        </div>
+            <small class="text-muted">Reporte de cumplimiento</small>
+            <div style="padding-top: 10px;">
+              <hr class="border-divider mt-0 mb-4">
+            </div>
+                    </div>
+                </router-link>
+      </b-col>
+
+      <b-col cols="3" class="col-item" v-if="auth.can['interestsCustom_r']">
+                <router-link :to="{name:'legalaspects-lm-interest-company'}" class="text-dark cursor-pointer item-app-navbar">
+                    <div class="my-2 mx-2" ref="custom_interest" @mouseover="changeClassImage('custom_interest', 'custom_interest_hover')">
+                        <img class="ui-w-80" src="/images/Sauce-ML Ico Admin mis intereses B.png" alt="" >
+
+                        <div class="font-weight-bold pt-1">
+                          Crear intereses 
+                        </div>
+            <small class="text-muted">Administrar mis intereses</small>
+                    </div>
+                    <div class="my-2 mx-2 imgHidden" ref="custom_interest_hover" @mouseleave="changeClassImage('custom_interest_hover', 'custom_interest')">
+                        <img class="ui-w-80" src="/images/Sauce-ML Ico Admin mis intereses B Over.png" alt="">
+
+                        <div class="font-weight-bold pt-1">
+                          Crear intereses 
+                        </div>
+            <small class="text-muted">Administrar mis intereses</small>
+            <div style="padding-top: 10px;">
+              <hr class="border-divider mt-0 mb-4">
+            </div>
+                    </div>
+                </router-link>
+      </b-col>
+
+      <b-col cols="3" class="col-item" v-if="auth.can['systemApplyCustom_r']">
+                <router-link :to="{name:'legalaspects-lm-system-apply-company'}" class="text-dark cursor-pointer item-app-navbar">
+                    <div class="my-2 mx-2" ref="custom_system" @mouseover="changeClassImage('custom_system', 'custom_system_hover')">
+                        <img class="ui-w-80" src="/images/Sauce-ML Ico Mis sistemas.png" alt="" >
+
+                        <div class="font-weight-bold pt-1">
+                          Crear mis sistemas  
+                        </div>
+            <small class="text-muted">Administrar mis sistemas</small>
+                    </div>
+                    <div class="my-2 mx-2 imgHidden" ref="custom_system_hover" @mouseleave="changeClassImage('custom_system_hover', 'custom_system')">
+                        <img class="ui-w-80" src="/images/Sauce-ML Ico Mis sistemas over.png" alt="">
+
+                        <div class="font-weight-bold pt-1">
+                          Crear mis sistemas  
+                        </div>
+            <small class="text-muted">Administrar mis sistemas</small>
+            <div style="padding-top: 10px;">
+              <hr class="border-divider mt-0 mb-4">
+            </div>
+                    </div>
+                </router-link>
+      </b-col>
+
+      <b-col cols="3" class="col-item" v-if="auth.can['lawsCustom_r']">
+                <router-link :to="{name:'legalaspects-lm-law-company'}" class="text-dark cursor-pointer item-app-navbar">
+                    <div class="my-2 mx-2" ref="custom_law" @mouseover="changeClassImage('custom_law', 'custom_law_hover')">
+                        <img class="ui-w-80" src="/images/Sauce-ML Ico Admin mis normas.png" alt="" >
+
+                        <div class="font-weight-bold pt-1">
+                          Crear mis normas  
+                        </div>
+            <small class="text-muted">Administrar mis normas</small>
+                    </div>
+                    <div class="my-2 mx-2 imgHidden" ref="custom_law_hover" @mouseleave="changeClassImage('custom_law_hover', 'custom_law')">
+                        <img class="ui-w-80" src="/images/Sauce-ML Ico Admin mis normas Over.png" alt="">
+
+                        <div class="font-weight-bold pt-1">
+                          Crear mis normas  
+                        </div>
+            <small class="text-muted">Administrar mis normas</small>
+            <div style="padding-top: 10px;">
+              <hr class="border-divider mt-0 mb-4">
+            </div>
+                    </div>
+                </router-link>
+      </b-col>
+
 			<b-col cols="3" class="col-item" v-if="auth.can['risksAspects_r']">
                 <router-link :to="{name:'legalaspects-lm-riskaspect'}" class="text-dark cursor-pointer item-app-navbar">
                     <div class="my-2 mx-2" ref="riskaspect" @mouseover="changeClassImage('riskaspect', 'riskaspect_hover')">
@@ -36,7 +180,7 @@
 						</div>
                     </div>
                 </router-link>
-            </b-col>
+      </b-col>
 
 			<b-col cols="3" class="col-item" v-if="auth.can['sstRisks_r']">
                 <router-link :to="{name:'legalaspects-lm-sstrisk'}" class="text-dark cursor-pointer item-app-navbar">
@@ -60,7 +204,7 @@
 						</div>
                     </div>
                 </router-link>
-            </b-col>
+      </b-col>
 
 			<b-col cols="3" class="col-item" v-if="auth.can['systemApply_r']">
                 <router-link :to="{name:'legalaspects-lm-system-apply'}" class="text-dark cursor-pointer item-app-navbar">
@@ -84,7 +228,7 @@
 						</div>
                     </div>
                 </router-link>
-            </b-col>
+      </b-col>
 
 			<b-col cols="3" class="col-item" v-if="auth.can['entities_r']">
                 <router-link :to="{name:'legalaspects-lm-entity'}" class="text-dark cursor-pointer item-app-navbar">
@@ -108,7 +252,7 @@
 						</div>
                     </div>
                 </router-link>
-            </b-col>
+      </b-col>
 
 			<b-col cols="3" class="col-item" v-if="auth.can['interests_r']">
                 <router-link :to="{name:'legalaspects-lm-interest'}" class="text-dark cursor-pointer item-app-navbar">
@@ -132,7 +276,7 @@
 						</div>
                     </div>
                 </router-link>
-            </b-col>
+      </b-col>
 
 			<b-col cols="3" class="col-item" v-if="auth.can['laws_r']">
                 <router-link :to="{name:'legalaspects-lm-law'}" class="text-dark cursor-pointer item-app-navbar">
@@ -156,153 +300,10 @@
 						</div>
                     </div>
                 </router-link>
-            </b-col>
-
-			<b-col cols="3" class="col-item" v-if="auth.can['interests_config']">
-                <router-link :to="{name:'legalaspects-lm-interest-myinterests'}" class="text-dark cursor-pointer item-app-navbar">
-                    <div class="my-2 mx-2" ref="config_interest" @mouseover="changeClassImage('config_interest', 'config_interest_hover')">
-                      	<img class="ui-w-80" src="/images/Sauce-ML Ico Establecer mis intereses.png" alt="" >
-
-                      	<div class="font-weight-bold pt-1">
-	                        Establecer mis intereses	
-                      	</div>
-						<small class="text-muted">Establecer mis intereses</small>
-                    </div>
-                    <div class="my-2 mx-2 imgHidden" ref="config_interest_hover" @mouseleave="changeClassImage('config_interest_hover', 'config_interest')">
-                      	<img class="ui-w-80" src="/images/Sauce-ML Ico Establecer mis intereses Over.png" alt="">
-
-                      	<div class="font-weight-bold pt-1">
-	                        Establecer mis intereses	
-                      	</div>
-						<small class="text-muted">Establecer mis intereses</small>
-						<div style="padding-top: 10px;">
-							<hr class="border-divider mt-0 mb-4">
-						</div>
-                    </div>
-                </router-link>
-            </b-col>
-
-			<b-col cols="3" class="col-item" v-if="auth.can['systemApplyCustom_r']">
-                <router-link :to="{name:'legalaspects-lm-system-apply-company'}" class="text-dark cursor-pointer item-app-navbar">
-                    <div class="my-2 mx-2" ref="custom_system" @mouseover="changeClassImage('custom_system', 'custom_system_hover')">
-                      	<img class="ui-w-80" src="/images/Sauce-ML Ico Mis sistemas.png" alt="" >
-
-                      	<div class="font-weight-bold pt-1">
-	                        Mis sistemas	
-                      	</div>
-						<small class="text-muted">Administrar mis sistemas</small>
-                    </div>
-                    <div class="my-2 mx-2 imgHidden" ref="custom_system_hover" @mouseleave="changeClassImage('custom_system_hover', 'custom_system')">
-                      	<img class="ui-w-80" src="/images/Sauce-ML Ico Mis sistemas over.png" alt="">
-
-                      	<div class="font-weight-bold pt-1">
-	                        Mis sistemas	
-                      	</div>
-						<small class="text-muted">Administrar mis sistemas</small>
-						<div style="padding-top: 10px;">
-							<hr class="border-divider mt-0 mb-4">
-						</div>
-                    </div>
-                </router-link>
-            </b-col>
-
-			<b-col cols="3" class="col-item" v-if="auth.can['interestsCustom_r']">
-                <router-link :to="{name:'legalaspects-lm-interest-company'}" class="text-dark cursor-pointer item-app-navbar">
-                    <div class="my-2 mx-2" ref="custom_interest" @mouseover="changeClassImage('custom_interest', 'custom_interest_hover')">
-                      	<img class="ui-w-80" src="/images/Sauce-ML Ico Admin mis intereses B.png" alt="" >
-
-                      	<div class="font-weight-bold pt-1">
-	                        Mis intereses	
-                      	</div>
-						<small class="text-muted">Administrar mis intereses</small>
-                    </div>
-                    <div class="my-2 mx-2 imgHidden" ref="custom_interest_hover" @mouseleave="changeClassImage('custom_interest_hover', 'custom_interest')">
-                      	<img class="ui-w-80" src="/images/Sauce-ML Ico Admin mis intereses B Over.png" alt="">
-
-                      	<div class="font-weight-bold pt-1">
-	                        Mis intereses	
-                      	</div>
-						<small class="text-muted">Administrar mis intereses</small>
-						<div style="padding-top: 10px;">
-							<hr class="border-divider mt-0 mb-4">
-						</div>
-                    </div>
-                </router-link>
-            </b-col>
-
-			<b-col cols="3" class="col-item" v-if="auth.can['lawsCustom_r']">
-                <router-link :to="{name:'legalaspects-lm-law-company'}" class="text-dark cursor-pointer item-app-navbar">
-                    <div class="my-2 mx-2" ref="custom_law" @mouseover="changeClassImage('custom_law', 'custom_law_hover')">
-                      	<img class="ui-w-80" src="/images/Sauce-ML Ico Admin mis normas.png" alt="" >
-
-                      	<div class="font-weight-bold pt-1">
-	                        Mis normas	
-                      	</div>
-						<small class="text-muted">Administrar mis normas</small>
-                    </div>
-                    <div class="my-2 mx-2 imgHidden" ref="custom_law_hover" @mouseleave="changeClassImage('custom_law_hover', 'custom_law')">
-                      	<img class="ui-w-80" src="/images/Sauce-ML Ico Admin mis normas Over.png" alt="">
-
-                      	<div class="font-weight-bold pt-1">
-	                        Mis normas	
-                      	</div>
-						<small class="text-muted">Administrar mis normas</small>
-						<div style="padding-top: 10px;">
-							<hr class="border-divider mt-0 mb-4">
-						</div>
-                    </div>
-                </router-link>
-            </b-col>
-
-			<b-col cols="3" class="col-item" v-if="auth.can['laws_qualify']">
-                <router-link :to="{name:'legalaspects-lm-law-qualify'}" class="text-dark cursor-pointer item-app-navbar">
-                    <div class="my-2 mx-2" ref="custom_law_qualify" @mouseover="changeClassImage('custom_law_qualify', 'custom_law_qualify_hover')">
-                      	<img class="ui-w-80" src="/images/Sauce-ML Ico Calificar Normas.png" alt="" >
-
-                      	<div class="font-weight-bold pt-1">
-	                        Evaluar normas	
-                      	</div>
-						<small class="text-muted">Evaluar normas</small>
-                    </div>
-                    <div class="my-2 mx-2 imgHidden" ref="custom_law_qualify_hover" @mouseleave="changeClassImage('custom_law_qualify_hover', 'custom_law_qualify')">
-                      	<img class="ui-w-80" src="/images/Sauce-ML Ico Calificar Normas Over.png" alt="">
-
-                      	<div class="font-weight-bold pt-1">
-	                        Evaluar normas	
-                      	</div>
-						<small class="text-muted">Evaluar normas</small>
-						<div style="padding-top: 10px;">
-							<hr class="border-divider mt-0 mb-4">
-						</div>
-                    </div>
-                </router-link>
-            </b-col>
-
-			<b-col cols="3" class="col-item" v-if="auth.can['laws_report_r']">
-                <router-link :to="{name:'legalaspects-lm-law-report'}" class="text-dark cursor-pointer item-app-navbar">
-                    <div class="my-2 mx-2" ref="custom_law_report" @mouseover="changeClassImage('custom_law_report', 'custom_law_report_hover')">
-                      	<img class="ui-w-80" src="/images/Sauce-ML Ico Reporte.png" alt="" >
-
-                      	<div class="font-weight-bold pt-1">
-	                        Reporte	
-                      	</div>
-						<small class="text-muted">Reporte de cumplimiento</small>
-                    </div>
-                    <div class="my-2 mx-2 imgHidden" ref="custom_law_report_hover" @mouseleave="changeClassImage('custom_law_report_hover', 'custom_law_report')">
-                      	<img class="ui-w-80" src="/images/Sauce-ML Ico Reporte Over.png" alt="">
-
-                      	<div class="font-weight-bold pt-1">
-	                        Reporte	
-                      	</div>
-						<small class="text-muted">Reporte de cumplimiento</small>
-						<div style="padding-top: 10px;">
-							<hr class="border-divider mt-0 mb-4">
-						</div>
-                    </div>
-                </router-link>
-            </b-col>
+      </b-col>
+	
 		</b-row>
-  	</div>
+  </div>
 </template>
 
 <style scoped>

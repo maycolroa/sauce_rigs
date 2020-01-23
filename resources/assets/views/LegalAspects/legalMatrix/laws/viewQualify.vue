@@ -1,7 +1,7 @@
 <template>
   <div>
     <header-module
-      title="MATRIZ LEGAL"
+      title="MI MATRIZ LEGAL"
       subtitle="EVALUAR NORMA"
       url="legalaspects-lm-law-qualify"
     />
