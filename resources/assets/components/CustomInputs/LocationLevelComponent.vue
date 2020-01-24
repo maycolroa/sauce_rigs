@@ -26,12 +26,6 @@ export default {
         isEdit: { type: Boolean, default: false },
         viewOnly: { type: Boolean, default: false },
         form: { type: Object, required: true },
-        application: { type: String, required: true },
-        module: { type: String, required: true },
-        labelRegional: { type: String, default: 'Regional' },
-        labelHeadquarter: { type: String, default: 'Sede' },
-        labelArea: { type: String, default: 'Área' },
-        labelProcess: { type: String, default: 'Proceso' },
         locationLevel: {
             default() {
                 return {
@@ -66,10 +60,7 @@ export default {
     },
     created()
     {
-        axios.post('/administration/configurations/locationLevelForms/getConfModule', {
-            application: this.application,
-            module: this.module
-        })
+        axios.post('/administration/configurations/locationLevelForms/getConfModule')
         .then(data => {
             if (Object.keys(data.data).length > 0)
                 setTimeout(() => {

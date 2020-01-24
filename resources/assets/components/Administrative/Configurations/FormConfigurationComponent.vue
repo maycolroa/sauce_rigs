@@ -2,7 +2,7 @@
 
   <b-form :action="url" @submit.prevent="submit" autocomplete="off">
 
-    <b-form-row v-if="auth.can['dangerMatrix_r']">
+    <b-form-row v-if="auth.can['biologicalMonitoring_audiometry_r'] || auth.can['dangerMatrix_r'] || auth.can['reinc_checks_r'] || auth.can['ph_inspections_r'] || auth.can['ph_reports_r']">
       <vue-radio :disabled="!auth.can['configurations_c']" :checked="form.location_level_form" class="col-md-12" v-model="form.location_level_form" :options="locationLevels" name="location_level_form" :error="form.errorsFor('location_level_form')" label="Nivel localización en formulario">
         </vue-radio>
     </b-form-row>

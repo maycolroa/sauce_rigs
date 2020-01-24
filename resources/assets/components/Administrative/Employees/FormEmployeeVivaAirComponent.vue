@@ -25,17 +25,12 @@
     </b-form-row>
 
     <b-form-row>
-      <vue-ajax-advanced-select :disabled="viewOnly" class="col-md-6" v-model="form.employee_regional_id" :error="form.errorsFor('employee_regional_id')" :selected-object="form.multiselect_regional" name="employee_regional_id" :label="keywordCheck('regional')" placeholder="Seleccione una opción" :url="regionalsDataUrl">
-          </vue-ajax-advanced-select>
-      <vue-ajax-advanced-select :disabled="viewOnly || !form.employee_regional_id" class="col-md-6" v-model="form.employee_headquarter_id" :error="form.errorsFor('employee_headquarter_id')" :selected-object="form.multiselect_sede" name="employee_headquarter_id" :label="keywordCheck('headquarter')" placeholder="Seleccione una opción" :url="headquartersDataUrl" :parameters="{regional: form.employee_regional_id }" :emptyAll="empty.headquarter" @updateEmpty="updateEmptyKey('headquarter')">
-          </vue-ajax-advanced-select>
-    </b-form-row>
-
-    <b-form-row>
-      <vue-ajax-advanced-select :disabled="viewOnly || !form.employee_headquarter_id" class="col-md-6" v-model="form.employee_process_id" :error="form.errorsFor('employee_process_id')" :selected-object="form.multiselect_proceso" name="employee_process_id" :label="keywordCheck('process')" placeholder="Seleccione una opción" :url="processesDataUrl" :parameters="{headquarter: form.employee_headquarter_id }" :emptyAll="empty.process" @updateEmpty="updateEmptyKey('process')">
-      </vue-ajax-advanced-select>
-      <vue-ajax-advanced-select :disabled="viewOnly || !form.employee_process_id" class="col-md-6" v-model="form.employee_area_id" :error="form.errorsFor('employee_area_id')" :selected-object="form.multiselect_area" name="employee_area_id" :label="keywordCheck('area')" placeholder="Seleccione una opción" :url="areasDataUrl" :parameters="{process: form.employee_process_id, headquarter: form.employee_headquarter_id }" :emptyAll="empty.area" @updateEmpty="updateEmptyKey('area')">
-          </vue-ajax-advanced-select>
+      <location-level-component
+        :is-edit="isEdit"
+        :view-only="viewOnly"
+        v-model="form.locations"
+        :location-level="employee.locations"
+        :form="form"/>
     </b-form-row>
 
     <b-form-row>
@@ -66,6 +61,7 @@ import VueAjaxAdvancedSelect from "@/components/Inputs/VueAjaxAdvancedSelect.vue
 import VueAdvancedSelect from "@/components/Inputs/VueAdvancedSelect.vue";
 import VueInput from "@/components/Inputs/VueInput.vue";
 import VueDatepicker from "@/components/Inputs/VueDatepicker.vue";
+import LocationLevelComponent from '@/components/CustomInputs/LocationLevelComponent.vue';
 import Form from "@/utils/Form.js";
 
 export default {
@@ -73,7 +69,8 @@ export default {
     VueAdvancedSelect,
     VueAjaxAdvancedSelect,
     VueDatepicker,
-    VueInput
+    VueInput,
+    LocationLevelComponent
   },
   props: {
     url: { type: String },
@@ -81,15 +78,10 @@ export default {
     cancelUrl: { type: [String, Object], required: true },
     isEdit: { type: Boolean, default: false },
     viewOnly: { type: Boolean, default: false },
-    regionalsDataUrl: { type: String, default: "" },
-    headquartersDataUrl: { type: String, default: "" },
-    areasDataUrl: { type: String, default: "" },
-    processesDataUrl: { type: String, default: "" },
     positionsDataUrl: { type: String, default: "" },
     businessesDataUrl: { type: String, default: "" },
     epsDataUrl: { type: String, default: "" },
     afpDataUrl: { type: String, default: "" },
-    disableWacthSelectInCreated: { type: Boolean, default: false},
     sexs: {
       type: Array,
       default: function() {
@@ -105,17 +97,19 @@ export default {
             sex: '',
             email: '',
             income_date: '',
-            employee_regional_id: '',
-            employee_headquarter_id: '',
-            employee_area_id: '',
-            employee_process_id: '',
             employee_position_id: '',
             employee_business_id: '',
             employee_eps_id: '',
             employee_afp_id: '',
             deal:'',
             extension: '',
-            mobile: ''
+            mobile: '',
+            locations: {
+              employee_regional_id: '',
+              employee_headquarter_id: '',
+              employee_area_id: '',
+              employee_process_id: ''
+            }
         };
       }
     }
@@ -123,34 +117,12 @@ export default {
   watch: {
     employee() {
       this.form = Form.makeFrom(this.employee, this.method);
-    },
-    'form.employee_regional_id'() {
-      this.emptySelect('employee_process_id', 'process')
-      this.emptySelect('employee_area_id', 'area')
-      this.emptySelect('employee_headquarter_id', 'headquarter')
-    },
-    'form.employee_headquarter_id'() {
-      this.emptySelect('employee_process_id', 'process')
-      this.emptySelect('employee_area_id', 'area')
-    },
-    'form.employee_process_id'() {
-      this.emptySelect('employee_area_id', 'area')
-    },
-    'form.employee_area_id'() {
-      if (this.disableWacth)
-        this.disableWacth = false
     }
   },
   data() {
     return {
       loading: false,
       form: Form.makeFrom(this.employee, this.method),
-      empty: {
-        headquarter: false,
-        area: false,
-        process: false
-      },
-      disableWacth: this.disableWacthSelectInCreated,
 
       disabledDates: {
         from: new Date()
@@ -158,18 +130,6 @@ export default {
     };
   },
   methods: {
-    updateEmptyKey(keyEmpty)
-    {
-      this.empty[keyEmpty]  = false
-    },
-    emptySelect(keySelect, keyEmpty)
-    {
-      if (this.form[keySelect] !== '' && !this.disableWacth)
-      {
-        this.empty[keyEmpty] = true
-        this.form[keySelect] = ''
-      }
-    },
     submit(e) {
       this.loading = true;
       this.form

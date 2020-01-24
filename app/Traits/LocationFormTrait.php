@@ -46,20 +46,16 @@ trait LocationFormTrait
                     $data["process"] = "SI";
                     $data["area"] = "NO";
                 }
-                else if ($locationLevelForm == 'Área')
+                else //if ($locationLevelForm == 'Área')
                 {
-                    $data["regional"] = "SI";
-                    $data["headquarter"] = "SI";
-                    $data["process"] = "SI";
-                    $data["area"] = "SI";
+                    $data = $this->getDefaultValues();
                 }
             }
+            else 
+                $data = $this->getDefaultValues();
 
         } catch (Exception $e) {
-            $data["regional"] = "SI";
-            $data["headquarter"] = "SI";
-            $data["process"] = "SI";
-            $data["area"] = "SI";
+            $data = $this->getDefaultValues();
         }
     
         return $data;
@@ -142,6 +138,23 @@ trait LocationFormTrait
         $data['multiselect_headquarter'] = $model->headquarter ? $model->headquarter->multiselect() : null;
         $data['multiselect_process'] = $model->process ? $model->process->multiselect() : null;
         $data['multiselect_area'] = $model->area ? $model->area->multiselect() : null;
+
+        return $data;
+    }
+
+    /**
+     * Return defult values
+     *
+     * @return array
+     */
+    protected function getDefaultValues()
+    {
+        $data = [];
+
+        $data["regional"] = "SI";
+        $data["headquarter"] = "SI";
+        $data["process"] = "SI";
+        $data["area"] = "SI";
 
         return $data;
     }
