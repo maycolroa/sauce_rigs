@@ -104,7 +104,9 @@ class Check extends Model
         'qualification_origin',
         'is_firm_process_origin',
         'is_firm_process_pcl',
-        'type_qualification_origin'
+        'type_qualification_origin',
+        'subsystem',
+        'conclusion_recommendations'
     ];
 
     /**

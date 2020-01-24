@@ -164,10 +164,22 @@ class CheckManager
             {
                 $monitoring = json_decode($monitoring);
 
-                $attrs = [
-                    'set_at' => $this->setFormatDate($monitoring->set_at),
-                    'conclusion' => $monitoring->conclusion
-                ];
+                 if ($monitoringClass == 'MedicalMonitoring')
+                 {
+                    $attrs = [
+                        'set_at' => $this->setFormatDate($monitoring->set_at),
+                        'conclusion' => $monitoring->conclusion,
+                        'has_monitoring_content' => isset($monitoring->has_monitoring_content) ? $monitoring->has_monitoring_content : null
+                    ];
+                } else if ($monitoringClass == 'LaborMonitoring')
+                {
+                    $attrs = [
+                        'set_at' => $this->setFormatDate($monitoring->set_at),
+                        'conclusion' => $monitoring->conclusion,
+                        'has_monitoring_content' => isset($monitoring->has_monitoring_content) ? $monitoring->has_monitoring_content : null,
+                        'productivity' => isset($monitoring->productivity) ? $monitoring->productivity : null
+                    ];
+                }
 
                 $newMonitoring = (new ReflectionClass("App\Models\PreventiveOccupationalMedicine\Reinstatements\\$monitoringClass"))->newInstanceArgs([$attrs]);
                 array_push($monitoringsToSave, $newMonitoring);
@@ -225,7 +237,7 @@ class CheckManager
             'entity_rating_pcl' => new ProcessPclDoneMustBePresent($request->in_process_pcl, $request->process_pcl_done, true)
         ];
 
-        if ($this->formModel != 'hptu')
+        if ($this->formModel != 'hptu' && $this->formModel != 'argos')
         {
             $rules = array_merge($rules, [
                 'monitoring_recommendations' => [new RequiredIfHasRecommendations($request->has_recommendations), new MonitoringRecomendation($request->indefinite_recommendations, $request->start_recommendations, $request->end_recommendations, $request->has_recommendations)],

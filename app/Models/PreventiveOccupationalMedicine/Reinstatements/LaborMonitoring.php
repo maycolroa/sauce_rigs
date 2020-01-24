@@ -22,6 +22,8 @@ class LaborMonitoring extends Model
     protected $fillable = [
         'set_at',
         'conclusion',
-        'check_id'
+        'check_id',
+        'has_monitoring_content',
+        'productivity'
     ];
 }

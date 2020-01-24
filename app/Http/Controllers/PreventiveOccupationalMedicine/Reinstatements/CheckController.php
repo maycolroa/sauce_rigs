@@ -723,6 +723,10 @@ class CheckController extends Controller
         {
             $pdf = PDF::loadView('pdf.reporteReinstatementsVivaAir', ['check' => $checks] );
         }
+        else if($formModel == 'argos')
+        {
+            $pdf = PDF::loadView('pdf.reporteReinstatementsArgos', ['check' => $checks] );
+        }
 
         $pdf->setPaper('A3', 'landscape');
 
