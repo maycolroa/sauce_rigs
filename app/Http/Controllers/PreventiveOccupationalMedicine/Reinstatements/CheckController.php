@@ -725,7 +725,7 @@ class CheckController extends Controller
         }
         else if($formModel == 'argos')
         {
-            $pdf = PDF::loadView('pdf.reporteReinstatementsArgos', ['check' => $checks] );
+            $pdf = PDF::loadView('pdf.reporteReinstatementsArgos', ['check' => $checks, 'locationForm' => $this->getLocationFormConfModule()] );
         }
 
         $pdf->setPaper('A3', 'landscape');
