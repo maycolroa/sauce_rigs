@@ -119,37 +119,59 @@ export default {
     created(){
         if (this.config.filters != undefined)
         {
-            for(var i in this.config.filters)
-            {
-                let item = this.config.filters[i]
-
-                if (item.permission != undefined && item.permission)
-                    if (!auth.can[item.permission])
-                        continue;
-
-                if (item.header == undefined)
-                    this.modal = true
-                else
-                    this.header = true
-
-                this.$set(this.filters, item.key, item)
-
-                if (item.type == 'select')
+            axios.post('/administration/configurations/locationLevelForms/getConfModule')
+            .then(data => {
+                if (Object.keys(data.data).length > 0)
                 {
-                    this.$set(this.filters[item.key], 'data', [])
-                    this.$set(this.filtersSelected, item.key, [])
-                    this.$set(this.filtersSelected.filtersType, item.key, 'IN')
-                    this.fetchFilterSelect(item.key, item.url)
-                }
-                else if (item.type == 'dateRange' || item.type == 'numberRange')
-                {
-                    this.$set(this.filtersSelected, item.key, '')
-                }
-            }
+                    let inputs = data.data
 
-            setTimeout(() => {
-                this.ready = true
-            }, 3000)
+                    for(var i in this.config.filters)
+                    {
+                        let item = this.config.filters[i]
+
+                        if (item.key == 'regionals' && inputs.regional == 'NO')
+                            continue;
+                        if (item.key == 'headquarters' && inputs.headquarter == 'NO')
+                            continue;
+                        if (item.key == 'processes' && inputs.process == 'NO')
+                            continue;
+                        if (item.key == 'macroprocesses' && inputs.process == 'NO')
+                            continue;
+                        if (item.key == 'areas' && inputs.area == 'NO')
+                            continue;
+
+                        if (item.permission != undefined && item.permission)
+                            if (!auth.can[item.permission])
+                                continue;
+
+                        if (item.header == undefined)
+                            this.modal = true
+                        else
+                            this.header = true
+
+                        this.$set(this.filters, item.key, item)
+
+                        if (item.type == 'select')
+                        {
+                            this.$set(this.filters[item.key], 'data', [])
+                            this.$set(this.filtersSelected, item.key, [])
+                            this.$set(this.filtersSelected.filtersType, item.key, 'IN')
+                            this.fetchFilterSelect(item.key, item.url)
+                        }
+                        else if (item.type == 'dateRange' || item.type == 'numberRange')
+                        {
+                            this.$set(this.filtersSelected, item.key, '')
+                        }
+                    }
+
+                    setTimeout(() => {
+                        this.ready = true
+                    }, 3000)
+                }
+            })
+            .catch(error => {
+                Alerts.error('Error', 'Hubo un problema recolectando la información');
+            });
         }
     },
     mounted() {

@@ -48,9 +48,9 @@
                   <div><b>{{ keywordCheck('businesses') }}:</b> {{ employeeDetail.business ? employeeDetail.business.name : '' }}</div>
               </b-col>
               <b-col>
-                  <div><b>{{ keywordCheck('regional') }}:</b> {{ employeeDetail.regional ? employeeDetail.regional.name : ''}}</div>
-                  <div><b>{{ keywordCheck('headquarter') }}:</b> {{ employeeDetail.headquarter ? employeeDetail.headquarter.name : '' }}</div>
-                   <div><b>{{ keywordCheck('process') }}:</b> {{ employeeDetail.process ? employeeDetail.process.name : '' }}</div>
+                  <div v-if="employeeDetail.regional"><b>{{ keywordCheck('regional') }}:</b> {{ employeeDetail.regional.name }}</div>
+                  <div v-if="employeeDetail.headquarter"><b>{{ keywordCheck('headquarter') }}:</b> {{  employeeDetail.headquarter.name }}</div>
+                  <div v-if="employeeDetail.process"><b>{{ keywordCheck('process') }}:</b> {{ employeeDetail.process.name }}</div>
                   <div v-if="employeeDetail.area"><b>{{ keywordCheck('area') }}:</b> {{ employeeDetail.area.name }}</div>
                   <div><b>{{ keywordCheck('eps') }}:</b> {{ employeeDetail.eps ? `${employeeDetail.eps.code} - ${employeeDetail.eps.name}` : '' }}</div>
                   <div><b>{{ keywordCheck('afp') }}:</b> {{ employeeDetail.afp ? `${employeeDetail.afp.code} - ${employeeDetail.afp.name}` : '' }}</div>

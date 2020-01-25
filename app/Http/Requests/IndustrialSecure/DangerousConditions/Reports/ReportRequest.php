@@ -2,13 +2,13 @@
 
 namespace App\Http\Requests\IndustrialSecure\DangerousConditions\Reports;
 
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Foundation\Http\FormRequest;
-use App\Traits\ConfigurableFormTrait;
-use Session;
+use App\Traits\LocationFormTrait;
 
 class ReportRequest extends FormRequest
 {
-    use ConfigurableFormTrait;
+    use LocationFormTrait;
 
     /**
      * Determine if the user is authorized to make this request.
@@ -20,6 +20,25 @@ class ReportRequest extends FormRequest
         return true;
     }
 
+    public function validator($factory)
+    {
+        return $factory->make(
+            $this->sanitize(), $this->container->call([$this, 'rules']), $this->messages()
+        );
+    }
+
+    public function sanitize()
+    {
+        if ($this->has('locations'))
+        {
+            $this->merge([
+                'locations' => json_decode($this->input('locations'), true)
+            ]);
+        }
+
+        return $this->all();
+    }
+
     /**
      * Get the validation rules that apply to the request.
      *
@@ -27,23 +46,27 @@ class ReportRequest extends FormRequest
      */
     public function rules()
     {
-        return [
+        $rules = [
             'condition_id' => 'required|exists:sau_ph_conditions,id',
             'rate' => 'required',
-            'observation' => 'required',
-            'employee_regional_id' => 'required|exists:sau_employees_regionals,id',
-            'employee_headquarter_id' => 'required|exists:sau_employees_headquarters,id',
-            'employee_process_id' => 'required|exists:sau_employees_processes,id',
-            'employee_area_id' => 'required|exists:sau_employees_areas,id',
+            'observation' => 'required'
         ];
 
-        return $this->getRules($params);
+        $rulesConfLocation = $this->getLocationFormRules();
+        $rules = array_merge($rules, $rulesConfLocation);
+
+        return $rules;
     }
 
     public function messages()
     {
+        $keywords = Auth::user()->getKeywords();
+        
         return [
-            'employee_regional_id.required' => 'El campo '.$this->keywordCheck('regional').' es obligatorio.'
+            'locations.employee_regional_id.required' => 'El campo '.$keywords['regional'].' es obligatorio.',
+            'locations.employee_headquarter_id.required' => 'El campo '.$keywords['headquarter'].' es obligatorio.',
+            'locations.employee_process_id.required' => 'El campo '.$keywords['process'].' es obligatorio.',
+            'locations.employee_area_id.required' => 'El campo '.$keywords['area'].' es obligatorio.'
         ];
     }
 }

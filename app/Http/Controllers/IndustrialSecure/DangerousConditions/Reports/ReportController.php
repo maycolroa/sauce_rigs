@@ -112,6 +112,9 @@ class ReportController extends Controller
             if (!$report->save())
                 return $this->respondHttp500();
 
+            if ($this->updateModelLocationForm($report, $request->get('locations')))
+                return $this->respondHttp500();
+                
             DB::commit();
 
         } catch (\Exception $e) {
@@ -138,10 +141,6 @@ class ReportController extends Controller
             $report = Report::findOrFail($id);
 
             $report->user;
-            $report->multiselect_regional = $report->regional ? $report->regional->multiselect() : []; 
-            $report->multiselect_sede = $report->headquarter ? $report->headquarter->multiselect() : []; 
-            $report->multiselect_proceso = $report->process ? $report->process->multiselect() : []; 
-            $report->multiselect_area = $report->area ? $report->area->multiselect() : [];
             $report->multiselect_condition = $report->condition ? $report->condition->multiselect() : [];
             $report->old_1 = $report->image_1;
             $report->path_1 = Storage::disk('public')->url('industrialSecure/dangerousConditions/reports/images/'. $report->image_1);
@@ -150,6 +149,7 @@ class ReportController extends Controller
             $report->old_3 = $report->image_3;
             $report->path_3 = Storage::disk('public')->url('industrialSecure/dangerousConditions/reports/images/'. $report->image_3);
             $report->actionPlan = ActionPlan::model($report)->prepareDataComponent();
+            $report->locations = $this->prepareDataLocationForm($report);
 
             return $this->respondHttp200([
                 'data' => $report,
@@ -175,6 +175,9 @@ class ReportController extends Controller
             $report->fill($request->all());
             
             if (!$report->update())
+                return $this->respondHttp500();
+
+            if ($this->updateModelLocationForm($report, $request->get('locations')))
                 return $this->respondHttp500();
 
             DB::commit();

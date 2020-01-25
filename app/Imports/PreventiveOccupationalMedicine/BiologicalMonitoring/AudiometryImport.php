@@ -22,10 +22,12 @@ use Maatwebsite\Excel\Facades\Excel;
 use Validator;
 use Exception;
 use App\Traits\AudiometryTrait;
+use App\Traits\LocationFormTrait;
 use App\Traits\UtilsTrait;
 
 class AudiometryImport implements ToCollection
 {
+    use LocationFormTrait;
     use AudiometryTrait;
     use UtilsTrait;
 
@@ -148,36 +150,45 @@ class AudiometryImport implements ToCollection
                 $fecha_nacimiento = $this->validateDate($row[4]);
                 $fecha_ingreso = $this->validateDate($row[12]);
 
-                $validator = Validator::make(
-                    [
-                        'identificacion'    => $row[0],
-                        'nombre'            => $row[1],
-                        'sexo'              => $row[2],
-                        'email'             => $row[3],
-                        'fecha_nacimiento'  => $fecha_nacimiento,
-                        'cargo'             => $row[5],
-                        'centro_costo'      => $row[6],
-                        'regional'          => $row[7],
-                        'sede'              => $row[8],
-                        'proceso'           => $row[9],
-                        'area'              => $row[10],
-                        'fecha_ingreso'     => $fecha_ingreso,
-                        'negocio'           => $row[13]
-                    ],
-                    [
-                        'identificacion'   => 'required|numeric',
-                        'nombre'           => 'required|string',
-                        'sexo'             => 'required|string|in:Masculino,Femenino',
-                        'email'            => 'required|email|unique:sau_employees,email,null,id,company_id,'.$this->company_id,
-                        'fecha_nacimiento' => 'nullable|date',
-                        'cargo'            => 'required',
-                        'centro_costo'     => 'nullable',
-                        'regional'         => 'required',
-                        'sede'             => 'required',
-                        'area'             => 'required',
-                        'proceso'          => 'required',
-                        'fecha_ingreso'    => 'required|date',
-                    ]);
+                $data = [
+                    'identificacion'    => $row[0],
+                    'nombre'            => $row[1],
+                    'sexo'              => $row[2],
+                    'email'             => $row[3],
+                    'fecha_nacimiento'  => $fecha_nacimiento,
+                    'cargo'             => $row[5],
+                    'centro_costo'      => $row[6],
+                    'regional'          => $row[7],
+                    'sede'              => $row[8],
+                    'proceso'           => $row[9],
+                    'area'              => $row[10],
+                    'fecha_ingreso'     => $fecha_ingreso,
+                    'negocio'           => $row[13]
+                ];
+
+                $rules = [];
+                $confLocation = $this->getLocationFormConfModule($this->company_id);
+        
+                if ($confLocation['regional'] == 'SI')
+                    $rules['regional'] = 'required';
+                if ($confLocation['headquarter'] == 'SI')
+                    $rules['sede'] = 'required';
+                if ($confLocation['process'] == 'SI')
+                    $rules['proceso'] = 'required';
+                if ($confLocation['area'] == 'SI')
+                    $rules['area'] = 'required';
+
+                $rules = array_merge($rules,
+                [
+                    'identificacion'   => 'required|numeric',
+                    'nombre'           => 'required|string',
+                    'sexo'             => 'required|string|in:Masculino,Femenino,Sin Sexo',
+                    'email'            => 'required|email|unique:sau_employees,email,null,id,company_id,'.$this->company_id,
+                    'fecha_nacimiento' => 'nullable|date',
+                    'cargo'            => 'required',
+                    'centro_costo'     => 'nullable',
+                    'fecha_ingreso'    => 'required|date',
+                ]);
 
                 $validator = Validator::make($data, $rules, 
                 [
@@ -198,10 +209,10 @@ class AudiometryImport implements ToCollection
                 }
                 else 
                 {
-                    $regional_id = $this->checkRegional($row[7]);
-                    $headquarter_id = $this->checkHeadquarter($regional_id, $row[8]);
-                    $process_id = $this->checkProcess($headquarter_id, $row[9]);
-                    $area_id = $this->checkArea($headquarter_id, $process_id, $row[10]);
+                    $regional_id = $confLocation['regional'] == 'SI' ? $this->checkRegional($row[7]) : null;
+                    $headquarter_id = $confLocation['headquarter'] == 'SI' ? $this->checkHeadquarter($regional_id, $row[8]) : null;
+                    $process_id = $confLocation['process'] == 'SI' ? $this->checkProcess($headquarter_id, $row[9]) : null;
+                    $area_id = $confLocation['area'] == 'SI' ? $this->checkArea($headquarter_id, $process_id, $row[10]) : null;
 
                     $employee = Employee::create([
                         'identification' => $row[0],
@@ -226,7 +237,7 @@ class AudiometryImport implements ToCollection
             }
             else
             {
-                $this->setError('Codigo EPS inválido');
+                $this->setError("Codigo {$this->keywords["eps"]} inválido");
             }
         }
 

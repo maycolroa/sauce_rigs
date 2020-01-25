@@ -12,10 +12,6 @@
             <form-report
                 url="/industrialSecurity/dangerousConditions/report"
                 method="POST"
-                regionals-data-url="/selects/regionals"
-                headquarters-data-url="/selects/headquarters"
-                areas-data-url="/selects/areas"
-                processes-data-url="/selects/processes"
                 conditions-data-url="/selects/industrialSecurity/conditions"
                 :rates="rates"
                 :cancel-url="{ name: 'dangerousconditions-reports' }"/>

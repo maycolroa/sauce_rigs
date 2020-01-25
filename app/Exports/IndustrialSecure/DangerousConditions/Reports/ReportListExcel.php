@@ -15,6 +15,7 @@ use Maatwebsite\Excel\Events\AfterSheet;
 use \Maatwebsite\Excel\Sheet;
 use DB;
 use App\Traits\UtilsTrait;
+use App\Traits\LocationFormTrait;
 
 Sheet::macro('styleCells', function (Sheet $sheet, string $cellRange, array $style) {
   $sheet->getDelegate()->getStyle($cellRange)->applyFromArray($style);
@@ -23,6 +24,7 @@ Sheet::macro('styleCells', function (Sheet $sheet, string $cellRange, array $sty
 class ReportListExcel implements FromQuery, WithMapping, WithHeadings, WithTitle, WithEvents, ShouldAutoSize
 {
     use RegistersEventListeners;
+    use LocationFormTrait;
     use UtilsTrait;
 
     protected $company_id;
@@ -36,7 +38,7 @@ class ReportListExcel implements FromQuery, WithMapping, WithHeadings, WithTitle
       $this->filters = $filters;
       $this->module_id = Module::where('name', 'dangerousConditions')->first()->id;
       $this->keywords = $this->getKeywordQueue($this->company_id);
-
+      $this->confLocation = $this->getLocationFormConfModule($this->company_id);
     }
 
     public function query()
@@ -81,12 +83,21 @@ class ReportListExcel implements FromQuery, WithMapping, WithHeadings, WithTitle
 
     public function map($data): array
     {
-      return [
-        $data->id,
-        $data->regional,
-        $data->headquarter,
-        $data->process,
-        $data->area,
+      $values = [$data->id];
+
+      if ($this->confLocation['regional'] == 'SI')
+        array_push($values, $data->regional);
+
+      if ($this->confLocation['headquarter'] == 'SI')
+        array_push($values, $data->headquarter);
+
+      if ($this->confLocation['process'] == 'SI')
+        array_push($values, $data->process);
+
+      if ($this->confLocation['area'] == 'SI')
+        array_push($values, $data->area);
+
+      $values = array_merge($values, [
         $data->rate,
         $data->observation,
         $data->condition,
@@ -95,17 +106,28 @@ class ReportListExcel implements FromQuery, WithMapping, WithHeadings, WithTitle
         $data->user,
         $data->document,
         $data->created_at
-      ];
+      ]);
+
+      return $values;
     }
 
     public function headings(): array
     {
-      return [
-        'Código',
-        $this->keywords['regional'],
-        $this->keywords['headquarter'],
-        $this->keywords['process'],
-        $this->keywords['area'],
+      $columns = ['Código'];
+
+      if ($this->confLocation['regional'] == 'SI')
+        array_push($columns, $this->keywords['regional']);
+
+      if ($this->confLocation['headquarter'] == 'SI')
+        array_push($columns, $this->keywords['headquarter']);
+
+      if ($this->confLocation['process'] == 'SI')
+        array_push($columns, $this->keywords['process']);
+
+      if ($this->confLocation['area'] == 'SI')
+        array_push($columns, $this->keywords['area']);
+
+      $columns = array_merge($columns, [
         'Severidad',
         'Observación',
         'Condición',
@@ -114,7 +136,9 @@ class ReportListExcel implements FromQuery, WithMapping, WithHeadings, WithTitle
         'Usuario que Reporta',
         'Identificación',
         'Fecha de creación'
-      ];
+      ]);
+
+      return $columns;
     }
 
     public static function afterSheet(AfterSheet $event)
