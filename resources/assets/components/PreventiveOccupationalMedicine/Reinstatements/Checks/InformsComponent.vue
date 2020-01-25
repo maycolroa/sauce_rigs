@@ -110,7 +110,7 @@
                                 </b-card>
                             </b-col>
                         </b-row>
-                        <b-row>
+                        <b-row v-if="locationForm.headquarter == 'SI'">
                             <b-col>
                                 <b-card border-variant="primary" :title="`Reportes por ${keywordCheck('headquarter')}`" class="mb-3 box-shadow-none">
                                     <b-row align-h="end">
@@ -135,7 +135,7 @@
                                 </b-card>
                             </b-col>
                         </b-row>
-                        <b-row>
+                        <b-row v-if="locationForm.process == 'SI'">
                             <b-col>
                                 <b-card border-variant="primary" :title="`Reportes por ${keywordCheck('process')}`" class="mb-3 box-shadow-none">
                                     <b-row align-h="end">

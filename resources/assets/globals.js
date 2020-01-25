@@ -71,6 +71,10 @@ export default function () {
 
     get keywords() {
       return keywords
+    },
+
+    get locationForm() {
+      return locationForm
     }
   }
 }

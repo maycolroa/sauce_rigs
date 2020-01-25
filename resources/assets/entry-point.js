@@ -33,6 +33,11 @@ if (typeof keywords !== 'undefined')
   window.keywords = keywords
 else
   window.keywords = {}
+
+if (typeof locationForm !== 'undefined')
+  window.locationForm = locationForm
+else
+  window.locationForm = {}
 /**
  * Echo exposes an expressive API for subscribing to channels and listening
  * for events that are broadcast by Laravel. Echo and event broadcasting
