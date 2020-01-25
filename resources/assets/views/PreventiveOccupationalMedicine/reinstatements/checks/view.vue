@@ -28,6 +28,23 @@
                   :clasification-origin="clasificationOrigin"
                   :cancel-url="{ name: 'reinstatements-checks'}"/>
               </template>
+              <template v-if="form == 'argos'">
+                <form-check-argos
+                  url="/biologicalmonitoring/reinstatements/check"
+                  method="POST"
+                  :check="data"
+                  :view-only="true"
+                  :disease-origins="diseaseOrigins"
+                  :lateralities="lateralities"
+                  :si-no="siNo"
+                  :origin-advisors="originAdvisors"
+                  :medical-conclusions="medicalConclusions"
+                  :labor-conclusions="laborConclusions"
+                  :origin-emitters="originEmitters"
+                  tracing-others-url="/biologicalmonitoring/reinstatements/check/tracingOthers"
+                  :clasification-origin="clasificationOrigin"
+                  :cancel-url="{ name: 'reinstatements-checks'}"/>
+              </template>
               <template v-if="form == 'hptu'">
                 <form-check-hptu
                   url="/biologicalmonitoring/reinstatements/check"
@@ -98,6 +115,7 @@
 <script>
 import FormCheck from '@/components/PreventiveOccupationalMedicine/Reinstatements/Checks/FormCheckComponent.vue';
 import FormCheckHptu from '@/components/PreventiveOccupationalMedicine/Reinstatements/Checks/FormCheckHptuComponent.vue';
+import FormCheckArgos from '@/components/PreventiveOccupationalMedicine/Reinstatements/Checks/FormCheckComponentArgos.vue';
 import FormCheckVivaAir from '@/components/PreventiveOccupationalMedicine/Reinstatements/Checks/FormCheckVivaAirComponent.vue';
 import FormCheckEmpresarial from '@/components/PreventiveOccupationalMedicine/Reinstatements/Checks/FormCheckEmpresarialComponent.vue';
 import Loading from "@/components/Inputs/Loading.vue";
@@ -112,6 +130,7 @@ export default {
   components:{
     FormCheck,
     FormCheckHptu,
+    FormCheckArgos,
     FormCheckVivaAir,
     FormCheckEmpresarial,
     Loading
