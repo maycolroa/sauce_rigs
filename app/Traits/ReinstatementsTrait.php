@@ -26,7 +26,7 @@ trait ReinstatementsTrait
             'relocated' => "nullable",
             'monitoring_recommendations' => 'nullable|date',
             'origin_recommendations' => "nullable",
-            'detail' => 'nullable|string',  
+            'detail' => 'nullable|string',
             'has_restrictions' => "required",
             'restriction_id' => 'nullable|exists:sau_reinc_restrictions,id',
             'medical_monitorings' => 'array',
@@ -54,6 +54,7 @@ trait ReinstatementsTrait
         if ($formModel == 'vivaAir')
         {
             $rules = array_merge($rules, [
+
                 'sve_associated' => 'required',
                 'medical_certificate_ueac' => 'required',
             ]);

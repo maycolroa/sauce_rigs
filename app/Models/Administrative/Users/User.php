@@ -7,6 +7,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Laratrust\Traits\LaratrustUserTrait;
 use App\Traits\CompanyTrait;
 use App\Traits\PermissionTrait;
+use App\Traits\LocationFormTrait;
 use App\Models\General\Team;
 use App\Models\General\Permission;
 use App\Models\General\Keyword;
@@ -20,6 +21,7 @@ class User extends Authenticatable
     use Notifiable;
     use CompanyTrait;
     use PermissionTrait;
+    use LocationFormTrait;
 
     /**
      * The attributes that are mass assignable.
@@ -229,5 +231,13 @@ class User extends Authenticatable
     public function systemsApply()
     {
         return $this->belongsToMany('App\Models\LegalAspects\LegalMatrix\SystemApply', 'sau_lm_user_system_apply')->withPivot('company_id');
+    }
+
+    public function getLocationForm($company = null)
+    {
+        $company = $company ? $company : Session::get('company_id');
+        $conf = $this->getLocationFormConfModule($company);
+
+        return $conf;
     }
 }

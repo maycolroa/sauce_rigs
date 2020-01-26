@@ -47,99 +47,82 @@
                     <th>Identificación</th>
                     <th>Nombre</th>
                     <th>Fecha de nacimiento</th>
-                    <th>Sexo</th>
                 </tr>
                 <tr>
                     <td>{{$check->employee->identification}}</td>
                     <td>{{$check->employee->name}}</td>
                     <td>{{$check->employee->date_of_birth}}</td>
-                    <td>{{$check->employee->sex}}</td>
                 </tr>
                 <tr>
+                    <th>Sexo</th>
                     <th>Fecha de ingreso</th>
                     <th>Antigüedad</th>
-                    <th>Edad</th>
-                    <th>{{ Auth::user()->getKeywords()['position'] }}</th>
                 </tr>
                 <tr>
+                    <td>{{$check->employee->sex}}</td>
                     <td>{{$check->employee->income_date}}</td>
                     <td>{{$check->employee->antiquity}}</td>
+                </tr>
+                <tr>
+                    <th>Edad</th>
+                    <th>{{ Auth::user()->getKeywords()['position'] }}</th>
+                    <th>{{ Auth::user()->getKeywords()['businesses'] }}</th>
+                </tr>
+                <tr>
                     <td>{{$check->employee->age}}</td>
                     <td>{{ $check->employee->position ? $check->employee->position->name : '' }}</td>
-                </tr>
-                <tr>
-                    <th>{{ Auth::user()->getKeywords()['businesses'] }}</th>
-                    <th>Números de contrato</th>
-                    <th>Fecha último contrato</th>
-                    <th>Tipo contrato</th>
-                </tr>
-                <tr>
                     <td>{{ $check->employee->business ? $check->employee->business->name : '' }}</td>
-                    <td>{{$check->contract_numbers}}</td>
-                    <td>{{$check->last_contract_date}}</td>
-                    <td>{{$check->contract_type}}</td>
-                </tr> 
-                <tr>
-                    <th>{{ Auth::user()->getKeywords()['businesses'] }}</th>
-                    <th>{{ Auth::user()->getKeywords()['eps'] }}</th>
-                    <th>{{ Auth::user()->getKeywords()['afp'] }}</th>
-                    <th>{{ Auth::user()->getKeywords()['arl'] }}</th>
                 </tr>
                 <tr>
-                    <td>{{ $check->employee->business ? $check->employee->business->name : '' }}</td>
-                    <td>{{ $check->employee->eps ? $check->employee->eps->code.'-'.$check->employee->eps->name : '' }}</
-                    <td>{{ $check->employee->afp ? $check->employee->afp->code.'-'.$check->employee->afp->name : '' }}</td>
-                    <td>{{ $check->employee->arl ? $check->employee->arl->code.'-'.$check->employee->arl->name : '' }}</td>
+                    <th colspan="2">{{ Auth::user()->getKeywords()['eps'] }}</th>
+                    <th>{{ Auth::user()->getKeywords()['regional'] }}</th>
+                </tr>
+                <tr>
+                    <td colspan="2">{{ $check->employee->eps ? $check->employee->eps->code.'-'.$check->employee->eps->name : '' }}</td>
+                    <td>{{ $check->employee->regional ? $check->employee->regional->name : '' }}</td>
                 </tr>
 
-                @if ($locationForm['regional'] == 'SI' && $locationForm['headquarter'] == 'NO')
-                    <tr>
-                        <th colspan="4">{{ Auth::user()->getKeywords()['regional'] }}</th>
-                    </tr>
-                    <tr>
-                        <td colspan="4">{{ $check->employee->regional ? $check->employee->regional->name : '' }}</td>
-                    </tr>
+                @if($locationForm['headquarter'] == 'SI' && $locationForm['process'] == 'NO')
+                <tr>
+                    <th colspan="3">{{ Auth::user()->getKeywords()['headquarter'] }}</th>
+                </tr>
+                @endif
+                
+                @if($locationForm['process'] == 'SI' && $locationForm['area'] == 'NO')
+                <tr>
+                    <th>{{ Auth::user()->getKeywords()['headquarter'] }}</th>
+                    <th colspan="2">{{ Auth::user()->getKeywords()['process'] }}</th>
+                </tr>
                 @endif
 
-                @if ($locationForm['headquarter'] == 'SI' && $locationForm['process'] == 'NO')
-                    <tr>
-                        <th colspan="2">{{ Auth::user()->getKeywords()['regional'] }}</th>
-                        <th colspan="2">{{ Auth::user()->getKeywords()['headquarter'] }}</th>
-                    </tr>
-                    <tr>
-                        <td colspan="2">{{ $check->employee->regional ? $check->employee->regional->name : '' }}</td>
-                        <td colspan="2">{{ $check->employee->headquarter ? $check->employee->headquarter->name : '' }}</td>
-                    </tr>
+                @if($locationForm['area'] == 'SI')
+                <tr>
+                    <th>{{ Auth::user()->getKeywords()['headquarter'] }}</th>
+                    <th>{{ Auth::user()->getKeywords()['process'] }}</th>
+                    <th>{{ Auth::user()->getKeywords()['area'] }}</th>
+                </tr>
                 @endif
 
-                @if ($locationForm['process'] == 'SI' && $locationForm['area'] == 'NO')
-                    <tr>
-                        <th>{{ Auth::user()->getKeywords()['regional'] }}</th>
-                        <th>{{ Auth::user()->getKeywords()['headquarter'] }}</th>
-                        <th colspan="2">{{ Auth::user()->getKeywords()['process'] }}</th>
-                    </tr>
-                    <tr>
-                        <td>{{ $check->employee->regional ? $check->employee->regional->name : '' }}</td>
-                        <td>{{ $check->employee->headquarter ? $check->employee->headquarter->name : '' }}</td>
-                        <td colspan="2">{{ $check->employee->process ? $check->employee->process->name : '' }}</td>
-                    </tr>
+                @if($locationForm['headquarter'] == 'SI' && $locationForm['process'] == 'NO')
+                <tr>
+                    <td colspan="3">{{ $check->employee->headquarter ? $check->employee->headquarter->name : '' }}</td>
+                </tr>
                 @endif
 
-                @if ($locationForm['area'] == 'SI')
-                    <tr>
-                        <th>{{ Auth::user()->getKeywords()['regional'] }}</th>
-                        <th>{{ Auth::user()->getKeywords()['headquarter'] }}</th>
-                        <th>{{ Auth::user()->getKeywords()['process'] }}</th>
-                        <th>{{ Auth::user()->getKeywords()['area'] }}</th>
-                    </tr>
-                    <tr>
-                        <td>{{ $check->employee->regional ? $check->employee->regional->name : '' }}</td>
-                        <td>{{ $check->employee->headquarter ? $check->employee->headquarter->name : '' }}</td>
-                        <td>{{ $check->employee->process ? $check->employee->process->name : '' }}</td>
-                        <td>{{ $check->employee->area ? $check->employee->area->name : '' }}</td>
-                    </tr>
+                @if($locationForm['process'] == 'SI' && $locationForm['area'] == 'NO')
+                <tr>
+                    <td>{{ $check->employee->headquarter ? $check->employee->headquarter->name : '' }}</td>
+                    <td colspan="2">{{ $check->employee->process ? $check->employee->process->name : '' }}</td>
+                </tr>
                 @endif
 
+                @if($locationForm['area'] == 'SI')
+                <tr>
+                    <td>{{ $check->employee->headquarter ? $check->employee->headquarter->name : '' }}</td>
+                    <td>{{ $check->employee->process ? $check->employee->process->name : '' }}</td>
+                    <td>{{ $check->employee->area ? $check->employee->area->name : '' }}</td>
+                </tr>
+                @endif         
             </thead>
         </table>
     </div>
@@ -150,27 +133,24 @@
         <table class="table-general">
             <thead>
                 <tr>
-                    <th>Fecha de inicio</th>
                     <th>{{ Auth::user()->getKeywords()['disease_origin'] }}</th>
-                    <th colspan="2">Código CIE 10</th>
-                    
+                    <th>Código CIE 10</th>
+                    <th>Sistema</th>                    
                 </tr>
                 <tr>
-                    <td>{{date('Y-m-d', strtotime($check->created_at))}}</td>
                     <td>{{$check->disease_origin}}</td>
-                    <td colspan="2">{{$check->cie10Code->code}} - {{$check->cie10Code->description}}</td>
-                </tr>
-                <tr>
-                    <th>Sistema</th>
-                    <th>Categoría</th>                    
-                    <th>Concepto de favorabilidad EPS</th>
-                    <th>Lateralidad</th>
-                </tr>
-                <tr>
+                    <td>{{$check->cie10Code->code}} - {{$check->cie10Code->description}}</td>
                     <td>{{$check->cie10Code->system}}</td>
+                </tr>
+                <tr>
+                    <th>Categoría</th>
+                    <th>Lateralidad</th>
+                    <th>Subsistema</th>
+                </tr>
+                <tr>
                     <td>{{$check->cie10Code->category}}</td>
-                    <td>{{$check->cie10Code->eps_favorability_concept}}</td>
                     <td>{{$check->laterality}}</td>
+                    <td>{{$check->subsystem}}</td>
                 </tr>   
             </thead>
         </table>
@@ -185,33 +165,33 @@
                     <th>¿Tiene recomendaciones?</th>
                     @if($check->has_recommendations == 'SI')
                     <th>Fecha Inicio Recomendaciones</th>
-                    <th colspan="2">¿Recomendaciones indefinidas?</th>
+                    <th>¿Recomendaciones indefinidas?</th>
                     @endif
                 </tr>                
                 <tr>
                     <td>{{$check->has_recommendations}}</td>
                     @if($check->has_recommendations == 'SI')
                     <td>{{date('Y-m-d', strtotime($check->start_recommendations))}}</td>
-                    <td colspan="2">{{$check->indefinite_recommendations}}</td>
+                    <td>{{$check->indefinite_recommendations}}</td>
                     @endif
                 </tr>
                 @if($check->has_recommendations == 'SI')
                 <tr>
                     <th>Fecha Fin Recomendaciones</th>
                     <th>Fecha de seguimiento a recomendaciones</th>
-                    <th colspan="2">Procedencia de las recomendaciones</th>
+                    <th>Procedencia de las recomendaciones</th>
                 </tr>
                 <tr>
                     <td>{{$check->end_recommendations ? date('Y-m-d', strtotime($check->end_recommendations)) : '-'}}</td>
                     <td>{{date('Y-m-d', strtotime($check->monitoring_recommendations))}}</td>
-                    <td colspan="2">{{$check->emitter_origin}}</td>
+                    <td>{{$check->emitter_origin}}</td>
                 </tr>
                 <tr>
                     <th>¿Reubicado?</th>
                     @if($check->relocated == 'NO')
-                    <th colspan="2">{{ Auth::user()->getKeywords()['detail_recommendations'] }}</th>
+                    <th>{{ Auth::user()->getKeywords()['detail_recommendations'] }}</th>
+                    <th>Conclusión a recomendaciones</th>
                     @else
-                    <th>Fecha de reubicación</th>
                     <th>{{ Auth::user()->getKeywords()['position'] }} Actualizado</th>
                     <th>{{ Auth::user()->getKeywords()['regional'] }} Actualizada</th>
                     @endif
@@ -219,9 +199,9 @@
                 <tr>
                     <td>{{$check->relocated}}</td>
                     @if($check->relocated == 'NO')
-                    <td colspan="2">{{$check->detail}}</td>
+                    <td>{{$check->detail}}</td>
+                    <td>{{$check->conclusion_recommendations}}</td>
                     @else
-                    <td>{{$check->relocated_date}}</td>
                     <td>{{ isset($check->relocatedPosition['name']) ? $check->relocatedPosition['name'] : '' }}</td>
                     <td>{{ isset($check->relocatedRegional['name']) ? $check->relocatedRegional['name'] : '' }}</td>
                     @endif
@@ -235,14 +215,14 @@
                                 <td colspan="4">{{$check->detail}}</td>
                             </tr>
                         @endif
-
+                        
                         @if ($locationForm['headquarter'] == 'SI' && $locationForm['process'] == 'NO')
                             <tr>
-                                <th colspan="2">{{ Auth::user()->getKeywords()['headquarter'] }} Actualizada</th>
+                                <th>{{ Auth::user()->getKeywords()['headquarter'] }} Actualizada</th>
                                 <th colspan="2">{{ Auth::user()->getKeywords()['detail_recommendations'] }}</th>
                             </tr>
                             <tr>
-                                <td colspan="2">{{ isset($check->relocatedHeadquarter['name']) ? $check->relocatedHeadquarter['name'] : '' }}</td>
+                                <td>{{ isset($check->relocatedHeadquarter['name']) ? $check->relocatedHeadquarter['name'] : '' }}</td>
                                 <td colspan="2">{{$check->detail}}</td>
                             </tr>
                         @endif
@@ -251,12 +231,12 @@
                             <tr>
                                 <th>{{ Auth::user()->getKeywords()['headquarter'] }} Actualizada</th>
                                 <th>{{ Auth::user()->getKeywords()['process'] }} Actualizada</th>
-                                <th colspan="2">{{ Auth::user()->getKeywords()['detail_recommendations'] }}</th>
+                                <th>{{ Auth::user()->getKeywords()['detail_recommendations'] }}</th>
                             </tr>
                             <tr>
                                 <td>{{ isset($check->relocatedHeadquarter['name']) ? $check->relocatedHeadquarter['name'] : '' }}</td>
                                 <td>{{ isset($check->relocatedProcess['name']) ? $check->relocatedProcess['name'] : '' }}</td>
-                                <td colspan="2">{{$check->detail}}</td>
+                                <td>{{$check->detail}}</td>
                             </tr>
                         @endif
                     @endif
@@ -273,18 +253,12 @@
                 <tr>
                     <th>¿Tiene Restricción?</th>
                     @if($check->has_restrictions == 'SI')
-                    <th>Fecha inicio restricción</th>
-                    <th>¿Restricción indefinida?</th>
-                    <th>Fecha fin restricción</th>
                     <th>Parte del cuerpo afectada</th>
                     @endif
                 </tr>
                 <tr>
                     <td>{{$check->has_restrictions}}</td>
                     @if($check->has_restrictions == 'SI')
-                    <td>{{$check->start_restrictions}}</td>
-                    <td>{{$check->indefinite_restrictions}}</td>
-                    <td>{{$check->end_restrictions}}</td>
                     <td>{{$check->restriction->name}}</td>
                     @endif
                 </tr>
@@ -298,58 +272,31 @@
         <table class="table-general">
             <thead>
                 <tr>
-                    <th>¿Incapacitado?</th>
-                    @if($check->has_incapacitated == 'SI')
-                    <th>Números de dias</th>
-                    <th>Última prórroga</th>
-                    @endif
-                </tr>
-                <tr>
-                    <td>{{$check->has_incapacitated}}</td>
-                    @if($check->has_incapacitated == 'SI')
-                    <td>{{$check->incapacitated_days}}</td>
-                    <td>{{$check->incapacitated_last_extension}}</td>
-                    @endif
-                </tr>
-            </thead>
-        </table>
-    </div>
-
-    <br><br>
-     <div style="page-break-inside: avoid;">
-        <table class="table-general">
-            <thead>
-                <tr>
-                    <th>Clasificación del caso</th>
-                </tr>
-                <tr>
-                    <td>{{$check->case_classification}}</td>
-                </tr>
-            </thead>
-        </table>
-    </div>
-
-    <br><br>
-
-    <div style="page-break-inside: avoid;">
-        <table class="table-general">
-            <thead>
-                <tr>
                     <th>Fecha Seguimiento Médico</th>
-                    <th>Conclusión Seguimiento Médico</th>
+                    <th colspan="2">Conclusión Seguimiento Médico</th>
+                    <th>¿Tiene seguimiento en el content?</th>
                 </tr>
                 @foreach($check->medicalMonitorings as $medical)
                 <tr>
                     <td>{{date('Y-m-d', strtotime($medical->set_at))}}</td>
-                    <td>{{$medical->conclusion}}</td>
+                    <td colspan="2">{{$medical->conclusion}}</td>
+                    <td>{{$medical->has_monitoring_content}}</td>
                 </tr>
                 @endforeach
                 <tr>
-                    <th colspan="2">Fecha próximo seguimiento</th>
+                    <th>Fecha Seguimiento Laboral</th>
+                    <th>Conclusión Seguimiento Laboral</th>
+                    <th>¿Tiene seguimiento en el content?</th>
+                    <th>Productividad</th>
                 </tr>
+                @foreach($check->laborMonitorings as $labor)
                 <tr>
-                    <td colspan="2">{{$check->next_date_tracking}}</td>
+                    <td>{{date('Y-m-d', strtotime($labor->set_at))}}</td>
+                    <td>{{$labor->conclusion}}</td>
+                    <td>{{$labor->has_monitoring_content}}</td>
+                    <td>{{$labor->productivity}}</td>
                 </tr>
+                @endforeach
             </thead>
         </table>
     </div>

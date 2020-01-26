@@ -15,7 +15,6 @@
               <form-employee
                   :sexs="sexs"
                   :employee="data"
-                  :disable-wacth-select-in-created="true"
                   :view-only="true"
                   :cancel-url="{ name: 'administrative-employees'}"/>
             </template>
@@ -23,7 +22,6 @@
               <form-employee-viva-air 
                   :sexs="sexs"
                   :employee="data"
-                  :disable-wacth-select-in-created="true"
                   :view-only="true"
                   :cancel-url="{ name: 'administrative-employees'}"/>
             </template>
@@ -32,7 +30,6 @@
                   :sexs="sexs"
                   :contract-types="contractTypes"
                   :employee="data"
-                  :disable-wacth-select-in-created="true"
                   :view-only="true"
                   :cancel-url="{ name: 'administrative-employees'}"/>
             </template>

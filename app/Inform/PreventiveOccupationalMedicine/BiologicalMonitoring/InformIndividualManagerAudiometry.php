@@ -72,14 +72,14 @@ class InformIndividualManagerAudiometry
 
         $data['email'] = $this->employee->email;
         $data['income_date'] = $this->employee->income_date ? (Carbon::createFromFormat('Y-m-d',$this->employee->income_date))->format('M d Y') : '-';;
-        $data['regional'] = isset($this->employee->regional) ? $this->employee->regional->name : '-';
-        $data['headquarter'] = isset($this->employee->headquarter) ? $this->employee->headquarter->name : '-';
-        $data['area'] = isset($this->employee->area) ? $this->employee->area->name : '-';
-        $data['process'] = isset($this->employee->process) ? $this->employee->process->name : '-';
+        $data['regional'] = isset($this->employee->regional) ? $this->employee->regional->name : null;
+        $data['headquarter'] = isset($this->employee->headquarter) ? $this->employee->headquarter->name : null;
+        $data['area'] = isset($this->employee->area) ? $this->employee->area->name : null;
+        $data['process'] = isset($this->employee->process) ? $this->employee->process->name : null;
         $data['position'] = isset($this->employee->position) ? $this->employee->position->name : '-';
         $data['business'] = isset($this->employee->business) ? $this->employee->business->name : '-';
         $data['eps'] = isset($this->employee->eps) ? ($this->employee->eps->code.' - '.$this->employee->eps->name) : '-';
-        $data['deal'] = $this->employee->deal;
+        $data['deal'] = $this->employee->deal ? $this->employee->deal : '-';
 
         return collect($data);
     }

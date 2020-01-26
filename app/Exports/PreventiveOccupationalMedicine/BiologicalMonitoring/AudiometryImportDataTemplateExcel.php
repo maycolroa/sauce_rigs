@@ -59,7 +59,7 @@ class AudiometryImportDataTemplateExcel implements FromCollection, WithHeadings,
         return [
           'Identificación',
           'Nombre',
-          'Sexo (Masculino, Femenino)',
+          'Sexo (Masculino, Femenino, Sin Sexo)',
           'Email',
           'Fecha Nacimiento (YYYY-MM-DD)',
           $this->keywords['position'],

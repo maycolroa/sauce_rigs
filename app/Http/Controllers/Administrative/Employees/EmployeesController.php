@@ -57,9 +57,10 @@ class EmployeesController extends Controller
             'sau_employees_arl.name as arl'
         )
         ->join('sau_employees_positions', 'sau_employees_positions.id', 'sau_employees.employee_position_id')
-        ->join('sau_employees_regionals', 'sau_employees_regionals.id', 'sau_employees.employee_regional_id')
-        ->join('sau_employees_headquarters', 'sau_employees_headquarters.id', 'sau_employees.employee_headquarter_id')
-        ->join('sau_employees_processes', 'sau_employees_processes.id', 'sau_employees.employee_process_id')
+        ->leftJoin('sau_employees_regionals', 'sau_employees_regionals.id', 'sau_employees.employee_regional_id')
+        ->leftJoin('sau_employees_headquarters', 'sau_employees_headquarters.id', 'sau_employees.employee_headquarter_id')
+        ->leftJoin('sau_employees_processes', 'sau_employees_processes.id', 'sau_employees.employee_process_id')
+        ->leftJoin('sau_employees_areas', 'sau_employees_areas.id', 'sau_employees.employee_area_id')
         ->leftJoin('sau_employees_businesses', 'sau_employees_businesses.id', 'sau_employees.employee_business_id')
         ->leftJoin('sau_employees_eps', 'sau_employees_eps.id', 'sau_employees.employee_eps_id')
         ->leftJoin('sau_employees_afp', 'sau_employees_afp.id', 'sau_employees.employee_afp_id')
@@ -91,6 +92,9 @@ class EmployeesController extends Controller
             return $this->respondHttp500();
         }
 
+        if($this->updateModelLocationForm($employee, $request->get('locations')))
+            return $this->respondHttp500();
+
         return $this->respondHttp200([
             'message' => 'Se creo el registro'
         ]);
@@ -118,10 +122,8 @@ class EmployeesController extends Controller
             if ($employee->last_contract_date)
                 $employee->last_contract_date = (Carbon::createFromFormat('Y-m-d',$employee->last_contract_date))->format('D M d Y');
 
-            $employee->multiselect_regional = $employee->regional->multiselect(); 
-            $employee->multiselect_sede = $employee->headquarter->multiselect(); 
-            $employee->multiselect_proceso = $employee->process->multiselect(); 
-            $employee->multiselect_area = $employee->area ? $employee->area->multiselect() : []; 
+            $employee->locations = $this->prepareDataLocationForm($employee);
+
             $employee->multiselect_cargo = $employee->position->multiselect(); 
             $employee->multiselect_centro_costo = $employee->business ? $employee->business->multiselect() : []; 
             $employee->multiselect_eps = $employee->eps ? $employee->eps->multiselect() : [];
@@ -157,6 +159,9 @@ class EmployeesController extends Controller
         if(!$employee->update()){
             return $this->respondHttp500();
         }
+
+        if($this->updateModelLocationForm($employee, $request->get('locations')))
+            return $this->respondHttp500();
 
         return $this->respondHttp200([
             'message' => 'Se actualizo el registro'

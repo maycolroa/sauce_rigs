@@ -22,10 +22,12 @@ use Maatwebsite\Excel\Facades\Excel;
 use Validator;
 use Exception;
 use App\Traits\ConfigurableFormTrait;
+use App\Traits\LocationFormTrait;
 
 class EmployeeImport implements ToCollection
 {
     use ConfigurableFormTrait;
+    use LocationFormTrait;
 
     private $company_id;
     private $user;
@@ -166,39 +168,44 @@ class EmployeeImport implements ToCollection
         $sql->company_scope = $this->company_id;
         $employee = $sql->first();
 
+        $rules = [];
+        $confLocation = $this->getLocationFormConfModule($this->company_id);
+
+        if ($confLocation['regional'] == 'SI')
+            $rules['regional'] = 'required';
+        if ($confLocation['headquarter'] == 'SI')
+            $rules['sede'] = 'required';
+        if ($confLocation['process'] == 'SI')
+            $rules['proceso'] = 'required';
+        if ($confLocation['area'] == 'SI')
+            $rules['area'] = 'required';
 
         if ($this->formModel == 'default' || $this->formModel == 'vivaAir')
         {
-            $rules = [
+            $rules = array_merge($rules,
+            [
                 'identificacion' => 'required|numeric',
                 'nombre' => 'required|string',
                 'fecha_nacimiento' => 'nullable|date',
                 'sexo' => 'required|string|in:Masculino,Femenino,Sin Sexo',
                 'email' => 'nullable|email|unique:sau_employees,email,'.($employee ? $employee->id : null).',id,company_id,'.$this->company_id,
                 'fecha_ingreso' => 'required|date',
-                'regional' => 'required',
-                'sede' => 'required',
-                'proceso' => 'required',
-                'area' => 'nullable',
                 'cargo' => 'required',
                 'centro_costo' => 'nullable',
                 'eps' => 'nullable|exists:sau_employees_eps,id',
                 'afp' => 'nullable|exists:sau_employees_afp,id'
-            ];
+            ]);
         }
         else if ($this->formModel == 'misionEmpresarial')
         {
-            $rules = [
+            $rules = array_merge($rules,
+            [
                 'identificacion' => 'required|numeric',
                 'nombre' => 'required|string',
                 'fecha_nacimiento' => 'nullable|date',
                 'sexo' => 'required|string|in:Masculino,Femenino,Sin Sexo',
                 'email' => 'nullable|email|unique:sau_employees,email,'.($employee ? $employee->id : null).',id,company_id,'.$this->company_id,
                 'fecha_ingreso' => 'required|date',
-                'regional' => 'required',
-                'sede' => 'required',
-                'proceso' => 'required',
-                'area' => 'nullable',
                 'cargo' => 'required',
                 'centro_costo' => 'nullable',
                 'eps' => 'nullable|exists:sau_employees_eps,id',
@@ -206,7 +213,7 @@ class EmployeeImport implements ToCollection
                 'arl' => 'nullable|exists:sau_employees_arl,id',
                 'numero_contrato' => 'required|integer|min:0',
                 'tipo_contrato' => 'required|in:'.$this->contract_types
-            ];
+            ]);
         }
 
         $validator = Validator::make($data, $rules, 
@@ -214,6 +221,7 @@ class EmployeeImport implements ToCollection
             'regional.required' => 'El campo '.$this->keywords['regional'].' es obligatorio.',
             'sede.required' => 'El campo '.$this->keywords['headquarter'].' es obligatorio.',
             'proceso.required' => 'El campo '.$this->keywords['process'].' es obligatorio.',
+            'area.required' => 'El campo '.$this->keywords['area'].' es obligatorio.',
             'cargo.required' => 'El campo '.$this->keywords['position'].' es obligatorio.',
             'eps.exists' => 'El campo '.$this->keywords['eps'].' es incorrecto.',
             'afp.exists' => 'El campo '.$this->keywords['afp'].' es incorrecto.',
@@ -232,10 +240,10 @@ class EmployeeImport implements ToCollection
         }
         else 
         {
-            $regional_id = $this->checkRegional($data['regional']);
-            $headquarter_id = $this->checkHeadquarter($regional_id, $data['sede']);
-            $process_id = $this->checkProcess($headquarter_id, $data['proceso']);
-            $area_id = $data['area'] ? $this->checkArea($headquarter_id, $process_id, $data['area']) : null;
+            $regional_id = $confLocation['regional'] == 'SI' ? $this->checkRegional($data['regional']) : null;
+            $headquarter_id = $confLocation['headquarter'] == 'SI' ? $this->checkHeadquarter($regional_id, $data['sede']) : null;
+            $process_id = $confLocation['process'] == 'SI' ? $this->checkProcess($headquarter_id, $data['proceso']) : null;
+            $area_id = $confLocation['area'] == 'SI' ? $this->checkArea($headquarter_id, $process_id, $data['area']) : null;
 
             $data_save = [
                 'identification' => $data['identificacion'],

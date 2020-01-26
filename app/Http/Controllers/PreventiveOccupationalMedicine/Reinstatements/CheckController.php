@@ -709,19 +709,23 @@ class CheckController extends Controller
 
         if ($formModel == 'default')
         { 
-            $pdf = PDF::loadView('pdf.reporteReinstatements', ['check' => $checks] );
+            $pdf = PDF::loadView('pdf.reporteReinstatements', ['check' => $checks, 'locationForm' => $this->getLocationFormConfModule()]);
         }
         else if ($formModel == 'misionEmpresarial')
         {
-            $pdf = PDF::loadView('pdf.reportReinstatementsMisionEmpresarial', ['check' => $checks] );
+            $pdf = PDF::loadView('pdf.reportReinstatementsMisionEmpresarial', ['check' => $checks, 'locationForm' => $this->getLocationFormConfModule()]);
         }
         else if ($formModel == 'hptu')
         {
-            $pdf = PDF::loadView('pdf.reporteReinstatementsHptu', ['check' => $checks] );
+            $pdf = PDF::loadView('pdf.reporteReinstatementsHptu', ['check' => $check, 'locationForm' => $this->getLocationFormConfModule()]);
         }
         else if($formModel == 'vivaAir')
         {
-            $pdf = PDF::loadView('pdf.reporteReinstatementsVivaAir', ['check' => $checks] );
+            $pdf = PDF::loadView('pdf.reporteReinstatementsVivaAir', ['check' => $checks, 'locationForm' => $this->getLocationFormConfModule()]);
+        }
+        else if($formModel == 'argos')
+        {
+            $pdf = PDF::loadView('pdf.reporteReinstatementsArgos', ['check' => $checks, 'locationForm' => $this->getLocationFormConfModule()] );
         }
 
         $pdf->setPaper('A3', 'landscape');

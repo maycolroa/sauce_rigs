@@ -12,10 +12,10 @@
                     <div><b>{{ keywordCheck('position') }}:</b> {{employee.position}}</div>
                 </b-col>
                 <b-col>
-                    <div><b>{{ keywordCheck('regional') }}:</b> {{employee.regional}}</div>
-                    <div><b>{{ keywordCheck('headquarter') }}:</b> {{employee.headquarter}}</div>
-                    <div><b>{{ keywordCheck('process') }}:</b> {{employee.process}}</div>
-                    <div><b>{{ keywordCheck('area') }}:</b> {{employee.area}}</div>
+                    <div v-if="employee.regional"><b>{{ keywordCheck('regional') }}:</b> {{employee.regional}}</div>
+                    <div v-if="employee.headquarter"><b>{{ keywordCheck('headquarter') }}:</b> {{employee.headquarter}}</div>
+                    <div v-if="employee.process"><b>{{ keywordCheck('process') }}:</b> {{employee.process}}</div>
+                    <div v-if="employee.area"><b>{{ keywordCheck('area') }}:</b> {{employee.area}}</div>
                     <div><b>Negocio:</b> {{employee.deal}}</div>
                     <div><b>{{ keywordCheck('eps') }}:</b> {{employee.eps}}</div>
                 </b-col>

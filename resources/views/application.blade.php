@@ -37,6 +37,8 @@
         var authGlobal = @json(['can' => Auth::user()->getCan(), 'hasRole' => Auth::user()->getHasRole()]);
 
         var keywords = @json(Auth::user()->getKeywords());
+
+        var locationForm = @json(Auth::user()->getLocationForm());
     </script>
     
     <script src="{{ mix('/app.js') }}"></script>

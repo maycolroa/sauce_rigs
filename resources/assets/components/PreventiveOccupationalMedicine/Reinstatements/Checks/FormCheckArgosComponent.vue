@@ -77,6 +77,9 @@
             <vue-advanced-select :disabled="viewOnly" class="col-md-6 offset-md-3" v-model="form.laterality" :error="form.errorsFor('laterality')" :multiple="false" :options="lateralities" :hide-selected="false" name="laterality" label="Lateralidad" placeholder="Seleccione una opción">
                 </vue-advanced-select>
           </b-form-row>
+          <b-form-row>
+            <vue-textarea :disabled="viewOnly" class="col-md-12" v-model="form.subsystem" label="Subsistema" name="subsystem" :error="form.errorsFor('subsystem')" placeholder=""></vue-textarea>
+          </b-form-row>
 
           <div class="col-md-12" style="padding-left: 15px; padding-right: 15px;">
             <hr class="border-dark container-m--x mt-0 mb-4">
@@ -97,8 +100,6 @@
           <div v-show="form.has_recommendations == 'SI'" class="col-md-12">
             <b-form-row>
               <vue-radio :disabled="viewOnly" :checked="form.relocated" class="col-md-3" v-model="form.relocated" :options="siNo" name="relocated" :error="form.errorsFor('relocated')" label="¿Reubicado?"></vue-radio>
-              <!--<vue-datepicker :disabled="viewOnly" class="col-md-5" v-model="form.monitoring_recommendations" label="Fecha de seguimiento a recomendaciones" :full-month-name="true" placeholder="Fecha de seguimiento a recomendaciones" :error="form.errorsFor('monitoring_recommendations')" name="monitoring_recommendations">
-                  </vue-datepicker>-->
               <vue-advanced-select :disabled="viewOnly" class="col-md-4" v-model="form.origin_recommendations" :error="form.errorsFor('origin_recommendations')" :multiple="false" :options="originAdvisors" :hide-selected="false" name="origin_recommendations" label="Procedencia de las recomendaciones" placeholder="Seleccione una opción">
                   </vue-advanced-select>
             </b-form-row>
@@ -114,6 +115,9 @@
             </b-form-row>
             <b-form-row>
               <vue-textarea :disabled="viewOnly" class="col-md-12" v-model="form.detail" :label="keywordCheck('detail_recommendations')" name="detail" :error="form.errorsFor('detail')" placeholder=""></vue-textarea>
+            </b-form-row>
+            <b-form-row>
+              <vue-textarea :disabled="viewOnly" class="col-md-12" v-model="form.conclusion_recommendations" label="Conclusión a recomendaciones" name="conclusion_recommendations" :error="form.errorsFor('conclusion_recommendations')" placeholder=""></vue-textarea>
             </b-form-row>
           </div>
 
@@ -134,17 +138,17 @@
           
           <b-form-row>
             <div class="col-md-6">
-                <monitoring-selector :disabled="viewOnly" :options="medicalConclusions" ref="medicalMonitoring" :monitoring-registered="check.medical_monitorings">
+                <monitoring-medical-selector :disabled="viewOnly" :options="medicalConclusions" ref="medicalMonitoring" :monitoring-registered="check.medical_monitorings" :siNo="siNo">
                     <template slot="monitoring-label">Fecha Seguimiento Médico</template>
                     <template slot="conclusion-label">Conclusión Seguimiento Médico</template>
-                </monitoring-selector>
+                </monitoring-medical-selector>
             </div>
 
             <div class="col-md-6">
-                <monitoring-selector :disabled="viewOnly" :options="laborConclusions" ref="laborMonitoring" :monitoring-registered="check.labor_monitorings">
+                <monitoring-laboral-selector :disabled="viewOnly" :options="laborConclusions" ref="laborMonitoring" :monitoring-registered="check.labor_monitorings" :siNo="siNo">
                     <template slot="monitoring-label">Fecha Seguimiento Laboral</template>
                     <template slot="conclusion-label">Conclusión Seguimiento Laboral</template>
-                </monitoring-selector>
+                </monitoring-laboral-selector>
             </div>
           </b-form-row>
 
@@ -168,9 +172,6 @@
                 <vue-advanced-select v-show="showEmitterOrigin" :disabled="viewOnly" class="col-md-6" v-model="form.qualification_origin" :error="form.errorsFor('qualification_origin')" :multiple="false" :options="clasificationOrigin" :hide-selected="false" name="qualification_origin" label="Clasificación de origen" placeholder="Seleccione una opción">
                   </vue-advanced-select>
 
-                <vue-advanced-select v-show="showEmitterOrigin" :disabled="viewOnly" class="col-md-6" v-model="form.type_qualification_origin" :error="form.errorsFor('type_qualification_origin')" :multiple="false" :options="typeQualificationControversy" :hide-selected="false" name="type_qualification_origin" label="Tipo de calificacion" placeholder="Seleccione una opción">
-                  </vue-advanced-select>
-
                 <vue-file-simple v-show="form.in_process_origin == 'NO' && form.process_origin_done == 'SI'" :help-text="form.old_process_origin_file ? `Para descargar el archivo actual, haga click <a href='/biologicalmonitoring/reinstatements/check/downloadOriginFile/${form.id}' target='blank'>aqui</a> `: null" :disabled="viewOnly" accept=".pdf" class="col-md-12" v-model="form.process_origin_file" label="Adjuntar PDF" name="process_origin_file" :error="form.errorsFor('process_origin_file')" placeholder="Seleccione un archivo"></vue-file-simple>
 
                 <vue-radio v-show="form.in_process_origin == 'SI' || form.process_origin_done == 'SI'" :disabled="viewOnly" :checked="form.is_firm_process_origin" class="col-md-6" v-model="form.is_firm_process_origin" :options="siNo" name="is_firm_process_origin" :error="form.errorsFor('is_firm_process_origin')" label="¿Es definitiva esta decisión?"></vue-radio>
@@ -183,17 +184,15 @@
                   <vue-advanced-select :disabled="viewOnly" class="col-md-6" v-model="form.emitter_controversy_origin_1" :error="form.errorsFor('emitter_controversy_origin_1')" :multiple="false" :options="originEmitters" :hide-selected="false" name="emitter_controversy_origin_1" label="Entidad que Califica la primera controversia" placeholder="Seleccione una opción">
                     </vue-advanced-select>
 
-                  <vue-advanced-select :disabled="viewOnly" class="col-md-6" v-model="form.type_controversy_origin_1" :error="form.errorsFor('type_controversy_origin_1')" :multiple="false" :options="typeQualificationControversy" :hide-selected="false" name="type_controversy_origin_1" label="Tipo de calificacion de la primera controversia" placeholder="Seleccione una opción">
-                    </vue-advanced-select>
-
-                  <vue-advanced-select :disabled="viewOnly" class="col-md-6" v-model="form.qualification_controversy_1" :error="form.errorsFor('qualification_controversy_1')" :multiple="false" :options="clasificationOrigin" :hide-selected="false" name="qualification_controversy_1" label="Clasificación de origen la primera controversia" placeholder="Seleccione una opción">
+                   <vue-advanced-select :disabled="viewOnly" class="col-md-6" v-model="form.qualification_controversy_1" :error="form.errorsFor('qualification_controversy_1')" :multiple="false" :options="clasificationOrigin" :hide-selected="false" name="qualification_controversy_1" label="Clasificación de origen la primera controversia" placeholder="Seleccione una opción">
                     </vue-advanced-select>
 
                     <vue-radio :disabled="viewOnly" :checked="form.is_firm_controversy_1" class="col-md-6" v-model="form.is_firm_controversy_1" :options="siNo" name="is_firm_controversy_1" :error="form.errorsFor('is_firm_controversy_1')" label="¿Es definitiva esta decisión?"></vue-radio>
 
                 </b-form-row>
 
-                <b-form-row v-show="form.is_firm_controversy_1 == 'NO' && form.is_firm_process_origin == 'NO' " style="padding-top: 15px;">
+
+                <b-form-row v-show="form.is_firm_controversy_1 == 'NO'  && form.is_firm_process_origin == 'NO' " style="padding-top: 15px;">
                   <h5 class="col-md-12">Controversia 2</h5>
                   <vue-datepicker :disabled="viewOnly" class="col-md-6" v-model="form.date_controversy_origin_2" label="Fecha calificación segunda controversia" :full-month-name="true" :error="form.errorsFor('date_controversy_origin_2')" name="date_controversy_origin_2">
                         </vue-datepicker>
@@ -201,12 +200,8 @@
                   <vue-advanced-select :disabled="viewOnly" class="col-md-6" v-model="form.emitter_controversy_origin_2" :error="form.errorsFor('emitter_controversy_origin_2')" :multiple="false" :options="originEmitters" :hide-selected="false" name="emitter_controversy_origin_2" label="Entidad que Califica la segunda controversia" placeholder="Seleccione una opción">
                     </vue-advanced-select>
 
-                  <vue-advanced-select :disabled="viewOnly" class="col-md-6" v-model="form.type_controversy_origin_2" :error="form.errorsFor('type_controversy_origin_2')" :multiple="false" :options="typeQualificationControversy" :hide-selected="false" name="type_controversy_origin_2" label="Tipo de calificacion de la segunda controversia" placeholder="Seleccione una opción">
-                    </vue-advanced-select>
-
                   <vue-advanced-select :disabled="viewOnly" class="col-md-6" v-model="form.qualification_controversy_2" :error="form.errorsFor('qualification_controversy_2')" :multiple="false" :options="clasificationOrigin" :hide-selected="false" name="qualification_controversy_2" label="Clasificación de origen la segunda controversia" placeholder="Seleccione una opción">
                     </vue-advanced-select>
-
                 </b-form-row>
                 
               </b-form-row>
@@ -330,7 +325,7 @@
               </tracing-other-check>
             </div>
           </b-form-row>
-          
+
         </b-card>
       </b-col>
     </b-row>
@@ -351,7 +346,8 @@ import VueInput from "@/components/Inputs/VueInput.vue";
 import VueDatepicker from "@/components/Inputs/VueDatepicker.vue";
 import VueRadio from "@/components/Inputs/VueRadio.vue";
 import VueTextarea from "@/components/Inputs/VueTextarea.vue";
-import MonitoringSelector from './MonitoringSelector.vue';
+import MonitoringMedicalSelector from './MonitoringMedicalSelector.vue';
+import MonitoringLaboralSelector from './MonitoringLaboralSelector.vue';
 import VueFileSimple from "@/components/Inputs/VueFileSimple.vue";
 import Form from "@/utils/Form.js";
 import Alerts from '@/utils/Alerts.js';
@@ -367,11 +363,12 @@ export default {
     VueInput,
     VueRadio,
     VueTextarea,
-    MonitoringSelector,
+    MonitoringMedicalSelector,
+    MonitoringLaboralSelector,
     VueFileSimple,
     TracingInserter,
-    FilesMultiple,
-    TracingOtherCheck
+    TracingOtherCheck,
+    FilesMultiple
   },
   props: {
     url: { type: String },
@@ -388,8 +385,8 @@ export default {
     cie10CodesDataUrl: { type: String, default: "" },
     epsDataUrl: { type: String, default: "" },
     restrictionsDataUrl: { type: String, default: "" },
-    disableWacthSelectInCreated: { type: Boolean, default: false},
     tracingOthersUrl: { type: String, default: "" },
+    disableWacthSelectInCreated: { type: Boolean, default: false},
     diseaseOrigins: {
       type: Array,
       default: function() {
@@ -432,12 +429,6 @@ export default {
         return [];
       }
     },
-    typeQualificationControversy: {
-      type: Array,
-      default: function() {
-        return [];
-      }
-    },
     clasificationOrigin: {
       type: Array,
       default: function() {
@@ -463,7 +454,6 @@ export default {
           process_origin_done_date: '',
           emitter_origin: '',
           qualification_origin: '',
-          type_qualification_origin: '',
           is_firm_process_origin: '',
           in_process_pcl: '',
           process_pcl_done: '',
@@ -492,8 +482,6 @@ export default {
           qualification_controversy_2: '',
           is_firm_controversy_1: '',
           is_firm_controversy_pcl_1: '',
-          type_controversy_origin_1: '',
-          type_controversy_origin_2: '',
           emitter_controversy_pcl_1: '',
           emitter_controversy_pcl_2: '',
           punctuation_controversy_plc_1: '',
@@ -514,6 +502,8 @@ export default {
           medical_certificate_ueac: '',
           relocated_type: '',
           created_at: '',
+          conclusion_recommendations: '',
+          subsystem: '',
           
           new_tracing: [],
           oldTracings: [],
@@ -532,7 +522,7 @@ export default {
     },
     'form.employee_id' () {
       this.updateDetails(`/administration/employee/${this.form.employee_id}`, 'employeeDetail')
-      this.updateTracingOtherReport('sau_reinc_tracings', 'tracingOtherReport');
+      this.updateTracingOtherReport('sau_reinc_tracings', 'tracingOtherReport');      
       this.updateTracingOtherReport('sau_reinc_labor_notes', 'laborNotesOtherReport');
     },
     'form.cie10_code_id': function() {

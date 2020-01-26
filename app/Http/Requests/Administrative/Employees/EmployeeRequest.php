@@ -21,6 +21,25 @@ class EmployeeRequest extends FormRequest
         return true;
     }
 
+    public function validator($factory)
+    {
+        return $factory->make(
+            $this->sanitize(), $this->container->call([$this, 'rules']), $this->messages()
+        );
+    }
+
+    public function sanitize()
+    {
+        if ($this->has('locations'))
+        {
+            $this->merge([
+                'locations' => json_decode($this->input('locations'), true)
+            ]);
+        }
+
+        return $this->all();
+    }
+
     /**
      * Get the validation rules that apply to the request.
      *
@@ -41,11 +60,11 @@ class EmployeeRequest extends FormRequest
         $keywords = Auth::user()->getKeywords();
         
         return [
-            'employee_regional_id.required' => 'El campo '.$keywords['regional'].' es obligatorio.',
-            'employee_headquarter_id.required' => 'El campo '.$keywords['headquarter'].' es obligatorio.',
-            'employee_process_id.required' => 'El campo '.$keywords['process'].' es obligatorio.',
-            'employee_area_id.required' => 'El campo '.$keywords['area'].' es obligatorio.',
-            'employee_position_id.required' => 'El campo '.$keywords['position'].' es obligatorio.'
+            'locations.employee_regional_id.required' => 'El campo '.$keywords['regional'].' es obligatorio.',
+            'locations.employee_headquarter_id.required' => 'El campo '.$keywords['headquarter'].' es obligatorio.',
+            'locations.employee_process_id.required' => 'El campo '.$keywords['process'].' es obligatorio.',
+            'locations.employee_area_id.required' => 'El campo '.$keywords['area'].' es obligatorio.',
+            'locations.employee_position_id.required' => 'El campo '.$keywords['position'].' es obligatorio.'
         ];
     }
 }
