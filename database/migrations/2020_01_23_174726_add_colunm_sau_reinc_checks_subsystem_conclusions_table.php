@@ -14,8 +14,8 @@ class AddColunmSauReincChecksSubsystemConclusionsTable extends Migration
     public function up()
     {
         Schema::table('sau_reinc_checks', function (Blueprint $table) {
-            $table->string('subsystem')->nullable()->after('cie10_code_id');
-            $table->string('conclusion_recommendations')->nullable()->after('origin_recommendations');                 
+            $table->text('subsystem')->nullable()->after('cie10_code_id');
+            $table->text('conclusion_recommendations')->nullable()->after('origin_recommendations');                 
         });    
     }
 
