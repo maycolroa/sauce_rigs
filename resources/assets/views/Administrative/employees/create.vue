@@ -22,7 +22,7 @@
                   eps-data-url="/selects/eps"
                   :cancel-url="{ name: 'administrative-employees'}"/>
               </template>
-              <template v-if="form == 'vivaAir'">
+              <template v-if="form == 'vivaAir' || form == 'manpower'">
                 <form-employee-viva-air 
                   url="/administration/employee"
                   method="POST"
