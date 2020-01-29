@@ -72,6 +72,7 @@ class TalendController extends Controller
             $talend = new Talend($request->except('file'));
             $talend->company_id = $this->company;
             $talend->path = $talend->path_base();
+            $this->makeDirectory($talend->path_client());
 
             $file_tmp = $request->file;
             $file_tmp->storeAs($talend->path_client(false), $file_tmp->getClientOriginalName());
@@ -139,6 +140,7 @@ class TalendController extends Controller
         if ($request->file != $talendUpload->file)
         {
             $talendUpload->path = $talendUpload->path_base();
+            $this->makeDirectory($talendUpload->path_client());
 
             $file_tmp = $request->file;
             $file_tmp->storeAs($talendUpload->path_client(false), $file_tmp->getClientOriginalName());

@@ -4,10 +4,12 @@ namespace App\Inform\PreventiveOccupationalMedicine\Reinstatements;
 
 use App\Models\PreventiveOccupationalMedicine\Reinstatements\Check;
 use App\Traits\ConfigurableFormTrait;
+use App\Traits\LocationFormTrait;
 
 class InformManagerCheck
 {
     use ConfigurableFormTrait;
+    use LocationFormTrait;
 
     /**
      * defines the availables informs
@@ -36,6 +38,12 @@ class InformManagerCheck
         'cases_per_cie_10_per_AT_pie'
     ];
 
+    const INFORM_LOCATION = [
+        'cases_per_regional_pie' => 'regional',
+        'cases_per_headquarter_pie' => 'headquarter',
+        'cases_per_process_pie' => 'process',
+    ];
+
     /**
      * this array must contain only the identifiers according to the case of the filter
      * @var array
@@ -54,6 +62,7 @@ class InformManagerCheck
     protected $filtersType;
     protected $formModel;
     protected $totalChecks;
+    protected $locationForm;
 
     /**
      * create an instance and set the attribute class
@@ -75,6 +84,7 @@ class InformManagerCheck
         $this->filtersType = $filtersType;
         $this->formModel = $this->getFormModel('form_check');
         $this->totalChecks = $this->getTotalChecks();
+        $this->locationForm = $this->getLocationFormConfModule();
     }
 
     /**
@@ -93,8 +103,16 @@ class InformManagerCheck
         }
         $informData = collect([]);
         foreach ($components as $component) {
-            $informData->put($component, $this->$component());
+
+            if (isset($this::INFORM_LOCATION[$component]))
+            {
+                if ($this->locationForm[$this::INFORM_LOCATION[$component]] == 'SI')
+                    $informData->put($component, $this->$component());
+            }
+            else
+                $informData->put($component, $this->$component());
         }
+        
         return $informData->toArray();
     }
 

@@ -56,14 +56,14 @@
         </b-row>
 
         <b-row>
-            <div><b>Condición:</b> {{ result.condition }}</div>
+            <div style="padding-left: 15px;"><b>Condición:</b> {{ result.condition }}</div>
         </b-row>
 
         <b-row>
-            <div><b>Número de reportes:</b> {{ result.reports }}</div>
+            <div style="padding-left: 15px;"><b>Número de reportes:</b> {{ result.reports }}</div>
         </b-row>
 
-        <div class="row float-right pt-10 pr-10" style="padding-top: 20px;">
+        <div class="row float-right pt-10 pr-10" style="padding-top: 20px; padding-right: 20px;">
             <template>
                 <b-btn variant="default" :to="{name: 'dangerousconditions-reports'}" :disabled="isLoading">Atras</b-btn>
             </template>

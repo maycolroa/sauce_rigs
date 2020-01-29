@@ -76,15 +76,20 @@ class AudiometryInformController extends Controller
     {
         $keywords = $this->user->getKeywords();
 
-        $select = [
-            $keywords['regionals'] => "employee_regional_id", 
-            $keywords['headquarters'] => "employee_headquarter_id",
-            $keywords['processes'] => "employee_process_id",
-            $keywords['areas'] => "employee_area_id",
-            'Negocios' => 'deal',
-            $keywords['positions'] => "employee_position_id",
+        $confLocation = $this->getLocationFormConfModule();
+        $select = [];
 
-        ];
+        if ($confLocation['regional'] == 'SI')
+            $select[$keywords['regionals']] = 'employee_regional_id';
+        if ($confLocation['headquarter'] == 'SI')
+            $select[$keywords['headquarters']] = 'employee_headquarter_id';
+        if ($confLocation['process'] == 'SI')
+            $select[['processes']] = 'employee_process_id';
+        if ($confLocation['area'] == 'SI')
+            $select[$keywords['areas']] = 'employee_area_id';
+
+        $select['Negocios'] = 'deal';
+        $select[$keywords['positions']] = "employee_position_id";
     
         return $this->multiSelectFormat(collect($select));
     }

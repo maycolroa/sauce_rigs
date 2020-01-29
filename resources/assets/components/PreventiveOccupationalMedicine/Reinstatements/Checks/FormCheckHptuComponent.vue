@@ -48,9 +48,9 @@
               <b-col>
                   <div><b>{{ keywordCheck('position') }}:</b> {{ employeeDetail.position ? employeeDetail.position.name : '' }}</div>
                   <div><b>{{ keywordCheck('businesses') }}:</b> {{ employeeDetail.business ? employeeDetail.business.name : '' }}</div>
-                  <div><b>{{ keywordCheck('regional') }}:</b> {{ employeeDetail.regional ? employeeDetail.regional.name : ''}}</div>
-                  <div><b>{{ keywordCheck('headquarter') }}:</b> {{ employeeDetail.headquarter ? employeeDetail.headquarter.name : '' }}</div>
-                  <div><b>{{ keywordCheck('process') }}:</b> {{ employeeDetail.process ? employeeDetail.process.name : '' }}</div>
+                  <div v-if="employeeDetail.regional"><b>{{ keywordCheck('regional') }}:</b> {{ employeeDetail.regional.name }}</div>
+                  <div v-if="employeeDetail.headquarter"><b>{{ keywordCheck('headquarter') }}:</b> {{  employeeDetail.headquarter.name }}</div>
+                  <div v-if="employeeDetail.process"><b>{{ keywordCheck('process') }}:</b> {{ employeeDetail.process.name }}</div>
                   <div v-if="employeeDetail.area"><b>{{ keywordCheck('area') }}:</b> {{ employeeDetail.area.name }}</div>
                   <div><b>{{ keywordCheck('eps') }}:</b> {{ employeeDetail.eps ? `${employeeDetail.eps.code} - ${employeeDetail.eps.name}` : '' }}</div>
               </b-col>
@@ -105,11 +105,11 @@
             <b-form-row v-show="form.relocated == 'SI'">
               <vue-ajax-advanced-select :disabled="viewOnly" class="col-md-3" v-model="form.relocated_position_id" name="relocated_position_id" :label="`${keywordCheck('position')} Actualizado`" placeholder="Seleccione una opción" :url="positionsDataUrl" :selected-object="form.relocated_position_multiselect">
                   </vue-ajax-advanced-select>
-              <vue-ajax-advanced-select :disabled="viewOnly" class="col-md-3" v-model="form.relocated_regional_id" name="relocated_regional_id" :label="`${keywordCheck('regional')} Actualizada`" placeholder="Seleccione una opción" :url="regionalsDataUrl" :selected-object="form.relocated_regional_multiselect">
+              <vue-ajax-advanced-select v-if="locationForm.regional == 'SI'" :disabled="viewOnly" class="col-md-3" v-model="form.relocated_regional_id" name="relocated_regional_id" :label="`${keywordCheck('regional')} Actualizada`" placeholder="Seleccione una opción" :url="regionalsDataUrl" :selected-object="form.relocated_regional_multiselect">
                   </vue-ajax-advanced-select>
-              <vue-ajax-advanced-select :disabled="viewOnly || !form.relocated_regional_id" class="col-md-3" v-model="form.relocated_headquarter_id" name="relocated_headquarter_id" :label="`${keywordCheck('headquarter')} Actualizada`" placeholder="Seleccione una opción" :url="headquartersDataUrl" :selected-object="form.relocated_headquarter_multiselect" :parameters="{regional: form.relocated_regional_id }" :emptyAll="empty.headquarter" @updateEmpty="updateEmptyKey('headquarter')">
+              <vue-ajax-advanced-select v-if="locationForm.headquarter == 'SI'" :disabled="viewOnly || !form.relocated_regional_id" class="col-md-3" v-model="form.relocated_headquarter_id" name="relocated_headquarter_id" :label="`${keywordCheck('headquarter')} Actualizada`" placeholder="Seleccione una opción" :url="headquartersDataUrl" :selected-object="form.relocated_headquarter_multiselect" :parameters="{regional: form.relocated_regional_id }" :emptyAll="empty.headquarter" @updateEmpty="updateEmptyKey('headquarter')">
                   </vue-ajax-advanced-select>
-              <vue-ajax-advanced-select :disabled="viewOnly || !form.relocated_headquarter_id" class="col-md-3" v-model="form.relocated_process_id" name="relocated_process_id" :label="`${keywordCheck('process')} Actualizado`" placeholder="Seleccione una opción" :url="processesDataUrl" :selected-object="form.relocated_process_multiselect" :parameters="{headquarter: form.relocated_headquarter_id }" :emptyAll="empty.process" @updateEmpty="updateEmptyKey('process')">
+              <vue-ajax-advanced-select v-if="locationForm.process == 'SI'" :disabled="viewOnly || !form.relocated_headquarter_id" class="col-md-3" v-model="form.relocated_process_id" name="relocated_process_id" :label="`${keywordCheck('process')} Actualizado`" placeholder="Seleccione una opción" :url="processesDataUrl" :selected-object="form.relocated_process_multiselect" :parameters="{headquarter: form.relocated_headquarter_id }" :emptyAll="empty.process" @updateEmpty="updateEmptyKey('process')">
                   </vue-ajax-advanced-select>
             </b-form-row>
             <b-form-row>

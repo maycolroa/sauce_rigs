@@ -16,11 +16,6 @@
                         :view-only="true"
                         :cancel-url="{ name: 'dangerousconditions-reports'}"
                         :rates="rates"
-                        :disable-wacth-select-in-created="true"
-                        regionals-data-url="/selects/regionals"
-                        headquarters-data-url="/selects/headquarters"
-                        areas-data-url="/selects/areas"
-                        processes-data-url="/selects/processes"
                         conditions-data-url="/selects/industrialSecurity/conditions"
                         />
                 </b-col>

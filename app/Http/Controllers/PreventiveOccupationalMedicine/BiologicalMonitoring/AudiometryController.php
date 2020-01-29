@@ -66,10 +66,18 @@ class AudiometryController extends Controller
 
         if (COUNT($filters) > 0)
         {
-          $audiometry->inRegionals($this->getValuesForMultiselect($filters["regionals"]), $filters['filtersType']['regionals']);
-          $audiometry->inHeadquarters($this->getValuesForMultiselect($filters["headquarters"]), $filters['filtersType']['headquarters']);
-          $audiometry->inAreas($this->getValuesForMultiselect($filters["areas"]), $filters['filtersType']['areas']);
-          $audiometry->inProcesses($this->getValuesForMultiselect($filters["processes"]), $filters['filtersType']['processes']);
+          if (isset($filters["regionals"]))
+            $audiometry->inRegionals($this->getValuesForMultiselect($filters["regionals"]), $filters['filtersType']['regionals']);
+
+          if (isset($filters["headquarters"]))
+            $audiometry->inHeadquarters($this->getValuesForMultiselect($filters["headquarters"]), $filters['filtersType']['headquarters']);
+
+          if (isset($filters["processes"]))
+            $audiometry->inProcesses($this->getValuesForMultiselect($filters["processes"]), $filters['filtersType']['processes']);
+
+          if (isset($filters["areas"]))
+            $audiometry->inAreas($this->getValuesForMultiselect($filters["areas"]), $filters['filtersType']['areas']);
+
           $audiometry->inPositions($this->getValuesForMultiselect($filters["positions"]), $filters['filtersType']['positions']);
           $audiometry->inDeals($this->getValuesForMultiselect($filters["deals"]), $filters['filtersType']['deals']);
           $audiometry->inYears($this->getValuesForMultiselect($filters["years"]), $filters['filtersType']['years']);
