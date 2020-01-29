@@ -132,6 +132,12 @@
                 "logo": null
             },
             {
+                "name": "biologicalMonitoring/respiratoryAnalysis",
+                "display_name": "Monitoreo Biológico/Análisis respiratorio",
+                "main": "SI",
+                "logo": null
+            },
+            {
                 "name": "reinstatements",
                 "display_name": "Reincorporaciones",
                 "main": "SI",

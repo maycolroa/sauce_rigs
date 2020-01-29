@@ -89,7 +89,15 @@ Route::middleware(['auth'])->group(function () {
         Route::post('musculoskeletalAnalysis/import', 'PreventiveOccupationalMedicine\BiologicalMonitoring\MusculoskeletalAnalysis\MusculoskeletalAnalysisController@import');
         Route::post('musculoskeletalAnalysis/export', 'PreventiveOccupationalMedicine\BiologicalMonitoring\MusculoskeletalAnalysis\MusculoskeletalAnalysisController@export');
         Route::post('musculoskeletalAnalysis/data', 'PreventiveOccupationalMedicine\BiologicalMonitoring\MusculoskeletalAnalysis\MusculoskeletalAnalysisController@data');
-        Route::ApiResource('musculoskeletalAnalysis', 'PreventiveOccupationalMedicine\BiologicalMonitoring\MusculoskeletalAnalysis\MusculoskeletalAnalysisController');   
+        Route::ApiResource('musculoskeletalAnalysis', 'PreventiveOccupationalMedicine\BiologicalMonitoring\MusculoskeletalAnalysis\MusculoskeletalAnalysisController'); 
+
+        Route::post('respiratoryAnalysis/reportIndividual', 'PreventiveOccupationalMedicine\BiologicalMonitoring\RespiratoryAnalysis\RespiratoryAnalysisInformController@dataIndividual');
+        Route::post('respiratoryAnalysis/informs', 'PreventiveOccupationalMedicine\BiologicalMonitoring\RespiratoryAnalysis\RespiratoryAnalysisInformController@data');
+        Route::post('respiratoryAnalysis/saveTracing', 'PreventiveOccupationalMedicine\BiologicalMonitoring\RespiratoryAnalysis\RespiratoryAnalysisController@saveTracing');
+        Route::post('respiratoryAnalysis/import', 'PreventiveOccupationalMedicine\BiologicalMonitoring\RespiratoryAnalysis\RespiratoryAnalysisController@import');
+        Route::post('respiratoryAnalysis/export', 'PreventiveOccupationalMedicine\BiologicalMonitoring\RespiratoryAnalysis\RespiratoryAnalysisController@export');
+        Route::post('respiratoryAnalysis/data', 'PreventiveOccupationalMedicine\BiologicalMonitoring\RespiratoryAnalysis\RespiratoryAnalysisController@data');
+        Route::ApiResource('respiratoryAnalysis', 'PreventiveOccupationalMedicine\BiologicalMonitoring\RespiratoryAnalysis\RespiratoryAnalysisController');  
 
         Route::prefix('absenteeism')->group(function () {
           Route::post('report/data', 'PreventiveOccupationalMedicine\Absenteeism\ReportController@data');
@@ -129,6 +137,7 @@ Route::middleware(['auth'])->group(function () {
         Route::post('branchOffice', 'PreventiveOccupationalMedicine\BiologicalMonitoring\MusculoskeletalAnalysis\MusculoskeletalAnalysisController@multiselectBranchOffice');
         Route::post('bm_musculoskeletalCompany', 'PreventiveOccupationalMedicine\BiologicalMonitoring\MusculoskeletalAnalysis\MusculoskeletalAnalysisController@multiselectCompany');
         Route::post('bm_musculoskeletalPacient', 'PreventiveOccupationalMedicine\BiologicalMonitoring\MusculoskeletalAnalysis\MusculoskeletalAnalysisController@multiselectPacient');
+        Route::post('bm_respiratoryPacient', 'PreventiveOccupationalMedicine\BiologicalMonitoring\RespiratoryAnalysis\RespiratoryAnalysisController@multiselectPacient');
         Route::post('regionals', 'Administrative\Regionals\EmployeeRegionalController@multiselect');
         Route::post('headquarters', 'Administrative\Headquarters\EmployeeHeadquarterController@multiselect');  
         Route::post('sexs', 'General\MultiSelectRadioController@sexs');  

@@ -176,6 +176,30 @@ export default [{
           import('@/views/PreventiveOccupationalMedicine/biologicalmonitoring/musculoskeletalAnalysis/reportIndividual')
       }
     ]),
+    ...middleware({ 'check-permission': 'biologicalMonitoring_respiratoryAnalysis_r' }, [
+      {
+        name: 'biologicalmonitoring-respiratoryanalysis',
+        path: 'biologicalmonitoring/respiratoryanalysis',
+        component: () =>
+            import('@/views/PreventiveOccupationalMedicine/biologicalmonitoring/respiratoryAnalysis/index')
+      }
+    ]), 
+    ...middleware({ 'check-permission': 'biologicalMonitoring_respiratoryAnalysis_r' }, [
+      {
+        name: 'biologicalmonitoring-respiratoryanalysis-reportindividual',
+        path: 'biologicalmonitoring/respiratoryanalysis/reportindividual',
+        component: () =>
+          import('@/views/PreventiveOccupationalMedicine/biologicalmonitoring/respiratoryAnalysis/reportIndividual')
+      }
+    ]),
+    ...middleware({ 'check-permission': 'biologicalMonitoring_respiratoryAnalysis_r' }, [
+      {
+        name: 'biologicalmonitoring-respiratoryanalysis-informs',
+        path: 'biologicalmonitoring/respiratoryanalysis/informs',
+        component: () =>
+          import('@/views/PreventiveOccupationalMedicine/biologicalmonitoring/respiratoryAnalysis/informs')
+      }
+    ]),
     {
       name: 'preventiveoccupationalmedicine-absenteeism',
       path: 'absenteeism',

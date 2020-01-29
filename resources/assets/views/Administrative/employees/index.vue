@@ -30,7 +30,7 @@
     <!-- modal confirmation for import -->
     <b-modal ref="modalConfirmationImport" class="modal-slide" hide-header hide-footer>
       <p class="text-justific mb-4">
-        Estimado Usuario para realizar la importarción el archivo debe cumplir lo siguiente:<br><br>
+        Estimado Usuario para realizar la importación el archivo debe cumplir lo siguiente:<br><br>
 
         <ol>
           <li>Formato excel (*.xlsx).</li>

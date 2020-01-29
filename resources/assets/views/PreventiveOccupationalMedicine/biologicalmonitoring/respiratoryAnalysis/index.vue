@@ -1,7 +1,7 @@
 <template>
   <div>
     <header-module
-      title="ANÁLISIS OSTEOMUSCULAR"
+      title="ANÁLISIS RESPIRATORIO"
       subtitle="ADMINISTRAR ANÁLISIS"
       url="preventiveoccupationalmedicine"
     />
@@ -10,17 +10,17 @@
       <b-card no-body>
         <b-card-header class="with-elements">
           <div class="card-title-elements">
-            <b-btn v-if="auth.can['biologicalMonitoring_musculoskeletalAnalysis_c']" variant="primary" @click="importMessage()" v-b-tooltip.top title="Importar"><i class="fas fa-upload"></i></b-btn>
-            <b-btn v-if="auth.can['biologicalMonitoring_musculoskeletalAnalysis_r']" variant="primary" @click="exportData()" v-b-tooltip.top title="Exportar"><i class="fas fa-download"></i></b-btn>
+            <b-btn v-if="auth.can['biologicalMonitoring_respiratoryAnalysis_c']" variant="primary" @click="importMessage()" v-b-tooltip.top title="Importar"><i class="fas fa-upload"></i></b-btn>
+            <b-btn v-if="auth.can['biologicalMonitoring_respiratoryAnalysis_r']" variant="primary" @click="exportData()" v-b-tooltip.top title="Exportar"><i class="fas fa-download"></i></b-btn>
             <input id="fileInputImport" type="file" style="display:none" v-on:input="importFile"/>
-            <b-btn v-if="auth.can['biologicalMonitoring_musculoskeletalAnalysis_c']" :to="{name:'biologicalmonitoring-musculoskeletalanalysis-informs'}" variant="primary">Ver Informes</b-btn>
-            <b-btn v-if="auth.can['biologicalMonitoring_musculoskeletalAnalysis_c']" :to="{name:'biologicalmonitoring-musculoskeletalanalysis-reportindividual'}" variant="primary">Reporte Individual</b-btn>
+            <b-btn v-if="auth.can['biologicalMonitoring_respiratoryAnalysis_c']" :to="{name:'biologicalmonitoring-respiratoryanalysis-informs'}" variant="primary">Ver Informes</b-btn>
+            <b-btn v-if="auth.can['biologicalMonitoring_respiratoryAnalysis_c']" :to="{name:'biologicalmonitoring-respiratoryanalysis-reportindividual'}" variant="primary">Reporte Individual</b-btn>
           </div>
         </b-card-header>
         <b-card-body>
              <vue-table
-                configName="biologicalmonitoring-musculoskeletalAnalysis"
-                v-if="auth.can['biologicalMonitoring_musculoskeletalAnalysis_r']"
+                configName="biologicalmonitoring-respiratoryAnalysis"
+                v-if="auth.can['biologicalMonitoring_respiratoryAnalysis_r']"
                 @filtersUpdate="setFilters"
                 ></vue-table>
         </b-card-body>
@@ -34,7 +34,7 @@
 
         <ol>
           <li>Formato excel (*.xlsx).</li>
-          <li>Incluir las cabeceras de los campos en las primeras 2 fila del documento.</li>
+          <li>Incluir las cabeceras de los campos en la primera fila del documento.</li>
           <li>Solo se leera la primera hoja del documento (En caso de tener mas de una).</li>
         </ol>
 
@@ -49,9 +49,9 @@
 import Alerts from '@/utils/Alerts.js';
 
 export default {
-  name: 'biologicalmonitoring-musculoskeletalAnalysis',
+  name: 'biologicalmonitoring-respiratoryAnalysis',
   metaInfo: {
-    title: 'Análisis Osteomuscular'
+    title: 'Análisis Respiratorio'
   },
   data () {
     return {
@@ -64,7 +64,7 @@ export default {
       this.filters = value
     },
     exportData(){
-      axios.post('/biologicalmonitoring/musculoskeletalAnalysis/export', this.filters)
+      axios.post('/biologicalmonitoring/respiratoryAnalysis/export', this.filters)
       .then(response => {
         Alerts.warning('Información', 'Se inicio la exportación, se le notificara a su correo electronico cuando finalice el proceso.');
       }).catch(error => {
@@ -76,7 +76,7 @@ export default {
       var imagefile = e.target.files;
 
       formData.append("file", imagefile[0]);
-      axios.post('/biologicalmonitoring/musculoskeletalAnalysis/import', formData, {
+      axios.post('/biologicalmonitoring/respiratoryAnalysis/import', formData, {
           headers: {
             'Content-Type': 'multipart/form-data'
           }
