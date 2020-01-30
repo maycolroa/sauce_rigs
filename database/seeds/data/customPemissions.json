@@ -65,6 +65,15 @@
                 ]
             },
             {
+                "name": "biologicalMonitoring/respiratoryAnalysis",
+                "permissions": [
+                    {
+                        "name": "biologicalMonitoring_respiratoryAnalysis_receive_notifications",
+                        "display_name": "Monitoreo Biológico/Análisis Respiratorio - recibir notificaciones"
+                    }
+                ]
+            },
+            {
                 "name": "reinstatements",
                 "permissions": [
                     {

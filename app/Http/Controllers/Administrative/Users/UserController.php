@@ -141,7 +141,7 @@ class UserController extends Controller
             if ($this->user->hasRole('Arrendatario', $this->team) || $this->user->hasRole('Contratista', $this->team))
             {
                 $role = $this->user->hasRole('Arrendatario', $this->team) ? 'Arrendatario' : 'Contratista';
-                $role = Role::defined()->where($role)->first();
+                $role = Role::defined()->where('name', $role)->first();
 
                 $user->attachRole($role, $this->team);
                 $contract = $this->getContractUser($this->user->id);

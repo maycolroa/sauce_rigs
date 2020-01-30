@@ -18,7 +18,7 @@
                   :view-only="true"
                   :cancel-url="{ name: 'administrative-employees'}"/>
             </template>
-            <template v-if="form == 'vivaAir'">
+            <template v-if="form == 'vivaAir' || form == 'manpower'">
               <form-employee-viva-air 
                   :sexs="sexs"
                   :employee="data"

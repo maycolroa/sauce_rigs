@@ -28,6 +28,20 @@
         ]
     },
     {
+        "module": "biologicalMonitoring/respiratoryAnalysis",
+        "dependencies": [
+            "users",
+            "roles",
+            "positions",
+            "regionals",
+            "headquarters",
+            "processes",
+            "areas",
+            "businesses",
+            "employees"
+        ]
+    },
+    {
         "module": "dangerMatrix",
         "dependencies": [
             "users",

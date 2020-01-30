@@ -1,9 +1,9 @@
 <template>
   <div>
     <header-module
-        title="ANÁLISIS OSTEOMUSCULAR"
+        title="ANÁLISIS RESPIRATORIO"
         subtitle="REPORTE INDIVIDUAL"
-        url="biologicalmonitoring-musculoskeletalanalysis"
+        url="biologicalmonitoring-respiratoryanalysis"
     />
 
     <div class="col-md">
@@ -11,7 +11,7 @@
         <b-card-body>
             <b-row align-h="end" style="padding-bottom: 15px;">
                 <b-col cols="1">
-                    <b-btn variant="default" :to="{name: 'biologicalmonitoring-musculoskeletalanalysis'}">Atras</b-btn>
+                    <b-btn variant="default" :to="{name: 'biologicalmonitoring-respiratoryanalysis'}">Atras</b-btn>
                 </b-col>
             </b-row>
             <b-row>
@@ -41,17 +41,17 @@
                         </b-card-header>
                         <b-collapse :id="`accordion-${key}`" visible :accordion="`accordion`">
                             <b-card-body>
-                                <musculoskeletal-analysis-form
+                                <respiratory-analysis-form
                                     :analisy="item"
                                     :view-only="true"
                                     :in-form="false"
-                                    :cancel-url="{ name: 'biologicalmonitoring-musculoskeletalanalysis'}"/>
+                                    :cancel-url="{ name: 'biologicalmonitoring-respiratoryanalysis'}"/>
                             </b-card-body>
                         </b-collapse>
                     </b-card>
                 </b-col>
             </b-row>
-            <b-form-row v-if="patient_identification">
+            <!--<b-form-row v-if="patient_identification">
                 <div class="col-md-12" style="padding-bottom: 20px;">
                     <tracing-inserter
                         :key="keyTrancing"
@@ -66,7 +66,7 @@
                         <b-btn type="submit" :disabled="isLoading" variant="primary" @click.prevent="saveTracing">Guardar Seguimiento</b-btn>
                     </center>
                 </div>
-            </b-form-row>
+            </b-form-row>-->
             <b-row class="float-right">
                 <b-col>
                     <b-btn variant="default" :to="{name: 'biologicalmonitoring-musculoskeletalanalysis'}">Atras</b-btn>
@@ -80,25 +80,25 @@
 
 <script>
 import VueAjaxAdvancedSelect from "@/components/Inputs/VueAjaxAdvancedSelect.vue";
-import MusculoskeletalAnalysisForm from '@/components/PreventiveOccupationalMedicine/BiologicalMonitoring/MusculoskeletalAnalysis/MusculoskeletalAnalysisForm.vue';
+import RespiratoryAnalysisForm from '@/components/PreventiveOccupationalMedicine/BiologicalMonitoring/RespiratoryAnalysis/RespiratoryAnalysisForm.vue';
 import TracingInserter from '@/components/PreventiveOccupationalMedicine/BiologicalMonitoring/MusculoskeletalAnalysis/TracingInserter.vue';
 import Alerts from '@/utils/Alerts.js';
 
 export default {
     name: 'biologicalmonitoring-respiratoryanalysis-report-individual',
     metaInfo: {
-        title: 'Análisis Respitatorio - Reporte Individual'
+        title: 'Análisis Respiratorio - Reporte Individual'
     },
     components:{
         VueAjaxAdvancedSelect,
-        MusculoskeletalAnalysisForm,
+        RespiratoryAnalysisForm,
         TracingInserter
     },
     data () {
         return {
             isLoading: false,
             patient_identification: '',
-            patienteDataUrl: '/selects/bm_musculoskeletalPacient',
+            patienteDataUrl: '/selects/bm_respiratoryPacient',
             dataAnalysis: [],
             new_tracing: '',
             oldTracings: [],
@@ -119,7 +119,7 @@ export default {
         {
             this.isLoading = true;
 
-            axios.post('/biologicalmonitoring/musculoskeletalAnalysis/reportIndividual', {
+            axios.post('/biologicalmonitoring/respiratoryAnalysis/reportIndividual', {
                 patient_identification: this.patient_identification
             })
             .then(data => {
