@@ -87,7 +87,7 @@ import Alerts from '@/utils/Alerts.js';
 export default {
     name: 'biologicalmonitoring-respiratoryanalysis-report-individual',
     metaInfo: {
-        title: 'Análisis Respitatorio - Reporte Individual'
+        title: 'Análisis Osteomuscular - Reporte Individual'
     },
     components:{
         VueAjaxAdvancedSelect,

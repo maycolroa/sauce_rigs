@@ -68,6 +68,7 @@ class InformIndividualManagerRespiratoryAnalysis
     {
         $data = RespiratoryAnalysis::select('sau_bm_respiratory_analysis.*')
         ->where('patient_identification', $this->id)
+        ->orderBy('year_of_spirometry')
         ->get();
 
         return $data;

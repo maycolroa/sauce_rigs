@@ -525,7 +525,7 @@ class LawController extends Controller
                     "activitiesRemoved" => []
                 ];
 
-                if ($article->qualify == 'No cumple')
+                if ($article->qualify == 'No cumple' || $article->qualify == 'Parcial')
                 {
                     $article->actionPlan = ActionPlan::model(ArticleFulfillment::find($article->qualification_id))->prepareDataComponent();
                 }
@@ -570,7 +570,7 @@ class LawController extends Controller
             {
                 $qualify = FulfillmentValues::find($qualification->fulfillment_value_id);
 
-                if ($qualify->name != 'No cumple')
+                if ($qualify->name != 'No cumple' && $qualify->name != 'Parcial')
                 {
                     if ($request->file != $qualification->file)
                     {
