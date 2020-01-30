@@ -150,8 +150,8 @@ class EmployeeImport implements ToCollection
             'cargo' => $row[10],
             'centro_costo' => $row[11],
             'negocio' => ($this->formModel == 'default') ? $row[12] : null,
-            'eps' => ($this->formModel == 'default') ? (string) $row[13] : ( ($this->formModel == 'vivaAir' || $this->formModel == 'misionEmpresarial') ? (string) $row[12] : null),
-            'afp' => ($this->formModel == 'vivaAir' || $this->formModel == 'misionEmpresarial') ? (string) $row[13] : null,
+            'eps' => ($this->formModel == 'default') ? (string) $row[13] : ( ($this->formModel == 'vivaAir' || $this->formModel == 'misionEmpresarial' || $this->formModel == 'manpower') ? (string) $row[12] : null),
+            'afp' => ($this->formModel == 'vivaAir' || $this->formModel == 'misionEmpresarial' || $this->formModel == 'manpower') ? (string) $row[13] : null,
             'arl' => ($this->formModel == 'misionEmpresarial') ? (string) $row[14] : null,
             'numero_contrato' => ($this->formModel == 'misionEmpresarial') ? $row[15] : null,
             'fecha_ultimo_contrato' => ($this->formModel == 'misionEmpresarial') ? $this->validateDate($row[16]) : null,
@@ -180,7 +180,7 @@ class EmployeeImport implements ToCollection
         if ($confLocation['area'] == 'SI')
             $rules['area'] = 'required';
 
-        if ($this->formModel == 'default' || $this->formModel == 'vivaAir')
+        if ($this->formModel == 'default' || $this->formModel == 'vivaAir' || $this->formModel == 'manpower')
         {
             $rules = array_merge($rules,
             [

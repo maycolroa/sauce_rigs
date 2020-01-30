@@ -20,15 +20,20 @@
             <vue-input :disabled="viewOnly" class="col-md-4" v-model="form.state" label="Estado" type="text" name="state" :error="form.errorsFor('state')" placeholder="Estado"></vue-input>
         </b-form-row>
         <b-form-row>
-            <vue-input :disabled="viewOnly" class="col-md-4" v-model="form.position" :label="keywordCheck('position')" type="text" name="position" :error="form.errorsFor('position')" placeholder="Seleccione una opción"></vue-input>
+            <vue-input :disabled="viewOnly" class="col-md-4" v-model="form.position" :label="keywordCheck('position')" type="text" name="position" :error="form.errorsFor('position')" placeholder="Seleccione una opción"></vue-input>            
+            <vue-input :disabled="viewOnly" class="col-md-4" v-model="form.symptomatology" label="Sintomatología" type="text" name="symptomatology" :error="form.errorsFor('symptomatology')" placeholder="Sintomatología"></vue-input>
+        </b-form-row>
+        <b-form-row>
             <vue-input :disabled="viewOnly" class="col-md-4" v-model="form.area" label="Área" type="text" name="area" :error="form.errorsFor('area')" placeholder="Área"></vue-input>
+            <vue-input :disabled="viewOnly" class="col-md-4" v-model="form.habits" label="Hábitos" type="text" name="habits" :error="form.errorsFor('habits')" placeholder="Hábitos"></vue-input>            
+        </b-form-row>
+        <b-form-row>   
+            <vue-input :disabled="viewOnly" class="col-md-4" v-model="form.history_of_respiratory_pathologies" label="Antecedentes Respiratorios" type="text" name="history_of_respiratory_pathologies" :error="form.errorsFor('history_of_respiratory_pathologies')" placeholder="Antecedentes Respiratorios"></vue-input>        
         </b-form-row>
     </b-card>
 
     <b-card bg-variant="transparent" border-variant="primary" title="" class="mb-3 box-shadow-none" style="padding-top: 15px;">
         <b-form-row>
-            <vue-input :disabled="viewOnly" class="col-md-4" v-model="form.habits" label="Hábitos" type="text" name="habits" :error="form.errorsFor('habits')" placeholder="Hábitos"></vue-input>
-            <vue-input :disabled="viewOnly" class="col-md-4" v-model="form.history_of_respiratory_pathologies" label="Antecedentes de patologias respiratorias" type="text" name="history_of_respiratory_pathologies" :error="form.errorsFor('history_of_respiratory_pathologies')" placeholder="Antecedentes de patologias respiratorias"></vue-input>
             <vue-input :disabled="viewOnly" class="col-md-4" v-model="form.measurement_date" label="Fecha de realización de mediciones" type="text" name="measurement_date" :error="form.errorsFor('measurement_date')" placeholder="Fecha de realización de mediciones"></vue-input>
         </b-form-row>
         <b-form-row>
@@ -42,7 +47,6 @@
             <vue-input :disabled="viewOnly" class="col-md-4" v-model="form.date_of_realization" label="Fecha realización" type="text" name="date_of_realization" :error="form.errorsFor('date_of_realization')" placeholder="Fecha realización"></vue-input>
         </b-form-row>
         <b-form-row>
-            <vue-input :disabled="viewOnly" class="col-md-4" v-model="form.symptomatology" label="Sintomatología" type="text" name="symptomatology" :error="form.errorsFor('symptomatology')" placeholder="Sintomatología"></vue-input>
             <vue-input :disabled="viewOnly" class="col-md-4" v-model="form.cvf_average_percentage" label="CVF % promedio" type="text" name="cvf_average_percentage" :error="form.errorsFor('cvf_average_percentage')" placeholder="CVF % promedio"></vue-input>
             <vue-input :disabled="viewOnly" class="col-md-4" v-model="form.vef1_average_percentage" label="VEF 1% promedio" type="text" name="vef1_average_percentage" :error="form.errorsFor('vef1_average_percentage')" placeholder="VEF 1% promedio"></vue-input>
         </b-form-row>

@@ -180,7 +180,7 @@
                         </div>
 
                           <!-- NO CUMPLE -->
-                          <b-btn v-if="article.qualify == 'No cumple'" @click="showModal(`modalPlan${index}`)" variant="primary"><span class="lnr lnr-bookmark"></span> Plan de acción</b-btn>
+                          <b-btn v-if="article.qualify == 'No cumple' || article.qualify == 'Parcial'" @click="showModal(`modalPlan${index}`)" variant="primary"><span class="lnr lnr-bookmark"></span> Plan de acción</b-btn>
 
                           <b-modal v-if="article.qualify == 'No cumple'" :ref="`modalPlan${index}`" :hideFooter="true" :id="`modals-default-${index+1}`" class="modal-top" size="lg" @hidden="saveArticleQualification(index)">
                             <div slot="modal-title">
