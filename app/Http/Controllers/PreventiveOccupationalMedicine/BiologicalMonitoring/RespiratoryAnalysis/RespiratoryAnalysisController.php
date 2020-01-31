@@ -9,7 +9,7 @@ use App\Models\Administrative\Users\User;
 //use App\Models\PreventiveOccupationalMedicine\BiologicalMonitoring\MusculoskeletalAnalysis\Tracing;
 use App\Models\PreventiveOccupationalMedicine\BiologicalMonitoring\RespiratoryAnalysis\RespiratoryAnalysis;
 use App\Jobs\PreventiveOccupationalMedicine\BiologicalMonitoring\RespiratoryAnalysis\RespiratoryAnalysisImportJob;
-//use App\Jobs\PreventiveOccupationalMedicine\BiologicalMonitoring\MusculoskeletalAnalysis\MusculoskeletalAnalysisExportJob;
+use App\Jobs\PreventiveOccupationalMedicine\BiologicalMonitoring\RespiratoryAnalysis\RespiratoryAnalysisExportJob;
 //use App\Inform\PreventiveOccupationalMedicine\BiologicalMonitoring\MusculoskeletalAnalysis\InformIndividualManagerMusculoskeletalAnalysis;
 use Carbon\Carbon;
 use DB;
@@ -243,11 +243,11 @@ class RespiratoryAnalysisController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    /*public function export(Request $request)
+    public function export(Request $request)
     {
       try
       {
-        $consolidatedPersonalRiskCriterion = $this->getValuesForMultiselect($request->consolidatedPersonalRiskCriterion);
+       /* $consolidatedPersonalRiskCriterion = $this->getValuesForMultiselect($request->consolidatedPersonalRiskCriterion);
         $branchOffice = $this->getValuesForMultiselect($request->branchOffice);
         $companies = $this->getValuesForMultiselect($request->companies);
         $filtersType = $request->filtersType;
@@ -267,9 +267,9 @@ class RespiratoryAnalysisController extends Controller
             'companies' => $companies,
             'dates' => $dates,
             'filtersType' => $filtersType
-        ];
+        ];*/
 
-        MusculoskeletalAnalysisExportJob::dispatch($this->user, $this->company, $filters);
+        RespiratoryAnalysisExportJob::dispatch($this->user, $this->company, /*$filters*/);
       
         return $this->respondHttp200();
       } catch(Exception $e) {
@@ -277,7 +277,7 @@ class RespiratoryAnalysisController extends Controller
       }
     }
 
-    public function saveTracing(Request $request)
+    /*public function saveTracing(Request $request)
     {
       try
       {

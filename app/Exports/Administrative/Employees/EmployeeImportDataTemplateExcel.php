@@ -82,7 +82,7 @@ class EmployeeImportDataTemplateExcel implements FromCollection, WithHeadings, W
           "{$this->keywords['eps']} (Los posibles valores se encuentran en la pestaña '{$this->keywords['eps']}', se debe ingresar el codigo de la {$this->keywords['eps']})"
         ]);
       }
-      else if ($this->formModel == 'vivaAir')
+      else if ($this->formModel == 'vivaAir' || $this->formModel == 'manpower')
       {
         return array_merge($columns, [
           "{$this->keywords['eps']} (Los posibles valores se encuentran en la pestaña '{$this->keywords['eps']}', se debe ingresar el codigo de la {$this->keywords['eps']})",

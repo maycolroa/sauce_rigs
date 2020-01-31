@@ -111,7 +111,7 @@ class RespiratoryAnalysisImport implements ToCollection
             'position' => $row[10],
             'habits' => $row[11],
             'history_of_respiratory_pathologies' => $row[12],
-            'measurement_date' => $this->validateDate($row[13]),
+            'measurement_date' => $row[13],
             'mg_m3_concentration' => $row[14],
             'ir' => $row[15],
             'type_of_exam' => $row[16],
