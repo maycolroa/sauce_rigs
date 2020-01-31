@@ -50,25 +50,12 @@ class RespiratoryAnalysisController extends Controller
          'sau_bm_respiratory_analysis.*'
         );
 
-        //$filters = $request->get('filters');
+        $filters = $request->get('filters');
 
-        /*if (COUNT($filters) > 0)
+        if (COUNT($filters) > 0)
         {
-          $data->inConsolidatedPersonalRiskCriterion($this->getValuesForMultiselect($filters["consolidatedPersonalRiskCriterion"]), $filters['filtersType']['consolidatedPersonalRiskCriterion']);
-          $data->inBranchOffice($this->getValuesForMultiselect($filters["branchOffice"]), $filters['filtersType']['branchOffice']);
-          $data->inCompanies($this->getValuesForMultiselect($filters["companies"]), $filters['filtersType']['companies']);
-
-          $dates_request = explode('/', $filters["dateRange"]);
-          $dates = [];
-
-          if (COUNT($dates_request) == 2)
-          {
-            array_push($dates, (Carbon::createFromFormat('D M d Y',$dates_request[0]))->format('Y-m-d'));
-            array_push($dates, (Carbon::createFromFormat('D M d Y',$dates_request[1]))->format('Y-m-d'));
-          }
-            
-          $data->betweenDate($dates);
-        }*/
+          $data->inRegional($this->getValuesForMultiselect($filters["regional"]), $filters['filtersType']['regional']);
+        }
 
         return Vuetable::of($data)
                 ->make();
@@ -171,14 +158,13 @@ class RespiratoryAnalysisController extends Controller
      *
      * @return Array
      */
-    /*public function multiselectBranchOffice()
+    public function multiselectRegional()
     {
-      $data = MusculoskeletalAnalysis::selectRaw(
-        'DISTINCT branch_office AS branch_office'
+      $data = RespiratoryAnalysis::selectRaw(
+        'DISTINCT regional AS regional'
       )
-      ->orderBy('branch_office')
-      ->get()
-      ->pluck('branch_office', 'branch_office');
+      ->orderBy('regional')
+      ->pluck('regional', 'regional');
 
       return $this->multiSelectFormat($data);
     }

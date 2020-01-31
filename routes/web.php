@@ -135,6 +135,7 @@ Route::middleware(['auth'])->group(function () {
         Route::post('audiometry/severityGradeRight', 'PreventiveOccupationalMedicine\BiologicalMonitoring\AudiometryController@multiselectSeverityGradeRight');  
         Route::post('consolidatedPersonalRiskCriterion', 'PreventiveOccupationalMedicine\BiologicalMonitoring\MusculoskeletalAnalysis\MusculoskeletalAnalysisController@multiselectConsolidatedPersonalRiskCriterion');
         Route::post('branchOffice', 'PreventiveOccupationalMedicine\BiologicalMonitoring\MusculoskeletalAnalysis\MusculoskeletalAnalysisController@multiselectBranchOffice');
+        Route::post('respiratory/regional', 'PreventiveOccupationalMedicine\BiologicalMonitoring\RespiratoryAnalysis\RespiratoryAnalysisController@multiselectRegional');
         Route::post('bm_musculoskeletalCompany', 'PreventiveOccupationalMedicine\BiologicalMonitoring\MusculoskeletalAnalysis\MusculoskeletalAnalysisController@multiselectCompany');
         Route::post('bm_musculoskeletalPacient', 'PreventiveOccupationalMedicine\BiologicalMonitoring\MusculoskeletalAnalysis\MusculoskeletalAnalysisController@multiselectPacient');
         Route::post('bm_respiratoryPacient', 'PreventiveOccupationalMedicine\BiologicalMonitoring\RespiratoryAnalysis\RespiratoryAnalysisController@multiselectPacient');

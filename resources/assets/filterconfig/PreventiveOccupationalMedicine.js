@@ -236,5 +236,17 @@ export default [
           header:true
         }
       ]
+    },
+    {
+      name: 'biologicalmonitoring-respiratoryAnalysis',
+      filters: [ 
+        {
+          url: '/selects/respiratory/regional',
+          key: 'regional',
+          type: 'select',
+          label: 'Regional o Planta',
+          header:true
+        }
+      ]
     }
 ];

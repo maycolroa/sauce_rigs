@@ -444,7 +444,7 @@ export default [
   configuration: {
       urlData: '/biologicalmonitoring/respiratoryAnalysis/data',
       filterColumns: true,
-      //configNameFilter: 'biologicalmonitoring-respiratoryAnalysis'
+      configNameFilter: 'biologicalmonitoring-respiratoryAnalysis'
   }
 },
 {
