@@ -89,19 +89,19 @@ class RespiratoryAnalysis extends Model
      * @param  array $branchOffice
      * @return Illuminate\Database\Eloquent\Builder
      */
-    /*public function scopeInBranchOffice($query, $branchOffice, $typeSearch = 'IN')
+    public function scopeInRegional($query, $regional, $typeSearch = 'IN')
     {
-        if (COUNT($branchOffice) > 0)
+        if (COUNT($regional) > 0)
         {
             if ($typeSearch == 'IN')
-                $query->whereIn('sau_bm_musculoskeletal_analysis.branch_office', $branchOffice);
+                $query->whereIn('sau_bm_respiratory_analysis.regional', $regional);
 
             else if ($typeSearch == 'NOT IN')
-                $query->whereNotIn('sau_bm_musculoskeletal_analysis.branch_office', $branchOffice);
+                $query->whereNotIn('sau_bm_respiratory_analysis.regional', $regional);
         }
 
         return $query;
-    }*/
+    }
 
     /**
      * filters checks through the given company
