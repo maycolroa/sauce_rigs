@@ -32,11 +32,8 @@ class RespiratoryAnalysisExcel implements FromQuery, WithMapping, WithHeadings, 
 
     public function query()
     {
-      $data = RespiratoryAnalysis::select('sau_bm_respiratory_analysis.*');
-      /*->inConsolidatedPersonalRiskCriterion($this->filters['consolidatedPersonalRiskCriterion'], $this->filters['filtersType']['consolidatedPersonalRiskCriterion'])
-      ->inBranchOffice($this->filters['branchOffice'], $this->filters['filtersType']['branchOffice'])
-      ->inCompanies($this->filters['companies'], $this->filters['filtersType']['companies'])
-      ->betweenDate($this->filters["dates"]);*/
+      $data = RespiratoryAnalysis::select('sau_bm_respiratory_analysis.*')
+      ->inRegional($this->filters['regional'], $this->filters['filtersType']['regional']);
 
       $data->company_scope = $this->company_id;
 
