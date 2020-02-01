@@ -24,7 +24,7 @@ class RespiratoryAnalysisExportJob implements ShouldQueue
      *
      * @return void
      */
-    public function __construct($user, $company_id, $filters = null)
+    public function __construct($user, $company_id, $filters)
     {
       $this->user = $user;
       $this->company_id = $company_id;
@@ -44,9 +44,9 @@ class RespiratoryAnalysisExportJob implements ShouldQueue
       $paramUrl = base64_encode($nameExcel);
       
       NotificationMail::
-        subject('Exportación de los Análisis Osteomuscular')
+        subject('Exportación de los Análisis Respiratorio')
         ->recipients($this->user)
-        ->message('Se ha generado una exportación de Análisis Osteomuscular.')
+        ->message('Se ha generado una exportación de Análisis Respiratorio.')
         ->subcopy('Este link es valido por 24 horas')
         ->buttons([['text'=>'Descargar', 'url'=>url("/export/{$paramUrl}")]])
         ->module('biologicalMonitoring/respiratoryAnalysis')

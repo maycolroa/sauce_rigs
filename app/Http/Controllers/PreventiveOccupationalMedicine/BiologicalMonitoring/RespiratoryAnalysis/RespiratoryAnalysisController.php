@@ -233,29 +233,15 @@ class RespiratoryAnalysisController extends Controller
     {
       try
       {
-       /* $consolidatedPersonalRiskCriterion = $this->getValuesForMultiselect($request->consolidatedPersonalRiskCriterion);
-        $branchOffice = $this->getValuesForMultiselect($request->branchOffice);
-        $companies = $this->getValuesForMultiselect($request->companies);
+        $regional = $this->getValuesForMultiselect($request->regional);
         $filtersType = $request->filtersType;
 
-        $dates = [];
-        $dates_request = explode('/', $request->dateRange);
-
-        if (COUNT($dates_request) == 2)
-        {
-            array_push($dates, (Carbon::createFromFormat('D M d Y', $dates_request[0]))->format('Y-m-d'));
-            array_push($dates, (Carbon::createFromFormat('D M d Y', $dates_request[1]))->format('Y-m-d'));
-        }
-
         $filters = [
-            'consolidatedPersonalRiskCriterion' => $consolidatedPersonalRiskCriterion,
-            'branchOffice' => $branchOffice,
-            'companies' => $companies,
-            'dates' => $dates,
+            'regional' => $regional,
             'filtersType' => $filtersType
-        ];*/
+        ];
 
-        RespiratoryAnalysisExportJob::dispatch($this->user, $this->company, /*$filters*/);
+        RespiratoryAnalysisExportJob::dispatch($this->user, $this->company, $filters);
       
         return $this->respondHttp200();
       } catch(Exception $e) {
