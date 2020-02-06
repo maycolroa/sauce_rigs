@@ -65,9 +65,17 @@ class InspectionController extends Controller
         if (COUNT($filters) > 0)
         {
             $inspections->inInspections($this->getValuesForMultiselect($filters["inspections"]), $filters['filtersType']['inspections']);
-            $inspections->inHeadquarters($this->getValuesForMultiselect($filters["headquarters"]), $filters['filtersType']['headquarters']);
-            $inspections->inAreas($this->getValuesForMultiselect($filters["areas"]), $filters['filtersType']['areas']);
 
+            if (isset($filters["areas"]))
+            {
+                $inspections->inHeadquarters($this->getValuesForMultiselect($filters["headquarters"]), $filters['filtersType']['headquarters']);
+            }
+            
+            if (isset($filters["areas"]))
+            {
+                $inspections->inAreas($this->getValuesForMultiselect($filters["areas"]), $filters['filtersType']['areas']);
+            }
+            
             $dates_request = explode('/', $filters["dateRange"]);
 
             $dates = [];

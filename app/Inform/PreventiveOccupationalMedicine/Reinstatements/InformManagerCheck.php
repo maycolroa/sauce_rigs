@@ -35,7 +35,8 @@ class InformManagerCheck
         'cases_per_medical_certificates_pie',
         'cases_per_cie_10_per_EG_pie',
         'cases_per_cie_10_per_EL_pie',
-        'cases_per_cie_10_per_AT_pie'
+        'cases_per_cie_10_per_AT_pie',
+        'cases_per_cie_10_pie'
     ];
 
     const INFORM_LOCATION = [
@@ -214,6 +215,36 @@ class InformManagerCheck
         return $data;
     }
 
+    private function executeQueryHeaderMonthCurdate($condition = null)
+    {
+        $data = Check::countDistinctEmployeeId()
+        ->join('sau_employees', 'sau_employees.id', 'sau_reinc_checks.employee_id')
+        ->inIdentifications($this->identifications, $this->filtersType['identifications'])
+        ->inNames($this->names, $this->filtersType['names'])
+        ->inRegionals($this->regionals, $this->filtersType['regionals'])
+        ->inBusinesses($this->businesses, $this->filtersType['businesses'])
+        ->inDiseaseOrigin($this->diseaseOrigin, $this->filtersType['diseaseOrigin'])
+        ->inYears($this->years, $this->filtersType['years'])
+        ->betweenDate($this->dateRange)
+        ->whereRaw("YEAR(sau_reinc_checks.created_at) = ".date('Y'). " AND MONTH(sau_reinc_checks.created_at) = ".date('m'));
+
+        if ($this->nextFollowDays)
+            $data->inNextFollowDays($this->nextFollowDays, $this->filtersType['nextFollowDays']);
+            
+        if ($this->sveAssociateds)
+            $data->inSveAssociateds($this->sveAssociateds, $this->filtersType['sveAssociateds']);
+
+        if ($this->medicalCertificates)
+            $data->inMedicalCertificates($this->medicalCertificates, $this->filtersType['medicalCertificates']);
+
+        if ($this->relocatedTypes)
+            $data->inRelocatedTypes($this->relocatedTypes, $this->filtersType['relocatedTypes']);
+
+        $data = $data->secureCount();
+
+        return $data;
+    }
+
     /**
      * return the headers reports pie data for the view
      * @return object
@@ -228,6 +259,10 @@ class InformManagerCheck
             'checkClose' => [
                 'label' => 'Número de reportes cerrados',
                 'value' => $this->executeQueryCheckClose()
+            ],
+            'checkCreateCurdateMonth' => [
+                'label' => 'Número de reportes creados en el mes actual',
+                'value' => $this->executeQueryHeaderMonthCurdate()
             ],
             'checksWithRecommendations' => [
                 'label' => 'Porcentaje reportes con recomendaciones',
@@ -269,89 +304,98 @@ class InformManagerCheck
                 'value' => $this->executeQueryHeader([
                     ['in_process_pcl', 'SI']
                 ])
-            ],
-            'checksWithoutRecommendations' => [
-                'label' => 'Porcentaje reportes sin recomendaciones',
-                'value' => $this->percentage(
-                    $this->executeQueryHeader([
-                        ['has_recommendations', 'NO']
-                    ])
-                    , $this->totalChecks),
-                'type' => 'percentage'
-            ],
-            'checksWithoutRestrictions' => [
-                'label' => 'Porcentaje reportes sin restricciones',
-                'value' => $this->percentage(
-                    $this->executeQueryHeader([
-                        ['has_restrictions', 'NO']
-                    ])
-                    , $this->totalChecks),
-                'type' => 'percentage'
-            ],
-            'checksDiseaseOrigin' => [
-                'label' => 'Porcentaje reportes por enfermedad laboral',
-                'value' => $this->percentage(
-                    $this->executeQueryHeader([
-                        ['disease_origin', 'Enfermedad Laboral']
-                    ])
-                    , $this->totalChecks),
-                'type' => 'percentage'
-            ],
-            'checksQualifiedARLOrigin' => [
-                'label' => 'Porcentaje reportes calificados por Origen por ARL',
-                'value' => $this->percentage(
-                    $this->executeQueryHeader([
-                        ['emitter_origin', 'ARL']
-                    ])
-                    , $this->totalChecks),
-                'type' => 'percentage'
-            ],
-            'checksQualifiedEPSOrigin' => [
-                'label' => 'Porcentaje reportes calificados por Origen por EPS',
-                'value' => $this->percentage(
-                    $this->executeQueryHeader([
-                        ['emitter_origin', 'EPS']
-                    ])
-                    , $this->totalChecks),
-                'type' => 'percentage'
-            ],
-            'checksQualifiedAFPOrigin' => [
-                'label' => 'Porcentaje reportes calificados por Origen por AFP',
-                'value' => $this->percentage(
-                    $this->executeQueryHeader([
-                        ['emitter_origin', 'AFP']
-                    ])
-                    , $this->totalChecks),
-                'type' => 'percentage'
-            ],
-            'checksQualifiedRegionalBoardOrigin' => [
-                'label' => 'Porcentaje reportes calificados por Origen por Junta Regional',
-                'value' => $this->percentage(
-                    $this->executeQueryHeader([
-                        ['emitter_origin', 'JUNTA REGIONAL']
-                    ])
-                    , $this->totalChecks),
-                'type' => 'percentage'
-            ],
-            'checksQualifiedNationalBoardOrigin' => [
-                'label' => 'Porcentaje reportes calificados por Origen por Junta Nacional',
-                'value' => $this->percentage(
-                    $this->executeQueryHeader([
-                        ['emitter_origin', 'JUNTA NACIONAL']
-                    ])
-                    , $this->totalChecks),
-                'type' => 'percentage'
-            ],
-            'checksQualifiedOtherEntitiesOrigin' => [
-                'label' => 'Porcentaje reportes calificados por Origen por Otras Entidades',
-                'value' => $this->percentage(
-                    $this->executeQueryHeader([
-                        ['emitter_origin', 'Sin Información']
-                    ])
-                    , $this->totalChecks),
-                'type' => 'percentage'
             ]
         ];
+
+
+        if ($this->formModel != 'argos')
+        {
+            $result = array_merge($result, 
+                [
+                    'checksWithoutRecommendations' => [
+                        'label' => 'Porcentaje reportes sin recomendaciones',
+                        'value' => $this->percentage(
+                            $this->executeQueryHeader([
+                                ['has_recommendations', 'NO']
+                            ])
+                            , $this->totalChecks),
+                        'type' => 'percentage'
+                    ],
+                    'checksWithoutRestrictions' => [
+                        'label' => 'Porcentaje reportes sin restricciones',
+                        'value' => $this->percentage(
+                            $this->executeQueryHeader([
+                                ['has_restrictions', 'NO']
+                            ])
+                            , $this->totalChecks),
+                        'type' => 'percentage'
+                    ],
+                    'checksDiseaseOrigin' => [
+                        'label' => 'Porcentaje reportes por enfermedad laboral',
+                        'value' => $this->percentage(
+                            $this->executeQueryHeader([
+                                ['disease_origin', 'Enfermedad Laboral']
+                            ])
+                            , $this->totalChecks),
+                        'type' => 'percentage'
+                    ],
+                    'checksQualifiedARLOrigin' => [
+                        'label' => 'Porcentaje reportes calificados por Origen por ARL',
+                        'value' => $this->percentage(
+                            $this->executeQueryHeader([
+                                ['emitter_origin', 'ARL']
+                            ])
+                            , $this->totalChecks),
+                        'type' => 'percentage'
+                    ],
+                    'checksQualifiedEPSOrigin' => [
+                        'label' => 'Porcentaje reportes calificados por Origen por EPS',
+                        'value' => $this->percentage(
+                            $this->executeQueryHeader([
+                                ['emitter_origin', 'EPS']
+                            ])
+                            , $this->totalChecks),
+                        'type' => 'percentage'
+                    ],
+                    'checksQualifiedAFPOrigin' => [
+                        'label' => 'Porcentaje reportes calificados por Origen por AFP',
+                        'value' => $this->percentage(
+                            $this->executeQueryHeader([
+                                ['emitter_origin', 'AFP']
+                            ])
+                            , $this->totalChecks),
+                        'type' => 'percentage'
+                    ],
+                    'checksQualifiedRegionalBoardOrigin' => [
+                        'label' => 'Porcentaje reportes calificados por Origen por Junta Regional',
+                        'value' => $this->percentage(
+                            $this->executeQueryHeader([
+                                ['emitter_origin', 'JUNTA REGIONAL']
+                            ])
+                            , $this->totalChecks),
+                        'type' => 'percentage'
+                    ],
+                    'checksQualifiedNationalBoardOrigin' => [
+                        'label' => 'Porcentaje reportes calificados por Origen por Junta Nacional',
+                        'value' => $this->percentage(
+                            $this->executeQueryHeader([
+                                ['emitter_origin', 'JUNTA NACIONAL']
+                            ])
+                            , $this->totalChecks),
+                        'type' => 'percentage'
+                    ],
+                    'checksQualifiedOtherEntitiesOrigin' => [
+                        'label' => 'Porcentaje reportes calificados por Origen por Otras Entidades',
+                        'value' => $this->percentage(
+                            $this->executeQueryHeader([
+                                ['emitter_origin', 'Sin Información']
+                            ])
+                            , $this->totalChecks),
+                        'type' => 'percentage'
+                    ]
+                ]
+            );
+        }
 
         if ($this->formModel == 'misionEmpresarial')
         {
@@ -638,12 +682,21 @@ class InformManagerCheck
     }
 
     /**
+     * Returns the reports of right air pta.
+     * @return collection
+     */
+    public function cases_per_cie_10_pie()
+    {
+        return $this->getReportPerCie10Data();
+    }
+
+    /**
      * returns the data for the cases per cie 10 code category according
      * to the specified disease_origin
      * @param  string $disease_origin
      * @return collection
      */
-    public function getReportPerCie10Data($disease_origin)
+    public function getReportPerCie10Data($disease_origin = null)
     {
         $checksPerCie10Code = Check::selectRaw("
             sau_reinc_cie10_codes.category AS cie10_code_category,
@@ -659,8 +712,10 @@ class InformManagerCheck
         ->inDiseaseOrigin($this->diseaseOrigin, $this->filtersType['diseaseOrigin'])
         ->inYears($this->years, $this->filtersType['years'])
         ->betweenDate($this->dateRange)
-        ->where('sau_reinc_checks.disease_origin', $disease_origin)
         ->groupBy('sau_reinc_cie10_codes.category');
+
+        if ($disease_origin != null)
+            $checksPerCie10Code->where('sau_reinc_checks.disease_origin', $disease_origin);
 
         if ($this->nextFollowDays)
             $checksPerCie10Code->inNextFollowDays($this->nextFollowDays, $this->filtersType['nextFollowDays']);

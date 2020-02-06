@@ -337,11 +337,17 @@ class VuetableColumnManager
             ['name' => 'sau_reinc_cie10_codes.code', 'data'=> 'code', 'title'=> 'Código CIE 10', 'sortable'=> true, 'searchable'=> true, 'detail'=> false, 'key'=> false ],
             ['name' => 'sau_checks.disease_origin', 'data'=> 'disease_origin', 'title'=> $this->keywords['disease_origin'], 'sortable'=> true, 'searchable'=> true, 'detail'=> false, 'key'=> false ],
             ['name' => 'sau_employees_regionals.name', 'data'=> 'regional', 'title'=> $this->keywords['regional'], 'sortable'=> true, 'searchable'=> true, 'detail'=> false, 'key'=> false ],
-            ['name' => 'sau_employees.identification', 'data'=> 'identification', 'title'=> 'Identificación', 'sortable'=> true, 'searchable'=> true, 'detail'=> false, 'key'=> false ],
-            ['name' => 'sau_employees.name', 'data'=> 'name', 'title'=> $this->keywords['employee'], 'sortable'=> true, 'searchable'=> true, 'detail'=> false, 'key'=> false ],
             ['name' => 'sau_checks.state', 'data'=> 'state', 'title'=> 'Estado del Reporte', 'sortable'=> true, 'searchable'=> true, 'detail'=> false, 'key'=> false],
-            ['name' => 'sau_checks.deadline', 'data'=> 'deadline', 'title'=> 'Fecha de Cierre', 'sortable'=> true, 'searchable'=> true, 'detail'=> false, 'key'=> false ]
+            ['name' => 'sau_employees.name', 'data'=> 'name', 'title'=> $this->keywords['employee'], 'sortable'=> true, 'searchable'=> true, 'detail'=> false, 'key'=> false ]
         ];
+
+        if (!$formModel == 'argos')
+        {
+            $colums = array_merge($colums, [
+                ['name' => 'sau_employees.identification', 'data'=> 'identification', 'title'=> 'Identificación', 'sortable'=> true, 'searchable'=> true, 'detail'=> false, 'key'=> false ],
+                ['name' => 'sau_checks.deadline', 'data'=> 'deadline', 'title'=> 'Fecha de Cierre', 'sortable'=> true, 'searchable'=> true, 'detail'=> false, 'key'=> false ]
+            ]);
+        }
 
         if ($formModel == 'misionEmpresarial')
         { 

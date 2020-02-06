@@ -24,7 +24,7 @@
                             </b-col>
                         </b-row>
 
-                        <b-row v-if="form != 'argos'">
+                        <b-row>
                             <b-col>
                                 <b-card border-variant="primary" title="Reportes abiertos por año de creación" class="mb-3 box-shadow-none">
                                     <chart-bar 
@@ -42,7 +42,7 @@
                                 </b-card>
                             </b-col>
                         </b-row>
-                        <b-row v-if="form != 'argos'">
+                        <b-row>
                             <b-col>
                                 <b-card border-variant="primary" title="Reportes abiertos por mes de creación" class="mb-3 box-shadow-none">
                                     <chart-bar 
@@ -69,7 +69,7 @@
                                         </b-col>
                                     </b-row>
                                     <b-row>
-                                        <b-col v-if="form != 'argos'">
+                                        <b-col>
                                             <table-report
                                                 :rows="disease_origin_reports_pie.table"
                                             />
@@ -94,7 +94,7 @@
                                         </b-col>
                                     </b-row>
                                     <b-row>
-                                        <b-col v-if="form != 'argos'">
+                                        <b-col>
                                             <table-report
                                                 :rows="cases_per_regional_pie.table"
                                             />
@@ -110,7 +110,7 @@
                                 </b-card>
                             </b-col>
                         </b-row>
-                        <b-row v-if="locationForm.headquarter == 'SI' && form != 'argos'">
+                        <b-row v-if="locationForm.headquarter == 'SI'">
                             <b-col>
                                 <b-card border-variant="primary" :title="`Reportes por ${keywordCheck('headquarter')}`" class="mb-3 box-shadow-none">
                                     <b-row align-h="end">
@@ -135,7 +135,7 @@
                                 </b-card>
                             </b-col>
                         </b-row>
-                        <b-row v-if="locationForm.process == 'SI' && form != 'argos'">
+                        <b-row v-if="locationForm.process == 'SI'">
                             <b-col>
                                 <b-card border-variant="primary" :title="`Reportes por ${keywordCheck('process')}`" class="mb-3 box-shadow-none">
                                     <b-row align-h="end">
@@ -169,7 +169,7 @@
                                         </b-col>
                                     </b-row>
                                     <b-row>
-                                        <b-col v-if="form != 'argos'">
+                                        <b-col>
                                             <table-report
                                                 :rows="cases_per_business_pie.table"
                                             />
@@ -180,26 +180,6 @@
                                                 :title="`Reportes por ${keywordCheck('businesses')}`"
                                                 color-line="red"
                                                 ref="cases_per_business_pie"/>
-                                        </b-col>
-                                    </b-row>
-                                </b-card>
-                            </b-col>
-                        </b-row>
-                        <b-row v-if="form == 'argos'">
-                            <b-col>
-                                <b-card border-variant="primary" title="Reportes por categoría Código CIE 10" class="mb-3 box-shadow-none">
-                                    <b-row align-h="end">
-                                        <b-col cols="2">
-                                            <b>Total reportes: {{ cases_per_cie_10_pie.datasets.count }} </b>
-                                        </b-col>
-                                    </b-row>
-                                    <b-row>
-                                        <b-col>
-                                            <chart-pie 
-                                                :chart-data="cases_per_cie_10_pie"
-                                                title="Código CIE 10"
-                                                color-line="red"
-                                                ref="cases_per_cie_10_pie"/>
                                         </b-col>
                                     </b-row>
                                 </b-card>
@@ -256,7 +236,7 @@
                             </b-col>
                         </b-row>
                     </b-tab>
-                    <b-tab v-if="form != 'argos'">
+                    <b-tab>
                         <template slot="title">
                         <strong>Reportes por categoría Código CIE 10 por EG</strong> 
                         </template>
@@ -279,7 +259,7 @@
                             </b-card>
                         </div>
                     </b-tab>
-                    <b-tab v-if="form != 'argos'">
+                    <b-tab>
                         <template slot="title">
                             <strong>Reportes por categoría Código CIE 10 por EL</strong> 
                         </template>
@@ -302,7 +282,7 @@
                             </b-card>
                         </div>
                     </b-tab>
-                    <b-tab v-if="form != 'argos'">
+                    <b-tab>
                         <template slot="title">
                             <strong>Reportes por categoría Código CIE 10 por AT</strong> 
                         </template>
@@ -432,10 +412,6 @@ export default {
                 datasets: []
             },
             cases_per_cie_10_per_AT_pie: {
-                labels: [],
-                datasets: []
-            },
-            cases_per_cie_10_pie: {
                 labels: [],
                 datasets: []
             }
