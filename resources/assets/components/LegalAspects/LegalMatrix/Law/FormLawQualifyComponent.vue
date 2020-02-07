@@ -176,13 +176,13 @@
                         <vue-file-simple v-if="article.qualify && article.qualify != 'No cumple' && article.qualify && article.qualify != 'Parcial'" :help-text="article.old_file ? `Para descargar el archivo actual, haga click <a href='/legalAspects/legalMatrix/law/downloadArticleQualify/${article.qualification_id}' target='blank'>aqui</a> `: null" :disabled="viewOnly" class="col-md-6" @input="saveArticleQualification(index)" accept=".pdf" v-model="article.file" label="Archivo (*.pdf)" name="file" :error="form.errorsFor('file')" placeholder="Seleccione un archivo"></vue-file-simple>
 
                         <div style="padding-top: 25px;">
-                          <b-btn v-if="article.qualify && article.qualify != 'No cumple' && article.file" @click="deleteFile(index)" variant="primary"><span class="ion ion-md-close-circle"></span> Eliminar Archivo</b-btn>
+                          <b-btn v-if="article.qualify && article.qualify != 'No cumple' && article.qualify != 'Parcial' && article.file" @click="deleteFile(index)" variant="primary"><span class="ion ion-md-close-circle"></span> Eliminar Archivo</b-btn>
                         </div>
 
                           <!-- NO CUMPLE -->
                           <b-btn v-if="article.qualify == 'No cumple' || article.qualify == 'Parcial'" @click="showModal(`modalPlan${index}`)" variant="primary"><span class="lnr lnr-bookmark"></span> Plan de acción</b-btn>
 
-                          <b-modal v-if="article.qualify == 'No cumple'" :ref="`modalPlan${index}`" :hideFooter="true" :id="`modals-default-${index+1}`" class="modal-top" size="lg" @hidden="saveArticleQualification(index)">
+                          <b-modal v-if="article.qualify == 'No cumple' || article.qualify == 'Parcial'" :ref="`modalPlan${index}`" :hideFooter="true" :id="`modals-default-${index+1}`" class="modal-top" size="lg" @hidden="saveArticleQualification(index)">
                             <div slot="modal-title">
                               Plan de acción <span class="font-weight-light">Evaluar Normas</span><br>
                               <small class="text-muted">Crea planes de acción para tu justificación.</small>
@@ -508,7 +508,7 @@ export default {
         this.loading = true;
         let article = this.form.articles[index]
 
-        if (article.fulfillment_value_id != 3)//No cumple
+        if (article.fulfillment_value_id != 3 && article.fulfillment_value_id != 5)//No cumple
         {
           if (typeof article.actionPlan !== 'undefined')
           {

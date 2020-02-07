@@ -74,7 +74,7 @@ trait LegalMatrixTrait
             {
                 $qualify = FulfillmentValues::find($qualification->fulfillment_value_id);
 
-                if ($qualify->name != 'No cumple')
+                if ($qualify->name != 'No cumple' && $qualify->name != 'Parcial')
                 {
                     $path = "fulfillments/".$qualification->company_id."/";
                     Storage::disk('s3_MLegal')->delete($path.$qualification->file);
