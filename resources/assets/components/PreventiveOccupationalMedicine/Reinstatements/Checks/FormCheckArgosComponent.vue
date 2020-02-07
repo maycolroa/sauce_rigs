@@ -103,16 +103,6 @@
               <vue-advanced-select :disabled="viewOnly" class="col-md-4" v-model="form.origin_recommendations" :error="form.errorsFor('origin_recommendations')" :multiple="false" :options="originAdvisors" :hide-selected="false" name="origin_recommendations" label="Procedencia de las recomendaciones" placeholder="Seleccione una opción">
                   </vue-advanced-select>
             </b-form-row>
-            <b-form-row v-show="form.relocated == 'SI'">
-              <vue-ajax-advanced-select :disabled="viewOnly" class="col-md-3" v-model="form.relocated_position_id" name="relocated_position_id" :label="`${keywordCheck('position')} Actualizado`" placeholder="Seleccione una opción" :url="positionsDataUrl" :selected-object="form.relocated_position_multiselect">
-                  </vue-ajax-advanced-select>
-              <vue-ajax-advanced-select v-if="locationForm.regional == 'SI'" :disabled="viewOnly" class="col-md-3" v-model="form.relocated_regional_id" name="relocated_regional_id" :label="`${keywordCheck('regional')} Actualizada`" placeholder="Seleccione una opción" :url="regionalsDataUrl" :selected-object="form.relocated_regional_multiselect">
-                  </vue-ajax-advanced-select>
-              <vue-ajax-advanced-select v-if="locationForm.headquarter == 'SI'" :disabled="viewOnly || !form.relocated_regional_id" class="col-md-3" v-model="form.relocated_headquarter_id" name="relocated_headquarter_id" :label="`${keywordCheck('headquarter')} Actualizada`" placeholder="Seleccione una opción" :url="headquartersDataUrl" :selected-object="form.relocated_headquarter_multiselect" :parameters="{regional: form.relocated_regional_id }" :emptyAll="empty.headquarter" @updateEmpty="updateEmptyKey('headquarter')">
-                  </vue-ajax-advanced-select>
-              <vue-ajax-advanced-select v-if="locationForm.process == 'SI'" :disabled="viewOnly || !form.relocated_headquarter_id" class="col-md-3" v-model="form.relocated_process_id" name="relocated_process_id" :label="`${keywordCheck('process')} Actualizado`" placeholder="Seleccione una opción" :url="processesDataUrl" :selected-object="form.relocated_process_multiselect" :parameters="{headquarter: form.relocated_headquarter_id }" :emptyAll="empty.process" @updateEmpty="updateEmptyKey('process')">
-                  </vue-ajax-advanced-select>
-            </b-form-row>
             <b-form-row>
               <vue-textarea :disabled="viewOnly" class="col-md-12" v-model="form.detail" :label="keywordCheck('detail_recommendations')" name="detail" :error="form.errorsFor('detail')" placeholder=""></vue-textarea>
             </b-form-row>
@@ -169,40 +159,7 @@
                 <vue-advanced-select v-show="showEmitterOrigin" :disabled="viewOnly" class="col-md-6" v-model="form.emitter_origin" :error="form.errorsFor('emitter_origin')" :multiple="false" :options="originEmitters" :hide-selected="false" name="emitter_origin" label="Entidad que Califica Origen" placeholder="Seleccione una opción">
                     </vue-advanced-select>
 
-                <vue-advanced-select v-show="showEmitterOrigin" :disabled="viewOnly" class="col-md-6" v-model="form.qualification_origin" :error="form.errorsFor('qualification_origin')" :multiple="false" :options="clasificationOrigin" :hide-selected="false" name="qualification_origin" label="Clasificación de origen" placeholder="Seleccione una opción">
-                  </vue-advanced-select>
-
                 <vue-file-simple v-show="form.in_process_origin == 'NO' && form.process_origin_done == 'SI'" :help-text="form.old_process_origin_file ? `Para descargar el archivo actual, haga click <a href='/biologicalmonitoring/reinstatements/check/downloadOriginFile/${form.id}' target='blank'>aqui</a> `: null" :disabled="viewOnly" accept=".pdf" class="col-md-12" v-model="form.process_origin_file" label="Adjuntar PDF" name="process_origin_file" :error="form.errorsFor('process_origin_file')" placeholder="Seleccione un archivo"></vue-file-simple>
-
-                <vue-radio v-show="form.in_process_origin == 'SI' || form.process_origin_done == 'SI'" :disabled="viewOnly" :checked="form.is_firm_process_origin" class="col-md-6" v-model="form.is_firm_process_origin" :options="siNo" name="is_firm_process_origin" :error="form.errorsFor('is_firm_process_origin')" label="¿Es definitiva esta decisión?"></vue-radio>
-
-                <b-form-row v-show="form.is_firm_process_origin == 'NO'" style="padding-top: 15px;">
-                  <h5 class="col-md-12">Controversia 1</h5>
-                  <vue-datepicker :disabled="viewOnly" class="col-md-6" v-model="form.date_controversy_origin_1" label="Fecha calificación primera controversia" :full-month-name="true" :error="form.errorsFor('date_controversy_origin_1')" name="date_controversy_origin_1">
-                        </vue-datepicker>
-
-                  <vue-advanced-select :disabled="viewOnly" class="col-md-6" v-model="form.emitter_controversy_origin_1" :error="form.errorsFor('emitter_controversy_origin_1')" :multiple="false" :options="originEmitters" :hide-selected="false" name="emitter_controversy_origin_1" label="Entidad que Califica la primera controversia" placeholder="Seleccione una opción">
-                    </vue-advanced-select>
-
-                   <vue-advanced-select :disabled="viewOnly" class="col-md-6" v-model="form.qualification_controversy_1" :error="form.errorsFor('qualification_controversy_1')" :multiple="false" :options="clasificationOrigin" :hide-selected="false" name="qualification_controversy_1" label="Clasificación de origen la primera controversia" placeholder="Seleccione una opción">
-                    </vue-advanced-select>
-
-                    <vue-radio :disabled="viewOnly" :checked="form.is_firm_controversy_1" class="col-md-6" v-model="form.is_firm_controversy_1" :options="siNo" name="is_firm_controversy_1" :error="form.errorsFor('is_firm_controversy_1')" label="¿Es definitiva esta decisión?"></vue-radio>
-
-                </b-form-row>
-
-
-                <b-form-row v-show="form.is_firm_controversy_1 == 'NO'  && form.is_firm_process_origin == 'NO' " style="padding-top: 15px;">
-                  <h5 class="col-md-12">Controversia 2</h5>
-                  <vue-datepicker :disabled="viewOnly" class="col-md-6" v-model="form.date_controversy_origin_2" label="Fecha calificación segunda controversia" :full-month-name="true" :error="form.errorsFor('date_controversy_origin_2')" name="date_controversy_origin_2">
-                        </vue-datepicker>
-
-                  <vue-advanced-select :disabled="viewOnly" class="col-md-6" v-model="form.emitter_controversy_origin_2" :error="form.errorsFor('emitter_controversy_origin_2')" :multiple="false" :options="originEmitters" :hide-selected="false" name="emitter_controversy_origin_2" label="Entidad que Califica la segunda controversia" placeholder="Seleccione una opción">
-                    </vue-advanced-select>
-
-                  <vue-advanced-select :disabled="viewOnly" class="col-md-6" v-model="form.qualification_controversy_2" :error="form.errorsFor('qualification_controversy_2')" :multiple="false" :options="clasificationOrigin" :hide-selected="false" name="qualification_controversy_2" label="Clasificación de origen la segunda controversia" placeholder="Seleccione una opción">
-                    </vue-advanced-select>
-                </b-form-row>
                 
               </b-form-row>
             </div>
@@ -221,50 +178,9 @@
 
                 <vue-file-simple v-show="form.in_process_pcl == 'NO' && form.process_pcl_done == 'SI'" :help-text="form.old_process_pcl_file ? `Para descargar el archivo actual, haga click <a href='/biologicalmonitoring/reinstatements/check/downloadPclFile/${form.id}' target='blank'>aqui</a> `: null" :disabled="viewOnly" accept=".pdf" class="col-md-12" v-model="form.process_pcl_file" label="Adjuntar PDF" name="process_pcl_file" :error="form.errorsFor('process_pcl_file')" placeholder="Seleccione un archivo"></vue-file-simple>
 
-                <vue-radio v-show="form.in_process_pcl == 'SI' || form.process_pcl_done == 'SI'" :disabled="viewOnly" :checked="form.is_firm_process_pcl" class="col-md-6" v-model="form.is_firm_process_pcl" :options="siNo" name="is_firm_process_pcl" :error="form.errorsFor('is_firm_process_pcl')" label="¿Es definitiva esta decisión?"></vue-radio>
-
-                <b-form-row v-show="form.is_firm_process_pcl == 'NO'" style="padding-top: 15px;">
-                  <h5 class="col-md-12">Controversia 1</h5>
-                  <vue-datepicker :disabled="viewOnly" class="col-md-6" v-model="form.date_controversy_pcl_1" label="Fecha calificación primera controversia" :full-month-name="true" :error="form.errorsFor('date_controversy_pcl_1')" name="date_controversy_pcl_1">
-                        </vue-datepicker>
-                        
-                  <vue-input :disabled="viewOnly" class="col-md-6" v-model="form.emitter_controversy_pcl_1" label="Entidad que Califica la primera controversia" type="text" name="emitter_controversy_pcl_1" :error="form.errorsFor('emitter_controversy_pcl_1')"></vue-input>
-
-                  <vue-input :disabled="viewOnly" class="col-md-6" v-model="form.punctuation_controversy_plc_1" label="Calificación" type="number" name="punctuation_controversy_plc_1" :error="form.errorsFor('punctuation_controversy_plc_1')"></vue-input>
-
-                  <vue-radio :disabled="viewOnly" :checked="form.is_firm_controversy_pcl_1" class="col-md-6" v-model="form.is_firm_controversy_pcl_1" :options="siNo" name="is_firm_controversy_pcl_1" :error="form.errorsFor('is_firm_controversy_pcl_1')" label="¿Es definitiva esta decisión?"></vue-radio>
-
-                </b-form-row>
-
-                <b-form-row v-show="form.is_firm_controversy_pcl_1 == 'NO' && form.is_firm_process_pcl == 'NO' " style="padding-top: 15px;">
-                  <h5 class="col-md-12">Controversia 2</h5>
-                  <vue-datepicker :disabled="viewOnly" class="col-md-6" v-model="form.date_controversy_pcl_2" label="Fecha calificación segunda controversia" :full-month-name="true" :error="form.errorsFor('date_controversy_pcl_2')" name="date_controversy_pcl_2">
-                        </vue-datepicker>
-
-                  <vue-input :disabled="viewOnly" class="col-md-6" v-model="form.emitter_controversy_pcl_2" label="Entidad que Califica la segunda controversia" type="text" name="emitter_controversy_pcl_2" :error="form.errorsFor('emitter_controversy_pcl_2')"></vue-input>
-
-                  <vue-input :disabled="viewOnly" class="col-md-6" v-model="form.punctuation_controversy_plc_2" label="Calificación" type="number" name="punctuation_controversy_plc_2" :error="form.errorsFor('punctuation_controversy_plc_2')"></vue-input>
-                </b-form-row>
-
               </b-form-row>
             </div>
           </div>
-
-          <div class="col-md-12" style="padding-left: 15px; padding-right: 15px;">
-            <hr class="border-dark container-m--x mt-0 mb-4">
-          </div>
-
-          <b-form-row>
-            <div class="col-md-12" style="padding-bottom: 20px;">
-              <center>
-                <files-multiple 
-                  v-model="form.files"
-                  :view-only="viewOnly"
-                  ref="filesCheck"
-                  @removeFile="pushRemoveFile"/>
-              </center>
-            </div>
-          </b-form-row>
 
           <div class="col-md-12" style="padding-left: 15px; padding-right: 15px;">
             <hr class="border-dark container-m--x mt-0 mb-4">
@@ -284,48 +200,6 @@
               </tracing-inserter>
             </div>
           </b-form-row>
-
-          <b-form-row style="padding-top: 20px;">
-            <div class="col-md-12">
-              <tracing-other-check
-                :old-tracings="tracingOtherReport"
-                ref="tracingInserterOther"
-                :label="keywordCheck('tracings')"
-              >
-              </tracing-other-check>
-            </div>
-          </b-form-row>
-
-          <div class="col-md-12" style="padding-left: 15px; padding-right: 15px;">
-            <hr class="border-dark container-m--x mt-0 mb-4">
-          </div>
-
-          <b-form-row>
-            <div class="col-md-12">
-              <tracing-inserter
-                :label="keywordCheck('labor_notes')"
-                :generate-pdf="false"
-                :disabled="viewOnly"
-                :editable-tracings="auth.can['reinc_checks_manage_tracings']"
-                :old-tracings="check.oldLaborNotes"
-                :si-no="siNo"
-                ref="laborNotesInserter"
-              >
-              </tracing-inserter>
-            </div>
-          </b-form-row>
-
-          <b-form-row style="padding-top: 20px;">
-            <div class="col-md-12">
-              <tracing-other-check
-                :old-tracings="laborNotesOtherReport"
-                ref="laborNotesInserterOther"
-                :label="keywordCheck('labor_notes')"
-              >
-              </tracing-other-check>
-            </div>
-          </b-form-row>
-
         </b-card>
       </b-col>
     </b-row>
@@ -352,8 +226,6 @@ import VueFileSimple from "@/components/Inputs/VueFileSimple.vue";
 import Form from "@/utils/Form.js";
 import Alerts from '@/utils/Alerts.js';
 import TracingInserter from './TracingInserter.vue';
-import TracingOtherCheck from './TracingOtherCheck.vue';
-import FilesMultiple from './FilesMultiple.vue';
 
 export default {
   components: {
@@ -366,9 +238,7 @@ export default {
     MonitoringMedicalSelector,
     MonitoringLaboralSelector,
     VueFileSimple,
-    TracingInserter,
-    TracingOtherCheck,
-    FilesMultiple
+    TracingInserter
   },
   props: {
     url: { type: String },
@@ -385,7 +255,6 @@ export default {
     cie10CodesDataUrl: { type: String, default: "" },
     epsDataUrl: { type: String, default: "" },
     restrictionsDataUrl: { type: String, default: "" },
-    tracingOthersUrl: { type: String, default: "" },
     disableWacthSelectInCreated: { type: Boolean, default: false},
     diseaseOrigins: {
       type: Array,
@@ -522,22 +391,9 @@ export default {
     },
     'form.employee_id' () {
       this.updateDetails(`/administration/employee/${this.form.employee_id}`, 'employeeDetail')
-      this.updateTracingOtherReport('sau_reinc_tracings', 'tracingOtherReport');      
-      this.updateTracingOtherReport('sau_reinc_labor_notes', 'laborNotesOtherReport');
     },
     'form.cie10_code_id': function() {
       this.updateDetails(`/biologicalmonitoring/reinstatements/cie10/${this.form.cie10_code_id}`, 'cie10CodeDetail');
-    },
-    'form.relocated_regional_id'() {
-      this.emptySelect('relocated_process_id', 'process')
-      this.emptySelect('relocated_headquarter_id', 'headquarter')
-    },
-    'form.relocated_headquarter_id'() {
-      this.emptySelect('relocated_process_id', 'process')
-    },
-    'form.relocated_process_id'() {
-      if (this.disableWacth)
-        this.disableWacth = false
     }
   },
   computed: {
@@ -564,20 +420,6 @@ export default {
         return true;
 
       return false;
-    },
-    showcontroversy_origin2() {
-      if (this.form.date_controversy_origin_1 === '' || this.form.emitter_controversy_origin_1 === '') {
-          return false;
-      } else {
-          return true;
-      }
-    },
-    showcontroversy_pcl2() {
-      if (this.form.date_controversy_pcl_1 === '' || this.form.emitter_controversy_pcl_1 === '') {
-          return false;
-      } else{
-          return true;
-      }
     }
   },
   mounted() {
@@ -587,18 +429,12 @@ export default {
     if (this.form.employee_id)
     {
       this.updateDetails(`/administration/employee/${this.form.employee_id}`, 'employeeDetail')
-      this.updateTracingOtherReport('sau_reinc_tracings', 'tracingOtherReport');
-      this.updateTracingOtherReport('sau_reinc_labor_notes', 'laborNotesOtherReport');
     }
 
     if (!this.isEdit && !this.viewOnly)
     {
       this.form.relocated = 'NO';
       this.form.indefinite_recommendations = 'SI';
-      this.form.is_firm_controversy_1 = 'SI';
-      this.form.is_firm_controversy_pcl_1 = 'SI';
-      this.is_firm_process_origin = 'SI';
-      this.is_firm_process_pcl = 'SI';
     }
 
     setTimeout(() => {
@@ -620,8 +456,6 @@ export default {
         process: false
       },
       disableWacth: this.disableWacthSelectInCreated,
-      tracingOtherReport: [],
-      laborNotesOtherReport: []
     };
   },
   methods: {
@@ -649,9 +483,6 @@ export default {
       this.form.labor_monitorings = this.$refs.laborMonitoring.getMonitoringList();
       this.form.new_tracing = this.$refs.tracingInserter.getNewTracing();
       this.form.oldTracings = this.$refs.tracingInserter.getOldTracings();
-      this.form.new_labor_notes = this.$refs.laborNotesInserter.getNewTracing();
-      this.form.oldLaborNotes = this.$refs.laborNotesInserter.getOldTracings();
-      
       this.form
         .submit(e.target.action)
         .then(response => {
@@ -694,21 +525,6 @@ export default {
           this.$router.go(-1);
       });
     },
-    updateTracingOtherReport(table, key)
-    {
-      if (this.form.employee_id)
-      {
-        axios.post(this.tracingOthersUrl, {employee_id: this.form.employee_id, check_id: this.form.id, table: table})
-          .then(response => {
-              if (response.data)
-                this[key] = response.data.data;
-          })
-          .catch(error => {
-            Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
-            this.$router.go(-1);
-          });
-      }
-    },
     formatDate(param)
     {
       let date = ''
@@ -729,10 +545,6 @@ export default {
         this.empty[keyEmpty] = true
         this.form[keySelect] = ''
       }
-    },
-    pushRemoveFile(value)
-    {
-      this.form.delete.files.push(value)
     },
   }
 };
