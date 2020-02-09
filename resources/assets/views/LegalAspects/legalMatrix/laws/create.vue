@@ -60,8 +60,8 @@ export default {
             this[key] = response;
         })
         .catch(error => {
-            Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
-            this.$router.go(-1);
+            //Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
+            //this.$router.go(-1);
         });
     },
   }

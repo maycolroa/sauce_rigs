@@ -122,7 +122,7 @@ export default {
                 }
             })
             .catch(error => {
-                Alerts.error('Error', 'Hubo un problema recolectando la información');
+                //Alerts.error('Error', 'Hubo un problema recolectando la información');
             });
         }
     },
@@ -174,7 +174,7 @@ export default {
                 this.filters[key].data = response;
             })
             .catch(error => {
-                Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
+                //Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
             });
         },
         emitFilters(key)
@@ -202,8 +202,8 @@ export default {
                 .then(response => {
                 })
                 .catch(error => {
-                    Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
-                    this.$router.go(-1);
+                    //Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
+                    //this.$router.go(-1);
                 });
         },
         getStateFilters()
@@ -248,8 +248,8 @@ export default {
                     }
                 })
                 .catch(error => {
-                    Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
-                    this.$router.go(-1);
+                    //Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
+                    //this.$router.go(-1);
                 });
         },
         cleanFilters()

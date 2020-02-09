@@ -57,8 +57,8 @@ export default {
         this.filterInterestsOptions = response.data;
     })
     .catch(error => {
-        Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
-        this.$router.go(-1);
+        //Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
+        //this.$router.go(-1);
     });
 
     axios.get(`/legalAspects/legalMatrix/law/qualify/${this.$route.params.id}`)
@@ -66,8 +66,8 @@ export default {
         this.data = response.data.data;
     })
     .catch(error => {
-        Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
-        this.$router.go(-1);
+        //Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
+        //this.$router.go(-1);
     });
     
   },
@@ -79,8 +79,8 @@ export default {
             this[key] = response;
         })
         .catch(error => {
-            Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
-            this.$router.go(-1);
+            //Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
+            //this.$router.go(-1);
         });
     },
   }
