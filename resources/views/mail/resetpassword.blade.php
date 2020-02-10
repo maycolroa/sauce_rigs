@@ -259,7 +259,6 @@ a[x-apple-data-detectors=true] {
 
 
 <div align="left" class="button-container left" style="padding-right: 0px; padding-left: 0px; padding-top:0px; padding-bottom:25px;">
-  <!--[if mso]><table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-spacing: 0; border-collapse: collapse; mso-table-lspace:0pt; mso-table-rspace:0pt;"><tr><td style="padding-right: 0px; padding-left: 0px; padding-top:0px; padding-bottom:25px;" align="left"><v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" xmlns:w="urn:schemas-microsoft-com:office:word" href="http://example.com/" style="height:36pt; v-text-anchor:middle; width:126pt;" arcsize="9%" strokecolor="#f0635f" fillcolor="#f0635f"><w:anchorlock/><v:textbox inset="0,0,0,0"><center style="color:#ffffff; font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif; font-size:16px;"><![endif]-->
     <a href="{{ $link }}" target="_blank" style="display: block;text-decoration: none;-webkit-text-size-adjust: none;text-align: center;color: #ffffff; background-color: #f0635f; border-radius: 4px; -webkit-border-radius: 4px; -moz-border-radius: 4px; max-width: 168px; width: 128px;width: auto; border-top: 0px solid transparent; border-right: 0px solid transparent; border-bottom: 0px solid transparent; border-left: 0px solid transparent; padding-top: 8px; padding-right: 20px; padding-bottom: 8px; padding-left: 20px; font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif;mso-border-alt: none">
       <span style="font-size:16px;line-height:32px;"><span style="font-size: 14px; line-height: 28px;" data-mce-style="font-size: 14px;">Restablecer contraseña</span></span>
     </a>
@@ -305,9 +304,6 @@ a[x-apple-data-detectors=true] {
 
                     <div class="">
 	<!--[if mso]><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="padding-right: 0px; padding-left: 0px; padding-top: 0px; padding-bottom: 0px;"><![endif]-->
-	<div style="color:#bbbbbb;line-height:150%;font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif; padding-right: 0px; padding-left: 0px; padding-top: 0px; padding-bottom: 0px;">
-		<div style="font-size:12px;line-height:18px;color:#bbbbbb;font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif;text-align:left;"><p style="margin: 0;font-size: 14px;line-height: 21px;text-align: center"><span style="font-size: 12px; line-height: 18px;">&#160;</span></p><p style="margin: 0;font-size: 14px;line-height: 21px;text-align: center"><span style="font-size: 12px; line-height: 18px;"><a style="color:#bbbbbb;color:#bbbbbb;text-decoration: underline;" href="http://example.com" target="_blank" rel="noopener"></a></span></p></div>
-	</div>
 	<!--[if mso]></td></tr></table><![endif]-->
 </div>
 
