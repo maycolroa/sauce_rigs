@@ -37,6 +37,20 @@
         </div>
       </form>
       <!-- / Form -->
+
+      <b-modal ref="inforUser" :hideFooter="true" class="modal-top" size="lg">
+        <div slot="modal-title">
+          <h3>Información</h3>
+        </div>
+        <b-card  bg-variant="transparent"  title="" class="mb-3 box-shadow-none">
+          <h4>Estimado usuario, si ingresa por primera vez al sistema, por favor diríjase a la opción "¿Olvidaste tu contraseña?"</h4>
+        </b-card>
+        <br>
+        <div class="row float-right pt-12 pr-12y">
+          <b-btn variant="primary" @click="hideModal">Cerrar</b-btn>
+        </div>
+      </b-modal>
+
     </div>
   </div>
 </template>
@@ -80,6 +94,9 @@ export default {
       form: Form.makeFrom(this.credentials, this.loginMethod),
     }
   },
+  mounted(){
+    this.$refs.inforUser.show()
+  },
   methods: {
       submit(e) {
         this.loading = true;
@@ -106,7 +123,10 @@ export default {
                 text: error
               });
           });
-      }
+      },
+      hideModal() {
+        this.$refs.inforUser.hide()
+      },
   },
 }
 </script>
