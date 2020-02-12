@@ -91,7 +91,7 @@ class ApplicationController extends Controller
       Session::put('company_id', $request->input('company_id'));
 
       $new_path = "/";
-      $data = $this->getAppsModules();
+      /*$data = $this->getAppsModules();
       $currentPath = trim($request->input('currentPath'), '/');
       $currentPath = explode("/", $currentPath);
 
@@ -141,7 +141,7 @@ class ApplicationController extends Controller
             }
           }
         }
-      }
+      }*/
 
       return $new_path;
     }

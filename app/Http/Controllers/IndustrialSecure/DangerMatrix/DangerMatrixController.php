@@ -22,7 +22,10 @@ use App\Models\IndustrialSecure\DangerMatrix\ChangeHistory;
 use App\Jobs\IndustrialSecure\DangerMatrix\DangerMatrixExportJob;
 use App\Facades\ActionPlans\Facades\ActionPlan;
 use App\Traits\DangerMatrixTrait;
+use App\Exports\IndustrialSecure\DangerMatrix\DangerMatrixImportTemplateExcel;
+use App\Jobs\IndustrialSecure\DangerMatrix\DangerMatrixImportJob;
 use Carbon\Carbon;
+use Maatwebsite\Excel\Facades\Excel;
 use Validator;
 use DB;
 
@@ -556,5 +559,24 @@ class DangerMatrixController extends Controller
         } catch(Exception $e) {
             return $this->respondHttp500();
         }
+    }
+
+    public function downloadTemplateImport()
+    {
+      return Excel::download(new DangerMatrixImportTemplateExcel(collect([]), $this->company), 'PlantillaImportacionMatrizPeligro.xlsx');
+    }
+
+    public function import(Request $request)
+    {
+      try
+      {
+        DangerMatrixImportJob::dispatch($request->file, $this->company, $this->user);
+      
+        return $this->respondHttp200();
+
+      } catch(Exception $e)
+      {
+        return $this->respondHttp500();
+      }
     }
 }

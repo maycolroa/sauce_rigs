@@ -143,7 +143,7 @@ class ReportManagerLaw
         $values_fulfillments = $laws->pluck('qualify')->unique();
 
         $fulfillments = FulfillmentValues::whereIn('name', $values_fulfillments)->get();
-        $system_apply = SystemApply::inSystemApply($this->systemApply, $this->filtersType['systemApply'])->get();
+        $system_apply = SystemApply::alls()->inSystemApply($this->systemApply, $this->filtersType['systemApply'])->get();
         $data = collect([]);
         $barSeries = $system_apply->pluck('name')->toArray();
 
