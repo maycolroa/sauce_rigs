@@ -244,6 +244,17 @@ class ActionPlanController extends Controller
             $users->join('sau_company_user', 'sau_company_user.user_id', 'sau_users.id');
         }
 
+        $users = $users->get();
+
+        $isSuper = $this->user->hasRole('Superadmin', $this->team);
+
+        if (!$isSuper)
+        {
+            $users = $users->filter(function ($user, $key) {
+                return !$user->hasRole('Superadmin', $this->team);
+            });
+        }
+
         $users = $users->pluck('id', 'name');
 
         return $this->multiSelectFormat($users);

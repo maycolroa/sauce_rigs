@@ -403,8 +403,19 @@ class UserController extends Controller
             $users = $users->where(function ($query) use ($keyword) {
                         $query->orWhere('sau_users.document', 'like', $keyword)
                         ->orWhere('sau_users.name', 'like', $keyword);
-                    })
-                    ->take(30)->pluck('id', 'name');
+                    })->get();
+                    //->take(30)->pluck('id', 'name');
+
+            $isSuper = $this->user->hasRole('Superadmin', $this->team);
+
+            if (!$isSuper)
+            {
+                $users = $users->filter(function ($user, $key) {
+                    return !$user->hasRole('Superadmin', $this->team);
+                });
+            }
+
+            $users = $users->take(30)->pluck('id', 'name');
 
             return $this->respondHttp200([
                 'options' => $this->multiSelectFormat($users)
@@ -412,6 +423,17 @@ class UserController extends Controller
         }
         else
         {
+            $users = $users->get();
+
+            $isSuper = $this->user->hasRole('Superadmin', $this->team);
+
+            if (!$isSuper)
+            {
+                $users = $users->filter(function ($user, $key) {
+                    return !$user->hasRole('Superadmin', $this->team);
+                });
+            }
+
             $users = $users->pluck('id', 'name');
 
             return $this->multiSelectFormat($users);

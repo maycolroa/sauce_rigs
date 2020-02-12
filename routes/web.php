@@ -34,7 +34,8 @@ Route::middleware(['auth'])->group(function () {
     });
 
     Route::get('templates/audiometryimport','PreventiveOccupationalMedicine\BiologicalMonitoring\AudiometryController@downloadTemplateImport');
-    Route::get('templates/employeeimport','Administrative\Employees\EmployeesController@downloadTemplateImport');
+    Route::get('templates/employeeimport','Administrative\Employees\EmployeesController@downloadTemplateImport');    
+    Route::get('templates/dangermatriximport','IndustrialSecure\DangerMatrix\DangerMatrixController@downloadTemplateImport');
 
 	//Cerrar sesión 
 	Route::get('/logout', 'Auth\LoginController@logout')->name('logout');
@@ -328,6 +329,7 @@ Route::middleware(['auth'])->group(function () {
       Route::post('dangersMatrix/reportHistory', 'IndustrialSecure\DangerMatrix\DangerMatrixReportHistoryController@report');
       Route::post('dangersMatrix/reportHistoryExport ', 'IndustrialSecure\DangerMatrix\DangerMatrixReportHistoryController@reportExport');
       Route::get('dangersMatrix/download/{dangersMatrix}', 'IndustrialSecure\DangerMatrix\DangerMatrixController@download');
+      Route::post('dangersMatrix/import', 'IndustrialSecure\DangerMatrix\DangerMatrixController@import');
       Route::ApiResource('dangersMatrix', 'IndustrialSecure\DangerMatrix\DangerMatrixController');
 
       Route::post('dangersMatrixHistory/data', 'IndustrialSecure\DangerMatrix\DangerMatrixHistoryController@data');

@@ -23,7 +23,7 @@ class EmployeesController extends Controller
         parent::__construct();
         $this->middleware('auth');
         $this->middleware("permission:employees_c, {$this->team}", ['only' => ['store', 'import', 'downloadTemplateImport']]);
-        $this->middleware("permission:employees_r, {$this->team}", ['except' =>'multiselect']);
+        $this->middleware("permission:employees_r, {$this->team}", ['except' =>['multiselect', 'multiselectDeal', 'multiselectIdentifications', 'multiselectNames']]);
         $this->middleware("permission:employees_u, {$this->team}", ['only' => 'update']);
         $this->middleware("permission:employees_d, {$this->team}", ['only' => 'destroy']);
     }
@@ -209,11 +209,13 @@ class EmployeesController extends Controller
 
     public function multiselectDeal(Request $request)
     {
+        \Log::info("dddddd");
         $deals = Employee::selectRaw(
                     "DISTINCT sau_employees.deal AS deal"
                 )
                 ->whereNotNull('sau_employees.deal')
                 ->pluck('deal', 'deal');
+                \Log::info($deals);
             
         return $this->multiSelectFormat($deals);
     }
