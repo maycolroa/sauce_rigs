@@ -9,6 +9,8 @@
     <div class="col-md">
       <b-card no-body>
         <b-card-body>
+        <loading :display="!ready"/>
+          <div v-if="ready">
             <industrial-secure-danger-matrix-form
                 :dangerMatrix="data"
                 :view-only="true"
@@ -20,6 +22,7 @@
                 :action-plan-states="actionPlanStates"
                 userDataUrl="/selects/users"
                 :configuration="configuration"/>
+          </div>
         </b-card-body>
       </b-card>
     </div>
@@ -30,6 +33,7 @@
 import IndustrialSecureDangerMatrixForm from '@/components/IndustrialSecure/DangerMatrix/FormDangerMatrixComponent.vue';
 import Alerts from '@/utils/Alerts.js';
 import GlobalMethods from '@/utils/GlobalMethods.js';
+import Loading from "@/components/Inputs/Loading.vue";
 
 export default {
   name: 'industrialsecure-dangermatrix-view',
@@ -37,7 +41,8 @@ export default {
     title: 'Matriz de Peligros - Ver'
   },
   components:{
-    IndustrialSecureDangerMatrixForm
+    IndustrialSecureDangerMatrixForm,
+    Loading
   },
   data () {
     return {
@@ -47,26 +52,26 @@ export default {
       qualifications: [],
       actionPlanStates: [],
       data: [],
-      configuration: []
+      configuration: [],      
+      ready: false
     }
   },
   created(){
-    axios.get('/administration/configuration/view')
-    .then(response => {
-        this.configuration = response.data.data;
-    })
-    .catch(error => {
-        Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
-        this.$router.go(-1);
-    });
+    
     
     axios.get(`/industrialSecurity/dangersMatrix/${this.$route.params.id}`)
     .then(response => {
         this.data = response.data.data;
+
+        axios.get('/administration/configuration/view')
+        .then(response2 => {
+            this.configuration = response2.data.data;
+            this.ready = true
+        })
+        .catch(error => {
+        });
     })
     .catch(error => {
-        Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
-        this.$router.go(-1);
     });
 
     this.fetchSelect('typeActivities', '/radios/dmTypeActivities')
@@ -83,8 +88,6 @@ export default {
             this[key] = response;
         })
         .catch(error => {
-            Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
-            this.$router.go(-1);
         });
     },
   }
