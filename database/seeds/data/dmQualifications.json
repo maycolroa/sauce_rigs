@@ -10,19 +10,19 @@
                 "values": [
                     {
                         "group_by": null,
-                        "value": "No ha ocurrido en el sector Hospitalario",
+                        "value": "No ha ocurrido en el sector hospitalario",
                         "description": ""
                     }, {
                         "group_by": null,
-                        "value": "Ha ocurrido en el sector Hospitalario",
+                        "value": "Ha ocurrido en el sector hospitalario",
                         "description": ""
                     }, {
                         "group_by": null,
-                        "value": "Alguna vez ha ocurrido en el Hospital en el último año",
+                        "value": "Alguna vez ha ocurrido en el hospital en el último año",
                         "description": ""
                     }, {
                         "group_by": null,
-                        "value": "Sucede varias veces en el último año y en diferentes procesos (en el Hospital)",
+                        "value": "Sucede varias veces en el último año y en diferentes procesos (en el hospital)",
                         "description": ""
                     }, {
                         "group_by": null,
@@ -38,102 +38,102 @@
                 "readonly": "NO",
                 "values": [
                     {
-                        "group_by": "No ha ocurrido en el sector Hospitalario",
+                        "group_by": "No ha ocurrido en el sector hospitalario",
                         "value": "8",
                         "description": "Una o más fatalidades"
                     }, 
                     {
-                        "group_by": "No ha ocurrido en el sector Hospitalario",
+                        "group_by": "No ha ocurrido en el sector hospitalario",
                         "value": "4",
                         "description": "Incapacidad permanente parcial o invalidez"
                     }, 
                     {
-                        "group_by": "No ha ocurrido en el sector Hospitalario",
+                        "group_by": "No ha ocurrido en el sector hospitalario",
                         "value": "3",
                         "description": "Incapacidad temporal > a 1 día"
                     }, 
                     {
-                        "group_by": "No ha ocurrido en el sector Hospitalario",
+                        "group_by": "No ha ocurrido en el sector hospitalario",
                         "value": "2",
                         "description": "Lesión menor sin incapacidad"
                     },
                     {
-                        "group_by": "No ha ocurrido en el sector Hospitalario",
+                        "group_by": "No ha ocurrido en el sector hospitalario",
                         "value": "1",
                         "description": "Lesión Leve (primeros auxilios)"
                     },
                     {
-                        "group_by": "Ha ocurrido en el sector Hospitalario",
+                        "group_by": "Ha ocurrido en el sector hospitalario",
                         "value": "10",
                         "description": "Una o más fatalidades"
                     }, 
                     {
-                        "group_by": "Ha ocurrido en el sector Hospitalario",
+                        "group_by": "Ha ocurrido en el sector hospitalario",
                         "value": "8",
                         "description": "Incapacidad permanente parcial o invalidez"
                     }, 
                     {
-                        "group_by": "Ha ocurrido en el sector Hospitalario",
+                        "group_by": "Ha ocurrido en el sector hospitalario",
                         "value": "6",
                         "description": "Incapacidad temporal > a 1 día"
                     }, 
                     {
-                        "group_by": "Ha ocurrido en el sector Hospitalario",
+                        "group_by": "Ha ocurrido en el sector hospitalario",
                         "value": "3",
                         "description": "Lesión menor sin incapacidad"
                     },
                     {
-                        "group_by": "Ha ocurrido en el sector Hospitalario",
+                        "group_by": "Ha ocurrido en el sector hospitalario",
                         "value": "2",
                         "description": "Lesión Leve (primeros auxilios)"
                     },
                     {
-                        "group_by": "Alguna vez ha ocurrido en el Hospital en el último año",
+                        "group_by": "Alguna vez ha ocurrido en el hospital en el último año",
                         "value": "15",
                         "description": "Una o más fatalidades"
                     }, 
                     {
-                        "group_by": "Alguna vez ha ocurrido en el Hospital en el último año",
+                        "group_by": "Alguna vez ha ocurrido en el hospital en el último año",
                         "value": "12",
                         "description": "Incapacidad permanente parcial o invalidez"
                     }, 
                     {
-                        "group_by": "Alguna vez ha ocurrido en el Hospital en el último año",
+                        "group_by": "Alguna vez ha ocurrido en el hospital en el último año",
                         "value": "9",
                         "description": "Incapacidad temporal > a 1 día"
                     }, 
                     {
-                        "group_by": "Alguna vez ha ocurrido en el Hospital en el último año",
+                        "group_by": "Alguna vez ha ocurrido en el hospital en el último año",
                         "value": "6",
                         "description": "Lesión menor sin incapacidad"
                     },
                     {
-                        "group_by": "Alguna vez ha ocurrido en el Hospital en el último año",
+                        "group_by": "Alguna vez ha ocurrido en el hospital en el último año",
                         "value": "3",
                         "description": "Lesión Leve (primeros auxilios)"
                     },
                     {
-                        "group_by": "Sucede varias veces en el último año y en diferentes procesos (en el Hospital)",
+                        "group_by": "Sucede varias veces en el último año y en diferentes procesos (en el hospital)",
                         "value": "20",
                         "description": "Una o más fatalidades"
                     }, 
                     {
-                        "group_by": "Sucede varias veces en el último año y en diferentes procesos (en el Hospital)",
+                        "group_by": "Sucede varias veces en el último año y en diferentes procesos (en el hospital)",
                         "value": "16",
                         "description": "Incapacidad permanente parcial o invalidez"
                     }, 
                     {
-                        "group_by": "Sucede varias veces en el último año y en diferentes procesos (en el Hospital)",
+                        "group_by": "Sucede varias veces en el último año y en diferentes procesos (en el hospital)",
                         "value": "12",
                         "description": "Incapacidad temporal > a 1 día"
                     }, 
                     {
-                        "group_by": "Sucede varias veces en el último año y en diferentes procesos (en el Hospital)",
+                        "group_by": "Sucede varias veces en el último año y en diferentes procesos (en el hospital)",
                         "value": "7",
                         "description": "Lesión menor sin incapacidad"
                     },
                     {
-                        "group_by": "Sucede varias veces en el último año y en diferentes procesos (en el Hospital)",
+                        "group_by": "Sucede varias veces en el último año y en diferentes procesos (en el hospital)",
                         "value": "4",
                         "description": "Lesión Leve (primeros auxilios)"
                     },
@@ -170,102 +170,102 @@
                 "readonly": "NO",
                 "values": [
                     {
-                        "group_by": "No ha ocurrido en el sector Hospitalario",
+                        "group_by": "No ha ocurrido en el sector hospitalario",
                         "value": "8",
                         "description": "Muy grave, mayor a 30 días de estancia (mayor a $21.001 millones)"
                     }, 
                     {
-                        "group_by": "No ha ocurrido en el sector Hospitalario",
+                        "group_by": "No ha ocurrido en el sector hospitalario",
                         "value": "4",
                         "description": "Grave, entre 17 y 30 días de estancia ($11.901 y $21.000)"
                     }, 
                     {
-                        "group_by": "No ha ocurrido en el sector Hospitalario",
+                        "group_by": "No ha ocurrido en el sector hospitalario",
                         "value": "3",
                         "description": "Severo, entre 8 y 17 días de estancia ($5.601 y $11.900 millones)"
                     }, 
                     {
-                        "group_by": "No ha ocurrido en el sector Hospitalario",
+                        "group_by": "No ha ocurrido en el sector hospitalario",
                         "value": "2",
                         "description": "Importante, entre 2 y 8 días de estancia ($1.401 y $5.600 millones)"
                     },
                     {
-                        "group_by": "No ha ocurrido en el sector Hospitalario",
+                        "group_by": "No ha ocurrido en el sector hospitalario",
                         "value": "1",
                         "description": "Leve, entre 0.5 y 2 días de estancia ($350 y $1.400 millones)"
                     },
                     {
-                        "group_by": "Ha ocurrido en el sector Hospitalario",
+                        "group_by": "Ha ocurrido en el sector hospitalario",
                         "value": "10",
                         "description": "Muy grave, mayor a 30 días de estancia (mayor a $21.001 millones)"
                     }, 
                     {
-                        "group_by": "Ha ocurrido en el sector Hospitalario",
+                        "group_by": "Ha ocurrido en el sector hospitalario",
                         "value": "8",
                         "description": "Grave, entre 17 y 30 días de estancia ($11.901 y $21.000)"
                     }, 
                     {
-                        "group_by": "Ha ocurrido en el sector Hospitalario",
+                        "group_by": "Ha ocurrido en el sector hospitalario",
                         "value": "6",
                         "description": "Severo, entre 8 y 17 días de estancia ($5.601 y $11.900 millones)"
                     }, 
                     {
-                        "group_by": "Ha ocurrido en el sector Hospitalario",
+                        "group_by": "Ha ocurrido en el sector hospitalario",
                         "value": "3",
                         "description": "Importante, entre 2 y 8 días de estancia ($1.401 y $5.600 millones)"
                     },
                     {
-                        "group_by": "Ha ocurrido en el sector Hospitalario",
+                        "group_by": "Ha ocurrido en el sector hospitalario",
                         "value": "2",
                         "description": "Leve, entre 0.5 y 2 días de estancia ($350 y $1.400 millones)"
                     },
                     {
-                        "group_by": "Alguna vez ha ocurrido en el Hospital en el último año",
+                        "group_by": "Alguna vez ha ocurrido en el hospital en el último año",
                         "value": "15",
                         "description": "Muy grave, mayor a 30 días de estancia (mayor a $21.001 millones)"
                     }, 
                     {
-                        "group_by": "Alguna vez ha ocurrido en el Hospital en el último año",
+                        "group_by": "Alguna vez ha ocurrido en el hospital en el último año",
                         "value": "12",
                         "description": "Grave, entre 17 y 30 días de estancia ($11.901 y $21.000)"
                     }, 
                     {
-                        "group_by": "Alguna vez ha ocurrido en el Hospital en el último año",
+                        "group_by": "Alguna vez ha ocurrido en el hospital en el último año",
                         "value": "9",
                         "description": "Severo, entre 8 y 17 días de estancia ($5.601 y $11.900 millones)"
                     }, 
                     {
-                        "group_by": "Alguna vez ha ocurrido en el Hospital en el último año",
+                        "group_by": "Alguna vez ha ocurrido en el hospital en el último año",
                         "value": "6",
                         "description": "Importante, entre 2 y 8 días de estancia ($1.401 y $5.600 millones)"
                     },
                     {
-                        "group_by": "Alguna vez ha ocurrido en el Hospital en el último año",
+                        "group_by": "Alguna vez ha ocurrido en el hospital en el último año",
                         "value": "3",
                         "description": "Leve, entre 0.5 y 2 días de estancia ($350 y $1.400 millones)"
                     },
                     {
-                        "group_by": "Sucede varias veces en el último año y en diferentes procesos (en el Hospital)",
+                        "group_by": "Sucede varias veces en el último año y en diferentes procesos (en el hospital)",
                         "value": "20",
                         "description": "Muy grave, mayor a 30 días de estancia (mayor a $21.001 millones)"
                     }, 
                     {
-                        "group_by": "Sucede varias veces en el último año y en diferentes procesos (en el Hospital)",
+                        "group_by": "Sucede varias veces en el último año y en diferentes procesos (en el hospital)",
                         "value": "16",
                         "description": "Grave, entre 17 y 30 días de estancia ($11.901 y $21.000)"
                     }, 
                     {
-                        "group_by": "Sucede varias veces en el último año y en diferentes procesos (en el Hospital)",
+                        "group_by": "Sucede varias veces en el último año y en diferentes procesos (en el hospital)",
                         "value": "12",
                         "description": "Severo, entre 8 y 17 días de estancia ($5.601 y $11.900 millones)"
                     }, 
                     {
-                        "group_by": "Sucede varias veces en el último año y en diferentes procesos (en el Hospital)",
+                        "group_by": "Sucede varias veces en el último año y en diferentes procesos (en el hospital)",
                         "value": "7",
                         "description": "Importante, entre 2 y 8 días de estancia ($1.401 y $5.600 millones)"
                     },
                     {
-                        "group_by": "Sucede varias veces en el último año y en diferentes procesos (en el Hospital)",
+                        "group_by": "Sucede varias veces en el último año y en diferentes procesos (en el hospital)",
                         "value": "4",
                         "description": "Leve, entre 0.5 y 2 días de estancia ($350 y $1.400 millones)"
                     },
@@ -302,102 +302,102 @@
                 "readonly": "NO",
                 "values": [
                     {
-                        "group_by": "No ha ocurrido en el sector Hospitalario",
+                        "group_by": "No ha ocurrido en el sector hospitalario",
                         "value": "8",
                         "description": "Impacto internacional"
                     }, 
                     {
-                        "group_by": "No ha ocurrido en el sector Hospitalario",
+                        "group_by": "No ha ocurrido en el sector hospitalario",
                         "value": "4",
                         "description": "Impacto nacional"
                     }, 
                     {
-                        "group_by": "No ha ocurrido en el sector Hospitalario",
+                        "group_by": "No ha ocurrido en el sector hospitalario",
                         "value": "3",
                         "description": "Impacto regional Departamento"
                     }, 
                     {
-                        "group_by": "No ha ocurrido en el sector Hospitalario",
+                        "group_by": "No ha ocurrido en el sector hospitalario",
                         "value": "2",
                         "description": "Impacto local Ciudad y  área Metropolitana"
                     },
                     {
-                        "group_by": "No ha ocurrido en el sector Hospitalario",
+                        "group_by": "No ha ocurrido en el sector hospitalario",
                         "value": "1",
                         "description": "Impacto interno HPTU"
                     },
                     {
-                        "group_by": "Ha ocurrido en el sector Hospitalario",
+                        "group_by": "Ha ocurrido en el sector hospitalario",
                         "value": "10",
                         "description": "Impacto internacional"
                     }, 
                     {
-                        "group_by": "Ha ocurrido en el sector Hospitalario",
+                        "group_by": "Ha ocurrido en el sector hospitalario",
                         "value": "8",
                         "description": "Impacto nacional"
                     }, 
                     {
-                        "group_by": "Ha ocurrido en el sector Hospitalario",
+                        "group_by": "Ha ocurrido en el sector hospitalario",
                         "value": "6",
                         "description": "Impacto regional Departamento"
                     }, 
                     {
-                        "group_by": "Ha ocurrido en el sector Hospitalario",
+                        "group_by": "Ha ocurrido en el sector hospitalario",
                         "value": "3",
                         "description": "Impacto local Ciudad y  área Metropolitana"
                     },
                     {
-                        "group_by": "Ha ocurrido en el sector Hospitalario",
+                        "group_by": "Ha ocurrido en el sector hospitalario",
                         "value": "2",
                         "description": "Impacto interno HPTU"
                     },
                     {
-                        "group_by": "Alguna vez ha ocurrido en el Hospital en el último año",
+                        "group_by": "Alguna vez ha ocurrido en el hospital en el último año",
                         "value": "15",
                         "description": "Impacto internacional"
                     }, 
                     {
-                        "group_by": "Alguna vez ha ocurrido en el Hospital en el último año",
+                        "group_by": "Alguna vez ha ocurrido en el hospital en el último año",
                         "value": "12",
                         "description": "Impacto nacional"
                     }, 
                     {
-                        "group_by": "Alguna vez ha ocurrido en el Hospital en el último año",
+                        "group_by": "Alguna vez ha ocurrido en el hospital en el último año",
                         "value": "9",
                         "description": "Impacto regional Departamento"
                     }, 
                     {
-                        "group_by": "Alguna vez ha ocurrido en el Hospital en el último año",
+                        "group_by": "Alguna vez ha ocurrido en el hospital en el último año",
                         "value": "6",
                         "description": "Impacto local Ciudad y  área Metropolitana"
                     },
                     {
-                        "group_by": "Alguna vez ha ocurrido en el Hospital en el último año",
+                        "group_by": "Alguna vez ha ocurrido en el hospital en el último año",
                         "value": "3",
                         "description": "Impacto interno HPTU"
                     },
                     {
-                        "group_by": "Sucede varias veces en el último año y en diferentes procesos (en el Hospital)",
+                        "group_by": "Sucede varias veces en el último año y en diferentes procesos (en el hospital)",
                         "value": "20",
                         "description": "Impacto internacional"
                     }, 
                     {
-                        "group_by": "Sucede varias veces en el último año y en diferentes procesos (en el Hospital)",
+                        "group_by": "Sucede varias veces en el último año y en diferentes procesos (en el hospital)",
                         "value": "16",
                         "description": "Impacto nacional"
                     }, 
                     {
-                        "group_by": "Sucede varias veces en el último año y en diferentes procesos (en el Hospital)",
+                        "group_by": "Sucede varias veces en el último año y en diferentes procesos (en el hospital)",
                         "value": "12",
                         "description": "Impacto regional Departamento"
                     }, 
                     {
-                        "group_by": "Sucede varias veces en el último año y en diferentes procesos (en el Hospital)",
+                        "group_by": "Sucede varias veces en el último año y en diferentes procesos (en el hospital)",
                         "value": "7",
                         "description": "Impacto local Ciudad y  área Metropolitana"
                     },
                     {
-                        "group_by": "Sucede varias veces en el último año y en diferentes procesos (en el Hospital)",
+                        "group_by": "Sucede varias veces en el último año y en diferentes procesos (en el hospital)",
                         "value": "4",
                         "description": "Impacto interno HPTU"
                     },

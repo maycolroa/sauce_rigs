@@ -13,9 +13,9 @@
             <b-btn v-if="auth.can['dangerMatrix_c']" :to="{name:'industrialsecure-dangermatrix-create'}" variant="primary">Crear Matriz de Peligros</b-btn>
             <b-btn v-if="auth.can['dangerMatrix_view_report']" :to="{name:'industrialsecure-dangermatrix-report'}" variant="primary">Reporte</b-btn>
             <b-btn v-if="auth.can['dangerMatrix_c']" :to="{name:'industrialsecure-dangermatrix-tags'}" variant="primary">Administrar Tags</b-btn>
-            <!--<b-btn v-if="auth.can['dangerMatrix_c']" variant="primary" href="/templates/dangermatriximport" target="blank" v-b-tooltip.top title="Generar Plantilla"><i class="fas fa-file-alt"></i></b-btn>
+            <b-btn v-if="auth.can['dangerMatrix_c']" variant="primary" href="/templates/dangermatriximport" target="blank" v-b-tooltip.top title="Generar Plantilla"><i class="fas fa-file-alt"></i></b-btn>
             <b-btn v-if="auth.can['employees_c']" variant="primary" @click="importMessage()" v-b-tooltip.top title="Importar"><i class="fas fa-upload"></i></b-btn>
-            <input id="fileInputImport" type="file" style="display:none" v-on:input="importDangerMatrix"/>-->
+            <input id="fileInputImport" type="file" style="display:none" v-on:input="importDangerMatrix"/>
           </div>
         </b-card-header>
         <b-card-body>
@@ -27,7 +27,7 @@
         </b-card-body>
     </b-card>
 
-     <!-- modal confirmation for import 
+     <!-- modal confirmation for import -->
     <b-modal ref="modalConfirmationImport" class="modal-slide" hide-header hide-footer>
       <p class="text-justific mb-4">
         Estimado Usuario para realizar la importación el archivo debe cumplir lo siguiente:<br><br>
@@ -41,7 +41,7 @@
       </p>
       <b-btn block variant="primary" @click="importConfirmation()">Aceptar</b-btn>
       <b-btn block variant="default" @click="toggleModalConfirmationImport(false)">Cancelar</b-btn>
-    </b-modal>-->
+    </b-modal>
     </div>
   </div>
 </template>

@@ -114,6 +114,18 @@ class ActivityDanger extends Model
           
           $this->attributes['danger_generated'] = implode(",", $danger_generated);
         }
+        else
+        {
+            $data = explode(",", $value);
+            $item = collect([]);
+
+            foreach ($data as $value)
+            {
+                $item->push(trim($value));
+            }
+            
+            $this->attributes['danger_generated'] = $item->implode(",");
+        }
       }
     }
 }
