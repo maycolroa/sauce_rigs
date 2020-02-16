@@ -203,13 +203,12 @@ export default {
   },
   watch: {
     dangerMatrix() {
-      this.loading = false;
       this.form = Form.makeFrom(this.dangerMatrix, this.method);
     }
   },
   data() {
     return {
-      loading: this.isEdit,
+      loading: false,
       form: Form.makeFrom(this.dangerMatrix, this.method),
       configLocation: {}
     };

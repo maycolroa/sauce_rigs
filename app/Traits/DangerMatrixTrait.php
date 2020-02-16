@@ -29,29 +29,29 @@ trait DangerMatrixTrait
 
         //Tipo 1
         
-        $matriz['Tipo 1']['No ha ocurrido en el sector Hospitalario']['8'] = ['label' => 'Medio-8', 'color' => 'orange', 'count' => 0];
-        $matriz['Tipo 1']['No ha ocurrido en el sector Hospitalario']['4'] = ['label' => 'Bajo-4', 'color' => 'warning', 'count' => 0];
-        $matriz['Tipo 1']['No ha ocurrido en el sector Hospitalario']['3'] = ['label' => 'Trivial-3', 'color' => 'success', 'count' => 0];
-        $matriz['Tipo 1']['No ha ocurrido en el sector Hospitalario']['2'] = ['label' => 'Trivial-2', 'color' => 'success', 'count' => 0];
-        $matriz['Tipo 1']['No ha ocurrido en el sector Hospitalario']['1'] = ['label' => 'Trivial-1', 'color' => 'success', 'count' => 0];
+        $matriz['Tipo 1']['No ha ocurrido en el sector hospitalario']['8'] = ['label' => 'Medio-8', 'color' => 'orange', 'count' => 0];
+        $matriz['Tipo 1']['No ha ocurrido en el sector hospitalario']['4'] = ['label' => 'Bajo-4', 'color' => 'warning', 'count' => 0];
+        $matriz['Tipo 1']['No ha ocurrido en el sector hospitalario']['3'] = ['label' => 'Trivial-3', 'color' => 'success', 'count' => 0];
+        $matriz['Tipo 1']['No ha ocurrido en el sector hospitalario']['2'] = ['label' => 'Trivial-2', 'color' => 'success', 'count' => 0];
+        $matriz['Tipo 1']['No ha ocurrido en el sector hospitalario']['1'] = ['label' => 'Trivial-1', 'color' => 'success', 'count' => 0];
 
-        $matriz['Tipo 1']['Ha ocurrido en el sector Hospitalario']['10'] = ['label' => 'Medio-10', 'color' => 'orange', 'count' => 0];
-        $matriz['Tipo 1']['Ha ocurrido en el sector Hospitalario']['8'] = ['label' => 'Medio-8', 'color' => 'orange', 'count' => 0];
-        $matriz['Tipo 1']['Ha ocurrido en el sector Hospitalario']['6'] = ['label' => 'Bajo-6', 'color' => 'warning', 'count' => 0];
-        $matriz['Tipo 1']['Ha ocurrido en el sector Hospitalario']['3'] = ['label' => 'Trivial-3', 'color' => 'success', 'count' => 0];
-        $matriz['Tipo 1']['Ha ocurrido en el sector Hospitalario']['2'] = ['label' => 'Trivial-2', 'color' => 'success', 'count' => 0];
+        $matriz['Tipo 1']['Ha ocurrido en el sector hospitalario']['10'] = ['label' => 'Medio-10', 'color' => 'orange', 'count' => 0];
+        $matriz['Tipo 1']['Ha ocurrido en el sector hospitalario']['8'] = ['label' => 'Medio-8', 'color' => 'orange', 'count' => 0];
+        $matriz['Tipo 1']['Ha ocurrido en el sector hospitalario']['6'] = ['label' => 'Bajo-6', 'color' => 'warning', 'count' => 0];
+        $matriz['Tipo 1']['Ha ocurrido en el sector hospitalario']['3'] = ['label' => 'Trivial-3', 'color' => 'success', 'count' => 0];
+        $matriz['Tipo 1']['Ha ocurrido en el sector hospitalario']['2'] = ['label' => 'Trivial-2', 'color' => 'success', 'count' => 0];
 
-        $matriz['Tipo 1']['Alguna vez ha ocurrido en el Hospital en el último año']['15'] = ['label' => 'Alto-15', 'color' => 'primary', 'count' => 0];
-        $matriz['Tipo 1']['Alguna vez ha ocurrido en el Hospital en el último año']['12'] = ['label' => 'Medio-12', 'color' => 'orange', 'count' => 0];
-        $matriz['Tipo 1']['Alguna vez ha ocurrido en el Hospital en el último año']['9'] = ['label' => 'Medio-9', 'color' => 'orange', 'count' => 0];
-        $matriz['Tipo 1']['Alguna vez ha ocurrido en el Hospital en el último año']['6'] = ['label' => 'Bajo-6', 'color' => 'warning', 'count' => 0];
-        $matriz['Tipo 1']['Alguna vez ha ocurrido en el Hospital en el último año']['3'] = ['label' => 'Trivial-3', 'color' => 'success', 'count' => 0];
+        $matriz['Tipo 1']['Alguna vez ha ocurrido en el hospital en el último año']['15'] = ['label' => 'Alto-15', 'color' => 'primary', 'count' => 0];
+        $matriz['Tipo 1']['Alguna vez ha ocurrido en el hospital en el último año']['12'] = ['label' => 'Medio-12', 'color' => 'orange', 'count' => 0];
+        $matriz['Tipo 1']['Alguna vez ha ocurrido en el hospital en el último año']['9'] = ['label' => 'Medio-9', 'color' => 'orange', 'count' => 0];
+        $matriz['Tipo 1']['Alguna vez ha ocurrido en el hospital en el último año']['6'] = ['label' => 'Bajo-6', 'color' => 'warning', 'count' => 0];
+        $matriz['Tipo 1']['Alguna vez ha ocurrido en el hospital en el último año']['3'] = ['label' => 'Trivial-3', 'color' => 'success', 'count' => 0];
 
-        $matriz['Tipo 1']['Sucede varias veces en el último año y en diferentes procesos (en el Hospital)']['20'] = ['label' => 'Alto-20', 'color' => 'primary', 'count' => 0];
-        $matriz['Tipo 1']['Sucede varias veces en el último año y en diferentes procesos (en el Hospital)']['16'] = ['label' => 'Alto-16', 'color' => 'primary', 'count' => 0];
-        $matriz['Tipo 1']['Sucede varias veces en el último año y en diferentes procesos (en el Hospital)']['12'] = ['label' => 'Medio-12', 'color' => 'orange', 'count' => 0];
-        $matriz['Tipo 1']['Sucede varias veces en el último año y en diferentes procesos (en el Hospital)']['7'] = ['label' => 'Bajo-7', 'color' => 'warning', 'count' => 0];
-        $matriz['Tipo 1']['Sucede varias veces en el último año y en diferentes procesos (en el Hospital)']['4'] = ['label' => 'Bajo-4', 'color' => 'warning', 'count' => 0];
+        $matriz['Tipo 1']['Sucede varias veces en el último año y en diferentes procesos (en el hospital)']['20'] = ['label' => 'Alto-20', 'color' => 'primary', 'count' => 0];
+        $matriz['Tipo 1']['Sucede varias veces en el último año y en diferentes procesos (en el hospital)']['16'] = ['label' => 'Alto-16', 'color' => 'primary', 'count' => 0];
+        $matriz['Tipo 1']['Sucede varias veces en el último año y en diferentes procesos (en el hospital)']['12'] = ['label' => 'Medio-12', 'color' => 'orange', 'count' => 0];
+        $matriz['Tipo 1']['Sucede varias veces en el último año y en diferentes procesos (en el hospital)']['7'] = ['label' => 'Bajo-7', 'color' => 'warning', 'count' => 0];
+        $matriz['Tipo 1']['Sucede varias veces en el último año y en diferentes procesos (en el hospital)']['4'] = ['label' => 'Bajo-4', 'color' => 'warning', 'count' => 0];
 
         $matriz['Tipo 1']['Sucede varias veces en el último año en el mismo proceso']['25'] = ['label' => 'Muy Alto-25', 'color' => 'purple', 'count' => 0];
         $matriz['Tipo 1']['Sucede varias veces en el último año en el mismo proceso']['20'] = ['label' => 'Alto-20', 'color' => 'primary', 'count' => 0];
@@ -60,5 +60,51 @@ trait DangerMatrixTrait
         $matriz['Tipo 1']['Sucede varias veces en el último año en el mismo proceso']['5'] = ['label' => 'Bajo-5', 'color' => 'warning', 'count' => 0];
 
         return $matriz;
+    }
+
+    public function getRulesDmImport($type, $ref = null)
+    {
+        $rules = [];
+
+        if ($type == 'Tipo 1')
+        {
+            $rules = [
+                'Nivel de Probabilidad' => [
+                    'No ha ocurrido en el sector hospitalario' => 'No ha ocurrido en el sector hospitalario',
+                    'Ha ocurrido en el sector hospitalario' => 'Ha ocurrido en el sector hospitalario',
+                    'Alguna vez ha ocurrido en el hospital en el último año' => 'Alguna vez ha ocurrido en el hospital en el último año',
+                    'Sucede varias veces en el último año y en diferentes procesos (en el hospital)' => 'Sucede varias veces en el último año y en diferentes procesos (en el hospital)',
+                    'Sucede varias veces en el último año en el mismo proceso' => 'Sucede varias veces en el último año en el mismo proceso'
+                ],
+                'NR Personas' => [
+                    'No ha ocurrido en el sector hospitalario' => [1,2,3,4,8],
+                    'Ha ocurrido en el sector hospitalario' => [2,3,6,8,10],
+                    'Alguna vez ha ocurrido en el hospital en el último año' => [3,6,9,12,15],
+                    'Sucede varias veces en el último año y en diferentes procesos (en el hospital)' => [4,7,12,16,20],
+                    'Sucede varias veces en el último año en el mismo proceso' => [5,10,15,20,25]
+                ],
+                'NR Económico' => [
+                    'No ha ocurrido en el sector hospitalario' => [1,2,3,4,8],
+                    'Ha ocurrido en el sector hospitalario' => [2,3,6,8,10],
+                    'Alguna vez ha ocurrido en el hospital en el último año' => [3,6,9,12,15],
+                    'Sucede varias veces en el último año y en diferentes procesos (en el hospital)' => [4,7,12,16,20],
+                    'Sucede varias veces en el último año en el mismo proceso' => [5,10,15,20,25]
+                ],
+                'NR Imagen' => [
+                    'No ha ocurrido en el sector hospitalario' => [1,2,3,4,8],
+                    'Ha ocurrido en el sector hospitalario' => [2,3,6,8,10],
+                    'Alguna vez ha ocurrido en el hospital en el último año' => [3,6,9,12,15],
+                    'Sucede varias veces en el último año y en diferentes procesos (en el hospital)' => [4,7,12,16,20],
+                    'Sucede varias veces en el último año en el mismo proceso' => [5,10,15,20,25]
+                ],
+            ];
+
+            if ($ref)
+            {
+                return ïsset($rules[$ref]) ? $rules[$ref] : [];
+            }
+        }
+
+        return $rules;
     }
 }

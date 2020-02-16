@@ -15,6 +15,7 @@ use Maatwebsite\Excel\Concerns\RegistersEventListeners;
 use Maatwebsite\Excel\Events\AfterSheet;
 use \Maatwebsite\Excel\Sheet;
 use App\Traits\UtilsTrait;
+use App\Traits\LocationFormTrait;
 
 Sheet::macro('styleCells', function (Sheet $sheet, string $cellRange, array $style) {
   $sheet->getDelegate()->getStyle($cellRange)->applyFromArray($style);
@@ -24,6 +25,7 @@ class DangerMatrixImportTemplateExcel implements FromCollection, WithHeadings, W
 {
     use RegistersEventListeners;
     use UtilsTrait;
+    use LocationFormTrait;
 
     protected $data;
     protected $company_id;
@@ -58,14 +60,26 @@ class DangerMatrixImportTemplateExcel implements FromCollection, WithHeadings, W
 
     public function headings(): array
     {
-      $columns = [
-        $this->keywords['regional'],
-        $this->keywords['headquarter'],
-        $this->keywords['process'],
-        $this->keywords['area'],
+      $columns = [];
+
+      $confLocation = $this->getLocationFormConfModule($this->company_id);
+
+      if ($confLocation['regional'] == 'SI')
+        array_push($columns, $this->keywords['regional']);
+
+      if ($confLocation['headquarter'] == 'SI')
+        array_push($columns, $this->keywords['headquarter']);
+
+      if ($confLocation['process'] == 'SI')
+        array_push($columns, $this->keywords['process']);
+
+      if ($confLocation['area'] == 'SI')
+        array_push($columns, $this->keywords['area']);
+
+      $columns = array_merge($columns, [
         'Participantes (Separados por “,”)',
         'Actividad',
-        'Tipo de actividad',
+        'Tipo de actividad (R, NR)',
         'Peligro (Biológico, Químico, etc.)',
         'Descripción del peligro (Separados por “,”)',
         'Peligro Generado (Sitio de trabajo, Vecindad, Fuera del sitio de trabajo) (Separados por “,”si son varios)',
@@ -84,7 +98,6 @@ class DangerMatrixImportTemplateExcel implements FromCollection, WithHeadings, W
         'Criterios de riesgo - Cumplimiento requisitos legales',
         'Criterios de riesgo - Alineamiento con las políticas de calidad y de SST',
         'Criterios de riesgo - Alineamiento con los objetivos y metas',
-        'Criterios de riesgo - Aceptabilidad del riesgo',
         'Medidas de Intervención - Eliminación',
         'Medidas de Intervención – Sustitución (Separados por “,”)',
         'Medidas de Intervención - Controles de ingeniería (Separados por “,”)',
@@ -94,16 +107,11 @@ class DangerMatrixImportTemplateExcel implements FromCollection, WithHeadings, W
         'Nivel de Probabilidad',
         'NR Personas',
         'NR Económico',
-        'NR Imagen',
-        'Plan de acción - Descripción',
-        'Responsable',
-        'Fecha de vencimiento',
-        'Fecha de ejecución',
-        'Estado',
-        'Observación'
-      ];
+        'NR Imagen'
+      ]);
 
       return $columns;
+
     }
 
     public static function afterSheet(AfterSheet $event)

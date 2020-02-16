@@ -239,16 +239,35 @@ trait UtilsTrait
         return $item;
     }
 
-    protected function tagsSave($data, $model)
+    protected function tagsPrepareImport($data, $serapator = ',')
     {
+        $data = explode($serapator, $data);
+        $item = collect([]);
+
         foreach ($data as $value)
         {
-            $item = $model::where('name', $value)->first();
+            $item->push(trim($value));
+        }
+        
+        $item = $item->unique();
+
+        return $item;
+    }
+
+    protected function tagsSave($data, $model, $company_id = null)
+    {
+        $company_id = $company_id ? $company_id : Session::get('company_id');
+        
+        foreach ($data as $value)
+        {
+            $item = $model::where('name', $value);
+            $item->company_scope = $company_id;
+            $item = $item->first();
 
             if (!$item)
                 $model::create([
                     'name'=>$value,
-                    'company_id'=>Session::get('company_id')
+                    'company_id'=>$company_id
                 ]);
 
             //$model::updateOrCreate(['name'=>$value, 'company_id'=>$company_id], ['name'=>$value, 'company_id'=>$company_id]);

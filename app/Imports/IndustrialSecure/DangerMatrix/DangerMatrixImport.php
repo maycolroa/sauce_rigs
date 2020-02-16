@@ -21,21 +21,25 @@ use App\Models\IndustrialSecure\DangerMatrix\TagsParticipant;
 use App\Models\IndustrialSecure\DangerMatrix\TagsPossibleConsequencesDanger;
 use App\Models\IndustrialSecure\DangerMatrix\TagsSubstitution;
 use App\Models\IndustrialSecure\DangerMatrix\TagsWarningSignage;
+use App\Models\IndustrialSecure\DangerMatrix\QualificationCompany;
 use App\Models\IndustrialSecure\Activities\Activity;
 use App\Models\IndustrialSecure\Dangers\Danger;
 use App\Facades\Configuration;
-use App\Exports\Administrative\Employees\EmployeeImportErrorExcel;
+use App\Exports\IndustrialSecure\DangerMatrix\DangerMatrixImportErrorExcel;
 use App\Facades\Mail\Facades\NotificationMail;
 use Maatwebsite\Excel\Facades\Excel;
+use Maatwebsite\Excel\Concerns\WithCalculatedFormulas;
 use Validator;
 use Exception;
 use App\Traits\ConfigurableFormTrait;
 use App\Traits\LocationFormTrait;
+use App\Traits\DangerMatrixTrait;
 
-class DangerMatrixImport implements ToCollection
+class DangerMatrixImport implements ToCollection, WithCalculatedFormulas
 {
     use ConfigurableFormTrait;
     use LocationFormTrait;
+    use DangerMatrixTrait;
 
     private $company_id;
     private $user;
@@ -65,16 +69,16 @@ class DangerMatrixImport implements ToCollection
                 {  
                     if ($key > 0) //Saltar cabecera
                     {
-                        if (COUNT($row) == 42 || COUNT($row) == 43)
-                        {
+                        /*if (COUNT($row) == 35 || COUNT($row) == 36)
+                        {*/
                             $this->checkDangerMarix($row, $key == 1);
-                        }
-                        else
+                        //}
+                        /*else
                         {
                             $this->setError('Formato inválido');
                             $this->setErrorData($row);
                            
-                        }
+                        }*/
                     }
                 }
 
@@ -93,33 +97,34 @@ class DangerMatrixImport implements ToCollection
                 }
                 else
                 {
-                    $nameExcel = 'export/1/empleados_errors_'.date("YmdHis").'.xlsx';
+                    $nameExcel = 'export/1/danger_matrix_errors_'.date("YmdHis").'.xlsx';
 
                     \Log::info($this->errors);                    
-                    /*Excel::store(new EmployeeImportErrorExcel(collect($this->errors_data), $this->errors, $this->formModel, $this->company_id), $nameExcel, 'public',\Maatwebsite\Excel\Excel::XLSX);
+                    Excel::store(new DangerMatrixImportErrorExcel(collect($this->errors_data), $this->errors, $this->company_id), $nameExcel, 'public',\Maatwebsite\Excel\Excel::XLSX);
                     $paramUrl = base64_encode($nameExcel);
             
                     NotificationMail::
-                        subject('Importación de empleados')
+                        subject('Importación de matríz de peligros')
                         ->recipients($this->user)
-                        ->message('El proceso de importación de empleados finalizo correctamente, pero algunas filas contenian errores. Puede descargar el archivo con el detalle de los errores en el botón de abajo.')
+                        ->message('El proceso de importación de matríz de peligros finalizo correctamente, pero algunas filas contenian errores. Puede descargar el archivo con el detalle de los errores en el botón de abajo.')
                         ->subcopy('Este link es valido por 24 horas')
                         ->buttons([['text'=>'Descargar', 'url'=>url("/export/{$paramUrl}")]])
-                        ->module('employees')
-                        ->event('Job: EmpployeeImportJob')
+                        ->module('dangerMatrix')
+                        ->event('Job: DangerMatrixImportJob')
                         ->company($this->company_id)
-                        ->send();*/
+                        ->send();
                 }
                 
             } catch (\Exception $e)
             {
+                \Log::info($e->getMessage());
                 NotificationMail::
-                    subject('Importación de empleados')
+                    subject('Importación de matríz de peligros')
                     ->recipients($this->user)
-                    ->message('Se produjo un error durante el proceso de importación de empleados. Contacte con el administrador')
+                    ->message('Se produjo un error durante el proceso de importación de matríz de peligros. Contacte con el administrador')
                     //->message($e->getMessage())
-                    ->module('employees')
-                    ->event('Job: EmpployeeImportJob')
+                    ->module('dangerMatrix')
+                    ->event('Job: DangerMatrixImportJob')
                     ->company($this->company_id)
                     ->send();
             }
@@ -132,55 +137,87 @@ class DangerMatrixImport implements ToCollection
 
     private function checkDangerMarix($row, $createMatrix)
     {
-        $data = [
-            'regional' => $row[0],
-            'sede' => $row[1],
-            'proceso' => $row[2],
-            'area' => $row[3],
-            'participantes' => $row[4],
-            'actividad' => $row[5],
-            'tipo_de_actividad' => strtoupper($row[6]),
-            'peligro' => $row[7],
-            'descripción_del_peligro' => $row[8],
-            'peligro_generado' => $row[9],
-            'posibles_consecuencias' => $row[10],
-            'fuente_generadora' => $row[11],
-            'colaboradores' => $row[12],
-            'contratistas' => $row[13],
-            'visitantes' => $row[14],
-            'estudiantes' => $row[15],
-            'arrendatarios' => $row[16],
-            'controles_de_ingeniería' => $row[17],
-            'sustitución' => $row[18],
-            'señalización_advertencia' => $row[19],
-            'controles_administrativos' => $row[20],
-            'epp' => $row[21],
-            'cumplimiento_requisitos_legales' => strtoupper($row[22]),
-            'alineamiento_con_las_políticas' => strtoupper($row[23]),
-            'alineamiento_con_los_objetivos' => strtoupper($row[24]),
-            'eliminación_medidas' => $row[25],
-            'sustitución_medidas' => $row[26],
-            'controles_de_ingeniería_medidas' => $row[27],
-            'señalización_advertencia_medidas' => $row[28],
-            'controles_administrativos_medidas' => $row[29],
-            'epp_medidas' => $row[30],
-            'nivel_de_probabilidad' => $row[31],
-            'nr_personas' => $row[32],
-            'nr_económico' => $row[33],
-            'nr_imagen' => $row[34]
-        ];
+        $data = [];
+        $saltos = 0;
+        $confLocation = $this->getLocationFormConfModule($this->company_id);
 
-        \Log::info(strtoupper($row[22]));
-        \Log::info(strtoupper($row[23]));
-        \Log::info(strtoupper($row[24]));
+        $conf = QualificationCompany::select('qualification_id');
+        $conf->company_scope = $this->company_id;
+        $conf = $conf->first();
 
+        if ($conf && $conf->qualification)
+            $conf = $conf->qualification;
 
-        /*$sql = Employee::where('identification', $data['identificacion']);
+        if ($confLocation['regional'] == 'SI')
+        {
+            $saltos = 1;
+            $data['regional'] = $row[0];
+        }
+        if ($confLocation['headquarter'] == 'SI')
+        {
+            $saltos = 2;
+            $data['sede'] = $row[1];
+        }
+        if ($confLocation['process'] == 'SI')
+        {
+            $saltos = 3;
+            $data['proceso'] = $row[2];
+        }
+        if ($confLocation['area'] == 'SI')
+        {
+            $saltos = 4;
+            $data['area'] = $row[3];
+        }
+
+        $data = array_merge($data,
+            [         
+                'participantes' => $row[0 + $saltos],
+                'actividad' => $row[1 + $saltos],
+                'tipo_de_actividad' => trim(strtoupper($row[2 + $saltos])),
+                'peligro' => $row[3 + $saltos],
+                'descripción_del_peligro' => $row[4 + $saltos],
+                'peligro_generado' => $row[5 + $saltos],
+                'posibles_consecuencias' => $row[6 + $saltos],
+                'fuente_generadora' => $row[7 + $saltos],
+                'colaboradores' => $row[8 + $saltos],
+                'contratistas' => $row[9 + $saltos],
+                'visitantes' => $row[10 + $saltos],
+                'estudiantes' => $row[11 + $saltos],
+                'arrendatarios' => $row[12 + $saltos],
+                'controles_de_ingeniería' => $row[13 + $saltos],
+                'sustitución' => $row[14 + $saltos],
+                'señalización_advertencia' => $row[15 + $saltos],
+                'controles_administrativos' => $row[16 + $saltos],
+                'epp' => $row[17 + $saltos],
+                'cumplimiento_requisitos_legales' => trim(strtoupper($row[18 + $saltos])),
+                'alineamiento_con_las_políticas' => trim(strtoupper($row[19 + $saltos])),
+                'alineamiento_con_los_objetivos' => trim(strtoupper($row[20 + $saltos])),
+                'eliminación_medidas' => $row[21 + $saltos],
+                'sustitución_medidas' => $row[22 + $saltos],
+                'controles_de_ingeniería_medidas' => $row[23 + $saltos],
+                'señalización_advertencia_medidas' => $row[24 + $saltos],
+                'controles_administrativos_medidas' => $row[25 + $saltos],
+                'epp_medidas' => $row[26 + $saltos]
+            ]);
+
+        if ($conf->name == 'Tipo 1')
+        {
+            $data = array_merge($data,
+            [
+                'nivel_de_probabilidad' => trim(ucfirst($row[27 + $saltos])),
+                'nr_personas' => $row[28 + $saltos],
+                'nr_económico' => $row[29 + $saltos],
+                'nr_imagen' => $row[30 + $saltos]
+            ]);
+        }
+
+        /*$ndp = $data["nivel_de_probabilidad"] == 'Sucede varias veces en el último año y en diferentes procesos' ? 'Sucede varias veces en el último año y en diferentes procesos (en el hospital)' : $data["nivel_de_probabilidad"];
+        \Log::info($ndp);
+        $sql = Employee::where('identification', $data['identificacion']);
         $sql->company_scope = $this->company_id;
         $employee = $sql->first();*/
 
         $rules = [];
-        $confLocation = $this->getLocationFormConfModule($this->company_id);
 
         if ($createMatrix)
         {
@@ -207,14 +244,42 @@ class DangerMatrixImport implements ToCollection
             'visitantes' => 'required|integer|min:0',
             'estudiantes' => 'required|integer|min:0',
             'arrendatarios' => 'required|integer|min:0',
-            'nivel_de_probabilidad' => 'required',
-            'nr_personas' => 'required',
-            'nr_económico' => 'required',
-            'nr_imagen' => 'required',
             'cumplimiento_requisitos_legales' => 'required|in:SI,NO',
             'alineamiento_con_las_políticas' => 'required|in:SI,NO',
             'alineamiento_con_los_objetivos' => 'required|in:SI,NO'            
         ]);
+
+        $rulesDm = $this->getRulesDmImport($conf->name);
+
+        if ($conf->name == 'Tipo 1')
+        {
+            $level = $rulesDm["Nivel de Probabilidad"];
+
+            $rules = array_merge($rules,
+                [
+                    'nivel_de_probabilidad' => "required|in:".implode(",", $level)
+                ]);
+
+            if (isset($level[$data["nivel_de_probabilidad"]]))
+            {
+                $current_level = $data["nivel_de_probabilidad"];
+                $rules = array_merge($rules,
+                [
+                    'nr_personas' => "required|integer|in:".implode(",", $rulesDm["NR Personas"][$current_level]),
+                    'nr_económico' => "required|integer|in:".implode(",", $rulesDm["NR Económico"][$current_level]),
+                    'nr_imagen' => "required|integer|in:".implode(",", $rulesDm["NR Imagen"][$current_level])
+                ]);
+            }
+            else
+            {
+                $rules = array_merge($rules,
+                    [
+                        'nr_personas' => 'required|integer',
+                        'nr_económico' => 'required|integer',
+                        'nr_imagen' => 'required|integer'
+                    ]);
+            }
+        }
 
         $validator = Validator::make($data, $rules, 
         [
@@ -237,6 +302,38 @@ class DangerMatrixImport implements ToCollection
         }
         else 
         {   
+            //TAGS
+                $possible_consequences_danger = $this->tagsPrepareImport($data['posibles_consecuencias']);
+                $danger_description = $this->tagsPrepareImport($data['descripción_del_peligro']);
+                $existing_controls_engineering_controls = $this->tagsPrepareImport($data['controles_de_ingeniería']);
+                $existing_controls_substitution = $this->tagsPrepareImport($data['sustitución']);
+                $existing_controls_warning_signage = $this->tagsPrepareImport($data['señalización_advertencia']);
+                $existing_controls_administrative_controls = $this->tagsPrepareImport($data['controles_administrativos']);
+                $existing_controls_epp = $this->tagsPrepareImport($data['epp']);
+                $intervention_measures_substitution = $this->tagsPrepareImport($data['sustitución_medidas']);
+                $intervention_measures_engineering_controls = $this->tagsPrepareImport($data['controles_de_ingeniería_medidas']);
+                $intervention_measures_warning_signage = $this->tagsPrepareImport($data['señalización_advertencia_medidas']);
+                $intervention_measures_administrative_controls = $this->tagsPrepareImport($data['controles_administrativos_medidas']);
+                $intervention_measures_epp = $this->tagsPrepareImport($data['epp_medidas']);
+                $participants = $this->tagsPrepareImport($data['participantes']);
+
+
+
+                $this->tagsSave($possible_consequences_danger, TagsPossibleConsequencesDanger::class, $this->company_id);
+                $this->tagsSave($danger_description, TagsDangerDescription::class, $this->company_id);
+                $this->tagsSave($existing_controls_engineering_controls, TagsEngineeringControls::class, $this->company_id);
+                $this->tagsSave($existing_controls_substitution, TagsSubstitution::class, $this->company_id);
+                $this->tagsSave($existing_controls_warning_signage, TagsWarningSignage::class, $this->company_id);
+                $this->tagsSave($existing_controls_administrative_controls, TagsAdministrativeControls::class, $this->company_id);
+                $this->tagsSave($existing_controls_epp, TagsEpp::class, $this->company_id);
+                $this->tagsSave($intervention_measures_substitution, TagsSubstitution::class, $this->company_id);
+                $this->tagsSave($intervention_measures_engineering_controls, TagsEngineeringControls::class, $this->company_id);
+                $this->tagsSave($intervention_measures_warning_signage, TagsWarningSignage::class, $this->company_id);
+                $this->tagsSave($intervention_measures_administrative_controls, TagsAdministrativeControls::class, $this->company_id);
+                $this->tagsSave($intervention_measures_epp, TagsEpp::class, $this->company_id);
+                $this->tagsSave($participants, TagsParticipant::class, $this->company_id);
+
+
             if ($createMatrix)
             {
                 $regional_id = $confLocation['regional'] == 'SI' ? $this->checkRegional($data['regional']) : null;
@@ -251,6 +348,7 @@ class DangerMatrixImport implements ToCollection
                 $this->dangerMatrix->employee_headquarter_id = $headquarter_id;
                 $this->dangerMatrix->employee_area_id = $area_id;
                 $this->dangerMatrix->employee_process_id = $process_id;
+                $this->dangerMatrix->participants = $participants->implode(',');
                 $this->dangerMatrix->save();
             }
 
@@ -264,40 +362,87 @@ class DangerMatrixImport implements ToCollection
             $danger = $danger->firstOrCreate(['name' => $data['peligro']], 
                                                 ['name' => $data['peligro'], 'company_id' => $this->company_id]);
 
-            $danger = DangerMatrixActivity::query();
-            $danger->company_scope = $this->company_id;
-            $danger = $danger->firstOrCreate(
+            $matrixActivity = DangerMatrixActivity::query();
+            $matrixActivity->company_scope = $this->company_id;
+            $matrixActivity = $matrixActivity->firstOrCreate(
                 ['danger_matrix_id' => $this->dangerMatrix->id, 'activity_id' => $activity->id, 'type_activity' => $data['tipo_de_actividad'] == 'R' ? 'Rutinaria' : 'No rutinaria'], 
                 ['danger_matrix_id' => $this->dangerMatrix->id, 'activity_id' => $activity->id, 'type_activity' => $data['tipo_de_actividad'] == 'R' ? 'Rutinaria' : 'No rutinaria']
                 );
 
-
             $activityDanger = new ActivityDanger();
-            $activityDanger->dm_activity_id = $activity->id;
+            $activityDanger->dm_activity_id = $matrixActivity->id;
             $activityDanger->danger_id = $danger->id;
-            $activityDanger->danger_description = $data['descripción_del_peligro'];
+            $activityDanger->danger_description = $danger_description->implode(',');
             $activityDanger->danger_generated = $data['peligro_generado'];
-            $activityDanger->possible_consequences_danger = $data['posibles_consecuencias'];
+            $activityDanger->possible_consequences_danger = $possible_consequences_danger->implode(',');
             $activityDanger->generating_source = $data['fuente_generadora'];
             $activityDanger->collaborators_quantity = $data['colaboradores'];
             $activityDanger->esd_quantity = $data['contratistas'];
             $activityDanger->visitor_quantity = $data['visitantes'];
             $activityDanger->student_quantity = $data['estudiantes'];
             $activityDanger->esc_quantity = $data['arrendatarios'];
-            $activityDanger->existing_controls_engineering_controls = $data['controles_de_ingeniería'];
-            $activityDanger->existing_controls_substitution = $data['sustitución'];
-            $activityDanger->existing_controls_warning_signage = $data['señalización_advertencia'];
-            $activityDanger->existing_controls_administrative_controls = $data['controles_administrativos'];
-            $activityDanger->existing_controls_epp = $data['epp'];
+            $activityDanger->existing_controls_engineering_controls = $existing_controls_engineering_controls->implode(',');
+            $activityDanger->existing_controls_substitution = $existing_controls_substitution->implode(',');
+            $activityDanger->existing_controls_warning_signage = $existing_controls_warning_signage->implode(',');
+            $activityDanger->existing_controls_administrative_controls = $existing_controls_administrative_controls->implode(',');
+            $activityDanger->existing_controls_epp = $existing_controls_epp->implode(',');
             $activityDanger->legal_requirements = $data['cumplimiento_requisitos_legales'];
             $activityDanger->quality_policies = $data['alineamiento_con_las_políticas'];
             $activityDanger->objectives_goals = $data['alineamiento_con_los_objetivos'];
+            $activityDanger->risk_acceptability = $data['cumplimiento_requisitos_legales'];
             $activityDanger->intervention_measures_elimination = $data['eliminación_medidas'];
-            $activityDanger->intervention_measures_substitution = $data['sustitución_medidas'];
-            $activityDanger->intervention_measures_engineering_controls = $data['controles_de_ingeniería_medidas'];
-            $activityDanger->intervention_measures_warning_signage = $data['señalización_advertencia_medidas'];
-            $activityDanger->intervention_measures_administrative_controls = $data['controles_administrativos_medidas'];
-            $activityDanger->intervention_measures_epp = $data['epp_medidas'];
+            $activityDanger->intervention_measures_substitution = $intervention_measures_substitution->implode(',');
+            $activityDanger->intervention_measures_engineering_controls = $intervention_measures_engineering_controls->implode(',');
+            $activityDanger->intervention_measures_warning_signage = $intervention_measures_warning_signage->implode(',');
+            $activityDanger->intervention_measures_administrative_controls = $intervention_measures_administrative_controls->implode(',');
+            $activityDanger->intervention_measures_epp = $intervention_measures_epp->implode(',');
+            $activityDanger->save();
+
+            if ($conf->name == 'Tipo 1')
+            {
+                $qualification1 = new QualificationDanger();
+                $qualification1->activity_danger_id = $activityDanger->id;
+                $qualification1->type_id = $conf->types()->where('description', 'Nivel de Probabilidad')->first()->id;
+                $qualification1->value_id = $data["nivel_de_probabilidad"];
+                $qualification1->save();
+
+                $qualification2 = new QualificationDanger();
+                $qualification2->activity_danger_id = $activityDanger->id;
+                $qualification2->type_id = $conf->types()->where('description', 'NR Personas')->first()->id;
+                $qualification2->value_id = $data["nr_personas"];
+                $qualification2->save();
+                $nri = $data["nr_personas"];
+
+                $qualification3 = new QualificationDanger();
+                $qualification3->activity_danger_id = $activityDanger->id;
+                $qualification3->type_id = $conf->types()->where('description', 'NR Económico')->first()->id;
+                $qualification3->value_id = $data["nr_económico"];
+                $qualification3->save();
+                $nri = $data["nr_económico"] > $nri ? $data["nr_económico"] : $nri;
+
+                $qualification4 = new QualificationDanger();
+                $qualification4->activity_danger_id = $activityDanger->id;
+                $qualification4->type_id = $conf->types()->where('description', 'NR Imagen')->first()->id;
+                $qualification4->value_id = $data["nr_imagen"];
+                $qualification4->save();
+                $nri = $data["nr_imagen"] > $nri ? $data["nr_imagen"] : $nri;
+
+                $qualification5 = new QualificationDanger();
+                $qualification5->activity_danger_id = $activityDanger->id;
+                $qualification5->type_id = $conf->types()->where('description', 'NRI')->first()->id;
+                $qualification5->value_id = $nri;
+                $qualification5->save();
+
+                $matriz_calification = $this->getMatrixCalification($conf->name);
+
+                $ndp = $data["nivel_de_probabilidad"];
+
+                if (isset($matriz_calification[$ndp]) && isset($matriz_calification[$ndp][$nri]))
+                {
+                    $activityDanger->qualification = $matriz_calification[$ndp][$nri]['label'];
+                    $activityDanger->save();
+                }
+            }
 
             return true;
         }
