@@ -62,7 +62,7 @@ trait DangerMatrixTrait
         return $matriz;
     }
 
-    public function getRulesDmImport($type, $ref = null)
+    protected function getRulesDmImport($type, $ref = null)
     {
         $rules = [];
 
