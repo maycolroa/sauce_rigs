@@ -1008,6 +1008,8 @@ export default [
         fields: [
             { name: 'sau_lm_articles_fulfillment_histories.id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true },
             { name: 'sau_users.name', data: 'name', title: 'Responsable', sortable: true, searchable: true, detail: false, key: false },
+            { name: 'sau_lm_articles_fulfillment_histories.fulfillment_value', data: 'fulfillment_value', title: 'Calificación', sortable: true, searchable: true, detail: false, key: false },
+            { name: 'sau_lm_articles_fulfillment_histories.observations', data: 'observations', title: 'Observación', sortable: true, searchable: true, detail: false, key: false },
             { name: 'sau_lm_articles_fulfillment_histories.created_at', data: 'created_at', title: 'Fecha', sortable: true, searchable: true, detail: false, key: false },
         ],
         'controlls': [{
