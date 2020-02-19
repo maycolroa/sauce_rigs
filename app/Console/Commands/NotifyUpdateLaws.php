@@ -58,8 +58,10 @@ class NotifyUpdateLaws extends Command
             $users = $users->get();
 
             $users = $users->filter(function ($user, $index) use ($company) {
-                return $user->can('legalMatrix_receive_notifications', $company->id);
+                return $user->can('legalMatrix_receive_notifications', $company->id) && !$user->hasRole('Superadmin', $company->id);
             });
+
+            
 
             $users->map(function($user) use ($company)
             {
@@ -102,7 +104,7 @@ class NotifyUpdateLaws extends Command
                         subject('Sauce - Matriz Legal Normas Modificadas')
                         ->view('LegalAspects.legalMatrix.notifyUpdateLaws')
                         ->recipients($user)
-                        ->message('Las siguientes normas fueron modificadas: ')
+                        ->message("Para la empresa $company->name, las siguientes normas fueron modificadas: ")
                         ->buttons([['text'=>'Llevarme a Matriz Legal', 'url'=>url("/legalaspects/lm/lawsQualify")]])
                         ->module('legalMatrix')
                         ->event('Tarea programada: NotifyUpdateLaws')

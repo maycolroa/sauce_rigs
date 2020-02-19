@@ -21,7 +21,7 @@ class TalendController extends Controller
         parent::__construct();
         $this->middleware('auth');
         $this->middleware("permission:absen_uploadTalend_c, {$this->team}", ['only' => 'store']);
-        $this->middleware("permission:absen_uploadTalend_r, {$this->team}", ['except' =>'multiselect', 'talendExist']);
+        $this->middleware("permission:absen_uploadTalend_r, {$this->team}", ['except' => ['multiselect', 'talendExist']]);
         $this->middleware("permission:absen_uploadTalend_u, {$this->team}", ['only' => 'update']);
         $this->middleware("permission:absen_uploadTalend_d, {$this->team}", ['only' => 'toggleState']);
     }

@@ -50,6 +50,9 @@ class InterestController extends Controller
         else
             $interests = Interest::system()->select('*');
 
+        if (!$request->has('orderBy'))
+            $interests->orderBy('name');
+
         return Vuetable::of($interests)
                     ->make();
     }
@@ -173,7 +176,7 @@ class InterestController extends Controller
         {
             $company = Company::find($this->company);
             $values = $company->interests()->system()->pluck('sau_lm_interests.id');
-            
+
             return $this->respondHttp200([
                 'data' => [
                     "values"=> $values
@@ -213,6 +216,7 @@ class InterestController extends Controller
                 ->where(function ($query) use ($keyword) {
                     $query->orWhere('name', 'like', $keyword);
                 })
+                ->orderBy('name')
                 ->take(30)->pluck('id', 'name');
 
             return $this->respondHttp200([
@@ -226,6 +230,7 @@ class InterestController extends Controller
                 'sau_lm_interests.name as name'
             )
             ->$scope()
+            ->orderBy('name')
             ->pluck('id', 'name');
         
             return $this->multiSelectFormat($interests);
@@ -246,6 +251,7 @@ class InterestController extends Controller
             'sau_lm_interests.name as name'
         )
         ->system()
+        ->orderBy('name')
         ->pluck('id', 'name');
     
         return $this->radioFormat($interests);

@@ -10,6 +10,8 @@ class ArticleFulfillmentHistory extends Model
 
     protected $fillable = [
         'fulfillment_id',
-        'user_id'
+        'user_id',
+        'fulfillment_value',
+        'observations'
     ];
 }

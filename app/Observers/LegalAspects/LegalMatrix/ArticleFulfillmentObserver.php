@@ -16,7 +16,9 @@ class ArticleFulfillmentObserver
     public function updating(ArticleFulfillment $article)
     {
         $article->histories()->create([
-            'user_id' => Auth::user()->id
+            'user_id' => Auth::user()->id,
+            'fulfillment_value' => $article->fulfillment_value->name,
+            'observations' => $article->observations
         ]);
     }
 }
