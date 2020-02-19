@@ -109,6 +109,11 @@
                               <div slot="modal-title">
                                 Última modificación: <span class="font-weight-light">{{ article.updated_at }}</span><br>
                                 Derogado: <span class="font-weight-light">{{ article.repealed }}</span>
+                                <b-row style="padding-top: 20px;">
+                                  <b-col>
+                                    <div><b>Intereses:</b> {{ article.interests_string }} </div>
+                                  </b-col>
+                                </b-row>
                               </div>
 
                               <b-card  bg-variant="transparent"  title="" class="mb-3 box-shadow-none">
@@ -117,34 +122,32 @@
                                     <div>{{ article.description }}<br><br></div>
                                   </b-col>
                                 </b-row>
-                                <b-row style="padding-top: 20px;">
-                                  <b-col>
-                                    <div><b>Intereses:</b> {{ article.interests_string }} </div>
-                                  </b-col>
-                                </b-row>
+                                
+                                <b-form-row>
+                                  <vue-advanced-select :ref="`qualification2${index}`" @input="syncArticleFull(index)" @selectedName="updateQualify($event, index)" :disabled="viewOnly" class="col-md-6" v-model="article.fulfillment_value_id" :multiple="false" :options="qualifications" name="fulfillment_value_id" label="Evaluación"></vue-advanced-select>
+
+                                  <vue-input @onBlur="saveArticleQualification(index)" :disabled="viewOnly" class="col-md-6" v-model="article.responsible" label="Responsable" type="text" name="responsible" :error="form.errorsFor('responsible')" placeholder="Responsable"></vue-input>
+                                </b-form-row>
+                                <b-form-row>
+                                  <vue-textarea @onBlur="saveArticleQualification(index)" :disabled="viewOnly" class="col-md-12" v-model="article.observations" label="Observaciones" name="observations" placeholder="Observaciones" :error="form.errorsFor(`observations`)" rows="3"></vue-textarea>
+                                </b-form-row>
+
+                                <b-form-row> 
+                                  <vue-file-simple v-if="article.qualify && article.qualify != 'No cumple' && article.qualify && article.qualify != 'Parcial'" :help-text="article.old_file ? `Para descargar el archivo actual, haga click <a href='/legalAspects/legalMatrix/law/downloadArticleQualify/${article.qualification_id}' target='blank'>aqui</a> `: null" :disabled="viewOnly" class="col-md-6" @input="saveArticleQualification(index)" accept=".pdf" v-model="article.file" label="Archivo (*.pdf)" name="file" :error="form.errorsFor('file')" placeholder="Seleccione un archivo"></vue-file-simple>
+
+                                  <div style="padding-top: 25px;">
+                                    <b-btn v-if="article.qualify && article.qualify != 'No cumple' && article.qualify != 'Parcial' && article.file" @click="deleteFile(index)" variant="primary"><span class="ion ion-md-close-circle"></span> Eliminar Archivo</b-btn>
+                                  </div>
+
+                                  <!-- NO CUMPLE -->
+                                  <b-btn v-if="article.qualify == 'No cumple' || article.qualify == 'Parcial'" @click="showModal(`modalPlan${index}`)" variant="primary"><span class="lnr lnr-bookmark"></span> Plan de acción</b-btn>
+                                </b-form-row>
                               </b-card>
                               <br>
                               <div class="row float-right pt-12 pr-12y">
                                 <b-btn variant="primary" @click="hideModal(`modalArticle${index}`)">Cerrar</b-btn>
                               </div>
                             </b-modal>
-
-                            <!-- <b-modal :ref="`modalArticleFulfillment${index}`" :hideFooter="true" :id="`modals-default-fulfillment-${index+1}`" class="modal-top" size="lg">
-                              <div slot="modal-title">
-                                Historial de cambios realizados
-                              </div>
-
-                              <b-card  bg-variant="transparent"  title="" class="mb-3 box-shadow-none">
-                                <vue-table
-                                  configName="legalaspects-lm-article-fulfillment-histories"
-                                  :modelId="article.qualification_id ? article.qualification_id : -1"
-                                  ></vue-table>
-                              </b-card>
-                              <br>
-                              <div class="row float-right pt-12 pr-12y">
-                                <b-btn variant="primary" @click="hideModal(`modalArticleFulfillment${index}`)">Cerrar</b-btn>
-                              </div>
-                            </b-modal> -->
                           </div>
                         </b-col>
                       </b-row>
@@ -483,6 +486,7 @@ export default {
 
               this.$nextTick(() => {
                 this.$refs[`qualification${key}`][0].refreshData()
+                this.$refs[`qualification2${key}`][0].refreshData()
               })
 
               //this.saveArticleQualification(key)  
@@ -500,6 +504,12 @@ export default {
       {
         Alerts.error('Error', 'El campo calificación es requerido');
       }
+    },
+    syncArticleFull(index)
+    {
+      this.$nextTick(() => {
+        this.$refs[`qualification${index}`][0].refreshData()
+      })
     },
     saveArticleQualification(index)
     {
