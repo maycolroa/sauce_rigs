@@ -20,7 +20,19 @@ class ReportManagerLaw
      */
     const INFORMS = [
         'fulfillment',
-        'resumenFulfillment'
+        'resumenFulfillment',
+        'reportTableDinamic'
+    ];
+
+    const CATEGORY_COLUMNS = [
+        "lawType" => "sau_lm_laws_types.name",
+        "riskAspects" => "sau_lm_risks_aspects.name",
+        "riskSst" => "sau_lm_sst_risks.name",
+        "entity" => "sau_lm_entities.name",
+        "systemApply" => "sau_lm_system_apply.name",
+        "year" => "sau_lm_laws.law_year",
+        "repealed" => "sau_lm_laws.repealed",
+        "interest" => "sau_lm_interests.name"
     ];
 
     protected $table_fulfillment = [
@@ -55,12 +67,14 @@ class ReportManagerLaw
     protected $articles_c = 0;
     protected $articles_nc = 0;
     protected $articles_partial = 0;
+    protected $category;
+    protected $qualificationsTypes;
 
     /**
      * create an instance and set the attribute class
      * @param array $lawTypes
      */
-    function __construct($lawTypes = [], $riskAspects = [], $entities = [], $sstRisks = [], $systemApply = [], $lawNumbers = [], $lawYears = [], $repealed = [], $responsibles = [], $interests = [], $states = [], $filtersType = [])
+    function __construct($lawTypes = [], $riskAspects = [], $entities = [], $sstRisks = [], $systemApply = [], $lawNumbers = [], $lawYears = [], $repealed = [], $responsibles = [], $interests = [], $states = [], $filtersType = [], $category = '')
     {
         $this->lawTypes = $lawTypes;
         $this->riskAspects = $riskAspects;
@@ -75,6 +89,7 @@ class ReportManagerLaw
         $this->states = $states;
         $this->filtersType = $filtersType;
         $this->totalLaws = $this->getTotalLaws();
+        $this->category = $category;
     }
 
     /**
@@ -157,6 +172,71 @@ class ReportManagerLaw
         }
 
         return $this->buildMultiBarDataChart($data, $barSeries);
+    }
+
+    private function reportTableDinamic()
+    {
+        $column = $this->category ? $this::CATEGORY_COLUMNS[$this->category] : $this::CATEGORY_COLUMNS['systemApply'];
+
+        $laws = Law::selectRaw(
+            'IF(sau_lm_fulfillment_values.name IS NULL, "Sin calificar", sau_lm_fulfillment_values.name) AS qualify,
+             '. $column .' AS category,
+             COUNT(DISTINCT sau_lm_articles_fulfillment.id) AS count'
+        )
+        ->join('sau_lm_system_apply', 'sau_lm_system_apply.id', 'sau_lm_laws.system_apply_id')
+        ->join('sau_lm_articles', 'sau_lm_articles.law_id', 'sau_lm_laws.id')
+        ->join('sau_lm_article_interest', 'sau_lm_article_interest.article_id', 'sau_lm_articles.id')
+        ->join('sau_lm_company_interest','sau_lm_company_interest.interest_id', 'sau_lm_article_interest.interest_id')
+        ->join('sau_lm_articles_fulfillment','sau_lm_articles_fulfillment.article_id', 'sau_lm_articles.id')
+        ->join('sau_lm_laws_types', 'sau_lm_laws_types.id', 'sau_lm_laws.law_type_id')
+        ->join('sau_lm_interests', 'sau_lm_interests.id', 'sau_lm_company_interest.interest_id')
+        ->join('sau_lm_risks_aspects', 'sau_lm_risks_aspects.id', 'sau_lm_laws.risk_aspect_id')
+        ->join('sau_lm_sst_risks', 'sau_lm_sst_risks.id', 'sau_lm_laws.sst_risk_id')
+        ->join('sau_lm_entities', 'sau_lm_entities.id', 'sau_lm_laws.entity_id')
+        ->leftJoin('sau_lm_fulfillment_values','sau_lm_fulfillment_values.id', 'sau_lm_articles_fulfillment.fulfillment_value_id')
+        ->where('sau_lm_articles_fulfillment.company_id', Session::get('company_id'))
+        ->inLawTypes($this->lawTypes, $this->filtersType['lawTypes'])
+        ->inRiskAspects($this->riskAspects, $this->filtersType['riskAspects'])
+        ->inEntities($this->entities, $this->filtersType['entities'])
+        ->inSstRisks($this->sstRisks, $this->filtersType['sstRisks'])
+        ->inSystemApply($this->systemApply, $this->filtersType['systemApply'])
+        ->inLawNumbers($this->lawNumbers, $this->filtersType['lawNumbers'])
+        ->inLawYears($this->lawYears, $this->filtersType['lawYears'])
+        ->inRepealed($this->repealed, $this->filtersType['repealed'])
+        ->inResponsibles($this->responsibles,$this->filtersType['responsibles'])
+        ->inInterests($this->interests,$this->filtersType['interests'])
+        ->inState($this->states,$this->filtersType['states'])
+        ->groupBy('category', 'qualify')
+        ->orderBy('category')
+        ->get();
+
+        $qualificationsTypes = array_keys($this->table_fulfillment);
+
+        $laws = $laws->groupBy('category');
+
+        $result = collect([]);
+
+        foreach ($laws as $category => $rows)
+        {
+            $item = collect([]);
+            $item->put('category', $category);
+
+            foreach ($qualificationsTypes as $qualification)
+            {
+                $item->put($qualification, 0);
+            }
+            \Log::info($item);
+
+            foreach ($rows as $row)
+            {
+                \Log::info($row->qualify);
+                $item->put($row->qualify, $row->count);
+            }
+
+            $result->push($item);
+        }
+
+        return $result;
     }
 
     /**
