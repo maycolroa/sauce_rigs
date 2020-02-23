@@ -602,6 +602,41 @@ class EvaluationContractController extends Controller
         }
     }
 
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  Activity  $activity
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy(EvaluationContract $evaluationContract)
+    {
+        DB::beginTransaction();
+
+        try
+        { 
+            foreach ($evaluationContract->items as $item)
+            {  
+                ActionPlan::model($item)->modelDeleteAll();
+            }
+
+            if(!$evaluationContract->delete())
+            {
+                return $this->respondHttp500();
+            }
+
+            DB::commit();
+
+        } catch (\Exception $e) {
+            DB::rollback();
+            return $this->respondHttp500();
+            //return $e->getMessage();
+        }
+        
+        return $this->respondHttp200([
+            'message' => 'Se elimino la evaluación realizada'
+        ]);
+    }
+
     public function report(Request $request)
     {
         $whereObjectives = '';

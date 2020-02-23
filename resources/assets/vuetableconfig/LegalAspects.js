@@ -249,6 +249,15 @@ export default [
                     messageConfirmation: 'Esta seguro de enviar la evaluación'
                 },
                 permission: 'contracts_evaluations_perform_evaluation'
+            },
+            {
+                name: 'delete',
+                data: {
+                    action: '/legalAspects/evaluationContract/',
+                    id: 'id',
+                    messageConfirmation: 'Esta seguro de borrar la evaluación realizada'
+                },
+                permission: 'contracts_evaluations_delete_evaluations_made'
             }],
         },
         {

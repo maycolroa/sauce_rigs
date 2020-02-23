@@ -218,6 +218,10 @@
                         "display_name": "Ausentismo/Informes - adiministrar usuarios"
                     },
                     {
+                        "name": "absen_reports_view_all",
+                        "display_name": "Ausentismo/Informes - ver todos los informes"
+                    },
+                    {
                         "name": "absen_uploadFiles_r",
                         "display_name": "Ausentismo/Administrar archivos"
                     },
@@ -402,6 +406,10 @@
                         "name": "contracts_evaluations_edit_evaluations_made",
                         "display_name": "Contratistas/Evaluaciones - editar evaluaciones realizadas"
                     },
+                    {
+                        "name": "contracts_evaluations_delete_evaluations_made",
+                        "display_name": "Contratistas/Evaluaciones - eliminar evaluaciones realizadas"
+                    },                    
                     {
                         "name": "contracts_evaluations_report_view",
                         "display_name": "Contratistas/Evaluaciones - ver reportes"

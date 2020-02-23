@@ -42,7 +42,7 @@ class ReportController extends Controller
     */
     public function data(Request $request)
     {
-        if($this->user->can('absen_reports_c', $this->team)){
+        if($this->user->can('absen_reports_view_all', $this->team)){
             $reports = Report::select('*');
         }
         else{

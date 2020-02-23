@@ -29,7 +29,7 @@
                             <b-col>
                                 <div><b>Total de artículos que aplican para el cumplimiento:</b> {{resumenFulfillment.articles_t}}
 
-                                    <div class="float-right" style="padding-right: 10px;">
+                                    <!--<div class="float-right" style="padding-right: 10px;">
                                         <b-btn v-b-popover.hover.focus.left="helps.articles_t.text" :title="helps.articles_t.title" variant="secondary" class="btn-circle-micro"><span class="fas fa-info"></span></b-btn>
                                     </div>
                                 </div>
@@ -46,8 +46,55 @@
                                     </div>
                                 </div>
                                 <div><b>% Artículos Cumplimiento:</b> {{resumenFulfillment.percentage_c}}</div>
-                                <div><b>% Artículos Incumplimiento:</b> {{resumenFulfillment.percentage_nc}}</div>
+                                <div><b>% Artículos Incumplimiento:</b> {{resumenFulfillment.percentage_nc}}</div>-->
+                                </div>
                             </b-col>
+                        </b-row>
+                    </b-card>
+                </b-col>
+            </b-row>
+            <b-row>
+                <b-col>
+                    <b-card border-variant="primary" title="" class="mb-3 box-shadow-none">
+                        <b-row>
+                            <div class="col-md-12" style="padding-bottom: 15px;">
+                                <b-col>
+                                    <vue-advanced-select :disabled="isLoading" v-model="legalMatrixSelected" :options="selectBar" :searchable="true" name="legalMatrixSelected" label="Categoría">
+                                    </vue-advanced-select>
+                                </b-col>
+                            </div>
+                        </b-row>
+                        <b-row>
+                            <div class="col-md-12" style="padding-bottom: 15px;">
+                                <div class="table-responsive">
+                                    <table class="table table-bordered table-striped mb-0">
+                                        <thead>
+                                            <tr>
+                                                <th class="text-center align-middle">Categoría</th>
+                                                <th class="text-center align-middle">Cumple</th>
+                                                <th class="text-center align-middle">No cumple</th>
+                                                <th class="text-center align-middle">Parcial</th>
+                                                <th class="text-center align-middle">En estudio</th>
+                                                <th class="text-center align-middle">No aplica</th>
+                                                <th class="text-center align-middle">Informativo</th>
+                                                <th class="text-center align-middle">Sin calificar</th>      
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr v-for="(row, index) in reportTableDinamic" :key="`row-${index}`">
+                                                <td class="align-middle">{{ row.category }}</td>
+                                                <td class="text-center align-middle">{{ row["Cumple"] }}</td>
+                                                <td class="text-center align-middle">{{ row["No cumple"] }}</td>
+                                                <td class="text-center align-middle">{{ row["Parcial"] }}</td>
+                                                <td class="text-center align-middle">{{ row["En estudio"] }}</td>
+                                                <td class="text-center align-middle">{{ row["No aplica"] }}</td>
+                                                <td class="text-center align-middle">{{ row["Informativo"] }}</td>
+                                                <td class="text-center align-middle">{{ row["Sin calificar"] }}</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
                         </b-row>
                     </b-card>
                 </b-col>
@@ -56,25 +103,7 @@
                 <b-col>
                     <b-card border-variant="primary" title="Cumplimiento de Artículos" class="mb-3 box-shadow-none">
                         <b-row>
-                            <div class="col-md-4" style="padding-bottom: 15px;">
-                                <div class="table-responsive" v-if="Object.keys(fulfillmentData.datasets.count).length > 0">
-                                    <table class="table table-bordered table-striped mb-0">
-                                        <thead>
-                                            <tr>
-                                                <th class="text-center align-middle">Sistema</th>
-                                                <th class="text-center align-middle">Total</th>                                                   
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr v-for="(row, index) in fulfillmentData.datasets.count" :key="`system-${index}`">
-                                                <td class="align-middle">{{ index }}</td>
-                                                <td class="text-center align-middle">{{ row }}</td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                            <div class="col-md-8">
+                            <div class="col-md-10">
                                 <chart-bar-multiple
                                     :chart-data="fulfillmentData"
                                     title="Cumplimiento de Artículos"
@@ -95,6 +124,7 @@ import GlobalMethods from '@/utils/GlobalMethods.js';
 import Loading from "@/components/Inputs/Loading.vue";
 import FilterGeneral from '@/components/Filters/FilterGeneral.vue';
 import ChartBarMultiple from '@/components/ECharts/ChartBarMultiple.vue';
+import VueAdvancedSelect from "@/components/Inputs/VueAdvancedSelect.vue";
 
 export default {
     name: 'legalaspects-lm-law-report',
@@ -104,19 +134,22 @@ export default {
     components:{
         Loading,
         FilterGeneral,
-        ChartBarMultiple
+        ChartBarMultiple,
+        VueAdvancedSelect
     },
     data () {
         return {
             filters: [],
+            selectBar: [],
             isLoading: false,
-            data: [],
             fulfillment: {
                 labels: [],
                 datasets: {
                     count: []
                 }
             },
+            legalMatrixSelected: 'systemApply',
+            reportTableDinamic: [],
             resumenFulfillment: {
                 total_laws: '',
                 total_articles: '',
@@ -126,7 +159,7 @@ export default {
                 percentage_c: '',
                 percentage_nc: ''
             },
-            helps: {
+            /*helps: {
                 articles_t: {
                     title: 'Artículos que aplican',
                     text: '1. Parcial\n2. En estudio\n3. No cumple\n4. Cumple\n5. Sin calificar',
@@ -139,15 +172,19 @@ export default {
                     title: 'Artículos / Puntos',
                     text: '1. En estudio (1)\n2. No cumple (1)\n3. Sin calificar(1)',
                 }
-            }
+            }*/
         }
     },
     created(){
+        this.fetchSelect('selectBar', '/selects/multiselectBarLegalMatrix')
         this.fetch()
     },
     computed: {
         fulfillmentData: function() {
             return this.fulfillment
+        },
+        legalMatrixData: function() {
+            return this.legalMatrix[this.legalMatrixSelected]
         }
     },
     watch: {
@@ -156,6 +193,9 @@ export default {
                 this.fetch()
             },
             deep: true
+        },
+        legalMatrixSelected() {
+            this.fetch();
         }
     },
     methods: {
@@ -165,7 +205,9 @@ export default {
             {
                 this.isLoading = true;
 
-                axios.post('/legalAspects/legalMatrix/law/report', this.filters)
+                let postData = Object.assign({}, {legalMatrixSelected: this.legalMatrixSelected}, this.filters);
+
+                axios.post('/legalAspects/legalMatrix/law/report', postData)
                 .then(response => {
                     this.update(response);
                     this.isLoading = false;
@@ -190,7 +232,18 @@ export default {
                 }).catch(error => {
                     Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
                 });
-        }
+        },
+        fetchSelect(key, url)
+        {
+            GlobalMethods.getDataMultiselect(url)
+            .then(response => {
+                this[key] = response;
+            })
+            .catch(error => {
+                Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
+                this.$router.go(-1);
+            });
+        },
     }
 }
 

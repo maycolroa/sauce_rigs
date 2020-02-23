@@ -50,8 +50,9 @@ class LawReportController extends Controller
         $interests = $this->getValuesForMultiselect($request->interests);
         $states = $this->getValuesForMultiselect($request->states);
         $filtersType = $request->filtersType;
+        $category = $request->legalMatrixSelected;
         
-        $reportManager = new ReportManagerLaw($lawTypes, $riskAspects, $entities, $sstRisks, $systemApply, $lawNumbers, $lawYears, $repealed, $responsibles, $interests, $states, $filtersType);
+        $reportManager = new ReportManagerLaw($lawTypes, $riskAspects, $entities, $sstRisks, $systemApply, $lawNumbers, $lawYears, $repealed, $responsibles, $interests, $states, $filtersType, $category);
         
         return $this->respondHttp200($reportManager->getInformData());
     }
@@ -82,5 +83,21 @@ class LawReportController extends Controller
         } catch(Exception $e) {
             return $this->respondHttp500();
         }
+    }
+
+    public function multiselectBar()
+    {
+        $select = [
+            'Años' => "year",
+            'Derogada' => "repealed",
+            'Entidades' => "entity",
+            'Intereses' => "interest",
+            'Riesgos ambientales' => "riskAspects",
+            'Riesgos SST' => "riskSst",
+            'Sistema que aplica' => "systemApply", 
+            'Tipo de norma' => "lawType",      
+        ];
+    
+        return $this->multiSelectFormat(collect($select));
     }
 }
