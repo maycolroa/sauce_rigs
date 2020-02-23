@@ -11,6 +11,7 @@ use App\Models\Administrative\Users\User;
 use App\Models\General\Company;
 use App\Models\General\Module;
 use App\Models\General\Team;
+use App\Models\System\Licenses\License;
 use App\Facades\Mail\Facades\NotificationMail;
 use App\Facades\Configuration;
 use DB;
@@ -19,6 +20,7 @@ class NotifyLicenseRenewalJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
+    protected $license_id;
     protected $company_id;
     protected $modules;
     protected $mails;
@@ -28,11 +30,12 @@ class NotifyLicenseRenewalJob implements ShouldQueue
      *
      * @return void
      */
-    public function __construct($company_id, $modules, $mails)
+    public function __construct($license_id, $company_id, $modules, $mails)
     {
-      $this->company_id = $company_id;
-      $this->modules = $modules;
-      $this->mails = $mails;
+        $this->license_id = $license_id;
+        $this->company_id = $company_id;
+        $this->modules = $modules;
+        $this->mails = $mails;
     }
 
     /**
@@ -78,21 +81,38 @@ class NotifyLicenseRenewalJob implements ShouldQueue
                 $recipients->push(new User(['email'=>$value]));
             }
 
-            $modules = Module::selectRaw('DISTINCT display_name')
-                            ->whereIn('id', $this->modules)
-                            ->orderBy('display_name')
-                            ->pluck('display_name')
-                            ->toArray();
+            $modules_news = collect([]);
+            $modules_olds = collect([]);
 
-            $modules = implode(", ", $modules);
+            foreach ($this->modules as $module)
+            {
+                $exists = License::select('sau_modules.display_name AS display_name')
+                    ->join('sau_license_module', 'sau_license_module.license_id', 'sau_licenses.id')
+                    ->join('sau_modules', 'sau_modules.id', 'sau_license_module.module_id')
+                    ->where('sau_licenses.id', '<>', $this->license_id)
+                    ->where('sau_modules.id', $module);
+
+                $exists->company_scope = $this->company_id;
+                $exists = $exists->first();
+
+                if ($exists)
+                    $modules_olds->push($exists->display_name);
+                else
+                {
+                    $exists = Module::find($module);
+                    $modules_news->push($exists->display_name);
+                }
+            }
 
             NotificationMail::
                 subject('Renovación de Licencia')
                 ->recipients($recipients)
-                ->message("Se creó/renovó la licencia de la compañia {$company->name} para los siguientes módulos: {$modules}")
+                ->message("Se acaba de crear una nueva licencia para la empresa <b>{$company->name}</b>")
                 ->module('users')
                 ->event('Job: NotifyLicenseRenewalJob')
                 ->company($this->company_id)
+                ->view("system.license.notificationLicense")
+                ->with(['modules_news'=>$modules_news, 'modules_olds'=>$modules_olds])
                 ->send();
         }
     }

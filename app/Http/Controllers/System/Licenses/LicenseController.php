@@ -94,7 +94,7 @@ class LicenseController extends Controller
             if ($request->has('add_email'))
                 $mails = $this->getDataFromMultiselect($request->get('add_email'));
 
-            NotifyLicenseRenewalJob::dispatch($license->company_id, $modules_main, $mails);
+            NotifyLicenseRenewalJob::dispatch($license->id, $license->company_id, $modules_main, $mails);
 
         } catch(\Exception $e) {
             \Log::info($e);
@@ -178,7 +178,7 @@ class LicenseController extends Controller
             
             $mails = $request->has('add_email') ? $this->getDataFromMultiselect($request->get('add_email')) : [];
 
-            NotifyLicenseRenewalJob::dispatch($license->company_id, $modules_main, $mails);
+            NotifyLicenseRenewalJob::dispatch($license->id, $license->company_id, $modules_main, $mails);
 
         } catch(\Exception $e) {
             DB::rollback();
