@@ -61,8 +61,6 @@ class NotifyUpdateLaws extends Command
                 return $user->can('legalMatrix_receive_notifications', $company->id) && !$user->hasRole('Superadmin', $company->id);
             });
 
-            
-
             $users->map(function($user) use ($company)
             {
                 $ini = Carbon::now()->addDays(-1)->format('Y-m-d 00:00:00');
