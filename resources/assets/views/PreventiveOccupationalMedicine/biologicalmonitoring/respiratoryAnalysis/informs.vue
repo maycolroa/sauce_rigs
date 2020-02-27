@@ -14,12 +14,13 @@
 
         <b-row>
             <b-col>
-                <b-row align-h="end">
-                        <b-col cols="6">
+                <b-card border-variant="primary" title="Colaboradores con deficiencias respiratorias" class="mb-3 box-shadow-none">
+                    <b-row>
+                        <b-col>
                             <b>Total de Colaboradores con deficiencias respiratorias {{ breathingProblems.datasets.count }} </b>
                         </b-col>
                     </b-row>
-                <b-card border-variant="primary" title="Colaboradores con deficiencias respiratorias" class="mb-3 box-shadow-none">
+                    <br>
                     <chart-pie 
                         :chart-data="breathingProblems"
                         title="Colaboradores con deficiencias respiratorias"
@@ -28,12 +29,13 @@
                 </b-card>
             </b-col>
             <b-col>
-                <b-row align-h="end">
-                        <b-col cols="6">
-                            <b>Total de Resultado de Espirometria {{ classificationAts.datasets.count }} </b>
-                        </b-col>
-                    </b-row>
                 <b-card border-variant="primary" title="Resultado de Espirometria" class="mb-3 box-shadow-none">
+                    <b-row>
+                            <b-col>
+                                <b>Total de Resultado de Espirometria {{ classificationAts.datasets.count }} </b>
+                            </b-col>
+                    </b-row>
+                    <br>
                     <chart-pie 
                         :chart-data="classificationAts"
                         title="Resultado de Espirometria"
@@ -43,7 +45,7 @@
             </b-col>
         </b-row>
 
-        <b-row>
+        <!--<b-row>
             <b-col>
                 <b-row align-h="end">
                         <b-col cols="6">
@@ -58,17 +60,18 @@
                         ref="breathingProblemsRegional"/>
                 </b-card>
             </b-col>
-        </b-row>
+        </b-row>-->
 
         <b-row>
             <b-col>
-                <b-row align-h="end">
-                        <b-col cols="6">
-                            <b>Total de Clasificación del patrón obstructivo {{ classificationObstructive.datasets.count }} </b>
-                        </b-col>
-                    </b-row>
                 <b-card border-variant="primary" title="Clasificación del patrón obstructivo" class="mb-3 box-shadow-none">
-                    <chart-bar
+                    <b-row>
+                            <b-col>
+                                <b>Total de Clasificación del patrón obstructivo {{ classificationObstructive.datasets.count }} </b>
+                            </b-col>
+                    </b-row>
+                    <br>
+                    <chart-pie
                         :chart-data="classificationObstructive"
                         title="Clasificación del patrón obstructivo"
                         color-line="red"
@@ -76,13 +79,14 @@
                 </b-card>
             </b-col>
             <b-col>
-                <b-row align-h="end">
-                        <b-col cols="6">
-                            <b>Total de Clasificación del patrón Restrictivo {{ classificationRestrictive.datasets.count }} </b>
-                        </b-col>
-                    </b-row>
                 <b-card border-variant="primary" title="Clasificación del patrón Restrictivo" class="mb-3 box-shadow-none">
-                    <chart-bar
+                    <b-row>
+                            <b-col>
+                                <b>Total de Clasificación del patrón Restrictivo {{ classificationRestrictive.datasets.count }} </b>
+                            </b-col>
+                    </b-row>
+                    <br>
+                    <chart-pie
                         :chart-data="classificationRestrictive"
                         title="Clasificación del patrón Restrictivo"
                         color-line="red"
