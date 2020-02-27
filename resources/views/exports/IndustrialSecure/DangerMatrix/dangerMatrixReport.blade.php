@@ -30,19 +30,19 @@
                 <td colspan="4">Descripción</td>
 
                 @if ($data['data2']['confLocation']['regional'] == 'SI')
-                    <td colspan="1">Regional</td>
+                    <td colspan="1">{{ Auth::user()->getKeywords()['regional'] }}</td>
                 @endif
                 
                 @if ($data['data2']['confLocation']['headquarter'] == 'SI')
-                    <td colspan="1">Sede</td>
+                    <td colspan="1">{{ Auth::user()->getKeywords()['headquarter'] }}</td>
                 @endif
 
                 @if ($data['data2']['confLocation']['process'] == 'SI')
-                    <td colspan="1">Proceso</td>
+                    <td colspan="1">{{ Auth::user()->getKeywords()['process'] }}</td>
                 @endif
 
                 @if ($data['data2']['confLocation']['area'] == 'SI')
-                    <td colspan="1">Área</td>
+                    <td colspan="1">{{ Auth::user()->getKeywords()['area'] }}</td>
                 @endif
 
             </tr>
