@@ -225,11 +225,9 @@ class ReportManagerLaw
             {
                 $item->put($qualification, 0);
             }
-            \Log::info($item);
 
             foreach ($rows as $row)
             {
-                \Log::info($row->qualify);
                 $item->put($row->qualify, $row->count);
             }
 
