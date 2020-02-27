@@ -125,6 +125,8 @@ trait LegalMatrixTrait
 
         foreach ($companies as $key => $value)
         {
+            \Log::info("sincronizando intereses de la compañia {$value->company_id}");
+            
             $this->syncQualificationsCompany($value->company_id);
         }
     }
