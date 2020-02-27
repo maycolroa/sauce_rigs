@@ -22,7 +22,7 @@ class DangerMatrixImportJob implements ShouldQueue
 
     public function __construct(UploadedFile $file, $company_id, $user)
     {
-      $this->nameFile = 'empleados_'.date("YmdHis").'.xlsx';
+      $this->nameFile = 'matriz_peligro_'.date("YmdHis").'.xlsx';
       Storage::disk('public')->putFileAs('import/1', $file, $this->nameFile);
       $this->company_id = $company_id;
       $this->user = $user;

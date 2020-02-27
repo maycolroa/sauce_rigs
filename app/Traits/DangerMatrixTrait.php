@@ -4,6 +4,11 @@ namespace App\Traits;
 
 trait DangerMatrixTrait
 {
+    protected function getDefaultCalificationDm()
+    {
+        return 'Tipo 1';
+    }
+    
     /**
      * returns the grade matrix
      *

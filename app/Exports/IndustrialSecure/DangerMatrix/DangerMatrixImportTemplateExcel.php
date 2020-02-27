@@ -71,7 +71,10 @@ class DangerMatrixImportTemplateExcel implements FromCollection, WithHeadings, W
         array_push($columns, $this->keywords['headquarter']);
 
       if ($confLocation['process'] == 'SI')
-        array_push($columns, $this->keywords['process']);
+      {
+          array_push($columns, $this->keywords['process']);
+          array_push($columns, 'Macroproceso');
+      }
 
       if ($confLocation['area'] == 'SI')
         array_push($columns, $this->keywords['area']);

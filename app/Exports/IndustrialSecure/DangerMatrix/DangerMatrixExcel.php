@@ -3,6 +3,7 @@
 namespace App\Exports\IndustrialSecure\DangerMatrix;
 
 use App\Models\IndustrialSecure\DangerMatrix\DangerMatrix;
+use App\Models\IndustrialSecure\DangerMatrix\Qualification;
 use App\Models\IndustrialSecure\DangerMatrix\QualificationCompany;
 use App\Models\IndustrialSecure\DangerMatrix\QualificationDanger;
 use App\Facades\ConfigurationsCompany\Facades\ConfigurationsCompany;
@@ -18,6 +19,7 @@ use \Maatwebsite\Excel\Sheet;
 
 use App\Traits\LocationFormTrait;
 use App\Traits\UtilsTrait;
+use App\Traits\DangerMatrixTrait;
 
 Sheet::macro('styleCells', function (Sheet $sheet, string $cellRange, array $style) {
   $sheet->getDelegate()->getStyle($cellRange)->applyFromArray($style);
@@ -28,6 +30,7 @@ class DangerMatrixExcel implements FromCollection, WithHeadings, WithMapping, Wi
     use RegistersEventListeners;
     use LocationFormTrait;
     use UtilsTrait;
+    use DangerMatrixTrait;
 
     protected $company_id;
     protected $danger_matrix_id;
@@ -48,7 +51,14 @@ class DangerMatrixExcel implements FromCollection, WithHeadings, WithMapping, Wi
         $qualifications = QualificationCompany::query();
         $qualifications->company_scope = $this->company_id;
         $qualifications = $qualifications->first();
-        $this->qualifications = $qualifications ? $qualifications->qualification->types : [];
+
+        if ($qualifications)
+            $this->qualifications = $qualifications->qualification->types;
+        else
+        {
+            $qualification = Qualification::where('name', $this->getDefaultCalificationDm())->first();
+            $this->qualifications = $qualification->types;
+        }
 
         $qualifications = QualificationDanger::selectRaw('
         CONCAT(sau_dm_qualification_danger.activity_danger_id, "_", sau_dm_qualification_danger.type_id) AS indice,
@@ -69,6 +79,7 @@ class DangerMatrixExcel implements FromCollection, WithHeadings, WithMapping, Wi
             'sau_employees_regionals.name AS regional',
             'sau_employees_headquarters.name AS headquarter',
             'sau_employees_processes.name AS process',
+            'sau_employees_processes.types AS macroprocess',
             'sau_employees_areas.name AS area',
             'sau_dm_activities.name AS activity',
             'sau_danger_matrix_activity.type_activity AS type_activity',
@@ -147,7 +158,10 @@ class DangerMatrixExcel implements FromCollection, WithHeadings, WithMapping, Wi
             array_push($values, $data->headquarter);
 
         if ($this->confLocation['process'] == 'SI')
+        {
             array_push($values, $data->process);
+            array_push($values, $data->macroprocess);
+        }
 
         if ($this->confLocation['area'] == 'SI')
             array_push($values, $data->area);
@@ -220,7 +234,10 @@ class DangerMatrixExcel implements FromCollection, WithHeadings, WithMapping, Wi
             array_push($columns, $this->keywords['headquarter']);
 
         if ($this->confLocation['process'] == 'SI')
+        {
             array_push($columns, $this->keywords['process']);
+            array_push($columns, 'Macroproceso');
+        }
 
         if ($this->confLocation['area'] == 'SI')
             array_push($columns, $this->keywords['area']);
