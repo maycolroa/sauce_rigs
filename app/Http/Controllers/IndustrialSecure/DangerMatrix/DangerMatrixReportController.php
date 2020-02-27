@@ -39,6 +39,8 @@ class DangerMatrixReportController extends Controller
 
         if ($conf && $conf->qualification)
             $conf = $conf->qualification->name;
+        else
+            $conf = $this->getDefaultCalificationDm();
 
         if ($conf)
         {
@@ -99,7 +101,7 @@ class DangerMatrixReportController extends Controller
 
             $matriz = [];
             $headers = array_keys($data);
-            $count = isset($data['Ha ocurrido en el sector Hospitalario']) ? COUNT($data['Ha ocurrido en el sector Hospitalario']) : 0;
+            $count = isset($data['Ha ocurrido en el sector hospitalario']) ? COUNT($data['Ha ocurrido en el sector hospitalario']) : 0;
 
             for ($i=0; $i < $count; $i++)
             { 

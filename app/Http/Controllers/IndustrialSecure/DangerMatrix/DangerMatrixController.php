@@ -445,6 +445,8 @@ class DangerMatrixController extends Controller
 
                     if ($conf && $conf->qualification)
                         $conf = $conf->qualification->name;
+                    else
+                        $conf = $this->getDefaultCalificationDm();
 
                     foreach ($itemD['qualifications'] as $itemQ)
                     {

@@ -25,67 +25,68 @@ class QualificationController extends Controller
             'data' => []
         ];
 
-        if ($conf)
+        if (!$conf)
         {
-            if ($conf->qualification)
+            $conf = Qualification::where('name', $this->getDefaultCalificationDm())->first();
+        }
+        else
+            $conf = $conf->qualification;
+
+        $data['type'] = $conf->name;
+        $data['matriz_calification'] = $this->getMatrixCalification($conf->name);
+
+        foreach ($conf->types as $type)
+        {
+            $arr = [];
+            $arr["type_id"] = $type->id;
+            $arr["description"] = $type->description;
+            $arr["type_input"] = $type->type_input;
+            $arr["grouped"] = $type->grouped;
+            $arr["readonly"] = $type->readonly;
+
+            $values = [];
+            $help = '';
+
+            if ($type->type_input == 'select')
             {
-                $data['type'] = $conf->qualification->name;
-                $data['matriz_calification'] = $this->getMatrixCalification($conf->qualification->name);
-
-                foreach ($conf->qualification->types as $type)
+                if ($type->grouped == 'NO')
                 {
-                    $arr = [];
-                    $arr["type_id"] = $type->id;
-                    $arr["description"] = $type->description;
-                    $arr["type_input"] = $type->type_input;
-                    $arr["grouped"] = $type->grouped;
-                    $arr["readonly"] = $type->readonly;
-
-                    $values = [];
-                    $help = '';
-
-                    if ($type->type_input == 'select')
+                    foreach ($type->values as $value)
                     {
-                        if ($type->grouped == 'NO')
-                        {
-                            foreach ($type->values as $value)
-                            {
-                                $values[$value->value] = $value->value;
+                        $values[$value->value] = $value->value;
 
-                                if ($value->description)
-                                    $help .= $value->value.'. '.$value->description."\n";
-                            }
-
-                            $values = $this->multiSelectFormat(collect($values));
-                        }
-                        else
-                        {
-                            $help_list = [];
-
-                            foreach ($type->values as $value)
-                            {
-                                $values[$value->group_by][$value->value] = $value->value;
-
-                                if ($value->description)
-                                    $help_list[$value->group_by][] = $value->value.'. '.$value->description."\n";
-                            }
-
-                            foreach ($values as $index => $value)
-                            {
-                                $values[$index] = $this->multiSelectFormat(collect($value));
-                                $help_list[$index] = implode("\n", $help_list[$index]);
-                            }
-
-                            $help = $help_list;
-                        }
+                        if ($value->description)
+                            $help .= $value->value.'. '.$value->description."\n";
                     }
 
-                    $arr["values"] = $values;
-                    $arr["help"] = $help;
+                    $values = $this->multiSelectFormat(collect($values));
+                }
+                else
+                {
+                    $help_list = [];
 
-                    array_push($data['data'], $arr);
+                    foreach ($type->values as $value)
+                    {
+                        $values[$value->group_by][$value->value] = $value->value;
+
+                        if ($value->description)
+                            $help_list[$value->group_by][] = $value->value.'. '.$value->description."\n";
+                    }
+
+                    foreach ($values as $index => $value)
+                    {
+                        $values[$index] = $this->multiSelectFormat(collect($value));
+                        $help_list[$index] = implode("\n", $help_list[$index]);
+                    }
+
+                    $help = $help_list;
                 }
             }
+
+            $arr["values"] = $values;
+            $arr["help"] = $help;
+
+            array_push($data['data'], $arr);
         }
 
         return $data;

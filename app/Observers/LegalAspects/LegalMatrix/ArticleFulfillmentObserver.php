@@ -17,7 +17,7 @@ class ArticleFulfillmentObserver
     {
         $article->histories()->create([
             'user_id' => Auth::user()->id,
-            'fulfillment_value' => $article->fulfillment_value->name,
+            'fulfillment_value' => $article->fulfillment_value ? $article->fulfillment_value->name : NULL,
             'observations' => $article->observations
         ]);
     }

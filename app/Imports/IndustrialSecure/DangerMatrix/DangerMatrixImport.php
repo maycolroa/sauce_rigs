@@ -13,6 +13,7 @@ use App\Models\IndustrialSecure\DangerMatrix\ActivityDanger;
 use App\Models\IndustrialSecure\DangerMatrix\DangerMatrix;
 use App\Models\IndustrialSecure\DangerMatrix\DangerMatrixActivity;
 use App\Models\IndustrialSecure\DangerMatrix\QualificationDanger;
+use App\Models\IndustrialSecure\DangerMatrix\Qualification;
 use App\Models\IndustrialSecure\DangerMatrix\TagsAdministrativeControls;
 use App\Models\IndustrialSecure\DangerMatrix\TagsDangerDescription;
 use App\Models\IndustrialSecure\DangerMatrix\TagsEngineeringControls;
@@ -21,6 +22,7 @@ use App\Models\IndustrialSecure\DangerMatrix\TagsParticipant;
 use App\Models\IndustrialSecure\DangerMatrix\TagsPossibleConsequencesDanger;
 use App\Models\IndustrialSecure\DangerMatrix\TagsSubstitution;
 use App\Models\IndustrialSecure\DangerMatrix\TagsWarningSignage;
+use App\Models\Administrative\Processes\TagsProcess;
 use App\Models\IndustrialSecure\DangerMatrix\QualificationCompany;
 use App\Models\IndustrialSecure\Activities\Activity;
 use App\Models\IndustrialSecure\Dangers\Danger;
@@ -147,6 +149,8 @@ class DangerMatrixImport implements ToCollection, WithCalculatedFormulas
 
         if ($conf && $conf->qualification)
             $conf = $conf->qualification;
+        else
+            $conf = Qualification::where('name', $this->getDefaultCalificationDm())->first();
 
         if ($confLocation['regional'] == 'SI')
         {
@@ -160,13 +164,15 @@ class DangerMatrixImport implements ToCollection, WithCalculatedFormulas
         }
         if ($confLocation['process'] == 'SI')
         {
-            $saltos = 3;
+            $saltos = 4;
             $data['proceso'] = $row[2];
+            $data['macroproceso'] = $row[3];
+
         }
         if ($confLocation['area'] == 'SI')
         {
-            $saltos = 4;
-            $data['area'] = $row[3];
+            $saltos = 5;
+            $data['area'] = $row[4];
         }
 
         $data = array_merge($data,
@@ -316,6 +322,7 @@ class DangerMatrixImport implements ToCollection, WithCalculatedFormulas
                 $intervention_measures_administrative_controls = $this->tagsPrepareImport($data['controles_administrativos_medidas']);
                 $intervention_measures_epp = $this->tagsPrepareImport($data['epp_medidas']);
                 $participants = $this->tagsPrepareImport($data['participantes']);
+                $macroproceso = $this->tagsPrepareImport($data['macroproceso']);
 
 
 
@@ -332,13 +339,14 @@ class DangerMatrixImport implements ToCollection, WithCalculatedFormulas
                 $this->tagsSave($intervention_measures_administrative_controls, TagsAdministrativeControls::class, $this->company_id);
                 $this->tagsSave($intervention_measures_epp, TagsEpp::class, $this->company_id);
                 $this->tagsSave($participants, TagsParticipant::class, $this->company_id);
+                $this->tagsSave($macroproceso, TagsProcess::class, $this->company_id);
 
 
             if ($createMatrix)
             {
                 $regional_id = $confLocation['regional'] == 'SI' ? $this->checkRegional($data['regional']) : null;
                 $headquarter_id = $confLocation['headquarter'] == 'SI' ? $this->checkHeadquarter($regional_id, $data['sede']) : null;
-                $process_id = $confLocation['process'] == 'SI' ? $this->checkProcess($headquarter_id, $data['proceso']) : null;
+                $process_id = $confLocation['process'] == 'SI' ? $this->checkProcess($headquarter_id, $data['proceso'], $macroproceso->implode(',')) : null; 
                 $area_id = $confLocation['area'] == 'SI' ? $this->checkArea($headquarter_id, $process_id, $data['area']) : null;
 
                 $this->dangerMatrix = new DangerMatrix();
@@ -495,7 +503,7 @@ class DangerMatrixImport implements ToCollection, WithCalculatedFormulas
         return $headquarter->id;
     }
 
-    private function checkProcess($headquarter_id, $process_name)
+    private function checkProcess($headquarter_id, $process_name, $macroproceso)
     {
         $process = EmployeeRegional::select("sau_employees_processes.id as id")
             ->join('sau_employees_headquarters', 'sau_employees_headquarters.employee_regional_id', 'sau_employees_regionals.id')
@@ -511,10 +519,15 @@ class DangerMatrixImport implements ToCollection, WithCalculatedFormulas
         {
             $process = new EmployeeProcess();
             $process->name = $process_name;
+            $process->types = $macroproceso;
             $process->save();
         }
         else
+        {
             $process = EmployeeProcess::find($process->id);
+            $process->types = $macroproceso;
+            $process->save();
+        }
         
         $process->headquarters()->detach($headquarter_id);
         $process->headquarters()->attach($headquarter_id);

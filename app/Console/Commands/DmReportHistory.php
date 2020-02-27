@@ -81,6 +81,8 @@ class DmReportHistory extends Command
 
                 if ($conf && $conf->qualification)
                     $conf = $conf->qualification->name;
+                else
+                    $conf = $this->getDefaultCalificationDm();
 
                 if ($conf)
                 {
