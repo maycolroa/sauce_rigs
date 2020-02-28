@@ -38,9 +38,9 @@ class RespiratoryAnalysisInformController extends Controller
      */
     public function data(Request $request)
     {
-        $consolidatedPersonalRiskCriterion = $this->getValuesForMultiselect($request->consolidatedPersonalRiskCriterion);
-        $branchOffice = $this->getValuesForMultiselect($request->branchOffice);
-        $companies = $this->getValuesForMultiselect($request->companies);
+        $regional = $this->getValuesForMultiselect($request->regional);
+        $deal = $this->getValuesForMultiselect($request->deal);
+        $interpretation = $this->getValuesForMultiselect($request->interpretation);
         $filtersType = $request->filtersType;
 
         $dates = [];
@@ -57,7 +57,7 @@ class RespiratoryAnalysisInformController extends Controller
             
         }
         
-        $informManager = new InformManagerRespiratoryAnalysis($consolidatedPersonalRiskCriterion, $branchOffice, $companies, $dates, $filtersType);
+        $informManager = new InformManagerRespiratoryAnalysis($regional, $deal, $interpretation, $dates, $filtersType);
         
         return $this->respondHttp200($informManager->getInformData());
     }

@@ -51,7 +51,7 @@
                     </b-card>
                 </b-col>
             </b-row>
-            <!--<b-form-row v-if="patient_identification">
+            <b-form-row v-if="patient_identification">
                 <div class="col-md-12" style="padding-bottom: 20px;">
                     <tracing-inserter
                         :key="keyTrancing"
@@ -66,7 +66,7 @@
                         <b-btn type="submit" :disabled="isLoading" variant="primary" @click.prevent="saveTracing">Guardar Seguimiento</b-btn>
                     </center>
                 </div>
-            </b-form-row>-->
+            </b-form-row>
             <b-row class="float-right">
                 <b-col>
                     <b-btn variant="default" :to="{name: 'biologicalmonitoring-musculoskeletalanalysis'}">Atras</b-btn>
@@ -142,7 +142,7 @@ export default {
 
             this.isLoading = true;
 
-            axios.post('/biologicalmonitoring/musculoskeletalAnalysis/saveTracing', {
+            axios.post('/biologicalmonitoring/respiratoryAnalysis/saveTracing', {
                 identification: this.patient_identification,
                 new_tracing: this.$refs.tracingInserter.getNewTracing(),
                 oldTracings: this.$refs.tracingInserter.getOldTracings()

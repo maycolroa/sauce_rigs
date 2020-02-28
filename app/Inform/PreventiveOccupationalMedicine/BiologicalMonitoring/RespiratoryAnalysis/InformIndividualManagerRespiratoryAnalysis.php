@@ -3,7 +3,7 @@
 namespace App\Inform\PreventiveOccupationalMedicine\BiologicalMonitoring\RespiratoryAnalysis;
 
 use App\Models\PreventiveOccupationalMedicine\BiologicalMonitoring\RespiratoryAnalysis\RespiratoryAnalysis;
-use App\Models\PreventiveOccupationalMedicine\BiologicalMonitoring\MusculoskeletalAnalysis\Tracing;
+use App\Models\PreventiveOccupationalMedicine\BiologicalMonitoring\RespiratoryAnalysis\TracingRespiratoryAnalysis;
 
 class InformIndividualManagerRespiratoryAnalysis
 {
@@ -80,7 +80,7 @@ class InformIndividualManagerRespiratoryAnalysis
      */
     private function oldTracings()
     {
-        $tracings = Tracing::where('identification', $this->id)->get();
+        $tracings = TracingRespiratoryAnalysis::where('identification', $this->id)->get();
 
         $oldTracings = [];
 

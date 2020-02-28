@@ -28,21 +28,21 @@ class InformManagerRespiratoryAnalysis
      * this array must contain only the identifiers according to the case of the filter
      * @var array
      */
-    protected $consolidatedPersonalRiskCriterion;
-    protected $branchOffice;
-    protected $companies;
+    protected $regional;
+    protected $deal;
+    protected $interpretation;
     protected $dateRange;
     protected $filtersType;
 
     /**
      * create an instance and set the attribute class
-     * @param array $consolidatedPersonalRiskCriterion
+     * @param array $regional
      */
-    function __construct($consolidatedPersonalRiskCriterion = [], $branchOffice = [], $companies = [], $dateRange = [], $filtersType = [])
+    function __construct($regional = [], $deal = [], $interpretation = [], $dateRange = [], $filtersType = [])
     {
-        $this->consolidatedPersonalRiskCriterion = $consolidatedPersonalRiskCriterion;
-        $this->branchOffice = $branchOffice;
-        $this->companies = $companies;
+        $this->regional = $regional;
+        $this->deal = $deal;
+        $this->interpretation = $interpretation;
         $this->dateRange = $dateRange;
         $this->filtersType = $filtersType;
     }
@@ -123,10 +123,10 @@ class InformManagerRespiratoryAnalysis
             $column." AS ".$column.",
             COUNT(patient_identification) AS count
         ")
-        /*->inConsolidatedPersonalRiskCriterion($this->consolidatedPersonalRiskCriterion, $this->filtersType['consolidatedPersonalRiskCriterion'])
-        ->inBranchOffice($this->branchOffice, $this->filtersType['branchOffice'])
-        ->inCompanies($this->companies, $this->filtersType['companies'])
-        ->betweenDate($this->dateRange)*/
+        ->inRegional($this->regional, $this->filtersType['regional'])
+        ->inDeal($this->deal, $this->filtersType['deal'])
+        ->inInterpretation($this->interpretation, $this->filtersType['interpretation'])
+        ->betweenDate($this->dateRange)
         ->where($column, '<>', '')
         ->whereNotNull($column)
         ->groupBy($column);
