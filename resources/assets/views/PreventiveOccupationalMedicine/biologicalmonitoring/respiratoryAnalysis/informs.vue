@@ -5,12 +5,12 @@
             subtitle="INFORMES"
             url="biologicalmonitoring-respiratoryanalysis"
         />
-        <!--<div>
+        <div>
             <filter-general 
                 v-model="filters" 
-                configName="biologicalmonitoring-respiratoryanalysis" 
+                configName="biologicalmonitoring-respiratoryAnalysis" 
                 :isDisabled="isLoading"/>
-        </div>-->
+        </div>
 
         <b-row>
             <b-col>

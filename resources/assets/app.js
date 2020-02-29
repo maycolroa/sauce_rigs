@@ -4,6 +4,7 @@ import Vue from 'vue'
 import router from './router/index.js'
 import VueRouterMiddleware from 'vue-router-middleware'
 import Notifications from 'vue-notification'
+import VueAnalytics from 'vue-analytics'
 
 import BootstrapVue from 'bootstrap-vue'
 
@@ -32,6 +33,13 @@ Vue.use(VueRouterMiddleware, {
     }
   }
 })
+Vue.use(VueAnalytics, {
+  id: process.env.MIX_GOOGLE_ANALYTICS_ID,
+  router,
+  debug: {
+    sendHitTask: process.env.NODE_ENV === 'production'
+  }
+})
 
 // Global RTL flag
 Vue.mixin({
@@ -41,7 +49,6 @@ Vue.mixin({
 Vue.mixin({
   computed: {
     routeAppName: function () {
-      
       if (this.$route.path != undefined)
       {
         let name = this.$route.path.split('/')

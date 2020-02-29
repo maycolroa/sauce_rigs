@@ -64,29 +64,29 @@ class RespiratoryAnalysis extends Model
     ];
 
     /**
-     * filters checks through the given consolidatedPersonalRiskCriterion
+     * filters checks through the given interpretation
      * @param  Illuminate\Database\Eloquent\Builder $query
-     * @param  array $consolidatedPersonalRiskCriterion
+     * @param  array $interpretation
      * @return Illuminate\Database\Eloquent\Builder
      */
-   /*public function scopeInConsolidatedPersonalRiskCriterion($query, $consolidatedPersonalRiskCriterion, $typeSearch = 'IN')
+   public function scopeInInterpretation($query, $interpretation, $typeSearch = 'IN')
     {
-        if (COUNT($consolidatedPersonalRiskCriterion) > 0)
+        if (COUNT($interpretation) > 0)
         {
             if ($typeSearch == 'IN')
-                $query->whereIn('sau_bm_musculoskeletal_analysis.consolidated_personal_risk_criterion', $consolidatedPersonalRiskCriterion);
+                $query->whereIn('sau_bm_respiratory_analysis.interpretation', $interpretation);
 
             else if ($typeSearch == 'NOT IN')
-                $query->whereNotIn('sau_bm_musculoskeletal_analysis.consolidated_personal_risk_criterion', $consolidatedPersonalRiskCriterion);
+                $query->whereNotIn('sau_bm_respiratory_analysis.interpretation', $interpretation);
         }
 
         return $query;
-    }*/
+    }
 
     /**
-     * filters checks through the given branchOffice
+     * filters checks through the given regional
      * @param  Illuminate\Database\Eloquent\Builder $query
-     * @param  array $branchOffice
+     * @param  array $regional
      * @return Illuminate\Database\Eloquent\Builder
      */
     public function scopeInRegional($query, $regional, $typeSearch = 'IN')
@@ -104,24 +104,24 @@ class RespiratoryAnalysis extends Model
     }
 
     /**
-     * filters checks through the given company
+     * filters checks through the given deal
      * @param  Illuminate\Database\Eloquent\Builder $query
-     * @param  array $company
+     * @param  array $deal
      * @return Illuminate\Database\Eloquent\Builder
      */
-   /* public function scopeInCompanies($query, $company, $typeSearch = 'IN')
+    public function scopeInDeal($query, $deal, $typeSearch = 'IN')
     {
-        if (COUNT($company) > 0)
+        if (COUNT($deal) > 0)
         {
             if ($typeSearch == 'IN')
-                $query->whereIn('sau_bm_musculoskeletal_analysis.company', $company);
+                $query->whereIn('sau_bm_respiratory_analysis.deal', $deal);
 
             else if ($typeSearch == 'NOT IN')
-                $query->whereNotIn('sau_bm_musculoskeletal_analysis.company', $company);
+                $query->whereNotIn('sau_bm_respiratory_analysis.deal', $deal);
         }
 
         return $query;
-    }*/
+    }
 
     /**
      * filters checks through the given date
@@ -129,12 +129,13 @@ class RespiratoryAnalysis extends Model
      * @param  array $dates
      * @return Illuminate\Database\Eloquent\Builder
      */
-    /*public function scopeBetweenDate($query, $dates)
+    public function scopeBetweenDate($query, $dates)
     {
         if (COUNT($dates) == 2)
         {
-            $query->whereBetween('sau_bm_musculoskeletal_analysis.date', $dates);
+            $query->whereBetween('sau_bm_respiratory_analysis.date_of_realization', $dates);
+            
             return $query;
         }
-    }*/
+    }
 }

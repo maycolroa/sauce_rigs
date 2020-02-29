@@ -246,6 +246,26 @@ export default [
           type: 'select',
           label: 'Regional o Planta',
           header:true
+        },
+        {
+          url: '/selects/respiratory/deal',
+          key: 'deal',
+          type: 'select',
+          label: 'Negocio',
+          header:true
+        },
+        {
+          url: '/selects/respiratory/interpretation',
+          key: 'interpretation',
+          type: 'select',
+          label: 'Interpretación',
+          header:true
+        },
+        {
+          key: 'dateRange',
+          type: 'dateRange',
+          label: 'Rango de fecha',
+          header:true
         }
       ]
     }

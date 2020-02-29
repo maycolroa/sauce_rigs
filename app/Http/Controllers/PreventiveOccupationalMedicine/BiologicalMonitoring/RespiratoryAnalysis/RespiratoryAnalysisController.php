@@ -6,11 +6,11 @@ use Illuminate\Http\Request;
 use App\Vuetable\Facades\Vuetable;
 use App\Http\Controllers\Controller;
 use App\Models\Administrative\Users\User;
-//use App\Models\PreventiveOccupationalMedicine\BiologicalMonitoring\MusculoskeletalAnalysis\Tracing;
+use App\Models\PreventiveOccupationalMedicine\BiologicalMonitoring\RespiratoryAnalysis\TracingRespiratoryAnalysis;
 use App\Models\PreventiveOccupationalMedicine\BiologicalMonitoring\RespiratoryAnalysis\RespiratoryAnalysis;
 use App\Jobs\PreventiveOccupationalMedicine\BiologicalMonitoring\RespiratoryAnalysis\RespiratoryAnalysisImportJob;
 use App\Jobs\PreventiveOccupationalMedicine\BiologicalMonitoring\RespiratoryAnalysis\RespiratoryAnalysisExportJob;
-//use App\Inform\PreventiveOccupationalMedicine\BiologicalMonitoring\MusculoskeletalAnalysis\InformIndividualManagerMusculoskeletalAnalysis;
+use App\Inform\PreventiveOccupationalMedicine\BiologicalMonitoring\RespiratoryAnalysis\InformIndividualManagerRespiratoryAnalysis;
 use Carbon\Carbon;
 use DB;
 
@@ -55,6 +55,19 @@ class RespiratoryAnalysisController extends Controller
         if (COUNT($filters) > 0)
         {
           $data->inRegional($this->getValuesForMultiselect($filters["regional"]), $filters['filtersType']['regional']);
+          $data->inDeal($this->getValuesForMultiselect($filters["deal"]), $filters['filtersType']['deal']);
+          $data->inInterpretation($this->getValuesForMultiselect($filters["interpretation"]), $filters['filtersType']['interpretation']);
+
+          $dates_request = explode('/', $filters["dateRange"]);
+          $dates = [];
+
+          if (COUNT($dates_request) == 2)
+          {
+            array_push($dates, (Carbon::createFromFormat('D M d Y',$dates_request[0]))->format('Y-m-d'));
+            array_push($dates, (Carbon::createFromFormat('D M d Y',$dates_request[1]))->format('Y-m-d'));
+          }
+            
+          $data->betweenDate($dates);
         }
 
         return Vuetable::of($data)
@@ -141,14 +154,14 @@ class RespiratoryAnalysisController extends Controller
      *
      * @return Array
      */
-    /*public function multiselectConsolidatedPersonalRiskCriterion()
+    public function multiselectDeal()
     {
-      $data = MusculoskeletalAnalysis::selectRaw(
-        'DISTINCT consolidated_personal_risk_criterion AS consolidated_personal_risk_criterion'
+      $data = RespiratoryAnalysis::selectRaw(
+        'DISTINCT deal AS deal'
       )
-      ->orderBy('consolidated_personal_risk_criterion')
+      ->orderBy('deal')
       ->get()
-      ->pluck('consolidated_personal_risk_criterion', 'consolidated_personal_risk_criterion');
+      ->pluck('deal', 'deal');
 
       return $this->multiSelectFormat($data);
     }
@@ -174,14 +187,14 @@ class RespiratoryAnalysisController extends Controller
      *
      * @return Array
      */
-    /*public function multiselectCompany()
+    public function multiselectInterpretation()
     {
-      $data = MusculoskeletalAnalysis::selectRaw(
-        'DISTINCT company AS company'
+      $data = RespiratoryAnalysis::selectRaw(
+        'DISTINCT interpretation AS interpretation'
       )
-      ->orderBy('company')
+      ->orderBy('interpretation')
       ->get()
-      ->pluck('company', 'company');
+      ->pluck('interpretation', 'interpretation');
 
       return $this->multiSelectFormat($data);
     }
@@ -249,7 +262,7 @@ class RespiratoryAnalysisController extends Controller
       }
     }
 
-    /*public function saveTracing(Request $request)
+    public function saveTracing(Request $request)
     {
       try
       {
@@ -265,7 +278,7 @@ class RespiratoryAnalysisController extends Controller
           return $this->respondHttp500();
       }
 
-      $informManager = new InformIndividualManagerMusculoskeletalAnalysis($request->identification);  
+      $informManager = new InformIndividualManagerRespiratoryAnalysis($request->identification);  
       return $this->respondHttp200($informManager->getInformData(['oldTracings']));
     }
 
@@ -278,7 +291,7 @@ class RespiratoryAnalysisController extends Controller
             if (!$tracingDescription)
                 return true;
 
-            $tracing = new Tracing();
+            $tracing = new TracingRespiratoryAnalysis();
             $tracing->company_id = $this->company;
             $tracing->description = $tracingDescription;
             $tracing->identification = $identification;
@@ -297,14 +310,14 @@ class RespiratoryAnalysisController extends Controller
      * @param  array  $tracingsToUpdate
      * @return void
      */
-    /*public function handleTracingUpdates(User $madeByUser, $tracingsToUpdate = [])
+    public function handleTracingUpdates(User $madeByUser, $tracingsToUpdate = [])
     {
         if (!is_array($tracingsToUpdate))
             return;
 
         foreach ($tracingsToUpdate as $tracing)
         {
-            $oldTracing = Tracing::where('id', $tracing["id"])->first();
+            $oldTracing = TracingRespiratoryAnalysis::where('id', $tracing["id"])->first();
 
             if (!$oldTracing)
                 continue;
@@ -317,5 +330,5 @@ class RespiratoryAnalysisController extends Controller
                 ]);
             }
         }
-    }*/
+    }
 }
