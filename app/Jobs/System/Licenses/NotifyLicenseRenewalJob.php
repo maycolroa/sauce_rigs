@@ -105,7 +105,7 @@ class NotifyLicenseRenewalJob implements ShouldQueue
             }
 
             NotificationMail::
-                subject('Renovación de Licencia')
+                subject('Creación de Licencia Sauce')
                 ->recipients($recipients)
                 ->message("Se acaba de crear una nueva licencia para la empresa <b>{$company->name}</b>")
                 ->module('users')

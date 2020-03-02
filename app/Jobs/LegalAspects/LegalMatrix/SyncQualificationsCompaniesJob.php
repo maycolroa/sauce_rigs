@@ -13,12 +13,16 @@ class SyncQualificationsCompaniesJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels, LegalMatrixTrait;
 
+    protected $law_id;
     /**
      * Create a new job instance.
      *
      * @return void
      */
-    public function __construct() { }
+    public function __construct($law_id) 
+    {
+        $this->law_id = $law_id;
+    }
 
     /**
      * Execute the job.
@@ -27,6 +31,6 @@ class SyncQualificationsCompaniesJob implements ShouldQueue
      */
     public function handle()
     {
-      $this->syncQualificationsCompanies();
+      $this->syncQualificationsCompanies($this->law_id);
     }
 }

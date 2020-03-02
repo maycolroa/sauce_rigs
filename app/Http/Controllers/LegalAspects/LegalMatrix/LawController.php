@@ -182,7 +182,7 @@ class LawController extends Controller
 
             DB::commit();
 
-            SyncQualificationsCompaniesJob::dispatch();
+            SyncQualificationsCompaniesJob::dispatch($law->id);
 
         } catch (\Exception $e) {
             DB::rollback();
@@ -304,7 +304,7 @@ class LawController extends Controller
 
             DB::commit();
 
-            SyncQualificationsCompaniesJob::dispatch();
+            SyncQualificationsCompaniesJob::dispatch($law->id);
 
         } catch (\Exception $e) {
             DB::rollback();
@@ -359,6 +359,8 @@ class LawController extends Controller
         {     
             $years[$i] = $i;            
         }
+
+        arsort($years);
 
         return $this->multiSelectFormat(collect($years));
     }
