@@ -46,6 +46,48 @@
                 ></vue-table>
             </b-card-body>
         </b-card>
+        <b-row>
+            <b-col>
+                <b-card border-variant="primary" title="Evaluaciones" class="mb-3 box-shadow-none">
+                    <b-row>
+                        <b-col><vue-advanced-select :disabled="isLoading" v-model="inspectionsSelected" :options="selectBar" :searchable="true" name="inspectionsSelected">
+                            </vue-advanced-select></b-col>
+                        <!--<b-col><vue-advanced-select :disabled="isLoading" v-model="years" :options="yearsOptions" :searchable="true" name="years" placeholder="Años" :multiple="true">
+                            </vue-advanced-select></b-col>
+                        <b-col><vue-advanced-select :disabled="isLoading" v-model="months" :options="monthsOptions" :searchable="true" name="months" placeholder="Meses" :multiple="true">
+                        </vue-advanced-select></b-col>-->
+                    </b-row>
+                    <b-row>
+                        <b-col class="text-center" style="padding-bottom: 15px;">
+                            <h4>Número de Inspecciones</h4>
+                        </b-col>
+                    </b-row>
+                    <b-row>
+                        <div class="col-md-12">
+                            <chart-bar 
+                                :chart-data="inspectionData"
+                                title="Número de Inspecciones realizadas"
+                                color-line="red"
+                                ref=""/>
+                        </div>
+                    </b-row>
+                    <!--<b-row>
+                        <b-col class="text-center" style="padding-bottom: 15px;">
+                            <h4>Porcentaje de Cumplimiento</h4>
+                        </b-col>
+                    </b-row>
+                    <b-row>
+                        <div class="col-md-12">
+                            <chart-bar-compliance 
+                                :chart-data="complianceData"
+                                title="Porcentaje de Cumplimiento"
+                                color-line="red"
+                                ref=""/>
+                        </div>
+                    </b-row>-->
+                </b-card>
+            </b-col>
+        </b-row>
     </div>
   </div>
 </template>
@@ -53,6 +95,8 @@
 <script>
 import Alerts from '@/utils/Alerts.js';
 import VueAdvancedSelect from "@/components/Inputs/VueAdvancedSelect.vue";
+import GlobalMethods from '@/utils/GlobalMethods.js';
+import ChartBar from '@/components/ECharts/ChartBar.vue';
 
 export default {
     name: 'dangerousconditions-inspections-report',
@@ -60,7 +104,8 @@ export default {
         title: 'Inspecciones - Reportes'
     },
     components:{
-        VueAdvancedSelect
+        VueAdvancedSelect,
+        ChartBar
     },
     data () {
         return {
@@ -78,11 +123,59 @@ export default {
             options: [
 					{ name:'Con Tema', value:'with_theme'},
 					{ name:'Sin Tema', value:'without_theme'}
-				]
+			],            
+            selectBar: [],
+            inspectionsSelected: 'inspection',
+            inspections: {
+                inspection: {
+                    labels: [],
+                    datasets: []
+                },
+                theme: {
+                    labels: [],
+                    datasets: []
+                },
+                headquarter: {
+                    labels: [],
+                    datasets: []
+                },
+                area: {
+                    labels: [],
+                    datasets: []
+                }
+            },
+            compliance: {
+                inspection: {
+                    labels: [],
+                    datasets: []
+                },
+                theme: {
+                    labels: [],
+                    datasets: []
+                },
+                headquarter: {
+                    labels: [],
+                    datasets: []
+                },
+                area: {
+                    labels: [],
+                    datasets: []
+                }
+            }
         }
     },
     created() {
         this.updateTotales()
+        this.fetchSelect('selectBar', '/selects/multiselectBarInspection')
+        this.fetch()
+    },
+    computed: {
+        inspectionData: function() {
+            return this.inspections[this.inspectionsSelected]
+        },
+        complianceData: function() {
+            return this.compliance[this.inspectionsSelected]
+        }
     },
     methods: {
         refreshData()
@@ -103,6 +196,45 @@ export default {
                 }).catch(error => {
                     Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
                 });
+        },
+        fetchSelect(key, url)
+        {
+            GlobalMethods.getDataMultiselect(url)
+            .then(response => {
+                this[key] = response;
+            })
+            .catch(error => {
+                Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
+                this.$router.go(-1);
+            });
+        },
+        fetch()
+        {
+            if (!this.isLoading)
+            {
+                //console.log('buscando...')
+                this.isLoading = true;
+
+                let postData = Object.assign({}, /*{years: this.years}, {months: this.months},*/ this.filters);
+
+                axios.post('/industrialSecurity/dangerousConditions/inspection/reportDinamic', postData)
+                .then(data => {
+                    this.update(data);
+                    this.isLoading = false;
+                })
+                .catch(error => {
+                    console.log(error);
+                    this.isLoading = false;
+                    Alerts.error('Error', 'Hubo un problema recolectando la información');
+                });
+            }
+        },
+        update(data) {
+            _.forIn(data.data, (value, key) => {
+                if (this[key]) {
+                    this[key] = value;
+                }
+            });
         },
         updateTotales()
         {
