@@ -473,6 +473,8 @@ Route::middleware(['auth'])->group(function () {
       Route::post('company/data', 'System\Companies\CompanyController@data');
       Route::ApiResource('company', 'System\Companies\CompanyController');  
       Route::post('company/switchStatus/{company}', 'System\Companies\CompanyController@toggleState');
+
+      Route::post('usersCompanies/data', 'System\UsersCompanies\UserCompanyController@data');
     });
 
 

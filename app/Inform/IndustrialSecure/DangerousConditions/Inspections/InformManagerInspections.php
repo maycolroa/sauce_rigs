@@ -136,8 +136,6 @@ class InformManagerInspections
         ->groupBy('t.category')
         ->get();
 
-        \Log::info($consultas2);
-
         return $this->builderDataCompliance($consultas2);
     }
 

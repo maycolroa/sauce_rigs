@@ -204,6 +204,12 @@
                 "display_name": "Compañias",
                 "main": "NO",
                 "logo": null
+            },
+            {
+                "name": "usersCompanies",
+                "display_name": "Usuarios Compañias",
+                "main": "NO",
+                "logo": null
             }
         ]
     }

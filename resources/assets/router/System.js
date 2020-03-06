@@ -115,5 +115,13 @@ export default [{
             import('@/views/System/companies/view')
         }
       ]),
+      ...middleware({ 'check-permission': 'usersCompanies_r' }, [
+        {
+          name: 'system-userscompanies',
+          path: 'userscompanies',
+          component: () =>
+            import('@/views/System/userCompanies/index')
+        }
+      ]), 
     ]
   }]
