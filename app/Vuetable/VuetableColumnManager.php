@@ -268,7 +268,8 @@ class VuetableColumnManager
                 ['name' => 'sau_users.document', 'data'=> 'document', 'title'=> 'Documento', 'sortable'=> true, 'searchable'=> true, 'detail'=> false, 'key'=> false ],
                 ['name' => 'sau_users.document_type', 'data'=> 'document_type', 'title'=> 'Tipo de Documento', 'sortable'=> true, 'searchable'=> true, 'detail'=> false, 'key'=> false ],
                 ['name' => 'sau_roles.name', 'data'=> 'role', 'title'=> 'Rol', 'sortable'=> true, 'searchable'=> true, 'detail'=> false, 'key'=> false ],
-                ['name' => 'sau_users.active', 'data'=> 'active', 'title'=> '¿Activo?', 'sortable'=> true, 'searchable'=> true, 'detail'=> false, 'key'=> false ]
+                ['name' => 'sau_users.active', 'data'=> 'active', 'title'=> '¿Activo?', 'sortable'=> true, 'searchable'=> true, 'detail'=> false, 'key'=> false ],
+                ['name' => 'sau_users.last_login_at', 'data'=> 'last_login_at', 'title'=> 'Última sesión', 'sortable'=> true, 'searchable'=> true, 'detail'=> false, 'key'=> false ]
             ];
 
         $colums = array_merge($colums, [

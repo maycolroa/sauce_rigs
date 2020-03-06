@@ -212,5 +212,19 @@ export default [
             urlData: '/system/company/data',
             filterColumns: true,
         }
-    }
+    },
+    {
+        name: 'system-users-companies',
+        fields: [
+            { name: 'sau_users.id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true },
+            { name: 'sau_users.name', data: 'name', title: 'Nombre', sortable: true, searchable: true, detail: false, key: false },
+            { name: 'sau_users.email', data: 'email', title: 'Correo', sortable: true, searchable: true, detail: false, key: false },
+            { name: 'sau_companies.name', data: 'company', title: 'Compañia', sortable: true, searchable: true, detail: false, key: false }
+        ],
+        'controlls': [],
+        configuration: {
+            urlData: '/system/usersCompanies/data',
+            filterColumns: true,
+        }
+    },
 ]

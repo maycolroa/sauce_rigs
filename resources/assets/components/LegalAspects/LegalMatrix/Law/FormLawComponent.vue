@@ -167,6 +167,13 @@
                     </b-collapse>
                   </b-card>
                 </template>
+                <b-form-row v-if="form.articles && form.articles.length > 0">
+                  <div class="col-md-12" v-if="!viewOnly">
+                    <div class="float-right" style="padding-top: 10px;">
+                      <b-btn variant="primary" @click.prevent="addActicle()"><span class="ion ion-md-add-circle"></span>&nbsp;&nbsp;Agregar Artículo</b-btn>
+                    </div>
+                  </div>
+                </b-form-row>
               </perfect-scrollbar>
             </b-form-row>
           </div>

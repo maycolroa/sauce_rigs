@@ -8,6 +8,7 @@ use App\Vuetable\Facades\Vuetable;
 use App\Models\IndustrialSecure\DangerousConditions\Inspections\InspectionItemsQualificationAreaLocation;
 use App\Models\IndustrialSecure\DangerousConditions\Inspections\Inspection;
 use App\Jobs\IndustrialSecure\DangerousConditions\Inspections\InspectionReportExportJob;
+use App\Inform\IndustrialSecure\DangerousConditions\Inspections\InformManagerInspections;
 use App\Models\General\Module;
 use Carbon\Carbon;
 use Validator;
@@ -274,5 +275,46 @@ class InspectionReportController extends Controller
         } catch(Exception $e) {
             return $this->respondHttp500();
         }
+    }
+
+    public function reportDinamic(Request $request)
+    {
+      $headquarters = $this->getValuesForMultiselect($request->headquarters);
+      $areas = $this->getValuesForMultiselect($request->areas);
+      $themes = $this->getValuesForMultiselect($request->themes);
+      $filtersType = $request->filtersType;
+      $dates = [];
+
+      if (isset($request->dateRange) && $request->dateRange)
+      {
+          $dates_request = explode('/', $request->dateRange);
+
+          if (COUNT($dates_request) == 2)
+          {
+              array_push($dates, (Carbon::createFromFormat('D M d Y',$dates_request[0]))->format('Y-m-d 00:00:00'));
+              array_push($dates, (Carbon::createFromFormat('D M d Y',$dates_request[1]))->format('Y-m-d 23:59:59'));
+          }
+      }
+
+      $informManager = new InformManagerInspections($this->company, $headquarters, $areas, $themes, $filtersType, $dates);
+
+      \Log::info($informManager->getInformData());
+
+      return $this->respondHttp200($informManager->getInformData());
+    }
+
+    public function multiselectBar()
+    {
+      $keywords = $this->user->getKeywords();
+
+      $select = [
+          'Inspecciones' => "inspection", 
+          'Temas' => "theme",
+          $keywords['headquarters'] => "headquarter",
+          $keywords['areas'] => "area"
+
+      ];
+  
+      return $this->multiSelectFormat(collect($select));
     }
 }

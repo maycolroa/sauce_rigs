@@ -13,7 +13,7 @@ use DB;
 
 trait LegalMatrixTrait
 {
-    public function getArticlesCompany($company_id = null)
+    public function getArticlesCompany($company_id = null, $law_id = null)
     {
         if ($company_id && !is_numeric($company_id))
             throw new \Exception('Company invalid');
@@ -28,15 +28,20 @@ trait LegalMatrixTrait
         if ($company_id)
             $articles->company_scope = $company_id;
 
+        if ($law_id)
+            $articles->where('sau_lm_articles.law_id', $law_id);
+
+        \Log::info($articles->toSql());
+
         return $articles->get();
     }
 
-    public function syncQualificationsCompany($company_id)
+    public function syncQualificationsCompany($company_id, $law_id = null)
     {
         if ($company_id && !is_numeric($company_id))
             throw new \Exception('Company invalid');
 
-        $articles = $this->getArticlesCompany($company_id);
+        $articles = $this->getArticlesCompany($company_id, $law_id);
         $ids_article = [];
 
         foreach ($articles as $key => $value)
@@ -46,7 +51,7 @@ trait LegalMatrixTrait
 
             $qualification = $qualification->firstOrCreate(
                 ['article_id' => $value->id],
-                ['article_id' => $value->id, 'company_id' => $company_id]
+                ['article_id' => $value->id, 'company_id' => $company_id, 'fulfillment_value_id' => 1]
             );
 
             array_push($ids_article, $value->id);
@@ -117,17 +122,15 @@ trait LegalMatrixTrait
         }
     }
 
-    public function syncQualificationsCompanies()
+    public function syncQualificationsCompanies($law_id)
     {
         $companies = DB::table('sau_lm_company_interest')
             ->selectRaw('DISTINCT company_id AS company_id')
             ->get();
 
         foreach ($companies as $key => $value)
-        {
-            \Log::info("sincronizando intereses de la compañia {$value->company_id}");
-            
-            $this->syncQualificationsCompany($value->company_id);
+        {            
+            $this->syncQualificationsCompany($value->company_id, $law_id);
         }
     }
 }

@@ -157,6 +157,7 @@ Route::middleware(['auth'])->group(function () {
         Route::post('nextFollowDays', 'PreventiveOccupationalMedicine\Reinstatements\CheckController@multiselectNextFollowDays');
         Route::post('multiselectBar', 'PreventiveOccupationalMedicine\BiologicalMonitoring\AudiometryInformController@multiselectBar');
         Route::post('multiselectBarEvaluations', 'LegalAspects\Contracs\EvaluationContractController@multiselectBar');
+        Route::post('multiselectBarInspection', 'IndustrialSecure\DangerousConditions\Inspections\InspectionReportController@multiselectBar');
         Route::post('multiselectBarLegalMatrix', 'LegalAspects\LegalMatrix\LawReportController@multiselectBar');
         Route::post('multiselectBarPercentage', 'PreventiveOccupationalMedicine\BiologicalMonitoring\AudiometryInformController@multiselectBarPercentage');
         Route::post('dmActivities', 'IndustrialSecure\Activities\ActivityController@multiselect');
@@ -340,6 +341,7 @@ Route::middleware(['auth'])->group(function () {
       Route::prefix('dangerousConditions')->group(function () {
         Route::post('inspection/switchStatus/{inspection}', 'IndustrialSecure\DangerousConditions\Inspections\InspectionController@toggleState');
         Route::post('inspection/data', 'IndustrialSecure\DangerousConditions\Inspections\InspectionController@data');
+        Route::post('inspection/reportDinamic', 'IndustrialSecure\DangerousConditions\Inspections\InspectionReportController@reportDinamic');
         Route::ApiResource('inspection', 'IndustrialSecure\DangerousConditions\Inspections\InspectionController');
 
         Route::get('inspection/downloadPdf/{id}', 'IndustrialSecure\DangerousConditions\Inspections\InspectionQualificationController@downloadPdf');
@@ -471,6 +473,8 @@ Route::middleware(['auth'])->group(function () {
       Route::post('company/data', 'System\Companies\CompanyController@data');
       Route::ApiResource('company', 'System\Companies\CompanyController');  
       Route::post('company/switchStatus/{company}', 'System\Companies\CompanyController@toggleState');
+
+      Route::post('usersCompanies/data', 'System\UsersCompanies\UserCompanyController@data');
     });
 
 
