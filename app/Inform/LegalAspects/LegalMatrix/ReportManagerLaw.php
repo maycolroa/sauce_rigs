@@ -375,6 +375,6 @@ class ReportManagerLaw
         ->inState($this->states,$this->filtersType['states'])
         ->first();
 
-        return $laws->total;
+        return $laws ? $laws->total : 0;
     }
 }

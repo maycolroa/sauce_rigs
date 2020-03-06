@@ -71,7 +71,7 @@
                                 ref=""/>
                         </div>
                     </b-row>
-                    <!--<b-row>
+                    <b-row>
                         <b-col class="text-center" style="padding-bottom: 15px;">
                             <h4>Porcentaje de Cumplimiento</h4>
                         </b-col>
@@ -84,7 +84,7 @@
                                 color-line="red"
                                 ref=""/>
                         </div>
-                    </b-row>-->
+                    </b-row>
                 </b-card>
             </b-col>
         </b-row>
@@ -97,6 +97,7 @@ import Alerts from '@/utils/Alerts.js';
 import VueAdvancedSelect from "@/components/Inputs/VueAdvancedSelect.vue";
 import GlobalMethods from '@/utils/GlobalMethods.js';
 import ChartBar from '@/components/ECharts/ChartBar.vue';
+import ChartBarCompliance from '@/components/ECharts/ChartBarCompliance.vue';
 
 export default {
     name: 'dangerousconditions-inspections-report',
@@ -105,7 +106,8 @@ export default {
     },
     components:{
         VueAdvancedSelect,
-        ChartBar
+        ChartBar,
+        ChartBarCompliance
     },
     data () {
         return {
@@ -187,6 +189,7 @@ export default {
         { 
             this.filters = value
             this.updateTotales()
+            this.fetch()
         },
         exportReport() {
             let postData = Object.assign({}, {table: this.table}, this.filters);

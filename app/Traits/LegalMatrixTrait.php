@@ -51,7 +51,7 @@ trait LegalMatrixTrait
 
             $qualification = $qualification->firstOrCreate(
                 ['article_id' => $value->id],
-                ['article_id' => $value->id, 'company_id' => $company_id]
+                ['article_id' => $value->id, 'company_id' => $company_id, 'fulfillment_value_id' => 1],
             );
 
             array_push($ids_article, $value->id);
