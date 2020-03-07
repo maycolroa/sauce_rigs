@@ -42,8 +42,7 @@ class UserCompanyController extends Controller
                 $q->on('sau_role_user.user_id', '=', 'sau_users.id')
                   ->on('sau_role_user.team_id', '=', 'sau_companies.id');
         })
-        ->where('sau_role_user.role_id', '<>', $role->id)
-        ->orWhereNull('sau_role_user.role_id')
+        ->whereRaw("(sau_role_user.role_id <> {$role->id} OR sau_role_user.role_id IS NULL)")
         ->groupBy('sau_users.id', 'company');
 
         return Vuetable::of($usersCompanies)
