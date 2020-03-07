@@ -210,7 +210,7 @@ class InformManagerEvaluationContract
 
         foreach ($data as $key => $value)
         {
-            $label = strlen($value->category) > 30 ? substr($value->category, 0, 30).'...' : substr($value->category, 0, 30);
+            $label = strlen($value->category) > 30 ? substr($this->sanear_string($value->category), 0, 30).'...' : $value->category;
 
             $labels->push($label);
             $cumple->push($value->p_cumple);
@@ -269,7 +269,7 @@ class InformManagerEvaluationContract
         $data = [];
         $total = 0;
         foreach ($rawData as $label => $count) {
-            $label2 = strlen($label) > 30 ? substr($label, 0, 30).'...' : substr($label, 0, 30);
+            $label2 = strlen($label) > 30 ? substr($this->sanear_string($value->category), 0, 30).'...' : $label;
             array_push($labels, $label2);
             array_push($data, ['name' => $label2, 'value' => $count]);
             $total += $count;

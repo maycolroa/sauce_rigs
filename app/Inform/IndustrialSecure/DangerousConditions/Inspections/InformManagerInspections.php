@@ -5,9 +5,12 @@ namespace App\Inform\IndustrialSecure\DangerousConditions\Inspections;
 use App\Models\IndustrialSecure\DangerousConditions\Inspections\Inspections;
 use App\Models\IndustrialSecure\DangerousConditions\Inspections\InspectionItemsQualificationAreaLocation;
 use DB;
+use App\Traits\UtilsTrait;
 
 class InformManagerInspections
 {
+    use UtilsTrait;
+
     /**
      * defines the availables informs
      *
@@ -184,7 +187,8 @@ class InformManagerInspections
         $data = [];
         $total = 0;
         foreach ($rawData as $label => $count) {
-            array_push($labels, $label);
+            $label2 = strlen($label) > 30 ? substr($this->sanear_string($value->category), 0, 30).'...' : $label;
+            array_push($labels, $label2);
             array_push($data, ['name' => $label, 'value' => $count]);
             $total += $count;
         }
@@ -206,7 +210,7 @@ class InformManagerInspections
 
         foreach ($data as $key => $value)
         {
-            $label = strlen($value->category) > 30 ? substr($value->category, 0, 30).'...' : substr($value->category, 0, 30);
+            $label = strlen($value->category) > 30 ? substr($this->sanear_string($value->category), 0, 30).'...' : $value->category;
 
             $labels->push($label);
             $cumple->push($value->p_cumple);
