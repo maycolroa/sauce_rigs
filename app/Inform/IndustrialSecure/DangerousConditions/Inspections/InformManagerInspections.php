@@ -187,7 +187,7 @@ class InformManagerInspections
         $data = [];
         $total = 0;
         foreach ($rawData as $label => $count) {
-            $label2 = strlen($label) > 30 ? substr($this->sanear_string($value->category), 0, 30).'...' : $label;
+            $label2 = strlen($label) > 30 ? substr($this->sanear_string($label), 0, 30).'...' : $label;
             array_push($labels, $label2);
             array_push($data, ['name' => $label, 'value' => $count]);
             $total += $count;
