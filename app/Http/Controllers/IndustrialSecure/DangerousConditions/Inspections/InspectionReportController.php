@@ -298,8 +298,6 @@ class InspectionReportController extends Controller
 
       $informManager = new InformManagerInspections($this->company, $headquarters, $areas, $themes, $filtersType, $dates);
 
-      \Log::info($informManager->getInformData());
-
       return $this->respondHttp200($informManager->getInformData());
     }
 
