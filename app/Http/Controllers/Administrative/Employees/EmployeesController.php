@@ -209,13 +209,11 @@ class EmployeesController extends Controller
 
     public function multiselectDeal(Request $request)
     {
-        \Log::info("dddddd");
         $deals = Employee::selectRaw(
                     "DISTINCT sau_employees.deal AS deal"
                 )
                 ->whereNotNull('sau_employees.deal')
                 ->pluck('deal', 'deal');
-                \Log::info($deals);
             
         return $this->multiSelectFormat($deals);
     }

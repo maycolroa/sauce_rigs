@@ -11,11 +11,13 @@ use App\Facades\ActionPlans\Facades\ActionPlan;
 use App\Http\Requests\Administrative\ActionPlans\ActionPlanRequest;
 use App\Jobs\Administrative\ActionPlans\ActionPlanExportJob;
 use App\Traits\ContractTrait;
+use App\Traits\Filtertrait;
 use DB;
 
 class ActionPlanController extends Controller
 {
     use ContractTrait;
+    use Filtertrait;
 
     /**
      * creates and instance and middlewares are checked
@@ -57,7 +59,9 @@ class ActionPlanController extends Controller
             ->join('sau_modules', 'sau_modules.id', 'sau_action_plans_activity_module.module_id')
             ->join('sau_users', 'sau_users.id', 'sau_action_plans_activities.responsible_id');
 
-        $filters = $request->get('filters');
+        $url = '/administrative/actionplans';
+
+        $filters = COUNT($request->get('filters')) > 0 ? $request->get('filters') : $this->filterDefaultValues($this->user->id, $url);
 
         if (isset($filters["responsibles"]))
             $activities->inResponsibles($this->getValuesForMultiselect($filters["responsibles"]), $filters['filtersType']['responsibles']);

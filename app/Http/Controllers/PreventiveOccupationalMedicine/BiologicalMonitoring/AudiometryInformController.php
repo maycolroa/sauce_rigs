@@ -5,11 +5,14 @@ namespace App\Http\Controllers\PreventiveOccupationalMedicine\BiologicalMonitori
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
+use App\Traits\Filtertrait;
 use App\Inform\PreventiveOccupationalMedicine\BiologicalMonitoring\InformManagerAudiometry;
 use App\Inform\PreventiveOccupationalMedicine\BiologicalMonitoring\InformIndividualManagerAudiometry;
 
 class AudiometryInformController extends Controller
 {
+    use Filtertrait;
+
     /**
      * creates and instance and middlewares are checked
      */
@@ -39,19 +42,31 @@ class AudiometryInformController extends Controller
      */
     public function data(Request $request)
     {
-        $regionals = $this->getValuesForMultiselect($request->regionals);
-        $headquarters = $this->getValuesForMultiselect($request->headquarters);
-        $areas = $this->getValuesForMultiselect($request->areas);
-        $processes = $this->getValuesForMultiselect($request->processes);
-        $deals = $this->getValuesForMultiselect($request->deals);
-        $positions = $this->getValuesForMultiselect($request->positions);
-        $years = $this->getValuesForMultiselect($request->years);
-        $dates = [];
-        $filtersType = $request->filtersType;
 
-        if (isset($request->dateRange) && $request->dateRange)
+        $url = "/preventiveoccupationalmedicine/biologicalmonitoring/audiometry/informs";
+        $init = true;
+        $filters = [];
+
+        if ($request->has('filtersType'))
+            $init = false;
+        else 
+            $filters = $this->filterDefaultValues($this->user->id, $url);
+
+        $regionals = !$init ? $this->getValuesForMultiselect($request->regionals) : (isset($filters['regionals']) ? $this->getValuesForMultiselect($filters['regionals']) : []);
+        $headquarters = !$init ? $this->getValuesForMultiselect($request->headquarters) : (isset($filters['headquarters']) ? $this->getValuesForMultiselect($filters['headquarters']) : []);
+        $areas = !$init ?  $this->getValuesForMultiselect($request->areas) : (isset($filters['areas']) ? $this->getValuesForMultiselect($filters['areas']) : []);
+        $processes = !$init ?  $this->getValuesForMultiselect($request->processes) : (isset($filters['processes']) ? $this->getValuesForMultiselect($filters['processes']) : []);
+        $deals = !$init ?  $this->getValuesForMultiselect($request->deals) : (isset($filters['deals']) ? $this->getValuesForMultiselect($filters['deals']) : []);
+        $positions = !$init ?  $this->getValuesForMultiselect($request->positions) : (isset($filters['positions']) ? $this->getValuesForMultiselect($filters['positions']) : []);
+        $years = !$init ?  $this->getValuesForMultiselect($request->years) : (isset($filters['years']) ? $this->getValuesForMultiselect($filters['years']) : []);
+        $dates = [];
+        $filtersType = !$init ? $request->filtersType : (isset($filters['filtersType']) ? $filters['filtersType'] : null);
+
+        $datesF = !$init ? $request->dateRange : (isset($filters['dateRange']) ? $filters['dateRange'] : null);
+
+        if (isset($datesF) && $datesF)
         {
-            $dates_request = explode('/', $request->dateRange);
+            $dates_request = explode('/', $datesF);
 
             if (COUNT($dates_request) == 2)
             {
@@ -84,7 +99,7 @@ class AudiometryInformController extends Controller
         if ($confLocation['headquarter'] == 'SI')
             $select[$keywords['headquarters']] = 'employee_headquarter_id';
         if ($confLocation['process'] == 'SI')
-            $select[['processes']] = 'employee_process_id';
+            $select[$keywords['processes']] = 'employee_process_id';
         if ($confLocation['area'] == 'SI')
             $select[$keywords['areas']] = 'employee_area_id';
 

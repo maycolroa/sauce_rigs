@@ -320,12 +320,12 @@ class ApplicationController extends Controller
     {
       FiltersState::updateOrCreate(
           [
-            'user_id' => Auth::user()->id, 
+            'user_id' => $this->user->id, 
             'url' => $request->url
           ],
           [
-            'user_id' => Auth::user()->id,
-            'company_id' => Session::get('company_id'),
+            'user_id' => $this->user->id,
+            'company_id' => $this->company,
             'url' => $request->url,
             'data' => json_encode($request->get('filters'))
           ]);

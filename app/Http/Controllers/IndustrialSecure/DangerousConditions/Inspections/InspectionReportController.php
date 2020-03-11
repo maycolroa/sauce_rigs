@@ -10,12 +10,15 @@ use App\Models\IndustrialSecure\DangerousConditions\Inspections\Inspection;
 use App\Jobs\IndustrialSecure\DangerousConditions\Inspections\InspectionReportExportJob;
 use App\Inform\IndustrialSecure\DangerousConditions\Inspections\InformManagerInspections;
 use App\Models\General\Module;
+use App\Traits\Filtertrait;
 use Carbon\Carbon;
 use Validator;
 use DB;
 
 class InspectionReportController extends Controller
 {
+    use Filtertrait;
+
     /**
      * creates and instance and middlewares are checked
      */
@@ -100,7 +103,9 @@ class InspectionReportController extends Controller
         else
           $consultas->groupBy('area', 'headquarter', 'numero_inspecciones');
 
-        $filters = $request->get('filters');
+        $url = "/industrialsecure/dangerousconditions/inspection/report";
+
+        $filters = COUNT($request->get('filters')) > 0 ? $request->get('filters') : $this->filterDefaultValues($this->user->id, $url);
 
         if (COUNT($filters) > 0)
         {
@@ -143,15 +148,30 @@ class InspectionReportController extends Controller
 
     public function getTotals(Request $request)
     {
-        $headquarters = $this->getValuesForMultiselect($request->headquarters);
-        $areas = $this->getValuesForMultiselect($request->areas);
-        $themes = $this->getValuesForMultiselect($request->themes);
-        $filtersType = $request->filtersType;
+        $url = "/industrialsecure/dangerousconditions/inspection/report";
+        $init = true;
+        $filters = [];
+
+        if ($request->has('filtersType'))
+            $init = false;
+        else 
+            $filters = $this->filterDefaultValues($this->user->id, $url);
+
+        $headquarters = !$init ? $this->getValuesForMultiselect($request->headquarters) : (isset($filters['headquarters']) ? $this->getValuesForMultiselect($filters['headquarters']) : []);
+        
+        $areas = !$init ? $this->getValuesForMultiselect($request->areas) : (isset($filters['areas']) ? $this->getValuesForMultiselect($filters['areas']) : []);
+        
+        $themes = !$init ? $this->getValuesForMultiselect($request->themes) : (isset($filters['themes']) ? $this->getValuesForMultiselect($filters['themes']) : []);
+
+        $filtersType = !$init ? $request->filtersType : (isset($filters['filtersType']) ? $filters['filtersType'] : null);
+
+        $datesF = !$init ? $request->dateRange : (isset($filters['dateRange']) ? $filters['dateRange'] : null);
+
         $dates = [];
 
-        if (isset($request->dateRange) && $request->dateRange)
+        if (isset($datesF) && $datesF)
         {
-            $dates_request = explode('/', $request->dateRange);
+            $dates_request = explode('/', $datesF);
 
             if (COUNT($dates_request) == 2)
             {
@@ -279,15 +299,30 @@ class InspectionReportController extends Controller
 
     public function reportDinamic(Request $request)
     {
-      $headquarters = $this->getValuesForMultiselect($request->headquarters);
-      $areas = $this->getValuesForMultiselect($request->areas);
-      $themes = $this->getValuesForMultiselect($request->themes);
-      $filtersType = $request->filtersType;
+      $url = "/industrialsecure/dangerousconditions/inspection/report";
+      $init = true;
+      $filters = [];
+
+      if ($request->has('filtersType'))
+          $init = false;
+      else 
+          $filters = $this->filterDefaultValues($this->user->id, $url);
+
+      $headquarters = !$init ? $this->getValuesForMultiselect($request->headquarters) : (isset($filters['headquarters']) ? $this->getValuesForMultiselect($filters['headquarters']) : []);
+        
+      $areas = !$init ? $this->getValuesForMultiselect($request->areas) : (isset($filters['areas']) ? $this->getValuesForMultiselect($filters['areas']) : []);
+      
+      $themes = !$init ? $this->getValuesForMultiselect($request->themes) : (isset($filters['themes']) ? $this->getValuesForMultiselect($filters['themes']) : []);
+
+      $filtersType = !$init ? $request->filtersType : (isset($filters['filtersType']) ? $filters['filtersType'] : null);
+
       $dates = [];
 
-      if (isset($request->dateRange) && $request->dateRange)
+      $datesF = !$init ? $request->dateRange : (isset($filters['dateRange']) ? $filters['dateRange'] : null);
+
+      if (isset($datesF) && $datesF)
       {
-          $dates_request = explode('/', $request->dateRange);
+          $dates_request = explode('/', $datesF);
 
           if (COUNT($dates_request) == 2)
           {

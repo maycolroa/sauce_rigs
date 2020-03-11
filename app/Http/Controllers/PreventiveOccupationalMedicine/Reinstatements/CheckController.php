@@ -13,6 +13,7 @@ use App\Http\Requests\PreventiveOccupationalMedicine\Reinstatements\CheckRequest
 use App\Jobs\PreventiveOccupationalMedicine\Reinstatements\CheckExportJob;
 use Illuminate\Support\Facades\Storage;
 use App\Traits\ConfigurableFormTrait;
+use App\Traits\Filtertrait;
 use Carbon\Carbon;
 use DB;
 use PDF;
@@ -21,6 +22,7 @@ use Datetime;
 class CheckController extends Controller
 { 
     use ConfigurableFormTrait;
+    use Filtertrait;
 
     /**
      * creates and instance and middlewares are checked
@@ -74,7 +76,9 @@ class CheckController extends Controller
         if ($request->employee_id)
             $checks->where('sau_reinc_checks.employee_id', '=', $request->employee_id);
 
-        $filters = $request->get('filters');
+        $url = "/preventiveoccupationalmedicine/reinstatements/checks";
+
+        $filters = COUNT($request->get('filters')) > 0 ? $request->get('filters') : $this->filterDefaultValues($this->user->id, $url);
 
         if (COUNT($filters) > 0)
         {

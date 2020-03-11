@@ -7,9 +7,12 @@ use Illuminate\Http\Request;
 use Carbon\Carbon;
 use App\Inform\PreventiveOccupationalMedicine\BiologicalMonitoring\MusculoskeletalAnalysis\InformManagerMusculoskeletalAnalysis;
 use App\Inform\PreventiveOccupationalMedicine\BiologicalMonitoring\MusculoskeletalAnalysis\InformIndividualManagerMusculoskeletalAnalysis;
+use App\Traits\Filtertrait;
 
 class MusculoskeletalAnalysisInformController extends Controller
 {
+    use Filtertrait;
+
     /**
      * creates and instance and middlewares are checked
      */
@@ -38,16 +41,27 @@ class MusculoskeletalAnalysisInformController extends Controller
      */
     public function data(Request $request)
     {
-        $consolidatedPersonalRiskCriterion = $this->getValuesForMultiselect($request->consolidatedPersonalRiskCriterion);
-        $branchOffice = $this->getValuesForMultiselect($request->branchOffice);
-        $companies = $this->getValuesForMultiselect($request->companies);
-        $filtersType = $request->filtersType;
+        $url = "/preventiveoccupationalmedicine/biologicalmonitoring/musculoskeletalanalysis/informs";
+        $init = true;
+        $filters = [];
+
+        if ($request->has('filtersType'))
+            $init = false;
+        else 
+            $filters = $this->filterDefaultValues($this->user->id, $url);
+
+        $consolidatedPersonalRiskCriterion = !$init ? $this->getValuesForMultiselect($request->consolidatedPersonalRiskCriterion) : (isset($filters['consolidatedPersonalRiskCriterion']) ? $this->getValuesForMultiselect($filters['consolidatedPersonalRiskCriterion']) : []);
+        $branchOffice = !$init ? $this->getValuesForMultiselect($request->branchOffice) : (isset($filters['branchOffice']) ? $this->getValuesForMultiselect($filters['branchOffice']) : []);
+        $companies = !$init ? $this->getValuesForMultiselect($request->companies) : (isset($filters['companies']) ? $this->getValuesForMultiselect($filters['companies']) : []);
+        $filtersType = !$init ? $request->filtersType : (isset($filters['filtersType']) ? $filters['filtersType'] : null);
 
         $dates = [];
+
+        $datesF = !$init ? $request->dateRange : (isset($filters['dateRange']) ? $filters['dateRange'] : null);
         
-        if (isset($request->dateRange) && $request->dateRange)
+        if (isset($datesF) && $datesF)
         {
-            $dates_request = explode('/', $request->dateRange);
+            $dates_request = explode('/', $datesF);
 
             if (COUNT($dates_request) == 2)
             {

@@ -15,10 +15,13 @@ use App\Http\Requests\IndustrialSecure\DangerousConditions\Reports\SaveQualifica
 use App\Jobs\IndustrialSecure\DangerousConditions\Reports\ReportExportJob;
 use App\Facades\ActionPlans\Facades\ActionPlan;
 use Validator;
+use App\Traits\Filtertrait;
 use DB;
 
 class ReportController extends Controller
 {
+    use Filtertrait;
+
     /**
      * creates and instance and middlewares are checked
      */
@@ -65,7 +68,9 @@ class ReportController extends Controller
         ->join('sau_ph_conditions_types', 'sau_ph_conditions_types.id', 'sau_ph_conditions.condition_type_id')
         ->join('sau_employees_headquarters', 'sau_employees_headquarters.id', 'sau_ph_reports.employee_headquarter_id');
 
-        $filters = $request->get('filters');
+        $url = "/industrialsecure/reports";
+
+        $filters = COUNT($request->get('filters')) > 0 ? $request->get('filters') : $this->filterDefaultValues($this->user->id, $url);
 
         if (COUNT($filters) > 0)
         {

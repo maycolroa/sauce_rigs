@@ -12,10 +12,13 @@ use App\Jobs\PreventiveOccupationalMedicine\BiologicalMonitoring\RespiratoryAnal
 use App\Jobs\PreventiveOccupationalMedicine\BiologicalMonitoring\RespiratoryAnalysis\RespiratoryAnalysisExportJob;
 use App\Inform\PreventiveOccupationalMedicine\BiologicalMonitoring\RespiratoryAnalysis\InformIndividualManagerRespiratoryAnalysis;
 use Carbon\Carbon;
+use App\Traits\Filtertrait;
 use DB;
 
 class RespiratoryAnalysisController extends Controller
 {
+    use Filtertrait;
+
     /**
      * creates and instance and middlewares are checked
      */
@@ -49,8 +52,10 @@ class RespiratoryAnalysisController extends Controller
        $data = RespiratoryAnalysis::select(
          'sau_bm_respiratory_analysis.*'
         );
+       
+       $url = "/preventiveoccupationalmedicine/biologicalmonitoring/respiratoryanalysis";
 
-        $filters = $request->get('filters');
+        $filters = COUNT($request->get('filters')) > 0 ? $request->get('filters') : $this->filterDefaultValues($this->user->id, $url);
 
         if (COUNT($filters) > 0)
         {

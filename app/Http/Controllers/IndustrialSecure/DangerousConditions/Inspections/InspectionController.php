@@ -14,10 +14,13 @@ use App\Models\Administrative\Areas\EmployeeArea;
 use App\Http\Requests\IndustrialSecure\DangerousConditions\Inspections\InspectionRequest;
 use App\Jobs\IndustrialSecure\DangerousConditions\Inspections\InspectionExportJob;
 use Carbon\Carbon;
+use App\Traits\Filtertrait;
 use DB;
 
 class InspectionController extends Controller
 {
+    use Filtertrait;
+    
     /**
      * creates and instance and middlewares are checked
      */
@@ -60,13 +63,15 @@ class InspectionController extends Controller
             ->leftJoin('sau_employees_areas', 'sau_employees_areas.id', 'sau_ph_inspection_area.employee_area_id')
             ->groupBy('sau_ph_inspections.id', 'sau_ph_inspections.name');
 
-        $filters = $request->get('filters');
+        $url = "/industrialsecure/dangerousconditions/inspections";
+
+        $filters = COUNT($request->get('filters')) > 0 ? $request->get('filters') : $this->filterDefaultValues($this->user->id, $url);
 
         if (COUNT($filters) > 0)
         {
             $inspections->inInspections($this->getValuesForMultiselect($filters["inspections"]), $filters['filtersType']['inspections']);
 
-            if (isset($filters["areas"]))
+            if (isset($filters["headquarters"]))
             {
                 $inspections->inHeadquarters($this->getValuesForMultiselect($filters["headquarters"]), $filters['filtersType']['headquarters']);
             }

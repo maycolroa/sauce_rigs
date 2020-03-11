@@ -9,10 +9,12 @@ use App\Models\IndustrialSecure\DangerMatrix\QualificationCompany;
 use App\Models\IndustrialSecure\DangerMatrix\DangerMatrix;
 use App\Jobs\IndustrialSecure\DangerMatrix\DangerMatrixReportExportJob;
 use App\Traits\DangerMatrixTrait;
+use App\Traits\Filtertrait;
 
 class DangerMatrixReportController extends Controller
 {
     use DangerMatrixTrait;
+    use Filtertrait;
 
     /**
      * creates and instance and middlewares are checked
@@ -35,6 +37,10 @@ class DangerMatrixReportController extends Controller
     {
         $data = [];
 
+        $url = "/industrialsecure/dangermatrix/report";
+        $init = true;
+        $filters = [];
+
         $conf = QualificationCompany::select('qualification_id')->first();
 
         if ($conf && $conf->qualification)
@@ -42,21 +48,32 @@ class DangerMatrixReportController extends Controller
         else
             $conf = $this->getDefaultCalificationDm();
 
+        if ($request->has('filtersType'))
+            $init = false;
+        else 
+            $filters = $this->filterDefaultValues($this->user->id, $url);
+
         if ($conf)
         {
             $matriz_calification = $this->getMatrixCalification($conf);
             $data = $matriz_calification;
 
             /** FIltros */
-            $regionals = $this->getValuesForMultiselect($request->regionals);
-            $headquarters = $this->getValuesForMultiselect($request->headquarters);
-            $areas = $this->getValuesForMultiselect($request->areas);
-            $processes = $this->getValuesForMultiselect($request->processes);
-            $macroprocesses = $this->getValuesForMultiselect($request->macroprocesses);
-            $dangers = $this->getValuesForMultiselect($request->dangers);
-            $dangerDescription = $this->getValuesForMultiselect($request->dangerDescription);
+            $regionals = !$init ? $this->getValuesForMultiselect($request->regionals) : (isset($filters['regionals']) ? $this->getValuesForMultiselect($filters['regionals']) : []);
+            
+            $headquarters = !$init ? $this->getValuesForMultiselect($request->headquarters) : (isset($filters['headquarters']) ? $this->getValuesForMultiselect($filters['headquarters']) : []);
+            
+            $areas = !$init ? $this->getValuesForMultiselect($request->areas) : (isset($filters['areas']) ? $this->getValuesForMultiselect($filters['areas']) : []);
+            
+            $processes = !$init ? $this->getValuesForMultiselect($request->processes) : (isset($filters['processes']) ? $this->getValuesForMultiselect($filters['processes']) : []);
+            
+            $macroprocesses = !$init ? $this->getValuesForMultiselect($request->macroprocesses) : (isset($filters['macroprocesses']) ? $this->getValuesForMultiselect($filters['macroprocesses']) : []);
+            
+            $dangers = !$init ? $this->getValuesForMultiselect($request->dangers) : (isset($filters['dangers']) ? $this->getValuesForMultiselect($filters['dangers']) : []);
+            
+            $dangerDescription = !$init ? $this->getValuesForMultiselect($request->dangerDescription) : (isset($filters['dangerDescription']) ? $this->getValuesForMultiselect($filters['dangerDescription']) : []);
             //$matrix = $this->getValuesForMultiselect($request->matrix);
-            $filtersType = $request->filtersType;
+            $filtersType = !$init ? $request->filtersType : (isset($filters['filtersType']) ? $filters['filtersType'] : null);
             /***********************************************/
 
             $dangersMatrix = DangerMatrix::select('sau_dangers_matrix.*')
@@ -137,16 +154,31 @@ class DangerMatrixReportController extends Controller
     */
     public function reportDangerTable(Request $request)
     {
+        $url = "/industrialsecure/dangermatrix/report";
+        $init = true;
+        $filters = [];
+
+        if ($request->has('filtersType'))
+            $init = false;
+        else 
+            $filters = $this->filterDefaultValues($this->user->id, $url);
+
         /** FIltros */
-        $regionals = $this->getValuesForMultiselect($request->regionals);
-        $headquarters = $this->getValuesForMultiselect($request->headquarters);
-        $areas = $this->getValuesForMultiselect($request->areas);
-        $processes = $this->getValuesForMultiselect($request->processes);
-        $macroprocesses = $this->getValuesForMultiselect($request->macroprocesses);
-        $dangers = $this->getValuesForMultiselect($request->dangers);
-        $dangerDescription = $this->getValuesForMultiselect($request->dangerDescription);
+        $regionals = !$init ? $this->getValuesForMultiselect($request->regionals) : (isset($filters['regionals']) ? $this->getValuesForMultiselect($filters['regionals']) : []);
+            
+        $headquarters = !$init ? $this->getValuesForMultiselect($request->headquarters) : (isset($filters['headquarters']) ? $this->getValuesForMultiselect($filters['headquarters']) : []);
+        
+        $areas = !$init ? $this->getValuesForMultiselect($request->areas) : (isset($filters['areas']) ? $this->getValuesForMultiselect($filters['areas']) : []);
+        
+        $processes = !$init ? $this->getValuesForMultiselect($request->processes) : (isset($filters['processes']) ? $this->getValuesForMultiselect($filters['processes']) : []);
+        
+        $macroprocesses = !$init ? $this->getValuesForMultiselect($request->macroprocesses) : (isset($filters['macroprocesses']) ? $this->getValuesForMultiselect($filters['macroprocesses']) : []);
+        
+        $dangers = !$init ? $this->getValuesForMultiselect($request->dangers) : (isset($filters['dangers']) ? $this->getValuesForMultiselect($filters['dangers']) : []);
+        
+        $dangerDescription = !$init ? $this->getValuesForMultiselect($request->dangerDescription) : (isset($filters['dangerDescription']) ? $this->getValuesForMultiselect($filters['dangerDescription']) : []);
         //$matrix = $this->getValuesForMultiselect($request->matrix);
-        $filtersType = $request->filtersType;
+        $filtersType = !$init ? $request->filtersType : (isset($filters['filtersType']) ? $filters['filtersType'] : null);
         /***********************************************/
 
         $dangers = DangerMatrix::select(

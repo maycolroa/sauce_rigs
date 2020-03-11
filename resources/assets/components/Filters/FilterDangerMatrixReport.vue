@@ -242,7 +242,7 @@ export default {
                         })
 
                         setTimeout(() => {
-                            this.$emit('input', this.filtersSelected)
+                            //this.$emit('input', this.filtersSelected)
                             this.ready = true
                         }, 2000)
                     }

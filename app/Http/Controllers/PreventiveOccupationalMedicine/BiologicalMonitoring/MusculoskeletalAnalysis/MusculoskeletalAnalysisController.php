@@ -12,10 +12,13 @@ use App\Jobs\PreventiveOccupationalMedicine\BiologicalMonitoring\Musculoskeletal
 use App\Jobs\PreventiveOccupationalMedicine\BiologicalMonitoring\MusculoskeletalAnalysis\MusculoskeletalAnalysisExportJob;
 use App\Inform\PreventiveOccupationalMedicine\BiologicalMonitoring\MusculoskeletalAnalysis\InformIndividualManagerMusculoskeletalAnalysis;
 use Carbon\Carbon;
+use App\Traits\Filtertrait;
 use DB;
 
 class MusculoskeletalAnalysisController extends Controller
 {
+    use Filtertrait;
+
     /**
      * creates and instance and middlewares are checked
      */
@@ -49,8 +52,10 @@ class MusculoskeletalAnalysisController extends Controller
        $data = MusculoskeletalAnalysis::select(
          'sau_bm_musculoskeletal_analysis.*'
         );
+       
+       $url = "/preventiveoccupationalmedicine/biologicalmonitoring/musculoskeletalanalysis";
 
-        $filters = $request->get('filters');
+        $filters = COUNT($request->get('filters')) > 0 ? $request->get('filters') : $this->filterDefaultValues($this->user->id, $url);
 
         if (COUNT($filters) > 0)
         {

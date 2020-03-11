@@ -13,11 +13,14 @@ use App\Models\LegalAspects\Contracts\Objective;
 use App\Models\LegalAspects\Contracts\Subobjective;
 use App\Models\LegalAspects\Contracts\Item;
 use App\Jobs\LegalAspects\Contracts\Evaluations\EvaluationExportJob;
+use App\Traits\Filtertrait;
 use Carbon\Carbon;
 use DB;
 
 class EvaluationController extends Controller
 {
+    use Filtertrait;
+    
     /**
      * creates and instance and middlewares are checked
      */
@@ -56,7 +59,9 @@ class EvaluationController extends Controller
             ->join('sau_ct_subobjectives', 'sau_ct_subobjectives.objective_id', 'sau_ct_objectives.id')
             ->groupBy('sau_ct_evaluations.id');
 
-        $filters = $request->get('filters');
+        $url = "/legalaspects/evaluations";
+
+        $filters = COUNT($request->get('filters')) > 0 ? $request->get('filters') : $this->filterDefaultValues($this->user->id, $url);
 
         if (isset($filters["evaluationsObjectives"]))
           $evaluations->inObjectives($this->getValuesForMultiselect($filters["evaluationsObjectives"]), $filters['filtersType']['evaluationsObjectives']);

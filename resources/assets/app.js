@@ -36,9 +36,9 @@ Vue.use(VueRouterMiddleware, {
 Vue.use(VueAnalytics, {
   id: process.env.MIX_GOOGLE_ANALYTICS_ID,
   router,
-  debug: {
+  /*debug: {
     sendHitTask: process.env.NODE_ENV === 'production'
-  }
+  }*/
 })
 
 // Global RTL flag

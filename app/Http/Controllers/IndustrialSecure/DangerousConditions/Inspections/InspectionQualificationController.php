@@ -270,8 +270,6 @@ class InspectionQualificationController extends Controller
 
         $pdf->setPaper('A4', 'landscape');
 
-        \Log::info($inspections);
-
         return $pdf->download('inspeccion.pdf');
     }
 

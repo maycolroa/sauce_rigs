@@ -31,8 +31,6 @@ trait LegalMatrixTrait
         if ($law_id)
             $articles->where('sau_lm_articles.law_id', $law_id);
 
-        \Log::info($articles->toSql());
-
         return $articles->get();
     }
 

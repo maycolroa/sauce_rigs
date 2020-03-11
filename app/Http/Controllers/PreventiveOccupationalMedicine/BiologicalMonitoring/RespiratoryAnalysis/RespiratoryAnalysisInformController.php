@@ -7,9 +7,12 @@ use Illuminate\Http\Request;
 use Carbon\Carbon;
 use App\Inform\PreventiveOccupationalMedicine\BiologicalMonitoring\RespiratoryAnalysis\InformManagerRespiratoryAnalysis;
 use App\Inform\PreventiveOccupationalMedicine\BiologicalMonitoring\RespiratoryAnalysis\InformIndividualManagerRespiratoryAnalysis;
+use App\Traits\Filtertrait;
 
 class RespiratoryAnalysisInformController extends Controller
 {
+    use Filtertrait;
+    
     /**
      * creates and instance and middlewares are checked
      */
@@ -38,16 +41,30 @@ class RespiratoryAnalysisInformController extends Controller
      */
     public function data(Request $request)
     {
-        $regional = $this->getValuesForMultiselect($request->regional);
-        $deal = $this->getValuesForMultiselect($request->deal);
-        $interpretation = $this->getValuesForMultiselect($request->interpretation);
-        $filtersType = $request->filtersType;
+        $url = "/preventiveoccupationalmedicine/biologicalmonitoring/respiratoryanalysis/informs";
+        $init = true;
+        $filters = [];
+
+        if ($request->has('filtersType'))
+            $init = false;
+        else 
+            $filters = $this->filterDefaultValues($this->user->id, $url);
+
+        $regional = !$init ? $this->getValuesForMultiselect($request->regional) : (isset($filters['regional']) ? $this->getValuesForMultiselect($filters['regional']) : []);
+
+        $deal = !$init ? $this->getValuesForMultiselect($request->deal) : (isset($filters['deal']) ? $this->getValuesForMultiselect($filters['deal']) : []);
+        
+        $interpretation = !$init ? $this->getValuesForMultiselect($request->interpretation) : (isset($filters['interpretation']) ? $this->getValuesForMultiselect($filters['interpretation']) : []);
+        
+        $filtersType = !$init ? $request->filtersType : (isset($filters['filtersType']) ? $filters['filtersType'] : null);
 
         $dates = [];
+
+        $datesF = !$init ? $request->dateRange : (isset($filters['dateRange']) ? $filters['dateRange'] : null);
         
-        if (isset($request->dateRange) && $request->dateRange)
+        if (isset($datesF) && $datesF)
         {
-            $dates_request = explode('/', $request->dateRange);
+            $dates_request = explode('/', $datesF);
 
             if (COUNT($dates_request) == 2)
             {

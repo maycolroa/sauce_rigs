@@ -21,6 +21,7 @@ use App\Jobs\LegalAspects\Contracts\Contractor\ContractorExportJob;
 use App\Facades\ActionPlans\Facades\ActionPlan;
 use App\Traits\ContractTrait;
 use App\Traits\UserTrait;
+use App\Traits\Filtertrait;
 use Carbon\Carbon;
 use Validator;
 use DB;
@@ -29,6 +30,7 @@ class ContractLesseeController extends Controller
 {
     use UserTrait;
     use ContractTrait;
+    use Filtertrait;
 
     /**
      * creates and instance and middlewares are checked
@@ -72,7 +74,9 @@ class ContractLesseeController extends Controller
                     )
                     ->leftJoin('sau_ct_list_check_resumen', 'sau_ct_list_check_resumen.contract_id', 'sau_ct_information_contract_lessee.id');
 
-        $filters = $request->get('filters');
+        $url = "/legalaspects/contractor";
+
+        $filters = COUNT($request->get('filters')) > 0 ? $request->get('filters') : $this->filterDefaultValues($this->user->id, $url);
 
         if (COUNT($filters) > 0)
         {

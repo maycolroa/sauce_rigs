@@ -37,10 +37,8 @@ class SaveQualificationRequest extends FormRequest
 
         if ($this->has('themes'))
         {
-            \Log::info($this->input('themes'));
             foreach ($this->input('themes') as $keyTheme => $value)
             {
-                \Log::info($value);
                 foreach ($value as $keyItem => $activities)
                 {
                     $data['themes'][$keyTheme]['items'][$keyItem] = json_decode($activities, true);

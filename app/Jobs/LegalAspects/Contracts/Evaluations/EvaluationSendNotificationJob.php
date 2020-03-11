@@ -49,11 +49,10 @@ class EvaluationSendNotificationJob implements ShouldQueue
       {
         $recipients = $evaluationContract->toArray();
         $recipients = User::active()->whereIn('id', $recipients)->get();
-        \Log::info($recipients);
         $recipients = $recipients->filter(function ($recipient, $index) {
           return $recipient->can('contracts_receive_notifications', $this->company_id);
         });
-        \Log::info($recipients);
+        
         if (!$recipients->isEmpty())
         {
           $nameExcel = 'export/1/evaluaciones_resultados_'.date("YmdHis").'.xlsx';
