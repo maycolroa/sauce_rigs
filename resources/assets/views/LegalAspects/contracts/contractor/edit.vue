@@ -18,6 +18,7 @@
 				        :contract-classifications="contractClassifications"
                 :cancel-url="{ name: 'legalaspects-contractor'}"
                 highRiskTypeUrl="/selects/contracts/highRisk"
+                activitiesUrl="/selects/contracts/ctActivities"
                 :users-responsibles="usersResponsibles"
                 :si-no="siNo"/>
         </b-card-body>

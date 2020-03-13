@@ -63,7 +63,7 @@ class ContractLesseeInformation extends Model
 
     public function activities()
     {
-        return $this->belongsToMany(Activity::class, 'contract_id');
+        return $this->belongsToMany(ActivityContract::class, 'sau_ct_contracts_activities', 'contract_id', 'activity_id');
     }
 
     public function multiselect()

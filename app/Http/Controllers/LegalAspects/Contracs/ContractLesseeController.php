@@ -112,6 +112,9 @@ class ContractLesseeController extends Controller
             $risks = ($request->high_risk_work == 'SI') ? $this->getDataFromMultiselect($request->high_risk_type_id) : [];
             $contract->highRiskType()->sync($risks);
 
+            $activitiesContract = ($request->high_risk_work == 'SI') ? $this->getDataFromMultiselect($request->activity_id) : [];
+            $contract->activities()->sync($activitiesContract);
+
             $user = $this->createUser($request);
 
             if ($user == $this->respondHttp500() || $user == null) {
@@ -158,6 +161,16 @@ class ContractLesseeController extends Controller
 
             $contract->multiselect_high_risk_type = $high_risk_type_id;
             $contract->high_risk_type_id = $high_risk_type_id;
+
+            $activity_id = [];
+
+            foreach ($contract->activities as $key => $value)
+            {                
+                array_push($activity_id, $value->multiselect());
+            }
+
+            $contract->multiselect_activity = $activity_id;
+            $contract->activity_id = $activity_id;
 
             $users_responsibles = [];
 
@@ -228,6 +241,9 @@ class ContractLesseeController extends Controller
                 $risks = ($request->high_risk_work == 'SI') ? $this->getDataFromMultiselect($request->high_risk_type_id) : [];
                 $contract->highRiskType()->sync($risks);
 
+                $activitiesContract = ($request->high_risk_work == 'SI') ? $this->getDataFromMultiselect($request->activity_id) : [];
+                $contract->activities()->sync($activitiesContract);
+
                 $responsibles = $this->getDataFromMultiselect($request->users_responsibles);
                 $contract->responsibles()->sync($responsibles);
             }
@@ -254,6 +270,7 @@ class ContractLesseeController extends Controller
 
         } catch (\Exception $e) {
             DB::rollback();
+            \Log::info($e->getMessage());
             //return $e->getMessage();
             return $this->respondHttp500();
         }

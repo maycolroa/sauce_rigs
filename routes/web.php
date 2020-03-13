@@ -205,7 +205,8 @@ Route::middleware(['auth'])->group(function () {
         Route::prefix('contracts')->group(function () {
           Route::post('sectionCategoryItems', 'LegalAspects\Contracs\SectionCategoryItemController@multiselect');
           Route::post('highRisk', 'LegalAspects\Contracs\ContractLesseeController@multiselectHighRisk');
-          Route::post('usersResponsibles', 'LegalAspects\Contracs\ContractLesseeController@multiselectUsers');
+          Route::post('usersResponsibles', 'LegalAspects\Contracs\ContractLesseeController@multiselectUsers');          
+          Route::post('ctActivities', 'LegalAspects\Contracs\ContractActivityController@multiselect');
         });
 
         Route::prefix('industrialSecurity')->group(function () {

@@ -212,8 +212,8 @@ class ContractActivityController extends Controller
         else
         {
             $activities = ActivityContract::selectRaw("
-                sau_dm_activities.id as id,
-                sau_dm_activities.name as name
+                sau_ct_activities.id as id,
+                sau_ct_activities.name as name
             ")->pluck('id', 'name');
         
             return $this->multiSelectFormat($activities);
