@@ -423,6 +423,8 @@ Route::middleware(['auth'])->group(function () {
       Route::ApiResource('evaluationContract', 'LegalAspects\Contracs\EvaluationContractController');
       Route::post('evaluationContract/sendNotification/{contract}', 'LegalAspects\Contracs\EvaluationContractController@sendNotification');
       Route::post('evaluationContractHistory/data', 'LegalAspects\Contracs\EvaluationContractHistoryController@data');
+      Route::post('activityContract/data', 'LegalAspects\Contracs\ContractActivityController@data');
+      Route::ApiResource('activityContract', 'LegalAspects\Contracs\ContractActivityController');
 
       Route::prefix('legalMatrix')->group(function () {
 

@@ -477,6 +477,58 @@ export default [
         }
     },
     {
+    name: 'legalaspects-contracts-activities',
+    fields: [
+        { name: 'sau_ct_activities.id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true },
+        { name: 'sau_ct_activities.name', data: 'name', title: 'Nombre', sortable: true, searchable: true, detail: false, key: false },
+        { name: '', data: 'controlls', title: 'Controles', sortable: false, searchable: false, detail: false, key: false },
+    ],
+    'controlls': [{
+        type: 'push',
+        buttons: [{
+        config: {
+            color: 'outline-success',
+            borderless: true,
+            icon: 'ion ion-md-create',
+            title: 'Editar'
+        },
+        data: {
+            routePush: { name: 'legalaspects-contracts-activities-edit' },
+            id: 'id',
+        },
+        permission: 'contracts_activities_u'
+        }, {
+        config: {
+            color: 'outline-info',
+            borderless: true,
+            icon: 'ion ion-md-eye',
+            title: 'Ver'
+        },
+        data: {
+            routePush: { name: 'legalaspects-contracts-activities-view' },
+            id: 'id',
+        },
+        permission: 'contracts_activities_r'
+        }]
+    },
+    {
+        type: 'base',
+        buttons: [{
+        name: 'delete',
+        data: {
+            action: '/legalAspects/activityContract/',
+            id: 'id',
+            messageConfirmation: 'Esta seguro de borrar la actividad __name__'
+        },
+        permission: 'contracts_activities_d'
+        }],
+    }],
+    configuration: {
+        urlData: '/legalAspects/activityContract/data',
+        filterColumns: true,
+    }
+},
+    {
         name: 'legalaspects-lm-interests',
         fields: [
             { name: 'sau_lm_interests.id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true },
