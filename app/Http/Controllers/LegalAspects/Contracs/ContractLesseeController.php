@@ -18,6 +18,7 @@ use App\Http\Requests\LegalAspects\Contracts\ContractRequest;
 use App\Http\Requests\LegalAspects\Contracts\ListCheckItemsRequest;
 use App\Jobs\LegalAspects\Contracts\ListCheck\ListCheckContractExportJob;
 use App\Jobs\LegalAspects\Contracts\Contractor\ContractorExportJob;
+use App\Jobs\LegalAspects\Contracts\Contractor\NotifyResponsibleContractJob;
 use App\Facades\ActionPlans\Facades\ActionPlan;
 use App\Models\Administrative\Users\User;
 use App\Traits\ContractTrait;
@@ -138,6 +139,8 @@ class ContractLesseeController extends Controller
             $contract->responsibles()->sync($responsibles);
 
             DB::commit();
+
+            NotifyResponsibleContractJob::dispatch($responsibles, $request->social_reason, $this->company);
 
         } catch (\Exception $e) {
             DB::rollback();
@@ -277,6 +280,8 @@ class ContractLesseeController extends Controller
             $this->reloadLiskCheckResumen($contract);
 
             DB::commit();
+
+            NotifyResponsibleContractJob::dispatch($responsibles, $request->social_reason, $this->company);
 
         } catch (\Exception $e) {
             DB::rollback();
