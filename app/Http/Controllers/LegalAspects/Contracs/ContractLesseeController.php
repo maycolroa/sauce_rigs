@@ -19,6 +19,7 @@ use App\Http\Requests\LegalAspects\Contracts\ListCheckItemsRequest;
 use App\Jobs\LegalAspects\Contracts\ListCheck\ListCheckContractExportJob;
 use App\Jobs\LegalAspects\Contracts\Contractor\ContractorExportJob;
 use App\Facades\ActionPlans\Facades\ActionPlan;
+use App\Models\Administrative\Users\User;
 use App\Traits\ContractTrait;
 use App\Traits\UserTrait;
 use App\Traits\Filtertrait;
@@ -115,10 +116,19 @@ class ContractLesseeController extends Controller
             $activitiesContract = ($request->high_risk_work == 'SI') ? $this->getDataFromMultiselect($request->activity_id) : [];
             $contract->activities()->sync($activitiesContract);
 
-            $user = $this->createUser($request);
+            $user = User::where('email', trim(strtolower($request->email)))->first();
 
-            if ($user == $this->respondHttp500() || $user == null) {
-                return $this->respondHttp500();
+            if (!$user)
+            {
+                $user = $this->createUser($request);
+
+                if ($user == $this->respondHttp500() || $user == null) {
+                    return $this->respondHttp500();
+                }
+            }
+            else
+            {
+                $user->companies()->attach($this->company);
             }
 
             $user->attachRole($this->getIdRole($request->type), $this->team);

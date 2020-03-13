@@ -39,7 +39,7 @@ class ContractRequest extends FormRequest
             if (!$id)
             {
                 $rules['name'] = 'required|string';
-                $rules['email'] = 'required|email|unique:sau_users,email';
+                $rules['email'] = 'required|email';//|unique:sau_users,email';
                 $rules['document'] = 'required';
             }
 
