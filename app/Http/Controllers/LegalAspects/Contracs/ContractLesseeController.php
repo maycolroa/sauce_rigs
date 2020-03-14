@@ -21,9 +21,11 @@ use App\Jobs\LegalAspects\Contracts\Contractor\ContractorExportJob;
 use App\Jobs\LegalAspects\Contracts\Contractor\NotifyResponsibleContractJob;
 use App\Facades\ActionPlans\Facades\ActionPlan;
 use App\Models\Administrative\Users\User;
+use App\Models\General\Company;
 use App\Traits\ContractTrait;
 use App\Traits\UserTrait;
 use App\Traits\Filtertrait;
+use App\Facades\Mail\Facades\NotificationMail;
 use Carbon\Carbon;
 use Validator;
 use DB;
@@ -130,6 +132,17 @@ class ContractLesseeController extends Controller
             else
             {
                 $user->companies()->attach($this->company);
+
+                $company = Company::find($this->company);
+
+                NotificationMail::
+                    subject('Creación de contratista en sauce')
+                    ->message("Usted acaba de ser creado como contratista en la empresa <b>{$company->name}</b>, por favor ingrese a Sauce y seleccione esta empresa para que pueda ingresar su información.")
+                    ->recipients($user)
+                    ->module('contracts')
+                    ->buttons([['text'=>'Ir a Sauce', 'url'=>url("/")]])
+                    ->company($this->company)
+                    ->send();
             }
 
             $user->attachRole($this->getIdRole($request->type), $this->team);
