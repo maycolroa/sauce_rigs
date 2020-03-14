@@ -116,7 +116,11 @@ class ContractLesseeController extends Controller
             $risks = ($request->high_risk_work == 'SI') ? $this->getDataFromMultiselect($request->high_risk_type_id) : [];
             $contract->highRiskType()->sync($risks);
 
-            $activitiesContract = ($request->high_risk_work == 'SI') ? $this->getDataFromMultiselect($request->activity_id) : [];
+            $activitiesContract = [];
+
+            if($request->has('activity_id'))
+                $activitiesContract = $this->getDataFromMultiselect($request->activity_id);
+
             $contract->activities()->sync($activitiesContract);
 
             $user = User::where('email', trim(strtolower($request->email)))->first();
@@ -148,7 +152,11 @@ class ContractLesseeController extends Controller
             $user->attachRole($this->getIdRole($request->type), $this->team);
             $contract->users()->sync($user);
 
-            $responsibles = $this->getDataFromMultiselect($request->users_responsibles);
+            $responsibles = [];
+
+            if($request->has('users_responsibles'))
+                $responsibles = $this->getDataFromMultiselect($request->users_responsibles);
+
             $contract->responsibles()->sync($responsibles);
 
             DB::commit();
@@ -267,10 +275,18 @@ class ContractLesseeController extends Controller
                 $risks = ($request->high_risk_work == 'SI') ? $this->getDataFromMultiselect($request->high_risk_type_id) : [];
                 $contract->highRiskType()->sync($risks);
 
-                $activitiesContract = ($request->high_risk_work == 'SI') ? $this->getDataFromMultiselect($request->activity_id) : [];
+                $activitiesContract = [];
+
+                if($request->has('activity_id'))
+                    $activitiesContract = $this->getDataFromMultiselect($request->activity_id);
+
                 $contract->activities()->sync($activitiesContract);
 
-                $responsibles = $this->getDataFromMultiselect($request->users_responsibles);
+                $responsibles = [];
+
+                if($request->has('users_responsibles'))
+                    $responsibles = $this->getDataFromMultiselect($request->users_responsibles);
+
                 $contract->responsibles()->sync($responsibles);
             }
 
