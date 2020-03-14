@@ -13,6 +13,7 @@ use App\Jobs\PreventiveOccupationalMedicine\BiologicalMonitoring\AudiometryImpor
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\PreventiveOccupationalMedicine\BiologicalMonitoring\AudiometryImportTemplate;
 use App\Traits\AudiometryTrait;
+use App\Traits\Filtertrait;
 
 class AudiometryController extends Controller
 {
@@ -30,6 +31,8 @@ class AudiometryController extends Controller
     }
 
     use AudiometryTrait;
+    use Filtertrait;
+
     /**
      * Display index.
      *
@@ -56,13 +59,15 @@ class AudiometryController extends Controller
         )
         ->join('sau_employees','sau_employees.id','sau_bm_audiometries.employee_id')
         ->join('sau_employees_regionals','sau_employees_regionals.id','sau_employees.employee_regional_id');
+
+        $url = "/preventiveoccupationalmedicine/biologicalmonitoring/audiometry";
         
         if ($request->has('modelId') && $request->get('modelId'))
         {
           $audiometry->where('sau_bm_audiometries.employee_id', '=', $request->get('modelId'));
         }
 
-        $filters = $request->get('filters');
+        $filters = COUNT($request->get('filters')) > 0 ? $request->get('filters') : $this->filterDefaultValues($this->user->id, $url);
 
         if (COUNT($filters) > 0)
         {

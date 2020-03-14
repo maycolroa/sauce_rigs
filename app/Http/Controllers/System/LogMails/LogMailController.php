@@ -6,11 +6,14 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Vuetable\Facades\Vuetable;
 use App\Models\System\LogMails\LogMail;
+use App\Traits\Filtertrait;
 use Carbon\Carbon;
 use DB;
 
 class LogMailController extends Controller
 {
+    use Filtertrait;
+
     /**
      * creates and instance and middlewares are checked
      */
@@ -47,7 +50,9 @@ class LogMailController extends Controller
                 ->join('sau_modules', 'sau_modules.id', 'sau_log_mails.module_id')
                 ->leftJoin('sau_companies', 'sau_companies.id', 'sau_log_mails.company_id');
 
-        $filters = $request->get('filters');
+        $url = "/system/logmails";
+
+        $filters = COUNT($request->get('filters')) > 0 ? $request->get('filters') : $this->filterDefaultValues($this->user->id, $url);
 
         if (COUNT($filters) > 0)
         {

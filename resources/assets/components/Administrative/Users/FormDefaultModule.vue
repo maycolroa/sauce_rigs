@@ -3,7 +3,7 @@
   <b-form :action="url" @submit.prevent="submit" autocomplete="off">
 
     <b-form-row>
-      <vue-advanced-select-group v-model="form.module_id" class="col-md-12" :options="modules" :limit="1000" :searchable="true" name="module_id" label="Aplicación \ Módulo" placeholder="Seleccione un modulo" text-block="Módulo al que sera redireccionado al iniciar sesión" :error="form.errorsFor('module_id')" :selected-object="form.multiselect_module">
+      <vue-advanced-select-group v-model="form.module_id" class="col-md-12" :options="modules" :limit="1000" :searchable="true" name="module_id" label="Aplicación \ Módulo" placeholder="Seleccione un modulo" text-block="Módulo al que sera redireccionado al iniciar sesión" :error="form.errorsFor('module_id')" :selected-object="form.multiselect_module" :allowEmpty="true" :hide-selected="false">
           </vue-advanced-select-group>
     </b-form-row>
 

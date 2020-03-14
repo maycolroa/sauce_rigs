@@ -441,6 +441,22 @@
                     {
                         "name": "contracts_receive_notifications",
                         "display_name": "Contratistas - recibir notificaciones"
+                    },
+                    {
+                        "name": "contracts_activities_c",
+                        "display_name": "Contratistas/Actividades - crear"
+                    },
+                    {
+                        "name": "contracts_activities_r",
+                        "display_name": "Contratistas/Actividades - ver"
+                    },
+                    {
+                        "name": "contracts_activities_u",
+                        "display_name": "Contratistas/Actividades - editar"
+                    },
+                    {
+                        "name": "contracts_activities_d",
+                        "display_name": "Contratistas/Actividades - eliminar"
                     }
                 ]
             },

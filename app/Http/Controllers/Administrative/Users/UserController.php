@@ -472,7 +472,7 @@ class UserController extends Controller
             return $this->respondHttp200([
                 'data' => [
                     "module_id" => $this->user->module_id,
-                    "multiselect_module" => $this->user->defaultModule ? $this->user->defaultModule->multiselect() : ''
+                    "multiselect_module" => $this->user->defaultModule ? $this->user->defaultModule->multiselect() : null
                 ]
             ]);
         } 
@@ -484,10 +484,18 @@ class UserController extends Controller
 
     public function defaultModule(DefaultModuleRequest $request)
     {
-        $module = Module::findOrFail($request->module_id);
+        $url = null;
+        $module_id = null;
 
-        $this->user->default_module_url = $module->application->name.'/'.$module->name;
-        $this->user->module_id = $module->id;
+        if ($request->has("module_id") && $request->module_id)
+        {
+            $module = Module::findOrFail($request->module_id);    
+            $url = $module->application->name.'/'.$module->name;
+            $module_id = $module->id;
+        }
+
+        $this->user->default_module_url = $url;
+        $this->user->module_id = $module_id;
 
         if(!$this->user->update()){
             return $this->respondHttp500();

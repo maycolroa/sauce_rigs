@@ -13,6 +13,7 @@ use App\Models\LegalAspects\LegalMatrix\ArticleFulfillment;
 use App\Models\LegalAspects\LegalMatrix\CompanyIntetest;
 use App\Jobs\LegalAspects\LegalMatrix\SyncQualificationsCompaniesJob;
 use App\Traits\LegalMatrixTrait;
+use App\Traits\Filtertrait;
 use App\Facades\ActionPlans\Facades\ActionPlan;
 use App\Http\Requests\LegalAspects\LegalMatrix\LawRequest;
 use App\Http\Requests\LegalAspects\LegalMatrix\SaveArticlesQualificationRequest;
@@ -23,6 +24,7 @@ use DB;
 class LawController extends Controller
 {
     use LegalMatrixTrait;
+    use Filtertrait;
 
     /**
      * creates and instance and middlewares are checked
@@ -79,6 +81,8 @@ class LawController extends Controller
             ->join('sau_lm_articles_fulfillment','sau_lm_articles_fulfillment.article_id', 'sau_lm_articles.id')
             ->where('sau_lm_articles_fulfillment.company_id', $this->company)
             ->groupBy('sau_lm_laws.id');
+
+            $url = "/legalaspects/lm/lawsQualify";
         }
         else
         {
@@ -98,12 +102,18 @@ class LawController extends Controller
             ->join('sau_lm_sst_risks', 'sau_lm_sst_risks.id', 'sau_lm_laws.sst_risk_id');
 
             if ($request->has('custom'))
-                $laws->company();
+            {
+                $laws->company();                
+                $url = "/legalaspects/lm/lawsCompany";
+            }
             else
+            {                
                 $laws->system();
+                $url = "/legalaspects/lm/laws";
+            }            
         }
 
-        $filters = $request->get('filters');
+        $filters = COUNT($request->get('filters')) > 0 ? $request->get('filters') : $this->filterDefaultValues($this->user->id, $url);
 
         if (COUNT($filters) > 0)
         {
@@ -116,7 +126,7 @@ class LawController extends Controller
             $laws->inLawYears($this->getValuesForMultiselect($filters["lawYears"]), $filters['filtersType']['lawYears']);
             $laws->inRepealed($this->getValuesForMultiselect($filters["repealed"]), $filters['filtersType']['repealed']);
 
-            if ($request->has('qualify'))
+            if ($request->has('qualify') || $url == '/legalaspects/lm/lawsQualify')
             {
                 $laws->inResponsibles($this->getValuesForMultiselect($filters["responsibles"]), $filters['filtersType']['responsibles']);
                 $laws->inInterests($this->getValuesForMultiselect($filters["interests"]), $filters['filtersType']['interests']);

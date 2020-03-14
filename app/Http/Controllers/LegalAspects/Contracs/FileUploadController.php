@@ -10,6 +10,7 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\Storage;
 use App\Vuetable\Facades\Vuetable;
 use App\Traits\ContractTrait;
+use App\Traits\Filtertrait;
 use Illuminate\Database\Eloquent\Collection;
 use App\Facades\Mail\Facades\NotificationMail;
 use DB;
@@ -17,6 +18,7 @@ use DB;
 class FileUploadController extends Controller
 {
     use ContractTrait;
+    use Filtertrait;
     
     /**
      * creates and instance and middlewares are checked
@@ -53,7 +55,9 @@ class FileUploadController extends Controller
           ->leftJoin('sau_ct_section_category_items', 'sau_ct_section_category_items.id', 'sau_ct_file_item_contract.item_id')
           ->groupBy('sau_ct_file_upload_contracts_leesse.id', 'sau_ct_section_category_items.item_name');
 
-        $filters = $request->get('filters');
+        $url = "/legalaspects/upload-files";
+
+        $filters = COUNT($request->get('filters')) > 0 ? $request->get('filters') : $this->filterDefaultValues($this->user->id, $url);
 
         if (COUNT($filters) > 0)
         {

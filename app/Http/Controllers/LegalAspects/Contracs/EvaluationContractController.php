@@ -22,6 +22,7 @@ use App\Jobs\LegalAspects\Contracts\Evaluations\EvaluationContractReportExportJo
 use App\Jobs\LegalAspects\Contracts\Evaluations\EvaluationExportJob;
 use App\Jobs\LegalAspects\Contracts\Evaluations\EvaluationSendNotificationJob;
 use App\Inform\LegalAspects\Contract\Evaluations\InformManagerEvaluationContract;
+use App\Traits\Filtertrait;
 use Carbon\Carbon;
 use DB;
 use Validator;
@@ -29,6 +30,8 @@ use PDF;
 
 class EvaluationContractController extends Controller
 {
+    use Filtertrait;
+
     /**
      * creates and instance and middlewares are checked
      */
@@ -81,7 +84,9 @@ class EvaluationContractController extends Controller
             $evaluation_contracts->where('sau_user_information_contract_lessee.user_id', '=', $this->user->id);
         }
 
-        $filters = $request->get('filters');
+        $url = "/legalaspects/evaluations/contracts/".$request->get('modelId');
+
+        $filters = COUNT($request->get('filters')) > 0 ? $request->get('filters') : $this->filterDefaultValues($this->user->id, $url);
 
         if (isset($filters["dateRange"]) && $filters["dateRange"])
         {
@@ -647,8 +652,10 @@ class EvaluationContractController extends Controller
         $whereItems = '';
         $whereContract = '';
         $subWhereQualificationTypes = '';
+
+        $url = "/legalaspects/evaluations/report";
         
-        $filters = $request->get('filters');
+        $filters = COUNT($request->get('filters')) > 0 ? $request->get('filters') : $this->filterDefaultValues($this->user->id, $url);
 
         if (isset($filters["evaluationsObjectives"]))
             $whereObjectives = $this->scopeQueryReport('o', $this->getValuesForMultiselect($filters["evaluationsObjectives"]), $filters['filtersType']['evaluationsObjectives']);
@@ -803,15 +810,30 @@ class EvaluationContractController extends Controller
 
     public function getTotales(Request $request)
     {
+        $url = "/legalaspects/evaluations/report";
+        $init = true;
+        $filters = [];
+
+        if ($request->has('filtersType'))
+            $init = false;
+        else 
+            $filters = $this->filterDefaultValues($this->user->id, $url);
+
         $whereDates = '';
 
-        $objectives = $this->getValuesForMultiselect($request->evaluationsObjectives);
-        $subobjectives = $this->getValuesForMultiselect($request->evaluationsSubobjectives);
-        $qualificationTypes = $this->getValuesForMultiselect($request->qualificationTypes);
-        $evaluations = $this->getValuesForMultiselect($request->evaluationsEvaluations);
-        $items = $this->getValuesForMultiselect($request->evaluationsItems);
-        $contract = $this->getValuesForMultiselect($request->contracts);
-        $filtersType = $request->filtersType;
+        $objectives = !$init ? $this->getValuesForMultiselect($request->evaluationsObjectives) : (isset($filters['evaluationsObjectives']) ? $this->getValuesForMultiselect($filters['evaluationsObjectives']) : []);
+        
+        $subobjectives = !$init ? $this->getValuesForMultiselect($request->evaluationsSubobjectives) : (isset($filters['evaluationsSubobjectives']) ? $this->getValuesForMultiselect($filters['evaluationsSubobjectives']) : []);
+        
+        $qualificationTypes = !$init ? $this->getValuesForMultiselect($request->qualificationTypes) : (isset($filters['qualificationTypes']) ? $this->getValuesForMultiselect($filters['qualificationTypes']) : []);
+        
+        $evaluations = !$init ? $this->getValuesForMultiselect($request->evaluationsEvaluations) : (isset($filters['evaluationsEvaluations']) ? $this->getValuesForMultiselect($filters['evaluationsEvaluations']) : []);
+        
+        $items = !$init ? $this->getValuesForMultiselect($request->evaluationsItems) : (isset($filters['evaluationsItems']) ? $this->getValuesForMultiselect($filters['evaluationsItems']) : []);
+        
+        $contract = !$init ? $this->getValuesForMultiselect($request->contracts) : (isset($filters['contracts']) ? $this->getValuesForMultiselect($filters['contracts']) : []);
+        
+        $filtersType = !$init ? $request->filtersType : (isset($filters['filtersType']) ? $filters['filtersType'] : null);
 
         $whereObjectives = $this->scopeQueryReport('o', $objectives, $filtersType['evaluationsObjectives']);
         $whereSubojectives = $this->scopeQueryReport('s', $subobjectives, $filtersType['evaluationsSubobjectives']);
@@ -821,9 +843,11 @@ class EvaluationContractController extends Controller
         $whereItems = $this->scopeQueryReport('i', $items, $filtersType['evaluationsItems']);
         $whereContract = $this->scopeQueryReport('ec', $contract, $filtersType['contracts'], 'contract_id');
 
-        if (isset($request->dateRange) && $request->dateRange)
+        $datesF = !$init ? $request->dateRange : (isset($filters['dateRange']) ? $filters['dateRange'] : null);
+
+        if (isset($datesF) && $datesF)
         {
-            $dates_request = explode('/', $request->dateRange);
+            $dates_request = explode('/', $datesF);
             $dates = [];
 
             if (COUNT($dates_request) == 2)
@@ -947,17 +971,33 @@ class EvaluationContractController extends Controller
 
     public function reportDinamicBar(Request $request)
     {
+        $url = "/legalaspects/evaluations/report";
+        $init = true;
+        $filters = [];
+
+        if ($request->has('filtersType'))
+            $init = false;
+        else 
+            $filters = $this->filterDefaultValues($this->user->id, $url);
+
         $whereDates = '';
 
-        $objectives = $this->getValuesForMultiselect($request->evaluationsObjectives);
-        $subobjectives = $this->getValuesForMultiselect($request->evaluationsSubobjectives);
-        $qualificationTypes = $this->getValuesForMultiselect($request->qualificationTypes);
-        $evaluations = $this->getValuesForMultiselect($request->evaluationsEvaluations);
-        $items = $this->getValuesForMultiselect($request->evaluationsItems);
-        $contract = $this->getValuesForMultiselect($request->contracts);
+        $objectives = !$init ? $this->getValuesForMultiselect($request->evaluationsObjectives) : (isset($filters['evaluationsObjectives']) ? $this->getValuesForMultiselect($filters['evaluationsObjectives']) : []);
+        
+        $subobjectives = !$init ? $this->getValuesForMultiselect($request->evaluationsSubobjectives) : (isset($filters['evaluationsSubobjectives']) ? $this->getValuesForMultiselect($filters['evaluationsSubobjectives']) : []);
+        
+        $qualificationTypes = !$init ? $this->getValuesForMultiselect($request->qualificationTypes) : (isset($filters['qualificationTypes']) ? $this->getValuesForMultiselect($filters['qualificationTypes']) : []);
+        
+        $evaluations = !$init ? $this->getValuesForMultiselect($request->evaluationsEvaluations) : (isset($filters['evaluationsEvaluations']) ? $this->getValuesForMultiselect($filters['evaluationsEvaluations']) : []);
+        
+        $items = !$init ? $this->getValuesForMultiselect($request->evaluationsItems) : (isset($filters['evaluationsItems']) ? $this->getValuesForMultiselect($filters['evaluationsItems']) : []);
+        
+        $contract = !$init ? $this->getValuesForMultiselect($request->contracts) : (isset($filters['contracts']) ? $this->getValuesForMultiselect($filters['contracts']) : []);
+
         $years = $this->getValuesForMultiselect($request->years);
         $months = $this->getValuesForMultiselect($request->months);
-        $filtersType = $request->filtersType;
+        
+        $filtersType = !$init ? $request->filtersType : (isset($filters['filtersType']) ? $filters['filtersType'] : null);
 
         $whereObjectives = $this->scopeQueryReport('o', $objectives, $filtersType['evaluationsObjectives']);
         $whereSubojectives = $this->scopeQueryReport('s', $subobjectives, $filtersType['evaluationsSubobjectives']);
@@ -969,9 +1009,11 @@ class EvaluationContractController extends Controller
         $whereYear = $this->scopeQueryReport('ec', $years, 'IN', 'evaluation_date', 'YEAR');
         $whereMonth = $this->scopeQueryReport('ec', $months, 'IN', 'evaluation_date', 'month');
 
-        if (isset($request->dateRange) && $request->dateRange)
+        $datesF = !$init ? $request->dateRange : (isset($filters['dateRange']) ? $filters['dateRange'] : null);
+
+        if (isset($datesF) && $datesF)
         {
-            $dates_request = explode('/', $request->dateRange);
+            $dates_request = explode('/', $datesF);
             $dates = [];
 
             if (COUNT($dates_request) == 2)

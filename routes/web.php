@@ -205,7 +205,8 @@ Route::middleware(['auth'])->group(function () {
         Route::prefix('contracts')->group(function () {
           Route::post('sectionCategoryItems', 'LegalAspects\Contracs\SectionCategoryItemController@multiselect');
           Route::post('highRisk', 'LegalAspects\Contracs\ContractLesseeController@multiselectHighRisk');
-          Route::post('usersResponsibles', 'LegalAspects\Contracs\ContractLesseeController@multiselectUsers');
+          Route::post('usersResponsibles', 'LegalAspects\Contracs\ContractLesseeController@multiselectUsers');          
+          Route::post('ctActivities', 'LegalAspects\Contracs\ContractActivityController@multiselect');
         });
 
         Route::prefix('industrialSecurity')->group(function () {
@@ -423,6 +424,8 @@ Route::middleware(['auth'])->group(function () {
       Route::ApiResource('evaluationContract', 'LegalAspects\Contracs\EvaluationContractController');
       Route::post('evaluationContract/sendNotification/{contract}', 'LegalAspects\Contracs\EvaluationContractController@sendNotification');
       Route::post('evaluationContractHistory/data', 'LegalAspects\Contracs\EvaluationContractHistoryController@data');
+      Route::post('activityContract/data', 'LegalAspects\Contracs\ContractActivityController@data');
+      Route::ApiResource('activityContract', 'LegalAspects\Contracs\ContractActivityController');
 
       Route::prefix('legalMatrix')->group(function () {
 

@@ -9,9 +9,12 @@ use App\Jobs\IndustrialSecure\DangerMatrix\DangerMatrixReportHistoryExportJob;
 use Session;
 use App\Models\IndustrialSecure\DangerMatrix\QualificationHistory;
 use App\Models\IndustrialSecure\DangerMatrix\ReportHistory;
+use App\Traits\Filtertrait;
 
 class DangerMatrixReportHistoryController extends Controller
 {
+    use Filtertrait;
+
     /**
      * creates and instance and middlewares are checked
      */
@@ -31,15 +34,31 @@ class DangerMatrixReportHistoryController extends Controller
      */
     public function report(Request $request)
     {
+        $url = "/industrialsecure/dangermatrix/report/history";
+        $init = true;
+        $filters = [];
+
+        if ($request->has('filtersType'))
+            $init = false;
+        else 
+            $filters = $this->filterDefaultValues($this->user->id, $url);
+
         /** FIltros */
-        $regionals = $this->getValuesForMultiselect($request->regionals);
-        $headquarters = $this->getValuesForMultiselect($request->headquarters);
-        $areas = $this->getValuesForMultiselect($request->areas);
-        $processes = $this->getValuesForMultiselect($request->processes);
-        $macroprocesses = $this->getValuesForMultiselect($request->macroprocesses);
-        $dangers = $this->getValuesForMultiselect($request->dangers);
-        $dangerDescription = $this->getValuesForMultiselect($request->dangerDescription);
-        $filtersType = $request->filtersType;
+        $regionals = !$init ? $this->getValuesForMultiselect($request->regionals) : (isset($filters['regionals']) ? $this->getValuesForMultiselect($filters['regionals']) : []);
+            
+        $headquarters = !$init ? $this->getValuesForMultiselect($request->headquarters) : (isset($filters['headquarters']) ? $this->getValuesForMultiselect($filters['headquarters']) : []);
+        
+        $areas = !$init ? $this->getValuesForMultiselect($request->areas) : (isset($filters['areas']) ? $this->getValuesForMultiselect($filters['areas']) : []);
+        
+        $processes = !$init ? $this->getValuesForMultiselect($request->processes) : (isset($filters['processes']) ? $this->getValuesForMultiselect($filters['processes']) : []);
+        
+        $macroprocesses = !$init ? $this->getValuesForMultiselect($request->macroprocesses) : (isset($filters['macroprocesses']) ? $this->getValuesForMultiselect($filters['macroprocesses']) : []);
+        
+        $dangers = !$init ? $this->getValuesForMultiselect($request->dangers) : (isset($filters['dangers']) ? $this->getValuesForMultiselect($filters['dangers']) : []);
+        
+        $dangerDescription = !$init ? $this->getValuesForMultiselect($request->dangerDescription) : (isset($filters['dangerDescription']) ? $this->getValuesForMultiselect($filters['dangerDescription']) : []);
+        //$matrix = $this->getValuesForMultiselect($request->matrix);
+        $filtersType = !$init ? $request->filtersType : (isset($filters['filtersType']) ? $filters['filtersType'] : null);
         /***********************************************/
 
         $dangersMatrix = ReportHistory::select('sau_dm_report_histories.*')

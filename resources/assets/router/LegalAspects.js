@@ -216,6 +216,38 @@ export default [
 					component: () => import('@/views/LegalAspects/contracts/uploadFiles/view')
 				}
 			]),
+			...middleware({ 'check-permission': 'contracts_activities_r' }, [
+				{
+					name: 'legalaspects-contracts-activities',
+					path: 'activities',
+					component: () =>
+					import('@/views/LegalAspects/contracts/activities/index')
+				}
+			]),
+			...middleware({ 'check-permission': 'contracts_activities_c' }, [
+				{
+					name: 'legalaspects-contracts-activities-create',
+					path: 'activities/create',
+					component: () =>
+					import('@/views/LegalAspects/contracts/activities/create')
+				}
+			]),
+			...middleware({ 'check-permission': 'contracts_u' }, [
+				{
+					name: 'legalaspects-contracts-activities-edit',
+					path: 'activities/edit/:id',
+					component: () =>
+					import('@/views/LegalAspects/contracts/activities/edit')
+				}
+			]),
+			...middleware({ 'check-permission': 'contracts_activities_r' }, [
+				{
+					name: 'legalaspects-contracts-activities-view',
+					path: 'activities/view/:id',
+					component: () =>
+					import('@/views/LegalAspects/contracts/activities/view')
+				}
+			]),
 			{
 				name: 'legalaspects-legalmatrix',
 				path: 'legalmatrix',

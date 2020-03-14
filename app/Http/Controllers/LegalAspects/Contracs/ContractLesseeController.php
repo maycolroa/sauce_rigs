@@ -18,9 +18,14 @@ use App\Http\Requests\LegalAspects\Contracts\ContractRequest;
 use App\Http\Requests\LegalAspects\Contracts\ListCheckItemsRequest;
 use App\Jobs\LegalAspects\Contracts\ListCheck\ListCheckContractExportJob;
 use App\Jobs\LegalAspects\Contracts\Contractor\ContractorExportJob;
+use App\Jobs\LegalAspects\Contracts\Contractor\NotifyResponsibleContractJob;
 use App\Facades\ActionPlans\Facades\ActionPlan;
+use App\Models\Administrative\Users\User;
+use App\Models\General\Company;
 use App\Traits\ContractTrait;
 use App\Traits\UserTrait;
+use App\Traits\Filtertrait;
+use App\Facades\Mail\Facades\NotificationMail;
 use Carbon\Carbon;
 use Validator;
 use DB;
@@ -29,6 +34,7 @@ class ContractLesseeController extends Controller
 {
     use UserTrait;
     use ContractTrait;
+    use Filtertrait;
 
     /**
      * creates and instance and middlewares are checked
@@ -72,7 +78,9 @@ class ContractLesseeController extends Controller
                     )
                     ->leftJoin('sau_ct_list_check_resumen', 'sau_ct_list_check_resumen.contract_id', 'sau_ct_information_contract_lessee.id');
 
-        $filters = $request->get('filters');
+        $url = "/legalaspects/contractor";
+
+        $filters = COUNT($request->get('filters')) > 0 ? $request->get('filters') : $this->filterDefaultValues($this->user->id, $url);
 
         if (COUNT($filters) > 0)
         {
@@ -108,10 +116,33 @@ class ContractLesseeController extends Controller
             $risks = ($request->high_risk_work == 'SI') ? $this->getDataFromMultiselect($request->high_risk_type_id) : [];
             $contract->highRiskType()->sync($risks);
 
-            $user = $this->createUser($request);
+            $activitiesContract = ($request->high_risk_work == 'SI') ? $this->getDataFromMultiselect($request->activity_id) : [];
+            $contract->activities()->sync($activitiesContract);
 
-            if ($user == $this->respondHttp500() || $user == null) {
-                return $this->respondHttp500();
+            $user = User::where('email', trim(strtolower($request->email)))->first();
+
+            if (!$user)
+            {
+                $user = $this->createUser($request);
+
+                if ($user == $this->respondHttp500() || $user == null) {
+                    return $this->respondHttp500();
+                }
+            }
+            else
+            {
+                $user->companies()->attach($this->company);
+
+                $company = Company::find($this->company);
+
+                NotificationMail::
+                    subject('Creación de contratista en sauce')
+                    ->message("Usted acaba de ser creado como contratista en la empresa <b>{$company->name}</b>, por favor ingrese a Sauce y seleccione esta empresa para que pueda ingresar su información.")
+                    ->recipients($user)
+                    ->module('contracts')
+                    ->buttons([['text'=>'Ir a Sauce', 'url'=>url("/")]])
+                    ->company($this->company)
+                    ->send();
             }
 
             $user->attachRole($this->getIdRole($request->type), $this->team);
@@ -121,6 +152,8 @@ class ContractLesseeController extends Controller
             $contract->responsibles()->sync($responsibles);
 
             DB::commit();
+
+            NotifyResponsibleContractJob::dispatch($responsibles, $request->social_reason, $this->company);
 
         } catch (\Exception $e) {
             DB::rollback();
@@ -154,6 +187,16 @@ class ContractLesseeController extends Controller
 
             $contract->multiselect_high_risk_type = $high_risk_type_id;
             $contract->high_risk_type_id = $high_risk_type_id;
+
+            $activity_id = [];
+
+            foreach ($contract->activities as $key => $value)
+            {                
+                array_push($activity_id, $value->multiselect());
+            }
+
+            $contract->multiselect_activity = $activity_id;
+            $contract->activity_id = $activity_id;
 
             $users_responsibles = [];
 
@@ -224,6 +267,9 @@ class ContractLesseeController extends Controller
                 $risks = ($request->high_risk_work == 'SI') ? $this->getDataFromMultiselect($request->high_risk_type_id) : [];
                 $contract->highRiskType()->sync($risks);
 
+                $activitiesContract = ($request->high_risk_work == 'SI') ? $this->getDataFromMultiselect($request->activity_id) : [];
+                $contract->activities()->sync($activitiesContract);
+
                 $responsibles = $this->getDataFromMultiselect($request->users_responsibles);
                 $contract->responsibles()->sync($responsibles);
             }
@@ -248,8 +294,11 @@ class ContractLesseeController extends Controller
 
             DB::commit();
 
+            NotifyResponsibleContractJob::dispatch($responsibles, $request->social_reason, $this->company);
+
         } catch (\Exception $e) {
             DB::rollback();
+            \Log::info($e->getMessage());
             //return $e->getMessage();
             return $this->respondHttp500();
         }

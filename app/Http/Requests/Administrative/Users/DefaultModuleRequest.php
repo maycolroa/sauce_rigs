@@ -24,7 +24,7 @@ class DefaultModuleRequest extends FormRequest
     public function rules()
     {
         return [
-            'module_id'  => 'required',
+            'module_id'  => 'nullable',
         ];
     }
 }

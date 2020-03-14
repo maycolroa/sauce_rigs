@@ -30,6 +30,8 @@
 					<b-form-row v-show="form.high_risk_work == 'SI'">
 						<vue-ajax-advanced-select :disabled="viewOnly" class="col-md-6 offset-md-3" v-model="form.high_risk_type_id" :error="form.errorsFor('high_risk_type_id')" :selected-object="form.multiselect_high_risk_type" :multiple="true" :allowEmpty="true" name="high_risk_type_id" label="Tipos de riesgos" placeholder="Seleccione los tipos de riesgos" :url="highRiskTypeUrl">
 						</vue-ajax-advanced-select>
+						<vue-ajax-advanced-select :disabled="viewOnly" class="col-md-6 offset-md-3" v-model="form.activity_id" :error="form.errorsFor('activity_id')" :selected-object="form.multiselect_activity" :multiple="true" :allowEmpty="true" name="activity_id" label="Actividades" placeholder="Seleccione las actividades a asignar" :url="activitiesUrl">
+						</vue-ajax-advanced-select>
 					</b-form-row>
 					<b-form-row v-if="isEdit || viewOnly">
 						<vue-checkbox-simple style="padding-top: 20px;" :disabled="viewOnly" class="col-md-6" v-model="form.active" label="¿Activo?" :checked="form.active" name="active" checked-value="SI" unchecked-value="NO"></vue-checkbox-simple>
@@ -73,7 +75,8 @@ export default {
 		cancelUrl: { type: [String, Object], required: true },
 		isEdit: { type: Boolean, default: false },
 		viewOnly: { type: Boolean, default: false },
-		highRiskTypeUrl: { type: String, default: "" },
+		highRiskTypeUrl: { type: String, default: "" },		
+		activitiesUrl: { type: String, default: "" },
 		roles: {
 			type: Array,
 			default: function() {
@@ -111,7 +114,8 @@ export default {
 					social_reason: '',
 					high_risk_work: '',
 					high_risk_type_id: [],
-					users_responsibles: []
+					users_responsibles: [],
+					activity_id: [],
 				};
 			}
 		}
