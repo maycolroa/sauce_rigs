@@ -310,7 +310,8 @@ class ContractLesseeController extends Controller
 
             DB::commit();
 
-            NotifyResponsibleContractJob::dispatch($responsibles, $request->social_reason, $this->company);
+            if (!$request->has('isInformation'))
+                NotifyResponsibleContractJob::dispatch($responsibles, $request->social_reason, $this->company);
 
         } catch (\Exception $e) {
             DB::rollback();

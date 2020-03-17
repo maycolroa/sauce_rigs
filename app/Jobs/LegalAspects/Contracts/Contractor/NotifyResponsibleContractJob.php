@@ -54,7 +54,7 @@ class NotifyResponsibleContractJob implements ShouldQueue
         NotificationMail::
             subject('Responsables Contratista')
             ->recipients($recipients)
-            ->message("Usted acaba de ser asignado como responsable de la contratista <b>{$this->contract}</b>")
+            ->message("Usted acaba de ser asignado como responsable del contratista <b>{$this->contract}</b>")
             ->module('users')
             ->event('Job: NotifyResponsibleContractJob')
             ->company($this->company_id)

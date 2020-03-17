@@ -38,7 +38,7 @@
       </form>
       <!-- / Form -->
 
-      <b-modal ref="inforUser" :hideFooter="true" class="modal-top" size="lg">
+      <!--<b-modal ref="inforUser" :hideFooter="true" class="modal-top" size="lg">
         <div slot="modal-title">
           <h3>Información</h3>
         </div>
@@ -49,7 +49,7 @@
         <div class="row float-right pt-12 pr-12y">
           <b-btn variant="primary" @click="hideModal">Cerrar</b-btn>
         </div>
-      </b-modal>
+      </b-modal>-->
 
     </div>
   </div>
@@ -95,7 +95,7 @@ export default {
     }
   },
   mounted(){
-    this.$refs.inforUser.show()
+    //this.$refs.inforUser.show()
   },
   methods: {
       submit(e) {

@@ -276,11 +276,11 @@ export default {
 			return result
 		},
 		saveQualification(index)
-    {
+    	{
 			if (!this.viewOnly)
-      {
+      		{
 				this.loading = true;
-        let item = this.form.items[index]
+        		let item = this.form.items[index]
         
 				let data = new FormData();
 				data.append('id', item.id);
@@ -310,21 +310,21 @@ export default {
 					}
 				}
 
-        this.form.resetError()
-        this.form
-          .submit(this.url, false, data)
-          .then(response => {
-            _.forIn(response.data.data, (value, key) => {
-              item[key] = value
-            })
+	        this.form.resetError()
+	        this.form
+	          .submit(this.url, false, data)
+	          .then(response => {
+	            _.forIn(response.data.data, (value, key) => {
+	              item[key] = value
+	            })
 
-            this.loading = false;
-            
-          })
-          .catch(error => {
-            this.loading = false;
-          });
-			}
+	            this.loading = false;
+	            
+	          })
+	          .catch(error => {
+	            this.loading = false;
+	          });
+				}
 		}
 	}
 };
