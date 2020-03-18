@@ -681,7 +681,9 @@ class ContractLesseeController extends Controller
 
         } catch (\Exception $e) {
             DB::rollback();
+            \Log::info($e->getMessage());
             return $this->respondHttp500();
+            
         }
     }
 

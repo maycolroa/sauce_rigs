@@ -17,10 +17,6 @@ class SectionCategoryItems extends Model
         return $this->belongsToMany('App\Models\General\Company', 'sau_ct_standard_items_required')->wherePivot('company_id', $company_id)->withPivot('required');
     }
 
-    public function standardItems(){
-        return $this->belongsToMany('App\Models\General\Company', 'sau_ct_standard_items_required')->withPivot('required');
-    }
-
     public function fileSyncInfo(){
         return $this->belongsToMany(FileUploadItemsDetail::class,'sau_ct_file_item_contract', 'item_id', 'file_id');
     }
