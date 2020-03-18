@@ -389,6 +389,51 @@ class ContractLesseeController extends Controller
         return false;
     }
 
+     public function getListCheckItemsValidations(Request $request)
+    {
+        $items = SectionCategoryItems::select('*')
+            ->get()
+            ->transform(function($item, $key){
+                $record = $item->itemStandardCompany($this->company)->first();
+
+                if ($record)
+                    $item->required = $record->pivot->required;
+                else
+                    $item->required = 'NO';
+
+                return $item;
+            });
+
+        return $this->respondHttp200([
+                'items' => $items
+            ]);
+    }
+
+    public function saveItemsStandard(Request $request)
+    {
+        $data = [];
+
+        foreach ($request->items as $key => $value)
+        {
+            $data[] = json_decode($value, true);
+        }
+
+        $ids = [];
+
+        foreach ($data as $value)
+        {
+            $ids[$value["id"]] = ['required'=>$value["required"]];
+        }
+
+        $company = Company::find($this->company);
+
+        $company->itemStandardCompany()->sync($ids);
+
+        return $this->respondHttp200([
+            'message' => 'Se actualizo la informaciòn'
+        ]);
+    }
+
     /**
      * Display the specified resource.
      *

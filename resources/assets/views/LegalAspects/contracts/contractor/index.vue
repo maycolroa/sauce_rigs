@@ -12,6 +12,9 @@
           <div class="card-title-elements" v-if="auth.can['contracts_c']"> 
             <b-btn :to="{name:'legalaspects-contractor-create'}" variant="primary">Crear contratista o arrendatario</b-btn>
           </div>
+          <div class="card-title-elements" v-if="auth.can['contracts_c']"> 
+            <b-btn :to="{name:'legalaspects-contractor-list-check-validation'}" variant="primary">Configurar Lista de Chequeo</b-btn>
+          </div>
           <div class="card-title-elements ml-md-auto" v-if="auth.can['contracts_export']">
             <b-dd variant="default" :right="isRTL">
               <template slot="button-content">

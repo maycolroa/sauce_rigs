@@ -63,6 +63,13 @@ export default [
 					component: () => import('@/views/LegalAspects/contracts/contract/listCheckItems')
 				}
 			]),
+			...middleware({ 'check-permission': 'contracts_c' }, [
+				{
+					name: 'legalaspects-contractor-list-check-validation',
+					path: 'contracts/list-check-validation',
+					component: () => import('@/views/LegalAspects/contracts/contractor/listCheckValidation')
+				}
+			]),
 			...middleware({ 'check-permission': 'contracts_view_list_standards' }, [
 				{
 					name: 'legalaspects-contracts-view-list-check',
