@@ -36,7 +36,7 @@
 							<!-- NO CUMPLE -->
 							<b-btn v-if="item.qualification == 'NC'" @click="showModal(`modalPlan${index}`)" variant="primary"><span class="lnr lnr-bookmark"></span> Plan de acción</b-btn>
 
-							<b-modal v-if="item.qualification == 'NC'" :ref="`modalPlan${index}`" :hideFooter="true" :id="`modals-default-${index+1}`" class="modal-top" size="lg" @hidden="saveQualification(index)">
+							<b-modal v-show="item.qualification == 'NC'" :ref="`modalPlan${index}`" :hideFooter="true" :id="`modals-default-${index+1}`" class="modal-top" size="lg" @hidden="saveQualification(index)">
 								<div slot="modal-title">
 									Plan de acción <span class="font-weight-light">Contratistas</span><br>
 									<small class="text-muted">Crea planes de acción para tu justificación.</small>
@@ -62,10 +62,16 @@
 							<!--CUMPLE -->
 							<b-btn v-if="item.qualification == 'C'" @click="showModal(`modalFile${index}`)" variant="primary"><span class="lnr lnr-bookmark"></span> Adjuntar archivos</b-btn>
 
-							<b-modal v-if="item.qualification == 'C'" :ref="`modalFile${index}`" :hideFooter="true" :id="`modals-file-${index+1}`" class="modal-top" size="lg" @hidden="saveQualification(index)">
+							<b-modal v-show="item.qualification == 'C'" :ref="`modalFile${index}`" :hideFooter="true" :id="`modals-file-${index+1}`" class="modal-top" size="lg" @hidden="saveQualification(index)">
 								<div slot="modal-title">
 									Subir Archivos <span class="font-weight-light">Contratistas</span><br>
 									<small class="text-muted">Selecciona archivos pdf's para este item.</small>
+								</div>
+
+								<div v-if="existError(`items.${index}.`)">
+										<b-form-feedback class="d-block" style="padding-bottom: 10px; text-align: center;">
+							                Archivos requeridos
+							             </b-form-feedback>
 								</div>
 
 								<b-card  bg-variant="transparent"  title="" class="mb-3 box-shadow-none">
@@ -92,8 +98,8 @@
 					</div>
 					<div v-if="existError(`items.${index}.`)">
 							<b-form-feedback class="d-block" style="padding-bottom: 10px;">
-                Este item contiene errores en sus datos
-              </b-form-feedback>
+				                Este item contiene errores en sus datos
+				             </b-form-feedback>
 					</div>
 				</div>
 			</b-card-body>
@@ -204,7 +210,7 @@ export default {
 					this.form.items[index].actionPlan.activities = [];
 				}
 
-				this.saveQualification(index)
+				this.showModal(`modalFile${index}`)
 			}
 			else if (qualification == 'NC')
 			{
@@ -231,7 +237,7 @@ export default {
 				this.form.items[index].files = [];
 
 				if (this.form.items[index].actionPlan.activities.length > 0)
-					this.showModal(`modalFile${index}`)
+					this.showModal(`modalPlan${index}`)
 				else
 					this.saveQualification(index)
 			}
@@ -276,11 +282,11 @@ export default {
 			return result
 		},
 		saveQualification(index)
-    {
+    	{
 			if (!this.viewOnly)
-      {
+      		{
 				this.loading = true;
-        let item = this.form.items[index]
+        		let item = this.form.items[index]
         
 				let data = new FormData();
 				data.append('id', item.id);
@@ -310,21 +316,21 @@ export default {
 					}
 				}
 
-        this.form.resetError()
-        this.form
-          .submit(this.url, false, data)
-          .then(response => {
-            _.forIn(response.data.data, (value, key) => {
-              item[key] = value
-            })
+	        this.form.resetError()
+	        this.form
+	          .submit(this.url, false, data)
+	          .then(response => {
+	            _.forIn(response.data.data, (value, key) => {
+	              item[key] = value
+	            })
 
-            this.loading = false;
-            
-          })
-          .catch(error => {
-            this.loading = false;
-          });
-			}
+	            this.loading = false;
+	            
+	          })
+	          .catch(error => {
+	            this.loading = false;
+	          });
+				}
 		}
 	}
 };

@@ -41,28 +41,51 @@ class RoleController extends Controller
     */
    public function data(Request $request)
    {
-        if ($this->user->can('roles_manage_defined', $this->team))
+        //if ($this->user->can('roles_manage_defined', $this->team))
 
             $roles = Role::select(
                 'sau_roles.id as id',
                 'sau_roles.name as name',
                 'sau_roles.description as description',
                 'sau_roles.type_role as type_role',
+                'sau_roles.company_id as company_id',
                 'sau_modules.display_name as display_name'
             )
             ->leftJoin('sau_modules', 'sau_modules.id', 'sau_roles.module_id')
             ->alls();
-        else 
+        /*else 
         
             $roles = Role::select(
                 'sau_roles.id as id',
                 'sau_roles.name as name',
                 'sau_roles.description as description'
             )
-            ->company();
+            ->company();*/
 
        return Vuetable::of($roles)
-                ->make();
+            ->addColumn('administrative-roles-edit', function ($role) {
+                if (!$role->company_id)
+                {
+                    if ($this->user->can('roles_manage_defined', $this->team))
+                        return true;
+                    else 
+                        return false;
+                }
+
+                return true;
+            })
+            ->addColumn('control_delete', function ($role) {
+                if (!$role->company_id)
+                {
+                    if ($this->user->can('roles_manage_defined', $this->team))
+                        return true;
+                    else 
+                        return false;
+                }
+
+                return true;
+            })
+            ->make();
    }
 
     /**

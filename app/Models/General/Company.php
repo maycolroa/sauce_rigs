@@ -28,6 +28,11 @@ class Company extends Model
         return $this->belongsToMany('App\Models\LegalAspects\LegalMatrix\Interest', 'sau_lm_company_interest');
     }
 
+    public function itemStandardCompany()
+    {
+        return $this->belongsToMany('App\Models\LegalAspects\Contracts\SectionCategoryItems', 'sau_ct_standard_items_required')->withPivot('required');
+    }
+
     public function multiselect()
     {
         return [

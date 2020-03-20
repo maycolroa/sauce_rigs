@@ -4,6 +4,7 @@ namespace App\Http\Requests\LegalAspects\Contracts;
 
 use Illuminate\Foundation\Http\FormRequest;
 use App\Facades\ActionPlans\Facades\ActionPlan;
+use App\Models\LegalAspects\Contracts\SectionCategoryItems;
 
 use Session;
 
@@ -103,6 +104,20 @@ class ListCheckItemsRequest extends FormRequest
             "items.*.files.*.file" => "required_if:qualification,C|max:20480",
             "items.*.files.*.expirationDate" => "nullable|date"
         ];
+
+        $record = SectionCategoryItems::find($this->input('id'));
+
+        if ($record)
+        {
+            $record =  $record->itemStandardCompany(Session::get('company_id'))->first();
+
+            if ($record && $record->pivot->required == 'SI')
+            {
+                $rules = array_merge($rules, [
+                    "items.*.files" => "required_if:qualification,C"
+                ]);
+            }
+        }
 
         $rulesActionPlan = ActionPlan::prefixIndex('items.*.')->getRules();
         $rules = array_merge($rules, $rulesActionPlan['rules']);
