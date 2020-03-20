@@ -179,6 +179,12 @@ export default [
           label: 'areas'
         },
         {
+          url: '/selects/industrialSecurity/inspections',
+          key: 'inspections',
+          type: 'select',
+          label: 'Nombres'
+        },
+        {
           url: '/selects/themes',
           key: 'themes',
           type: 'select',

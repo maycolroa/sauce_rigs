@@ -190,15 +190,15 @@ class InspectionItemsQualificationAreaLocation extends Model
      * @param  array $inspections
      * @return Illuminate\Database\Eloquent\Builder
      */
-    public function scopeInInspections($query, $inspections, $typeSearch = 'IN')
+    public function scopeInInspections($query, $inspections, $typeSearch = 'IN', $alias = 'sau_ph_inspection_sections')
     {
         if (COUNT($inspections) > 0)
         {
             if ($typeSearch == 'IN')
-                $query->whereIn('sau_ph_inspections.id', $inspections);
+                $query->whereIn("{$alias}.id", $inspections);
 
             else if ($typeSearch == 'NOT IN')
-                $query->whereNotIn('sau_ph_inspections.id', $inspections);
+                $query->whereNotIn("{$alias}.id", $inspections);
         }
 
         return $query;
