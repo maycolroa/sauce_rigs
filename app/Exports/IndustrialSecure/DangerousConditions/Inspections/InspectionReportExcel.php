@@ -50,6 +50,7 @@ class InspectionReportExcel implements FromCollection, WithMapping, WithHeadings
         $column = 'l.name as headquarter';
 
       $consultas = InspectionItemsQualificationAreaLocation::select(
+          'i.name AS name',
           'a.name as area',
           'l.name as headquarter',
           "{$column}",
@@ -89,15 +90,20 @@ class InspectionReportExcel implements FromCollection, WithMapping, WithHeadings
         ->join('sau_employees_headquarters as l','l.id', 'sau_ph_inspection_items_qualification_area_location.employee_headquarter_id')
         ->join('sau_ct_qualifications as q','q.id', 'sau_ph_inspection_items_qualification_area_location.qualification_id')
         ->where('i.company_id', $this->company_id)
-        ->inHeadquarters($this->filters['headquarters'], $this->filters['filtersType']['headquarters'])
-        ->inAreas($this->filters['areas'], $this->filters['filtersType']['areas'])
+        ->inInspections($this->filters['inspections'], $this->filters['filtersType']['inspections'], 'i')
         ->betweenDate($this->filters["dates"])
         ->inThemes($this->filters["themes"], $this->filters['filtersType']['themes'], 's');
 
+        if (isset($this->filters['headquarters']) && COUNT($this->filters['headquarters']) > 0)
+            $consultas->inHeadquarters($this->filters['headquarters'], $this->filters['filtersType']['headquarters']);
+
+        if (isset($this->filters['areas']) && COUNT($this->filters['areas']) > 0)
+            $consultas->inAreas($this->filters['areas'], $this->filters['filtersType']['areas']);
+
         if ($this->table == "with_theme")
-          $consultas->groupBy('area', 'headquarter', 'numero_inspecciones', 'section');
+          $consultas->groupBy('name', 'area', 'headquarter', 'numero_inspecciones', 'section');
         else
-          $consultas->groupBy('area', 'headquarter', 'numero_inspecciones');
+          $consultas->groupBy('name', 'area', 'headquarter', 'numero_inspecciones');
 
       $consultas = $consultas->get();
 
@@ -145,6 +151,7 @@ class InspectionReportExcel implements FromCollection, WithMapping, WithHeadings
     public function map($data): array
     {
       $result = [
+        $data->name,
         $data->headquarter,
         $data->area
       ];
@@ -168,6 +175,7 @@ class InspectionReportExcel implements FromCollection, WithMapping, WithHeadings
     public function headings(): array
     {
       $columns = [
+        'Nombre',
         $this->keywords['headquarter'],
         $this->keywords['area'],
       ];
@@ -193,6 +201,18 @@ class InspectionReportExcel implements FromCollection, WithMapping, WithHeadings
       if ($this->table == "with_theme")
       {
         return [
+          'E' => NumberFormat::FORMAT_NUMBER,
+          'F' => NumberFormat::FORMAT_NUMBER,
+          'G' => NumberFormat::FORMAT_NUMBER,
+          'H' => NumberFormat::FORMAT_PERCENTAGE_00,
+          'I' => NumberFormat::FORMAT_PERCENTAGE_00,
+          'J' => NumberFormat::FORMAT_NUMBER,
+          'K' => NumberFormat::FORMAT_NUMBER,
+        ];
+      }
+      else
+      {
+        return [
           'D' => NumberFormat::FORMAT_NUMBER,
           'E' => NumberFormat::FORMAT_NUMBER,
           'F' => NumberFormat::FORMAT_NUMBER,
@@ -202,24 +222,12 @@ class InspectionReportExcel implements FromCollection, WithMapping, WithHeadings
           'J' => NumberFormat::FORMAT_NUMBER,
         ];
       }
-      else
-      {
-        return [
-          'C' => NumberFormat::FORMAT_NUMBER,
-          'D' => NumberFormat::FORMAT_NUMBER,
-          'E' => NumberFormat::FORMAT_NUMBER,
-          'F' => NumberFormat::FORMAT_PERCENTAGE_00,
-          'G' => NumberFormat::FORMAT_PERCENTAGE_00,
-          'H' => NumberFormat::FORMAT_NUMBER,
-          'I' => NumberFormat::FORMAT_NUMBER,
-        ];
-      }
     }
 
     public static function afterSheet(AfterSheet $event)
     {
       $event->sheet->styleCells(
-        'A1:J1',
+        'A1:K1',
           [
             'alignment' => [
               'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT,

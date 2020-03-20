@@ -672,6 +672,7 @@ export default [
     name: 'dangerousconditions-inspections-report',
     fields: [
         { name: 'sau_ph_inspection_items_qualification_area_location.id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true },
+        { name: 'sau_ph_inspections.name', data: 'name', title: 'Nombre', sortable: true, searchable: false, detail: false, key: false },
         { name: 'sau_employees_headquarters.name', data: 'headquarter', title: 'headquarter', sortable: true, searchable: false, detail: false, key: false },
         { name: 'sau_employees_areas.name', data: 'area', title: 'area', sortable: true, searchable: false, detail: false, key: false },
         { name: 'section', data: 'section', title: 'Temas', sortable: true, searchable: false, detail: false, key: false },

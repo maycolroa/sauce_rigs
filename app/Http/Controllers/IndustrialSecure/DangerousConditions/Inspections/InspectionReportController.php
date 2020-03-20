@@ -58,6 +58,7 @@ class InspectionReportController extends Controller
         $column = 'l.name as headquarter';
 
       $consultas = InspectionItemsQualificationAreaLocation::select(
+          'i.name as name',
           'a.name as area',
           'l.name as headquarter',
           "{$column}",
@@ -99,9 +100,9 @@ class InspectionReportController extends Controller
         ->where('i.company_id', $this->company);
 
         if ($request->table == "with_theme" )
-          $consultas->groupBy('area', 'headquarter', 'numero_inspecciones', 'section');
+          $consultas->groupBy('name', 'area', 'headquarter', 'numero_inspecciones', 'section');
         else
-          $consultas->groupBy('area', 'headquarter', 'numero_inspecciones');
+          $consultas->groupBy('name', 'area', 'headquarter', 'numero_inspecciones');
 
         $url = "/industrialsecure/dangerousconditions/inspection/report";
 
@@ -109,8 +110,13 @@ class InspectionReportController extends Controller
 
         if (COUNT($filters) > 0)
         {
-            $consultas->inHeadquarters($this->getValuesForMultiselect($filters["headquarters"]), $filters['filtersType']['headquarters']);
-            $consultas->inAreas($this->getValuesForMultiselect($filters["areas"]), $filters['filtersType']['areas']);
+            if (isset($filters["headquarters"]))
+              $consultas->inHeadquarters($this->getValuesForMultiselect($filters["headquarters"]), $filters['filtersType']['headquarters']);
+
+            if (isset($filters["areas"]))
+              $consultas->inAreas($this->getValuesForMultiselect($filters["areas"]), $filters['filtersType']['areas']);
+
+            $consultas->inInspections($this->getValuesForMultiselect($filters["inspections"]), $filters['filtersType']['inspections'], 'i');
             $consultas->inThemes($this->getValuesForMultiselect($filters["themes"]), $filters['filtersType']['themes'], 's');
 
             $dates_request = explode('/', $filters["dateRange"]);
@@ -161,6 +167,8 @@ class InspectionReportController extends Controller
         
         $areas = !$init ? $this->getValuesForMultiselect($request->areas) : (isset($filters['areas']) ? $this->getValuesForMultiselect($filters['areas']) : []);
         
+        $inspections = !$init ? $this->getValuesForMultiselect($request->inspections) : (isset($filters['inspections']) ? $this->getValuesForMultiselect($filters['inspections']) : []);
+
         $themes = !$init ? $this->getValuesForMultiselect($request->themes) : (isset($filters['themes']) ? $this->getValuesForMultiselect($filters['themes']) : []);
 
         $filtersType = !$init ? $request->filtersType : (isset($filters['filtersType']) ? $filters['filtersType'] : null);
@@ -216,13 +224,19 @@ class InspectionReportController extends Controller
              ->join('sau_ph_inspection_sections as s','it.inspection_section_id', 's.id')
              ->join('sau_ph_inspections as i','s.inspection_id', 'i.id')
              ->join('sau_ct_qualifications as q','q.id', 'sau_ph_inspection_items_qualification_area_location.qualification_id')
-             ->inHeadquarters($headquarters, $filtersType['headquarters'])
-             ->inAreas($areas, $filtersType['areas'])
              ->inThemes($themes, $filtersType['themes'], 's')
+             ->inInspections($inspections, $filtersType['inspections'], 'i')
              ->betweenDate($dates)
              ->where('i.company_id', $this->company)
-             ->groupBy('employee_area_id', 'employee_headquarter_id', 'numero_inspecciones')
-             ->get(); 
+             ->groupBy('employee_area_id', 'employee_headquarter_id', 'numero_inspecciones');
+
+        if (COUNT($headquarters) > 0)
+          $consultas->inHeadquarters($headquarters, $filtersType['headquarters']);
+
+        if (COUNT($areas) > 0)
+          $consultas->inAreas($areas, $filtersType['areas']);
+
+        $consultas = $consultas->get();
 
         $result = collect([]);
         $result->put('inspections', 0);
@@ -266,6 +280,7 @@ class InspectionReportController extends Controller
           $headquarters = $this->getValuesForMultiselect($request->headquarters);
           $areas = $this->getValuesForMultiselect($request->areas);
           $themes = $this->getValuesForMultiselect($request->themes);
+          $inspections = $this->getValuesForMultiselect($request->inspections);
           $filtersType = $request->filtersType;
           $dates = [];
   
@@ -284,6 +299,7 @@ class InspectionReportController extends Controller
                 'headquarters' => $headquarters,
                 'areas' => $areas,
                 'themes' => $themes,
+                'inspections' => $inspections,
                 'dates' => $dates,
                 'filtersType' => $filtersType,
                 'table' => $request->table
@@ -314,6 +330,8 @@ class InspectionReportController extends Controller
       
       $themes = !$init ? $this->getValuesForMultiselect($request->themes) : (isset($filters['themes']) ? $this->getValuesForMultiselect($filters['themes']) : []);
 
+      $inspections = !$init ? $this->getValuesForMultiselect($request->inspections) : (isset($filters['inspections']) ? $this->getValuesForMultiselect($filters['inspections']) : []);
+
       $filtersType = !$init ? $request->filtersType : (isset($filters['filtersType']) ? $filters['filtersType'] : null);
 
       $dates = [];
@@ -331,7 +349,7 @@ class InspectionReportController extends Controller
           }
       }
 
-      $informManager = new InformManagerInspections($this->company, $headquarters, $areas, $themes, $filtersType, $dates);
+      $informManager = new InformManagerInspections($this->company, $headquarters, $areas, $themes, $filtersType, $dates, $inspections);
 
       return $this->respondHttp200($informManager->getInformData());
     }
