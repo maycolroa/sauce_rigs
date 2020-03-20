@@ -9,6 +9,26 @@
         <vue-file-simple :help-text="form.old_file ? `Para descargar el archivo actual, haga click <a href='/biologicalmonitoring/absenteeism/talendUpload/download/${form.id}' target='blank'>aqui</a> `: null" :disabled="viewOnly" accept=".zip" class="col-md-12" v-model="form.file" label="Archivo (*.zip)" name="file" :error="form.errorsFor('file')" placeholder="Seleccione un archivo"></vue-file-simple>
     </b-form-row>
 
+    <b-form-row>
+      <div class="col-md-6" style="padding-bottom: 20px;">
+        <center>
+          <div class="my-0 mx-2 text-center">
+            <img class="ui-w-400" src="~@/images/help_upload_talend.jpeg" alt="">
+          </div>
+        </center>
+      </div>
+      <div class="col-md-6">
+        <ul>
+          <li>Escoger el nombre para el talend.</li>
+          <li>Se debe crear un archivo con extensión <b>*.zip</b> utilizando ese nombre.</li>
+          <li>El archivo contendra una carpeta principal con el mismo nombre.</li>
+          <li>Dentro de la carpeta principal habra una carpeta <b>lib</b> y una carpeta con el mismo nombre del talend la cual tiene el archivo sh.</li>
+          <li>Archivo SH: debe tener el mismo nombre del talend pero terminar en <b>_run.sh</b>.</li>
+          <li><b>Mayúsculas y Minúsculas deben coincidír.</b></li>
+        </ul>
+      </div>
+    </b-form-row>
+
     <div class="row float-right pt-10 pr-10">
       <template>
         <b-btn variant="default" :to="cancelUrl" :disabled="loading">{{ viewOnly ? "Atras" : "Cancelar"}}</b-btn>&nbsp;&nbsp;
