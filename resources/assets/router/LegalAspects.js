@@ -239,7 +239,7 @@ export default [
 					import('@/views/LegalAspects/contracts/activities/create')
 				}
 			]),
-			...middleware({ 'check-permission': 'contracts_u' }, [
+			...middleware({ 'check-permission': 'contracts_activities_u' }, [
 				{
 					name: 'legalaspects-contracts-activities-edit',
 					path: 'activities/edit/:id',
@@ -253,6 +253,37 @@ export default [
 					path: 'activities/view/:id',
 					component: () =>
 					import('@/views/LegalAspects/contracts/activities/view')
+				}
+			]),...middleware({ 'check-permission': 'contracts_employee_r' }, [
+				{
+					name: 'legalaspects-contracts-employees',
+					path: 'employees',
+					component: () =>
+					import('@/views/LegalAspects/contracts/employees/index')
+				}
+			]),
+			...middleware({ 'check-permission': 'contracts_employee_c' }, [
+				{
+					name: 'legalaspects-contracts-employees-create',
+					path: 'employees/create',
+					component: () =>
+					import('@/views/LegalAspects/contracts/employees/create')
+				}
+			]),
+			...middleware({ 'check-permission': 'contracts_employee_u' }, [
+				{
+					name: 'legalaspects-contracts-employees-edit',
+					path: 'employees/edit/:id',
+					component: () =>
+					import('@/views/LegalAspects/contracts/employees/edit')
+				}
+			]),
+			...middleware({ 'check-permission': 'contracts_employee_r' }, [
+				{
+					name: 'legalaspects-contracts-employees-view',
+					path: 'employees/view/:id',
+					component: () =>
+					import('@/views/LegalAspects/contracts/employees/view')
 				}
 			]),
 			{

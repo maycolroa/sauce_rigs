@@ -36,6 +36,11 @@ class ContractLesseeInformation extends Model
         return $this->belongsToMany('App\Models\Administrative\Users\User', 'sau_users');
     }*/
 
+    public function employees()
+    {
+        return $this->hasMany(ContractWorker::class, 'contract_id');
+    }
+
     public function users()
     {
         return $this->belongsToMany('App\Models\Administrative\Users\User', 'sau_user_information_contract_lessee', 'information_id');
