@@ -486,6 +486,7 @@ class EvaluationContractController extends Controller
     {
         $evaluation = Evaluation::find($evaluationContract->evaluation_id);
         $report = [];
+        $report_total = [];
 
         foreach ($evaluation->ratingsTypes()->get() as $key => $value)
         {
@@ -493,6 +494,13 @@ class EvaluationContractController extends Controller
                 'total' => 0,
                 'total_c' => 0,
                 'percentage' =>0
+            ];
+
+            $report_total[$value->id] = [
+                'total' => 0,
+                'total_c' => 0,
+                'percentage' =>0,
+                'category' => $value->name
             ];
         }
 
@@ -578,8 +586,28 @@ class EvaluationContractController extends Controller
                 }
 
                 $subobjective->report = $clone_report;
+
+                foreach ($clone_report as $key => $value)
+                {
+                    $report_total[$key]['total'] += $value['total'];
+                    $report_total[$key]['total_c'] += $value['total_c'];
+                }
+
+                foreach ($report_total as $key => $value)
+                {
+                    $report_total[$key]['percentage'] = round(($value['total_c'] / $value['total']) * 100, 1);
+                }
             }
         }
+
+        //$evaluation_base->report_category = $report_total;
+        $report_total = collect($report_total);
+        $evaluation_base->report_total = $report_total->push([
+            'total' => $report_total->sum('total'),
+            'total_c' => $report_total->sum('total_c'),
+            'percentage' => round(($report_total->sum('total_c') / $report_total->sum('total')) * 100, 1),
+            'category' => 'Total'
+        ]);
 
         return $evaluation_base;
     }

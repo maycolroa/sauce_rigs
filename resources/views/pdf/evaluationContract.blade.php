@@ -47,6 +47,29 @@
     </div>
 
     <br><br>
+
+    <div style="page-break-inside: avoid;">
+        <table class="table-general">
+            <thead> 
+                    <tr>
+                        <th>Categoria</th>
+                        <th>Total</th>
+                        <th>Total Cumple</th>
+                        <th>Cumplimiento (%)</th>
+                    </tr>                   
+                @foreach($evaluations->evaluation->report_total as $rate)
+                    <tr>
+                        <td>{{ $rate["category"] }}</td>
+                        <td>{{ $rate["total"] }}</td>
+                        <td>{{ $rate["total_c"] }}</td>
+                        <td>{{ $rate["percentage"] }}%</td>
+                    </tr>
+                @endforeach
+            </thead>
+        </table>        
+    </div>
+    
+    <br><br>
     
     <div style="page-break-inside: avoid;">
         <table class="table-general">
