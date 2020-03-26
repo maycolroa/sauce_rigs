@@ -84,8 +84,10 @@ class NotifyLicenseRenewalJob implements ShouldQueue
 
         foreach ($users as $key => $value)
         {
-            $recipients->push(new User(['email'=>$value]));
+            $recipients->push(new User(['email'=>$value->email]));
         }
+
+        \Log::info($recipients);
 
         $modules_news = collect([]);
         $modules_olds = collect([]);

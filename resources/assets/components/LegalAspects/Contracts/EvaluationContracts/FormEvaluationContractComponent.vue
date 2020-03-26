@@ -87,6 +87,27 @@
                 <blockquote class="blockquote text-left pb-10" style="padding-bottom: 5px; padding-top:5px;" v-if="viewOnly">
                     <p class="mb-0"><b>Fecha de evaluación:</b> {{ evaluation.evaluation_date ? evaluation.evaluation_date : 'Sin evaluar'}}</p>
                 </blockquote>
+
+                <template v-if="viewOnly">
+                    <b-card no-body class="pb-1 mb-2" v-for="(rate, keyTotal) in form.evaluation.report_total" :key="`total-${keyTotal}`">
+                      <div class="row no-gutters align-items-center">
+                        <div class="col-12 col-md-5 px-4 pt-4">
+                          <p class="text-dark font-weight-semibold">{{ rate.category }}</p><br>
+                        </div>
+                        <div class="col-4 col-md-2 text-muted small px-4 pt-4">
+                          <strong>Total</strong> <br> {{ rate.total }}
+                        </div>
+                        <div class="col-4 col-md-2 text-muted small px-4 pt-4">
+                          <strong>Total Cumple</strong> <br> {{ rate.total_c }}
+                        </div>
+                        <div class="col-4 col-md-3 px-4 pt-4">
+                          <div class="text-right text-muted small">{{ rate.percentage }}%</div>
+                          <b-progress :value="rate.percentage" height="6px" />
+                        </div>
+                      </div>
+                    </b-card>
+                </template>
+
                 <blockquote class="blockquote text-center">
                     <p class="mb-0">Temas de la evaluación</p>
                 </blockquote>

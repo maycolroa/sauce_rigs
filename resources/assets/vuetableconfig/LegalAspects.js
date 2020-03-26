@@ -477,57 +477,112 @@ export default [
         }
     },
     {
-    name: 'legalaspects-contracts-activities',
-    fields: [
-        { name: 'sau_ct_activities.id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true },
-        { name: 'sau_ct_activities.name', data: 'name', title: 'Nombre', sortable: true, searchable: true, detail: false, key: false },
-        { name: '', data: 'controlls', title: 'Controles', sortable: false, searchable: false, detail: false, key: false },
-    ],
-    'controlls': [{
-        type: 'push',
-        buttons: [{
-        config: {
-            color: 'outline-success',
-            borderless: true,
-            icon: 'ion ion-md-create',
-            title: 'Editar'
+        name: 'legalaspects-contracts-activities',
+        fields: [
+            { name: 'sau_ct_activities.id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true },
+            { name: 'sau_ct_activities.name', data: 'name', title: 'Nombre', sortable: true, searchable: true, detail: false, key: false },
+            { name: '', data: 'controlls', title: 'Controles', sortable: false, searchable: false, detail: false, key: false },
+        ],
+        'controlls': [{
+            type: 'push',
+            buttons: [{
+            config: {
+                color: 'outline-success',
+                borderless: true,
+                icon: 'ion ion-md-create',
+                title: 'Editar'
+            },
+            data: {
+                routePush: { name: 'legalaspects-contracts-activities-edit' },
+                id: 'id',
+            },
+            permission: 'contracts_activities_u'
+            }, {
+            config: {
+                color: 'outline-info',
+                borderless: true,
+                icon: 'ion ion-md-eye',
+                title: 'Ver'
+            },
+            data: {
+                routePush: { name: 'legalaspects-contracts-activities-view' },
+                id: 'id',
+            },
+            permission: 'contracts_activities_r'
+            }]
         },
-        data: {
-            routePush: { name: 'legalaspects-contracts-activities-edit' },
-            id: 'id',
-        },
-        permission: 'contracts_activities_u'
-        }, {
-        config: {
-            color: 'outline-info',
-            borderless: true,
-            icon: 'ion ion-md-eye',
-            title: 'Ver'
-        },
-        data: {
-            routePush: { name: 'legalaspects-contracts-activities-view' },
-            id: 'id',
-        },
-        permission: 'contracts_activities_r'
-        }]
+        {
+            type: 'base',
+            buttons: [{
+            name: 'delete',
+            data: {
+                action: '/legalAspects/activityContract/',
+                id: 'id',
+                messageConfirmation: 'Esta seguro de borrar la actividad __name__'
+            },
+            permission: 'contracts_activities_d'
+            }],
+        }],
+        configuration: {
+            urlData: '/legalAspects/activityContract/data',
+            filterColumns: true,
+        }
     },
     {
-        type: 'base',
-        buttons: [{
-        name: 'delete',
-        data: {
-            action: '/legalAspects/activityContract/',
-            id: 'id',
-            messageConfirmation: 'Esta seguro de borrar la actividad __name__'
+        name: 'legalaspects-contracts-employees',
+        fields: [
+            { name: 'sau_ct_contract_employees.id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true },
+            { name: 'sau_ct_contract_employees.identification', data: 'identification', title: 'Identificación', sortable: true, searchable: true, detail: false, key: false },
+            { name: 'sau_ct_contract_employees.name', data: 'name', title: 'Nombre', sortable: true, searchable: true, detail: false, key: false },
+            { name: 'sau_ct_contract_employees.position', data: 'position', title: 'Posición', sortable: true, searchable: true, detail: false, key: false },
+            { name: 'sau_ct_contract_employees.email', data: 'email', title: 'Email', sortable: true, searchable: true, detail: false, key: false },
+            { name: '', data: 'controlls', title: 'Controles', sortable: false, searchable: false, detail: false, key: false },
+        ],
+        'controlls': [{
+            type: 'push',
+            buttons: [{
+            config: {
+                color: 'outline-success',
+                borderless: true,
+                icon: 'ion ion-md-create',
+                title: 'Editar'
+            },
+            data: {
+                routePush: { name: 'legalaspects-contracts-employees-edit' },
+                id: 'id',
+            },
+            permission: 'contracts_employee_u'
+            }, {
+            config: {
+                color: 'outline-info',
+                borderless: true,
+                icon: 'ion ion-md-eye',
+                title: 'Ver'
+            },
+            data: {
+                routePush: { name: 'legalaspects-contracts-employees-view' },
+                id: 'id',
+            },
+            permission: 'contracts_employee_r'
+            }]
         },
-        permission: 'contracts_activities_d'
+        {
+            type: 'base',
+            buttons: [{
+            name: 'delete',
+            data: {
+                action: '/legalAspects/employeeContract/',
+                id: 'id',
+                messageConfirmation: 'Esta seguro de borrar el empleado __name__'
+            },
+            permission: 'contracts_employee_d'
+            }],
         }],
-    }],
-    configuration: {
-        urlData: '/legalAspects/activityContract/data',
-        filterColumns: true,
-    }
-},
+        configuration: {
+            urlData: '/legalAspects/employeeContract/data',
+            filterColumns: true,
+        }
+    },
     {
         name: 'legalaspects-lm-interests',
         fields: [

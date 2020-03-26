@@ -20,4 +20,12 @@ class ActivityContract extends Model
     {
         return $this->hasMany(ActivityDocument::class, 'activity_id');
     }
+
+    public function multiselect()
+    {
+        return [
+            'name' => $this->name,
+            'value' => $this->id
+        ];
+    }
 }

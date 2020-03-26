@@ -457,6 +457,22 @@
                     {
                         "name": "contracts_activities_d",
                         "display_name": "Contratistas/Actividades - eliminar"
+                    },
+                    {
+                        "name": "contracts_employee_c",
+                        "display_name": "Contratistas/Empleados - crear"
+                    },
+                    {
+                        "name": "contracts_employee_r",
+                        "display_name": "Contratistas/Empleados - ver"
+                    },
+                    {
+                        "name": "contracts_employee_u",
+                        "display_name": "Contratistas/Empleados - editar"
+                    },
+                    {
+                        "name": "contracts_employee_d",
+                        "display_name": "Contratistas/Empleados - eliminar"
                     }
                 ]
             },

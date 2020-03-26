@@ -65,13 +65,24 @@
 								</router-link>
 							</div>
 
-							<div class="d-flex col-sm-6 col-md-4 col-lg-6 align-items-center" v-if="auth.can['contracts_activities_r']">
+							<div class="d-flex col-sm-6 col-md-4 col-lg-6 align-items-center" v-if="(!auth.hasRole['Arrendatario'] && !auth.hasRole['Contratista']) && auth.can['contracts_activities_r']">
 								<router-link tag="a" href="javascript:void(0)" class="card-body media align-items-center text-dark" :to="{name:'legalaspects-contracts-activities'}">
 									<i class="lnr lnr-upload display-4 d-block text-primary"></i>
 									<span class="media-body d-block ml-3">
 										<span class="text-big font-weight-bolder">Actividades</span>
 										<br>
 										<small class="text-muted">Actividades</small>
+									</span>
+								</router-link>
+							</div>
+
+							<div class="d-flex col-sm-6 col-md-4 col-lg-6 align-items-center" v-if="(auth.hasRole['Arrendatario'] || auth.hasRole['Contratista']) && auth.can['contracts_employee_r']">
+								<router-link tag="a" href="javascript:void(0)" class="card-body media align-items-center text-dark" :to="{name:'legalaspects-contracts-employees'}">
+									<i class="lnr lnr-user display-4 d-block text-primary"></i>
+									<span class="media-body d-block ml-3">
+										<span class="text-big font-weight-bolder">Administrar empleados</span>
+										<br>
+										<small class="text-muted">Administrar empleados</small>
 									</span>
 								</router-link>
 							</div>
