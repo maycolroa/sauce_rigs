@@ -54,9 +54,15 @@ class ContractEmployeeController extends Controller
             'sau_ct_contract_employees.name AS name',
             'sau_ct_contract_employees.email AS email',
             'sau_ct_contract_employees.position AS position',
-            'sau_ct_contract_employees.identification AS identification',
-            'sau_ct_information_contract_lessee.social_reason AS contract')
-        ->join('sau_ct_information_contract_lessee', 'sau_ct_information_contract_lessee.id', 'sau_ct_contract_employees.contract_id');
+            'sau_ct_contract_employees.identification AS identification');
+
+        if ($request->has('modelId') && $request->get('modelId'))
+            $employees->where('sau_ct_contract_employees.contract_id', $request->get('modelId'));
+        else 
+        {
+            $employees->join('sau_user_information_contract_lessee', 'sau_user_information_contract_lessee.information_id', 'sau_ct_contract_employees.contract_id');
+            $employees->where('sau_user_information_contract_lessee.user_id', '=', $this->user->id);
+        }
 
         return Vuetable::of($employees)
                     ->make();
@@ -94,6 +100,7 @@ class ContractEmployeeController extends Controller
 
             $contract = $this->getContractUser($this->user->id, $this->company);
             $employee->contract_id = $contract->id;
+            $employee->company_id = $this->company;
 
             if (!$employee->save())
                 return $this->respondHttp500();

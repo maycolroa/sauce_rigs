@@ -3,9 +3,11 @@
 namespace App\Models\LegalAspects\Contracts;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Traits\CompanyTrait;
 
 class ContractEmployee extends Model
 {
+    use CompanyTrait;
 
     protected $table = 'sau_ct_contract_employees';
     
@@ -14,7 +16,8 @@ class ContractEmployee extends Model
         'name',
         'identification',
         'position',
-        'email'
+        'email',
+        'company_id'
     ];
 
     public function contract()
