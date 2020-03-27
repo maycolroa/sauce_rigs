@@ -82,6 +82,16 @@ class EvaluationContractNotificationExcel implements FromCollection, WithHeading
     */
     public function collection()
     {
+      foreach ($this->ratings as $value)
+      {
+        $report_total[$value->id] = [
+                'total' => 0,
+                'total_c' => 0,
+                'percentage' =>0,
+                'category' => $value->name
+            ];
+      }
+
       $evaluations = EvaluationContract::selectRaw(
         'sau_ct_evaluation_contract.id as evaluation_contract_id,
           sau_ct_objectives.description as objective,
@@ -107,38 +117,76 @@ class EvaluationContractNotificationExcel implements FromCollection, WithHeading
 
       $evaluations->company_scope = $this->company_id;
 
-      return $evaluations->get();
+      $evaluations = $evaluations->get()
+      ->map(function($evaluation, $key) use (&$report_total) {
+
+        $data = [
+          $evaluation->contract,
+          $evaluation->evaluation_date,
+          $evaluation->evaluator,
+          $this->evaluators[$evaluation->evaluation_contract_id],
+          isset($this->interviewees[$evaluation->evaluation_contract_id]) ? $this->interviewees[$evaluation->evaluation_contract_id] : '',
+          $evaluation->objective,
+          $evaluation->subobjective,
+          $evaluation->item,
+          $evaluation->observation
+        ];
+
+        $key = $evaluation->evaluation_contract_id.'_'.$evaluation->item_id.'_';
+
+        foreach ($this->ratings as $rating)
+        {
+          $value = isset($this->qualifications[$key.$rating->id]) ? 
+            ($this->qualifications[$key.$rating->id] ? 
+                $this->qualifications[$key.$rating->id] : 'N/A')
+            : 'N/A';
+
+          $value = str_replace('pending', 'NO', $value);
+          
+          array_push($data, $value);
+
+          $report_total[$rating->id]['total'] += 1;
+
+          if ($value == 'SI' || $value == 'N/A')
+            $report_total[$rating->id]['total_c'] += 1;
+        }
+
+        return $data;
+      });
+
+      foreach ($report_total as $key => $value)
+      {
+          $report_total[$key]['percentage'] = round(($value['total_c'] / $value['total']) * 100, 1);
+      }
+
+      $report_total = collect($report_total);
+      $report_total->push([
+          'total' => $report_total->sum('total'),
+          'total_c' => $report_total->sum('total_c'),
+          'percentage' => round(($report_total->sum('total_c') / $report_total->sum('total')) * 100, 1),
+          'category' => 'Total'
+      ]);
+
+      $evaluations->push([""]);
+      $evaluations->push([""]);
+      $evaluations->push(['Categoría', 'Total', 'Total Cumple', 'Cumplimiento (%)']);
+
+      foreach ($report_total as $key => $value)
+      {
+        $evaluations->push([
+          $value['category'],
+          $value['total'], 
+          $value['total_c'], 
+          $value['percentage'].'%'
+        ]);
+      }
+
+      return $evaluations;
     }
 
     public function map($data): array
     {
-      $values = [
-        $data->contract,
-        $data->evaluation_date,
-        $data->evaluator,
-        $this->evaluators[$data->evaluation_contract_id],
-        isset($this->interviewees[$data->evaluation_contract_id]) ? $this->interviewees[$data->evaluation_contract_id] : '',
-        $data->objective,
-        $data->subobjective,
-        $data->item,
-        $data->observation
-      ];
-
-      $key = $data->evaluation_contract_id.'_'.$data->item_id.'_';
-
-      foreach ($this->ratings as $rating)
-      {
-        $value = isset($this->qualifications[$key.$rating->id]) ? 
-          ($this->qualifications[$key.$rating->id] ? 
-              $this->qualifications[$key.$rating->id] : 'N/A')
-          : 'N/A';
-
-        $value = str_replace('pending', 'NO', $value);
-        
-        array_push($values, $value);
-      }
-
-      return $values;
+      return $data;
     }
 
     public function headings(): array

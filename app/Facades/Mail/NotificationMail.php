@@ -483,7 +483,7 @@ class NotificationMail
             $this->restart();
         }
         catch (\Exception $e) {
-          //zzzdd($e);
+          \Log::info($e->getMessage());
             throw new \Exception('An error occurred while sending the mail');
         }
 

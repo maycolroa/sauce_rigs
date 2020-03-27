@@ -124,12 +124,16 @@ class LicenseController extends Controller
 
             $modules = [];
 
+            $mails = [];
+
             foreach ($license->modules()->main()->get() as $key => $value)
             {               
                 array_push($modules, $value->multiselect());
             }
 
             $license->module_id = $modules;
+
+            $license->add_email = $mails;
 
             return $this->respondHttp200([
                 'data' => $license,
