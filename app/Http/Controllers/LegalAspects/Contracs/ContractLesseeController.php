@@ -236,6 +236,23 @@ class ContractLesseeController extends Controller
             $contract = $this->getContractUser($this->user->id);
             $contract->isInformation = true;
 
+            /*$companies = DB::table('sau_company_user')
+                ->where('user_id', $this->user->id)
+                ->where('company_id', '<>', $this->company)
+                ->get();
+
+            $companies = $companies->filter(function($company, $key) {
+                return $this->user->hasRole('Contratista', $company->company_id);
+            })
+            ->map(function($company, $key) {
+                return Company::find($company->company_id)->multiselect();
+            });
+
+            $contract->multiselect_companies = $companies;
+            $contract->existsOthersContract = ($this->user->hasRole('Contratista', $this->company) && $companies->count() > 0) ? true : false;
+
+            \Log::info($contract);*/
+
             return $this->respondHttp200([
                 'data' => $contract
             ]);

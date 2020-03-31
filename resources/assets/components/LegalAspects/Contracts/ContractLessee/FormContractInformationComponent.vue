@@ -15,6 +15,11 @@
 							<div><b>¿Trabajo de alto riesgo?:</b> {{ form.high_risk_work }}</div>
 						</b-col>
 					</b-row>
+					<!-- <b-row>
+						<center v-if="employeeDetail.id">
+				            <b-btn variant="primary" size="md" @click="" ><span class="ion ion-md-eye"></span> Transferir valores de lista de chequeo de otra empresa</b-btn>
+				         </center>
+					</b-row> -->
 				</b-card>
 				<b-card border-variant="primary" class="mb-3 box-shadow-none">
                     <b-form-row>
@@ -87,6 +92,8 @@ export default {
 					arl: '',
 					number_workers: '',
 					risk_class: '',
+					/*multiselect_companies: '',
+					existsOthersContract: false*/
 				};
 			}
 		}

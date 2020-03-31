@@ -56,7 +56,9 @@ class ActivityContractRequest extends FormRequest
         $id = $this->input('id');
 
         return [
-            'name' => 'required|string|unique:sau_ct_activities,name,'.$id.',id,company_id,'.Session::get('company_id'),
+            'name' => 'required|unique:sau_ct_activities,name,'.$id.',id,company_id,'.Session::get('company_id'),
+            'documents' => 'nullable|array',
+            'documents.*.name' => 'required'
         ];
     }
 }

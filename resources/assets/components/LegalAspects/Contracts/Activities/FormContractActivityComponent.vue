@@ -5,6 +5,10 @@
       <vue-input :disabled="viewOnly" class="col-md-12" v-model="form.name" label="Nombre" type="text" name="name" :error="form.errorsFor('name')" placeholder="Nombre"></vue-input>
     </b-form-row>
 
+    <blockquote class="blockquote text-center">
+          <p class="mb-0">Documentos</p>
+    </blockquote>
+
     <template v-for="(document, index) in form.documents">
       <div :key="document.key">
           <b-form-row>
@@ -13,7 +17,7 @@
                       <b-btn variant="outline-primary icon-btn borderless" size="sm" v-b-tooltip.top title="Eliminar" @click.prevent="removeDocument(index)"><span class="ion ion-md-close-circle"></span></b-btn>
                   </div>
               </div>
-              <vue-input class="col-md-12" v-model="document.name" label="Nombre" name="documents"></vue-input>
+              <vue-input class="col-md-12" v-model="document.name" label="Nombre" name="documents" :disabled="viewOnly" type="text" placeholder="Nombre" :error="form.errorsFor(`documents.${index}.name`)"></vue-input>
           </b-form-row>
       </div>
     </template>
