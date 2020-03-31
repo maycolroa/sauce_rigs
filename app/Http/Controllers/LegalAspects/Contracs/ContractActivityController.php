@@ -68,7 +68,8 @@ class ContractActivityController extends Controller
             if (!$activity->save())
                 return $this->respondHttp500();
 
-            $this->saveDocuments($request->documents, $activity);
+            if ($request->has('documents'))
+                $this->saveDocuments($request->documents, $activity);
 
             DB::commit();
 
@@ -131,7 +132,8 @@ class ContractActivityController extends Controller
                 return $this->respondHttp500();
             }
 
-            $this->saveDocuments($request->documents, $activityContract);
+            if ($request->has('documents'))
+                $this->saveDocuments($request->documents, $activityContract);
 
             $this->deleteData($request->get('delete'));
 
@@ -139,9 +141,7 @@ class ContractActivityController extends Controller
 
         } catch (\Exception $e) {
             DB::rollback();
-            \Log::info($e->getMessage());
             return $this->respondHttp500();
-            //return $e->getMessage();
         }
 
         return $this->respondHttp200([
@@ -157,12 +157,7 @@ class ContractActivityController extends Controller
      */
     public function destroy(ActivityContract $activityContract)
     {
-        if (count($activityContract->documents) > 0)
-        {
-            return $this->respondWithError('No se puede eliminar la actividad porque hay documentos asociadas a ella');
-        }
-
-        if(!$activityContract->delete())
+        if (!$activityContract->delete())
         {
             return $this->respondHttp500();
         }

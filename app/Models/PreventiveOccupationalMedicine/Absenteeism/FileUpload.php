@@ -44,6 +44,9 @@ class FileUpload extends Model
 
     public function path_donwload()
     {
-        return "{$this->path_client(false)}/{$this->file}";
+        $pos = strrpos($this->path, 'preventiveOccupationalMedicine');
+        $path = substr($this->path, $pos);
+        
+        return "{$path}{$this->file}";
     }
 }
