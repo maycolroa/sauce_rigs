@@ -26,8 +26,30 @@ Vue.use(VueRouterMiddleware, {
       next()
     },
     checkPermission(params, to, from, next) {
-      if (params && auth.can[params])
-        next()
+      let valid = false;
+
+      if (params)
+      {
+        if (typeof params === 'string')
+        {
+          if (auth.can[params])
+            valid = true;
+        }
+        else
+        {
+          for (let value of params)
+          {
+            if (auth.can[value])
+            {
+              valid = true;
+              break;
+            }
+          };
+        }
+      }
+
+      if (valid)
+        next();
       else
         next({ path: '/' })
     }

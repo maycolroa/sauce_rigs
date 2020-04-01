@@ -36,6 +36,11 @@ class ContractLesseeInformation extends Model
         return $this->belongsToMany('App\Models\Administrative\Users\User', 'sau_users');
     }*/
 
+    public function company()
+    {
+        return $this->belongsTo('App\Models\General\Company', 'company_id');
+    }
+
     public function employees()
     {
         return $this->hasMany(ContractWorker::class, 'contract_id');
@@ -75,6 +80,14 @@ class ContractLesseeInformation extends Model
     {
         return [
             'name' => "{$this->nit} - {$this->social_reason}",
+            'value' => $this->id
+        ];
+    }
+
+    public function multiselectCompany()
+    {
+        return [
+            'name' => "{$this->company->name} - {$this->nit} - {$this->social_reason}",
             'value' => $this->id
         ];
     }

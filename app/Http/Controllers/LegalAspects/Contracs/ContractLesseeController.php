@@ -19,6 +19,7 @@ use App\Http\Requests\LegalAspects\Contracts\ListCheckItemsRequest;
 use App\Jobs\LegalAspects\Contracts\ListCheck\ListCheckContractExportJob;
 use App\Jobs\LegalAspects\Contracts\Contractor\ContractorExportJob;
 use App\Jobs\LegalAspects\Contracts\Contractor\NotifyResponsibleContractJob;
+use App\Jobs\LegalAspects\Contracts\ListCheck\ListCheckCopyJob;
 use App\Facades\ActionPlans\Facades\ActionPlan;
 use App\Models\Administrative\Users\User;
 use App\Models\General\Company;
@@ -44,7 +45,7 @@ class ContractLesseeController extends Controller
         parent::__construct();
         $this->middleware('auth');
         $this->middleware("permission:contracts_c, {$this->team}", ['only' => 'store']);
-        $this->middleware("permission:contracts_r, {$this->team}", ['except' => ['getInformation', 'multiselect', 'getListCheckItems', 'qualifications', 'saveQualificationItems', 'update']] );
+        $this->middleware("permission:contracts_r, {$this->team}", ['except' => ['getInformation', 'multiselect', 'getListCheckItems', 'qualifications', 'saveQualificationItems', 'update', 'listCheckCopy']] );
         $this->middleware("permission:contracts_u|contracts_myInformation, {$this->team}", ['only' => 'update']);
         $this->middleware("permission:contracts_myInformation, {$this->team}", ['only' => 'getInformation']);
         $this->middleware("permission:contracts_export, {$this->team}", ['only' => 'export']);
@@ -235,29 +236,46 @@ class ContractLesseeController extends Controller
         {
             $contract = $this->getContractUser($this->user->id);
             $contract->isInformation = true;
+            $contract->multiselect_contracts = [];
 
-            /*$companies = DB::table('sau_company_user')
-                ->where('user_id', $this->user->id)
-                ->where('company_id', '<>', $this->company)
-                ->get();
+            if ($this->user->hasRole('Contratista', $this->company))
+            {
+                $contracts = ContractLesseeInformation::withoutGlobalScopes()
+                    ->join('sau_user_information_contract_lessee', 'sau_user_information_contract_lessee.information_id', 'sau_ct_information_contract_lessee.id')
+                    ->where('sau_user_information_contract_lessee.user_id', $this->user->id)
+                    ->where('sau_ct_information_contract_lessee.id', '<>', $contract->id)
+                    ->get();
 
-            $companies = $companies->filter(function($company, $key) {
-                return $this->user->hasRole('Contratista', $company->company_id);
-            })
-            ->map(function($company, $key) {
-                return Company::find($company->company_id)->multiselect();
-            });
+                $contracts = $contracts->filter(function($contract, $key) {
+                    return $this->user->hasRole('Contratista', $contract->company_id);
+                })
+                ->map(function($contract, $key) {
+                    return $contract->multiselectCompany();
+                });            
 
-            $contract->multiselect_companies = $companies;
-            $contract->existsOthersContract = ($this->user->hasRole('Contratista', $this->company) && $companies->count() > 0) ? true : false;
-
-            \Log::info($contract);*/
+                $contract->multiselect_contracts = $contracts;
+                $contract->existsOthersContract = $contracts->count() > 0 ? true : false;
+            }
 
             return $this->respondHttp200([
                 'data' => $contract
             ]);
         } catch(Exception $e){
             $this->respondHttp500();
+        }
+    }
+
+    public function listCheckCopy(Request $request)
+    {
+        $contract = $this->getContractUser($this->user->id);
+
+        try
+        {
+            ListCheckCopyJob::dispatch($this->user, $this->company, $contract, $request->contract_selected);
+        
+            return $this->respondHttp200();
+        } catch(Exception $e) {
+            return $this->respondHttp500();
         }
     }
 

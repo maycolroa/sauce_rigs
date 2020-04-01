@@ -523,7 +523,7 @@ export default [
 					import('@/views/LegalAspects/legalMatrix/laws/view')
 				},
 			]),
-			...middleware({ 'check-permission': 'laws_qualify' }, [
+			...middleware({ 'check-permission': ['laws_qualify', 'laws_qualify_view'] }, [
 				{
 					name: 'legalaspects-lm-law-qualify',
 					path: 'lm/lawsQualify',
