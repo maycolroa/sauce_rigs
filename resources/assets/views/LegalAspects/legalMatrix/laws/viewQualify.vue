@@ -17,7 +17,8 @@
                 :action-plan-states="actionPlanStates"
                 :si-no="siNo"
                 :filter-interests-options="filterInterestsOptions"
-                :is-edit="true"
+                :is-edit="isEdit"
+                :view-only="viewOnly"
                 :cancel-url="{ name: 'legalaspects-lm-law-qualify'}"/>
         </b-card-body>
       </b-card>
@@ -44,10 +45,14 @@ export default {
       qualifications: [],
       actionPlanStates: [],
       siNo: [],
-      filterInterestsOptions: []
+      filterInterestsOptions: [],
+      isEdit: false,
+      viewOnly: true
     }
   },
   created(){
+    this.isEdit = this.auth.can['laws_qualify']
+    this.viewOnly = this.auth.can['laws_qualify'] ? false : true;
     this.fetchSelect('qualifications', '/selects/legalMatrix/articlesQualifications')
     this.fetchSelect('actionPlanStates', '/selects/actionPlanStates')
     this.fetchSelect('siNo', '/selects/siNo')

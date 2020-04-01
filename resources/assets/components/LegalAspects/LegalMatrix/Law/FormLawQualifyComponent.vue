@@ -55,7 +55,7 @@
                       </vue-advanced-select>
             </b-form-row>
             <blockquote class="blockquote text-center">
-              <p class="mb-0">Artículos de la norma | <b-btn variant="primary" size="sm" @click="$refs.modalQualificationAll.show()" ><span class="ion ion-md-clipboard"></span> Evaluar todos </b-btn></p>
+              <p class="mb-0">Artículos de la norma | <b-btn v-if="isEdit" variant="primary" size="sm" @click="$refs.modalQualificationAll.show()" ><span class="ion ion-md-clipboard"></span> Evaluar todos </b-btn></p>
 
               <b-modal ref="modalQualificationAll" :hideFooter="true" id="modals-qualification-all" class="modal-top" size="lg">
                 <div slot="modal-title">
@@ -96,8 +96,7 @@
                                 v-b-tooltip.top title="Ver historial de cambios">
                                   <span class="ion ion-md-eye"></span>
                               </b-btn>
-                              <b-btn @click="showModal(`modalArticle${index}`)" 
-                                v-if="!viewOnly"
+                              <b-btn @click="showModal(`modalArticle${index}`)"
                                 size="sm" 
                                 variant="secondary icon-btn borderless"
                                 v-b-tooltip.top title="Ver artículo completo">
@@ -135,7 +134,7 @@
                                 <b-form-row> 
                                   <vue-file-simple v-if="article.qualify && article.qualify != 'No cumple' && article.qualify && article.qualify != 'Parcial'" :help-text="article.old_file ? `Para descargar el archivo actual, haga click <a href='/legalAspects/legalMatrix/law/downloadArticleQualify/${article.qualification_id}' target='blank'>aqui</a> `: null" :disabled="viewOnly" class="col-md-6" @input="saveArticleQualification(index)" accept=".pdf" v-model="article.file" label="Archivo (*.pdf)" name="file" :error="form.errorsFor('file')" placeholder="Seleccione un archivo"></vue-file-simple>
 
-                                  <div style="padding-top: 25px;">
+                                  <div style="padding-top: 25px;" v-if="isEdit">
                                     <b-btn v-if="article.qualify && article.qualify != 'No cumple' && article.qualify != 'Parcial' && article.file" @click="deleteFile(index)" variant="primary"><span class="ion ion-md-close-circle"></span> Eliminar Archivo</b-btn>
                                   </div>
 
@@ -178,7 +177,7 @@
                       <b-form-row> 
                         <vue-file-simple v-if="article.qualify && article.qualify != 'No cumple' && article.qualify && article.qualify != 'Parcial'" :help-text="article.old_file ? `Para descargar el archivo actual, haga click <a href='/legalAspects/legalMatrix/law/downloadArticleQualify/${article.qualification_id}' target='blank'>aqui</a> `: null" :disabled="viewOnly" class="col-md-6" @input="saveArticleQualification(index)" accept=".pdf" v-model="article.file" label="Archivo (*.pdf)" name="file" :error="form.errorsFor('file')" placeholder="Seleccione un archivo"></vue-file-simple>
 
-                        <div style="padding-top: 25px;">
+                        <div style="padding-top: 25px;" v-if="isEdit">
                           <b-btn v-if="article.qualify && article.qualify != 'No cumple' && article.qualify != 'Parcial' && article.file" @click="deleteFile(index)" variant="primary"><span class="ion ion-md-close-circle"></span> Eliminar Archivo</b-btn>
                         </div>
 
@@ -513,7 +512,7 @@ export default {
     },
     saveArticleQualification(index)
     {
-      if (this.ready)
+      if (this.ready && this.isEdit)
       {
         this.loading = true;
         let article = this.form.articles[index]

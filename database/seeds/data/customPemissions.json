@@ -580,6 +580,10 @@
                         "display_name": "Matriz Legal/Normas - calificar"
                     },
                     {
+                        "name": "laws_qualify_view",
+                        "display_name": "Matriz Legal/Normas - ver calificadas"
+                    },
+                    {
                         "name": "interests_config",
                         "display_name": "Matriz Legal/Intereses - establecer mis intereses"
                     },

@@ -38,7 +38,7 @@
                 </router-link>
       </b-col>
 
-      <b-col cols="3" class="col-item" v-if="auth.can['laws_qualify']">
+      <b-col cols="3" class="col-item" v-if="auth.can['laws_qualify'] || auth.can['laws_qualify_view']">
                 <router-link :to="{name:'legalaspects-lm-law-qualify'}" class="text-dark cursor-pointer item-app-navbar">
                     <div class="my-2 mx-2" ref="custom_law_qualify" @mouseover="changeClassImage('custom_law_qualify', 'custom_law_qualify_hover')">
                         <img class="ui-w-80" src="/images/Sauce-ML Ico Calificar Normas.png" alt="" >
