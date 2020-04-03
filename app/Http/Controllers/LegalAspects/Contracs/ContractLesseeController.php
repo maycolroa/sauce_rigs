@@ -11,7 +11,7 @@ use App\Models\LegalAspects\Contracts\CompanyLimitCreated;
 use App\Models\LegalAspects\Contracts\FileUpload;
 use App\Models\LegalAspects\Contracts\ContractLesseeInformation;
 use App\Models\LegalAspects\Contracts\SectionCategoryItems;
-use App\Models\LegalAspects\Contracts\Qualifications;;
+use App\Models\LegalAspects\Contracts\Qualifications;
 use App\Models\LegalAspects\Contracts\HighRiskType;
 use App\Models\LegalAspects\Contracts\ItemQualificationContractDetail;
 use App\Http\Requests\LegalAspects\Contracts\ContractRequest;
@@ -675,7 +675,7 @@ class ContractLesseeController extends Controller
                         //Borrar archivos reemplazados
                         foreach ($files_names_delete as $keyf => $file)
                         {
-                            Storage::disk('public')->delete('legalAspects/files/'. $file);
+                            Storage::disk('s3')->delete('legalAspects/files/'. $file);
                         }
                     }
                 }
@@ -699,7 +699,7 @@ class ContractLesseeController extends Controller
                     if ($file_delete)
                     {
                         $file_delete->delete();
-                        Storage::disk('public')->delete('legalAspects/files/'. $file['old_name']);
+                        Storage::disk('s3')->delete('legalAspects/files/'. $file['old_name']);
                     }
                 }
             }
