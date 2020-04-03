@@ -30,7 +30,9 @@
 					<b-form-row v-show="form.high_risk_work == 'SI'">
 						<vue-ajax-advanced-select :disabled="viewOnly" class="col-md-6 offset-md-3" v-model="form.high_risk_type_id" :error="form.errorsFor('high_risk_type_id')" :selected-object="form.multiselect_high_risk_type" :multiple="true" :allowEmpty="true" name="high_risk_type_id" label="Tipos de riesgos" placeholder="Seleccione los tipos de riesgos" :url="highRiskTypeUrl">
 						</vue-ajax-advanced-select>
-						<vue-ajax-advanced-select :disabled="viewOnly" class="col-md-6 offset-md-3" v-model="form.activity_id" :error="form.errorsFor('activity_id')" :selected-object="form.multiselect_activity" :multiple="true" :allowEmpty="true" name="activity_id" label="Actividades" placeholder="Seleccione las actividades a asignar" :url="activitiesUrl">
+					</b-form-row>
+					<b-form-row>
+						<vue-ajax-advanced-select :disabled="viewOnly" class="col-md-12" v-model="form.activity_id" :error="form.errorsFor('activity_id')" :selected-object="form.multiselect_activity" :multiple="true" :allowEmpty="true" name="activity_id" label="Actividades" placeholder="Seleccione las actividades a asignar" :url="activitiesUrl">
 						</vue-ajax-advanced-select>
 					</b-form-row>
 					<b-form-row v-if="isEdit || viewOnly">
