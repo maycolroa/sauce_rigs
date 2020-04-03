@@ -322,7 +322,7 @@ class EvaluationContractController extends Controller
                         //Borrar archivos reemplazados
                         foreach ($files_names_delete as $keyf => $file)
                         {
-                            Storage::disk('public')->delete($fileUpload->path_client(false)."/".$file);
+                            Storage::disk('s3')->delete($fileUpload->path_client(false)."/".$file);
                         }
                     }
 
@@ -628,7 +628,7 @@ class EvaluationContractController extends Controller
 
                 if ($file_delete)
                 {
-                    Storage::disk('public')->delete($file_delete->path_client(false)."/".$file_delete->file);
+                    Storage::disk('s3')->delete($file_delete->path_client(false)."/".$file_delete->file);
                     $file_delete->delete();
                 }
             }
@@ -941,7 +941,7 @@ class EvaluationContractController extends Controller
 
     public function downloadFile(EvaluationFile $evaluationFile)
     {
-        return Storage::disk('public')->download($evaluationFile->path_donwload());
+        return Storage::disk('s3')->download($evaluationFile->path_donwload());
     }
 
     public function download(EvaluationContract $evaluationContract)

@@ -16,14 +16,14 @@
 						</b-col>
 					</b-row>
 					<br><br>
-					<!--<center v-if="auth.hasRole['Contratista'] && form.existsOthersContract">
-			            <b-btn variant="primary" size="md" @click="$refs.modalTransfer.show()" >Copiar valores de lista de chequeo desde otro contratista</b-btn>
-			         </center>-->
+					<center v-if="auth.hasRole['Contratista'] && form.existsOthersContract">
+			            <b-btn variant="primary" size="md" @click="$refs.modalTransfer.show()" >Transferencia de estandares mínimos</b-btn>
+			         </center>
 				</b-card>
 
 				<b-modal ref="modalTransfer" :hideFooter="true" id="modals-historial" class="modal-top" size="lg">
 					<div slot="modal-title">
-						<h4>Seleccione el contratista del cual desea copiar los valores</h4>
+						<h4>Seleccione el contratista del cual desea transferir los valores</h4>
 					</div>
 					<center>
 						<vue-advanced-select class="col-md-12" v-model="contract_select" :error="form.errorsFor('contract_select')" name="contract_select" label="Contratista" placeholder="Seleccione el contratista" :options="form.multiselect_contracts">
@@ -31,8 +31,22 @@
                 	</center>
 
 					<div class="row float-right pt-12 pr-12y">						
-                        <b-btn @click="listCheckCopy()" variant="primary">Copiar</b-btn>&nbsp;&nbsp;
+                        <b-btn @click="$refs.modalConfirmTransfer.show()" variant="primary">Copiar</b-btn>&nbsp;&nbsp;
 						<b-btn variant="primary" @click="$refs.modalTransfer.hide()">Cerrar</b-btn>
+					</div>
+				</b-modal>
+
+				<b-modal ref="modalConfirmTransfer" :hideFooter="true" id="modals-historial2" class="modal-top" size="lg">
+					<div slot="modal-title">
+						<h4>Confirmación</h4>
+					</div>
+					<center>
+						<p> De continuar con la transferencia, todos los estandares mínimos diligenciados se borraran y se remplazaran por los transferidos. ¿Desea continuar? </p>
+                	</center>
+
+					<div class="row float-right pt-12 pr-12y">						
+                        <b-btn @click="listCheckCopy()" variant="primary">SI</b-btn>&nbsp;&nbsp;
+						<b-btn variant="primary" @click="$refs.modalConfirmTransfer.hide()">NO</b-btn>
 					</div>
 				</b-modal>
 
@@ -151,7 +165,7 @@ export default {
 	      axios.post('/legalAspects/contracts/listCheckCopy', {contract_selected: this.contract_select})
 	        .then(response => {
 	          Alerts.warning('Información', 'Estimado usuario, se le notificara a su correo electronico cuando finalice el proceso.');
-	          this.$refs.modalTransfer.hide()
+	          this.$refs.modalConfirmTransfer.hide()
 	        }).catch(error => {
 	          Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
 	        });

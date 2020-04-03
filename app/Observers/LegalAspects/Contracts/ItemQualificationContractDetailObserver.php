@@ -32,10 +32,13 @@ class ItemQualificationContractDetailObserver
 
     private function syncInformation(ItemQualificationContractDetail $qualification)
     {
-        $qualification->contract->listCheckHistory()->create([
+        if (Auth::user())
+        {
+            $qualification->contract->listCheckHistory()->create([
             'user_id' => Auth::user()->id
-        ]);
+            ]);
 
-        SyncQualificationResumenJob::dispatch($qualification->contract);
+            SyncQualificationResumenJob::dispatch($qualification->contract);
+        }
     }
 }
