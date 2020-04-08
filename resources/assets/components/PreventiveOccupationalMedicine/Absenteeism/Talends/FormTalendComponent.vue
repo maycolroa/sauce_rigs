@@ -25,6 +25,7 @@
           <li>Dentro de la carpeta principal habra una carpeta <b>lib</b> y una carpeta con el mismo nombre del talend la cual tiene el archivo sh.</li>
           <li>Archivo SH: debe tener el mismo nombre del talend pero terminar en <b>_run.sh</b>.</li>
           <li><b>Mayúsculas y Minúsculas deben coincidír.</b></li>
+          <li><b>Añadir en el sh: --context=Default --context_param ruta_archivo="$1" --context_param nombre_archivo="$2" "$@".</b></li>
         </ul>
       </div>
     </b-form-row>

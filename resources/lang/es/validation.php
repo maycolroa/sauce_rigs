@@ -311,6 +311,11 @@ return [
       'users.*.role_id' => 'Rol',
       'talend_id' => 'Tipo',
       'documents.*.name' => 'Nombre',
+      'activity_id' => 'Actividades',
+      'number_attemps' => 'Número de intentos',
+      'number_questions_show' => 'Preguntas a evaluar',
+      'min_calification' => 'Calificación mínima',
+      'max_calification' => 'Calificación máxima'
     ],
 
 ];
