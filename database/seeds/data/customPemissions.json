@@ -473,6 +473,22 @@
                     {
                         "name": "contracts_employee_d",
                         "display_name": "Contratistas/Empleados - eliminar"
+                    },
+                    {
+                        "name": "contracts_training_c",
+                        "display_name": "Contratistas/Capacitación - crear"
+                    },
+                    {
+                        "name": "contracts_training_r",
+                        "display_name": "Contratistas/Capacitación - ver"
+                    },
+                    {
+                        "name": "contracts_training_u",
+                        "display_name": "Contratistas/Capacitación - editar"
+                    },
+                    {
+                        "name": "contracts_training_d",
+                        "display_name": "Contratistas/Capacitación - eliminar"
                     }
                 ]
             },

@@ -311,6 +311,15 @@ return [
       'users.*.role_id' => 'Rol',
       'talend_id' => 'Tipo',
       'documents.*.name' => 'Nombre',
+      'activity_id' => 'Actividades',
+      'number_attemps' => 'Número de intentos',
+      'number_questions_show' => 'Preguntas a evaluar',
+      'min_calification' => 'Calificación mínima',
+      'max_calification' => 'Calificación máxima',
+      'questions.*.description' => 'Descripción',
+      'questions.*.type_question_id' => 'Tipo de pregunta',
+      'questions.*.value_question' => 'Valor de la pregunta',
+      'questions.*.answers' => 'Respuesta valida'
     ],
 
 ];

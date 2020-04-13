@@ -30,5 +30,6 @@ class DatabaseSeeder extends Seeder
         $this->call(ModulesDependenciesSeeder::class);
         $this->call(MakeKeywordsSeeder::class);
         $this->call(CtContractHighRiskTypeSeeder::class);
+        $this->call(CtTrainingTypesQualificationsSeeder::class);
     }
 }
