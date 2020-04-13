@@ -18,7 +18,7 @@ class TrainingRequest extends FormRequest
     }
 
     
-    /*public function validator($factory)
+    public function validator($factory)
     {
         return $factory->make(
             $this->sanitize(), $this->container->call([$this, 'rules']), $this->messages()
@@ -27,11 +27,11 @@ class TrainingRequest extends FormRequest
 
     public function sanitize()
     {
-        if ($this->has('documents'))
+        if ($this->has('questions'))
         {
-            foreach ($this->input('documents') as $key => $value)
+            foreach ($this->input('questions') as $key => $value)
             {
-                $data['documents'][$key] = json_decode($value, true);
+                $data['questions'][$key] = json_decode($value, true);
                 $this->merge($data);
             }
         }
@@ -44,7 +44,7 @@ class TrainingRequest extends FormRequest
         }
 
         return $this->all();
-    }*/
+    }
 
     /**
      * Get the validation rules that apply to the request.
@@ -61,7 +61,25 @@ class TrainingRequest extends FormRequest
             'min_calification'  => "required|integer|min:1|between:1,".$this->input('max_calification'),
             'max_calification'  => 'required|min:1',
             'number_attemps'  => 'required|min:1',
-            'activity_id' => 'required'
+            'activity_id' => 'required',
+            'questions' => 'required|array',
+            'questions.*.description' => 'required',
+            'questions.*.type_question_id' => 'required',
+            'questions.*.value_question' => 'required',
+            'questions.*.options' => 'required_if:questions.*.type_question_id,1,3',
+            'questions.*.answers' => 'required'
+        ];
+    }
+
+    /**
+     * Get the validation error message.
+     *
+     * @return string
+     */
+    public function messages()
+    {
+        return [
+            'questions.*.options.required_if' => 'El campo Opciones de respuesta es obligatorio'
         ];
     }
 }

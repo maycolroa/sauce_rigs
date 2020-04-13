@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Storage;
 use App\Models\LegalAspects\Contracts\Training;
 use App\Http\Requests\LegalAspects\Contracts\TrainingRequest;
 use App\Models\LegalAspects\Contracts\TrainingQuestions;
-use App\Models\LegalAspects\Contracts\FileUpload;
+use App\Models\LegalAspects\Contracts\TrainingTypeQuestion;
 use Carbon\Carbon;
 use Validator;
 use DB;
@@ -93,6 +93,8 @@ class ContractTrainingController extends Controller
 
             $this->saveFile($training, $request);
 
+            $this->saveQuestions($training, $request->get('questions'));
+
             DB::commit();
 
         } catch (\Exception $e) {
@@ -120,14 +122,22 @@ class ContractTrainingController extends Controller
             $training = Training::findOrFail($id);
             $training->old_file = $training->file;
 
-            /*foreach ($activity->documents as $document)
+            foreach ($training->questions as $question)
             {
-                $document->key = Carbon::now()->timestamp + rand(1,10000);
+                $question->key = Carbon::now()->timestamp + rand(1,10000);
+                $question->multiselect_type_question_id = $question->type->multiselect();
+
+                if ($question->type_question_id == 1 || $question->type_question_id == 3)
+                {
+                    $question->options = implode("\n", $question->answer_options->get('options'));
+                }
+
+                $question->answers = implode("\n", $question->answer_options->get('answers'));
             }
 
-            $activity->delete = [
-                'documents' => []
-            ];*/
+            $training->delete = [
+                'questions' => []
+            ];
 
             $activity_id = [];
 
@@ -171,6 +181,8 @@ class ContractTrainingController extends Controller
 
             $this->saveFile($trainingContract, $request);
 
+            $this->saveQuestions($trainingContract, $request->get('questions'));
+
             /*if ($request->has('documents'))
                 $this->saveDocuments($request->documents, $trainingContract);*/
 
@@ -208,6 +220,29 @@ class ContractTrainingController extends Controller
         return $this->respondHttp200([
             'message' => 'Se elimino la capacitación'
         ]);
+    }
+
+    private function saveQuestions($training, $questions)
+    {
+        foreach ($questions as $key => $question)
+        {
+            $id = isset($question['id']) ? $question['id'] : NULL;
+            $config = collect(['options' => [], 'answers' => []]);
+
+            if ($question['type_question_id'] == 1 || $question['type_question_id'] == 3)
+            {
+                $config->put('options', explode("\n", $question['options']));
+                $config->put('answers', explode("\n", $question['answers']));
+            }
+            else
+            {
+                $config->put('answers', [$question['answers']]);
+            }
+
+            $question['answer_options'] = $config;
+
+            $training->questions()->updateOrCreate(['id'=>$id], $question);
+        }
     }
 
     public function saveFile($training, $request)
@@ -288,5 +323,31 @@ class ContractTrainingController extends Controller
     public function download(Training $trainingContract)
     {
       return Storage::disk('s3')->download($trainingContract->path_donwload());
+    }
+
+    public function multiselectTypeQuestion(Request $request)
+    {
+        if($request->has('keyword'))
+        {
+            $keyword = "%{$request->keyword}%";
+            $typeQuestions = TrainingTypeQuestion::select("id", "description")
+                ->where(function ($query) use ($keyword) {
+                    $query->orWhere('description', 'like', $keyword);
+                })
+                ->take(30)->pluck('id', 'description');
+
+            return $this->respondHttp200([
+                'options' => $this->multiSelectFormat($typeQuestions)
+            ]);
+        }
+        else
+        {
+            $typeQuestions = TrainingTypeQuestion::selectRaw("
+                sau_ct_training_types_questions.id as id,
+                sau_ct_training_types_questions.description as name
+            ")->pluck('id', 'name');
+        
+            return $this->multiSelectFormat($typeQuestions);
+        }
     }
 }

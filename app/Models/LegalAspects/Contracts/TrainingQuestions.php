@@ -12,14 +12,22 @@ class TrainingQuestions extends Model
         'training_id',
         'description',
         'type_question_id',
-        'answer',
-        'options',
+        'answer_options',
         'value_question',
     ];
 
-    public function Training()
+    /**
+     * The attributes that should be cast to native types.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'answer_options' => 'collection',
+    ];
+
+    public function type()
     {
-        return $this->belongsTo(Training::class, 'training_id');
+        return $this->belongsTo(TrainingTypeQuestion::class, 'type_question_id');
     }
 
     public function multiselect()

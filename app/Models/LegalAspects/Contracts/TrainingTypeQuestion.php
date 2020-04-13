@@ -10,13 +10,14 @@ class TrainingTypeQuestion extends Model
     protected $table = 'sau_ct_training_types_questions';
     
     protected $fillable = [
-        'name'
+        'name',
+        'description'
     ];
 
     public function multiselect()
     {
         return [
-            'name' => $this->name,
+            'name' => $this->description,
             'value' => $this->id
         ];
     }

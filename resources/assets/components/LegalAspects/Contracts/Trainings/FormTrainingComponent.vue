@@ -39,6 +39,99 @@
       </b-collapse>
     </b-card>
 
+    <b-card no-body class="mb-2 border-secondary" style="width: 100%;">
+      <b-card-header class="bg-secondary">
+          <b-row>
+            <b-col cols="11" class="d-flex justify-content-between"> Preguntas </b-col>
+            <b-col cols="1">
+                <div class="float-right">
+                  <b-button-group>
+                    <b-btn href="javascript:void(0)" v-b-toggle="'accordion-questions'" variant="link">
+                      <span class="collapse-icon"></span>
+                    </b-btn>
+                  </b-button-group>
+                </div>
+            </b-col>
+          </b-row>
+      </b-card-header>
+      <b-collapse :id="`accordion-questions`" visible :accordion="`accordion-master`">
+        <b-card-body>
+          <div class="col-md-12">
+            <blockquote class="blockquote text-center">
+              <p class="mb-0">Preguntas de la capacitación</p>
+            </blockquote>
+            <b-form-row>
+              <div class="col-md-12" v-if="!viewOnly">
+                <div class="float-right" style="padding-top: 10px; padding-bottom: 10px">
+                  <b-btn variant="primary" @click.prevent="addQuestion()"><span class="ion ion-md-add-circle"></span>&nbsp;&nbsp;Agregar pregunta</b-btn>
+                </div>
+              </div>
+            </b-form-row>
+
+            <template v-for="(question, index) in form.questions">
+              <b-card no-body class="mb-2 border-secondary" :key="question.key" style="width: 100%;">
+                <b-card-header class="bg-secondary">
+                  <b-row>
+                      <b-col cols="10" class="d-flex justify-content-between"> <strong>{{ question.description ? (question.description.length > 200 ? `${question.description.substring(0, 200)}...` : question.description) : `Nueva Pregunta ${index + 1}` }}</strong>  </b-col>
+                      <b-col cols="2">
+                        <div class="float-right">
+                          <b-button-group>
+                            <b-btn href="javascript:void(0)" v-b-toggle="'accordion' + question.key+'-1'" variant="link">
+                              <span class="collapse-icon"></span>
+                            </b-btn>
+                            <b-btn @click.prevent="removeQuestion(index)" 
+                              v-if="!viewOnly"
+                              size="sm" 
+                              variant="secondary icon-btn borderless"
+                              v-b-tooltip.top title="Eliminar Pregunta">
+                                <span class="ion ion-md-close-circle"></span>
+                            </b-btn>
+                          </b-button-group>
+                        </div>
+                      </b-col>
+                  </b-row>
+                </b-card-header>
+                <b-collapse :id="`accordion${question.key}-1`" :visible="!isEdit && !viewOnly" :accordion="`accordion-123`">
+                  <b-card-body>
+                    <b-form-row>
+                      <vue-textarea :disabled="viewOnly" class="col-md-12" v-model="question.description" label="Descripción" name="description" placeholder="Descripción" :error="form.errorsFor(`questions.${index}.description`)" rows="3"></vue-textarea>
+                    </b-form-row>
+                    <b-form-row>
+                      <vue-ajax-advanced-select :disabled="viewOnly" class="col-md-12" v-model="question.type_question_id" :error="form.errorsFor(`questions.${index}.type_question_id`)" :selected-object="question.multiselect_type_question_id" :multiple="false" name="type_question_id" label="Tipo de pregunta" placeholder="Seleccione el tipo de pregunta" :url="typeQuestionUrl">
+                      </vue-ajax-advanced-select>
+                    </b-form-row>
+                    <b-form-row>
+                      <!--Selección simple-->
+                      <vue-textarea v-if="question.type_question_id == '1'" :disabled="viewOnly" class="col-md-12" v-model="question.options" :error="form.errorsFor(`questions.${index}.options`)" label="Opciones de respuestas (Separadas por saltos de linea)" name="options" placeholder="Opciones de respuestas" rows="3"></vue-textarea>
+                      <vue-input v-if="question.type_question_id == '1'" :disabled="viewOnly" class="col-md-12" v-model="question.answers" label="Respuesta valida (Debe estar dentro de las opciones dadas en el campo anterior)" type="text" name="answers" :error="form.errorsFor(`questions.${index}.answers`)" placeholder="Respuesta valida"></vue-input>
+
+                      <!--Verdadero o falso-->
+                      <vue-radio v-if="question.type_question_id == '2'" :disabled="viewOnly" class="col-md-12" v-model="question.answers" :options="trueFalse" :name="`trueFalse${index}`" :error="form.errorsFor(`questions.${index}.answers`)" label="Elige la opciòn correcta" :checked="question.answers">
+                      </vue-radio>
+
+                      <!--Selección multiple-->
+                      <vue-textarea v-if="question.type_question_id == '3'" :disabled="viewOnly" class="col-md-12" v-model="question.options" label="Opciones de respuestas (Separadas por saltos de linea)" name="options" placeholder="Opciones de respuestas" rows="3" :error="form.errorsFor(`questions.${index}.options`)"></vue-textarea>
+                      <vue-textarea v-if="question.type_question_id == '3'" :disabled="viewOnly" class="col-md-12" v-model="question.answers" label="Respuestas validas (Separadas por saltos de linea. Deben estar dentro de las opciones dadas en el campo anterior)" name="answers" placeholder="Respuestas validas" rows="3" :error="form.errorsFor(`questions.${index}.answers`)"></vue-textarea>
+
+                      <!--Si o NO-->
+                      <vue-radio v-if="question.type_question_id == '4'" :disabled="viewOnly" class="col-md-12" v-model="question.answers" :options="siNo" :name="`siNo${index}`" :error="form.errorsFor(`questions.${index}.answers`)" label="Elige la opciòn correcta" :checked="question.answers">
+                      </vue-radio>
+                    </b-form-row>
+
+                    <b-form-row>
+                      <vue-input :disabled="viewOnly" class="col-md-12" v-model="question.value_question" label="Valor de la pregunta" type="number" name="value_question" min="1" :error="form.errorsFor(`questions.${index}.value_question`)" placeholder="Valor de la pregunta"></vue-input>
+                    </b-form-row>
+                      </b-card-body>
+                    </b-collapse>
+                  </b-card>
+                </template>
+              </perfect-scrollbar>
+            </b-form-row>
+          </div>
+        </b-card-body>
+      </b-collapse>
+    </b-card>
+
     <div class="row float-right pt-10 pr-10" style="padding-top: 20px;">
       <template>
         <b-btn variant="default" :to="cancelUrl" :disabled="loading">{{ viewOnly ? "Atras" : "Cancelar"}}</b-btn>&nbsp;&nbsp;
@@ -75,13 +168,8 @@ export default {
     cancelUrl: { type: [String, Object], required: true },
     isEdit: { type: Boolean, default: false },
     viewOnly: { type: Boolean, default: false },   
-    activitiesUrl: { type: String, default: "" },
-    typesEvaluation: {
-      type: Array,
-      default: function() {
-        return [];
-      }
-    },
+    activitiesUrl: { type: String, default: "" }, 
+    typeQuestionUrl: { type: String, default: "" },
     training: {
       default() {
         return {
@@ -92,6 +180,7 @@ export default {
           min_calification: '',
           file: '',         
           activity_id: [],
+          questions: []
         };
       }
     }
@@ -105,7 +194,15 @@ export default {
   data() {
     return {
         loading: this.isEdit,
-        form: Form.makeFrom(this.training, this.method)
+        form: Form.makeFrom(this.training, this.method),
+        siNo: [
+          {text: 'SI', value: 'SI'},
+          {text: 'NO', value: 'NO'}
+        ],
+        trueFalse: [
+          {text: 'Verdadero', value: 1},
+          {text: 'Falso', value: 0}
+        ]
     };
   },
   methods: {
@@ -121,19 +218,20 @@ export default {
           this.loading = false;
         });
     },
-    addObjetive() {
-        this.form.objectives.push({
+    addQuestion() {
+        this.form.questions.push({
             key: new Date().getTime(),
             description: '',
-            subobjectives: []
+            type_question_id: [],
+            value_question: ''
         })
     },
-    removeObjetive(index)
+    removeQuestion(index)
     {
-      if (this.form.objectives[index].id != undefined)
-        this.form.delete.objectives.push(this.form.objectives[index].id)
+      if (this.form.questions[index].id != undefined)
+        this.form.delete.questions.push(questions[index].id)
 
-      this.form.objectives.splice(index, 1)
+      this.form.questions.splice(index, 1)
     }
   }
 }
