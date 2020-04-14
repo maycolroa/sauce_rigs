@@ -84,6 +84,7 @@ class ContractTrainingController extends Controller
             $training->company_id = $this->company;
             $training->creator_user = $this->user->id;
             $training->modifier_user = $this->user->id;
+            $training->max_calification = $request->number_questions_show;
 
             if (!$training->save())
                 return $this->respondHttp500();
@@ -172,6 +173,7 @@ class ContractTrainingController extends Controller
         {
             $trainingContract->fill($request->except('file'));
             $trainingContract->modifier_user = $this->user->id;
+            $trainingContract->max_calification = $request->number_questions_show;
 
             if (!$trainingContract->update())
                 return $this->respondHttp500();

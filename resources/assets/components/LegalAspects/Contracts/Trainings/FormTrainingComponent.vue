@@ -25,15 +25,13 @@
           </b-form-row>
           <b-form-row>
             <vue-input :disabled="viewOnly" class="col-md-6" v-model="form.number_attemps" label="Número de intentos" min="1" type="number" name="number_attemps" :error="form.errorsFor('number_attemps')" placeholder="Número de intentos"></vue-input>            
-            <vue-input :disabled="viewOnly" class="col-md-6" v-model="form.max_calification" min="1" label="Calificación máxima" type="number" name="max_calification" :error="form.errorsFor('max_calification')" placeholder="Calificación máxima"></vue-input>
-          </b-form-row>
-          <b-form-row>
+            <!--<vue-input :disabled="viewOnly" class="col-md-6" v-model="form.max_calification" min="1" label="Calificación máxima" type="number" name="max_calification" :error="form.errorsFor('max_calification')" placeholder="Calificación máxima"></vue-input>-->
             <vue-input :disabled="viewOnly" class="col-md-6" v-model="form.min_calification" label="Calificación mínima para aprobar" type="number" name="min_calification" min="1" :error="form.errorsFor('min_calification')" placeholder="Calificación minima  para aprobar"></vue-input>
+          </b-form-row>
+          <b-form-row>            
             <vue-ajax-advanced-select :disabled="viewOnly" class="col-md-6" v-model="form.activity_id" :error="form.errorsFor('activity_id')" :selected-object="form.multiselect_activity" :multiple="true" :allowEmpty="true" name="activity_id" label="Actividades" placeholder="Seleccione las actividades relacionadas" :url="activitiesUrl">
             </vue-ajax-advanced-select>
-          </b-form-row>
-          <b-form-row>
-            <vue-file-simple :disabled="viewOnly" :help-text="form.id ? `Para descargar el archivo actual, haga click <a href='/legalAspects/trainingContract/download/${form.id}' target='blank'>aqui</a> ` : null" class="col-md-12" v-model="form.file" label="Archivo" name="file" placeholder="Seleccione un archivo" :error="form.errorsFor(`file`)"/>
+            <vue-file-simple :disabled="viewOnly" :help-text="form.id ? `Para descargar el archivo actual, haga click <a href='/legalAspects/trainingContract/download/${form.id}' target='blank'>aqui</a> ` : null" class="col-md-6" v-model="form.file" label="Archivo" name="file" placeholder="Seleccione un archivo" :error="form.errorsFor(`file`)"/>
           </b-form-row>
         </b-card-body>
       </b-collapse>
@@ -94,7 +92,7 @@
                 <b-collapse :id="`accordion${question.key}-1`" :visible="!isEdit && !viewOnly" :accordion="`accordion-123`">
                   <b-card-body>
                     <b-form-row>
-                      <vue-textarea :disabled="viewOnly" class="col-md-12" v-model="question.description" label="Descripción" name="description" placeholder="Descripción" :error="form.errorsFor(`questions.${index}.description`)" rows="3"></vue-textarea>
+                      <vue-textarea :disabled="viewOnly" class="col-md-12" v-model="question.description" label="Enunciado" name="description" placeholder="Descripción" :error="form.errorsFor(`questions.${index}.description`)" rows="3"></vue-textarea>
                     </b-form-row>
                     <b-form-row>
                       <vue-ajax-advanced-select :disabled="viewOnly" class="col-md-12" v-model="question.type_question_id" :error="form.errorsFor(`questions.${index}.type_question_id`)" :selected-object="question.multiselect_type_question_id" :multiple="false" name="type_question_id" label="Tipo de pregunta" placeholder="Seleccione el tipo de pregunta" :url="typeQuestionUrl">
@@ -102,7 +100,7 @@
                     </b-form-row>
                     <b-form-row>
                       <!--Selección simple-->
-                      <vue-textarea v-if="question.type_question_id == '1'" :disabled="viewOnly" class="col-md-12" v-model="question.options" :error="form.errorsFor(`questions.${index}.options`)" label="Opciones de respuestas (Separadas por saltos de linea)" name="options" placeholder="Opciones de respuestas" rows="3"></vue-textarea>
+                      <vue-textarea v-if="question.type_question_id == '1'" :disabled="viewOnly" class="col-md-12" v-model="question.options" :error="form.errorsFor(`questions.${index}.options`)" label="Opciones de respuestas (Separadas por enter)" name="options" placeholder="Opciones de respuestas" rows="3"></vue-textarea>
                       <vue-input v-if="question.type_question_id == '1'" :disabled="viewOnly" class="col-md-12" v-model="question.answers" label="Respuesta valida (Debe estar dentro de las opciones dadas en el campo anterior)" type="text" name="answers" :error="form.errorsFor(`questions.${index}.answers`)" placeholder="Respuesta valida"></vue-input>
 
                       <!--Verdadero o falso-->
@@ -110,17 +108,17 @@
                       </vue-radio>
 
                       <!--Selección multiple-->
-                      <vue-textarea v-if="question.type_question_id == '3'" :disabled="viewOnly" class="col-md-12" v-model="question.options" label="Opciones de respuestas (Separadas por saltos de linea)" name="options" placeholder="Opciones de respuestas" rows="3" :error="form.errorsFor(`questions.${index}.options`)"></vue-textarea>
-                      <vue-textarea v-if="question.type_question_id == '3'" :disabled="viewOnly" class="col-md-12" v-model="question.answers" label="Respuestas validas (Separadas por saltos de linea. Deben estar dentro de las opciones dadas en el campo anterior)" name="answers" placeholder="Respuestas validas" rows="3" :error="form.errorsFor(`questions.${index}.answers`)"></vue-textarea>
+                      <vue-textarea v-if="question.type_question_id == '3'" :disabled="viewOnly" class="col-md-12" v-model="question.options" label="Opciones de respuestas (Separadas por enter)" name="options" placeholder="Opciones de respuestas" rows="3" :error="form.errorsFor(`questions.${index}.options`)"></vue-textarea>
+                      <vue-textarea v-if="question.type_question_id == '3'" :disabled="viewOnly" class="col-md-12" v-model="question.answers" label="Respuestas validas (Separadas por enter. Deben estar dentro de las opciones dadas en el campo anterior)" name="answers" placeholder="Respuestas validas" rows="3" :error="form.errorsFor(`questions.${index}.answers`)"></vue-textarea>
 
                       <!--Si o NO-->
                       <vue-radio v-if="question.type_question_id == '4'" :disabled="viewOnly" class="col-md-12" v-model="question.answers" :options="siNo" :name="`siNo${index}`" :error="form.errorsFor(`questions.${index}.answers`)" label="Elige la opciòn correcta" :checked="question.answers">
                       </vue-radio>
                     </b-form-row>
 
-                    <b-form-row>
+                    <!--<b-form-row>
                       <vue-input :disabled="viewOnly" class="col-md-12" v-model="question.value_question" label="Valor de la pregunta" type="number" name="value_question" min="1" :error="form.errorsFor(`questions.${index}.value_question`)" placeholder="Valor de la pregunta"></vue-input>
-                    </b-form-row>
+                    </b-form-row>-->
                       </b-card-body>
                     </b-collapse>
                   </b-card>
@@ -176,7 +174,6 @@ export default {
           name: '',
           number_questions_show: '',
           number_attemps: '',
-          max_calification: '',
           min_calification: '',
           file: '',         
           activity_id: [],

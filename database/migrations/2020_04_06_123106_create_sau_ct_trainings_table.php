@@ -19,10 +19,10 @@ class CreateSauCtTrainingsTable extends Migration
             $table->string('name');
             $table->unsignedInteger('creator_user');
             $table->unsignedInteger('modifier_user');
-            $table->string('number_questions_show');
-            $table->string('min_calification');
-            $table->string('max_calification');
-            $table->string('number_attemps');
+            $table->integer('number_questions_show');
+            $table->integer('min_calification');
+            $table->integer('max_calification');
+            $table->integer('number_attemps');
             $table->string('file')->nullable();
             
             $table->foreign('company_id')->references('id')->on('sau_companies')->onUpdate('cascade')->onDelete('cascade'); 

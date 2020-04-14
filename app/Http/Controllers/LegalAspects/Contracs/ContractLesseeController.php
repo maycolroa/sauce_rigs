@@ -434,7 +434,7 @@ class ContractLesseeController extends Controller
                 if ($record)
                     $item->required = $record->pivot->required;
                 else
-                    $item->required = 'NO';
+                    $item->required = 'SI';
 
                 return $item;
             });
