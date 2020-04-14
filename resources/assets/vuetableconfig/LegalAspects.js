@@ -567,13 +567,28 @@ export default [
         {
             type: 'base',
             buttons: [{
-            name: 'delete',
-            data: {
-                action: '/legalAspects/trainingContract/',
-                id: 'id',
-                messageConfirmation: 'Esta seguro de borrar la capacitación __name__'
+                name: 'delete',
+                data: {
+                    action: '/legalAspects/trainingContract/',
+                    id: 'id',
+                    messageConfirmation: 'Esta seguro de borrar la capacitación __name__'
+                },
+                permission: 'contracts_training_d'
             },
-            permission: 'contracts_training_d'
+            {
+                name: 'switchStatus',
+                config: {
+                    color: 'outline-danger',
+                    borderless: true,
+                    icon: 'fas fa-sync',
+                    title: 'Cambiar Estado'
+                },
+                data: {
+                    action: '/legalAspects/trainingContract/switchStatus/',
+                    id: 'id',
+                    messageConfirmation: 'Esta seguro de querer cambiar el estado de __name__'
+                },
+                permission: 'contracts_training_u'
             }],
         }],
         configuration: {

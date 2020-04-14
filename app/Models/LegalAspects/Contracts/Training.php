@@ -19,7 +19,12 @@ class Training extends Model
         'number_questions_show',
         'min_calification',
         'max_calification',
-        'number_attemps'
+        'number_attemps',
+        'active'
+    ];
+
+    protected $casts = [
+        'active' => 'boolean',
     ];
 
     public function questions()
