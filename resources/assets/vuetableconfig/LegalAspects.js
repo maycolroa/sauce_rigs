@@ -533,6 +533,7 @@ export default [
         fields: [
             { name: 'trainings.id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true },
             { name: 'trainings.name', data: 'name', title: 'Nombre', sortable: true, searchable: true, detail: false, key: false },
+            { name: 'trainings.active', data: 'active', title: '¿Activa?', sortable: true, searchable: true, detail: false, key: false },
             { name: 'trainings.created_at', data: 'created_at', title: 'Fecha creación', sortable: true, searchable: true, detail: false, key: false },
             { name: '', data: 'controlls', title: 'Controles', sortable: false, searchable: false, detail: false, key: false },
         ],

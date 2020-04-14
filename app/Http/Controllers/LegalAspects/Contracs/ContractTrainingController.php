@@ -310,7 +310,7 @@ class ContractTrainingController extends Controller
         $training = Training::findOrFail($id);
 
         if ($training->questions->count() >= $training->number_questions_show)
-            $data = ['active' => !$training->active];
+            $data = ['active' => $training->toogleState()];
         else
         {
             return $this->respondWithError('El número de preguntas asociados a la capacitación es menor al número de preguntas a mostrar en el examen, debe completar la capacitación para asi poder activarla.');

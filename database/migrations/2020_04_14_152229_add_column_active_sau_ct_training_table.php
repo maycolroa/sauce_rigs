@@ -14,7 +14,7 @@ class AddColumnActiveSauCtTrainingTable extends Migration
     public function up()
     {
         Schema::table('sau_ct_trainings', function (Blueprint $table) {
-            $table->boolean('active')->default(false);         
+            $table->string('active')->default('NO');         
         });
     }
 

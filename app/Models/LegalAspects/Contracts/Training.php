@@ -23,10 +23,6 @@ class Training extends Model
         'active'
     ];
 
-    protected $casts = [
-        'active' => 'boolean',
-    ];
-
     public function questions()
     {
         return $this->hasMany(TrainingQuestions::class, 'training_id');
@@ -48,6 +44,33 @@ class Training extends Model
             'name' => $this->name,
             'value' => $this->id
         ];
+    }
+
+    public function toogleState()
+    {
+        return $this->isActive() ? "NO" : "SI";
+    }
+
+    public function scopeByState($query, $state)
+    {
+        return $query->where('sau_ct_trainings.active', $state);
+    }
+
+    /**
+     * filters only open/closed check
+     * @param  Illuminate\Database\Eloquent\Builder $query
+     * @param  Boleam $isActive
+     * @return Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeIsActive($query, $isActive = true)
+    {
+        $state = $isActive ? 'SI' : 'NO'; 
+        return $query->byState($state);
+    }
+
+    public function isActive()
+    {
+        return $this->state == 'SI';
     }
 
     public function path_base($storageLocation = true)
