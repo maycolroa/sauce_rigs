@@ -61,8 +61,13 @@ class TalendController extends Controller
             "file" => [
                 function ($attribute, $value, $fail)
                 {
-                    if ($value && !is_string($value) && $value->getClientMimeType() != 'application/zip')
-                        $fail('Archivo debe ser un zip');
+                  if ($value && !is_string($value))
+                  {
+                      $ext = strtolower($value->getClientOriginalExtension());
+                      
+                      if ($ext != 'zip')
+                          $fail('Archivo debe ser un zip');
+                  }
                 },
             ]
         ])->validate();
@@ -129,8 +134,13 @@ class TalendController extends Controller
             "file" => [
                 function ($attribute, $value, $fail)
                 {
-                    if ($value && !is_string($value) && $value->getClientMimeType() != 'application/zip')
+                  if ($value && !is_string($value))
+                  {
+                    $ext = strtolower($value->getClientOriginalExtension());
+                    
+                    if ($ext != 'zip')
                         $fail('Archivo debe ser un zip');
+                  }
                 },
             ]
         ])->validate();

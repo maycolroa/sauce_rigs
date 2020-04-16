@@ -209,7 +209,7 @@ export default {
         .submit(e.target.action)
         .then(response => {
           this.loading = false;
-          this.$router.push({ name: "legalaspects-contracts-trainings" });
+          this.$router.push({ name: "legalaspects-contracts-trainings-virtual" });
         })
         .catch(error => {
           this.loading = false;

@@ -529,7 +529,7 @@ export default [
         }
     },
     {
-        name: 'legalaspects-contracts-trainings',
+        name: 'legalaspects-contracts-trainings-virtual',
         fields: [
             { name: 'trainings.id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true },
             { name: 'trainings.name', data: 'name', title: 'Nombre', sortable: true, searchable: true, detail: false, key: false },
@@ -547,7 +547,7 @@ export default [
                 title: 'Editar'
             },
             data: {
-                routePush: { name: 'legalaspects-contracts-trainings-edit' },
+                routePush: { name: 'legalaspects-contracts-trainings-virtual-edit' },
                 id: 'id',
             },
             permission: 'contracts_training_u'
@@ -559,7 +559,7 @@ export default [
                 title: 'Ver'
             },
             data: {
-                routePush: { name: 'legalaspects-contracts-trainings-view' },
+                routePush: { name: 'legalaspects-contracts-trainings-virtual-view' },
                 id: 'id',
             },
             permission: 'contracts_training_r'
