@@ -19,7 +19,7 @@ class CreateSauCtTrainingQuestionsTable extends Migration
             $table->text('description');
             $table->unsignedInteger('type_question_id');
             $table->text('answer_options');
-            $table->string('value_question');
+            $table->integer('value_question')->default(1);
 
             $table->foreign('training_id')->references('id')->on('sau_ct_trainings')->onUpdate('cascade')->onDelete('cascade');
             $table->foreign('type_question_id')->references('id')->on('sau_ct_training_types_questions')->onUpdate('cascade')->onDelete('cascade');

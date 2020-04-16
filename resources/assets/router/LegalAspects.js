@@ -295,28 +295,36 @@ export default [
 					import('@/views/LegalAspects/contracts/trainings/index')
 				}
 			]),
+			...middleware({ 'check-permission': 'contracts_training_r' }, [
+				{
+					name: 'legalaspects-contracts-trainings-virtual',
+					path: 'trainings/virtual',
+					component: () =>
+					import('@/views/LegalAspects/contracts/trainings/virtual/index')
+				}
+			]),
 			...middleware({ 'check-permission': 'contracts_training_c' }, [
 				{
-					name: 'legalaspects-contracts-trainings-create',
-					path: 'trainings/create',
+					name: 'legalaspects-contracts-trainings-virtual-create',
+					path: 'trainings/virtual/create',
 					component: () =>
-					import('@/views/LegalAspects/contracts/trainings/create')
+					import('@/views/LegalAspects/contracts/trainings/virtual/create')
 				}
 			]),
 			...middleware({ 'check-permission': 'contracts_training_u' }, [
 				{
-					name: 'legalaspects-contracts-trainings-edit',
-					path: 'trainings/edit/:id',
+					name: 'legalaspects-contracts-trainings-virtual-edit',
+					path: 'trainings/virtual/edit/:id',
 					component: () =>
-					import('@/views/LegalAspects/contracts/trainings/edit')
+					import('@/views/LegalAspects/contracts/trainings/virtual/edit')
 				}
 			]),
 			...middleware({ 'check-permission': 'contracts_training_r' }, [
 				{
-					name: 'legalaspects-contracts-trainings-view',
-					path: 'trainings/view/:id',
+					name: 'legalaspects-contracts-trainings-virtual-view',
+					path: 'trainings/virtual/view/:id',
 					component: () =>
-					import('@/views/LegalAspects/contracts/trainings/view')
+					import('@/views/LegalAspects/contracts/trainings/virtual/view')
 				}
 			]),
 			{

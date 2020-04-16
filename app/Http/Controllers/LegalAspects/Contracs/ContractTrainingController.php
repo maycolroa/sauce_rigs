@@ -10,6 +10,7 @@ use App\Models\LegalAspects\Contracts\Training;
 use App\Http\Requests\LegalAspects\Contracts\TrainingRequest;
 use App\Models\LegalAspects\Contracts\TrainingQuestions;
 use App\Models\LegalAspects\Contracts\TrainingTypeQuestion;
+use App\Jobs\LegalAspects\Contracts\Training\TrainingSendNotificationJob;
 use Carbon\Carbon;
 use Validator;
 use DB;
@@ -49,7 +50,10 @@ class ContractTrainingController extends Controller
         $trainings = Training::select('*');
 
         return Vuetable::of($trainings)
-                    ->make();
+                ->addColumn('retrySendMail', function ($training) {
+                    return $training->isActive();
+                })
+                ->make();    
     }
 
     /**
@@ -84,6 +88,7 @@ class ContractTrainingController extends Controller
             $training->company_id = $this->company;
             $training->creator_user = $this->user->id;
             $training->modifier_user = $this->user->id;
+            $training->max_calification = $request->number_questions_show;
 
             if (!$training->save())
                 return $this->respondHttp500();
@@ -172,6 +177,7 @@ class ContractTrainingController extends Controller
         {
             $trainingContract->fill($request->except('file'));
             $trainingContract->modifier_user = $this->user->id;
+            $trainingContract->max_calification = $request->number_questions_show;
 
             if (!$trainingContract->update())
                 return $this->respondHttp500();
@@ -266,54 +272,6 @@ class ContractTrainingController extends Controller
         
     }
 
-    /*private function saveDocuments($documents, $activity)
-    {
-        foreach ($documents as $document)
-        {
-            $id = isset($document['id']) ? $document['id'] : NULL;
-            $activity->documents()->updateOrCreate(['id'=>$id], $document);
-        }
-    }
-
-    private function deleteData($data)
-    {    
-        if (COUNT($data['documents']) > 0)
-            ActivityDocument::destroy($data['documents']);
-    }
-
-    /**
-     * Returns an array for a select type input
-     *
-     * @param Request $request
-     * @return Array
-     */
-
-    /*public function multiselect(Request $request)
-    {
-        if($request->has('keyword'))
-        {
-            $keyword = "%{$request->keyword}%";
-            $activities = ActivityContract::select("id", "name")
-                ->where(function ($query) use ($keyword) {
-                    $query->orWhere('name', 'like', $keyword);
-                })
-                ->take(30)->pluck('id', 'name');
-
-            return $this->respondHttp200([
-                'options' => $this->multiSelectFormat($activities)
-            ]);
-        }
-        else
-        {
-            $activities = ActivityContract::selectRaw("
-                sau_ct_activities.id as id,
-                sau_ct_activities.name as name
-            ")->pluck('id', 'name');
-        
-            return $this->multiSelectFormat($activities);
-        }
-    }*/
-
     /**
      * Remove the specified resource from storage.
      *
@@ -349,5 +307,30 @@ class ContractTrainingController extends Controller
         
             return $this->multiSelectFormat($typeQuestions);
         }
+    }
+
+    public function toggleState(Request $request, $id)
+    {
+        $training = Training::findOrFail($id);
+
+        if ($training->questions->count() >= $training->number_questions_show)
+            $data = ['active' => $training->toogleState()];
+        else
+        {
+            return $this->respondWithError('El número de preguntas asociados a la capacitación es menor al número de preguntas a mostrar en el examen, debe completar la capacitación para asi poder activarla.');
+        }
+
+        if (!$training->update($data)) {
+            return $this->respondHttp500();
+        }
+        
+        return $this->respondHttp200([
+            'message' => 'Se cambio el estado de la capacitación'
+        ]);
+    }
+
+    public function sendNotification($id)
+    {
+        TrainingSendNotificationJob::dispatch($this->company, $id);
     }
 }

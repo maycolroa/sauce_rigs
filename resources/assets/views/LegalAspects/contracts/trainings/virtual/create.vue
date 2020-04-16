@@ -2,8 +2,8 @@
   <div>
     <header-module
       title="CONTRATISTAS"
-      subtitle="CREAR CAPACITACIÓN"
-      url="legalaspects-contracts-trainings"
+      subtitle="CREAR CAPACITACIÓN VIRTUAL"
+      url="legalaspects-contracts-trainings-virtual"
     />
 
     <div class="col-md">
@@ -12,7 +12,7 @@
             <form-training-component
                 url="/legalAspects/trainingContract"
                 method="POST"
-                :cancel-url="{ name: 'legalaspects-contracts-trainings'}"                
+                :cancel-url="{ name: 'legalaspects-contracts-trainings-virtual'}"                
                 activitiesUrl="/selects/contracts/ctActivities"
                 typeQuestionUrl="/selects/contracts/ctTrainingTypeQuestions"/>
         </b-card-body>
@@ -26,9 +26,9 @@ import FormTrainingComponent from '@/components/LegalAspects/Contracts/Trainings
 import Alerts from '@/utils/Alerts.js';
 
 export default {
-  name: 'industrialsecure-trainings-create',
+  name: 'industrialsecure-trainings-virtual-create',
   metaInfo: {
-    title: 'Capacitaciones - Crear'
+    title: 'Capacitaciones Virtuales - Crear'
   },
   components:{
     FormTrainingComponent

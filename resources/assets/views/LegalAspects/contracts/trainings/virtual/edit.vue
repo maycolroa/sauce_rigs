@@ -2,31 +2,35 @@
   <div>
     <header-module
       title="CONTRATISTAS"
-      subtitle="VER CAPACITACIÓN"
-      url="legalaspects-contracts-trainings"
+      subtitle="EDITAR CAPACITACIÓN VIRTUAL"
+      url="legalaspects-contracts-trainings-virtual"
     />
 
     <div class="col-md">
       <b-card no-body>
         <b-card-body>
             <form-training-component
+                :url="`/legalAspects/trainingContract/${this.$route.params.id}`"
+                method="PUT"
                 :training="data"
-                :view-only="true"
-                :cancel-url="{ name: 'legalaspects-contracts-trainings'}"/>
+                :is-edit="true"
+                :cancel-url="{ name: 'legalaspects-contracts-trainings-virtual'}"
+                activitiesUrl="/selects/contracts/ctActivities"
+                typeQuestionUrl="/selects/contracts/ctTrainingTypeQuestions"/>
         </b-card-body>
       </b-card>
     </div>
   </div>
 </template>
- 
+
 <script>
 import FormTrainingComponent from '@/components/LegalAspects/Contracts/Trainings/FormTrainingComponent.vue';
 import Alerts from '@/utils/Alerts.js';
 
 export default {
-  name: 'legalaspects-contracts-trainings-view',
+  name: 'legalaspects-contracts-trainings-virtual-edit',
   metaInfo: {
-    title: 'Capacitaciones - Ver'
+    title: 'Capacitaciones Virtuales- Editar'
   },
   components:{
     FormTrainingComponent

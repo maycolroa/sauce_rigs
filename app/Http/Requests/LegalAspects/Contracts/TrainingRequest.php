@@ -58,14 +58,14 @@ class TrainingRequest extends FormRequest
         return [
             'name' => 'required|unique:sau_ct_trainings,name,'.$id.',id,company_id,'.Session::get('company_id'),
             'number_questions_show' => 'required|min:1',
-            'min_calification'  => "required|integer|min:1|between:1,".$this->input('max_calification'),
-            'max_calification'  => 'required|min:1',
+            'min_calification'  => "required|integer|min:1",//|between:1,".$this->input('max_calification'),
+           // 'max_calification'  => 'required|min:1',
             'number_attemps'  => 'required|min:1',
             'activity_id' => 'required',
             'questions' => 'required|array',
             'questions.*.description' => 'required',
             'questions.*.type_question_id' => 'required',
-            'questions.*.value_question' => 'required',
+            //'questions.*.value_question' => 'required',
             'questions.*.options' => 'required_if:questions.*.type_question_id,1,3',
             'questions.*.answers' => 'required'
         ];

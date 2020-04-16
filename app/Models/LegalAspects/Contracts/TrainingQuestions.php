@@ -12,8 +12,7 @@ class TrainingQuestions extends Model
         'training_id',
         'description',
         'type_question_id',
-        'answer_options',
-        'value_question',
+        'answer_options'
     ];
 
     /**

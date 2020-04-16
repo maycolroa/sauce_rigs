@@ -25,10 +25,10 @@
 					<b-form-row>
 						<vue-advanced-select v-if="form.type == 'Contratista'" :disabled="viewOnly" class="col-md-6" v-model="form.classification" :error="form.errorsFor('classification')" name="classification" label="Clasificación" placeholder="Seleccione una clasificación" :options="contractClassifications">
                         </vue-advanced-select>
-						<vue-radio :disabled="viewOnly" :checked="form.high_risk_work" class="col-md-6 offset-md-3" v-model="form.high_risk_work" :options="siNo" name="high_risk_work" :error="form.errorsFor('high_risk_work')" label="¿La empresa realiza trabajos de alto riesgo?"></vue-radio>
+						<vue-radio :disabled="viewOnly" :checked="form.high_risk_work" class="col-md-6 offset-md-3" v-model="form.high_risk_work" :options="siNo" name="high_risk_work" :error="form.errorsFor('high_risk_work')" label="¿La empresa realiza tareas de alto riesgo?"></vue-radio>
 					</b-form-row>
 					<b-form-row v-show="form.high_risk_work == 'SI'">
-						<vue-ajax-advanced-select :disabled="viewOnly" class="col-md-6 offset-md-3" v-model="form.high_risk_type_id" :error="form.errorsFor('high_risk_type_id')" :selected-object="form.multiselect_high_risk_type" :multiple="true" :allowEmpty="true" name="high_risk_type_id" label="Tipos de riesgos" placeholder="Seleccione los tipos de riesgos" :url="highRiskTypeUrl">
+						<vue-ajax-advanced-select :disabled="viewOnly" class="col-md-6 offset-md-3" v-model="form.high_risk_type_id" :error="form.errorsFor('high_risk_type_id')" :selected-object="form.multiselect_high_risk_type" :multiple="true" :allowEmpty="true" name="high_risk_type_id" label="Tareas de riesgos" placeholder="Seleccione las tareas de alto riesgo" :url="highRiskTypeUrl">
 						</vue-ajax-advanced-select>
 					</b-form-row>
 					<b-form-row>
@@ -39,7 +39,7 @@
 						<vue-checkbox-simple style="padding-top: 20px;" :disabled="viewOnly" class="col-md-6" v-model="form.active" label="¿Activo?" :checked="form.active" name="active" checked-value="SI" unchecked-value="NO"></vue-checkbox-simple>
 					</b-form-row>
 					<b-form-row>
-						<vue-advanced-select :disabled="viewOnly" class="col-md-12" v-model="form.users_responsibles" :selected-object="form.multiselect_users_responsibles" :error="form.errorsFor('users_responsibles')" name="users_responsibles" label="Responsable de la contratista" placeholder="Seleccione el responsable de la contratista" :options="usersResponsibles" :multiple="true">
+						<vue-advanced-select :disabled="viewOnly" class="col-md-12" v-model="form.users_responsibles" :selected-object="form.multiselect_users_responsibles" :error="form.errorsFor('users_responsibles')" name="users_responsibles" label="Responsable del contratista" placeholder="Seleccione el responsable del contratista" :options="usersResponsibles" :multiple="true">
 						</vue-advanced-select>
 					</b-form-row>
             	</b-card>

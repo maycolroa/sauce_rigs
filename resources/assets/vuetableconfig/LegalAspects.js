@@ -529,10 +529,11 @@ export default [
         }
     },
     {
-        name: 'legalaspects-contracts-trainings',
+        name: 'legalaspects-contracts-trainings-virtual',
         fields: [
             { name: 'trainings.id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true },
             { name: 'trainings.name', data: 'name', title: 'Nombre', sortable: true, searchable: true, detail: false, key: false },
+            { name: 'trainings.active', data: 'active', title: '¿Activa?', sortable: true, searchable: true, detail: false, key: false },
             { name: 'trainings.created_at', data: 'created_at', title: 'Fecha creación', sortable: true, searchable: true, detail: false, key: false },
             { name: '', data: 'controlls', title: 'Controles', sortable: false, searchable: false, detail: false, key: false },
         ],
@@ -546,7 +547,7 @@ export default [
                 title: 'Editar'
             },
             data: {
-                routePush: { name: 'legalaspects-contracts-trainings-edit' },
+                routePush: { name: 'legalaspects-contracts-trainings-virtual-edit' },
                 id: 'id',
             },
             permission: 'contracts_training_u'
@@ -558,7 +559,7 @@ export default [
                 title: 'Ver'
             },
             data: {
-                routePush: { name: 'legalaspects-contracts-trainings-view' },
+                routePush: { name: 'legalaspects-contracts-trainings-virtual-view' },
                 id: 'id',
             },
             permission: 'contracts_training_r'
@@ -567,13 +568,43 @@ export default [
         {
             type: 'base',
             buttons: [{
-            name: 'delete',
-            data: {
-                action: '/legalAspects/trainingContract/',
-                id: 'id',
-                messageConfirmation: 'Esta seguro de borrar la capacitación __name__'
+                name: 'delete',
+                data: {
+                    action: '/legalAspects/trainingContract/',
+                    id: 'id',
+                    messageConfirmation: 'Esta seguro de borrar la capacitación __name__'
+                },
+                permission: 'contracts_training_d'
             },
-            permission: 'contracts_training_d'
+            {
+                name: 'switchStatus',
+                config: {
+                    color: 'outline-danger',
+                    borderless: true,
+                    icon: 'fas fa-sync',
+                    title: 'Cambiar Estado'
+                },
+                data: {
+                    action: '/legalAspects/trainingContract/switchStatus/',
+                    id: 'id',
+                    messageConfirmation: 'Esta seguro de querer cambiar el estado de __name__'
+                },
+                permission: 'contracts_training_u'
+            },
+            {
+                name: 'retrySendMail',
+                config: {
+                    color: 'outline-danger',
+                    borderless: true,
+                    icon: 'ion ion-ios-mail',
+                    title: 'Enviar Capacitación'
+                },
+                data: {
+                    action: '/legalAspects/trainingContract/sendNotification/',
+                    id: 'id',
+                    messageConfirmation: 'Esta seguro de enviar la capacitación'
+                },
+                permission: 'contracts_training_u'
             }],
         }],
         configuration: {
