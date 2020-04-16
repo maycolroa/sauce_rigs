@@ -10,6 +10,7 @@ use App\Models\LegalAspects\Contracts\Training;
 use App\Http\Requests\LegalAspects\Contracts\TrainingRequest;
 use App\Models\LegalAspects\Contracts\TrainingQuestions;
 use App\Models\LegalAspects\Contracts\TrainingTypeQuestion;
+use App\Jobs\LegalAspects\Contracts\Training\TrainingSendNotificationJob;
 use Carbon\Carbon;
 use Validator;
 use DB;
@@ -49,7 +50,10 @@ class ContractTrainingController extends Controller
         $trainings = Training::select('*');
 
         return Vuetable::of($trainings)
-                    ->make();
+                ->addColumn('retrySendMail', function ($training) {
+                    return $training->isActive();
+                })
+                ->make();    
     }
 
     /**
@@ -316,8 +320,6 @@ class ContractTrainingController extends Controller
             return $this->respondWithError('El número de preguntas asociados a la capacitación es menor al número de preguntas a mostrar en el examen, debe completar la capacitación para asi poder activarla.');
         }
 
-        \Log::info($data);
-
         if (!$training->update($data)) {
             return $this->respondHttp500();
         }
@@ -325,5 +327,10 @@ class ContractTrainingController extends Controller
         return $this->respondHttp200([
             'message' => 'Se cambio el estado de la capacitación'
         ]);
+    }
+
+    public function sendNotification($id)
+    {
+        TrainingSendNotificationJob::dispatch($this->company, $id);
     }
 }

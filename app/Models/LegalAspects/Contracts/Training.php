@@ -28,7 +28,7 @@ class Training extends Model
         return $this->hasMany(TrainingQuestions::class, 'training_id');
     }
 
-     public function activities()
+    public function activities()
     {
         return $this->belongsToMany(ActivityContract::class, 'sau_ct_training_activity', 'training_id', 'activity_id');
     }
@@ -70,7 +70,7 @@ class Training extends Model
 
     public function isActive()
     {
-        return $this->state == 'SI';
+        return $this->active == 'SI';
     }
 
     public function path_base($storageLocation = true)

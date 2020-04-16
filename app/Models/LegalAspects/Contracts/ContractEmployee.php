@@ -17,7 +17,8 @@ class ContractEmployee extends Model
         'identification',
         'position',
         'email',
-        'company_id'
+        'company_id',
+        'token'
     ];
 
     public function contract()

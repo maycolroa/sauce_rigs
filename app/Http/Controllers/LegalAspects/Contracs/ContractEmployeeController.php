@@ -11,6 +11,7 @@ use App\Http\Requests\LegalAspects\Contracts\ContractEmployeeRequest;
 use App\Models\LegalAspects\Contracts\ActivityContract;
 use App\Models\LegalAspects\Contracts\ActivityDocument;
 use App\Models\LegalAspects\Contracts\FileUpload;
+use App\Jobs\LegalAspects\Contracts\Training\TrainingSendNotificationJob;
 use App\Traits\ContractTrait;
 use Carbon\Carbon;
 use Validator;
@@ -101,6 +102,7 @@ class ContractEmployeeController extends Controller
             $contract = $this->getContractUser($this->user->id, $this->company);
             $employee->contract_id = $contract->id;
             $employee->company_id = $this->company;
+            $employee->token = bcrypt($employee->email.$employee->identification);
 
             if (!$employee->save())
                 return $this->respondHttp500();
@@ -111,6 +113,8 @@ class ContractEmployeeController extends Controller
                 $activities = $this->saveActivities($employee, $request->activities);
 
             $employee->activities()->sync($activities->values());
+
+            TrainingSendNotificationJob::dispatch($this->company, '', $employee->id);
 
             DB::commit();
 
@@ -192,6 +196,9 @@ class ContractEmployeeController extends Controller
         {
             $employeeContract->fill($request->all());
 
+            if (!$employeeContract->token)
+                $employeeContract->token = bcrypt($employeeContract->email.$employeeContract->identification);
+
             if(!$employeeContract->update()){
                 return $this->respondHttp500();
             }
@@ -219,6 +226,8 @@ class ContractEmployeeController extends Controller
             }
 
             DB::commit();
+
+            TrainingSendNotificationJob::dispatch($this->company, '', $employeeContract->id);
 
         } catch (\Exception $e) {
             DB::rollback();

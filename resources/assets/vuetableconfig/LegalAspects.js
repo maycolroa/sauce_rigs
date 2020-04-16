@@ -590,6 +590,21 @@ export default [
                     messageConfirmation: 'Esta seguro de querer cambiar el estado de __name__'
                 },
                 permission: 'contracts_training_u'
+            },
+            {
+                name: 'retrySendMail',
+                config: {
+                    color: 'outline-danger',
+                    borderless: true,
+                    icon: 'ion ion-ios-mail',
+                    title: 'Enviar Capacitación'
+                },
+                data: {
+                    action: '/legalAspects/trainingContract/sendNotification/',
+                    id: 'id',
+                    messageConfirmation: 'Esta seguro de enviar la capacitación'
+                },
+                permission: 'contracts_training_u'
             }],
         }],
         configuration: {
