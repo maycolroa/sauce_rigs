@@ -2,6 +2,7 @@
 
 namespace App\Models\LegalAspects\Contracts;
 
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Database\Eloquent\Model;
 use App\Traits\CompanyTrait;
 

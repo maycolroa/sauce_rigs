@@ -20,6 +20,12 @@ Route::get('export/{url}',function($url){
 Route::get('/password/generate/{token}', 'Auth\GeneratePasswordController@generatePassword');
 Route::post('/password/generate/{id}', 'Auth\GeneratePasswordController@updatePassword');
 
+Route::prefix('training')->group(function () {
+  Route::get('{training}/{token}', 'LegalAspects\Contracs\TrainingEmployeeController@index');
+  Route::post('response', 'LegalAspects\Contracs\TrainingEmployeeController@saveTraining');
+  Route::get('download/file/{id}', 'LegalAspects\Contracs\TrainingEmployeeController@download');
+});
+
 Route::middleware(['auth'])->group(function () { 
     Route::get('appWithModules', 'General\ApplicationController@appsWhithModules');
     Route::get('getCompanies', 'General\ApplicationController@getCompanies');

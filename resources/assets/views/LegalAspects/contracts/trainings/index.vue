@@ -12,7 +12,7 @@
 
 							<div class="d-flex col-sm-6 col-md-4 col-lg-6 align-items-center" v-if="(!auth.hasRole['Arrendatario'] && !auth.hasRole['Contratista']) && auth.can['contracts_training_r']">
 								<router-link tag="a" href="javascript:void(0)" class="card-body media align-items-center text-dark" :to="{name:'legalaspects-contracts-trainings-virtual'}">
-									<i class="lnr lnr-upload display-4 d-block text-primary"></i>
+									<i class="lnr lnr-laptop display-4 d-block text-primary"></i>
 									<span class="media-body d-block ml-3">
 										<span class="text-big font-weight-bolder">Capacitaciones Virtuales</span>
 										<br>
@@ -23,7 +23,7 @@
 
 							<div class="d-flex col-sm-6 col-md-4 col-lg-6 align-items-center" v-if="(!auth.hasRole['Arrendatario'] && !auth.hasRole['Contratista']) && auth.can['contracts_training_r']">
 								<router-link tag="a" href="javascript:void(0)" class="card-body media align-items-center text-dark" :to="{name:'legalaspects-contracts-trainings-virtual'}">
-									<i class="lnr lnr-upload display-4 d-block text-primary"></i>
+									<i class="lnr lnr-users display-4 d-block text-primary"></i>
 									<span class="media-body d-block ml-3">
 										<span class="text-big font-weight-bolder">Capacitaciones Presenciales</span>
 										<br>

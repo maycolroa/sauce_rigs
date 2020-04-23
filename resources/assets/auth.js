@@ -21,14 +21,17 @@ Vue.mixin({
   data: globals
 });
 
+Vue.component('header-module', require('./views/headerModule.vue'));
+
 import Login from './components/Administrative/Auth/LoginComponent.vue';
 import Footerlogin from './components/LayoutFooter.vue';
 import MailResetPassword from './components/Administrative/Auth/MailResetPasswordComponent.vue';
 import GeneratePassword from './components/Administrative/Auth/GeneratePasswordComponent.vue';
 import PasswordReset from './components/Administrative/Auth/PasswordResetComponent.vue';
+import TrainingEmployee from './components/LegalAspects/Contracts/Trainings/FormTrainingEmployeeComponent.vue';
 
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
-  components: { Footerlogin,Login,MailResetPassword,GeneratePassword,PasswordReset }
+  components: { Footerlogin,Login,MailResetPassword,GeneratePassword,PasswordReset,TrainingEmployee}
 })
