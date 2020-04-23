@@ -439,7 +439,7 @@ class NotificationMail
         {
             array_push($this->attach, $attach);
         }
-        else if (is_array($attach) && !empty($data))
+        else if (is_array($attach))
         {
             foreach ($attach as $key => $path)
             {

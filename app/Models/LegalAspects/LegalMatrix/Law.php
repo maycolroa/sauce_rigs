@@ -288,7 +288,7 @@ class Law extends Model
                 foreach ($states as $key => $value)
                 {
                     if ($value == 'Sin calificar')
-                        array_push($items, '(SUM(IF(sau_lm_articles_fulfillment.fulfillment_value_id IS NOT NULL OR sau_lm_articles_fulfillment.fulfillment_value_id = 1, 1, 0)) = 0)');
+                        array_push($items, '(SUM(IF(sau_lm_articles_fulfillment.fulfillment_value_id IS NOT NULL AND sau_lm_articles_fulfillment.fulfillment_value_id <> 1, 1, 0)) = 0)');
 
                     else if ($value == 'En proceso')
                         array_push($items, '( SUM(IF(sau_lm_articles_fulfillment.fulfillment_value_id IS NOT NULL AND sau_lm_articles_fulfillment.fulfillment_value_id <> 1, 1, 0)) > 0 AND SUM(IF(sau_lm_articles_fulfillment.fulfillment_value_id IS NULL OR sau_lm_articles_fulfillment.fulfillment_value_id = 1, 1, 0)) > 0 )');

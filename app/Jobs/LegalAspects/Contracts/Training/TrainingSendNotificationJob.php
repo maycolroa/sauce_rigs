@@ -60,6 +60,8 @@ class TrainingSendNotificationJob implements ShouldQueue
         $trainings = Training::select(
             'sau_ct_trainings.id as id',
             'sau_ct_trainings.name as name_training',
+            'sau_ct_trainings.file as file',
+            'sau_ct_trainings.company_id as company_id',
             'sau_ct_contract_employees.id as id_employee',
             'sau_ct_contract_employees.name as name_employee',
             'sau_ct_contract_employees.email as email',
@@ -118,9 +120,11 @@ class TrainingSendNotificationJob implements ShouldQueue
                 {
                   $email = $value->email;
                   $name = $value->name_employee;
+                  $id_training = $value->id;
+                  $token = $value->token;
                 }
                 
-                $url = url("/");
+                $url = action('LegalAspects\Contracs\TrainingEmployeeController@index', ['training' => $id_training, 'token' => $token]);
                 array_push($urls, $url);
                 array_push($list, '<b>'.$value->name_training.'</b>');
               }
@@ -148,8 +152,6 @@ class TrainingSendNotificationJob implements ShouldQueue
             }
           });
         }
-
-        \Log::info($trainings);
       }
     }
 }
