@@ -124,6 +124,9 @@ class ContractLesseeController extends Controller
 
             $contract->activities()->sync($activitiesContract);
 
+            if ($request->has('documents'))
+                $this->saveDocuments($request->documents, $contract);
+
             $user = User::where('email', trim(strtolower($request->email)))->first();
 
             if (!$user)
@@ -186,6 +189,15 @@ class ContractLesseeController extends Controller
         try
         {
             $contract = ContractLesseeInformation::findOrFail($id);
+
+            foreach ($contract->documents as $document)
+            {
+                $document->key = Carbon::now()->timestamp + rand(1,10000);
+            }
+
+            $contract->delete = [
+                'documents' => []
+            ];
 
             $high_risk_type_id = [];
 
@@ -323,6 +335,9 @@ class ContractLesseeController extends Controller
                     $responsibles = $this->getDataFromMultiselect($request->users_responsibles);
 
                 $contract->responsibles()->sync($responsibles);
+
+                if ($request->has('documents'))
+                    $this->saveDocuments($request->documents, $contract);
             }
 
             if (!$contract->update())
@@ -577,6 +592,15 @@ class ContractLesseeController extends Controller
     {
         $qualifications = Qualifications::pluck("description", "name");
         return $qualifications;
+    }
+
+    public function saveDocuments($documents, $contract)
+    {
+        foreach ($documents as $document)
+        {
+            $id = isset($document['id']) ? $document['id'] : NULL;
+            $contract->documents()->updateOrCreate(['id'=>$id], $document);
+        }
     }
 
     /**

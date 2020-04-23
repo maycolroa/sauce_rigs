@@ -43,6 +43,28 @@
 						</vue-advanced-select>
 					</b-form-row>
             	</b-card>
+            	<b-card border-variant="primary" title="Documentos a solicitar">
+
+				    <template v-for="(document, index) in form.documents">
+				      <div :key="document.key">
+				          <b-form-row>
+				              <div class="col-md-12" v-if="!viewOnly">
+				                  <div class="float-right">
+				                      <b-btn variant="outline-primary icon-btn borderless" size="sm" v-b-tooltip.top title="Eliminar" @click.prevent="removeDocument(index)"><span class="ion ion-md-close-circle"></span></b-btn>
+				                  </div>
+				              </div>
+				              <vue-input class="col-md-12" v-model="document.name" label="Nombre" name="documents" :disabled="viewOnly" type="text" placeholder="Nombre" :error="form.errorsFor(`documents.${index}.name`)"></vue-input>
+				          </b-form-row>
+				      </div>
+				    </template>
+
+				    <b-form-row style="padding-bottom: 20px;">
+				      <div class="col-md-12" v-if="!viewOnly">
+				          <center><b-btn variant="primary" @click.prevent="addDocument()"><span class="ion ion-md-add-circle"></span>&nbsp;&nbsp;Agregar Documento</b-btn></center>
+				      </div>
+				    </b-form-row>
+            	</b-card>
+
 				<div class="row float-right pt-10 pr-10">
                     <template>
                         <b-btn variant="default" :to="cancelUrl" :disabled="loading">{{ viewOnly ? "Atras" : "Cancelar"}}</b-btn>&nbsp;&nbsp;
@@ -61,6 +83,7 @@ import VueAjaxAdvancedSelect from "@/components/Inputs/VueAjaxAdvancedSelect.vue
 import VueInput from "@/components/Inputs/VueInput.vue";
 import VueCheckboxSimple from "@/components/Inputs/VueCheckboxSimple.vue";
 import VueRadio from "@/components/Inputs/VueRadio.vue";
+import ActivityDocument from '@/components/LegalAspects/Contracts/Activities/FormContractActivityDocumentComponent.vue';
 import Form from "@/utils/Form.js";
 
 export default {
@@ -69,7 +92,8 @@ export default {
 		VueAjaxAdvancedSelect,
 		VueInput,
 		VueCheckboxSimple,
-		VueRadio
+		VueRadio,
+		ActivityDocument
 	},
 	props: {
 		url: { type: String },
@@ -118,6 +142,7 @@ export default {
 					high_risk_type_id: [],
 					users_responsibles: [],
 					activity_id: [],
+					documents: []
 				};
 			}
 		}
@@ -146,7 +171,20 @@ export default {
 			.catch(error => {
 				this.loading = false;
 			});
-		}
+		},
+		addDocument() {
+        this.form.documents.push({
+            key: new Date().getTime(),
+            name: ''
+        })
+	    },
+	    removeDocument(index)
+	    {
+	      if (this.form.documents[index].id != undefined)
+	        this.form.delete.documents.push(this.form.documents[index].id)
+
+	      this.form.documents.splice(index, 1)
+	    }
 	}
 };
 </script>

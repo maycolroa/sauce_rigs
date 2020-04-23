@@ -41,6 +41,12 @@ class ContractLesseeInformation extends Model
         return $this->belongsTo('App\Models\General\Company', 'company_id');
     }
 
+    public function documents()
+    {
+        return $this->hasMany(ContractDocument::class, 'contract_id');
+    }
+
+
     public function employees()
     {
         return $this->hasMany(ContractWorker::class, 'contract_id');
