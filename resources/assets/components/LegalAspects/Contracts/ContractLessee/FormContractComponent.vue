@@ -44,7 +44,6 @@
 					</b-form-row>
             	</b-card>
             	<b-card border-variant="primary" title="Documentos a solicitar">
-
 				    <template v-for="(document, index) in form.documents">
 				      <div :key="document.key">
 				          <b-form-row>

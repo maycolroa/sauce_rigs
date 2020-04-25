@@ -77,7 +77,68 @@
                     </b-form-row>
 
             	</b-card>
-				<div class="row float-right pt-10 pr-10">
+
+            	<b-card border-variant="primary" title="Documentos solicitados">
+				    <b-card bg-variant="transparent" border-variant="dark" :title="document.name" class="mb-3 box-shadow-none" v-for="(document, index) in form.documents" :key="document.key">
+                		<b-row>
+                 			<b-col>
+                    			<div class="col-md-12">
+                    				<b-form-row>
+								        <div class="col-md-12">
+				                          <div class="float-right" style="padding-top: 10px;">
+				                            <b-btn variant="primary" @click.prevent="addFile(document)"><span class="ion ion-md-add-circle"></span> Añadir archivo</b-btn>
+				                          </div>
+				                        </div>
+			                    	</b-form-row>
+			                        <b-form-row style="padding-top: 15px;">
+				                        <template v-for="(file, indexFile) in document.files">
+				                          <b-card no-body class="mb-2 border-secondary" :key="file.key" style="width: 100%;" >
+				                            <b-card-header class="bg-secondary">
+				                              <b-row>
+				                                <b-col cols="10" class="d-flex justify-content-between text-white"> Archivo #{{ indexFile + 1 }}</b-col>
+				                                <b-col cols="2">
+				                                  <div class="float-right">
+				                                    <b-button-group>
+				                                      <b-btn href="javascript:void(0)" v-b-toggle="'accordion'+ file.key +'-1'" variant="link">
+				                                        <span class="collapse-icon"></span>
+				                                      </b-btn>
+				                                      <b-btn @click.prevent="removeFile(document, indexFile)"
+				                                        size="sm" 
+				                                        variant="secondary icon-btn borderless"
+				                                        v-b-tooltip.top title="Eliminar Archivo">
+				                                        <span class="ion ion-md-close-circle"></span>
+				                                      </b-btn>
+				                                    </b-button-group>
+				                                  </div>
+				                                </b-col>
+				                              </b-row>
+				                            </b-card-header>
+				                            <b-collapse :id="`accordion${file.key}-1`" visible :accordion="`accordion-documents.${index}`">
+				                              <b-card-body border-variant="primary" class="mb-3 box-shadow-none">
+				                                <div class="rounded ui-bordered p-3 mb-3">
+				                        
+				                                  <b-form-row>
+				                                    <vue-input class="col-md-6" v-model="file.name" label="Nombre" type="text" name="name"  placeholder="Nombre" :error="form.errorsFor(`documents.${index}.files.${indexFile}.name`)"/>
+				                                    <vue-datepicker class="col-md-6" v-model="file.expirationDate" label="Fecha de vencimiento" :full-month-name="true" placeholder="Seleccione la fecha de vencimiento"  name="expirationDate" :disabled-dates="disabledDates"/>
+				                                  </b-form-row>
+
+				                                  <b-form-row>
+				                                    <vue-file-simple :help-text="file.id ? `Para descargar el archivo actual, haga click <a href='/legalAspects/fileUpload/download/${file.id}' target='blank'>aqui</a> ` : null" class="col-md-12" v-model="file.file" label="Archivo" name="file" placeholder="Seleccione un archivo" :error="form.errorsFor(`documents.${index}.files.${indexFile}.file`)"/>
+				                                  </b-form-row>
+
+				                                </div>
+				                              </b-card-body>
+				                            </b-collapse>
+				                          </b-card>
+				                        </template>
+				                    </b-form-row>
+				    			</div>
+				    		</b-col>
+                		</b-row>
+            		</b-card>
+            	</b-card>
+
+				<div class="row float-right pt-10 pr-10" style="padding-top: 20px">
                     <template>
                         <b-btn variant="default" :to="cancelUrl" :disabled="loading">Atras</b-btn>&nbsp;&nbsp;
                         <b-btn type="submit" :disabled="loading" variant="primary">Guardar</b-btn>
@@ -92,13 +153,17 @@
 
 import VueAdvancedSelect from "@/components/Inputs/VueAdvancedSelect.vue";
 import VueInput from "@/components/Inputs/VueInput.vue";
+import VueDatepicker from "@/components/Inputs/VueDatepicker.vue";
+import VueFileSimple from "@/components/Inputs/VueFileSimple.vue";
 import Form from "@/utils/Form.js";
 import Alerts from '@/utils/Alerts.js';
 
 export default {
 	components: {
 		VueAdvancedSelect,
-		VueInput
+		VueInput,
+		VueDatepicker,
+		VueFileSimple
 	},
 	props: {
 		url: { type: String },
@@ -123,7 +188,8 @@ export default {
 					number_workers: '',
 					risk_class: '',
 					multiselect_contracts: [],
-					existsOthersContract: false
+					existsOthersContract: false,
+					documents: []
 				};
 			}
 		}
@@ -138,12 +204,24 @@ export default {
 		return {
 			loading: false,
 			form: Form.makeFrom(this.contract, this.method),
-			contract_select: ''
+			contract_select: '',
+			disabledDates: {
+		        to: new Date()
+		    }
 		};
 	},
 	methods: {
 		submit(e) {
 		this.loading = true;
+
+		this.form.clearFilesBinary();
+        _.forIn(this.form.documents, (documento, keyDocument) => {
+          _.forIn(documento.files, (file, keyFile) => {
+            if (file.file)
+              this.form.addFileBinary(`${keyDocument}_${keyFile}`, file.file);
+          });
+        });
+
 		this.form
 			.submit(e.target.action)
 			.then(response => {
@@ -169,7 +247,21 @@ export default {
 	        }).catch(error => {
 	          Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
 	        });
-    	}
+    	},
+    	addFile(documento) {
+	      documento.files.push({
+	        key: new Date().getTime(),
+	        name: '',
+	        expirationDate: '',
+	        file: ''
+	      });
+	    },
+	    removeFile(documento, index) {
+	      if (documento.files[index].id != undefined)
+	        this.form.delete.files.push(documento.files[index].id)
+	        
+	      documento.files.splice(index, 1);
+	    }
 	}
 };
 </script>

@@ -42,6 +42,22 @@ class ContractRequest extends FormRequest
             ]);
         }
 
+        if ($this->has('files_binary') && COUNT($this->files_binary) > 0)
+        {
+            $data = $this->all();
+
+            foreach ($this->files_binary as $key => $value)
+            {
+                $allKeys = explode("_", $key);
+                $keyDoc = $allKeys[0];
+                $keyFile = $allKeys[1];
+
+                $data['documents'][$keyDoc]['files'][$keyFile]['file'] = $value;
+            }
+
+            $this->merge($data);
+        }
+
         return $this->all();
     }
 

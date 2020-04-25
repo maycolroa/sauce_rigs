@@ -46,7 +46,6 @@ class ContractLesseeInformation extends Model
         return $this->hasMany(ContractDocument::class, 'contract_id');
     }
 
-
     public function employees()
     {
         return $this->hasMany(ContractWorker::class, 'contract_id');

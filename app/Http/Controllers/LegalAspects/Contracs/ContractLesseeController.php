@@ -14,6 +14,7 @@ use App\Models\LegalAspects\Contracts\SectionCategoryItems;
 use App\Models\LegalAspects\Contracts\Qualifications;
 use App\Models\LegalAspects\Contracts\HighRiskType;
 use App\Models\LegalAspects\Contracts\ItemQualificationContractDetail;
+use App\Models\LegalAspects\Contracts\ContractDocument;
 use App\Http\Requests\LegalAspects\Contracts\ContractRequest;
 use App\Http\Requests\LegalAspects\Contracts\ListCheckItemsRequest;
 use App\Jobs\LegalAspects\Contracts\ListCheck\ListCheckContractExportJob;
@@ -258,6 +259,10 @@ class ContractLesseeController extends Controller
                     ->where('sau_ct_information_contract_lessee.id', '<>', $contract->id)
                     ->get();
 
+                $documents = ContractDocument::where('contract_id', $contract->id)->get();
+
+                $contract->documents = $this->getFilesByDocuments($contract, $documents);
+
                 $contracts = $contracts->filter(function($contract, $key) {
                     return $this->user->hasRole('Contratista', $contract->company_id);
                 })
@@ -275,6 +280,48 @@ class ContractLesseeController extends Controller
         } catch(Exception $e){
             $this->respondHttp500();
         }
+    }
+
+    public function getFilesByDocuments($contract, $documents)
+    {
+        if ($documents->count() > 0)
+        {
+            $contract = $this->getContractUser($this->user->id, $this->company);
+            $documents = $documents->transform(function($document, $key) use ($contract) {
+                $document->key = Carbon::now()->timestamp + rand(1,10000);
+                $document->files = [];
+
+                $files = FileUpload::select(
+                            'sau_ct_file_upload_contracts_leesse.id AS id',
+                            'sau_ct_file_upload_contracts_leesse.name AS name',
+                            'sau_ct_file_upload_contracts_leesse.file AS file',
+                            'sau_ct_file_upload_contracts_leesse.expirationDate AS expirationDate'
+                        )
+                        ->join('sau_ct_file_upload_contract','sau_ct_file_upload_contract.file_upload_id','sau_ct_file_upload_contracts_leesse.id')
+                        ->join('sau_ct_file_document_contract', 'sau_ct_file_document_contract.file_id', 'sau_ct_file_upload_contracts_leesse.id')
+                        ->where('sau_ct_file_upload_contract.contract_id', $contract->id)
+                        ->where('sau_ct_file_document_contract.document_id', $document->id)
+                        ->where('sau_ct_file_document_contract.contract_id', $contract->id)
+                        ->get();
+
+                if ($files)
+                {
+                    $files->transform(function($file, $index) {
+                        $file->key = Carbon::now()->timestamp + rand(1,10000);
+                        $file->old_name = $file->file;
+                        $file->expirationDate = $file->expirationDate == null ? null : (Carbon::createFromFormat('Y-m-d',$file->expirationDate))->format('D M d Y');
+
+                        return $file;
+                    });
+
+                    $document->files = $files;
+                }
+
+                return $document;
+            });
+        }
+
+        return $documents;
     }
 
     public function listCheckCopy(Request $request)
@@ -300,6 +347,22 @@ class ContractLesseeController extends Controller
      */
     public function update(ContractRequest $request, ContractLesseeInformation $contract)
     {
+        Validator::make($request->all(), [
+            "documents.*.files.*.file" => [
+                function ($attribute, $value, $fail)
+                {
+                    if ($value && !is_string($value))
+                    {
+                        $ext = strtolower($value->getClientOriginalExtension());
+                        
+                        if ($ext != 'xlsx' && $ext != 'xls' && $ext != 'pdf')
+                            $fail('Archivo debe ser un pdf o un excel');
+                    }
+                }
+
+            ]
+        ])->validate();
+
         DB::beginTransaction();
 
         try
@@ -316,7 +379,11 @@ class ContractLesseeController extends Controller
                 $contract->classification = NULL;
 
             if ($request->has('isInformation'))
-                $contract->completed_registration = 'SI';            
+            {
+                $contract->completed_registration = 'SI';
+
+                $documents = $this->saveDocumentsContracts($contract, $request->documents);
+            }
             else
             {
                 $risks = ($request->high_risk_work == 'SI') ? $this->getDataFromMultiselect($request->high_risk_type_id) : [];
@@ -818,4 +885,62 @@ class ContractLesseeController extends Controller
         return $this->multiSelectFormat($users);
 
     }
+
+    public function saveDocumentsContracts($contract, $documents)
+    {
+        foreach ($documents as $document)
+        {
+            if (COUNT($document['files']) > 0)
+            {
+                $files_names_delete = [];
+
+                foreach ($document['files'] as $keyF => $file) 
+                {
+                    $create_file = true;
+
+                    if (isset($file['id']))
+                    {
+                        $fileUpload = FileUpload::findOrFail($file['id']);
+
+                        if ($file['old_name'] == $file['file'])
+                            $create_file = false;
+                        else
+                            array_push($files_names_delete, $file['old_name']);
+                    }
+                    else
+                    {
+                        $fileUpload = new FileUpload();
+                        $fileUpload->user_id = $this->user->id;
+                    }
+
+                    if ($create_file)
+                    {
+                        $file_tmp = $file['file'];
+                        $nameFile = base64_encode($this->user->id . now() . rand(1,10000) . $keyF) .'.'. $file_tmp->extension();
+                        $file_tmp->storeAs('legalAspects/files/', $nameFile, 's3');
+                        $fileUpload->file = $nameFile;
+                    }
+
+                    $fileUpload->name = $file['name'];
+                    $fileUpload->expirationDate = $file['expirationDate'] == null ? null : (Carbon::createFromFormat('D M d Y', $file['expirationDate']))->format('Ymd');
+
+                    if (!$fileUpload->save())
+                        return $this->respondHttp500();
+
+                    $fileUpload->contracts()->sync([$contract->id]);
+                    $ids = [];
+                    $ids[$document['id']] = ['contract_id' => $contract->id];
+                    $fileUpload->documentsContract()->sync($ids);
+                }
+
+                //Borrar archivos reemplazados
+                foreach ($files_names_delete as $keyf => $file)
+                {
+                    Storage::disk('s3')->delete('legalAspects/files/'. $file);
+                }
+            }
+        }
+    }
+
+    
 }

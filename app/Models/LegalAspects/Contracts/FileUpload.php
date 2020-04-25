@@ -27,6 +27,11 @@ class FileUpload extends Model
         return $this->belongsToMany(ActivityDocument::class, 'sau_ct_file_document_employee', 'file_id', 'document_id')->withPivot('employee_id');
     }
 
+    public function documentsContract()
+    {
+        return $this->belongsToMany(ContractDocument::class, 'sau_ct_file_document_contract', 'file_id', 'document_id')->withPivot('contract_id');
+    }
+
     public function contracts()
     {
         return $this->belongsToMany(ContractLesseeInformation::class,'sau_ct_file_upload_contract', 'file_upload_id', 'contract_id');
