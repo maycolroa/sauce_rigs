@@ -4,7 +4,8 @@ namespace App\Facades\Mail;
 
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Mail;
-use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Collection AS CollectionEloquent;
+use Illuminate\Support\Collection;
 use App\Facades\Mail\NotificationGeneralMail;
 use App\Models\Administrative\Users\User;
 use App\Models\System\LogMails\LogMail;
@@ -23,6 +24,14 @@ class NotificationMail
      * @var App\User
      */
     private $recipients;
+
+    /**
+     * Recipients Copy to whom the mail will be sent
+     *
+     * @var Illuminate\Database\Eloquent\Collection
+     * @var App\User
+     */
+    private $copyHidden;
 
     /**
      * Subject of the mail
@@ -133,17 +142,21 @@ class NotificationMail
 
     public function recipients($recipients)
     {
-        if (!$recipients instanceof Collection && !$recipients instanceof User && !$recipients instanceof Employee)
+        if (!$recipients instanceof CollectionEloquent && !$recipients instanceof Collection && !$recipients instanceof User && !$recipients instanceof Employee)
             throw new \Exception('Invalid recipient format');
         
-        if ($recipients instanceof Collection)
+        if ($recipients instanceof CollectionEloquent || $recipients instanceof Collection)
         {
             if ($recipients->isEmpty())
                 throw new \Exception('Empty collection');
             
             $recipients = $recipients->filter(function ($value, $key) {
-                if (($value instanceof User || $value instanceof Employee) && 
-                preg_match('/^[_a-zA-Z0-9-]+(.[_a-zA-Z0-9-]+)*@[a-zA-Z0-9-]+(.[a-zA-Z0-9-]+)*(.[a-zA-Z]{2,4})$/', $value->email) )
+                $email = is_array($value) ? 
+                        (isset($value['email']) ? $value['email'] : null) : 
+                        (isset($value->email) ? $value->email : null);
+
+                if ($email && 
+                    preg_match('/^[_a-zA-Z0-9-]+(.[_a-zA-Z0-9-]+)@[a-zA-Z0-9-]+(.[a-zA-Z0-9-]+)(.[a-zA-Z]{2,4})$/', $email) )
                     return true;
                 else 
                     return false;
@@ -156,8 +169,45 @@ class NotificationMail
         if (($recipients instanceof User || $recipients instanceof Employee) && 
                 !preg_match('/^[_a-zA-Z0-9-]+(.[_a-zA-Z0-9-]+)*@[a-zA-Z0-9-]+(.[a-zA-Z0-9-]+)*(.[a-zA-Z]{2,4})$/', $recipients->email) )
             throw new \Exception('Incorrect email format');
-        
+    
         $this->recipients = $recipients;
+
+        return $this;
+    }
+
+    public function copyHidden($recipients)
+    {
+        //return $this->recipients($recipients, true);
+
+        if (!$recipients instanceof CollectionEloquent && !$recipients instanceof Collection && !$recipients instanceof User && !$recipients instanceof Employee)
+            throw new \Exception('Invalid recipient format');
+        
+        if ($recipients instanceof CollectionEloquent || $recipients instanceof Collection)
+        {
+            if ($recipients->isEmpty())
+                throw new \Exception('Empty collection');
+            
+            $recipients = $recipients->filter(function ($value, $key) {
+                $email = is_array($value) ? 
+                        (isset($value['email']) ? $value['email'] : null) : 
+                        (isset($value->email) ? $value->email : null);
+
+                if ($email && 
+                    preg_match('/^[_a-zA-Z0-9-]+(.[_a-zA-Z0-9-]+)@[a-zA-Z0-9-]+(.[a-zA-Z0-9-]+)(.[a-zA-Z]{2,4})$/', $email) )
+                    return true;
+                else 
+                    return false;
+            });
+
+            if ($recipients->isEmpty())
+                throw new \Exception('The collection was empty after filtering the invalid emails');
+        }
+
+        if (($recipients instanceof User || $recipients instanceof Employee) && 
+                !preg_match('/^[_a-zA-Z0-9-]+(.[_a-zA-Z0-9-]+)*@[a-zA-Z0-9-]+(.[a-zA-Z0-9-]+)*(.[a-zA-Z]{2,4})$/', $recipients->email) )
+            throw new \Exception('Incorrect email format');
+
+        $this->copyHidden = $recipients;
 
         return $this;
     }
@@ -169,7 +219,7 @@ class NotificationMail
      * @return $this
      */
     public function subject($subject)
-    {
+    {        
         if (!is_string($subject) || $subject == '')
             throw new \Exception('The format of the subject is incorrect'); 
 
@@ -476,8 +526,16 @@ class NotificationMail
         try { 
             $message = (new NotificationGeneralMail($this->prepareData()))
                 ->onQueue('emails');
-            
-            Mail::to($this->recipients)->queue($message);
+
+            if ($this->copyHidden)
+            {
+                Mail::to($this->recipients)
+                ->bcc($this->copyHidden)
+                ->queue($message);
+            }
+            else
+                Mail::to($this->recipients)
+                ->queue($message);
 
             $this->createLog((new NotificationGeneralMail($this->prepareData()))->render());
             $this->restart();
@@ -499,6 +557,7 @@ class NotificationMail
     {
         $data = new \stdClass();
         $data->recipients = $this->recipients;
+        $data->copyHidden = $this->copyHidden;
         $data->view = $this->view;
         $data->subject = $this->subject;
         $data->attach = $this->attach;
@@ -549,17 +608,34 @@ class NotificationMail
         }
 
         if ($this->recipients instanceof User || $this->recipients instanceof Employee)
-            $log->recipients = $this->recipients->email;    
-        else if ($this->recipients instanceof Collection)
+            $log->recipients = $this->recipients->email;   
+        else if ($this->recipients instanceof CollectionEloquent || $this->recipients instanceof Collection)
         {
             $array = [];
 
             foreach($this->recipients as $item)
             {
                 array_push($array, $item->email);
-            }
+            }        
 
             $log->recipients = implode(',', $array);
+        }
+
+        if ($this->copyHidden instanceof User || $this->copyHidden instanceof Employee)
+            $log->copy_hidden = $this->copyHidden->email;   
+        else if ($this->copyHidden instanceof CollectionEloquent || $this->copyHidden instanceof Collection)
+        {   
+            $array_copy = [];
+
+            $this->copyHidden->each(function ($value, $key) use (&$array_copy) {
+                $email = is_array($value) ? 
+                        (isset($value['email']) ? $value['email'] : null) : 
+                        (isset($value->email) ? $value->email : null);
+
+                array_push($array_copy, $email);
+            });
+
+            $log->copy_hidden = implode(',', $array_copy);
         }
         
         $log->company_id = $this->company;
@@ -595,6 +671,7 @@ class NotificationMail
     private function restart()
     {
         $this->recipients = [];
+        $this->copyHidden = [];
         $this->view = 'notification';
         $this->subject = 'Notificación';
         $this->message = '';
