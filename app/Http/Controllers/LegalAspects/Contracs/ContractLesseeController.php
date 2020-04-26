@@ -28,7 +28,9 @@ use App\Traits\ContractTrait;
 use App\Traits\UserTrait;
 use App\Traits\Filtertrait;
 use App\Facades\Mail\Facades\NotificationMail;
+use App\Exports\LegalAspects\Contracts\Contractor\ContractsImportTemplateExcel;
 use Carbon\Carbon;
+use Maatwebsite\Excel\Facades\Excel;
 use Validator;
 use DB;
 
@@ -942,5 +944,8 @@ class ContractLesseeController extends Controller
         }
     }
 
-    
+    public function downloadTemplateImport()
+    {
+        return Excel::download(new ContractsImportTemplateExcel(collect([]), $this->company), 'PlantillaImportacionContratistas.xlsx');
+    }
 }

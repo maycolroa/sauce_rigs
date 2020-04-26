@@ -29,6 +29,11 @@
                     <div><b>Destinatarios:</b><p> {{ data.recipients }} </p></div>
                   </b-col>
                 </b-row>
+                <b-row>
+                  <b-col>
+                    <div><b>Destinatarios con copia oculta:</b><p> {{ data.copy_hidden }} </p></div>
+                  </b-col>
+                </b-row>
               </b-card>
             </div>
             

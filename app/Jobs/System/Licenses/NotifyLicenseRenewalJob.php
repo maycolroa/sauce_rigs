@@ -51,12 +51,14 @@ class NotifyLicenseRenewalJob implements ShouldQueue
 
         $recipients = User::where('id', -1)->get();
 
+        $admins = collect([]);
+
         $emailAdmins = Configuration::getConfiguration('admin_license_notification_email');
         $emailAdmins = explode(",", $emailAdmins);
 
         foreach ($emailAdmins as $key => $value)
         {
-            $recipients->push(new User(['email'=>$value]));
+            $admins->push(['email'=>$value]);
         }
 
         foreach ($this->mails as $key => $value)
@@ -77,17 +79,31 @@ class NotifyLicenseRenewalJob implements ShouldQueue
             //->where('sau_company_user.company_id', $this->company_id)
             //->where('sau_roles.company_id', $this->company_id)
             ->whereIn('sau_permissions.module_id', $this->modules)
+            ->where('sau_roles.display_name', '<>', 'Superadmin')
             ->groupBy('sau_users.id', 'sau_users.email', 'sau_roles.display_name');
 
         $users->company_scope = $this->company_id;
         $users = $users->get();
+
+        $supers = User::select('sau_users.email')
+            ->active()
+            ->join('sau_role_user', function($q) use ($team) { 
+                $q->on('sau_role_user.user_id', '=', 'sau_users.id')
+                  ->on('sau_role_user.team_id', '=', DB::raw($team->id));
+            })
+            ->join('sau_roles', 'sau_roles.id', 'sau_role_user.role_id')
+            ->where('sau_roles.display_name', 'Superadmin')
+            ->get();
 
         foreach ($users as $key => $value)
         {
             $recipients->push(new User(['email'=>$value->email]));
         }
 
-        \Log::info($recipients);
+        foreach ($supers as $key => $value)
+        {
+            $admins->push(['email'=>$value->email]);
+        }
 
         $modules_news = collect([]);
         $modules_olds = collect([]);
@@ -122,6 +138,7 @@ class NotifyLicenseRenewalJob implements ShouldQueue
             ->company($this->company_id)
             ->view("system.license.notificationLicense")
             ->with(['modules_news'=>$modules_news, 'modules_olds'=>$modules_olds])
+            ->copyHidden($admins)
             ->send();
 
         if (in_array(Module::where('name', 'reinstatements')->first()->id, $this->modules))
