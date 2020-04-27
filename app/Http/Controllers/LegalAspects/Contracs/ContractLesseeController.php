@@ -28,7 +28,7 @@ use App\Traits\ContractTrait;
 use App\Traits\UserTrait;
 use App\Traits\Filtertrait;
 use App\Facades\Mail\Facades\NotificationMail;
-use App\Exports\LegalAspects\Contracts\Contractor\ContractsImportTemplateExcel;
+use App\Exports\LegalAspects\Contracts\Contractor\ContractsImportTemplate;
 use Carbon\Carbon;
 use Maatwebsite\Excel\Facades\Excel;
 use Validator;
@@ -261,9 +261,9 @@ class ContractLesseeController extends Controller
                     ->where('sau_ct_information_contract_lessee.id', '<>', $contract->id)
                     ->get();
 
-                $documents = ContractDocument::where('contract_id', $contract->id)->get();
+                //$documents = ContractDocument::where('contract_id', $contract->id)->get();
 
-                $contract->documents = $this->getFilesByDocuments($contract, $documents);
+                //$contract->documents = $this->getFilesByDocuments($contract, $documents);
 
                 $contracts = $contracts->filter(function($contract, $key) {
                     return $this->user->hasRole('Contratista', $contract->company_id);
@@ -946,6 +946,6 @@ class ContractLesseeController extends Controller
 
     public function downloadTemplateImport()
     {
-        return Excel::download(new ContractsImportTemplateExcel(collect([]), $this->company), 'PlantillaImportacionContratistas.xlsx');
+        return Excel::download(new ContractsImportTemplate($this->company), 'PlantillaImportacionContratistas.xlsx');
     }
 }
