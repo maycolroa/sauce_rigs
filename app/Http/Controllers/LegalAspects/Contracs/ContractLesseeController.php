@@ -15,6 +15,7 @@ use App\Models\LegalAspects\Contracts\Qualifications;
 use App\Models\LegalAspects\Contracts\HighRiskType;
 use App\Models\LegalAspects\Contracts\ItemQualificationContractDetail;
 use App\Models\LegalAspects\Contracts\ContractDocument;
+use App\Http\Requests\LegalAspects\Contracts\DocumentRequest;
 use App\Http\Requests\LegalAspects\Contracts\ContractRequest;
 use App\Http\Requests\LegalAspects\Contracts\ListCheckItemsRequest;
 use App\Jobs\LegalAspects\Contracts\ListCheck\ListCheckContractExportJob;
@@ -127,8 +128,8 @@ class ContractLesseeController extends Controller
 
             $contract->activities()->sync($activitiesContract);
 
-            if ($request->has('documents'))
-                $this->saveDocuments($request->documents, $contract);
+            /*if ($request->has('documents'))
+                $this->saveDocuments($request->documents, $contract);*/
 
             $user = User::where('email', trim(strtolower($request->email)))->first();
 
@@ -261,9 +262,9 @@ class ContractLesseeController extends Controller
                     ->where('sau_ct_information_contract_lessee.id', '<>', $contract->id)
                     ->get();
 
-                //$documents = ContractDocument::where('contract_id', $contract->id)->get();
+                $documents = ContractDocument::where('company_id', $this->company)->get();
 
-                //$contract->documents = $this->getFilesByDocuments($contract, $documents);
+                $contract->documents = $this->getFilesByDocuments($contract, $documents);
 
                 $contracts = $contracts->filter(function($contract, $key) {
                     return $this->user->hasRole('Contratista', $contract->company_id);
@@ -663,13 +664,45 @@ class ContractLesseeController extends Controller
         return $qualifications;
     }
 
-    public function saveDocuments($documents, $contract)
+    public function saveDocuments(DocumentRequest $request)
     {
+        DB::beginTransaction();
+
+        try
+        {
+            foreach ($request->documents as $value)
+            {
+                $id = isset($value['id']) ? $value['id'] : NULL;
+
+                $document = ContractDocument::updateOrCreate(['id'=>$id], ['company_id'=>$this->company, 'name'=>$value['name']]);
+            }
+
+            DB::commit();
+
+        } catch (\Exception $e) {
+            DB::rollback();
+            \Log::info($e->getMessage());
+            return $this->respondHttp500();
+            //return $e->getMessage();
+        }
+
+        return $this->respondHttp200([
+            'message' => 'Se guardaron los documentos'
+        ]);
+    }
+
+    public function getDocuments()
+    {
+        $documents = ContractDocument::get();
+
         foreach ($documents as $document)
         {
-            $id = isset($document['id']) ? $document['id'] : NULL;
-            $contract->documents()->updateOrCreate(['id'=>$id], $document);
+            $document->key = Carbon::now()->timestamp + rand(1,10000);
         }
+
+        return $this->respondHttp200([
+            'documents' => $documents
+        ]);
     }
 
     /**
