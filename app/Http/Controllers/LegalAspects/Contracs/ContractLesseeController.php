@@ -30,6 +30,7 @@ use App\Traits\UserTrait;
 use App\Traits\Filtertrait;
 use App\Facades\Mail\Facades\NotificationMail;
 use App\Exports\LegalAspects\Contracts\Contractor\ContractsImportTemplate;
+use App\Jobs\LegalAspects\Contracts\Contractor\ContractImportJob;
 use Carbon\Carbon;
 use Maatwebsite\Excel\Facades\Excel;
 use Validator;
@@ -499,7 +500,7 @@ class ContractLesseeController extends Controller
         if ($limit)
             $limit = $limit->value;
         else 
-            $limit = 6;
+            $limit = 10;
 
         $count_contracts = ContractLesseeInformation::where('active', 'SI')->count();
 
@@ -990,5 +991,19 @@ class ContractLesseeController extends Controller
     public function downloadTemplateImport()
     {
         return Excel::download(new ContractsImportTemplate($this->company), 'PlantillaImportacionContratistas.xlsx');
+    }
+
+    public function import(Request $request)
+    {
+      try
+      {
+        ContractImportJob::dispatch($request->file, $this->company, $this->user);
+      
+        return $this->respondHttp200();
+
+      } catch(Exception $e)
+      {
+        return $this->respondHttp500();
+      }
     }
 }

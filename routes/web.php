@@ -409,6 +409,7 @@ Route::middleware(['auth'])->group(function () {
       Route::post('contracts/retrySendMail/{contract}', 'LegalAspects\Contracs\ContractLesseeController@retrySendMail');
       Route::post('contracts/listCheckCopy', 'LegalAspects\Contracs\ContractLesseeController@listCheckCopy');
       Route::post('contracts/export', 'LegalAspects\Contracs\ContractLesseeController@export');
+      Route::post('contracts/import', 'LegalAspects\Contracs\ContractLesseeController@import');
       Route::ApiResource('contracts', 'LegalAspects\Contracs\ContractLesseeController');
       Route::post('contracts/saveDocuments', 'LegalAspects\Contracs\ContractLesseeController@saveDocuments');
       Route::post('contracts/getDocuments', 'LegalAspects\Contracs\ContractLesseeController@getDocuments');
