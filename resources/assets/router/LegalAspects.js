@@ -287,6 +287,14 @@ export default [
 					import('@/views/LegalAspects/contracts/employees/view')
 				}
 			]),
+			...middleware({ 'check-permission': 'contracts_c' }, [
+				{
+					name: 'legalaspects-contracts-documents',
+					path: 'contracts/documents',
+					component: () =>
+					import('@/views/LegalAspects/contracts/contractor/documentsRequest')
+				}
+			]),
 			...middleware({ 'check-permission': 'contracts_training_r' }, [
 				{
 					name: 'legalaspects-contracts-trainings',

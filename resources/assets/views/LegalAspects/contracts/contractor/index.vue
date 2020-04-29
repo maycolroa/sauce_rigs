@@ -15,6 +15,9 @@
           <div class="card-title-elements" v-if="auth.can['contracts_c']"> 
             <b-btn :to="{name:'legalaspects-contractor-list-check-validation'}" variant="primary">Configurar Lista de Chequeo</b-btn>
           </div>
+          <div class="card-title-elements" v-if="auth.can['contracts_c']"> 
+            <b-btn :to="{name:'legalaspects-contracts-documents'}" variant="primary">Configurar Documentos a solicitar</b-btn>
+          </div>
           <div class="card-title-elements" v-if="auth.can['contracts_c']">
             <b-btn variant="primary" href="/templates/contractimport" target="blank" v-b-tooltip.top title="Generar Plantilla"><i class="fas fa-file-alt"></i></b-btn>
           </div>

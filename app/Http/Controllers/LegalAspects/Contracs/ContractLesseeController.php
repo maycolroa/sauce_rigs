@@ -15,6 +15,7 @@ use App\Models\LegalAspects\Contracts\Qualifications;
 use App\Models\LegalAspects\Contracts\HighRiskType;
 use App\Models\LegalAspects\Contracts\ItemQualificationContractDetail;
 use App\Models\LegalAspects\Contracts\ContractDocument;
+use App\Http\Requests\LegalAspects\Contracts\DocumentRequest;
 use App\Http\Requests\LegalAspects\Contracts\ContractRequest;
 use App\Http\Requests\LegalAspects\Contracts\ListCheckItemsRequest;
 use App\Jobs\LegalAspects\Contracts\ListCheck\ListCheckContractExportJob;
@@ -28,7 +29,7 @@ use App\Traits\ContractTrait;
 use App\Traits\UserTrait;
 use App\Traits\Filtertrait;
 use App\Facades\Mail\Facades\NotificationMail;
-use App\Exports\LegalAspects\Contracts\Contractor\ContractsImportTemplateExcel;
+use App\Exports\LegalAspects\Contracts\Contractor\ContractsImportTemplate;
 use Carbon\Carbon;
 use Maatwebsite\Excel\Facades\Excel;
 use Validator;
@@ -127,8 +128,8 @@ class ContractLesseeController extends Controller
 
             $contract->activities()->sync($activitiesContract);
 
-            if ($request->has('documents'))
-                $this->saveDocuments($request->documents, $contract);
+            /*if ($request->has('documents'))
+                $this->saveDocuments($request->documents, $contract);*/
 
             $user = User::where('email', trim(strtolower($request->email)))->first();
 
@@ -261,7 +262,7 @@ class ContractLesseeController extends Controller
                     ->where('sau_ct_information_contract_lessee.id', '<>', $contract->id)
                     ->get();
 
-                $documents = ContractDocument::where('contract_id', $contract->id)->get();
+                $documents = ContractDocument::where('company_id', $this->company)->get();
 
                 $contract->documents = $this->getFilesByDocuments($contract, $documents);
 
@@ -663,13 +664,55 @@ class ContractLesseeController extends Controller
         return $qualifications;
     }
 
-    public function saveDocuments($documents, $contract)
+    public function saveDocuments(DocumentRequest $request)
     {
+        DB::beginTransaction();
+
+        try
+        {
+            foreach ($request->documents as $value)
+            {
+                $id = isset($value['id']) ? $value['id'] : NULL;
+
+                $document = ContractDocument::updateOrCreate(['id'=>$id], ['company_id'=>$this->company, 'name'=>$value['name']]);
+            }
+
+            if ($request->delete)
+                $this->deleteData($request->get('delete'));
+
+            DB::commit();
+
+        } catch (\Exception $e) {
+            DB::rollback();
+            \Log::info($e->getMessage());
+            return $this->respondHttp500();
+            //return $e->getMessage();
+        }
+
+        return $this->respondHttp200([
+            'message' => 'Se guardaron los documentos'
+        ]);
+    }
+
+    public function getDocuments()
+    {
+        $documents = ContractDocument::get();
+
         foreach ($documents as $document)
         {
-            $id = isset($document['id']) ? $document['id'] : NULL;
-            $contract->documents()->updateOrCreate(['id'=>$id], $document);
+            $document->key = Carbon::now()->timestamp + rand(1,10000);
         }
+
+        return $this->respondHttp200([
+            'delete' => [],
+            'documents' => $documents
+        ]);
+    }
+
+    private function deleteData($data)
+    {    
+        if (COUNT($data) > 0)
+            ContractDocument::destroy($data);
     }
 
     /**
@@ -946,6 +989,6 @@ class ContractLesseeController extends Controller
 
     public function downloadTemplateImport()
     {
-        return Excel::download(new ContractsImportTemplateExcel(collect([]), $this->company), 'PlantillaImportacionContratistas.xlsx');
+        return Excel::download(new ContractsImportTemplate($this->company), 'PlantillaImportacionContratistas.xlsx');
     }
 }
