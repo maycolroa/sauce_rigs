@@ -89,10 +89,10 @@ export default {
 	    },
 	    removeDocument(index)
 	    {
-	      if (this.form.documents[index].id != undefined)
-	        this.form.delete.documents.push(this.form.documents[index].id)
+	        if (this.form.documents[index].id != undefined)
+        		this.form.delete.push(this.form.documents[index].id)
 
-	      this.form.documents.splice(index, 1)
+      		this.form.documents.splice(index, 1)
 	    }
 	}
 };

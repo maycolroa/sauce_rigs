@@ -677,6 +677,9 @@ class ContractLesseeController extends Controller
                 $document = ContractDocument::updateOrCreate(['id'=>$id], ['company_id'=>$this->company, 'name'=>$value['name']]);
             }
 
+            if ($request->delete)
+                $this->deleteData($request->get('delete'));
+
             DB::commit();
 
         } catch (\Exception $e) {
@@ -701,8 +704,15 @@ class ContractLesseeController extends Controller
         }
 
         return $this->respondHttp200([
+            'delete' => [],
             'documents' => $documents
         ]);
+    }
+
+    private function deleteData($data)
+    {    
+        if (COUNT($data) > 0)
+            ContractDocument::destroy($data);
     }
 
     /**
