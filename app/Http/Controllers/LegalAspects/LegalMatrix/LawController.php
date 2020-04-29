@@ -560,84 +560,83 @@ class LawController extends Controller
     {
         try
         {
-            DB::beginTransaction();
-
             $data = $request->except('articles');
+            
+            DB::transaction(function () use (&$data, $request) {
 
-            $qualification = ArticleFulfillment::find($request->qualification_id);
-            $qualification->fulfillment_value_id = $request->fulfillment_value_id ? $request->fulfillment_value_id : NULL;
-            $qualification->observations = $request->observations ? $request->observations : NULL;
-            $qualification->responsible = $request->responsible ? $request->responsible : NULL;
+                $qualification = ArticleFulfillment::find($request->qualification_id);
+                $qualification->fulfillment_value_id = $request->fulfillment_value_id ? $request->fulfillment_value_id : NULL;
+                $qualification->observations = $request->observations ? $request->observations : NULL;
+                $qualification->responsible = $request->responsible ? $request->responsible : NULL;
 
-             //Se inician los atributos necesarios que seran estaticos para todas las actividades
-            // De esta forma se evitar la asignacion innecesaria una y otra vez 
-            ActionPlan::
-                    user($this->user)
-                ->module('legalMatrix')
-                ->url(url('/administrative/actionplans'));
+                 //Se inician los atributos necesarios que seran estaticos para todas las actividades
+                // De esta forma se evitar la asignacion innecesaria una y otra vez 
+                ActionPlan::
+                        user($this->user)
+                    ->module('legalMatrix')
+                    ->url(url('/administrative/actionplans'));
 
-            $path = 'fulfillments/'.$this->company."/";
+                $path = 'fulfillments/'.$this->company."/";
 
-            if ($qualification->fulfillment_value_id)
-            {
-                $qualify = FulfillmentValues::find($qualification->fulfillment_value_id);
-
-                if ($qualify->name != 'No cumple' && $qualify->name != 'Parcial')
+                if ($qualification->fulfillment_value_id)
                 {
-                    if ($request->file != $qualification->file)
+                    $qualify = FulfillmentValues::find($qualification->fulfillment_value_id);
+
+                    if ($qualify->name != 'No cumple' && $qualify->name != 'Parcial')
                     {
-                        if ($request->file)
+                        if ($request->file != $qualification->file)
                         {
-                            $file = $request->file;
-                            Storage::disk('s3_MLegal')->delete($path. $qualification->file);
-                            $nameFile = base64_encode($this->user->id . now() . rand(1,10000)) .'.'. $file->extension();
-                            $file->storeAs($path, $nameFile, 's3_MLegal');
-                            $qualification->file = $nameFile;
-                            $data['file'] = $nameFile;
-                            $data['old_file'] = $nameFile;
-                        }
-                        else
-                        {
-                            /*Storage::disk('s3_MLegal')->delete($path. $qualification->file);
-                            $qualification->file = NUlL;
-                            $data['file'] = NULL;
-                            $data['old_file'] = NULL;*/
+                            if ($request->file)
+                            {
+                                $file = $request->file;
+                                Storage::disk('s3_MLegal')->delete($path. $qualification->file);
+                                $nameFile = base64_encode($this->user->id . now() . rand(1,10000)) .'.'. $file->extension();
+                                $file->storeAs($path, $nameFile, 's3_MLegal');
+                                $qualification->file = $nameFile;
+                                $data['file'] = $nameFile;
+                                $data['old_file'] = $nameFile;
+                            }
+                            else
+                            {
+                                /*Storage::disk('s3_MLegal')->delete($path. $qualification->file);
+                                $qualification->file = NUlL;
+                                $data['file'] = NULL;
+                                $data['old_file'] = NULL;*/
+                            }
                         }
                     }
-                }
-                else
-                {
-                    /*if ($qualification->file)
+                    else
                     {
-                        Storage::disk('s3_MLegal')->delete($path. $qualification->file);
-                        $qualification->file = NUlL;
-                        $data['file'] = NULL;
-                        $data['old_file'] = NULL;
-                    }*/
+                        /*if ($qualification->file)
+                        {
+                            Storage::disk('s3_MLegal')->delete($path. $qualification->file);
+                            $qualification->file = NUlL;
+                            $data['file'] = NULL;
+                            $data['old_file'] = NULL;
+                        }*/
+                    }
+
+                    /**Planes de acción*/
+                    ActionPlan::
+                        model($qualification)
+                        ->activities($request->actionPlan)
+                        ->save();
+
+                    $data['actionPlan'] = ActionPlan::getActivities();
                 }
 
-                /**Planes de acción*/
-                ActionPlan::
-                    model($qualification)
-                    ->activities($request->actionPlan)
-                    ->save();
+                if (!$qualification->save())
+                    return $this->respondHttp500();
 
-                $data['actionPlan'] = ActionPlan::getActivities();
-            }
+                ActionPlan::sendMail();
 
-            if (!$qualification->save())
-                return $this->respondHttp500();
-
-            ActionPlan::sendMail();
-
-            DB::commit();
+            }, 3);
 
             return $this->respondHttp200([
                 'data' => $data
             ]);
 
         } catch (Exception $e){
-            DB::rollback();
             return $this->respondHttp500();
         }
     }
