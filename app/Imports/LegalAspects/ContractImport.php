@@ -5,18 +5,16 @@ namespace App\Imports\LegalAspects;
 use Illuminate\Support\Collection;
 use App\Models\Administrative\Roles\Role;
 use App\Models\LegalAspects\Contracts\CompanyLimitCreated;
-use App\Models\LegalAspects\Contracts\FileUpload;
 use App\Models\LegalAspects\Contracts\ContractLesseeInformation;
-use App\Models\LegalAspects\Contracts\SectionCategoryItems;
-use App\Models\LegalAspects\Contracts\Qualifications;
 use App\Models\LegalAspects\Contracts\HighRiskType;
-use App\Models\LegalAspects\Contracts\ItemQualificationContractDetail;
-use App\Models\LegalAspects\Contracts\ContractDocument;
+use App\Models\Administrative\Users\User;
+use App\Models\Administrative\Users\GeneratePasswordUser;
+use App\Models\General\Team;
 use App\Traits\ContractTrait;
 use App\Traits\UserTrait;
 use Maatwebsite\Excel\Concerns\ToCollection;
 use App\Facades\Configuration;
-use App\Exports\IndustrialSecure\DangerMatrix\DangerMatrixImportErrorExcel;
+use App\Exports\LegalAspects\Contracts\Contractor\ContractsImportErrorExcel;
 use App\Facades\Mail\Facades\NotificationMail;
 use Maatwebsite\Excel\Facades\Excel;
 use Maatwebsite\Excel\Concerns\WithCalculatedFormulas;
@@ -35,6 +33,13 @@ class ContractImport implements ToCollection, WithCalculatedFormulas
     private $sheet = 1;
     private $key_row = 2;
     private $keywords;
+    const CLASS_RISK = [
+        'clase de riesgo i' => 'Clase de riesgo I',
+        'clase de riesgo ii' => 'Clase de riesgo II',
+        'clase de riesgo iii' => 'Clase de riesgo III',
+        'clase de riesgo iv' => 'Clase de riesgo IV',
+        'clase de riesgo v' => 'Clase de riesgo V'
+    ];
 
     public function __construct($company_id, $user)
     {
@@ -115,13 +120,13 @@ class ContractImport implements ToCollection, WithCalculatedFormulas
             'nombre_usuario' => $row[0],
             'documento_usuario' => $row[1],
             'email_usuario' => $row[2],
-            'tipo_de_empresa' => $row[3],
-            'clasificacion' => $row[4],
+            'tipo_de_empresa' => strtolower($row[3]),
+            'clasificacion' => strtolower($row[4]),
             'nombre_empresa' => $row[5],
             'nit' => $row[6],
             'razon_social' => $row[7],
-            'trabajo_alto_riesgo' => $row[8],
-            'tipo_trabajo_alto_riesgo' => $row[9],            
+            'trabajo_alto_riesgo' => strtolower($row[8]),
+            'tipo_trabajo_alto_riesgo' => array_map('trim', explode(",", strtolower($row[9]))),            
             'direccion' => $row[10],
             'telefono' => $row[11],
             'nombre_representante_legal' => $row[12],
@@ -130,27 +135,47 @@ class ContractImport implements ToCollection, WithCalculatedFormulas
             'actividad_economica_empresa' => $row[15],
             'arl' => $row[16],
             'numero_trabajadores' => $row[17],
-            'clase_riesgo' => $row[18]
+            'clase_riesgo' => strtolower($row[18])
         ];
 
+        $highRisk = HighRiskType::selectRaw("LOWER(name) AS name")->pluck('name')->implode(',');
+
         $rules = [
-            /*'nombre_usuario' => 'required|string',
+            'nombre_usuario' => 'required|string',
             'documento_usuario' => 'required',
-            'email_usuario' => 'required|email',*/
-            'tipo_de_empresa' => 'required',
+            'email_usuario' => 'required|email',
+            'tipo_de_empresa' => 'required|string|in:contratista,arrendatario',
             'nombre_empresa' => 'required',
             'nit' => 'required|numeric',
             'razon_social' => 'required|string',
             'trabajo_alto_riesgo' => 'required'     
         ];
 
-        if (strtolower($data["tipo_de_empresa"]) == 'contratista')
+        if ($data["tipo_de_empresa"] == 'contratista')
         {
             $rules = array_merge($rules,
                 [
-                    'clasificacion' => 'required'
+                    'clasificacion' => 'required|string|in:empresa,unidad de produccion agropecuaria,unidad de producción agropecuaria'
                 ]);
         }
+
+        if ($data["trabajo_alto_riesgo"] == 'si')
+        {
+            $rules = array_merge($rules,
+                [
+                    'tipo_trabajo_alto_riesgo' => "required|array|min:1",
+                    "tipo_trabajo_alto_riesgo.*" => "nullable|in:$highRisk",
+                ]);
+        }
+
+        if ($data["clase_riesgo"])
+        {
+            $rules = array_merge($rules,
+                [
+                    'clase_riesgo' => "nullable|string|in:clase de riesgo i,clase de riesgo ii,clase de riesgo iii,clase de riesgo iv,clase de riesgo v"
+                ]);
+        }
+
 
         $validator = Validator::make($data, $rules);
 
@@ -170,6 +195,16 @@ class ContractImport implements ToCollection, WithCalculatedFormulas
                 $this->setError('Límite alcanzado..!! No puede crear más contratistas o arrendatarios hasta que inhabilite alguno de ellos.');
             else
             {
+                //////////////////////////Creacion contratista/////////////////
+
+                if ($data["clasificacion"] == "unidad de produccion agropecuaria" || $data["clasificacion"] == "unidad de producción agropecuaria")
+                {
+                    $data["clasificacion"] = "UPA";
+                }
+                else
+                    $data["clasificacion"] = "Empresa";
+
+
                 $contracts = new ContractLesseeInformation();
                 $contracts->company_id = $this->company_id;
                 $contracts->nit = $data['nit'];
@@ -183,33 +218,55 @@ class ContractImport implements ToCollection, WithCalculatedFormulas
                 $contracts->economic_activity_of_company = $data['actividad_economica_empresa'];
                 $contracts->arl = $data['arl'];
                 $contracts->SG_SST_name = $data['nombre_encargado_sst'];
-                $contracts->risk_class = $data['clase_riesgo'];
+                $contracts->risk_class = $this::CLASS_RISK[strtolower($data['clase_riesgo'])];
                 $contracts->number_workers = $data['numero_trabajadores'];
-                $contracts->high_risk_work = $data['trabajo_alto_riesgo'];
+                $contracts->high_risk_work = ucfirst($data['trabajo_alto_riesgo']);
                 $contracts->social_reason = $data['razon_social'];
                 $contracts->save();
-
-                //\Log::info($this->contracts);
 
                 $risks = $this->checkHighRiskWork($data['tipo_trabajo_alto_riesgo']);
 
                 $contracts->highRiskType()->sync($risks);
 
-                /*$user = User::where('email', trim(strtolower($data['email_usuario'])))->first();
+                ///////////////////Creacion Usiario//////////////////
+
+                $user = User::where('email', trim(strtolower($data['email_usuario'])))->first();
+
+                $team = Team::where('name', $this->company_id)->first()->id;
 
                 if (!$user)
                 {
-                    $user = $this->createUser($request);
+                    $user = new User();
+                    $user->name = $data['nombre_usuario'];
+                    $user->email = $data['email_usuario'];
+                    $user->document = $data['documento_usuario'];
+                    $user->save();
 
-                    if ($user == $this->respondHttp500() || $user == null) {
-                        return $this->respondHttp500();
-                    }
+                    $user->companies()->sync($this->company_id);
+
+                    $generatePasswordUser = new GeneratePasswordUser();
+
+                    $generatePasswordUser->user_id = $user->id;
+                    $generatePasswordUser->token = bcrypt($user->email.$user->document);
+                    $generatePasswordUser->save();
+
+                    NotificationMail::
+                        subject('Creación de usuario en sauce')
+                        ->message('Te damos la bienvenida a la plataforma, se ha generado un nuevo usuario para este correo, para establecer tu nueva contraseña, por favor dar click al siguiente enlace.')
+                        ->recipients($user)
+                        ->buttons([['text'=>'Establecer contraseña', 'url'=>url("/password/generate/".base64_encode($generatePasswordUser->token))]])
+                        ->module('users')
+                        ->subcopy('Este link sólo se puede utilizar una vez')
+                        ->company($this->company_id)
+                        ->send();
+
+                    $user->attachRole($this->getIdRole($contracts->type), $team);
                 }
                 else
                 {
-                    $user->companies()->attach($this->company);
+                    $user->companies()->attach($this->company_id);
 
-                    $company = Company::find($this->company);
+                    $company = Company::find($this->company_id);
 
                     NotificationMail::
                         subject('Creación de contratista en sauce')
@@ -219,7 +276,9 @@ class ContractImport implements ToCollection, WithCalculatedFormulas
                         ->buttons([['text'=>'Ir a Sauce', 'url'=>url("/")]])
                         ->company($this->company)
                         ->send();
-                }*/
+                }
+
+                $contracts->users()->sync($user);
 
                 return true;
 
@@ -228,11 +287,23 @@ class ContractImport implements ToCollection, WithCalculatedFormulas
         }
     }
 
+    private function getIdRole($role)
+    {
+        $role = Role::defined()
+            ->where('name', $role)
+            ->first();
+
+        if ($role)
+            $role = $role->id;
+
+        return $role;
+    }
+
     private function checkHighRiskWork($data)
     {
-        $risks = collect(explode(",", $data))->map(function ($item, $key)
+        $risks = collect($data)->map(function ($item, $key)
             {
-                return trim($item);
+                return ucfirst($item);
             })->toArray();
 
         $ids = HighRiskType::select('id')->whereIn('name', $risks)->get();
