@@ -77,6 +77,14 @@ export default [
 					component: () => import('@/views/LegalAspects/contracts/contract/listCheckItems')
 				}
 			]),
+			...middleware({ 'check-permission': 'contracts_c' }, [
+				{
+					name: 'legalaspects-contracts-report',
+					path: 'report/contracts',
+					component: () =>
+					import('@/views/LegalAspects/contracts/contractor/reportStandar')
+				}
+			]),
 			...middleware({ 'check-permission': 'contracts_typesQualification_r' }, [
 				{
 					name: 'legalaspects-typesrating',

@@ -449,6 +449,7 @@ Route::middleware(['auth'])->group(function () {
       Route::post('employeeContract/files', 'LegalAspects\Contracs\ContractEmployeeController@getFilesForm');
       Route::post('employeeContract/data', 'LegalAspects\Contracs\ContractEmployeeController@data');
       Route::ApiResource('employeeContract', 'LegalAspects\Contracs\ContractEmployeeController');
+      Route::post('listCheck/report', 'LegalAspects\Contracs\ListCheckReportController@data');
 
       Route::prefix('legalMatrix')->group(function () {
 
