@@ -183,6 +183,7 @@ Route::middleware(['auth'])->group(function () {
         Route::post('actionPlanStates', 'General\MultiSelectRadioController@actionPlanStates');
         Route::post('actionPlanModules', 'Administrative\ActionPlans\ActionPlanController@actionPlanModules');
         Route::post('contractors', 'LegalAspects\Contracs\ContractLesseeController@multiselect');
+        Route::post('contractStandar', 'LegalAspects\Contracs\ContractLesseeController@multiselectStandard');
         Route::post('ctRoles', 'General\MultiSelectRadioController@ctRoles');
         Route::post('ctContractClassifications', 'General\MultiSelectRadioController@ctContractClassifications'); 
         Route::post('ctkindsRisks', 'General\MultiSelectRadioController@ctkindsRisks'); 

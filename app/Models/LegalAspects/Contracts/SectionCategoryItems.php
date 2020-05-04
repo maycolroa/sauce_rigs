@@ -28,4 +28,18 @@ class SectionCategoryItems extends Model
             'value' => $this->id
         ];
     }
+
+    public function scopeInStandard($query, $itemStandar, $typeSearch = 'IN')
+    {
+        if (COUNT($itemStandar) > 0)
+        {
+            if ($typeSearch == 'IN')
+                $query->whereIn('sau_ct_section_category_items.id', $itemStandar);
+
+            else if ($typeSearch == 'NOT IN')
+                $query->whereNotIn('sau_ct_section_category_items.id', $itemStandar);
+        }
+
+        return $query;
+    }
 }

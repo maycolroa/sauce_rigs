@@ -6,12 +6,12 @@
         url="legalaspects-contracts"
     />
 
-    <!--<div>
+    <div>
         <filter-general 
             v-model="filters" 
-            configName="" 
+            configName="legalaspects-contracts-list-check-report" 
             :isDisabled="isLoading"/>
-    </div>-->
+    </div>
 
     <div class="col-md">
         <b-card border-variant="primary" title="Estandares mínimos" class="mb-3 box-shadow-none">
@@ -82,21 +82,20 @@ export default {
     created(){
         this.fetch()
     },
-    /*watch: {
+    watch: {
         filters: {
             handler(val){
                 this.fetch()
             },
             deep: true
         }
-    },*/
+    },
     methods: {
-        /*setFilters(value)
+        setFilters(value)
         { 
             this.filters = value
-            this.updateTotales()
             this.fetch()
-        },*/
+        },
         fetch()
         {
             if (!this.isLoading)
@@ -104,7 +103,7 @@ export default {
                 //console.log('buscando...')
                 this.isLoading = true;
 
-                axios.post('/legalAspects/listCheck/report'/*, this.filters*/)
+                axios.post('/legalAspects/listCheck/report', this.filters)
                 .then(data => {
                     this.update(data);
                     this.isLoading = false;

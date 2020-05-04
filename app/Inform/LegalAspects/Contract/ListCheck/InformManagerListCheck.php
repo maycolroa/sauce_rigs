@@ -30,44 +30,23 @@ class InformManagerListCheck
      * @var array
      */
     protected $company_id;
-    /*protected $identifications;
-    protected $names;
-    protected $regionals;
-    protected $businesses;
-    protected $diseaseOrigin;
-    protected $nextFollowDays;
-    protected $dateRange;
-    protected $years;
-    protected $sveAssociateds;
-    protected $medicalCertificates;
-    protected $relocatedTypes;
+    protected $contracts;
+    protected $classification;
+    protected $itemStandar;
     protected $filtersType;
-    protected $formModel;
-    protected $totalChecks;
-    protected $locationForm;*/
 
     /**
      * create an instance and set the attribute class
      * @param array $identifications
      */
-    function __construct($company_id/*$identifications = [], $names = [], $regionals = [], $businesses = [], $diseaseOrigin = [], $nextFollowDays = [], $dateRange = [], $years = [], $sveAssociateds = [], $medicalCertificates = [], $relocatedTypes = [], $filtersType = []*/)
+    function __construct($company_id, $contracts = [], $classification = [], $itemStandar = [], $filtersType = [])
     {
         $this->company_id = $company_id;
-        /*$this->identifications = $identifications;
-        $this->names = $names;
-        $this->regionals = $regionals;
-        $this->businesses = $businesses;
-        $this->diseaseOrigin = $diseaseOrigin;
-        $this->nextFollowDays = $nextFollowDays;
-        $this->dateRange = $dateRange;
-        $this->years = $years;
-        $this->sveAssociateds = $sveAssociateds;
-        $this->medicalCertificates = $medicalCertificates;
-        $this->relocatedTypes = $relocatedTypes;
+        $this->contracts = $contracts;
+        $this->classification = $classification;
+        $this->itemStandar = $itemStandar;
         $this->filtersType = $filtersType;
-        $this->formModel = $this->getFormModel('form_check');
-        $this->totalChecks = $this->getTotalChecks();
-        $this->locationForm = $this->getLocationFormConfModule();*/
+
     }
 
     /**
@@ -111,10 +90,15 @@ class InformManagerListCheck
             COUNT(*) AS total
         ")
         ->leftJoin('sau_ct_list_check_resumen', 'sau_ct_list_check_resumen.contract_id', 'sau_ct_information_contract_lessee.id')
+        ->inContracts($this->contracts, $this->filtersType['contracts'])
+        ->inClassification($this->classification, $this->filtersType['classification'])
         ->where('sau_ct_information_contract_lessee.type', 'Contratista')
         ->groupBy('label', 'orden')
         ->orderBy('orden', 'DESC')
         ->pluck('total', 'label');
+
+        \Log::info($this->classification);
+        \Log::info($this->contracts);
 
         return $this->buildDataChart($contracts);
     }
@@ -137,7 +121,9 @@ class InformManagerListCheck
                     (classification = 'Empresa' AND number_workers > 50) 
                     )THEN '60 Estándares'
             ELSE NULL END AS standard_name")
-        ->withoutGlobalScopes()
+        ->withoutGlobalScopes()        
+        ->inContracts($this->contracts, $this->filtersType['contracts'])
+        ->inClassification($this->classification, $this->filtersType['classification'])
         ->where('sau_ct_information_contract_lessee.company_id', $this->company_id)
         ->havingRaw("standard_name IS NOT NULL");
 
@@ -160,9 +146,13 @@ class InformManagerListCheck
                 $join->on("sau_ct_item_qualification_contract.item_id", "sau_ct_section_category_items.id");
             })
             ->groupBy('sau_ct_section_category_items.item_name')
-            ->mergeBindings($items_apply->getQuery())
+            ->mergeBindings($items_apply->getQuery())            
+            ->inStandard($this->itemStandar, $this->filtersType['itemStandar'])
             ->orderBy('category')
             ->get();
+
+            
+        \Log::info($this->itemStandar);
 
         return $this->builderDataCompliance($compliance);
     
