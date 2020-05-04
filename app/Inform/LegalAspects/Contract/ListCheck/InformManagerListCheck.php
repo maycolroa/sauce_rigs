@@ -3,10 +3,14 @@
 namespace App\Inform\LegalAspects\Contract\ListCheck;
 
 use App\Models\LegalAspects\Contracts\ContractLesseeInformation;
+use App\Models\LegalAspects\Contracts\SectionCategoryItems;
 use App\Models\LegalAspects\Contracts\ListCheckResumen;
+use App\Traits\UtilsTrait;
+use DB;
 
 class InformManagerListCheck
 {
+    use UtilsTrait;
     /**
      * defines the availables informs
      *
@@ -97,7 +101,7 @@ class InformManagerListCheck
             CASE
                 WHEN total_p_c BETWEEN 0 AND 35 THEN '0% - 35%'
                 WHEN total_p_c BETWEEN 36 AND 70 THEN '36% - 70%'
-                WHEN total_p_c > 7 THEN '71% - 100%'
+                WHEN total_p_c > 71 THEN '71% - 100%'
                 ELSE '0% - 35%' END AS label,
             CASE
                 WHEN total_p_c BETWEEN 0 AND 35 THEN 1
@@ -112,8 +116,6 @@ class InformManagerListCheck
         ->orderBy('orden', 'DESC')
         ->pluck('total', 'label');
 
-        \Log::info($contracts);
-
         return $this->buildDataChart($contracts);
     }
 
@@ -123,37 +125,47 @@ class InformManagerListCheck
      */
     private function standar()
     {
-        /*$data = Check::selectRaw(
-            $column." AS ".$column.",
-            COUNT(DISTINCT employee_id) AS count
-        ")
-        ->isOpen()
-        ->join('sau_employees', 'sau_employees.id', 'sau_reinc_checks.employee_id')
-        ->inIdentifications($this->identifications, $this->filtersType['identifications'])
-        ->inNames($this->names, $this->filtersType['names'])
-        ->inRegionals($this->regionals, $this->filtersType['regionals'])
-        ->inBusinesses($this->businesses, $this->filtersType['businesses'])
-        ->inDiseaseOrigin($this->diseaseOrigin, $this->filtersType['diseaseOrigin'])
-        ->inYears($this->years, $this->filtersType['years'])
-        ->betweenDate($this->dateRange)
-        ->where($column, '<>', '')
-        ->groupBy($column);
+        $items_apply = ContractLesseeInformation::selectRaw("
+            id AS contract_id,
+            CASE 
+                WHEN (classification = 'UPA' AND number_workers <= 10 AND risk_class IN ('Clase de riesgo I', 'Clase de riesgo II', 'Clase de riesgo III')) THEN '3 Estándares'
+                WHEN (classification = 'Empresa' AND number_workers <= 10 AND risk_class IN ('Clase de riesgo I', 'Clase de riesgo II', 'Clase de riesgo III')) THEN '7 Estándares'
+                WHEN (classification = 'Empresa' AND number_workers BETWEEN 11 AND 50 AND risk_class IN ('Clase de riesgo I', 'Clase de riesgo II', 'Clase de riesgo III')) THEN '21 Estándares'
+                WHEN (
+                    (classification = 'UPA' AND number_workers <= 10 AND risk_class IN ('Clase de riesgo IV', 'Clase de riesgo V')) OR
+                    (classification = 'Empresa' AND number_workers BETWEEN 11 AND 50 AND risk_class IN ('Clase de riesgo IV', 'Clase de riesgo V')) OR 
+                    (classification = 'Empresa' AND number_workers > 50) 
+                    )THEN '60 Estándares'
+            ELSE NULL END AS standard_name")
+        ->withoutGlobalScopes()
+        ->where('sau_ct_information_contract_lessee.company_id', $this->company_id)
+        ->havingRaw("standard_name IS NOT NULL");
 
-        if ($this->nextFollowDays)
-            $data->inNextFollowDays($this->nextFollowDays, $this->filtersType['nextFollowDays']);
+        //$items_apply->company_scope = $this->company_id;
 
-        if ($this->sveAssociateds)
-            $data->inSveAssociateds($this->sveAssociateds, $this->filtersType['sveAssociateds']);
+        $compliance = SectionCategoryItems::selectRaw("
+                sau_ct_section_category_items.item_name AS category,
+                SUM(CASE WHEN sau_ct_item_qualification_contract.qualification_id IN (1,3) THEN 1 ELSE 0 END) AS total_c,
+                SUM(CASE WHEN sau_ct_item_qualification_contract.qualification_id = 2 OR sau_ct_item_qualification_contract.qualification_id IS NULL THEN 1 ELSE 0 END) AS total_nc
+                ")
+            ->join('sau_ct_items_standard', 'sau_ct_items_standard.item_id', 'sau_ct_section_category_items.id')
+            ->join('sau_ct_standard_classification', 'sau_ct_standard_classification.id', 'sau_ct_items_standard.standard_id')
+            ->join(DB::raw("({$items_apply->toSql()}) as t"), function ($join) 
+            {
+                $join->on("t.standard_name", "sau_ct_standard_classification.standard_name");
+            })
+            ->leftJoin('sau_ct_item_qualification_contract', function ($join) 
+            {
+                $join->on("sau_ct_item_qualification_contract.contract_id", "t.contract_id");
+                $join->on("sau_ct_item_qualification_contract.item_id", "sau_ct_section_category_items.id");
+            })
+            ->groupBy('sau_ct_section_category_items.item_name')
+            ->mergeBindings($items_apply->getQuery())
+            ->orderBy('category')
+            ->get();
 
-        if ($this->medicalCertificates)
-            $data->inMedicalCertificates($this->medicalCertificates, $this->filtersType['medicalCertificates']);
-
-        if ($this->relocatedTypes)
-            $data->inRelocatedTypes($this->relocatedTypes, $this->filtersType['relocatedTypes']);
-
-        $data = $data->pluck('count', $column);
-
-        return $this->buildTableChartData($data);*/
+        return $this->builderDataCompliance($compliance);
+    
     }
 
     /**
@@ -183,26 +195,59 @@ class InformManagerListCheck
         ]);
     }
 
-    private function buildTableChartData($data)
+    private function builderDataCompliance($data)
     {
-        $result = collect([]);
-        $result->put('chart', $this->buildDataChart($data));
+        $labels = collect([]);
+        $cumple = collect([]);
+        $no_cumple = collect([]);
 
-        return $result;
-    }
+        foreach ($data as $key => $value)
+        {
+            $label = strlen($value->category) > 30 ? substr($this->sanear_string($value->category), 0, 30).'...' : $value->category;
 
-    /**
-     * computes the percentage of a value related to a total value
-     * @param  integer|float $value
-     * @param  integer|float $totalValue
-     * @return integer|float
-     */
-    protected function percentage($value, $totalValue)
-    {
-        if ($totalValue == 0) {
-            return 'N/A';
+            $total = $value->total_c + $value->total_nc;
+
+            $labels->push($label);
+            $cumple->push(round(($value->total_c / $total) * 100));
+            $no_cumple->push(round(($value->total_nc / $total) * 100));
         }
 
-        return round(($value / $totalValue) * 100, 1);
+        $info = [
+            "name" => 'Cumple',
+            "type" => 'bar',
+            "stack" => 'barras',
+            "data" => $cumple->values(),
+            "label" => [
+                "normal" => [
+                    "show" => true,
+                    "color" => "white",
+                    "formatter" => '{c}%',
+                ]
+            ]
+        ];
+
+        $info2 = [
+            "name" => 'No Cumple',
+            "type" => 'bar',
+            "stack" => 'barras',
+            "data" => $no_cumple->values(),
+            "label" => [
+                "normal" => [
+                    "show" => true,
+                    "color" => "white",
+                    "formatter" => '{c}%',
+                ]
+            ]
+        ];
+
+        return collect([
+            'legend' => ['Cumple', 'No Cumple'],
+            'labels' => $labels,
+            'datasets' => [
+                'data' => [$info, $info2],
+                'type' => 'percentage',
+                'count' => 0,
+            ]
+        ]);
     }
 }

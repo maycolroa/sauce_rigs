@@ -17,14 +17,14 @@
         <b-card border-variant="primary" title="Estandares mínimos" class="mb-3 box-shadow-none">
             <b-row>
                 <b-col class="text-center" style="padding-bottom: 15px;">
-                    <h4>Porcentaje de Cumplimiento por Contratista</h4>
+                    <h4>Rango de Cumplimiento por Contratista</h4>
                 </b-col>
             </b-row>
             <b-row>
                 <div class="col-md-12">
                     <chart-bar 
                         :chart-data="contracts"
-                        title="Porcentaje de Cumplimiento por Contratista"
+                        title="Rango de Cumplimiento por Contratista"
                         color-line="red"
                         ref=""/>
                 </div>
