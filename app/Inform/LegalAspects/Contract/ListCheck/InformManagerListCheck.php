@@ -97,9 +97,6 @@ class InformManagerListCheck
         ->orderBy('orden', 'DESC')
         ->pluck('total', 'label');
 
-        \Log::info($this->classification);
-        \Log::info($this->contracts);
-
         return $this->buildDataChart($contracts);
     }
 
@@ -150,9 +147,6 @@ class InformManagerListCheck
             ->inStandard($this->itemStandar, $this->filtersType['itemStandar'])
             ->orderBy('category')
             ->get();
-
-            
-        \Log::info($this->itemStandar);
 
         return $this->builderDataCompliance($compliance);
     
