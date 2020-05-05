@@ -77,6 +77,14 @@ export default [
 					component: () => import('@/views/LegalAspects/contracts/contract/listCheckItems')
 				}
 			]),
+			...middleware({ 'check-permission': 'contracts_c' }, [
+				{
+					name: 'legalaspects-contracts-report',
+					path: 'report/contracts',
+					component: () =>
+					import('@/views/LegalAspects/contracts/contractor/reportStandar')
+				}
+			]),
 			...middleware({ 'check-permission': 'contracts_typesQualification_r' }, [
 				{
 					name: 'legalaspects-typesrating',
@@ -507,6 +515,38 @@ export default [
 					component: () =>
 					import('@/views/LegalAspects/legalMatrix/entities/view')
 				},
+			]),
+			...middleware({ 'check-permission': 'entitiesCustom_r' }, [
+				{
+					name: 'legalaspects-lm-entity-company',
+					path: 'lm/entityCompany',
+					component: () =>
+					import('@/views/LegalAspects/legalMatrix/entities/indexCompany')
+				}, 
+			]),
+			...middleware({ 'check-permission': 'entitiesCustom_c' }, [
+				{
+					name: 'legalaspects-lm-entity-company-create',
+					path: 'lm/entityCompany/create',
+					component: () =>
+					import('@/views/LegalAspects/legalMatrix/entities/createCompany')
+				},
+			]),
+			...middleware({ 'check-permission': 'entitiesCustom_u' }, [
+				{
+					name: 'legalaspects-lm-entity-company-edit',
+					path: 'lm/entityCompany/edit/:id',
+					component: () =>
+					import('@/views/LegalAspects/legalMatrix/entities/edit')
+				},
+			]),
+			...middleware({ 'check-permission': 'entitiesCustom_r' }, [
+				{
+					name: 'legalaspects-lm-entity-company-view',
+					path: 'lm/entityCompany/view/:id',
+					component: () =>
+					import('@/views/LegalAspects/legalMatrix/entities/view')
+				}
 			]),
 			...middleware({ 'check-permission': 'laws_r' }, [
 				{

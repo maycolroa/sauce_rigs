@@ -125,4 +125,32 @@ class ContractLesseeInformation extends Model
 
         return $query;
     }
+
+    public function scopeInContracts($query, $contracts, $typeSearch = 'IN')
+    {
+        if (COUNT($contracts) > 0)
+        {
+            if ($typeSearch == 'IN')
+                $query->whereIn('sau_ct_information_contract_lessee.id', $contracts);
+
+            else if ($typeSearch == 'NOT IN')
+                $query->whereNotIn('sau_ct_information_contract_lessee.id', $contracts);
+        }
+
+        return $query;
+    }
+
+    public function scopeInClassification($query, $classification, $typeSearch = 'IN')
+    {
+        if (COUNT($classification) > 0)
+        {
+            if ($typeSearch == 'IN')
+                $query->whereIn('sau_ct_information_contract_lessee.classification', $classification);
+
+            else if ($typeSearch == 'NOT IN')
+                $query->whereNotIn('sau_ct_information_contract_lessee.classification', $classification);
+        }
+
+        return $query;
+    }
 }

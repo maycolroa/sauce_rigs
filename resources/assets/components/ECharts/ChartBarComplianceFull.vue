@@ -62,7 +62,7 @@ export default {
             title: {
                 text: this.title,
             },
-            tooltip: {
+            /*tooltip: {
                 trigger: 'axis',
                 axisPointer : {            
                     type : 'shadow'        
@@ -73,18 +73,9 @@ export default {
                     let nc = params[1]
                     let symbole = '%'
 
-                    let message = (
-                        c != undefined ? c.name : (nc != undefined ? nc.name : '')) + '<br/>';
-
-                    if (c !== undefined)
-                        message += c.marker + c.seriesName + ': ' + c.value + symbole + '<br/>';
-
-                    if (nc !== undefined)
-                        message += nc.marker + nc.seriesName + ': ' + nc.value + symbole;
-
-                    return message;
+                    return c.name + '<br/>' + c.marker + c.seriesName + ': ' + c.value + symbole + '<br/>' + nc.marker + nc.seriesName + ': ' + nc.value + symbole;
                 }
-            },
+            },*/
             legend: {
                 data: this.chartData.legend
             },
@@ -132,7 +123,7 @@ export default {
         return this.height
     },
     formatter() {
-        return this.chartData.datasets.type ? (this.chartData.datasets.type == ' ' ? '{c}%' : '{c}') : '{c}';
+        return this.chartData.datasets.type ? (this.chartData.datasets.type == 'percentage' ? '{c}%' : '{c}') : '{c}';
     }
   },
   methods: {

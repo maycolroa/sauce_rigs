@@ -106,6 +106,29 @@ export default [
       ]
     },
     {
+      name: 'legalaspects-contracts-list-check-report',
+      filters: [
+        {
+          url: '/selects/contractors',
+          key: 'contracts',
+          type: 'select',
+          label: 'Contratistas'
+        },
+        {
+          url: '/selects/ctContractClassifications',
+          key: 'classification',
+          type: 'select',
+          label: 'Clasificaciòn'
+        },
+        {
+          url: '/selects/contractStandar',
+          key: 'itemStandar',
+          type: 'select',
+          label: 'Estandar'
+        },
+      ]
+    },
+    {
       name: 'legalAspects-legalMatrix-laws',
       filters: [
         {
@@ -121,7 +144,7 @@ export default [
           label: 'Temas Ambientales'
         },
         {
-          url: '/selects/legalMatrix/entities',
+          url: '/selects/legalMatrix/entitiesSystem',
           key: 'entities',
           type: 'select',
           label: 'Entes'
@@ -174,7 +197,7 @@ export default [
           label: 'Temas Ambientales'
         },
         {
-          url: '/selects/legalMatrix/entities',
+          url: '/selects/legalMatrix/entitiesCompany',
           key: 'entities',
           type: 'select',
           label: 'Entes'

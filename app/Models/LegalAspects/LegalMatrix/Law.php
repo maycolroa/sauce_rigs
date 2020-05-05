@@ -139,13 +139,22 @@ class Law extends Model
      */
     public function scopeInEntities($query, $entities, $typeSearch = 'IN')
     {
-        if (COUNT($entities) > 0)
+        $ids = [];
+
+        foreach ($entities as $key => $value)
         {
+            $ids[] = $value;
+        }
+
+        if(COUNT($ids) > 0)
+        {
+            $ids = explode(",", implode(",", $ids));
+
             if ($typeSearch == 'IN')
-                $query->whereIn('sau_lm_laws.entity_id', $entities);
+                $query->whereIn('sau_lm_laws.entity_id', $ids);
 
             else if ($typeSearch == 'NOT IN')
-                $query->whereNotIn('sau_lm_laws.entity_id', $entities);
+                $query->whereNotIn('sau_lm_laws.entity_id', $ids);
         }
 
         return $query;

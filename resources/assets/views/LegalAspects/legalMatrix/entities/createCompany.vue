@@ -3,7 +3,7 @@
     <header-module
       title="MATRIZ LEGAL"
       subtitle="CREAR ENTIDAD"
-      url="legalaspects-lm-entity"
+      url="legalaspects-lm-entity-company"
     />
 
     <div class="col-md">
@@ -11,7 +11,8 @@
         <b-card-body>
             <form-entity-component
                 url="/legalAspects/legalMatrix/entity"
-                method="POST"/>
+                method="POST"
+                :custom="true"/>
         </b-card-body>
       </b-card>
     </div>
@@ -23,7 +24,7 @@ import FormEntityComponent from '@/components/LegalAspects/LegalMatrix/Entity/Fo
 import Alerts from '@/utils/Alerts.js';
 
 export default {
-  name: 'legalaspects-lm-entity-create',
+  name: 'legalaspects-lm-entity-company-create',
   metaInfo: {
     title: 'Entidades - Crear'
   },

@@ -183,6 +183,7 @@ Route::middleware(['auth'])->group(function () {
         Route::post('actionPlanStates', 'General\MultiSelectRadioController@actionPlanStates');
         Route::post('actionPlanModules', 'Administrative\ActionPlans\ActionPlanController@actionPlanModules');
         Route::post('contractors', 'LegalAspects\Contracs\ContractLesseeController@multiselect');
+        Route::post('contractStandar', 'LegalAspects\Contracs\ContractLesseeController@multiselectStandard');
         Route::post('ctRoles', 'General\MultiSelectRadioController@ctRoles');
         Route::post('ctContractClassifications', 'General\MultiSelectRadioController@ctContractClassifications'); 
         Route::post('ctkindsRisks', 'General\MultiSelectRadioController@ctkindsRisks'); 
@@ -235,6 +236,8 @@ Route::middleware(['auth'])->group(function () {
           Route::post('riskAspects', 'LegalAspects\LegalMatrix\RiskAspectController@multiselect');
           Route::post('sstRisks', 'LegalAspects\LegalMatrix\SstRiskController@multiselect');
           Route::post('entities', 'LegalAspects\LegalMatrix\EntityController@multiselect');
+          Route::post('entitiesCompany', 'LegalAspects\LegalMatrix\EntityController@multiselectCompany');
+          Route::post('entitiesSystem', 'LegalAspects\LegalMatrix\EntityController@multiselectSystem');
           Route::post('lawsTypes', 'LegalAspects\LegalMatrix\LawTypeController@multiselect');
           Route::post('repealed', 'General\MultiSelectRadioController@lmRepealed');
           Route::post('articlesQualifications', 'LegalAspects\LegalMatrix\LawController@articlesQualificationsMultiselect');
@@ -449,6 +452,7 @@ Route::middleware(['auth'])->group(function () {
       Route::post('employeeContract/files', 'LegalAspects\Contracs\ContractEmployeeController@getFilesForm');
       Route::post('employeeContract/data', 'LegalAspects\Contracs\ContractEmployeeController@data');
       Route::ApiResource('employeeContract', 'LegalAspects\Contracs\ContractEmployeeController');
+      Route::post('listCheck/report', 'LegalAspects\Contracs\ListCheckReportController@data');
 
       Route::prefix('legalMatrix')->group(function () {
 

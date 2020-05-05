@@ -17,10 +17,10 @@ class EntityController extends Controller
     {
         parent::__construct();
         $this->middleware('auth');
-        $this->middleware("permission:entities_c, {$this->team}", ['only' => 'store']);
-        $this->middleware("permission:entities_r, {$this->team}", ['except' =>'multiselect']);
-        $this->middleware("permission:entities_u, {$this->team}", ['only' => 'update']);
-        $this->middleware("permission:entities_d, {$this->team}", ['only' => 'destroy']);
+        $this->middleware("permission:entities_c|entitiesCustom_c, {$this->team}", ['only' => 'store']);
+        $this->middleware("permission:entities_r|entitiesCustom_r, {$this->team}", ['except' =>'multiselect']);
+        $this->middleware("permission:entities_u|entitiesCustom_u, {$this->team}", ['only' => 'update']);
+        $this->middleware("permission:entities_d|entitiesCustom_d, {$this->team}", ['only' => 'destroy']);
     }
 
     /**
@@ -40,7 +40,10 @@ class EntityController extends Controller
     */
     public function data(Request $request)
     {
-        $entities = Entity::select('*');
+        if ($request->has('custom'))
+            $entities = Entity::company()->select('*');
+        else
+            $entities = Entity::system()->select('*');
 
         return Vuetable::of($entities)
                     ->make();
@@ -55,6 +58,9 @@ class EntityController extends Controller
     public function store(EntityRequest $request)
     {
         $entity = new Entity($request->all());
+
+        if ($request->custom == 'true')
+            $entity->company_id = $this->company;
         
         if(!$entity->save()){
             return $this->respondHttp500();
@@ -76,6 +82,7 @@ class EntityController extends Controller
         try
         {
             $entity = Entity::findOrFail($id);
+            $entity->custom = $entity->company_id ? true : false;
 
             return $this->respondHttp200([
                 'data' => $entity,
@@ -135,12 +142,13 @@ class EntityController extends Controller
      * @return Array
      */
 
-    public function multiselect(Request $request)
+    public function multiselect(Request $request, $scope = 'alls')
     {
         if($request->has('keyword'))
         {
             $keyword = "%{$request->keyword}%";
             $entities = Entity::select("id", "name")
+                ->$scope()
                 ->where(function ($query) use ($keyword) {
                     $query->orWhere('name', 'like', $keyword);
                 })
@@ -152,13 +160,24 @@ class EntityController extends Controller
         }
         else
         {
-            $entities = Entity::select(
-                'sau_lm_entities.id as id',
-                'sau_lm_entities.name as name'
-            )
-            ->pluck('id', 'name');
+            $entities = Entity::selectRaw(
+                "GROUP_CONCAT(sau_lm_entities.id) as ids,
+                 sau_lm_entities.name as name")
+            ->$scope()
+            ->groupBy('sau_lm_entities.name')
+            ->pluck('ids', 'name');
         
             return $this->multiSelectFormat($entities);
         }
+    }
+
+    public function multiselectSystem(Request $request)
+    {
+        return $this->multiselect($request, 'system');
+    }
+
+    public function multiselectCompany(Request $request)
+    {
+        return $this->multiselect($request, 'company');
     }
 }

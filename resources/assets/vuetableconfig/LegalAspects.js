@@ -928,6 +928,58 @@ export default [
         }
     },
     {
+        name: 'legalaspects-lm-entity-company',
+        fields: [
+            { name: 'sau_lm_entities.id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true },
+            { name: 'sau_lm_entities.name', data: 'name', title: 'Nombre', sortable: true, searchable: true, detail: false, key: false },
+            { name: '', data: 'controlls', title: 'Controles', sortable: false, searchable: false, detail: false, key: false },
+        ],
+        'controlls': [{
+            type: 'push',
+            buttons: [{
+                config: {
+                    color: 'outline-success',
+                    borderless: true,
+                    icon: 'ion ion-md-create',
+                    title: 'Editar'
+                },
+                data: {
+                    routePush: { name: 'legalaspects-lm-entity-company-edit' },
+                    id: 'id',
+                },
+                permission: 'entitiesCustom_u'
+            }, {
+                config: {
+                    color: 'outline-info',
+                    borderless: true,
+                    icon: 'ion ion-md-eye',
+                    title: 'Ver'
+                },
+                data: {
+                    routePush: { name: 'legalaspects-lm-entity-company-view' },
+                    id: 'id',
+                },
+                permission: 'entitiesCustom_r'
+            }]
+        },
+        {
+            type: 'base',
+            buttons: [{
+            name: 'delete',
+            data: {
+                action: '/legalAspects/legalMatrix/entity/',
+                id: 'id',
+                messageConfirmation: 'Esta seguro de borrar la entidad __name__'
+            },
+            permission: 'entitiesCustom_d'
+            }],
+        }],
+        configuration: {
+            urlData: '/legalAspects/legalMatrix/entity/data',
+            filterColumns: true,
+        }
+    },
+    {
         name: 'legalaspects-lm-laws',
         fields: [
             { name: 'sau_lm_laws.id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true },

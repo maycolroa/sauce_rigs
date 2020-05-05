@@ -2,7 +2,7 @@
   <div>
     <header-module
       title="MATRIZ LEGAL"
-      subtitle="VER SISTEMA"
+      subtitle="CREAR SISTEMA"
       url="legalaspects-lm-system-apply-company"
     />
 

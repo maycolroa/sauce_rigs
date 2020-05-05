@@ -481,6 +481,35 @@ class ContractLesseeController extends Controller
         }
     }
 
+    public function multiselectStandard(Request $request)
+    {
+        if($request->has('keyword'))
+        {
+            $keyword = "%{$request->keyword}%";
+            $items = SectionCategoryItems::selectRaw("
+                sau_ct_section_category_items.id as id,
+                sau_ct_section_category_items.item_name as item_name
+            ")
+            ->where(function ($query) use ($keyword) {
+                $query->orWhere('item_name', 'like', $keyword);
+            })
+            ->take(30)->pluck('id', 'item_name');
+
+            return $this->respondHttp200([
+                'options' => $this->multiSelectFormat($items)
+            ]);
+        }
+        else
+        {
+            $items = SectionCategoryItems::selectRaw("
+                sau_ct_section_category_items.id as id,
+                sau_ct_section_category_items.item_name as item_name
+            ")->pluck('id', 'item_name');
+        
+            return $this->multiSelectFormat($items);
+        }
+    }
+
     private function getIdRole($role)
     {
         $role = Role::defined()
