@@ -42,18 +42,4 @@ class Entity extends Model
         return $query->where('sau_lm_entities.company_id', Session::get('company_id'))
             ->orWhereNull('sau_lm_entities.company_id');
     }
-
-    public function scopeInEntity($query, $entity, $typeSearch = 'IN')
-    {
-        if (COUNT($entity) > 0)
-        {
-            if ($typeSearch == 'IN')
-                $query->whereIn('sau_lm_entities.id', $entity);
-
-            else if ($typeSearch == 'NOT IN')
-                $query->whereNotIn('sau_lm_entities.id', $entity);
-        }
-
-        return $query;
-    }
 }

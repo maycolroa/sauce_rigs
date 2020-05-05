@@ -160,12 +160,12 @@ class EntityController extends Controller
         }
         else
         {
-            $entities = Entity::select(
-                'sau_lm_entities.id as id',
-                'sau_lm_entities.name as name'
-            )
+            $entities = Entity::selectRaw(
+                "GROUP_CONCAT(sau_lm_entities.id) as ids,
+                 sau_lm_entities.name as name")
             ->$scope()
-            ->pluck('id', 'name');
+            ->groupBy('sau_lm_entities.name')
+            ->pluck('ids', 'name');
         
             return $this->multiSelectFormat($entities);
         }
