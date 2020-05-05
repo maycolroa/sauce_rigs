@@ -276,6 +276,8 @@ class ContractImport implements ToCollection, WithCalculatedFormulas
                         ->buttons([['text'=>'Ir a Sauce', 'url'=>url("/")]])
                         ->company($this->company)
                         ->send();
+
+                    $user->attachRole($this->getIdRole($contracts->type), $team);
                 }
 
                 $contracts->users()->sync($user);

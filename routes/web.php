@@ -236,6 +236,8 @@ Route::middleware(['auth'])->group(function () {
           Route::post('riskAspects', 'LegalAspects\LegalMatrix\RiskAspectController@multiselect');
           Route::post('sstRisks', 'LegalAspects\LegalMatrix\SstRiskController@multiselect');
           Route::post('entities', 'LegalAspects\LegalMatrix\EntityController@multiselect');
+          Route::post('entitiesCompany', 'LegalAspects\LegalMatrix\EntityController@multiselectCompany');
+          Route::post('entitiesSystem', 'LegalAspects\LegalMatrix\EntityController@multiselectSystem');
           Route::post('lawsTypes', 'LegalAspects\LegalMatrix\LawTypeController@multiselect');
           Route::post('repealed', 'General\MultiSelectRadioController@lmRepealed');
           Route::post('articlesQualifications', 'LegalAspects\LegalMatrix\LawController@articlesQualificationsMultiselect');

@@ -3,6 +3,7 @@
 namespace App\Http\Requests\LegalAspects\LegalMatrix;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Session;
 
 class EntityRequest extends FormRequest
 {
@@ -24,9 +25,12 @@ class EntityRequest extends FormRequest
     public function rules()
     {
         $id = $this->input('id');
+        $rules = [];
 
-        return [
-            'name' => 'required|string|unique:sau_lm_entities,name,'.$id.',id',
-        ];
+        if ($this->input('custom'))
+            $rules['name'] = 'required|unique:sau_lm_entities,name,'.$id.',id,company_id,'.Session::get('company_id');
+        else
+            $rules['name'] = 'required|unique:sau_lm_entities,name,'.$id.',id';
+        return $rules;
     }
 }

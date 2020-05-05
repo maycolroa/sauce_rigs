@@ -144,7 +144,7 @@ export default [
           label: 'Temas Ambientales'
         },
         {
-          url: '/selects/legalMatrix/entities',
+          url: '/selects/legalMatrix/entitiesSystem',
           key: 'entities',
           type: 'select',
           label: 'Entes'
@@ -197,7 +197,7 @@ export default [
           label: 'Temas Ambientales'
         },
         {
-          url: '/selects/legalMatrix/entities',
+          url: '/selects/legalMatrix/entitiesCompany',
           key: 'entities',
           type: 'select',
           label: 'Entes'

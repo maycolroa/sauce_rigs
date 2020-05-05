@@ -620,6 +620,22 @@
                         "display_name": "Matriz Legal/Mis Sistemas que Aplican - eliminar"
                     },
                     {
+                        "name": "entitiesCustom_c",
+                        "display_name": "Matriz Legal/Mis Entidades - crear"
+                    },
+                    {
+                        "name": "entitiesCustom_r",
+                        "display_name": "Matriz Legal/Mis Entidades - ver"
+                    },
+                    {
+                        "name": "entitiesCustom_u",
+                        "display_name": "Matriz Legal/Mis Entidades - editar"
+                    },
+                    {
+                        "name": "entitiesCustom_d",
+                        "display_name": "Matriz Legal/Mis Entidades - eliminar"
+                    },
+                    {
                         "name": "interestsCustom_c",
                         "display_name": "Matriz Legal/Mis Intereses - crear"
                     },
