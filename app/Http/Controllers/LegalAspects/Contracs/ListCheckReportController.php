@@ -6,6 +6,9 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 use App\Inform\LegalAspects\Contract\ListCheck\InformManagerListCheck;
+use App\Models\LegalAspects\Contracts\ActivityContract;
+use App\Models\LegalAspects\Contracts\ContractDocument;
+use App\Vuetable\Facades\Vuetable;
 
 class ListCheckReportController extends Controller
 {
@@ -45,5 +48,49 @@ class ListCheckReportController extends Controller
         $informManager = new InformManagerListCheck($this->company, $contracts, $classification, $itemStandar, $filtersType);
         
         return $this->respondHttp200($informManager->getInformData());
+    }
+
+    public function employeeDocument()
+    {
+        $documentsEmployee = ActivityContract::selectRaw("
+            sau_ct_activities_documents.id as id,
+            sau_ct_activities.name as actividad,
+            sau_ct_activities_documents.name as documento,
+            count(sau_ct_contract_employee_activities.employee_id) as empleado, 
+            sum(case when sau_ct_file_document_employee.employee_id is not null then 1 else 0 end ) AS cargado
+            ")
+            ->join('sau_ct_activities_documents', 'sau_ct_activities_documents.activity_id', 'sau_ct_activities.id')
+            ->join('sau_ct_contract_employee_activities', 'sau_ct_contract_employee_activities.activity_contract_id', 'sau_ct_activities.id')
+            ->leftJoin('sau_ct_file_document_employee', function ($join) 
+            {
+                $join->on("sau_ct_file_document_employee.employee_id", "sau_ct_contract_employee_activities.employee_id");
+                $join->on("sau_ct_file_document_employee.document_id", "sau_ct_activities_documents.id");
+            })
+            ->groupBy('id', 'actividad', 'documento')
+            ->orderBy('actividad');
+
+        return Vuetable::of($documentsEmployee)
+                    ->make();
+    }
+
+    public function globalDocument()
+    {
+        $documentsGlobal = ContractDocument::selectRaw("
+            sau_ct_contracts_documents.id as id,
+            sau_ct_contracts_documents.name as documento,
+            count(sau_ct_information_contract_lessee.id) as contratista,
+            sum(case when sau_ct_file_document_contract.contract_id is not null then 1 else 0 end ) as cargado
+            ")
+            ->join('sau_ct_information_contract_lessee', 'sau_ct_information_contract_lessee.company_id', 'sau_ct_contracts_documents.company_id')
+            ->leftJoin('sau_ct_file_document_contract', function ($join) 
+            {
+                $join->on("sau_ct_file_document_contract.contract_id", "sau_ct_information_contract_lessee.id");
+                $join->on("sau_ct_file_document_contract.document_id", "sau_ct_contracts_documents.id");
+            })
+            ->groupBy('id', 'documento')
+            ->orderBy('documento');
+
+        return Vuetable::of($documentsGlobal)
+                    ->make();
     }
 }

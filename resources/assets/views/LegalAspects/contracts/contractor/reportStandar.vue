@@ -44,6 +44,20 @@
                 </div>
             </b-row>
         </b-card>
+        <b-card border-variant="primary" title="Documentos cargados por empleados" class="mb-3 box-shadow-none">
+             <vue-table
+                v-if="auth.can['contracts_r']"
+                configName="legalaspects-contract-documents-employee-report"
+                @filtersUpdate="setFilters"
+                ></vue-table>
+        </b-card>
+        <b-card border-variant="primary" title="Documentos globales" class="mb-3 box-shadow-none">
+             <vue-table
+                v-if="auth.can['contracts_r']"
+                configName="legalaspects-contract-documents-global-report"
+                @filtersUpdate="setFilters"
+                ></vue-table>
+        </b-card>
     </div>
   </div>
 </template>
