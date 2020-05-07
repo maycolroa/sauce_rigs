@@ -453,6 +453,8 @@ Route::middleware(['auth'])->group(function () {
       Route::post('employeeContract/data', 'LegalAspects\Contracs\ContractEmployeeController@data');
       Route::ApiResource('employeeContract', 'LegalAspects\Contracs\ContractEmployeeController');
       Route::post('listCheck/report', 'LegalAspects\Contracs\ListCheckReportController@data');
+      Route::post('employeeDocument/report', 'LegalAspects\Contracs\ListCheckReportController@employeeDocument');
+      Route::post('globalDocument/report', 'LegalAspects\Contracs\ListCheckReportController@globalDocument');
 
       Route::prefix('legalMatrix')->group(function () {
 

@@ -529,6 +529,51 @@ export default [
         }
     },
     {
+        name: 'legalaspects-contract-documents-employee-report',
+        fields: [
+            { name: 'id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true },
+            { name: 'actividad', data: 'actividad', title: 'Actividad', sortable: true, searchable: false, detail: false, key: false },
+            { name: 'documento', data: 'documento', title: 'Documento', sortable: true, searchable: false, detail: false, key: false },
+            { name: 'empleado', data: 'empleado', title: '# Empleados que requieren el documento', sortable: true, searchable: false, detail: false, key: false },
+            { name: 'cargado', data: 'cargado', title: '# Documentos cargados', sortable: true, searchable: false, detail: false, key: false },
+        ],
+        'controlls': [{
+                type: 'push',
+                buttons: []
+            },
+            {
+                type: 'base',
+                buttons: [],
+            }],
+        configuration: {
+            urlData: '/legalAspects/employeeDocument/report',
+            filterColumns: false,
+            //configNameFilter: 'legalaspects-evaluations-report'
+        }
+    },
+    {
+        name: 'legalaspects-contract-documents-global-report',
+        fields: [
+            { name: 'id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true },
+            { name: 'documento', data: 'documento', title: 'Documento', sortable: true, searchable: false, detail: false, key: false },
+            { name: 'contratista', data: 'contratista', title: '# Contratistas', sortable: true, searchable: false, detail: false, key: false },
+            { name: 'cargado', data: 'cargado', title: '# Documentos cargados', sortable: true, searchable: false, detail: false, key: false },
+        ],
+        'controlls': [{
+                type: 'push',
+                buttons: []
+            },
+            {
+                type: 'base',
+                buttons: [],
+            }],
+        configuration: {
+            urlData: '/legalAspects/globalDocument/report',
+            filterColumns: false,
+            //configNameFilter: 'legalaspects-evaluations-report'
+        }
+    },
+    {
         name: 'legalaspects-contracts-trainings-virtual',
         fields: [
             { name: 'trainings.id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true },
