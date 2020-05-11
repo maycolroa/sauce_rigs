@@ -51,7 +51,7 @@
                 @filtersUpdate="setFilters"
                 ></vue-table>
         </b-card>
-        <b-card border-variant="primary" title="Documentos globales" class="mb-3 box-shadow-none">
+        <b-card v-if="exists" border-variant="primary" title="Documentos globales" class="mb-3 box-shadow-none">
              <vue-table
                 v-if="auth.can['contracts_r']"
                 configName="legalaspects-contract-documents-global-report"
@@ -83,6 +83,7 @@ export default {
         return {
             filters: [],
             isLoading: false,
+            exists: true,
             contracts: {
                 labels: [],
                 datasets: []
