@@ -532,10 +532,11 @@ export default [
         name: 'legalaspects-contract-documents-employee-report',
         fields: [
             { name: 'id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true },
-            { name: 'actividad', data: 'actividad', title: 'Actividad', sortable: true, searchable: false, detail: false, key: false },
-            { name: 'documento', data: 'documento', title: 'Documento', sortable: true, searchable: false, detail: false, key: false },
-            { name: 'empleado', data: 'empleado', title: '# Empleados que requieren el documento', sortable: true, searchable: false, detail: false, key: false },
-            { name: 'cargado', data: 'cargado', title: '# Documentos cargados', sortable: true, searchable: false, detail: false, key: false },
+            { name: 'contract', data: 'contract', title: 'Contratista', sortable: true, searchable: true, detail: false, key: false },
+            { name: 'employee', data: 'employee', title: 'Empleado', sortable: true, searchable: true, detail: false, key: false },
+            { name: 'activity', data: 'activity', title: 'Actividad', sortable: true, searchable: true, detail: false, key: false },
+            { name: 'document', data: 'document', title: 'Documento', sortable: true, searchable: true, detail: false, key: false },
+            { name: 'cargado', data: 'cargado', title: '¿Cargado?', sortable: true, searchable: false, detail: false, key: false },
         ],
         'controlls': [{
                 type: 'push',
@@ -555,8 +556,8 @@ export default [
         name: 'legalaspects-contract-documents-global-report',
         fields: [
             { name: 'id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true },
-            { name: 'documento', data: 'documento', title: 'Documento', sortable: true, searchable: false, detail: false, key: false },
-            { name: 'contratista', data: 'contratista', title: '# Contratistas', sortable: true, searchable: false, detail: false, key: false },
+            { name: 'documento', data: 'documento', title: 'Documento', sortable: true, searchable: true, detail: false, key: false },
+            { name: 'contratista', data: 'contratista', title: '# Contratistas', sortable: true, searchable: true, detail: false, key: false },
             { name: 'cargado', data: 'cargado', title: '# Documentos cargados', sortable: true, searchable: false, detail: false, key: false },
         ],
         'controlls': [{
