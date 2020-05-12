@@ -9,10 +9,12 @@ use App\Inform\LegalAspects\Contract\ListCheck\InformManagerListCheck;
 use App\Models\LegalAspects\Contracts\ActivityContract;
 use App\Models\LegalAspects\Contracts\ContractDocument;
 use App\Models\LegalAspects\Contracts\ContractLesseeInformation;
+use App\Traits\Filtertrait;
 use App\Vuetable\Facades\Vuetable;
 
 class ListCheckReportController extends Controller
 {
+    use Filtertrait;
     /**
      * creates and instance and middlewares are checked
      */
@@ -51,7 +53,7 @@ class ListCheckReportController extends Controller
         return $this->respondHttp200($informManager->getInformData());
     }
 
-    public function employeeDocument()
+    public function employeeDocument(Request $request)
     {
         $documentsEmployee = ContractLesseeInformation::selectRaw("
                 sau_ct_information_contract_lessee.id AS id,
@@ -71,36 +73,53 @@ class ListCheckReportController extends Controller
                 $join->on("sau_ct_file_document_employee.document_id", "sau_ct_activities_documents.id");
             })
             ->orderBy('contract');
+            
+        $url = "/legalaspects/report/contracts";
+
+        $filters = COUNT($request->get('filters')) > 0 ? $request->get('filters') : $this->filterDefaultValues($this->user->id, $url);
+
+        if (COUNT($filters) > 0)
+        {
+            $documentsEmployee->inContracts($this->getValuesForMultiselect($filters["contracts"]),$filters['filtersType']['contracts']);
+            $documentsEmployee->inClassification($this->getValuesForMultiselect($filters["classification"]),$filters['filtersType']['classification']);
+        }
 
         return Vuetable::of($documentsEmployee)
                     ->make();
     }
 
-    public function globalDocument()
+    public function globalDocument(Request $request)
     {
-        $exist;
-
-        $documentsGlobal = ContractDocument::selectRaw("
+        $documentsGlobal = ContractLesseeInformation::selectRaw("
             sau_ct_contracts_documents.id as id,
             sau_ct_contracts_documents.name as documento,
-            count(sau_ct_information_contract_lessee.id) as contratista,
-            sum(case when sau_ct_file_document_contract.contract_id is not null then 1 else 0 end ) as cargado
+            sau_ct_information_contract_lessee.social_reason AS contratista,
+            case when sau_ct_file_document_contract.contract_id is not null then 'SI' else 'NO' end as cargado
             ")
-            ->join('sau_ct_information_contract_lessee', 'sau_ct_information_contract_lessee.company_id', 'sau_ct_contracts_documents.company_id')
+            ->join('sau_ct_contracts_documents', 'sau_ct_information_contract_lessee.company_id', 'sau_ct_contracts_documents.company_id')
             ->leftJoin('sau_ct_file_document_contract', function ($join) 
             {
                 $join->on("sau_ct_file_document_contract.contract_id", "sau_ct_information_contract_lessee.id");
                 $join->on("sau_ct_file_document_contract.document_id", "sau_ct_contracts_documents.id");
             })
-            ->groupBy('id', 'documento')
-            ->orderBy('documento');
+            ->orderBy('documento');            
 
             if($documentsGlobal)
                 $exist = true;            
             else
                 $exist = false;
 
+        $url = "/legalaspects/report/contracts";
+
+        $filters = COUNT($request->get('filters')) > 0 ? $request->get('filters') : $this->filterDefaultValues($this->user->id, $url);
+
+        if (COUNT($filters) > 0)
+        {
+            $documentsGlobal->inContracts($this->getValuesForMultiselect($filters["contracts"]),$filters['filtersType']['contracts']);
+            $documentsGlobal->inClassification($this->getValuesForMultiselect($filters["classification"]),$filters['filtersType']['classification']);
+        }
+
         return Vuetable::of($documentsGlobal)
                     ->make();
     }
-}
+}                        

@@ -158,6 +158,30 @@
                 </router-link>
       </b-col>
 
+      <b-col cols="3" class="col-item" v-if="auth.can['entitiesCustom_r']">
+                <router-link :to="{name:'legalaspects-lm-entity-company'}" class="text-dark cursor-pointer item-app-navbar">
+                    <div class="my-2 mx-2" ref="custom_entity" @mouseover="changeClassImage('custom_entity', 'custom_entity_hover')">
+                        <img class="ui-w-80" src="/images/Sauce-ML Ico Admin entidades.png" alt="" >
+
+                        <div class="font-weight-bold pt-1">
+                          Administrar mis entidades 
+                        </div>
+            <small class="text-muted">Administrar mis entidades</small>
+                    </div>
+                    <div class="my-2 mx-2 imgHidden" ref="custom_entity_hover" @mouseleave="changeClassImage('custom_entity_hover', 'custom_entity')">
+                        <img class="ui-w-80" src="/images/Sauce-ML Ico Admin entidades over.png" alt="">
+
+                        <div class="font-weight-bold pt-1">
+                          Administrar mis entidades 
+                        </div>
+            <small class="text-muted">Administrar mis entidades</small>
+            <div style="padding-top: 10px;">
+              <hr class="border-divider mt-0 mb-4">
+            </div>
+                    </div>
+                </router-link>
+      </b-col>
+
 			<b-col cols="3" class="col-item" v-if="auth.can['risksAspects_r']">
                 <router-link :to="{name:'legalaspects-lm-riskaspect'}" class="text-dark cursor-pointer item-app-navbar">
                     <div class="my-2 mx-2" ref="riskaspect" @mouseover="changeClassImage('riskaspect', 'riskaspect_hover')">
@@ -250,30 +274,6 @@
 						<div style="padding-top: 10px;">
 							<hr class="border-divider mt-0 mb-4">
 						</div>
-                    </div>
-                </router-link>
-      </b-col>
-
-      <b-col cols="3" class="col-item" v-if="auth.can['entitiesCustom_r']">
-                <router-link :to="{name:'legalaspects-lm-entity-company'}" class="text-dark cursor-pointer item-app-navbar">
-                    <div class="my-2 mx-2" ref="custom_entity" @mouseover="changeClassImage('custom_entity', 'custom_entity_hover')">
-                        <img class="ui-w-80" src="/images/Sauce-ML Ico Admin entidades.png" alt="" >
-
-                        <div class="font-weight-bold pt-1">
-                          Administrar mis entidades 
-                        </div>
-            <small class="text-muted">Administrar mis entidades</small>
-                    </div>
-                    <div class="my-2 mx-2 imgHidden" ref="custom_entity_hover" @mouseleave="changeClassImage('custom_entity_hover', 'custom_entity')">
-                        <img class="ui-w-80" src="/images/Sauce-ML Ico Admin entidades over.png" alt="">
-
-                        <div class="font-weight-bold pt-1">
-                          Administrar mis entidades 
-                        </div>
-            <small class="text-muted">Administrar mis entidades</small>
-            <div style="padding-top: 10px;">
-              <hr class="border-divider mt-0 mb-4">
-            </div>
                     </div>
                 </router-link>
       </b-col>
