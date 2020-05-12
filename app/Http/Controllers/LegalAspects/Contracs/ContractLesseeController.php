@@ -1037,17 +1037,13 @@ class ContractLesseeController extends Controller
       }
     }
 
-    /*public function saveAlerts(Request $request)
+    public function saveAlerts(Request $request)
     {
         \Log::info($request);
     }
 
     public function getAlerts()
     {
-        $alerts = ConfigurationsCompany::where('key', 'days_alert_without_activity')->get();
-
-        return $this->respondHttp200([
-            'data' => $alerts
-        ]);
-    }*/
+        
+    }
 }

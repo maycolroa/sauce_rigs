@@ -72,7 +72,7 @@ class ListCheckReportController extends Controller
                 $join->on("sau_ct_file_document_employee.employee_id", "sau_ct_contract_employee_activities.employee_id");
                 $join->on("sau_ct_file_document_employee.document_id", "sau_ct_activities_documents.id");
             })
-            ->orderBy('contract');
+            /*->orderBy('contract')*/;
             
         $url = "/legalaspects/report/contracts";
 
@@ -102,7 +102,7 @@ class ListCheckReportController extends Controller
                 $join->on("sau_ct_file_document_contract.contract_id", "sau_ct_information_contract_lessee.id");
                 $join->on("sau_ct_file_document_contract.document_id", "sau_ct_contracts_documents.id");
             })
-            ->orderBy('documento');            
+            /*->orderBy('documento')*/;            
 
             if($documentsGlobal)
                 $exist = true;            
