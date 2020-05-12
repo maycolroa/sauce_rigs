@@ -46,16 +46,16 @@
         </b-card>
         <b-card border-variant="primary" title="Documentos cargados por empleados" class="mb-3 box-shadow-none">
              <vue-table
-                v-if="auth.can['contracts_r']"
                 configName="legalaspects-contract-documents-employee-report"
-                @filtersUpdate="setFilters"
+                :params="{filters}"
+                ref="documentEmployee"
                 ></vue-table>
         </b-card>
         <b-card v-if="exists" border-variant="primary" title="Documentos globales" class="mb-3 box-shadow-none">
              <vue-table
-                v-if="auth.can['contracts_r']"
                 configName="legalaspects-contract-documents-global-report"
-                @filtersUpdate="setFilters"
+                :params="{filters}"
+                ref="documentGlobal"
                 ></vue-table>
         </b-card>
     </div>
@@ -100,17 +100,14 @@ export default {
     watch: {
         filters: {
             handler(val){
+                this.$refs.documentEmployee.refresh()
+                this.$refs.documentGlobal.refresh()
                 this.fetch()
             },
             deep: true
         }
     },
     methods: {
-        setFilters(value)
-        { 
-            this.filters = value
-            this.fetch()
-        },
         fetch()
         {
             if (!this.isLoading)

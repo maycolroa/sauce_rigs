@@ -10,14 +10,17 @@
       <b-card no-body>
         <b-card-header class="with-elements">
           <div class="card-title-elements" v-if="auth.can['contracts_c']"> 
-            <b-btn :to="{name:'legalaspects-contractor-create'}" variant="primary">Crear contratista o arrendatario</b-btn>
+            <b-btn :to="{name:'legalaspects-contractor-create'}" variant="primary">Crear</b-btn>
           </div>
           <div class="card-title-elements" v-if="auth.can['contracts_c']"> 
-            <b-btn :to="{name:'legalaspects-contractor-list-check-validation'}" variant="primary">Configurar Lista de Chequeo</b-btn>
+            <b-btn variant="primary" :to="{name:'legalaspects-contractor-list-check-validation'}" v-b-tooltip.top title="Configurar Lista de Chequeo"><i class="ion ion-ios-list-box"></i></b-btn>
           </div>
           <div class="card-title-elements" v-if="auth.can['contracts_c']"> 
-            <b-btn :to="{name:'legalaspects-contracts-documents'}" variant="primary">Configurar Documentos a solicitar</b-btn>
+            <b-btn variant="primary" :to="{name:'legalaspects-contracts-documents'}" v-b-tooltip.top title="Configurar Documentos a solicitar"><i class="ion ion-md-document"></i></b-btn>
           </div>
+          <!--<div class="card-title-elements" v-if="auth.can['contracts_c']"> 
+            <b-btn variant="primary" :to="{name:'legalaspects-contracts-alerts'}" v-b-tooltip.top title="Configurar Alertas"><i class="far fa-bell"></i></b-btn>
+          </div>-->
           <div class="card-title-elements" v-if="auth.can['contracts_c']">
             <b-btn variant="primary" href="/templates/contractimport" target="blank" v-b-tooltip.top title="Generar Plantilla"><i class="fas fa-file-alt"></i></b-btn>
           </div>

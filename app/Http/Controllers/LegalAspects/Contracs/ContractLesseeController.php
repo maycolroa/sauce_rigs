@@ -31,6 +31,7 @@ use App\Traits\Filtertrait;
 use App\Facades\Mail\Facades\NotificationMail;
 use App\Exports\LegalAspects\Contracts\Contractor\ContractsImportTemplate;
 use App\Jobs\LegalAspects\Contracts\Contractor\ContractImportJob;
+use App\Facades\ConfigurationsCompany\Facades\ConfigurationsCompany;
 use Carbon\Carbon;
 use Maatwebsite\Excel\Facades\Excel;
 use Validator;
@@ -1035,4 +1036,18 @@ class ContractLesseeController extends Controller
         return $this->respondHttp500();
       }
     }
+
+    /*public function saveAlerts(Request $request)
+    {
+        \Log::info($request);
+    }
+
+    public function getAlerts()
+    {
+        $alerts = ConfigurationsCompany::where('key', 'days_alert_without_activity')->get();
+
+        return $this->respondHttp200([
+            'data' => $alerts
+        ]);
+    }*/
 }

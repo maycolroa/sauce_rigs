@@ -78,10 +78,10 @@ class InformManagerListCheck
     {
         $contracts = ContractLesseeInformation::selectRaw("
             CASE
-                WHEN total_p_c BETWEEN 0 AND 35 THEN '0% - 35%'
-                WHEN total_p_c BETWEEN 36 AND 70 THEN '36% - 70%'
-                WHEN total_p_c > 71 THEN '71% - 100%'
-                ELSE '0% - 35%' END AS label,
+                WHEN total_p_c BETWEEN 0 AND 60 THEN 'Crítico < 60%'
+                WHEN total_p_c BETWEEN 61 AND 85 THEN 'Moderadamente Aceptable 60% - 85%'
+                WHEN total_p_c > 85 THEN 'Aceptable > 85%'
+                ELSE 'Crítico < 60%' END AS label,
             CASE
                 WHEN total_p_c BETWEEN 0 AND 35 THEN 1
                 WHEN total_p_c BETWEEN 36 AND 70 THEN 2
