@@ -416,8 +416,6 @@ Route::middleware(['auth'])->group(function () {
       Route::ApiResource('contracts', 'LegalAspects\Contracs\ContractLesseeController');
       Route::post('contracts/saveDocuments', 'LegalAspects\Contracs\ContractLesseeController@saveDocuments');
       Route::post('contracts/getDocuments', 'LegalAspects\Contracs\ContractLesseeController@getDocuments');
-      Route::post('contracts/getAlerts', 'LegalAspects\Contracs\ContractLesseeController@getAlerts');
-      Route::post('contracts/saveAlerts', 'LegalAspects\Contracs\ContractLesseeController@saveAlerts');
 
       Route::post('fileUpload/data', 'LegalAspects\Contracs\FileUploadController@data');
       Route::get('fileUpload/download/{fileUpload}', 'LegalAspects\Contracs\FileUploadController@download');

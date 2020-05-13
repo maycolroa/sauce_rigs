@@ -18,9 +18,6 @@
           <div class="card-title-elements" v-if="auth.can['contracts_c']"> 
             <b-btn variant="primary" :to="{name:'legalaspects-contracts-documents'}" v-b-tooltip.top title="Configurar Documentos a solicitar"><i class="ion ion-md-document"></i></b-btn>
           </div>
-          <!--<div class="card-title-elements" v-if="auth.can['contracts_c']"> 
-            <b-btn variant="primary" :to="{name:'legalaspects-contracts-alerts'}" v-b-tooltip.top title="Configurar Alertas"><i class="far fa-bell"></i></b-btn>
-          </div>-->
           <div class="card-title-elements" v-if="auth.can['contracts_c']">
             <b-btn variant="primary" href="/templates/contractimport" target="blank" v-b-tooltip.top title="Generar Plantilla"><i class="fas fa-file-alt"></i></b-btn>
           </div>

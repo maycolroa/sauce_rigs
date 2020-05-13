@@ -85,14 +85,6 @@ export default [
 					import('@/views/LegalAspects/contracts/contractor/reportStandar')
 				}
 			]),
-			...middleware({ 'check-permission': 'contracts_c' }, [
-				{
-					name: 'legalaspects-contracts-alerts',
-					path: 'contracts/alerts',
-					component: () =>
-					import('@/views/LegalAspects/contracts/contractor/alerts')
-				}
-			]),
 			...middleware({ 'check-permission': 'contracts_typesQualification_r' }, [
 				{
 					name: 'legalaspects-typesrating',

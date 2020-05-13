@@ -45,7 +45,8 @@ class ConfigurationsCompany
             'location_level_form' => 'Nivel localización en formulario',
             'days_alert_expiration_date_action_plan' => 'Días de alerta por fecha de vencimiento cercana para los planes de acción',
             'days_alert_expiration_date_contract_file_upload' => 'Días de alerta por fecha de vencimiento cercana para los archivos cargados en el módulo de contratistas',
-            'show_action_plans' => 'Mostrar planes de acción en el formulario de matriz de peligros'
+            'show_action_plans' => 'Mostrar planes de acción en el formulario de matriz de peligros',
+            'days_alert_without_activity' => 'Dias de alerta para contratistas sin actividad'
         ];
     }
 
