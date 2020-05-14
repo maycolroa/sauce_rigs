@@ -8,9 +8,13 @@ use App\Facades\Mail\Facades\NotificationMail;
 use App\Models\LegalAspects\Contracts\ContractEmployee;
 use App\Models\Administrative\Users\User;
 use App\Models\LegalAspects\Contracts\ContractLesseeInformation;
+use App\Models\LegalAspects\Contracts\SectionCategoryItems;
 use App\Models\System\Licenses\License;
+use App\Models\General\Company;
 use App\Traits\ContractTrait;
 use Carbon\Carbon;
+use DB;
+
 
 class DaysAlertsWithoutActivityContractors extends Command
 {
@@ -58,7 +62,11 @@ class DaysAlertsWithoutActivityContractors extends Command
 
         foreach ($companies as $key => $company)
         {
+            $companyContract = Company::find($company);
+
             $configDay = $this->getConfig($company);
+
+            $responsibles = collect([]);
 
             $listAlerts = collect([]);
 
@@ -251,9 +259,155 @@ class DaysAlertsWithoutActivityContractors extends Command
                 }
             }
 
-            /**CONTRATISTAS CON ARCHIVOS GLOBALES PENDIENTES*/
+            /**FIN CONTRATISTAS CON ARCHIVOS GLOBALES PENDIENTES*/
 
-            //\Log::info($listAlerts);
+            /**CONTRATISTAS CON STANDARES PENDIENTES POR CALIFICAR*/
+
+            $standardApply = ContractLesseeInformation::selectRaw("
+                sau_ct_information_contract_lessee.id AS contratista,
+                CASE 
+                    WHEN (classification = 'UPA' AND number_workers <= 10 AND risk_class IN ('Clase de riesgo I', 'Clase de riesgo II', 'Clase de riesgo III')) THEN '3 Estándares'
+                    WHEN (classification = 'Empresa' AND number_workers <= 10 AND risk_class IN ('Clase de riesgo I', 'Clase de riesgo II', 'Clase de riesgo III')) THEN '7 Estándares'
+                    WHEN (classification = 'Empresa' AND number_workers BETWEEN 11 AND 50 AND risk_class IN ('Clase de riesgo I', 'Clase de riesgo II', 'Clase de riesgo III')) THEN '21 Estándares'
+                    WHEN (
+                        (classification = 'UPA' AND number_workers <= 10 AND risk_class IN ('Clase de riesgo IV', 'Clase de riesgo V')) OR
+                        (classification = 'Empresa' AND number_workers BETWEEN 11 AND 50 AND risk_class IN ('Clase de riesgo IV', 'Clase de riesgo V')) OR 
+                        (classification = 'Empresa' AND number_workers > 50) 
+                        )THEN '60 Estándares'
+                ELSE NULL END AS standard_names,
+                sau_ct_information_contract_lessee.created_at AS created_at
+                ")
+            ->withoutGlobalScopes()
+            ->where('sau_ct_information_contract_lessee.company_id', $company)        
+            ->havingRaw('standard_names IS NOT NULL')
+            ->orderBy('contratista');
+
+            $standard = SectionCategoryItems::select(
+                'sau_ct_standard_classification.standard_name',
+                'sau_ct_section_category_items.id AS item_id')
+            ->join('sau_ct_items_standard', 'sau_ct_items_standard.item_id', 'sau_ct_section_category_items.id')
+            ->join('sau_ct_standard_classification', 'sau_ct_standard_classification.id', 'sau_ct_items_standard.standard_id');
+
+            $pendientStandard = DB::table(DB::raw("({$standardApply->toSql()}) AS t"))
+            ->selectRaw("
+                contratista,
+                SUM(CASE WHEN sau_ct_item_qualification_contract.qualification_id IS NULL THEN 1 ELSE 0 END) AS total_nc,
+                MAX(sau_ct_item_qualification_contract.updated_at) AS updated_at,
+                t.created_at
+            ")
+            ->join(DB::raw("({$standard->toSql()}) as t2"), function ($join) 
+            {
+                $join->on("t2.standard_name", "t.standard_names");
+            })
+            ->leftJoin('sau_ct_item_qualification_contract', function ($join) 
+            {
+                $join->on("sau_ct_item_qualification_contract.item_id", "t2.item_id");
+                $join->on("sau_ct_item_qualification_contract.contract_id", "t.contratista");
+            })
+            ->groupBy('contratista', 'standard_names')
+            ->mergeBindings($standardApply->getQuery())
+            ->mergeBindings($standard->getQuery())
+            ->get();
+
+            if ($pendientStandard->count() > 0)
+            {
+                $noStandard = $pendientStandard->filter(function($item, $key) {
+                    return $item->total_nc > '0';
+                });
+
+                foreach ($noStandard as $contract) 
+                {
+                    $auxstandard = $noStandard->where('updated_at', '<>', 'null')->max('updated_at');
+
+                    if ($auxstandard)
+                    {
+                        $datestandard = Carbon::createFromFormat('Y-m-d H:i:s', $auxstandard);
+
+                        if ($datestandard->diffInDays(Carbon::now()) >= $configDay)
+                        {
+                            if ($listAlerts->has($contract->contratista))
+                            {
+                                $standarPendient = $listAlerts->get($contract->contratista);
+                                $standarPendient->push('Estándares pendientes por calificar');
+                                $listAlerts->put($contract->contratista, $standarPendient);
+                            }
+                            else
+                                $listAlerts->put($contract->contratista, collect(['Estándares pendientes por calificar']));
+                        }
+                    }
+                    else
+                    {
+                        $datestandard = Carbon::createFromFormat('Y-m-d H:i:s', $contract->created_at);
+
+                        if ($datestandard && $datestandard->diffInDays(Carbon::now()) >= $configDay)
+                        {
+                            if ($listAlerts->has($contract->contratista))
+                            {
+                                $standarPendient = $listAlerts->get($contract->contratista);
+                                $standarPendient->push('Estándares pendientes por calificar');
+                                $listAlerts->put($contract->contratista, $standarPendient);
+                            }
+                            else
+                                $listAlerts->put($contract->contratista, collect(['Estándares pendientes por calificar']));
+                        }
+                    }
+                }
+            }
+
+            /**CONTRATISTAS CON STANDARES PENDIENTES POR CALIFICAR*/
+
+            /**AGRUPACION POR RESPONSABLE**/
+
+            foreach ($listAlerts as $keyContract => $alert)
+            {
+                $contractIter = ContractLesseeInformation::where('id', $keyContract);
+                $contractIter->company_scope = $company;
+                $contractIter = $contractIter->first();
+
+                $recipients = $contractIter->responsibles;
+
+
+
+                $recipients = $recipients->filter(function ($recipient, $index) use ($company) {
+                  return $recipient->can('contracts_receive_notifications', $company);
+                });
+
+                foreach ($recipients as $recipient)
+                {
+                    if (!$responsibles->has($recipient->email))
+                        $responsibles->put($recipient->email, collect([]));
+                }
+
+                foreach ($responsibles as $keyResponsible => $responsible)
+                {
+                    $iter = $responsibles->get($keyResponsible);
+                    $iter->push([
+                        'Contratista' => $contractIter->social_reason,
+                        'Actividades pendientes' => $alert->implode(", ")
+                    ]);
+                }
+            }
+
+            /** FIN AGRUPACION POR RESPONSABLE**/
+
+            /**ENVIO DE CORREO**/
+
+            foreach ($responsibles as $key => $data)
+            {
+                $recipient = new User(["email" => $key]); 
+
+                NotificationMail::
+                    subject('Sauce - Contratistas contratistas sin actividad')
+                    ->recipients($recipient)
+                    ->message("Para la empresa <b>$companyContract->name</b>, este es el listado de las contratistas sin actividad en los ùltimos <b>$configDay</b> dias")
+                    ->module('contracts')
+                    ->event('Tarea programada: DaysAlertsWithoutActivityContractors')
+                    ->table($data->toArray())
+                    ->company($company)
+                    ->send();
+            }
+
+            /**FIN ENVIODE CORREO**/
         }        
     }
 
