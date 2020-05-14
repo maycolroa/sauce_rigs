@@ -66,6 +66,9 @@ class DaysAlertsWithoutActivityContractors extends Command
 
             $configDay = $this->getConfig($company);
 
+            if (!$configDay)
+                continue;
+
             $responsibles = collect([]);
 
             $listAlerts = collect([]);
@@ -420,7 +423,7 @@ class DaysAlertsWithoutActivityContractors extends Command
             return ConfigurationsCompany::company($company_id)->findByKey($key);
             
         } catch (Exception $e) {
-            return 30;
+            return null;
         }
     }
 }
