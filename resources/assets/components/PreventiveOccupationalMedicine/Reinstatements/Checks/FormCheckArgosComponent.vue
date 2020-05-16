@@ -159,7 +159,7 @@
                 <vue-advanced-select v-show="showEmitterOrigin" :disabled="viewOnly" class="col-md-6" v-model="form.emitter_origin" :error="form.errorsFor('emitter_origin')" :multiple="false" :options="originEmitters" :hide-selected="false" name="emitter_origin" label="Entidad que Califica Origen" placeholder="Seleccione una opción">
                     </vue-advanced-select>
 
-                <vue-file-simple v-show="form.in_process_origin == 'NO' && form.process_origin_done == 'SI'" :help-text="form.old_process_origin_file ? `Para descargar el archivo actual, haga click <a href='/biologicalmonitoring/reinstatements/check/downloadOriginFile/${form.id}' target='blank'>aqui</a> `: null" :disabled="viewOnly" accept=".pdf" class="col-md-12" v-model="form.process_origin_file" label="Adjuntar PDF" name="process_origin_file" :error="form.errorsFor('process_origin_file')" placeholder="Seleccione un archivo"></vue-file-simple>
+                <vue-file-simple v-show="form.in_process_origin == 'NO' && form.process_origin_done == 'SI'" :help-text="form.old_process_origin_file ? `Para descargar el archivo actual, haga click <a href='/biologicalmonitoring/reinstatements/check/downloadOriginFile/${form.id}' target='blank'>aqui</a> `: null" :disabled="viewOnly" accept=".pdf" class="col-md-12" v-model="form.process_origin_file" label="Adjuntar PDF" name="process_origin_file" :error="form.errorsFor('process_origin_file')" placeholder="Seleccione un archivo" maxFileSize="20"></vue-file-simple>
                 
               </b-form-row>
             </div>

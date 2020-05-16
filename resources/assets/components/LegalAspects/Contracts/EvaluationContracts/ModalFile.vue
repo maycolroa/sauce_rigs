@@ -41,7 +41,7 @@
                                                 </div>
                                             </b-form-row>
                                             <b-form-row>
-                                                <vue-file-simple :disabled="viewOnly" :help-text="item.id ? `Para descargar el archivo actual, haga click <a href='/legalAspects/evaluationContract/downloadFile/${item.id}' target='blank'>aqui</a> ` : null" class="col-md-10 offset-md-1" v-model="item.file" label="Imagen (*.png, *.jpg, *.jpeg)" name="file" :error="form.errorsFor(`${prefixIndex}.${index}.file`)" placeholder="Seleccione una imagen"></vue-file-simple>
+                                                <vue-file-simple :disabled="viewOnly" :help-text="item.id ? `Para descargar el archivo actual, haga click <a href='/legalAspects/evaluationContract/downloadFile/${item.id}' target='blank'>aqui</a> ` : null" class="col-md-10 offset-md-1" v-model="item.file" label="Imagen (*.png, *.jpg, *.jpeg)" name="file" :error="form.errorsFor(`${prefixIndex}.${index}.file`)" placeholder="Seleccione una imagen" maxFileSize="10"></vue-file-simple>
                                             </b-form-row>
                                             <hr class="border-light container-m--x mt-0 mb-4">
                                         </div>
