@@ -43,7 +43,7 @@ export default {
     textBlock: {type: String},
     actionBlock: {type: String},
     helpText: {type: String},
-    maxFileSize: { type: Number, default: 20000000 },
+    maxFileSize: { type: Number, default: 0 },
   },
   watch:{
 
@@ -75,9 +75,9 @@ export default {
           return this.emitError(`Tipo de archivo inválido: La extensión del archivo debe ser ${this.accept}`)
       }
       
-      if (value.size > this.maxFileSize) 
+      if (this.maxFileSize > 0 && value.size > (this.maxFileSize * 1000000)) 
       {
-        return this.emitError(`Archivo muy pesado: El tamaño del archivo no puede superar ${this.maxFileSize/1000000}MB.`)
+        return this.emitError(`Archivo muy pesado: El tamaño del archivo no puede superar ${this.maxFileSize}MB.`)
       }
 
       this.$emit('input', value);

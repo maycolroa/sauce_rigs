@@ -153,4 +153,21 @@ class ContractLesseeInformation extends Model
 
         return $query;
     }
+
+    public function scopeByState($query, $state)
+    {
+        return $query->where('sau_ct_information_contract_lessee.active', $state);
+    }
+
+    /**
+     * filters only open/closed check
+     * @param  Illuminate\Database\Eloquent\Builder $query
+     * @param  Boleam $isActive
+     * @return Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeIsActive($query, $isActive = true)
+    {
+        $state = $isActive ? 'SI' : 'NO'; 
+        return $query->byState($state);
+    }
 }

@@ -9,7 +9,7 @@
         </center>
         
         <b-form-row>
-            <vue-file-simple :help-text="form.old ? `Para descargar la imagen actual, haga click <a href='${urlDownload}' target='blank'>aqui</a> `: null" class="col-md-12" @input="submit" v-model="form.image" label="Imagen (*.png, *.jpg, *.jpeg)" name="image" :error="form.errorsFor('image')" placeholder="Seleccione una imagen"></vue-file-simple>
+            <vue-file-simple :help-text="form.old ? `Para descargar la imagen actual, haga click <a href='${urlDownload}' target='blank'>aqui</a> `: null" class="col-md-12" @input="submit" v-model="form.image" label="Imagen (*.png, *.jpg, *.jpeg)" name="image" :error="form.errorsFor('image')" placeholder="Seleccione una imagen" maxFileSize="10"></vue-file-simple>
         </b-form-row>
         <b-row align-h="center">
             <b-col cols="2">

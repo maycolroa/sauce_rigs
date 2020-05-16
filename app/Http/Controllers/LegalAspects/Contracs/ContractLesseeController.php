@@ -1036,14 +1036,4 @@ class ContractLesseeController extends Controller
         return $this->respondHttp500();
       }
     }
-
-    public function saveAlerts(Request $request)
-    {
-        \Log::info($request);
-    }
-
-    public function getAlerts()
-    {
-        
-    }
 }
