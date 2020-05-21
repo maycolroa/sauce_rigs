@@ -6,12 +6,15 @@ use App\Models\Administrative\Users\User;
 use App\Models\Administrative\Users\GeneratePasswordUser;
 use App\Facades\Mail\Facades\NotificationMail;
 use Session;
+use Hash;
 
 trait UserTrait
 {
     public function createUser($request)
     {
         $user = new User($request->all());
+        $user->api_token = Hash::make($user->document . str_random(10));
+        
         $generatePasswordUser = new GeneratePasswordUser();
 
         if(!$user->save()){
