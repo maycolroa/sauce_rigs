@@ -61,7 +61,7 @@ class ListCheckReportController extends Controller
                 sau_ct_contract_employees.name AS employee,
                 sau_ct_activities.name As activity,
                 sau_ct_activities_documents.name AS document,
-                cases when sau_ct_file_document_employee.employee_id is not null then 'SI' else 'NO' end as cargado
+                case when sau_ct_file_document_employee.employee_id is not null then 'SI' else 'NO' end as cargado
             ")
             ->join('sau_ct_contract_employees', 'sau_ct_contract_employees.contract_id', 'sau_ct_information_contract_lessee.id')
             ->join('sau_ct_contract_employee_activities', 'sau_ct_contract_employee_activities.employee_id', 'sau_ct_contract_employees.id')

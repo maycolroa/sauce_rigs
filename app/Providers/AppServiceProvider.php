@@ -6,6 +6,10 @@ use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\View;
 use App\Services\ConfigurationServices;
+use App\Services\ConstantService;
+use App\Services\PermissionService;
+use App\Services\ViewService;
+use App\Managers\Administrative\KeywordManager;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -17,6 +21,7 @@ class AppServiceProvider extends ServiceProvider
     public function boot()
     {
         Schema::defaultStringLength(191);
+        View::share('viewService', new ViewService());
     }
 
     /**
@@ -32,6 +37,19 @@ class AppServiceProvider extends ServiceProvider
         $this->app->singleton('configuration_service', function () {
             return new ConfigurationServices();
         });
+
+        $this->app->singleton('constant_service', function () {
+            return new ConstantService();
+        });
+
+        $this->app->singleton('permission_service', function () {
+            return new PermissionService();
+        });
+
+        $this->app->singleton('keyword_manager', function () {
+            return new KeywordManager();
+        });
+
 
     }
 }

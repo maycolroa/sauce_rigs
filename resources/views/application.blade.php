@@ -34,9 +34,9 @@
     </div>
 
     <script>
-        var authGlobal = @json(['can' => Auth::user()->getCan(), 'hasRole' => Auth::user()->getHasRole()]);
+        var authGlobal = @json(['can' => $viewService->getCan(), 'hasRole' => $viewService->getHasRole()]);
 
-        var keywords = @json(Auth::user()->getKeywords());
+        var keywords = @json($viewService->getKeywords());
 
         var locationForm = @json(Auth::user()->getLocationForm());
     </script>

@@ -31,7 +31,7 @@
           <b-form-row>            
             <vue-ajax-advanced-select :disabled="viewOnly" class="col-md-6" v-model="form.activity_id" :error="form.errorsFor('activity_id')" :selected-object="form.multiselect_activity" :multiple="true" :allowEmpty="true" name="activity_id" label="Actividades" placeholder="Seleccione las actividades relacionadas" :url="activitiesUrl">
             </vue-ajax-advanced-select>
-            <vue-file-simple :disabled="viewOnly" :help-text="form.id ? `Para descargar el archivo actual, haga click <a href='/legalAspects/trainingContract/download/${form.id}' target='blank'>aqui</a> ` : null" class="col-md-6" v-model="form.file" label="Archivo" name="file" placeholder="Seleccione un archivo" :error="form.errorsFor(`file`)" maxFileSize="20"/>
+            <vue-file-simple :disabled="viewOnly" :help-text="form.id ? `Para descargar el archivo actual, haga click <a href='/legalAspects/trainingContract/download/${form.id}' target='blank'>aqui</a> ` : null" class="col-md-6" v-model="form.file" label="Archivo" name="file" placeholder="Seleccione un archivo" :error="form.errorsFor(`file`)" :maxFileSize="20"/>
           </b-form-row>
         </b-card-body>
       </b-collapse>

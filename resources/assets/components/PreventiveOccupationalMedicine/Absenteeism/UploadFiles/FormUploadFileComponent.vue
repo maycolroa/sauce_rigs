@@ -2,7 +2,7 @@
 	<b-form :action="url" @submit.prevent="submit" autocomplete="off">
 		<b-form-row>
 			<vue-input :disabled="viewOnly" class="col-md-6" v-model="form.name" label="Nombre" type="text" name="name" :error="form.errorsFor('name')" placeholder="Nombre"></vue-input>
-			<vue-file-simple :help-text="form.old_file ? `Para descargar el archivo actual, haga click <a href='/biologicalmonitoring/absenteeism/fileUpload/download/${form.id}' target='blank'>aqui</a> `: null" :disabled="viewOnly" class="col-md-6" v-model="form.file" label="Archivo (*.xls | *.xlsx | *.zip)" name="file" :error="form.errorsFor('file')" placeholder="Seleccione un archivo" maxFileSize="20"></vue-file-simple>
+			<vue-file-simple :help-text="form.old_file ? `Para descargar el archivo actual, haga click <a href='/biologicalmonitoring/absenteeism/fileUpload/download/${form.id}' target='blank'>aqui</a> `: null" :disabled="viewOnly" class="col-md-6" v-model="form.file" label="Archivo (*.xls | *.xlsx | *.zip)" name="file" :error="form.errorsFor('file')" placeholder="Seleccione un archivo" :maxFileSize="20"></vue-file-simple>
 		</b-form-row>
 
 		<b-form-row>

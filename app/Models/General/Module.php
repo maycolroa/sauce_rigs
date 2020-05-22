@@ -14,6 +14,11 @@ class Module extends Model
     {
         return $this->belongsTo(Application::class);
     }
+    
+    public function permissions()
+    {
+        return $this->hasMany(Permission::class);
+    }
 
     public function logMails()
     {
