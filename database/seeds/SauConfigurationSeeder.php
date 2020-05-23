@@ -77,6 +77,11 @@ class SauConfigurationSeeder extends Seeder
                 'key' => 'reinc_select_emitter_origin',
                 'value' => '["ARL","EPS","AFP","JUNTA REGIONAL","JUNTA NACIONAL","Sin Información"]',
                 'observation' => 'Reincorporaciones - Entidad que Califica Origen'
+            ],
+            [
+                'key' => 'days_delete_files_temporal',
+                'value' => '10',
+                'observation' => 'Cantidad de días para borrar archivos temporales'
             ]
         ];
 

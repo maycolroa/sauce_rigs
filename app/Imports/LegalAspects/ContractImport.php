@@ -14,6 +14,7 @@ use App\Traits\ContractTrait;
 use App\Traits\UserTrait;
 use Maatwebsite\Excel\Concerns\ToCollection;
 use App\Facades\Configuration;
+use App\Models\General\Company;
 use App\Exports\LegalAspects\Contracts\Contractor\ContractsImportErrorExcel;
 use App\Facades\Mail\Facades\NotificationMail;
 use Maatwebsite\Excel\Facades\Excel;
@@ -274,7 +275,7 @@ class ContractImport implements ToCollection, WithCalculatedFormulas
                         ->recipients($user)
                         ->module('contracts')
                         ->buttons([['text'=>'Ir a Sauce', 'url'=>url("/")]])
-                        ->company($this->company)
+                        ->company($this->company_id)
                         ->send();
 
                     $user->attachRole($this->getIdRole($contracts->type), $team);

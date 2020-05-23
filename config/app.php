@@ -228,6 +228,8 @@ return [
         'StorageFile' => App\Facades\StorageFiles\StorageFile::class,
         'CheckManager' => App\Facades\Check\CheckManager::class,
         'PDF' => Barryvdh\DomPDF\Facade::class,
+        'Constant' => App\Facades\General\Constant::class,
+        'PermissionService' => App\Facades\General\PermissionService::class,
     ],
 
     /**

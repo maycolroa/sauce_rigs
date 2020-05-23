@@ -6,7 +6,7 @@
     </b-form-row>
 
     <b-form-row>
-        <vue-file-simple :help-text="form.old_file ? `Para descargar el archivo actual, haga click <a href='/biologicalmonitoring/absenteeism/talendUpload/download/${form.id}' target='blank'>aqui</a> `: null" :disabled="viewOnly" accept=".zip" class="col-md-12" v-model="form.file" label="Archivo (*.zip)" name="file" :error="form.errorsFor('file')" placeholder="Seleccione un archivo" maxFileSize="50"></vue-file-simple>
+        <vue-file-simple :help-text="form.old_file ? `Para descargar el archivo actual, haga click <a href='/biologicalmonitoring/absenteeism/talendUpload/download/${form.id}' target='blank'>aqui</a> `: null" :disabled="viewOnly" accept=".zip" class="col-md-12" v-model="form.file" label="Archivo (*.zip)" name="file" :error="form.errorsFor('file')" placeholder="Seleccione un archivo" :maxFileSize="50"></vue-file-simple>
     </b-form-row>
 
     <b-form-row>

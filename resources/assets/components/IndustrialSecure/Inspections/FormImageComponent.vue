@@ -9,7 +9,7 @@
                 </center>
         
         <b-form-row> 
-            <vue-file-simple v-if="!viewOnly" class="col-md-12" @input="submit" v-model="form.image" name="image" :error="form.errorsFor('image')" placeholder="Seleccione una imagen" maxFileSize="10"></vue-file-simple>
+            <vue-file-simple v-if="!viewOnly" class="col-md-12" @input="submit" v-model="form.image" name="image" :error="form.errorsFor('image')" placeholder="Seleccione una imagen" :maxFileSize="10"></vue-file-simple>
             <!--<vue-file-simple :help-text="form.old ? `Para descargar la imagen actual, haga click <a href='conditionsReports/image/download' target='blank'>aqui</a> `: null" :disabled="!auth.can['logos_c']" class="col-md-12" @input="submit" accept=".png" v-model="form.image" label="Imagen (*.png, *.jpg, *.jpeg)" name="image" :error="form.errorsFor('image')" placeholder="Seleccione una imagen"></vue-file-simple>-->
         </b-form-row>
         <b-row align-h="center">

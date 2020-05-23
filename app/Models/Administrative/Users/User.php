@@ -12,6 +12,7 @@ use App\Models\General\Team;
 use App\Models\General\Permission;
 use App\Models\General\Keyword;
 use App\Models\Administrative\Roles\Role;
+use Constant;
 use Session;
 use DB;
 
@@ -239,5 +240,10 @@ class User extends Authenticatable
         $conf = $this->getLocationFormConfModule($company);
 
         return $conf;
+    }
+
+    public function isSuperAdmin($team)
+    {
+        return $this->hasRole(Constant::getConstant('ROLE_SUPER'), $team);
     }
 }

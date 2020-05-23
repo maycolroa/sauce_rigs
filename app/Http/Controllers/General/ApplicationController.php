@@ -17,6 +17,7 @@ use App\Models\Administrative\Employees\EmployeeEPS;
 use App\Models\Administrative\Employees\EmployeeAFP;
 use App\Models\Administrative\Employees\EmployeeARL;
 use App\Vuetable\VuetableColumnManager;
+use App\Facades\General\PermissionService;
 
 class ApplicationController extends Controller
 {
@@ -40,7 +41,7 @@ class ApplicationController extends Controller
      */
     public function appsWhithModules()
     {
-      return $this->getAppsModules();
+      return PermissionService::getModulesFormatVue(Auth::user(), $this->company);
     }
 
     /**
@@ -50,29 +51,12 @@ class ApplicationController extends Controller
      */
     public function getCompanies()
     {
-      if(Auth::check())
+      if (Auth::check())
       {
-        $companies = Auth::user()->companies()->withoutGlobalScopes()->get();
-        $data = [];
-
-        foreach ($companies as $val)
-        {
-            $license = DB::table('sau_licenses')
-                    ->whereRaw('company_id = ? 
-                                AND ? BETWEEN started_at AND ended_at', 
-                                [$val->pivot->company_id, date('Y-m-d')])
-                    ->first();
-          
-            if ($license)
-            {
-              $data[$val->pivot->company_id] = [
-                  "id"=>$val->pivot->company_id, 
-                  "name"=>ucwords(strtolower($val->name))
-                ];
-            }
-        }
-        
-        return ["selected"=>Session::get('company_id'), "data"=>$data];
+        return collect([
+          "selected" => Session::get('company_id'), 
+          "data"     => PermissionService::getCompaniesActive(Auth::user())
+        ]);
       }
 
       return $this->respondHttp401();

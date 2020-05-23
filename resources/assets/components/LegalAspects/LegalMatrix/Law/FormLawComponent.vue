@@ -49,9 +49,9 @@
             <vue-advanced-select :disabled="viewOnly" class="col-md-6" v-model="form.repealed" :multiple="false" :options="repealed" :hide-selected="false" name="repealed" :error="form.errorsFor('repealed')" label="Derogada" placeholder="Seleccione una opciòn">
               </vue-advanced-select>
             <template v-if="isEdit || viewOnly">
-						  <vue-file-simple :help-text="form.old_file ? `Para descargar el archivo actual, haga click <a href='/legalAspects/legalMatrix/law/download/${this.$route.params.id}' target='blank'>aqui</a> `: null" :disabled="viewOnly" class="col-md-6" v-model="form.file" label="Archivo (*.pdf)" name="file" :error="form.errorsFor('file')" placeholder="Seleccione un archivo" maxFileSize="20"></vue-file-simple>
+						  <vue-file-simple :help-text="form.old_file ? `Para descargar el archivo actual, haga click <a href='/legalAspects/legalMatrix/law/download/${this.$route.params.id}' target='blank'>aqui</a> `: null" :disabled="viewOnly" class="col-md-6" v-model="form.file" label="Archivo (*.pdf)" name="file" :error="form.errorsFor('file')" placeholder="Seleccione un archivo" :maxFileSize="20"></vue-file-simple>
             </template>
-						<vue-file-simple v-else :disabled="viewOnly" class="col-md-6" v-model="form.file" label="Archivo (*.pdf)" name="file" :error="form.errorsFor('file')" placeholder="Seleccione un archivo" maxFileSize="20"></vue-file-simple>
+						<vue-file-simple v-else :disabled="viewOnly" class="col-md-6" v-model="form.file" label="Archivo (*.pdf)" name="file" :error="form.errorsFor('file')" placeholder="Seleccione un archivo" :maxFileSize="20"></vue-file-simple>
           </b-form-row>
         </b-card-body>
       </b-collapse>
