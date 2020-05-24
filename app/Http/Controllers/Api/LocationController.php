@@ -51,7 +51,7 @@ class LocationController extends ApiController
 
         $regionals = $regionals = EmployeeRegional::select('id', 'name');
         $regionals->company_scope = $request->company_id;
-        $regionals = $regionals->get();
+        $regionals = $regionals->orderBy('name')->get();
 
         $regionals->transform(function($regional, $keyR) use ($level) {
 
@@ -59,6 +59,7 @@ class LocationController extends ApiController
             {
                 $headquarters = EmployeeHeadquarter::select('id', 'name')
                 ->where('employee_regional_id', $regional->id)
+                ->orderBy('name')
                 ->get();
 
                 if ($level >= 3)
@@ -71,6 +72,7 @@ class LocationController extends ApiController
                         ->join('sau_headquarter_process', 'sau_headquarter_process.employee_process_id', 'sau_employees_processes.id')
                         ->join('sau_employees_headquarters', 'sau_employees_headquarters.id', 'sau_headquarter_process.employee_headquarter_id')
                         ->where('sau_headquarter_process.employee_headquarter_id', $headquarter->id)
+                        ->orderBy('sau_employees_processes.name')
                         ->get();
 
                         if ($level >= 4)
@@ -84,6 +86,7 @@ class LocationController extends ApiController
                                 ->join('sau_employees_processes', 'sau_employees_processes.id', 'sau_process_area.employee_process_id')
                                 ->where('sau_process_area.employee_headquarter_id', $headquarter->id)
                                 ->where('sau_process_area.employee_process_id', $process->id)
+                                ->orderBy('sau_employees_areas.name')
                                 ->get();
 
                                 $process->areas = $areas;

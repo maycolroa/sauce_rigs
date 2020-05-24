@@ -5,6 +5,7 @@ namespace App\Http\Requests\Api;
 use Illuminate\Foundation\Http\FormRequest;
 use Auth;
 use App\Rules\Api\CheckCompany;
+use App\Rules\Api\CheckLicense;
 
 class CompanyRequiredRequest extends FormRequest
 {
@@ -26,7 +27,7 @@ class CompanyRequiredRequest extends FormRequest
     public function rules()
     {
         return [
-            'company_id' => ['required', 'numeric', new CheckCompany(Auth::guard('api')->user()->id)]
+            'company_id' => ['required', 'numeric', new CheckCompany(Auth::guard('api')->user()->id), new CheckLicense()]
         ];
     }
 }
