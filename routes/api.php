@@ -21,6 +21,8 @@ use Illuminate\Http\Request;
 Route::group(['prefix'=>'v1', 'middleware' => 'api'], function () {
     Route::post('login', 'Api\AuthController@login');
 
+    Route::post('location', 'Api\LocationController@levelLocation');
+
     /*Route::post('changeTermsConditions', 'Api\ConfigurationController@changeStateTermsConditions');
     Route::post('termsConditions', 'Api\ConfigurationController@termsConditions');
     Route::post('getTermsConditions', 'Api\ConfigurationController@getTermsConditions');
