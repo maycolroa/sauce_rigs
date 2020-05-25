@@ -241,7 +241,7 @@ class EmployeeAreaController extends Controller
                 else
                     $areas->whereIn('employee_process_id', $this->getValuesForMultiselect($process));
 
-                $areas = $areas->take(30)->pluck('id', 'name');
+                $areas = $areas->orderBy('name')->take(30)->pluck('id', 'name');
 
                 return $this->respondHttp200([
                     'options' => $this->multiSelectFormat($areas)
@@ -259,6 +259,7 @@ class EmployeeAreaController extends Controller
                 ->join('sau_employees_headquarters', 'sau_employees_headquarters.id', 'sau_headquarter_process.employee_headquarter_id')
                 ->join('sau_employees_regionals', 'sau_employees_regionals.id', 'sau_employees_headquarters.employee_regional_id')
                 ->groupBy('sau_employees_areas.id', 'sau_employees_areas.name')
+                ->orderBy('name')
                 ->pluck('id', 'name');
         
             return $this->multiSelectFormat($areas);

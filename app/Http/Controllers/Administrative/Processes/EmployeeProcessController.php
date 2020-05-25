@@ -217,7 +217,7 @@ class EmployeeProcessController extends Controller
                 else
                     $processes->whereIn('sau_headquarter_process.employee_headquarter_id', $this->getValuesForMultiselect($headquarter));
 
-                $processes = $processes->take(30)->pluck('id', 'name');
+                $processes = $processes->orderBy('name')->take(30)->pluck('id', 'name');
 
                 return $this->respondHttp200([
                     'options' => $this->multiSelectFormat($processes)
@@ -233,6 +233,7 @@ class EmployeeProcessController extends Controller
                 ->join('sau_employees_headquarters', 'sau_employees_headquarters.id', 'sau_headquarter_process.employee_headquarter_id')
                 ->join('sau_employees_regionals', 'sau_employees_regionals.id', 'sau_employees_headquarters.employee_regional_id')
                 ->groupBy('sau_employees_processes.id', 'sau_employees_processes.name')
+                ->orderBy('name')
                 ->pluck('id', 'name');
         
             return $this->multiSelectFormat($processes);
