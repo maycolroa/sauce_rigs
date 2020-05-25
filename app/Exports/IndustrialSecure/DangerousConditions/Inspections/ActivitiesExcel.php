@@ -122,3 +122,41 @@ class ActivitiesExcel implements FromQuery, WithMapping, WithHeadings, WithTitle
     }
 }
 
+/**
+select 
+`sau_ph_inspections`.*,
+ GROUP_CONCAT(DISTINCT sau_employees_headquarters.name ORDER BY sau_employees_headquarters.name ASC) AS sede,
+ GROUP_CONCAT(DISTINCT sau_employees_areas.name ORDER BY sau_employees_areas.name ASC) AS area,
+ `sau_ph_inspection_sections`.`name` as `section_name`,
+ `sau_ph_inspection_section_items`.`description` as `description`,
+`sau_ct_qualifications`.`name` as `qualification_name`,
+ `sau_ct_qualifications`.`description` as `qualification_description`,
+ `a`.`name` as `areas`, 
+ `h`.`name` as `headquarter`,
+ `sau_users`.`name` as `qualifier`,
+ `q`.`find`, 
+ `q`.`qualification_date`, 
+ sau_action_plans_activities.description as desc_plan, 
+ sau_action_plans_activities.execution_date,
+ sau_action_plans_activities.expiration_date,
+`sau_action_plans_activities`.`state` as `state_activity`,
+`u`.`name` as `responsible`
+ from `sau_ph_inspections` 
+ inner join `sau_ph_inspection_sections` on `sau_ph_inspection_sections`.`inspection_id` = `sau_ph_inspections`.`id` 
+ inner join `sau_ph_inspection_section_items` on `sau_ph_inspection_section_items`.`inspection_section_id` = `sau_ph_inspection_sections`.`id` 
+ left join `sau_ph_inspection_headquarter` on `sau_ph_inspection_headquarter`.`inspection_id` = `sau_ph_inspections`.`id` 
+ left join `sau_ph_inspection_area` on `sau_ph_inspection_area`.`inspection_id` = `sau_ph_inspections`.`id` 
+ left join `sau_employees_headquarters` on `sau_employees_headquarters`.`id` = `sau_ph_inspection_headquarter`.`employee_headquarter_id` 
+ left join `sau_employees_areas` on `sau_employees_areas`.`id` = `sau_ph_inspection_area`.`employee_area_id` 
+ left join sau_ph_inspection_items_qualification_area_location q on q.item_id = sau_ph_inspection_section_items.id
+ left join `sau_ct_qualifications` on `sau_ct_qualifications`.`id` = `q`.`qualification_id`
+ left join sau_employees_headquarters h on q.employee_headquarter_id = h.id
+ left join sau_employees_areas a on q.employee_area_id = a.id 
+ left join `sau_users` on `q`.`qualifier_id` = `sau_users`.`id` 
+ left join `sau_action_plans_activity_module` on sau_action_plans_activity_module.item_id = q.id  and item_table_name = 'sau_ph_inspection_items_qualification_area_location'
+ left join sau_action_plans_activities on sau_action_plans_activities.id = sau_action_plans_activity_module.activity_id
+left join sau_users u on u.id = sau_action_plans_activities.responsible_id
+ where `sau_ph_inspections`.`company_id` = 1 
+ group by `sau_ph_inspections`.`id`, `sau_ph_inspections`.`name`, `sau_ph_inspections`.`created_at`, `sau_ph_inspections`.`state`, `sau_ph_inspection_sections`.`name`, `sau_ph_inspection_section_items`.`description`, sau_action_plans_activities.id, qualification_name, qualification_description, areas, headquarter, qualifier,  `q`.`find`, `q`.`qualification_date`, responsible, desc_plan, sau_action_plans_activities.execution_date, sau_action_plans_activities.expiration_date, state_activity
+ order by `sau_ph_inspections`.`id`
+ **/

@@ -4,6 +4,7 @@ namespace App\Exports\IndustrialSecure\DangerousConditions\Inspections;
 
 use Maatwebsite\Excel\Concerns\Exportable;
 use Maatwebsite\Excel\Concerns\WithMultipleSheets;
+use App\Exports\IndustrialSecure\DangerousConditions\Inspections\InspectionCompletExcel;
 use App\Exports\IndustrialSecure\DangerousConditions\Inspections\InspectionListExcel;
 use App\Exports\IndustrialSecure\DangerousConditions\Inspections\QualificationsExcel;
 use App\Exports\IndustrialSecure\DangerousConditions\Inspections\ActivitiesExcel;
@@ -29,9 +30,10 @@ class InspectionExcel implements WithMultipleSheets
     {
         $sheets = [];
 
-        $sheets[] = new InspectionListExcel($this->company_id, $this->filters);
+        $sheets[] = new InspectionCompletExcel($this->company_id, $this->filters);
+        /*$sheets[] = new InspectionListExcel($this->company_id, $this->filters);
         $sheets[] = new QualificationsExcel($this->company_id, $this->filters);
-        $sheets[] = new ActivitiesExcel($this->company_id, $this->filters);
+        $sheets[] = new ActivitiesExcel($this->company_id, $this->filters);*/
 
         return $sheets;
     }
