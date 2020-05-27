@@ -23,6 +23,9 @@ Route::group(['prefix'=>'v1', 'middleware' => 'api'], function () {
 
     Route::post('location', 'Api\LocationController@levelLocation');
 
+    Route::post('preReports', 'Api\ReportsController@preReport');
+    Route::resource('reports', 'Api\ReportsController');
+
     /*Route::post('changeTermsConditions', 'Api\ConfigurationController@changeStateTermsConditions');
     Route::post('termsConditions', 'Api\ConfigurationController@termsConditions');
     Route::post('getTermsConditions', 'Api\ConfigurationController@getTermsConditions');
@@ -37,8 +40,7 @@ Route::group(['prefix'=>'v1', 'middleware' => 'api'], function () {
 
     Route::post('conditions-info', 'Api\ConditionsController@info');
 
-    Route::post('preReports', 'Api\ReportsController@preReport');
-    Route::resource('reports', 'Api\ReportsController');
+    
 
     Route::post('listReporstUser', 'Api\ReportsController@listReportsUser');    
 
