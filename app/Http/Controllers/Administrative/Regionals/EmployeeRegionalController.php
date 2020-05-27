@@ -145,6 +145,7 @@ class EmployeeRegionalController extends Controller
                 ->where(function ($query) use ($keyword) {
                     $query->orWhere('name', 'like', $keyword);
                 })
+                ->orderBy('name')
                 ->take(30)->pluck('id', 'name');
 
             return $this->respondHttp200([
@@ -156,7 +157,7 @@ class EmployeeRegionalController extends Controller
             $regionals = EmployeeRegional::selectRaw("
                 sau_employees_regionals.id as id,
                 sau_employees_regionals.name as name
-            ")->pluck('id', 'name');
+            ")->orderBy('name')->pluck('id', 'name');
         
             return $this->multiSelectFormat($regionals);
         }

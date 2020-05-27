@@ -94,6 +94,12 @@ class ConstantService
         'Parcial'
     ];
 
+    CONST PH_RATES = [
+        'Alto',
+        'Medio',
+        'Bajo'
+    ];
+
     /** FIN Condiciones Peligrosas */
 
     /**

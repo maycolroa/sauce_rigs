@@ -164,7 +164,7 @@ class EmployeeHeadquarterController extends Controller
                     $headquarters->whereIn('employee_regional_id', $this->getValuesForMultiselect($regional));
             }
 
-            $headquarters = $headquarters->take(30)->pluck('id', 'name');
+            $headquarters = $headquarters->orderBy('name')->take(30)->pluck('id', 'name');
 
             return $this->respondHttp200([
                 'options' => $this->multiSelectFormat($headquarters)
@@ -177,6 +177,7 @@ class EmployeeHeadquarterController extends Controller
                  sau_employees_headquarters.name as name")
             ->join('sau_employees_regionals', 'sau_employees_regionals.id', 'sau_employees_headquarters.employee_regional_id')
             ->groupBy('sau_employees_headquarters.name')
+            ->orderBy('name')
             ->pluck('ids', 'name');
         
             return $this->multiSelectFormat($headquarters);

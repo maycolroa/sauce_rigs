@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Api;
 
 use Hash;
-use App\Http\Requests\Api\LoginRequest;
 use App\Http\Requests;
 use App\Http\Requests\Api\CompanyRequiredRequest;
 use App\Models\General\Company;
