@@ -115,51 +115,48 @@ class ReportsController extends ApiController
             ]), 401);
         }*/
 
-        DB::beginTransaction();
-
-        try
+      DB::beginTransaction();
+        
+      try
+      {
+        if ($request->id)
         {
-          $data = $request->all();
-
-          $report = new Report();
-          $report->condition_id = $request->condition_id;           
-          $report->other_condition = $request->other_condition;
-          $report->rate = $request->rate;
-          $report->observation = $request->observation;
-          $report->user_id = $this->user->id;
-          $report->company_id = $request->company_id;
-          
-          if (!$report->save())
-              return $this->respondHttp500();
-
-          if ($this->updateModelLocationForm($report, $request->get('locations')))
-              return $this->respondHttp500();
-
-            \Log::info($request);
-
-          ActionPlan::
-                user($this->user)
-            ->module('dangerousConditions')
-            ->url(url('/administrative/actionplans'))
-            ->model($report)
-            ->activities($request->actionPlan)
-            ->save();
-
-            $data['actionPlan'] = ActionPlan::getActivities();
-
-            ActionPlan::sendMail();
-              
-          DB::commit();
-
-        } catch (\Exception $e) {
-            \Log::info($e->getMessage());
-            DB::rollback();
-            return $this->respondHttp500();
+          $report = Report::query();
+          $report->company_scope = $request->company_id;
+          $report = $report->findOrFail($request->id);
         }
+        else
+          $report = new Report();
 
-        return $this->respondHttp200([
-            'data' => $report
-        ]);
+        $report->fill($request->all());
+        $report->user_id = $this->user->id;
+
+        if (!$report->save())
+            return $this->respondHttp500();
+
+          \Log::info($request->actionPlan);
+
+        ActionPlan::
+              user($this->user)
+          ->module('dangerousConditions')
+          ->url(url('/administrative/actionplans'))
+          ->model($report)
+          ->activities($request->actionPlan)
+          ->company($request->company_id)
+          ->save()
+          ->sendMail();
+            
+        DB::commit();
+
+      } catch (\Exception $e) {
+          \Log::info($e->getMessage());
+          DB::rollback();
+          return $this->respondHttp500();
+      }
+
+      return $this->respondHttp200([
+          'data' => $report
+      ]);
     }
 
     /**

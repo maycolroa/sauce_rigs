@@ -705,7 +705,11 @@ class ActionPlan
                 $activity->user_id = $this->user->id;
             }
             else
-                $activity = ActionPlansActivity::find($itemA['id']);
+            {
+                $activity = ActionPlansActivity::query();
+                $activity->company_scope = $company_id;
+                $activity = $activity->find($itemA['id']);
+            }
 
             $activity->description = $itemA['description'];
             $activity->responsible_id = $itemA['responsible_id'];
