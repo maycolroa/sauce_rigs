@@ -6,6 +6,7 @@ use Illuminate\Foundation\Http\FormRequest;
 use Auth;
 use App\Rules\Api\CheckCompany;
 use App\Rules\Api\CheckLicense;
+use App\Rules\Api\CheckLocationConfiguration;
 use Constant;
 //use App\Traits\LocationFormTrait;
 
@@ -52,14 +53,18 @@ class ReportRequest extends FormRequest
     public function rules()
     {
         $rates = implode(',', Constant::getConstant('PH_RATES'));
-        \Log::info($this->input('rate'));
+        //\Log::info($this->input('rate'));
 
          $rules = [
             'company_id' => ['required', 'numeric', new CheckCompany(Auth::guard('api')->user()->id), new CheckLicense()],
             'observation' => 'required',
             'condition_id' => 'required|exists:sau_ph_conditions,id|numeric',
             'rate' => "required|in:$rates",
-            'other_condition' => 'string|max:255'
+            'other_condition' => 'string|max:255',
+            'employee_regional_id' => [new CheckLocationConfiguration($this->input('company_id'))],
+            'employee_headquarter_id' => [new CheckLocationConfiguration($this->input('company_id'))],
+            'employee_process_id' => [new CheckLocationConfiguration($this->input('company_id'))],
+            'employee_area_id' => [new CheckLocationConfiguration($this->input('company_id'))]
         ];
 
         /*$rulesConfLocation = $this->getLocationFormRules();
