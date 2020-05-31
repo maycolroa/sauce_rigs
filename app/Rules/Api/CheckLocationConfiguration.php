@@ -47,11 +47,11 @@ class CheckLocationConfiguration implements Rule
         else
             $level = 1;
 
-        if ($value == 'employee_area_id')
+        if ($attribute == 'employee_area_id')
             $level2 = 4;
-        else if ($value == 'employee_process_id')
+        else if ($attribute == 'employee_process_id')
             $level2 = 3;
-        else if ($value == 'employee_headquarter_id')
+        else if ($attribute == 'employee_headquarter_id')
             $level2 = 2;
         else
             $level2 = 1;
