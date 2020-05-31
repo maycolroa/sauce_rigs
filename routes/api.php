@@ -45,14 +45,14 @@ Route::group(['prefix'=>'v1', 'middleware' => 'api'], function () {
 
     Route::post('listReporstUser', 'Api\ReportsController@listReportsUser');    
 
-    Route::post('company', 'Api\logoController@showFile');
+    Route::post('company', 'Api\logoController@showFile');*/
 
     Route::group(['prefix'=>'inspections'], function () {
-        Route::post('qualifications/list', 'Api\InspectionController@qualificationsList');
+        //Route::post('qualifications/list', 'Api\InspectionController@qualificationsList');
         Route::post('list', 'Api\InspectionController@lisInspectionsAvailable');
-        Route::post('create', 'Api\InspectionController@create');
+        /*Route::post('create', 'Api\InspectionController@create');
         Route::post('register', 'Api\InspectionController@store');
         Route::post('imageItem', 'Api\InspectionController@imageItem');
-        Route::post('quelifiedListUser', 'Api\InspectionController@quelifiedListUser');
-    });*/
+        Route::post('quelifiedListUser', 'Api\InspectionController@quelifiedListUser');*/
+    });
 });
