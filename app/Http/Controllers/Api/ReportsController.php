@@ -2,16 +2,17 @@
 
 namespace App\Http\Controllers\Api;
 
-use Storage;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\Request;
 use App\Models\IndustrialSecure\DangerousConditions\Reports\Report;
 use App\Models\IndustrialSecure\DangerousConditions\Reports\Condition;
 use App\Models\IndustrialSecure\DangerousConditions\Reports\ConditionType;
 use App\Http\Requests\Api\ReportRequest;
-use App\Http\Requests\IndustrialSecure\DangerousConditions\Reports\SaveQualificationRequest;
+use App\Http\Requests\Api\ImageReportRequest;
 use App\Facades\ActionPlans\Facades\ActionPlan;
 use App\Traits\LocationFormTrait;
 use File;
+use Carbon\Carbon;
 use DB;
 
 class ReportsController extends ApiController
@@ -50,55 +51,70 @@ class ReportsController extends ApiController
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function saveImage(Request $request)
+    public function saveImage(ImageReportRequest $request)
     {
-        Validator::make($request->all(), [
-            "image" => [
-                function ($attribute, $value, $fail)
-                {
-                    if ($value && !is_string($value) && 
-                        $value->getClientMimeType() != 'image/png' && 
-                        $value->getClientMimeType() != 'image/jpg' &&
-                        $value->getClientMimeType() != 'image/jpeg')
+        $report = Report::query();
+        $report->company_scope = $request->company_id;
+        $report = $report->findOrFail($request->report_id);
 
-                        $fail('Imagen debe ser PNG ó JPG ó JPEG');
-                },
-            ]
-        ])->validate();
+        $images = collect([]);
 
-        $report = Report::findOrFail($request->id);
-        $data = $request->all();
-        $picture = $request->column;
+        $this->checkImgRequest($images, $request, 1);
+        $this->checkImgRequest($images, $request, 2);
+        $this->checkImgRequest($images, $request, 3);
 
-        if ($request->image != $report->$picture)
+        /*$images->each(function ($image, $key) use ($report) {
+            $i = 0; //Cantidad de img +1
+            $column = "image_".($i + $key);
+            \Log::info($column);
+            $this->checkImgStore($report, $image, $column);
+          });*/
+
+        $i = 1;
+        $replace = false;
+
+        while ($images->count() > 0)
         {
-            if ($request->image)
-            {
-                $file = $request->image;
-                Storage::disk('public')->delete('industrialSecure/dangerousConditions/reports/images/'. $report->$picture);
-                $nameFile = base64_encode($this->user->id . now() . rand(1,10000)) .'.'. $file->extension();
-                $file->storeAs('industrialSecure/dangerousConditions/reports/images/', $nameFile, 'public');
-                $report->$picture = $nameFile;
-                $data['image'] = $nameFile;
-                $data['old'] = $nameFile;
-                $data['path'] = Storage::disk('public')->url('industrialSecure/dangerousConditions/reports/images/'. $nameFile);
-            }
-            else
-            {
-                Storage::disk('public')->delete('industrialSecure/dangerousConditions/reports/images/'. $report->$picture);
-                $report->$picture = NULL;
-                $data['image'] = "";
-                $data['old'] = NULL;
-                $data['path'] = NULL;
-            }
+          $column = "image_".$i;
+
+          if (!$report->$column || $replace)
+          {
+            \Log::info($column);
+            $this->checkImgStore($report, $images->pop(), $column);
+          }
+
+          if ($i == 3)
+          {
+            $i = 1;
+            $replace = true;
+            \Log::info("reemplazo");
+          }
+          else
+            $i++;
         }
 
-        if (!$report->update())
-            return $this->respondHttp500();
-
         return $this->respondHttp200([
-            'data' => $data
+            'data' => $report
         ]);
+    }
+
+    public function checkImgStore($report, $image, $column)
+    {
+      $fileName = md5($image->getClientOriginalName() . Carbon::now()) . $column . '.' . $image->getClientOriginalExtension();
+      $file = file_get_contents($image->getRealPath());
+
+      $report->img_delete($column);
+      $report->store_image($column, $fileName, $file);
+    }
+
+    public function checkImgRequest(&$images, $request, $key)
+    {
+      $index = "image_".$key;
+
+      if ($request->has($index) && $request->$index)
+      {
+        $images->push($request->$index);
+      }
     }
 
     /**
@@ -133,8 +149,6 @@ class ReportsController extends ApiController
 
         if (!$report->save())
             return $this->respondHttp500();
-
-          \Log::info($request->actionPlan);
 
         ActionPlan::
               user($this->user)

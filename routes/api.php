@@ -24,7 +24,8 @@ Route::group(['prefix'=>'v1', 'middleware' => 'api'], function () {
     Route::post('location', 'Api\LocationController@levelLocation');
 
     Route::post('preReports', 'Api\ReportsController@preReport');
-    Route::resource('reports', 'Api\ReportsController');
+    //Route::resource('reports', 'Api\ReportsController');
+    Route::post('saveImage', 'Api\ReportsController@saveImage');
 
     /*Route::post('changeTermsConditions', 'Api\ConfigurationController@changeStateTermsConditions');
     Route::post('termsConditions', 'Api\ConfigurationController@termsConditions');

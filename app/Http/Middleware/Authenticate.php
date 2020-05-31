@@ -19,17 +19,16 @@ class Authenticate
     {
         if (Auth::guard($guard)->guest()) {
             if ($request->ajax() || $request->wantsJson() || $request->exists('api_token')) {
-                \Log::info("entgfgfcgfra");
+                
                 return response(json_encode([
                     'response' => 'error',
                     'data' => 'No autorizado'
                     ]),401);
             } else {
-                \Log::info("entra");
                 return redirect()->guest('login');
             }
         }
-\Log::info("entr2355a");
+
         return $next($request);
     }
 }

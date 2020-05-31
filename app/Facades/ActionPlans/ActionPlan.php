@@ -755,7 +755,10 @@ class ActionPlan
         
         foreach ($this->activities['activitiesRemoved'] as $itemA)
         {
-            $activity = ActionPlansActivity::find($itemA['id']);
+            $activity = ActionPlansActivity::query();
+            $activity->company_scope = $company_id;
+            $activity = $activity->find($itemA['id']);
+
 
             if ($activity)
                 $activity->delete();

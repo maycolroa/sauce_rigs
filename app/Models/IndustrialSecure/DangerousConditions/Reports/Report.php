@@ -6,9 +6,12 @@ use Illuminate\Database\Eloquent\Model;
 use App\Traits\CompanyTrait;
 use Carbon\Carbon;
 use Exception;
+use Illuminate\Support\Facades\Storage;
 
 class Report extends Model
 {
+    const DISK = 's3_DConditions';
+
     use CompanyTrait;
 
     protected $table = 'sau_ph_reports';
@@ -132,5 +135,32 @@ class Report extends Model
         }
 
         return $query;
+    }
+
+    public function path_base()
+    {
+        return "reports_images/";
+    }
+
+    public function donwload_img($key)
+    {
+        return Storage::disk($this::DISK)->download("{$this->path_base()}{$this->$key}");
+    }
+
+    public function img_exists($key)
+    {
+        return Storage::disk($this::DISK)->exists("{$this->path_base()}{$this->$key}");
+    }
+
+    public function img_delete($key)
+    {
+        if ($this->$key && $this->img_exists($key))
+           Storage::disk($this::DISK)->delete("{$this->path_base()}{$this->$key}");
+    }
+
+    public function store_image($key, $fileName, $file)
+    {
+        Storage::disk($this::DISK)->put("{$this->path_base()}{$fileName}", $file, 'public');
+        $this->update([$key => $fileName]);
     }
 }
