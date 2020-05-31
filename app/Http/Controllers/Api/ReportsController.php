@@ -63,13 +63,6 @@ class ReportsController extends ApiController
         $this->checkImgRequest($images, $request, 2);
         $this->checkImgRequest($images, $request, 3);
 
-        /*$images->each(function ($image, $key) use ($report) {
-            $i = 0; //Cantidad de img +1
-            $column = "image_".($i + $key);
-            \Log::info($column);
-            $this->checkImgStore($report, $image, $column);
-          });*/
-
         $i = 1;
         $replace = false;
 
@@ -79,7 +72,6 @@ class ReportsController extends ApiController
 
           if (!$report->$column || $replace)
           {
-            \Log::info($column);
             $this->checkImgStore($report, $images->pop(), $column);
           }
 
@@ -87,7 +79,6 @@ class ReportsController extends ApiController
           {
             $i = 1;
             $replace = true;
-            \Log::info("reemplazo");
           }
           else
             $i++;
