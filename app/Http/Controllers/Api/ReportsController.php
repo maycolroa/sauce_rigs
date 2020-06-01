@@ -7,10 +7,12 @@ use Illuminate\Http\Request;
 use App\Models\IndustrialSecure\DangerousConditions\Reports\Report;
 use App\Models\IndustrialSecure\DangerousConditions\Reports\Condition;
 use App\Models\IndustrialSecure\DangerousConditions\Reports\ConditionType;
+use App\Models\General\Company;
 use App\Http\Requests\Api\ReportRequest;
 use App\Http\Requests\Api\ImageReportRequest;
 use App\Facades\ActionPlans\Facades\ActionPlan;
 use App\Traits\LocationFormTrait;
+use App\Http\Requests\Api\CompanyRequiredRequest;
 use File;
 use Carbon\Carbon;
 use DB;
@@ -277,5 +279,26 @@ class ReportsController extends ApiController
     public function destroy($id)
     {
         return $this->responderError('No encontrado');
+    }
+
+    public function getIncentives(CompanyRequiredRequest $request)
+    {
+      try
+      {
+        $company = Company::find($request->company_id);
+        
+        if (!$company->ph_file_incentives || !$company->ph_state_incentives)
+          return $this->respondHttp200();
+
+        $headers = array(
+          'Content-Type: application/pdf',
+        );
+
+        return Storage::disk('local')->download('file_incentives/'.$company->ph_file_incentives, 'Incentivos.pdf', $headers);
+      }
+      catch(\Exception $e){
+        \Log::info($e->getMessage());
+        return $this->respondHttp500();
+      }
     }
 }
