@@ -286,14 +286,14 @@ class ReportsController extends ApiController
       try
       {
         $company = Company::find($request->company_id);
-        \Log::info("llega1");
+        
         if (!$company->ph_file_incentives || !$company->ph_state_incentives)
           return $this->respondHttp200();
 
         $headers = array(
           'Content-Type: application/pdf',
         );
-        \Log::info("llega");
+
         return Storage::disk('local')->download('file_incentives/'.$company->ph_file_incentives, 'Incentivos.pdf', $headers);
       }
       catch(\Exception $e){
