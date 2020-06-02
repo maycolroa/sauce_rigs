@@ -18,6 +18,13 @@ class ProcessFileUploadJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
+    /**
+     * The number of times the job may be attempted.
+     *
+     * @var int
+     */
+    public $tries = 1;
+
     protected $user;
     protected $company_id;
     protected $file;
@@ -69,8 +76,7 @@ class ProcessFileUploadJob implements ShouldQueue
             $command = "sh {$this->talend->path_sh()} '{$this->file->path}' '{$this->file->file}'";
             \Log::info($command);
             $process = Process::fromShellCommandline($command);
-
-            $process->run();
+            $process->setTimeout(1800);
 
             \Log::info("Salida del talend: \n");
             \Log::info($process->getOutput());
