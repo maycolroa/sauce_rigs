@@ -352,6 +352,9 @@ Route::middleware(['auth'])->group(function () {
       Route::post('dangersMatrixHistory/data', 'IndustrialSecure\DangerMatrix\DangerMatrixHistoryController@data');
 
       Route::prefix('dangerousConditions')->group(function () {
+        Route::get('incentive/download', 'IndustrialSecure\DangerousConditions\IncentiveController@download');
+        Route::get('incentive/view', 'IndustrialSecure\DangerousConditions\IncentiveController@show');
+        Route::post('incentive', 'IndustrialSecure\DangerousConditions\IncentiveController@store');
         Route::post('inspection/switchStatus/{inspection}', 'IndustrialSecure\DangerousConditions\Inspections\InspectionController@toggleState');
         Route::post('inspection/data', 'IndustrialSecure\DangerousConditions\Inspections\InspectionController@data');
         Route::post('inspection/reportDinamic', 'IndustrialSecure\DangerousConditions\Inspections\InspectionReportController@reportDinamic');

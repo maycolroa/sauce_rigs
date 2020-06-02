@@ -211,6 +211,14 @@ export default [{
       },
       ...middleware({ 'check-permission': 'ph_inspections_r' }, [
         {
+          name: 'dangerousconditions-incentives',
+          path: 'dangerousconditions/incentives',
+          component: () =>
+              import('@/views/IndustrialSecure/dangerousConditions/incentives/create')
+        }
+      ]),
+      ...middleware({ 'check-permission': 'ph_inspections_r' }, [
+        {
           name: 'dangerousconditions-inspections',
           path: 'dangerousconditions/inspections',
           component: () =>

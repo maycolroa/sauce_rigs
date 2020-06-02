@@ -19,7 +19,7 @@ export default {
     props:{
         name: { type: String, required: true },
         disabled: { type: Boolean, default: false },
-        checked: { type: [String, Number], default: '' },
+        checked: { type: [String, Number, Boolean], default: '' },
         label: {type: String},
         options: {type: [Array, Object], required: true},
         error: {type: String, default: null},
