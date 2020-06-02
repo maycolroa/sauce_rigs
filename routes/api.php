@@ -28,10 +28,10 @@ Route::group(['prefix'=>'v1', 'middleware' => 'api'], function () {
     Route::post('saveImage', 'Api\ReportsController@saveImage');
     Route::post('incentives', 'Api\ReportsController@getIncentives');
 
-    /*Route::post('changeTermsConditions', 'Api\ConfigurationController@changeStateTermsConditions');
+    Route::post('changeTermsConditions', 'Api\ConfigurationController@changeStateTermsConditions');
     Route::post('termsConditions', 'Api\ConfigurationController@termsConditions');
     Route::post('getTermsConditions', 'Api\ConfigurationController@getTermsConditions');
-    Route::post('statePositions', 'Api\ConfigurationController@statePositions');
+    /*Route::post('statePositions', 'Api\ConfigurationController@statePositions');
     Route::post('stateIncentives', 'Api\ConfigurationController@stateIncentives');
     Route::post('incentives', 'Api\ConfigurationController@getIncentives');
     Route::post('positions', 'Api\ConfigurationController@getPositions');
