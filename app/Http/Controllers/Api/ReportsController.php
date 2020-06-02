@@ -301,4 +301,21 @@ class ReportsController extends ApiController
         return $this->respondHttp500();
       }
     }
+
+    public function info()
+    {
+        $types = ConditionType::all();
+        $result = [];
+
+        foreach ($types as $type) {
+            $result[] = [
+                'description' => $type->description,
+                'values' => $type->conditions,
+            ];
+        }
+
+        return $this->respondHttp200([
+          'data' => $result
+      ]);
+    }
 }

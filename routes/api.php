@@ -38,15 +38,15 @@ Route::group(['prefix'=>'v1', 'middleware' => 'api'], function () {
 
     Route::post('locations', 'Api\ConfigurationController@listLocations');
     Route::post('areas', 'Api\ConfigurationController@listAreas');
-    Route::post('responsibles', 'Api\ConfigurationController@listResponsibles');
+    Route::post('responsibles', 'Api\ConfigurationController@listResponsibles');*/
 
-    Route::post('conditions-info', 'Api\ConditionsController@info');
+    Route::post('conditions-info', 'Api\ReportsController@info');
 
     
 
-    Route::post('listReporstUser', 'Api\ReportsController@listReportsUser');    
+    //Route::post('listReporstUser', 'Api\ReportsController@listReportsUser');    
 
-    Route::post('company', 'Api\logoController@showFile');*/
+    //Route::post('company', 'Api\logoController@showFile');
 
     Route::group(['prefix'=>'inspections'], function () {
         //Route::post('qualifications/list', 'Api\InspectionController@qualificationsList');
