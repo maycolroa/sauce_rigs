@@ -268,56 +268,47 @@ class InspectionController extends ApiController
                 'data' => 'No autorizado'
             ]), 401);
         }*/
-        $validator = Validator::make($request->all(), [
-          'image' => 'required',
-          'item_id' => 'required',
-          'area_id' => 'required',
-          'location_id' => 'required',
-          'key' => 'required'
-      ]);
 
-        $image = $request->input('image');
+        $image1 = $request->photo_1;
+        $image2 = $request->photo_2;
+
         $item = InspectionItemsQualificationAreaLocation::where('item_id',$request->item_id)
-                ->where('area_id',$request->area_id)->where('location_id',$request->location_id)->where('qualification_date', base64_decode($request->key))->first();
+                ->where('employee_area_id',$request->employee_area_id)
+                ->where('employee_headquarter_id',$request->employee_headquarter_id)
+                ->where('qualification_date', base64_decode($request->key))
+                ->first();
 
-        if($item["photo_".$image] != null){
-            return json_encode([
-              'response' => 'ok',
-              'data' => 'Este item ya tiene la imagen '.$image,
-          ], JSON_UNESCAPED_UNICODE);
+        if($item["photo_1"] != null)
+        {
+            return $this->respondHttp200([
+            'message' => 'ESte item ya tiene la imagen 1'
+            ]);
         };
 
-        if (!$request->hasFile('file')) {
-            return response(json_encode([
-                    'response' => 'error',
-                    'data' => 'No se envio imagen',
-                ], JSON_UNESCAPED_UNICODE), 500);
-        }
-
-        if (!$request->file('file')->isValid()) {
-            return response(json_encode([
-                    'response' => 'error',
-                    'data' => 'Imagen inválida',
-                ], JSON_UNESCAPED_UNICODE), 500);
-        }
-
+        if($item["photo_2"] != null)
+        {
+            return $this->respondHttp200([
+            'message' => 'ESte item ya tiene la imagen 2'
+            ]);
+        };
        
-        $fileName = md5($request->file('file')->getClientOriginalName() . \Carbon\Carbon::now()) . $item->id . 'image_' . $image . '.' . $request->file('file')->getClientOriginalExtension();
-        $item->image($image, $fileName);
+        $fileName1 = md5($image1->getClientOriginalName() . Carbon::now()) . $item->id . 'image_1' . '.' . $image1->getClientOriginalExtension();
+
+        $fileName2 = md5($image2->getClientOriginalName() . Carbon::now()) . $item->id . 'image_2' . '.' . $image2->getClientOriginalExtension();
+
+        $item->photo_1 = $fileName1;
+        $item->photo_2 = $fileName2;
 
         if (!$item->save()) {
-            return response(json_encode([
-                'response' => 'error',
-                'data' => 'Hubo un problema guardando el reporte',
-            ], JSON_UNESCAPED_UNICODE), 500);
+            return $this->respondHttp500();
         }
-        Storage::disk('s3')->put('inspections_images/'.$fileName,
-                        file_get_contents($request->file('file')->getRealPath()),'public');
+
+        Storage::disk('s3_DConditions')->put('inspections_images/'.$fileName1, $image1, 'public');
+        Storage::disk('s3_DConditions')->put('inspections_images/'.$fileName2, $image2, 'public');
         
-        return json_encode([
-            'response' => 'ok',
-            'data' => 'Reporte guardado correctamente',
-        ], JSON_UNESCAPED_UNICODE);
+        return $this->respondHttp200([
+            'data' => 'Reporte guardado correctamente'
+        ]);
     }
 
     /**
