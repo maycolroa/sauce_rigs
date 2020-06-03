@@ -14,6 +14,7 @@ use App\Facades\ActionPlans\Facades\ActionPlan;
 use App\Http\Requests\Api\InspectionsRequest;
 use App\Http\Requests\Api\InspectionsCreateRequest;
 use App\Http\Requests\Api\InspectionQualificationsRequest;
+use App\Http\Requests\Api\ImageInspectionRequest;
 use Validator;
 use Carbon\Carbon;
 use DB;
@@ -260,7 +261,7 @@ class InspectionController extends ApiController
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function imageItem(Request $request)
+    public function imageItem(ImageInspectionRequest $request)
     {
         /*if (!$this->user->hasPermission('create_reports')) {
             return response(json_encode([
@@ -351,7 +352,7 @@ class InspectionController extends ApiController
                     'name' => $inspection->name,
                     'area' => $inspectionReady->area,
                     'location' => $inspectionReady->location,
-                    'qualification_date' => $inspectionReady->qualification_date != '' ? \Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $inspectionReady->qualification_date)->toDateString() : '',
+                    'qualification_date' => $inspectionReady->qualification_date != '' ? Carbon::createFromFormat('Y-m-d H:i:s', $inspectionReady->qualification_date)->toDateString() : '',
                     'sections' => []
             ];
             

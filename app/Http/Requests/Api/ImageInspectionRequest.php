@@ -6,6 +6,7 @@ use Illuminate\Foundation\Http\FormRequest;
 use App\Rules\FileFormat;
 use App\Rules\Api\CheckCompany;
 use App\Rules\Api\CheckLicense;
+use App\Rules\Api\CheckLocationConfiguration;
 use Auth;
 
 class ImageInspectionRequest extends FormRequest
