@@ -155,6 +155,8 @@ class ReportsController extends ApiController
             
         DB::commit();
 
+        $report->actionPlan = ActionPlan::getActivities();
+
       } catch (\Exception $e) {
           \Log::info($e->getMessage());
           DB::rollback();

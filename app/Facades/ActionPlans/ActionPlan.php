@@ -557,7 +557,7 @@ class ActionPlan
             $tmp['multiselect_responsible'] = $activity->responsible->multiselect();
             $tmp['user_id'] = $activity->user_id;
             $tmp['execution_date'] = ($activity->execution_date) ? (Carbon::createFromFormat('Y-m-d', $activity->execution_date))->format('D M d Y') : '';
-            $tmp['oldExecution_date'] = ($activity->execution_date) ? (Carbon::createFromFormat('Y-m-d', $activity->execution_date))->format('D M d Y') : '';;
+            $tmp['oldExecution_date'] = ($activity->execution_date) ? (Carbon::createFromFormat('Y-m-d', $activity->execution_date))->format('D M d Y') : '';
             $tmp['expiration_date'] = (Carbon::createFromFormat('Y-m-d', $activity->expiration_date))->format('D M d Y');
             $tmp['oldExpiration_date'] = (Carbon::createFromFormat('Y-m-d', $activity->expiration_date))->format('D M d Y');
             $tmp['state'] = $activity->state;
@@ -751,6 +751,13 @@ class ActionPlan
             }
             
             $this->activities['activities'][$keyItem]['id'] = $activity->id;
+            $this->activities['activities'][$keyItem]['oldDescription'] = $activity->description;
+            $this->activities['activities'][$keyItem]['oldExpiration_date'] = $activity->expiration_date ? (Carbon::createFromFormat('Ymd', $activity->expiration_date))->format('D M d Y') : '';
+            $this->activities['activities'][$keyItem]['oldExecution_date'] = $activity->execution_date ? (Carbon::createFromFormat('Ymd', $activity->execution_date))->format('D M d Y') : '';
+            $this->activities['activities'][$keyItem]['oldState'] = $activity->state;
+            $this->activities['activities'][$keyItem]['oldObservation'] = $activity->observation;
+            $this->activities['activities'][$keyItem]['oldResponsible_id'] = $activity->responsible_id;
+
         }
         
         foreach ($this->activities['activitiesRemoved'] as $itemA)
