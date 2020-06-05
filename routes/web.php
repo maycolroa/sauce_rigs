@@ -129,6 +129,7 @@ Route::middleware(['auth'])->group(function () {
         Route::post('employeesNames', 'Administrative\Employees\EmployeesController@multiselectNames');
         Route::post('employeesIdentifications', 'Administrative\Employees\EmployeesController@multiselectIdentifications');
         Route::post('users', 'Administrative\Users\UserController@multiselect');
+        Route::post('usersActionPlan', 'Administrative\Users\UserController@multiselectUsersActionPlan');
         Route::post('usersOtherCompany', 'Administrative\Users\UserController@multiselectUsers');
         Route::post('responsiblesFilter', 'Administrative\ActionPlans\ActionPlanController@multiselectResponsiblesFilter');  
         Route::post('multiselect', 'General\ApplicationController@multiselect');

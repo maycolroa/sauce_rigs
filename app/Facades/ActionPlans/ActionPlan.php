@@ -935,7 +935,8 @@ class ActionPlan
                 'Fecha Ejecución' => ($value['execution_date']) ? Carbon::createFromFormat($format, $value['execution_date'])->toFormattedDateString() : '',
                 'Estado' => $value['state'],
                 'Descripción' => $value['description'],
-                'Módulo' => $module ? $module : (isset($value['module_name']) ? $value['module_name'] : '')
+                'Módulo' => $module ? $module : (isset($value['module_name']) ? $value['module_name'] : ''),
+                /*'Detalle' => "Ley nueva decreto 2000 art 14 fht hghrth fgherjy sdgsd fgfhfgh hf hdfgj fhfhdfg ghfghf hf hfhdfgjgf sfhfdjdfg sghfjdfgh dfuadfsdfh sdkjflsjf lsdhflsdjkf lsdbfhlsdfbh jkdhfbkljdfh lskdfsldfj"*/
             ]);
         }
 
