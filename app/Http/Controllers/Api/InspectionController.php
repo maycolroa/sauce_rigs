@@ -12,6 +12,9 @@ use App\Models\IndustrialSecure\DangerousConditions\Inspections\InspectionItemsQ
 use App\Models\LegalAspects\Contracts\Qualifications;
 use App\Facades\ActionPlans\Facades\ActionPlan;
 use App\Http\Requests\Api\InspectionsRequest;
+use App\Http\Requests\Api\InspectionsCreateRequest;
+use App\Http\Requests\Api\InspectionQualificationsRequest;
+use App\Http\Requests\Api\ImageInspectionRequest;
 use Validator;
 use Carbon\Carbon;
 use DB;
@@ -100,38 +103,33 @@ class InspectionController extends ApiController
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function create(Request $request)
+    public function create(InspectionsCreateRequest $request)
     {
-        if (!$this->user->hasRole(['admin', 'company_admin', 'company_supervisor'])) {
+        /*if (!$this->user->hasRole(['admin', 'company_admin', 'company_supervisor'])) {
             return response(json_encode([
                 'response' => 'error',
                 'data' => 'No autorizado'
             ]), 401);
-        }
+        }*/
 
-        if (!$request->has('id'))
-        {
-            return response(json_encode([
-                'response' => 'error',
-                'data' => 'ID de la inspección requerido'
-            ]), 422);
-        }
+        $inspection = Inspection::query();
+        $inspection->company_scope = $request->company_id;
+        $inspection = $inspection->find($request->inspection_id);
 
-        $inspection = Inspection::find($request->get('id'));
         $data = [];
 
         if ($inspection)
         {
             $data['id'] = $inspection->id;
             $data['name'] = $inspection->name;
-            $data['created_at'] = $inspection->created_at != '' ? \Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $inspection->created_at)->toDateString() : '';
+            $data['created_at'] = $inspection->created_at != '' ? Carbon::createFromFormat('Y-m-d H:i:s', $inspection->created_at)->toDateString() : '';
             $data['sections'] = [];
 
-            foreach ($inspection->sections as $keySection => $section)
+            foreach ($inspection->themes as $keyThemes => $theme)
             {
                 $tmp_items = [];
 
-                foreach($section->items as $keyItem => $item)
+                foreach($theme->items as $keyItem => $item)
                 {
                     $tmp_items[] = [
                         'id' => $item->id,
@@ -139,201 +137,21 @@ class InspectionController extends ApiController
                     ];
                 }
 
-                $data['sections'][] = [
-                    'id' => $section->id,
-                    'name' => $section->name,
+                $data['themes'][] = [
+                    'id' => $theme->id,
+                    'name' => $theme->name,
                     'items' => $tmp_items
                 ];
             }
         }
         else
         {
-            return response(json_encode([
-                'response' => 'error',
-                'data' => 'Inspección no encontrada'
-            ]), 404);
+            return $this->respondWithError('Inspección no encontrada');
         }
 
-        return response(json_encode([
-            'response' => 'ok',
+        return $this->respondHttp200([
             'data' => $data
-        ], JSON_UNESCAPED_UNICODE), 200);
-    }
-
-    /**
-     * Stores the images of a given report.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        if (!$this->user->hasRole(['admin', 'company_admin', 'company_supervisor'])) {
-            return response(json_encode([
-                'response' => 'error',
-                'data' => 'No autorizado'
-            ]), 401);
-        }
-
-        $validator = Validator::make($request->all(), [
-            'inspection_id' => 'required',
-            'items' => 'required',
-            'area_id' => 'required',
-            'location_id' => 'required',
         ]);
-
-        if ($validator->fails()) {
-            return response(json_encode([
-                'response' => 'error',
-                'errors' => $validator->messages()
-            ]), 422);
-        }
-
-        $inspection = Inspection::find($request->get('inspection_id'));
-
-        if (!$inspection)
-        {
-            return response(json_encode([
-                'response' => 'error',
-                'data' => 'Inspección no encontrada'
-            ]), 404);
-        }
-
-        DB::beginTransaction();
-
-        $qualifier_id = $this->user->id;
-        $area_id = $request->area_id;
-        $location_id = $request->location_id;
-        $qualification_date = date('Y-m-d H:i:s');
-
-        try
-        {
-            $activitiesNew = [];
-
-            foreach ($request->get('items') as $key => $value)
-            {
-                $item = new InspectionItemsQualificationAreaLocation();
-                $item->item_id = $value["item_id"];
-                $item->qualification_id = $value["qualification_id"];
-                $item->find = isset($value["find"]) ? $value["find"] : '';
-                $item->qualification_date = $qualification_date;
-                $item->qualifier_id = $qualifier_id;
-                $item->area_id = $area_id;
-                $item->location_id = $location_id;
-                $item->save();
-
-                if ($item)
-                {
-                    if (isset($value["actions"]) && is_array($value["actions"]) && COUNT($value["actions"]) > 0)
-                    {
-                        foreach ($value["actions"] as $keyAction => $valueAction)
-                        {
-                            $action = new InspectionActionPlan();                            
-                            $action->description = isset($valueAction["description"]) ? $valueAction["description"] : null;
-                            $action->watch_date = isset($valueAction["watch_date"]) ? \Carbon\Carbon::parse($valueAction["watch_date"])->toDateTimeString() : null;
-                            $action->exec_date = isset($valueAction["exec_date"]) ? \Carbon\Carbon::parse($valueAction["exec_date"])->toDateTimeString() : null;
-                            $action->responsible_id = isset($valueAction["responsible_id"]) ? $valueAction["responsible_id"] : null;
-                            $action->state = isset($valueAction["state"]) ? $valueAction["state"] : null;
-                            $action->qualification_item_id = $item->id;
-                            $action->save();
-
-                            $data = $action->toArray();
-                            $data['section'] = $item->item->section->name;
-                            $data['item'] = $item->item->description;
-
-                            array_push($activitiesNew, $data);
-                        }
-                    }
-                }
-            }
-
-            //Envio de corre
-            if(!$this->user->hasRole('company_supervisor')){
-                ActionPlanInspection::sendMail($inspection->id, $item->id, collect($activitiesNew), $this->user->id, $this->user->company_id, url("/inspections/itemDetail/{$item->id}"));
-            }
-
-            DB::commit();
-            
-
-        } catch (\Exception $e) {
-            DB::rollback();
-            \Log::error($e);
-            return response(json_encode([
-                'response' => 'error',
-                'data' => 'No se realizo la calificación',
-            ], JSON_UNESCAPED_UNICODE), 500);
-        }
-
-        return json_encode([
-            'response' => 'ok',
-            'data' => base64_encode($qualification_date),
-        ], JSON_UNESCAPED_UNICODE);
-    }
-
-        /**
-     * Stores the images of a given report.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function imageItem(Request $request)
-    {
-        if (!$this->user->hasPermission('create_reports')) {
-            return response(json_encode([
-                'response' => 'error',
-                'data' => 'No autorizado'
-            ]), 401);
-        }
-        $validator = Validator::make($request->all(), [
-          'image' => 'required',
-          'item_id' => 'required',
-          'area_id' => 'required',
-          'location_id' => 'required',
-          'key' => 'required'
-      ]);
-
-        $image = $request->input('image');
-        $item = InspectionItemsQualificationAreaLocation::where('item_id',$request->item_id)
-                ->where('area_id',$request->area_id)->where('location_id',$request->location_id)->where('qualification_date', base64_decode($request->key))->first();
-
-        if($item["photo_".$image] != null){
-            return json_encode([
-              'response' => 'ok',
-              'data' => 'Este item ya tiene la imagen '.$image,
-          ], JSON_UNESCAPED_UNICODE);
-        };
-
-        if (!$request->hasFile('file')) {
-            return response(json_encode([
-                    'response' => 'error',
-                    'data' => 'No se envio imagen',
-                ], JSON_UNESCAPED_UNICODE), 500);
-        }
-
-        if (!$request->file('file')->isValid()) {
-            return response(json_encode([
-                    'response' => 'error',
-                    'data' => 'Imagen inválida',
-                ], JSON_UNESCAPED_UNICODE), 500);
-        }
-
-       
-        $fileName = md5($request->file('file')->getClientOriginalName() . \Carbon\Carbon::now()) . $item->id . 'image_' . $image . '.' . $request->file('file')->getClientOriginalExtension();
-        $item->image($image, $fileName);
-
-        if (!$item->save()) {
-            return response(json_encode([
-                'response' => 'error',
-                'data' => 'Hubo un problema guardando el reporte',
-            ], JSON_UNESCAPED_UNICODE), 500);
-        }
-        Storage::disk('s3')->put('inspections_images/'.$fileName,
-                        file_get_contents($request->file('file')->getRealPath()),'public');
-        
-        return json_encode([
-            'response' => 'ok',
-            'data' => 'Reporte guardado correctamente',
-        ], JSON_UNESCAPED_UNICODE);
     }
 
     /**
@@ -343,14 +161,14 @@ class InspectionController extends ApiController
      */
     public function qualificationsList()
     {
-        if (!$this->user->hasRole(['admin', 'company_admin', 'company_supervisor'])) {
+        /*if (!$this->user->hasRole(['admin', 'company_admin', 'company_supervisor'])) {
             return response(json_encode([
                 'response' => 'error',
                 'data' => 'No autorizado'
             ]), 401);
-        }
+        }*/
         
-        $qualifications = Qualification::where('state', 1)->get();
+        $qualifications = Qualifications::all();
 
         $data = [];
 
@@ -363,12 +181,136 @@ class InspectionController extends ApiController
                 ];
         }
 
-        return response(json_encode([
-            'response' => 'ok',
+        return $this->respondHttp200([
             'data' => $data
-        ], JSON_UNESCAPED_UNICODE), 200);
+        ]);
     }
 
+    /**
+     * Stores the images of a given report.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function store(InspectionQualificationsRequest $request)
+    {
+        /*if (!$this->user->hasRole(['admin', 'company_admin', 'company_supervisor'])) {
+            return response(json_encode([
+                'response' => 'error',
+                'data' => 'No autorizado'
+            ]), 401);
+        }*/
+
+        $inspection = Inspection::query();
+        $inspection->company_scope = $request->company_id;
+        $inspection = $inspection->find($request->inspection_id);
+
+        if (!$inspection)
+        {
+           return $this->respondWithError('Inspección no encontrada');
+        }
+
+        try
+        {
+            DB::beginTransaction();
+
+            $qualifier_id = $this->user->id;
+            $employee_area_id = $request->employee_area_id;
+            $employee_headquarter_id = $request->employee_headquarter_id;
+            $qualification_date = date('Y-m-d H:i:s');
+
+            foreach ($request->items as $key => $value)
+            {
+                $item = new InspectionItemsQualificationAreaLocation();
+                $item->item_id = $value["item_id"];
+                $item->qualification_id = $value["qualification_id"];
+                $item->find = isset($value["find"]) ? $value["find"] : '';
+                $item->qualification_date = $qualification_date;
+                $item->qualifier_id = $qualifier_id;
+                $item->employee_area_id = $employee_area_id;
+                $item->employee_headquarter_id = $employee_headquarter_id;
+                $item->save();
+
+                ActionPlan::
+                  user($this->user)
+                ->module('dangerousConditions')
+                ->url(url('/administrative/actionplans'))
+                ->model($item)
+                ->activities($value["actionPlan"])
+                ->company($request->company_id)
+                ->save()
+                ->sendMail();
+            }
+
+            DB::commit();
+
+        } catch (\Exception $e) {
+          \Log::info($e->getMessage());
+          DB::rollback();
+          return $this->respondHttp500();
+        }
+
+        return $this->respondHttp200([
+            'data' => base64_encode($qualification_date)
+        ]);
+    }
+
+        /**
+     * Stores the images of a given report.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function imageItem(ImageInspectionRequest $request)
+    {
+        /*if (!$this->user->hasPermission('create_reports')) {
+            return response(json_encode([
+                'response' => 'error',
+                'data' => 'No autorizado'
+            ]), 401);
+        }*/
+
+        $image1 = $request->photo_1;
+        $image2 = $request->photo_2;
+
+        $item = InspectionItemsQualificationAreaLocation::where('item_id',$request->item_id)
+                ->where('employee_area_id',$request->employee_area_id)
+                ->where('employee_headquarter_id',$request->employee_headquarter_id)
+                ->where('qualification_date', base64_decode($request->key))
+                ->first();
+
+        if($item["photo_1"] != null)
+        {
+            return $this->respondHttp200([
+            'message' => 'ESte item ya tiene la imagen 1'
+            ]);
+        };
+
+        if($item["photo_2"] != null)
+        {
+            return $this->respondHttp200([
+            'message' => 'ESte item ya tiene la imagen 2'
+            ]);
+        };
+       
+        $fileName1 = md5($image1->getClientOriginalName() . Carbon::now()) . $item->id . 'image_1' . '.' . $image1->getClientOriginalExtension();
+
+        $fileName2 = md5($image2->getClientOriginalName() . Carbon::now()) . $item->id . 'image_2' . '.' . $image2->getClientOriginalExtension();
+
+        $item->photo_1 = $fileName1;
+        $item->photo_2 = $fileName2;
+
+        if (!$item->save()) {
+            return $this->respondHttp500();
+        }
+
+        Storage::disk('s3_DConditions')->put('inspections_images/'.$fileName1, $image1, 'public');
+        Storage::disk('s3_DConditions')->put('inspections_images/'.$fileName2, $image2, 'public');
+        
+        return $this->respondHttp200([
+            'data' => 'Reporte guardado correctamente'
+        ]);
+    }
 
     /**
      * Get the list of inspeccions quelified for user
@@ -410,7 +352,7 @@ class InspectionController extends ApiController
                     'name' => $inspection->name,
                     'area' => $inspectionReady->area,
                     'location' => $inspectionReady->location,
-                    'qualification_date' => $inspectionReady->qualification_date != '' ? \Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $inspectionReady->qualification_date)->toDateString() : '',
+                    'qualification_date' => $inspectionReady->qualification_date != '' ? Carbon::createFromFormat('Y-m-d H:i:s', $inspectionReady->qualification_date)->toDateString() : '',
                     'sections' => []
             ];
             

@@ -585,6 +585,66 @@ class UserController extends Controller
         return $this->multiSelectFormat($users);
     }
 
+    public function multiselectUsersActionPlan(Request $request)
+    {
+        $users = User::selectRaw("
+                    sau_users.id as id,
+                    sau_users.name as name
+                ")->active();
+
+        if ($this->user->hasRole('Arrendatario', $this->team) || $this->user->hasRole('Contratista', $this->team))
+        {
+            $users->join('sau_user_information_contract_lessee', 'sau_user_information_contract_lessee.user_id', 'sau_users.id')
+                  ->where('sau_user_information_contract_lessee.information_id', $this->getContractIdUser($this->user->id));
+        }
+        else
+        {
+            $users->join('sau_company_user', 'sau_company_user.user_id', 'sau_users.id');
+        }
+
+        if($request->has('keyword'))
+        {
+            $keyword = "%{$request->keyword}%";
+
+            $users = $users->where(function ($query) use ($keyword) {
+                        $query->orWhere('sau_users.name', 'like', $keyword);
+                    })->get();
+                    //->take(30)->pluck('id', 'name');
+
+            $isSuper = $this->user->hasRole('Superadmin', $this->team);
+
+            if (!$isSuper)
+            {
+                $users = $users->filter(function ($user, $key) {
+                    return !$user->hasRole('Superadmin', $this->team);
+                });
+            }
+
+            $users = $users->take(30)->pluck('id', 'name');
+
+            return $this->respondHttp200([
+                'options' => $this->multiSelectFormat($users)
+            ]);
+        }
+        else
+        {
+            $users = $users->get();
+
+            $isSuper = $this->user->hasRole('Superadmin', $this->team);
+
+            if (!$isSuper)
+            {
+                $users = $users->filter(function ($user, $key) {
+                    return !$user->hasRole('Superadmin', $this->team);
+                });
+            }
+
+            $users = $users->pluck('id', 'name');
+
+            return $this->multiSelectFormat($users);
+        }
+    }
+
     public function addUserOtherCompany(UserOtherCompanyRequest $request)
     {
         DB::beginTransaction();

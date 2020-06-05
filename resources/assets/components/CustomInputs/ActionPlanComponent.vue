@@ -112,7 +112,7 @@ export default {
     data() {
         return {
             search: '',
-            userDataUrl: '/selects/users'
+            userDataUrl: '/selects/usersActionPlan'
         };
     },
     created() {

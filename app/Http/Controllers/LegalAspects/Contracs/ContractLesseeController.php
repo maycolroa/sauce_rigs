@@ -196,14 +196,14 @@ class ContractLesseeController extends Controller
         {
             $contract = ContractLesseeInformation::findOrFail($id);
 
-            foreach ($contract->documents as $document)
+            /*foreach ($contract->documents as $document)
             {
                 $document->key = Carbon::now()->timestamp + rand(1,10000);
             }
 
             $contract->delete = [
                 'documents' => []
-            ];
+            ];*/
 
             $high_risk_type_id = [];
 

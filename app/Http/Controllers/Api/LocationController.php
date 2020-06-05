@@ -9,6 +9,7 @@ use App\Models\General\Company;
 use App\Models\Administrative\Users\User;
 use App\Facades\General\PermissionService;
 use App\Traits\LocationFormTrait;
+use App\Traits\UtilsTrait;
 use App\Models\Administrative\Regionals\EmployeeRegional;
 use App\Models\Administrative\Headquarters\EmployeeHeadquarter;
 use App\Models\Administrative\Processes\EmployeeProcess;
@@ -17,6 +18,8 @@ use Auth;
 
 class LocationController extends ApiController
 {
+    use UtilsTrait;
+    
     public function __construct()
     {
         $this->middleware('auth:api');
@@ -26,6 +29,8 @@ class LocationController extends ApiController
     public function levelLocation(CompanyRequiredRequest $request)
     {    
         $location = $this->getLocationFormConfModule($request->company_id);
+
+        $keywords = $this->getKeywordQueue($request->company_id);
 
         $level = "";
 
@@ -40,10 +45,10 @@ class LocationController extends ApiController
 
         $result = collect([]);
         $result->put('level_info', [
-            '1. Regional',
-            '2. Sede',
-            '3. Proceso',
-            '4. Área'
+            '1. '.$keywords['regional'],
+            '2. '.$keywords['headquarter'],
+            '3. '.$keywords['process'],
+            '4. '.$keywords['area']
         ]);
 
         $result->put('level', $level);

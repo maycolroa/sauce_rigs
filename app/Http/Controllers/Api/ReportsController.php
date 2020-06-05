@@ -155,6 +155,8 @@ class ReportsController extends ApiController
             
         DB::commit();
 
+        $report->actionPlan = ActionPlan::getActivities();
+
       } catch (\Exception $e) {
           \Log::info($e->getMessage());
           DB::rollback();
@@ -286,9 +288,12 @@ class ReportsController extends ApiController
       try
       {
         $company = Company::find($request->company_id);
+
+        if (!$company->ph_state_incentives)
+          return $this->respondWithError('No tiene incentivos activos');
         
-        if (!$company->ph_file_incentives || !$company->ph_state_incentives)
-          return $this->respondHttp200();
+        if (!$company->ph_file_incentives)
+          return $this->respondWithError('No ha cargado incentivos');
 
         $headers = array(
           'Content-Type: application/pdf',
