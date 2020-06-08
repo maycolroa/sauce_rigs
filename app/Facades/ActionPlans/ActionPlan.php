@@ -145,6 +145,14 @@ class ActionPlan
      */
     private $daysAlertExpirationDate;
 
+    /**
+     * Undocumented variable
+     *
+     * @var String
+     * @var Interger
+     */
+    private $details;
+
     public function __construct()
     {
         $this->states = Configuration::getConfiguration('action_plans_states');
@@ -374,6 +382,12 @@ class ActionPlan
         return $this;
     }
 
+    public function details($details)
+    {
+        $this->details = $details;
+        return $this;
+    }
+
     /**
      * Assign the creation date of the main record that contains all the activities
      * 
@@ -500,7 +514,7 @@ class ActionPlan
             $tmp['oldDescription'] = $value->activity->description;
             $tmp['responsible_id'] = $value->activity->responsible_id;
             $tmp['oldResponsible_id'] = $value->activity->responsible_id;
-            $tmp['multiselect_responsible'] = $value->activity->responsible->multiselect();
+            $tmp['multiselect_responsible'] = $value->activity->responsible->multiselectActionPlan();
             $tmp['user_id'] = $value->activity->user_id;
             $tmp['execution_date'] = ($value->activity->execution_date) ? (Carbon::createFromFormat('Y-m-d', $value->activity->execution_date))->format('D M d Y') : '';
             $tmp['oldExecution_date'] = ($value->activity->execution_date) ? (Carbon::createFromFormat('Y-m-d', $value->activity->execution_date))->format('D M d Y') : '';
@@ -554,7 +568,7 @@ class ActionPlan
             $tmp['oldDescription'] = $activity->description;
             $tmp['responsible_id'] = $activity->responsible_id;
             $tmp['oldResponsible_id'] = $activity->responsible_id;
-            $tmp['multiselect_responsible'] = $activity->responsible->multiselect();
+            $tmp['multiselect_responsible'] = $activity->responsible->multiselectActionPlan();
             $tmp['user_id'] = $activity->user_id;
             $tmp['execution_date'] = ($activity->execution_date) ? (Carbon::createFromFormat('Y-m-d', $activity->execution_date))->format('D M d Y') : '';
             $tmp['oldExecution_date'] = ($activity->execution_date) ? (Carbon::createFromFormat('Y-m-d', $activity->execution_date))->format('D M d Y') : '';
@@ -921,6 +935,9 @@ class ActionPlan
         if ($this->creationDate)
             array_push($list, 'Fecha de creación: '.$this->creationDate);
 
+        if ($this->details)
+            array_push($list, $this->details);
+
         return $list;
     }
 
@@ -935,8 +952,7 @@ class ActionPlan
                 'Fecha Ejecución' => ($value['execution_date']) ? Carbon::createFromFormat($format, $value['execution_date'])->toFormattedDateString() : '',
                 'Estado' => $value['state'],
                 'Descripción' => $value['description'],
-                'Módulo' => $module ? $module : (isset($value['module_name']) ? $value['module_name'] : ''),
-                /*'Detalle' => "Ley nueva decreto 2000 art 14 fht hghrth fgherjy sdgsd fgfhfgh hf hdfgj fhfhdfg ghfghf hf hfhdfgjgf sfhfdjdfg sghfjdfgh dfuadfsdfh sdkjflsjf lsdhflsdjkf lsdbfhlsdfbh jkdhfbkljdfh lskdfsldfj"*/
+                'Módulo' => $module ? $module : (isset($value['module_name']) ? $value['module_name'] : '')
             ]);
         }
 

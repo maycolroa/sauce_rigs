@@ -178,11 +178,27 @@ class InspectionQualificationController extends Controller
 
             $qualification = InspectionItemsQualificationAreaLocation::findOrFail($request->id_item_qualification);
 
+            $inspection = $qualification->item->section->inspection;
+            $theme = $qualification->item->section;
+            $item = $qualification->item;
+
+            $details = 'Inspección: ' . $inspection->name . ' - ' . $theme->name . ' - ' . $item->description;
+
+            $regionals = $inspection->regionals ? $inspection->regionals->implode('name', ', ') : null;
+            $headquarters =  $inspection->headquarters ? $inspection->headquarters->implode('name', ', ') : null;
+            $processes = $inspection->processes ? $inspection->processes->implode('name', ', ') : null;
+            $areas = $inspection->areas ? $inspection->areas->implode('name', ', ') : null;
+
             ActionPlan::
                     user($this->user)
                 ->module('dangerousConditions')
                 ->url(url('/administrative/actionplans'))
                 ->model($qualification)
+                ->regional($regionals)
+                ->headquarter($headquarters)
+                ->area($areas)
+                ->process($processes)
+                ->details($details)
                 ->activities($request->actionPlan)
                 ->save();
 
