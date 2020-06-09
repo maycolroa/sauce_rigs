@@ -158,6 +158,28 @@ class ActionPlan
         $this->states = Configuration::getConfiguration('action_plans_states');
     }
 
+    public function restart()
+    {
+        $this->module = null;
+        $this->url = null;
+        $this->model = null;
+        $this->regional = null;
+        $this->headquarter = null;
+        $this->area = null;
+        $this->process = null;
+        $this->activities = null;
+        $this->company = null;
+        $this->details = null;
+        $this->states = null;
+        $this->prefixIndex = null;
+        $this->user = null;
+        $this->activitiesNew = [];
+        $this->activitiesReady = [];
+        $this->creationDate = null;
+        $this->daysAlertExpirationDate = null;
+
+    }
+
     /**
      * Process of the main register that contains all the activities
      *
@@ -249,7 +271,7 @@ class ActionPlan
      * @return $this
      */
     public function activities($activities)
-    {
+    {        
         if (empty($activities) || !$this->is_assoc($activities) || !isset($activities['activities']) || !isset($activities['activitiesRemoved']))
             throw new \Exception('The format of the activities is incorrect');
         
@@ -771,6 +793,7 @@ class ActionPlan
             $this->activities['activities'][$keyItem]['oldState'] = $activity->state;
             $this->activities['activities'][$keyItem]['oldObservation'] = $activity->observation;
             $this->activities['activities'][$keyItem]['oldResponsible_id'] = $activity->responsible_id;
+            $this->activities['activities'][$keyItem]['user_id'] = $activity->user_id;
 
         }
         

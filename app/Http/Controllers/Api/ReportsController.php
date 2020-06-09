@@ -130,9 +130,21 @@ class ReportsController extends ApiController
       {
         if ($request->id)
         {
-          $report = Report::query();
+          $report = Report::select(
+          'sau_ph_reports.*',
+          'sau_employees_regionals.name AS regionals',
+          'sau_employees_headquarters.name AS sede',
+          'sau_employees_processes.name AS proceso',
+          'sau_employees_areas.name AS areas'
+          )
+          ->join('sau_employees_regionals', 'sau_employees_regionals.id', 'sau_ph_reports.employee_regional_id')
+          ->join('sau_employees_headquarters', 'sau_employees_headquarters.id', 'sau_ph_reports.employee_headquarter_id')
+          ->join('sau_employees_processes', 'sau_employees_processes.id', 'sau_ph_reports.employee_process_id')
+          ->join('sau_employees_areas', 'sau_employees_areas.id', 'sau_ph_reports.employee_area_id')
+          ->where('sau_ph_reports.id', $request->id);
+
           $report->company_scope = $request->company_id;
-          $report = $report->findOrFail($request->id);
+          $report = $report->first();
         }
         else
           $report = new Report();
@@ -143,7 +155,24 @@ class ReportsController extends ApiController
         if (!$report->save())
             return $this->respondHttp500();
 
+        $details = $report->condition->conditionType->description. ': ' . $report->condition->description;
+
         ActionPlan::
+                user($this->user)
+            ->module('dangerousConditions')
+            ->url(url('/administrative/actionplans'))
+            ->model($report)
+            ->regional($report->regionals ? $report->regionals : null)
+            ->headquarter($report->sede ? $report->sede : null)
+            ->area($report->areas ? $report->areas : null)
+            ->process($report->proceso ? $report->proceso : null)
+            ->details($details)
+            ->activities($request->actionPlan)
+            ->company($request->company_id)
+            ->save()
+            ->sendMail();
+
+        /*ActionPlan::
               user($this->user)
           ->module('dangerousConditions')
           ->url(url('/administrative/actionplans'))
@@ -151,7 +180,7 @@ class ReportsController extends ApiController
           ->activities($request->actionPlan)
           ->company($request->company_id)
           ->save()
-          ->sendMail();
+          ->sendMail();*/
             
         DB::commit();
 
