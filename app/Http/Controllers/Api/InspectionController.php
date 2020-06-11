@@ -201,9 +201,30 @@ class InspectionController extends ApiController
             ]), 401);
         }*/
 
-        $inspection = Inspection::query();
+        $inspection = Inspection::selectRaw("
+          sau_ph_inspections.*,
+          GROUP_CONCAT(DISTINCT sau_employees_headquarters.name ORDER BY sau_employees_headquarters.name ASC) AS sede,
+          GROUP_CONCAT(DISTINCT sau_employees_areas.name ORDER BY sau_employees_areas.name ASC) AS area,
+          GROUP_CONCAT(DISTINCT sau_employees_regionals.name ORDER BY sau_employees_regionals.name ASC) AS regional,
+          GROUP_CONCAT(DISTINCT sau_employees_processes.name ORDER BY sau_employees_processes.name ASC) AS proceso")
+        ->leftJoin('sau_ph_inspection_headquarter', 'sau_ph_inspection_headquarter.inspection_id', 'sau_ph_inspections.id')
+        ->leftJoin('sau_ph_inspection_area', 'sau_ph_inspection_area.inspection_id', 'sau_ph_inspections.id')
+        ->leftJoin('sau_employees_headquarters', 'sau_employees_headquarters.id', 'sau_ph_inspection_headquarter.employee_headquarter_id')
+        ->leftJoin('sau_employees_areas', 'sau_employees_areas.id', 'sau_ph_inspection_area.employee_area_id')
+        ->leftJoin('sau_ph_inspection_regional', 'sau_ph_inspection_regional.inspection_id', 'sau_ph_inspections.id')
+        ->leftJoin('sau_ph_inspection_process', 'sau_ph_inspection_process.inspection_id', 'sau_ph_inspections.id')
+        ->leftJoin('sau_employees_regionals', 'sau_employees_regionals.id', 'sau_ph_inspection_regional.employee_regional_id')
+        ->leftJoin('sau_employees_processes', 'sau_employees_processes.id', 'sau_ph_inspection_process.employee_process_id')
+        ->where('sau_ph_inspections.id', $request->inspection_id)
+        ->groupBy('sau_ph_inspections.id');
+
         $inspection->company_scope = $request->company_id;
-        $inspection = $inspection->find($request->inspection_id);
+        $inspection = $inspection->first();
+
+        $regionals = $inspection->regional ? $inspection->regional : null;
+        $headquarters =  $inspection->sede ? $inspection->sede : null;
+        $processes = $inspection->proceso ? $inspection->proceso : null;
+        $areas = $inspection->area ? $inspection->area : null;
 
         if (!$inspection)
         {
@@ -231,7 +252,34 @@ class InspectionController extends ApiController
                 $item->employee_headquarter_id = $employee_headquarter_id;
                 $item->save();
 
+                $theme = $item->item->section;
+                $itemName = $item->item;
+
+                if ($value["actionPlan"]["activities"])
+                {
+                    $details = 'Inspección: ' . $inspection->name . ' - ' . $theme->name . ' - ' . $itemName->description;
+                }
+
                 ActionPlan::
+                    user($this->user)
+                ->module('dangerousConditions')
+                ->url(url('/administrative/actionplans'))
+                ->model($item)
+                ->regional($regionals)
+                ->headquarter($headquarters)
+                ->area($areas)
+                ->process($processes)
+                ->activities($value["actionPlan"])                
+                ->company($request->company_id);
+
+                if ($details)
+                    ActionPlan::details($details);
+
+                ActionPlan::save()->sendMail();
+
+                ActionPlan::restart();
+
+                /*ActionPlan::
                   user($this->user)
                 ->module('dangerousConditions')
                 ->url(url('/administrative/actionplans'))
@@ -239,7 +287,7 @@ class InspectionController extends ApiController
                 ->activities($value["actionPlan"])
                 ->company($request->company_id)
                 ->save()
-                ->sendMail();
+                ->sendMail();*/
             }
 
             DB::commit();

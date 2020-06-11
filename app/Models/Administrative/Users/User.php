@@ -92,6 +92,14 @@ class User extends Authenticatable
     public function multiselect()
     {
         return [
+          'name' => "{$this->document} - {$this->name}",
+          'value' => $this->id
+        ];
+    }
+
+    public function multiselectActionPlan()
+    {
+        return [
           'name' => "{$this->name}",
           'value' => $this->id
         ];

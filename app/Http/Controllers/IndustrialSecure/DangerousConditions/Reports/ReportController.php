@@ -359,11 +359,18 @@ class ReportController extends Controller
 
             $report = Report::findOrFail($request->id);
 
+            $details = $report->condition->conditionType->description. ': ' . $report->condition->description;
+
             ActionPlan::
                     user($this->user)
                 ->module('dangerousConditions')
                 ->url(url('/administrative/actionplans'))
                 ->model($report)
+                ->regional($report->regional ? $report->regional->name : null)
+                ->headquarter($report->headquarter ? $report->headquarter->name : null)
+                ->area($report->area ? $report->area->name : null)
+                ->process($report->process ? $report->process->name : null)
+                ->details($details)
                 ->activities($request->actionPlan)
                 ->save();
 
