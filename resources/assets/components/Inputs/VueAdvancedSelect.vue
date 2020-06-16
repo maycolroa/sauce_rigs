@@ -74,7 +74,7 @@ export default {
     textBlock: { type: String },
     actionBlock: { type: String },
     btnLabelPopover: { type: Object },
-    limit: { type: Number, default: 5 },
+    limit: { type: Number, default:1000 },
     closeOnSelect: {type: Boolean, default: true},
     taggable: {type: Boolean, default: false},
     filterTypeSearch: { type: Boolean, default: false },

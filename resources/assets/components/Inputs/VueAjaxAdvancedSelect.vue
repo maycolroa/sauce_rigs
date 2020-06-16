@@ -23,7 +23,7 @@
                          :searchable="true"
                          :loading="isLoading"
                          :close-on-select="!multiple"
-                        :limit="5"
+                        :limit="limit"
                         :limit-text="limitText"
                         :class="state"
                         tag-placeholder="Añadir esto como nueva etiqueta"
@@ -52,6 +52,7 @@ export default {
         placeholder: { type: String, default: '' },
         multiple: { type: Boolean, default: false },
         textBlock: {type: String},
+        limit: { type: Number, default:1000 },
         actionBlock: {type: String},
         url: { type: String, required: true },
         selectedObject: { type: [Object, Array] },
