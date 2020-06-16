@@ -357,7 +357,21 @@ export default {
 
       if (this.form.articles)
       {
-        return this.form.articles.slice(0, this.limitShowArticles);
+        let range = 0;
+        let count = 0;
+        //this.showArticle
+        for (let i = 0; i < this.form.articles.length; i++)
+        {
+          count += this.showArticle(this.form.articles[i]) ? 1 : 0;
+          range++;
+          console.log(count)
+          if (count == this.limitShowArticles)
+            break;
+        }
+        console.log(range)
+        this.limitShowArticles = range;
+        return this.form.articles.slice(0, range);
+        //return this.form.articles.slice(0, this.limitShowArticles);
       }
       
       return []
