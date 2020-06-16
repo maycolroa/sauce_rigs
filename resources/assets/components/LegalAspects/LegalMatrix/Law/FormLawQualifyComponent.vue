@@ -364,11 +364,9 @@ export default {
         {
           count += this.showArticle(this.form.articles[i]) ? 1 : 0;
           range++;
-          console.log(count)
           if (count == this.limitShowArticles)
             break;
         }
-        console.log(range)
         this.limitShowArticles = range;
         return this.form.articles.slice(0, range);
         //return this.form.articles.slice(0, this.limitShowArticles);
