@@ -81,48 +81,21 @@ class ConfigurationController extends ApiController
         {
             $users->join('sau_company_user', 'sau_company_user.user_id', 'sau_users.id');
         }
+        
+        $users = $users->get();
 
-        if($request->has('keyword'))
+        $isSuper = $this->user->hasRole('Superadmin', $this->team);
+
+        if (!$isSuper)
         {
-            $keyword = "%{$request->keyword}%";
-
-            $users = $users->where(function ($query) use ($keyword) {
-                        $query->orWhere('sau_users.name', 'like', $keyword);
-                    })->get();
-                    //->take(30)->pluck('id', 'name');
-
-            $isSuper = $this->user->hasRole('Superadmin', $this->team);
-
-            if (!$isSuper)
-            {
-                $users = $users->filter(function ($user, $key) {
-                    return !$user->hasRole('Superadmin', $this->team);
-                });
-            }
-
-            $users = $users->take(30)->pluck('id', 'name');
-
-            return $this->respondHttp200([
-                'options' => $this->multiSelectFormat($users)
-            ]);
+            $users = $users->filter(function ($user, $key) {
+                return !$user->hasRole('Superadmin', $this->team);
+            });
         }
-        else
-        {
-            $users = $users->get();
 
-            $isSuper = $this->user->hasRole('Superadmin', $this->team);
+        $users = $users->pluck('id', 'name');
 
-            if (!$isSuper)
-            {
-                $users = $users->filter(function ($user, $key) {
-                    return !$user->hasRole('Superadmin', $this->team);
-                });
-            }
-
-            $users = $users->pluck('id', 'name');
-
-            return $this->multiSelectFormat($users);
-        }
+        return $this->multiSelectFormat($users);
     }
 
     /**
