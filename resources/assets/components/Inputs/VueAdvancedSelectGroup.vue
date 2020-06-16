@@ -52,7 +52,7 @@ export default {
     multiple: { type: Boolean, default: false },
     textBlock: { type: String },
     actionBlock: { type: String },
-    limit: { type: Number, default: 5 },
+    limit: { type: Number, default: 1000 },
     groupSelect: {type: Boolean, default: false},
     returnObject: {type: Boolean, default: false},
     selectedObject: { type: Object },
