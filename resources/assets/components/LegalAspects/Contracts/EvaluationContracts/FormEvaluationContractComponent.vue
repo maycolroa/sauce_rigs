@@ -177,7 +177,7 @@
                                                                     <modal-file v-model="form.evaluation.objectives[index].subobjectives[index2].items[index3].files" :item-id="item.id" :view-only="viewOnly" @removeFile="pushRemoveFile" :form="form" :prefixIndex="`evaluation.objectives.${index}.subobjectives.${index2}.items.${index3}.files`"/>
                                                                     <b-btn @click="showModal(`modalPlan${index}-${index2}-${index3}`)" variant="outline-info icon-btn borderless" size="xs" v-b-tooltip.top title="Ver plan de acción"><span class="ion ion-md-paper"></span></b-btn>
                                                                     </center>
-                                                                    <b-modal :ref="`modalPlan${index}-${index2}-${index3}`" :hideFooter="true" :id="`modals-default-${index+1}${index2}${index3}`" class="modal-top" size="lg">
+                                                                    <b-modal :ref="`modalPlan${index}-${index2}-${index3}`" :hideFooter="true" :id="`modals-default-${index+1}${index2}${index3}`" class="modal-top" size="lg" @hidden="removed(index, index2, index3)">
                                                                     <div slot="modal-title">
                                                                       Plan de acción<br>
                                                                       <small class="text-muted">Crea planes de acción.</small>
@@ -420,6 +420,22 @@ export default {
         })
         .catch(error => {
           this.loading = false;
+        });
+    },
+    removed(index, index2, index3) {
+        let keys = [];
+
+        this.form.evaluation.objectives[index].subobjectives[index2].items[index3].actionPlan.activities.forEach((activity, keyAct) => {
+          if (activity.description && activity.responsible_id && activity.expiration_date && activity.state)
+          {
+            keys.push(activity);
+          }
+        });
+
+        this.form.evaluation.objectives[index].subobjectives[index2].items[index3].actionPlan.activities.splice(0);
+
+        keys.forEach((item, key) => {
+            this.form.evaluation.objectives[index].subobjectives[index2].items[index3].actionPlan.activities.push(item)
         });
     },
     fetchContractor()
