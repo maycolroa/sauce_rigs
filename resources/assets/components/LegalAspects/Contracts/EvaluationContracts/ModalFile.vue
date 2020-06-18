@@ -5,7 +5,7 @@
         </div>
 
         <!-- Modal -->
-        <b-modal ref="file" :hideFooter="true" id="modals-top" size="lg" class="modal-top">
+        <b-modal ref="file" :hideFooter="true" id="modals-top" size="lg" class="modal-top" @hidden="removed">
             <div slot="modal-title">
                 Archivos
             </div>
@@ -107,6 +107,22 @@ export default {
 
             this.value.splice(index, 1)
         },
+        removed() {
+            let keys = [];
+
+            this.value.forEach((file, keyObs) => {
+              if (file.file)
+              {
+                keys.push(file);
+              }
+            });
+
+            this.value.splice(0);
+
+            keys.forEach((item, key) => {
+                this.value.push(item)
+            });
+        }
     }
 }
 </script>

@@ -5,7 +5,7 @@
         </div>
 
         <!-- Modal -->
-        <b-modal ref="observations" :hideFooter="true" id="modals-top" size="lg" class="modal-top">
+        <b-modal ref="observations" :hideFooter="true" id="modals-top" size="lg" class="modal-top" @hidden="removed">
             <div slot="modal-title">
                 Observaciones
             </div>
@@ -100,6 +100,28 @@ export default {
 
             this.value.splice(index, 1)
         },
+        removed() {
+            let keys = [];
+
+            this.value.forEach((observation, keyObs) => {
+              if (observation.description)
+              {
+                keys.push({
+                    description: observation.description,
+                    item_id: observation.item_id
+                });
+              }
+            });
+
+            this.value.splice(0);
+
+            keys.forEach((item, key) => {
+                this.value.push({
+                    description: item.description,
+                    item_id: item.item_id
+                })
+            });
+        }
     }
 }
 </script>
