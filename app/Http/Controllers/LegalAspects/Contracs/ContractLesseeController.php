@@ -255,6 +255,9 @@ class ContractLesseeController extends Controller
             $contract = $this->getContractUser($this->user->id);
             $contract->isInformation = true;
             $contract->multiselect_contracts = [];
+            $contract->delete = [
+                'files' => []
+            ];
 
             if ($this->user->hasRole('Contratista', $this->company))
             {
@@ -387,7 +390,23 @@ class ContractLesseeController extends Controller
             {
                 $contract->completed_registration = 'SI';
 
-                $documents = $this->saveDocumentsContracts($contract, $request->documents);
+                if ($request->has('documents') && COUNT($request->documents) > 0)
+                    $this->saveDocumentsContracts($contract, $request->documents);
+
+                if ($request->has('delete'))
+                {
+                    foreach ($request->delete['files'] as $id)
+                    {
+                        $file_delete = FileUpload::find($id);
+    
+                        if ($file_delete)
+                        {
+                            $path = $file_delete->file;
+                            $file_delete->delete();
+                            Storage::disk('s3')->delete('legalAspects/files/'. $path);
+                        }
+                    }
+                }
             }
             else
             {
@@ -402,14 +421,11 @@ class ContractLesseeController extends Controller
                 $contract->activities()->sync($activitiesContract);
 
                 $responsibles = [];
-
+                
                 if($request->has('users_responsibles'))
                     $responsibles = $this->getDataFromMultiselect($request->users_responsibles);
 
                 $contract->responsibles()->sync($responsibles);
-
-                if ($request->has('documents'))
-                    $this->saveDocuments($request->documents, $contract);
             }
 
             if (!$contract->update())
@@ -420,19 +436,13 @@ class ContractLesseeController extends Controller
             foreach ($users as $user)
             {
                 $user->syncRoles([$this->getIdRole($contract->type)], $this->team);
-
-                /*if ($contract->active == 'NO')
-                {
-                    $user->active = 'NO';
-                    $user->save();
-                }*/
             }
 
             $this->reloadLiskCheckResumen($contract);
 
             DB::commit();
 
-            if (!$request->has('isInformation'))
+            if (!$request->has('isInformation') && COUNT($responsibles) > 0)
                 NotifyResponsibleContractJob::dispatch($responsibles, $request->social_reason, $this->company);
 
         } catch (\Exception $e) {
@@ -701,15 +711,17 @@ class ContractLesseeController extends Controller
 
         try
         {
-            foreach ($request->documents as $value)
+            if ($request->has('documents'))
             {
-                $id = isset($value['id']) ? $value['id'] : NULL;
-
-                $document = ContractDocument::updateOrCreate(['id'=>$id], ['company_id'=>$this->company, 'name'=>$value['name']]);
+                foreach ($request->documents as $value)
+                {
+                    $id = isset($value['id']) ? $value['id'] : NULL;
+                    ContractDocument::updateOrCreate(['id'=>$id], ['company_id'=>$this->company, 'name'=>$value['name']]);
+                }
             }
 
-            if ($request->delete)
-                $this->deleteData($request->get('delete'));
+            if ($request->has('delete'))
+                $this->deleteData($request->delete);
 
             DB::commit();
 

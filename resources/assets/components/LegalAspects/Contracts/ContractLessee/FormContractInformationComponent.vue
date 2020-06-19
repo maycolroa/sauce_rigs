@@ -95,7 +95,7 @@
 				                          <b-card no-body class="mb-2 border-secondary" :key="file.key" style="width: 100%;" >
 				                            <b-card-header class="bg-secondary">
 				                              <b-row>
-				                                <b-col cols="10" class="d-flex justify-content-between text-white"> Archivo #{{ indexFile + 1 }}</b-col>
+				                                <b-col cols="10" class="d-flex justify-content-between"> Archivo #{{ indexFile + 1 }}</b-col>
 				                                <b-col cols="2">
 				                                  <div class="float-right">
 				                                    <b-button-group>

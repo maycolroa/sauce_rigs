@@ -54,7 +54,6 @@
 
               <blockquote class="blockquote text-center" v-if="activity.documents.length > 0"><p class="mb-0">Documentos Requeridos</p></blockquote>
 
-              </b-form-row>
               <b-card bg-variant="transparent" border-variant="dark" :title="document.name" class="mb-3 box-shadow-none" v-for="(document, indexDocument) in activity.documents" :key="document.key">
                 <b-row>
                   <b-col>
@@ -71,7 +70,7 @@
                           <b-card no-body class="mb-2 border-secondary" :key="file.key" style="width: 100%;" >
                             <b-card-header class="bg-secondary">
                               <b-row>
-                                <b-col cols="10" class="d-flex justify-content-between text-white"> Archivo #{{ indexFile + 1 }}</b-col>
+                                <b-col cols="10" class="d-flex justify-content-between"> Archivo #{{ indexFile + 1 }}</b-col>
                                 <b-col cols="2">
                                   <div class="float-right">
                                     <b-button-group>

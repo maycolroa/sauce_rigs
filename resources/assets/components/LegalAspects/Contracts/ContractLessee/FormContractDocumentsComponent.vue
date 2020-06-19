@@ -23,6 +23,7 @@
 				    </b-form-row>
             	</b-card>
 
+				<br>
 				<div class="row float-right pt-10 pr-10">
                     <template>
                         <b-btn variant="default" :to="cancelUrl" :disabled="loading">{{"Cancelar"}}</b-btn>&nbsp;&nbsp;

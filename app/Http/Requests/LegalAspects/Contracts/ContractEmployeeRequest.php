@@ -21,7 +21,7 @@ class ContractEmployeeRequest extends FormRequest
     public function validator($factory)
     {
         return $factory->make(
-            $this->sanitize(), $this->container->call([$this, 'rules']), $this->messages()
+            $this->sanitize(), $this->container->call([$this, 'rules']), $this->messages(), $this->attributes()
         );
     }
 
@@ -77,6 +77,18 @@ class ContractEmployeeRequest extends FormRequest
             'email' => 'required|email',
             'name' => 'required',
             'position' => 'required',
+            'activities.*.selected' => 'required',
+            'activities.*.documents.*.files.*.name' => 'required',
+            'activities.*.documents.*.files.*.file' => 'required'
+        ];
+    }
+
+    public function attributes()
+    {
+        return [
+            'activities.*.selected' => 'Actividad',
+            'activities.*.documents.*.files.*.name' => 'Nombre',
+            'activities.*.documents.*.files.*.file' => 'Archivo'
         ];
     }
 }
