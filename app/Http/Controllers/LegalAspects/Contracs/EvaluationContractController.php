@@ -172,6 +172,10 @@ class EvaluationContractController extends Controller
         }
 
         return $this->respondHttp200([
+            'data' => $evaluation_contract
+        ]);
+
+        return $this->respondHttp200([
             'message' => 'Se realizo la evaluación'
         ]);
         
@@ -238,6 +242,10 @@ class EvaluationContractController extends Controller
 
             DB::commit();
 
+            $evaluation_base = $this->getEvaluation($evaluationContract->evaluation_id);
+
+            $data = $this->setValuesEvaluation($evaluationContract, $evaluation_base);
+
             /*if ($evaluationContract->ready())
                 $this->sendNotification($evaluationContract->id);*/
 
@@ -246,6 +254,10 @@ class EvaluationContractController extends Controller
             \Log::info($e->getMessage());
             return $this->respondHttp500();
         }
+
+        return $this->respondHttp200([
+            'data' => $data
+        ]);
 
         return $this->respondHttp200([
             'message' => 'Se actualizo la evaluación'
