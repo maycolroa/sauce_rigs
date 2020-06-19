@@ -319,7 +319,9 @@ return [
       'questions.*.description' => 'Descripción',
       'questions.*.type_question_id' => 'Tipo de pregunta',
       'questions.*.value_question' => 'Valor de la pregunta',
-      'questions.*.answers' => 'Respuesta valida'
+      'questions.*.answers' => 'Respuesta valida',
+      'high_risk_type_id' => 'Tareas de riesgos',
+      'high_risk_work' => '¿La empresa realiza tareas de alto riesgo?'
     ],
 
 ];

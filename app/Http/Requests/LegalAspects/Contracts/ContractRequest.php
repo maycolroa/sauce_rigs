@@ -20,7 +20,7 @@ class ContractRequest extends FormRequest
     public function validator($factory)
     {
         return $factory->make(
-            $this->sanitize(), $this->container->call([$this, 'rules']), $this->messages()
+            $this->sanitize(), $this->container->call([$this, 'rules']), $this->messages(), $this->attributes()
         );
     }
 
@@ -77,7 +77,8 @@ class ContractRequest extends FormRequest
                 'business_name' => 'required|string',
                 'nit' => 'required|numeric',//unique:sau_ct_information_contract_lessee,nit,' . $id . ',id,company_id,'.Session::get('company_id'),
                 'social_reason' => 'required|string',
-                'high_risk_work' => 'required'
+                'high_risk_work' => 'required',
+                'high_risk_type_id' => 'array|required_if:high_risk_work,SI'
             ];
 
             if (!$id)
@@ -101,10 +102,20 @@ class ContractRequest extends FormRequest
                 'economic_activity_of_company' => 'required|string',
                 'arl' => 'required|string',
                 'number_workers' => 'required|integer|min:0',
-                'risk_class' => 'required'
+                'risk_class' => 'required',
+                'documents.*.files.*.name' => 'required',
+                'documents.*.files.*.file' => 'required'
             ];
         }
         
         return $rules;
+    }
+
+    public function attributes()
+    {
+        return [
+            'documents.*.files.*.name' => 'Nombre',
+            'documents.*.files.*.file' => 'Archivo'
+        ];
     }
 }
