@@ -7,9 +7,10 @@
                     <div><b>Dirección:</b> {{contractor.address}}</div>
                     <div><b>Teléfono:</b> {{contractor.phone}}</div>
                     <div><b>N° de personas que laboran en el HPTU:</b> {{contractor.number_workers}}</div>
+                    <div><b>Nombre del coordinador de gestión ambiental:</b> {{contractor.environmental_management_name}}</div>
                 </b-col>
                 <b-col>
-                    <div><b>Nombre del coordinador de gestión ambiental:</b> {{contractor.legal_representative_name}}</div>
+                    <div><b>Nombre del representante legal:</b> {{contractor.legal_representative_name}}</div>
                     <div><b>Nombre del coordinador de SST:</b> {{contractor.SG_SST_name}}</div>
                     <div><b>Actividad económica general de la empresa:</b> {{contractor.economic_activity_of_company}}</div>
                     <div><b>Clase de riesgo:</b> {{contractor.risk_class}}</div>
