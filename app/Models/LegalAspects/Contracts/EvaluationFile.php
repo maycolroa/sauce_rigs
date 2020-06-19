@@ -38,6 +38,6 @@ class EvaluationFile extends Model
 
     public function path_image()
     {
-        return Storage::disk('public')->url($this->path_donwload());
+        return Storage::disk('s3')->url($this->path_donwload());
     }
 }

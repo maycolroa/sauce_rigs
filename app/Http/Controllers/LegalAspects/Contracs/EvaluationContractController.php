@@ -161,6 +161,8 @@ class EvaluationContractController extends Controller
 
             DB::commit();
 
+            $data = $this->getEvaluationData($evaluation_contract->id);
+
             /*if ($evaluation_contract->ready())
                 $this->sendNotification($evaluation_contract->id);*/
 
@@ -172,7 +174,7 @@ class EvaluationContractController extends Controller
         }
 
         return $this->respondHttp200([
-            'data' => $evaluation_contract
+            'data' => $data
         ]);
 
         return $this->respondHttp200([
@@ -242,9 +244,7 @@ class EvaluationContractController extends Controller
 
             DB::commit();
 
-            $evaluation_base = $this->getEvaluation($evaluationContract->evaluation_id);
-
-            $data = $this->setValuesEvaluation($evaluationContract, $evaluation_base);
+            $data = $this->getEvaluationData($evaluationContract->id);
 
             /*if ($evaluationContract->ready())
                 $this->sendNotification($evaluationContract->id);*/
@@ -323,7 +323,7 @@ class EvaluationContractController extends Controller
                             {
                                 $file_tmp = $file['file'];
                                 $nameFile = base64_encode($this->user->id . now() . rand(1,10000) . $keyF) .'.'. $file_tmp->extension();
-                                $file_tmp->storeAs($fileUpload->path_client(false), $nameFile, 'public');
+                                $file_tmp->storeAs($fileUpload->path_client(false), $nameFile, 's3');
                                 $fileUpload->file = $nameFile;
                             }
 
@@ -376,29 +376,7 @@ class EvaluationContractController extends Controller
     {
         try
         {
-            $evaluationContract = EvaluationContract::findOrFail($id);
-            $evaluationContract->multiselect_contract_id = $evaluationContract->contract->multiselect();
-            
-            $evaluators_id = [];
-
-            foreach ($evaluationContract->evaluators as $key => $value)
-            {
-                array_push($evaluators_id, $value->multiselect());
-            }
-
-            $evaluationContract->evaluators_id = $evaluators_id;
-            $evaluationContract->multiselect_evaluators_id = $evaluators_id;
-
-            $evaluationContract->interviewees;
-            
-            $evaluation_base = $this->getEvaluation($evaluationContract->evaluation_id);
-            $evaluationContract->evaluation = $this->setValuesEvaluation($evaluationContract, $evaluation_base);
-
-            $evaluationContract->delete = [
-                'interviewees' => [],
-                'observations' => [],
-                'files' => []
-            ];
+            $evaluationContract = $this->getEvaluationData($id);
 
             return $this->respondHttp200([
                 'data' => $evaluationContract
@@ -406,6 +384,35 @@ class EvaluationContractController extends Controller
         } catch(Exception $e){
             $this->respondHttp500();
         }
+    }
+
+    public function getEvaluationData($id)
+    {
+        $evaluationContract = EvaluationContract::findOrFail($id);
+        $evaluationContract->multiselect_contract_id = $evaluationContract->contract->multiselect();
+        
+        $evaluators_id = [];
+
+        foreach ($evaluationContract->evaluators as $key => $value)
+        {
+            array_push($evaluators_id, $value->multiselect());
+        }
+
+        $evaluationContract->evaluators_id = $evaluators_id;
+        $evaluationContract->multiselect_evaluators_id = $evaluators_id;
+
+        $evaluationContract->interviewees;
+        
+        $evaluation_base = $this->getEvaluation($evaluationContract->evaluation_id);
+        $evaluationContract->evaluation = $this->setValuesEvaluation($evaluationContract, $evaluation_base);
+
+        $evaluationContract->delete = [
+            'interviewees' => [],
+            'observations' => [],
+            'files' => []
+        ];
+
+        return $evaluationContract;
     }
 
     /**

@@ -431,28 +431,9 @@ export default {
           if (redirect)
             this.$router.back()
           else
-          {    
-            /*response.data.data.objectives.forEach((objetive, keyObj) => {
-                objetive.subobjectives.forEach((subobjetive, keySubObj) => {
-                    subobjetive.items.forEach((item, keyItem) => {
-                        item.files.forEach((file, keyFile) => {
-                          this.form.objetive[keyObj].subobjetive[keySubObj].item[keyItem].file[keyFile] = value
-                          console.log(value)
-                        });
-                        item.observations.forEach((observation, keyObs) => {
-                          this.form.objetive[keyObj].subobjetive[keySubObj].item[keyItem].observation[keyObs] = value
-                          console.log(value)
-                        });
-                        item.actionPlan.activities.forEach((activity, keyAct) => {
-                          this.form.objetive[keyObj].subobjetive[keySubObj].item[keyItem].activity[keyAct] = value
-                          console.log(value)
-                        });
-                    });
-                });
-            });*/
-
+          {
             _.forIn(response.data.data, (value, key) => {
-              this.form.evaluation[key] = value
+              this.form[key] = value
             })
           }
 
