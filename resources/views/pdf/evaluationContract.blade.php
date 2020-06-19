@@ -84,19 +84,25 @@
                     <td>{{$evaluations->contract->nit}}</td>
                     <td>{{$evaluations->contract->address}}</td>
                     <td>{{$evaluations->contract->phone}}</td>
-                    <td>{{$evaluations->contract->high_risk_work}}</td>
+                    <td>{{$evaluations->contract->risk_class}}</td>
                 </tr>
                 <tr>
                     <th>Nombre del coordinador de gestión ambiental</th>
                     <th>Nombre del coordinador de SST</th>
-                    <th>Actividad económica general de la empresa</th>
+                    <th>Nombre del representante legal</th>
                     <th>N° de personas que laboran en el HPTU</th>
                 </tr>
                 <tr>
-                    <td>{{$evaluations->contract->legal_representative_name}}</td>
+                    <td>{{$evaluations->contract->environmental_management_name}}</td>
                     <td>{{$evaluations->contract->SG_SST_name}}</td>
-                    <td>{{$evaluations->contract->economic_activity_of_company}}</td>
+                    <td>{{$evaluations->contract->legal_representative_name}}</td>
                     <td>{{$evaluations->contract->number_workers}}</td>
+                </tr>
+                <tr>
+                    <th>Actividad económica general de la empresa</th>
+                </tr>
+                <tr>
+                    <td>{{$evaluations->contract->economic_activity_of_company}}</td>
                 </tr>
             </thead>
         </table>
