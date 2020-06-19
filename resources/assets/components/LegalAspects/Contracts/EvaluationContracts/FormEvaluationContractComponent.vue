@@ -280,7 +280,8 @@
             <template slot="footer" slot-scope="props">
                 <b-btn variant="default" @click="$router.go(-1)" :disabled="loading">{{ viewOnly ? "Atras" : "Cancelar"}}</b-btn>
                 <b-btn v-on:click="props.prevTab" :disabled="loading" variant="default">Anterior</b-btn>
-                <b-btn v-on:click="props.nextTab" :disabled="loading || props.isLastStep" variant="default">Siguiente</b-btn>
+                <b-btn v-on:click="props.nextTab" :disabled="loading || props.isLastStep" variant="default">Siguiente</b-btn>                
+                <b-btn @click="submit(false)" :disabled="loading" variant="primary" v-if="!viewOnly">Guardar y continuar</b-btn>
                 <b-btn type="submit" :disabled="loading" variant="primary" v-if="!viewOnly">Finalizar</b-btn>
             </template>
         </form-wizard>
@@ -397,8 +398,10 @@ export default {
     };
   },
   methods: {
-    submit(e) {
+    submit(redirect = true) {
       this.loading = true;
+
+      let url = this.url;
 
       this.form.clearFilesBinary();
 
@@ -411,12 +414,30 @@ export default {
               });
           });
       });
+      
+      if (this.method == 'POST')
+      {
+        if (this.form.id)
+          this.form.updateMethod('PUT')
+
+        url = !this.form.id ? this.url : `${this.url}/${this.form.id }`;
+      }
                         
       this.form
-        .submit(e.target.action)
+        .submit(url)
         .then(response => {
           this.loading = false;
-          this.$router.back()
+
+          if (redirect)
+            this.$router.back()
+          else
+          {
+            _.forIn(response.data.data, (value, key) => {
+              this.form[key] = value
+            })
+          }
+
+          
         })
         .catch(error => {
           this.loading = false;

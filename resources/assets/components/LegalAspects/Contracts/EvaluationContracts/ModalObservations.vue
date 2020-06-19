@@ -106,20 +106,14 @@ export default {
             this.value.forEach((observation, keyObs) => {
               if (observation.description)
               {
-                keys.push({
-                    description: observation.description,
-                    item_id: observation.item_id
-                });
+                keys.push(observation);
               }
             });
 
             this.value.splice(0);
 
             keys.forEach((item, key) => {
-                this.value.push({
-                    description: item.description,
-                    item_id: item.item_id
-                })
+                this.value.push(item)
             });
         }
     }

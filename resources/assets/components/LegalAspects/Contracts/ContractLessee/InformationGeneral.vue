@@ -12,7 +12,7 @@
                     <div><b>Nombre del coordinador de gestión ambiental:</b> {{contractor.legal_representative_name}}</div>
                     <div><b>Nombre del coordinador de SST:</b> {{contractor.SG_SST_name}}</div>
                     <div><b>Actividad económica general de la empresa:</b> {{contractor.economic_activity_of_company}}</div>
-                    <div><b>Clase de riesgo:</b> {{contractor.high_risk_work}}</div>
+                    <div><b>Clase de riesgo:</b> {{contractor.risk_class}}</div>
                 </b-col>
             </b-row>
         </b-card>
