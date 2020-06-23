@@ -16,6 +16,7 @@ use App\Http\Requests\Api\CompanyRequiredRequest;
 use File;
 use Carbon\Carbon;
 use DB;
+use Illuminate\Support\Str;
 
 class ReportsController extends ApiController
 {
@@ -84,17 +85,44 @@ class ReportsController extends ApiController
           }
           else
             $i++;
-        }
+        };
+        
+        $imagenes = [
+          'image_1' => [ 'file' => '', 'url' => $report->path_image('image_1')],
+          'image_2' => [ 'file' => '', 'url' => $report->path_image('image_2')],
+          'image_3' => [ 'file' => '', 'url' => $report->path_image('image_3')]
+        ];
 
         return $this->respondHttp200([
-            'data' => $report
+            'data' => $imagenes
         ]);
     }
 
+    public function base64($file, $column)
+    {
+      $image_64 = $file;
+
+      $extension = explode('/', explode(':', substr($image_64, 0, strpos($image_64, ';')))[1])[1];
+
+      $replace = substr($image_64, 0, strpos($image_64, ',')+1); 
+
+      $image = str_replace($replace, '', $image_64); 
+
+      $image = str_replace(' ', '+', $image); 
+
+      $imageName = base64_encode($this->user->id . rand(1,10000) . now()) . $column . '.' . $extension;
+
+      $imagen = base64_decode($image);
+
+      return ['name' => $imageName, 'image' => $imagen];
+
+    } 
+
     public function checkImgStore($report, $image, $column)
     {
-      $fileName = md5($image->getClientOriginalName() . Carbon::now()) . $column . '.' . $image->getClientOriginalExtension();
-      $file = file_get_contents($image->getRealPath());
+      $img = $this->base64($image, $column);
+      $fileName = $img['name'];
+      $file = $img['image'];
 
       $report->img_delete($column);
       $report->store_image($column, $fileName, $file);
@@ -104,9 +132,9 @@ class ReportsController extends ApiController
     {
       $index = "image_".$key;
 
-      if ($request->has($index) && $request->$index)
+      if ($request->has($index) && $request->$index['file'])
       {
-        $images->push($request->$index);
+        $images->push($request->$index['file']);
       }
     }
 
