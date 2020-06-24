@@ -147,6 +147,12 @@ class Report extends Model
         return Storage::disk($this::DISK)->download("{$this->path_base()}{$this->$key}");
     }
 
+    public function path_image($key)
+    {
+        if ($this->$key && $this->img_exists($key))
+            return Storage::disk($this::DISK)->url("{$this->path_base()}{$this->$key}");
+    }
+
     public function img_exists($key)
     {
         return Storage::disk($this::DISK)->exists("{$this->path_base()}{$this->$key}");

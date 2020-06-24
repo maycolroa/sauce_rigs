@@ -20,9 +20,9 @@ class ImageReportRequest extends FormRequest
         return [
             'company_id' => ['required', 'numeric', new CheckCompany(Auth::guard('api')->user()->id), new CheckLicense()],
             'report_id' => 'required|numeric',
-            'image_1' => ['image', 'max:10000', new FileFormat(['png','jpg','jpeg'])],
+            /*'image_1' => ['image', 'max:10000', new FileFormat(['png','jpg','jpeg'])],
             'image_2' => ['image', 'max:10000', new FileFormat(['png','jpg','jpeg'])],
-            'image_3' => ['image', 'max:10000', new FileFormat(['png','jpg','jpeg'])]
+            'image_3' => ['image', 'max:10000', new FileFormat(['png','jpg','jpeg'])]*/
         ];
     }
 }
