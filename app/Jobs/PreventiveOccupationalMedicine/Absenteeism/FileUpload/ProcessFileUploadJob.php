@@ -77,6 +77,7 @@ class ProcessFileUploadJob implements ShouldQueue
             \Log::info($command);
             $process = Process::fromShellCommandline($command);
             $process->setTimeout(1800);
+            $process->run();
 
             \Log::info("Salida del talend: \n");
             \Log::info($process->getOutput());
