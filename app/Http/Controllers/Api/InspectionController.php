@@ -35,13 +35,6 @@ class InspectionController extends ApiController
      */
     public function lisInspectionsAvailable(InspectionsRequest $request)
     {
-        /*if (!$this->user->hasRole(['admin', 'company_admin', 'company_supervisor'])) {
-            return response(json_encode([
-                'response' => 'error',
-                'data' => 'No autorizado'
-            ]), 401);
-        }*/
-
         $location = $this->getLocationFormConfModule($request->company_id);
 
         $level = "";
@@ -54,42 +47,42 @@ class InspectionController extends ApiController
             $level = 2;
         else
             $level = 1;
-        
-        $inspections = Inspection::join('sau_ph_inspection_regional', 'sau_ph_inspection_regional.inspection_id', 'sau_ph_inspections.id')          
-          ->where('employee_regional_id',$request->employee_regional_id)
-          ->where('state', 'SI');
 
-        if ($level >= 2)
-        {
-          $inspections->join('sau_ph_inspection_headquarter', 'sau_ph_inspection_headquarter.inspection_id', 'sau_ph_inspections.id')
-          ->where('employee_headquarter_id',$request->employee_headquarter_id);
-          
-          if ($level >= 3)
-          {
-            $inspections->join('sau_ph_inspection_process', 'sau_ph_inspection_process.inspection_id', 'sau_ph_inspections.id')
-            ->where('employee_process_id',$request->employee_process_id);
-
-            if ($level >=4)
-            {
-              $inspections->join('sau_ph_inspection_area', 'sau_ph_inspection_area.inspection_id', 'sau_ph_inspections.id')            
-              ->where('employee_area_id',$request->employee_area_id);
-            }
-          }
-        }
-
+        $inspections = Inspection::query();
         $inspections->company_scope = $request->company_id;
-
-        $data = [];
+        $data = collect([]);
 
         foreach ($inspections->get() as $key => $value)
         {
             $created_at = $value->created_at != '' ? Carbon::createFromFormat('Y-m-d H:i:s', $value->created_at)->toDateString() : '';
-
-            $data[] = [
+            $inspection = collect([
                 'id' => $value->id,
                 'name' => $value->name,
                 'created_at' => $created_at
-            ];
+            ]);
+
+            $regionals = DB::table('sau_ph_inspection_regional')->where('inspection_id', $value->id)->pluck('employee_regional_id')->unique();
+            $inspection->put('regionals', $regionals);
+
+            if ($level >= 2)
+            {
+                $headquarters = DB::table('sau_ph_inspection_headquarter')->where('inspection_id', $value->id)->pluck('employee_headquarter_id')->unique();
+                $inspection->put('headquarters', $headquarters);
+            }
+
+            if ($level >= 3)
+            {
+                $processes = DB::table('sau_ph_inspection_process')->where('inspection_id', $value->id)->pluck('employee_process_id')->unique();
+                $inspection->put('processes', $processes);
+            }
+
+            if ($level >= 4)
+            {
+                $areas = DB::table('sau_ph_inspection_area')->where('inspection_id', $value->id)->pluck('employee_area_id')->unique();
+                $inspection->put('areas', $areas);
+            }
+
+            $data->push($inspection);
         }
 
         return $this->respondHttp200([
