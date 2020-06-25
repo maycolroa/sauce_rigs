@@ -48,7 +48,12 @@ class InspectionController extends ApiController
         else
             $level = 1;
 
-        $inspections = Inspection::query();
+        $inspections = Inspection::with([
+            'themes' => function ($query) {
+                $query->with('items');
+            }
+        ]);
+
         $inspections->company_scope = $request->company_id;
         $data = collect([]);
 
@@ -58,7 +63,8 @@ class InspectionController extends ApiController
             $inspection = collect([
                 'id' => $value->id,
                 'name' => $value->name,
-                'created_at' => $created_at
+                'created_at' => $created_at,
+                'themes' => $value->themes
             ]);
 
             $regionals = DB::table('sau_ph_inspection_regional')->where('inspection_id', $value->id)->pluck('employee_regional_id')->unique();
