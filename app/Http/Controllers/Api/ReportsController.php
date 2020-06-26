@@ -158,28 +158,18 @@ class ReportsController extends ApiController
       {
         if ($request->id)
         {
-          $report = Report::select(
-          'sau_ph_reports.*',
-          'sau_employees_regionals.name AS regionals',
-          'sau_employees_headquarters.name AS sede',
-          'sau_employees_processes.name AS proceso',
-          'sau_employees_areas.name AS areas'
-          )
-          ->join('sau_employees_regionals', 'sau_employees_regionals.id', 'sau_ph_reports.employee_regional_id')
-          ->join('sau_employees_headquarters', 'sau_employees_headquarters.id', 'sau_ph_reports.employee_headquarter_id')
-          ->join('sau_employees_processes', 'sau_employees_processes.id', 'sau_ph_reports.employee_process_id')
-          ->join('sau_employees_areas', 'sau_employees_areas.id', 'sau_ph_reports.employee_area_id')
-          ->where('sau_ph_reports.id', $request->id);
-
+          $report = Report::where('id', $request->id);
           $report->company_scope = $request->company_id;
           $report = $report->first();
         }
         else
+        {
           $report = new Report();
+          $report->user_id = $this->user->id;
+        }
 
         $report->fill($request->all());
-        $report->user_id = $this->user->id;
-
+        
         if (!$report->save())
             return $this->respondHttp500();
 
@@ -233,10 +223,12 @@ class ReportsController extends ApiController
      */
     public function listReportsUser()
     {
-      try{
-      $reports = Report::where('user_id', $this->user->id)->orderBy('created_at','desc')->paginate(15);
-      $data = [];
-      foreach ($reports as $key => $value) {
+      try
+      {
+        $reports = Report::where('user_id', $this->user->id)->orderBy('created_at','desc')->paginate(15);
+        $data = [];
+
+        foreach ($reports as $key => $value) {
           
           $action_plans = [];
 
