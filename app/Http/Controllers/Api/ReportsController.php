@@ -9,6 +9,7 @@ use App\Models\IndustrialSecure\DangerousConditions\Reports\Condition;
 use App\Models\IndustrialSecure\DangerousConditions\Reports\ConditionType;
 use App\Models\General\Company;
 use App\Http\Requests\Api\ReportRequest;
+use App\Models\Administrative\Regionals\EmployeeRegional;
 use App\Http\Requests\Api\ImageReportRequest;
 use App\Facades\ActionPlans\Facades\ActionPlan;
 use App\Traits\LocationFormTrait;
@@ -158,7 +159,19 @@ class ReportsController extends ApiController
       {
         if ($request->id)
         {
-          $report = Report::where('id', $request->id);
+          $report = Report::select(
+            'sau_ph_reports.*',
+            'sau_employees_regionals.name AS regionals',
+            'sau_employees_headquarters.name AS sede',
+            'sau_employees_processes.name AS proceso',
+            'sau_employees_areas.name AS areas'
+          )
+          ->leftjoin('sau_employees_regionals', 'sau_employees_regionals.id', 'sau_ph_reports.employee_regional_id')
+          ->leftjoin('sau_employees_headquarters', 'sau_employees_headquarters.id', 'sau_ph_reports.employee_headquarter_id')
+          ->leftjoin('sau_employees_processes', 'sau_employees_processes.id', 'sau_ph_reports.employee_process_id')
+          ->leftjoin('sau_employees_areas', 'sau_employees_areas.id', 'sau_ph_reports.employee_area_id')
+          ->where('sau_ph_reports.id', $request->id);
+
           $report->company_scope = $request->company_id;
           $report = $report->first();
         }
@@ -172,6 +185,21 @@ class ReportsController extends ApiController
         
         if (!$report->save())
             return $this->respondHttp500();
+
+        if ($report->employee_regional_id)
+        {
+          $regional = EmployeeRegional::select('name')->where('id', $report->employee_regional_id);
+          $regional->company_scope = $request->company_id;
+          $regional = $regional->first();
+          $report->regional_name = $regional->name;
+        }
+        if ($report->employee_headquarter_id)
+          $report->headquarter_name = $report->headquarter->name;
+        if ($report->employee_process_id)
+          $report->process_name = $report->process->name;
+        if ($report->employee_area_id)
+          $report->area_name = $report->area->name;
+        $report->condition_name = $report->condition->description;
 
         $details = $report->condition->conditionType->description. ': ' . $report->condition->description;
 
