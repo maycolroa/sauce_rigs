@@ -12,7 +12,6 @@
                          :placeholder="placeholder"
                          :disabled="disabled"
                          deselect-label="Puede quitar este valor"
-                         :hide-selected="multiple"
                          :show-labels="false"
                          @input="updateValue"
                          :allow-empty="allowEmpty"
