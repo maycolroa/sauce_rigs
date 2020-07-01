@@ -12,7 +12,6 @@
                 :placeholder="placeholder"
                 :disabled="disabled"
                 label="name"
-                :hide-selected="hideSelected"
                 deselect-label="Puede quitar este valor"
                 :class="state"
                 track-by="name"
