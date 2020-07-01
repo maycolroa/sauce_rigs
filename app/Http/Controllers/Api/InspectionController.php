@@ -235,21 +235,57 @@ class InspectionController extends ApiController
             DB::beginTransaction();
 
             $qualifier_id = $this->user->id;
-            $employee_area_id = $request->employee_area_id;
-            $employee_headquarter_id = $request->employee_headquarter_id;
+            $employee_regional_id = $request->employee_regional_id ? $request->employee_regional_id : null;
+            $employee_process_id = $request->employee_process_id ? $request->employee_process_id : null;
+            $employee_area_id = $request->employee_area_id ? $request->employee_area_id : null;
+            $employee_headquarter_id = $request->employee_headquarter_id ? $request->employee_headquarter_id : null;
             $qualification_date = date('Y-m-d H:i:s');
+
+            $items = [];
 
             foreach ($request->items as $key => $value)
             {
+                $fileName1 = null;
+                $fileName2 = null;
+
                 $item = new InspectionItemsQualificationAreaLocation();
                 $item->item_id = $value["item_id"];
                 $item->qualification_id = $value["qualification_id"];
                 $item->find = isset($value["find"]) ? $value["find"] : '';
                 $item->qualification_date = $qualification_date;
                 $item->qualifier_id = $qualifier_id;
+                $item->employee_regional_id = $employee_regional_id;
+                $item->employee_process_id = $employee_process_id;
                 $item->employee_area_id = $employee_area_id;
                 $item->employee_headquarter_id = $employee_headquarter_id;
+
                 $item->save();
+
+                $images = collect([]);
+
+                $this->checkImgRequest($images, $value['photos'], 1);
+                $this->checkImgRequest($images, $value['photos'], 2);
+
+                $i = 1;
+                $replace = false;
+
+                while ($images->count() > 0)
+                {
+                  $column = "photo_".$i;
+
+                  if (!$item->$column || $replace)
+                  {
+                    $this->checkImgStore($item, $images->pop(), $column);
+                  }
+
+                  if ($i == 3)
+                  {
+                    $i = 1;
+                    $replace = true;
+                  }
+                  else
+                    $i++;
+                };
 
                 $theme = $item->item->section;
                 $itemName = $item->item;
@@ -278,18 +314,32 @@ class InspectionController extends ApiController
 
                 ActionPlan::restart();
 
-                /*ActionPlan::
-                  user($this->user)
-                ->module('dangerousConditions')
-                ->url(url('/administrative/actionplans'))
-                ->model($item)
-                ->activities($value["actionPlan"])
-                ->company($request->company_id)
-                ->save()
-                ->sendMail();*/
-            }
+                $itemSave = [
+                    "id" => $item->id,
+                    "item_id" => $item->item_id,
+                    "qualification_id" => $item->qualification_id,
+                    "find" => $item->find,
+                    "photos" => [
+                        "photo_1" => ["file" => "", "url" => $item->path_image('photo_1')],
+                        "photo_2" => ["file" => "", "url" => $item->path_image('photo_2')]
+                    ],
+                    "actionPlan" => ActionPlan::getActivities()
+                ];
 
+                array_push($items, $itemSave);
+            }
+            
             DB::commit();
+
+            $data = [
+                'inspection_id' => $inspection->id,
+                "company_id" => $request->company_id,
+                "employee_regional_id" => $request->employee_regional_id,
+                "employee_headquarter_id" => $request->employee_headquarter_id,
+                "employee_area_id" => $request->employee_area_id,
+                "employee_process_id" => $request->employee_process_id,
+                "items" => $items
+            ];
 
         } catch (\Exception $e) {
           \Log::info($e->getMessage());
@@ -298,65 +348,48 @@ class InspectionController extends ApiController
         }
 
         return $this->respondHttp200([
-            'data' => base64_encode($qualification_date)
+            'data' => $data
         ]);
     }
 
-        /**
-     * Stores the images of a given report.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function imageItem(ImageInspectionRequest $request)
+    public function checkImgStore($item, $image, $column)
     {
-        /*if (!$this->user->hasPermission('create_reports')) {
-            return response(json_encode([
-                'response' => 'error',
-                'data' => 'No autorizado'
-            ]), 401);
-        }*/
+      $img = $this->base64($image, $column);
+      $fileName = $img['name'];
+      $file = $img['image'];
 
-        $image1 = $request->photo_1;
-        $image2 = $request->photo_2;
+      $item->img_delete($column);
+      $item->store_image($column, $fileName, $file);
+    }
 
-        $item = InspectionItemsQualificationAreaLocation::where('item_id',$request->item_id)
-                ->where('employee_area_id',$request->employee_area_id)
-                ->where('employee_headquarter_id',$request->employee_headquarter_id)
-                ->where('qualification_date', base64_decode($request->key))
-                ->first();
+    public function checkImgRequest(&$images, $value, $key)
+    {
+      $index = "photo_".$key;
 
-        if($item["photo_1"] != null)
-        {
-            return $this->respondHttp200([
-            'message' => 'ESte item ya tiene la imagen 1'
-            ]);
-        };
+      if (isset($value[$index]) && $value[$index]['file'])
+      {
+        $images->push($value[$index]['file']);
+      }
+    }
 
-        if($item["photo_2"] != null)
-        {
-            return $this->respondHttp200([
-            'message' => 'ESte item ya tiene la imagen 2'
-            ]);
-        };
-       
-        $fileName1 = md5($image1->getClientOriginalName() . Carbon::now()) . $item->id . 'image_1' . '.' . $image1->getClientOriginalExtension();
+    public function base64($file, $column)
+    {
+      $image_64 = $file;
+      
+      $extension = explode('/', explode(':', substr($image_64, 0, strpos($image_64, ';')))[1])[1];
 
-        $fileName2 = md5($image2->getClientOriginalName() . Carbon::now()) . $item->id . 'image_2' . '.' . $image2->getClientOriginalExtension();
+      $replace = substr($image_64, 0, strpos($image_64, ',')+1); 
 
-        $item->photo_1 = $fileName1;
-        $item->photo_2 = $fileName2;
+      $image = str_replace($replace, '', $image_64); 
 
-        if (!$item->save()) {
-            return $this->respondHttp500();
-        }
+      $image = str_replace(' ', '+', $image); 
 
-        Storage::disk('s3_DConditions')->put('inspections_images/'.$fileName1, $image1, 'public');
-        Storage::disk('s3_DConditions')->put('inspections_images/'.$fileName2, $image2, 'public');
-        
-        return $this->respondHttp200([
-            'data' => 'Reporte guardado correctamente'
-        ]);
+      $imageName = base64_encode($this->user->id . rand(1,10000) . now()) . $column . '.' . $extension;
+
+      $imagen = base64_decode($image);
+
+      return ['name' => $imageName, 'image' => $imagen];
+
     }
 
     /**
