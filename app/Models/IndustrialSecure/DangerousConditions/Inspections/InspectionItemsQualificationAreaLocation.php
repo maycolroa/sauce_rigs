@@ -3,9 +3,12 @@
 namespace App\Models\IndustrialSecure\DangerousConditions\Inspections;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
 
 class InspectionItemsQualificationAreaLocation extends Model
 {
+    const DISK = 's3_DConditions';
+
     protected $table = "sau_ph_inspection_items_qualification_area_location";
 
     protected $fillable = [
@@ -202,5 +205,38 @@ class InspectionItemsQualificationAreaLocation extends Model
         }
 
         return $query;
+    }
+
+    public function path_base()
+    {
+        return "inspections_images/";
+    }
+
+    public function donwload_img($key)
+    {
+        return Storage::disk($this::DISK)->download("{$this->path_base()}{$this->$key}");
+    }
+
+    public function path_image($key)
+    {
+        if ($this->$key && $this->img_exists($key))
+            return Storage::disk($this::DISK)->url("{$this->path_base()}{$this->$key}");
+    }
+
+    public function img_exists($key)
+    {
+        return Storage::disk($this::DISK)->exists("{$this->path_base()}{$this->$key}");
+    }
+
+    public function img_delete($key)
+    {
+        if ($this->$key && $this->img_exists($key))
+           Storage::disk($this::DISK)->delete("{$this->path_base()}{$this->$key}");
+    }
+
+    public function store_image($key, $fileName, $file)
+    {
+        Storage::disk($this::DISK)->put("{$this->path_base()}{$fileName}", $file, 'public');
+        $this->update([$key => $fileName]);
     }
 }
