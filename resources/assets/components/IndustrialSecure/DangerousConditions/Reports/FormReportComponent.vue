@@ -23,6 +23,38 @@
         :form="form"/>
     </b-form-row>
 
+    <center>
+      <div style="padding-top: 20px; padding-bottom: 20px;"><b-btn @click="showModal" variant="primary"><span class="ion ion-md-eye"></span> Crear plan de acción</b-btn></div>
+    </center>
+
+    <div v-if="existError">
+      <b-form-feedback class="d-block" style="padding-bottom: 10px;">
+        Hay errores en sus datos
+      </b-form-feedback>
+    </div>
+
+    <b-modal ref="modalPlan" :hideFooter="true" id="modals-default" class="modal-top" size="lg">
+      <div slot="modal-title">
+        Plan de acción<br>
+        <small class="text-muted">Crea planes de acción para tu justificación.</small>
+      </div>
+
+      <b-card bg-variant="transparent" title="" class="mb-3 box-shadow-none">
+        <action-plan-component
+          :is-edit="!viewOnly"
+          :view-only="viewOnly"
+          :form="form"
+          :action-plan-states="actionPlanStates"
+          v-model="form.actionPlan"
+          :action-plan="form.actionPlan"/>
+      </b-card>
+      <br>
+      <div class="row float-right pt-12 pr-12y">
+        <b-btn variant="primary" @click="hideModal">Cerrar</b-btn>
+      </div>
+    </b-modal>
+
+
     <div class="row float-right pt-10 pr-10">
       <template>
         <b-btn variant="default" :to="cancelUrl" :disabled="loading">{{ viewOnly ? "Atras" : "Cancelar"}}</b-btn>&nbsp;&nbsp;
@@ -34,17 +66,23 @@
 
 <script>
 import VueAjaxAdvancedSelect from "@/components/Inputs/VueAjaxAdvancedSelect.vue";
+import PerfectScrollbar from '@/vendor/libs/perfect-scrollbar/PerfectScrollbar';
 import VueAdvancedSelect from "@/components/Inputs/VueAdvancedSelect.vue";
 import VueTextarea from "@/components/Inputs/VueTextarea.vue";
 import LocationLevelComponent from '@/components/CustomInputs/LocationLevelComponent.vue';
 import Form from "@/utils/Form.js";
+import FormImage from '../FormImageComponent.vue';
+import ActionPlanComponent from '@/components/CustomInputs/ActionPlanComponent.vue';
 
 export default {
   components: {
     VueAdvancedSelect,
     VueAjaxAdvancedSelect,
     VueTextarea,
-    LocationLevelComponent
+    LocationLevelComponent,
+    PerfectScrollbar,
+    ActionPlanComponent,
+    FormImage
   },
   props: {
     url: { type: String },
@@ -63,19 +101,29 @@ export default {
         return [];
       } 
     },
+    actionPlanStates: {
+      type: Array,
+      default: function() {
+        return [];
+      }
+    },
     report: {
       default() {
         return {
-            observation: '',
-            rate: '',
-            condition_id: '',
-            other_condition: '',
-            locations: {
-              employee_regional_id: '',
-              employee_headquarter_id: '',
-              employee_area_id: '',
-              employee_process_id: ''
-            }
+          observation: '',
+          rate: '',
+          condition_id: '',
+          other_condition: '',
+          locations: {
+            employee_regional_id: '',
+            employee_headquarter_id: '',
+            employee_area_id: '',
+            employee_process_id: ''
+          },
+          actionPlan: {
+            activities: [],
+            activitiesRemoved: []
+          }
         };
       }
     }
@@ -83,6 +131,19 @@ export default {
   watch: {
     report() {
       this.form = Form.makeFrom(this.report, this.method);
+    }
+  },
+  computed: {
+    existError() {
+      let keys = Object.keys(this.form.errors.errors)
+      let result = false
+      
+      if (keys.length > 0)
+      {
+        result = true
+      }
+
+      return result
     }
   },
   data() {
@@ -103,6 +164,12 @@ export default {
         .catch(error => {
           this.loading = false;
         });
+    },
+    showModal() {
+      this.$refs.modalPlan.show()
+    },
+    hideModal() {
+      this.$refs.modalPlan.hide()
     }
   }
 };

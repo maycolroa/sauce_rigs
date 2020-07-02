@@ -49,7 +49,7 @@
       </b-card>
     </div>
 
-    <div class="col-md-12">
+    <!--<div class="col-md-12">
       <b-card bg-variant="transparent" border-variant="dark" title="Imágenes" class="mb-3 box-shadow-none">
           <b-row style="padding-bottom: 35px;">
             <b-col>
@@ -97,7 +97,7 @@
             </b-col>
           </b-row>
       </b-card>
-    </div>
+    </div>-->
 
     <div class="row float-right pt-10 pr-10" style="padding-top: 20px;">
       <template>

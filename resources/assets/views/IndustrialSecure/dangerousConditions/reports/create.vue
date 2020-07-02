@@ -13,7 +13,8 @@
                 url="/industrialSecurity/dangerousConditions/report"
                 method="POST"
                 conditions-data-url="/selects/industrialSecurity/conditions"
-                :rates="rates"
+                :rates="rates"                
+                :action-plan-states="actionPlanStates"
                 :cancel-url="{ name: 'dangerousconditions-reports' }"/>
         </b-card-body>
       </b-card>
@@ -36,11 +37,13 @@ export default {
   },
   data () {
     return {
-        rates: []
+        rates: [],
+        actionPlanStates: []
     }
   },
   created(){
       this.fetchSelect('rates', '/selects/industrialSecurity/rates')
+      this.fetchSelect('actionPlanStates', '/selects/actionPlanStates')
   },
   methods: {
       fetchSelect(key, url)

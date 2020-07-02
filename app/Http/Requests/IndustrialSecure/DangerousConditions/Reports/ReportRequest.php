@@ -5,10 +5,13 @@ namespace App\Http\Requests\IndustrialSecure\DangerousConditions\Reports;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Foundation\Http\FormRequest;
 use App\Traits\LocationFormTrait;
+use App\Facades\ActionPlans\Facades\ActionPlan;
 
 class ReportRequest extends FormRequest
 {
     use LocationFormTrait;
+
+    protected $message = [];
 
     /**
      * Determine if the user is authorized to make this request.
@@ -36,6 +39,13 @@ class ReportRequest extends FormRequest
             ]);
         }
 
+        if ($this->has('actionPlan'))
+        {
+            $this->merge([
+                'actionPlan' => json_decode($this->input('actionPlan'), true)
+            ]);
+        }
+
         return $this->all();
     }
 
@@ -52,6 +62,10 @@ class ReportRequest extends FormRequest
             'observation' => 'required'
         ];
 
+        $rulesActionPlan = ActionPlan::getRules();
+        $rules = array_merge($rules, $rulesActionPlan['rules']);
+        $this->message = $rulesActionPlan['messages'];
+
         $rulesConfLocation = $this->getLocationFormRules();
         $rules = array_merge($rules, $rulesConfLocation);
 
@@ -62,11 +76,15 @@ class ReportRequest extends FormRequest
     {
         $keywords = Auth::user()->getKeywords();
         
-        return [
+        $messages = [
             'locations.employee_regional_id.required' => 'El campo '.$keywords['regional'].' es obligatorio.',
             'locations.employee_headquarter_id.required' => 'El campo '.$keywords['headquarter'].' es obligatorio.',
             'locations.employee_process_id.required' => 'El campo '.$keywords['process'].' es obligatorio.',
             'locations.employee_area_id.required' => 'El campo '.$keywords['area'].' es obligatorio.'
         ];
+
+        $messages = array_merge($messages, $this->message);
+
+        return $messages;
     }
 }
