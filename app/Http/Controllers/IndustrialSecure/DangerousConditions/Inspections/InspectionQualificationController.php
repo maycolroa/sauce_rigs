@@ -58,8 +58,8 @@ class InspectionQualificationController extends Controller
                 'sau_employees_areas.name AS area',
                 'sau_users.name AS qualificator'
             )
-            ->join('sau_employees_headquarters', 'sau_employees_headquarters.id', 'sau_ph_inspection_items_qualification_area_location.employee_headquarter_id')
-            ->join('sau_employees_areas', 'sau_employees_areas.id', 'sau_ph_inspection_items_qualification_area_location.employee_area_id')
+            ->leftJoin('sau_employees_headquarters', 'sau_employees_headquarters.id', 'sau_ph_inspection_items_qualification_area_location.employee_headquarter_id')
+            ->leftJoin('sau_employees_areas', 'sau_employees_areas.id', 'sau_ph_inspection_items_qualification_area_location.employee_area_id')
             ->join('sau_users', 'sau_users.id', 'sau_ph_inspection_items_qualification_area_location.qualifier_id')
             ->join('sau_ph_inspection_section_items', 'sau_ph_inspection_section_items.id', 'sau_ph_inspection_items_qualification_area_location.item_id')
             ->join('sau_ph_inspection_sections','sau_ph_inspection_sections.id', 'sau_ph_inspection_section_items.inspection_section_id')
@@ -143,10 +143,10 @@ class InspectionQualificationController extends Controller
                 $itemRow->put('find', $item->find);
                 $itemRow->put('photo_1', $item->photo_1);
                 $itemRow->put('old_1', $item->photo_1);
-                $itemRow->put('path_1', Storage::disk('public')->url('industrialSecure/dangerousConditions/inspections/images/'. $item->photo_1));
+                $itemRow->put('path_1', $item->path_image('photo_1'));
                 $itemRow->put('photo_2', $item->photo_2);
                 $itemRow->put('old_2', $item->photo_2);
-                $itemRow->put('path_2', Storage::disk('public')->url('industrialSecure/dangerousConditions/inspections/images/'. $item->photo_2));
+                $itemRow->put('path_2', $item->path_image('photo_2'));
                 $itemRow->put('actionPlan', ActionPlan::model($item)->prepareDataComponent());
                 $items->push($itemRow);
             }
@@ -243,17 +243,17 @@ class InspectionQualificationController extends Controller
             if ($request->image)
             {
                 $file = $request->image;
-                Storage::disk('public')->delete('industrialSecure/dangerousConditions/inspections/images/'. $qualification->$picture);
+                $qualification->img_delete($picture);
                 $nameFile = base64_encode($this->user->id . now() . rand(1,10000)) .'.'. $file->extension();
-                $file->storeAs('industrialSecure/dangerousConditions/inspections/images/', $nameFile, 'public');
+                $file->storeAs($qualification->path_base(), $nameFile, 's3_DConditions');
                 $qualification->$picture = $nameFile;
                 $data['image'] = $nameFile;
                 $data['old'] = $nameFile;
-                $data['path'] = Storage::disk('public')->url('industrialSecure/dangerousConditions/inspections/images/'. $nameFile);
+                $data['path'] = Storage::disk('s3_DConditions')->url($qualification->path_base(). $nameFile);
             }
             else
             {
-                Storage::disk('public')->delete('industrialSecure/dangerousConditions/inspections/images/'. $qualification->$picture);
+                $qualification->img_delete($picture);
                 $qualification->$picture = NULL;
                 $data['image'] = "";
                 $data['old'] = NULL;
@@ -272,8 +272,7 @@ class InspectionQualificationController extends Controller
     public function downloadImage($id, $column)
     {
         $qualification = InspectionItemsQualificationAreaLocation::findOrFail($id);
-
-        return Storage::disk('public')->download('industrialSecure/dangerousConditions/inspections/images/'. $qualification->$column);
+        return $qualification->donwload_img($column);
     }
 
     public function downloadPdf($id)
