@@ -200,6 +200,8 @@ class InspectionController extends ApiController
             ]), 401);
         }*/
 
+        $response = $request->all();
+
         $inspection = Inspection::selectRaw("
           sau_ph_inspections.*,
           GROUP_CONCAT(DISTINCT sau_employees_headquarters.name ORDER BY sau_employees_headquarters.name ASC) AS sede,
@@ -236,110 +238,99 @@ class InspectionController extends ApiController
 
             $qualifier_id = $this->user->id;
             $employee_regional_id = $request->employee_regional_id ? $request->employee_regional_id : null;
+            $employee_headquarter_id = $request->employee_headquarter_id ? $request->employee_headquarter_id : null;
             $employee_process_id = $request->employee_process_id ? $request->employee_process_id : null;
             $employee_area_id = $request->employee_area_id ? $request->employee_area_id : null;
-            $employee_headquarter_id = $request->employee_headquarter_id ? $request->employee_headquarter_id : null;
             $qualification_date = date('Y-m-d H:i:s');
 
-            $items = [];
-
-            foreach ($request->items as $key => $value)
+            foreach ($request->themes as $keyT => $theme)
             {
-                $fileName1 = null;
-                $fileName2 = null;
-
-                $item = new InspectionItemsQualificationAreaLocation();
-                $item->item_id = $value["item_id"];
-                $item->qualification_id = $value["qualification_id"];
-                $item->find = isset($value["find"]) ? $value["find"] : '';
-                $item->qualification_date = $qualification_date;
-                $item->qualifier_id = $qualifier_id;
-                $item->employee_regional_id = $employee_regional_id;
-                $item->employee_process_id = $employee_process_id;
-                $item->employee_area_id = $employee_area_id;
-                $item->employee_headquarter_id = $employee_headquarter_id;
-
-                $item->save();
-
-                $images = collect([]);
-
-                $this->checkImgRequest($images, $value['photos'], 1);
-                $this->checkImgRequest($images, $value['photos'], 2);
-
-                $i = 1;
-                $replace = false;
-
-                while ($images->count() > 0)
+                foreach ($theme['items'] as $key => $value)
                 {
-                  $column = "photo_".$i;
+                    $fileName1 = null;
+                    $fileName2 = null;
 
-                  if (!$item->$column || $replace)
-                  {
-                    $this->checkImgStore($item, $images->pop(), $column);
-                  }
+                    if (isset($value['id']) && $value['id'])
+                        $item = InspectionItemsQualificationAreaLocation::find($value['id']);
+                    else { 
+                        $item = new InspectionItemsQualificationAreaLocation();
+                        $item->qualification_date = $qualification_date;
+                    }
+                    
+                    $item->item_id = $value["item_id"];
+                    $item->qualification_id = $value["qualification_id"];
+                    $item->find = isset($value["find"]) ? $value["find"] : '';
+                    $item->qualifier_id = $qualifier_id;
+                    $item->employee_regional_id = $employee_regional_id;
+                    $item->employee_process_id = $employee_process_id;
+                    $item->employee_area_id = $employee_area_id;
+                    $item->employee_headquarter_id = $employee_headquarter_id;
+                    $item->save();
 
-                  if ($i == 3)
-                  {
-                    $i = 1;
-                    $replace = true;
-                  }
-                  else
-                    $i++;
-                };
+                    $response['themes'][$keyT]['items'][$key]['id'] = $item->id;
 
-                $theme = $item->item->section;
-                $itemName = $item->item;
+                    if (isset($value['photos']))
+                    {
+                        $images = collect([]);
+                        $this->checkImgRequest($images, $value['photos'], 1);
+                        $this->checkImgRequest($images, $value['photos'], 2);
 
-                if ($value["actionPlan"]["activities"])
-                {
-                    $details = 'Inspección: ' . $inspection->name . ' - ' . $theme->name . ' - ' . $itemName->description;
+                        $i = 1;
+                        $replace = false;
+
+                        while ($images->count() > 0)
+                        {
+                        $column = "photo_".$i;
+
+                        if (!$item->$column || $replace)
+                        {
+                            $this->checkImgStore($item, $images->pop(), $column);
+                        }
+
+                        if ($i == 2)
+                        {
+                            $i = 1;
+                            $replace = true;
+                        }
+                        else
+                            $i++;
+                        };
+
+                        $response['themes'][$keyT]['items'][$key]["photos"] = [
+                            "photo_1" => ["file" => "", "url" => $item->path_image('photo_1')],
+                            "photo_2" => ["file" => "", "url" => $item->path_image('photo_2')]
+                        ];
+                    }
+
+                    if (isset($value["actionPlan"]))
+                    {
+                        $theme = $item->item->section;
+                        $itemName = $item->item;
+                        $details = 'Inspección: ' . $inspection->name . ' - ' . $theme->name . ' - ' . $itemName->description;
+
+                        ActionPlan::
+                            user($this->user)
+                        ->module('dangerousConditions')
+                        ->url(url('/administrative/actionplans'))
+                        ->model($item)
+                        ->regional($regionals)
+                        ->headquarter($headquarters)
+                        ->area($areas)
+                        ->process($processes)
+                        ->activities($value["actionPlan"])                
+                        ->company($request->company_id)
+                        ->details($details)
+                        ->save()
+                        ->sendMail();
+
+                        $response['themes'][$keyT]['items'][$key]['actionPlan'] = ActionPlan::getActivities();
+
+                        ActionPlan::restart();
+                    }
                 }
-
-                ActionPlan::
-                    user($this->user)
-                ->module('dangerousConditions')
-                ->url(url('/administrative/actionplans'))
-                ->model($item)
-                ->regional($regionals)
-                ->headquarter($headquarters)
-                ->area($areas)
-                ->process($processes)
-                ->activities($value["actionPlan"])                
-                ->company($request->company_id);
-
-                if ($details)
-                    ActionPlan::details($details);
-
-                ActionPlan::save()->sendMail();
-
-                ActionPlan::restart();
-
-                $itemSave = [
-                    "id" => $item->id,
-                    "item_id" => $item->item_id,
-                    "qualification_id" => $item->qualification_id,
-                    "find" => $item->find,
-                    "photos" => [
-                        "photo_1" => ["file" => "", "url" => $item->path_image('photo_1')],
-                        "photo_2" => ["file" => "", "url" => $item->path_image('photo_2')]
-                    ],
-                    "actionPlan" => ActionPlan::getActivities()
-                ];
-
-                array_push($items, $itemSave);
             }
             
             DB::commit();
-
-            $data = [
-                'inspection_id' => $inspection->id,
-                "company_id" => $request->company_id,
-                "employee_regional_id" => $request->employee_regional_id,
-                "employee_headquarter_id" => $request->employee_headquarter_id,
-                "employee_area_id" => $request->employee_area_id,
-                "employee_process_id" => $request->employee_process_id,
-                "items" => $items
-            ];
 
         } catch (\Exception $e) {
           \Log::info($e->getMessage());
@@ -348,7 +339,7 @@ class InspectionController extends ApiController
         }
 
         return $this->respondHttp200([
-            'data' => $data
+            'data' => $response
         ]);
     }
 
