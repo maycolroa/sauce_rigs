@@ -119,11 +119,28 @@ class ReportController extends Controller
 
             if ($this->updateModelLocationForm($report, $request->get('locations')))
                 return $this->respondHttp500();
+
+            $details = $report->condition->conditionType->description. ': ' . $report->condition->description;
+
+            ActionPlan::
+                    user($this->user)
+                ->module('dangerousConditions')
+                ->url(url('/administrative/actionplans'))
+                ->model($report)
+                ->regional($report->regional ? $report->regional->name : null)
+                ->headquarter($report->headquarter ? $report->headquarter->name : null)
+                ->area($report->area ? $report->area->name : null)
+                ->process($report->process ? $report->process->name : null)
+                ->details($details)
+                ->activities($request->actionPlan)
+                ->save();
+
+            ActionPlan::sendMail();
                 
             DB::commit();
 
         } catch (\Exception $e) {
-            //\Log::info($e->getMessage());
+            \Log::info($e->getMessage());
             DB::rollback();
             return $this->respondHttp500();
         }
@@ -184,6 +201,23 @@ class ReportController extends Controller
 
             if ($this->updateModelLocationForm($report, $request->get('locations')))
                 return $this->respondHttp500();
+
+            $details = $report->condition->conditionType->description. ': ' . $report->condition->description;
+
+            ActionPlan::
+                    user($this->user)
+                ->module('dangerousConditions')
+                ->url(url('/administrative/actionplans'))
+                ->model($report)
+                ->regional($report->regional ? $report->regional->name : null)
+                ->headquarter($report->headquarter ? $report->headquarter->name : null)
+                ->area($report->area ? $report->area->name : null)
+                ->process($report->process ? $report->process->name : null)
+                ->details($details)
+                ->activities($request->actionPlan)
+                ->save();
+
+            ActionPlan::sendMail();
 
             DB::commit();
 

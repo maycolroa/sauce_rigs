@@ -18,6 +18,7 @@
                         :is-edit="true"
                         :cancel-url="{ name: 'dangerousconditions-reports'}"
                         :rates="rates"
+                        :action-plan-states="actionPlanStates"
                         conditions-data-url="/selects/industrialSecurity/conditions"
                         />
                 </b-col>
@@ -44,14 +45,18 @@ export default {
     data () {
         return {
             data: [],
-            rates: []
+            rates: [],
+            actionPlanStates: []
         }
     },
-    created(){        
+    created(){     
+  
+
         axios.get(`/industrialSecurity/dangerousConditions/report/${this.$route.params.id}`)
         .then(response => {
             this.data = response.data.data;
             this.fetchSelect('rates', '/selects/industrialSecurity/rates')
+            this.fetchSelect('actionPlanStates', '/selects/actionPlanStates') 
         })
         .catch(error => {
             Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');

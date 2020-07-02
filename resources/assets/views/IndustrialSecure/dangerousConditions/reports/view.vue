@@ -17,6 +17,7 @@
                         :cancel-url="{ name: 'dangerousconditions-reports'}"
                         :rates="rates"
                         conditions-data-url="/selects/industrialSecurity/conditions"
+                        :action-plan-states="actionPlanStates"
                         />
                 </b-col>
             </b-row>
@@ -42,7 +43,8 @@ export default {
     data () {
         return {
             data: [],
-            rates: []
+            rates: [],
+            actionPlanStates: []
         }
     },
     created(){
@@ -50,6 +52,7 @@ export default {
         .then(response => {
             this.data = response.data.data;
             this.fetchSelect('rates', '/selects/industrialSecurity/rates')
+            this.fetchSelect('actionPlanStates', '/selects/actionPlanStates') 
         })
         .catch(error => {
             Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
