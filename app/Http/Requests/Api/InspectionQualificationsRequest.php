@@ -31,7 +31,7 @@ class InspectionQualificationsRequest extends FormRequest
     public function sanitize()
     {
         $this->merge([
-            'inspections' => json_decode($this->input('inspections'), true)
+            'items' => json_decode($this->input('items'), true)
         ]);
 
         return $this->all();
@@ -49,7 +49,7 @@ class InspectionQualificationsRequest extends FormRequest
         return [
             'company_id' => ['required', 'numeric', new CheckCompany(Auth::guard('api')->user()->id), new CheckLicense()],
             'inspection_id' => 'required|numeric',
-            'items' => 'required|array',
+            'themes' => 'required|array',
             'employee_regional_id' => [new CheckLocationConfiguration($this->input('company_id'))],
             'employee_headquarter_id' => [new CheckLocationConfiguration($this->input('company_id'))],
             'employee_process_id' => [new CheckLocationConfiguration($this->input('company_id'))],
