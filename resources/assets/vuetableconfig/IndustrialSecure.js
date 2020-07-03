@@ -737,19 +737,7 @@ export default [
                 id: 'id',
             },
             permission: 'ph_reports_r'
-          },{
-            config: {
-                color: 'outline-info',
-                borderless: true,
-                icon: 'ion ion-md-list',
-                title: 'Calificar'
-            },
-            data: {
-                routePush: { name: 'dangerousconditions-reports-qualifications' },
-                id: 'id',
-            },
-            permission: 'ph_reports_r'
-        }]
+          }]
       },
       {
         type: 'base',

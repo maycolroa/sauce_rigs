@@ -79,6 +79,7 @@ return [
             'secret' => '1gBQ3h6NV74svE8PwHovPSUiL74R1r7OC3WzXHbv',
             'region' => 'us-east-1',
             'bucket' => 'apirigs',
+            'visibility' => 'public'
         ],
 
     ],

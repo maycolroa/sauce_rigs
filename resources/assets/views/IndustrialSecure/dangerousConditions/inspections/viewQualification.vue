@@ -3,7 +3,6 @@
     <header-module
       title="CONDICIONES PELIGROSAS"
       subtitle="VER INSPECCIÓN CALIFICADA"
-      url="dangerousconditions-inspections-qualification"
     />
 
     <div class="col-md">

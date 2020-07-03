@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Foundation\Http\FormRequest;
 use App\Traits\LocationFormTrait;
 use App\Facades\ActionPlans\Facades\ActionPlan;
+use App\Rules\FileFormat;
 
 class ReportRequest extends FormRequest
 {
@@ -59,7 +60,10 @@ class ReportRequest extends FormRequest
         $rules = [
             'condition_id' => 'required|exists:sau_ph_conditions,id',
             'rate' => 'required',
-            'observation' => 'required'
+            'observation' => 'required',
+            'image_1' => [new FileFormat(['png','jpg','jpeg'])],
+            'image_2' => [new FileFormat(['png','jpg','jpeg'])],
+            'image_3' => [new FileFormat(['png','jpg','jpeg'])]
         ];
 
         $rulesActionPlan = ActionPlan::getRules();

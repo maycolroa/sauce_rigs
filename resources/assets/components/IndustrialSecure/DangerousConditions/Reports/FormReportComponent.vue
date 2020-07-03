@@ -23,15 +23,53 @@
         :form="form"/>
     </b-form-row>
 
+    <div class="col-md-12">
+      <b-card bg-variant="transparent" border-variant="dark" title="Imágenes" class="mb-3 box-shadow-none">
+        <center><h4>Imagen 1</h4></center>
+        <div>
+          <center>
+              <loading :display="loading"/>
+              <div class="my-4 mx-2 text-center" v-if="!loading && form.old_1">
+                  <img class="mw-100" :src="form.path_1" alt="Max-width 100%">
+              </div>
+          </center>
+          
+          <b-form-row>
+              <vue-file-simple :help-text="form.old_1 ? `Para descargar la imagen actual, haga click <a href='/industrialSecurity/dangerousConditions/report/downloadImage/${report.id}/image_1' target='blank'>aqui</a> `: null" class="col-md-12" v-model="form.image_1" label="Imagen (*.png, *.jpg, *.jpeg)" name="image_1" :error="form.errorsFor('image_1')" placeholder="Seleccione una imagen" :maxFileSize="10"></vue-file-simple>
+          </b-form-row>
+        </div>
+        <div>
+          <center><h4>Imagen 2</h4></center>
+          <center>
+              <loading :display="loading"/>
+              <div class="my-4 mx-2 text-center" v-if="!loading && form.old_2">
+                  <img class="mw-100" :src="form.path_2" alt="Max-width 100%">
+              </div>
+          </center>
+          
+          <b-form-row>
+              <vue-file-simple :help-text="form.old_2 ? `Para descargar la imagen actual, haga click <a href='/industrialSecurity/dangerousConditions/report/downloadImage/${report.id}/image_2' target='blank'>aqui</a> `: null" class="col-md-12" v-model="form.image_2" label="Imagen (*.png, *.jpg, *.jpeg)" name="image_2" :error="form.errorsFor('image_2')" placeholder="Seleccione una imagen" :maxFileSize="10"></vue-file-simple>
+          </b-form-row>
+        </div>
+        <div>
+          <center><h4>Imagen 3</h4></center>
+          <center>
+              <loading :display="loading"/>
+              <div class="my-4 mx-2 text-center" v-if="!loading && form.old_3">
+                  <img class="mw-100" :src="form.path_3" alt="Max-width 100%">
+              </div>
+          </center>
+          
+          <b-form-row>
+              <vue-file-simple :help-text="form.old_3 ? `Para descargar la imagen actual, haga click <a href='/industrialSecurity/dangerousConditions/report/downloadImage/${report.id}/image_3' target='blank'>aqui</a> `: null" class="col-md-12" v-model="form.image_3" label="Imagen (*.png, *.jpg, *.jpeg)" name="image_3" :error="form.errorsFor('image_3')" placeholder="Seleccione una imagen" :maxFileSize="10"></vue-file-simple>
+          </b-form-row>
+        </div>
+      </b-card>
+    </div>
+
     <center>
       <div style="padding-top: 20px; padding-bottom: 20px;"><b-btn @click="showModal" variant="primary"><span class="ion ion-md-eye"></span> Crear plan de acción</b-btn></div>
     </center>
-
-    <div v-if="existError">
-      <b-form-feedback class="d-block" style="padding-bottom: 10px;">
-        Hay errores en sus datos
-      </b-form-feedback>
-    </div>
 
     <b-modal ref="modalPlan" :hideFooter="true" id="modals-default" class="modal-top" size="lg">
       <div slot="modal-title">
@@ -71,8 +109,9 @@ import VueAdvancedSelect from "@/components/Inputs/VueAdvancedSelect.vue";
 import VueTextarea from "@/components/Inputs/VueTextarea.vue";
 import LocationLevelComponent from '@/components/CustomInputs/LocationLevelComponent.vue';
 import Form from "@/utils/Form.js";
-import FormImage from '../FormImageComponent.vue';
 import ActionPlanComponent from '@/components/CustomInputs/ActionPlanComponent.vue';
+import Loading from "@/components/Inputs/Loading.vue";
+import VueFileSimple from "@/components/Inputs/VueFileSimple.vue";
 
 export default {
   components: {
@@ -82,7 +121,8 @@ export default {
     LocationLevelComponent,
     PerfectScrollbar,
     ActionPlanComponent,
-    FormImage
+    Loading,
+    VueFileSimple
   },
   props: {
     url: { type: String },
@@ -123,7 +163,16 @@ export default {
           actionPlan: {
             activities: [],
             activitiesRemoved: []
-          }
+          },
+          image_1: '',
+          path_1: '',
+          old_1: '',
+          image_2: '',
+          path_2: '',
+          old_2: '',
+          image_3: '',
+          path_3: '',
+          old_3: '',
         };
       }
     }
@@ -131,19 +180,6 @@ export default {
   watch: {
     report() {
       this.form = Form.makeFrom(this.report, this.method);
-    }
-  },
-  computed: {
-    existError() {
-      let keys = Object.keys(this.form.errors.errors)
-      let result = false
-      
-      if (keys.length > 0)
-      {
-        result = true
-      }
-
-      return result
     }
   },
   data() {

@@ -110,9 +110,33 @@ class ReportController extends Controller
 
         try
         {
-            $report = new Report($request->all());
+            $report = new Report($request->except(['image_1', 'image_2', 'image_3']));
             $report->company_id = $this->company;
             $report->user_id = $this->user->id;
+
+            if ($request->image_1)
+            {
+                $file1 = $request->image_1;
+                $nameFile1 = base64_encode($this->user->id . now() . rand(1,10000)) .'.'. $file1->extension();
+                $file1->storeAs($report->path_base(), $nameFile1, 's3_DConditions');
+                $report->image_1 = $nameFile1;
+            }
+
+            if ($request->image_2)
+            {
+                $file2 = $request->image_2;
+                $nameFile2 = base64_encode($this->user->id . now() . rand(1,10000)) .'.'. $file2->extension();
+                $file2->storeAs($report->path_base(), $nameFile2, 's3_DConditions');
+                $report->image_2 = $nameFile2;
+            }
+
+            if ($request->image_3)
+            {
+                $file3 = $request->image_3;
+                $nameFile3 = base64_encode($this->user->id . now() . rand(1,10000)) .'.'. $file3->extension();
+                $file3->storeAs($report->path_base(), $nameFile3, 's3_DConditions');
+                $report->image_3 = $nameFile3;
+            }
             
             if (!$report->save())
                 return $this->respondHttp500();
@@ -165,11 +189,11 @@ class ReportController extends Controller
             $report->user;
             $report->multiselect_condition = $report->condition ? $report->condition->multiselect() : [];
             $report->old_1 = $report->image_1;
-            $report->path_1 = Storage::disk('public')->url('industrialSecure/dangerousConditions/reports/images/'. $report->image_1);
+            $report->path_1 = $report->path_image('image_1');
             $report->old_2 = $report->image_2;
-            $report->path_2 = Storage::disk('public')->url('industrialSecure/dangerousConditions/reports/images/'. $report->image_2);
+            $report->path_2 = $report->path_image('image_2');
             $report->old_3 = $report->image_3;
-            $report->path_3 = Storage::disk('public')->url('industrialSecure/dangerousConditions/reports/images/'. $report->image_3);
+            $report->path_3 = $report->path_image('image_3');
             $report->actionPlan = ActionPlan::model($report)->prepareDataComponent();
             $report->locations = $this->prepareDataLocationForm($report);
 
@@ -194,7 +218,57 @@ class ReportController extends Controller
 
         try
         {
-            $report->fill($request->all());
+            $report->fill($request->except(['image_1', 'image_2', 'image_3']));
+
+            if ($request->image_1 != $report->image_1)
+            {
+                if ($request->image_1)
+                {
+                    $file = $request->image_1;
+                    $nameFile1 = base64_encode($this->user->id . now() . rand(1,10000)) .'.'. $file->extension();
+                    $report->img_delete('image_1');
+                    $file->storeAs($report->path_base(), $nameFile1, 's3_DConditions');
+                }
+                else
+                {
+                    $report->img_delete('image_1');
+                    $report->image_1 = NULL;
+                }
+            }
+
+            if ($request->image_2 != $report->image_2)
+            {
+                if ($request->image_2)
+                {
+                    $file2 = $request->image_2;
+                    $nameFile2 = base64_encode($this->user->id . now() . rand(1,10000)) .'.'. $file2->extension();                    
+                    $report->img_delete('image_2');
+                    $file2->storeAs($report->path_base(), $nameFile2, 's3_DConditions');
+                    $report->image_2 = $nameFile2;
+                }
+                else
+                {
+                    $report->img_delete('image_2');
+                    $report->image_2 = NULL;
+                }
+            }
+
+            if ($request->image_3 != $report->image_3)
+            {
+                if ($request->image_3)
+                {
+                    $file3 = $request->image_3;
+                    $nameFile3 = base64_encode($this->user->id . now() . rand(1,10000)) .'.'. $file3->extension();
+                    $report->img_delete('image_3');
+                    $file3->storeAs($report->path_base(), $nameFile3, 's3_DConditions');
+                    $report->image_3 = $nameFile3;
+                }
+                else
+                {
+                    $report->img_delete('image_3');
+                    $report->image_2 = NULL;
+                }
+            }
             
             if (!$report->update())
                 return $this->respondHttp500();
@@ -222,7 +296,7 @@ class ReportController extends Controller
             DB::commit();
 
         } catch (\Exception $e) {
-            //\Log::info($e->getMessage());
+            \Log::info($e->getMessage());
             DB::rollback();
             return $this->respondHttp500();
         }
@@ -230,6 +304,13 @@ class ReportController extends Controller
         return $this->respondHttp200([
             'message' => 'Se actualizo el reporte'
         ]);
+    }
+
+    public function downloadImage($id, $column)
+    {
+        $report = Report::findOrFail($id);
+
+        return $report->donwload_img($column);
     }
 
     /**
@@ -376,14 +457,7 @@ class ReportController extends Controller
         ]);
     }
 
-    public function downloadImage($id, $column)
-    {
-        $report = Report::findOrFail($id);
-
-        return Storage::disk('public')->download('industrialSecure/dangerousConditions/reports/images/'. $report->$column);
-    }
-
-    public function saveQualification(SaveQualificationRequest $request)
+    /*public function saveQualification(SaveQualificationRequest $request)
     {
         try
         {
@@ -423,5 +497,5 @@ class ReportController extends Controller
             DB::rollback();
             return $this->respondHttp500();
         }
-    }
+    }*/
 }
