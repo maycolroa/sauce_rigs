@@ -31,7 +31,7 @@
                 :class="state"
                 track-by="name"
                 @input="updateValue($event, true)"
-                :allow-empty="true"
+                :allow-empty="allowEmpty"
                 :multiple="multiple"
                 :close-on-select="closeOnSelectState"
                 :limit="limit"
@@ -67,6 +67,7 @@ export default {
     label: { type: String, default: "" },
     disabled: { type: Boolean, default: false },
     searchable: { type: Boolean, default: false },
+    allowEmpty: { type: Boolean, default: true },
     hideSelected: { type: Boolean, default: true },
     placeholder: { type: String, default: "" },
     multiple: { type: Boolean, default: false },

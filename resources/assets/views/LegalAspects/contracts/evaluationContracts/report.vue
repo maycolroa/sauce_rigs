@@ -44,7 +44,7 @@
             <b-col>
                 <b-card border-variant="primary" title="Evaluaciones" class="mb-3 box-shadow-none">
                     <b-row>
-                        <b-col><vue-advanced-select :disabled="isLoading" v-model="evaluationsSelected" :options="selectBar" :searchable="true" name="evaluationsSelected">
+                        <b-col><vue-advanced-select :disabled="isLoading" v-model="evaluationsSelected" :options="selectBar" :allowEmpty="false" :searchable="true" name="evaluationsSelected">
                             </vue-advanced-select></b-col>
                         <b-col><vue-advanced-select :disabled="isLoading" v-model="years" :options="yearsOptions" :searchable="true" name="years" placeholder="Años" :multiple="true">
                             </vue-advanced-select></b-col>
