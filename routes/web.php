@@ -166,6 +166,7 @@ Route::middleware(['auth'])->group(function () {
         Route::post('multiselectBar', 'PreventiveOccupationalMedicine\BiologicalMonitoring\AudiometryInformController@multiselectBar');
         Route::post('multiselectBarEvaluations', 'LegalAspects\Contracs\EvaluationContractController@multiselectBar');
         Route::post('multiselectBarInspection', 'IndustrialSecure\DangerousConditions\Inspections\InspectionReportController@multiselectBar');
+        Route::post('multiselectBarReports', 'IndustrialSecure\DangerousConditions\Reports\ReportInformController@multiselectBar');
         Route::post('multiselectBarLegalMatrix', 'LegalAspects\LegalMatrix\LawReportController@multiselectBar');
         Route::post('multiselectBarPercentage', 'PreventiveOccupationalMedicine\BiologicalMonitoring\AudiometryInformController@multiselectBarPercentage');
         Route::post('dmActivities', 'IndustrialSecure\Activities\ActivityController@multiselect');

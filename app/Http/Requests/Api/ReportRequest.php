@@ -57,10 +57,10 @@ class ReportRequest extends FormRequest
 
          $rules = [
             'company_id' => ['required', 'numeric', new CheckCompany(Auth::guard('api')->user()->id), new CheckLicense()],
-            'observation' => 'required',
+            //'observation' => 'required',
             'condition_id' => 'required|exists:sau_ph_conditions,id|numeric',
             'rate' => "required|in:$rates",
-            'other_condition' => 'string|max:255',
+            //'other_condition' => 'string|max:255',
             'employee_regional_id' => [new CheckLocationConfiguration($this->input('company_id'))],
             'employee_headquarter_id' => [new CheckLocationConfiguration($this->input('company_id'))],
             'employee_process_id' => [new CheckLocationConfiguration($this->input('company_id'))],

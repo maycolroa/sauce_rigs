@@ -60,7 +60,7 @@ class ReportRequest extends FormRequest
         $rules = [
             'condition_id' => 'required|exists:sau_ph_conditions,id',
             'rate' => 'required',
-            'observation' => 'required',
+            //'observation' => 'required',
             'image_1' => [new FileFormat(['png','jpg','jpeg'])],
             'image_2' => [new FileFormat(['png','jpg','jpeg'])],
             'image_3' => [new FileFormat(['png','jpg','jpeg'])]

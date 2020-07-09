@@ -5,6 +5,30 @@
             subtitle="REPORTE INFORMES"
             url="dangerousconditions-reports"
         />
+        <b-row style="padding-top: 15px;">
+            <b-col>
+                <b-card border-variant="primary" title="Reportes" class="mb-3 box-shadow-none">
+                    <b-row>
+                        <b-col><vue-advanced-select :disabled="isLoading" v-model="reportSelected" :options="selectBar" :searchable="true" name="reportSelected" :allowEmpty="false" :hideSelected="false">
+                            </vue-advanced-select></b-col>
+                    </b-row>
+                    <b-row>
+                        <b-col class="text-center" style="padding-bottom: 15px;">
+                            <h4>Número de Reportes</h4>
+                        </b-col>
+                    </b-row>
+                    <b-row>
+                        <div class="col-md-12">
+                            <chart-bar 
+                                :chart-data="reportData"
+                                title="Número de reportes realizados"
+                                color-line="red"
+                                ref=""/>
+                        </div>
+                    </b-row>
+                </b-card>
+            </b-col>
+        </b-row>
        <b-row>
             <b-col>
                 <b-card border-variant="primary" :title="`${keywordCheck('headquarters')} con más reportes`" class="mb-3 box-shadow-none">
@@ -113,23 +137,59 @@ export default {
             result: {
                 reports: 0, 
                 condition: ''
-            }
+            },
+            selectBar: [],
+            reportSelected: 'rate',
+            reports: {
+                rate: {
+                    labels: [],
+                    datasets: []
+                },
+                condition: {
+                    labels: [],
+                    datasets: []
+                },
+                headquarter: {
+                    labels: [],
+                    datasets: []
+                },
+                area: {
+                    labels: [],
+                    datasets: []
+                },
+                regional: {
+                    labels: [],
+                    datasets: []
+                },
+                process: {
+                    labels: [],
+                    datasets: []
+                }
+            },
 
         }
     },
     created(){
+        this.fetchSelect('selectBar', '/selects/multiselectBarReports')
         this.fetch()
-
-       GlobalMethods.getDataMultiselect('/selects/headquarters')
+    },
+    computed: {
+        reportData: function() {
+            return this.reports[this.reportSelected]
+        }
+    },
+    methods: {
+        fetchSelect(key, url)
+        {
+            GlobalMethods.getDataMultiselect(url)
             .then(response => {
-                this.options_headquarter = response;
+                this[key] = response;
             })
             .catch(error => {
                 Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
                 this.$router.go(-1);
             });
-    },
-    methods: {
+        },
         conditionHeadquarter()
         {
             if (!this.isLoading)

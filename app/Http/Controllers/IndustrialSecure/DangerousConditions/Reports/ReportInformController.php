@@ -38,7 +38,7 @@ class ReportInformController extends Controller
      */
     public function data(Request $request)
     {
-        $informManager = new InformManagerReport();
+        $informManager = new InformManagerReport($this->company);
         
         return $this->respondHttp200($informManager->getInformData());
     }
@@ -50,5 +50,28 @@ class ReportInformController extends Controller
         $informManager = new InformManagerReport();
         
         return $this->respondHttp200($informManager->locationWithCondition($ids));
+    }
+
+    public function multiselectBar()
+    {
+        $keywords = $this->user->getKeywords();
+
+        $confLocation = $this->getLocationFormConfModule();
+
+        $select = [
+            'Severidad' => "rate", 
+            'Condición' => "condition"
+        ];
+
+        if ($confLocation['regional'] == 'SI')
+            $select[$keywords['regionals']] = 'regional';
+        if ($confLocation['headquarter'] == 'SI')
+            $select[$keywords['headquarters']] = 'headquarter';
+        if ($confLocation['process'] == 'SI')
+            $select[$keywords['processes']] = 'process';
+        if ($confLocation['area'] == 'SI')
+            $select[$keywords['areas']] = 'area';
+  
+      return $this->multiSelectFormat(collect($select));
     }
 }
