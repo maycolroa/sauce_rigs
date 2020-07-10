@@ -224,5 +224,58 @@ export default [
           label: 'Fecha de creación',
         }
       ]
+    },
+    {
+      name: 'dangerousconditions-report-informs',
+      filters: [
+        {
+          url: '/selects/industrialSecurity/conditions',
+          key: 'conditions',
+          type: 'select',
+          label: 'Condición'
+        },
+        {
+          url: '/selects/industrialSecurity/rates',
+          key: 'rates',
+          type: 'select',
+          label: 'Severidad'
+        },
+        {
+          url: '/selects/users',
+          key: 'users',
+          type: 'select',
+          label: 'Usuarios'
+        },
+        {
+          url: '/selects/regionals',
+          key: 'regionals',
+          type: 'select',
+          label: 'regionals'
+        },
+        {
+          url: '/selects/headquarters',
+          key: 'headquarters',
+          type: 'select',
+          label: 'headquarters'
+        },
+        {
+          url: '/selects/processes',
+          key: 'processes',
+          type: 'select',
+          label: 'processes'
+        },
+        {
+          url: '/selects/areas',
+          key: 'areas',
+          type: 'select',
+          label: 'areas'
+        },
+        {
+          key: 'dateRange',
+          type: 'dateRange',
+          label: 'Fecha de creación',
+        },
+
+      ]
     }
 ];
