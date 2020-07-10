@@ -41,6 +41,9 @@
 </head>
 <body style="margin: 50px; margin-top: 0px;">
     <div style="page-break-inside: avoid;">
+        @if ($inspections["logo"])
+        <div style="page-break-inside: avoid; text-align: right; padding-bottom: 10px;"><img src="{{ public_path('storage/administrative/logos/').$inspections['logo'] }}" width="120px" height="120px"/></div>
+        @endif
         <table class="table-general">
             <thead>
                 <tr>
@@ -68,62 +71,45 @@
 
     <br><br>
 
-    <table>
-        <thead>
-            <tr>
-                <th>Temas</th>
-            </tr>
-            @foreach($inspections["themes"] as $keyTheme => $theme)
-            <tr>
-                <td class="body-themes">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th class="title-obj">{{ $keyTheme + 1 }} - {{$theme["name"]}}</th>
-                            </tr>
-                            <tr>
-                                <td class="body-themes">
-                                    <table>
-                                        <thead>
-                                            <tr>
-                                                <th>Item</th>
-                                                <th>Calificación</th>
-                                                <th>Hallazgo</th>
-                                            </tr>
-                                            @foreach($theme["items"] as $keyItem => $item)
-                                            <tr>
-                                                <td class="title-obj">{{ $keyTheme + 1 }}.{{ $keyItem + 1 }} - {{ $item["description"] }}</td>
-                                                <td>{{ $item["qualification"] }}</td>
-                                                <td>{{ $item["find"] }}</td>
-                                            </tr> 
-                                            @if($item["photo_1"] || $item["photo_2"])
-                                            <tr>
-                                                <td style="border-right: none;">
-                                                    @if($item["photo_1"])
-                                                    <img width="200" height="150" src="{{$item['path_1']}}">
-                                                    @endif
-                                                </td>
-                                                <td style="border-right: none; border-left: none;"></td>
-                                                <td style="border-left: none;">
-                                                    @if($item["photo_2"])
-                                                    <img src="{{$item['path_2']}}" width="200" height="150">
-                                                    @endif
-                                                </td>
-                                            </tr>
-                                            @endif
-                                            @endforeach                                      
-                                        </thead>
-                                    </table>
-                                </td>
-                            </tr>
-                        </thead>
-                    </table>
-                </td>
-            </tr>
-            @endforeach
-        </thead>
-    </table>
+    <div style="page-break-inside: avoid;">
+        <p style="text-align: center; font-size: 12px;"><b>Temas</b></p>
+
+        @foreach($inspections["themes"] as $keyTheme => $theme)
+            <p style="text-align: justify; font-size: 12px;"><b>{{ $keyTheme + 1 }} - {{$theme["name"]}}</b></p>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Item</th>
+                        <th>Calificación</th>
+                        <th>Hallazgo</th>
+                    </tr>
+                    @foreach($theme["items"] as $keyItem => $item)
+                    <tr>
+                        <td class="title-obj">{{ $keyTheme + 1 }}.{{ $keyItem + 1 }} - {{ $item["description"] }}</td>
+                        <td>{{ $item["qualification"] }}</td>
+                        <td>{{ $item["find"] }}</td>
+                    </tr> 
+                    @if($item["photo_1"] || $item["photo_2"])
+                    <tr>
+                        <td style="border-right: none;">
+                            @if($item["photo_1"])
+                            <img width="200" height="150" src="{{$item['path_1']}}">
+                            @endif
+                        </td>
+                        <td style="border-right: none; border-left: none;"></td>
+                        <td style="border-left: none;">
+                            @if($item["photo_2"])
+                            <img src="{{$item['path_2']}}" width="200" height="150">
+                            @endif
+                        </td>
+                    </tr>
+                    @endif
+                    @endforeach                                      
+                </thead>
+            </table>
+        @endforeach
     </div>
+
     <br><br>
 
     <div style="page-break-inside: avoid;">
