@@ -34,18 +34,41 @@ class InformManagerReport
         ['sau_employees_headquarters.name', 'headquarter'],
         ['sau_employees_areas.name', 'area'],
         ['sau_ph_conditions.description', 'condition'], 
-        ['sau_ph_reports.rate', 'rate']
+        ['sau_ph_reports.rate', 'rate'],
+        ['sau_users.name', 'user']
     ];
 
     protected $company;
+    protected $regionals;
+    protected $headquarters;
+    protected $processes;
+    protected $areas;
+    protected $conditions;
+    protected $rates;
+    protected $users;
+    protected $years;
+    protected $months;
+    protected $dates;
+    protected $filtersType;
 
     /**
      * create an instance and set the attribute class
      * @param array $regionals
      */
-    function __construct($company = '')
+    function __construct($company = '', $regionals = '', $headquarters = '', $processes = '', $areas = '', $conditions = '', $rates = '', $users = '', $years = '', $months = '', $dates = '', $filtersType = '')
     {
         $this->company = $company;
+        $this->regionals = $regionals;
+        $this->headquarters = $headquarters;
+        $this->processes = $processes;
+        $this->areas = $areas;
+        $this->conditions = $conditions;
+        $this->rates = $rates;
+        $this->users = $users;
+        $this->years = $years;
+        $this->months = $months;
+        $this->dates = $dates;
+        $this->filtersType = $filtersType;
     }
 
     /**
@@ -155,12 +178,31 @@ class InformManagerReport
         ->withoutGlobalScopes()
         ->join('sau_ph_conditions', 'sau_ph_conditions.id', 'sau_ph_reports.condition_id')
         ->join('sau_ph_conditions_types', 'sau_ph_conditions_types.id', 'sau_ph_conditions.condition_type_id')
+        ->join('sau_users', 'sau_users.id', 'sau_ph_reports.user_id')
         ->leftJoin('sau_employees_headquarters', 'sau_employees_headquarters.id', 'sau_ph_reports.employee_headquarter_id')
         ->leftJoin('sau_employees_areas', 'sau_employees_areas.id','sau_ph_reports.employee_area_id' )
         ->leftJoin('sau_employees_regionals', 'sau_employees_regionals.id','sau_ph_reports.employee_regional_id' )
         ->leftJoin('sau_employees_processes', 'sau_employees_processes.id','sau_ph_reports.employee_process_id' )
+        ->inConditions($this->conditions, $this->filtersType['conditions'])
+        ->inRates($this->rates, $this->filtersType['rates'])
+        ->inUsers($this->users, $this->filtersType['users'])        
+        ->inYears($this->years)
+        ->inMonths($this->months)
+        ->betweenDate($this->dates)
         ->where('sau_ph_reports.company_id', $this->company)
         ->groupBy('category');
+
+        if (COUNT($this->headquarters) > 0)
+            $consultas->inHeadquarters($this->headquarters, $this->filtersType['headquarters']);
+
+        if (COUNT($this->areas) > 0)
+            $consultas->inAreas($this->areas, $this->filtersType['areas']);
+
+        if (COUNT($this->regionals) > 0)
+            $consultas->inRegionals($this->regionals, $this->filtersType['regionals']);
+
+        if (COUNT($this->processes) > 0)
+            $consultas->inProcesses($this->processes, $this->filtersType['processes']);
 
         $consultas = DB::table(DB::raw("({$consultas->toSql()}) AS t"))
         ->selectRaw("

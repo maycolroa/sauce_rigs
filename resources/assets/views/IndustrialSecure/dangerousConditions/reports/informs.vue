@@ -5,12 +5,24 @@
             subtitle="REPORTE INFORMES"
             url="dangerousconditions-reports"
         />
+
+        <div>
+            <filter-general 
+                v-model="filters" 
+                configName="dangerousconditions-report-informs" 
+                :isDisabled="isLoading"/>
+        </div>
+
         <b-row style="padding-top: 15px;">
             <b-col>
                 <b-card border-variant="primary" title="Reportes" class="mb-3 box-shadow-none">
                     <b-row>
                         <b-col><vue-advanced-select :disabled="isLoading" v-model="reportSelected" :options="selectBar" :searchable="true" name="reportSelected" :allowEmpty="false" :hideSelected="false">
                             </vue-advanced-select></b-col>
+                         <b-col><vue-advanced-select :disabled="isLoading" v-model="years" :options="yearsOptions" :searchable="true" name="years" placeholder="Años" :multiple="true">
+                        </vue-advanced-select></b-col>
+                        <b-col><vue-advanced-select :disabled="isLoading" v-model="months" :options="monthsOptions" :searchable="true" name="months" placeholder="Meses" :multiple="true">
+                        </vue-advanced-select></b-col>
                     </b-row>
                     <b-row>
                         <b-col class="text-center" style="padding-bottom: 15px;">
@@ -29,7 +41,7 @@
                 </b-card>
             </b-col>
         </b-row>
-       <b-row>
+       <!--<b-row>
             <b-col>
                 <b-card border-variant="primary" :title="`${keywordCheck('headquarters')} con más reportes`" class="mb-3 box-shadow-none">
                     <chart-bar 
@@ -85,7 +97,7 @@
 
         <b-row>
             <div style="padding-left: 15px;"><b>Número de reportes:</b> {{ result.reports }}</div>
-        </b-row>
+        </b-row>-->
 
         <div class="row float-right pt-10 pr-10" style="padding-top: 20px; padding-right: 20px;">
             <template>
@@ -100,6 +112,7 @@ import Alerts from '@/utils/Alerts.js';
 import ChartBar from '@/components/ECharts/ChartBar.vue';
 import VueAdvancedSelect from "@/components/Inputs/VueAdvancedSelect.vue";
 import GlobalMethods from '@/utils/GlobalMethods.js';
+import FilterGeneral from '@/components/Filters/FilterGeneral.vue';
 
 export default {
     name: 'reports-informs',
@@ -109,13 +122,15 @@ export default {
     components:{
         ChartBar,
         VueAdvancedSelect,
-        GlobalMethods
+        GlobalMethods,
+        FilterGeneral
     },
     data () {
         return {
             filters: [],
             isLoading: false,
-
+            yearsOptions: [],
+            monthsOptions: [],
             report_per_headquarter: {
                 labels: [],
                 datasets: []
@@ -140,7 +155,13 @@ export default {
             },
             selectBar: [],
             reportSelected: 'rate',
+            years: '',
+            months: '',
             reports: {
+                user: {
+                    labels: [],
+                    datasets: []
+                },
                 rate: {
                     labels: [],
                     datasets: []
@@ -171,11 +192,27 @@ export default {
     },
     created(){
         this.fetchSelect('selectBar', '/selects/multiselectBarReports')
+        this.fetchSelect('yearsOptions', '/selects/reportDinamic/years')
+        this.fetchSelect('monthsOptions', '/selects/reportDinamic/months')
         this.fetch()
     },
     computed: {
         reportData: function() {
             return this.reports[this.reportSelected]
+        }
+    },
+    watch: {
+        years() {
+          this.fetch();
+        },
+        months() {
+          this.fetch();
+        },
+        filters: {
+            handler(val){
+                this.fetch()
+            },
+            deep: true
         }
     },
     methods: {
@@ -215,7 +252,9 @@ export default {
                 //console.log('buscando...')
                 this.isLoading = true;
 
-                axios.post('/industrialSecurity/dangerousConditions/report/informs', this.filters)
+                let postData = Object.assign({}, {years: this.years}, {months: this.months}, this.filters);
+
+                axios.post('/industrialSecurity/dangerousConditions/report/informs', postData)
                 .then(data => {
                     this.update(data);
                     this.isLoading = false;
