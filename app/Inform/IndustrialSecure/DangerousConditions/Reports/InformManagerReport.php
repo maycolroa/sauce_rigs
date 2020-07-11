@@ -183,14 +183,26 @@ class InformManagerReport
         ->leftJoin('sau_employees_areas', 'sau_employees_areas.id','sau_ph_reports.employee_area_id' )
         ->leftJoin('sau_employees_regionals', 'sau_employees_regionals.id','sau_ph_reports.employee_regional_id' )
         ->leftJoin('sau_employees_processes', 'sau_employees_processes.id','sau_ph_reports.employee_process_id' )
-        ->inConditions($this->conditions, $this->filtersType['conditions'])
-        ->inRates($this->rates, $this->filtersType['rates'])
-        ->inUsers($this->users, $this->filtersType['users'])        
-        ->inYears($this->years)
-        ->inMonths($this->months)
-        ->betweenDate($this->dates)
         ->where('sau_ph_reports.company_id', $this->company)
         ->groupBy('category');
+
+        if (COUNT($this->conditions) > 0)
+            $consultas->inConditions($this->conditions, $this->filtersType['conditions']);
+
+        if (COUNT($this->rates) > 0)
+            $consultas->inRates($this->rates, $this->filtersType['rates']);
+
+        if (COUNT($this->users) > 0)
+            $consultas->inUsers($this->users, $this->filtersType['users']); 
+
+        if (COUNT($this->years) > 0)      
+            $consultas->inYears($this->years);
+
+        if (COUNT($this->months) > 0)
+            $consultas->inMonths($this->months);
+
+        if (COUNT($this->dates) > 0)
+            $consultas->betweenDate($this->dates);
 
         if (COUNT($this->headquarters) > 0)
             $consultas->inHeadquarters($this->headquarters, $this->filtersType['headquarters']);
