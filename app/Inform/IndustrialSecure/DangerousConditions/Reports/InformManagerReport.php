@@ -5,9 +5,12 @@ namespace App\Inform\IndustrialSecure\DangerousConditions\Reports;
 use App\Models\IndustrialSecure\DangerousConditions\Reports\Report;
 use App\Models\Administrative\Employees\Employee;
 use DB;
+use App\Traits\UtilsTrait;
 
 class InformManagerReport
 {
+    use UtilsTrait;
+
     /**
      * defines the availables informs
      *
@@ -22,15 +25,50 @@ class InformManagerReport
         'report_per_area',
         'report_per_user',
         'report_per_headquarter_area',
+        'reports'
     ];
+
+    const GROUPING_COLUMNS = [
+        ['sau_employees_processes.name', 'process'],
+        ['sau_employees_regionals.name', 'regional'],        
+        ['sau_employees_headquarters.name', 'headquarter'],
+        ['sau_employees_areas.name', 'area'],
+        ['sau_ph_conditions.description', 'condition'], 
+        ['sau_ph_reports.rate', 'rate'],
+        ['sau_users.name', 'user']
+    ];
+
+    protected $company;
+    protected $regionals;
+    protected $headquarters;
+    protected $processes;
+    protected $areas;
+    protected $conditions;
+    protected $rates;
+    protected $users;
+    protected $years;
+    protected $months;
+    protected $dates;
+    protected $filtersType;
 
     /**
      * create an instance and set the attribute class
      * @param array $regionals
      */
-    function __construct()
+    function __construct($company = '', $regionals = '', $headquarters = '', $processes = '', $areas = '', $conditions = '', $rates = '', $users = '', $years = '', $months = '', $dates = '', $filtersType = '')
     {
-
+        $this->company = $company;
+        $this->regionals = $regionals;
+        $this->headquarters = $headquarters;
+        $this->processes = $processes;
+        $this->areas = $areas;
+        $this->conditions = $conditions;
+        $this->rates = $rates;
+        $this->users = $users;
+        $this->years = $years;
+        $this->months = $months;
+        $this->dates = $dates;
+        $this->filtersType = $filtersType;
     }
 
     /**
@@ -121,6 +159,75 @@ class InformManagerReport
         return $this->buildDataChart($data);
     }
 
+    public function reports()
+    {
+        $columns = $this::GROUPING_COLUMNS;
+        $informData = collect([]);
+
+        foreach ($columns as $column) {
+            $informData->put($column[1], $this->reportBar($column[0]));
+        }
+    
+        return $informData->toArray();
+    }
+
+    private function reportBar($column)
+    {
+        $consultas = Report::select("$column as category", 
+            DB::raw('COUNT(DISTINCT sau_ph_reports.id) AS count'))
+        ->withoutGlobalScopes()
+        ->join('sau_ph_conditions', 'sau_ph_conditions.id', 'sau_ph_reports.condition_id')
+        ->join('sau_ph_conditions_types', 'sau_ph_conditions_types.id', 'sau_ph_conditions.condition_type_id')
+        ->join('sau_users', 'sau_users.id', 'sau_ph_reports.user_id')
+        ->leftJoin('sau_employees_headquarters', 'sau_employees_headquarters.id', 'sau_ph_reports.employee_headquarter_id')
+        ->leftJoin('sau_employees_areas', 'sau_employees_areas.id','sau_ph_reports.employee_area_id' )
+        ->leftJoin('sau_employees_regionals', 'sau_employees_regionals.id','sau_ph_reports.employee_regional_id' )
+        ->leftJoin('sau_employees_processes', 'sau_employees_processes.id','sau_ph_reports.employee_process_id' )
+        ->where('sau_ph_reports.company_id', $this->company)
+        ->groupBy('category');
+
+        if (COUNT($this->conditions) > 0)
+            $consultas->inConditions($this->conditions, $this->filtersType['conditions']);
+
+        if (COUNT($this->rates) > 0)
+            $consultas->inRates($this->rates, $this->filtersType['rates']);
+
+        if (COUNT($this->users) > 0)
+            $consultas->inUsers($this->users, $this->filtersType['users']); 
+
+        if (COUNT($this->years) > 0)      
+            $consultas->inYears($this->years);
+
+        if (COUNT($this->months) > 0)
+            $consultas->inMonths($this->months);
+
+        if (COUNT($this->dates) > 0)
+            $consultas->betweenDate($this->dates);
+
+        if (COUNT($this->headquarters) > 0)
+            $consultas->inHeadquarters($this->headquarters, $this->filtersType['headquarters']);
+
+        if (COUNT($this->areas) > 0)
+            $consultas->inAreas($this->areas, $this->filtersType['areas']);
+
+        if (COUNT($this->regionals) > 0)
+            $consultas->inRegionals($this->regionals, $this->filtersType['regionals']);
+
+        if (COUNT($this->processes) > 0)
+            $consultas->inProcesses($this->processes, $this->filtersType['processes']);
+
+        $consultas = DB::table(DB::raw("({$consultas->toSql()}) AS t"))
+        ->selectRaw("
+             t.category AS category,
+             SUM(t.count) AS total
+        ")
+        ->mergeBindings($consultas->getQuery())
+        ->groupBy('t.category')
+        ->pluck('total', 'category');
+
+        return $this->buildDataChart2($consultas);
+    }
+
     /**
      * takes the raw data collection and builds
      * a new collection with the right structure for the
@@ -135,6 +242,27 @@ class InformManagerReport
         $total = 0;
         foreach ($rawData as $label => $count) {
             array_push($labels, $label);
+            array_push($data, ['name' => $label, 'value' => $count]);
+            $total += $count;
+        }
+
+        return collect([
+            'labels' => $labels,
+            'datasets' => [
+                'data' => $data,
+                'count' => $total
+            ]
+        ]);
+    }
+
+     protected function buildDataChart2($rawData)
+    {
+        $labels = [];
+        $data = [];
+        $total = 0;
+        foreach ($rawData as $label => $count) {
+            $label2 = strlen($label) > 30 ? substr($this->sanear_string($label), 0, 30).'...' : $label;
+            array_push($labels, $label2);
             array_push($data, ['name' => $label, 'value' => $count]);
             $total += $count;
         }

@@ -166,6 +166,7 @@ Route::middleware(['auth'])->group(function () {
         Route::post('multiselectBar', 'PreventiveOccupationalMedicine\BiologicalMonitoring\AudiometryInformController@multiselectBar');
         Route::post('multiselectBarEvaluations', 'LegalAspects\Contracs\EvaluationContractController@multiselectBar');
         Route::post('multiselectBarInspection', 'IndustrialSecure\DangerousConditions\Inspections\InspectionReportController@multiselectBar');
+        Route::post('multiselectBarReports', 'IndustrialSecure\DangerousConditions\Reports\ReportInformController@multiselectBar');
         Route::post('multiselectBarLegalMatrix', 'LegalAspects\LegalMatrix\LawReportController@multiselectBar');
         Route::post('multiselectBarPercentage', 'PreventiveOccupationalMedicine\BiologicalMonitoring\AudiometryInformController@multiselectBarPercentage');
         Route::post('dmActivities', 'IndustrialSecure\Activities\ActivityController@multiselect');
@@ -196,6 +197,8 @@ Route::middleware(['auth'])->group(function () {
         Route::post('reincRelocatedTypes', 'PreventiveOccupationalMedicine\Reinstatements\CheckController@multiselectRelocatedTypes');
         Route::post('dmReportMultiselect', 'IndustrialSecure\DangerMatrix\DangerMatrixReportHistoryController@multiselect');
         Route::post('dmReportMonths', 'IndustrialSecure\DangerMatrix\DangerMatrixReportHistoryController@multiselect');
+        Route::post('reportDinamic/years', 'IndustrialSecure\DangerousConditions\Reports\ReportInformController@multiselectYears');
+          Route::post('reportDinamic/months', 'IndustrialSecure\DangerousConditions\Reports\ReportInformController@multiselectMounts');
 
         Route::prefix('evaluations')->group(function () {
           Route::post('evaluations', 'LegalAspects\Contracs\EvaluationController@multiselectEvaluations');

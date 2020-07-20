@@ -161,7 +161,6 @@ class TrainingEmployeeController extends Controller
      */
     public function download($id)
     {
-        \Log::info("sss");
         $training = Training::withoutGlobalScopes()->find($id);
         return Storage::disk('s3')->download($training->path_donwload());
     }

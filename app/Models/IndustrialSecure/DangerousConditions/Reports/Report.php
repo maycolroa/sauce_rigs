@@ -82,6 +82,118 @@ class Report extends Model
         return $query;
     }
 
+    public function scopeInRates($query, $rates, $typeSearch = 'IN')
+    {
+        if (COUNT($rates) > 0)
+        {
+            if ($typeSearch == 'IN')
+                $query->whereIn('sau_ph_reports.rate', $rates);
+
+            else if ($typeSearch == 'NOT IN')
+                $query->whereNotIn('sau_ph_reports.rate', $rates);
+        }
+
+        return $query;
+    }
+
+    public function scopeInUsers($query, $users, $typeSearch = 'IN')
+    {
+        if (COUNT($users) > 0)
+        {
+            if ($typeSearch == 'IN')
+                $query->whereIn('sau_ph_reports.user_id', $users);
+
+            else if ($typeSearch == 'NOT IN')
+                $query->whereNotIn('sau_ph_reports.user_id', $users);
+        }
+
+        return $query;
+    }
+
+    public function scopeInRegionals($query, $regionals, $typeSearch = 'IN')
+    {
+        if (COUNT($regionals) > 0)
+        {
+            if ($typeSearch == 'IN')
+                $query->whereIn('sau_ph_reports.employee_regional_id', $regionals);
+
+            else if ($typeSearch == 'NOT IN')
+                $query->whereNotIn('sau_ph_reports.employee_regional_id', $regionals);
+        }
+
+        return $query;
+    }
+
+    public function scopeInHeadquarters($query, $headquarters, $typeSearch = 'IN')
+    {
+        if (COUNT($headquarters) > 0)
+        {
+            if ($typeSearch == 'IN')
+                $query->whereIn('sau_ph_reports.employee_headquarter_id', $headquarters);
+
+            else if ($typeSearch == 'NOT IN')
+                $query->whereNotIn('sau_ph_reports.employee_headquarter_id', $headquarters);
+        }
+
+        return $query;
+    }
+
+    public function scopeInProcesses($query, $processes, $typeSearch = 'IN')
+    {
+        if (COUNT($processes) > 0)
+        {
+            if ($typeSearch == 'IN')
+                $query->whereIn('sau_ph_reports.employee_process_id', $processes);
+
+            else if ($typeSearch == 'NOT IN')
+                $query->whereNotIn('sau_ph_reports.employee_process_id', $processes);
+        }
+
+        return $query;
+    }
+
+    public function scopeInAreas($query, $areas, $typeSearch = 'IN')
+    {
+        if (COUNT($areas) > 0)
+        {
+            if ($typeSearch == 'IN')
+                $query->whereIn('sau_ph_reports.employee_area_id', $areas);
+
+            else if ($typeSearch == 'NOT IN')
+                $query->whereNotIn('sau_ph_reports.employee_area_id', $areas);
+        }
+
+        return $query;
+    }
+
+    public function scopeInYears($query, $years, $typeSearch = 'IN')
+    {
+        if (COUNT($years) > 0)
+        {
+            if ($typeSearch == 'IN')
+                $query->whereRaw('YEAR(sau_ph_reports.created_at) IN (' . $years->implode(',') . ')' );
+
+            else if ($typeSearch == 'NOT IN')
+                $query->whereRaw('YEAR(sau_ph_reports.created_at) NOT IN (' . $years->implode(',') . ')' );
+        }
+
+        return $query;
+    }
+
+    public function scopeInMonths($query, $months, $typeSearch = 'IN')
+    {
+        if (COUNT($months) > 0)
+        {
+            if ($typeSearch == 'IN')
+                $query->whereRaw('month(sau_ph_reports.created_at) IN (' . $months->implode(',') . ')' );
+
+            else if ($typeSearch == 'NOT IN')
+                $query->whereRaw('month(sau_ph_reports.created_at) NOT IN (' . $months->implode(',') . ')' );
+        }
+
+        return $query;
+    }
+
     /**
      * filters checks through the given conditionTypes
      * @param  Illuminate\Database\Eloquent\Builder $query

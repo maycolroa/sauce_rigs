@@ -15,6 +15,7 @@ use App\Models\Administrative\Processes\EmployeeProcess;
 use App\Models\Administrative\Areas\EmployeeArea;
 use App\Http\Requests\IndustrialSecure\DangerousConditions\Inspections\SaveQualificationRequest;
 use App\Facades\ActionPlans\Facades\ActionPlan;
+use App\Models\General\Company;
 use Carbon\Carbon;
 use Validator;
 use DB;
@@ -291,6 +292,12 @@ class InspectionQualificationController extends Controller
     public function getDataExportPdf($id)
     {
         $inspection = $this->getInformationInspection($id);
+
+        $company = Company::select('logo')->where('id', $this->company)->first();
+
+        $logo = ($company && $company->logo) ? $company->logo : null;
+
+        $inspection->put('logo', $logo);
 
         return $inspection;
     }
