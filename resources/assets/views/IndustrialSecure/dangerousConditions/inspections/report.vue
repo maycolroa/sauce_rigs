@@ -41,6 +41,7 @@
                     ref="tableReport"
                     v-if="auth.can['ph_inspections_r']"
                     configName="dangerousconditions-inspections-report"
+                    :customColumnsName="true" 
                     @filtersUpdate="setFilters"
                     :params="{table: table}"
                 ></vue-table>
@@ -208,7 +209,6 @@ export default {
             })
             .catch(error => {
                 Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
-                this.$router.go(-1);
             });
         },
         fetch()
@@ -248,7 +248,6 @@ export default {
                 })
                 .catch(error => {
                     Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
-                    this.$router.go(-1);
                 });
         }
     }

@@ -57,6 +57,26 @@ class Inspection extends Model
     }
 
     /**
+     * filters checks through the given regionals
+     * @param  Illuminate\Database\Eloquent\Builder $query
+     * @param  array $regionals
+     * @return Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeInRegionals($query, $regionals, $typeSearch = 'IN')
+    {
+        if (COUNT($regionals) > 0)
+        {
+            if ($typeSearch == 'IN')
+                $query->whereIn('sau_ph_inspection_regional.employee_regional_id', $regionals);
+
+            else if ($typeSearch == 'NOT IN')
+                $query->whereNotIn('sau_ph_inspection_regional.employee_regional_id', $regionals);
+        }
+
+        return $query;
+    }
+
+    /**
      * filters checks through the given headquarters
      * @param  Illuminate\Database\Eloquent\Builder $query
      * @param  array $headquarters
@@ -80,6 +100,26 @@ class Inspection extends Model
 
             else if ($typeSearch == 'NOT IN')
                 $query->whereNotIn('sau_ph_inspection_headquarter.employee_headquarter_id', $ids);
+        }
+
+        return $query;
+    }
+
+    /**
+     * filters checks through the given processes
+     * @param  Illuminate\Database\Eloquent\Builder $query
+     * @param  array $processes
+     * @return Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeInProcesses($query, $processes, $typeSearch = 'IN')
+    {
+        if (COUNT($processes) > 0)
+        {
+            if ($typeSearch == 'IN')
+                $query->whereIn('sau_ph_inspection_process.employee_process_id', $processes);
+
+            else if ($typeSearch == 'NOT IN')
+                $query->whereNotIn('sau_ph_inspection_process.employee_process_id', $processes);
         }
 
         return $query;

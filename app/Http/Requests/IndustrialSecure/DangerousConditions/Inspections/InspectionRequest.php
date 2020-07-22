@@ -3,10 +3,12 @@
 namespace App\Http\Requests\IndustrialSecure\DangerousConditions\Inspections;
 
 use Illuminate\Foundation\Http\FormRequest;
+use App\Traits\LocationFormTrait;
 use Session;
 
 class InspectionRequest extends FormRequest
 {
+    use LocationFormTrait;
     /**
      * Determine if the user is authorized to make this request.
      *
@@ -54,16 +56,28 @@ class InspectionRequest extends FormRequest
     {
         $id = $this->input('id');
 
-        return [
+        $rules = [
             'name' => 'required|string|unique:sau_ph_inspections,name,'.$id.',id,company_id,'.Session::get('company_id'),
-            'employee_regional_id' => 'required',
-            'employee_headquarter_id' => 'required',
-            'employee_area_id' => 'required',
-            'employee_process_id' => 'required',
             'themes' => 'required|array',
             'themes.*.name' => 'required',
             'themes.*.items' => 'required|array',
             'themes.*.items.*.description' => 'required'
         ];
+
+        $confLocation = $this->getLocationFormConfModule();
+
+        if ($confLocation)
+        {
+            if ($confLocation['regional'] == 'SI')
+                $rules['employee_regional_id'] = 'required';
+            if ($confLocation['headquarter'] == 'SI')
+                $rules['employee_headquarter_id'] = 'required';
+            if ($confLocation['process'] == 'SI')
+                $rules['employee_process_id'] = 'required';
+            if ($confLocation['area'] == 'SI')
+                $rules['employee_area_id'] = 'required';
+        }
+
+        return $rules;
     }
 }

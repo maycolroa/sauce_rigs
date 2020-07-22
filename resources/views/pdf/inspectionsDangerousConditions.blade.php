@@ -47,14 +47,10 @@
         <table class="table-general">
             <thead>
                 <tr>
-                    <th>Inspección</th>
-                    <th>{{ Auth::user()->getKeywords()['headquarter'] }}</th>
-                    <th>{{ Auth::user()->getKeywords()['area'] }}</th>
+                    <th colspan="3">Inspección</th>
                 </tr>
                 <tr>
-                    <td>{{$inspections["inspection"]}}</td>
-                    <td>{{$inspections["headquarter"]}}</td>
-                    <td>{{$inspections["area"]}}</td>
+                    <td colspan="3">{{ $inspections["inspection"] }}</td>
                 </tr>
                 <tr>
                     <th>Fecha Creación</th>
@@ -66,6 +62,32 @@
                     <td>{{$inspections["qualification_date"]}}</td>
                     <td>{{$inspections["qualifier"]}}</td>
                 </tr>
+                <tr>
+                    <th>{{ Auth::user()->getKeywords()['regional'] }}</th>
+                    @if ($inspections["headquarter"])
+                        <th>{{ Auth::user()->getKeywords()['headquarter'] }}</th>
+                    @endif
+                    @if ($inspections["process"])
+                        <th>{{ Auth::user()->getKeywords()['process'] }}</th>
+                    @endif
+                </tr>
+                <tr>
+                    <th>{{ $inspections["regional"] }}</th>
+                    @if ($inspections["headquarter"])
+                        <th>{{ $inspections["headquarter"] }}</th>
+                    @endif
+                    @if ($inspections["process"])
+                        <th>{{ $inspections["process"] }}</th>
+                    @endif
+                </tr>
+                @if ($inspections["area"])
+                    <tr>
+                        <th colspan="3">{{ Auth::user()->getKeywords()['area'] }}</th>
+                    </tr>
+                    <tr>
+                        <td colspan="3">{{ $inspections["area"] }}</td>
+                    </tr>
+                @endif
             </thead>
         </table>
 

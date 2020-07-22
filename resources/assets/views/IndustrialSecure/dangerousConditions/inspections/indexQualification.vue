@@ -11,6 +11,7 @@
         <b-card-body>
               <vue-table
                 configName="dangerousconditions-inspections-qualification"
+                :customColumnsName="true" 
                 v-if="auth.can['ph_inspections_r']"
                 :params="{inspectionId: `${this.$route.params.id}`}"
                 ></vue-table>

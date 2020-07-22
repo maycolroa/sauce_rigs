@@ -11,13 +11,14 @@ use App\Jobs\IndustrialSecure\DangerousConditions\Inspections\InspectionReportEx
 use App\Inform\IndustrialSecure\DangerousConditions\Inspections\InformManagerInspections;
 use App\Models\General\Module;
 use App\Traits\Filtertrait;
+use App\Traits\LocationFormTrait;
 use Carbon\Carbon;
 use Validator;
 use DB;
 
 class InspectionReportController extends Controller
 {
-    use Filtertrait;
+    use Filtertrait, LocationFormTrait;
 
     /**
      * creates and instance and middlewares are checked
@@ -51,24 +52,38 @@ class InspectionReportController extends Controller
     public function data(Request $request)
     {
       $module_id = Module::where('name', 'dangerousConditions')->first()->id;
+      $confLocation = $this->getLocationFormConfModule();
+      $where = 'iq2.employee_regional_id = sau_ph_inspection_items_qualification_area_location.employee_regional_id ';
+
+      if ($confLocation)
+      {
+        if ($confLocation['headquarter'] == 'SI')
+          $where .= 'AND iq2.employee_headquarter_id = sau_ph_inspection_items_qualification_area_location.employee_headquarter_id ';
+        if ($confLocation['process'] == 'SI')
+          $where .= 'AND iq2.employee_process_id = sau_ph_inspection_items_qualification_area_location.employee_process_id ';
+        if ($confLocation['area'] == 'SI')
+          $where .= 'AND iq2.employee_area_id = sau_ph_inspection_items_qualification_area_location.employee_area_id ';
+      }
 
       if ($request->table == "with_theme" )
         $column = 's.name as section';
       else
-        $column = 'l.name as headquarter';
+        $column = 'r.name as regional';
 
       $consultas = InspectionItemsQualificationAreaLocation::select(
           'i.name as name',
-          'a.name as area',
+          'r.name as regional',
           'l.name as headquarter',
+          'p.name as process',
+          'a.name as area',
           "{$column}",
-          DB::raw('(
+          DB::raw("(
             select count(distinct i2.id) from sau_ph_inspection_items_qualification_area_location iq2
             inner join sau_ph_inspection_section_items it2 on iq2.item_id = it2.id
             inner join sau_ph_inspection_sections s2 on it2.inspection_section_id = s2.id
             inner join sau_ph_inspections i2 on s2.inspection_id = i2.id
-            where iq2.employee_headquarter_id = sau_ph_inspection_items_qualification_area_location.employee_headquarter_id and iq2.employee_area_id = sau_ph_inspection_items_qualification_area_location.employee_area_id
-            ) as numero_inspecciones'),
+            where {$where}
+            ) as numero_inspecciones"),
           DB::raw('count(sau_ph_inspection_items_qualification_area_location.qualification_id) as numero_items'),
           DB::raw('count(IF(q.fulfillment = 1, q.id, null)) as numero_items_cumplimiento'),
           DB::raw('count(IF(q.fulfillment = 0, q.id, null)) as numero_items_no_cumplimiento'),
@@ -94,15 +109,17 @@ class InspectionReportController extends Controller
         ->join('sau_ph_inspection_section_items as it','sau_ph_inspection_items_qualification_area_location.item_id', 'it.id')
         ->join('sau_ph_inspection_sections as s','it.inspection_section_id', 's.id')
         ->join('sau_ph_inspections as i','s.inspection_id', 'i.id')
-        ->join('sau_employees_areas as a','a.id', 'sau_ph_inspection_items_qualification_area_location.employee_area_id')
-        ->join('sau_employees_headquarters as l','l.id', 'sau_ph_inspection_items_qualification_area_location.employee_headquarter_id')
         ->join('sau_ct_qualifications as q','q.id', 'sau_ph_inspection_items_qualification_area_location.qualification_id')
+        ->leftJoin('sau_employees_regionals as r', 'r.id', 'sau_ph_inspection_items_qualification_area_location.employee_regional_id')
+        ->leftJoin('sau_employees_headquarters as l','l.id', 'sau_ph_inspection_items_qualification_area_location.employee_headquarter_id')
+        ->leftJoin('sau_employees_processes as p', 'p.id', 'sau_ph_inspection_items_qualification_area_location.employee_process_id')
+        ->leftJoin('sau_employees_areas as a','a.id', 'sau_ph_inspection_items_qualification_area_location.employee_area_id')
         ->where('i.company_id', $this->company);
 
         if ($request->table == "with_theme" )
-          $consultas->groupBy('name', 'area', 'headquarter', 'numero_inspecciones', 'section');
+          $consultas->groupBy('name', 'area', 'headquarter', 'process', 'regional', 'numero_inspecciones', 'section');
         else
-          $consultas->groupBy('name', 'area', 'headquarter', 'numero_inspecciones');
+          $consultas->groupBy('name', 'area', 'headquarter', 'process', 'regional', 'numero_inspecciones');
 
         $url = "/industrialsecure/dangerousconditions/inspection/report";
 
@@ -110,9 +127,15 @@ class InspectionReportController extends Controller
 
         if (COUNT($filters) > 0)
         {
+            if (isset($filters["regionals"]))
+              $consultas->inRegionals($this->getValuesForMultiselect($filters["regionals"]), $filters['filtersType']['regionals']);
+
             if (isset($filters["headquarters"]))
               $consultas->inHeadquarters($this->getValuesForMultiselect($filters["headquarters"]), $filters['filtersType']['headquarters']);
 
+            if (isset($filters["processes"]))
+              $consultas->inProcesses($this->getValuesForMultiselect($filters["processes"]), $filters['filtersType']['processes']);
+            
             if (isset($filters["areas"]))
               $consultas->inAreas($this->getValuesForMultiselect($filters["areas"]), $filters['filtersType']['areas']);
 
@@ -163,7 +186,11 @@ class InspectionReportController extends Controller
         else 
             $filters = $this->filterDefaultValues($this->user->id, $url);
 
+        $regionals = !$init ? $this->getValuesForMultiselect($request->regionals) : (isset($filters['regionals']) ? $this->getValuesForMultiselect($filters['regionals']) : []);
+
         $headquarters = !$init ? $this->getValuesForMultiselect($request->headquarters) : (isset($filters['headquarters']) ? $this->getValuesForMultiselect($filters['headquarters']) : []);
+
+        $processes = !$init ? $this->getValuesForMultiselect($request->processes) : (isset($filters['processes']) ? $this->getValuesForMultiselect($filters['processes']) : []);
         
         $areas = !$init ? $this->getValuesForMultiselect($request->areas) : (isset($filters['areas']) ? $this->getValuesForMultiselect($filters['areas']) : []);
         
@@ -190,14 +217,27 @@ class InspectionReportController extends Controller
 
         $module_id = Module::where('name', 'dangerousConditions')->first()->id;
 
+        $confLocation = $this->getLocationFormConfModule();
+        $where = 'iq2.employee_regional_id = sau_ph_inspection_items_qualification_area_location.employee_regional_id ';
+
+        if ($confLocation)
+        {
+          if ($confLocation['headquarter'] == 'SI')
+            $where .= 'AND iq2.employee_headquarter_id = sau_ph_inspection_items_qualification_area_location.employee_headquarter_id ';
+          if ($confLocation['process'] == 'SI')
+            $where .= 'AND iq2.employee_process_id = sau_ph_inspection_items_qualification_area_location.employee_process_id ';
+          if ($confLocation['area'] == 'SI')
+            $where .= 'AND iq2.employee_area_id = sau_ph_inspection_items_qualification_area_location.employee_area_id ';
+        }
+
         $consultas = InspectionItemsQualificationAreaLocation::select(
-            DB::raw('(
+            DB::raw("(
              select count(distinct i2.id) from sau_ph_inspection_items_qualification_area_location iq2
              inner join sau_ph_inspection_section_items it2 on iq2.item_id = it2.id
              inner join sau_ph_inspection_sections s2 on it2.inspection_section_id = s2.id
              inner join sau_ph_inspections i2 on s2.inspection_id = i2.id
-             where iq2.employee_headquarter_id = sau_ph_inspection_items_qualification_area_location.employee_headquarter_id and iq2.employee_area_id = sau_ph_inspection_items_qualification_area_location.employee_area_id
-             ) as numero_inspecciones'),
+             where {$where}
+             ) as numero_inspecciones"),
              DB::raw('count(sau_ph_inspection_items_qualification_area_location.qualification_id) as numero_items'),
              DB::raw('count(IF(q.fulfillment = 1, q.id, null)) as numero_items_cumplimiento'),
              DB::raw('count(IF(q.fulfillment = 0, q.id, null)) as numero_items_no_cumplimiento'),
@@ -228,10 +268,16 @@ class InspectionReportController extends Controller
              ->inInspections($inspections, $filtersType['inspections'], 'i')
              ->betweenDate($dates)
              ->where('i.company_id', $this->company)
-             ->groupBy('employee_area_id', 'employee_headquarter_id', 'numero_inspecciones');
+             ->groupBy('employee_regional_id', 'employee_headquarter_id', 'employee_process_id', 'employee_area_id', 'numero_inspecciones');
+
+        if (COUNT($regionals) > 0)
+          $consultas->inRegionals($regionals, $filtersType['regionals']);
 
         if (COUNT($headquarters) > 0)
           $consultas->inHeadquarters($headquarters, $filtersType['headquarters']);
+        
+        if (COUNT($processes) > 0)
+          $consultas->inProcesses($processes, $filtersType['processes']);
 
         if (COUNT($areas) > 0)
           $consultas->inAreas($areas, $filtersType['areas']);
@@ -277,7 +323,9 @@ class InspectionReportController extends Controller
     {
       try
         {
+          $regionals = $this->getValuesForMultiselect($request->regionals);
           $headquarters = $this->getValuesForMultiselect($request->headquarters);
+          $processes = $this->getValuesForMultiselect($request->processes);
           $areas = $this->getValuesForMultiselect($request->areas);
           $themes = $this->getValuesForMultiselect($request->themes);
           $inspections = $this->getValuesForMultiselect($request->inspections);
@@ -296,7 +344,9 @@ class InspectionReportController extends Controller
           }
 
             $filters = [
+                'regionals' => $regionals,
                 'headquarters' => $headquarters,
+                'processes' => $processes,
                 'areas' => $areas,
                 'themes' => $themes,
                 'inspections' => $inspections,
@@ -324,8 +374,12 @@ class InspectionReportController extends Controller
       else 
           $filters = $this->filterDefaultValues($this->user->id, $url);
 
+      $regionals = !$init ? $this->getValuesForMultiselect($request->regionals) : (isset($filters['regionals']) ? $this->getValuesForMultiselect($filters['regionals']) : []);
+
       $headquarters = !$init ? $this->getValuesForMultiselect($request->headquarters) : (isset($filters['headquarters']) ? $this->getValuesForMultiselect($filters['headquarters']) : []);
-        
+
+      $processes = !$init ? $this->getValuesForMultiselect($request->processes) : (isset($filters['processes']) ? $this->getValuesForMultiselect($filters['processes']) : []);
+      
       $areas = !$init ? $this->getValuesForMultiselect($request->areas) : (isset($filters['areas']) ? $this->getValuesForMultiselect($filters['areas']) : []);
       
       $themes = !$init ? $this->getValuesForMultiselect($request->themes) : (isset($filters['themes']) ? $this->getValuesForMultiselect($filters['themes']) : []);
@@ -349,7 +403,7 @@ class InspectionReportController extends Controller
           }
       }
 
-      $informManager = new InformManagerInspections($this->company, $headquarters, $areas, $themes, $filtersType, $dates, $inspections);
+      $informManager = new InformManagerInspections($this->company, $regionals, $headquarters, $processes, $areas, $themes, $filtersType, $dates, $inspections);
 
       return $this->respondHttp200($informManager->getInformData());
     }
@@ -357,14 +411,21 @@ class InspectionReportController extends Controller
     public function multiselectBar()
     {
       $keywords = $this->user->getKeywords();
+      $confLocation = $this->getLocationFormConfModule();
 
       $select = [
           'Inspecciones' => "inspection", 
-          'Temas' => "theme",
-          $keywords['headquarters'] => "headquarter",
-          $keywords['areas'] => "area"
-
+          'Temas' => "theme"
       ];
+
+      if ($confLocation['regional'] == 'SI')
+        $select[$keywords['regionals']] = 'regional';
+      if ($confLocation['headquarter'] == 'SI')
+        $select[$keywords['headquarters']] = 'headquarter';
+      if ($confLocation['process'] == 'SI')
+        $select[$keywords['processes']] = 'process';
+      if ($confLocation['area'] == 'SI')
+        $select[$keywords['areas']] = 'area';
   
       return $this->multiSelectFormat(collect($select));
     }

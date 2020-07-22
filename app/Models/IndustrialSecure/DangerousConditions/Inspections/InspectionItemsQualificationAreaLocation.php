@@ -14,8 +14,10 @@ class InspectionItemsQualificationAreaLocation extends Model
     protected $fillable = [
         'item_id',
         'qualification_id',
-        'employee_headquarter_id',	
-        'employee_area_id',	
+        'employee_regional_id',
+        'employee_headquarter_id',
+        'employee_process_id',
+        'employee_area_id',
         'qualifier_id',	
         'find',
         'qualification_date',
@@ -30,14 +32,24 @@ class InspectionItemsQualificationAreaLocation extends Model
         return $this->belongsTo(InspectionSectionItem::class, 'item_id');
     }
 
-    public function area()
+    public function regional()
     {
-        return $this->belongsTo('App\Models\Administrative\Areas\EmployeeArea', 'employee_area_id');
+        return $this->belongsTo('App\Models\Administrative\Regionals\EmployeeRegional', 'employee_regional_id');
     }
 
     public function headquarter()
     {
         return $this->belongsTo('App\Models\Administrative\Headquarters\EmployeeHeadquarter', 'employee_headquarter_id');
+    }
+
+    public function process()
+    {
+        return $this->belongsTo('App\Models\Administrative\Processes\EmployeeProcess', 'employee_process_id');
+    }
+
+    public function area()
+    {
+        return $this->belongsTo('App\Models\Administrative\Areas\EmployeeArea', 'employee_area_id');
     }
 
     public function qualifier()
@@ -57,6 +69,26 @@ class InspectionItemsQualificationAreaLocation extends Model
         }
 
         $this->attributes["photo_{$imageNumber}"] = $imageName;
+    }
+
+    /**
+     * filters checks through the given regionals
+     * @param  Illuminate\Database\Eloquent\Builder $query
+     * @param  array $regionals
+     * @return Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeInRegionals($query, $regionals, $typeSearch = 'IN')
+    {
+        if (COUNT($regionals) > 0)
+        {
+            if ($typeSearch == 'IN')
+                $query->whereIn('sau_ph_inspection_items_qualification_area_location.employee_regional_id', $regionals);
+
+            else if ($typeSearch == 'NOT IN')
+                $query->whereNotIn('sau_ph_inspection_items_qualification_area_location.employee_regional_id', $regionals);
+        }
+
+        return $query;
     }
 
     /**
@@ -83,6 +115,26 @@ class InspectionItemsQualificationAreaLocation extends Model
 
             else if ($typeSearch == 'NOT IN')
                 $query->whereNotIn('sau_ph_inspection_items_qualification_area_location.employee_headquarter_id', $ids);
+        }
+
+        return $query;
+    }
+
+    /**
+     * filters checks through the given processes
+     * @param  Illuminate\Database\Eloquent\Builder $query
+     * @param  array $processes
+     * @return Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeInProcesses($query, $processes, $typeSearch = 'IN')
+    {
+        if (COUNT($processes) > 0)
+        {
+            if ($typeSearch == 'IN')
+                $query->whereIn('sau_ph_inspection_items_qualification_area_location.employee_process_id', $processes);
+
+            else if ($typeSearch == 'NOT IN')
+                $query->whereNotIn('sau_ph_inspection_items_qualification_area_location.employee_process_id', $processes);
         }
 
         return $query;
