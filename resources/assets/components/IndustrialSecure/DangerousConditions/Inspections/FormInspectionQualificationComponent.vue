@@ -87,7 +87,7 @@
                                       <!-- Planes de acción -->
                                       <b-btn v-if="!viewOnly" @click="showModal(`modalPlan${index}-${index2}`)" variant="outline-info icon-btn borderless" size="xs" v-b-tooltip.top title="Ver plan de acción"><span class="ion ion-md-eye"></span></b-btn>
 
-                                      <b-modal :ref="`modalPlan${index}-${index2}`" :hideFooter="true" :id="`modals-default-${index+1}${index2}`" class="modal-top" size="lg" @hidden="saveActionPlan(index, index2)">
+                                      <b-modal :ref="`modalPlan${index}-${index2}`" :hideFooter="true" :id="`modals-default-${index+1}${index2}`" class="modal-top" size="lg" @hidden="removed(index, index2)">
                                         <div slot="modal-title">
                                           Plan de acción<br>
                                           <small class="text-muted">Crea planes de acción para tu justificación.</small>
@@ -275,7 +275,25 @@ export default {
 			}
 
 			return result
-		},
+    },
+    removed(index, index2) {
+      let keys = [];
+      
+      this.form.themes[index].items[index2].actionPlan.activities.forEach((activity, keyAct) => {
+        if (activity.description && activity.responsible_id && activity.expiration_date && activity.state)
+        {
+          keys.push(activity);
+        }
+      });
+
+      this.form.themes[index].items[index2].actionPlan.activities.splice(0);
+
+      keys.forEach((item, key) => {
+        this.form.themes[index].items[index2].actionPlan.activities.push(item)
+      });
+
+      this.saveActionPlan(index, index2);
+    },
     saveActionPlan(indexTheme, indexItem)
     {
       if (this.ready)

@@ -64,8 +64,8 @@ class PermissionService
             });
             
             $modules = $modules->filter(function($module, $keyMod) use ($company, $user, $team) {
-                return $user->isSuperAdmin($team) || 
-                ($this->existsLicenseByModule($company, $module->get('id')) && $module->get('permissions')->where('can', true)->first());
+                return $this->existsLicenseByModule($company, $module->get('id')) && 
+                ($user->isSuperAdmin($team) || $module->get('permissions')->where('can', true)->first());
             })
             ->values();
 

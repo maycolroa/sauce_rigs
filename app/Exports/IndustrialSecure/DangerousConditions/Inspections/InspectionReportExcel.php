@@ -17,15 +17,17 @@ use Maatwebsite\Excel\Events\AfterSheet;
 use \Maatwebsite\Excel\Sheet;
 use DB;
 use App\Traits\UtilsTrait;
+use App\Traits\LocationFormTrait;
 
 Sheet::macro('styleCells', function (Sheet $sheet, string $cellRange, array $style) {
   $sheet->getDelegate()->getStyle($cellRange)->applyFromArray($style);
 });
 
-class InspectionReportExcel implements FromCollection, WithMapping, WithHeadings, WithTitle, WithEvents, WithColumnFormatting, ShouldAutoSize
+class InspectionReportExcel implements FromCollection, WithMapping, WithHeadings, WithTitle, WithEvents/*, WithColumnFormatting*/, ShouldAutoSize
 {
     use RegistersEventListeners;
     use UtilsTrait;
+    use LocationFormTrait;
 
     protected $company_id;
     protected $filters;
@@ -38,11 +40,24 @@ class InspectionReportExcel implements FromCollection, WithMapping, WithHeadings
       $this->filters = $filters;
       $this->table = $this->filters['table'];
       $this->keywords = $this->getKeywordQueue($this->company_id);
+      $this->confLocation = $this->getLocationFormConfModule($this->company_id);
     }
 
     public function collection()
     {
       $module_id = Module::where('name', 'dangerousConditions')->first()->id;
+
+      $where = 'iq2.employee_regional_id = sau_ph_inspection_items_qualification_area_location.employee_regional_id ';
+
+      if ($this->confLocation)
+      {
+        if ($this->confLocation['headquarter'] == 'SI')
+          $where .= 'AND iq2.employee_headquarter_id = sau_ph_inspection_items_qualification_area_location.employee_headquarter_id ';
+        if ($this->confLocation['process'] == 'SI')
+          $where .= 'AND iq2.employee_process_id = sau_ph_inspection_items_qualification_area_location.employee_process_id ';
+        if ($this->confLocation['area'] == 'SI')
+          $where .= 'AND iq2.employee_area_id = sau_ph_inspection_items_qualification_area_location.employee_area_id ';
+      }
 
       if ($this->table == "with_theme" )
         $column = 's.name as section';
@@ -50,17 +65,19 @@ class InspectionReportExcel implements FromCollection, WithMapping, WithHeadings
         $column = 'l.name as headquarter';
 
       $consultas = InspectionItemsQualificationAreaLocation::select(
-          'i.name AS name',
-          'a.name as area',
+          'i.name as name',
+          'r.name as regional',
           'l.name as headquarter',
+          'p.name as process',
+          'a.name as area',
           "{$column}",
-          DB::raw('(
+          DB::raw("(
             select count(distinct i2.id) from sau_ph_inspection_items_qualification_area_location iq2
             inner join sau_ph_inspection_section_items it2 on iq2.item_id = it2.id
             inner join sau_ph_inspection_sections s2 on it2.inspection_section_id = s2.id
             inner join sau_ph_inspections i2 on s2.inspection_id = i2.id
-            where iq2.employee_headquarter_id = sau_ph_inspection_items_qualification_area_location.employee_headquarter_id and iq2.employee_area_id = sau_ph_inspection_items_qualification_area_location.employee_area_id
-            ) as numero_inspecciones'),
+            where {$where}
+            ) as numero_inspecciones"),
           DB::raw('count(sau_ph_inspection_items_qualification_area_location.qualification_id) as numero_items'),
           DB::raw('count(IF(q.fulfillment = 1, q.id, null)) as numero_items_cumplimiento'),
           DB::raw('count(IF(q.fulfillment = 0, q.id, null)) as numero_items_no_cumplimiento'),
@@ -86,24 +103,32 @@ class InspectionReportExcel implements FromCollection, WithMapping, WithHeadings
         ->join('sau_ph_inspection_section_items as it','sau_ph_inspection_items_qualification_area_location.item_id', 'it.id')
         ->join('sau_ph_inspection_sections as s','it.inspection_section_id', 's.id')
         ->join('sau_ph_inspections as i','s.inspection_id', 'i.id')
-        ->join('sau_employees_areas as a','a.id', 'sau_ph_inspection_items_qualification_area_location.employee_area_id')
-        ->join('sau_employees_headquarters as l','l.id', 'sau_ph_inspection_items_qualification_area_location.employee_headquarter_id')
         ->join('sau_ct_qualifications as q','q.id', 'sau_ph_inspection_items_qualification_area_location.qualification_id')
+        ->leftJoin('sau_employees_regionals as r', 'r.id', 'sau_ph_inspection_items_qualification_area_location.employee_regional_id')
+        ->leftJoin('sau_employees_headquarters as l','l.id', 'sau_ph_inspection_items_qualification_area_location.employee_headquarter_id')
+        ->leftJoin('sau_employees_processes as p', 'p.id', 'sau_ph_inspection_items_qualification_area_location.employee_process_id')
+        ->leftJoin('sau_employees_areas as a','a.id', 'sau_ph_inspection_items_qualification_area_location.employee_area_id')
         ->where('i.company_id', $this->company_id)
         ->inInspections($this->filters['inspections'], $this->filters['filtersType']['inspections'], 'i')
         ->betweenDate($this->filters["dates"])
         ->inThemes($this->filters["themes"], $this->filters['filtersType']['themes'], 's');
 
+        if (isset($this->filters['regionals']) && COUNT($this->filters['regionals']) > 0)
+            $consultas->inRegionals($this->filters['regionals'], $this->filters['filtersType']['regionals']);
+
         if (isset($this->filters['headquarters']) && COUNT($this->filters['headquarters']) > 0)
             $consultas->inHeadquarters($this->filters['headquarters'], $this->filters['filtersType']['headquarters']);
+        
+        if (isset($this->filters['processes']) && COUNT($this->filters['processes']) > 0)
+            $consultas->inProcesses($this->filters['processes'], $this->filters['filtersType']['processes']);
 
         if (isset($this->filters['areas']) && COUNT($this->filters['areas']) > 0)
             $consultas->inAreas($this->filters['areas'], $this->filters['filtersType']['areas']);
 
         if ($this->table == "with_theme")
-          $consultas->groupBy('name', 'area', 'headquarter', 'numero_inspecciones', 'section');
+          $consultas->groupBy('name', 'area', 'headquarter', 'process', 'regional', 'numero_inspecciones', 'section');
         else
-          $consultas->groupBy('name', 'area', 'headquarter', 'numero_inspecciones');
+          $consultas->groupBy('name', 'area', 'headquarter', 'process', 'regional', 'numero_inspecciones');
 
       $consultas = $consultas->get();
 
@@ -150,11 +175,19 @@ class InspectionReportExcel implements FromCollection, WithMapping, WithHeadings
 
     public function map($data): array
     {
-      $result = [
-        $data->name,
-        $data->headquarter,
-        $data->area
-      ];
+      $result = [$data->name];
+
+      if ($this->confLocation['regional'] == 'SI')
+        array_push($result, $data->regional);
+
+      if ($this->confLocation['headquarter'] == 'SI')
+        array_push($result, $data->headquarter);
+
+      if ($this->confLocation['process'] == 'SI')
+        array_push($result, $data->process);
+
+      if ($this->confLocation['area'] == 'SI')
+        array_push($result, $data->areas);
 
       if ($this->table == "with_theme")
         array_push($result, $data->section);
@@ -174,19 +207,27 @@ class InspectionReportExcel implements FromCollection, WithMapping, WithHeadings
 
     public function headings(): array
     {
-      $columns = [
-        'Nombre',
-        $this->keywords['headquarter'],
-        $this->keywords['area'],
-      ];
+      $columns = ['Nombre'];
+
+      if ($this->confLocation['regional'] == 'SI')
+        array_push($columns, $this->keywords['regional']);
+
+      if ($this->confLocation['headquarter'] == 'SI')
+        array_push($columns, $this->keywords['headquarter']);
+
+      if ($this->confLocation['process'] == 'SI')
+        array_push($columns, $this->keywords['process']);
+
+      if ($this->confLocation['area'] == 'SI')
+        array_push($columns, $this->keywords['area']);
 
       if ($this->table == "with_theme")
         array_push($columns, 'Tema');
 
       $columns = array_merge($columns, [
         '# Inspecciones',
-        '# Items No Cumplimiento',
         '# Items Cumplimiento',
+        '# Items No Cumplimiento',
         '% Items Cumplimiento',
         '% Items No Cumplimiento',
         '# Planes de Acción Realizados',
@@ -196,7 +237,7 @@ class InspectionReportExcel implements FromCollection, WithMapping, WithHeadings
       return $columns;
     }
 
-    public function columnFormats(): array
+    /*public function columnFormats(): array
     {
       if ($this->table == "with_theme")
       {
@@ -222,7 +263,7 @@ class InspectionReportExcel implements FromCollection, WithMapping, WithHeadings
           'J' => NumberFormat::FORMAT_NUMBER,
         ];
       }
-    }
+    }*/
 
     public static function afterSheet(AfterSheet $event)
     {

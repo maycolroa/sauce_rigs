@@ -1,5 +1,6 @@
 <template>
-    <div>
+    <b-form :action="url" @submit.prevent="submit" autocomplete="off">
+            
         <center>
             <loading :display="loading"/>
             <div class="my-4 mx-2 text-center" v-if="!loading && form.old">
@@ -8,14 +9,14 @@
         </center>
         
         <b-form-row>
-            <vue-file-simple :help-text="form.old ? `Para descargar la imagen actual, haga click <a href='${urlDownload}' target='blank'>aqui</a> `: null" class="col-md-12" v-model="form.image" label="Imagen (*.png, *.jpg, *.jpeg)" name="image" :error="form.errorsFor('image')" placeholder="Seleccione una imagen" :maxFileSize="10"></vue-file-simple>
+            <vue-file-simple :help-text="form.old ? `Para descargar la imagen actual, haga click <a href='${urlDownload}' target='blank'>aqui</a> `: null" class="col-md-12" @input="submit" v-model="form.image" label="Imagen (*.png, *.jpg, *.jpeg)" name="image" :error="form.errorsFor('image')" placeholder="Seleccione una imagen" :maxFileSize="10"></vue-file-simple>
         </b-form-row>
         <b-row align-h="center">
             <b-col cols="2">
                 <b-btn v-if="form.image" @click="deleteFile" variant="primary"><span class="ion ion-md-close-circle"></span> Eliminar Imagen</b-btn>
             </b-col>
         </b-row>
-    </div>
+    </b-form>
 </template>
 
 <script>
@@ -29,7 +30,9 @@ export default {
         Loading
     },
     props: {
+        url: { type: String },
         urlDownload: { type: String },
+        method: { type: String, default: 'POST' },
         id: { type: Number },
         image: { type: String },
         path: { type: String },
@@ -52,13 +55,13 @@ export default {
             form: Form.makeFrom(this.logo, this.method, false, false)
         };
     },
-    /*watch: {
+    watch: {
         image() {
             this.form.image = this.image
             this.form.path = this.path
             this.form.old = this.old
         }
-    },*/
+    },
     mounted() {
         this.form.image = this.image
         this.form.path = this.path
@@ -67,8 +70,8 @@ export default {
     methods: {
         deleteFile() {
             this.form.image = null;
-            //this.submit() 
-        }/*,
+            this.submit() 
+        },
         submit() {
             
             let data = new FormData();
@@ -93,7 +96,7 @@ export default {
             .catch(error => {
                 this.loading = false;
             });
-        }*/
+        }
     }
 };
 </script>

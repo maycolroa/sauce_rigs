@@ -117,10 +117,22 @@ export default [
           label: 'Nombres'
         },
         {
+          url: '/selects/regionals',
+          key: 'regionals',
+          type: 'select',
+          label: 'regionals'
+        },
+        {
           url: '/selects/headquarters',
           key: 'headquarters',
           type: 'select',
           label: 'headquarters'
+        },
+        {
+          url: '/selects/processes',
+          key: 'processes',
+          type: 'select',
+          label: 'processes'
         },
         {
           url: '/selects/areas',
@@ -139,10 +151,22 @@ export default [
       name: 'dangerousconditions-inspections-qualification',
       filters: [
         {
+          url: '/selects/regionals',
+          key: 'regionals',
+          type: 'select',
+          label: 'regionals'
+        },
+        {
           url: '/selects/headquarters',
           key: 'headquarters',
           type: 'select',
           label: 'headquarters'
+        },
+        {
+          url: '/selects/processes',
+          key: 'processes',
+          type: 'select',
+          label: 'processes'
         },
         {
           url: '/selects/areas',
@@ -167,10 +191,22 @@ export default [
       name: 'dangerousconditions-inspections-report',
       filters: [
         {
+          url: '/selects/regionals',
+          key: 'regionals',
+          type: 'select',
+          label: 'regionals'
+        },
+        {
           url: '/selects/headquarters',
           key: 'headquarters',
           type: 'select',
           label: 'headquarters'
+        },
+        {
+          url: '/selects/processes',
+          key: 'processes',
+          type: 'select',
+          label: 'processes'
         },
         {
           url: '/selects/areas',

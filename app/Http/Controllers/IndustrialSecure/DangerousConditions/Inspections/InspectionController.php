@@ -54,12 +54,18 @@ class InspectionController extends Controller
     {
         $inspections = Inspection::select(
                 'sau_ph_inspections.*',
-                DB::raw('GROUP_CONCAT(DISTINCT sau_employees_headquarters.name ORDER BY sau_employees_headquarters.name ASC) AS sede'),
+                DB::raw('GROUP_CONCAT(DISTINCT sau_employees_regionals.name ORDER BY sau_employees_regionals.name ASC) AS regional'),
+                DB::raw('GROUP_CONCAT(DISTINCT sau_employees_headquarters.name ORDER BY sau_employees_headquarters.name ASC) AS headquarter'),
+                DB::raw('GROUP_CONCAT(DISTINCT sau_employees_processes.name ORDER BY sau_employees_processes.name ASC) AS process'),
                 DB::raw('GROUP_CONCAT(DISTINCT sau_employees_areas.name ORDER BY sau_employees_areas.name ASC) AS area')
             )
+            ->leftJoin('sau_ph_inspection_regional', 'sau_ph_inspection_regional.inspection_id', 'sau_ph_inspections.id')
             ->leftJoin('sau_ph_inspection_headquarter', 'sau_ph_inspection_headquarter.inspection_id', 'sau_ph_inspections.id')
+            ->leftJoin('sau_ph_inspection_process', 'sau_ph_inspection_process.inspection_id', 'sau_ph_inspections.id')
             ->leftJoin('sau_ph_inspection_area', 'sau_ph_inspection_area.inspection_id', 'sau_ph_inspections.id')
+            ->leftJoin('sau_employees_regionals', 'sau_employees_regionals.id', 'sau_ph_inspection_regional.employee_regional_id')
             ->leftJoin('sau_employees_headquarters', 'sau_employees_headquarters.id', 'sau_ph_inspection_headquarter.employee_headquarter_id')
+            ->leftJoin('sau_employees_processes', 'sau_employees_processes.id', 'sau_ph_inspection_process.employee_process_id')
             ->leftJoin('sau_employees_areas', 'sau_employees_areas.id', 'sau_ph_inspection_area.employee_area_id')
             ->groupBy('sau_ph_inspections.id', 'sau_ph_inspections.name');
 
@@ -71,15 +77,17 @@ class InspectionController extends Controller
         {
             $inspections->inInspections($this->getValuesForMultiselect($filters["inspections"]), $filters['filtersType']['inspections']);
 
+            if (isset($filters["regionals"]))
+                $inspections->inRegionals($this->getValuesForMultiselect($filters["regionals"]), $filters['filtersType']['regionals']);
+
             if (isset($filters["headquarters"]))
-            {
                 $inspections->inHeadquarters($this->getValuesForMultiselect($filters["headquarters"]), $filters['filtersType']['headquarters']);
-            }
+
+            if (isset($filters["processes"]))
+                $inspections->inProcesses($this->getValuesForMultiselect($filters["processes"]), $filters['filtersType']['processes']);
             
             if (isset($filters["areas"]))
-            {
                 $inspections->inAreas($this->getValuesForMultiselect($filters["areas"]), $filters['filtersType']['areas']);
-            }
             
             $dates_request = explode('/', $filters["dateRange"]);
 
@@ -123,7 +131,7 @@ class InspectionController extends Controller
             DB::commit();
 
         } catch (\Exception $e) {
-            //\Log::info($e->getMessage());
+            \Log::info($e->getMessage());
             DB::rollback();
             return $this->respondHttp500();
         }
@@ -274,10 +282,22 @@ class InspectionController extends Controller
 
     private function saveLocation($inspection, $request)
     {
-        $regionals = $this->getDataFromMultiselect($request->get('employee_regional_id'));
-        $headquarters = $this->getDataFromMultiselect($request->get('employee_headquarter_id'));
-        $processes = $this->getDataFromMultiselect($request->get('employee_process_id'));
-        $areas = $this->getDataFromMultiselect($request->get('employee_area_id'));
+        $regionals = [];
+        $headquarters = [];
+        $processes = [];
+        $areas = [];
+
+        if ($request->has('employee_regional_id'))
+            $regionals = $this->getDataFromMultiselect($request->get('employee_regional_id'));
+        
+        if ($request->has('employee_headquarter_id'))
+            $headquarters = $this->getDataFromMultiselect($request->get('employee_headquarter_id'));
+
+        if ($request->has('employee_process_id'))
+            $processes = $this->getDataFromMultiselect($request->get('employee_process_id'));
+
+        if ($request->has('employee_area_id'))
+            $areas = $this->getDataFromMultiselect($request->get('employee_area_id'));
 
         $headquarters_valid = $this->getHeadquarter($regionals);
         $headquarters = array_intersect($headquarters, $headquarters_valid);
@@ -366,7 +386,9 @@ class InspectionController extends Controller
       try
       {
         $inspections = $this->getValuesForMultiselect($request->inspections);
+        $regionals = $this->getValuesForMultiselect($request->regionals);
         $headquarters = $this->getValuesForMultiselect($request->headquarters);
+        $processes = $this->getValuesForMultiselect($request->processes);
         $areas = $this->getValuesForMultiselect($request->areas);
         $filtersType = $request->filtersType;
 
@@ -381,7 +403,9 @@ class InspectionController extends Controller
 
         $filters = [
             'inspections' => $inspections,
+            'regionals' => $regionals,
             'headquarters' => $headquarters,
+            'processes' => $processes,
             'areas' => $areas,
             'dates' => $dates,
             'filtersType' => $filtersType

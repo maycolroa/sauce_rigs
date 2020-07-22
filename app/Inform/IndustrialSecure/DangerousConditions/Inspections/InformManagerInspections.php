@@ -27,13 +27,17 @@ class InformManagerInspections
     ];
 
     const GROUPING_COLUMNS = [
+        ['sau_employees_regionals.name', 'regional'],        
         ['sau_employees_headquarters.name', 'headquarter'],
+        ['sau_employees_processes.name', 'process'],
         ['sau_employees_areas.name', 'area'],
         ['sau_ph_inspection_sections.name', 'theme'], 
         ['sau_ph_inspections.name', 'inspection']
     ];
 
+    protected $regionals;
     protected $headquarters;
+    protected $processes;
     protected $areas;
     protected $themes;
     protected $filtersType;
@@ -45,10 +49,12 @@ class InformManagerInspections
      * create an instance and set the attribute class
      * @param array $regionals
      */
-    function __construct($company = '', $headquarters = '', $areas = '', $themes = '', $filtersType = '', $dates = '', $inspections = '')
+    function __construct($company = '', $regionals = '', $headquarters = '', $processes = '', $areas = '', $themes = '', $filtersType = '', $dates = '', $inspections = '')
     {
         $this->company = $company;
+        $this->regionals = $regionals;
         $this->headquarters = $headquarters;
+        $this->processes = $processes;
         $this->areas = $areas;
         $this->themes = $themes;
         $this->filtersType = $filtersType;
@@ -90,16 +96,24 @@ class InformManagerInspections
             ->join('sau_ph_inspection_sections','sau_ph_inspection_section_items.inspection_section_id', 'sau_ph_inspection_sections.id')
             ->join('sau_ph_inspections','sau_ph_inspection_sections.inspection_id', 'sau_ph_inspections.id')
             ->join('sau_ct_qualifications','sau_ct_qualifications.id', 'sau_ph_inspection_items_qualification_area_location.qualification_id')
-            ->join('sau_employees_headquarters', 'sau_employees_headquarters.id', 'sau_ph_inspection_items_qualification_area_location.employee_headquarter_id')
-            ->join('sau_employees_areas', 'sau_employees_areas.id','sau_ph_inspection_items_qualification_area_location.employee_area_id' )
+            ->leftJoin('sau_employees_regionals', 'sau_employees_regionals.id', 'sau_ph_inspection_items_qualification_area_location.employee_regional_id')
+            ->leftJoin('sau_employees_headquarters', 'sau_employees_headquarters.id', 'sau_ph_inspection_items_qualification_area_location.employee_headquarter_id')
+            ->leftJoin('sau_employees_processes', 'sau_employees_processes.id', 'sau_ph_inspection_items_qualification_area_location.employee_process_id')
+            ->leftJoin('sau_employees_areas', 'sau_employees_areas.id','sau_ph_inspection_items_qualification_area_location.employee_area_id')
             ->inThemes($this->themes, $this->filtersType['themes'])
             ->inInspections($this->inspections, $this->filtersType['inspections'])
             ->betweenDate($this->dates)
             ->where('sau_ph_inspections.company_id', $this->company)
             ->groupBy('category', 'sau_ph_inspection_items_qualification_area_location.qualification_date');
 
+        if (COUNT($this->regionals) > 0)
+            $consultas->inRegionals($this->regionals, $this->filtersType['regionals']);
+
         if (COUNT($this->headquarters) > 0)
             $consultas->inHeadquarters($this->headquarters, $this->filtersType['headquarters']);
+
+        if (COUNT($this->processes) > 0)
+            $consultas->inProcesses($this->processes, $this->filtersType['processes']);
 
         if (COUNT($this->areas) > 0)
             $consultas->inAreas($this->areas, $this->filtersType['areas']);
@@ -127,16 +141,24 @@ class InformManagerInspections
             ->join('sau_ph_inspection_sections','sau_ph_inspection_section_items.inspection_section_id', 'sau_ph_inspection_sections.id')
             ->join('sau_ph_inspections','sau_ph_inspection_sections.inspection_id', 'sau_ph_inspections.id')
             ->join('sau_ct_qualifications','sau_ct_qualifications.id', 'sau_ph_inspection_items_qualification_area_location.qualification_id')
-            ->join('sau_employees_headquarters', 'sau_employees_headquarters.id', 'sau_ph_inspection_items_qualification_area_location.employee_headquarter_id')
-            ->join('sau_employees_areas', 'sau_employees_areas.id','sau_ph_inspection_items_qualification_area_location.employee_area_id' )
+            ->leftJoin('sau_employees_regionals', 'sau_employees_regionals.id', 'sau_ph_inspection_items_qualification_area_location.employee_regional_id')
+            ->leftJoin('sau_employees_headquarters', 'sau_employees_headquarters.id', 'sau_ph_inspection_items_qualification_area_location.employee_headquarter_id')
+            ->leftJoin('sau_employees_processes', 'sau_employees_processes.id', 'sau_ph_inspection_items_qualification_area_location.employee_process_id')
+            ->leftJoin('sau_employees_areas', 'sau_employees_areas.id','sau_ph_inspection_items_qualification_area_location.employee_area_id')
             ->inThemes($this->themes, $this->filtersType['themes'])
             ->inInspections($this->inspections, $this->filtersType['inspections'])
             ->betweenDate($this->dates)
             ->where('sau_ph_inspections.company_id', $this->company)
             ->groupBy('category');
 
+        if (COUNT($this->regionals) > 0)
+            $consultas2->inRegionals($this->regionals, $this->filtersType['regionals']);
+
         if (COUNT($this->headquarters) > 0)
             $consultas2->inHeadquarters($this->headquarters, $this->filtersType['headquarters']);
+
+        if (COUNT($this->processes) > 0)
+            $consultas2->inProcesses($this->processes, $this->filtersType['processes']);
 
         if (COUNT($this->areas) > 0)
             $consultas2->inAreas($this->areas, $this->filtersType['areas']);

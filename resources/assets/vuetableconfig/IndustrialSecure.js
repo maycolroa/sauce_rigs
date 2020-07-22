@@ -529,13 +529,7 @@ export default [
 {
     name: 'dangerousconditions-inspections',
     fields: [
-        { name: 'sau_ph_inspections.id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true },
-        { name: 'sau_ph_inspections.name', data: 'name', title: 'Nombre', sortable: true, searchable: true, detail: false, key: false },
-        { name: 'sau_employees_headquarters.name', data: 'sede', title: 'headquarters', sortable: true, searchable: true, detail: false, key: false },
-        { name: 'sau_employees_areas.name', data: 'area', title: 'areas', sortable: true, searchable: true, detail: false, key: false },
-        { name: 'sau_ph_inspections.state', data: 'state', title: '¿Activa?', sortable: true, searchable: true, detail: false, key: false },
-        { name: 'sau_ph_inspections.created_at', data: 'created_at', title: 'Fecha de creación', sortable: true, searchable: true, detail: false, key: false },
-        { name: '', data: 'controlls', title: 'Controles', sortable: false, searchable: false, detail: false, key: false },
+        { name: 'sau_ph_inspections.id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true }
     ],
     'controlls': [{
           type: 'push',
@@ -618,12 +612,7 @@ export default [
 {
     name: 'dangerousconditions-inspections-qualification',
     fields: [
-        { name: 'sau_ph_inspection_items_qualification_area_location.id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true },
-        { name: 'sau_employees_headquarters.name', data: 'headquarter', title: 'headquarter', sortable: true, searchable: true, detail: false, key: false },
-        { name: 'sau_employees_areas.name', data: 'area', title: 'area', sortable: true, searchable: true, detail: false, key: false },
-        { name: 'sau_users.name', data: 'qualificator', title: 'Calificador', sortable: true, searchable: true, detail: false, key: false },
-        { name: 'sau_ph_inspection_items_qualification_area_location.qualification_date', data: 'qualification_date', title: 'Fecha Calificación', sortable: true, searchable: true, detail: false, key: false },
-        { name: '', data: 'controlls', title: 'Controles', sortable: false, searchable: false, detail: false, key: false },
+        { name: 'sau_ph_inspection_items_qualification_area_location.id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true }
     ],
     'controlls': [{
           type: 'push',
@@ -671,18 +660,7 @@ export default [
 {
     name: 'dangerousconditions-inspections-report',
     fields: [
-        { name: 'sau_ph_inspection_items_qualification_area_location.id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true },
-        { name: 'sau_ph_inspections.name', data: 'name', title: 'Nombre', sortable: true, searchable: false, detail: false, key: false },
-        { name: 'sau_employees_headquarters.name', data: 'headquarter', title: 'headquarter', sortable: true, searchable: false, detail: false, key: false },
-        { name: 'sau_employees_areas.name', data: 'area', title: 'area', sortable: true, searchable: false, detail: false, key: false },
-        { name: 'section', data: 'section', title: 'Temas', sortable: true, searchable: false, detail: false, key: false },
-        { name: 'numero_inspecciones', data: 'numero_inspecciones', title: '# Inspecciones', sortable: true, searchable: false, detail: false, key: false },
-        { name: 'numero_items_cumplimiento', data: 'numero_items_cumplimiento', title: '# Items Cumplimiento', sortable: true, searchable: false, detail: false, key: false },
-        { name: 'numero_items_no_cumplimiento', data: 'numero_items_no_cumplimiento', title: '# Items No Cumplimiento', sortable: true, searchable: false, detail: false, key: false },
-        { name: 'porcentaje_items_cumplimiento', data: 'porcentaje_items_cumplimiento', title: '% Items Cumplimiento', sortable: true, searchable: false, detail: false, key: false },
-        { name: 'porcentaje_items_no_cumplimiento', data: 'porcentaje_items_no_cumplimiento', title: '% Items No Cumplimiento', sortable: true, searchable: false, detail: false, key: false },
-        { name: 'numero_planes_ejecutados', data: 'numero_planes_ejecutados', title: '# Planes de Acción Realizados', sortable: true, searchable: false, detail: false, key: false },
-        { name: 'numero_planes_no_ejecutados', data: 'numero_planes_no_ejecutados', title: '# Planes de Acción No Realizados', sortable: true, searchable: false, detail: false, key: false },
+        { name: 'sau_ph_inspection_items_qualification_area_location.id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true }
     ],
     'controlls': [{
         type: 'push',
