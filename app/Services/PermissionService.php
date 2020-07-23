@@ -46,6 +46,7 @@ class PermissionService
                 $module->put('main', $moduleIter->main == 'SI' ? true : false);
                 $module->put('isSubModule', COUNT(explode("/", $moduleIter->name)) == 2 ? true : false);
                 $module->put('mainSubModule', strtolower(explode("/", $moduleIter->name)[0]));
+                $module->put('parentApp', $moduleIter->application->name);
 
                 $permissions = collect([]);
 
@@ -64,6 +65,9 @@ class PermissionService
             });
             
             $modules = $modules->filter(function($module, $keyMod) use ($company, $user, $team) {
+                if ($module->get('parentApp') == 'system' && $user->isSuperAdmin($team))
+                    return true;
+
                 return $this->existsLicenseByModule($company, $module->get('id')) && 
                 ($user->isSuperAdmin($team) || $module->get('permissions')->where('can', true)->first());
             })
