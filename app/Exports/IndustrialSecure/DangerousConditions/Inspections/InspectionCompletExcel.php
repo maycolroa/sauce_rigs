@@ -132,7 +132,7 @@ class InspectionCompletExcel implements FromQuery, WithMapping, WithHeadings, Wi
       ->inProcesses($this->filters['processes'], $this->filters['filtersType']['processes'])
       ->inAreas($this->filters['areas'], $this->filters['filtersType']['areas'])
       ->betweenDate($this->filters["dates"])
-      ->groupBy('sau_ph_inspections.id', 'sau_ph_inspections.name', 'sau_ph_inspections.created_at', 'sau_ph_inspections.state', 'sau_ph_inspection_sections.name', 'sau_ph_inspection_section_items.description', 'sau_action_plans_activities.id', 'qualification_name', 'qualification_description', 'qualifier', 'sau_ph_inspection_items_qualification_area_location.find', 'sau_ph_inspection_items_qualification_area_location.qualification_date', 'responsible', 'desc_plan', 'sau_action_plans_activities.execution_date', 'sau_action_plans_activities.expiration_date', 'state_activity', 'sau_employees_regionals.name')
+      ->groupBy('sau_ph_inspections.id', 'sau_ph_inspections.name', 'sau_ph_inspections.created_at', 'sau_ph_inspections.state', 'sau_ph_inspection_sections.name', 'sau_ph_inspection_section_items.description', 'sau_action_plans_activities.id', 'qualification_name', 'qualification_description', 'qualifier', 'sau_ph_inspection_items_qualification_area_location.find', 'sau_ph_inspection_items_qualification_area_location.qualification_date', 'responsible', 'desc_plan', 'sau_action_plans_activities.execution_date', 'sau_action_plans_activities.expiration_date', 'state_activity', 'sau_employees_regionals.name', 'sau_employees_headquarters.name', 'sau_employees_processes.name', 'sau_employees_areas.name', 'regionals', 'areas', 'headquarter', 'process')
       ->withoutGlobalScopes()
       ->where('sau_ph_inspections.company_id', $this->company_id);
 
@@ -163,7 +163,7 @@ class InspectionCompletExcel implements FromQuery, WithMapping, WithHeadings, Wi
         expiration_date,
         state_activity
       ")
-      ->groupBy('id', 'name', 'created_at', 'state', 'name', 'description', 'compid', 'qualification_name', 'qualification_description', 'qualifier', 'find', 'qualification_date', 'responsible', 'desc_plan', 'execution_date', 'expiration_date', 'state_activity')
+      ->groupBy('id', 'name', 'created_at', 'state', 'section_name', 'description', 'qualification_name', 'qualification_description', 'qualifier', 'find', 'regionals', 'areas', 'headquarter', 'process', 'qualification_date', 'responsible', 'desc_plan', 'execution_date', 'expiration_date', 'state_activity')
       ->orderBy('id')
       ->mergeBindings($inspection->getQuery());
 
