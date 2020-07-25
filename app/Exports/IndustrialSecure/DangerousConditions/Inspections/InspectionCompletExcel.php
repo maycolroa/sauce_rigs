@@ -47,10 +47,8 @@ class InspectionCompletExcel implements FromQuery, WithMapping, WithHeadings, Wi
       $inspection = Inspection::selectRaw("
         sau_ph_inspections.id,
         sau_ph_inspections.name,
-        sau_ph_inspections.company_id as compid,
         sau_ph_inspections.state,
         sau_ph_inspections.created_at,
-        sau_ph_inspections.updated_at,
         sau_ph_inspection_sections.name as section_name,
         sau_ph_inspection_section_items.description as description,
         sau_ct_qualifications.name as qualification_name,
@@ -132,10 +130,10 @@ class InspectionCompletExcel implements FromQuery, WithMapping, WithHeadings, Wi
       ->inProcesses($this->filters['processes'], $this->filters['filtersType']['processes'])
       ->inAreas($this->filters['areas'], $this->filters['filtersType']['areas'])
       ->betweenDate($this->filters["dates"])
-      ->groupBy('sau_ph_inspections.id', 'sau_ph_inspections.name', 'sau_ph_inspections.created_at', 'sau_ph_inspections.state', 'sau_ph_inspection_sections.name', 'sau_ph_inspection_section_items.description', 'sau_action_plans_activities.id', 'qualification_name', 'qualification_description', 'qualifier', 'sau_ph_inspection_items_qualification_area_location.find', 'sau_ph_inspection_items_qualification_area_location.qualification_date', 'responsible', 'desc_plan', 'sau_action_plans_activities.execution_date', 'sau_action_plans_activities.expiration_date', 'state_activity', 'sau_employees_regionals.name', 'sau_employees_headquarters.name', 'sau_employees_processes.name', 'sau_employees_areas.name', 'regionals', 'areas', 'headquarter', 'process')
+      ->groupBy('sau_ph_inspections.id', 'sau_ph_inspections.name', 'sau_ph_inspections.created_at', 'sau_ph_inspections.state', 'sau_ph_inspection_sections.name', 'sau_ph_inspection_section_items.description', 'qualification_name', 'qualification_description', 'regionals', 'areas', 'headquarter', 'process', 'qualifier', 'sau_ph_inspection_items_qualification_area_location.find', 'sau_ph_inspection_items_qualification_area_location.qualification_date', 'sau_action_plans_activities.id', 'desc_plan', 'sau_action_plans_activities.execution_date', 'sau_action_plans_activities.expiration_date', 'state_activity', 'responsible', 'regional', 'sede', 'proceso', 'area')
       ->withoutGlobalScopes()
       ->where('sau_ph_inspections.company_id', $this->company_id);
-
+      
       $result = DB::table(DB::raw("({$inspection->toSql()}) AS t"))
       ->selectRaw("
         id,
