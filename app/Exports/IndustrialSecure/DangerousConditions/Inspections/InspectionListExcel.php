@@ -41,7 +41,7 @@ class InspectionListExcel implements FromQuery, WithMapping, WithHeadings, WithT
     public function query()
     {
       $inspection = Inspection::selectRaw("
-        ssau_ph_inspections.id,
+        sau_ph_inspections.id,
         sau_ph_inspections.name,
         sau_ph_inspections.state,
         sau_ph_inspections.created_at,
