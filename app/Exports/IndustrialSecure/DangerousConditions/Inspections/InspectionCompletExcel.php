@@ -130,7 +130,7 @@ class InspectionCompletExcel implements FromQuery, WithMapping, WithHeadings, Wi
       ->inProcesses($this->filters['processes'], $this->filters['filtersType']['processes'])
       ->inAreas($this->filters['areas'], $this->filters['filtersType']['areas'])
       ->betweenDate($this->filters["dates"])
-      ->groupBy('sau_ph_inspections.id', 'sau_ph_inspections.name', 'sau_ph_inspections.created_at', 'sau_ph_inspections.state', 'sau_ph_inspection_sections.name', 'sau_ph_inspection_section_items.description', 'qualification_name', 'qualification_description', 'regionals', 'areas', 'headquarter', 'process', 'qualifier', 'sau_ph_inspection_items_qualification_area_location.find', 'sau_ph_inspection_items_qualification_area_location.qualification_date', 'sau_action_plans_activities.id', 'desc_plan', 'sau_action_plans_activities.execution_date', 'sau_action_plans_activities.expiration_date', 'state_activity', 'responsible', 'regional', 'sede', 'proceso', 'area')
+      ->groupBy('sau_ph_inspections.id', 'sau_ph_inspections.name', 'sau_ph_inspections.created_at', 'sau_ph_inspections.state', 'sau_ph_inspection_sections.name', 'sau_ph_inspection_section_items.description', 'qualification_name', 'qualification_description', 'regionals', 'areas', 'headquarter', 'process', 'qualifier', 'sau_ph_inspection_items_qualification_area_location.find', 'sau_ph_inspection_items_qualification_area_location.qualification_date', 'sau_action_plans_activities.id', 'desc_plan', 'sau_action_plans_activities.execution_date', 'sau_action_plans_activities.expiration_date', 'state_activity', 'responsible')
       ->withoutGlobalScopes()
       ->where('sau_ph_inspections.company_id', $this->company_id);
       
