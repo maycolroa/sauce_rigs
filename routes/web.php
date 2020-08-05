@@ -372,6 +372,7 @@ Route::middleware(['auth'])->group(function () {
         Route::post('inspection/qualification/data', 'IndustrialSecure\DangerousConditions\Inspections\InspectionQualificationController@data');
         Route::ApiResource('inspection/qualification', 'IndustrialSecure\DangerousConditions\Inspections\InspectionQualificationController');
         Route::post('inspection/export', 'IndustrialSecure\DangerousConditions\Inspections\InspectionController@export');
+        Route::post('inspection/exportQualify', 'IndustrialSecure\DangerousConditions\Inspections\InspectionController@exportQualify');
         Route::post('inspection/report', 'IndustrialSecure\DangerousConditions\Inspections\InspectionReportController@data');
         Route::post('inspection/report/getTotals', 'IndustrialSecure\DangerousConditions\Inspections\InspectionReportController@getTotals');
         Route::post('inspection/exportReport', 'IndustrialSecure\DangerousConditions\Inspections\InspectionReportController@export');
