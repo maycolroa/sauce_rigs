@@ -320,6 +320,7 @@ class InspectionController extends ApiController
                         ->activities($value["actionPlan"])                
                         ->company($request->company_id)
                         ->details($details)
+                        ->dateSimpleFormat(true)
                         ->save()
                         ->sendMail();
 

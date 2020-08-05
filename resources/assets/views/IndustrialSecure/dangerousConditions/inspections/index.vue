@@ -18,6 +18,7 @@
         <b-card-body>
              <vue-table
                 configName="dangerousconditions-inspections"
+                :customColumnsName="true" 
                 v-if="auth.can['ph_inspections_r']"
                 @filtersUpdate="setFilters"
                 ></vue-table>

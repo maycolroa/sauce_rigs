@@ -30,8 +30,8 @@ class InspectionExcel implements WithMultipleSheets
     {
         $sheets = [];
 
-        $sheets[] = new InspectionCompletExcel($this->company_id, $this->filters);
-        /*$sheets[] = new InspectionListExcel($this->company_id, $this->filters);
+        $sheets[] = new InspectionListExcel($this->company_id, $this->filters);
+        /*$sheets[] = new InspectionCompletExcel($this->company_id, $this->filters);
         $sheets[] = new QualificationsExcel($this->company_id, $this->filters);
         $sheets[] = new ActivitiesExcel($this->company_id, $this->filters);*/
 

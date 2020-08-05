@@ -153,6 +153,13 @@ class ActionPlan
      */
     private $details;
 
+    /**
+     * True: YYYY-MM-DD / False: D M d Y
+     *
+     * @var Booleam
+     */
+    private $dateSimpleFormat;
+
     public function __construct()
     {
         $this->states = Configuration::getConfiguration('action_plans_states');
@@ -177,7 +184,7 @@ class ActionPlan
         $this->activitiesReady = [];
         $this->creationDate = null;
         $this->daysAlertExpirationDate = null;
-
+        $this->dateSimpleFormat = false;
     }
 
     /**
@@ -407,6 +414,12 @@ class ActionPlan
     public function details($details)
     {
         $this->details = $details;
+        return $this;
+    }
+
+    public function dateSimpleFormat($dateSimpleFormat)
+    {
+        $this->dateSimpleFormat = $dateSimpleFormat;
         return $this;
     }
 
@@ -749,8 +762,18 @@ class ActionPlan
 
             $activity->description = $itemA['description'];
             $activity->responsible_id = $itemA['responsible_id'];
-            $activity->execution_date = ($itemA['execution_date']) ? (Carbon::createFromFormat('D M d Y', $itemA['execution_date']))->format('Ymd') : null;
-            $activity->expiration_date = (Carbon::createFromFormat('D M d Y', $itemA['expiration_date']))->format('Ymd');
+
+            if ($this->dateSimpleFormat)
+            {
+                $activity->execution_date = $itemA['execution_date'];
+                $activity->expiration_date = $itemA['expiration_date'];
+            }
+            else
+            {
+                $activity->execution_date = ($itemA['execution_date']) ? (Carbon::createFromFormat('D M d Y', $itemA['execution_date']))->format('Ymd') : null;
+                $activity->expiration_date = (Carbon::createFromFormat('D M d Y', $itemA['expiration_date']))->format('Ymd');
+            }
+             
             $activity->state = $itemA['state'];
             $activity->editable = (isset($itemA['editable']) && $itemA['editable']) ? $itemA['editable'] : 'SI';
             $activity->company_id = $company_id;
@@ -788,13 +811,21 @@ class ActionPlan
             
             $this->activities['activities'][$keyItem]['id'] = $activity->id;
             $this->activities['activities'][$keyItem]['oldDescription'] = $activity->description;
-            $this->activities['activities'][$keyItem]['oldExpiration_date'] = $activity->expiration_date ? (Carbon::createFromFormat('Ymd', $activity->expiration_date))->format('D M d Y') : '';
-            $this->activities['activities'][$keyItem]['oldExecution_date'] = $activity->execution_date ? (Carbon::createFromFormat('Ymd', $activity->execution_date))->format('D M d Y') : '';
             $this->activities['activities'][$keyItem]['oldState'] = $activity->state;
             $this->activities['activities'][$keyItem]['oldObservation'] = $activity->observation;
             $this->activities['activities'][$keyItem]['oldResponsible_id'] = $activity->responsible_id;
             $this->activities['activities'][$keyItem]['user_id'] = $activity->user_id;
 
+            if ($this->dateSimpleFormat)
+            {
+                $this->activities['activities'][$keyItem]['oldExpiration_date'] = $activity->expiration_date;
+                $this->activities['activities'][$keyItem]['oldExecution_date'] = $activity->execution_date;
+            }
+            else
+            {
+                $this->activities['activities'][$keyItem]['oldExpiration_date'] = $activity->expiration_date ? (Carbon::createFromFormat('Ymd', $activity->expiration_date))->format('D M d Y') : '';
+                $this->activities['activities'][$keyItem]['oldExecution_date'] = $activity->execution_date ? (Carbon::createFromFormat('Ymd', $activity->execution_date))->format('D M d Y') : '';
+            }
         }
         
         foreach ($this->activities['activitiesRemoved'] as $itemA)
@@ -970,9 +1001,20 @@ class ActionPlan
 
         foreach ($data as $key => $value) 
         {
+            if ($this->dateSimpleFormat)
+            {
+                $expiration_date = $value['expiration_date'];
+                $execution_date = $value['execution_date'];
+            }
+            else
+            {
+                $expiration_date = Carbon::createFromFormat($format, $value['expiration_date'])->toFormattedDateString();
+                $execution_date = ($value['execution_date']) ? Carbon::createFromFormat($format, $value['execution_date'])->toFormattedDateString() : '';
+            }
+
             array_push($result, [
-                'Fecha Vencimiento' => Carbon::createFromFormat($format, $value['expiration_date'])->toFormattedDateString(),
-                'Fecha Ejecución' => ($value['execution_date']) ? Carbon::createFromFormat($format, $value['execution_date'])->toFormattedDateString() : '',
+                'Fecha Vencimiento' => $expiration_date,
+                'Fecha Ejecución' => $expiration_date,
                 'Estado' => $value['state'],
                 'Descripción' => $value['description'],
                 'Módulo' => $module ? $module : (isset($value['module_name']) ? $value['module_name'] : '')

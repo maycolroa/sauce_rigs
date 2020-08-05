@@ -40,7 +40,10 @@ class VuetableColumnManager
         'industrialsecuredangermatrixreport',
         'legalAspectsfileUpload',
         'reinstatementschecks',
-        'reinstatementschecksform'
+        'reinstatementschecksform',
+        'dangerousconditionsinspections',
+        'dangerousconditionsinspectionsqualification',
+        'dangerousconditionsinspectionsreport'
     ];
 
     protected $customColumnsName;
@@ -133,7 +136,7 @@ class VuetableColumnManager
      * 
      * @return Array
      */
-    private function getColumnsLocations($headers = [])
+    private function getColumnsLocations($headers = [], $searchable = true)
     {
         $colums = [];
 
@@ -160,22 +163,22 @@ class VuetableColumnManager
         
         if ($confLocation['regional'] == 'SI')
             array_push($colums, [
-                'name'=>'sau_employees_regionals.name', 'data'=>'regional', 'title'=>$columnsHeader['regional'], 'sortable'=>true, 'searchable'=>true, 'detail'=>false, 'key'=>false
+                'name'=>'sau_employees_regionals.name', 'data'=>'regional', 'title'=>$columnsHeader['regional'], 'sortable'=>true, 'searchable'=> $searchable, 'detail'=>false, 'key'=>false
             ]);
 
         if ($confLocation['headquarter'] == 'SI')
             array_push($colums, [
-                'name'=>'sau_employees_headquarters.name', 'data'=>'headquarter', 'title'=>$columnsHeader['headquarter'], 'sortable'=>true, 'searchable'=>true, 'detail'=>false, 'key'=>false
+                'name'=>'sau_employees_headquarters.name', 'data'=>'headquarter', 'title'=>$columnsHeader['headquarter'], 'sortable'=>true, 'searchable'=> $searchable, 'detail'=>false, 'key'=>false
             ]);
 
         if ($confLocation['process'] == 'SI')
             array_push($colums, [
-                'name'=>'sau_employees_processes.name', 'data'=>'process', 'title'=>$columnsHeader['process'], 'sortable'=>true, 'searchable'=>true, 'detail'=>false, 'key'=>false
+                'name'=>'sau_employees_processes.name', 'data'=>'process', 'title'=>$columnsHeader['process'], 'sortable'=>true, 'searchable'=> $searchable, 'detail'=>false, 'key'=>false
             ]);
 
         if ($confLocation['area'] == 'SI')
             array_push($colums, [
-                'name'=>'sau_employees_areas.name', 'data'=>'area', 'title'=>$columnsHeader['area'], 'sortable'=>true, 'searchable'=>true, 'detail'=>false, 'key'=>false
+                'name'=>'sau_employees_areas.name', 'data'=>'area', 'title'=>$columnsHeader['area'], 'sortable'=>true, 'searchable'=> $searchable, 'detail'=>false, 'key'=>false
             ]);
 
         return $colums;
@@ -373,5 +376,70 @@ class VuetableColumnManager
     public function reinstatementschecksform()
     {
         return $this->reinstatementschecks();
+    }
+
+    /**
+     * returns the columns for the danger matrix
+     * 
+     * @return Array
+     */
+    public function dangerousconditionsinspections()
+    {
+        $colums = [
+            ['name' => 'sau_ph_inspections.id', 'data'=> 'id', 'title'=> 'ID', 'sortable'=> false, 'searchable'=> false, 'detail'=> false, 'key'=> true ],
+            ['name' => 'sau_ph_inspections.name', 'data'=> 'name', 'title'=> 'Nombre', 'sortable'=> true, 'searchable'=> true, 'detail'=> false, 'key'=> false ],
+            ['name' => 'sau_ph_inspections.state', 'data'=> 'state', 'title'=> '¿Activa?', 'sortable'=> true, 'searchable'=> true, 'detail'=> false, 'key'=> false ],
+            ['name' => 'sau_ph_inspections.created_at', 'data'=> 'created_at', 'title'=> 'Fecha de creación', 'sortable'=> true, 'searchable'=> true, 'detail'=> false, 'key'=> false ],
+        ];
+
+        $colums = array_merge($colums, $this->getColumnsLocations());
+        $colums = array_merge($colums, [
+            ['name' => '', 'data'=> 'controlls', 'title'=> 'Controles', 'sortable'=> false, 'searchable'=> false, 'detail'=> false, 'key'=> false ],
+        ]);
+
+        return $colums;
+    }
+
+    /**
+     * returns the columns for the danger matrix
+     * 
+     * @return Array
+     */
+    public function dangerousconditionsinspectionsqualification()
+    {
+        $colums = [
+            ['name' => 'sau_ph_inspection_items_qualification_area_location.id', 'data'=> 'id', 'title'=> 'ID', 'sortable'=> false, 'searchable'=> false, 'detail'=> false, 'key'=> true ],
+            ['name' => 'sau_users.name', 'data'=> 'qualificator', 'title'=> 'Calificador', 'sortable'=> true, 'searchable'=> true, 'detail'=> false, 'key'=> false ],
+            ['name' => 'sau_ph_inspection_items_qualification_area_location.qualification_date', 'data'=> 'qualification_date', 'title'=> 'Fecha Calificación', 'sortable'=> true, 'searchable'=> true, 'detail'=> false, 'key'=> false ]
+        ];
+
+        $colums = array_merge($colums, $this->getColumnsLocations());
+        $colums = array_merge($colums, [
+            ['name' => '', 'data'=> 'controlls', 'title'=> 'Controles', 'sortable'=> false, 'searchable'=> false, 'detail'=> false, 'key'=> false ],
+        ]);
+
+        return $colums;
+    }
+
+    public function dangerousconditionsinspectionsreport()
+    {
+        $colums = [
+            ['name' => 'sau_ph_inspection_items_qualification_area_location.id', 'data'=> 'id', 'title'=> 'ID', 'sortable'=> false, 'searchable'=> false, 'detail'=> false, 'key'=> true ],
+            ['name' => 'sau_ph_inspections.name', 'data'=> 'name', 'title'=> 'Nombre', 'sortable'=> true, 'searchable'=> false, 'detail'=> false, 'key'=> false ]
+        ];
+
+        $colums = array_merge($colums, $this->getColumnsLocations([], false));
+        $colums = array_merge($colums, [
+            ['name' => 'section', 'data'=> 'section', 'title'=> 'Temas', 'sortable'=> false, 'searchable'=> false, 'detail'=> false, 'key'=> false ],
+            ['name' => 'numero_inspecciones', 'data'=> 'numero_inspecciones', 'title'=> '# Inspecciones', 'sortable'=> true, 'searchable'=> false, 'detail'=> false, 'key'=> false ],
+            ['name' => 'numero_items_cumplimiento', 'data'=> 'numero_items_cumplimiento', 'title'=> '# Items Cumplimiento', 'sortable'=> true, 'searchable'=> false, 'detail'=> false, 'key'=> false ],
+            ['name' => 'numero_items_no_cumplimiento', 'data'=> 'numero_items_no_cumplimiento', 'title'=> '# Items No Cumplimiento', 'sortable'=> true, 'searchable'=> false, 'detail'=> false, 'key'=> false ],
+            ['name' => 'porcentaje_items_cumplimiento', 'data'=> 'porcentaje_items_cumplimiento', 'title'=> '% Items Cumplimiento', 'sortable'=> true, 'searchable'=> false, 'detail'=> false, 'key'=> false ],
+            ['name' => 'porcentaje_items_no_cumplimiento', 'data'=> 'porcentaje_items_no_cumplimiento', 'title'=> '% Items No Cumplimiento', 'sortable'=> true, 'searchable'=> false, 'detail'=> false, 'key'=> false ],
+            ['name' => 'numero_planes_ejecutados', 'data'=> 'numero_planes_ejecutados', 'title'=> '# Planes de Acción Realizados', 'sortable'=> true, 'searchable'=> false, 'detail'=> false, 'key'=> false ],
+            ['name' => 'numero_planes_no_ejecutados', 'data'=> 'numero_planes_no_ejecutados', 'title'=> '# Planes de Acción No Realizados', 'sortable'=> true, 'searchable'=> false, 'detail'=> false, 'key'=> false ]
+        ]);
+
+        return $colums;
     }
 }

@@ -71,7 +71,7 @@ return [
             'secret' => '1gBQ3h6NV74svE8PwHovPSUiL74R1r7OC3WzXHbv',
             'region' => 'us-east-1',
             'bucket' => 'matrizlegal',
-            'url' => env('AWS_URL'),
+            'url' => env('AWS_URL')
         ],
         's3_DConditions' => [
             'driver' => 's3',
