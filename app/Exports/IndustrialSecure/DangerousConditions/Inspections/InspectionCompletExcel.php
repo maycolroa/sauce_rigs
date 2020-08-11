@@ -33,16 +33,18 @@ class InspectionCompletExcel implements FromQuery, WithMapping, WithHeadings, Wi
     protected $filters;
     protected $keywords;
     protected $items_id;
+    protected $id;
 
-    public function __construct($company_id, $filters)
+    public function __construct($company_id, $filters, $id)
     {
       $this->company_id = $company_id;
       $this->filters = $filters;
+      $this->id = $id;
       $this->keywords = $this->getKeywordQueue($this->company_id);
       $this->confLocation = $this->getLocationFormConfModule($this->company_id);
     }
 
-    public function query()
+    public function query2()
     {
       $inspection = Inspection::selectRaw("
         sau_ph_inspections.id,
@@ -168,9 +170,82 @@ class InspectionCompletExcel implements FromQuery, WithMapping, WithHeadings, Wi
       return $result;
     }
 
-    public function query2()
+    public function query()
     {
-      $inspection = Inspection::selectRaw("
+      $qualifications = InspectionItemsQualificationAreaLocation::selectRaw("
+          sau_ph_inspections.name as insp_name,
+          sau_ph_inspection_sections.name as section_name,
+          sau_ph_inspection_section_items.description as description,
+          sau_ct_qualifications.name as qualification_name,
+          sau_ct_qualifications.description as qualification_description,
+          sau_users.name as qualifier,
+          sau_ph_inspection_items_qualification_area_location.find, 
+          sau_ph_inspection_items_qualification_area_location.qualification_date,
+          sau_employees_regionals.name as regionals, 
+          sau_employees_headquarters.name as headquarter,
+          sau_employees_processes.name as process, 
+          sau_employees_areas.name as areas,
+          sau_action_plans_activities.description as desc_plan,
+          sau_action_plans_activities.execution_date,
+          sau_action_plans_activities.expiration_date,
+          sau_action_plans_activities.state as state_activity,
+          u.name as responsible"
+        )
+      ->leftJoin('sau_ph_inspection_section_items', 'sau_ph_inspection_items_qualification_area_location.item_id', 'sau_ph_inspection_section_items.id')
+      ->join('sau_ph_inspection_sections', 'sau_ph_inspection_sections.id', 'sau_ph_inspection_section_items.inspection_section_id')
+      ->join('sau_ph_inspections', 'sau_ph_inspections.id', 'sau_ph_inspection_sections.inspection_id')
+      ->leftJoin( 'sau_ct_qualifications', 'sau_ct_qualifications.id', 'sau_ph_inspection_items_qualification_area_location.qualification_id')
+      ->leftJoin('sau_employees_regionals', function ($join) 
+      {
+        $join->on("sau_employees_regionals.id", "sau_ph_inspection_items_qualification_area_location.employee_regional_id");
+        $join->on("sau_ph_inspections.company_id", "=", DB::raw("{$this->company_id}"));
+      })
+      ->leftJoin('sau_employees_headquarters', function ($join) 
+      {
+        $join->on("sau_employees_headquarters.id", "sau_ph_inspection_items_qualification_area_location.employee_headquarter_id");
+        $join->on("sau_ph_inspections.company_id", "=", DB::raw("{$this->company_id}"));
+      })
+      ->leftJoin('sau_employees_processes', function ($join) 
+      {
+        $join->on("sau_employees_processes.id", "sau_ph_inspection_items_qualification_area_location.employee_process_id");
+        $join->on("sau_ph_inspections.company_id", "=", DB::raw("{$this->company_id}"));
+      })
+      ->leftJoin('sau_employees_areas', function ($join) 
+      {
+        $join->on("sau_employees_areas.id", "sau_ph_inspection_items_qualification_area_location.employee_area_id");
+        $join->on("sau_ph_inspections.company_id", "=", DB::raw("{$this->company_id}"));
+      })
+      ->leftJoin('sau_users', 'sau_ph_inspection_items_qualification_area_location.qualifier_id',  'sau_users.id')
+      ->leftJoin('sau_action_plans_activity_module', function ($join) 
+      {
+          $join->on("sau_action_plans_activity_module.item_id", "sau_ph_inspection_items_qualification_area_location.id");
+          $join->on("sau_action_plans_activity_module.item_table_name", "=", DB::raw("'sau_ph_inspection_items_qualification_area_location'"));
+      }) 
+      ->leftJoin('sau_action_plans_activities', 'sau_action_plans_activities.id', 'sau_action_plans_activity_module.activity_id')
+      ->leftJoin( 'sau_users AS u', 'u.id', 'sau_action_plans_activities.responsible_id')
+      ->InQualifiers($this->filters['qualifiers'], $this->filters['filtersType']['qualifiers'])
+      ->betweenDate($this->filters["dates"]);
+
+      if (isset($this->filters['regionals']) && $this->filters['filtersType']['regionals'] && COUNT($this->filters['regionals']) > 0)
+          $qualifications->inRegionals($this->filters['regionals'], $this->filters['filtersType']['regionals']);
+
+      if (isset($this->filters['headquarters']) && $this->filters['filtersType']['headquarters'] && COUNT($this->filters['headquarters']) > 0)
+          $qualifications->inHeadquarters($this->filters['headquarters'], $this->filters['filtersType']['headquarters']);
+      
+      if (isset($this->filters['processes']) && isset($this->filters['filtersType']['processes']) && COUNT($this->filters['processes']) > 0)
+          $qualifications->inProcesses($this->filters['processes'], $this->filters['filtersType']['processes']);
+
+      if (isset($this->filters['areas']) && isset($this->filters['filtersType']['areas']) && COUNT($this->filters['areas']) > 0)
+          $qualifications->inAreas($this->filters['areas'], $this->filters['filtersType']['areas']);
+
+      //->groupBy('sau_ph_inspections.id', 'sau_ph_inspections.name', 'sau_ph_inspections.created_at', 'sau_ph_inspections.state', 'sau_ph_inspection_sections.name', 'sau_ph_inspection_section_items.description', 'sau_action_plans_activities.id', 'qualification_name', 'qualification_description', 'regionals', 'areas', 'headquarter', 'process', 'qualifier',  'sau_ph_inspection_items_qualification_area_location.find', 'sau_ph_inspection_items_qualification_area_location.qualification_date', 'responsible', 'desc_plan', 'sau_action_plans_activities.execution_date', 'sau_action_plans_activities.expiration_date', 'state_activity')
+      $qualifications->where('sau_ph_inspections.id', $this->id);
+
+      $qualifications->company_scope = $this->company_id;
+
+      return $qualifications;
+
+      /*$inspection = Inspection::selectRaw("
           sau_ph_inspections.*,
           GROUP_CONCAT(DISTINCT sau_employees_regionals.name ORDER BY sau_employees_regionals.name ASC) AS regional,
           GROUP_CONCAT(DISTINCT sau_employees_headquarters.name ORDER BY sau_employees_headquarters.name ASC) AS sede,
@@ -223,32 +298,19 @@ class InspectionCompletExcel implements FromQuery, WithMapping, WithHeadings, Wi
         ->inProcesses($this->filters['processes'], $this->filters['filtersType']['processes'])
         ->inAreas($this->filters['areas'], $this->filters['filtersType']['areas'])
         ->betweenDate($this->filters["dates"])
-        ->groupBy('sau_ph_inspections.id', 'sau_ph_inspections.name', 'sau_ph_inspections.created_at', 'sau_ph_inspections.state', 'sau_ph_inspection_sections.name', 'sau_ph_inspection_section_items.description', 'sau_action_plans_activities.id', 'qualification_name', 'qualification_description', 'regionals', 'areas', 'headquarter', 'process', 'qualifier',  'sau_ph_inspection_items_qualification_area_location.find', 'sau_ph_inspection_items_qualification_area_location.qualification_date', 'responsible', 'desc_plan', 'sau_action_plans_activities.execution_date', 'sau_action_plans_activities.expiration_date', 'state_activity');
+        ->groupBy('sau_ph_inspections.id', 'sau_ph_inspections.name', 'sau_ph_inspections.created_at', 'sau_ph_inspections.state', 'sau_ph_inspection_sections.name', 'sau_ph_inspection_section_items.description', 'sau_action_plans_activities.id', 'qualification_name', 'qualification_description', 'regionals', 'areas', 'headquarter', 'process', 'qualifier',  'sau_ph_inspection_items_qualification_area_location.find', 'sau_ph_inspection_items_qualification_area_location.qualification_date', 'responsible', 'desc_plan', 'sau_action_plans_activities.execution_date', 'sau_action_plans_activities.expiration_date', 'state_activity')
+        ->where('sau_ph_inspections.id', $this->id);
 
       $inspection->company_scope = $this->company_id;
 
-      return $inspection;
+      return $inspection;*/
     }
 
     public function map($data): array
     {
-      $values = [$data->id, $data->name];
-
-      if ($this->confLocation['regional'] == 'SI')
-        array_push($values, $data->regional);
-
-      if ($this->confLocation['headquarter'] == 'SI')
-        array_push($values, $data->sede);
-
-      if ($this->confLocation['process'] == 'SI')
-        array_push($values, $data->proceso);
-
-      if ($this->confLocation['area'] == 'SI')
-        array_push($values, $data->area);
+      $values = [$data->insp_name];
 
       $values = array_merge($values, [
-        $data->created_at,
-        $data->state,
         $data->section_name,
         $data->description,
         $data->qualification_name,
@@ -283,23 +345,9 @@ class InspectionCompletExcel implements FromQuery, WithMapping, WithHeadings, Wi
 
     public function headings(): array
     {
-      $columns = ['Código', 'Nombre'];
-
-      if ($this->confLocation['regional'] == 'SI')
-        array_push($columns, $this->keywords['regional']);
-
-      if ($this->confLocation['headquarter'] == 'SI')
-        array_push($columns, $this->keywords['headquarter']);
-
-      if ($this->confLocation['process'] == 'SI')
-        array_push($columns, $this->keywords['process']);
-
-      if ($this->confLocation['area'] == 'SI')
-        array_push($columns, $this->keywords['area']);
+      $columns = ['Nombre'];
       
       $columns = array_merge($columns, [
-        'Fecha de creación',
-        '¿Activa?',
         'Nombre del tema',
         'Descripción del item',
         'Calificación',
@@ -354,7 +402,7 @@ class InspectionCompletExcel implements FromQuery, WithMapping, WithHeadings, Wi
     */
     public function title(): string
     {
-        return 'Inspecciones';
+        return 'Inspecciones Calificadas';
     }
 }
 

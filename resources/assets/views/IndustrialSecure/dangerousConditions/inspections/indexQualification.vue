@@ -14,12 +14,14 @@
           </div>
         </b-card-header>
         <b-card-body>
-              <vue-table
-                configName="dangerousconditions-inspections-qualification"
-                :customColumnsName="true" 
-                v-if="auth.can['ph_inspections_r']"
-                :params="{inspectionId: `${this.$route.params.id}`}"
-                ></vue-table>
+          <vue-table
+            configName="dangerousconditions-inspections-qualification"
+            :customColumnsName="true" 
+            v-if="auth.can['ph_inspections_r']"
+            :params="{inspectionId: `${this.$route.params.id}`}"
+            :modelId="`${this.$route.params.id}`"
+            @filtersUpdate="setFilters"
+            ></vue-table>
         </b-card-body>
       </b-card>
     </div>
@@ -33,16 +35,43 @@ export default {
   name: 'dangerousconditions-inspections-qualification',
   metaInfo: {
     title: 'Inspecciones - Calificadas'
-  }
-}
- methods: {
-    exportData(){
-      axios.post('/industrialSecurity/dangerousConditions/inspection/exportQualify', this.filters)
-      .then(response => {
-        Alerts.warning('Información', 'Se inicio la exportación, se le notificara a su correo electronico cuando finalice el proceso.');
-      }).catch(error => {
-        Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
-      });
+  },
+  data () {
+    return {
+      filters: [],
+      inspection_id: this.$route.params.id
+    }
+  },
+  methods: {
+    setFilters(value)
+    {
+      this.filters = value
+    },
+    exportData()
+    {
+      console.log(this.filters.dateRange)
+      if (this.filters.dateRange) {
+
+        this.postData = Object.assign({}, {id: this.inspection_id}, this.filters);
+
+        axios.post('/industrialSecurity/dangerousConditions/inspection/exportQualify', this.postData)
+        .then(response => {
+          Alerts.warning('Información', 'Se inicio la exportación, se le notificara a su correo electronico cuando finalice el proceso.');
+        }).catch(error => {
+          if (error.response.status == 500 && error.response.data.error != 'Internal Error')
+          {
+            Alerts.error('Error', error.response.data.error);
+          }
+          else 
+          {
+            Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
+          }
+        });
+      }
+      else {
+        Alerts.error('Error', 'Debe elegir un rango de fecha no mayor a 6 meses');
+      }
     },
   }
+}
 </script>

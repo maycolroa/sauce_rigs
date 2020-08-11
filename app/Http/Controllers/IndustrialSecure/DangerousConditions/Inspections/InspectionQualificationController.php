@@ -15,7 +15,9 @@ use App\Models\Administrative\Processes\EmployeeProcess;
 use App\Models\Administrative\Areas\EmployeeArea;
 use App\Http\Requests\IndustrialSecure\DangerousConditions\Inspections\SaveQualificationRequest;
 use App\Facades\ActionPlans\Facades\ActionPlan;
+use App\Jobs\IndustrialSecure\DangerousConditions\Inspections\InspectionQualifyExportJob;
 use App\Models\General\Company;
+use App\Traits\Filtertrait;
 use Carbon\Carbon;
 use Validator;
 use DB;
@@ -23,6 +25,7 @@ use PDF;
 
 class InspectionQualificationController extends Controller
 {
+    use Filtertrait;
     /**
      * creates and instance and middlewares are checked
      */
@@ -69,8 +72,9 @@ class InspectionQualificationController extends Controller
             ->join('sau_ph_inspection_section_items', 'sau_ph_inspection_section_items.id', 'sau_ph_inspection_items_qualification_area_location.item_id')
             ->join('sau_ph_inspection_sections','sau_ph_inspection_sections.id', 'sau_ph_inspection_section_items.inspection_section_id')
             ->where('sau_ph_inspection_sections.inspection_id', $request->inspectionId);
+        $url = "/industrialsecure/dangerousconditions/inspections/qualification/".$request->get('modelId');
 
-        $filters = $request->get('filters');
+        $filters = COUNT($request->get('filters')) > 0 ? $request->get('filters') : $this->filterDefaultValues($this->user->id, $url);
 
         if (COUNT($filters) > 0)
         {
@@ -326,5 +330,52 @@ class InspectionQualificationController extends Controller
         $inspection->put('logo', $logo);
 
         return $inspection;
+    }
+
+    public function exportQualify(Request $request)
+    {
+        try
+        {
+            $dates = [];
+            $dates_request = explode('/', $request->dateRange);
+
+            $date1 = Carbon::createFromFormat('D M d Y', $dates_request[0]);
+            $date2 = Carbon::createFromFormat('D M d Y', $dates_request[1]);
+
+            $regionals = $request->regionals ? $this->getValuesForMultiselect($request->regionals) : [];
+            $headquarters = $request->headquarters ? $this->getValuesForMultiselect($request->headquarters) : [];
+            $processes = $request->processes ? $this->getValuesForMultiselect($request->processes) : [];
+            $areas = $request->areas ? $this->getValuesForMultiselect($request->areas) : [];
+            $qualifiers = $this->getValuesForMultiselect($request->qualifiers);
+            $filtersType = $request->filtersType;
+
+            if (COUNT($dates_request) == 2)
+            {
+                array_push($dates, $date1->format('Y-m-d 00:00:00'));
+                array_push($dates, $date2->format('Y-m-d 23:59:59'));
+            }
+
+            if($date1->diffInMonths($date2) > 6)
+            {
+                return $this->respondWithError('El rango de fecha ingresado no puede ser mayor a 6 meses');
+            }
+
+            $filters = [
+                'qualifiers' => $qualifiers,
+                'regionals' => $regionals,
+                'headquarters' => $headquarters,
+                'processes' => $processes,
+                'areas' => $areas,
+                'dates' => $dates,
+                'filtersType' => $filtersType
+            ];
+
+            InspectionQualifyExportJob::dispatch($this->user, $this->company, $filters, $request->id);
+          
+            return $this->respondHttp200();
+
+        } catch(Exception $e) {
+            return $this->respondHttp500();
+        }
     }
 }
