@@ -464,6 +464,15 @@ class DangerMatrixController extends Controller
                                 $ndp = $itemQ['value_id'];
                         }
 
+                        else if ($conf == 'Tipo 2')
+                        {
+                            if ($itemQ['description'] == 'Severidad')
+                                $sev = $itemQ['value_id'];
+
+                            if ($itemQ['description'] == 'Tabla de frecuencia')
+                                $fre = $itemQ['value_id'];
+                        }
+
                         if (!$qualification->save())
                             return $this->respondHttp500();
                     }
@@ -475,6 +484,17 @@ class DangerMatrixController extends Controller
                         if (isset($matriz_calification[$ndp]) && isset($matriz_calification[$ndp][$nri]))
                         {
                             $danger->qualification = $matriz_calification[$ndp][$nri]['label'];
+                            $danger->save();
+                        }
+                    }
+
+                    else if ($conf == 'Tipo 2')
+                    {
+                        $matriz_calification = $this->getMatrixCalification($conf);
+
+                        if (isset($matriz_calification[$sev]) && isset($matriz_calification[$sev][$fre]))
+                        {
+                            $danger->qualification = $matriz_calification[$sev][$fre]['label'];
                             $danger->save();
                         }
                     }

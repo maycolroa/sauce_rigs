@@ -40,6 +40,7 @@ class DangerMatrixReportController extends Controller
         $url = "/industrialsecure/dangermatrix/report";
         $init = true;
         $filters = [];
+        $showLabelCol = false;
 
         $conf = QualificationCompany::select('qualification_id')->first();
 
@@ -96,6 +97,8 @@ class DangerMatrixReportController extends Controller
                     {
                         $nri = -1;
                         $ndp = -1;
+                        $frec = -1;
+                        $sev = -1;
 
                         foreach ($itemDanger->qualifications as $keyQ => $itemQ)
                         {
@@ -107,34 +110,86 @@ class DangerMatrixReportController extends Controller
                                 if ($itemQ->typeQualification->description == 'Nivel de Probabilidad')
                                     $ndp = $itemQ->value_id;
                             }
+                            else if ($conf == 'Tipo 2')
+                            {
+                                if ($itemQ->typeQualification->description == 'Tabla de frecuencia')
+                                {
+                                    $frec = $itemQ->value_id;
+                                }
+
+                                if ($itemQ->typeQualification->description == 'Severidad')
+                                {
+                                    $sev = $itemQ->value_id;
+                                }
+                            }
                         }
 
                         if ($conf == 'Tipo 1')
+                        {
                             if (isset($data[$ndp]) && isset($data[$ndp][$nri]))
                                 $data[$ndp][$nri]['count']++;
+                        }
+                        else if ($conf == 'Tipo 2')
+                        {
+                            if (isset($data[$sev]) && isset($data[$sev][$frec]))
+                            {
+                                $data[$sev][$frec]['count']++;
+                                 \Log::info($data[$sev][$frec]['count']);
+                            }
+                        }
                     }
                 }
             }
 
             $matriz = [];
             $headers = array_keys($data);
-            $count = isset($data['Ha ocurrido en el sector hospitalario']) ? COUNT($data['Ha ocurrido en el sector hospitalario']) : 0;
+            $count = 0;
 
-            for ($i=0; $i < $count; $i++)
-            { 
-                $y = 0;
+            if ($conf == 'Tipo 1')
+            {
+                $headers = array_keys($data);
+                $count = isset($data['Ha ocurrido en el sector hospitalario']) ? COUNT($data['Ha ocurrido en el sector hospitalario']) : 0;
 
-                foreach ($data as $key => $value)
-                {
-                    $x = 0;
+                for ($i=0; $i < $count; $i++)
+                { 
+                    $y = 0;
 
-                    foreach ($value as $key2 => $value2)
-                    { 
-                        $matriz[$x][$y] = array_merge($data[$key][$key2], ["row"=>$key, "col"=>$key2]);
-                        $x++;
+                    foreach ($data as $key => $value)
+                    {
+                        $x = 0;
+
+                        foreach ($value as $key2 => $value2)
+                        { 
+                            $matriz[$x][$y] = array_merge($data[$key][$key2], ["row"=>$key, "col"=>$key2]);
+                            $x++;
+                        }
+
+                        $y++;
                     }
+                }
+            }
+            else if ($conf == 'Tipo 2')
+            {
+                $showLabelCol = true;
+                $headers = array_keys($data);
+                $count = isset($data['MENOR']) ? COUNT($data['MENOR']) : 0;
 
-                    $y++;
+                for ($i=0; $i < $count; $i++)
+                { 
+                    $y = 0;
+
+                    foreach ($data as $key => $value)
+                    {
+                        $x = 0;
+
+                        foreach ($value as $key2 => $value2)
+                        { 
+                            $matriz[$x][$y] = array_merge($data[$key][$key2], ["row"=>$key, "col"=>$key2]);
+                            $x++;
+                        }
+
+                        $y++;
+                    }
                 }
             }
         }
@@ -142,7 +197,8 @@ class DangerMatrixReportController extends Controller
         return $this->respondHttp200([
             "data" => [
                 "data" => $matriz,
-                "headers" => $headers
+                "headers" => $headers,
+                "showLabelCol" => $showLabelCol
             ]
         ]);
     }
@@ -209,7 +265,7 @@ class DangerMatrixReportController extends Controller
         ->inDangers($dangers, $filtersType['dangers'])
         ->inDangerDescription($dangerDescription, $filtersType['dangerDescription'])
         ->where('sau_dm_activity_danger.qualification', $request->label)
-        ->where('sau_dm_qualification_types.description', 'Nivel de Probabilidad')
+        //->where('sau_dm_qualification_types.description', 'Nivel de Probabilidad')
         ->where('sau_dm_qualification_danger.value_id', $request->row);
 
         return Vuetable::of($dangers)

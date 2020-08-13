@@ -24,6 +24,10 @@ trait DangerMatrixTrait
         {
             $matriz = $all_matriz['Tipo 1'];
         }
+        else if ($type == 'Tipo 2' && isset($all_matriz['Tipo 2']))
+        {
+            $matriz = $all_matriz['Tipo 2'];
+        }
 
         return $matriz;
     }
@@ -63,6 +67,33 @@ trait DangerMatrixTrait
         $matriz['Tipo 1']['Sucede varias veces en el último año en el mismo proceso']['15'] = ['label' => 'Alto-15', 'color' => 'primary', 'count' => 0];
         $matriz['Tipo 1']['Sucede varias veces en el último año en el mismo proceso']['10'] = ['label' => 'Medio-10', 'color' => 'orange', 'count' => 0];
         $matriz['Tipo 1']['Sucede varias veces en el último año en el mismo proceso']['5'] = ['label' => 'Bajo-5', 'color' => 'warning', 'count' => 0];
+
+        //TIpo 2
+
+
+        $matriz['Tipo 2']['MENOR']['RECURRENTE'] = ['label' => 'Moderada/Tolerable-4', 'color' => 'warning', 'count' => 0];
+        $matriz['Tipo 2']['LEVE']['RECURRENTE'] = ['label' => 'Alta/Inaceptable-8', 'color' => 'orange', 'count' => 0];
+        $matriz['Tipo 2']['GRAVE']['RECURRENTE'] = ['label' => 'Extrema/Inadmisible-12', 'color' => 'primary', 'count' => 0];
+        $matriz['Tipo 2']['CATASTRÓFICA']['RECURRENTE'] = ['label' => 'Extrema/Inadmisible-16', 'color' => 'primary', 'count' => 0];
+
+         $matriz['Tipo 2']['MENOR']['FRECUENTE'] = ['label' => 'Moderada/Tolerable-3', 'color' => 'warning', 'count' => 0];
+         $matriz['Tipo 2']['LEVE']['FRECUENTE'] = ['label' => 'Alta/Inaceptable-6', 'color' => 'orange', 'count' => 0];
+         $matriz['Tipo 2']['GRAVE']['FRECUENTE'] = ['label' => 'Alta/Inaceptable-9', 'color' => 'orange', 'count' => 0];
+         $matriz['Tipo 2']['CATASTRÓFICA']['FRECUENTE'] = ['label' => 'Extrema/Inadmisible-12', 'color' => 'primary', 'count' => 0];
+
+         $matriz['Tipo 2']['MENOR']['POSIBLE'] = ['label' => 'Baja/Aceptable-2', 'color' => 'info', 'count' => 0];
+         $matriz['Tipo 2']['LEVE']['POSIBLE'] = ['label' => 'Moderada/Tolerable-4', 'color' => 'warning', 'count' => 0];
+         $matriz['Tipo 2']['GRAVE']['POSIBLE'] = ['label' => 'Alta/Inaceptable-6', 'color' => 'orange', 'count' => 0];
+         $matriz['Tipo 2']['CATASTRÓFICA']['POSIBLE'] = ['label' => 'Alta/Inaceptable-8', 'color' => 'orange', 'count' => 0];
+
+         $matriz['Tipo 2']['MENOR']['REMOTO'] = ['label' => 'Baja/Aceptable-1', 'color' => 'info', 'count' => 0];
+         $matriz['Tipo 2']['LEVE']['REMOTO'] = ['label' => 'Baja/Aceptable-2', 'color' => 'info', 'count' => 0];
+         $matriz['Tipo 2']['GRAVE']['REMOTO'] = ['label' => 'Moderada/Tolerable-3', 'color' => 'warning', 'count' => 0];
+         $matriz['Tipo 2']['CATASTRÓFICA']['REMOTO'] = ['label' => 'Moderada/Tolerable-4', 'color' => 'warning', 'count' => 0];
+
+
+        
+
 
         return $matriz;
     }
