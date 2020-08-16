@@ -112,15 +112,11 @@ class DangerMatrixReportController extends Controller
                             }
                             else if ($conf == 'Tipo 2')
                             {
-                                if ($itemQ->typeQualification->description == 'Tabla de frecuencia')
-                                {
+                                if ($itemQ->typeQualification->description == 'Frecuencia')
                                     $frec = $itemQ->value_id;
-                                }
 
                                 if ($itemQ->typeQualification->description == 'Severidad')
-                                {
                                     $sev = $itemQ->value_id;
-                                }
                             }
                         }
 
@@ -132,18 +128,13 @@ class DangerMatrixReportController extends Controller
                         else if ($conf == 'Tipo 2')
                         {
                             if (isset($data[$sev]) && isset($data[$sev][$frec]))
-                            {
                                 $data[$sev][$frec]['count']++;
-                                 \Log::info($data[$sev][$frec]['count']);
-                            }
                         }
                     }
                 }
             }
 
             $matriz = [];
-            $headers = array_keys($data);
-            $count = 0;
 
             if ($conf == 'Tipo 1')
             {

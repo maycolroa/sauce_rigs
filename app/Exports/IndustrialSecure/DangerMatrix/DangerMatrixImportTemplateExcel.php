@@ -16,6 +16,7 @@ use Maatwebsite\Excel\Events\AfterSheet;
 use \Maatwebsite\Excel\Sheet;
 use App\Traits\UtilsTrait;
 use App\Traits\LocationFormTrait;
+use App\Models\IndustrialSecure\DangerMatrix\QualificationCompany;
 
 Sheet::macro('styleCells', function (Sheet $sheet, string $cellRange, array $style) {
   $sheet->getDelegate()->getStyle($cellRange)->applyFromArray($style);
@@ -30,12 +31,22 @@ class DangerMatrixImportTemplateExcel implements FromCollection, WithHeadings, W
     protected $data;
     protected $company_id;
     protected $keywords;
+    protected $conf;
 
     public function __construct($data, $company_id)
     {
       $this->data = $data;
       $this->company_id = $company_id;
       $this->keywords = $this->getKeywordQueue($this->company_id);
+
+      $this->conf = QualificationCompany::select('qualification_id');
+      $this->conf->company_scope = $this->company_id;
+      $this->conf = $this->conf->first();
+
+      if ($this->conf && $this->conf->qualification)
+        $this->conf = $this->conf->qualification->name;
+      else
+        $this->conf = $this->getDefaultCalificationDm();
     }
 
     /**
@@ -106,12 +117,25 @@ class DangerMatrixImportTemplateExcel implements FromCollection, WithHeadings, W
         'Medidas de Intervención - Controles de ingeniería (Separados por “,”)',
         'Medidas de Intervención - Señalización, Advertencia (Separados por “,”)',
         'Medidas de Intervención - Controles administrativos (Separados por “,”)',
-        'Medidas de Intervención – EPP (Separados por “,”)',
+        'Medidas de Intervención – EPP (Separados por “,”)'
+      ]);
+
+      if ($this->conf == "Tipo 1")
+      {
+        $columns = array_merge($columns, [
         'Nivel de Probabilidad',
         'NR Personas',
         'NR Económico',
         'NR Imagen'
-      ]);
+        ]);
+      }
+      else if ($this->conf == "Tipo 2")
+      {
+        $columns = array_merge($columns, [
+        'Frecuencia',
+        'Severidad'
+        ]);
+      }
 
       return $columns;
 

@@ -91,10 +91,6 @@ trait DangerMatrixTrait
          $matriz['Tipo 2']['GRAVE']['REMOTO'] = ['label' => 'Moderada/Tolerable-3', 'color' => 'warning', 'count' => 0];
          $matriz['Tipo 2']['CATASTRÓFICA']['REMOTO'] = ['label' => 'Moderada/Tolerable-4', 'color' => 'warning', 'count' => 0];
 
-
-        
-
-
         return $matriz;
     }
 
@@ -133,6 +129,28 @@ trait DangerMatrixTrait
                     'Sucede varias veces en el último año y en diferentes procesos (en el hospital)' => [4,7,12,16,20],
                     'Sucede varias veces en el último año en el mismo proceso' => [5,10,15,20,25]
                 ],
+            ];
+
+            if ($ref)
+            {
+                return ïsset($rules[$ref]) ? $rules[$ref] : [];
+            }
+        }
+        if ($type == 'Tipo 2')
+        {
+            $rules = [
+                'Frecuencia' => [
+                    'RECURRENTE' => 'RECURRENTE',
+                    'FRECUENTE' => 'FRECUENTE',
+                    'POSIBLE' => 'POSIBLE',
+                    'REMOTO' => 'REMOTO'
+                ],
+                'Severidad' => [
+                    'MENOR' => 'MENOR',
+                    'LEVE' => 'LEVE',
+                    'GRAVE' => 'GRAVE',
+                    'CATASTRÓFICA' => 'CATASTRÓFICA'
+                ]
             ];
 
             if ($ref)
