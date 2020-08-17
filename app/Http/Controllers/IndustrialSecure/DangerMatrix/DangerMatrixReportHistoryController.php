@@ -37,6 +37,7 @@ class DangerMatrixReportHistoryController extends Controller
         $url = "/industrialsecure/dangermatrix/report/history";
         $init = true;
         $filters = [];
+        $showLabelCol = false;
 
         if ($request->has('filtersType'))
             $init = false;
@@ -185,7 +186,8 @@ class DangerMatrixReportHistoryController extends Controller
         return $this->respondHttp200([
             "data" => [
                 "data" => $matriz,
-                "headers" => $headers
+                "headers" => $headers,
+                "showLabelCol" => $showLabelCol
             ]
         ]);
     }
