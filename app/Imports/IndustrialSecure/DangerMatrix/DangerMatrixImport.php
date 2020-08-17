@@ -216,6 +216,14 @@ class DangerMatrixImport implements ToCollection, WithCalculatedFormulas
                 'nr_imagen' => $row[30 + $saltos]
             ]);
         }
+        else if ($conf->name == 'Tipo 2')
+        {
+            $data = array_merge($data,
+            [
+                'frecuencia' => strtoupper($row[27 + $saltos]),
+                'severidad' => strtoupper($row[28 + $saltos])
+            ]);
+        }
 
         /*$ndp = $data["nivel_de_probabilidad"] == 'Sucede varias veces en el último año y en diferentes procesos' ? 'Sucede varias veces en el último año y en diferentes procesos (en el hospital)' : $data["nivel_de_probabilidad"];
         \Log::info($ndp);
@@ -286,6 +294,17 @@ class DangerMatrixImport implements ToCollection, WithCalculatedFormulas
                     ]);
             }
         }
+        else if ($conf->name == 'Tipo 2')
+        {
+            $level = $rulesDm["Frecuencia"];
+            $level2 = $rulesDm["Severidad"];
+
+            $rules = array_merge($rules,
+                [
+                    'frecuencia' => "required|in:".implode(",", $level),
+                    'severidad' => "required|in:".implode(",", $level2)
+                ]);
+        }
 
         $validator = Validator::make($data, $rules, 
         [
@@ -322,7 +341,9 @@ class DangerMatrixImport implements ToCollection, WithCalculatedFormulas
                 $intervention_measures_administrative_controls = $this->tagsPrepareImport($data['controles_administrativos_medidas']);
                 $intervention_measures_epp = $this->tagsPrepareImport($data['epp_medidas']);
                 $participants = $this->tagsPrepareImport($data['participantes']);
-                $macroproceso = $this->tagsPrepareImport($data['macroproceso']);
+
+                if ($confLocation['process'] == 'SI')
+                    $macroproceso = $this->tagsPrepareImport($data['macroproceso']);
 
 
 
@@ -339,7 +360,9 @@ class DangerMatrixImport implements ToCollection, WithCalculatedFormulas
                 $this->tagsSave($intervention_measures_administrative_controls, TagsAdministrativeControls::class, $this->company_id);
                 $this->tagsSave($intervention_measures_epp, TagsEpp::class, $this->company_id);
                 $this->tagsSave($participants, TagsParticipant::class, $this->company_id);
-                $this->tagsSave($macroproceso, TagsProcess::class, $this->company_id);
+
+                if ($confLocation['process'] == 'SI')
+                    $this->tagsSave($macroproceso, TagsProcess::class, $this->company_id);
 
 
             if ($createMatrix)
@@ -448,6 +471,30 @@ class DangerMatrixImport implements ToCollection, WithCalculatedFormulas
                 if (isset($matriz_calification[$ndp]) && isset($matriz_calification[$ndp][$nri]))
                 {
                     $activityDanger->qualification = $matriz_calification[$ndp][$nri]['label'];
+                    $activityDanger->save();
+                }
+            }
+            else if ($conf->name == 'Tipo 2')
+            {
+                $qualification1 = new QualificationDanger();
+                $qualification1->activity_danger_id = $activityDanger->id;
+                $qualification1->type_id = $conf->types()->where('description', 'Frecuencia')->first()->id;
+                $qualification1->value_id = $data["frecuencia"];
+                $qualification1->save();
+                $fre = $data["frecuencia"];
+
+                $qualification2 = new QualificationDanger();
+                $qualification2->activity_danger_id = $activityDanger->id;
+                $qualification2->type_id = $conf->types()->where('description', 'Severidad')->first()->id;
+                $qualification2->value_id = $data["severidad"];
+                $qualification2->save();
+                $sev = $data["severidad"];
+
+                $matriz_calification = $this->getMatrixCalification($conf->name);
+
+                if (isset($matriz_calification[$sev]) && isset($matriz_calification[$sev][$fre]))
+                {
+                    $activityDanger->qualification = $matriz_calification[$sev][$fre]['label'];
                     $activityDanger->save();
                 }
             }

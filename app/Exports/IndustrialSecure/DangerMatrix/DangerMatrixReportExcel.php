@@ -9,7 +9,7 @@ use Maatwebsite\Excel\Concerns\RegistersEventListeners;
 use Maatwebsite\Excel\Events\AfterSheet;
 use Maatwebsite\Excel\Concerns\WithTitle;
 use \Maatwebsite\Excel\Sheet;
-
+use App\Facades\Administrative\KeywordManager;
 use App\Models\IndustrialSecure\DangerMatrix\QualificationCompany;
 use App\Models\IndustrialSecure\DangerMatrix\DangerMatrix;
 use App\Traits\DangerMatrixTrait;
@@ -29,6 +29,7 @@ class DangerMatrixReportExcel implements FromView, WithEvents, WithTitle
     protected $filters;
     protected $data;
     protected $confLocation;
+    protected $conf;
 
     public function __construct($company_id, $filters)
     {
@@ -40,18 +41,18 @@ class DangerMatrixReportExcel implements FromView, WithEvents, WithTitle
       $title_table = '';
       $data_table = [];
 
-      $conf = QualificationCompany::select('qualification_id');
-      $conf->company_scope = $this->company_id;
-      $conf = $conf->first();
+      $this->conf = QualificationCompany::select('qualification_id');
+      $this->conf->company_scope = $this->company_id;
+      $this->conf = $this->conf->first();
 
-      if ($conf && $conf->qualification)
-        $conf = $conf->qualification->name;
+      if ($this->conf && $this->conf->qualification)
+        $this->conf = $this->conf->qualification->name;
       else
-        $conf = $this->getDefaultCalificationDm();
+        $this->conf = $this->getDefaultCalificationDm();
 
-      if ($conf)
+      if ($this->conf)
       {
-        $data = $this->getMatrixCalification($conf);
+        $data = $this->getMatrixCalification($this->conf);
 
         $dangersMatrix = DangerMatrix::select('sau_dangers_matrix.*')
             ->leftJoin('sau_employees_processes', 'sau_employees_processes.id', 'sau_dangers_matrix.employee_process_id')
@@ -75,10 +76,12 @@ class DangerMatrixReportExcel implements FromView, WithEvents, WithTitle
             {
               $nri = -1;
               $ndp = -1;
+              $frec = -1;
+              $sev = -1;
 
               foreach ($itemDanger->qualifications as $keyQ => $itemQ)
               {
-                if ($conf == 'Tipo 1')
+                if ($this->conf == 'Tipo 1')
                 {
                   if ($itemQ->typeQualification->description == 'NRI')
                     $nri = $itemQ->value_id;
@@ -86,34 +89,76 @@ class DangerMatrixReportExcel implements FromView, WithEvents, WithTitle
                   if ($itemQ->typeQualification->description == 'Nivel de Probabilidad')
                     $ndp = $itemQ->value_id;
                 }
+                else if ($this->conf == 'Tipo 2')
+                {
+                  if ($itemQ->typeQualification->description == 'Frecuencia')
+                      $frec = $itemQ->value_id;
+
+                  if ($itemQ->typeQualification->description == 'Severidad')
+                      $sev = $itemQ->value_id;
+                }
               }
 
-              if ($conf == 'Tipo 1')
+              if ($this->conf == 'Tipo 1')
+              {
                 if (isset($data[$ndp]) && isset($data[$ndp][$nri]))
                   $data[$ndp][$nri]['count']++;
+              }
+              else if ($this->conf == 'Tipo 2')
+              {
+                  if (isset($data[$sev]) && isset($data[$sev][$frec]))
+                      $data[$sev][$frec]['count']++;
+              }
             }
           }
         }
 
         $matriz = [];
-        $headers = array_keys($data);
-        $count = isset($data['Ha ocurrido en el sector hospitalario']) ? COUNT($data['Ha ocurrido en el sector hospitalario']) : 0;
 
-        for ($i=0; $i < $count; $i++)
-        { 
-          $y = 0;
+        if ($this->conf == 'Tipo 1')
+        {
+          $headers = array_keys($data);
+          $count = isset($data['Ha ocurrido en el sector hospitalario']) ? COUNT($data['Ha ocurrido en el sector hospitalario']) : 0;
 
-          foreach ($data as $key => $value)
-          {
-            $x = 0;
+          for ($i=0; $i < $count; $i++)
+          { 
+            $y = 0;
 
-            foreach ($value as $key2 => $value2)
-            { 
-              $matriz[$x][$y] = array_merge($data[$key][$key2], ["row"=>$key, "col"=>$key2]);
-              $x++;
+            foreach ($data as $key => $value)
+            {
+              $x = 0;
+
+              foreach ($value as $key2 => $value2)
+              { 
+                $matriz[$x][$y] = array_merge($data[$key][$key2], ["row"=>$key, "col"=>$key2]);
+                $x++;
+              }
+
+              $y++;
             }
+          }
+        }
+        else if ($this->conf == 'Tipo 2')
+        {
+          $headers = array_keys($data);
+          $count = isset($data['MENOR']) ? COUNT($data['MENOR']) : 0;
 
-            $y++;
+          for ($i=0; $i < $count; $i++)
+          { 
+              $y = 0;
+
+              foreach ($data as $key => $value)
+              {
+                  $x = 0;
+
+                  foreach ($value as $key2 => $value2)
+                  { 
+                      $matriz[$x][$y] = array_merge($data[$key][$key2], ["row"=>$key, "col"=>$key2]);
+                      $x++;
+                  }
+
+                  $y++;
+              }
           }
         }
 
@@ -146,7 +191,7 @@ class DangerMatrixReportExcel implements FromView, WithEvents, WithTitle
           //->inMatrix($this->filters['matrix'], $this->filters['filtersType']['matrix'])
           ->inDangers($this->filters['dangers'], $this->filters['filtersType']['dangers'])
           ->where('sau_dm_activity_danger.qualification', $this->filters['label'])
-          ->where('sau_dm_qualification_types.description', 'Nivel de Probabilidad')
+          //->where('sau_dm_qualification_types.description', 'Nivel de Probabilidad')
           ->where('sau_dm_qualification_danger.value_id', $this->filters['row']);
 
           $dangers->company_scope = $this->company_id;
@@ -167,109 +212,232 @@ class DangerMatrixReportExcel implements FromView, WithEvents, WithTitle
             "confLocation" => $this->confLocation
           ]
       ];
+
+      $conf = $this->conf;
+
+      Sheet::macro('getConfDM', function (Sheet $sheet) use ($conf) {
+        return $conf;
+      });
     }
 
     public static function afterSheet(AfterSheet $event)
     {
-      $colors['A4:F4'] = 'ef7b38';
-      $colors['G4:L4'] = 'f0635f';
-      $colors['M4:O4'] = '6f42c1';
+      $conf = $event->sheet->getConfDM();
 
-      $colors['A5:C5'] = 'FFD950';
-      $colors['D5:I5'] = 'ef7b38';
-      $colors['J5:O5'] = 'f0635f';
-
-      $colors['A6:C6'] = '02BC77';
-      $colors['D6:F6'] = 'FFD950';
-      $colors['G6:L6'] = 'ef7b38';
-      $colors['M6:O6'] = 'f0635f';
-
-      $colors['A7:F7'] = '02BC77';
-      $colors['G7:L7'] = 'FFD950';
-      $colors['M7:O7'] = 'ef7b38';
-
-      $colors['A8:I8'] = '02BC77';
-      $colors['J8:O8'] = 'FFD950';
-
-      foreach ($colors as $cols => $color)
+      if ($conf == 'Tipo 1')
       {
+        $colors['A4:F4'] = 'ef7b38';
+        $colors['G4:L4'] = 'f0635f';
+        $colors['M4:O4'] = '6f42c1';
+
+        $colors['A5:C5'] = 'FFD950';
+        $colors['D5:I5'] = 'ef7b38';
+        $colors['J5:O5'] = 'f0635f';
+
+        $colors['A6:C6'] = '02BC77';
+        $colors['D6:F6'] = 'FFD950';
+        $colors['G6:L6'] = 'ef7b38';
+        $colors['M6:O6'] = 'f0635f';
+
+        $colors['A7:F7'] = '02BC77';
+        $colors['G7:L7'] = 'FFD950';
+        $colors['M7:O7'] = 'ef7b38';
+
+        $colors['A8:I8'] = '02BC77';
+        $colors['J8:O8'] = 'FFD950';
+
+        foreach ($colors as $cols => $color)
+        {
+          $event->sheet->styleCells(
+            $cols,
+              [
+                'fill' => [
+                    'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_GRADIENT_LINEAR,
+                    'rotation' => 90,
+                    'startColor' => [
+                        'rgb' => $color
+                    ],
+                    'endColor' => [
+                        'rgb' => $color
+                    ],
+                  ],
+              ]
+          );
+        }
+
         $event->sheet->styleCells(
-          $cols,
+          'A1:AZ3',
             [
-              'fill' => [
-                  'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_GRADIENT_LINEAR,
-                  'rotation' => 90,
-                  'startColor' => [
-                      'rgb' => $color
-                  ],
-                  'endColor' => [
-                      'rgb' => $color
-                  ],
+              'alignment' => [
+                'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
+                'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
+                'wrapText' => true
+              ],
+              'font' => [
+                 'name' => 'Arial', 
+                 'bold' => true,
+              ]
+            ]
+        );
+
+        $event->sheet->styleCells(
+          'A4:O8',
+            [
+              'borders' => [
+                'allBorders' => [
+                    'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THICK,
+                    'color' => ['argb' => 'FFFFFFFF'],
                 ],
+              ],
+              'font' => [
+                'name' => 'Arial',
+                'size' => 14
+              ],
+              'alignment' => [
+                'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
+                'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
+              ],
+            ]
+        );
+
+        $event->sheet->styleCells(
+          'A10:O12',
+            [
+              'font' => [
+                'name' => 'Arial',
+                'bold' => true,
+                'size' => 11
+              ],
+              'alignment' => [
+                'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
+                'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
+              ],
+            ]
+        );
+
+        $event->sheet->styleCells(
+          'A13:O200',
+            [
+              'alignment' => [
+                'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT,
+                'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
+                'wrapText' => true
+              ],
             ]
         );
       }
+      else if ($conf == 'Tipo 2')
+      {
+        $colors['D4:F4'] = 'ffd950';
+        $colors['G4:I4'] = 'ee7a38';
+        $colors['J4:O4'] = 'f0635f';
 
-      $event->sheet->styleCells(
-        'A1:AZ3',
-          [
-            'alignment' => [
-              'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
-              'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
-              'wrapText' => true
-            ],
-            'font' => [
-               'name' => 'Arial', 
-               'bold' => true,
-            ]
-          ]
-      );
+        $colors['D5:F5'] = 'ffd950';
+        $colors['G5:L5'] = 'ee7a38';
+        $colors['M5:O5'] = 'f0635f';
 
-      $event->sheet->styleCells(
-        'A4:O8',
-          [
-            'borders' => [
-              'allBorders' => [
-                  'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THICK,
-                  'color' => ['argb' => 'FFFFFFFF'],
+        $colors['D6:F6'] = '29c3d7';
+        $colors['G6:I6'] = 'ffd950';
+        $colors['J6:O6'] = 'ee7a38';
+
+        $colors['D7:I7'] = '29c3d7';
+        $colors['J7:O7'] = 'ffd950';
+
+        foreach ($colors as $cols => $color)
+        {
+          $event->sheet->styleCells(
+            $cols,
+              [
+                'fill' => [
+                    'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_GRADIENT_LINEAR,
+                    'rotation' => 90,
+                    'startColor' => [
+                        'rgb' => $color
+                    ],
+                    'endColor' => [
+                        'rgb' => $color
+                    ],
+                  ],
+              ]
+          );
+        }
+
+        $event->sheet->styleCells(
+          'A1:AZ3',
+            [
+              'alignment' => [
+                'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
+                'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
+                'wrapText' => true
               ],
-            ],
-            'font' => [
-              'name' => 'Arial',
-              'size' => 14
-            ],
-            'alignment' => [
-              'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
-              'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
-            ],
-          ]
-      );
+              'font' => [
+                 'name' => 'Arial', 
+                 'bold' => true,
+              ]
+            ]
+        );
 
-      $event->sheet->styleCells(
-        'A10:O12',
-          [
-            'font' => [
-              'name' => 'Arial',
-              'bold' => true,
-              'size' => 11
-            ],
-            'alignment' => [
-              'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
-              'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
-            ],
-          ]
-      );
+        $event->sheet->styleCells(
+          'A4:A7',
+            [
+              'alignment' => [
+                'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
+                'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
+                'wrapText' => true
+              ],
+              'font' => [
+                 'name' => 'Arial', 
+                 'bold' => true,
+              ]
+            ]
+        );
 
-      $event->sheet->styleCells(
-        'A13:O200',
-          [
-            'alignment' => [
-              'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT,
-              'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
-              'wrapText' => true
-            ],
-          ]
-      );
+        $event->sheet->styleCells(
+          'D4:O7',
+            [
+              'borders' => [
+                'allBorders' => [
+                    'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THICK,
+                    'color' => ['argb' => 'FFFFFFFF'],
+                ],
+              ],
+              'font' => [
+                'name' => 'Arial',
+                'size' => 14
+              ],
+              'alignment' => [
+                'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
+                'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
+              ],
+            ]
+        );
+
+        $event->sheet->styleCells(
+          'A9:O11',
+            [
+              'font' => [
+                'name' => 'Arial',
+                'bold' => true,
+                'size' => 11
+              ],
+              'alignment' => [
+                'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
+                'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
+              ],
+            ]
+        );
+
+        $event->sheet->styleCells(
+          'A12:O200',
+            [
+              'alignment' => [
+                'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT,
+                'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
+                'wrapText' => true
+              ],
+            ]
+        );
+      }
     }
 
     /**
@@ -282,8 +450,24 @@ class DangerMatrixReportExcel implements FromView, WithEvents, WithTitle
 
     public function view(): View
     {
+      $keyword = KeywordManager::getKeywords($this->company_id);
+      $showLabelCol = false;
+
+      if ($this->conf == 'Tipo 2')
+      {
+        $showLabelCol = true;
+
+        return view('exports.IndustrialSecure.DangerMatrix.dangerMatrixReportType2', [
+          'data' => $this->data,
+          'keyword' => $keyword,
+          'showLabelCol' => $showLabelCol
+        ]);
+      }
+
       return view('exports.IndustrialSecure.DangerMatrix.dangerMatrixReport', [
-          'data' => $this->data
+          'data' => $this->data,
+          'keyword' => $keyword,
+          'showLabelCol' => $showLabelCol
       ]);
     }
 }

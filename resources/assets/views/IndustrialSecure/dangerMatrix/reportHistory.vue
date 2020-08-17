@@ -35,6 +35,7 @@
                             <table class="table table-bordered mb-0">
                                 <thead>
                                     <tr>
+                                        <th v-if="showLabelCol"> </th>
                                         <th v-for="(header, index) in headers" :key="index" class="text-center align-middle">
                                             {{ header }}
                                         </th>
@@ -42,6 +43,7 @@
                                 </thead>
                                 <tbody>
                                     <tr v-for="(row, index) in information" :key="index">
+                                        <th v-if="showLabelCol" class="text-center align-middle">{{ row[0].col }}</th>
                                         <td v-for="(col, index2) in row" :key="index2" :class="`bg-${col.color}`">
                                             <b-btn style="width: 100%;" :variant="col.color">{{ col.label }} <b-badge variant="light">{{ col.count }}</b-badge></b-btn>
                                         </td>
@@ -113,6 +115,14 @@ export default {
             }
 
             return []
+        },
+        showLabelCol() {
+            if (Object.keys(this.data).length > 0)
+            {
+                return this.data.showLabelCol;
+            }
+
+            return false;
         }
     },
     watch: {
