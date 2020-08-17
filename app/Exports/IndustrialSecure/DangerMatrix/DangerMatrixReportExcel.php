@@ -104,7 +104,6 @@ class DangerMatrixReportExcel implements FromView, WithEvents, WithTitle
                 if (isset($data[$ndp]) && isset($data[$ndp][$nri]))
                   $data[$ndp][$nri]['count']++;
               }
-
               else if ($this->conf == 'Tipo 2')
               {
                   if (isset($data[$sev]) && isset($data[$sev][$frec]))

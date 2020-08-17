@@ -95,6 +95,8 @@ class DangerMatrixReportHistoryController extends Controller
         {
             $nri = -1;
             $ndp = -1;
+            $frec = -1;
+            $sev = -1;
 
             $qualifications = json_decode($itemDanger->qualification, true);
 
@@ -108,32 +110,75 @@ class DangerMatrixReportHistoryController extends Controller
                     if ($itemQ["name"] == 'Nivel de Probabilidad')
                         $ndp = $itemQ["value"];
                 }
+                else if ($conf == 'Tipo 2')
+                {
+                    if ($itemQ["name"] == 'Frecuencia')
+                        $frec = $itemQ["value"];
+
+                    if ($itemQ["name"] == 'Severidad')
+                        $sev = $itemQ["value"];
+                }
             }
 
             if ($conf == 'Tipo 1')
+            {
                 if (isset($data[$ndp]) && isset($data[$ndp][$nri]))
                     $data[$ndp][$nri]['count']++;
+            }
+            else if ($conf == 'Tipo 2')
+            {
+                if (isset($data[$sev]) && isset($data[$sev][$frec]))
+                    $data[$sev][$frec]['count']++;
+            }
         }
 
         $matriz = [];
-        $headers = array_keys($data);
-        $count = isset($data['Ha ocurrido en el sector Hospitalario']) ? COUNT($data['Ha ocurrido en el sector Hospitalario']) : 0;
 
-        for ($i=0; $i < $count; $i++)
-        { 
-            $y = 0;
+        if ($conf == 'Tipo 1')
+        {       
+            $headers = array_keys($data);
+            $count = isset($data['Ha ocurrido en el sector Hospitalario']) ? COUNT($data['Ha ocurrido en el sector Hospitalario']) : 0;
 
-            foreach ($data as $key => $value)
-            {
-                $x = 0;
+            for ($i=0; $i < $count; $i++)
+            { 
+                $y = 0;
 
-                foreach ($value as $key2 => $value2)
-                { 
-                    $matriz[$x][$y] = array_merge($data[$key][$key2], ["row"=>$key, "col"=>$key2]);
-                    $x++;
+                foreach ($data as $key => $value)
+                {
+                    $x = 0;
+
+                    foreach ($value as $key2 => $value2)
+                    { 
+                        $matriz[$x][$y] = array_merge($data[$key][$key2], ["row"=>$key, "col"=>$key2]);
+                        $x++;
+                    }
+
+                    $y++;
                 }
+            }
+        }
+        else if ($conf == 'Tipo 2')
+        {
+            $showLabelCol = true;
+            $headers = array_keys($data);
+            $count = isset($data['MENOR']) ? COUNT($data['MENOR']) : 0;
 
-                $y++;
+            for ($i=0; $i < $count; $i++)
+            { 
+                $y = 0;
+
+                foreach ($data as $key => $value)
+                {
+                    $x = 0;
+
+                    foreach ($value as $key2 => $value2)
+                    { 
+                        $matriz[$x][$y] = array_merge($data[$key][$key2], ["row"=>$key, "col"=>$key2]);
+                        $x++;
+                    }
+
+                    $y++;
+                }
             }
         }
         

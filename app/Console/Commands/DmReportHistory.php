@@ -106,6 +106,8 @@ class DmReportHistory extends Command
                             {
                                 $nri = -1;
                                 $ndp = -1;
+                                $frec = -1;
+                                $sev = -1;
                                 $qualification = collect([]);
 
                                 foreach ($itemDanger->qualifications as $keyQ => $itemQ)
@@ -122,10 +124,19 @@ class DmReportHistory extends Command
 
                                         if ($itemQ->typeQualification->description == 'Nivel de Probabilidad')
                                             $ndp = $itemQ->value_id;
+                                    }                                    
+                                    else if ($conf == 'Tipo 2')
+                                    {
+                                      if ($itemQ->typeQualification->description == 'Frecuencia')
+                                          $frec = $itemQ->value_id;
+
+                                      if ($itemQ->typeQualification->description == 'Severidad')
+                                          $sev = $itemQ->value_id;
                                     }
                                 }
 
                                 if ($conf == 'Tipo 1')
+                                {
                                     if (isset($data[$ndp]) && isset($data[$ndp][$nri]))
                                     {
                                         $qualification->push([
@@ -133,6 +144,17 @@ class DmReportHistory extends Command
                                             "value" => $data[$ndp][$nri]['label']
                                         ]);
                                     }
+                                }
+                                else if ($conf == 'Tipo 2')
+                                {
+                                  if (isset($data[$sev]) && isset($data[$sev][$frec]))
+                                  {
+                                    $qualification->push([
+                                        "name" => "Calficación",
+                                        "value" => $data[$sev][$frec]['label']
+                                    ]);
+                                  }
+                                }
 
                                 $danger = Danger::where("id", $itemDanger->danger_id);
                                 $danger->company_scope = $company;
@@ -162,6 +184,7 @@ class DmReportHistory extends Command
 
         } catch (\Exception $e) {
             DB::rollback();
+            \Log::info($e->getMessage());
             \Log::info("Ocurrio un error durante el proceso de la tarea programada: DmReportHistory");
         }
     }
