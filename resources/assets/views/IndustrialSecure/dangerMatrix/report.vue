@@ -22,6 +22,9 @@
             <b-row>
                 <b-col>
                     <b-card border-variant="secondary" title="" class="mb-3 box-shadow-none">
+                        <div v-if="showLabelCol">
+                            <p class="text-center align-middle"><b>Eje Y: Frecuencia / Eje X: Severidad</b></p>
+                        </div>
                         <div class="table-responsive">
                             <table class="table table-bordered mb-0">
                                 <thead>

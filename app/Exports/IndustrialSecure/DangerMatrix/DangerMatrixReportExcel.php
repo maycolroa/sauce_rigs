@@ -328,20 +328,20 @@ class DangerMatrixReportExcel implements FromView, WithEvents, WithTitle
       }
       else if ($conf == 'Tipo 2')
       {
-        $colors['D4:F4'] = 'ffd950';
-        $colors['G4:I4'] = 'ee7a38';
-        $colors['J4:O4'] = 'f0635f';
-
         $colors['D5:F5'] = 'ffd950';
-        $colors['G5:L5'] = 'ee7a38';
-        $colors['M5:O5'] = 'f0635f';
+        $colors['G5:I5'] = 'ee7a38';
+        $colors['J5:O5'] = 'f0635f';
 
-        $colors['D6:F6'] = '29c3d7';
-        $colors['G6:I6'] = 'ffd950';
-        $colors['J6:O6'] = 'ee7a38';
+        $colors['D6:F6'] = 'ffd950';
+        $colors['G6:L6'] = 'ee7a38';
+        $colors['M6:O6'] = 'f0635f';
 
-        $colors['D7:I7'] = '29c3d7';
-        $colors['J7:O7'] = 'ffd950';
+        $colors['D7:F7'] = '29c3d7';
+        $colors['G7:I7'] = 'ffd950';
+        $colors['J7:O7'] = 'ee7a38';
+
+        $colors['D8:I8'] = '29c3d7';
+        $colors['J8:O8'] = 'ffd950';
 
         foreach ($colors as $cols => $color)
         {
@@ -378,7 +378,7 @@ class DangerMatrixReportExcel implements FromView, WithEvents, WithTitle
         );
 
         $event->sheet->styleCells(
-          'A4:A7',
+          'A5:A8',
             [
               'alignment' => [
                 'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
@@ -393,7 +393,7 @@ class DangerMatrixReportExcel implements FromView, WithEvents, WithTitle
         );
 
         $event->sheet->styleCells(
-          'D4:O7',
+          'D5:O8',
             [
               'borders' => [
                 'allBorders' => [
@@ -413,7 +413,7 @@ class DangerMatrixReportExcel implements FromView, WithEvents, WithTitle
         );
 
         $event->sheet->styleCells(
-          'A9:O11',
+          'A10:O12',
             [
               'font' => [
                 'name' => 'Arial',
@@ -428,7 +428,7 @@ class DangerMatrixReportExcel implements FromView, WithEvents, WithTitle
         );
 
         $event->sheet->styleCells(
-          'A12:O200',
+          'A13:O200',
             [
               'alignment' => [
                 'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT,
