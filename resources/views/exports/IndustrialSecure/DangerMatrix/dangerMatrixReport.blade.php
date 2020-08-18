@@ -3,12 +3,6 @@
     <thead>
         <tr>
             @if ($showLabelCol)
-                <th colspan="3"> </th>
-                <th colspan="12">Severidad</th>
-            @endif
-        </tr>
-        <tr>
-            @if ($showLabelCol)
                 <th colspan="3" rowspan="3"> </th>
             @endif
             @foreach($data['data1']['headers'] as $key => $header)
