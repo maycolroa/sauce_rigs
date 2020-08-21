@@ -149,7 +149,7 @@ trait DangerMatrixTrait
                     'MENOR' => 'MENOR',
                     'LEVE' => 'LEVE',
                     'GRAVE' => 'GRAVE',
-                    'CATASTRÓFICA' => 'CATASTRÓFICA'
+                    'CATASTRóFICA' => 'CATASTRóFICA'
                 ]
             ];
 
