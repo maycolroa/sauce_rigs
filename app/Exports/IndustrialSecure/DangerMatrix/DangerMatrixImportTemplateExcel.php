@@ -109,9 +109,9 @@ class DangerMatrixImportTemplateExcel implements FromCollection, WithHeadings, W
         'Controles Existentes - Señalización, Advertencia (Separados por “,”)',
         'Controles Existentes - Controles administrativos (Separados por “,”) ',
         'Controles Existentes – EPP (Separados por “,”)',
-        'Criterios de riesgo - Cumplimiento requisitos legales',
-        'Criterios de riesgo - Alineamiento con las políticas de calidad y de SST',
-        'Criterios de riesgo - Alineamiento con los objetivos y metas',
+        'Criterios de riesgo - Cumplimiento requisitos legales (SI o NO)',
+        'Criterios de riesgo - Alineamiento con las políticas de calidad y de SST (SI o NO)',
+        'Criterios de riesgo - Alineamiento con los objetivos y metas (SI o NO)',
         'Medidas de Intervención - Eliminación',
         'Medidas de Intervención – Sustitución (Separados por “,”)',
         'Medidas de Intervención - Controles de ingeniería (Separados por “,”)',
@@ -132,8 +132,8 @@ class DangerMatrixImportTemplateExcel implements FromCollection, WithHeadings, W
       else if ($this->conf == "Tipo 2")
       {
         $columns = array_merge($columns, [
-        'Frecuencia',
-        'Severidad'
+        'Frecuencia (RECURRENTE, FRECUENTE, POSIBLE, REMOTO'),
+        'Severidad (MENOR, LEVE, GRAVE, CATASTRóFICA)'
         ]);
       }
 

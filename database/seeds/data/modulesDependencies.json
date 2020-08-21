@@ -10,7 +10,8 @@
             "processes",
             "areas",
             "businesses",
-            "employees"
+            "employees",
+            "customLabels"
         ]
     },
     {
@@ -24,7 +25,8 @@
             "processes",
             "areas",
             "businesses",
-            "employees"
+            "employees",
+            "customLabels"
         ]
     },
     {
@@ -38,7 +40,8 @@
             "processes",
             "areas",
             "businesses",
-            "employees"
+            "employees",
+            "customLabels"
         ]
     },
     {
@@ -53,7 +56,8 @@
             "activities",
             "dangers",
             "configurations",
-            "actionPlans"
+            "actionPlans",
+            "customLabels"
         ]
     },
     {
@@ -65,7 +69,8 @@
             "processes",
             "areas",
             "headquarters",
-            "actionPlans"
+            "actionPlans",
+            "customLabels"
         ]
     },
     {
@@ -74,7 +79,8 @@
             "users",
             "roles",
             "configurations",
-            "actionPlans"
+            "actionPlans",
+            "customLabels"
         ]
     },
     {
@@ -82,7 +88,8 @@
         "dependencies": [
             "users",
             "roles",
-            "actionPlans"
+            "actionPlans",
+            "customLabels"
         ]
     },
     {
@@ -105,7 +112,8 @@
         "module": "absenteeism",
         "dependencies": [
             "users",
-            "roles"
+            "roles",
+            "customLabels"
         ]
     }
 ]

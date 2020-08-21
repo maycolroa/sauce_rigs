@@ -682,6 +682,10 @@ class NotificationMail
         $this->subcopy = '';
         $this->with = [];
         $this->company = '';
+        $this->attach = [];
+        $this->module = '';
+        $this->event = '';
+
     }
 
     /**
