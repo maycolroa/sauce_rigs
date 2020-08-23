@@ -221,12 +221,13 @@ class PermissionService
         $apps->each(function($app, $keyApp) use (&$permission_enabled) {
             $app->get('modules')->each(function($module, $keyMod) use (&$permission_enabled) {
                 $module->get('permissions')->each(function($permission, $keyPer) use (&$permission_enabled) {
-                    $permission_enabled->push($permission);
+                    //$permission_enabled->push($permission);
+                    $permission_enabled->put($permission->get('name'), $permission->get('can'));
                 });
             });
         });
 
-        $permissions = collect([]);
+        /*$permissions = collect([]);
         
         foreach (Permission::all() as $permission)
         {
@@ -234,9 +235,9 @@ class PermissionService
                 $permissions->put($permission->name, true);
             else
                 $permissions->put($permission->name, false);
-        }
+        }*/
 
-        return $permissions;
+        return $permission_enabled;
     }
 
     /**
