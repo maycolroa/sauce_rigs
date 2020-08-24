@@ -23,6 +23,7 @@ use App\Jobs\LegalAspects\Contracts\Evaluations\EvaluationExportJob;
 use App\Jobs\LegalAspects\Contracts\Evaluations\EvaluationSendNotificationJob;
 use App\Inform\LegalAspects\Contract\Evaluations\InformManagerEvaluationContract;
 use App\Traits\Filtertrait;
+use App\Models\General\Company;
 use Carbon\Carbon;
 use DB;
 use Validator;
@@ -997,6 +998,12 @@ class EvaluationContractController extends Controller
         $evaluation_base = $this->getEvaluation($evaluationContract->evaluation_id);
 
         $evaluationContract->evaluation = $this->setValuesEvaluation($evaluationContract, $evaluation_base);
+
+        $company = Company::select('logo')->where('id', $this->company)->first();
+
+        $logo = ($company && $company->logo) ? $company->logo : null;
+
+        $evaluationContract->logo = $logo;
 
         return $evaluationContract;
     }

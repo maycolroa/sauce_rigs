@@ -23,6 +23,7 @@ class ContractLesseeInformation extends Model
         'address',
         'legal_representative_name',
         'environmental_management_name',
+        'human_management_coordinator',
         'economic_activity_of_company',
         'arl',
         'SG_SST_name',

@@ -63,15 +63,16 @@
 
 					<b-form-row>
                         <vue-input class="col-md-6" v-model="form.environmental_management_name" label="Nombre del encargado de gestión ambiental" type="text" name="environmental_management_name" :error="form.errorsFor('environmental_management_name')" placeholder="Nombre del encargado de gestión ambiental"></vue-input>
-                        <vue-input class="col-md-6" v-model="form.economic_activity_of_company" label="Actividad económica de la empresa" type="text" name="economic_activity_of_company" :error="form.errorsFor('economic_activity_of_company')" placeholder="Actividad económica de la empresa"></vue-input>
+                        <vue-input class="col-md-6" v-model="form.human_management_coordinator" label="Coordinador de gestión humana" type="text" name="human_management_coordinator" :error="form.errorsFor('human_management_coordinator')" placeholder="Coordinador de gestión humana"></vue-input>
                     </b-form-row>
 
                     <b-form-row>
+                        <vue-input class="col-md-6" v-model="form.economic_activity_of_company" label="Actividad económica de la empresa" type="text" name="economic_activity_of_company" :error="form.errorsFor('economic_activity_of_company')" placeholder="Actividad económica de la empresa"></vue-input>
                         <vue-input class="col-md-6" v-model="form.arl" label="Arl" type="text" name="arl" :error="form.errorsFor('arl')" placeholder="Arl"></vue-input>
-                        <vue-input class="col-md-6" v-model="form.number_workers"  type="number" :error="form.errorsFor('number_workers')" name="number_workers" label="Número de trabajadores" placeholder="Número de trabajadores"></vue-input>
                     </b-form-row>
 
 					<b-form-row>
+						<vue-input class="col-md-6" v-model="form.number_workers"  type="number" :error="form.errorsFor('number_workers')" name="number_workers" label="Número de trabajadores" placeholder="Número de trabajadores"></vue-input>
                         <vue-advanced-select class="col-md-6" v-model="form.risk_class" :error="form.errorsFor('risk_class')" name="risk_class" label="Clase de riesgo" placeholder="Seleccione la clase riesgo" :options="kindsRisks">
                         </vue-advanced-select>
                     </b-form-row>
@@ -183,6 +184,7 @@ export default {
 					legal_representative_name: '',
 					SG_SST_name: '',
 					environmental_management_name: '',
+					human_management_coordinator: '',
 					economic_activity_of_company: '',
 					arl: '',
 					number_workers: '',
