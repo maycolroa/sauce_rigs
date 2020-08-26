@@ -11,7 +11,8 @@
             "areas",
             "businesses",
             "employees",
-            "customLabels"
+            "customLabels",
+            "configurations"
         ]
     },
     {
@@ -26,7 +27,8 @@
             "areas",
             "businesses",
             "employees",
-            "customLabels"
+            "customLabels",
+            "configurations"
         ]
     },
     {
@@ -41,7 +43,8 @@
             "areas",
             "businesses",
             "employees",
-            "customLabels"
+            "customLabels",
+            "configurations"
         ]
     },
     {
@@ -70,7 +73,8 @@
             "areas",
             "headquarters",
             "actionPlans",
-            "customLabels"
+            "customLabels",
+            "configurations"
         ]
     },
     {
@@ -89,7 +93,8 @@
             "users",
             "roles",
             "actionPlans",
-            "customLabels"
+            "customLabels",
+            "configurations"
         ]
     },
     {
@@ -105,7 +110,8 @@
             "businesses",
             "employees",
             "logos",
-            "customLabels"
+            "customLabels",
+            "configurations"
         ]
     },
     {

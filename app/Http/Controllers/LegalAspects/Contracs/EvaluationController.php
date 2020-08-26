@@ -227,6 +227,8 @@ class EvaluationController extends Controller
         try
         {
             $evaluation->fill($request->all());
+            $evaluation->in_edit = false;
+            $evaluation->user_edit = null;
 
             if(!$evaluation->update()){
                 return $this->respondHttp500();
@@ -462,6 +464,25 @@ class EvaluationController extends Controller
         
             return $this->respondHttp200();
         } catch(Exception $e) {
+            return $this->respondHttp500();
+        }
+    }
+
+    public function inEdit(Request $request)
+    {
+        try
+        {
+            $evaluation = Evaluation::findOrFail($request->id);
+            $evaluation->in_edit = true;
+            $evaluation->user_edit = $this->user->name. ' - ' .$this->user->email;
+
+            if(!$evaluation->save()){
+                return $this->respondHttp500();
+            }
+
+            return $this->respondHttp200();
+
+        } catch (\Exception $e) {
             return $this->respondHttp500();
         }
     }
