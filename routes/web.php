@@ -437,6 +437,7 @@ Route::middleware(['auth'])->group(function () {
       Route::post('evaluation/data', 'LegalAspects\Contracs\EvaluationController@data');
       Route::post('evaluation/export', 'LegalAspects\Contracs\EvaluationController@export');
       Route::ApiResource('evaluation', 'LegalAspects\Contracs\EvaluationController');
+      Route::post('evaluation/block', 'LegalAspects\Contracs\EvaluationController@inEdit');
 
       Route::get('evaluationContract/downloadFile/{evaluationFile}', 'LegalAspects\Contracs\EvaluationContractController@downloadFile');
       Route::post('evaluationContract/data', 'LegalAspects\Contracs\EvaluationContractController@data');

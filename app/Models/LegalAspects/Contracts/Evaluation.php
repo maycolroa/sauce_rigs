@@ -15,7 +15,13 @@ class Evaluation extends Model
         'name',
         'type',
         'company_id',
-        'creator_user_id'
+        'creator_user_id',
+        'in_edit',
+        'user_edit'
+    ];
+
+    protected $casts = [
+        'in_edit' => 'boolean'
     ];
 
     public function ratingsTypes()

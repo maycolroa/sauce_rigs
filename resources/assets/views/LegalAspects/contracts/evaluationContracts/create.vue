@@ -48,10 +48,15 @@ export default {
     axios.get(`/legalAspects/evaluationContract/getData/${this.$route.params.id}`)
     .then(response => {
         this.data = response.data.data;
+
+        if (this.data.evaluation.in_edit)
+        {
+          Alerts.error('Error', 'Estimado usuario en este momento la evaluación se encuentra en edición por el usuario' + ' ' + this.data.evaluation.user_edit);
+          this.$router.go(-1);
+        }
     })
     .catch(error => {
         Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
-        this.$router.go(-1);
     });
 
     this.fetchSelect('typesRating', '/legalAspects/typeRating/AllTypesRating')
@@ -66,7 +71,6 @@ export default {
         })
         .catch(error => {
             Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
-            this.$router.go(-1);
         });
     },
   }

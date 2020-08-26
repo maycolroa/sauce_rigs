@@ -12,6 +12,7 @@
                 <b-col>
                     <div><b>Nombre del representante legal:</b> {{contractor.legal_representative_name}}</div>
                     <div><b>Nombre del coordinador de SST:</b> {{contractor.SG_SST_name}}</div>
+                    <div><b>Nombre del Coordinador de gestión humana:</b> {{contractor.human_management_coordinator}}</div>
                     <div><b>Actividad económica general de la empresa:</b> {{contractor.economic_activity_of_company}}</div>
                     <div><b>Clase de riesgo:</b> {{contractor.risk_class}}</div>
                 </b-col>

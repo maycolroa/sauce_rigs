@@ -51,7 +51,14 @@ export default {
     })
     .catch(error => {
         Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
-        this.$router.go(-1);
+    });
+
+    axios.post('/legalAspects/evaluation/block', { id: this.$route.params.id })
+    .then(response => {      
+        Alerts.warning('Información', 'Estimado usuario mientras esté editando este formato no podrán realizarse evaluaciones, al culminar debe darle en el botón de finalizar para desbloquearlo.');
+    })
+    .catch(error => {
+        Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
     });
 
     this.fetchSelect('typesEvaluation', '/radios/ctTypesEvaluation')
@@ -66,7 +73,6 @@ export default {
         })
         .catch(error => {
             Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
-            this.$router.go(-1);
         });
     },
   }

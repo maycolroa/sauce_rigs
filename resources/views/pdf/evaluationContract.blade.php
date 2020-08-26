@@ -40,6 +40,9 @@
     </style>
 </head>
 <body style="margin: 20px; margin-top: 0px;">
+        @if ($evaluations->logo)
+        <div style="page-break-inside: avoid; text-align: right; padding-bottom: 10px;"><img src="{{ public_path('storage/administrative/logos/').$evaluations->logo }}" width="120px" height="120px"/></div>
+        @endif
     <div style="page-break-inside: avoid;">
         <h3> Fecha de Evaluación: {{$evaluations->evaluation_date}}</h3>
         <h3>Contratista: {{$evaluations->contract->social_reason}}</h3>
@@ -98,10 +101,12 @@
                     <td>{{$evaluations->contract->number_workers}}</td>
                 </tr>
                 <tr>
-                    <th colspan="4">Actividad económica general de la empresa</th>
+                    <th>Nombre del coordinador de gestión humana</th> 
+                    <th colspan="3">Actividad económica general de la empresa</th>
                 </tr>
                 <tr>
-                    <td colspan="4">{{$evaluations->contract->economic_activity_of_company}}</td>
+                    <td>{{$evaluations->contract->human_management_coordinator}}</td>
+                    <td colspan="3">{{$evaluations->contract->economic_activity_of_company}}</td>
                 </tr>
             </thead>
         </table>
