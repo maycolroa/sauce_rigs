@@ -132,7 +132,7 @@ class DangerMatrixImportTemplateExcel implements FromCollection, WithHeadings, W
       else if ($this->conf == "Tipo 2")
       {
         $columns = array_merge($columns, [
-        'Frecuencia (RECURRENTE, FRECUENTE, POSIBLE, REMOTO'),
+        'Frecuencia (RECURRENTE, FRECUENTE, POSIBLE, REMOTO)',
         'Severidad (MENOR, LEVE, GRAVE, CATASTRóFICA)'
         ]);
       }
