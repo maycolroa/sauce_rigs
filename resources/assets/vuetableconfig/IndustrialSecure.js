@@ -681,6 +681,7 @@ export default [
     name: 'dangerousconditions-report',
     fields: [
         { name: 'sau_ph_report.id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true },
+        { name: 'sau_ph_report.id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: false },
         { name: 'sau_employees_headquarters.name', data: 'headquarter', title: 'headquarter', sortable: true, searchable: true, detail: false, key: false },
         { name: 'sau_users.name', data: 'user', title: 'Usuario', sortable: true, searchable: true, detail: false, key: false },
         { name: 'sau_ph_conditions.description', data: 'condition', title: 'Condición', sortable: true, searchable: true, detail: false, key: false },
