@@ -136,7 +136,7 @@ trait DangerMatrixTrait
                 return ïsset($rules[$ref]) ? $rules[$ref] : [];
             }
         }
-        if ($type == 'Tipo 2')
+        else if ($type == 'Tipo 2')
         {
             $rules = [
                 'Frecuencia' => [
