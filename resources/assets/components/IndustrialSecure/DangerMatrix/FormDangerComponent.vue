@@ -40,6 +40,7 @@
                 </b-form-row>
                 <b-form-row>
                   <vue-input :disabled="viewOnly" class="col-md-6" v-model="danger.esc_quantity" label="Arrendatarios" type="number" name="esc_quantity" :error="form.errorsFor(`activities.${indexActivity}.dangers.${indexDanger}.esc_quantity`)" placeholder="0"></vue-input>
+                  <vue-textarea :disabled="viewOnly" class="col-md-6" v-model="danger.observations" label="Observaciones" name="observations" :error="form.errorsFor(`activities.${indexActivity}.dangers.${indexDanger}.observations`)" placeholder="Observaciones"></vue-textarea>
                 </b-form-row>
               </b-card>
             </tab-content>

@@ -418,7 +418,8 @@ class DangerMatrixController extends Controller
                     $danger->esd_quantity = $itemD['esd_quantity'];
                     $danger->visitor_quantity = $itemD['visitor_quantity'];
                     $danger->student_quantity = $itemD['student_quantity'];
-                    $danger->esc_quantity = $itemD['esc_quantity'];
+                    $danger->esc_quantity = $itemD['esc_quantity'];            
+                    $danger->observations = $itemD['observations'];
                     $danger->existing_controls_engineering_controls = $existing_controls_engineering_controls->implode(',');
                     $danger->existing_controls_substitution = $existing_controls_substitution->implode(',');
                     $danger->existing_controls_warning_signage = $existing_controls_warning_signage->implode(',');

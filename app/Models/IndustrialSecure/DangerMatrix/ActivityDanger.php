@@ -22,6 +22,7 @@ class ActivityDanger extends Model
         'visitor_quantity',
         'student_quantity',
         'esc_quantity',
+        'observations',
         'existing_controls_engineering_controls',
         'existing_controls_substitution',
         'existing_controls_warning_signage',

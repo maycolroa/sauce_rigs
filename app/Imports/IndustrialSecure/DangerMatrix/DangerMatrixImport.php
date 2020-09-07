@@ -190,38 +190,39 @@ class DangerMatrixImport implements ToCollection, WithCalculatedFormulas
                 'visitantes' => $row[10 + $saltos],
                 'estudiantes' => $row[11 + $saltos],
                 'arrendatarios' => $row[12 + $saltos],
-                'controles_de_ingeniería' => $row[13 + $saltos],
-                'sustitución' => $row[14 + $saltos],
-                'señalización_advertencia' => $row[15 + $saltos],
-                'controles_administrativos' => $row[16 + $saltos],
-                'epp' => $row[17 + $saltos],
-                'cumplimiento_requisitos_legales' => trim(strtoupper($row[18 + $saltos])),
-                'alineamiento_con_las_políticas' => trim(strtoupper($row[19 + $saltos])),
-                'alineamiento_con_los_objetivos' => trim(strtoupper($row[20 + $saltos])),
-                'eliminación_medidas' => $row[21 + $saltos],
-                'sustitución_medidas' => $row[22 + $saltos],
-                'controles_de_ingeniería_medidas' => $row[23 + $saltos],
-                'señalización_advertencia_medidas' => $row[24 + $saltos],
-                'controles_administrativos_medidas' => $row[25 + $saltos],
-                'epp_medidas' => $row[26 + $saltos]
+                'observaciones' => $row[13 + $saltos],
+                'controles_de_ingeniería' => $row[14 + $saltos],
+                'sustitución' => $row[15 + $saltos],
+                'señalización_advertencia' => $row[16 + $saltos],
+                'controles_administrativos' => $row[17 + $saltos],
+                'epp' => $row[18 + $saltos],
+                'cumplimiento_requisitos_legales' => trim(strtoupper($row[19 + $saltos])),
+                'alineamiento_con_las_políticas' => trim(strtoupper($row[20 + $saltos])),
+                'alineamiento_con_los_objetivos' => trim(strtoupper($row[21 + $saltos])),
+                'eliminación_medidas' => $row[22 + $saltos],
+                'sustitución_medidas' => $row[23 + $saltos],
+                'controles_de_ingeniería_medidas' => $row[24 + $saltos],
+                'señalización_advertencia_medidas' => $row[25 + $saltos],
+                'controles_administrativos_medidas' => $row[26 + $saltos],
+                'epp_medidas' => $row[27 + $saltos]
             ]);
 
         if ($conf->name == 'Tipo 1')
         {
             $data = array_merge($data,
             [
-                'nivel_de_probabilidad' => trim(ucfirst($row[27 + $saltos])),
-                'nr_personas' => $row[28 + $saltos],
-                'nr_económico' => $row[29 + $saltos],
-                'nr_imagen' => $row[30 + $saltos]
+                'nivel_de_probabilidad' => trim(ucfirst($row[28 + $saltos])),
+                'nr_personas' => $row[29 + $saltos],
+                'nr_económico' => $row[30 + $saltos],
+                'nr_imagen' => $row[31 + $saltos]
             ]);
         }
         else if ($conf->name == 'Tipo 2')
         {
             $data = array_merge($data,
             [
-                'frecuencia' => strtoupper($row[27 + $saltos]),
-                'severidad' => strtoupper($row[28 + $saltos])
+                'frecuencia' => strtoupper($row[28 + $saltos]),
+                'severidad' => strtoupper($row[29 + $saltos])
             ]);
         }
 
@@ -411,7 +412,8 @@ class DangerMatrixImport implements ToCollection, WithCalculatedFormulas
             $activityDanger->esd_quantity = $data['contratistas'];
             $activityDanger->visitor_quantity = $data['visitantes'];
             $activityDanger->student_quantity = $data['estudiantes'];
-            $activityDanger->esc_quantity = $data['arrendatarios'];
+            $activityDanger->esc_quantity = $data['arrendatarios'];            
+            $activityDanger->observations = $data['observations'];
             $activityDanger->existing_controls_engineering_controls = $existing_controls_engineering_controls->implode(',');
             $activityDanger->existing_controls_substitution = $existing_controls_substitution->implode(',');
             $activityDanger->existing_controls_warning_signage = $existing_controls_warning_signage->implode(',');
