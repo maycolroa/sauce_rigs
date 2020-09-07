@@ -680,14 +680,14 @@ export default [
 {
     name: 'dangerousconditions-report',
     fields: [
-        { name: 'sau_ph_report.id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true },
-        { name: 'sau_ph_report.id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: false },
+        { name: 'sau_ph_reports.id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true },
+        { name: 'sau_ph_reports.id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: false },
         { name: 'sau_employees_headquarters.name', data: 'headquarter', title: 'headquarter', sortable: true, searchable: true, detail: false, key: false },
         { name: 'sau_users.name', data: 'user', title: 'Usuario', sortable: true, searchable: true, detail: false, key: false },
         { name: 'sau_ph_conditions.description', data: 'condition', title: 'Condición', sortable: true, searchable: true, detail: false, key: false },
         { name: 'sau_ph_conditions_types.description', data: 'type', title: 'Tipo de condición', sortable: true, searchable: true, detail: false, key: false },
-        { name: 'sau_ph_report.rate', data: 'rate', title: 'Severidad', sortable: true, searchable: true, detail: false, key: false },
-        { name: 'sau_ph_report.created_at', data: 'created_at', title: 'Fecha de creación', sortable: true, searchable: true, detail: false, key: false },
+        { name: 'sau_ph_reports.rate', data: 'rate', title: 'Severidad', sortable: true, searchable: true, detail: false, key: false },
+        { name: 'sau_ph_reports.created_at', data: 'created_at', title: 'Fecha de creación', sortable: true, searchable: true, detail: false, key: false },
         { name: '', data: 'controlls', title: 'Controles', sortable: false, searchable: false, detail: false, key: false },
     ],
     'controlls': [{
