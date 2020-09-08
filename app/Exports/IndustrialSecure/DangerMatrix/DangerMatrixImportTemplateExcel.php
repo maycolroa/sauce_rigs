@@ -104,6 +104,7 @@ class DangerMatrixImportTemplateExcel implements FromCollection, WithHeadings, W
         'Expuestos - Visitantes',
         'Expuestos - Estudiantes',
         'Expuestos - Arrendatarios',
+        'Observaciones',
         'Controles Existentes - Controles de ingeniería (Separados por “,”)',
         'Controles Existentes – Sustitución (Separados por “,”)',
         'Controles Existentes - Señalización, Advertencia (Separados por “,”)',
