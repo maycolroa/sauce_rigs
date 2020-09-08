@@ -413,7 +413,7 @@ class DangerMatrixImport implements ToCollection, WithCalculatedFormulas
             $activityDanger->visitor_quantity = $data['visitantes'];
             $activityDanger->student_quantity = $data['estudiantes'];
             $activityDanger->esc_quantity = $data['arrendatarios'];            
-            $activityDanger->observations = $data['observations'];
+            $activityDanger->observations = $data['observaciones'];
             $activityDanger->existing_controls_engineering_controls = $existing_controls_engineering_controls->implode(',');
             $activityDanger->existing_controls_substitution = $existing_controls_substitution->implode(',');
             $activityDanger->existing_controls_warning_signage = $existing_controls_warning_signage->implode(',');

@@ -89,10 +89,6 @@ class ConfigurationController extends ApiController
 
         $isSuper = $this->user->hasRole('Superadmin', $team->id);
 
-        \Log::info($this->user);
-        \Log::info($isSuper);
-        \Log::info($team->id);
-
         if (!$isSuper)
         {
             $users = $users->filter(function ($user, $key) use ($team) {
