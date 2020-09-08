@@ -8,6 +8,7 @@ use App\Models\General\Company;
 use App\Facades\Configuration;
 use App\Http\Requests\Api\CompanyRequiredRequest;
 use App\Models\Administrative\Users\User;
+use App\Models\General\Team;
 use Auth;
 
 class ConfigurationController extends ApiController
@@ -66,13 +67,15 @@ class ConfigurationController extends ApiController
 
     public function getUsersActionPlan(CompanyRequiredRequest $request)
     {
+        $team = Team::where('name', $request->company_id)->first();
+
         $users = User::selectRaw("
                     sau_users.id as id,
                     sau_users.name as name
                 ")->active();
         $users->company_scope = $request->company_id;
 
-        if ($this->user->hasRole('Arrendatario', $this->team) || $this->user->hasRole('Contratista', $this->team))
+        if ($this->user->hasRole('Arrendatario', $team->id) || $this->user->hasRole('Contratista', $team->id))
         {
             $users->join('sau_user_information_contract_lessee', 'sau_user_information_contract_lessee.user_id', 'sau_users.id')
                   ->where('sau_user_information_contract_lessee.information_id', $this->getContractIdUser($this->user->id));
@@ -84,12 +87,16 @@ class ConfigurationController extends ApiController
         
         $users = $users->get();
 
-        $isSuper = $this->user->hasRole('Superadmin', $this->team);
+        $isSuper = $this->user->hasRole('Superadmin', $team->id);
+
+        \Log::info($this->user);
+        \Log::info($isSuper);
+        \Log::info($team->id);
 
         if (!$isSuper)
         {
-            $users = $users->filter(function ($user, $key) {
-                return !$user->hasRole('Superadmin', $this->team);
+            $users = $users->filter(function ($user, $key) use ($team) {
+                return !$user->hasRole('Superadmin', $team->id);
             });
         }
 
