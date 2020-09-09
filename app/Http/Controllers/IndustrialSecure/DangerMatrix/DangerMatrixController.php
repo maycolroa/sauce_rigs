@@ -252,6 +252,7 @@ class DangerMatrixController extends Controller
             'activities.*.dangers.*.visitor_quantity' => 'required|integer|min:0',
             'activities.*.dangers.*.student_quantity' => 'required|integer|min:0',
             'activities.*.dangers.*.esc_quantity' => 'required|integer|min:0',
+            'activities.*.dangers.*.observations' => 'nullable',
             'activities.*.dangers.*.existing_controls_engineering_controls' => 'nullable|array',
             'activities.*.dangers.*.existing_controls_substitution' => 'nullable|array',
             'activities.*.dangers.*.existing_controls_warning_signage' => 'nullable|array',
@@ -470,7 +471,7 @@ class DangerMatrixController extends Controller
                             if ($itemQ['description'] == 'Severidad')
                                 $sev = $itemQ['value_id'];
 
-                            if ($itemQ['description'] == 'Tabla de frecuencia')
+                            if ($itemQ['description'] == 'Frecuencia')
                                 $fre = $itemQ['value_id'];
                         }
 
