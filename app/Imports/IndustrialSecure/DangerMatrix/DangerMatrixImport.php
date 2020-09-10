@@ -71,10 +71,10 @@ class DangerMatrixImport implements ToCollection, WithCalculatedFormulas
                 {  
                     if ($key > 0) //Saltar cabecera
                     {
-                        /*if (COUNT($row) == 35 || COUNT($row) == 36)
-                        {*/
+                        if (isset($row[0]) && $row[0])
+                        {
                             $this->checkDangerMarix($row, $key == 1);
-                        //}
+                        }
                         /*else
                         {
                             $this->setError('Formato inválido');
@@ -83,8 +83,6 @@ class DangerMatrixImport implements ToCollection, WithCalculatedFormulas
                         }*/
                     }
                 }
-
-                
 
                 if (COUNT($this->errors) == 0)
                 {
