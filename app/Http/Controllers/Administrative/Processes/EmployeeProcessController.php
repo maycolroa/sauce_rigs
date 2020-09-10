@@ -207,7 +207,7 @@ class EmployeeProcessController extends Controller
                 ->join('sau_headquarter_process', 'sau_headquarter_process.employee_process_id', 'sau_employees_processes.id')
                 ->join('sau_employees_headquarters', 'sau_employees_headquarters.id', 'sau_headquarter_process.employee_headquarter_id')
                 ->where(function ($query) use ($keyword) {
-                    $query->orWhere('sau_employees_headquarters.name', 'like', $keyword);
+                    $query->orWhere('sau_employees_processes.name', 'like', $keyword);
                 });
 
                 $headquarter = $request->get('headquarter');

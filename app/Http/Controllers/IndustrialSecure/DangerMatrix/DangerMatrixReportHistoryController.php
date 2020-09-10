@@ -138,7 +138,7 @@ class DangerMatrixReportHistoryController extends Controller
         if ($conf == 'Tipo 1')
         {       
             $headers = array_keys($data);
-            $count = isset($data['Ha ocurrido en el sector Hospitalario']) ? COUNT($data['Ha ocurrido en el sector Hospitalario']) : 0;
+            $count = isset($data['Ha ocurrido en el sector hospitalario']) ? COUNT($data['Ha ocurrido en el sector hospitalario']) : 0;
 
             for ($i=0; $i < $count; $i++)
             { 

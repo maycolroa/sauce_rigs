@@ -17,6 +17,7 @@ use \Maatwebsite\Excel\Sheet;
 use App\Traits\UtilsTrait;
 use App\Traits\LocationFormTrait;
 use App\Models\IndustrialSecure\DangerMatrix\QualificationCompany;
+use App\Traits\DangerMatrixTrait;
 
 Sheet::macro('styleCells', function (Sheet $sheet, string $cellRange, array $style) {
   $sheet->getDelegate()->getStyle($cellRange)->applyFromArray($style);
@@ -27,6 +28,7 @@ class DangerMatrixImportTemplateExcel implements FromCollection, WithHeadings, W
     use RegistersEventListeners;
     use UtilsTrait;
     use LocationFormTrait;
+    use DangerMatrixTrait;
 
     protected $data;
     protected $company_id;
