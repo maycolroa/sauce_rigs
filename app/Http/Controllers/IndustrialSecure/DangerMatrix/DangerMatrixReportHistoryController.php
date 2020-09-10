@@ -81,6 +81,8 @@ class DangerMatrixReportHistoryController extends Controller
             $conf = $dangersMatrix[0]->type_configuration;
         }
 
+        \Log::info($conf);
+
         $matriz_calification = QualificationHistory::
               where("year", $request->year)
             ->where("month", $request->month)
@@ -106,10 +108,14 @@ class DangerMatrixReportHistoryController extends Controller
                 if ($conf == 'Tipo 1')
                 {
                     if ($itemQ["name"] == 'NRI')
+                    {
                         $nri = $itemQ["value"];
+                    }
 
                     if ($itemQ["name"] == 'Nivel de Probabilidad')
+                    {
                         $ndp = $itemQ["value"];
+                    }
                 }
                 else if ($conf == 'Tipo 2')
                 {
@@ -138,7 +144,9 @@ class DangerMatrixReportHistoryController extends Controller
         if ($conf == 'Tipo 1')
         {       
             $headers = array_keys($data);
-            $count = isset($data['Ha ocurrido en el sector Hospitalario']) ? COUNT($data['Ha ocurrido en el sector Hospitalario']) : 0;
+            $count = isset($data['Ha ocurrido en el sector hospitalario']) ? COUNT($data['Ha ocurrido en el sector hospitalario']) : 0;
+
+            \Log::info($count);
 
             for ($i=0; $i < $count; $i++)
             { 
@@ -152,6 +160,8 @@ class DangerMatrixReportHistoryController extends Controller
                     { 
                         $matriz[$x][$y] = array_merge($data[$key][$key2], ["row"=>$key, "col"=>$key2]);
                         $x++;
+
+                        \Log::info($matriz);
                     }
 
                     $y++;
