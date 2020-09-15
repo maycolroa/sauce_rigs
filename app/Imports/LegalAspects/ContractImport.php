@@ -57,10 +57,13 @@ class ContractImport implements ToCollection, WithCalculatedFormulas
             try
             {
                 foreach ($rows as $key => $row) 
-                {  
+                { 
                     if ($key > 0) //Saltar cabecera
                     {
-                        $this->checkContract($row);
+                        if (isset($row[0]) && $row[0])
+                        {
+                            $this->checkContract($row);
+                        }
                     }
                 }
 
@@ -219,7 +222,7 @@ class ContractImport implements ToCollection, WithCalculatedFormulas
                 $contracts->economic_activity_of_company = $data['actividad_economica_empresa'];
                 $contracts->arl = $data['arl'];
                 $contracts->SG_SST_name = $data['nombre_encargado_sst'];
-                $contracts->risk_class = $this::CLASS_RISK[strtolower($data['clase_riesgo'])];
+                $contracts->risk_class = isset($this::CLASS_RISK[strtolower($data['clase_riesgo'])]) ? $this::CLASS_RISK[strtolower($data['clase_riesgo'])] : NULL;
                 $contracts->number_workers = $data['numero_trabajadores'];
                 $contracts->high_risk_work = ucfirst($data['trabajo_alto_riesgo']);
                 $contracts->social_reason = $data['razon_social'];
