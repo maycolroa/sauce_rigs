@@ -6,7 +6,7 @@
                     <div><b>Nit:</b> {{contractor.nit}}</div>
                     <div><b>Dirección:</b> {{contractor.address}}</div>
                     <div><b>Teléfono:</b> {{contractor.phone}}</div>
-                    <div><b>N° de personas que laboran en el HPTU:</b> {{contractor.number_workers}}</div>
+                    <div><b>N° de personas que laboran en la empresa:</b> {{contractor.number_workers}}</div>
                     <div><b>Nombre del coordinador de gestión ambiental:</b> {{contractor.environmental_management_name}}</div>
                 </b-col>
                 <b-col>
