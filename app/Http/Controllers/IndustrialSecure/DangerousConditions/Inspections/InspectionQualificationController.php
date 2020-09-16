@@ -57,7 +57,8 @@ class InspectionQualificationController extends Controller
     public function data(Request $request)
     {
         $qualifications = InspectionItemsQualificationAreaLocation::distinct()->select(
-                'sau_ph_inspection_items_qualification_area_location.*',
+                DB::raw('MAX(sau_ph_inspection_items_qualification_area_location.id) AS id'),
+                'sau_ph_inspection_items_qualification_area_location.qualification_date',
                 'sau_employees_regionals.name AS regional',
                 'sau_employees_headquarters.name AS headquarter',
                 'sau_employees_processes.name AS process',
@@ -71,7 +72,9 @@ class InspectionQualificationController extends Controller
             ->join('sau_users', 'sau_users.id', 'sau_ph_inspection_items_qualification_area_location.qualifier_id')
             ->join('sau_ph_inspection_section_items', 'sau_ph_inspection_section_items.id', 'sau_ph_inspection_items_qualification_area_location.item_id')
             ->join('sau_ph_inspection_sections','sau_ph_inspection_sections.id', 'sau_ph_inspection_section_items.inspection_section_id')
-            ->where('sau_ph_inspection_sections.inspection_id', $request->inspectionId);
+            ->where('sau_ph_inspection_sections.inspection_id', $request->inspectionId)
+            ->groupBy('sau_ph_inspection_items_qualification_area_location.qualification_date', 'regional', 'headquarter', 'process', 'area', 'qualificator');
+
         $url = "/industrialsecure/dangerousconditions/inspections/qualification/".$request->get('modelId');
 
         $filters = COUNT($request->get('filters')) > 0 ? $request->get('filters') : $this->filterDefaultValues($this->user->id, $url);
