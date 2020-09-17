@@ -29,7 +29,7 @@ class ReportExcel implements WithMultipleSheets
         $sheets = [];
 
         $sheets[] = new ReportListExcel($this->company_id, $this->filters);
-        $sheets[] = new ActivitiesExcel($this->company_id, $this->filters);
+        //$sheets[] = new ActivitiesExcel($this->company_id, $this->filters);
 
         return $sheets;
     }

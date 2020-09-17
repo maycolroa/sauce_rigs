@@ -52,7 +52,12 @@ class ReportListExcel implements FromQuery, WithMapping, WithHeadings, WithTitle
           'sau_users.name as user',
           'sau_users.document as document',
           'sau_ph_conditions.description as condition',
-          'sau_ph_conditions_types.description as type'
+          'sau_ph_conditions_types.description as type',
+          'sau_action_plans_activities.description as desc_plan',
+          'sau_action_plans_activities.execution_date',
+          'sau_action_plans_activities.expiration_date',
+          'sau_action_plans_activities.state as state_activity',
+          DB::raw('u.name as responsible')
         )
         ->join('sau_users', 'sau_users.id', 'sau_ph_reports.user_id')
         ->join('sau_ph_conditions', 'sau_ph_conditions.id', 'sau_ph_reports.condition_id')
@@ -61,6 +66,13 @@ class ReportListExcel implements FromQuery, WithMapping, WithHeadings, WithTitle
         ->leftJoin('sau_employees_headquarters', 'sau_employees_headquarters.id', 'sau_ph_reports.employee_headquarter_id')
         ->leftJoin('sau_employees_processes', 'sau_employees_processes.id', 'sau_ph_reports.employee_process_id')
         ->leftJoin('sau_employees_areas', 'sau_employees_areas.id', 'sau_ph_reports.employee_area_id')
+        ->leftJoin('sau_action_plans_activity_module', function ($join) 
+        {
+            $join->on("sau_action_plans_activity_module.item_id", "sau_ph_reports.id");
+            $join->on("sau_action_plans_activity_module.item_table_name", "=", DB::raw("'sau_ph_reports'"));
+        }) 
+        ->leftJoin('sau_action_plans_activities', 'sau_action_plans_activities.id', 'sau_action_plans_activity_module.activity_id')
+        ->leftJoin( 'sau_users AS u', 'u.id', 'sau_action_plans_activities.responsible_id')
         ->inConditions($this->filters['conditions'], $this->filters['filtersType']['conditions'])
         ->inConditionTypes($this->filters['conditionTypes'], $this->filters['filtersType']['conditionTypes'])
         ->betweenDate($this->filters["dates"]);
@@ -68,12 +80,9 @@ class ReportListExcel implements FromQuery, WithMapping, WithHeadings, WithTitle
         if (COUNT($this->filters['states']) > 0)
         {
             $report
-            ->join('sau_action_plans_activity_module', 'sau_action_plans_activity_module.item_id', 'sau_ph_reports.id')
-            ->join('sau_action_plans_activities', 'sau_action_plans_activities.id', 'sau_action_plans_activity_module.activity_id')
-            ->where('item_table_name', 'sau_ph_reports')
             ->where('sau_action_plans_activity_module.module_id', $this->module_id)
             ->inStates($this->filters['states'], $this->filters['filtersType']['states'])
-            ->groupBy('sau_ph_reports.id', 'headquarter', 'sau_ph_reports.created_at', 'user', 'condition', 'type', 'sau_ph_reports.rate');
+            ->groupBy('sau_ph_reports.id', 'headquarter', 'sau_ph_reports.created_at', 'user', 'condition', 'type', 'sau_ph_reports.rate', 'desc_plan', 'execution_date', 'expiration_date', 'state_activity', 'responsible');
         }
 
       $report->company_scope = $this->company_id;
@@ -105,8 +114,14 @@ class ReportListExcel implements FromQuery, WithMapping, WithHeadings, WithTitle
         $data->other_condition,
         $data->user,
         $data->document,
-        $data->created_at
+        $data->created_at,
+        $data->desc_plan,
+        $data->responsible,
+        $data->expiration_date,
+        $data->execution_date,
+        $data->state_activity
       ]);
+
 
       return $values;
     }
@@ -135,7 +150,12 @@ class ReportListExcel implements FromQuery, WithMapping, WithHeadings, WithTitle
         'Otra Condición',
         'Usuario que Reporta',
         'Identificación',
-        'Fecha de creación'
+        'Fecha de creación',
+        'Descripción de la actividad del plan de acción',
+        'Responsable',
+        'Fecha de vencimiento',
+        'Fecha de ejecución',
+        'Estado'
       ]);
 
       return $columns;
@@ -144,7 +164,7 @@ class ReportListExcel implements FromQuery, WithMapping, WithHeadings, WithTitle
     public static function afterSheet(AfterSheet $event)
     {
       $event->sheet->styleCells(
-        'A1:M1',
+        'A1:R1',
           [
             'alignment' => [
               'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT,
