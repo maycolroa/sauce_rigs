@@ -575,6 +575,54 @@ export default [
         }
     },
     {
+        name: 'legalaspects-contract-trainig-employee-report-details',
+        fields: [
+            { name: 'id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true },
+            { name: 'contract', data: 'contract', title: 'Contratista', sortable: true, searchable: false, detail: false, key: false },
+            { name: 'employee', data: 'employee', title: 'Empleado', sortable: true, searchable: false, detail: false, key: false },
+            { name: 'training', data: 'training', title: 'Capacitación', sortable: true, searchable: false, detail: false, key: false },
+            { name: 'attemp', data: 'attemp', title: 'Intentos', sortable: true, searchable: false, detail: false, key: false },
+            { name: 'puntaje', data: 'puntaje', title: 'Puntaje máximo', sortable: true, searchable: false, detail: false, key: false },
+        ],
+        'controlls': [{
+                type: 'push',
+                buttons: []
+            },
+            {
+                type: 'base',
+                buttons: [],
+            }],
+        configuration: {
+            urlData: '/legalAspects/trainigEmployeeDetails/report',
+            filterColumns: false,
+            //configNameFilter: 'legalaspects-evaluations-report'
+        }
+    },
+    /*{
+        name: 'legalaspects-contract-trainig-employee-report-consolidated',
+        fields: [
+            { name: 'id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true },
+            { name: 'contract', data: 'contract', title: 'Contratista', sortable: true, searchable: false, detail: false, key: false },
+            { name: 'training', data: 'training', title: 'Capacitación', sortable: true, searchable: false, detail: false, key: false },
+            { name: 'employees approved', data: 'employees approved', title: 'Empleados aprobados', sortable: true, searchable: false, detail: false, key: false },
+            { name: 'pending employees', data: 'pending employees', title: 'Empleados pendientes', sortable: true, searchable: false, detail: false, key: false },
+            { name: 'employees failed', data: 'employees failed', title: 'Empleados reprobados', sortable: true, searchable: false, detail: false, key: false },
+        ],
+        'controlls': [{
+                type: 'push',
+                buttons: []
+            },
+            {
+                type: 'base',
+                buttons: [],
+            }],
+        configuration: {
+            urlData: '/legalAspects/trainigEmployeeConsolidated/report',
+            filterColumns: false,
+            //configNameFilter: 'legalaspects-evaluations-report'
+        }
+    },*/
+    {
         name: 'legalaspects-contracts-trainings-virtual',
         fields: [
             { name: 'trainings.id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true },
