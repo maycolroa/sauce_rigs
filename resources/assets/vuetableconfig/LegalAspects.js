@@ -598,15 +598,15 @@ export default [
             //configNameFilter: 'legalaspects-evaluations-report'
         }
     },
-    /*{
+    {
         name: 'legalaspects-contract-trainig-employee-report-consolidated',
         fields: [
             { name: 'id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true },
             { name: 'contract', data: 'contract', title: 'Contratista', sortable: true, searchable: false, detail: false, key: false },
             { name: 'training', data: 'training', title: 'Capacitación', sortable: true, searchable: false, detail: false, key: false },
-            { name: 'employees approved', data: 'employees approved', title: 'Empleados aprobados', sortable: true, searchable: false, detail: false, key: false },
-            { name: 'pending employees', data: 'pending employees', title: 'Empleados pendientes', sortable: true, searchable: false, detail: false, key: false },
-            { name: 'employees failed', data: 'employees failed', title: 'Empleados reprobados', sortable: true, searchable: false, detail: false, key: false },
+            { name: 'apro', data: 'apro', title: 'Empleados aprobados', sortable: true, searchable: false, detail: false, key: false },
+            { name: 'pendiente', data: 'pendiente', title: 'Empleados pendientes', sortable: true, searchable: false, detail: false, key: false },
+            { name: 'rep', data: 'rep', title: 'Empleados reprobados', sortable: true, searchable: false, detail: false, key: false },
         ],
         'controlls': [{
                 type: 'push',
@@ -621,7 +621,7 @@ export default [
             filterColumns: false,
             //configNameFilter: 'legalaspects-evaluations-report'
         }
-    },*/
+    },
     {
         name: 'legalaspects-contracts-trainings-virtual',
         fields: [

@@ -58,13 +58,13 @@
                 ref="documentGlobal"
                 ></vue-table>
         </b-card>
-        <!--<b-card v-if="exists" border-variant="primary" title="Capacitaciones consolidadas" class="mb-3 box-shadow-none">
+        <b-card v-if="exists" border-variant="primary" title="Capacitaciones consolidadas" class="mb-3 box-shadow-none">
              <vue-table
                 configName="legalaspects-contract-trainig-employee-report-consolidated"
                 :params="{filters}"
                 ref="consolidated"
                 ></vue-table>
-        </b-card>-->
+        </b-card>
         <b-card v-if="exists" border-variant="primary" title="Capacitaciones detalladas" class="mb-3 box-shadow-none">
              <vue-table
                 configName="legalaspects-contract-trainig-employee-report-details"
@@ -116,7 +116,7 @@ export default {
             handler(val){
                 this.$refs.documentEmployee.refresh()
                 this.$refs.documentGlobal.refresh()
-                //this.$refs.consolidated.refresh()                
+                this.$refs.consolidated.refresh()                
                 this.$refs.details.refresh()
                 this.fetch()
             },

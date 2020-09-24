@@ -126,19 +126,6 @@ class ListCheckReportController extends Controller
 
     public function trainingEmployeeDetails (Request $request)
     {
-        /*"SELECT employee_id, training_id, cap, trab, social_reason, count_question, COUNT(id) AS attemp, max(max_q), concat(max(max_q), '/', count_question) as puntaje FROM 
-        (
-        SELECT s.employee_id, s.training_id, t.name AS cap, e.name AS trab, c.social_reason, t.number_questions_show AS count_question,
-        a.id,
-        (SELECT SUM(IF(correct, 1, 0)) AS total FROM sau_ct_training_employee_questions_answers WHERE attempt_id = a.id) AS max_q
-        FROM sauce_2.sau_ct_training_employee_send s
-        inner join sau_ct_trainings t ON t.id = s.training_id
-        inner join sau_ct_contract_employees e on e.id = s.employee_id
-        inner join sau_ct_information_contract_lessee c on c.id = e.contract_id
-        left join sau_ct_training_employee_attempts a ON a.training_id = s.training_id AND a.employee_id = s.employee_id
-        group by s.training_id, s.employee_id, a.id) AS t
-        group by employee_id, training_id"*/
-
         $trainigsDetails = ContractLesseeInformation::select(
             'sau_ct_training_employee_send.employee_id',
             'sau_ct_training_employee_send.training_id',
@@ -184,6 +171,51 @@ class ListCheckReportController extends Controller
 
     public function trainigEmployeeConsolidated (Request $request)
     {
+        $consolidated = ContractLesseeInformation::select(
+            'sau_ct_training_employee_send.employee_id',
+            'sau_ct_training_employee_send.training_id',
+            'sau_ct_trainings.name AS training',
+            'sau_ct_information_contract_lessee.social_reason AS contract',
+            'sau_ct_trainings.min_calification AS min_calification',
+            DB::raw('(SELECT SUM(IF(correct, 1, 0)) AS total 
+            FROM sau_ct_training_employee_questions_answers 
+            WHERE attempt_id = sau_ct_training_employee_attempts.id) AS max_q')
+        )
+        ->join('sau_ct_contract_employees', 'sau_ct_contract_employees.contract_id', 'sau_ct_information_contract_lessee.id')
+        ->join('sau_ct_training_employee_send', 'sau_ct_training_employee_send.employee_id', 'sau_ct_contract_employees.id')
+        ->join('sau_ct_trainings', 'sau_ct_trainings.id', 'sau_ct_training_employee_send.training_id')        
+        ->leftJoin('sau_ct_training_employee_attempts', function ($join) 
+        {
+            $join->on("sau_ct_training_employee_attempts.training_id", "sau_ct_training_employee_send.training_id");
+            $join->on("sau_ct_training_employee_attempts.employee_id", "sau_ct_training_employee_send.employee_id");
+        })
+        ->withoutGlobalScopes()        
+        ->where('sau_ct_information_contract_lessee.company_id', $this->company)
+        ->groupBy('sau_ct_training_employee_send.training_id', 'sau_ct_training_employee_send.employee_id', 'sau_ct_training_employee_attempts.id');
+
+        $url = "/legalaspects/report/contracts";
+
+        $filters = COUNT($request->get('filters')) > 0 ? $request->get('filters') : $this->filterDefaultValues($this->user->id, $url);
+
+        if (COUNT($filters) > 0)
+        {
+            $consolidated->inContracts($this->getValuesForMultiselect($filters["contracts"]),$filters['filtersType']['contracts']);
+            $consolidated->inClassification($this->getValuesForMultiselect($filters["classification"]),$filters['filtersType']['classification']);
+        }
+
+        $report = DB::table(DB::raw("({$consolidated->toSql()}) AS t"))
+        ->selectRaw("employee_id, training_id, training, contract, min_calification, max(max_q),
+        IF(max(max_q) IS NULL, 'PENDIENTE', IF (max(max_q) >= min_calification, 'APRO', 'REP')) AS result")
+        //->mergeBindings($consolidated->getQuery())
+        ->groupBy('employee_id', 'training_id');
+
+        $report2 = DB::table(DB::raw("({$report->toSql()}) AS t2"))
+        ->selectRaw("contract, training, SUM(IF(result = 'PENDIENTE', 1, 0)) AS pendiente, SUM(IF(result = 'APRO', 1, 0)) AS apro, SUM(IF(result = 'REP', 1, 0)) AS rep")
+        ->mergeBindings($consolidated->getQuery())
+        ->groupBy('contract', 'training');
+
+        return Vuetable::of($report2)
+                    ->make();
         
     }
 }                        
