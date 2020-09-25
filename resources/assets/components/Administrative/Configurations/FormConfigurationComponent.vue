@@ -10,7 +10,7 @@
     <hr class="border-light container-m--x mt-0 mb-4">
     
     <b-form-row v-if="auth.can['actionPlans_r']">
-        <vue-input :disabled="!auth.can['configurations_c']" class="col-md-12" v-model="form.days_alert_expiration_date_action_plan" label="Días de alerta por fecha de vencimiento cercana para los plane de acción" type="number" name="days_alert_expiration_date_action_plan" :error="form.errorsFor('days_alert_expiration_date_action_plan')" placeholder="1"></vue-input>
+        <vue-input :disabled="!auth.can['configurations_c']" class="col-md-12" v-model="form.days_alert_expiration_date_action_plan" label="Días de alerta por fecha de vencimiento cercana para los planes de acción" type="number" name="days_alert_expiration_date_action_plan" :error="form.errorsFor('days_alert_expiration_date_action_plan')" placeholder="1"></vue-input>
     </b-form-row>
 
     <hr class="border-light container-m--x mt-0 mb-4">

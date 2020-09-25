@@ -167,7 +167,7 @@
                         </b-form-row>
                         <hr class="border-light container-m--x mt-0 mb-4">
                         <b-form-row>
-                          <vue-advanced-select :ref="`qualification${index}`" @input="saveArticleQualification(index)" @selectedName="updateQualify($event, index)" :disabled="viewOnly" class="col-md-6" v-model="article.fulfillment_value_id" :multiple="false" :options="qualifications" name="fulfillment_value_id" label="Evaluación"></vue-advanced-select>
+                          <vue-advanced-select :ref="`qualification${index}`" @input="saveArticleQualification(index)" @selectedName="updateQualify($event, index)" :disabled="viewOnly" class="col-md-6" v-model="article.fulfillment_value_id" :multiple="false" :options="qualifications" :allow-empty="false" name="fulfillment_value_id" label="Evaluación"></vue-advanced-select>
 
                           <vue-input @onBlur="saveArticleQualification(index)" :disabled="viewOnly" class="col-md-6" v-model="article.responsible" label="Responsable" type="text" name="responsible" :error="form.errorsFor('responsible')" placeholder="Responsable"></vue-input>
                       </b-form-row>

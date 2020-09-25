@@ -88,6 +88,51 @@
                     <p class="mb-0"><b>Fecha de evaluación:</b> {{ evaluation.evaluation_date ? evaluation.evaluation_date : 'Sin evaluar'}}</p>
                 </blockquote>
 
+                <div id="fixedbutton">
+                    <b-btn variant="primary" type="button" @click="calculateResumen" title="Resumen">
+                        <i class="ion ion-ios-list"></i>
+                    </b-btn>
+                </div>
+
+                <b-modal ref="modalPending" :hideFooter="true" id="modalPending" class="modal-top" size="lg">
+                    <div slot="modal-title">
+                      Items pendientes por calificar
+                    </div>
+                     <b-card bg-variant="transparent" title="" class="mb-3 box-shadow-none">
+                        <loading :display="cargando"/>
+                        <template v-if="!cargando">
+                            <div v-for="(objetive, key) in resumenList" >
+                                <blockquote class="blockquote text-center">
+                                    <p class="mb-0">{{ objetive.description }}</p>
+                                </blockquote>
+                                 <b-card no-body class="pb-1 mb-2" v-for="(subobjetive, keySub) in objetive.subobjectives" :key="`sub-${keySub}`">
+                                  <div class="row no-gutters align-items-center">
+                                    <div class="col-12 col-md-7 px-4 pt-4">
+                                      <p class="text-dark font-weight-semibold" style="font-size: 10px;">{{ subobjetive.description }}</p><br>
+                                    </div>
+                                    <div class="col-4 col-md-1 text-muted small">
+                                     <strong>Items</strong> <br> {{ `${subobjetive.itemsQualify}/${subobjetive.itemsTotal}` }}
+                                    </div>
+                                    <div class="col-4 col-md-3">
+                                      <div class="text-right text-muted small">{{ Math.abs((subobjetive.itemsQualify/subobjetive.itemsTotal) * 100).toFixed(0) }}%</div>
+                                      <b-progress :value="parseFloat(Math.abs((subobjetive.itemsQualify/subobjetive.itemsTotal) * 100).toFixed(0))" height="6px" :variant="subobjetive.itemsTotal == subobjetive.itemsQualify ? 'success' : 'danger'" />
+                                    </div>
+                                    <div class="col-4 col-md-1 text-muted small text-center">
+                                        <span v-if="subobjetive.itemsTotal == subobjetive.itemsQualify" class="ion ion-md-checkbox text-success"></span>
+                                        <span v-else class="ion ion-md-close-circle text-danger"></span>
+                                    </div>
+                                  </div>
+                                  <br>
+                                </b-card>
+                            </div>
+                        </template>
+                    </b-card>
+
+                    <div class="row float-right pt-12 pr-12y">
+                      <b-btn variant="primary" @click="$refs.modalPending.hide()">Cerrar</b-btn>
+                    </div>
+                </b-modal>
+
                 <template v-if="viewOnly">
                     <b-card no-body class="pb-1 mb-2" v-for="(rate, keyTotal) in form.evaluation.report_total" :key="`total-${keyTotal}`">
                       <div class="row no-gutters align-items-center">
@@ -375,6 +420,8 @@ export default {
   },
   data() {
     return {
+        cargando: false,
+        resumenList: [],
         loading: this.isEdit,
         form: Form.makeFrom(this.evaluation, this.method),
         contractDataUrl: '/selects/contractors',
@@ -496,6 +543,48 @@ export default {
     hideModal(ref) {
         this.$refs[ref][0].hide()
     },
+    calculateResumen() {
+        this.resumenList.splice(0);
+        this.cargando = true;
+        this.$refs.modalPending.show();
+
+        this.form.evaluation.objectives.forEach((objetive, keyObj) => {
+            let subobjectives = [];
+
+            objetive.subobjectives.forEach((subobjetive, keySubObj) => {
+                let count = 0
+
+                subobjetive.items.forEach((item, keyItem) => {
+                    let pending = 0
+
+                    _.forIn(item.ratings, (rating, keyRating) => {
+                        if (rating.apply == 'SI')
+                        {
+                            if (!rating.value || rating.value == 'pending')
+                                pending++
+                        }
+                    });
+
+                    if (pending == 0)
+                        count++;
+                });
+
+                subobjectives.push({description: subobjetive.description, itemsTotal: subobjetive.items.length, itemsQualify: count});
+            });
+
+            this.resumenList.push({description: objetive.description, subobjectives: subobjectives});
+        });
+
+        this.cargando = false;
+    }
   }
 };
 </script>
+
+<style lang="scss">
+#fixedbutton {
+    position: fixed;
+    bottom: 0px;
+    right: 0px; 
+}
+</style>
