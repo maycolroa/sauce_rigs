@@ -21,7 +21,7 @@ class ReportController extends Controller
         $this->middleware('auth');
         $this->middleware("permission:absen_reports_c, {$this->team}", ['only' => 'store']);
         $this->middleware("permission:absen_reports_r, {$this->team}");
-        $this->middleware("permission:absen_reports_u, {$this->team}", ['only' => 'update']);
+        $this->middleware("permission:absen_reports_u|absen_reports_admin_user, {$this->team}", ['only' => 'update']);
         $this->middleware("permission:absen_reports_d, {$this->team}", ['only' => 'destroy']);
     }
 
