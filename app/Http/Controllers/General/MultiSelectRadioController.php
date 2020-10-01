@@ -160,4 +160,15 @@ class MultiSelectRadioController extends Controller
         
         return $this->multiSelectFormat(collect($data));
     }
+
+    public function ctFileStates()
+    {
+        $data = [
+            "ACEPTADO" => "ACEPTADO",
+            "PENDIENTE" => "PENDIENTE",
+            "RECHAZADO" => "RECHAZADO"
+        ];
+        
+        return $this->multiSelectFormat(collect($data));
+    }
 }

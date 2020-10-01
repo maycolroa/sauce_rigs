@@ -18,6 +18,13 @@
 						<vue-file-simple v-if="isEdit || viewOnly" :help-text="`Para descargar el archivo actual, haga click <a href='/legalAspects/fileUpload/download/${this.$route.params.id}' target='blank'>aqui</a> `" :disabled="viewOnly" class="col-md-12" v-model="form.file" label="Archivo" name="file" :error="form.errorsFor('file')" placeholder="Seleccione un archivo" :maxFileSize="20"></vue-file-simple>
 						<vue-file-simple v-else :disabled="viewOnly" class="col-md-12" v-model="form.file" label="Archivo" name="file" :error="form.errorsFor('file')" placeholder="Seleccione un archivo" :maxFileSize="20"></vue-file-simple>
                     </b-form-row>
+
+                    <b-form-row v-if="!auth.hasRole['Arrendatario'] && !auth.hasRole['Contratista']">
+						<vue-advanced-select class="col-md-6" v-model="form.state"  name="state" label="Estado del documento" placeholder="Seleccione el estado" :options="states" :error="form.errorsFor('state')" :multiple="false" :allow-empty="false">
+						</vue-advanced-select>
+						<vue-textarea v-if="form.state == 'RECHAZADO'" class="col-md-6" v-model="form.reason_rejection" label="Motivo del rechazo" name="reason_rejection" :error="form.errorsFor('reason_rejection')" placeholder="Motivo del rechazo"></vue-textarea>
+					</b-form-row>
+
             	</b-card>
 				<div class="row float-right pt-10 pr-10">
                     <template>
@@ -36,6 +43,8 @@ import VueInput from "@/components/Inputs/VueInput.vue";
 import VueFileSimple from "@/components/Inputs/VueFileSimple.vue";
 import VueDatepicker from "@/components/Inputs/VueDatepicker.vue";
 import VueAjaxAdvancedSelect from "@/components/Inputs/VueAjaxAdvancedSelect.vue";
+import VueAdvancedSelect from "@/components/Inputs/VueAdvancedSelect.vue";
+import VueTextarea from "@/components/Inputs/VueTextarea.vue";
 import Form from "@/utils/Form.js";
 
 export default {
@@ -43,7 +52,9 @@ export default {
 		VueInput,
 		VueFileSimple,
 		VueDatepicker,
-		VueAjaxAdvancedSelect
+		VueAjaxAdvancedSelect,
+		VueAdvancedSelect,
+		VueTextarea
 	},
 	props: {
 		url: { type: String },
@@ -51,6 +62,12 @@ export default {
 		cancelUrl: { type: [String, Object], required: true },
 		isEdit: { type: Boolean, default: false },
 		viewOnly: { type: Boolean, default: false },
+		states: {
+	      type: Array,
+	      default: function() {
+	        return [];
+	      }
+	    },
 		fileUpload: {
 			default() {
 				return {
@@ -58,7 +75,9 @@ export default {
 					contract_id: '',
 					name: '',
 					expirationDate: '',
-					file: ''
+					file: '',
+					state:'',
+					reason_rejection: ''
 				};
 			}
 		}
