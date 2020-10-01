@@ -81,6 +81,14 @@ class Kernel extends ConsoleKernel
         $schedule->command('notify-update-list-check-contract')
             ->timezone('America/Bogota')
             ->dailyAt('02:00');
+
+        $schedule->command('notify-upload-documents-contracts')
+            ->timezone('America/Bogota')
+            ->dailyAt('02:00');
+
+        $schedule->command('days-alerts-without-activity-contractors')
+            ->timezone('America/Bogota')
+            ->dailyAt('02:00');
     }
 
     /**

@@ -14,7 +14,8 @@
                 method="PUT"
                 :view-only="true"
                 :fileUpload="data"
-                :cancel-url="{ name: 'legalaspects-upload-files'}"/>
+                :cancel-url="{ name: 'legalaspects-upload-files'}"
+                :states="states"/>
         </b-card-body>
       </b-card>
     </div>
@@ -35,7 +36,8 @@ export default {
   },
   data(){
     return {
-      data: {}
+      data: {},
+      states: []
     }
   },
   created(){
@@ -47,6 +49,21 @@ export default {
         Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
         this.$router.go(-1);
     });
+
+    this.fetchSelect('states', '/selects/contracts/statesFile')
+  },
+  methods: {
+    fetchSelect(key, url)
+    {
+        GlobalMethods.getDataMultiselect(url)
+        .then(response => {
+            this[key] = response;
+        })
+        .catch(error => {
+            Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
+            this.$router.go(-1);
+        });
+    },
   }
 }
 </script>

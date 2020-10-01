@@ -10,7 +10,9 @@ use Session;
 class CompanyScope implements Scope {
       public function apply(Builder $builder, Model $model) {
 
-        $company_id = Session::get('company_id') == null ? (isset($builder->company_scope) ? $builder->company_scope : null) : Session::get('company_id');
+        /*$company_id = Session::get('company_id') == null ? (isset($builder->company_scope) ? $builder->company_scope : null) : Session::get('company_id');*/
+
+        $company_id = isset($builder->company_scope) && $builder->company_scope ? $builder->company_scope : Session::get('company_id');
 
         if($model->scope_table_for_company_table != null){
             if($builder->getQuery()->joins != null){

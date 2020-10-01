@@ -15,6 +15,7 @@ use App\Models\LegalAspects\Contracts\Qualifications;
 use App\Models\LegalAspects\Contracts\HighRiskType;
 use App\Models\LegalAspects\Contracts\ItemQualificationContractDetail;
 use App\Models\LegalAspects\Contracts\ContractDocument;
+use App\Models\LegalAspects\Contracts\FileModuleState;
 use App\Http\Requests\LegalAspects\Contracts\DocumentRequest;
 use App\Http\Requests\LegalAspects\Contracts\ContractRequest;
 use App\Http\Requests\LegalAspects\Contracts\ListCheckItemsRequest;
@@ -844,6 +845,27 @@ class ContractLesseeController extends Controller
 
                             if (!$fileUpload->save())
                                 return $this->respondHttp500();
+
+                            $ini = Carbon::now()->format('Y-m-d 00:00:00');
+                            $end = Carbon::now()->format('Y-m-d 23:59:59');
+
+                            $state = FileModuleState::where('file_id', $fileUpload->id)
+                            ->whereRaw("sau_ct_file_module_state.created_at BETWEEN '$ini' AND '$end'")->first();
+
+                            if ($state)
+                            {
+                              $state->state = 'MODIFICADO';
+                              $state->update();
+                            }
+                            else
+                            {
+                                $state = new FileModuleState;
+                                $state->contract_id = $contract->id;
+                                $state->file_id = $fileUpload->id;
+                                $state->module = 'Lista de chequeo';
+                                $state->state = 'CREADO';
+                                $state->save();
+                            }
                                 
                             $data['files'][$keyF]['id'] = $fileUpload->id;
 
@@ -1014,6 +1036,27 @@ class ContractLesseeController extends Controller
 
                     if (!$fileUpload->save())
                         return $this->respondHttp500();
+
+                    $ini = Carbon::now()->format('Y-m-d 00:00:00');
+                    $end = Carbon::now()->format('Y-m-d 23:59:59');
+
+                    $state = FileModuleState::where('file_id', $fileUpload->id)
+                    ->whereRaw("sau_ct_file_module_state.created_at BETWEEN '$ini' AND '$end'")->first();
+
+                    if ($state)
+                    {
+                      $state->state = 'MODIFICADO';
+                      $state->update();
+                    }
+                    else
+                    {
+                        $state = new FileModuleState;
+                        $state->contract_id = $contract->id;
+                        $state->file_id = $fileUpload->id;
+                        $state->module = 'Documentos globales';
+                        $state->state = 'CREADO';
+                        $state->save();
+                    }
 
                     $fileUpload->contracts()->sync([$contract->id]);
                     $ids = [];

@@ -11,6 +11,7 @@ use App\Http\Requests\LegalAspects\Contracts\ContractEmployeeRequest;
 use App\Models\LegalAspects\Contracts\ActivityContract;
 use App\Models\LegalAspects\Contracts\ActivityDocument;
 use App\Models\LegalAspects\Contracts\FileUpload;
+use App\Models\LegalAspects\Contracts\FileModuleState;
 use App\Jobs\LegalAspects\Contracts\Training\TrainingSendNotificationJob;
 use App\Traits\ContractTrait;
 use Carbon\Carbon;
@@ -286,6 +287,27 @@ class ContractEmployeeController extends Controller
 
                         if (!$fileUpload->save())
                             return $this->respondHttp500();
+
+                        $ini = Carbon::now()->format('Y-m-d 00:00:00');
+                        $end = Carbon::now()->format('Y-m-d 23:59:59');
+
+                        $state = FileModuleState::where('file_id', $fileUpload->id)
+                        ->whereRaw("sau_ct_file_module_state.created_at BETWEEN '$ini' AND '$end'")->first();
+
+                        if ($state)
+                        {
+                          $state->state = 'MODIFICADO';
+                          $state->update();
+                        }
+                        else
+                        {
+                            $state = new FileModuleState;
+                            $state->contract_id = $employee->contract_id;
+                            $state->file_id = $fileUpload->id;
+                            $state->module = 'Empleados';
+                            $state->state = 'CREADO';
+                            $state->save();
+                        }
 
                         $fileUpload->contracts()->sync([$employee->contract_id]);
                         $ids = [];

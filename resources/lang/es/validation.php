@@ -321,7 +321,9 @@ return [
       'questions.*.value_question' => 'Valor de la pregunta',
       'questions.*.answers' => 'Respuesta valida',
       'high_risk_type_id' => 'Tareas de riesgos',
-      'high_risk_work' => '¿La empresa realiza tareas de alto riesgo?'
+      'high_risk_work' => '¿La empresa realiza tareas de alto riesgo?',
+      'state' => 'Estado',
+      'reason_rejection' => 'Motivo del rechazo'
     ],
 
 ];

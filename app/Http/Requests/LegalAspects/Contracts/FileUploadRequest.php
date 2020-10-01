@@ -4,6 +4,8 @@ namespace App\Http\Requests\LegalAspects\Contracts;
 
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Foundation\Http\FormRequest;
+use App\Models\General\Team;
+use Session;
 
 class FileUploadRequest extends FormRequest
 {
@@ -30,8 +32,14 @@ class FileUploadRequest extends FormRequest
             "expirationDate" => "nullable|date"//|after_or_equal:today"
         ];
 
-        if (!Auth::user()->hasRole('Arrendatario') && !Auth::user()->hasRole('Contratista'))
+        $team = Team::where('name', Session::get('company_id'))->first()->id;
+
+        if (!Auth::user()->hasRole('Arrendatario', $team) && !Auth::user()->hasRole('Contratista', $team))
+        {
+            $rules['state'] = "required";
+            $rules['reason_rejection'] = 'required_if:state,RECHAZADO';
             $rules['contract_id'] = 'required|array';
+        }
 
         return $rules;
     }

@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\LegalAspects\Contracs;
 
 use App\Models\LegalAspects\Contracts\FileUpload;
+use App\Models\LegalAspects\Contracts\FileModuleState;
+use App\Models\LegalAspects\Contracts\ContractLesseeInformation;
 use App\Http\Requests\LegalAspects\Contracts\FileUploadRequest;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -107,6 +109,8 @@ class FileUploadController extends Controller
         $fileUpload->user_id = $this->user->id;
         $fileUpload->name = $request->name;
         $fileUpload->expirationDate = $request->expirationDate == null ? null : (Carbon::createFromFormat('D M d Y', $request->expirationDate))->format('Ymd');
+        $fileUpload->state = $request->state == null ? 'PENDIENTE' : $request->state;
+        $fileUpload->reason_rejection = $request->reason_rejection;
       
         if(!$fileUpload->save())
         {
@@ -120,6 +124,14 @@ class FileUploadController extends Controller
         else 
         {
           $fileUpload->contracts()->sync([$this->getContractIdUser($this->user->id)]);
+
+          $state = new FileModuleState;
+          $state->contract_id = $this->getContractIdUser($this->user->id);
+          $state->file_id = $fileUpload->id;
+          $state->module = 'Subida de Archivos';
+          $state->state = 'CREADO';
+          $state->date = date('Y-m-d');
+          $state->save();
         }
 
         DB::commit();
@@ -189,6 +201,9 @@ class FileUploadController extends Controller
           return $this->respondWithError('No tiene permitido editar este archivo');
         }
 
+        $file = FileUpload::find($fileUpload->id);
+        $beforeFile= $file;
+
         if($request->file != $fileUpload->file)
         {
           $file = $request->file;
@@ -199,7 +214,9 @@ class FileUploadController extends Controller
         }
         
         $fileUpload->name = $request->name;
-        $fileUpload->expirationDate = $request->expirationDate == null ? null : (Carbon::createFromFormat('D M d Y', $request->expirationDate))->format('Ymd');
+        $fileUpload->expirationDate = $request->expirationDate == null ? null : (Carbon::createFromFormat('D M d Y', $request->expirationDate))->format('Ymd');        
+        $fileUpload->state = $request->state == null ? 'PENDIENTE' : $request->state;
+        $fileUpload->reason_rejection = $request->reason_rejection;
         
         if(!$fileUpload->save()) {
           return $this->respondHttp500();
@@ -211,7 +228,52 @@ class FileUploadController extends Controller
         }
         else 
         {
-          $fileUpload->contracts()->sync($this->getContractsIds());
+          $fileUpload->contracts()->sync([$this->getContractIdUser($this->user->id)]);
+        }
+
+        if(COUNT($request->get('contract_id')) == 1)
+        {
+          if ($beforeFile->state != $fileUpload->state && $fileUpload->state == 'RECHAZADO')
+          {
+            FileModuleState::updateOrCreate(['file_id' => $fileUpload->id, 'date' => date('Y-m-d')],
+            [
+              'contract_id' => $this->getDataFromMultiselect($request->get('contract_id'))[0],
+              'file_id' => $fileUpload->id,
+              'module' => 'Subida de Archivos',
+              'state' => 'RECHAZADO',
+              'date' => date('Y-m-d')
+            ]);
+          }
+          else 
+          {
+            if ($beforeFile->name != $fileUpload->name || $beforeFile->file != $fileUpload->file || $beforeFile->expirationDate != $fileUpload->expirationDate)
+            {
+              if (!$this->user->hasRole('Arrendatario', $this->company) || !$this->user->hasRole('Contratista', $this->company))
+              {
+                //notificar creador
+                FileModuleState::updateOrCreate(['file_id' => $fileUpload->id, 'date' => date('Y-m-d')],
+                [
+                  'contract_id' => $this->getDataFromMultiselect($request->get('contract_id'))[0],
+                  'file_id' => $fileUpload->id,
+                  'module' => 'Subida de Archivos',
+                  'state' => 'MODIFICADO CONTRATANTE',
+                  'date' => date('Y-m-d')
+                ]);
+              }
+              else
+              {
+                //notificar contratante
+                FileModuleState::updateOrCreate(['file_id' => $fileUpload->id, 'date' => date('Y-m-d')],
+                [
+                  'contract_id' => $this->getDataFromMultiselect($request->get('contract_id'))[0],
+                  'file_id' => $fileUpload->id,
+                  'module' => 'Subida de Archivos',
+                  'state' => 'MODIFICADO',
+                  'date' => date('Y-m-d')
+                ]);
+              }
+            }
+          }
         }
 
         DB::commit();

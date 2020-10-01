@@ -220,7 +220,8 @@ Route::middleware(['auth'])->group(function () {
           Route::post('usersResponsibles', 'LegalAspects\Contracs\ContractLesseeController@multiselectUsers');          
           Route::post('ctActivities', 'LegalAspects\Contracs\ContractActivityController@multiselect');
           Route::post('ctActivitiesContracts', 'LegalAspects\Contracs\ContractEmployeeController@multiselect');
-          Route::post('ctTrainingTypeQuestions', 'LegalAspects\Contracs\ContractTrainingController@multiselectTypeQuestion');
+          Route::post('ctTrainingTypeQuestions', 'LegalAspects\Contracs\ContractTrainingController@multiselectTypeQuestion');          
+          Route::post('statesFile', 'General\MultiSelectRadioController@ctFileStates');
         });
 
         Route::prefix('industrialSecurity')->group(function () {
