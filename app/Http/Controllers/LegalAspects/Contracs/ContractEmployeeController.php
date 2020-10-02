@@ -305,7 +305,8 @@ class ContractEmployeeController extends Controller
                             $state->contract_id = $employee->contract_id;
                             $state->file_id = $fileUpload->id;
                             $state->module = 'Empleados';
-                            $state->state = 'CREADO';
+                            $state->state = 'CREADO';                            
+                            $state->date = date('Y-m-d');
                             $state->save();
                         }
 
