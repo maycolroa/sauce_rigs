@@ -145,6 +145,7 @@ export default {
 		cancelUrl: { type: [String, Object], required: true },
 		isEdit: { type: Boolean, default: false },
 		viewOnly: { type: Boolean, default: false },
+		contractId: {type: [String, Number] },
 		qualifications: {
 			type: [Array, Object],
 			default: function() {
@@ -305,6 +306,7 @@ export default {
 				data.append('actionPlan', JSON.stringify(item.actionPlan));
 				data.append(`items[${index}]`, JSON.stringify({ files: item.files, actionPlan: item.actionPlan }));
 				data.append('delete', JSON.stringify(this.form.delete));
+				data.append('contract_id', this.contractId);
 
 				if(typeof item.files !== 'undefined')
 				{

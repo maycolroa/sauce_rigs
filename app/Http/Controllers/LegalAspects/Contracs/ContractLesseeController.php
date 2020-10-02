@@ -786,7 +786,11 @@ class ContractLesseeController extends Controller
             $data = $request->except(['items', 'files_binary']);
 
             $qualifications = Qualifications::pluck("id", "name");
-            $contract = $this->getContractUser($this->user->id);
+
+            if ($request->has('contract_id') && $request->contract_id)                
+                $contract = ContractLesseeInformation::findOrFail($request->contract_id);
+            else
+                $contract = $this->getContractUser($this->user->id);
 
             //Se inician los atributos necesarios que seran estaticos para todas las actividades
             // De esta forma se evitar la asignacion innecesaria una y otra vez 
@@ -818,6 +822,8 @@ class ContractLesseeController extends Controller
                             if (isset($file['id']))
                             {
                                 $fileUpload = FileUpload::findOrFail($file['id']);
+
+                                $beforeFile = $fileUpload;
 
                                 if ($file['old_name'] == $file['file'])
                                     $create_file = false;
@@ -863,7 +869,8 @@ class ContractLesseeController extends Controller
                                 $state->contract_id = $contract->id;
                                 $state->file_id = $fileUpload->id;
                                 $state->module = 'Lista de chequeo';
-                                $state->state = 'CREADO';
+                                $state->state = 'CREADO';                                
+                                $state->date = date('Y-m-d');
                                 $state->save();
                             }
                                 
@@ -1054,7 +1061,8 @@ class ContractLesseeController extends Controller
                         $state->contract_id = $contract->id;
                         $state->file_id = $fileUpload->id;
                         $state->module = 'Documentos globales';
-                        $state->state = 'CREADO';
+                        $state->state = 'CREADO';                        
+                        $state->date = date('Y-m-d');
                         $state->save();
                     }
 

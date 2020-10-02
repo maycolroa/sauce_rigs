@@ -9,8 +9,8 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\LegalAspects\Contracts\ListCheck\ListCheckContractExcel;
-use App\Facades\Mail\Facades\NotificationMail;
 use App\Traits\ContractTrait;
+use App\Facades\Mail\Facades\NotificationMail;
 
 class ListCheckContractExportJob implements ShouldQueue
 {
@@ -39,6 +39,9 @@ class ListCheckContractExportJob implements ShouldQueue
     {
         //$recipients = $this->getUsersMasterContract($this->company_id);
         $recipients = $this->contract->responsibles;
+        $usersContract = $this->getUsersContract($this->contract->id, $this->company_id);
+        $recipients = $usersContract->merge($recipients);
+
 
         $recipients = $recipients->filter(function ($recipient, $index) {
           return $recipient->can('contracts_receive_notifications', $this->company_id);

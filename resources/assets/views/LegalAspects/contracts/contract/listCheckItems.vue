@@ -19,7 +19,7 @@
 							v-else
 							:url="`/legalAspects/contracts/saveQualificationItems`"
 							method="POST"
-							:view-only="(this.$route.params.id ? true : false)"
+							:contractId="(this.$route.params.id ? this.$route.params.id : '')"
 							:items="items"
 							:qualifications="qualifications"				
 							:cancel-url="{ name: (this.$route.params.id ? 'legalaspects-contractor' : 'legalaspects-contracts')}"/>
