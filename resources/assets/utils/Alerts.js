@@ -8,7 +8,7 @@ export default class Alerts {
       type: 'bg-danger text-white',
       title: title,
       text: message,
-      duration: 5000
+      duration: 10000
     });
   }
 
@@ -18,7 +18,7 @@ export default class Alerts {
       type: 'bg-success text-white',
       title: title,
       text: message,
-      duration: 5000
+      duration: 10000
     });
   }
 
@@ -29,7 +29,7 @@ export default class Alerts {
       type: 'bg-warning text-dark',
       title: title,
       text: message,
-      duration: 5000
+      duration: 10000
     });
   }
 }
