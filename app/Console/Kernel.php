@@ -23,7 +23,8 @@ class Kernel extends ConsoleKernel
         //'App\Console\Commands\ReincSendMail',
         //'App\Console\Commands\ReincNotificationNextFollowUp',
         'App\Console\Commands\DmReportHistory',
-        'App\Console\Commands\NotifyUpdateListCheckContract'
+        'App\Console\Commands\NotifyUpdateListCheckContract',
+        'App\Console\Commands\CtUnlockEvaluation'
     ];
 
     /**
@@ -89,6 +90,10 @@ class Kernel extends ConsoleKernel
         $schedule->command('days-alerts-without-activity-contractors')
             ->timezone('America/Bogota')
             ->dailyAt('02:00');
+
+        $schedule->command('ct-unlock-evaluation')
+            ->timezone('America/Bogota')
+            ->everyMinute();
     }
 
     /**
