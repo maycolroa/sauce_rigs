@@ -99,6 +99,8 @@ class ResetPasswordController extends Controller
                                     'last_login_at' => Carbon::now()->toDateTimeString()
                                 ]);
 
+                                $this->userActivity();
+
                                 $valid = true;
                             }
                             else //Contratista inhabilitada
@@ -111,6 +113,8 @@ class ResetPasswordController extends Controller
                             Auth::user()->update([
                                 'last_login_at' => Carbon::now()->toDateTimeString()
                             ]);
+
+                            $this->userActivity();
 
                             $valid = true;
                         }
@@ -132,5 +136,14 @@ class ResetPasswordController extends Controller
 
         if (!Session::get('company_id') || !$valid)
             Auth::logout();
+    }
+
+    public function userActivity()
+    {
+        $activity = new LogUserActivity;
+        $activity->user_id = Auth::user()->id;
+        $activity->company_id = Session::get('company_id');
+        $activity->description = 'Inicio de sesión';
+        $activity->save();
     }
 }

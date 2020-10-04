@@ -19,6 +19,13 @@
                 :action-plan-states="actionPlanStates"/>
         </b-card-body>
       </b-card>
+
+      <b-modal ref="modalBlock" class="modal-slide" hide-header hide-footer @hidden="returnPage()">
+        <p class="text-justific mb-4">
+          Estimado usuario en este momento la evaluación se encuentra en edición por el usuario <b> {{ data.evaluation ? data.evaluation.user_edit : '' }} </b>
+        </p>
+        <b-btn block variant="primary" @click="returnPage()">Aceptar</b-btn>
+      </b-modal>
     </div>
   </div>
 </template>
@@ -50,10 +57,7 @@ export default {
         this.data = response.data.data;
 
         if (this.data.evaluation.in_edit)
-        {
-          Alerts.error('Error', 'Estimado usuario en este momento la evaluación se encuentra en edición por el usuario' + ' ' + this.data.evaluation.user_edit);
-          this.$router.go(-1);
-        }
+          this.$refs.modalBlock.show();
     })
     .catch(error => {
         Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
@@ -63,6 +67,9 @@ export default {
     this.fetchSelect('actionPlanStates', '/selects/actionPlanStates')
   },
   methods: {
+    returnPage() {
+      this.$router.go(-1);
+    },
     fetchSelect(key, url)
     {
         GlobalMethods.getDataMultiselect(url)

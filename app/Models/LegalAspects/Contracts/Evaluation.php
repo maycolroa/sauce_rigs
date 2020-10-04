@@ -17,7 +17,17 @@ class Evaluation extends Model
         'company_id',
         'creator_user_id',
         'in_edit',
-        'user_edit'
+        'user_edit',
+        'time_edit'
+    ];
+
+    /**
+     * The attributes that should be mutated to dates.
+     *
+     * @var array
+     */
+    protected $dates = [
+        'time_edit',
     ];
 
     protected $casts = [
@@ -190,5 +200,10 @@ class Evaluation extends Model
             $query->whereBetween('sau_ct_evaluation_contract.evaluation_date', $dates);
             return $query;
         }
+    }
+
+    public function scopeLocked($query)
+    {
+        return $query->where('in_edit', true);
     }
 }

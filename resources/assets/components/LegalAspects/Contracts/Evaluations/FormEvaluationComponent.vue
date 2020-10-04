@@ -269,10 +269,30 @@ export default {
   data() {
     return {
         loading: this.isEdit,
-        form: Form.makeFrom(this.evaluation, this.method)
+        form: Form.makeFrom(this.evaluation, this.method),
+        blockInterval: ''
     };
   },
+  created() {
+    if (this.isEdit)
+    {
+      Alerts.warning('Información', 'Estimado usuario mientras esté editando este formato no podrán realizarse evaluaciones, al culminar debe darle en el botón de finalizar para desbloquearlo.');
+
+      this.blockInterval = setInterval(this.blockEvaluation, 10000);
+    }
+  },
+  beforeDestroy() {
+    clearInterval( this.blockInterval )
+  },
   methods: {
+    blockEvaluation() {
+      axios.post('/legalAspects/evaluation/block', { id: this.evaluation.id })
+        .then(response => {      
+        })
+        .catch(error => {
+            //Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
+        });
+    },
     submit(e) {
       this.loading = true;
       this.form

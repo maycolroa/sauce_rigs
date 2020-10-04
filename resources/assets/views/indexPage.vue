@@ -27,7 +27,7 @@
           </div>
           <b-row :key="key_row">
               <b-col v-for="(parameter, key) in item_row" :key="key">
-                <router-link :to="{ name: parameter.url}" class="text-dark cursor-pointer item-app-navbar">
+                <router-link :to="{ name: parameter.url}" v-on:click.native="activityUser(parameter.display_name)" class="text-dark cursor-pointer item-app-navbar">
                   <center>
                     <div class="my-2 mx-2 text-center" :ref="`${parameter.image}`" @mouseover="changeClassImage(parameter.image, `${parameter.image}_hover`)">
                       <img class="ui-w-80" :src="`/images/${parameter.image}.png`" alt="" >
@@ -111,6 +111,10 @@
       changeClassImage(image, imageHover) {
         this.$refs[image][0].classList.add("imgHidden");
         this.$refs[imageHover][0].classList.remove("imgHidden");
+      },
+      activityUser(description)
+      {
+        this.userActivity(description)
       }
     }
   }

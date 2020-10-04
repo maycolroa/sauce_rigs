@@ -475,6 +475,7 @@ class EvaluationController extends Controller
             $evaluation = Evaluation::findOrFail($request->id);
             $evaluation->in_edit = true;
             $evaluation->user_edit = $this->user->name. ' - ' .$this->user->email;
+            $evaluation->time_edit = Carbon::now();
 
             if(!$evaluation->save()){
                 return $this->respondHttp500();
