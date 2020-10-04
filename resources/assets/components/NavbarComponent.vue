@@ -72,7 +72,7 @@
           <b-row>
             <template v-for="(item, index) in apps">
               <b-col :key="index" v-if="item.modules.length > 0">
-                <router-link :to="{ name: index}" v-on:click.native="toggleApp()" class="text-dark cursor-pointer item-app-navbar">
+                <router-link :to="{ name: index}" v-on:click.native="toggleApp(item.display_name)" class="text-dark cursor-pointer item-app-navbar">
                 <div class="my-2 mx-2 text-center" :ref="`${item.image}`" @mouseover="changeClassImage(item.image, `${item.image}_hover`)">
                   <img class="ui-w-60" :src="`/images/${item.image}.png`" alt="">
                   <div class="text-center font-weight-bold pt-1">
@@ -193,8 +193,9 @@ export default {
             Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
         });
     }, 
-    toggleApp: function () {
+    toggleApp(description) {
       document.getElementById('navbar-application-sauce__BV_button_').click()
+      this.userActivity(description)
     }
   },
   created () {

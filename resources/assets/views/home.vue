@@ -8,14 +8,14 @@
                         <template>
                             <center>
                                 <b-dd variant="default" class="text-dark text-center font-weight-bolder" :text="item.display_name" :right="isRTL">
-                                    <b-dd-item :to="{ name: (item.name+'-'+subItem.name) }" v-for="(subItem, subIndex) in item.subModules" :key="subIndex">{{ keywordCheck(subItem.name, subItem.display_name) }} </b-dd-item>
+                                    <b-dd-item :to="{ name: (item.name+'-'+subItem.name) }" @click="activityUser(subItem.display_name)" v-for="(subItem, subIndex) in item.subModules" :key="subIndex">{{ keywordCheck(subItem.name, subItem.display_name) }} </b-dd-item>
                                 </b-dd>
                             </center>
                         </template>
                     </template>
 
                     <template v-else> <!-- Link Directo -->
-                        <router-link class="text-dark cursor-pointer item-app-navbar" :to="{ name: (routeAppName+'-'+item.name)}" :key="index"> 
+                        <router-link class="text-dark cursor-pointer item-app-navbar" v-on:click.native="activityUser(item.display_name)" :to="{ name: (routeAppName+'-'+item.name)}" :key="index"> 
                             <center>
                                 <div class="my-2 mx-2 text-center">
                                     <div class="text-center">
@@ -53,6 +53,12 @@
         }
 
         return [];
+      }
+    },
+    methods: {
+      activityUser(description)
+      {
+        this.userActivity(description)
       }
     }
   }

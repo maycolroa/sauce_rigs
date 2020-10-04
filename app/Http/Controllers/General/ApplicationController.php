@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Auth;
 use Session;
 //use App\Models\General\License;
 use App\Models\General\Company;
+use App\Models\General\LogUserActivity;
 use App\Models\General\Module;
 use App\Models\General\FiltersState;
 use DB;
@@ -75,57 +76,6 @@ class ApplicationController extends Controller
       Session::put('company_id', $request->input('company_id'));
 
       $new_path = "/";
-      /*$data = $this->getAppsModules();
-      $currentPath = trim($request->input('currentPath'), '/');
-      $currentPath = explode("/", $currentPath);
-
-      if (COUNT($currentPath) == 1) 
-      {
-        if (isset($data[$currentPath[0]]) )//Permiso a la aplicacion
-          $new_path .= $currentPath[0];
-        //ELSE ---> Esta en la raiz o No tiene acceso a la aplicacion
-      }
-      else
-      {
-        $app = $currentPath[0];
-
-        if (!isset($data[$app]))//NO tienen Permiso a la aplicacion
-          return $new_path;
-
-        $new_path .= $app;
-        $modules = explode("-", $request->input('currentName'));
-
-        if (COUNT($modules) == 1) //Link directo
-        {
-          foreach ($data[$app]["modules"] as $key => $value)
-          {
-            if(strtolower($value["name"]) == $modules[0])
-              return $new_path .= '/'.$modules[0];
-          }
-        }
-        else //Submodulo
-        {
-          $path_mod = '';
-
-          foreach ($data[$app]["modules"] as $key => $value)
-          {
-            if(strtolower($value["name"]) == $modules[0]) //Entra si tiene permiso al modulo
-            {
-              $path_mod = $modules[0];
-              $pos_mod = $key;
-            }
-          }
-
-          if ($path_mod != '')//Si tiene permiso al modulo verifica el submodulo
-          {
-            foreach ($data[$app]["modules"][$pos_mod]["subModules"] as $key => $value)
-            {
-              if(strtolower($value["name"]) == $modules[1])
-                return $new_path .= '/'.$path_mod.'/'.$modules[1];
-            }
-          }
-        }
-      }*/
 
       return $new_path;
     }
@@ -382,5 +332,14 @@ class ApplicationController extends Controller
         
             return $this->multiSelectFormat($modules);
         }
+    }
+
+    public function userActivity(Request $request)
+    {
+        $activity = new LogUserActivity;
+        $activity->user_id = $this->user->id;
+        $activity->company_id = $this->company;
+        $activity->description = $request->description;
+        $activity->save();
     }
 }

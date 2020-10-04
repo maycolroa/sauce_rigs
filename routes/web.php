@@ -32,7 +32,8 @@ Route::middleware(['auth'])->group(function () {
     Route::post('changeCompany', 'General\ApplicationController@changeCompany');
     Route::post('vuetableCustomColumns', 'General\ApplicationController@vuetableCustomColumns');
     Route::post('setStateFilters', 'General\ApplicationController@setStateFilters');
-    Route::post('getStateFilters', 'General\ApplicationController@getStateFilters');
+    Route::post('getStateFilters', 'General\ApplicationController@getStateFilters');    
+    Route::post('userActivity', 'General\ApplicationController@userActivity');
 
     Route::prefix('configurableForm')->group(function () {
       Route::post('formModel', 'General\ConfigurableFormControlle@formModel');

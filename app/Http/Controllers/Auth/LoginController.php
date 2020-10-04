@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Traits\ResponseTrait;
 use App\Traits\ContractTrait;
 use App\Models\Administrative\Users\User;
+use App\Models\General\LogUserActivity;
 use App\Models\General\Team;
 use Carbon\Carbon;
 use Session;
@@ -81,6 +82,8 @@ class LoginController extends Controller
                                         Auth::user()->update([
                                             'last_login_at' => Carbon::now()->toDateTimeString()
                                         ]);
+
+                                        $this->userActivity();
                                         
                                         return $this->respondHttp200([
                                             'redirectTo' => 'legalaspects/contracts/information'
@@ -125,11 +128,39 @@ class LoginController extends Controller
             'last_login_at' => Carbon::now()->toDateTimeString()
         ]);
 
+        $this->userActivity();
+
         if (Auth::user()->default_module_url)
             return $this->respondHttp200([
                 'redirectTo' => strtolower(Auth::user()->default_module_url)
             ]);
 
         return $this->respondHttp200();
+    }
+
+    public function userActivity($description = NULL)
+    {
+        $activity = new LogUserActivity;
+        $activity->user_id = Auth::user()->id;
+        $activity->company_id = Session::get('company_id');
+        $activity->description = $description ? $description : 'Inicio de sesión';
+        $activity->save();
+    }
+
+    /**
+     * Log the user out of the application.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function logout(Request $request)
+    {
+        $this->userActivity('Cerrado de sesión');
+
+        $this->guard()->logout();
+
+        $request->session()->invalidate();
+
+        return $this->loggedOut($request) ?: redirect('/');
     }
 }

@@ -83,6 +83,12 @@ Vue.mixin({
   methods: {
     keywordCheck(key, defaultValue = '') {
       return this.keywords[key] != undefined ? this.keywords[key] : defaultValue
+    },
+    userActivity(description)
+    {
+      axios.post('/userActivity', { description: description })
+      .then(response => {})
+      .catch(error => {});
     }
   }
 })

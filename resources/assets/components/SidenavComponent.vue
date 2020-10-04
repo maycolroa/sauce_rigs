@@ -5,7 +5,7 @@
       <span class="app-brand-logo logo bg-primary">
         <img class="ui-w-30 rounded-circle align-middle text-circle" :src="`/images/${iconApp}_icon.png`" alt="Kitten">
       </span>
-      <router-link :to="{ name: routeAppName}" class="app-brand-text logo sidenav-text font-weight-normal ml-2"> {{ appName }} </router-link>
+      <router-link :to="{ name: routeAppName}" v-on:click.native="activityUser(appName)" class="app-brand-text logo sidenav-text font-weight-normal ml-2"> {{ appName }} </router-link>
       <a href="javascript:void(0)" class="layout-sidenav-toggle sidenav-link text-large ml-auto" @click="toggleSidenav()">
         <i class="ion ion-md-menu align-middle"></i>
       </a>
@@ -18,14 +18,14 @@
         <template v-if="item['subModules'] != undefined"> <!--Sub Modulos -->
           <sidenav-menu icon="fas fa-angle-right" :key="index">
             <template slot="link-text">{{ item.display_name }}</template>
-            <sidenav-router-link :to="{ name: (item.name+'-'+subItem.name) }" :active="isMenuActive(item.name+'-'+subItem.name)" :exact="true"
+            <sidenav-router-link :to="{ name: (item.name+'-'+subItem.name) }" v-on:click.native="activityUser(subItem.display_name)" :active="isMenuActive(item.name+'-'+subItem.name)" :exact="true"
                 v-for="(subItem, subIndex) in item.subModules" :key="subIndex"> 
                 {{ keywordCheck(subItem.name, subItem.display_name) }} 
             </sidenav-router-link>
           </sidenav-menu>
         </template>
         <template v-else> <!-- Link Directo -->
-          <sidenav-router-link icon="fas fa-angle-right" :to="{ name: (routeAppName+'-'+item.name)}" :active="isMenuActive(routeAppName+'-'+item.name)" :exact="true" :key="index"> 
+          <sidenav-router-link icon="fas fa-angle-right" v-on:click.native="activityUser(item.display_name)" :to="{ name: (routeAppName+'-'+item.name)}" :active="isMenuActive(routeAppName+'-'+item.name)" :exact="true" :key="index"> 
               {{ keywordCheck(item.name, item.display_name) }} 
           </sidenav-router-link>
         </template>
@@ -98,13 +98,15 @@ export default {
     isMenuActive (url) {
       return this.$route.name.indexOf(url) === 0
     },
-
     isMenuOpen (url) {
       return this.$route.path.indexOf(url) === 0 && this.orientation !== 'horizontal'
     },
-
     toggleSidenav () {
       this.layoutHelpers.toggleCollapsed()
+    },
+    activityUser(description)
+    {
+      this.userActivity(description)
     }
   }
 }
