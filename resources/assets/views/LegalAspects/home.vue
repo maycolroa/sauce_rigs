@@ -3,7 +3,7 @@
         <template v-if="modules.length > 0">
             <b-row v-if="checkModule('contracts')">
                 <b-col cols="6">
-                    <router-link :to="{ name: 'legalaspects-contracts'}" class="text-dark cursor-pointer item-app-navbar">
+                    <router-link :to="{ name: 'legalaspects-contracts'}" v-on:click.native="activityUser('Contratistas')" class="text-dark cursor-pointer item-app-navbar">
                         <center>
                             <div style="font-size: 20px;" class="my-2 mx-2 text-center font-weight-bold" ref="contracts" @mouseover="changeClassImage('contracts', 'contracts_hover')">
                                 <img class="ui-w-80" src="/images/contracts.png" alt=""> CONTRATISTAS
@@ -24,7 +24,7 @@
 
             <b-row v-if="checkModule('legalmatrix')">
                 <b-col cols="6">
-                    <router-link :to="{ name: 'legalaspects-legalmatrix'}" class="text-dark cursor-pointer item-app-navbar">
+                    <router-link :to="{ name: 'legalaspects-legalmatrix'}" v-on:click.native="activityUser('Matríz legal')" class="text-dark cursor-pointer item-app-navbar">
                         <center>
                             <div style="font-size: 20px;" class="my-2 mx-2 text-center font-weight-bold" ref="legalmatrix" @mouseover="changeClassImage('legalmatrix', 'legalmatrix_hover')">
                                 <img class="ui-w-80" src="/images/legalmatrix.png" alt=""> MATRIZ LEGAL
@@ -80,6 +80,10 @@
         changeClassImage(image, imageHover) {
             this.$refs[image].classList.add("imgHidden");
             this.$refs[imageHover].classList.remove("imgHidden");
+        },
+        activityUser(description)
+        {
+          this.userActivity(description)
         }
     }
   }
