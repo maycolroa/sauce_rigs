@@ -291,4 +291,9 @@ class InspectionItemsQualificationAreaLocation extends Model
         Storage::disk($this::DISK)->put("{$this->path_base()}{$fileName}", $file, 'public');
         $this->update([$key => $fileName]);
     }
+
+    public function store_image_api($fileName, $file)
+    {
+        return Storage::disk($this::DISK)->put("{$this->path_base()}{$fileName}", $file, 'public');
+    }
 }

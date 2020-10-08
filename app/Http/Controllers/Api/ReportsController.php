@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\IndustrialSecure\DangerousConditions\Reports\Report;
 use App\Models\IndustrialSecure\DangerousConditions\Reports\Condition;
 use App\Models\IndustrialSecure\DangerousConditions\Reports\ConditionType;
+use App\Models\IndustrialSecure\DangerousConditions\ImageApi;
 use App\Models\General\Company;
 use App\Http\Requests\Api\ReportRequest;
 use App\Models\Administrative\Regionals\EmployeeRegional;
@@ -55,7 +56,7 @@ class ReportsController extends ApiController
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function saveImage(ImageReportRequest $request)
+    /* public function saveImage(ImageReportRequest $request)
     {
         $report = Report::query();
         $report->company_scope = $request->company_id;
@@ -137,7 +138,7 @@ class ReportsController extends ApiController
       {
         $images->push($request->$index['file']);
       }
-    }
+    }*/
 
     /**
      * Create the report to store the images later
@@ -181,7 +182,43 @@ class ReportsController extends ApiController
           $report->user_id = $this->user->id;
         }
 
-        $report->fill($request->all());
+        $report->company_id = $request->company_id;
+        $report->observation = $request->observation;
+        $report->rate = $request->rate;
+        $report->condition_id = $request->condition_id;
+        $report->employee_regional_id = $request->employee_regional_id;
+        $report->employee_headquarter_id = $request->employee_headquarter_id ? $request->employee_headquarter_id : NULL;
+        $report->employee_process_id = $request->employee_process_id ? $request->employee_process_id : NULL;
+        $report->employee_area_id = $request->employee_area_id ? $request->employee_area_id : NULL;
+        $report->other_condition = $request->other_condition ? $request->other_condition : NULL;
+        $report->save();
+
+        $image_1 = ImageApi::where('hash', $request->image_1['file'])->where('type', 1)->first();
+
+        if ($image_1)
+        {
+          $report->img_delete('image_1');
+          $report->image_1 = $image_1->file;
+          $image_1->delete();
+        }
+
+        $image_2 = ImageApi::where('hash', $request->image_2['file'])->where('type', 1)->first();
+        
+        if ($image_2)
+        {
+          $report->img_delete('image_2');
+          $report->image_2 = $image_2->file;
+          $image_2->delete();
+        }
+
+        $image_3 = ImageApi::where('hash', $request->image_3['file'])->where('type', 1)->first();
+        
+        if ($image_3)
+        {
+          $report->img_delete('image_3');
+          $report->image_3 = $image_3->file;
+          $image_3->delete();
+        }
         
         if (!$report->save())
             return $this->respondHttp500();
@@ -231,6 +268,10 @@ class ReportsController extends ApiController
         DB::commit();
 
         $report->actionPlan = ActionPlan::getActivities();
+
+        $report->image_1 = [ 'file' => '', 'url' => $report->path_image('image_1')];
+        $report->image_2 = [ 'file' => '', 'url' => $report->path_image('image_2')];
+        $report->image_3 = [ 'file' => '', 'url' => $report->path_image('image_3')];
 
       } catch (\Exception $e) {
           \Log::info($e->getMessage());

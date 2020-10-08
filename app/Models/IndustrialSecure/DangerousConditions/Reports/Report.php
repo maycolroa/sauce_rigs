@@ -263,6 +263,8 @@ class Report extends Model
     {
         if ($this->$key && $this->img_exists($key))
             return Storage::disk($this::DISK)->url("{$this->path_base()}{$this->$key}");
+        else
+            return '';
     }
 
     public function img_exists($key)
@@ -280,5 +282,10 @@ class Report extends Model
     {
         Storage::disk($this::DISK)->put("{$this->path_base()}{$fileName}", $file, 'public');
         $this->update([$key => $fileName]);
+    }
+
+    public function store_image_api($fileName, $file)
+    {
+        return Storage::disk($this::DISK)->put("{$this->path_base()}{$fileName}", $file, 'public');
     }
 }
