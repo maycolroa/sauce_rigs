@@ -682,7 +682,7 @@ export default [
     fields: [
         { name: 'sau_ph_reports.id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true },
         { name: 'sau_ph_reports.id', data: 'id', title: 'ID', sortable: false, searchable: true, detail: false, key: false },
-        { name: 'sau_employees_headquarters.name', data: 'headquarter', title: 'headquarter', sortable: true, searchable: true, detail: false, key: false },
+        { name: 'sau_employees_regionals.name', data: 'regional', title: 'regional', sortable: true, searchable: true, detail: false, key: false },
         { name: 'sau_users.name', data: 'user', title: 'Usuario', sortable: true, searchable: true, detail: false, key: false },
         { name: 'sau_ph_conditions.description', data: 'condition', title: 'Condición', sortable: true, searchable: true, detail: false, key: false },
         { name: 'sau_ph_conditions_types.description', data: 'type', title: 'Tipo de condición', sortable: true, searchable: true, detail: false, key: false },
