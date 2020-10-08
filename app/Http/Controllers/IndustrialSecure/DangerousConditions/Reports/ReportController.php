@@ -90,7 +90,7 @@ class ReportController extends Controller
                 ->where('item_table_name', 'sau_ph_reports')
                 ->where('sau_action_plans_activity_module.module_id', $module_id)
                 ->inStates($states, $filters['filtersType']['states'])
-                ->groupBy('sau_ph_reports.id', 'regionals', 'sau_ph_reports.created_at', 'user', 'condition', 'type', 'sau_ph_reports.rate');
+                ->groupBy('sau_ph_reports.id', 'regional', 'sau_ph_reports.created_at', 'user', 'condition', 'type', 'sau_ph_reports.rate');
             }
         }
 
