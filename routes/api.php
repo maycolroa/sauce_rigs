@@ -43,6 +43,8 @@ Route::group(['prefix'=>'v1', 'middleware' => 'api'], function () {
 
     Route::post('conditions-info', 'Api\ReportsController@info');
 
+    Route::post('imageApi', 'Api\ConfigurationController@saveImageApi');
+
     
 
     //Route::post('listReporstUser', 'Api\ReportsController@listReportsUser');    

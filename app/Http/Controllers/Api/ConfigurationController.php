@@ -8,11 +8,71 @@ use App\Models\General\Company;
 use App\Facades\Configuration;
 use App\Http\Requests\Api\CompanyRequiredRequest;
 use App\Models\Administrative\Users\User;
+use App\Models\IndustrialSecure\DangerousConditions\ImageApi;
+use App\Models\IndustrialSecure\DangerousConditions\Inspections\InspectionItemsQualificationAreaLocation;
 use App\Models\General\Team;
+use App\Models\IndustrialSecure\DangerousConditions\Reports\Report;
 use Auth;
 
 class ConfigurationController extends ApiController
 {
+    public function saveImageApi(Request $request)
+    {
+      DB::beginTransaction();
+          
+        try
+        {
+          $img = $this->base64($request->image);
+          $fileName = $img['name'];
+          $file = $img['image'];
+
+          $image = new ImageApi;
+          $image->file = $fileName;
+          $image->type = $request->type;
+          $image->hash = $request->hash;
+          $image->save();
+
+          if (!$image->save())
+                return $this->respondHttp500();
+
+          if ($image->type == 1)
+            (new Report)->store_image_api($fileName, $file);
+          else
+            (new InspectionItemsQualificationAreaLocation)->store_image_api($fileName, $file);
+
+          DB::commit();
+
+        } catch (\Exception $e) {
+            \Log::info($e->getMessage());
+            DB::rollback();
+            return $this->respondHttp500();
+        }
+
+        return $this->respondHttp200([
+          'data' => $request->id
+        ]);
+    }
+
+    public function base64($file)
+    {
+      $image_64 = $file;
+
+      $extension = explode('/', explode(':', substr($image_64, 0, strpos($image_64, ';')))[1])[1];
+
+      $replace = substr($image_64, 0, strpos($image_64, ',')+1); 
+
+      $image = str_replace($replace, '', $image_64); 
+
+      $image = str_replace(' ', '+', $image); 
+
+      $imageName = base64_encode($this->user->id . rand(1,10000) . now()) . '.' . $extension;
+
+      $imagen = base64_decode($image);
+
+      return ['name' => $imageName, 'image' => $imagen];
+
+    } 
+
   /**
    * Get state terms and conditions
    *

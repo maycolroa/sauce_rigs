@@ -470,7 +470,7 @@ export default [
     name: 'inspections-conditionsReports',
     fields: [
         { name: 'sau_inspect_conditions_reports.id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true },
-        { name: 'sau_employees_headquarters.name', data: 'headquarter', title: 'headquarter', sortable: true, searchable: true, detail: false, key: false },
+        { name: 'sau_employees_regionals.name', data: 'regional', title: 'regional', sortable: true, searchable: true, detail: false, key: false },
         { name: 'sau_users.name', data: 'user_name', title: 'Usuario', sortable: true, searchable: true, detail: false, key: false },
         { name: 'sau_inspect_conditions.description', data: 'condition', title: 'Condicion', sortable: true, searchable: true, detail: false, key: false },
         { name: 'sau_inspect_conditions_type.description', data: 'type', title: 'Tipo de condicion', sortable: true, searchable: true, detail: false, key: false },

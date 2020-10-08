@@ -9,6 +9,7 @@ use App\Models\IndustrialSecure\DangerousConditions\Inspections\Inspection;
 use App\Models\IndustrialSecure\DangerousConditions\Inspections\InspectionSection;
 use App\Models\IndustrialSecure\DangerousConditions\Inspections\InspectionSectionItem;
 use App\Models\IndustrialSecure\DangerousConditions\Inspections\InspectionItemsQualificationAreaLocation;
+use App\Models\IndustrialSecure\DangerousConditions\ImageApi;
 use App\Models\LegalAspects\Contracts\Qualifications;
 use App\Facades\ActionPlans\Facades\ActionPlan;
 use App\Http\Requests\Api\InspectionsRequest;
@@ -271,7 +272,25 @@ class InspectionController extends ApiController
 
                     if (isset($value['photos']))
                     {
-                        $images = collect([]);
+                        $photo_1 = ImageApi::where('hash', $value['photos']['photo_1']['file'])->where('type', 2)->first();
+
+                        if ($photo_1)
+                        {
+                          $item->img_delete('photo_1');
+                          $item->photo_1 = $photo_1->file;
+                          $photo_1->delete();
+                        }
+
+                        $photo_2 = ImageApi::where('hash', $value['photos']['photo_2']['file'])->where('type', 2)->first();
+                        
+                        if ($photo_2)
+                        {
+                          $item->img_delete('photo_2');
+                          $item->photo_2 = $photo_2->file;
+                          $photo_2->delete();
+                        }
+
+                        /*$images = collect([]);
                         $this->checkImgRequest($images, $value['photos'], 1);
                         $this->checkImgRequest($images, $value['photos'], 2);
 
@@ -294,7 +313,9 @@ class InspectionController extends ApiController
                         }
                         else
                             $i++;
-                        };
+                        };*/
+
+                        $item->update();
 
                         $response['themes'][$keyT]['items'][$key]["photos"] = [
                             "photo_1" => ["file" => "", "url" => $item->path_image('photo_1')],
@@ -344,7 +365,7 @@ class InspectionController extends ApiController
         ]);
     }
 
-    public function checkImgStore($item, $image, $column)
+    /*public function checkImgStore($item, $image, $column)
     {
       $img = $this->base64($image, $column);
       $fileName = $img['name'];
@@ -382,7 +403,7 @@ class InspectionController extends ApiController
 
       return ['name' => $imageName, 'image' => $imagen];
 
-    }
+    }*/
 
     /**
      * Get the list of inspeccions quelified for user
