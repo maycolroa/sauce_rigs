@@ -6,6 +6,7 @@ import LayoutMaster from '@/views/layoutMaster'
 import IndexPage from '@/views/indexPage'
 import ChangePassword from '@/views/Administrative/users/changePassword'
 import DefaultModule from '@/views/Administrative/users/defaultModule'
+import Alerts from '@/utils/Alerts.js';
 
 import globals from '@/globals'
 
@@ -71,6 +72,21 @@ router.afterEach(() => {
 })
 
 router.beforeEach((to, from, next) => {
+  //session expired
+  /*axios.interceptors.response.use(function (response) {
+    // Any status code that lie within the range of 2xx cause this function to trigger
+    // Do something with response data
+    return response;
+    }, function (error) {
+    // Any status codes that falls outside the range of 2xx cause this function to trigger
+    // Do something with response error
+    if(error.response.status === 401 || error.response.status === 419) {
+      console.log('error')
+        // redirect to login page
+        Alerts.error('Error', 'Su sesión ha expirado, para continuar abra otra pestaña e inicie sesion en esta');
+    }
+    return Promise.reject(error);
+  })*/
   // Set loading state
   document.body.classList.add('app-loading')
 
