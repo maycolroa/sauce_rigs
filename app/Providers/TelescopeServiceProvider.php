@@ -24,7 +24,7 @@ class TelescopeServiceProvider extends TelescopeApplicationServiceProvider
 
         Telescope::auth(function ($request) {
 
-            /*if (isset($request->user()->id) && Session::get('company_id'))
+            if (isset($request->user()->id) && Session::get('company_id'))
             {
                 $team = Team::where('name', Session::get('company_id'))->first();
 
@@ -33,7 +33,7 @@ class TelescopeServiceProvider extends TelescopeApplicationServiceProvider
                 }
             }
             else
-                throw new UnauthorizedHttpException('Unauthorized');*/
+                throw new UnauthorizedHttpException('Unauthorized');
 
             return true;
         });
@@ -46,21 +46,22 @@ class TelescopeServiceProvider extends TelescopeApplicationServiceProvider
      */
     public function register()
     {
-        // Telescope::night();
+        Telescope::night();
 
         Telescope::ignoreMigrations();
 
         $this->hideSensitiveRequestDetails();
 
         Telescope::filter(function (IncomingEntry $entry) {
-            if ($this->app->isLocal()) {
+            return true;
+            /*if ($this->app->isLocal()) {
                 return true;
             }
 
             return $entry->isReportableException() ||
                    $entry->isFailedJob() ||
                    $entry->isScheduledTask() ||
-                   $entry->hasMonitoredTag();
+                   $entry->hasMonitoredTag();*/
         });
     }
 
