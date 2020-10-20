@@ -247,3 +247,11 @@ html body .background-system {
 .col-item {
 	min-height: 200px;
 }
+.loading-container .loading-backdrop {
+  background: #fff !important;
+  opacity: .7 !important;
+}
+.loading-container .loading {
+  background: none !important;
+  box-shadow: none !important;
+}
