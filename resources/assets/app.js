@@ -10,6 +10,7 @@ import BootstrapVue from 'bootstrap-vue'
 
 import globals from './globals.js'
 import Popper from 'popper.js'
+import BlockUI from 'vue-blockui';
 
 // Required to enable animations on dropdowns/tooltips/popovers
 Popper.Defaults.modifiers.computeStyle.gpuAcceleration = false
@@ -18,6 +19,7 @@ Vue.config.productionTip = false
 
 Vue.use(BootstrapVue)
 Vue.use(Notifications)
+Vue.use(BlockUI)
 Vue.use(VueRouterMiddleware, {
   router,
   middlewares: {

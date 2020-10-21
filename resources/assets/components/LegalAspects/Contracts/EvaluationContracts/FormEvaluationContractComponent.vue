@@ -330,10 +330,15 @@
                 <b-btn type="submit" :disabled="loading" variant="primary" v-if="!viewOnly">Finalizar</b-btn>
             </template>
         </form-wizard>
+
+        <b-card>
+          <BlockUI message="" :html="html" v-if="loading" />
+        </b-card>
     </b-form>
 </template>
 
 <style src="@/vendor/libs/vue-form-wizard/vue-form-wizard.scss" lang="scss"></style>
+<style src="@/vendor/libs/spinkit/spinkit.scss" lang="scss"></style>
 
 <script>
 import VueInput from "@/components/Inputs/VueInput.vue";
@@ -441,54 +446,76 @@ export default {
             number_workers: '',
             high_risk_work: '',
             social_reason: ''
-        }
+        },
+        autoSave: '',
+        textBlock: 'Cargando...',
+        
     };
   },
+  computed: {
+    html() {
+        return `<div class="sk-folding-cube sk-primary"><div class="sk-cube1 sk-cube"></div><div class="sk-cube2 sk-cube"></div><div class="sk-cube4 sk-cube"></div><div class="sk-cube3 sk-cube"></div></div><h5 class="text-center mb-0">${this.textBlock}</h5>`
+    } 
+  },
+  created() {
+    if (!this.viewOnly) {
+      this.autoSave = setInterval(this.saveAuto, 900000);
+    }
+  },
+  beforeDestroy() {
+    clearInterval( this.autoSave );
+  },
   methods: {
+    saveAuto() {
+        this.submit(false);
+    },
     submit(redirect = true) {
-      this.loading = true;
+        this.textBlock = 'Guardando...';
 
-      let url = this.url;
+        if (!this.loading)
+        {
+          this.loading = true;
 
-      this.form.clearFilesBinary();
+          let url = this.url;
 
-      this.form.evaluation.objectives.forEach((objetive, keyObj) => {
-          objetive.subobjectives.forEach((subobjetive, keySubObj) => {
-              subobjetive.items.forEach((item, keyItem) => {
-                  item.files.forEach((file, keyFile) => {
-                      this.form.addFileBinary(`${keyObj}_${keySubObj}_${keyItem}_${keyFile}`, file.file)
+          this.form.clearFilesBinary();
+
+          this.form.evaluation.objectives.forEach((objetive, keyObj) => {
+              objetive.subobjectives.forEach((subobjetive, keySubObj) => {
+                  subobjetive.items.forEach((item, keyItem) => {
+                      item.files.forEach((file, keyFile) => {
+                          this.form.addFileBinary(`${keyObj}_${keySubObj}_${keyItem}_${keyFile}`, file.file)
+                      });
                   });
               });
           });
-      });
-      
-      if (this.method == 'POST')
-      {
-        if (this.form.id)
-          this.form.updateMethod('PUT')
-
-        url = !this.form.id ? this.url : `${this.url}/${this.form.id }`;
-      }
-                        
-      this.form
-        .submit(url)
-        .then(response => {
-          this.loading = false;
-
-          if (redirect)
-            this.$router.back()
-          else
-          {
-            _.forIn(response.data.data, (value, key) => {
-              this.form[key] = value
-            })
-          }
-
           
-        })
-        .catch(error => {
-          this.loading = false;
-        });
+          if (this.method == 'POST')
+          {
+            if (this.form.id)
+              this.form.updateMethod('PUT')
+
+            url = !this.form.id ? this.url : `${this.url}/${this.form.id }`;
+          }
+                            
+          this.form
+            .submit(url)
+            .then(response => {
+              this.loading = false;
+
+              if (redirect)
+                this.$router.back()
+              else
+              {
+                _.forIn(response.data.data, (value, key) => {
+                  this.form[key] = value
+                })
+              }
+            })
+            .catch(error => {
+              this.loading = false;
+            });
+        }
     },
     removed(index, index2, index3) {
         let keys = [];
