@@ -35,8 +35,8 @@ class InspectionQualificationController extends Controller
         $this->middleware('auth');
         //$this->middleware('permission:ph_inspections_c', ['only' => 'store']);
         $this->middleware("permission:ph_inspections_r, {$this->team}");
-        //$this->middleware('permission:ph_inspections_u', ['only' => 'update']);
-        //$this->middleware('permission:ph_inspections_d', ['only' => 'destroy']);
+        //$this->middleware('permission:ph_inspections_u', ['only' => 'update']);        
+        $this->middleware("permission:ph_qualification_inspection_d, {$this->team}", ['only' => 'destroy']);
     }
 
     /**
@@ -380,5 +380,40 @@ class InspectionQualificationController extends Controller
         } catch(Exception $e) {
             return $this->respondHttp500();
         }
+    }
+
+    public function destroy($qualification)
+    {
+        //DB::beginTransaction();
+
+        $qualification = InspectionItemsQualificationAreaLocation::findOrFail($qualification);
+
+        $items = InspectionItemsQualificationAreaLocation::where('qualification_date', $qualification->qualification_date)->get();
+
+        try
+        { 
+            foreach ($items as $item)
+            {  
+                ActionPlan::model($item)->modelDeleteAll();
+
+                $item->img_delete('photo_1');
+                $item->img_delete('photo_2');
+
+                if(!$item->delete())
+                {
+                    return $this->respondHttp500();
+                }
+            }
+            DB::commit();
+
+        } catch (\Exception $e) {
+            DB::rollback();
+            return $this->respondHttp500();
+            //return $e->getMessage();
+        }
+        
+        return $this->respondHttp200([
+            'message' => 'Se elimino la inspección realizada'
+        ]);
     }
 }
