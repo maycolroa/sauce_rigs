@@ -390,8 +390,6 @@ class InspectionQualificationController extends Controller
 
         $items = InspectionItemsQualificationAreaLocation::where('qualification_date', $qualification->qualification_date)->get();
 
-        \Log::info($items);
-
         try
         { 
             foreach ($items as $item)
