@@ -305,6 +305,10 @@
                         "display_name": "Condiciones Peligrosas/Inspecciones - exportar reportes"
                     },
                     {
+                        "name": "ph_qualification_inspection_d",
+                        "display_name": "Condiciones Peligrosas/Inspecciones Calificadas - eliminar"
+                    },                    
+                    {
                         "name": "ph_reports_c",
                         "display_name": "Condiciones Peligrosas/Reportes - crear"
                     },

@@ -466,7 +466,7 @@ export default [
         filterColumns: true,
     }
 },
-{
+/*{
     name: 'inspections-conditionsReports',
     fields: [
         { name: 'sau_inspect_conditions_reports.id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true },
@@ -525,7 +525,7 @@ export default [
         urlData: '/industrialSecurity/inspections/conditionsReports/data',
         filterColumns: true,
     }
-},
+},*/
 {
     name: 'dangerousconditions-inspections',
     fields: [
@@ -649,7 +649,15 @@ export default [
       },
       {
         type: 'base',
-        buttons: [],
+        buttons: [{
+        name: 'delete',
+        data: {
+            action: '/industrialSecurity/dangerousConditions/inspection/qualification/',
+            id: 'id',
+            messageConfirmation: 'Esta seguro de borrar la inspección realizada'
+        },
+        permission: 'ph_qualification_inspection_d'
+        }],
       }],
     configuration: {
         urlData: '/industrialSecurity/dangerousConditions/inspection/qualification/data',
