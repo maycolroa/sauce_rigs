@@ -9,17 +9,19 @@
     <div class="col-md">
       <b-card no-body>
         <b-card-body>
-            <form-law-qualify-component
-                :url="`/legalAspects/legalMatrix/law/${this.$route.params.id}`"
-                method="PUT"
-                :law="data"
-                :qualifications="qualifications"
-                :action-plan-states="actionPlanStates"
-                :si-no="siNo"
-                :filter-interests-options="filterInterestsOptions"
-                :is-edit="isEdit"
-                :view-only="viewOnly"
-                :cancel-url="{ name: 'legalaspects-lm-law-qualify'}"/>
+          <loading-block v-if="!ready"/>
+          <form-law-qualify-component
+            v-if="ready"
+            :url="`/legalAspects/legalMatrix/law/${this.$route.params.id}`"
+            method="PUT"
+            :law="data"
+            :qualifications="qualifications"
+            :action-plan-states="actionPlanStates"
+            :si-no="siNo"
+            :filter-interests-options="filterInterestsOptions"
+            :is-edit="isEdit"
+            :view-only="viewOnly"
+            :cancel-url="{ name: 'legalaspects-lm-law-qualify'}"/>
         </b-card-body>
       </b-card>
     </div>
@@ -42,52 +44,55 @@ export default {
   data () {
     return {
       data: [],
+      articles: [],
       qualifications: [],
       actionPlanStates: [],
       siNo: [],
       filterInterestsOptions: [],
       isEdit: false,
-      viewOnly: true
+      viewOnly: true,
+      ready: false
     }
   },
   created(){
     this.isEdit = this.auth.can['laws_qualify']
     this.viewOnly = this.auth.can['laws_qualify'] ? false : true;
-    this.fetchSelect('qualifications', '/selects/legalMatrix/articlesQualifications')
-    this.fetchSelect('actionPlanStates', '/selects/actionPlanStates')
-    this.fetchSelect('siNo', '/selects/siNo')
-
-    axios.post('/selects/legalMatrix/filterInterests', { id: this.$route.params.id })
-    .then(response => {
-        this.filterInterestsOptions = response.data;
-    })
-    .catch(error => {
-        //Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
-        //this.$router.go(-1);
-    });
 
     axios.get(`/legalAspects/legalMatrix/law/qualify/${this.$route.params.id}`)
     .then(response => {
-        this.data = response.data.data;
-    })
-    .catch(error => {
-        //Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
-        //this.$router.go(-1);
-    });
-    
-  },
-  methods: {
-    fetchSelect(key, url)
-    {
-        GlobalMethods.getDataMultiselect(url)
+      this.data = response.data.data;
+
+      axios.post('/selects/legalMatrix/filterInterests', { id: this.$route.params.id })
+      .then(response => {
+        this.filterInterestsOptions = response.data;
+
+        GlobalMethods.getDataMultiselect('/selects/legalMatrix/articlesQualifications')
         .then(response => {
-            this[key] = response;
+          this.qualifications = response;
+
+          GlobalMethods.getDataMultiselect('/selects/actionPlanStates')
+          .then(response => {
+            this.actionPlanStates = response;
+
+            GlobalMethods.getDataMultiselect('/selects/siNo')
+            .then(response => {
+              this.siNo = response;
+              this.ready = true;
+            })
+            .catch(error => {
+            });
+          })
+          .catch(error => {
+          });
         })
         .catch(error => {
-            //Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
-            //this.$router.go(-1);
         });
-    },
+      })
+      .catch(error => {
+      });
+    })
+    .catch(error => {
+    });
   }
 }
 </script>
