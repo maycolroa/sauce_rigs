@@ -1,7 +1,7 @@
 <template>
 
   <b-form :action="url" @submit.prevent="submit" autocomplete="off">
-    <loading-block v-if="loading || loadingAlternativo"/>
+    <loading-block :text="textBlock" v-if="loading || loadingAlternativo"/>
     <b-card no-body class="mb-2 border-secondary" style="width: 100%;">
       <b-card-header class="bg-secondary">
         <b-row>
@@ -103,7 +103,7 @@
                           </b-btn>
                         </b-button-group>
 
-                        <b-modal :ref="`modalArticle${index}`" :hideFooter="true" :id="`modals-default-${index+1}`" class="modal-top" size="lg">
+                        <b-modal :ref="`modalArticle${index}`" :hideFooter="true" :id="`modals-default-${index+1}`" class="modal-top" size="lg" @hidden="hideModal(`modalArticle${index}`)">
                           <div slot="modal-title">
                             Última modificación: <span class="font-weight-light">{{ article.updated_at }}</span><br>
                             Derogado: <span class="font-weight-light">{{ article.repealed }}</span>
@@ -260,6 +260,7 @@ import VueInput from "@/components/Inputs/VueInput.vue";
 import VueTextarea from "@/components/Inputs/VueTextarea.vue";
 import VueFileSimple from "@/components/Inputs/VueFileSimple.vue";
 import ActionPlanComponent from '@/components/CustomInputs/ActionPlanComponent.vue';
+import Alerts from '@/utils/Alerts.js';
 
 export default {
   components: {
@@ -322,6 +323,18 @@ export default {
     }
   },
   watch: {
+    currentAxios() {
+      if (this.eventSaveAll)
+      {
+        if (this.currentAxios == this.totalAxios)
+        {
+          this.textBlock = 'Recargando Página...';
+          setTimeout(() => {
+            location.reload();
+          }, 3000);
+        }
+      }
+    }
   },
   computed: {
   },
@@ -329,7 +342,7 @@ export default {
     return {
       loading: true,
       form: Form.makeFrom(this.law, this.method, false, false),
-      limitShowArticles: 5,
+      limitShowArticles: 20,
       currentShow: 0,
       totalShow: 0,
       idHistory: '',
@@ -338,11 +351,16 @@ export default {
       filterRepealed: '',
       filterInterests: '',
       activateEvent: false,
+      activateEventModal: false,
       fulfillment_value_id: '',
       responsible: '',
       observations: '',
       qualifyName: '',
-      loadingAlternativo: false
+      loadingAlternativo: false,
+      totalAxios: 0,
+      currentAxios: 0,
+      eventSaveAll: false,
+      textBlock: 'Cargando...'
     };
   },
   created() {
@@ -351,7 +369,7 @@ export default {
   },
   methods: {
     resetReloadShowArticles() {
-      this.limitShowArticles = 5;
+      this.limitShowArticles = 20;
       this.reloadShowArticles();
     },
     reloadShowArticles() {
@@ -361,20 +379,27 @@ export default {
 
       _.forIn(this.form.articles, (article, key) => {
         let show = true;
+        article.show_article_real = false;
 
         if (this.currentShow == this.limitShowArticles)
         {
           show = false;
 
           if (!this.checkFilter(article, 'filterQualification', 'qualify') && !this.checkFilter(article, 'filterRepealed', 'repealed') && this.checkFilterInterest(article))
+          {
             this.totalShow++;
+            article.show_article_real = true;
+          }
         }
         else if (this.checkFilter(article, 'filterQualification', 'qualify') || this.checkFilter(article, 'filterRepealed', 'repealed') || !this.checkFilterInterest(article))
         {
           show = false;
         }
         else
+        {
           this.totalShow++;
+          article.show_article_real = true;
+        }
 
         article.show_article = show;
         this.currentShow += show ? 1 : 0;
@@ -382,7 +407,7 @@ export default {
 
       setTimeout(() => {
         this.loading = false;
-      }, 3000)
+      }, 5000)
     },
     checkFilter(article, key, propety) {
       return this[key] != '' && article[propety].toLowerCase().indexOf(this[key].toLowerCase()) !== 0
@@ -407,16 +432,18 @@ export default {
       return show;
     },
     showMore() {
-      this.limitShowArticles += 5;
+      this.limitShowArticles += 20;
       this.reloadShowArticles();
     },
     showModalHistory(id) {
       this.idHistory = id
     },
     showModal(ref) {
+      this.activateEventModal = true;
 			this.$refs[ref][0].show();
 		},
 		hideModal(ref) {
+      this.activateEventModal = false;
 			this.$refs[ref][0].hide();
 		},
     closeModalHistory() {
@@ -437,6 +464,12 @@ export default {
     updateQualify(event, index) {
       this.form.articles[index].qualify = event;
       this.builderFilterQualificationOptions();
+
+      if (!this.activateEventModal)
+        this.$nextTick(() => {
+          this.$refs[`qualification2${index}`][0].refreshData();
+        });
+
       this.saveArticleQualification(index);
     },
     deleteFile(index) {
@@ -462,9 +495,12 @@ export default {
 			return result
     },
     syncArticleFull(index) {
-      this.$nextTick(() => {
-        this.$refs[`qualification${index}`][0].refreshData();
-      })
+      if (this.activateEventModal)
+      {
+        this.$nextTick(() => {
+          this.$refs[`qualification${index}`][0].refreshData();
+        })
+      }
     },
     updateQualifyAll(value) {
       this.qualifyName = value;
@@ -473,11 +509,20 @@ export default {
     {
       if (this.fulfillment_value_id != '')
       {
+        this.textBlock = 'Guardando...';
         this.loadingAlternativo = true;
+        this.eventSaveAll = true;
+        this.totalAxios = 0;
+        this.currentAxios = 0;
+
+        _.forIn(this.form.articles, (article, key) => { 
+          if (article.show_article_real)
+            this.totalAxios++;
+        });
 
         _.forIn(this.form.articles, (article, key) => {
             
-            if (article.show_article)
+            if (article.show_article_real)
             {
               article.fulfillment_value_id = this.fulfillment_value_id;
 
@@ -489,23 +534,29 @@ export default {
                 
               article.qualify = this.qualifyName;
               
-              this.$nextTick(() => {
+              //this.updateQualify(this.qualifyName, key);
+              //console.log("uno");
+              /*this.$nextTick(() => {
                 this.$refs[`qualification${key}`][0].refreshData();
                 this.$refs[`qualification2${key}`][0].refreshData();
-              })
-
-              //this.saveArticleQualification(key);
+              })*/
+              
+              this.saveArticleQualification(key);
             }
         });
 
-        this.$refs.modalQualificationAll.hide()
+        /*this.$refs.modalQualificationAll.hide()
         this.fulfillment_value_id = ''
         this.observations = ''
         this.responsible = ''
         this.qualifyName = ''
         this.$refs.qualificationAll.cleanData()
-        this.loadingAlternativo = false;
-        this.builderFilterQualificationOptions();
+        
+        setTimeout(() => {
+          this.loadingAlternativo = false;
+        }, 3000);
+
+        this.builderFilterQualificationOptions();*/
       }
       else
       {
@@ -547,9 +598,11 @@ export default {
           .then(response => {
             _.forIn(response.data.data, (value, key) => {
               article[key] = value
-            })            
+            })
+            this.currentAxios++;
           })
           .catch(error => {
+            this.currentAxios++;
             //this.loading = false;
           });
       }
