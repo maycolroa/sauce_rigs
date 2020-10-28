@@ -68,7 +68,7 @@ class EvaluationContractReportExcel implements FromCollection, WithMapping, With
                 COUNT(DISTINCT ec.id) as t_evaluations,
                 SUM(IF(eir.value = 'NO' OR eir.value = 'pending', 1, 0)) AS t_no_cumple,
                 SUM(IF(eir.value = 'SI', 1,
-                        IF(eir.value IS NULL AND eir.item_id IS NOT NULL, 1,
+                        IF(eir.value IS NULL AND eir.item_id IS NOT NULL, 0,
                             IF(eir.value IS NULL AND eir.item_id IS NULL,
                                 (SELECT 
                                         COUNT(etr.type_rating_id)

@@ -572,7 +572,6 @@ class EvaluationContractController extends Controller
                     foreach ($clone as $index => $rating)
                     {
                         $clone[$index]['value'] = isset($values[$index]) ? $values[$index] : NULL;
-                        $clone_report[$index]['total'] += 1;
 
                         if ($rating['apply'] == 'SI')
                         {
@@ -580,16 +579,31 @@ class EvaluationContractController extends Controller
                                 $clone_report[$index]['total_c'] += 1;
                             else 
                             {
-                                if ($clone[$index]['value'] == 'SI' || $clone[$index]['value'] == 'N/A')
+                                if ($clone[$index]['value'] == 'SI' /*|| $clone[$index]['value'] == 'N/A'*/)
+                                {
+                                    $clone_report[$index]['total'] += 1;
                                     $clone_report[$index]['total_c'] += 1;
+                                }
+                                else if ($clone[$index]['value'] == 'NO')
+                                {
+                                    $clone_report[$index]['total'] += 1;
+                                }
                             }
                         }
-                        else 
+                        /*else 
                         {
+                            \Log::info('n/a');
                             $clone_report[$index]['total_c'] += 1;
-                        }
+                        }*/
 
-                        $clone_report[$index]['percentage'] = round(($clone_report[$index]['total_c'] / $clone_report[$index]['total']) * 100, 1);
+                        if ($clone_report[$index]['total'] == 0)
+                        {
+                            $clone_report[$index]['percentage'] = 0;
+                        }
+                        else
+                        {
+                            $clone_report[$index]['percentage'] = round(($clone_report[$index]['total_c'] / $clone_report[$index]['total']) * 100, 1);
+                        }
                     }
 
                     $item->ratings = $clone;
@@ -615,7 +629,12 @@ class EvaluationContractController extends Controller
 
                 foreach ($report_total as $key => $value)
                 {
-                    $report_total[$key]['percentage'] = round(($value['total_c'] / $value['total']) * 100, 1);
+                    if ($value['total'] == 0)
+                    {
+                        $report_total[$key]['percentage'] = 0;
+                    }
+                    else
+                        $report_total[$key]['percentage'] = round(($value['total_c'] / $value['total']) * 100, 1);
                 }
             }
         }
@@ -753,7 +772,7 @@ class EvaluationContractController extends Controller
                     COUNT(DISTINCT ec.id) as t_evaluations,
                     SUM(IF(eir.value = 'NO' OR eir.value = 'pending', 1, 0)) AS t_no_cumple,
                     SUM(IF(eir.value = 'SI', 1,
-                            IF(eir.value IS NULL AND eir.item_id IS NOT NULL, 1,
+                            IF(eir.value IS NULL AND eir.item_id IS NOT NULL, 0,
                                 IF(eir.value IS NULL AND eir.item_id IS NULL,
                                     (SELECT 
                                             COUNT(etr.type_rating_id)
@@ -922,7 +941,7 @@ class EvaluationContractController extends Controller
                     COUNT(DISTINCT ec.id) as t_evaluations,
                     SUM(IF(eir.value = 'NO' OR eir.value = 'pending', 1, 0)) AS t_no_cumple,
                     SUM(IF(eir.value = 'SI', 1,
-                            IF(eir.value IS NULL AND eir.item_id IS NOT NULL, 1,
+                            IF(eir.value IS NULL AND eir.item_id IS NOT NULL, 0,
                                 IF(eir.value IS NULL AND eir.item_id IS NULL,
                                     (SELECT 
                                             COUNT(etr.type_rating_id)

@@ -7,7 +7,7 @@
     </b-form-row>
 
     <b-form-row>
-      <vue-input v-if="!isEdit" help-text="La contraseña es un campo opcional. En caso de no ingresar la contraseña se le enviará un correo al usuario para que sea él quien la configure." :disabled="viewOnly" class="col-md-6" v-model="form.password" label="Contraseña" type="password" name="password" :error="form.errorsFor('password')" placeholder="Contraseña"></vue-input>
+      <vue-input v-if="!isEdit" help-text="La contraseña debe contener mínimo 8 caracteres entre los cuales debe haber al menos un número y un caracter especial (@$!%?&*._-). Es un campo opcional. En caso de no ingresar la contraseña se le enviará un correo al usuario para que sea él quien la configure." :disabled="viewOnly" class="col-md-6" v-model="form.password" label="Contraseña" type="password" name="password" :error="form.errorsFor('password')" placeholder="Contraseña"></vue-input>
       <vue-input :disabled="viewOnly" class="col-md-6" v-model="form.document" label="Documento" type="text" name="document" :error="form.errorsFor('document')" placeholder="Documento"></vue-input>
     </b-form-row>
 
