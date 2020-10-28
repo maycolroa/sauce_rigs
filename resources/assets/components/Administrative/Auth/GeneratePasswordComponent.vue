@@ -17,6 +17,7 @@
                 label="Nueva contraseña"
                 name="password"
                 type="password"
+                help-text="La contraseña debe contener mínimo 8 caracteres entre los cuales debe haber al menos un número y un caracter especial (@$!%?&*._-)."
                 :autocomplete="true"
                 placeholder="Escribe tu nueva contraseña"
                 :error="form.errorsFor('password')"
