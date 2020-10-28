@@ -7,7 +7,7 @@
     </b-form-row>
 
     <b-form-row>
-      <vue-input class="col-md-12" v-model="form.password" label="Nueva Contraseña" type="password" name="password" :error="form.errorsFor('password')" placeholder="Nueva Contraseña"></vue-input>
+      <vue-input class="col-md-12" v-model="form.password" help-text="La contraseña debe contener mínimo 8 caracteres entre los cuales debe haber al menos un número y un caracter especial (@$!%?&*._-)." label="Nueva Contraseña" type="password" name="password" :error="form.errorsFor('password')" placeholder="Nueva Contraseña"></vue-input>
     </b-form-row>
 
     <b-form-row>

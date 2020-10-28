@@ -32,7 +32,8 @@ class UserRequest extends FormRequest
             'name'      => 'required|string',
             'email'     => 'required|email|unique:sau_users,email,' . $id . ',id',
             'document'  => 'required|numeric',
-            'password'  => 'nullable|string|min:6'
+            'password'  => ['nullable', 'regex:/^(?=.*\d)(?=.*[@$!%*?&._-])([A-Za-z\d@$!%*?&._-]|[^ ]){8,}$/']
+            //'email' => 'regex:/^.+@.+$/i'
         ];
 
         $team = Team::where('name', Session::get('company_id'))->first()->id;

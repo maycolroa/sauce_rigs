@@ -7,6 +7,7 @@ use Illuminate\Foundation\Auth\ResetsPasswords;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Auth\Events\PasswordReset;
+use App\Models\General\LogUserActivity;
 use App\Traits\ContractTrait;
 use App\Models\General\Team;
 use Carbon\Carbon;
@@ -145,5 +146,19 @@ class ResetPasswordController extends Controller
         $activity->company_id = Session::get('company_id');
         $activity->description = 'Inicio de sesión';
         $activity->save();
+    }
+
+    /**
+     * Get the password reset validation rules.
+     *
+     * @return array
+     */
+    protected function rules()
+    {
+        return [
+            'token' => 'required',
+            'email' => 'required|email',
+            'password' => ['required', 'regex:/^(?=.*\d)(?=.*[@$!%*?&._-])([A-Za-z\d@$!%*?&._-]|[^ ]){8,}$/', 'confirmed'],
+        ];
     }
 }

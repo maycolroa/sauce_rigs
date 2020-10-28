@@ -42,7 +42,7 @@ class GeneratePasswordController extends Controller
     {
 
         $validationPassword = $request->validate([
-            'password' => 'required|confirmed',
+            'password' => ['required', 'regex:/^(?=.*\d)(?=.*[@$!%*?&._-])([A-Za-z\d@$!%*?&._-]|[^ ]){8,}$/', 'confirmed']
         ]);
 
         $user = User::findOrFail($id);

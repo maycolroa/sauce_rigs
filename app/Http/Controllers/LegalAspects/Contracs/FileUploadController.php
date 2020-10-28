@@ -136,7 +136,7 @@ class FileUploadController extends Controller
 
         DB::commit();
 
-        $this->sendNotification($fileUpload);
+        //$this->sendNotification($fileUpload);
       }
       catch(\Exception $e) {
         DB::rollback();
@@ -278,7 +278,7 @@ class FileUploadController extends Controller
 
         DB::commit();
 
-        $this->sendNotification($fileUpload, 'actualizado');
+        //$this->sendNotification($fileUpload, 'actualizado');
       }
       catch(\Exception $e) {
         DB::rollback();
@@ -349,7 +349,7 @@ class FileUploadController extends Controller
       return true;
     }
 
-    private function sendNotification($fileUpload, $type_action = 'creado')
+    /*private function sendNotification($fileUpload, $type_action = 'creado')
     {
       if ($this->user->hasRole('Arrendatario', $this->company) || $this->user->hasRole('Contratista', $this->company))
       {
@@ -385,7 +385,7 @@ class FileUploadController extends Controller
           ->company($this->company)
           ->send();
       }
-    }
+    }*/
 
      /**
      * Display the specified resource.
