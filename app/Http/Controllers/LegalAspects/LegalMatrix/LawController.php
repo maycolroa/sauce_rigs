@@ -630,6 +630,8 @@ class LawController extends Controller
 
                 ActionPlan::sendMail();
 
+                $data['fulfillment_value_id'] = (int) $qualification->fulfillment_value_id;
+
             }, 3);
 
             return $this->respondHttp200([
