@@ -46,11 +46,11 @@
             <p class="mb-0">Filtrar por:</p>
           </blockquote>
           <b-form-row>
-            <vue-advanced-select @change="resetReloadShowArticles" class="col-md-4" v-model="filterQualification" :options="filterQualificationOptions" :hide-selected="false" name="filterQualification" label="Calificación" placeholder="Seleccione la Calificación">
+            <vue-advanced-select @input="resetReloadShowArticles" class="col-md-4" v-model="filterQualification" :options="filterQualificationOptions" :hide-selected="false" name="filterQualification" label="Calificación" placeholder="Seleccione la Calificación">
                     </vue-advanced-select>
-            <vue-advanced-select @change="resetReloadShowArticles" class="col-md-4" v-model="filterRepealed" :options="siNo" :hide-selected="false" name="filterRepealed" label="Derogado" placeholder="Seleccione una opción">
+            <vue-advanced-select @input="resetReloadShowArticles" class="col-md-4" v-model="filterRepealed" :options="siNo" :hide-selected="false" name="filterRepealed" label="Derogado" placeholder="Seleccione una opción">
                     </vue-advanced-select>
-            <vue-advanced-select @change="resetReloadShowArticles" class="col-md-4" v-model="filterInterests" :multiple="true" :options="filterInterestsOptions" :allowEmpty="true" name="filterInterests" label="Intereses" placeholder="Seleccione los intereses">
+            <vue-advanced-select @input="resetReloadShowArticles" class="col-md-4" v-model="filterInterests" :multiple="true" :options="filterInterestsOptions" :allowEmpty="true" name="filterInterests" label="Intereses" placeholder="Seleccione los intereses">
                     </vue-advanced-select>
           </b-form-row>
           <blockquote class="blockquote text-center">
@@ -63,7 +63,7 @@
 
               <b-card  bg-variant="transparent"  title="" class="mb-3 box-shadow-none">
                 <b-form-row>
-                  <vue-advanced-select ref="qualificationAll" :disabled="viewOnly" class="col-md-6" v-model="fulfillment_value_id" :multiple="false" :options="qualifications" name="fulfillment_value_id_all" label="Evaluación" @selectedName="updateQualifyAll"/>
+                  <vue-advanced-select ref="qualificationAll" :disabled="viewOnly" class="col-md-6" v-model="fulfillment_value_id" :multiple="false" :options="qualifications" name="fulfillment_value_id" label="Evaluación" @selectedName="updateQualifyAll"/>
                   <vue-input :disabled="viewOnly" class="col-md-6" v-model="responsible" label="Responsable" type="text" name="responsible" placeholder="Responsable"/>
                 </b-form-row>
                 <b-form-row>
@@ -102,7 +102,8 @@
                               <span class="fas fa-book-open"></span>
                           </b-btn>
                         </b-button-group>
-                        <b-modal :ref="`modalArticle${index}`" :hideFooter="true" :id="`modals-default-${index+1}`" class="modal-top" size="lg">
+
+                        <b-modal :ref="`modalArticle${index}`" :hideFooter="true" :id="`modals-default-${index+1}`" class="modal-top" size="lg" @hidden="hideModal(`modalArticle${index}`)">
                           <div slot="modal-title">
                             Última modificación: <span class="font-weight-light">{{ article.updated_at }}</span><br>
                             Derogado: <span class="font-weight-light">{{ article.repealed }}</span>
@@ -119,6 +120,26 @@
                                 <div>{{ article.description }}<br><br></div>
                               </b-col>
                             </b-row>
+                            
+                            <b-form-row>
+                              <vue-advanced-select :ref="`qualification2${index}`" @input="syncArticleFull(index)"  :disabled="viewOnly" class="col-md-6" v-model="article.fulfillment_value_id" :options="qualifications" name="fulfillment_value_id" label="Evaluación"></vue-advanced-select>
+
+                              <vue-input @onBlur="saveArticleQualification(index)" :disabled="viewOnly" class="col-md-6" v-model="article.responsible" label="Responsable" type="text" name="responsible" :error="form.errorsFor('responsible')" placeholder="Responsable"></vue-input>
+                            </b-form-row>
+                            <b-form-row>
+                              <vue-textarea @onBlur="saveArticleQualification(index)" :disabled="viewOnly" class="col-md-12" v-model="article.observations" label="Observaciones" name="observations" placeholder="Observaciones" :error="form.errorsFor(`observations`)" rows="3"></vue-textarea>
+                            </b-form-row>
+
+                            <b-form-row> 
+                              <vue-file-simple v-if="article.qualify && article.qualify != 'No cumple' && article.qualify && article.qualify != 'Parcial'" :help-text="article.old_file ? `Para descargar el archivo actual, haga click <a href='/legalAspects/legalMatrix/law/downloadArticleQualify/${article.qualification_id}' target='blank'>aqui</a> `: null" :disabled="viewOnly" class="col-md-6" @input="saveArticleQualification(index)" accept=".pdf" v-model="article.file" label="Archivo (*.pdf)" name="file" :error="form.errorsFor('file')" placeholder="Seleccione un archivo" :maxFileSize="20"></vue-file-simple>
+
+                              <div style="padding-top: 25px;" v-if="isEdit">
+                                <b-btn v-if="article.qualify && article.qualify != 'No cumple' && article.qualify != 'Parcial' && article.file" @click="deleteFile(index)" variant="primary"><span class="ion ion-md-close-circle"></span> Eliminar Archivo</b-btn>
+                              </div>
+
+                              <!-- NO CUMPLE -->
+                              <b-btn v-if="article.qualify == 'No cumple' || article.qualify == 'Parcial'" @click="showModal(`modalPlan${index}`)" variant="primary"><span class="lnr lnr-bookmark"></span> Plan de acción</b-btn>
+                            </b-form-row>
                           </b-card>
                           <br>
                           <div class="row float-right pt-12 pr-12y">
@@ -147,7 +168,7 @@
                   <hr class="border-light container-m--x mt-0 mb-4">
 
                   <b-form-row>
-                    <vue-advanced-select @selectedName="updateQualify($event, index)" :disabled="viewOnly" class="col-md-6" v-model="article.fulfillment_value_id" :options="qualifications" :allow-empty="false" :name="`fulfillment_value_id_${article.id}`" label="Evaluación"/>
+                    <vue-advanced-select :ref="`qualification${index}`" @selectedName="updateQualify($event, index)" :disabled="viewOnly" class="col-md-6" v-model="article.fulfillment_value_id" :options="qualifications" :allow-empty="false" name="fulfillment_value_id" label="Evaluación"/>
 
                     <vue-input @onBlur="saveArticleQualification(index)" :disabled="viewOnly" class="col-md-6" v-model="article.responsible" label="Responsable" name="responsible" :error="form.errorsFor('responsible')" placeholder="Responsable"/>
                   </b-form-row>
@@ -330,6 +351,7 @@ export default {
       filterRepealed: '',
       filterInterests: '',
       activateEvent: false,
+      activateEventModal: false,
       fulfillment_value_id: '',
       responsible: '',
       observations: '',
@@ -341,16 +363,16 @@ export default {
       textBlock: 'Cargando...'
     };
   },
+  created() {
+    this.builderFilterQualificationOptions();
+    this.reloadShowArticles();
+  },
   mounted() {
     setTimeout(() => {
       this.$nextTick(() => {
         this.activateEvent = true;
       });
     }, 5000)
-  },
-  created() {
-    this.builderFilterQualificationOptions();
-    this.reloadShowArticles();
   },
   methods: {
     resetReloadShowArticles() {
@@ -387,7 +409,6 @@ export default {
         }
 
         article.show_article = show;
-        article.key = !show ? new Date().getTime() + Math.round(Math.random() * 10000) : article.key;
         this.currentShow += show ? 1 : 0;
       });
 
@@ -427,9 +448,11 @@ export default {
       this.idHistory = id
     },
     showModal(ref) {
+      this.activateEventModal = true;
 			this.$refs[ref][0].show();
 		},
 		hideModal(ref) {
+      this.activateEventModal = false;
 			this.$refs[ref][0].hide();
 		},
     closeModalHistory() {
@@ -448,11 +471,16 @@ export default {
       })
     },
     updateQualify(event, index) {
-      if (event) {
-        this.form.articles[index].qualify = event;
-        this.saveArticleQualification(index);
-        this.builderFilterQualificationOptions();
-      }
+      this.form.articles[index].qualify = event;
+      this.builderFilterQualificationOptions();
+
+      if (!this.activateEventModal)
+        this.$nextTick(() => {
+          if (this.$refs[`qualification2${index}`][0] != undefined)
+            this.$refs[`qualification2${index}`][0].refreshData();
+        });
+
+      this.saveArticleQualification(index);
     },
     deleteFile(index) {
       this.form.articles[index].file = null;
@@ -475,6 +503,16 @@ export default {
 			}
 
 			return result
+    },
+    syncArticleFull(index) {
+      console.log("llego")
+      if (this.activateEventModal)
+      {
+        this.$nextTick(() => {
+          if (this.$refs[`qualification${index}`][0] != undefined)
+            this.$refs[`qualification${index}`][0].refreshData();
+        })
+      }
     },
     updateQualifyAll(value) {
       this.qualifyName = value;
@@ -508,9 +546,29 @@ export default {
                 
               article.qualify = this.qualifyName;
               
+              //this.updateQualify(this.qualifyName, key);
+              //console.log("uno");
+              /*this.$nextTick(() => {
+                this.$refs[`qualification${key}`][0].refreshData();
+                this.$refs[`qualification2${key}`][0].refreshData();
+              })*/
+              
               this.saveArticleQualification(key);
             }
         });
+
+        /*this.$refs.modalQualificationAll.hide()
+        this.fulfillment_value_id = ''
+        this.observations = ''
+        this.responsible = ''
+        this.qualifyName = ''
+        this.$refs.qualificationAll.cleanData()
+        
+        setTimeout(() => {
+          this.loadingAlternativo = false;
+        }, 3000);
+
+        this.builderFilterQualificationOptions();*/
       }
       else
       {
@@ -560,6 +618,9 @@ export default {
             //this.loading = false;
           });
       }
+
+      /*if (this.form.articles.length == (index + 1))
+        this.activateEvent = true;*/
     }
   }
 };
