@@ -69,7 +69,8 @@ export default {
         Alerts.warning('Información', 'Se inicio la importación, se le notificara a su correo electronico cuando finalice el proceso.');
       }).catch(error => {
         Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
-      });    },
+      });    
+    },
     importMessage() {
       this.toggleModalConfirmationImport(true)
     },

@@ -43,7 +43,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('templates/audiometryimport','PreventiveOccupationalMedicine\BiologicalMonitoring\AudiometryController@downloadTemplateImport');
     Route::get('templates/employeeimport','Administrative\Employees\EmployeesController@downloadTemplateImport');    
     Route::get('templates/dangermatriximport','IndustrialSecure\DangerMatrix\DangerMatrixController@downloadTemplateImport');
-    Route::get('templates/contractimport','LegalAspects\Contracs\ContractLesseeController@downloadTemplateImport');  
+    Route::get('templates/contractimport','LegalAspects\Contracs\ContractLesseeController@downloadTemplateImport');
+    Route::get('templates/legalmatriximport','LegalAspects\LegalMatrix\LawController@downloadTemplateImport');  
 
 	//Cerrar sesión 
 	Route::get('/logout', 'Auth\LoginController@logout')->name('logout');
