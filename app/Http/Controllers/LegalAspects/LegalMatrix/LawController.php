@@ -17,7 +17,7 @@ use App\Traits\Filtertrait;
 use App\Facades\ActionPlans\Facades\ActionPlan;
 use App\Http\Requests\LegalAspects\LegalMatrix\LawRequest;
 use App\Http\Requests\LegalAspects\LegalMatrix\SaveArticlesQualificationRequest;
-use App\Exports\LegalAspects\LegalMatrix\LegalMatrixImportTemplate;
+use App\Exports\LegalAspects\LegalMatrix\LegalMatrixImport;
 //use App\Jobs\LegalAspects\LegalMatrix\LawImportJob;
 use Carbon\Carbon;
 use Maatwebsite\Excel\Facades\Excel;
@@ -693,7 +693,7 @@ class LawController extends Controller
 
     public function downloadTemplateImport()
     {
-        return Excel::download(new LegalMatrixImportTemplate(collect([]), $this->company), 'PlantillaImportacionLeyes.xlsx');
+        return Excel::download(new LegalMatrixImport($this->company), 'PlantillaImportacionLeyes.xlsx');
     }
 
     /*public function import(Request $request)

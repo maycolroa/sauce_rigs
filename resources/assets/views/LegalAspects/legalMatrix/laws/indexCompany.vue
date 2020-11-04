@@ -12,8 +12,8 @@
           <div class="card-title-elements"> 
             <b-btn :to="{name:'legalaspects-lm-law-company-create'}" variant="primary">Crear Norma</b-btn>
             <b-btn variant="primary" href="/templates/legalmatriximport" target="blank" v-b-tooltip.top title="Generar Plantilla"><i class="fas fa-file-alt"></i></b-btn>
-            <b-btn variant="primary" @click="importMessage()" v-b-tooltip.top title="Importar"><i class="fas fa-upload"></i></b-btn>
-            <input id="fileInputImport" type="file" style="display:none" v-on:input="importLegalMatrix"/>
+            <!--<b-btn variant="primary" @click="importMessage()" v-b-tooltip.top title="Importar"><i class="fas fa-upload"></i></b-btn>
+            <input id="fileInputImport" type="file" style="display:none" v-on:input="importLegalMatrix"/>-->
           </div>
         </b-card-header>
         <b-card-body>
@@ -25,7 +25,7 @@
         </b-card-body>
     </b-card>
 
-     <!-- modal confirmation for import -->
+     <!-- modal confirmation for import 
     <b-modal ref="modalConfirmationImport" class="modal-slide" hide-header hide-footer>
       <p class="text-justific mb-4">
         Estimado Usuario para realizar la importación el archivo debe cumplir lo siguiente:<br><br>
@@ -39,7 +39,7 @@
       </p>
       <b-btn block variant="primary" @click="importConfirmation()">Aceptar</b-btn>
       <b-btn block variant="default" @click="toggleModalConfirmationImport(false)">Cancelar</b-btn>
-    </b-modal>
+    </b-modal>-->
 
     </div>
   </div>

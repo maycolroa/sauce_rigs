@@ -59,17 +59,17 @@ class LegalMatrixImportTemplate implements FromCollection, WithHeadings, WithMap
       $columns = [
         'Nombre(*)',
         'Número(*)',
-        'Tipo(*)',
+        'Tipo (Los posibles valores se encuentran en la pestaña Tipos de Leyes)(*)',
         'Año(*)',
         'Sistema que aplica(*)',
         'Descripción(*)',
         'Observación',
-        'Tema ambiental(*)',
+        'Tema ambiental (Los posibles valores se encuentran en la pestaña Temas ambientales)(*)',
         'Ente(*)',
-        'Tema SST(*)',
+        'Tema SST (Los posibles valores se encuentran en la pestaña Temas SST)(*)',
         'Dereogada(*)',
         'Desripcion del artículo(*)',
-        'Intereses del artículo (Si son varios separarlos por coma)(*)'
+        'Intereses del artículo (Si son varios separarlos por coma)(Los posibles valores se encuentran en la pestaña Intereses)(*)'
       ];
 
       return $columns;
