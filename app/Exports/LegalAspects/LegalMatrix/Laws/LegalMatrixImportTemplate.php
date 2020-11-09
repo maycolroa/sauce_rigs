@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Exports\LegalAspects\LegalMatrix;
+namespace App\Exports\LegalAspects\LegalMatrix\Laws;
 
 use PhpOffice\PhpSpreadsheet\Shared\Date;
 use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
@@ -65,11 +65,12 @@ class LegalMatrixImportTemplate implements FromCollection, WithHeadings, WithMap
         'Descripción(*)',
         'Observación',
         'Tema ambiental (Los posibles valores se encuentran en la pestaña Temas ambientales)(*)',
-        'Ente(*)',
+        'Ente(Los posibles valores se encuentran en la pestaña Entes)(*)',
         'Tema SST (Los posibles valores se encuentran en la pestaña Temas SST)(*)',
         'Dereogada(*)',
         'Desripcion del artículo(*)',
-        'Intereses del artículo (Si son varios separarlos por coma)(Los posibles valores se encuentran en la pestaña Intereses)(*)'
+        'Intereses del artículo (Si son varios separarlos por coma)(Los posibles valores se encuentran en la pestaña Intereses)(*)',
+        'Artículo derogado (SI, NO)'
       ];
 
       return $columns;

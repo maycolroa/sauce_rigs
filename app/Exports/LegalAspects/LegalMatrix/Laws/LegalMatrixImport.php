@@ -1,14 +1,15 @@
 <?php
 
-namespace App\Exports\LegalAspects\LegalMatrix;
+namespace App\Exports\LegalAspects\LegalMatrix\Laws;
 
 use Maatwebsite\Excel\Concerns\Exportable;
 use Maatwebsite\Excel\Concerns\WithMultipleSheets;
-use App\Exports\LegalAspects\LegalMatrix\LegalMatrixImportTemplate;
-use App\Exports\LegalAspects\LegalMatrix\InterestTemplate;
-use App\Exports\LegalAspects\LegalMatrix\LawTypeTemplate;
-use App\Exports\LegalAspects\LegalMatrix\RiskAspectstTemplate;
-use App\Exports\LegalAspects\LegalMatrix\SstRiskTemplate;
+use App\Exports\LegalAspects\LegalMatrix\Laws\LegalMatrixImportTemplate;
+use App\Exports\LegalAspects\LegalMatrix\Laws\InterestTemplate;
+use App\Exports\LegalAspects\LegalMatrix\Laws\LawTypeTemplate;
+use App\Exports\LegalAspects\LegalMatrix\Laws\RiskAspectstTemplate;
+use App\Exports\LegalAspects\LegalMatrix\Laws\SstRiskTemplate;
+use App\Exports\LegalAspects\LegalMatrix\Laws\EntityTemplate;
 
 class LegalMatrixImport implements WithMultipleSheets
 {
@@ -33,6 +34,7 @@ class LegalMatrixImport implements WithMultipleSheets
         $sheets[] = new LawTypeTemplate($this->company_id);
         $sheets[] = new RiskAspectstTemplate($this->company_id);
         $sheets[] = new SstRiskTemplate($this->company_id);
+        $sheets[] = new EntityTemplate($this->company_id);
 
         return $sheets;
     }

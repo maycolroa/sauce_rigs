@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Jobs\LegalAspects\Contracts\Contractor;
+namespace App\Jobs\LegalAspects\LegalMatrix;
 
 use Illuminate\Bus\Queueable;
 use Illuminate\Queue\SerializesModels;
@@ -10,7 +10,7 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 use Maatwebsite\Excel\Facades\Excel;
-//use App\Imports\LegalAspects\LawImport;
+use App\Imports\LegalAspects\LawImport;
 
 class LawImportJob implements ShouldQueue
 {
@@ -22,7 +22,7 @@ class LawImportJob implements ShouldQueue
 
     public function __construct(UploadedFile $file, $company_id, $user)
     {
-      $this->nameFile = 'contract_'.date("YmdHis").'.xlsx';
+      $this->nameFile = 'law'.date("YmdHis").'.xlsx';
       Storage::disk('public')->putFileAs('import/1', $file, $this->nameFile);
       $this->company_id = $company_id;
       $this->user = $user;
@@ -35,7 +35,7 @@ class LawImportJob implements ShouldQueue
      */
     public function handle()
     {
-      Excel::import(new ContractImport($this->company_id, $this->user), "/import/1/$this->nameFile", 'public');
+      Excel::import(new LawImport($this->company_id, $this->user), "/import/1/$this->nameFile", 'public');
       Storage::disk('public')->delete('import/1/'. $this->nameFile);
     }
 }
