@@ -644,7 +644,7 @@ class EvaluationContractController extends Controller
         $evaluation_base->report_total = $report_total->push([
             'total' => $report_total->sum('total'),
             'total_c' => $report_total->sum('total_c'),
-            'percentage' => round(($report_total->sum('total_c') / $report_total->sum('total')) * 100, 1),
+            'percentage' => $report_total->sum('total') > 0 ? round(($report_total->sum('total_c') / $report_total->sum('total')) * 100, 1) : 0,
             'category' => 'Total'
         ]);
 
