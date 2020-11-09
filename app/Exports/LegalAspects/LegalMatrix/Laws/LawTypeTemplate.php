@@ -1,8 +1,8 @@
 <?php 
 
-namespace App\Exports\LegalAspects\LegalMatrix;
+namespace App\Exports\LegalAspects\LegalMatrix\Laws;
 
-use App\Models\LegalAspects\LegalMatrix\RiskAspect;
+use App\Models\LegalAspects\LegalMatrix\LawType;
 use Maatwebsite\Excel\Concerns\FromQuery;
 use Maatwebsite\Excel\Concerns\WithMapping;
 use Maatwebsite\Excel\Concerns\WithHeadings;
@@ -13,7 +13,7 @@ use Maatwebsite\Excel\Events\AfterSheet;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 use App\Traits\UtilsTrait;
 
-class RiskAspectstTemplate implements FromQuery, WithMapping, WithHeadings, WithTitle, WithEvents, ShouldAutoSize
+class LawTypeTemplate implements FromQuery, WithMapping, WithHeadings, WithTitle, WithEvents, ShouldAutoSize
 {
     use RegistersEventListeners;
     use UtilsTrait;
@@ -28,10 +28,10 @@ class RiskAspectstTemplate implements FromQuery, WithMapping, WithHeadings, With
     /**
     * @var eps $eps
     */
-    public function map($risk): array
+    public function map($lawsType): array
     {
         return [
-            $risk->name
+            $lawsType->name
         ];
     }
 
@@ -47,14 +47,14 @@ class RiskAspectstTemplate implements FromQuery, WithMapping, WithHeadings, With
     */
     public function title(): string
     {
-        return 'Temas Ambientales';
+        return 'Tipos de Leyes';
     }
 
     public function query()
     {
-        $risk = RiskAspect::select('name');
+        $lawsType = LawType::select('name');
         
-        return $risk;    
+        return $lawsType;    
     }
 
     public static function afterSheet(AfterSheet $event)

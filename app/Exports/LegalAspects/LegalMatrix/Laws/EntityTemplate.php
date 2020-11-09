@@ -1,8 +1,8 @@
 <?php 
 
-namespace App\Exports\LegalAspects\LegalMatrix;
+namespace App\Exports\LegalAspects\LegalMatrix\Laws;
 
-use App\Models\LegalAspects\LegalMatrix\LawType;
+use App\Models\LegalAspects\LegalMatrix\Entity;
 use Maatwebsite\Excel\Concerns\FromQuery;
 use Maatwebsite\Excel\Concerns\WithMapping;
 use Maatwebsite\Excel\Concerns\WithHeadings;
@@ -13,7 +13,7 @@ use Maatwebsite\Excel\Events\AfterSheet;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 use App\Traits\UtilsTrait;
 
-class LawTypeTemplate implements FromQuery, WithMapping, WithHeadings, WithTitle, WithEvents, ShouldAutoSize
+class EntityTemplate implements FromQuery, WithMapping, WithHeadings, WithTitle, WithEvents, ShouldAutoSize
 {
     use RegistersEventListeners;
     use UtilsTrait;
@@ -28,10 +28,10 @@ class LawTypeTemplate implements FromQuery, WithMapping, WithHeadings, WithTitle
     /**
     * @var eps $eps
     */
-    public function map($lawsType): array
+    public function map($entity): array
     {
         return [
-            $lawsType->name
+            $entity->name
         ];
     }
 
@@ -47,14 +47,15 @@ class LawTypeTemplate implements FromQuery, WithMapping, WithHeadings, WithTitle
     */
     public function title(): string
     {
-        return 'Tipos de Leyes';
+        return 'Entes';
     }
 
     public function query()
     {
-        $lawsType = LawType::select('name');
-        
-        return $lawsType;    
+        $entities = Entity::select('name')
+        ->where('company_id', $this->company_id);
+
+        return $entities;    
     }
 
     public static function afterSheet(AfterSheet $event)

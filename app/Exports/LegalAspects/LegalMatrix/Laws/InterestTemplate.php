@@ -1,6 +1,6 @@
 <?php 
 
-namespace App\Exports\LegalAspects\LegalMatrix;
+namespace App\Exports\LegalAspects\LegalMatrix\Laws;
 
 use App\Models\LegalAspects\LegalMatrix\Interest;
 use Maatwebsite\Excel\Concerns\FromQuery;

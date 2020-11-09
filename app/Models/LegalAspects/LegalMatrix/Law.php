@@ -37,7 +37,8 @@ class Law extends Model
         'entity_id',
         'sst_risk_id',
         'repealed',
-        'file'
+        'file',
+        'company_id'
     ];
 
     public $scope_table_for_company_table = 'sau_lm_company_interest';
