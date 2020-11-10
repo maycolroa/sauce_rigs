@@ -30,7 +30,7 @@ class ActionPlanController extends Controller
         $this->middleware("permission:actionPlans_r, {$this->team}");
         $this->middleware("permission:actionPlans_u, {$this->team}", ['only' => 'update']);
         $this->middleware("permission:actionPlans_export, {$this->team}", ['only' => 'export']);
-        //$this->middleware("permission:actionPlans_d, {$this->team}", ['only' => 'destroy']);
+        $this->middleware("permission:action_plan_activities_d, {$this->team}", ['only' => 'destroy']);
     }
 
     /**
@@ -262,5 +262,17 @@ class ActionPlanController extends Controller
         $users = $users->pluck('id', 'name');
 
         return $this->multiSelectFormat($users);
+    }
+
+     public function destroy($id)
+    {
+        $activity = ActionPlansActivity::where('id', $id);
+
+        if(!$activity->delete())
+            return $this->respondHttp500();
+        
+        return $this->respondHttp200([
+            'message' => 'Se elimino la actividad'
+        ]);
     }
 }

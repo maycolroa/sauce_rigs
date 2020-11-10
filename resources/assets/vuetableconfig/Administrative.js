@@ -497,7 +497,15 @@ export default [
     },
     {
       type: 'base',
-      buttons: [],
+      buttons: [{
+        name: 'delete',
+        data: {
+            action: '/administration/actionplan/deleteActivity/',
+            id: 'id',
+            messageConfirmation: 'Esta seguro de borrar la actividad'
+        },
+        permission: 'action_plan_activities_d'
+        }],
     }],
     configuration: {
       urlData: '/administration/actionplan/data',

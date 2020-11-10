@@ -30,6 +30,10 @@
                     {
                         "name": "actionPlans_receive_notifications",
                         "display_name": "Planes de acción - recibir notificaciones"
+                    },
+                    {
+                        "name": "action_plan_activities_d",
+                        "display_name": "Planes de acción - borrar actividades"
                     }
                 ]
             }

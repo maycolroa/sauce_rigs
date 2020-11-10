@@ -523,7 +523,7 @@ export default {
       {
         let article = this.form.articles[index]
 
-        if (article.fulfillment_value_id != 3 && article.fulfillment_value_id != 5)//No cumple
+        /*if (article.fulfillment_value_id != 3 && article.fulfillment_value_id != 5)//No cumple
         {
           if (typeof article.actionPlan !== 'undefined')
           {
@@ -534,7 +534,7 @@ export default {
 
             article.actionPlan.activities = [];
           }
-        }
+        }*/
         
         let data = new FormData();
         data.append('id', article.id);
