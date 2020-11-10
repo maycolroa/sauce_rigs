@@ -327,6 +327,7 @@ Route::middleware(['auth'])->group(function () {
 
       Route::post('actionplan/data', 'Administrative\ActionPlans\ActionPlanController@data');
       Route::post('actionplan/export', 'Administrative\ActionPlans\ActionPlanController@export');
+      Route::delete('actionplan/deleteActivity/{id}', 'Administrative\ActionPlans\ActionPlanController@destroy');
       Route::ApiResource('actionplan', 'Administrative\ActionPlans\ActionPlanController');
 
       Route::get('logo/download', 'Administrative\Logos\LogoController@download');
