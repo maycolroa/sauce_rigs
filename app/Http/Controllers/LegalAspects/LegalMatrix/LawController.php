@@ -508,7 +508,7 @@ class LawController extends Controller
                   })
                 ->join('sau_lm_company_interest','sau_lm_company_interest.interest_id', 'sau_lm_article_interest.interest_id')
                 ->groupBy('sau_lm_articles.id')
-                ->where('sau_lm_articles.law_id', $law->id)
+                //->where('sau_lm_articles.law_id', $law->id)
                 ->orderBy('sau_lm_articles.sequence')
                 ->get();
 
@@ -559,6 +559,29 @@ class LawController extends Controller
             ]);
 
         } catch(Exception $e){
+            return $this->respondHttp500();
+        }
+    }
+
+    public function saveArticlesQualificationAlls(SaveArticlesQualificationRequest $request)
+    {
+        \Log::info($request);
+        
+        try
+        {
+            $ids = explode(',', $request->id);
+            $qualification = ArticleFulfillment::whereIn('id', $ids)
+            ->update([
+                'fulfillment_value_id' => $request->fulfillment_value_id ? $request->fulfillment_value_id : NULL,
+                'observations' => $request->observations ? $request->observations : NULL,
+                'responsible' => $request->responsible ? $request->responsible : NULL,
+            ]);
+
+            if (!$qualification) {
+                    return $this->respondHttp500();
+            }
+
+        } catch (Exception $e){
             return $this->respondHttp500();
         }
     }
