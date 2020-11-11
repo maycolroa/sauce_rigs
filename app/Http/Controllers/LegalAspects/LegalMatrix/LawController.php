@@ -564,9 +564,7 @@ class LawController extends Controller
     }
 
     public function saveArticlesQualificationAlls(SaveArticlesQualificationRequest $request)
-    {
-        \Log::info($request);
-        
+    {        
         try
         {
             $ids = explode(',', $request->id);

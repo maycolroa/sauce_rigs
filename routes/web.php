@@ -177,6 +177,7 @@ Route::middleware(['auth'])->group(function () {
         Route::post('dmGeneratedDangers', 'General\MultiSelectRadioController@dmGeneratedDangers');
         Route::post('tagsAdministrativeControls', 'IndustrialSecure\Tags\TagController@multiselectAdministrativeControls');
         Route::post('tagsEngineeringControls', 'IndustrialSecure\Tags\TagController@multiselectEngineeringControls');
+        Route::post('tagsHistoryChange', 'IndustrialSecure\Tags\TagController@multiselectHistoryChange');
         Route::post('tagsEpp', 'IndustrialSecure\Tags\TagController@multiselectEpp');
         Route::post('tagsPossibleConsequencesDanger', 'IndustrialSecure\Tags\TagController@multiselectPossibleConsequencesDanger');
         Route::post('tagsWarningSignage', 'IndustrialSecure\Tags\TagController@multiselectWarningSignage');
