@@ -18,6 +18,7 @@ use App\Models\IndustrialSecure\DangerMatrix\TagsWarningSignage;
 use App\Models\IndustrialSecure\DangerMatrix\TagsSubstitution;
 use App\Models\IndustrialSecure\DangerMatrix\TagsParticipant;
 use App\Models\IndustrialSecure\DangerMatrix\TagsDangerDescription;
+use App\Models\IndustrialSecure\DangerMatrix\TagsHistoryChange;
 use App\Models\IndustrialSecure\DangerMatrix\ChangeHistory;
 use App\Jobs\IndustrialSecure\DangerMatrix\DangerMatrixExportJob;
 use App\Facades\ActionPlans\Facades\ActionPlan;
@@ -231,6 +232,15 @@ class DangerMatrixController extends Controller
             }
         }
 
+        if ($request->has('changeHistory') && $request->get('changeHistory'))
+        {
+            foreach ($request->get('changeHistory') as $key => $value)
+            {
+                $data5['changeHistory'][$key] = json_decode($value, true);
+                $request->merge($data5);
+            }
+        }
+
         $id = null;
 
         if ($dangerMatrix)
@@ -305,9 +315,12 @@ class DangerMatrixController extends Controller
             {
                 $msg = 'Se actualizo la matriz de peligro';
 
+                $history_change = $this->tagsPrepare($request->get('changeHistory'));
+                $this->tagsSave($history_change, TagsHistoryChange::class);
+
                 $dangerMatrix->histories()->create([
                     'user_id' => $this->user->id,
-                    'description' => $request->get('changeHistory')
+                    'description' => $history_change->implode(',')
                 ]);
             }
             else

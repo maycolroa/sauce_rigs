@@ -77,7 +77,7 @@
       </b-form-row>
 
       <b-form-row v-if="isEdit">
-        <vue-textarea class="col-md-12" v-model="form.changeHistory" label="Detalle de cambios realizados" name="changeHistory" :error="form.errorsFor('changeHistory')" placeholder="Detalle de cambios realizados"></vue-textarea>
+        <vue-ajax-advanced-select class="col-md-12" v-model="form.changeHistory" name="danger_description" :error="form.errorsFor('changeHistory')" label="Detalle de cambios realizados" placeholder="Seleccione los detalles de cambios realizados" :url="tagsHistoryChangeDataUrl" :multiple="true" :allowEmpty="true" :taggable="true"></vue-ajax-advanced-select>
       </b-form-row>
 
       <b-form-row v-if="viewOnly">
@@ -116,7 +116,6 @@ import Form from "@/utils/Form.js";
 import FormActivityComponent from '@/components/IndustrialSecure/DangerMatrix/FormActivityComponent.vue';
 import ModalsCreateComponent from '@/components/IndustrialSecure/DangerMatrix/ModalsCreateComponent.vue';
 import LocationLevelComponent from '@/components/CustomInputs/LocationLevelComponent.vue';
-import VueTextarea from "@/components/Inputs/VueTextarea.vue";
 import VueAjaxAdvancedSelect from "@/components/Inputs/VueAjaxAdvancedSelect.vue";
 
 export default {
@@ -125,7 +124,6 @@ export default {
     FormActivityComponent,
     ModalsCreateComponent,
     LocationLevelComponent,
-    VueTextarea,
     VueAjaxAdvancedSelect
   },
   props: {
@@ -210,7 +208,8 @@ export default {
     return {
       loading: false,
       form: Form.makeFrom(this.dangerMatrix, this.method),
-      configLocation: {}
+      configLocation: {},      
+      tagsHistoryChangeDataUrl: '/selects/tagsHistoryChange'
     };
   },
   methods: {
