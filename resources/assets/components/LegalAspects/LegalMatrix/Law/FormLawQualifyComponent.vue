@@ -484,6 +484,43 @@ export default {
       if (this.fulfillment_value_id != '')
       {
         this.textBlock = 'Guardando...';
+        this.loadingAlternativo = true;        
+        let data = new FormData();
+        let ids = [];
+
+        _.forIn(this.form.articles, (article, key) => {
+          if (article.show_article_real)
+            {
+              ids.push(article.qualification_id);
+            }       
+        });
+
+        data.append('id', ids);
+        data.append('observations', this.observations ? this.observations : '');
+        data.append('responsible', this.responsible ? this.responsible : '');
+        data.append('fulfillment_value_id', this.fulfillment_value_id);
+
+        this.form
+          .submit('/legalAspects/legalMatrix/law/saveArticlesQualificationAlls', false, data)
+          .then(response => {
+            this.textBlock = 'Recargando Página...';
+            setTimeout(() => {
+              location.reload();
+            }, 3000);
+          })
+          .catch(error => {
+          });
+      }
+      else
+      {
+        Alerts.error('Error', 'El campo calificación es requerido');
+      }
+    },
+    saveAllArticles11()
+    {
+      if (this.fulfillment_value_id != '')
+      {
+        this.textBlock = 'Guardando...';
         this.loadingAlternativo = true;
         this.eventSaveAll = true;
         this.totalAxios = 0;
@@ -553,10 +590,10 @@ export default {
             _.forIn(response.data.data, (value, key) => {
               article[key] = value
             })
-            this.currentAxios++;
+            //this.currentAxios++;
           })
           .catch(error => {
-            this.currentAxios++;
+            //this.currentAxios++;
             //this.loading = false;
           });
       }
