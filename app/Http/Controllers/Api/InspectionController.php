@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Models\IndustrialSecure\DangerousConditions\Inspections\Inspection;
+use App\Models\IndustrialSecure\DangerousConditions\Inspections\AdditionalFields;
 use App\Models\IndustrialSecure\DangerousConditions\Inspections\InspectionSection;
 use App\Models\IndustrialSecure\DangerousConditions\Inspections\InspectionSectionItem;
 use App\Models\IndustrialSecure\DangerousConditions\Inspections\InspectionItemsQualificationAreaLocation;
@@ -52,7 +53,8 @@ class InspectionController extends ApiController
         $inspections = Inspection::with([
             'themes' => function ($query) {
                 $query->with('items');
-            }
+            },
+            'additional_fields'
         ]);
 
         $inspections->company_scope = $request->company_id;
@@ -65,7 +67,8 @@ class InspectionController extends ApiController
                 'id' => $value->id,
                 'name' => $value->name,
                 'created_at' => $created_at,
-                'themes' => $value->themes
+                'themes' => $value->themes,
+                'additional_fields' => $value->additional_fields
             ]);
 
             $regionals = DB::table('sau_ph_inspection_regional')->where('inspection_id', $value->id)->pluck('employee_regional_id')->unique();

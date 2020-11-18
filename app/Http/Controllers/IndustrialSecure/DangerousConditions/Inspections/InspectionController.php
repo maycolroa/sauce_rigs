@@ -343,7 +343,7 @@ class InspectionController extends Controller
             InspectionSectionItem::destroy($data['items']);
 
         if (COUNT($data['additional_fields']) > 0)
-        AdditionalFields::destroy($data['additional_fields']);
+            AdditionalFields::destroy($data['additional_fields']);
     }
 
     /**
