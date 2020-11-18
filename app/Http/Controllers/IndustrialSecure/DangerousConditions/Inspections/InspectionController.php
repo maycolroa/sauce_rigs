@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Vuetable\Facades\Vuetable;
 use App\Models\IndustrialSecure\DangerousConditions\Inspections\Inspection;
+use App\Models\IndustrialSecure\DangerousConditions\Inspections\AdditionalFields;
 use App\Models\IndustrialSecure\DangerousConditions\Inspections\InspectionSection;
 use App\Models\IndustrialSecure\DangerousConditions\Inspections\InspectionSectionItem;
 use App\Models\Administrative\Headquarters\EmployeeHeadquarter;
@@ -125,6 +126,8 @@ class InspectionController extends Controller
                 return $this->respondHttp500();
 
             $this->saveLocation($inspection, $request);
+            
+            $this->saveAdditionalFields($inspection, $request->get('additional_fields'));
 
             $this->saveThemes($inspection, $request->get('themes'));
 
@@ -189,6 +192,11 @@ class InspectionController extends Controller
             $inspection->multiselect_area = $areas;
             $inspection->employee_area_id = $areas;
 
+            foreach ($inspection->additional_fields as $field)
+            {
+                $field->key = Carbon::now()->timestamp + rand(1,10000);
+            }
+
             foreach ($inspection->themes as $theme)
             {
                 $theme->key = Carbon::now()->timestamp + rand(1,10000);
@@ -200,6 +208,7 @@ class InspectionController extends Controller
             }
 
             $inspection->delete = [
+                'additional_fields' => [],
                 'themes' => [],
                 'items' => []
             ];
@@ -231,6 +240,8 @@ class InspectionController extends Controller
                 return $this->respondHttp500();
 
             $this->saveLocation($inspection, $request);
+            
+            $this->saveAdditionalFields($inspection, $request->get('additional_fields'));
 
             $this->saveThemes($inspection, $request->get('themes'));
 
@@ -259,6 +270,15 @@ class InspectionController extends Controller
     {
         
     }
+
+    public function saveAdditionalFields($inspection, $additional_fields)
+    {
+        foreach ($additional_fields as $field)
+        {
+            $id = isset($field['id']) ? $field['id'] : NULL;
+            $fieldNew = $inspection->additional_fields()->updateOrCreate(['id'=>$id], $field);
+        }
+    }    
 
     private function saveThemes($inspection, $themes)
     {
@@ -321,6 +341,9 @@ class InspectionController extends Controller
 
         if (COUNT($data['items']) > 0)
             InspectionSectionItem::destroy($data['items']);
+
+        if (COUNT($data['additional_fields']) > 0)
+        AdditionalFields::destroy($data['additional_fields']);
     }
 
     /**

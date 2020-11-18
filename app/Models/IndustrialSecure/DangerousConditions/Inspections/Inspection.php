@@ -26,6 +26,10 @@ class Inspection extends Model
     {
         return $this->hasMany(InspectionSection::class, 'inspection_id');
     }
+    public function additional_fields()
+    {
+        return $this->hasMany(AdditionalFields::class, 'inspection_id');
+    }
 
     /**
      * verifies if the check is open

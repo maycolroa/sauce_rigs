@@ -37,6 +37,44 @@
       </b-collapse>
     </b-card>
 
+   <b-card no-body class="mb-2 border-secondary" style="width: 100%;">
+     <b-card-header class="bg-secondary">
+        <b-row>
+          <b-col cols="11" class="d-flex justify-content-between"> Campos adicionales </b-col>
+          <b-col cols="1">
+            <div class="float-right">
+              <b-button-group>
+                <b-btn href="javascript:void(0)" v-b-toggle="'accordion-field'" variant="link">
+                  <span class="collapse-icon"></span>
+                </b-btn>
+              </b-button-group>
+            </div>
+          </b-col>
+        </b-row>
+      </b-card-header>
+      <b-collapse :id="`accordion-field`" visible :accordion="`accordion-master`">
+        <b-card-body>
+          <template v-for="(field, index) in form.additional_fields">
+            <div :key="index.key">
+                <b-form-row>
+                    <div class="col-md-12">
+                        <div class="float-right">
+                            <b-btn variant="outline-primary icon-btn borderless" size="sm" v-if="!viewOnly" v-b-tooltip.top title="Eliminar" @click.prevent="removeField(index)"><span class="ion ion-md-close-circle"></span></b-btn>
+                        </div>
+                    </div>
+                    <vue-input class="col-md-12" v-model="field.name" label="Nombre" name="field" type="text" placeholder="Nombre" :error="form.errorsFor(`field.${index}.name`)"></vue-input>
+                </b-form-row>
+            </div>
+          </template>
+          <b-form-row style="padding-bottom: 20px;">
+            <div class="col-md-12">
+                <center><b-btn variant="primary" v-if="!viewOnly" @click.prevent="addField()"><span class="ion ion-md-add-circle"></span>&nbsp;&nbsp;Agregar Campo</b-btn></center>
+            </div>
+          </b-form-row>
+        </b-card-body>
+      </b-collapse>
+    </b-card>
+
     <b-card no-body class="mb-2 border-secondary" style="width: 100%;">
       <b-card-header class="bg-secondary">
           <b-row>
@@ -190,6 +228,7 @@ export default {
           employee_headquarter_id: [],
           employee_area_id: [],
           employee_process_id: [],
+          additional_fields: [],
           themes: []
         };
       }
@@ -247,7 +286,20 @@ export default {
         this.form.delete.items.push(this.form.themes[indexTheme].items[index].id)
 
       this.form.themes[indexTheme].items.splice(index, 1)
-    }
+    },
+		addField() {
+	        this.form.additional_fields.push({
+	            key: new Date().getTime(),
+	            name: ''
+	        })
+	    },
+	    removeField(index)
+	    {
+	        if (this.form.additional_fields[index].id != undefined)
+        		this.form.delete.additional_fields.push(this.form.additional_fields[index].id)
+
+      		this.form.additional_fields.splice(index, 1)
+	    }
   }
 };
 </script>

@@ -37,6 +37,15 @@ class InspectionRequest extends FormRequest
             }
         }
 
+        if ($this->has('additional_fields'))
+        {
+            foreach ($this->input('additional_fields') as $key => $value)
+            {
+                $data['additional_fields'][$key] = json_decode($value, true);
+                $this->merge($data);
+            }
+        }
+
         if ($this->has('delete'))
         {
             $this->merge([
@@ -61,7 +70,8 @@ class InspectionRequest extends FormRequest
             'themes' => 'required|array',
             'themes.*.name' => 'required',
             'themes.*.items' => 'required|array',
-            'themes.*.items.*.description' => 'required'
+            'themes.*.items.*.description' => 'required',
+            'additional_fields' => 'nullable|array'
         ];
 
         $confLocation = $this->getLocationFormConfModule();
