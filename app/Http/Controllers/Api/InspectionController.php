@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Models\IndustrialSecure\DangerousConditions\Inspections\Inspection;
 use App\Models\IndustrialSecure\DangerousConditions\Inspections\AdditionalFields;
+use App\Models\IndustrialSecure\DangerousConditions\Inspections\AdditionalFieldsValues;
 use App\Models\IndustrialSecure\DangerousConditions\Inspections\InspectionSection;
 use App\Models\IndustrialSecure\DangerousConditions\Inspections\InspectionSectionItem;
 use App\Models\IndustrialSecure\DangerousConditions\Inspections\InspectionItemsQualificationAreaLocation;
@@ -351,6 +352,23 @@ class InspectionController extends ApiController
                         $response['themes'][$keyT]['items'][$key]['actionPlan'] = ActionPlan::getActivities();
 
                         ActionPlan::restart();
+                    }
+                }
+            }
+
+            if ($request->has('additional_fields') && $request->additional_fields)
+            {
+                foreach ($request->additional_fields as $add) 
+                {
+                    $field = AdditionalFields::find($add['id']);
+
+                    if($field)
+                    {
+                        $field_value = new AdditionalFieldsValues;
+                        $field_value->field_id = $field->id;
+                        $field_value->value = $add['value'];
+                        $field_value->qualification_date = $qualification_date;
+                        $field_value->save();
                     }
                 }
             }

@@ -7,6 +7,8 @@ use App\Http\Controllers\Controller;
 use App\Vuetable\Facades\Vuetable;
 use Illuminate\Support\Facades\Storage;
 use App\Models\IndustrialSecure\DangerousConditions\Inspections\Inspection;
+use App\Models\IndustrialSecure\DangerousConditions\Inspections\AdditionalFields;
+use App\Models\IndustrialSecure\DangerousConditions\Inspections\AdditionalFieldsValues;
 use App\Models\IndustrialSecure\DangerousConditions\Inspections\InspectionSection;
 use App\Models\IndustrialSecure\DangerousConditions\Inspections\InspectionSectionItem;
 use App\Models\IndustrialSecure\DangerousConditions\Inspections\InspectionItemsQualificationAreaLocation;
@@ -187,6 +189,22 @@ class InspectionQualificationController extends Controller
             $themes->push($theme);
         }
 
+        $add_fields = AdditionalFieldsValues::where('qualification_date', $qualification->qualification_date)->get();
+
+        $fields = collect([]);
+
+        foreach ($add_fields as $fieldKey => $field)
+        {
+            $field_add = collect([]);
+
+            $add = AdditionalFields::find($field['field_id']);
+
+            $field_add->put('key', Carbon::now()->timestamp + rand(1,10000));
+            $field_add->put('name', $add->name);
+            $field_add->put('value', $field['value']);
+            $fields->push($field_add);
+        }
+
         $data = collect([]);
         $data->put('inspection', $qualification->item->section->inspection->name);
         $data->put('regional', $qualification->regional ? $qualification->regional->name : '');
@@ -197,6 +215,7 @@ class InspectionQualificationController extends Controller
         $data->put('qualification_date', $qualification->qualification_date);
         $data->put('qualifier', $qualification->qualifier ? $qualification->qualifier->name : '');
         $data->put('themes', $themes);
+        $data->put('add_fields', $fields);
 
         return $data;
     }
