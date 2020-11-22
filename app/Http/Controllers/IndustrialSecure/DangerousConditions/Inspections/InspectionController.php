@@ -126,8 +126,9 @@ class InspectionController extends Controller
                 return $this->respondHttp500();
 
             $this->saveLocation($inspection, $request);
-            
-            $this->saveAdditionalFields($inspection, $request->get('additional_fields'));
+
+            if ($request->has('additional_fields') && $request->additional_fields)            
+                $this->saveAdditionalFields($inspection, $request->get('additional_fields'));
 
             $this->saveThemes($inspection, $request->get('themes'));
 
@@ -240,8 +241,9 @@ class InspectionController extends Controller
                 return $this->respondHttp500();
 
             $this->saveLocation($inspection, $request);
-            
-            $this->saveAdditionalFields($inspection, $request->get('additional_fields'));
+
+            if ($request->has('additional_fields') && $request->additional_fields)            
+                $this->saveAdditionalFields($inspection, $request->get('additional_fields'));
 
             $this->saveThemes($inspection, $request->get('themes'));
 
@@ -343,7 +345,7 @@ class InspectionController extends Controller
             InspectionSectionItem::destroy($data['items']);
 
         if (COUNT($data['additional_fields']) > 0)
-        AdditionalFields::destroy($data['additional_fields']);
+            AdditionalFields::destroy($data['additional_fields']);
     }
 
     /**

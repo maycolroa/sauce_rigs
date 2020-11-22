@@ -25,6 +25,34 @@
       </b-collapse>
     </b-card>
 
+    <b-card v-if="form.add_fields && form.add_fields.length > 0" no-body class="mb-2 border-secondary" style="width: 100%;">
+     <b-card-header class="bg-secondary">
+        <b-row>
+          <b-col cols="11" class="d-flex justify-content-between"> Campos adicionales </b-col>
+          <b-col cols="1">
+            <div class="float-right">
+              <b-button-group>
+                <b-btn href="javascript:void(0)" v-b-toggle="'accordion-field'" variant="link">
+                  <span class="collapse-icon"></span>
+                </b-btn>
+              </b-button-group>
+            </div>
+          </b-col>
+        </b-row>
+      </b-card-header>
+      <b-collapse :id="`accordion-field`" visible :accordion="`accordion-master`">
+        <b-card-body>
+          <template v-for="(field, index) in form.add_fields">
+            <div :key="index.key">
+                <b-form-row>
+                    <vue-textarea :disabled="true" class="col-md-12" v-model="field.value" :label="field.name" name="name" type="text" placeholder="Nombre" :error="form.errorsFor(`field.${index}.name`)"></vue-textarea>
+                </b-form-row>
+            </div>
+          </template>
+        </b-card-body>
+      </b-collapse>
+    </b-card>
+
     <b-card no-body class="mb-2 border-secondary" style="width: 100%;">
       <b-card-header class="bg-secondary">
           <b-row>
@@ -230,7 +258,8 @@ export default {
     qualification: {
       default() {
         return {
-          themes: []
+          themes: [],
+          add_fields: []
         };
       }
     }
