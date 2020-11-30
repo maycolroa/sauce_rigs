@@ -642,9 +642,12 @@ class EvaluationContractController extends Controller
         //$evaluation_base->report_category = $report_total;
         $report_total = collect($report_total);
         $evaluation_base->report_total = $report_total->push([
-            'total' => $report_total->sum('total'),
+            /*'total' => $report_total->sum('total'),
             'total_c' => $report_total->sum('total_c'),
-            'percentage' => $report_total->sum('total') > 0 ? round(($report_total->sum('total_c') / $report_total->sum('total')) * 100, 1) : 0,
+            'percentage' => $report_total->sum('total') > 0 ? round(($report_total->sum('total_c') / $report_total->sum('total')) * 100, 1) : 0,*/
+            'total' => count($report_total),
+            'total_c' => $report_total->sum('percentage'),
+            'percentage' => round($report_total->sum('percentage') / count($report_total), 1),
             'category' => 'Total'
         ]);
 

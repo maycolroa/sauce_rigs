@@ -93,6 +93,27 @@
 
     <br><br>
 
+    @if (COUNT($inspections["add_fields"]) > 0)
+        <table class="table-general">
+            <thead>
+                <tr>
+                    <th colspan="2">Campos Adicionales</th>
+                </tr>
+                <tr>
+                    <th>Nombre</th>
+                    <th>Valor</th>
+                </tr>
+                @foreach($inspections["add_fields"] as $keyAdd => $add)
+                <tr>
+                    <td>{{$add["name"]}}</td>
+                    <td>{{$add["value"]}}</td>
+                </tr>
+                @endforeach
+        </table>
+
+    <br><br>
+    @endif
+
     <div style="page-break-inside: avoid;">
         <p style="text-align: center; font-size: 12px;"><b>Temas</b></p>
 

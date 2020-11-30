@@ -7,12 +7,18 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Models\IndustrialSecure\DangerousConditions\Inspections\Inspection;
 use App\Models\IndustrialSecure\DangerousConditions\Inspections\AdditionalFields;
+use App\Models\IndustrialSecure\DangerousConditions\Inspections\QualificationRepeat;
 use App\Models\IndustrialSecure\DangerousConditions\Inspections\AdditionalFieldsValues;
 use App\Models\IndustrialSecure\DangerousConditions\Inspections\InspectionSection;
 use App\Models\IndustrialSecure\DangerousConditions\Inspections\InspectionSectionItem;
 use App\Models\IndustrialSecure\DangerousConditions\Inspections\InspectionItemsQualificationAreaLocation;
 use App\Models\IndustrialSecure\DangerousConditions\ImageApi;
 use App\Models\LegalAspects\Contracts\Qualifications;
+use App\Models\Administrative\Regionals\EmployeeRegional;
+use App\Models\Administrative\Headquarters\EmployeeHeadquarter;
+use App\Models\Administrative\Processes\EmployeeProcess;
+use App\Models\Administrative\Areas\EmployeeArea;
+use App\Models\Administrative\Users\User;
 use App\Facades\ActionPlans\Facades\ActionPlan;
 use App\Http\Requests\Api\InspectionsRequest;
 use App\Http\Requests\Api\InspectionsCreateRequest;
@@ -248,6 +254,8 @@ class InspectionController extends ApiController
             $employee_area_id = $request->employee_area_id ? $request->employee_area_id : null;
             $qualification_date = date('Y-m-d H:i:s');
 
+            $qualification_date_verify = '';
+
             foreach ($request->themes as $keyT => $theme)
             {
                 foreach ($theme['items'] as $key => $value)
@@ -261,7 +269,9 @@ class InspectionController extends ApiController
                         $item = new InspectionItemsQualificationAreaLocation();
                         $item->qualification_date = $qualification_date;
                     }
-                    
+
+                    $qualification_date_verify = $item->qualification_date;
+
                     $item->item_id = $value["item_id"];
                     $item->qualification_id = $value["qualification_id"];
                     $item->find = isset($value["find"]) ? $value["find"] : '';
@@ -271,6 +281,7 @@ class InspectionController extends ApiController
                     $item->employee_area_id = $employee_area_id;
                     $item->employee_headquarter_id = $employee_headquarter_id;
                     $item->save();
+                
 
                     $response['themes'][$keyT]['items'][$key]['id'] = $item->id;
 
@@ -364,13 +375,89 @@ class InspectionController extends ApiController
 
                     if($field)
                     {
-                        $field_value = new AdditionalFieldsValues;
-                        $field_value->field_id = $field->id;
-                        $field_value->value = $add['value'];
-                        $field_value->qualification_date = $qualification_date;
-                        $field_value->save();
+                        $exist_add = AdditionalFieldsValues::where('qualification_date', $qualification_date_verify)->where('field_id', $field->id)->first();
+
+                        if ($exist_add)
+                        {
+                            $exist_add->field_id = $field->id;
+                            $exist_add->value = $add['value'];
+                            $exist_add->qualification_date = $qualification_date_verify;
+                            $exist_add->update();
+                        }
+                        else
+                        {
+                            $field_value = new AdditionalFieldsValues;
+                            $field_value->field_id = $field->id;
+                            $field_value->value = $add['value'];
+                            $field_value->qualification_date = $qualification_date_verify;
+                            $field_value->save();
+                        }
                     }
                 }
+            }
+
+            if ($request->has('repeat_date') && $request->repeat_date)
+            {
+                $add_fields_repeat = [];
+
+                if ($request->has('additional_fields') && $request->additional_fields)
+                {
+                    foreach ($request->additional_fields as $add) 
+                    {
+                        array_push( $add_fields_repeat, $add['name']);
+                    }
+                }
+
+                $mails_notify = [];
+
+                if ($request->has('repeat_emails') && $request->repeat_emails)
+                {
+                    foreach ($request->repeat_emails as $email)
+                    {
+                        $mails = User::find($email['value']);
+                        array_push($mails_notify, $mails->email);
+                    }
+                }
+
+                $regionalRepeat = EmployeeRegional::where('id', $employee_regional_id);
+                $regionalRepeat->company_scope = $request->company_id;
+                $regionalRepeat = $regionalRepeat->first();
+                $headquarterRepeat = EmployeeHeadquarter::find($employee_headquarter_id);
+                $processRepeat = EmployeeProcess::find($employee_process_id);
+                $areaRepeat = EmployeeArea::find($employee_area_id);
+
+                $exist_repeat = QualificationRepeat::where('qualification_date', $qualification_date_verify);
+                $exist_repeat = $exist_repeat->first();
+
+                if ($exist_repeat)
+                {
+                    $exist_repeat->inspection_id = $request->inspection_id;
+                    $exist_repeat->user_id = $this->user->id;
+                    $exist_repeat->regional = $regionalRepeat->name;
+                    $exist_repeat->headquarter = $headquarterRepeat ? $headquarterRepeat->name : null;
+                    $exist_repeat->process = $processRepeat ? $processRepeat->name : null;
+                    $exist_repeat->area = $areaRepeat ? $areaRepeat->name : null;
+                    $exist_repeat->fields_adds = $add_fields_repeat ? implode($add_fields_repeat, ',') : null;
+                    $exist_repeat->send_emails = $mails_notify ? implode($mails_notify, ',') : null;
+                    $exist_repeat->qualification_date = $qualification_date;
+                    $exist_repeat->repeat_date = $request->repeat_date;
+                    $exist_repeat->update(); 
+                }
+                else
+                {
+                    $repeat = new QualificationRepeat;
+                    $repeat->inspection_id = $request->inspection_id;
+                    $repeat->user_id = $this->user->id;
+                    $repeat->regional = $regionalRepeat->name;
+                    $repeat->headquarter = $headquarterRepeat ? $headquarterRepeat->name : null;
+                    $repeat->process = $processRepeat ? $processRepeat->name : null;
+                    $repeat->area = $areaRepeat ? $areaRepeat->name : null;
+                    $repeat->fields_adds = $add_fields_repeat ? implode($add_fields_repeat, ',') : null;
+                    $repeat->send_emails = $mails_notify ? implode($mails_notify, ',') : null;
+                    $repeat->qualification_date = $qualification_date_verify;
+                    $repeat->repeat_date = $request->repeat_date;
+                    $repeat->save();
+                }                
             }
             
             DB::commit();
