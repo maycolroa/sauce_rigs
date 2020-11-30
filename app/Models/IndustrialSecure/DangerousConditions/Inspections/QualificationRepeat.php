@@ -21,4 +21,14 @@ class QualificationRepeat extends Model
         'qualification_date',
         'repeat_date'
     ];
+
+    public function inspection()
+    {
+        return $this->belongsTo(Inspection::class);
+    }
+
+    public function user()
+    {
+        return $this->belongsTo('App\Models\Administrative\Users\User', 'user_id');
+    }
 }

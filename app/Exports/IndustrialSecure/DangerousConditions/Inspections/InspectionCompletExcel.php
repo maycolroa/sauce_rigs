@@ -4,6 +4,8 @@ namespace App\Exports\IndustrialSecure\DangerousConditions\Inspections;
 
 use App\Models\IndustrialSecure\DangerousConditions\Inspections\Inspection;
 use App\Models\IndustrialSecure\DangerousConditions\Inspections\InspectionItemsQualificationAreaLocation;
+use App\Models\IndustrialSecure\DangerousConditions\Inspections\AdditionalFields;
+use App\Models\IndustrialSecure\DangerousConditions\Inspections\AdditionalFieldsValues;
 use App\Models\Administrative\ActionPlans\ActionPlansActivity;
 use App\Models\General\Module;
 use Maatwebsite\Excel\Concerns\FromQuery;
@@ -34,6 +36,8 @@ class InspectionCompletExcel implements FromQuery, WithMapping, WithHeadings, Wi
     protected $keywords;
     protected $items_id;
     protected $id;
+    protected $add_fields;
+    protected $add_fields_values;
 
     public function __construct($company_id, $filters, $id)
     {
@@ -173,6 +177,7 @@ class InspectionCompletExcel implements FromQuery, WithMapping, WithHeadings, Wi
     public function query()
     {
       $qualifications = InspectionItemsQualificationAreaLocation::selectRaw("
+          sau_ph_inspections.id as insp_id,
           sau_ph_inspections.name as insp_name,
           sau_ph_inspection_sections.name as section_name,
           sau_ph_inspection_section_items.description as description,
@@ -308,6 +313,8 @@ class InspectionCompletExcel implements FromQuery, WithMapping, WithHeadings, Wi
 
     public function map($data): array
     {
+      $this->add_fields_values = AdditionalFieldsValues::select('value')->where('qualification_date', $data->qualification_date)->get();
+
       $values = [$data->insp_name];
 
       $values = array_merge($values, [
@@ -340,11 +347,17 @@ class InspectionCompletExcel implements FromQuery, WithMapping, WithHeadings, Wi
         $data->state_activity
       ]);
 
+      foreach ($this->add_fields_values as $key => $value2) {
+        array_push($values, $value2->value);
+      }
+
       return $values;
     }
 
     public function headings(): array
     {
+      $this->add_fields = AdditionalFields::select('name')->where('inspection_id', $this->id)->get();
+
       $columns = ['Nombre'];
       
       $columns = array_merge($columns, [
@@ -376,6 +389,10 @@ class InspectionCompletExcel implements FromQuery, WithMapping, WithHeadings, Wi
         'Fecha de ejecución',
         'Estado'
       ]);
+
+      foreach ($this->add_fields as $key => $value) {
+        array_push($columns, $value->name);
+      }
 
       return $columns;
     }
