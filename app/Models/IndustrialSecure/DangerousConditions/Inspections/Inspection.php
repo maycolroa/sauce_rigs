@@ -15,11 +15,18 @@ class Inspection extends Model
         'name',
         'company_id',
         'state',
+        'type_id',
+        'fullfilment_parcial'
     ];
 
     public function company()
     {
         return $this->belongsTo(Company::class);
+    }
+
+    public function type()
+    {
+        return $this->belongsTo(TypeInspections::class);
     }
 
     public function themes()
@@ -58,6 +65,26 @@ class Inspection extends Model
     public function areas()
     {
         return $this->belongsToMany('App\Models\Administrative\Areas\EmployeeArea', 'sau_ph_inspection_area');
+    }
+
+    /**
+     * filters checks through the given type
+     * @param  Illuminate\Database\Eloquent\Builder $query
+     * @param  array $types
+     * @return Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeInTypes($query, $types, $typeSearch = 'IN')
+    {
+        if (COUNT($types) > 0)
+        {
+            if ($typeSearch == 'IN')
+                $query->whereIn('sau_ph_inspections.type_id', $types);
+
+            else if ($typeSearch == 'NOT IN')
+                $query->whereNotIn('sau_ph_inspections.type_id', $types);
+        }
+
+        return $query;
     }
 
     /**

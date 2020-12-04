@@ -132,12 +132,12 @@ class InspectionQualificationController extends Controller
 
         $inspectionsReady = InspectionItemsQualificationAreaLocation::select(
                 'sau_ph_inspection_items_qualification_area_location.*',
-                DB::raw('CONCAT(sau_ct_qualifications.name, " (",  sau_ct_qualifications.description, ")") AS qualification'),
+                DB::raw('CONCAT(sau_ph_qualifications_inspections.name, " (",  sau_ph_qualifications_inspections.description, ")") AS qualification'),
                 'sau_ph_inspection_section_items.description AS item_name',
                 'sau_ph_inspection_sections.name AS section_name',
                 'sau_ph_inspection_sections.id AS section_id'
             )
-            ->leftJoin('sau_ct_qualifications', 'sau_ct_qualifications.id', 'sau_ph_inspection_items_qualification_area_location.qualification_id')
+            ->leftJoin('sau_ph_qualifications_inspections', 'sau_ph_qualifications_inspections.id', 'sau_ph_inspection_items_qualification_area_location.qualification_id')
             ->join('sau_ph_inspection_section_items', 'sau_ph_inspection_section_items.id', 'sau_ph_inspection_items_qualification_area_location.item_id')
             ->join('sau_ph_inspection_sections', 'sau_ph_inspection_sections.id', 'sau_ph_inspection_section_items.inspection_section_id')
             ->where('sau_ph_inspection_items_qualification_area_location.qualification_date', $qualification->qualification_date);

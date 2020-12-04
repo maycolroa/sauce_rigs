@@ -16,6 +16,7 @@
                 headquarters-data-url="/selects/headquarters"
                 areas-data-url="/selects/areas"
                 processes-data-url="/selects/processes"
+                :typesInspection="typesInspection"
                 :inspection="data"
                 :cancel-url="{ name: 'dangerousconditions-inspections' }"/>
         </b-card-body>
@@ -27,6 +28,7 @@
 <script>
 import FormInspection from '@/components/IndustrialSecure/DangerousConditions/Inspections/FormInspectionComponent.vue';
 import Alerts from '@/utils/Alerts.js';
+import GlobalMethods from '@/utils/GlobalMethods.js';
 
 export default {
   name: 'dangerousconditions-inspections-create',
@@ -39,9 +41,12 @@ export default {
   data(){
     return {
       data: [],
+      typesInspection: []
     }
   },
   created(){
+    this.fetchSelect('typesInspection', '/selects/industrialSecurity/inspectionType')
+
     axios.get(`/industrialSecurity/dangerousConditions/inspection/${this.$route.params.id}`)
     .then(response => {
         this.data = response.data.data;
@@ -63,5 +68,18 @@ export default {
         Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
     });
   },
+  methods: {
+    fetchSelect(key, url)
+    {
+        GlobalMethods.getDataMultiselect(url)
+        .then(response => {
+            this[key] = response;
+        })
+        .catch(error => {
+            Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
+            this.$router.go(-1);
+        });
+    },
+  }
 }
 </script>

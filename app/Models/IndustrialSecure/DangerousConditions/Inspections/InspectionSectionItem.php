@@ -11,6 +11,8 @@ class InspectionSectionItem extends Model
     protected $fillable = [
         'description',
         'inspection_section_id',
+        'compliance_value',
+        'partial_value'
     ];
 
     public function section()

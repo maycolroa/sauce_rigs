@@ -87,6 +87,7 @@ class InspectionReportController extends Controller
           DB::raw('count(sau_ph_inspection_items_qualification_area_location.qualification_id) as numero_items'),
           DB::raw('count(IF(q.fulfillment = 1, q.id, null)) as numero_items_cumplimiento'),
           DB::raw('count(IF(q.fulfillment = 0, q.id, null)) as numero_items_no_cumplimiento'),
+          //DB::raw('count(IF(q.fulfillment = 0.5, q.id, null)) as numero_items_cumplimiento_parcial'),
           DB::raw("sum(
             (SELECT IF(COUNT(IF(iap2.state=\"Pendiente\",0, NULL)) > 0, 1, 0) 
             FROM sau_action_plans_activities iap2 
@@ -109,7 +110,7 @@ class InspectionReportController extends Controller
         ->join('sau_ph_inspection_section_items as it','sau_ph_inspection_items_qualification_area_location.item_id', 'it.id')
         ->join('sau_ph_inspection_sections as s','it.inspection_section_id', 's.id')
         ->join('sau_ph_inspections as i','s.inspection_id', 'i.id')
-        ->join('sau_ct_qualifications as q','q.id', 'sau_ph_inspection_items_qualification_area_location.qualification_id')
+        ->join('sau_ph_qualifications_inspections as q','q.id', 'sau_ph_inspection_items_qualification_area_location.qualification_id')
         ->leftJoin('sau_employees_regionals as r', 'r.id', 'sau_ph_inspection_items_qualification_area_location.employee_regional_id')
         ->leftJoin('sau_employees_headquarters as l','l.id', 'sau_ph_inspection_items_qualification_area_location.employee_headquarter_id')
         ->leftJoin('sau_employees_processes as p', 'p.id', 'sau_ph_inspection_items_qualification_area_location.employee_process_id')
@@ -168,6 +169,12 @@ class InspectionReportController extends Controller
             else
               return '0%';
           })
+          /*->addColumn('porcentaje_items_cumplimiento_parcial', function ($consulta) {
+            if ($consulta->numero_items > 0)
+              return round(($consulta->numero_items_cumplimiento_parcial / $consulta->numero_items) * 100, 1)."%";
+            else
+              return '0%';
+          })*/
           ->addColumn('numero_planes_ejecutados', function ($consulta) {
               return $consulta->actividades_totales - $consulta->numero_planes_no_ejecutados;
           })
@@ -263,7 +270,7 @@ class InspectionReportController extends Controller
              ->join('sau_ph_inspection_section_items as it','sau_ph_inspection_items_qualification_area_location.item_id', 'it.id')
              ->join('sau_ph_inspection_sections as s','it.inspection_section_id', 's.id')
              ->join('sau_ph_inspections as i','s.inspection_id', 'i.id')
-             ->join('sau_ct_qualifications as q','q.id', 'sau_ph_inspection_items_qualification_area_location.qualification_id')
+             ->join('sau_ph_qualifications_inspections as q','q.id', 'sau_ph_inspection_items_qualification_area_location.qualification_id')
              ->inThemes($themes, $filtersType['themes'], 's')
              ->inInspections($inspections, $filtersType['inspections'], 'i')
              ->betweenDate($dates)

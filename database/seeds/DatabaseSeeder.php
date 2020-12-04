@@ -31,5 +31,7 @@ class DatabaseSeeder extends Seeder
         $this->call(MakeKeywordsSeeder::class);
         $this->call(CtContractHighRiskTypeSeeder::class);
         $this->call(CtTrainingTypesQualificationsSeeder::class);
+        $this->call(PhQualificationsInspectionsSeeder::class);
+        $this->call(PhTypeInspectionsSeeder::class);
     }
 }

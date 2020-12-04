@@ -103,7 +103,7 @@ class InspectionReportExcel implements FromCollection, WithMapping, WithHeadings
         ->join('sau_ph_inspection_section_items as it','sau_ph_inspection_items_qualification_area_location.item_id', 'it.id')
         ->join('sau_ph_inspection_sections as s','it.inspection_section_id', 's.id')
         ->join('sau_ph_inspections as i','s.inspection_id', 'i.id')
-        ->join('sau_ct_qualifications as q','q.id', 'sau_ph_inspection_items_qualification_area_location.qualification_id')
+        ->join('sau_ph_qualifications_inspections as q','q.id', 'sau_ph_inspection_items_qualification_area_location.qualification_id')
         ->leftJoin('sau_employees_regionals as r', 'r.id', 'sau_ph_inspection_items_qualification_area_location.employee_regional_id')
         ->leftJoin('sau_employees_headquarters as l','l.id', 'sau_ph_inspection_items_qualification_area_location.employee_headquarter_id')
         ->leftJoin('sau_employees_processes as p', 'p.id', 'sau_ph_inspection_items_qualification_area_location.employee_process_id')

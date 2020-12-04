@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Vuetable\Facades\Vuetable;
 use App\Models\IndustrialSecure\DangerousConditions\Inspections\Inspection;
+use App\Models\IndustrialSecure\DangerousConditions\Inspections\TypeInspections;
 use App\Models\IndustrialSecure\DangerousConditions\Inspections\AdditionalFields;
 use App\Models\IndustrialSecure\DangerousConditions\Inspections\InspectionSection;
 use App\Models\IndustrialSecure\DangerousConditions\Inspections\InspectionSectionItem;
@@ -467,5 +468,21 @@ class InspectionController extends Controller
         ->pluck('id', 'name');
 
       return $this->multiSelectFormat($inspections);
+    }
+
+    /**
+     * Returns an arrangement with the types
+     *
+     * @return Array
+     */
+    public function multiselectTypes()
+    {
+        $types = TypeInspections::select(
+            "sau_ph_type_inspections.id as id",
+            "sau_ph_type_inspections.type as type")
+            ->orderBy('type')
+            ->pluck('id', 'type');
+
+        return $this->multiSelectFormat($types);
     }
 }
