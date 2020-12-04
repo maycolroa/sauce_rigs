@@ -23,6 +23,14 @@
             <vue-input :disabled="viewOnly" class="col-md-12" v-model="form.name" label="Nombre" type="text" name="name" :error="form.errorsFor('name')" placeholder="Nombre"></vue-input>
           </b-form-row>
           <b-form-row>
+            <vue-advanced-select 
+              v-model="form.type_id"
+              :disabled="viewOnly" class="col-md-6" :multiple="false" :options="typesInspection" :hide-selected="false" name="type_id" label="Selecciona el tipo de inspección" :btnLabelPopover="createHelp()" placeholder="Selecciona el tipo de inspección"
+              :error="form.errorsFor('type_id')" >
+                  </vue-advanced-select>
+            <vue-input v-show="form.type_id == 1" :disabled="viewOnly" class="col-md-6" v-model="form.fullfilment_parcial" label="Valor del cumplimiento parcial" type="number" name="fullfilment_parcial" :error="form.errorsFor('fullfilment_parcial')" placeholder="Ej: 0.1, 0.2, 0.3" help-text="Los valores de este campo deben encontrarse entre 0 y 1. De no colocar ningun valor, se tomara por defecto 0.5"></vue-input>
+          </b-form-row>
+          <b-form-row>
             <vue-ajax-advanced-select v-if="locationForm.regional == 'SI'" :disabled="viewOnly" class="col-md-6" v-model="form.employee_regional_id" :error="form.errorsFor('employee_regional_id')" :selected-object="form.multiselect_regional" name="employee_regional_id" :label="keywordCheck('regionals')" placeholder="Seleccione las opciones" :url="regionalsDataUrl" :multiple="true" :allowEmpty="true">
                 </vue-ajax-advanced-select>
             <vue-ajax-advanced-select v-if="locationForm.headquarter == 'SI'" :disabled="viewOnly || (form.employee_regional_id && form.employee_regional_id.length == 0)" class="col-md-6" v-model="form.employee_headquarter_id" :error="form.errorsFor('employee_headquarter_id')" :selected-object="form.multiselect_sede" name="employee_headquarter_id" :label="keywordCheck('headquarters')" placeholder="Seleccione las opciones" :url="headquartersDataUrl" :parameters="{regional: form.employee_regional_id }" :multiple="true" :allowEmpty="true">
@@ -153,6 +161,8 @@
                                 <tr>
                                   <th scope="col" class="align-middle" v-if="!viewOnly">#</th>
                                   <th scope="col" class="align-middle">Descripción</th>
+                                  <th v-show="form.type_id == 2" scope="col" class="align-middle">Valor cumplimiento (%)</th>
+                                  <th v-show="form.type_id == 2" scope="col" class="align-middle">Valor parcial (%)</th>
                                 </tr>
                               </thead>
                               <tbody>
@@ -168,6 +178,12 @@
                                     </td>
                                     <td style="padding: 0px;">
                                       <vue-textarea :disabled="viewOnly" class="col-md-12" v-model="form.themes[index].items[index2].description" label="" name="description" placeholder="Descripción" :error="form.errorsFor(`themes.${index}.items.${index2}.description`)" rows="1"></vue-textarea>
+                                    </td>
+                                    <td v-show="form.type_id == 2">
+                                      <vue-input :disabled="viewOnly" class="col-md-12" v-model="form.themes[index].items[index2].compliance_value" label="" type="number" name="compliance_value" :error="form.errorsFor(`themes.${index}.items.${index2}.compliance_value`)" placeholder="% cumplimiento"></vue-input>
+                                    </td>
+                                    <td v-show="form.type_id == 2">
+                                      <vue-input :disabled="viewOnly" class="col-md-12" v-model="form.themes[index].items[index2].partial_value" label="" type="number" name="partial_value" :error="form.errorsFor(`themes.${index}.items.${index2}.partial_value`)" placeholder="% parcial"></vue-input>
                                     </td>
                                   </tr>
                                 </template>
@@ -198,6 +214,7 @@
 <script>
 import VueInput from "@/components/Inputs/VueInput.vue";
 import VueAjaxAdvancedSelect from "@/components/Inputs/VueAjaxAdvancedSelect.vue";
+import VueAdvancedSelect from "@/components/Inputs/VueAdvancedSelect.vue";
 import PerfectScrollbar from '@/vendor/libs/perfect-scrollbar/PerfectScrollbar';
 import Form from "@/utils/Form.js";
 import VueTextarea from "@/components/Inputs/VueTextarea.vue";
@@ -208,7 +225,8 @@ export default {
     VueInput,
     VueAjaxAdvancedSelect,
     PerfectScrollbar,
-    VueTextarea
+    VueTextarea,
+    VueAdvancedSelect
   },
   props: {
     url: { type: String },
@@ -220,10 +238,18 @@ export default {
     headquartersDataUrl: { type: String, default: "" },
     areasDataUrl: { type: String, default: "" },
     processesDataUrl: { type: String, default: "" },
+    typesInspection: {
+      type: Array,
+      default: function() {
+        return [];
+      }
+    },
     inspection: {
       default() {
         return {
           name: '',
+          type_id:'',
+          fullfilment_parcial: '',
           employee_regional_id: [],
           employee_headquarter_id: [],
           employee_area_id: [],
@@ -292,14 +318,22 @@ export default {
 	            key: new Date().getTime(),
 	            name: ''
 	        })
-	    },
-	    removeField(index)
-	    {
-	        if (this.form.additional_fields[index].id != undefined)
-        		this.form.delete.additional_fields.push(this.form.additional_fields[index].id)
+	  },
+    removeField(index)
+    {
+        if (this.form.additional_fields[index].id != undefined)
+          this.form.delete.additional_fields.push(this.form.additional_fields[index].id)
 
-      		this.form.additional_fields.splice(index, 1)
-	    }
+        this.form.additional_fields.splice(index, 1)
+    },
+    createHelp(grouped, help)
+    {
+      return {
+          title: "Descripción de los tipos",
+          icon: 'fas fa-info',
+          content: "Tipo 1 : Inspección en la cual todos los items tienen el mismo valor el cual es '1'.\n Tipo 2 : Inspección en la cual a los items pertenecientes a un tema se les puede asignar una valor porcentual específico dentro de su tema"
+      }
+    }
   }
 };
 </script>

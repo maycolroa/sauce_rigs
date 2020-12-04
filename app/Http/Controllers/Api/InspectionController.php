@@ -13,7 +13,7 @@ use App\Models\IndustrialSecure\DangerousConditions\Inspections\InspectionSectio
 use App\Models\IndustrialSecure\DangerousConditions\Inspections\InspectionSectionItem;
 use App\Models\IndustrialSecure\DangerousConditions\Inspections\InspectionItemsQualificationAreaLocation;
 use App\Models\IndustrialSecure\DangerousConditions\ImageApi;
-use App\Models\LegalAspects\Contracts\Qualifications;
+use App\Models\IndustrialSecure\DangerousConditions\Inspections\Qualifications;
 use App\Models\Administrative\Regionals\EmployeeRegional;
 use App\Models\Administrative\Headquarters\EmployeeHeadquarter;
 use App\Models\Administrative\Processes\EmployeeProcess;

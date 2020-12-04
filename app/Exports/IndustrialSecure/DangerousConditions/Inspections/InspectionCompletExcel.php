@@ -57,8 +57,8 @@ class InspectionCompletExcel implements FromQuery, WithMapping, WithHeadings, Wi
         sau_ph_inspections.created_at,
         sau_ph_inspection_sections.name as section_name,
         sau_ph_inspection_section_items.description as description,
-        sau_ct_qualifications.name as qualification_name,
-        sau_ct_qualifications.description as qualification_description,
+        sau_ph_qualifications_inspections.name as qualification_name,
+        sau_ph_qualifications_inspections.description as qualification_description,
         
         sau_employees_regionals.name AS regional,
         sau_employees_headquarters.name AS sede,
@@ -117,7 +117,7 @@ class InspectionCompletExcel implements FromQuery, WithMapping, WithHeadings, Wi
       ->leftJoin('sau_employees_processes', 'sau_employees_processes.id', 'sau_ph_inspection_process.employee_process_id')
       ->leftJoin('sau_employees_areas', 'sau_employees_areas.id', 'sau_ph_inspection_area.employee_area_id')
       ->leftJoin('sau_ph_inspection_items_qualification_area_location', 'sau_ph_inspection_items_qualification_area_location.item_id', 'sau_ph_inspection_section_items.id')
-      ->leftJoin( 'sau_ct_qualifications', 'sau_ct_qualifications.id', 'sau_ph_inspection_items_qualification_area_location.qualification_id')
+      ->leftJoin( 'sau_ph_qualifications_inspections', 'sau_ph_qualifications_inspections.id', 'sau_ph_inspection_items_qualification_area_location.qualification_id')
       ->leftJoin('sau_employees_regionals AS r', 'sau_ph_inspection_items_qualification_area_location.employee_regional_id', 'r.id')
       ->leftJoin('sau_employees_headquarters AS h', 'sau_ph_inspection_items_qualification_area_location.employee_headquarter_id', 'h.id')
       ->leftJoin('sau_employees_processes AS p', 'sau_ph_inspection_items_qualification_area_location.employee_process_id', 'p.id')
@@ -181,8 +181,8 @@ class InspectionCompletExcel implements FromQuery, WithMapping, WithHeadings, Wi
           sau_ph_inspections.name as insp_name,
           sau_ph_inspection_sections.name as section_name,
           sau_ph_inspection_section_items.description as description,
-          sau_ct_qualifications.name as qualification_name,
-          sau_ct_qualifications.description as qualification_description,
+          sau_ph_qualifications_inspections.name as qualification_name,
+          sau_ph_qualifications_inspections.description as qualification_description,
           sau_users.name as qualifier,
           sau_ph_inspection_items_qualification_area_location.find, 
           sau_ph_inspection_items_qualification_area_location.qualification_date,
@@ -199,7 +199,7 @@ class InspectionCompletExcel implements FromQuery, WithMapping, WithHeadings, Wi
       ->leftJoin('sau_ph_inspection_section_items', 'sau_ph_inspection_items_qualification_area_location.item_id', 'sau_ph_inspection_section_items.id')
       ->join('sau_ph_inspection_sections', 'sau_ph_inspection_sections.id', 'sau_ph_inspection_section_items.inspection_section_id')
       ->join('sau_ph_inspections', 'sau_ph_inspections.id', 'sau_ph_inspection_sections.inspection_id')
-      ->leftJoin( 'sau_ct_qualifications', 'sau_ct_qualifications.id', 'sau_ph_inspection_items_qualification_area_location.qualification_id')
+      ->leftJoin( 'sau_ph_qualifications_inspections', 'sau_ph_qualifications_inspections.id', 'sau_ph_inspection_items_qualification_area_location.qualification_id')
       ->leftJoin('sau_employees_regionals', function ($join) 
       {
         $join->on("sau_employees_regionals.id", "sau_ph_inspection_items_qualification_area_location.employee_regional_id");
@@ -258,8 +258,8 @@ class InspectionCompletExcel implements FromQuery, WithMapping, WithHeadings, Wi
           GROUP_CONCAT(DISTINCT sau_employees_areas.name ORDER BY sau_employees_areas.name ASC) AS area,
           sau_ph_inspection_sections.name as section_name,
           sau_ph_inspection_section_items.description as description,
-          sau_ct_qualifications.name as qualification_name,
-          sau_ct_qualifications.description as qualification_description,
+          sau_ph_qualifications_inspections.name as qualification_name,
+          sau_ph_qualifications_inspections.description as qualification_description,
           r.name as regionals, 
           h.name as headquarter,
           p.name as process, 
@@ -284,7 +284,7 @@ class InspectionCompletExcel implements FromQuery, WithMapping, WithHeadings, Wi
         ->leftJoin('sau_employees_processes', 'sau_employees_processes.id', 'sau_ph_inspection_process.employee_process_id')
         ->leftJoin('sau_employees_areas', 'sau_employees_areas.id', 'sau_ph_inspection_area.employee_area_id')
         ->leftJoin('sau_ph_inspection_items_qualification_area_location', 'sau_ph_inspection_items_qualification_area_location.item_id', 'sau_ph_inspection_section_items.id')
-        ->leftJoin( 'sau_ct_qualifications', 'sau_ct_qualifications.id', 'sau_ph_inspection_items_qualification_area_location.qualification_id')
+        ->leftJoin( 'sau_ph_qualifications_inspections', 'sau_ph_qualifications_inspections.id', 'sau_ph_inspection_items_qualification_area_location.qualification_id')
         ->leftJoin('sau_employees_regionals AS r', 'sau_ph_inspection_items_qualification_area_location.employee_regional_id', 'r.id')
         ->leftJoin('sau_employees_headquarters AS h', 'sau_ph_inspection_items_qualification_area_location.employee_headquarter_id', 'h.id')
         ->leftJoin('sau_employees_processes AS p', 'sau_ph_inspection_items_qualification_area_location.employee_process_id', 'p.id')
