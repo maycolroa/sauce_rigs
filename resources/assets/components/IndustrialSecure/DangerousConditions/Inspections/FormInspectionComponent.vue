@@ -249,7 +249,7 @@ export default {
         return {
           name: '',
           type_id:'',
-          fullfilment_parcial: '',
+          fullfilment_parcial: 0.5,
           employee_regional_id: [],
           employee_headquarter_id: [],
           employee_area_id: [],

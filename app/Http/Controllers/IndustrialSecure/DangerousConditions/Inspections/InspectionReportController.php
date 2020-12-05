@@ -87,7 +87,7 @@ class InspectionReportController extends Controller
           DB::raw('count(sau_ph_inspection_items_qualification_area_location.qualification_id) as numero_items'),
           DB::raw('count(IF(q.fulfillment = 1, q.id, null)) as numero_items_cumplimiento'),
           DB::raw('count(IF(q.fulfillment = 0, q.id, null)) as numero_items_no_cumplimiento'),
-          //DB::raw('count(IF(q.fulfillment = 0.5, q.id, null)) as numero_items_cumplimiento_parcial'),
+          //DB::raw('count(IF(q.fulfillment = 2, q.id, null)) as numero_items_cumplimiento_parcial'),
           DB::raw("sum(
             (SELECT IF(COUNT(IF(iap2.state=\"Pendiente\",0, NULL)) > 0, 1, 0) 
             FROM sau_action_plans_activities iap2 
@@ -169,7 +169,7 @@ class InspectionReportController extends Controller
             else
               return '0%';
           })
-          /*->addColumn('porcentaje_items_cumplimiento_parcial', function ($consulta) {
+         /*->addColumn('porcentaje_items_cumplimiento_parcial', function ($consulta) {
             if ($consulta->numero_items > 0)
               return round(($consulta->numero_items_cumplimiento_parcial / $consulta->numero_items) * 100, 1)."%";
             else
@@ -248,6 +248,7 @@ class InspectionReportController extends Controller
              DB::raw('count(sau_ph_inspection_items_qualification_area_location.qualification_id) as numero_items'),
              DB::raw('count(IF(q.fulfillment = 1, q.id, null)) as numero_items_cumplimiento'),
              DB::raw('count(IF(q.fulfillment = 0, q.id, null)) as numero_items_no_cumplimiento'),
+             //DB::raw('count(IF(q.fulfillment = 2, q.id, null)) as numero_items_cumplimiento_parcial'),
              DB::raw("sum(
                (SELECT IF(COUNT(IF(iap2.state=\"Pendiente\",0, NULL)) > 0, 1, 0) 
                FROM sau_action_plans_activities iap2 
@@ -296,6 +297,7 @@ class InspectionReportController extends Controller
         $result->put('numero_items', 0);
         $result->put('t_cumple', 0);
         $result->put('t_no_cumple', 0);
+        //$result->put('t_cumple_p', 0);
         $result->put('pa_no_realizados', 0);
         $result->put('actividades_totales', 0);
 
@@ -305,6 +307,7 @@ class InspectionReportController extends Controller
           $result->put('numero_items', $result->get('numero_items') + $value->numero_items);
           $result->put('t_cumple', $result->get('t_cumple') + $value->numero_items_cumplimiento);
           $result->put('t_no_cumple', $result->get('t_no_cumple') + $value->numero_items_no_cumplimiento);
+          //$result->put('t_cumple_p', $result->get('t_cumple_p') + $value->numero_items_cumplimiento_parcial);
           $result->put('pa_no_realizados', $result->get('pa_no_realizados') + $value->numero_planes_no_ejecutados);
           $result->put('actividades_totales', $result->get('actividades_totales') + $value->actividades_totales);
         }
@@ -318,6 +321,11 @@ class InspectionReportController extends Controller
           $result->put('p_no_cumple', round(($result->get('t_no_cumple')/ $result->get('numero_items')) * 100, 1)."%");
         else
           $result->put('p_no_cumple', '0%');
+
+        /*if ($result->get('numero_items') > 0)
+          $result->put('p_parcial', round(($result->get('t_cumple_p') / $result->get('numero_items')) * 100, 1)."%");
+        else
+          $result->put('p_parcial', '0%');*/
 
         $result->put('pa_realizados', $result->get('actividades_totales') - $result->get('pa_no_realizados'));
     

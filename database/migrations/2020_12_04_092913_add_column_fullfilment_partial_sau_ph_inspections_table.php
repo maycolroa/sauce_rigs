@@ -14,7 +14,7 @@ class AddColumnFullfilmentPartialSauPhInspectionsTable extends Migration
     public function up()
     {
         Schema::table('sau_ph_inspections', function (Blueprint $table) {
-            $table->double('fullfilment_parcial')->after('type_id')->nullable();
+            $table->double('fullfilment_parcial')->after('type_id')->default(0.5);
         });
     }
 

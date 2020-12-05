@@ -67,6 +67,8 @@ class InspectionRequest extends FormRequest
 
         $rules = [
             'name' => 'required|string|unique:sau_ph_inspections,name,'.$id.',id,company_id,'.Session::get('company_id'),
+            'type_id' => 'required|integer',
+            'fullfilment_parcial' => 'nullable|numeric|max:1',
             'themes' => 'required|array',
             'themes.*.name' => 'required',
             'themes.*.items' => 'required|array',

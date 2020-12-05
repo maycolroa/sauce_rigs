@@ -323,7 +323,8 @@ return [
       'high_risk_type_id' => 'Tareas de riesgos',
       'high_risk_work' => '¿La empresa realiza tareas de alto riesgo?',
       'state' => 'Estado',
-      'reason_rejection' => 'Motivo del rechazo'
+      'reason_rejection' => 'Motivo del rechazo',
+      'fullfilment_parcial' => 'Valor de cumplimiento parcial'
     ],
 
 ];

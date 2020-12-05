@@ -21,10 +21,12 @@
                                 <div><b># Inspecciones:</b> {{ information.inspections }}</div>
                                 <div><b># Cumplimientos:</b> {{information.t_cumple}}</div>
                                 <div><b># No Cumplimientos:</b> {{information.t_no_cumple}}</div>
+                                <!--<div><b># Cumplimientos Parciales:</b> {{information.t_cumple_p}}</div>-->
                             </b-col>
                             <b-col>
                                 <div><b>% Cumplimientos:</b> {{information.p_cumple}}</div>
                                 <div><b>% No Cumplimientos:</b> {{information.p_no_cumple}}</div>
+                                <!--<div><b>% Cumplimientos Parciales:</b> {{information.p_parcial}}</div>-->
                             </b-col>
                             <b-col>
                                 <div><b># Planes de acción realizados:</b> {{ information.pa_realizados }}</div>
@@ -117,8 +119,10 @@ export default {
                 inspections: 0,
                 t_cumple: 0,
                 t_no_cumple: 0,
+                //t_cumple_p: 0,
                 p_cumple: '0%',
                 p_no_cumple: '0%',
+                //p_parcial: '0%',
                 pa_realizados: 0,
                 pa_no_realizados: 0
             },
