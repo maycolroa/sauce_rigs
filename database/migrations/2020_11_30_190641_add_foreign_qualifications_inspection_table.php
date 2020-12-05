@@ -16,7 +16,7 @@ class AddForeignQualificationsInspectionTable extends Migration
         Schema::table('sau_ph_inspection_items_qualification_area_location', function (Blueprint $table) {
             $table->dropForeign('sau_qualification_id_foreign');
 
-            $table->foreign('qualification_id', 'qualification_id_foreign')
+            $table->foreign('qualification_id', 'sau_qualification_id_foreign')
                 ->references('id')
                 ->on('sau_ph_qualifications_inspections')
                 ->onDelete('cascade');
