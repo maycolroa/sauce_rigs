@@ -31,7 +31,7 @@ class PhQualificationsInspectionsSeeder extends Seeder
             [
                 'name' => 'Parcial',
                 'description' => 'Parcial',
-                'fulfillment' => 0.5
+                'fulfillment' => 2
             ],
         ];
 
