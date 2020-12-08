@@ -438,10 +438,10 @@ class VuetableColumnManager
             ['name' => 'numero_inspecciones', 'data'=> 'numero_inspecciones', 'title'=> '# Inspecciones', 'sortable'=> true, 'searchable'=> false, 'detail'=> false, 'key'=> false ],
             ['name' => 'numero_items_cumplimiento', 'data'=> 'numero_items_cumplimiento', 'title'=> '# Items Cumplimiento', 'sortable'=> true, 'searchable'=> false, 'detail'=> false, 'key'=> false ],
             ['name' => 'numero_items_no_cumplimiento', 'data'=> 'numero_items_no_cumplimiento', 'title'=> '# Items No Cumplimiento', 'sortable'=> true, 'searchable'=> false, 'detail'=> false, 'key'=> false ],
-            ['name' => 'numero_items_cumplimiento_parcial', 'data'=> 'numero_items_cumplimiento_parcial', 'title'=> '# Items Cumplimiento Parcial', 'sortable'=> true, 'searchable'=> false, 'detail'=> false, 'key'=> false ],
+            //['name' => 'numero_items_cumplimiento_parcial', 'data'=> 'numero_items_cumplimiento_parcial', 'title'=> '# Items Cumplimiento Parcial', 'sortable'=> true, 'searchable'=> false, 'detail'=> false, 'key'=> false ],
             ['name' => 'porcentaje_items_cumplimiento', 'data'=> 'porcentaje_items_cumplimiento', 'title'=> '% Items Cumplimiento', 'sortable'=> true, 'searchable'=> false, 'detail'=> false, 'key'=> false ],
             ['name' => 'porcentaje_items_no_cumplimiento', 'data'=> 'porcentaje_items_no_cumplimiento', 'title'=> '% Items No Cumplimiento', 'sortable'=> true, 'searchable'=> false, 'detail'=> false, 'key'=> false ],
-            ['name' => 'porcentaje_items_cumplimiento_parcial', 'data'=> 'porcentaje_items_cumplimiento_parcial', 'title'=> '% Items Cumplimiento Parcial', 'sortable'=> true, 'searchable'=> false, 'detail'=> false, 'key'=> false ],
+            //['name' => 'porcentaje_items_cumplimiento_parcial', 'data'=> 'porcentaje_items_cumplimiento_parcial', 'title'=> '% Items Cumplimiento Parcial', 'sortable'=> true, 'searchable'=> false, 'detail'=> false, 'key'=> false ],
             ['name' => 'numero_planes_ejecutados', 'data'=> 'numero_planes_ejecutados', 'title'=> '# Planes de Acción Realizados', 'sortable'=> true, 'searchable'=> false, 'detail'=> false, 'key'=> false ],
             ['name' => 'numero_planes_no_ejecutados', 'data'=> 'numero_planes_no_ejecutados', 'title'=> '# Planes de Acción No Realizados', 'sortable'=> true, 'searchable'=> false, 'detail'=> false, 'key'=> false ]
         ]);
