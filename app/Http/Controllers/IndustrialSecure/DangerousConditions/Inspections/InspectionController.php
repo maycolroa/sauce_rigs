@@ -122,6 +122,25 @@ class InspectionController extends Controller
         {
             $inspection = new Inspection($request->all());
             $inspection->company_id = $this->company;
+
+            $themes = $request->get('themes');
+
+            $porcentage_total_theme = 0;
+
+            \Log::info($request);
+
+            foreach ($themes as $theme) 
+            {
+                foreach ($theme['items'] as $item) 
+                {
+                    $porcentage_total_theme = $porcentage_total_theme + $item['compliance_value'];
+                }
+
+                if ($porcentage_total_theme <= 100)
+                {
+                    \Log::info($porcentage_total_theme);
+                }
+            }
             
             if (!$inspection->save())
                 return $this->respondHttp500();
@@ -237,10 +256,29 @@ class InspectionController extends Controller
         try
         {
             $inspection->fill($request->all());
-            
-            if (!$inspection->update())
-                return $this->respondHttp500();
 
+            $themes = $request->get('themes');
+
+            $porcentage_total_theme = [];
+            $porcentage_partial_theme = [];
+
+            foreach ($themes as $key => $theme) 
+            {
+                $porcentage_total_theme[$key] = 0;
+                $porcentage_partial_theme[$key] = 0;
+
+                foreach ($theme['items'] as $key2 => $item) 
+                {
+                    $porcentage_total_theme[$key] = $porcentage_total_theme[$key] + $item['compliance_value'];
+                    $porcentage_partial_theme[$key] = $porcentage_partial_theme[$key] + $item['partial_value'];
+                }
+
+                if ($porcentage_total_theme[$key] > 100 || $porcentage_partial_theme[$key] > 100)
+                {
+                    return $this->respondWithError('El total del porcentaje total de cumplimiento o de cumplimiento parcial del tema  ' . $theme['name'] . ' es mayor a 100%');
+                }
+            }
+            
             $this->saveLocation($inspection, $request);
 
             if ($request->has('additional_fields') && $request->additional_fields)            

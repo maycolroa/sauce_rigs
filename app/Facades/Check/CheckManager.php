@@ -470,6 +470,7 @@ class CheckManager
         $attrs = [
             'start_recommendations',
             'end_recommendations',
+            'disease_origin_date',
             'monitoring_recommendations',
             'process_origin_done_date',
             'process_pcl_done_date',

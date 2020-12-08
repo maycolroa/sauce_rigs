@@ -297,7 +297,7 @@ class InspectionReportController extends Controller
         $result->put('numero_items', 0);
         $result->put('t_cumple', 0);
         $result->put('t_no_cumple', 0);
-        //$result->put('t_cumple_p', 0);
+       // $result->put('t_cumple_p', 0);
         $result->put('pa_no_realizados', 0);
         $result->put('actividades_totales', 0);
 

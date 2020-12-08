@@ -46,7 +46,9 @@ class Employee extends Model
       'last_contract_date',
       'contract_type',
       'mobile',
-      'extension'
+      'extension',
+      'age',
+      'salary'
   ];
 
     public function audiometries(){

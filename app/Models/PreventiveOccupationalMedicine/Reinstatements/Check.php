@@ -40,6 +40,7 @@ class Check extends Model
         'employee_id',
         'state',
         'disease_origin',
+        'disease_origin_date',
         'has_recommendations',
         'start_recommendations',
         'end_recommendations',
