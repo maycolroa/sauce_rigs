@@ -18,6 +18,14 @@
                   :view-only="true"
                   :cancel-url="{ name: 'administrative-employees'}"/>
             </template>
+            <template v-if="form == 'ingeomega'">
+              <form-employee-ingeomega
+                  :sexs="sexs"
+                  :employee="data"
+                  :contract-types="contractTypes"
+                  :view-only="true"
+                  :cancel-url="{ name: 'administrative-employees'}"/>
+            </template>
             <template v-if="form == 'vivaAir' || form == 'manpower'">
               <form-employee-viva-air 
                   :sexs="sexs"
@@ -44,6 +52,7 @@
 import FormEmployee from '@/components/Administrative/Employees/FormEmployeeComponent.vue';
 import FormEmployeeVivaAir from '@/components/Administrative/Employees/FormEmployeeVivaAirComponent.vue';
 import FormEmployeeEmpresarial from '@/components/Administrative/Employees/FormEmployeeEmpresarialComponent.vue';
+import FormEmployeeIngeomega from '@/components/Administrative/Employees/FormEmployeeIngeomegaComponent.vue';
 import Alerts from '@/utils/Alerts.js';
 import GlobalMethods from '@/utils/GlobalMethods.js';
 import Loading from "@/components/Inputs/Loading.vue";
@@ -59,6 +68,7 @@ export default {
     FormEmployee,
     FormEmployeeVivaAir,
     FormEmployeeEmpresarial,
+    FormEmployeeIngeomega,
     Loading
   },
   data () {
@@ -75,7 +85,7 @@ export default {
 		.then(response => {
       this.form = response.data;
       
-      if (this.form == 'misionEmpresarial')
+      if (this.form == 'misionEmpresarial' || this.form == 'ingeomega')
       {
         axios.post(`/configurableForm/selectOptions`, {key: 'employee_select_contract_types'})
         .then(response3 => {

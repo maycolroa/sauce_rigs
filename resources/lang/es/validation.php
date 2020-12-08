@@ -324,7 +324,9 @@ return [
       'high_risk_work' => '¿La empresa realiza tareas de alto riesgo?',
       'state' => 'Estado',
       'reason_rejection' => 'Motivo del rechazo',
-      'fullfilment_parcial' => 'Valor de cumplimiento parcial'
+      'fullfilment_parcial' => 'Valor de cumplimiento parcial',
+      'themes.*.items.*.compliance_value' => 'Valor cumplimiento',
+      'themes.*.items.*.partial_value' => 'Valor parcial'
     ],
 
 ];

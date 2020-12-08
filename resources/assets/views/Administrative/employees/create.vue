@@ -22,6 +22,18 @@
                   eps-data-url="/selects/eps"
                   :cancel-url="{ name: 'administrative-employees'}"/>
               </template>
+              <template v-if="form == 'ingeomega'">
+                <form-employee-ingeomega
+                  url="/administration/employee"
+                  method="POST"
+                  :sexs="sexs"
+                  positions-data-url="/selects/positions"
+                  businesses-data-url="/selects/businesses"
+                  eps-data-url="/selects/eps"
+                  afp-data-url="/selects/afp"
+                  :contract-types="contractTypes"
+                  :cancel-url="{ name: 'administrative-employees'}"/>
+              </template>
               <template v-if="form == 'vivaAir' || form == 'manpower'">
                 <form-employee-viva-air 
                   url="/administration/employee"
@@ -57,6 +69,7 @@
 import FormEmployee from '@/components/Administrative/Employees/FormEmployeeComponent.vue';
 import FormEmployeeVivaAir from '@/components/Administrative/Employees/FormEmployeeVivaAirComponent.vue';
 import FormEmployeeEmpresarial from '@/components/Administrative/Employees/FormEmployeeEmpresarialComponent.vue';
+import FormEmployeeIngeomega from '@/components/Administrative/Employees/FormEmployeeIngeomegaComponent.vue';
 import Loading from "@/components/Inputs/Loading.vue";
 import Alerts from '@/utils/Alerts.js';
 import GlobalMethods from '@/utils/GlobalMethods.js';
@@ -72,6 +85,7 @@ export default {
     FormEmployee,
     FormEmployeeVivaAir,
     FormEmployeeEmpresarial,
+    FormEmployeeIngeomega,
     Loading
   },
   data(){
@@ -87,7 +101,7 @@ export default {
 		.then(response => {
       this.form = response.data;
       
-      if (this.form == 'misionEmpresarial')
+      if (this.form == 'misionEmpresarial' || this.form == 'ingeomega')
       {
         axios.post(`/configurableForm/selectOptions`, {key: 'employee_select_contract_types'})
         .then(response => {

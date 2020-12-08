@@ -76,6 +76,12 @@ class InspectionRequest extends FormRequest
             'additional_fields' => 'nullable|array'
         ];
 
+        if ($this->input('type_id')  == 2)
+        {
+            $rules['themes.*.items.*.compliance_value'] = 'required|numeric|max:100';
+            $rules['themes.*.items.*.partial_value'] = 'required|numeric|max:100';
+        }
+
         $confLocation = $this->getLocationFormConfModule();
 
         if ($confLocation)

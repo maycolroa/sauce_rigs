@@ -136,8 +136,8 @@ class InformManagerInspections
             "$column as category",
             DB::raw('count(sau_ph_inspection_items_qualification_area_location.qualification_id) as numero_items'),
             DB::raw('count(IF(sau_ph_qualifications_inspections.fulfillment = 1, sau_ph_qualifications_inspections.id, null)) as t_cumple'),
-            DB::raw('count(IF(sau_ph_qualifications_inspections.fulfillment = 0, sau_ph_qualifications_inspections.id, null)) as t_no_cumple')
-            //DB::raw('count(IF(sau_ph_qualifications_inspections.fulfillment = 2, sau_ph_qualifications_inspections.id, null)) as t_cumple_p')
+            DB::raw('count(IF(sau_ph_qualifications_inspections.fulfillment = 0, sau_ph_qualifications_inspections.id, null)) as t_no_cumple'),
+            DB::raw('count(IF(sau_ph_qualifications_inspections.fulfillment = 2, sau_ph_qualifications_inspections.id, null)) as t_cumple_p')
             )
             ->join('sau_ph_inspection_section_items','sau_ph_inspection_items_qualification_area_location.item_id', 'sau_ph_inspection_section_items.id')
             ->join('sau_ph_inspection_sections','sau_ph_inspection_section_items.inspection_section_id', 'sau_ph_inspection_sections.id')
@@ -168,11 +168,11 @@ class InformManagerInspections
         $consultas2 = DB::table(DB::raw("({$consultas2->toSql()}) AS t"))
         ->select(
             "t.category AS category",
-            DB::raw('ROUND( (t_cumple * 100) / (t_cumple + t_no_cumple), 1) AS p_cumple'),
-            DB::raw('ROUND( (t_no_cumple * 100) / (t_cumple + t_no_cumple), 1) AS p_no_cumple')
-            /*DB::raw('ROUND( (t_cumple * 100) / (t_cumple + t_no_cumple + t_cumple_p), 1) AS p_cumple'),
+            //DB::raw('ROUND( (t_cumple * 100) / (t_cumple + t_no_cumple), 1) AS p_cumple'),
+            //DB::raw('ROUND( (t_no_cumple * 100) / (t_cumple + t_no_cumple), 1) AS p_no_cumple')
+            DB::raw('ROUND( (t_cumple * 100) / (t_cumple + t_no_cumple + t_cumple_p), 1) AS p_cumple'),
             DB::raw('ROUND( (t_no_cumple * 100) / (t_cumple + t_no_cumple + t_cumple_p), 1) AS p_no_cumple'),
-            DB::raw('ROUND( (t_cumple_p * 100) / (t_cumple + t_cumple_p + t_no_cumple), 1) AS p_cumple_p')*/
+            DB::raw('ROUND( (t_cumple_p * 100) / (t_cumple + t_cumple_p + t_no_cumple), 1) AS p_cumple_p')
         )
         ->mergeBindings($consultas2->getQuery())
         ->groupBy('t.category')
@@ -246,7 +246,7 @@ class InformManagerInspections
         $labels = collect([]);
         $cumple = collect([]);
         $no_cumple = collect([]);
-        //$parcial = collect([]);
+        $parcial = collect([]);
 
         foreach ($data as $key => $value)
         {
@@ -255,7 +255,7 @@ class InformManagerInspections
             $labels->push($label);
             $cumple->push($value->p_cumple);
             $no_cumple->push($value->p_no_cumple);
-            //$parcial->push($value->p_cumple_p);
+            $parcial->push($value->p_cumple_p);
         }
 
         $info = [
@@ -286,7 +286,7 @@ class InformManagerInspections
             ]
         ];
 
-        /*$info3 = [
+        $info3 = [
             "name" => 'Parcial',
             "type" => 'bar',
             "stack" => 'barras',
@@ -298,15 +298,15 @@ class InformManagerInspections
                     "formatter" => '{c}%',
                 ]
             ]
-        ];*/
+        ];
 
         return collect([
-            'legend' => ['Cumple', 'No Cumple'],
-            //'legend' => ['Cumple', 'No Cumple', 'Parcial'],
+            //'legend' => ['Cumple', 'No Cumple'],
+            'legend' => ['Cumple', 'No Cumple', 'Parcial'],
             'labels' => $labels,
             'datasets' => [
-                'data' => [$info, $info2],
-                //'data' => [$info, $info2, $info3],
+                //'data' => [$info, $info2],
+                'data' => [$info, $info2, $info3],
                 'type' => 'percentage',
                 'count' => 0,
             ]
