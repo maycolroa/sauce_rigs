@@ -125,7 +125,8 @@ class InspectionController extends Controller
 
             $themes = $request->get('themes');
 
-            $porcentage_total_theme = 0;
+            $porcentage_total_theme = [];
+            $porcentage_partial_theme = [];
 
             if($request->type_id == 2)
             {
