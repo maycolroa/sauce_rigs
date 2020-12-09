@@ -1,3 +1,7 @@
+@if ($inspections["logo"])
+<div style="page-break-inside: avoid; text-align: right; padding-bottom: 10px;"><img src="{{ public_path('storage/administrative/logos/').$inspections['logo'] }}" width="120px" height="120px"/></div>
+@endif
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -7,8 +11,8 @@
     <title>Document</title>
     <style>
         @page { margin: 40px 5px; }
-        #header { position: fixed; left: 100px; right: 100px; top: 5px; height: 50px;text-align: center; }
-        #header .page:after { content: counter(page); }
+        #header { position: fixed; left: 100px; right: 100px; top: -25px; height: 50px;text-align: center; }
+        #header .page:after { content: counter(page, upper-roman); }
 
         table {
           font-family: arial, sans-serif;          
@@ -43,18 +47,20 @@
 
     </style>
 </head>
-<body style="margin: 50px; margin-top: 120px;">
+<body style="margin: 50px; margin-top: 70px;">
     <div id="header">
         <table class="table-general" style='border: 1px solid black;'>
             <thead>
                 <tr>
                     @if ($inspections["logo"])
-                    <th style='border-right: 1px solid black; padding: 1px; width: 20%'><img src="{{ public_path('storage/administrative/logos/').$inspections['logo'] }}" width="50px" height="50px"/></th>
+                    <th colspan='2' style='border-right: 1px solid black;'><img src="{{ public_path('storage/administrative/logos/').$inspections['logo'] }}" width="50px" height="50px"/></th>
                     @endif
-                    <th style='border-right: 1px solid black; padding: 1px; width: 60%'>{{ $inspections["inspection"] }}</th>
-                    <th style='padding: 1px; width: 20%'>
-                        <p>Fecha Creación: {{\Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $inspections["created_at"])->format('Y-m-d')}}</p>
+                    <th colspan='2' style='border-right: 1px solid black;'>{{ $inspections["inspection"] }}</th>
+                    <th>
+                        <p>Fecha Creación: {{$inspections["created_at"]}}</p>
                         <p class="page">Página </p>
+                        <p>Fecha Calificación: {{$inspections["qualification_date"]}}</p>
+                        <p>Responsable: {{$inspections["qualifier"]}}</p>
                     </th>
                 </tr>
                 <!--<tr>
@@ -75,14 +81,14 @@
                 </tr>
                 <tr>
                     <td colspan="3">{{ $inspections["inspection"] }}</td>
-                </tr>-->
+                </tr>
                 <tr>
-                    <!--<th>Fecha Creación</th>-->
+                    <th>Fecha Creación</th>
                     <th>Fecha Calificación</th>
                     <th>Responsable</th>
                 </tr>
                 <tr>
-                    <!--<td>{{$inspections["created_at"]}}</td>-->
+                    <td>{{$inspections["created_at"]}}</td>
                     <td>{{$inspections["qualification_date"]}}</td>
                     <td>{{$inspections["qualifier"]}}</td>
                 </tr>-->
