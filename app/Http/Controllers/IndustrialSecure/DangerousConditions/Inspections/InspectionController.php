@@ -127,8 +127,6 @@ class InspectionController extends Controller
 
             $porcentage_total_theme = 0;
 
-            \Log::info($request);
-
             if($request->type_id == 2)
             {
                 foreach ($themes as $key => $theme) 
@@ -148,8 +146,6 @@ class InspectionController extends Controller
                     }
                 }
             }
-
-            
             
             if (!$inspection->save())
                 return $this->respondHttp500();
