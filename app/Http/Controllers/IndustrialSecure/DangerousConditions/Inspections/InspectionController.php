@@ -127,18 +127,23 @@ class InspectionController extends Controller
 
             $porcentage_total_theme = 0;
 
-            \Log::info($request);
-
-            foreach ($themes as $theme) 
+            if($request->type_id == 2)
             {
-                foreach ($theme['items'] as $item) 
+                foreach ($themes as $key => $theme) 
                 {
-                    $porcentage_total_theme = $porcentage_total_theme + $item['compliance_value'];
-                }
+                    $porcentage_total_theme[$key] = 0;
+                    $porcentage_partial_theme[$key] = 0;
 
-                if ($porcentage_total_theme <= 100)
-                {
-                    \Log::info($porcentage_total_theme);
+                    foreach ($theme['items'] as $key2 => $item) 
+                    {
+                        $porcentage_total_theme[$key] = $porcentage_total_theme[$key] + $item['compliance_value'];
+                        $porcentage_partial_theme[$key] = $porcentage_partial_theme[$key] + $item['partial_value'];
+                    }
+
+                    if ($porcentage_total_theme[$key] > 100 || $porcentage_partial_theme[$key] > 100)
+                    {
+                        return $this->respondWithError('El total del porcentaje total de cumplimiento o de cumplimiento parcial del tema  ' . $theme['name'] . ' es mayor a 100%');
+                    }
                 }
             }
             
@@ -262,20 +267,23 @@ class InspectionController extends Controller
             $porcentage_total_theme = [];
             $porcentage_partial_theme = [];
 
-            foreach ($themes as $key => $theme) 
+            if($request->type_id == 2)
             {
-                $porcentage_total_theme[$key] = 0;
-                $porcentage_partial_theme[$key] = 0;
-
-                foreach ($theme['items'] as $key2 => $item) 
+                foreach ($themes as $key => $theme) 
                 {
-                    $porcentage_total_theme[$key] = $porcentage_total_theme[$key] + $item['compliance_value'];
-                    $porcentage_partial_theme[$key] = $porcentage_partial_theme[$key] + $item['partial_value'];
-                }
+                    $porcentage_total_theme[$key] = 0;
+                    $porcentage_partial_theme[$key] = 0;
 
-                if ($porcentage_total_theme[$key] > 100 || $porcentage_partial_theme[$key] > 100)
-                {
-                    return $this->respondWithError('El total del porcentaje total de cumplimiento o de cumplimiento parcial del tema  ' . $theme['name'] . ' es mayor a 100%');
+                    foreach ($theme['items'] as $key2 => $item) 
+                    {
+                        $porcentage_total_theme[$key] = $porcentage_total_theme[$key] + $item['compliance_value'];
+                        $porcentage_partial_theme[$key] = $porcentage_partial_theme[$key] + $item['partial_value'];
+                    }
+
+                    if ($porcentage_total_theme[$key] > 100 || $porcentage_partial_theme[$key] > 100)
+                    {
+                        return $this->respondWithError('El total del porcentaje total de cumplimiento o de cumplimiento parcial del tema  ' . $theme['name'] . ' es mayor a 100%');
+                    }
                 }
             }
             

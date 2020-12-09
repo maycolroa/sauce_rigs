@@ -1,3 +1,7 @@
+@if ($inspections["logo"])
+<div style="page-break-inside: avoid; text-align: right; padding-bottom: 10px;"><img src="{{ public_path('storage/administrative/logos/').$inspections['logo'] }}" width="120px" height="120px"/></div>
+@endif
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
