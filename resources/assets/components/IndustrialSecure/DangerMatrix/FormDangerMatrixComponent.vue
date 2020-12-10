@@ -12,7 +12,7 @@
     <b-form :action="url" @submit.prevent="submit" autocomplete="off">
 
       <b-form-row>
-        <vue-radio :disabled="viewOnly" :checked="form.approved" class="col-md-6" v-model="form.approved" :options="siNo" name="approved" :error="form.errorsFor('approved')" label="¿Aprobar mátriz?">
+        <vue-radio v-if="auth.can['dangerMatrix_approved_matrix']" :disabled="viewOnly" :checked="form.approved" class="col-md-6" v-model="form.approved" :options="siNo" name="approved" :error="form.errorsFor('approved')" label="¿Aprobar mátriz?">
           </vue-radio>
       </b-form-row>
       

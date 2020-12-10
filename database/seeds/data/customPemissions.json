@@ -274,6 +274,10 @@
                     {
                         "name": "dangerMatrix_receive_notifications",
                         "display_name": "Matriz de peligro - recibir notificaciones"
+                    },
+                    {
+                        "name": "dangerMatrix_approved_matrix",
+                        "display_name": "Matriz de peligro - Aprobar matrices"
                     }
                 ]
             },
