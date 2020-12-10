@@ -10,6 +10,11 @@
     </b-row>
 
     <b-form :action="url" @submit.prevent="submit" autocomplete="off">
+
+      <b-form-row>
+        <vue-radio :disabled="viewOnly" :checked="form.approved" class="col-md-6" v-model="form.approved" :options="siNo" name="approved" :error="form.errorsFor('approved')" label="¿Aprobar mátriz?">
+          </vue-radio>
+      </b-form-row>
       
       <b-form-row>
         <location-level-component
@@ -113,6 +118,7 @@
 <script>
 import VueInput from "@/components/Inputs/VueInput.vue";
 import Form from "@/utils/Form.js";
+import VueRadio from "@/components/Inputs/VueRadio.vue";
 import FormActivityComponent from '@/components/IndustrialSecure/DangerMatrix/FormActivityComponent.vue';
 import ModalsCreateComponent from '@/components/IndustrialSecure/DangerMatrix/ModalsCreateComponent.vue';
 import LocationLevelComponent from '@/components/CustomInputs/LocationLevelComponent.vue';
@@ -121,6 +127,7 @@ import VueAjaxAdvancedSelect from "@/components/Inputs/VueAjaxAdvancedSelect.vue
 export default {
   components: {
     VueInput,
+    VueRadio,
     FormActivityComponent,
     ModalsCreateComponent,
     LocationLevelComponent,
@@ -179,6 +186,7 @@ export default {
               employee_process_id: ''
             },
             name: '',
+            approved: '',
             participants: '',
             activities: [
               {

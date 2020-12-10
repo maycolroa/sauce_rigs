@@ -100,6 +100,7 @@ class VuetableColumnManager
         $colums = [
             ['name' => 'sau_dangers_matrix.id', 'data'=> 'id', 'title'=> 'ID', 'sortable'=> false, 'searchable'=> false, 'detail'=> false, 'key'=> true ],
             ['name' => 'sau_users.name', 'data'=> 'supervisor', 'title'=> 'Supervisor', 'sortable'=> true, 'searchable'=> true, 'detail'=> false, 'key'=> false ],
+            ['name' => 'approved', 'data'=> 'approved', 'title'=> '¿Aprobada?', 'sortable'=> true, 'searchable'=> false, 'detail'=> false, 'key'=> false ]
         ];
 
         $colums = array_merge($colums, $this->getColumnsLocations());
