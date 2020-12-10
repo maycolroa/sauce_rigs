@@ -64,13 +64,14 @@ class DangerMatrixController extends Controller
     */
     public function data(Request $request)
     {
-        $dangersMatrix = DangerMatrix::select(
-            'sau_dangers_matrix.*',
-            'sau_employees_regionals.name as regional',
-            'sau_employees_headquarters.name as headquarter',
-            'sau_employees_areas.name as area',
-            'sau_employees_processes.name as process',
-            'sau_users.name as supervisor'
+        $dangersMatrix = DangerMatrix::selectRaw("
+            sau_dangers_matrix.*,
+            sau_employees_regionals.name as regional,
+            sau_employees_headquarters.name as headquarter,
+            sau_employees_areas.name as area,
+            sau_employees_processes.name as process,
+            sau_users.name as supervisor,            
+            case when sau_dangers_matrix.approved is true then 'SI' else 'NO' end as approved"
         )
         ->leftJoin('sau_employees_regionals', 'sau_employees_regionals.id', 'sau_dangers_matrix.employee_regional_id')
         ->leftJoin('sau_employees_headquarters', 'sau_employees_headquarters.id', 'sau_dangers_matrix.employee_headquarter_id')
@@ -106,6 +107,11 @@ class DangerMatrixController extends Controller
         try
         {
             $dangerMatrix = DangerMatrix::findOrFail($id);
+
+            if ($dangerMatrix->approved == true)
+                $dangerMatrix->approved = 'SI';
+            else
+                $dangerMatrix->approved = 'NO';
 
             $dangerMatrix->activitiesRemoved = [];
             $dangerMatrix->locations = $this->prepareDataLocationForm($dangerMatrix);
@@ -248,6 +254,7 @@ class DangerMatrixController extends Controller
 
         $rules = [
             'name' => 'nullable|string|unique:sau_dangers_matrix,name,'.$id.',id,company_id,'.$this->company,
+            'approved' => 'nullable',
             'participants' => 'nullable|array',
             'activities' => 'required|array',
             'activities.*.activity_id' => 'required|exists:sau_dm_activities,id',
@@ -332,6 +339,13 @@ class DangerMatrixController extends Controller
             }
 
             $dangerMatrix->name = $request->get('name');
+
+            $approved = $request->get('approved');
+
+            if($approved == 'SI')
+                $dangerMatrix->approved = true;
+            else
+                $dangerMatrix->approved = false;
 
             $participants = $this->tagsPrepare($request->get('participants'));
             $this->tagsSave($participants, TagsParticipant::class);
