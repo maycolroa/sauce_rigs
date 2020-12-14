@@ -70,36 +70,48 @@ class LoginController extends Controller
                         {
                             Session::put('company_id', $val->pivot->company_id);
                             $team = Team::where('name', Session::get('company_id'))->first()->id;
-                            
-                            if (Auth::user()->hasRole('Arrendatario', $team) || Auth::user()->hasRole('Contratista', $team))
+
+                            if (!Auth::user()->terms_conditions)
                             {
-                                $contract = $this->getContractUser(Auth::user()->id);
-
-                                if ($contract->active == 'SI')
-                                {
-                                    if ($contract->completed_registration == 'NO')
-                                    {
-                                        Auth::user()->update([
-                                            'last_login_at' => Carbon::now()->toDateTimeString()
-                                        ]);
-
-                                        $this->userActivity();
-                                        
-                                        return $this->respondHttp200([
-                                            'redirectTo' => 'legalaspects/contracts/information'
-                                        ]);
-                                    }
-
-                                    return $this->defaultUrl();
-                                }
-                                else 
-                                {
-                                    Auth::logout();
-                                    return $this->respondWithError(['errors'=>['email'=>'Estimado Usuario su contratista se encuentra inhabilitada para poder ingresar al sistema']], 422);
-                                }
+                                $this->userActivity();
+                                
+                                return $this->respondHttp200([
+                                    'redirectTo' => 'termsconditions'
+                                ]);
                             }
+                            else
+                            {
+                                if (Auth::user()->hasRole('Arrendatario', $team) || Auth::user()->hasRole('Contratista', $team))
+                                {
+                                    $contract = $this->getContractUser(Auth::user()->id);
 
-                            return $this->defaultUrl();
+                                    if ($contract->active == 'SI')
+                                    {
+                                        if ($contract->completed_registration == 'NO')
+                                        {
+                                            Auth::user()->update([
+                                                'last_login_at' => Carbon::now()->toDateTimeString()
+                                            ]);
+
+                                            $this->userActivity();
+                                            
+                                            return $this->respondHttp200([
+                                                'redirectTo' => 'legalaspects/contracts/information'
+                                            ]);
+                                        }
+
+                                        return $this->defaultUrl();
+                                    }
+                                    else 
+                                    {
+                                        Auth::logout();
+                                        return $this->respondWithError(['errors'=>['email'=>'Estimado Usuario su contratista se encuentra inhabilitada para poder ingresar al sistema']], 422);
+                                    }
+                                }
+
+                                return $this->defaultUrl();
+                            }
+                            
                         }
                     }
                     

@@ -34,6 +34,8 @@ Route::middleware(['auth'])->group(function () {
     Route::post('setStateFilters', 'General\ApplicationController@setStateFilters');
     Route::post('getStateFilters', 'General\ApplicationController@getStateFilters');    
     Route::post('userActivity', 'General\ApplicationController@userActivity');
+    Route::get('get_terms_conditions', 'General\ApplicationController@getTermsConditionsUsers');
+    Route::post('accept_terms_conditions', 'General\ApplicationController@accepTermsConditionsUsers');
 
     Route::prefix('configurableForm')->group(function () {
       Route::post('formModel', 'General\ConfigurableFormControlle@formModel');
