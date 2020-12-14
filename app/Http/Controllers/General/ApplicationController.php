@@ -342,4 +342,23 @@ class ApplicationController extends Controller
         $activity->description = $request->description;
         $activity->save();
     }
+
+    /**
+   * Get text terms and conditions
+   *
+   * @return \Illuminate\Http\Response
+   */
+  public function getTermsConditionsUsers()
+  {
+      return $this->respondHttp200([
+          'data' => Configuration::getConfiguration('ph_text_terms_conditions')
+      ]);
+  }
+
+  public function accepTermsConditionsUsers()
+  {
+    $user = User::find($this->user->id);
+    $user->terms_conditions = true;
+    $user->update();
+  }
 }
