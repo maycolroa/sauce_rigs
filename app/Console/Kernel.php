@@ -19,7 +19,7 @@ class Kernel extends ConsoleKernel
         /*'App\Console\Commands\CheckLastLoginNotification',
         'App\Console\Commands\DisableUsers',*/
         'App\Console\Commands\DaysAlertExpiredLicense',
-        'App\Console\Commands\NotifyUpdateLaws',
+        //'App\Console\Commands\NotifyUpdateLaws',
         //'App\Console\Commands\ReincSendMail',
         //'App\Console\Commands\ReincNotificationNextFollowUp',
         'App\Console\Commands\DmReportHistory',
@@ -63,9 +63,9 @@ class Kernel extends ConsoleKernel
             ->timezone('America/Bogota')
             ->at('01:00');
 
-        $schedule->command('notify-update-laws')
+        /*$schedule->command('notify-update-laws')
             ->timezone('America/Bogota')
-            ->dailyAt('01:00');
+            ->dailyAt('01:00');*/
         
         $schedule->command('dm-report-history')
             ->timezone('America/Bogota')
