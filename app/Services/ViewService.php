@@ -5,6 +5,7 @@ namespace App\Services;
 use Illuminate\Support\Facades\Auth;
 use App\Facades\General\PermissionService;
 use App\Facades\Administrative\KeywordManager;
+use App\Models\Administrative\Users\User;
 use Session;
 
 class ViewService
@@ -40,5 +41,10 @@ class ViewService
     public function getKeywords()
     {
         return KeywordManager::getKeywords(Session::get('company_id'));
+    }
+
+    public function getTerms()
+    {
+        return Auth::user()->terms_conditions;
     }
 }
