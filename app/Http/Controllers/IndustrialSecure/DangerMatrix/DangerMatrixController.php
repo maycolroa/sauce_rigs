@@ -20,6 +20,9 @@ use App\Models\IndustrialSecure\DangerMatrix\TagsParticipant;
 use App\Models\IndustrialSecure\DangerMatrix\TagsDangerDescription;
 use App\Models\IndustrialSecure\DangerMatrix\TagsHistoryChange;
 use App\Models\IndustrialSecure\DangerMatrix\ChangeHistory;
+use App\Models\IndustrialSecure\DangerMatrix\AdditionalFields;
+use App\Models\IndustrialSecure\DangerMatrix\AdditionalFieldsValues;
+use App\Http\Requests\IndustrialSecure\DangerMatrix\AddFieldsRequest;
 use App\Jobs\IndustrialSecure\DangerMatrix\DangerMatrixExportJob;
 use App\Facades\ActionPlans\Facades\ActionPlan;
 use App\Traits\DangerMatrixTrait;
@@ -198,6 +201,60 @@ class DangerMatrixController extends Controller
         return $this->respondHttp200([
             'message' => 'Se elimino la matriz de peligro'
         ]);
+    }
+
+    public function saveFields(AddFieldsRequest $request)
+    {
+        DB::beginTransaction();
+
+        try
+        {
+            if ($request->has('fields'))
+            {
+                foreach ($request->fields as $value)
+                {
+                    $id = isset($value['id']) ? $value['id'] : NULL;
+                    AdditionalFields::updateOrCreate(['id'=>$id], ['company_id'=>$this->company, 'name'=>$value['name']]);
+                }
+            }
+
+            if ($request->has('delete'))
+                $this->deleteData($request->delete);
+
+            DB::commit();
+
+        } catch (\Exception $e) {
+            DB::rollback();
+            \Log::info($e->getMessage());
+            return $this->respondHttp500();
+            //return $e->getMessage();
+        }
+
+        return $this->respondHttp200([
+            'message' => 'Se guardaron los documentos'
+        ]);
+    }
+
+    public function getAdditionalFiels()
+    {
+        $fields = AdditionalFields::get();
+
+        foreach ($fields as $field)
+        {
+            $field->key = Carbon::now()->timestamp + rand(1,10000);
+        }
+        \Log::info($fields);
+
+        return $this->respondHttp200([
+            'delete' => [],
+            'fields' => $fields
+        ]);
+    }
+
+    private function deleteData($data)
+    {    
+        if (COUNT($data) > 0)
+            AdditionalFields::destroy($data);
     }
 
     /**

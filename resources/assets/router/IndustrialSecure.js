@@ -93,6 +93,14 @@ export default [{
       ]),
       ...middleware({ 'check-permission': 'dangerMatrix_c' }, [
         {
+          name: 'industrialsecure-dangermatrix-addfields',
+          path: 'dangermatrix/addfields',
+          component: () =>
+            import('@/views/IndustrialSecure/dangerMatrix/addfieldsRequest')
+        },
+      ]),
+      ...middleware({ 'check-permission': 'dangerMatrix_c' }, [
+        {
           name: 'industrialsecure-dangermatrix-clone',
           path: 'dangermatrix/clone',
           component: () =>
