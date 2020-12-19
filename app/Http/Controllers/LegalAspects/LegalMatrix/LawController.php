@@ -10,6 +10,7 @@ use App\Models\LegalAspects\LegalMatrix\Law;
 use App\Models\LegalAspects\LegalMatrix\Article;
 use App\Models\LegalAspects\LegalMatrix\FulfillmentValues;
 use App\Models\LegalAspects\LegalMatrix\ArticleFulfillment;
+use App\Models\LegalAspects\LegalMatrix\ArticleFulfillmentHistory;
 use App\Models\LegalAspects\LegalMatrix\CompanyIntetest;
 use App\Jobs\LegalAspects\LegalMatrix\SyncQualificationsCompaniesJob;
 use App\Traits\LegalMatrixTrait;
@@ -574,6 +575,17 @@ class LawController extends Controller
                 'observations' => $request->observations ? $request->observations : NULL,
                 'responsible' => $request->responsible ? $request->responsible : NULL,
             ]);
+
+            foreach ($ids as $id) 
+            {
+                $article = ArticleFulfillment::find($id);
+
+                $article->histories()->create([
+                    'user_id' => $this->user->id,
+                    'fulfillment_value' => $article->fulfillment_value ? $article->fulfillment_value->name : NULL,
+                    'observations' => $article->observations
+                ]);
+            }
 
             if (!$qualification) {
                     return $this->respondHttp500();

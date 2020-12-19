@@ -2,7 +2,7 @@
   	<div>
 		<header-module
 			title="MATRIZ DE PELIGROS"
-			subtitle="CREAR MATRIZ"
+			subtitle="CREAR CAMPOS ADICIONALES"
 			url="industrialsecure-dangermatrix"
 		/>
 
@@ -10,7 +10,7 @@
 			<b-card no-body>
 				<b-card-body>
 					<form-additional-fields
-						url="/legalAspects/contracts/saveDocuments"
+						url="/industrialSecurity/dangersMatrix/addFields"
 						method="POST"
 						:cancel-url="{ name: 'industrialsecure-dangermatrix'}"
 						:fields="fields"/>
@@ -41,8 +41,8 @@ export default {
 		}
 	},
 	created(){
-		//axios para obtener los documentos
-		axios.post("/legalAspects/contracts/getfields")
+		//axios para obtener los campos adicionales
+		axios.post("/industrialSecurity/dangersMatrix/getfields")
 		.then(response => {
 			this.fields = response.data;
 			this.ready = true

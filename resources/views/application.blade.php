@@ -34,7 +34,7 @@
     </div>
 
     <script>
-        var authGlobal = @json(['can' => $viewService->getCan(), 'hasRole' => $viewService->getHasRole()]);
+        var authGlobal = @json(['can' => $viewService->getCan(), 'hasRole' => $viewService->getHasRole(), 'terms' => $viewService->getTerms()]);
 
         var keywords = @json($viewService->getKeywords());
 
