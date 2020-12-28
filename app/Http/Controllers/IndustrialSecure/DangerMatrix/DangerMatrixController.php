@@ -211,10 +211,13 @@ class DangerMatrixController extends Controller
         {
             if ($request->has('fields'))
             {
-                foreach ($request->fields as $value)
+                if ($request->fields)
                 {
-                    $id = isset($value['id']) ? $value['id'] : NULL;
-                    AdditionalFields::updateOrCreate(['id'=>$id], ['company_id'=>$this->company, 'name'=>$value['name']]);
+                    foreach ($request->fields as $value)
+                    {
+                        $id = isset($value['id']) ? $value['id'] : NULL;
+                        AdditionalFields::updateOrCreate(['id'=>$id], ['company_id'=>$this->company, 'name'=>$value['name']]);
+                    }
                 }
             }
 
@@ -231,7 +234,7 @@ class DangerMatrixController extends Controller
         }
 
         return $this->respondHttp200([
-            'message' => 'Se guardaron los documentos'
+            'message' => 'Se guardaron los campos'
         ]);
     }
 

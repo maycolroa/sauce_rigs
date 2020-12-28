@@ -19,12 +19,18 @@ class Kernel extends ConsoleKernel
         /*'App\Console\Commands\CheckLastLoginNotification',
         'App\Console\Commands\DisableUsers',*/
         'App\Console\Commands\DaysAlertExpiredLicense',
-        //'App\Console\Commands\NotifyUpdateLaws',
+        'App\Console\Commands\NotifyUpdateLaws',
         //'App\Console\Commands\ReincSendMail',
         //'App\Console\Commands\ReincNotificationNextFollowUp',
         'App\Console\Commands\DmReportHistory',
         'App\Console\Commands\NotifyUpdateListCheckContract',
-        'App\Console\Commands\CtUnlockEvaluation'
+        'App\Console\Commands\CtUnlockEvaluation',
+        'App\Console\Commands\DaysAlertsWithoutActivityContractors',
+        'App\Console\Commands\NotifyUploadDocumentsContracts',
+        'App\Console\Commands\NotifyRejectedDocumentsContracts',
+        'App\Console\Commands\DeleteOldImagesApi',
+        'App\Console\Commands\DeleteFilesTemporal',
+        //'App\Console\Commands\RememberRepeatInspetion'
     ];
 
     /**
@@ -63,9 +69,9 @@ class Kernel extends ConsoleKernel
             ->timezone('America/Bogota')
             ->at('01:00');
 
-        /*$schedule->command('notify-update-laws')
+        $schedule->command('notify-update-laws')
             ->timezone('America/Bogota')
-            ->dailyAt('01:00');*/
+            ->dailyAt('01:00');
         
         $schedule->command('dm-report-history')
             ->timezone('America/Bogota')
@@ -90,6 +96,22 @@ class Kernel extends ConsoleKernel
         $schedule->command('days-alerts-without-activity-contractors')
             ->timezone('America/Bogota')
             ->dailyAt('02:00');
+
+        $schedule->command('notify-rejected-documents-contracts')
+            ->timezone('America/Bogota')
+            ->dailyAt('02:00');
+
+        $schedule->command('delete-old-images-api')
+            ->timezone('America/Bogota')
+            ->dailyAt('03:00');
+
+        $schedule->command('delete-files-temporal')
+            ->timezone('America/Bogota')
+            ->dailyAt('03:00');
+
+        /*$schedule->command('remember-repeat-inspetion')
+            ->timezone('America/Bogota')
+            ->dailyAt('02:00');*/
 
         $schedule->command('ct-unlock-evaluation')
             ->timezone('America/Bogota')
