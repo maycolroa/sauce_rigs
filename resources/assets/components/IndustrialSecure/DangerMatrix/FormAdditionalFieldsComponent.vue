@@ -18,7 +18,7 @@
 
 				    <b-form-row style="padding-bottom: 20px;">
 				      <div class="col-md-12">
-				          <center><b-btn variant="primary" @click.prevent="addField()"><span class="ion ion-md-add-circle"></span>&nbsp;&nbsp;Agregar Documento</b-btn></center>
+				          <center><b-btn variant="primary" @click.prevent="addField()"><span class="ion ion-md-add-circle"></span>&nbsp;&nbsp;Agregar Campo</b-btn></center>
 				      </div>
 				    </b-form-row>
             	</b-card>
