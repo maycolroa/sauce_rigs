@@ -44,6 +44,10 @@ class EmployeeImportErrorExcel implements WithMultipleSheets
             $sheets[] = new AfpTemplateExcel($this->company_id);
             $sheets[] = new ArlTemplateExcel($this->company_id);
         }
+        else if ($this->formModel == 'ingeomega')
+        {
+            $sheets[] = new AfpTemplateExcel($this->company_id);
+        }
         
         $sheets[] = new AudiometryImportErrorListExcel($this->errors);
        

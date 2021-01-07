@@ -178,6 +178,7 @@ Route::middleware(['auth'])->group(function () {
         Route::post('dmDangerMatrix', 'IndustrialSecure\DangerMatrix\DangerMatrixController@multiselect');
         Route::post('dmGeneratedDangers', 'General\MultiSelectRadioController@dmGeneratedDangers');
         Route::post('tagsAdministrativeControls', 'IndustrialSecure\Tags\TagController@multiselectAdministrativeControls');
+        Route::post('tagsAddFields/{id}', 'IndustrialSecure\Tags\TagController@multiselectAddFields');
         Route::post('tagsEngineeringControls', 'IndustrialSecure\Tags\TagController@multiselectEngineeringControls');
         Route::post('tagsHistoryChange', 'IndustrialSecure\Tags\TagController@multiselectHistoryChange');
         Route::post('tagsEpp', 'IndustrialSecure\Tags\TagController@multiselectEpp');
@@ -352,6 +353,7 @@ Route::middleware(['auth'])->group(function () {
 
       Route::post('dangersMatrix/data', 'IndustrialSecure\DangerMatrix\DangerMatrixController@data');
       Route::post('dangersMatrix/getQualificationsComponent', 'IndustrialSecure\DangerMatrix\QualificationController@getQualificationsComponent');
+      Route::post('dangersMatrix/getfieldsadd', 'IndustrialSecure\DangerMatrix\DangerMatrixController@getFieldAdd');
       Route::post('dangersMatrix/addFields', 'IndustrialSecure\DangerMatrix\DangerMatrixController@saveFields');
       Route::post('dangersMatrix/getfields', 'IndustrialSecure\DangerMatrix\DangerMatrixController@getAdditionalFiels');
       Route::post('dangersMatrix/report', 'IndustrialSecure\DangerMatrix\DangerMatrixReportController@report');

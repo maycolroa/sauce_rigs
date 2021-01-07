@@ -19,7 +19,8 @@
                 :qualifications="qualifications"
                 :action-plan-states="actionPlanStates"
                 userDataUrl="/selects/users"
-                :configuration="configuration"/>
+                :configuration="configuration"
+                :fields="fields"/>
         </b-card-body>
       </b-card>
     </div>
@@ -46,7 +47,8 @@ export default {
       siNo: [],
       qualifications: [],
       actionPlanStates: [],
-      configuration: []
+      configuration: [],
+      fields: {}
     }
   },
   created(){
@@ -63,6 +65,18 @@ export default {
     .catch(error => {
         Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
         this.$router.go(-1);
+    });
+
+    axios.post("/industrialSecurity/dangersMatrix/getfieldsadd")
+		.then(response => {
+			this.fields = response.data.data;
+      this.ready = true
+      
+      console.log(this.fields)
+		})
+		.catch(error => {
+			Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
+			this.$router.go(-1);
     });
   },
   methods: {
