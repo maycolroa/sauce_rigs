@@ -120,6 +120,23 @@ class DangerMatrixController extends Controller
             $dangerMatrix->locations = $this->prepareDataLocationForm($dangerMatrix);
             $dangerMatrix->changeHistory = '';
 
+            /*$fields = AdditionalFields::get();
+
+            \Log::info($fields);
+
+            foreach ($fields as $field)
+            {
+                $add_field = AdditionalFieldsValues::where('danger_matrix_id',$id)->where('field_id', $field->id)->get();
+
+                \Log::info($add_field);
+
+                $field->value = $add_field->value;
+                
+                \Log::info($field);
+            }*/
+
+            //$dangerMatrix->add_fields = $fields;
+
             foreach ($dangerMatrix->activities as $keyActivity => $itemActivity)
             {   
                 $itemActivity->key = Carbon::now()->timestamp + rand(1,10000);
@@ -149,6 +166,20 @@ class DangerMatrixController extends Controller
         } catch(Exception $e){
             $this->respondHttp500();
         }
+    }
+
+    public function getFieldAdd(Request $request, DangerMatrix $dangersMatrix)
+    {
+        $fields = AdditionalFields::get();
+
+        foreach ($fields as $field)
+        {
+            $field->value = '';
+        }
+
+        return $this->respondHttp200([
+            'data' => $fields
+        ]);
     }
 
     /**
@@ -246,7 +277,6 @@ class DangerMatrixController extends Controller
         {
             $field->key = Carbon::now()->timestamp + rand(1,10000);
         }
-        \Log::info($fields);
 
         return $this->respondHttp200([
             'delete' => [],
@@ -304,6 +334,15 @@ class DangerMatrixController extends Controller
             {
                 $data5['changeHistory'][$key] = json_decode($value, true);
                 $request->merge($data5);
+            }
+        }
+
+        if ($request->has('add_fields'))
+        {
+            foreach ($request->get('add_fields') as $key => $value)
+            {
+                $data6['add_fields'][$key] = json_decode($value, true);
+                $request->merge($data6);
             }
         }
 
@@ -414,6 +453,29 @@ class DangerMatrixController extends Controller
             if(!$dangerMatrix->save()){
                 return $this->respondHttp500();
             }
+
+            /*foreach ($request->add_fields as $value) 
+            {
+                $fields_add = $this->tagsPrepare($value);
+
+                $field = new AdditionalFieldsValues();
+                $field->field_id = $value['id'];
+                $field->danger_matrix_id = $dangerMatrix->id;
+                $field->value = $fields_add->implode(',');
+                $field->save();
+
+                \Log::info($fields_add->implode(','));
+                \Log::info($field->value);
+            }*/
+
+            /*foreach ($request->add_fields as $value) 
+            {
+                $field = new AdditionalFieldsValues();
+                $field->field_id = $value['id'];
+                $field->danger_matrix_id = $dangerMatrix->id;
+                $field->value = $value['value'];
+                $field->save();
+            }*/
 
             if($this->updateModelLocationForm($dangerMatrix, $request->get('locations')))
             {

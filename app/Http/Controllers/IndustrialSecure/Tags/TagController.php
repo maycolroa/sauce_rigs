@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Models\IndustrialSecure\DangerMatrix\TagsAdministrativeControls;
 use App\Models\IndustrialSecure\DangerMatrix\TagsEngineeringControls;
 use App\Models\IndustrialSecure\DangerMatrix\TagsEpp;
+use App\Models\IndustrialSecure\DangerMatrix\TagsAddFields;
 use App\Models\IndustrialSecure\DangerMatrix\TagsPossibleConsequencesDanger;
 use App\Models\IndustrialSecure\DangerMatrix\TagsWarningSignage;
 use App\Models\IndustrialSecure\DangerMatrix\TagsSubstitution;
@@ -21,6 +22,31 @@ class TagController extends Controller
      *
      * @param Request $request
      * @return Array
+     */
+
+    public function multiselectAddFields(Request $request, $id)
+    {
+        if($request->has('keyword'))
+        {
+            $keyword = "%{$request->keyword}%";
+            $tags = TagsAddFields::select("id", "name")
+                ->where(function ($query) use ($keyword) {
+                    $query->orWhere('name', 'like', $keyword);
+                })
+                ->where('field_id', $id)
+                ->take(30)->pluck('id', 'name');
+
+            return $this->respondHttp200([
+                'options' => $this->multiSelectFormat($tags)
+            ]);
+        }
+    }
+
+    /**
+     * Returns an array for a select type input
+     *
+     * @param Request $request
+     * @return Array 
      */
 
     public function multiselectAdministrativeControls(Request $request)

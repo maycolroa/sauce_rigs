@@ -44,6 +44,10 @@ class EmployeeImportTemplate implements WithMultipleSheets
             $sheets[] = new AfpTemplateExcel($this->company_id);
             $sheets[] = new ArlTemplateExcel($this->company_id);
         }
+        else if ($formModel == 'ingeomega')
+        {
+            $sheets[] = new AfpTemplateExcel($this->company_id);
+        }
 
         return $sheets;
     }

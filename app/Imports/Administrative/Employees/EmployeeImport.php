@@ -150,12 +150,14 @@ class EmployeeImport implements ToCollection
             'cargo' => $row[10],
             'centro_costo' => $row[11],
             'negocio' => ($this->formModel == 'default') ? $row[12] : null,
-            'eps' => ($this->formModel == 'default') ? (string) $row[13] : ( ($this->formModel == 'vivaAir' || $this->formModel == 'misionEmpresarial' || $this->formModel == 'manpower') ? (string) $row[12] : null),
-            'afp' => ($this->formModel == 'vivaAir' || $this->formModel == 'misionEmpresarial' || $this->formModel == 'manpower') ? (string) $row[13] : null,
+            'eps' => ($this->formModel == 'default') ? (string) $row[13] : ( ($this->formModel == 'vivaAir' || $this->formModel == 'misionEmpresarial' || $this->formModel == 'manpower'|| $this->formModel == 'ingeomega') ? (string) $row[12] : null),
+            'afp' => ($this->formModel == 'vivaAir' || $this->formModel == 'misionEmpresarial' || $this->formModel == 'manpower' || $this->formModel == 'ingeomega') ? (string) $row[13] : null,
             'arl' => ($this->formModel == 'misionEmpresarial') ? (string) $row[14] : null,
             'numero_contrato' => ($this->formModel == 'misionEmpresarial') ? $row[15] : null,
             'fecha_ultimo_contrato' => ($this->formModel == 'misionEmpresarial') ? $this->validateDate($row[16]) : null,
-            'tipo_contrato' => ($this->formModel == 'misionEmpresarial') ? $row[17] : null,
+            'tipo_contrato' => ($this->formModel == 'misionEmpresarial') ? $row[17] : ( ($this->formModel == 'ingeomega') ? $row[16] : null),
+            'edad' => ($this->formModel == 'ingeomega') ? $row[14] : null,
+            'salario' => ($this->formModel == 'ingeomega') ? $row[15] : null
         ];
 
         $data['fecha_nacimiento'] = $this->validateDate($data['fecha_nacimiento']);
@@ -215,6 +217,25 @@ class EmployeeImport implements ToCollection
                 'tipo_contrato' => 'required|in:'.$this->contract_types
             ]);
         }
+        else if ($this->formModel == 'ingeomega')
+        {
+            $rules = array_merge($rules,
+            [
+                'identificacion' => 'required|numeric',
+                'nombre' => 'required|string',
+                'fecha_nacimiento' => 'nullable|date',
+                'sexo' => 'required|string|in:Masculino,Femenino,Sin Sexo',
+                'email' => 'nullable|email|unique:sau_employees,email,'.($employee ? $employee->id : null).',id,company_id,'.$this->company_id,
+                'fecha_ingreso' => 'required|date',
+                'cargo' => 'required',
+                'edad' => 'nullable',
+                'salario' => 'nullable',
+                'centro_costo' => 'nullable',
+                'eps' => 'nullable|exists:sau_employees_eps,id',
+                'afp' => 'nullable|exists:sau_employees_afp,id',
+                'tipo_contrato' => 'nullable'
+            ]);
+        }
 
         $validator = Validator::make($data, $rules, 
         [
@@ -265,7 +286,9 @@ class EmployeeImport implements ToCollection
                 'employee_arl_id' => $data['arl'],
                 'contract_numbers' => $data['numero_contrato'],
                 'last_contract_date' => $data['fecha_ultimo_contrato'],
-                'contract_type' => $data['tipo_contrato']
+                'contract_type' => $data['tipo_contrato'],
+                'age' => $data['edad'],
+                'salary' => $data['salario']
             ];
 
             if ($employee)

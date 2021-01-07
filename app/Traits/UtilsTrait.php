@@ -274,6 +274,25 @@ trait UtilsTrait
         }
     }
 
+    protected function tagsSaveFields($data, $model, $company_id = null, $field_id)
+    {
+        $company_id = $company_id ? $company_id : Session::get('company_id');
+        
+        foreach ($data as $value)
+        {
+            $item = $model::where('name', $value);
+            $item->company_scope = $company_id;
+            $item = $item->first();
+
+            if (!$item)
+                $model::create([
+                    'name'=>$value,
+                    'company_id'=>$company_id,
+                    'field_id'=>$field_id
+                ]);
+        }
+    }
+
     /**
      * Check if an array is associative
      *

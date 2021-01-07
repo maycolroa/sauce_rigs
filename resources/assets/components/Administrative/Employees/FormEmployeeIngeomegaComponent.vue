@@ -53,8 +53,7 @@
     <b-form-row>
       <vue-ajax-advanced-select :disabled="viewOnly" class="col-md-6" v-model="form.employee_afp_id" :error="form.errorsFor('employee_afp_id')" :selected-object="form.multiselect_afp" name="employee_afp_id" :label="keywordCheck('afp')" placeholder="Seleccione una opción" :url="afpDataUrl">
       </vue-ajax-advanced-select>
-      <vue-advanced-select :disabled="viewOnly" class="col-md-6" v-model="form.contract_type" :error="form.errorsFor('contract_type')" :multiple="false" :options="contractTypes" :hide-selected="false" name="contract_type" label="Tipo de contrato" placeholder="Seleccione el tipo de contrato">
-          </vue-advanced-select>   
+      <vue-input :disabled="viewOnly" class="col-md-6" v-model="form.contract_type" label="Tipo de contrato" type="text" name="contract_type" :error="form.errorsFor('contract_type')" placeholder="Tipo de contrato"></vue-input>  
     </b-form-row> 
 
     <div class="row float-right pt-10 pr-10">

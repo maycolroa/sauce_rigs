@@ -100,6 +100,16 @@ class EmployeeImportDataTemplateExcel implements FromCollection, WithHeadings, W
           'Tipo de contrato (Termino fijo, Termino indefinido, Obra labor, Prestación de servicios)'
         ]);
       }
+      else if ($this->formModel == 'ingeomega')
+      {
+        return array_merge($columns, [
+          "{$this->keywords['eps']} (Los posibles valores se encuentran en la pestaña '{$this->keywords['eps']}', se debe ingresar el codigo de la {$this->keywords['eps']})",
+          "{$this->keywords['afp']} (Los posibles valores se encuentran en la pestaña '{$this->keywords['afp']}', se debe ingresar el codigo de la {$this->keywords['afp']})",
+          'Edad',
+          'Salario',
+          'Tipo de contrato'
+        ]);
+      }
     }
 
     public function columnFormats(): array

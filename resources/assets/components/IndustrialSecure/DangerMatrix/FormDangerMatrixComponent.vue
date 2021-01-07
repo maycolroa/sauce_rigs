@@ -28,6 +28,14 @@
           @configLocation="setConfigLocation"/>
       </b-form-row>
 
+      <!--<b-form-row>
+        <template v-show="this.fields.length > 0" v-for="(field, index) in this.fields">
+          <div :key="index.key">
+            <vue-ajax-advanced-select :disabled="viewOnly" class="col-md-12" v-model="form.add_fields" :label="field.name" name="fieldname" type="text" placeholder="Seleccione" :error="form.errorsFor(`field.${index}.fieldname`)" :url="`/selects/tagsAddFields/${field.id}`" :allowEmpty="true" :taggable="true" :multiple="true"></vue-ajax-advanced-select>
+          </div>
+        </template>
+      </b-form-row>-->
+
       <b-form-row>
         <vue-input :disabled="viewOnly" class="col-md-6" v-model="form.name" label="Nombre" type="text" name="name" :error="form.errorsFor('name')" placeholder="Nombre"></vue-input>
 
@@ -122,6 +130,7 @@ import VueRadio from "@/components/Inputs/VueRadio.vue";
 import FormActivityComponent from '@/components/IndustrialSecure/DangerMatrix/FormActivityComponent.vue';
 import ModalsCreateComponent from '@/components/IndustrialSecure/DangerMatrix/ModalsCreateComponent.vue';
 import LocationLevelComponent from '@/components/CustomInputs/LocationLevelComponent.vue';
+import VueTextarea from "@/components/Inputs/VueTextarea.vue";
 import VueAjaxAdvancedSelect from "@/components/Inputs/VueAjaxAdvancedSelect.vue";
 
 export default {
@@ -131,7 +140,8 @@ export default {
     FormActivityComponent,
     ModalsCreateComponent,
     LocationLevelComponent,
-    VueAjaxAdvancedSelect
+    VueAjaxAdvancedSelect,
+    VueTextarea
   },
   props: {
     url: { type: String },
@@ -176,6 +186,12 @@ export default {
         return [];
       }
     },
+    fields: {
+      type: [Array, Object],
+      default: function() {
+        return [];
+      }
+    },
     dangerMatrix: {
       default() {
         return {
@@ -185,6 +201,7 @@ export default {
               employee_area_id: '',
               employee_process_id: ''
             },
+            add_fields: '',
             name: '',
             approved: '',
             participants: '',
@@ -223,6 +240,7 @@ export default {
   methods: {
     submit(redirect = true) {
       this.loading = true;
+      //this.form.add_fields = this.fields;
       this.form
         .submit(this.url)
         .then(response => {
