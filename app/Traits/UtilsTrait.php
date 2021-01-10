@@ -274,13 +274,13 @@ trait UtilsTrait
         }
     }
 
-    protected function tagsSaveFields($data, $model, $company_id = null, $field_id)
+    protected function tagsSaveFields($data, $model, $field_id, $company_id = null)
     {
         $company_id = $company_id ? $company_id : Session::get('company_id');
         
         foreach ($data as $value)
         {
-            $item = $model::where('name', $value);
+            $item = $model::where('name', $value)->where('field_id', $field_id);
             $item->company_scope = $company_id;
             $item = $item->first();
 

@@ -63,7 +63,8 @@ export default {
   created(){
     axios.get(`/industrialSecurity/dangersMatrix/${this.$route.params.id}`)
     .then(response => {
-        this.data = response.data.data;   
+        this.data = response.data.data;  
+        this.fields = response.data.data.add_fields;
 
         axios.get('/administration/configuration/view')
         .then(response2 => {

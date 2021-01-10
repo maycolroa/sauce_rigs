@@ -13,6 +13,7 @@ use App\Models\IndustrialSecure\DangerMatrix\QualificationDanger;
 use App\Models\IndustrialSecure\DangerMatrix\TagsAdministrativeControls;
 use App\Models\IndustrialSecure\DangerMatrix\TagsEngineeringControls;
 use App\Models\IndustrialSecure\DangerMatrix\TagsEpp;
+use App\Models\IndustrialSecure\DangerMatrix\TagsAddFields;
 use App\Models\IndustrialSecure\DangerMatrix\TagsPossibleConsequencesDanger;
 use App\Models\IndustrialSecure\DangerMatrix\TagsWarningSignage;
 use App\Models\IndustrialSecure\DangerMatrix\TagsSubstitution;
@@ -120,22 +121,21 @@ class DangerMatrixController extends Controller
             $dangerMatrix->locations = $this->prepareDataLocationForm($dangerMatrix);
             $dangerMatrix->changeHistory = '';
 
-            /*$fields = AdditionalFields::get();
-
-            \Log::info($fields);
+            $fields = AdditionalFields::get();
 
             foreach ($fields as $field)
             {
-                $add_field = AdditionalFieldsValues::where('danger_matrix_id',$id)->where('field_id', $field->id)->get();
+                $field->value = '';
+            }
 
-                \Log::info($add_field);
+            foreach ($fields as $field)
+            {
+                $add_field = AdditionalFieldsValues::where('danger_matrix_id',$id)->where('field_id', $field->id)->first();
 
-                $field->value = $add_field->value;
-                
-                \Log::info($field);
-            }*/
+                $field->value = $add_field['value'];
+            }
 
-            //$dangerMatrix->add_fields = $fields;
+            $dangerMatrix->add_fields = $fields;
 
             foreach ($dangerMatrix->activities as $keyActivity => $itemActivity)
             {   
@@ -454,28 +454,18 @@ class DangerMatrixController extends Controller
                 return $this->respondHttp500();
             }
 
-            /*foreach ($request->add_fields as $value) 
+            foreach ($request->add_fields as $key => $value) 
             {
-                $fields_add = $this->tagsPrepare($value);
+                $fields_add = $this->tagsPrepare($value['value']);
 
-                $field = new AdditionalFieldsValues();
-                $field->field_id = $value['id'];
-                $field->danger_matrix_id = $dangerMatrix->id;
-                $field->value = $fields_add->implode(',');
-                $field->save();
+                $this->tagsSaveFields($fields_add, TagsAddFields::class, $value['id']);
 
-                \Log::info($fields_add->implode(','));
-                \Log::info($field->value);
-            }*/
-
-            /*foreach ($request->add_fields as $value) 
-            {
-                $field = new AdditionalFieldsValues();
-                $field->field_id = $value['id'];
-                $field->danger_matrix_id = $dangerMatrix->id;
-                $field->value = $value['value'];
-                $field->save();
-            }*/
+                $field_exist = AdditionalFieldsValues::updateOrCreate(['danger_matrix_id'=> $dangerMatrix->id, 'field_id' => $value['id']], [
+                    'field_id' => $value['id'],
+                    'danger_matrix_id' => $dangerMatrix->id,
+                    'value' => $fields_add->implode(',')
+                ]);
+            }
 
             if($this->updateModelLocationForm($dangerMatrix, $request->get('locations')))
             {

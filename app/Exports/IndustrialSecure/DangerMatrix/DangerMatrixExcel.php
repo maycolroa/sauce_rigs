@@ -8,6 +8,8 @@ use App\Models\IndustrialSecure\DangerMatrix\QualificationCompany;
 use App\Models\IndustrialSecure\DangerMatrix\QualificationDanger;
 use App\Facades\ConfigurationsCompany\Facades\ConfigurationsCompany;
 use Maatwebsite\Excel\Concerns\FromCollection;
+use App\Models\IndustrialSecure\DangerMatrix\AdditionalFields;
+use App\Models\IndustrialSecure\DangerMatrix\AdditionalFieldsValues;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithMapping;
 use Maatwebsite\Excel\Concerns\WithTitle;
@@ -39,6 +41,9 @@ class DangerMatrixExcel implements FromCollection, WithHeadings, WithMapping, Wi
     protected $qualificationsValues;
     protected $configurations;
     protected $keywords;
+    protected $add_fields;
+    protected $add_fields_values;
+    protected $add_fields_ids;
 
     public function __construct($company_id, $danger_matrix_id)
     {
@@ -150,6 +155,20 @@ class DangerMatrixExcel implements FromCollection, WithHeadings, WithMapping, Wi
 
     public function map($data): array
     {
+        $this->add_fields_ids = AdditionalFields::get();
+
+        $this->add_fields_values = [];
+
+        foreach ($this->add_fields_ids as $key => $value3) 
+        {
+            $add = AdditionalFieldsValues::select('value')->where('danger_matrix_id',$this->danger_matrix_id)->where('field_id', $value3->id)->get();
+
+            foreach ($add as $key => $value4) 
+            {
+                array_push($this->add_fields_values, $value4->value);
+            }
+        }
+
         $values = [$data->name];
 
         if ($this->confLocation['regional'] == 'SI')
@@ -222,11 +241,18 @@ class DangerMatrixExcel implements FromCollection, WithHeadings, WithMapping, Wi
             ]);
         }
 
+        foreach ($this->add_fields_values as $key => $value2) 
+        {
+            array_push($values, $value2);
+        }
+
         return $values;
     }
 
     public function headings(): array
     {
+        $this->add_fields = AdditionalFields::select('name')->get();
+        
         $columns = ['Nombre'];
 
         if ($this->confLocation['regional'] == 'SI')
@@ -294,6 +320,10 @@ class DangerMatrixExcel implements FromCollection, WithHeadings, WithMapping, Wi
                 'Observación'
             ]);
         }
+
+      foreach ($this->add_fields as $key => $value) {
+        array_push($columns, $value->name);
+      }
 
         return $columns;
     }

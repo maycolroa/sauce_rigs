@@ -71,8 +71,6 @@ export default {
 		.then(response => {
 			this.fields = response.data.data;
       this.ready = true
-      
-      console.log(this.fields)
 		})
 		.catch(error => {
 			Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');

@@ -20,7 +20,8 @@
                 :qualifications="qualifications"
                 :action-plan-states="actionPlanStates"
                 userDataUrl="/selects/users"
-                :configuration="configuration"/>
+                :configuration="configuration"
+                :fields="fields"/>
         </b-card-body>
       </b-card>
     </div>
@@ -48,7 +49,8 @@ export default {
       qualifications: [],
       actionPlanStates: [],
       data: [],
-      configuration: []
+      configuration: [],
+      fields: {}
     }
   },
   created(){
@@ -64,6 +66,7 @@ export default {
     axios.get(`/industrialSecurity/dangersMatrix/${this.$route.params.id}`)
     .then(response => {
         this.data = response.data.data;
+        this.fields = response.data.data.add_fields;
         delete this.data.id
         this.data.activities.map((activity) => {
           activity.id = ''

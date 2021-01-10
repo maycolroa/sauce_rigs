@@ -28,13 +28,13 @@
           @configLocation="setConfigLocation"/>
       </b-form-row>
 
-      <!--<b-form-row>
+      <b-form-row>
         <template v-show="this.fields.length > 0" v-for="(field, index) in this.fields">
-          <div :key="index.key">
-            <vue-ajax-advanced-select :disabled="viewOnly" class="col-md-12" v-model="form.add_fields" :label="field.name" name="fieldname" type="text" placeholder="Seleccione" :error="form.errorsFor(`field.${index}.fieldname`)" :url="`/selects/tagsAddFields/${field.id}`" :allowEmpty="true" :taggable="true" :multiple="true"></vue-ajax-advanced-select>
+          <div class="col-md-6" :key="index.key">
+            <vue-ajax-advanced-select :disabled="viewOnly" class="col-md-12" v-model="field.value" :label="field.name" name="fieldname" type="text" placeholder="Seleccione" :error="form.errorsFor(`field.${index}.fieldname`)" :url="`/selects/tagsAddFields/${field.id}`" :allowEmpty="true" :taggable="true" :multiple="true"></vue-ajax-advanced-select>
           </div>
         </template>
-      </b-form-row>-->
+      </b-form-row>
 
       <b-form-row>
         <vue-input :disabled="viewOnly" class="col-md-6" v-model="form.name" label="Nombre" type="text" name="name" :error="form.errorsFor('name')" placeholder="Nombre"></vue-input>
@@ -235,12 +235,12 @@ export default {
       form: Form.makeFrom(this.dangerMatrix, this.method),
       configLocation: {},      
       tagsHistoryChangeDataUrl: '/selects/tagsHistoryChange'
-    };
+    }
   },
   methods: {
     submit(redirect = true) {
       this.loading = true;
-      //this.form.add_fields = this.fields;
+      this.form.add_fields = this.fields;
       this.form
         .submit(this.url)
         .then(response => {
