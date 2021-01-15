@@ -686,6 +686,26 @@ export default [
     }
 },
 {
+    name: 'dangerousconditions-inspections-report-type-2',
+    fields: [
+        { name: 'sau_ph_inspection_items_qualification_area_location.id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true }
+    ],
+    'controlls': [{
+        type: 'push',
+        buttons: []
+    },
+    {
+        type: 'base',
+        buttons: [],
+    }],
+
+    configuration: {
+        urlData: '/industrialSecurity/dangerousConditions/inspection/reportType2',
+        filterColumns: false,
+        //configNameFilter: 'dangerousconditions-inspections-report'
+    }
+},
+{
     name: 'dangerousconditions-report',
     fields: [
         { name: 'sau_ph_reports.id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true },

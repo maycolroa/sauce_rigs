@@ -23,7 +23,9 @@ class InformManagerInspections
 
     const INFORMS = [
         'inspections',
-        'compliance'
+        'compliance',
+        'inspectionsType2',
+        'complianceType2'
     ];
 
     const GROUPING_COLUMNS = [
@@ -104,6 +106,50 @@ class InformManagerInspections
             ->inInspections($this->inspections, $this->filtersType['inspections'])
             ->betweenDate($this->dates)
             ->where('sau_ph_inspections.company_id', $this->company)
+            ->where('sau_ph_inspections.type_id', 1)
+            ->groupBy('category', 'sau_ph_inspection_items_qualification_area_location.qualification_date');
+
+        if (COUNT($this->regionals) > 0)
+            $consultas->inRegionals($this->regionals, $this->filtersType['regionals']);
+
+        if (COUNT($this->headquarters) > 0)
+            $consultas->inHeadquarters($this->headquarters, $this->filtersType['headquarters']);
+
+        if (COUNT($this->processes) > 0)
+            $consultas->inProcesses($this->processes, $this->filtersType['processes']);
+
+        if (COUNT($this->areas) > 0)
+            $consultas->inAreas($this->areas, $this->filtersType['areas']);
+
+        $consultas = DB::table(DB::raw("({$consultas->toSql()}) AS t"))
+        ->selectRaw("
+             t.category AS category,
+             SUM(t.count) AS total
+        ")
+        ->mergeBindings($consultas->getQuery())
+        ->groupBy('t.category')
+        ->pluck('total', 'category');
+
+        return $this->buildDataChart($consultas);
+    }
+
+    private function inspectionsBarType2($column)
+    {
+        $consultas = InspectionItemsQualificationAreaLocation::select("$column as category", 
+            DB::raw('COUNT(DISTINCT sau_ph_inspections.id) AS count'))
+            ->join('sau_ph_inspection_section_items','sau_ph_inspection_items_qualification_area_location.item_id', 'sau_ph_inspection_section_items.id')
+            ->join('sau_ph_inspection_sections','sau_ph_inspection_section_items.inspection_section_id', 'sau_ph_inspection_sections.id')
+            ->join('sau_ph_inspections','sau_ph_inspection_sections.inspection_id', 'sau_ph_inspections.id')
+            ->join('sau_ph_qualifications_inspections','sau_ph_qualifications_inspections.id', 'sau_ph_inspection_items_qualification_area_location.qualification_id')
+            ->leftJoin('sau_employees_regionals', 'sau_employees_regionals.id', 'sau_ph_inspection_items_qualification_area_location.employee_regional_id')
+            ->leftJoin('sau_employees_headquarters', 'sau_employees_headquarters.id', 'sau_ph_inspection_items_qualification_area_location.employee_headquarter_id')
+            ->leftJoin('sau_employees_processes', 'sau_employees_processes.id', 'sau_ph_inspection_items_qualification_area_location.employee_process_id')
+            ->leftJoin('sau_employees_areas', 'sau_employees_areas.id','sau_ph_inspection_items_qualification_area_location.employee_area_id')
+            ->inThemes($this->themes, $this->filtersType['themes'])
+            ->inInspections($this->inspections, $this->filtersType['inspections'])
+            ->betweenDate($this->dates)
+            ->where('sau_ph_inspections.company_id', $this->company)
+            ->where('sau_ph_inspections.type_id', 2)
             ->groupBy('category', 'sau_ph_inspection_items_qualification_area_location.qualification_date');
 
         if (COUNT($this->regionals) > 0)
@@ -136,8 +182,8 @@ class InformManagerInspections
             "$column as category",
             DB::raw('count(sau_ph_inspection_items_qualification_area_location.qualification_id) as numero_items'),
             DB::raw('count(IF(sau_ph_qualifications_inspections.fulfillment = 1, sau_ph_qualifications_inspections.id, null)) as t_cumple'),
-            DB::raw('count(IF(sau_ph_qualifications_inspections.fulfillment = 0, sau_ph_qualifications_inspections.id, null)) as t_no_cumple')/*,
-            DB::raw('count(IF(sau_ph_qualifications_inspections.fulfillment = 2, sau_ph_qualifications_inspections.id, null)) as t_cumple_p')*/
+            DB::raw('count(IF(sau_ph_qualifications_inspections.fulfillment = 0, sau_ph_qualifications_inspections.id, null)) as t_no_cumple'),
+            DB::raw('count(IF(sau_ph_qualifications_inspections.fulfillment = 2, sau_ph_qualifications_inspections.id, null)) as t_cumple_p')
             )
             ->join('sau_ph_inspection_section_items','sau_ph_inspection_items_qualification_area_location.item_id', 'sau_ph_inspection_section_items.id')
             ->join('sau_ph_inspection_sections','sau_ph_inspection_section_items.inspection_section_id', 'sau_ph_inspection_sections.id')
@@ -151,6 +197,7 @@ class InformManagerInspections
             ->inInspections($this->inspections, $this->filtersType['inspections'])
             ->betweenDate($this->dates)
             ->where('sau_ph_inspections.company_id', $this->company)
+            ->where('sau_ph_inspections.type_id', 1)
             ->groupBy('category');
 
         if (COUNT($this->regionals) > 0)
@@ -169,10 +216,59 @@ class InformManagerInspections
         ->select(
             "t.category AS category",
             DB::raw('ROUND( (t_cumple * 100) / (t_cumple + t_no_cumple), 1) AS p_cumple'),
-            DB::raw('ROUND( (t_no_cumple * 100) / (t_cumple + t_no_cumple), 1) AS p_no_cumple')
-            /*DB::raw('ROUND( (t_cumple * 100) / (t_cumple + t_no_cumple + t_cumple_p), 1) AS p_cumple'),
+            DB::raw('ROUND( (t_no_cumple * 100) / (t_cumple + t_no_cumple), 1) AS p_no_cumple'),
+            DB::raw('ROUND( (t_cumple * 100) / (t_cumple + t_no_cumple + t_cumple_p), 1) AS p_cumple'),
             DB::raw('ROUND( (t_no_cumple * 100) / (t_cumple + t_no_cumple + t_cumple_p), 1) AS p_no_cumple'),
-            DB::raw('ROUND( (t_cumple_p * 100) / (t_cumple + t_cumple_p + t_no_cumple), 1) AS p_cumple_p')*/
+            DB::raw('ROUND( (t_cumple_p * 100) / (t_cumple + t_cumple_p + t_no_cumple), 1) AS p_cumple_p')
+        )
+        ->mergeBindings($consultas2->getQuery())
+        ->groupBy('t.category')
+        ->get();
+
+        return $this->builderDataCompliance($consultas2);
+    }
+
+    private function complianceType2Bar($column)
+    {
+        $consultas2 = InspectionItemsQualificationAreaLocation::select(
+            "$column as category",
+            DB::raw('SUM(IF(sau_ph_inspection_items_qualification_area_location.qualification_id = 1, sau_ph_inspection_section_items.compliance_value, 0)) / COUNT(DISTINCT sau_ph_inspection_items_qualification_area_location.qualification_date) AS t_cumple'),
+            DB::raw('SUM(IF(sau_ph_inspection_items_qualification_area_location.qualification_id = 4, sau_ph_inspection_section_items.partial_value, 0)) / COUNT(DISTINCT sau_ph_inspection_items_qualification_area_location.qualification_date) AS t_parcial'),
+            DB::raw('SUM(IF(sau_ph_inspection_items_qualification_area_location.qualification_id = 2, 0, 0)) / COUNT(DISTINCT sau_ph_inspection_items_qualification_area_location.qualification_date) AS t_no_cumple')
+            )
+            ->join('sau_ph_inspection_section_items','sau_ph_inspection_items_qualification_area_location.item_id', 'sau_ph_inspection_section_items.id')
+            ->join('sau_ph_inspection_sections','sau_ph_inspection_section_items.inspection_section_id', 'sau_ph_inspection_sections.id')
+            ->join('sau_ph_inspections','sau_ph_inspection_sections.inspection_id', 'sau_ph_inspections.id')
+            ->join('sau_ph_qualifications_inspections','sau_ph_qualifications_inspections.id', 'sau_ph_inspection_items_qualification_area_location.qualification_id')
+            ->leftJoin('sau_employees_regionals', 'sau_employees_regionals.id', 'sau_ph_inspection_items_qualification_area_location.employee_regional_id')
+            ->leftJoin('sau_employees_headquarters', 'sau_employees_headquarters.id', 'sau_ph_inspection_items_qualification_area_location.employee_headquarter_id')
+            ->leftJoin('sau_employees_processes', 'sau_employees_processes.id', 'sau_ph_inspection_items_qualification_area_location.employee_process_id')
+            ->leftJoin('sau_employees_areas', 'sau_employees_areas.id','sau_ph_inspection_items_qualification_area_location.employee_area_id')
+            ->inThemes($this->themes, $this->filtersType['themes'])
+            ->inInspections($this->inspections, $this->filtersType['inspections'])
+            ->betweenDate($this->dates)
+            ->where('sau_ph_inspections.company_id', $this->company)
+            ->where('sau_ph_inspections.type_id', 2)
+            ->groupBy('sau_ph_inspection_sections.id', 'category');
+
+        if (COUNT($this->regionals) > 0)
+            $consultas2->inRegionals($this->regionals, $this->filtersType['regionals']);
+
+        if (COUNT($this->headquarters) > 0)
+            $consultas2->inHeadquarters($this->headquarters, $this->filtersType['headquarters']);
+
+        if (COUNT($this->processes) > 0)
+            $consultas2->inProcesses($this->processes, $this->filtersType['processes']);
+
+        if (COUNT($this->areas) > 0)
+            $consultas2->inAreas($this->areas, $this->filtersType['areas']);
+
+        $consultas2 = DB::table(DB::raw("({$consultas2->toSql()}) AS t"))
+        ->select(
+            "t.category AS category",
+            DB::raw('AVG(t_cumple) AS p_cumple'),
+            DB::raw('AVG(t_parcial) AS p_cumple_p'),
+            DB::raw('(100 - AVG(t_cumple) - AVG(t_parcial)) AS p_no_cumple')
         )
         ->mergeBindings($consultas2->getQuery())
         ->groupBy('t.category')
@@ -197,6 +293,18 @@ class InformManagerInspections
         return $informData->toArray();
     }
 
+    public function inspectionsType2()
+    {
+        $columns = $this::GROUPING_COLUMNS;
+        $informData = collect([]);
+
+        foreach ($columns as $column) {
+            $informData->put($column[1], $this->inspectionsBarType2($column[0]));
+        }
+    
+        return $informData->toArray();
+    }
+
     /**
      * Returns the exposed population reports grouped by each filter type
      * @return collection
@@ -208,6 +316,18 @@ class InformManagerInspections
 
         foreach ($columns as $column) {
             $informData->put($column[1], $this->complianceBar($column[0]));
+        }
+    
+        return $informData->toArray();
+    }
+
+    public function complianceType2()
+    {
+        $columns = $this::GROUPING_COLUMNS;
+        $informData = collect([]);
+
+        foreach ($columns as $column) {
+            $informData->put($column[1], $this->complianceType2Bar($column[0]));
         }
     
         return $informData->toArray();
@@ -246,7 +366,7 @@ class InformManagerInspections
         $labels = collect([]);
         $cumple = collect([]);
         $no_cumple = collect([]);
-        //$parcial = collect([]);
+        $parcial = collect([]);
 
         foreach ($data as $key => $value)
         {
@@ -255,7 +375,7 @@ class InformManagerInspections
             $labels->push($label);
             $cumple->push($value->p_cumple);
             $no_cumple->push($value->p_no_cumple);
-            //$parcial->push($value->p_cumple_p);
+            $parcial->push($value->p_cumple_p);
         }
 
         $info = [
@@ -286,7 +406,7 @@ class InformManagerInspections
             ]
         ];
 
-        /*$info3 = [
+        $info3 = [
             "name" => 'Parcial',
             "type" => 'bar',
             "stack" => 'barras',
@@ -298,15 +418,15 @@ class InformManagerInspections
                     "formatter" => '{c}%',
                 ]
             ]
-        ];*/
+        ];
 
         return collect([
-            'legend' => ['Cumple', 'No Cumple'],
-            //'legend' => ['Cumple', 'No Cumple', 'Parcial'],
+            //'legend' => ['Cumple', 'No Cumple'],
+            'legend' => ['Cumple', 'No Cumple', 'Parcial'],
             'labels' => $labels,
             'datasets' => [
-                'data' => [$info, $info2],
-                //'data' => [$info, $info2, $info3],
+                //'data' => [$info, $info2],
+                'data' => [$info, $info2, $info3],
                 'type' => 'percentage',
                 'count' => 0,
             ]

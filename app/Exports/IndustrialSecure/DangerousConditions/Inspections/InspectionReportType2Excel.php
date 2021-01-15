@@ -23,7 +23,7 @@ Sheet::macro('styleCells', function (Sheet $sheet, string $cellRange, array $sty
   $sheet->getDelegate()->getStyle($cellRange)->applyFromArray($style);
 });
 
-class InspectionReportExcel implements FromCollection, WithMapping, WithHeadings, WithTitle, WithEvents/*, WithColumnFormatting*/, ShouldAutoSize
+class InspectionReportType2Excel implements FromCollection, WithMapping, WithHeadings, WithTitle, WithEvents/*, WithColumnFormatting*/, ShouldAutoSize
 {
     use RegistersEventListeners;
     use UtilsTrait;
@@ -59,7 +59,7 @@ class InspectionReportExcel implements FromCollection, WithMapping, WithHeadings
           $where .= 'AND iq2.employee_area_id = sau_ph_inspection_items_qualification_area_location.employee_area_id ';
       }
 
-      $where .= 'AND i2.type_id = 1';
+      $where .= 'AND i2.type_id = 2';
 
       if ($this->table == "with_theme" )
         $column = 's.name as section';
@@ -108,7 +108,7 @@ class InspectionReportExcel implements FromCollection, WithMapping, WithHeadings
         ->join('sau_ph_inspections as i', function ($join) 
         {
             $join->on("s.inspection_id", "i.id");
-            $join->on("i.type_id", DB::raw(1));
+            $join->on("i.type_id", DB::raw(2));
         })
         //->join('sau_ph_inspections as i','s.inspection_id', 'i.id')
         ->join('sau_ph_qualifications_inspections as q','q.id', 'sau_ph_inspection_items_qualification_area_location.qualification_id')
@@ -301,7 +301,7 @@ class InspectionReportExcel implements FromCollection, WithMapping, WithHeadings
     */
     public function title(): string
     {
-        return 'Inspecciones Tipo 1 - Reporte';
+        return 'Inspecciones Tipo 2 - Reporte';
     }
 }
 
