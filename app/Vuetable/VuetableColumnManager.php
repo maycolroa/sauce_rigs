@@ -43,7 +43,8 @@ class VuetableColumnManager
         'reinstatementschecksform',
         'dangerousconditionsinspections',
         'dangerousconditionsinspectionsqualification',
-        'dangerousconditionsinspectionsreport'
+        'dangerousconditionsinspectionsreport',
+        'dangerousconditionsinspectionsreporttype2'
     ];
 
     protected $customColumnsName;
@@ -439,10 +440,34 @@ class VuetableColumnManager
             ['name' => 'numero_inspecciones', 'data'=> 'numero_inspecciones', 'title'=> '# Inspecciones', 'sortable'=> true, 'searchable'=> false, 'detail'=> false, 'key'=> false ],
             ['name' => 'numero_items_cumplimiento', 'data'=> 'numero_items_cumplimiento', 'title'=> '# Items Cumplimiento', 'sortable'=> true, 'searchable'=> false, 'detail'=> false, 'key'=> false ],
             ['name' => 'numero_items_no_cumplimiento', 'data'=> 'numero_items_no_cumplimiento', 'title'=> '# Items No Cumplimiento', 'sortable'=> true, 'searchable'=> false, 'detail'=> false, 'key'=> false ],
-            //['name' => 'numero_items_cumplimiento_parcial', 'data'=> 'numero_items_cumplimiento_parcial', 'title'=> '# Items Cumplimiento Parcial', 'sortable'=> true, 'searchable'=> false, 'detail'=> false, 'key'=> false ],
+            ['name' => 'numero_items_cumplimiento_parcial', 'data'=> 'numero_items_cumplimiento_parcial', 'title'=> '# Items Cumplimiento Parcial', 'sortable'=> true, 'searchable'=> false, 'detail'=> false, 'key'=> false ],
             ['name' => 'porcentaje_items_cumplimiento', 'data'=> 'porcentaje_items_cumplimiento', 'title'=> '% Items Cumplimiento', 'sortable'=> true, 'searchable'=> false, 'detail'=> false, 'key'=> false ],
             ['name' => 'porcentaje_items_no_cumplimiento', 'data'=> 'porcentaje_items_no_cumplimiento', 'title'=> '% Items No Cumplimiento', 'sortable'=> true, 'searchable'=> false, 'detail'=> false, 'key'=> false ],
-            //['name' => 'porcentaje_items_cumplimiento_parcial', 'data'=> 'porcentaje_items_cumplimiento_parcial', 'title'=> '% Items Cumplimiento Parcial', 'sortable'=> true, 'searchable'=> false, 'detail'=> false, 'key'=> false ],
+            ['name' => 'porcentaje_items_cumplimiento_parcial', 'data'=> 'porcentaje_items_cumplimiento_parcial', 'title'=> '% Items Cumplimiento Parcial', 'sortable'=> true, 'searchable'=> false, 'detail'=> false, 'key'=> false ],
+            ['name' => 'numero_planes_ejecutados', 'data'=> 'numero_planes_ejecutados', 'title'=> '# Planes de Acción Realizados', 'sortable'=> true, 'searchable'=> false, 'detail'=> false, 'key'=> false ],
+            ['name' => 'numero_planes_no_ejecutados', 'data'=> 'numero_planes_no_ejecutados', 'title'=> '# Planes de Acción No Realizados', 'sortable'=> true, 'searchable'=> false, 'detail'=> false, 'key'=> false ]
+        ]);
+
+        return $colums;
+    }
+
+    public function dangerousconditionsinspectionsreporttype2()
+    {
+        $colums = [
+            ['name' => 'sau_ph_inspection_items_qualification_area_location.id', 'data'=> 'id', 'title'=> 'ID', 'sortable'=> false, 'searchable'=> false, 'detail'=> false, 'key'=> true ],
+            ['name' => 'sau_ph_inspections.name', 'data'=> 'name', 'title'=> 'Nombre', 'sortable'=> true, 'searchable'=> false, 'detail'=> false, 'key'=> false ]
+        ];
+
+        $colums = array_merge($colums, $this->getColumnsLocations([], false));
+        $colums = array_merge($colums, [
+            ['name' => 'section', 'data'=> 'section', 'title'=> 'Temas', 'sortable'=> false, 'searchable'=> false, 'detail'=> false, 'key'=> false ],
+            ['name' => 'numero_inspecciones', 'data'=> 'numero_inspecciones', 'title'=> '# Inspecciones', 'sortable'=> true, 'searchable'=> false, 'detail'=> false, 'key'=> false ],
+            ['name' => 'numero_items_cumplimiento', 'data'=> 'numero_items_cumplimiento', 'title'=> '# Items Cumplimiento', 'sortable'=> true, 'searchable'=> false, 'detail'=> false, 'key'=> false ],
+            ['name' => 'numero_items_no_cumplimiento', 'data'=> 'numero_items_no_cumplimiento', 'title'=> '# Items No Cumplimiento', 'sortable'=> true, 'searchable'=> false, 'detail'=> false, 'key'=> false ],
+            ['name' => 'numero_items_cumplimiento_parcial', 'data'=> 'numero_items_cumplimiento_parcial', 'title'=> '# Items Cumplimiento Parcial', 'sortable'=> true, 'searchable'=> false, 'detail'=> false, 'key'=> false ],
+            ['name' => 'porcentaje_items_cumplimiento', 'data'=> 'porcentaje_items_cumplimiento', 'title'=> '% Items Cumplimiento', 'sortable'=> true, 'searchable'=> false, 'detail'=> false, 'key'=> false ],
+            ['name' => 'porcentaje_items_no_cumplimiento', 'data'=> 'porcentaje_items_no_cumplimiento', 'title'=> '% Items No Cumplimiento', 'sortable'=> true, 'searchable'=> false, 'detail'=> false, 'key'=> false ],
+            ['name' => 'porcentaje_items_cumplimiento_parcial', 'data'=> 'porcentaje_items_cumplimiento_parcial', 'title'=> '% Items Cumplimiento Parcial', 'sortable'=> true, 'searchable'=> false, 'detail'=> false, 'key'=> false ],
             ['name' => 'numero_planes_ejecutados', 'data'=> 'numero_planes_ejecutados', 'title'=> '# Planes de Acción Realizados', 'sortable'=> true, 'searchable'=> false, 'detail'=> false, 'key'=> false ],
             ['name' => 'numero_planes_no_ejecutados', 'data'=> 'numero_planes_no_ejecutados', 'title'=> '# Planes de Acción No Realizados', 'sortable'=> true, 'searchable'=> false, 'detail'=> false, 'key'=> false ]
         ]);

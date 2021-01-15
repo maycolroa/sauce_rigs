@@ -8,7 +8,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Maatwebsite\Excel\Facades\Excel;
-use App\Exports\IndustrialSecure\DangerousConditions\Inspections\InspectionReportExcel;
+use App\Exports\IndustrialSecure\DangerousConditions\Inspections\InspectionReport;
 use App\Facades\Mail\Facades\NotificationMail;
 
 class InspectionReportExportJob implements ShouldQueue
@@ -39,7 +39,7 @@ class InspectionReportExportJob implements ShouldQueue
     public function handle()
     {
       $nameExcel = 'export/1/inspecciones_reporte_'.date("YmdHis").'.xlsx';
-      Excel::store(new InspectionReportExcel($this->company_id, $this->filters),$nameExcel,'public',\Maatwebsite\Excel\Excel::XLSX);
+      Excel::store(new InspectionReport($this->company_id, $this->filters),$nameExcel,'public',\Maatwebsite\Excel\Excel::XLSX);
       
       $paramUrl = base64_encode($nameExcel);
       
