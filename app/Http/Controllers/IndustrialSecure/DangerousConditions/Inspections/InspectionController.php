@@ -287,6 +287,9 @@ class InspectionController extends Controller
                     }
                 }
             }
+
+            if (!$inspection->update())
+                return $this->respondHttp500();
             
             $this->saveLocation($inspection, $request);
 
