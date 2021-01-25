@@ -8,6 +8,7 @@ use App\Vuetable\Facades\Vuetable;
 use Illuminate\Support\Facades\Storage;
 use App\Models\IndustrialSecure\DangerousConditions\Inspections\Inspection;
 use App\Models\IndustrialSecure\DangerousConditions\Inspections\AdditionalFields;
+use App\Models\IndustrialSecure\DangerousConditions\Inspections\InspectionFirm;
 use App\Models\IndustrialSecure\DangerousConditions\Inspections\AdditionalFieldsValues;
 use App\Models\IndustrialSecure\DangerousConditions\Inspections\InspectionSection;
 use App\Models\IndustrialSecure\DangerousConditions\Inspections\InspectionSectionItem;
@@ -205,6 +206,10 @@ class InspectionQualificationController extends Controller
             $fields->push($field_add);
         }
 
+        $firm = InspectionFirm::where('qualification_date', $qualification->qualification_date)->first();
+
+        $firm->image = $firm->path_image('image');
+
         $data = collect([]);
         $data->put('inspection', $qualification->item->section->inspection->name);
         $data->put('regional', $qualification->regional ? $qualification->regional->name : '');
@@ -216,6 +221,7 @@ class InspectionQualificationController extends Controller
         $data->put('qualifier', $qualification->qualifier ? $qualification->qualifier->name : '');
         $data->put('themes', $themes);
         $data->put('add_fields', $fields);
+        $data->put('firm', $firm);
 
         return $data;
     }

@@ -211,5 +211,15 @@
             </thead>
         </table>   
     </div>
+
+    @if ($inspections["firm"])
+        <div style="page-break-inside: avoid;">
+            <center>
+                <img src="{{$inspections["firm"]["image"]}}" width="150px" height="75px"/>
+            </center>
+            <p style="text-align: center; font-size: 12px;"><b>{{ $inspections["firm"]['name'] }}</b><p>
+            <p style="text-align: center; font-size: 12px;"><b>{{ $inspections["firm"]['identification'] }}</b></p>
+        </div>
+    @endif
 </body>
 </html>
