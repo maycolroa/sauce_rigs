@@ -9,6 +9,7 @@ use App\Models\IndustrialSecure\DangerousConditions\Inspections\Inspection;
 use App\Models\IndustrialSecure\DangerousConditions\Inspections\AdditionalFields;
 use App\Models\IndustrialSecure\DangerousConditions\Inspections\QualificationRepeat;
 use App\Models\IndustrialSecure\DangerousConditions\Inspections\AdditionalFieldsValues;
+use App\Models\IndustrialSecure\DangerousConditions\Inspections\InspectionFirm;
 use App\Models\IndustrialSecure\DangerousConditions\Inspections\InspectionSection;
 use App\Models\IndustrialSecure\DangerousConditions\Inspections\InspectionSectionItem;
 use App\Models\IndustrialSecure\DangerousConditions\Inspections\InspectionItemsQualificationAreaLocation;
@@ -458,6 +459,32 @@ class InspectionController extends ApiController
                     $repeat->repeat_date = $request->repeat_date;
                     $repeat->save();
                 }                
+            }
+
+
+            if ($request->has('firm') && $request->firm)
+            {
+                $img_firm = ImageApi::where('hash', $request->firm['image'])->where('type', 3)->first();
+
+                $exist_firm = InspectionFirm::where('qualification_date', $qualification_date_verify)->first();
+
+                if ($exist_firm)
+                {
+                    $exist_firm->name = $request->firm['name'];
+                    $exist_firm->identification = $request->firm['identification'];
+                    $exist_firm->image = $img_firm->file;
+                    $exist_firm->qualification_date = $qualification_date_verify;
+                    $exist_firm->update();
+                }
+                else
+                {
+                    $firm = new InspectionFirm;
+                    $firm->name = $request->firm['name'];
+                    $firm->identification = $request->firm['identification'];
+                    $firm->image = $img_firm->file;
+                    $firm->qualification_date = $qualification_date_verify;
+                    $firm->save();
+                }
             }
             
             DB::commit();
