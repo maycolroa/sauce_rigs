@@ -205,7 +205,7 @@ class InspectionController extends ApiController
      */
     public function store(InspectionQualificationsRequest $request)
     {
-        //\Log::info($request);
+        \Log::info($request);
         /*if (!$this->user->hasRole(['admin', 'company_admin', 'company_supervisor'])) {
             return response(json_encode([
                 'response' => 'error',
