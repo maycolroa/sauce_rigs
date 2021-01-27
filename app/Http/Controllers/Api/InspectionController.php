@@ -205,6 +205,7 @@ class InspectionController extends ApiController
      */
     public function store(InspectionQualificationsRequest $request)
     {
+        //\Log::info($request);
         /*if (!$this->user->hasRole(['admin', 'company_admin', 'company_supervisor'])) {
             return response(json_encode([
                 'response' => 'error',
@@ -464,26 +465,29 @@ class InspectionController extends ApiController
 
             if ($request->has('firm') && $request->firm)
             {
-                $img_firm = ImageApi::where('hash', $request->firm['image'])->where('type', 3)->first();
-
-                $exist_firm = InspectionFirm::where('qualification_date', $qualification_date_verify)->first();
-
-                if ($exist_firm)
+                if ($request->firm['image'])
                 {
-                    $exist_firm->name = $request->firm['name'];
-                    $exist_firm->identification = $request->firm['identification'];
-                    $exist_firm->image = $img_firm->file;
-                    $exist_firm->qualification_date = $qualification_date_verify;
-                    $exist_firm->update();
-                }
-                else
-                {
-                    $firm = new InspectionFirm;
-                    $firm->name = $request->firm['name'];
-                    $firm->identification = $request->firm['identification'];
-                    $firm->image = $img_firm->file;
-                    $firm->qualification_date = $qualification_date_verify;
-                    $firm->save();
+                    $img_firm = ImageApi::where('hash', $request->firm['image'])->where('type', 3)->first();
+
+                    $exist_firm = InspectionFirm::where('qualification_date', $qualification_date_verify)->first();
+
+                    if ($exist_firm)
+                    {
+                        $exist_firm->name = $request->firm['name'];
+                        $exist_firm->identification = $request->firm['identification'];
+                        $exist_firm->image = $img_firm->file;
+                        $exist_firm->qualification_date = $qualification_date_verify;
+                        $exist_firm->update();
+                    }
+                    else
+                    {
+                        $firm = new InspectionFirm;
+                        $firm->name = $request->firm['name'];
+                        $firm->identification = $request->firm['identification'];
+                        $firm->image = $img_firm->file;
+                        $firm->qualification_date = $qualification_date_verify;
+                        $firm->save();
+                    }
                 }
             }
             
