@@ -208,7 +208,10 @@ class InspectionQualificationController extends Controller
 
         $firm = InspectionFirm::where('qualification_date', $qualification->qualification_date)->first();
 
-        $firm->image = $firm->path_image('image');
+        if ($firm)
+        {
+            $firm->image = $firm->path_image('image');
+        }
 
         $data = collect([]);
         $data->put('inspection', $qualification->item->section->inspection->name);
