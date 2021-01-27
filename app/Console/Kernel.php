@@ -25,7 +25,7 @@ class Kernel extends ConsoleKernel
         'App\Console\Commands\DmReportHistory',
         'App\Console\Commands\NotifyUpdateListCheckContract',
         'App\Console\Commands\CtUnlockEvaluation',
-        'App\Console\Commands\DaysAlertsWithoutActivityContractors',
+        //'App\Console\Commands\DaysAlertsWithoutActivityContractors',
         'App\Console\Commands\NotifyUploadDocumentsContracts',
         'App\Console\Commands\NotifyRejectedDocumentsContracts',
         'App\Console\Commands\DeleteOldImagesApi',
@@ -93,9 +93,9 @@ class Kernel extends ConsoleKernel
             ->timezone('America/Bogota')
             ->dailyAt('02:00');
 
-        $schedule->command('days-alerts-without-activity-contractors')
+        /*$schedule->command('days-alerts-without-activity-contractors')
             ->timezone('America/Bogota')
-            ->dailyAt('02:00');
+            ->dailyAt('02:00');*/
 
         $schedule->command('notify-rejected-documents-contracts')
             ->timezone('America/Bogota')
