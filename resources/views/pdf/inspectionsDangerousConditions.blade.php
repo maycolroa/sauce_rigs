@@ -212,13 +212,23 @@
         </table>   
     </div>
 
-    @if ($inspections["firm"])
+    @if ($inspections["firms"])
         <div style="page-break-inside: avoid;">
-            <center>
-                <img src="{{$inspections["firm"]["image"]}}" width="150px" height="75px"/>
-            </center>
-            <p style="text-align: center; font-size: 12px;"><b>{{ $inspections["firm"]['name'] }}</b><p>
-            <p style="text-align: center; font-size: 12px;"><b>{{ $inspections["firm"]['identification'] }}</b></p>
+            <table style="background-color: white;">
+                @foreach($inspections["firms"] as $key => $firm)
+                    <tr style="background-color: white;">
+                        @foreach($firm as $key => $firm2)
+                            <td style="border: 0px solid #dddddd; text-align: center; padding: 0px">
+                                <center>
+                                    <img src="{{$firm2["image"]}}" width="150px" height="75px"/>
+                                </center>
+                                <p style="text-align: center; font-size: 12px;"><b>{{ $firm2['name'] }}</b><p>
+                                <p style="text-align: center; font-size: 12px;"><b>{{ $firm2['identification'] }}</b></p>
+                            </td>
+                        @endforeach
+                    </tr>
+                @endforeach
+            </table>
         </div>
     @endif
 </body>

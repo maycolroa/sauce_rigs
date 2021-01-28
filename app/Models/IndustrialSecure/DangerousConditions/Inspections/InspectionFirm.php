@@ -33,4 +33,10 @@ class InspectionFirm extends Model
     {
         return Storage::disk($this::DISK)->exists("{$this->path_base()}{$this->$key}");
     }
+    
+    public function img_delete($key)
+    {
+        if ($this->$key && $this->img_exists($key))
+           Storage::disk($this::DISK)->delete("{$this->path_base()}{$this->$key}");
+    }
 }

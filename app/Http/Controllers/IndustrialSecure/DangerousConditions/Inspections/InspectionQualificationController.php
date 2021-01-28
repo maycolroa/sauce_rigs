@@ -206,12 +206,29 @@ class InspectionQualificationController extends Controller
             $fields->push($field_add);
         }
 
-        $firm = InspectionFirm::where('qualification_date', $qualification->qualification_date)->first();
+        $firms = InspectionFirm::where('qualification_date', $qualification->qualification_date)->get();
 
-        if ($firm)
+        $firms_values_par = collect([]);
+        $firms_values = collect([]);
+
+        foreach ($firms as $firmKey => $firm)
         {
-            $firm->image = $firm->path_image('image');
+            $firm_add = collect([]);
+            $firm_add->put('key', Carbon::now()->timestamp + rand(1,10000));
+            $firm_add->put('name', $firm->name);
+            $firm_add->put('identification', $firm->identification);
+            $firm_add->put('image', $firm->path_image('image'));
+            $firms_values->push($firm_add);
+
+            if ($firms_values->count() == 2)
+            {
+                $firms_values_par->push($firms_values);
+                $firms_values = collect([]);
+            }
         }
+
+        if ($firms_values->count() > 0)
+            $firms_values_par->push($firms_values);
 
         $data = collect([]);
         $data->put('inspection', $qualification->item->section->inspection->name);
@@ -224,7 +241,7 @@ class InspectionQualificationController extends Controller
         $data->put('qualifier', $qualification->qualifier ? $qualification->qualifier->name : '');
         $data->put('themes', $themes);
         $data->put('add_fields', $fields);
-        $data->put('firm', $firm);
+        $data->put('firms', $firms_values_par);
 
         return $data;
     }
