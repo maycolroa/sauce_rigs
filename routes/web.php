@@ -46,7 +46,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('templates/employeeimport','Administrative\Employees\EmployeesController@downloadTemplateImport');    
     Route::get('templates/dangermatriximport','IndustrialSecure\DangerMatrix\DangerMatrixController@downloadTemplateImport');
     Route::get('templates/contractimport','LegalAspects\Contracs\ContractLesseeController@downloadTemplateImport');
-    Route::get('templates/legalmatriximport','LegalAspects\LegalMatrix\LawController@downloadTemplateImport');  
+    Route::get('templates/legalmatriximport','LegalAspects\LegalMatrix\LawController@downloadTemplateImport');    
+    Route::get('templates/usersimport','Administrative\Users\UserController@downloadTemplateImport');    
 
 	//Cerrar sesión 
 	Route::get('/logout', 'Auth\LoginController@logout')->name('logout');
@@ -289,6 +290,7 @@ Route::middleware(['auth'])->group(function () {
       Route::post('users/filtersConfig', 'Administrative\Users\UserController@filtersConfig');
 			Route::post('users/data', 'Administrative\Users\UserController@data');
       Route::post('users/export', 'Administrative\Users\UserController@export');
+      Route::post('users/import', 'Administrative\Users\UserController@import');
       Route::post('users/changePassword', 'Administrative\Users\UserController@changePassword');
       Route::get('users/myDefaultModule', 'Administrative\Users\UserController@myDefaultModule');
       Route::post('users/defaultModule', 'Administrative\Users\UserController@defaultModule');

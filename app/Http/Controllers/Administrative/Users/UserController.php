@@ -18,6 +18,9 @@ use App\Traits\PermissionTrait;
 use App\Jobs\Administrative\Users\UserExportJob;
 use App\Jobs\System\Companies\SyncUsersSuperadminJob;
 use App\Http\Requests\Administrative\Users\UserOtherCompanyRequest;
+use App\Exports\Administrative\Users\UsersImportTemplate;
+use App\Jobs\Administrative\Users\UserImportJob;
+use Maatwebsite\Excel\Facades\Excel;
 use Validator;
 use Hash;
 use DB;
@@ -680,5 +683,30 @@ class UserController extends Controller
         return $this->respondHttp200([
             'message' => 'Se agregarón los usuarios'
         ]);
+    }
+
+    public function downloadTemplateImport()
+    {
+      return Excel::download(new UsersImportTemplate(collect([]), $this->company), 'PlantillaImportacionUsuarios.xlsx');
+    }
+
+    /**
+     * import.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function import(Request $request)
+    {
+      try
+      {
+        UserImportJob::dispatch($request->file, $request->role_id, $this->company, $this->user);
+      
+        return $this->respondHttp200();
+
+      } catch(Exception $e)
+      {
+        return $this->respondHttp500();
+      }
     }
 }

@@ -21,6 +21,14 @@ export default [{
       ]),
       ...middleware({ 'check-permission': 'users_c' }, [
         {
+          name: 'administrative-users-import',
+          path: 'users/import',
+          component: () =>
+            import('@/views/Administrative/users/import')
+        }
+      ]),
+      ...middleware({ 'check-permission': 'users_c' }, [
+        {
           name: 'administrative-users-create',
           path: 'users/create',
           component: () =>
