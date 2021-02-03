@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Exports\LegalAspects\LegalMatrix\Laws;
+namespace App\Exports\Administrative\Users;
 
 use PhpOffice\PhpSpreadsheet\Shared\Date;
 use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
@@ -14,16 +14,16 @@ use Maatwebsite\Excel\Concerns\WithEvents;
 use Maatwebsite\Excel\Concerns\RegistersEventListeners;
 use Maatwebsite\Excel\Events\AfterSheet;
 use \Maatwebsite\Excel\Sheet;
-use App\Traits\UtilsTrait;
+use App\Traits\ConfigurableFormTrait;
 
 Sheet::macro('styleCells', function (Sheet $sheet, string $cellRange, array $style) {
   $sheet->getDelegate()->getStyle($cellRange)->applyFromArray($style);
 });
 
-class LegalMatrixImportTemplate implements FromCollection, WithHeadings, WithMapping, WithEvents, WithTitle, ShouldAutoSize
+class UsersImportTemplate implements FromCollection, WithHeadings, WithMapping, WithEvents, WithTitle, ShouldAutoSize
 {
     use RegistersEventListeners;
-    use UtilsTrait;
+    use ConfigurableFormTrait;
 
     protected $data;
     protected $company_id;
@@ -56,22 +56,21 @@ class LegalMatrixImportTemplate implements FromCollection, WithHeadings, WithMap
 
     public function headings(): array
     {
+      $formModel = $this->getFormModel('form_user', $this->company_id);
+
       $columns = [
-        'Nombre(*)',
-        'Número(*)',
-        'Tipo (Los posibles valores se encuentran en la pestaña Tipos de Leyes)(*)',
-        'Año(*)',
-        'Sistema que aplica(*)',
-        'Descripción(*)',
-        'Observación',
-        'Tema ambiental (Los posibles valores se encuentran en la pestaña Temas ambientales)(*)',
-        'Ente(Los posibles valores se encuentran en la pestaña Entes)(*)',
-        'Tema SST (Los posibles valores se encuentran en la pestaña Temas SST)(*)',
-        'Dereogada(*)',
-        'Desripcion del artículo(*)',
-        'Intereses del artículo (Si son varios separarlos por coma)(Los posibles valores se encuentran en la pestaña Intereses)(*)',
-        'Artículo derogado (SI, NO)'
+        'Doumento de identificación (*)',
+        'Email (*)',
+        'Nombre (*)'
       ];
+
+      if ($formModel == 'hptu')
+      {
+        $columns = array_merge($columns, [
+          'Registro medico',
+          'Licencia SST'
+          ]);
+      }
 
       return $columns;
 
@@ -99,6 +98,6 @@ class LegalMatrixImportTemplate implements FromCollection, WithHeadings, WithMap
     */
     public function title(): string
     {
-        return 'Leyes';
+        return 'Usuarios';
     }
 }
