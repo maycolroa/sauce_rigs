@@ -470,7 +470,6 @@ class CheckManager
         $attrs = [
             'start_recommendations',
             'end_recommendations',
-            'disease_origin_date',
             'monitoring_recommendations',
             'process_origin_done_date',
             'process_pcl_done_date',
@@ -485,6 +484,13 @@ class CheckManager
             'next_date_tracking',
             'relocated_date'
         ];
+
+        if ($this->formModel == 'ingeomega')
+        {
+            $attrs = array_merge($attrs, [
+                'disease_origin_date',
+            ]);
+        }
 
         foreach ($attrs as $attr)
         {

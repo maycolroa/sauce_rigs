@@ -212,6 +212,8 @@
         </table>   
     </div>
 
+    <br><br>
+
     @if ($inspections["firms"])
         <div style="page-break-inside: avoid;">
             <table style="background-color: white;">

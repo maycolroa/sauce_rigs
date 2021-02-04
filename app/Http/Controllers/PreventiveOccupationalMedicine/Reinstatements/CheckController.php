@@ -175,6 +175,7 @@ class CheckController extends Controller
             DB::commit();
 
         } catch (Exception $e){
+            \Log::info($e->getMessage());
             DB::rollback();
             return $this->respondHttp500();
         }
