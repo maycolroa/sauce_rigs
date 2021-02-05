@@ -266,6 +266,11 @@ class UserController extends Controller
         try
         { 
             $user->fill($request->all());
+
+            if ($request->active == 'NO' && $user->companies->count() > 1)
+            {
+                return $this->respondWithError('Este usuario no puede ser desactivado, ya que se encuentra asociado a varias compañias');
+            }
             
             if (!$user->update())
                 return $this->respondHttp500();
@@ -333,36 +338,38 @@ class UserController extends Controller
      */
     public function destroy(User $user)
     {
-        /*DB::beginTransaction();
+        DB::beginTransaction();
 
         try
         {
-            if (count($user->actionPlanResponsibles) > 0 || count($user->actionPlanCreator) > 0)
+            if ($user->companies->count() > 1)
             {
-                return $this->respondWithError('No se puede eliminar el usuario porque hay registros asociados a él');
+                $roles = DB::table('sau_role_user')->where('user_id', $user->id)->where('team_id', $this->company)->pluck('role_id');
+
+                $user->companies()->detach($this->company);
+                $user->detachRoles($roles, $this->company);
             }
-
-            //$user->companies()->detach();
-            $user->syncRoles([]); // Eliminar datos de relaciones
-            $user->syncPermissions([]); // Eliminar datos de relaciones
-            //$user->contractInformation()->detach(); // Eliminar relación de contratista o arrendatario
-
-            if(!$user->delete())
+            else
             {
-                return $this->respondHttp500();
+                $user->update(['active' => 'NO']);
+
+                DB::commit();
+
+                return $this->respondWithError('Este usuario no puede ser eliminado, se ha desactivado automáticamente ya que solo esta asociado a la compañia en sesión');
             }
+            
 
             DB::commit();
             
             return $this->respondHttp200([
-                'message' => 'Se elimino el usuario'
+                'message' => 'Se elimino el usuario de la compañia'
             ]);
 
         } catch (\Exception $e) {
             DB::rollback();
             \Log::error($e->getMessage());
             return $this->respondHttp500();
-        }*/
+        }
     }
 
     /**

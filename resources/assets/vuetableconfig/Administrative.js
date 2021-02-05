@@ -34,7 +34,7 @@ export default [
     },
     {
       type: 'base',
-      buttons: [/*{
+      buttons: [{
         name: 'delete',
         data: {
           action: '/administration/users/',
@@ -42,7 +42,7 @@ export default [
           messageConfirmation: 'Esta seguro de borrar el usuario del __name__'
         },
         permission: 'users_d'
-      */],
+      }],
     }],
     configuration: {
       urlData: '/administration/users/data',
