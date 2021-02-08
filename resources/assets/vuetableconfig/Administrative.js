@@ -47,6 +47,7 @@ export default [
     configuration: {
       urlData: '/administration/users/data',
       filterColumns: true,
+      configNameFilter: 'administrative-users'
     }
   },
   {

@@ -22,18 +22,19 @@
           <div class="card-title-elements" v-if="auth.can['users_c']">
             <b-btn :to="{name:'administrative-users-import'}" variant="primary">Importar</b-btn>
           </div>
-          <!-- <div class="card-title-elements ml-md-auto" v-if="auth.can['users_r']">
+          <div class="card-title-elements ml-md-auto" v-if="auth.can['users_r']">
             <b-dd variant="default" :right="isRTL">
-            <template slot="button-content">
-              <span class='fas fa-cogs'></span>
-            </template>
-            <b-dd-item @click="exportUsers()"><i class="fas fa-download"></i> &nbsp;Exportar</b-dd-item>
-          </b-dd>
-          </div>-->
+              <template slot="button-content">
+                <span class='fas fa-cogs'></span>
+              </template>
+              <b-dd-item @click="exportUsers()"><i class="fas fa-download"></i> &nbsp;Exportar</b-dd-item>
+            </b-dd>
+          </div>
         </b-card-header>
         <b-card-body>
              <vue-table
                 configName="administrative-users"
+                @filtersUpdate="setFilters"
                 :customColumnsName="true"
                 v-if="auth.can['users_r']"
                 ></vue-table>
@@ -51,9 +52,18 @@ export default {
   metaInfo: {
     title: 'Usuarios'
   },
+  data () {
+    return {
+      filters: []
+    }
+  },
   methods: {
+    setFilters(value)
+    {
+      this.filters = value
+    },
     exportUsers(){
-      axios.post('/administration/users/export')
+      axios.post('/administration/users/export', this.filters)
       .then(response => {
         Alerts.warning('Información', 'Se inicio la exportación, se le notificara a su correo electronico cuando finalice el proceso.');
       }).catch(error => {

@@ -21,5 +21,16 @@ export default [
         label: 'Estados'
       }
     ]
+  },
+  {
+    name: 'administrative-users',
+    filters: [
+      {
+        url: '/selects/roles',
+        key: 'roles',
+        type: 'select',
+        label: 'Roles'
+      }
+    ] 
   }
 ];

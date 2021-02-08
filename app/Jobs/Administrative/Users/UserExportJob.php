@@ -17,7 +17,7 @@ class UserExportJob implements ShouldQueue
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     protected $user;
-
+    protected $filters;
     protected $company_id;
 
     /**
@@ -25,10 +25,11 @@ class UserExportJob implements ShouldQueue
      *
      * @return void
      */
-    public function __construct($user, $company_id)
+    public function __construct($user, $company_id, $filters)
     {
       $this->user = $user;
       $this->company_id = $company_id;
+      $this->filters = $filters;
     }
 
     /**
@@ -40,16 +41,8 @@ class UserExportJob implements ShouldQueue
     {
       try
       {
-          $users = User::select(
-                'sau_users.*',
-                'sau_roles.name as role'
-            )->join('sau_role_user','sau_role_user.user_id','sau_users.id')
-            ->join('sau_roles','sau_roles.id','sau_role_user.role_id');
-
-          $users->company_scope = $this->company_id;
-
           $nameExcel = 'export/1/usuarios_'.date("YmdHis").'.xlsx';
-          Excel::store(new UsersExcel($users->get()),$nameExcel,'public',\Maatwebsite\Excel\Excel::XLSX);
+          Excel::store(new UsersExcel($this->company_id, $this->filters),$nameExcel,'public',\Maatwebsite\Excel\Excel::XLSX);
           
           $paramUrl = base64_encode($nameExcel);
 
@@ -64,12 +57,15 @@ class UserExportJob implements ShouldQueue
             ->company($this->company_id)
             ->send();
 
-      } catch (\Exception $e)
+      } 
+      catch (\Exception $e)
       {
+        \Log::info($e->getMessage());
+        
           NotificationMail::
               subject('Exportación de Usuarios')
               ->recipients($this->user)
-              ->message('Se produjo un error durante el proceso de importación de los usuarios. Contacte con el administrador')
+              ->message('Se produjo un error durante el proceso de exportación de los usuarios. Contacte con el administrador')
               ->module('users')
               ->event('Job: UserExportJob')
               ->company($this->company_id)
