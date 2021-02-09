@@ -94,7 +94,6 @@ class NotifyLicenseRenewalJob implements ShouldQueue
             ->join('sau_roles', 'sau_roles.id', 'sau_role_user.role_id')
             ->where('sau_roles.display_name', 'Superadmin')
             ->get();
-        \Log::info($users);
 
         foreach ($users as $key => $value)
         {
@@ -131,7 +130,6 @@ class NotifyLicenseRenewalJob implements ShouldQueue
 
         if (COUNT($recipients) > 0 && COUNT($admins) > 0)
         {
-            \Log::info(1);
             NotificationMail::
                 subject('Creación de Licencia Sauce')
                 ->recipients($recipients)
@@ -146,7 +144,6 @@ class NotifyLicenseRenewalJob implements ShouldQueue
         }
         else
         {
-            \Log::info(2);
             NotificationMail::
                 subject('Creación de Licencia Sauce')
                 ->message("Se acaba de crear una nueva licencia para la empresa <b>{$company->name}</b>")
