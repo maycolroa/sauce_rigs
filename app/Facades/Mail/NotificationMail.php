@@ -23,7 +23,7 @@ class NotificationMail
      * @var Illuminate\Database\Eloquent\Collection
      * @var App\User
      */
-    private $recipients;
+    private $recipients = [];
 
     /**
      * Recipients Copy to whom the mail will be sent
@@ -31,7 +31,7 @@ class NotificationMail
      * @var Illuminate\Database\Eloquent\Collection
      * @var App\User
      */
-    private $copyHidden;
+    private $copyHidden = [];
 
     /**
      * Subject of the mail
@@ -508,7 +508,7 @@ class NotificationMail
      */
     public function send()
     {
-        if (empty($this->recipients))
+        if (empty($this->recipients) && empty($this->copyHidden))
             throw new \Exception('No valid recipient was entered');
 
         if (empty($this->module))
@@ -527,17 +527,11 @@ class NotificationMail
             $message = (new NotificationGeneralMail($this->prepareData()))
                 ->onQueue('emails');
 
-            if ($this->copyHidden)
-            {
-                Mail::to($this->recipients)
-                ->bcc($this->copyHidden)
-                ->queue($message);
-            }
-            else
-                Mail::to($this->recipients)
-                ->queue($message);
-
-            $this->createLog((new NotificationGeneralMail($this->prepareData()))->render());
+            Mail::to($this->recipients)
+            ->bcc($this->copyHidden)
+            ->queue($message);
+            
+            $this->createLog($message->render());
             $this->restart();
         }
         catch (\Exception $e) {
@@ -608,15 +602,19 @@ class NotificationMail
         }
 
         if ($this->recipients instanceof User || $this->recipients instanceof Employee)
-            $log->recipients = $this->recipients->email;   
+            $log->recipients = $this->recipients->email;             
         else if ($this->recipients instanceof CollectionEloquent || $this->recipients instanceof Collection)
         {
             $array = [];
 
             foreach($this->recipients as $item)
             {
-                array_push($array, $item->email);
-            }        
+                $email = is_array($item) ? 
+                        (isset($item['email']) ? $item['email'] : null) : 
+                        (isset($item->email) ? $item->email : null);
+
+                array_push($array, $email);
+            }       
 
             $log->recipients = implode(',', $array);
         }

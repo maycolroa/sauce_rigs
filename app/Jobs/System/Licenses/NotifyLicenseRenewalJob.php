@@ -94,6 +94,7 @@ class NotifyLicenseRenewalJob implements ShouldQueue
             ->join('sau_roles', 'sau_roles.id', 'sau_role_user.role_id')
             ->where('sau_roles.display_name', 'Superadmin')
             ->get();
+        \Log::info($users);
 
         foreach ($users as $key => $value)
         {
@@ -128,18 +129,35 @@ class NotifyLicenseRenewalJob implements ShouldQueue
             }
         }
 
-
-        NotificationMail::
-            subject('Creación de Licencia Sauce')
-            ->recipients($recipients)
-            ->message("Se acaba de crear una nueva licencia para la empresa <b>{$company->name}</b>")
-            ->module('users')
-            ->event('Job: NotifyLicenseRenewalJob')
-            ->company($this->company_id)
-            ->view("system.license.notificationLicense")
-            ->with(['modules_news'=>$modules_news, 'modules_olds'=>$modules_olds])
-            ->copyHidden($admins)
-            ->send();
+        if (COUNT($recipients) > 0 && COUNT($admins) > 0)
+        {
+            \Log::info(1);
+            NotificationMail::
+                subject('Creación de Licencia Sauce')
+                ->recipients($recipients)
+                ->message("Se acaba de crear una nueva licencia para la empresa <b>{$company->name}</b>")
+                ->module('users')
+                ->event('Job: NotifyLicenseRenewalJob')
+                ->company($this->company_id)
+                ->view("system.license.notificationLicense")
+                ->with(['modules_news'=>$modules_news, 'modules_olds'=>$modules_olds])
+                ->copyHidden($admins)
+                ->send();
+        }
+        else
+        {
+            \Log::info(2);
+            NotificationMail::
+                subject('Creación de Licencia Sauce')
+                ->message("Se acaba de crear una nueva licencia para la empresa <b>{$company->name}</b>")
+                ->module('users')
+                ->event('Job: NotifyLicenseRenewalJob')
+                ->company($this->company_id)
+                ->view("system.license.notificationLicense")
+                ->with(['modules_news'=>$modules_news, 'modules_olds'=>$modules_olds])
+                ->copyHidden($admins)
+                ->send();
+        }
 
         if (in_array(Module::where('name', 'reinstatements')->first()->id, $this->modules))
             SyncRestrictionDefaultJob::dispatch($this->company_id);
