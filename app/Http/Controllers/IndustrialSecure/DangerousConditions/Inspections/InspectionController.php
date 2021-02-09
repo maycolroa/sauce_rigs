@@ -321,7 +321,37 @@ class InspectionController extends Controller
      */
     public function destroy(Inspection $inspection)
     {
-        
+        DB::beginTransaction();
+
+        try
+        { 
+            foreach ($inspection->themes as $theme)
+            {
+                foreach ($theme->items as $item)
+                {
+                    if ($item->qualifications->count() > 0)
+                        return $this->respondWithError('No se puede eliminar la inspección porque hay inspecciones realizadas asociadas a ella');
+                }
+            }
+
+            if(!$inspection->delete())
+            {
+                return $this->respondHttp500();
+            }
+
+            DB::commit();
+
+        } catch (\Exception $e) {
+            \Log::info($e->getMessage());
+            DB::rollback();
+            return $this->respondHttp500();
+            //return $e->getMessage();
+        }
+
+        return $this->respondHttp200([
+            'message' => 'Se elimino la inspección'
+        ]);
+
     }
 
     public function saveAdditionalFields($inspection, $additional_fields)

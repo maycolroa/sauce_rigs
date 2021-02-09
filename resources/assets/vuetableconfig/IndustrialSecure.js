@@ -600,7 +600,16 @@ export default [
                     messageConfirmation: 'Esta seguro de querer cambiar el estado de __name__'
                 },
                 permission: 'ph_inspections_u'
-            }
+            },
+            {
+                name: 'delete',
+                data: {
+                    action: '/industrialSecurity/dangerousConditions/inspection/',
+                    id: 'id',
+                    messageConfirmation: 'Esta seguro de borrar la inspección'
+                },
+                permission: 'ph_inspections_d'
+                }
         ],
       }],
     configuration: {
