@@ -9,7 +9,12 @@ use App\Models\System\Licenses\License;
 use App\Models\General\ModuleDependence;
 use App\Http\Requests\System\Licenses\LicenseRequest;
 use App\Jobs\System\Licenses\NotifyLicenseRenewalJob;
+use Illuminate\Validation\Rule;
+use App\Models\General\Company;
+use App\Models\Administrative\Users\User;
+use App\Models\Administrative\Roles\Role;
 use Carbon\Carbon;
+use Validator;
 use DB;
 
 class LicenseController extends Controller
@@ -68,6 +73,30 @@ class LicenseController extends Controller
      */
     public function store(LicenseRequest $request)
     {
+        Validator::make($request->all(), [
+            'add_email' => Rule::requiredIf(function() use($request){
+
+                $company = Company::find($request->company_id);
+                $role = Role::defined()->where('name', 'Superadmin')->first();
+
+                $users = User::withoutGlobalScopes()->join('sau_company_user', 'sau_company_user.user_id', 'sau_users.id')
+                ->leftJoin('sau_role_user', function($q) use ($company) { 
+                    $q->on('sau_role_user.user_id', '=', 'sau_users.id')
+                    ->on('sau_role_user.team_id', '=', DB::raw($company->id));
+                })
+                ->where('sau_role_user.role_id', '<>', $role->id)
+                ->groupBy('sau_users.id')
+                ->count();
+
+                if ($users == 0)
+                    return true;
+                else
+                    return false;
+            })
+        ],[
+          'required'  => 'Por favor, agregue emails para notificar la creación de la licencia.'
+        ])->validate();
+
         DB::beginTransaction();
 
         try

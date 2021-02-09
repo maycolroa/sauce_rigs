@@ -254,4 +254,18 @@ class User extends Authenticatable
     {
         return $this->hasRole(Constant::getConstant('ROLE_SUPER'), $team);
     }
+
+    public function scopeInRoles($query, $roles, $typeSearch = 'IN')
+    {
+        if (COUNT($roles) > 0)
+        {
+            if ($typeSearch == 'IN')
+                $query->whereIn('sau_role_user.role_id', $roles);
+
+            else if ($typeSearch == 'NOT IN')
+                $query->whereNotIn('sau_role_user.role_id', $roles);
+        }
+
+        return $query;
+    }
 }

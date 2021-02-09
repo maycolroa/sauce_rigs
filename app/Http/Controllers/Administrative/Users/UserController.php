@@ -21,6 +21,7 @@ use App\Http\Requests\Administrative\Users\UserOtherCompanyRequest;
 use App\Exports\Administrative\Users\UsersImportTemplate;
 use App\Jobs\Administrative\Users\UserImportJob;
 use Maatwebsite\Excel\Facades\Excel;
+use App\Traits\Filtertrait;
 use Validator;
 use Hash;
 use DB;
@@ -30,6 +31,7 @@ class UserController extends Controller
     use UserTrait;
     use ContractTrait;
     use PermissionTrait;
+    use Filtertrait;
 
     /**
      * creates and instance and middlewares are checked
@@ -61,6 +63,8 @@ class UserController extends Controller
     */
    public function data(Request $request)
    {    
+        $url = "/administrative/users";
+
         if ($this->user->hasRole('Arrendatario', $this->team) || $this->user->hasRole('Contratista', $this->team))
         {
             $users = User::select(
@@ -104,6 +108,14 @@ class UserController extends Controller
                 $users->where('sau_role_user.role_id', '<>', $role->id)
                       ->orWhereNull('sau_role_user.role_id');
         }
+            
+        $filters = COUNT($request->get('filters')) > 0 ? $request->get('filters') : $this->filterDefaultValues($this->user->id, $url);
+
+        if (COUNT($filters) > 0)
+        {
+            $users->inRoles($this->getValuesForMultiselect($filters["roles"]), $filters['filtersType']['roles']);
+        }
+        
 
        return Vuetable::of($users)
                 ->addColumn('administrative-users-edit', function ($user) {
@@ -378,11 +390,19 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function export()
+    public function export(Request $request)
     {
         try
         {
-            UserExportJob::dispatch($this->user, $this->company);
+            $roles = $this->getValuesForMultiselect($request->roles);
+            $filtersType = $request->filtersType;
+
+            $filters = [
+                'roles' => $roles,
+                'filtersType' => $filtersType
+            ];
+
+            UserExportJob::dispatch($this->user, $this->company, $filters);
           
             return $this->respondHttp200();
         } 

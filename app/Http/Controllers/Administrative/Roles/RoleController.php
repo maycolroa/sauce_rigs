@@ -259,18 +259,33 @@ class RoleController extends Controller
      */
     public function multiselect(Request $request)
     {
+        
         $includeSuper = $this->user->hasRole('Superadmin', $this->team) ? true : false;
 
-        $keyword = "%{$request->keyword}%";
-        $roles = Role::form($includeSuper)->select("id", "name")
-            ->where(function ($query) use ($keyword) {
-                $query->orWhere('name', 'like', $keyword);
-             })
-            ->take(30)->pluck('id', 'name');
+        if($request->has('keyword'))
+        {
+            $keyword = "%{$request->keyword}%";
+            $roles = Role::form($includeSuper)->select("id", "name")
+                ->where(function ($query) use ($keyword) {
+                    $query->orWhere('name', 'like', $keyword);
+                })
+                ->take(30)->pluck('id', 'name');
 
-        return $this->respondHttp200([
-            'options' => $this->multiSelectFormat($roles)
-        ]);
+            return $this->respondHttp200([
+                'options' => $this->multiSelectFormat($roles)
+            ]);
+        }
+        else
+        {
+            $roles = Role::alls($includeSuper)->selectRaw(
+               "sau_roles.id as id,
+                sau_roles.name as name")
+                ->orderBy('name')
+            ->pluck('id', 'name');
+        
+            return $this->multiSelectFormat($roles);
+
+        }
     }
 
     /**
