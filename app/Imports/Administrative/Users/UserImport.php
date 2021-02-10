@@ -18,6 +18,7 @@ use Maatwebsite\Excel\Concerns\WithCalculatedFormulas;
 use App\Traits\ConfigurableFormTrait;
 use Validator;
 use Exception;
+use Hash;
 
 class UserImport implements ToCollection, WithCalculatedFormulas
 {
