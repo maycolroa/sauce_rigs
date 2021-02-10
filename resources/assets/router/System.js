@@ -122,6 +122,30 @@ export default [{
           component: () =>
             import('@/views/System/userCompanies/index')
         }
+      ]),
+      ...middleware({ 'check-permission': 'customerMonitoring_r' }, [
+        {
+          name: 'system-customermonitoring',
+          path: 'customermonitoring',
+          component: () =>
+            import('@/views/System/customerMonitoring/index')
+        }
+      ]),
+      ...middleware({ 'check-permission': 'customerMonitoring_r' }, [
+        {
+          name: 'system-customermonitoring-dangerousconditions',
+          path: 'customermonitoring/dangerousconditions',
+          component: () =>
+            import('@/views/System/customerMonitoring/indexDangerousConditions')
+        }
+      ]),
+      ...middleware({ 'check-permission': 'customerMonitoring_r' }, [
+        {
+          name: 'system-customermonitoring-reinstatements',
+          path: 'customermonitoring/reinstatements',
+          component: () =>
+            import('@/views/System/customerMonitoring/indexReinstatement')
+        }
       ]), 
     ]
   }]

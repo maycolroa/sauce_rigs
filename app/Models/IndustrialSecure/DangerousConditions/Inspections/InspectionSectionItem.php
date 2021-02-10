@@ -19,4 +19,9 @@ class InspectionSectionItem extends Model
     {
         return $this->belongsTo(InspectionSection::class, 'inspection_section_id');
     }
+
+    public function qualifications()
+    {
+        return $this->hasMany(InspectionItemsQualificationAreaLocation::class, 'item_id');
+    }
 }

@@ -190,6 +190,7 @@ class InspectionReportController extends Controller
 
     public function dataType2(Request $request)
     {
+      \Log::info($request);
       $module_id = Module::where('name', 'dangerousConditions')->first()->id;
       $confLocation = $this->getLocationFormConfModule();
       $where = 'iq2.employee_regional_id = sau_ph_inspection_items_qualification_area_location.employee_regional_id ';

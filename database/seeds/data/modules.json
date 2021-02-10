@@ -210,6 +210,12 @@
                 "display_name": "Usuarios Compañias",
                 "main": "NO",
                 "logo": null
+            },
+            {
+                "name": "customerMonitoring",
+                "display_name": "Monitoreo de clientes",
+                "main": "NO",
+                "logo": null
             }
         ]
     }
