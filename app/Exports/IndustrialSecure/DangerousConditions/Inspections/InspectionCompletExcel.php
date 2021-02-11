@@ -231,6 +231,12 @@ class InspectionCompletExcel implements FromQuery, WithMapping, WithHeadings, Wi
       ->InQualifiers($this->filters['qualifiers'], $this->filters['filtersType']['qualifiers'])
       ->betweenDate($this->filters["dates"]);
 
+      if (isset($this->filters['themes']) && $this->filters['filtersType']['themes'] && COUNT($this->filters['themes']) > 0)
+          $qualifications->inThemes($this->filters['themes'], $this->filters['filtersType']['themes']);
+
+      if (isset($this->filters['inspections']) && $this->filters['filtersType']['inspections'] && COUNT($this->filters['inspections']) > 0)
+          $qualifications->inInspections($this->filters['inspections'], $this->filters['filtersType']['inspections']);
+
       if (isset($this->filters['regionals']) && $this->filters['filtersType']['regionals'] && COUNT($this->filters['regionals']) > 0)
           $qualifications->inRegionals($this->filters['regionals'], $this->filters['filtersType']['regionals']);
 

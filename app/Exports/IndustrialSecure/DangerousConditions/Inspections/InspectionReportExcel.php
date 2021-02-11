@@ -117,9 +117,15 @@ class InspectionReportExcel implements FromCollection, WithMapping, WithHeadings
         ->leftJoin('sau_employees_processes as p', 'p.id', 'sau_ph_inspection_items_qualification_area_location.employee_process_id')
         ->leftJoin('sau_employees_areas as a','a.id', 'sau_ph_inspection_items_qualification_area_location.employee_area_id')
         ->where('i.company_id', $this->company_id)
-        ->inInspections($this->filters['inspections'], $this->filters['filtersType']['inspections'], 'i')
-        ->betweenDate($this->filters["dates"])
-        ->inThemes($this->filters["themes"], $this->filters['filtersType']['themes'], 's');
+        //->inInspections($this->filters['inspections'], $this->filters['filtersType']['inspections'], 'i')
+        ->betweenDate($this->filters["dates"]);
+        //->inThemes($this->filters["themes"], $this->filters['filtersType']['themes'], 's');
+
+        if (isset($this->filters['inspections']) && COUNT($this->filters['inspections']) > 0)
+            $consultas->inInspections($this->filters['inspections'], $this->filters['filtersType']['inspections'], 'i');
+
+        if (isset($this->filters['themes']) && COUNT($this->filters['themes']) > 0)
+            $consultas->inThemes($this->filters['themes'], $this->filters['filtersType']['themes'], 's');
 
         if (isset($this->filters['regionals']) && COUNT($this->filters['regionals']) > 0)
             $consultas->inRegionals($this->filters['regionals'], $this->filters['filtersType']['regionals']);

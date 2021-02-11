@@ -147,8 +147,11 @@ class InspectionReportController extends Controller
             if (isset($filters["areas"]))
               $consultas->inAreas($this->getValuesForMultiselect($filters["areas"]), $filters['filtersType']['areas']);
 
-            $consultas->inInspections($this->getValuesForMultiselect($filters["inspections"]), $filters['filtersType']['inspections'], 'i');
-            $consultas->inThemes($this->getValuesForMultiselect($filters["themes"]), $filters['filtersType']['themes'], 's');
+            if (isset($filters["inspections"]))
+              $consultas->inInspections($this->getValuesForMultiselect($filters["inspections"]), $filters['filtersType']['inspections'], 'i');
+
+            if (isset($filters["themes"]))
+              $consultas->inThemes($this->getValuesForMultiselect($filters["themes"]), $filters['filtersType']['themes'], 's');
 
             $dates_request = explode('/', $filters["dateRange"]);
 
@@ -190,7 +193,6 @@ class InspectionReportController extends Controller
 
     public function dataType2(Request $request)
     {
-      \Log::info($request);
       $module_id = Module::where('name', 'dangerousConditions')->first()->id;
       $confLocation = $this->getLocationFormConfModule();
       $where = 'iq2.employee_regional_id = sau_ph_inspection_items_qualification_area_location.employee_regional_id ';
@@ -287,8 +289,11 @@ class InspectionReportController extends Controller
             if (isset($filters["areas"]))
               $consultas->inAreas($this->getValuesForMultiselect($filters["areas"]), $filters['filtersType']['areas']);
 
-            $consultas->inInspections($this->getValuesForMultiselect($filters["inspections"]), $filters['filtersType']['inspections'], 'i');
-            $consultas->inThemes($this->getValuesForMultiselect($filters["themes"]), $filters['filtersType']['themes'], 's');
+            if (isset($filters["inspections"]))
+              $consultas->inInspections($this->getValuesForMultiselect($filters["inspections"]), $filters['filtersType']['inspections'], 'i');
+
+            /*if (isset($filters["themes"]))
+              $consultas->inThemes($this->getValuesForMultiselect($filters["themes"]), $filters['filtersType']['themes'], 's');*/
 
             $dates_request = explode('/', $filters["dateRange"]);
 
@@ -427,12 +432,18 @@ class InspectionReportController extends Controller
              })
              //->join('sau_ph_inspections as i','s.inspection_id', 'i.id')
              ->join('sau_ph_qualifications_inspections as q','q.id', 'sau_ph_inspection_items_qualification_area_location.qualification_id')
-             ->inThemes($themes, $filtersType['themes'], 's')
-             ->inInspections($inspections, $filtersType['inspections'], 'i')
+             //->inThemes($themes, $filtersType['themes'], 's')
+             //->inInspections($inspections, $filtersType['inspections'], 'i')
              ->betweenDate($dates)
              ->where('i.company_id', $this->company)
              //->where('i.type_id', 1)
              ->groupBy('employee_regional_id', 'employee_headquarter_id', 'employee_process_id', 'employee_area_id', 'numero_inspecciones');
+
+        if (COUNT($themes) > 0)
+          $consultas->inThemes($themes, $filtersType['themes'], 's');
+
+        if (COUNT($inspections) > 0)
+          $consultas->inInspections($inspections, $filtersType['inspections'], 'i');
 
         if (COUNT($regionals) > 0)
           $consultas->inRegionals($regionals, $filtersType['regionals']);
@@ -587,12 +598,18 @@ class InspectionReportController extends Controller
              })
              //->join('sau_ph_inspections as i','s.inspection_id', 'i.id')
              ->join('sau_ph_qualifications_inspections as q','q.id', 'sau_ph_inspection_items_qualification_area_location.qualification_id')
-             ->inThemes($themes, $filtersType['themes'], 's')
-             ->inInspections($inspections, $filtersType['inspections'], 'i')
+             //->inThemes($themes, $filtersType['themes'], 's')
+             //->inInspections($inspections, $filtersType['inspections'], 'i')
              ->betweenDate($dates)
              ->where('i.type_id', 2)
              ->where('i.company_id', $this->company)
              ->groupBy('employee_regional_id', 'employee_headquarter_id', 'employee_process_id', 'employee_area_id', 'numero_inspecciones');
+
+        if (COUNT($themes) > 0)
+          $consultas->inThemes($themes, $filtersType['themes'], 's');
+   
+        if (COUNT($inspections) > 0)
+          $consultas->inInspections($inspections, $filtersType['inspections'], 'i');
 
         if (COUNT($regionals) > 0)
           $consultas->inRegionals($regionals, $filtersType['regionals']);
