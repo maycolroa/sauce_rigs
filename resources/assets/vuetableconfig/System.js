@@ -227,4 +227,20 @@ export default [
             filterColumns: true,
         }
     },
+    {
+        name: 'system-customermonitoring-reinstatements',
+        fields: [
+            { name: 'id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true },
+            { name: 'name', data: 'name', title: 'Compañia', sortable: true, searchable: true, detail: false, key: false },
+            { name: 'started_at', data: 'started_at', title: 'Fecha Inicio', sortable: true, searchable: true, detail: false, key: false },
+            { name: 'ended_at', data: 'ended_at', title: 'Fecha Fin', sortable: true, searchable: true, detail: false, key: false },
+            { name: 'total_mes', data: 'total_mes', title: 'Reṕortes creados este mes', sortable: true, searchable: true, detail: false, key: false },
+            { name: 'total_anio', data: 'total_anio', title: 'Reṕortes creados este año', sortable: true, searchable: true, detail: false, key: false }
+        ],
+        'controlls': [],
+        configuration: {
+            urlData: '/system/customermonitoring/dataReinstatements',
+            filterColumns: true,
+        }
+    },
 ]
