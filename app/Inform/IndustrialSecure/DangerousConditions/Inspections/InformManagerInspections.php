@@ -102,8 +102,8 @@ class InformManagerInspections
             ->leftJoin('sau_employees_headquarters', 'sau_employees_headquarters.id', 'sau_ph_inspection_items_qualification_area_location.employee_headquarter_id')
             ->leftJoin('sau_employees_processes', 'sau_employees_processes.id', 'sau_ph_inspection_items_qualification_area_location.employee_process_id')
             ->leftJoin('sau_employees_areas', 'sau_employees_areas.id','sau_ph_inspection_items_qualification_area_location.employee_area_id')
-            ->inThemes($this->themes, $this->filtersType['themes'])
-            ->inInspections($this->inspections, $this->filtersType['inspections'])
+            //->inThemes($this->themes, $this->filtersType['themes'])
+            //->inInspections($this->inspections, $this->filtersType['inspections'])
             ->betweenDate($this->dates)
             ->where('sau_ph_inspections.company_id', $this->company)
             ->where('sau_ph_inspections.type_id', 1)
@@ -120,6 +120,12 @@ class InformManagerInspections
 
         if (COUNT($this->areas) > 0)
             $consultas->inAreas($this->areas, $this->filtersType['areas']);
+
+        if (COUNT($this->themes) > 0)
+            $consultas->inThemes($this->themes, $this->filtersType['themes']);
+
+        if (COUNT($this->inspections) > 0)
+            $consultas->inInspections($this->inspections, $this->filtersType['inspections']);
 
         $consultas = DB::table(DB::raw("({$consultas->toSql()}) AS t"))
         ->selectRaw("
@@ -145,8 +151,8 @@ class InformManagerInspections
             ->leftJoin('sau_employees_headquarters', 'sau_employees_headquarters.id', 'sau_ph_inspection_items_qualification_area_location.employee_headquarter_id')
             ->leftJoin('sau_employees_processes', 'sau_employees_processes.id', 'sau_ph_inspection_items_qualification_area_location.employee_process_id')
             ->leftJoin('sau_employees_areas', 'sau_employees_areas.id','sau_ph_inspection_items_qualification_area_location.employee_area_id')
-            ->inThemes($this->themes, $this->filtersType['themes'])
-            ->inInspections($this->inspections, $this->filtersType['inspections'])
+            //->inThemes($this->themes, $this->filtersType['themes'])
+            //->inInspections($this->inspections, $this->filtersType['inspections'])
             ->betweenDate($this->dates)
             ->where('sau_ph_inspections.company_id', $this->company)
             ->where('sau_ph_inspections.type_id', 2)
@@ -163,6 +169,12 @@ class InformManagerInspections
 
         if (COUNT($this->areas) > 0)
             $consultas->inAreas($this->areas, $this->filtersType['areas']);
+
+        if (COUNT($this->themes) > 0)
+            $consultas->inThemes($this->themes, $this->filtersType['themes']);
+
+        if (COUNT($this->inspections) > 0)
+            $consultas->inInspections($this->inspections, $this->filtersType['inspections']);
 
         $consultas = DB::table(DB::raw("({$consultas->toSql()}) AS t"))
         ->selectRaw("
@@ -193,8 +205,8 @@ class InformManagerInspections
             ->leftJoin('sau_employees_headquarters', 'sau_employees_headquarters.id', 'sau_ph_inspection_items_qualification_area_location.employee_headquarter_id')
             ->leftJoin('sau_employees_processes', 'sau_employees_processes.id', 'sau_ph_inspection_items_qualification_area_location.employee_process_id')
             ->leftJoin('sau_employees_areas', 'sau_employees_areas.id','sau_ph_inspection_items_qualification_area_location.employee_area_id')
-            ->inThemes($this->themes, $this->filtersType['themes'])
-            ->inInspections($this->inspections, $this->filtersType['inspections'])
+            //->inThemes($this->themes, $this->filtersType['themes'])
+            //->inInspections($this->inspections, $this->filtersType['inspections'])
             ->betweenDate($this->dates)
             ->where('sau_ph_inspections.company_id', $this->company)
             ->where('sau_ph_inspections.type_id', 1)
@@ -212,11 +224,17 @@ class InformManagerInspections
         if (COUNT($this->areas) > 0)
             $consultas2->inAreas($this->areas, $this->filtersType['areas']);
 
+        if (COUNT($this->themes) > 0)
+            $consultas2->inThemes($this->themes, $this->filtersType['themes']);
+
+        if (COUNT($this->inspections) > 0)
+            $consultas2->inInspections($this->inspections, $this->filtersType['inspections']);
+
         $consultas2 = DB::table(DB::raw("({$consultas2->toSql()}) AS t"))
         ->select(
             "t.category AS category",
-            DB::raw('ROUND( (t_cumple * 100) / (t_cumple + t_no_cumple), 1) AS p_cumple'),
-            DB::raw('ROUND( (t_no_cumple * 100) / (t_cumple + t_no_cumple), 1) AS p_no_cumple'),
+            //DB::raw('ROUND( (t_cumple * 100) / (t_cumple + t_no_cumple), 1) AS p_cumple'),
+            //DB::raw('ROUND( (t_no_cumple * 100) / (t_cumple + t_no_cumple), 1) AS p_no_cumple'),
             DB::raw('ROUND( (t_cumple * 100) / (t_cumple + t_no_cumple + t_cumple_p), 1) AS p_cumple'),
             DB::raw('ROUND( (t_no_cumple * 100) / (t_cumple + t_no_cumple + t_cumple_p), 1) AS p_no_cumple'),
             DB::raw('ROUND( (t_cumple_p * 100) / (t_cumple + t_cumple_p + t_no_cumple), 1) AS p_cumple_p')
@@ -244,8 +262,8 @@ class InformManagerInspections
             ->leftJoin('sau_employees_headquarters', 'sau_employees_headquarters.id', 'sau_ph_inspection_items_qualification_area_location.employee_headquarter_id')
             ->leftJoin('sau_employees_processes', 'sau_employees_processes.id', 'sau_ph_inspection_items_qualification_area_location.employee_process_id')
             ->leftJoin('sau_employees_areas', 'sau_employees_areas.id','sau_ph_inspection_items_qualification_area_location.employee_area_id')
-            ->inThemes($this->themes, $this->filtersType['themes'])
-            ->inInspections($this->inspections, $this->filtersType['inspections'])
+            //->inThemes($this->themes, $this->filtersType['themes'])
+            //->inInspections($this->inspections, $this->filtersType['inspections'])
             ->betweenDate($this->dates)
             ->where('sau_ph_inspections.company_id', $this->company)
             ->where('sau_ph_inspections.type_id', 2)
@@ -263,12 +281,18 @@ class InformManagerInspections
         if (COUNT($this->areas) > 0)
             $consultas2->inAreas($this->areas, $this->filtersType['areas']);
 
+        if (COUNT($this->themes) > 0)
+            $consultas2->inThemes($this->themes, $this->filtersType['themes']);
+
+        if (COUNT($this->inspections) > 0)
+            $consultas2->inInspections($this->inspections, $this->filtersType['inspections']);
+
         $consultas2 = DB::table(DB::raw("({$consultas2->toSql()}) AS t"))
         ->select(
             "t.category AS category",
-            DB::raw('AVG(t_cumple) AS p_cumple'),
-            DB::raw('AVG(t_parcial) AS p_cumple_p'),
-            DB::raw('(100 - AVG(t_cumple) - AVG(t_parcial)) AS p_no_cumple')
+            DB::raw('ROUND(AVG(t_cumple), 1) AS p_cumple'),
+            DB::raw('ROUND(AVG(t_parcial), 1) AS p_cumple_p'),
+            DB::raw('ROUND((100 - AVG(t_cumple) - AVG(t_parcial)), 1) AS p_no_cumple')
         )
         ->mergeBindings($consultas2->getQuery())
         ->groupBy('t.category')

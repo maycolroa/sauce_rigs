@@ -74,8 +74,6 @@ class CustomerMonitoringController extends Controller
             ->where('sau_license_module.module_id', 21)
             ->groupBy('sau_companies.id');
 
-            \Log::info($companies->get());
-
         return Vuetable::of($companies)
                     ->make();
     }
