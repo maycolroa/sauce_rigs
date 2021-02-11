@@ -9,6 +9,7 @@ use App\Models\System\Licenses\License;
 use App\Models\General\Company;
 use App\Models\PreventiveOccupationalMedicine\Reinstatements\Check;
 use App\Models\IndustrialSecure\DangerousConditions\Reports\Report;
+use App\Models\IndustrialSecure\DangerousConditions\Inspections\InspectionItemsQualificationAreaLocation;
 use Carbon\Carbon;
 use Validator;
 use DB;
@@ -79,26 +80,38 @@ class CustomerMonitoringController extends Controller
                     ->make();
     }
 
-    /*public function dataDangerousConditions(Request $request)
+    public function dataDangerousConditions(Request $request)
     {
         $now = Carbon::now();
 
         $reports = Report::select(
-            "sau_reinc_checks.company_id AS company_id",
-            DB::raw("SUM(CASE WHEN YEAR(sau_reinc_checks.created_at) = {$now->year} AND MONTH(sau_reinc_checks.created_at) = {$now->month} THEN 1 ELSE 0 END) AS total_mes"),
-            DB::raw("SUM(CASE WHEN YEAR(sau_reinc_checks.created_at) = {$now->year} THEN 1 ELSE 0 END) AS total_anio")
+            "sau_ph_reports.company_id AS company_id",
+            DB::raw("SUM(CASE WHEN YEAR(sau_ph_reports.created_at) = {$now->year} AND MONTH(sau_ph_reports.created_at) = {$now->month} THEN 1 ELSE 0 END) AS report_mes"),
+            DB::raw("SUM(CASE WHEN YEAR(sau_ph_reports.created_at) = {$now->year} THEN 1 ELSE 0 END) AS report_anio")
         )
         ->withoutGlobalScopes()
-        ->groupBy('sau_reinc_checks.company_id');  
+        ->groupBy('sau_ph_reports.company_id');
+        
+        $inspections = InspectionItemsQualificationAreaLocation::select(
+            "sau_ph_inspections.company_id AS company_id",
+            DB::raw("COUNT(DISTINCT CASE WHEN YEAR(sau_ph_inspection_items_qualification_area_location.qualification_date) = {$now->year} AND MONTH(sau_ph_inspection_items_qualification_area_location.qualification_date) = {$now->month} THEN sau_ph_inspection_items_qualification_area_location.qualification_date END) AS insp_mes"),
+            DB::raw("COUNT(DISTINCT CASE WHEN YEAR(sau_ph_inspection_items_qualification_area_location.qualification_date) = {$now->year} THEN sau_ph_inspection_items_qualification_area_location.qualification_date END) AS insp_anio")
+        )
+        ->join('sau_ph_inspection_section_items', 'sau_ph_inspection_section_items.id', 'sau_ph_inspection_items_qualification_area_location.item_id')
+        ->join('sau_ph_inspection_sections', 'sau_ph_inspection_sections.id', 'sau_ph_inspection_section_items.inspection_section_id')
+        ->join('sau_ph_inspections', 'sau_ph_inspections.id', 'sau_ph_inspection_sections.inspection_id')        
+        ->withoutGlobalScopes()
+        ->groupBy('sau_ph_inspections.company_id');
         
         $companies = Company::selectRaw('
                 sau_companies.id AS id,
                 sau_companies.name AS name,
                 MAX(sau_licenses.started_at) AS started_at,
                 MAX(sau_licenses.ended_at) AS ended_at,
-                IFNULL(t.total, 0) AS total,
-                IFNULL(t.total_mes, 0) AS total_mes,
-                IFNULL(t.total_anio, 0) AS total_anio'
+                IFNULL(t.report_mes, 0) AS report_mes,
+                IFNULL(t.report_anio, 0) AS report_anio,
+                IFNULL(t2.insp_mes, 0) AS insp_mes,
+                IFNULL(t2.insp_anio, 0) AS insp_anio'
             )
             ->join('sau_licenses', 'sau_licenses.company_id', 'sau_companies.id')
             ->join('sau_license_module', 'sau_license_module.license_id', 'sau_licenses.id')
@@ -106,11 +119,15 @@ class CustomerMonitoringController extends Controller
                 $join->on("t.company_id", "sau_companies.id");
             })
             ->mergeBindings($reports->getQuery())
+            ->leftJoin(DB::raw("({$inspections->toSql()}) as t2"), function ($join) {
+                $join->on("t2.company_id", "sau_companies.id");
+            })
+            ->mergeBindings($inspections->getQuery())
             ->whereRaw('? BETWEEN started_at AND ended_at', [date('Y-m-d')])
-            ->where('sau_license_module.module_id', 21)
+            ->where('sau_license_module.module_id', 26)
             ->groupBy('sau_companies.id');
 
         return Vuetable::of($companies)
                     ->make();
-    }*/
+    }
 }

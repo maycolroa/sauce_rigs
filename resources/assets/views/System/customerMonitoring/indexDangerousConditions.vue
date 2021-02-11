@@ -2,16 +2,16 @@
   <div>
     <header-module
       title="SISTEMA"
-      subtitle="SUPERVISAR CORREOS"
-      url="system"
+      subtitle="MONITOREO DE CLIENTES - CONDICIONES PELIGROSAS"
+      url="system-customermonitoring"
     />
 
     <div class="col-md">
       <b-card no-body>
         <b-card-body>
              <vue-table
-                configName="system-logmails"
-                v-if="auth.can['logMails_r']"
+                configName="system-customermonitoring-dangerousConditions"
+                v-if="auth.can['customerMonitoring_r']"
                 ></vue-table>
         </b-card-body>
     </b-card>
@@ -23,9 +23,9 @@
 import Alerts from '@/utils/Alerts.js';
 
 export default {
-  name: 'logMails',
+  name: 'customermonitoring-dangerousConditions',
   metaInfo: {
-    title: 'Supervisar Correos'
+    title: 'Monitoreo de clientes- Condiciones Peligrosas'
   }
 }
 </script>
