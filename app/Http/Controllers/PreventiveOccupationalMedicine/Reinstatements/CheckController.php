@@ -704,7 +704,8 @@ class CheckController extends Controller
         $checks = $this->getCheckView($check);
 
         $checks->employee->antiquity = $this->timeDifference($checks->employee->income_date);
-        $checks->employee->age = $checks->employee->date_of_birth ? $this->timeDifference((Carbon::createFromFormat('Y-m-d',$checks->employee->date_of_birth))->toDateString()) : '';
+        $checks->employee->age = $checks->employee->age ? $checks->employee->age : ($checks->employee->date_of_birth ? $this->timeDifference((Carbon::createFromFormat('Y-m-d',$checks->employee->date_of_birth))->toDateString()) : '');
+        //$checks->employee->age = $checks->employee->date_of_birth ? $this->timeDifference((Carbon::createFromFormat('Y-m-d',$checks->employee->date_of_birth))->toDateString()) : '';
 
         //\Log::info($checks);
 
@@ -735,6 +736,10 @@ class CheckController extends Controller
         else if($formModel == 'manpower')
         {
             $pdf = PDF::loadView('pdf.reporteReinstatementsManPower', ['check' => $checks, 'locationForm' => $this->getLocationFormConfModule()] );
+        }
+        else if($formModel == 'ingeomega')
+        {
+            $pdf = PDF::loadView('pdf.reporteReinstatementsIngeomega', ['check' => $checks, 'locationForm' => $this->getLocationFormConfModule()] );
         }
 
         $pdf->setPaper('A3', 'landscape');
