@@ -576,7 +576,9 @@ class EvaluationContractController extends Controller
                         if ($rating['apply'] == 'SI')
                         {
                             if (!$clone[$index]['value'])
-                                $clone_report[$index]['total_c'] += 1;
+                            {
+                                //$clone_report[$index]['total_c'] += 1;
+                            }
                             else 
                             {
                                 if ($clone[$index]['value'] == 'SI' /*|| $clone[$index]['value'] == 'N/A'*/)
