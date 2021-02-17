@@ -157,7 +157,8 @@ Route::middleware(['auth'])->group(function () {
         Route::post('bm_respiratoryPacient', 'PreventiveOccupationalMedicine\BiologicalMonitoring\RespiratoryAnalysis\RespiratoryAnalysisController@multiselectPacient');
         Route::post('regionals', 'Administrative\Regionals\EmployeeRegionalController@multiselect');
         Route::post('headquarters', 'Administrative\Headquarters\EmployeeHeadquarterController@multiselect');  
-        Route::post('sexs', 'General\MultiSelectRadioController@sexs');  
+        Route::post('sexs', 'General\MultiSelectRadioController@sexs');          
+        Route::post('days', 'General\MultiSelectRadioController@days');  
         Route::post('processes', 'Administrative\Processes\EmployeeProcessController@multiselect');
         Route::post('positions', 'Administrative\Positions\EmployeePositionController@multiselect');
         Route::post('businesses', 'Administrative\Businesses\EmployeeBusinessController@multiselect');
@@ -536,6 +537,8 @@ Route::middleware(['auth'])->group(function () {
       Route::post('company/switchStatus/{company}', 'System\Companies\CompanyController@toggleState');
       Route::post('customermonitoring/dataReinstatements', 'System\CustomerMonitoring\CustomerMonitoringController@dataReinstatements');
       Route::post('customermonitoring/dataDangerousConditions', 'System\CustomerMonitoring\CustomerMonitoringController@dataDangerousConditions');
+      Route::post('customermonitoring/dataDangerousConditions', 'System\CustomerMonitoring\CustomerMonitoringController@dataAutomaticsSend');
+      Route::ApiResource('send', 'System\CustomerMonitoring\CustomerMonitoringController');      
 
       Route::post('usersCompanies/data', 'System\UsersCompanies\UserCompanyController@data');
     });

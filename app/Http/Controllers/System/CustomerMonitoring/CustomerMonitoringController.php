@@ -130,4 +130,98 @@ class CustomerMonitoringController extends Controller
         return Vuetable::of($companies)
                     ->make();
     }
+
+    public function dataAutomaticsSend(Request $request)
+    {
+        
+    }
+
+    /**
+     * Display the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function show($id)
+    {
+        try
+        {
+            $company = Company::findOrFail($id);
+            $company->users = [];
+            $company->delete = [];
+
+            return $this->respondHttp200([
+                'data' => $company,
+            ]);
+        } catch(Exception $e){
+            $this->respondHttp500();
+        }
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  App\Http\Requests\IndustrialSecure\Activities\CompanyRequest  $request
+     * @param  Company  $company
+     * @return \Illuminate\Http\Response
+     */
+    public function update(CompanyRequest $request, Company $company)
+    {
+        DB::beginTransaction();
+
+        try
+        {
+            $company->fill($request->all());
+            
+            if(!$company->update())
+                return $this->respondHttp500();
+
+            $team = Team::updateOrCreate(
+                [
+                    'name' => $company->id,
+                ], 
+                [
+                    'id' => $company->id,
+                    'name' => $company->id,
+                    'display_name' => $company->name,
+                    'description' => "Equipo ".$company->name
+                ]
+            );
+
+            if ($request->has('users') && COUNT($request->users) > 0)
+            {
+                foreach ($request->users as $key => $value)
+                {
+                    $user = User::find($value['user_id']);
+
+                    if ($user)
+                    {
+                        $user->companies()->attach($company->id);
+
+                        $roles = $this->getValuesForMultiselect($value['role_id']);
+                        $roles = Role::whereIn('id', $roles)->get();
+
+                        if (COUNT($roles) > 0)
+                        {
+                            $team = Team::where('name', $company->id)->first();
+                            $user->attachRoles($roles, $team);
+                        }
+                    }
+                }
+            }
+                
+            DB::commit();
+
+            SyncUsersSuperadminJob::dispatch();
+
+        } catch (\Exception $e) {
+            \Log::info($e->getMessage());
+            DB::rollback();
+            return $this->respondHttp500();
+        }
+
+        return $this->respondHttp200([
+            'message' => 'Se actualizo la compañia'
+        ]);
+    }
 }

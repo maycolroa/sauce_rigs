@@ -105,9 +105,9 @@ class Kernel extends ConsoleKernel
             ->timezone('America/Bogota')
             ->dailyAt('03:00');
 
-        $schedule->command('delete-files-temporal')
+        /*$schedule->command('delete-files-temporal')
             ->timezone('America/Bogota')
-            ->dailyAt('03:00');
+            ->dailyAt('03:00');*/
 
         /*$schedule->command('remember-repeat-inspetion')
             ->timezone('America/Bogota')
