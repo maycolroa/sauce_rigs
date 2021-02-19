@@ -54,10 +54,12 @@ class ActionPlanController extends Controller
                 'sau_action_plans_activities.*',
                 'sau_action_plans_activities.state as state_activity',
                 'sau_users.name as responsible',
-                'sau_modules.display_name')
+                'sau_modules.display_name',
+                'u.name as user_creator')
             ->join('sau_action_plans_activity_module', 'sau_action_plans_activity_module.activity_id', 'sau_action_plans_activities.id')
             ->join('sau_modules', 'sau_modules.id', 'sau_action_plans_activity_module.module_id')
-            ->join('sau_users', 'sau_users.id', 'sau_action_plans_activities.responsible_id');
+            ->join('sau_users', 'sau_users.id', 'sau_action_plans_activities.responsible_id')
+            ->join('sau_users as u', 'u.id', 'sau_action_plans_activities.user_id');
 
         $url = '/administrative/actionplans';
 
