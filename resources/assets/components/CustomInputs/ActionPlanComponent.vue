@@ -40,6 +40,9 @@
                     </b-card-header>
                     <b-collapse :id="`accordion${activity.key}-1`" visible :accordion="`accordion-${prefixIndex}`">
                         <b-card-body>
+                            <b-form-row v-show="viewOnly || isEdit">
+                                <vue-input :disabled="viewOnly || isEdit" class="col-md-12" v-model="activity.user_creator_name" label="Usuario Creador" name="user_creator_name" placeholder="Usuario Creador" :error="form.errorsFor(`${prefixIndex}actionPlan.activities.${index}.user_creator_name`)"></vue-input>
+                            </b-form-row>
                             <b-form-row>
                                 <vue-textarea :disabled="viewOnly || activity.editable == 'NO' || !activity.edit_all" class="col-md-12" v-model="activity.description" label="Descripción" name="description" placeholder="Descripción" :error="form.errorsFor(`${prefixIndex}actionPlan.activities.${index}.description`)"></vue-textarea>
                                 <vue-ajax-advanced-select :disabled="viewOnly || !activity.edit_all" class="col-md-12" v-model="activity.responsible_id" :selected-object="activity.multiselect_responsible" name="responsible_id" label="Responsable" placeholder="Seleccione el responsable" :url="userDataUrl" :error="form.errorsFor(`${prefixIndex}actionPlan.activities.${index}.responsible_id`)">

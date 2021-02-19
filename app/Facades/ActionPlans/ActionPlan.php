@@ -605,6 +605,7 @@ class ActionPlan
             $tmp['oldResponsible_id'] = $activity->responsible_id;
             $tmp['multiselect_responsible'] = $activity->responsible->multiselectActionPlan();
             $tmp['user_id'] = $activity->user_id;
+            $tmp['user_creator_name'] = $activity->user->name;
             $tmp['execution_date'] = ($activity->execution_date) ? (Carbon::createFromFormat('Y-m-d', $activity->execution_date))->format('D M d Y') : '';
             $tmp['oldExecution_date'] = ($activity->execution_date) ? (Carbon::createFromFormat('Y-m-d', $activity->execution_date))->format('D M d Y') : '';
             $tmp['expiration_date'] = (Carbon::createFromFormat('Y-m-d', $activity->expiration_date))->format('D M d Y');

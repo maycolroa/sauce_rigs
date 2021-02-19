@@ -2,15 +2,13 @@
   <b-form :action="url" @submit.prevent="submit" autocomplete="off">
         <div class="col-md-12">
           <b-form-row>
-            <vue-advanced-select class="col-md-6" v-model="form.users[index].user_id" :error="form.errorsFor(`users.${index}.user_id`)" name="user" label="Usuario" placeholder="Seleccione un usuario" :options="usersOptions"  :searchable="true">
+            <vue-advanced-select class="col-md-6" v-model="form.users" :error="form.errorsFor('users')" name="user" label="Usuario" placeholder="Seleccione un usuario" :options="usersOptions"  :searchable="true">
             </vue-advanced-select>
 
-            <vue-advanced-select :disabled="isLoading" v-model="inspectionsSelectedType2" :options="daysOptions" :allowEmpty="false" :searchable="true" name="inspectionsSelectedType2"></vue-advanced-select>
+            <vue-advanced-select :disabled="isLoading" v-model="form.days" :options="daysOptions" :allowEmpty="false" :searchable="true" name="inspectionsSelectedType2"></vue-advanced-select>
               
           </b-form-row>
         </div>
-      </template>
-    </b-form-row>
 
     <div class="row float-right pt-10 pr-10">
       <template>
@@ -54,7 +52,7 @@ export default {
       default() {
         return {
           users: [],
-          day: ''
+          days: ''
         };
       }
     }
