@@ -261,6 +261,24 @@ export default [
             filterColumns: true,
         }
     },
+    {
+        name: 'system-customermonitoring-absenteeism',
+        fields: [
+            { name: 'id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true },
+            { name: 'name', data: 'name', title: 'Compañia', sortable: true, searchable: true, detail: false, key: false },
+            { name: 'started_at', data: 'started_at', title: 'Fecha Inicio Licencia', sortable: true, searchable: true, detail: false, key: false },
+            { name: 'ended_at', data: 'ended_at', title: 'Fecha Fin Licencia', sortable: true, searchable: true, detail: false, key: false },
+            { name: 'report_mes', data: 'report_mes', title: 'Reṕortes vistos este mes', sortable: true, searchable: true, detail: false, key: false },
+            { name: 'report_anio', data: 'report_anio', title: 'Reṕortes vistos este año', sortable: true, searchable: true, detail: false, key: false },
+            { name: 'file_mes', data: 'file_mes', title: 'Archivos cargados este mes', sortable: true, searchable: true, detail: false, key: false },
+            { name: 'file_anio', data: 'file_anio', title: 'Archivos cargados este año', sortable: true, searchable: true, detail: false, key: false }
+        ],
+        'controlls': [],
+        configuration: {
+            urlData: '/system/customermonitoring/dataAbsenteeism',
+            filterColumns: true,
+        }
+    },
     /*{
         name: 'system-customermonitoring-automatics-send',
         fields: [

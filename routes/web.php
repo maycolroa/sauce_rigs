@@ -113,7 +113,7 @@ Route::middleware(['auth'])->group(function () {
         Route::ApiResource('respiratoryAnalysis', 'PreventiveOccupationalMedicine\BiologicalMonitoring\RespiratoryAnalysis\RespiratoryAnalysisController');  
 
         Route::prefix('absenteeism')->group(function () {
-          Route::post('report/data', 'PreventiveOccupationalMedicine\Absenteeism\ReportController@data');
+          Route::post('report/data', 'PreventiveOccupationalMedicine\Absenteeism\ReportController@data');Route::post('report/monitorView/{id}', 'PreventiveOccupationalMedicine\Absenteeism\ReportController@monitorViews');
           Route::ApiResource('report', 'PreventiveOccupationalMedicine\Absenteeism\ReportController');
           
           Route::get('fileUpload/download/{fileUpload}', 'PreventiveOccupationalMedicine\Absenteeism\FileUploadController@download');
@@ -537,7 +537,8 @@ Route::middleware(['auth'])->group(function () {
       Route::post('company/switchStatus/{company}', 'System\Companies\CompanyController@toggleState');
       Route::post('customermonitoring/dataReinstatements', 'System\CustomerMonitoring\CustomerMonitoringController@dataReinstatements');
       Route::post('customermonitoring/dataDangerousConditions', 'System\CustomerMonitoring\CustomerMonitoringController@dataDangerousConditions');
-      Route::post('customermonitoring/dataDangerousConditions', 'System\CustomerMonitoring\CustomerMonitoringController@dataAutomaticsSend');
+      Route::post('customermonitoring/dataAutomaticsSend', 'System\CustomerMonitoring\CustomerMonitoringController@dataAutomaticsSend');
+      Route::post('customermonitoring/dataAbsenteeism', 'System\CustomerMonitoring\CustomerMonitoringController@dataAbsenteeism');
       Route::ApiResource('send', 'System\CustomerMonitoring\CustomerMonitoringController');      
 
       Route::post('usersCompanies/data', 'System\UsersCompanies\UserCompanyController@data');

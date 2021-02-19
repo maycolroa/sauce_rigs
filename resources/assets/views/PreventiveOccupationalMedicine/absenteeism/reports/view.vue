@@ -38,6 +38,12 @@ export default {
         Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
         this.$router.go(-1);
     });
+
+    axios.post(`/biologicalmonitoring/absenteeism/report/monitorView/${this.$route.params.id}`)
+    .then(response => {
+    })
+    .catch(error => {
+    });
   },
 }
 </script>
