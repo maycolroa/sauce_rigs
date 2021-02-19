@@ -48,7 +48,7 @@ export default {
     .then(response => {
         this.data = response.data.data;
         this.fetchSelect('usersOptions', '/selects/usersOtherCompany');
-        this.fetchSelect('daysOptions', '/selects/days')
+        //this.fetchSelect('daysOptions', '/selects/days')
         
     })
     .catch(error => {

@@ -143,6 +143,10 @@ trait ContractTrait
                 {
                     $items = $sql->where('sau_ct_standard_classification.standard_name', '=', '7 estandares')->get();
                 }
+                else if ($contract->risk_class == "Clase de riesgo IV" || $contract->risk_class == "Clase de riesgo V")
+                {
+                    $items = $sql->where('sau_ct_standard_classification.standard_name', '=', '60 estandares')->get();
+                }
             }
             else if ($contract->number_workers > 10 && $contract->number_workers <= 50)
             {
