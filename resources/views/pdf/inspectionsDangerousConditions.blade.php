@@ -70,46 +70,52 @@
     <div style="page-break-inside: avoid;">
         <table class="table-general">
             <thead>
-                <!--<tr>
-                    <th colspan="3">Inspección</th>
-                </tr>
                 <tr>
-                    <td colspan="3">{{ $inspections["inspection"] }}</td>
-                </tr>-->
-                <tr>
-                    <!--<th>Fecha Creación</th>-->
                     <th>Fecha Calificación</th>
                     <th>Responsable</th>
                 </tr>
                 <tr>
-                    <!--<td>{{$inspections["created_at"]}}</td>-->
                     <td>{{$inspections["qualification_date"]}}</td>
                     <td>{{$inspections["qualifier"]}}</td>
-                </tr>-->
+                </tr>
                 <tr>
                     <th>{{ Auth::user()->getKeywords()['regional'] }}</th>
                     @if ($inspections["headquarter"])
                         <th>{{ Auth::user()->getKeywords()['headquarter'] }}</th>
                     @endif
-                    @if ($inspections["process"])
-                        <th>{{ Auth::user()->getKeywords()['process'] }}</th>
-                    @endif
                 </tr>
                 <tr>
-                    <th>{{ $inspections["regional"] }}</th>
+                    <td>{{ $inspections["regional"] }}</th>
                     @if ($inspections["headquarter"])
-                        <th>{{ $inspections["headquarter"] }}</th>
-                    @endif
-                    @if ($inspections["process"])
-                        <th>{{ $inspections["process"] }}</th>
+                        <td>{{ $inspections["headquarter"] }}</th>
                     @endif
                 </tr>
-                @if ($inspections["area"])
+                @if ($inspections["process"])
                     <tr>
-                        <th colspan="3">{{ Auth::user()->getKeywords()['area'] }}</th>
+                        @if ($inspections["process"])
+                            <th>{{ Auth::user()->getKeywords()['process'] }}</th>
+                        @endif
+                        @if ($inspections["area"])
+                            <th>{{ Auth::user()->getKeywords()['area'] }}</th>
+                        @endif
+                    </tr>
+                @endif
+                @if ($inspections["process"])
+                    <tr>
+                        @if ($inspections["process"])
+                            <th>{{ $inspections["process"] }}</th>
+                        @endif
+                        @if ($inspections["area"])
+                            <td colspan=>{{ $inspections["area"] }}</td>
+                        @endif
+                    </tr>
+                @endif
+                @if ($inspections["compliance"])
+                    <tr>
+                        <th colspan="2">Porcentaje de cumplimiento</th>
                     </tr>
                     <tr>
-                        <td colspan="3">{{ $inspections["area"] }}</td>
+                        <td colspan="2">{{$inspections["compliance"]}}%</td>
                     </tr>
                 @endif
             </thead>

@@ -57,6 +57,10 @@ class ListCheckContractExcel implements FromCollection, WithMapping, WithHeading
                     $items = $sql->where('sau_ct_standard_classification.standard_name', '=', '60 estandares')->get();
                 }
             }
+            else if ($contract->risk_class == "Clase de riesgo IV" || $contract->risk_class == "Clase de riesgo V")
+            {
+                $items = $sql->where('sau_ct_standard_classification.standard_name', '=', '60 estandares')->get();
+            }
         }
         else if ($this->contract->classification == 'Empresa')
         {
@@ -77,6 +81,10 @@ class ListCheckContractExcel implements FromCollection, WithMapping, WithHeading
                 {
                     $items = $sql->where('sau_ct_standard_classification.standard_name', '=', '60 estandares')->get();
                 }
+            }
+            else if ($contract->risk_class == "Clase de riesgo IV" || $contract->risk_class == "Clase de riesgo V")
+            {
+                $items = $sql->where('sau_ct_standard_classification.standard_name', '=', '60 estandares')->get();
             }
             else if ($this->contract->number_workers > 50)
             {
