@@ -230,6 +230,10 @@ class InspectionQualificationController extends Controller
         if ($firms_values->count() > 0)
             $firms_values_par->push($firms_values);
 
+        
+        if ($qualification->item->section->inspection->type_id == 1)
+            $compliance = $this->complianceType1($id);
+            
         $data = collect([]);
         $data->put('inspection', $qualification->item->section->inspection->name);
         $data->put('regional', $qualification->regional ? $qualification->regional->name : '');
@@ -243,8 +247,102 @@ class InspectionQualificationController extends Controller
         $data->put('add_fields', $fields);
         $data->put('firms', $firms_values_par);
 
+        if ($qualification->item->section->inspection->type_id == 1)
+            $data->put('compliance', $compliance->p_cumple);
+        else
+            $data->put('compliance', null);
+
+
         return $data;
     }
+
+    public function complianceType1($id)
+    {
+        $qualification = InspectionItemsQualificationAreaLocation::findOrFail($id);
+
+        $consultas = InspectionItemsQualificationAreaLocation::select(
+            DB::raw('count(sau_ph_inspection_items_qualification_area_location.qualification_id) as numero_items'),
+            DB::raw('count(IF(sau_ph_qualifications_inspections.fulfillment = 1, sau_ph_qualifications_inspections.id, null)) as t_cumple'),
+            DB::raw('count(IF(sau_ph_qualifications_inspections.fulfillment = 0, sau_ph_qualifications_inspections.id, null)) as t_no_cumple'),
+            DB::raw('SUM(IF(sau_ph_qualifications_inspections.fulfillment = 2, sau_ph_inspections.fullfilment_parcial, 0)) as t_cumple_p')
+            )
+            ->join('sau_ph_inspection_section_items','sau_ph_inspection_items_qualification_area_location.item_id', 'sau_ph_inspection_section_items.id')
+            ->join('sau_ph_inspection_sections','sau_ph_inspection_section_items.inspection_section_id', 'sau_ph_inspection_sections.id')
+            ->join('sau_ph_inspections','sau_ph_inspection_sections.inspection_id', 'sau_ph_inspections.id')
+            ->join('sau_ph_qualifications_inspections','sau_ph_qualifications_inspections.id', 'sau_ph_inspection_items_qualification_area_location.qualification_id')
+            ->leftJoin('sau_employees_regionals', 'sau_employees_regionals.id', 'sau_ph_inspection_items_qualification_area_location.employee_regional_id')
+            ->leftJoin('sau_employees_headquarters', 'sau_employees_headquarters.id', 'sau_ph_inspection_items_qualification_area_location.employee_headquarter_id')
+            ->leftJoin('sau_employees_processes', 'sau_employees_processes.id', 'sau_ph_inspection_items_qualification_area_location.employee_process_id')
+            ->leftJoin('sau_employees_areas', 'sau_employees_areas.id','sau_ph_inspection_items_qualification_area_location.employee_area_id')
+            ->where('sau_ph_inspection_items_qualification_area_location.qualification_date', $qualification->qualification_date);
+
+        if ($qualification->employee_regional_id)
+            $consultas->where('sau_ph_inspection_items_qualification_area_location.employee_regional_id', $qualification->employee_regional_id);
+
+        if ($qualification->employee_headquarter_id)
+            $consultas->where('sau_ph_inspection_items_qualification_area_location.employee_headquarter_id', $qualification->employee_headquarter_id);
+
+        if ($qualification->employee_process_id)
+            $consultas->where('sau_ph_inspection_items_qualification_area_location.employee_process_id', $qualification->employee_process_id);
+
+        if ($qualification->employee_area_id)
+            $consultas->where('sau_ph_inspection_items_qualification_area_location.employee_area_id', $qualification->employee_area_id);
+
+        $consultas = DB::table(DB::raw("({$consultas->toSql()}) AS t"))
+        ->select(
+            DB::raw('ROUND( ((t_cumple + t_cumple_p) * 100) / numero_items, 1) AS p_cumple'),
+            DB::raw('ROUND( (t_no_cumple * 100) / numero_items, 1) AS p_no_cumple')
+            //DB::raw('ROUND( (t_cumple_p * 100) / (t_cumple + t_cumple_p + t_no_cumple), 1) AS p_cumple_p')
+        )
+        ->mergeBindings($consultas->getQuery())
+        ->first();
+
+        return $consultas;
+    }
+
+
+    /*private function complianceType2($id)
+    {        
+        $qualification = InspectionItemsQualificationAreaLocation::findOrFail($id);
+
+        $consultas2 = InspectionItemsQualificationAreaLocation::select(
+            DB::raw('SUM(IF(sau_ph_inspection_items_qualification_area_location.qualification_id = 1, sau_ph_inspection_section_items.compliance_value, 0)) / COUNT(DISTINCT sau_ph_inspection_items_qualification_area_location.qualification_date) AS t_cumple'),
+            DB::raw('SUM(IF(sau_ph_inspection_items_qualification_area_location.qualification_id = 4, sau_ph_inspection_section_items.partial_value, 0)) / COUNT(DISTINCT sau_ph_inspection_items_qualification_area_location.qualification_date) AS t_parcial'),
+            DB::raw('SUM(IF(sau_ph_inspection_items_qualification_area_location.qualification_id = 2, 0, 0)) / COUNT(DISTINCT sau_ph_inspection_items_qualification_area_location.qualification_date) AS t_no_cumple')
+            )
+            ->join('sau_ph_inspection_section_items','sau_ph_inspection_items_qualification_area_location.item_id', 'sau_ph_inspection_section_items.id')
+            ->join('sau_ph_inspection_sections','sau_ph_inspection_section_items.inspection_section_id', 'sau_ph_inspection_sections.id')
+            ->join('sau_ph_inspections','sau_ph_inspection_sections.inspection_id', 'sau_ph_inspections.id')
+            ->join('sau_ph_qualifications_inspections','sau_ph_qualifications_inspections.id', 'sau_ph_inspection_items_qualification_area_location.qualification_id')
+            ->leftJoin('sau_employees_regionals', 'sau_employees_regionals.id', 'sau_ph_inspection_items_qualification_area_location.employee_regional_id')
+            ->leftJoin('sau_employees_headquarters', 'sau_employees_headquarters.id', 'sau_ph_inspection_items_qualification_area_location.employee_headquarter_id')
+            ->leftJoin('sau_employees_processes', 'sau_employees_processes.id', 'sau_ph_inspection_items_qualification_area_location.employee_process_id')
+            ->leftJoin('sau_employees_areas', 'sau_employees_areas.id','sau_ph_inspection_items_qualification_area_location.employee_area_id')
+            ->where('sau_ph_inspection_items_qualification_area_location.qualification_date', $qualification->qualification_date);
+
+        if ($qualification->employee_regional_id)
+            $consultas2->where('sau_ph_inspection_items_qualification_area_location.employee_regional_id', $qualification->employee_regional_id);
+
+        if ($qualification->employee_headquarter_id)
+            $consultas2->where('sau_ph_inspection_items_qualification_area_location.employee_headquarter_id', $qualification->employee_headquarter_id);
+
+        if ($qualification->employee_process_id)
+            $consultas2->where('sau_ph_inspection_items_qualification_area_location.employee_process_id', $qualification->employee_process_id);
+
+        if ($qualification->employee_area_id)
+            $consultas2->where('sau_ph_inspection_items_qualification_area_location.employee_area_id', $qualification->employee_area_id);
+
+        $consultas2 = DB::table(DB::raw("({$consultas2->toSql()}) AS t"))
+        ->select(
+            DB::raw('ROUND(AVG(t_cumple), 1) AS p_cumple'),
+            DB::raw('ROUND(AVG(t_parcial), 1) AS p_cumple_p'),
+            DB::raw('ROUND((100 - AVG(t_cumple) - AVG(t_parcial)), 1) AS p_no_cumple')
+        )
+        ->mergeBindings($consultas2->getQuery())
+        ->first();
+
+        return $consultas2;
+    }*/
 
     public function saveQualification(SaveQualificationRequest $request)
     {
