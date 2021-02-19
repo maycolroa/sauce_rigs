@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Vuetable\Facades\Vuetable;
 use App\Models\PreventiveOccupationalMedicine\Absenteeism\Report;
+use App\Models\PreventiveOccupationalMedicine\Absenteeism\MonitorReportView;
 use App\Http\Requests\PreventiveOccupationalMedicine\Absenteeism\ReportRequest;
 use Config;
 use DB;
@@ -180,5 +181,14 @@ class ReportController extends Controller
         return $this->respondHttp200([
             'message' => 'Se elimino el informe'
         ]);
+    }
+
+    public function monitorViews($id)
+    {
+        $view = new MonitorReportView;
+        $view->report_id = $id;
+        $view->user_id = $this->user->id;
+        $view->company_id = $this->company;
+        $view->save();
     }
 }

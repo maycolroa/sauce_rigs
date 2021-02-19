@@ -147,5 +147,13 @@ export default [{
             import('@/views/System/customerMonitoring/indexReinstatement')
         }
       ]), 
+      ...middleware({ 'check-permission': 'customerMonitoring_r' }, [
+        {
+          name: 'system-customermonitoring-absenteeism',
+          path: 'customermonitoring/absenteeism',
+          component: () =>
+            import('@/views/System/customerMonitoring/indexAbsenteeism')
+        }
+      ]),
     ]
   }]
