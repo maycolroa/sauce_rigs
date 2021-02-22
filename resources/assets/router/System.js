@@ -154,6 +154,14 @@ export default [{
           component: () =>
             import('@/views/System/customerMonitoring/indexAbsenteeism')
         }
+      ]), 
+      ...middleware({ 'check-permission': 'customerMonitoring_r' }, [
+        {
+          name: 'system-customermonitoring-dangerMatrix',
+          path: 'customermonitoring/dangerMatrix',
+          component: () =>
+            import('@/views/System/customerMonitoring/indexDangerMatrix')
+        }
       ]),
     ]
   }]

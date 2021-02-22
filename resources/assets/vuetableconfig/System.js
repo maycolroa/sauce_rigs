@@ -278,6 +278,21 @@ export default [
             urlData: '/system/customermonitoring/dataAbsenteeism',
             filterColumns: true,
         }
+    },{
+        name: 'system-customermonitoring-dangerMatrix',
+        fields: [
+            { name: 'id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true },
+            { name: 'name', data: 'name', title: 'Compañia', sortable: true, searchable: true, detail: false, key: false },
+            { name: 'started_at', data: 'started_at', title: 'Fecha Inicio Licencia', sortable: true, searchable: true, detail: false, key: false },
+            { name: 'ended_at', data: 'ended_at', title: 'Fecha Fin Licencia', sortable: true, searchable: true, detail: false, key: false },
+            { name: 'total_mes', data: 'total_mes', title: 'Matríces creadas o modificadas este mes', sortable: true, searchable: true, detail: false, key: false },
+            { name: 'total_anio', data: 'total_anio', title: 'Matríces creadas o modificadas este año', sortable: true, searchable: true, detail: false, key: false }
+        ],
+        'controlls': [],
+        configuration: {
+            urlData: '/system/customermonitoring/dataDangerMatrix',
+            filterColumns: true,
+        }
     },
     /*{
         name: 'system-customermonitoring-automatics-send',
