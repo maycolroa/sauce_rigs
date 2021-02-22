@@ -113,7 +113,8 @@ Route::middleware(['auth'])->group(function () {
         Route::ApiResource('respiratoryAnalysis', 'PreventiveOccupationalMedicine\BiologicalMonitoring\RespiratoryAnalysis\RespiratoryAnalysisController');  
 
         Route::prefix('absenteeism')->group(function () {
-          Route::post('report/data', 'PreventiveOccupationalMedicine\Absenteeism\ReportController@data');Route::post('report/monitorView/{id}', 'PreventiveOccupationalMedicine\Absenteeism\ReportController@monitorViews');
+          Route::post('report/data', 'PreventiveOccupationalMedicine\Absenteeism\ReportController@data');
+          Route::post('report/monitorView/{id}', 'PreventiveOccupationalMedicine\Absenteeism\ReportController@monitorViews');
           Route::ApiResource('report', 'PreventiveOccupationalMedicine\Absenteeism\ReportController');
           
           Route::get('fileUpload/download/{fileUpload}', 'PreventiveOccupationalMedicine\Absenteeism\FileUploadController@download');
@@ -143,6 +144,7 @@ Route::middleware(['auth'])->group(function () {
         Route::post('modulesGroup', 'General\ApplicationController@multiselectGroupModules');
         Route::post('linceseModulesGroup', 'General\ApplicationController@multiselectGroupLicenseModules');
         Route::post('permissions', 'Administrative\Roles\RoleController@multiselectPermissions');
+        Route::post('permissionsAlls', 'Administrative\Roles\RoleController@permissionsMultiselect');
         Route::post('areas', 'Administrative\Areas\EmployeeAreaController@multiselect');  
         Route::post('years/audiometry', 'PreventiveOccupationalMedicine\BiologicalMonitoring\AudiometryController@multiselectYears');
         Route::post('audiometry/severityGradeLeft', 'PreventiveOccupationalMedicine\BiologicalMonitoring\AudiometryController@multiselectSeverityGradeLeft');
@@ -539,9 +541,11 @@ Route::middleware(['auth'])->group(function () {
       Route::post('customermonitoring/dataDangerousConditions', 'System\CustomerMonitoring\CustomerMonitoringController@dataDangerousConditions');
       Route::post('customermonitoring/dataAutomaticsSend', 'System\CustomerMonitoring\CustomerMonitoringController@dataAutomaticsSend');
       Route::post('customermonitoring/dataAbsenteeism', 'System\CustomerMonitoring\CustomerMonitoringController@dataAbsenteeism');
+      Route::post('customermonitoring/dataDangerMatrix', 'System\CustomerMonitoring\CustomerMonitoringController@dataDangerMatrix');
       Route::ApiResource('send', 'System\CustomerMonitoring\CustomerMonitoringController');      
 
       Route::post('usersCompanies/data', 'System\UsersCompanies\UserCompanyController@data');
+      Route::post('usersCompanies/export', 'System\UsersCompanies\UserCompanyController@export');
     });
 
 

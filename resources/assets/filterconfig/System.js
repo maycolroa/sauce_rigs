@@ -15,5 +15,16 @@ export default [
             label: 'Módulos'
         },
       ]
+    },
+    {
+      name: 'system-userscompany',
+      filters: [
+        {
+            url: '/selects/permissionsAlls',
+            key: 'permissions',
+            type: 'select',
+            label: 'Permisos'
+        },
+      ]
     }
 ]
