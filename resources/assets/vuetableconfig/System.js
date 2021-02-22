@@ -225,6 +225,7 @@ export default [
         configuration: {
             urlData: '/system/usersCompanies/data',
             filterColumns: true,
+            configNameFilter: 'system-userscompany'
         }
     },
     {

@@ -144,6 +144,7 @@ Route::middleware(['auth'])->group(function () {
         Route::post('modulesGroup', 'General\ApplicationController@multiselectGroupModules');
         Route::post('linceseModulesGroup', 'General\ApplicationController@multiselectGroupLicenseModules');
         Route::post('permissions', 'Administrative\Roles\RoleController@multiselectPermissions');
+        Route::post('permissionsAlls', 'Administrative\Roles\RoleController@permissionsMultiselect');
         Route::post('areas', 'Administrative\Areas\EmployeeAreaController@multiselect');  
         Route::post('years/audiometry', 'PreventiveOccupationalMedicine\BiologicalMonitoring\AudiometryController@multiselectYears');
         Route::post('audiometry/severityGradeLeft', 'PreventiveOccupationalMedicine\BiologicalMonitoring\AudiometryController@multiselectSeverityGradeLeft');
@@ -544,6 +545,7 @@ Route::middleware(['auth'])->group(function () {
       Route::ApiResource('send', 'System\CustomerMonitoring\CustomerMonitoringController');      
 
       Route::post('usersCompanies/data', 'System\UsersCompanies\UserCompanyController@data');
+      Route::post('usersCompanies/export', 'System\UsersCompanies\UserCompanyController@export');
     });
 
 

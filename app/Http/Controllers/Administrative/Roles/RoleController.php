@@ -259,7 +259,6 @@ class RoleController extends Controller
      */
     public function multiselect(Request $request)
     {
-        
         $includeSuper = $this->user->hasRole('Superadmin', $this->team) ? true : false;
 
         if($request->has('keyword'))
@@ -305,5 +304,33 @@ class RoleController extends Controller
         }
         
         return $permissions;
+    }
+
+    public function permissionsMultiselect(Request $request)
+    {
+        if($request->has('keyword'))
+        {
+            $keyword = "%{$request->keyword}%";
+            $roles = Permission::form($includeSuper)->select("id", "description")
+                ->where(function ($query) use ($keyword) {
+                    $query->orWhere('description', 'like', $keyword);
+                })
+                ->take(30)->pluck('id', 'description');
+
+            return $this->respondHttp200([
+                'options' => $this->multiSelectFormat($roles)
+            ]);
+        }
+        else
+        {
+            $roles = Permission::selectRaw(
+               "sau_permissions.id as id,
+                sau_permissions.description as name")
+                ->orderBy('name')
+            ->pluck('id', 'name');
+        
+            return $this->multiSelectFormat($roles);
+
+        }
     }
 }

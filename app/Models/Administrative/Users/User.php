@@ -268,4 +268,18 @@ class User extends Authenticatable
 
         return $query;
     }
+
+    public function scopeInPermissions($query, $permissions, $typeSearch = 'IN')
+    {
+        if (COUNT($permissions) > 0)
+        {
+            if ($typeSearch == 'IN')
+                $query->whereIn('sau_permission_role.permission_id', $permissions);
+
+            else if ($typeSearch == 'NOT IN')
+                $query->whereNotIn('sau_permission_role.permission_id', $permissions);
+        }
+
+        return $query;
+    }
 }
