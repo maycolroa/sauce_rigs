@@ -8,9 +8,12 @@ use App\Vuetable\Facades\Vuetable;
 use App\Models\Administrative\Users\User;
 use App\Models\Administrative\Roles\Role;
 use App\Jobs\System\UsersCompanies\UserCompaniesExportJob;
+use App\Traits\Filtertrait;
 
 class UserCompanyController extends Controller
 {
+    use Filtertrait;
+
     /**
      * Display a listing of the resource.
      *
