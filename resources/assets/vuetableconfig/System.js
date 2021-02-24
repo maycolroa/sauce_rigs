@@ -279,7 +279,8 @@ export default [
             urlData: '/system/customermonitoring/dataAbsenteeism',
             filterColumns: true,
         }
-    },{
+    },
+    {
         name: 'system-customermonitoring-dangerMatrix',
         fields: [
             { name: 'id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true },
@@ -292,6 +293,28 @@ export default [
         'controlls': [],
         configuration: {
             urlData: '/system/customermonitoring/dataDangerMatrix',
+            filterColumns: true,
+        }
+    },
+    {
+        name: 'system-customermonitoring-contract',
+        fields: [
+            { name: 'id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true },
+            { name: 'name', data: 'name', title: 'Compañia', sortable: true, searchable: true, detail: false, key: false },
+            { name: 'started_at', data: 'started_at', title: 'Fecha Inicio Licencia', sortable: true, searchable: true, detail: false, key: false },
+            { name: 'ended_at', data: 'ended_at', title: 'Fecha Fin Licencia', sortable: true, searchable: true, detail: false, key: false },
+            { name: 'contract_mes', data: 'contract_mes', title: 'Contratistas creados este mes', sortable: true, searchable: true, detail: false, key: false },
+            { name: 'contract_anio', data: 'contract_anio', title: 'Contratistas creados este año', sortable: true, searchable: true, detail: false, key: false },
+            { name: 'eva_mes', data: 'eva_mes', title: 'Evaluaciones creadas o modificadas este mes', sortable: true, searchable: true, detail: false, key: false },
+            { name: 'eva_anio', data: 'eva_anio', title: 'Evaluaciones creadas o modificadas este año', sortable: true, searchable: true, detail: false, key: false },
+            { name: 'cal_mes', data: 'cal_mes', title: 'Items de lista de chequeo calificados este mes', sortable: true, searchable: true, detail: false, key: false },
+            { name: 'cal_anio', data: 'cal_anio', title: 'Items de lista de chequeo calificados este año', sortable: true, searchable: true, detail: false, key: false },
+            { name: 'file_mes', data: 'file_mes', title: 'Archivos cargados este mes', sortable: true, searchable: true, detail: false, key: false },
+            { name: 'file_anio', data: 'file_anio', title: 'Archivos cargados este año', sortable: true, searchable: true, detail: false, key: false }
+        ],
+        'controlls': [],
+        configuration: {
+            urlData: '/system/customermonitoring/dataContract',
             filterColumns: true,
         }
     },
