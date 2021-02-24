@@ -162,6 +162,14 @@ export default [{
           component: () =>
             import('@/views/System/customerMonitoring/indexDangerMatrix')
         }
+      ]), 
+      ...middleware({ 'check-permission': 'customerMonitoring_r' }, [
+        {
+          name: 'system-customermonitoring-contract',
+          path: 'customermonitoring/contract',
+          component: () =>
+            import('@/views/System/customerMonitoring/indexContract')
+        }
       ]),
     ]
   }]
