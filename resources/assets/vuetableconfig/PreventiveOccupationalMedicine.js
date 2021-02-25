@@ -546,7 +546,16 @@ export default [
     },
     {
       type: 'base',
-      buttons: []
+      buttons: [{
+        name: 'delete',
+        data: {
+            action: '/biologicalmonitoring/absenteeism/fileUpload/',
+            id: 'id',
+            messageConfirmation: 'Esta seguro de borrar el registro __name__'
+        },
+        permission: 'absen_uploadFiles_d'
+        }
+      ]
     }
   ],
   configuration: {
