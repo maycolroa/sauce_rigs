@@ -49,4 +49,12 @@ class FileUpload extends Model
         
         return "{$path}{$this->file}";
     }
+
+    public function path_delete($s3 = false)
+    {
+        if ($s3)
+            return $this->path_donwload();
+        else
+            return "{$this->path}/{$this->file}";
+    }
 }

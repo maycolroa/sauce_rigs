@@ -230,6 +230,10 @@
                         "display_name": "Ausentismo/Administrar archivos"
                     },
                     {
+                        "name": "absen_uploadFiles_d",
+                        "display_name": "Ausentismo/Administrar archivos - eliminar"
+                    },
+                    {
                         "name": "absen_uploadTalend_c",
                         "display_name": "Ausentismo/Administrar talends - crear"
                     },

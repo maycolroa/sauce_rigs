@@ -12,6 +12,7 @@ use App\Http\Requests\PreventiveOccupationalMedicine\Absenteeism\FileUploadReque
 use App\Jobs\PreventiveOccupationalMedicine\Absenteeism\FileUpload\ProcessFileUploadJob;
 use Carbon\Carbon;
 use Validator;
+use File;
 
 class FileUploadController extends Controller
 {
@@ -25,7 +26,7 @@ class FileUploadController extends Controller
         //$this->middleware("permission:absen_uploadFiles_c, {$this->team}", ['only' => 'store']);
         $this->middleware("permission:absen_uploadFiles_r, {$this->team}");
         //$this->middleware("permission:absen_uploadFiles_u, {$this->team}", ['only' => 'update']);
-        //$this->middleware("permission:absen_uploadFiles_d, {$this->team}", ['only' => 'destroy']);
+        $this->middleware("permission:absen_uploadFiles_d, {$this->team}", ['only' => 'destroy']);
     }
 
     /**
@@ -127,7 +128,19 @@ class FileUploadController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function destroy(FileUpload $fileUpload)
-    { }
+    { 
+      Storage::disk('s3')->delete($fileUpload->path_delete(true));
+      File::delete($fileUpload->path_delete());
+
+      if (!$fileUpload->delete())
+      {
+            return $this->respondHttp500();
+      }
+        
+        return $this->respondHttp200([
+            'message' => 'Se elimino el registro'
+        ]);
+    }
 
     /**
      * Remove the specified resource from storage.
