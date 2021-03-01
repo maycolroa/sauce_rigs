@@ -543,6 +543,7 @@ Route::middleware(['auth'])->group(function () {
       Route::post('customermonitoring/dataAbsenteeism', 'System\CustomerMonitoring\CustomerMonitoringController@dataAbsenteeism');
       Route::post('customermonitoring/dataDangerMatrix', 'System\CustomerMonitoring\CustomerMonitoringController@dataDangerMatrix');
       Route::post('customermonitoring/dataContract', 'System\CustomerMonitoring\CustomerMonitoringController@dataContract');
+      Route::post('customermonitoring/dataLegalMatrix', 'System\CustomerMonitoring\CustomerMonitoringController@dataLegalMatrix');
       Route::ApiResource('send', 'System\CustomerMonitoring\CustomerMonitoringController');      
 
       Route::post('usersCompanies/data', 'System\UsersCompanies\UserCompanyController@data');

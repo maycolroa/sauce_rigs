@@ -171,5 +171,13 @@ export default [{
             import('@/views/System/customerMonitoring/indexContract')
         }
       ]),
+      ...middleware({ 'check-permission': 'customerMonitoring_r' }, [
+        {
+          name: 'system-customermonitoring-legalMatrix',
+          path: 'customermonitoring/legalMatrix',
+          component: () =>
+            import('@/views/System/customerMonitoring/indexLegalMatrix')
+        }
+      ]),
     ]
   }]
