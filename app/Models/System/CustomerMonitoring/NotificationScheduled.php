@@ -6,7 +6,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class NotificationScheduled extends Model
 {
-
     protected $table = 'sau_notification_scheduled';
 
     protected $fillable = [
@@ -17,5 +16,13 @@ class NotificationScheduled extends Model
     public function notification()
     {
         return $this->belongsTo(Notification::class, 'notification_id');
+    }
+
+    public function multiselect()
+    {
+        return [
+          'name' => $this->day,
+          'value' => $this->day
+        ];
     }
 }

@@ -179,5 +179,21 @@ export default [{
             import('@/views/System/customerMonitoring/indexLegalMatrix')
         }
       ]),
+      ...middleware({ 'check-permission': 'customerMonitoring_r' }, [
+        {
+          name: 'system-customermonitoring-automaticsSend',
+          path: 'customermonitoring/automaticsSend',
+          component: () =>
+            import('@/views/System/customerMonitoring/sendAutomatics/index')
+        }
+      ]),
+      ...middleware({ 'check-permission': 'customerMonitoring_r' }, [
+        {
+          name: 'system-customermonitoring-automaticsSend-edit',
+          path: 'customermonitoring/automaticsSend/:id',
+          component: () =>
+            import('@/views/System/customerMonitoring/sendAutomatics/edit')
+        }
+      ]),
     ]
   }]

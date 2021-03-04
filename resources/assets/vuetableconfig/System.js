@@ -336,13 +336,12 @@ export default [
             filterColumns: true,
         }
     },
-    /*{
+    {
         name: 'system-customermonitoring-automatics-send',
         fields: [
             { name: 'id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true },
             { name: 'name', data: 'name', title: 'Notificación', sortable: true, searchable: true, detail: false, key: false },
-            { name: 'users', data: 'users', title: 'Usuarios a Enviar', sortable: true, searchable: true, detail: false, key: false },
-            { name: 'days', data: 'days', title: 'Dias de cada mes para enviar', sortable: true, searchable: true, detail: false, key: false }
+            { name: '', data: 'controlls', title: 'Controles', sortable: false, searchable: false, detail: false, key: false },
         ],
         'controlls': [{
             type: 'push',
@@ -354,15 +353,19 @@ export default [
                 title: 'Editar'
             },
             data: {
-                routePush: { name: 'system-licenses-edit' },
+                routePush: { name: 'system-customermonitoring-automaticsSend-edit' },
                 id: 'id',
             },
             permission: 'customerMonitoring_r'
             }]
+        },
+        {
+            type: 'base',
+            buttons: [],
         }],
         configuration: {
             urlData: '/system/customermonitoring/dataAutomaticsSend',
             filterColumns: true,
         }
-    },*/
+    },
 ]

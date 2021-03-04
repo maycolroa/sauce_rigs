@@ -541,7 +541,7 @@ class ContractLesseeController extends Controller
         if ($limit)
             $limit = $limit->value;
         else 
-            $limit = 10;
+            $limit = 1000;
 
         $count_contracts = ContractLesseeInformation::where('active', 'SI')->count();
 

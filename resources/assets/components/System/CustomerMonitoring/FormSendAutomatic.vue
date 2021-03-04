@@ -2,18 +2,18 @@
   <b-form :action="url" @submit.prevent="submit" autocomplete="off">
         <div class="col-md-12">
           <b-form-row>
-            <vue-advanced-select class="col-md-6" v-model="form.users" :error="form.errorsFor('users')" name="user" label="Usuario" placeholder="Seleccione un usuario" :options="usersOptions"  :searchable="true">
+            <vue-advanced-select class="col-md-6" v-model="form.user_id" :error="form.errorsFor('users')" name="user" label="Usuario" placeholder="Seleccione un usuario" :selected-object="form.multiselect_users"  :options="usersOptions"  :searchable="true" :multiple="true">
             </vue-advanced-select>
 
-            <vue-advanced-select :disabled="isLoading" v-model="form.days" :options="daysOptions" :allowEmpty="false" :searchable="true" name="inspectionsSelectedType2"></vue-advanced-select>
+            <vue-advanced-select class="col-md-6" v-model="form.day_id" :error="form.errorsFor('days')" :options="daysOptions" :selected-object="form.multiselect_days" :searchable="true" name="days" label="Dias" placeholder="Seleccione los dias de envío" :multiple="true"></vue-advanced-select>
               
           </b-form-row>
         </div>
 
     <div class="row float-right pt-10 pr-10">
       <template>
-        <b-btn variant="default" :to="cancelUrl" :disabled="loading">Cancelar</b-btn>&nbsp;&nbsp;
-        <b-btn type="submit" :disabled="loading" variant="primary">Finalizar</b-btn>
+        <b-btn variant="default" :to="cancelUrl" >Cancelar</b-btn>&nbsp;&nbsp;
+        <b-btn type="submit" variant="primary">Finalizar</b-btn>
       </template>
     </div>
   </b-form>
@@ -51,10 +51,16 @@ export default {
     send: {
       default() {
         return {
-          users: [],
-          days: ''
+          user_id: [],
+          day_id: []
         };
       }
+    }
+  },
+  watch: {
+    send() {
+      this.loading = false;
+      this.form = Form.makeFrom(this.send, this.method);
     }
   },
   data() {
@@ -70,7 +76,7 @@ export default {
         .submit(e.target.action)
         .then(response => {
           this.loading = false;
-          this.$router.push({ name: "system-customermonitoring-automatics-send" });
+          this.$router.push({ name: "system-customermonitoring-automaticsSend"  });
         })
         .catch(error => {
           this.loading = false;

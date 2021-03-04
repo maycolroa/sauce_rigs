@@ -19,6 +19,8 @@ use App\Models\LegalAspects\Contracts\ItemQualificationContractDetail;
 use App\Models\LegalAspects\Contracts\EvaluationContract;
 use App\Models\LegalAspects\Contracts\EvaluationFile;
 use App\Models\LegalAspects\LegalMatrix\ArticleFulfillment;
+use App\Models\System\CustomerMonitoring\NotificationScheduled;
+use App\Models\System\CustomerMonitoring\Notification;
 use Carbon\Carbon;
 use Validator;
 use DB;
@@ -173,11 +175,6 @@ class CustomerMonitoringController extends Controller
 
         return Vuetable::of($companies)
                     ->make();
-    }
-
-    public function dataAutomaticsSend(Request $request)
-    {
-        
     }
 
     public function dataAbsenteeism(Request $request)
@@ -357,6 +354,14 @@ class CustomerMonitoringController extends Controller
                     ->make();
     }
 
+    public function dataAutomaticsSend(Request $request)
+    {
+        $sends = Notification::select('*');
+
+        return Vuetable::of($sends)
+                    ->make();
+    }
+
     /**
      * Display the specified resource.
      *
@@ -367,14 +372,33 @@ class CustomerMonitoringController extends Controller
     {
         try
         {
-            $company = Company::findOrFail($id);
-            $company->users = [];
-            $company->delete = [];
+            $notification = Notification::findOrFail($id);
+
+            $user_id = [];
+
+            foreach ($notification->users as $key => $value)
+            {                
+                array_push($user_id, $value->multiselect());
+            }
+
+            $notification->multiselect_users = $user_id;
+            $notification->user_id = $user_id;
+            
+            $days = [];
+
+            foreach ($notification->days as $key => $value)
+            {                
+                array_push($days, $value->multiselect());
+            }
+
+            $notification->multiselect_days = $days;
+            $notification->day_id = $days;  
 
             return $this->respondHttp200([
-                'data' => $company,
+                'data' => $notification,
             ]);
         } catch(Exception $e){
+            \Log::info($e->getMessage());
             $this->respondHttp500();
         }
     }
@@ -386,54 +410,39 @@ class CustomerMonitoringController extends Controller
      * @param  Company  $company
      * @return \Illuminate\Http\Response
      */
-    public function update(CompanyRequest $request, Company $company)
+    public function update(Request $request, Notification $notification)
     {
         DB::beginTransaction();
 
         try
         {
-            $company->fill($request->all());
-            
-            if(!$company->update())
-                return $this->respondHttp500();
-
-            $team = Team::updateOrCreate(
-                [
-                    'name' => $company->id,
-                ], 
-                [
-                    'id' => $company->id,
-                    'name' => $company->id,
-                    'display_name' => $company->name,
-                    'description' => "Equipo ".$company->name
-                ]
-            );
-
-            if ($request->has('users') && COUNT($request->users) > 0)
+            if ($request->has('user_id') && COUNT($request->user_id) > 0)
             {
-                foreach ($request->users as $key => $value)
+                $user_id = $this->getDataFromMultiselect($request->get('user_id'));
+                $notification->users()->sync($user_id);
+            }
+
+            if ($request->has('day_id') && COUNT($request->day_id) > 0)
+            {
+                $days = $this->getDataFromMultiselect($request->get('day_id'));
+                $days_conf = $notification->days->pluck('day')->toArray();
+
+                foreach ($days as $day)
                 {
-                    $user = User::find($value['user_id']);
-
-                    if ($user)
+                    if (!in_array($day, $days_conf))
                     {
-                        $user->companies()->attach($company->id);
-
-                        $roles = $this->getValuesForMultiselect($value['role_id']);
-                        $roles = Role::whereIn('id', $roles)->get();
-
-                        if (COUNT($roles) > 0)
-                        {
-                            $team = Team::where('name', $company->id)->first();
-                            $user->attachRoles($roles, $team);
-                        }
+                        $record = new NotificationScheduled;
+                        $record->day = $day;
+                        $record->notification_id = $notification->id;
+                        $record->save();
                     }
                 }
+                
+                NotificationScheduled::
+                    where('notification_id', $notification->id)->whereNotIn('day', $days)->delete();
             }
                 
             DB::commit();
-
-            SyncUsersSuperadminJob::dispatch();
 
         } catch (\Exception $e) {
             \Log::info($e->getMessage());
@@ -442,7 +451,7 @@ class CustomerMonitoringController extends Controller
         }
 
         return $this->respondHttp200([
-            'message' => 'Se actualizo la compañia'
+            'message' => 'Se actualizo la notificación'
         ]);
     }
 }

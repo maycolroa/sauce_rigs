@@ -51,10 +51,10 @@
                             <b-form-row>
                                 <vue-datepicker :disabled="viewOnly || !activity.edit_all" class="col-md-4" v-model="activity.expiration_date" label="Fecha de vencimiento" placeholder="Seleccione la fecha de vencimiento" name="expiration_date" :disabled-dates="disabledExpirationDate(index)" :error="form.errorsFor(`${prefixIndex}actionPlan.activities.${index}.expiration_date`)">
                                     </vue-datepicker>
-                                <vue-datepicker :disabled="viewOnly || activity.expiration_date == ''" class="col-md-4" v-model="activity.execution_date" label="Fecha de ejecución" placeholder="Seleccione la fecha de ejecución" name="execution_date" :disabled-dates="disabledExecutionDate(index)" :error="form.errorsFor(`${prefixIndex}actionPlan.activities.${index}.execution_date`)">
-                                    </vue-datepicker>
                                 <vue-advanced-select :disabled="viewOnly" class="col-md-4" v-model="activity.state" :multiple="false" :options="actionPlanStates" :hide-selected="false" name="state" label="Estado" placeholder="Seleccione el estado" :error="form.errorsFor(`${prefixIndex}actionPlan.activities.${index}.state`)">
                                     </vue-advanced-select>
+                                <vue-datepicker :disabled="viewOnly || activity.expiration_date == ''" class="col-md-4" v-model="activity.execution_date" label="Fecha de ejecución" placeholder="Seleccione la fecha de ejecución" name="execution_date" :disabled-dates="disabledExecutionDate(index)" :error="form.errorsFor(`${prefixIndex}actionPlan.activities.${index}.execution_date`)">
+                                    </vue-datepicker>                           
                             </b-form-row>
                             <b-form-row>
                                 <vue-textarea :disabled="viewOnly" class="col-md-12" v-model="activity.observation" label="Observación" name="observation" placeholder="Observación" :error="form.errorsFor(`${prefixIndex}actionPlan.activities.${index}.observation`)"></vue-textarea>

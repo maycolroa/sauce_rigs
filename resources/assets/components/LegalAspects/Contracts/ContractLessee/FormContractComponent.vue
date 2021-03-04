@@ -2,7 +2,7 @@
     <b-row>
         <b-col>
             <b-form :action="url" @submit.prevent="submit" autocomplete="off">
-				<b-card border-variant="primary" title="Datos personales" class="mb-3 box-shadow-none" v-if="!isEdit && !viewOnly">
+				<b-card border-variant="primary" title="Datos Responsable del Contratista" class="mb-3 box-shadow-none" v-if="!isEdit && !viewOnly">
                     <b-form-row>
                         <vue-input :disabled="viewOnly" class="col-md-6" v-model="form.name" label="Nombre" type="text" name="name" :error="form.errorsFor('name')" placeholder="Nombre"></vue-input>
                         <vue-input :disabled="viewOnly" class="col-md-6" v-model="form.document" label="Documento" type="text" name="document" :error="form.errorsFor('document')" placeholder="Documento"></vue-input>
@@ -16,7 +16,7 @@
 					<b-form-row>
 						<vue-advanced-select :disabled="viewOnly" class="col-md-6" v-model="form.type" :error="form.errorsFor('type')" name="type" label="Tipo" placeholder="Seleccione el tipo" :options="roles">
                         </vue-advanced-select>
-                        <vue-input :disabled="viewOnly" class="col-md-6" v-model="form.business_name" label="Nombre de la empresa" type="text" name="business_name" :error="form.errorsFor('business_name')" placeholder="Nombre de la empresa"></vue-input>
+                        <vue-input :disabled="viewOnly" class="col-md-6" v-model="form.business_name" label="Nombre Comercial" type="text" name="business_name" :error="form.errorsFor('business_name')" placeholder="Nombre Comercial"></vue-input>
                     </b-form-row>
 					<b-form-row>
 						<vue-input :disabled="viewOnly" class="col-md-6" v-model="form.nit" label="Nit" type="number" name="nit" :error="form.errorsFor('nit')" placeholder="Nit o número de indetificación"></vue-input>

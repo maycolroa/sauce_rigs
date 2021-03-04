@@ -615,6 +615,21 @@ class UserController extends Controller
         return $this->multiSelectFormat($users);
     }
 
+    public function multiselectUsersAutomaticSend()
+    {
+        $users = User::select(
+            "sau_users.id AS id",
+            DB::raw("CONCAT(sau_users.document, ' - ', sau_users.name) AS name")
+        )
+        ->active()
+        ->withoutGlobalScopes()
+        ->join('sau_company_user', 'sau_company_user.user_id', 'sau_users.id')
+        ->groupBy('id')
+        ->pluck('id', 'name');
+                
+        return $this->multiSelectFormat($users);
+    }
+
     public function multiselectUsersActionPlan(Request $request)
     {
         $users = User::selectRaw("
