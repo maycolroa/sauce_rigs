@@ -6,7 +6,7 @@
     </b-form-row>
 
     <blockquote class="blockquote text-center">
-          <p class="mb-0">Documentos</p>
+          <p class="mb-0">Documentos de los empleados del contratistas</p>
     </blockquote>
 
     <template v-for="(document, index) in form.documents">

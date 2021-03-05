@@ -11,15 +11,17 @@ class NotificationGeneralMail extends Mailable
     use Queueable, SerializesModels;
 
     protected $mail;
+    protected $logModel;
 
     /**
      * Create a new message instance.
      *
      * @return void
      */
-    public function __construct($mail)
+    public function __construct($mail, $logModel)
     {
         $this->mail = $mail;
+        $this->logModel = $logModel;
     }
 
     /**
@@ -42,7 +44,11 @@ class NotificationGeneralMail extends Mailable
 
       $mail = $this->subject($this->mail->subject)
                     ->markdown('mail.'.$this->mail->view)
-                    ->with(['mail' => $this->mail]);
+                    ->with(['mail' => $this->mail])
+                    ->withSwiftMessage(function ($message) {
+                      $message->getHeaders()
+                          ->addTextHeader('X-Model-ID', $this->logModel ? $this->logModel->id : '');
+                  });
 
       if (COUNT($this->mail->attach) > 0)
       {

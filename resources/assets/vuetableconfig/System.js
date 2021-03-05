@@ -327,8 +327,8 @@ export default [
             { name: 'ended_at', data: 'ended_at', title: 'Fecha Fin Licencia', sortable: true, searchable: true, detail: false, key: false },
             { name: 'cal_mes', data: 'cal_mes', title: 'Artículos calificados este mes', sortable: true, searchable: true, detail: false, key: false },
             { name: 'cal_anio', data: 'cal_anio', title: 'Artículos calificados este año', sortable: true, searchable: true, detail: false, key: false },
-            /*{ name: 'file_mes', data: 'file_mes', title: 'Archivos cargados este mes', sortable: true, searchable: true, detail: false, key: false },
-            { name: 'file_anio', data: 'file_anio', title: 'Archivos cargados este año', sortable: true, searchable: true, detail: false, key: false }*/
+            { name: 'email_mes', data: 'email_mes', title: 'Emails vistos este mes', sortable: true, searchable: true, detail: false, key: false },
+            { name: 'email_anio', data: 'email_anio', title: 'Emails vistos este año', sortable: true, searchable: true, detail: false, key: false }
         ],
         'controlls': [],
         configuration: {
@@ -336,13 +336,12 @@ export default [
             filterColumns: true,
         }
     },
-    /*{
+    {
         name: 'system-customermonitoring-automatics-send',
         fields: [
             { name: 'id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true },
             { name: 'name', data: 'name', title: 'Notificación', sortable: true, searchable: true, detail: false, key: false },
-            { name: 'users', data: 'users', title: 'Usuarios a Enviar', sortable: true, searchable: true, detail: false, key: false },
-            { name: 'days', data: 'days', title: 'Dias de cada mes para enviar', sortable: true, searchable: true, detail: false, key: false }
+            { name: '', data: 'controlls', title: 'Controles', sortable: false, searchable: false, detail: false, key: false },
         ],
         'controlls': [{
             type: 'push',
@@ -354,15 +353,19 @@ export default [
                 title: 'Editar'
             },
             data: {
-                routePush: { name: 'system-licenses-edit' },
+                routePush: { name: 'system-customermonitoring-automaticsSend-edit' },
                 id: 'id',
             },
             permission: 'customerMonitoring_r'
             }]
+        },
+        {
+            type: 'base',
+            buttons: [],
         }],
         configuration: {
             urlData: '/system/customermonitoring/dataAutomaticsSend',
             filterColumns: true,
         }
-    },*/
+    },
 ]

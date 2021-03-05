@@ -137,6 +137,7 @@ Route::middleware(['auth'])->group(function () {
         Route::post('users', 'Administrative\Users\UserController@multiselect');
         Route::post('usersActionPlan', 'Administrative\Users\UserController@multiselectUsersActionPlan');
         Route::post('usersOtherCompany', 'Administrative\Users\UserController@multiselectUsers');
+        Route::post('usersAutomaticSend', 'Administrative\Users\UserController@multiselectUsersAutomaticSend');
         Route::post('responsiblesFilter', 'Administrative\ActionPlans\ActionPlanController@multiselectResponsiblesFilter');  
         Route::post('multiselect', 'General\ApplicationController@multiselect');
         Route::post('roles', 'Administrative\Roles\RoleController@multiselect');
@@ -544,7 +545,7 @@ Route::middleware(['auth'])->group(function () {
       Route::post('customermonitoring/dataDangerMatrix', 'System\CustomerMonitoring\CustomerMonitoringController@dataDangerMatrix');
       Route::post('customermonitoring/dataContract', 'System\CustomerMonitoring\CustomerMonitoringController@dataContract');
       Route::post('customermonitoring/dataLegalMatrix', 'System\CustomerMonitoring\CustomerMonitoringController@dataLegalMatrix');
-      Route::ApiResource('send', 'System\CustomerMonitoring\CustomerMonitoringController');      
+      Route::ApiResource('notification', 'System\CustomerMonitoring\CustomerMonitoringController');      
 
       Route::post('usersCompanies/data', 'System\UsersCompanies\UserCompanyController@data');
       Route::post('usersCompanies/export', 'System\UsersCompanies\UserCompanyController@export');

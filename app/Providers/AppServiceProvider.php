@@ -10,6 +10,7 @@ use App\Services\ConstantService;
 use App\Services\PermissionService;
 use App\Services\ViewService;
 use App\Managers\Administrative\KeywordManager;
+use App\Managers\System\NotificationManager;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -50,6 +51,8 @@ class AppServiceProvider extends ServiceProvider
             return new KeywordManager();
         });
 
-
+        $this->app->singleton('notification_manager', function () {
+            return new NotificationManager();
+        });
     }
 }

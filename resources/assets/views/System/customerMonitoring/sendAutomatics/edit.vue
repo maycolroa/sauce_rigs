@@ -3,20 +3,20 @@
     <header-module
       title="SISTEMA"
       subtitle="MONITOREO DE CLIENTES - EDITAR ENVIO AUTOMÁTICO"
-      url="system-customermonitoring-automatics-send"
+      url="system-customermonitoring-automaticsSend"
     />
 
     <div class="col-md">
       <b-card no-body>
         <b-card-body>
             <form-send-automatic
-                :url="`/system/customerMonitoring/send/${this.$route.params.id}`"
+                :url="`/system/notification/${this.$route.params.id}`"
                 method="PUT"
                 :send="data"
                 :is-edit="true"
                 :usersOptions="usersOptions"
                 :daysOptions="daysOptions"
-                :cancel-url="{ name: 'system-customermonitoring-automatics-send'}"/>
+                :cancel-url="{ name: 'system-customermonitoring-automaticsSend'}"/>
         </b-card-body>
       </b-card>
     </div>
@@ -29,7 +29,7 @@ import GlobalMethods from '@/utils/GlobalMethods.js';
 import Alerts from '@/utils/Alerts.js';
 
 export default {
-  name: 'system-customermonitoring-automatics-send-create',
+  name: 'system-customermonitoring-automatics-send-edit',
   metaInfo: {
     title: 'Monitoreo de clientes - Editar Envio Automático'
   },
@@ -44,12 +44,11 @@ export default {
     }
   },
   created(){
-    axios.get(`/system/customerMonitoring/send/${this.$route.params.id}`)
+    axios.get(`/system/notification/${this.$route.params.id}`)
     .then(response => {
         this.data = response.data.data;
-        this.fetchSelect('usersOptions', '/selects/usersOtherCompany');
-        //this.fetchSelect('daysOptions', '/selects/days')
-        
+        this.fetchSelect('usersOptions', '/selects/usersAutomaticSend');
+        this.fetchSelect('daysOptions', '/selects/days');
     })
     .catch(error => {
         Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');

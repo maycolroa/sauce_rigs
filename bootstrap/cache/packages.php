@@ -17,6 +17,13 @@
       0 => 'Fideloper\\Proxy\\TrustedProxyServiceProvider',
     ),
   ),
+  'jdavidbakr/mail-tracker' => 
+  array (
+    'providers' => 
+    array (
+      0 => 'jdavidbakr\\MailTracker\\MailTrackerServiceProvider',
+    ),
+  ),
   'laravel/horizon' => 
   array (
     'providers' => 

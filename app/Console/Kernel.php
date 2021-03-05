@@ -30,6 +30,7 @@ class Kernel extends ConsoleKernel
         'App\Console\Commands\NotifyRejectedDocumentsContracts',
         'App\Console\Commands\DeleteOldImagesApi',
         'App\Console\Commands\DeleteFilesTemporal',
+        'App\Console\Commands\SendAutomaticNotifications',
         //'App\Console\Commands\RememberRepeatInspetion'
     ];
 
@@ -102,6 +103,10 @@ class Kernel extends ConsoleKernel
             ->dailyAt('02:00');
 
         $schedule->command('delete-old-images-api')
+            ->timezone('America/Bogota')
+            ->dailyAt('03:00');
+
+        $schedule->command('send-automatic-notifications')
             ->timezone('America/Bogota')
             ->dailyAt('03:00');
 

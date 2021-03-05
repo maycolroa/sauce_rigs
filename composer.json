@@ -10,6 +10,7 @@
         "bugsnag/bugsnag-laravel": "^2.0",
         "doctrine/dbal": "^2.8",
         "fideloper/proxy": "^4.0",
+        "jdavidbakr/mail-tracker": "v3.x-dev",
         "laravel/framework": "5.8.*",
         "laravel/horizon": "^2.2",
         "laravel/telescope": "^2.1",

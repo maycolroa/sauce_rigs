@@ -26,7 +26,7 @@
           <b-form-row>
             <vue-input :disabled="viewOnly" class="col-md-6" v-model="form.number_attemps" label="Número de intentos" min="1" type="number" name="number_attemps" :error="form.errorsFor('number_attemps')" placeholder="Número de intentos"></vue-input>            
             <!--<vue-input :disabled="viewOnly" class="col-md-6" v-model="form.max_calification" min="1" label="Calificación máxima" type="number" name="max_calification" :error="form.errorsFor('max_calification')" placeholder="Calificación máxima"></vue-input>-->
-            <vue-input :disabled="viewOnly" class="col-md-6" v-model="form.min_calification" label="Calificación mínima para aprobar" type="number" name="min_calification" min="1" :error="form.errorsFor('min_calification')" placeholder="Calificación minima  para aprobar"></vue-input>
+            <vue-input :disabled="viewOnly" class="col-md-6" v-model="form.min_calification" label="Número de preguntas mínimas para aprobar" type="number" name="min_calification" min="1" :error="form.errorsFor('min_calification')" placeholder="Calificación minima  para aprobar"></vue-input>
           </b-form-row>
           <b-form-row>            
             <vue-ajax-advanced-select :disabled="viewOnly" class="col-md-6" v-model="form.activity_id" :error="form.errorsFor('activity_id')" :selected-object="form.multiselect_activity" :multiple="true" :allowEmpty="true" name="activity_id" label="Actividades" placeholder="Seleccione las actividades relacionadas" :url="activitiesUrl">
