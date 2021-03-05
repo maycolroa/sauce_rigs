@@ -327,8 +327,8 @@ export default [
             { name: 'ended_at', data: 'ended_at', title: 'Fecha Fin Licencia', sortable: true, searchable: true, detail: false, key: false },
             { name: 'cal_mes', data: 'cal_mes', title: 'Artículos calificados este mes', sortable: true, searchable: true, detail: false, key: false },
             { name: 'cal_anio', data: 'cal_anio', title: 'Artículos calificados este año', sortable: true, searchable: true, detail: false, key: false },
-            /*{ name: 'file_mes', data: 'file_mes', title: 'Archivos cargados este mes', sortable: true, searchable: true, detail: false, key: false },
-            { name: 'file_anio', data: 'file_anio', title: 'Archivos cargados este año', sortable: true, searchable: true, detail: false, key: false }*/
+            { name: 'email_mes', data: 'email_mes', title: 'Emails vistos este mes', sortable: true, searchable: true, detail: false, key: false },
+            { name: 'email_anio', data: 'email_anio', title: 'Emails vistos este año', sortable: true, searchable: true, detail: false, key: false }
         ],
         'controlls': [],
         configuration: {

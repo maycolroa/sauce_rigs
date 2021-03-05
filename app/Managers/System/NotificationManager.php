@@ -18,7 +18,14 @@ class NotificationManager extends BaseManager
 
     public function sendNotification()
     {
-        foreach (Notification::get() as $key => $record)
+        $this->now = Carbon::now();
+
+        $records = Notification::select('sau_notifications.*', 'sau_notification_scheduled.day as day')
+        ->join('sau_notification_scheduled', 'sau_notification_scheduled.notification_id', 'sau_notifications.id')
+        ->where('sau_notification_scheduled.day', $this->now->day)
+        ->get();
+
+        foreach ($records as $key => $record)
         {
             if (isset($this::ALERTS[$record->code]) && $this::ALERTS[$record->code])
             {

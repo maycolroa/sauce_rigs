@@ -8,6 +8,23 @@ class LogMail extends Model
 {
     protected $table = 'sau_log_mails';
 
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
+    protected $fillable = [
+        'company_id',
+        'module_id',
+        'event',
+        'recipients',
+        'copyHidden',
+        'subject',
+        'message',
+        'created_at',
+        'message_id'
+    ];
+
     public $timestamps = false;
 
     public function module()

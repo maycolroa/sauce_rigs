@@ -523,19 +523,22 @@ class NotificationMail
             return false; //No tiene licencia activa para el modulo por lo que se omite el envio del correo
         }
 
+        $logModel = $this->createLog('MENSAJE');
+
         try { 
-            $message = (new NotificationGeneralMail($this->prepareData()))
+            $message = (new NotificationGeneralMail($this->prepareData(), $logModel))
                 ->onQueue('emails');
 
             Mail::to($this->recipients)
             ->bcc($this->copyHidden)
             ->queue($message);
             
-            $this->createLog($message->render());
+            $logModel->update(['message' => $message->render()]);
             $this->restart();
         }
         catch (\Exception $e) {
           \Log::info($e->getMessage());
+          $logModel->delete();
             throw new \Exception('An error occurred while sending the mail');
         }
 
@@ -644,6 +647,8 @@ class NotificationMail
         $log->message = $body;
         $log->created_at = date("Y-m-d H:i:s");
         $log->save();
+
+        return $log;
     }
 
     /**
