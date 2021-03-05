@@ -230,6 +230,7 @@ return [
         'PDF' => Barryvdh\DomPDF\Facade::class,
         'Constant' => App\Facades\General\Constant::class,
         'PermissionService' => App\Facades\General\PermissionService::class,
+        'NotificationManager' => App\Facades\System\NotificationManager::class,
     ],
 
     /**

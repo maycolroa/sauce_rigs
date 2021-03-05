@@ -53,6 +53,13 @@
       'Excel' => 'Maatwebsite\\Excel\\Facades\\Excel',
     ),
   ),
+  'michaelgrimshaw/laravel-email-tracker' => 
+  array (
+    'providers' => 
+    array (
+      0 => 'MichaelGrimshaw\\MailTracker\\MailTrackerServiceProvider',
+    ),
+  ),
   'nesbot/carbon' => 
   array (
     'providers' => 
