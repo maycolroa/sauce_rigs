@@ -51,7 +51,7 @@ class LegalMatrixTemplateExcel implements FromQuery, WithMapping, WithHeadings, 
       ->withoutGlobalScopes()
       ->join('sent_emails', 'sent_emails.message_id', 'sau_log_mails.message_id')
       ->where('sau_log_mails.module_id', 17)
-      ->where('sent_emails.opens', 1)
+      ->where('sent_emails.opens', '>', 0)
       ->groupBy('sau_log_mails.company_id'); 
       
       $companies = Company::selectRaw('
