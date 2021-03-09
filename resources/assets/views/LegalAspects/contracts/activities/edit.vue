@@ -13,6 +13,7 @@
                 :url="`/legalAspects/activityContract/${this.$route.params.id}`"
                 method="PUT"
                 :activity="data"
+                :typeDocument='typeDocument'
                 :is-edit="true"
                 :cancel-url="{ name: 'legalaspects-contracts-activities'}"/>
         </b-card-body>
@@ -24,6 +25,7 @@
 <script>
 import ContractActivityForm from '@/components/LegalAspects/Contracts/Activities/FormContractActivityComponent.vue';
 import Alerts from '@/utils/Alerts.js';
+import GlobalMethods from '@/utils/GlobalMethods.js';
 
 export default {
   name: 'legalaspects-contracts-activities-edit',
@@ -36,6 +38,7 @@ export default {
   data () {
     return {
       data: [],
+			typeDocument: []
     }
   },
   created(){
@@ -47,6 +50,20 @@ export default {
         Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
         this.$router.go(-1);
     });
+    this.fetchSelect('typeDocument', '/selects/typesDocument')
   },
+  methods: {
+		fetchSelect(key, url)
+		{
+			GlobalMethods.getDataMultiselect(url)
+			.then(response => {
+				this[key] = response;
+			})
+			.catch(error => {
+				Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
+				this.$router.go(-1);
+			});
+		},
+	}
 }
 </script>

@@ -15,7 +15,8 @@ class ContractDocument extends Model
     
     protected $fillable = [
         'company_id',
-        'name'
+        'name',
+        'document_id'
     ];
 
     

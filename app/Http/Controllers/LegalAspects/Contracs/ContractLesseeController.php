@@ -16,6 +16,7 @@ use App\Models\LegalAspects\Contracts\HighRiskType;
 use App\Models\LegalAspects\Contracts\ItemQualificationContractDetail;
 use App\Models\LegalAspects\Contracts\ContractDocument;
 use App\Models\LegalAspects\Contracts\FileModuleState;
+use App\Models\LegalAspects\Contracts\ActivityDocument;
 use App\Http\Requests\LegalAspects\Contracts\DocumentRequest;
 use App\Http\Requests\LegalAspects\Contracts\ContractRequest;
 use App\Http\Requests\LegalAspects\Contracts\ListCheckItemsRequest;
@@ -196,15 +197,6 @@ class ContractLesseeController extends Controller
         try
         {
             $contract = ContractLesseeInformation::findOrFail($id);
-
-            /*foreach ($contract->documents as $document)
-            {
-                $document->key = Carbon::now()->timestamp + rand(1,10000);
-            }
-
-            $contract->delete = [
-                'documents' => []
-            ];*/
 
             $high_risk_type_id = [];
 

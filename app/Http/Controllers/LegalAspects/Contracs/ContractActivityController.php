@@ -8,6 +8,7 @@ use App\Vuetable\Facades\Vuetable;
 use App\Models\LegalAspects\Contracts\ActivityContract;
 use App\Http\Requests\LegalAspects\Contracts\ActivityContractRequest;
 use App\Models\LegalAspects\Contracts\ActivityDocument;
+use App\Models\LegalAspects\Contracts\ContractDocument;
 use Carbon\Carbon;
 use DB;
 
@@ -172,7 +173,23 @@ class ContractActivityController extends Controller
         foreach ($documents as $document)
         {
             $id = isset($document['id']) ? $document['id'] : NULL;
-            $activity->documents()->updateOrCreate(['id'=>$id], $document);
+            $doc_act = $activity->documents()->updateOrCreate(['id'=>$id], $document);
+
+            if ($document['type'] == 'Contratista')
+            {
+                ContractDocument::updateOrCreate(['document_id'=> $doc_act->id], 
+                ['name' => $document['name'],
+                'company_id' => $activity->company_id,
+                'document_id' => $doc_act->id]);
+            }
+            else if ($document['type'] == 'Empleado')
+            {
+                $doc_del = ContractDocument::where('document_id', $doc_act->id)->first();
+
+                if ($doc_del)
+                    $doc_del->delete();
+
+            }
         }
     }
 
