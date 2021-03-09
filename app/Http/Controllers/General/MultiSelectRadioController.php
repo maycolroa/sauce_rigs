@@ -178,4 +178,14 @@ class MultiSelectRadioController extends Controller
         
         return $this->multiSelectFormat(collect($data));
     }
+
+    public function typesDocumentContract()
+    {
+        $data = [
+            "Empleado" => "Empleado",
+            "Contratista" => "Contratista"
+        ];
+        
+        return $this->multiSelectFormat(collect($data));
+    }
 }

@@ -160,7 +160,8 @@ Route::middleware(['auth'])->group(function () {
         Route::post('bm_respiratoryPacient', 'PreventiveOccupationalMedicine\BiologicalMonitoring\RespiratoryAnalysis\RespiratoryAnalysisController@multiselectPacient');
         Route::post('regionals', 'Administrative\Regionals\EmployeeRegionalController@multiselect');
         Route::post('headquarters', 'Administrative\Headquarters\EmployeeHeadquarterController@multiselect');  
-        Route::post('sexs', 'General\MultiSelectRadioController@sexs');          
+        Route::post('sexs', 'General\MultiSelectRadioController@sexs');    
+        Route::post('typesDocument', 'General\MultiSelectRadioController@typesDocumentContract');        
         Route::post('days', 'General\MultiSelectRadioController@days');  
         Route::post('processes', 'Administrative\Processes\EmployeeProcessController@multiselect');
         Route::post('positions', 'Administrative\Positions\EmployeePositionController@multiselect');

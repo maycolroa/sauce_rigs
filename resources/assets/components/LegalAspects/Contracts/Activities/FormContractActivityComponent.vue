@@ -17,7 +17,9 @@
                       <b-btn variant="outline-primary icon-btn borderless" size="sm" v-b-tooltip.top title="Eliminar" @click.prevent="removeDocument(index)"><span class="ion ion-md-close-circle"></span></b-btn>
                   </div>
               </div>
-              <vue-input class="col-md-12" v-model="document.name" label="Nombre" name="documents" :disabled="viewOnly" type="text" placeholder="Nombre" :error="form.errorsFor(`documents.${index}.name`)"></vue-input>
+              <vue-input class="col-md-6" v-model="document.name" label="Nombre" name="name" :disabled="viewOnly" type="text" placeholder="Nombre" :error="form.errorsFor(`documents.${index}.name`)"></vue-input>
+              <vue-advanced-select :disabled="viewOnly" class="col-md-6" v-model="document.type" :error="form.errorsFor(`documents.${index}.type`)" :multiple="false" :options="typeDocument" :hide-selected="false" name="type" label="Tipo" placeholder="Seleccione el tipo">
+          </vue-advanced-select>
           </b-form-row>
       </div>
     </template>
@@ -39,13 +41,13 @@
 
 <script>
 import VueInput from "@/components/Inputs/VueInput.vue";
-import ActivityDocument from './FormContractActivityDocumentComponent.vue';
+import VueAdvancedSelect from "@/components/Inputs/VueAdvancedSelect.vue";
 import Form from "@/utils/Form.js";
 
 export default {
   components: {
     VueInput,
-    ActivityDocument
+    VueAdvancedSelect
   },
   props: {
     url: { type: String },
@@ -53,6 +55,12 @@ export default {
     cancelUrl: { type: [String, Object], required: true },
     isEdit: { type: Boolean, default: false },
     viewOnly: { type: Boolean, default: false },
+    typeDocument: {
+      type: Array,
+      default: function() {
+        return [];
+      }
+    },
     activity: {
       default() {
         return {

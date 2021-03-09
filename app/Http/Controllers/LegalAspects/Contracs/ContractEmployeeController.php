@@ -418,7 +418,7 @@ class ContractEmployeeController extends Controller
 
     public function getFilesByActivity($activity, $employee_id)
     {
-        $documents = ActivityDocument::where('activity_id', $activity)->get();
+        $documents = ActivityDocument::where('activity_id', $activity)->where('type', 'Empleado')->get();
 
         if ($documents->count() > 0)
         {

@@ -340,7 +340,7 @@ export default [
         name: 'system-customermonitoring-automatics-send',
         fields: [
             { name: 'id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true },
-            { name: 'name', data: 'name', title: 'Notificación', sortable: true, searchable: true, detail: false, key: false },
+            { name: 'name', data: 'name', title: 'Notificación', sortable: false, searchable: false, detail: false, key: false },
             { name: '', data: 'controlls', title: 'Controles', sortable: false, searchable: false, detail: false, key: false },
         ],
         'controlls': [{
