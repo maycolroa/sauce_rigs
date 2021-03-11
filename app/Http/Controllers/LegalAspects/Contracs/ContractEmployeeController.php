@@ -428,17 +428,17 @@ class ContractEmployeeController extends Controller
                 $document->files = [];
 
                 $files = FileUpload::select(
-                            'sau_ct_file_upload_contracts_leesse.id AS id',
-                            'sau_ct_file_upload_contracts_leesse.name AS name',
-                            'sau_ct_file_upload_contracts_leesse.file AS file',
-                            'sau_ct_file_upload_contracts_leesse.expirationDate AS expirationDate'
-                        )
-                        ->join('sau_ct_file_upload_contract','sau_ct_file_upload_contract.file_upload_id','sau_ct_file_upload_contracts_leesse.id')
-                        ->join('sau_ct_file_document_employee', 'sau_ct_file_document_employee.file_id', 'sau_ct_file_upload_contracts_leesse.id')
-                        ->where('sau_ct_file_upload_contract.contract_id', $contract->id)
-                        ->where('sau_ct_file_document_employee.document_id', $document->id)
-                        ->where('sau_ct_file_document_employee.employee_id', $employee_id)
-                        ->get();
+                    'sau_ct_file_upload_contracts_leesse.id AS id',
+                    'sau_ct_file_upload_contracts_leesse.name AS name',
+                    'sau_ct_file_upload_contracts_leesse.file AS file',
+                    'sau_ct_file_upload_contracts_leesse.expirationDate AS expirationDate'
+                )
+                ->join('sau_ct_file_upload_contract','sau_ct_file_upload_contract.file_upload_id','sau_ct_file_upload_contracts_leesse.id')
+                ->join('sau_ct_file_document_employee', 'sau_ct_file_document_employee.file_id', 'sau_ct_file_upload_contracts_leesse.id')
+                ->where('sau_ct_file_upload_contract.contract_id', $contract->id)
+                ->where('sau_ct_file_document_employee.document_id', $document->id)
+                ->where('sau_ct_file_document_employee.employee_id', $employee_id)
+                ->get();
 
                 if ($files)
                 {
