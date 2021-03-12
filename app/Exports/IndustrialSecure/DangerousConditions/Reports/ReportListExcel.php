@@ -183,7 +183,7 @@ class ReportListExcel implements FromQuery, WithMapping, WithHeadings, WithTitle
     */
     public function title(): string
     {
-      return 'Reportes';
+      return 'Inspecciones no planeadas';
     }
 }
 

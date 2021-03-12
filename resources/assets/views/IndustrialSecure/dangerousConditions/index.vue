@@ -1,7 +1,7 @@
 <template>
   	<div>
     	<header-module
-			title="CONDICIONES PELIGROSAS"
+			title="INSPECCIONES"
 			url="industrialsecure"
 		/>
     	<div class="col-md">
@@ -14,7 +14,7 @@
 								<router-link tag="a" href="javascript:void(0)" class="card-body media align-items-center text-dark" :to="{name:'dangerousconditions-reports'}">
 									<i class="lnr lnr-chart-bars display-4 d-block text-primary"></i>
 									<span class="media-body d-block ml-3">
-										<span class="text-big font-weight-bolder">Reportes</span>
+										<span class="text-big font-weight-bolder">Inspecciones no Planeadas</span>
 									</span>
 								</router-link>
 							</div>
@@ -23,7 +23,7 @@
 								<router-link tag="a" href="javascript:void(0)" class="card-body media align-items-center text-dark" :to="{name:'dangerousconditions-inspections'}"  >
 									<i class="far fa-newspaper display-4 d-block text-primary" ></i>
 									<span class="media-body d-block ml-3">
-										<span class="text-big font-weight-bolder">Inspecciones</span>
+										<span class="text-big font-weight-bolder">Inspecciones Planeadas</span>
 									</span>
 								</router-link>
 							</div>
@@ -50,7 +50,7 @@ import Alerts from "@/utils/Alerts.js";
 export default {
 	name: "dangerousConditions",
 	metaInfo: {
-		title: "Condiciones Peligrosas"
+		title: "Inspecciones"
 	},
   	methods: {
   	}

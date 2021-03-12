@@ -1,8 +1,8 @@
 <template>
   <div>
     <header-module
-      title="CONDICIONES PELIGROSAS"
-      subtitle="CREAR REPORTE"
+      title="INSPECCIONES"
+      subtitle="CREAR INSPECCIÓN NO PLANEADA"
       url="dangerousconditions-reports"
     />
 
@@ -30,7 +30,7 @@ import GlobalMethods from '@/utils/GlobalMethods.js';
 export default {
   name: 'dangerousconditions-reports-create',
   metaInfo: {
-    title: 'Reportes - Crear'
+    title: 'Inspecciones no planeadas - Crear'
   },
   components:{
     FormReport

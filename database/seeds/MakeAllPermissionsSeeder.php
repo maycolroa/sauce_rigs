@@ -30,7 +30,7 @@ class MakeAllPermissionsSeeder extends Seeder
                 'configurations_d',
                 'actionPlans_c',
                 'actionPlans_d',
-                'contracts_d',
+                //'contracts_d',
                 'logMails_c',
                 'logMails_u',
                 'logMails_d',

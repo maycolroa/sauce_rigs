@@ -134,7 +134,7 @@ class DangerousConditionsTemplateExcel implements FromQuery, WithMapping, WithSt
     */
     public function title(): string
     {
-      return 'Condiciones Peligrosas';
+      return 'Inspecciones';
     }
 }
 

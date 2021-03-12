@@ -1,8 +1,8 @@
 <template>
   <div>
     <header-module
-      title="CONDICIONES PELIGROSAS"
-      subtitle="EDITAR INSPECCIÓN"
+      title="INSPECCIONES"
+      subtitle="EDITAR INSPECCIÓN PLANEADA"
       url="dangerousconditions-inspections"
     />
 
@@ -34,7 +34,7 @@ import GlobalMethods from '@/utils/GlobalMethods.js';
 export default {
   name: 'dangerousconditions-inspections-edit',
   metaInfo: {
-    title: 'Inspecciones - Editar'
+    title: 'Inspecciones Planeadas - Editar'
   },
   components:{
     FormInspection

@@ -195,7 +195,7 @@ class InspectionListExcel implements FromQuery, WithMapping, WithHeadings, WithT
     */
     public function title(): string
     {
-        return 'Inspecciones';
+        return 'Inspecciones Planeadas';
     }
 }
 
