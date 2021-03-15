@@ -10,6 +10,7 @@ use App\Models\LegalAspects\Contracts\Training;
 use App\Http\Requests\LegalAspects\Contracts\TrainingRequest;
 use App\Models\LegalAspects\Contracts\TrainingQuestions;
 use App\Models\LegalAspects\Contracts\TrainingTypeQuestion;
+use App\Models\LegalAspects\Contracts\TrainingFiles;
 use App\Jobs\LegalAspects\Contracts\Training\TrainingSendNotificationJob;
 use Carbon\Carbon;
 use Validator;
@@ -65,7 +66,7 @@ class ContractTrainingController extends Controller
     public function store(TrainingRequest $request)
     {
         Validator::make($request->all(), [
-            "file" => [
+            "files.*.file" => [
                 function ($attribute, $value, $fail)
                 {
                     if ($value && !is_string($value))
@@ -96,7 +97,7 @@ class ContractTrainingController extends Controller
             $activities = $this->getDataFromMultiselect($request->activity_id);
             $training->activities()->sync($activities);
 
-            $this->saveFile($training, $request);
+            $this->saveFile($training, $request->get('files'));
 
             $this->saveQuestions($training, $request->get('questions'));
 
@@ -125,7 +126,6 @@ class ContractTrainingController extends Controller
         try
         {
             $training = Training::findOrFail($id);
-            $training->old_file = $training->file;
 
             foreach ($training->questions as $question)
             {
@@ -140,8 +140,11 @@ class ContractTrainingController extends Controller
                 $question->answers = implode("\n", $question->answer_options->get('answers'));
             }
 
+            $training->files = $this->getFiles($training->id);
+
             $training->delete = [
-                'questions' => []
+                'questions' => [],
+                'files' => []
             ];
 
             $activity_id = [];
@@ -175,7 +178,7 @@ class ContractTrainingController extends Controller
 
         try
         {
-            $trainingContract->fill($request->except('file'));
+            $trainingContract->fill($request->except('files'));
             $trainingContract->modifier_user = $this->user->id;
             $trainingContract->max_calification = $request->number_questions_show;
 
@@ -185,14 +188,14 @@ class ContractTrainingController extends Controller
             $activitiesTraining = $this->getDataFromMultiselect($request->activity_id);
             $trainingContract->activities()->sync($activitiesTraining);
 
-            $this->saveFile($trainingContract, $request);
+            $this->saveFile($trainingContract, $request->get('files'));
 
             $this->saveQuestions($trainingContract, $request->get('questions'));
 
             /*if ($request->has('documents'))
                 $this->saveDocuments($request->documents, $trainingContract);*/
 
-            //$this->deleteData($request->get('delete'));
+            $this->deleteData($request->get('delete'));
 
             DB::commit();
 
@@ -217,11 +220,19 @@ class ContractTrainingController extends Controller
     {
         $fileBk = $trainingContract->replicate();
 
+        $file_delete = TrainingFiles::where('training_id', $trainingContract->id)->get();
+
+        if ($file_delete)
+        {
+            foreach ($file_delete as $keyf => $file)
+            {
+                $path = $file->file;
+                Storage::disk('s3')->delete('legalAspects/contracts/trainings/files/'. $path);
+            }
+        }
+
         if (!$trainingContract->delete())
             return $this->respondHttp500();
-
-        if ($fileBk->file)
-            Storage::disk('s3')->delete($fileBk->path_client(false)."/".$fileBk->file);
         
         return $this->respondHttp200([
             'message' => 'Se elimino la capacitación'
@@ -251,25 +262,75 @@ class ContractTrainingController extends Controller
         }
     }
 
-    public function saveFile($training, $request)
+    public function saveFile($training, $files)
     {
-        if ($request->file)
+        if ($files && count($files) > 0)
         {
-            if ($request->file != $training->file)
+            $files_names_delete = [];
+
+            foreach ($files as $keyF => $value) 
             {
-                if ($request->has('old_file') && $request->old_file)
+                $create_file = true;
+
+                if (isset($value['id']))
                 {
-                    Storage::disk('s3')->delete($training->path_client(false)."/".$request->old_file);
+                    $fileUpload = TrainingFiles::findOrFail($value['id']);
+
+                    if ($value['old_name'] == $value['file'])
+                        $create_file = false;
+                    else
+                        array_push($files_names_delete, $value['old_name']);
                 }
-                
-                $file = $request->file;
-                $nameFile = base64_encode($this->user->id . now() . rand(1,10000)) .'.'. $file->extension();
-                $file->storeAs($training->path_client(false), $nameFile, 's3');
-                $training->file = $nameFile;
-                $training->save();
+                else
+                {
+                    $fileUpload = new TrainingFiles();                    
+                    $fileUpload->training_id = $training->id;
+                    $fileUpload->name = $value['name'];
+                }
+
+                if ($create_file)
+                {
+                    $file_tmp = $value['file'];
+                    $nameFile = base64_encode($this->user->id . now() . rand(1,10000) . $keyF) .'.'. $file_tmp->extension();
+                    $file_tmp->storeAs($fileUpload->path_client(false), $nameFile, 's3');
+                    $fileUpload->file = $nameFile;
+                }
+
+                if (!$fileUpload->save())
+                    return $this->respondHttp500();
+            }
+
+            //Borrar archivos reemplazados
+            foreach ($files_names_delete as $keyf => $file)
+            {
+                Storage::disk('s3')->delete($fileUpload->path_client(false)."/".$file);
             }
         }
         
+    }
+
+    public function deleteData($delete)
+    {
+        foreach ($delete['files'] as $id)
+        {
+            $file_delete = TrainingFiles::find($id);
+
+            if ($file_delete)
+            {
+                $path = $file_delete->file;
+                $file_delete->delete();
+                Storage::disk('s3')->delete('legalAspects/contracts/trainings/files/'. $path);
+            }
+        }
+
+        foreach ($delete['questions'] as $id)
+        {
+            $question = TrainingQuestions::find($id);
+
+            if ($question)
+                $question->delete();
+                
+        }
     }
 
     /**
@@ -278,9 +339,9 @@ class ContractTrainingController extends Controller
      * @param  \App\FileUpload  $fileUpload
      * @return \Illuminate\Http\Response
      */
-    public function download(Training $trainingContract)
+    public function download(TrainingFiles $file)
     {
-      return Storage::disk('s3')->download($trainingContract->path_donwload());
+      return Storage::disk('s3')->download($file->path_donwload());
     }
 
     public function multiselectTypeQuestion(Request $request)
@@ -332,5 +393,27 @@ class ContractTrainingController extends Controller
     public function sendNotification($id)
     {
         TrainingSendNotificationJob::dispatch($this->company, $id);
+    }
+
+    public function getFiles($training)
+    {
+        $get_files = TrainingFiles::where('training_id', $training)->get();
+
+        $files = [];
+
+        if ($get_files->count() > 0)
+        {               
+            $get_files->transform(function($get_file, $index) {
+                $get_file->key = Carbon::now()->timestamp + rand(1,10000);
+                $get_file->name = $get_file->name;
+                $get_file->old_name = $get_file->file;
+
+                return $get_file;
+            });
+
+            $files = $get_files;
+        }
+
+        return $files;
     }
 }

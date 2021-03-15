@@ -2,7 +2,7 @@
   <div>
     <header-module
       title="SISTEMA"
-      subtitle="MONITOREO DE CLIENTES - CONDICIONES PELIGROSAS"
+      subtitle="MONITOREO DE CLIENTES - INSPECCIONES"
       url="system-customermonitoring"
     />
 
@@ -25,7 +25,7 @@ import Alerts from '@/utils/Alerts.js';
 export default {
   name: 'customermonitoring-dangerousConditions',
   metaInfo: {
-    title: 'Monitoreo de clientes- Condiciones Peligrosas'
+    title: 'Monitoreo de clientes- Inspecciones'
   }
 }
 </script>

@@ -606,7 +606,7 @@ export default [
                 data: {
                     action: '/industrialSecurity/dangerousConditions/inspection/',
                     id: 'id',
-                    messageConfirmation: 'Esta seguro de borrar la inspección'
+                    messageConfirmation: 'Esta seguro de borrar la inspección planeada'
                 },
                 permission: 'ph_inspections_d'
                 }
@@ -647,7 +647,7 @@ export default [
               color: 'outline-danger',
               borderless: true,
               icon: 'fas fa-file-pdf',
-              title: 'Descargar inspección en PDF'
+              title: 'Descargar inspección planeada en PDF'
             },
             data: {
               action: '/industrialSecurity/dangerousConditions/inspection/downloadPdf/',
@@ -663,7 +663,7 @@ export default [
         data: {
             action: '/industrialSecurity/dangerousConditions/inspection/qualification/',
             id: 'id',
-            messageConfirmation: 'Esta seguro de borrar la inspección realizada'
+            messageConfirmation: 'Esta seguro de borrar la inspección planeada realizada'
         },
         permission: 'ph_qualification_inspection_d'
         }],
@@ -762,7 +762,7 @@ export default [
         data: {
             action: '/industrialSecurity/dangerousConditions/report/',
             id: 'id',
-            messageConfirmation: 'Esta seguro de borrar el reporte'
+            messageConfirmation: 'Esta seguro de borrar la inspección no planeada'
         },
         permission: 'ph_reports_r'
         }],

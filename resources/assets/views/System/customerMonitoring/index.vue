@@ -15,7 +15,7 @@
 								<router-link tag="a" href="javascript:void(0)" class="card-body media align-items-center text-dark" :to="{name:'system-customermonitoring-dangerousconditions'}">
 									<i class="far fa-newspaper display-4 d-block text-primary" ></i>
 									<span class="media-body d-block ml-3">
-										<span class="text-big font-weight-bolder">Monitoreo de clientes - Condiciones Peligrosas</span>
+										<span class="text-big font-weight-bolder">Monitoreo de clientes - Inspecciones</span>
 									</span>
 								</router-link>
 							</div>

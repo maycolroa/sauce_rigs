@@ -45,8 +45,8 @@ class Role extends LaratrustRole
 
       $modules->company_scope = $company;
       $modules = $modules->pluck('sau_license_module.module_id')->unique()->implode(",");
-
-      $query->whereRaw("sau_roles.company_id = {$company} OR (sau_roles.company_id IS NULL AND sau_roles.name NOT IN('Contratista', 'Arrendatario') AND module_id IN ({$modules}))");
+      
+      $query->whereRaw("(sau_roles.company_id = {$company} OR (sau_roles.company_id IS NULL AND sau_roles.name NOT IN('Contratista', 'Arrendatario') AND module_id IN ({$modules})))");
 
       if (!$includeSuper)
         $query->where('sau_roles.name', '<>', 'Superadmin');
@@ -65,7 +65,7 @@ class Role extends LaratrustRole
       $modules->company_scope = $company;
       $modules = $modules->pluck('sau_license_module.module_id')->unique()->implode(",");
 
-      $query->whereRaw("sau_roles.company_id = {$company} OR (sau_roles.company_id IS NULL AND module_id IN ({$modules}))");
+      $query->whereRaw("(sau_roles.company_id = {$company} OR (sau_roles.company_id IS NULL AND module_id IN ({$modules})))");
 
       if (!$includeSuper)
         $query->where('sau_roles.name', '<>', 'Superadmin');

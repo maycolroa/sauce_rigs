@@ -1,8 +1,8 @@
 <template>
   <div>
     <header-module
-      title="CONDICIONES PELIGROSAS"
-      subtitle="REPORTE DE INSPECCIONES"
+      title="INSPECCIONES"
+      subtitle="REPORTE DE INSPECCIONES PLANEADAS"
       url="dangerousconditions-inspections"
     />
 
@@ -52,21 +52,21 @@
         </b-card>
         <b-row>
             <b-col>
-                <b-card border-variant="primary" title="Inspecciones" class="mb-3 box-shadow-none">
+                <b-card border-variant="primary" title="Inspecciones Planeadas" class="mb-3 box-shadow-none">
                     <b-row>
                         <b-col><vue-advanced-select :disabled="isLoading" v-model="inspectionsSelected" :options="selectBar" :allowEmpty="false" :searchable="true" name="inspectionsSelected">
                             </vue-advanced-select></b-col>
                     </b-row>
                     <b-row>
                         <b-col class="text-center" style="padding-bottom: 15px;">
-                            <h4>Número de Inspecciones</h4>
+                            <h4>Número de Inspecciones Planeadas</h4>
                         </b-col>
                     </b-row>
                     <b-row>
                         <div class="col-md-12">
                             <chart-bar 
                                 :chart-data="inspectionData"
-                                title="Número de Inspecciones realizadas"
+                                title="Número de Inspecciones Planeadas realizadas"
                                 color-line="red"
                                 ref=""/>
                         </div>
@@ -137,14 +137,14 @@
                     </b-row>
                     <b-row>
                         <b-col class="text-center" style="padding-bottom: 15px;">
-                            <h4>Número de Inspecciones</h4>
+                            <h4>Número de Inspecciones Planeadas</h4>
                         </b-col>
                     </b-row>
                     <b-row>
                         <div class="col-md-12">
                             <chart-bar 
                                 :chart-data="inspectionType2Data"
-                                title="Número de Inspecciones realizadas"
+                                title="Número de Inspecciones Planeadas realizadas"
                                 color-line="red"
                                 ref=""/>
                         </div>
@@ -180,7 +180,7 @@ import ChartBarCompliance from '@/components/ECharts/ChartBarCompliance.vue';
 export default {
     name: 'dangerousconditions-inspections-report',
     metaInfo: {
-        title: 'Inspecciones - Reportes'
+        title: 'Inspecciones Planeadas - Reportes'
     },
     components:{
         VueAdvancedSelect,

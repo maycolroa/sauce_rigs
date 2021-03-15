@@ -290,67 +290,67 @@
                 "permissions": [
                     {
                         "name": "ph_inspections_c",
-                        "display_name": "Condiciones Peligrosas/Inspecciones - crear"
+                        "display_name": "Inspecciones/Inspecciones Planeadas - crear"
                     },
                     {
                         "name": "ph_inspections_r",
-                        "display_name": "Condiciones Peligrosas/Inspecciones - ver"
+                        "display_name": "Inspecciones/Inspecciones Planeadas - ver"
                     },
                     {
                         "name": "ph_inspections_u",
-                        "display_name": "Condiciones Peligrosas/Inspecciones - editar"
+                        "display_name": "Inspecciones/Inspecciones Planeadas - editar"
                     },
                     {
                         "name": "ph_inspections_d",
-                        "display_name": "Condiciones Peligrosas/Inspecciones - cambiar estado"
+                        "display_name": "Inspecciones/Inspecciones Planeadas - cambiar estado"
                     },
                     {
                         "name": "ph_inspections_export",
-                        "display_name": "Condiciones Peligrosas/Inspecciones - exportar"
+                        "display_name": "Inspecciones/Inspecciones Planeadas - exportar"
                     },
                     {
                         "name": "ph_inspections_report_view",
-                        "display_name": "Condiciones Peligrosas/Inspecciones - ver reportes"
+                        "display_name": "Inspecciones/Inspecciones Planeadas - ver reportes"
                     },
                     {
                         "name": "ph_inspections_report_export",
-                        "display_name": "Condiciones Peligrosas/Inspecciones - exportar reportes"
+                        "display_name": "Inspecciones/Inspecciones Planeadas - exportar reportes"
                     },
                     {
                         "name": "ph_qualification_inspection_d",
-                        "display_name": "Condiciones Peligrosas/Inspecciones Calificadas - eliminar"
+                        "display_name": "Inspecciones/Inspecciones Planeadas Calificadas - eliminar"
                     },                    
                     {
                         "name": "ph_reports_c",
-                        "display_name": "Condiciones Peligrosas/Reportes - crear"
+                        "display_name": "Inspecciones/Inspecciones no Planeadas - crear"
                     },
                     {
                         "name": "ph_reports_r",
-                        "display_name": "Condiciones Peligrosas/Reportes - ver"
+                        "display_name": "Inspecciones/Inspecciones no Planeadas - ver"
                     },
                     {
                         "name": "ph_reports_u",
-                        "display_name": "Condiciones Peligrosas/Reportes - editar"
+                        "display_name": "Inspecciones/Inspecciones no Planeadas - editar"
                     },
                     {
                         "name": "ph_reports_d",
-                        "display_name": "Condiciones Peligrosas/Reportes - eliminar"
+                        "display_name": "Inspecciones/Inspecciones no Planeadas - eliminar"
                     },
                     {
                         "name": "ph_reports_export",
-                        "display_name": "Condiciones Peligrosas/Reportes - exportar"
+                        "display_name": "Inspecciones/Inspecciones no Planeadas - exportar"
                     },
                     {
                         "name": "ph_reports_informs_view",
-                        "display_name": "Condiciones Peligrosas/Reportes - ver informes"
+                        "display_name": "Inspecciones/Inspecciones no Planeadas - ver informes"
                     },
                     {
                         "name": "ph_reports_qualifications",
-                        "display_name": "Condiciones Peligrosas/Reportes - calificar"
+                        "display_name": "Inspecciones/Inspecciones no Planeadas - calificar"
                     },
                     {
                         "name": "ph_receive_notifications",
-                        "display_name": "Condiciones Peligrosas - recibir notificaciones"
+                        "display_name": "Inspecciones Planeadas - recibir notificaciones"
                     }
                 ]
             }

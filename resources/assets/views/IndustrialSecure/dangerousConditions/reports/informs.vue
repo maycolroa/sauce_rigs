@@ -1,8 +1,8 @@
 <template>
     <div>
         <header-module
-            title="CONDICIONES PELIGROSAS"
-            subtitle="REPORTE INFORMES"
+            title="INSPECCIONES"
+            subtitle="REPORTE INSPECCIONES NO PLANEADAS"
             url="dangerousconditions-reports"
         />
 
@@ -15,7 +15,7 @@
 
         <b-row style="padding-top: 15px;">
             <b-col>
-                <b-card border-variant="primary" title="Reportes" class="mb-3 box-shadow-none">
+                <b-card border-variant="primary" title="Inspecciones no Planeadas" class="mb-3 box-shadow-none">
                     <b-row>
                         <b-col><vue-advanced-select :disabled="isLoading" v-model="reportSelected" :options="selectBar" :searchable="true" name="reportSelected" :allowEmpty="false" :hideSelected="false">
                             </vue-advanced-select></b-col>
@@ -26,14 +26,14 @@
                     </b-row>
                     <b-row>
                         <b-col class="text-center" style="padding-bottom: 15px;">
-                            <h4>Número de Reportes</h4>
+                            <h4>Número de Inspecciones no planeadas</h4>
                         </b-col>
                     </b-row>
                     <b-row>
                         <div class="col-md-12">
                             <chart-bar 
                                 :chart-data="reportData"
-                                title="Número de reportes realizados"
+                                title="Número de inspecciones no planeadas realizadas"
                                 color-line="red"
                                 ref=""/>
                         </div>
@@ -117,7 +117,7 @@ import FilterGeneral from '@/components/Filters/FilterGeneral.vue';
 export default {
     name: 'reports-informs',
     metaInfo: {
-        title: 'Reportes - Informes'
+        title: 'Reportes - Inpsecciones no planeadas'
     },
     components:{
         ChartBar,

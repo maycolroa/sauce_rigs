@@ -11,7 +11,7 @@ class ConstantService
      * DM -> Matriz de peligros
      * CT -> Contratistas
      * LM -> Matriz Legal
-     * PH -> Condiciones Peligrosas
+     * PH -> Inspecciones
      */
 
     CONST SI_NO = [
@@ -86,7 +86,7 @@ class ConstantService
 
     /** FIN Matriz Legal */
 
-    /** Condiciones Peligrosas */
+    /** Inspecciones */
 
     CONST PH_TYPE_RATES = [
         'SI',
@@ -100,7 +100,7 @@ class ConstantService
         'Bajo'
     ];
 
-    /** FIN Condiciones Peligrosas */
+    /** FIN Inspecciones */
 
     /**
      * returns a constant defined by the $key

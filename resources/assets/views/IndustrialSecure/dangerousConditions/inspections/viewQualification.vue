@@ -1,8 +1,8 @@
 <template>
   <div>
     <header-module
-      title="CONDICIONES PELIGROSAS"
-      subtitle="VER INSPECCIÓN CALIFICADA"
+      title="INSPECCIONES"
+      subtitle="VER INSPECCIÓN PLANEADA CALIFICADA"
     />
 
     <div class="col-md">
@@ -29,7 +29,7 @@ import GlobalMethods from '@/utils/GlobalMethods.js';
 export default {
   name: 'dangerousconditions-inspections-qualification-view',
   metaInfo: {
-    title: 'Inspecciones - Calificaciones Ver'
+    title: 'Inspecciones Planeadas - Calificaciones Ver'
   },
   components:{
     FormInspectionQualification

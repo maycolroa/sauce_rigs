@@ -1,8 +1,8 @@
 <template>
   <div>
     <header-module
-      title="CONDICIONES PELIGROSAS"
-      subtitle="INSPECCIONES CALIFICADAS"
+      title="INSPECCIONES"
+      subtitle="INSPECCIONES PLANEADAS CALIFICADAS"
       url="dangerousconditions-inspections"
     />
 
@@ -34,7 +34,7 @@ import Alerts from '@/utils/Alerts.js';
 export default {
   name: 'dangerousconditions-inspections-qualification',
   metaInfo: {
-    title: 'Inspecciones - Calificadas'
+    title: 'Inspecciones Planeadas - Calificadas'
   },
   data () {
     return {

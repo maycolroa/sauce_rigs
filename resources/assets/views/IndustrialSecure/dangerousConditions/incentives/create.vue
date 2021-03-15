@@ -1,7 +1,7 @@
 <template>
   <div>
     <header-module
-      title="CONDICIONES PELIGROSAS"
+      title="INSPECCIONES"
       subtitle="ADMINISTRAR INCENTIVOS"
       url="industrialsecure-dangerousconditions"
     />

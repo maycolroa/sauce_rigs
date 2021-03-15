@@ -425,7 +425,7 @@ class InspectionCompletExcel implements FromQuery, WithMapping, WithHeadings, Wi
     */
     public function title(): string
     {
-        return 'Inspecciones Calificadas';
+        return 'Inspecciones Planeadas Calificadas';
     }
 }
 
