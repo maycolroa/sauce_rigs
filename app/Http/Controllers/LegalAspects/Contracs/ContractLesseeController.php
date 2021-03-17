@@ -293,17 +293,17 @@ class ContractLesseeController extends Controller
                 $document->files = [];
 
                 $files = FileUpload::select(
-                            'sau_ct_file_upload_contracts_leesse.id AS id',
-                            'sau_ct_file_upload_contracts_leesse.name AS name',
-                            'sau_ct_file_upload_contracts_leesse.file AS file',
-                            'sau_ct_file_upload_contracts_leesse.expirationDate AS expirationDate'
-                        )
-                        ->join('sau_ct_file_upload_contract','sau_ct_file_upload_contract.file_upload_id','sau_ct_file_upload_contracts_leesse.id')
-                        ->join('sau_ct_file_document_contract', 'sau_ct_file_document_contract.file_id', 'sau_ct_file_upload_contracts_leesse.id')
-                        ->where('sau_ct_file_upload_contract.contract_id', $contract->id)
-                        ->where('sau_ct_file_document_contract.document_id', $document->id)
-                        ->where('sau_ct_file_document_contract.contract_id', $contract->id)
-                        ->get();
+                    'sau_ct_file_upload_contracts_leesse.id AS id',
+                    'sau_ct_file_upload_contracts_leesse.name AS name',
+                    'sau_ct_file_upload_contracts_leesse.file AS file',
+                    'sau_ct_file_upload_contracts_leesse.expirationDate AS expirationDate'
+                )
+                ->join('sau_ct_file_upload_contract','sau_ct_file_upload_contract.file_upload_id','sau_ct_file_upload_contracts_leesse.id')
+                ->join('sau_ct_file_document_contract', 'sau_ct_file_document_contract.file_id', 'sau_ct_file_upload_contracts_leesse.id')
+                ->where('sau_ct_file_upload_contract.contract_id', $contract->id)
+                ->where('sau_ct_file_document_contract.document_id', $document->id)
+                ->where('sau_ct_file_document_contract.contract_id', $contract->id)
+                ->get();
 
                 if ($files)
                 {
@@ -732,7 +732,7 @@ class ContractLesseeController extends Controller
 
     public function getDocuments()
     {
-        $documents = ContractDocument::get();
+        $documents = ContractDocument::whereNull('document_id')->get();
 
         foreach ($documents as $document)
         {
@@ -1091,4 +1091,74 @@ class ContractLesseeController extends Controller
         return $this->respondHttp500();
       }
     }
+
+    /*public function destroy(ContractLesseeInformation $contract)
+    {
+        DB::beginTransaction();
+
+        try
+        {
+            //$contract->activities()->sync([]);
+
+            $documents = ContractDocument::where('company_id', $this->company)->whereNull('document_id')->get();
+
+            if ($documents->count() > 0)
+            {
+                \Log::info($documents);
+
+                foreach ($documents as $document)
+                {
+                    $files = FileUpload::select(
+                        'sau_ct_file_upload_contracts_leesse.id AS id'
+                    )
+                    ->join('sau_ct_file_upload_contract','sau_ct_file_upload_contract.file_upload_id','sau_ct_file_upload_contracts_leesse.id')
+                    ->join('sau_ct_file_document_contract', 'sau_ct_file_document_contract.file_id', 'sau_ct_file_upload_contracts_leesse.id')
+                    ->where('sau_ct_file_upload_contract.contract_id', $contract->id)
+                    ->where('sau_ct_file_document_contract.document_id', $document->id)
+                    ->where('sau_ct_file_document_contract.contract_id', $contract->id)
+                    ->get();
+
+                    \Log::info($files);
+                
+                    foreach ($files as $file)
+                    {
+                        $file_delete = FileUpload::find($file);
+                        \Log::info($file_delete);
+    
+                        if ($file_delete)
+                        {
+                            $path = $file_delete->file;
+                            \Log::info($path);
+                            /*$file_delete->delete();
+                            Storage::disk('s3')->delete('legalAspects/files/'. $path);
+                        }
+                    }
+                }
+            }
+
+            
+
+            foreach ($evaluationContract->items as $item)
+            {  
+                ActionPlan::model($item)->modelDeleteAll();
+            }
+
+            if(!$evaluationContract->delete())
+            {
+                return $this->respondHttp500();
+            }
+
+            DB::commit();
+
+        } catch (\Exception $e) {
+            DB::rollback();
+            \Log::info($e->getMessage());
+            return $this->respondHttp500();
+            //return $e->getMessage();
+        }
+        
+        return $this->respondHttp200([
+            'message' => 'Se elimino la evaluación realizada'
+        ]);
+    }*/
 }

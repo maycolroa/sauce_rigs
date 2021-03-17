@@ -532,12 +532,24 @@ class NotificationMail
             Mail::to($this->recipients)
             ->bcc($this->copyHidden)
             ->queue($message);
+
+            /**
+             * Debido a un error con la libreria 'jdavidbakr/mail-tracker' para el seguimiento de correos al momento de enviar correos sin destinatarios en el parametro 'to()', se realizo una modificacion directamente en el codigo de la libreria para resolverlo, agregando este codigo
+             * 
+             * $recipients = [];
+             * $recipients = $message->getTo() ? array_merge($recipients, $message->getTo()) : $recipients
+             * $recipients = $message->getBcc() ? array_merge($recipients, $message->getBcc()) : $recipients;
+             * foreach ($recipients as $to_email => $to_name) {
+             * 
+             * En el archivo 'sauce/vendor/jdavidbakr/mail-tracker/src/MailTracker.php' en la funcion 'createTrackers()' a partir de la linea 132.
+             */
             
             $logModel->update(['message' => $message->render()]);
             $this->restart();
         }
         catch (\Exception $e) {
           \Log::info($e->getMessage());
+          \Log::info($e->getTraceAsString());
           $logModel->delete();
             throw new \Exception('An error occurred while sending the mail');
         }

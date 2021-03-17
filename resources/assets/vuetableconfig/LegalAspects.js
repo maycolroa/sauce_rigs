@@ -454,7 +454,16 @@ export default [
                         messageConfirmation: 'Esta seguro de reenviar el correo de bienvenida a __social_reason__'
                     },
                     permission: 'contracts_resend_welcome_email'
-                }
+                },
+                /*{
+                    name: 'delete',
+                    data: {
+                        action: '/legalAspects/contracts/',
+                        id: 'id',
+                        messageConfirmation: 'Esta seguro de borrar la contratrista?'
+                    },
+                    permission: 'contracts_d'
+                }*/
             ],
           }],
         configuration: {

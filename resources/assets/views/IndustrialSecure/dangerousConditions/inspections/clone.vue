@@ -51,6 +51,11 @@ export default {
     .then(response => {
         this.data = response.data.data;
         delete this.data.id
+        this.data.additional_fields.map((field) => {
+          delete field.id
+          delete field.inspection_id
+          return field
+        })
         this.data.themes.map((theme) => {
           delete theme.id
           delete theme.inspection_id
