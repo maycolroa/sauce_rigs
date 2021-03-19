@@ -260,7 +260,23 @@ class ContractLesseeController extends Controller
                     ->where('sau_ct_information_contract_lessee.id', '<>', $contract->id)
                     ->get();
 
-                $documents = ContractDocument::where('company_id', $this->company)->get();
+                $doc_act_id = collect([]);
+
+                foreach ($contract->activities as $key => $value)
+                {                
+                    $docs = ActivityDocument::where('activity_id', $value->id)->where('type', 'Contratista')->get();
+
+                    foreach ($docs as $value2)
+                    {
+                        $doc_act_id->push($value2->id);
+                    }
+                }
+
+                $documents = ContractDocument::where('company_id', $this->company)->whereNull('document_id')->get();
+
+                $documents2 = ContractDocument::where('company_id', $this->company)->whereIn('document_id', $doc_act_id)->get();
+
+                $documents = $documents->merge($documents2);
 
                 $contract->documents = $this->getFilesByDocuments($contract, $documents);
 

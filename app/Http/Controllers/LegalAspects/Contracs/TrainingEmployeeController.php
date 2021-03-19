@@ -12,6 +12,8 @@ use App\Models\LegalAspects\Contracts\ContractEmployee;
 use App\Models\LegalAspects\Contracts\TrainingEmployeeSend;
 use App\Models\LegalAspects\Contracts\TrainingEmployeeAttempt;
 use App\Models\LegalAspects\Contracts\TrainingEmployeeQuestionsAnswers;
+use App\Models\LegalAspects\Contracts\TrainingFiles;
+use Carbon\Carbon;
 use DB;
 
 class TrainingEmployeeController extends Controller
@@ -31,6 +33,7 @@ class TrainingEmployeeController extends Controller
         if ($employee)
         {
             $training = Training::withoutGlobalScopes()->find($training);
+            $training->files = $this->getFiles($training);
 
             if ($training)
             {
@@ -70,6 +73,7 @@ class TrainingEmployeeController extends Controller
                 $options->put('options', $this->multiSelectFormat($options->get('options')));
                 $question->answer_options = $options;
                 $question->answers = '';
+                $question->key = Carbon::now()->timestamp + rand(1,10000);
                 //\Log::info($question->answer_options);
 
                 return $question;
@@ -161,7 +165,29 @@ class TrainingEmployeeController extends Controller
      */
     public function download($id)
     {
-        $training = Training::withoutGlobalScopes()->find($id);
+        $training = TrainingFiles::find($id);
         return Storage::disk('s3')->download($training->path_donwload());
+    }
+
+    public function getFiles($training)
+    {
+        $get_files = TrainingFiles::where('training_id', $training->id)->get();
+
+        $files = [];
+
+        if ($get_files->count() > 0)
+        {               
+            $get_files->transform(function($get_file, $index) {
+                $get_file->key = Carbon::now()->timestamp + rand(1,10000);
+                $get_file->name = $get_file->name;
+                $get_file->old_name = $get_file->file;
+
+                return $get_file;
+            });
+
+            $files = $get_files;
+        }
+
+        return $files;
     }
 }

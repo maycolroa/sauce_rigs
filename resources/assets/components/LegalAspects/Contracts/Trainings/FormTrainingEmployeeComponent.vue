@@ -18,11 +18,25 @@
                         <b-col>
                             <div><b>Número de intento:</b> {{ form.attempt }}</div>
                         </b-col>
-                        <b-col v-if="training.file">
+                        <!--<b-col v-if="training.file">
                           <div class="text-center"><b>Descarga aqui el material de apoyo para la resolución de la capacitación</b></div>
                           <center><a class="btn btn-primary" :href="`/training/download/file/${form.id}`" target='blank'><i class="fas fa-download"></i></a></center>
-                        </b-col>
+                        </b-col>-->
                     </b-row>
+                </b-card>
+
+                <b-card v-show="form.files" bg-variant="transparent" border-variant="dark" title="" class="mb-3 box-shadow-none">
+                  <div class="text-center"><b>Descarga aqui el material de apoyo para la resolución de la capacitación</b></div>
+                  <template v-for="(file, index) in form.files">
+                     <div :key="file.key">
+                      <center>
+                        <b-row>                       
+                          <p>{{ `${index + 1}.`}} </p><a :href="`/training/download/file/${file.id}`" target='blank'>{{ file.name }}</a>
+                          <br>
+                        </b-row>
+                      </center>
+                     </div>
+                  </template>
                 </b-card>
 
                 <b-card bg-variant="transparent" border-variant="dark" title="" class="mb-3 box-shadow-none">
@@ -30,7 +44,8 @@
                         <p class="mb-0">Preguntas</p>
                     </blockquote>
 
-                     <template v-for="(question, index) in form.questions">
+                    <template v-for="(question, index) in form.questions">
+                      <div :key="question.key">
                         <b-form-row>
                             <p>{{ `${index + 1}. ${question.description} `}}</p>
                         </b-form-row>
@@ -51,6 +66,7 @@
                             <vue-radio v-if="question.type.name == 'yes_no'" class="col-md-12" v-model="question.answers" :options="siNo" :name="`siNo${index}`" label="Respuesta"></vue-radio>
                           
                         </b-form-row>
+                      </div>
                     </template>
                 </b-card>
 
@@ -91,9 +107,8 @@
             <center><h3>Usted ha {{ result }} la capacitación</h3></center>
           </b-card-body>
         </b-card>
-      </div>
     </div>
-  </div>    
+  </div>
 </template>
 
 <style src="@/vendor/libs/vue-form-wizard/vue-form-wizard.scss" lang="scss"></style>
@@ -121,7 +136,7 @@ export default {
         return {
             id: '', 
             name: '',
-            file: '',
+            files: {},
             number_attemps: '',
             attempt: '',
             employee: '',

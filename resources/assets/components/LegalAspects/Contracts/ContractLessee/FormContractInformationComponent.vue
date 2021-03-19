@@ -77,6 +77,10 @@
                         </vue-advanced-select>
                     </b-form-row>
 
+					<b-form-row>
+						<vue-input class="col-md-6" v-model="form.email_training_employee"  type="text" :error="form.errorsFor('email_training_employee')" name="email_training_employee" label="Correo para envio de capacitaciones de los empleados (Opcional)" placeholder="Correo para envio de capacitaciones de los empleados"></vue-input>
+                    </b-form-row>
+
             	</b-card>
 
             	<b-card border-variant="primary" title="Documentos solicitados">
@@ -189,6 +193,7 @@ export default {
 					arl: '',
 					number_workers: '',
 					risk_class: '',
+					email_training_employee: '',
 					multiselect_contracts: [],
 					existsOthersContract: false,
 					documents: []
