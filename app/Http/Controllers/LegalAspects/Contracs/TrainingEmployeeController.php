@@ -180,6 +180,8 @@ class TrainingEmployeeController extends Controller
             $get_files->transform(function($get_file, $index) {
                 $get_file->key = Carbon::now()->timestamp + rand(1,10000);
                 $get_file->name = $get_file->name;
+                $get_file->type = $get_file->type;
+                $get_file->link = $get_file->link;
                 $get_file->old_name = $get_file->file;
 
                 return $get_file;

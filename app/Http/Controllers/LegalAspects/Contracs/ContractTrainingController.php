@@ -276,8 +276,9 @@ class ContractTrainingController extends Controller
                 {
                     $fileUpload = TrainingFiles::findOrFail($value['id']);
 
-                    if ($value['old_name'] == $value['file'])
-                        $create_file = false;
+                    if ($value['type'] == 'Archivo')
+                        if ($value['old_name'] == $value['file'] )
+                            $create_file = false;
                     else
                         array_push($files_names_delete, $value['old_name']);
                 }
@@ -286,9 +287,16 @@ class ContractTrainingController extends Controller
                     $fileUpload = new TrainingFiles();                    
                     $fileUpload->training_id = $training->id;
                     $fileUpload->name = $value['name'];
+                    $fileUpload->type = $value['type'];
                 }
 
-                if ($create_file)
+                if ($value['type'] == 'Link')
+                {
+                    $fileUpload->link = $value['link'];
+                    $fileUpload->file = NULL;
+                }
+
+                if ($create_file && $value['type'] == 'Archivo')
                 {
                     $file_tmp = $value['file'];
                     $nameFile = base64_encode($this->user->id . now() . rand(1,10000) . $keyF) .'.'. $file_tmp->extension();
@@ -406,6 +414,8 @@ class ContractTrainingController extends Controller
             $get_files->transform(function($get_file, $index) {
                 $get_file->key = Carbon::now()->timestamp + rand(1,10000);
                 $get_file->name = $get_file->name;
+                $get_file->type = $get_file->type;
+                $get_file->link = $get_file->link;
                 $get_file->old_name = $get_file->file;
 
                 return $get_file;

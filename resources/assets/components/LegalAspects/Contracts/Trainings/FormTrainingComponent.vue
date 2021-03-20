@@ -40,7 +40,7 @@
     <b-card no-body class="mb-2 border-secondary" style="width: 100%;">
       <b-card-header class="bg-secondary">
         <b-row>
-          <b-col cols="11" class="d-flex justify-content-between"> Archivos </b-col>
+          <b-col cols="11" class="d-flex justify-content-between"> Material de apoyo </b-col>
           <b-col cols="1">
             <div class="float-right">
               <b-button-group>
@@ -57,20 +57,24 @@
         <template v-for="(file, index) in form.files">
           <div :key="file.key">
               <b-form-row>
-                  <div class="col-md-12">
-                      <div class="float-right">
-                          <b-btn variant="outline-primary icon-btn borderless" size="sm" v-b-tooltip.top title="Eliminar" @click.prevent="removeFile(index)"><span class="ion ion-md-close-circle"></span></b-btn>
-                      </div>
-                  </div>
-                  <vue-input class="col-md-6" v-model="file.name" label="Nombre" name="name" type="text" placeholder="Nombre" :error="form.errorsFor(`files.${index}.name`)"></vue-input>
-                  <vue-file-simple :disabled="viewOnly" :help-text="file.id ? `Para descargar el archivo actual, haga click <a href='/legalAspects/trainingContract/download/${file.id}' target='blank'>aqui</a> ` : null" class="col-md-6" v-model="file.file" label="Archivo" name="file" placeholder="Seleccione un archivo" :error="form.errorsFor(`file`)" :maxFileSize="20"/>
+                <div class="col-md-12">
+                    <div class="float-right">
+                        <b-btn variant="outline-primary icon-btn borderless" size="sm" v-b-tooltip.top title="Eliminar" @click.prevent="removeFile(index)"><span class="ion ion-md-close-circle"></span></b-btn>
+                    </div>
+                </div>
+                <vue-input class="col-md-6" v-model="file.name" label="Nombre" name="name" type="text" placeholder="Nombre" :error="form.errorsFor(`files.${index}.name`)"></vue-input>
+                <vue-radio :disabled="viewOnly" class="col-md-6" v-model="file.type" :options="fileLink" :name="`fileLink${index}`" :error="form.errorsFor(`file.${index}.type`)" label="Elige el tipo de material" :checked="file.type">
+                    </vue-radio>
+                <vue-file-simple v-if="file.type == 'Archivo'" :disabled="viewOnly" :help-text="file.id ? `Para descargar el archivo actual, haga click <a href='/legalAspects/trainingContract/download/${file.id}' target='blank'>aqui</a> ` : null" class="col-md-12" v-model="file.file" label="Archivo" name="file" placeholder="Seleccione un archivo" :error="form.errorsFor(`file`)" :maxFileSize="20"/>
+
+                <vue-input v-if="file.type == 'Link'" class="col-md-12" v-model="file.link" label="Link (Debe agregar el prefijo https://)" name="link" type="text" placeholder="Link" :error="form.errorsFor(`files.${index}.link`)"></vue-input>
               </b-form-row>
           </div>
         </template>
 
         <b-form-row style="padding-bottom: 20px;">
           <div class="col-md-12">
-              <center><b-btn variant="primary" @click.prevent="addFile()"><span class="ion ion-md-add-circle"></span>&nbsp;&nbsp;Agregar archivo</b-btn></center>
+              <center><b-btn variant="primary" @click.prevent="addFile()"><span class="ion ion-md-add-circle"></span>&nbsp;&nbsp;Agregar</b-btn></center>
           </div>
         </b-form-row>          
       </b-card-body>
@@ -241,6 +245,10 @@ export default {
         trueFalse: [
           {text: 'Verdadero', value: 1},
           {text: 'Falso', value: 0}
+        ],
+        fileLink: [
+          {text: 'Archivo', value: 'Archivo'},
+          {text: 'Link', value: 'Link'}
         ]
     };
   },
@@ -269,7 +277,9 @@ export default {
       this.form.files.push({
           key: new Date().getTime(),
           name: '',
-          file: ''
+          type: '',
+          file: '',
+          link: ''
       })
     },
 	  removeFile(index)

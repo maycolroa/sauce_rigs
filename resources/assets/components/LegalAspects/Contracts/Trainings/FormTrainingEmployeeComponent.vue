@@ -30,8 +30,12 @@
                   <template v-for="(file, index) in form.files">
                      <div :key="file.key">
                       <center>
-                        <b-row>                       
+                        <b-row v-if="file.type == 'Archivo'">                       
                           <p>{{ `${index + 1}.`}} </p><a :href="`/training/download/file/${file.id}`" target='blank'>{{ file.name }}</a>
+                          <br>
+                        </b-row>
+                        <b-row v-if="file.type == 'Link'">                       
+                          <p>{{ `${index + 1}.`}} </p><a :href="file.link" target='blank'>{{ file.name }}</a>
                           <br>
                         </b-row>
                       </center>
