@@ -16,6 +16,7 @@ use App\Jobs\LegalAspects\Contracts\Training\TrainingSendNotificationJob;
 use App\Traits\ContractTrait;
 use Carbon\Carbon;
 use Validator;
+use Hash;
 use DB;
 
 class ContractEmployeeController extends Controller
@@ -103,7 +104,7 @@ class ContractEmployeeController extends Controller
             $contract = $this->getContractUser($this->user->id, $this->company);
             $employee->contract_id = $contract->id;
             $employee->company_id = $this->company;
-            $employee->token = bcrypt($employee->email.$employee->identification);
+            $employee->token = Hash::make($employee->email.$employee->identification);
 
             if (!$employee->save())
                 return $this->respondHttp500();
@@ -198,7 +199,7 @@ class ContractEmployeeController extends Controller
             $employeeContract->fill($request->all());
 
             if (!$employeeContract->token)
-                $employeeContract->token = bcrypt($employeeContract->email.$employeeContract->identification);
+                $employeeContract->token = Hash::make($employeeContract->email.$employeeContract->identification);
 
             if(!$employeeContract->update()){
                 return $this->respondHttp500();

@@ -9,6 +9,7 @@ use App\Models\Administrative\Users\User;
 use App\Models\Administrative\Roles\Role;
 use App\Jobs\System\UsersCompanies\UserCompaniesExportJob;
 use App\Traits\Filtertrait;
+use Carbon\Carbon;
 
 class UserCompanyController extends Controller
 {
@@ -33,6 +34,8 @@ class UserCompanyController extends Controller
     {
         $role = Role::defined()->where('name', 'Superadmin')->first();
 
+        $now = Carbon::now()->format('Y-m-d');
+
         $url = "/system/userscompanies";
 
         $usersCompanies = User::select(
@@ -44,6 +47,7 @@ class UserCompanyController extends Controller
         ->withoutGlobalScopes()
         ->join('sau_company_user', 'sau_users.id', 'sau_company_user.user_id')
         ->join('sau_companies', 'sau_companies.id', 'sau_company_user.company_id')
+        ->join('sau_licenses', 'sau_licenses.company_id', 'sau_companies.id')
         ->leftJoin('sau_role_user', function($q){ 
                 $q->on('sau_role_user.user_id', '=', 'sau_users.id')
                   ->on('sau_role_user.team_id', '=', 'sau_companies.id');
@@ -52,6 +56,7 @@ class UserCompanyController extends Controller
         ->leftJoin('sau_permission_role', 'sau_permission_role.role_id', 'sau_roles.id')
         ->leftJoin('sau_permissions', 'sau_permissions.id', 'sau_permission_role.permission_id')
         ->whereRaw("(sau_role_user.role_id <> {$role->id} OR sau_role_user.role_id IS NULL)")
+        ->whereRaw("'{$now}' BETWEEN sau_licenses.started_at AND sau_licenses.ended_at")
         ->groupBy('sau_users.id', 'company');
 
         $filters = COUNT($request->get('filters')) > 0 ? $request->get('filters') : $this->filterDefaultValues($this->user->id, $url);

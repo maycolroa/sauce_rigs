@@ -11,7 +11,9 @@ class TrainingFiles extends Model
     protected $fillable = [
         'training_id',
         'name',
-        'file'
+        'file',
+        'type',
+        'link'
     ];
 
     public function training()

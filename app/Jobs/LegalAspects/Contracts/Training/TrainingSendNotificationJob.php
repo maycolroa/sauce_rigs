@@ -60,12 +60,12 @@ class TrainingSendNotificationJob implements ShouldQueue
         $trainings = Training::select(
             'sau_ct_trainings.id as id',
             'sau_ct_trainings.name as name_training',
-            'sau_ct_trainings.file as file',
             'sau_ct_trainings.company_id as company_id',
             'sau_ct_contract_employees.id as id_employee',
             'sau_ct_contract_employees.name as name_employee',
             'sau_ct_contract_employees.email as email',
-            'sau_ct_contract_employees.token as token'
+            'sau_ct_contract_employees.token as token',
+					  'sau_ct_information_contract_lessee.email_training_employee as email_supervisor_contract'
           )
           ->join('sau_ct_training_activity', 'sau_ct_training_activity.training_id', 'sau_ct_trainings.id')
           ->join('sau_ct_contract_employee_activities', 'sau_ct_contract_employee_activities.activity_contract_id', 'sau_ct_training_activity.activity_id')
@@ -86,8 +86,10 @@ class TrainingSendNotificationJob implements ShouldQueue
 
         if ($trainings->count() > 0)
         {
+          $listSupervisor = collect([]);
+
           $trainings = $trainings->groupBy('id_employee')
-          ->each(function ($item, $keyEmployee) use ($company) {
+          ->each(function ($item, $keyEmployee) use ($company, &$listSupervisor) {
             $trainingsList = collect([]);
 
             $item->each(function ($training, $key) use ($keyEmployee, &$trainingsList) {
@@ -104,7 +106,6 @@ class TrainingSendNotificationJob implements ShouldQueue
                 }
 
                 $trainingsList->push($training);
-
             });
 
             if ($trainingsList->count() > 0)
@@ -124,9 +125,16 @@ class TrainingSendNotificationJob implements ShouldQueue
                   $token = $value->token;
                 }
                 
-                $url = action('LegalAspects\Contracs\TrainingEmployeeController@index', ['training' => $id_training, 'token' => $token]);
+                $url = action('LegalAspects\Contracs\TrainingEmployeeController@index', ['training' => $value->id, 'token' => $token]);
                 array_push($urls, $url);
                 array_push($list, '<b>'.$value->name_training.'</b>');
+
+                $listSupervisor->push([
+                  'employee' => $value->name_employee,
+                  'training' => '<b>'.$value->name_training.'</b>',
+                  'url' => $url,
+                  'supervisor' => $value->email_supervisor_contract,
+                ]);
               }
 
               $recipients = new User(['email' => $email]);
@@ -151,6 +159,23 @@ class TrainingSendNotificationJob implements ShouldQueue
               }
             }
           });
+
+          foreach ($listSupervisor->groupBy('supervisor') as $key => $value)
+          {
+            if ($key)
+            {
+              NotificationMail::
+                subject('Sauce - Contratistas Capacitaciones')
+                ->view('LegalAspects.contract.trainingEmployeeSupervisor')
+                ->recipients(collect([['email' => $key]]))
+                ->message("Estimado usuario, estas son las capacitaciones que deben realizar los siguientes empleados, para hacerlo ingrese a los links indicados en la columna Capacitación: ")
+                ->module('contracts')
+                ->event('TrainingSendNotificationJob')
+                ->with(['data'=>$value])
+                ->company($company)
+                ->send();
+            }
+          }          
         }
       }
     }
