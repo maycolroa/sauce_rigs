@@ -698,6 +698,38 @@ export default [
 					import('@/views/LegalAspects/legalMatrix/reports/index')
 				}
 			]),
+			...middleware({ 'check-permission': 'contracts_list_standards_qualification_r' }, [
+				{
+					name: 'legalaspects-list-check-qualification',
+					path: 'listcheck',
+					component: () =>
+					import('@/views/LegalAspects/contracts/listCheck/index')
+				}
+			]),
+			...middleware({ 'check-permission': 'contracts_list_standards_qualification_c' }, [
+				{
+					name: 'legalaspects-list-check-qualification-create',
+					path: 'listcheck/create',
+					component: () =>
+					import('@/views/LegalAspects/contracts/listCheck/create')
+				}
+			]),
+			...middleware({ 'check-permission': 'contracts_list_standards_qualification_u' }, [
+				{
+					name: 'legalaspects-list-check-qualification-edit',
+					path: 'listcheck/edit/:id',
+					component: () =>
+					import('@/views/LegalAspects/contracts/listCheck/edit')
+				}
+			]),
+			...middleware({ 'check-permission': 'contracts_list_standards_qualification_r' }, [
+				{
+					name: 'legalaspects-list-check-qualification-view',
+					path: 'listcheck/view/:id',
+					component: () =>
+					import('@/views/LegalAspects/contracts/listCheck/view')
+				}
+			])
 		]
 	}
 ];

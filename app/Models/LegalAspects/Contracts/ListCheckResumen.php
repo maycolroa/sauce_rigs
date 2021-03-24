@@ -15,6 +15,7 @@ class ListCheckResumen extends Model
         'total_nc',
         'total_sc',
         'total_p_c',
-        'total_p_nc'
+        'total_p_nc',
+        'list_qualification_id'
     ];
 }

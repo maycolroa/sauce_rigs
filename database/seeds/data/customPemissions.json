@@ -505,6 +505,22 @@
                     {
                         "name": "contracts_training_d",
                         "display_name": "Contratistas/Capacitación - eliminar"
+                    },
+                    {
+                        "name": "contracts_list_standards_qualification_c",
+                        "display_name": "Contratistas/Lista de Chequeo Calificación - crear"
+                    },
+                    {
+                        "name": "contracts_list_standards_qualification_r",
+                        "display_name": "Contratistas/Lista de Chequeo Calificación - ver"
+                    },
+                    {
+                        "name": "contracts_list_standards_qualification_u",
+                        "display_name": "Contratistas/Lista de Chequeo Calificación - editar"
+                    },
+                    {
+                        "name": "contracts_list_standards_qualification_d",
+                        "display_name": "Contratistas/Lista de Chequeo Calificación - eliminar"
                     }
                 ]
             },

@@ -224,6 +224,7 @@ trait ContractTrait
         if (COUNT($items) > 0)
         {
             $totales = [
+                'list_qualification_id' => $items_delete->list_qualification_id,
                 'total_standard' => 0,
                 'total_c' => 0,
                 'total_nc' => 0,

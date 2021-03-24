@@ -1379,5 +1379,101 @@ export default [
             urlData: '/legalAspects/legalMatrix/articleFulfillmentHistory/data',
             filterColumns: true,
         }
+    },
+    {
+        name: 'legalaspects-contractor-list-check-qualification',
+        fields: [
+            { name: 'sau_ct_list_check_qualifications.id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true },
+            { name: 'sau_users.name', data: 'user_creator', title: 'Usuario Creador', sortable: true, searchable: true, detail: false, key: false },
+            { name: 'sau_ct_list_check_qualifications.created_at', data: 'created_at', title: 'Fecha creación', sortable: true, searchable: true, detail: false, key: false },
+            { name: 'sau_ct_list_check_qualifications.validity_period', data: 'validity_period', title: 'Período de vigencia', sortable: true, searchable: true, detail: false, key: false },
+            { name: 'sau_ct_list_check_qualifications.state', data: 'state_list', title: 'Eatado', sortable: true, searchable: true, detail: false, key: false },
+            { name: '', data: 'controlls', title: 'Controles', sortable: false, searchable: false, detail: false, key: false },
+        ],
+        'controlls': [{
+            type: 'push',
+            buttons: [{
+                config: {
+                    color: 'outline-success',
+                    borderless: true,
+                    icon: 'ion ion-md-create',
+                    title: 'Editar'
+                },
+                data: {
+                    routePush: { name: 'legalaspects-list-check-qualification-edit' },
+                    id: 'id',
+                },
+                permission: 'contracts_list_standards_qualification_u'
+            }, {
+                config: {
+                    color: 'outline-info',
+                    borderless: true,
+                    icon: 'ion ion-md-eye',
+                    title: 'Ver'
+                },
+                data: {
+                    routePush: { name: 'legalaspects-list-check-qualification-view' },
+                    id: 'id',
+                },
+                permission: 'contracts_list_standards_qualification_r'
+            },/*{
+                config: {
+                    color: 'outline-success',
+                    borderless: true,
+                    icon: 'ion ion-ios-copy',
+                    title: 'Clonar Calificación'
+                },
+                data: {
+                    routePush: { name: 'legalaspects-list-check-qualification-clone' },
+                    id: 'id',
+                },
+                permission: 'contracts_list_standards_qualification_c'
+              },*/{
+                config: {
+                    color: 'outline-success',
+                    borderless: true,
+                    icon: 'ion ion-md-clipboard',
+                    title: 'Realizar Calificación'
+                },
+                data: {
+                    routePush: { name: 'legalaspects-contracts-view-list-check' },
+                    id: 'id',
+                },
+                permission: 'contracts_list_standards_qualification_r'
+            }]
+        },
+        /*{
+            type: 'simpleDownload',
+            buttons: [{
+            name: 'downloadFile',
+            config: {
+              color: 'outline-danger',
+              borderless: true,
+              icon: 'fas fa-file-pdf',
+              title: 'Descargar Calificación en PDF'
+            },
+            data: {
+              action: '/legalAspects/listCheck/downloadPdf/',
+              id: 'id'
+            },
+            permission: 'contracts_list_standards_qualification_u'
+            }],
+        },*/
+        {
+            type: 'base',
+            buttons: [{
+            name: 'delete',
+            data: {
+                action: '/legalAspects/listCheck/',
+                id: 'id',
+                messageConfirmation: 'Esta seguro de borrar la calificación'
+            },
+            permission: 'contracts_list_standards_qualification_u'
+            }],
+        }],
+        configuration: {
+            urlData: '/legalAspects/listCheck/data',
+            filterColumns: true,
+        }
     }
 ]
