@@ -1436,7 +1436,7 @@ export default [
                     title: 'Realizar Calificación'
                 },
                 data: {
-                    routePush: { name: 'legalaspects-contracts-view-list-check' },
+                    routePush: { name: 'legalaspects-contracts-view-list-check-qualification' },
                     id: 'id',
                 },
                 permission: 'contracts_list_standards_qualification_r'

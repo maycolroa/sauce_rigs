@@ -729,7 +729,16 @@ export default [
 					component: () =>
 					import('@/views/LegalAspects/contracts/listCheck/view')
 				}
+			]),
+			...middleware({ 'check-permission': 'contracts_list_standards_qualification_r' }, [
+				{
+					name: 'legalaspects-contracts-view-list-check-qualification',
+					path: 'listcheck/view-list-check/:id',
+					component: () =>
+					import('@/views/LegalAspects/contracts/listCheck/listCheckItems')
+				}
 			])
+			
 		]
 	}
 ];

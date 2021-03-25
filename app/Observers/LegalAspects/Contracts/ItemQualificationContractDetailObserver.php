@@ -38,7 +38,7 @@ class ItemQualificationContractDetailObserver
             'user_id' => Auth::user()->id
             ]);
 
-            SyncQualificationResumenJob::dispatch($qualification->contract);
+            SyncQualificationResumenJob::dispatch($qualification->contract, $qualification->list_qualification_id);
         }
     }
 }

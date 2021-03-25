@@ -17,6 +17,7 @@ use App\Models\LegalAspects\Contracts\ItemQualificationContractDetail;
 use App\Models\LegalAspects\Contracts\ContractDocument;
 use App\Models\LegalAspects\Contracts\FileModuleState;
 use App\Models\LegalAspects\Contracts\ActivityDocument;
+use App\Models\LegalAspects\Contracts\ListCheckQualification;
 use App\Http\Requests\LegalAspects\Contracts\DocumentRequest;
 use App\Http\Requests\LegalAspects\Contracts\ContractRequest;
 use App\Http\Requests\LegalAspects\Contracts\ListCheckItemsRequest;
@@ -447,7 +448,11 @@ class ContractLesseeController extends Controller
                 $user->syncRoles([$this->getIdRole($contract->type)], $this->team);
             }
 
-            $this->reloadLiskCheckResumen($contract);
+            $qualification_list = ListCheckQualification::where('contract_id', $contract->id)->where('state', true)->first();
+
+            \Log::info($qualification_list->id);
+
+            $this->reloadLiskCheckResumen($contract, $qualification_list->id);
 
             DB::commit();
 
