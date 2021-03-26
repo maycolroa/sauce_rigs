@@ -26,4 +26,12 @@ class ListCheckQualification extends Model
     {
         return $this->hasMany(EvaluationContractItem::class, 'list_qualification_id');
     }
+
+    public function multiselect()
+    {
+        return [
+            'name' => $this->validity_period,
+            'value' => $this->id
+        ];
+    }
 }

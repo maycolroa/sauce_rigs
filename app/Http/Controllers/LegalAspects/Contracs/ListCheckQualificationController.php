@@ -13,6 +13,7 @@ use App\Models\LegalAspects\Contracts\FileUpload;
 use App\Facades\ActionPlans\Facades\ActionPlan;
 use App\Models\LegalAspects\Contracts\FileModuleState;
 use App\Http\Requests\LegalAspects\Contracts\ListCheckItemsRequest;
+use App\Jobs\LegalAspects\Contracts\ListCheck\ListCheckQualificationCopyJob;
 use Validator;
 use Carbon\Carbon;
 use App\Traits\ContractTrait;
@@ -77,7 +78,10 @@ class ListCheckQualificationController extends Controller
         $contract = $this->getContractUser($this->user->id, $this->company);
 
         $qualification_exist = ListCheckQualification::where('company_id', $this->company)
-        ->where('contract_id', $contract->id)->where('state', true)->orderBy('created_at', 'DESC')->first();
+        ->where('contract_id', $contract->id)
+        ->where('state', true)
+        ->orderBy('created_at', 'DESC')
+        ->first();
 
         $qualification = new ListCheckQualification($request->all());
         $qualification->company_id = $this->company;
@@ -258,6 +262,90 @@ class ListCheckQualificationController extends Controller
         }
     }
 
+    public function listCheckItemsClone(Request $request)
+    {
+        try
+        {   
+            $data = $this->listCheckQualificationCopy($request->id);
+
+            return $this->respondHttp200([
+                'data' => $data
+            ]);
+
+        } catch(Exception $e){
+            $this->respondHttp500();
+        }
+    }
+
+    public function listCheckQualificationCopy($list_selected)
+    {
+      DB::beginTransaction();
+
+      try
+      {
+        $contract = $this->getContractUser($this->user->id);
+
+        $items = $this->getStandardItemsContract($contract);
+
+        $qualifications = Qualifications::pluck("name", "id");
+
+        $qualification_exist = ListCheckQualification::find($list_selected);
+
+        $newQualification = new ListCheckQualification();
+        $newQualification->validity_period = $qualification_exist->validity_period;
+        $newQualification->company_id = $this->company;
+        $newQualification->contract_id = $contract->id;
+        $newQualification->user_id = $this->user->id;
+        $newQualification->state = true;
+
+        $qualification_exist_active = ListCheckQualification::where('company_id', $this->company)
+        ->where('contract_id', $contract->id)
+        ->where('state', true)
+        ->orderBy('created_at', 'DESC')
+        ->first();
+        
+        if(!$newQualification->save()){
+            return $this->respondHttp500();
+        }
+
+        $qualification_exist_active->update([
+            'state' => false
+        ]);
+
+        //Obtiene los items calificados
+        $getQualifications = ItemQualificationContractDetail::
+            where('contract_id', $contract->id)
+            ->where('list_qualification_id', $qualification_exist->id)
+            ->get();
+
+        /**Insercion de registros encontrados*/
+
+        if (COUNT($getQualifications) > 0)
+        {
+          $getQualifications->each(function($item, $index) use ($qualifications, $newQualification, $contract) {
+
+            $qualificationNewCopy = $item->replicate()->fill([
+                'contract_id' => $contract->id,
+                'list_qualification_id' => $newQualification->id
+            ]);
+
+            $qualificationNewCopy->save();     
+          });
+        }
+
+        $data = $newQualification->id;
+
+        DB::commit();
+
+        return $data;
+
+      } catch(Exception $e){
+        \Log::info($e->getMessage());
+        DB::rollback();
+            $this->respondHttp500();
+      }
+    }
+
     /**
      * Update the list Check
      *
@@ -401,12 +489,12 @@ class ListCheckQualificationController extends Controller
                 }
 
                 /**Planes de acción*/
-                /*ActionPlan::
+                ActionPlan::
                         model($itemQualification)
                     ->activities($request->actionPlan)
                     ->save();
 
-                $data['actionPlan'] = ActionPlan::getActivities();*/
+                $data['actionPlan'] = ActionPlan::getActivities();
             }
 
             //Borrar archivos que fueron removidos de los items
@@ -442,6 +530,20 @@ class ListCheckQualificationController extends Controller
             
         }
     }
+
+    /*public function listCheckQualificationCopy(Request $request)
+    {
+        $contract = $this->getContractUser($this->user->id);
+
+        try
+        {
+            ListCheckQualificationCopyJob::dispatch($this->user, $this->company, $contract, $request->list_selected);
+        
+            return $this->respondHttp200();
+        } catch(Exception $e) {
+            return $this->respondHttp500();
+        }
+    }*/
 
     /**
      * Returns an array for a select type input

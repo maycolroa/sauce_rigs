@@ -1387,7 +1387,7 @@ export default [
             { name: 'sau_users.name', data: 'user_creator', title: 'Usuario Creador', sortable: true, searchable: true, detail: false, key: false },
             { name: 'sau_ct_list_check_qualifications.created_at', data: 'created_at', title: 'Fecha creación', sortable: true, searchable: true, detail: false, key: false },
             { name: 'sau_ct_list_check_qualifications.validity_period', data: 'validity_period', title: 'Período de vigencia', sortable: true, searchable: true, detail: false, key: false },
-            { name: 'sau_ct_list_check_qualifications.state', data: 'state_list', title: 'Eatado', sortable: true, searchable: true, detail: false, key: false },
+            { name: 'sau_ct_list_check_qualifications.state', data: 'state_list', title: 'Estado', sortable: true, searchable: true, detail: false, key: false },
             { name: '', data: 'controlls', title: 'Controles', sortable: false, searchable: false, detail: false, key: false },
         ],
         'controlls': [{
@@ -1416,7 +1416,7 @@ export default [
                     id: 'id',
                 },
                 permission: 'contracts_list_standards_qualification_r'
-            },/*{
+            },{
                 config: {
                     color: 'outline-success',
                     borderless: true,
@@ -1426,9 +1426,10 @@ export default [
                 data: {
                     routePush: { name: 'legalaspects-list-check-qualification-clone' },
                     id: 'id',
+                    messageConfirmation: 'Al clonar la calificación solo se copiaran las calificaciones, los archivos y planes de acción debe diligenciarlos de nuevo segun sea el caso'
                 },
                 permission: 'contracts_list_standards_qualification_c'
-              },*/{
+              },{
                 config: {
                     color: 'outline-success',
                     borderless: true,

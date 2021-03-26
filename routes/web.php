@@ -450,6 +450,7 @@ Route::middleware(['auth'])->group(function () {
       Route::post('listCheck/data', 'LegalAspects\Contracs\ListCheckQualificationController@data');
       Route::post('listCheck/getListCheckItems', 'LegalAspects\Contracs\ListCheckQualificationController@getListCheckItems');
       Route::post('listCheck/saveQualificationItems', 'LegalAspects\Contracs\ListCheckQualificationController@saveQualificationItems');
+      Route::post('listCheck/listCheckCopy', 'LegalAspects\Contracs\ListCheckQualificationController@listCheckItemsClone');
 
       Route::post('fileUpload/data', 'LegalAspects\Contracs\FileUploadController@data');
       Route::get('fileUpload/download/{fileUpload}', 'LegalAspects\Contracs\FileUploadController@download');

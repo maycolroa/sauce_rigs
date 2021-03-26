@@ -737,7 +737,15 @@ export default [
 					component: () =>
 					import('@/views/LegalAspects/contracts/listCheck/listCheckItems')
 				}
-			])
+			]),
+			...middleware({ 'check-permission': 'contracts_list_standards_qualification_c' }, [
+				{
+					name: 'legalaspects-list-check-qualification-clone',
+					path: 'listcheck/clone',
+					component: () =>
+					import('@/views/LegalAspects/contracts/listCheck/cloneListCheckItems')
+				}
+			]),
 			
 		]
 	}

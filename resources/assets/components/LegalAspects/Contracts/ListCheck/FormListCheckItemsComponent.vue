@@ -1,5 +1,16 @@
 <template>
     <b-form :action="url" @submit.prevent="submit" autocomplete="off">
+		<b-modal ref="modalTransfer" :hideFooter="true" id="modals-historial" class="modal-top" size="md">
+			<div slot="modal-title">
+				<h4>INFORMACIÓN</h4>
+			</div>
+			<p> Se clonaron solo las calificaciones, debe diligenciar de nuevo los archivos y planes de acción según sea caso </p>
+
+			<div class="row float-right pt-12 pr-12y">						
+				<b-btn variant="primary" @click="$refs.modalTransfer.hide()">Cerrar</b-btn>
+			</div>
+		</b-modal>
+
 		<element-fixed-component>
 		  <list-check-items-resumen-component :items="form.items"/>
 		</element-fixed-component>
@@ -144,6 +155,7 @@ export default {
 		method: { type: String },
 		cancelUrl: { type: [String, Object], required: true },
 		isEdit: { type: Boolean, default: false },
+		message: { type: Boolean, default: false },
 		viewOnly: { type: Boolean, default: false },
 		contractId: {type: [String, Number] },
 		qualificationListId: {type: [String, Number] },
@@ -180,6 +192,10 @@ export default {
 			this.loading = false;
 			this.form = Form.makeFrom(this.items, this.method, false, false);
 		}
+	},
+	mounted() {
+		if (this.message)
+			this.$refs.modalTransfer.show()
 	},
 	data() {
 		return {
