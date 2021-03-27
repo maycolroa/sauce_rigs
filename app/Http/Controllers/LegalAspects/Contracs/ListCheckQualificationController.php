@@ -18,6 +18,7 @@ use Validator;
 use Carbon\Carbon;
 use App\Traits\ContractTrait;
 use DB;
+use PDF;
 
 class ListCheckQualificationController extends Controller
 {
@@ -164,95 +165,7 @@ class ListCheckQualificationController extends Controller
     {
         try
         {
-            $qualification_list = ListCheckQualification::findOrFail($request->id);
-
-            if ($qualification_list->id)
-                $contract = ContractLesseeInformation::findOrFail($qualification_list->contract_id);
-            else 
-                $contract = $this->getContractUser($this->user->id);
-
-            $items = $this->getStandardItemsContract($contract);
-
-            $qualifications = Qualifications::pluck("name", "id");
-
-            //Obtiene los items calificados
-            $items_calificated = ItemQualificationContractDetail::
-                      where('contract_id', $contract->id)
-                    ->where('list_qualification_id', $qualification_list->id)
-                    ->pluck("qualification_id", "item_id");
-            
-            $items_observations = ItemQualificationContractDetail::
-                     where('contract_id', $contract->id)
-                    ->where('list_qualification_id', $qualification_list->id)                     
-                    ->pluck("observations", "item_id");
-
-            if (COUNT($items) > 0)
-            {
-                $items->transform(function($item, $index) use ($qualifications, $items_calificated, $contract, $items_observations, $qualification_list) {
-                    //Añade las actividades definidas de cada item para los planes de acción
-                    $item->activities_defined = $item->activities()->pluck("description");
-                    $item->qualification = isset($items_calificated[$item->id]) ? $qualifications[$items_calificated[$item->id]] : '';
-                    $item->observations = isset($items_observations[$item->id]) ? $items_observations[$item->id] : '';
-                    $item->list_qualification_id = $qualification_list->id;
-                    $item->files = [];
-                    $item->actionPlan = [
-                        "activities" => [],
-                        "activitiesRemoved" => []
-                    ];
-
-                    if ($item->qualification == 'C')
-                    {
-                        $files = FileUpload::select(
-                                    'sau_ct_file_upload_contracts_leesse.id AS id',
-                                    'sau_ct_file_upload_contracts_leesse.name AS name',
-                                    'sau_ct_file_upload_contracts_leesse.file AS file',
-                                    'sau_ct_file_upload_contracts_leesse.expirationDate AS expirationDate'
-                                )
-                                ->join('sau_ct_file_upload_contract','sau_ct_file_upload_contract.file_upload_id','sau_ct_file_upload_contracts_leesse.id')
-                                ->join('sau_ct_file_item_contract', 'sau_ct_file_item_contract.file_id', 'sau_ct_file_upload_contracts_leesse.id')
-                                ->where('sau_ct_file_upload_contract.contract_id', $contract->id)
-                                ->where('sau_ct_file_item_contract.item_id', $item->id)
-                                ->where('sau_ct_file_item_contract.list_qualification_id', $qualification_list->id)
-                                ->get();
-
-                        if ($files)
-                        {
-                            $files->transform(function($file, $index) {
-                                $file->key = Carbon::now()->timestamp + rand(1,10000);
-                                $file->old_name = $file->file;
-                                $file->expirationDate = $file->expirationDate == null ? null : (Carbon::createFromFormat('Y-m-d',$file->expirationDate))->format('D M d Y');
-
-                                return $file;
-                            });
-
-                            $item->files = $files;
-                        }
-                    }
-                    else if ($item->qualification == 'NC')
-                    {
-                        $model_activity = ItemQualificationContractDetail::
-                                  where('contract_id', $contract->id)
-                                ->where('item_id', $item->id)
-                                ->where('list_qualification_id', $qualification_list->id)
-                                ->first();
-
-                        $item->actionPlan = ActionPlan::model($model_activity)->prepareDataComponent();
-                    }
-
-                    return $item;
-                });
-
-                $data = [
-                    'id' => $contract->id,
-                    'items' => $items,
-                    'id_qualification_list' => $qualification_list->id,
-                    'delete' => [
-						'files' => []
-                    ]
-                ];
-            }
-            else
-                $data = [];
+           $data = $this->getListCheckItemsPdf($request->id);
 
             return $this->respondHttp200([
                 'data' => $data
@@ -545,37 +458,133 @@ class ListCheckQualificationController extends Controller
         }
     }*/
 
-    /**
-     * Returns an array for a select type input
-     *
-     * @param Request $request
-     * @return Array
-     */
-
-    public function multiselect(Request $request)
+    public function downloadPdf($id)
     {
-        if($request->has('keyword'))
-        {
-            $keyword = "%{$request->keyword}%";
-            $regionals = EmployeeRegional::select("id", "name")
-                ->where(function ($query) use ($keyword) {
-                    $query->orWhere('name', 'like', $keyword);
-                })
-                ->orderBy('name')
-                ->take(30)->pluck('id', 'name');
+        $listCheck = $this->getDataExportPdf($id);
 
-            return $this->respondHttp200([
-                'options' => $this->multiSelectFormat($regionals)
-            ]);
+        PDF::setOptions(['dpi' => 150, 'defaultFont' => 'sans-serif']);
+
+        $pdf = PDF::loadView('pdf.qualificationListCheck', ['listCheck' => $listCheck] );
+
+        $pdf->setPaper('A4', 'landscape');
+
+        return $pdf->download('lista de estandares mínimos.pdf');
+    }
+
+    public function getDataExportPdf($id)
+    {
+        $listCheck = $this->getListCheckItemsPdf($id);
+
+        \Log::info($listCheck);
+
+        return $listCheck;
+    }
+
+    public function getListCheckItemsPdf($id)
+    {
+        $qualification_list = ListCheckQualification::findOrFail($id);
+
+        if ($qualification_list->id)
+            $contract = ContractLesseeInformation::findOrFail($qualification_list->contract_id);
+        else 
+            $contract = $this->getContractUser($this->user->id);
+
+        $items = $this->getStandardItemsContract($contract);
+
+        $qualifications = Qualifications::pluck("name", "id");
+
+        //Obtiene los items calificados
+        $items_calificated = ItemQualificationContractDetail::
+                    where('contract_id', $contract->id)
+                ->where('list_qualification_id', $qualification_list->id)
+                ->pluck("qualification_id", "item_id");
+        
+        $items_observations = ItemQualificationContractDetail::
+                    where('contract_id', $contract->id)
+                ->where('list_qualification_id', $qualification_list->id)                     
+                ->pluck("observations", "item_id");
+
+        if (COUNT($items) > 0)
+        {
+            $items->transform(function($item, $index) use ($qualifications, $items_calificated, $contract, $items_observations, $qualification_list) {
+                //Añade las actividades definidas de cada item para los planes de acción
+                $item->activities_defined = $item->activities()->pluck("description");
+                $item->qualification = isset($items_calificated[$item->id]) ? $qualifications[$items_calificated[$item->id]] : '';
+                $item->observations = isset($items_observations[$item->id]) ? $items_observations[$item->id] : '';
+                $item->list_qualification_id = $qualification_list->id;
+                $item->files = [];
+                $item->actionPlan = [
+                    "activities" => [],
+                    "activitiesRemoved" => []
+                ];
+
+                if ($item->qualification == 'C')
+                {
+                    $files = FileUpload::select(
+                                'sau_ct_file_upload_contracts_leesse.id AS id',
+                                'sau_ct_file_upload_contracts_leesse.name AS name',
+                                'sau_ct_file_upload_contracts_leesse.file AS file',
+                                'sau_ct_file_upload_contracts_leesse.expirationDate AS expirationDate'
+                            )
+                            ->join('sau_ct_file_upload_contract','sau_ct_file_upload_contract.file_upload_id','sau_ct_file_upload_contracts_leesse.id')
+                            ->join('sau_ct_file_item_contract', 'sau_ct_file_item_contract.file_id', 'sau_ct_file_upload_contracts_leesse.id')
+                            ->where('sau_ct_file_upload_contract.contract_id', $contract->id)
+                            ->where('sau_ct_file_item_contract.item_id', $item->id)
+                            ->where('sau_ct_file_item_contract.list_qualification_id', $qualification_list->id)
+                            ->get();
+
+                    if ($files)
+                    {
+                        $files->transform(function($file, $index) {
+                            $file->key = Carbon::now()->timestamp + rand(1,10000);
+                            $file->old_name = $file->file;
+                            $file->expirationDate = $file->expirationDate == null ? null : (Carbon::createFromFormat('Y-m-d',$file->expirationDate))->format('D M d Y');
+
+                            return $file;
+                        });
+
+                        $item->files = $files;
+                    }
+                }
+                else if ($item->qualification == 'NC')
+                {
+                    $model_activity = ItemQualificationContractDetail::
+                                where('contract_id', $contract->id)
+                            ->where('item_id', $item->id)
+                            ->where('list_qualification_id', $qualification_list->id)
+                            ->first();
+
+                    $item->actionPlan = ActionPlan::model($model_activity)->prepareDataComponent();
+                }
+
+                return $item;
+            });
+
+            $qualifications_creator = ListCheckQualification::select(
+                'sau_ct_list_check_qualifications.*',
+                DB::raw("case when sau_ct_list_check_qualifications.state is true then 'ACTIVA' else 'INACTIVA' end as state_list"),
+                'sau_users.name as user_creator')
+            ->join('sau_users', 'sau_users.id', 'sau_ct_list_check_qualifications.user_id')
+            ->where('company_id', $this->company)
+            ->where('contract_id', $contract->id)
+            ->where('sau_ct_list_check_qualifications.id', $qualification_list->id)
+            ->first();
+
+            $data = [
+                'id' => $contract->id,
+                'items' => $items,
+                'id_qualification_list' => $qualification_list->id,
+                'delete' => [
+                    'files' => []
+                ],
+                'validity_period' => $qualification_list->validity_period,
+                'user_Creator' => $qualifications_creator->user_creator,
+                'state' => $qualifications_creator->state_list
+            ];
         }
         else
-        {
-            $regionals = EmployeeRegional::selectRaw("
-                sau_employees_regionals.id as id,
-                sau_employees_regionals.name as name
-            ")->orderBy('name')->pluck('id', 'name');
-        
-            return $this->multiSelectFormat($regionals);
-        }
+            $data = [];
+
+        return  $data;
     }
 }

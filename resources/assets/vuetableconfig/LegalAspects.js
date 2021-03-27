@@ -1443,7 +1443,7 @@ export default [
                 permission: 'contracts_list_standards_qualification_r'
             }]
         },
-        /*{
+        {
             type: 'simpleDownload',
             buttons: [{
             name: 'downloadFile',
@@ -1459,7 +1459,7 @@ export default [
             },
             permission: 'contracts_list_standards_qualification_u'
             }],
-        },*/
+        },
         {
             type: 'base',
             buttons: [{
