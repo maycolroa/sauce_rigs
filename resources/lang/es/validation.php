@@ -326,7 +326,8 @@ return [
       'reason_rejection' => 'Motivo del rechazo',
       'fullfilment_parcial' => 'Valor de cumplimiento parcial',
       'themes.*.items.*.compliance_value' => 'Valor cumplimiento',
-      'themes.*.items.*.partial_value' => 'Valor parcial'
+      'themes.*.items.*.partial_value' => 'Valor parcial',
+      'validity_period' => 'Período de Vigencia'
     ],
 
 ];

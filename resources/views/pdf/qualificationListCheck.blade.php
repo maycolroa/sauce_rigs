@@ -117,5 +117,31 @@
             </thead>
         </table>   
     </div>
+
+    <br><br>
+
+    <div style="page-break-inside: avoid;">
+        <table>
+            <thead>
+                <tr>
+                    <th colspan="3">Archivos</th>
+                </tr>
+                <tr>
+                    <th>Item</th>
+                    <th>Nombre</th>
+                    <th>Fecha de vencimiento</th>
+                </tr>                
+                @foreach($listCheck["items"] as $keyItem => $item)
+                    @foreach($item["files"] as $file)
+                        <tr>
+                            <td>{{ $keyItem + 1 }}</td>
+                            <td>{{$file["name"]}}</td>
+                            <td>{{$file["expirationDate"] ? date('Y-m-d', strtotime($file["expirationDate"])) : '-' }}</td>
+                        </tr>
+                    @endforeach
+                @endforeach
+            </thead>
+        </table>   
+    </div>
 </body>
 </html>

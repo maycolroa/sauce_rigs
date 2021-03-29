@@ -14,6 +14,7 @@ use App\Facades\ActionPlans\Facades\ActionPlan;
 use App\Models\LegalAspects\Contracts\FileModuleState;
 use App\Http\Requests\LegalAspects\Contracts\ListCheckItemsRequest;
 use App\Jobs\LegalAspects\Contracts\ListCheck\ListCheckQualificationCopyJob;
+use App\Http\Requests\LegalAspects\Contracts\ListCheckQualificationRequest;
 use Validator;
 use Carbon\Carbon;
 use App\Traits\ContractTrait;
@@ -74,7 +75,7 @@ class ListCheckQualificationController extends Controller
      * @param  App\Http\Requests\Administrative\Regionals\RegionalRequest  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(ListCheckQualificationRequest $request)
     {
         $contract = $this->getContractUser($this->user->id, $this->company);
 
@@ -94,9 +95,10 @@ class ListCheckQualificationController extends Controller
             return $this->respondHttp500();
         }
 
-        $qualification_exist->update([
-            'state' => false
-        ]);
+        if($qualification_exist)
+            $qualification_exist->update([
+                'state' => false
+            ]);
 
         return $this->respondHttp200([
             'message' => 'Se creo el registro'
@@ -130,7 +132,7 @@ class ListCheckQualificationController extends Controller
      * @param  EmployeeRegional  $regional
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, ListCheckQualification $listCheck)
+    public function update(ListCheckQualificationRequest $request, ListCheckQualification $listCheck)
     {
         $listCheck->fill($request->all());
         
@@ -474,8 +476,6 @@ class ListCheckQualificationController extends Controller
     public function getDataExportPdf($id)
     {
         $listCheck = $this->getListCheckItemsPdf($id);
-
-        \Log::info($listCheck);
 
         return $listCheck;
     }
