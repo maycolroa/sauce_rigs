@@ -579,7 +579,8 @@ class ListCheckQualificationController extends Controller
                 ],
                 'validity_period' => $qualification_list->validity_period,
                 'user_Creator' => $qualifications_creator->user_creator,
-                'state' => $qualifications_creator->state_list
+                'state' => $qualifications_creator->state_list,
+                'contract_name' => $contract->social_reason
             ];
         }
         else

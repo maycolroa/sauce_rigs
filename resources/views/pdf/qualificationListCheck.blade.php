@@ -52,6 +52,9 @@
                         <p>Período de vigencia: {{$listCheck['validity_period']}}</p>
                     </th>
                     <th style='padding: 1px; width: 20%'>
+                        <p>Contratista: {{$listCheck['contract_name']}}</p>
+                    </th>
+                    <th style='padding: 1px; width: 20%'>
                         <p>Estado: {{$listCheck['state']}}</p>
                     </th>
                     <th style='padding: 1px; width: 20%'>
