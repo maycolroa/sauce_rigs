@@ -146,6 +146,7 @@ export default {
 		isEdit: { type: Boolean, default: false },
 		viewOnly: { type: Boolean, default: false },
 		contractId: {type: [String, Number] },
+		qualificationListId: {type: [String, Number] },
 		qualifications: {
 			type: [Array, Object],
 			default: function() {
@@ -307,6 +308,7 @@ export default {
 				data.append(`items[${index}]`, JSON.stringify({ files: item.files, actionPlan: item.actionPlan }));
 				data.append('delete', JSON.stringify(this.form.delete));
 				data.append('contract_id', this.contractId);
+				data.append('list_qualification_id', this.qualificationListId);
 
 				if(typeof item.files !== 'undefined')
 				{

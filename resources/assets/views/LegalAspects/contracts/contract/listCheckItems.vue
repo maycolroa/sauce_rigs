@@ -21,7 +21,8 @@
 							method="POST"
 							:contractId="(this.$route.params.id ? this.$route.params.id : '')"
 							:items="items"
-							:qualifications="qualifications"				
+							:qualifications="qualifications"	
+							:qualificationListId="qualificationListId"			
 							:cancel-url="{ name: (this.$route.params.id ? 'legalaspects-contractor' : 'legalaspects-contracts')}"/>
 					</template>
 				</b-card-body>
@@ -49,6 +50,7 @@ export default {
 			items: [],
 			qualifications: [],
 			ready: false,
+			qualificationListId: ''
 		}
 	},
 	created(){
@@ -59,18 +61,17 @@ export default {
 		})
 		.catch(error => {
 			Alerts.error('Error', 'Se ha generado un error en el proceso al cargar las calificaciones, por favor contacte con el administrador');
-			this.$router.go(-1);
 		});
 
 		//axios para obtener los items a calificar
 		axios.post("/legalAspects/contracts/getListCheckItems", { id: this.$route.params.id })
 		.then(response => {
 			this.items = response.data.data;
+			this.qualificationListId = response.data.data.id_qualification_list;
 			this.ready = true
 		})
 		.catch(error => {
 			Alerts.error('Error', 'Se ha generado un error en el proceso al cargar los items, por favor contacte con el administrador');
-			this.$router.go(-1);
 		});
 	},
 }

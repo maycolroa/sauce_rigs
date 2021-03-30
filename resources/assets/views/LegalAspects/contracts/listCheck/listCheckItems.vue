@@ -62,7 +62,6 @@ export default {
 		})
 		.catch(error => {
 			Alerts.error('Error', 'Se ha generado un error en el proceso al cargar las calificaciones, por favor contacte con el administrador');
-			this.$router.go(-1);
 		});
 
 		//axios para obtener los items a calificar
@@ -75,7 +74,6 @@ export default {
 		})
 		.catch(error => {
 			Alerts.error('Error', 'Se ha generado un error en el proceso al cargar los items, por favor contacte con el administrador');
-			this.$router.go(-1);
 		});
 	},
 }

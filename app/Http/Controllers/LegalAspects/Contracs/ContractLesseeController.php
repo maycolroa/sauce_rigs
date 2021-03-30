@@ -84,9 +84,15 @@ class ContractLesseeController extends Controller
                     'sau_ct_list_check_resumen.total_nc AS total_nc',
                     'sau_ct_list_check_resumen.total_sc AS total_sc',
                     'sau_ct_list_check_resumen.total_p_c AS total_p_c',
-                    'sau_ct_list_check_resumen.total_p_nc AS total_p_nc'
+                    'sau_ct_list_check_resumen.total_p_nc AS total_p_nc',
+                    'sau_ct_list_check_resumen.list_qualification_id AS id_qualification'
                     )
-                    ->leftJoin('sau_ct_list_check_resumen', 'sau_ct_list_check_resumen.contract_id', 'sau_ct_information_contract_lessee.id');
+                    ->leftJoin('sau_ct_list_check_qualifications', function ($join) 
+                    {
+                      $join->on("sau_ct_list_check_qualifications.contract_id", "sau_ct_information_contract_lessee.id");
+                      $join->on('sau_ct_list_check_qualifications.state', DB::raw(1));
+                    })
+                    ->leftJoin('sau_ct_list_check_resumen', 'sau_ct_list_check_resumen.list_qualification_id', 'sau_ct_list_check_qualifications.id');
 
         $url = "/legalaspects/contractor";
 
@@ -623,6 +629,8 @@ class ContractLesseeController extends Controller
             else 
                 $contract = $this->getContractUser($this->user->id);
 
+            $qualification_list = ListCheckQualification::where('contract_id', $contract->id)->where('state', true)->first();
+
             $items = $this->getStandardItemsContract($contract);
 
             $qualifications = Qualifications::pluck("name", "id");
@@ -630,19 +638,22 @@ class ContractLesseeController extends Controller
             //Obtiene los items calificados
             $items_calificated = ItemQualificationContractDetail::
                       where('contract_id', $contract->id)
+                    ->where('list_qualification_id', $qualification_list->id)
                     ->pluck("qualification_id", "item_id");
             
             $items_observations = ItemQualificationContractDetail::
                      where('contract_id', $contract->id)
+                    ->where('list_qualification_id', $qualification_list->id)
                     ->pluck("observations", "item_id");
 
             if (COUNT($items) > 0)
             {
-                $items->transform(function($item, $index) use ($qualifications, $items_calificated, $contract, $items_observations) {
+                $items->transform(function($item, $index) use ($qualifications, $items_calificated, $contract, $items_observations, $qualification_list) {
                     //Añade las actividades definidas de cada item para los planes de acción
                     $item->activities_defined = $item->activities()->pluck("description");
                     $item->qualification = isset($items_calificated[$item->id]) ? $qualifications[$items_calificated[$item->id]] : '';
                     $item->observations = isset($items_observations[$item->id]) ? $items_observations[$item->id] : '';
+                    $item->list_qualification_id = $qualification_list->id;
                     $item->files = [];
                     $item->actionPlan = [
                         "activities" => [],
@@ -661,6 +672,7 @@ class ContractLesseeController extends Controller
                                 ->join('sau_ct_file_item_contract', 'sau_ct_file_item_contract.file_id', 'sau_ct_file_upload_contracts_leesse.id')
                                 ->where('sau_ct_file_upload_contract.contract_id', $contract->id)
                                 ->where('sau_ct_file_item_contract.item_id', $item->id)
+                                ->where('sau_ct_file_item_contract.list_qualification_id', $qualification_list->id)
                                 ->get();
 
                         if ($files)
@@ -680,6 +692,7 @@ class ContractLesseeController extends Controller
                     {
                         $model_activity = ItemQualificationContractDetail::
                                   where('contract_id', $contract->id)
+                                ->where('list_qualification_id', $qualification_list->id)
                                 ->where('item_id', $item->id)
                                 ->first();
 
@@ -691,6 +704,7 @@ class ContractLesseeController extends Controller
 
                 $data = [
                     'id' => $contract->id,
+                    'id_qualification_list' => $qualification_list->id,
                     'items' => $items,
                     'delete' => [
 						'files' => []
@@ -795,7 +809,11 @@ class ContractLesseeController extends Controller
 
         try
         {
-            //\Log::info($request->all());
+            \Log::info($request);
+
+            if ($request->has('list_qualification_id') && $request->list_qualification_id)
+                $qualification_list = ListCheckQualification::findOrFail($request->list_qualification_id);
+                
             $data = $request->except(['items', 'files_binary']);
 
             $qualifications = Qualifications::pluck("id", "name");
@@ -803,7 +821,12 @@ class ContractLesseeController extends Controller
             if ($request->has('contract_id') && $request->contract_id)                
                 $contract = ContractLesseeInformation::findOrFail($request->contract_id);
             else
-                $contract = $this->getContractUser($this->user->id);
+            {
+                if($qualification_list)
+                    $contract = ContractLesseeInformation::findOrFail($qualification_list->contract_id);
+                else
+                    $contract = $this->getContractUser($this->user->id);
+            }
 
             //Se inician los atributos necesarios que seran estaticos para todas las actividades
             // De esta forma se evitar la asignacion innecesaria una y otra vez 
@@ -815,11 +838,18 @@ class ContractLesseeController extends Controller
             if ($request->has('qualification') && $request->qualification)
             {
                 $itemQualification = ItemQualificationContractDetail::updateOrCreate(
-                    ['contract_id' => $contract->id, 'item_id' => $request->id], 
-                    ['contract_id' => $contract->id, 'item_id' => $request->id, 'qualification_id' => $qualifications[$request->qualification], 'observations' => $request->observations]);
-
-                if (!$itemQualification->save()) 
-                    return $this->respondHttp500();
+                    [
+                        'contract_id' => $contract->id, 
+                        'item_id' => $request->id, 
+                        'list_qualification_id' => $request->list_qualification_id
+                    ],
+                    [
+                        'contract_id' => $contract->id, 
+                        'item_id' => $request->id, 
+                        'qualification_id' => $qualifications[$request->qualification], 
+                        'observations' => $request->observations, 
+                        'list_qualification_id' => $request->list_qualification_id
+                    ]);
 
                 //Cumple y solo es aqui donde se cargan archivos
                 if ($request->qualification == 'C')
@@ -890,7 +920,11 @@ class ContractLesseeController extends Controller
                             $data['files'][$keyF]['id'] = $fileUpload->id;
 
                             $fileUpload->contracts()->sync([$contract->id]);
-                            $fileUpload->items()->sync([$request->id]);
+                            
+                            $ids[$request->id] = ['list_qualification_id' => $request->list_qualification_id];
+
+                            $fileUpload->items()->sync($ids);
+                            //$fileUpload->items()->sync([$request->id]);
                         }
 
                         //Borrar archivos reemplazados
