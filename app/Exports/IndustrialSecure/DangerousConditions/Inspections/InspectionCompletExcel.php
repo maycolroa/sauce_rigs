@@ -372,7 +372,7 @@ class InspectionCompletExcel implements FromQuery, WithMapping, WithHeadings, Wi
         'Calificación',
         'Descripción Calificación',
         'Calificador',
-        'Hallazgo'
+        'Observación'
       ]);
 
       if ($this->confLocation['regional'] == 'SI')

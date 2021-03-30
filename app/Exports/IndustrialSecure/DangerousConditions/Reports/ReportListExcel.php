@@ -145,9 +145,9 @@ class ReportListExcel implements FromQuery, WithMapping, WithHeadings, WithTitle
       $columns = array_merge($columns, [
         'Severidad',
         'Observación',
-        'Condición',
-        'Tipo de condición',
-        'Otra Condición',
+        'Hallazgo',
+        'Tipo de hallazgo',
+        'Otro Hallazgo',
         'Usuario que Reporta',
         'Identificación',
         'Fecha de creación',
