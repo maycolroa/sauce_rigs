@@ -18,16 +18,18 @@ class ListCheckContractExportJob implements ShouldQueue
 
     protected $company_id;
     protected $contract;
+    protected $list_id;
 
     /**
      * Create a new job instance.
      *
      * @return void
      */
-    public function __construct($company_id, $contract)
+    public function __construct($company_id, $contract, $list_id)
     {
       $this->company_id = $company_id;
       $this->contract = $contract;
+      $this->list_id = $list_id;
     }
 
     /**
@@ -50,7 +52,7 @@ class ListCheckContractExportJob implements ShouldQueue
         if (!$recipients->isEmpty())
         {
           $nameExcel = 'export/1/lista_estandares_minimos_'.date("YmdHis").'.xlsx';
-          Excel::store(new ListCheckContractExcel($this->contract),$nameExcel,'public',\Maatwebsite\Excel\Excel::XLSX);
+          Excel::store(new ListCheckContractExcel($this->contract, $this->list_id),$nameExcel,'public',\Maatwebsite\Excel\Excel::XLSX);
           
           $paramUrl = base64_encode($nameExcel);
           

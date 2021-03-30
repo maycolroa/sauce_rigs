@@ -809,8 +809,6 @@ class ContractLesseeController extends Controller
 
         try
         {
-            \Log::info($request);
-
             if ($request->has('list_qualification_id') && $request->list_qualification_id)
                 $qualification_list = ListCheckQualification::findOrFail($request->list_qualification_id);
                 
