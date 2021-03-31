@@ -163,6 +163,14 @@ export default [
 					import('@/views/LegalAspects/contracts/evaluationContracts/create')
 				}
 			]),
+			...middleware({ 'check-permission': 'contracts_evaluations_perform_evaluation' }, [
+				{
+					name: 'legalaspects-evaluations-contracts-clone',
+					path: 'evaluations/contracts/clone',
+					component: () =>
+					import('@/views/LegalAspects/contracts/evaluationContracts/clone')
+				}
+			]),
 			...middleware({ 'check-permission': 'contracts_evaluations_view_evaluations_made' }, [
 				{
 					name: 'legalaspects-evaluations-lessee',
@@ -745,8 +753,7 @@ export default [
 					component: () =>
 					import('@/views/LegalAspects/contracts/listCheck/cloneListCheckItems')
 				}
-			]),
-			
+			]),			
 		]
 	}
 ];
