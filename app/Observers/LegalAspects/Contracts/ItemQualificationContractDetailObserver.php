@@ -35,7 +35,8 @@ class ItemQualificationContractDetailObserver
         if (Auth::user())
         {
             $qualification->contract->listCheckHistory()->create([
-            'user_id' => Auth::user()->id
+            'user_id' => Auth::user()->id,
+            'list_qualification_id' => $qualification->list_qualification_id
             ]);
 
             SyncQualificationResumenJob::dispatch($qualification->contract, $qualification->list_qualification_id);

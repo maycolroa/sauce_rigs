@@ -89,7 +89,12 @@ class InformManagerListCheck
                 ELSE 1 END AS orden,
             COUNT(*) AS total
         ")
-        ->leftJoin('sau_ct_list_check_resumen', 'sau_ct_list_check_resumen.contract_id', 'sau_ct_information_contract_lessee.id')
+        ->join('sau_ct_list_check_qualifications', function ($join) 
+            {
+                $join->on("sau_ct_list_check_qualifications.contract_id", "sau_ct_information_contract_lessee.id");
+                $join->on('sau_ct_list_check_qualifications.state', DB::raw(1));
+            })
+        ->leftJoin('sau_ct_list_check_resumen', 'sau_ct_list_check_resumen.list_qualification_id', 'sau_ct_list_check_qualifications.id')
         ->inContracts($this->contracts, $this->filtersType['contracts'])
         ->inClassification($this->classification, $this->filtersType['classification'])
         ->where('sau_ct_information_contract_lessee.type', 'Contratista')
@@ -116,6 +121,8 @@ class InformManagerListCheck
                     (classification = 'UPA' AND number_workers <= 10 AND risk_class IN ('Clase de riesgo IV', 'Clase de riesgo V')) OR
                     (classification = 'Empresa' AND number_workers BETWEEN 11 AND 50 AND risk_class IN ('Clase de riesgo IV', 'Clase de riesgo V')) OR 
                     (classification = 'Empresa' AND number_workers > 50) 
+                    )THEN '60 Estándares' OR 
+                    (classification = 'Empresa' AND risk_class IN ('Clase de riesgo IV', 'Clase de riesgo V')) 
                     )THEN '60 Estándares'
             ELSE NULL END AS standard_name")
         ->withoutGlobalScopes()        

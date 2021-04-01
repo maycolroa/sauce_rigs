@@ -16,7 +16,7 @@
 						<b-card  bg-variant="transparent"  title="" class="mb-3 box-shadow-none">
 							<vue-table
 									configName="legalaspects-contractor-list-check-history"
-									:modelId="form.id ? form.id : -1"
+									:modelId="qualificationListId ? qualificationListId : -1"
 									></vue-table>
 						</b-card>
 						<br>
