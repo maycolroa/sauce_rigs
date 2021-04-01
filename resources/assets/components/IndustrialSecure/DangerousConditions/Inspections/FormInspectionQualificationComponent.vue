@@ -105,7 +105,7 @@
                                   <th scope="col" class="align-middle" v-if="!viewOnly">#</th>
                                   <th scope="col" class="align-middle">Descripción</th>
                                   <th scope="col" class="align-middle">Calificación</th>
-                                  <th scope="col" class="align-middle">Hallazgo</th>
+                                  <th scope="col" class="align-middle">Observación</th>
                                 </tr>
                               </thead>
                               <tbody>
@@ -195,7 +195,7 @@
                                       <vue-input :disabled="true" class="col-md-12" v-model="form.themes[index].items[index2].qualification" label="" type="text" name="qualification" placeholder="Calificación"></vue-input>
                                     </td>
                                     <td style="padding: 0px;">
-                                      <vue-textarea :disabled="true" class="col-md-12" v-model="form.themes[index].items[index2].find" label="" name="find" placeholder="Hallazgo" rows="1"></vue-textarea>
+                                      <vue-textarea :disabled="true" class="col-md-12" v-model="form.themes[index].items[index2].find" label="" name="find" placeholder="Observación" rows="1"></vue-textarea>
                                     </td>
                                   </tr>
                                 </template>

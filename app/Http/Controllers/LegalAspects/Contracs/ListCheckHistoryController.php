@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Vuetable\Facades\Vuetable;
 use App\Models\LegalAspects\Contracts\ListCheckChangeHistory;
+use App\Models\LegalAspects\Contracts\ListCheckQualification;
 
 class ListCheckHistoryController extends Controller
 {
@@ -33,7 +34,9 @@ class ListCheckHistoryController extends Controller
         ->join('sau_users', 'sau_users.id', 'sau_ct_lisk_check_change_histories.user_id');
 
         if ($request->has('modelId') && $request->get('modelId'))
-            $histories->where('sau_ct_lisk_check_change_histories.contract_id', '=', $request->get('modelId'));
+        {
+            $histories->where('sau_ct_lisk_check_change_histories.list_qualification_id', '=', $request->get('modelId'));
+        }
 
         return Vuetable::of($histories)
                     ->make();

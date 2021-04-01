@@ -19,7 +19,7 @@ class FileUpload extends Model
 
     public function items()
     {
-        return $this->belongsToMany(SectionCategoryItems::class, 'sau_ct_file_item_contract', 'file_id', 'item_id');
+        return $this->belongsToMany(SectionCategoryItems::class, 'sau_ct_file_item_contract', 'file_id', 'item_id')->withPivot('list_qualification_id');
     }
 
     public function documents()

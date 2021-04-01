@@ -3,7 +3,7 @@
 		<header-module
 			title="CONTRATISTAS"
 			subtitle="LISTA DE ESTÁNDARES MÍNIMOS"
-			:url="(this.$route.params.id ? 'legalaspects-contractor' : 'legalaspects-contracts')"
+			url="legalaspects-list-check-qualification"
 		/>
 
 
@@ -17,13 +17,13 @@
 						</template>
 						<list-check-items
 							v-else
-							:url="`/legalAspects/contracts/saveQualificationItems`"
+							:url="`/legalAspects/listCheck/saveQualificationItems`"
 							method="POST"
-							:contractId="(this.$route.params.id ? this.$route.params.id : '')"
+							:contractId="contractId"
 							:items="items"
-							:qualifications="qualifications"	
-							:qualificationListId="qualificationListId"			
-							:cancel-url="{ name: (this.$route.params.id ? 'legalaspects-contractor' : 'legalaspects-contracts')}"/>
+							:qualifications="qualifications"
+							:qualificationListId="qualificationListId"				
+							:cancel-url="{ name: 'legalaspects-list-check-qualification'}"/>
 					</template>
 				</b-card-body>
 			</b-card>
@@ -32,7 +32,7 @@
 </template>
 
 <script>
-import ListCheckItems from '@/components/LegalAspects/Contracts/ContractLessee/FormListCheckItemsComponent.vue';
+import ListCheckItems from '@/components/LegalAspects/Contracts/ListCheck/FormListCheckItemsComponent.vue';
 import Alerts from '@/utils/Alerts.js';
 import Loading from "@/components/Inputs/Loading.vue";
 
@@ -50,6 +50,7 @@ export default {
 			items: [],
 			qualifications: [],
 			ready: false,
+			contractId : '',
 			qualificationListId: ''
 		}
 	},
@@ -64,9 +65,10 @@ export default {
 		});
 
 		//axios para obtener los items a calificar
-		axios.post("/legalAspects/contracts/getListCheckItems", { id: this.$route.params.id })
+		axios.post("/legalAspects/listCheck/getListCheckItems", { id: this.$route.params.id })
 		.then(response => {
 			this.items = response.data.data;
+			this.contractId = response.data.data.id;
 			this.qualificationListId = response.data.data.id_qualification_list;
 			this.ready = true
 		})

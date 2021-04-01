@@ -27,10 +27,12 @@ class ListCheckContractExcel implements FromCollection, WithMapping, WithHeading
     use RegistersEventListeners;
 
     protected $contract;
+    protected $list_id;
 
-    public function __construct($contract)
+    public function __construct($contract, $list_id)
     {
       $this->contract = $contract;
+      $this->list_id = $list_id;
     }
 
     public function collection()
@@ -42,7 +44,7 @@ class ListCheckContractExcel implements FromCollection, WithMapping, WithHeading
         ->join('sau_ct_items_standard', 'sau_ct_items_standard.item_id', 'sau_ct_section_category_items.id')
         ->join('sau_ct_standard_classification', 'sau_ct_standard_classification.id', 'sau_ct_items_standard.standard_id');
 
-        $items = [];
+        $items = collect([]);
 
         if ($this->contract->classification == 'UPA')
         {
@@ -69,6 +71,11 @@ class ListCheckContractExcel implements FromCollection, WithMapping, WithHeading
                 if ($this->contract->risk_class == "Clase de riesgo I" || $this->contract->risk_class == "Clase de riesgo II" || $this->contract->risk_class == "Clase de riesgo III")
                 {
                     $items = $sql->where('sau_ct_standard_classification.standard_name', '=', '7 estandares')->get();
+                }
+
+                else if ($this->contract->risk_class == "Clase de riesgo IV" || $this->contract->risk_class == "Clase de riesgo V")
+                {
+                    $items = $sql->where('sau_ct_standard_classification.standard_name', '=', '60 estandares')->get();
                 }
             }
             else if ($this->contract->number_workers > 10 && $this->contract->number_workers <= 50)
@@ -97,6 +104,7 @@ class ListCheckContractExcel implements FromCollection, WithMapping, WithHeading
         //Obtiene los items calificados
         $items_calificated = ItemQualificationContractDetail::
                   where('contract_id', $this->contract->id)
+                  ->where('list_qualification_id', $this->list_id)
                 ->pluck("qualification_id", "item_id");
 
         $totales = [

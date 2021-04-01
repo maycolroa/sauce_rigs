@@ -14,15 +14,17 @@ class SyncQualificationResumenJob implements ShouldQueue
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels, ContractTrait;
 
     protected $contract;
+    protected $qualification;
 
     /**
      * Create a new job instance.
      *
      * @return void
      */
-    public function __construct($contract)
+    public function __construct($contract, $qualification)
     {
       $this->contract = $contract;
+      $this->qualification = $qualification;
     }
 
     /**
@@ -32,6 +34,6 @@ class SyncQualificationResumenJob implements ShouldQueue
      */
     public function handle()
     {
-        $this->reloadLiskCheckResumen($this->contract);
+        $this->reloadLiskCheckResumen($this->contract, $this->qualification);
     }
 }

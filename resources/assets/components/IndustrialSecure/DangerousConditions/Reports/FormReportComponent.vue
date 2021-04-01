@@ -5,13 +5,13 @@
     <b-form-row>
       <vue-advanced-select :disabled="viewOnly" class="col-md-6" v-model="form.rate" :multiple="false" :options="rates" :hide-selected="false" name="rate" :error="form.errorsFor('rate')" label="Severidad" placeholder="Seleccione el grado de severidad">
         </vue-advanced-select>
-      <vue-ajax-advanced-select :disabled="viewOnly" class="col-md-6" v-model="form.condition_id" :error="form.errorsFor('condition_id')" :selected-object="form.multiselect_condition" name="condition_id" label="Condición" placeholder="Seleccione la condición" :url="conditionsDataUrl">
+      <vue-ajax-advanced-select :disabled="viewOnly" class="col-md-6" v-model="form.condition_id" :error="form.errorsFor('condition_id')" :selected-object="form.multiselect_condition" name="condition_id" label="Hallazgo" placeholder="Seleccione el Hallazgo" :url="conditionsDataUrl">
           </vue-ajax-advanced-select>
     </b-form-row>
 
     <b-form-row>
       <vue-textarea :disabled="viewOnly" class="col-md-6" v-model="form.observation" label="Observación" name="observation" :error="form.errorsFor('observation')"  placeholder="Observación"></vue-textarea>
-      <vue-textarea :disabled="viewOnly" class="col-md-6" v-model="form.other_condition" label="Otra Condición" name="other_condition" :error="form.errorsFor(`other_condition`)"  placeholder="Otra Condición"></vue-textarea>
+      <vue-textarea :disabled="viewOnly" class="col-md-6" v-model="form.other_condition" label="Otro Hallazgo" name="other_condition" :error="form.errorsFor(`other_condition`)"  placeholder="Otro Hallazgo"></vue-textarea>
     </b-form-row>
   
     <b-form-row>

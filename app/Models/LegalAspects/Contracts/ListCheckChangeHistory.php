@@ -10,6 +10,7 @@ class ListCheckChangeHistory extends Model
 
     protected $fillable = [
         'contract_id',
-        'user_id'
+        'user_id',
+        'list_qualification_id'
     ];
 }

@@ -46,7 +46,13 @@ class NotifyUpdateListCheckContract extends Command
         $end = Carbon::now()->addDays(-1)->format('Y-m-d 23:59:59');
 
         $contracts = DB::table('sau_ct_item_qualification_contract')
-            ->selectRaw('DISTINCT contract_id AS id')
+            ->selectRaw('DISTINCT sau_ct_item_qualification_contract.contract_id AS id,
+                        list_qualification_id AS list_id')
+            ->join('sau_ct_list_check_qualifications', function ($join) 
+            {
+                $join->on("sau_ct_list_check_qualifications.id", "sau_ct_item_qualification_contract.list_qualification_id");
+                $join->on('sau_ct_list_check_qualifications.state', DB::raw(1));
+            })
             ->whereRaw("sau_ct_item_qualification_contract.updated_at BETWEEN '$ini' AND '$end'")
             ->get();
 
@@ -54,7 +60,7 @@ class NotifyUpdateListCheckContract extends Command
         {
             $contract = ContractLesseeInformation::withoutGlobalScopes()
             ->find($value->id);            ;
-            ListCheckContractExportJob::dispatch($contract->company_id, $contract);
+            ListCheckContractExportJob::dispatch($contract->company_id, $contract, $value->list_id);
         }
     }
 }

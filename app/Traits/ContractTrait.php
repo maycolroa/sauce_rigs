@@ -172,7 +172,7 @@ trait ContractTrait
         return $items;
     }
 
-    public function reloadLiskCheckResumen($contract)
+    public function reloadLiskCheckResumen($contract, $qualification)
     {
         $items = [];
         $items_delete = [];
@@ -182,7 +182,7 @@ trait ContractTrait
         
         $items_delete = COUNT($items) > 0 ? $items->pluck('id') : [];
 
-        $contract->listCheckResumen()->delete();
+        $contract->listCheckResumen()->where('list_qualification_id', $qualification)->delete();
 
         $items_delete = ItemQualificationContractDetail::select(
                     'sau_ct_item_qualification_contract.*',
@@ -190,6 +190,7 @@ trait ContractTrait
                 )
                 ->join('sau_ct_qualifications', 'sau_ct_qualifications.id', 'sau_ct_item_qualification_contract.qualification_id')
                 ->where('contract_id', $contract->id)
+                ->where('list_qualification_id', $qualification)
                 ->whereNotIn('item_id', $items_delete)
                 ->get();
 
@@ -205,6 +206,7 @@ trait ContractTrait
                   ->join('sau_ct_file_item_contract', 'sau_ct_file_item_contract.file_id', 'sau_ct_file_upload_contracts_leesse.id')
                   ->where('sau_ct_file_upload_contract.contract_id', $contract->id)
                   ->where('sau_ct_file_item_contract.item_id', $item->item_id)
+                  ->where('sau_ct_file_item_contract.list_qualification_id', $qualification)
                   ->get();
                 
                 foreach ($files as $file)
@@ -224,6 +226,7 @@ trait ContractTrait
         if (COUNT($items) > 0)
         {
             $totales = [
+                'list_qualification_id' => $qualification,
                 'total_standard' => 0,
                 'total_c' => 0,
                 'total_nc' => 0,
@@ -237,6 +240,7 @@ trait ContractTrait
             //Obtiene los items calificados
             $items_calificated = ItemQualificationContractDetail::
                       where('contract_id', $contract->id)
+                    ->where('list_qualification_id', $qualification)
                     ->pluck("qualification_id", "item_id");
 
             $items->each(function($item, $index) use ($qualifications, $items_calificated, $contract, &$totales) {
@@ -265,7 +269,7 @@ trait ContractTrait
             $totales['total_p_c'] = round(($totales['total_c'] / $totales['total_standard']) * 100, 1);
             $totales['total_p_nc'] = round(($totales['total_nc'] / $totales['total_standard']) * 100, 1);
 
-            $contract->listCheckResumen()->updateOrCreate(['contract_id'=>$contract->id], $totales);
+            $contract->listCheckResumen()->updateOrCreate(['contract_id'=>$contract->id, 'list_qualification_id' => $qualification], $totales);
         }
     }
 }

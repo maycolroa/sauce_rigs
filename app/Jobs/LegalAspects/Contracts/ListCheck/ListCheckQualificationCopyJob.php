@@ -25,13 +25,13 @@ use App\Models\LegalAspects\Contracts\ListCheckQualification;
 use App\Jobs\LegalAspects\Contracts\ListCheck\SyncQualificationResumenJob;
 use DB;
 
-class ListCheckCopyJob implements ShouldQueue
+class ListCheckQualificationCopyJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels, ContractTrait;
 
     protected $company_id;
     protected $contract;
-    protected $contract_select;
+    protected $list_selected;
     protected $user;
 
     /**
@@ -39,11 +39,11 @@ class ListCheckCopyJob implements ShouldQueue
      *
      * @return void
      */
-    public function __construct($user, $company_id, $contract, $contract_select)
+    public function __construct($user, $company_id, $contract, $list_selected)
     {
       $this->company_id = $company_id;
       $this->contract = $contract;
-      $this->contract_select = $contract_select;
+      $this->list_selected = $list_selected;
       $this->user = $user;
     }
 
@@ -108,7 +108,7 @@ class ListCheckCopyJob implements ShouldQueue
                   $path = 'legalAspects/files/'. $old_file;
 
                   if (!File::exists($path))
-                    Storage::disk('s3')->delete($path);
+                    Storage::disk('public')->delete($path);
                 });
 
                 $item->files = $files;
@@ -128,20 +128,18 @@ class ListCheckCopyJob implements ShouldQueue
 
         /**Insercion de registros encontrados*/
 
-        $selected_contract = ContractLesseeInformation::withoutGlobalScopes()->find($this->contract_select);
+        $selected_list = ListCheckQualification::find($this->list_selected);
 
-        $qualification_exist_selected = ListCheckQualification::where('contract_id', $this->contract_select)
-        ->where('state', true)
-        ->first();
+        \Log::info($selected_list);
 
         $getQualifications = ItemQualificationContractDetail::
-              where('contract_id', $this->contract_select)
-            ->where('list_qualification_id', $qualification_exist_selected->id)
+              where('contract_id', $this->contract->id)
+            ->where('list_qualification_id', $selected_list->id)
             ->get();
 
         if (COUNT($getQualifications) > 0)
         {
-          $getQualifications->each(function($item, $index) use ($qualifications, $selected_contract, $qualification_exist_selected, $qualification_exist) {
+          $getQualifications->each(function($item, $index) use ($qualifications, $selected_list, $qualification_exist) {
 
             $newQualification = $item->replicate()->fill([
                 'contract_id' => $this->contract->id,
@@ -150,50 +148,7 @@ class ListCheckCopyJob implements ShouldQueue
 
             $newQualification->save();
 
-            $item->qualification = $item->qualification_id ? $qualifications[$item->qualification_id] : '';
-
-            if ($item->qualification == 'C')
-            {
-              $files = FileUpload::select(
-                  'sau_ct_file_upload_contracts_leesse.id AS id',
-                  'sau_ct_file_upload_contracts_leesse.name AS name',
-                  'sau_ct_file_upload_contracts_leesse.file AS file',
-                  'sau_ct_file_upload_contracts_leesse.expirationDate AS expirationDate'
-              )
-              ->join('sau_ct_file_upload_contract','sau_ct_file_upload_contract.file_upload_id','sau_ct_file_upload_contracts_leesse.id')
-              ->join('sau_ct_file_item_contract', 'sau_ct_file_item_contract.file_id', 'sau_ct_file_upload_contracts_leesse.id')
-              ->where('sau_ct_file_upload_contract.contract_id', $this->contract_select)
-              ->where('sau_ct_file_item_contract.item_id', $item->item_id)
-              ->where('sau_ct_file_item_contract.list_qualification_id', $qualification_exist_selected->id)
-              ->get();
-
-              if ($files->count() > 0)
-              {
-                
-                $files->each(function($file, $index) use ($item, $qualification_exist) {
-
-                  $extension = explode('.', $file->file);
-
-                  $nameFile = base64_encode($this->user->id . now() . rand(1,10000)) .'.'. $extension[1];
-
-                  $newQFile = $file->replicate()->fill([
-                    'user_id' => $this->user->id,
-                    'file' => $nameFile
-                  ]);
-
-                  $newQFile->save();
-
-                  Storage::disk('s3')->copy('legalAspects/files/'. $file->file, 'legalAspects/files/'. $nameFile);
-
-                  $newQFile->contracts()->sync([$this->contract->id]);
-
-                  $ids[$item->item_id] = ['list_qualification_id' => $qualification_exist->id];
-
-                  $newQFile->items()->sync($ids);
-                  //$newQFile->items()->sync([$item->item_id]);
-                });
-              }
-            }            
+            $item->qualification = $item->qualification_id ? $qualifications[$item->qualification_id] : '';         
           });
         }
 

@@ -275,7 +275,7 @@ class DaysAlertsWithoutActivityContractors extends Command
                     WHEN (
                         (classification = 'UPA' AND number_workers <= 10 AND risk_class IN ('Clase de riesgo IV', 'Clase de riesgo V')) OR
                         (classification = 'Empresa' AND number_workers BETWEEN 11 AND 50 AND risk_class IN ('Clase de riesgo IV', 'Clase de riesgo V')) OR 
-                        (classification = 'Empresa' AND number_workers > 50) 
+                        (classification = 'Empresa' AND number_workers > 50) OR (classification = 'Empresa' AND risk_class IN ('Clase de riesgo IV', 'Clase de riesgo V')) 
                         )THEN '60 Estándares'
                 ELSE NULL END AS standard_names,
                 sau_ct_information_contract_lessee.created_at AS created_at
@@ -302,9 +302,15 @@ class DaysAlertsWithoutActivityContractors extends Command
             {
                 $join->on("t2.standard_name", "t.standard_names");
             })
+            ->join('sau_ct_list_check_qualifications', function ($join) 
+            {
+                $join->on("sau_ct_list_check_qualifications.contract_id", "t.contratista");
+                $join->on('sau_ct_list_check_qualifications.state', DB::raw(1));
+            })
             ->leftJoin('sau_ct_item_qualification_contract', function ($join) 
             {
                 $join->on("sau_ct_item_qualification_contract.item_id", "t2.item_id");
+                $join->on("sau_ct_item_qualification_contract.list_qualification_id", "sau_ct_list_check_qualifications.id");
                 $join->on("sau_ct_item_qualification_contract.contract_id", "t.contratista");
             })
             ->groupBy('contratista', 'standard_names')
@@ -422,7 +428,7 @@ class DaysAlertsWithoutActivityContractors extends Command
         {
             return ConfigurationsCompany::company($company_id)->findByKey($key);
             
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             return null;
         }
     }

@@ -3,7 +3,7 @@
 		<header-module
 			title="CONTRATISTAS"
 			subtitle="LISTA DE ESTÁNDARES MÍNIMOS"
-			:url="(this.$route.params.id ? 'legalaspects-contractor' : 'legalaspects-contracts')"
+			url="legalaspects-list-check-qualification"
 		/>
 
 
@@ -17,13 +17,14 @@
 						</template>
 						<list-check-items
 							v-else
-							:url="`/legalAspects/contracts/saveQualificationItems`"
+							:url="`/legalAspects/listCheck/saveQualificationItems`"
 							method="POST"
-							:contractId="(this.$route.params.id ? this.$route.params.id : '')"
+							:contractId="contractId"
 							:items="items"
-							:qualifications="qualifications"	
-							:qualificationListId="qualificationListId"			
-							:cancel-url="{ name: (this.$route.params.id ? 'legalaspects-contractor' : 'legalaspects-contracts')}"/>
+							:qualifications="qualifications"
+							:qualificationListId="qualificationListId"
+							:message="true"				
+							:cancel-url="{ name: 'legalaspects-list-check-qualification'}"/>
 					</template>
 				</b-card-body>
 			</b-card>
@@ -32,7 +33,7 @@
 </template>
 
 <script>
-import ListCheckItems from '@/components/LegalAspects/Contracts/ContractLessee/FormListCheckItemsComponent.vue';
+import ListCheckItems from '@/components/LegalAspects/Contracts/ListCheck/FormListCheckItemsComponent.vue';
 import Alerts from '@/utils/Alerts.js';
 import Loading from "@/components/Inputs/Loading.vue";
 
@@ -50,7 +51,9 @@ export default {
 			items: [],
 			qualifications: [],
 			ready: false,
-			qualificationListId: ''
+			contractId : '',
+			qualificationListId: '',
+			idCopy: ''
 		}
 	},
 	created(){
@@ -64,13 +67,24 @@ export default {
 		});
 
 		//axios para obtener los items a calificar
-		axios.post("/legalAspects/contracts/getListCheckItems", { id: this.$route.params.id })
+		axios.post("/legalAspects/listCheck/listCheckCopy", { id: this.$route.params.id })
 		.then(response => {
-			this.items = response.data.data;
-			this.qualificationListId = response.data.data.id_qualification_list;
-			this.ready = true
+			this.idCopy = response.data.data;
+
+			axios.post("/legalAspects/listCheck/getListCheckItems", { id: this.idCopy })
+			.then(response2 => {
+				this.items = response2.data.data;
+				this.contractId = response2.data.data.id;
+				this.qualificationListId = response2.data.data.id_qualification_list;
+				this.ready = true
+			})
+			.catch(error => {
+				console.log(error)
+				Alerts.error('Error', 'Se ha generado un error en el proceso al cargar los items, por favor contacte con el administrador');
+			});
 		})
 		.catch(error => {
+			console.log(error)
 			Alerts.error('Error', 'Se ha generado un error en el proceso al cargar los items, por favor contacte con el administrador');
 		});
 	},
