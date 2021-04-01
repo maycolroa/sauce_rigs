@@ -18,7 +18,7 @@ class AddColumnListQualificationIdSauCtListCheckQualificationTable extends Migra
      */
     public function up()
     {
-        Schema::table('sau_ct_file_item_contract', function ($table) {
+       /* Schema::table('sau_ct_file_item_contract', function ($table) {
             $table->unsignedInteger('list_qualification_id')->nullable();
 
             $table->foreign('list_qualification_id')->references('id')->on('sau_ct_list_check_qualifications')->onUpdate('cascade')->onDelete('cascade');
@@ -63,7 +63,7 @@ class AddColumnListQualificationIdSauCtListCheckQualificationTable extends Migra
             $table->unsignedInteger('list_qualification_id')->nullable();
 
             $table->foreign('list_qualification_id')->references('id')->on('sau_ct_list_check_qualifications')->onUpdate('cascade')->onDelete('cascade');
-        });
+        });*/
 
         $resumen = ListCheckResumen::get();
 
@@ -71,9 +71,10 @@ class AddColumnListQualificationIdSauCtListCheckQualificationTable extends Migra
         {
             $qualification = ListCheckQualification::select('id')->where('contract_id', $value->contract_id)->first();
 
-            $value->update([
-                'list_qualification_id' => $qualification->id
-            ]);
+            if ($qualification)
+                $value->update([
+                    'list_qualification_id' => $qualification->id
+                ]);
         }
 
         Schema::table('sau_ct_lisk_check_change_histories', function ($table) {
@@ -88,9 +89,10 @@ class AddColumnListQualificationIdSauCtListCheckQualificationTable extends Migra
         {
             $qualification = ListCheckQualification::select('id')->where('contract_id', $value->contract_id)->first();
 
-            $value->update([
-                'list_qualification_id' => $qualification->id
-            ]);
+            if ($qualification)
+                $value->update([
+                    'list_qualification_id' => $qualification->id
+                ]);
         }
     }
 
