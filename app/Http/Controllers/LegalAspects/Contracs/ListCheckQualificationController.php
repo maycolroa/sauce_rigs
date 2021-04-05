@@ -588,4 +588,35 @@ class ListCheckQualificationController extends Controller
 
         return  $data;
     }
+
+     public function toggleState(Request $request, $id)
+    {
+        $qualification = ListCheckQualification::findOrFail($id);
+
+        $qualification_active = ListCheckQualification::where('contract_id', $qualification->contract_id)->where('state', true)->get();
+
+        if ($qualification->state == false)
+        {
+            $qualification->state = true;
+        }
+        else if ($qualification_active->count() > 1)
+        {
+            if ($qualification->state == true)
+                $qualification->state = false;
+            else
+                $qualification->state = true;
+        }
+        else
+        {
+            return $this->respondWithError('No se puede desactivar la calificación ya que debe tener por lo menos 1 calificación activa.');
+        }
+
+        if (!$qualification->update()) {
+            return $this->respondHttp500();
+        }
+        
+        return $this->respondHttp200([
+            'message' => 'Se cambio el estado de la calificación'
+        ]);
+    }
 }

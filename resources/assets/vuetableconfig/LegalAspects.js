@@ -1409,14 +1409,14 @@ export default [
                     color: 'outline-success',
                     borderless: true,
                     icon: 'ion ion-md-create',
-                    title: 'Editar'
+                    title: 'Editar Calificación'
                 },
                 data: {
-                    routePush: { name: 'legalaspects-list-check-qualification-edit' },
+                    routePush: { name: 'legalaspects-contracts-view-list-check-qualification' },
                     id: 'id',
                 },
-                permission: 'contracts_list_standards_qualification_u'
-            }, {
+                permission: 'contracts_list_standards_qualification_r'
+            }, /*{
                 config: {
                     color: 'outline-info',
                     borderless: true,
@@ -1428,7 +1428,7 @@ export default [
                     id: 'id',
                 },
                 permission: 'contracts_list_standards_qualification_r'
-            },{
+            },*/{
                 config: {
                     color: 'outline-success',
                     borderless: true,
@@ -1437,23 +1437,22 @@ export default [
                 },
                 data: {
                     routePush: { name: 'legalaspects-list-check-qualification-clone' },
-                    id: 'id',
-                    messageConfirmation: 'Al clonar la calificación solo se copiaran las calificaciones, los archivos y planes de acción debe diligenciarlos de nuevo segun sea el caso'
+                    id: 'id'
                 },
                 permission: 'contracts_list_standards_qualification_c'
               },{
                 config: {
                     color: 'outline-success',
                     borderless: true,
-                    icon: 'ion ion-md-clipboard',
-                    title: 'Realizar Calificación'
+                    icon:  'ion ion-md-clipboard',
+                    title: 'Editar Período de Vigencia'
                 },
                 data: {
-                    routePush: { name: 'legalaspects-contracts-view-list-check-qualification' },
+                    routePush: { name: 'legalaspects-list-check-qualification-edit' },
                     id: 'id',
                 },
-                permission: 'contracts_list_standards_qualification_r'
-            }]
+                permission: 'contracts_list_standards_qualification_u'
+            },]
         },
         {
             type: 'simpleDownload',
@@ -1481,7 +1480,22 @@ export default [
                 id: 'id',
                 messageConfirmation: 'Esta seguro de borrar la calificación'
             },
-            permission: 'contracts_list_standards_qualification_u'
+            permission: 'contracts_list_standards_qualification_d'
+            },
+            {
+                name: 'switchStatus',
+                config: {
+                    color: 'outline-danger',
+                    borderless: true,
+                    icon: 'fas fa-sync',
+                    title: 'Cambiar Estado'
+                },
+                data: {
+                    action: '/legalAspects/listCheck/switchStatus/',
+                    id: 'id',
+                    messageConfirmation: 'Esta seguro de querer cambiar el estado'
+                },
+                permission: 'contracts_list_standards_qualification_u'
             }],
         }],
         configuration: {

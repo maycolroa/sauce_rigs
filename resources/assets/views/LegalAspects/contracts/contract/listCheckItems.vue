@@ -71,7 +71,14 @@ export default {
 			this.ready = true
 		})
 		.catch(error => {
-			Alerts.error('Error', 'Se ha generado un error en el proceso al cargar los items, por favor contacte con el administrador');
+			if (error.response.status == 500 && error.response.data.error != 'Internal Error')
+			{
+				Alerts.error('Error', error.response.data.error);
+			}
+			else
+			{
+				Alerts.error('Error', 'Se ha generado un error en el proceso al cargar los items, por favor contacte con el administrador');
+			}
 		});
 	},
 }
