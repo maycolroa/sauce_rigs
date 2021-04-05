@@ -153,10 +153,20 @@ class ListCheckQualificationController extends Controller
      */
     public function destroy(ListCheckQualification $listCheck)
     {
-        if(!$listCheck->delete())
+        $qualification = ListCheckQualification::findOrFail($listCheck->id);
+
+        $qualification_active = ListCheckQualification::where('contract_id', $qualification->contract_id)->where('state', true)->get();
+
+        if ($qualification->state == false)
         {
-            return $this->respondHttp500();
+            if(!$qualification->delete())
+                return $this->respondHttp500();
         }
+        else
+        {
+            return $this->respondWithError('No se puede eliminar la calificación ya que debe tener por lo menos 1 calificación activa.');
+        }
+        
         
         return $this->respondHttp200([
             'message' => 'Se elimino el registro'
