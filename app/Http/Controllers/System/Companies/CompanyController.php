@@ -128,8 +128,14 @@ class CompanyController extends Controller
 
         try
         {
+        
             $company->fill($request->all());
-            
+
+            if ($request->ph_state_incentives == true)
+                $company->ph_state_incentives = 1;
+            else
+                $company->ph_state_incentives = 0;
+           
             if(!$company->update())
                 return $this->respondHttp500();
 
