@@ -50,7 +50,7 @@ class ContractLesseeInformation extends Model
 
     public function employees()
     {
-        return $this->hasMany(ContractWorker::class, 'contract_id');
+        return $this->hasMany(ContractEmployee::class, 'contract_id');
     }
 
     public function users()

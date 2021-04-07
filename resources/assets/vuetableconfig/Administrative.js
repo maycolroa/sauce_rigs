@@ -474,7 +474,7 @@ export default [
       { name: 'sau_action_plans_activities.id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true },
       { name: 'sau_action_plans_activities.description', data: 'description', title: 'Descripcion', sortable: true, searchable: true, detail: false, key: false },
       { name: 'sau_users.name', data: 'responsible', title: 'Responsable', sortable: true, searchable: true, detail: false, key: false },
-      { name: 'user_creator', data: 'user_creator', title: 'Usuario Creador', sortable: true, searchable: true, detail: false, key: false },
+      { name: 'u.name', data: 'user_creator', title: 'Usuario Creador', sortable: true, searchable: false, detail: false, key: false },
       { name: 'sau_action_plans_activities.expiration_date', data: 'expiration_date', title: 'Fecha Vencimiento', sortable: true, searchable: true, detail: false, key: false },
       { name: 'sau_action_plans_activities.execution_date', data: 'execution_date', title: 'Fecha Ejecución', sortable: true, searchable: true, detail: false, key: false },
       { name: 'sau_action_plans_activities.state', data: 'state_activity', title: 'Estado', sortable: true, searchable: true, detail: false, key: false },

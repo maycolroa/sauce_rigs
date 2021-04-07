@@ -159,6 +159,11 @@ class ListCheckQualificationController extends Controller
 
         if ($qualification->state == false)
         {
+            foreach ($qualification->files as $file) 
+            {                    
+                $file->delete();
+                Storage::disk('s3')->delete('legalAspects/files/'. $file->file);
+            }
             if(!$qualification->delete())
                 return $this->respondHttp500();
         }
@@ -362,7 +367,7 @@ class ListCheckQualificationController extends Controller
                             {
                                 $file_tmp = $file['file'];
                                 $nameFile = base64_encode($this->user->id . now() . rand(1,10000) . $keyF) .'.'. $file_tmp->extension();
-                                $file_tmp->storeAs('legalAspects/files/', $nameFile, 'public');
+                                $file_tmp->storeAs('legalAspects/files/', $nameFile, 's3');
                                 $fileUpload->file = $nameFile;
                                 $data['files'][$keyF]['file'] = $nameFile;
                                 $data['files'][$keyF]['old_name'] = $nameFile;
@@ -408,7 +413,7 @@ class ListCheckQualificationController extends Controller
                         //Borrar archivos reemplazados
                         foreach ($files_names_delete as $keyf => $file)
                         {
-                            Storage::disk('public')->delete('legalAspects/files/'. $file);
+                            Storage::disk('s3')->delete('legalAspects/files/'. $file);
                         }
                     }
                 }

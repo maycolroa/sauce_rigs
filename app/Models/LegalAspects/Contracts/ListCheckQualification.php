@@ -24,7 +24,12 @@ class ListCheckQualification extends Model
 
     public function items()
     {
-        return $this->hasMany(EvaluationContractItem::class, 'list_qualification_id');
+        return $this->hasMany(ItemQualificationContractDetail::class, 'list_qualification_id');
+    }
+
+    public function files()
+    {
+        return $this->belongsToMany(FileUpload::class, 'sau_ct_file_item_contract',  'list_qualification_id', 'file_id')->withPivot('item_id');
     }
 
     public function multiselect()
