@@ -18,6 +18,8 @@ use App\Models\LegalAspects\Contracts\ContractDocument;
 use App\Models\LegalAspects\Contracts\FileModuleState;
 use App\Models\LegalAspects\Contracts\ActivityDocument;
 use App\Models\LegalAspects\Contracts\ListCheckQualification;
+use App\Models\LegalAspects\Contracts\EvaluationContract;
+use App\Models\LegalAspects\Contracts\EvaluationFile;
 use App\Http\Requests\LegalAspects\Contracts\DocumentRequest;
 use App\Http\Requests\LegalAspects\Contracts\ContractRequest;
 use App\Http\Requests\LegalAspects\Contracts\ListCheckItemsRequest;
@@ -1084,7 +1086,7 @@ class ContractLesseeController extends Controller
                     {
                         $file_tmp = $file['file'];
                         $nameFile = base64_encode($this->user->id . now() . rand(1,10000) . $keyF) .'.'. $file_tmp->extension();
-                        $file_tmp->storeAs('legalAspects/files/', $nameFile, 's3');
+                        $file_tmp->storeAs('legalAspects/files/', $nameFile, 'public');
                         $fileUpload->file = $nameFile;
                     }
 
@@ -1150,20 +1152,34 @@ class ContractLesseeController extends Controller
       }
     }
 
-    /*public function destroy(ContractLesseeInformation $contract)
+    public function destroy(ContractLesseeInformation $contract)
     {
         DB::beginTransaction();
 
         try
         {
-            //$contract->activities()->sync([]);
+            //Borrado de documentos
+
+            $doc_act_id = collect([]);
+
+            foreach ($contract->activities as $key => $value)
+            {                
+                $docs = ActivityDocument::where('activity_id', $value->id)->where('type', 'Contratista')->get();
+
+                foreach ($docs as $value2)
+                {
+                    $doc_act_id->push($value2->id);
+                }
+            }
 
             $documents = ContractDocument::where('company_id', $this->company)->whereNull('document_id')->get();
 
+            $documents2 = ContractDocument::where('company_id', $this->company)->whereIn('document_id', $doc_act_id)->get();
+
+            $documents = $documents->merge($documents2);
+
             if ($documents->count() > 0)
             {
-                \Log::info($documents);
-
                 foreach ($documents as $document)
                 {
                     $files = FileUpload::select(
@@ -1175,36 +1191,95 @@ class ContractLesseeController extends Controller
                     ->where('sau_ct_file_document_contract.document_id', $document->id)
                     ->where('sau_ct_file_document_contract.contract_id', $contract->id)
                     ->get();
-
-                    \Log::info($files);
                 
                     foreach ($files as $file)
                     {
                         $file_delete = FileUpload::find($file);
-                        \Log::info($file_delete);
     
                         if ($file_delete)
                         {
-                            $path = $file_delete->file;
-                            \Log::info($path);
-                            /*$file_delete->delete();
-                            Storage::disk('s3')->delete('legalAspects/files/'. $path);
+                            foreach ($file_delete as $file_2) 
+                            {
+                                $path = $file_2->file;
+                                $file_2->delete();
+                                Storage::disk('s3')->delete('legalAspects/files/'. $path);
+                            }
                         }
                     }
                 }
             }
 
-            
+            //Borrado evaluaciones
 
-            foreach ($evaluationContract->items as $item)
-            {  
-                ActionPlan::model($item)->modelDeleteAll();
+            $evaluationContract = EvaluationContract::where('contract_id', $contract->id)->get();
+
+            foreach ($evaluationContract as $evaluation)
+            {
+                foreach ($evaluation->items as $item)
+                {
+                    ActionPlan::model($item)->modelDeleteAll();
+                }
+
+                foreach ($evaluation->files  as $file)
+                {
+                    $file_delete = EvaluationFile::find($file);
+
+                    if ($file_delete)
+                    {
+                        foreach ($file_delete as $file_2) 
+                        {
+                            Storage::disk('s3')->delete($file_2->path_client(false)."/".$file_2->file);
+                            $file_2->delete();
+                        }
+                    }
+                }
+
+                $evaluation->delete();
             }
 
-            if(!$evaluationContract->delete())
+            //Borrado de empleados
+
+            foreach ($contract->employees as $employee)
+            {
+                $files = DB::table('sau_ct_file_document_employee')->where('employee_id', $employee->id)->get();
+
+                foreach ($files as $key => $value)
+                {
+                    $file_delete = FileUpload::find($value->file_id);
+                    if ($file_delete)
+                    {
+                        $path = $file_delete->file;
+                        $file_delete->delete();
+                        Storage::disk('s3')->delete('legalAspects/files/'. $path);
+                    }
+                }
+
+                $employee->delete();
+            }
+
+            // Borrado de actividades
+
+             $contract->activities()->sync([]);
+
+            // Borrado de calificaciones de lista de chequeo
+
+            $qualification_list = ListCheckQualification::where('contract_id', $contract->id)->get();
+
+            foreach ($qualification_list as $qualification)
+            {
+                foreach ($qualification->files as $file) 
+                {                    
+                    $file->delete();
+                    Storage::disk('s3')->delete('legalAspects/files/'. $file->file);
+                }
+
+                $qualification->delete();
+            }
+
+            if(!$contract->delete())
             {
                 return $this->respondHttp500();
-            }
+            }       
 
             DB::commit();
 
@@ -1216,7 +1291,7 @@ class ContractLesseeController extends Controller
         }
         
         return $this->respondHttp200([
-            'message' => 'Se elimino la evaluación realizada'
+            'message' => 'Se elimino la contratista'
         ]);
-    }*/
+    }
 }

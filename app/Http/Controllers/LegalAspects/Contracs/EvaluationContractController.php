@@ -696,6 +696,20 @@ class EvaluationContractController extends Controller
                 ActionPlan::model($item)->modelDeleteAll();
             }
 
+            foreach ($evaluationContract->files  as $file)
+            {
+                $file_delete = EvaluationFile::find($file);
+
+                if ($file_delete)
+                {
+                    foreach ($file_delete as $file_2) 
+                    {
+                        Storage::disk('s3')->delete($file_2->path_client(false)."/".$file_2->file);
+                        $file_2->delete();
+                    }
+                }
+            }
+
             if(!$evaluationContract->delete())
             {
                 return $this->respondHttp500();
@@ -705,8 +719,8 @@ class EvaluationContractController extends Controller
 
         } catch (\Exception $e) {
             DB::rollback();
+            Log::info($e->getMessage());
             return $this->respondHttp500();
-            //return $e->getMessage();
         }
         
         return $this->respondHttp200([

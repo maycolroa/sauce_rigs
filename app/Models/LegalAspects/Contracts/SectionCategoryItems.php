@@ -18,7 +18,7 @@ class SectionCategoryItems extends Model
     }
 
     public function fileSyncInfo(){
-        return $this->belongsToMany(FileUploadItemsDetail::class,'sau_ct_file_item_contract', 'item_id', 'file_id');
+        return $this->belongsToMany(FileUploadItemsDetail::class,'sau_ct_file_item_contract', 'item_id', 'file_id')->withPivot('list_qualification_id');
     }
 
     public function multiselect()

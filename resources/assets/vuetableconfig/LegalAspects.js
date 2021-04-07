@@ -467,15 +467,15 @@ export default [
                     },
                     permission: 'contracts_resend_welcome_email'
                 },
-                /*{
+                {
                     name: 'delete',
                     data: {
                         action: '/legalAspects/contracts/',
                         id: 'id',
-                        messageConfirmation: 'Esta seguro de borrar la contratrista?'
+                        messageConfirmation: 'Esta seguro de borrar la contratrista? De hacerlo se borraran todos los registros asociados a esta, tales como: evaluaciones, calificaciones de listas de estandares minimos, empleados y todos los documentos cargados'
                     },
                     permission: 'contracts_d'
-                }*/
+                }
             ],
           }],
         configuration: {
