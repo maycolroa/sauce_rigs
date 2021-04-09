@@ -180,7 +180,7 @@ export default {
                 fromDate = new Date(fromDate.getFullYear(), fromDate.getMonth(), fromDate.getDate())
 
                 return {
-                    to: toDate,
+                    //to: toDate,
                     from: fromDate
                 }
             }
