@@ -30,7 +30,7 @@ class UpdateLabelsLocationsNewFormat extends Migration
             $label->keyword_id = $keyword->keyword_id;
             $label->company_id = $keyword->company_id;
             $label->display_name = $keyword->display_name;
-            KeywordCompany::where('company_id', $keyword->company_id)->where('keyword_id', $keyword->keyword_id)->delete();
+            KeywordCompany::withoutGlobalScopes()->where('company_id', $keyword->company_id)->where('keyword_id', $keyword->keyword_id)->delete();
             $label->display_name = $this->getValueLocation($label, 'keyword_id');
             $label->save();
         }
