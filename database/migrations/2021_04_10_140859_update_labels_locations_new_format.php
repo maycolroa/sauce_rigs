@@ -21,7 +21,7 @@ class UpdateLabelsLocationsNewFormat extends Migration
             $keyword->update();
         }
 
-        foreach (KeywordCompany::get() as $key => $keyword)
+        foreach (KeywordCompany::withoutGlobalScopes()->get() as $key => $keyword)
         {
             $keyword->id = $keyword->keyword_id;
             $keyword->display_name = $this->getValueLocation($keyword);
