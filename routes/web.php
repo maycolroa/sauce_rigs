@@ -48,6 +48,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('templates/contractimport','LegalAspects\Contracs\ContractLesseeController@downloadTemplateImport');
     Route::get('templates/legalmatriximport','LegalAspects\LegalMatrix\LawController@downloadTemplateImport');    
     Route::get('templates/usersimport','Administrative\Users\UserController@downloadTemplateImport');    
+    Route::get('templates/contractemployeeimport','LegalAspects\Contracs\ContractEmployeeController@downloadTemplateImport');
 
 	//Cerrar sesión 
 	Route::get('/logout', 'Auth\LoginController@logout')->name('logout');
@@ -490,6 +491,7 @@ Route::middleware(['auth'])->group(function () {
       Route::post('employeeContract/files', 'LegalAspects\Contracs\ContractEmployeeController@getFilesForm');
       Route::post('employeeContract/data', 'LegalAspects\Contracs\ContractEmployeeController@data');
       Route::ApiResource('employeeContract', 'LegalAspects\Contracs\ContractEmployeeController');
+      Route::post('employeeContract/import', 'LegalAspects\Contracs\ContractEmployeeController@import');
       Route::post('listCheck/report', 'LegalAspects\Contracs\ListCheckReportController@data');
       Route::post('employeeDocument/report', 'LegalAspects\Contracs\ListCheckReportController@employeeDocument');
       Route::post('globalDocument/report', 'LegalAspects\Contracs\ListCheckReportController@globalDocument');      

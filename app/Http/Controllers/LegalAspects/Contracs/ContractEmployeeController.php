@@ -13,7 +13,10 @@ use App\Models\LegalAspects\Contracts\ActivityDocument;
 use App\Models\LegalAspects\Contracts\FileUpload;
 use App\Models\LegalAspects\Contracts\FileModuleState;
 use App\Jobs\LegalAspects\Contracts\Training\TrainingSendNotificationJob;
+use App\Exports\LegalAspects\Contracts\Contracts\ContractsEmployeesImport;
+use App\Jobs\LegalAspects\Contracts\Employees\ContractEmployeeImportJob;
 use App\Traits\ContractTrait;
+use Maatwebsite\Excel\Facades\Excel;
 use Carbon\Carbon;
 use Validator;
 use Hash;
@@ -459,5 +462,28 @@ class ContractEmployeeController extends Controller
         }
 
         return $documents;
+    }
+
+    public function downloadTemplateImport()
+    {
+        $contract = $this->getContractUser($this->user->id, $this->company);
+
+        return Excel::download(new ContractsEmployeesImport($this->company, $contract), 'PlantillaImportacionContratistasEmpleados.xlsx');
+    }
+
+    public function import(Request $request)
+    {
+      try
+      {
+        $contract = $this->getContractUser($this->user->id, $this->company);
+
+        ContractEmployeeImportJob::dispatch($request->file, $this->company, $this->user, $contract);
+      
+        return $this->respondHttp200();
+
+      } catch(Exception $e)
+      {
+        return $this->respondHttp500();
+      }
     }
 }
