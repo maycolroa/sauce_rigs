@@ -17,14 +17,14 @@ class UpdateLabelsLocationsNewFormat extends Migration
     {
         foreach (Keyword::get() as $key => $keyword)
         {
-            $keyword->disply_name = $this->getValueLocation($keyword);
+            $keyword->display_name = $this->getValueLocation($keyword);
             $keyword->update();
         }
 
         foreach (KeywordCompany::get() as $key => $keyword)
         {
             $keyword->id = $keyword->keyword_id;
-            $keyword->disply_name = $this->getValueLocation($keyword);
+            $keyword->display_name = $this->getValueLocation($keyword);
             $keyword->update();
         }
     }
