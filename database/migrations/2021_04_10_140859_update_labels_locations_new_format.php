@@ -23,8 +23,7 @@ class UpdateLabelsLocationsNewFormat extends Migration
 
         foreach (KeywordCompany::withoutGlobalScopes()->get() as $key => $keyword)
         {
-            $keyword->id = $keyword->keyword_id;
-            $keyword->display_name = $this->getValueLocation($keyword);
+            $keyword->display_name = $this->getValueLocation($keyword, 'keyword_id');
             $keyword->update();
         }
     }
@@ -39,28 +38,25 @@ class UpdateLabelsLocationsNewFormat extends Migration
         //
     }
 
-    private function getValueLocation($keyword, $concat = true)
+    private function getValueLocation($keyword, $column = "id")
     {
         $label = $keyword->display_name;
 
-        if (in_array($keyword->id, [1,2,3,4,6,7,8,9]))
+        if (in_array($keyword->$column, [1,2,3,4,6,7,8,9]))
         {
             $label = trim(preg_replace('/^((1.)|(2.)|(3.)|(4.))/', "", $label));
 
-            if ($concat)
-            {
-                if (in_array($keyword->id, [1,2]))
-                    $label = "1. {$label}";
+            if (in_array($keyword->$column, [1,2]))
+                $label = "1. {$label}";
 
-                if (in_array($keyword->id, [3,4]))
-                    $label = "2. {$label}";
+            if (in_array($keyword->$column, [3,4]))
+                $label = "2. {$label}";
 
-                if (in_array($keyword->id, [6,7]))
-                    $label = "3. {$label}";
+            if (in_array($keyword->$column, [6,7]))
+                $label = "3. {$label}";
 
-                if (in_array($keyword->id, [8,9]))
-                    $label = "4. {$label}";
-            }
+            if (in_array($keyword->$column, [8,9]))
+                $label = "4. {$label}";
         }
 
         return $label;
