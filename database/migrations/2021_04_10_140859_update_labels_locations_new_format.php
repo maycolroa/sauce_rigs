@@ -5,6 +5,7 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 use App\Models\General\Keyword;
 use App\Models\Administrative\Labels\KeywordCompany;
+use DB as DBMaster;
 
 class UpdateLabelsLocationsNewFormat extends Migration
 {
@@ -21,11 +22,19 @@ class UpdateLabelsLocationsNewFormat extends Migration
             $keyword->update();
         }
 
+        DBMaster::beginTransaction();
+
         foreach (KeywordCompany::withoutGlobalScopes()->get() as $key => $keyword)
         {
-            $keyword->display_name = $this->getValueLocation($keyword, 'keyword_id');
-            $keyword->update();
+            $label = new KeywordCompany();
+            $label->company_id = $keyword->company_id;
+            $label->display_name = $keyword->display_name;
+            KeywordCompany::where('company_id', $keyword->company_id)->where('keyword_id', $keyword->keyword_id)->delete();
+            $label->display_name = $this->getValueLocation($label, 'keyword_id');
+            $label->save();
         }
+
+        DBMaster::commit();
     }
 
     /**
