@@ -254,9 +254,11 @@ class UserController extends Controller
 
             $user->multiselect_filter_system_apply = $systemsApply;
             $user->filter_system_apply = $systemsApply;
+            $data = $user->toArray();
+            $data['password'] = '';
             
             return $this->respondHttp200([
-                'data' => $user,
+                'data' => $data
             ]);
         } catch(Exception $e){
             $this->respondHttp500();
@@ -277,7 +279,10 @@ class UserController extends Controller
 
         try
         { 
-            $user->fill($request->all());
+            $user->fill($request->except('password'));
+
+            if ($request->has('password') && $request->password)
+                $user->password = $request->password;
 
             if ($request->active == 'NO' && $user->companies->count() > 1)
             {
