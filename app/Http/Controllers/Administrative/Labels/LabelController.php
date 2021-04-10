@@ -63,6 +63,7 @@ class LabelController extends Controller
     {
         $label = new KeywordCompany($request->all());
         $label->company_id = $this->company;
+        $label->display_name = $this->getValueLocation($label);
         
         KeywordCompany::where('keyword_id', $label->keyword_id)->delete();
 
@@ -86,6 +87,7 @@ class LabelController extends Controller
         try
         {
             $label = KeywordCompany::where('keyword_id', $id)->first();
+            $label->display_name = $this->getValueLocation($label, false);
             $label->multiselect_keyword = $label->keyword->multiselect();
 
             return $this->respondHttp200([
@@ -113,6 +115,7 @@ class LabelController extends Controller
 
             $label = new KeywordCompany($request->all());
             $label->company_id = $this->company;
+            $label->display_name = $this->getValueLocation($label);
             
             if(!$label->save()){
                 return $this->respondHttp500();
@@ -143,5 +146,32 @@ class LabelController extends Controller
         return $this->respondHttp200([
             'message' => 'Se elimino la etiqueta'
         ]);
+    }
+
+    private function getValueLocation(KeywordCompany $keyword, $concat = true)
+    {
+        $label = $keyword->display_name;
+
+        if (in_array($keyword->keyword_id, [1,2,3,4,6,7,8,9]))
+        {
+            $label = trim(preg_replace('/^((1.)|(2.)|(3.)|(4.))/', "", $label));
+
+            if ($concat)
+            {
+                if (in_array($keyword->keyword_id, [1,2]))
+                    $label = "1. {$label}";
+
+                if (in_array($keyword->keyword_id, [3,4]))
+                    $label = "2. {$label}";
+
+                if (in_array($keyword->keyword_id, [6,7]))
+                    $label = "3. {$label}";
+
+                if (in_array($keyword->keyword_id, [8,9]))
+                    $label = "4. {$label}";
+            }
+        }
+
+        return $label;
     }
 }
