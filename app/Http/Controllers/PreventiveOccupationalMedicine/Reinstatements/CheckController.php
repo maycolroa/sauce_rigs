@@ -741,6 +741,10 @@ class CheckController extends Controller
         {
             $pdf = PDF::loadView('pdf.reporteReinstatementsIngeomega', ['check' => $checks, 'locationForm' => $this->getLocationFormConfModule()] );
         }
+        else if($formModel == 'familia')
+        {
+            $pdf = PDF::loadView('pdf.reporteReinstatementsFamilia', ['check' => $checks, 'locationForm' => $this->getLocationFormConfModule()] );
+        }
 
         $pdf->setPaper('A3', 'landscape');
 

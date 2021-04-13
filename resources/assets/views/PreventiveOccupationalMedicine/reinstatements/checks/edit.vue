@@ -37,6 +37,32 @@
                   :is-edit="true"
                   :cancel-url="{ name: 'reinstatements-checks'}"/>
             </template>
+            <template v-if="form == 'familia'">
+              <form-check-familia
+                  :url="`/biologicalmonitoring/reinstatements/check/${this.$route.params.id}`"
+                  method="PUT"
+                  :check="data"
+                  :disable-wacth-select-in-created="true"
+                  employees-data-url="/selects/employees"
+                  :disease-origins="diseaseOrigins"
+                  :lateralities="lateralities"
+                  cie10-codes-data-url="/selects/cie10"
+                  :si-no="siNo"
+                  :origin-advisors="originAdvisors"
+                  regionals-data-url="/selects/regionals"
+                  headquarters-data-url="/selects/headquarters"
+                  areas-data-url="/selects/areas"
+                  processes-data-url="/selects/processes"
+                  positions-data-url="/selects/positions"
+                  restrictions-data-url="/selects/restrictions"
+                  :medical-conclusions="medicalConclusions"
+                  :labor-conclusions="laborConclusions"
+                  :origin-emitters="originEmitters"
+                  tracing-others-url="/biologicalmonitoring/reinstatements/check/tracingOthers"
+                  :clasification-origin="clasificationOrigin"
+                  :is-edit="true"
+                  :cancel-url="{ name: 'reinstatements-checks'}"/>
+            </template>
             <template v-if="form == 'ingeomega'">
                 <form-check-ingeomega
                   :url="`/biologicalmonitoring/reinstatements/check/${this.$route.params.id}`"
@@ -216,6 +242,7 @@ import FormCheckArgos from '@/components/PreventiveOccupationalMedicine/Reinstat
 import FormCheckVivaAir from '@/components/PreventiveOccupationalMedicine/Reinstatements/Checks/FormCheckVivaAirComponent.vue';
 import FormCheckEmpresarial from '@/components/PreventiveOccupationalMedicine/Reinstatements/Checks/FormCheckEmpresarialComponent.vue';
 import FormCheckIngeomega from '@/components/PreventiveOccupationalMedicine/Reinstatements/Checks/FormCheckIngeomegaComponent.vue';
+import FormCheckFamilia from '@/components/PreventiveOccupationalMedicine/Reinstatements/Checks/FormCheckFamiliaComponent.vue';
 import Loading from "@/components/Inputs/Loading.vue";
 import Alerts from '@/utils/Alerts.js';
 import GlobalMethods from '@/utils/GlobalMethods.js';
@@ -233,6 +260,7 @@ export default {
     FormCheckEmpresarial,
     FormCheckManPower,
     FormCheckIngeomega,
+    FormCheckFamilia,
     Loading
   },
   data () {
