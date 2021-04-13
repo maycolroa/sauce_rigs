@@ -445,6 +445,7 @@ export default {
           relocated: '',
           laterality: '',
           detail: '',
+          position_functions_assigned_reassigned: '',
           monitoring_recommendations: '',
           in_process_origin: '',
           process_origin_done: '',
@@ -600,6 +601,8 @@ export default {
       this.disableWacth = false
     }, 3000)
     
+    if (!this.form.position_functions_assigned_reassigned)
+      this.form.position_functions_assigned_reassigned = 'Después de conocer las restricciones y/o recomendaciones emitidas y conocimiento de las demandas físicas y postulares del puesto de trabajo del colaborador en mención, se definen las siguientes tareas a realizar: '
   },
   data() {
     return {

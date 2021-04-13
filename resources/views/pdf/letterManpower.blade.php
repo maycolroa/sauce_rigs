@@ -22,7 +22,7 @@
     <br/>
     <center><b>COMUNICACIÓN INTERNA</b></center>
     <br/><br/>
-    <b>Fecha: {{date('d/m/Y H:i:s')}}</b>
+    <b>Fecha: {{$date}}</b>
     <br/><br/>
     <b>Para: {{ $to }}</b>
     <br/>
@@ -42,9 +42,9 @@
     @if ($check->start_recommendations)
         
         @if ($check->indefinite_recommendations != "NO")
-            <p>Las anteriores recomendaciones son <b>indefinidas</b>.</p>
+            <p>Las anteriores recomendaciones han sido emitidas por {{$check->origin_recommendations}} y son <b>indefinidas</b>.</p>
         @else
-            <p>Las anteriores recomendaciones son de <b>carácter temporal</b> por {{$check->time_different}} días a partir del {{$check->start_recommendations}} hasta el {{$check->end_recommendations}} fecha de reintegro.</p>
+            <p>Las anteriores recomendaciones han sido emitidas por {{$check->origin_recommendations}} y son de <b>carácter temporal</b> por {{$check->time_different}} días a partir del {{$check->start_recommendations}} hasta el {{$check->end_recommendations}} fecha de reintegro.</p>
         @endif
         
     @endif

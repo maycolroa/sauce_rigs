@@ -19,7 +19,7 @@
     @if ($logo)
     <div style="text-align: right"><img src="{{ public_path('storage/administrative/logos/').$logo }}" width="120px" height="120px"/></div>
     @endif
-    <p><b>Fecha: {{date('d/m/Y')}}</b></p>
+    <p><b>Fecha: {{$date}}</b></p>
     <p><b>Hora: {{date('H:i:s')}}</b></p>
     <br/>
     <p><b>Comunicación interna</b></p>
@@ -31,7 +31,7 @@
     <br/><br/>
     <b>Asunto: {{$subject}}</b>
     <br/><br/>
-    <p>Una vez analizada la información suministrada a Seguridad y Salud en el Trabajo por parte de <b>{{$check->name}}</b>, identificada con DNI <b>{{$check->identification}}</b> y en el cargo de <b>{{$check->position}}</b> de la base <b>{{$check->headquarter}}</b>, nos permitimos informarle que de acuerdo a lo establecido en los artículos 7 y 8 de la Ley 776/2002 para Colombia y RM 312-2011-MINSA para Peru; a continuación se realizan algunas sugerencias con el fin de contribuir en la recuperación del estado de salud y lograr el mejor desempeño laboral posible.</p>
+    <p>Una vez analizada la información suministrada a Seguridad y Salud en el Trabajo por parte de <b>{{$check->name}}</b>, identificado(a) con DNI <b>{{$check->identification}}</b> y en el cargo de <b>{{$check->position}}</b> de la base <b>{{$check->headquarter}}</b>, con fecha de ingreso {{$income_date}}, quien ha tenido un evento de {{$check->disease_origin}}, nos permitimos informarle que de acuerdo a lo establecido en los artículos 7 y 8 de la Ley 776/2002 para Colombia y RM 312-2011-MINSA para Peru; a continuación se realizan algunas sugerencias con el fin de contribuir en la recuperación del estado de salud y lograr el mejor desempeño laboral posible.</p>
 
     <br/>
     @if ($check->check_detail)
@@ -44,9 +44,9 @@
     @if ($check->start_recommendations)
         
         @if ($check->indefinite_recommendations != "NO")
-            <p>Las anteriores recomendaciones tienen un carácter <b>indefinido</b>, y para ello se realizará el respectivo acompañamiento y seguimiento desde Seguridad y Salud en el Trabajo.</p>
+            <p>Las anteriores recomendaciones han sido emitidas por {{$check->origin_recommendations}} y tienen un carácter <b>indefinido</b>, y para ello se realizará el respectivo acompañamiento y seguimiento desde Seguridad y Salud en el Trabajo.</p>
         @else
-            <p>Las anteriores recomendaciones tienen un carácter <b>temporal</b>, y para ello se realizará el respectivo acompañamiento y seguimiento desde Seguridad y Salud en el Trabajo.</p>
+            <p>Las anteriores recomendaciones han sido emitidas por {{$check->origin_recommendations}} y tienen un carácter <b>temporal</b>, y para ello se realizará el respectivo acompañamiento y seguimiento desde Seguridad y Salud en el Trabajo.</p>
         @endif
         
     @endif
