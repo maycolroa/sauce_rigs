@@ -37,6 +37,7 @@
     @if ($check->start_recommendations)
         
         @if ($check->indefinite_recommendations != "NO")
+            <b>Procedencia de las recomendaciones: </b> {{$check->origin_recommendations}}<br>
             <b>Tipo de recomendaciones: </b>Definitivas<br><br>
             <table style="width: 100%">
                 <tr>
@@ -63,6 +64,7 @@
                 </tr>
             </table>
         @else
+            <b>Procedencia de las recomendaciones: </b> {{$check->origin_recommendations}}<br>
             <b>Tipo de recomendaciones: </b>Temporales<br><br>
             <table style="width: 100%">
                 <tr>
@@ -90,6 +92,7 @@
             </table>
         @endif
     @else
+        <b>Procedencia de las recomendaciones: </b>No aplica<br>
         <b>Tipo de recomendaciones: </b>No aplica<br><br>
         
         <table style="width: 100%">

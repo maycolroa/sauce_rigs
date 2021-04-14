@@ -447,7 +447,8 @@ class CheckController extends Controller
             DATEDIFF(sau_reinc_checks.end_recommendations, sau_reinc_checks.start_recommendations) AS time_different,
             sau_reinc_checks.indefinite_recommendations AS indefinite_recommendations,
             sau_reinc_checks.monitoring_recommendations AS monitoring_recommendations,
-            sau_employees_headquarters.name AS headquarter'
+            sau_employees_headquarters.name AS headquarter,
+            sau_reinc_checks.origin_recommendations as origin_recommendations'
         )
         ->join('sau_employees', 'sau_employees.id', 'sau_reinc_checks.employee_id')
         ->leftJoin('sau_employees_headquarters', 'sau_employees_headquarters.id', 'sau_employees.employee_headquarter_id')
@@ -474,8 +475,17 @@ class CheckController extends Controller
         ];
 
         PDF::setOptions(['dpi' => 150, 'defaultFont' => 'sans-serif']);
-        
-        $pdf = PDF::loadView('pdf.tracing', $data);
+
+        $formModel = $this->getFormModel('reinc_letter_tracing');
+
+        if ($formModel == 'default')
+        { 
+            $pdf = PDF::loadView('pdf.tracing', $data);
+        }
+        else if ($formModel == 'familia')
+        {
+            $pdf = PDF::loadView('pdf.tracingFamilia', $data);
+        }
 
         return $pdf->stream('seguimiento.pdf');
     }
@@ -495,7 +505,8 @@ class CheckController extends Controller
             sau_employees.name AS name,
             sau_employees.identification AS identification,
             sau_reinc_checks.origin_recommendations as origin_recommendations,
-            sau_employees_positions.name AS position'
+            sau_employees_positions.name AS position,
+            sau_reinc_checks.position_functions_assigned_reassigned as position_functions_assigned_reassigned'
         )
         ->join('sau_employees', 'sau_employees.id', '=', 'sau_reinc_checks.employee_id')
         ->leftJoin('sau_employees_regionals', 'sau_employees_regionals.id', '=', 'sau_employees.employee_regional_id')

@@ -37,6 +37,14 @@
             {!! nl2br($check->check_detail) !!}
         </div>
     @endif
+
+    <p>El cargo y funciones asignadas y/o reasignadas al trabajador son: </p>
+
+    @if ($check->position_functions_assigned_reassigned)
+        <div style="border: solid black 1px; padding: 0px 20px; text-align: justify; text-justify: inter-word; padding-top: 5px; padding-bottom: 5px;">
+            {!! nl2br($check->position_functions_assigned_reassigned) !!}
+        </div>
+    @endif
     
     @if ($check->start_recommendations)
         

@@ -45,10 +45,10 @@ class LocationController extends ApiController
 
         $result = collect([]);
         $result->put('level_info', [
-            '1. '.$keywords['regional'],
-            '2. '.$keywords['headquarter'],
-            '3. '.$keywords['process'],
-            '4. '.$keywords['area']
+            $keywords['regional'],
+            $keywords['headquarter'],
+            $keywords['process'],
+            $keywords['area']
         ]);
 
         $result->put('level', $level);
