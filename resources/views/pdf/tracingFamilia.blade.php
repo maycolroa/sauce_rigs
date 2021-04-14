@@ -224,8 +224,8 @@
     <div style="page-break-inside: avoid;">
         <table class="table-general" style="border: 1px solid black; width: 100%">
             <tr style="width:100%">
-                <td style="width:50%; border-right: 1px solid black; border-bottom: 1px solid black;"><b>Horario de trabajo</b></td>
-                <td style="width:50%; border-bottom: 1px solid black;"></td>
+                <td style="width:50%; border-right: 1px solid black;"><b>Horario de trabajo</b></td>
+                <td style="width:50%;"></td>
             </tr>
         </table>
     </div>
