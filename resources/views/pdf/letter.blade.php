@@ -19,7 +19,7 @@
     @if ($logo)
     <div style="text-align: right"><img src="{{ public_path('storage/administrative/logos/').$logo }}" width="120px" height="120px"/></div>
     @endif
-    <p>{{date('d/m/Y H:i:s')}}</p>
+    <p>{{$date}}</p>
     <br/>
     <center><b>COMUNICACIÓN INTERNA</b></center>
     <br/><br/>
@@ -29,7 +29,7 @@
     <br/><br/>
     <b>Asunto: {{$subject}}</b>
     <br/><br/>
-    <p>Una vez analizado el estado de salud, de <b>{{$check->name}}</b>, identificada con <b>c.c. {{$check->identification}}</b>, cargo: <b>{{$check->position}}</b>, asignada a {{$check->regional}}, nos permitimos comentarle que:</p>
+    <p>Una vez analizado el estado de salud, de <b>{{$check->name}}</b>, identificado(a) con <b>c.c. {{$check->identification}}</b>, cargo: <b>{{$check->position}}</b>, asignada a {{$check->regional}}, con fecha de ingreso {{$income_date}}, quien ha tenido un evento de {{$check->disease_origin}}, nos permitimos comentarle que:</p>
     <p>De acuerdo a lo establecido los artículos 7 y 8 de la Ley 776/2002, nos permitimos dar algunas sugerencias con el fin de contribuir en la recuperación del estado de salud y lograr el mejor desempeño laboral posible de <b>{{$check->name}}:</b></p>
 
     <br/>
@@ -42,9 +42,9 @@
     @if ($check->start_recommendations)
         
         @if ($check->indefinite_recommendations != "NO")
-            <p>Las anteriores recomendaciones son <b>indefinidas</b>.</p>
+            <p>Las anteriores recomendaciones han sido emitidas por {{$check->origin_recommendations}} y son <b>indefinidas</b>.</p>
         @else
-            <p>Las anteriores recomendaciones son de <b>carácter temporal</b> por {{$check->time_different}} días a partir del {{$check->start_recommendations}} hasta el {{$check->end_recommendations}} fecha de reintegro.</p>
+            <p>Las anteriores recomendaciones han sido emitidas por {{$check->origin_recommendations}} y son de <b>carácter temporal</b> por {{$check->time_different}} días a partir del {{$check->start_recommendations}} hasta el {{$check->end_recommendations}} fecha de reintegro.</p>
         @endif
         
     @endif

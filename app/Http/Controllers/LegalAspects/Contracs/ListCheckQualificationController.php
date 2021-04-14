@@ -613,6 +613,14 @@ class ListCheckQualificationController extends Controller
         if ($qualification->state == false)
         {
             $qualification->state = true;
+
+            if ($qualification_active->count() >= 1)
+            {
+                foreach ($qualification_active as $value) {
+                    $value->state = false;
+                    $value->update();
+                }
+            }
         }
         else if ($qualification_active->count() > 1)
         {

@@ -447,7 +447,8 @@ class CheckController extends Controller
             DATEDIFF(sau_reinc_checks.end_recommendations, sau_reinc_checks.start_recommendations) AS time_different,
             sau_reinc_checks.indefinite_recommendations AS indefinite_recommendations,
             sau_reinc_checks.monitoring_recommendations AS monitoring_recommendations,
-            sau_employees_headquarters.name AS headquarter'
+            sau_employees_headquarters.name AS headquarter,
+            sau_reinc_checks.origin_recommendations as origin_recommendations'
         )
         ->join('sau_employees', 'sau_employees.id', 'sau_reinc_checks.employee_id')
         ->leftJoin('sau_employees_headquarters', 'sau_employees_headquarters.id', 'sau_employees.employee_headquarter_id')
@@ -455,6 +456,12 @@ class CheckController extends Controller
         ->leftJoin('sau_employees_positions', 'sau_employees_positions.id', 'sau_employees.employee_position_id')
         ->where('sau_reinc_checks.id', $request->check_id)
         ->first();
+
+        $now = Carbon::now();
+
+        $check->income_date = Carbon::parse($check->income_date, 'UTC')->isoFormat('ll');
+
+        $check->now = Carbon::parse($now, 'UTC')->isoFormat('ll');
 
         $company = Company::select('logo')->where('id', $this->company)->first();
         $new_date_tracing = $request->new_date_tracing ? (Carbon::createFromFormat('D M d Y', $request->new_date_tracing))->format('Y-m-d') : '';
@@ -468,8 +475,17 @@ class CheckController extends Controller
         ];
 
         PDF::setOptions(['dpi' => 150, 'defaultFont' => 'sans-serif']);
-        
-        $pdf = PDF::loadView('pdf.tracing', $data);
+
+        $formModel = $this->getFormModel('reinc_letter_tracing');
+
+        if ($formModel == 'default')
+        { 
+            $pdf = PDF::loadView('pdf.tracing', $data);
+        }
+        else if ($formModel == 'familia')
+        {
+            $pdf = PDF::loadView('pdf.tracingFamilia', $data);
+        }
 
         return $pdf->stream('seguimiento.pdf');
     }
@@ -479,6 +495,8 @@ class CheckController extends Controller
         $check = Check::selectRaw(
            'sau_reinc_checks.detail as check_detail,
             sau_reinc_checks.start_recommendations AS start_recommendations,
+            sau_reinc_checks.disease_origin AS disease_origin,
+            sau_employees.income_date AS income_date,
             sau_reinc_checks.end_recommendations AS end_recommendations,
             DATEDIFF(sau_reinc_checks.end_recommendations, sau_reinc_checks.start_recommendations) AS time_different,
             sau_reinc_checks.indefinite_recommendations AS indefinite_recommendations,
@@ -487,7 +505,8 @@ class CheckController extends Controller
             sau_employees.name AS name,
             sau_employees.identification AS identification,
             sau_reinc_checks.origin_recommendations as origin_recommendations,
-            sau_employees_positions.name AS position'
+            sau_employees_positions.name AS position,
+            sau_reinc_checks.position_functions_assigned_reassigned as position_functions_assigned_reassigned'
         )
         ->join('sau_employees', 'sau_employees.id', '=', 'sau_reinc_checks.employee_id')
         ->leftJoin('sau_employees_regionals', 'sau_employees_regionals.id', '=', 'sau_employees.employee_regional_id')
@@ -495,6 +514,14 @@ class CheckController extends Controller
         ->leftJoin('sau_employees_positions', 'sau_employees_positions.id', '=', 'sau_employees.employee_position_id')
         ->where('sau_reinc_checks.id', $request->check_id)
         ->first();
+
+        $now = Carbon::now();
+
+        $check->income_date = Carbon::parse($check->income_date, 'UTC')->isoFormat('ll');
+
+        $date = Carbon::parse($now, 'UTC')->isoFormat('ll');
+
+        \Log::info($check->income_date);
             
         $company = Company::select('logo')->where('id', $this->company)->first();
 
@@ -504,6 +531,8 @@ class CheckController extends Controller
             'subject' => $request->subject, 
             'user' => $this->user,
             'check' => $check,
+            'date' => $date,
+            'income_date' => $check->income_date,
             'firm' => $request->firm,
             'recommendations' => $this->replaceLast(',', ' y ', $request->selectedRecommendations),
             'logo' => ($company && $company->logo) ? $company->logo : null
@@ -512,7 +541,6 @@ class CheckController extends Controller
         PDF::setOptions(['dpi' => 150, 'defaultFont' => 'sans-serif']);
 
         $formModel = $this->getFormModel('reinc_letter_recomendatios');
-
         if ($formModel == 'default')
         { 
             $pdf = PDF::loadView('pdf.letter', $data);
@@ -533,6 +561,11 @@ class CheckController extends Controller
         {
             $pdf = PDF::loadView('pdf.letterManpower', $data);
         }
+        else if($formModel == 'familia')
+        {
+            $pdf = PDF::loadView('pdf.letterFamilia', $data);
+        }
+
 
         return $pdf->stream('recomendaciones.pdf');
     
@@ -740,6 +773,10 @@ class CheckController extends Controller
         else if($formModel == 'ingeomega')
         {
             $pdf = PDF::loadView('pdf.reporteReinstatementsIngeomega', ['check' => $checks, 'locationForm' => $this->getLocationFormConfModule()] );
+        }
+        else if($formModel == 'familia')
+        {
+            $pdf = PDF::loadView('pdf.reporteReinstatementsFamilia', ['check' => $checks, 'locationForm' => $this->getLocationFormConfModule()] );
         }
 
         $pdf->setPaper('A3', 'landscape');

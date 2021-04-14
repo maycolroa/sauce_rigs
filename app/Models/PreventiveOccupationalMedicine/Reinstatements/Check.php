@@ -107,7 +107,8 @@ class Check extends Model
         'is_firm_process_pcl',
         'type_qualification_origin',
         'subsystem',
-        'conclusion_recommendations'
+        'conclusion_recommendations',
+        'position_functions_assigned_reassigned'
     ];
 
     /**
