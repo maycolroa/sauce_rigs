@@ -5,6 +5,8 @@ namespace App\Http\Controllers\IndustrialSecure\DangerMatrix;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Vuetable\Facades\Vuetable;
+use App\Models\IndustrialSecure\Activities\Activity;
+use App\Models\IndustrialSecure\Dangers\Danger;
 use App\Models\IndustrialSecure\DangerMatrix\DangerMatrix;
 use App\Models\IndustrialSecure\DangerMatrix\DangerMatrixActivity;
 use App\Models\IndustrialSecure\DangerMatrix\ActivityDanger;
@@ -640,10 +642,16 @@ class DangerMatrixController extends Controller
                         }
                     }
 
+                    $activity_procedence = Activity::find($itemA['activity_id']);
+                    $danger_procedence = Danger::find($danger->danger_id);
+
+                    $detail_procedence = 'Mátriz de Peligros - Actividad: '. $activity_procedence->name . '. Peligro: '. $danger_procedence->name;
+
                     /**Planes de acción*/
                     ActionPlan::
                           model($danger)
                         ->activities($itemD['actionPlan'])
+                        ->detailProcedence($detail_procedence)
                         ->save();
                 }
 

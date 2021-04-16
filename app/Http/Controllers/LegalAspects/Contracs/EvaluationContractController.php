@@ -349,8 +349,11 @@ class EvaluationContractController extends Controller
                             'item_id' => $item['id']
                         ]);
 
+                    $detail_procedence = 'Contratistas - Evaluación Contratista. Evaluación: ' . $evaluation['name'] . ' - Tema: ' .  $objective['description'] . '- Subtema: ' . $subobjective['description'] . ' - Item: ' . $item['description'];
+
                     ActionPlan::
                         model($itemEvaluation)
+                        ->detailProcedence($detail_procedence)
                         ->activities($item['actionPlan'])
                         ->save();
                 }

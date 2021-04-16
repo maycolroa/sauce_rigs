@@ -212,6 +212,9 @@ class InspectionController extends ApiController
             ]), 401);
         }*/
 
+        //$keywords = $this->user->getKeywords();
+        //$confLocation = $this->getLocationFormConfModule();
+
         $response = $request->all();
 
         $inspection = Inspection::selectRaw("
@@ -345,6 +348,15 @@ class InspectionController extends ApiController
                         $itemName = $item->item;
                         $details = 'Inspección: ' . $inspection->name . ' - ' . $theme->name . ' - ' . $itemName->description;
 
+                        /*if ($confLocation['regional'] == 'SI')
+                            $detail_procedence = 'Inspecciones Planeadas. ' . $details . '- ' . $keywords['regional']. ': ' .  $item->regional->name;
+                        if ($confLocation['headquarter'] == 'SI')
+                            $detail_procedence = $detail_procedence . ' - ' .$keywords['headquarter']. ': ' .  $item->headquarter->name;
+                        if ($confLocation['process'] == 'SI')
+                            $detail_procedence = $detail_procedence . ' - ' .$keywords['process']. ': ' .  $item->process->name;
+                        if ($confLocation['area'] == 'SI')
+                            $detail_procedence = $detail_procedence . ' - ' .$keywords['area']. ': ' .  $item->area->name;*/
+
                         ActionPlan::
                             user($this->user)
                         ->module('dangerousConditions')
@@ -357,6 +369,7 @@ class InspectionController extends ApiController
                         ->activities($value["actionPlan"])                
                         ->company($request->company_id)
                         ->details($details)
+                        //->detailProcedence($detail_procedence)
                         ->dateSimpleFormat(true)
                         ->save()
                         ->sendMail();

@@ -13,7 +13,6 @@ class Article extends Model
     protected $table = 'sau_lm_articles';
 
     protected $fillable = [
-        'name',
         'description',
         'law_id',
         'repealed',

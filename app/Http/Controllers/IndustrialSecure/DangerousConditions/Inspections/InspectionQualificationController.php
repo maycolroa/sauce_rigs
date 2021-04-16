@@ -21,6 +21,7 @@ use App\Facades\ActionPlans\Facades\ActionPlan;
 use App\Jobs\IndustrialSecure\DangerousConditions\Inspections\InspectionQualifyExportJob;
 use App\Models\General\Company;
 use App\Traits\Filtertrait;
+use App\Traits\LocationFormTrait;
 use Carbon\Carbon;
 use Validator;
 use DB;
@@ -28,7 +29,7 @@ use PDF;
 
 class InspectionQualificationController extends Controller
 {
-    use Filtertrait;
+    use Filtertrait, LocationFormTrait;
     /**
      * creates and instance and middlewares are checked
      */
@@ -346,6 +347,9 @@ class InspectionQualificationController extends Controller
 
     public function saveQualification(SaveQualificationRequest $request)
     {
+        $keywords = $this->user->getKeywords();
+        $confLocation = $this->getLocationFormConfModule();
+
         try
         {
             DB::beginTransaction();
@@ -366,6 +370,15 @@ class InspectionQualificationController extends Controller
             $processes = $inspection->processes ? $inspection->processes->implode('name', ', ') : null;
             $areas = $inspection->areas ? $inspection->areas->implode('name', ', ') : null;
 
+            if ($confLocation['regional'] == 'SI')
+                $detail_procedence = 'Inspecciones - Inspecciones Planeadas. ' . $details . '- ' . $keywords['regional']. ': ' .  $qualification->regional->name;
+            if ($confLocation['headquarter'] == 'SI')
+                $detail_procedence = $detail_procedence . ' - ' .$keywords['headquarter']. ': ' .  $qualification->headquarter->name;
+            if ($confLocation['process'] == 'SI')
+                $detail_procedence = $detail_procedence . ' - ' .$keywords['process']. ': ' .  $qualification->process->name;
+            if ($confLocation['area'] == 'SI')
+                $detail_procedence = $detail_procedence . ' - ' .$keywords['area']. ': ' .  $qualification->area->name;
+
             ActionPlan::
                     user($this->user)
                 ->module('dangerousConditions')
@@ -376,6 +389,7 @@ class InspectionQualificationController extends Controller
                 ->area($areas)
                 ->process($processes)
                 ->details($details)
+                ->detailProcedence($detail_procedence)
                 ->activities($request->actionPlan)
                 ->save();
 
