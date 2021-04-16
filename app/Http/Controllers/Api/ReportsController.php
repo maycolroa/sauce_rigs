@@ -154,6 +154,9 @@ class ReportsController extends ApiController
             ]), 401);
         }*/
 
+        //$keywords = $this->user->getKeywords();
+        //$confLocation = $this->getLocationFormConfModule();
+
       DB::beginTransaction();
         
       try
@@ -240,6 +243,15 @@ class ReportsController extends ApiController
 
         $details = $report->condition->conditionType->description. ': ' . $report->condition->description;
 
+        /*if ($confLocation['regional'] == 'SI')
+            $detail_procedence = 'Inspecciones no planesdas. Hallazgo: '. $report->condition->description . ' - ' . $keywords['regional']. ': ' .  $report->regional->name;
+        if ($confLocation['headquarter'] == 'SI')
+            $detail_procedence = $detail_procedence . ' - ' .$keywords['headquarter']. ': ' .  $report->headquarter->name;
+        if ($confLocation['process'] == 'SI')
+            $detail_procedence = $detail_procedence . ' - ' .$keywords['process']. ': ' .  $report->process->name;
+        if ($confLocation['area'] == 'SI')
+            $detail_procedence = $detail_procedence . ' - ' .$keywords['area']. ': ' .  $report->area->name;*/
+
         ActionPlan::
                 user($this->user)
             ->module('dangerousConditions')
@@ -250,6 +262,7 @@ class ReportsController extends ApiController
             ->area($report->areas ? $report->areas : null)
             ->process($report->proceso ? $report->proceso : null)
             ->details($details)
+            //->detailProcedence($detail_procedence)
             ->activities($request->actionPlan)
             ->company($request->company_id)
             ->save()

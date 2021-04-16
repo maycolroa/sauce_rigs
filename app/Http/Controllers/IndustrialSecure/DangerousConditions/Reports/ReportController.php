@@ -106,6 +106,9 @@ class ReportController extends Controller
      */
     public function store(ReportRequest $request)
     {
+        $keywords = $this->user->getKeywords();
+        $confLocation = $this->getLocationFormConfModule();
+
         DB::beginTransaction();
 
         try
@@ -146,6 +149,17 @@ class ReportController extends Controller
 
             $details = $report->condition->conditionType->description. ': ' . $report->condition->description;
 
+            if ($confLocation['regional'] == 'SI')
+                $detail_procedence = 'Inspecciones no planesdas. '. $details . '- ' . $keywords['regional']. ': ' .  $report->regional->name;
+            if ($confLocation['headquarter'] == 'SI')
+                $detail_procedence = $detail_procedence . '- ' .$keywords['headquarter']. ': ' .  $report->headquarter->name;
+            if ($confLocation['process'] == 'SI')
+                $detail_procedence = $detail_procedence . '- ' .$keywords['process']. ': ' .  $report->process->name;
+            if ($confLocation['area'] == 'SI')
+                $detail_procedence = $detail_procedence . '- ' .$keywords['area']. ': ' .  $report->area->name;
+
+                \Log::info($detail_procedence);
+
             ActionPlan::
                     user($this->user)
                 ->module('dangerousConditions')
@@ -156,6 +170,7 @@ class ReportController extends Controller
                 ->area($report->area ? $report->area->name : null)
                 ->process($report->process ? $report->process->name : null)
                 ->details($details)
+                ->detailProcedence($detail_procedence)
                 ->activities($request->actionPlan)
                 ->save();
 
@@ -214,6 +229,9 @@ class ReportController extends Controller
      */
     public function update(ReportRequest $request, Report $report)
     {
+        $keywords = $this->user->getKeywords();
+        $confLocation = $this->getLocationFormConfModule();
+
         DB::beginTransaction();
 
         try
@@ -278,6 +296,15 @@ class ReportController extends Controller
 
             $details = $report->condition->conditionType->description. ': ' . $report->condition->description;
 
+            if ($confLocation['regional'] == 'SI')
+                $detail_procedence = 'Inspecciones - Inspecciones no planeadas. Hallazgo: '. $report->condition->description . ' - ' . $keywords['regional']. ': ' .  $report->regional->name;
+            if ($confLocation['headquarter'] == 'SI')
+                $detail_procedence = $detail_procedence . ' - ' .$keywords['headquarter']. ': ' .  $report->headquarter->name;
+            if ($confLocation['process'] == 'SI')
+                $detail_procedence = $detail_procedence . ' - ' .$keywords['process']. ': ' .  $report->process->name;
+            if ($confLocation['area'] == 'SI')
+                $detail_procedence = $detail_procedence . ' - ' .$keywords['area']. ': ' .  $report->area->name;
+
             ActionPlan::
                     user($this->user)
                 ->module('dangerousConditions')
@@ -288,6 +315,7 @@ class ReportController extends Controller
                 ->area($report->area ? $report->area->name : null)
                 ->process($report->process ? $report->process->name : null)
                 ->details($details)
+                ->detailProcedence($detail_procedence)
                 ->activities($request->actionPlan)
                 ->save();
 

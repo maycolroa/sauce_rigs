@@ -160,6 +160,14 @@ class ActionPlan
      */
     private $dateSimpleFormat;
 
+     /**
+     * Detail of the plan
+     *
+     * @var string
+     */
+    private $detailProcedence = '';
+
+
     public function __construct()
     {
         $this->states = Configuration::getConfiguration('action_plans_states');
@@ -185,6 +193,23 @@ class ActionPlan
         $this->creationDate = null;
         $this->daysAlertExpirationDate = null;
         $this->dateSimpleFormat = false;
+        $this->detailProcedence = null;
+    }
+
+    /**
+     * Edit the mail subject
+     *
+     * @param string $subject
+     * @return $this
+     */
+    public function detailProcedence($detailProcedence)
+    {        
+        if (!is_string($detailProcedence) || $detailProcedence == '')
+            throw new \Exception('The format of the detailProcedence is incorrect'); 
+
+        $this->detailProcedence = $detailProcedence;
+
+        return $this;
     }
 
     /**
@@ -562,6 +587,7 @@ class ActionPlan
             $tmp['editable'] = $value->activity->editable;
             $tmp['company_id'] = $value->activity->company_id;
             $tmp['edit_all'] = $this->checkEditAll($value->activity);
+            $tmp['detail_procedence'] = $value->activity->detail_procedence;
 
             array_push($data['activities'], $tmp);
         }
@@ -617,6 +643,7 @@ class ActionPlan
             $tmp['editable'] = $activity->editable;
             $tmp['company_id'] = $activity->company_id;
             $tmp['edit_all'] = $this->checkEditAll($activity);
+            $tmp['detail_procedence'] = $activity->detail_procedence;
 
             array_push($data['actionPlan']['activities'], $tmp);
         }
@@ -779,6 +806,7 @@ class ActionPlan
             $activity->editable = (isset($itemA['editable']) && $itemA['editable']) ? $itemA['editable'] : 'SI';
             $activity->company_id = $company_id;
             $activity->observation = $itemA['observation'];
+            $activity->detail_procedence = $this->detailProcedence;
             $activity->save();
             
             if(isset($itemA['oldState']))

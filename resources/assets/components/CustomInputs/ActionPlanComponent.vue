@@ -45,7 +45,10 @@
                             </b-form-row>
                             <b-form-row>
                                 <vue-textarea :disabled="viewOnly || activity.editable == 'NO' || !activity.edit_all" class="col-md-12" v-model="activity.description" label="Descripción" name="description" placeholder="Descripción" :error="form.errorsFor(`${prefixIndex}actionPlan.activities.${index}.description`)"></vue-textarea>
-                                <vue-ajax-advanced-select :disabled="viewOnly || !activity.edit_all" class="col-md-12" v-model="activity.responsible_id" :selected-object="activity.multiselect_responsible" name="responsible_id" label="Responsable" placeholder="Seleccione el responsable" :url="userDataUrl" :error="form.errorsFor(`${prefixIndex}actionPlan.activities.${index}.responsible_id`)">
+                                 <vue-textarea :disabled="true" class="col-md-12" v-model="activity.detail_procedence" label="Detalle de procedencia" name="detail_procedence" placeholder="Detalle de procedencia" :error="form.errorsFor(`${prefixIndex}actionPlan.activities.${index}.detail_procedence`)"></vue-textarea>
+                            </b-form-row>
+                            <b-form-row>
+                               <vue-ajax-advanced-select :disabled="viewOnly || !activity.edit_all" class="col-md-12" v-model="activity.responsible_id" :selected-object="activity.multiselect_responsible" name="responsible_id" label="Responsable" placeholder="Seleccione el responsable" :url="userDataUrl" :error="form.errorsFor(`${prefixIndex}actionPlan.activities.${index}.responsible_id`)">
                                     </vue-ajax-advanced-select>
                             </b-form-row>
                             <b-form-row>

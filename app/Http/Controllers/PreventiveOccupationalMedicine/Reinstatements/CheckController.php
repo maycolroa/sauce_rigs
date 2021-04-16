@@ -520,8 +520,6 @@ class CheckController extends Controller
         $check->income_date = Carbon::parse($check->income_date, 'UTC')->isoFormat('ll');
 
         $date = Carbon::parse($now, 'UTC')->isoFormat('ll');
-
-        \Log::info($check->income_date);
             
         $company = Company::select('logo')->where('id', $this->company)->first();
 

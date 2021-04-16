@@ -419,8 +419,12 @@ class ListCheckQualificationController extends Controller
                 }
 
                 /**Planes de acción*/
+
+                $detail_procedence = 'Contratista - Estándares mínimos. Estándar: ' . $request->item_name;
+
                 ActionPlan::
                         model($itemQualification)
+                    ->detailProcedence($detail_procedence)
                     ->activities($request->actionPlan)
                     ->save();
 
