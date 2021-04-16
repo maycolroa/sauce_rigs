@@ -212,8 +212,8 @@ class InspectionController extends ApiController
             ]), 401);
         }*/
 
-        //$keywords = $this->user->getKeywords();
-        //$confLocation = $this->getLocationFormConfModule();
+        $keywords = $this->getKeywordQueue($request->company_id);
+        $confLocation = $this->getLocationFormConfModule($request->company_id);;
 
         $response = $request->all();
 
@@ -344,18 +344,26 @@ class InspectionController extends ApiController
 
                     if (isset($value["actionPlan"]))
                     {
+
+                        $regional_detail = EmployeeRegional::where('id', $employee_regional_id);
+                        $regional_detail->company_scope = $request->company_id;
+                        $regional_detail = $regional_detail->first();
+                        $headquarter_detail = EmployeeHeadquarter::find($employee_headquarter_id);
+                        $process_detail = EmployeeProcess::find($employee_process_id);
+                        $area_detail = EmployeeArea::find($employee_area_id);
+
                         $theme = $item->item->section;
                         $itemName = $item->item;
-                        $details = 'Inspección: ' . $inspection->name . ' - ' . $theme->name . ' - ' . $itemName->description;
+                        $details = 'Inspección: ' . $inspection->name . ' - Tema: ' . $theme->name . ' - Item: ' . $itemName->description;
 
-                        /*if ($confLocation['regional'] == 'SI')
-                            $detail_procedence = 'Inspecciones Planeadas. ' . $details . '- ' . $keywords['regional']. ': ' .  $item->regional->name;
+                        if ($confLocation['regional'] == 'SI')
+                            $detail_procedence = 'Inspecciones Planeadas. ' . $details . ' - ' . $keywords['regional']. ': ' .  $regional_detail->name;
                         if ($confLocation['headquarter'] == 'SI')
-                            $detail_procedence = $detail_procedence . ' - ' .$keywords['headquarter']. ': ' .  $item->headquarter->name;
+                            $detail_procedence = $detail_procedence . ' - ' .$keywords['headquarter']. ': ' .  $headquarter_detail->name;
                         if ($confLocation['process'] == 'SI')
-                            $detail_procedence = $detail_procedence . ' - ' .$keywords['process']. ': ' .  $item->process->name;
+                            $detail_procedence = $detail_procedence . ' - ' .$keywords['process']. ': ' .  $process_detail->name;
                         if ($confLocation['area'] == 'SI')
-                            $detail_procedence = $detail_procedence . ' - ' .$keywords['area']. ': ' .  $item->area->name;*/
+                            $detail_procedence = $detail_procedence . ' - ' .$keywords['area']. ': ' .  $area_detail->name;
 
                         ActionPlan::
                             user($this->user)
@@ -369,7 +377,7 @@ class InspectionController extends ApiController
                         ->activities($value["actionPlan"])                
                         ->company($request->company_id)
                         ->details($details)
-                        //->detailProcedence($detail_procedence)
+                        ->detailProcedence($detail_procedence)
                         ->dateSimpleFormat(true)
                         ->save()
                         ->sendMail();
