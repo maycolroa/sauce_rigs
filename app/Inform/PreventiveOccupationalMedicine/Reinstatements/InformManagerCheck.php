@@ -36,7 +36,8 @@ class InformManagerCheck
         'cases_per_cie_10_per_EG_pie',
         'cases_per_cie_10_per_EL_pie',
         'cases_per_cie_10_per_AT_pie',
-        'cases_per_cie_10_pie'
+        'cases_per_cie_10_pie',
+        'cases_per_relocated_types_pie'
     ];
 
     const INFORM_LOCATION = [
@@ -613,6 +614,11 @@ class InformManagerCheck
     public function cases_per_medical_certificates_pie()
     {
         return $this->getReportPerColumn('medical_certificate_ueac');
+    }
+
+    public function cases_per_relocated_types_pie()
+    {
+        return $this->getReportPerColumn('relocated_type');
     }
 
     /**

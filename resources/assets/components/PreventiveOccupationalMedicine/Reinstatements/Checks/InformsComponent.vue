@@ -255,6 +255,31 @@
                                 </b-card>
                             </b-col>
                         </b-row>
+                        <b-row v-if="form == 'vivaAir'">
+                            <b-col>
+                                <b-card border-variant="primary" title="Reportes por Tipos de Reintegro" class="mb-3 box-shadow-none">
+                                    <b-row align-h="end">
+                                        <b-col cols="2">
+                                            <b>Total reportes: {{ cases_per_relocated_types_pie.chart.datasets.count }} </b>
+                                        </b-col>
+                                    </b-row>
+                                    <b-row>
+                                        <b-col>
+                                            <table-report
+                                                :rows="cases_per_relocated_types_pie.table"
+                                            />
+                                        </b-col>
+                                        <b-col>
+                                            <chart-pie 
+                                                :chart-data="cases_per_relocated_types_pie.chart"
+                                                title="Reportes por Tipos de Reintegro"
+                                                color-line="red"
+                                                ref="cases_per_relocated_types_pie"/>
+                                        </b-col>
+                                    </b-row>
+                                </b-card>
+                            </b-col>
+                        </b-row>
                     </b-tab>
                     <b-tab v-if="form != 'argos'">
                         <template slot="title">
@@ -389,6 +414,13 @@ export default {
                 }
             },
             cases_per_headquarter_pie: {
+                table: [],
+                chart: {
+                    labels: [],
+                    datasets: []
+                }
+            },
+            cases_per_relocated_types_pie: {
                 table: [],
                 chart: {
                     labels: [],
