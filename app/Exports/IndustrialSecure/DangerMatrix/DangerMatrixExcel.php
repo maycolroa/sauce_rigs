@@ -6,7 +6,7 @@ use App\Models\IndustrialSecure\DangerMatrix\DangerMatrix;
 use App\Models\IndustrialSecure\DangerMatrix\Qualification;
 use App\Models\IndustrialSecure\DangerMatrix\QualificationCompany;
 use App\Models\IndustrialSecure\DangerMatrix\QualificationDanger;
-use App\Facades\ConfigurationsCompany\Facades\ConfigurationsCompany;
+use App\Facades\ConfigurationCompany\Facades\ConfigurationsCompany;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use App\Models\IndustrialSecure\DangerMatrix\AdditionalFields;
 use App\Models\IndustrialSecure\DangerMatrix\AdditionalFieldsValues;

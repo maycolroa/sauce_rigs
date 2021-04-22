@@ -3,7 +3,7 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
-use App\Facades\ConfigurationsCompany\Facades\ConfigurationsCompany;
+use App\Facades\ConfigurationCompany\Facades\ConfigurationsCompany;
 use App\Facades\Mail\Facades\NotificationMail;
 use App\Models\LegalAspects\Contracts\ContractEmployee;
 use App\Models\Administrative\Users\User;

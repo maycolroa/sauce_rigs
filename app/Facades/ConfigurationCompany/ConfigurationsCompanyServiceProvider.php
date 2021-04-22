@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Facades\ConfigurationsCompany;
+namespace App\Facades\ConfigurationCompany;
 
 use Illuminate\Support\ServiceProvider;
 

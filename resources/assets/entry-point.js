@@ -34,7 +34,7 @@ window.axios.interceptors.response.use(function (response) {
   // Do something with response error
   if (error.response.status == 401)
   {
-    alert("Se cerro la sesion por inactividad");
+    alert("Se cerró la sesión por inactividad.");
     location.reload();
     return;
   }

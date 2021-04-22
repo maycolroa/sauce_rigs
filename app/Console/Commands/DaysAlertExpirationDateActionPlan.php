@@ -4,7 +4,7 @@ namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 
-use App\Facades\ConfigurationsCompany\Facades\ConfigurationsCompany;
+use App\Facades\ConfigurationCompany\Facades\ConfigurationsCompany;
 use App\Facades\ActionPlans\Facades\ActionPlan;
 
 class DaysAlertExpirationDateActionPlan extends Command

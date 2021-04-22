@@ -153,7 +153,7 @@ return [
         App\Vuetable\VuetableServiceProvider::class,
         App\Facades\Mail\NotificationMailServiceProvider::class,
         App\Facades\ActionPlans\ActionPlanServiceProvider::class,
-        App\Facades\ConfigurationsCompany\ConfigurationsCompanyServiceProvider::class,
+        App\Facades\ConfigurationCompany\ConfigurationsCompanyServiceProvider::class,
         App\Facades\StorageFiles\StorageFileServiceProvider::class,
         App\Facades\Check\CheckManagerServiceProvider::class,
 
@@ -224,7 +224,7 @@ return [
         'Excel' => Maatwebsite\Excel\Facades\Excel::class,
         'NotificationMail' => App\Facades\Mail\NotificationMail::class,
         'ActionPlan' => App\Facades\ActionPlans\ActionPlan::class,
-        'ConfigurationsCompany' => App\Facades\ConfigurationsCompany\ConfigurationsCompany::class,
+        'ConfigurationsCompany' => App\Facades\ConfigurationCompany\ConfigurationsCompany::class,
         'StorageFile' => App\Facades\StorageFiles\StorageFile::class,
         'CheckManager' => App\Facades\Check\CheckManager::class,
         'PDF' => Barryvdh\DomPDF\Facade::class,

@@ -2,7 +2,7 @@
 
 namespace App\Traits;
 
-use App\Facades\ConfigurationsCompany\Facades\ConfigurationsCompany;
+use App\Facades\ConfigurationCompany\Facades\ConfigurationsCompany;
 use App\Facades\Configuration;
 use Exception;
 

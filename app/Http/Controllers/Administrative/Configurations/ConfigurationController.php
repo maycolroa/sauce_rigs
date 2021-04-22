@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Administrative\Configurations;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Administrative\Configuration\ConfigurationRequest;
-use App\Facades\ConfigurationsCompany\Facades\ConfigurationsCompany;
+use App\Facades\ConfigurationCompany\Facades\ConfigurationsCompany;
 
 class ConfigurationController extends Controller
 {

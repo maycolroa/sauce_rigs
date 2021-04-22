@@ -36,7 +36,7 @@ use App\Traits\Filtertrait;
 use App\Facades\Mail\Facades\NotificationMail;
 use App\Exports\LegalAspects\Contracts\Contractor\ContractsImportTemplate;
 use App\Jobs\LegalAspects\Contracts\Contractor\ContractImportJob;
-use App\Facades\ConfigurationsCompany\Facades\ConfigurationsCompany;
+use App\Facades\ConfigurationCompany\Facades\ConfigurationsCompany;
 use Carbon\Carbon;
 use Maatwebsite\Excel\Facades\Excel;
 use Validator;

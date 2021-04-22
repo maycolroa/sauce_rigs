@@ -184,7 +184,7 @@ export default {
 
                 return {
                     //to: toDate,
-                    from: fromDate
+                    //from: fromDate
                 }
             }
             else
