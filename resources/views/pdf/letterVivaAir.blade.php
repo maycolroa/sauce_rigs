@@ -24,7 +24,7 @@
     <br/>
     <p><b>Comunicación interna</b></p>
     <p><b>Programa de reintegro laboral post incapacidad</b></p>
-    <br/><br/>
+    <br/>
     <b>Para: {{ $to }}</b>
     <br/><br/>
     <b>De: {{$from}}</b>
@@ -50,7 +50,7 @@
         @endif
         
     @endif
-    <br/><br/><br/><br/><br/>
+    <br/><br/><br/><br/>
     <table style="width: 100%">
         <tr>
             <td>FIRMA COLABORADOR</td>
