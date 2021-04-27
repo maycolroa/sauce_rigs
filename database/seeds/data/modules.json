@@ -108,6 +108,12 @@
                 "display_name": "Inspecciones",
                 "main": "SI",
                 "logo": null
+            },
+            {
+                "name": "riskMatrix",
+                "display_name": "Matriz de riesgos",
+                "main": "SI",
+                "logo": null
             }
         ]
     },

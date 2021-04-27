@@ -466,66 +466,6 @@ export default [
         filterColumns: true,
     }
 },
-/*{
-    name: 'inspections-conditionsReports',
-    fields: [
-        { name: 'sau_inspect_conditions_reports.id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true },
-        { name: 'sau_employees_regionals.name', data: 'regional', title: 'regional', sortable: true, searchable: true, detail: false, key: false },
-        { name: 'sau_users.name', data: 'user_name', title: 'Usuario', sortable: true, searchable: true, detail: false, key: false },
-        { name: 'sau_inspect_conditions.description', data: 'condition', title: 'Condicion', sortable: true, searchable: true, detail: false, key: false },
-        { name: 'sau_inspect_conditions_type.description', data: 'type', title: 'Tipo de condicion', sortable: true, searchable: true, detail: false, key: false },
-        { name: 'sau_inspect_conditions_reports.rate', data: 'rate', title: 'Severidad', sortable: true, searchable: true, detail: false, key: false },
-        { name: 'sau_inspect_conditions_reports.created_at', data: 'created_at', title: 'Fecha de creacion', sortable: true, searchable: true, detail: false, key: false },
-        { name: '', data: 'controlls', title: 'Controles', sortable: false, searchable: false, detail: false, key: false }
-    ],
-    'controlls': [
-        {
-            type: 'push',
-            buttons: [{
-                config: {
-                    color: 'outline-success',
-                    borderless: true,
-                    icon: 'ion ion-md-create',
-                    title: 'Editar'
-                },
-                data: {
-                    routePush: { name: 'inspections-conditionsReports-edit' },
-                    id: 'id',
-                },
-                permission: 'inspect_conditionsReports_u'
-                },
-                {
-                config: {
-                    color: 'outline-info',
-                    borderless: true,
-                    icon: 'ion ion-md-eye',
-                    title: 'Ver'
-                },
-                data: {
-                    routePush: { name: 'inspections-conditionsReports-view' },
-                    id: 'id',
-                },
-                permission: 'inspect_conditionsReports_r'
-            }],
-        },
-        {
-            type: 'base',
-            buttons: [{
-            name: 'delete',
-            data: {
-                action: '/industrialSecurity/inspections/conditionsReports/',
-                id: 'id',
-                messageConfirmation: 'Esta seguro de borrar el reporte'
-            },
-            permission: 'inspect_conditionsReports_d'
-            }],
-        },
-    ],
-    configuration: {
-        urlData: '/industrialSecurity/inspections/conditionsReports/data',
-        filterColumns: true,
-    }
-},*/
 {
     name: 'dangerousconditions-inspections',
     fields: [
@@ -771,6 +711,83 @@ export default [
         urlData: '/industrialSecurity/dangerousConditions/report/data',
         filterColumns: true,
         configNameFilter: 'dangerousconditions-report'
+    }
+},
+{
+    name: 'industrialsecure-riskmatrix',
+    fields: [{ name: 'sau_dangers_matrix.id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true }],
+    'controlls': [{
+        type: 'push',
+        buttons: [{
+        config: {
+            color: 'outline-success',
+            borderless: true,
+            icon: 'ion ion-md-create',
+            title: 'Editar'
+        },
+        data: {
+            routePush: { name: 'industrialsecure-riskmatrix-edit' },
+            id: 'id',
+        },
+        permission: 'riskMatrix_u'
+        },/* {
+        config: {
+            color: 'outline-success',
+            borderless: true,
+            icon: 'ion ion-ios-copy',
+            title: 'Clonar'
+        },
+        data: {
+            routePush: { name: 'industrialsecure-riskmatrix-clone' },
+            id: 'id',
+        },
+        permission: 'riskMatrix_c'
+        },*/ {
+        config: {
+            color: 'outline-info',
+            borderless: true,
+            icon: 'ion ion-md-eye',
+            title: 'Ver'
+        },
+        data: {
+            routePush: { name: 'industrialsecure-riskmatrix-view' },
+            id: 'id',
+        },
+        permission: 'riskMatrix_r'
+        }]
+    },
+    {
+        type: 'base',
+        buttons: [{
+        name: 'delete',
+        data: {
+            action: '/industrialSecurity/risksMatrix/',
+            id: 'id',
+            messageConfirmation: 'Esta seguro de borrar la matriz de riesgos __name__'
+        },
+        permission: 'riskMatrix_d'
+        }],
+    },
+    /*{
+        type: 'download',
+        buttons: [{
+            name: 'downloadMatrix',
+            config: {
+                color: 'outline-success',
+                borderless: true,
+                icon: 'ion ion-md-cloud-download',
+                title: 'Exportar'
+            },
+            data: {
+                action: '/industrialSecurity/dangersMatrix/download/',
+                id: 'id'
+            },
+            permission: 'dangerMatrix_export'
+        }],
+    }*/],
+    configuration: {
+        urlData: '/industrialSecurity/risksMatrix/data',
+        filterColumns: true,
     }
 },
 ];

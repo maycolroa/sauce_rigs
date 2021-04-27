@@ -193,7 +193,8 @@ Route::middleware(['auth'])->group(function () {
         Route::post('tagsWarningSignage', 'IndustrialSecure\Tags\TagController@multiselectWarningSignage');
         Route::post('tagsTypeProcess', 'General\TagController@multiselectTypeProcess');
         Route::post('tagsSubstitution', 'IndustrialSecure\Tags\TagController@multiselectSubstitution');
-        Route::post('tagsParticipants', 'IndustrialSecure\Tags\TagController@multiselectParticipants');
+        Route::post('tagsParticipants', 'IndustrialSecure\Tags\TagController@multiselectSubstitution');
+        Route::post('tagsRmParticipants', 'IndustrialSecure\RiskMatrix\Tags\ParticipantsController@multiselect');
         Route::post('tagsDangerDescription', 'IndustrialSecure\Tags\TagController@multiselectDangerDescription');
         Route::post('actionPlanStates', 'General\MultiSelectRadioController@actionPlanStates');
         Route::post('actionPlanModules', 'Administrative\ActionPlans\ActionPlanController@actionPlanModules');
@@ -374,6 +375,9 @@ Route::middleware(['auth'])->group(function () {
       Route::ApiResource('dangersMatrix', 'IndustrialSecure\DangerMatrix\DangerMatrixController');
 
       Route::post('dangersMatrixHistory/data', 'IndustrialSecure\DangerMatrix\DangerMatrixHistoryController@data');
+
+      Route::post('risksMatrix/data', 'IndustrialSecure\RiskMatrix\RiskMatrixController@data');
+      Route::ApiResource('risksMatrix', 'IndustrialSecure\RiskMatrix\RiskMatrixController');
 
       Route::prefix('dangerousConditions')->group(function () {
         Route::get('incentive/download', 'IndustrialSecure\DangerousConditions\IncentiveController@download');
