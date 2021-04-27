@@ -550,6 +550,7 @@ class NotificationMail
         catch (\Exception $e) {
           \Log::info($e->getMessage());
           \Log::info($e->getTraceAsString());
+          $this->restart();
           $logModel->delete();
             throw new \Exception('An error occurred while sending the mail');
         }

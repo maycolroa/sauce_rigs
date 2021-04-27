@@ -335,6 +335,38 @@ export default [{
           component: () =>
               import('@/views/IndustrialSecure/dangerousConditions/reports/informs')
         }
-      ])
+      ]),
+      ...middleware({ 'check-permission': 'riskMatrix_r' }, [ 
+        {
+          name: 'industrialsecure-riskmatrix',
+          path: 'riskmatrix',
+          component: () =>
+            import('@/views/IndustrialSecure/riskMatrix/index')
+        }
+      ]),
+      ...middleware({ 'check-permission': 'riskMatrix_c' }, [
+        {
+          name: 'industrialsecure-riskmatrix-create',
+          path: 'riskmatrix/create',
+          component: () =>
+            import('@/views/IndustrialSecure/riskMatrix/create')
+        },
+      ]),
+      ...middleware({ 'check-permission': 'riskMatrix_u' }, [
+        {
+          name: 'industrialsecure-riskmatrix-edit',
+          path: 'riskmatrix/edit/:id',
+          component: () =>
+            import('@/views/IndustrialSecure/riskMatrix/edit')
+        }
+      ]), 
+      ...middleware({ 'check-permission': 'riskMatrix_r' }, [
+        {
+          name: 'industrialsecure-riskmatrix-view',
+          path: 'riskmatrix/view/:id',
+          component: () =>
+            import('@/views/IndustrialSecure/riskMatrix/view')
+        }
+      ]),
     ]
   }]
