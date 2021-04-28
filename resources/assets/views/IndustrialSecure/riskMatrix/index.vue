@@ -10,7 +10,7 @@
       <b-card no-body>
         <b-card-header class="with-elements">
           <div class="card-title-elements">
-            <b-btn v-if="auth.can['dangerMatrix_c']" :to="{name:'industrialsecure-riskmatrix-create'}" variant="primary">Crear Matriz de Peligros</b-btn>
+            <b-btn v-if="auth.can['dangerMatrix_c']" :to="{name:'industrialsecure-riskmatrix-create'}" variant="primary">Crear Matriz de Riesgos</b-btn>
             <!--<b-btn v-if="auth.can['dangerMatrix_view_report']" :to="{name:'industrialsecure-dangermatrix-report'}" variant="primary">Reporte</b-btn>
             <b-btn v-if="auth.can['dangerMatrix_c']" :to="{name:'industrialsecure-dangermatrix-tags'}" variant="primary">Administrar Tags</b-btn>
             <div class="card-title-elements" v-if="auth.can['dangerMatrix_c']"> 
