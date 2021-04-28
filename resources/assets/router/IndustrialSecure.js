@@ -368,5 +368,37 @@ export default [{
             import('@/views/IndustrialSecure/riskMatrix/view')
         }
       ]),
+      ...middleware({ 'check-permission': 'subProcesses_r' }, [
+        {
+          name: 'industrialsecure-subprocesses',
+          path: 'subprocesses',
+          component: () =>
+            import('@/views/IndustrialSecure/riskMatrix/subProcess/index')
+        }
+      ]), 
+      ...middleware({ 'check-permission': 'subProcesses_c' }, [
+        {
+          name: 'industrialsecure-subprocesses-create',
+          path: 'subprocesses/create',
+          component: () =>
+            import('@/views/IndustrialSecure/riskMatrix/subProcess/create')
+        }
+      ]), 
+      ...middleware({ 'check-permission': 'subProcesses_u' }, [
+        {
+          name: 'industrialsecure-subprocesses-edit',
+          path: 'subprocesses/edit/:id',
+          component: () =>
+            import('@/views/IndustrialSecure/riskMatrix/subProcess/edit')
+        }
+      ]),
+      ...middleware({ 'check-permission': 'subProcesses_r' }, [
+        {
+          name: 'industrialsecure-subprocesses-view',
+          path: 'subprocesses/view/:id',
+          component: () =>
+            import('@/views/IndustrialSecure/riskMatrix/subProcess/view')
+        }
+      ]),
     ]
   }]

@@ -379,6 +379,9 @@ Route::middleware(['auth'])->group(function () {
       Route::post('risksMatrix/data', 'IndustrialSecure\RiskMatrix\RiskMatrixController@data');
       Route::ApiResource('risksMatrix', 'IndustrialSecure\RiskMatrix\RiskMatrixController');
 
+      Route::post('subProcess/data', 'IndustrialSecure\RiskMatrix\SubProcessController@data');
+      Route::ApiResource('subProcess', 'IndustrialSecure\RiskMatrix\SubProcessController');
+
       Route::prefix('dangerousConditions')->group(function () {
         Route::get('incentive/download', 'IndustrialSecure\DangerousConditions\IncentiveController@download');
         Route::get('incentive/view', 'IndustrialSecure\DangerousConditions\IncentiveController@show');
