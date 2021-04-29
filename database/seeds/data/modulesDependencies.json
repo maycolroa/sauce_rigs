@@ -132,7 +132,8 @@
             "subProcesses",
             "configurations",
             "actionPlans",
-            "customLabels"
+            "customLabels",
+            "risks"
         ]
     }
 ]

@@ -2,19 +2,19 @@
   <div>
     <header-module
       title="MATRIZ DE RIESGOS"
-      subtitle="EDITAR SUBPROCESO"
-      url="industrialsecure-subprocesses"
+      subtitle="EDITAR RIESGOS"
+      url="industrialsecure-risks"
     />
 
     <div class="col-md">
       <b-card no-body>
         <b-card-body>
-            <industrial-secure-sub-process-form
-                :url="`/industrialSecurity/subProcess/${this.$route.params.id}`"
+            <industrial-secure-risk-form
+                :url="`/industrialSecurity/risk/${this.$route.params.id}`"
                 method="PUT"
-                :subProcess="data"
+                :risk="data"
                 :is-edit="true"
-                :cancel-url="{ name: 'industrialsecure-subprocesses'}"/>
+                :cancel-url="{ name: 'industrialsecure-risks'}"/>
         </b-card-body>
       </b-card>
     </div>
@@ -22,16 +22,16 @@
 </template>
 
 <script>
-import IndustrialSecureSubProcessForm from '@/components/IndustrialSecure/RiskMatrix/SubProcess/FormSubProcessComponent.vue';
+import IndustrialSecureRiskForm from '@/components/IndustrialSecure/RiskMatrix/Risk/FormRiskComponent.vue';
 import Alerts from '@/utils/Alerts.js';
 
 export default {
-  name: 'industrialsecure-subprocesses-edit',
+  name: 'industrialsecure-risks-edit',
   metaInfo: {
-    title: 'Subprocesos - Editar'
+    title: 'Riesgos - Editar'
   },
   components:{
-    IndustrialSecureSubProcessForm
+    IndustrialSecureRiskForm
   },
   data () {
     return {
@@ -39,7 +39,7 @@ export default {
     }
   },
   created(){
-    axios.get(`/industrialSecurity/subProcess/${this.$route.params.id}`)
+    axios.get(`/industrialSecurity/risk/${this.$route.params.id}`)
     .then(response => {
         this.data = response.data.data;
     })

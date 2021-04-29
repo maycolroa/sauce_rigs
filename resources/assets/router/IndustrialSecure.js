@@ -400,5 +400,37 @@ export default [{
             import('@/views/IndustrialSecure/riskMatrix/subProcess/view')
         }
       ]),
+      ...middleware({ 'check-permission': 'risks_r' }, [
+        {
+          name: 'industrialsecure-risks',
+          path: 'risks',
+          component: () =>
+            import('@/views/IndustrialSecure/riskMatrix/risk/index')
+        }
+      ]), 
+      ...middleware({ 'check-permission': 'risks_c' }, [
+        {
+          name: 'industrialsecure-risks-create',
+          path: 'risks/create',
+          component: () =>
+            import('@/views/IndustrialSecure/riskMatrix/risk/create')
+        }
+      ]), 
+      ...middleware({ 'check-permission': 'risks_u' }, [
+        {
+          name: 'industrialsecure-risks-edit',
+          path: 'risks/edit/:id',
+          component: () =>
+            import('@/views/IndustrialSecure/riskMatrix/risk/edit')
+        }
+      ]),
+      ...middleware({ 'check-permission': 'risks_r' }, [
+        {
+          name: 'industrialsecure-risks-view',
+          path: 'risks/view/:id',
+          component: () =>
+            import('@/views/IndustrialSecure/riskMatrix/risk/view')
+        }
+      ]),
     ]
   }]
