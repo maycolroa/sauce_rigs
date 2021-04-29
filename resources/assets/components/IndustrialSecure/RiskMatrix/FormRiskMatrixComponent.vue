@@ -128,7 +128,7 @@ import VueInput from "@/components/Inputs/VueInput.vue";
 import Form from "@/utils/Form.js";
 import VueRadio from "@/components/Inputs/VueRadio.vue";
 //import FormActivityComponent from '@/components/IndustrialSecure/DangerMatrix/FormActivityComponent.vue';
-import ModalsCreateComponent from '@/components/IndustrialSecure/DangerMatrix/ModalsCreateComponent.vue';
+import ModalsCreateComponent from '@/components/IndustrialSecure/RiskMatrix/ModalsCreateComponent.vue';
 import LocationLevelComponent from '@/components/CustomInputs/LocationLevelComponent.vue';
 import VueTextarea from "@/components/Inputs/VueTextarea.vue";
 import VueAjaxAdvancedSelect from "@/components/Inputs/VueAjaxAdvancedSelect.vue";

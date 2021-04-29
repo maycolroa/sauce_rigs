@@ -119,5 +119,21 @@
             "users",
             "roles"
         ]
+    },
+    {
+        "module": "riskMatrix",
+        "dependencies": [
+            "users",
+            "roles",
+            "regionals",
+            "headquarters",
+            "processes",
+            "areas",
+            "subProcesses",
+            "configurations",
+            "actionPlans",
+            "customLabels",
+            "risks"
+        ]
     }
 ]

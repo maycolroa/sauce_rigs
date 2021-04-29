@@ -790,4 +790,108 @@ export default [
         filterColumns: true,
     }
 },
+{
+    name: 'industrialsecure-subprocess',
+    fields: [
+        { name: 'sau_rm_sub_processes.id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true },
+        { name: 'sau_rm_sub_processes.name', data: 'name', title: 'Nombre', sortable: true, searchable: true, detail: false, key: false },
+        { name: '', data: 'controlls', title: 'Controles', sortable: false, searchable: false, detail: false, key: false },
+    ],
+    'controlls': [{
+        type: 'push',
+        buttons: [{
+        config: {
+            color: 'outline-success',
+            borderless: true,
+            icon: 'ion ion-md-create',
+            title: 'Editar'
+        },
+        data: {
+            routePush: { name: 'industrialsecure-subprocesses-edit' },
+            id: 'id',
+        },
+        permission: 'subProcesses_u'
+        }, {
+        config: {
+            color: 'outline-info',
+            borderless: true,
+            icon: 'ion ion-md-eye',
+            title: 'Ver'
+        },
+        data: {
+            routePush: { name: 'industrialsecure-subprocesses-view' },
+            id: 'id',
+        },
+        permission: 'subProcesses_r'
+        }]
+    },
+    {
+        type: 'base',
+        buttons: [{
+        name: 'delete',
+        data: {
+            action: '/industrialSecurity/subProcess/',
+            id: 'id',
+            messageConfirmation: 'Esta seguro de borrar el subproceso __name__'
+        },
+        permission: 'subProcesses_d'
+        }],
+    }],
+    configuration: {
+        urlData: '/industrialSecurity/subProcess/data',
+        filterColumns: true,
+    }
+},
+{
+    name: 'industrialsecure-risk',
+    fields: [
+        { name: 'sau_rm_risk.id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true },
+        { name: 'sau_rm_risk.name', data: 'name', title: 'Nombre', sortable: true, searchable: true, detail: false, key: false },
+        { name: '', data: 'controlls', title: 'Controles', sortable: false, searchable: false, detail: false, key: false },
+    ],
+    'controlls': [{
+        type: 'push',
+        buttons: [{
+        config: {
+            color: 'outline-success',
+            borderless: true,
+            icon: 'ion ion-md-create',
+            title: 'Editar'
+        },
+        data: {
+            routePush: { name: 'industrialsecure-risks-edit' },
+            id: 'id',
+        },
+        permission: 'risks_u'
+        }, {
+        config: {
+            color: 'outline-info',
+            borderless: true,
+            icon: 'ion ion-md-eye',
+            title: 'Ver'
+        },
+        data: {
+            routePush: { name: 'industrialsecure-risks-view' },
+            id: 'id',
+        },
+        permission: 'risks_r'
+        }]
+    },
+    {
+        type: 'base',
+        buttons: [{
+        name: 'delete',
+        data: {
+            action: '/industrialSecurity/risk/',
+            id: 'id',
+            messageConfirmation: 'Esta seguro de borrar el riesgo __name__'
+        },
+        permission: 'risks_d'
+        }],
+    }],
+    configuration: {
+        urlData: '/industrialSecurity/risk/data',
+        filterColumns: true,
+    }
+},
 ];

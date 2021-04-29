@@ -114,6 +114,18 @@
                 "display_name": "Matriz de riesgos",
                 "main": "SI",
                 "logo": null
+            },
+            {
+                "name": "subProcesses",
+                "display_name": "Subprocesos",
+                "main": "SI",
+                "logo": null
+            },
+            {
+                "name": "risks",
+                "display_name": "Riesgos",
+                "main": "SI",
+                "logo": null
             }
         ]
     },

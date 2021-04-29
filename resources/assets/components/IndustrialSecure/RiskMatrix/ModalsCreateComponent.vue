@@ -36,7 +36,7 @@
             </div>
         </b-modal>
 
-        <!-- Modal Danger
+         Modal Danger
         <b-modal ref="danger" :hideFooter="true" id="modals-top" size="lg" class="modal-top">
             <div slot="modal-title">
                 Crear Peligro
