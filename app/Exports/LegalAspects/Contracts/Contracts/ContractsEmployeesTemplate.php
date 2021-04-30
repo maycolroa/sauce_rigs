@@ -61,6 +61,7 @@ class ContractsEmployeesTemplate implements FromCollection, WithHeadings, WithMa
         'Identificación (*)',
         'Email (*)',
         'Cargo (*)',
+        'AFP (Tomar el código de la pestaña AFP) (*)',
         'Actividades (Tomar el código de la actividad a asignar al empleado de la pestaña Actividades, de ser varias actividades debe separar los códigos por coma (,))'
       ];
 

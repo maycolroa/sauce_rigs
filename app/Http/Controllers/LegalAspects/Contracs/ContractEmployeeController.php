@@ -146,6 +146,7 @@ class ContractEmployeeController extends Controller
         try
         {
             $contractEmployee = ContractEmployee::findOrFail($id);
+            $contractEmployee->multiselect_afp = $contractEmployee->afp ? $contractEmployee->afp->multiselect() : [];
 
             $activities = $contractEmployee->activities->transform(function($activity, $index) use ($contractEmployee) {
                 $activity->key = Carbon::now()->timestamp + rand(1,10000);

@@ -13,7 +13,8 @@
 						url="/legalAspects/employeeContract"
 						method="POST"
 						:cancel-url="{ name: 'legalaspects-contracts-employees'}"
-						activitiesUrl="/selects/contracts/ctActivitiesContracts"/>
+						activitiesUrl="/selects/contracts/ctActivitiesContracts"
+                  		afp-data-url="/selects/afp"/>
 				</b-card-body>
 			</b-card>
 		</div>  	</div>

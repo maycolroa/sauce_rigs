@@ -4,7 +4,9 @@ namespace App\Exports\LegalAspects\Contracts\Contracts;
 
 use Maatwebsite\Excel\Concerns\Exportable;
 use Maatwebsite\Excel\Concerns\WithMultipleSheets;
-use App\Exports\LegalAspects\Contracts\Contracts\ContractsEmployeesTemplate;use App\Exports\LegalAspects\Contracts\Contracts\ActivityContractTemplate;
+use App\Exports\LegalAspects\Contracts\Contracts\ContractsEmployeesTemplate;
+use App\Exports\LegalAspects\Contracts\Contracts\ActivityContractTemplate;
+use App\Exports\Administrative\Employees\AfpTemplateExcel;
 
 class ContractsEmployeesImport implements WithMultipleSheets
 {
@@ -28,6 +30,7 @@ class ContractsEmployeesImport implements WithMultipleSheets
 
         $sheets[] = new ContractsEmployeesTemplate(collect([]), $this->company_id, $this->contract);
         $sheets[] = new ActivityContractTemplate($this->contract,$this->company_id);
+        $sheets[] = new AfpTemplateExcel($this->company_id);
 
         return $sheets;
     }
