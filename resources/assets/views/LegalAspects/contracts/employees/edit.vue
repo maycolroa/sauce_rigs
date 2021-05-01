@@ -14,6 +14,7 @@
                 method="PUT"
                 :employee="data"
                 activitiesUrl="/selects/contracts/ctActivitiesContracts"
+                afp-data-url="/selects/afp"
                 :is-edit="true"
                 :cancel-url="{ name: 'legalaspects-contracts-employees'}"/>
         </b-card-body>

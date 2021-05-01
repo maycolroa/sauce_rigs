@@ -9,6 +9,7 @@ use App\Models\LegalAspects\Contracts\ContractLesseeInformation;
 use App\Models\LegalAspects\Contracts\HighRiskType;
 use App\Models\Administrative\Users\User;
 use App\Models\Administrative\Users\GeneratePasswordUser;
+use App\Models\Administrative\Employees\EmployeeAFP;
 use App\Models\General\Team;
 use App\Traits\ContractTrait;
 use App\Traits\UserTrait;
@@ -42,6 +43,7 @@ class ContractEmployeeImport implements ToCollection, WithCalculatedFormulas
     {        
       $this->user = $user;
       $this->company_id = $company_id;
+      $this->afp_data = EmployeeAFP::pluck('id', 'code');
       $this->contract = $contract;
     }
 
@@ -121,15 +123,19 @@ class ContractEmployeeImport implements ToCollection, WithCalculatedFormulas
             'documento_empleado' => $row[1],
             'email_empleado' => $row[2],
             'posicion' => ucfirst($row[3]),
-            'actividades' => explode(",", $row[4])
+            'afp' => $row[4],
+            'actividades' => explode(",", $row[5])
         ];
+
+        $data['afp'] = $data['afp'] ? (isset($this->afp_data[$data['afp']]) ? $this->afp_data[$data['afp']] : -1) : null;
 
         $rules = [
             'nombre_empleado' => 'required|string',
             'documento_empleado' => 'required',
             'email_empleado' => 'required|email',
             'posicion' => 'required|string',
-            'actividades' => 'required'    
+            'actividades' => 'required',
+            'afp' => 'nullable|exists:sau_employees_afp,id'    
         ];
 
 
@@ -157,6 +163,7 @@ class ContractEmployeeImport implements ToCollection, WithCalculatedFormulas
                     $employee->company_id = $this->company_id;
                     $employee->contract_id = $this->contract->id;
                     $employee->token = Hash::make($data['email_empleado'].$data['documento_empleado']);
+                    $employee->employee_afp_id = $data['afp'];
                     $employee->save();
 
                     $employee->activities()->sync($data['actividades']);

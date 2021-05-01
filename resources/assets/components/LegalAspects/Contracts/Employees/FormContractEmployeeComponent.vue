@@ -10,6 +10,10 @@
       <vue-input :disabled="viewOnly" class="col-md-6" v-model="form.email" label="Email" type="text" name="email" :error="form.errorsFor('email')" placeholder="Email"/>
       <vue-input :disabled="viewOnly" class="col-md-6" v-model="form.position" label="Cargo" type="text" name="position" :error="form.errorsFor('position')" placeholder="Cargo"/>
     </b-form-row>
+    <b-form-row>
+      <vue-ajax-advanced-select :disabled="viewOnly" class="col-md-12" v-model="form.employee_afp_id" :error="form.errorsFor('employee_afp_id')" :selected-object="form.multiselect_afp" name="employee_afp_id" label="AFP" placeholder="Seleccione una opción" :url="afpDataUrl">
+      </vue-ajax-advanced-select>
+    </b-form-row>
     <div class="col-md-12">
       <blockquote class="blockquote text-center">
           <p class="mb-0">Actividades</p>
@@ -152,13 +156,15 @@ export default {
     isEdit: { type: Boolean, default: false },
     viewOnly: { type: Boolean, default: false },    
     activitiesUrl: { type: String, default: "" },
+    afpDataUrl: { type: String, default: "" },
     employee: {
       default() {
         return {
             name: '',
             identification: '',
             position: '',
-            email: '',          
+            email: '',
+            employee_afp_id: '',          
             activities: [],
             delete: {
               files: []

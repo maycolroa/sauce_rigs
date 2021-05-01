@@ -4,6 +4,7 @@ namespace App\Models\LegalAspects\Contracts;
 
 use Illuminate\Database\Eloquent\Model;
 use App\Traits\CompanyTrait;
+use App\Models\Administrative\Employees\EmployeeAFP;
 
 class ContractEmployee extends Model
 {
@@ -18,7 +19,8 @@ class ContractEmployee extends Model
         'position',
         'email',
         'company_id',
-        'token'
+        'token',
+        'employee_afp_id'
     ];
 
     public function contract()
@@ -29,5 +31,10 @@ class ContractEmployee extends Model
     public function activities()
     {
         return $this->belongsToMany(ActivityContract::class, 'sau_ct_contract_employee_activities', 'employee_id', 'activity_contract_id');
+    }
+
+    public function afp()
+    {
+        return $this->belongsTo(EmployeeAFP::class, 'employee_afp_id');
     }
 }

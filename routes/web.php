@@ -196,7 +196,7 @@ Route::middleware(['auth'])->group(function () {
         Route::post('tagsParticipants', 'IndustrialSecure\Tags\TagController@multiselectSubstitution');
         Route::post('tagsRmParticipants', 'IndustrialSecure\RiskMatrix\Tags\ParticipantsController@multiselect');
         Route::post('tagsDangerDescription', 'IndustrialSecure\Tags\TagController@multiselectDangerDescription');
-        Route::post('actionPlanStates', 'General\MultiSelectRadioController@actionPlanStates');
+        Route::post('actionPlanStates/{all?}', 'General\MultiSelectRadioController@actionPlanStates');
         Route::post('actionPlanModules', 'Administrative\ActionPlans\ActionPlanController@actionPlanModules');
         Route::post('contractors', 'LegalAspects\Contracs\ContractLesseeController@multiselect');
         Route::post('contractStandar', 'LegalAspects\Contracs\ContractLesseeController@multiselectStandard');
