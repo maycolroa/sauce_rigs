@@ -19,6 +19,8 @@ use App\Models\Administrative\Processes\EmployeeProcess;
 use App\Models\System\Licenses\License;
 use App\Facades\Mail\Facades\NotificationMail;
 use App\Facades\Configuration;
+use Illuminate\Validation\Rule;
+use Validator;
 use Exception;
 use Session;
 
@@ -217,9 +219,9 @@ class ActionPlan
      *
      * @return Array
      */
-    public function getStates()
+    public function getStates($all = '')
     {
-        return $this->states;
+        return $all ? array_merge($this->states, ['N/A']) : $this->states;
     }
 
     /**
@@ -522,13 +524,14 @@ class ActionPlan
         $rules = [];
 
         $ACTION_PLAN_STATES = implode(",", $this->states);
+        $ACTION_PLAN_STATES = $ACTION_PLAN_STATES . ",N/A";
 
         $rules['rules'][$this->prefixIndex.'actionPlan'] = 'array';
         $rules['rules'][$this->prefixIndex.'actionPlan.activities'] = 'array';
-        $rules['rules'][$this->prefixIndex.'actionPlan.activities.*.description'] = 'required';
-        $rules['rules'][$this->prefixIndex.'actionPlan.activities.*.responsible_id'] = 'required|exists:sau_users,id';
+        $rules['rules'][$this->prefixIndex.'actionPlan.activities.*.description'] = "required_unless:{$this->prefixIndex}actionPlan.activities.*.state,N/A";
+        $rules['rules'][$this->prefixIndex.'actionPlan.activities.*.responsible_id'] = "required_unless:{$this->prefixIndex}actionPlan.activities.*.state,N/A";
         $rules['rules'][$this->prefixIndex.'actionPlan.activities.*.execution_date'] = 'date';
-        $rules['rules'][$this->prefixIndex.'actionPlan.activities.*.expiration_date'] = 'required|date';
+        $rules['rules'][$this->prefixIndex.'actionPlan.activities.*.expiration_date'] = "required_unless:{$this->prefixIndex}actionPlan.activities.*.state,N/A|date";
         $rules['rules'][$this->prefixIndex.'actionPlan.activities.*.state'] = "required|in:$ACTION_PLAN_STATES";
 
         $rules['messages'][$this->prefixIndex.'actionPlan.array'] = 'El campo Planes de acción debe ser un array';
@@ -578,8 +581,8 @@ class ActionPlan
             $tmp['user_id'] = $value->activity->user_id;
             $tmp['execution_date'] = ($value->activity->execution_date) ? (Carbon::createFromFormat('Y-m-d', $value->activity->execution_date))->format('D M d Y') : '';
             $tmp['oldExecution_date'] = ($value->activity->execution_date) ? (Carbon::createFromFormat('Y-m-d', $value->activity->execution_date))->format('D M d Y') : '';
-            $tmp['expiration_date'] = (Carbon::createFromFormat('Y-m-d', $value->activity->expiration_date))->format('D M d Y');
-            $tmp['oldExpiration_date'] = (Carbon::createFromFormat('Y-m-d', $value->activity->expiration_date))->format('D M d Y');
+            $tmp['expiration_date'] = ($value->activity->expiration_date) ? (Carbon::createFromFormat('Y-m-d', $value->activity->expiration_date))->format('D M d Y') : '';
+            $tmp['oldExpiration_date'] = ($value->activity->expiration_date) ? (Carbon::createFromFormat('Y-m-d', $value->activity->expiration_date))->format('D M d Y') : '';
             $tmp['state'] = $value->activity->state;
             $tmp['oldState'] = $value->activity->state;
             $tmp['observation'] = $value->activity->observation;
@@ -587,6 +590,7 @@ class ActionPlan
             $tmp['editable'] = $value->activity->editable;
             $tmp['company_id'] = $value->activity->company_id;
             $tmp['edit_all'] = $this->checkEditAll($value->activity);
+            $tmp['table'] = $value->activity->activityModule->item_table_name;
             $tmp['detail_procedence'] = $value->activity->detail_procedence;
 
             array_push($data['activities'], $tmp);
@@ -634,8 +638,8 @@ class ActionPlan
             $tmp['user_creator_name'] = $activity->user->name;
             $tmp['execution_date'] = ($activity->execution_date) ? (Carbon::createFromFormat('Y-m-d', $activity->execution_date))->format('D M d Y') : '';
             $tmp['oldExecution_date'] = ($activity->execution_date) ? (Carbon::createFromFormat('Y-m-d', $activity->execution_date))->format('D M d Y') : '';
-            $tmp['expiration_date'] = (Carbon::createFromFormat('Y-m-d', $activity->expiration_date))->format('D M d Y');
-            $tmp['oldExpiration_date'] = (Carbon::createFromFormat('Y-m-d', $activity->expiration_date))->format('D M d Y');
+            $tmp['expiration_date'] = ($activity->expiration_date) ? (Carbon::createFromFormat('Y-m-d', $activity->expiration_date))->format('D M d Y') : '';
+            $tmp['oldExpiration_date'] = ($activity->expiration_date) ? (Carbon::createFromFormat('Y-m-d', $activity->expiration_date))->format('D M d Y') : '';
             $tmp['state'] = $activity->state;
             $tmp['oldState'] = $activity->state;
             $tmp['observation'] = $activity->observation;
@@ -644,6 +648,7 @@ class ActionPlan
             $tmp['company_id'] = $activity->company_id;
             $tmp['edit_all'] = $this->checkEditAll($activity);
             $tmp['detail_procedence'] = $activity->detail_procedence;
+            $tmp['table'] = $activity->activityModule->item_table_name;
 
             array_push($data['actionPlan']['activities'], $tmp);
         }
@@ -789,7 +794,7 @@ class ActionPlan
             }
 
             $activity->description = $itemA['description'];
-            $activity->responsible_id = $itemA['responsible_id'];
+            $activity->responsible_id = $itemA['responsible_id'] ? $itemA['responsible_id'] : $this->user->id;
 
             if ($this->dateSimpleFormat)
             {
@@ -799,7 +804,7 @@ class ActionPlan
             else
             {
                 $activity->execution_date = ($itemA['execution_date']) ? (Carbon::createFromFormat('D M d Y', $itemA['execution_date']))->format('Ymd') : null;
-                $activity->expiration_date = (Carbon::createFromFormat('D M d Y', $itemA['expiration_date']))->format('Ymd');
+                $activity->expiration_date = ($itemA['expiration_date']) ? (Carbon::createFromFormat('D M d Y', $itemA['expiration_date']))->format('Ymd') : null;
             }
              
             $activity->state = $itemA['state'];

@@ -15,7 +15,7 @@ export default [
         label: 'Módulos'
       },
       {
-        url: '/selects/actionPlanStates',
+        url: '/selects/actionPlanStates/all',
         key: 'states',
         type: 'select',
         label: 'Estados'

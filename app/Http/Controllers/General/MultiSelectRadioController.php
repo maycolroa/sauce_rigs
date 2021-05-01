@@ -12,9 +12,9 @@ class MultiSelectRadioController extends Controller
      *
      * @return Array
      */
-    public function actionPlanStates()
+    public function actionPlanStates($all = '')
     {
-        return $this->multiSelectFormat(ActionPlan::getStates());
+        return $this->multiSelectFormat(ActionPlan::getStates($all));
     }
 
     /**

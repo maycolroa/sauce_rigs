@@ -230,6 +230,7 @@ return [
       'competitors_id' => 'Participantes',
       'items.*.actionPlan.activities.*.execution_date' => 'Fecha de ejecución',
       'items.*.actionPlan.activities.*.expiration_date' => 'Fecha de vencimiento',
+      'items.*.actionPlan.activities.*.description' => 'Descripción',
       'items.*.actionPlan.activities.*.responsible_id' => 'Responsable',
       'items.*.actionPlan.activities.*.state' => 'Estado',
       'items.*.files.*.name' => 'Nombre',

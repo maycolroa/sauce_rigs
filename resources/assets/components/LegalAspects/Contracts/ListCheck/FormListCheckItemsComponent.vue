@@ -170,7 +170,8 @@ export default {
 			default: function() {
 				return [
 					{ name:'Pendiente', value:'Pendiente'},
-					{ name:'Ejecutada', value:'Ejecutada'}
+					{ name:'Ejecutada', value:'Ejecutada'},
+					{ name:'N/A', value:'N/A'}
 				];
 			}
 		},

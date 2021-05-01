@@ -9,6 +9,7 @@
     <div class="col-md">
       <b-card no-body>
         <b-card-body>
+           <loading :display="!ready"/>
             <form-action-plans-component
                 :url="`/administration/actionplan/${this.$route.params.id}`"
                 method="PUT"
@@ -25,6 +26,7 @@
 import FormActionPlansComponent from '@/components/Administrative/ActionPlans/FormActionPlansComponent.vue';
 import Alerts from '@/utils/Alerts.js';
 import GlobalMethods from '@/utils/GlobalMethods.js';
+import Loading from "@/components/Inputs/Loading.vue";
 
 export default {
   name: 'administrative-actionplans-edit',
@@ -32,7 +34,8 @@ export default {
     title: 'Planes de acción - Editar'
   },
   components:{
-    FormActionPlansComponent
+    FormActionPlansComponent,
+    Loading
   },
   data () {
     return {
@@ -41,6 +44,7 @@ export default {
           activities: []
         }
       },
+      ready: false,
       actionPlanStates: []
     }
   },
@@ -48,13 +52,22 @@ export default {
     axios.get(`/administration/actionplan/${this.$route.params.id}`)
     .then(response => {
         this.data = response.data.data;
+        if (this.data.actionPlan.activities[0].table == 'sau_ct_item_qualification_contract')
+        {
+          this.fetchSelect('actionPlanStates', '/selects/actionPlanStates/all')
+        }
+        else 
+        {
+          this.fetchSelect('actionPlanStates', '/selects/actionPlanStates')
+        }
+        this.ready = true
     })
     .catch(error => {
         Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
         this.$router.go(-1);
     });
 
-    this.fetchSelect('actionPlanStates', '/selects/actionPlanStates')
+
   },
   methods: {
     fetchSelect(key, url)
