@@ -45,7 +45,8 @@ class VuetableColumnManager
         'dangerousconditionsinspectionsqualification',
         'dangerousconditionsinspectionsreport',
         'dangerousconditionsinspectionsreporttype2',
-        'industrialsecureriskmatrix'
+        'industrialsecureriskmatrix',
+        'dangerousconditionsreport',
     ];
 
     protected $customColumnsName;
@@ -487,6 +488,30 @@ class VuetableColumnManager
             ['name' => 'porcentaje_items_cumplimiento_parcial', 'data'=> 'porcentaje_items_cumplimiento_parcial', 'title'=> '% Items Cumplimiento Parcial', 'sortable'=> false, 'searchable'=> false, 'detail'=> false, 'key'=> false ],
             ['name' => 'numero_planes_ejecutados', 'data'=> 'numero_planes_ejecutados', 'title'=> '# Planes de Acción Realizados', 'sortable'=> false, 'searchable'=> false, 'detail'=> false, 'key'=> false ],
             ['name' => 'numero_planes_no_ejecutados', 'data'=> 'numero_planes_no_ejecutados', 'title'=> '# Planes de Acción No Realizados', 'sortable'=> false, 'searchable'=> false, 'detail'=> false, 'key'=> false ]
+        ]);
+
+        return $colums;
+    }
+
+    public function dangerousconditionsreport()
+    {
+        $colums = [
+            [ 'name'=> 'sau_ph_reports.id', 'data'=> 'id', 'title'=> 'ID', 'sortable'=> false, 'searchable'=> true, 'detail'=> false, 'key'=> false ]
+        ];
+
+        $colums = array_merge($colums, $this->getColumnsLocations());
+
+        $colums = array_merge($colums, [
+            ['name' => 'sau_ph_reports.id', 'data'=> 'id', 'title'=> 'ID', 'sortable'=> false, 'searchable'=> false, 'detail'=> false, 'key'=> true ],
+            ['name'=> 'sau_users.name', 'data'=> 'user', 'title'=> 'Usuario', 'sortable'=> true, 'searchable'=> true, 'detail'=> false, 'key'=> false ],
+            [ 'name'=> 'sau_ph_conditions.description', 'data'=> 'condition', 'title'=> 'Hallazgo', 'sortable'=> true, 'searchable'=> true, 'detail'=> false, 'key'=> false ],
+            [ 'name'=> 'sau_ph_conditions_types.description', 'data'=> 'type', 'title'=> 'Tipo de reporte', 'sortable'=> true, 'searchable'=> true, 'detail'=> false, 'key'=> false ],
+            [ 'name'=> 'sau_ph_reports.rate', 'data'=> 'rate', 'title'=> 'Severidad', 'sortable'=> true, 'searchable'=> true, 'detail'=> false, 'key'=> false ],
+            [ 'name'=> 'sau_ph_reports.created_at', 'data'=> 'created_at', 'title'=> 'Fecha de creación', 'sortable'=> true, 'searchable'=> true, 'detail'=> false, 'key'=> false ]
+        ]);
+
+        $colums = array_merge($colums, [
+            ['name' => '', 'data'=> 'controlls', 'title'=> 'Controles', 'sortable'=> false, 'searchable'=> false, 'detail'=> false, 'key'=> false ],
         ]);
 
         return $colums;

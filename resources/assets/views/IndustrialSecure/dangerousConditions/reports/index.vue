@@ -19,6 +19,7 @@
              <vue-table
                 configName="dangerousconditions-report"
                 v-if="auth.can['ph_reports_r']"
+                :customColumnsName="true" 
                 @filtersUpdate="setFilters"
                 ></vue-table>
         </b-card-body>
