@@ -654,7 +654,7 @@ export default [
         //configNameFilter: 'dangerousconditions-inspections-report'
     }
 },
-{
+/*{
     name: 'dangerousconditions-report',
     fields: [
         { name: 'sau_ph_reports.id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true },
@@ -666,6 +666,64 @@ export default [
         { name: 'sau_ph_reports.rate', data: 'rate', title: 'Severidad', sortable: true, searchable: true, detail: false, key: false },
         { name: 'sau_ph_reports.created_at', data: 'created_at', title: 'Fecha de creación', sortable: true, searchable: true, detail: false, key: false },
         { name: '', data: 'controlls', title: 'Controles', sortable: false, searchable: false, detail: false, key: false },
+    ],
+    'controlls': [{
+          type: 'push',
+          buttons: [{
+            config: {
+                color: 'outline-success',
+                borderless: true,
+                icon: 'ion ion-md-create',
+                title: 'Editar'
+            },
+            data: {
+                routePush: { name: 'dangerousconditions-reports-edit' },
+                id: 'id',
+            },
+            permission: 'ph_reports_u'
+          }, {
+            config: {
+                color: 'outline-info',
+                borderless: true,
+                icon: 'ion ion-md-eye',
+                title: 'Ver'
+            },
+            data: {
+                routePush: { name: 'dangerousconditions-reports-view' },
+                id: 'id',
+            },
+            permission: 'ph_reports_r'
+          }]
+      },
+      {
+        type: 'base',
+        buttons: [{
+        name: 'delete',
+        data: {
+            action: '/industrialSecurity/dangerousConditions/report/',
+            id: 'id',
+            messageConfirmation: 'Esta seguro de borrar la inspección no planeada'
+        },
+        permission: 'ph_reports_r'
+        }],
+    }],
+    configuration: {
+        urlData: '/industrialSecurity/dangerousConditions/report/data',
+        filterColumns: true,
+        configNameFilter: 'dangerousconditions-report'
+    }
+},*/
+{
+    name: 'dangerousconditions-report',
+    fields: [
+        { name: 'sau_ph_reports.id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true },
+        /*{ name: 'sau_employees_regionals.name', data: 'regional', title: 'regional', sortable: true, searchable: true, detail: false, key: false },
+        { name: 'sau_users.name', data: 'user', title: 'Usuario', sortable: true, searchable: true, detail: false, key: false },
+        { name: 'sau_ph_conditions.description', data: 'condition', title: 'Hallazgo', sortable: true, searchable: true, detail: false, key: false },
+        { name: 'sau_ph_conditions_types.description', data: 'type', title: 'Tipo de reporte', sortable: true, searchable: true, detail: false, key: false },
+        { name: 'sau_ph_reports.rate', data: 'rate', title: 'Severidad', sortable: true, searchable: true, detail: false, key: false },
+        { name: 'sau_ph_reports.created_at', data: 'created_at', title: 'Fecha de creación', sortable: true, searchable: true, detail: false, key: false },
+        { name: '', data: 'controlls', title: 'Controles', sortable: false, searchable: false, detail: false, key: false },*/
     ],
     'controlls': [{
           type: 'push',

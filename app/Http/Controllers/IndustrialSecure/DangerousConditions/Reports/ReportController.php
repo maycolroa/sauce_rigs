@@ -57,6 +57,9 @@ class ReportController extends Controller
         $reports = Report::select(
             'sau_ph_reports.id',
             'sau_employees_regionals.name as regional',
+            'sau_employees_headquarters.name AS headquarter',
+            'sau_employees_processes.name AS process',
+            'sau_employees_areas.name AS area',
             'sau_ph_reports.created_at',
             'sau_users.name as user',
             'sau_ph_conditions.description as condition',
@@ -66,7 +69,10 @@ class ReportController extends Controller
         ->join('sau_users', 'sau_users.id', 'sau_ph_reports.user_id')
         ->join('sau_ph_conditions', 'sau_ph_conditions.id', 'sau_ph_reports.condition_id')
         ->join('sau_ph_conditions_types', 'sau_ph_conditions_types.id', 'sau_ph_conditions.condition_type_id')
-        ->join('sau_employees_regionals', 'sau_employees_regionals.id', 'sau_ph_reports.employee_regional_id');
+        ->join('sau_employees_regionals', 'sau_employees_regionals.id', 'sau_ph_reports.employee_regional_id')
+        ->leftJoin('sau_employees_headquarters', 'sau_employees_headquarters.id', 'sau_ph_reports.employee_headquarter_id')
+        ->leftJoin('sau_employees_processes', 'sau_employees_processes.id', 'sau_ph_reports.employee_process_id')
+        ->leftJoin('sau_employees_areas', 'sau_employees_areas.id', 'sau_ph_reports.employee_area_id');
 
         $url = "/industrialsecure/reports";
 
