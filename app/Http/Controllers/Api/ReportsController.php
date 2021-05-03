@@ -446,7 +446,7 @@ class ReportsController extends ApiController
         foreach ($types as $type) {
             $result[] = [
                 'description' => $type->description,
-                'values' => $type->conditions,
+                'values' => $type->conditions()->orderBy('description')->get(),
             ];
         }
 
