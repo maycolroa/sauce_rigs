@@ -1280,10 +1280,34 @@ class ContractLesseeController extends Controller
                 $qualification->delete();
             }
 
+            //Borrado de usuarios o desactivacion.
+
+            $users = $contract->users;
+
+            foreach ($users as $key => $value) 
+            {
+                $count_contract = User::select(
+                    'sau_users.*')
+                ->join('sau_user_information_contract_lessee', 'sau_user_information_contract_lessee.user_id', 'sau_users.id')
+                ->where('sau_user_information_contract_lessee.user_id', $value->id)
+                ->get();
+
+                if ($count_contract->count() > 1)
+                    $contract->users()->detach($value->id);
+                else
+                {
+                    $user_desactive = User::find($value->id);
+                    $user_desactive->active = 'NO';
+                    $user_desactive = $user_desactive->save();
+                }
+            }
+
+            //Borrado de contratista
+
             if(!$contract->delete())
             {
                 return $this->respondHttp500();
-            }       
+            }
 
             DB::commit();
 

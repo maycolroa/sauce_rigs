@@ -39,7 +39,12 @@
 			</b-card-header>
 			<b-card-body>
 				<div class="rounded ui-bordered p-3 mb-3"  v-for="(item, index) in form.items" :key="item.id">
-					<p class="my-1">{{ index + 1 }} - {{ item.item_name }}</p>
+					<p class="my-1">{{ index + 1 }} - {{ item.item_name }}</p> 
+					<b-col>
+                		<div class="float-right" style="padding-right: 10px;">
+                    		<b-btn v-b-popover.hover.focus.left="item.verification_mode" title="Modo de verificación" variant="primary" class="btn-circle-micro"><span class="fas fa-info"></span></b-btn>
+                		</div>
+              		</b-col>
 					<span class="text-muted">{{ item.criterion_description}}</span>
 					<div class="media align-items-center mt-3">
 						<div class="media-body ml-2">
