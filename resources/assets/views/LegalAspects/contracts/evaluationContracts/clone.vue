@@ -61,7 +61,12 @@ export default {
           objective.subobjectives.map((subobjective) => {
             subobjective.items.map((item) => {
               item.file = [];
-              item.actionPlan = {"activities":[],"activitiesRemoved":[]};
+              item.actionPlan.activities.map((plan) => {
+                plan.id = ''
+
+                return plan;
+              });
+              //item.actionPlan = {"activities":[],"activitiesRemoved":[]};
               item.files_pdf = [];
               item.observations.map((obs) => {
                 delete obs.id
