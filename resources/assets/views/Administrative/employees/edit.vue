@@ -19,6 +19,7 @@
                   positions-data-url="/selects/positions"
                   businesses-data-url="/selects/businesses"
                   eps-data-url="/selects/eps"
+                  afp-data-url="/selects/afp"
                   :employee="data"
                   :is-edit="true"
                   :cancel-url="{ name: 'administrative-employees'}"/>

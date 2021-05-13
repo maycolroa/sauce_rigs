@@ -20,6 +20,7 @@
                   positions-data-url="/selects/positions"
                   businesses-data-url="/selects/businesses"
                   eps-data-url="/selects/eps"
+                  afp-data-url="/selects/afp"
                   :cancel-url="{ name: 'administrative-employees'}"/>
               </template>
               <template v-if="form == 'ingeomega'">
