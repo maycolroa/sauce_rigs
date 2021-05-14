@@ -44,6 +44,13 @@
 					</b-form-row>
             	</b-card>
 
+				<b-card border-variant="primary" v-show="isEdit || viewOnly" title="Usuarios del contratista" class="mb-3 box-shadow-none">
+					<div class="rounded ui-bordered p-3 mb-3"  v-for="(user, index) in usersContract" :key="user.id">
+						<p class="my-1">{{ index + 1 }} . {{ user.name }} - {{ user.email}}</p> 
+					</div>
+					
+            	</b-card>
+
 				<div class="row float-right pt-10 pr-10">
                     <template>
                         <b-btn variant="default" :to="cancelUrl" :disabled="loading">{{ viewOnly ? "Atras" : "Cancelar"}}</b-btn>&nbsp;&nbsp;
@@ -93,6 +100,12 @@ export default {
 			}
 		},
 		usersResponsibles: {
+			type: Array,
+			default: function() {
+				return [];
+			}
+		},
+		usersContract: {
 			type: Array,
 			default: function() {
 				return [];

@@ -15,6 +15,7 @@
                 :roles="roles"
                 :contract-classifications="contractClassifications"
                 :users-responsibles="usersResponsibles"
+                :usersContract="usersContract"
                 :cancel-url="{ name: 'legalaspects-contractor'}"
                 :si-no="siNo"/>
         </b-card-body>
@@ -42,13 +43,15 @@ export default {
             roles: [],
             contractClassifications: [],
             siNo: [],
-            usersResponsibles: []
+            usersResponsibles: [],
+            usersContract: []
         }
     },
     created(){
         axios.get(`/legalAspects/contracts/${this.$route.params.id}`)
         .then(response => {
             this.data = response.data.data;
+            this.usersContract = response.data.data.usersContract;
         })
         .catch(error => {
             Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');

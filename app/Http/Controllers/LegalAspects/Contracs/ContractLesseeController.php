@@ -234,6 +234,8 @@ class ContractLesseeController extends Controller
                 array_push($users_responsibles, $value->multiselect());
             }
 
+            $contract->usersContract = $contract->users;
+
             $contract->multiselect_users_responsibles = $users_responsibles;
             $contract->users_responsibles = $users_responsibles;
 
