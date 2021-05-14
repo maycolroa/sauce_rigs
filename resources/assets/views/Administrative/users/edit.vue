@@ -20,6 +20,7 @@
                 systemApplyDataUrl="/selects/legalMatrix/systemApply"
                 :user="data"
                 :filters-config="filtersConfig"
+                :contracts="contracts"
                 :is-edit="true"
                 :cancel-url="{ name: 'administrative-users'}"/>
             </template>
@@ -32,6 +33,7 @@
                 systemApplyDataUrl="/selects/legalMatrix/systemApply"
                 :user="data"
                 :filters-config="filtersConfig"
+                :contracts="contracts"
                 :is-edit="true"
                 :cancel-url="{ name: 'administrative-users'}"/>
             </template>
@@ -63,7 +65,8 @@ export default {
       form: '',
       data: [],
       ready: false,
-      filtersConfig: {}
+      filtersConfig: {},
+      contracts: []
     }
   },
   created(){    
@@ -78,6 +81,8 @@ export default {
         axios.get(`/administration/users/${this.$route.params.id}`)
         .then(response3 => {
             this.data = response3.data.data;
+            this.contracts = response3.data.data.contracts;
+            console.log(this.contracts)
             this.ready = true
         })
         .catch(error => {
