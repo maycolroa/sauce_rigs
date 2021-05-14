@@ -45,11 +45,16 @@
             	</b-card>
 
 				<b-card border-variant="primary" v-show="isEdit || viewOnly" title="Usuarios del contratista" class="mb-3 box-shadow-none">
-					<div class="rounded ui-bordered p-3 mb-3"  v-for="(user, index) in usersContract" :key="user.id">
-						<p class="my-1">{{ index + 1 }} . {{ user.name }} - {{ user.email}}</p> 
-					</div>
-					
-            	</b-card>
+					<table class="table table-bordered table-sm table-striped table-hover" style="width: 100%; font-size: 10px;">
+						<tbody>
+							<tr v-for="(user, index) in usersContract" :key="user.id">
+								<td style='text-center align-middle'>
+									{{ index + 1 }} . {{ user.name }} - {{ user.email}}
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</b-card>
 
 				<div class="row float-right pt-10 pr-10">
                     <template>

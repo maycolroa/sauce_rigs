@@ -33,11 +33,18 @@
     </template>
 
     <template v-if="!auth.hasRole['Arrendatario'] && !auth.hasRole['Contratista']" v-show="contracts.length > 0">
-      <b-card border-variant="primary" v-show="isEdit || viewOnly" title="Contratista a las cuales pertenece el usuario" class="mb-3 box-shadow-none">
-            <div class="rounded ui-bordered p-3 mb-3"  v-for="(contract, index) in contracts" :key="contract.id">
-              <p class="my-1">{{ index + 1 }} . {{ contract.social_reason }}</p> 
-            </div>					
-      </b-card>
+      <div style= "margin-bottom: 20px;">
+        <h6><b>Contratista a las cuales pertenece el usuario</b></h6>
+        <table class="table table-bordered table-sm table-striped table-hover" style="width: 100%; font-size: 10px;">
+             <tbody>
+                <tr v-for="(contract, index) in contracts" :key="contract.id">
+                    <td style='text-center align-middle'>
+                        {{ index + 1 }} . {{ contract.social_reason }}
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+      </div>
     </template>
 
     <div class="row float-right pt-10 pr-10">
