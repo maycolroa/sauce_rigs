@@ -151,7 +151,7 @@ class EmployeeImport implements ToCollection
             'centro_costo' => $row[11],
             'negocio' => ($this->formModel == 'default') ? $row[12] : null,
             'eps' => ($this->formModel == 'default') ? (string) $row[13] : ( ($this->formModel == 'vivaAir' || $this->formModel == 'misionEmpresarial' || $this->formModel == 'manpower'|| $this->formModel == 'ingeomega') ? (string) $row[12] : null),
-            'afp' => ($this->formModel == 'vivaAir' || $this->formModel == 'misionEmpresarial' || $this->formModel == 'manpower' || $this->formModel == 'ingeomega') ? (string) $row[13] : null,
+            'afp' => ($this->formModel == 'default') ? (string) $row[14] : ($this->formModel == 'vivaAir' || $this->formModel == 'misionEmpresarial' || $this->formModel == 'manpower' || $this->formModel == 'ingeomega') ? (string) $row[13] : null,
             'arl' => ($this->formModel == 'misionEmpresarial') ? (string) $row[14] : null,
             'numero_contrato' => ($this->formModel == 'misionEmpresarial') ? $row[15] : null,
             'fecha_ultimo_contrato' => ($this->formModel == 'misionEmpresarial') ? $this->validateDate($row[16]) : null,
