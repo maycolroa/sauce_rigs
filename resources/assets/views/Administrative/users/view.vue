@@ -16,6 +16,7 @@
                 :user="data"
                 :view-only="true"
                 :filters-config="filtersConfig"
+                :contracts="contracts"
                 :cancel-url="{ name: 'administrative-users'}"/>
             </template>
             <template v-if="form == 'hptu'">
@@ -23,6 +24,7 @@
                 :user="data"
                 :view-only="true"
                 :filters-config="filtersConfig"
+                :contracts="contracts"
                 :cancel-url="{ name: 'administrative-users'}"/>
             </template>
           </div>
@@ -53,7 +55,8 @@ export default {
       form: '',
       data: [],
       ready: false,
-      filtersConfig: {}
+      filtersConfig: {},
+      contracts: []
     }
   },
   created(){
@@ -68,6 +71,7 @@ export default {
         axios.get(`/administration/users/${this.$route.params.id}`)
         .then(response3 => {
             this.data = response3.data.data;
+            this.contracts = response3.data.data.contracts
             this.ready = true
         })
         .catch(error => {

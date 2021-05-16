@@ -44,6 +44,18 @@
 					</b-form-row>
             	</b-card>
 
+				<b-card border-variant="primary" v-show="isEdit || viewOnly" title="Usuarios del contratista" class="mb-3 box-shadow-none">
+					<table class="table table-bordered table-sm table-striped table-hover" style="width: 100%; font-size: 10px;">
+						<tbody>
+							<tr v-for="(user, index) in usersContract" :key="user.id">
+								<td style='text-center align-middle'>
+									{{ index + 1 }} . {{ user.name }} - {{ user.email}}
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</b-card>
+
 				<div class="row float-right pt-10 pr-10">
                     <template>
                         <b-btn variant="default" :to="cancelUrl" :disabled="loading">{{ viewOnly ? "Atras" : "Cancelar"}}</b-btn>&nbsp;&nbsp;
@@ -93,6 +105,12 @@ export default {
 			}
 		},
 		usersResponsibles: {
+			type: Array,
+			default: function() {
+				return [];
+			}
+		},
+		usersContract: {
 			type: Array,
 			default: function() {
 				return [];

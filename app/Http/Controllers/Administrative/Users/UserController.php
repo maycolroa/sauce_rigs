@@ -252,6 +252,19 @@ class UserController extends Controller
                     array_push($systemsApply, $value->multiselect());
             }
 
+            if($this->user->hasRole('Superadmin', $this->team))
+            {
+                $user->contracts = $this->getMultiplesContracstUser($user->id, true);
+            }            
+            else if (!$this->user->hasRole('Arrendatario', $this->team) || !$this->user->hasRole('Contratista', $this->team))
+            {
+                $user->contracts = $this->getMultiplesContracstUser($user->id, false, $this->company);
+            }
+            else if ($this->user->hasRole('Arrendatario', $this->team) || $this->user->hasRole('Contratista', $this->team))
+            {
+                $user->contracts = [];
+            }
+
             $user->multiselect_filter_system_apply = $systemsApply;
             $user->filter_system_apply = $systemsApply;
             $data = $user->toArray();

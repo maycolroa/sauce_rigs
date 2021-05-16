@@ -45,6 +45,10 @@
       <vue-ajax-advanced-select :disabled="viewOnly" class="col-md-6" v-model="form.employee_eps_id" :error="form.errorsFor('employee_eps_id')" :selected-object="form.multiselect_eps" name="employee_eps_id" :label="keywordCheck('eps')" placeholder="Seleccione una opción" :url="epsDataUrl">
           </vue-ajax-advanced-select>
     </b-form-row>
+    <b-form-row>
+      <vue-ajax-advanced-select :disabled="viewOnly" class="col-md-6" v-model="form.employee_afp_id" :error="form.errorsFor('employee_afp_id')" :selected-object="form.multiselect_afp" name="employee_afp_id" :label="keywordCheck('afp')" placeholder="Seleccione una opción" :url="afpDataUrl">
+      </vue-ajax-advanced-select>
+    </b-form-row>
 
     <div class="row float-right pt-10 pr-10">
       <template>
@@ -80,6 +84,7 @@ export default {
     positionsDataUrl: { type: String, default: "" },
     businessesDataUrl: { type: String, default: "" },
     epsDataUrl: { type: String, default: "" },
+    afpDataUrl: { type: String, default: "" },
     sexs: {
       type: Array,
       default: function() {
@@ -98,6 +103,7 @@ export default {
             employee_position_id: '',
             employee_business_id: '',
             employee_eps_id: '',
+            employee_afp_id: '',
             deal:'',
             extension: '',
             mobile: '',

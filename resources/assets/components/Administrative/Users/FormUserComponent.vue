@@ -32,6 +32,21 @@
       </b-form-row>
     </template>
 
+    <template v-if="!auth.hasRole['Arrendatario'] && !auth.hasRole['Contratista']" v-show="contracts.length > 0">
+      <div style= "margin-bottom: 20px;">
+        <h6><b>Contratista a las cuales pertenece el usuario</b></h6>
+        <table class="table table-bordered table-sm table-striped table-hover" style="width: 100%; font-size: 10px;">
+             <tbody>
+                <tr v-for="(contract, index) in contracts" :key="contract.id">
+                    <td style='text-center align-middle'>
+                        {{ index + 1 }} . {{ contract.social_reason }}
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+      </div>
+    </template>
+
     <div class="row float-right pt-10 pr-10">
       <template>
         <b-btn variant="default" :to="cancelUrl" :disabled="loading">{{ viewOnly ? "Atras" : "Cancelar"}}</b-btn>&nbsp;&nbsp;
@@ -65,6 +80,12 @@ export default {
     filtersConfig: { type: Object, default() {
         return {};
     }},
+    contracts: {
+			type: Array,
+			default: function() {
+				return [];
+			}
+		},
     user: {
       default() {
         return {
