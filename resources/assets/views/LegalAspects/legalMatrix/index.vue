@@ -182,6 +182,30 @@
                 </router-link>
       </b-col>
 
+      <b-col cols="3" class="col-item" v-if="auth.can['typesCustom_r']">
+                <router-link :to="{name:'legalaspects-lm-type-company'}" class="text-dark cursor-pointer item-app-navbar">
+                    <div class="my-2 mx-2" ref="custom_type" @mouseover="changeClassImage('custom_type', 'custom_type_hover')">
+                        <img class="ui-w-80" src="/images/Sauce-ML Ico Admin entidades.png" alt="" >
+
+                        <div class="font-weight-bold pt-1">
+                          Administrar mis tipos de leyes 
+                        </div>
+            <small class="text-muted">Administrar mis tipos de leyes</small>
+                    </div>
+                    <div class="my-2 mx-2 imgHidden" ref="custom_type_hover" @mouseleave="changeClassImage('custom_type_hover', 'custom_type')">
+                        <img class="ui-w-80" src="/images/Sauce-ML Ico Admin entidades over.png" alt="">
+
+                        <div class="font-weight-bold pt-1">
+                          Administrar mis tipos de leyes 
+                        </div>
+            <small class="text-muted">Administrar mis tipos de leyes</small>
+            <div style="padding-top: 10px;">
+              <hr class="border-divider mt-0 mb-4">
+            </div>
+                    </div>
+                </router-link>
+      </b-col>
+
 			<b-col cols="3" class="col-item" v-if="auth.can['risksAspects_r']">
                 <router-link :to="{name:'legalaspects-lm-riskaspect'}" class="text-dark cursor-pointer item-app-navbar">
                     <div class="my-2 mx-2" ref="riskaspect" @mouseover="changeClassImage('riskaspect', 'riskaspect_hover')">

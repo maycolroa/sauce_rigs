@@ -753,7 +753,39 @@ export default [
 					component: () =>
 					import('@/views/LegalAspects/contracts/listCheck/cloneListCheckItems')
 				}
-			]),			
+			]),	
+			...middleware({ 'check-permission': 'typesCustom_r' }, [
+				{
+					name: 'legalaspects-lm-type-company',
+					path: 'lm/typeCompany',
+					component: () =>
+					import('@/views/LegalAspects/legalMatrix/types/indexCompany')
+				}, 
+			]),
+			...middleware({ 'check-permission': 'typesCustom_c' }, [
+				{
+					name: 'legalaspects-lm-type-company-create',
+					path: 'lm/typeCompany/create',
+					component: () =>
+					import('@/views/LegalAspects/legalMatrix/types/createCompany')
+				},
+			]),
+			...middleware({ 'check-permission': 'typesCustom_u' }, [
+				{
+					name: 'legalaspects-lm-type-company-edit',
+					path: 'lm/typeCompany/edit/:id',
+					component: () =>
+					import('@/views/LegalAspects/legalMatrix/types/edit')
+				},
+			]),
+			...middleware({ 'check-permission': 'typesCustom_r' }, [
+				{
+					name: 'legalaspects-lm-type-company-view',
+					path: 'lm/typeCompany/view/:id',
+					component: () =>
+					import('@/views/LegalAspects/legalMatrix/types/view')
+				}
+			]),		
 		]
 	}
 ];

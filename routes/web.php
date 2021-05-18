@@ -257,6 +257,7 @@ Route::middleware(['auth'])->group(function () {
           Route::post('sstRisks', 'LegalAspects\LegalMatrix\SstRiskController@multiselect');
           Route::post('entities', 'LegalAspects\LegalMatrix\EntityController@multiselect');
           Route::post('entitiesCompany', 'LegalAspects\LegalMatrix\EntityController@multiselectCompany');
+          Route::post('typesCompany', 'LegalAspects\LegalMatrix\LawTypeController@multiselectCompany');
           Route::post('entitiesSystem', 'LegalAspects\LegalMatrix\EntityController@multiselectSystem');
           Route::post('lawsTypes', 'LegalAspects\LegalMatrix\LawTypeController@multiselect');
           Route::post('repealed', 'General\MultiSelectRadioController@lmRepealed');
@@ -523,6 +524,9 @@ Route::middleware(['auth'])->group(function () {
 
         Route::post('entity/data', 'LegalAspects\LegalMatrix\EntityController@data');
         Route::ApiResource('entity', 'LegalAspects\LegalMatrix\EntityController');
+
+        Route::post('type/data', 'LegalAspects\LegalMatrix\LawTypeController@data');
+        Route::ApiResource('type', 'LegalAspects\LegalMatrix\LawTypeController');
 
         Route::post('systemApply/data', 'LegalAspects\LegalMatrix\SystemApplyController@data');
         Route::ApiResource('systemApply', 'LegalAspects\LegalMatrix\SystemApplyController');
