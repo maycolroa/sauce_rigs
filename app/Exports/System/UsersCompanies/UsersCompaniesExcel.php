@@ -38,6 +38,7 @@ class UsersCompaniesExcel implements FromQuery, WithMapping, WithHeadings, WithT
           'sau_users.id',
           'sau_users.name',
           'sau_users.email', 
+          'sau_users.active',
           'sau_companies.name as company',
           DB::raw('GROUP_CONCAT(sau_roles.name) AS role')
       )
@@ -66,6 +67,7 @@ class UsersCompaniesExcel implements FromQuery, WithMapping, WithHeadings, WithT
       $values = [
         $data->name,
         $data->email,
+        $data->active,
         $data->role,
         $data->company
       ];
@@ -78,6 +80,7 @@ class UsersCompaniesExcel implements FromQuery, WithMapping, WithHeadings, WithT
       $columns = [
         'Nombre',
         'Email',
+        '¿Activo?',
         'Rol',
         'Compañia'
       ];

@@ -710,6 +710,22 @@
                     {
                         "name": "legalMatrix_receive_notifications",
                         "display_name": "Matriz Legal - recibir notificaciones"
+                    },
+                    {
+                        "name": "typesCustom_c",
+                        "display_name": "Matriz Legal/Mis Tipos - crear"
+                    },
+                    {
+                        "name": "typesCustom_r",
+                        "display_name": "Matriz Legal/Mis Tipos - ver"
+                    },
+                    {
+                        "name": "typesCustom_u",
+                        "display_name": "Matriz Legal/Mis Tipos - editar"
+                    },
+                    {
+                        "name": "typesCustom_d",
+                        "display_name": "Matriz Legal/Mis Tipos - eliminar"
                     }
                 ]
             }

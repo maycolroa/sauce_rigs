@@ -99,6 +99,7 @@ class EmployeeImport implements ToCollection
                 }
                 else
                 {
+                    \Log::info($this->errors); 
                     $nameExcel = 'export/1/empleados_errors_'.date("YmdHis").'.xlsx';                    
                     Excel::store(new EmployeeImportErrorExcel(collect($this->errors_data), $this->errors, $this->formModel, $this->company_id), $nameExcel, 'public',\Maatwebsite\Excel\Excel::XLSX);
                     $paramUrl = base64_encode($nameExcel);
@@ -117,6 +118,7 @@ class EmployeeImport implements ToCollection
                 
             } catch (\Exception $e)
             {
+                \Log::info($e->getMessage());
                 NotificationMail::
                     subject('Importación de empleados')
                     ->recipients($this->user)
@@ -140,7 +142,7 @@ class EmployeeImport implements ToCollection
             'identificacion' => $row[0],
             'nombre' => $row[1],
             'fecha_nacimiento' => $row[2],
-            'sexo' => $row[3],
+            'sexo' => ucfirst($row[3]),
             'email' => $row[4],
             'fecha_ingreso' => $row[5],
             'regional' => $row[6],

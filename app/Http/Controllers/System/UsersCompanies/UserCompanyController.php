@@ -42,7 +42,8 @@ class UserCompanyController extends Controller
             'sau_users.id',
             'sau_users.name',
             'sau_users.email', 
-            'sau_companies.name as company'
+            'sau_companies.name as company',
+            'sau_users.active'
         )
         ->withoutGlobalScopes()
         ->join('sau_company_user', 'sau_users.id', 'sau_company_user.user_id')
