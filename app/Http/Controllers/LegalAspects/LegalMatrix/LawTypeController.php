@@ -79,9 +79,7 @@ class LawTypeController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function show($id)
-    {
-        \Log::info(147455);
-        
+    {        
         try
         {
             $type = LawType::findOrFail($id);
