@@ -20,7 +20,7 @@ trait EmployeeTrait
             'name' => 'required|string',
             'date_of_birth' => 'nullable|date',
             'sex' => 'required|string|in:Masculino,Femenino,Sin Sexo',
-            'email' => 'nullable|email|unique:sau_employees,email,'.$params['id'].',id,company_id,'.$params['company_id'],
+            'email' => 'nullable|email',//|unique:sau_employees,email,'.$params['id'].',id,company_id,'.$params['company_id'],
             'income_date' => 'required|date',
             'employee_position_id' => 'required|exists:sau_employees_positions,id',
             'employee_business_id' => 'nullable|exists:sau_employees_businesses,id',
