@@ -115,7 +115,8 @@ class EmployeesController extends Controller
 
             $employee->income_date = (Carbon::createFromFormat('Y-m-d',$employee->income_date))->format('D M d Y');
 
-            $employee->age = $employee->age ? $employee->age : ($employee->date_of_birth ? $this->timeDifference((Carbon::createFromFormat('Y-m-d',$employee->date_of_birth))->toDateString()) : '');
+            if($this->company != 616) 
+                $employee->age = $employee->age ? $employee->age : ($employee->date_of_birth ? $this->timeDifference((Carbon::createFromFormat('Y-m-d',$employee->date_of_birth))->toDateString()) : '');
 
             if ($employee->date_of_birth)
                 $employee->date_of_birth = (Carbon::createFromFormat('Y-m-d',$employee->date_of_birth))->format('D M d Y');
@@ -148,7 +149,11 @@ class EmployeesController extends Controller
      */
     public function update(EmployeeRequest $request, Employee $employee)
     {
-        $employee->fill($request->all());
+        if($this->company != 616) 
+            $employee->fill($request->except('age'));
+        else
+            $employee->fill($request->all());
+            
         $employee->income_date = (Carbon::createFromFormat('D M d Y',$employee->income_date))->format('Ymd');
 
         if ($employee->date_of_birth)
