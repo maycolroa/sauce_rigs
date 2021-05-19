@@ -92,8 +92,11 @@
                 </tr>
                 @if ($inspections["process"])
                     <tr>
-                        @if ($inspections["process"])
+                        @if ($inspections["process"] && !$inspections["area"])
                             <th>{{ Auth::user()->getKeywords()['process'] }}</th>
+                            @if ($inspections["compliance"])
+                                <th colspan="1">Porcentaje de cumplimiento</th>
+                            @endif
                         @endif
                         @if ($inspections["area"])
                             <th>{{ Auth::user()->getKeywords()['area'] }}</th>
@@ -102,15 +105,18 @@
                 @endif
                 @if ($inspections["process"])
                     <tr>
-                        @if ($inspections["process"])
-                            <th>{{ $inspections["process"] }}</th>
+                        @if ($inspections["process"] && !$inspections["area"])
+                            <td>{{ $inspections["process"] }}</th>
+                            @if ($inspections["compliance"])
+                                <td colspan="1">{{$inspections["compliance"]}}%</td>
+                            @endif
                         @endif
                         @if ($inspections["area"])
                             <td colspan=>{{ $inspections["area"] }}</td>
                         @endif
                     </tr>
                 @endif
-                @if ($inspections["compliance"])
+                @if (!$inspections["process"] && $inspections["area"] && $inspections["compliance"])
                     <tr>
                         <th colspan="2">Porcentaje de cumplimiento</th>
                     </tr>
@@ -119,10 +125,12 @@
                     </tr>
                 @endif
             </thead>
-        </table>
+        </table>    
+    </div>
 
     <br><br>
 
+    <div style="page-break-inside: avoid;">
         @if (COUNT($inspections["add_fields"]) > 0)
             <table class="table-general">
                 <thead>
