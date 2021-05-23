@@ -241,6 +241,15 @@ export default [{
               import('@/views/IndustrialSecure/dangerousConditions/inspections/create')
         }
       ]),
+      
+      ...middleware({ 'check-permission': 'ph_inspections_c' }, [
+        {
+          name: 'dangerousconditions-inspections-import',
+          path: 'dangerousconditions/inspections/import',
+          component: () =>
+            import('@/views/IndustrialSecure/dangerousConditions/inspections/import')
+        }
+      ]),
       ...middleware({ 'check-permission': 'ph_inspections_r' }, [
         {
           name: 'dangerousconditions-inspections-view',

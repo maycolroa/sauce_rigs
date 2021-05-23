@@ -13,7 +13,7 @@
                 url="/legalAspects/legalMatrix/law"
                 method="POST"
                 :years="years"
-                lawTypeDataUrl="/selects/legalMatrix/lawsTypes"
+                lawTypeDataUrl="/selects/legalMatrix/typesSystem"
                 riskAspectDataUrl="/selects/legalMatrix/riskAspects"
                 entityDataUrl="/selects/legalMatrix/entitiesSystem"
                 sstRiskDataUrl="/selects/legalMatrix/sstRisks"

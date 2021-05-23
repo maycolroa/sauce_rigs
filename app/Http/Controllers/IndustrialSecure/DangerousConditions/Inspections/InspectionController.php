@@ -15,6 +15,9 @@ use App\Models\Administrative\Processes\EmployeeProcess;
 use App\Models\Administrative\Areas\EmployeeArea;
 use App\Http\Requests\IndustrialSecure\DangerousConditions\Inspections\InspectionRequest;
 use App\Jobs\IndustrialSecure\DangerousConditions\Inspections\InspectionExportJob;
+use App\Exports\IndustrialSecure\DangerousConditions\Inspections\InspectionImportTemplateExcel;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Jobs\IndustrialSecure\DangerousConditions\Inspections\InspectionImportJob;
 use Carbon\Carbon;
 use App\Traits\Filtertrait;
 use DB;
@@ -564,5 +567,24 @@ class InspectionController extends Controller
             ->pluck('id', 'type');
 
         return $this->multiSelectFormat($types);
+    }
+
+    public function downloadTemplateImport()
+    {
+      return Excel::download(new InspectionImportTemplateExcel(collect([]), $this->company), 'PlantillaImportacionInspecciones.xlsx');
+    }
+
+    public function import(Request $request)
+    {
+      try
+      {
+        InspectionImportJob::dispatch($request->file, $request->except('file'), $this->company, $this->user);
+      
+        return $this->respondHttp200();
+
+      } catch(Exception $e)
+      {
+        return $this->respondHttp500();
+      }
     }
 }

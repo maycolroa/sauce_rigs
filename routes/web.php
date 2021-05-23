@@ -46,9 +46,10 @@ Route::middleware(['auth'])->group(function () {
     Route::get('templates/employeeimport','Administrative\Employees\EmployeesController@downloadTemplateImport');    
     Route::get('templates/dangermatriximport','IndustrialSecure\DangerMatrix\DangerMatrixController@downloadTemplateImport');
     Route::get('templates/contractimport','LegalAspects\Contracs\ContractLesseeController@downloadTemplateImport');
-    Route::get('templates/legalmatriximport','LegalAspects\LegalMatrix\LawController@downloadTemplateImport');    
-    Route::get('templates/usersimport','Administrative\Users\UserController@downloadTemplateImport');    
-    Route::get('templates/contractemployeeimport','LegalAspects\Contracs\ContractEmployeeController@downloadTemplateImport');
+    Route::get('templates/legalmatriximport','LegalAspects\LegalMatrix\LawController@downloadTemplateImport');  
+    Route::get('templates/usersimport','Administrative\Users\UserController@downloadTemplateImport');      
+    Route::get('templates/contractemployeeimport','LegalAspects\Contracs\ContractEmployeeController@downloadTemplateImport');  
+    Route::get('templates/inspectionsimport','IndustrialSecure\DangerousConditions\Inspections\InspectionController@downloadTemplateImport');
 
 	//Cerrar sesión 
 	Route::get('/logout', 'Auth\LoginController@logout')->name('logout');
@@ -259,6 +260,7 @@ Route::middleware(['auth'])->group(function () {
           Route::post('entitiesCompany', 'LegalAspects\LegalMatrix\EntityController@multiselectCompany');
           Route::post('typesCompany', 'LegalAspects\LegalMatrix\LawTypeController@multiselectCompany');
           Route::post('entitiesSystem', 'LegalAspects\LegalMatrix\EntityController@multiselectSystem');
+          Route::post('typesSystem', 'LegalAspects\LegalMatrix\LawTypeController@multiselectSystem');
           Route::post('lawsTypes', 'LegalAspects\LegalMatrix\LawTypeController@multiselect');
           Route::post('repealed', 'General\MultiSelectRadioController@lmRepealed');
           Route::post('articlesQualifications', 'LegalAspects\LegalMatrix\LawController@articlesQualificationsMultiselect');
@@ -394,6 +396,7 @@ Route::middleware(['auth'])->group(function () {
         Route::post('inspection/data', 'IndustrialSecure\DangerousConditions\Inspections\InspectionController@data');
         Route::post('inspection/reportDinamic', 'IndustrialSecure\DangerousConditions\Inspections\InspectionReportController@reportDinamic');
         Route::ApiResource('inspection', 'IndustrialSecure\DangerousConditions\Inspections\InspectionController');
+        Route::post('inspection/import', 'IndustrialSecure\DangerousConditions\Inspections\InspectionController@import');
 
         Route::get('inspection/downloadPdf/{id}', 'IndustrialSecure\DangerousConditions\Inspections\InspectionQualificationController@downloadPdf');
         

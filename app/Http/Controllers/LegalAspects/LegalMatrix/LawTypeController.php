@@ -169,4 +169,9 @@ class LawTypeController extends Controller
     {
         return $this->multiselect($request, 'company');
     }
+
+    public function multiselectSystem(Request $request)
+    {
+        return $this->multiselect($request, 'system');
+    }
 }
