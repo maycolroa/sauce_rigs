@@ -40,7 +40,7 @@
 
     <template v-if="!auth.hasRole['Arrendatario'] && !auth.hasRole['Contratista']" v-show="contracts.length > 0">
       <div style= "margin-bottom: 20px;">
-        <h6><b>Contratista a las cuales pertenece el usuario</b></h6>
+        <h6><b>Contratistas a los cuales pertenece el usuario</b></h6>
         <table class="table table-bordered table-sm table-striped table-hover" style="width: 100%; font-size: 10px;">
              <tbody>
                 <tr v-for="(contract, index) in contracts" :key="contract.id">
