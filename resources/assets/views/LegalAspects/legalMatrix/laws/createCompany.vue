@@ -16,7 +16,7 @@
                 :years="years"
                 riskAspectDataUrl="/selects/legalMatrix/riskAspects"
                 entityDataUrl="/selects/legalMatrix/entitiesCompany"
-                lawTypeDataUrl="/selects/legalMatrix/typesCompany"
+                lawTypeDataUrl="/selects/legalMatrix/lawsTypes"
                 sstRiskDataUrl="/selects/legalMatrix/sstRisks"
                 urlDataInterests="/selects/legalMatrix/interests"
                 systemApplyUrl="/selects/legalMatrix/systemApplyCompany"
