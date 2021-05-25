@@ -8,18 +8,23 @@ use App\Models\Administrative\Areas\EmployeeArea;
 use App\Models\Administrative\Regionals\EmployeeRegional;
 use App\Models\Administrative\Headquarters\EmployeeHeadquarter;
 use App\Models\Administrative\Processes\EmployeeProcess;
+use App\Models\IndustrialSecure\DangerousConditions\Inspections\Inspection;
+use App\Models\IndustrialSecure\DangerousConditions\Inspections\InspectionSection;
+use App\Models\IndustrialSecure\DangerousConditions\Inspections\InspectionSectionItem;
 use App\Facades\Configuration;
-use App\Exports\IndustrialSecure\DangerMatrix\DangerMatrixImportErrorExcel;
+use App\Exports\IndustrialSecure\DangerousConditions\Inspections\InspectionImportErrorExcel;
 use App\Facades\Mail\Facades\NotificationMail;
 use Maatwebsite\Excel\Facades\Excel;
 use Maatwebsite\Excel\Concerns\WithCalculatedFormulas;
 use Validator;
 use Exception;
 use App\Traits\LocationFormTrait;
+use App\Traits\UtilsTrait;
+use DB;
 
 class InspectionsImport implements ToCollection, WithCalculatedFormulas
 {
-    use LocationFormTrait;
+    use LocationFormTrait, UtilsTrait;
 
     private $company_id;
     private $user;
@@ -28,26 +33,26 @@ class InspectionsImport implements ToCollection, WithCalculatedFormulas
     private $sheet = 1;
     private $key_row = 2;
     private $inspection;
+    private $theme_compliance;
     private $locations;
+    private $sum_compliance = [];
+    private $sum_parcial = [];
 
     public function __construct($company_id, $user, $locations)
     {
       $this->user = $user;
       $this->company_id = $company_id;
       $this->locations = $locations;
-      \Log::info('entro');
-      \Log::info($this->locations);
     }
 
     public function collection(Collection $rows)
     {
         if ($this->sheet == 1)
         {
-            
             try
             {
                 foreach ($rows as $key => $row) 
-                {  
+                {
                     if ($key > 0) //Saltar cabecera
                     {
                         if (isset($row[0]) && $row[0])
@@ -79,7 +84,7 @@ class InspectionsImport implements ToCollection, WithCalculatedFormulas
                     $nameExcel = 'export/1/danger_matrix_errors_'.date("YmdHis").'.xlsx';
 
                     \Log::info($this->errors);                    
-                    Excel::store(new DangerMatrixImportErrorExcel(collect($this->errors_data), $this->errors, $this->company_id), $nameExcel, 'public',\Maatwebsite\Excel\Excel::XLSX);
+                    Excel::store(new InspectionImportErrorExcel(collect($this->errors_data), $this->errors, $this->company_id), $nameExcel, 'public',\Maatwebsite\Excel\Excel::XLSX);
                     $paramUrl = base64_encode($nameExcel);
             
                     NotificationMail::
@@ -119,16 +124,12 @@ class InspectionsImport implements ToCollection, WithCalculatedFormulas
         $data = [    
             'nombre' => $row[0],
             'tipo' => ucfirst($row[1]),
-            'cumplimiento_parcial_tipo_!' => $row[2],
+            'cumplimiento_parcial_tipo_1' => $row[2],
             'tema' => $row[3],
             'item' => $row[4],
             'valor_cumplimiento_item_tipo_2' => $row[5],
             'valor_cumplimiento_parcial_item_tipo_2' => $row[6]
         ];
-
-        \Log::info($data);
-        \Log::info($this->locations);
-
 
         $rules = [
             'nombre' => 'required',
@@ -140,6 +141,8 @@ class InspectionsImport implements ToCollection, WithCalculatedFormulas
             'valor_cumplimiento_parcial_item_tipo_2' => 'nullable|numeric|max:100'          
         ];
 
+        $validator = Validator::make($data, $rules);
+
         if ($validator->fails())
         {
             foreach ($validator->messages()->all() as $value)
@@ -150,107 +153,168 @@ class InspectionsImport implements ToCollection, WithCalculatedFormulas
             $this->setErrorData($row);
             return null;
         }
-        /*else 
+        else 
         {   
-            if ($createMatrix)
-            {
-                $regional_id = $confLocation['regional'] == 'SI' ? $this->checkRegional($data['regional']) : null;
-                $headquarter_id = $confLocation['headquarter'] == 'SI' ? $this->checkHeadquarter($regional_id, $data['sede']) : null;
-                $process_id = $confLocation['process'] == 'SI' ? $this->checkProcess($headquarter_id, $data['proceso'], $macroproceso->implode(',')) : null; 
-                $area_id = $confLocation['area'] == 'SI' ? $this->checkArea($headquarter_id, $process_id, $data['area']) : null;
+            $exist = $this->checkInspectionExist($data['nombre'], $data['tipo'], $data['cumplimiento_parcial_tipo_1']);
 
-                $this->inspection = new DangerMatrix();
-                $this->inspection->company_id = $this->company_id;
-                $this->inspection->user_id = $this->user->id;
-                $this->inspection->employee_regional_id = $regional_id;
-                $this->inspection->employee_headquarter_id = $headquarter_id;
-                $this->inspection->employee_area_id = $area_id;
-                $this->inspection->employee_process_id = $process_id;
-                $this->inspection->participants = $participants->implode(',');
-                $this->inspection->save();
+            $exist_theme = $this->checkThemeInspectionExist($data['tema'], $exist);
+
+            $key_casilla = $exist . '-' . $exist_theme;
+
+            if ($data['tipo'] == 'Tipo 2')
+            {
+                if (!isset($this->sum_compliance[$key_casilla]))
+                    $this->sum_compliance[$key_casilla] = $data['valor_cumplimiento_item_tipo_2'];
+                else
+                    $this->sum_compliance[$key_casilla] += $data['valor_cumplimiento_item_tipo_2'];
+
+                if (!isset($this->sum_parcial[$key_casilla]))
+                    $this->sum_parcial[$key_casilla] = $data['valor_cumplimiento_parcial_item_tipo_2'];
+                else
+                    $this->sum_parcial[$key_casilla] += $data['valor_cumplimiento_parcial_item_tipo_2'];
+
+                if ($this->sum_compliance[$key_casilla] <= 100 && $this->sum_parcial[$key_casilla] <= 100)
+                {
+                    $item = new InspectionSectionItem;
+                    $item->description = $data['item'];
+                    $item->inspection_section_id = $exist_theme;
+                    $item->compliance_value = $data['valor_cumplimiento_item_tipo_2'];
+                    $item->partial_value = $data['valor_cumplimiento_parcial_item_tipo_2'];
+        
+                    $item->save();
+                }
+                else
+                {
+                    $this->sum_compliance[$key_casilla] -= $data['valor_cumplimiento_item_tipo_2'];
+                    $this->sum_parcial[$key_casilla] -= $data['valor_cumplimiento_parcial_item_tipo_2'];
+                    $this->setError("La sumatoria total del porcentaje total de cumplimiento o de cumplimiento parcial del tema  " . $this->theme_compliance->name . " es mayor a 100%");
+
+                    $this->setErrorData($row);
+                }
+            }
+            else
+            {
+                $item = new InspectionSectionItem;
+                $item->description = $data['item'];
+                $item->inspection_section_id = $exist_theme;
+    
+                $item->save();
             }
 
             return true;
-        }*/
+        }
     }
 
-    private function checkArea($headquarter_id, $process_id, $area_name)
-    {        
-        $area = EmployeeRegional::select("sau_employees_areas.id as id")
-            ->join('sau_employees_headquarters', 'sau_employees_headquarters.employee_regional_id', 'sau_employees_regionals.id')
-            ->join('sau_headquarter_process', 'sau_headquarter_process.employee_headquarter_id', 'sau_employees_headquarters.id')
-            ->join('sau_employees_processes', 'sau_employees_processes.id', 'sau_headquarter_process.employee_process_id')
-            ->join('sau_process_area', 'sau_process_area.employee_process_id', 'sau_employees_processes.id')
-            ->join('sau_employees_areas', 'sau_employees_areas.id', 'sau_process_area.employee_area_id')
-            ->where('sau_employees_areas.name', $area_name)
-            ->groupBy('sau_employees_areas.id', 'sau_employees_areas.name');
-
-        $area->company_scope = $this->company_id;
-        $area = $area->first();
-
-        if (!$area)
-        {
-            $area = new EmployeeArea();
-            $area->name = $area_name;
-            $area->save();
-        }
+    private function checkInspectionExist($name, $type, $value_partial)
+    {
+        if ($type == 'Tipo 1')
+            $type = 1;
         else
-            $area = EmployeeArea::find($area->id);
-        
-        $area->processes()->wherePivot('employee_headquarter_id','=',$headquarter_id)->detach($process_id);
-        $area->processes()->attach($process_id, ['employee_headquarter_id' => $headquarter_id]);
+            $type = 2;
 
-        return $area->id;
-    }
+        $inspection = Inspection::query();
+        $inspection->company_scope = $this->company_id;
+        $inspection = $inspection->firstOrCreate(
+            ['name' => $name, 'type_id' => $type, 'company_id' => $this->company_id], 
+            ['name' => $name, 'type_id' => $type,'company_id' => $this->company_id]
+        );
 
-    private function checkRegional($name)
-    {
-        $regional = EmployeeRegional::query();
-        $regional->company_scope = $this->company_id;
-        $regional = $regional->firstOrCreate(['name' => $name], 
-                                            ['name' => $name, 'company_id' => $this->company_id]);
-
-        return $regional->id;
-    }
-
-    private function checkHeadquarter($regional_id, $headquarter)
-    {
-        $headquarter = EmployeeHeadquarter::firstOrCreate(['name' => $headquarter, 'employee_regional_id' => $regional_id], 
-                                            ['name' => $headquarter, 'employee_regional_id' => $regional_id]);
-
-        return $headquarter->id;
-    }
-
-    private function checkProcess($headquarter_id, $process_name, $macroproceso)
-    {
-        $process = EmployeeRegional::select("sau_employees_processes.id as id")
-            ->join('sau_employees_headquarters', 'sau_employees_headquarters.employee_regional_id', 'sau_employees_regionals.id')
-            ->join('sau_headquarter_process', 'sau_headquarter_process.employee_headquarter_id', 'sau_employees_headquarters.id')
-            ->join('sau_employees_processes', 'sau_employees_processes.id', 'sau_headquarter_process.employee_process_id')
-            ->where('sau_employees_processes.name', $process_name)
-            ->groupBy('sau_employees_processes.id', 'sau_employees_processes.name');
-
-        $process->company_scope = $this->company_id;
-        $process = $process->first();
-
-        if (!$process)
+        if ($inspection->type_id == 1)
         {
-            $process = new EmployeeProcess();
-            $process->name = $process_name;
-            $process->types = $macroproceso;
-            $process->save();
+            $inspection->fullfilment_parcial = $value_partial;
+            $inspection->save();
         }
-        else
-        {
-            $process = EmployeeProcess::find($process->id);
-            $process->types = $macroproceso;
-            $process->save();
-        }
-        
-        $process->headquarters()->detach($headquarter_id);
-        $process->headquarters()->attach($headquarter_id);
 
-        return $process->id;
+        $this->saveLocation($inspection, $this->locations);
+
+        return $inspection->id;
+    }
+
+    private function checkThemeInspectionExist($name, $inspection_id)
+    {
+        $theme = InspectionSection::query();
+        $theme = $theme->firstOrCreate(
+            ['name' => $name, 'inspection_id' => $inspection_id], 
+            ['name' => $name, 'inspection_id' => $inspection_id]);
+
+        $this->theme_compliance = $theme;
+
+        return $theme->id;
+    }
+
+    private function saveLocation($inspection, $request)
+    {
+
+        $regionals = [];
+        $headquarters = [];
+        $processes = [];
+        $areas = [];
+
+        if ($request['employee_regional_id'])
+            $regionals = $this->getDataFromMultiselect($request['employee_regional_id']);
+
+        if (isset($request['employee_headquarter_id']))
+            $headquarters = $this->getDataFromMultiselect($request['employee_headquarter_id']);
+
+        if (isset($request['employee_process_id']))
+            $processes = $this->getDataFromMultiselect($request['employee_process_id']);
+
+        if (isset($request['employee_area_id']))
+            $areas = $this->getDataFromMultiselect($request['employee_area_id']);
+
+
+        $headquarters_valid = $this->getHeadquarter($regionals);
+        $headquarters = array_intersect($headquarters, $headquarters_valid);
+
+        $processes_valid = $this->getProcess($headquarters);
+        $processes = array_intersect($processes, $processes_valid);
+
+        $areas_valid = $this->getAreas($headquarters, $processes);
+        $areas = array_intersect($areas, $areas_valid);
+
+        $inspection->headquarters()->sync($headquarters);
+        $inspection->regionals()->sync($regionals);
+        $inspection->processes()->sync($processes);
+        $inspection->areas()->sync($areas);
+    }
+
+    private function getHeadquarter($regionals)
+    {
+        $headquarters = EmployeeHeadquarter::selectRaw(
+            "sau_employees_headquarters.id as id")
+        ->join('sau_employees_regionals', 'sau_employees_regionals.id', 'sau_employees_headquarters.employee_regional_id')
+        ->whereIn('employee_regional_id', $regionals)
+        ->pluck('id')
+        ->toArray();
+
+        return $headquarters;
+    }
+
+    private function getProcess($headquarters)
+    {
+        $processes = EmployeeProcess::selectRaw(
+            "sau_employees_processes.id as id")
+        ->join('sau_headquarter_process', 'sau_headquarter_process.employee_process_id', 'sau_employees_processes.id')
+        ->join('sau_employees_headquarters', 'sau_employees_headquarters.id', 'sau_headquarter_process.employee_headquarter_id')
+        ->whereIn('sau_headquarter_process.employee_headquarter_id', $headquarters)
+        ->pluck('id')
+        ->toArray();
+
+        return $processes;
+    }
+
+    private function getAreas($headquarters, $process)
+    {
+        $areas = EmployeeArea::selectRaw(
+            "sau_employees_areas.id as id")
+        ->join('sau_process_area', 'sau_process_area.employee_area_id', 'sau_employees_areas.id')
+        ->join('sau_employees_processes', 'sau_employees_processes.id', 'sau_process_area.employee_process_id')
+        ->whereIn('employee_headquarter_id', $headquarters)
+        ->whereIn('employee_process_id', $process)
+        ->pluck('id')
+        ->toArray();
+    
+        return $areas;
     }
 
     private function setError($message)
@@ -262,18 +326,5 @@ class InspectionsImport implements ToCollection, WithCalculatedFormulas
     {
         $this->errors_data[] = $row;
         $this->key_row++;
-    }
-
-    private function validateDate($date)
-    {
-        try
-        {
-            $d = \PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($date);
-        }
-        catch (\Exception $e) {
-            return $date;
-        }
-
-        return $d ? $d : null;
     }
 }
