@@ -213,7 +213,8 @@ Route::middleware(['auth'])->group(function () {
         Route::post('dmReportMultiselect', 'IndustrialSecure\DangerMatrix\DangerMatrixReportHistoryController@multiselect');
         Route::post('dmReportMonths', 'IndustrialSecure\DangerMatrix\DangerMatrixReportHistoryController@multiselect');
         Route::post('reportDinamic/years', 'IndustrialSecure\DangerousConditions\Reports\ReportInformController@multiselectYears');
-          Route::post('reportDinamic/months', 'IndustrialSecure\DangerousConditions\Reports\ReportInformController@multiselectMounts');
+        Route::post('reportDinamic/months', 'IndustrialSecure\DangerousConditions\Reports\ReportInformController@multiselectMounts');
+        Route::post('qualificationMasiveInspection', 'IndustrialSecure\DangerousConditions\Inspections\InspectionController@multiselectQualification');
 
         Route::prefix('evaluations')->group(function () {
           Route::post('evaluations', 'LegalAspects\Contracs\EvaluationController@multiselectEvaluations');
@@ -397,6 +398,8 @@ Route::middleware(['auth'])->group(function () {
         Route::post('inspection/reportDinamic', 'IndustrialSecure\DangerousConditions\Inspections\InspectionReportController@reportDinamic');
         Route::ApiResource('inspection', 'IndustrialSecure\DangerousConditions\Inspections\InspectionController');
         Route::post('inspection/import', 'IndustrialSecure\DangerousConditions\Inspections\InspectionController@import');
+        Route::post('inspection/saveConfigurationMasive', 'IndustrialSecure\DangerousConditions\Inspections\InspectionController@storeQualificationOption');
+        Route::post('inspection/getConfigurationMasive', 'IndustrialSecure\DangerousConditions\Inspections\InspectionController@getQualificationOption');
 
         Route::get('inspection/downloadPdf/{id}', 'IndustrialSecure\DangerousConditions\Inspections\InspectionQualificationController@downloadPdf');
         

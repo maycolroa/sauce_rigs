@@ -32,6 +32,11 @@ class Company extends Model
         return $this->belongsToMany('App\Models\LegalAspects\LegalMatrix\Interest', 'sau_lm_company_interest');
     }
 
+    public function qualificationMasive()
+    {
+        return $this->belongsToMany('App\Models\IndustrialSecure\DangerousConditions\Inspections\Qualifications', 'sau_ph_qualification_masive_company', 'company_id', 'qualification_id');
+    }
+
     public function itemStandardCompany()
     {
         return $this->belongsToMany('App\Models\LegalAspects\Contracts\SectionCategoryItems', 'sau_ct_standard_items_required')->withPivot('required');

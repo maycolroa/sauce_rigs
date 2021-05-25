@@ -16,7 +16,8 @@
             <b-btn v-if="auth.can['ph_inspections_c']" variant="primary" href="/templates/inspectionsimport" target="blank" v-b-tooltip.top title="Generar Plantilla"><i class="fas fa-file-alt"></i></b-btn>
             <div class="card-title-elements" v-if="auth.can['users_c']">
               <b-btn :to="{name:'dangerousconditions-inspections-import'}" variant="primary">Importar</b-btn>
-            </div>-
+            </div>
+            <b-btn v-if="auth.can['ph_inspections_c']" variant="primary" :to="{name:'dangerousconditions-inspection-qualification-masive'}" v-b-tooltip.top title="Configurar opciones para la calificación másiva"><i class="oi oi-list"></i></b-btn>
           </div>
         </b-card-header>
         <b-card-body>
