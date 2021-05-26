@@ -240,8 +240,15 @@ export default [{
           component: () =>
               import('@/views/IndustrialSecure/dangerousConditions/inspections/create')
         }
+      ]),      
+      ...middleware({ 'check-permission': 'ph_inspections_c' }, [
+        {
+          name: 'dangerousconditions-inspection-qualification-masive',
+          path: 'dangerousconditions/inspections/qualification/masive',
+          component: () =>
+            import('@/views/IndustrialSecure/dangerousConditions/inspections/qualificationMasive')
+        }
       ]),
-      
       ...middleware({ 'check-permission': 'ph_inspections_c' }, [
         {
           name: 'dangerousconditions-inspections-import',

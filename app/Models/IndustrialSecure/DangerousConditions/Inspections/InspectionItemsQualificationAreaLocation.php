@@ -59,7 +59,7 @@ class InspectionItemsQualificationAreaLocation extends Model
 
     public function qualification()
     {
-        return $this->belongsTo('App\Models\LegalAspects\Contracts\Qualifications', 'sau_ct_qualifications');
+        return $this->belongsTo('App\Models\IndustrialSecure\DangerousConditions\Inspections\Qualifications', 'sau_ph_qualifications_inspections');
     }
     
     public function image($imageNumber, $imageName = null)

@@ -13,6 +13,9 @@ use App\Models\IndustrialSecure\DangerousConditions\Inspections\InspectionSectio
 use App\Models\Administrative\Headquarters\EmployeeHeadquarter;
 use App\Models\Administrative\Processes\EmployeeProcess;
 use App\Models\Administrative\Areas\EmployeeArea;
+use App\Models\IndustrialSecure\DangerousConditions\Inspections\Qualifications;
+use App\Models\General\Company;
+use App\Facades\ConfigurationCompany\Facades\ConfigurationsCompany;
 use App\Http\Requests\IndustrialSecure\DangerousConditions\Inspections\InspectionRequest;
 use App\Jobs\IndustrialSecure\DangerousConditions\Inspections\InspectionExportJob;
 use App\Exports\IndustrialSecure\DangerousConditions\Inspections\InspectionImportTemplateExcel;
@@ -569,6 +572,18 @@ class InspectionController extends Controller
         return $this->multiSelectFormat($types);
     }
 
+    public function multiselectQualification()
+    {
+        $qualification = Qualifications::select(
+            "sau_ph_qualifications_inspections.id as id",
+            "sau_ph_qualifications_inspections.description as description")
+            ->where('id', '<=', 4)
+            ->orderBy('description')
+            ->pluck('id', 'description');
+
+        return $this->multiSelectFormat($qualification);
+    }
+
     public function downloadTemplateImport()
     {
       return Excel::download(new InspectionImportTemplateExcel(collect([]), $this->company), 'PlantillaImportacionInspecciones.xlsx');
@@ -586,5 +601,35 @@ class InspectionController extends Controller
       {
         return $this->respondHttp500();
       }
+    }
+
+    public function storeQualificationOption(Request $request)
+    {
+        $optionsSave = [];
+
+        if ($request['options'])
+            $optionsSave = $this->getDataFromMultiselect($request['options']);
+
+        $company = Company::find($this->company);
+        $company->qualificationMasive()->sync($optionsSave);
+
+        return $this->respondHttp200([
+            'message' => 'Se actualizó la configuración'
+        ]);
+    }
+
+    public function getQualificationOption()
+    {
+        $company = Company::find($this->company);
+        $qualifications = [];
+
+        foreach ($company->qualificationMasive as $key => $value)
+        {
+            array_push($qualifications, $value->multiselect());
+        }
+
+        return $this->respondHttp200([
+            'data' => $qualifications,
+        ]);
     }
 }

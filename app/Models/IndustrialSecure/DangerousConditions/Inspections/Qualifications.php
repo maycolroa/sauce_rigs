@@ -12,4 +12,13 @@ class Qualifications extends Model
         'name',
         'description'
     ];
+
+    public function multiselect()
+    {
+        return [
+          'name' => $this->description,
+          'value' => $this->id,
+          'short' => $this->name
+        ];
+    }
 }
