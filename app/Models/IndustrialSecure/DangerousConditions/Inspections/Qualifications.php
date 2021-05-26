@@ -17,7 +17,8 @@ class Qualifications extends Model
     {
         return [
           'name' => $this->description,
-          'value' => $this->id
+          'value' => $this->id,
+          'short' => $this->name
         ];
     }
 }

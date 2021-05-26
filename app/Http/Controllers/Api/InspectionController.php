@@ -20,6 +20,7 @@ use App\Models\Administrative\Headquarters\EmployeeHeadquarter;
 use App\Models\Administrative\Processes\EmployeeProcess;
 use App\Models\Administrative\Areas\EmployeeArea;
 use App\Models\Administrative\Users\User;
+use App\Models\General\Company;
 use App\Facades\ActionPlans\Facades\ActionPlan;
 use App\Http\Requests\Api\InspectionsRequest;
 use App\Http\Requests\Api\InspectionsCreateRequest;
@@ -194,6 +195,21 @@ class InspectionController extends ApiController
 
         return $this->respondHttp200([
             'data' => $data
+        ]);
+    }
+
+    public function optionsMasiveQualification(Request $request)
+    {
+        $company = Company::find($request->company_id);
+        $qualifications = [];
+
+        foreach ($company->qualificationMasive as $key => $value)
+        {
+            array_push($qualifications, $value->multiselect());            
+        }
+
+        return $this->respondHttp200([
+            'data' => $qualifications,
         ]);
     }
 

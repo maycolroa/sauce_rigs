@@ -605,7 +605,10 @@ class InspectionController extends Controller
 
     public function storeQualificationOption(Request $request)
     {
-        $optionsSave = $this->getDataFromMultiselect($request['options']);
+        $optionsSave = [];
+
+        if ($request['options'])
+            $optionsSave = $this->getDataFromMultiselect($request['options']);
 
         $company = Company::find($this->company);
         $company->qualificationMasive()->sync($optionsSave);
@@ -617,7 +620,6 @@ class InspectionController extends Controller
 
     public function getQualificationOption()
     {
-        \Log::info('entro');
         $company = Company::find($this->company);
         $qualifications = [];
 
