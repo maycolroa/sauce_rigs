@@ -413,7 +413,7 @@ class ContractLesseeController extends Controller
                 if ($request->has('documents') && COUNT($request->documents) > 0)
                     $this->saveDocumentsContracts($contract, $request->documents);
 
-                if ($request->has('delete'))
+                if ($request->has('delete') && COUNT($request->delete) > 0)
                 {
                     foreach ($request->delete['files'] as $id)
                     {
@@ -460,7 +460,8 @@ class ContractLesseeController extends Controller
 
             $qualification_list = ListCheckQualification::where('contract_id', $contract->id)->where('state', true)->first();
 
-            $this->reloadLiskCheckResumen($contract, $qualification_list->id);
+            if ($qualification_list)
+                $this->reloadLiskCheckResumen($contract, $qualification_list->id);
 
             DB::commit();
 

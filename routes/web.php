@@ -305,6 +305,8 @@ Route::middleware(['auth'])->group(function () {
       Route::post('users/changePassword', 'Administrative\Users\UserController@changePassword');
       Route::get('users/myDefaultModule', 'Administrative\Users\UserController@myDefaultModule');
       Route::post('users/defaultModule', 'Administrative\Users\UserController@defaultModule');
+      Route::get('users/firm/view', 'Administrative\Users\UserController@showFirm');
+      Route::post('users/firm', 'Administrative\Users\UserController@storeFirm');
       Route::post('users/addUserOtherCompany', 'Administrative\Users\UserController@addUserOtherCompany');
 			Route::ApiResource('users', 'Administrative\Users\UserController');
 
