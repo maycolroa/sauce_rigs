@@ -798,17 +798,17 @@ class UserController extends Controller
                 if ($request->firm_image)
                 {
                     $file = $request->firm_image;
-                    Storage::disk('public')->delete('administrative/firms_users/'. $user->id. '/' .$user->firm);
-                    Storage::disk('public')->put('administrative/firms_users/'.$user->id.'/' . $imageName, $file, 'public');
+                    Storage::disk('s3')->delete('administrative/firms_users/'. $user->id. '/' .$user->firm);
+                    Storage::disk('s3')->put('administrative/firms_users/'.$user->id.'/' . $imageName, $file, 'public');
                     //$file->storeAs('administrative/firms_users/'.$user->id.'/' , $imageName, 'public');
                     $user->firm = $imageName;
                     $data['firm_image'] = $imageName;
                     $data['old_firm'] = $imageName;
-                    $data['firm_path'] = Storage::disk('public')->url('administrative/firms_users/'.$user->id.'/' , $imageName);
+                    $data['firm_path'] = Storage::disk('s3')->url('administrative/firms_users/'.$user->id.'/' , $imageName);
                 }
                 else
                 {
-                    Storage::disk('public')->delete('administrative/firms_users/'. $user->id. '/' .$user->firm);
+                    Storage::disk('s3')->delete('administrative/firms_users/'. $user->id. '/' .$user->firm);
                     $user->firm = NUlL;
                     $data['firm_image'] = NULL;
                     $data['old_firm'] = NULL;
@@ -824,17 +824,17 @@ class UserController extends Controller
                 if ($request->firm_image)
                 {
                     $file = $request->firm_image;
-                    Storage::disk('public')->delete('administrative/firms_users/'. $user->id. '/'. $user->firm);
+                    Storage::disk('s3')->delete('administrative/firms_users/'. $user->id. '/'. $user->firm);
                     $nameFile = base64_encode($this->user->id . rand(1,10000) . now()) .'.'. $file->extension();
-                    $file->storeAs('administrative/firms_users/'. $user->id, $nameFile, 'public');
+                    $file->storeAs('administrative/firms_users/'. $user->id, $nameFile, 's3');
                     $user->firm = $nameFile;
                     $data['logo'] = $nameFile;
                     $data['old_logo'] = $nameFile;
-                    $data['logo_path'] = Storage::disk('public')->url('administrative/firms_users/'. $user->id. '/'. $nameFile);
+                    $data['logo_path'] = Storage::disk('s3')->url('administrative/firms_users/'. $user->id. '/'. $nameFile);
                 }
                 else
                 {
-                    Storage::disk('public')->delete('administrative/firms_users/'. $user->id. '/'. $user->firm);
+                    Storage::disk('s3')->delete('administrative/firms_users/'. $user->id. '/'. $user->firm);
                     $user->firm = NUlL;
                     $data['logo'] = NULL;
                     $data['old_logo'] = NULL;
@@ -865,7 +865,7 @@ class UserController extends Controller
             $user = User::select('id','firm')->find($this->user->id);
             $user->firm_image = $user->firm;
             $user->old_firm = $user->firm;
-            $user->firm_path = Storage::disk('public')->url('administrative/firms_users/'. $user->id . '/' . $user->firm);
+            $user->firm_path = Storage::disk('s3')->url('administrative/firms_users/'. $user->id . '/' . $user->firm);
             $user->type = '';
 
             return $this->respondHttp200([
