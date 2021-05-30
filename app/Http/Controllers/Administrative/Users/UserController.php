@@ -22,6 +22,7 @@ use App\Exports\Administrative\Users\UsersImportTemplate;
 use App\Jobs\Administrative\Users\UserImportJob;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Traits\Filtertrait;
+use Illuminate\Support\Facades\Storage;
 use Validator;
 use Hash;
 use DB;
@@ -768,5 +769,110 @@ class UserController extends Controller
       {
         return $this->respondHttp500();
       }
+    }
+
+    public function storeFirm(Request $request)
+    {
+        $user = User::find($this->user->id);
+
+        $data = $request->all();
+          
+        if ($request->type == "Dibujar")
+        {
+            $image_64 = $request->firm_image;
+    
+            $extension = explode('/', explode(':', substr($image_64, 0, strpos($image_64, ';')))[1])[1];
+    
+            $replace = substr($image_64, 0, strpos($image_64, ',')+1); 
+    
+            $image = str_replace($replace, '', $image_64); 
+    
+            $image = str_replace(' ', '+', $image); 
+    
+            $imageName = base64_encode($this->user->id . rand(1,10000) . now()) . '.' . $extension;
+
+            $request->firm_image = base64_decode($image);
+
+            if ($request->imageName != $user->firm)
+            {
+                if ($request->firm_image)
+                {
+                    $file = $request->firm_image;
+                    Storage::disk('s3')->delete('administrative/firms_users/'. $user->id. '/' .$user->firm);
+                    Storage::disk('s3')->put('administrative/firms_users/'.$user->id.'/' . $imageName, $file, 'public');
+                    //$file->storeAs('administrative/firms_users/'.$user->id.'/' , $imageName, 'public');
+                    $user->firm = $imageName;
+                    $data['firm_image'] = $imageName;
+                    $data['old_firm'] = $imageName;
+                    $data['firm_path'] = Storage::disk('s3')->url('administrative/firms_users/'.$user->id.'/' , $imageName);
+                }
+                else
+                {
+                    Storage::disk('s3')->delete('administrative/firms_users/'. $user->id. '/' .$user->firm);
+                    $user->firm = NUlL;
+                    $data['firm_image'] = NULL;
+                    $data['old_firm'] = NULL;
+                    $data['firm_path'] = NULL;
+                }
+            }
+
+        }
+        else
+        {
+            if ($request->firm_image != $user->firm)
+            {
+                if ($request->firm_image)
+                {
+                    $file = $request->firm_image;
+                    Storage::disk('s3')->delete('administrative/firms_users/'. $user->id. '/'. $user->firm);
+                    $nameFile = base64_encode($this->user->id . rand(1,10000) . now()) .'.'. $file->extension();
+                    $file->storeAs('administrative/firms_users/'. $user->id, $nameFile, 's3');
+                    $user->firm = $nameFile;
+                    $data['logo'] = $nameFile;
+                    $data['old_logo'] = $nameFile;
+                    $data['logo_path'] = Storage::disk('s3')->url('administrative/firms_users/'. $user->id. '/'. $nameFile);
+                }
+                else
+                {
+                    Storage::disk('s3')->delete('administrative/firms_users/'. $user->id. '/'. $user->firm);
+                    $user->firm = NUlL;
+                    $data['logo'] = NULL;
+                    $data['old_logo'] = NULL;
+                    $data['logo_path'] = NULL;
+                }
+            }
+        }
+
+        \Log::info($user);
+
+        if (!$user->update())
+            return $this->respondHttp500();
+
+        return $this->respondHttp200([
+            'message' => 'Se creo la firma'
+        ]);
+    }
+
+    /**
+     * Display the specified resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function showFirm()
+    {
+        try
+        {
+            $user = User::select('id','firm')->find($this->user->id);
+            $user->firm_image = $user->firm;
+            $user->old_firm = $user->firm;
+            $user->firm_path = Storage::disk('s3')->url('administrative/firms_users/'. $user->id . '/' . $user->firm);
+            $user->type = '';
+
+            return $this->respondHttp200([
+                'data' => $user
+            ]);
+        } catch(Exception $e){
+            $this->respondHttp500();
+        }
     }
 }
