@@ -325,31 +325,6 @@ class InspectionController extends ApiController
                           $photo_2->delete();
                         }
 
-                        /*$images = collect([]);
-                        $this->checkImgRequest($images, $value['photos'], 1);
-                        $this->checkImgRequest($images, $value['photos'], 2);
-
-                        $i = 1;
-                        $replace = false;
-
-                        while ($images->count() > 0)
-                        {
-                        $column = "photo_".$i;
-
-                        if (!$item->$column || $replace)
-                        {
-                            $this->checkImgStore($item, $images->pop(), $column);
-                        }
-
-                        if ($i == 2)
-                        {
-                            $i = 1;
-                            $replace = true;
-                        }
-                        else
-                            $i++;
-                        };*/
-
                         $item->update();
 
                         $response['themes'][$keyT]['items'][$key]["photos"] = [
@@ -503,43 +478,66 @@ class InspectionController extends ApiController
             {
                 foreach ($request->firms['firmsAdd'] as $key => $firms) 
                 {                    
-                    if ($firms['image'])
+                    if ($firms['type'] == 'ingresar')
                     {
-                        $exist_firm = InspectionFirm::where('qualification_date', $qualification_date_verify)->where('identification', $firms['identification'])->first();
-
-                        if ($exist_firm)
+                        if ($firms['image'])
                         {
-                            $img_firm = ImageApi::where('hash', $firms['image'])->where('type', 3)->first();
+                            $exist_firm = InspectionFirm::where('qualification_date', $qualification_date_verify)->where('identification', $firms['identification'])->first();
 
-                            if ($img_firm)
-                                $exist_firm->image = $img_firm->file;
+                            if ($exist_firm)
+                            {
+                                $img_firm = ImageApi::where('hash', $firms['image'])->where('type', 3)->first();
+
+                                if ($img_firm)
+                                    $exist_firm->image = $img_firm->file;
+                                else
+                                    $exist_firm->image = $firms['image'];
+
+                                $exist_firm->name = $firms['name'];
+                                $exist_firm->state = 'Ingresada';
+                                $exist_firm->identification = $firms['identification'];
+                                $exist_firm->qualification_date = $qualification_date_verify;
+                                $exist_firm->update();
+                            }
                             else
-                                $exist_firm->image = $firms['image'];
+                            {
+                                $exist_firm = new InspectionFirm;
 
-                            $exist_firm->name = $firms['name'];
-                            $exist_firm->identification = $firms['identification'];
-                            $exist_firm->qualification_date = $qualification_date_verify;
-                            $exist_firm->update();
+                                $img_firm = ImageApi::where('hash', $firms['image'])->where('type', 3)->first();
+
+                                if ($img_firm)
+                                    $exist_firm->image = $img_firm->file;
+                                else
+                                    $exist_firm->image = $firms['image'];
+
+                                $exist_firm->name = $firms['name'];
+                                $exist_firm->state = 'Ingresada';
+                                $exist_firm->identification = $firms['identification'];
+                                $exist_firm->company_id = $request->company_id;
+                                $exist_firm->qualification_date = $qualification_date_verify;
+                                $exist_firm->save();
+                            }
+
+                            $response['firms']['firmsAdd'][$key] = [
+                                "id" => $exist_firm->id, "name" => $exist_firm->name, "identification" => $exist_firm->identification, "image" => $exist_firm->image, "type" => $firms['type']
+                            ];
                         }
-                        else
-                        {
-                            $exist_firm = new InspectionFirm;
+                    }
+                    else
+                    {
+                        $user_solicitud = User::find($firms['firm_solicitud']['value']);
 
-                            $img_firm = ImageApi::where('hash', $firms['image'])->where('type', 3)->first();
-
-                            if ($img_firm)
-                                $exist_firm->image = $img_firm->file;
-                            else
-                                $exist_firm->image = $firms['image'];
-
-                            $exist_firm->name = $firms['name'];
-                            $exist_firm->identification = $firms['identification'];
-                            $exist_firm->qualification_date = $qualification_date_verify;
-                            $exist_firm->save();
-                        }
+                        $exist_firm = new InspectionFirm;
+                        $exist_firm->name = $firms['name'];
+                        $exist_firm->state = 'Pendiente';
+                        $exist_firm->company_id = $request->company_id;
+                        $exist_firm->user_id = $user_solicitud->id;
+                        $exist_firm->identification = $user_solicitud->document;
+                        $exist_firm->qualification_date = $qualification_date_verify;
+                        $exist_firm->save();
 
                         $response['firms']['firmsAdd'][$key] = [
-                            "id" => $exist_firm->id, "name" => $exist_firm->name, "identification" => $exist_firm->identification, "image" => $exist_firm->image
+                            "id" => $exist_firm->id, "name" => $exist_firm->name, "identification" => $exist_firm->identification, "image" => $exist_firm->image, "type" => $firms['type']
                         ];
                     }
                 }
@@ -571,46 +569,6 @@ class InspectionController extends ApiController
             'data' => $response
         ]);
     }
-
-    /*public function checkImgStore($item, $image, $column)
-    {
-      $img = $this->base64($image, $column);
-      $fileName = $img['name'];
-      $file = $img['image'];
-
-      $item->img_delete($column);
-      $item->store_image($column, $fileName, $file);
-    }
-
-    public function checkImgRequest(&$images, $value, $key)
-    {
-      $index = "photo_".$key;
-
-      if (isset($value[$index]) && $value[$index]['file'])
-      {
-        $images->push($value[$index]['file']);
-      }
-    }
-
-    public function base64($file, $column)
-    {
-      $image_64 = $file;
-      
-      $extension = explode('/', explode(':', substr($image_64, 0, strpos($image_64, ';')))[1])[1];
-
-      $replace = substr($image_64, 0, strpos($image_64, ',')+1); 
-
-      $image = str_replace($replace, '', $image_64); 
-
-      $image = str_replace(' ', '+', $image); 
-
-      $imageName = base64_encode($this->user->id . rand(1,10000) . now()) . $column . '.' . $extension;
-
-      $imagen = base64_decode($image);
-
-      return ['name' => $imageName, 'image' => $imagen];
-
-    }*/
 
     /**
      * Get the list of inspeccions quelified for user
