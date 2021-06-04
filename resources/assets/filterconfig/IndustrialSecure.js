@@ -313,5 +313,91 @@ export default [
         },
 
       ]
-    }
+    },
+    {
+      name: 'dangerousconditions-inspections-request-firm-admin',
+      filters: [
+        {
+          url: '/selects/regionals',
+          key: 'regionals',
+          type: 'select',
+          label: 'regionals'
+        },
+        {
+          url: '/selects/headquarters',
+          key: 'headquarters',
+          type: 'select',
+          label: 'headquarters'
+        },
+        {
+          url: '/selects/processes',
+          key: 'processes',
+          type: 'select',
+          label: 'processes'
+        },
+        {
+          url: '/selects/areas',
+          key: 'areas',
+          type: 'select',
+          label: 'areas'
+        },
+        {
+          url: '/selects/users',
+          key: 'qualifiers',
+          type: 'select',
+          label: 'Calificador'
+        },
+        {
+          key: 'dateRange',
+          type: 'dateRange',
+          label: 'Fecha de calificación',
+        },
+        {
+          url: '/selects/users',
+          key: 'user_firm',
+          type: 'select',
+          label: 'Usuario Firmante'
+        }
+      ]
+    },
+    {
+      name: 'dangerousconditions-inspections-request-firm',
+      filters: [
+        {
+          url: '/selects/regionals',
+          key: 'regionals',
+          type: 'select',
+          label: 'regionals'
+        },
+        {
+          url: '/selects/headquarters',
+          key: 'headquarters',
+          type: 'select',
+          label: 'headquarters'
+        },
+        {
+          url: '/selects/processes',
+          key: 'processes',
+          type: 'select',
+          label: 'processes'
+        },
+        {
+          url: '/selects/areas',
+          key: 'areas',
+          type: 'select',
+          label: 'areas'
+        },
+        {
+          url: '/selects/users',
+          key: 'qualifiers',
+          type: 'select',
+          label: 'Calificador'
+        },
+        {
+          key: 'dateRange',
+          type: 'dateRange',
+          label: 'Fecha de calificación',
+        },
+      ]
+    },
 ];

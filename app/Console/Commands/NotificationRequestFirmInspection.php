@@ -80,9 +80,9 @@ class NotificationRequestFirmInspection extends Command
                     ->message("Estimado usuario usted tiene <b>$firms->total</b> inspecciones planeadas pendientes por firmar en la compañia <b>$firms->company</b> ")
                     ->module('dangerousConditions')
                     ->event('Tarea programada: NotificationRequestFirmInspection')
-                    /*->buttons([
-                        ['text'=>'Llevarme al sitio', 'url'=> url('/industrialsecure/dangermatrix/view/'.$dangerMatrix->id
-                    ])*/
+                    ->buttons([
+                        ['text'=>'Llevarme al sitio', 'url'=> url('/industrialsecure/dangerousconditions/inspections/request/firm')]
+                    ])
                     ->company($company)
                     ->send();
             }

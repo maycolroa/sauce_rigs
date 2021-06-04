@@ -404,6 +404,12 @@ Route::middleware(['auth'])->group(function () {
         Route::post('inspection/getConfigurationMasive', 'IndustrialSecure\DangerousConditions\Inspections\InspectionController@getQualificationOption');
 
         Route::get('inspection/downloadPdf/{id}', 'IndustrialSecure\DangerousConditions\Inspections\InspectionQualificationController@downloadPdf');
+
+        Route::post('inspection/requestFirm/data', 'IndustrialSecure\DangerousConditions\Inspections\InspectionRequestFirmController@data');
+
+        Route::post('inspection/requestFirm/view/{id}', 'IndustrialSecure\DangerousConditions\Inspections\InspectionRequestFirmController@showInspection');
+
+        Route::post('inspection/requestFirm/saveFirm', 'IndustrialSecure\DangerousConditions\Inspections\InspectionRequestFirmController@saveFirm');
         
         Route::get('inspection/qualification/downloadImage/{id}/{column}', 'IndustrialSecure\DangerousConditions\Inspections\InspectionQualificationController@downloadImage');
         Route::post('inspection/qualification/saveImage', 'IndustrialSecure\DangerousConditions\Inspections\InspectionQualificationController@saveImage');

@@ -615,6 +615,38 @@ export default [
     }
 },
 {
+    name: 'dangerousconditions-inspections-request-firm',
+    fields: [
+        { name: 'sau_ph_inspection_items_qualification_area_location.id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true }
+    ],
+    'controlls': [
+        {
+          type: 'push',
+          buttons: [{
+            config: {
+                color: 'outline-info',
+                borderless: true,
+                icon: 'ion ion-md-eye',
+                title: 'Ver'
+            },
+            data: {
+                routePush: { name: 'dangerousconditions-inspections-request-firm-view' },
+                id: 'id',
+            },
+            permission: 'ph_inspections_r'
+          }]
+        },
+        {
+            type: 'base',
+            buttons: [],
+        }
+    ],
+    configuration: {
+        urlData: '/industrialSecurity/dangerousConditions/inspection/requestFirm/data',
+        filterColumns: true
+    }
+},
+{
     name: 'dangerousconditions-inspections-report',
     fields: [
         { name: 'sau_ph_inspection_items_qualification_area_location.id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true }
