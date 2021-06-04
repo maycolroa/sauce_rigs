@@ -64,8 +64,8 @@ class FileUploadController extends Controller
             function ($attribute, $value, $fail)
             {
               $ext = strtolower($value->getClientOriginalExtension());
-              if ($value && !is_string($value) && $ext != 'xlsx' && $ext != 'xls' && $ext != 'zip' & $ext != 'cvs')
-                  $fail('Archivo debe ser un Zip, un Excel o un Cvs');
+              if ($value && !is_string($value) && $ext != 'xlsx' && $ext != 'xls' && $ext != 'zip' & $ext != 'csv')
+                  $fail('Archivo debe ser un Zip, un Excel o un Csv');
             },
         ]
       ])->validate();
