@@ -121,7 +121,7 @@ class InformManagerListCheck
                     (classification = 'UPA' AND number_workers <= 10 AND risk_class IN ('Clase de riesgo IV', 'Clase de riesgo V')) OR
                     (classification = 'Empresa' AND number_workers BETWEEN 11 AND 50 AND risk_class IN ('Clase de riesgo IV', 'Clase de riesgo V')) OR 
                     (classification = 'Empresa' AND number_workers > 50) 
-                    )THEN '60 Estándares' OR 
+                     OR 
                     (classification = 'Empresa' AND risk_class IN ('Clase de riesgo IV', 'Clase de riesgo V')) 
                     )THEN '60 Estándares'
             ELSE NULL END AS standard_name")
