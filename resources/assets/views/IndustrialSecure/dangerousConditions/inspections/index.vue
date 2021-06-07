@@ -18,6 +18,7 @@
               <b-btn :to="{name:'dangerousconditions-inspections-import'}" variant="primary">Importar</b-btn>
             </div>
             <b-btn v-if="auth.can['ph_inspections_c']" variant="primary" :to="{name:'dangerousconditions-inspection-qualification-masive'}" v-b-tooltip.top title="Configurar opciones para la calificación másiva"><i class="oi oi-list"></i></b-btn>
+            <b-btn v-if="auth.can['ph_inspections_r']" variant="primary" :to="{name:'dangerousconditions-inspections-request-firm'}" v-b-tooltip.top title="Ver Solicitudes de Firmas"><i class="ion ion-md-create"></i></b-btn>
           </div>
         </b-card-header>
         <b-card-body>

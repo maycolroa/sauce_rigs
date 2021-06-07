@@ -259,6 +259,22 @@ export default [{
       ]),
       ...middleware({ 'check-permission': 'ph_inspections_r' }, [
         {
+          name: 'dangerousconditions-inspections-request-firm',
+          path: 'dangerousconditions/inspections/request/firm',
+          component: () =>
+            import('@/views/IndustrialSecure/dangerousConditions/inspections/viewRequestFirm')
+        }
+      ]),
+      ...middleware({ 'check-permission': 'ph_inspections_r' }, [
+        {
+          name: 'dangerousconditions-inspections-request-firm-view',
+          path: 'dangerousconditions/inspections/request/firm/view/:id',
+          component: () =>
+            import('@/views/IndustrialSecure/dangerousConditions/inspections/firmQualification')
+        }
+      ]),
+      ...middleware({ 'check-permission': 'ph_inspections_r' }, [
+        {
           name: 'dangerousconditions-inspections-view',
           path: 'dangerousconditions/inspections/view/:id',
           component: () =>

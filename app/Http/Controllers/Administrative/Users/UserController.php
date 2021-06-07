@@ -793,6 +793,8 @@ class UserController extends Controller
 
             $request->firm_image = base64_decode($image);
 
+            $request->imageName = $imageName;
+
             if ($request->imageName != $user->firm)
             {
                 if ($request->firm_image)

@@ -162,6 +162,7 @@ export default {
         return {}
       }
     },
+    configNameFilterDefault: {type: String, default: ''},
   },
   components:{
     FilterGeneral,
@@ -200,7 +201,7 @@ export default {
       if (this.config.configuration.configNameFilter != undefined)
         return this.config.configuration.configNameFilter
       else 
-        return ''
+        return this.configNameFilterDefault
     },
     loader(){
       if(this.config.configuration.detailComponent){

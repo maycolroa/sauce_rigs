@@ -180,6 +180,27 @@ class InspectionItemsQualificationAreaLocation extends Model
         return $query;
     }
 
+     /**
+     * filters checks through the given date
+     * @param  Illuminate\Database\Eloquent\Builder $query
+     * @param  array $dates
+     * @return Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeInUserFirm($query, $user_firm, $typeSearch = 'IN')
+    {
+        if (COUNT($user_firm) > 0)
+        {
+            if ($typeSearch == 'IN')
+                $query->whereIn('sau_ph_qualification_inspection_firm.user_id', $user_firm);
+
+            else if ($typeSearch == 'NOT IN')
+                $query->whereNotIn('sau_ph_qualification_inspection_firm.user_id', $user_firm);
+        }
+
+        return $query;
+    }
+
+
     /**
      * filters checks through the given date
      * @param  Illuminate\Database\Eloquent\Builder $query

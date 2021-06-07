@@ -31,6 +31,7 @@ class Kernel extends ConsoleKernel
         'App\Console\Commands\DeleteOldImagesApi',
         'App\Console\Commands\DeleteFilesTemporal',
         'App\Console\Commands\SendAutomaticNotifications',
+        'App\Console\Commands\NotificationRequestFirmInspection',
         //'App\Console\Commands\RememberRepeatInspetion'
     ];
 
@@ -121,6 +122,10 @@ class Kernel extends ConsoleKernel
         $schedule->command('ct-unlock-evaluation')
             ->timezone('America/Bogota')
             ->everyMinute();
+
+        $schedule->command('notification-request-firm-inspection')
+            ->timezone('America/Bogota')
+            ->dailyAt('12:00');
     }
 
     /**
