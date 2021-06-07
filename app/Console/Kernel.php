@@ -123,7 +123,7 @@ class Kernel extends ConsoleKernel
             ->timezone('America/Bogota')
             ->everyMinute();
 
-        $schedule->command('ct-unlock-evaluation')
+        $schedule->command('notification-request-firm-inspection')
             ->timezone('America/Bogota')
             ->dailyAt('12:00');
     }
