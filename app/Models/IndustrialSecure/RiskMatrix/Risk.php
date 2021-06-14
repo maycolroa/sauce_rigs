@@ -10,6 +10,7 @@ class Risk extends Model
 
     protected $fillable = [
         'name',
+        'category',
         'company_id'
     ];
 

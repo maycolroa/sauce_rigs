@@ -28,6 +28,7 @@ class RiskRequest extends FormRequest
 
         return [
             'name' => 'required|string|unique:sau_rm_risk,name,'.$id.',id,company_id,'.Session::get('company_id'),
+            'category' => 'required'
         ];
     }
 }
