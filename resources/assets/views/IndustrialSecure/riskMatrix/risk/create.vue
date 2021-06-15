@@ -14,6 +14,7 @@
                 url="/industrialSecurity/risk"
                 method="POST"
                 :cancel-url="{ name: 'industrialsecure-risks'}"
+                :categories="categories"
                 :modal="modal"/>
         </b-card-body>
       </b-card>
@@ -38,7 +39,24 @@ export default {
   },
   data(){
     return {
+      categories: []
     }
-  }
+  },
+  created(){
+    this.fetchOptions('categories', 'rm_risk_categories')
+  },
+  methods: {
+    fetchOptions(key, search)
+    {
+      axios.post(`/configurableForm/selectOptions`, {key: search})
+        .then(response => {
+          this[key] = response.data;
+        })
+        .catch(error => {
+          Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
+          this.$router.go(-1);
+        });
+    }
+	}
 }
 </script>

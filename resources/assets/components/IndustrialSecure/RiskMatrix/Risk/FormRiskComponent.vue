@@ -4,6 +4,10 @@
     <b-form-row>
       <vue-input :disabled="viewOnly" class="col-md-12" v-model="form.name" label="Nombre" type="text" name="name" :error="form.errorsFor('name')" placeholder="Nombre"></vue-input>
     </b-form-row>
+    <b-form-row>
+      <vue-advanced-select :disabled="viewOnly" class="col-md-12" v-model="form.category" :error="form.errorsFor('category')" :multiple="false" :options="categories" :hide-selected="false" name="category" label="Categoría" placeholder="Seleccione una opción">
+          </vue-advanced-select>
+    </b-form-row>
 
     <div class="row float-right pt-10 pr-10">
       <template>
@@ -16,11 +20,13 @@
 
 <script>
 import VueInput from "@/components/Inputs/VueInput.vue";
+import VueAdvancedSelect from "@/components/Inputs/VueAdvancedSelect.vue";
 import Form from "@/utils/Form.js";
 
 export default {
   components: {
-    VueInput
+    VueInput,
+    VueAdvancedSelect
   },
   props: {
     url: { type: String },
@@ -29,10 +35,17 @@ export default {
     isEdit: { type: Boolean, default: false },
     viewOnly: { type: Boolean, default: false },
     modal: { type: Boolean, default: false },
+    categories: {
+      type: Array,
+      default: function() {
+        return [];
+      }
+    },
     risk: {
       default() {
         return {
-            name: ''
+            name: '',
+            category: ''
         };
       }
     }

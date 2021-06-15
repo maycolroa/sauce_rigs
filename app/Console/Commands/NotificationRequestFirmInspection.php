@@ -75,7 +75,7 @@ class NotificationRequestFirmInspection extends Command
                 $recipient = new User(["email" => $firms->email]); 
 
                 NotificationMail::
-                    subject('Sauce - Contratistas contratistas sin actividad')
+                    subject('Inspecciones - Inspecciones planeadas pendientes por firmar')
                     ->recipients($recipient)
                     ->message("Estimado usuario usted tiene <b>$firms->total</b> inspecciones planeadas pendientes por firmar en la compañia <b>$firms->company</b> ")
                     ->module('dangerousConditions')

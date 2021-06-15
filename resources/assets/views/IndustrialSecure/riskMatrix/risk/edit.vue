@@ -13,6 +13,7 @@
                 :url="`/industrialSecurity/risk/${this.$route.params.id}`"
                 method="PUT"
                 :risk="data"
+                :categories="categories"
                 :is-edit="true"
                 :cancel-url="{ name: 'industrialsecure-risks'}"/>
         </b-card-body>
@@ -36,9 +37,12 @@ export default {
   data () {
     return {
       data: [],
+      categories: []
     }
   },
   created(){
+    this.fetchOptions('categories', 'rm_risk_categories')
+
     axios.get(`/industrialSecurity/risk/${this.$route.params.id}`)
     .then(response => {
         this.data = response.data.data;
@@ -47,5 +51,18 @@ export default {
         Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
     });
   },
+  methods: {
+    fetchOptions(key, search)
+    {
+      axios.post(`/configurableForm/selectOptions`, {key: search})
+        .then(response => {
+          this[key] = response.data;
+        })
+        .catch(error => {
+          Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
+          this.$router.go(-1);
+        });
+    }
+	}
 }
 </script>
