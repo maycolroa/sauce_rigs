@@ -182,6 +182,8 @@ Route::middleware(['auth'])->group(function () {
         Route::post('multiselectBarLegalMatrix', 'LegalAspects\LegalMatrix\LawReportController@multiselectBar');
         Route::post('multiselectBarPercentage', 'PreventiveOccupationalMedicine\BiologicalMonitoring\AudiometryInformController@multiselectBarPercentage');
         Route::post('dmActivities', 'IndustrialSecure\Activities\ActivityController@multiselect');
+        Route::post('rmSubprocess', 'IndustrialSecure\RiskMatrix\SubProcessController@multiselect');
+        Route::post('rmRisk', 'IndustrialSecure\RiskMatrix\RiskController@multiselect');
         Route::post('dmDangers', 'IndustrialSecure\Dangers\DangerController@multiselect');
         Route::post('dmDangerMatrix', 'IndustrialSecure\DangerMatrix\DangerMatrixController@multiselect');
         Route::post('dmGeneratedDangers', 'General\MultiSelectRadioController@dmGeneratedDangers');
@@ -196,6 +198,7 @@ Route::middleware(['auth'])->group(function () {
         Route::post('tagsSubstitution', 'IndustrialSecure\Tags\TagController@multiselectSubstitution');
         Route::post('tagsParticipants', 'IndustrialSecure\Tags\TagController@multiselectSubstitution');
         Route::post('tagsRmParticipants', 'IndustrialSecure\RiskMatrix\Tags\ParticipantsController@multiselect');
+        Route::post('tagsRmRiskCausesControls', 'IndustrialSecure\RiskMatrix\Tags\CauseControlsController@multiselect');
         Route::post('tagsDangerDescription', 'IndustrialSecure\Tags\TagController@multiselectDangerDescription');
         Route::post('actionPlanStates/{all?}', 'General\MultiSelectRadioController@actionPlanStates');
         Route::post('actionPlanModules', 'Administrative\ActionPlans\ActionPlanController@actionPlanModules');
