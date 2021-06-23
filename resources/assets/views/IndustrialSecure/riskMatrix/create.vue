@@ -12,6 +12,7 @@
             <industrial-secure-risk-matrix-form
                 url="/industrialSecurity/risksMatrix"
                 method="POST"
+                :action-plan-states="actionPlanStates"
                 :cancel-url="{ name: 'industrialsecure-riskmatrix'}"
                 :si-no="siNo"/>
         </b-card-body>
@@ -35,33 +36,21 @@ export default {
   },
   data(){
     return {
-      siNo: []
+      siNo: [],
+      actionPlanStates: [],
     }
   },
   created(){
-    /*this.fetchSelect('typeActivities', '/radios/dmTypeActivities')
-    this.fetchSelect('dangerGenerated', '/selects/dmGeneratedDangers')*/
     this.fetchSelect('siNo', '/radios/siNo')
-    /*this.fetchSelect('qualifications', '/industrialSecurity/dangersMatrix/getQualificationsComponent')
     this.fetchSelect('actionPlanStates', '/selects/actionPlanStates')
 
-    axios.get('/administration/configuration/view')
+    /*axios.get('/administration/configuration/view')
     .then(response => {
         this.configuration = response.data.data;
     })
     .catch(error => {
         Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
         this.$router.go(-1);
-    });
-
-    axios.post("/industrialSecurity/dangersMatrix/getfieldsadd")
-		.then(response => {
-			this.fields = response.data.data;
-      this.ready = true
-		})
-		.catch(error => {
-			Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
-			this.$router.go(-1);
     });*/
   },
   methods: {

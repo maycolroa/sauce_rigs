@@ -50,6 +50,8 @@
                     :index-subprocess="indexSubprocess"
                     :index-risk="index"
                     @riskName="updateDangerNamePanel"
+                    :siNo="siNo"
+                    :action-plan-states="actionPlanStates"
                   />
                 </b-card-body>
               </b-collapse>

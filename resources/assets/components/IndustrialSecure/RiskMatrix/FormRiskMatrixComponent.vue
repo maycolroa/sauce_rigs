@@ -66,6 +66,8 @@
                   :form="form"
                   :index-subprocess="index"
                   @subprocessName="updateActivityNameTab"
+                  :siNo="siNo"
+                  :action-plan-states="actionPlanStates"
                 />
             </b-tab>
           </b-tabs>
@@ -109,25 +111,13 @@ export default {
     cancelUrl: { type: [String, Object], required: true },
     isEdit: { type: Boolean, default: false },
     viewOnly: { type: Boolean, default: false },
-    /*typeActivities: {
-      type: Array,
-      default: function() {
-        return [];
-      }
-    },
-    dangerGenerated: {
-      type: Array,
-      default: function() {
-        return [];
-      }
-    },*/
     siNo: {
       type: Array,
       default: function() {
         return [];
       }
     },
-    /*qualifications: {
+    qualifications: {
       type: [Array, Object],
       default: function() {
         return [];
@@ -145,12 +135,6 @@ export default {
         return [];
       }
     },
-    fields: {
-      type: [Array, Object],
-      default: function() {
-        return [];
-      }
-    },*/
     riskMatrix: {
       default() {
         return {

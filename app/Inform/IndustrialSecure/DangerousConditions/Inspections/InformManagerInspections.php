@@ -84,7 +84,6 @@ class InformManagerInspections
             $informData->put($component, $this->$component());
         }
 
-        \Log::info($informData->toArray());
         return $informData->toArray();
     }
 
