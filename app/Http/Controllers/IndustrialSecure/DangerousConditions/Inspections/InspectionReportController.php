@@ -89,7 +89,7 @@ class InspectionReportController extends Controller
           DB::raw('count(sau_ph_inspection_items_qualification_area_location.qualification_id) as numero_items'),
           DB::raw('count(IF(q.fulfillment = 1, q.id, null)) as numero_items_cumplimiento'),
           DB::raw('count(IF(q.fulfillment = 0, q.id, null)) as numero_items_no_cumplimiento'),
-          DB::raw('count(IF(q.fulfillment = 2, q.id, null)) as numero_items_cumplimiento_parcial'),
+          DB::raw('count(IF(q.fulfillment = 2, q.id, null)) as numero_items_cumplimiento_parcial')/*,
           DB::raw("sum(
             (SELECT IF(COUNT(IF(iap2.state=\"Pendiente\",0, NULL)) > 0, 1, 0) 
             FROM sau_action_plans_activities iap2 
@@ -107,7 +107,7 @@ class InspectionReportController extends Controller
             iam2.item_table_name = 'sau_ph_inspection_items_qualification_area_location' and 
             iam2.module_id = {$module_id} and
             iam2.item_id = sau_ph_inspection_items_qualification_area_location.id)
-            )AS actividades_totales")
+            )AS actividades_totales")*/
         )
         ->join('sau_ph_inspection_section_items as it','sau_ph_inspection_items_qualification_area_location.item_id', 'it.id')
         ->join('sau_ph_inspection_sections as s','it.inspection_section_id', 's.id')
@@ -404,7 +404,7 @@ class InspectionReportController extends Controller
              DB::raw('count(sau_ph_inspection_items_qualification_area_location.qualification_id) as numero_items'),
              DB::raw('count(IF(q.fulfillment = 1, q.id, null)) as numero_items_cumplimiento'),
              DB::raw('count(IF(q.fulfillment = 0, q.id, null)) as numero_items_no_cumplimiento'),
-             DB::raw('count(IF(q.fulfillment = 2, q.id, null)) as numero_items_cumplimiento_parcial'),
+             DB::raw('count(IF(q.fulfillment = 2, q.id, null)) as numero_items_cumplimiento_parcial')/*,
              DB::raw("sum(
                (SELECT IF(COUNT(IF(iap2.state=\"Pendiente\",0, NULL)) > 0, 1, 0) 
                FROM sau_action_plans_activities iap2 
@@ -422,7 +422,7 @@ class InspectionReportController extends Controller
                 iam2.item_table_name = 'sau_ph_inspection_items_qualification_area_location' and 
                 iam2.module_id = {$module_id} and
                 iam2.item_id = sau_ph_inspection_items_qualification_area_location.id)
-               )AS actividades_totales")
+               )AS actividades_totales")*/
              )
              ->join('sau_ph_inspection_section_items as it','sau_ph_inspection_items_qualification_area_location.item_id', 'it.id')
              ->join('sau_ph_inspection_sections as s','it.inspection_section_id', 's.id')
@@ -571,7 +571,7 @@ class InspectionReportController extends Controller
              DB::raw('count(sau_ph_inspection_items_qualification_area_location.qualification_id) as numero_items'),
              DB::raw('count(IF(q.fulfillment = 1, q.id, null)) as numero_items_cumplimiento'),
              DB::raw('count(IF(q.fulfillment = 0, q.id, null)) as numero_items_no_cumplimiento'),
-             DB::raw('count(IF(q.fulfillment = 2, q.id, null)) as numero_items_cumplimiento_parcial'),
+             DB::raw('count(IF(q.fulfillment = 2, q.id, null)) as numero_items_cumplimiento_parcial')/*,
              DB::raw("sum(
                (SELECT IF(COUNT(IF(iap2.state=\"Pendiente\",0, NULL)) > 0, 1, 0) 
                FROM sau_action_plans_activities iap2 
@@ -589,7 +589,7 @@ class InspectionReportController extends Controller
                 iam2.item_table_name = 'sau_ph_inspection_items_qualification_area_location' and 
                 iam2.module_id = {$module_id} and
                 iam2.item_id = sau_ph_inspection_items_qualification_area_location.id)
-               )AS actividades_totales")
+               )AS actividades_totales")*/
              )
              ->join('sau_ph_inspection_section_items as it','sau_ph_inspection_items_qualification_area_location.item_id', 'it.id')
              ->join('sau_ph_inspection_sections as s','it.inspection_section_id', 's.id')
