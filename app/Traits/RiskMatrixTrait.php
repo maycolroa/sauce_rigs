@@ -8,60 +8,116 @@ trait DangerMatrixTrait
     {
         $matriz = [];
 
-        //Tipo 1
-        
-        $matriz['Tipo 1']['No ha ocurrido en el sector hospitalario']['8'] = ['label' => 'Medio-8', 'color' => 'orange', 'count' => 0];
-        $matriz['Tipo 1']['No ha ocurrido en el sector hospitalario']['4'] = ['label' => 'Bajo-4', 'color' => 'warning', 'count' => 0];
-        $matriz['Tipo 1']['No ha ocurrido en el sector hospitalario']['3'] = ['label' => 'Trivial-3', 'color' => 'success', 'count' => 0];
-        $matriz['Tipo 1']['No ha ocurrido en el sector hospitalario']['2'] = ['label' => 'Trivial-2', 'color' => 'success', 'count' => 0];
-        $matriz['Tipo 1']['No ha ocurrido en el sector hospitalario']['1'] = ['label' => 'Trivial-1', 'color' => 'success', 'count' => 0];
-
-        $matriz['Tipo 1']['Ha ocurrido en el sector hospitalario']['10'] = ['label' => 'Medio-10', 'color' => 'orange', 'count' => 0];
-        $matriz['Tipo 1']['Ha ocurrido en el sector hospitalario']['8'] = ['label' => 'Medio-8', 'color' => 'orange', 'count' => 0];
-        $matriz['Tipo 1']['Ha ocurrido en el sector hospitalario']['6'] = ['label' => 'Bajo-6', 'color' => 'warning', 'count' => 0];
-        $matriz['Tipo 1']['Ha ocurrido en el sector hospitalario']['3'] = ['label' => 'Trivial-3', 'color' => 'success', 'count' => 0];
-        $matriz['Tipo 1']['Ha ocurrido en el sector hospitalario']['2'] = ['label' => 'Trivial-2', 'color' => 'success', 'count' => 0];
-
-        $matriz['Tipo 1']['Alguna vez ha ocurrido en el hospital en el último año']['15'] = ['label' => 'Alto-15', 'color' => 'primary', 'count' => 0];
-        $matriz['Tipo 1']['Alguna vez ha ocurrido en el hospital en el último año']['12'] = ['label' => 'Medio-12', 'color' => 'orange', 'count' => 0];
-        $matriz['Tipo 1']['Alguna vez ha ocurrido en el hospital en el último año']['9'] = ['label' => 'Medio-9', 'color' => 'orange', 'count' => 0];
-        $matriz['Tipo 1']['Alguna vez ha ocurrido en el hospital en el último año']['6'] = ['label' => 'Bajo-6', 'color' => 'warning', 'count' => 0];
-        $matriz['Tipo 1']['Alguna vez ha ocurrido en el hospital en el último año']['3'] = ['label' => 'Trivial-3', 'color' => 'success', 'count' => 0];
-
-        $matriz['Tipo 1']['Sucede varias veces en el último año y en diferentes procesos (en el hospital)']['20'] = ['label' => 'Alto-20', 'color' => 'primary', 'count' => 0];
-        $matriz['Tipo 1']['Sucede varias veces en el último año y en diferentes procesos (en el hospital)']['16'] = ['label' => 'Alto-16', 'color' => 'primary', 'count' => 0];
-        $matriz['Tipo 1']['Sucede varias veces en el último año y en diferentes procesos (en el hospital)']['12'] = ['label' => 'Medio-12', 'color' => 'orange', 'count' => 0];
-        $matriz['Tipo 1']['Sucede varias veces en el último año y en diferentes procesos (en el hospital)']['7'] = ['label' => 'Bajo-7', 'color' => 'warning', 'count' => 0];
-        $matriz['Tipo 1']['Sucede varias veces en el último año y en diferentes procesos (en el hospital)']['4'] = ['label' => 'Bajo-4', 'color' => 'warning', 'count' => 0];
-
-        $matriz['Tipo 1']['Sucede varias veces en el último año en el mismo proceso']['25'] = ['label' => 'Muy Alto-25', 'color' => 'purple', 'count' => 0];
-        $matriz['Tipo 1']['Sucede varias veces en el último año en el mismo proceso']['20'] = ['label' => 'Alto-20', 'color' => 'primary', 'count' => 0];
-        $matriz['Tipo 1']['Sucede varias veces en el último año en el mismo proceso']['15'] = ['label' => 'Alto-15', 'color' => 'primary', 'count' => 0];
-        $matriz['Tipo 1']['Sucede varias veces en el último año en el mismo proceso']['10'] = ['label' => 'Medio-10', 'color' => 'orange', 'count' => 0];
-        $matriz['Tipo 1']['Sucede varias veces en el último año en el mismo proceso']['5'] = ['label' => 'Bajo-5', 'color' => 'warning', 'count' => 0];
-
-        //TIpo 2
-
-
-        $matriz['Tipo 2']['MENOR']['RECURRENTE'] = ['label' => 'Moderada/Tolerable-4', 'color' => 'warning', 'count' => 0];
-        $matriz['Tipo 2']['LEVE']['RECURRENTE'] = ['label' => 'Alta/Inaceptable-8', 'color' => 'orange', 'count' => 0];
-        $matriz['Tipo 2']['GRAVE']['RECURRENTE'] = ['label' => 'Extrema/Inadmisible-12', 'color' => 'primary', 'count' => 0];
-        $matriz['Tipo 2']['CATASTRÓFICA']['RECURRENTE'] = ['label' => 'Extrema/Inadmisible-16', 'color' => 'primary', 'count' => 0];
-
-         $matriz['Tipo 2']['MENOR']['FRECUENTE'] = ['label' => 'Moderada/Tolerable-3', 'color' => 'warning', 'count' => 0];
-         $matriz['Tipo 2']['LEVE']['FRECUENTE'] = ['label' => 'Alta/Inaceptable-6', 'color' => 'orange', 'count' => 0];
-         $matriz['Tipo 2']['GRAVE']['FRECUENTE'] = ['label' => 'Alta/Inaceptable-9', 'color' => 'orange', 'count' => 0];
-         $matriz['Tipo 2']['CATASTRÓFICA']['FRECUENTE'] = ['label' => 'Extrema/Inadmisible-12', 'color' => 'primary', 'count' => 0];
-
-         $matriz['Tipo 2']['MENOR']['POSIBLE'] = ['label' => 'Baja/Aceptable-2', 'color' => 'info', 'count' => 0];
-         $matriz['Tipo 2']['LEVE']['POSIBLE'] = ['label' => 'Moderada/Tolerable-4', 'color' => 'warning', 'count' => 0];
-         $matriz['Tipo 2']['GRAVE']['POSIBLE'] = ['label' => 'Alta/Inaceptable-6', 'color' => 'orange', 'count' => 0];
-         $matriz['Tipo 2']['CATASTRÓFICA']['POSIBLE'] = ['label' => 'Alta/Inaceptable-8', 'color' => 'orange', 'count' => 0];
-
-         $matriz['Tipo 2']['MENOR']['REMOTO'] = ['label' => 'Baja/Aceptable-1', 'color' => 'info', 'count' => 0];
-         $matriz['Tipo 2']['LEVE']['REMOTO'] = ['label' => 'Baja/Aceptable-2', 'color' => 'info', 'count' => 0];
-         $matriz['Tipo 2']['GRAVE']['REMOTO'] = ['label' => 'Moderada/Tolerable-3', 'color' => 'warning', 'count' => 0];
-         $matriz['Tipo 2']['CATASTRÓFICA']['REMOTO'] = ['label' => 'Moderada/Tolerable-4', 'color' => 'warning', 'count' => 0];
+        $matriz['Automático']['Si']['Total']['Documentado']['Si'] = ['Altamente Efectivo'];
+        $matriz['Automático']['Si']['Total']['Parcialmente Documentado']['Si'] = ['Altamente Efectivo'];
+        $matriz['Automático']['Si']['Total']['No Documentado']['Si'] = ['Altamente Efectivo'];
+        $matriz['Automático']['Si']['Total']['Documentado']['No'] = ['Altamente Efectivo'];
+        $matriz['Automático']['Si']['Total']['Parcialmente Documentado']['No'] = ['Altamente Efectivo'];
+        $matriz['Automático']['Si']['Total']['No Documentado']['No'] = ['Altamente Efectivo'];
+        $matriz['Automático']['No']['Total']['Documentado']['Si'] = ['Altamente Efectivo'];
+        $matriz['Automático']['No']['Total']['Parcialmente Documentado']['Si'] = ['Efectivo'];
+        $matriz['Mixto']['Si']['Total']['Documentado']['Si'] = ['Efectivo'];
+        $matriz['Automático']['No']['Total']['No Documentado']['Si'] = ['Efectivo'];
+        $matriz['Mixto']['No']['Total']['Documentado']['Si'] = ['Efectivo'];
+        $matriz['Automático']['Si']['Parcial']['Documentado']['Si'] = ['Efectivo'];
+        $matriz['Mixto']['Si']['Total']['Parcialmente Documentado']['Si'] = ['Efectivo'];
+        $matriz['Automático']['Si']['Parcial']['Parcialmente Documentado']['Si'] = ['Efectivo'];
+        $matriz['Automático']['Si']['Parcial']['No Documentado']['Si'] = ['Efectivo'];
+        $matriz['Mixto']['Si']['Total']['No Documentado']['Si'] = ['Efectivo'];
+        $matriz['Automático']['No']['Parcial']['Documentado']['Si'] = ['Efectivo'];
+        $matriz['Mixto']['Si']['Parcial']['Documentado']['Si'] = ['Efectivo'];
+        $matriz['Automático']['No']['Total']['No Documentado']['No'] = ['Efectivo'];
+        $matriz['Automático']['Si']['Parcial']['Documentado']['No'] = ['Efectivo'];
+        $matriz['Mixto']['No']['Total']['Parcialmente Documentado']['Si'] = ['Medianamente Efectivo'];
+        $matriz['Automático']['No']['Parcial']['Parcialmente Documentado']['Si'] = ['Medianamente Efectivo'];
+        $matriz['Mixto']['Si']['Parcial']['Parcialmente Documentado']['Si'] = ['Efectivo'];
+        $matriz['Mixto']['No']['Total']['No Documentado']['Si'] = ['Medianamente Efectivo'];
+        $matriz['Mixto']['No']['Parcial']['Documentado']['Si'] = ['Medianamente Efectivo'];
+        $matriz['Mixto']['No']['Parcial']['Parcialmente Documentado']['Si'] = ['Medianamente Efectivo'];
+        $matriz['Manual']['Si']['Total']['Documentado']['Si'] = ['Altamente Efectivo'];
+        $matriz['Automático']['No']['Parcial']['No Documentado']['Si'] = ['Medianamente Efectivo'];
+        $matriz['Manual']['Si']['Parcial']['Documentado']['Si'] = ['Efectivo'];
+        $matriz['Automático']['No']['Total']['Documentado']['No'] = ['Medianamente Efectivo'];
+        $matriz['Automático']['No']['Total']['Parcialmente Documentado']['No'] = ['Medianamente Efectivo'];
+        $matriz['Mixto']['Si']['Total']['Documentado']['No'] = ['Efectivo'];
+        $matriz['Mixto']['Si']['Total']['Parcialmente Documentado']['No'] = ['Efectivo'];
+        $matriz['Mixto']['Si']['Total']['No Documentado']['No'] = ['Efectivo'];
+        $matriz['Mixto']['No']['Total']['Documentado']['No'] = ['Medianamente Efectivo'];
+        $matriz['Mixto']['No']['Total']['Parcialmente Documentado']['No'] = ['Medianamente Efectivo'];
+        $matriz['Automático']['No']['Parcial']['Documentado']['No'] = ['Medianamente Efectivo'];
+        $matriz['Automático']['No']['Parcial']['Parcialmente Documentado']['No'] = ['Medianamente Efectivo'];
+        $matriz['Automático']['Si']['Parcial']['Parcialmente Documentado']['No'] = ['Medianamente Efectivo'];
+        $matriz['Automático']['Si']['Parcial']['No Documentado']['No'] = ['Medianamente Efectivo'];
+        $matriz['Mixto']['Si']['Parcial']['Documentado']['No'] = ['Medianamente Efectivo'];
+        $matriz['Mixto']['Si']['Parcial']['Documentado']['No'] = ['Medianamente Efectivo'];
+        $matriz['Mixto']['Si']['Parcial']['Parcialmente Documentado']['No'] = ['Medianamente Efectivo'];
+        $matriz['Mixto']['No']['Total']['No Documentado']['No'] = ['Medianamente Efectivo'];
+        $matriz['Mixto']['No']['Parcial']['Documentado']['No'] = ['Medianamente Efectivo'];
+        $matriz['Mixto']['No']['Parcial']['Parcialmente Documentado']['No'] = ['Medianamente Efectivo'];
+        $matriz['Mixto']['No']['Parcial']['Parcialmente Documentado']['No'] = ['Medianamente Efectivo'];
+        $matriz['Manual']['Si']['Parcial']['No Documentado']['Si'] = ['Efectivo'];
+        $matriz['Manual']['Si']['Total']['Documentado']['No'] = ['Medianamente Efectivo'];
+        $matriz['Manual']['No']['Total']['Documentado']['No'] = ['Medianamente Efectivo'];
+        $matriz['Mixto']['Si']['Parcial']['No Documentado']['No'] = ['Medianamente Efectivo'];
+        $matriz['Mixto']['Si']['Parcial']['No Documentado']['Si'] = ['Efectivo'];
+        $matriz['Manual']['No']['Parcial']['Documentado']['No'] = ['Medianamente Efectivo'];
+        $matriz['Manual']['Si']['Total']['No Documentado']['Si'] = ['Efectivo'];
+        $matriz['Manual']['No']['Total']['Documentado']['Si'] = ['Medianamente Efectivo'];
+        $matriz['Manual']['No']['Total']['Parcialmente Documentado']['Si'] = ['Medianamente Efectivo'];
+        $matriz['Automático']['Si']['Inmaterial']['Documentado']['Si'] = ['Inefectivo'];
+        $matriz['Automático']['Si']['Inmaterial']['Parcialmente Documentado']['Si'] = ['Inefectivo'];
+        $matriz['Automático']['Si']['Inmaterial']['No Documentado']['Si'] = ['Inefectivo'];
+        $matriz['Automático']['No']['Inmaterial']['Documentado']['Si'] = ['Inefectivo'];
+        $matriz['Automático']['No']['Inmaterial']['Parcialmente Documentado']['Si'] = ['Inefectivo'];
+        $matriz['Automático']['No']['Inmaterial']['No Documentado']['Si'] = ['Inefectivo'];
+        $matriz['Mixto']['Si']['Inmaterial']['Documentado']['Si'] = ['Inefectivo'];
+        $matriz['Mixto']['Si']['Inmaterial']['Parcialmente Documentado']['Si'] = ['Inefectivo'];
+        $matriz['Mixto']['Si']['Inmaterial']['No Documentado']['Si'] = ['Inefectivo'];
+        $matriz['Mixto']['No']['Parcial']['No Documentado']['Si'] = ['Inefectivo'];
+        $matriz['Mixto']['No']['Inmaterial']['Parcialmente Documentado']['Si'] = ['Inefectivo'];
+        $matriz['Mixto']['No']['Inmaterial']['No Documentado']['Si'] = ['Inefectivo'];
+        $matriz['Manual']['No']['Total']['No Documentado']['Si'] = ['Medianamente Efectivo'];
+        $matriz['Manual']['No']['Parcial']['Documentado']['Si'] = ['Inefectivo'];
+        $matriz['Manual']['No']['Parcial']['Parcialmente Documentado']['Si'] = ['Medianamente Efectivo'];
+        $matriz['Manual']['No']['Parcial']['No Documentado']['Si'] = ['Inefectivo'];
+        $matriz['Manual']['No']['Inmaterial']['Documentado']['Si'] = ['Inefectivo'];
+        $matriz['Manual']['No']['Inmaterial']['Parcialmente Documentado']['Si'] = ['Inefectivo'];
+        $matriz['Manual']['Si']['Inmaterial']['Documentado']['Si'] = ['Inefectivo'];
+        $matriz['Manual']['Si']['Inmaterial']['Parcialmente Documentado']['Si'] = ['Inefectivo'];
+        $matriz['Mixto']['No']['Inmaterial']['Documentado']['Si'] = ['Inefectivo'];
+        $matriz['Manual']['Si']['Total']['Parcialmente Documentado']['No'] = ['Medianamente Efectivo'];
+        $matriz['Manual']['Si']['Total']['Parcialmente Documentado']['Si'] = ['Medianamente Efectivo'];
+        $matriz['Manual']['Si']['Total']['No Documentado']['No'] = ['Medianamente Efectivo'];
+        $matriz['Manual']['No']['Total']['Parcialmente Documentado']['No'] = ['Medianamente Efectivo'];
+        $matriz['Automático']['No']['Parcial']['No Documentado']['No'] = ['Inefectivo'];
+        $matriz['Manual']['Si']['Parcial']['Documentado']['No'] = ['Medianamente Efectivo'];
+        $matriz['Manual']['Si']['Parcial']['Parcialmente Documentado']['No'] = ['Medianamente Efectivo'];
+        $matriz['Automático']['Si']['Inmaterial']['Documentado']['No'] = ['Inefectivo'];
+        $matriz['Automático']['Si']['Inmaterial']['Parcialmente Documentado']['No'] = ['Inefectivo'];
+        $matriz['Automático']['Si']['Inmaterial']['No Documentado']['No'] = ['Inefectivo'];
+        $matriz['Automático']['No']['Inmaterial']['Documentado']['No'] = ['Inefectivo'];
+        $matriz['Automático']['No']['Inmaterial']['Parcialmente Documentado']['No'] = ['Inefectivo'];
+        $matriz['Automático']['No']['Inmaterial']['No Documentado']['No'] = ['Inefectivo'];
+        $matriz['Mixto']['Si']['Inmaterial']['Documentado']['No'] = ['Inefectivo'];
+        $matriz['Manual']['Si']['Parcial']['Parcialmente Documentado']['Si'] = ['Efectivo'];
+        $matriz['Mixto']['No']['Parcial']['No Documentado']['No'] = ['Inefectivo'];
+        $matriz['Manual']['Si']['Parcial']['No Documentado']['No'] = ['Medianamente Efectivo'];
+        $matriz['Manual']['No']['Total']['No Documentado']['No'] = ['Inefectivo'];
+        $matriz['Manual']['No']['Parcial']['Parcialmente Documentado']['No'] = ['Inefectivo'];
+        $matriz['Manual']['No']['Parcial']['No Documentado']['No'] = ['Inefectivo'];
+        $matriz['Manual']['Si']['Inmaterial']['No Documentado']['Si'] = ['Inefectivo'];
+        $matriz['Manual']['No']['Inmaterial']['No Documentado']['Si'] = ['Sin Mitigación'];
+        $matriz['Mixto']['Si']['Inmaterial']['Parcialmente Documentado']['No'] = ['Sin Mitigación'];
+        $matriz['Mixto']['Si']['Inmaterial']['No Documentado']['No'] = ['Sin Mitigación'];
+        $matriz['Mixto']['No']['Inmaterial']['Parcialmente Documentado']['No'] = ['Sin Mitigación'];
+        $matriz['Mixto']['No']['Inmaterial']['No Documentado']['No'] = ['Sin Mitigación'];
+        $matriz['Manual']['No']['Inmaterial']['Documentado']['No'] = ['Sin Mitigación'];
+        $matriz['Manual']['No']['Inmaterial']['Parcialmente Documentado']['No'] = ['Sin Mitigación'];
+        $matriz['Manual']['Si']['Inmaterial']['No Documentado']['No'] = ['Sin Mitigación'];
+        $matriz['Manual']['No']['Inmaterial']['No Documentado']['No'] = ['Sin Mitigación'];
+        $matriz['Manual']['Si']['Inmaterial']['Documentado']['No'] = ['Inefectivo'];
+        $matriz['Manual']['Si']['Inmaterial']['Parcialmente Documentado']['No'] = ['Sin Mitigación'];
+        $matriz['Mixto']['No']['Inmaterial']['Documentado']['No'] = ['Sin Mitigación'];
 
         return $matriz;
     }
