@@ -126,7 +126,7 @@ class InformManagerInspections
             $consultas->inThemes($this->themes, $this->filtersType['themes']);
 
         if (COUNT($this->inspections) > 0)
-            $consultas->inInspections($this->inspections, $this->filtersType['inspections']);
+            $consultas->inInspections($this->inspections, $this->filtersType['inspections'], 'sau_ph_inspections');
 
         $consultas = DB::table(DB::raw("({$consultas->toSql()}) AS t"))
         ->selectRaw("
@@ -175,7 +175,7 @@ class InformManagerInspections
             $consultas->inThemes($this->themes, $this->filtersType['themes']);
 
         if (COUNT($this->inspections) > 0)
-            $consultas->inInspections($this->inspections, $this->filtersType['inspections']);
+            $consultas->inInspections($this->inspections, $this->filtersType['inspections'], 'sau_ph_inspections');
 
         $consultas = DB::table(DB::raw("({$consultas->toSql()}) AS t"))
         ->selectRaw("
@@ -229,7 +229,7 @@ class InformManagerInspections
             $consultas2->inThemes($this->themes, $this->filtersType['themes']);
 
         if (COUNT($this->inspections) > 0)
-            $consultas2->inInspections($this->inspections, $this->filtersType['inspections']);
+            $consultas2->inInspections($this->inspections, $this->filtersType['inspections'], 'sau_ph_inspections');
 
         $consultas2 = DB::table(DB::raw("({$consultas2->toSql()}) AS t"))
         ->select(
@@ -286,7 +286,7 @@ class InformManagerInspections
             $consultas2->inThemes($this->themes, $this->filtersType['themes']);
 
         if (COUNT($this->inspections) > 0)
-            $consultas2->inInspections($this->inspections, $this->filtersType['inspections']);
+            $consultas2->inInspections($this->inspections, $this->filtersType['inspections'], 'sau_ph_inspections');
 
         $consultas2 = DB::table(DB::raw("({$consultas2->toSql()}) AS t"))
         ->select(

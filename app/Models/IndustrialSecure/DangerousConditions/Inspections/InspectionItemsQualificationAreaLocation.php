@@ -266,7 +266,7 @@ class InspectionItemsQualificationAreaLocation extends Model
      * @param  array $inspections
      * @return Illuminate\Database\Eloquent\Builder
      */
-    public function scopeInInspections($query, $inspections, $typeSearch = 'IN', $alias = 'sau_ph_inspection_sections')
+    public function scopeInInspections($query, $inspections, $typeSearch = 'IN', $alias = 'sau_ph_inspections')
     {
         if (COUNT($inspections) > 0)
         {
