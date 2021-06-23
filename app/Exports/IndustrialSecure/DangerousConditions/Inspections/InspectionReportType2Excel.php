@@ -301,7 +301,7 @@ class InspectionReportType2Excel implements FromCollection, WithMapping, WithHea
     */
     public function title(): string
     {
-        return 'Inspecciones Planeadas Tipo 2 - Reporte';
+        return 'Inspecciones Planeadas-Reporte';
     }
 }
 
