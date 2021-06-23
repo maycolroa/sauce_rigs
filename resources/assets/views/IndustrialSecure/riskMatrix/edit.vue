@@ -15,6 +15,7 @@
                 :url="`/industrialSecurity/risksMatrix/${this.$route.params.id}`"
                 method="PUT"
                 :riskMatrix="data"
+                :action-plan-states="actionPlanStates"
                 :is-edit="true"
                 :cancel-url="{ name: 'industrialsecure-riskmatrix'}"
                 :si-no="siNo"/>
@@ -44,6 +45,7 @@ export default {
     return {
       siNo: [],
       data: [],
+      actionPlanStates: [],
       ready: false,
     }
   },
@@ -51,25 +53,13 @@ export default {
     axios.get(`/industrialSecurity/risksMatrix/${this.$route.params.id}`)
     .then(response => {
         this.data = response.data.data;
-        this.ready = true  
-        //this.fields = response.data.data.add_fields;
-
-        /*axios.get('/administration/configuration/view')
-        .then(response2 => {
-            this.configuration = response2.data.data;
-            this.ready = true
-        })
-        .catch(error => {
-        });*/
+        this.ready = true
     })
     .catch(error => {
     });
 
-    /*this.fetchSelect('typeActivities', '/radios/dmTypeActivities')
-    this.fetchSelect('dangerGenerated', '/selects/dmGeneratedDangers')*/
     this.fetchSelect('siNo', '/radios/siNo')
-    /*this.fetchSelect('qualifications', '/industrialSecurity/dangersMatrix/getQualificationsComponent')
-    this.fetchSelect('actionPlanStates', '/selects/actionPlanStates')*/
+    this.fetchSelect('actionPlanStates', '/selects/actionPlanStates')
   },
   methods: {
     fetchSelect(key, url)

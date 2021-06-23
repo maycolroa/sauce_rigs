@@ -13,6 +13,7 @@
           <div v-if="ready">
             <industrial-secure-risk-matrix-form
                 :riskMatrix="data"
+                :action-plan-states="actionPlanStates"
                 :view-only="true"
                 :cancel-url="{ name: 'industrialsecure-riskmatrix'}"
                 :si-no="siNo"/>
@@ -41,6 +42,7 @@ export default {
   data () {
     return {
       siNo: [],
+      actionPlanStates: [],
       data: [],     
       ready: false,
     }
@@ -52,24 +54,11 @@ export default {
     .then(response => {
         this.data = response.data.data;
         this.ready = true  
-        /*this.fields = response.data.data.add_fields;
-
-        axios.get('/administration/configuration/view')
-        .then(response2 => {
-            this.configuration = response2.data.data;
-            this.ready = true
-        })
-        .catch(error => {
-        });*/
     })
     .catch(error => {
     });
-
-    //this.fetchSelect('typeActivities', '/radios/dmTypeActivities')
-    //this.fetchSelect('dangerGenerated', '/selects/dmGeneratedDangers')
     this.fetchSelect('siNo', '/radios/siNo')
-    //this.fetchSelect('qualifications', '/industrialSecurity/dangersMatrix/getQualificationsComponent')
-    //this.fetchSelect('actionPlanStates', '/selects/actionPlanStates')
+    this.fetchSelect('actionPlanStates', '/selects/actionPlanStates')
   },
   methods: {
     fetchSelect(key, url)

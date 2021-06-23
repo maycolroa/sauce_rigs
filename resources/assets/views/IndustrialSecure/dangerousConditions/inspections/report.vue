@@ -189,6 +189,7 @@ export default {
     },
     data () {
         return {
+            isLoading: false,
             filters: [],
             information: {
                 inspections: 0,
@@ -316,12 +317,14 @@ export default {
     methods: {
         refreshData()
         {
-            this.$refs.tableReport.refresh()
+            if (!this.isLoading)
+                this.$refs.tableReport.refresh()
             //this.updateTotales()
         },
         refreshData2()
         {
-            this.$refs.tableReport2.refresh()
+            if (!this.isLoading)
+                this.$refs.tableReport2.refresh()
             //this.updateTotales()
         },
         setFilters(value)

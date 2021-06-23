@@ -84,7 +84,7 @@ class InspectionReportController extends Controller
             inner join sau_ph_inspection_section_items it2 on iq2.item_id = it2.id
             inner join sau_ph_inspection_sections s2 on it2.inspection_section_id = s2.id
             inner join sau_ph_inspections i2 on s2.inspection_id = i2.id
-            where {$where}
+            where i2.company_id = {$this->company} AND {$where}
             ) as numero_inspecciones"),
           DB::raw('count(sau_ph_inspection_items_qualification_area_location.qualification_id) as numero_items'),
           DB::raw('count(IF(q.fulfillment = 1, q.id, null)) as numero_items_cumplimiento'),
@@ -94,7 +94,7 @@ class InspectionReportController extends Controller
             (SELECT IF(COUNT(IF(iap2.state=\"Pendiente\",0, NULL)) > 0, 1, 0) 
             FROM sau_action_plans_activities iap2 
             inner join sau_action_plans_activity_module iam2 on iam2.activity_id = iap2.id
-            WHERE 
+            WHERE iap2.company_id = {$this->company} AND
             iam2.item_table_name = 'sau_ph_inspection_items_qualification_area_location' and 
             iam2.module_id = {$module_id} and
             iam2.item_id = sau_ph_inspection_items_qualification_area_location.id)
@@ -103,7 +103,7 @@ class InspectionReportController extends Controller
             (SELECT IF(COUNT(true), 1, 0) as actividades_totales
             FROM sau_action_plans_activities iap2 
             inner join sau_action_plans_activity_module iam2 on iam2.activity_id = iap2.id
-            WHERE 
+            WHERE iap2.company_id = {$this->company} AND
             iam2.item_table_name = 'sau_ph_inspection_items_qualification_area_location' and 
             iam2.module_id = {$module_id} and
             iam2.item_id = sau_ph_inspection_items_qualification_area_location.id)
@@ -113,6 +113,7 @@ class InspectionReportController extends Controller
         ->join('sau_ph_inspection_sections as s','it.inspection_section_id', 's.id')
         ->join('sau_ph_inspections as i', function ($join) 
              {
+                $join->on("i.company_id", DB::raw($this->company));
                  $join->on("s.inspection_id", "i.id");
                  $join->on("i.type_id", DB::raw(1));
              })
@@ -398,7 +399,7 @@ class InspectionReportController extends Controller
              inner join sau_ph_inspection_section_items it2 on iq2.item_id = it2.id
              inner join sau_ph_inspection_sections s2 on it2.inspection_section_id = s2.id
              inner join sau_ph_inspections i2 on s2.inspection_id = i2.id
-             where {$where}
+             where i2.company_id = {$this->company} AND {$where}
              ) as numero_inspecciones"),
              DB::raw('count(sau_ph_inspection_items_qualification_area_location.qualification_id) as numero_items'),
              DB::raw('count(IF(q.fulfillment = 1, q.id, null)) as numero_items_cumplimiento'),
@@ -408,7 +409,7 @@ class InspectionReportController extends Controller
                (SELECT IF(COUNT(IF(iap2.state=\"Pendiente\",0, NULL)) > 0, 1, 0) 
                FROM sau_action_plans_activities iap2 
                inner join sau_action_plans_activity_module iam2 on iam2.activity_id = iap2.id
-               WHERE 
+               WHERE iap2.company_id = {$this->company} AND
                 iam2.item_table_name = 'sau_ph_inspection_items_qualification_area_location' and 
                 iam2.module_id = {$module_id} and
                 iam2.item_id = sau_ph_inspection_items_qualification_area_location.id)
@@ -417,7 +418,7 @@ class InspectionReportController extends Controller
                (SELECT IF(COUNT(true), 1, 0) as actividades_totales
                FROM sau_action_plans_activities iap2 
                inner join sau_action_plans_activity_module iam2 on iam2.activity_id = iap2.id
-               WHERE 
+               WHERE iap2.company_id = {$this->company} AND
                 iam2.item_table_name = 'sau_ph_inspection_items_qualification_area_location' and 
                 iam2.module_id = {$module_id} and
                 iam2.item_id = sau_ph_inspection_items_qualification_area_location.id)
@@ -427,6 +428,7 @@ class InspectionReportController extends Controller
              ->join('sau_ph_inspection_sections as s','it.inspection_section_id', 's.id')
              ->join('sau_ph_inspections as i', function ($join) 
              {
+                $join->on("i.company_id", DB::raw($this->company));
                  $join->on("s.inspection_id", "i.id");
                  $join->on("i.type_id", DB::raw(1));
              })

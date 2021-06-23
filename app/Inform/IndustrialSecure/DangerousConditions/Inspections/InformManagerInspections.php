@@ -83,6 +83,7 @@ class InformManagerInspections
         foreach ($components as $component) {
             $informData->put($component, $this->$component());
         }
+
         return $informData->toArray();
     }
 
