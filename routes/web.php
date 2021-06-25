@@ -184,6 +184,10 @@ Route::middleware(['auth'])->group(function () {
         Route::post('dmActivities', 'IndustrialSecure\Activities\ActivityController@multiselect');
         Route::post('rmSubprocess', 'IndustrialSecure\RiskMatrix\SubProcessController@multiselect');
         Route::post('rmRisk', 'IndustrialSecure\RiskMatrix\RiskController@multiselect');
+        Route::post('rmControlsDecrease', 'General\MultiSelectRadioController@rmControlsDecrease');
+        Route::post('rmNature', 'General\MultiSelectRadioController@rmNature');
+        Route::post('rmCoverage', 'General\MultiSelectRadioController@rmCoverage');
+        Route::post('rmDocumentation', 'General\MultiSelectRadioController@rmDocumentation');
         Route::post('dmDangers', 'IndustrialSecure\Dangers\DangerController@multiselect');
         Route::post('dmDangerMatrix', 'IndustrialSecure\DangerMatrix\DangerMatrixController@multiselect');
         Route::post('dmGeneratedDangers', 'General\MultiSelectRadioController@dmGeneratedDangers');
@@ -386,6 +390,9 @@ Route::middleware(['auth'])->group(function () {
       Route::post('dangersMatrixHistory/data', 'IndustrialSecure\DangerMatrix\DangerMatrixHistoryController@data');
 
       Route::post('risksMatrix/data', 'IndustrialSecure\RiskMatrix\RiskMatrixController@data');
+      Route::post('risksMatrix/getEvaluationControls', 'IndustrialSecure\RiskMatrix\RiskMatrixController@getEvaluationControl');
+      Route::post('risksMatrix/getMitigation', 'IndustrialSecure\RiskMatrix\RiskMatrixController@getMitigation');
+      Route::post('risksMatrix/getImpacts', 'IndustrialSecure\RiskMatrix\RiskMatrixController@getImpacts');
       Route::ApiResource('risksMatrix', 'IndustrialSecure\RiskMatrix\RiskMatrixController');
 
       Route::post('subProcess/data', 'IndustrialSecure\RiskMatrix\SubProcessController@data');

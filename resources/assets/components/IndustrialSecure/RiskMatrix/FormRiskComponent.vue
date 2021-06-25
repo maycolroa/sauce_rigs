@@ -33,9 +33,9 @@
                   <vue-input class="col-md-4" :disabled="true" v-model="risk.max_inherent_impact" label="Max. Impacto Inherente" type="number" name="max_inherent_impact"></vue-input>
                 </b-form-row>
                 <b-form-row>
-                  <vue-input class="col-md-4" :disabled="true" v-model="risk.decription_inherent_impact" label="Desripión Impacto Inherente" type="number" name="description_inherent_impact"></vue-input>
+                  <vue-input class="col-md-4" :disabled="true" v-model="risk.description_inherent_impact" label="Desripión Impacto Inherente" type="text" name="description_inherent_impact"></vue-input>
                   <vue-advanced-select :disabled="viewOnly" class="col-md-4" v-model="risk.max_inherent_frequency" :multiple="false" :options="valuesNumericsFrecuency" :hide-selected="false" name="max_inherent_frequency" label="Max Frecuencia Inherente" placeholder="Seleccione" :error="form.errorsFor(`subprocess.${indexSubprocess}.risk.${indexRisk}.max_inherent_frequency`)"></vue-advanced-select>
-                  <vue-input class="col-md-4" :disabled="true" v-model="risk.description_inherent_frequency" label="Desripión Frecuencia Inherente" type="number" name="description_inherent_frequency"></vue-input>
+                  <vue-input class="col-md-4" :disabled="true" v-model="risk.description_inherent_frequency" label="Desripión Frecuencia Inherente" type="text" name="description_inherent_frequency"></vue-input>
                 </b-form-row>
                 <b-form-row>
                   <vue-input class="col-md-4" :disabled="true" v-model="risk.inherent_exposition" label="Exposición Inherente" type="number" name="inherent_exposition"></vue-input>
@@ -114,28 +114,28 @@
             <tab-content title="Evaluación Residual">
               <b-card bg-variant="transparent" border-variant="secondary" title="" class="mb-3 box-shadow-none">
                <b-form-row>
-                  <vue-advanced-select :disabled="viewOnly" class="col-md-4" v-model="risk.controls_decrease" :multiple="false" :options="valuesNumerics" :hide-selected="false" name="controls_decrease" label="Los controles apuntan a disminuir" placeholder="Seleccione" :error="form.errorsFor(`subprocess.${indexSubprocess}.risk.${indexRisk}.controls_decrease`)"></vue-advanced-select>
-                  <vue-advanced-select :disabled="viewOnly" class="col-md-4" v-model="risk.nature" :multiple="false" :options="valuesNumerics" :hide-selected="false" name="nature" label="Naturaleza" placeholder="Seleccione" :error="form.errorsFor(`subprocess.${indexSubprocess}.risk.${indexRisk}.nature`)"></vue-advanced-select>
+                  <vue-advanced-select :disabled="viewOnly" class="col-md-4" v-model="risk.controls_decrease" :multiple="false" :options="controlsDecrease" :hide-selected="false" name="controls_decrease" label="Los controles apuntan a disminuir" placeholder="Seleccione" :error="form.errorsFor(`subprocess.${indexSubprocess}.risk.${indexRisk}.controls_decrease`)"></vue-advanced-select>
+                  <vue-advanced-select :disabled="viewOnly" class="col-md-4" v-model="risk.nature" :multiple="false" :options="nature" :hide-selected="false" name="nature" label="Naturaleza" placeholder="Seleccione" :error="form.errorsFor(`subprocess.${indexSubprocess}.risk.${indexRisk}.nature`)"></vue-advanced-select>
                   <vue-radio :disabled="viewOnly" :checked="risk.evidency" class="col-md-4" v-model="risk.evidence" :options="siNo" name="evidence" :error="form.errorsFor('evidence')" label="Evidencia"></vue-radio>
                 </b-form-row>
                 <b-form-row>
-                  <vue-advanced-select :disabled="viewOnly" class="col-md-4" v-model="risk.coverage" :multiple="false" :options="valuesNumerics" :hide-selected="false" name="coverage" label="Cobertura" placeholder="Seleccione" :error="form.errorsFor(`subprocess.${indexSubprocess}.risk.${indexRisk}.coverage`)"></vue-advanced-select>
-                  <vue-advanced-select :disabled="viewOnly" class="col-md-4" v-model="risk.documentation" :multiple="false" :options="valuesNumerics" :hide-selected="false" name="documentation" label="Documentación" placeholder="Seleccione" :error="form.errorsFor(`subprocess.${indexSubprocess}.risk.${indexRisk}.documentation`)"></vue-advanced-select>
+                  <vue-advanced-select :disabled="viewOnly" class="col-md-4" v-model="risk.coverage" :multiple="false" :options="coverage" :hide-selected="false" name="coverage" label="Cobertura" placeholder="Seleccione" :error="form.errorsFor(`subprocess.${indexSubprocess}.risk.${indexRisk}.coverage`)"></vue-advanced-select>
+                  <vue-advanced-select :disabled="viewOnly" class="col-md-4" v-model="risk.documentation" :multiple="false" :options="documentation" :hide-selected="false" name="documentation" label="Documentación" placeholder="Seleccione" :error="form.errorsFor(`subprocess.${indexSubprocess}.risk.${indexRisk}.documentation`)"></vue-advanced-select>
                   <vue-radio :disabled="viewOnly" :checked="risk.evidency" class="col-md-4" v-model="risk.segregation" :options="siNo" name="segregation" :error="form.errorsFor(`subprocess.${indexSubprocess}.risk.${indexRisk}.segregation`)" label="Segregación"></vue-radio>
                 </b-form-row>
                 <b-form-row>
-                  <vue-input class="col-md-4" :disabled="true" v-model="risk.control_evaluation" label="Evaluación del control" type="number" name="control_evaluation" :error="form.errorsFor(`subprocess.${indexSubprocess}.risk.${indexRisk}.control_evaluation`)"></vue-input>
-                  <vue-input class="col-md-4" :disabled="true" v-model="risk.percentege_mitigation" label="% Mitigación" type="number" name="percentege_mitigation" :error="form.errorsFor(`subprocess.${indexSubprocess}.risk.${indexRisk}.percentege_mitigation`)"></vue-input>
-                  <vue-input class="col-md-4" :disabled="true" v-model="risk.max_residual_impact" label="Max Impacto Residual" type="number" name="max_residual_impact" :error="form.errorsFor(`subprocess.${indexSubprocess}.risk.${indexRisk}.max_residual_impact`)"></vue-input>
+                  <vue-input class="col-md-4" :disabled="true" v-model="risk.control_evaluation" label="Evaluación del control" type="text" name="control_evaluation" :error="form.errorsFor(`subprocess.${indexSubprocess}.risk.${indexRisk}.control_evaluation`)"></vue-input>
+                  <vue-input class="col-md-4" :disabled="true" v-model="risk.percentege_mitigation" label="% Mitigación" type="text" name="percentege_mitigation" :error="form.errorsFor(`subprocess.${indexSubprocess}.risk.${indexRisk}.percentege_mitigation`)"></vue-input>
+                  <vue-input class="col-md-4" :disabled="true" v-model="risk.max_residual_impact" label="Max Impacto Residual" type="text" name="max_residual_impact" :error="form.errorsFor(`subprocess.${indexSubprocess}.risk.${indexRisk}.max_residual_impact`)"></vue-input>
                 </b-form-row>
                  <b-form-row>
-                  <vue-input class="col-md-4" :disabled="true" v-model="risk.description_residual_impact" label="Desripión Impacto Residual" type="number" name="description_residual_impact" :error="form.errorsFor(`subprocess.${indexSubprocess}.risk.${indexRisk}.description_residual_impact`)"></vue-input>
+                  <vue-input class="col-md-4" :disabled="true" v-model="risk.description_residual_impact" label="Desripión Impacto Residual" type="text" name="description_residual_impact" :error="form.errorsFor(`subprocess.${indexSubprocess}.risk.${indexRisk}.description_residual_impact`)"></vue-input>
                   <vue-input class="col-md-4" :disabled="true" v-model="risk.max_residual_frequency" label="Max Frecuencia Residual" type="number" name="max_residual_frequency" :error="form.errorsFor(`subprocess.${indexSubprocess}.risk.${indexRisk}.max_residual_frequency`)"></vue-input>
-                  <vue-input class="col-md-4" :disabled="true" v-model="risk.description_residual_frequency" label="Desripión Frecuencia Residual" type="number" name="description_residual_frequency" :error="form.errorsFor(`subprocess.${indexSubprocess}.risk.${indexRisk}.description_residual_frequency`)"></vue-input>
+                  <vue-input class="col-md-4" :disabled="true" v-model="risk.description_residual_frequency" label="Desripión Frecuencia Residual" type="text" name="description_residual_frequency" :error="form.errorsFor(`subprocess.${indexSubprocess}.risk.${indexRisk}.description_residual_frequency`)"></vue-input>
                 </b-form-row>
                 <b-form-row>
                   <vue-input class="col-md-4" :disabled="true" v-model="risk.residual_exposition" label="Exposición Residual" type="number" name="residual_exposition" :error="form.errorsFor(`subprocess.${indexSubprocess}.risk.${indexRisk}.residual_exposition`)"></vue-input>
-                  <vue-input class="col-md-4" :disabled="true" v-model="risk.max_impact_event_risk" label="Max Impacto Evento Riesgo" type="number" name="max_impact_event_risk" :error="form.errorsFor(`subprocess.${indexSubprocess}.risk.${indexRisk}.max_impact_event_risk`)"></vue-input>
+                  <vue-input class="col-md-8" :disabled="true" v-model="risk.max_impact_event_risk" label="Max Impacto Evento Riesgo" type="text" name="max_impact_event_risk" :error="form.errorsFor(`subprocess.${indexSubprocess}.risk.${indexRisk}.max_impact_event_risk`)"></vue-input>
                 </b-form-row>
               </b-card>
             </tab-content>
@@ -201,6 +201,7 @@ export default {
     form: { type: Object, required: true },
     indexSubprocess: { type: Number, required: true },
     indexRisk: { type: Number, required: true },
+    eventRisk: false,
     valuesNumerics: {
 			type: Array,
 			default: function() {
@@ -238,7 +239,43 @@ export default {
         return [];
       }
     },
-    configuration: {
+    evaluationControls: {
+      type: [Array, Object],
+      default: function() {
+        return [];
+      }
+    },
+    impactsDescription: {
+      type: [Array, Object],
+      default: function() {
+        return [];
+      }
+    },
+    controlsDecrease: {
+      type: Array,
+      default: function() {
+        return [];
+      }
+    },
+    nature: {
+      type: Array,
+      default: function() {
+        return [];
+      }
+    },
+    coverage: {
+      type: Array,
+      default: function() {
+        return [];
+      }
+    },
+    documentation: {
+      type: Array,
+      default: function() {
+        return [];
+      }
+    },
+    mitigation: {
       type: [Array, Object],
       default: function() {
         return [];
@@ -299,14 +336,17 @@ export default {
     risk: {
        handler(val) {
         this.loading = false;
-        this.$emit('input', this.risk);
+        //this.$emit('input', this.risk);
         this.updateData()
       },
       deep: true
     },
     'risk.risk_id': function() {
       this.updateDetails(`/industrialSecurity/risk/${this.risk.risk_id}`, 'riskDetail');
-    }
+    },
+    'risk.residual_exposition': function() {
+      this.updateEventRisk();
+    },
   },
   data() {
     return {
@@ -360,16 +400,172 @@ export default {
       cause.controls.splice(index, 1)
     },
     updateData() {
+      // Calculo de max impacto inherente
       if (this.risk.econommic != undefined && this.risk.quality_care_patient_safety != undefined && this.risk.reputational != undefined && this.risk.legal_regulatory != undefined && this.risk.environmental != undefined)
       {
-        if (this.risk.econommic && this.risk.quality_care_patient_safety && this.risk.reputational && this.risk.legal_regulatory && this.risk.environmental)
+        if (this.risk.econommic !== '' && this.risk.quality_care_patient_safety !== '' && this.risk.reputational !== '' && this.risk.legal_regulatory !== '' && this.risk.environmental !== '')
         {
-          this.risk.max_inherent_impact = Math.max(this.risk.econommic, this.risk.quality_care_patient_safety, this.risk.reputational, this.risk.econommic, this.risk.environmental)
+            this.risk.max_inherent_impact = Math.max(this.risk.econommic, this.risk.quality_care_patient_safety, this.risk.reputational, this.risk.legal_regulatory, this.risk.environmental)
         }
       } 
       else
-        this.risk.max_inherent_impact.value = ''
+        this.risk.max_inherent_impact = ''
+
+      // Calculo de descripcion max impacto inherente
+      if (this.risk.max_inherent_impact != undefined)
+      {
+        if (this.risk.max_inherent_impact && this.risk.max_inherent_impact > 0)
+        {
+          this.risk.description_inherent_impact = this.impactsDescription['impact'][this.risk.max_inherent_impact]
+        }
+      }
+      else
+        this.risk.description_inherent_impact = ''
+
+      // calculo descripcion max frecuencia inherente
+      if (this.risk.max_inherent_frequency != undefined)
+      {
+        if (this.risk.max_inherent_frequency && this.risk.max_inherent_frequency > 0)
+        {
+          this.risk.description_inherent_frequency = this.impactsDescription['frecuency'][this.risk.max_inherent_frequency]
+        }
+      }
+      else
+        this.risk.description_inherent_frequency = ''
+
+      //calculo de exposicion inherente
+      if (this.risk.max_inherent_frequency != undefined && this.risk.max_inherent_impact != undefined)
+      {
+        if (this.risk.max_inherent_frequency && this.risk.max_inherent_impact)
+        {
+          if (this.risk.max_inherent_frequency > 0 && this.risk.max_inherent_impact > 0)
+          {
+            this.risk.inherent_exposition = this.risk.max_inherent_frequency * this.risk.max_inherent_impact;
+          }
+        }
+      }
+      else
+        this.risk.inherent_exposition = ''
+
+      // Calculo Evaluacion control (Evaluacion residual)
+      if (this.risk.nature != undefined && this.risk.evidence != undefined && this.risk.coverage != undefined && this.risk.documentation != undefined && this.risk.segregation != undefined)
+      {
+        if (this.risk.nature !== '' && this.risk.evidence !== '' && this.risk.coverage !== '' && this.risk.documentation !== '' && this.risk.segregation !== '')
+        {
+            this.risk.control_evaluation = this.evaluationControls[this.risk.nature][this.risk.evidence][this.risk.coverage][this.risk.documentation][this.risk.segregation]
+        }
+      } 
+      else
+        this.risk.control_evaluation = ''
+
+      // Calculo de % de mitigacion
+      if (this.risk.control_evaluation != undefined)
+      {
+        if (this.risk.control_evaluation !== '')
+        {
+          this.risk.percentege_mitigation = this.mitigation[this.risk.control_evaluation] + '%'
+        }
+      }
+      else
+        this.risk.percentege_mitigation = ''
+
+      //Calculo max impacto residual
+      if (this.risk.controls_decrease != undefined && this.risk.percentege_mitigation != undefined && this.risk.max_inherent_impact != undefined)
+      {
+        if (this.risk.percentege_mitigation !== '' && this.risk.max_inherent_impact !== '' )
+        {
+          if (this.risk.controls_decrease == 'Frecuencia' || this.risk.controls_decrease == '')
+          {
+            this.risk.max_residual_impact = this.risk.max_inherent_impact
+          }
+          else
+          {
+            this.risk.max_residual_impact = Math.ceil(this.risk.max_inherent_impact - (this.risk.max_inherent_impact * (this.mitigation[this.risk.control_evaluation] / 100)))
+          }
+        }
+      }
+       // calculo descripcion max impacto residual
+      if (this.risk.max_residual_impact != undefined)
+      {
+        if (this.risk.max_residual_impact && this.risk.max_residual_impact > 0)
+        {
+          this.risk.description_residual_impact = this.impactsDescription['impact'][this.risk.max_residual_impact]
+        }
+      }
+      else
+        this.risk.description_residual_impact = ''
+
+      // calculo de frecuencia residual
+      if (this.risk.controls_decrease != undefined && this.risk.percentege_mitigation != undefined && this.risk.max_inherent_frequency != undefined)
+      {
+        if (this.risk.percentege_mitigation !== '' && this.risk.max_inherent_frequency !== '' )
+        {
+          if (this.risk.controls_decrease == 'Frecuencia' || this.risk.controls_decrease == '')
+          {
+            this.risk.max_residual_frequency = this.risk.max_inherent_frequency
+          }
+          else
+          {
+            this.risk.max_residual_frequency = Math.ceil(this.risk.max_inherent_frequency - (this.risk.max_inherent_frequency * (this.mitigation[this.risk.control_evaluation] / 100)))
+          }
+        }
+      } 
+
+      // calculo descripcion max impacto residual
+      if (this.risk.max_residual_frequency != undefined)
+      {
+        if (this.risk.max_residual_frequency && this.risk.max_residual_frequency > 0)
+        {
+          this.risk.description_residual_frequency = this.impactsDescription['frecuency'][this.risk.max_residual_frequency]
+        }
+      }
+      else
+        this.risk.description_residual_frequency = ''
+
+      //calculo exposicion residual
+      if (this.risk.max_residual_impact != undefined && this.risk.max_residual_frequency != undefined)
+      {
+        if (this.risk.max_residual_impact && this.risk.max_residual_frequency)
+        {
+          if (this.risk.max_residual_impact > 0 && this.risk.max_residual_frequency > 0)
+          {
+            this.risk.residual_exposition = this.risk.max_residual_frequency * this.risk.max_residual_impact;
+          }
+        }
+      }
     },
+    updateEventRisk()
+    {
+      if (this.risk.residual_exposition > 0)
+      {
+        if (this.risk.max_inherent_impact != undefined)
+        {
+          if (this.risk.max_inherent_impact !== '')
+          {
+            if (this.risk.econommic == this.risk.max_inherent_impact)
+            {
+              this.risk.max_impact_event_risk = 'Económico '
+            }
+            if (this.risk.quality_care_patient_safety == this.risk.max_inherent_impact)
+            {
+              this.risk.max_impact_event_risk = this.risk.max_impact_event_risk + 'Calidad en la atención y seguridad del paciente '
+            }
+            if (this.risk.reputational == this.risk.max_inherent_impact)
+            {
+              this.risk.max_impact_event_risk = this.risk.max_impact_event_risk + 'Reputacional '
+            }
+            if (this.risk.legal_regulatory == this.risk.max_inherent_impact)
+            {
+              this.risk.max_impact_event_risk = this.risk.max_impact_event_risk + 'Legal Regulatorio '
+            }
+            if (this.risk.environmental == this.risk.max_inherent_impact)
+            {
+              this.risk.max_impact_event_risk = this.risk.max_impact_event_risk + ' Ambiental'
+            }
+          }
+        }
+      }
+    }
   }
 };
 </script>

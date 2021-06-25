@@ -188,4 +188,48 @@ class MultiSelectRadioController extends Controller
         
         return $this->multiSelectFormat(collect($data));
     }
+
+    public function rmControlsDecrease()
+    {
+        $data = [
+            "Frecuencia" => "Frecuencia",
+            "Impacto" => "Impacto",
+            "Ambos" => "Ambos"
+        ];
+        
+        return $this->multiSelectFormat(collect($data));
+    }
+
+    public function rmNature()
+    {
+        $data = [
+            "Automático" => "Automático",
+            "Manual" => "Manual",
+            "Mixto" => "Mixto"
+        ];
+        
+        return $this->multiSelectFormat(collect($data));
+    }
+
+    public function rmCoverage()
+    {
+        $data = [
+            "Inmaterial" => "Inmaterial",
+            "Parcial" => "Parcial",
+            "Total" => "Total"
+        ];
+        
+        return $this->multiSelectFormat(collect($data));
+    }
+
+    public function rmDocumentation()
+    {
+        $data = [
+            "Documentado" => "Documentado",
+            "No Documentado" => "No Documentado",
+            "Parcialmente Documentado" => "Parcialmente Documentado"
+        ];
+        
+        return $this->multiSelectFormat(collect($data));
+    }
 }

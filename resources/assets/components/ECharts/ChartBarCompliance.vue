@@ -72,16 +72,20 @@ export default {
                     let c = params[0]
                     let nc = params[1]
                     let symbole = '%'
+                    let p = params[2]
 
-                    let message = (
+                    let message = (              
                         c != undefined ? c.name : (nc != undefined ? nc.name : '')) + '<br/>';
 
                     if (c !== undefined)
                         message += c.marker + c.seriesName + ': ' + c.value + symbole + '<br/>';
 
                     if (nc !== undefined)
-                        message += nc.marker + nc.seriesName + ': ' + nc.value + symbole;
+                        message += nc.marker + nc.seriesName + ': ' + nc.value + symbole + '<br/>';
 
+                    if (p !== undefined)
+                        message += p.marker + p.seriesName + ': ' + p.value + symbole;
+                        
                     return message;
                 }
             },

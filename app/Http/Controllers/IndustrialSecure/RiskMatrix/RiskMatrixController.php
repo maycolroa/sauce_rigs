@@ -9,9 +9,13 @@ use App\Models\IndustrialSecure\RiskMatrix\RiskMatrix;
 use App\Http\Requests\IndustrialSecure\RiskMatrix\RiskMatrixRequest;
 use App\Models\IndustrialSecure\RiskMatrix\TagsRmParticipant;
 use DB;
+use App\Traits\RiskMatrixTrait;
+
 
 class RiskMatrixController extends Controller
 {
+    use RiskMatrixTrait;
+
     /**
      * creates and instance and middlewares are checked
      */
@@ -199,5 +203,26 @@ class RiskMatrixController extends Controller
         return $this->respondHttp200([
             'message' => $msg
         ]);
+    }
+
+    public function getEvaluationControl()
+    {
+        $data = $this->getControlEvaluation();
+
+        return $data;
+    }
+
+    public function getImpacts()
+    {
+        $data = $this->getDescriptionImpactsFrequency();
+
+        return $data;
+    }
+
+    public function getMitigation()
+    {
+        $data = $this->percentageMitigation();
+        
+        return $data;
     }
 }

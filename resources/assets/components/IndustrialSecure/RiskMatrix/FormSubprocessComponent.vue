@@ -52,6 +52,13 @@
                     @riskName="updateDangerNamePanel"
                     :siNo="siNo"
                     :action-plan-states="actionPlanStates"
+                    :evaluation-controls="evaluationControls"
+                    :impacts-description="impactsDescription"
+                    :controls-decrease="controlsDecrease"
+                    :nature="nature"
+                    :coverage="coverage"
+                    :documentation="documentation"
+                    :mitigation="mitigation"
                   />
                 </b-card-body>
               </b-collapse>
@@ -83,26 +90,8 @@ export default {
     viewOnly: { type: Boolean, default: false },
     form: { type: Object, required: true },
     indexSubprocess: { type: Number, required: true },
-    typeActivities: {
-      type: Array,
-      default: function() {
-        return [];
-      }
-    },
-    riskGenerated: {
-      type: Array,
-      default: function() {
-        return [];
-      }
-    },
     siNo: {
       type: Array,
-      default: function() {
-        return [];
-      }
-    },
-    qualifications: {
-      type: [Array, Object],
       default: function() {
         return [];
       }
@@ -113,7 +102,43 @@ export default {
         return [];
       }
     },
-    configuration: {
+    evaluationControls: {
+      type: [Array, Object],
+      default: function() {
+        return [];
+      }
+    },
+    impactsDescription: {
+      type: [Array, Object],
+      default: function() {
+        return [];
+      }
+    },
+    controlsDecrease: {
+      type: Array,
+      default: function() {
+        return [];
+      }
+    },
+    nature: {
+      type: Array,
+      default: function() {
+        return [];
+      }
+    },
+    coverage: {
+      type: Array,
+      default: function() {
+        return [];
+      }
+    },
+    documentation: {
+      type: Array,
+      default: function() {
+        return [];
+      }
+    },
+    mitigation: {
       type: [Array, Object],
       default: function() {
         return [];
@@ -146,7 +171,21 @@ export default {
                 delete: {
                   causes: [],
                   controls: []
-                }
+                },
+                controls_decrease: '',
+                nature: '',
+                evidence: '',
+                coverage: '',
+                documentation: '',
+                segregation: '',
+                control_evaluation: '',
+                percentege_mitigation: '',
+                max_residual_impact: '',
+                description_residual_impact: '',
+                max_residual_frequency: '',
+                description_residual_frequency: '',
+                residual_exposition: '',
+                max_impact_event_risk: ''
               }
             ],
             risksRemoved: [],
@@ -212,7 +251,21 @@ export default {
         delete: {
           causes: [],
           controls: []
-        }
+        },
+        controls_decrease: '',
+        nature: '',
+        evidence: '',
+        coverage: '',
+        documentation: '',
+        segregation: '',
+        control_evaluation: '',
+        percentege_mitigation: '',
+        max_residual_impact: '',
+        description_residual_impact: '',
+        max_residual_frequency: '',
+        description_residual_frequency: '',
+        residual_exposition: '',
+        max_impact_event_risk: ''
       })
     },
     removeDanger(index) {

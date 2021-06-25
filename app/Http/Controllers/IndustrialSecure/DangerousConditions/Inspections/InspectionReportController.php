@@ -79,13 +79,14 @@ class InspectionReportController extends Controller
           'p.name as process',
           'a.name as area',
           "{$column}",
-          DB::raw("(
+          DB::raw("count(distinct sau_ph_inspection_items_qualification_area_location.qualification_date) AS numero_inspecciones")
+          /*DB::raw("(
             select count(distinct iq2.qualification_date) from sau_ph_inspection_items_qualification_area_location iq2
             inner join sau_ph_inspection_section_items it2 on iq2.item_id = it2.id
             inner join sau_ph_inspection_sections s2 on it2.inspection_section_id = s2.id
             inner join sau_ph_inspections i2 on s2.inspection_id = i2.id
             where i2.company_id = {$this->company} AND {$where}
-            ) as numero_inspecciones"),
+            ) as numero_inspecciones")*/,
           DB::raw('count(sau_ph_inspection_items_qualification_area_location.qualification_id) as numero_items'),
           DB::raw('count(IF(q.fulfillment = 1, q.id, null)) as numero_items_cumplimiento'),
           DB::raw('count(IF(q.fulfillment = 0, q.id, null)) as numero_items_no_cumplimiento'),
@@ -126,9 +127,9 @@ class InspectionReportController extends Controller
         ->where('i.company_id', $this->company);
 
         if ($request->table == "with_theme" )
-          $consultas->groupBy('name', 'area', 'headquarter', 'process', 'regional', 'numero_inspecciones', 'section');
+          $consultas->groupBy('name', 'area', 'headquarter', 'process', 'regional', 'section');
         else
-          $consultas->groupBy('name', 'area', 'headquarter', 'process', 'regional', 'numero_inspecciones');
+          $consultas->groupBy('name', 'area', 'headquarter', 'process', 'regional');
 
         $url = "/industrialsecure/dangerousconditions/inspection/report";
 
