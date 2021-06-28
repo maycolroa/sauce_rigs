@@ -47,79 +47,67 @@ class InspectionReportType2Excel implements FromCollection, WithMapping, WithHea
     {
       $module_id = Module::where('name', 'dangerousConditions')->first()->id;
 
-      $where = 'iq2.employee_regional_id = sau_ph_inspection_items_qualification_area_location.employee_regional_id ';
-
-      if ($this->confLocation)
-      {
-        if ($this->confLocation['headquarter'] == 'SI')
-          $where .= 'AND iq2.employee_headquarter_id = sau_ph_inspection_items_qualification_area_location.employee_headquarter_id ';
-        if ($this->confLocation['process'] == 'SI')
-          $where .= 'AND iq2.employee_process_id = sau_ph_inspection_items_qualification_area_location.employee_process_id ';
-        if ($this->confLocation['area'] == 'SI')
-          $where .= 'AND iq2.employee_area_id = sau_ph_inspection_items_qualification_area_location.employee_area_id ';
-      }
-
-      $where .= 'AND i2.type_id = 2';
-
       if ($this->table == "with_theme" )
-        $column = 's.name as section';
+        $column = 'sau_ph_inspection_sections.name as section';
       else
-        $column = 'l.name as headquarter';
+        $column = 'sau_employees_headquarters.name as headquarter';
 
-      $consultas = InspectionItemsQualificationAreaLocation::select(
-          'i.name as name',
-          'r.name as regional',
-          'l.name as headquarter',
-          'p.name as process',
-          'a.name as area',
+        $consultas = InspectionItemsQualificationAreaLocation::select(
+          'sau_ph_inspections.name AS name',
+          'sau_employees_regionals.name AS regional',
+          'sau_employees_headquarters.name AS headquarter',
+          'sau_employees_processes.name AS process',
+          'sau_employees_areas.name AS area',
           "{$column}",
-          DB::raw("(
-            select count(distinct iq2.qualification_date) from sau_ph_inspection_items_qualification_area_location iq2
-            inner join sau_ph_inspection_section_items it2 on iq2.item_id = it2.id
-            inner join sau_ph_inspection_sections s2 on it2.inspection_section_id = s2.id
-            inner join sau_ph_inspections i2 on s2.inspection_id = i2.id
-            where {$where}
-            ) as numero_inspecciones"),
-          DB::raw('count(sau_ph_inspection_items_qualification_area_location.qualification_id) as numero_items'),
-          DB::raw('count(IF(q.fulfillment = 1, q.id, null)) as numero_items_cumplimiento'),
-          DB::raw('count(IF(q.fulfillment = 0, q.id, null)) as numero_items_no_cumplimiento'),
-          DB::raw('count(IF(q.fulfillment = 2, q.id, null)) as numero_items_cumplimiento_parcial'),
-          DB::raw("sum(
-            (SELECT IF(COUNT(IF(iap2.state=\"Pendiente\",0, NULL)) > 0, 1, 0) 
-            FROM sau_action_plans_activities iap2 
-            inner join sau_action_plans_activity_module iam2 on iam2.activity_id = iap2.id
-            WHERE 
-            iam2.item_table_name = 'sau_ph_inspection_items_qualification_area_location' and 
-            iam2.module_id = {$module_id} and
-            iam2.item_id = sau_ph_inspection_items_qualification_area_location.id)
-            )AS numero_planes_no_ejecutados"),
-          DB::raw("sum(
-            (SELECT IF(COUNT(true), 1, 0) as actividades_totales
-            FROM sau_action_plans_activities iap2 
-            inner join sau_action_plans_activity_module iam2 on iam2.activity_id = iap2.id
-            WHERE 
-            iam2.item_table_name = 'sau_ph_inspection_items_qualification_area_location' and 
-            iam2.module_id = {$module_id} and
-            iam2.item_id = sau_ph_inspection_items_qualification_area_location.id)
-            )AS actividades_totales")
+          DB::raw('COUNT(DISTINCT sau_ph_inspection_items_qualification_area_location.qualification_date) AS numero_inspecciones'),
+          DB::raw('COUNT(IF(sau_ph_qualifications_inspections.fulfillment = 1, sau_ph_qualifications_inspections.id, NULL)) AS numero_items_cumplimiento'),
+          DB::raw('COUNT(IF(sau_ph_qualifications_inspections.fulfillment = 0, sau_ph_qualifications_inspections.id, NULL)) AS numero_items_no_cumplimiento'),
+          DB::raw('COUNT(IF(sau_ph_qualifications_inspections.fulfillment = 2, sau_ph_qualifications_inspections.id, NULL)) AS numero_items_cumplimiento_parcial'),
+          DB::raw('
+              CASE WHEN COUNT(sau_ph_inspection_items_qualification_area_location.qualification_id) > 0 
+              THEN ROUND( ( COUNT(IF(sau_ph_qualifications_inspections.fulfillment = 1, sau_ph_qualifications_inspections.id, NULL)) / COUNT(sau_ph_inspection_items_qualification_area_location.qualification_id) ) * 100, 2)
+              ELSE 0 END AS porcentaje_items_cumplimiento'),
+          DB::raw('CASE WHEN COUNT(sau_ph_inspection_items_qualification_area_location.qualification_id) > 0 
+              THEN ROUND( ( COUNT(IF(sau_ph_qualifications_inspections.fulfillment = 0, sau_ph_qualifications_inspections.id, NULL)) / COUNT(sau_ph_inspection_items_qualification_area_location.qualification_id) ) * 100, 1)
+              ELSE 0 END AS porcentaje_items_no_cumplimiento'),
+          DB::raw('CASE WHEN COUNT(sau_ph_inspection_items_qualification_area_location.qualification_id) > 0 
+          THEN ROUND( ( COUNT(IF(sau_ph_qualifications_inspections.fulfillment = 2, sau_ph_qualifications_inspections.id, NULL)) / COUNT(sau_ph_inspection_items_qualification_area_location.qualification_id) ) * 100, 1)
+          ELSE 0 END AS porcentaje_items_cumplimiento_parcial'),
+          DB::raw("COUNT(DISTINCT IF(sau_action_plans_activities.state = 'Pendiente', sau_action_plans_activities.id, NULL)) AS numero_planes_no_ejecutados"),
+          DB::raw("COUNT(DISTINCT IF(sau_action_plans_activities.state = 'Ejecutada', sau_action_plans_activities.id, NULL)) AS numero_planes_ejecutados")
         )
-        ->join('sau_ph_inspection_section_items as it','sau_ph_inspection_items_qualification_area_location.item_id', 'it.id')
-        ->join('sau_ph_inspection_sections as s','it.inspection_section_id', 's.id')
-        ->join('sau_ph_inspections as i', function ($join) 
+        ->join('sau_ph_inspection_section_items','sau_ph_inspection_items_qualification_area_location.item_id', 'sau_ph_inspection_section_items.id')
+        ->join('sau_ph_inspection_sections','sau_ph_inspection_section_items.inspection_section_id', 'sau_ph_inspection_sections.id')
+        ->join('sau_ph_inspections', function ($join) 
         {
-            $join->on("s.inspection_id", "i.id");
-            $join->on("i.type_id", DB::raw(2));
+          $join->on("sau_ph_inspections.company_id", DB::raw($this->company_id));
+          $join->on("sau_ph_inspections.type_id", DB::raw(2));
+          $join->on("sau_ph_inspection_sections.inspection_id", "sau_ph_inspections.id");
         })
-        //->join('sau_ph_inspections as i','s.inspection_id', 'i.id')
-        ->join('sau_ph_qualifications_inspections as q','q.id', 'sau_ph_inspection_items_qualification_area_location.qualification_id')
-        ->leftJoin('sau_employees_regionals as r', 'r.id', 'sau_ph_inspection_items_qualification_area_location.employee_regional_id')
-        ->leftJoin('sau_employees_headquarters as l','l.id', 'sau_ph_inspection_items_qualification_area_location.employee_headquarter_id')
-        ->leftJoin('sau_employees_processes as p', 'p.id', 'sau_ph_inspection_items_qualification_area_location.employee_process_id')
-        ->leftJoin('sau_employees_areas as a','a.id', 'sau_ph_inspection_items_qualification_area_location.employee_area_id')
-        ->where('i.company_id', $this->company_id)
-        ->inInspections($this->filters['inspections'], $this->filters['filtersType']['inspections'], 'i')
-        ->betweenDate($this->filters["dates"])
-        ->inThemes($this->filters["themes"], $this->filters['filtersType']['themes'], 's');
+        ->join('sau_ph_qualifications_inspections','sau_ph_qualifications_inspections.id', 'sau_ph_inspection_items_qualification_area_location.qualification_id')
+        ->join('sau_employees_regionals', 'sau_employees_regionals.id', 'sau_ph_inspection_items_qualification_area_location.employee_regional_id')
+        ->leftJoin('sau_employees_headquarters','sau_employees_headquarters.id', 'sau_ph_inspection_items_qualification_area_location.employee_headquarter_id')
+        ->leftJoin('sau_employees_processes', 'sau_employees_processes.id', 'sau_ph_inspection_items_qualification_area_location.employee_process_id')
+        ->leftJoin('sau_employees_areas','sau_employees_areas.id', 'sau_ph_inspection_items_qualification_area_location.employee_area_id')
+        ->leftJoin('sau_action_plans_activity_module', function ($join) use ($module_id)
+        {
+          $join->on("sau_action_plans_activity_module.module_id", DB::raw($module_id));
+          $join->on("sau_action_plans_activity_module.item_table_name", DB::raw("'sau_ph_inspection_items_qualification_area_location'"));
+          $join->on("sau_action_plans_activity_module.item_id", "sau_ph_inspection_items_qualification_area_location.id");
+        })
+        ->leftJoin('sau_action_plans_activities', function ($join) 
+        {
+          $join->on("sau_action_plans_activities.company_id", DB::raw($this->company_id));
+          $join->on("sau_action_plans_activities.id", 'sau_action_plans_activity_module.activity_id');
+        })
+        ->where('sau_ph_inspections.company_id', $this->company_id)
+        ->betweenDate($this->filters["dates"]);
+
+        if (isset($this->filters['inspections']) && COUNT($this->filters['inspections']) > 0)
+            $consultas->inInspections($this->filters['inspections'], $this->filters['filtersType']['inspections'], 'sau_ph_inspections');
+
+        if (isset($this->filters['themes']) && COUNT($this->filters['themes']) > 0)
+            $consultas->inThemes($this->filters['themes'], $this->filters['filtersType']['themes'], 'sau_ph_inspection_sections');
 
         if (isset($this->filters['regionals']) && COUNT($this->filters['regionals']) > 0)
             $consultas->inRegionals($this->filters['regionals'], $this->filters['filtersType']['regionals']);
@@ -134,51 +122,11 @@ class InspectionReportType2Excel implements FromCollection, WithMapping, WithHea
             $consultas->inAreas($this->filters['areas'], $this->filters['filtersType']['areas']);
 
         if ($this->table == "with_theme")
-          $consultas->groupBy('name', 'area', 'headquarter', 'process', 'regional', 'numero_inspecciones', 'section');
+          $consultas->groupBy('name', 'area', 'headquarter', 'process', 'regional', 'section');
         else
-          $consultas->groupBy('name', 'area', 'headquarter', 'process', 'regional', 'numero_inspecciones');
+          $consultas->groupBy('name', 'area', 'headquarter', 'process', 'regional');
 
       $consultas = $consultas->get();
-
-      $consultas->transform(function($item, $key) {
-        
-        $item->porcentaje_items_cumplimiento = ($item->numero_items > 0) ? round(($item->numero_items_cumplimiento / $item->numero_items) * 100, 1)."%" : '0%';
-
-        $item->porcentaje_items_no_cumplimiento = ($item->numero_items > 0) ? round(($item->numero_items_no_cumplimiento / $item->numero_items) * 100, 1)."%" : '0%';
-
-        $item->porcentaje_items_cumplimiento_parcial = ($item->numero_items > 0) ? round(($item->numero_items_cumplimiento_parcial / $item->numero_items) * 100, 1)."%" : '0%';
-
-        $item->numero_planes_ejecutados = $item->actividades_totales - $item->numero_planes_no_ejecutados;
-
-        return $item;
-      });
-        
-      /*$result = collect([]);
-
-      $totales = new \stdClass();
-      $totales->objective = '';
-      $totales->subobjective = 'TOTALES';
-      $totales->t_evaluations = 0;
-      $totales->t_cumple = 0;
-      $totales->t_no_cumple = 0;
-      $totales->p_cumple = 0;
-      $totales->p_no_cumple = 0;
-
-      foreach ($evaluations->get() as $value)
-      {
-        $result->push($value);
-
-        $totales->t_evaluations = $totales->t_evaluations + $value->t_evaluations;
-        $totales->t_cumple = $totales->t_cumple + $value->t_cumple;
-        $totales->t_no_cumple = $totales->t_no_cumple + $value->t_no_cumple;
-      }
-
-      if ($totales->t_evaluations > 0)
-      {
-        $totales->p_cumple = $totales->t_cumple / ($totales->t_cumple + $totales->t_no_cumple);
-        $totales->p_no_cumple = $totales->t_no_cumple / ($totales->t_cumple + $totales->t_no_cumple);
-        $result->push($totales);
-      }*/
 
       return $consultas;
     }
@@ -301,7 +249,7 @@ class InspectionReportType2Excel implements FromCollection, WithMapping, WithHea
     */
     public function title(): string
     {
-        return 'Inspecciones Planeadas-Reporte';
+        return 'Inspec Planeadas-Reporte Tipo 2';
     }
 }
 
