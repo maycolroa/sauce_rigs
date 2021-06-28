@@ -408,6 +408,7 @@ class InformManagerInspections
             "type" => 'bar',
             "stack" => 'barras',
             "data" => $cumple->values(),
+            "itemStyle" => ['color' => '#008f39'],
             "label" => [
                 "normal" => [
                     "show" => true,
@@ -422,6 +423,7 @@ class InformManagerInspections
             "type" => 'bar',
             "stack" => 'barras',
             "data" => $no_cumple->values(),
+            "itemStyle" => ['color' => '#f0635f'],
             "label" => [
                 "normal" => [
                     "show" => true,
@@ -436,6 +438,7 @@ class InformManagerInspections
             "type" => 'bar',
             "stack" => 'barras',
             "data" => $parcial->values(),
+            "itemStyle" => ['color' => '#E5B601'],
             "label" => [
                 "normal" => [
                     "show" => true,

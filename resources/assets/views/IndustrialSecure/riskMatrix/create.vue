@@ -13,6 +13,13 @@
                 url="/industrialSecurity/risksMatrix"
                 method="POST"
                 :action-plan-states="actionPlanStates"
+                :evaluation-controls="evaluationControls"
+                :impacts-description="impactsDescription"
+                :controls-decrease="controlsDecrease"
+                :nature="nature"
+                :coverage="coverage"
+                :documentation="documentation"
+                :mitigation="mitigation"
                 :cancel-url="{ name: 'industrialsecure-riskmatrix'}"
                 :si-no="siNo"/>
         </b-card-body>
@@ -38,19 +45,43 @@ export default {
     return {
       siNo: [],
       actionPlanStates: [],
+      evaluationControls: {},
+      impactsDescription: {},
+      controlsDecrease: [],
+      nature: [],
+      coverage: [],
+      documentation: [],
+      mitigation : []
+
     }
   },
   created(){
     this.fetchSelect('siNo', '/radios/siNo')
     this.fetchSelect('actionPlanStates', '/selects/actionPlanStates')
+    this.fetchSelect('controlsDecrease', '/selects/rmControlsDecrease')
+    this.fetchSelect('nature', '/selects/rmNature')
+    this.fetchSelect('coverage', '/selects/rmCoverage')
+    this.fetchSelect('documentation', '/selects/rmDocumentation')
+    this.fetchSelect('evaluationControls', '/industrialSecurity/risksMatrix/getEvaluationControls')
+    this.fetchSelect('impactsDescription', '/industrialSecurity/risksMatrix/getImpacts')
+    this.fetchSelect('mitigation', '/industrialSecurity/risksMatrix/getMitigation')
 
-    /*axios.get('/administration/configuration/view')
+    /*axios.get('/industrialSecurity/risksMatrix/getEvaluationControls')
     .then(response => {
-        this.configuration = response.data.data;
+        this.evaluationControls = response.data.data;
     })
     .catch(error => {
         Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
-        this.$router.go(-1);
+        
+    });
+
+    axios.get('/industrialSecurity/risksMatrix/getImpacts')
+    .then(response => {
+        this.impactsDescription = response.data.data;
+    })
+    .catch(error => {
+        Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
+        
     });*/
   },
   methods: {

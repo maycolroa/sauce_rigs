@@ -68,6 +68,13 @@
                   @subprocessName="updateActivityNameTab"
                   :siNo="siNo"
                   :action-plan-states="actionPlanStates"
+                  :evaluation-controls="evaluationControls"
+                  :impacts-description="impactsDescription"
+                  :controls-decrease="controlsDecrease"
+                  :nature="nature"
+                  :coverage="coverage"
+                  :documentation="documentation"
+                  :mitigation="mitigation"
                 />
             </b-tab>
           </b-tabs>
@@ -117,19 +124,49 @@ export default {
         return [];
       }
     },
-    qualifications: {
-      type: [Array, Object],
-      default: function() {
-        return [];
-      }
-    },
     actionPlanStates: {
       type: Array,
       default: function() {
         return [];
       }
     },
-    configuration: {
+    evaluationControls: {
+      type: [Array, Object],
+      default: function() {
+        return [];
+      }
+    },
+    impactsDescription: {
+      type: [Array, Object],
+      default: function() {
+        return [];
+      }
+    },
+    controlsDecrease: {
+      type: Array,
+      default: function() {
+        return [];
+      }
+    },
+    nature: {
+      type: Array,
+      default: function() {
+        return [];
+      }
+    },
+    coverage: {
+      type: Array,
+      default: function() {
+        return [];
+      }
+    },
+    documentation: {
+      type: Array,
+      default: function() {
+        return [];
+      }
+    },
+    mitigation: {
       type: [Array, Object],
       default: function() {
         return [];

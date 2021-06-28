@@ -208,6 +208,7 @@ class InformManagerListCheck
             "type" => 'bar',
             "stack" => 'barras',
             "data" => $cumple->values(),
+            "itemStyle" => ['color' => '#008f39'],
             "label" => [
                 "normal" => [
                     "show" => true,
@@ -222,6 +223,7 @@ class InformManagerListCheck
             "type" => 'bar',
             "stack" => 'barras',
             "data" => $no_cumple->values(),
+            "itemStyle" => ['color' => '#f0635f'],
             "label" => [
                 "normal" => [
                     "show" => true,
