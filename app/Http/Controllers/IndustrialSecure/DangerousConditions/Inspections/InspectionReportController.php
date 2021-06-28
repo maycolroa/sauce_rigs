@@ -304,19 +304,10 @@ class InspectionReportController extends Controller
 
         $consultas = InspectionItemsQualificationAreaLocation::select(
           DB::raw('COUNT(DISTINCT sau_ph_inspection_items_qualification_area_location.qualification_date) AS numero_inspecciones'),
+          DB::raw('count(sau_ph_inspection_items_qualification_area_location.qualification_id) as numero_items'),
           DB::raw('COUNT(IF(sau_ph_qualifications_inspections.fulfillment = 1, sau_ph_qualifications_inspections.id, NULL)) AS numero_items_cumplimiento'),
           DB::raw('COUNT(IF(sau_ph_qualifications_inspections.fulfillment = 0, sau_ph_qualifications_inspections.id, NULL)) AS numero_items_no_cumplimiento'),
           DB::raw('COUNT(IF(sau_ph_qualifications_inspections.fulfillment = 2, sau_ph_qualifications_inspections.id, NULL)) AS numero_items_cumplimiento_parcial'),
-          DB::raw('
-          CASE WHEN COUNT(sau_ph_inspection_items_qualification_area_location.qualification_id) > 0 
-          THEN ROUND( ( COUNT(IF(sau_ph_qualifications_inspections.fulfillment = 1, sau_ph_qualifications_inspections.id, NULL)) / COUNT(sau_ph_inspection_items_qualification_area_location.qualification_id) ) * 100, 2)
-          ELSE 0 END AS porcentaje_items_cumplimiento'),
-          DB::raw('CASE WHEN COUNT(sau_ph_inspection_items_qualification_area_location.qualification_id) > 0 
-          THEN ROUND( ( COUNT(IF(sau_ph_qualifications_inspections.fulfillment = 0, sau_ph_qualifications_inspections.id, NULL)) / COUNT(sau_ph_inspection_items_qualification_area_location.qualification_id) ) * 100, 1)
-          ELSE 0 END AS porcentaje_items_no_cumplimiento'),
-          DB::raw('CASE WHEN COUNT(sau_ph_inspection_items_qualification_area_location.qualification_id) > 0 
-          THEN ROUND( ( COUNT(IF(sau_ph_qualifications_inspections.fulfillment = 2, sau_ph_qualifications_inspections.id, NULL)) / COUNT(sau_ph_inspection_items_qualification_area_location.qualification_id) ) * 100, 1)
-          ELSE 0 END AS porcentaje_items_cumplimiento_parcial'),
           DB::raw("COUNT(DISTINCT IF(sau_action_plans_activities.state = 'Pendiente', sau_action_plans_activities.id, NULL)) AS numero_planes_no_ejecutados"),
           DB::raw("COUNT(DISTINCT IF(sau_action_plans_activities.state = 'Ejecutada', sau_action_plans_activities.id, NULL)) AS numero_planes_ejecutados")
         )
@@ -384,10 +375,22 @@ class InspectionReportController extends Controller
           $result->put('t_cumple_p', $result->get('t_cumple_p') + $value->numero_items_cumplimiento_parcial);
           $result->put('pa_no_realizados', $result->get('pa_no_realizados') + $value->numero_planes_no_ejecutados);
           $result->put('pa_realizados', $result->get('numero_planes_ejecutados') + $value->numero_planes_ejecutados);
-          $result->put('p_cumple', $result->get('p_cumple') + $value->porcentaje_items_cumplimiento);
-          $result->put('p_no_cumple', $result->get('p_no_cumple') + $value->porcentaje_items_no_cumplimiento);
-          $result->put('p_parcial', $result->get('p_parcial') + $value->porcentaje_items_cumplimiento_parcial);
         }
+
+        if ($result->get('numero_items') > 0)
+          $result->put('p_cumple', round(($result->get('t_cumple') / $result->get('numero_items')) * 100, 1)."%");
+        else
+          $result->put('p_cumple', '0%');
+
+        if ($result->get('numero_items') > 0)
+          $result->put('p_no_cumple', round(($result->get('t_no_cumple')/ $result->get('numero_items')) * 100, 1)."%");
+        else
+          $result->put('p_no_cumple', '0%');
+
+        if ($result->get('numero_items') > 0)
+          $result->put('p_parcial', round(($result->get('t_cumple_p') / $result->get('numero_items')) * 100, 1)."%");
+        else
+          $result->put('p_parcial', '0%');
     
         return $this->respondHttp200([
             'data' => $result
@@ -438,6 +441,7 @@ class InspectionReportController extends Controller
 
         $consultas = InspectionItemsQualificationAreaLocation::select(
           DB::raw('COUNT(DISTINCT sau_ph_inspection_items_qualification_area_location.qualification_date) AS numero_inspecciones'),
+          DB::raw('count(sau_ph_inspection_items_qualification_area_location.qualification_id) as numero_items'),
           DB::raw('COUNT(IF(sau_ph_qualifications_inspections.fulfillment = 1, sau_ph_qualifications_inspections.id, NULL)) AS numero_items_cumplimiento'),
           DB::raw('COUNT(IF(sau_ph_qualifications_inspections.fulfillment = 0, sau_ph_qualifications_inspections.id, NULL)) AS numero_items_no_cumplimiento'),
           DB::raw('COUNT(IF(sau_ph_qualifications_inspections.fulfillment = 2, sau_ph_qualifications_inspections.id, NULL)) AS numero_items_cumplimiento_parcial'),
@@ -518,10 +522,22 @@ class InspectionReportController extends Controller
           $result->put('t_cumple_p', $result->get('t_cumple_p') + $value->numero_items_cumplimiento_parcial);
           $result->put('pa_no_realizados', $result->get('pa_no_realizados') + $value->numero_planes_no_ejecutados);
           $result->put('pa_realizados', $result->get('numero_planes_ejecutados') + $value->numero_planes_ejecutados);
-          $result->put('p_cumple', $result->get('p_cumple') + $value->porcentaje_items_cumplimiento);
-          $result->put('p_no_cumple', $result->get('p_no_cumple') + $value->porcentaje_items_no_cumplimiento);
-          $result->put('p_parcial', $result->get('p_parcial') + $value->porcentaje_items_cumplimiento_parcial);
         }
+
+        if ($result->get('numero_items') > 0)
+        $result->put('p_cumple', round(($result->get('t_cumple') / $result->get('numero_items')) * 100, 1)."%");
+        else
+          $result->put('p_cumple', '0%');
+
+        if ($result->get('numero_items') > 0)
+          $result->put('p_no_cumple', round(($result->get('t_no_cumple')/ $result->get('numero_items')) * 100, 1)."%");
+        else
+          $result->put('p_no_cumple', '0%');
+
+        if ($result->get('numero_items') > 0)
+          $result->put('p_parcial', round(($result->get('t_cumple_p') / $result->get('numero_items')) * 100, 1)."%");
+        else
+          $result->put('p_parcial', '0%');
         
         return $this->respondHttp200([
             'data' => $result
