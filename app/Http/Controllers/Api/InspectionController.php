@@ -477,9 +477,75 @@ class InspectionController extends ApiController
             if ($request->has('firms') && $request->firms)
             {
                 foreach ($request->firms['firmsAdd'] as $key => $firms) 
-                {                    
-                    if ($firms['type'] == 'ingresar')
+                {               
+                    if (isset($firms['type']))
+                    {   
+                        if ($firms['type'] == 'ingresar')
+                        {
+                            if ($firms['image'])
+                            {
+                                $exist_firm = InspectionFirm::where('qualification_date', $qualification_date_verify)->where('identification', $firms['identification'])->first();
+
+                                if ($exist_firm)
+                                {
+                                    $img_firm = ImageApi::where('hash', $firms['image'])->where('type', 3)->first();
+
+                                    if ($img_firm)
+                                        $exist_firm->image = $img_firm->file;
+                                    else
+                                        $exist_firm->image = $firms['image'];
+
+                                    $exist_firm->name = $firms['name'];
+                                    $exist_firm->state = 'Ingresada';
+                                    $exist_firm->identification = $firms['identification'];
+                                    $exist_firm->qualification_date = $qualification_date_verify;
+                                    $exist_firm->update();
+                                }
+                                else
+                                {
+                                    $exist_firm = new InspectionFirm;
+
+                                    $img_firm = ImageApi::where('hash', $firms['image'])->where('type', 3)->first();
+
+                                    if ($img_firm)
+                                        $exist_firm->image = $img_firm->file;
+                                    else
+                                        $exist_firm->image = $firms['image'];
+
+                                    $exist_firm->name = $firms['name'];
+                                    $exist_firm->state = 'Ingresada';
+                                    $exist_firm->identification = $firms['identification'];
+                                    $exist_firm->company_id = $request->company_id;
+                                    $exist_firm->qualification_date = $qualification_date_verify;
+                                    $exist_firm->save();
+                                }
+
+                                $response['firms']['firmsAdd'][$key] = [
+                                    "id" => $exist_firm->id, "name" => $exist_firm->name, "identification" => $exist_firm->identification, "image" => $exist_firm->image, "type" => $firms['type']
+                                ];
+                            }
+                        }
+                        else
+                        {
+                            $user_solicitud = User::find($firms['firm_solicitud']['value']);
+
+                            $exist_firm = new InspectionFirm;
+                            $exist_firm->name = $firms['name'];
+                            $exist_firm->state = 'Pendiente';
+                            $exist_firm->company_id = $request->company_id;
+                            $exist_firm->user_id = $user_solicitud->id;
+                            $exist_firm->identification = $user_solicitud->document;
+                            $exist_firm->qualification_date = $qualification_date_verify;
+                            $exist_firm->save();
+
+                            $response['firms']['firmsAdd'][$key] = [
+                                "id" => $exist_firm->id, "name" => $exist_firm->name, "identification" => $exist_firm->identification, "image" => $exist_firm->image, "type" => $firms['type']
+                            ];
+                        }
+                    }
+                    else 
                     {
+                        \Log::info('88');   
                         if ($firms['image'])
                         {
                             $exist_firm = InspectionFirm::where('qualification_date', $qualification_date_verify)->where('identification', $firms['identification'])->first();
@@ -519,26 +585,9 @@ class InspectionController extends ApiController
                             }
 
                             $response['firms']['firmsAdd'][$key] = [
-                                "id" => $exist_firm->id, "name" => $exist_firm->name, "identification" => $exist_firm->identification, "image" => $exist_firm->image, "type" => $firms['type']
+                                "id" => $exist_firm->id, "name" => $exist_firm->name, "identification" => $exist_firm->identification, "image" => $exist_firm->image, "type" => 'ingresar'
                             ];
                         }
-                    }
-                    else
-                    {
-                        $user_solicitud = User::find($firms['firm_solicitud']['value']);
-
-                        $exist_firm = new InspectionFirm;
-                        $exist_firm->name = $firms['name'];
-                        $exist_firm->state = 'Pendiente';
-                        $exist_firm->company_id = $request->company_id;
-                        $exist_firm->user_id = $user_solicitud->id;
-                        $exist_firm->identification = $user_solicitud->document;
-                        $exist_firm->qualification_date = $qualification_date_verify;
-                        $exist_firm->save();
-
-                        $response['firms']['firmsAdd'][$key] = [
-                            "id" => $exist_firm->id, "name" => $exist_firm->name, "identification" => $exist_firm->identification, "image" => $exist_firm->image, "type" => $firms['type']
-                        ];
                     }
                 }
 
