@@ -237,7 +237,7 @@ class InspectionReportController extends Controller
               $consultas->inAreas($this->getValuesForMultiselect($filters["areas"]), $filters['filtersType']['areas']);
 
             if (isset($filters["inspections"]))
-              $consultas->inInspections($this->getValuesForMultiselect($filters["inspections"]), $filters['filtersType']['inspections'], 'i');
+              $consultas->inInspections($this->getValuesForMultiselect($filters["inspections"]), $filters['filtersType']['inspections'], 'sau_ph_inspections');
 
             /*if (isset($filters["themes"]))
               $consultas->inThemes($this->getValuesForMultiselect($filters["themes"]), $filters['filtersType']['themes'], 's');*/
@@ -362,6 +362,7 @@ class InspectionReportController extends Controller
         $result->put('t_no_cumple', 0);
         $result->put('t_cumple_p', 0);
         $result->put('pa_no_realizados', 0);
+        $result->put('pa_realizados', 0);
         $result->put('p_cumple', 0);
         $result->put('p_no_cumple', 0);
         $result->put('p_parcial', 0);
@@ -374,7 +375,7 @@ class InspectionReportController extends Controller
           $result->put('t_no_cumple', $result->get('t_no_cumple') + $value->numero_items_no_cumplimiento);
           $result->put('t_cumple_p', $result->get('t_cumple_p') + $value->numero_items_cumplimiento_parcial);
           $result->put('pa_no_realizados', $result->get('pa_no_realizados') + $value->numero_planes_no_ejecutados);
-          $result->put('pa_realizados', $result->get('numero_planes_ejecutados') + $value->numero_planes_ejecutados);
+          $result->put('pa_realizados', $result->get('pa_realizados') + $value->numero_planes_ejecutados);
         }
 
         if ($result->get('numero_items') > 0)
@@ -521,7 +522,7 @@ class InspectionReportController extends Controller
           $result->put('t_no_cumple', $result->get('t_no_cumple') + $value->numero_items_no_cumplimiento);
           $result->put('t_cumple_p', $result->get('t_cumple_p') + $value->numero_items_cumplimiento_parcial);
           $result->put('pa_no_realizados', $result->get('pa_no_realizados') + $value->numero_planes_no_ejecutados);
-          $result->put('pa_realizados', $result->get('numero_planes_ejecutados') + $value->numero_planes_ejecutados);
+          $result->put('pa_realizados', $result->get('pa_realizados') + $value->numero_planes_ejecutados);
         }
 
         if ($result->get('numero_items') > 0)
