@@ -52,79 +52,61 @@ class InspectionReportController extends Controller
     public function data(Request $request)
     {
       $module_id = Module::where('name', 'dangerousConditions')->first()->id;
-      $confLocation = $this->getLocationFormConfModule();
-      $where = 'iq2.employee_regional_id = sau_ph_inspection_items_qualification_area_location.employee_regional_id ';
-
-      if ($confLocation)
-      {
-        if ($confLocation['headquarter'] == 'SI')
-          $where .= 'AND iq2.employee_headquarter_id = sau_ph_inspection_items_qualification_area_location.employee_headquarter_id ';
-        if ($confLocation['process'] == 'SI')
-          $where .= 'AND iq2.employee_process_id = sau_ph_inspection_items_qualification_area_location.employee_process_id ';
-        if ($confLocation['area'] == 'SI')
-          $where .= 'AND iq2.employee_area_id = sau_ph_inspection_items_qualification_area_location.employee_area_id ';
-      }
-
-      $where .= 'AND i2.type_id = 1';
 
       if ($request->table == "with_theme" )
-        $column = 's.name as section';
+        $column = 'sau_ph_inspection_sections.name as section';
       else
-        $column = 'r.name as regional';
+        $column = 'sau_employees_regionals.name as regional';
 
       $consultas = InspectionItemsQualificationAreaLocation::select(
-          'i.name as name',
-          'r.name as regional',
-          'l.name as headquarter',
-          'p.name as process',
-          'a.name as area',
-          "{$column}",
-          DB::raw("count(distinct sau_ph_inspection_items_qualification_area_location.qualification_date) AS numero_inspecciones")
-          /*DB::raw("(
-            select count(distinct iq2.qualification_date) from sau_ph_inspection_items_qualification_area_location iq2
-            inner join sau_ph_inspection_section_items it2 on iq2.item_id = it2.id
-            inner join sau_ph_inspection_sections s2 on it2.inspection_section_id = s2.id
-            inner join sau_ph_inspections i2 on s2.inspection_id = i2.id
-            where i2.company_id = {$this->company} AND {$where}
-            ) as numero_inspecciones")*/,
-          DB::raw('count(sau_ph_inspection_items_qualification_area_location.qualification_id) as numero_items'),
-          DB::raw('count(IF(q.fulfillment = 1, q.id, null)) as numero_items_cumplimiento'),
-          DB::raw('count(IF(q.fulfillment = 0, q.id, null)) as numero_items_no_cumplimiento'),
-          DB::raw('count(IF(q.fulfillment = 2, q.id, null)) as numero_items_cumplimiento_parcial')/*,
-          DB::raw("sum(
-            (SELECT IF(COUNT(IF(iap2.state=\"Pendiente\",0, NULL)) > 0, 1, 0) 
-            FROM sau_action_plans_activities iap2 
-            inner join sau_action_plans_activity_module iam2 on iam2.activity_id = iap2.id
-            WHERE iap2.company_id = {$this->company} AND
-            iam2.item_table_name = 'sau_ph_inspection_items_qualification_area_location' and 
-            iam2.module_id = {$module_id} and
-            iam2.item_id = sau_ph_inspection_items_qualification_area_location.id)
-            )AS numero_planes_no_ejecutados"),
-          DB::raw("sum(
-            (SELECT IF(COUNT(true), 1, 0) as actividades_totales
-            FROM sau_action_plans_activities iap2 
-            inner join sau_action_plans_activity_module iam2 on iam2.activity_id = iap2.id
-            WHERE iap2.company_id = {$this->company} AND
-            iam2.item_table_name = 'sau_ph_inspection_items_qualification_area_location' and 
-            iam2.module_id = {$module_id} and
-            iam2.item_id = sau_ph_inspection_items_qualification_area_location.id)
-            )AS actividades_totales")*/
-        )
-        ->join('sau_ph_inspection_section_items as it','sau_ph_inspection_items_qualification_area_location.item_id', 'it.id')
-        ->join('sau_ph_inspection_sections as s','it.inspection_section_id', 's.id')
-        ->join('sau_ph_inspections as i', function ($join) 
-             {
-                $join->on("i.company_id", DB::raw($this->company));
-                 $join->on("s.inspection_id", "i.id");
-                 $join->on("i.type_id", DB::raw(1));
-             })
-        //->join('sau_ph_inspections as i','s.inspection_id', 'i.id')
-        ->join('sau_ph_qualifications_inspections as q','q.id', 'sau_ph_inspection_items_qualification_area_location.qualification_id')
-        ->leftJoin('sau_employees_regionals as r', 'r.id', 'sau_ph_inspection_items_qualification_area_location.employee_regional_id')
-        ->leftJoin('sau_employees_headquarters as l','l.id', 'sau_ph_inspection_items_qualification_area_location.employee_headquarter_id')
-        ->leftJoin('sau_employees_processes as p', 'p.id', 'sau_ph_inspection_items_qualification_area_location.employee_process_id')
-        ->leftJoin('sau_employees_areas as a','a.id', 'sau_ph_inspection_items_qualification_area_location.employee_area_id')
-        ->where('i.company_id', $this->company);
+        'sau_ph_inspections.name AS name',
+        'sau_employees_regionals.name AS regional',
+        'sau_employees_headquarters.name AS headquarter',
+        'sau_employees_processes.name AS process',
+        'sau_employees_areas.name AS area',
+        "{$column}",
+        DB::raw('COUNT(DISTINCT sau_ph_inspection_items_qualification_area_location.qualification_date) AS numero_inspecciones'),
+        DB::raw('COUNT(IF(sau_ph_qualifications_inspections.fulfillment = 1, sau_ph_qualifications_inspections.id, NULL)) AS numero_items_cumplimiento'),
+        DB::raw('COUNT(IF(sau_ph_qualifications_inspections.fulfillment = 0, sau_ph_qualifications_inspections.id, NULL)) AS numero_items_no_cumplimiento'),
+        DB::raw('COUNT(IF(sau_ph_qualifications_inspections.fulfillment = 2, sau_ph_qualifications_inspections.id, NULL)) AS numero_items_cumplimiento_parcial'),
+        DB::raw('
+            CASE WHEN COUNT(sau_ph_inspection_items_qualification_area_location.qualification_id) > 0 
+            THEN ROUND( ( COUNT(IF(sau_ph_qualifications_inspections.fulfillment = 1, sau_ph_qualifications_inspections.id, NULL)) / COUNT(sau_ph_inspection_items_qualification_area_location.qualification_id) ) * 100, 2)
+            ELSE 0 END AS porcentaje_items_cumplimiento'),
+        DB::raw('CASE WHEN COUNT(sau_ph_inspection_items_qualification_area_location.qualification_id) > 0 
+            THEN ROUND( ( COUNT(IF(sau_ph_qualifications_inspections.fulfillment = 0, sau_ph_qualifications_inspections.id, NULL)) / COUNT(sau_ph_inspection_items_qualification_area_location.qualification_id) ) * 100, 1)
+            ELSE 0 END AS porcentaje_items_no_cumplimiento'),
+        DB::raw('CASE WHEN COUNT(sau_ph_inspection_items_qualification_area_location.qualification_id) > 0 
+        THEN ROUND( ( COUNT(IF(sau_ph_qualifications_inspections.fulfillment = 2, sau_ph_qualifications_inspections.id, NULL)) / COUNT(sau_ph_inspection_items_qualification_area_location.qualification_id) ) * 100, 1)
+        ELSE 0 END AS porcentaje_items_cumplimiento_parcial'),
+        DB::raw("COUNT(DISTINCT IF(sau_action_plans_activities.state = 'Pendiente', sau_action_plans_activities.id, NULL)) AS numero_planes_no_ejecutados"),
+        DB::raw("COUNT(DISTINCT IF(sau_action_plans_activities.state = 'Ejecutada', sau_action_plans_activities.id, NULL)) AS numero_planes_ejecutados")
+      )
+      ->join('sau_ph_inspection_section_items','sau_ph_inspection_items_qualification_area_location.item_id', 'sau_ph_inspection_section_items.id')
+      ->join('sau_ph_inspection_sections','sau_ph_inspection_section_items.inspection_section_id', 'sau_ph_inspection_sections.id')
+      ->join('sau_ph_inspections', function ($join) 
+      {
+        $join->on("sau_ph_inspections.company_id", DB::raw($this->company));
+        $join->on("sau_ph_inspections.type_id", DB::raw(1));
+        $join->on("sau_ph_inspection_sections.inspection_id", "sau_ph_inspections.id");
+      })
+      ->join('sau_ph_qualifications_inspections','sau_ph_qualifications_inspections.id', 'sau_ph_inspection_items_qualification_area_location.qualification_id')
+      ->join('sau_employees_regionals', 'sau_employees_regionals.id', 'sau_ph_inspection_items_qualification_area_location.employee_regional_id')
+      ->leftJoin('sau_employees_headquarters','sau_employees_headquarters.id', 'sau_ph_inspection_items_qualification_area_location.employee_headquarter_id')
+      ->leftJoin('sau_employees_processes', 'sau_employees_processes.id', 'sau_ph_inspection_items_qualification_area_location.employee_process_id')
+      ->leftJoin('sau_employees_areas','sau_employees_areas.id', 'sau_ph_inspection_items_qualification_area_location.employee_area_id')
+      ->leftJoin('sau_action_plans_activity_module', function ($join) use ($module_id)
+      {
+        $join->on("sau_action_plans_activity_module.module_id", DB::raw($module_id));
+        $join->on("sau_action_plans_activity_module.item_table_name", DB::raw("'sau_ph_inspection_items_qualification_area_location'"));
+        $join->on("sau_action_plans_activity_module.item_id", "sau_ph_inspection_items_qualification_area_location.id");
+      })
+      ->leftJoin('sau_action_plans_activities', function ($join) 
+      {
+        $join->on("sau_action_plans_activities.company_id", DB::raw($this->company));
+        $join->on("sau_action_plans_activities.id", 'sau_action_plans_activity_module.activity_id');
+      })
+      ->where('sau_ph_inspections.company_id', $this->company);
 
         if ($request->table == "with_theme" )
           $consultas->groupBy('name', 'area', 'headquarter', 'process', 'regional', 'section');
@@ -150,7 +132,7 @@ class InspectionReportController extends Controller
               $consultas->inAreas($this->getValuesForMultiselect($filters["areas"]), $filters['filtersType']['areas']);
 
             if (isset($filters["inspections"]))
-              $consultas->inInspections($this->getValuesForMultiselect($filters["inspections"]), $filters['filtersType']['inspections'], 'i');
+              $consultas->inInspections($this->getValuesForMultiselect($filters["inspections"]), $filters['filtersType']['inspections'], 'sau_ph_inspections');
 
             if (isset($filters["themes"]))
               $consultas->inThemes($this->getValuesForMultiselect($filters["themes"]), $filters['filtersType']['themes'], 's');
@@ -169,109 +151,72 @@ class InspectionReportController extends Controller
         }
 
         return Vuetable::of($consultas)
-          ->addColumn('porcentaje_items_cumplimiento', function ($consulta) {
-            if ($consulta->numero_items > 0)
-              return round(($consulta->numero_items_cumplimiento / $consulta->numero_items) * 100, 1)."%";
-            else
-              return '0%';
-          })
-          ->addColumn('porcentaje_items_no_cumplimiento', function ($consulta) {
-            if ($consulta->numero_items > 0)
-              return round(($consulta->numero_items_no_cumplimiento / $consulta->numero_items) * 100, 1)."%";
-            else
-              return '0%';
-          })
-         ->addColumn('porcentaje_items_cumplimiento_parcial', function ($consulta) {
-            if ($consulta->numero_items > 0)
-              return round(($consulta->numero_items_cumplimiento_parcial / $consulta->numero_items) * 100, 1)."%";
-            else
-              return '0%';
-          })
-          ->addColumn('numero_planes_ejecutados', function ($consulta) {
-              return $consulta->actividades_totales - $consulta->numero_planes_no_ejecutados;
-          })
           ->make();  
     }
 
     public function dataType2(Request $request)
     {
       $module_id = Module::where('name', 'dangerousConditions')->first()->id;
-      $confLocation = $this->getLocationFormConfModule();
-      $where = 'iq2.employee_regional_id = sau_ph_inspection_items_qualification_area_location.employee_regional_id ';
-
-      if ($confLocation)
-      {
-        if ($confLocation['headquarter'] == 'SI')
-          $where .= 'AND iq2.employee_headquarter_id = sau_ph_inspection_items_qualification_area_location.employee_headquarter_id ';
-        if ($confLocation['process'] == 'SI')
-          $where .= 'AND iq2.employee_process_id = sau_ph_inspection_items_qualification_area_location.employee_process_id ';
-        if ($confLocation['area'] == 'SI')
-          $where .= 'AND iq2.employee_area_id = sau_ph_inspection_items_qualification_area_location.employee_area_id ';
-      }
-
-      $where .= 'AND i2.type_id = 2';
 
       if ($request->table == "with_theme" )
-        $column = 's.name as section';
+        $column = 'sau_ph_inspection_sections.name as section';
       else
-        $column = 'r.name as regional';
+        $column = 'sau_employees_regionals.name as regional';
 
-      $consultas = InspectionItemsQualificationAreaLocation::select(
-          'i.name as name',
-          'r.name as regional',
-          'l.name as headquarter',
-          'p.name as process',
-          'a.name as area',
+        $consultas = InspectionItemsQualificationAreaLocation::select(
+          'sau_ph_inspections.name AS name',
+          'sau_employees_regionals.name AS regional',
+          'sau_employees_headquarters.name AS headquarter',
+          'sau_employees_processes.name AS process',
+          'sau_employees_areas.name AS area',
           "{$column}",
-          DB::raw("(
-            select count(distinct iq2.qualification_date) from sau_ph_inspection_items_qualification_area_location iq2
-            inner join sau_ph_inspection_section_items it2 on iq2.item_id = it2.id
-            inner join sau_ph_inspection_sections s2 on it2.inspection_section_id = s2.id
-            inner join sau_ph_inspections i2 on s2.inspection_id = i2.id
-            where {$where}
-            ) as numero_inspecciones"),
-          DB::raw('count(sau_ph_inspection_items_qualification_area_location.qualification_id) as numero_items'),
-          DB::raw('count(IF(q.fulfillment = 1, q.id, null)) as numero_items_cumplimiento'),
-          DB::raw('count(IF(q.fulfillment = 0, q.id, null)) as numero_items_no_cumplimiento'),
-          DB::raw('count(IF(q.fulfillment = 2, q.id, null)) as numero_items_cumplimiento_parcial'),
-          DB::raw("sum(
-            (SELECT IF(COUNT(IF(iap2.state=\"Pendiente\",0, NULL)) > 0, 1, 0) 
-            FROM sau_action_plans_activities iap2 
-            inner join sau_action_plans_activity_module iam2 on iam2.activity_id = iap2.id
-            WHERE 
-            iam2.item_table_name = 'sau_ph_inspection_items_qualification_area_location' and 
-            iam2.module_id = {$module_id} and
-            iam2.item_id = sau_ph_inspection_items_qualification_area_location.id)
-            )AS numero_planes_no_ejecutados"),
-          DB::raw("sum(
-            (SELECT IF(COUNT(true), 1, 0) as actividades_totales
-            FROM sau_action_plans_activities iap2 
-            inner join sau_action_plans_activity_module iam2 on iam2.activity_id = iap2.id
-            WHERE 
-            iam2.item_table_name = 'sau_ph_inspection_items_qualification_area_location' and 
-            iam2.module_id = {$module_id} and
-            iam2.item_id = sau_ph_inspection_items_qualification_area_location.id)
-            )AS actividades_totales")
+          DB::raw('COUNT(DISTINCT sau_ph_inspection_items_qualification_area_location.qualification_date) AS numero_inspecciones'),
+          DB::raw('COUNT(IF(sau_ph_qualifications_inspections.fulfillment = 1, sau_ph_qualifications_inspections.id, NULL)) AS numero_items_cumplimiento'),
+          DB::raw('COUNT(IF(sau_ph_qualifications_inspections.fulfillment = 0, sau_ph_qualifications_inspections.id, NULL)) AS numero_items_no_cumplimiento'),
+          DB::raw('COUNT(IF(sau_ph_qualifications_inspections.fulfillment = 2, sau_ph_qualifications_inspections.id, NULL)) AS numero_items_cumplimiento_parcial'),
+          DB::raw('
+              CASE WHEN COUNT(sau_ph_inspection_items_qualification_area_location.qualification_id) > 0 
+              THEN ROUND( ( COUNT(IF(sau_ph_qualifications_inspections.fulfillment = 1, sau_ph_qualifications_inspections.id, NULL)) / COUNT(sau_ph_inspection_items_qualification_area_location.qualification_id) ) * 100, 2)
+              ELSE 0 END AS porcentaje_items_cumplimiento'),
+          DB::raw('CASE WHEN COUNT(sau_ph_inspection_items_qualification_area_location.qualification_id) > 0 
+              THEN ROUND( ( COUNT(IF(sau_ph_qualifications_inspections.fulfillment = 0, sau_ph_qualifications_inspections.id, NULL)) / COUNT(sau_ph_inspection_items_qualification_area_location.qualification_id) ) * 100, 1)
+              ELSE 0 END AS porcentaje_items_no_cumplimiento'),
+          DB::raw('CASE WHEN COUNT(sau_ph_inspection_items_qualification_area_location.qualification_id) > 0 
+          THEN ROUND( ( COUNT(IF(sau_ph_qualifications_inspections.fulfillment = 2, sau_ph_qualifications_inspections.id, NULL)) / COUNT(sau_ph_inspection_items_qualification_area_location.qualification_id) ) * 100, 1)
+          ELSE 0 END AS porcentaje_items_cumplimiento_parcial'),
+          DB::raw("COUNT(DISTINCT IF(sau_action_plans_activities.state = 'Pendiente', sau_action_plans_activities.id, NULL)) AS numero_planes_no_ejecutados"),
+          DB::raw("COUNT(DISTINCT IF(sau_action_plans_activities.state = 'Ejecutada', sau_action_plans_activities.id, NULL)) AS numero_planes_ejecutados")
         )
-        ->join('sau_ph_inspection_section_items as it','sau_ph_inspection_items_qualification_area_location.item_id', 'it.id')
-        ->join('sau_ph_inspection_sections as s','it.inspection_section_id', 's.id')
-        ->join('sau_ph_inspections as i', function ($join) 
+        ->join('sau_ph_inspection_section_items','sau_ph_inspection_items_qualification_area_location.item_id', 'sau_ph_inspection_section_items.id')
+        ->join('sau_ph_inspection_sections','sau_ph_inspection_section_items.inspection_section_id', 'sau_ph_inspection_sections.id')
+        ->join('sau_ph_inspections', function ($join) 
         {
-            $join->on("s.inspection_id", "i.id");
-            $join->on("i.type_id", DB::raw(2));
+          $join->on("sau_ph_inspections.company_id", DB::raw($this->company));
+          $join->on("sau_ph_inspections.type_id", DB::raw(2));
+          $join->on("sau_ph_inspection_sections.inspection_id", "sau_ph_inspections.id");
         })
-        //->join('sau_ph_inspections as i','s.inspection_id', 'i.id')
-        ->join('sau_ph_qualifications_inspections as q','q.id', 'sau_ph_inspection_items_qualification_area_location.qualification_id')
-        ->leftJoin('sau_employees_regionals as r', 'r.id', 'sau_ph_inspection_items_qualification_area_location.employee_regional_id')
-        ->leftJoin('sau_employees_headquarters as l','l.id', 'sau_ph_inspection_items_qualification_area_location.employee_headquarter_id')
-        ->leftJoin('sau_employees_processes as p', 'p.id', 'sau_ph_inspection_items_qualification_area_location.employee_process_id')
-        ->leftJoin('sau_employees_areas as a','a.id', 'sau_ph_inspection_items_qualification_area_location.employee_area_id')
-        ->where('i.company_id', $this->company);
+        ->join('sau_ph_qualifications_inspections','sau_ph_qualifications_inspections.id', 'sau_ph_inspection_items_qualification_area_location.qualification_id')
+        ->join('sau_employees_regionals', 'sau_employees_regionals.id', 'sau_ph_inspection_items_qualification_area_location.employee_regional_id')
+        ->leftJoin('sau_employees_headquarters','sau_employees_headquarters.id', 'sau_ph_inspection_items_qualification_area_location.employee_headquarter_id')
+        ->leftJoin('sau_employees_processes', 'sau_employees_processes.id', 'sau_ph_inspection_items_qualification_area_location.employee_process_id')
+        ->leftJoin('sau_employees_areas','sau_employees_areas.id', 'sau_ph_inspection_items_qualification_area_location.employee_area_id')
+        ->leftJoin('sau_action_plans_activity_module', function ($join) use ($module_id)
+        {
+          $join->on("sau_action_plans_activity_module.module_id", DB::raw($module_id));
+          $join->on("sau_action_plans_activity_module.item_table_name", DB::raw("'sau_ph_inspection_items_qualification_area_location'"));
+          $join->on("sau_action_plans_activity_module.item_id", "sau_ph_inspection_items_qualification_area_location.id");
+        })
+        ->leftJoin('sau_action_plans_activities', function ($join) 
+        {
+          $join->on("sau_action_plans_activities.company_id", DB::raw($this->company));
+          $join->on("sau_action_plans_activities.id", 'sau_action_plans_activity_module.activity_id');
+        })
+        ->where('sau_ph_inspections.company_id', $this->company);
 
         if ($request->table == "with_theme" )
-          $consultas->groupBy('name', 'area', 'headquarter', 'process', 'regional', 'numero_inspecciones', 'section');
+          $consultas->groupBy('name', 'area', 'headquarter', 'process', 'regional', 'section');
         else
-          $consultas->groupBy('name', 'area', 'headquarter', 'process', 'regional', 'numero_inspecciones');
+          $consultas->groupBy('name', 'area', 'headquarter', 'process', 'regional');
 
         $url = "/industrialsecure/dangerousconditions/inspection/report";
 
@@ -311,27 +256,6 @@ class InspectionReportController extends Controller
         }
 
         return Vuetable::of($consultas)
-          ->addColumn('porcentaje_items_cumplimiento', function ($consulta) {
-            if ($consulta->numero_items > 0)
-              return round(($consulta->numero_items_cumplimiento / $consulta->numero_items) * 100, 1)."%";
-            else
-              return '0%';
-          })
-          ->addColumn('porcentaje_items_no_cumplimiento', function ($consulta) {
-            if ($consulta->numero_items > 0)
-              return round(($consulta->numero_items_no_cumplimiento / $consulta->numero_items) * 100, 1)."%";
-            else
-              return '0%';
-          })
-         ->addColumn('porcentaje_items_cumplimiento_parcial', function ($consulta) {
-            if ($consulta->numero_items > 0)
-              return round(($consulta->numero_items_cumplimiento_parcial / $consulta->numero_items) * 100, 1)."%";
-            else
-              return '0%';
-          })
-          ->addColumn('numero_planes_ejecutados', function ($consulta) {
-              return $consulta->actividades_totales - $consulta->numero_planes_no_ejecutados;
-          })
           ->make();  
              
     }
@@ -378,75 +302,53 @@ class InspectionReportController extends Controller
 
         $module_id = Module::where('name', 'dangerousConditions')->first()->id;
 
-        $confLocation = $this->getLocationFormConfModule();
-        $where = 'iq2.employee_regional_id = sau_ph_inspection_items_qualification_area_location.employee_regional_id ';
-
-        if ($confLocation)
-        {
-          if ($confLocation['headquarter'] == 'SI')
-            $where .= 'AND iq2.employee_headquarter_id = sau_ph_inspection_items_qualification_area_location.employee_headquarter_id ';
-          if ($confLocation['process'] == 'SI')
-            $where .= 'AND iq2.employee_process_id = sau_ph_inspection_items_qualification_area_location.employee_process_id ';
-          if ($confLocation['area'] == 'SI')
-            $where .= 'AND iq2.employee_area_id = sau_ph_inspection_items_qualification_area_location.employee_area_id ';
-        }
-
-        $where .= 'AND i2.type_id = 1';
-
         $consultas = InspectionItemsQualificationAreaLocation::select(
-            DB::raw("(
-             select count(distinct iq2.qualification_date) 
-             from sau_ph_inspection_items_qualification_area_location iq2
-             inner join sau_ph_inspection_section_items it2 on iq2.item_id = it2.id
-             inner join sau_ph_inspection_sections s2 on it2.inspection_section_id = s2.id
-             inner join sau_ph_inspections i2 on s2.inspection_id = i2.id
-             where i2.company_id = {$this->company} AND {$where}
-             ) as numero_inspecciones"),
-             DB::raw('count(sau_ph_inspection_items_qualification_area_location.qualification_id) as numero_items'),
-             DB::raw('count(IF(q.fulfillment = 1, q.id, null)) as numero_items_cumplimiento'),
-             DB::raw('count(IF(q.fulfillment = 0, q.id, null)) as numero_items_no_cumplimiento'),
-             DB::raw('count(IF(q.fulfillment = 2, q.id, null)) as numero_items_cumplimiento_parcial')/*,
-             DB::raw("sum(
-               (SELECT IF(COUNT(IF(iap2.state=\"Pendiente\",0, NULL)) > 0, 1, 0) 
-               FROM sau_action_plans_activities iap2 
-               inner join sau_action_plans_activity_module iam2 on iam2.activity_id = iap2.id
-               WHERE iap2.company_id = {$this->company} AND
-                iam2.item_table_name = 'sau_ph_inspection_items_qualification_area_location' and 
-                iam2.module_id = {$module_id} and
-                iam2.item_id = sau_ph_inspection_items_qualification_area_location.id)
-               )AS numero_planes_no_ejecutados"),
-             DB::raw("sum(
-               (SELECT IF(COUNT(true), 1, 0) as actividades_totales
-               FROM sau_action_plans_activities iap2 
-               inner join sau_action_plans_activity_module iam2 on iam2.activity_id = iap2.id
-               WHERE iap2.company_id = {$this->company} AND
-                iam2.item_table_name = 'sau_ph_inspection_items_qualification_area_location' and 
-                iam2.module_id = {$module_id} and
-                iam2.item_id = sau_ph_inspection_items_qualification_area_location.id)
-               )AS actividades_totales")*/
-             )
-             ->join('sau_ph_inspection_section_items as it','sau_ph_inspection_items_qualification_area_location.item_id', 'it.id')
-             ->join('sau_ph_inspection_sections as s','it.inspection_section_id', 's.id')
-             ->join('sau_ph_inspections as i', function ($join) 
-             {
-                $join->on("i.company_id", DB::raw($this->company));
-                 $join->on("s.inspection_id", "i.id");
-                 $join->on("i.type_id", DB::raw(1));
-             })
-             //->join('sau_ph_inspections as i','s.inspection_id', 'i.id')
-             ->join('sau_ph_qualifications_inspections as q','q.id', 'sau_ph_inspection_items_qualification_area_location.qualification_id')
-             //->inThemes($themes, $filtersType['themes'], 's')
-             //->inInspections($inspections, $filtersType['inspections'], 'i')
-             ->betweenDate($dates)
-             ->where('i.company_id', $this->company)
-             //->where('i.type_id', 1)
-             ->groupBy('employee_regional_id', 'employee_headquarter_id', 'employee_process_id', 'employee_area_id', 'numero_inspecciones');
+          DB::raw('COUNT(DISTINCT sau_ph_inspection_items_qualification_area_location.qualification_date) AS numero_inspecciones'),
+          DB::raw('COUNT(IF(sau_ph_qualifications_inspections.fulfillment = 1, sau_ph_qualifications_inspections.id, NULL)) AS numero_items_cumplimiento'),
+          DB::raw('COUNT(IF(sau_ph_qualifications_inspections.fulfillment = 0, sau_ph_qualifications_inspections.id, NULL)) AS numero_items_no_cumplimiento'),
+          DB::raw('COUNT(IF(sau_ph_qualifications_inspections.fulfillment = 2, sau_ph_qualifications_inspections.id, NULL)) AS numero_items_cumplimiento_parcial'),
+          DB::raw('
+          CASE WHEN COUNT(sau_ph_inspection_items_qualification_area_location.qualification_id) > 0 
+          THEN ROUND( ( COUNT(IF(sau_ph_qualifications_inspections.fulfillment = 1, sau_ph_qualifications_inspections.id, NULL)) / COUNT(sau_ph_inspection_items_qualification_area_location.qualification_id) ) * 100, 2)
+          ELSE 0 END AS porcentaje_items_cumplimiento'),
+          DB::raw('CASE WHEN COUNT(sau_ph_inspection_items_qualification_area_location.qualification_id) > 0 
+          THEN ROUND( ( COUNT(IF(sau_ph_qualifications_inspections.fulfillment = 0, sau_ph_qualifications_inspections.id, NULL)) / COUNT(sau_ph_inspection_items_qualification_area_location.qualification_id) ) * 100, 1)
+          ELSE 0 END AS porcentaje_items_no_cumplimiento'),
+          DB::raw('CASE WHEN COUNT(sau_ph_inspection_items_qualification_area_location.qualification_id) > 0 
+          THEN ROUND( ( COUNT(IF(sau_ph_qualifications_inspections.fulfillment = 2, sau_ph_qualifications_inspections.id, NULL)) / COUNT(sau_ph_inspection_items_qualification_area_location.qualification_id) ) * 100, 1)
+          ELSE 0 END AS porcentaje_items_cumplimiento_parcial'),
+          DB::raw("COUNT(DISTINCT IF(sau_action_plans_activities.state = 'Pendiente', sau_action_plans_activities.id, NULL)) AS numero_planes_no_ejecutados"),
+          DB::raw("COUNT(DISTINCT IF(sau_action_plans_activities.state = 'Ejecutada', sau_action_plans_activities.id, NULL)) AS numero_planes_ejecutados")
+        )
+        ->join('sau_ph_inspection_section_items','sau_ph_inspection_items_qualification_area_location.item_id', 'sau_ph_inspection_section_items.id')
+        ->join('sau_ph_inspection_sections','sau_ph_inspection_section_items.inspection_section_id', 'sau_ph_inspection_sections.id')
+        ->join('sau_ph_inspections', function ($join) 
+        {
+          $join->on("sau_ph_inspections.company_id", DB::raw($this->company));
+          $join->on("sau_ph_inspections.type_id", DB::raw(1));
+          $join->on("sau_ph_inspection_sections.inspection_id", "sau_ph_inspections.id");
+        })
+        ->join('sau_ph_qualifications_inspections','sau_ph_qualifications_inspections.id', 'sau_ph_inspection_items_qualification_area_location.qualification_id')
+        ->leftJoin('sau_action_plans_activity_module', function ($join) use ($module_id)
+        {
+          $join->on("sau_action_plans_activity_module.module_id", DB::raw($module_id));
+          $join->on("sau_action_plans_activity_module.item_table_name", DB::raw("'sau_ph_inspection_items_qualification_area_location'"));
+          $join->on("sau_action_plans_activity_module.item_id", "sau_ph_inspection_items_qualification_area_location.id");
+        })
+        ->leftJoin('sau_action_plans_activities', function ($join) 
+        {
+          $join->on("sau_action_plans_activities.company_id", DB::raw($this->company));
+          $join->on("sau_action_plans_activities.id", 'sau_action_plans_activity_module.activity_id');
+        })
+        ->betweenDate($dates)
+        ->where('sau_ph_inspections.company_id', $this->company)
+        ->groupBy('employee_regional_id', 'employee_headquarter_id', 'employee_process_id', 'employee_area_id');
 
         if (COUNT($themes) > 0)
-          $consultas->inThemes($themes, $filtersType['themes'], 's');
+          $consultas->inThemes($themes, $filtersType['themes'], 'sau_ph_inspection_sections');
 
         if (COUNT($inspections) > 0)
-          $consultas->inInspections($inspections, $filtersType['inspections'], 'i');
+          $consultas->inInspections($inspections, $filtersType['inspections'], 'sau_ph_inspections');
 
         if (COUNT($regionals) > 0)
           $consultas->inRegionals($regionals, $filtersType['regionals']);
@@ -469,7 +371,9 @@ class InspectionReportController extends Controller
         $result->put('t_no_cumple', 0);
         $result->put('t_cumple_p', 0);
         $result->put('pa_no_realizados', 0);
-        $result->put('actividades_totales', 0);
+        $result->put('p_cumple', 0);
+        $result->put('p_no_cumple', 0);
+        $result->put('p_parcial', 0);
 
         foreach ($consultas as $key => $value)
         {
@@ -479,25 +383,11 @@ class InspectionReportController extends Controller
           $result->put('t_no_cumple', $result->get('t_no_cumple') + $value->numero_items_no_cumplimiento);
           $result->put('t_cumple_p', $result->get('t_cumple_p') + $value->numero_items_cumplimiento_parcial);
           $result->put('pa_no_realizados', $result->get('pa_no_realizados') + $value->numero_planes_no_ejecutados);
-          $result->put('actividades_totales', $result->get('actividades_totales') + $value->actividades_totales);
+          $result->put('pa_realizados', $result->get('numero_planes_ejecutados') + $value->numero_planes_ejecutados);
+          $result->put('p_cumple', $result->get('p_cumple') + $value->porcentaje_items_cumplimiento);
+          $result->put('p_no_cumple', $result->get('p_no_cumple') + $value->porcentaje_items_no_cumplimiento);
+          $result->put('p_parcial', $result->get('p_parcial') + $value->porcentaje_items_cumplimiento_parcial);
         }
-
-        if ($result->get('numero_items') > 0)
-          $result->put('p_cumple', round(($result->get('t_cumple') / $result->get('numero_items')) * 100, 1)."%");
-        else
-          $result->put('p_cumple', '0%');
-
-        if ($result->get('numero_items') > 0)
-          $result->put('p_no_cumple', round(($result->get('t_no_cumple')/ $result->get('numero_items')) * 100, 1)."%");
-        else
-          $result->put('p_no_cumple', '0%');
-
-        if ($result->get('numero_items') > 0)
-          $result->put('p_parcial', round(($result->get('t_cumple_p') / $result->get('numero_items')) * 100, 1)."%");
-        else
-          $result->put('p_parcial', '0%');
-
-        $result->put('pa_realizados', $result->get('actividades_totales') - $result->get('pa_no_realizados'));
     
         return $this->respondHttp200([
             'data' => $result
@@ -546,73 +436,53 @@ class InspectionReportController extends Controller
 
         $module_id = Module::where('name', 'dangerousConditions')->first()->id;
 
-        $confLocation = $this->getLocationFormConfModule();
-        $where = 'iq2.employee_regional_id = sau_ph_inspection_items_qualification_area_location.employee_regional_id ';
-
-        if ($confLocation)
-        {
-          if ($confLocation['headquarter'] == 'SI')
-            $where .= 'AND iq2.employee_headquarter_id = sau_ph_inspection_items_qualification_area_location.employee_headquarter_id ';
-          if ($confLocation['process'] == 'SI')
-            $where .= 'AND iq2.employee_process_id = sau_ph_inspection_items_qualification_area_location.employee_process_id ';
-          if ($confLocation['area'] == 'SI')
-            $where .= 'AND iq2.employee_area_id = sau_ph_inspection_items_qualification_area_location.employee_area_id ';
-        }
-
-        $where .= 'AND i2.type_id = 2';
-
         $consultas = InspectionItemsQualificationAreaLocation::select(
-            DB::raw("(
-             select count(distinct iq2.qualification_date) from sau_ph_inspection_items_qualification_area_location iq2
-             inner join sau_ph_inspection_section_items it2 on iq2.item_id = it2.id
-             inner join sau_ph_inspection_sections s2 on it2.inspection_section_id = s2.id
-             inner join sau_ph_inspections i2 on s2.inspection_id = i2.id
-             where {$where}
-             ) as numero_inspecciones"),
-             DB::raw('count(sau_ph_inspection_items_qualification_area_location.qualification_id) as numero_items'),
-             DB::raw('count(IF(q.fulfillment = 1, q.id, null)) as numero_items_cumplimiento'),
-             DB::raw('count(IF(q.fulfillment = 0, q.id, null)) as numero_items_no_cumplimiento'),
-             DB::raw('count(IF(q.fulfillment = 2, q.id, null)) as numero_items_cumplimiento_parcial')/*,
-             DB::raw("sum(
-               (SELECT IF(COUNT(IF(iap2.state=\"Pendiente\",0, NULL)) > 0, 1, 0) 
-               FROM sau_action_plans_activities iap2 
-               inner join sau_action_plans_activity_module iam2 on iam2.activity_id = iap2.id
-               WHERE 
-                iam2.item_table_name = 'sau_ph_inspection_items_qualification_area_location' and 
-                iam2.module_id = {$module_id} and
-                iam2.item_id = sau_ph_inspection_items_qualification_area_location.id)
-               )AS numero_planes_no_ejecutados"),
-             DB::raw("sum(
-               (SELECT IF(COUNT(true), 1, 0) as actividades_totales
-               FROM sau_action_plans_activities iap2 
-               inner join sau_action_plans_activity_module iam2 on iam2.activity_id = iap2.id
-               WHERE 
-                iam2.item_table_name = 'sau_ph_inspection_items_qualification_area_location' and 
-                iam2.module_id = {$module_id} and
-                iam2.item_id = sau_ph_inspection_items_qualification_area_location.id)
-               )AS actividades_totales")*/
-             )
-             ->join('sau_ph_inspection_section_items as it','sau_ph_inspection_items_qualification_area_location.item_id', 'it.id')
-             ->join('sau_ph_inspection_sections as s','it.inspection_section_id', 's.id')
-             ->join('sau_ph_inspections as i', function ($join) 
-             {
-                 $join->on("s.inspection_id", "i.id");
-                 $join->on("i.type_id", DB::raw(2));
-             })
-             //->join('sau_ph_inspections as i','s.inspection_id', 'i.id')
-             ->join('sau_ph_qualifications_inspections as q','q.id', 'sau_ph_inspection_items_qualification_area_location.qualification_id')
-             //->inThemes($themes, $filtersType['themes'], 's')
-             //->inInspections($inspections, $filtersType['inspections'], 'i')
-             ->betweenDate($dates)
-             ->where('i.type_id', 2)
-             ->where('i.company_id', $this->company)
-             ->groupBy('employee_regional_id', 'employee_headquarter_id', 'employee_process_id', 'employee_area_id', 'numero_inspecciones');
+          DB::raw('COUNT(DISTINCT sau_ph_inspection_items_qualification_area_location.qualification_date) AS numero_inspecciones'),
+          DB::raw('COUNT(IF(sau_ph_qualifications_inspections.fulfillment = 1, sau_ph_qualifications_inspections.id, NULL)) AS numero_items_cumplimiento'),
+          DB::raw('COUNT(IF(sau_ph_qualifications_inspections.fulfillment = 0, sau_ph_qualifications_inspections.id, NULL)) AS numero_items_no_cumplimiento'),
+          DB::raw('COUNT(IF(sau_ph_qualifications_inspections.fulfillment = 2, sau_ph_qualifications_inspections.id, NULL)) AS numero_items_cumplimiento_parcial'),
+          DB::raw('
+          CASE WHEN COUNT(sau_ph_inspection_items_qualification_area_location.qualification_id) > 0 
+          THEN ROUND( ( COUNT(IF(sau_ph_qualifications_inspections.fulfillment = 1, sau_ph_qualifications_inspections.id, NULL)) / COUNT(sau_ph_inspection_items_qualification_area_location.qualification_id) ) * 100, 2)
+          ELSE 0 END AS porcentaje_items_cumplimiento'),
+          DB::raw('CASE WHEN COUNT(sau_ph_inspection_items_qualification_area_location.qualification_id) > 0 
+          THEN ROUND( ( COUNT(IF(sau_ph_qualifications_inspections.fulfillment = 0, sau_ph_qualifications_inspections.id, NULL)) / COUNT(sau_ph_inspection_items_qualification_area_location.qualification_id) ) * 100, 1)
+          ELSE 0 END AS porcentaje_items_no_cumplimiento'),
+          DB::raw('CASE WHEN COUNT(sau_ph_inspection_items_qualification_area_location.qualification_id) > 0 
+          THEN ROUND( ( COUNT(IF(sau_ph_qualifications_inspections.fulfillment = 2, sau_ph_qualifications_inspections.id, NULL)) / COUNT(sau_ph_inspection_items_qualification_area_location.qualification_id) ) * 100, 1)
+          ELSE 0 END AS porcentaje_items_cumplimiento_parcial'),
+          DB::raw("COUNT(DISTINCT IF(sau_action_plans_activities.state = 'Pendiente', sau_action_plans_activities.id, NULL)) AS numero_planes_no_ejecutados"),
+          DB::raw("COUNT(DISTINCT IF(sau_action_plans_activities.state = 'Ejecutada', sau_action_plans_activities.id, NULL)) AS numero_planes_ejecutados")
+        )
+        ->join('sau_ph_inspection_section_items','sau_ph_inspection_items_qualification_area_location.item_id', 'sau_ph_inspection_section_items.id')
+        ->join('sau_ph_inspection_sections','sau_ph_inspection_section_items.inspection_section_id', 'sau_ph_inspection_sections.id')
+        ->join('sau_ph_inspections', function ($join) 
+        {
+          $join->on("sau_ph_inspections.company_id", DB::raw($this->company));
+          $join->on("sau_ph_inspections.type_id", DB::raw(2));
+          $join->on("sau_ph_inspection_sections.inspection_id", "sau_ph_inspections.id");
+        })
+        ->join('sau_ph_qualifications_inspections','sau_ph_qualifications_inspections.id', 'sau_ph_inspection_items_qualification_area_location.qualification_id')
+        ->leftJoin('sau_action_plans_activity_module', function ($join) use ($module_id)
+        {
+          $join->on("sau_action_plans_activity_module.module_id", DB::raw($module_id));
+          $join->on("sau_action_plans_activity_module.item_table_name", DB::raw("'sau_ph_inspection_items_qualification_area_location'"));
+          $join->on("sau_action_plans_activity_module.item_id", "sau_ph_inspection_items_qualification_area_location.id");
+        })
+        ->leftJoin('sau_action_plans_activities', function ($join) 
+        {
+          $join->on("sau_action_plans_activities.company_id", DB::raw($this->company));
+          $join->on("sau_action_plans_activities.id", 'sau_action_plans_activity_module.activity_id');
+        })
+        ->betweenDate($dates)
+        ->where('sau_ph_inspections.company_id', $this->company)
+        ->groupBy('employee_regional_id', 'employee_headquarter_id', 'employee_process_id', 'employee_area_id');
 
         if (COUNT($themes) > 0)
-          $consultas->inThemes($themes, $filtersType['themes'], 's');
-   
+          $consultas->inThemes($themes, $filtersType['themes'], 'sau_ph_inspection_sections');
+
         if (COUNT($inspections) > 0)
-          $consultas->inInspections($inspections, $filtersType['inspections'], 'i');
+          $consultas->inInspections($inspections, $filtersType['inspections'], 'sau_ph_inspections');
 
         if (COUNT($regionals) > 0)
           $consultas->inRegionals($regionals, $filtersType['regionals']);
@@ -635,7 +505,9 @@ class InspectionReportController extends Controller
         $result->put('t_no_cumple', 0);
         $result->put('t_cumple_p', 0);
         $result->put('pa_no_realizados', 0);
-        $result->put('actividades_totales', 0);
+        $result->put('p_cumple', 0);
+        $result->put('p_no_cumple', 0);
+        $result->put('p_parcial', 0);
 
         foreach ($consultas as $key => $value)
         {
@@ -645,26 +517,12 @@ class InspectionReportController extends Controller
           $result->put('t_no_cumple', $result->get('t_no_cumple') + $value->numero_items_no_cumplimiento);
           $result->put('t_cumple_p', $result->get('t_cumple_p') + $value->numero_items_cumplimiento_parcial);
           $result->put('pa_no_realizados', $result->get('pa_no_realizados') + $value->numero_planes_no_ejecutados);
-          $result->put('actividades_totales', $result->get('actividades_totales') + $value->actividades_totales);
+          $result->put('pa_realizados', $result->get('numero_planes_ejecutados') + $value->numero_planes_ejecutados);
+          $result->put('p_cumple', $result->get('p_cumple') + $value->porcentaje_items_cumplimiento);
+          $result->put('p_no_cumple', $result->get('p_no_cumple') + $value->porcentaje_items_no_cumplimiento);
+          $result->put('p_parcial', $result->get('p_parcial') + $value->porcentaje_items_cumplimiento_parcial);
         }
-
-        if ($result->get('numero_items') > 0)
-          $result->put('p_cumple', round(($result->get('t_cumple') / $result->get('numero_items')) * 100, 1)."%");
-        else
-          $result->put('p_cumple', '0%');
-
-        if ($result->get('numero_items') > 0)
-          $result->put('p_no_cumple', round(($result->get('t_no_cumple')/ $result->get('numero_items')) * 100, 1)."%");
-        else
-          $result->put('p_no_cumple', '0%');
-
-        if ($result->get('numero_items') > 0)
-          $result->put('p_parcial', round(($result->get('t_cumple_p') / $result->get('numero_items')) * 100, 1)."%");
-        else
-          $result->put('p_parcial', '0%');
-
-        $result->put('pa_realizados', $result->get('actividades_totales') - $result->get('pa_no_realizados'));
-    
+        
         return $this->respondHttp200([
             'data' => $result
         ]);

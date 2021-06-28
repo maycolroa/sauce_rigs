@@ -124,7 +124,7 @@
                     configName="dangerousconditions-inspections-report-type-2"
                     :customColumnsName="true" 
                     @filtersUpdate="setFilters"
-                    :params="{table: table}"
+                    :params="{table: table, filters}"
                 ></vue-table>
             </b-card-body>
         </b-card>
@@ -299,6 +299,14 @@ export default {
         this.updateTotales()
         this.fetchSelect('selectBar', '/selects/multiselectBarInspection')
         this.fetch()
+    },
+    watch: {
+        filters: {
+            handler(val) {
+                this.$refs.tableReport2.refresh()
+            },
+            deep: true,
+        },
     },
     computed: {
         inspectionData: function() {
