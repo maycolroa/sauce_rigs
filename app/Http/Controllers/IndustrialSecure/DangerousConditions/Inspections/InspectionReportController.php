@@ -135,7 +135,7 @@ class InspectionReportController extends Controller
               $consultas->inInspections($this->getValuesForMultiselect($filters["inspections"]), $filters['filtersType']['inspections'], 'sau_ph_inspections');
 
             if (isset($filters["themes"]))
-              $consultas->inThemes($this->getValuesForMultiselect($filters["themes"]), $filters['filtersType']['themes'], 's');
+              $consultas->inThemes($this->getValuesForMultiselect($filters["themes"]), $filters['filtersType']['themes'], 'sau_ph_inspection_sections');
 
             $dates_request = explode('/', $filters["dateRange"]);
 
@@ -239,8 +239,8 @@ class InspectionReportController extends Controller
             if (isset($filters["inspections"]))
               $consultas->inInspections($this->getValuesForMultiselect($filters["inspections"]), $filters['filtersType']['inspections'], 'sau_ph_inspections');
 
-            /*if (isset($filters["themes"]))
-              $consultas->inThemes($this->getValuesForMultiselect($filters["themes"]), $filters['filtersType']['themes'], 's');*/
+            if (isset($filters["themes"]))
+              $consultas->inThemes($this->getValuesForMultiselect($filters["themes"]), $filters['filtersType']['themes'], 'sau_ph_inspection_sections');
 
             $dates_request = explode('/', $filters["dateRange"]);
 
