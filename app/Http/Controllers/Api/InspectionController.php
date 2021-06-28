@@ -545,7 +545,6 @@ class InspectionController extends ApiController
                     }
                     else 
                     {
-                        \Log::info('88');   
                         if ($firms['image'])
                         {
                             $exist_firm = InspectionFirm::where('qualification_date', $qualification_date_verify)->where('identification', $firms['identification'])->first();
