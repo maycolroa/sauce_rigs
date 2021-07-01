@@ -401,6 +401,13 @@ Route::middleware(['auth'])->group(function () {
       Route::post('risk/data', 'IndustrialSecure\RiskMatrix\RiskController@data');
       Route::ApiResource('risk', 'IndustrialSecure\RiskMatrix\RiskController');
 
+
+      Route::post('risksMatrix/macroprocess/data', 'IndustrialSecure\RiskMatrix\MacroprocessController@data');
+
+      Route::prefix('risksMatrix')->group(function () {
+        Route::ApiResource('macroprocess', 'IndustrialSecure\RiskMatrix\MacroprocessController');
+      });
+
       Route::prefix('dangerousConditions')->group(function () {
         Route::get('incentive/download', 'IndustrialSecure\DangerousConditions\IncentiveController@download');
         Route::get('incentive/view', 'IndustrialSecure\DangerousConditions\IncentiveController@show');

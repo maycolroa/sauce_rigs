@@ -464,5 +464,29 @@ export default [{
             import('@/views/IndustrialSecure/riskMatrix/risk/view')
         }
       ]),
+      ...middleware({ 'check-permission': 'riskMatrix_c' }, [
+        {
+          name: 'industrialsecure-riskmatrix-macroprocesses',
+          path: 'macroprocess',
+          component: () =>
+            import('@/views/IndustrialSecure/riskMatrix/macroprocess/index')
+        }
+      ]), 
+      ...middleware({ 'check-permission': 'riskMatrix_c' }, [
+        {
+          name: 'industrialsecure-riskmatrix-macroprocesses-view',
+          path: 'macroprocess/view/:id',
+          component: () =>
+            import('@/views/IndustrialSecure/riskMatrix/macroprocess/view')
+        }
+      ]), 
+      ...middleware({ 'check-permission': 'riskMatrix_c' }, [
+        {
+          name: 'industrialsecure-riskmatrix-macroprocesses-edit',
+          path: 'macroprocess/edit/:id',
+          component: () =>
+            import('@/views/IndustrialSecure/riskMatrix/macroprocess/edit')
+        }
+      ]),
     ]
   }]

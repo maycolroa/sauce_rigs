@@ -10,10 +10,9 @@
       <b-card no-body>
         <b-card-header class="with-elements">
           <div class="card-title-elements">
-            <b-btn v-if="auth.can['dangerMatrix_c']" :to="{name:'industrialsecure-riskmatrix-create'}" variant="primary">Crear Matriz de Riesgos</b-btn>
-            <!--<b-btn v-if="auth.can['dangerMatrix_view_report']" :to="{name:'industrialsecure-dangermatrix-report'}" variant="primary">Reporte</b-btn>
-            <b-btn v-if="auth.can['dangerMatrix_c']" :to="{name:'industrialsecure-dangermatrix-tags'}" variant="primary">Administrar Tags</b-btn>
-            <div class="card-title-elements" v-if="auth.can['dangerMatrix_c']"> 
+            <b-btn v-if="auth.can['riskMatrix_c']" :to="{name:'industrialsecure-riskmatrix-create'}" variant="primary">Crear Matriz de Riesgos</b-btn>            
+            <b-btn v-if="auth.can['riskMatrix_c']" :to="{name:'industrialsecure-riskmatrix-macroprocesses'}" variant="primary">Macroprocesos</b-btn>
+            <!--<div class="card-title-elements" v-if="auth.can['dangerMatrix_c']"> 
               <b-btn variant="primary" :to="{name:'industrialsecure-dangermatrix-addfields'}" v-b-tooltip.top title="Configurar Campos Adicionales"><i class="ion ion-md-document"></i></b-btn>
             </div>
             <b-btn v-if="auth.can['dangerMatrix_c']" variant="primary" href="/templates/dangermatriximport" target="blank" v-b-tooltip.top title="Generar Plantilla"><i class="fas fa-file-alt"></i></b-btn>
