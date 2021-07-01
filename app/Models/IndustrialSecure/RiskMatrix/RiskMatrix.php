@@ -19,10 +19,10 @@ class RiskMatrix extends Model
         'participants'
     ];
      
-    /*public function activities()
+    public function subprocesses()
     {
-        return $this->hasMany(DangerMatrixActivity::class, 'danger_matrix_id');
-    }*/
+        return $this->hasMany(RiskMatrixSubProcess::class, 'risk_matrix_id');
+    }
 
     public function regional()
     {
@@ -186,53 +186,4 @@ class RiskMatrix extends Model
 
         return $query;
     }
-
-    /**
-     * filters checks through the given dangers
-     * @param  Illuminate\Database\Eloquent\Builder $query
-     * @param  array $dangers
-     * @return Illuminate\Database\Eloquent\Builder
-     */
-    /*public function scopeInDangers($query, $dangers, $typeSearch = 'IN')
-    {
-        if (COUNT($dangers) > 0)
-        {
-            if ($typeSearch == 'IN')
-                $query->whereIn('sau_dm_activity_danger.danger_id', $dangers);
-
-            else if ($typeSearch == 'NOT IN')
-                $query->whereNotIn('sau_dm_activity_danger.danger_id', $dangers);
-        }
-
-        return $query;
-    }
-
-    /**
-     * filters checks through the given macroprocesses
-     * @param  Illuminate\Database\Eloquent\Builder $query
-     * @param  array $macroprocesses
-     * @return Illuminate\Database\Eloquent\Builder
-     */
-    /*public function scopeInDangerDescription($query, $dangerdescription, $typeSearch = 'IN')
-    {
-        $regexp = [];
-
-        foreach ($dangerdescription as $key => $value)
-        {
-            $regexp[] = "((^|,)($value)(,|$))";
-        }
-
-        if (COUNT($regexp) > 0)
-        {
-            $regexp = implode("|", $regexp);
-
-            if ($typeSearch == 'IN')
-                $query->where('sau_dm_activity_danger.danger_description', 'REGEXP', $regexp);
-
-            else if ($typeSearch == 'NOT IN')
-                $query->where('sau_dm_activity_danger.danger_description', 'NOT REGEXP', $regexp);
-        }
-
-        return $query;
-    }*/
 }

@@ -52,7 +52,6 @@ export default {
       coverage: [],
       documentation: [],
       mitigation : []
-
     }
   },
   created(){
@@ -65,24 +64,6 @@ export default {
     this.fetchSelect('evaluationControls', '/industrialSecurity/risksMatrix/getEvaluationControls')
     this.fetchSelect('impactsDescription', '/industrialSecurity/risksMatrix/getImpacts')
     this.fetchSelect('mitigation', '/industrialSecurity/risksMatrix/getMitigation')
-
-    /*axios.get('/industrialSecurity/risksMatrix/getEvaluationControls')
-    .then(response => {
-        this.evaluationControls = response.data.data;
-    })
-    .catch(error => {
-        Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
-        
-    });
-
-    axios.get('/industrialSecurity/risksMatrix/getImpacts')
-    .then(response => {
-        this.impactsDescription = response.data.data;
-    })
-    .catch(error => {
-        Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
-        
-    });*/
   },
   methods: {
     fetchSelect(key, url)

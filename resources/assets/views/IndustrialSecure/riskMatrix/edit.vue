@@ -18,7 +18,14 @@
                 :action-plan-states="actionPlanStates"
                 :is-edit="true"
                 :cancel-url="{ name: 'industrialsecure-riskmatrix'}"
-                :si-no="siNo"/>
+                :si-no="siNo"
+                :evaluation-controls="evaluationControls"
+                :impacts-description="impactsDescription"
+                :controls-decrease="controlsDecrease"
+                :nature="nature"
+                :coverage="coverage"
+                :documentation="documentation"
+                :mitigation="mitigation"/>
           </div>
         </b-card-body>
       </b-card>
@@ -47,6 +54,13 @@ export default {
       data: [],
       actionPlanStates: [],
       ready: false,
+      evaluationControls: {},
+      impactsDescription: {},
+      controlsDecrease: [],
+      nature: [],
+      coverage: [],
+      documentation: [],
+      mitigation : []
     }
   },
   created(){
@@ -60,6 +74,13 @@ export default {
 
     this.fetchSelect('siNo', '/radios/siNo')
     this.fetchSelect('actionPlanStates', '/selects/actionPlanStates')
+    this.fetchSelect('controlsDecrease', '/selects/rmControlsDecrease')
+    this.fetchSelect('nature', '/selects/rmNature')
+    this.fetchSelect('coverage', '/selects/rmCoverage')
+    this.fetchSelect('documentation', '/selects/rmDocumentation')
+    this.fetchSelect('evaluationControls', '/industrialSecurity/risksMatrix/getEvaluationControls')
+    this.fetchSelect('impactsDescription', '/industrialSecurity/risksMatrix/getImpacts')
+    this.fetchSelect('mitigation', '/industrialSecurity/risksMatrix/getMitigation')
   },
   methods: {
     fetchSelect(key, url)

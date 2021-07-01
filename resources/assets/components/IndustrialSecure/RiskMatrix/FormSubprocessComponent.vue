@@ -1,7 +1,7 @@
 <template>
     <b-form autocomplete="off">
       <b-form-row>
-        <vue-ajax-advanced-select @selectedName="emitSubprocessName" :disabled="viewOnly" class="col-md-6" v-model="subprocess.subprocess_id" :selected-object="subprocess.multiselect_subprocess" name="subprocess_id" :error="form.errorsFor(`subprocesses.${indexSubprocess}.subprocess_id`)" label="Subproceso" placeholder="Seleccione el subproceso" :url="subprocessesDataUrl">
+        <vue-ajax-advanced-select @selectedName="emitSubprocessName" :disabled="viewOnly" class="col-md-6" v-model="subprocess.sub_process_id" :selected-object="subprocess.multiselect_subprocess" name="sub_process_id" :error="form.errorsFor(`subprocesses.${indexSubprocess}.sub_process_id`)" label="Subproceso" placeholder="Seleccione el subproceso" :url="subprocessesDataUrl">
           </vue-ajax-advanced-select>
       </b-form-row>
       <b-form-row>
@@ -149,7 +149,7 @@ export default {
         return {
             key: new Date().getTime(),
             id: '',
-            subprocess_id: '',
+            sub_process_id: '',
             risks: [
               {
                 key: new Date().getTime(),
@@ -157,7 +157,7 @@ export default {
                 risk: {
                   name: ''
                 },
-                econommic:'',
+                economic:'',
                 quality_care_patient_safety: '',
                 reputational: '',
                 legal_regulatory: '',
@@ -170,7 +170,8 @@ export default {
                 causes_controls: [],
                 delete: {
                   causes: [],
-                  controls: []
+                  controls: [],
+                  indicators: []
                 },
                 controls_decrease: '',
                 nature: '',
@@ -185,11 +186,16 @@ export default {
                 max_residual_frequency: '',
                 description_residual_frequency: '',
                 residual_exposition: '',
-                max_impact_event_risk: ''
+                max_impact_event_risk: '',
+                indicators: [],
+                actionPlan: {
+                    activities: [],
+                    activitiesRemoved: []
+                },
               }
             ],
             risksRemoved: [],
-            subprocess: {
+            sub_process: {
               name: ''
             }
         };
@@ -234,10 +240,11 @@ export default {
         key: new Date().getTime(),
         id: '',
         risk_id: '',
+        risk_sequence: this.subprocess.risks.length + 1,
         risk: {
           name: ''
         },
-        econommic:'',
+        economic:'',
         quality_care_patient_safety: '',
         reputational: '',
         legal_regulatory: '',
@@ -250,7 +257,8 @@ export default {
         causes_controls: [],
         delete: {
           causes: [],
-          controls: []
+          controls: [],
+          indicators: []
         },
         controls_decrease: '',
         nature: '',
@@ -265,7 +273,12 @@ export default {
         max_residual_frequency: '',
         description_residual_frequency: '',
         residual_exposition: '',
-        max_impact_event_risk: ''
+        max_impact_event_risk: '',
+        indicators: [],
+        actionPlan: {
+            activities: [],
+            activitiesRemoved: []
+        },
       })
     },
     removeDanger(index) {

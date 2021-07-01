@@ -62,7 +62,7 @@ class RiskController extends Controller
         }
 
         return $this->respondHttp200([
-            'message' => 'Se creo la actividad'
+            'message' => 'Se creo el riesgo'
         ]);
     }
 
@@ -102,7 +102,7 @@ class RiskController extends Controller
         }
         
         return $this->respondHttp200([
-            'message' => 'Se actualizo el subproceso'
+            'message' => 'Se actualizo el riesgo'
         ]);
     }
 
@@ -125,7 +125,7 @@ class RiskController extends Controller
         }
         
         return $this->respondHttp200([
-            'message' => 'Se elimino la actividad'
+            'message' => 'Se elimino el riesgo'
         ]);
     }
 

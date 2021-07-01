@@ -8,6 +8,16 @@ use App\Vuetable\Facades\Vuetable;
 use App\Models\IndustrialSecure\RiskMatrix\RiskMatrix;
 use App\Http\Requests\IndustrialSecure\RiskMatrix\RiskMatrixRequest;
 use App\Models\IndustrialSecure\RiskMatrix\TagsRmParticipant;
+use App\Models\IndustrialSecure\RiskMatrix\TagsRmCauseControls;
+use App\Models\IndustrialSecure\RiskMatrix\Cause;
+use App\Models\IndustrialSecure\RiskMatrix\CauseControl;
+use App\Models\IndustrialSecure\RiskMatrix\Indicators;
+use App\Models\IndustrialSecure\RiskMatrix\RiskMatrixSubProcess;
+use App\Models\IndustrialSecure\RiskMatrix\SubProcessRisk;
+use App\Models\IndustrialSecure\RiskMatrix\Risk;
+use App\Models\IndustrialSecure\RiskMatrix\SubProcess;
+use App\Facades\ActionPlans\Facades\ActionPlan;
+use Carbon\Carbon;
 use DB;
 use App\Traits\RiskMatrixTrait;
 
@@ -90,6 +100,46 @@ class RiskMatrixController extends Controller
 
             $riskMatrix->locations = $this->prepareDataLocationForm($riskMatrix);
 
+            foreach ($riskMatrix->subprocesses as $keySubprocess=> $itemSubprocess)
+            {   
+                $itemSubprocess->key = Carbon::now()->timestamp + rand(1,10000);
+                $itemSubprocess->subprocessesRemoved = [];
+                $itemSubprocess->multiselect_subprocess = $itemSubprocess->subProcess->multiselect();
+
+                foreach ($itemSubprocess->risks as $keyRisk => $itemRisk)
+                {
+                    $itemRisk->key = Carbon::now()->timestamp + rand(1,10000);
+                    $itemRisk->riskRemoved = [];
+                    $itemRisk->multiselect_risk = $itemRisk->risk->multiselect();
+
+                    $itemRisk->actionPlan = ActionPlan::model($itemRisk)->prepareDataComponent();
+
+                    /*\Log::info($itemRisk->causes);
+
+                    foreach ($itemRisk->causes as $key => $value) {
+                        \Log::info($value);
+                        foreach ($value->controls as $key2 => $value2) {
+                            \Log::info($value2);
+                        }
+                    }*/
+                    
+
+                    $causes_controls = $itemRisk->causes->transform(function($cause, $index) {
+                            $cause->key = Carbon::now()->timestamp + rand(1,10000);
+                            $cause->cause = $cause->cause;
+                            $cause->controls = $cause->controls()->orderBy('number_control')->get();
+            
+                        return $cause;
+                    });
+
+                    $itemRisk->indicators = $itemRisk->indicators;
+
+                    $itemRisk->causes_controls = $causes_controls;
+                }
+            }
+
+            \Log::info($riskMatrix);
+
             return $this->respondHttp200([
                 'data' => $riskMatrix,
             ]);
@@ -150,16 +200,8 @@ class RiskMatrixController extends Controller
         { 
             if ($riskMatrix)
             {
-                $msg = 'Se actualizo la matriz de peligro';
-
-                /*$history_change = $this->tagsPrepare($request->get('changeHistory'));
-                $this->tagsSave($history_change, TagsHistoryChange::class);
-
-                $riskMatrix->histories()->create([
-                    'user_id' => $this->user->id,
-                    'description' => $history_change->implode(',')
-                ]);*/
-            }
+                $msg = 'Se actualizo la matriz de riesgos';
+           }
             else
             {
                 $msg = 'Se creo la matriz de riesgos';
@@ -189,6 +231,170 @@ class RiskMatrixController extends Controller
             {
                 return $this->respondHttp500();
             }
+
+            if ($request->has('subprocessesRemoved') && COUNT($request->get('subprocessesRemoved')) > 0)
+            {
+                foreach ($request->get('subprocessesRemoved') as $key => $value)
+                {
+                    $subprocessDel = RiskMatrixSubProcess::find($value['id']);
+
+                    if ($subprocessDel)
+                        $subprocessDel->delete();
+                }
+            }
+
+            //Se inician los atributos necesarios que seran estaticos para todos los subprocesos
+            // De esta forma se evitar la asignacion innecesaria una y otra vez 
+            ActionPlan::
+                    user($this->user)
+                ->module('riskMatrix')
+                ->regional($riskMatrix->regional ? $riskMatrix->regional->name : null)
+                ->headquarter($riskMatrix->headquarter ? $riskMatrix->headquarter->name : null)
+                ->area($riskMatrix->area ? $riskMatrix->area->name : null)
+                ->process($riskMatrix->process ? $riskMatrix->process->name : null)
+                ->creationDate($riskMatrix->created_at)
+                ->url(url('/industrialsecure/riskMatrix/view/'.$riskMatrix->id));
+
+            foreach ($request->get('subprocesses') as $keyA => $itemS)
+            {
+                if ($itemS['id'] == '')
+                {
+                    $subprocess = new RiskMatrixSubProcess();
+                    $subprocess->risk_matrix_id = $riskMatrix->id;
+                }
+                else
+                    $subprocess = RiskMatrixSubProcess::find($itemS['id']);
+
+                $subprocess->sub_process_id = $itemS['sub_process_id'];
+
+                if(!$subprocess->save()){
+                    return $this->respondHttp500();
+                }
+
+                foreach ($itemS['risks'] as $keyD => $itemR)
+                {
+                    if ($itemR['id'] == '')
+                        $risk = new SubProcessRisk();
+                    else
+                        $risk = SubProcessRisk::find($itemR['id']);
+                    
+                    //TAGS
+                    
+
+                    //////////////////////////////
+                    
+                    $risk->rm_subprocess_id = $subprocess->id;
+                    $risk->risk_id = $itemR['risk_id'];
+                    $risk->risk_sequence = $keyD + 1;
+                    $risk->economic = $itemR['economic'];
+                    $risk->quality_care_patient_safety =  $itemR['quality_care_patient_safety'];
+                    $risk->reputational = $itemR['reputational'];
+                    $risk->legal_regulatory = $itemR['legal_regulatory'];
+                    $risk->environmental = $itemR['environmental'];
+                    $risk->max_inherent_impact = $itemR['max_inherent_impact'];
+                    $risk->description_inherent_impact = $itemR['description_inherent_impact'];
+                    $risk->max_inherent_frequency = $itemR['max_inherent_frequency'];            
+                    $risk->description_inherent_frequency = $itemR['description_inherent_frequency'];
+                    $risk->inherent_exposition = $itemR['inherent_exposition'];
+                    $risk->controls_decrease = $itemR['controls_decrease'];
+                    $risk->nature = $itemR['nature'];
+                    $risk->evidence = $itemR['evidence'];
+                    $risk->coverage = $itemR['coverage'];
+                    $risk->documentation = $itemR['documentation'];
+                    $risk->segregation = $itemR['segregation'];
+                    $risk->control_evaluation = $itemR['control_evaluation'];
+                    $risk->percentege_mitigation = $itemR['percentege_mitigation'];
+                    $risk->max_residual_impact = $itemR['max_residual_impact'];
+                    $risk->description_residual_impact = $itemR['description_residual_impact'];
+                    $risk->max_residual_frequency = $itemR['max_residual_frequency'];
+                    $risk->description_residual_frequency = $itemR['description_residual_frequency'];
+
+                    $risk->residual_exposition = $itemR['residual_exposition'];
+                    $risk->max_impact_event_risk = $itemR['max_impact_event_risk'];
+
+                    if(!$risk->save()){
+                        return $this->respondHttp500();
+                    }
+
+                    foreach ($itemR['causes_controls'] as $keyC => $itemC)
+                    {
+                        if ($itemC['id'] == '')
+                            $cause = new Cause();
+                        else
+                            $cause = Cause::find($itemC['id']);
+
+                        $cause->rm_subprocess_risk_id = $risk->id;
+                        $cause->cause = $itemC['cause'];
+
+                        if(!$cause->save()){
+                            return $this->respondHttp500();
+                        }
+
+                        foreach ($itemC['controls'] as $keyC2 => $itemC2)
+                        {
+                            if ($itemC2['id'] == '')
+                                $control = new CauseControl();
+                            else
+                                $control = CauseControl::find($itemC2['id']);
+
+                            $controls = $this->tagsPrepare($itemC2['controls']);
+                            $this->tagsSave($controls, TagsRmCauseControls::class);
+
+                            $control->controls = $controls->implode(',');
+                            $control->rm_cause_id = $cause->id;
+                            $control->number_control = $itemC2['number_control'];
+
+                            if(!$control->save()){
+                                return $this->respondHttp500();
+                            }
+                        }
+
+                    }
+
+                    foreach ($itemR['indicators'] as $keyI => $itemI)
+                    {
+                        if ($itemI['id'] == '')
+                            $indicator = new Indicators();
+                        else
+                            $indicator = Indicators::find($itemI['id']);
+
+                        $indicator->rm_subprocess_risk_id = $risk->id;
+                        $indicator->indicator = $itemI['indicator'];
+
+                        if(!$indicator->save()){
+                            return $this->respondHttp500();
+                        }
+                    }
+
+                    $subprocess_procedence = SubProcess::find($itemS['sub_process_id']);
+                    $risk_procedence = Risk::find($risk->risk_id);
+
+                    $detail_procedence = 'Mátriz de Peligros - Actividad: '. $subprocess_procedence->name . '. Peligro: '. $risk_procedence->name;
+
+                    /**Planes de acción*/
+                    ActionPlan::
+                          model($risk)
+                        ->activities($itemR['actionPlan'])
+                        ->detailProcedence($detail_procedence)
+                        ->save();
+                }
+
+                if (isset($itemS['risksRemoved']) && COUNT($itemS['risksRemoved']) > 0)
+                {
+                    foreach ($itemS['risksRemoved'] as $key => $value)
+                    {
+                        $riskDel = SubProcessRisk::find($value['id']);
+
+                        if ($riskDel)
+                        {
+                            ActionPlan::model($riskDel)->modelDeleteAll();
+                            $riskDel->delete();
+                        }
+                    }
+                }
+            }
+
+            ActionPlan::sendMail();
 
             DB::commit();
 

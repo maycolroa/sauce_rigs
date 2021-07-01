@@ -48,7 +48,7 @@
           <b-tabs card pills class="nav-responsive-md md-pills-light">
             <b-tab v-for="(subprocess, index) in form.subprocesses" :key="subprocess.key">
                 <template slot="title">
-                  <strong>{{ form.subprocesses[index].subprocess.name ? form.subprocesses[index].subprocess.name : `Nuevo Subproceso ${index + 1}` }}</strong> 
+                  <strong>{{ form.subprocesses[index].sub_process.name ? form.subprocesses[index].sub_process.name : `Nuevo Subproceso ${index + 1}` }}</strong> 
                   <b-btn @click.prevent="removeActivity(index)" 
                     v-if="form.subprocesses.length > 1 && !viewOnly"
                     size="sm" 
@@ -188,10 +188,10 @@ export default {
               {
                 key: new Date().getTime(),
                 id: '',
-                subprocess_id: '',
+                sub_process_id: '',
                 risks: [],
                 risksRemoved: [],
-                subprocess: {
+                sub_process: {
                   name: ''
                 }
               }
@@ -210,7 +210,8 @@ export default {
     return {
       loading: false,
       form: Form.makeFrom(this.riskMatrix, this.method),
-      configLocation: {}
+      configLocation: {},
+      seq: 0
     }
   },
   methods: {
@@ -233,12 +234,13 @@ export default {
         {
           key: new Date().getTime(),
           id: '',
-          subprocess_id: '',
+          sub_process_id: '',
           risks: [],
           risksRemoved: [],
-          subprocess: {
+          sub_process: {
             name: ''
-          }
+          },
+          seq: this.s
         }
       )
     },
@@ -248,7 +250,7 @@ export default {
       this.riskMatrix.subprocesses.splice(index, 1)
     },
     updateActivityNameTab(values, index) {
-      this.form.subprocesses[index].subprocess.name = values
+      this.form.subprocesses[index].sub_process.name = values
     },
     setConfigLocation(value)
     {
