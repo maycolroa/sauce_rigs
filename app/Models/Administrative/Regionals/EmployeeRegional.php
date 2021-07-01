@@ -13,7 +13,8 @@ class EmployeeRegional extends Model
 
     protected $fillable = [
         'name',
-        'company_id'
+        'company_id',
+        'abbreviation'
     ];
 
     public function employees()
