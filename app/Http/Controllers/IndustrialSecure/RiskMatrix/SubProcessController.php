@@ -62,7 +62,7 @@ class SubProcessController extends Controller
         }
 
         return $this->respondHttp200([
-            'message' => 'Se creo la actividad'
+            'message' => 'Se creo el subproceso'
         ]);
     }
 
@@ -125,7 +125,7 @@ class SubProcessController extends Controller
         }
         
         return $this->respondHttp200([
-            'message' => 'Se elimino la actividad'
+            'message' => 'Se elimino el subproceso'
         ]);
     }
 
