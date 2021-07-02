@@ -98,7 +98,7 @@ import Form from "@/utils/Form.js";
 import VueRadio from "@/components/Inputs/VueRadio.vue";
 import FormSubprocessComponent from '@/components/IndustrialSecure/RiskMatrix/FormSubprocessComponent.vue';
 import ModalsCreateComponent from '@/components/IndustrialSecure/RiskMatrix/ModalsCreateComponent.vue';
-import LocationLevelComponent from '@/components/CustomInputs/LocationLevelComponent.vue';
+import LocationLevelComponent from '@/components/IndustrialSecure/RiskMatrix/LocationLevelComponent.vue';
 import VueTextarea from "@/components/Inputs/VueTextarea.vue";
 import VueAjaxAdvancedSelect from "@/components/Inputs/VueAjaxAdvancedSelect.vue";
 
@@ -179,7 +179,8 @@ export default {
               employee_regional_id: '',
               employee_headquarter_id: '',
               employee_area_id: '',
-              employee_process_id: ''
+              employee_process_id: '',
+              macroprocess_id: ''
             },
             name: '',
             approved: '',
@@ -210,8 +211,7 @@ export default {
     return {
       loading: false,
       form: Form.makeFrom(this.riskMatrix, this.method),
-      configLocation: {},
-      seq: 0
+      configLocation: {},      
     }
   },
   methods: {
@@ -239,8 +239,7 @@ export default {
           risksRemoved: [],
           sub_process: {
             name: ''
-          },
-          seq: this.s
+          }
         }
       )
     },

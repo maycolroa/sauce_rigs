@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Vuetable\Facades\Vuetable;
 use App\Models\Administrative\Processes\TagsProcess;
+use App\Models\Administrative\Processes\EmployeeProcess;
 
 class MacroprocessController extends Controller
 {
@@ -82,6 +83,34 @@ class MacroprocessController extends Controller
         
         return $this->respondHttp200([
             'message' => 'Se actualizo el registro'
+        ]);
+    }
+
+    public function multiselect(Request $request)
+    {
+        $processes = EmployeeProcess::selectRaw(
+            "sau_employees_processes.types as macroprocess")
+        ->where('sau_employees_processes.id', $request->process)
+        ->first();
+
+        $macroprocess = explode(',',$processes->macroprocess);
+        $data = collect([]);
+
+        foreach ($macroprocess as $key => $value) {
+            $data->push($value);
+        }
+
+        $options_macro = TagsProcess::selectRaw(
+            "sau_tags_processes.id,
+            sau_tags_processes.name")
+        ->whereIn('sau_tags_processes.name', $data)
+        ->where('sau_tags_processes.company_id', $this->company)
+        ->pluck('id', 'name');
+
+        $options = $this->multiSelectFormat($options_macro);
+
+        return $this->respondHttp200([
+            'options' => $options
         ]);
     }
 }

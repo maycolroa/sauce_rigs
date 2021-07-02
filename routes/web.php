@@ -166,6 +166,7 @@ Route::middleware(['auth'])->group(function () {
         Route::post('typesDocument', 'General\MultiSelectRadioController@typesDocumentContract');        
         Route::post('days', 'General\MultiSelectRadioController@days');  
         Route::post('processes', 'Administrative\Processes\EmployeeProcessController@multiselect');
+        Route::post('macroprocess', 'IndustrialSecure\RiskMatrix\MacroprocessController@multiselect');
         Route::post('positions', 'Administrative\Positions\EmployeePositionController@multiselect');
         Route::post('businesses', 'Administrative\Businesses\EmployeeBusinessController@multiselect');
         Route::post('eps', 'General\ApplicationController@multiselectEps');

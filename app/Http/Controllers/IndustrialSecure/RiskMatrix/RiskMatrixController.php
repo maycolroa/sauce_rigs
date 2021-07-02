@@ -112,17 +112,7 @@ class RiskMatrixController extends Controller
                     $itemRisk->riskRemoved = [];
                     $itemRisk->multiselect_risk = $itemRisk->risk->multiselect();
 
-                    $itemRisk->actionPlan = ActionPlan::model($itemRisk)->prepareDataComponent();
-
-                    /*\Log::info($itemRisk->causes);
-
-                    foreach ($itemRisk->causes as $key => $value) {
-                        \Log::info($value);
-                        foreach ($value->controls as $key2 => $value2) {
-                            \Log::info($value2);
-                        }
-                    }*/
-                    
+                    $itemRisk->actionPlan = ActionPlan::model($itemRisk)->prepareDataComponent();                    
 
                     $causes_controls = $itemRisk->causes->transform(function($cause, $index) {
                             $cause->key = Carbon::now()->timestamp + rand(1,10000);
@@ -137,8 +127,6 @@ class RiskMatrixController extends Controller
                     $itemRisk->causes_controls = $causes_controls;
                 }
             }
-
-            \Log::info($riskMatrix);
 
             return $this->respondHttp200([
                 'data' => $riskMatrix,
@@ -222,6 +210,7 @@ class RiskMatrixController extends Controller
             $participants = $this->tagsPrepare($request->get('participants'));
             $this->tagsSave($participants, TagsRmParticipant::class);
             $riskMatrix->participants = $participants->implode(',');
+            $riskMatrix->macroprocess_id = $request->locations['macroprocess_id'];
             
             if(!$riskMatrix->save()){
                 return $this->respondHttp500();
