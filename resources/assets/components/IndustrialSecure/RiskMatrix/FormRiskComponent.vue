@@ -225,6 +225,7 @@ export default {
     form: { type: Object, required: true },
     indexSubprocess: { type: Number, required: true },
     indexRisk: { type: Number, required: true },
+    nomenclature: { type: String, required: true },
     eventRisk: false,
     valuesNumerics: {
 			type: Array,
@@ -364,6 +365,7 @@ export default {
               activities: [],
               activitiesRemoved: []
           },
+          nomenclature: ''
         };
       }
     }
@@ -427,7 +429,7 @@ export default {
         id: '',
         controls: '',
         number_control: this.risk.causes_controls[cause].controls.length + 1,
-        nomenlature: ''
+        nomenclature: this.nomenclature + 'C.' + (this.risk.causes_controls[cause].controls.length + 1)
       })
     },
     removeControl(cause,index) {   

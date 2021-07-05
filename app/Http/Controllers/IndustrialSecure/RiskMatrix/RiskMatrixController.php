@@ -17,6 +17,11 @@ use App\Models\IndustrialSecure\RiskMatrix\SubProcessRisk;
 use App\Models\IndustrialSecure\RiskMatrix\Risk;
 use App\Models\IndustrialSecure\RiskMatrix\SubProcess;
 use App\Facades\ActionPlans\Facades\ActionPlan;
+use App\Models\Administrative\Regionals\EmployeeRegional;
+use App\Models\Administrative\Processes\TagsProcess;
+use App\Models\Administrative\Headquarters\EmployeeHeadquarter;
+use App\Models\Administrative\Processes\EmployeeProcess;
+use App\Models\Administrative\Areas\EmployeeArea;
 use Carbon\Carbon;
 use DB;
 use App\Traits\RiskMatrixTrait;
@@ -419,5 +424,60 @@ class RiskMatrixController extends Controller
         $data = $this->percentageMitigation();
         
         return $data;
+    }
+
+    public function getAbrevRegional(Request $request)
+    {
+        $abrev = EmployeeRegional::find($request->id);
+
+        $nom_reg = $abrev->abbreviation;
+
+        return $this->respondHttp200([
+            'data' => $nom_reg,
+        ]);
+    }
+
+    public function getAbrevMacro(Request $request)
+    {
+        $abrev = TagsProcess::find($request->id);
+
+        $nom_reg = $abrev->abbreviation;
+
+        return $this->respondHttp200([
+            'data' => $nom_reg,
+        ]);
+    }
+
+    public function getAbrevHeadquarter(Request $request)
+    {
+        $abrev = EmployeeHeadquarter::find($request->id);
+
+        $nom_reg = $abrev->abbreviation;
+
+        return $this->respondHttp200([
+            'data' => $nom_reg,
+        ]);
+    }
+
+    public function getAbrevProcess(Request $request)
+    {
+        $abrev = EmployeeProcess::find($request->id);
+
+        $nom_reg = $abrev->abbreviation;
+
+        return $this->respondHttp200([
+            'data' => $nom_reg,
+        ]);
+    }
+
+    public function getAbrevArea(Request $request)
+    {
+        $abrev = EmployeeArea::find($request->id);
+
+        $nom_reg = $abrev->abbreviation;
+
+        return $this->respondHttp200([
+            'data' => $nom_reg,
+        ]);
     }
 }

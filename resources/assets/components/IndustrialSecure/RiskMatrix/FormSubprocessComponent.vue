@@ -59,6 +59,7 @@
                     :coverage="coverage"
                     :documentation="documentation"
                     :mitigation="mitigation"
+                    :nomenclature="nomenclature"
                   />
                 </b-card-body>
               </b-collapse>
@@ -90,6 +91,7 @@ export default {
     viewOnly: { type: Boolean, default: false },
     form: { type: Object, required: true },
     indexSubprocess: { type: Number, required: true },
+    nomenclature: { type: String, required: true },
     siNo: {
       type: Array,
       default: function() {
@@ -279,6 +281,7 @@ export default {
             activities: [],
             activitiesRemoved: []
         },
+        nomenclature: this.nomenclature + 'R.' + (this.subprocess.risks.length + 1) 
       })
     },
     removeDanger(index) {

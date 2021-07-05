@@ -21,6 +21,7 @@
 
 <script>
 import VueAjaxAdvancedSelect from "@/components/Inputs/VueAjaxAdvancedSelect.vue";
+import Alerts from '@/utils/Alerts.js';
 
 export default {
     components: {
@@ -37,7 +38,8 @@ export default {
                     employee_headquarter_id: '',
                     employee_area_id: '',
                     employee_process_id: '',
-                    macroprocess_id: ''
+                    macroprocess_id: '',
+                    nomenclature: ''
                 };
             }
         }
@@ -62,7 +64,10 @@ export default {
                 headquarter: 'NO',
                 area: 'NO',
                 process: 'NO'
-            }
+            },
+            nom_reg: '',
+            nom_macro: '',
+            nom_proc: ''
         };
     },
     created()
@@ -88,17 +93,26 @@ export default {
     },
     watch: {
         'locationLevel.employee_regional_id'() {
+            this.updateNomenclatureReg();
             this.emptySelect('employee_area_id', 'area')
             this.emptySelect('employee_process_id', 'process')
             this.emptySelect('employee_headquarter_id', 'headquarter')
         },
         'locationLevel.employee_headquarter_id'() {
+            //this.updateNomenclatureHead();
             this.emptySelect('employee_area_id', 'area')
             this.emptySelect('employee_process_id', 'process')
         },
         'locationLevel.employee_process_id'() {
+            this.updateNomenclaturePro();
             this.emptySelect('employee_area_id', 'area')
             this.emptySelect('macroprocess_id', 'macroprocess')
+        },
+        /*'locationLevel.employee_area_id'() {
+            this.updateNomenclatureArea();
+        },*/
+        'locationLevel.macroprocess_id'() {
+            this.updateNomenclatureMacro();
         },
         locationLevel: {
             handler(val){
@@ -120,7 +134,61 @@ export default {
                 this.empty[keyEmpty] = true
                 this.locationLevel[keySelect] = ''
             }
-        }
+        },
+        updateNomenclatureReg()
+        {
+            axios.post("/industrialSecurity/risksMatrix/getAbrevRegional", {id: this.locationLevel.employee_regional_id})
+            .then(response => {
+                this.nom_reg = response.data.data;
+            })
+            .catch(error => {
+                Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
+            });
+        },
+        /*updateNomenclatureHead()
+        {
+            axios.post("/industrialSecurity/risksMatrix/getAbrevHeadquarter", {id: this.locationLevel.employee_headquarter_id})
+            .then(response => {
+                this.nomenclature = response.data.data;
+                console.log(this.nomenclature)
+            })
+            .catch(error => {
+                Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
+            });
+        },*/
+        updateNomenclaturePro()
+        {
+            axios.post("/industrialSecurity/risksMatrix/getAbrevProcess", {id: this.locationLevel.employee_process_id})
+            .then(response => {
+                this.nom_proc = response.data.data;
+            })
+            .catch(error => {
+                Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
+            });
+        },
+        updateNomenclatureMacro()
+        {
+            axios.post("/industrialSecurity/risksMatrix/getAbrevMacro", {id: this.locationLevel.macroprocess_id})
+            .then(response => {
+                this.nom_macro = response.data.data;
+                this.locationLevel.nomenclature = this.nom_reg + '.' + this.nom_macro + '.' + this.nom_proc + '.';
+            })
+            .catch(error => {
+                Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
+            });
+        },
+        /*updateNomenclatureArea()
+        {
+            axios.post("/industrialSecurity/risksMatrix/getAbrevArea", {id: this.locationLevel.employee_area_id})
+            .then(response => {
+                this.nomenclature = response.data.data;
+                console.log(this.nomenclature)
+            })
+            .catch(error => {
+                Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
+            });
+        },*/
+
     }
 }
 </script>
