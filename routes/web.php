@@ -405,6 +405,12 @@ Route::middleware(['auth'])->group(function () {
 
       Route::post('risksMatrix/macroprocess/data', 'IndustrialSecure\RiskMatrix\MacroprocessController@data');
 
+      Route::post('risksMatrix/getAbrevRegional', 'IndustrialSecure\RiskMatrix\RiskMatrixController@getAbrevRegional');
+      Route::post('risksMatrix/getAbrevHeadquarter', 'IndustrialSecure\RiskMatrix\RiskMatrixController@getAbrevHeadquarter');
+      Route::post('risksMatrix/getAbrevProcess', 'IndustrialSecure\RiskMatrix\RiskMatrixController@getAbrevProcess');
+      Route::post('risksMatrix/getAbrevArea', 'IndustrialSecure\RiskMatrix\RiskMatrixController@getAbrevArea');
+      Route::post('risksMatrix/getAbrevMacro', 'IndustrialSecure\RiskMatrix\RiskMatrixController@getAbrevMacro');
+
       Route::prefix('risksMatrix')->group(function () {
         Route::ApiResource('macroprocess', 'IndustrialSecure\RiskMatrix\MacroprocessController');
       });

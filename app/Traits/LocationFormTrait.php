@@ -138,6 +138,7 @@ trait LocationFormTrait
         {            
             $data['macroprocess_id'] = $model->macroprocess_id;
             $data['multiselect_macroprocess'] = $model->macroprocess ? $model->macroprocess->multiselect() : null;
+            $data['nomenclature'] = $model->nomenclature;
         }
 
         $data['multiselect_regional'] = $model->regional ? $model->regional->multiselect() : null;

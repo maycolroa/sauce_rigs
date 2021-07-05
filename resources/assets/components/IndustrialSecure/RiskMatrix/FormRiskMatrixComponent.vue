@@ -75,6 +75,7 @@
                   :coverage="coverage"
                   :documentation="documentation"
                   :mitigation="mitigation"
+                  :nomenclature="form.locations.nomenclature"
                 />
             </b-tab>
           </b-tabs>
@@ -180,7 +181,8 @@ export default {
               employee_headquarter_id: '',
               employee_area_id: '',
               employee_process_id: '',
-              macroprocess_id: ''
+              macroprocess_id: '',
+              nomenclature: ''
             },
             name: '',
             approved: '',
@@ -230,6 +232,8 @@ export default {
         });
     },
     addActiviy() {
+      console.log(this.form.locations);
+      console.log(this.form.locations.nomenclature + 'matrix');
       this.riskMatrix.subprocesses.push(
         {
           key: new Date().getTime(),
