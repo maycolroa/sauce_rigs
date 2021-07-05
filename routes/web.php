@@ -166,6 +166,7 @@ Route::middleware(['auth'])->group(function () {
         Route::post('typesDocument', 'General\MultiSelectRadioController@typesDocumentContract');        
         Route::post('days', 'General\MultiSelectRadioController@days');  
         Route::post('processes', 'Administrative\Processes\EmployeeProcessController@multiselect');
+        Route::post('macroprocess', 'IndustrialSecure\RiskMatrix\MacroprocessController@multiselect');
         Route::post('positions', 'Administrative\Positions\EmployeePositionController@multiselect');
         Route::post('businesses', 'Administrative\Businesses\EmployeeBusinessController@multiselect');
         Route::post('eps', 'General\ApplicationController@multiselectEps');
@@ -400,6 +401,13 @@ Route::middleware(['auth'])->group(function () {
 
       Route::post('risk/data', 'IndustrialSecure\RiskMatrix\RiskController@data');
       Route::ApiResource('risk', 'IndustrialSecure\RiskMatrix\RiskController');
+
+
+      Route::post('risksMatrix/macroprocess/data', 'IndustrialSecure\RiskMatrix\MacroprocessController@data');
+
+      Route::prefix('risksMatrix')->group(function () {
+        Route::ApiResource('macroprocess', 'IndustrialSecure\RiskMatrix\MacroprocessController');
+      });
 
       Route::prefix('dangerousConditions')->group(function () {
         Route::get('incentive/download', 'IndustrialSecure\DangerousConditions\IncentiveController@download');

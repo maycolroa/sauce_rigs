@@ -984,4 +984,51 @@ export default [
         filterColumns: true,
     }
 },
+{
+    name: 'industrialsecure-riskmatrix-macroprocesses',
+    fields: [
+        { name: 'sau_tags_processes.id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true },
+        { name: 'sau_tags_processes.name', data: 'name', title: 'Nombre', sortable: true, searchable: true, detail: false, key: false },
+        { name: 'sau_tags_processes.abbreviation', data: 'abbreviation', title: 'Abreviatura', sortable: true, searchable: true, detail: false, key: false },
+        { name: '', data: 'controlls', title: 'Controles', sortable: false, searchable: false, detail: false, key: false }
+    ],
+    'controlls': [
+        {
+            type: 'push',
+            buttons: [{
+                config: {
+                    color: 'outline-success',
+                    borderless: true,
+                    icon: 'ion ion-md-create',
+                    title: 'Editar'
+                },
+                data: {
+                    routePush: { name: 'industrialsecure-riskmatrix-macroprocesses-edit' },
+                    id: 'id',
+                },
+                permission: 'riskMatrix_u'
+                }, {
+                config: {
+                    color: 'outline-info',
+                    borderless: true,
+                    icon: 'ion ion-md-eye',
+                    title: 'Ver'
+                },
+                data: {
+                    routePush: { name: 'industrialsecure-riskmatrix-macroprocesses-view' },
+                    id: 'id',
+                },
+                permission: 'riskMatrix_r'
+                }]
+        },
+        {
+            type: 'base',
+            buttons: [],
+        },
+    ],
+    configuration: {
+        urlData: '/industrialSecurity/risksMatrix/macroprocess/data',
+        filterColumns: true,
+    }
+}
 ];

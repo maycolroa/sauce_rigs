@@ -76,6 +76,7 @@ class EmployeeProcessController extends Controller
 
             $process = new EmployeeProcess();
             $process->name = $request->name;
+            $process->abbreviation = $request->abbreviation;
             $process->types = $types->implode(',');
             $process->save();
 
@@ -147,6 +148,7 @@ class EmployeeProcessController extends Controller
             $this->tagsSave($types, TagsProcess::class);
             
             $process->name = $request->name;
+            $process->abbreviation = $request->abbreviation;
             $process->types = $types->implode(',');
             $process->update();
 

@@ -11,11 +11,12 @@
             <tab-content title="General">
               <b-card bg-variant="transparent" border-variant="secondary" title="" class="mb-3 box-shadow-none">
                 <b-form-row>
-                  <vue-ajax-advanced-select @selectedName="emitDangerName" :disabled="viewOnly" class="col-md-12" v-model="risk.risk_id" :selected-object="risk.multiselect_risk" name="risk_id" :error="form.errorsFor(`subProcesses.${indexSubprocess}.risks.${indexRisk}.risk_id`)" label="Riesgo" placeholder="Seleccione el Riesgo" :url="risksDataUrl"> </vue-ajax-advanced-select>
+                  <vue-ajax-advanced-select @selectedName="emitDangerName" :disabled="viewOnly" class="col-md-8" v-model="risk.risk_id" :selected-object="risk.multiselect_risk" name="risk_id" :error="form.errorsFor(`subProcesses.${indexSubprocess}.risks.${indexRisk}.risk_id`)" label="Riesgo" placeholder="Seleccione el Riesgo" :url="risksDataUrl"> </vue-ajax-advanced-select>
+                  <vue-input :disabled="true" class="col-md-4" v-model="riskDetail.category" label="Categoría" type="text" name="category"></vue-input>
                 </b-form-row>
                 <b-form-row>
-                  <vue-input :disabled="true" class="col-md-6" v-model="riskDetail.category" label="Categoría" type="text" name="category"></vue-input>
-                  <vue-input class="col-md-6" v-model="risk.risk_sequence" label="# Riesgo" type="number" name="risk_sequence"></vue-input>
+                  <vue-input :disabled="true" class="col-md-6" v-model="risk.risk_sequence" label="# Riesgo" type="number" name="risk_sequence"></vue-input>
+                  <vue-input :disabled="true" class="col-md-6" v-model="risk.nomenclature" label="Nomenclatura" type="text" name="nomenclature"></vue-input>
                 </b-form-row>
               </b-card>
             </tab-content>
@@ -23,9 +24,9 @@
             <tab-content title="Evaluación Inherente">
               <b-card bg-variant="transparent" border-variant="secondary" title="" class="mb-3 box-shadow-none">
                 <b-form-row>
-                  <vue-advanced-select :disabled="viewOnly" class="col-md-4" v-model="risk.economic" :multiple="false" :options="valuesNumerics" :hide-selected="false" name="economic" label="Económico" placeholder="Seleccione" :error="form.errorsFor(`subprocesses.${indexSubprocess}.risks.${indexRisk}.economic`)"></vue-advanced-select>
-                  <vue-advanced-select :disabled="viewOnly" class="col-md-4" v-model="risk.quality_care_patient_safety" :multiple="false" :options="valuesNumerics" :hide-selected="false" name="quality_care_patient_safety" label="Calidad en la atención y seguridad del paciente" placeholder="Seleccione" :error="form.errorsFor(`subprocesses.${indexSubprocess}.risks.${indexRisk}.quality_care_patient_safety`)"></vue-advanced-select>
-                  <vue-advanced-select :disabled="viewOnly" class="col-md-4" v-model="risk.reputational" :multiple="false" :options="valuesNumerics" :hide-selected="false" name="reputational" label="Reputacional" placeholder="Seleccione" :error="form.errorsFor(`subprocesses.${indexSubprocess}.risks.${indexRisk}.reputational`)"></vue-advanced-select>
+                  <vue-advanced-select :disabled="viewOnly" class="col-md-3" v-model="risk.economic" :multiple="false" :options="valuesNumerics" :hide-selected="false" name="economic" label="Económico" placeholder="Seleccione" :error="form.errorsFor(`subprocesses.${indexSubprocess}.risks.${indexRisk}.economic`)"></vue-advanced-select>
+                  <vue-advanced-select :disabled="viewOnly" class="col-md-6" v-model="risk.quality_care_patient_safety" :multiple="false" :options="valuesNumerics" :hide-selected="false" name="quality_care_patient_safety" label="Calidad en la atención y seguridad del paciente" placeholder="Seleccione" :error="form.errorsFor(`subprocesses.${indexSubprocess}.risks.${indexRisk}.quality_care_patient_safety`)"></vue-advanced-select>
+                  <vue-advanced-select :disabled="viewOnly" class="col-md-3" v-model="risk.reputational" :multiple="false" :options="valuesNumerics" :hide-selected="false" name="reputational" label="Reputacional" placeholder="Seleccione" :error="form.errorsFor(`subprocesses.${indexSubprocess}.risks.${indexRisk}.reputational`)"></vue-advanced-select>
                 </b-form-row>
                 <b-form-row>
                   <vue-advanced-select :disabled="viewOnly" class="col-md-4" v-model="risk.legal_regulatory" :multiple="false" :options="valuesNumerics" :hide-selected="false" name="legal_regulatory" label="Legal Regulatorio" placeholder="Seleccione" :error="form.errorsFor(`subprocesses.${indexSubprocess}.risks.${indexRisk}.legal_regulatory`)"></vue-advanced-select>
@@ -98,8 +99,8 @@
                                   </div>
                                   <vue-ajax-advanced-select :disabled="viewOnly" class="col-md-12" v-model="control.controls" name="controls" :error="form.errorsFor(`subprocesses.${indexSubprocess}.risks.${indexRisk}.causes_controls.${indexC}.controls.${indexControl}.controls`)" label="Controles" placeholder="Seleccione los controles" :url="tagsRiskCausesControlsDataUrl" :multiple="true" :allowEmpty="true" :taggable="true">
                                   </vue-ajax-advanced-select>
-                                  <vue-input class="col-md-2" v-model="control.number_control" label="# Control" type="number" name="number_control"></vue-input>
-                                  <vue-input class="col-md-4" v-model="control.nomenclature" label="Nomenclatura" type="text" name="nomenclature"></vue-input>
+                                  <vue-input :disabled="true" class="col-md-2" v-model="control.number_control" label="# Control" type="number" name="number_control"></vue-input>
+                                  <vue-input :disabled="true" class="col-md-4" v-model="control.nomenclature" label="Nomenclatura" type="text" name="nomenclature"></vue-input>
                                </b-form-row>
                             </div>
                           </template>

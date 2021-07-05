@@ -3,11 +3,12 @@
   <b-form :action="url" @submit.prevent="submit" autocomplete="off">
     <b-form-row>
       <vue-input :disabled="viewOnly" class="col-md-6" v-model="form.name" label="Nombre" type="text" name="name" :error="form.errorsFor('name')" placeholder="Nombre"></vue-input>
-      <vue-ajax-advanced-select :disabled="viewOnly" class="col-md-6" v-model="form.employee_regional_id" :error="form.errorsFor('employee_regional_id')" :selected-object="form.multiselect_regional" name="employee_regional_id" :label="keywordCheck('regional')" placeholder="Seleccione una opción" :url="regionalsDataUrl">
-          </vue-ajax-advanced-select>
+      <vue-input :disabled="viewOnly" class="col-md-6" v-model="form.abbreviation" label="Abreviatura (Opcional)" type="text" name="abbreviation" :error="form.errorsFor('abbreviation')" placeholder="Abreviatura"></vue-input>
     </b-form-row>
 
     <b-form-row>
+      <vue-ajax-advanced-select :disabled="viewOnly" class="col-md-6" v-model="form.employee_regional_id" :error="form.errorsFor('employee_regional_id')" :selected-object="form.multiselect_regional" name="employee_regional_id" :label="keywordCheck('regional')" placeholder="Seleccione una opción" :url="regionalsDataUrl">
+          </vue-ajax-advanced-select>
       <vue-ajax-advanced-select :disabled="viewOnly || !form.employee_regional_id" class="col-md-6" v-model="form.employee_headquarter_id" :error="form.errorsFor('employee_headquarter_id')" :selected-object="form.multiselect_sede" name="employee_headquarter_id" :label="keywordCheck('headquarter')" placeholder="Seleccione una opción" :url="headquartersDataUrl" :parameters="{regional: form.employee_regional_id }" :emptyAll="empty.headquarter" @updateEmpty="updateEmptyKey('headquarter')">
           </vue-ajax-advanced-select>
       <vue-ajax-advanced-select :disabled="viewOnly || !form.employee_headquarter_id" class="col-md-6" v-model="form.employee_process_id" :error="form.errorsFor('employee_process_id')"  name="employee_process_id" :label="keywordCheck('processes')" placeholder="Seleccione las opciones" :url="processesDataUrl" :parameters="{headquarter: form.employee_headquarter_id }" :emptyAll="empty.process" @updateEmpty="updateEmptyKey('process')" :multiple="true" :allowEmpty="true" :selected-object="form.multiselect_employee_process_id">
@@ -50,7 +51,8 @@ export default {
             name: '',
             employee_regional_id: '',
             employee_headquarter_id: '',
-            employee_process_id: ''
+            employee_process_id: '',
+            abbreviation: ''
         };
       }
     }

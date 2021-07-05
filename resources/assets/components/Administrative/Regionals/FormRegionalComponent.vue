@@ -2,7 +2,8 @@
 
   <b-form :action="url" @submit.prevent="submit" autocomplete="off">
     <b-form-row>
-      <vue-input :disabled="viewOnly" class="col-md-12" v-model="form.name" label="Nombre" type="text" name="name" :error="form.errorsFor('name')" placeholder="Nombre"></vue-input>
+      <vue-input :disabled="viewOnly" class="col-md-6" v-model="form.name" label="Nombre" type="text" name="name" :error="form.errorsFor('name')" placeholder="Nombre"></vue-input>
+      <vue-input :disabled="viewOnly" class="col-md-6" v-model="form.abbreviation" label="Abreviatura (Opcional)" type="text" name="abbreviation" :error="form.errorsFor('abbreviation')" placeholder="Abreviatura"></vue-input>
     </b-form-row>
 
     <div class="row float-right pt-10 pr-10">
@@ -32,7 +33,8 @@ export default {
     regional: {
       default() {
         return {
-            name: ''
+            name: '',
+            abbreviation: ''
         };
       }
     }

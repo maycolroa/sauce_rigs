@@ -12,7 +12,8 @@ class EmployeeArea extends Model
     protected $table = 'sau_employees_areas';
 
     protected $fillable = [
-        'name'
+        'name',
+        'abbreviation'
     ];
 
     //the attribute define the table for scope company execute

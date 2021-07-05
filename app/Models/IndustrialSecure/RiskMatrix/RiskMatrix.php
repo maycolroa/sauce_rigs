@@ -44,6 +44,11 @@ class RiskMatrix extends Model
         return $this->belongsTo('App\Models\Administrative\Processes\EmployeeProcess', 'employee_process_id');
     }
 
+    public function macroprocess()
+    {
+        return $this->belongsTo('App\Models\Administrative\Processes\TagsProcess', 'macroprocess_id');
+    }
+
     /*public function histories()
     {
         return $this->hasMany(ChangeHistory::class, 'danger_matrix_id');

@@ -134,6 +134,12 @@ trait LocationFormTrait
         $data['employee_process_id'] = $model->employee_process_id;
         $data['employee_area_id'] = $model->employee_area_id;
 
+        if ($model->macroprocess_id)
+        {            
+            $data['macroprocess_id'] = $model->macroprocess_id;
+            $data['multiselect_macroprocess'] = $model->macroprocess ? $model->macroprocess->multiselect() : null;
+        }
+
         $data['multiselect_regional'] = $model->regional ? $model->regional->multiselect() : null;
         $data['multiselect_headquarter'] = $model->headquarter ? $model->headquarter->multiselect() : null;
         $data['multiselect_process'] = $model->process ? $model->process->multiselect() : null;

@@ -13,7 +13,8 @@ class EmployeeHeadquarter extends Model
 
     protected $fillable = [
         'name',
-        'employee_regional_id'
+        'employee_regional_id',
+        'abbreviation'
     ];
 
     //the attribute define the table for scope company execute
