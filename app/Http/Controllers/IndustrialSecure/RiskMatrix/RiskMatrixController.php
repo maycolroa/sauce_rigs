@@ -216,6 +216,7 @@ class RiskMatrixController extends Controller
             $this->tagsSave($participants, TagsRmParticipant::class);
             $riskMatrix->participants = $participants->implode(',');
             $riskMatrix->macroprocess_id = $request->locations['macroprocess_id'];
+            $riskMatrix->nomenclature = $request->locations['nomenclature'];
             
             if(!$riskMatrix->save()){
                 return $this->respondHttp500();
@@ -279,7 +280,8 @@ class RiskMatrixController extends Controller
                     
                     $risk->rm_subprocess_id = $subprocess->id;
                     $risk->risk_id = $itemR['risk_id'];
-                    $risk->risk_sequence = $keyD + 1;
+                    $risk->nomenclature = $itemR['nomenclature'];
+                    $risk->risk_sequence = $itemR['risk_sequence'];
                     $risk->economic = $itemR['economic'];
                     $risk->quality_care_patient_safety =  $itemR['quality_care_patient_safety'];
                     $risk->reputational = $itemR['reputational'];
@@ -337,6 +339,7 @@ class RiskMatrixController extends Controller
                             $control->controls = $controls->implode(',');
                             $control->rm_cause_id = $cause->id;
                             $control->number_control = $itemC2['number_control'];
+                            $control->nomenclature = $itemC2['nomenclature'];
 
                             if(!$control->save()){
                                 return $this->respondHttp500();
@@ -363,7 +366,7 @@ class RiskMatrixController extends Controller
                     $subprocess_procedence = SubProcess::find($itemS['sub_process_id']);
                     $risk_procedence = Risk::find($risk->risk_id);
 
-                    $detail_procedence = 'Mátriz de Peligros - Actividad: '. $subprocess_procedence->name . '. Peligro: '. $risk_procedence->name;
+                    $detail_procedence = 'Mátriz de Riesgos - Subproceso: '. $subprocess_procedence->name . '. Riesgo: '. $risk_procedence->name;
 
                     /**Planes de acción*/
                     ActionPlan::
