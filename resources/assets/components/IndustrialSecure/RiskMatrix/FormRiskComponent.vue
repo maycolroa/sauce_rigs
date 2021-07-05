@@ -49,7 +49,7 @@
                 <b-form-row>
                   <div class="col-md-12" v-if="!viewOnly">
                     <div class="float-right" style="padding-top: 10px;">
-                      <b-btn variant="primary" @click.prevent="addCause()"><span class="ion ion-md-add-circle"></span>&nbsp;&nbsp;Agregar Causa</b-btn>
+                      <b-btn variant="primary" @click.prevent="addCause()" v-if="!viewOnly"><span class="ion ion-md-add-circle"></span>&nbsp;&nbsp;Agregar Causa</b-btn>
                     </div>
                   </div>
                 </b-form-row>
@@ -85,7 +85,7 @@
                           </b-form-row>
                           <b-form-row style="padding-bottom: 20px;">
                             <div class="col-md-12">
-                                <center><b-btn variant="primary" @click.prevent="addControl(indexC)"><span class="ion ion-md-add-circle"></span>&nbsp;&nbsp;Agregar Control</b-btn></center>
+                                <center><b-btn variant="primary" @click.prevent="addControl(indexC)" v-if="!viewOnly"><span class="ion ion-md-add-circle"></span>&nbsp;&nbsp;Agregar Control</b-btn></center>
                             </div>
                           </b-form-row>  
 
@@ -94,7 +94,7 @@
                                 <b-form-row>
                                   <div class="col-md-12">
                                       <div class="float-right">
-                                          <b-btn variant="outline-primary icon-btn borderless" size="sm" v-b-tooltip.top title="Eliminar" @click.prevent="removeControl(cause, indexControl)"><span class="ion ion-md-close-circle"></span></b-btn>
+                                          <b-btn variant="outline-primary icon-btn borderless" size="sm" v-b-tooltip.top title="Eliminar" v-if="!viewOnly" @click.prevent="removeControl(cause, indexControl)"><span class="ion ion-md-close-circle"></span></b-btn>
                                       </div>
                                   </div>
                                   <vue-ajax-advanced-select :disabled="viewOnly" class="col-md-12" v-model="control.controls" name="controls" :error="form.errorsFor(`subprocesses.${indexSubprocess}.risks.${indexRisk}.causes_controls.${indexC}.controls.${indexControl}.controls`)" label="Controles" placeholder="Seleccione los controles" :url="tagsRiskCausesControlsDataUrl" :multiple="true" :allowEmpty="true" :taggable="true">
@@ -140,7 +140,7 @@
                 </b-form-row>
                 <b-form-row style="padding-bottom: 20px;">
                   <div class="col-md-12">
-                      <center><b-btn variant="primary" @click.prevent="addIndicator()"><span class="ion ion-md-add-circle"></span>&nbsp;&nbsp;Agregar Indicador</b-btn></center>
+                      <center><b-btn variant="primary" v-if="!viewOnly" @click.prevent="addIndicator()"><span class="ion ion-md-add-circle"></span>&nbsp;&nbsp;Agregar Indicador</b-btn></center>
                   </div>
                 </b-form-row>
 
@@ -149,7 +149,7 @@
                       <b-form-row>
                         <div class="col-md-12">
                             <div class="float-right">
-                                <b-btn variant="outline-primary icon-btn borderless" size="sm" v-b-tooltip.top title="Eliminar" @click.prevent="removeIndicator(indexInd)"><span class="ion ion-md-close-circle"></span></b-btn>
+                                <b-btn v-if="!viewOnly" variant="outline-primary icon-btn borderless" size="sm" v-b-tooltip.top title="Eliminar" @click.prevent="removeIndicator(indexInd)"><span class="ion ion-md-close-circle"></span></b-btn>
                             </div>
                         </div>
                         <vue-input class="col-md-12" v-model="indicator.indicator" label="Indicador" type="text" name="indicator"></vue-input>
@@ -231,7 +231,6 @@ export default {
 			type: Array,
 			default: function() {
 				return [
-					{ name:0, value:'0'},
 					{ name:1, value:'1'},
 					{ name:2, value:'2'},
 					{ name:3, value:'3'},
