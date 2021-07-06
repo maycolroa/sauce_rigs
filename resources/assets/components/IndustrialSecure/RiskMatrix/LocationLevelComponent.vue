@@ -158,24 +158,30 @@ export default {
         },*/
         updateNomenclaturePro()
         {
-            axios.post("/industrialSecurity/risksMatrix/getAbrevProcess", {id: this.locationLevel.employee_process_id})
-            .then(response => {
-                this.nom_proc = response.data.data;
-            })
-            .catch(error => {
-                Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
-            });
+            if (this.locationLevel.employee_process_id)
+            {
+                axios.post("/industrialSecurity/risksMatrix/getAbrevProcess", {id: this.locationLevel.employee_process_id})
+                .then(response => {
+                    this.nom_proc = response.data.data;
+                })
+                .catch(error => {
+                    Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
+                });
+            }
         },
         updateNomenclatureMacro()
         {
-            axios.post("/industrialSecurity/risksMatrix/getAbrevMacro", {id: this.locationLevel.macroprocess_id})
-            .then(response => {
-                this.nom_macro = response.data.data;
-                this.locationLevel.nomenclature = this.nom_reg + '.' + this.nom_macro + '.' + this.nom_proc + '.';
-            })
-            .catch(error => {
-                Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
-            });
+            if (this.locationLevel.macroprocess_id)
+            {
+                axios.post("/industrialSecurity/risksMatrix/getAbrevMacro", {id: this.locationLevel.macroprocess_id})
+                .then(response => {
+                    this.nom_macro = response.data.data;
+                    this.locationLevel.nomenclature = this.nom_reg + '.' + this.nom_macro + '.' + this.nom_proc + '.';
+                })
+                .catch(error => {
+                    Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
+                });
+            }
         },
         /*updateNomenclatureArea()
         {
