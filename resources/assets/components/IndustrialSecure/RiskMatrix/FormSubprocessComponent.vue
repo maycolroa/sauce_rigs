@@ -60,6 +60,7 @@
                     :documentation="documentation"
                     :mitigation="mitigation"
                     :nomenclature="nomenclature"
+                    :text-help="textHelp"
                   />
                 </b-card-body>
               </b-collapse>
@@ -141,6 +142,12 @@ export default {
       }
     },
     mitigation: {
+      type: [Array, Object],
+      default: function() {
+        return [];
+      }
+    },
+    textHelp: {
       type: [Array, Object],
       default: function() {
         return [];

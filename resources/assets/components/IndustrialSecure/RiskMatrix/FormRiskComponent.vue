@@ -24,18 +24,60 @@
             <tab-content title="Evaluación Inherente">
               <b-card bg-variant="transparent" border-variant="secondary" title="" class="mb-3 box-shadow-none">
                 <b-form-row>
-                  <vue-advanced-select :disabled="viewOnly" class="col-md-3" v-model="risk.economic" :multiple="false" :options="valuesNumerics" :hide-selected="false" name="economic" label="Económico" placeholder="Seleccione" :error="form.errorsFor(`subprocesses.${indexSubprocess}.risks.${indexRisk}.economic`)"></vue-advanced-select>
-                  <vue-advanced-select :disabled="viewOnly" class="col-md-6" v-model="risk.quality_care_patient_safety" :multiple="false" :options="valuesNumerics" :hide-selected="false" name="quality_care_patient_safety" label="Calidad en la atención y seguridad del paciente" placeholder="Seleccione" :error="form.errorsFor(`subprocesses.${indexSubprocess}.risks.${indexRisk}.quality_care_patient_safety`)"></vue-advanced-select>
-                  <vue-advanced-select :disabled="viewOnly" class="col-md-3" v-model="risk.reputational" :multiple="false" :options="valuesNumerics" :hide-selected="false" name="reputational" label="Reputacional" placeholder="Seleccione" :error="form.errorsFor(`subprocesses.${indexSubprocess}.risks.${indexRisk}.reputational`)"></vue-advanced-select>
+                  <div class="col-md-3" >
+                    <b-col>
+                      <div class="float-right" style="padding-right: 10px;">
+                          <b-btn v-b-popover.hover.focus.left="textHelp.economico" title="Modo de verificación" variant="primary" class="btn-circle-micro"><span class="fas fa-info"></span></b-btn>
+                      </div>
+                    </b-col>
+                    <vue-advanced-select :disabled="viewOnly" v-model="risk.economic" :multiple="false" :options="valuesNumerics" :hide-selected="false" name="economic" label="Económico" placeholder="Seleccione" :error="form.errorsFor(`subprocesses.${indexSubprocess}.risks.${indexRisk}.economic`)"></vue-advanced-select>
+                  </div>
+                  <div class="col-md-6">
+                    <b-col>
+                      <div class="float-right" style="padding-right: 10px;">
+                          <b-btn v-b-popover.hover.focus.left="textHelp.calidad" title="Modo de verificación" variant="primary" class="btn-circle-micro"><span class="fas fa-info"></span></b-btn>
+                      </div>
+                    </b-col>
+                    <vue-advanced-select :disabled="viewOnly" v-model="risk.quality_care_patient_safety" :multiple="false" :options="valuesNumerics" :hide-selected="false" name="quality_care_patient_safety" label="Calidad en la atención y seguridad del paciente" placeholder="Seleccione" :error="form.errorsFor(`subprocesses.${indexSubprocess}.risks.${indexRisk}.quality_care_patient_safety`)"></vue-advanced-select>
+                  </div>
+                  <div class="col-md-3" >
+                    <b-col>
+                      <div class="float-right" style="padding-right: 10px;">
+                          <b-btn v-b-popover.hover.focus.left="textHelp.reputacional" title="Modo de verificación" variant="primary" class="btn-circle-micro"><span class="fas fa-info"></span></b-btn>
+                      </div>
+                    </b-col>
+                    <vue-advanced-select :disabled="viewOnly" v-model="risk.reputational" :multiple="false" :options="valuesNumerics" :hide-selected="false" name="reputational" label="Reputacional" placeholder="Seleccione" :error="form.errorsFor(`subprocesses.${indexSubprocess}.risks.${indexRisk}.reputational`)"></vue-advanced-select>
+                  </div>
                 </b-form-row>
                 <b-form-row>
-                  <vue-advanced-select :disabled="viewOnly" class="col-md-4" v-model="risk.legal_regulatory" :multiple="false" :options="valuesNumerics" :hide-selected="false" name="legal_regulatory" label="Legal Regulatorio" placeholder="Seleccione" :error="form.errorsFor(`subprocesses.${indexSubprocess}.risks.${indexRisk}.legal_regulatory`)"></vue-advanced-select>
-                  <vue-advanced-select :disabled="viewOnly" class="col-md-4" v-model="risk.environmental" :multiple="false" :options="valuesNumerics" :hide-selected="false" name="environmental" label="Ambiental" placeholder="Seleccione" :error="form.errorsFor(`subprocesses.${indexSubprocess}.risks.${indexRisk}.environmental`)"></vue-advanced-select>
+                  <div class="col-md-4" >
+                    <b-col>
+                      <div class="float-right" style="padding-right: 10px;">
+                          <b-btn v-b-popover.hover.focus.left="textHelp.legal" title="Modo de verificación" variant="primary" class="btn-circle-micro"><span class="fas fa-info"></span></b-btn>
+                      </div>
+                    </b-col>
+                    <vue-advanced-select :disabled="viewOnly" v-model="risk.legal_regulatory" :multiple="false" :options="valuesNumerics" :hide-selected="false" name="legal_regulatory" label="Legal Regulatorio" placeholder="Seleccione" :error="form.errorsFor(`subprocesses.${indexSubprocess}.risks.${indexRisk}.legal_regulatory`)"></vue-advanced-select>
+                  </div>
+                  <div class="col-md-4" >
+                    <b-col>
+                      <div class="float-right" style="padding-right: 10px;">
+                          <b-btn v-b-popover.hover.focus.left="textHelp.ambiental" title="Modo de verificación" variant="primary" class="btn-circle-micro"><span class="fas fa-info"></span></b-btn>
+                      </div>
+                    </b-col>
+                    <vue-advanced-select :disabled="viewOnly" v-model="risk.environmental" :multiple="false" :options="valuesNumerics" :hide-selected="false" name="environmental" label="Ambiental" placeholder="Seleccione" :error="form.errorsFor(`subprocesses.${indexSubprocess}.risks.${indexRisk}.environmental`)"></vue-advanced-select>
+                  </div>
                   <vue-input class="col-md-4" :disabled="true" v-model="risk.max_inherent_impact" label="Max. Impacto Inherente" type="number" name="max_inherent_impact" :error="form.errorsFor(`subprocesses.${indexSubprocess}.risks.${indexRisk}.max_inherent_impact`)"></vue-input>
                 </b-form-row>
                 <b-form-row>
                   <vue-input class="col-md-4" :disabled="true" v-model="risk.description_inherent_impact" label="Descripción Impacto Inherente" type="text" name="description_inherent_impact" :error="form.errorsFor(`subprocesses.${indexSubprocess}.risks.${indexRisk}.description_inherent_impact`)"></vue-input>
-                  <vue-advanced-select :disabled="viewOnly" class="col-md-4" v-model="risk.max_inherent_frequency" :multiple="false" :options="valuesNumericsFrecuency" :hide-selected="false" name="max_inherent_frequency" label="Max. Frecuencia Inherente" placeholder="Seleccione" :error="form.errorsFor(`subprocesses.${indexSubprocess}.risks.${indexRisk}.max_inherent_frequency`)"></vue-advanced-select>
+                  <div class="col-md-4" >
+                    <b-col>
+                      <div class="float-right" style="padding-right: 10px;">
+                          <b-btn v-b-popover.hover.focus.left="textHelp.max_frequence" title="Modo de verificación" variant="primary" class="btn-circle-micro"><span class="fas fa-info"></span></b-btn>
+                      </div>
+                    </b-col>
+                    <vue-advanced-select :disabled="viewOnly" v-model="risk.max_inherent_frequency" :multiple="false" :options="valuesNumericsFrecuency" :hide-selected="false" name="max_inherent_frequency" label="Max. Frecuencia Inherente" placeholder="Seleccione" :error="form.errorsFor(`subprocesses.${indexSubprocess}.risks.${indexRisk}.max_inherent_frequency`)"></vue-advanced-select>
+                  </div>
                   <vue-input class="col-md-4" :disabled="true" v-model="risk.description_inherent_frequency" label="Descripicón Frecuencia Inherente" type="text" name="description_inherent_frequency" :error="form.errorsFor(`subprocesses.${indexSubprocess}.risks.${indexRisk}.description_inherent_frequency`)"></vue-input>
                 </b-form-row>
                 <b-form-row>
@@ -116,13 +158,48 @@
               <b-card bg-variant="transparent" border-variant="secondary" title="" class="mb-3 box-shadow-none">
                <b-form-row>
                   <vue-advanced-select :disabled="viewOnly" class="col-md-4" v-model="risk.controls_decrease" :multiple="false" :options="controlsDecrease" :hide-selected="false" name="controls_decrease" label="Los controles apuntan a disminuir" placeholder="Seleccione" :error="form.errorsFor(`subprocesses.${indexSubprocess}.risks.${indexRisk}.controls_decrease`)"></vue-advanced-select>
-                  <vue-advanced-select :disabled="viewOnly" class="col-md-4" v-model="risk.nature" :multiple="false" :options="nature" :hide-selected="false" name="nature" label="Naturaleza" placeholder="Seleccione" :error="form.errorsFor(`subprocesses.${indexSubprocess}.risks.${indexRisk}.nature`)"></vue-advanced-select>
-                  <vue-radio :disabled="viewOnly" :checked="risk.evidence" class="col-md-4" v-model="risk.evidence" :options="siNo" name="evidence" :error="form.errorsFor(`subprocesses.${indexSubprocess}.risks.${indexRisk}.evidence`)" label="Evidencia"></vue-radio>
+                  <div class="col-md-4" >
+                    <b-col>
+                      <div class="float-right" style="padding-right: 10px;">
+                          <b-btn v-b-popover.hover.focus.left="textHelp.naturaleza" title="Modo de verificación" variant="primary" class="btn-circle-micro"><span class="fas fa-info"></span></b-btn>
+                      </div>
+                    </b-col>
+                  <vue-advanced-select :disabled="viewOnly" v-model="risk.nature" :multiple="false" :options="nature" :hide-selected="false" name="nature" label="Naturaleza" placeholder="Seleccione" :error="form.errorsFor(`subprocesses.${indexSubprocess}.risks.${indexRisk}.nature`)"></vue-advanced-select>
+                  </div>
+                  <div class="col-md-4" >
+                    <b-col>
+                      <div class="float-right" style="padding-right: 10px;">
+                          <b-btn v-b-popover.hover.focus.left="textHelp.evidencia" title="Modo de verificación" variant="primary" class="btn-circle-micro"><span class="fas fa-info"></span></b-btn>
+                      </div>
+                    </b-col>
+                  <vue-radio :disabled="viewOnly" :checked="risk.evidence" v-model="risk.evidence" :options="siNo" name="evidence" :error="form.errorsFor(`subprocesses.${indexSubprocess}.risks.${indexRisk}.evidence`)" label="Evidencia"></vue-radio>
+                  </div>
                 </b-form-row>
                 <b-form-row>
-                  <vue-advanced-select :disabled="viewOnly" class="col-md-4" v-model="risk.coverage" :multiple="false" :options="coverage" :hide-selected="false" name="coverage" label="Cobertura" placeholder="Seleccione" :error="form.errorsFor(`subprocesses.${indexSubprocess}.risks.${indexRisk}.coverage`)"></vue-advanced-select>
-                  <vue-advanced-select :disabled="viewOnly" class="col-md-4" v-model="risk.documentation" :multiple="false" :options="documentation" :hide-selected="false" name="documentation" label="Documentación" placeholder="Seleccione" :error="form.errorsFor(`subprocesses.${indexSubprocess}.risks.${indexRisk}.documentation`)"></vue-advanced-select>
-                  <vue-radio :disabled="viewOnly" :checked="risk.segregation" class="col-md-4" v-model="risk.segregation" :options="siNo" name="segregation" :error="form.errorsFor(`subprocesses.${indexSubprocess}.risks.${indexRisk}.segregation`)" label="Segregación"></vue-radio>
+                  <div class="col-md-4" >
+                    <b-col>
+                      <div class="float-right" style="padding-right: 10px;">
+                          <b-btn v-b-popover.hover.focus.left="textHelp.cobertura" title="Modo de verificación" variant="primary" class="btn-circle-micro"><span class="fas fa-info"></span></b-btn>
+                      </div>
+                    </b-col>
+                  <vue-advanced-select :disabled="viewOnly" v-model="risk.coverage" :multiple="false" :options="coverage" :hide-selected="false" name="coverage" label="Cobertura" placeholder="Seleccione" :error="form.errorsFor(`subprocesses.${indexSubprocess}.risks.${indexRisk}.coverage`)"></vue-advanced-select>
+                  </div>
+                  <div class="col-md-4" >
+                    <b-col>
+                      <div class="float-right" style="padding-right: 10px;">
+                          <b-btn v-b-popover.hover.focus.left="textHelp.documentacion" title="Modo de verificación" variant="primary" class="btn-circle-micro"><span class="fas fa-info"></span></b-btn>
+                      </div>
+                    </b-col>
+                    <vue-advanced-select :disabled="viewOnly" v-model="risk.documentation" :multiple="false" :options="documentation" :hide-selected="false" name="documentation" label="Documentación" placeholder="Seleccione" :error="form.errorsFor(`subprocesses.${indexSubprocess}.risks.${indexRisk}.documentation`)"></vue-advanced-select>
+                  </div>
+                  <div class="col-md-4" >
+                    <b-col>
+                      <div class="float-right" style="padding-right: 10px;">
+                          <b-btn v-b-popover.hover.focus.left="textHelp.segregacion" title="Modo de verificación" variant="primary" class="btn-circle-micro"><span class="fas fa-info"></span></b-btn>
+                      </div>
+                    </b-col>
+                    <vue-radio :disabled="viewOnly" :checked="risk.segregation" v-model="risk.segregation" :options="siNo" name="segregation" :error="form.errorsFor(`subprocesses.${indexSubprocess}.risks.${indexRisk}.segregation`)" label="Segregación"></vue-radio>
+                  </div>
                 </b-form-row>
                 <b-form-row>
                   <vue-input class="col-md-4" :disabled="true" v-model="risk.control_evaluation" label="Evaluación del control" type="text" name="control_evaluation" :error="form.errorsFor(`subprocesses.${indexSubprocess}.risks.${indexRisk}.control_evaluation`)"></vue-input>
@@ -214,6 +291,8 @@ export default {
     {
       this.updateDetails(`/industrialSecurity/risk/${this.risk.risk_id}`, 'riskDetail');
     }
+
+    console.log(this.textHelp);
     
     setTimeout(() => {
         this.loading = false;
@@ -300,6 +379,12 @@ export default {
       }
     },
     mitigation: {
+      type: [Array, Object],
+      default: function() {
+        return [];
+      }
+    },
+    textHelp: {
       type: [Array, Object],
       default: function() {
         return [];

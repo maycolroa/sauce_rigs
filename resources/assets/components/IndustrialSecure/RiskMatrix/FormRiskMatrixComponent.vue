@@ -76,6 +76,7 @@
                   :documentation="documentation"
                   :mitigation="mitigation"
                   :nomenclature="form.locations.nomenclature"
+                  :text-help="textHelp"
                 />
             </b-tab>
           </b-tabs>
@@ -168,6 +169,12 @@ export default {
       }
     },
     mitigation: {
+      type: [Array, Object],
+      default: function() {
+        return [];
+      }
+    },
+    textHelp: {
       type: [Array, Object],
       default: function() {
         return [];

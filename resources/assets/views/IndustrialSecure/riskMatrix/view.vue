@@ -23,7 +23,8 @@
                 :nature="nature"
                 :coverage="coverage"
                 :documentation="documentation"
-                :mitigation="mitigation"/>
+                :mitigation="mitigation"
+                :text-help="textHelp"/>
           </div>
         </b-card-body>
       </b-card>
@@ -80,6 +81,7 @@ export default {
     this.fetchSelect('evaluationControls', '/industrialSecurity/risksMatrix/getEvaluationControls')
     this.fetchSelect('impactsDescription', '/industrialSecurity/risksMatrix/getImpacts')
     this.fetchSelect('mitigation', '/industrialSecurity/risksMatrix/getMitigation')
+    this.fetchSelect('textHelp', '/industrialSecurity/risksMatrix/getTextHelp')
   },
   methods: {
     fetchSelect(key, url)

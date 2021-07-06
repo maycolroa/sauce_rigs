@@ -21,7 +21,8 @@
                 :documentation="documentation"
                 :mitigation="mitigation"
                 :cancel-url="{ name: 'industrialsecure-riskmatrix'}"
-                :si-no="siNo"/>
+                :si-no="siNo"
+                :text-help="textHelp"/>
         </b-card-body>
       </b-card>
     </div>
@@ -51,7 +52,8 @@ export default {
       nature: [],
       coverage: [],
       documentation: [],
-      mitigation : []
+      mitigation : [],
+      textHelp: []
     }
   },
   created(){
@@ -64,6 +66,7 @@ export default {
     this.fetchSelect('evaluationControls', '/industrialSecurity/risksMatrix/getEvaluationControls')
     this.fetchSelect('impactsDescription', '/industrialSecurity/risksMatrix/getImpacts')
     this.fetchSelect('mitigation', '/industrialSecurity/risksMatrix/getMitigation')
+    this.fetchSelect('textHelp', '/industrialSecurity/risksMatrix/getTextHelp')
   },
   methods: {
     fetchSelect(key, url)
