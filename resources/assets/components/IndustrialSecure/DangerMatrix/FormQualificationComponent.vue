@@ -123,6 +123,8 @@ export default {
                 this.$set(this.casillas, value.description, key)
             });
 
+            console.log(this.data)
+
             this.ready = true
 
             setTimeout(() => {

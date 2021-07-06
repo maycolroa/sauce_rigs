@@ -498,4 +498,12 @@ class RiskMatrixController extends Controller
             'data' => $nom_reg,
         ]);
     }
+
+
+    public function getTextHelp()
+    {
+        $data = $this->textHelp();
+
+        return $data;
+    }
 }
