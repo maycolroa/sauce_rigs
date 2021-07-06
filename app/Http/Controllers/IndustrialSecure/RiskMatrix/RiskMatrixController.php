@@ -447,7 +447,10 @@ class RiskMatrixController extends Controller
     {
         $abrev = TagsProcess::find($request->id);
 
-        $nom_reg = $abrev->abbreviation;
+        if ($abrev->abbreviation)
+            $nom_reg = $abrev->abbreviation;
+        else
+            $nom_reg = '';
 
         return $this->respondHttp200([
             'data' => $nom_reg,
@@ -458,7 +461,10 @@ class RiskMatrixController extends Controller
     {
         $abrev = EmployeeHeadquarter::find($request->id);
 
-        $nom_reg = $abrev->abbreviation;
+        if ($abrev->abbreviation)
+            $nom_reg = $abrev->abbreviation;
+        else
+            $nom_reg = '';
 
         return $this->respondHttp200([
             'data' => $nom_reg,
@@ -469,7 +475,10 @@ class RiskMatrixController extends Controller
     {
         $abrev = EmployeeProcess::find($request->id);
 
-        $nom_reg = $abrev->abbreviation;
+        if ($abrev->abbreviation)
+            $nom_reg = $abrev->abbreviation;
+        else
+            $nom_reg = '';
 
         return $this->respondHttp200([
             'data' => $nom_reg,
@@ -480,7 +489,10 @@ class RiskMatrixController extends Controller
     {
         $abrev = EmployeeArea::find($request->id);
 
-        $nom_reg = $abrev->abbreviation;
+        if ($abrev->abbreviation)
+            $nom_reg = $abrev->abbreviation;
+        else
+            $nom_reg = '';
 
         return $this->respondHttp200([
             'data' => $nom_reg,
