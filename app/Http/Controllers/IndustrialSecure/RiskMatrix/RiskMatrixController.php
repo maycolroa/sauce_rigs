@@ -433,7 +433,10 @@ class RiskMatrixController extends Controller
     {
         $abrev = EmployeeRegional::find($request->id);
 
-        $nom_reg = $abrev->abbreviation;
+        if ($abrev->abbreviation)
+            $nom_reg = $abrev->abbreviation;
+        else
+            $nom_reg = '';
 
         return $this->respondHttp200([
             'data' => $nom_reg,
