@@ -48,6 +48,8 @@ class VuetableColumnManager
         'industrialsecureriskmatrix',
         'dangerousconditionsreport',
         'dangerousconditionsinspectionsrequestfirm',
+        'industrialsecureriskmatrixreport',
+        'industrialsecureriskmatrixreportresidual'
     ];
 
     protected $customColumnsName;
@@ -525,6 +527,38 @@ class VuetableColumnManager
             ['name' => 'u.name', 'data'=> 'user_firm', 'title'=> 'Usuario Firmante', 'sortable'=> true, 'searchable'=> true, 'detail'=> false, 'key'=> false ],
             ['name' => 'sau_users.name', 'data'=> 'qualificator', 'title'=> 'Calificador', 'sortable'=> true, 'searchable'=> true, 'detail'=> false, 'key'=> false ],
             ['name' => 'sau_ph_inspection_items_qualification_area_location.qualification_date', 'data'=> 'qualification_date', 'title'=> 'Fecha Calificación', 'sortable'=> true, 'searchable'=> true, 'detail'=> false, 'key'=> false ]
+        ];
+
+        $colums = array_merge($colums, $this->getColumnsLocations());
+        $colums = array_merge($colums, [
+            ['name' => '', 'data'=> 'controlls', 'title'=> 'Controles', 'sortable'=> false, 'searchable'=> false, 'detail'=> false, 'key'=> false ],
+        ]);
+
+        return $colums;
+    }
+
+    public function industrialsecureriskmatrixreport()
+    {
+        $colums = [
+            ['name' => 'sau_dangers_matrix.id', 'data'=> 'id', 'title'=> 'ID', 'sortable'=> false, 'searchable'=> false, 'detail'=> false, 'key'=> true ],
+            ['name' => 'sau_rm_risk.name', 'data'=> 'name', 'title'=> 'Riesgo', 'sortable'=> true, 'searchable'=> true, 'detail'=> false, 'key'=> false ],
+            ['name' => 'sau_rm_risk.category', 'data'=> 'category', 'title'=> 'Categoría', 'sortable'=> true, 'searchable'=> true, 'detail'=> false, 'key'=> false ]
+        ];
+
+        $colums = array_merge($colums, $this->getColumnsLocations());
+        $colums = array_merge($colums, [
+            ['name' => '', 'data'=> 'controlls', 'title'=> 'Controles', 'sortable'=> false, 'searchable'=> false, 'detail'=> false, 'key'=> false ],
+        ]);
+
+        return $colums;
+    }
+
+    public function industrialsecureriskmatrixreportresidual()
+    {
+        $colums = [
+            ['name' => 'sau_dangers_matrix.id', 'data'=> 'id', 'title'=> 'ID', 'sortable'=> false, 'searchable'=> false, 'detail'=> false, 'key'=> true ],
+            ['name' => 'sau_rm_risk.name', 'data'=> 'name', 'title'=> 'Riesgo', 'sortable'=> true, 'searchable'=> true, 'detail'=> false, 'key'=> false ],
+            ['name' => 'sau_rm_risk.category', 'data'=> 'category', 'title'=> 'Categoría', 'sortable'=> true, 'searchable'=> true, 'detail'=> false, 'key'=> false ]
         ];
 
         $colums = array_merge($colums, $this->getColumnsLocations());

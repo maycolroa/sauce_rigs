@@ -1030,5 +1030,69 @@ export default [
         urlData: '/industrialSecurity/risksMatrix/macroprocess/data',
         filterColumns: true,
     }
-}
+},
+{
+    name: 'industrialsecure-riskmatrix-report',
+    fields: [
+        { name: 'sau_rm_risks_matrix.id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true }
+    ],
+    'controlls': [
+        {
+            type: 'push',
+            buttons: [{
+                config: {
+                    color: 'outline-info',
+                    borderless: true,
+                    icon: 'ion ion-md-eye',
+                    title: 'Ver'
+                },
+                data: {
+                    routePush: { name: 'industrialsecure-riskmatrix-view' },
+                    id: 'id',
+                },
+                permission: 'riskMatrix_r'
+            }]
+        },
+        {
+            type: 'base',
+            buttons: [],
+        }
+    ],
+    configuration: {
+        urlData: '/industrialSecurity/risksMatrix/reportRiskInherentTable',
+        filterColumns: true,
+    }
+},
+{
+    name: 'industrialsecure-riskmatrix-report-residual',
+    fields: [
+        { name: 'sau_rm_risks_matrix.id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true }
+    ],
+    'controlls': [
+        {
+            type: 'push',
+            buttons: [{
+                config: {
+                    color: 'outline-info',
+                    borderless: true,
+                    icon: 'ion ion-md-eye',
+                    title: 'Ver'
+                },
+                data: {
+                    routePush: { name: 'industrialsecure-riskmatrix-view' },
+                    id: 'id',
+                },
+                permission: 'riskMatrix_r'
+            }]
+        },
+        {
+            type: 'base',
+            buttons: [],
+        }
+    ],
+    configuration: {
+        urlData: '/industrialSecurity/risksMatrix/reportRiskResidualTable',
+        filterColumns: true,
+    }
+},
 ];

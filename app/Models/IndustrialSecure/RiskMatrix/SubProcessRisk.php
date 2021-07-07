@@ -61,17 +61,17 @@ class SubProcessRisk extends Model
      * @param  array $dangers
      * @return Illuminate\Database\Eloquent\Builder
      */
-    /*public function scopeInDangers($query, $dangers, $typeSearch = 'IN')
+    public function scopeInRisks($query, $risks, $typeSearch = 'IN')
     {
-        if (COUNT($dangers) > 0)
+        if (COUNT($risks) > 0)
         {
             if ($typeSearch == 'IN')
-                $query->whereIn('sau_dm_activity_danger.danger_id', $dangers);
+                $query->whereIn('sau_rm_subprocess_risk.risk_id', $risks);
 
             else if ($typeSearch == 'NOT IN')
-                $query->whereNotIn('sau_dm_activity_danger.danger_id', $dangers);
+                $query->whereNotIn('sau_rm_subprocess_risk.risk_id', $risks);
         }
 
         return $query;
-    }*/
+    }
 }
