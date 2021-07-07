@@ -1,0 +1,386 @@
+<?php
+
+namespace App\Http\Controllers\IndustrialSecure\RiskMatrix;
+
+use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use App\Vuetable\Facades\Vuetable;
+use App\Models\IndustrialSecure\RiskMatrix\RiskMatrix;
+use App\Jobs\IndustrialSecure\DangerMatrix\RiskMatrixReportExportJob;
+use App\Traits\RiskMatrixTrait;
+use App\Traits\Filtertrait;
+
+class RiskMatrixReportController extends Controller
+{
+    use RiskMatrixTrait;
+    use Filtertrait;
+
+    /**
+     * creates and instance and middlewares are checked
+     */
+    function __construct()
+    {
+        parent::__construct();
+        $this->middleware('auth');
+        /*$this->middleware("permission:dangerMatrix_r|dangerMatrix_view_report, {$this->team}");
+        $this->middleware("permission:dangerMatrix_export_report, {$this->team}", ['only' => 'reportExport']);*/
+    }
+
+    /**
+     * returns the inform data according to
+     * multiple conditions, like filters
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function reportInherent(Request $request)
+    {
+        $data = [];
+
+        $url = "/industrialsecure/riskmatrix/report";
+        $init = true;
+        $filters = [];
+        $showLabelCol = false;
+
+        if ($request->has('filtersType'))
+            $init = false;
+        else 
+            $filters = $this->filterDefaultValues($this->user->id, $url);
+
+            $matriz_calification = $this->getMatrixReport();
+            $data = $matriz_calification;
+
+        /** FIltros */
+        $regionals = !$init ? $this->getValuesForMultiselect($request->regionals) : (isset($filters['regionals']) ? $this->getValuesForMultiselect($filters['regionals']) : []);
+        
+        $headquarters = !$init ? $this->getValuesForMultiselect($request->headquarters) : (isset($filters['headquarters']) ? $this->getValuesForMultiselect($filters['headquarters']) : []);
+        
+        $areas = !$init ? $this->getValuesForMultiselect($request->areas) : (isset($filters['areas']) ? $this->getValuesForMultiselect($filters['areas']) : []);
+        
+        $processes = !$init ? $this->getValuesForMultiselect($request->processes) : (isset($filters['processes']) ? $this->getValuesForMultiselect($filters['processes']) : []);
+        
+        $macroprocesses = !$init ? $this->getValuesForMultiselect($request->macroprocesses) : (isset($filters['macroprocesses']) ? $this->getValuesForMultiselect($filters['macroprocesses']) : []);
+        
+        $risks = !$init ? $this->getValuesForMultiselect($request->risks) : (isset($filters['risks']) ? $this->getValuesForMultiselect($filters['risks']) : []);
+
+        $filtersType = !$init ? $request->filtersType : (isset($filters['filtersType']) ? $filters['filtersType'] : null);
+        /***********************************************/
+
+        $risksMatrix = RiskMatrix::select('sau_rm_risks_matrix.*')
+            ->join('sau_employees_regionals', 'sau_employees_regionals.id', 'sau_rm_risks_matrix.employee_regional_id')
+            ->leftJoin('sau_employees_headquarters', 'sau_employees_headquarters.id', 'sau_rm_risks_matrix.employee_headquarter_id')
+            ->leftJoin('sau_employees_areas', 'sau_employees_areas.id', 'sau_rm_risks_matrix.employee_area_id')
+            ->leftJoin('sau_employees_processes', 'sau_employees_processes.id', 'sau_rm_risks_matrix.employee_process_id')
+            ->inRegionals($regionals, isset($filtersType['regionals']) ? $filtersType['regionals'] : 'IN')
+            ->inHeadquarters($headquarters, isset($filtersType['headquarters']) ? $filtersType['headquarters'] : 'IN')
+            ->inAreas($areas, isset($filtersType['areas']) ? $filtersType['areas'] : 'IN')
+            ->inProcesses($processes, isset($filtersType['processes']) ? $filtersType['processes'] : 'IN')
+            ->inMacroprocesses($macroprocesses, isset($filtersType['macroprocesses']) ? $filtersType['macroprocesses'] : 'IN')
+            ->get();
+
+        foreach ($risksMatrix as $keyMatrix => $itemMatrix)
+        {
+            foreach ($itemMatrix->subprocesses as $keySub => $itemSub)
+            {
+                $subprocess_risks = $itemSub->risks()->inRisks($risks, $filtersType['risks'])->get();
+
+                foreach ($subprocess_risks as $keyRisk => $itemRisk)
+                {
+                    $frec = $itemRisk->description_inherent_frequency;
+
+                    $imp = $itemRisk->description_inherent_impact;
+
+                    if (isset($data[$frec]) && isset($data[$frec][$imp]))
+                            $data[$frec][$imp]['count']++;
+                }
+            }
+        }
+
+        $matriz = [];
+
+        $showLabelCol = true;
+        $headers = array_keys($data);
+
+        $count = isset($data['Muy Bajo']) ? COUNT($data['Muy Bajo']) : 0;
+
+        for ($i=0; $i < $count; $i++)
+        { 
+            $y = 0;
+
+            foreach ($data as $key => $value)
+            {
+                $x = 0;
+
+                foreach ($value as $key2 => $value2)
+                { 
+                    $matriz[$x][$y] = array_merge($data[$key][$key2], ["row"=>$key, "col"=>$key2]);
+                    $x++;
+                }
+
+                $y++;
+            }
+        }
+
+        return $this->respondHttp200([
+            "data" => [
+                "data" => $matriz,
+                "headers" => $headers,
+                "showLabelCol" => $showLabelCol
+            ]
+        ]);
+    }
+
+    /**
+    * Display a listing of the resource.
+    *
+    * @return \Illuminate\Http\Response
+    */
+    public function reportRiskInherentTable(Request $request)
+    {
+        $url = "/industrialsecure/dangermatrix/report";
+        $init = true;
+        $filters = [];
+
+        if ($request->has('filtersType'))
+            $init = false;
+        else 
+            $filters = $this->filterDefaultValues($this->user->id, $url);
+
+        /** FIltros */
+        /*$regionals = !$init ? $this->getValuesForMultiselect($request->regionals) : (isset($filters['regionals']) ? $this->getValuesForMultiselect($filters['regionals']) : []);
+            
+        $headquarters = !$init ? $this->getValuesForMultiselect($request->headquarters) : (isset($filters['headquarters']) ? $this->getValuesForMultiselect($filters['headquarters']) : []);
+        
+        $areas = !$init ? $this->getValuesForMultiselect($request->areas) : (isset($filters['areas']) ? $this->getValuesForMultiselect($filters['areas']) : []);
+        
+        $processes = !$init ? $this->getValuesForMultiselect($request->processes) : (isset($filters['processes']) ? $this->getValuesForMultiselect($filters['processes']) : []);
+        
+        $macroprocesses = !$init ? $this->getValuesForMultiselect($request->macroprocesses) : (isset($filters['macroprocesses']) ? $this->getValuesForMultiselect($filters['macroprocesses']) : []);
+        
+        $risk = !$init ? $this->getValuesForMultiselect($request->risks) : (isset($filters['risks']) ? $this->getValuesForMultiselect($filters['risks']) : []);
+        $filtersType = !$init ? $request->filtersType : (isset($filters['filtersType']) ? $filters['filtersType'] : null);
+        /***********************************************/
+
+        $risks = RiskMatrix::select(
+            'sau_rm_risks_matrix.id AS id',
+            'sau_rm_risk.name AS name',
+            'sau_rm_risk.category AS category',
+            'sau_employees_regionals.name as regional',
+            'sau_employees_headquarters.name as headquarter',
+            'sau_employees_processes.name as process',
+            'sau_employees_areas.name as area',
+            'sau_tags_processes.name as types'
+        )
+        ->join('sau_rm_risk_matrix_subprocess', 'sau_rm_risk_matrix_subprocess.risk_matrix_id', 'sau_rm_risks_matrix.id')
+        ->join('sau_rm_subprocess_risk', 'sau_rm_subprocess_risk.rm_subprocess_id', 'sau_rm_risk_matrix_subprocess.id')
+        ->join('sau_rm_risk', 'sau_rm_risk.id', 'sau_rm_subprocess_risk.risk_id')
+        ->leftJoin('sau_employees_regionals', 'sau_employees_regionals.id', 'sau_rm_risks_matrix.employee_regional_id')
+        ->leftJoin('sau_employees_headquarters', 'sau_employees_headquarters.id', 'sau_rm_risks_matrix.employee_headquarter_id')
+        ->leftJoin('sau_employees_processes', 'sau_employees_processes.id', 'sau_rm_risks_matrix.employee_process_id')
+        ->leftJoin('sau_employees_areas', 'sau_employees_areas.id', 'sau_rm_risks_matrix.employee_area_id')
+        ->leftJoin('sau_tags_processes', 'sau_tags_processes.id', 'sau_rm_risks_matrix.macroprocess_id')
+        /*->inRegionals($regionals, isset($filtersType['regionals']) ? $filtersType['regionals'] : 'IN')
+        ->inHeadquarters($headquarters, isset($filtersType['headquarters']) ? $filtersType['headquarters'] : 'IN')
+        ->inAreas($areas, isset($filtersType['areas']) ? $filtersType['areas'] : 'IN')
+        ->inProcesses($processes, isset($filtersType['processes']) ? $filtersType['processes'] : 'IN')
+        ->inMacroprocesses($macroprocesses, isset($filtersType['macroprocesses']) ? $filtersType['macroprocesses'] : 'IN')
+        ->inRisks($risk, $filtersType['risks'])*/
+        ->where('sau_rm_subprocess_risk.description_inherent_frequency',$request->row)
+        ->where('sau_rm_subprocess_risk.description_inherent_impact',$request->col);
+
+        return Vuetable::of($risks)
+                    ->make();
+    }
+
+    /**
+     * returns the inform data according to
+     * multiple conditions, like filters
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function reportResidual(Request $request)
+    {
+        $data = [];
+
+        $url = "/industrialsecure/riskmatrix/report";
+        $init = true;
+        $filters = [];
+        $showLabelCol = false;
+
+        if ($request->has('filtersType'))
+            $init = false;
+        else 
+            $filters = $this->filterDefaultValues($this->user->id, $url);
+
+            $matriz_calification = $this->getMatrixReport();
+            $data = $matriz_calification;
+
+        /** FIltros */
+        $regionals = !$init ? $this->getValuesForMultiselect($request->regionals) : (isset($filters['regionals']) ? $this->getValuesForMultiselect($filters['regionals']) : []);
+        
+        $headquarters = !$init ? $this->getValuesForMultiselect($request->headquarters) : (isset($filters['headquarters']) ? $this->getValuesForMultiselect($filters['headquarters']) : []);
+        
+        $areas = !$init ? $this->getValuesForMultiselect($request->areas) : (isset($filters['areas']) ? $this->getValuesForMultiselect($filters['areas']) : []);
+        
+        $processes = !$init ? $this->getValuesForMultiselect($request->processes) : (isset($filters['processes']) ? $this->getValuesForMultiselect($filters['processes']) : []);
+        
+        $macroprocesses = !$init ? $this->getValuesForMultiselect($request->macroprocesses) : (isset($filters['macroprocesses']) ? $this->getValuesForMultiselect($filters['macroprocesses']) : []);
+        
+        $risks = !$init ? $this->getValuesForMultiselect($request->risks) : (isset($filters['risks']) ? $this->getValuesForMultiselect($filters['risks']) : []);
+
+        $filtersType = !$init ? $request->filtersType : (isset($filters['filtersType']) ? $filters['filtersType'] : null);
+        /***********************************************/
+
+        $risksMatrix = RiskMatrix::select('sau_rm_risks_matrix.*')
+            ->join('sau_employees_regionals', 'sau_employees_regionals.id', 'sau_rm_risks_matrix.employee_regional_id')
+            ->leftJoin('sau_employees_headquarters', 'sau_employees_headquarters.id', 'sau_rm_risks_matrix.employee_headquarter_id')
+            ->leftJoin('sau_employees_areas', 'sau_employees_areas.id', 'sau_rm_risks_matrix.employee_area_id')
+            ->leftJoin('sau_employees_processes', 'sau_employees_processes.id', 'sau_rm_risks_matrix.employee_process_id')
+            ->inRegionals($regionals, isset($filtersType['regionals']) ? $filtersType['regionals'] : 'IN')
+            ->inHeadquarters($headquarters, isset($filtersType['headquarters']) ? $filtersType['headquarters'] : 'IN')
+            ->inAreas($areas, isset($filtersType['areas']) ? $filtersType['areas'] : 'IN')
+            ->inProcesses($processes, isset($filtersType['processes']) ? $filtersType['processes'] : 'IN')
+            ->inMacroprocesses($macroprocesses, isset($filtersType['macroprocesses']) ? $filtersType['macroprocesses'] : 'IN')
+            ->get();
+
+        foreach ($risksMatrix as $keyMatrix => $itemMatrix)
+        {
+            foreach ($itemMatrix->subprocesses as $keySub => $itemSub)
+            {
+                $subprocess_risks = $itemSub->risks()->inRisks($risks, $filtersType['risks'])->get();
+
+                foreach ($subprocess_risks as $keyRisk => $itemRisk)
+                {
+                    $frec = $itemRisk->description_residual_frequency;
+
+                    $imp = $itemRisk->description_residual_impact;
+
+                    if (isset($data[$frec]) && isset($data[$frec][$imp]))
+                            $data[$frec][$imp]['count']++;
+                }
+            }
+        }
+
+        $matriz = [];
+
+        $showLabelCol = true;
+        $headers = array_keys($data);
+
+        $count = isset($data['Muy Bajo']) ? COUNT($data['Muy Bajo']) : 0;
+
+        for ($i=0; $i < $count; $i++)
+        { 
+            $y = 0;
+
+            foreach ($data as $key => $value)
+            {
+                $x = 0;
+
+                foreach ($value as $key2 => $value2)
+                { 
+                    $matriz[$x][$y] = array_merge($data[$key][$key2], ["row"=>$key, "col"=>$key2]);
+                    $x++;
+                }
+
+                $y++;
+            }
+        }
+
+        return $this->respondHttp200([
+            "data" => [
+                "data" => $matriz,
+                "headers" => $headers,
+                "showLabelCol" => $showLabelCol
+            ]
+        ]);
+    }
+
+    /**
+    * Display a listing of the resource.
+    *
+    * @return \Illuminate\Http\Response
+    */
+    public function reportRiskResidualTable(Request $request)
+    {
+        $url = "/industrialsecure/dangermatrix/report";
+        $init = true;
+        $filters = [];
+
+        if ($request->has('filtersType'))
+            $init = false;
+        else 
+            $filters = $this->filterDefaultValues($this->user->id, $url);
+
+        /** FIltros */
+        /*$regionals = !$init ? $this->getValuesForMultiselect($request->regionals) : (isset($filters['regionals']) ? $this->getValuesForMultiselect($filters['regionals']) : []);
+            
+        $headquarters = !$init ? $this->getValuesForMultiselect($request->headquarters) : (isset($filters['headquarters']) ? $this->getValuesForMultiselect($filters['headquarters']) : []);
+        
+        $areas = !$init ? $this->getValuesForMultiselect($request->areas) : (isset($filters['areas']) ? $this->getValuesForMultiselect($filters['areas']) : []);
+        
+        $processes = !$init ? $this->getValuesForMultiselect($request->processes) : (isset($filters['processes']) ? $this->getValuesForMultiselect($filters['processes']) : []);
+        
+        $macroprocesses = !$init ? $this->getValuesForMultiselect($request->macroprocesses) : (isset($filters['macroprocesses']) ? $this->getValuesForMultiselect($filters['macroprocesses']) : []);
+        
+        $risk = !$init ? $this->getValuesForMultiselect($request->risks) : (isset($filters['risks']) ? $this->getValuesForMultiselect($filters['risks']) : []);
+        $filtersType = !$init ? $request->filtersType : (isset($filters['filtersType']) ? $filters['filtersType'] : null);
+        /***********************************************/
+
+        $risks = RiskMatrix::select(
+            'sau_rm_risks_matrix.id AS id',
+            'sau_rm_risk.name AS name',
+            'sau_rm_risk.category AS category',
+            'sau_employees_regionals.name as regional',
+            'sau_employees_headquarters.name as headquarter',
+            'sau_employees_processes.name as process',
+            'sau_employees_areas.name as area',
+            'sau_tags_processes.name as types'
+        )
+        ->join('sau_rm_risk_matrix_subprocess', 'sau_rm_risk_matrix_subprocess.risk_matrix_id', 'sau_rm_risks_matrix.id')
+        ->join('sau_rm_subprocess_risk', 'sau_rm_subprocess_risk.rm_subprocess_id', 'sau_rm_risk_matrix_subprocess.id')
+        ->join('sau_rm_risk', 'sau_rm_risk.id', 'sau_rm_subprocess_risk.risk_id')
+        ->leftJoin('sau_employees_regionals', 'sau_employees_regionals.id', 'sau_rm_risks_matrix.employee_regional_id')
+        ->leftJoin('sau_employees_headquarters', 'sau_employees_headquarters.id', 'sau_rm_risks_matrix.employee_headquarter_id')
+        ->leftJoin('sau_employees_processes', 'sau_employees_processes.id', 'sau_rm_risks_matrix.employee_process_id')
+        ->leftJoin('sau_employees_areas', 'sau_employees_areas.id', 'sau_rm_risks_matrix.employee_area_id')
+        ->leftJoin('sau_tags_processes', 'sau_tags_processes.id', 'sau_rm_risks_matrix.macroprocess_id')
+        /*->inRegionals($regionals, isset($filtersType['regionals']) ? $filtersType['regionals'] : 'IN')
+        ->inHeadquarters($headquarters, isset($filtersType['headquarters']) ? $filtersType['headquarters'] : 'IN')
+        ->inAreas($areas, isset($filtersType['areas']) ? $filtersType['areas'] : 'IN')
+        ->inProcesses($processes, isset($filtersType['processes']) ? $filtersType['processes'] : 'IN')
+        ->inMacroprocesses($macroprocesses, isset($filtersType['macroprocesses']) ? $filtersType['macroprocesses'] : 'IN')
+        ->inRisks($risk, $filtersType['risks'])*/
+        ->where('sau_rm_subprocess_risk.description_residual_frequency',$request->row)
+        ->where('sau_rm_subprocess_risk.description_residual_impact',$request->col);
+
+        return Vuetable::of($risks)
+                    ->make();
+    }
+
+    public function reportExport(Request $request)
+    {
+        try
+        {
+            /** FIltros */
+            $filters = [
+                "regionals" => $this->getValuesForMultiselect($request->regionals),
+                "headquarters" => $this->getValuesForMultiselect($request->headquarters),
+                "areas" => $this->getValuesForMultiselect($request->areas),
+                "processes" => $this->getValuesForMultiselect($request->processes),
+                "macroprocesses" => $this->getValuesForMultiselect($request->macroprocesses),
+                "dangers" => $this->getValuesForMultiselect($request->dangers),
+                "dangerDescription" => $this->getValuesForMultiselect($request->dangerDescription),
+                //"matrix" => $this->getValuesForMultiselect($request->matrix),
+                "row" => $request->row,
+                "col" => $request->col,
+                "label" => $request->label,
+                "filtersType" => $request->filtersType
+            ];
+
+            RiskMatrixReportExportJob::dispatch($this->user, $this->company, $filters);
+
+            return $this->respondHttp200();
+        } catch(Exception $e) {
+            return $this->respondHttp500();
+        }
+    }
+}

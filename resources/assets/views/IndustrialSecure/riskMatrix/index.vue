@@ -12,6 +12,7 @@
           <div class="card-title-elements">
             <b-btn v-if="auth.can['riskMatrix_c']" :to="{name:'industrialsecure-riskmatrix-create'}" variant="primary">Crear Matriz de Riesgos</b-btn>            
             <b-btn v-if="auth.can['riskMatrix_c']" :to="{name:'industrialsecure-riskmatrix-macroprocesses'}" variant="primary">Macroprocesos</b-btn>
+            <b-btn v-if="auth.can['riskMatrix_c']" :to="{name:'industrialsecure-riskmatrix-report'}" variant="primary">Reporte</b-btn>
             <!--<div class="card-title-elements" v-if="auth.can['dangerMatrix_c']"> 
               <b-btn variant="primary" :to="{name:'industrialsecure-dangermatrix-addfields'}" v-b-tooltip.top title="Configurar Campos Adicionales"><i class="ion ion-md-document"></i></b-btn>
             </div>

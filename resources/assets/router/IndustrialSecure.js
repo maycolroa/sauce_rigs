@@ -488,5 +488,13 @@ export default [{
             import('@/views/IndustrialSecure/riskMatrix/macroprocess/edit')
         }
       ]),
+      ...middleware({ 'check-permission': 'riskMatrix_c' }, [
+        {
+          name: 'industrialsecure-riskmatrix-report',
+          path: 'riskmatrix/report',
+          component: () =>
+            import('@/views/IndustrialSecure/riskMatrix/report')
+        }
+      ]),
     ]
   }]

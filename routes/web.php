@@ -396,6 +396,10 @@ Route::middleware(['auth'])->group(function () {
       Route::post('risksMatrix/getMitigation', 'IndustrialSecure\RiskMatrix\RiskMatrixController@getMitigation');
       Route::post('risksMatrix/getImpacts', 'IndustrialSecure\RiskMatrix\RiskMatrixController@getImpacts');
       Route::ApiResource('risksMatrix', 'IndustrialSecure\RiskMatrix\RiskMatrixController');
+      Route::post('risksMatrix/report', 'IndustrialSecure\RiskMatrix\RiskMatrixReportController@reportInherent');
+      Route::post('risksMatrix/reportRiskInherentTable', 'IndustrialSecure\RiskMatrix\RiskMatrixReportController@reportRiskInherentTable');
+      Route::post('risksMatrix/reportResidual', 'IndustrialSecure\RiskMatrix\RiskMatrixReportController@reportResidual');
+      Route::post('risksMatrix/reportRiskResidualTable', 'IndustrialSecure\RiskMatrix\RiskMatrixReportController@reportRiskResidualTable');
 
       Route::post('subProcess/data', 'IndustrialSecure\RiskMatrix\SubProcessController@data');
       Route::ApiResource('subProcess', 'IndustrialSecure\RiskMatrix\SubProcessController');

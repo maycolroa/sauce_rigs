@@ -291,8 +291,6 @@ export default {
     {
       this.updateDetails(`/industrialSecurity/risk/${this.risk.risk_id}`, 'riskDetail');
     }
-
-    console.log(this.textHelp);
     
     setTimeout(() => {
         this.loading = false;
