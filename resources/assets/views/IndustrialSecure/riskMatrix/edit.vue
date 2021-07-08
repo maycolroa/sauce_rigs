@@ -61,7 +61,8 @@ export default {
       nature: [],
       coverage: [],
       documentation: [],
-      mitigation : []
+      mitigation : [],
+      textHelp: []
     }
   },
   created(){

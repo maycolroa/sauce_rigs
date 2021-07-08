@@ -400,4 +400,45 @@ export default [
         },
       ]
     },
+    {
+      name: 'industrialsecure-riskmatrix-report',
+      filters: [
+        {
+          url: '/selects/regionals',
+          key: 'regionals',
+          type: 'select',
+          label: 'regionals'
+        },
+        {
+          url: '/selects/headquarters',
+          key: 'headquarters',
+          type: 'select',
+          label: 'headquarters'
+        },
+        {
+          url: '/selects/processes',
+          key: 'processes',
+          type: 'select',
+          label: 'processes'
+        },
+        {
+          url: '/selects/tagsTypeProcessRiskMatrix',
+          key: 'macroprocesses',
+          type: 'select',
+          label: 'Macroprocesos'
+        },
+        {
+          url: '/selects/areas',
+          key: 'areas',
+          type: 'select',
+          label: 'areas'
+        },
+        {
+          url: '/selects/rmRisk',
+          key: 'risks',
+          type: 'select',
+          label: 'Riesgos'
+        }
+      ]
+    },
 ];

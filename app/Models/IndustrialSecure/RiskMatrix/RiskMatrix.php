@@ -16,6 +16,8 @@ class RiskMatrix extends Model
         'employee_headquarter_id',
         'employee_area_id',
         'employee_process_id',
+        'macroprocess_id',
+        'nomenclature',
         'participants'
     ];
      
@@ -151,22 +153,13 @@ class RiskMatrix extends Model
      */
     public function scopeInMacroprocesses($query, $macroprocesses, $typeSearch = 'IN')
     {
-        $regexp = [];
-
-        foreach ($macroprocesses as $key => $value)
+        if (COUNT($macroprocesses) > 0)
         {
-            $regexp[] = "((^|,)($value)(,|$))";
-        }
-
-        if (COUNT($regexp) > 0)
-        {
-            $regexp = implode("|", $regexp);
-
             if ($typeSearch == 'IN')
-                $query->where('sau_employees_processes.types', 'REGEXP', $regexp);
+                $query->whereIn('sau_rm_risks_matrix.macroprocess_id', $macroprocesses);
 
             else if ($typeSearch == 'NOT IN')
-                $query->where('sau_employees_processes.types', 'NOT REGEXP', $regexp);
+                $query->whereNotIn('sau_rm_risks_matrix.macroprocess_id', $macroprocesses);
         }
 
         return $query;

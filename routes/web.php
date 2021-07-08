@@ -200,6 +200,7 @@ Route::middleware(['auth'])->group(function () {
         Route::post('tagsPossibleConsequencesDanger', 'IndustrialSecure\Tags\TagController@multiselectPossibleConsequencesDanger');
         Route::post('tagsWarningSignage', 'IndustrialSecure\Tags\TagController@multiselectWarningSignage');
         Route::post('tagsTypeProcess', 'General\TagController@multiselectTypeProcess');
+        Route::post('tagsTypeProcessRiskMatrix', 'General\TagController@multiselectTypeProcessRiskMatrx');
         Route::post('tagsSubstitution', 'IndustrialSecure\Tags\TagController@multiselectSubstitution');
         Route::post('tagsParticipants', 'IndustrialSecure\Tags\TagController@multiselectSubstitution');
         Route::post('tagsRmParticipants', 'IndustrialSecure\RiskMatrix\Tags\ParticipantsController@multiselect');
@@ -400,6 +401,7 @@ Route::middleware(['auth'])->group(function () {
       Route::post('risksMatrix/reportRiskInherentTable', 'IndustrialSecure\RiskMatrix\RiskMatrixReportController@reportRiskInherentTable');
       Route::post('risksMatrix/reportResidual', 'IndustrialSecure\RiskMatrix\RiskMatrixReportController@reportResidual');
       Route::post('risksMatrix/reportRiskResidualTable', 'IndustrialSecure\RiskMatrix\RiskMatrixReportController@reportRiskResidualTable');
+      Route::post('risksMatrix/reportTableResidual', 'IndustrialSecure\RiskMatrix\RiskMatrixReportController@reportTableResidual');
 
       Route::post('subProcess/data', 'IndustrialSecure\RiskMatrix\SubProcessController@data');
       Route::ApiResource('subProcess', 'IndustrialSecure\RiskMatrix\SubProcessController');
