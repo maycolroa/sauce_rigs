@@ -220,6 +220,7 @@ Route::middleware(['auth'])->group(function () {
         Route::post('reincMedicalCertificates', 'PreventiveOccupationalMedicine\Reinstatements\CheckController@multiselectMedicalCertificates');
         Route::post('reincRelocatedTypes', 'PreventiveOccupationalMedicine\Reinstatements\CheckController@multiselectRelocatedTypes');
         Route::post('dmReportMultiselect', 'IndustrialSecure\DangerMatrix\DangerMatrixReportHistoryController@multiselect');
+        Route::post('rmReportMultiselect', 'IndustrialSecure\RiskMatrix\RiskMatrixReportHistoryController@multiselect');
         Route::post('dmReportMonths', 'IndustrialSecure\DangerMatrix\DangerMatrixReportHistoryController@multiselect');
         Route::post('reportDinamic/years', 'IndustrialSecure\DangerousConditions\Reports\ReportInformController@multiselectYears');
         Route::post('reportDinamic/months', 'IndustrialSecure\DangerousConditions\Reports\ReportInformController@multiselectMounts');
@@ -402,6 +403,11 @@ Route::middleware(['auth'])->group(function () {
       Route::post('risksMatrix/reportResidual', 'IndustrialSecure\RiskMatrix\RiskMatrixReportController@reportResidual');
       Route::post('risksMatrix/reportRiskResidualTable', 'IndustrialSecure\RiskMatrix\RiskMatrixReportController@reportRiskResidualTable');
       Route::post('risksMatrix/reportTableResidual', 'IndustrialSecure\RiskMatrix\RiskMatrixReportController@reportTableResidual');
+
+
+      Route::post('risksMatrix/reportHistory', 'IndustrialSecure\RiskMatrix\RiskMatrixReportHistoryController@reportInherent');
+      Route::post('risksMatrix/reportHistoryResidual', 'IndustrialSecure\RiskMatrix\RiskMatrixReportHistoryController@reportResidual');
+      Route::post('risksMatrix/reportHistoryTableResidual', 'IndustrialSecure\RiskMatrix\RiskMatrixReportHistoryController@reportTableResidual');
 
       Route::post('subProcess/data', 'IndustrialSecure\RiskMatrix\SubProcessController@data');
       Route::ApiResource('subProcess', 'IndustrialSecure\RiskMatrix\SubProcessController');

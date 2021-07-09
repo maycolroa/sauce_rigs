@@ -23,6 +23,7 @@ class Kernel extends ConsoleKernel
         //'App\Console\Commands\ReincSendMail',
         //'App\Console\Commands\ReincNotificationNextFollowUp',
         'App\Console\Commands\DmReportHistory',
+        'App\Console\Commands\RmReportHistory',
         'App\Console\Commands\NotifyUpdateListCheckContract',
         'App\Console\Commands\CtUnlockEvaluation',
         //'App\Console\Commands\DaysAlertsWithoutActivityContractors',
@@ -76,6 +77,10 @@ class Kernel extends ConsoleKernel
             ->dailyAt('01:00');
         
         $schedule->command('dm-report-history')
+            ->timezone('America/Bogota')
+            ->cron('0 1 1 1-12/3 *');
+        
+        $schedule->command('rm-report-history')
             ->timezone('America/Bogota')
             ->cron('0 1 1 1-12/3 *');
 

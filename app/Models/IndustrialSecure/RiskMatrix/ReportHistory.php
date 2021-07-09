@@ -4,53 +4,31 @@ namespace App\Models\IndustrialSecure\RiskMatrix;
 
 use Illuminate\Database\Eloquent\Model;
 
-class RiskMatrix extends Model
+class ReportHistory extends Model
 {
-    protected $table = 'sau_rm_risks_matrix';
+
+    protected $table = 'sau_rm_report_histories';
 
     protected $fillable = [
-        'name',
-        'user_id',
         'company_id',
-        'employee_regional_id',
-        'employee_headquarter_id',
-        'employee_area_id',
-        'employee_process_id',
-        'macroprocess_id',
-        'nomenclature',
-        'participants'
+        'year',
+        'month',
+        'regional',
+        'area',
+        'headquarter',
+        'process',
+        'macroprocess',
+        'qualification',
+        'risk'
     ];
-     
-    public function subprocesses()
-    {
-        return $this->hasMany(RiskMatrixSubProcess::class, 'risk_matrix_id');
-    }
 
-    public function regional()
+    public function multiselect()
     {
-        return $this->belongsTo('App\Models\Administrative\Regionals\EmployeeRegional', 'employee_regional_id');
+        return [
+            'name' => $this->name,
+            'value' => $this->id
+        ];
     }
-
-    public function headquarter()
-    {
-        return $this->belongsTo('App\Models\Administrative\Headquarters\EmployeeHeadquarter', 'employee_headquarter_id');
-    }
-
-    public function area()
-    {
-        return $this->belongsTo('App\Models\Administrative\Areas\EmployeeArea', 'employee_area_id');
-    }
-
-    public function process()
-    {
-        return $this->belongsTo('App\Models\Administrative\Processes\EmployeeProcess', 'employee_process_id');
-    }
-
-    public function macroprocess()
-    {
-        return $this->belongsTo('App\Models\Administrative\Processes\TagsProcess', 'macroprocess_id');
-    }
-
     /**
      * filters checks through the given regionals
      * @param  Illuminate\Database\Eloquent\Builder $query
@@ -62,10 +40,10 @@ class RiskMatrix extends Model
         if (COUNT($regionals) > 0)
         {
             if ($typeSearch == 'IN')
-                $query->whereIn('sau_rm_risks_matrix.employee_regional_id', $regionals);
+                $query->whereIn('sau_rm_report_histories.regional', $regionals);
 
             else if ($typeSearch == 'NOT IN')
-                $query->whereNotIn('sau_rm_risks_matrix.employee_regional_id', $regionals);
+                $query->whereNotIn('sau_rm_report_histories.regional', $regionals);
         }
 
         return $query;
@@ -91,10 +69,10 @@ class RiskMatrix extends Model
             $ids = explode(",", implode(",", $ids));
 
             if ($typeSearch == 'IN')
-                $query->whereIn('sau_rm_risks_matrix.employee_headquarter_id', $ids);
+                $query->whereIn('sau_rm_report_histories.headquarter', $ids);
 
             else if ($typeSearch == 'NOT IN')
-                $query->whereNotIn('sau_rm_risks_matrix.employee_headquarter_id', $ids);
+                $query->whereNotIn('sau_rm_report_histories.headquarter', $ids);
         }
 
         return $query;
@@ -111,10 +89,10 @@ class RiskMatrix extends Model
         if (COUNT($areas) > 0)
         {
             if ($typeSearch == 'IN')
-                $query->whereIn('sau_rm_risks_matrix.employee_area_id', $areas);
+                $query->whereIn('sau_rm_report_histories.area', $areas);
 
             else if ($typeSearch == 'NOT IN')
-                $query->whereNotIn('sau_rm_risks_matrix.employee_area_id', $areas);
+                $query->whereNotIn('sau_rm_report_histories.area', $areas);
         }
 
         return $query;
@@ -131,10 +109,10 @@ class RiskMatrix extends Model
         if (COUNT($processes) > 0)
         {
             if ($typeSearch == 'IN')
-                $query->whereIn('sau_rm_risks_matrix.employee_process_id', $processes);
+                $query->whereIn('sau_rm_report_histories.process', $processes);
 
             else if ($typeSearch == 'NOT IN')
-                $query->whereNotIn('sau_rm_risks_matrix.employee_process_id', $processes);
+                $query->whereNotIn('sau_rm_report_histories.process', $processes);
         }
 
         return $query;
@@ -151,30 +129,30 @@ class RiskMatrix extends Model
         if (COUNT($macroprocesses) > 0)
         {
             if ($typeSearch == 'IN')
-                $query->whereIn('sau_rm_risks_matrix.macroprocess_id', $macroprocesses);
+                $query->whereIn('sau_rm_report_histories.macroprocess', $macroprocesses);
 
             else if ($typeSearch == 'NOT IN')
-                $query->whereNotIn('sau_rm_risks_matrix.macroprocess_id', $macroprocesses);
+                $query->whereNotIn('sau_rm_report_histories.macroprocess', $macroprocesses);
         }
 
         return $query;
     }
 
     /**
-     * filters checks through the given matrix
+     * filters checks through the given dangers
      * @param  Illuminate\Database\Eloquent\Builder $query
-     * @param  array $matrix
+     * @param  array $dangers
      * @return Illuminate\Database\Eloquent\Builder
      */
-    public function scopeInMatrix($query, $matrix, $typeSearch = 'IN')
+    public function scopeInRisks($query, $risks, $typeSearch = 'IN')
     {
-        if (COUNT($matrix) > 0)
+        if (COUNT($risks) > 0)
         {
             if ($typeSearch == 'IN')
-                $query->whereIn('sau_rm_risks_matrix.id', $matrix);
+                $query->whereIn('sau_rm_report_histories.risk', $risks);
 
             else if ($typeSearch == 'NOT IN')
-                $query->whereNotIn('sau_rm_risks_matrix.id', $matrix);
+                $query->whereNotIn('sau_rm_report_histories.risk', $risks);
         }
 
         return $query;
