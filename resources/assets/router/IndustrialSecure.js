@@ -496,5 +496,13 @@ export default [{
             import('@/views/IndustrialSecure/riskMatrix/report')
         }
       ]),
+      ...middleware({ 'check-permission': 'riskMatrix_c' }, [
+        {
+          name: 'industrialsecure-riskmatrix-report-history',
+          path: 'riskmatrix/report/history',
+          component: () =>
+            import('@/views/IndustrialSecure/riskMatrix/reportHistory')
+        }
+      ]),
     ]
   }]

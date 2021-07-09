@@ -9,13 +9,13 @@
         <div v-show="!isLoading">
             <b-row align-h="end">
                 <b-col>
-                    <b-btn v-if="auth.can['dangerMatrix_export_report']" @click="exportReport()" variant="primary"><i class="fas fa-download"></i> &nbsp; Exportar Reporte</b-btn>
-                    <b-btn :to="{name:'industrialsecure-dangermatrix-report-history'}" variant="primary">Ver historial</b-btn>
+                    <b-btn v-if="auth.can['riskMatrix_c']" @click="exportReport()" variant="primary"><i class="fas fa-download"></i> &nbsp; Exportar Reporte</b-btn>
+                    <b-btn :to="{name:'industrialsecure-riskmatrix-report-history'}" variant="primary">Ver historial</b-btn>
                 </b-col>
                 <b-col cols="3">
                     <filter-danger-matrix-report 
                         v-model="filters" 
-                        configName="industrialsecure-dangermatrix-report" 
+                        configName="industrialsecure-riskmatrix-report" 
                         :isDisabled="isLoading"/>
                 </b-col>
             </b-row>
@@ -101,6 +101,32 @@
                     </b-card>
                 </b-col>
             </b-row>
+            <b-row>
+                <b-col>
+                    <b-card border-variant="secondary" title="" class="mb-3 box-shadow-none">
+                        <div class="table-responsive">
+                            <table class="table table-bordered mb-0">
+                                <thead>
+                                    <tr>
+                                        <th>{{ keywordCheck('process') }}</th>
+                                        <th>{{ keywordCheck('area') }}</th>
+                                        <th>Riesgo</th>
+                                        <th>Evento de riesgo</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr v-for="(row, index) in tableResidual" :key="index">
+                                        <td>{{ row.process }}</td>
+                                        <td>{{ row.area }}</td>
+                                        <td :class="`bg-${row.risk['color']}`">R.{{ row.risk['sequence'] }}</td>
+                                        <td>{{ row.risk_name }}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </b-card>
+                </b-col>
+            </b-row>
         </div>
         <div class="row float-right pt-10 pr-15">
             <template>
@@ -137,6 +163,7 @@ export default {
             paramsTable: {},
             data: [],
             dataResidual: [],
+            reportTableResidual: [],
             typeParams: 'filters'
         }
     },
@@ -153,7 +180,7 @@ export default {
             return [];
         },
         headersResidual() {
-            if (Object.keys(this.data).length > 0)
+            if (Object.keys(this.dataResidual).length > 0)
             {
                 return this.dataResidual.headers;
             }
@@ -169,9 +196,17 @@ export default {
             return []
         },
         informationResidual() {
-            if (Object.keys(this.data).length > 0)
+            if (Object.keys(this.dataResidual).length > 0)
             {
                 return this.dataResidual.data
+            }
+
+            return []
+        },
+        tableResidual() {
+            if (Object.keys(this.reportTableResidual).length > 0)
+            {
+                return this.reportTableResidual.data
             }
 
             return []
@@ -220,6 +255,16 @@ export default {
                     this.isLoading = false;
                     Alerts.error('Error', 'Hubo un problema recolectando la información');
                 });
+
+                axios.post('/industrialSecurity/risksMatrix/reportTableResidual', this.filters)
+                .then(response => {
+                    this.reportTableResidual = response.data.data;
+                    this.isLoading = false;
+                })
+                .catch(error => {
+                    this.isLoading = false;
+                    Alerts.error('Error', 'Hubo un problema recolectando la información');
+                });
             }
         },
         fetchTable(row, col, label, count)
@@ -236,7 +281,7 @@ export default {
                     this.$set(this.paramsTable, key, value)
                 });
                 
-                this.titleTable = `Riesgos`
+                this.titleTable = `Riesgos ${row} - ${col}`
                 this.typeParams = 'paramsTable'
                 this.showTableRisk = true
             }
@@ -255,7 +300,7 @@ export default {
                     this.$set(this.paramsTableResidual, key, value)
                 });
                 
-                this.titleTableResidual = `Riesgos`
+                this.titleTableResidual = `Riesgos ${row} - ${col}`
                 this.typeParams = 'paramsTableResidual'
                 this.showTableRiskResidual = true
             }

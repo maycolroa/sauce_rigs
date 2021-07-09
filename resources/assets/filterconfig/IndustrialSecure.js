@@ -400,4 +400,98 @@ export default [
         },
       ]
     },
+    {
+      name: 'industrialsecure-riskmatrix-report',
+      filters: [
+        {
+          url: '/selects/regionals',
+          key: 'regionals',
+          type: 'select',
+          label: 'regionals'
+        },
+        {
+          url: '/selects/headquarters',
+          key: 'headquarters',
+          type: 'select',
+          label: 'headquarters'
+        },
+        {
+          url: '/selects/processes',
+          key: 'processes',
+          type: 'select',
+          label: 'processes'
+        },
+        {
+          url: '/selects/tagsTypeProcessRiskMatrix',
+          key: 'macroprocesses',
+          type: 'select',
+          label: 'Macroprocesos'
+        },
+        {
+          url: '/selects/areas',
+          key: 'areas',
+          type: 'select',
+          label: 'areas'
+        },
+        {
+          url: '/selects/rmRisk',
+          key: 'risks',
+          type: 'select',
+          label: 'Riesgos'
+        }
+      ]
+    },
+    {
+      name: 'industrialsecure-riskmatrix-report-history',
+      filters: [
+        {
+          url: '/selects/rmReportMultiselect',
+          key: 'regionals',
+          type: 'select',
+          label: 'regionals',
+          column: 'regional',
+          tag: false
+        },
+        {
+          url: '/selects/rmReportMultiselect',
+          key: 'headquarters',
+          type: 'select',
+          label: 'headquarters',
+          column: 'headquarter',
+          tag: false
+        },
+        {
+          url: '/selects/rmReportMultiselect',
+          key: 'processes',
+          type: 'select',
+          label: 'processes',
+          column: 'process',
+          tag: false
+        },
+        {
+          url: '/selects/rmReportMultiselect',
+          key: 'macroprocesses',
+          type: 'select',
+          label: 'Macroprocesos',
+          column: 'macroprocess',
+          tag: false
+        },
+        {
+          url: '/selects/rmReportMultiselect',
+          key: 'areas',
+          type: 'select',
+          label: 'areas',
+          column: 'area',
+          tag: false
+        },
+        {
+          url: '/selects/rmReportMultiselect',
+          key: 'risks',
+          type: 'select',
+          label: 'Riesgos',
+          column: 'risk',
+          tag: false
+        }
+      ]
+    },
 ];
