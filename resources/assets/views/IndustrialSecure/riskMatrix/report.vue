@@ -164,7 +164,13 @@ export default {
             data: [],
             dataResidual: [],
             reportTableResidual: [],
-            typeParams: 'filters'
+            typeParams: 'filters',
+            filtersTable: {
+                rowI: '',
+                colI: '',
+                rowR: '',
+                colR: ''
+            }
         }
     },
     created(){
@@ -269,13 +275,16 @@ export default {
         },
         fetchTable(row, col, label, count)
         {
+            this.filtersTable.rowI = row
+            this.filtersTable.colI = col
+
             this.clearAttrTable()
 
             if (count > 0)
             {
-                this.$set(this.paramsTable, 'row', row)
-                this.$set(this.paramsTable, 'col', col)
-                this.$set(this.paramsTable, 'label', label)
+                this.$set(this.paramsTable, 'rowI', row)
+                this.$set(this.paramsTable, 'colI', col)
+                this.$set(this.paramsTable, 'labelI', label)
                 
                 _.forIn(this.filters, (value, key) => {
                     this.$set(this.paramsTable, key, value)
@@ -288,13 +297,16 @@ export default {
         },
         fetchTableResidual(row, col, label, count)
         {
+            this.filtersTable.rowR = row
+            this.filtersTable.colR = col
+
             this.clearAttrTableResidual()
 
             if (count > 0)
             {
-                this.$set(this.paramsTableResidual, 'row', row)
-                this.$set(this.paramsTableResidual, 'col', col)
-                this.$set(this.paramsTableResidual, 'label', label)
+                this.$set(this.paramsTableResidual, 'rowR', row)
+                this.$set(this.paramsTableResidual, 'colR', col)
+                this.$set(this.paramsTableResidual, 'labelR', label)
                 
                 _.forIn(this.filters, (value, key) => {
                     this.$set(this.paramsTableResidual, key, value)
@@ -322,7 +334,8 @@ export default {
             this.typeParams = 'filters'
         },
         exportReport() {
-            axios.post('/industrialSecurity/risksMatrix/reportExport', this[this.typeParams])
+            this.postData = Object.assign({}, {filtersTable: this.filtersTable}, this[this.typeParams]);
+            axios.post('/industrialSecurity/risksMatrix/reportExport', this.postData)
                 .then(response => {
                     Alerts.warning('Información', 'Se inicio la exportación, se le notificara a su correo electronico cuando finalice el proceso.');
                 }).catch(error => {

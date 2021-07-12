@@ -3,11 +3,13 @@
 namespace App\Managers;
 
 use App\Models\General\Team;
+use App\Traits\UtilsTrait;
 
 use Exception;
 
 class BaseManager
 {
+    use UtilsTrait;
     /**
      * Escribe en el log el mensaje de error
      *

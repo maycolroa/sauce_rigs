@@ -73,8 +73,6 @@ class RiskMatrixReportHistoryController extends Controller
             ->where("month", $request->month)
             ->get();
 
-        \Log::info($risksMatrix);
-
         $matriz_calification = $this->getMatrixReport();
 
         $data = $matriz_calification ? $matriz_calification : [];
