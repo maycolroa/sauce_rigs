@@ -231,6 +231,8 @@ return [
         'Constant' => App\Facades\General\Constant::class,
         'PermissionService' => App\Facades\General\PermissionService::class,
         'NotificationManager' => App\Facades\System\NotificationManager::class,
+        'RiskMatrixReportManager' => App\Facades\RiskMatrix\RiskMatrixManager::class,
+        'RiskMatrixHistoryManager' => App\Facades\RiskMatrix\RiskMatrixHistoryManager::class
     ],
 
     /**

@@ -11,6 +11,8 @@ use App\Services\PermissionService;
 use App\Services\ViewService;
 use App\Managers\Administrative\KeywordManager;
 use App\Managers\System\NotificationManager;
+use App\Managers\RiskMatrixManager;
+use App\Managers\RiskMatrixHistoryManager;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -53,6 +55,14 @@ class AppServiceProvider extends ServiceProvider
 
         $this->app->singleton('notification_manager', function () {
             return new NotificationManager();
+        });
+
+        $this->app->singleton('risk_matrix_manager', function () {
+            return new RiskMatrixManager();
+        });
+
+        $this->app->singleton('risk_matrix_history_manager', function () {
+            return new RiskMatrixHistoryManager();
         });
     }
 }

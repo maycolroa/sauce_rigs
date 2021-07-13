@@ -5,11 +5,15 @@ namespace App\Http\Controllers\IndustrialSecure\RiskMatrix;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
-use App\Jobs\IndustrialSecure\DangerMatrix\DangerMatrixReportHistoryExportJob;
+use App\Jobs\IndustrialSecure\RiskMatrix\RisksMatrixReportHistoryExportJob;
 use App\Traits\RiskMatrixTrait;
 use Session;
 use App\Models\IndustrialSecure\RiskMatrix\ReportHistory;
 use App\Traits\Filtertrait;
+use RiskMatrixHistoryManager;
+use PDF;
+use Illuminate\Support\Facades\Storage;
+use App\Facades\Mail\Facades\NotificationMail;
 
 class RiskMatrixReportHistoryController extends Controller
 {
@@ -35,196 +39,19 @@ class RiskMatrixReportHistoryController extends Controller
      */
     public function reportInherent(Request $request)
     {
-        $url = "/industrialsecure/dangermatrix/report/history";
-        $init = true;
-        $filters = [];
-        $showLabelCol = false;
+        $data = RiskMatrixHistoryManager::reportInherent($request, $request->filters, $this->user->id, $this->company);
 
-        if ($request->has('filtersType'))
-            $init = false;
-        else 
-            $filters = $this->filterDefaultValues($this->user->id, $url);
-
-        /** FIltros */
-        $regionals = !$init ? $this->getValuesForMultiselect($request->regionals) : (isset($filters['regionals']) ? $this->getValuesForMultiselect($filters['regionals']) : []);
-            
-        $headquarters = !$init ? $this->getValuesForMultiselect($request->headquarters) : (isset($filters['headquarters']) ? $this->getValuesForMultiselect($filters['headquarters']) : []);
-        
-        $areas = !$init ? $this->getValuesForMultiselect($request->areas) : (isset($filters['areas']) ? $this->getValuesForMultiselect($filters['areas']) : []);
-        
-        $processes = !$init ? $this->getValuesForMultiselect($request->processes) : (isset($filters['processes']) ? $this->getValuesForMultiselect($filters['processes']) : []);
-        
-        $macroprocesses = !$init ? $this->getValuesForMultiselect($request->macroprocesses) : (isset($filters['macroprocesses']) ? $this->getValuesForMultiselect($filters['macroprocesses']) : []);
-        
-        $risks = !$init ? $this->getValuesForMultiselect($request->risks) : (isset($filters['risks']) ? $this->getValuesForMultiselect($filters['risks']) : []);
-        
-        $filtersType = !$init ? $request->filtersType : (isset($filters['filtersType']) ? $filters['filtersType'] : null);
-        /***********************************************/
-
-        $risksMatrix = ReportHistory::select('sau_rm_report_histories.*')
-            ->inRegionals($regionals, isset($filtersType['regionals']) ? $filtersType['regionals'] : 'IN')
-            ->inHeadquarters($headquarters, isset($filtersType['headquarters']) ? $filtersType['headquarters'] : 'IN')
-            ->inAreas($areas, isset($filtersType['areas']) ? $filtersType['areas'] : 'IN')
-            ->inProcesses($processes, isset($filtersType['processes']) ? $filtersType['processes'] : 'IN')
-            ->inMacroprocesses($macroprocesses, isset($filtersType['macroprocesses']) ? $filtersType['macroprocesses'] : 'IN')
-            ->inRisks($risks, $filtersType['risks'])
-            ->where("company_id", $this->company)
-            ->where("year", $request->year)
-            ->where("month", $request->month)
-            ->get();
-
-        \Log::info($risksMatrix);
-
-        $matriz_calification = $this->getMatrixReport();
-
-        $data = $matriz_calification ? $matriz_calification : [];
-
-        foreach ($risksMatrix as $keyRisk => $itemRisk)
-        {
-            $frec = -1;
-            $imp = -1;
-
-            $qualifications = json_decode($itemRisk->qualification, true);
-
-            foreach ($qualifications as $keyQ => $itemQ)
-            {
-                if ($itemQ["name"] == 'Frecuencia Inherente')
-                    $frec = $itemQ["value"];
-
-                if ($itemQ["name"] == 'Impacto Inherente')
-                    $imp = $itemQ["value"];
-            }
-
-            if (isset($data[$frec]) && isset($data[$frec][$imp]))
-                $data[$frec][$imp]['count']++;
-        }
-
-        $matriz = [];
-
-        $showLabelCol = true;
-        $headers = array_keys($data);
-        $count = isset($data['Muy Bajo']) ? COUNT($data['Muy Bajo']) : 0;
-
-        for ($i=0; $i < $count; $i++)
-        { 
-            $y = 0;
-
-            foreach ($data as $key => $value)
-            {
-                $x = 0;
-
-                foreach ($value as $key2 => $value2)
-                { 
-                    $matriz[$x][$y] = array_merge($data[$key][$key2], ["row"=>$key, "col"=>$key2]);
-                    $x++;
-                }
-
-                $y++;
-            }
-        }
-        
         return $this->respondHttp200([
-            "data" => [
-                "data" => $matriz,
-                "headers" => $headers,
-                "showLabelCol" => $showLabelCol
-            ]
+            "data" => $data
         ]);
     }
 
     public function reportResidual(Request $request)
     {
-        $url = "/industrialsecure/dangermatrix/report/history";
-        $init = true;
-        $filters = [];
-        $showLabelCol = false;
+        $data = RiskMatrixHistoryManager::reportResidual($request, $request->filters, $this->user->id, $this->company);
 
-        if ($request->has('filtersType'))
-            $init = false;
-        else 
-            $filters = $this->filterDefaultValues($this->user->id, $url);
-
-        /** FIltros */
-        $regionals = !$init ? $this->getValuesForMultiselect($request->regionals) : (isset($filters['regionals']) ? $this->getValuesForMultiselect($filters['regionals']) : []);
-            
-        $headquarters = !$init ? $this->getValuesForMultiselect($request->headquarters) : (isset($filters['headquarters']) ? $this->getValuesForMultiselect($filters['headquarters']) : []);
-        
-        $areas = !$init ? $this->getValuesForMultiselect($request->areas) : (isset($filters['areas']) ? $this->getValuesForMultiselect($filters['areas']) : []);
-        
-        $processes = !$init ? $this->getValuesForMultiselect($request->processes) : (isset($filters['processes']) ? $this->getValuesForMultiselect($filters['processes']) : []);
-        
-        $macroprocesses = !$init ? $this->getValuesForMultiselect($request->macroprocesses) : (isset($filters['macroprocesses']) ? $this->getValuesForMultiselect($filters['macroprocesses']) : []);
-        
-        $risks = !$init ? $this->getValuesForMultiselect($request->risks) : (isset($filters['risks']) ? $this->getValuesForMultiselect($filters['risks']) : []);
-        
-        $filtersType = !$init ? $request->filtersType : (isset($filters['filtersType']) ? $filters['filtersType'] : null);
-        /***********************************************/
-
-        $risksMatrix = ReportHistory::select('sau_rm_report_histories.*')
-            ->inRegionals($regionals, isset($filtersType['regionals']) ? $filtersType['regionals'] : 'IN')
-            ->inHeadquarters($headquarters, isset($filtersType['headquarters']) ? $filtersType['headquarters'] : 'IN')
-            ->inAreas($areas, isset($filtersType['areas']) ? $filtersType['areas'] : 'IN')
-            ->inProcesses($processes, isset($filtersType['processes']) ? $filtersType['processes'] : 'IN')
-            ->inMacroprocesses($macroprocesses, isset($filtersType['macroprocesses']) ? $filtersType['macroprocesses'] : 'IN')
-            ->inRisks($risks, $filtersType['risks'])
-            ->where("year", $request->year)
-            ->where("month", $request->month)
-            ->get();
-
-        $matriz_calification = $this->getMatrixReport();
-
-        $data = $matriz_calification ? $matriz_calification : [];
-
-        foreach ($risksMatrix as $keyRisk => $itemRisk)
-        {
-            $frec = -1;
-            $imp = -1;
-
-            $qualifications = json_decode($itemRisk->qualification, true);
-
-            foreach ($qualifications as $keyQ => $itemQ)
-            {
-                if ($itemQ["name"] == 'Frecuencia Residual')
-                    $frec = $itemQ["value"];
-
-                if ($itemQ["name"] == 'Impacto Residual')
-                    $imp = $itemQ["value"];
-            }
-
-            if (isset($data[$frec]) && isset($data[$frec][$imp]))
-                $data[$frec][$imp]['count']++;
-        }
-
-        $matriz = [];
-
-        $showLabelCol = true;
-        $headers = array_keys($data);
-        $count = isset($data['Muy Bajo']) ? COUNT($data['Muy Bajo']) : 0;
-
-        for ($i=0; $i < $count; $i++)
-        { 
-            $y = 0;
-
-            foreach ($data as $key => $value)
-            {
-                $x = 0;
-
-                foreach ($value as $key2 => $value2)
-                { 
-                    $matriz[$x][$y] = array_merge($data[$key][$key2], ["row"=>$key, "col"=>$key2]);
-                    $x++;
-                }
-
-                $y++;
-            }
-        }
-        
         return $this->respondHttp200([
-            "data" => [
-                "data" => $matriz,
-                "headers" => $headers,
-                "showLabelCol" => $showLabelCol
-            ]
+            "data" => $data
         ]);
     }
 
@@ -235,86 +62,15 @@ class RiskMatrixReportHistoryController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function reportTableResidual(Request $request)
-    {
-        $data = [];
-
-        $url = "/industrialsecure/riskmatrix/report";
-        $init = true;
-        $filters = [];
-        $showLabelCol = false;
-
-        if ($request->has('filtersType'))
-            $init = false;
-        else 
-            $filters = $this->filterDefaultValues($this->user->id, $url);
-
-            $matriz_calification = $this->getMatrixReport();
-            $data = $matriz_calification;
-
-        /** FIltros */
-        $regionals = !$init ? $this->getValuesForMultiselect($request->regionals) : (isset($filters['regionals']) ? $this->getValuesForMultiselect($filters['regionals']) : []);
-        
-        $headquarters = !$init ? $this->getValuesForMultiselect($request->headquarters) : (isset($filters['headquarters']) ? $this->getValuesForMultiselect($filters['headquarters']) : []);
-        
-        $areas = !$init ? $this->getValuesForMultiselect($request->areas) : (isset($filters['areas']) ? $this->getValuesForMultiselect($filters['areas']) : []);
-        
-        $processes = !$init ? $this->getValuesForMultiselect($request->processes) : (isset($filters['processes']) ? $this->getValuesForMultiselect($filters['processes']) : []);
-        
-        $macroprocesses = !$init ? $this->getValuesForMultiselect($request->macroprocesses) : (isset($filters['macroprocesses']) ? $this->getValuesForMultiselect($filters['macroprocesses']) : []);
-        
-        $risks = !$init ? $this->getValuesForMultiselect($request->risks) : (isset($filters['risks']) ? $this->getValuesForMultiselect($filters['risks']) : []);
-
-        $filtersType = !$init ? $request->filtersType : (isset($filters['filtersType']) ? $filters['filtersType'] : null);
-        /***********************************************/
-
-        $risksMatrix = ReportHistory::select('sau_rm_report_histories.*')
-        ->inRegionals($regionals, isset($filtersType['regionals']) ? $filtersType['regionals'] : 'IN')
-        ->inHeadquarters($headquarters, isset($filtersType['headquarters']) ? $filtersType['headquarters'] : 'IN')
-        ->inAreas($areas, isset($filtersType['areas']) ? $filtersType['areas'] : 'IN')
-        ->inProcesses($processes, isset($filtersType['processes']) ? $filtersType['processes'] : 'IN')
-        ->inMacroprocesses($macroprocesses, isset($filtersType['macroprocesses']) ? $filtersType['macroprocesses'] : 'IN')
-        ->inRisks($risks, $filtersType['risks'])
-        ->where("year", $request->year)
-        ->where("month", $request->month)
-        ->get();
-
-        $table_report = [];
-
-        foreach ($risksMatrix as $keyMatrix => $itemMatrix)
-        {
-            $frec = -1;
-            $imp = -1;
-            $array_table = [];
-
-            $array_table['process'] = $itemMatrix->process;
-            $array_table['area'] = $itemMatrix->area;
-
-            $qualifications = json_decode($itemMatrix->qualification, true);
-            
-            foreach ($qualifications as $keyQ => $itemQ)
-            {
-                if ($itemQ["name"] == 'Frecuencia Residual')
-                    $frec = $itemQ["value"];
-
-                if ($itemQ["name"] == 'Impacto Residual')
-                    $imp = $itemQ["value"];
-            }
-
-            $array_table['risk'] = ['sequence' => $itemMatrix->risk_sequence, 'color' => $data[$frec][$imp]['color']];
-
-            $array_table['risk_name'] = $itemMatrix->risk;
-
-            array_push($table_report, $array_table);
-        }
+    {   
+        $data = RiskMatrixHistoryManager::reportTableResidual($request, $request->filters, $this->user->id, $this->company);
 
         return $this->respondHttp200([
-            "data" => [
-                "data" => $table_report
-            ]
+            "data" => $data
         ]);
     }
 
-    public function reportExport(Request $request)
+    public function reportExportExcel(Request $request)
     {
         try
         {
@@ -325,16 +81,65 @@ class RiskMatrixReportHistoryController extends Controller
                 "areas" => $this->getValuesForMultiselect($request->areas),
                 "processes" => $this->getValuesForMultiselect($request->processes),
                 "macroprocesses" => $this->getValuesForMultiselect($request->macroprocesses),
-                "dangers" => $this->getValuesForMultiselect($request->dangers),
-                "dangerDescription" => $this->getValuesForMultiselect($request->dangerDescription),
+                "risks" => $this->getValuesForMultiselect($request->risks),
                 "filtersType" => $request->filtersType,
                 "year" => $request->year,
                 "month" => $request->month,
             ];
 
-            DangerMatrixReportHistoryExportJob::dispatch($this->user, $this->company, $filters);
+            RisksMatrixReportHistoryExportJob::dispatch($this->user, $this->company, $filters);
 
             return $this->respondHttp200();
+        } catch(Exception $e) {
+            return $this->respondHttp500();
+        }
+    }
+
+    public function getDataExportPdf($request)
+    {
+        $data = [
+            'inherent_report' => RiskMatrixHistoryManager::reportInherent($request, $request->filters, $this->user->id, $this->company),
+            'residual_report' => RiskMatrixHistoryManager::reportResidual($request, $request->filters, $this->user->id, $this->company),
+            'table_report_residual' => RiskMatrixHistoryManager::reportTableResidual($request, $request->filters, $this->user->id, $this->company)
+        ];
+
+        return $data;
+    }
+
+    public function reportExportPdf(Request $request)
+    {
+        try
+        {
+            $report = $this->getDataExportPdf($request);
+
+            PDF::setOptions(['dpi' => 150, 'defaultFont' => 'sans-serif']);
+
+            $pdf = PDF::loadView('pdf.reportHistoryRiskMatrix', ['report' => $report, 'locationForm' => $this->getLocationFormConfModule()] );
+
+            $pdf->setPaper('A4');
+            //PDF::render();
+            $pdf = $pdf->output();
+        
+            $pdfName = 'matriz_de_riesgos_reporte_'.date("YmdHis").'.pdf';
+            $nameExcel = 'export/1/matriz_de_riesgos_reporte_'.date("YmdHis").'.pdf';
+
+            Storage::disk('public')->put($nameExcel, $pdf, 'public');
+
+            $paramUrl = base64_encode($nameExcel);
+
+            NotificationMail::
+                subject('Exportación de matriz de riesgos - Reportes')
+                ->recipients($this->user)
+                ->message('Se ha generado una exportación de reportes de matriz de riesgos.')
+                ->subcopy('Este link es valido por 24 horas')
+                ->buttons([['text'=>'Descargar', 'url'=>url("/export/{$paramUrl}")]])
+                ->module('dangerMatrix')
+                ->event('Job: RiskMatrixReportExportJob')
+                ->company($this->company)
+                ->send();
+
+            return $this->respondHttp200();
+
         } catch(Exception $e) {
             return $this->respondHttp500();
         }
