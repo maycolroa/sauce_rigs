@@ -10,7 +10,7 @@ use Maatwebsite\Excel\Events\AfterSheet;
 use Maatwebsite\Excel\Concerns\WithTitle;
 use \Maatwebsite\Excel\Sheet;
 use App\Facades\Administrative\KeywordManager;
-use App\Models\IndustrialSecure\RiskMatrix\RiskMatrix;
+use App\Models\IndustrialSecure\RiskMatrix\ReportHistory;
 use App\Traits\RiskMatrixTrait;
 use App\Traits\LocationFormTrait;
 
@@ -18,7 +18,7 @@ Sheet::macro('styleCells', function (Sheet $sheet, string $cellRange, array $sty
   $sheet->getDelegate()->getStyle($cellRange)->applyFromArray($style);
 });
 
-class RiskMatrixTableReportResidualExcel implements FromView, WithEvents, WithTitle
+class RiskMatrixTableReportResidualHistoryExcel implements FromView, WithEvents, WithTitle
 {
     use RegistersEventListeners;
     use RiskMatrixTrait;
@@ -35,56 +35,52 @@ class RiskMatrixTableReportResidualExcel implements FromView, WithEvents, WithTi
       $this->confLocation = $this->getLocationFormConfModule($this->company_id);
 
       $data = [];
-      $title_table = '';
-      $data_table = [];
 
-      $data = $this->getMatrixReport();
-
-      $risksMatrix = RiskMatrix::select(
-        'sau_rm_risks_matrix.*',
-        'sau_employees_processes.name as process',
-        'sau_employees_areas.name as area'
-      )
-      ->join('sau_employees_regionals', 'sau_employees_regionals.id', 'sau_rm_risks_matrix.employee_regional_id')
-      ->leftJoin('sau_employees_headquarters', 'sau_employees_headquarters.id', 'sau_rm_risks_matrix.employee_headquarter_id')
-      ->leftJoin('sau_employees_areas', 'sau_employees_areas.id', 'sau_rm_risks_matrix.employee_area_id')
-      ->leftJoin('sau_employees_processes', 'sau_employees_processes.id', 'sau_rm_risks_matrix.employee_process_id')
-      ->inRegionals($this->filters['regionals'], isset($this->filters['filtersType']['regionals']) ? $this->filters['filtersType']['regionals'] : 'IN')
-      ->inHeadquarters($this->filters['headquarters'], isset($this->filters['filtersType']['headquarters']) ? $this->filters['filtersType']['headquarters'] : 'IN')
-      ->inAreas($this->filters['areas'], isset($this->filters['filtersType']['areas']) ? $this->filters['filtersType']['areas'] : 'IN')
-      ->inProcesses($this->filters['processes'], isset($this->filters['filtersType']['processes']) ? $this->filters['filtersType']['processes'] : 'IN')
-      ->inMacroprocesses($this->filters['macroprocesses'], isset($this->filters['filtersType']['macroprocesses']) ? $this->filters['filtersType']['macroprocesses'] : 'IN');
+      $risksMatrix = ReportHistory::select('sau_rm_report_histories.*')
+        ->inRegionals($this->filters['regionals'], isset($this->filters['filtersType']['regionals']) ? $this->filters['filtersType']['regionals'] : 'IN')
+        ->inHeadquarters($this->filters['headquarters'], isset($this->filters['filtersType']['headquarters']) ? $this->filters['filtersType']['headquarters'] : 'IN')
+        ->inAreas($this->filters['areas'], isset($this->filters['filtersType']['areas']) ? $this->filters['filtersType']['areas'] : 'IN')
+        ->inProcesses($this->filters['processes'], isset($this->filters['filtersType']['processes']) ? $this->filters['filtersType']['processes'] : 'IN')
+        ->inMacroprocesses($this->filters['macroprocesses'], isset($this->filters['filtersType']['macroprocesses']) ? $this->filters['filtersType']['macroprocesses'] : 'IN')
+        ->inRisks($this->filters['risks'], $this->filters['filtersType']['risks'])
+        ->where("year", $this->filters['year'])
+        ->where("month", $this->filters['month']);
 
       $risksMatrix->company_scope = $this->company_id;
       $risksMatrix = $risksMatrix->get();
+
+      $matriz_calification = $this->getMatrixReport();
+
+      $data = $matriz_calification ? $matriz_calification : [];
 
       $table_report = [];
 
       foreach ($risksMatrix as $keyMatrix => $itemMatrix)
       {
+          $frec = -1;
+          $imp = -1;
+          $array_table = [];
 
-          foreach ($itemMatrix->subprocesses as $keySub => $itemSub)
+          $array_table['process'] = $itemMatrix->process;
+          $array_table['area'] = $itemMatrix->area;
+
+          $qualifications = json_decode($itemMatrix->qualification, true);
+          
+          foreach ($qualifications as $keyQ => $itemQ)
           {
-            $subprocess_risks = $itemSub->risks()->inRisks($this->filters['risks'], $this->filters['filtersType']['risks'])->get();
+              if ($itemQ["name"] == 'Frecuencia Residual')
+                  $frec = $itemQ["value"];
 
-            foreach ($subprocess_risks as $keyRisk => $itemRisk)
-            {
-                $array_table = [];
-
-                $array_table['process'] = $itemMatrix->process;
-                $array_table['area'] = $itemMatrix->area;
-                
-                $frec = $itemRisk->description_residual_frequency;
-                $imp = $itemRisk->description_residual_impact;
-
-                $array_table['sequence'] = $itemRisk->risk_sequence;
-                $array_table['color'] = $data[$frec][$imp]['color'];
-                $array_table['risk_name'] = $itemRisk->risk->name;
-
-                array_push($table_report, $array_table);
-            }
+              if ($itemQ["name"] == 'Impacto Residual')
+                  $imp = $itemQ["value"];
           }
-      }
+
+          $array_table['sequence'] = $itemMatrix->risk_sequence;
+          $array_table['color'] = $data[$frec][$imp]['color'];
+          $array_table['risk_name'] = $itemMatrix->risk;
+
+          array_push($table_report, $array_table);
+      } 
 
       $this->data = [
         "title" => 'Listado de Riesgos con Frecuencia e Impacto Residual',

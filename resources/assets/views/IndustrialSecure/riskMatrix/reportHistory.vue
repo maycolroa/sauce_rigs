@@ -270,7 +270,7 @@ export default {
         exportReport() {
             this.postData = Object.assign({}, {year: this.year}, {month: this.month}, this.filters);
 
-            axios.post('/industrialSecurity/dangersMatrix/reportHistoryExport', this.postData)
+            axios.post('/industrialSecurity/risksMatrix/reportHistoryExport', this.postData)
                 .then(response => {
                     Alerts.warning('Información', 'Se inicio la exportación, se le notificara a su correo electronico cuando finalice el proceso.');
                 }).catch(error => {

@@ -406,6 +406,7 @@ Route::middleware(['auth'])->group(function () {
 
 
       Route::post('risksMatrix/reportExport', 'IndustrialSecure\RiskMatrix\RiskMatrixReportController@reportExporteExcel');
+      Route::post('risksMatrix/reportHistoryExport ', 'IndustrialSecure\RiskMatrix\RiskMatrixReportHistoryController@reportExportExcel');
 
 
       Route::post('risksMatrix/reportHistory', 'IndustrialSecure\RiskMatrix\RiskMatrixReportHistoryController@reportInherent');

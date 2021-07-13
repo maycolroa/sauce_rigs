@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Jobs\IndustrialSecure\DangerMatrix;
+namespace App\Jobs\IndustrialSecure\RiskMatrix;
 
 use Illuminate\Bus\Queueable;
 use Illuminate\Queue\SerializesModels;
@@ -8,10 +8,10 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Maatwebsite\Excel\Facades\Excel;
-use App\Exports\IndustrialSecure\DangerMatrix\DangerMatrixReportHistoryExcel;
+use App\Exports\IndustrialSecure\RiskMatrix\RiskMatrixReportHistory;
 use App\Facades\Mail\Facades\NotificationMail;
 
-class DangerMatrixReportHistoryExportJob implements ShouldQueue
+class RisksMatrixReportHistoryExportJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
@@ -38,19 +38,19 @@ class DangerMatrixReportHistoryExportJob implements ShouldQueue
      */
     public function handle()
     {
-      $nameExcel = 'export/1/matriz_de_peligros_reporte_historico_'.date("YmdHis").'.xlsx';
-      Excel::store(new DangerMatrixReportHistoryExcel($this->company_id, $this->filters), $nameExcel, 'public',\Maatwebsite\Excel\Excel::XLSX);
+      $nameExcel = 'export/1/matriz_de_riesgos_reporte_historico_'.date("YmdHis").'.xlsx';
+      Excel::store(new RiskMatrixReportHistory($this->company_id, $this->filters), $nameExcel, 'public',\Maatwebsite\Excel\Excel::XLSX);
       
       $paramUrl = base64_encode($nameExcel);
       
       NotificationMail::
-        subject('Exportación de matriz de peligros - Reportes Historicos')
+        subject('Exportación de matriz de riesgos - Reportes Historicos')
         ->recipients($this->user)
-        ->message('Se ha generado una exportación de reportes de matriz de peligros.')
+        ->message('Se ha generado una exportación de reportes de matriz de riesgos.')
         ->subcopy('Este link es valido por 24 horas')
         ->buttons([['text'=>'Descargar', 'url'=>url("/export/{$paramUrl}")]])
         ->module('dangerMatrix')
-        ->event('Job: DangerMatrixReportHistoryExportJob')
+        ->event('Job: RisksMatrixReportHistoryExportJob')
         ->company($this->company_id)
         ->send();
     }

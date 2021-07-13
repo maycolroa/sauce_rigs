@@ -5,7 +5,7 @@ namespace App\Http\Controllers\IndustrialSecure\RiskMatrix;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
-use App\Jobs\IndustrialSecure\DangerMatrix\DangerMatrixReportHistoryExportJob;
+use App\Jobs\IndustrialSecure\RiskMatrix\RisksMatrixReportHistoryExportJob;
 use App\Traits\RiskMatrixTrait;
 use Session;
 use App\Models\IndustrialSecure\RiskMatrix\ReportHistory;
@@ -312,7 +312,7 @@ class RiskMatrixReportHistoryController extends Controller
         ]);
     }
 
-    public function reportExport(Request $request)
+    public function reportExportExcel(Request $request)
     {
         try
         {
@@ -323,14 +323,13 @@ class RiskMatrixReportHistoryController extends Controller
                 "areas" => $this->getValuesForMultiselect($request->areas),
                 "processes" => $this->getValuesForMultiselect($request->processes),
                 "macroprocesses" => $this->getValuesForMultiselect($request->macroprocesses),
-                "dangers" => $this->getValuesForMultiselect($request->dangers),
-                "dangerDescription" => $this->getValuesForMultiselect($request->dangerDescription),
+                "risks" => $this->getValuesForMultiselect($request->risks),
                 "filtersType" => $request->filtersType,
                 "year" => $request->year,
                 "month" => $request->month,
             ];
 
-            DangerMatrixReportHistoryExportJob::dispatch($this->user, $this->company, $filters);
+            RisksMatrixReportHistoryExportJob::dispatch($this->user, $this->company, $filters);
 
             return $this->respondHttp200();
         } catch(Exception $e) {
