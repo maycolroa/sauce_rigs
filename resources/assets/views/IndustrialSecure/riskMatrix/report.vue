@@ -9,7 +9,8 @@
         <div v-show="!isLoading">
             <b-row align-h="end">
                 <b-col>
-                    <b-btn v-if="auth.can['riskMatrix_c']" @click="exportReport()" variant="primary"><i class="fas fa-download"></i> &nbsp; Exportar Reporte</b-btn>
+                    <b-btn v-if="auth.can['riskMatrix_c']" @click="exportReport()" variant="primary"><i class="fas fa-download"></i> &nbsp; Exportar Reporte Excel</b-btn>
+                    <b-btn v-if="auth.can['riskMatrix_c']" @click="exportReportPdf()" variant="primary"><i class="fas fa-download"></i> &nbsp; Exportar Reporte PDF</b-btn>
                     <b-btn :to="{name:'industrialsecure-riskmatrix-report-history'}" variant="primary">Ver historial</b-btn>
                 </b-col>
                 <b-col cols="3">
@@ -341,7 +342,17 @@ export default {
                 }).catch(error => {
                     Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
                 });
-        }
+        },
+        exportReportPdf() {
+            this.postData = Object.assign({}, {filtersTable: this.filtersTable}, this[this.typeParams]);
+
+            axios.post('/industrialSecurity/risksMatrix/reportExportPdf', this.postData)
+                .then(response => {
+                    Alerts.warning('Información', 'Se inicio la exportación, se le notificara a su correo electronico cuando finalice el proceso.');
+                }).catch(error => {
+                    Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
+                });
+        },
     }
 }
 

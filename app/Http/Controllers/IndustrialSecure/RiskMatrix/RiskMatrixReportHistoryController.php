@@ -337,6 +337,34 @@ class RiskMatrixReportHistoryController extends Controller
         }
     }
 
+    public function getDataExportPdf()
+    {
+        $data = [
+            'inherent_report' => $this->inherent_report,
+            'residual_report' => $this->residual_report,
+            'inherent_report_table' => $this->inherent_report_table,
+            'residual_report_table' => $this->residual_report_table,
+            'table_report_residual' => $this->table_report_residual
+        ];
+
+        return $data;
+    }
+
+    public function reportExportPdf()
+    {
+        $report = $this->getDataExportPdf();
+
+        \Log::info($report);
+
+        PDF::setOptions(['dpi' => 150, 'defaultFont' => 'sans-serif']);
+
+        $pdf = PDF::loadView('pdf.qualificationListCheck', ['report' => $report] );
+
+        $pdf->setPaper('A4', 'landscape');
+
+        return $pdf->download('Reportes matriz de riesgos.pdf');
+    }
+
     /**
      * Returns an array for a select type input
      *

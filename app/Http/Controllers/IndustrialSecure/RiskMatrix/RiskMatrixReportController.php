@@ -9,6 +9,8 @@ use App\Models\IndustrialSecure\RiskMatrix\RiskMatrix;
 use App\Jobs\IndustrialSecure\RiskMatrix\RiskMatrixReportExportJob;
 use App\Traits\RiskMatrixTrait;
 use App\Traits\Filtertrait;
+use Illuminate\Support\Facades\Storage;
+use App\Facades\Mail\Facades\NotificationMail;
 use PDF;
 use RiskMatrixReportManager;
 
@@ -120,31 +122,55 @@ class RiskMatrixReportController extends Controller
         }
     }
 
-    public function getDataExportPdf()
+    public function getDataExportPdf($request)
     {
         $data = [
-            'inherent_report' => $this->inherent_report,
-            'residual_report' => $this->residual_report,
-            'inherent_report_table' => $this->inherent_report_table,
-            'residual_report_table' => $this->residual_report_table,
-            'table_report_residual' => $this->table_report_residual
+            'inherent_report' => RiskMatrixReportManager::reportInherent($request, $request->filters, $this->user->id),
+            'residual_report' => RiskMatrixReportManager::reportResidual($request, $request->filters, $this->user->id),
+            'inherent_report_table' => RiskMatrixReportManager::reportRiskInherentTablePdf($request, $request->filters, $this->user->id)->get(),
+            'residual_report_table' => RiskMatrixReportManager::reportRiskResidualTablePdf($request, $request->filters, $this->user->id)->get(),
+            'table_report_residual' => RiskMatrixReportManager::reportTableResidual($request, $request->filters, $this->user->id)
         ];
 
         return $data;
     }
 
-    public function downloadPdf()
+    public function reportExportPdf(Request $request)
     {
-        $report = $this->getDataExportPdf();
+        try
+        {
+            $report = $this->getDataExportPdf($request);
 
-        \Log::info($report);
+            PDF::setOptions(['dpi' => 150, 'defaultFont' => 'sans-serif']);
 
-        /*PDF::setOptions(['dpi' => 150, 'defaultFont' => 'sans-serif']);
+            $pdf = PDF::loadView('pdf.reportRiskMatrix', ['report' => $report, 'locationForm' => $this->getLocationFormConfModule()] );
 
-        $pdf = PDF::loadView('pdf.qualificationListCheck', ['report' => $report] );
+            $pdf->setPaper('A4');
+            //PDF::render();
+            $pdf = $pdf->output();
+        
+            $pdfName = 'matriz_de_riesgos_reporte_'.date("YmdHis").'.pdf';
+            $nameExcel = 'export/1/matriz_de_riesgos_reporte_'.date("YmdHis").'.pdf';
 
-        $pdf->setPaper('A4', 'landscape');
+            Storage::disk('public')->put($nameExcel, $pdf, 'public');
 
-        return $pdf->download('Reportes matriz de riesgos.pdf');*/
+            $paramUrl = base64_encode($nameExcel);
+
+            NotificationMail::
+                subject('Exportación de matriz de riesgos - Reportes')
+                ->recipients($this->user)
+                ->message('Se ha generado una exportación de reportes de matriz de riesgos.')
+                ->subcopy('Este link es valido por 24 horas')
+                ->buttons([['text'=>'Descargar', 'url'=>url("/export/{$paramUrl}")]])
+                ->module('dangerMatrix')
+                ->event('Job: RiskMatrixReportExportJob')
+                ->company($this->company)
+                ->send();
+
+            return $this->respondHttp200();
+
+        } catch(Exception $e) {
+            return $this->respondHttp500();
+        }
     }
 }

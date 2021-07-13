@@ -149,7 +149,9 @@ class RiskMatrixManager extends BaseManager
             'sau_employees_headquarters.name as headquarter',
             'sau_employees_processes.name as process',
             'sau_employees_areas.name as area',
-            'sau_tags_processes.name as types'
+            'sau_tags_processes.name as types',
+            'sau_rm_subprocess_risk.description_inherent_frequency as frequency',
+            'sau_rm_subprocess_risk.description_inherent_impact as impact'
         )
         ->join('sau_rm_risk_matrix_subprocess', 'sau_rm_risk_matrix_subprocess.risk_matrix_id', 'sau_rm_risks_matrix.id')
         ->join('sau_rm_subprocess_risk', 'sau_rm_subprocess_risk.rm_subprocess_id', 'sau_rm_risk_matrix_subprocess.id')
@@ -306,7 +308,9 @@ class RiskMatrixManager extends BaseManager
             'sau_employees_headquarters.name as headquarter',
             'sau_employees_processes.name as process',
             'sau_employees_areas.name as area',
-            'sau_tags_processes.name as types'
+            'sau_tags_processes.name as types',
+            'sau_rm_subprocess_risk.description_residual_frequency as frequency',
+            'sau_rm_subprocess_risk.description_residual_impact as impact'
         )
         ->join('sau_rm_risk_matrix_subprocess', 'sau_rm_risk_matrix_subprocess.risk_matrix_id', 'sau_rm_risks_matrix.id')
         ->join('sau_rm_subprocess_risk', 'sau_rm_subprocess_risk.rm_subprocess_id', 'sau_rm_risk_matrix_subprocess.id')
@@ -410,5 +414,117 @@ class RiskMatrixManager extends BaseManager
         ];
         
         return $data;
+    }
+
+    public function reportRiskInherentTablePdf($request = [], $filters = [], $user)
+    {
+        $url = "/industrialsecure/riskmatrix/report";
+        $init = true;
+        $filters = [];
+
+        if ($request->has('filtersType'))
+            $init = false;
+        else 
+            $filters = $this->filterDefaultValues($user, $url);
+
+        /** FIltros */
+        $regionals = !$init ? $this->getValuesForMultiselect($request->regionals) : (isset($filters['regionals']) ? $this->getValuesForMultiselect($filters['regionals']) : []);
+            
+        $headquarters = !$init ? $this->getValuesForMultiselect($request->headquarters) : (isset($filters['headquarters']) ? $this->getValuesForMultiselect($filters['headquarters']) : []);
+        
+        $areas = !$init ? $this->getValuesForMultiselect($request->areas) : (isset($filters['areas']) ? $this->getValuesForMultiselect($filters['areas']) : []);
+        
+        $processes = !$init ? $this->getValuesForMultiselect($request->processes) : (isset($filters['processes']) ? $this->getValuesForMultiselect($filters['processes']) : []);
+        
+        $macroprocesses = !$init ? $this->getValuesForMultiselect($request->macroprocesses) : (isset($filters['macroprocesses']) ? $this->getValuesForMultiselect($filters['macroprocesses']) : []);
+        
+        $filtersType = !$init ? $request->filtersType : (isset($filters['filtersType']) ? $filters['filtersType'] : null);
+        /***********************************************/
+
+        $risks = RiskMatrix::select(
+            'sau_rm_risks_matrix.id AS id',
+            'sau_rm_risk.name AS name',
+            'sau_rm_risk.category AS category',
+            'sau_employees_regionals.name as regional',
+            'sau_employees_headquarters.name as headquarter',
+            'sau_employees_processes.name as process',
+            'sau_employees_areas.name as area',
+            'sau_tags_processes.name as types',
+            'sau_rm_subprocess_risk.description_inherent_frequency as frequency',
+            'sau_rm_subprocess_risk.description_inherent_impact as impact'
+        )
+        ->join('sau_rm_risk_matrix_subprocess', 'sau_rm_risk_matrix_subprocess.risk_matrix_id', 'sau_rm_risks_matrix.id')
+        ->join('sau_rm_subprocess_risk', 'sau_rm_subprocess_risk.rm_subprocess_id', 'sau_rm_risk_matrix_subprocess.id')
+        ->join('sau_rm_risk', 'sau_rm_risk.id', 'sau_rm_subprocess_risk.risk_id')
+        ->leftJoin('sau_employees_regionals', 'sau_employees_regionals.id', 'sau_rm_risks_matrix.employee_regional_id')
+        ->leftJoin('sau_employees_headquarters', 'sau_employees_headquarters.id', 'sau_rm_risks_matrix.employee_headquarter_id')
+        ->leftJoin('sau_employees_processes', 'sau_employees_processes.id', 'sau_rm_risks_matrix.employee_process_id')
+        ->leftJoin('sau_employees_areas', 'sau_employees_areas.id', 'sau_rm_risks_matrix.employee_area_id')
+        ->leftJoin('sau_tags_processes', 'sau_tags_processes.id', 'sau_rm_risks_matrix.macroprocess_id')
+        ->inRegionals($regionals, isset($filtersType['regionals']) ? $filtersType['regionals'] : 'IN')
+        ->inHeadquarters($headquarters, isset($filtersType['headquarters']) ? $filtersType['headquarters'] : 'IN')
+        ->inAreas($areas, isset($filtersType['areas']) ? $filtersType['areas'] : 'IN')
+        ->inProcesses($processes, isset($filtersType['processes']) ? $filtersType['processes'] : 'IN')
+        ->inMacroprocesses($macroprocesses, isset($filtersType['macroprocesses']) ? $filtersType['macroprocesses'] : 'IN')
+        ->where('sau_rm_subprocess_risk.description_inherent_frequency',$request->filtersTable['rowI'])
+        ->where('sau_rm_subprocess_risk.description_inherent_impact',$request->filtersTable['colI']);
+
+        return $risks;
+    }
+
+    public function reportRiskResidualTablePdf($request = [], $filters = [], $user)
+    {
+        $url = "/industrialsecure/riskmatrix/report";
+        $init = true;
+        $filters = [];
+
+        if ($request->has('filtersType'))
+            $init = false;
+        else 
+            $filters = $this->filterDefaultValues($user, $url);
+
+        /** FIltros */
+        $regionals = !$init ? $this->getValuesForMultiselect($request->regionals) : (isset($filters['regionals']) ? $this->getValuesForMultiselect($filters['regionals']) : []);
+            
+        $headquarters = !$init ? $this->getValuesForMultiselect($request->headquarters) : (isset($filters['headquarters']) ? $this->getValuesForMultiselect($filters['headquarters']) : []);
+        
+        $areas = !$init ? $this->getValuesForMultiselect($request->areas) : (isset($filters['areas']) ? $this->getValuesForMultiselect($filters['areas']) : []);
+        
+        $processes = !$init ? $this->getValuesForMultiselect($request->processes) : (isset($filters['processes']) ? $this->getValuesForMultiselect($filters['processes']) : []);
+        
+        $macroprocesses = !$init ? $this->getValuesForMultiselect($request->macroprocesses) : (isset($filters['macroprocesses']) ? $this->getValuesForMultiselect($filters['macroprocesses']) : []);
+
+        $filtersType = !$init ? $request->filtersType : (isset($filters['filtersType']) ? $filters['filtersType'] : null);
+        /***********************************************/
+
+        $risks = RiskMatrix::select(
+            'sau_rm_risks_matrix.id AS id',
+            'sau_rm_risk.name AS name',
+            'sau_rm_risk.category AS category',
+            'sau_employees_regionals.name as regional',
+            'sau_employees_headquarters.name as headquarter',
+            'sau_employees_processes.name as process',
+            'sau_employees_areas.name as area',
+            'sau_tags_processes.name as types',
+            'sau_rm_subprocess_risk.description_residual_frequency as frequency',
+            'sau_rm_subprocess_risk.description_residual_impact as impact'
+        )
+        ->join('sau_rm_risk_matrix_subprocess', 'sau_rm_risk_matrix_subprocess.risk_matrix_id', 'sau_rm_risks_matrix.id')
+        ->join('sau_rm_subprocess_risk', 'sau_rm_subprocess_risk.rm_subprocess_id', 'sau_rm_risk_matrix_subprocess.id')
+        ->join('sau_rm_risk', 'sau_rm_risk.id', 'sau_rm_subprocess_risk.risk_id')
+        ->leftJoin('sau_employees_regionals', 'sau_employees_regionals.id', 'sau_rm_risks_matrix.employee_regional_id')
+        ->leftJoin('sau_employees_headquarters', 'sau_employees_headquarters.id', 'sau_rm_risks_matrix.employee_headquarter_id')
+        ->leftJoin('sau_employees_processes', 'sau_employees_processes.id', 'sau_rm_risks_matrix.employee_process_id')
+        ->leftJoin('sau_employees_areas', 'sau_employees_areas.id', 'sau_rm_risks_matrix.employee_area_id')
+        ->leftJoin('sau_tags_processes', 'sau_tags_processes.id', 'sau_rm_risks_matrix.macroprocess_id')
+        ->inRegionals($regionals, isset($filtersType['regionals']) ? $filtersType['regionals'] : 'IN')
+        ->inHeadquarters($headquarters, isset($filtersType['headquarters']) ? $filtersType['headquarters'] : 'IN')
+        ->inAreas($areas, isset($filtersType['areas']) ? $filtersType['areas'] : 'IN')
+        ->inProcesses($processes, isset($filtersType['processes']) ? $filtersType['processes'] : 'IN')
+        ->inMacroprocesses($macroprocesses, isset($filtersType['macroprocesses']) ? $filtersType['macroprocesses'] : 'IN')
+        ->where('sau_rm_subprocess_risk.description_residual_frequency',$request->filtersTable['rowR'])
+        ->where('sau_rm_subprocess_risk.description_residual_impact',$request->filtersTable['colR']);
+
+        return $risks;
     }
 }
