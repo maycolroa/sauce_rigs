@@ -272,10 +272,7 @@ class RiskMatrixController extends Controller
 
                 foreach ($itemS['risks'] as $keyD => $itemR)
                 {
-                    \Log::info($count_sequence);
                     $count_sequence = $count_sequence + 1;
-
-                    \Log::info($count_sequence);
 
                     if ($itemR['id'] == '')
                         $risk = new SubProcessRisk();
@@ -337,10 +334,7 @@ class RiskMatrixController extends Controller
 
                         foreach ($itemC['controls'] as $keyC2 => $itemC2)
                         {
-                            \Log::info($count_controls);
                             $count_controls = $count_controls + 1;
-
-                            \Log::info($count_controls);
 
                             if ($itemC2['id'] == '')
                                 $control = new CauseControl();
