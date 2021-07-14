@@ -12,7 +12,7 @@ use App\Models\LegalAspects\LegalMatrix\SystemApply;
 use App\Models\LegalAspects\LegalMatrix\LawType;
 use App\Models\LegalAspects\LegalMatrix\RiskAspect;
 use App\Models\LegalAspects\LegalMatrix\SstRisk;
-use App\Jobs\LegalAspects\LegalMatrix\SyncQualificationsCompaniesJob;
+use App\Jobs\LegalAspects\LegalMatrix\SyncQualificationsCompaniesImportJob;
 use App\Exports\LegalAspects\LegalMatrix\Laws\LawsImportErrorExcel;
 use App\Facades\Mail\Facades\NotificationMail;
 use Maatwebsite\Excel\Facades\Excel;
@@ -185,6 +185,8 @@ class LawImport implements ToCollection, WithCalculatedFormulas
             $this->interest = $this->checkInterest(explode(",", $data['article_interests']));
 
             $article->interests()->sync($this->interest);
+
+            SyncQualificationsCompaniesImportJob::dispatch($this->company_id);
 
             return true;
         }

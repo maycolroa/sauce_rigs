@@ -121,6 +121,7 @@ class VuetableColumnManager
     {
         $colums = [
             ['name' => 'sau_rm_risks_matrix.id', 'data'=> 'id', 'title'=> 'ID', 'sortable'=> false, 'searchable'=> false, 'detail'=> false, 'key'=> true ],
+            ['name' => 'sau_rm_risks_matrix.name', 'data'=> 'name', 'title'=> 'Nombre', 'sortable'=> true, 'searchable'=> true, 'detail'=> false, 'key'=> false ],
             ['name' => 'sau_users.name', 'data'=> 'supervisor', 'title'=> 'Supervisor', 'sortable'=> true, 'searchable'=> true, 'detail'=> false, 'key'=> false ],
             ['name' => 'approved', 'data'=> 'approved', 'title'=> '¿Aprobada?', 'sortable'=> true, 'searchable'=> false, 'detail'=> false, 'key'=> false ]
         ];

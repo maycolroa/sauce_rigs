@@ -158,27 +158,32 @@ trait RiskMatrixTrait
         $data = [];
 
         $data = [
-            'economico' => '1 No Significativo: Pérdidas Económicas hasta el 0.10% del patrimonio
+            'economico' => '0 No aplica
+            1 No Significativo: Pérdidas Económicas hasta el 0.10% del patrimonio
             2 Leve: Pérdidas Económicas entre 0.11% y 0.20% del patrimonio.
             3 Moderado: Pérdidas Económicas entre el 0.21% y 0.30% del patrimonio.
             4 Grave: Pérdidas Económicas entre el 0.31% y 0.40% del patrimonio.
             5 Extremo: Pérdidas Económicas de más de 0.4% del patrimonio.',
-            'calidad' => '1 No Significativo: No hay lesión o lesión menor o tratamiento no significativo / No identificado por el paciente.
+            'calidad' => '0 No aplica
+            1 No Significativo: No hay lesión o lesión menor o tratamiento no significativo / No identificado por el paciente.
             2 Leve: Lesión leve que requiere tratamiento  e intervención leve sin cambio en la complejidad de la atención.
             3 Moderado: Lesión o enfermedad que requiere aumento en sus días de estancia o cambio en la complejidad de la atención .
             4 Grave: Lesión de largo plazo o discapacidad permanente menor.
             5 Extremo: Discapacidad permanente mayor o efecto psicológico mayor (en el paciente o su familia) o Muerte.',
-            'reputacional' => '1 No significativo: El hecho no afecta la confianza y credibilidad en ningún grupo de interés ni tiene despliegue por medios masivos de comunicación. El hecho es conocido al interior de la Institución.
+            'reputacional' => '0 No aplica
+            1 No significativo: El hecho no afecta la confianza y credibilidad en ningún grupo de interés ni tiene despliegue por medios masivos de comunicación. El hecho es conocido al interior de la Institución.
             2 Leve: El hecho afecta la confianza y credibilidad en los grupos de interés cuyo Coeficiente de Cn  esté en el rango (0.1 – 0.3) /  el hecho tiene despliegue por medios masivos de comunicación locales. 
             3 Moderado: El hecho afecta la confianza y credibilidad en los grupos de interés cuyo Coeficiente de Cn esté en el rango (0.31 – 0.6) / el hecho tiene despliegue por medios masivos de comunicación locales y regionales. 
             4 Grave: El hecho afecta la confianza y credibilidad en los grupos de interés cuyo Coeficiente de Cn esté en el rango (0.61 – 0.9) / el hecho tiene despliegue por medios masivos de comunicación locales, regionales y nacionales. 
             5 Extremo: El hecho afecta la confianza y credibilidad en todos los grupos de interés de la organización y en otros públicos afectados / el hecho tiene despliegue por medios masivos de comunicación locales, regionales, nacionales e internacionales.',
-            'legal' => '1 No Significativo: Queja ante autoridad administrativa 
+            'legal' => '0 No aplica
+            1 No Significativo: Queja ante autoridad administrativa 
             2 Leve: Observaciones por parte de los entes de control con plazo para cumplimiento de acciones 
             3 Moderado: Demandas que impliquen indemnizaciones o Multas o sanciones por incumplimiento de la normatividad 
             4 Grave: Intervención total o parcial de la Entidad 
             5 Extremo: Suspensión temporal de actividades o  no habilitación del servicio ',
-            'ambiental' => '1 No Significativo: Afectación transitoria de un ecosistema sin consecuencias ambientales
+            'ambiental' => '0 No aplica
+            1 No Significativo: Afectación transitoria de un ecosistema sin consecuencias ambientales
             2 Leve: Afectación ambiental recuperable de un ecosistema de corto plazo (de un día a un mes) 
             3 Moderado: Afectación ambiental recuperable de un ecosistema de mediano plazo (de un mes a doce meses) 
             4 Grave: Afectación ambiental recuperable de un ecosistema de largo plazo (mayor a un año) 
@@ -249,43 +254,4 @@ trait RiskMatrixTrait
 
         return $matriz;
     }
-
-    /*protected function getMatrixReport()
-    {
-        $matriz = [];
-
-        //[frecuencia][impacto]
-        
-        $matriz['1.Muy Bajo']['5.Extremo'] = ['color' => 'warning', 'count' => 0];
-        $matriz['1.Muy Bajo']['4.Grave'] = ['color' => 'warning', 'count' => 0];
-        $matriz['1.Muy Bajo']['3.Moderado'] = ['color' => 'success', 'count' => 0];
-        $matriz['1.Muy Bajo']['2.Leve'] = ['color' => 'success', 'count' => 0];
-        $matriz['1.Muy Bajo']['1.No Significativo'] = ['color' => 'success', 'count' => 0];
-
-        $matriz['2.Bajo']['5.Extremo'] = ['color' => 'orange', 'count' => 0];
-        $matriz['2.Bajo']['4.Grave'] = ['color' => 'warning', 'count' => 0];
-        $matriz['2.Bajo']['3.Moderado'] = ['color' => 'warning', 'count' => 0];
-        $matriz['2.Bajo']['2.Leve'] = ['color' => 'success', 'count' => 0];
-        $matriz['2.Bajo']['1.No Significativo'] = ['color' => 'success', 'count' => 0];
-
-        $matriz['3.Moderada']['5.Extremo'] = ['color' => 'primary', 'count' => 0];
-        $matriz['3.Moderada']['4.Grave'] = ['color' => 'orange', 'count' => 0];
-        $matriz['3.Moderada']['3.Moderado'] = ['color' => 'warning', 'count' => 0];
-        $matriz['3.Moderada']['2.Leve'] = ['color' => 'warning', 'count' => 0];
-        $matriz['3.Moderada']['1.No Significativo'] = ['color' => 'success', 'count' => 0];
-
-        $matriz['4.Alta']['5.Extremo'] = ['color' => 'primary', 'count' => 0];
-        $matriz['4.Alta']['4.Grave'] = ['color' => 'primary', 'count' => 0];
-        $matriz['4.Alta']['3.Moderado'] = ['color' => 'orange', 'count' => 0];
-        $matriz['4.Alta']['2.Leve'] = ['color' => 'warning', 'count' => 0];
-        $matriz['4.Alta']['1.No Significativo'] = ['color' => 'warning', 'count' => 0];
-
-        $matriz['5.Muy Alta']['5.Extremo'] = ['color' => 'primary', 'count' => 0];
-        $matriz['5.Muy Alta']['4.Grave'] = ['color' => 'primary', 'count' => 0];
-        $matriz['5.Muy Alta']['3.Moderado'] = ['color' => 'primary', 'count' => 0];
-        $matriz['5.Muy Alta']['2.Leve'] = ['color' => 'orange', 'count' => 0];
-        $matriz['5.Muy Alta']['1.No Significativo'] = ['color' => 'warning', 'count' => 0];
-
-        return $matriz;
-    }*/
 }
