@@ -249,7 +249,7 @@ export default {
         key: new Date().getTime(),
         id: '',
         risk_id: '',
-        risk_sequence: this.subprocess.risks.length + 1,
+        risk_sequence: '',
         risk: {
           name: ''
         },
@@ -288,7 +288,7 @@ export default {
             activities: [],
             activitiesRemoved: []
         },
-        nomenclature: this.nomenclature + 'R.' + (this.subprocess.risks.length + 1) 
+        nomenclature: this.nomenclature + 'R.' 
       })
     },
     removeDanger(index) {

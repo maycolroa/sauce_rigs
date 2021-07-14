@@ -239,8 +239,6 @@ export default {
         });
     },
     addActiviy() {
-      console.log(this.form.locations);
-      console.log(this.form.locations.nomenclature + 'matrix');
       this.riskMatrix.subprocesses.push(
         {
           key: new Date().getTime(),

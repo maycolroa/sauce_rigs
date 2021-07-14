@@ -250,8 +250,12 @@ class RiskMatrixController extends Controller
                 ->creationDate($riskMatrix->created_at)
                 ->url(url('/industrialsecure/riskMatrix/view/'.$riskMatrix->id));
 
+            $count_sequence = 0;
+            $count_controls = 0;
+
             foreach ($request->get('subprocesses') as $keyA => $itemS)
             {
+
                 if ($itemS['id'] == '')
                 {
                     $subprocess = new RiskMatrixSubProcess();
@@ -268,6 +272,11 @@ class RiskMatrixController extends Controller
 
                 foreach ($itemS['risks'] as $keyD => $itemR)
                 {
+                    \Log::info($count_sequence);
+                    $count_sequence = $count_sequence + 1;
+
+                    \Log::info($count_sequence);
+
                     if ($itemR['id'] == '')
                         $risk = new SubProcessRisk();
                     else
@@ -280,8 +289,8 @@ class RiskMatrixController extends Controller
                     
                     $risk->rm_subprocess_id = $subprocess->id;
                     $risk->risk_id = $itemR['risk_id'];
-                    $risk->nomenclature = $itemR['nomenclature'];
-                    $risk->risk_sequence = $itemR['risk_sequence'];
+                    $risk->nomenclature = $itemR['nomenclature'] . $count_sequence;
+                    $risk->risk_sequence = $count_sequence;
                     $risk->economic = $itemR['economic'];
                     $risk->quality_care_patient_safety =  $itemR['quality_care_patient_safety'];
                     $risk->reputational = $itemR['reputational'];
@@ -328,6 +337,11 @@ class RiskMatrixController extends Controller
 
                         foreach ($itemC['controls'] as $keyC2 => $itemC2)
                         {
+                            \Log::info($count_controls);
+                            $count_controls = $count_controls + 1;
+
+                            \Log::info($count_controls);
+
                             if ($itemC2['id'] == '')
                                 $control = new CauseControl();
                             else
@@ -338,8 +352,8 @@ class RiskMatrixController extends Controller
 
                             $control->controls = $controls->implode(',');
                             $control->rm_cause_id = $cause->id;
-                            $control->number_control = $itemC2['number_control'];
-                            $control->nomenclature = $itemC2['nomenclature'];
+                            $control->number_control = $count_controls;
+                            $control->nomenclature = $itemC2['nomenclature'] . $count_controls;
 
                             if(!$control->save()){
                                 return $this->respondHttp500();

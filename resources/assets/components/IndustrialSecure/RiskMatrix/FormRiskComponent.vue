@@ -15,7 +15,7 @@
                   <vue-input :disabled="true" class="col-md-4" v-model="riskDetail.category" label="Categoría" type="text" name="category"></vue-input>
                 </b-form-row>
                 <b-form-row>
-                  <vue-input :disabled="true" class="col-md-6" v-model="risk.risk_sequence" label="# Riesgo" type="number" name="risk_sequence"></vue-input>
+                  <vue-input v-if="isEdit || viewOnly" :disabled="true" class="col-md-6" v-model="risk.risk_sequence" label="# Riesgo" type="number" name="risk_sequence"></vue-input>
                   <vue-input :disabled="true" class="col-md-6" v-model="risk.nomenclature" label="Nomenclatura" type="text" name="nomenclature"></vue-input>
                 </b-form-row>
               </b-card>
@@ -141,7 +141,7 @@
                                   </div>
                                   <vue-ajax-advanced-select :disabled="viewOnly" class="col-md-12" v-model="control.controls" name="controls" :error="form.errorsFor(`subprocesses.${indexSubprocess}.risks.${indexRisk}.causes_controls.${indexC}.controls.${indexControl}.controls`)" label="Controles" placeholder="Seleccione los controles" :url="tagsRiskCausesControlsDataUrl" :multiple="true" :allowEmpty="true" :taggable="true">
                                   </vue-ajax-advanced-select>
-                                  <vue-input :disabled="true" class="col-md-2" v-model="control.number_control" label="# Control" type="number" name="number_control"></vue-input>
+                                  <vue-input v-if="isEdit || viewOnly"  :disabled="true" class="col-md-2" v-model="control.number_control" label="# Control" type="number" name="number_control"></vue-input>
                                   <vue-input :disabled="true" class="col-md-4" v-model="control.nomenclature" label="Nomenclatura" type="text" name="nomenclature"></vue-input>
                                </b-form-row>
                             </div>
@@ -512,7 +512,7 @@ export default {
         id: '',
         controls: '',
         number_control: this.risk.causes_controls[cause].controls.length + 1,
-        nomenclature: this.nomenclature + 'C.' + (this.risk.causes_controls[cause].controls.length + 1)
+        nomenclature: this.nomenclature + 'C.'
       })
     },
     removeControl(cause,index) {   
