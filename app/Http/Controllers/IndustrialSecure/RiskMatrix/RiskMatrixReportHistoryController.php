@@ -199,6 +199,7 @@ class RiskMatrixReportHistoryController extends Controller
                 $keyword = "%{$request->keyword}%";
                 $data = ReportHistory::selectRaw("DISTINCT $column")
                 ->where($column, "<>", "")
+                ->where('company_id', $this->company)
                 ->whereNotNull($column);
 
                 if ($request->has('year'))
