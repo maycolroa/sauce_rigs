@@ -165,6 +165,7 @@ class RiskMatrixReportHistoryController extends Controller
                 ->where(function ($query) use ($keyword, $column) {
                     $query->orWhere($column, 'like', $keyword);
                 })
+                ->where('company_id', $this->company)
                 ->orderBy($column);
 
                 if ($request->has('year'))
@@ -198,6 +199,7 @@ class RiskMatrixReportHistoryController extends Controller
                 $keyword = "%{$request->keyword}%";
                 $data = ReportHistory::selectRaw("DISTINCT $column")
                 ->where($column, "<>", "")
+                ->where('company_id', $this->company)
                 ->whereNotNull($column);
 
                 if ($request->has('year'))
