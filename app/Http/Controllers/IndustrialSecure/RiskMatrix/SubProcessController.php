@@ -40,7 +40,7 @@ class SubProcessController extends Controller
     */
     public function data(Request $request)
     {
-        $sub_processes = SubProcess::select('*');
+        $sub_processes = SubProcess::select('*')->where('company_id', $this->company);
 
         return Vuetable::of($sub_processes)
                     ->make();
@@ -157,7 +157,9 @@ class SubProcessController extends Controller
             $sub_processes = SubProcess::selectRaw("
                 sau_rm_sub_processes.id as id,
                 sau_rm_sub_processes.name as name
-            ")->pluck('id', 'name');
+            ")
+            ->where('company_id', $this->company)
+            ->pluck('id', 'name');
         
             return $this->multiSelectFormat($sub_processes);
         }
