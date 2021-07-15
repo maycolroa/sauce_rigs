@@ -165,6 +165,7 @@ class RiskMatrixReportHistoryController extends Controller
                 ->where(function ($query) use ($keyword, $column) {
                     $query->orWhere($column, 'like', $keyword);
                 })
+                ->where('company_id', $this->company)
                 ->orderBy($column);
 
                 if ($request->has('year'))
