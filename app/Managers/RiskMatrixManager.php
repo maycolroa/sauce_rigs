@@ -20,7 +20,7 @@ class RiskMatrixManager extends BaseManager
      *
      * @return \Illuminate\Http\Response
      */
-    public function reportInherent($request = [], $filters = [], $user)
+    public function reportInherent($request = [], $filters = [], $user, $company)
     {
         $data = [];
 
@@ -62,6 +62,7 @@ class RiskMatrixManager extends BaseManager
             ->inAreas($areas, isset($filtersType['areas']) ? $filtersType['areas'] : 'IN')
             ->inProcesses($processes, isset($filtersType['processes']) ? $filtersType['processes'] : 'IN')
             ->inMacroprocesses($macroprocesses, isset($filtersType['macroprocesses']) ? $filtersType['macroprocesses'] : 'IN')
+            ->where('sau_rm_risks_matrix.company_id', $company)
             ->get();
 
         foreach ($risksMatrix as $keyMatrix => $itemMatrix)
@@ -116,7 +117,7 @@ class RiskMatrixManager extends BaseManager
         return $data;
     }
 
-    public function reportRiskInherentTable($request = [], $filters = [], $user)
+    public function reportRiskInherentTable($request = [], $filters = [], $user, $company)
     {
         $url = "/industrialsecure/riskmatrix/report";
         $init = true;
@@ -166,6 +167,7 @@ class RiskMatrixManager extends BaseManager
         ->inAreas($areas, isset($filtersType['areas']) ? $filtersType['areas'] : 'IN')
         ->inProcesses($processes, isset($filtersType['processes']) ? $filtersType['processes'] : 'IN')
         ->inMacroprocesses($macroprocesses, isset($filtersType['macroprocesses']) ? $filtersType['macroprocesses'] : 'IN')
+        ->where('sau_rm_risks_matrix.company_id', $company)
         ->where('sau_rm_subprocess_risk.description_inherent_frequency',$request->rowI)
         ->where('sau_rm_subprocess_risk.description_inherent_impact',$request->colI);
 
@@ -178,7 +180,7 @@ class RiskMatrixManager extends BaseManager
      *
      * @return \Illuminate\Http\Response
      */
-    public function reportResidual($request = [], $filters = [], $user)
+    public function reportResidual($request = [], $filters = [], $user, $company)
     {
         $data = [];
 
@@ -221,6 +223,7 @@ class RiskMatrixManager extends BaseManager
             ->inAreas($areas, isset($filtersType['areas']) ? $filtersType['areas'] : 'IN')
             ->inProcesses($processes, isset($filtersType['processes']) ? $filtersType['processes'] : 'IN')
             ->inMacroprocesses($macroprocesses, isset($filtersType['macroprocesses']) ? $filtersType['macroprocesses'] : 'IN')
+            ->where('sau_rm_risks_matrix.company_id', $company)
             ->get();
 
         foreach ($risksMatrix as $keyMatrix => $itemMatrix)
@@ -275,7 +278,7 @@ class RiskMatrixManager extends BaseManager
         return $data;
     }
 
-    public function reportRiskResidualTable($request = [], $filters = [], $user)
+    public function reportRiskResidualTable($request = [], $filters = [], $user, $company)
     {
         $url = "/industrialsecure/riskmatrix/report";
         $init = true;
@@ -325,13 +328,14 @@ class RiskMatrixManager extends BaseManager
         ->inAreas($areas, isset($filtersType['areas']) ? $filtersType['areas'] : 'IN')
         ->inProcesses($processes, isset($filtersType['processes']) ? $filtersType['processes'] : 'IN')
         ->inMacroprocesses($macroprocesses, isset($filtersType['macroprocesses']) ? $filtersType['macroprocesses'] : 'IN')
+        ->where('sau_rm_risks_matrix.company_id', $company)
         ->where('sau_rm_subprocess_risk.description_residual_frequency',$request->rowR)
         ->where('sau_rm_subprocess_risk.description_residual_impact',$request->colR);
 
         return $risks;
     }
 
-    public function reportTableResidual($request = [], $filters = [], $user)
+    public function reportTableResidual($request = [], $filters = [], $user, $company)
     {
         $data = [];
 
@@ -378,6 +382,7 @@ class RiskMatrixManager extends BaseManager
         ->inAreas($areas, isset($filtersType['areas']) ? $filtersType['areas'] : 'IN')
         ->inProcesses($processes, isset($filtersType['processes']) ? $filtersType['processes'] : 'IN')
         ->inMacroprocesses($macroprocesses, isset($filtersType['macroprocesses']) ? $filtersType['macroprocesses'] : 'IN')
+        ->where('sau_rm_risks_matrix.company_id', $company)
         ->get();
 
         $table_report = [];
@@ -416,7 +421,7 @@ class RiskMatrixManager extends BaseManager
         return $data;
     }
 
-    public function reportRiskInherentTablePdf($request = [], $filters = [], $user)
+    public function reportRiskInherentTablePdf($request = [], $filters = [], $user, $company)
     {
         $url = "/industrialsecure/riskmatrix/report";
         $init = true;
@@ -466,13 +471,14 @@ class RiskMatrixManager extends BaseManager
         ->inAreas($areas, isset($filtersType['areas']) ? $filtersType['areas'] : 'IN')
         ->inProcesses($processes, isset($filtersType['processes']) ? $filtersType['processes'] : 'IN')
         ->inMacroprocesses($macroprocesses, isset($filtersType['macroprocesses']) ? $filtersType['macroprocesses'] : 'IN')
+        ->where('sau_rm_risks_matrix.company_id', $company)
         ->where('sau_rm_subprocess_risk.description_inherent_frequency',$request->filtersTable['rowI'])
         ->where('sau_rm_subprocess_risk.description_inherent_impact',$request->filtersTable['colI']);
 
         return $risks;
     }
 
-    public function reportRiskResidualTablePdf($request = [], $filters = [], $user)
+    public function reportRiskResidualTablePdf($request = [], $filters = [], $user, $company)
     {
         $url = "/industrialsecure/riskmatrix/report";
         $init = true;
@@ -522,6 +528,7 @@ class RiskMatrixManager extends BaseManager
         ->inAreas($areas, isset($filtersType['areas']) ? $filtersType['areas'] : 'IN')
         ->inProcesses($processes, isset($filtersType['processes']) ? $filtersType['processes'] : 'IN')
         ->inMacroprocesses($macroprocesses, isset($filtersType['macroprocesses']) ? $filtersType['macroprocesses'] : 'IN')
+        ->where('sau_rm_risks_matrix.company_id', $company)
         ->where('sau_rm_subprocess_risk.description_residual_frequency',$request->filtersTable['rowR'])
         ->where('sau_rm_subprocess_risk.description_residual_impact',$request->filtersTable['colR']);
 

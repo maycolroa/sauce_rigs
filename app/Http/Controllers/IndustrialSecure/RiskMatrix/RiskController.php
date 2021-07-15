@@ -40,7 +40,7 @@ class RiskController extends Controller
     */
     public function data(Request $request)
     {
-        $risks = Risk::select('*');
+        $risks = Risk::select('*')->where('company_id', $this->company);
 
         return Vuetable::of($risks)
                     ->make();
@@ -157,7 +157,9 @@ class RiskController extends Controller
             $sub_processes = Risk::selectRaw("
                 sau_rm_risk.id as id,
                 sau_rm_risk.name as name
-            ")->pluck('id', 'name');
+            ")
+            ->where('company_id', $this->company)
+            ->pluck('id', 'name');
         
             return $this->multiSelectFormat($sub_processes);
         }

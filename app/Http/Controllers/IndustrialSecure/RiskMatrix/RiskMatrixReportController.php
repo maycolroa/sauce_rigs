@@ -38,7 +38,7 @@ class RiskMatrixReportController extends Controller
      */
     public function reportInherent(Request $request)
     {
-        $data = RiskMatrixReportManager::reportInherent($request, $request->filters, $this->user->id);
+        $data = RiskMatrixReportManager::reportInherent($request, $request->filters, $this->user->id, $this->company);
 
         return $this->respondHttp200([
             "data" => $data
@@ -52,7 +52,7 @@ class RiskMatrixReportController extends Controller
     */
     public function reportRiskInherentTable(Request $request)
     {
-        return Vuetable::of(RiskMatrixReportManager::reportRiskInherentTable($request, $request->filters, $this->user->id))->make();
+        return Vuetable::of(RiskMatrixReportManager::reportRiskInherentTable($request, $request->filters, $this->user->id, $this->company))->make();
     }
 
     /**
@@ -63,7 +63,7 @@ class RiskMatrixReportController extends Controller
      */
     public function reportResidual(Request $request)
     {
-        $data = RiskMatrixReportManager::reportResidual($request, $request->filters, $this->user->id);
+        $data = RiskMatrixReportManager::reportResidual($request, $request->filters, $this->user->id, $this->company);
 
         return $this->respondHttp200([
             "data" => $data
@@ -77,7 +77,7 @@ class RiskMatrixReportController extends Controller
     */
     public function reportRiskResidualTable(Request $request)
     {
-        return Vuetable::of(RiskMatrixReportManager::reportRiskResidualTable($request, $request->filters, $this->user->id))->make();
+        return Vuetable::of(RiskMatrixReportManager::reportRiskResidualTable($request, $request->filters, $this->user->id, $this->company))->make();
     }
 
     /**
@@ -88,7 +88,7 @@ class RiskMatrixReportController extends Controller
      */
     public function reportTableResidual(Request $request)
     {
-        $data = RiskMatrixReportManager::reportTableResidual($request, $request->filters, $this->user->id);
+        $data = RiskMatrixReportManager::reportTableResidual($request, $request->filters, $this->user->id, $this->company);
 
         return $this->respondHttp200([
             "data" => $data
@@ -125,11 +125,11 @@ class RiskMatrixReportController extends Controller
     public function getDataExportPdf($request)
     {
         $data = [
-            'inherent_report' => RiskMatrixReportManager::reportInherent($request, $request->filters, $this->user->id),
-            'residual_report' => RiskMatrixReportManager::reportResidual($request, $request->filters, $this->user->id),
-            'inherent_report_table' => RiskMatrixReportManager::reportRiskInherentTablePdf($request, $request->filters, $this->user->id)->get(),
-            'residual_report_table' => RiskMatrixReportManager::reportRiskResidualTablePdf($request, $request->filters, $this->user->id)->get(),
-            'table_report_residual' => RiskMatrixReportManager::reportTableResidual($request, $request->filters, $this->user->id)
+            'inherent_report' => RiskMatrixReportManager::reportInherent($request, $request->filters, $this->user->id, $this->company),
+            'residual_report' => RiskMatrixReportManager::reportResidual($request, $request->filters, $this->user->id, $this->company),
+            'inherent_report_table' => RiskMatrixReportManager::reportRiskInherentTablePdf($request, $request->filters, $this->user->id, $this->company)->get(),
+            'residual_report_table' => RiskMatrixReportManager::reportRiskResidualTablePdf($request, $request->filters, $this->user->id, $this->company)->get(),
+            'table_report_residual' => RiskMatrixReportManager::reportTableResidual($request, $request->filters, $this->user->id, $this->company)
         ];
 
         return $data;
