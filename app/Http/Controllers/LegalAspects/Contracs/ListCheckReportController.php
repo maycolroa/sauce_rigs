@@ -25,7 +25,7 @@ class ListCheckReportController extends Controller
     {
         parent::__construct();
         $this->middleware('auth');
-        $this->middleware("permission:reinc_checks_informs, {$this->team}", ['only' => 'data']);
+        //$this->middleware("permission:reinc_checks_informs, {$this->team}", ['only' => 'data']);
     }
 
     /**
