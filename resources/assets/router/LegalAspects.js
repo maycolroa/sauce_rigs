@@ -785,6 +785,22 @@ export default [
 					component: () =>
 					import('@/views/LegalAspects/legalMatrix/types/view')
 				}
+			]),				
+			...middleware({ 'check-permission': 'contracts_c' }, [
+				{
+					name: 'legalaspects-contractor-masive-activities',
+					path: 'contracts/masiveActivities',
+					component: () =>
+					import('@/views/LegalAspects/contracts/contractor/masiveActivities')
+				}
+			]),				
+			...middleware({ 'check-permission': 'contracts_c' }, [
+				{
+					name: 'legalaspects-contractor-masive-responsibles',
+					path: 'contracts/masiveResponsibles',
+					component: () =>
+					import('@/views/LegalAspects/contracts/contractor/masiveResponsibles')
+				}
 			]),		
 		]
 	}

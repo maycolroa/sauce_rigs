@@ -44,7 +44,12 @@ class Role extends LaratrustRole
             ->whereRaw('? BETWEEN started_at AND ended_at', [date('Y-m-d')]);
 
       $modules->company_scope = $company;
-      $modules = $modules->pluck('sau_license_module.module_id')->unique()->implode(",");
+      $modules = $modules->pluck('sau_license_module.module_id')->unique();
+
+      if ($modules->count() > 0)
+        $modules = $modules->implode(",");
+      else
+        $modules = 'null';
       
       $query->whereRaw("(sau_roles.company_id = {$company} OR (sau_roles.company_id IS NULL AND sau_roles.name NOT IN('Contratista', 'Arrendatario') AND module_id IN ({$modules})))");
 
