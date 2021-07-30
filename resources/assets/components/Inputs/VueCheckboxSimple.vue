@@ -16,8 +16,8 @@ export default {
         name: { type: String, required: true },
         disabled: { type: Boolean, default: false },
         label: {type: String, default: ''},
-        checkedValue: {type: [String, Boolean], default: true},
-        uncheckedValue: {type: [String, Boolean], default: false},
+        checkedValue: {type: [String, Boolean, Number], default: true},
+        uncheckedValue: {type: [String, Boolean, Number], default: false},
         checked: { type: [String, Number, Boolean] },
     },
     methods:{
