@@ -560,6 +560,8 @@ class InspectionQualificationController extends Controller
 
         $items = InspectionItemsQualificationAreaLocation::where('qualification_date', $qualification->qualification_date)->get();
 
+        $firms = InspectionFirm::where('qualification_date', $qualification->qualification_date)->get();
+
         try
         { 
             foreach ($items as $item)
@@ -574,6 +576,15 @@ class InspectionQualificationController extends Controller
                     return $this->respondHttp500();
                 }
             }
+
+            foreach ($firms as $firm)
+            {
+                if(!$firm->delete())
+                {
+                    return $this->respondHttp500();
+                }
+            }
+
             DB::commit();
 
         } catch (\Exception $e) {
