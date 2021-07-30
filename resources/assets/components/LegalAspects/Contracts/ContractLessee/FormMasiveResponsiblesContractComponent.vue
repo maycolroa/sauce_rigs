@@ -3,7 +3,7 @@
       <template v-if="form.contracts.length == 0">
         <div slot="modal-title">
           <h4>INFORMACIÓN</h4>
-            <p> No existen contratistas sin actividades asignadas</p>
+            <p> No existen contratistas sin responsables asignados</p>
         </div>
       </template>
       <template v-else>
@@ -12,8 +12,8 @@
                 <thead class="bg-secondary">
                     <tr>
                         <th scope="col" class="align-middle">Contratista</th>
-                        <template v-for="(activity, index) in form.activities">
-                          <th scope="col" class="align-middle" :key="activity.key">{{index + 1}}. {{ activity.name }}</th>
+                        <template v-for="(responsible, index) in form.responsibles">
+                          <th scope="col" class="align-middle" :key="responsible.key">{{index + 1}}. {{ responsible.name }}</th>
                         </template>
                     </tr>
                 </thead>
@@ -21,10 +21,10 @@
                   <template v-for="contract in form.contracts">
                     <tr :key="contract.id">
                         <td style="padding: 0px; text-aling: center;">{{contract.name}}</td>
-                        <template v-for="activity in form.activities">
-                          <td scope="col" class="align-middle" :key="activity.key">
+                        <template v-for="responsible in form.responsibles">
+                          <td scope="col" class="align-middle" :key="responsible.id">
                             <center class="radio-masive">
-                              <vue-checkbox-simple class="col-md-3" label="" name="activities" :checked-value="activity.id" unchecked-value="" @input="updateValue(contract, activity.id, $event)"/>
+                              <vue-checkbox-simple class="col-md-3" label="" name="responsibles" :checked-value="responsible.id" unchecked-value="" @input="updateValue(contract, responsible.id, $event)"/>
                             </center>
                           </td>
                         </template>
@@ -73,7 +73,7 @@ export default {
       default() {
         return {
           contracts: [],
-				  activities: []
+				  responsibles: []
         };
       }
     }

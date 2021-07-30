@@ -1367,4 +1367,44 @@ class ContractLesseeController extends Controller
                 $contract_sync->activities()->sync($contract['selection']);
         }
     }
+
+    public function getInformationResponsibles(Request $request)
+    {
+        $responsibles = $this->getUsersMasterContract($this->company);
+        $contracts_totals = ContractLesseeInformation::get();
+        $contracts = [];
+
+        foreach ($contracts_totals as $key => $value) 
+        {
+            if ($value->responsibles()->count() == 0)  
+                array_push($contracts, ["id" => $value->id, "name" => $value->social_reason, "selection" => []]);
+        }
+
+        return $this->respondHttp200([
+            'data' => [
+                'contracts' => $contracts,
+                'responsibles' => $responsibles
+            ]
+        ]);
+    }
+
+    public function saveMasiveResponsibles(Request $request)
+    {
+        if ($request->has('contracts') && $request->get('contracts'))
+        {
+            foreach ($request->get('contracts') as $key => $value)
+            {
+                $data['contracts'][$key] = json_decode($value, true);
+                $request->merge($data);
+            }
+        }
+
+        foreach ($request->contracts as $key => $contract) 
+        {   
+            $contract_sync = ContractLesseeInformation::find($contract['id']);
+
+            if ($contract['selection'])
+                $contract_sync->responsibles()->sync($contract['selection']);
+        }
+    }
 }

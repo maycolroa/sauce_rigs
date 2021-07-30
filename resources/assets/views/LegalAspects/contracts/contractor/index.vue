@@ -26,7 +26,10 @@
             <input id="fileInputImport" type="file" style="display:none" v-on:input="importContract"/>
           </div>
           <div class="card-title-elements" v-if="auth.can['contracts_c']"> 
-            <b-btn variant="primary" :to="{name:'legalaspects-contractor-masive-activities'}" v-b-tooltip.top title="Configurar Actividades Masivamente"><i class="ion ion-ios-copy"></i></b-btn>
+            <b-btn variant="primary" :to="{name:'legalaspects-contractor-masive-activities'}" v-b-tooltip.top title="Configurar Actividades Masivamente"><i class="ion ion-md-copy"></i></b-btn>
+          </div>
+          <div class="card-title-elements" v-if="auth.can['contracts_c']"> 
+            <b-btn variant="primary" :to="{name:'legalaspects-contractor-masive-responsibles'}" v-b-tooltip.top title="Configurar Responsables Masivamente"><i class="ion ion-ios-person"></i></b-btn>
           </div>
           <div class="card-title-elements ml-md-auto" v-if="auth.can['contracts_export']">
             <b-dd variant="default" :right="isRTL">
