@@ -60,8 +60,11 @@ class RespiratoryAnalysisController extends Controller
         if (COUNT($filters) > 0)
         {
           $data->inRegional($this->getValuesForMultiselect($filters["regional"]), $filters['filtersType']['regional']);
-          $data->inDeal($this->getValuesForMultiselect($filters["deal"]), $filters['filtersType']['deal']);
-          $data->inInterpretation($this->getValuesForMultiselect($filters["interpretation"]), $filters['filtersType']['interpretation']);
+
+          if (isset($filters["deal"]) && isset($filters['filtersType']['deal']))
+            $data->inDeal($this->getValuesForMultiselect($filters["deal"]), $filters['filtersType']['deal']);
+          if (isset($filters["interpretation"]) && isset($filters['filtersType']['interpretation']))
+            $data->inInterpretation($this->getValuesForMultiselect($filters["interpretation"]), $filters['filtersType']['interpretation']);
 
           $dates_request = explode('/', $filters["dateRange"]);
           $dates = [];

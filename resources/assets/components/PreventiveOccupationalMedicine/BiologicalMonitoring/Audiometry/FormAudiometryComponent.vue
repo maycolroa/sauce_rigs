@@ -56,6 +56,16 @@
       </tab-content>
       <tab-content title="General">
         <b-form-row>
+          <location-level-component
+            :is-edit="isEdit"
+            :view-only="viewOnly"
+            v-model="form.locations"
+            :location-level="audiometry.locations"
+            :form="form"
+            application="preventiveoccupationalmedicine"
+            module="audiometry"/>
+        </b-form-row>
+        <b-form-row>
           <vue-datepicker :disabled="viewOnly" class="col-md-6" v-model="form.date" label="Fecha" :full-month-name="true" placeholder="Seleccione la fecha" :error="form.errorsFor('date')" name="date" :disabled-dates="disabledDates">
           </vue-datepicker>
 
@@ -188,6 +198,7 @@ import VueDatepicker from "@/components/Inputs/VueDatepicker.vue";
 import VueTextarea from "@/components/Inputs/VueTextarea.vue";
 import ResultsAudiometry from '@/components/PreventiveOccupationalMedicine/BiologicalMonitoring/Audiometry/ResultsAudiometryComponent.vue';
 import Form from "@/utils/Form.js";
+import LocationLevelComponent from '@/components/CustomInputs/LocationLevelComponent.vue';
 import { FormWizard, TabContent, WizardStep } from "vue-form-wizard";
 
 export default {
@@ -200,7 +211,8 @@ export default {
     FormWizard,
     TabContent,
     WizardStep,
-    ResultsAudiometry
+    ResultsAudiometry,
+    LocationLevelComponent
   },
   mounted() {
     this.$refs.wizardFormAudiometry.activateAll();
@@ -227,6 +239,12 @@ export default {
     audiometry: {
       default() {
         return {
+          locations: {
+            employee_regional_id: '',
+            employee_headquarter_id: '',
+            employee_area_id: '',
+            employee_process_id: ''
+          },
           date: "",
           previews_events: "",
           employee_id: "",
