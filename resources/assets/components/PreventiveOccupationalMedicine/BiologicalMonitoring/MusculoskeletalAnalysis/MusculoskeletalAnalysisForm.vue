@@ -28,6 +28,14 @@
             <vue-input :disabled="viewOnly" class="col-md-4" v-model="form.phone_alternative" label="Telefóno Alterno" type="text" name="phone_alternative" :error="form.errorsFor('phone_alternative')" placeholder="Telefóno Alterno"></vue-input>
             <vue-input :disabled="viewOnly" class="col-md-4" v-model="form.state" label="Estado" type="text" name="state" :error="form.errorsFor('state')" placeholder="Estado"></vue-input>
         </b-form-row>
+        <b-form-row>
+            <vue-input v-if="form.employee_regional_id" :disabled="viewOnly" class="col-md-4" v-model="form.employee_regional_id" :label="keywordCheck('regional')" type="text" name="employee_regional_id" :error="form.errorsFor('employee_regional_id')" placeholder=""></vue-input>
+            <vue-input v-if="form.employee_headquarter_id" :disabled="viewOnly" class="col-md-4" v-model="form.employee_headquarter_id" :label="keywordCheck('headquarter')" type="text" name="employee_headquarter_id" :error="form.errorsFor('employee_headquarter_id')" placeholder=""></vue-input>
+            <vue-input v-if="form.employee_process_id" :disabled="viewOnly" class="col-md-4" v-model="form.employee_process_id" :label="keywordCheck('process')" type="text" name="employee_process_id" :error="form.errorsFor('employee_process_id')" placeholder=""></vue-input>
+        </b-form-row>
+        <b-form-row>
+            <vue-input v-if="form.employee_area_id" :disabled="viewOnly" class="col-md-4" v-model="form.employee_area_id" :label="keywordCheck('area')" type="text" name="employee_area_id" :error="form.errorsFor('employee_area_id')" placeholder=""></vue-input>
+        </b-form-row>
     </b-card>
 
     <b-card bg-variant="transparent" border-variant="primary" title="Habitos" class="mb-3 box-shadow-none" style="padding-top: 15px;">

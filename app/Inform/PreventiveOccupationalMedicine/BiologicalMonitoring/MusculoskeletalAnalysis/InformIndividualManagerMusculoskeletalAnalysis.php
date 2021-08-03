@@ -70,6 +70,14 @@ class InformIndividualManagerMusculoskeletalAnalysis
         ->where('patient_identification', $this->id)
         ->get();
 
+        foreach ($data as $key => $value) 
+        {            
+            $value->employee_regional_id = $value->regional->name;
+            $value->employee_headquarter_id = $value->headquarter->name;
+            $value->employee_process_id = $value->process->name;
+            $value->employee_area_id = $value->area->name;
+        }
+
         return $data;
     }
 
