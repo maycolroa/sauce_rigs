@@ -82,26 +82,6 @@ class Audiometry extends Model
         return $this->belongsTo('App\Models\Administrative\Employees\Employee','employee_id');
     }
     
-    public function regional()
-    {
-        return $this->belongsTo('App\Models\Administrative\Regionals\EmployeeRegional', 'employee_regional_id');
-    }
-
-    public function headquarter()
-    {
-        return $this->belongsTo('App\Models\Administrative\Headquarters\EmployeeHeadquarter', 'employee_headquarter_id');
-    }
-
-    public function area()
-    {
-        return $this->belongsTo('App\Models\Administrative\Areas\EmployeeArea', 'employee_area_id');
-    }
-
-    public function process()
-    {
-        return $this->belongsTo('App\Models\Administrative\Processes\EmployeeProcess', 'employee_process_id');
-    }
-
     /**
      * Set the epp separate with comma.
      *

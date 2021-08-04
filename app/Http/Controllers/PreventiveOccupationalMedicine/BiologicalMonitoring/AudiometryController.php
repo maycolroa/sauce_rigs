@@ -118,24 +118,11 @@ class AudiometryController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(AudiometryRequest $request)
-    {
-        if ($request->has('locations'))
-        {
-          $data3['locations'] = json_decode($request->get('locations'), true);
-          $request->merge($data3);
-        }
-
-        \Log::info($request);
-        
+    {        
         $audiometry = new Audiometry($request->all());
         $audiometry->date = (Carbon::createFromFormat('D M d Y',$audiometry->date))->format('Ymd');
         
         if(!$audiometry->save()){
-          return $this->respondHttp500();
-        }
-
-        if($this->updateModelLocationForm($audiometry, $request->get('locations')))
-        {
           return $this->respondHttp500();
         }
 
@@ -158,8 +145,7 @@ class AudiometryController extends Controller
 
       try{
         $audiometry->date = (Carbon::createFromFormat('Y-m-d',$audiometry->date))->format('D M d Y');
-        $audiometry->multiselect_employee = $audiometry->employee->multiselect(); 
-        $audiometry->locations = $this->prepareDataLocationForm($audiometry);
+        $audiometry->multiselect_employee = $audiometry->employee->multiselect();
         return $this->respondHttp200([
             'data' => $audiometry,
         ]);
@@ -177,22 +163,11 @@ class AudiometryController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function update(AudiometryRequest $request, Audiometry $audiometry)
-    {
-      if ($request->has('locations'))
-      {
-        $data3['locations'] = json_decode($request->get('locations'), true);
-        $request->merge($data3);
-      }
- 
+    { 
       $audiometry->fill($request->all());
       $audiometry->date = (Carbon::createFromFormat('D M d Y',$audiometry->date))->format('Ymd');
       
       if(!$audiometry->update()){
-        return $this->respondHttp500();
-      }
-
-      if($this->updateModelLocationForm($audiometry, $request->get('locations')))
-      {
         return $this->respondHttp500();
       }
 
