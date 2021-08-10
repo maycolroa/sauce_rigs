@@ -62,6 +62,26 @@
           <vue-ajax-advanced-select :disabled="viewOnly" class="col-md-6" v-model="form.employee_id" :error="form.errorsFor('employee_id')" :selected-object="form.multiselect_employee" name="employee_id" :label="keywordCheck('employee')" placeholder="Seleccione una opción" :url="employeesDataUrl">
           </vue-ajax-advanced-select>
         </b-form-row>
+        <b-form-row>
+          <b-col>
+            <b-card v-if="employeeDetail.regional" bg-variant="transparent" border-variant="dark" title="" class="mb-3 box-shadow-none">
+              <b-row>
+                  <b-col v-if="employeeDetail.regional">
+                    <div><b>{{ keywordCheck('regional') }}:</b> {{ employeeDetail.regional.name }}</div>
+                  </b-col>
+                  <b-col v-if="employeeDetail.headquarter">
+                    <div><b>{{ keywordCheck('headquarter') }}:</b> {{  employeeDetail.headquarter.name }}</div>
+                  </b-col>
+                  <b-col v-if="employeeDetail.process">
+                    <div><b>{{ keywordCheck('process') }}:</b> {{ employeeDetail.process.name }}</div>
+                  </b-col>
+                  <b-col v-if="employeeDetail.area">
+                    <div><b>{{ keywordCheck('area') }}:</b> {{ employeeDetail.area.name }}</div>
+                  </b-col>
+              </b-row>
+            </b-card>
+          </b-col>
+        </b-form-row>
         <vue-textarea :disabled="viewOnly" v-model="form.previews_events" label="Eventos previos" :error="form.errorsFor('previews_events')" name="previews_events" placeholder="Eventos previos"></vue-textarea>
 
         <b-form-row>
@@ -188,6 +208,7 @@ import VueDatepicker from "@/components/Inputs/VueDatepicker.vue";
 import VueTextarea from "@/components/Inputs/VueTextarea.vue";
 import ResultsAudiometry from '@/components/PreventiveOccupationalMedicine/BiologicalMonitoring/Audiometry/ResultsAudiometryComponent.vue';
 import Form from "@/utils/Form.js";
+import LocationLevelComponent from '@/components/CustomInputs/LocationLevelComponent.vue';
 import { FormWizard, TabContent, WizardStep } from "vue-form-wizard";
 
 export default {
@@ -200,10 +221,16 @@ export default {
     FormWizard,
     TabContent,
     WizardStep,
-    ResultsAudiometry
+    ResultsAudiometry,
+    LocationLevelComponent
   },
   mounted() {
     this.$refs.wizardFormAudiometry.activateAll();
+
+    if (this.form.employee_id)
+    {
+      this.updateDetails(`/administration/employee/${this.form.employee_id}`, 'employeeDetail')
+    }
   },
   props: {
     url: { type: String },
@@ -269,17 +296,42 @@ export default {
     audiometry() {
       this.loading = false;
       this.form = Form.makeFrom(this.audiometry, this.method);
-    }
+    },
+    'form.employee_id' () {
+      this.updateDetails(`/administration/employee/${this.form.employee_id}`)
+    },
   },
   data() {
     return {
       loading: this.isEdit,
       form: Form.makeFrom(this.audiometry, this.method),
-
       disabledDates: {
         from: new Date()
-      }
+      },
+      inputs: {
+        regional: 'NO',
+        headquarter: 'NO',
+        area: 'NO',
+        process: 'NO'
+      },
+      employeeDetail: []
     };
+  },
+  created()
+  {
+      axios.post('/administration/configurations/locationLevelForms/getConfModule')
+      .then(data => {
+          if (Object.keys(data.data).length > 0)
+              setTimeout(() => {
+                  this.inputs = data.data
+                  this.disableWacth = false
+              }, 3000)
+          this.isLoading = false;
+      })
+      .catch(error => {
+          this.isLoading = false;
+          Alerts.error('Error', 'Hubo un problema recolectando la información');
+      });
   },
   methods: {
     submit(e) {
@@ -293,7 +345,20 @@ export default {
         .catch(error => {
           this.loading = false;
         });
-    }
+    },
+    updateDetails(url)
+    {
+      this.isLoading = true;
+      axios.get(url)
+      .then(response => {
+          this.employeeDetail = response.data.data;
+          this.isLoading = false;
+      })
+      .catch(error => {
+          Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
+          this.$router.go(-1);
+      });
+    },
   }
 };
 </script>

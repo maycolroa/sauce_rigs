@@ -10,6 +10,7 @@
       <b-card no-body>
         <b-card-header class="with-elements">
           <div class="card-title-elements">
+            <b-btn v-if="auth.can['biologicalMonitoring_musculoskeletalAnalysis_c']" variant="primary" href="/templates/musculoskeletalimport" target="blank" v-b-tooltip.top title="Generar Plantilla"><i class="fas fa-file-alt"></i></b-btn>
             <b-btn v-if="auth.can['biologicalMonitoring_musculoskeletalAnalysis_c']" variant="primary" @click="importMessage()" v-b-tooltip.top title="Importar"><i class="fas fa-upload"></i></b-btn>
             <b-btn v-if="auth.can['biologicalMonitoring_musculoskeletalAnalysis_r']" variant="primary" @click="exportData()" v-b-tooltip.top title="Exportar"><i class="fas fa-download"></i></b-btn>
             <input id="fileInputImport" type="file" style="display:none" v-on:input="importFile"/>

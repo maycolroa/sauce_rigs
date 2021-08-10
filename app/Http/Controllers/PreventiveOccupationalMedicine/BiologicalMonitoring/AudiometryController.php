@@ -118,12 +118,12 @@ class AudiometryController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(AudiometryRequest $request)
-    {
+    {        
         $audiometry = new Audiometry($request->all());
         $audiometry->date = (Carbon::createFromFormat('D M d Y',$audiometry->date))->format('Ymd');
         
         if(!$audiometry->save()){
-            return $this->respondHttp500();
+          return $this->respondHttp500();
         }
 
         $this->calculateBaseAudiometry($audiometry->employee_id);
@@ -145,7 +145,7 @@ class AudiometryController extends Controller
 
       try{
         $audiometry->date = (Carbon::createFromFormat('Y-m-d',$audiometry->date))->format('D M d Y');
-        $audiometry->multiselect_employee = $audiometry->employee->multiselect(); 
+        $audiometry->multiselect_employee = $audiometry->employee->multiselect();
         return $this->respondHttp200([
             'data' => $audiometry,
         ]);
@@ -163,8 +163,7 @@ class AudiometryController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function update(AudiometryRequest $request, Audiometry $audiometry)
-    {
- 
+    { 
       $audiometry->fill($request->all());
       $audiometry->date = (Carbon::createFromFormat('D M d Y',$audiometry->date))->format('Ymd');
       

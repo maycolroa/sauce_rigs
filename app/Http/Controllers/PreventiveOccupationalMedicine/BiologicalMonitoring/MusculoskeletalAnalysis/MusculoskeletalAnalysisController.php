@@ -12,6 +12,8 @@ use App\Jobs\PreventiveOccupationalMedicine\BiologicalMonitoring\Musculoskeletal
 use App\Jobs\PreventiveOccupationalMedicine\BiologicalMonitoring\MusculoskeletalAnalysis\MusculoskeletalAnalysisExportJob;
 use App\Inform\PreventiveOccupationalMedicine\BiologicalMonitoring\MusculoskeletalAnalysis\InformIndividualManagerMusculoskeletalAnalysis;
 use Carbon\Carbon;
+use App\Exports\PreventiveOccupationalMedicine\BiologicalMonitoring\MusculoskeletalAnalysis\MusculoskeletalAnalysisTemplateExcel;
+use Maatwebsite\Excel\Facades\Excel;
 use App\Traits\Filtertrait;
 use DB;
 
@@ -350,5 +352,10 @@ class MusculoskeletalAnalysisController extends Controller
                 ]);
             }
         }
+    }
+
+    public function downloadTemplateImport()
+    {
+      return Excel::download(new MusculoskeletalAnalysisTemplateExcel($this->company, collect([])), 'PlantillaImportacionAnalisisOsteomuscular.xlsx');
     }
 }

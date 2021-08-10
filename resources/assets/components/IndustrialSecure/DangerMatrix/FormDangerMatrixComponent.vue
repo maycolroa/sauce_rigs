@@ -28,8 +28,8 @@
           @configLocation="setConfigLocation"/>
       </b-form-row>
 
-      <b-form-row>
-        <template v-show="this.fields.length > 0" v-for="(field, index) in this.fields">
+      <b-form-row v-show="this.fields.length > 0">
+        <template v-for="(field, index) in this.fields">
           <div class="col-md-6" :key="index.key">
             <vue-ajax-advanced-select :disabled="viewOnly" class="col-md-12" v-model="field.value" :label="field.name" name="fieldname" type="text" placeholder="Seleccione" :error="form.errorsFor(`field.${index}.fieldname`)" :url="`/selects/tagsAddFields/${field.id}`" :allowEmpty="true" :taggable="true" :multiple="true"></vue-ajax-advanced-select>
           </div>

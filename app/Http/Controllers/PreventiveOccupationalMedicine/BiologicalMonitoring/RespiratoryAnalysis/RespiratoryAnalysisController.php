@@ -14,6 +14,8 @@ use App\Inform\PreventiveOccupationalMedicine\BiologicalMonitoring\RespiratoryAn
 use Carbon\Carbon;
 use App\Traits\Filtertrait;
 use DB;
+use App\Exports\PreventiveOccupationalMedicine\BiologicalMonitoring\RespiratoryAnalysis\RespiratoryAnalysisTemplateExcel;
+use Maatwebsite\Excel\Facades\Excel;
 
 class RespiratoryAnalysisController extends Controller
 {
@@ -60,8 +62,11 @@ class RespiratoryAnalysisController extends Controller
         if (COUNT($filters) > 0)
         {
           $data->inRegional($this->getValuesForMultiselect($filters["regional"]), $filters['filtersType']['regional']);
-          $data->inDeal($this->getValuesForMultiselect($filters["deal"]), $filters['filtersType']['deal']);
-          $data->inInterpretation($this->getValuesForMultiselect($filters["interpretation"]), $filters['filtersType']['interpretation']);
+
+          if (isset($filters["deal"]) && isset($filters['filtersType']['deal']))
+            $data->inDeal($this->getValuesForMultiselect($filters["deal"]), $filters['filtersType']['deal']);
+          if (isset($filters["interpretation"]) && isset($filters['filtersType']['interpretation']))
+            $data->inInterpretation($this->getValuesForMultiselect($filters["interpretation"]), $filters['filtersType']['interpretation']);
 
           $dates_request = explode('/', $filters["dateRange"]);
           $dates = [];
@@ -335,5 +340,10 @@ class RespiratoryAnalysisController extends Controller
                 ]);
             }
         }
+    }
+
+    public function downloadTemplateImport()
+    {
+      return Excel::download(new RespiratoryAnalysisTemplateExcel($this->company, collect([])), 'PlantillaImportacionAnalisisRespiratorio.xlsx');
     }
 }

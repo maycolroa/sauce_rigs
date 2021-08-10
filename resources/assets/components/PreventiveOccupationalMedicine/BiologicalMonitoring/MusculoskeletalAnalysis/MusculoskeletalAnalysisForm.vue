@@ -28,6 +28,14 @@
             <vue-input :disabled="viewOnly" class="col-md-4" v-model="form.phone_alternative" label="Telefóno Alterno" type="text" name="phone_alternative" :error="form.errorsFor('phone_alternative')" placeholder="Telefóno Alterno"></vue-input>
             <vue-input :disabled="viewOnly" class="col-md-4" v-model="form.state" label="Estado" type="text" name="state" :error="form.errorsFor('state')" placeholder="Estado"></vue-input>
         </b-form-row>
+        <b-form-row>
+            <vue-input v-if="inputs.regional == 'SI'" :disabled="viewOnly" class="col-md-4" v-model="form.employee_regional_id" :label="keywordCheck('regional')" type="text" name="employee_regional_id" :error="form.errorsFor('employee_regional_id')" placeholder=""></vue-input>
+            <vue-input v-if="inputs.headquarter == 'SI'" :disabled="viewOnly" class="col-md-4" v-model="form.employee_headquarter_id" :label="keywordCheck('headquarter')" type="text" name="employee_headquarter_id" :error="form.errorsFor('employee_headquarter_id')" placeholder=""></vue-input>
+            <vue-input v-if="inputs.process == 'SI'" :disabled="viewOnly" class="col-md-4" v-model="form.employee_process_id" :label="keywordCheck('process')" type="text" name="employee_process_id" :error="form.errorsFor('employee_process_id')" placeholder=""></vue-input>
+        </b-form-row>
+        <b-form-row>
+            <vue-input v-if="inputs.area == 'SI'" :disabled="viewOnly" class="col-md-4" v-model="form.employee_area_id" :label="keywordCheck('area')" type="text" name="employee_area_id" :error="form.errorsFor('employee_area_id')" placeholder=""></vue-input>
+        </b-form-row>
     </b-card>
 
     <b-card bg-variant="transparent" border-variant="primary" title="Habitos" class="mb-3 box-shadow-none" style="padding-top: 15px;">
@@ -219,6 +227,12 @@ export default {
     return {
       loading: this.isEdit,
       form: Form.makeFrom(this.analisy, this.method),
+      inputs: {
+        regional: 'NO',
+        headquarter: 'NO',
+        area: 'NO',
+        process: 'NO'
+      }
     };
   },
   methods: {
@@ -234,6 +248,21 @@ export default {
           this.loading = false;
         });
     }
+  },
+  created() {
+      axios.post('/administration/configurations/locationLevelForms/getConfModule')
+      .then(data => {
+          if (Object.keys(data.data).length > 0)
+              setTimeout(() => {
+                  this.inputs = data.data
+                  this.disableWacth = false
+              }, 3000)
+          this.isLoading = false;
+      })
+      .catch(error => {
+          this.isLoading = false;
+          Alerts.error('Error', 'Hubo un problema recolectando la información');
+      });
   }
 };
 </script>

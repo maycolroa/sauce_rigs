@@ -63,6 +63,26 @@ class RespiratoryAnalysis extends Model
     protected $dates = [
     ];
 
+    public function regionalEmployee()
+    {
+        return $this->belongsTo('App\Models\Administrative\Regionals\EmployeeRegional', 'employee_regional_id');
+    }
+
+    public function headquarterEmployee()
+    {
+        return $this->belongsTo('App\Models\Administrative\Headquarters\EmployeeHeadquarter', 'employee_headquarter_id');
+    }
+
+    public function areaEmployee()
+    {
+        return $this->belongsTo('App\Models\Administrative\Areas\EmployeeArea', 'employee_area_id');
+    }
+
+    public function processEmployee()
+    {
+        return $this->belongsTo('App\Models\Administrative\Processes\EmployeeProcess', 'employee_process_id');
+    }
+
     /**
      * filters checks through the given interpretation
      * @param  Illuminate\Database\Eloquent\Builder $query

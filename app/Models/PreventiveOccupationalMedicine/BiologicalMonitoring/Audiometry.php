@@ -81,7 +81,7 @@ class Audiometry extends Model
     public function employee(){
         return $this->belongsTo('App\Models\Administrative\Employees\Employee','employee_id');
     }
-
+    
     /**
      * Set the epp separate with comma.
      *
