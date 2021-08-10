@@ -72,10 +72,17 @@ class InformIndividualManagerMusculoskeletalAnalysis
 
         foreach ($data as $key => $value) 
         {            
-            $value->employee_regional_id = $value->regional->name;
-            $value->employee_headquarter_id = $value->headquarter->name;
-            $value->employee_process_id = $value->process->name;
-            $value->employee_area_id = $value->area->name;
+            if ($value->employee_regional_id)           
+                $value->employee_regional_id = $value->regional->name;
+
+            if ($value->employee_headquarter_id)
+                $value->employee_headquarter_id = $value->headquarter->name;
+
+            if ($value->employee_process_id)
+                $value->employee_process_id = $value->process->name;
+                
+            if ($value->employee_area_id)
+                $value->employee_area_id = $value->area->name;
         }
 
         return $data;

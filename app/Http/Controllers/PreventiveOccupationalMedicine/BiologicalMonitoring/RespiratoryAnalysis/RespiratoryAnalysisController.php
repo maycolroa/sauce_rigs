@@ -14,6 +14,8 @@ use App\Inform\PreventiveOccupationalMedicine\BiologicalMonitoring\RespiratoryAn
 use Carbon\Carbon;
 use App\Traits\Filtertrait;
 use DB;
+use App\Exports\PreventiveOccupationalMedicine\BiologicalMonitoring\RespiratoryAnalysis\RespiratoryAnalysisTemplateExcel;
+use Maatwebsite\Excel\Facades\Excel;
 
 class RespiratoryAnalysisController extends Controller
 {
@@ -338,5 +340,10 @@ class RespiratoryAnalysisController extends Controller
                 ]);
             }
         }
+    }
+
+    public function downloadTemplateImport()
+    {
+      return Excel::download(new RespiratoryAnalysisTemplateExcel($this->company, collect([])), 'PlantillaImportacionAnalisisRespiratorio.xlsx');
     }
 }

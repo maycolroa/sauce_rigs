@@ -71,6 +71,21 @@ class InformIndividualManagerRespiratoryAnalysis
         ->orderBy('year_of_spirometry')
         ->get();
 
+        foreach ($data as $key => $value) 
+        {
+            if ($value->employee_regional_id)
+                $value->employee_regional_id = $value->regionalEmployee->name;
+                
+            if ($value->employee_headquarter_id)
+                $value->employee_headquarter_id = $value->headquarterEmployee->name;
+
+            if ($value->employee_process_id)
+                $value->employee_process_id = $value->processEmployee->name;
+                
+            if ($value->employee_area_id)
+                $value->employee_area_id = $value->areaEmployee->name;
+        }
+
         return $data;
     }
 
