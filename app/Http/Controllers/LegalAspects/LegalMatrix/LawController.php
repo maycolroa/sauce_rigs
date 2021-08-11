@@ -656,7 +656,7 @@ class LawController extends Controller
                         }*/
                     }
 
-                    $detail_procedence = 'Mátriz Legal - Ley: ' . $qualification->article->law->name . '. - ' . 'Artículo: ' . $qualification->article->description . '.';
+                    $detail_procedence = 'Mátriz Legal - Norma: ' . $qualification->article->law->name . '. - ' . 'Artículo: ' . $qualification->article->description . '.';
 
                     /**Planes de acción*/
                     ActionPlan::

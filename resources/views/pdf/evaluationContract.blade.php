@@ -92,7 +92,7 @@
                     <th>Nombre del coordinador de gestión ambiental</th>
                     <th>Nombre del coordinador de SST</th>
                     <th>Nombre del representante legal</th>
-                    <th>N° de personas que laboran en el HPTU</th>
+                    <th>N° de personas que laboran en la empresa</th>
                 </tr>
                 <tr>
                     <td>{{$evaluations->contract->environmental_management_name}}</td>
@@ -199,9 +199,15 @@
                                     @foreach($item->files_pdf as $row)
                                         <tr>
                                         @foreach($row as $col)
+                                            @if($col["type"] != 'pdf')
                                             <td style="border-right: none;">
-                                                <img width="200" height="150" src="{{$col}}">
+                                                <img width="200" height="150" src="{{$col['file']}}">
                                             </td>
+                                            @else
+                                                <td style="border-right: none;">
+                                                    <p>Contiene {{$item->count_file_pdf}} archivos pdf</p>
+                                                </td>
+                                            @endif
                                         @endforeach
                                         </tr>
                                     @endforeach

@@ -26,10 +26,17 @@
                                 <perfect-scrollbar :options="{ wheelPropagation: true }" class="mb-4" style="height: 300px; padding-right: 15px; width: 100%;">
                                     <template v-for="(item, index) in value">
                                         <div :key="index">
-                                            <template v-if="item.path">
+                                            <template v-if="item.path && item.type_file != 'pdf'">
                                                 <center>
                                                     <div class="my-4 mx-2 text-center">
                                                         <img class="mw-100" :src="`${item.path}`" alt="Max-width 100%">
+                                                    </div>
+                                                </center>
+                                            </template>
+                                            <template v-else-if="item.type_file == 'pdf'">
+                                                <center>
+                                                    <div class="my-4 mx-2 text-center">
+                                                        <i class="far fa-file-pdf display-4 d-block text-primary" ></i>
                                                     </div>
                                                 </center>
                                             </template>
@@ -41,7 +48,7 @@
                                                 </div>
                                             </b-form-row>
                                             <b-form-row>
-                                                <vue-file-simple :disabled="viewOnly" :help-text="item.id ? `Para descargar el archivo actual, haga click <a href='/legalAspects/evaluationContract/downloadFile/${item.id}' target='blank'>aqui</a> ` : null" class="col-md-10 offset-md-1" v-model="item.file" label="Imagen (*.png, *.jpg, *.jpeg)" name="file" :error="form.errorsFor(`${prefixIndex}.${index}.file`)" placeholder="Seleccione una imagen" :maxFileSize="10"></vue-file-simple>
+                                                <vue-file-simple :disabled="viewOnly" :help-text="item.id ? `Para descargar el archivo actual, haga click <a href='/legalAspects/evaluationContract/downloadFile/${item.id}' target='blank'>aqui</a> ` : null" class="col-md-10 offset-md-1" v-model="item.file" label="Archivo (*.png, *.jpg, *.jpeg, *.pdf)" name="file" :error="form.errorsFor(`${prefixIndex}.${index}.file`)" placeholder="Seleccione un archivo" :maxFileSize="10"></vue-file-simple>
                                             </b-form-row>
                                             <hr class="border-light container-m--x mt-0 mb-4">
                                         </div>
