@@ -3,7 +3,7 @@
     <header-module
       title="MATRIZ DE RIESGOS"
       subtitle="ADMINISTRAR SUBPROCESOS"
-      url="industrialsecure"
+      url="industrialsecure-riskmatrix-menu"
     />
 
     <div class="col-md">

@@ -3,7 +3,7 @@
     <header-module
       title="MATRIZ DE PELIGROS"
       subtitle="ADMINISTRAR MATRICES"
-      url="industrialsecure"
+      url="industrialsecure-dangermatrix-menu"
     />
 
     <div class="col-md">

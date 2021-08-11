@@ -1,5 +1,5 @@
-import LayoutModules from '@/views/layoutModules'
-import Home from '@/views/home'
+import LayoutModules from '@/views/layoutModules';
+import Home from '@/views/IndustrialSecure/home';
 import { middleware } from 'vue-router-middleware'
 
 export default [{
@@ -81,6 +81,14 @@ export default [{
           path: 'dangermatrix',
           component: () =>
             import('@/views/IndustrialSecure/dangerMatrix/index')
+        }
+      ]),
+      ...middleware({ 'check-permission': 'dangerMatrix_r' }, [ 
+        {
+          name: 'industrialsecure-dangermatrix-menu',
+          path: 'dangermatrix-menu',
+          component: () =>
+            import('@/views/IndustrialSecure/dangerMatrix/indexMenu')
         }
       ]),
       ...middleware({ 'check-permission': 'dangerMatrix_c' }, [
@@ -502,6 +510,14 @@ export default [{
           path: 'riskmatrix/report/history',
           component: () =>
             import('@/views/IndustrialSecure/riskMatrix/reportHistory')
+        }
+      ]), 
+      ...middleware({ 'check-permission': 'risks_r' }, [ 
+        {
+          name: 'industrialsecure-riskmatrix-menu',
+          path: 'riskmatrix-menu',
+          component: () =>
+            import('@/views/IndustrialSecure/riskMatrix/indexMenu')
         }
       ]),
     ]
