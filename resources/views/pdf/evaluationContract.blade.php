@@ -177,46 +177,70 @@
 
             @foreach($objective->subobjectives as $keySub => $subobjective)
                 <p style="text-align: justify; font-size: 12px;"><b>{{ $keyObj + 1 }}.{{ $keySub + 1 }} - {{$subobjective->description}}</b></p><br>
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Item</th>
-                                @foreach($evaluations->evaluation->types_rating as $type)
+                    @foreach($subobjective->items as $keyItem => $item)
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Item</th>
+                                    @foreach($evaluations->evaluation->types_rating as $type)
+                                    @if($type["apply"] == 'SI')
+                                    <th>{{$type["name"]}}</th>
+                                    @endif
+                                    @endforeach
+                                </tr>
+                                <tr>
+                                    <td class="title-obj">{{ $keyObj + 1 }}.{{ $keySub + 1 }}.{{ $keyItem + 1 }} - {{ $item->description }}</td>
+                                    @foreach($item->ratings as $rating)
+                                    <td>{{$rating["value"] ? ($rating["value"] == 'pending' ? 'NO' : $rating["value"]) : 'N/A'}}</td>
+                                    @endforeach
+                                </tr>
+                                @if(COUNT($item->files) > 0)
+                                
+                                    @foreach($item->files_pdf as $row)
+                                        <tr>
+                                        @foreach($row as $col)
+                                            <td style="border-right: none;">
+                                                <img width="200" height="150" src="{{$col}}">
+                                            </td>
+                                        @endforeach
+                                        </tr>
+                                    @endforeach
+                                @endif
+                                @if(COUNT($item->observations) > 0)
+                                    <tr>
+                                        <th colspan="{{COUNT($item->ratings) + 1}}">Observaciones</th>
+                                    </tr>                          
+                                    @foreach($item->observations as $observation)
+                                        <tr>
+                                            <td colspan="{{COUNT($item->ratings) + 1}}" class="title-obj">{{$observation->description}}</td>
+                                        </tr>
+                                    @endforeach
+                                @endif      
+                            </thead>
+                        </table>
+                        <br>                             
+                    @endforeach
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Porcentaje de cumplimiento</th>
+                            @foreach($evaluations->evaluation->types_rating as $type)
                                 @if($type["apply"] == 'SI')
                                 <th>{{$type["name"]}}</th>
                                 @endif
-                                @endforeach
-                            </tr>
-                            @foreach($subobjective->items as $keyItem => $item)
-                            <tr>
-                                <td class="title-obj">{{ $keyObj + 1 }}.{{ $keySub + 1 }}.{{ $keyItem + 1 }} - {{ $item->description }}</td>
-                                @foreach($item->ratings as $rating)
-                                <td>{{$rating["value"] ? ($rating["value"] == 'pending' ? 'NO' : $rating["value"]) : 'N/A'}}</td>
-                                @endforeach
-                            </tr>
-                            @if(COUNT($item->files) > 0)
-                            
-                                @foreach($item->files_pdf as $row)
-                                    <tr>
-                                    @foreach($row as $col)
-                                        <td style="border-right: none;">
-                                            <img width="200" height="150" src="{{$col}}">
-                                        </td>
-                                    @endforeach
-                                    </tr>
-                                @endforeach
-                            @endif                   
                             @endforeach
-                            <tr>
-                                <td>Porcentaje de cumplimiento</td>
-                                @foreach($subobjective->report as $repor)
-                                <td>{{$repor["percentage"]}}%</td>
-                                @endforeach
-                            </tr>
-                        </thead>
-                    </table>
+                        <tr>
+                            <td><b>{{ $keyObj + 1 }}.{{ $keySub + 1 }} - {{$subobjective->description}}</b></td>
+                            @foreach($subobjective->report as $repor)
+                            <td>{{$repor["percentage"]}}%</td>
+                            @endforeach
+                        </tr>
+                    </thead>
+                </table>
             @endforeach
         @endforeach
+
+        
     </div>
 
     <br><br><br>
@@ -257,7 +281,7 @@
 
     <br><br>
 
-    <div style="page-break-inside: avoid;">
+    {{--<div style="page-break-inside: avoid;">
         <table>
             <thead>
                 <tr>
@@ -281,6 +305,6 @@
                 @endforeach
             </thead>
         </table>   
-    </div>
+    </div>--}}
 </body>
 </html>
