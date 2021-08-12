@@ -13,6 +13,7 @@ use Maatwebsite\Excel\Concerns\RegistersEventListeners;
 use Maatwebsite\Excel\Events\AfterSheet;
 use \Maatwebsite\Excel\Sheet;
 use App\Traits\UtilsTrait;
+use App\Traits\LocationFormTrait;
 
 Sheet::macro('styleCells', function (Sheet $sheet, string $cellRange, array $style) {
   $sheet->getDelegate()->getStyle($cellRange)->applyFromArray($style);
@@ -21,26 +22,37 @@ Sheet::macro('styleCells', function (Sheet $sheet, string $cellRange, array $sty
 class MusculoskeletalAnalysisExcel implements FromQuery, WithMapping, WithHeadings, WithTitle, WithEvents, ShouldAutoSize
 {
     use RegistersEventListeners;
-    use UtilsTrait;
+    use UtilsTrait, LocationFormTrait;
 
     protected $company_id;
     protected $filters;
     protected $keywords;
+    protected $confLocation;
 
     public function __construct($company_id, $filters)
     {
       $this->company_id = $company_id;
       $this->filters = $filters;
       $this->keywords = $this->getKeywordQueue($this->company_id);
+      $this->confLocation = $this->getLocationFormConfModule($this->company_id);
     }
 
     public function query()
     {
-      $data = MusculoskeletalAnalysis::select('sau_bm_musculoskeletal_analysis.*')
+      $data = MusculoskeletalAnalysis::select(
+        'sau_bm_musculoskeletal_analysis.*',
+        'sau_employees_regionals.name AS regional',
+        'sau_employees_headquarters.name AS headquarter',
+        'sau_employees_processes.name AS process',
+        'sau_employees_areas.name AS area')
+      ->leftJoin('sau_employees_regionals', 'sau_employees_regionals.id', 'sau_bm_musculoskeletal_analysis.employee_regional_id')
+      ->leftJoin('sau_employees_headquarters', 'sau_employees_headquarters.id', 'sau_bm_musculoskeletal_analysis.employee_headquarter_id')
+      ->leftJoin('sau_employees_processes', 'sau_employees_processes.id', 'sau_bm_musculoskeletal_analysis.employee_process_id')
+      ->leftJoin('sau_employees_areas', 'sau_employees_areas.id', 'sau_bm_musculoskeletal_analysis.employee_area_id')
       ->inConsolidatedPersonalRiskCriterion($this->filters['consolidatedPersonalRiskCriterion'], $this->filters['filtersType']['consolidatedPersonalRiskCriterion'])
       ->inBranchOffice($this->filters['branchOffice'], $this->filters['filtersType']['branchOffice'])
       ->inCompanies($this->filters['companies'], $this->filters['filtersType']['companies'])
-      ->betweenDate($this->filters["dates"]);;
+      ->betweenDate($this->filters["dates"]);
 
       $data->company_scope = $this->company_id;
 
@@ -49,7 +61,24 @@ class MusculoskeletalAnalysisExcel implements FromQuery, WithMapping, WithHeadin
 
     public function map($data): array
     {
-      return [
+      $values = [];
+
+      if ($this->confLocation['regional'] == 'SI')
+          array_push($values, $data->regional);
+
+      if ($this->confLocation['headquarter'] == 'SI')
+          array_push($values, $data->headquarter);
+
+      if ($this->confLocation['process'] == 'SI')
+      {
+          array_push($values, $data->process);
+          array_push($values, $data->macroprocess);
+      }
+
+      if ($this->confLocation['area'] == 'SI')
+          array_push($values, $data->area);
+
+      $values = array_merge($values, [
         $data->patient_identification,
         $data->name,
         $data->date,
@@ -135,12 +164,31 @@ class MusculoskeletalAnalysisExcel implements FromQuery, WithMapping, WithHeadin
         $data->workday,
         $data->symptomatology_observations,
         $data->id3
-      ];
+      ]);
+
+      return $values;
     }
 
     public function headings(): array
     {
-        return [
+        $columns = [];
+
+        if ($this->confLocation['regional'] == 'SI')
+            array_push($columns, $this->keywords['regional']);
+
+        if ($this->confLocation['headquarter'] == 'SI')
+            array_push($columns, $this->keywords['headquarter']);
+
+        if ($this->confLocation['process'] == 'SI')
+        {
+            array_push($columns, $this->keywords['process']);
+            array_push($columns, 'Macroproceso');
+        }
+
+        if ($this->confLocation['area'] == 'SI')
+            array_push($columns, $this->keywords['area']);
+
+        $columns = array_merge($columns, [
             'Identificación Paciente',
             'Nombre',
             'Fecha',
@@ -226,7 +274,9 @@ class MusculoskeletalAnalysisExcel implements FromQuery, WithMapping, WithHeadin
             'Jornada Laboral',
             'Observaciones2',
             'ID3'            
-        ];
+        ]);
+
+        return $columns;
     }
 
     public static function afterSheet(AfterSheet $event)

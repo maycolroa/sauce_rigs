@@ -125,7 +125,8 @@ class EvaluationContractController extends Controller
                     if (!is_string($value) && 
                         $value->getClientMimeType() != 'image/png' && 
                         $value->getClientMimeType() != 'image/jpg' &&
-                        $value->getClientMimeType() != 'image/jpeg')
+                        $value->getClientMimeType() != 'image/jpeg' &&
+                        $value->getClientOriginalExtension() != 'pdf')
                         
                         $fail('Imagen debe ser PNG ó JPG ó JPEG');
                 },
@@ -198,11 +199,12 @@ class EvaluationContractController extends Controller
                 function ($attribute, $value, $fail)
                 {
                     if (!is_string($value) && 
-                        $value->getClientMimeType() != 'image/png' && 
-                        $value->getClientMimeType() != 'image/jpg' &&
-                        $value->getClientMimeType() != 'image/jpeg')
-
-                        $fail('Imagen debe ser PNG ó JPG ó JPEG');
+                    $value->getClientMimeType() != 'image/png' && 
+                    $value->getClientMimeType() != 'image/jpg' &&
+                    $value->getClientMimeType() != 'image/jpeg' &&
+                    $value->getClientOriginalExtension() != 'pdf')
+                    
+                    $fail('Imagen debe ser PNG ó JPG ó JPEG');
                 },
             ]
         ])->validate();
@@ -326,6 +328,7 @@ class EvaluationContractController extends Controller
                                 $nameFile = base64_encode($this->user->id . now() . rand(1,10000) . $keyF) .'.'. $file_tmp->extension();
                                 $file_tmp->storeAs($fileUpload->path_client(false), $nameFile, 's3');
                                 $fileUpload->file = $nameFile;
+                                $fileUpload->type_file = $file_tmp->extension();
                             }
 
                             if (!$fileUpload->save())
@@ -547,14 +550,16 @@ class EvaluationContractController extends Controller
                     $files = $evaluationContract->files()->where('item_id', $item->id)->get();
 
                     $images_pdf = [];
+                    $count_pdf = 0;
                     $i = 0;
                     $j = 0;
 
-                    $files->transform(function($file, $indexFile) use ($totals_apply, &$i, &$j, &$images_pdf) {
+                    $files->transform(function($file, $indexFile) use ($totals_apply, &$i, &$j, &$images_pdf, &$count_pdf) {
                         $file->key = Carbon::now()->timestamp + rand(1,10000);
+                        $file->type_file = $file->type_file;
                         $file->old_name = $file->file;
                         $file->path = $file->path_image();
-                        $images_pdf[$i][$j] = $file->path;
+                        $images_pdf[$i][$j] = ['file' => $file->path, 'type' => $file->type_file];
                         $j++;
 
                         if ($j > ($totals_apply))
@@ -563,11 +568,15 @@ class EvaluationContractController extends Controller
                             $j = 0;
                         }
 
+                        if ($file->type_file == 'pdf')
+                            $count_pdf++;
+
                         return $file;
                     });
 
                     $item->files = $files;
                     $item->files_pdf = $images_pdf;
+                    $item->count_file_pdf = $count_pdf;
 
                     $values = $evaluationContract->results()->where('item_id', $item->id)->pluck('value', 'type_rating_id');
                     $clone = $item->ratings;
