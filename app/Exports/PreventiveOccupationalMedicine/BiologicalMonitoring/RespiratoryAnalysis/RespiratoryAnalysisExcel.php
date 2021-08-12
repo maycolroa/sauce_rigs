@@ -12,6 +12,9 @@ use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 use Maatwebsite\Excel\Concerns\RegistersEventListeners;
 use Maatwebsite\Excel\Events\AfterSheet;
 use \Maatwebsite\Excel\Sheet;
+use App\Traits\UtilsTrait;
+use App\Traits\LocationFormTrait;
+
 
 Sheet::macro('styleCells', function (Sheet $sheet, string $cellRange, array $style) {
   $sheet->getDelegate()->getStyle($cellRange)->applyFromArray($style);
@@ -20,19 +23,33 @@ Sheet::macro('styleCells', function (Sheet $sheet, string $cellRange, array $sty
 class RespiratoryAnalysisExcel implements FromQuery, WithMapping, WithHeadings, WithTitle, WithEvents, ShouldAutoSize
 {
     use RegistersEventListeners;
+    use UtilsTrait, LocationFormTrait;
 
     protected $company_id;
     protected $filters;
+    protected $keywords;
+    protected $confLocation;
 
     public function __construct($company_id, $filters)
     {
       $this->company_id = $company_id;
       $this->filters = $filters;
+      $this->keywords = $this->getKeywordQueue($this->company_id);
+      $this->confLocation = $this->getLocationFormConfModule($this->company_id);
     }
 
     public function query()
     {
-      $data = RespiratoryAnalysis::select('sau_bm_respiratory_analysis.*')
+      $data = RespiratoryAnalysis::select(
+        'sau_bm_respiratory_analysis.*',
+        'sau_employees_regionals.name AS regional',
+        'sau_employees_headquarters.name AS headquarter',
+        'sau_employees_processes.name AS process',
+        'sau_employees_areas.name AS area')
+      ->leftJoin('sau_employees_regionals', 'sau_employees_regionals.id', 'sau_bm_respiratory_analysis.employee_regional_id')
+      ->leftJoin('sau_employees_headquarters', 'sau_employees_headquarters.id', 'sau_bm_respiratory_analysis.employee_headquarter_id')
+      ->leftJoin('sau_employees_processes', 'sau_employees_processes.id', 'sau_bm_respiratory_analysis.employee_process_id')
+      ->leftJoin('sau_employees_areas', 'sau_employees_areas.id', 'sau_bm_respiratory_analysis.employee_area_id')
       ->inRegional($this->filters['regional'], $this->filters['filtersType']['regional']);
 
       $data->company_scope = $this->company_id;
@@ -42,7 +59,24 @@ class RespiratoryAnalysisExcel implements FromQuery, WithMapping, WithHeadings, 
 
     public function map($data): array
     {
-      return [
+      $values = [];
+
+      if ($this->confLocation['regional'] == 'SI')
+          array_push($values, $data->regional);
+
+      if ($this->confLocation['headquarter'] == 'SI')
+          array_push($values, $data->headquarter);
+
+      if ($this->confLocation['process'] == 'SI')
+      {
+          array_push($values, $data->process);
+          array_push($values, $data->macroprocess);
+      }
+
+      if ($this->confLocation['area'] == 'SI')
+          array_push($values, $data->area);
+
+      $values = array_merge($values, [
         $data->patient_identification,
         $data->name,
         $data->sex,
@@ -87,12 +121,31 @@ class RespiratoryAnalysisExcel implements FromQuery, WithMapping, WithHeadings, 
         $data->ats_obstruction_classification,
         $data->ats_restrictive_classification,
         $data->state
-      ];
+      ]);
+
+      return $values;
     }
 
     public function headings(): array
     {
-        return [
+      $columns = [];
+
+      if ($this->confLocation['regional'] == 'SI')
+          array_push($columns, $this->keywords['regional']);
+
+      if ($this->confLocation['headquarter'] == 'SI')
+          array_push($columns, $this->keywords['headquarter']);
+
+      if ($this->confLocation['process'] == 'SI')
+      {
+          array_push($columns, $this->keywords['process']);
+          array_push($columns, 'Macroproceso');
+      }
+
+      if ($this->confLocation['area'] == 'SI')
+          array_push($columns, $this->keywords['area']);
+
+      $columns = array_merge($columns, [
             'Cedula',
             'Nombres',
             'sexo',
@@ -137,7 +190,9 @@ class RespiratoryAnalysisExcel implements FromQuery, WithMapping, WithHeadings, 
             'CLASIFICACION OBSTRUCCION ATS',
             'CLASIFICACION RESTRICTIVO ATS',
             'Estado'
-        ];
+        ]);
+
+        return $columns;
     }
 
     public static function afterSheet(AfterSheet $event)
