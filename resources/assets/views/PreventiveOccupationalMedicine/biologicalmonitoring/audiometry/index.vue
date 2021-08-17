@@ -4,7 +4,7 @@
       v-if="viewIndex"
       title="AUDIOMETRIAS"
       subtitle="ADMINISTRAR AUDIOMETRIAS"
-      url="preventiveoccupationalmedicine"
+      url="biologicalmonitoring-audiometry"
     />
 
     <div class="col-md">

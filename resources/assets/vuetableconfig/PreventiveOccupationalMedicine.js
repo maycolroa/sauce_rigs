@@ -155,6 +155,96 @@ export default [
     }
 },
 {
+  name: 'audiometry-evaluations',
+  fields: [
+      { name: 'sau_bm_evaluations.id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true },
+      { name: 'sau_bm_evaluations.name', data: 'name', title: 'Nombre', sortable: true, searchable: true, detail: false, key: false },
+      { name: 'sau_bm_evaluations.created_at', data: 'created_at', title: 'Fecha creación', sortable: true, searchable: true, detail: false, key: false },
+      { name: '', data: 'controlls', title: 'Controles', sortable: false, searchable: false, detail: false, key: false },
+  ],
+  'controlls': [{
+      type: 'push',
+      buttons: [{
+          config: {
+              color: 'outline-success',
+              borderless: true,
+              icon: 'ion ion-md-create',
+              title: 'Editar'
+          },
+          data: {
+              routePush: { name: 'audiometry-evaluations-edit' },
+              id: 'id',
+          },
+          permission: 'biologicalMonitoring_audiometry_r'
+      }, {
+          config: {
+              color: 'outline-info',
+              borderless: true,
+              icon: 'ion ion-md-eye',
+              title: 'Ver'
+          },
+          data: {
+              routePush: { name: 'audiometry-evaluations-view' },
+              id: 'id',
+          },
+          permission: 'biologicalMonitoring_audiometry_r'
+      },/*{
+          config: {
+              color: 'outline-success',
+              borderless: true,
+              icon: 'ion ion-ios-copy',
+              title: 'Clonar Evaluación'
+          },
+          data: {
+              routePush: { name: 'audiometry-evaluations-clone' },
+              id: 'id',
+          },
+          permission: 'biologicalMonitoring_audiometry_r'
+        },{
+          config: {
+              color: 'outline-success',
+              borderless: true,
+              icon: 'ion ion-md-clipboard',
+              title: 'Realizar Evaluación'
+          },
+          data: {
+              routePush: { name: 'audiometry-evaluations-evaluate' },
+              id: 'id',
+          },
+          permission: 'contracts_evaluations_perform_evaluation'
+      }, {
+        config: {
+            color: 'outline-info',
+            borderless: true,
+            icon: 'ion ion-md-list',
+            title: 'Ver Evaluaciones Realizadas'
+        },
+        data: {
+            routePush: { name: 'audiometry-evaluations-contracts' },
+            id: 'id',
+        },
+        permission: 'biologicalMonitoring_audiometry_r'
+    }*/]
+  },
+  {
+      type: 'base',
+      buttons: [{
+      name: 'delete',
+      data: {
+          action: '/biologicalmonitoring/audiometry/evaluation/',
+          id: 'id',
+          messageConfirmation: 'Esta seguro de borrar la evaluación __name__'
+      },
+      permission: 'biologicalMonitoring_audiometry_d'
+      }],
+  }],
+  configuration: {
+      urlData: '/biologicalmonitoring/audiometry/evaluation/dataAudiometry',
+      filterColumns: true,
+      //configNameFilter: 'audiometry-evaluations'
+  }
+},
+{
   name: 'reinstatements-restrictions',
   fields: [
       { name: 'sau_reinc_restrictions.id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true },

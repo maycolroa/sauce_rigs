@@ -66,6 +66,13 @@ Route::middleware(['auth'])->group(function () {
       	Route::ApiResource('audiometry', 'PreventiveOccupationalMedicine\BiologicalMonitoring\AudiometryController');   
       	Route::post('audiometry/informs', 'PreventiveOccupationalMedicine\BiologicalMonitoring\AudiometryInformController@data');
         Route::post('audiometry/informs/individual', 'PreventiveOccupationalMedicine\BiologicalMonitoring\AudiometryInformController@dataIndividual');
+
+        Route::prefix('audiometry')->group(function () {
+          Route::post('evaluation/dataAudiometry', 'PreventiveOccupationalMedicine\BiologicalMonitoring\Evaluations\EvaluationController@dataAudiometry');
+          Route::ApiResource('evaluation', 'PreventiveOccupationalMedicine\BiologicalMonitoring\Evaluations\EvaluationController');          
+          Route::post('evaluation/block', 'PreventiveOccupationalMedicine\BiologicalMonitoring\Evaluations\EvaluationController@inEdit');
+        });
+
         
         Route::prefix('reinstatements')->group(function () {
   

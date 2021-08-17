@@ -10,29 +10,24 @@
 					<div class="card-title-elements">
 						<div class="row no-gutters row-bordered row-border-light h-100">
 							
-							<div class="d-flex col-sm-6 col-md-4 col-lg-6 align-items-center" v-if="auth.can['ph_reports_r']">
-								<router-link tag="a" href="javascript:void(0)" class="card-body media align-items-center text-dark" :to="{name:'industrialsecure-activities'}">
-									<i class="far fa-newspaper display-4 d-block text-primary"></i>
+							<div class="d-flex col-sm-6 col-md-4 col-lg-6 align-items-center" v-if="auth.can['biologicalMonitoring_audiometry_r']">
+								<router-link tag="a" href="javascript:void(0)" class="card-body media align-items-center text-dark" :to="{name:'biologicalmonitoring-audiometry-index'}">
+									<i class="ion ion-md-megaphone display-4 d-block text-primary"></i>
 									<span class="media-body d-block ml-3">
-										<span class="text-big font-weight-bolder">Actividades</span>
+										<span class="text-big font-weight-bolder">Audiometrías</span>
+										<br>
+										<small class="text-muted">Administrar Audiometrías</small>
 									</span>
 								</router-link>
 							</div>
 
-							<div class="d-flex col-sm-6 col-md-4 c ol-lg-6 align-items-center" v-if="auth.can['ph_inspections_r']">
-								<router-link tag="a" href="javascript:void(0)" class="card-body media align-items-center text-dark" :to="{name:'industrialsecure-dangers'}"  >
-									<i class="far fa-list-alt display-4 d-block text-primary" ></i>
+							<div class="d-flex col-sm-6 col-md-4 col-lg-6 align-items-center" v-if="auth.can['biologicalMonitoring_audiometry_r']">
+								<router-link tag="a" href="javascript:void(0)" class="card-body media align-items-center text-dark" :to="{name:'audiometry-evaluations'}"  >
+									<i class="lnr lnr-magnifier display-4 d-block text-primary" ></i>
 									<span class="media-body d-block ml-3">
-										<span class="text-big font-weight-bolder">Peligros</span>
-									</span>
-								</router-link>
-							</div>
-
-							<div class="d-flex col-sm-6 col-md-4 c ol-lg-6 align-items-center" v-if="auth.can['ph_inspections_r']">
-								<router-link tag="a" href="javascript:void(0)" class="card-body media align-items-center text-dark" :to="{name:'industrialsecure-dangermatrix'}"  >
-									<i class="far fa-clipboard display-4 d-block text-primary" ></i>
-									<span class="media-body d-block ml-3">
-										<span class="text-big font-weight-bolder">Matriz de Peligros</span>
+										<span class="text-big font-weight-bolder">Evaluaciones Grado de Desarrollo del SVE</span>
+										<br>
+										<small class="text-muted">Administrar las evaluaciones.</small>
 									</span>
 								</router-link>
 							</div>
@@ -48,9 +43,9 @@
 import Alerts from "@/utils/Alerts.js";
 
 export default {
-	name: "dangerMatrix",
+	name: "audiometry",
 	metaInfo: {
-		title: "Matriz de Peligros"
+		title: "Audiometrias"
 	},
   	methods: {
   	}

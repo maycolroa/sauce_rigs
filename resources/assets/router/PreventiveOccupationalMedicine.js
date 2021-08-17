@@ -16,6 +16,14 @@ export default [{
         name: 'biologicalmonitoring-audiometry',
         path: 'biologicalmonitoring/audiometry',
         component: () =>
+            import('@/views/PreventiveOccupationalMedicine/biologicalmonitoring/audiometry/indexMenu')
+      }
+    ]),
+    ...middleware({ 'check-permission': 'biologicalMonitoring_audiometry_r' }, [
+      {
+        name: 'biologicalmonitoring-audiometry-index',
+        path: 'biologicalmonitoring/audiometry/index',
+        component: () =>
             import('@/views/PreventiveOccupationalMedicine/biologicalmonitoring/audiometry/index')
       }
     ]), 
@@ -418,6 +426,44 @@ export default [{
           component: () =>
           import('@/views/PreventiveOccupationalMedicine/reinstatements/medicalConclusions/view')
         }
-      ])
+      ]),
+      ...middleware({ 'check-permission': 'biologicalMonitoring_audiometry_r' }, [
+				{
+					name: 'audiometry-evaluations',
+					path: 'evaluations',
+					component: () =>
+					import('@/views/PreventiveOccupationalMedicine/biologicalmonitoring/audiometry/evaluations/index')
+				}
+			]),
+			...middleware({ 'check-permission': 'biologicalMonitoring_audiometry_r' }, [
+				{
+					name: 'audiometry-evaluations-create',
+					path: 'evaluations/create',
+					component: () => import('@/views/PreventiveOccupationalMedicine/biologicalmonitoring/audiometry/evaluations/create')
+				}
+			]),
+			...middleware({ 'check-permission': 'biologicalMonitoring_audiometry_r' }, [
+				{
+					name: 'audiometry-evaluations-clone',
+					path: 'evaluations/clone',
+					component: () => import('@/views/PreventiveOccupationalMedicine/biologicalmonitoring/audiometry/evaluations/clone')
+				}
+			]),
+			...middleware({ 'check-permission': 'biologicalMonitoring_audiometry_r' }, [
+				{
+					name: 'audiometry-evaluations-edit',
+					path: 'evaluations/edit/:id',
+					component: () =>
+					import('@/views/PreventiveOccupationalMedicine/biologicalmonitoring/audiometry/evaluations/edit')
+				},
+			]),
+			...middleware({ 'check-permission': 'biologicalMonitoring_audiometry_r' }, [
+				{
+					name: 'audiometry-evaluations-view',
+					path: 'evaluations/view/:id',
+					component: () =>
+					import('@/views/PreventiveOccupationalMedicine/biologicalmonitoring/audiometry/evaluations/view')
+				}
+			]),
   ]
 }]
