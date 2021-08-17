@@ -328,6 +328,7 @@ class EvaluationContractController extends Controller
                                 $nameFile = base64_encode($this->user->id . now() . rand(1,10000) . $keyF) .'.'. $file_tmp->extension();
                                 $file_tmp->storeAs($fileUpload->path_client(false), $nameFile, 's3');
                                 $fileUpload->file = $nameFile;
+                                $fileUpload->name_file = $file_tmp->getClientOriginalName();
                                 $fileUpload->type_file = $file_tmp->extension();
                             }
 
@@ -557,9 +558,10 @@ class EvaluationContractController extends Controller
                     $files->transform(function($file, $indexFile) use ($totals_apply, &$i, &$j, &$images_pdf, &$count_pdf) {
                         $file->key = Carbon::now()->timestamp + rand(1,10000);
                         $file->type_file = $file->type_file;
+                        $file->name_file = $file->name_file;
                         $file->old_name = $file->file;
                         $file->path = $file->path_image();
-                        $images_pdf[$i][$j] = ['file' => $file->path, 'type' => $file->type_file];
+                        $images_pdf[$i][$j] = ['file' => $file->path, 'type' => $file->type_file, 'name' => $file->name_file];
                         $j++;
 
                         if ($j > ($totals_apply))

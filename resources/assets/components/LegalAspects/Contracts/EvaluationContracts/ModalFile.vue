@@ -37,6 +37,7 @@
                                                 <center>
                                                     <div class="my-4 mx-2 text-center">
                                                         <i class="far fa-file-pdf display-4 d-block text-primary" ></i>
+                                                        {{item.name_file}}
                                                     </div>
                                                 </center>
                                             </template>
