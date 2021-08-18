@@ -71,6 +71,10 @@ Route::middleware(['auth'])->group(function () {
           Route::post('evaluation/dataAudiometry', 'PreventiveOccupationalMedicine\BiologicalMonitoring\Evaluations\EvaluationController@dataAudiometry');
           Route::ApiResource('evaluation', 'PreventiveOccupationalMedicine\BiologicalMonitoring\Evaluations\EvaluationController');          
           Route::post('evaluation/block', 'PreventiveOccupationalMedicine\BiologicalMonitoring\Evaluations\EvaluationController@inEdit');
+
+          Route::ApiResource('evaluationPerform', 'PreventiveOccupationalMedicine\BiologicalMonitoring\Evaluations\EvaluationPerformController');
+          Route::get('getData/{evaluation}', 'PreventiveOccupationalMedicine\BiologicalMonitoring\Evaluations\EvaluationPerformController@getData');
+          
         });
 
         
@@ -558,7 +562,7 @@ Route::middleware(['auth'])->group(function () {
       Route::post('evaluationContract/data', 'LegalAspects\Contracs\EvaluationContractController@data');
       Route::get('evaluationContract/download/{evaluationContract}', 'LegalAspects\Contracs\EvaluationContractController@download');
       Route::get('evaluationContract/downloadPdf/{evaluationContract}', 'LegalAspects\Contracs\EvaluationContractController@downloadPdf');
-      Route::get('evaluationContract/getData/{evaluationContract}', 'LegalAspects\Contracs\EvaluationContractController@getData');
+      Route::get('evaluationContract/getData/{evaluationContract}', 'LegalAspects\Contracs\EvaluationContractController@getData');  
       Route::post('evaluationContract/report', 'LegalAspects\Contracs\EvaluationContractController@report');
       Route::post('evaluationContract/reportDinamic', 'LegalAspects\Contracs\EvaluationContractController@reportDinamicBar');
       Route::post('evaluationContract/exportReport', 'LegalAspects\Contracs\EvaluationContractController@exportReport');

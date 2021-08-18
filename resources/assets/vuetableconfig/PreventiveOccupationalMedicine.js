@@ -200,7 +200,7 @@ export default [
               id: 'id',
           },
           permission: 'biologicalMonitoring_audiometry_r'
-        },{
+        },*/{
           config: {
               color: 'outline-success',
               borderless: true,
@@ -211,7 +211,7 @@ export default [
               routePush: { name: 'audiometry-evaluations-evaluate' },
               id: 'id',
           },
-          permission: 'contracts_evaluations_perform_evaluation'
+          permission: 'biologicalMonitoring_audiometry_r'
       }, {
         config: {
             color: 'outline-info',
@@ -224,7 +224,7 @@ export default [
             id: 'id',
         },
         permission: 'biologicalMonitoring_audiometry_r'
-    }*/]
+    }]
   },
   {
       type: 'base',

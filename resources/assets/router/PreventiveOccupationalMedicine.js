@@ -465,5 +465,53 @@ export default [{
 					import('@/views/PreventiveOccupationalMedicine/biologicalmonitoring/audiometry/evaluations/view')
 				}
 			]),
+      ...middleware({ 'check-permission': 'biologicalMonitoring_audiometry_r' }, [
+				{
+					name: 'audiometry-evaluations-evaluate',
+					path: 'evaluations/evaluate/:id',
+					component: () =>
+					import('@/views/PreventiveOccupationalMedicine/biologicalmonitoring/audiometry/evaluations/evaluationCreate')
+				}
+			]),
+			/*...middleware({ 'check-permission': 'biologicalMonitoring_audiometry_r' }, [
+				{
+					name: 'legalaspects-evaluations-contracts-clone',
+					path: 'evaluations/contracts/clone',
+					component: () =>
+					import('PreventiveOccupationalMedicine/biologicalmonitoring/audiometry/evaluations/evaluationClone')
+				}
+			]),*/
+			...middleware({ 'check-permission': 'biologicalMonitoring_audiometry_r' }, [
+				{
+					name: 'audiometry-evaluations-lessee',
+					path: 'evaluations/perform',
+					component: () =>
+					import('@/views/PreventiveOccupationalMedicine/biologicalmonitoring/audiometry/evaluations/evaluationIndex')
+				},
+			]),
+			...middleware({ 'check-permission': 'biologicalMonitoring_audiometry_r' }, [
+				{
+					name: 'audiometry-evaluations-perform',
+					path: 'evaluations/perform/:id',
+					component: () =>
+					import('@/views/PreventiveOccupationalMedicine/biologicalmonitoring/audiometry/evaluations/evaluationIndex')
+				}
+			]),
+			...middleware({ 'check-permission': 'biologicalMonitoring_audiometry_r' }, [
+				{
+					name: 'audiometry-evaluations-perform-view',
+					path: 'evaluations/perform/view/:id',
+					component: () =>
+					import('@/views/PreventiveOccupationalMedicine/biologicalmonitoring/audiometry/evaluations/evaluationView')
+				}
+			]),
+			...middleware({ 'check-permission': 'biologicalMonitoring_audiometry_r' }, [
+				{
+					name: 'audiometry-evaluations-perform-edit',
+					path: 'evaluations/perform/edit/:id',
+					component: () =>
+					import('@/views/PreventiveOccupationalMedicine/biologicalmonitoring/audiometry/evaluations/evaluationEdit')
+				}
+			]),
   ]
 }]
