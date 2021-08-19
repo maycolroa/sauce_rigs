@@ -1,13 +1,13 @@
 <template>
     <div>
         <div>
-            <b-btn class="btn-modals" variant="outline-info icon-btn borderless" size="xs" v-b-tooltip.top title="Archivos" @click="showModal()"><span class="ion ion-ios-archive"></span></b-btn>
+            <b-btn class="btn-modals" variant="outline-info icon-btn borderless" size="xs" v-b-tooltip.top title="Observaciones" @click="showModal()"><span class="ion ion-md-eye"></span></b-btn>
         </div>
 
         <!-- Modal -->
-        <b-modal ref="file" :hideFooter="true" id="modals-top" size="lg" class="modal-top" @hidden="removed">
+        <b-modal ref="observations" :hideFooter="true" id="modals-top" size="lg" class="modal-top" @hidden="removed">
             <div slot="modal-title">
-                Archivos
+                Observaciones
             </div>
 
             <div class="row" style="padding-bottom: 10px;">
@@ -17,7 +17,7 @@
                             <b-form-row>
                                 <div class="col-md-12" v-if="!viewOnly">
                                 <div class="float-right">
-                                    <b-btn variant="primary" @click.prevent="addFile()"><span class="ion ion-md-add-circle"></span>&nbsp;&nbsp;Agregar</b-btn>
+                                    <b-btn variant="primary" @click.prevent="addObservation()"><span class="ion ion-md-add-circle"></span>&nbsp;&nbsp;Agregar</b-btn>
                                 </div>
                                 </div>
                             </b-form-row>
@@ -26,30 +26,15 @@
                                 <perfect-scrollbar :options="{ wheelPropagation: true }" class="mb-4" style="height: 300px; padding-right: 15px; width: 100%;">
                                     <template v-for="(item, index) in value">
                                         <div :key="index">
-                                            <template v-if="item.path && item.type_file != 'pdf'">
-                                                <center>
-                                                    <div class="my-4 mx-2 text-center">
-                                                        <img class="mw-100" :src="`${item.path}`" alt="Max-width 100%">
-                                                    </div>
-                                                </center>
-                                            </template>
-                                            <template v-else-if="item.type_file == 'pdf'">
-                                                <center>
-                                                    <div class="my-4 mx-2 text-center">
-                                                        <i class="far fa-file-pdf display-4 d-block text-primary" ></i>
-                                                        {{item.name_file}}
-                                                    </div>
-                                                </center>
-                                            </template>
                                             <b-form-row v-if="!viewOnly">
                                                 <div class="col-md-12">
                                                     <div class="float-right">
-                                                        <b-btn v-if="!viewOnly" variant="outline-primary icon-btn borderless" size="sm" v-b-tooltip.top title="Eliminar Archivos" @click.prevent="removeFile(index)"><span class="ion ion-md-close-circle"></span></b-btn>
+                                                        <b-btn v-if="!viewOnly" variant="outline-primary icon-btn borderless" size="sm" v-b-tooltip.top title="Eliminar Observación" @click.prevent="removeObservation(index)"><span class="ion ion-md-close-circle"></span></b-btn>
                                                     </div>
                                                 </div>
                                             </b-form-row>
                                             <b-form-row>
-                                                <vue-file-simple :disabled="viewOnly" :help-text="item.id ? `Para descargar el archivo actual, haga click <a href='/legalAspects/evaluationContract/downloadFile/${item.id}' target='blank'>aqui</a> ` : null" class="col-md-10 offset-md-1" v-model="item.file" label="Archivo (*.png, *.jpg, *.jpeg, *.pdf)" name="file" :error="form.errorsFor(`${prefixIndex}.${index}.file`)" placeholder="Seleccione un archivo" :maxFileSize="10"></vue-file-simple>
+                                                <vue-textarea :disabled="viewOnly" class="col-md-12" v-model="item.description" label="Descripción" name="description" placeholder="Descripción" rows="3" :error="form.errorsFor(`${prefixIndex}.${index}.description`)"></vue-textarea>
                                             </b-form-row>
                                             <hr class="border-light container-m--x mt-0 mb-4">
                                         </div>
@@ -76,14 +61,14 @@
 
 <script>
 import { SweetModal, SweetModalTab } from 'sweet-modal-vue';
-import VueFileSimple from "@/components/Inputs/VueFileSimple.vue";
+import VueTextarea from "@/components/Inputs/VueTextarea.vue";
 import PerfectScrollbar from '@/vendor/libs/perfect-scrollbar/PerfectScrollbar';
 
 export default {
-    name: 'modals-files',
+    name: 'modals-observations',
     components:{
         SweetModal,
-        VueFileSimple,
+        VueTextarea,
         PerfectScrollbar
     },
     props: {
@@ -98,30 +83,30 @@ export default {
     },
     methods: {
         showModal () {
-            this.$refs.file.show()
+            this.$refs.observations.show()
         },
         hideModal () {
-            this.$refs.file.hide()
+            this.$refs.observations.hide()
         },
-        addFile() {
+        addObservation() {
             this.value.push({
-                file: '',
+                description: '',
                 item_id: this.itemId
             })
         },
-        removeFile(index) {
+        removeObservation(index) {
             if (this.value[index].id != undefined)
-                this.$emit('removeFile', this.value[index].id);
+                this.$emit('removeObservation', this.value[index].id);
 
             this.value.splice(index, 1)
         },
         removed() {
             let keys = [];
 
-            this.value.forEach((file, keyObs) => {
-              if (file.file)
+            this.value.forEach((observation, keyObs) => {
+              if (observation.description)
               {
-                keys.push(file);
+                keys.push(observation);
               }
             });
 

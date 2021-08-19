@@ -195,7 +195,9 @@
                                     @endforeach
                                 </tr>
                                 @if(COUNT($item->files) > 0)
-                                
+                                    <tr>
+                                        <th colspan="{{COUNT($item->ratings) + 1}}">Archivos</th>
+                                    </tr>   
                                     @foreach($item->files_pdf as $row)
                                         <tr>
                                         @foreach($row as $col)
@@ -205,7 +207,7 @@
                                             </td>
                                             @else
                                                 <td style="border-right: none;">
-                                                    <p>Contiene {{$item->count_file_pdf}} archivos pdf</p>
+                                                    <p>{{$col['name']}}</p>
                                                 </td>
                                             @endif
                                         @endforeach

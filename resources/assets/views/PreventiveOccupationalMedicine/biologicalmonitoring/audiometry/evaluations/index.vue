@@ -26,7 +26,7 @@
         <b-card-body>
              <vue-table
                 v-if="auth.can['biologicalMonitoring_audiometry_r']"
-                configName="audiometry-evaluations"
+                configName="biologicalmonitoring-audiometry-evaluations"
                 @filtersUpdate="setFilters"
                 ></vue-table>
         </b-card-body>
