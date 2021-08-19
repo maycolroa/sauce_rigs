@@ -1,7 +1,7 @@
 <template>
   <div>
     <header-module
-      title="CONTRATISTAS"
+      title="AUDIOMETRIAS EVALUACIONES"
       subtitle="ADMINISTRAR EVALUACIONES REALIZADAS"
     />
 
@@ -9,13 +9,13 @@
       <b-card no-body>
         <b-card-header class="with-elements">
           <div class="card-title-elements" > 
-            <b-btn :to="{name:'legalaspects-evaluations'}" variant="secondary">Regresar</b-btn>
+            <b-btn :to="{name:'audiometry-evaluations'}" variant="secondary">Regresar</b-btn>
           </div>
         </b-card-header>
         <b-card-body>
              
               <vue-table
-                configName="legalaspects-evaluations-contracts"
+                configName="biologicalmonitoring-evaluations-perform"
                 :modelId="`${this.$route.params.id}`"
                 ></vue-table>
         </b-card-body>
@@ -28,7 +28,7 @@
 import Alerts from '@/utils/Alerts.js';
 
 export default {
-  name: 'evaluations-contracts',
+  name: 'audiomery-evaluations-perform',
   metaInfo: {
     title: 'Evaluaciones Realizadas'
   }

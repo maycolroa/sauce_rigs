@@ -473,22 +473,22 @@ export default [{
 					import('@/views/PreventiveOccupationalMedicine/biologicalmonitoring/audiometry/evaluations/evaluationCreate')
 				}
 			]),
-			/*...middleware({ 'check-permission': 'biologicalMonitoring_audiometry_r' }, [
+			...middleware({ 'check-permission': 'biologicalMonitoring_audiometry_r' }, [
 				{
-					name: 'legalaspects-evaluations-contracts-clone',
+					name: 'audiometry-evaluations-perform-clone',
 					path: 'evaluations/contracts/clone',
 					component: () =>
-					import('PreventiveOccupationalMedicine/biologicalmonitoring/audiometry/evaluations/evaluationClone')
+					import('@/views/PreventiveOccupationalMedicine/biologicalmonitoring/audiometry/evaluations/evaluationClone')
 				}
-			]),*/
-			...middleware({ 'check-permission': 'biologicalMonitoring_audiometry_r' }, [
+			]),
+		/*	...middleware({ 'check-permission': 'biologicalMonitoring_audiometry_r' }, [
 				{
 					name: 'audiometry-evaluations-lessee',
 					path: 'evaluations/perform',
 					component: () =>
 					import('@/views/PreventiveOccupationalMedicine/biologicalmonitoring/audiometry/evaluations/evaluationIndex')
 				},
-			]),
+			]),*/
 			...middleware({ 'check-permission': 'biologicalMonitoring_audiometry_r' }, [
 				{
 					name: 'audiometry-evaluations-perform',

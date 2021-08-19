@@ -214,6 +214,10 @@
                                                                 <td class="align-middle text-nowrap" style="padding: 0px;">
                                                                     <center>
                                                                         <vue-radio v-if="!viewOnly" :checked="form.evaluation.stages[index].criterion[index2].items[index3].value" class="col-md-12" v-model="form.evaluation.stages[index].criterion[index2].items[index3].value" :options="[{'text':'Cumple','value':'Cumple'},{'text':'Parcial','value': 'Parcial'}, {'text':'No Cumple','value':'No Cumple'}]" :name="`value${item.id}`" label="" :error="form.errorsFor(`evaluation.stages.${index}.criterion.${index2}.items.${index3}.value`)"></vue-radio>
+
+                                                                        <template v-else>
+                                                                        {{ form.evaluation.stages[index].criterion[index2].items[index3].value ? form.evaluation.stages[index].criterion[index2].items[index3].value : 'Sin calificar' }}
+                                                                    </template>
                                                                     </center>
                                                                 </td>
                                                             </tr>

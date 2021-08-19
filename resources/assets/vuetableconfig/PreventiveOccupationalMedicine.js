@@ -155,7 +155,7 @@ export default [
     }
 },
 {
-  name: 'audiometry-evaluations',
+  name: 'biologicalmonitoring-audiometry-evaluations',
   fields: [
       { name: 'sau_bm_evaluations.id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true },
       { name: 'sau_bm_evaluations.name', data: 'name', title: 'Nombre', sortable: true, searchable: true, detail: false, key: false },
@@ -188,7 +188,7 @@ export default [
               id: 'id',
           },
           permission: 'biologicalMonitoring_audiometry_r'
-      },/*{
+      },{
           config: {
               color: 'outline-success',
               borderless: true,
@@ -200,7 +200,7 @@ export default [
               id: 'id',
           },
           permission: 'biologicalMonitoring_audiometry_r'
-        },*/{
+        },{
           config: {
               color: 'outline-success',
               borderless: true,
@@ -220,7 +220,7 @@ export default [
             title: 'Ver Evaluaciones Realizadas'
         },
         data: {
-            routePush: { name: 'audiometry-evaluations-contracts' },
+            routePush: { name: 'audiometry-evaluations-perform' },
             id: 'id',
         },
         permission: 'biologicalMonitoring_audiometry_r'
@@ -243,6 +243,109 @@ export default [
       filterColumns: true,
       //configNameFilter: 'audiometry-evaluations'
   }
+},
+{
+    name: 'biologicalmonitoring-evaluations-perform',
+    fields: [
+        { name: 'sau_bm_evaluation_perform.id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true },
+        { name: 'sau_bm_evaluation_perform.name', data: 'name', title: 'Nombre', sortable: true, searchable: true, detail: false, key: false },
+        { name: 'sau_bm_evaluation_perform.evaluation_date', data: 'evaluation_date', title: 'Fecha evaluación', sortable: true, searchable: true, detail: false, key: false },
+        { name: 'sau_users.name', data: 'name', title: 'Calificador', sortable: true, searchable: true, detail: false, key: false },
+        { name: 'sau_bm_evaluation_perform.state', data: 'state', title: 'Estado', sortable: true, searchable: true, detail: false, key: false },
+        { name: '', data: 'controlls', title: 'Controles', sortable: false, searchable: false, detail: false, key: false },
+    ],
+    'controlls': [{
+            type: 'push',
+            buttons: [{
+            config: {
+                color: 'outline-success',
+                borderless: true,
+                icon: 'ion ion-md-create',
+                title: 'Editar'
+            },
+            data: {
+                routePush: { name: 'audiometry-evaluations-perform-edit' },
+                id: 'id',
+            },
+            permission: 'contracts_evaluations_edit_evaluations_made'
+            }, {
+            config: {
+                color: 'outline-info',
+                borderless: true,
+                icon: 'ion ion-md-eye',
+                title: 'Ver'
+            },
+            data: {
+                routePush: { name: 'audiometry-evaluations-perform-view' },
+                id: 'id',
+            },
+            permission: 'contracts_evaluations_view_evaluations_made'
+            },{
+                config: {
+                    color: 'outline-success',
+                    borderless: true,
+                    icon: 'ion ion-ios-copy',
+                    title: 'Clonar Evaluación'
+                },
+                data: {
+                    routePush: { name: 'audiometry-evaluations-perform-clone' },
+                    id: 'id',
+                },
+                permission: 'contracts_evaluations_edit_evaluations_made'
+            }]
+        },
+        {
+            type: 'base',
+            buttons: [
+            {
+                name: 'delete',
+                data: {
+                    action: '/legalAspects/evaluationContract/',
+                    id: 'id',
+                    messageConfirmation: 'Esta seguro de borrar la evaluación realizada'
+                },
+                permission: 'contracts_evaluations_delete_evaluations_made'
+            }],
+        },
+        /*{
+            type: 'download',
+            buttons: [{
+                name: 'downloadMatrix',
+                config: {
+                    color: 'outline-success',
+                    borderless: true,
+                    icon: 'ion ion-md-cloud-download',
+                    title: 'Exportar'
+                },
+                data: {
+                    action: '/legalAspects/evaluationContract/download/',
+                    id: 'id'
+                },
+                permission: 'contracts_evaluations_export'
+            }],
+        },*/
+        {
+            type: 'simpleDownload',
+            buttons: [{
+            name: 'downloadFile',
+            config: {
+            color: 'outline-danger',
+            borderless: true,
+            icon: 'fas fa-file-pdf',
+            title: 'Descargar Evaluación en PDF'
+            },
+            data: {
+            action: '/legalAspects/evaluationContract/downloadPdf/',
+            id: 'id'
+            },
+            permission: 'contracts_evaluations_export'
+            }],
+        },],
+    configuration: {
+        urlData: '/biologicalmonitoring/audiometry/evaluationPerform/data',
+        filterColumns: true,
+        //configNameFilter: 'legalaspects-evaluations-contracts'
+    }
 },
 {
   name: 'reinstatements-restrictions',

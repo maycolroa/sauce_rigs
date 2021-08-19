@@ -19,7 +19,7 @@ class EvaluationFile extends Model
 
     public function evaluation()
     {
-        return $this->belongsTo(EvaluationContract::class, 'evaluation_id');
+        return $this->belongsTo(EvaluationPerform::class, 'evaluation_id');
     }
 
     public function path_base($storageLocation = true)

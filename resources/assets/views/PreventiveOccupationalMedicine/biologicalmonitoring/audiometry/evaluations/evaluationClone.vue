@@ -1,20 +1,20 @@
 <template>
   <div>
     <header-module
-        title="CONTRATISTAS"
-        subtitle="EDITAR EVALUACIÓN REALIZADA"
-    />
+			title="AUDIOMETRIAS EVALUACIONES"
+			subtitle="CREAR EVALUACIÓN"
+			url="audiometry-evaluations"
+		/>
 
     <div class="col-md">
       <b-card no-body>
         <b-card-body>
-            <form-evaluation-perform
-                :url="`/biologicalmonitoring/audiometry/evaluationPerform/${this.$route.params.id}`"
-                method="PUT"
+          <form-evaluation-perform
+                :url="`/biologicalmonitoring/audiometry/evaluationPerform`"
+                method="POST"
                 :evaluation="data"
-                :is-edit="true"
                 userDataUrl="/selects/users"
-                :cancel-url="{ name: 'audiometry-evaluations-perform'}"
+                :cancel-url="{ name: 'audiometry-evaluations'}"
                 :action-plan-states="actionPlanStates"/>
         </b-card-body>
       </b-card>
@@ -25,44 +25,67 @@
         </p>
         <b-btn block variant="primary" @click="returnPage()">Aceptar</b-btn>
       </b-modal>
+
     </div>
   </div>
 </template>
- 
+
 <script>
 import FormEvaluationPerform from '@/components/PreventiveOccupationalMedicine/BiologicalMonitoring/Evaluations/EvaluationPerform/FormEvaluationPerformComponent.vue';
 import Alerts from '@/utils/Alerts.js';
 import GlobalMethods from '@/utils/GlobalMethods.js';
 
 export default {
-  name: 'audiometry-evaluations-perform-edit',
+  name: 'audiometry-evaluations-perform-create',
   metaInfo: {
-    title: 'Evaluaciones Realizadas - Editar'
+    title: 'Evaluaciones - Evaluar'
   },
   components:{
     FormEvaluationPerform
   },
-  data () {
+  data(){
     return {
       data: [],
+      typesRating: [],
       actionPlanStates: []
     }
   },
   created(){
-
-    axios.get(`/biologicalmonitoring/audiometry/evaluationPerform/${this.$route.params.id}`)
+     axios.get(`/biologicalmonitoring/audiometry/evaluationPerform/${this.$route.params.id}`)
     .then(response => {
         this.data = response.data.data;
+        console.log(this.data)
+        delete this.data.id
+        this.data.evaluation.stages.map((objective) => {
+          objective.criterion.map((subobjective) => {
+            subobjective.items.map((item) => {
+              item.file = [];
+              item.actionPlan.activities.map((plan) => {
+                plan.id = ''
+
+                return plan;
+              });
+              item.files_pdf = [];
+              item.observations.map((obs) => {
+                delete obs.id
+                delete obs.evaluation_id
+
+                return obs
+              });
+              return item;
+            });
+            return subobjective;
+          });
+          return objective;
+        });
 
         if (this.data.evaluation.in_edit)
           this.$refs.modalBlock.show();
     })
     .catch(error => {
+      console.log(error)
         Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
-        this.$router.go(-1);
     });
-
-    this.fetchSelect('actionPlanStates', '/selects/actionPlanStates')
   },
   methods: {
     returnPage() {
@@ -76,7 +99,6 @@ export default {
         })
         .catch(error => {
             Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
-            this.$router.go(-1);
         });
     },
   }

@@ -95,8 +95,6 @@ class EvaluationPerformController extends Controller
      */
     public function store(EvaluationPerformRequest $request)
     {
-        \Log::info($request);
-
         Validator::make($request->all(), [
             "evaluation.stages.*.criterion.*.items.*.files.*.file" => [
                 function ($attribute, $value, $fail)
@@ -249,7 +247,7 @@ class EvaluationPerformController extends Controller
 
         ActionPlan::
                 user($this->user)
-            ->module('contracts')
+            ->module('biologicalMonitoring/audiometry')
             ->url(url('/administrative/actionplans'));
 
         foreach ($evaluation['stages'] as $objective)
@@ -271,8 +269,6 @@ class EvaluationPerformController extends Controller
                         'item_id' => $item['id'],
                         'value' => $item['value'] ? $item['value'] : NULL
                     ]);
-                    
-                    //$evaluationPerform->results()->updateOrCreate(['item_id'=>$itemModel->id, 'value'=>$item['value']]);
 
                     foreach ($item['observations'] as $observation)
                     {
@@ -325,16 +321,6 @@ class EvaluationPerformController extends Controller
                         }
                     }
 
-                    /*$itemEvaluation = EvaluationPerformItem::firstOrCreate(
-                    [
-                        'evaluation_id' => $evaluationPerform->id,
-                        'item_id' => $item['id']
-                    ], 
-                    [
-                        'evaluation_id' => $evaluationPerform->id,
-                        'item_id' => $item['id']
-                    ]);*/
-
                     $detail_procedence = 'Monitoreo Biologico - Audiometrias. Evaluación: ' . $evaluation['name'] . ' - Etapa: ' .  $objective['description'] . '- Criterio: ' . $subobjective['description'] . ' - Item: ' . $item['description'];
 
                     ActionPlan::
@@ -345,8 +331,6 @@ class EvaluationPerformController extends Controller
                 }
             }
         }
-
-        //$state = $evaluationPerform->results()->where('sau_bm_evaluation_perform_items.value', 'NULL')->get();
 
         $state = EvaluationPerformItem::where('evaluation_id', $evaluationPerform->id)->whereNull('value')->get();
         if (COUNT($state) > 0)
@@ -482,14 +466,23 @@ class EvaluationPerformController extends Controller
 
                     $images_pdf = [];
                     $count_pdf = 0;
+                    $i = 0;
+                    $j = 0;
 
-                    $files->transform(function($file, $indexFile) use (&$images_pdf, &$count_pdf) {
+                    $files->transform(function($file, $indexFile) use (&$images_pdf, &$count_pdf, &$i, &$j) {
                         $file->key = Carbon::now()->timestamp + rand(1,10000);
                         $file->type_file = $file->type_file;
                         $file->name_file = $file->name_file;
                         $file->old_name = $file->file;
                         $file->path = $file->path_image();
                         $images_pdf[$i][$j] = ['file' => $file->path, 'type' => $file->type_file, 'name' => $file->name_file];
+                        $j++;
+
+                        if ($j > 3)
+                        {
+                            $i++;
+                            $j = 0;
+                        }
                         
                         if ($file->type_file == 'pdf')
                             $count_pdf++;

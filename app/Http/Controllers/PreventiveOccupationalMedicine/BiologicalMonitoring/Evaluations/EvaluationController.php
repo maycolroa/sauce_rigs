@@ -104,6 +104,11 @@ class EvaluationController extends Controller
             $evaluation->user_creator_id = $this->user->id;
             $evaluation->module_id = $request->module_id;
 
+            if (!$request->in_edit)
+                $evaluation->in_edit = 0;
+            else
+                $evaluation->in_edit = 1;
+
             if(!$evaluation->save()){
                 return $this->respondHttp500();
             }

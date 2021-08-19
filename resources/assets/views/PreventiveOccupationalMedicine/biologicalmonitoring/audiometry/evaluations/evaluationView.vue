@@ -8,11 +8,11 @@
     <div class="col-md">
       <b-card no-body>
         <b-card-body>
-            <form-evaluation-contract-component
+            <form-evaluation-perform
                 :evaluation="data"
                 :view-only="true"
                 userDataUrl="/selects/users"
-                :cancel-url="{ name: 'legalaspects-evaluations-contracts'}"
+                :cancel-url="{ name: 'audiometry-evaluations-perform'}"
                 :action-plan-states="actionPlanStates"/>
         </b-card-body>
       </b-card>
@@ -21,7 +21,7 @@
 </template>
  
 <script>
-import FormEvaluationContractComponent from '@/components/LegalAspects/Contracts/EvaluationContracts/FormEvaluationContractComponent.vue';
+import FormEvaluationPerform from '@/components/PreventiveOccupationalMedicine/BiologicalMonitoring/Evaluations/EvaluationPerform/FormEvaluationPerformComponent.vue';
 import Alerts from '@/utils/Alerts.js';
 import GlobalMethods from '@/utils/GlobalMethods.js';
 
@@ -31,7 +31,7 @@ export default {
     title: 'Evaluaciones Realizadas - Ver'
   },
   components:{
-    FormEvaluationContractComponent
+    FormEvaluationPerform
   },
   data () {
     return {
@@ -41,7 +41,7 @@ export default {
   },
   created(){
 
-    axios.get(`/biologicalmonitoring/audiometry/evaluation/perform/${this.$route.params.id}`)
+    axios.get(`/biologicalmonitoring/audiometry/evaluationPerform/${this.$route.params.id}`)
     .then(response => {
         this.data = response.data.data;
     })

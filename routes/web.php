@@ -73,8 +73,9 @@ Route::middleware(['auth'])->group(function () {
           Route::post('evaluation/block', 'PreventiveOccupationalMedicine\BiologicalMonitoring\Evaluations\EvaluationController@inEdit');
 
           Route::ApiResource('evaluationPerform', 'PreventiveOccupationalMedicine\BiologicalMonitoring\Evaluations\EvaluationPerformController');
+          Route::post('evaluationPerform/data', 'PreventiveOccupationalMedicine\BiologicalMonitoring\Evaluations\EvaluationPerformController@data');
           Route::get('getData/{evaluation}', 'PreventiveOccupationalMedicine\BiologicalMonitoring\Evaluations\EvaluationPerformController@getData');
-          
+          Route::get('evaluationPerform/downloadFile/{evaluationFile}', 'PreventiveOccupationalMedicine\BiologicalMonitoring\Evaluations\EvaluationPerformController@downloadFile');
         });
 
         
