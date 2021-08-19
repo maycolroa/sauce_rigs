@@ -3,6 +3,8 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
+use App\Models\System\Licenses\License;
+use App\Models\General\Company;
 use App\Models\Administrative\Users\User;
 use DB;
 use App\Models\PreventiveOccupationalMedicine\Reinstatements\Check;
@@ -23,7 +25,7 @@ class ReincSendMail extends Command
      *
      * @var string
      */
-    protected $description = 'Command description';
+    protected $description = 'Envia notificacion cuando se vencen las recomendaciones de algun reporte de empleados en reincorporaciones';
 
     /**
      * Create a new command instance.
@@ -42,21 +44,30 @@ class ReincSendMail extends Command
      */
     public function handle()
     {
-        $companies = DB::table('sau_reinc_checks')
-            ->selectRaw('DISTINCT company_id AS id')
-            ->get();
+        $companies = License::selectRaw('DISTINCT company_id')
+            ->join('sau_license_module', 'sau_license_module.license_id', 'sau_licenses.id')
+            ->withoutGlobalScopes()
+            ->whereRaw('? BETWEEN started_at AND ended_at', [date('Y-m-d')])
+            ->where('sau_license_module.module_id', '21');
+
+        $companies = $companies->pluck('sau_licenses.company_id');
 
         foreach ($companies as $company)
         {
+            $checks = DB::table('sau_reinc_checks')
+            ->selectRaw('DISTINCT company_id AS id')
+            ->where('company_id', $company)
+            ->get();
+
             $users = User::select('sau_users.*')
                             ->active()
                             ->join('sau_company_user', 'sau_company_user.user_id', 'sau_users.id');
 
-            $users->company_scope = $company->id;
+            $users->company_scope = $company;
             $users = $users->get();
 
             $users = $users->filter(function ($user, $index) use ($company) {
-                return $user->can('reinc_receive_notifications', $company->id);
+                return $user->can('reinc_receive_notifications', $company) && !$user->isSuperAdmin($company);
             });
 
             $users->map(function($user) use ($company)
@@ -87,7 +98,7 @@ class ReincSendMail extends Command
                 ]);
 
                 $data->user = $user->id;
-                $data->company_scope = $company->id;
+                $data->company_scope = $company;
             
                 $data = DB::table(DB::raw("({$this->getSqlWithBinding($data)}) AS t"))
                 ->select(
@@ -123,10 +134,11 @@ class ReincSendMail extends Command
                             ->module('reinstatements')
                             ->event('Tarea programada: ReincSendMail')
                             ->table($table)
-                            ->company($company->id)
+                            ->company($company)
                             ->send();
 
-                        //\Log::info($data);
+                        \Log::info($user);
+                        \Log::info($table);
                     }     
                 });
         }

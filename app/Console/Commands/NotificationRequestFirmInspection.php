@@ -68,8 +68,6 @@ class NotificationRequestFirmInspection extends Command
             ->groupBy('user_id')
             ->get();
 
-            \Log::info($company);
-
             foreach ($request_firms as $key => $firms) 
             {
                 $recipient = new User(["email" => $firms->email]); 

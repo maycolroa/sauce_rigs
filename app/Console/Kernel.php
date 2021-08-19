@@ -20,7 +20,7 @@ class Kernel extends ConsoleKernel
         'App\Console\Commands\DisableUsers',*/
         'App\Console\Commands\DaysAlertExpiredLicense',
         'App\Console\Commands\NotifyUpdateLaws',
-        //'App\Console\Commands\ReincSendMail',
+        'App\Console\Commands\ReincSendMail',
         //'App\Console\Commands\ReincNotificationNextFollowUp',
         'App\Console\Commands\DmReportHistory',
         'App\Console\Commands\RmReportHistory',
@@ -84,11 +84,11 @@ class Kernel extends ConsoleKernel
             ->timezone('America/Bogota')
             ->cron('0 1 1 1-12/3 *');
 
-        /*$schedule->command('reinc-send-mail')
+        $schedule->command('reinc-send-mail')
             ->timezone('America/Bogota')
-            ->dailyAt('22:00');
+            ->dailyAt('03:00');
 
-        $schedule->command('reinc-notification-next-follow-up')
+        /*$schedule->command('reinc-notification-next-follow-up')
             ->timezone('America/Bogota')
             ->dailyAt('01:00');*/
 
