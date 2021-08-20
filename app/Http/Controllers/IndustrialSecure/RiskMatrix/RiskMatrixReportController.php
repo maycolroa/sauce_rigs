@@ -162,7 +162,7 @@ class RiskMatrixReportController extends Controller
                 ->message('Se ha generado una exportación de reportes de matriz de riesgos.')
                 ->subcopy('Este link es valido por 24 horas')
                 ->buttons([['text'=>'Descargar', 'url'=>url("/export/{$paramUrl}")]])
-                ->module('dangerMatrix')
+                ->module('riskMatrix')
                 ->event('Job: RiskMatrixReportExportJob')
                 ->company($this->company)
                 ->send();
