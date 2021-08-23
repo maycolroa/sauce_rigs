@@ -300,30 +300,13 @@ export default [
             {
                 name: 'delete',
                 data: {
-                    action: '/legalAspects/evaluationContract/',
+                    action: '/biologicalmonitoring/audiometry/evaluationPerform/',
                     id: 'id',
                     messageConfirmation: 'Esta seguro de borrar la evaluación realizada'
                 },
                 permission: 'contracts_evaluations_delete_evaluations_made'
             }],
         },
-        /*{
-            type: 'download',
-            buttons: [{
-                name: 'downloadMatrix',
-                config: {
-                    color: 'outline-success',
-                    borderless: true,
-                    icon: 'ion ion-md-cloud-download',
-                    title: 'Exportar'
-                },
-                data: {
-                    action: '/legalAspects/evaluationContract/download/',
-                    id: 'id'
-                },
-                permission: 'contracts_evaluations_export'
-            }],
-        },*/
         {
             type: 'simpleDownload',
             buttons: [{
@@ -335,7 +318,7 @@ export default [
             title: 'Descargar Evaluación en PDF'
             },
             data: {
-            action: '/legalAspects/evaluationContract/downloadPdf/',
+            action: '/biologicalmonitoring/audiometry/evaluationPerform/downloadPdf/',
             id: 'id'
             },
             permission: 'contracts_evaluations_export'

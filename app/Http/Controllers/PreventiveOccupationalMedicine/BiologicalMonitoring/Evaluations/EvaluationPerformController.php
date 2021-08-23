@@ -586,7 +586,8 @@ class EvaluationPerformController extends Controller
 
     public function downloadFile(EvaluationFile $evaluationFile)
     {
-        return Storage::disk('s3')->download($evaluationFile->path_donwload());
+        //return Storage::disk('s3')->download($evaluationFile->path_donwload());
+        return Storage::disk('s3')->download($evaluationFile->path_donwload(), $evaluationFile->name_file);
     }
 
     /*public function download(EvaluationPerform $evaluationPerform)
@@ -607,7 +608,7 @@ class EvaluationPerformController extends Controller
 
         PDF::setOptions(['dpi' => 150, 'defaultFont' => 'sans-serif']);
 
-        $pdf = PDF::loadView('pdf.evaluationPerform', ['evaluations' => $evaluations] );
+        $pdf = PDF::loadView('pdf.evaluationBiologicalMonitoring', ['evaluations' => $evaluations] );
 
         $pdf->setPaper('A3', 'landscape');
 
