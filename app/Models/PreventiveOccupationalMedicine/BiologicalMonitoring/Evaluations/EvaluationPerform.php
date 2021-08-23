@@ -54,7 +54,7 @@ class EvaluationPerform extends Model
 
     public function items()
     {
-        return $this->hasMany(EvaluationContractItem::class, 'evaluation_id');
+        return $this->hasMany(EvaluationPerformItem::class, 'evaluation_id');
     }
 
 
