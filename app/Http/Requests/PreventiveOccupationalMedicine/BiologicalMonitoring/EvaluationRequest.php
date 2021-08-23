@@ -55,7 +55,7 @@ class EvaluationRequest extends FormRequest
         $id = $this->input('id');
 
         return [
-            'name' => 'required|string|unique:sau_ct_evaluations,name,'.$id.',id,company_id,'.Session::get('company_id'),
+            'name' => 'required|string|unique:sau_bm_evaluations,name,'.$id.',id,company_id,'.Session::get('company_id'),
             'stages' => 'required|array',
             'stages.*.description' => 'required',
             'stages.*.criterion' => 'required|array',

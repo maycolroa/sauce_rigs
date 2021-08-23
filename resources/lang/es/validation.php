@@ -354,7 +354,13 @@ return [
       'subprocesses.*.risks.*.max_residual_frequency' => 'Max. Frecuencia Residual',
       'subprocesses.*.risks.*.description_residual_frequency' => 'Descripción Frecuencia Residual',
       'subprocesses.*.risks.*.residual_exposition' => 'Exposición Residual',
-      'subprocesses.*.risks.*.max_impact_event_risk' => 'Max Impacto Evento Riesgo'
+      'subprocesses.*.risks.*.max_impact_event_risk' => 'Max Impacto Evento Riesgo',
+      'stages' => 'Etapas',
+      'stages.*.description' => 'Descripción',
+      'stages.*.criterion' => 'Criterios',
+      'stages.*.criterion.*.description' => 'Descripción',
+      'stages.*.criterion.*.items' => 'Items',
+      'stages.*.criterion.*.items.*.description' => 'Descripción'
     ],
 
 ];
