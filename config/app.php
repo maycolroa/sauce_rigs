@@ -146,6 +146,7 @@ return [
         Illuminate\Translation\TranslationServiceProvider::class,
         Illuminate\Validation\ValidationServiceProvider::class,
         Illuminate\View\ViewServiceProvider::class,
+        Chumper\Zipper\ZipperServiceProvider::class,
 
         /*
          * Package Service Providers...
@@ -232,7 +233,8 @@ return [
         'PermissionService' => App\Facades\General\PermissionService::class,
         'NotificationManager' => App\Facades\System\NotificationManager::class,
         'RiskMatrixReportManager' => App\Facades\RiskMatrix\RiskMatrixManager::class,
-        'RiskMatrixHistoryManager' => App\Facades\RiskMatrix\RiskMatrixHistoryManager::class
+        'RiskMatrixHistoryManager' => App\Facades\RiskMatrix\RiskMatrixHistoryManager::class,
+        'Zipper' => Chumper\Zipper\Zipper::class
     ],
 
     /**
