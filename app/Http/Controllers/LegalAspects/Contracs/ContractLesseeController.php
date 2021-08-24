@@ -1095,7 +1095,7 @@ class ContractLesseeController extends Controller
                     {
                         $file_tmp = $file['file'];
                         $nameFile = base64_encode($this->user->id . now() . rand(1,10000) . $keyF) .'.'. $file_tmp->extension();
-                        $file_tmp->storeAs('legalAspects/files/', $nameFile, 'public');
+                        $file_tmp->storeAs('legalAspects/files/', $nameFile, 's3');
                         $fileUpload->file = $nameFile;
                     }
 

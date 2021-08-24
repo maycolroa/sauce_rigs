@@ -22,7 +22,8 @@
         "predis/predis": "^1.1",
         "santigarcor/laratrust": "5.2.*",
         "spatie/laravel-cors": "^1.6",
-        "symfony/process": "^4.3"
+        "symfony/process": "^4.3",
+        "chumper/zipper": "1.0.x"
     },
     "require-dev": {
         "filp/whoops": "^2.0",
