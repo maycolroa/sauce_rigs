@@ -221,6 +221,12 @@
                 </tr>
                 @endforeach
                 <tr>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
                     <td>Total</td>
                     <td>{{ $evaluations->evaluation->compliance['total'] }}</td>
                     <td>{{ $evaluations->evaluation->compliance['total_c'] }}</td>

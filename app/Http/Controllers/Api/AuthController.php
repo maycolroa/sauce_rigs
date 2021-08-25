@@ -18,6 +18,7 @@ class AuthController extends ApiController
             'sau_users.*'
         )
         ->where('document', $request->document)
+        ->active()
         ->first();
 
         if (!$user) 

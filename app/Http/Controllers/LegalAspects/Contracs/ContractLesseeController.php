@@ -149,10 +149,19 @@ class ContractLesseeController extends Controller
 
             if (!$user)
             {
-                $user = $this->createUser($request);
+                $document_user = User::where('document', $request->document)->active()->first();
 
-                if ($user == $this->respondHttp500() || $user == null) {
-                    return $this->respondHttp500();
+                if(!$document_user)
+                {
+                    $user = $this->createUser($request);
+
+                    if ($user == $this->respondHttp500() || $user == null) {
+                        return $this->respondHttp500();
+                    }
+                }
+                else
+                {
+                    return $this->respondWithError('El documento ingresado para el responsable de contratista ya se encuentra activo en el sistema, por lo tanto no puede ser procesado, por favor contacte con el administrador');
                 }
             }
             else
@@ -173,6 +182,7 @@ class ContractLesseeController extends Controller
 
             $user->attachRole($this->getIdRole($request->type), $this->team);
             $contract->users()->sync($user);
+            
 
             $responsibles = [];
 
