@@ -252,6 +252,7 @@ export default [
         { name: 'sau_bm_evaluation_perform.evaluation_date', data: 'evaluation_date', title: 'Fecha evaluación', sortable: true, searchable: true, detail: false, key: false },
         { name: 'sau_users.name', data: 'name', title: 'Calificador', sortable: true, searchable: true, detail: false, key: false },
         { name: 'sau_bm_evaluation_perform.state', data: 'state', title: 'Estado', sortable: true, searchable: true, detail: false, key: false },
+        { name: 'sau_bm_evaluation_perform.percentage_compliance', data: 'percentage_compliance', title: 'Cumplimiento', sortable: true, searchable: true, detail: false, key: false },
         { name: '', data: 'controlls', title: 'Controles', sortable: false, searchable: false, detail: false, key: false },
     ],
     'controlls': [{
