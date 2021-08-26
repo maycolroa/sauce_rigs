@@ -213,6 +213,22 @@ class InspectionController extends ApiController
         ]);
     }
 
+    public function getQualificationDate($regional)
+    {
+        $date = Carbon::now();
+
+        do {
+            $date = $date->addSecond(rand(1,999));
+            $exist = InspectionItemsQualificationAreaLocation::
+                  where('qualification_date', $date->copy()->format('Y-m-d H:i:s'))
+                ->where('employee_regional_id', $regional)
+                ->exists();
+
+        } while ($exist);
+
+        return $date->format('Y-m-d H:i:s');
+    }
+
     /**
      * Stores the images of a given report.
      *
@@ -272,7 +288,7 @@ class InspectionController extends ApiController
             $employee_headquarter_id = $request->employee_headquarter_id ? $request->employee_headquarter_id : null;
             $employee_process_id = $request->employee_process_id ? $request->employee_process_id : null;
             $employee_area_id = $request->employee_area_id ? $request->employee_area_id : null;
-            $qualification_date = date('Y-m-d H:i:s');
+            $qualification_date = $this->getQualificationDate($employee_regional_id);            
 
             $qualification_date_verify = '';
 

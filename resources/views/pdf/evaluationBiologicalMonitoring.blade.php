@@ -200,24 +200,40 @@
 
     <br><br>
 
-    {{--<div style="page-break-inside: avoid;">
+    {<div style="page-break-inside: avoid;">
         <table>
             <thead>
                 <tr>
-                    <th>Porcentaje de cumplimiento</th>
-                    @foreach($evaluations->evaluation->types_rating as $type)
-                        @if($type["apply"] == 'SI')
-                        <th>{{$type["name"]}}</th>
-                        @endif
-                    @endforeach
+                    <th colspan="4">Resultados Generales</th>
+                </tr>
                 <tr>
-                    <td><b>{{ $keyObj + 1 }}.{{ $keySub + 1 }} - {{$subobjective->description}}</b></td>
-                    @foreach($subobjective->report as $repor)
-                    <td>{{$repor["percentage"]}}%</td>
-                    @endforeach
+                    <th>Etapas</th>
+                    <th>Puntaje Maximo Posible</th>
+                    <th>Resultado</th>
+                    <th>Porcentaje</th>
+                </tr>
+                @foreach($evaluations->evaluation->stages as $objective)
+                <tr>
+                    <td>{{ $objective->description }}</td>
+                    <td>{{ $objective->compliance['total'] }}</td>
+                    <td>{{ $objective->compliance['total_c'] }}</td>
+                    <td>{{ $objective->compliance['percentage'] }}</td>
+                </tr>
+                @endforeach
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>Total</td>
+                    <td>{{ $evaluations->evaluation->compliance['total'] }}</td>
+                    <td>{{ $evaluations->evaluation->compliance['total_c'] }}</td>
+                    <td>{{ $evaluations->evaluation->compliance['percentage'] }}</td>
                 </tr>
             </thead>
         </table>
-    </div>--}}
+    </div>
 </body>
 </html>

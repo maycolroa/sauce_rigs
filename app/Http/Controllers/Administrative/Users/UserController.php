@@ -155,6 +155,10 @@ class UserController extends Controller
             if ($user == $this->respondHttp500() || $user == null) {
                 return $this->respondHttp500();
             }
+            else if ($user == "Documento repetido")
+            {
+                return $this->respondWithError('El documento ingresado ya se encuentra activo en el sistema, por lo tanto no puede ser procesado, por favor contacte con el administrador');
+            }
 
             if ($this->user->hasRole('Arrendatario', $this->team) || $this->user->hasRole('Contratista', $this->team))
             {
@@ -193,6 +197,7 @@ class UserController extends Controller
 
         } catch (\Exception $e) {
             DB::rollback();
+            \Log::info($e->getMessage());
             return $this->respondHttp500();
         }
 

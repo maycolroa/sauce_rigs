@@ -250,8 +250,24 @@ class EvaluationPerformController extends Controller
             ->module('biologicalMonitoring/audiometry')
             ->url(url('/administrative/actionplans'));
 
+            $report = [];
+
+            $report_total = [
+                'total' => 0,
+                'total_c' => 0,
+                'percentage' =>0
+            ];
+
         foreach ($evaluation['stages'] as $objective)
         {
+            $report[$objective['id']] = [
+                'total' => 0,
+                'total_c' => 0,
+                'percentage' =>0
+            ];
+
+            $clone_report = $report;
+
             foreach ($objective['criterion'] as $subobjective)
             {
                 foreach ($subobjective['items'] as $item)
@@ -269,6 +285,22 @@ class EvaluationPerformController extends Controller
                         'item_id' => $item['id'],
                         'value' => $item['value'] ? $item['value'] : NULL
                     ]);
+
+                    if ($item['value'] == 'Cumple')
+                    {
+                        $clone_report[$objective['id']]['total'] += 10;
+                        $clone_report[$objective['id']]['total_c'] += 10;
+                    }
+                    else if ($item['value'] == 'No Cumple')
+                    {
+                        $clone_report[$objective['id']]['total'] += 10;
+                        $clone_report[$objective['id']]['total_c'] += 1;
+                    }
+                    else if ($item['value'] == 'Parcial')
+                    {
+                        $clone_report[$objective['id']]['total'] += 10;
+                        $clone_report[$objective['id']]['total_c'] += 5;
+                    }
 
                     foreach ($item['observations'] as $observation)
                     {
@@ -330,9 +362,25 @@ class EvaluationPerformController extends Controller
                         ->save();
                 }
             }
+
+            if ($clone_report[$objective['id']]['total'] == 0)
+                $clone_report[$objective['id']]['percentage'] = 0;
+            else
+                $clone_report[$objective['id']]['percentage'] = round(($clone_report[$objective['id']]['total_c'] / $clone_report[$objective['id']]['total']) * 100, 1);
+
+            $report_total['total'] += $clone_report[$objective['id']]['total'];
+            $report_total['total_c'] += $clone_report[$objective['id']]['total_c'];
         }
 
+        $report_total['percentage'] = round(($report_total['total_c'] / $report_total['total']) * 100, 1);
+
+        $evaluationPerform->percentage_compliance = $report_total['percentage'] . '%';
+        $evaluationPerform->update();
+
+        //$evaluationPerform->update(['percentage_compliance' => $report_total['percentage'] . '%']);
+
         $state = EvaluationPerformItem::where('evaluation_id', $evaluationPerform->id)->whereNull('value')->get();
+
         if (COUNT($state) > 0)
             $evaluationPerform->update(['state' => 'En proceso']);
         else
@@ -455,8 +503,24 @@ class EvaluationPerformController extends Controller
     {
         $evaluation = Evaluation::find($evaluationPerform->evaluation_id);
 
+        $report = [];
+
+        $report_total = [
+            'total' => 0,
+            'total_c' => 0,
+            'percentage' =>0
+        ];
+
         foreach ($evaluation_base->stages as $objective)
         {
+            $report[$objective->id] = [
+                'total' => 0,
+                'total_c' => 0,
+                'percentage' =>0
+            ];
+
+            $clone_report = $report;
+            
             foreach ($objective->criterion as $subobjective)
             {
                 foreach ($subobjective->items as $item)
@@ -498,6 +562,22 @@ class EvaluationPerformController extends Controller
 
                     $item->value = $evaluationPerformItem->value;
 
+                    if ($item->value == 'Cumple')
+                    {
+                        $clone_report[$objective->id]['total'] += 10;
+                        $clone_report[$objective->id]['total_c'] += 10;
+                    }
+                    else if ($item->value == 'No Cumple')
+                    {
+                        $clone_report[$objective->id]['total'] += 10;
+                        $clone_report[$objective->id]['total_c'] += 1;
+                    }
+                    else if ($item->value == 'Parcial')
+                    {
+                        $clone_report[$objective->id]['total'] += 10;
+                        $clone_report[$objective->id]['total_c'] += 5;
+                    }
+
                     if ($evaluationPerformItem)
                         $item->actionPlan = ActionPlan::model($evaluationPerformItem)->prepareDataComponent();
                     else
@@ -507,7 +587,21 @@ class EvaluationPerformController extends Controller
                         ];
                 }
             }
+
+            if ($clone_report[$objective->id]['total'] == 0)
+                $clone_report[$objective->id]['percentage'] = 0;
+            else
+                $clone_report[$objective->id]['percentage'] = round(($clone_report[$objective->id]['total_c'] / $clone_report[$objective->id]['total']) * 100, 1);
+
+            $objective->compliance = $clone_report[$objective->id];
+
+            $report_total['total'] += $clone_report[$objective->id]['total'];
+            $report_total['total_c'] += $clone_report[$objective->id]['total_c'];
         }
+
+        $report_total['percentage'] = round(($report_total['total_c'] / $report_total['total']) * 100, 1);
+
+        $evaluation_base->compliance = $report_total;
 
         return $evaluation_base;
     }
