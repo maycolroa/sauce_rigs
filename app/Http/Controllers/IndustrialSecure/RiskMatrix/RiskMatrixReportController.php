@@ -11,6 +11,7 @@ use App\Traits\RiskMatrixTrait;
 use App\Traits\Filtertrait;
 use Illuminate\Support\Facades\Storage;
 use App\Facades\Mail\Facades\NotificationMail;
+use App\Models\General\Company;
 use PDF;
 use RiskMatrixReportManager;
 
@@ -124,12 +125,18 @@ class RiskMatrixReportController extends Controller
 
     public function getDataExportPdf($request)
     {
+        $company = Company::select('logo')->where('id', $this->company)->first();
+
+        $logo = ($company && $company->logo) ? $company->logo : null;
+
         $data = [
             'inherent_report' => RiskMatrixReportManager::reportInherent($request, $request->filters, $this->user->id, $this->company),
             'residual_report' => RiskMatrixReportManager::reportResidual($request, $request->filters, $this->user->id, $this->company),
             'inherent_report_table' => RiskMatrixReportManager::reportRiskInherentTablePdf($request, $request->filters, $this->user->id, $this->company)->get(),
             'residual_report_table' => RiskMatrixReportManager::reportRiskResidualTablePdf($request, $request->filters, $this->user->id, $this->company)->get(),
-            'table_report_residual' => RiskMatrixReportManager::reportTableResidual($request, $request->filters, $this->user->id, $this->company)
+            'table_report_residual' => RiskMatrixReportManager::reportTableResidual($request, $request->filters, $this->user->id, $this->company),
+            'logo' => $logo,
+            'filtros' => $request
         ];
 
         return $data;

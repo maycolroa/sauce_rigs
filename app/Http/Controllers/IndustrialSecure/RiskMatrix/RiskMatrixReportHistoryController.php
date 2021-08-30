@@ -12,6 +12,7 @@ use App\Models\IndustrialSecure\RiskMatrix\ReportHistory;
 use App\Traits\Filtertrait;
 use RiskMatrixHistoryManager;
 use PDF;
+use App\Models\General\Company;
 use Illuminate\Support\Facades\Storage;
 use App\Facades\Mail\Facades\NotificationMail;
 
@@ -97,10 +98,16 @@ class RiskMatrixReportHistoryController extends Controller
 
     public function getDataExportPdf($request)
     {
+        $company = Company::select('logo')->where('id', $this->company)->first();
+
+        $logo = ($company && $company->logo) ? $company->logo : null;
+        
         $data = [
             'inherent_report' => RiskMatrixHistoryManager::reportInherent($request, $request->filters, $this->user->id, $this->company),
             'residual_report' => RiskMatrixHistoryManager::reportResidual($request, $request->filters, $this->user->id, $this->company),
-            'table_report_residual' => RiskMatrixHistoryManager::reportTableResidual($request, $request->filters, $this->user->id, $this->company)
+            'table_report_residual' => RiskMatrixHistoryManager::reportTableResidual($request, $request->filters, $this->user->id, $this->company),
+            'logo' => $logo,
+            'filtros' => $request
         ];
 
         return $data;
