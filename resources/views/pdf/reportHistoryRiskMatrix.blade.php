@@ -36,9 +36,46 @@
 </head>
 <body style="margin: 50px; margin-top: 0px;">
     <div style="page-break-inside: avoid;">
-        {{--@if ($inspections["logo"])
-        <div style="page-break-inside: avoid; text-align: right; padding-bottom: 10px;"><img src="{{ public_path('storage/administrative/logos/').$inspections['logo'] }}" width="120px" height="120px"/></div>
-        @endif--}}
+        @if ($report["logo"])
+        <div style="page-break-inside: avoid; text-align: right; padding-bottom: 10px;"><img src="{{ public_path('storage/administrative/logos/').$report['logo'] }}" width="120px" height="120px"/></div>
+        @endif
+        @if ($report["filtros"])
+        <div>
+            @if ($report["filtros"]['regionals'])
+            <p style="text-align: center"><b>Filtros:</b></p>
+            <p><b>{{ Auth::user()->getKeywords()['regionals'] }} :</b>  
+                @foreach ($report["filtros"]['regionals'] as $keyR => $reg) {{$reg['name']}} 
+                @if (COUNT($report["filtros"]['regionals']) == ($keyR + 1))
+                @else , @endif 
+                @endforeach</p>
+            @endif
+
+            @if ($report["filtros"]['headquarters'])
+            <p><b>{{ Auth::user()->getKeywords()['headquarters'] }} :</b>  @foreach ($report["filtros"]['headquarters'] as $keyH => $head) {{$head['name']}} @if (COUNT($report["filtros"]['headquarters']) == ($keyH + 1))
+                @else , @endif  @endforeach</p>
+            @endif
+
+            @if ($report["filtros"]["processes"])
+                <p><b>{{ Auth::user()->getKeywords()['processes'] }} :</b>  @foreach ($report["filtros"]['processes'] as $keyP => $pro) {{$pro['name']}} @if (COUNT($report["filtros"]['processes']) == ($keyP + 1))
+                    @else , @endif  @endforeach</p>
+            @endif
+
+            @if ($report["filtros"]["macroprocesses"])
+                <p><b>Macroprocesos :</b>  @foreach ($report["filtros"]['macroprocesses'] as $keyM => $ma) {{$ma['name']}} @if (COUNT($report["filtros"]['macroprocesses']) == ($keyM + 1))
+                    @else , @endif  @endforeach</p>
+            @endif
+
+            @if ($report["filtros"]["areas"])
+                <p><b>{{ Auth::user()->getKeywords()['areas'] }} :</b>  @foreach ($report["filtros"]['areas'] as $keyA => $area) {{$area['name']}} @if (COUNT($report["filtros"]['areas']) == ($keyA + 1))
+                    @else , @endif  @endforeach</p>
+            @endif
+
+            @if ($report["filtros"]["risks"])
+                <p><b>Riesgos :</b>  @foreach ($report["filtros"]['risks'] as $keyRR => $risk) {{$risk['name']}} @if (COUNT($report["filtros"]['risks']) == ($keyRR + 1))
+                    @else , @endif  @endforeach</p>
+            @endif
+        </div>
+        @endif
         <div>
             <p style="text-align: center"><b>Mapa Riesgos Inherentes</b></p>
             <p style="text-align: center"><b>Eje Y: Impacto / Eje X: Frecuencia</b></p>

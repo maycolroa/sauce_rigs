@@ -286,7 +286,7 @@ class RiskMatrixController extends Controller
                     
                     $risk->rm_subprocess_id = $subprocess->id;
                     $risk->risk_id = $itemR['risk_id'];
-                    $risk->nomenclature = $itemR['nomenclature'] . $count_sequence;
+                    $risk->nomenclature = $riskMatrix->nomenclature. 'R.' . $count_sequence;
                     $risk->risk_sequence = $count_sequence;
                     $risk->economic = $itemR['economic'];
                     $risk->quality_care_patient_safety =  $itemR['quality_care_patient_safety'];
@@ -341,19 +341,18 @@ class RiskMatrixController extends Controller
                             else
                                 $control = CauseControl::find($itemC2['id']);
 
-                            $controls = $this->tagsPrepare($itemC2['controls']);
-                            $this->tagsSave($controls, TagsRmCauseControls::class);
+                            //$controls = $this->tagsPrepare($itemC2['controls']);
+                            //$this->tagsSave($controls, TagsRmCauseControls::class);
 
-                            $control->controls = $controls->implode(',');
+                            $control->controls = $itemC2['controls'];//$controls->implode(',');
                             $control->rm_cause_id = $cause->id;
                             $control->number_control = $count_controls;
-                            $control->nomenclature = $itemC2['nomenclature'] . $count_controls;
+                            $control->nomenclature = $riskMatrix->nomenclature. 'C.' . $count_controls;
 
                             if(!$control->save()){
                                 return $this->respondHttp500();
                             }
                         }
-
                     }
 
                     foreach ($itemR['indicators'] as $keyI => $itemI)
@@ -374,7 +373,7 @@ class RiskMatrixController extends Controller
                     $subprocess_procedence = SubProcess::find($itemS['sub_process_id']);
                     $risk_procedence = Risk::find($risk->risk_id);
 
-                    $detail_procedence = 'Mátriz de Riesgos - Subproceso: '. $subprocess_procedence->name . '. Riesgo: '. $risk_procedence->name;
+                    $detail_procedence = 'Matríz de Riesgos - Subproceso: '. $subprocess_procedence->name . '. Riesgo: '. $risk_procedence->name;
 
                     /**Planes de acción*/
                     ActionPlan::
