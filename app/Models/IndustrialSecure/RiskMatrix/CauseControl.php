@@ -11,7 +11,8 @@ class CauseControl extends Model
     protected $fillable = [        
         'rm_cause_id',
         'controls',
-        'number_control'
+        'number_control',
+        'nomenclature'
     ];
 
     public $timestamps = false;

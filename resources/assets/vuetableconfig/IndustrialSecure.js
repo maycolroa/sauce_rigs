@@ -858,7 +858,7 @@ export default [
         permission: 'riskMatrix_d'
         }],
     },
-    /*{
+    {
         type: 'download',
         buttons: [{
             name: 'downloadMatrix',
@@ -869,12 +869,12 @@ export default [
                 title: 'Exportar'
             },
             data: {
-                action: '/industrialSecurity/dangersMatrix/download/',
+                action: '/industrialSecurity/risksMatrix/download/',
                 id: 'id'
             },
-            permission: 'dangerMatrix_export'
+            permission: 'riskMatrix_c'
         }],
-    }*/],
+    }],
     configuration: {
         urlData: '/industrialSecurity/risksMatrix/data',
         filterColumns: true,
