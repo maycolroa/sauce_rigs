@@ -12,6 +12,7 @@ use Maatwebsite\Excel\Concerns\WithEvents;
 use Maatwebsite\Excel\Concerns\RegistersEventListeners;
 use Maatwebsite\Excel\Events\AfterSheet;
 use \Maatwebsite\Excel\Sheet;
+use App\Models\IndustrialSecure\RiskMatrix\Indicators;
 
 use App\Traits\LocationFormTrait;
 use App\Traits\UtilsTrait;
@@ -58,6 +59,7 @@ class RiskMatrixExcel implements FromCollection, WithHeadings, WithMapping, With
             'sau_rm_sub_processes.name AS subprocess',
             'sau_rm_risk.name AS risk',
             'sau_rm_risk.category AS risk_category',
+            'sau_rm_subprocess_risk.id as rm_id',
             'sau_rm_subprocess_risk.rm_subprocess_id',
             'sau_rm_subprocess_risk.risk_id',
             'sau_rm_subprocess_risk.risk_sequence',
@@ -90,7 +92,7 @@ class RiskMatrixExcel implements FromCollection, WithHeadings, WithMapping, With
             'sau_rm_cause_controls.controls',
             'sau_rm_cause_controls.number_control',
             'sau_rm_cause_controls.nomenclature AS nom_control',
-            'sau_rm_risk_indicators.indicator'
+            //'sau_rm_risk_indicators.indicator'
         ];
 
         $riskMatrix = RiskMatrix::
@@ -105,7 +107,7 @@ class RiskMatrixExcel implements FromCollection, WithHeadings, WithMapping, With
             ->join('sau_rm_risk', 'sau_rm_risk.id', 'sau_rm_subprocess_risk.risk_id')
             ->leftJoin('sau_rm_causes', 'sau_rm_causes.rm_subprocess_risk_id', 'sau_rm_subprocess_risk.id')
             ->leftJoin('sau_rm_cause_controls', 'sau_rm_cause_controls.rm_cause_id', 'sau_rm_causes.id')
-            ->leftJoin('sau_rm_risk_indicators', 'sau_rm_risk_indicators.rm_subprocess_risk_id', 'sau_rm_subprocess_risk.id')
+            //->leftJoin('sau_rm_risk_indicators', 'sau_rm_risk_indicators.rm_subprocess_risk_id', 'sau_rm_subprocess_risk.id')
             ->where('sau_rm_risks_matrix.id', $this->risk_matrix_id);
 
         $riskMatrix->selectRaw(implode(",", $selecs));
@@ -117,6 +119,8 @@ class RiskMatrixExcel implements FromCollection, WithHeadings, WithMapping, With
 
     public function map($data): array
     {
+        $indicators = Indicators::select('indicator')->where('rm_subprocess_risk_id', $data->rm_id)->pluck('indicator');
+
         $values = [$data->name];
 
         if ($this->confLocation['regional'] == 'SI')
@@ -169,7 +173,7 @@ class RiskMatrixExcel implements FromCollection, WithHeadings, WithMapping, With
             $data->description_residual_frequency,
             (String) $data->residual_exposition,
             $data->max_impact_event_risk,
-            $data->indicator
+            $indicators->implode(',')
         ]);
 
         return $values;
