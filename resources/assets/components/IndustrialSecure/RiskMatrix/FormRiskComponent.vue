@@ -139,8 +139,9 @@
                                           <b-btn variant="outline-primary icon-btn borderless" size="sm" v-b-tooltip.top title="Eliminar" v-if="!viewOnly" @click.prevent="removeControl(cause, indexControl)"><span class="ion ion-md-close-circle"></span></b-btn>
                                       </div>
                                   </div>
-                                  <vue-ajax-advanced-select :disabled="viewOnly" class="col-md-12" v-model="control.controls" name="controls" :error="form.errorsFor(`subprocesses.${indexSubprocess}.risks.${indexRisk}.causes_controls.${indexC}.controls.${indexControl}.controls`)" label="Controles" placeholder="Seleccione los controles" :url="tagsRiskCausesControlsDataUrl" :multiple="true" :allowEmpty="true" :taggable="true">
-                                  </vue-ajax-advanced-select>
+                                  <vue-textarea :disabled="viewOnly" class="col-md-12" v-model="control.controls" label="Control" name="controls" placeholder="Control" rows="3" :error="form.errorsFor(`subprocesses.${indexSubprocess}.risks.${indexRisk}.causes_controls.${indexC}.controls.${indexControl}.controls`)"/>
+                                  <!--<vue-ajax-advanced-select :disabled="viewOnly" class="col-md-12" v-model="control.controls" name="controls" :error="form.errorsFor(`subprocesses.${indexSubprocess}.risks.${indexRisk}.causes_controls.${indexC}.controls.${indexControl}.controls`)" label="Controles" placeholder="Seleccione los controles" :url="tagsRiskCausesControlsDataUrl" :multiple="true" :allowEmpty="true" :taggable="true">
+                                  </vue-ajax-advanced-select>-->
                                   <vue-input v-if="isEdit || viewOnly"  :disabled="true" class="col-md-2" v-model="control.number_control" label="# Control" type="number" name="number_control"></vue-input>
                                   <vue-input :disabled="true" class="col-md-4" v-model="control.nomenclature" label="Nomenclatura" type="text" name="nomenclature"></vue-input>
                                </b-form-row>
