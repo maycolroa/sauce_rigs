@@ -22,6 +22,7 @@ use App\Models\Administrative\Processes\TagsProcess;
 use App\Models\Administrative\Headquarters\EmployeeHeadquarter;
 use App\Models\Administrative\Processes\EmployeeProcess;
 use App\Models\Administrative\Areas\EmployeeArea;
+use App\Jobs\IndustrialSecure\RiskMatrix\RiskMatrixExportJob;
 use Carbon\Carbon;
 use DB;
 use App\Traits\RiskMatrixTrait;
@@ -512,5 +513,17 @@ class RiskMatrixController extends Controller
         $data = $this->textHelp();
 
         return $data;
+    }
+
+    public function download(RiskMatrix $risksMatrix)
+    {
+        try
+        {
+            RiskMatrixExportJob::dispatch($this->user, $this->company, $risksMatrix->id);
+
+            return $this->respondHttp200();
+        } catch(Exception $e) {
+            return $this->respondHttp500();
+        }
     }
 }

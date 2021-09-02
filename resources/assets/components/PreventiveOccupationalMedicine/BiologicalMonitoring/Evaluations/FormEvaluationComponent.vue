@@ -63,7 +63,7 @@
                   <b-card no-body class="mb-2 border-secondary" :key="stage.key" style="width: 100%;">
                     <b-card-header class="bg-secondary">
                       <b-row>
-                        <b-col cols="10" class="d-flex justify-content-between"> {{ form.stages[index].description ? form.stages[index].description : `Nuevo tema ${index + 1}` }}</b-col>
+                        <b-col cols="10" class="d-flex justify-content-between"> {{ form.stages[index].description ? form.stages[index].description : `Nueva Etapa ${index + 1}` }}</b-col>
                         <b-col cols="2">
                           <div class="float-right">
                             <b-button-group>
