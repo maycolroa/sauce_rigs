@@ -77,7 +77,7 @@ class NotifyCreateContractEmployee extends Command
                 $recipients = $contractIter->responsibles;
 
                 $recipients = $recipients->filter(function ($recipient, $index) use ($keyCompany) {
-                  return $recipient->can('contracts_receive_notifications', $keyCompany);
+                  return $recipient->can('contracts_receive_notifications', $keyCompany) && !$recipient->isSuperAdmin($keyCompany);
                 });
 
                 foreach ($recipients as $recipient)

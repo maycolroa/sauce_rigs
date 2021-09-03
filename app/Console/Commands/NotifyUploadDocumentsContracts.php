@@ -87,7 +87,7 @@ class NotifyUploadDocumentsContracts extends Command
                     $recipients = $contract->responsibles;
 
                     $recipients = $recipients->filter(function ($recipient, $index) use ($company) {
-                      return $recipient->can('contracts_receive_notifications', $company);
+                      return $recipient->can('contracts_receive_notifications', $company) && !$recipient->isSuperAdmin($company);
                     });
 
                     foreach ($recipients as $recipient)

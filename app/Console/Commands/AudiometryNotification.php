@@ -82,7 +82,7 @@ class AudiometryNotification extends Command
                     $recipients = $recipients->get();
 
                     $recipients = $recipients->filter(function ($recipient, $index) use ($key) {
-                        return $recipient->can('biologicalMonitoring_audiometry_receive_notifications', $key);
+                        return $recipient->can('biologicalMonitoring_audiometry_receive_notifications', $key) && !$recipient->isSuperAdmin($key);
                     });
                     
                     if (!$recipients->isEmpty())
