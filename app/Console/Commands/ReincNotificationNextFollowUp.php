@@ -55,7 +55,7 @@ class ReincNotificationNextFollowUp extends Command
             $users = $users->get();
 
             $users = $users->filter(function ($user, $index) use ($company) {
-                return $user->can('reinc_receive_notifications', $company->id);
+                return $user->can('reinc_receive_notifications', $company->id) && !$user->isSuperAdmin($company);
             });
 
             $users->map(function($user) use ($company)

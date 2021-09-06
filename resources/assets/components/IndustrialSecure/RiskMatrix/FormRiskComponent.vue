@@ -11,11 +11,11 @@
             <tab-content title="General">
               <b-card bg-variant="transparent" border-variant="secondary" title="" class="mb-3 box-shadow-none">
                 <b-form-row>
-                  <vue-ajax-advanced-select @selectedName="emitDangerName" :disabled="viewOnly" class="col-md-8" v-model="risk.risk_id" :selected-object="risk.multiselect_risk" name="risk_id" :error="form.errorsFor(`subProcesses.${indexSubprocess}.risks.${indexRisk}.risk_id`)" label="Riesgo" placeholder="Seleccione el Riesgo" :url="risksDataUrl"> </vue-ajax-advanced-select>
-                  <vue-input :disabled="true" class="col-md-4" v-model="riskDetail.category" label="Categoría" type="text" name="category"></vue-input>
+                  <vue-ajax-advanced-select @selectedName="emitDangerName" :disabled="viewOnly" class="col-md-12" v-model="risk.risk_id" :selected-object="risk.multiselect_risk" name="risk_id" :error="form.errorsFor(`subProcesses.${indexSubprocess}.risks.${indexRisk}.risk_id`)" label="Riesgo" placeholder="Seleccione el Riesgo" :url="risksDataUrl"> </vue-ajax-advanced-select>
                 </b-form-row>
                 <b-form-row>
-                  <vue-input v-if="isEdit || viewOnly" :disabled="true" class="col-md-6" v-model="risk.risk_sequence" label="# Riesgo" type="number" name="risk_sequence"></vue-input>
+                  <vue-input :disabled="true" class="col-md-4" v-model="riskDetail.category" label="Categoría" type="text" name="category"></vue-input>
+                  <vue-input v-if="isEdit || viewOnly" :disabled="true" class="col-md-2" v-model="risk.risk_sequence" label="# Riesgo" type="number" name="risk_sequence"></vue-input>
                   <vue-input :disabled="true" class="col-md-6" v-model="risk.nomenclature" label="Nomenclatura" type="text" name="nomenclature"></vue-input>
                 </b-form-row>
               </b-card>

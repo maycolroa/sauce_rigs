@@ -68,7 +68,7 @@ class DaysAlertExpirationDateContractFilesUpload extends Command
                 $recipients = $this->getUsersMasterContract($company_id);
 
                 $recipients = $recipients->filter(function ($recipient, $index) use ($company_id) {
-                    return $recipient->can('contracts_receive_notifications', $company_id);
+                    return $recipient->can('contracts_receive_notifications', $company_id) && !$recipient->isSuperAdmin($company_id);
                 });
 
                 if (!$recipients->isEmpty())

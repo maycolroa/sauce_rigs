@@ -42,8 +42,7 @@
         @if ($report["filtros"])
         <div>
             @if ($report["filtros"]['regionals'])
-            <p style="text-align: center"><b>Filtros:</b></p>
-            <p><b>{{ Auth::user()->getKeywords()['regionals'] }} :</b>  
+            <p><b>{{ substr (Auth::user()->getKeywords()['regionals'], 3 ) }}:</b> 
                 @foreach ($report["filtros"]['regionals'] as $keyR => $reg) {{$reg['name']}} 
                 @if (COUNT($report["filtros"]['regionals']) == ($keyR + 1))
                 @else , @endif 
@@ -51,12 +50,12 @@
             @endif
 
             @if ($report["filtros"]['headquarters'])
-            <p><b>{{ Auth::user()->getKeywords()['headquarters'] }} :</b>  @foreach ($report["filtros"]['headquarters'] as $keyH => $head) {{$head['name']}} @if (COUNT($report["filtros"]['headquarters']) == ($keyH + 1))
+                <p><b>{{ substr (Auth::user()->getKeywords()['headquarters'], 3 ) }} :</b>  @foreach ($report["filtros"]['headquarters'] as $keyH => $head) {{$head['name']}} @if (COUNT($report["filtros"]['headquarters']) == ($keyH + 1))
                 @else , @endif  @endforeach</p>
             @endif
 
             @if ($report["filtros"]["processes"])
-                <p><b>{{ Auth::user()->getKeywords()['processes'] }} :</b>  @foreach ($report["filtros"]['processes'] as $keyP => $pro) {{$pro['name']}} @if (COUNT($report["filtros"]['processes']) == ($keyP + 1))
+                <p><b>{{ substr (Auth::user()->getKeywords()['processes'], 3 ) }} :</b>  @foreach ($report["filtros"]['processes'] as $keyP => $pro) {{$pro['name']}} @if (COUNT($report["filtros"]['processes']) == ($keyP + 1))
                     @else , @endif  @endforeach</p>
             @endif
 
@@ -66,7 +65,7 @@
             @endif
 
             @if ($report["filtros"]["areas"])
-                <p><b>{{ Auth::user()->getKeywords()['areas'] }} :</b>  @foreach ($report["filtros"]['areas'] as $keyA => $area) {{$area['name']}} @if (COUNT($report["filtros"]['areas']) == ($keyA + 1))
+                <p><b>{{ substr (Auth::user()->getKeywords()['areas'], 3 ) }} :</b>  @foreach ($report["filtros"]['areas'] as $keyA => $area) {{$area['name']}} @if (COUNT($report["filtros"]['areas']) == ($keyA + 1))
                     @else , @endif  @endforeach</p>
             @endif
 
