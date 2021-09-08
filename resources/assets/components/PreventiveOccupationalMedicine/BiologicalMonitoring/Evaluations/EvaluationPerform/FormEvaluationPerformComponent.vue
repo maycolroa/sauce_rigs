@@ -360,22 +360,22 @@ export default {
             labels: this.labels_report,
             datasets: [{
                 label: 'Base',
-                backgroundColor: 'rgba(76, 175, 80, 0)',
-                borderColor: '#4CAF50',
-                pointBackgroundColor: '#4CAF50',
+                backgroundColor: 'rgba(0, 0, 255, 0)',
+                borderColor: '#ff0000',
+                pointBackgroundColor: '#ff0000',
                 pointBorderColor: '#fff',
                 pointHoverBackgroundColor: '#fff',
-                pointHoverBorderColor: '#4CAF50',
+                pointHoverBorderColor: '#ff0000',
                 data: this.form.evaluation.report_values_base,
                 borderWidth: 1
             }, {
                 label: 'Resultado',
-                backgroundColor: 'rgba(0, 150, 136, 0)',
-                borderColor: '#009688',
-                pointBackgroundColor: '#009688',
+                backgroundColor: 'rgba(255, 0, 0, 0)',
+                borderColor: '#0000ff',
+                pointBackgroundColor: '#0000ff',
                 pointBorderColor: '#fff',
                 pointHoverBackgroundColor: '#fff',
-                pointHoverBorderColor: '#009688',
+                pointHoverBorderColor: '#0000ff',
                 data: this.form.evaluation.report_values_result,
                 borderWidth: 1
             }]
