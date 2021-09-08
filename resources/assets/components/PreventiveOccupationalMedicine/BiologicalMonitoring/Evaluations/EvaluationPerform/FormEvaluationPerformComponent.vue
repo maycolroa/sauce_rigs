@@ -256,6 +256,16 @@
                 </b-row>
             </tab-content>
 
+            <tab-content v-if="isEdit || viewOnly"  title="Reporte">
+                <center><b-row>
+                    <b-col>
+                        <b-card bg-variant="transparent" border-variant="dark" title="" class="mb-3 box-shadow-none">
+                            <radar-component :key="test" :chartData="chartData" ref="radar"></radar-component>
+                        </b-card>
+                    </b-col>
+                </b-row></center>
+            </tab-content>
+
             <template slot="footer" slot-scope="props">
                 <b-btn variant="default" @click="$router.go(-1)" :disabled="loading">{{ viewOnly ? "Atras" : "Cancelar"}}</b-btn>
                 <b-btn v-on:click="props.prevTab" :disabled="loading" variant="default">Anterior</b-btn>
@@ -288,6 +298,7 @@ import ModalObservations from "./ModalObservations.vue"
 import ModalFile from "./ModalFile.vue"
 import Loading from "@/components/Inputs/Loading.vue";
 import ActionPlanComponent from '@/components/CustomInputs/ActionPlanComponent.vue';
+import RadarComponent from '@/components/Chartjs/ChartRadar.vue';
 
 export default {
   components: {
@@ -303,7 +314,8 @@ export default {
     ModalObservations,
     ModalFile,
     Loading,
-    ActionPlanComponent
+    ActionPlanComponent,
+    RadarComponent
   },
   props: {
     url: { type: String },
@@ -342,6 +354,33 @@ export default {
     evaluation() {
       this.loading = false;
       this.form = Form.makeFrom(this.evaluation, this.method);
+      this.labels_report = this.form.evaluation.labels_report;
+
+      this.chartData = {
+            labels: this.labels_report,
+            datasets: [{
+                label: 'Base',
+                backgroundColor: 'rgba(76, 175, 80, 0)',
+                borderColor: '#4CAF50',
+                pointBackgroundColor: '#4CAF50',
+                pointBorderColor: '#fff',
+                pointHoverBackgroundColor: '#fff',
+                pointHoverBorderColor: '#4CAF50',
+                data: this.form.evaluation.report_values_base,
+                borderWidth: 1
+            }, {
+                label: 'Resultado',
+                backgroundColor: 'rgba(0, 150, 136, 0)',
+                borderColor: '#009688',
+                pointBackgroundColor: '#009688',
+                pointBorderColor: '#fff',
+                pointHoverBackgroundColor: '#fff',
+                pointHoverBorderColor: '#009688',
+                data: this.form.evaluation.report_values_result,
+                borderWidth: 1
+            }]
+        }
+        this.test = !this.test;
     }
   },
   data() {
@@ -350,9 +389,11 @@ export default {
         resumenList: [],
         loading: this.isEdit,
         form: Form.makeFrom(this.evaluation, this.method),
+        labels_report : [],
         autoSave: '',
         textBlock: 'Cargando...',
-        
+        chartData: {},
+        test: true
     };
   },
   computed: {

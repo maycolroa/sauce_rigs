@@ -504,6 +504,9 @@ class EvaluationPerformController extends Controller
         $evaluation = Evaluation::find($evaluationPerform->evaluation_id);
 
         $report = [];
+        $stages_report = [];
+        $report_values_base = [];
+        $report_values_result = [];
 
         $report_total = [
             'total' => 0,
@@ -513,6 +516,8 @@ class EvaluationPerformController extends Controller
 
         foreach ($evaluation_base->stages as $objective)
         {
+            array_push($stages_report, $objective->description);
+
             $report[$objective->id] = [
                 'total' => 0,
                 'total_c' => 0,
@@ -560,7 +565,10 @@ class EvaluationPerformController extends Controller
 
                     $evaluationPerformItem = EvaluationPerformItem::where('evaluation_id', $evaluationPerform->id)->where('item_id',  $item->id)->first();
 
-                    $item->value = $evaluationPerformItem->value;
+                    if ($evaluationPerformItem)
+                        $item->value = $evaluationPerformItem->value;
+                    else
+                        $item->value = 'Pending';
 
                     if ($item->value == 'Cumple')
                     {
@@ -576,6 +584,11 @@ class EvaluationPerformController extends Controller
                     {
                         $clone_report[$objective->id]['total'] += 10;
                         $clone_report[$objective->id]['total_c'] += 5;
+                    }
+                    else if ($item->value == 'Pending')
+                    {
+                        $clone_report[$objective->id]['total'] += 10;
+                        $clone_report[$objective->id]['total_c'] += 1;
                     }
 
                     if ($evaluationPerformItem)
@@ -595,6 +608,9 @@ class EvaluationPerformController extends Controller
 
             $objective->compliance = $clone_report[$objective->id];
 
+            array_push($report_values_base, $clone_report[$objective->id]['total']);
+            array_push($report_values_result, $clone_report[$objective->id]['total_c']);
+
             $report_total['total'] += $clone_report[$objective->id]['total'];
             $report_total['total_c'] += $clone_report[$objective->id]['total_c'];
         }
@@ -602,6 +618,9 @@ class EvaluationPerformController extends Controller
         $report_total['percentage'] = round(($report_total['total_c'] / $report_total['total']) * 100, 1);
 
         $evaluation_base->compliance = $report_total;
+        $evaluation_base->labels_report = $stages_report;
+        $evaluation_base->report_values_base = $report_values_base;
+        $evaluation_base->report_values_result = $report_values_result;
 
         return $evaluation_base;
     }
