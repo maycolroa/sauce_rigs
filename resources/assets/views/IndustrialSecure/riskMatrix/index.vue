@@ -16,7 +16,7 @@
             <!--<div class="card-title-elements" v-if="auth.can['dangerMatrix_c']"> 
               <b-btn variant="primary" :to="{name:'industrialsecure-dangermatrix-addfields'}" v-b-tooltip.top title="Configurar Campos Adicionales"><i class="ion ion-md-document"></i></b-btn>
             </div>
-            <b-btn v-if="auth.can['dangerMatrix_c']" variant="primary" href="/templates/dangermatriximport" target="blank" v-b-tooltip.top title="Generar Plantilla"><i class="fas fa-file-alt"></i></b-btn>
+            <b-btn v-if="auth.can['riskMatrix_c']" variant="primary" href="/templates/riskmatriximport" target="blank" v-b-tooltip.top title="Generar Plantilla"><i class="fas fa-file-alt"></i></b-btn>
             <b-btn v-if="auth.can['dangerMatrix_c']" variant="primary" @click="importMessage()" v-b-tooltip.top title="Importar"><i class="fas fa-upload"></i></b-btn>
             <input id="fileInputImport" type="file" style="display:none" v-on:input="importDangerMatrix"/>-->
           </div>

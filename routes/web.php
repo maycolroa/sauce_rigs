@@ -50,6 +50,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('templates/usersimport','Administrative\Users\UserController@downloadTemplateImport');      
     Route::get('templates/contractemployeeimport','LegalAspects\Contracs\ContractEmployeeController@downloadTemplateImport');  
     Route::get('templates/inspectionsimport','IndustrialSecure\DangerousConditions\Inspections\InspectionController@downloadTemplateImport');
+    Route::get('templates/riskmatriximport','IndustrialSecure\RiskMatrix\RiskMatrixController@downloadTemplateImport');
     Route::get('templates/musculoskeletalimport','PreventiveOccupationalMedicine\BiologicalMonitoring\MusculoskeletalAnalysis\MusculoskeletalAnalysisController@downloadTemplateImport');
     Route::get('templates/respiratoryAnalysisimport','PreventiveOccupationalMedicine\BiologicalMonitoring\RespiratoryAnalysis\RespiratoryAnalysisController@downloadTemplateImport');
 

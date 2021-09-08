@@ -23,9 +23,11 @@ use App\Models\Administrative\Headquarters\EmployeeHeadquarter;
 use App\Models\Administrative\Processes\EmployeeProcess;
 use App\Models\Administrative\Areas\EmployeeArea;
 use App\Jobs\IndustrialSecure\RiskMatrix\RiskMatrixExportJob;
+use App\Exports\IndustrialSecure\RiskMatrix\RiskMatrixImportTemplateExcel;
 use Carbon\Carbon;
 use DB;
 use App\Traits\RiskMatrixTrait;
+use Maatwebsite\Excel\Facades\Excel;
 
 
 class RiskMatrixController extends Controller
@@ -39,10 +41,10 @@ class RiskMatrixController extends Controller
     {
         parent::__construct();
         $this->middleware('auth');
-        $this->middleware("permission:regionals_c, {$this->team}", ['only' => 'store']);
-        $this->middleware("permission:regionals_r, {$this->team}", ['except' =>'multiselect']);
-        $this->middleware("permission:regionals_u, {$this->team}", ['only' => 'update']);
-        $this->middleware("permission:regionals_d, {$this->team}", ['only' => 'destroy']);
+        $this->middleware("permission:riskMatrix_c, {$this->team}", ['only' => 'store']);
+        $this->middleware("permission:riskMatrix_r, {$this->team}", ['except' =>'multiselect']);
+        $this->middleware("permission:riskMatrix_u, {$this->team}", ['only' => 'update']);
+        $this->middleware("permission:riskMatrix_d, {$this->team}", ['only' => 'destroy']);
     }
 
     /**
@@ -525,5 +527,10 @@ class RiskMatrixController extends Controller
         } catch(Exception $e) {
             return $this->respondHttp500();
         }
+    }
+
+    public function downloadTemplateImport()
+    {
+      return Excel::download(new RiskMatrixImportTemplateExcel(collect([]), $this->company), 'PlantillaImportacionMatrizRiesgo.xlsx');
     }
 }
