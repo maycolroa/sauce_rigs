@@ -13,12 +13,9 @@
             <b-btn v-if="auth.can['riskMatrix_c']" :to="{name:'industrialsecure-riskmatrix-create'}" variant="primary">Crear Matriz de Riesgos</b-btn>            
             <b-btn v-if="auth.can['riskMatrix_c']" :to="{name:'industrialsecure-riskmatrix-macroprocesses'}" variant="primary">Macroprocesos</b-btn>
             <b-btn v-if="auth.can['riskMatrix_c']" :to="{name:'industrialsecure-riskmatrix-report'}" variant="primary">Reporte</b-btn>
-            <!--<div class="card-title-elements" v-if="auth.can['dangerMatrix_c']"> 
-              <b-btn variant="primary" :to="{name:'industrialsecure-dangermatrix-addfields'}" v-b-tooltip.top title="Configurar Campos Adicionales"><i class="ion ion-md-document"></i></b-btn>
-            </div>
             <b-btn v-if="auth.can['riskMatrix_c']" variant="primary" href="/templates/riskmatriximport" target="blank" v-b-tooltip.top title="Generar Plantilla"><i class="fas fa-file-alt"></i></b-btn>
-            <b-btn v-if="auth.can['dangerMatrix_c']" variant="primary" @click="importMessage()" v-b-tooltip.top title="Importar"><i class="fas fa-upload"></i></b-btn>
-            <input id="fileInputImport" type="file" style="display:none" v-on:input="importDangerMatrix"/>-->
+            <b-btn v-if="auth.can['riskMatrix_c']" variant="primary" @click="importMessage()" v-b-tooltip.top title="Importar"><i class="fas fa-upload"></i></b-btn>
+            <input id="fileInputImport" type="file" style="display:none" v-on:input="importRiskMatrix"/>
           </div>
         </b-card-header>
         <b-card-body>
@@ -58,12 +55,12 @@ export default {
     title: 'Matriz de Riesgos'
   },
   methods: {
-    importDangerMatrix(e){
+    importRiskMatrix(e){
       var formData = new FormData();
       var imagefile = e.target.files;
 
       formData.append("file", imagefile[0]);
-      axios.post('/industrialSecurity/dangersMatrix/import', formData, {
+      axios.post('/industrialSecurity/risksMatrix/import', formData, {
           headers: {
             'Content-Type': 'multipart/form-data'
           }
