@@ -62,6 +62,8 @@ class RiskMatrixImportTemplate implements FromCollection, WithHeadings, WithMapp
     {
       $columns = [];
 
+      array_push($columns, 'Nombre');
+
       $confLocation = $this->getLocationFormConfModule($this->company_id);
 
       if ($confLocation['regional'] == 'SI')
