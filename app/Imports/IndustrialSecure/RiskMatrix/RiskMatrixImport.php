@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Imports\IndustrialSecure\DangerMatrix;
+namespace App\Imports\IndustrialSecure\RiskMatrix;
 
 use Illuminate\Support\Collection;
 use Maatwebsite\Excel\Concerns\ToCollection;
@@ -13,6 +13,7 @@ use App\Models\IndustrialSecure\RiskMatrix\RiskMatrixSubProcess;
 use App\Models\IndustrialSecure\RiskMatrix\SubProcessRisk;
 use App\Models\IndustrialSecure\RiskMatrix\Risk;
 use App\Models\IndustrialSecure\RiskMatrix\SubProcess;
+use App\Models\Administrative\Processes\TagsProcess;
 use App\Models\Administrative\Areas\EmployeeArea;
 use App\Models\Administrative\Regionals\EmployeeRegional;
 use App\Models\Administrative\Headquarters\EmployeeHeadquarter;
@@ -40,7 +41,9 @@ class RiskMatrixImport implements ToCollection, WithCalculatedFormulas
     private $key_row = 2;
     private $keywords;
     private $createRisk;
-    private $secuence;
+    private $riskMatrix;
+    private $secuence = [];
+    private $count_controls = 0;
 
     public function __construct($company_id, $user)
     {
@@ -48,7 +51,6 @@ class RiskMatrixImport implements ToCollection, WithCalculatedFormulas
       $this->user = $user;
       $this->company_id = $company_id;
       $this->keywords = $this->getKeywordQueue($this->company_id);
-      $this->secuence = collect([]);
     }
 
     public function collection(Collection $rows)
@@ -135,24 +137,25 @@ class RiskMatrixImport implements ToCollection, WithCalculatedFormulas
         if ($confLocation['regional'] == 'SI')
         {
             $saltos = 1;
-            $data['regional'] = $row[0];
+            $data['name'] = $row[0];
+            $data['regional'] = $row[1];
         }
         if ($confLocation['headquarter'] == 'SI')
         {
             $saltos = 2;
-            $data['sede'] = $row[1];
+            $data['sede'] = $row[2];
         }
         if ($confLocation['process'] == 'SI')
         {
             $saltos = 4;
-            $data['proceso'] = $row[2];
-            $data['macroproceso'] = $row[3];
+            $data['proceso'] = $row[3];
+            $data['macroproceso'] = $row[4];
 
         }
         if ($confLocation['area'] == 'SI')
         {
             $saltos = 5;
-            $data['area'] = $row[4];
+            $data['area'] = $row[5];
         }
 
         $data = array_merge($data,
@@ -172,30 +175,30 @@ class RiskMatrixImport implements ToCollection, WithCalculatedFormulas
                 'ambiental' => $row[13 + $saltos],
                 'max_impacto_inherente' => $row[14 + $saltos],
                 'desc_impacto_inherente' => $row[15 + $saltos],
-                'max_frecuencia_inherente' => $row[15 + $saltos],
-                'desc_frecuencia_inherente' => $row[16 + $saltos],
-                'exposicion_inherente' => $row[17 + $saltos],
-                'control_disminuir' => $row[18 + $saltos],
-                'naturaleza' => $row[19 + $saltos],
-                'evidencia' => trim(strtoupper($row[20 + $saltos])),
-                'cobertura' => $row[21 + $saltos],
-                'documentacion' => $row[22 + $saltos],
-                'segregacion' => trim(strtoupper($row[23 + $saltos])),
-                'evaluacion_control' => $row[24 + $saltos],
-                'mitigacion' => $row[25 + $saltos],
-                'max_impacto_residual' => $row[26 + $saltos],
-                'desc_max_impacto_residual' => $row[27 + $saltos],
-                'max_frecuencia_residual' => $row[28 + $saltos],
-                'desc_frecuencia_residual' => $row[29 + $saltos],
-                'exposicion_Residual' => $row[30 + $saltos],
-                'max_evento_riesgo' => $row[31 + $saltos],
-                'indicadores' => $row[32 + $saltos]
+                'max_frecuencia_inherente' => $row[16 + $saltos],
+                'desc_frecuencia_inherente' => $row[17 + $saltos],
+                'exposicion_inherente' => $row[18 + $saltos],
+                'control_disminuir' => $row[19 + $saltos],
+                'naturaleza' => $row[20 + $saltos],
+                'evidencia' => trim(strtoupper($row[21 + $saltos])),
+                'cobertura' => $row[22 + $saltos],
+                'documentacion' => $row[23 + $saltos],
+                'segregacion' => trim(strtoupper($row[24 + $saltos])),
+                'evaluacion_control' => $row[25 + $saltos],
+                'mitigacion' => $row[26 + $saltos],
+                'max_impacto_residual' => $row[27 + $saltos],
+                'desc_max_impacto_residual' => $row[28 + $saltos],
+                'max_frecuencia_residual' => $row[29 + $saltos],
+                'desc_frecuencia_residual' => $row[30 + $saltos],
+                'exposicion_Residual' => $row[31 + $saltos],
+                'max_evento_riesgo' => $row[32 + $saltos],
+                'indicadores' => $row[33 + $saltos]
             ]);
 
-        if ($this->secuence['R.'.$data['secuencia']])
-                $this->createRisk = false;
-        else
+        if (COUNT($this->secuence) > 0 && isset($this->secuence[$data['secuencia']]))
             $this->createRisk = false;
+        else
+            $this->createRisk = true;
                 
 
         $rules = [];
@@ -230,7 +233,7 @@ class RiskMatrixImport implements ToCollection, WithCalculatedFormulas
                 'desc_impacto_inherente' => 'required',
                 'max_frecuencia_inherente' => 'required|integer|min:0|max:5',
                 'desc_frecuencia_inherente' => 'required',
-                'exposicion_inherente' => 'required|integer|min:0|max:5',
+                'exposicion_inherente' => 'required|integer|min:0',
                 'control_disminuir' => 'required',
                 'naturaleza' => 'required',
                 'evidencia' => 'required|in:SI,NO',
@@ -243,7 +246,7 @@ class RiskMatrixImport implements ToCollection, WithCalculatedFormulas
                 'desc_max_impacto_residual' => 'required',
                 'max_frecuencia_residual' => 'required|integer|min:0|max:5',
                 'desc_frecuencia_residual' => 'required',
-                'exposicion_Residual' => 'required|integer|min:0|max:5',
+                'exposicion_Residual' => 'required|integer|min:0',
                 'max_evento_riesgo' => 'required',
                 'indicadores' => 'required'           
             ]);
@@ -275,77 +278,134 @@ class RiskMatrixImport implements ToCollection, WithCalculatedFormulas
                 //TAGS
                     $participants = $this->tagsPrepareImport($data['participantes']);
 
-                    $this->tagsSave($participants, TagsParticipant::class, $this->company_id);
+                    $this->tagsSave($participants, TagsRmParticipant::class, $this->company_id);
                 //
 
                 if ($createMatrix)
                 {
                     $regional_id = $confLocation['regional'] == 'SI' ? $this->checkRegional($data['regional']) : null;
+                    $macroprocess_id = $confLocation['process'] == 'SI' ? $this->checkMacroprocess($data['macroproceso']) : null;
                     $headquarter_id = $confLocation['headquarter'] == 'SI' ? $this->checkHeadquarter($regional_id, $data['sede']) : null;
-                    $process_id = $confLocation['process'] == 'SI' ? $this->checkProcess($headquarter_id, $data['proceso'], $macroproceso->implode(',')) : null; 
+                    $process_id = $confLocation['process'] == 'SI' ? $this->checkProcess($headquarter_id, $data['proceso']) : null; 
                     $area_id = $confLocation['area'] == 'SI' ? $this->checkArea($headquarter_id, $process_id, $data['area']) : null;
 
-                    $this->dangerMatrix = new DangerMatrix();
-                    $this->dangerMatrix->company_id = $this->company_id;
-                    $this->dangerMatrix->user_id = $this->user->id;
-                    $this->dangerMatrix->employee_regional_id = $regional_id;
-                    $this->dangerMatrix->employee_headquarter_id = $headquarter_id;
-                    $this->dangerMatrix->employee_area_id = $area_id;
-                    $this->dangerMatrix->employee_process_id = $process_id;
-                    $this->dangerMatrix->participants = $participants->implode(',');
-                    $this->dangerMatrix->save();
+                    $this->riskMatrix = new RiskMatrix();
+                    $this->riskMatrix->company_id = $this->company_id;
+                    $this->riskMatrix->user_id = $this->user->id;
+                    $this->riskMatrix->name = $data['name'];
+                    $this->riskMatrix->employee_regional_id = $regional_id;
+                    $this->riskMatrix->employee_headquarter_id = $headquarter_id;
+                    $this->riskMatrix->employee_area_id = $area_id;
+                    $this->riskMatrix->employee_process_id = $process_id;
+                    $this->riskMatrix->macroprocess_id = $macroprocess_id;
+                    $this->riskMatrix->participants = $participants->implode(',');
+                    $this->riskMatrix->nomenclature = $data['nomenclatura'];
+                    $this->riskMatrix->save();
                 }
 
-                $activity = Activity::query();
-                $activity->company_scope = $this->company_id;
-                $activity = $activity->firstOrCreate(['name' => $data['actividad']], 
-                                                    ['name' => $data['actividad'], 'company_id' => $this->company_id]);
+                $sub_process = SubProcess::query();
+                $sub_process->company_scope = $this->company_id;
+                $sub_process = $sub_process->firstOrCreate(
+                    ['name' => $data['sub_proceso']], 
+                    ['name' => $data['sub_proceso'], 'company_id' => $this->company_id]
+                );
 
-                $danger = Danger::query();
-                $danger->company_scope = $this->company_id;
-                $danger = $danger->firstOrCreate(['name' => $data['peligro']], 
-                                                    ['name' => $data['peligro'], 'company_id' => $this->company_id]);
+                $risk = Risk::query();
+                $risk->company_scope = $this->company_id;
+                $risk = $risk->firstOrCreate(
+                    ['name' => $data['riesgo'], 'category' => $data['categoria']], 
+                    ['name' => $data['riesgo'], 'category' => $data['categoria'], 'company_id' => $this->company_id]
+                );
 
-                $matrixActivity = DangerMatrixActivity::query();
-                $matrixActivity->company_scope = $this->company_id;
-                $matrixActivity = $matrixActivity->firstOrCreate(
-                    ['danger_matrix_id' => $this->dangerMatrix->id, 'activity_id' => $activity->id, 'type_activity' => $data['tipo_de_actividad'] == 'R' ? 'Rutinaria' : 'No rutinaria'], 
-                    ['danger_matrix_id' => $this->dangerMatrix->id, 'activity_id' => $activity->id, 'type_activity' => $data['tipo_de_actividad'] == 'R' ? 'Rutinaria' : 'No rutinaria']
-                    );
+                $matrixSubprocess = RiskMatrixSubProcess::query();
+                $matrixSubprocess->company_scope = $this->company_id;
+                $matrixSubprocess = $matrixSubprocess->firstOrCreate(
+                    ['risk_matrix_id' => $this->riskMatrix->id, 'sub_process_id' => $sub_process->id], 
+                    ['risk_matrix_id' => $this->riskMatrix->id, 'sub_process_id' => $sub_process->id]
+                );
 
-                $activityDanger = new ActivityDanger();
-                $activityDanger->dm_activity_id = $matrixActivity->id;
-                $activityDanger->danger_id = $danger->id;
-                $activityDanger->danger_description = $danger_description->implode(',');
-                $activityDanger->danger_generated = $data['peligro_generado'];
-                $activityDanger->possible_consequences_danger = $possible_consequences_danger->implode(',');
-                $activityDanger->generating_source = $data['fuente_generadora'];
-                $activityDanger->collaborators_quantity = $data['colaboradores'];
-                $activityDanger->esd_quantity = $data['contratistas'];
-                $activityDanger->visitor_quantity = $data['visitantes'];
-                $activityDanger->student_quantity = $data['estudiantes'];
-                $activityDanger->esc_quantity = $data['arrendatarios'];            
-                $activityDanger->observations = $data['observaciones'];
-                $activityDanger->existing_controls_engineering_controls = $existing_controls_engineering_controls->implode(',');
-                $activityDanger->existing_controls_substitution = $existing_controls_substitution->implode(',');
-                $activityDanger->existing_controls_warning_signage = $existing_controls_warning_signage->implode(',');
-                $activityDanger->existing_controls_administrative_controls = $existing_controls_administrative_controls->implode(',');
-                $activityDanger->existing_controls_epp = $existing_controls_epp->implode(',');
-                $activityDanger->legal_requirements = $data['cumplimiento_requisitos_legales'];
-                $activityDanger->quality_policies = $data['alineamiento_con_las_políticas'];
-                $activityDanger->objectives_goals = $data['alineamiento_con_los_objetivos'];
-                $activityDanger->risk_acceptability = $data['cumplimiento_requisitos_legales'];
-                $activityDanger->intervention_measures_elimination = $data['eliminación_medidas'];
-                $activityDanger->intervention_measures_substitution = $intervention_measures_substitution->implode(',');
-                $activityDanger->intervention_measures_engineering_controls = $intervention_measures_engineering_controls->implode(',');
-                $activityDanger->intervention_measures_warning_signage = $intervention_measures_warning_signage->implode(',');
-                $activityDanger->intervention_measures_administrative_controls = $intervention_measures_administrative_controls->implode(',');
-                $activityDanger->intervention_measures_epp = $intervention_measures_epp->implode(',');
-                $activityDanger->save();
+                $risk_subproocess = new SubProcessRisk();
+                $risk_subproocess->rm_subprocess_id = $matrixSubprocess->id;
+                $risk_subproocess->risk_id = $risk->id;
+                $risk_subproocess->nomenclature = $data['nomenclatura'] . '.R.' . $data['secuencia'];
+                $risk_subproocess->risk_sequence = $data['secuencia'];
+                $risk_subproocess->economic = $data['economico'];
+                $risk_subproocess->quality_care_patient_safety =  $data['atencion_paciente'];
+                $risk_subproocess->reputational = $data['reputacional'];
+                $risk_subproocess->legal_regulatory = $data['legal_Regulatorio'];
+                $risk_subproocess->environmental = $data['ambiental'];
+                $risk_subproocess->max_inherent_impact = $data['max_impacto_inherente'];
+                $risk_subproocess->description_inherent_impact = $data['desc_impacto_inherente'];
+                $risk_subproocess->max_inherent_frequency = $data['max_frecuencia_inherente'];            
+                $risk_subproocess->description_inherent_frequency = $data['desc_frecuencia_inherente'];
+                $risk_subproocess->inherent_exposition = $data['exposicion_inherente'];
+                $risk_subproocess->controls_decrease = $data['control_disminuir'];
+                $risk_subproocess->nature = $data['naturaleza'];
+                $risk_subproocess->evidence = $data['evidencia'];
+                $risk_subproocess->coverage = $data['cobertura'];
+                $risk_subproocess->documentation = $data['documentacion'];
+                $risk_subproocess->segregation = $data['segregacion'];
+                $risk_subproocess->control_evaluation = $data['evaluacion_control'];
+                $risk_subproocess->percentege_mitigation = $data['mitigacion'];
+                $risk_subproocess->max_residual_impact = $data['max_impacto_residual'];
+                $risk_subproocess->description_residual_impact = $data['desc_max_impacto_residual'];
+                $risk_subproocess->max_residual_frequency = $data['max_frecuencia_residual'];
+                $risk_subproocess->description_residual_frequency = $data['desc_frecuencia_residual'];
+                $risk_subproocess->residual_exposition = $data['exposicion_Residual'];
+                $risk_subproocess->max_impact_event_risk = $data['max_evento_riesgo'];
+                $risk_subproocess->save();
+
+                $cause = new Cause();
+                $cause->rm_subprocess_risk_id = $risk_subproocess->id;
+                $cause->cause = $data['causa'];
+                $cause->save();
+
+                $controls = explode(' - ', $data['controles']);
+
+                foreach ($controls as $keyC2 => $itemC2)
+                {
+                    $this->count_controls = $this->count_controls + 1;
+
+                    $control = new CauseControl();
+                    $control->controls = $itemC2;
+                    $control->rm_cause_id = $cause->id;
+                    $control->number_control = $this->count_controls;
+                    $control->nomenclature = $data['nomenclatura']. '.C.' . $this->count_controls;
+                    $control->save();
+                }
+
+                $indicators =explode(' - ', $data['indicadores']);
+
+                foreach ($indicators as $keyI => $itemI)
+                {
+                    $indicator = new Indicators();
+                    $indicator->rm_subprocess_risk_id = $risk_subproocess->id;
+                    $indicator->indicator = $itemI;
+                    $indicator->save();
+                }
+
+                $this->secuence[$data['secuencia']] = $risk_subproocess->id;
             }
             else
             {
-                //
+                $cause = new Cause();
+                $cause->rm_subprocess_risk_id = $this->secuence[$data['secuencia']];
+                $cause->cause = $data['causa'];
+                $cause->save();
+
+                $controls = explode(' - ', $data['controles']);
+
+                foreach ($controls as $keyC2 => $itemC2)
+                {
+                    $this->count_controls = $this->count_controls + 1;
+
+                    $control = new CauseControl();
+                    $control->controls = $itemC2;
+                    $control->rm_cause_id = $cause->id;
+                    $control->number_control = $this->count_controls;
+                    $control->nomenclature = $data['nomenclatura']. '.C.' . $this->count_controls;
+                    $control->save();
+                }
             }
 
             return true;
@@ -399,7 +459,7 @@ class RiskMatrixImport implements ToCollection, WithCalculatedFormulas
         return $headquarter->id;
     }
 
-    private function checkProcess($headquarter_id, $process_name, $macroproceso)
+    private function checkProcess($headquarter_id, $process_name)
     {
         $process = EmployeeRegional::select("sau_employees_processes.id as id")
             ->join('sau_employees_headquarters', 'sau_employees_headquarters.employee_regional_id', 'sau_employees_regionals.id')
@@ -415,13 +475,13 @@ class RiskMatrixImport implements ToCollection, WithCalculatedFormulas
         {
             $process = new EmployeeProcess();
             $process->name = $process_name;
-            $process->types = $macroproceso;
+            //$process->types = $macroproceso;
             $process->save();
         }
         else
         {
             $process = EmployeeProcess::find($process->id);
-            $process->types = $macroproceso;
+            //$process->types = $macroproceso;
             $process->save();
         }
         
@@ -429,6 +489,16 @@ class RiskMatrixImport implements ToCollection, WithCalculatedFormulas
         $process->headquarters()->attach($headquarter_id);
 
         return $process->id;
+    }
+
+    private function checkMacroprocess($name)
+    {
+        $macroprocess = TagsProcess::query();
+        $macroprocess->company_scope = $this->company_id;
+        $macroprocess = $macroprocess->firstOrCreate(['name' => $name], 
+                                            ['name' => $name, 'company_id' => $this->company_id]);
+
+        return $macroprocess->id;
     }
 
     private function setError($message)
