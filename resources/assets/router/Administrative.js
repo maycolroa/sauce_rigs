@@ -338,6 +338,14 @@ export default [{
             import('@/views/Administrative/actionplans/edit')
         }
       ]),
+      ...middleware({ 'check-permission': 'action_plan_activities_tracing' }, [
+        {
+          name: 'administrative-actionplans-tracing',
+          path: 'actionplans/tracing/:id',
+          component: () =>
+            import('@/views/Administrative/actionplans/tracings')
+        }
+      ]),
       ...middleware({ 'check-permission': 'logos_r' }, [
         {
           name: 'administrative-logos',

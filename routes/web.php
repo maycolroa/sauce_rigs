@@ -376,6 +376,8 @@ Route::middleware(['auth'])->group(function () {
       Route::post('actionplan/export', 'Administrative\ActionPlans\ActionPlanController@export');
       Route::delete('actionplan/deleteActivity/{id}', 'Administrative\ActionPlans\ActionPlanController@destroy');
       Route::ApiResource('actionplan', 'Administrative\ActionPlans\ActionPlanController');
+      Route::post('actionplan/saveTracing', 'Administrative\ActionPlans\ActionPlanController@saveTracing');
+      Route::post('actionplan/getTracings', 'Administrative\ActionPlans\ActionPlanController@getTracings');
 
       Route::get('logo/download', 'Administrative\Logos\LogoController@download');
       Route::get('logo/view', 'Administrative\Logos\LogoController@show');

@@ -495,7 +495,20 @@ export default [
           id: 'id',
         },
         permission: 'actionPlans_u'
-      }]
+      },
+      {
+        config: {
+            color: 'outline-success',
+            borderless: true,
+            icon: 'ion ion-md-eye',
+            title: 'Seguimientos'
+        },
+        data: {
+            routePush: { name: 'administrative-actionplans-tracing' },
+            id: 'id',
+        },
+        permission: 'action_plan_activities_tracing'
+    },]
     },
     {
       type: 'base',
