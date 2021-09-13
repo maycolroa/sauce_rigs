@@ -421,6 +421,7 @@ Route::middleware(['auth'])->group(function () {
       Route::post('risksMatrix/reportRiskResidualTable', 'IndustrialSecure\RiskMatrix\RiskMatrixReportController@reportRiskResidualTable');
       Route::post('risksMatrix/reportTableResidual', 'IndustrialSecure\RiskMatrix\RiskMatrixReportController@reportTableResidual');
       Route::get('risksMatrix/download/{risksMatrix}', 'IndustrialSecure\RiskMatrix\RiskMatrixController@download');
+      Route::post('risksMatrix/import', 'IndustrialSecure\RiskMatrix\RiskMatrixController@import');
 
 
       Route::post('risksMatrix/reportExport', 'IndustrialSecure\RiskMatrix\RiskMatrixReportController@reportExporteExcel');

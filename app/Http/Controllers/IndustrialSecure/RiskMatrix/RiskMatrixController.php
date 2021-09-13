@@ -24,6 +24,7 @@ use App\Models\Administrative\Processes\EmployeeProcess;
 use App\Models\Administrative\Areas\EmployeeArea;
 use App\Jobs\IndustrialSecure\RiskMatrix\RiskMatrixExportJob;
 use App\Exports\IndustrialSecure\RiskMatrix\RiskMatrixImportTemplateExcel;
+use App\Jobs\IndustrialSecure\RiskMatrix\RiskMatrixImportJob;
 use Carbon\Carbon;
 use DB;
 use App\Traits\RiskMatrixTrait;
@@ -532,5 +533,20 @@ class RiskMatrixController extends Controller
     public function downloadTemplateImport()
     {
       return Excel::download(new RiskMatrixImportTemplateExcel(collect([]), $this->company), 'PlantillaImportacionMatrizRiesgo.xlsx');
+    }
+
+    public function import(Request $request)
+    {
+        \Log::info('import');
+      try
+      {
+        RiskMatrixImportJob::dispatch($request->file, $this->company, $this->user);
+      
+        return $this->respondHttp200();
+
+      } catch(Exception $e)
+      {
+        return $this->respondHttp500();
+      }
     }
 }
