@@ -34,6 +34,14 @@
                     {
                         "name": "action_plan_activities_d",
                         "display_name": "Planes de acción - borrar actividades"
+                    },
+                    {
+                        "name": "action_plan_activities_tracing",
+                        "display_name": "Planes de acción - Seguimientos"
+                    },
+                    {
+                        "name": "action_plan_activities_tracing_admin",
+                        "display_name": "Planes de acción - Administrar Seguimientos"
                     }
                 ]
             }

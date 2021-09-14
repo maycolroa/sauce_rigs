@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Vuetable\Facades\Vuetable;
 use App\Models\Administrative\Users\User;
 use App\Models\Administrative\ActionPlans\ActionPlansActivity;
+use App\Models\Administrative\ActionPlans\ActionPlansTracing;
 use App\Facades\ActionPlans\Facades\ActionPlan;
 use App\Http\Requests\Administrative\ActionPlans\ActionPlanRequest;
 use App\Jobs\Administrative\ActionPlans\ActionPlanExportJob;
@@ -275,6 +276,47 @@ class ActionPlanController extends Controller
         
         return $this->respondHttp200([
             'message' => 'Se elimino la actividad'
+        ]);
+    }
+
+    public function saveTracing(Request $request)
+    {
+        foreach ($request->tracings as $key => $value) 
+        {
+            $data = json_decode($value, true);
+            $tracing = new ActionPlansTracing;
+            $tracing->activity_id = $request->activity_id;
+            $tracing->tracing = $data['tracing'];
+            $tracing->user_id = $this->user->id;
+            $tracing->save();
+        }
+
+        return $this->respondHttp200([
+            'message' => 'Se guardaron los seguimientos'
+        ]);
+    }
+
+    public function getTracings(Request $request)
+    {
+        $isEdit = false;
+
+        $tracings = ActionPlansTracing::select(
+            'sau_action_plan_activities_tracing.id AS id',
+            'sau_action_plan_activities_tracing.tracing As tracing',
+            'sau_users.name AS user',
+            'sau_action_plan_activities_tracing.created_at AS date'
+        )
+        ->join('sau_users', 'sau_users.id', 'sau_action_plan_activities_tracing.user_id')
+        ->where('activity_id', $request->id)->get();
+
+        if ($tracings->count() > 0)
+            $isEdit = true;
+
+        return $this->respondHttp200([
+            'delete' => [],
+            'tracings' => $tracings,
+            'activity_id' => $request->id,
+            'isEdit' => $isEdit
         ]);
     }
 }
