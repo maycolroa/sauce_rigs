@@ -301,6 +301,7 @@ class ActionPlanController extends Controller
         $isEdit = false;
 
         $tracings = ActionPlansTracing::select(
+            'sau_action_plan_activities_tracing.id AS id',
             'sau_action_plan_activities_tracing.tracing As tracing',
             'sau_users.name AS user',
             'sau_action_plan_activities_tracing.created_at AS date'

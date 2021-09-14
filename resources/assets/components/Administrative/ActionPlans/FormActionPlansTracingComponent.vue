@@ -11,7 +11,8 @@
 				                      <b-btn variant="outline-primary icon-btn borderless" size="sm" v-b-tooltip.top title="Eliminar" @click.prevent="removeDocument(index)"><span class="ion ion-md-close-circle"></span></b-btn>
 				                  </div>
 				              </div>
-				              <vue-textarea :disabled="!auth.can['action_plan_activities_tracing_admin']" class="col-md-12" v-model="tracing.tracing" label="Seguimiento" name="tracings" type="text" placeholder="Seguimiento" :error="form.errorsFor(`tracings.${index}.tracing`)"></vue-textarea>
+				              <vue-textarea v-if="auth.can['action_plan_activities_tracing_admin']" class="col-md-12" v-model="tracing.tracing" label="Seguimiento" name="tracings" type="text" placeholder="Seguimiento" :error="form.errorsFor(`tracings.${index}.tracing`)"></vue-textarea>
+                              <vue-textarea v-if="!auth.can['action_plan_activities_tracing_admin']" :disabled="tracing.id" class="col-md-12" v-model="tracing.tracing" label="Seguimiento" name="tracings" type="text" placeholder="Seguimiento" :error="form.errorsFor(`tracings.${index}.tracing`)"></vue-textarea>
 				          </b-form-row>
                         <template v-if="form.isEdit">
                           <b-form-row>
