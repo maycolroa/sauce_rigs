@@ -530,7 +530,7 @@ export default {
     },
     removeIndicator(index) {   
       if(this.risk.indicators[index].id != '')
-        this.risk.delete.indicators.push(indicators[index].id)
+        this.risk.delete.indicators.push(this.risk.indicators[index].id)
       this.risk.indicators.splice(index, 1)
     },
     updateData() {

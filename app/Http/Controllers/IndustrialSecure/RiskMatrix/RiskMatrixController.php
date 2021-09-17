@@ -134,6 +134,12 @@ class RiskMatrixController extends Controller
                     $itemRisk->indicators = $itemRisk->indicators;
 
                     $itemRisk->causes_controls = $causes_controls;
+
+                    $itemRisk->delete = [
+                        'causes' => [],
+                        'controls' => [],
+                        'indicators' => []
+                    ];
                 }
             }
 

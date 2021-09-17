@@ -35,16 +35,16 @@ class ReportLawExcel implements FromQuery, WithMapping, WithHeadings, WithTitle,
     public function query()
     {
       $laws = Law::selectRaw(
-        'sau_lm_articles_fulfillment.id AS id,
+        "sau_lm_articles_fulfillment.id AS id,
          SUBSTRING(sau_lm_articles.description, 1, 20) AS article,
          sau_lm_laws_types.name AS type,
          sau_lm_laws.law_number AS law_number,
          sau_lm_laws.law_year AS law_year,
-         sau_lm_system_apply.name AS system,
-         IF(sau_lm_fulfillment_values.name IS NULL, "Sin calificar", sau_lm_fulfillment_values.name) AS qualify,
+         sau_lm_system_apply.name AS 'system',
+         IF(sau_lm_fulfillment_values.name IS NULL, 'Sin calificar', sau_lm_fulfillment_values.name) AS qualify,
          sau_lm_entities.name AS entity,
          sau_lm_articles_fulfillment.observations AS observations,
-         sau_lm_articles_fulfillment.responsible AS responsible'
+         sau_lm_articles_fulfillment.responsible AS responsible"
       )
       ->join('sau_lm_system_apply', 'sau_lm_system_apply.id', 'sau_lm_laws.system_apply_id')
       ->join('sau_lm_laws_types', 'sau_lm_laws_types.id', 'sau_lm_laws.law_type_id')

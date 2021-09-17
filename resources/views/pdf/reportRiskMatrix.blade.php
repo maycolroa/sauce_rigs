@@ -11,6 +11,10 @@
           width: 100%;
         }
 
+        p {
+          font-family: arial, sans-serif;
+        }
+
         td, th {
           text-align: center;
           padding: 8px;

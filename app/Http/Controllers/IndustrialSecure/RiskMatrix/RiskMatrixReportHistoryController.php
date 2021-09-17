@@ -135,9 +135,9 @@ class RiskMatrixReportHistoryController extends Controller
             $paramUrl = base64_encode($nameExcel);
 
             NotificationMail::
-                subject('Exportación de matriz de riesgos - Reportes')
+                subject('Exportación PDF Reportes Historicos de matriz de riesgos')
                 ->recipients($this->user)
-                ->message('Se ha generado una exportación de reportes de matriz de riesgos.')
+                ->message('Se ha generado una exportación de reportes historicos de matriz de riesgos.')
                 ->subcopy('Este link es valido por 24 horas')
                 ->buttons([['text'=>'Descargar', 'url'=>url("/export/{$paramUrl}")]])
                 ->module('riskMatrix')
