@@ -241,7 +241,8 @@ export default {
             if (!this.isLoading)
             {
                 this.isLoading = true;
-                this.clearAttrTable()
+                this.clearAttrTable();
+                this.clearAttrTableResidual();
 
                 axios.post('/industrialSecurity/risksMatrix/report', this.filters)
                 .then(response => {

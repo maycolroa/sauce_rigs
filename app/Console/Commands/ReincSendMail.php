@@ -136,9 +136,6 @@ class ReincSendMail extends Command
                             ->table($table)
                             ->company($company)
                             ->send();
-
-                        \Log::info($user);
-                        \Log::info($table);
                     }     
                 });
         }
