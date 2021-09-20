@@ -284,10 +284,17 @@ class ActionPlanController extends Controller
         foreach ($request->tracings as $key => $value) 
         {
             $data = json_decode($value, true);
-            $tracing = new ActionPlansTracing;
-            $tracing->activity_id = $request->activity_id;
+
+            if (isset($data['id']))
+                $tracing = ActionPlansTracing::find($data['id']);
+            else
+            {
+                $tracing = new ActionPlansTracing;
+                $tracing->activity_id = $request->activity_id;
+                $tracing->user_id = $this->user->id;
+            }
+            
             $tracing->tracing = $data['tracing'];
-            $tracing->user_id = $this->user->id;
             $tracing->save();
         }
 

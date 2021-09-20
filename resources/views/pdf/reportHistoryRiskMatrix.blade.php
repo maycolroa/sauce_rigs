@@ -12,7 +12,7 @@
         }
 
         td, th {
-          text-align: center;
+          text-align: left;
           padding: 8px;
         }
 
@@ -76,8 +76,8 @@
         </div>
         @endif
         <div>
-            <p style="text-align: center"><b>Mapa Riesgos Inherentes</b></p>
-            <p style="text-align: center"><b>Eje Y: Impacto / Eje X: Frecuencia</b></p>
+            <p style="text-align: left"><b>Mapa Riesgos Inherentes</b></p>
+            <p style="text-align: left"><b>Eje Y: Impacto / Eje X: Frecuencia</b></p>
         </div>
         <div>
             <table class="table-general">
@@ -128,8 +128,8 @@
 
     <div style="page-break-inside: avoid;">
         <div>
-            <p style="text-align: center"><b>Mapa Riesgos Resudiales</b></p>
-            <p style="text-align: center"><b>Eje Y: Impacto / Eje X: Frecuencia</b></p>
+            <p style="text-align: left"><b>Mapa Riesgos Resudiales</b></p>
+            <p style="text-align: left"><b>Eje Y: Impacto / Eje X: Frecuencia</b></p>
         </div>
         <div>
             <table class="table-general">
@@ -180,7 +180,7 @@
     
     <div style="page-break-inside: avoid;">
         <div>
-            <p style="text-align: center"><b>Listado de Riesgos con Frecuencia e Impacto Residual</b></p>
+            <p style="text-align: left"><b>Listado de Riesgos con Frecuencia e Impacto Residual</b></p>
         </div>
         <table class="table-general">
             <thead>

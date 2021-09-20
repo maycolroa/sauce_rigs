@@ -16,7 +16,7 @@
         }
 
         td, th {
-          text-align: center;
+          text-align: left;
           padding: 8px;
         }
 
@@ -118,8 +118,8 @@
         </div>
         @endif
         <div>
-            <p style="text-align: center"><b>Mapa Riesgos Inherentes</b></p>
-            <p style="text-align: center"><b>Eje Y: Impacto / Eje X: Frecuencia</b></p>
+            <p style="text-align: left"><b>Mapa Riesgos Inherentes</b></p>
+            <p style="text-align: left"><b>Eje Y: Impacto / Eje X: Frecuencia</b></p>
         </div>
         <div>
             <table class="table-general">
@@ -171,7 +171,7 @@
     @if(COUNT($report["inherent_report_table"]) > 0)
         <div style="page-break-inside: avoid;">
             <div>
-                <p style="text-align: center"><b>Riesgos {{$report["inherent_report_table"][0]['frequency']}} - {{$report["inherent_report_table"][0]['impact']}}</b></p>
+                <p style="text-align: left"><b>Riesgos {{$report["inherent_report_table"][0]['frequency']}} - {{$report["inherent_report_table"][0]['impact']}}</b></p>
             </div>
             <table class="table-general">
                 <thead>
@@ -207,8 +207,8 @@
         <div style="page-break-inside: avoid; text-align: right; padding-bottom: 10px;"><img src="{{ public_path('storage/administrative/logos/').$inspections['logo'] }}" width="120px" height="120px"/></div>
         @endif--}}
         <div>
-            <p style="text-align: center"><b>Mapa Riesgos Resudiales</b></p>
-            <p style="text-align: center"><b>Eje Y: Impacto / Eje X: Frecuencia</b></p>
+            <p style="text-align: left"><b>Mapa Riesgos Resudiales</b></p>
+            <p style="text-align: left"><b>Eje Y: Impacto / Eje X: Frecuencia</b></p>
         </div>
         <div>
             <table class="table-general">
@@ -260,7 +260,7 @@
     @if(COUNT($report["residual_report_table"]) > 0)
         <div style="page-break-inside: avoid;">
             <div>
-                <p style="text-align: center"><b>Riesgos {{$report["residual_report_table"][0]['frequency']}} - {{$report["residual_report_table"][0]['impact']}}</b></p>
+                <p style="text-align: left"><b>Riesgos {{$report["residual_report_table"][0]['frequency']}} - {{$report["residual_report_table"][0]['impact']}}</b></p>
             </div>
             <table class="table-general">
                 <thead>
@@ -293,7 +293,7 @@
     
     <div style="page-break-inside: avoid;">
         <div>
-            <p style="text-align: center"><b>Listado de Riesgos con Frecuencia e Impacto Residual</b></p>
+            <p style="text-align: left"><b>Listado de Riesgos con Frecuencia e Impacto Residual</b></p>
         </div>
         <table class="table-general">
             <thead>
