@@ -197,6 +197,7 @@ class RiskMatrixController extends Controller
 
     private function saveRiskMatrix($request, $riskMatrix = null)
     {
+       // \Log::info($request);
         DB::beginTransaction();
 
         try
@@ -326,6 +327,39 @@ class RiskMatrixController extends Controller
 
                     if(!$risk->save()){
                         return $this->respondHttp500();
+                    }
+
+                    if (isset($itemR['delete']['causes']) && COUNT($itemR['delete']['causes']) > 0)
+                    {
+                        foreach ($itemR['delete']['causes'] as $key => $value)
+                        {
+                            $causeDel = Cause::find($value['id']);
+
+                            if ($causeDel)
+                                $causeDel->delete();
+                        }
+                    }
+
+                    if (isset($itemR['delete']['controls']) && COUNT($itemR['delete']['controls']) > 0)
+                    {
+                        foreach ($itemR['delete']['controls'] as $key => $value)
+                        {
+                            $controlDel = CauseControl::find($value);
+
+                            if ($controlDel)
+                                $controlDel->delete();
+                        }
+                    }
+
+                    if (isset($itemR['delete']['indicators']) && COUNT($itemR['delete']['indicators']) > 0)
+                    {
+                        foreach ($itemR['delete']['indicators'] as $key => $value)
+                        {
+                            $indiDel = Indicators::find($value);
+
+                            if ($indiDel)
+                                $indiDel->delete();
+                        }
                     }
 
                     foreach ($itemR['causes_controls'] as $keyC => $itemC)
