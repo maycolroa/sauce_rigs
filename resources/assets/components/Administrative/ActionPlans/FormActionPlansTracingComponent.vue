@@ -61,7 +61,8 @@ export default {
 				return {
 					tracings: [],
                     activity_id: '',
-                    isEdit: false
+                    isEdit: false,
+                    delete: []
 				};
 			}
 		}

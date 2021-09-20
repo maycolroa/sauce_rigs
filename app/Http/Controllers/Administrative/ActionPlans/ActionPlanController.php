@@ -281,21 +281,36 @@ class ActionPlanController extends Controller
 
     public function saveTracing(Request $request)
     {
-        foreach ($request->tracings as $key => $value) 
+        \Log::info($request);
+        if ($request->has('delete') && count($request->delete) > 0)
         {
-            $data = json_decode($value, true);
-
-            if (isset($data['id']))
-                $tracing = ActionPlansTracing::find($data['id']);
-            else
+            foreach ($request->delete as $key => $value) 
             {
-                $tracing = new ActionPlansTracing;
-                $tracing->activity_id = $request->activity_id;
-                $tracing->user_id = $this->user->id;
+                $tracingDel = ActionPlansTracing::find($value);
+
+                if ($tracingDel)
+                    $tracingDel->delete();
             }
-            
-            $tracing->tracing = $data['tracing'];
-            $tracing->save();
+        }
+
+        if ($request->has('tracings') && count($request->tracings) > 0)
+        {
+            foreach ($request->tracings as $key => $value) 
+            {
+                $data = json_decode($value, true);
+
+                if (isset($data['id']))
+                    $tracing = ActionPlansTracing::find($data['id']);
+                else
+                {
+                    $tracing = new ActionPlansTracing;
+                    $tracing->activity_id = $request->activity_id;
+                    $tracing->user_id = $this->user->id;
+                }
+                
+                $tracing->tracing = $data['tracing'];
+                $tracing->save();
+            }
         }
 
         return $this->respondHttp200([
