@@ -19,12 +19,13 @@
                     <div><b>Año de norma:</b> {{ law.law_year }}</div>
                     <div><b>Ente:</b> {{ law.entity ? law.entity.name : '' }}</div>
                 </b-col>
-                <b-col class="text-center">                   
-                    <div><b>Sistema que aplica:</b> {{ law.system_apply ? law.system_apply.name : '' }}</div>
+                <b-col class="text-center">
+                    <div><b>Sistema que aplica:</b> {{ law.system_apply ? law.system_apply.name : '' }}</div>                
                     <div><b>Observaciones:</b> {{ law.observations }}</div>
                     <div><b>Fecha de creación:</b> {{ law.created_at }}</div>
                     <div><b>Tema SST:</b> {{ law.sst_risk ? law.sst_risk.name : '' }}</div>
                     <div><b>Derogada:</b> {{ law.repealed }}</div>
+                    <div v-show="law.url"><a :href="law.url" target='blank'>Ver Archivo de la norma</a></div>
                 </b-col>
             </b-row>
         </b-card>

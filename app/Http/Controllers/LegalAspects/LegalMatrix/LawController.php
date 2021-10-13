@@ -385,6 +385,12 @@ class LawController extends Controller
         return Storage::disk('s3_MLegal')->download($path.$law->file);
     }
 
+    public function showFile(Law $law)
+    {
+        $path = (!$law->company_id) ? 'laws/' : "laws/".$this->company."/";
+        return Storage::disk('s3_MLegal')->url($path.$law->file);
+    }
+
     private function saveArticles($law, $articles)
     {
         foreach ($articles as $key => $article)
@@ -495,12 +501,20 @@ class LawController extends Controller
     {
         try
         {
+            if ($law->file)
+            {
+                $path = (!$law->company_id) ? 'laws/' : "laws/".$this->company."/".$law->file;
+                $law->url = Storage::disk('s3_MLegal')->url($path);
+            }
+            else
+                $law->url = '';
+            
             $law->lawType;
             $law->riskAspect;
             $law->entity;
             $law->sstRisk;
             $law->systemApply;
-
+            
             $articles = Article::select('sau_lm_articles.*')
                 ->join('sau_lm_article_interest', function ($join) use ($law)
                   {

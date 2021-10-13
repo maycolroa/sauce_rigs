@@ -296,7 +296,8 @@ export default {
           sst_risk_id: '',
           repealed: '',
           file: '',
-          articles: []
+          articles: [],
+          url: ''
         };
       }
     }

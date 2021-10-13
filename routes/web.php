@@ -619,6 +619,7 @@ Route::middleware(['auth'])->group(function () {
 
         Route::get('law/downloadArticleQualify/{articleFulfillment}', 'LegalAspects\LegalMatrix\LawController@downloadArticleQualify');
         Route::get('law/download/{law}', 'LegalAspects\LegalMatrix\LawController@download');
+        Route::get('law/showFile/{law}', 'LegalAspects\LegalMatrix\LawController@showFile');
         Route::get('law/qualify/{law}', 'LegalAspects\LegalMatrix\LawController@getArticlesQualification');
         Route::post('law/saveArticlesQualification', 'LegalAspects\LegalMatrix\LawController@saveArticlesQualification');
         Route::post('law/saveArticlesQualificationAlls', 'LegalAspects\LegalMatrix\LawController@saveArticlesQualificationAlls');
