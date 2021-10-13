@@ -81,7 +81,11 @@
                   <vue-input class="col-md-4" :disabled="true" v-model="risk.description_inherent_frequency" label="Descripicón Frecuencia Inherente" type="text" name="description_inherent_frequency" :error="form.errorsFor(`subprocesses.${indexSubprocess}.risks.${indexRisk}.description_inherent_frequency`)"></vue-input>
                 </b-form-row>
                 <b-form-row>
-                  <vue-input class="col-md-4" :disabled="true" v-model="risk.inherent_exposition" label="Exposición Inherente" type="number" name="inherent_exposition" :error="form.errorsFor(`subprocesses.${indexSubprocess}.risks.${indexRisk}.inherent_exposition`)"></vue-input>
+                  <b-col cols="2" style="padding-right: 0px;padding-left: 0px;"><label class="form-label mb-12">Exposición Inherente</label></b-col>
+                  <b-col cols="10"><b-alert show class="col-md-4" :class="backgroundInputInherente">
+                   <b>{{risk.inherent_exposition}}</b>
+                  </b-alert></b-col>
+                  <!--<vue-input class="col-md-4" :disabled="true" v-model="risk.inherent_exposition" label="Exposición Inherente" type="number" name="inherent_exposition" :error="form.errorsFor(`subprocesses.${indexSubprocess}.risks.${indexRisk}.inherent_exposition`)"></vue-input>-->
                 </b-form-row>
               </b-card>
             </tab-content>
@@ -213,8 +217,17 @@
                   <vue-input class="col-md-4" :disabled="true" v-model="risk.description_residual_frequency" label="Descripción Frecuencia Residual" type="text" name="description_residual_frequency" :error="form.errorsFor(`subprocesses.${indexSubprocess}.risks.${indexRisk}.description_residual_frequency`)"></vue-input>
                 </b-form-row>
                 <b-form-row>
-                  <vue-input class="col-md-4" :disabled="true" v-model="risk.residual_exposition" label="Exposición Residual" type="number" name="residual_exposition" :error="form.errorsFor(`subprocesses.${indexSubprocess}.risks.${indexRisk}.residual_exposition`)"></vue-input>
-                  <vue-input class="col-md-8" :disabled="true" v-model="risk.max_impact_event_risk" label="Max Impacto Evento Riesgo" type="text" name="max_impact_event_risk" :error="form.errorsFor(`subprocesses.${indexSubprocess}.risks.${indexRisk}.max_impact_event_risk`)"></vue-input>
+                  <b-col cols="2" style="padding-right: 0px;padding-left: 0px;"><label class="form-label mb-12">Exposición Residual</label></b-col>
+                  <b-col cols="10"><b-alert show class="col-md-4" :class="backgroundInputResidual">
+                   <b>{{risk.residual_exposition}}</b>
+                  </b-alert></b-col>
+                </b-form-row>
+                <b-form-row>
+                  <!--<b-alert show label="Exposición Residual" class="col-md-4" :class="backgroundInputResidual">
+                   <b>{{risk.residual_exposition}}</b>
+                  </b-alert>
+                  <vue-input class="col-md-4" :class="backgroundInputResidual" v-model="risk.residual_exposition" label="Exposición Residual" type="number" name="residual_exposition" :error="form.errorsFor(`subprocesses.${indexSubprocess}.risks.${indexRisk}.residual_exposition`)"> </vue-input>-->
+                  <vue-input class="col-md-10" :disabled="true" v-model="risk.max_impact_event_risk" label="Max Impacto Evento Riesgo" type="text" name="max_impact_event_risk" :error="form.errorsFor(`subprocesses.${indexSubprocess}.risks.${indexRisk}.max_impact_event_risk`)"></vue-input>
                 </b-form-row>
                 <b-form-row style="padding-bottom: 20px;">
                   <div class="col-md-12">
@@ -478,6 +491,102 @@ export default {
       tagsRiskCausesControlsDataUrl: '/selects/tagsRmRiskCausesControls'
     };
   },
+  computed: {
+    backgroundInputResidual()
+    {
+      if (
+      (this.risk.description_residual_frequency == 'Bajo' && this.risk.description_residual_impact == 'Extremo') || 
+      (this.risk.description_residual_frequency == 'Moderada' && this.risk.description_residual_impact == 'Grave') || 
+      (this.risk.description_residual_frequency == 'Alta' && this.risk.description_residual_impact == 'Moderado') ||
+      (this.risk.description_residual_frequency == 'Muy Alta' && this.risk.description_residual_impact == 'Leve'))
+      {
+        return 'colorOrange';
+      }
+      else if (
+      (this.risk.description_residual_frequency == 'Muy Bajo' && this.risk.description_residual_impact == 'Moderado') || 
+      (this.risk.description_residual_frequency == 'Muy Bajo' && this.risk.description_residual_impact == 'Leve') || 
+      (this.risk.description_residual_frequency == 'Bajo' && this.risk.description_residual_impact == 'Leve') ||
+      (this.risk.description_residual_frequency == 'Bajo' && this.risk.description_residual_impact == 'No Significativo') ||
+      (this.risk.description_residual_frequency == 'Moderada' && this.risk.description_residual_impact == 'No Significativo') ||
+      (this.risk.description_residual_frequency == 'Bajo' && this.risk.description_residual_impact == 'No Significativo'))
+      {
+        return 'colorGreen';
+      }
+      else if (
+      (this.risk.description_residual_frequency == 'Moderada' && this.risk.description_residual_impact == 'Extremo') || 
+      (this.risk.description_residual_frequency == 'Alta' && this.risk.description_residual_impact == 'Extremo') || 
+      (this.risk.description_residual_frequency == 'Alta' && this.risk.description_residual_impact == 'Grave') ||
+      (this.risk.description_residual_frequency == 'Muy Alta' && this.risk.description_residual_impact == 'Extremo') ||
+      (this.risk.description_residual_frequency == 'Muy Alta' && this.risk.description_residual_impact == 'Grave') ||
+      (this.risk.description_residual_frequency == 'Muy Alta' && this.risk.description_residual_impact == 'Moderado'))
+      {
+        return 'colorRed';
+      }
+      else if (
+      (this.risk.description_residual_frequency == 'Muy Bajo' && this.risk.description_residual_impact == 'Extremo') || 
+      (this.risk.description_residual_frequency == 'Muy Bajo' && this.risk.description_residual_impact == 'Grave') || 
+      (this.risk.description_residual_frequency == 'Bajo' && this.risk.description_residual_impact == 'Grave') ||
+      (this.risk.description_residual_frequency == 'Bajo' && this.risk.description_residual_impact == 'Moderado') ||
+      (this.risk.description_residual_frequency == 'Moderada' && this.risk.description_residual_impact == 'Moderado') ||
+      (this.risk.description_residual_frequency == 'Moderada' && this.risk.description_residual_impact == 'Leve') ||
+      (this.risk.description_residual_frequency == 'Alta' && this.risk.description_residual_impact == 'Leve') ||
+      (this.risk.description_residual_frequency == 'Alta' && this.risk.description_residual_impact == 'No Significativo') ||
+      (this.risk.description_residual_frequency == 'Muy Alta' && this.risk.description_residual_impact == 'No Significativo'))
+      {
+        return 'colorYelow';
+      }
+      else {
+        return '';
+      }
+    },
+    backgroundInputInherente()
+    {
+      if (
+      (this.risk.description_inherent_frequency == 'Bajo' && this.risk.description_inherent_impact == 'Extremo') || 
+      (this.risk.description_inherent_frequency == 'Moderada' && this.risk.description_inherent_impact == 'Grave') || 
+      (this.risk.description_inherent_frequency == 'Alta' && this.risk.description_inherent_impact == 'Moderado') ||
+      (this.risk.description_inherent_frequency == 'Muy Alta' && this.risk.description_inherent_impact == 'Leve'))
+      {
+        return 'colorOrange';
+      }
+      else if (
+      (this.risk.description_inherent_frequency == 'Muy Bajo' && this.risk.description_inherent_impact == 'Moderado') || 
+      (this.risk.description_inherent_frequency == 'Muy Bajo' && this.risk.description_inherent_impact == 'Leve') || 
+      (this.risk.description_inherent_frequency == 'Bajo' && this.risk.description_inherent_impact == 'Leve') ||
+      (this.risk.description_inherent_frequency == 'Bajo' && this.risk.description_inherent_impact == 'No Significativo') ||
+      (this.risk.description_inherent_frequency == 'Moderada' && this.risk.description_inherent_impact == 'No Significativo') ||
+      (this.risk.description_inherent_frequency == 'Bajo' && this.risk.description_inherent_impact == 'No Significativo'))
+      {
+        return 'colorGreen';
+      }
+      else if (
+      (this.risk.description_inherent_frequency == 'Moderada' && this.risk.description_inherent_impact == 'Extremo') || 
+      (this.risk.description_inherent_frequency == 'Alta' && this.risk.description_inherent_impact == 'Extremo') || 
+      (this.risk.description_inherent_frequency == 'Alta' && this.risk.description_inherent_impact == 'Grave') ||
+      (this.risk.description_inherent_frequency == 'Muy Alta' && this.risk.description_inherent_impact == 'Extremo') ||
+      (this.risk.description_inherent_frequency == 'Muy Alta' && this.risk.description_inherent_impact == 'Grave') ||
+      (this.risk.description_inherent_frequency == 'Muy Alta' && this.risk.description_inherent_impact == 'Moderado'))
+      {
+        return 'colorRed';
+      }
+      else if (
+      (this.risk.description_inherent_frequency == 'Muy Bajo' && this.risk.description_inherent_impact == 'Extremo') || 
+      (this.risk.description_inherent_frequency == 'Muy Bajo' && this.risk.description_inherent_impact == 'Grave') || 
+      (this.risk.description_inherent_frequency == 'Bajo' && this.risk.description_inherent_impact == 'Grave') ||
+      (this.risk.description_inherent_frequency == 'Bajo' && this.risk.description_inherent_impact == 'Moderado') ||
+      (this.risk.description_inherent_frequency == 'Moderada' && this.risk.description_inherent_impact == 'Moderado') ||
+      (this.risk.description_inherent_frequency == 'Moderada' && this.risk.description_inherent_impact == 'Leve') ||
+      (this.risk.description_inherent_frequency == 'Alta' && this.risk.description_inherent_impact == 'Leve') ||
+      (this.risk.description_inherent_frequency == 'Alta' && this.risk.description_inherent_impact == 'No Significativo') ||
+      (this.risk.description_inherent_frequency == 'Muy Alta' && this.risk.description_inherent_impact == 'No Significativo'))
+      {
+        return 'colorYelow';
+      }
+      else {
+        return '';
+      }
+    }
+  },
   methods: {
     emitDangerName(value) {
       this.$emit('riskName', value, this.indexRisk)
@@ -703,3 +812,22 @@ export default {
   }
 };
 </script>
+
+<style lang="scss">
+.colorRed {
+    background-color: #f0635f;
+    text-align: center;
+}
+.colorYelow {
+    background-color: #FFD950;
+    text-align: center;
+}
+.colorOrange {
+    background-color: #fba36e;
+    text-align: center;
+}
+.colorGreen {
+    background-color: #02BC77;
+    text-align: center;
+}
+</style>
