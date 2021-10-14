@@ -801,7 +801,101 @@ export default [
 					component: () =>
 					import('@/views/LegalAspects/contracts/contractor/masiveResponsibles')
 				}
-			]),		
+			]),			
+			...middleware({ 'check-permission': 'contracts_informs_r' }, [
+				{
+					name: 'legalaspects-informs',
+					path: 'contract/informs',
+					component: () =>
+					import('@/views/LegalAspects/contracts/informsQuantitative/index')
+				}
+			]),
+			...middleware({ 'check-permission': 'contracts_informs_c' }, [
+				{
+					name: 'legalaspects-informs-create',
+					path: 'contract/informs/create',
+					component: () => import('@/views/LegalAspects/contracts/informsQuantitative/create')
+				}
+			]),
+			...middleware({ 'check-permission': 'contracts_informs_c' }, [
+				{
+					name: 'legalaspects-informs-clone',
+					path: 'contract/informs/clone',
+					component: () => import('@/views/LegalAspects/contracts/informsQuantitative/clone')
+				}
+			]),
+			...middleware({ 'check-permission': 'contracts_informs_u' }, [
+				{
+					name: 'legalaspects-informs-edit',
+					path: 'contract/informs/edit/:id',
+					component: () =>
+					import('@/views/LegalAspects/contracts/informsQuantitative/edit')
+				},
+			]),
+			...middleware({ 'check-permission': 'contracts_informs_r' }, [
+				{
+					name: 'legalaspects-informs-view',
+					path: 'contract/informs/view/:id',
+					component: () =>
+					import('@/views/LegalAspects/contracts/informsQuantitative/view')
+				}
+			]),
+			/*...middleware({ 'check-permission': 'contracts_informs_perform_evaluation' }, [
+				{
+					name: 'legalaspects-informs-evaluate',
+					path: 'informs/evaluate/:id',
+					component: () =>
+					import('@/views/LegalAspects/contracts/evaluationContracts/create')
+				}
+			]),
+			...middleware({ 'check-permission': 'contracts_informs_perform_evaluation' }, [
+				{
+					name: 'legalaspects-informs-contracts-clone',
+					path: 'informs/contracts/clone',
+					component: () =>
+					import('@/views/LegalAspects/contracts/evaluationContracts/clone')
+				}
+			]),
+			...middleware({ 'check-permission': 'contracts_informs_view_informs_made' }, [
+				{
+					name: 'legalaspects-informs-lessee',
+					path: 'informs/contracts',
+					component: () =>
+					import('@/views/LegalAspects/contracts/evaluationContracts/index')
+				},
+			]),
+			...middleware({ 'check-permission': 'contracts_informs_view_informs_made' }, [
+				{
+					name: 'legalaspects-informs-contracts',
+					path: 'informs/contracts/:id',
+					component: () =>
+					import('@/views/LegalAspects/contracts/evaluationContracts/index')
+				}
+			]),
+			...middleware({ 'check-permission': 'contracts_informs_view_informs_made' }, [
+				{
+					name: 'legalaspects-informs-contracts-view',
+					path: 'informs/contracts/view/:id',
+					component: () =>
+					import('@/views/LegalAspects/contracts/evaluationContracts/view')
+				}
+			]),
+			...middleware({ 'check-permission': 'contracts_informs_edit_informs_made' }, [
+				{
+					name: 'legalaspects-informs-contracts-edit',
+					path: 'informs/contracts/edit/:id',
+					component: () =>
+					import('@/views/LegalAspects/contracts/evaluationContracts/edit')
+				}
+			]),
+			...middleware({ 'check-permission': 'contracts_informs_report_view' }, [
+				{
+					name: 'legalaspects-informs-report',
+					path: 'informs/report',
+					component: () =>
+					import('@/views/LegalAspects/contracts/evaluationContracts/report')
+				}
+			]),*/	
 		]
 	}
 ];

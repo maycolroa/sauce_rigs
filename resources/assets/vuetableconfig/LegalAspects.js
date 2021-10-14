@@ -1555,4 +1555,94 @@ export default [
             filterColumns: true,
         }
     },
+    {
+        name: 'legalaspects-informs',
+        fields: [
+            { name: 'sau_ct_informs.id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true },
+            { name: 'sau_ct_informs.name', data: 'name', title: 'Nombre', sortable: true, searchable: true, detail: false, key: false },
+            { name: 'sau_ct_informs.created_at', data: 'created_at', title: 'Fecha creación', sortable: true, searchable: true, detail: false, key: false },
+            { name: '', data: 'controlls', title: 'Controles', sortable: false, searchable: false, detail: false, key: false },
+        ],
+        'controlls': [{
+            type: 'push',
+            buttons: [{
+                config: {
+                    color: 'outline-success',
+                    borderless: true,
+                    icon: 'ion ion-md-create',
+                    title: 'Editar'
+                },
+                data: {
+                    routePush: { name: 'legalaspects-informs-edit' },
+                    id: 'id',
+                },
+                permission: 'contracts_informs_u'
+            }, {
+                config: {
+                    color: 'outline-info',
+                    borderless: true,
+                    icon: 'ion ion-md-eye',
+                    title: 'Ver'
+                },
+                data: {
+                    routePush: { name: 'legalaspects-informs-view' },
+                    id: 'id',
+                },
+                permission: 'contracts_informs_r'
+            },{
+                config: {
+                    color: 'outline-success',
+                    borderless: true,
+                    icon: 'ion ion-ios-copy',
+                    title: 'Clonar Informe'
+                },
+                data: {
+                    routePush: { name: 'legalaspects-informs-clone' },
+                    id: 'id',
+                },
+                permission: 'contracts_informs_c'
+              },{
+                config: {
+                    color: 'outline-success',
+                    borderless: true,
+                    icon: 'ion ion-md-clipboard',
+                    title: 'Realizar Informe'
+                },
+                data: {
+                    routePush: { name: 'legalaspects-informs-evaluate' },
+                    id: 'id',
+                },
+                permission: 'contracts_informs_perform_informs'
+            }, {
+              config: {
+                  color: 'outline-info',
+                  borderless: true,
+                  icon: 'ion ion-md-list',
+                  title: 'Ver Informes Realizados'
+              },
+              data: {
+                  routePush: { name: 'legalaspects-informs-contracts' },
+                  id: 'id',
+              },
+              permission: 'contracts_informs_view_informs_made'
+          }]
+        },
+        {
+            type: 'base',
+            buttons: [{
+            name: 'delete',
+            data: {
+                action: '/legalAspects/inform/',
+                id: 'id',
+                messageConfirmation: 'Esta seguro de borrar el informe __name__'
+            },
+            permission: 'contracts_informs_d'
+            }],
+        }],
+        configuration: {
+            urlData: '/legalAspects/inform/data',
+            filterColumns: true,
+            //configNameFilter: 'legalaspects-informs'
+        }
+    },
 ]

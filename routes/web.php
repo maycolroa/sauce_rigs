@@ -595,6 +595,9 @@ Route::middleware(['auth'])->group(function () {
       Route::post('trainigEmployeeDetails/report', 'LegalAspects\Contracs\ListCheckReportController@trainingEmployeeDetails');
       Route::post('trainigEmployeeConsolidated/report', 'LegalAspects\Contracs\ListCheckReportController@trainigEmployeeConsolidated');
 
+      Route::post('inform/data', 'LegalAspects\Contracs\InformController@data');
+      Route::ApiResource('inform', 'LegalAspects\Contracs\InformController');
+
       Route::prefix('legalMatrix')->group(function () {
 
         Route::post('interest/data', 'LegalAspects\LegalMatrix\InterestController@data');
