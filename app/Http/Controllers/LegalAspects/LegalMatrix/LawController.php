@@ -503,7 +503,7 @@ class LawController extends Controller
         {
             if ($law->file)
             {
-                $path = (!$law->company_id) ? 'laws/' : "laws/".$this->company."/".$law->file;
+                $path = (!$law->company_id) ? 'laws/'.$law->file : "laws/".$this->company."/".$law->file;
                 $law->url = Storage::disk('s3_MLegal')->url($path);
             }
             else
