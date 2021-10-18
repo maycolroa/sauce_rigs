@@ -191,10 +191,10 @@ class InformController extends Controller
      */
     public function destroy(Inform $inform)
     {
-        if (count($inform->informContracts) > 0)
+        /*if (count($inform->informContracts) > 0)
         {
             return $this->respondWithError('No se puede eliminar el informe porque ya existen informes realizados asociados a el');
-        }
+        }*/
 
         if(!$inform->delete())
         {
