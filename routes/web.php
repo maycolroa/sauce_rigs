@@ -595,6 +595,9 @@ Route::middleware(['auth'])->group(function () {
       Route::post('trainigEmployeeDetails/report', 'LegalAspects\Contracs\ListCheckReportController@trainingEmployeeDetails');
       Route::post('trainigEmployeeConsolidated/report', 'LegalAspects\Contracs\ListCheckReportController@trainigEmployeeConsolidated');
 
+      Route::post('inform/data', 'LegalAspects\Contracs\InformController@data');
+      Route::ApiResource('inform', 'LegalAspects\Contracs\InformController');
+
       Route::prefix('legalMatrix')->group(function () {
 
         Route::post('interest/data', 'LegalAspects\LegalMatrix\InterestController@data');
@@ -619,6 +622,7 @@ Route::middleware(['auth'])->group(function () {
 
         Route::get('law/downloadArticleQualify/{articleFulfillment}', 'LegalAspects\LegalMatrix\LawController@downloadArticleQualify');
         Route::get('law/download/{law}', 'LegalAspects\LegalMatrix\LawController@download');
+        Route::get('law/showFile/{law}', 'LegalAspects\LegalMatrix\LawController@showFile');
         Route::get('law/qualify/{law}', 'LegalAspects\LegalMatrix\LawController@getArticlesQualification');
         Route::post('law/saveArticlesQualification', 'LegalAspects\LegalMatrix\LawController@saveArticlesQualification');
         Route::post('law/saveArticlesQualificationAlls', 'LegalAspects\LegalMatrix\LawController@saveArticlesQualificationAlls');
