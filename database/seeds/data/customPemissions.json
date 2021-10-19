@@ -551,7 +551,7 @@
                         "display_name": "Contratistas/Informes - exportar"
                     },
                     {
-                        "name": "contracts_informs_perform_evaluation",
+                        "name": "contracts_informs_perform_informs",
                         "display_name": "Contratistas/Informes - realizar informe"
                     },
                     {
