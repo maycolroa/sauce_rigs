@@ -508,7 +508,7 @@ export default {
       (this.risk.description_residual_frequency == 'Bajo' && this.risk.description_residual_impact == 'Leve') ||
       (this.risk.description_residual_frequency == 'Bajo' && this.risk.description_residual_impact == 'No Significativo') ||
       (this.risk.description_residual_frequency == 'Moderada' && this.risk.description_residual_impact == 'No Significativo') ||
-      (this.risk.description_residual_frequency == 'Bajo' && this.risk.description_residual_impact == 'No Significativo'))
+      (this.risk.description_residual_frequency == 'Muy Bajo' && this.risk.description_residual_impact == 'No Significativo'))
       {
         return 'colorGreen';
       }
