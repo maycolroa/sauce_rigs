@@ -17,4 +17,9 @@ class InformTheme extends Model
     {
         return $this->belongsTo(Inform::class, 'inform_id');
     }
+
+    public function items()
+    {
+        return $this->hasMany(InformThemeItem::class, 'evaluation_theme_id');
+    }
 }

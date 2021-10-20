@@ -253,6 +253,9 @@ Route::middleware(['auth'])->group(function () {
           Route::post('months', 'LegalAspects\Contracs\EvaluationContractController@multiselectMounts');
         });
 
+        Route::post('inform/years', 'LegalAspects\Contracs\InformContractController@multiselectYears');
+        Route::post('inform/month', 'LegalAspects\Contracs\InformContractController@multiselectMonth');
+
         Route::prefix('absenteeism')->group(function () {
           Route::post('talends', 'PreventiveOccupationalMedicine\Absenteeism\TalendController@multiselect');
         });
@@ -597,6 +600,10 @@ Route::middleware(['auth'])->group(function () {
 
       Route::post('inform/data', 'LegalAspects\Contracs\InformController@data');
       Route::ApiResource('inform', 'LegalAspects\Contracs\InformController');
+
+      Route::ApiResource('informContract', 'LegalAspects\Contracs\InformContractController');
+      Route::post('informContract/data', 'LegalAspects\Contracs\InformContractController@data');
+      Route::get('informContract/getData/{informContract}', 'LegalAspects\Contracs\InformContractController@getData');
 
       Route::prefix('legalMatrix')->group(function () {
 

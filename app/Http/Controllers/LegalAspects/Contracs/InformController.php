@@ -7,7 +7,8 @@ use App\Http\Controllers\Controller;
 use App\Vuetable\Facades\Vuetable;
 use App\Http\Requests\LegalAspects\Contracts\InformRequest;
 use App\Models\LegalAspects\Contracts\Inform;
-use App\Models\LegalAspects\Contracts\Theme;
+use App\Models\LegalAspects\Contracts\InformTheme;
+use App\Models\LegalAspects\Contracts\InformThemeItem;
 use App\Jobs\LegalAspects\Contracts\Evaluations\EvaluationExportJob;
 use App\Traits\Filtertrait;
 use Carbon\Carbon;
@@ -132,10 +133,16 @@ class InformController extends Controller
             foreach ($inform->themes as $theme)
             {
                 $theme->key = Carbon::now()->timestamp + rand(1,10000);
+
+                foreach ($theme->items as $item)
+                {
+                    $item->key = Carbon::now()->timestamp + rand(1,10000);
+                }
             }
 
             $inform->delete = [
-                'themes' => []
+                'themes' => [],
+                'items' => []
             ];
 
             return $this->respondHttp200([
@@ -211,14 +218,28 @@ class InformController extends Controller
         foreach ($themes as $theme)
         {
             $id = isset($theme['id']) ? $theme['id'] : NULL;
-            $themeNew = $inform->themes()->updateOrCreate(['id'=>$id], $theme);;
+            $themeNew = $inform->themes()->updateOrCreate(['id'=>$id], $theme);
+
+            $this->saveitems($themeNew, $theme['items']);
+        }
+    }
+
+    private function saveitems($theme, $items)
+    {
+        foreach ($items as $item)
+        {
+            $id = isset($item['id']) ? $item['id'] : NULL;
+            $itemNew = $theme->items()->updateOrCreate(['id'=>$id], $item);
         }
     }
 
     private function deleteData($data)
     {    
         if (COUNT($data['themes']) > 0)
-            Objective::destroy($data['themes']);
+            InformTheme::destroy($data['themes']);
+
+        if (COUNT($data['items']) > 0)
+            InformThemeItem::destroy($data['items']);
 
     }
 

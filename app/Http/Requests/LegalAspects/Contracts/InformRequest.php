@@ -57,7 +57,9 @@ class InformRequest extends FormRequest
         return [
             'name' => 'required|string|unique:sau_ct_informs,name,'.$id.',id,company_id,'.Session::get('company_id'),
             'themes' => 'required|array',
-            'themes.*.description' => 'required'
+            'themes.*.description' => 'required',
+            'themes.*.items' => 'required|array',
+            'themes.*.items.*.description' => 'required',
         ];
     }
 }

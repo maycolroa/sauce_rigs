@@ -840,15 +840,15 @@ export default [
 					import('@/views/LegalAspects/contracts/informsQuantitative/view')
 				}
 			]),
-			/*...middleware({ 'check-permission': 'contracts_informs_perform_evaluation' }, [
+			...middleware({ 'check-permission': 'contracts_informs_perform_informs' }, [
 				{
 					name: 'legalaspects-informs-evaluate',
 					path: 'informs/evaluate/:id',
 					component: () =>
-					import('@/views/LegalAspects/contracts/evaluationContracts/create')
+					import('@/views/LegalAspects/contracts/informContract/create')
 				}
 			]),
-			...middleware({ 'check-permission': 'contracts_informs_perform_evaluation' }, [
+			/*...middleware({ 'check-permission': 'contracts_informs_perform_informs' }, [
 				{
 					name: 'legalaspects-informs-contracts-clone',
 					path: 'informs/contracts/clone',

@@ -69,9 +69,9 @@
 								<router-link tag="a" href="javascript:void(0)" class="card-body media align-items-center text-dark" :to="{name:'legalaspects-informs'}">
 									<i class="lnr lnr-magnifier display-4 d-block text-primary"></i>
 									<span class="media-body d-block ml-3">
-										<span class="text-big font-weight-bolder">Administración de los informes</span>
+										<span class="text-big font-weight-bolder">Administración de los informes mensuales</span>
 										<br>
-										<small class="text-muted">Administrar los informes de tus contratistas y/o arrendatarios.</small>
+										<small class="text-muted">Administrar los informes mensuales de tus contratistas y/o arrendatarios.</small>
 									</span>
 								</router-link>
 							</div>
