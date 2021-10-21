@@ -555,7 +555,7 @@ export default {
       (this.risk.description_inherent_frequency == 'Bajo' && this.risk.description_inherent_impact == 'Leve') ||
       (this.risk.description_inherent_frequency == 'Bajo' && this.risk.description_inherent_impact == 'No Significativo') ||
       (this.risk.description_inherent_frequency == 'Moderada' && this.risk.description_inherent_impact == 'No Significativo') ||
-      (this.risk.description_inherent_frequency == 'Bajo' && this.risk.description_inherent_impact == 'No Significativo'))
+      (this.risk.description_inherent_frequency == 'Muy Bajo' && this.risk.description_inherent_impact == 'No Significativo'))
       {
         return 'colorGreen';
       }
