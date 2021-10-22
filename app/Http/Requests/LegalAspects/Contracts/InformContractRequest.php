@@ -20,14 +20,14 @@ class InformContractRequest extends FormRequest
     public function validator($factory)
     {
         return $factory->make(
-            $this->sanitize(), $this->container->call([$this, 'rules']), $this->messages()
+            $this->sanitize(), $this->container->call([$this, 'rules'])//, $this->messages()
         );
     }
 
     public function sanitize()
     {
         $this->merge([
-            'evaluation' => json_decode($this->input('evaluation'), true)
+            'inform' => json_decode($this->input('inform'), true)
         ]);
 
         if ($this->has('delete'))
@@ -45,9 +45,10 @@ class InformContractRequest extends FormRequest
             {
                 $allKeys = explode("_", $key);
                 $keyObj = $allKeys[0];
-                $keyFile = $allKeys[1];
+                $keyItem = $allKeys[1];
+                $keyFile = $allKeys[2];
 
-                $data['evaluation']['themes'][$keyObj]['files'][$keyFile]['file'] = $value;
+                $data['inform']['themes'][$keyObj]['items'][$keyItem]['files'][$keyFile]['file'] = $value;
             }
 
             $this->merge($data);
@@ -66,10 +67,9 @@ class InformContractRequest extends FormRequest
         $id = $this->input('id');
 
         return [
-            'evaluators_id' => 'required|array',
             'contract_id' => 'required|exists:sau_ct_information_contract_lessee,id',
-            'evaluation.themes.*.observations.*.description' => 'required',
-            'evaluation.themes.*.files.*.file' => 'max:20480'
+            'inform.themes.*.items.*.observations.*.description' => 'required',
+            'inform.themes.*.items.*.files.*.file' => 'max:20480'
         ];
     }
 

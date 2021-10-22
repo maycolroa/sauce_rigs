@@ -848,28 +848,20 @@ export default [
 					import('@/views/LegalAspects/contracts/informContract/create')
 				}
 			]),
-			/*...middleware({ 'check-permission': 'contracts_informs_perform_informs' }, [
+			...middleware({ 'check-permission': 'contracts_informs_perform_informs' }, [
 				{
 					name: 'legalaspects-informs-contracts-clone',
 					path: 'informs/contracts/clone',
 					component: () =>
-					import('@/views/LegalAspects/contracts/evaluationContracts/clone')
+					import('@/views/LegalAspects/contracts/informContract/clone')
 				}
-			]),
-			...middleware({ 'check-permission': 'contracts_informs_view_informs_made' }, [
-				{
-					name: 'legalaspects-informs-lessee',
-					path: 'informs/contracts',
-					component: () =>
-					import('@/views/LegalAspects/contracts/evaluationContracts/index')
-				},
 			]),
 			...middleware({ 'check-permission': 'contracts_informs_view_informs_made' }, [
 				{
 					name: 'legalaspects-informs-contracts',
 					path: 'informs/contracts/:id',
 					component: () =>
-					import('@/views/LegalAspects/contracts/evaluationContracts/index')
+					import('@/views/LegalAspects/contracts/informContract/index')
 				}
 			]),
 			...middleware({ 'check-permission': 'contracts_informs_view_informs_made' }, [
@@ -877,7 +869,7 @@ export default [
 					name: 'legalaspects-informs-contracts-view',
 					path: 'informs/contracts/view/:id',
 					component: () =>
-					import('@/views/LegalAspects/contracts/evaluationContracts/view')
+					import('@/views/LegalAspects/contracts/informContract/view')
 				}
 			]),
 			...middleware({ 'check-permission': 'contracts_informs_edit_informs_made' }, [
@@ -885,7 +877,7 @@ export default [
 					name: 'legalaspects-informs-contracts-edit',
 					path: 'informs/contracts/edit/:id',
 					component: () =>
-					import('@/views/LegalAspects/contracts/evaluationContracts/edit')
+					import('@/views/LegalAspects/contracts/informContract/edit')
 				}
 			]),
 			...middleware({ 'check-permission': 'contracts_informs_report_view' }, [
@@ -893,9 +885,9 @@ export default [
 					name: 'legalaspects-informs-report',
 					path: 'informs/report',
 					component: () =>
-					import('@/views/LegalAspects/contracts/evaluationContracts/report')
+					import('@/views/LegalAspects/contracts/informContract/report')
 				}
-			]),*/	
+			]),
 		]
 	}
 ];

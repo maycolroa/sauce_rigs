@@ -14,17 +14,24 @@ class InformContract extends Model
     protected $fillable = [
         'inform_date',
         'inform_id',
-        'contract_id',
         'company_id',
+        'contract_id',
         'evaluator_id',
-        'period',
+        'year',
+        'month',
         'state',
-        'observation'
+        'observation',
+        'Objective_inform'
     ];
 
-    public function evaluation()
+    public function inform()
     {
-        return $this->belongsTo(Evaluation::class, 'evaluation_id');
+        return $this->belongsTo(Inform::class, 'inform_id');
+    }
+
+    public function items()
+    {
+        return $this->hasMany(InformContractItem::class, 'inform_id');
     }
 
     public function contract()
@@ -32,46 +39,30 @@ class InformContract extends Model
         return $this->belongsTo(ContractLesseeInformation::class, 'contract_id');
     }
 
-    public function evaluators()
+    public function evaluator()
     {
         return $this->belongsToMany('App\Models\Administrative\Users\User', 'sau_ct_evaluation_user', 'evaluation_id');
     }
 
-    public function interviewees()
-    {
-        return $this->hasMany(Interviewee::class, 'evaluation_id');
-    }
-
     public function observations()
     {
-        return $this->hasMany(Observation::class, 'evaluation_id');
+        return $this->hasMany(InformContractItemObservation::class, 'inform_id');
     }
 
     public function files()
     {
-        return $this->hasMany(EvaluationFile::class, 'evaluation_id');
+        return $this->hasMany(InformContractItemFile::class, 'inform_id');
     }
 
     public function results()
     {
-        return $this->hasMany(EvaluationItemRating::class, 'evaluation_id');
-    }
-
-    public function histories()
-    {
-        return $this->hasMany(EvaluationContractHistory::class, 'evaluation_id');
+        return $this->hasMany(InformContractItem::class, 'inform_id');
     }
 
     public function ready()
     {
         return $this->state == 'Terminada' ? true : false;
     }
-
-    public function items()
-    {
-        return $this->hasMany(EvaluationContractItem::class, 'evaluation_id');
-    }
-
 
     /**
      * filters checks through the given objectives
