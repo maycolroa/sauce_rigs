@@ -532,47 +532,47 @@
                     },
                     {
                         "name": "contracts_informs_c",
-                        "display_name": "Contratistas/Informes - crear"
+                        "display_name": "Contratistas/Informes mensuales - crear"
                     },
                     {
                         "name": "contracts_informs_r",
-                        "display_name": "Contratistas/Informes - ver"
+                        "display_name": "Contratistas/Informes mensuales - ver"
                     },
                     {
                         "name": "contracts_informs_u",
-                        "display_name": "Contratistas/Informes - editar"
+                        "display_name": "Contratistas/Informes mensuales - editar"
                     },
                     {
                         "name": "contracts_informs_d",
-                        "display_name": "Contratistas/Informes - eliminar"
+                        "display_name": "Contratistas/Informes mensuales - eliminar"
                     },
                     {
                         "name": "contracts_informs_export",
-                        "display_name": "Contratistas/Informes - exportar"
+                        "display_name": "Contratistas/Informes mensuales - exportar"
                     },
                     {
                         "name": "contracts_informs_perform_informs",
-                        "display_name": "Contratistas/Informes - realizar informe"
+                        "display_name": "Contratistas/Informes mensuales - realizar informe"
                     },
                     {
                         "name": "contracts_informs_view_informs_made",
-                        "display_name": "Contratistas/Informes - ver informes realizadas"
+                        "display_name": "Contratistas/Informes mensuales - ver informes mensuales realizadas"
                     },
                     {
                         "name": "contracts_informs_edit_informs_made",
-                        "display_name": "Contratistas/Informes - editar informes realizadas"
+                        "display_name": "Contratistas/Informes mensuales - editar informes mensuales realizadas"
                     },
                     {
                         "name": "contracts_informs_delete_informs_made",
-                        "display_name": "Contratistas/Informes - eliminar informes realizadas"
+                        "display_name": "Contratistas/Informes mensuales - eliminar informes mensuales realizadas"
                     },                    
                     {
                         "name": "contracts_informs_report_view",
-                        "display_name": "Contratistas/Informes - ver reportes"
+                        "display_name": "Contratistas/Informes mensuales - ver reportes"
                     },
                     {
                         "name": "contracts_informs_report_export",
-                        "display_name": "Contratistas/Informes - exportar reportes"
+                        "display_name": "Contratistas/Informes mensuales - exportar reportes"
                     }
                 ]
             },
