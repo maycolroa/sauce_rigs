@@ -41,7 +41,7 @@ class InformContract extends Model
 
     public function evaluator()
     {
-        return $this->belongsToMany('App\Models\Administrative\Users\User', 'sau_ct_evaluation_user', 'evaluation_id');
+        return $this->belongsTo('App\Models\Administrative\Users\User', 'evaluator_id');
     }
 
     public function observations()

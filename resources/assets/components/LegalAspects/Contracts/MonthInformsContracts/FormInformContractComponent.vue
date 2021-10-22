@@ -31,7 +31,7 @@
                 </b-form-row>
                 <b-form-row>
                     <vue-advanced-select class="col-md-2" :disabled="viewOnly" v-model="form.year" :options="yearsOptions" :searchable="false" name="years" placeholder="Año" :multiple="false"></vue-advanced-select>
-                    <vue-advanced-select class="col-md-2" :disabled="viewOnly" v-model="form.month" :options="monthsOptions" :searchable="false" name="years" placeholder="Mes" :multiple="false"></vue-advanced-select>
+                    <vue-advanced-select class="col-md-2" :disabled="viewOnly" v-model="form.month" :options="monthsOptions" @input="periodValid()" :searchable="false" name="years" placeholder="Mes" :multiple="false"></vue-advanced-select>
                 </b-form-row>
                 <b-form-row>
                     <vue-input v-if="viewOnly || isEdit" disabled class="col-md-4" v-model="form.inform_date" label="Fecha de presentación" type="text" name="inform_date" placeholder="Fecha de presentación"></vue-input>
@@ -259,7 +259,9 @@ export default {
   mounted() {
         setTimeout(() => {
             this.$refs.wizardForminform.activateAll();
+            this.verify = true
         }, 4000)
+
   },
   watch: {
     inform() {
@@ -269,9 +271,10 @@ export default {
     'form.contract_id' () {
         this.fetchContractor()
     },
-    'form.month' () {
+    /*'form.month' () {
+      if (!this.isEdit || !this.viewOnly)
         this.periodValid()
-    }
+    }*/
   },
   data() {
     return {
@@ -301,6 +304,7 @@ export default {
         },
         autoSave: '',
         textBlock: 'Cargando...',
+        verify: false
         
     };
   },
@@ -440,15 +444,18 @@ export default {
     },
     periodValid()
     {
-      this.postData = Object.assign({}, {year: this.form.year}, {month: this.form.month}, {contract: this.form.contract_id},
-      {inform: this.form.inform_id});
+      if (this.verify)
+      {
+        this.postData = Object.assign({}, {year: this.form.year}, {month: this.form.month}, {contract: this.form.contract_id},
+        {inform: this.form.inform_id});
 
-      axios.post('/legalAspects/informContract/periodExist', this.postData)
-        .then(response => {
-            
-        }).catch(error => {
-            Alerts.error('Error', 'Este período ya ha sido evaluado para este contratista, por favor seleccione otro período');
-        });
+        axios.post('/legalAspects/informContract/periodExist', this.postData)
+          .then(response => {
+              
+          }).catch(error => {
+              Alerts.error('Error', 'Este período ya ha sido evaluado para este contratista, por favor seleccione otro período');
+          });
+      }
     }
   }
 };

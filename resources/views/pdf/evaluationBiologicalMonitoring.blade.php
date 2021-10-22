@@ -200,7 +200,7 @@
 
     <br><br>
 
-    {<div style="page-break-inside: avoid;">
+    <div style="page-break-inside: avoid;">
         <table>
             <thead>
                 <tr>
