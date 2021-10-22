@@ -1645,4 +1645,96 @@ export default [
             //configNameFilter: 'legalaspects-informs'
         }
     },
+    {
+        name: 'legalaspects-informs-contracts',
+        fields: [
+            { name: 'sau_ct_inform_contract.id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true },
+            { name: 'sau_ct_information_contract_lessee.nit', data: 'nit', title: 'NIT', sortable: true, searchable: true, detail: false, key: false },
+            { name: 'sau_ct_information_contract_lessee.social_reason', data: 'social_reason', title: 'Razón social', sortable: true, searchable: true, detail: false, key: false },
+            { name: 'sau_ct_inform_contract.inform_date', data: 'inform_date', title: 'Fecha evaluación', sortable: true, searchable: true, detail: false, key: false },
+            { name: 'sau_ct_inform_contract.periodo', data: 'periodo', title: 'Período', sortable: true, searchable: true, detail: false, key: false },
+            { name: 'sau_ct_inform_contract.state', data: 'state', title: 'Estado', sortable: true, searchable: true, detail: false, key: false },
+            { name: '', data: 'controlls', title: 'Controles', sortable: false, searchable: false, detail: false, key: false },
+        ],
+        'controlls': [
+            {
+              type: 'push',
+              buttons: [
+                {
+                config: {
+                    color: 'outline-success',
+                    borderless: true,
+                    icon: 'ion ion-md-create',
+                    title: 'Editar'
+                },
+                data: {
+                    routePush: { name: 'legalaspects-informs-contracts-edit' },
+                    id: 'id',
+                },
+                permission: 'contracts_informs_edit_informs_made'
+              }, {
+                config: {
+                    color: 'outline-info',
+                    borderless: true,
+                    icon: 'ion ion-md-eye',
+                    title: 'Ver'
+                },
+                data: {
+                    routePush: { name: 'legalaspects-informs-contracts-view' },
+                    id: 'id',
+                },
+                permission: 'contracts_informs_view_informs_made'
+              },
+              {
+                config: {
+                    color: 'outline-success',
+                    borderless: true,
+                    icon: 'ion ion-ios-copy',
+                    title: 'Clonar Evaluación'
+                },
+                data: {
+                    routePush: { name: 'legalaspects-informs-contracts-clone' },
+                    id: 'id',
+                },
+                permission: 'contracts_informs_edit_informs_made'
+            }]
+          },
+          {
+              type: 'base',
+              buttons: [
+              {
+                  name: 'delete',
+                  data: {
+                      action: '/legalAspects/informContract/',
+                      id: 'id',
+                      messageConfirmation: 'Esta seguro de borrar la evaluación realizada'
+                  },
+                  permission: 'contracts_informs_delete_informs_made'
+              }],
+          },
+          {
+              type: 'simpleDownload',
+              buttons: [
+              {
+                name: 'downloadFile',
+                config: {
+                    color: 'outline-danger',
+                    borderless: true,
+                    icon: 'fas fa-file-pdf',
+                    title: 'Descargar Evaluación en PDF'
+                },
+                data: {
+                    action: '/legalAspects/informContract/downloadPdf/',
+                    id: 'id'
+                },
+                permission: 'contracts_evaluations_export'
+              }],
+          }
+        ],
+        configuration: {
+            urlData: '/legalAspects/informContract/data',
+            filterColumns: true,
+            //configNameFilter: 'legalaspects-evaluations-contracts'*/
+        }
+    }
 ]

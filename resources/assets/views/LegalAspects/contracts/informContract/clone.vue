@@ -2,37 +2,27 @@
   <div>
     <header-module
 			title="CONTRATISTAS"
-			subtitle="CREAR EVALUACIÓN"
-			url="legalaspects-evaluations"
+			subtitle="EVALUAR"
+			url="legalaspects-informs"
 		/>
 
     <div class="col-md">
       <b-card no-body>
         <b-card-body>
-          <form-evaluation-contract-component
-                :url="`/legalAspects/evaluationContract`"
+          <form-inform-contract-component
+                :url="`/legalAspects/informContract`"
                 method="POST"
-                :evaluation="data"
-                :types-rating="typesRating"
-                userDataUrl="/selects/users"
-                :cancel-url="{ name: 'legalaspects-evaluations'}"
+                :inform="data"
+                :cancel-url="{ name: 'legalaspects-informs'}"
                 :action-plan-states="actionPlanStates"/>
         </b-card-body>
       </b-card>
-
-      <b-modal ref="modalBlock" class="modal-slide" hide-header hide-footer @hidden="returnPage()">
-        <p class="text-justific mb-4">
-          Estimado usuario en este momento la evaluación se encuentra en edición por el usuario <b> {{ data.evaluation ? data.evaluation.user_edit : '' }} </b>
-        </p>
-        <b-btn block variant="primary" @click="returnPage()">Aceptar</b-btn>
-      </b-modal>
-
     </div>
   </div>
 </template>
 
 <script>
-import FormEvaluationContractComponent from '@/components/LegalAspects/Contracts/EvaluationContracts/FormEvaluationContractComponent.vue';
+import FormInformContractComponent from '@/components/LegalAspects/Contracts/MonthInformsContracts/FormInformContractComponent.vue';
 import Alerts from '@/utils/Alerts.js';
 import GlobalMethods from '@/utils/GlobalMethods.js';
 
@@ -42,31 +32,30 @@ export default {
     title: 'Evaluaciones - Evaluar'
   },
   components:{
-    FormEvaluationContractComponent
+    FormInformContractComponent
   },
   data(){
     return {
       data: [],
-      typesRating: [],
       actionPlanStates: []
     }
   },
   created(){
-     axios.get(`/legalAspects/evaluationContract/${this.$route.params.id}`)
+     axios.get(`/legalAspects/informContract/${this.$route.params.id}`)
     .then(response => {
         this.data = response.data.data;
         console.log(this.data);
         delete this.data.id
-        this.data.evaluation.objectives.map((objective) => {
-          objective.subobjectives.map((subobjective) => {
-            subobjective.items.map((item) => {
+        this.data.year = ''
+        this.data.month = ''
+        this.data.inform.themes.map((theme) => {
+            theme.items.map((item) => {
               item.file = [];
               item.actionPlan.activities.map((plan) => {
                 plan.id = ''
 
                 return plan;
               });
-              //item.actionPlan = {"activities":[],"activitiesRemoved":[]};
               item.files_pdf = [];
               item.observations.map((obs) => {
                 delete obs.id
@@ -76,13 +65,8 @@ export default {
               });
               return item;
             });
-            return subobjective;
-          });
-          return objective;
+          return theme;
         });
-
-        if (this.data.evaluation.in_edit)
-          this.$refs.modalBlock.show();
     })
     .catch(error => {
       console.log(error)

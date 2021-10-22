@@ -32,10 +32,10 @@
                 <b-form-row>
                     <vue-advanced-select class="col-md-2" :disabled="viewOnly" v-model="form.year" :options="yearsOptions" :searchable="false" name="years" placeholder="Año" :multiple="false"></vue-advanced-select>
                     <vue-advanced-select class="col-md-2" :disabled="viewOnly" v-model="form.month" :options="monthsOptions" :searchable="false" name="years" placeholder="Mes" :multiple="false"></vue-advanced-select>
-                    <vue-input v-if="viewOnly || isEdit" disabled class="col-md-4" v-model="form.inform_date" label="Fecha de presentación" type="text" name="inform_date" placeholder="Fecha de presentación"></vue-input>
                 </b-form-row>
                 <b-form-row>
-                  <vue-textarea :disabled="viewOnly" class="col-md-12" v-model="form.objective_inform" label="Objetivo del informe" name="objective_inform" placeholder="Objetivo del informe"  rows="1"></vue-textarea>
+                    <vue-input v-if="viewOnly || isEdit" disabled class="col-md-4" v-model="form.inform_date" label="Fecha de presentación" type="text" name="inform_date" placeholder="Fecha de presentación"></vue-input>
+                  <vue-textarea :disabled="viewOnly" class="col-md-8" v-model="form.Objective_inform" label="Objetivo del informe" name="Objective_inform" placeholder="Objetivo del informe"  rows="1"></vue-textarea>
                 </b-form-row>
 
             </tab-content>
@@ -52,70 +52,103 @@
                 </blockquote>
                 <b-form-row style="padding-top: 15px;">
                     <perfect-scrollbar :options="{ wheelPropagation: true }" class="mb-4" style="height: 500px; padding-right: 15px; width: 100%;">
-                        <b-card no-body class="mb-2 border-secondary" style="width: 100%;">
+                      <template v-for="(objetive, index) in form.inform.themes">
+                        <b-card no-body class="mb-2 border-secondary" :key="objetive.key" style="width: 100%;">
+                          <b-card-header class="bg-secondary">
+                              <b-row>
+                                  <b-col cols="10" class="d-flex justify-content-between"> {{ form.inform.themes[index].description }}</b-col>
+                                  <b-col cols="2">
+                                      <div class="float-right">
+                                      <b-button-group>
+                                          <b-btn href="javascript:void(0)" v-b-toggle="'accordion' + objetive.key+'-12'" variant="link">
+                                          <span class="collapse-icon"></span>
+                                          </b-btn>
+                                      </b-button-group>
+                                      </div>
+                                  </b-col>
+                              </b-row>
+                          </b-card-header>
+                          <b-collapse :id="`accordion${objetive.key}-12`" visible :accordion="`accordion-123543`">
                             <b-card-body>
-                                <table class="table table-bordered table-hover">
-                                    <thead class="bg-secondary">
-                                        <tr>
-                                            <th scope="col" class="align-middle text-center">#</th>
-                                            <th scope="col" class="align-middle">Descripción</th>
-                                            <th colspan="3" scope="col" class="align-middle text-center" ></th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <template v-for="(theme, index) in form.inform.themes">
-                                            <tr :key="index">
-                                                <td class="align-middle">
-                                                    <center>
-                                                    <modal-observations v-model="form.inform.themes[index].observations" :item-id="theme.id" :view-only="viewOnly" @removeObservation="pushRemoveObservation" :form="form" :prefixIndex="`inform.themes.${index}.observations`"/>
-                                                    <modal-file v-model="form.inform.themes[index].files" :item-id="theme.id" :view-only="viewOnly" @removeFile="pushRemoveFile" :form="form" :prefixIndex="`inform.themes.${index}.files`"/>
-                                                    <b-btn @click="showModal(`modalPlan${index}`)" variant="outline-info icon-btn borderless" size="xs" v-b-tooltip.top title="Ver plan de acción"><span class="ion ion-md-paper"></span></b-btn>
-                                                    </center>
-                                                    <b-modal :ref="`modalPlan${index}`" :hideFooter="true" :id="`modals-default-${index+1}`" class="modal-top" size="lg" @hidden="removed(index)">
-                                                    <div slot="modal-title">
-                                                        Plan de acción<br>
-                                                        <small class="text-muted">Crea planes de acción.</small>
-                                                    </div>
-
-                                                    <b-card bg-variant="transparent"  title="" class="mb-3 box-shadow-none">
-                                                        <action-plan-component
-                                                        :is-edit="!viewOnly"
-                                                        :view-only="viewOnly"
-                                                        :form="form"
-                                                        :prefix-index="`inform.themes.${index}.actionPlan`"
-                                                        :action-plan-states="actionPlanStates"
-                                                        v-model="form.inform.themes[index].actionPlan"
-                                                        :action-plan="form.inform.themes[index].actionPlan"/>
-                                                    </b-card>
-                                                    <br>
-                                                    <div class="row float-right pt-12 pr-12y">
-                                                        <b-btn variant="primary" @click="hideModal(`modalPlan${index}`)">Cerrar</b-btn>
-                                                    </div>
-                                                    </b-modal>
-                                                </td>                  
-                                                <td style="padding: 0px;">
-                                                    <vue-textarea :disabled="true" class="col-md-12" v-model="form.inform.themes[index].description" label="" name="description" placeholder="Descripción"  rows="1"></vue-textarea>
-                                                </td>
-                                                <td colspan="2" class="align-middle text-nowrap" style="padding: 0px;">
-                                                  <b-row class="col-md-12">
-                                                    <b-col>
-                                                      <vue-input :disabled="viewOnly" v-model="form.inform.themes[index].programmed" label="Programado" type="text" name="name" :error="form.errorsFor('name')"></vue-input>
-                                                    </b-col>
-                                                    <b-col>
-                                                      <vue-input :disabled="viewOnly" v-model="form.inform.themes[index].expected" label="Esperado" type="text" name="name" :error="form.errorsFor('name')"></vue-input>
-                                                    </b-col>
-                                                    <b-col>
-                                                      <vue-input :disabled="viewOnly" v-model="form.inform.themes[index].compliance" label="% Cumplimiento" type="text" name="name" :error="form.errorsFor('name')"></vue-input>
-                                                    </b-col>
-                                                    <b-btn @click="showModal(`modalHistory${index}`)" variant="outline-info icon-btn borderless" size="xs" v-b-tooltip.top title="Ver historial"><span class="ion ion-ios-copy"></span></b-btn>
-                                                  </b-row>
-                                                </td>
+                              <b-form-row style="padding-top: 15px;">
+                                <b-card no-body class="mb-2 border-secondary" style="width: 100%;">
+                                  <b-card-body>
+                                    <table class="table table-bordered table-hover">
+                                        <thead class="bg-secondary">
+                                            <tr>
+                                                <th scope="col" class="align-middle text-center">#</th>
+                                                <th scope="col" class="align-middle">Descripción</th>
+                                                <th colspan="3" scope="col" class="align-middle text-center" ></th>
                                             </tr>
-                                        </template>
-                                    </tbody>
-                                </table>
+                                        </thead>
+                                        <tbody>
+                                          <template v-for="(item, index2) in objetive.items">
+                                              <tr :key="index2">
+                                                  <td class="align-middle">
+                                                      <center>
+                                                      <modal-observations v-model="form.inform.themes[index].items[index2].observations" :item-id="item.id" :view-only="viewOnly" @removeObservation="pushRemoveObservation" :form="form" :prefixIndex="`inform.themes.${index}.observations`"/>
+                                                      <modal-file v-model="form.inform.themes[index].items[index2].files" :item-id="item.id" :view-only="viewOnly" @removeFile="pushRemoveFile" :form="form" :prefixIndex="`inform.themes${index}.items${index2}.files`"/>
+                                                      <b-btn @click="showModal(`modalPlan${index2}`)" variant="outline-info icon-btn borderless" size="xs" v-b-tooltip.top title="Ver plan de acción"><span class="ion ion-md-paper"></span></b-btn>
+                                                      </center>
+                                                      <b-modal :ref="`modalPlan${index2}`" :hideFooter="true" :id="`modals-default-${index2+1}`" class="modal-top" size="lg" @hidden="removed(index, index2)">
+                                                      <div slot="modal-title">
+                                                          Plan de acción<br>
+                                                          <small class="text-muted">Crea planes de acción.</small>
+                                                      </div>
+
+                                                      <b-card bg-variant="transparent"  title="" class="mb-3 box-shadow-none">
+                                                          <action-plan-component
+                                                          :is-edit="!viewOnly"
+                                                          :view-only="viewOnly"
+                                                          :form="form"
+                                                          :prefix-index="`inform.themes${index}.items${index2}-actionPlan`"
+                                                          :action-plan-states="actionPlanStates"
+                                                          v-model="form.inform.themes[index].items[index2].actionPlan"
+                                                          :action-plan="form.inform.themes[index].items[index2].actionPlan"/>
+                                                      </b-card>
+                                                      <br>
+                                                      <div class="row float-right pt-12 pr-12y">
+                                                          <b-btn variant="primary" @click="hideModal(`modalPlan${index2}`)">Cerrar</b-btn>
+                                                      </div>
+                                                      </b-modal>
+                                                  </td>                  
+                                                  <td style="padding: 0px;">
+                                                      <vue-textarea :disabled="true" class="col-md-12" v-model="form.inform.themes[index].items[index2].description" label="" name="description" placeholder="Descripción"  rows="1"></vue-textarea>
+                                                  </td>
+                                                  <td colspan="2" class="align-middle text-nowrap" style="padding: 0px;">
+                                                    <b-row class="col-md-12">
+                                                      <b-col>
+                                                        <vue-input :disabled="viewOnly" v-model="form.inform.themes[index].items[index2].programmed" label="Programado" type="number" name="name" :error="form.errorsFor('name')" @input="calculatePorcentage(index, index2)"></vue-input>
+                                                      </b-col>
+                                                      <b-col>
+                                                        <vue-input :disabled="viewOnly" v-model="form.inform.themes[index].items[index2].executed" label="Ejecutado" type="number" name="name" :error="form.errorsFor('name')" @input="calculatePorcentage(index, index2)"></vue-input>
+                                                      </b-col>
+                                                      <b-col :key="form.inform.themes[index].items[index2].compliance">
+                                                        <vue-input :disabled="true" v-model="form.inform.themes[index].items[index2].compliance" label="% Cumplimiento" type="number" name="name" :error="form.errorsFor('name')"></vue-input>
+                                                      </b-col>
+                                                      <b-btn @click="showModal(`modalHistory${index2}`)" variant="outline-info icon-btn borderless" size="xs" v-b-tooltip.top title="Ver historial"><span class="ion ion-ios-copy"></span></b-btn>
+                                                    </b-row>
+                                                    <b-modal :ref="`modalHistory${index2}`" :hideFooter="true" :id="`modals-default-${index2+1}`" class="modal-top" size="lg">
+                                                      <div slot="modal-title">
+                                                          Historíco<br>
+                                                      </div>
+                                                      <br>
+                                                      <div class="row float-right pt-12 pr-12y">
+                                                          <b-btn variant="primary" @click="hideModal(`modalHistory${index2}`)">Cerrar</b-btn>
+                                                      </div>
+                                                      </b-modal>
+                                                  </td>
+                                              </tr>
+                                          </template>
+                                        </tbody>
+                                    </table>
+                                  </b-card-body>
+                                </b-card>
+                              </b-form-row>
                             </b-card-body>
+                          </b-collapse>
                         </b-card>
+                      </template>
                     </perfect-scrollbar>
                 </b-form-row>
                 </div>
@@ -129,24 +162,6 @@
                             </b-card>
                     </b-col>
                 </b-row>
-            </tab-content>
-
-            <tab-content title="Historial" v-if="viewOnly">
-                <div class="col-md-12">
-                    <blockquote class="blockquote text-center">
-                        <p class="mb-0">Fechas de modificaciones</p>
-                    </blockquote>
-                    <div class="col-md">
-                        <b-card no-body>
-                            <b-card-body>
-                                <vue-table
-                                    configName="legalaspects-informs-contracts-histories"
-                                    :modelId="form.id ? form.id : -1"
-                                    ></vue-table>
-                            </b-card-body>
-                        </b-card>
-                    </div>
-                </div>
             </tab-content>
 
             <template slot="footer" slot-scope="props">
@@ -168,6 +183,7 @@
 <style src="@/vendor/libs/spinkit/spinkit.scss" lang="scss"></style>
 
 <script>
+import Vue from 'vue'
 import VueInput from "@/components/Inputs/VueInput.vue";
 import VueRadio from "@/components/Inputs/VueRadio.vue";
 import VueAjaxAdvancedSelect from "@/components/Inputs/VueAjaxAdvancedSelect.vue";
@@ -226,11 +242,15 @@ export default {
             contract_id: '',
             inform_id: '',
             observation: '',
-            objective_inform: '',
+            Objective_inform: '',
             year: '',
             month: '',
             inform: {
                 themes: []
+            },
+            delete: {
+              observations: [],
+              files: []
             }
         };
       }
@@ -287,9 +307,9 @@ export default {
     } 
   },
   created() {
-    if (!this.viewOnly) {
+    /*if (!this.viewOnly) {
       this.autoSave = setInterval(this.saveAuto, 900000);
-    }
+    }*/
     
     this.fetchSelect('yearsOptions', '/selects/inform/years')
     this.fetchSelect('monthsOptions', '/selects/inform/month')
@@ -313,7 +333,11 @@ export default {
           this.form.clearFilesBinary();
 
           this.form.inform.themes.forEach((theme, keyObj) => {
-             this.form.addFileBinary(`${keyObj}`, file.file)
+            theme.items.forEach((item, keyItem) => {
+             item.files.forEach((file, keyFile) => {
+                  this.form.addFileBinary(`${keyObj}_${keyItem}_${keyFile}`, file.file)
+              });
+            });
           });
           
           if (this.method == 'POST')
@@ -343,20 +367,20 @@ export default {
             });
         }
     },
-    removed(index) {
+    removed(index, index2) {
         let keys = [];
 
-        this.form.inform.themes[index].actionPlan.activities.forEach((activity, keyAct) => {
+        this.form.inform.themes[index].items[index2].actionPlan.activities.forEach((activity, keyAct) => {
           if (activity.description && activity.responsible_id && activity.expiration_date && activity.state)
           {
             keys.push(activity);
           }
         });
 
-        this.form.inform.themes[index].actionPlan.activities.splice(0);
+        this.form.inform.themes[index].items[index2].actionPlan.activities.splice(0);
 
         keys.forEach((item, key) => {
-            this.form.inform.themes[index].actionPlan.activities.push(item)
+            this.form.inform.themes[index].items[index2].actionPlan.activities.push(item)
         });
     },
     fetchContractor()
@@ -393,6 +417,24 @@ export default {
             Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
         });
     },
+    calculatePorcentage(index, index2)
+    {
+      if (this.form.inform.themes[index].items[index2].programmed != undefined && this.form.inform.themes[index].items[index2].executed != undefined)
+      {
+        if (this.form.inform.themes[index].items[index2].programmed !== '' && this.form.inform.themes[index].items[index2].executed !== '')
+        {
+          this.form.inform.themes[index].items[index2].compliance = Math.round((this.form.inform.themes[index].items[index2].executed / this.form.inform.themes[index].items[index2].programmed) * 100);
+        }
+        else
+        {
+          this.form.inform.themes[index].items[index2].compliance = ''
+        }
+      }
+      else
+      {
+        this.form.inform.themes[index].items[index2].compliance = ''
+      }
+    }
   }
 };
 </script>

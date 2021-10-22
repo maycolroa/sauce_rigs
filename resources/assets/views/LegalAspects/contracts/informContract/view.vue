@@ -2,18 +2,16 @@
   <div>
     <header-module
         title="CONTRATISTAS"
-        subtitle="VER EVALUACIÓN REALIZADA"
+        subtitle="VER INFORME MENSUAL REALIZADO"
     />
 
     <div class="col-md">
       <b-card no-body>
         <b-card-body>
-            <form-evaluation-contract-component
-                :evaluation="data"
+            <form-inform-contract-component
+                :inform="data"
                 :view-only="true"
-                :types-rating="typesRating"
-                userDataUrl="/selects/users"
-                :cancel-url="{ name: 'legalaspects-evaluations-contracts'}"
+                :cancel-url="{ name: 'legalaspects-informs-contracts'}"
                 :action-plan-states="actionPlanStates"/>
         </b-card-body>
       </b-card>
@@ -22,28 +20,27 @@
 </template>
  
 <script>
-import FormEvaluationContractComponent from '@/components/LegalAspects/Contracts/EvaluationContracts/FormEvaluationContractComponent.vue';
+import FormInformContractComponent from '@/components/LegalAspects/Contracts/MonthInformsContracts/FormInformContractComponent.vue';
 import Alerts from '@/utils/Alerts.js';
 import GlobalMethods from '@/utils/GlobalMethods.js';
 
 export default {
-  name: 'legalaspects-evaluations-contratcs-view',
+  name: 'legalaspects-informs-contratcs-view',
   metaInfo: {
-    title: 'Evaluaciones Realizadas - Ver'
+    title: 'Informes Mensuales Realizados - Ver'
   },
   components:{
-    FormEvaluationContractComponent
+    FormInformContractComponent
   },
   data () {
     return {
       data: [],
-      typesRating: [],
       actionPlanStates: []
     }
   },
   created(){
 
-    axios.get(`/legalAspects/evaluationContract/${this.$route.params.id}`)
+    axios.get(`/legalAspects/informContract/${this.$route.params.id}`)
     .then(response => {
         this.data = response.data.data;
     })
@@ -52,7 +49,6 @@ export default {
         this.$router.go(-1);
     });
 
-    this.fetchSelect('typesRating', '/legalAspects/typeRating/AllTypesRating')
     this.fetchSelect('actionPlanStates', '/selects/actionPlanStates')
   },
   methods: {

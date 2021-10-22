@@ -604,6 +604,9 @@ Route::middleware(['auth'])->group(function () {
       Route::ApiResource('informContract', 'LegalAspects\Contracs\InformContractController');
       Route::post('informContract/data', 'LegalAspects\Contracs\InformContractController@data');
       Route::get('informContract/getData/{informContract}', 'LegalAspects\Contracs\InformContractController@getData');
+      Route::get('informContract/downloadFile/{informContractItemFile}', 'LegalAspects\Contracs\InformContractController@downloadFile');
+
+      Route::get('informContract/downloadPdf/{informContract}', 'LegalAspects\Contracs\InformContractController@downloadPdf');
 
       Route::prefix('legalMatrix')->group(function () {
 

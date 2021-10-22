@@ -10,13 +10,12 @@ use Illuminate\Support\Facades\Storage;
 use App\Http\Requests\LegalAspects\Contracts\InformContractRequest;
 use App\Models\LegalAspects\Contracts\Inform;
 use App\Models\LegalAspects\Contracts\InformContract;
+use App\Models\LegalAspects\Contracts\InformThemeItem;
+use App\Models\LegalAspects\Contracts\InformContractItem;
 use App\Models\LegalAspects\Contracts\ContractLesseeInformation;
-use App\Models\LegalAspects\Contracts\Observation;
-use App\Models\LegalAspects\Contracts\InformFile;
+use App\Models\LegalAspects\Contracts\InformContractItemObservation;
+use App\Models\LegalAspects\Contracts\InformContractItemFile;
 use App\Models\General\Module;
-use App\Jobs\LegalAspects\Contracts\Evaluations\EvaluationExportJob;
-use App\Jobs\LegalAspects\Contracts\Evaluations\EvaluationSendNotificationJob;
-use App\Inform\LegalAspects\Contract\Evaluations\InformManagerEvaluationContract;
 use App\Traits\Filtertrait;
 use App\Models\General\Company;
 use Carbon\Carbon;
@@ -59,28 +58,18 @@ class InformContractController extends Controller
     */
     public function data(Request $request)
     {
-        $evaluation_contracts = EvaluationContract::select(
-                'sau_ct_evaluation_contract.*',
+        $inform_contracts = InformContract::select(
+                'sau_ct_inform_contract.*',
                 'sau_ct_information_contract_lessee.social_reason as social_reason',
                 'sau_ct_information_contract_lessee.nit as nit',
-                'sau_users.name as name'
+                'sau_users.name as name',
+                DB::raw("CONCAT(year, ' - ', month) AS periodo")
             )
-            ->join('sau_users', 'sau_users.id', 'sau_ct_evaluation_contract.evaluator_id')
-            ->join('sau_ct_information_contract_lessee', 'sau_ct_information_contract_lessee.id', 'sau_ct_evaluation_contract.contract_id')
-            /*->join('sau_ct_evaluations', 'sau_ct_evaluations.id', 'sau_ct_evaluation_contract.evaluation_id')
-            ->join('sau_ct_objectives', 'sau_ct_objectives.evaluation_id', 'sau_ct_evaluations.id')
-            ->join('sau_ct_subobjectives', 'sau_ct_subobjectives.objective_id', 'sau_ct_objectives.id')
-            ->groupBy('sau_ct_evaluation_contract.id')*/;
+            ->join('sau_users', 'sau_users.id', 'sau_ct_inform_contract.evaluator_id')
+            ->join('sau_ct_information_contract_lessee', 'sau_ct_information_contract_lessee.id', 'sau_ct_inform_contract.contract_id')
+            ->where('sau_ct_inform_contract.inform_id', '=', $request->get('modelId'));;
 
-        if ($request->has('modelId') && $request->get('modelId'))
-            $evaluation_contracts->where('sau_ct_evaluation_contract.evaluation_id', '=', $request->get('modelId'));
-        else 
-        {
-            $evaluation_contracts->join('sau_user_information_contract_lessee', 'sau_user_information_contract_lessee.information_id', 'sau_ct_evaluation_contract.contract_id');
-            $evaluation_contracts->where('sau_user_information_contract_lessee.user_id', '=', $this->user->id);
-        }
-
-        $url = "/legalaspects/evaluations/contracts/".$request->get('modelId');
+        /*$url = "/legalaspects/inform/contracts/".$request->get('modelId');
 
         $filters = COUNT($request->get('filters')) > 0 ? $request->get('filters') : $this->filterDefaultValues($this->user->id, $url);
 
@@ -95,26 +84,25 @@ class InformContractController extends Controller
                 array_push($dates, (Carbon::createFromFormat('D M d Y',$dates_request[1]))->format('Y-m-d 23:59:59'));
             }
             
-            $evaluation_contracts->betweenDate($dates);
-        }
+            $inform_contracts->betweenDate($dates);
+        }*/
 
-        return Vuetable::of($evaluation_contracts)
-                    ->addColumn('retrySendMail', function ($evaluation_contract) {
-                        return $evaluation_contract->ready();
-                    })
+        //return Vuetable::of($inform_contracts)->make();
+        return Vuetable::of($inform_contracts)
                     ->make();
     }
     
     /**
      * Store a newly created resource in storage.
      *
-     * @param  App\Http\Requests\LegalAspects\EvaluationContracts\InformContractRequest $request
+     * @param  App\Http\Requests\LegalAspects\InformContracts\InformContractRequest $request
      * @return \Illuminate\Http\Response
      */
     public function store(InformContractRequest $request)
     {
+        \Log::info($request);
         Validator::make($request->all(), [
-            "evaluation.objectives.*.files.*.file" => [
+            "inform.themes.*.items.*.files.*.file" => [
                 function ($attribute, $value, $fail)
                 {
                     if (!is_string($value) && 
@@ -133,35 +121,25 @@ class InformContractController extends Controller
 
         try
         {
-            $evaluation_contract = new EvaluationContract($request->all());
-            $evaluation_contract->company_id = $this->company;
-            $evaluation_contract->evaluation_date = date('Y-m-d H:i:s');
-            $evaluation_contract->evaluator_id = $this->user->id;
+            $inform_contract = new InformContract($request->all());
+            $inform_contract->company_id = $this->company;
+            $inform_contract->inform_date = date('Y-m-d H:i:s');
+            $inform_contract->evaluator_id = $this->user->id;
             
-            if(!$evaluation_contract->save()){
+            if(!$inform_contract->save()){
                 return $this->respondHttp500();
-            }
+            }        
 
-            if ($request->get('evaluators_id') && COUNT($request->get('evaluators_id')) > 0)
-            {
-                $evaluation_contract->evaluators()->sync($this->getDataFromMultiselect($request->get('evaluators_id')));
-            }
-
-            if ($request->get('interviewees') && COUNT($request->get('interviewees')) > 0)
-            {
-                $evaluation_contract->interviewees()->createMany($request->get('interviewees'));
-            }
-
-            $this->saveResults($evaluation_contract, $request->get('evaluation'));
+            $this->saveResults($inform_contract, $request->get('inform'));
 
             $this->deleteData($request->get('delete'));
 
             DB::commit();
 
-            $data = $this->getEvaluationData($evaluation_contract->id);
+            $data = $this->getInformData($inform_contract->id);
 
-            /*if ($evaluation_contract->ready())
-                $this->sendNotification($evaluation_contract->id);*/
+            /*if ($inform_contract->ready())
+                $this->sendNotification($inform_contract->id);*/
 
         } catch (\Exception $e) {
             DB::rollback();
@@ -175,7 +153,7 @@ class InformContractController extends Controller
         ]);
 
         return $this->respondHttp200([
-            'message' => 'Se realizo la evaluación'
+            'message' => 'Se realizo la evaluación del informe mensual'
         ]);
         
     }
@@ -183,14 +161,14 @@ class InformContractController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  App\Http\Requests\LegalAspects\EvaluationContracts\InformContractRequest $request
-     * @param  App\LegalAspects\EvaluationContract $evaluation_contract
+     * @param  App\Http\Requests\LegalAspects\InformContracts\InformContractRequest $request
+     * @param  App\LegalAspects\InformContract $inform_contract
      * @return \Illuminate\Http\Response
      */
-    public function update(InformContractRequest $request, EvaluationContract $evaluationContract)
+    public function update(InformContractRequest $request, InformContract $informContract)
     {
         Validator::make($request->all(), [
-            "evaluation.objectives.*.subobjectives.*.items.*.files.*.file" => [
+            "inform.themes.*.items.*.files.*.file" => [
                 function ($attribute, $value, $fail)
                 {
                     if (!is_string($value) && 
@@ -208,44 +186,22 @@ class InformContractController extends Controller
 
         try
         {
-            $evaluationContract->fill($request->all());
+            $informContract->fill($request->all());
 
-            if(!$evaluationContract->update()){
+            if(!$informContract->update()){
                 return $this->respondHttp500();
             }
 
-            if ($request->get('evaluators_id') && COUNT($request->get('evaluators_id')) > 0)
-            {
-                $evaluationContract->evaluators()->sync($this->getDataFromMultiselect($request->get('evaluators_id')));
-            }
-            else
-            {
-                $evaluationContract->evaluators()->sync([]);
-            }
-
-            if ($request->get('interviewees') && COUNT($request->get('interviewees')) > 0)
-            {
-                foreach ($request->get('interviewees') as $interviewee)
-                {    
-                    $id = isset($interviewee['id']) ? $interviewee['id'] : NULL;
-                    $evaluationContract->interviewees()->updateOrCreate(['id'=>$id], $interviewee);
-                }
-            }
-
-            $this->saveResults($evaluationContract, $request->get('evaluation'));
-            
-            $evaluationContract->histories()->create([
-                'user_id' => $this->user->id
-            ]);
+            $this->saveResults($informContract, $request->get('inform'));
 
             $this->deleteData($request->get('delete'));
 
             DB::commit();
 
-            $data = $this->getEvaluationData($evaluationContract->id);
+            $data = $this->getInformData($informContract->id);
 
-            /*if ($evaluationContract->ready())
-                $this->sendNotification($evaluationContract->id);*/
+            /*if ($informContract->ready())
+                $this->sendNotification($informContract->id);*/
 
         } catch (\Exception $e) {
             DB::rollback();
@@ -258,113 +214,112 @@ class InformContractController extends Controller
         ]);
 
         return $this->respondHttp200([
-            'message' => 'Se actualizo la evaluación'
+            'message' => 'Se actualizo la evaluación del informe mensual'
         ]);
     }
 
-    private function saveResults($evaluationContract, $evaluation)
+    private function saveResults($informContract, $inform)
     {
-        $evaluationContract->results()->delete();
+        $informContract->results()->delete();
 
         ActionPlan::
                 user($this->user)
             ->module('contracts')
             ->url(url('/administrative/actionplans'));
 
-        foreach ($evaluation['objectives'] as $objective)
+        foreach ($inform['themes'] as $objective)
         {
-            foreach ($objective['subobjectives'] as $subobjective)
+            foreach ($objective['items'] as $item)
             {
-                foreach ($subobjective['items'] as $item)
+                $itemModel = InformThemeItem::find($item['id']);
+
+                $itemEvaluation = InformContractItem::firstOrCreate(
+                [
+                    'inform_id' => $informContract->id,
+                    'item_id' => $item['id'],
+                    'value_programed' => isset($item['programmed']) ? $item['programmed'] : NULL,
+                    'value_executed' => $item['executed'] ? $item['executed'] : NULL,
+                    'compliance' => $item['compliance'] ? $item['compliance'] : NULL
+                ], 
+                [
+                    'inform_id' => $informContract->id,
+                    'item_id' => $item['id'],
+                    'value_programed' => isset($item['programmed']) ? $item['programmed'] : NULL,
+                    'value_executed' => $item['executed'] ? $item['executed'] : NULL,
+                    'compliance' => $item['compliance'] ? $item['compliance'] : NULL
+
+                ]);
+                
+                foreach ($item['observations'] as $observation)
                 {
-                    $itemModel = Item::find($item['id']);
-                    
-                    foreach ($item['ratings'] as $rating)
-                    {
-                        $value = $rating['apply'] == 'NO' ? null : ($rating['value'] ? $rating['value'] : 'pending');
-                        $rating['value'] = $value;
-
-                        $evaluationContract->results()->updateOrCreate(['item_id'=>$itemModel->id, 'type_rating_id'=>$rating['type_rating_id']], $rating);
-                    }
-
-                    foreach ($item['observations'] as $observation)
-                    {
-                        $id = isset($observation['id']) ? $observation['id'] : NULL;
-                        $evaluationContract->observations()->updateOrCreate(['id'=>$id], $observation);
-                    }
-
-                    if ($item['files'] && COUNT($item['files']) > 0)
-                    {
-                        $files_names_delete = [];
-
-                        foreach ($item['files'] as $keyF => $file) 
-                        {
-                            $create_file = true;
-
-                            if (isset($file['id']))
-                            {
-                                $fileUpload = EvaluationFile::findOrFail($file['id']);
-
-                                if ($file['old_name'] == $file['file'])
-                                    $create_file = false;
-                                else
-                                    array_push($files_names_delete, $file['old_name']);
-                            }
-                            else
-                            {
-                                $fileUpload = new EvaluationFile();
-                                $fileUpload->item_id = $itemModel->id;
-                                $fileUpload->evaluation_id = $evaluationContract->id;
-                            }
-
-                            if ($create_file)
-                            {
-                                $file_tmp = $file['file'];
-                                $nameFile = base64_encode($this->user->id . now() . rand(1,10000) . $keyF) .'.'. $file_tmp->extension();
-                                $file_tmp->storeAs($fileUpload->path_client(false), $nameFile, 's3');
-                                $fileUpload->file = $nameFile;
-                                $fileUpload->name_file = $file_tmp->getClientOriginalName();
-                                $fileUpload->type_file = $file_tmp->extension();
-                            }
-
-                            if (!$fileUpload->save())
-                                return $this->respondHttp500();
-                        }
-
-                        //Borrar archivos reemplazados
-                        foreach ($files_names_delete as $keyf => $file)
-                        {
-                            Storage::disk('s3')->delete($fileUpload->path_client(false)."/".$file);
-                        }
-                    }
-
-                    $itemEvaluation = EvaluationContractItem::firstOrCreate(
-                        [
-                            'evaluation_id' => $evaluationContract->id,
-                            'item_id' => $item['id']
-                        ], 
-                        [
-                            'evaluation_id' => $evaluationContract->id,
-                            'item_id' => $item['id']
-                        ]);
-
-                    $detail_procedence = 'Contratistas - Evaluación Contratista. Evaluación: ' . $evaluation['name'] . ' - Tema: ' .  $objective['description'] . '- Subtema: ' . $subobjective['description'] . ' - Item: ' . $item['description'];
-
-                    ActionPlan::
-                        model($itemEvaluation)
-                        ->detailProcedence($detail_procedence)
-                        ->activities($item['actionPlan'])
-                        ->save();
+                    $id = isset($observation['id']) ? $observation['id'] : NULL;
+                    $informContract->observations()->updateOrCreate(['id'=>$id], $observation);
                 }
+
+                if ($item['files'] && COUNT($item['files']) > 0)
+                {
+                    $files_names_delete = [];
+
+                    foreach ($item['files'] as $keyF => $file) 
+                    {
+                        $create_file = true;
+
+                        if (isset($file['id']))
+                        {
+                            $fileUpload = InformContractItemFile::findOrFail($file['id']);
+
+                            if ($file['old_name'] == $file['file'])
+                                $create_file = false;
+                            else
+                                array_push($files_names_delete, $file['old_name']);
+                        }
+                        else
+                        {
+                            $fileUpload = new InformContractItemFile();
+                            $fileUpload->item_id = $itemModel->id;
+                            $fileUpload->inform_id = $informContract->id;
+                        }
+
+                        if ($create_file)
+                        {
+                            $file_tmp = $file['file'];
+                            $nameFile = base64_encode($this->user->id . now() . rand(1,10000) . $keyF) .'.'. $file_tmp->extension();
+                            $file_tmp->storeAs($fileUpload->path_client(false), $nameFile, 's3');
+                            $fileUpload->file = $nameFile;
+                            $fileUpload->name_file = $file_tmp->getClientOriginalName();
+                            $fileUpload->type_file = $file_tmp->extension();
+                        }
+
+                        if (!$fileUpload->save())
+                            return $this->respondHttp500();
+                    }
+
+                    //Borrar archivos reemplazados
+                    foreach ($files_names_delete as $keyf => $file)
+                    {
+                        Storage::disk('s3')->delete($fileUpload->path_client(false)."/".$file);
+                    }
+                }
+
+                $detail_procedence = 'Contratistas - Informes Mensuales Contratista. Informe: ' . $inform['name'] . ' - Tema: ' .  $objective['description'] . ' - Item: ' . $item['description'];
+            
+                if (isset($item['actionPlan']))
+                {
+                    ActionPlan::
+                    model($itemEvaluation)
+                    ->detailProcedence($detail_procedence)
+                    ->activities($item['actionPlan'])
+                    ->save();
+                }                
             }
         }
 
-        $state = $evaluationContract->results()->where('sau_ct_evaluation_item_rating.value', 'pending')->get();
+        $state = InformContractItem::where('inform_id', $informContract->id)->whereNull('value_executed')->get();
 
         if (COUNT($state) > 0)
-            $evaluationContract->update(['state' => 'En proceso']);
+            $informContract->update(['state' => 'En proceso']);
         else
-            $evaluationContract->update(['state' => 'Terminada']);
+            $informContract->update(['state' => 'Terminada']);
 
         ActionPlan::sendMail();
     }
@@ -391,31 +346,18 @@ class InformContractController extends Controller
 
     public function getInformData($id)
     {
-        $evaluationContract = EvaluationContract::findOrFail($id);
-        $evaluationContract->multiselect_contract_id = $evaluationContract->contract->multiselect();
+        $informContract = InformContract::findOrFail($id);
+        $informContract->multiselect_contract_id = $informContract->contract->multiselect(); 
         
-        $evaluators_id = [];
+        $inform_base = $this->getInform($informContract->inform_id);
+        $informContract->inform = $this->setValuesInform($informContract, $inform_base);
 
-        foreach ($evaluationContract->evaluators as $key => $value)
-        {
-            array_push($evaluators_id, $value->multiselect());
-        }
-
-        $evaluationContract->evaluators_id = $evaluators_id;
-        $evaluationContract->multiselect_evaluators_id = $evaluators_id;
-
-        $evaluationContract->interviewees;
-        
-        $evaluation_base = $this->getEvaluation($evaluationContract->evaluation_id);
-        $evaluationContract->evaluation = $this->setValuesEvaluation($evaluationContract, $evaluation_base);
-
-        $evaluationContract->delete = [
-            'interviewees' => [],
+        $informContract->delete = [
             'observations' => [],
             'files' => []
         ];
 
-        return $evaluationContract;
+        return $informContract;
     }
 
     /**
@@ -432,6 +374,9 @@ class InformContractController extends Controller
             $informContract->contract_id = '';
             $informContract->inform_id = $id;
             $informContract->observation = '';
+            $informContract->Objective_inform = '';
+            $informContract->year = '';
+            $informContract->month = '';
             $informContract->inform = $this->getInform($id);
         
             $informContract->delete = [
@@ -454,179 +399,84 @@ class InformContractController extends Controller
         foreach ($inform->themes as $objective)
         {
             $objective->key = Carbon::now()->timestamp + rand(1,10000);
-            $objective->observations = [];
-            $objective->files = [];
+
+            foreach ($objective->items as $subobjective)
+            {
+                $subobjective->key = Carbon::now()->timestamp + rand(1,10000);
+                $subobjective->observations = [];
+                $subobjective->files = [];
+            }
         }
 
         return $inform;
     }
 
-    private function setValuesEvaluation($evaluationContract, $evaluation_base)
+    private function setValuesInform($informContract, $inform_base)
     {
-        $evaluation = Evaluation::find($evaluationContract->evaluation_id);
-        $report = [];
-        $report_total = [];
+        $inform = Inform::find($informContract->inform_id);
 
-        foreach ($evaluation->ratingsTypes()->get() as $key => $value)
+        foreach ($inform_base->themes as $objective)
         {
-            $report[$value->id] = [
-                'total' => 0,
-                'total_c' => 0,
-                'percentage' =>0
-            ];
-
-            $report_total[$value->id] = [
-                'total' => 0,
-                'total_c' => 0,
-                'percentage' =>0,
-                'category' => $value->name
-            ];
-        }
-
-        $totals_apply = 0;
-
-        foreach ($evaluation_base->types_rating as $key => $value)
-        {
-            if ($value['apply'] == 'SI')
-                $totals_apply++;
-        }
-
-        foreach ($evaluation_base->objectives as $objective)
-        {
-            foreach ($objective->subobjectives as $subobjective)
+            foreach ($objective ->items as $item)
             {
-                $clone_report = $report;
+                $item->observations = $informContract->observations()->where('item_id', $item->id)->get();
+                $files = $informContract->files()->where('item_id', $item->id)->get();
 
-                foreach ($subobjective->items as $item)
-                {
-                    $item->observations = $evaluationContract->observations()->where('item_id', $item->id)->get();
-                    $files = $evaluationContract->files()->where('item_id', $item->id)->get();
+                $images_pdf = [];
+                $count_pdf = 0;
+                $i = 0;
+                $j = 0;
 
-                    $images_pdf = [];
-                    $count_pdf = 0;
-                    $i = 0;
-                    $j = 0;
+                $files->transform(function($file, $indexFile) use (&$i, &$j, &$images_pdf, &$count_pdf) {
+                    $file->key = Carbon::now()->timestamp + rand(1,10000);
+                    $file->type_file = $file->type_file;
+                    $file->name_file = $file->name_file;
+                    $file->old_name = $file->file;
+                    $file->path = $file->path_image();
+                    $images_pdf[$i][$j] = ['file' => $file->path, 'type' => $file->type_file, 'name' => $file->name_file];
+                    $j++;
 
-                    $files->transform(function($file, $indexFile) use ($totals_apply, &$i, &$j, &$images_pdf, &$count_pdf) {
-                        $file->key = Carbon::now()->timestamp + rand(1,10000);
-                        $file->type_file = $file->type_file;
-                        $file->name_file = $file->name_file;
-                        $file->old_name = $file->file;
-                        $file->path = $file->path_image();
-                        $images_pdf[$i][$j] = ['file' => $file->path, 'type' => $file->type_file, 'name' => $file->name_file];
-                        $j++;
-
-                        if ($j > ($totals_apply))
-                        {
-                            $i++;
-                            $j = 0;
-                        }
-
-                        if ($file->type_file == 'pdf')
-                            $count_pdf++;
-
-                        return $file;
-                    });
-
-                    $item->files = $files;
-                    $item->files_pdf = $images_pdf;
-                    $item->count_file_pdf = $count_pdf;
-
-                    $values = $evaluationContract->results()->where('item_id', $item->id)->pluck('value', 'type_rating_id');
-                    $clone = $item->ratings;
-
-                    foreach ($clone as $index => $rating)
+                    if ($j > 3)
                     {
-                        $clone[$index]['value'] = isset($values[$index]) ? $values[$index] : NULL;
-
-                        if ($rating['apply'] == 'SI')
-                        {
-                            if (!$clone[$index]['value'])
-                            {
-                                //$clone_report[$index]['total_c'] += 1;
-                            }
-                            else 
-                            {
-                                if ($clone[$index]['value'] == 'SI' /*|| $clone[$index]['value'] == 'N/A'*/)
-                                {
-                                    $clone_report[$index]['total'] += 1;
-                                    $clone_report[$index]['total_c'] += 1;
-                                }
-                                else if ($clone[$index]['value'] == 'NO')
-                                {
-                                    $clone_report[$index]['total'] += 1;
-                                }
-                            }
-                        }
-                        /*else 
-                        {
-                            \Log::info('n/a');
-                            $clone_report[$index]['total_c'] += 1;
-                        }*/
-
-                        if ($clone_report[$index]['total'] == 0)
-                        {
-                            $clone_report[$index]['percentage'] = 0;
-                        }
-                        else
-                        {
-                            $clone_report[$index]['percentage'] = round(($clone_report[$index]['total_c'] / $clone_report[$index]['total']) * 100, 1);
-                        }
+                        $i++;
+                        $j = 0;
                     }
 
-                    $item->ratings = $clone;
+                    if ($file->type_file == 'pdf')
+                        $count_pdf++;
 
-                    $evaluationContractItem = EvaluationContractItem::where('evaluation_id', $evaluationContract->id)->where('item_id',  $item->id)->first();
+                    return $file;
+                });
 
-                    if ($evaluationContractItem)
-                        $item->actionPlan = ActionPlan::model($evaluationContractItem)->prepareDataComponent();
-                    else
-                        $item->actionPlan = [
-                            "activities" => [],
-                            "activitiesRemoved" => []
-                        ];
+                $item->files = $files;
+                $item->files_pdf = $images_pdf;
+                $item->count_file_pdf = $count_pdf;
+
+                $values = $informContract->results()->where('item_id', $item->id)->get();
+
+                foreach ($values as $key => $value) {
+                    $item->programmed = $value->value_programed;
+                    $item->executed = $value->value_executed;
+                    $item->compliance = $value->compliance;
                 }
 
-                $subobjective->report = $clone_report;
+                $informContractItem = InformContractItem::where('inform_id', $informContract->id)->where('item_id',  $item->id)->first();
 
-                foreach ($clone_report as $key => $value)
-                {
-                    $report_total[$key]['total'] += $value['total'];
-                    $report_total[$key]['total_c'] += $value['total_c'];
-                }
-
-                foreach ($report_total as $key => $value)
-                {
-                    if ($value['total'] == 0)
-                    {
-                        $report_total[$key]['percentage'] = 0;
-                    }
-                    else
-                        $report_total[$key]['percentage'] = round(($value['total_c'] / $value['total']) * 100, 1);
-                }
+                if ($informContractItem)
+                    $item->actionPlan = ActionPlan::model($informContractItem)->prepareDataComponent();
+                else
+                    $item->actionPlan = [
+                        "activities" => [],
+                        "activitiesRemoved" => []
+                    ];
             }
         }
 
-        //$evaluation_base->report_category = $report_total;
-        $report_total = collect($report_total);
-        $evaluation_base->report_total = $report_total->push([
-            /*'total' => $report_total->sum('total'),
-            'total_c' => $report_total->sum('total_c'),
-            'percentage' => $report_total->sum('total') > 0 ? round(($report_total->sum('total_c') / $report_total->sum('total')) * 100, 1) : 0,*/
-            'total' => count($report_total),
-            'total_c' => $report_total->sum('percentage'),
-            'percentage' => round($report_total->sum('percentage') / count($report_total), 1),
-            'category' => 'Total'
-        ]);
-
-        return $evaluation_base;
+        return $inform_base;
     }
 
     private function deleteData($data)
     {
-        if (COUNT($data['interviewees']) > 0)
-            Interviewee::destroy($data['interviewees']);
-
         if (COUNT($data['observations']) > 0)
             Observation::destroy($data['observations']);
         
@@ -634,7 +484,7 @@ class InformContractController extends Controller
         {
             foreach ($data['files'] as $keyF => $file)
             {
-                $file_delete = EvaluationFile::find($file);
+                $file_delete = InformContractItemFile::find($file);
 
                 if ($file_delete)
                 {
@@ -651,20 +501,20 @@ class InformContractController extends Controller
      * @param  Activity  $activity
      * @return \Illuminate\Http\Response
      */
-    public function destroy(EvaluationContract $evaluationContract)
+    public function destroy(InformContract $informContract)
     {
         DB::beginTransaction();
 
         try
         { 
-            foreach ($evaluationContract->items as $item)
+            foreach ($informContract->items as $item)
             {  
                 ActionPlan::model($item)->modelDeleteAll();
             }
 
-            foreach ($evaluationContract->files  as $file)
+            foreach ($informContract->files  as $file)
             {
-                $file_delete = EvaluationFile::find($file);
+                $file_delete = InformContractItemFile::find($file);
 
                 if ($file_delete)
                 {
@@ -676,7 +526,7 @@ class InformContractController extends Controller
                 }
             }
 
-            if(!$evaluationContract->delete())
+            if(!$informContract->delete())
             {
                 return $this->respondHttp500();
             }
@@ -685,7 +535,7 @@ class InformContractController extends Controller
 
         } catch (\Exception $e) {
             DB::rollback();
-            Log::info($e->getMessage());
+            \Log::info($e->getMessage());
             return $this->respondHttp500();
         }
         
@@ -694,398 +544,42 @@ class InformContractController extends Controller
         ]);
     }
 
-    public function report(Request $request)
+    public function downloadFile(InformContractItemFile $informContractItemFile)
     {
-        $whereObjectives = '';
-        $whereSubojectives = '';
-        $whereDates = '';
-        $whereQualificationTypes = '';
-        $whereEvaluations = '';
-        $whereItems = '';
-        $whereContract = '';
-        $subWhereQualificationTypes = '';
-
-        $url = "/legalaspects/evaluations/report";
-        
-        $filters = COUNT($request->get('filters')) > 0 ? $request->get('filters') : $this->filterDefaultValues($this->user->id, $url);
-
-        if (isset($filters["evaluationsObjectives"]))
-            $whereObjectives = $this->scopeQueryReport('o', $this->getValuesForMultiselect($filters["evaluationsObjectives"]), $filters['filtersType']['evaluationsObjectives']);
-
-        if (isset($filters["evaluationsSubobjectives"]))
-            $whereSubojectives = $this->scopeQueryReport('s', $this->getValuesForMultiselect($filters["evaluationsSubobjectives"]), $filters['filtersType']['evaluationsSubobjectives']);
-
-        if (isset($filters["evaluationsEvaluations"]))
-            $whereEvaluations = $this->scopeQueryReport('e', $this->getValuesForMultiselect($filters["evaluationsEvaluations"]), $filters['filtersType']['evaluationsEvaluations']);
-
-        if (isset($filters["evaluationsItems"]))
-            $whereItems = $this->scopeQueryReport('i', $this->getValuesForMultiselect($filters["evaluationsItems"]), $filters['filtersType']['evaluationsItems']);
-
-        if (isset($filters["contracts"]))
-            $whereContract = $this->scopeQueryReport('ec', $this->getValuesForMultiselect($filters["contracts"]), $filters['filtersType']['contracts'], 'contract_id');
-
-        if (isset($filters["qualificationTypes"]))
-        {
-            $whereQualificationTypes = $this->scopeQueryReport('eir', $this->getValuesForMultiselect($filters["qualificationTypes"]), $filters['filtersType']['qualificationTypes'], 'type_rating_id');
-            $subWhereQualificationTypes = $this->scopeQueryReport('etr', $this->getValuesForMultiselect($filters["qualificationTypes"]), $filters['filtersType']['qualificationTypes'], 'type_rating_id');
-        }
-
-        if (isset($filters["dateRange"]) && $filters["dateRange"])
-        {
-            $dates_request = explode('/', $filters["dateRange"]);
-            $dates = [];
-
-            if (COUNT($dates_request) == 2)
-            {
-                array_push($dates, (Carbon::createFromFormat('D M d Y',$dates_request[0]))->format('Y-m-d 00:00:00'));
-                array_push($dates, (Carbon::createFromFormat('D M d Y',$dates_request[1]))->format('Y-m-d 23:59:59'));
-
-                $whereDates = " AND ec.evaluation_date BETWEEN '".$dates[0]."' AND '".$dates[1]."'";
-            }
-        }
-
-        $evaluations = DB::table(DB::raw("(SELECT 
-            t.*,
-            CONCAT(ROUND( (t_cumple * 100) / (t_cumple + t_no_cumple), 1), '%') AS p_cumple,
-            CONCAT(ROUND( (t_no_cumple * 100) / (t_cumple + t_no_cumple), 1), '%') AS p_no_cumple 
-            FROM (
-            
-                SELECT 
-                    GROUP_CONCAT(DISTINCT s.id) as id,
-                    o.description as objective,
-                    s.description as subobjective,
-                    COUNT(DISTINCT ec.id) as t_evaluations,
-                    SUM(IF(eir.value = 'NO' OR eir.value = 'pending', 1, 0)) AS t_no_cumple,
-                    SUM(IF(eir.value = 'SI', 1,
-                            IF(eir.value IS NULL AND eir.item_id IS NOT NULL, 0,
-                                IF(eir.value IS NULL AND eir.item_id IS NULL,
-                                    (SELECT 
-                                            COUNT(etr.type_rating_id)
-                                        FROM
-                                            sau_ct_evaluation_type_rating etr
-                                        WHERE
-                                            etr.evaluation_id = e.id {$subWhereQualificationTypes}
-                                    )
-                                , 0)
-                            )
-                        )
-                    ) AS t_cumple
-                
-                    FROM sau_ct_evaluation_contract ec
-                    INNER JOIN sau_ct_evaluations e ON e.id = ec.evaluation_id
-                    INNER JOIN sau_ct_objectives o ON o.evaluation_id = e.id
-                    INNER JOIN sau_ct_subobjectives s ON s.objective_id = o.id
-                    INNER JOIN sau_ct_items i ON i.subobjective_id = s.id
-                    LEFT JOIN sau_ct_evaluation_item_rating eir ON eir.item_id = i.id AND eir.evaluation_id = ec.id
-                
-                    WHERE ec.company_id = ".$this->company. $whereDates . $whereObjectives . $whereSubojectives . $whereQualificationTypes . $whereContract . $whereItems . $whereEvaluations ." 
-                    GROUP BY objective, subobjective
-                ) AS t
-            ) AS t"));
-    
-        return Vuetable::of($evaluations)
-            ->make();
+        \Log::info($informContractItemFile);
+        return Storage::disk('s3')->download($informContractItemFile->path_donwload());
     }
 
-    private function scopeQueryReport($table, $data, $typeSearch, $primary = 'id', $specialColumn = false)
+    public function downloadPdf(InformContract $informContract)
     {
-        $ids = [];
-        $query = '';
-
-        foreach ($data as $key => $value)
-        {
-            $ids[] = $value;
-        }
-
-        if(COUNT($ids) > 0)
-        {
-            $ids = implode(",", $ids);
-
-            if ($typeSearch == 'IN')
-                $query = !$specialColumn ? " AND $table.$primary IN ($ids)" : " AND $specialColumn($table.$primary) IN ($ids)";
-
-            else if ($typeSearch == 'NOT IN')
-                $query = !$specialColumn ? " AND $table.$primary NOT IN ($ids)" : " AND $specialColumn($table.$primary) NOT IN ($ids)";
-        }
-
-        return $query;
-    }
-
-    /**
-     * Export resources from storage.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function exportReport(Request $request)
-    {
-        try
-        {
-            $evaluations = $this->getValuesForMultiselect($request->evaluationsEvaluations);
-            $objectives = $this->getValuesForMultiselect($request->evaluationsObjectives);
-            $subobjectives = $this->getValuesForMultiselect($request->evaluationsSubobjectives);
-            $items = $this->getValuesForMultiselect($request->evaluationsItems);
-            $contracts = $this->getValuesForMultiselect($request->contracts);
-            $qualificationTypes = $this->getValuesForMultiselect($request->qualificationTypes);
-            $dates = [];
-            $filtersType = $request->filtersType;
-
-            if (isset($request->dateRange) && $request->dateRange)
-            {
-                $dates_request = explode('/', $request->dateRange);
-
-                if (COUNT($dates_request) == 2)
-                {
-                    array_push($dates, (Carbon::createFromFormat('D M d Y',$dates_request[0]))->format('Y-m-d 00:00:00'));
-                    array_push($dates, (Carbon::createFromFormat('D M d Y',$dates_request[1]))->format('Y-m-d 23:59:59'));
-                }
-                
-            }
-
-            $filters = [
-                'objectives' => $objectives,
-                'subobjectives' => $subobjectives,
-                'qualificationTypes' => $qualificationTypes,
-                'dates' => $dates,
-                'filtersType' => $filtersType,
-                'evaluations' => $evaluations,
-                'items' => $items,
-                'contracts' => $contracts
-            ];
-
-            EvaluationContractReportExportJob::dispatch($this->user, $this->company, $filters);
-        
-            return $this->respondHttp200();
-        } catch(Exception $e) {
-            return $this->respondHttp500();
-        }
-    }
-
-    public function getTotales(Request $request)
-    {
-        $url = "/legalaspects/evaluations/report";
-        $init = true;
-        $filters = [];
-
-        if ($request->has('filtersType'))
-            $init = false;
-        else 
-            $filters = $this->filterDefaultValues($this->user->id, $url);
-
-        $whereDates = '';
-
-        $objectives = !$init ? $this->getValuesForMultiselect($request->evaluationsObjectives) : (isset($filters['evaluationsObjectives']) ? $this->getValuesForMultiselect($filters['evaluationsObjectives']) : []);
-        
-        $subobjectives = !$init ? $this->getValuesForMultiselect($request->evaluationsSubobjectives) : (isset($filters['evaluationsSubobjectives']) ? $this->getValuesForMultiselect($filters['evaluationsSubobjectives']) : []);
-        
-        $qualificationTypes = !$init ? $this->getValuesForMultiselect($request->qualificationTypes) : (isset($filters['qualificationTypes']) ? $this->getValuesForMultiselect($filters['qualificationTypes']) : []);
-        
-        $evaluations = !$init ? $this->getValuesForMultiselect($request->evaluationsEvaluations) : (isset($filters['evaluationsEvaluations']) ? $this->getValuesForMultiselect($filters['evaluationsEvaluations']) : []);
-        
-        $items = !$init ? $this->getValuesForMultiselect($request->evaluationsItems) : (isset($filters['evaluationsItems']) ? $this->getValuesForMultiselect($filters['evaluationsItems']) : []);
-        
-        $contract = !$init ? $this->getValuesForMultiselect($request->contracts) : (isset($filters['contracts']) ? $this->getValuesForMultiselect($filters['contracts']) : []);
-        
-        $filtersType = !$init ? $request->filtersType : (isset($filters['filtersType']) ? $filters['filtersType'] : null);
-
-        $whereObjectives = $this->scopeQueryReport('o', $objectives, $filtersType['evaluationsObjectives']);
-        $whereSubojectives = $this->scopeQueryReport('s', $subobjectives, $filtersType['evaluationsSubobjectives']);
-        $whereQualificationTypes = $this->scopeQueryReport('eir', $qualificationTypes, $filtersType['qualificationTypes'], 'type_rating_id');
-        $subWhereQualificationTypes = $this->scopeQueryReport('etr', $qualificationTypes, $filtersType['qualificationTypes'], 'type_rating_id');
-        $whereEvaluations = $this->scopeQueryReport('e', $evaluations, $filtersType['evaluationsEvaluations']);
-        $whereItems = $this->scopeQueryReport('i', $items, $filtersType['evaluationsItems']);
-        $whereContract = $this->scopeQueryReport('ec', $contract, $filtersType['contracts'], 'contract_id');
-
-        $datesF = !$init ? $request->dateRange : (isset($filters['dateRange']) ? $filters['dateRange'] : null);
-
-        if (isset($datesF) && $datesF)
-        {
-            $dates_request = explode('/', $datesF);
-            $dates = [];
-
-            if (COUNT($dates_request) == 2)
-            {
-                array_push($dates, (Carbon::createFromFormat('D M d Y',$dates_request[0]))->format('Y-m-d 00:00:00'));
-                array_push($dates, (Carbon::createFromFormat('D M d Y',$dates_request[1]))->format('Y-m-d 23:59:59'));
-
-                $whereDates = " AND ec.evaluation_date BETWEEN '".$dates[0]."' AND '".$dates[1]."'";
-            }
-        }
-
-        $evaluations = DB::table(DB::raw("(SELECT 
-            SUM(t_evaluations) AS evaluations,
-            SUM(t_no_cumple) as t_no_cumple,
-            SUM(t_cumple) AS t_cumple,
-            CONCAT(ROUND( (SUM(t_cumple) * 100) / SUM(t_cumple + t_no_cumple), 1), '%') AS p_cumple,
-            CONCAT(ROUND( (SUM(t_no_cumple) * 100) / SUM(t_cumple + t_no_cumple), 1), '%') AS p_no_cumple 
-            FROM (
-            
-                SELECT 
-                    GROUP_CONCAT(DISTINCT s.id) as id,
-                    o.description as objective,
-                    s.description as subobjective,
-                    COUNT(DISTINCT ec.id) as t_evaluations,
-                    SUM(IF(eir.value = 'NO' OR eir.value = 'pending', 1, 0)) AS t_no_cumple,
-                    SUM(IF(eir.value = 'SI', 1,
-                            IF(eir.value IS NULL AND eir.item_id IS NOT NULL, 0,
-                                IF(eir.value IS NULL AND eir.item_id IS NULL,
-                                    (SELECT 
-                                            COUNT(etr.type_rating_id)
-                                        FROM
-                                            sau_ct_evaluation_type_rating etr
-                                        WHERE
-                                            etr.evaluation_id = e.id {$subWhereQualificationTypes}
-                                    )
-                                , 0)
-                            )
-                        )
-                    ) AS t_cumple
-                
-                    FROM sau_ct_evaluation_contract ec
-                    INNER JOIN sau_ct_evaluations e ON e.id = ec.evaluation_id
-                    INNER JOIN sau_ct_objectives o ON o.evaluation_id = e.id
-                    INNER JOIN sau_ct_subobjectives s ON s.objective_id = o.id
-                    INNER JOIN sau_ct_items i ON i.subobjective_id = s.id
-                    LEFT JOIN sau_ct_evaluation_item_rating eir ON eir.item_id = i.id AND eir.evaluation_id = ec.id
-                
-                    WHERE ec.company_id = ".$this->company. $whereDates . $whereObjectives . $whereSubojectives . $whereQualificationTypes . $whereContract . $whereItems . $whereEvaluations ."
-                    GROUP BY objective, subobjective
-                ) AS t
-            ) AS t"))
-            ->first();
-    
-        return $this->respondHttp200([
-            'data' => $evaluations
-        ]);
-    }
-
-    public function sendNotification($id)
-    {
-        EvaluationSendNotificationJob::dispatch($this->company, $id);
-    }
-
-    public function downloadFile(EvaluationFile $evaluationFile)
-    {
-        return Storage::disk('s3')->download($evaluationFile->path_donwload());
-    }
-
-    public function download(EvaluationContract $evaluationContract)
-    {
-        try
-        {
-            EvaluationExportJob::dispatch($this->user, $this->company, [], $evaluationContract->id);
-
-            return $this->respondHttp200();
-        } catch(Exception $e) {
-            return $this->respondHttp500();
-        }
-    }
-
-    public function downloadPdf(EvaluationContract $evaluationContract)
-    {
-        $evaluations = $this->getDataExportPdf($evaluationContract->id);
+        $inform = $this->getDataExportPdf($informContract->id);
 
         PDF::setOptions(['dpi' => 150, 'defaultFont' => 'sans-serif']);
 
-        $pdf = PDF::loadView('pdf.evaluationContract', ['evaluations' => $evaluations] );
+        $pdf = PDF::loadView('pdf.InformContract', ['inform' => $inform] );
 
         $pdf->setPaper('A3', 'landscape');
 
-        return $pdf->download('evaluacion.pdf');
+        return $pdf->download('informe_mensual.pdf');
     }
 
     public function getDataExportPdf($id)
     {
-        $evaluationContract = EvaluationContract::findOrFail($id);
-        $evaluationContract->evaluators;
-        $evaluationContract->contract;
-        $evaluationContract->interviewees;
-        $evaluation_base = $this->getEvaluation($evaluationContract->evaluation_id);
+        $informContract = InformContract::findOrFail($id);
+        $informContract->evaluators;
+        $informContract->contract;
+        $informContract->interviewees;
+        $inform_base = $this->getInform($informContract->inform_id);
 
-        $evaluationContract->evaluation = $this->setValuesEvaluation($evaluationContract, $evaluation_base);
+        $informContract->inform = $this->setValuesInform($informContract, $inform_base);
 
         $company = Company::select('logo')->where('id', $this->company)->first();
 
         $logo = ($company && $company->logo) ? $company->logo : null;
 
-        $evaluationContract->logo = $logo;
+        $informContract->logo = $logo;
 
-        return $evaluationContract;
-    }
-
-    public function multiselectBar()
-    {
-        $select = [
-            'Evaluaciones' => "evaluation", 
-            'Temas' => "objective",
-            'Subtemas' => "subobjective",
-            'Items' => "item",
-            'Proceso a evaluar' => "type_rating",
-            'Contratistas' => "contract",
-
-        ];
-    
-        return $this->multiSelectFormat(collect($select));
-    }
-
-    public function reportDinamicBar(Request $request)
-    {
-        $url = "/legalaspects/evaluations/report";
-        $init = true;
-        $filters = [];
-
-        if ($request->has('filtersType'))
-            $init = false;
-        else 
-            $filters = $this->filterDefaultValues($this->user->id, $url);
-
-        $whereDates = '';
-
-        $objectives = !$init ? $this->getValuesForMultiselect($request->evaluationsObjectives) : (isset($filters['evaluationsObjectives']) ? $this->getValuesForMultiselect($filters['evaluationsObjectives']) : []);
-        
-        $subobjectives = !$init ? $this->getValuesForMultiselect($request->evaluationsSubobjectives) : (isset($filters['evaluationsSubobjectives']) ? $this->getValuesForMultiselect($filters['evaluationsSubobjectives']) : []);
-        
-        $qualificationTypes = !$init ? $this->getValuesForMultiselect($request->qualificationTypes) : (isset($filters['qualificationTypes']) ? $this->getValuesForMultiselect($filters['qualificationTypes']) : []);
-        
-        $evaluations = !$init ? $this->getValuesForMultiselect($request->evaluationsEvaluations) : (isset($filters['evaluationsEvaluations']) ? $this->getValuesForMultiselect($filters['evaluationsEvaluations']) : []);
-        
-        $items = !$init ? $this->getValuesForMultiselect($request->evaluationsItems) : (isset($filters['evaluationsItems']) ? $this->getValuesForMultiselect($filters['evaluationsItems']) : []);
-        
-        $contract = !$init ? $this->getValuesForMultiselect($request->contracts) : (isset($filters['contracts']) ? $this->getValuesForMultiselect($filters['contracts']) : []);
-
-        $years = $this->getValuesForMultiselect($request->years);
-        $months = $this->getValuesForMultiselect($request->months);
-        
-        $filtersType = !$init ? $request->filtersType : (isset($filters['filtersType']) ? $filters['filtersType'] : null);
-
-        $whereObjectives = $this->scopeQueryReport('o', $objectives, $filtersType['evaluationsObjectives']);
-        $whereSubojectives = $this->scopeQueryReport('s', $subobjectives, $filtersType['evaluationsSubobjectives']);
-        $subWhereQualificationTypes = $this->scopeQueryReport('etr', $qualificationTypes, $filtersType['qualificationTypes'], 'type_rating_id');
-        $whereQualificationTypes = $this->scopeQueryReport('eir', $qualificationTypes, $filtersType['qualificationTypes'], 'type_rating_id');
-        $whereEvaluations = $this->scopeQueryReport('e', $evaluations, $filtersType['evaluationsEvaluations']);
-        $whereItems = $this->scopeQueryReport('i', $items, $filtersType['evaluationsItems']);
-        $whereContract = $this->scopeQueryReport('ec', $contract, $filtersType['contracts'], 'contract_id');
-        $whereYear = $this->scopeQueryReport('ec', $years, 'IN', 'evaluation_date', 'YEAR');
-        $whereMonth = $this->scopeQueryReport('ec', $months, 'IN', 'evaluation_date', 'month');
-
-        $datesF = !$init ? $request->dateRange : (isset($filters['dateRange']) ? $filters['dateRange'] : null);
-
-        if (isset($datesF) && $datesF)
-        {
-            $dates_request = explode('/', $datesF);
-            $dates = [];
-
-            if (COUNT($dates_request) == 2)
-            {
-                array_push($dates, (Carbon::createFromFormat('D M d Y',$dates_request[0]))->format('Y-m-d 00:00:00'));
-                array_push($dates, (Carbon::createFromFormat('D M d Y',$dates_request[1]))->format('Y-m-d 23:59:59'));
-
-                $whereDates = " AND ec.evaluation_date BETWEEN '".$dates[0]."' AND '".$dates[1]."'";
-            }
-        }
-
-        $report = new InformManagerEvaluationContract($this->company, $whereContract, $whereEvaluations, $whereObjectives, $whereSubojectives, $whereItems, $whereQualificationTypes, $whereDates, $subWhereQualificationTypes, $whereYear, $whereMonth);
-
-        return $this->respondHttp200($report->getInformData());
+        return $informContract;
     }
 
     public function multiselectYears()
