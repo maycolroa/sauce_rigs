@@ -560,10 +560,11 @@ class InformContractController extends Controller
     public function downloadPdf(InformContract $informContract)
     {
         $inform = $this->getDataExportPdf($informContract->id);
+        \Log::info($inform);
 
         PDF::setOptions(['dpi' => 150, 'defaultFont' => 'sans-serif']);
 
-        $pdf = PDF::loadView('pdf.InformContract', ['inform' => $inform] );
+        $pdf = PDF::loadView('pdf.informContract', ['inform' => $inform] );
 
         $pdf->setPaper('A3', 'landscape');
 
@@ -573,9 +574,8 @@ class InformContractController extends Controller
     public function getDataExportPdf($id)
     {
         $informContract = InformContract::findOrFail($id);
-        $informContract->evaluators;
+        $informContract->evaluator;
         $informContract->contract;
-        $informContract->interviewees;
         $inform_base = $this->getInform($informContract->inform_id);
 
         $informContract->inform = $this->setValuesInform($informContract, $inform_base);
