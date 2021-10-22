@@ -268,6 +268,9 @@ export default {
     },
     'form.contract_id' () {
         this.fetchContractor()
+    },
+    'form.month' () {
+        this.periodValid()
     }
   },
   data() {
@@ -304,7 +307,7 @@ export default {
   computed: {
     html() {
         return `<div class="sk-folding-cube sk-primary"><div class="sk-cube1 sk-cube"></div><div class="sk-cube2 sk-cube"></div><div class="sk-cube4 sk-cube"></div><div class="sk-cube3 sk-cube"></div></div><h5 class="text-center mb-0">${this.textBlock}</h5>`
-    } 
+    }
   },
   created() {
     /*if (!this.viewOnly) {
@@ -434,6 +437,18 @@ export default {
       {
         this.form.inform.themes[index].items[index2].compliance = ''
       }
+    },
+    periodValid()
+    {
+      this.postData = Object.assign({}, {year: this.form.year}, {month: this.form.month}, {contract: this.form.contract_id},
+      {inform: this.form.inform_id});
+
+      axios.post('/legalAspects/informContract/periodExist', this.postData)
+        .then(response => {
+            
+        }).catch(error => {
+            Alerts.error('Error', 'Este período ya ha sido evaluado para este contratista, por favor seleccione otro período');
+        });
     }
   }
 };

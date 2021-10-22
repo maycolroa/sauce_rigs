@@ -608,6 +608,8 @@ Route::middleware(['auth'])->group(function () {
 
       Route::get('informContract/downloadPdf/{informContract}', 'LegalAspects\Contracs\InformContractController@downloadPdf');
 
+      Route::post('informContract/periodExist', 'LegalAspects\Contracs\InformContractController@periodExist');
+
       Route::prefix('legalMatrix')->group(function () {
 
         Route::post('interest/data', 'LegalAspects\LegalMatrix\InterestController@data');

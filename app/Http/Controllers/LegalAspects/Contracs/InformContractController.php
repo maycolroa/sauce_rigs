@@ -100,7 +100,18 @@ class InformContractController extends Controller
      */
     public function store(InformContractRequest $request)
     {
-        \Log::info($request);
+        $valid = InformContract::where('contract_id', $request->contract_id)
+            ->where('year', $request->year)
+            ->where('inform_id', $request->inform_id)
+            ->where('month', $request->month)
+            ->exists();
+
+        if ($valid)
+        {
+            \Log::info('entro');
+            return $this->respondWithError('Este período ya ha sido evaluado para este contratista, por favor seleccione otro período');
+        }
+
         Validator::make($request->all(), [
             "inform.themes.*.items.*.files.*.file" => [
                 function ($attribute, $value, $fail)
@@ -138,14 +149,10 @@ class InformContractController extends Controller
 
             $data = $this->getInformData($inform_contract->id);
 
-            /*if ($inform_contract->ready())
-                $this->sendNotification($inform_contract->id);*/
-
         } catch (\Exception $e) {
             DB::rollback();
             \Log::info($e->getMessage());
             return $this->respondHttp500();
-            //return $e->getMessage();
         }
 
         return $this->respondHttp200([
@@ -540,7 +547,7 @@ class InformContractController extends Controller
         }
         
         return $this->respondHttp200([
-            'message' => 'Se elimino la evaluación realizada'
+            'message' => 'Se elimino la evaluación del informe mensual'
         ]);
     }
 
@@ -614,5 +621,21 @@ class InformContractController extends Controller
         ];
 
         return $this->multiSelectFormat(collect($months));
+    }
+
+    public function periodExist(Request $request)
+    {
+        $valid = InformContract::where('contract_id', $request->contract)
+        ->where('year', $request->year)
+        ->where('month', $request->month)
+        ->where('inform_id', $request->inform)
+        ->exists();
+
+        if ($valid)
+            return $this->respondWithError('Este período ya ha sido evaluado para este contratista, por favor seleccione otro período');
+        else
+            return $this->respondHttp200([
+            'message' => 'Período valido'
+        ]);
     }
 }
