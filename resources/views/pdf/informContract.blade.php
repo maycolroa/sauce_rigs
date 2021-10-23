@@ -97,7 +97,7 @@
                         <tr>
                             <td class="title-obj">{{ $keyObj + 1 }}.{{ $keyItem + 1 }} - {{ $item->description }}</td>
                             
-                            <td>{{$item->programed ? $item->programed : 'Sin Calificar'}}</td>
+                            <td>{{$item->programmed ? $item->programmed : 'Sin Calificar'}}</td>
 
                             <td>{{$item->executed ? $item->executed : 'Sin Calificar'}}</td>
 
