@@ -14,6 +14,7 @@ class InformContractItem extends Model
         'inform_id',
         'item_id',
         'value_programed',
-	    'value_executed'
+	    'value_executed',
+        'compliance'
     ];
 }
