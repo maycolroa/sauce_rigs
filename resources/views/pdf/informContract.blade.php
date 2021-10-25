@@ -54,10 +54,14 @@
             <thead>
                 <tr>
                     <th>Evaluador</th>
+                    <th>Observación</th>
                 </tr>
                  <tr>
                     <td valign="top">
                         {{$inform->evaluator->name}}
+                    </td>
+                    <td valign="top">
+                        {{$inform->observation}}
                     </td>
                 </tr>
             </thead>
@@ -66,7 +70,7 @@
     
     <br><br>
 
-    <div style="page-break-inside: avoid;">
+    <!--<div style="page-break-inside: avoid;">
         <table>
             <thead>
                 <tr>
@@ -77,66 +81,68 @@
                 </tr>
             </thead>
         </table>
-    </div>
-
-    <br><br>
+    </div>-->
 
     <div style="page-break-inside: avoid;">
         <p style="text-align: center; font-size: 12px;"><b>Temas</b></p>
         @foreach($inform->inform->themes as $keyObj => $objective)
-            <p style="text-align: justify; font-size: 12px;"><b>{{ $keyObj + 1 }} - {{$objective->description}}</b></p>
-            @foreach($objective->items as $keyItem => $item)
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Item</th>
-                            <th>Programado</th>
-                            <th>Ejecutado</th>
-                            <th>% Cumplimiento</th>
-                        </tr>
-                        <tr>
-                            <td class="title-obj">{{ $keyObj + 1 }}.{{ $keyItem + 1 }} - {{ $item->description }}</td>
-                            
-                            <td>{{$item->programmed ? $item->programmed : 'Sin Calificar'}}</td>
+            <div style="page-break-inside: avoid;">
+                <p style="text-align: justify; font-size: 12px;"><b>{{ $keyObj + 1 }} - {{$objective->description}}</b></p>
+                <div style="page-break-inside: avoid;">
+                @foreach($objective->items as $keyItem => $item)
+                    <table>
+                        <thead>
+                            <tr style="width:100%">
+                                <th style="width:25%">Item</th>
+                                <th style="width:25%">Programado</th>
+                                <th style="width:25%">Ejecutado</th>
+                                <th style="width:25%">% Cumplimiento</th>
+                            </tr>
+                            <tr style="width:100%">
+                                <td style="width:25%" class="title-obj">{{ $keyObj + 1 }}.{{ $keyItem + 1 }} - {{ $item->description }}</td>
+                                
+                                <td style="width:25%">{{$item->programmed ? $item->programmed : 'Sin Calificar'}}</td>
 
-                            <td>{{$item->executed ? $item->executed : 'Sin Calificar'}}</td>
+                                <td style="width:25%">{{$item->executed ? $item->executed : 'Sin Calificar'}}</td>
 
-                            <td>{{$item->compliance ? $item->compliance : 'Sin Cumplimiento'}}</td>
-                        </tr>
-                        @if(COUNT($item->files) > 0)
-                            <tr>
-                                <th colspan="4">Archivos</th>
-                            </tr>   
-                            @foreach($item->files_pdf as $row)
+                                <td style="width:25%">{{$item->compliance ? $item->compliance : 'Sin Cumplimiento'}}</td>
+                            </tr>
+                            @if(COUNT($item->files) > 0)
                                 <tr>
-                                @foreach($row as $col)
-                                    @if($col["type"] != 'pdf')
-                                    <td style="border-right: none;">
-                                        <img width="200" height="150" src="{{$col['file']}}">
-                                    </td>
-                                    @else
+                                    <th colspan="4">Archivos</th>
+                                </tr>   
+                                @foreach($item->files_pdf as $row)
+                                    <tr>
+                                    @foreach($row as $col)
+                                        @if($col["type"] != 'pdf')
                                         <td style="border-right: none;">
-                                            <p>{{$col['name']}}</p>
+                                            <img width="200" height="150" src="{{$col['file']}}">
                                         </td>
-                                    @endif
+                                        @else
+                                            <td style="border-right: none;">
+                                                <p>{{$col['name']}}</p>
+                                            </td>
+                                        @endif
+                                    @endforeach
+                                    </tr>
                                 @endforeach
-                                </tr>
-                            @endforeach
-                        @endif
-                        @if(COUNT($item->observations) > 0)
-                            <tr>
-                                <th colspan="4">Observaciones</th>
-                            </tr>                          
-                            @foreach($item->observations as $observation)
+                            @endif
+                            @if(COUNT($item->observations) > 0)
                                 <tr>
-                                    <td colspan="4" class="title-obj">{{$observation->description}}</td>
-                                </tr>
-                            @endforeach
-                        @endif      
-                    </thead>
-                </table>
+                                    <th colspan="4">Observaciones</th>
+                                </tr>                          
+                                @foreach($item->observations as $observation)
+                                    <tr>
+                                        <td colspan="4" class="title-obj">{{$observation->description}}</td>
+                                    </tr>
+                                @endforeach
+                            @endif      
+                        </thead>
+                    </table>
                 <br>                             
             @endforeach
+            </div>
+            </div>
         @endforeach        
     </div>
 

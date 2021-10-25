@@ -610,6 +610,8 @@ Route::middleware(['auth'])->group(function () {
 
       Route::post('informContract/periodExist', 'LegalAspects\Contracs\InformContractController@periodExist');
 
+      Route::post('informContract/historyItemQualification', 'LegalAspects\Contracs\InformContractController@historyItemQualification');
+
       Route::prefix('legalMatrix')->group(function () {
 
         Route::post('interest/data', 'LegalAspects\LegalMatrix\InterestController@data');

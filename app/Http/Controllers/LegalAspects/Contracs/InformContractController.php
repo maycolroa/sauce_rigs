@@ -638,4 +638,46 @@ class InformContractController extends Controller
             'message' => 'Período valido'
         ]);
     }
+
+    public function historyItemQualification(Request $request)
+    {
+        $headingsXls = collect([]);
+
+        $months = $this->multiselectMonth();
+
+        foreach ($months as $key => $month) 
+        {
+            $headingsXls->push(['id' => $month['name'], 'name' => $month['name']]);
+        }
+
+        $headings = $headingsXls->pluck('name')->toArray();
+
+        $qualifications = InformContractItem::select('sau_ct_inform_contract.*',
+        'sau_ct_inform_contract_items.*')
+        ->join('sau_ct_inform_contract', 'sau_ct_inform_contract.id', 'sau_ct_inform_contract_items.inform_id')
+        ->where('sau_ct_inform_contract_items.item_id', $request->item_id)
+        ->where('sau_ct_inform_contract.year', $request->year)
+        ->where('sau_ct_inform_contract.inform_id', $request->inform)
+        ->where('contract_id', $request->contract)
+        ->get();
+
+        $answers = collect([]);
+
+        foreach ($headingsXls as $key => $item)
+        {
+            $response = $qualifications->where('month', $item['id'])->first();
+
+            if ($response)
+            $answers->push($response->value_executed);
+            else
+            $answers->push(0);
+        }
+
+        $data = [
+            'headings' => $headings,
+            'answers' => $answers
+        ];
+
+        return $data;
+    }
 }
