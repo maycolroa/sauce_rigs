@@ -126,12 +126,32 @@
                                                       <b-col :key="form.inform.themes[index].items[index2].compliance">
                                                         <vue-input :disabled="true" v-model="form.inform.themes[index].items[index2].compliance" label="% Cumplimiento" type="number" name="name" :error="form.errorsFor('name')"></vue-input>
                                                       </b-col>
-                                                      <b-btn @click="showModal(`modalHistory${index2}`)" variant="outline-info icon-btn borderless" size="xs" v-b-tooltip.top title="Ver historial"><span class="ion ion-ios-copy"></span></b-btn>
+                                                      <b-btn @click="showModal(`modalHistory${index2}`, true, form.inform.themes[index].items[index2].id)" variant="outline-info icon-btn borderless" size="xs" v-b-tooltip.top title="Ver historial"><span class="ion ion-ios-copy"></span></b-btn>
                                                     </b-row>
-                                                    <b-modal :ref="`modalHistory${index2}`" :hideFooter="true" :id="`modals-default-${index2+1}`" class="modal-top" size="lg">
+                                                    <b-modal :ref="`modalHistory${index2}`" :hideFooter="true" :id="`modals-default-${index2+1}`" class="modal-top modal-item" size="lg">
                                                       <div slot="modal-title">
                                                           Historíco<br>
                                                       </div>
+                                                      <b-card bg-variant="transparent"  title="" class="mb-3 box-shadow-none">
+                                                          <table>
+                                                            <thead>
+                                                              <tr>
+                                                                <td>Item</td>
+                                                                <template v-for="(month, indexM) in history.headings">
+                                                                  <td :key="indexM">{{month}}</td>
+                                                                </template>
+                                                              </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                              <tr>
+                                                                <td>{{form.inform.themes[index].items[index2].description}}</td>
+                                                                <template v-for="(executed, indexE) in history.answers">
+                                                                  <td :key="indexE">{{executed}}</td>
+                                                                </template>
+                                                              </tr>
+                                                            </tbody>
+                                                          </table>
+                                                      </b-card>
                                                       <br>
                                                       <div class="row float-right pt-12 pr-12y">
                                                           <b-btn variant="primary" @click="hideModal(`modalHistory${index2}`)">Cerrar</b-btn>
@@ -183,7 +203,6 @@
 <style src="@/vendor/libs/spinkit/spinkit.scss" lang="scss"></style>
 
 <script>
-import Vue from 'vue'
 import VueInput from "@/components/Inputs/VueInput.vue";
 import VueRadio from "@/components/Inputs/VueRadio.vue";
 import VueAjaxAdvancedSelect from "@/components/Inputs/VueAjaxAdvancedSelect.vue";
@@ -304,7 +323,8 @@ export default {
         },
         autoSave: '',
         textBlock: 'Cargando...',
-        verify: false
+        verify: false,
+        history: []
         
     };
   },
@@ -408,7 +428,11 @@ export default {
     {
       this.form.delete.files.push(value)
     },
-    showModal(ref) {
+    showModal(ref, history = false, item_id = 0) {
+      if (history)
+      {
+        this.historyItem(item_id)
+      }
         this.$refs[ref][0].show()
     },
     hideModal(ref) {
@@ -456,6 +480,19 @@ export default {
               Alerts.error('Error', 'Este período ya ha sido evaluado para este contratista, por favor seleccione otro período');
           });
       }
+    },
+    historyItem($index)
+    {
+      this.postData = Object.assign({}, {year: this.form.year}, {contract: this.form.contract_id},
+      {inform: this.form.inform_id}, {item_id: $index});
+
+      axios.post('/legalAspects/informContract/historyItemQualification', this.postData)
+        .then(response => {
+          this.history = response.data
+          console.log(this.history)
+        }).catch(error => {
+            Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
+        });
     }
   }
 };
@@ -466,5 +503,11 @@ export default {
     position: fixed;
     bottom: 0px;
     right: 0px; 
+}
+
+.modal-item {
+  .modal-dialog {
+    min-width: 80% !important;
+  }
 }
 </style>
