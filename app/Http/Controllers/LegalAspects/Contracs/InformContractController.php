@@ -641,7 +641,6 @@ class InformContractController extends Controller
 
     public function historyItemQualification(Request $request)
     {
-        \Log::info($request);
         $headingsXls = collect([]);
 
         $months = $this->multiselectMonth();
@@ -678,8 +677,6 @@ class InformContractController extends Controller
             'headings' => $headings,
             'answers' => $answers
         ];
-
-        \Log::info($data); 
 
         return $data;
     }
