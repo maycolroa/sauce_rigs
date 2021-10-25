@@ -83,8 +83,8 @@
                                         </thead>
                                         <tbody>
                                           <template v-for="(item, index2) in objetive.items">
-                                              <tr :key="index2">
-                                                  <td class="align-middle">
+                                              <tr :key="index2" style="width:100%">
+                                                  <td style="width:5%" class="align-middle">
                                                       <center>
                                                       <modal-observations v-model="form.inform.themes[index].items[index2].observations" :item-id="item.id" :view-only="viewOnly" @removeObservation="pushRemoveObservation" :form="form" :prefixIndex="`inform.themes.${index}.observations`"/>
                                                       <modal-file v-model="form.inform.themes[index].items[index2].files" :item-id="item.id" :view-only="viewOnly" @removeFile="pushRemoveFile" :form="form" :prefixIndex="`inform.themes${index}.items${index2}.files`"/>
@@ -112,10 +112,10 @@
                                                       </div>
                                                       </b-modal>
                                                   </td>                  
-                                                  <td style="padding: 0px;">
-                                                      <vue-textarea :disabled="true" class="col-md-12" v-model="form.inform.themes[index].items[index2].description" label="" name="description" placeholder="Descripción"  rows="1"></vue-textarea>
+                                                  <td colspan="3" style="width:40%; padding: 0px;">
+                                                      <vue-textarea :disabled="true" class="col-md-12" v-model="form.inform.themes[index].items[index2].description" label="" name="description" placeholder="Descripción" rows="3"></vue-textarea>
                                                   </td>
-                                                  <td colspan="2" class="align-middle text-nowrap" style="padding: 0px;">
+                                                  <td class="align-middle text-nowrap" style="padding: 0px; width:55%">
                                                     <b-row class="col-md-12">
                                                       <b-col>
                                                         <vue-input :disabled="viewOnly" v-model="form.inform.themes[index].items[index2].programmed" label="Programado" type="number" name="name" :error="form.errorsFor('name')" @input="calculatePorcentage(index, index2)"></vue-input>
