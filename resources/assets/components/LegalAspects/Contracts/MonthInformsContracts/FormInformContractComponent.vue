@@ -135,18 +135,20 @@
                                                       <b-card bg-variant="transparent"  title="" class="mb-3 box-shadow-none">
                                                           <table>
                                                             <thead>
-                                                              <tr>
-                                                                <td>Item</td>
+                                                              <tr style="width:100%">
+                                                                <td style="width:30%">Item</td>
                                                                 <template v-for="(month, indexM) in history.headings">
                                                                   <td :key="indexM">{{month}}</td>
                                                                 </template>
                                                               </tr>
                                                             </thead>
                                                             <tbody>
-                                                              <tr>
-                                                                <td>{{form.inform.themes[index].items[index2].description}}</td>
+                                                              <tr style="width:100%">
+                                                                <td style="width:30%">
+                                                                  <vue-textarea :disabled="true" class="col-md-12" v-model="form.inform.themes[index].items[index2].description" label="" name="description" rows="3"></vue-textarea>
+                                                                </td>
                                                                 <template v-for="(executed, indexE) in history.answers">
-                                                                  <td :key="indexE">{{executed}}</td>
+                                                                  <td style="vertical-align: middle;" :key="indexE"><center>{{executed}}</center></td>
                                                                 </template>
                                                               </tr>
                                                             </tbody>
@@ -507,7 +509,7 @@ export default {
 
 .modal-item {
   .modal-dialog {
-    min-width: 80% !important;
+    min-width: 95% !important;
   }
 }
 </style>
