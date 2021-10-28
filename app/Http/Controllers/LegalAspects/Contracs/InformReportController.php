@@ -44,47 +44,6 @@ class InformReportController extends Controller
     {
         return view('application');
     }
-
-    /**
-    * Display a listing of the resource.
-    *
-    * @return \Illuminate\Http\Response
-    */
-    public function data(Request $request)
-    {
-        $inform_contracts = InformContract::select(
-                'sau_ct_inform_contract.*',
-                'sau_ct_information_contract_lessee.social_reason as social_reason',
-                'sau_ct_information_contract_lessee.nit as nit',
-                'sau_users.name as name',
-                DB::raw("CONCAT(year, ' - ', month) AS periodo")
-            )
-            ->join('sau_users', 'sau_users.id', 'sau_ct_inform_contract.evaluator_id')
-            ->join('sau_ct_information_contract_lessee', 'sau_ct_information_contract_lessee.id', 'sau_ct_inform_contract.contract_id')
-            ->where('sau_ct_inform_contract.inform_id', '=', $request->get('modelId'));;
-
-        /*$url = "/legalaspects/inform/contracts/".$request->get('modelId');
-
-        $filters = COUNT($request->get('filters')) > 0 ? $request->get('filters') : $this->filterDefaultValues($this->user->id, $url);
-
-        if (isset($filters["dateRange"]) && $filters["dateRange"])
-        {
-            $dates_request = explode('/', $filters["dateRange"]);
-            $dates = [];
-
-            if (COUNT($dates_request) == 2)
-            {
-                array_push($dates, (Carbon::createFromFormat('D M d Y',$dates_request[0]))->format('Y-m-d 00:00:00'));
-                array_push($dates, (Carbon::createFromFormat('D M d Y',$dates_request[1]))->format('Y-m-d 23:59:59'));
-            }
-            
-            $inform_contracts->betweenDate($dates);
-        }*/
-
-        //return Vuetable::of($inform_contracts)->make();
-        return Vuetable::of($inform_contracts)
-                    ->make();
-    }
     
     public function multiselectMonth()
     {
@@ -187,6 +146,8 @@ class InformReportController extends Controller
             $qualifications->push($qualifications_2);    
 
             $theme['items']->push($qualifications);
+
+            \Log::info($theme['items']);
         }
 
         return $themes;
@@ -292,5 +253,95 @@ class InformReportController extends Controller
         
             return $this->multiSelectFormat($data);
         }
+    }
+
+    public function multiselectItems(Request $request)
+    {
+        if($request->has('keyword'))
+        {
+            $keyword = "%{$request->keyword}%";
+            $data = InformThemeItem::select("sau_ct_inform_theme_item.id", "sau_ct_inform_theme_item.description")
+                ->join('sau_ct_informs_themes', 'sau_ct_informs_themes.id', 'sau_ct_inform_theme_item.evaluation_theme_id')
+                ->where(function ($query) use ($keyword) {
+                    $query->orWhere('sau_ct_inform_theme_item.description', 'like', $keyword);
+                })
+                ->where('sau_ct_informs_themes.inform_id', $request->inform_id)
+                ->take(30)->pluck('sau_ct_inform_theme_item.id', 'sau_ct_inform_theme_item.description');
+
+            return $this->respondHttp200([
+                'options' => $this->multiSelectFormat($data)
+            ]);
+        }
+        else
+        {
+            $data = InformThemeItem::selectRaw("
+                sau_ct_inform_theme_item.id as id,
+                sau_ct_inform_theme_item.description as description
+            ")
+            ->join('sau_ct_informs_themes', 'sau_ct_informs_themes.id', 'sau_ct_inform_theme_item.evaluation_theme_id')
+            ->pluck('id', 'description');
+        
+            return $this->multiSelectFormat($data);
+        }
+    }
+
+    public function reportLineItemQualification(Request $request)
+    { 
+        if ($request->item_id)
+        {
+            $headingsXls = collect([]);
+
+            $months = $this->multiselectMonth();
+
+            foreach ($months as $key => $month) 
+            {
+                $headingsXls->push(['id' => $month['name'], 'name' => $month['name']]);
+            }
+
+            $headings = $headingsXls->pluck('name')->toArray();
+
+            $qualifications = InformContractItem::select(
+                'sau_ct_inform_contract_items.*',
+                'sau_ct_inform_contract.*',
+                'sau_ct_inform_theme_item.description'
+            )
+            ->join('sau_ct_inform_theme_item', 'sau_ct_inform_theme_item.id', 'sau_ct_inform_contract_items.item_id')
+            ->join('sau_ct_inform_contract', 'sau_ct_inform_contract.id', 'sau_ct_inform_contract_items.inform_id')
+            ->where('sau_ct_inform_contract_items.item_id', $request->item_id)
+            ->where('sau_ct_inform_contract.year', $request->year)
+            ->where('sau_ct_inform_contract.inform_id', $request->inform_id)
+            ->where('contract_id', $request->contract_id)
+            ->groupBy('sau_ct_inform_theme_item.description', 'sau_ct_inform_contract_items.id')
+            ->get();
+
+            $answers = collect([]);
+
+            $item_des = '';
+
+            foreach ($qualifications as $key => $value) {
+                if ($key == 0)
+                    $item_des = $value->description;
+            }
+
+            foreach ($headingsXls as $key => $item)
+            {
+                $response = $qualifications->where('month', $item['id'])->first();
+
+                if ($response)
+                $answers->push($response->value_executed);
+                else
+                $answers->push(0);
+            }
+
+            $data = [
+                'item' => $item_des,
+                'headings' => $headings,
+                'answers' => $answers
+            ];
+        }
+        else
+            $data = [];
+
+        return $data;
     }
 }
