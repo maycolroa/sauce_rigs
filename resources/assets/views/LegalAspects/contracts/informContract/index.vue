@@ -8,7 +8,9 @@
     <div class="col-md">
       <b-card no-body>
         <b-card-header class="with-elements">
-            <b-btn :to="{name:'legalaspects-informs'}" variant="secondary">Regresar</b-btn>
+            <b-btn :to="{name:'legalaspects-informs'}" variant="secondary">Regresar</b-btn>&nbsp;&nbsp;
+            <b-btn :to="{name:'legalaspects-informs-report', id: `${this.$route.params.id}`}"
+             variant="primary">Reporte</b-btn>
         </b-card-header>
         <b-card-body>
           <vue-table

@@ -883,7 +883,7 @@ export default [
 			...middleware({ 'check-permission': 'contracts_informs_report_view' }, [
 				{
 					name: 'legalaspects-informs-report',
-					path: 'informs/report',
+					path: 'informs/report/:id',
 					component: () =>
 					import('@/views/LegalAspects/contracts/informContract/report')
 				}

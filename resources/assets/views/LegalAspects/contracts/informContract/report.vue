@@ -1,267 +1,156 @@
 <template>
-  <div>
-    <header-module
-        title="CONTRATISTAS"
-        subtitle="REPORTE DE EVALUACIONES REALIZADAS"
-        url="legalaspects-evaluations"
-    />
-
-    <div class="col-md">
-        <b-card no-body>
-            <b-card-header class="with-elements">
-                <div class="card-title-elements ml-md-auto" v-if="auth.can['contracts_evaluations_report_export']">
-                    <b-dd variant="default" :right="isRTL">
-                        <template slot="button-content">
-                            <span class='fas fa-cogs'></span>
-                        </template>
-                        <b-dd-item @click="exportReport()"><i class="fas fa-download"></i> &nbsp;Exportar</b-dd-item>
-                    </b-dd>
-                </div>
-            </b-card-header>
-            <b-card-body>
-                <div style="padding-top: ">
-                    <b-card bg-variant="transparent" border-variant="dark" title="Totales" class="mb-3 box-shadow-none">
-                        <b-row>
-                            <b-col>
-                                <div><b>Evaluaciones:</b> {{information.evaluations}}</div>
-                                <div><b># Cumplimientos:</b> {{information.t_cumple}}</div>
-                                <div><b># No Cumplimientos:</b> {{information.t_no_cumple}}</div>
-                            </b-col>
-                            <b-col>
-                                <div><b>% Cumplimientos:</b> {{information.p_cumple}}</div>
-                                <div><b>% No Cumplimientos:</b> {{information.p_no_cumple}}</div>
-                            </b-col>
-                        </b-row>
+    <div>
+        <header-module
+            title="INFORMES MENSUALES"
+            subtitle="REPORTE"
+        />
+        <div class="col-md">
+            <b-card no-body>
+                <b-card-header class="with-elements">
+                    <b-btn :to="{name:'legalaspects-informs-contracts', id: `${this.$route.params.id}`}" variant="secondary">Regresar</b-btn>
+                </b-card-header>
+            </b-card>
+        </div>
+        <loading :display="isLoading"/>
+        <div style="width:100%" class="col-md" v-show="!isLoading">
+            <b-card style="width:100%" no-body>
+                <b-row>
+                    <vue-ajax-advanced-select :disabled="isLoading" class="col-md-4" v-model="contract_id" name="contract_id" label="Contratista" placeholder="Seleccione la contratista" :url="contractDataUrl">
+                                </vue-ajax-advanced-select>
+                    <vue-ajax-advanced-select :disabled="isLoading || !contract_id" class="col-md-4" v-model="year" name="year" label="Año" placeholder=Año :url="urlMultiselect" :parameters="{column: 'year'}" @updateEmpty="updateEmptyKey('year')" :emptyAll="empty.year">
+                    </vue-ajax-advanced-select>
+                    <vue-ajax-advanced-select :disabled="isLoading || !year" class="col-md-4" v-model="theme" name="theme" label="Tema" placeholder=Tema :url="urlMultiselectTheme" :parameters="{inform_id: inform_id}" @updateEmpty="updateEmptyKey('theme')" :emptyAll="empty.theme">
+                    </vue-ajax-advanced-select>
+                </b-row>
+                <b-row style="width:100%" v-if="report.length > 0">
+                    <b-card bg-variant="transparent"  title="" class="mb-3 box-shadow-none">
+                        <table style="width:80%; font-size: 14px" class="table table-bordered mb-2">
+                            <tbody>
+                                <template v-for="(theme, index) in report">
+                                    <tr :key="index+2" style="width:100%;">
+                                        <td :colspan="theme.headings[0].length" :key="index" style="width:100%; background-color:#f0635f"><center><b>{{theme.name}}</b></center></td>
+                                    </tr>
+                                    <tr :key="index+200" style="width:100%">
+                                        <template v-for="(month, indexM) in theme.headings[0]">
+                                            <td v-if="indexM == 13" style="width:100%; background-color:#dcdcdc" :key="indexM">{{month}}</td>
+                                            <td v-else :key="indexM">{{month}}</td>
+                                        </template>
+                                    </tr>
+                                    <template v-for="(executed, indexE) in theme.items[0]">
+                                        <tr v-if="theme.items[0].length == (indexE + 1)" :key="indexE+454+indexE" style="width:100%; background-color:#dcdcdc">
+                                            <template v-for="(value, indexV) in executed">
+                                                <td  v-if="indexV == 'total'" style="vertical-align: middle; background-color:#dcdcdc" :key="indexV">
+                                                    <center>{{value}}</center>
+                                                </td>
+                                                <td  v-else style="vertical-align: middle;" :key="indexV">
+                                                    <center>{{value}}</center>
+                                                </td>
+                                            </template>
+                                        </tr>
+                                        <tr v-else :key="indexE+454+indexE" style="width:100%">
+                                            <template v-for="(value, indexV) in executed">
+                                                <td  v-if="indexV == 'total'" style="vertical-align: middle; background-color:#dcdcdc" :key="indexV">
+                                                    <center>{{value}}</center>
+                                                </td>
+                                                <td  v-else style="vertical-align: middle;" :key="indexV">
+                                                    <center>{{value}}</center>
+                                                </td>
+                                            </template>
+                                        </tr>
+                                    </template>
+                                </template>
+                            </tbody>
+                        </table>
                     </b-card>
-                </div>
-                <vue-table
-                    configName="legalaspects-evaluations-reports"
-                    @filtersUpdate="setFilters"
-                    ></vue-table>
-            </b-card-body>
-        </b-card>
-        <b-row>
-            <b-col>
-                <b-card border-variant="primary" title="Evaluaciones" class="mb-3 box-shadow-none">
-                    <b-row>
-                        <b-col><vue-advanced-select :disabled="isLoading" v-model="evaluationsSelected" :options="selectBar" :allowEmpty="false" :searchable="true" name="evaluationsSelected">
-                            </vue-advanced-select></b-col>
-                        <b-col><vue-advanced-select :disabled="isLoading" v-model="years" :options="yearsOptions" :searchable="true" name="years" placeholder="Años" :multiple="true">
-                            </vue-advanced-select></b-col>
-                        <b-col><vue-advanced-select :disabled="isLoading" v-model="months" :options="monthsOptions" :searchable="true" name="months" placeholder="Meses" :multiple="true">
-                        </vue-advanced-select></b-col>
-                    </b-row>
-                    <b-row>
-                        <b-col class="text-center" style="padding-bottom: 15px;">
-                            <h4>Número de Evaluaciones</h4>
-                        </b-col>
-                    </b-row>
-                    <b-row>
-                        <div class="col-md-12">
-                            <chart-bar 
-                                :chart-data="evaluationsData"
-                                title="Número de evaluaciones realizadas"
-                                color-line="red"
-                                ref=""/>
-                        </div>
-                    </b-row>
-                    <b-row>
-                        <b-col class="text-center" style="padding-bottom: 15px;">
-                            <h4>Porcentaje de Cumplimiento</h4>
-                        </b-col>
-                    </b-row>
-                    <b-row>
-                        <div class="col-md-12">
-                            <chart-bar-compliance 
-                                :chart-data="complianceData"
-                                title="Porcentaje de Cumplimiento"
-                                color-line="red"
-                                ref=""/>
-                        </div>
-                    </b-row>
-                </b-card>
-            </b-col>
-        </b-row>
-    </div>
-  </div>
+                </b-row>
+            </b-card>
+        </div>
+    </diV>
 </template>
 
 <script>
+
 import Alerts from '@/utils/Alerts.js';
-import VueAdvancedSelect from "@/components/Inputs/VueAdvancedSelect.vue";
-import ChartBar from '@/components/ECharts/ChartBar.vue';
-import ChartBarCompliance from '@/components/ECharts/ChartBarCompliance.vue';
-import GlobalMethods from '@/utils/GlobalMethods.js';
+import Loading from "@/components/Inputs/Loading.vue";
+import VueAjaxAdvancedSelect from "@/components/Inputs/VueAjaxAdvancedSelect.vue";
 
 export default {
-    name: 'legalaspects-evaluations-report',
+    name: 'legalaspects-informs-report',
     metaInfo: {
-        title: 'Evaluaciones - Reportes'
+        title: 'Informes Mensuales - Reporte'
     },
     components:{
-        VueAdvancedSelect,
-        ChartBarCompliance,
-        ChartBar
+        Loading,
+        VueAjaxAdvancedSelect
     },
     data () {
         return {
-            filters: [],
-            selectBar: [],
-            yearsOptions: [],
-            monthsOptions: [],
             isLoading: false,
-            information: {
-                evaluations: 0,
-                t_cumple: 0,
-                t_no_cumple: 0,
-                p_cumple: '0%',
-                p_no_cumple: '0%'
+            report: [],
+            year: '',
+            theme: '',
+            contract_id: '',
+            empty: {
+                year: false,
+                theme: false
             },
-            evaluationsSelected: 'evaluation',
-            years: '',
-            months: '',
-            evaluations: {
-                evaluation: {
-                    labels: [],
-                    datasets: []
-                },
-                objective: {
-                    labels: [],
-                    datasets: []
-                },
-                subobjective: {
-                    labels: [],
-                    datasets: []
-                },
-                item: {
-                    labels: [],
-                    datasets: []
-                },
-                type_rating: {
-                    labels: [],
-                    datasets: []
-                },
-                contract: {
-                    labels: [],
-                    datasets: []
-                }
-            },
-            compliance: {
-                evaluation: {
-                    labels: [],
-                    datasets: []
-                },
-                objective: {
-                    labels: [],
-                    datasets: []
-                },
-                subobjective: {
-                    labels: [],
-                    datasets: []
-                },
-                item: {
-                    labels: [],
-                    datasets: []
-                },
-                type_rating: {
-                    labels: [],
-                    datasets: []
-                },
-                contract: {
-                    labels: [],
-                    datasets: []
-                }
-            }
+            urlMultiselect: '/selects/ctInformReportMultiselect',
+            urlMultiselectTheme: '/selects/ctInformReportMultiselectThemes',
+            inform_id: this.$route.params.id,
+            contractDataUrl: '/selects/contractors',
         }
     },
-    created() {
-        this.updateTotales()
-        this.fetchSelect('selectBar', '/selects/multiselectBarEvaluations')
-        this.fetchSelect('yearsOptions', '/selects/evaluations/years')
-        this.fetchSelect('monthsOptions', '/selects/evaluations/months')
-        this.fetch()
-    },
-    computed: {
-        evaluationsData: function() {
-            return this.evaluations[this.evaluationsSelected]
-        },
-        complianceData: function() {
-            return this.compliance[this.evaluationsSelected]
-        }
+    created(){
+        //this.fetch()
     },
     watch: {
-        years() {
-          this.fetch();
+        'contract_id'() {
+            this.emptySelect('year', 'year')
+            this.emptySelect('theme', 'theme')
         },
-        months() {
-            this.fetch();
+        'year'() {
+            if (this.contract_id && this.year)
+            {
+                this.emptySelect('theme', 'theme')
+                this.fetch()
+            }
+        },
+        'theme'()
+        {
+            this.fetch()
         }
     },
     methods: {
-        setFilters(value)
-        { 
-            this.filters = value
-            this.updateTotales()
-            this.fetch()
-        },
-        fetchSelect(key, url)
-        {
-            GlobalMethods.getDataMultiselect(url)
-            .then(response => {
-                this[key] = response;
-            })
-            .catch(error => {
-                Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
-                this.$router.go(-1);
-            });
-        },
-        exportReport() {
-            axios.post('/legalAspects/evaluationContract/exportReport', this.filters)
-                .then(response => {
-                    Alerts.warning('Información', 'Se inicio la exportación, se le notificara a su correo electronico cuando finalice el proceso.');
-                }).catch(error => {
-                    Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
-                });
-        },
-        updateTotales()
-        {
-            axios.post('/legalAspects/evaluationContract/getTotales', this.filters)
-                .then(response => {
-                    this.information = response.data.data;
-                })
-                .catch(error => {
-                    Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
-                    this.$router.go(-1);
-                });
-        },
         fetch()
         {
             if (!this.isLoading)
             {
-                //console.log('buscando...')
                 this.isLoading = true;
+                this.postData = Object.assign({}, {contract_id: this.contract_id}, {year: this.year}, {theme: this.theme}, {inform_id: this.inform_id});
 
-                let postData = Object.assign({}, {years: this.years}, {months: this.months}, this.filters);
-
-                axios.post('/legalAspects/evaluationContract/reportDinamic', postData)
-                .then(data => {
-                    this.update(data);
-                    this.isLoading = false;
-                })
-                .catch(error => {
-                    console.log(error);
-                    this.isLoading = false;
-                    Alerts.error('Error', 'Hubo un problema recolectando la información');
-                });
+                axios.post('/legalAspects/informContract/reportTableTotales', this.postData)
+                    .then(response => {
+                    this.report = response.data
+                    console.log(this.report[0].items[0])
+                    this.isLoading = false
+                    }).catch(error => {
+                        Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
+                    });
             }
         },
-        update(data) {
-            _.forIn(data.data, (value, key) => {
-                if (this[key]) {
-                    this[key] = value;
-                }
-            });
-        }
+        emptySelect(keySelect, keyEmpty)
+        {
+            if (this[keySelect] !== '')
+            {
+                this.empty[keyEmpty] = true
+                this[keySelect] = ''
+            }
+        },
+        updateEmptyKey(keyEmpty)
+        {
+            this.empty[keyEmpty]  = false
+        },
     }
 }
+
 </script>

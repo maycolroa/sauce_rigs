@@ -130,7 +130,7 @@
                                                     </b-row>
                                                     <b-modal :ref="`modalHistory${index2}`" :hideFooter="true" :id="`modals-default-${index2+1}`" class="modal-top modal-item" size="lg">
                                                       <div slot="modal-title">
-                                                          Historíco<br>
+                                                          Histórico<br>
                                                       </div>
                                                       <b-card bg-variant="transparent"  title="" class="mb-3 box-shadow-none">
                                                           <table>
@@ -491,7 +491,6 @@ export default {
       axios.post('/legalAspects/informContract/historyItemQualification', this.postData)
         .then(response => {
           this.history = response.data
-          console.log(this.history)
         }).catch(error => {
             Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
         });
