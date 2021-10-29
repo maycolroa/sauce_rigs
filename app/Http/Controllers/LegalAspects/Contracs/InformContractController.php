@@ -585,6 +585,7 @@ class InformContractController extends Controller
         $logo = ($company && $company->logo) ? $company->logo : null;
 
         $informContract->logo = $logo;
+        $informContract->inform_base = $inform_base;
 
         return $informContract;
     }

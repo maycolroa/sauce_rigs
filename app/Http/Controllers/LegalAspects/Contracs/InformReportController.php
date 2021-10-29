@@ -146,8 +146,6 @@ class InformReportController extends Controller
             $qualifications->push($qualifications_2);    
 
             $theme['items']->push($qualifications);
-
-            \Log::info($theme['items']);
         }
 
         return $themes;
@@ -329,6 +327,158 @@ class InformReportController extends Controller
 
                 if ($response)
                 $answers->push($response->value_executed);
+                else
+                $answers->push(0);
+            }
+
+            $data = [
+                'item' => $item_des,
+                'headings' => $headings,
+                'answers' => $answers
+            ];
+        }
+        else
+            $data = [];
+
+        return $data;
+    }
+
+    public function reportTableTotalesPorcentage(Request $request)
+    {
+        \Log::info($request);
+        $themes = collect([]);
+
+        if ($request->theme)
+        {
+            $inform_themes = InformTheme::find($request->theme);
+
+            $themes->push(['id' => $inform_themes->id, 'name' => $inform_themes->description, 'headings' => collect([]), 'items' => collect([])]);
+        }
+        else
+        {
+            $inform_themes = InformTheme::where('inform_id',$request->inform_id)->get();
+
+            foreach ($inform_themes as $key => $value) 
+            {
+                $themes->push(['id' => $value->id, 'name' => $value->description, 'headings' => collect([]), 'items' => collect([])]);
+            }
+        }
+
+        $headingsXls = collect([['id' => 'id', 'name' => 'Item']]);
+
+        $months = $this->multiselectMonth();
+
+        foreach ($months as $key => $month) 
+        {
+            $headingsXls->push(['id' => $month['name'], 'name' => $month['name']]);
+        }
+
+        $headingsXls->push(['id' => 'Total', 'name' => 'Total']);
+
+        foreach ($themes as $key => $theme) 
+        {
+            $theme['headings']->push($headingsXls->pluck('name')->toArray());
+
+            $qualifications = InformContractItem::join('sau_ct_inform_contract', 'sau_ct_inform_contract.id', 'sau_ct_inform_contract_items.inform_id')
+            ->join('sau_ct_inform_theme_item', 'sau_ct_inform_theme_item.id', 'sau_ct_inform_contract_items.item_id')
+            ->where('sau_ct_inform_theme_item.evaluation_theme_id', $theme['id'])
+            ->where('sau_ct_inform_contract.year', $request->year)
+            ->where('contract_id', $request->contract_id)
+            ->where('sau_ct_inform_contract.inform_id', $request->inform_id)
+            ->groupBy('sau_ct_inform_theme_item.description');
+
+            foreach ($months as $key => $month)
+            {
+                $select[] = "SUM(
+                        CASE 
+                            WHEN sau_ct_inform_contract.month = '{$month['name']}' THEN 
+                            CASE
+                                WHEN compliance IS NOT NULL 
+                                THEN compliance ELSE 0 END
+                            ELSE 0
+                        END
+                    ) AS month{$key}";
+            }
+
+            $qualifications = $qualifications->select(
+                "sau_ct_inform_theme_item.description AS item",
+                DB::raw(implode(",", $select)),
+                DB::raw("round(SUM(compliance)/12, 2) as total")
+            )->get();
+
+            \Log::info($qualifications);
+
+            $qualifications_2 = [
+                'item' => 'Total',
+                'month0' => round($qualifications->sum('month0')/$qualifications->count(), 2),
+                'month1' => round($qualifications->sum('month1')/$qualifications->count(), 2),
+                'month2' => round($qualifications->sum('month2')/$qualifications->count(), 2),
+                'month3' => round($qualifications->sum('month3')/$qualifications->count(), 2),
+                'month4' => round($qualifications->sum('month4')/$qualifications->count(), 2),
+                'month5' => round($qualifications->sum('month5')/$qualifications->count(), 2),
+                'month6' => round($qualifications->sum('month6')/$qualifications->count(), 2),
+                'month7' => round($qualifications->sum('month7')/$qualifications->count(), 2),
+                'month8' => round($qualifications->sum('month8')/$qualifications->count(), 2),
+                'month9' => round($qualifications->sum('month9')/$qualifications->count(), 2),
+                'month10' => round($qualifications->sum('month10')/$qualifications->count(), 2),
+                'month11' => round($qualifications->sum('month11')/$qualifications->count(), 2),
+                'total' => round($qualifications->sum('total')/$qualifications->count(), 2),
+            ];
+
+            $qualifications_2 = collect($qualifications_2);
+
+            $qualifications->push($qualifications_2);    
+
+            $theme['items']->push($qualifications);
+        }
+
+        return $themes;
+    }
+
+    public function reportLineItemPorcentage(Request $request)
+    { 
+        if ($request->item_id)
+        {
+            $headingsXls = collect([]);
+
+            $months = $this->multiselectMonth();
+
+            foreach ($months as $key => $month) 
+            {
+                $headingsXls->push(['id' => $month['name'], 'name' => $month['name']]);
+            }
+
+            $headings = $headingsXls->pluck('name')->toArray();
+
+            $qualifications = InformContractItem::select(
+                'sau_ct_inform_contract_items.*',
+                'sau_ct_inform_contract.*',
+                'sau_ct_inform_theme_item.description'
+            )
+            ->join('sau_ct_inform_theme_item', 'sau_ct_inform_theme_item.id', 'sau_ct_inform_contract_items.item_id')
+            ->join('sau_ct_inform_contract', 'sau_ct_inform_contract.id', 'sau_ct_inform_contract_items.inform_id')
+            ->where('sau_ct_inform_contract_items.item_id', $request->item_id)
+            ->where('sau_ct_inform_contract.year', $request->year)
+            ->where('sau_ct_inform_contract.inform_id', $request->inform_id)
+            ->where('contract_id', $request->contract_id)
+            ->groupBy('sau_ct_inform_theme_item.description', 'sau_ct_inform_contract_items.id')
+            ->get();
+
+            $answers = collect([]);
+
+            $item_des = '';
+
+            foreach ($qualifications as $key => $value) {
+                if ($key == 0)
+                    $item_des = $value->description;
+            }
+
+            foreach ($headingsXls as $key => $item)
+            {
+                $response = $qualifications->where('month', $item['id'])->first();
+
+                if ($response)
+                $answers->push($response->compliance);
                 else
                 $answers->push(0);
             }
