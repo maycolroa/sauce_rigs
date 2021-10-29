@@ -73,7 +73,7 @@
                     <b-card style="width:95%" no-body>
                         <b-row style="width:95%; padding-left: 5%">
                             <b-col>
-                                <vue-ajax-advanced-select :disabled="isLoading || !year" class="col-md-12" v-model="item" name="item" label="Item" placeholder="Item" :url="urlMultiselectItem" :parameters="{inform_id: inform_id}" @updateEmpty="updateEmptyKey('item')" :emptyAll="true">
+                                <vue-ajax-advanced-select :disabled="isLoading || !year" class="col-md-12" v-model="item" name="item" label="Item para graficar" placeholder="Item" :url="urlMultiselectItem" :parameters="{inform_id: inform_id}" @updateEmpty="updateEmptyKey('item')" :emptyAll="true">
                             </vue-ajax-advanced-select>
                             </b-col>
                         </b-row>
@@ -134,7 +134,7 @@
                     <b-card style="width:95%" no-body>
                         <b-row style="width:95%; padding-left: 5%">
                             <b-col>
-                                <vue-ajax-advanced-select :disabled="isLoading || !year" class="col-md-12" v-model="item_2" name="item" label="Item Cumplimientos" placeholder="Item" :url="urlMultiselectItem" :parameters="{inform_id: inform_id}" @updateEmpty="updateEmptyKey('item')" :emptyAll="true">
+                                <vue-ajax-advanced-select :disabled="isLoading || !year" class="col-md-12" v-model="item_2" name="item" label="Item para graficar Cumplimientos" placeholder="Item" :url="urlMultiselectItem" :parameters="{inform_id: inform_id}" @updateEmpty="updateEmptyKey('item')" :emptyAll="true">
                             </vue-ajax-advanced-select>
                             </b-col>
                         </b-row>
