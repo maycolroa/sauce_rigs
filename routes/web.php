@@ -310,6 +310,7 @@ Route::middleware(['auth'])->group(function () {
 
         Route::post('ctInformReportMultiselect', 'LegalAspects\Contracs\InformReportController@multiselect');
         Route::post('ctInformReportMultiselectThemes', 'LegalAspects\Contracs\InformReportController@multiselectThemes');
+        Route::post('ctInformReportMultiselectItems', 'LegalAspects\Contracs\InformReportController@multiselectItems');
 
         Route::prefix('system')->group(function () {
           Route::post('labels', 'System\Labels\LabelController@multiselect');
@@ -616,6 +617,8 @@ Route::middleware(['auth'])->group(function () {
       Route::post('informContract/historyItemQualification', 'LegalAspects\Contracs\InformContractController@historyItemQualification');
 
       Route::post('informContract/reportTableTotales', 'LegalAspects\Contracs\InformReportController@reportTableTotales');
+
+      Route::post('informContract/reportLineItemQualification', 'LegalAspects\Contracs\InformReportController@reportLineItemQualification');
 
       Route::prefix('legalMatrix')->group(function () {
 

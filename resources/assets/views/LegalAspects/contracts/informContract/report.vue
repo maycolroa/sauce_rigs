@@ -14,45 +14,51 @@
         <loading :display="isLoading"/>
         <div style="width:100%" class="col-md" v-show="!isLoading">
             <b-card style="width:100%" no-body>
-                <b-row>
-                    <vue-ajax-advanced-select :disabled="isLoading" class="col-md-4" v-model="contract_id" name="contract_id" label="Contratista" placeholder="Seleccione la contratista" :url="contractDataUrl">
+                <b-row style="width:95%; padding-left: 5%">
+                    <b-col cols="4">
+                        <vue-ajax-advanced-select :disabled="isLoading" v-model="contract_id" name="contract_id" label="Contratista" placeholder="Seleccione la contratista" :url="contractDataUrl">
                                 </vue-ajax-advanced-select>
-                    <vue-ajax-advanced-select :disabled="isLoading || !contract_id" class="col-md-4" v-model="year" name="year" label="Año" placeholder=Año :url="urlMultiselect" :parameters="{column: 'year'}" @updateEmpty="updateEmptyKey('year')" :emptyAll="empty.year">
-                    </vue-ajax-advanced-select>
-                    <vue-ajax-advanced-select :disabled="isLoading || !year" class="col-md-4" v-model="theme" name="theme" label="Tema" placeholder=Tema :url="urlMultiselectTheme" :parameters="{inform_id: inform_id}" @updateEmpty="updateEmptyKey('theme')" :emptyAll="empty.theme">
-                    </vue-ajax-advanced-select>
+                    </b-col>
+                    <b-col cols="4">
+                        <vue-ajax-advanced-select :disabled="isLoading || !contract_id" v-model="year" name="year" label="Año" placeholder=Año :url="urlMultiselect" :parameters="{column: 'year'}" @updateEmpty="updateEmptyKey('year')" :emptyAll="empty.year">
+                        </vue-ajax-advanced-select>
+                    </b-col>
+                    <b-col cols="4">
+                        <vue-ajax-advanced-select :disabled="isLoading || !year" v-model="theme" name="theme" label="Tema" placeholder=Tema :url="urlMultiselectTheme" :parameters="{inform_id: inform_id}" @updateEmpty="updateEmptyKey('theme')" :emptyAll="empty.theme">
+                        </vue-ajax-advanced-select>
+                    </b-col>
                 </b-row>
                 <b-row style="width:100%" v-if="report.length > 0">
                     <b-card bg-variant="transparent"  title="" class="mb-3 box-shadow-none">
-                        <table style="width:80%; font-size: 14px" class="table table-bordered mb-2">
+                        <table style="width:90%; font-size: 14px" class="table table-bordered mb-2">
                             <tbody>
                                 <template v-for="(theme, index) in report">
-                                    <tr :key="index+2" style="width:100%;">
-                                        <td :colspan="theme.headings[0].length" :key="index" style="width:100%; background-color:#f0635f"><center><b>{{theme.name}}</b></center></td>
+                                    <tr :key="index+round()" style="width:100%;">
+                                        <td :colspan="theme.headings[0].length" style="width:100%; background-color:#f0635f"><center><b>{{theme.name}} - {{}}</b></center></td>
                                     </tr>
-                                    <tr :key="index+200" style="width:100%">
+                                    <tr :key="index+round()" style="width:100%">
                                         <template v-for="(month, indexM) in theme.headings[0]">
-                                            <td v-if="indexM == 13" style="width:100%; background-color:#dcdcdc" :key="indexM">{{month}}</td>
-                                            <td v-else :key="indexM">{{month}}</td>
+                                            <td v-if="indexM == 13" style="width:100%; background-color:#dcdcdc" :key="indexM+round()">{{month}}</td>
+                                            <td v-else :key="indexM+round()">{{month}}</td>
                                         </template>
                                     </tr>
                                     <template v-for="(executed, indexE) in theme.items[0]">
-                                        <tr v-if="theme.items[0].length == (indexE + 1)" :key="indexE+454+indexE" style="width:100%; background-color:#dcdcdc">
+                                        <tr v-if="theme.items[0].length == (indexE + 1)" :key="indexE+round()" style="width:100%; background-color:#dcdcdc">
                                             <template v-for="(value, indexV) in executed">
-                                                <td  v-if="indexV == 'total'" style="vertical-align: middle; background-color:#dcdcdc" :key="indexV">
+                                                <td  v-if="indexV == 'total'" style="vertical-align: middle; background-color:#dcdcdc" :key="indexV+round()">
                                                     <center>{{value}}</center>
                                                 </td>
-                                                <td  v-else style="vertical-align: middle;" :key="indexV">
+                                                <td  v-else style="vertical-align: middle;" :key="indexV+round()">
                                                     <center>{{value}}</center>
                                                 </td>
                                             </template>
                                         </tr>
-                                        <tr v-else :key="indexE+454+indexE" style="width:100%">
+                                        <tr v-else :key="indexE+round()" style="width:100%">
                                             <template v-for="(value, indexV) in executed">
-                                                <td  v-if="indexV == 'total'" style="vertical-align: middle; background-color:#dcdcdc" :key="indexV">
+                                                <td  v-if="indexV == 'total'" style="vertical-align: middle; background-color:#dcdcdc" :key="indexV+round()">
                                                     <center>{{value}}</center>
                                                 </td>
-                                                <td  v-else style="vertical-align: middle;" :key="indexV">
+                                                <td  v-else style="vertical-align: middle;" :key="indexV+round()">
                                                     <center>{{value}}</center>
                                                 </td>
                                             </template>
@@ -64,6 +70,19 @@
                     </b-card>
                 </b-row>
             </b-card>
+            <b-card style="width:100%" no-body>
+                <b-row style="width:95%; padding-left: 5%">
+                    <b-col>
+                        <vue-ajax-advanced-select :disabled="isLoading || !year" class="col-md-12" v-model="item" name="item" label="Item" placeholder=Item :url="urlMultiselectItem" :parameters="{inform_id: inform_id}" @updateEmpty="updateEmptyKey('item')" :emptyAll="true">
+                    </vue-ajax-advanced-select>
+                    </b-col>
+                </b-row>
+                <b-row class="col-md-12">
+                    <b-col v-if="item">
+                        <line-component :key="test" :chartData="chartData" ref="line"></line-component>
+                    </b-col>
+                </b-row>
+            </b-card>
         </div>
     </diV>
 </template>
@@ -73,6 +92,7 @@
 import Alerts from '@/utils/Alerts.js';
 import Loading from "@/components/Inputs/Loading.vue";
 import VueAjaxAdvancedSelect from "@/components/Inputs/VueAjaxAdvancedSelect.vue";
+import LineComponent from '@/components/Chartjs/ChartLine.vue';
 
 export default {
     name: 'legalaspects-informs-report',
@@ -81,7 +101,8 @@ export default {
     },
     components:{
         Loading,
-        VueAjaxAdvancedSelect
+        VueAjaxAdvancedSelect,
+        LineComponent
     },
     data () {
         return {
@@ -90,14 +111,19 @@ export default {
             year: '',
             theme: '',
             contract_id: '',
+            item: '',
             empty: {
                 year: false,
                 theme: false
             },
             urlMultiselect: '/selects/ctInformReportMultiselect',
             urlMultiselectTheme: '/selects/ctInformReportMultiselectThemes',
+            urlMultiselectItem: '/selects/ctInformReportMultiselectItems',
             inform_id: this.$route.params.id,
             contractDataUrl: '/selects/contractors',
+            test: true,
+            chartData: {},
+            report_line: []
         }
     },
     created(){
@@ -118,7 +144,11 @@ export default {
         'theme'()
         {
             this.fetch()
-        }
+        },
+        'item'()
+        {
+            this.fetch2()
+        },
     },
     methods: {
         fetch()
@@ -131,12 +161,36 @@ export default {
                 axios.post('/legalAspects/informContract/reportTableTotales', this.postData)
                     .then(response => {
                     this.report = response.data
-                    console.log(this.report[0].items[0])
-                    this.isLoading = false
+                    this.isLoading = false;
                     }).catch(error => {
                         Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
                     });
             }
+        },
+        fetch2()
+        {
+            this.postData2 = Object.assign({}, {contract_id: this.contract_id}, {year: this.year}, {inform_id: this.inform_id}, {item_id: this.item});
+
+            axios.post('/legalAspects/informContract/reportLineItemQualification', this.postData2)
+                .then(response => {
+                this.report_line = response.data
+
+                this.chartData = {
+                    labels: this.report_line.headings,
+                    datasets: [{
+                        label: this.report_line.item,
+                        data: this.report_line.answers,
+                        borderWidth: 1,
+                        backgroundColor: '#36A2EB',
+                        borderColor: '#36A2EB',
+                        fill: false
+                    }]
+                }
+                this.test = !this.test;
+                console.log(this.report_line);
+                }).catch(error => {
+                    Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
+                });
         },
         emptySelect(keySelect, keyEmpty)
         {
@@ -150,6 +204,10 @@ export default {
         {
             this.empty[keyEmpty]  = false
         },
+        round()
+        {
+            return Math.random();
+        }
     }
 }
 
