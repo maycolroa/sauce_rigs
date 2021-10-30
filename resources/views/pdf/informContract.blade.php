@@ -44,6 +44,7 @@
         <div style="page-break-inside: avoid; text-align: right; padding-bottom: 10px;"><img src="{{ public_path('storage/administrative/logos/').$inform->logo }}" width="120px" height="120px"/></div>
         @endif
     <div style="page-break-inside: avoid;">
+        <h3> {{$inform->inform_base->name}}</h3>
         <h3> Fecha de Evaluación: {{$inform->inform_date}}</h3>
     </div>
 

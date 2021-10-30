@@ -34,7 +34,7 @@
                             <tbody>
                                 <template v-for="(theme, index) in report">
                                     <tr :key="index+round()" style="width:100%;">
-                                        <td :colspan="theme.headings[0].length" style="width:100%; background-color:#f0635f"><center><b>{{theme.name}} - {{}}</b></center></td>
+                                        <td :colspan="theme.headings[0].length" style="width:100%; background-color:#f0635f"><center><b>{{theme.name}}</b></center></td>
                                     </tr>
                                     <tr :key="index+round()" style="width:100%">
                                         <template v-for="(month, indexM) in theme.headings[0]">
@@ -69,18 +69,86 @@
                         </table>
                     </b-card>
                 </b-row>
-            </b-card>
-            <b-card style="width:100%" no-body>
-                <b-row style="width:95%; padding-left: 5%">
-                    <b-col>
-                        <vue-ajax-advanced-select :disabled="isLoading || !year" class="col-md-12" v-model="item" name="item" label="Item" placeholder=Item :url="urlMultiselectItem" :parameters="{inform_id: inform_id}" @updateEmpty="updateEmptyKey('item')" :emptyAll="true">
-                    </vue-ajax-advanced-select>
-                    </b-col>
+                <b-row>
+                    <b-card style="width:95%" no-body>
+                        <b-row style="width:95%; padding-left: 5%">
+                            <b-col>
+                                <vue-ajax-advanced-select :disabled="isLoading || !year" class="col-md-12" v-model="item" name="item" label="Item para graficar" placeholder="Item" :url="urlMultiselectItem" :parameters="{inform_id: inform_id}" @updateEmpty="updateEmptyKey('item')" :emptyAll="true">
+                            </vue-ajax-advanced-select>
+                            </b-col>
+                        </b-row>
+                        <b-row class="col-md-12">
+                            <b-col v-if="item">
+                                <line-component v-if="report_line.answers.length > 0" :key="test" :chartData="chartData" ref="line"></line-component>
+                                <b-container v-else>
+                                    <b-row align-h="center">
+                                        <b-col cols="6">No hay resultados</b-col>
+                                    </b-row>
+                                </b-container>
+                            </b-col>
+                        </b-row>
+                    </b-card>
                 </b-row>
-                <b-row class="col-md-12">
-                    <b-col v-if="item">
-                        <line-component :key="test" :chartData="chartData" ref="line"></line-component>
-                    </b-col>
+                <b-row style="width:95%%" v-if="report_porcentage.length > 0">
+                    <b-card bg-variant="transparent"  title="" class="mb-3 box-shadow-none">
+                        <table style="width:90%; font-size: 14px" class="table table-bordered mb-2">
+                            <tbody>
+                                <template v-for="(theme, index) in report_porcentage">
+                                    <tr :key="index+round()" style="width:100%;">
+                                        <td :colspan="theme.headings[0].length" style="width:100%; background-color:#f0635f"><center><b>{{theme.name}}</b></center></td>
+                                    </tr>
+                                    <tr :key="index+round()" style="width:100%">
+                                        <template v-for="(month, indexM) in theme.headings[0]">
+                                            <td v-if="indexM == 13" style="width:100%; background-color:#dcdcdc" :key="indexM+round()">{{month}}</td>
+                                            <td v-else :key="indexM+round()">{{month}}</td>
+                                        </template>
+                                    </tr>
+                                    <template v-for="(executed, indexE) in theme.items[0]">
+                                        <tr v-if="theme.items[0].length == (indexE + 1)" :key="indexE+round()" style="width:100%; background-color:#dcdcdc">
+                                            <template v-for="(value, indexV) in executed">
+                                                <td  v-if="indexV == 'total'" style="vertical-align: middle; background-color:#dcdcdc" :key="indexV+round()">
+                                                    <center>{{value}}</center>
+                                                </td>
+                                                <td  v-else style="vertical-align: middle;" :key="indexV+round()">
+                                                    <center>{{value}}</center>
+                                                </td>
+                                            </template>
+                                        </tr>
+                                        <tr v-else :key="indexE+round()" style="width:100%">
+                                            <template v-for="(value, indexV) in executed">
+                                                <td  v-if="indexV == 'total'" style="vertical-align: middle; background-color:#dcdcdc" :key="indexV+round()">
+                                                    <center>{{value}}</center>
+                                                </td>
+                                                <td  v-else style="vertical-align: middle;" :key="indexV+round()">
+                                                    <center>{{value}}</center>
+                                                </td>
+                                            </template>
+                                        </tr>
+                                    </template>
+                                </template>
+                            </tbody>
+                        </table>
+                    </b-card>
+                </b-row>
+                <b-row>
+                    <b-card style="width:95%" no-body>
+                        <b-row style="width:95%; padding-left: 5%">
+                            <b-col>
+                                <vue-ajax-advanced-select :disabled="isLoading || !year" class="col-md-12" v-model="item_2" name="item" label="Item para graficar Cumplimientos" placeholder="Item" :url="urlMultiselectItem" :parameters="{inform_id: inform_id}" @updateEmpty="updateEmptyKey('item')" :emptyAll="true">
+                            </vue-ajax-advanced-select>
+                            </b-col>
+                        </b-row>
+                        <b-row class="col-md-12">
+                            <b-col v-if="item_2">
+                                <line-component v-if="report_line_porcentage.answers.length > 0" :key="test" :chartData="chartData2" ref="line"></line-component>
+                                <b-container v-else>
+                                    <b-row align-h="center">
+                                        <b-col cols="6">No hay resultados</b-col>
+                                    </b-row>
+                                </b-container>
+                            </b-col>
+                        </b-row>
+                    </b-card>
                 </b-row>
             </b-card>
         </div>
@@ -112,6 +180,7 @@ export default {
             theme: '',
             contract_id: '',
             item: '',
+            item_2: '',
             empty: {
                 year: false,
                 theme: false
@@ -123,7 +192,18 @@ export default {
             contractDataUrl: '/selects/contractors',
             test: true,
             chartData: {},
-            report_line: []
+            chartData2: {},
+            report_line: {
+                item: '',
+                headings: [],
+                answers: []
+            },
+            report_porcentage: [],
+            report_line_porcentage: {
+                item: '',
+                headings: [],
+                answers: []
+            },
         }
     },
     created(){
@@ -139,6 +219,8 @@ export default {
             {
                 this.emptySelect('theme', 'theme')
                 this.fetch()
+                console.log('1')
+                console.log('2')
             }
         },
         'theme'()
@@ -148,6 +230,10 @@ export default {
         'item'()
         {
             this.fetch2()
+        },
+        'item_2'()
+        {
+            this.fetch4()
         },
     },
     methods: {
@@ -162,6 +248,7 @@ export default {
                     .then(response => {
                     this.report = response.data
                     this.isLoading = false;
+                    this.fetch3()
                     }).catch(error => {
                         Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
                     });
@@ -187,7 +274,47 @@ export default {
                     }]
                 }
                 this.test = !this.test;
-                console.log(this.report_line);
+                }).catch(error => {
+                    Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
+                });
+        },
+        fetch3()
+        {
+            if (!this.isLoading)
+            {
+                this.isLoading = true;
+                this.postData = Object.assign({}, {contract_id: this.contract_id}, {year: this.year}, {theme: this.theme}, {inform_id: this.inform_id});
+
+                axios.post('/legalAspects/informContract/reportTablePorcentage', this.postData)
+                    .then(response => {
+                        console.log('entro')
+                    this.report_porcentage = response.data
+                    this.isLoading = false;
+                    }).catch(error => {
+                        Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
+                    });
+            }
+        },
+        fetch4()
+        {
+            this.postData2 = Object.assign({}, {contract_id: this.contract_id}, {year: this.year}, {inform_id: this.inform_id}, {item_id: this.item_2});
+
+            axios.post('/legalAspects/informContract/reportLineItemPorcentege', this.postData2)
+                .then(response => {
+                this.report_line_porcentage = response.data
+
+                this.chartData2 = {
+                    labels: this.report_line_porcentage.headings,
+                    datasets: [{
+                        label: this.report_line_porcentage.item,
+                        data: this.report_line_porcentage.answers,
+                        borderWidth: 1,
+                        backgroundColor: '#36A2EB',
+                        borderColor: '#36A2EB',
+                        fill: false
+                    }]
+                }
+                this.test = !this.test;
                 }).catch(error => {
                     Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
                 });

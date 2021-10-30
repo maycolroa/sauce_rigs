@@ -73,8 +73,8 @@ class ContractTrainingController extends Controller
                     {
                         $ext = strtolower($value->getClientOriginalExtension());
                         
-                        if ($ext != 'pdf')
-                            $fail('Archivo debe ser un pdf');
+                        if ($ext != 'pdf' || $ext != 'ppt' || $ext != 'pptx' || $ext != 'doc' || $ext != 'docx')
+                            $fail('Archivo debe ser un pdf, ppt, pptx, doc, docx');
                     }
                 }
 
@@ -174,6 +174,22 @@ class ContractTrainingController extends Controller
      */
     public function update(TrainingRequest $request, Training $trainingContract)
     {
+        Validator::make($request->all(), [
+            "files.*.file" => [
+                function ($attribute, $value, $fail)
+                {
+                    if ($value && !is_string($value))
+                    {
+                        $ext = strtolower($value->getClientOriginalExtension());
+                        
+                        if ($ext != 'pdf' || $ext != 'ppt' || $ext != 'pptx' || $ext != 'doc' || $ext != 'docx')
+                            $fail('Archivo debe ser un pdf, ppt, pptx, doc, docx');
+                    }
+                }
+
+            ]
+        ])->validate();
+        
         DB::beginTransaction();
 
         try

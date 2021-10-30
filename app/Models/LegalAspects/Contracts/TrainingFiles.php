@@ -29,7 +29,7 @@ class TrainingFiles extends Model
 
     public function path_client($storageLocation = true)
     {
-        return "{$this->path_base($storageLocation)}{$this->company_id}";
+        return "{$this->path_base($storageLocation)}{$this->training->company_id}";
     }
 
     public function path_donwload()
