@@ -73,7 +73,7 @@ class ContractTrainingController extends Controller
                     {
                         $ext = strtolower($value->getClientOriginalExtension());
                         
-                        if ($ext != 'pdf' || $ext != 'ppt' || $ext != 'pptx' || $ext != 'doc' || $ext != 'docx')
+                        if ($ext != 'pdf' && $ext && 'ppt' && $ext != 'pptx' && $ext != 'doc' && $ext != 'docx')
                             $fail('Archivo debe ser un pdf, ppt, pptx, doc, docx');
                     }
                 }
@@ -182,8 +182,10 @@ class ContractTrainingController extends Controller
                     {
                         $ext = strtolower($value->getClientOriginalExtension());
                         
-                        if ($ext != 'pdf' || $ext != 'ppt' || $ext != 'pptx' || $ext != 'doc' || $ext != 'docx')
+                        if ($ext != 'pdf' && $ext && 'ppt' && $ext != 'pptx' && $ext != 'doc' && $ext != 'docx')
+                        {
                             $fail('Archivo debe ser un pdf, ppt, pptx, doc, docx');
+                        }
                     }
                 }
 
@@ -318,6 +320,7 @@ class ContractTrainingController extends Controller
                     $nameFile = base64_encode($this->user->id . now() . rand(1,10000) . $keyF) .'.'. $file_tmp->extension();
                     $file_tmp->storeAs($fileUpload->path_client(false), $nameFile, 's3');
                     $fileUpload->file = $nameFile;
+                    $fileUpload->type_file = $file_tmp->extension();
                 }
 
                 if (!$fileUpload->save())
@@ -365,7 +368,7 @@ class ContractTrainingController extends Controller
      */
     public function download(TrainingFiles $file)
     {
-      return Storage::disk('s3')->download($file->path_donwload());
+      return Storage::disk('s3')->download($file->path_donwload(), $file->name);
     }
 
     public function multiselectTypeQuestion(Request $request)

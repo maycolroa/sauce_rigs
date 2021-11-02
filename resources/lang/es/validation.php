@@ -360,7 +360,11 @@ return [
       'stages.*.criterion' => 'Criterios',
       'stages.*.criterion.*.description' => 'Descripción',
       'stages.*.criterion.*.items' => 'Items',
-      'stages.*.criterion.*.items.*.description' => 'Descripción'
+      'stages.*.criterion.*.items.*.description' => 'Descripción',
+      'questions' => 'Preguntas',
+      'questions.*.description' => 'Descripción',
+      'questions.*.type_question_id' => 'Tipo de pregunta',
+      'questions.*.answers' => 'Respuestas'
     ],
 
 ];

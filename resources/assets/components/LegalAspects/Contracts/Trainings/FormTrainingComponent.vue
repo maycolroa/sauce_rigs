@@ -65,6 +65,7 @@
                 <vue-input class="col-md-6" v-model="file.name" label="Nombre" name="name" type="text" placeholder="Nombre" :error="form.errorsFor(`files.${index}.name`)"></vue-input>
                 <vue-radio :disabled="viewOnly" class="col-md-6" v-model="file.type" :options="fileLink" :name="`fileLink${index}`" :error="form.errorsFor(`file.${index}.type`)" label="Elige el tipo de material" :checked="file.type">
                     </vue-radio>
+                <vue-input v-if="(file.type == 'Archivo' && viewOnly) || (file.type == 'Archivo' && isEdit)" :disabled="true" class="col-md-4" v-model="file.type_file" label="Tipo de archivo" name="type_file" type="text" placeholder="Tipo de archivo" :error="form.errorsFor(`files.${index}.type_file`)"></vue-input>
                 <vue-file-simple v-if="file.type == 'Archivo'" :disabled="viewOnly" :help-text="file.id ? `Para descargar el archivo actual, haga click <a href='/legalAspects/trainingContract/download/${file.id}' target='blank'>aqui</a> ` : null" class="col-md-12" v-model="file.file" label="Archivo" name="file" placeholder="Seleccione un archivo" :error="form.errorsFor(`file`)" :maxFileSize="20"/>
 
                 <vue-input v-if="file.type == 'Link'" class="col-md-12" v-model="file.link" label="Link (Debe agregar el prefijo https://)" name="link" type="text" placeholder="Link" :error="form.errorsFor(`files.${index}.link`)"></vue-input>
@@ -103,6 +104,9 @@
               <p class="mb-0">Preguntas de la capacitación</p>
             </blockquote>
             <b-form-row>
+              <b-form-feedback class="d-block" v-if="form.errorsFor(`questions`)" style="padding-bottom: 10px;">
+                {{ form.errorsFor(`questions`) }}
+              </b-form-feedback>
               <div class="col-md-12" v-if="!viewOnly">
                 <div class="float-right" style="padding-top: 10px; padding-bottom: 10px">
                   <b-btn variant="primary" @click.prevent="addQuestion()"><span class="ion ion-md-add-circle"></span>&nbsp;&nbsp;Agregar pregunta</b-btn>
