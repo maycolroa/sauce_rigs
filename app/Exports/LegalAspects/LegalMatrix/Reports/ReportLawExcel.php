@@ -36,7 +36,7 @@ class ReportLawExcel implements FromQuery, WithMapping, WithHeadings, WithTitle,
     {
       $laws = Law::selectRaw(
         "sau_lm_articles_fulfillment.id AS id,
-         SUBSTRING(sau_lm_articles.description, 1, 20) AS article,
+         SUBSTRING(sau_lm_articles.description, 1, 24) AS article,
          sau_lm_laws_types.name AS type,
          sau_lm_laws.law_number AS law_number,
          sau_lm_laws.law_year AS law_year,

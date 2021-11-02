@@ -1013,7 +1013,11 @@ class EvaluationContractController extends Controller
 
     public function downloadFile(EvaluationFile $evaluationFile)
     {
-        return Storage::disk('s3')->download($evaluationFile->path_donwload());
+        $name = $evaluationFile->name_file;
+        if ($name)
+            return Storage::disk('s3')->download($evaluationFile->path_donwload(), $name);
+        else
+            return Storage::disk('s3')->download($evaluationFile->path_donwload());
     }
 
     public function download(EvaluationContract $evaluationContract)
