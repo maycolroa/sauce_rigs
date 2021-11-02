@@ -319,7 +319,7 @@ class ContractTrainingController extends Controller
                     $file_tmp = $value['file'];
                     $nameFile = base64_encode($this->user->id . now() . rand(1,10000) . $keyF) .'.'. $file_tmp->extension();
                     $file_tmp->storeAs($fileUpload->path_client(false), $nameFile, 's3');
-                    $fileUpload->file = $nameFile.'.'.$file_tmp->getClientOriginalExtension();
+                    $fileUpload->file = $nameFile;
                     //$fileUpload->type_file = $file_tmp->extension();
                     $fileUpload->type_file = strtolower($file_tmp->getClientOriginalExtension());
                 }
@@ -369,7 +369,7 @@ class ContractTrainingController extends Controller
      */
     public function download(TrainingFiles $file)
     {
-      return Storage::disk('s3')->download($file->path_donwload(), $file->name);
+      return Storage::disk('s3')->download($file->path_donwload(), $file->name.'.'.$file->type_file);
     }
 
     public function multiselectTypeQuestion(Request $request)
