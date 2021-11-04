@@ -207,6 +207,7 @@ export default {
 		return {
 			loading: this.isEdit,
 			form: Form.makeFrom(this.items, this.method, false, false),
+			required: ''
 		};
 	},
 	methods: {
@@ -234,7 +235,7 @@ export default {
 					this.form.items[index].actionPlan.activities = [];
 				}
 
-				this.showModal(`modalFile${index}`)
+				this.verifyRequiredFile(this.form.items[index].id, index)
 			}
 			else if (qualification == 'NC')
 			{
@@ -357,6 +358,21 @@ export default {
 	            this.loading = false;
 	          });
 				}
+		},
+		verifyRequiredFile(item_id, index)
+		{
+			this.postData = Object.assign({}, {item_id: item_id});
+
+                axios.post('/legalAspects/listCheck/verifyRequiredFile', this.postData)
+                    .then(response => {
+						this.required = response.data
+						if (this.required == 'Requerido')
+						{
+							this.showModal(`modalFile${index}`)
+						}
+                    }).catch(error => {
+                        Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
+                    });
 		}
 	}
 };
