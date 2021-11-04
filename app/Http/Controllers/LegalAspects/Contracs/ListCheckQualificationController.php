@@ -21,6 +21,7 @@ use Carbon\Carbon;
 use App\Traits\ContractTrait;
 use DB;
 use PDF;
+use App\Models\LegalAspects\Contracts\SectionCategoryItems;
 
 class ListCheckQualificationController extends Controller
 {
@@ -646,5 +647,20 @@ class ListCheckQualificationController extends Controller
         return $this->respondHttp200([
             'message' => 'Se cambio el estado de la calificación'
         ]);
+    }
+
+    public function verifyRequiredFile(Request $request)
+    {
+        $record = SectionCategoryItems::find($request->item_id);
+
+        if ($record)
+        {
+            $record =  $record->itemStandardCompany($this->company)->first();
+
+            if ($record && $record->pivot->required == 'SI')
+                return $data = 'Requerido';
+            else
+                return $data = 'No Requerido';
+        }
     }
 }
