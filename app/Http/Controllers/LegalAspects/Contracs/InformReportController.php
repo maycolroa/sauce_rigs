@@ -345,7 +345,6 @@ class InformReportController extends Controller
 
     public function reportTableTotalesPorcentage(Request $request)
     {
-        \Log::info($request);
         $themes = collect([]);
 
         if ($request->theme)
@@ -387,6 +386,21 @@ class InformReportController extends Controller
             ->where('sau_ct_inform_contract.inform_id', $request->inform_id)
             ->groupBy('sau_ct_inform_theme_item.description');
 
+            $total = InformContractItem::selectRaw('
+                COUNT(DISTINCT sau_ct_inform_contract.month) AS total
+            ')
+            ->join('sau_ct_inform_contract', 'sau_ct_inform_contract.id', 'sau_ct_inform_contract_items.inform_id')
+            ->join('sau_ct_inform_theme_item', 'sau_ct_inform_theme_item.id', 'sau_ct_inform_contract_items.item_id')
+            ->where('year', $request->year)
+            ->where('sau_ct_inform_theme_item.evaluation_theme_id', $theme['id'])
+            ->where('sau_ct_inform_contract.inform_id', $request->inform_id)
+            ->where('contract_id', $request->contract_id)
+            ->get()->toArray();
+
+            foreach ($total as $key => $value) {
+                $total = $value['total'];
+            }
+
             foreach ($months as $key => $month)
             {
                 $select[] = "SUM(
@@ -403,10 +417,8 @@ class InformReportController extends Controller
             $qualifications = $qualifications->select(
                 "sau_ct_inform_theme_item.description AS item",
                 DB::raw(implode(",", $select)),
-                DB::raw("round(SUM(compliance)/12, 2) as total")
+                DB::raw("round(SUM(compliance)/{$total}, 1) as total")
             )->get();
-
-            \Log::info($qualifications);
 
             $qualifications_2 = [
                 'item' => 'Total',
@@ -422,7 +434,7 @@ class InformReportController extends Controller
                 'month9' => round($qualifications->sum('month9')/$qualifications->count(), 2),
                 'month10' => round($qualifications->sum('month10')/$qualifications->count(), 2),
                 'month11' => round($qualifications->sum('month11')/$qualifications->count(), 2),
-                'total' => round($qualifications->sum('total')/$qualifications->count(), 2),
+                'total' => round($qualifications->sum('total')/$qualifications->count(), 1),
             ];
 
             $qualifications_2 = collect($qualifications_2);

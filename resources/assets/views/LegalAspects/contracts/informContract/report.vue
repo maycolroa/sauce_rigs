@@ -28,6 +28,9 @@
                         </vue-ajax-advanced-select>
                     </b-col>
                 </b-row>
+                <b-row>
+                    <label class="col-md-6"><b>Valor Ejecutado</b></label>
+                </b-row>
                 <b-row style="width:100%" v-if="report.length > 0">
                     <b-card bg-variant="transparent"  title="" class="mb-3 box-shadow-none">
                         <table style="width:90%; font-size: 14px" class="table table-bordered mb-2">
@@ -89,6 +92,9 @@
                         </b-row>
                     </b-card>
                 </b-row>
+                <b-row>
+                    <label class="col-md-6"><b>Cumplimiento</b></label>
+                </b-row>
                 <b-row style="width:95%%" v-if="report_porcentage.length > 0">
                     <b-card bg-variant="transparent"  title="" class="mb-3 box-shadow-none">
                         <table style="width:90%; font-size: 14px" class="table table-bordered mb-2">
@@ -107,20 +113,20 @@
                                         <tr v-if="theme.items[0].length == (indexE + 1)" :key="indexE+round()" style="width:100%; background-color:#dcdcdc">
                                             <template v-for="(value, indexV) in executed">
                                                 <td  v-if="indexV == 'total'" style="vertical-align: middle; background-color:#dcdcdc" :key="indexV+round()">
-                                                    <center>{{value}}</center>
+                                                    <center>{{value}}%</center>
                                                 </td>
                                                 <td  v-else style="vertical-align: middle;" :key="indexV+round()">
-                                                    <center>{{value}}</center>
+                                                    <center>{{value}}%</center>
                                                 </td>
                                             </template>
                                         </tr>
                                         <tr v-else :key="indexE+round()" style="width:100%">
                                             <template v-for="(value, indexV) in executed">
                                                 <td  v-if="indexV == 'total'" style="vertical-align: middle; background-color:#dcdcdc" :key="indexV+round()">
-                                                    <center>{{value}}</center>
+                                                    <center>{{value}}%</center>
                                                 </td>
                                                 <td  v-else style="vertical-align: middle;" :key="indexV+round()">
-                                                    <center>{{value}}</center>
+                                                    <center>{{value}}%</center>
                                                 </td>
                                             </template>
                                         </tr>
@@ -219,8 +225,6 @@ export default {
             {
                 this.emptySelect('theme', 'theme')
                 this.fetch()
-                console.log('1')
-                console.log('2')
             }
         },
         'theme'()
@@ -287,7 +291,6 @@ export default {
 
                 axios.post('/legalAspects/informContract/reportTablePorcentage', this.postData)
                     .then(response => {
-                        console.log('entro')
                     this.report_porcentage = response.data
                     this.isLoading = false;
                     }).catch(error => {
