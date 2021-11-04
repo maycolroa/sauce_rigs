@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\Storage;
 
 trait ContractTrait
 {
-    public function getUsersContract($contract_id, $company_id = null)
+    public function getUsersContract($contract_id, $company_id = null, $scope_active = false)
     {
         if (!is_numeric($contract_id))
             throw new \Exception('Contract invalid');
@@ -36,7 +36,11 @@ trait ContractTrait
         if ($contract)
         {
             $users_id = $contract->toArray();
-            $users = User::active()->whereIn('id', $users_id)->get();
+
+            if ($scope_active)
+                $users = User::whereIn('id', $users_id)->get();
+            else
+                $users = User::active()->whereIn('id', $users_id)->get();
         }
 
         return $users;

@@ -468,6 +468,21 @@ export default [
                     permission: 'contracts_resend_welcome_email'
                 },
                 {
+                    name: 'reactiveUser',
+                    config: {
+                        color: 'outline-danger',
+                        borderless: true,
+                        icon: 'fas fa-sync',
+                        title: 'Reactivar Usuario del contratista'
+                    },
+                    data: {
+                        action: '/legalAspects/contracts/reactiveUser/',
+                        id: 'id',
+                        messageConfirmation: '¿Esta seguro de querer reactivar este usuario y reenviar el correo de bienvenida?'
+                    },
+                    permission: 'ph_inspections_u'
+                },
+                {
                     name: 'delete',
                     data: {
                         action: '/legalAspects/contracts/',

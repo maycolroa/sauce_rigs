@@ -114,6 +114,20 @@ class ContractLesseeController extends Controller
 
                 return false;
             })
+            ->addColumn('retrySendMail', function ($contract) {
+                $users = $this->getUsersContract($contract->id, $this->company, true);
+                if ($users[0]->active == 'SI')
+                    return true;
+
+                return false;
+            })
+            ->addColumn('reactiveUser', function ($contract) {
+                $users = $this->getUsersContract($contract->id, $this->company, true);
+                if ($users[0]->active == 'NO')
+                    return true;
+
+                return false;
+            })
             ->make();
     }
 
@@ -1019,6 +1033,26 @@ class ContractLesseeController extends Controller
         }
 
         return $this->respondHttp500();
+    }
+
+    public function reactiveUser(ContractLesseeInformation $contract)
+    {
+        $users = $this->getUsersContract($contract->id, $this->company, true);
+
+        try
+        {  
+            if ($users->count() > 0)
+            {
+                if ($users[0]->active == 'NO')
+                {
+                    $users[0]->update(['active' => 'SI']);
+                    return $this->retrySendMail($contract);
+                }
+            }
+        } catch(Exception $e) {
+            \Log::info($e->getMessage());
+            return $this->respondHttp500();
+        }
     }
 
     /**
