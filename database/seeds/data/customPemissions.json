@@ -260,6 +260,10 @@
                     {
                         "name": "absen_receive_notifications",
                         "display_name": "Ausentismo - recibir notificaciones"
+                    },
+                    {
+                        "name": "absen_uploadFiles_error",
+                        "display_name": "Ausentismo/Administrar archivos - ver errores"
                     }
                 ]
             }

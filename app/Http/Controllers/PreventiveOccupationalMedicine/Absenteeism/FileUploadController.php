@@ -109,7 +109,20 @@ class FileUploadController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function show($id)
-    { }
+    {
+      try
+        {
+            $file = FileUpload::findOrFail($id);
+
+            
+            return $this->respondHttp200([
+                'data' => $file,
+            ]);
+            
+        } catch(Exception $e){
+            $this->respondHttp500();
+        }
+    }
 
     /**
      * Update the specified resource in storage.

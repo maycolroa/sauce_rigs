@@ -12,6 +12,7 @@
             <upload-file-form
                 :url="`/biologicalmonitoring/absenteeism/fileUpload/${this.$route.params.id}`"
                 method="PUT"
+                :view-error="true"
                 :view-only="true"
                 :fileUpload="data"
                 :cancel-url="{ name: 'absenteeism-upload-files'}"/>

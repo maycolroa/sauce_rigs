@@ -108,7 +108,7 @@ class ProcessFileUploadJob implements ShouldQueue
                 $result = $this::states[0];
                 //throw new ProcessFailedException($process);
 
-            $this->file->update(['state' => $result]);
+            $this->file->update(['state' => $result, 'state_error' => $process->getOutput()]);
 
             NotificationMail::
                 subject('Ausentismo - carga de archivo')

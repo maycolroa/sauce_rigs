@@ -2,12 +2,16 @@
 	<b-form :action="url" @submit.prevent="submit" autocomplete="off">
 		<b-form-row>
 			<vue-input :disabled="viewOnly" class="col-md-6" v-model="form.name" label="Nombre" type="text" name="name" :error="form.errorsFor('name')" placeholder="Nombre"></vue-input>
-			<vue-file-simple :help-text="form.old_file ? `Para descargar el archivo actual, haga click <a href='/biologicalmonitoring/absenteeism/fileUpload/download/${form.id}' target='blank'>aqui</a> `: null" :disabled="viewOnly" class="col-md-6" v-model="form.file" label="Archivo (*.xls | *.xlsx | *.zip)" name="file" :error="form.errorsFor('file')" placeholder="Seleccione un archivo" :maxFileSize="20"></vue-file-simple>
+			<vue-file-simple v-if="!viewError" :help-text="form.old_file ? `Para descargar el archivo actual, haga click <a href='/biologicalmonitoring/absenteeism/fileUpload/download/${form.id}' target='blank'>aqui</a> `: null" :disabled="viewOnly" class="col-md-6" v-model="form.file" label="Archivo (*.xls | *.xlsx | *.zip)" name="file" :error="form.errorsFor('file')" placeholder="Seleccione un archivo" :maxFileSize="20"></vue-file-simple>
 		</b-form-row>
 
-		<b-form-row>
+		<b-form-row v-if="!viewError">
 			<vue-ajax-advanced-select :disabled="viewOnly" class="col-md-12" v-model="form.talend_id" :error="form.errorsFor('talend_id')" :selected-object="form.multiselect_talend" name="talend_id" label="Tipo" placeholder="Seleccione el tipo de archivo" :url="talendsDataUrl"></vue-ajax-advanced-select>
 		</b-form-row>
+
+		<b-form-row v-if="auth.hasRole['Superadmin'] && viewError">
+			<vue-textarea :disabled="true" class="col-md-12" v-model="form.state_file" label="Estado del archivo" name="state_file" placeholder="Estado del archivo" rows="3"></vue-textarea>
+		</b-form-row>     
 
 		<div class="row float-right pt-10 pr-10">
 			<template>
@@ -22,13 +26,15 @@
 import VueAjaxAdvancedSelect from "@/components/Inputs/VueAjaxAdvancedSelect.vue";
 import VueInput from "@/components/Inputs/VueInput.vue";
 import VueFileSimple from "@/components/Inputs/VueFileSimple.vue";
+import VueTextarea from "@/components/Inputs/VueTextarea.vue";      
 import Form from "@/utils/Form.js";
 
 export default {
 	components: {
 		VueInput,
 		VueFileSimple,
-		VueAjaxAdvancedSelect
+		VueAjaxAdvancedSelect,
+		VueTextarea
 	},
 	props: {
 		url: { type: String },
@@ -36,13 +42,15 @@ export default {
 		cancelUrl: { type: [String, Object], required: true },
 		isEdit: { type: Boolean, default: false },
 		viewOnly: { type: Boolean, default: false },
+		viewError: { type: Boolean, default: false },
 		talendsDataUrl: { type: String, default: "" },
 		fileUpload: {
 			default() {
 				return {
 					name: '',
 					file: '',
-					talend_id: ''
+					talend_id: '',
+					state_file: ''
 				};
 			}
 		}
