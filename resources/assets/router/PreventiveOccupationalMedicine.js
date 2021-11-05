@@ -266,7 +266,14 @@ export default [{
         path: 'absenteeism/upload-files/create',
 					component: () => import('@/views/PreventiveOccupationalMedicine/absenteeism/uploadFiles/create')
       }
-    ]), 
+    ]),
+    ...middleware({ 'check-permission': 'absen_uploadFiles_error' }, [
+      {
+        name: 'absenteeism-upload-files-view-error',
+        path: 'absenteeism/upload-files/view-error/:id',
+					component: () => import('@/views/PreventiveOccupationalMedicine/absenteeism/uploadFiles/viewError')
+      }
+    ]),
     ...middleware({ 'check-permission': 'absen_uploadTalend_r' }, [
       {
         name: 'absenteeism-talends',

@@ -719,7 +719,19 @@ export default [
     },
     {
       type: 'push',
-      buttons: []
+      buttons: [{
+        config: {
+            color: 'outline-info',
+            borderless: true,
+            icon: 'ion ion-md-eye',
+            title: 'Ver'
+        },
+        data: {
+            routePush: { name: 'absenteeism-upload-files-view-error' },
+            id: 'id',
+        },
+        permission: 'absen_uploadFiles_error'
+      }]
     },
     {
       type: 'base',

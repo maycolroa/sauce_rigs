@@ -22,7 +22,7 @@
 </template>
 
 <script>
-import UploadFileForm from '@/components/PreventiveOccupationalMedicine/Absenteeism/UploadFiles/FormUploadFile.vue';
+import UploadFileForm from '@/components/PreventiveOccupationalMedicine/Absenteeism/UploadFiles/FormUploadFileComponent.vue';
 import GlobalMethods from '@/utils/GlobalMethods.js';
 
 export default {

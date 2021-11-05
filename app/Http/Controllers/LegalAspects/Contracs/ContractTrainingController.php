@@ -73,7 +73,7 @@ class ContractTrainingController extends Controller
                     {
                         $ext = strtolower($value->getClientOriginalExtension());
                         
-                        if ($ext != 'pdf' && $ext && 'ppt' && $ext != 'pptx' && $ext != 'doc' && $ext != 'docx')
+                        if ($ext != 'pdf' && $ext != 'ppt' && $ext != 'pptx' && $ext != 'doc' && $ext != 'docx')
                             $fail('Archivo debe ser un pdf, ppt, pptx, doc, docx');
                     }
                 }
@@ -182,7 +182,7 @@ class ContractTrainingController extends Controller
                     {
                         $ext = strtolower($value->getClientOriginalExtension());
                         
-                        if ($ext != 'pdf' && $ext && 'ppt' && $ext != 'pptx' && $ext != 'doc' && $ext != 'docx')
+                        if ($ext != 'pdf' && $ext != 'ppt' && $ext != 'pptx' && $ext != 'doc' && $ext != 'docx')
                         {
                             $fail('Archivo debe ser un pdf, ppt, pptx, doc, docx');
                         }
