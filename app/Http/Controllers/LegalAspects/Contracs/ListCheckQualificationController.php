@@ -291,8 +291,17 @@ class ListCheckQualificationController extends Controller
             "items.*.files.*.file" => [
                 function ($attribute, $value, $fail)
                 {
-                    if (!is_string($value) && $value->getClientMimeType() != 'application/pdf')
-                        $fail('Archivo debe ser un pdf');
+                    if ($value && !is_string($value))
+                    {
+                        $ext = strtolower($value->getClientOriginalExtension());
+                        
+                        if ($ext != 'pdf' && $ext != 'doc' && $ext != 'docx' && $ext != 'xlsx' && $ext != 'xls')
+                        {
+                            $fail('Archivo debe ser un pdf, doc, docx, xlsx, xls');
+                        }
+                    }
+                    /*if (!is_string($value) && $value->getClientMimeType() != 'application/pdf')
+                        $fail('Archivo debe ser un pdf');*/
                 },
             ]
         ])->validate();
