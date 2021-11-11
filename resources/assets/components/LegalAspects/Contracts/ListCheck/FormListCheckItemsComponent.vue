@@ -39,6 +39,24 @@
 			</b-card-header>
 			<b-card-body>
 				<div class="rounded ui-bordered p-3 mb-3"  v-for="(item, index) in form.items" :key="item.id">
+					<b-col v-if="validate_qualificacion">
+                		<div class="float-right" style="padding-right: 10px;">
+                    		<b-btn v-if="item.state_aprove_qualification == 'PENDIENTE'"  variant="warning" class="btn-circle-micro" v-b-popover.hover.focus.left="aprove" title="Calificación Pendiente"><span class="fas fa-question"></span></b-btn>
+							<b-btn v-if="item.state_aprove_qualification == 'APROBADA'"  variant="success" class="btn-circle-micro" v-b-popover.hover.focus.left="pending" title="Calificación Aprobada"><span class="fas fa-check"></span></b-btn>
+							<b-btn @click="showModal(`modalRechazo${index}`)" v-if="item.state_aprove_qualification == 'RECHAZADA'"  variant="primary" class="btn-circle-micro" v-b-popover.hover.focus.left="rechazada" title="Calificación Rechazada"><span class="fas fa-times"></span></b-btn>
+							<b-modal :ref="`modalRechazo${index}`" :hideFooter="true" :id="`modals-rechazo-${index+1}`" class="modal-top" size="lg">
+							<div slot="modal-title">
+								Motivo de Rechazo <span class="font-weight-light">de la calificación</span>
+							</div>
+							<br>
+							<vue-textarea :disabled="true" class="col-md-12" v-model="item.reason_rejection" label="Motivo del rexhazo" name="reason_rejection" placeholder="Motivo" :error="form.errorsFor(`reason_rejection`)"></vue-textarea>
+							<br>
+							<div class="row float-right pt-12 pr-12y">
+								<b-btn variant="primary" @click="hideModal(`modalRechazo${index}`)">Cerrar</b-btn>
+							</div>
+						</b-modal>
+                		</div>
+              		</b-col>
 					<p class="my-1">{{ index + 1 }} - {{ item.item_name }}</p> 
 					<b-col>
                 		<div class="float-right" style="padding-right: 10px;">
@@ -164,6 +182,7 @@ export default {
 		viewOnly: { type: Boolean, default: false },
 		contractId: {type: [String, Number] },
 		qualificationListId: {type: [String, Number] },
+		validate_qualificacion: { type: Boolean, default: false },
 		qualifications: {
 			type: [Array, Object],
 			default: function() {
@@ -207,7 +226,10 @@ export default {
 		return {
 			loading: this.isEdit,
 			form: Form.makeFrom(this.items, this.method, false, false),
-			required: ''
+			required: '',
+			aprove: 'El contratante a aprobado su calificación para el item',
+			rechazada: 'EL contratante ha rechazado su calificación, debe reevaluar el item, dele click al boton para conocer el motivo del rechazo',
+			pending: 'Calificación pendiente por aprobación del contratante'
 		};
 	},
 	methods: {
@@ -349,6 +371,7 @@ export default {
 	          .then(response => {
 	            _.forIn(response.data.data, (value, key) => {
 	              item[key] = value
+				  this.form.items[index].state_aprove_qualification = 'PENDIENTE';
 	            })
 
 	            this.loading = false;

@@ -22,7 +22,8 @@
 							:contractId="contractId"
 							:items="items"
 							:qualifications="qualifications"
-							:qualificationListId="qualificationListId"				
+							:qualificationListId="qualificationListId"		
+							:validate_qualificacion="validate_qualificacion"			
 							:cancel-url="{ name: 'legalaspects-list-check-qualification'}"/>
 					</template>
 				</b-card-body>
@@ -51,7 +52,8 @@ export default {
 			qualifications: [],
 			ready: false,
 			contractId : '',
-			qualificationListId: ''
+			qualificationListId: '',
+			validate_qualificacion: ''
 		}
 	},
 	created(){
@@ -59,6 +61,15 @@ export default {
 		axios.get("/legalAspects/contracts/qualifications")
 		.then(response => {
 			this.qualifications = response.data;
+		})
+		.catch(error => {
+			Alerts.error('Error', 'Se ha generado un error en el proceso al cargar las calificaciones, por favor contacte con el administrador');
+		});
+
+		//Obtener validacion de la empresa para las calificaciones de la lista de chequeo
+		axios.post("/legalAspects/listCheck/getValidationQualification")
+		.then(response => {
+			this.validate_qualificacion = response.data.data;
 		})
 		.catch(error => {
 			Alerts.error('Error', 'Se ha generado un error en el proceso al cargar las calificaciones, por favor contacte con el administrador');

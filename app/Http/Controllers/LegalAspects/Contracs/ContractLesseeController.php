@@ -1530,17 +1530,21 @@ class ContractLesseeController extends Controller
 
     public function desaproveQualification(Request $request)
     {
-        \Log::info($request);
-        $items_calificated = ItemQualificationContractDetail::
+        if ($request->reason_rejection)
+        {
+            $items_calificated = ItemQualificationContractDetail::
             where('contract_id', $request->contract_id)
             ->where('list_qualification_id', $request->list_id)
             ->where('item_id', $request->item_id)
             ->first();
 
-        $items_calificated->update(['state_aprove_qualification' => 'RECHAZADA', 'reason_rejection' => $request->reason_rejection]);
+            $items_calificated->update(['state_aprove_qualification' => 'RECHAZADA', 'reason_rejection' => $request->reason_rejection]);
 
-        return $this->respondHttp200([
-            'message' => 'Se actualizo la calificación'
-        ]);
+            return $this->respondHttp200([
+                'message' => 'Se actualizo la calificación'
+            ]);
+        }
+        else
+            return $this->respondWithError('Debe adicionar un motivo de rechazo');
     }
 }

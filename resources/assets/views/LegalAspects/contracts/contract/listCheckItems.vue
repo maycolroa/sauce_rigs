@@ -68,8 +68,7 @@ export default {
 		//Obtener validacion de la empresa para las calificaciones de la lista de chequeo
 		axios.post("/legalAspects/contracts/getValidationQualificarion")
 		.then(response => {
-			console.log(response)
-			//this.validate_qualificacion = response.data;
+			this.validate_qualificacion = response.data.data;
 		})
 		.catch(error => {
 			Alerts.error('Error', 'Se ha generado un error en el proceso al cargar las calificaciones, por favor contacte con el administrador');

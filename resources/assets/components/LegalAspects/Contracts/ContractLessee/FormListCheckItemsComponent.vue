@@ -31,10 +31,9 @@
 					<p class="my-1">{{ index + 1 }} - {{ item.item_name }}</p>
 					<b-col v-if="validate_qualificacion">
                 		<div class="float-right" style="padding-right: 10px;">
-                    		<b-btn v-if="item.state_aprove_qualification == 'PENDIENTE'"  variant="warning" class="btn-circle-micro"><span class="fas fa-info"></span></b-btn>
-							<b-btn v-if="item.state_aprove_qualification == 'APROBADA'"  variant="success" class="btn-circle-micro"><span class="fas fa-info"></span></b-btn>
-							<b-btn v-if="item.state_aprove_qualification == 'RECHAZADA'"  variant="primary" class="btn-circle-micro"><span class="fas fa-info"></span></b-btn>
-							
+                    		<b-btn v-if="item.state_aprove_qualification == 'PENDIENTE'"  variant="warning" class="btn-circle-micro" title="Calificación Pendiente"><span class="fas fa-question"></span></b-btn>
+							<b-btn v-if="item.state_aprove_qualification == 'APROBADA'"  variant="success" class="btn-circle-micro" title="Calificación Aprobada"><span class="fas fa-check"></span></b-btn>
+							<b-btn v-if="item.state_aprove_qualification == 'RECHAZADA'"  variant="primary" class="btn-circle-micro" title="Calificación Rechazada"><span class="fas fa-times"></span></b-btn>						
                 		</div>
               		</b-col>
 					<span class="text-muted">{{ item.criterion_description}}</span>
@@ -109,16 +108,16 @@
 						</center>
 
 						<b-modal :ref="`modalRechazo${index}`" :hideFooter="true" :id="`modals-rechazo-${index+1}`" class="modal-top" size="lg" @hidden="desaproveQualification(item.id, item.reason_rejection, index)">
-								<div slot="modal-title">
-									Motivo de Rechazo <span class="font-weight-light">de la calificación</span>
-								</div>
-								<br>
-								<vue-textarea class="col-md-12" v-model="item.reason_rejection" label="Motivo del rexhazo" name="reason_rejection" placeholder="Motivo" :error="form.errorsFor(`reason_rejection`)"></vue-textarea>
-								<br>
-								<div class="row float-right pt-12 pr-12y">
-									<b-btn variant="primary" @click="hideModal(`modalRechazo${index}`)">Cerrar</b-btn>
-								</div>
-							</b-modal>
+							<div slot="modal-title">
+								Motivo de Rechazo <span class="font-weight-light">de la calificación</span>
+							</div>
+							<br>
+							<vue-textarea class="col-md-12" v-model="item.reason_rejection" label="Motivo del rexhazo" name="reason_rejection" placeholder="Motivo" :error="form.errorsFor(`reason_rejection`)"></vue-textarea>
+							<br>
+							<div class="row float-right pt-12 pr-12y">
+								<b-btn variant="primary" @click="hideModal(`modalRechazo${index}`)">Cerrar</b-btn>
+							</div>
+						</b-modal>
 					</div>
 					<div v-else class="col-md-12">
 						<vue-textarea @onBlur="saveQualification(`${index}`)" :disabled="viewOnly" class="col-md-12" v-model="item.observations" label="Observaciones" name="observations" placeholder="Observaciones" :error="form.errorsFor(`observations`)"></vue-textarea>
@@ -404,7 +403,7 @@ export default {
 					this.form.items[index].reason_rejection = reason_rejection;
 					Alerts.success('Exito','Se actualizo la calificación');
 				}).catch(error => {
-					Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
+					Alerts.error('Error', 'Debe adicionar un motivo de rechazo');
 				});
 		}
 	}

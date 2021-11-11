@@ -101,7 +101,6 @@ export default {
       this.form
         .submit(e.target.action)
         .then(response => {
-          console.log(this.form)
           this.loading = false;
         })
         .catch(error => {

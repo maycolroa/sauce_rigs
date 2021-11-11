@@ -38,8 +38,6 @@ class ConfigurationController extends Controller
      */
     public function store(ConfigurationRequest $request)
     {
-        \Log::info('store');
-        \Log::info($request);
         $request = $request->except('_method');
 
         foreach ($request as $key => $value)
