@@ -10,6 +10,7 @@ use App\Models\LegalAspects\Contracts\FileUpload;
 use App\Models\Administrative\Users\User;
 use App\Facades\ActionPlans\Facades\ActionPlan;
 use Illuminate\Support\Facades\Storage;
+use App\Facades\ConfigurationCompany\Facades\ConfigurationsCompany;
 //use App\Models\LegalAspects\Contracts\LiskCheckResumen;
 
 trait ContractTrait
@@ -269,11 +270,17 @@ trait ContractTrait
 
             $qualifications = Qualifications::pluck("name", "id");
 
+            $exist = ConfigurationsCompany::findByKey('validate_qualification_list_check');
+
             //Obtiene los items calificados
             $items_calificated = ItemQualificationContractDetail::
                       where('contract_id', $contract->id)
-                    ->where('list_qualification_id', $qualification)
-                    ->pluck("qualification_id", "item_id");
+                    ->where('list_qualification_id', $qualification);                   
+
+            if ($exist == 'SI')
+                $items_calificated->where('state_aprove_qualification', 'APROBADA');
+
+            $items_calificated = $items_calificated->pluck("qualification_id", "item_id");
 
             $items->each(function($item, $index) use ($qualifications, $items_calificated, $contract, &$totales) {
                 

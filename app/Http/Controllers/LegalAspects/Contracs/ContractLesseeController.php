@@ -897,39 +897,22 @@ class ContractLesseeController extends Controller
             {
                 $exist = ConfigurationsCompany::findByKey('validate_qualification_list_check');
 
+                $itemQualification = ItemQualificationContractDetail::updateOrCreate(
+                    [
+                        'contract_id' => $contract->id, 
+                        'item_id' => $request->id, 
+                        'list_qualification_id' => $request->list_qualification_id
+                    ],
+                    [
+                        'contract_id' => $contract->id, 
+                        'item_id' => $request->id,                    
+                        'qualification_id' => $qualifications[$request->qualification], 
+                        'observations' => $request->observations, 
+                        'list_qualification_id' => $request->list_qualification_id
+                    ]);
+
                 if ($exist == 'SI')
-                {
-                    $itemQualification = ItemQualificationContractDetail::updateOrCreate(
-                        [
-                            'contract_id' => $contract->id, 
-                            'item_id' => $request->id, 
-                            'list_qualification_id' => $request->list_qualification_id
-                        ],
-                        [
-                            'contract_id' => $contract->id, 
-                            'item_id' => $request->id,                    
-                            'qualification_id' => $qualifications[$request->qualification], 
-                            'observations' => $request->observations, 
-                            'list_qualification_id' => $request->list_qualification_id,
-                            'state_aprove_qualification' => 'PENDIENTE'
-                        ]);
-                    }
-                else
-                {
-                    $itemQualification = ItemQualificationContractDetail::updateOrCreate(
-                        [
-                            'contract_id' => $contract->id, 
-                            'item_id' => $request->id, 
-                            'list_qualification_id' => $request->list_qualification_id
-                        ],
-                        [
-                            'contract_id' => $contract->id, 
-                            'item_id' => $request->id,                    
-                            'qualification_id' => $qualifications[$request->qualification], 
-                            'observations' => $request->observations, 
-                            'list_qualification_id' => $request->list_qualification_id
-                        ]);
-                }
+                    $itemQualification->update(['state_aprove_qualification' => 'PENDIENTE']);
                 
 
                 //Cumple y solo es aqui donde se cargan archivos

@@ -5,6 +5,7 @@ namespace App\Inform\LegalAspects\Contract\ListCheck;
 use App\Models\LegalAspects\Contracts\ContractLesseeInformation;
 use App\Models\LegalAspects\Contracts\SectionCategoryItems;
 use App\Models\LegalAspects\Contracts\ListCheckResumen;
+use App\Facades\ConfigurationCompany\Facades\ConfigurationsCompany;
 use App\Traits\UtilsTrait;
 use DB;
 
@@ -151,9 +152,14 @@ class InformManagerListCheck
             })
             ->groupBy('sau_ct_section_category_items.item_name')
             ->mergeBindings($items_apply->getQuery())            
-            ->inStandard($this->itemStandar, $this->filtersType['itemStandar'])
-            ->orderBy('category')
-            ->get();
+            ->inStandard($this->itemStandar, $this->filtersType['itemStandar']);
+
+            $exist = ConfigurationsCompany::findByKey('validate_qualification_list_check');
+
+            if ($exist == 'SI')
+                $compliance->where('sau_ct_item_qualification_contract.state_aprove_qualification', 'APROBADA');
+            
+            $compliance = $compliance->orderBy('category')->get();
 
         return $this->builderDataCompliance($compliance);
     
