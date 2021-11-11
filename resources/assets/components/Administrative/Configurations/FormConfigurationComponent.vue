@@ -32,6 +32,11 @@
         </vue-radio>
     </b-form-row>
 
+    <b-form-row v-if="auth.can['contracts_r']">
+      <vue-radio :disabled="!auth.can['configurations_c']" :checked="form.validate_qualification_list_check" class="col-md-12" v-model="form.validate_qualification_list_check" :options="siNo" name="validate_qualification_list_check" :error="form.errorsFor('validate_qualification_list_check')" label="Validar calificaciones de lista de chequeo">
+        </vue-radio>
+    </b-form-row>
+
     <div class="row float-right pt-10 pr-10">
       <template>
         <b-btn type="submit" :disabled="loading || (!auth.can['configurations_c'])" variant="primary">Guardar</b-btn>
@@ -72,7 +77,8 @@ export default {
           days_alert_expiration_date_action_plan: '',
           days_alert_expiration_date_contract_file_upload: '',
           show_action_plans: '',
-          days_alert_without_activity: ''
+          days_alert_without_activity: '',
+          validate_qualification_list_check: ''
         };
       }
     }
@@ -95,6 +101,7 @@ export default {
       this.form
         .submit(e.target.action)
         .then(response => {
+          console.log(this.form)
           this.loading = false;
         })
         .catch(error => {

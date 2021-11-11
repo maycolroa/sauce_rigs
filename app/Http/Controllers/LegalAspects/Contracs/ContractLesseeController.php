@@ -673,6 +673,16 @@ class ContractLesseeController extends Controller
                         where('contract_id', $contract->id)
                         ->where('list_qualification_id', $qualification_list->id)
                         ->pluck("qualification_id", "item_id");
+
+                $items_aprove = ItemQualificationContractDetail::
+                    where('contract_id', $contract->id)
+                    ->where('list_qualification_id', $qualification_list->id)
+                    ->pluck("state_aprove_qualification", "item_id");
+
+                $items_reason_reject = ItemQualificationContractDetail::
+                    where('contract_id', $contract->id)
+                    ->where('list_qualification_id', $qualification_list->id)
+                    ->pluck("reason_rejection", "item_id");
                 
                 $items_observations = ItemQualificationContractDetail::
                         where('contract_id', $contract->id)
@@ -681,12 +691,17 @@ class ContractLesseeController extends Controller
 
                 if (COUNT($items) > 0)
                 {
-                    $items->transform(function($item, $index) use ($qualifications, $items_calificated, $contract, $items_observations, $qualification_list) {
+                    $items->transform(function($item, $index) use ($qualifications, $items_calificated, $contract, $items_observations, $qualification_list, $items_aprove, $items_reason_reject) {
                         //Añade las actividades definidas de cada item para los planes de acción
                         $item->activities_defined = $item->activities()->pluck("description");
                         $item->qualification = isset($items_calificated[$item->id]) ? $qualifications[$items_calificated[$item->id]] : '';
-                        $item->observations = isset($items_observations[$item->id]) ? $items_observations[$item->id] : '';
+                        $item->observations = (isset($items_observations[$item->id]) && $items_observations[$item->id] != 'null') ? $items_observations[$item->id] : '';
                         $item->list_qualification_id = $qualification_list->id;
+                        $item->state_aprove_qualification = isset($items_aprove[$item->id]) ? $items_aprove[$item->id] : 'NULL';
+                        
+                        if (isset($items_reason_reject[$item->id]))
+                            $item->reason_rejection = isset($items_reason_reject[$item->id]) ? $items_reason_reject[$item->id] : 'NULL';
+
                         $item->files = [];
                         $item->actionPlan = [
                             "activities" => [],
@@ -880,19 +895,42 @@ class ContractLesseeController extends Controller
 
             if ($request->has('qualification') && $request->qualification)
             {
-                $itemQualification = ItemQualificationContractDetail::updateOrCreate(
-                    [
-                        'contract_id' => $contract->id, 
-                        'item_id' => $request->id, 
-                        'list_qualification_id' => $request->list_qualification_id
-                    ],
-                    [
-                        'contract_id' => $contract->id, 
-                        'item_id' => $request->id, 
-                        'qualification_id' => $qualifications[$request->qualification], 
-                        'observations' => $request->observations, 
-                        'list_qualification_id' => $request->list_qualification_id
-                    ]);
+                $exist = ConfigurationsCompany::findByKey('validate_qualification_list_check');
+
+                if ($exist == 'SI')
+                {
+                    $itemQualification = ItemQualificationContractDetail::updateOrCreate(
+                        [
+                            'contract_id' => $contract->id, 
+                            'item_id' => $request->id, 
+                            'list_qualification_id' => $request->list_qualification_id
+                        ],
+                        [
+                            'contract_id' => $contract->id, 
+                            'item_id' => $request->id,                    
+                            'qualification_id' => $qualifications[$request->qualification], 
+                            'observations' => $request->observations, 
+                            'list_qualification_id' => $request->list_qualification_id,
+                            'state_aprove_qualification' => 'PENDIENTE'
+                        ]);
+                    }
+                else
+                {
+                    $itemQualification = ItemQualificationContractDetail::updateOrCreate(
+                        [
+                            'contract_id' => $contract->id, 
+                            'item_id' => $request->id, 
+                            'list_qualification_id' => $request->list_qualification_id
+                        ],
+                        [
+                            'contract_id' => $contract->id, 
+                            'item_id' => $request->id,                    
+                            'qualification_id' => $qualifications[$request->qualification], 
+                            'observations' => $request->observations, 
+                            'list_qualification_id' => $request->list_qualification_id
+                        ]);
+                }
+                
 
                 //Cumple y solo es aqui donde se cargan archivos
                 if ($request->qualification == 'C')
@@ -1459,5 +1497,50 @@ class ContractLesseeController extends Controller
             if ($contract['selection'])
                 $contract_sync->responsibles()->sync($contract['selection']);
         }
+    }
+
+    public function verifyValidateQualificationListCheck()
+    {
+        $exist = ConfigurationsCompany::findByKey('validate_qualification_list_check');
+
+        if ($exist == 'SI')
+            return $this->respondHttp200([
+                'data' => true
+            ]);
+        else
+            return $this->respondHttp200([
+                'data' => false
+            ]);
+    }
+
+    public function aproveQualification(Request $request)
+    {
+        $items_calificated = ItemQualificationContractDetail::
+            where('contract_id', $request->contract_id)
+            ->where('list_qualification_id', $request->list_id)
+            ->where('item_id', $request->item_id)
+            ->first();
+
+        $items_calificated->update(['state_aprove_qualification' => 'APROBADA','reason_rejection' => NULL]);
+
+        return $this->respondHttp200([
+            'message' => 'Se actualizo la calificación'
+        ]);
+    }
+
+    public function desaproveQualification(Request $request)
+    {
+        \Log::info($request);
+        $items_calificated = ItemQualificationContractDetail::
+            where('contract_id', $request->contract_id)
+            ->where('list_qualification_id', $request->list_id)
+            ->where('item_id', $request->item_id)
+            ->first();
+
+        $items_calificated->update(['state_aprove_qualification' => 'RECHAZADA', 'reason_rejection' => $request->reason_rejection]);
+
+        return $this->respondHttp200([
+            'message' => 'Se actualizo la calificación'
+        ]);
     }
 }

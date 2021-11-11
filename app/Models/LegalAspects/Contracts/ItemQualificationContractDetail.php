@@ -13,7 +13,9 @@ class ItemQualificationContractDetail extends Model
         'qualification_id',
         'contract_id',
         'observations',
-        'list_qualification_id'
+        'list_qualification_id',
+        'state_aprove_qualification',
+        'reason_rejection'
     ];
 
     public function contract()

@@ -531,6 +531,9 @@ Route::middleware(['auth'])->group(function () {
       Route::post('contracts/data', 'LegalAspects\Contracs\ContractLesseeController@data');
       Route::get('contracts/getInformation', 'LegalAspects\Contracs\ContractLesseeController@getInformation');
       Route::post('contracts/getListCheckItems', 'LegalAspects\Contracs\ContractLesseeController@getListCheckItems');
+      Route::post('contracts/getValidationQualificarion', 'LegalAspects\Contracs\ContractLesseeController@verifyValidateQualificationListCheck');
+      Route::post('contracts/aproveQualification', 'LegalAspects\Contracs\ContractLesseeController@aproveQualification');
+      Route::post('contracts/desaproveQualification', 'LegalAspects\Contracs\ContractLesseeController@desaproveQualification');
       Route::post('contracts/getItemValidation', 'LegalAspects\Contracs\ContractLesseeController@getListCheckItemsValidations');
       Route::post('contracts/saveValidations', 'LegalAspects\Contracs\ContractLesseeController@saveItemsStandard');
       Route::get('contracts/qualifications', 'LegalAspects\Contracs\ContractLesseeController@qualifications');

@@ -29,6 +29,14 @@
 			<b-card-body>
 				<div class="rounded ui-bordered p-3 mb-3"  v-for="(item, index) in form.items" :key="item.id">
 					<p class="my-1">{{ index + 1 }} - {{ item.item_name }}</p>
+					<b-col v-if="validate_qualificacion">
+                		<div class="float-right" style="padding-right: 10px;">
+                    		<b-btn v-if="item.state_aprove_qualification == 'PENDIENTE'"  variant="warning" class="btn-circle-micro"><span class="fas fa-info"></span></b-btn>
+							<b-btn v-if="item.state_aprove_qualification == 'APROBADA'"  variant="success" class="btn-circle-micro"><span class="fas fa-info"></span></b-btn>
+							<b-btn v-if="item.state_aprove_qualification == 'RECHAZADA'"  variant="primary" class="btn-circle-micro"><span class="fas fa-info"></span></b-btn>
+							
+                		</div>
+              		</b-col>
 					<span class="text-muted">{{ item.criterion_description}}</span>
 					<div class="media align-items-center mt-3">
 						<div class="media-body ml-2">
@@ -60,7 +68,7 @@
 							<!------------------------------->
 
 							<!--CUMPLE -->
-							<b-btn v-if="item.qualification == 'C'" @click="showModal(`modalFile${index}`)" variant="primary"><span class="lnr lnr-bookmark"></span> Adjuntar archivos</b-btn>
+							<b-btn v-if="item.qualification == 'C'" @click="showModal(`modalFile${index}`)" variant="primary"><span class="lnr lnr-bookmark"></span> Consultar archivos</b-btn>
 
 							<b-modal v-show="item.qualification == 'C'" :ref="`modalFile${index}`" :hideFooter="true" :id="`modals-file-${index+1}`" class="modal-top" size="lg" @hidden="saveQualification(index)">
 								<div slot="modal-title">
@@ -93,7 +101,26 @@
 								<vue-radio :disabled="viewOnly" v-model="item.qualification" label="Calificación" :name="`items${item.id}`" :error="form.errorsFor(`items.${index}`)" :options="qualifications" :checked="item.qualification" @input="changeActionFiles(item.qualification, `${index}`)"></vue-radio>
 						</div>						
 					</div>
-					<div class="col-md-12">
+					<div v-if="validate_qualificacion" class="col-md-12">
+						<vue-textarea @onBlur="saveQualification(`${index}`)" :disabled="viewOnly" class="col-md-12" v-model="item.observations" label="Observaciones" name="observations" placeholder="Observaciones" :error="form.errorsFor(`observations`)"></vue-textarea>
+						<center>
+							<b-btn @click="aproveQualification(item.id, index)" variant="primary"><span class="lnr lnr-checkmark-circle"></span> Aprobar Calificación</b-btn>
+							<b-btn @click="showModal(`modalRechazo${index}`)" variant="primary"><span class="lnr lnr-cross-circle"></span> Rechazar Calificación</b-btn>
+						</center>
+
+						<b-modal :ref="`modalRechazo${index}`" :hideFooter="true" :id="`modals-rechazo-${index+1}`" class="modal-top" size="lg" @hidden="desaproveQualification(item.id, item.reason_rejection, index)">
+								<div slot="modal-title">
+									Motivo de Rechazo <span class="font-weight-light">de la calificación</span>
+								</div>
+								<br>
+								<vue-textarea class="col-md-12" v-model="item.reason_rejection" label="Motivo del rexhazo" name="reason_rejection" placeholder="Motivo" :error="form.errorsFor(`reason_rejection`)"></vue-textarea>
+								<br>
+								<div class="row float-right pt-12 pr-12y">
+									<b-btn variant="primary" @click="hideModal(`modalRechazo${index}`)">Cerrar</b-btn>
+								</div>
+							</b-modal>
+					</div>
+					<div v-else class="col-md-12">
 						<vue-textarea @onBlur="saveQualification(`${index}`)" :disabled="viewOnly" class="col-md-12" v-model="item.observations" label="Observaciones" name="observations" placeholder="Observaciones" :error="form.errorsFor(`observations`)"></vue-textarea>
 					</div>
 					<div v-if="existError(`items.${index}.`)">
@@ -147,6 +174,7 @@ export default {
 		viewOnly: { type: Boolean, default: false },
 		contractId: {type: [String, Number] },
 		qualificationListId: {type: [String, Number] },
+		validate_qualificacion: { type: Boolean, default: false },
 		qualifications: {
 			type: [Array, Object],
 			default: function() {
@@ -212,8 +240,9 @@ export default {
 
 					this.form.items[index].actionPlan.activities = [];
 				}
-
-				this.showModal(`modalFile${index}`)
+				
+				this.verifyRequiredFile(this.form.items[index].id, index)
+				//this.showModal(`modalFile${index}`)
 			}
 			else if (qualification == 'NC')
 			{
@@ -336,6 +365,47 @@ export default {
 	            this.loading = false;
 	          });
 				}
+		},
+		verifyRequiredFile(item_id, index)
+		{
+			this.postData = Object.assign({}, {item_id: item_id});
+
+			axios.post('/legalAspects/listCheck/verifyRequiredFile', this.postData)
+				.then(response => {
+					this.required = response.data
+					if (this.required == 'Requerido')
+					{
+						this.showModal(`modalFile${index}`)
+					}
+				}).catch(error => {
+					Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
+				});
+		},
+		aproveQualification(item_id, index)
+		{
+			this.postData2 = Object.assign({}, {item_id: item_id}, {list_id: this.qualificationListId}, {contract_id: this.contractId});
+
+			axios.post('/legalAspects/contracts/aproveQualification', this.postData2)
+				.then(response => {
+					this.form.items[index].state_aprove_qualification = 'APROBADA';
+					this.form.items[index].reason_rejection = null;
+					Alerts.success('Exito','Se actualizo la calificación');
+				}).catch(error => {
+					Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
+				});
+		},
+		desaproveQualification(item_id, reason_rejection, index)
+		{
+			this.postData3 = Object.assign({}, {item_id: item_id}, {list_id: this.qualificationListId}, {contract_id: this.contractId}, {reason_rejection: reason_rejection});
+
+			axios.post('/legalAspects/contracts/desaproveQualification', this.postData3)
+				.then(response => {
+					this.form.items[index].state_aprove_qualification = 'RECHAZADA';
+					this.form.items[index].reason_rejection = reason_rejection;
+					Alerts.success('Exito','Se actualizo la calificación');
+				}).catch(error => {
+					Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
+				});
 		}
 	}
 };
