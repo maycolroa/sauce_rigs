@@ -99,7 +99,7 @@ class RiskMatrixImportTemplate implements FromCollection, WithHeadings, WithMapp
         'Max. Frecuencia Inherente (Valores validos 0-5)',
         'Descripción Frecuencia Inherente',
         'Exposición Inherente',
-        'Controles Actuales (Separados por "-")',
+        'Controles Actuales (Separados por "*")',
         'El control apunta a disminuir (Frecuencia, Impacto, Ambos)',
         'Naturaleza (Automático, Manual, Mixto)',
         'Evidencia (SI, NO)',
@@ -114,7 +114,7 @@ class RiskMatrixImportTemplate implements FromCollection, WithHeadings, WithMapp
         'Descripción Frecuencia Residual',
         'Exposición Residual',
         'Maximo Impacto Evento Riesgo',
-        'Indicadores (Separados por “-”)'
+        'Indicadores (Separados por “*”)'
       ]);
 
       return $columns;

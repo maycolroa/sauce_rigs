@@ -247,8 +247,8 @@ class RiskMatrixImport implements ToCollection, WithCalculatedFormulas
                 'max_frecuencia_residual' => 'required|integer|min:0|max:5',
                 'desc_frecuencia_residual' => 'required',
                 'exposicion_Residual' => 'required|integer|min:0',
-                'max_evento_riesgo' => 'required',
-                'indicadores' => 'required'           
+                'max_evento_riesgo' => 'required'
+            //    'indicadores' => 'required'           
             ]);
         }
 
@@ -374,14 +374,17 @@ class RiskMatrixImport implements ToCollection, WithCalculatedFormulas
                     $control->save();
                 }
 
-                $indicators =explode(' - ', $data['indicadores']);
-
-                foreach ($indicators as $keyI => $itemI)
+                if ($data['indicadores'])
                 {
-                    $indicator = new Indicators();
-                    $indicator->rm_subprocess_risk_id = $risk_subproocess->id;
-                    $indicator->indicator = $itemI;
-                    $indicator->save();
+                    $indicators =explode(' * ', $data['indicadores']);
+
+                    foreach ($indicators as $keyI => $itemI)
+                    {
+                        $indicator = new Indicators();
+                        $indicator->rm_subprocess_risk_id = $risk_subproocess->id;
+                        $indicator->indicator = $itemI;
+                        $indicator->save();
+                    }
                 }
 
                 $this->secuence[$data['secuencia']] = $risk_subproocess->id;
@@ -393,7 +396,7 @@ class RiskMatrixImport implements ToCollection, WithCalculatedFormulas
                 $cause->cause = $data['causa'];
                 $cause->save();
 
-                $controls = explode(' - ', $data['controles']);
+                $controls = explode(' * ', $data['controles']);
 
                 foreach ($controls as $keyC2 => $itemC2)
                 {

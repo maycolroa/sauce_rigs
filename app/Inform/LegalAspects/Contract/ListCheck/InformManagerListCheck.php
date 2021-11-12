@@ -156,8 +156,8 @@ class InformManagerListCheck
 
             $exist = ConfigurationsCompany::findByKey('validate_qualification_list_check');
 
-            if ($exist == 'SI')
-                $compliance->where('sau_ct_item_qualification_contract.state_aprove_qualification', 'APROBADA');
+            /*if ($exist == 'SI')
+                $compliance->where('sau_ct_item_qualification_contract.state_aprove_qualification', 'APROBADA');*/
             
             $compliance = $compliance->orderBy('category')->get();
 
