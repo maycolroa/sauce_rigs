@@ -22,7 +22,8 @@
 							:contractId="(this.$route.params.id ? this.$route.params.id : '')"
 							:items="items"
 							:qualifications="qualifications"	
-							:qualificationListId="qualificationListId"			
+							:qualificationListId="qualificationListId"	
+							:validate_qualificacion="validate_qualificacion"		
 							:cancel-url="{ name: (this.$route.params.id ? 'legalaspects-contractor' : 'legalaspects-contracts')}"/>
 					</template>
 				</b-card-body>
@@ -50,7 +51,8 @@ export default {
 			items: [],
 			qualifications: [],
 			ready: false,
-			qualificationListId: ''
+			qualificationListId: '',
+			validate_qualificacion: ''
 		}
 	},
 	created(){
@@ -58,6 +60,15 @@ export default {
 		axios.get("/legalAspects/contracts/qualifications")
 		.then(response => {
 			this.qualifications = response.data;
+		})
+		.catch(error => {
+			Alerts.error('Error', 'Se ha generado un error en el proceso al cargar las calificaciones, por favor contacte con el administrador');
+		});
+
+		//Obtener validacion de la empresa para las calificaciones de la lista de chequeo
+		axios.post("/legalAspects/contracts/getValidationQualificarion")
+		.then(response => {
+			this.validate_qualificacion = response.data.data;
 		})
 		.catch(error => {
 			Alerts.error('Error', 'Se ha generado un error en el proceso al cargar las calificaciones, por favor contacte con el administrador');
