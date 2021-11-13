@@ -131,8 +131,8 @@ trait RiskMatrixTrait
         $data['impact'][3] = 'Moderado';
         $data['impact'][4] = 'Grave';
         $data['impact'][5] = 'Extremo';
-        $data['frecuency'][1] = 'Muy Bajo';
-        $data['frecuency'][2] = 'Bajo';
+        $data['frecuency'][1] = 'Muy Baja';
+        $data['frecuency'][2] = 'Baja';
         $data['frecuency'][3] = 'Moderada';
         $data['frecuency'][4] = 'Alta';
         $data['frecuency'][5] = 'Muy Alta';
@@ -222,17 +222,17 @@ trait RiskMatrixTrait
 
         //[frecuencia][impacto]
         
-        $matriz['Muy Bajo']['Extremo'] = ['color' => 'warning', 'count' => 0];
-        $matriz['Muy Bajo']['Grave'] = ['color' => 'warning', 'count' => 0];
-        $matriz['Muy Bajo']['Moderado'] = ['color' => 'success', 'count' => 0];
-        $matriz['Muy Bajo']['Leve'] = ['color' => 'success', 'count' => 0];
-        $matriz['Muy Bajo']['No Significativo'] = ['color' => 'success', 'count' => 0];
+        $matriz['Muy Baja']['Extremo'] = ['color' => 'warning', 'count' => 0];
+        $matriz['Muy Baja']['Grave'] = ['color' => 'warning', 'count' => 0];
+        $matriz['Muy Baja']['Moderado'] = ['color' => 'success', 'count' => 0];
+        $matriz['Muy Baja']['Leve'] = ['color' => 'success', 'count' => 0];
+        $matriz['Muy Baja']['No Significativo'] = ['color' => 'success', 'count' => 0];
 
-        $matriz['Bajo']['Extremo'] = ['color' => 'orange', 'count' => 0];
-        $matriz['Bajo']['Grave'] = ['color' => 'warning', 'count' => 0];
-        $matriz['Bajo']['Moderado'] = ['color' => 'warning', 'count' => 0];
-        $matriz['Bajo']['Leve'] = ['color' => 'success', 'count' => 0];
-        $matriz['Bajo']['No Significativo'] = ['color' => 'success', 'count' => 0];
+        $matriz['Baja']['Extremo'] = ['color' => 'orange', 'count' => 0];
+        $matriz['Baja']['Grave'] = ['color' => 'warning', 'count' => 0];
+        $matriz['Baja']['Moderado'] = ['color' => 'warning', 'count' => 0];
+        $matriz['Baja']['Leve'] = ['color' => 'success', 'count' => 0];
+        $matriz['Baja']['No Significativo'] = ['color' => 'success', 'count' => 0];
 
         $matriz['Moderada']['Extremo'] = ['color' => 'primary', 'count' => 0];
         $matriz['Moderada']['Grave'] = ['color' => 'orange', 'count' => 0];

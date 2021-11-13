@@ -88,7 +88,7 @@ class RiskMatrixHistoryManager extends BaseManager
 
         $showLabelCol = true;
         $headers = array_keys($data);
-        $count = isset($data['Muy Bajo']) ? COUNT($data['Muy Bajo']) : 0;
+        $count = isset($data['Muy Baja']) ? COUNT($data['Muy Baja']) : 0;
 
         for ($i=0; $i < $count; $i++)
         { 
@@ -193,7 +193,7 @@ class RiskMatrixHistoryManager extends BaseManager
 
         $showLabelCol = true;
         $headers = array_keys($data);
-        $count = isset($data['Muy Bajo']) ? COUNT($data['Muy Bajo']) : 0;
+        $count = isset($data['Muy Baja']) ? COUNT($data['Muy Baja']) : 0;
 
         for ($i=0; $i < $count; $i++)
         { 
