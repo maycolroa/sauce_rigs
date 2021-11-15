@@ -333,7 +333,13 @@ class ListCheckQualificationController extends Controller
 
             if ($request->has('qualification') && $request->qualification)
             {
-                $exist = ConfigurationsCompany::findByKey('validate_qualification_list_check');
+                try
+                {
+                    $exist = ConfigurationsCompany::findByKey('validate_qualification_list_check');
+                    
+                } catch (\Exception $e) {
+                    $exist = 'NO';
+                }
 
                 if ($exist == 'SI')
                 {
@@ -714,7 +720,13 @@ class ListCheckQualificationController extends Controller
 
     public function verifyValidateQualificationListCheck()
     {
-        $exist = ConfigurationsCompany::findByKey('validate_qualification_list_check');
+        try
+        {
+            $exist = ConfigurationsCompany::findByKey('validate_qualification_list_check');
+            
+        } catch (\Exception $e) {
+            $exist = 'NO';
+        }
 
         if ($exist == 'SI')
             return $this->respondHttp200([
