@@ -154,7 +154,13 @@ class InformManagerListCheck
             ->mergeBindings($items_apply->getQuery())            
             ->inStandard($this->itemStandar, $this->filtersType['itemStandar']);
 
-            $exist = ConfigurationsCompany::findByKey('validate_qualification_list_check');
+            try
+            {
+                $exist = ConfigurationsCompany::findByKey('validate_qualification_list_check');
+                
+            } catch (\Exception $e) {
+                $exist = 'NO';
+            }
 
             /*if ($exist == 'SI')
                 $compliance->where('sau_ct_item_qualification_contract.state_aprove_qualification', 'APROBADA');*/

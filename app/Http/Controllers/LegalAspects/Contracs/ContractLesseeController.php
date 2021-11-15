@@ -895,7 +895,13 @@ class ContractLesseeController extends Controller
 
             if ($request->has('qualification') && $request->qualification)
             {
-                $exist = ConfigurationsCompany::findByKey('validate_qualification_list_check');
+                try
+                {
+                    $exist = ConfigurationsCompany::findByKey('validate_qualification_list_check');
+                    
+                } catch (\Exception $e) {
+                    $exist = 'NO';
+                }
 
                 $itemQualification = ItemQualificationContractDetail::updateOrCreate(
                     [
@@ -1484,8 +1490,13 @@ class ContractLesseeController extends Controller
 
     public function verifyValidateQualificationListCheck()
     {
-        $exist = ConfigurationsCompany::findByKey('validate_qualification_list_check');
-
+        try
+        {
+            $exist = ConfigurationsCompany::findByKey('validate_qualification_list_check');
+            
+        } catch (\Exception $e) {
+            $exist = 'NO';
+            }
         if ($exist == 'SI')
             return $this->respondHttp200([
                 'data' => true

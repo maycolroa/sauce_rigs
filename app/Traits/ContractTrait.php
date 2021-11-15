@@ -270,7 +270,13 @@ trait ContractTrait
 
             $qualifications = Qualifications::pluck("name", "id");
 
-            $exist = ConfigurationsCompany::findByKey('validate_qualification_list_check');
+            try
+            {
+                $exist = ConfigurationsCompany::findByKey('validate_qualification_list_check');
+                
+            } catch (\Exception $e) {
+                $exist = 'NO';
+            }
 
             //Obtiene los items calificados
             $items_calificated = ItemQualificationContractDetail::
