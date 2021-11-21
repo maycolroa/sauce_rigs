@@ -1532,7 +1532,7 @@ class ContractLesseeController extends Controller
             ->where('item_id', $request->item_id)
             ->first();
 
-            $items_calificated->update(['state_aprove_qualification' => 'RECHAZADA', 'reason_rejection' => $request->reason_rejection]);
+            $items_calificated->update(['state_aprove_qualification' => 'RECHAZADA', 'reason_rejection' => $request->reason_rejection, 'qualification_id' => 2]);
 
             return $this->respondHttp200([
                 'message' => 'Se actualizo la calificación'

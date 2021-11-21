@@ -162,8 +162,11 @@ class InformManagerListCheck
                 $exist = 'NO';
             }
 
-            /*if ($exist == 'SI')
-                $compliance->where('sau_ct_item_qualification_contract.state_aprove_qualification', 'APROBADA');*/
+            if ($exist == 'SI')
+            {
+                $compliance->where('sau_ct_item_qualification_contract.state_aprove_qualification', 'APROBADA');
+                $compliance->orWhere('sau_ct_item_qualification_contract.state_aprove_qualification', 'PENDIENTE');
+            }
             
             $compliance = $compliance->orderBy('category')->get();
 
