@@ -49,7 +49,9 @@ class VuetableColumnManager
         'dangerousconditionsreport',
         'dangerousconditionsinspectionsrequestfirm',
         'industrialsecureriskmatrixreport',
-        'industrialsecureriskmatrixreportresidual'
+        'industrialsecureriskmatrixreportresidual',
+        'industrialsecureeppslocation'
+
     ];
 
     protected $customColumnsName;
@@ -107,6 +109,21 @@ class VuetableColumnManager
             ['name' => 'sau_dangers_matrix.id', 'data'=> 'id', 'title'=> 'ID', 'sortable'=> false, 'searchable'=> false, 'detail'=> false, 'key'=> true ],
             ['name' => 'sau_users.name', 'data'=> 'supervisor', 'title'=> 'Supervisor', 'sortable'=> true, 'searchable'=> true, 'detail'=> false, 'key'=> false ],
             ['name' => 'approved', 'data'=> 'approved', 'title'=> '¿Aprobada?', 'sortable'=> true, 'searchable'=> false, 'detail'=> false, 'key'=> false ]
+        ];
+
+        $colums = array_merge($colums, $this->getColumnsLocations());
+        $colums = array_merge($colums, [
+            ['name' => '', 'data'=> 'controlls', 'title'=> 'Controles', 'sortable'=> false, 'searchable'=> false, 'detail'=> false, 'key'=> false ],
+        ]);
+
+        return $colums;
+    }
+
+    public function industrialsecureeppslocation()
+    {
+        $colums = [
+            ['name' => 'sau_epp_locations.id', 'data'=> 'id', 'title'=> 'ID', 'sortable'=> false, 'searchable'=> false, 'detail'=> false, 'key'=> true ],
+            ['name' => 'sau_epp_locations.name', 'data'=> 'name', 'title'=> 'Nombre', 'sortable'=> true, 'searchable'=> true, 'detail'=> false, 'key'=> false ]
         ];
 
         $colums = array_merge($colums, $this->getColumnsLocations());

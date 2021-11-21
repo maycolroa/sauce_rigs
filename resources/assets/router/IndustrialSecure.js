@@ -560,5 +560,37 @@ export default [{
             import('@/views/IndustrialSecure/epp/elements/view')
         }
       ]),
+      ...middleware({ 'check-permission': 'location_r' }, [
+        {
+          name: 'industrialsecure-epps-locations',
+          path: 'epps/locations',
+          component: () =>
+            import('@/views/IndustrialSecure/epp/locations/index')
+        }
+      ]), 
+      ...middleware({ 'check-permission': 'location_c' }, [
+        {
+          name: 'industrialsecure-epps-locations-create',
+          path: 'epps/locations/create',
+          component: () =>
+            import('@/views/IndustrialSecure/epp/locations/create')
+        }
+      ]), 
+      ...middleware({ 'check-permission': 'location_u' }, [
+        {
+          name: 'industrialsecure-epps-locations-edit',
+          path: 'epps/locations/edit/:id',
+          component: () =>
+            import('@/views/IndustrialSecure/epp/locations/edit')
+        }
+      ]),
+      ...middleware({ 'check-permission': 'location_r' }, [
+        {
+          name: 'industrialsecure-epps-locations-view',
+          path: 'epps/locations/view/:id',
+          component: () =>
+            import('@/views/IndustrialSecure/epp/locations/view')
+        }
+      ]),
     ]
   }]

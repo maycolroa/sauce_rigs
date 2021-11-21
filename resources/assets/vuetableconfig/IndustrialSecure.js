@@ -1152,4 +1152,54 @@ export default [
         filterColumns: true,
     }
 },
+{
+    name: 'industrialsecure-epps-location',
+    fields: [
+        { name: 'sau_epp_locations.id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true }
+    ],
+    'controlls': [{
+        type: 'push',
+        buttons: [{
+        config: {
+            color: 'outline-success',
+            borderless: true,
+            icon: 'ion ion-md-create',
+            title: 'Editar'
+        },
+        data: {
+            routePush: { name: 'industrialsecure-epps-locations-edit' },
+            id: 'id',
+        },
+        permission: 'location_u'
+        },  {
+        config: {
+            color: 'outline-info',
+            borderless: true,
+            icon: 'ion ion-md-eye',
+            title: 'Ver'
+        },
+        data: {
+            routePush: { name: 'industrialsecure-epps-locations-view' },
+            id: 'id',
+        },
+        permission: 'location_r'
+        }]
+    },
+    {
+        type: 'base',
+        buttons: [{
+        name: 'delete',
+        data: {
+            action: '/industrialSecurity/epp/location/',
+            id: 'id',
+            messageConfirmation: 'Esta seguro de borrar la ubicación __name__'
+        },
+        permission: 'location_d'
+        }],
+    }],
+    configuration: {
+        urlData: '/industrialSecurity/epp/location/data',
+        filterColumns: true,
+    }
+}
 ];

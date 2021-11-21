@@ -512,6 +512,8 @@ Route::middleware(['auth'])->group(function () {
         Route::ApiResource('element', 'IndustrialSecure\EPP\ElementController');
         Route::post('element/data', 'IndustrialSecure\EPP\ElementController@data');
         Route::get('element/download/{element}', 'IndustrialSecure\EPP\ElementController@downloadImage');
+        Route::ApiResource('location', 'IndustrialSecure\EPP\LocationController');
+        Route::post('location/data', 'IndustrialSecure\EPP\LocationController@data');
       });
 
       Route::prefix('tags')->group(function () {
