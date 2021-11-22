@@ -298,6 +298,19 @@
                 ]
             },
             {
+                "name": "riskMatrix",
+                "permissions": [
+                    {
+                        "name": "riskMatrix_view_report",
+                        "display_name": "Matriz de riesgos - ver reporte"
+                    },
+                    {
+                        "name": "riskMatrix_export_report",
+                        "display_name": "Matriz de riesgos - exportar reporte"
+                    }
+                ]
+            },
+            {
                 "name": "dangerousConditions",
                 "permissions": [
                     {

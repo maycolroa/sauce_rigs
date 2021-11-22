@@ -9,8 +9,8 @@
         <div v-show="!isLoading">
             <b-row align-h="end">
                 <b-col>
-                    <b-btn v-if="auth.can['riskMatrix_c']" @click="exportReport()" variant="primary"><i class="fas fa-download"></i> &nbsp; Exportar Reporte Excel</b-btn>
-                    <b-btn v-if="auth.can['riskMatrix_c']" @click="exportReportPdf()" variant="primary"><i class="fas fa-download"></i> &nbsp; Exportar Reporte PDF</b-btn>
+                    <b-btn v-if="auth.can['riskMatrix_export_report']" @click="exportReport()" variant="primary"><i class="fas fa-download"></i> &nbsp; Exportar Reporte Excel</b-btn>
+                    <b-btn v-if="auth.can['riskMatrix_export_report']" @click="exportReportPdf()" variant="primary"><i class="fas fa-download"></i> &nbsp; Exportar Reporte PDF</b-btn>
                     <b-btn :to="{name:'industrialsecure-riskmatrix-report-history'}" variant="primary">Ver historial</b-btn>
                 </b-col>
                 <b-col cols="3">

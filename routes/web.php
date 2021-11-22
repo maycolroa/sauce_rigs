@@ -54,6 +54,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('templates/musculoskeletalimport','PreventiveOccupationalMedicine\BiologicalMonitoring\MusculoskeletalAnalysis\MusculoskeletalAnalysisController@downloadTemplateImport');
     Route::get('templates/respiratoryAnalysisimport','PreventiveOccupationalMedicine\BiologicalMonitoring\RespiratoryAnalysis\RespiratoryAnalysisController@downloadTemplateImport');
     Route::get('templates/elementimport','IndustrialSecure\EPP\ElementController@downloadTemplateImport');
+    Route::get('templates/locationimport','IndustrialSecure\EPP\LocationController@downloadTemplateImport');
 
 	//Cerrar sesión 
 	Route::get('/logout', 'Auth\LoginController@logout')->name('logout');
@@ -516,6 +517,7 @@ Route::middleware(['auth'])->group(function () {
         Route::post('element/import', 'IndustrialSecure\EPP\ElementController@import');
         Route::ApiResource('location', 'IndustrialSecure\EPP\LocationController');
         Route::post('location/data', 'IndustrialSecure\EPP\LocationController@data');
+        Route::post('location/import', 'IndustrialSecure\EPP\LocationController@import');
       });
 
       Route::prefix('tags')->group(function () {
