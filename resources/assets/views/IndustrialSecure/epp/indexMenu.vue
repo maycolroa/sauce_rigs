@@ -2,7 +2,7 @@
   	<div>
     	<header-module
 			title="ELEMENTOS DE PROTECCIÓN PERSONAL"
-			url="preventiveoccupationalmedicine"
+			url="industrialsecure"
 		/>
     	<div class="col-md">
 			<b-card no-body>
@@ -45,7 +45,7 @@ import Alerts from "@/utils/Alerts.js";
 export default {
 	name: "audiometry",
 	metaInfo: {
-		title: "Audiometrias"
+		title: "Elementos de protección personal"
 	},
   	methods: {
   	}

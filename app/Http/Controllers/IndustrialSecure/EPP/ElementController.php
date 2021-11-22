@@ -11,6 +11,9 @@ use App\Models\IndustrialSecure\Epp\TagsType;
 use App\Http\Requests\IndustrialSecure\Epp\ElementRequest;
 use Validator;
 use Illuminate\Support\Facades\Storage;
+use App\Exports\IndustrialSecure\Epp\ElementImportTemplateExcel;
+use App\Jobs\IndustrialSecure\Epp\ElementImportJob;
+use Maatwebsite\Excel\Facades\Excel;
 
 class ElementController extends Controller
 {
@@ -283,5 +286,24 @@ class ElementController extends Controller
         $name = $element->image;
 
         return Storage::disk('s3')->download($element->path_donwload(), $name);                                               
+    }
+
+    public function downloadTemplateImport()
+    {
+      return Excel::download(new ElementImportTemplateExcel(collect([]), $this->company), 'PlantillaImportacionElementos.xlsx');
+    }
+
+    public function import(Request $request)
+    {
+      try
+      {
+        ElementImportJob::dispatch($request->file, $this->company, $this->user);
+      
+        return $this->respondHttp200();
+
+      } catch(Exception $e)
+      {
+        return $this->respondHttp500();
+      }
     }
 }

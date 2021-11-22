@@ -22,11 +22,11 @@ class CreateSauEppElementsTable extends Migration
             $table->text('type');
             $table->string('mark');
             $table->text('applicable_standard');
-            $table->text('observations');
-            $table->text('operating_instructions');
+            $table->text('observations')->nullable();
+            $table->text('operating_instructions')->nullable();
             $table->boolean('state');
             $table->boolean('reusable');
-            $table->string('image');
+            $table->string('image')->nullable();
             $table->timestamps();
             $table->foreign('company_id')->references('id')->on('sau_companies')->onUpdate('cascade')->onDelete('cascade');
         });
