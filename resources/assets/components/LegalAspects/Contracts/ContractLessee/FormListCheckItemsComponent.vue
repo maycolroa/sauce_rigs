@@ -403,6 +403,7 @@ export default {
 				.then(response => {
 					this.form.items[index].state_aprove_qualification = 'RECHAZADA';
 					this.form.items[index].reason_rejection = reason_rejection;
+					this.form.items[index].qualification = 'NC';
 					Alerts.success('Exito','Se actualizo la calificación');
 				}).catch(error => {
 					Alerts.error('Error', 'Debe adicionar un motivo de rechazo');

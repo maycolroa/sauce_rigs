@@ -520,5 +520,77 @@ export default [{
             import('@/views/IndustrialSecure/riskMatrix/indexMenu')
         }
       ]),
+      ...middleware({ 'check-permission': 'elements_r' }, [ 
+        {
+          name: 'industrialsecure-epp',
+          path: 'epp/menu',
+          component: () =>
+            import('@/views/IndustrialSecure/epp/indexMenu')
+        }
+      ]),
+      ...middleware({ 'check-permission': 'elements_r' }, [
+        {
+          name: 'industrialsecure-epps-elements',
+          path: 'epps/elements',
+          component: () =>
+            import('@/views/IndustrialSecure/epp/elements/index')
+        }
+      ]), 
+      ...middleware({ 'check-permission': 'elements_c' }, [
+        {
+          name: 'industrialsecure-epps-elements-create',
+          path: 'epps/elements/create',
+          component: () =>
+            import('@/views/IndustrialSecure/epp/elements/create')
+        }
+      ]), 
+      ...middleware({ 'check-permission': 'elements_u' }, [
+        {
+          name: 'industrialsecure-epps-elements-edit',
+          path: 'epps/elements/edit/:id',
+          component: () =>
+            import('@/views/IndustrialSecure/epp/elements/edit')
+        }
+      ]),
+      ...middleware({ 'check-permission': 'elements_r' }, [
+        {
+          name: 'industrialsecure-epps-elements-view',
+          path: 'epps/elements/view/:id',
+          component: () =>
+            import('@/views/IndustrialSecure/epp/elements/view')
+        }
+      ]),
+      ...middleware({ 'check-permission': 'location_r' }, [
+        {
+          name: 'industrialsecure-epps-locations',
+          path: 'epps/locations',
+          component: () =>
+            import('@/views/IndustrialSecure/epp/locations/index')
+        }
+      ]), 
+      ...middleware({ 'check-permission': 'location_c' }, [
+        {
+          name: 'industrialsecure-epps-locations-create',
+          path: 'epps/locations/create',
+          component: () =>
+            import('@/views/IndustrialSecure/epp/locations/create')
+        }
+      ]), 
+      ...middleware({ 'check-permission': 'location_u' }, [
+        {
+          name: 'industrialsecure-epps-locations-edit',
+          path: 'epps/locations/edit/:id',
+          component: () =>
+            import('@/views/IndustrialSecure/epp/locations/edit')
+        }
+      ]),
+      ...middleware({ 'check-permission': 'location_r' }, [
+        {
+          name: 'industrialsecure-epps-locations-view',
+          path: 'epps/locations/view/:id',
+          component: () =>
+            import('@/views/IndustrialSecure/epp/locations/view')
+        }
+      ]),
     ]
   }]

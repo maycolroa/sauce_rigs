@@ -365,6 +365,43 @@
                         "display_name": "Inspecciones Planeadas - recibir notificaciones"
                     }
                 ]
+            },
+            {
+                "name": "epp",
+                "permissions": [
+                    {
+                        "name": "elements_c",
+                        "display_name": "Elementos de proteccion personal - elementos crear"
+                    },
+                    {
+                        "name": "elements_r",
+                        "display_name": "Elementos de proteccion personal - elementos ver"
+                    },
+                    {
+                        "name": "elements_u",
+                        "display_name": "Elementos de proteccion personal - elementos actualizar"
+                    },
+                    {
+                        "name": "elements_d",
+                        "display_name": "Elementos de proteccion personal - elementos borrar"
+                    },
+                    {
+                        "name": "location_c",
+                        "display_name": "Elementos de proteccion personal - ubicaciones crear"
+                    },
+                    {
+                        "name": "location_r",
+                        "display_name": "Elementos de proteccion personal - ubicaciones ver"
+                    },
+                    {
+                        "name": "location_u",
+                        "display_name": "Elementos de proteccion personal - ubicaciones actualizar"
+                    },
+                    {
+                        "name": "location_d",
+                        "display_name": "Elementos de proteccion personal - ubicaciones borrar"
+                    }
+                ]
             }
         ]
     },

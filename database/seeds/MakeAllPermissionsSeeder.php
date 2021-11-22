@@ -56,7 +56,11 @@ class MakeAllPermissionsSeeder extends Seeder
                 'dangerousConditions_d',
                 'usersCompanies_c',
                 'usersCompanies_u',
-                'usersCompanies_d'
+                'usersCompanies_d',
+                'epp_c',
+                'epp_r',
+                'epp_u',
+                'epp_d',
             ];
 
             $modules = Module::all();

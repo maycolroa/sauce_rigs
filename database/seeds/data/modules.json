@@ -102,6 +102,12 @@
                 "display_name": "Matriz de riesgos",
                 "main": "SI",
                 "logo": null
+            },
+            {
+                "name": "epp",
+                "display_name": "Elementos protección personal",
+                "main": "SI",
+                "logo": null
             }
         ]
     },

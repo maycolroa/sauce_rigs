@@ -1095,4 +1095,111 @@ export default [
         filterColumns: true,
     }
 },
+{
+    name: 'industrialsecure-epps-elements',
+    fields: [
+        { name: 'sau_epp_elements.id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true },
+        { name: 'sau_epp_elements.name', data: 'name', title: 'Nombre', sortable: true, searchable: true, detail: false, key: false },
+        { name: 'sau_epp_elements.code', data: 'code', title: 'Código', sortable: true, searchable: true, detail: false, key: false },
+        { name: 'sau_epp_elements.type', data: 'type', title: 'Tipo', sortable: true, searchable: true, detail: false, key: false },
+        { name: 'sau_epp_elements.mark', data: 'mark', title: 'Marca', sortable: true, searchable: true, detail: false, key: false },
+        { name: 'sau_epp_elements.state', data: 'state', title: '¿Activo?', sortable: true, searchable: true, detail: false, key: false },
+        { name: 'sau_epp_elements.reusable', data: 'reusable', title: '¿Reutilizable?', sortable: true, searchable: true, detail: false, key: false },
+        { name: '', data: 'controlls', title: 'Controles', sortable: false, searchable: false, detail: false, key: false },
+    ],
+    'controlls': [{
+        type: 'push',
+        buttons: [{
+        config: {
+            color: 'outline-success',
+            borderless: true,
+            icon: 'ion ion-md-create',
+            title: 'Editar'
+        },
+        data: {
+            routePush: { name: 'industrialsecure-epps-elements-edit' },
+            id: 'id',
+        },
+        permission: 'elements_u'
+        }, {
+        config: {
+            color: 'outline-info',
+            borderless: true,
+            icon: 'ion ion-md-eye',
+            title: 'Ver'
+        },
+        data: {
+            routePush: { name: 'industrialsecure-epps-elements-view' },
+            id: 'id',
+        },
+        permission: 'elements_u'
+        }]
+    },
+    {
+        type: 'base',
+        buttons: [{
+        name: 'delete',
+        data: {
+            action: '/industrialSecurity/epp/element/',
+            id: 'id',
+            messageConfirmation: 'Esta seguro de borrar el elemento __name__'
+        },
+        permission: 'elements_d'
+        }],
+    }],
+    configuration: {
+        urlData: '/industrialSecurity/epp/element/data',
+        filterColumns: true,
+    }
+},
+{
+    name: 'industrialsecure-epps-location',
+    fields: [
+        { name: 'sau_epp_locations.id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true }
+    ],
+    'controlls': [{
+        type: 'push',
+        buttons: [{
+        config: {
+            color: 'outline-success',
+            borderless: true,
+            icon: 'ion ion-md-create',
+            title: 'Editar'
+        },
+        data: {
+            routePush: { name: 'industrialsecure-epps-locations-edit' },
+            id: 'id',
+        },
+        permission: 'location_u'
+        },  {
+        config: {
+            color: 'outline-info',
+            borderless: true,
+            icon: 'ion ion-md-eye',
+            title: 'Ver'
+        },
+        data: {
+            routePush: { name: 'industrialsecure-epps-locations-view' },
+            id: 'id',
+        },
+        permission: 'location_r'
+        }]
+    },
+    {
+        type: 'base',
+        buttons: [{
+        name: 'delete',
+        data: {
+            action: '/industrialSecurity/epp/location/',
+            id: 'id',
+            messageConfirmation: 'Esta seguro de borrar la ubicación __name__'
+        },
+        permission: 'location_d'
+        }],
+    }],
+    configuration: {
+        urlData: '/industrialSecurity/epp/location/data',
+        filterColumns: true,
+    }
+}
 ];

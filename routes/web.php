@@ -53,6 +53,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('templates/riskmatriximport','IndustrialSecure\RiskMatrix\RiskMatrixController@downloadTemplateImport');
     Route::get('templates/musculoskeletalimport','PreventiveOccupationalMedicine\BiologicalMonitoring\MusculoskeletalAnalysis\MusculoskeletalAnalysisController@downloadTemplateImport');
     Route::get('templates/respiratoryAnalysisimport','PreventiveOccupationalMedicine\BiologicalMonitoring\RespiratoryAnalysis\RespiratoryAnalysisController@downloadTemplateImport');
+    Route::get('templates/elementimport','IndustrialSecure\EPP\ElementController@downloadTemplateImport');
 
 	//Cerrar sesión 
 	Route::get('/logout', 'Auth\LoginController@logout')->name('logout');
@@ -242,6 +243,8 @@ Route::middleware(['auth'])->group(function () {
         Route::post('reportDinamic/years', 'IndustrialSecure\DangerousConditions\Reports\ReportInformController@multiselectYears');
         Route::post('reportDinamic/months', 'IndustrialSecure\DangerousConditions\Reports\ReportInformController@multiselectMounts');
         Route::post('qualificationMasiveInspection', 'IndustrialSecure\DangerousConditions\Inspections\InspectionController@multiselectQualification');
+        Route::post('tagsTypeEpp', 'IndustrialSecure\EPP\ElementController@multiselectTypes');
+        Route::post('tagsMarkEpp', 'IndustrialSecure\EPP\ElementController@multiselectMarks');
 
         Route::prefix('evaluations')->group(function () {
           Route::post('evaluations', 'LegalAspects\Contracs\EvaluationController@multiselectEvaluations');
@@ -504,6 +507,15 @@ Route::middleware(['auth'])->group(function () {
         Route::get('report/downloadImage/{id}/{column}', 'IndustrialSecure\DangerousConditions\Reports\ReportController@downloadImage');
         Route::post('report/informs', 'IndustrialSecure\DangerousConditions\Reports\ReportInformController@data');
         Route::post('report/conditionHeadquarter', 'IndustrialSecure\DangerousConditions\Reports\ReportInformController@locationWithCondition');
+      });
+
+      Route::prefix('epp')->group(function () {
+        Route::ApiResource('element', 'IndustrialSecure\EPP\ElementController');
+        Route::post('element/data', 'IndustrialSecure\EPP\ElementController@data');
+        Route::get('element/download/{element}', 'IndustrialSecure\EPP\ElementController@downloadImage');
+        Route::post('element/import', 'IndustrialSecure\EPP\ElementController@import');
+        Route::ApiResource('location', 'IndustrialSecure\EPP\LocationController');
+        Route::post('location/data', 'IndustrialSecure\EPP\LocationController@data');
       });
 
       Route::prefix('tags')->group(function () {
