@@ -7,6 +7,9 @@ use App\Http\Controllers\Controller;
 use App\Vuetable\Facades\Vuetable;
 use App\Models\IndustrialSecure\Epp\Location;
 use App\Http\Requests\IndustrialSecure\Epp\LocationRequest;
+use App\Exports\IndustrialSecure\Epp\LocationImportTemplateExcel;
+use App\Jobs\IndustrialSecure\Epp\LocationImportJob;
+use Maatwebsite\Excel\Facades\Excel;
 
 class LocationController extends Controller
 {
@@ -180,5 +183,24 @@ class LocationController extends Controller
         
             return $this->multiSelectFormat($locations);
         }
+    }
+
+    public function downloadTemplateImport()
+    {
+      return Excel::download(new LocationImportTemplateExcel(collect([]), $this->company), 'PlantillaImportacionUbicaciones.xlsx');
+    }
+
+    public function import(Request $request)
+    {
+      try
+      {
+        LocationImportJob::dispatch($request->file, $this->company, $this->user);
+      
+        return $this->respondHttp200();
+
+      } catch(Exception $e)
+      {
+        return $this->respondHttp500();
+      }
     }
 }

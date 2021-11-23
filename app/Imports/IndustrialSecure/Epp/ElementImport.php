@@ -116,8 +116,6 @@ class ElementImport implements ToCollection, WithCalculatedFormulas
             'reutilizable' => strtoupper($row[9])
         ];
 
-        \Log::info($data);
-
         $rules = [
             'codigo' => 'required',
             'nombre' => 'required',

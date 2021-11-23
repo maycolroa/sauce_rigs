@@ -512,7 +512,7 @@ export default [{
             import('@/views/IndustrialSecure/riskMatrix/reportHistory')
         }
       ]), 
-      ...middleware({ 'check-permission': 'risks_r' }, [ 
+      ...middleware({ 'check-permission': 'riskMatrix_r' }, [ 
         {
           name: 'industrialsecure-riskmatrix-menu',
           path: 'riskmatrix-menu',
