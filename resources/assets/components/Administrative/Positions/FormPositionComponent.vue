@@ -16,6 +16,7 @@
 
 <script>
 import VueInput from "@/components/Inputs/VueInput.vue";
+import VueAjaxAdvancedSelect from "@/components/Inputs/VueAjaxAdvancedSelect.vue";
 import Form from "@/utils/Form.js";
 
 export default {

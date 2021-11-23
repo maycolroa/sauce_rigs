@@ -496,7 +496,7 @@ export default [{
             import('@/views/IndustrialSecure/riskMatrix/macroprocess/edit')
         }
       ]),
-      ...middleware({ 'check-permission': 'riskMatrix_c' }, [
+      ...middleware({ 'check-permission': 'riskMatrix_view_report' }, [
         {
           name: 'industrialsecure-riskmatrix-report',
           path: 'riskmatrix/report',
@@ -504,7 +504,7 @@ export default [{
             import('@/views/IndustrialSecure/riskMatrix/report')
         }
       ]),
-      ...middleware({ 'check-permission': 'riskMatrix_c' }, [
+      ...middleware({ 'check-permission': 'riskMatrix_view_report' }, [
         {
           name: 'industrialsecure-riskmatrix-report-history',
           path: 'riskmatrix/report/history',
