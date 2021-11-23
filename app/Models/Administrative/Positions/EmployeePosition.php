@@ -21,6 +21,11 @@ class EmployeePosition extends Model
         return $this->hasMany('App\Models\Administrative\Employees\Employee', 'employee_position_id');
     }
 
+    public function elements()
+    {
+        return $this->belongsToMany('App\Models\IndustrialSecure\Epp\Element', 'sau_employee_position_epp_elements');
+    }
+
     public function multiselect()
     {
         return [

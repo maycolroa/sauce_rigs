@@ -321,6 +321,8 @@ Route::middleware(['auth'])->group(function () {
           Route::post('usersCompany', 'System\Companies\CompanyController@multiselectUsers');
           Route::post('rolesCompany', 'System\Companies\CompanyController@multiselectRoles');
         });
+
+        Route::post('eppElements', 'IndustrialSecure\EPP\ElementController@multiselect');
     });
 
     Route::prefix('radios')->group(function () {

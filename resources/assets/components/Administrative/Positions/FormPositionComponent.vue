@@ -3,6 +3,8 @@
   <b-form :action="url" @submit.prevent="submit" autocomplete="off">
     <b-form-row>
       <vue-input :disabled="viewOnly" class="col-md-12" v-model="form.name" label="Nombre" type="text" name="name" :error="form.errorsFor('name')" placeholder="Nombre"></vue-input>
+      <vue-ajax-advanced-select :disabled="viewOnly" class="col-md-12" v-model="form.elements" :error="form.errorsFor('elements')"  name="elements" label="ELementos de protección personal correspondientes al cargo" placeholder="Seleccione los elementos" :url="tagsElementsDataUrl" :multiple="true" :allowEmpty="true" :selected-object="form.multiselect_elements">
+        </vue-ajax-advanced-select>
     </b-form-row>
 
     <div class="row float-right pt-10 pr-10">
@@ -21,7 +23,8 @@ import Form from "@/utils/Form.js";
 
 export default {
   components: {
-    VueInput
+    VueInput,
+    VueAjaxAdvancedSelect
   },
   props: {
     url: { type: String },
@@ -32,7 +35,8 @@ export default {
     position: {
       default() {
         return {
-            name: ''
+            name: '',
+            elements: []
         };
       }
     }
@@ -47,6 +51,7 @@ export default {
     return {
       loading: this.isEdit,
       form: Form.makeFrom(this.position, this.method),
+      tagsElementsDataUrl: '/selects/eppElements',
     };
   },
   methods: {

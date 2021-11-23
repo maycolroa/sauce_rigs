@@ -61,6 +61,8 @@ class EmployeePositionController extends Controller
             return $this->respondHttp500();
         }
 
+        $position->elements()->sync($this->getDataFromMultiselect($request->get('elements')));
+
         return $this->respondHttp200([
             'message' => 'Se creo el registro'
         ]);
@@ -77,6 +79,15 @@ class EmployeePositionController extends Controller
         try
         {
             $position = EmployeePosition::findOrFail($id);
+            $elements = [];
+
+            foreach ($position->elements as $key => $value)
+            {                
+                array_push($elements, $value->multiselect());
+            }
+
+            $position->multiselect_elements = $elements;
+            $position->elements = $elements;
 
             return $this->respondHttp200([
                 'data' => $position,
@@ -100,6 +111,8 @@ class EmployeePositionController extends Controller
         if(!$position->update()){
           return $this->respondHttp500();
         }
+
+        $position->elements()->sync($this->getDataFromMultiselect($request->get('elements')));
         
         return $this->respondHttp200([
             'message' => 'Se actualizo el registro'
