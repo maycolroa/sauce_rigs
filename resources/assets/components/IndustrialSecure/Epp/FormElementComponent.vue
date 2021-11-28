@@ -29,14 +29,19 @@
     </b-form-row>
 
     <b-form-row>
-      <template v-if="form.id">
+      <vue-radio :disabled="viewOnly" class="col-md-6" v-model="form.identify_each_element" :options="siNo" name="identify_each_element" :error="form.errorsFor('identify_each_element')" label="¿Desea identificar cada elemento?" :checked="form.identify_each_element"></vue-radio>
+      <vue-radio v-if="form.identify_each_element == 'SI'" :disabled="viewOnly" class="col-md-6" v-model="form.expiration_date" :options="siNo" name="expiration_date" :error="form.errorsFor('expiration_date')" label="¿Tiene fecha de vencimiento?" :checked="form.expiration_date"></vue-radio>
+    </b-form-row>
+
+    <b-form-row>
+      <template v-if="form.id && form.image && form.path">
           <center>
               <div class="my-4 mx-2 text-center">
                   <img class="mw-100" :src="`${form.path}`" alt="Max-width 100%">
               </div>
           </center>
       </template>
-      <vue-file-simple :disabled="viewOnly" :help-text="form.id ? `Para descargar el archivo actual, haga click <a href='/industrialSecurity/epp/element/download/${form.id}' target='blank'>aqui</a> ` : null" class="col-md-12" v-model="form.image" label="Imagen" name="image" placeholder="Seleccione un archivo" :error="form.errorsFor(`image`)" :maxFileSize="20"/>
+      <vue-file-simple :disabled="viewOnly" :help-text="(form.id && form.image) ? `Para descargar el archivo actual, haga click <a href='/industrialSecurity/epp/element/download/${form.id}' target='blank'>aqui</a> ` : null" class="col-md-12" v-model="form.image" label="Imagen" name="image" placeholder="Seleccione un archivo" :error="form.errorsFor(`image`)" :maxFileSize="20"/>
     </b-form-row>
 
     <div class="row float-right pt-10 pr-10">
@@ -78,14 +83,16 @@ export default {
             name: '',
             code: '',
             type: [],
-            mark: '',
+            mark: [],
             description: '',
             observations: '',
             state: '',
             reusable: '',
             image: '',
             operating_instructions: '',
-            applicable_standard: ''
+            applicable_standard: '',
+            identify_each_element: '',
+            expiration_date: ''
         };
       }
     }

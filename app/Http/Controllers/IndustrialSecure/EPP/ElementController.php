@@ -95,6 +95,8 @@ class ElementController extends Controller
         $element->applicable_standard = $request->applicable_standard;
         $element->state = $request->state == "Activo" ? true : false;
         $element->reusable = $request->reusable == "SI" ? true : false;
+        $element->identify_each_element = $request->identify_each_element == "SI" ? true : false;
+        $element->expiration_date = $request->expiration_date == "SI" ? true : false;
         $element->company_id = $this->company;
         $element->type = $types->implode(',');
         $element->mark = $mark->implode(',');
@@ -132,7 +134,12 @@ class ElementController extends Controller
 
             $element->state = $element->state ? 'Activo' : 'Inactivo';
             $element->reusable = $element->reusable ? 'SI' : 'NO';
-            $element->path = $element->path_image();
+            $element->identify_each_element = $element->identify_each_element ? 'SI' : 'NO';
+            $element->expiration_date = $element->expiration_date ? 'SI' : 'NO';
+            if ($element->image)
+                $element->path = $element->path_image();
+            else
+                $element->path = NULL;
 
             return $this->respondHttp200([
                 'data' => $element,
@@ -181,11 +188,24 @@ class ElementController extends Controller
         $element->applicable_standard = $request->applicable_standard;
         $element->state = $request->state == "Activo" ? true : false;
         $element->reusable = $request->reusable == "SI" ? true : false;
+        $element->identify_each_element = $request->identify_each_element == "SI" ? true : false;
+        $element->expiration_date = $request->expiration_date == "SI" ? true : false;
         $element->type = $types->implode(',');
         $element->mark = $mark->implode(',');
         
         if(!$element->update()){
           return $this->respondHttp500();
+        }
+
+        if ($request->image)
+        {
+            $file_tmp = $request->image;
+            $nameFile = base64_encode($this->user->id . now() . rand(1,10000)) .'.'. $file_tmp->extension();
+            $file_tmp->storeAs($element->path_client(false), $nameFile, 's3');
+            $element->image = $nameFile;
+
+            if(!$element->update())
+                return $this->respondHttp500();
         }
         
         return $this->respondHttp200([
