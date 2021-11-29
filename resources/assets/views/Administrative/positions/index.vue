@@ -16,6 +16,14 @@
           <b-btn v-if="auth.can['positions_c']" variant="primary" href="/templates/positionimport" target="blank" v-b-tooltip.top title="Generar Plantilla"><i class="fas fa-file-alt"></i></b-btn>&nbsp;&nbsp;
           <b-btn v-if="auth.can['positions_c']" variant="primary" @click="importMessage()" v-b-tooltip.top title="Importar"><i class="fas fa-upload"></i></b-btn>
           <input id="fileInputImport" type="file" style="display:none" v-on:input="importPosition"/>
+          <div class="card-title-elements ml-md-auto" v-if="auth.can['positions_r']">
+            <b-dd variant="default" :right="isRTL">
+              <template slot="button-content">
+                <span class='fas fa-cogs'></span>
+              </template>
+              <b-dd-item @click="exportPositions()"><i class="fas fa-download"></i> &nbsp;Exportar</b-dd-item>
+            </b-dd>
+          </div>
         </b-card-header>
         <b-card-body>
              <vue-table
@@ -83,7 +91,15 @@ export default {
         this.$refs.modalConfirmationImport.show()
       else
         this.$refs.modalConfirmationImport.hide();
-    }
+    },
+    exportPositions() {
+      axios.post('/administration/position/export')
+        .then(response => {
+          Alerts.warning('Información', 'Se inicio la exportación, se le notificara a su correo electronico cuando finalice el proceso.');
+        }).catch(error => {
+          Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
+        });
+    },
   },
 }
 </script>

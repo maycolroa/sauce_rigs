@@ -358,6 +358,7 @@ Route::middleware(['auth'])->group(function () {
 			Route::post('position/data', 'Administrative\Positions\EmployeePositionController@data');
 			Route::ApiResource('position', 'Administrative\Positions\EmployeePositionController');
 			Route::post('position/import', 'Administrative\Positions\EmployeePositionController@import');
+      Route::post('position/export', 'Administrative\Positions\EmployeePositionController@export');
 
 			Route::post('regional/data', 'Administrative\Regionals\EmployeeRegionalController@data');
 			Route::ApiResource('regional', 'Administrative\Regionals\EmployeeRegionalController');
