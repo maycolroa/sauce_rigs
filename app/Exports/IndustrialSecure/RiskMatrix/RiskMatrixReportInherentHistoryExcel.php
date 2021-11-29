@@ -46,7 +46,8 @@ class RiskMatrixReportInherentHistoryExcel implements FromView, WithEvents, With
         ->inMacroprocesses($this->filters['macroprocesses'], isset($this->filters['filtersType']['macroprocesses']) ? $this->filters['filtersType']['macroprocesses'] : 'IN')
         ->inRisks($this->filters['risks'], $this->filters['filtersType']['risks'])
         ->where("year", $this->filters['year'])
-        ->where("month", $this->filters['month']);
+        ->where("month", $this->filters['month'])        
+        ->where('sau_rm_report_histories.company_id', $this->company_id);
 
       $risksMatrix->company_scope = $this->company_id;
       $risksMatrix = $risksMatrix->get();

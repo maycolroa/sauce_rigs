@@ -7,6 +7,9 @@ use App\Http\Controllers\Controller;
 use App\Vuetable\Facades\Vuetable;
 use App\Models\Administrative\Positions\EmployeePosition;
 use App\Http\Requests\Administrative\Positions\PositionRequest;
+use App\Exports\Administrative\Positions\PositionImportTemplateExcel;
+use App\Jobs\Administrative\Positions\PositionImportJob;
+use Maatwebsite\Excel\Facades\Excel;
 
 class EmployeePositionController extends Controller
 {
@@ -61,6 +64,8 @@ class EmployeePositionController extends Controller
             return $this->respondHttp500();
         }
 
+        $position->elements()->sync($this->getDataFromMultiselect($request->get('elements')));
+
         return $this->respondHttp200([
             'message' => 'Se creo el registro'
         ]);
@@ -77,6 +82,15 @@ class EmployeePositionController extends Controller
         try
         {
             $position = EmployeePosition::findOrFail($id);
+            $elements = [];
+
+            foreach ($position->elements as $key => $value)
+            {                
+                array_push($elements, $value->multiselect());
+            }
+
+            $position->multiselect_elements = $elements;
+            $position->elements = $elements;
 
             return $this->respondHttp200([
                 'data' => $position,
@@ -100,6 +114,8 @@ class EmployeePositionController extends Controller
         if(!$position->update()){
           return $this->respondHttp500();
         }
+
+        $position->elements()->sync($this->getDataFromMultiselect($request->get('elements')));
         
         return $this->respondHttp200([
             'message' => 'Se actualizo el registro'
@@ -160,5 +176,24 @@ class EmployeePositionController extends Controller
         
             return $this->multiSelectFormat($positions);
         }
+    }
+
+    public function downloadTemplateImport()
+    {
+      return Excel::download(new PositionImportTemplateExcel($this->company), 'PlantillaImportacionCargos.xlsx');
+    }
+
+    public function import(Request $request)
+    {
+      try
+      {
+        PositionImportJob::dispatch($request->file, $this->company, $this->user);
+      
+        return $this->respondHttp200();
+
+      } catch(Exception $e)
+      {
+        return $this->respondHttp500();
+      }
     }
 }

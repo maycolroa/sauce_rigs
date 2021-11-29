@@ -25,7 +25,9 @@ class Element extends Model
         'state',
         'reusable',
         'image',
-        'company_id'
+        'company_id',
+        'identify_each_element',
+        'expiration_date'
     ];
 
     public function multiselect()

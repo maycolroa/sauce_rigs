@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Exports\IndustrialSecure\Epp;
+namespace App\Exports\Administrative\Positions;
 
 use PhpOffice\PhpSpreadsheet\Shared\Date;
 use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
@@ -14,22 +14,18 @@ use Maatwebsite\Excel\Concerns\WithEvents;
 use Maatwebsite\Excel\Concerns\RegistersEventListeners;
 use Maatwebsite\Excel\Events\AfterSheet;
 use \Maatwebsite\Excel\Sheet;
-use App\Traits\UtilsTrait;
-use App\Traits\LocationFormTrait;
-use App\Models\IndustrialSecure\DangerMatrix\QualificationCompany;
-use App\Traits\DangerMatrixTrait;
 
 Sheet::macro('styleCells', function (Sheet $sheet, string $cellRange, array $style) {
   $sheet->getDelegate()->getStyle($cellRange)->applyFromArray($style);
 });
 
-class ElementImportTemplateExcel implements FromCollection, WithHeadings, WithMapping, WithEvents, WithTitle, ShouldAutoSize
+class PositionsTemplate implements FromCollection, WithHeadings, WithMapping, WithEvents, WithTitle, ShouldAutoSize
 {
     use RegistersEventListeners;
-    use UtilsTrait;
 
     protected $data;
     protected $company_id;
+
     public function __construct($data, $company_id)
     {
       $this->data = $data;
@@ -59,18 +55,8 @@ class ElementImportTemplateExcel implements FromCollection, WithHeadings, WithMa
     public function headings(): array
     {
       $columns = [
-        'Código',
-        'Nombre',
-        'Tipo (Si es mas de uno separarlo por comas ",")',
-        'Marca',
-        'Descripción',
-        'Norma Aplicable',
-        'Observaciones (Opcional)',
-        'Instrucciones de uso (Opcional)',
-        'Estado (Activo, Inactivo)',
-        '¿Reutilizable? (SI, NO)',
-        '¿Desea identificar cada elemento? (SI, NO)',
-        '¿Tiene fecha de vencimiento? (SI, NO) (Opcional, Solo aplica si desea identificar cada elemento)'
+        'Nombre (*)',
+        'Elementos (Tomar el código del elemento a asignar al cargo de la pestaña Elementos, de ser varios elementos debe separar los códigos por coma y un espacio (0, 0))(Opcional)'
       ];
 
       return $columns;
@@ -99,7 +85,6 @@ class ElementImportTemplateExcel implements FromCollection, WithHeadings, WithMa
     */
     public function title(): string
     {
-        return 'Elementos';
+        return 'Cargos';
     }
 }
-

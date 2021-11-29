@@ -56,6 +56,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('templates/elementimport','IndustrialSecure\EPP\ElementController@downloadTemplateImport');
     Route::get('templates/locationimport','IndustrialSecure\EPP\LocationController@downloadTemplateImport');
 
+    Route::get('templates/positionimport','Administrative\Positions\EmployeePositionController@downloadTemplateImport');
+
 	//Cerrar sesión 
 	Route::get('/logout', 'Auth\LoginController@logout')->name('logout');
 
@@ -321,6 +323,8 @@ Route::middleware(['auth'])->group(function () {
           Route::post('usersCompany', 'System\Companies\CompanyController@multiselectUsers');
           Route::post('rolesCompany', 'System\Companies\CompanyController@multiselectRoles');
         });
+
+        Route::post('eppElements', 'IndustrialSecure\EPP\ElementController@multiselect');
     });
 
     Route::prefix('radios')->group(function () {
@@ -353,6 +357,7 @@ Route::middleware(['auth'])->group(function () {
 
 			Route::post('position/data', 'Administrative\Positions\EmployeePositionController@data');
 			Route::ApiResource('position', 'Administrative\Positions\EmployeePositionController');
+			Route::post('position/import', 'Administrative\Positions\EmployeePositionController@import');
 
 			Route::post('regional/data', 'Administrative\Regionals\EmployeeRegionalController@data');
 			Route::ApiResource('regional', 'Administrative\Regionals\EmployeeRegionalController');
