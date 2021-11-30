@@ -248,6 +248,7 @@ Route::middleware(['auth'])->group(function () {
         Route::post('qualificationMasiveInspection', 'IndustrialSecure\DangerousConditions\Inspections\InspectionController@multiselectQualification');
         Route::post('tagsTypeEpp', 'IndustrialSecure\EPP\ElementController@multiselectTypes');
         Route::post('tagsMarkEpp', 'IndustrialSecure\EPP\ElementController@multiselectMarks');
+        Route::post('tagsStandarApplyEpp', 'IndustrialSecure\EPP\ElementController@multiselectApplicableStandard');
 
         Route::prefix('evaluations')->group(function () {
           Route::post('evaluations', 'LegalAspects\Contracs\EvaluationController@multiselectEvaluations');

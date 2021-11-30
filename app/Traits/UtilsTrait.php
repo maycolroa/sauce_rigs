@@ -274,6 +274,31 @@ trait UtilsTrait
         }
     }
 
+    protected function tagsSaveSystemCompany($data, $model, $company_id = null)
+    {
+        $company_id = $company_id ? $company_id : Session::get('company_id');
+        
+        foreach ($data as $value)
+        {
+            $item = $model::where('name', $value)->where('system', true);
+            $item = $item->first();
+
+            if (!$item)
+            {
+                $item2 = $model::where('name', $value)->where('company_id', $company_id);
+                $item2 = $item2->first();
+
+                if (!$item2)
+                {
+                    $model::create([
+                        'name'=>$value,
+                        'company_id'=>$company_id
+                    ]);
+                }
+            }
+        }
+    }
+
     protected function tagsSaveFields($data, $model, $field_id, $company_id = null)
     {
         $company_id = $company_id ? $company_id : Session::get('company_id');

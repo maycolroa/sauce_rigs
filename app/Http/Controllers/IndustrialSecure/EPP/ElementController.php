@@ -8,6 +8,7 @@ use App\Vuetable\Facades\Vuetable;
 use App\Models\IndustrialSecure\Epp\Element;
 use App\Models\IndustrialSecure\Epp\TagsMark;
 use App\Models\IndustrialSecure\Epp\TagsType;
+use App\Models\IndustrialSecure\Epp\TagsApplicableStandard;
 use App\Http\Requests\IndustrialSecure\Epp\ElementRequest;
 use Validator;
 use Illuminate\Support\Facades\Storage;
@@ -86,13 +87,16 @@ class ElementController extends Controller
         $mark = $this->tagsPrepare($request->get('mark'));
         $this->tagsSave($mark, TagsMark::class);
 
+        $standar_apply = tagsPrepare($request->get('applicable_standard'));
+        $this->tagsSaveSystemCompany($standar_apply, TagsApplicableStandard::class);
+
         $element = new Element();
         $element->name = $request->name;
         $element->code = $request->code;
         $element->description = $request->description;
         $element->observations = $request->observations;
         $element->operating_instructions = $request->operating_instructions;
-        $element->applicable_standard = $request->applicable_standard;
+        $element->applicable_standard = $standar_apply->implode(',');
         $element->state = $request->state == "Activo" ? true : false;
         $element->reusable = $request->reusable == "SI" ? true : false;
         $element->identify_each_element = $request->identify_each_element == "SI" ? true : false;
@@ -180,12 +184,15 @@ class ElementController extends Controller
         $this->tagsSave($mark, TagsMark::class);
 
 
+        $standar_apply = $this->tagsPrepare($request->get('applicable_standard'));
+        $this->tagsSaveSystemCompany($standar_apply, TagsApplicableStandard::class);
+
         $element->name = $request->name;
         $element->code = $request->code;
         $element->description = $request->description;
         $element->observations = $request->observations;
         $element->operating_instructions = $request->operating_instructions;
-        $element->applicable_standard = $request->applicable_standard;
+        $element->applicable_standard = $standar_apply->implode(',');
         $element->state = $request->state == "Activo" ? true : false;
         $element->reusable = $request->reusable == "SI" ? true : false;
         $element->identify_each_element = $request->identify_each_element == "SI" ? true : false;
@@ -197,7 +204,7 @@ class ElementController extends Controller
           return $this->respondHttp500();
         }
 
-        if ($request->image)
+        if ($request->image != $element->image)
         {
             $file_tmp = $request->image;
             $nameFile = base64_encode($this->user->id . now() . rand(1,10000)) .'.'. $file_tmp->extension();
@@ -292,6 +299,25 @@ class ElementController extends Controller
                 ->where(function ($query) use ($keyword) {
                     $query->orWhere('name', 'like', $keyword);
                 })
+                ->take(30)->pluck('id', 'name');
+
+            return $this->respondHttp200([
+                'options' => $this->multiSelectFormat($tags)
+            ]);
+        } 
+    }
+
+    public function multiselectApplicableStandard(Request $request)
+    {
+        if($request->has('keyword'))
+        {
+            $keyword = "%{$request->keyword}%";
+            $tags = TagsApplicableStandard::select("id", "name")
+                ->where(function ($query) use ($keyword) {
+                    $query->orWhere('name', 'like', $keyword);
+                })
+                ->where('system', true)
+                ->orWhere('company_id', $this->company)
                 ->take(30)->pluck('id', 'name');
 
             return $this->respondHttp200([

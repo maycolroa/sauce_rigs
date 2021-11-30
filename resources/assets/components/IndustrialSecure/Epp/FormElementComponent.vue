@@ -15,7 +15,7 @@
 
     <b-form-row>
       <vue-textarea :disabled="viewOnly" class="col-md-6" v-model="form.description" label="Descripción" name="description" ::error="form.errorsFor('description')"  placeholder="Descripción"></vue-textarea>
-      <vue-textarea :disabled="viewOnly" class="col-md-6" v-model="form.applicable_standard" label="Norma Aplicable" name="applicable_standard" ::error="form.errorsFor('applicable_standard')"  placeholder="Norma Aplicable"></vue-textarea>
+      <vue-ajax-advanced-select :disabled="viewOnly" class="col-md-6" v-model="form.applicable_standard" name="applicable_standard" :error="form.errorsFor('applicable_standard')" label="Normas Aplicables" placeholder="Seleccione la norma" :url="tagsStandarApplyDataUrl" :multiple="true" :allowEmpty="true" :taggable="true"></vue-ajax-advanced-select>
     </b-form-row>
 
     <b-form-row>
@@ -90,7 +90,7 @@ export default {
             reusable: '',
             image: '',
             operating_instructions: '',
-            applicable_standard: '',
+            applicable_standard: [],
             identify_each_element: '',
             expiration_date: ''
         };
@@ -109,6 +109,7 @@ export default {
       form: Form.makeFrom(this.element, this.method),
       tagsTypeDataUrl: '/selects/tagsTypeEpp',
       tagsMarkDataUrl: '/selects/tagsMarkEpp',
+      tagsStandarApplyDataUrl: '/selects/tagsStandarApplyEpp',
       actInac: [
           {text: 'Activo', value: 'Activo'},
           {text: 'Inactivo', value: 'Inactivo'}
