@@ -13,6 +13,8 @@ use App\Http\Requests\IndustrialSecure\Epp\ElementRequest;
 use Validator;
 use Illuminate\Support\Facades\Storage;
 use App\Exports\IndustrialSecure\Epp\ElementImportTemplateExcel;
+use App\Exports\IndustrialSecure\Epp\ElementNotIdentExcel;
+use App\Exports\IndustrialSecure\Epp\ElementIdentExcel;
 use App\Jobs\IndustrialSecure\Epp\ElementImportJob;
 use Maatwebsite\Excel\Facades\Excel;
 
@@ -351,5 +353,15 @@ class ElementController extends Controller
       {
         return $this->respondHttp500();
       }
+    }
+
+    public function elementNotIdentImport()
+    {
+      return Excel::download(new ElementNotIdentExcel($this->company), 'PlantillaImportacionSaldos.xlsx');
+    }
+
+    public function elementIdentImport()
+    {
+      return Excel::download(new ElementIdentExcel($this->company), 'PlantillaImportacionSaldos.xlsx');
     }
 }

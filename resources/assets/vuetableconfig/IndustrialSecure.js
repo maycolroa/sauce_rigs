@@ -1132,6 +1132,18 @@ export default [
             routePush: { name: 'industrialsecure-epps-elements-view' },
             id: 'id',
         },
+        permission: 'elements_r'
+        }, {
+        config: {
+            color: 'outline-success',
+            borderless: true,
+            icon: 'fas fa-upload',
+            title: 'Importar Saldo Inicial'
+        },
+        data: {
+            routePush: { name: 'industrialsecure-epps-elements-import-balance-inicial' },
+            id: 'id',
+        },
         permission: 'elements_u'
         }]
     },
