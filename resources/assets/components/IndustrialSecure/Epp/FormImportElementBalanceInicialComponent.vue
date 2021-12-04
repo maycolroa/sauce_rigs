@@ -4,7 +4,7 @@
 
     <b-card no-body class="mb-2 border-secondary" style="width: 100%;">
       <b-card-body>
-        <p><b>Estimado usuario solo podra cargar el archivo una sola vez</b></p>
+        <p><b>Estimado usuario recuerde cargar el archivo correspondiente a la configuración del elemento seleccionado</b></p>
         <b-form-row>
           <vue-file-simple class="col-md-12" v-model="form.file" label="Archivo" name="file" placeholder="Seleccione un archivo" :error="form.errorsFor(`file`)" :maxFileSize="20"/>
         </b-form-row>
@@ -45,11 +45,13 @@ export default {
     url: { type: String },
     method: { type: String },
     cancelUrl: { type: [String, Object], required: true },
+    id: { type: Number, required: true },
     rolesDataUrl: { type: String, default: "" },
     user: {
       default() {
         return {
-          file: ''
+          file: '',
+          id: ''
         };
       }
     }
@@ -68,13 +70,14 @@ export default {
   },
   methods: {
     submit(e) {
+      this.form.id = this.id;
       this.loading = true;
       this.form
         .submit(e.target.action)
         .then(response => {
           this.loading = false;
           Alerts.warning('Información', 'Se inicio la importación, se le notificara a su correo electronico cuando finalice el proceso.');
-          this.$router.push({ name: "administrative-users" });
+          this.$router.push({ name: "industrialsecure-epps-elements" });
         })
         .catch(error => {
           this.loading = false;

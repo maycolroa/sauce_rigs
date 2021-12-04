@@ -1133,7 +1133,8 @@ export default [
             id: 'id',
         },
         permission: 'elements_r'
-        }, {
+        }, /*{
+        name: 'importBalanceInitial',
         config: {
             color: 'outline-success',
             borderless: true,
@@ -1145,7 +1146,7 @@ export default [
             id: 'id',
         },
         permission: 'elements_u'
-        }]
+        }*/]
     },
     {
         type: 'base',

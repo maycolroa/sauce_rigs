@@ -8,6 +8,7 @@ use App\Vuetable\Facades\Vuetable;
 use App\Models\IndustrialSecure\Epp\Element;
 use App\Models\IndustrialSecure\Epp\TagsMark;
 use App\Models\IndustrialSecure\Epp\TagsType;
+use App\Models\IndustrialSecure\Epp\ElementBalanceInicialLog;
 use App\Models\IndustrialSecure\Epp\TagsApplicableStandard;
 use App\Http\Requests\IndustrialSecure\Epp\ElementRequest;
 use Validator;
@@ -16,6 +17,7 @@ use App\Exports\IndustrialSecure\Epp\ElementImportTemplateExcel;
 use App\Exports\IndustrialSecure\Epp\ElementNotIdentExcel;
 use App\Exports\IndustrialSecure\Epp\ElementIdentExcel;
 use App\Jobs\IndustrialSecure\Epp\ElementImportJob;
+use App\Jobs\IndustrialSecure\Epp\ElementBalanceInitialImportJob;
 use Maatwebsite\Excel\Facades\Excel;
 
 class ElementController extends Controller
@@ -57,6 +59,13 @@ class ElementController extends Controller
         );
 
         return Vuetable::of($elements)
+                    ->addColumn('industrialsecure-epps-elements-import-balance-inicial', function ($element) {
+                        $import = ElementBalanceInicialLog::where('element_id', $element->id)->exists();
+                        if (!$import)
+                            return true;
+                        else
+                            return false;
+                    })
                     ->make();
     }
 
@@ -363,5 +372,19 @@ class ElementController extends Controller
     public function elementIdentImport()
     {
       return Excel::download(new ElementIdentExcel($this->company), 'PlantillaImportacionSaldos.xlsx');
+    }
+
+    public function importBalanceInicial(Request $request)
+    {
+        try
+        {
+            ElementBalanceInitialImportJob::dispatch($request->file, $this->company, $this->user);
+        
+            return $this->respondHttp200();
+
+        } catch(Exception $e)
+        {
+            return $this->respondHttp500();
+        }
     }
 }

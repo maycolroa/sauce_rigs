@@ -13,9 +13,11 @@
             <b-btn :to="{name:'industrialsecure-epps-elements-create'}" variant="primary">Crear Elemento</b-btn>&nbsp;&nbsp;
           </div>
           <b-btn v-if="auth.can['elements_c']" variant="primary" href="/templates/elementimport" target="blank" v-b-tooltip.top title="Generar Plantilla"><i class="fas fa-file-alt"></i></b-btn>&nbsp;&nbsp;
-          <b-btn v-if="auth.can['elements_c']" variant="primary" @click="importMessage()" v-b-tooltip.top title="Importar"><i class="fas fa-upload"></i></b-btn>
+          <b-btn v-if="auth.can['elements_c']" variant="primary" @click="importMessage()" v-b-tooltip.top title="Importar"><i class="fas fa-upload"></i></b-btn>&nbsp;&nbsp;
           <input id="fileInputImport" type="file" style="display:none" v-on:input="importElement"/>
-          <div class="card-title-elements ml-md-auto" v-if="auth.can['positions_r']">
+           <b-btn v-if="auth.can['elements_c']" variant="primary" @click="importMessage2()" v-b-tooltip.top title="Importar Saldos Iniciales"><i class="fas fa-cloud-upload-alt"></i></b-btn>
+          <input id="fileInputImport2" type="file" style="display:none" v-on:input="    importElementBalance"/>
+          <div class="card-title-elements ml-md-auto" v-if="auth.can['elements_r']">
             <b-dd variant="default" :right="isRTL">
               <template slot="button-content">
                 <span class='fas fa-cogs'></span>
@@ -46,6 +48,21 @@
           </p>
           <b-btn block variant="primary" @click="importConfirmation()">Aceptar</b-btn>
           <b-btn block variant="default" @click="toggleModalConfirmationImport(false)">Cancelar</b-btn>
+        </b-modal>
+
+        <b-modal ref="modalConfirmationImport2" class="modal-slide" hide-header hide-footer>
+          <p class="text-justific mb-4">
+            Estimado Usuario para realizar la importación el archivo debe cumplir lo siguiente:<br><br>
+
+            <ol>
+              <li>Formato excel (*.xlsx).</li>
+              <li>Incluir las cabeceras de los campos en la primera fila del documento.</li>
+              <li>Solo se leera la primera hoja del documento (En caso de tener mas de una).</li>
+            </ol>
+
+          </p>
+          <b-btn block variant="primary" @click="importConfirmation2()">Aceptar</b-btn>
+          <b-btn block variant="default" @click="toggleModalConfirmationImport2(false)">Cancelar</b-btn>
         </b-modal>
     </b-card>
     </div>
@@ -89,6 +106,35 @@ export default {
         this.$refs.modalConfirmationImport.show()
       else
         this.$refs.modalConfirmationImport.hide();
+    },
+    importElementBalance(e){
+      var formData2 = new FormData();
+      var imagefile2 = e.target.files;
+
+      formData2.append("file", imagefile2[0]);
+      axios.post('/industrialSecurity/epp/element/import/balanceInicial', formData2, {
+          headers: {
+            'Content-Type': 'multipart/form-data'
+          }
+      })
+      .then(response => {
+        Alerts.warning('Información', 'Se inicio la importación, se le notificara a su correo electronico cuando finalice el proceso.');
+      }).catch(error => {
+        Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
+      });    
+    },
+    importMessage2() {
+      this.toggleModalConfirmationImport2(true)
+    },
+    importConfirmation2() {
+      this.toggleModalConfirmationImport2(false);
+      document.getElementById('fileInputImport2').click()
+    },
+    toggleModalConfirmationImport2(toggle) {
+      if (toggle)
+        this.$refs.modalConfirmationImport2.show()
+      else
+        this.$refs.modalConfirmationImport2.hide();
     }
   },
 }

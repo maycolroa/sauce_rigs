@@ -5,7 +5,7 @@ namespace App\Exports\IndustrialSecure\Epp;
 use Maatwebsite\Excel\Concerns\Exportable;
 use Maatwebsite\Excel\Concerns\WithMultipleSheets;
 use App\Exports\IndustrialSecure\Epp\ElementNotIdentImportTemplateExcel;
-use App\Exports\Administrative\Positions\ElementTemplate;
+use App\Exports\IndustrialSecure\Epp\ElementTemplate;
 use App\Exports\IndustrialSecure\Epp\LocationsTemplate;
 
 class ElementNotIdentExcel implements WithMultipleSheets
@@ -27,7 +27,7 @@ class ElementNotIdentExcel implements WithMultipleSheets
         $sheets = [];
 
         $sheets[] = new ElementNotIdentImportTemplateExcel(collect([]), $this->company_id);
-        $sheets[] = new ElementTemplate($this->company_id);
+        $sheets[] = new ElementTemplate($this->company_id, 0);
         $sheets[] = new LocationsTemplate($this->company_id);
         return $sheets;
     }
