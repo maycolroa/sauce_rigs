@@ -61,7 +61,10 @@ class ElementIdentImportTemplateExcel implements FromCollection, WithHeadings, W
       $columns = [
         'Código Elemento',
         'Codigo Ubicación',
-        'Cantidad'
+        'Secuencia Elemento (Debe repetirse la cantidad de unidades que ingrese por cada combinacion de código de elemento y codigo de ubicacion)',
+        'Cantidad (Colocar el numero total de unidades por cada combinacion de código de elemento y codigo de ubicacion)',
+        'Código',
+        'Fecha de Vencimiento (Aplica según la configuración del elemento a ingresar) (Año-Mes-Dia)'
       ];
 
       return $columns;
