@@ -43,6 +43,16 @@ class ElementRequest extends FormRequest
                 $this->merge($data);
             }
         } 
+
+        if ($this->has('applicable_standard'))
+        {
+            foreach ($this->input('applicable_standard') as $key => $value)
+            {
+                $data['applicable_standard'][$key] = json_decode($value, true);
+                $this->merge($data);
+            }
+        }
+
         return $this->all();
     }
 
@@ -61,7 +71,7 @@ class ElementRequest extends FormRequest
             'description' => 'required|string',
             'type' => 'required',
             'mark' => 'required',
-            'applicable_standard' => 'nullable|string',
+            'applicable_standard' => 'nullable|array',
             'observations' => 'nullable|string',
             'operating_instructions' => 'nullable|string',
             'state' => 'required',

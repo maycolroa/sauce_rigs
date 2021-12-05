@@ -560,6 +560,14 @@ export default [{
             import('@/views/IndustrialSecure/epp/elements/view')
         }
       ]),
+      ...middleware({ 'check-permission': 'elements_c' }, [
+        {
+          name: 'industrialsecure-epps-elements-import-balance-inicial',
+          path: 'epps/elements/balanceInicial',
+          component: () =>
+            import('@/views/IndustrialSecure/epp/elements/importBalanceInicial')
+        }
+      ]), 
       ...middleware({ 'check-permission': 'location_r' }, [
         {
           name: 'industrialsecure-epps-locations',

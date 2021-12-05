@@ -57,6 +57,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('templates/locationimport','IndustrialSecure\EPP\LocationController@downloadTemplateImport');
 
     Route::get('templates/positionimport','Administrative\Positions\EmployeePositionController@downloadTemplateImport');
+    Route::get('templates/elementnotidentimport','IndustrialSecure\EPP\ElementController@elementNotIdentImport');
+    Route::get('templates/elementidentimport','IndustrialSecure\EPP\ElementController@elementIdentImport');
 
 	//Cerrar sesión 
 	Route::get('/logout', 'Auth\LoginController@logout')->name('logout');
@@ -248,6 +250,7 @@ Route::middleware(['auth'])->group(function () {
         Route::post('qualificationMasiveInspection', 'IndustrialSecure\DangerousConditions\Inspections\InspectionController@multiselectQualification');
         Route::post('tagsTypeEpp', 'IndustrialSecure\EPP\ElementController@multiselectTypes');
         Route::post('tagsMarkEpp', 'IndustrialSecure\EPP\ElementController@multiselectMarks');
+        Route::post('tagsStandarApplyEpp', 'IndustrialSecure\EPP\ElementController@multiselectApplicableStandard');
 
         Route::prefix('evaluations')->group(function () {
           Route::post('evaluations', 'LegalAspects\Contracs\EvaluationController@multiselectEvaluations');
@@ -521,6 +524,7 @@ Route::middleware(['auth'])->group(function () {
         Route::post('element/data', 'IndustrialSecure\EPP\ElementController@data');
         Route::get('element/download/{element}', 'IndustrialSecure\EPP\ElementController@downloadImage');
         Route::post('element/import', 'IndustrialSecure\EPP\ElementController@import');
+        Route::post('element/import/balanceInicial', 'IndustrialSecure\EPP\ElementController@importBalanceInicial');
         Route::ApiResource('location', 'IndustrialSecure\EPP\LocationController');
         Route::post('location/data', 'IndustrialSecure\EPP\LocationController@data');
         Route::post('location/import', 'IndustrialSecure\EPP\LocationController@import');
