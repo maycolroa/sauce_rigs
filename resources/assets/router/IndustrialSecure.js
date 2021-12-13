@@ -600,5 +600,37 @@ export default [{
             import('@/views/IndustrialSecure/epp/locations/view')
         }
       ]),
+      ...middleware({ 'check-permission': 'transaction_r' }, [
+        {
+          name: 'industrialsecure-epps-transactions',
+          path: 'epps/transactions',
+          component: () =>
+            import('@/views/IndustrialSecure/epp/transactions/indexEmployee')
+        }
+      ]), 
+      ...middleware({ 'check-permission': 'transaction_c' }, [
+        {
+          name: 'industrialsecure-epps-transactions-create',
+          path: 'epps/transactions/create',
+          component: () =>
+            import('@/views/IndustrialSecure/epp/transactions/create')
+        }
+      ]), 
+      ...middleware({ 'check-permission': 'transaction_u' }, [
+        {
+          name: 'industrialsecure-epps-transactions-edit',
+          path: 'epps/transactions/edit/:id',
+          component: () =>
+            import('@/views/IndustrialSecure/epp/transactions/edit')
+        }
+      ]),
+      ...middleware({ 'check-permission': 'transaction_r' }, [
+        {
+          name: 'industrialsecure-epps-transactions-view',
+          path: 'epps/transactions/view/:id',
+          component: () =>
+            import('@/views/IndustrialSecure/epp/transactions/view')
+        }
+      ]),
     ]
   }]

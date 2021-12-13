@@ -59,13 +59,13 @@ class ElementController extends Controller
         );
 
         return Vuetable::of($elements)
-                    ->addColumn('industrialsecure-epps-elements-import-balance-inicial', function ($element) {
+                    /*->addColumn('industrialsecure-epps-elements-import-balance-inicial', function ($element) {
                         $import = ElementBalanceInicialLog::where('element_id', $element->id)->exists();
                         if (!$import)
                             return true;
                         else
                             return false;
-                    })
+                    })*/
                     ->make();
     }
 
@@ -266,8 +266,20 @@ class ElementController extends Controller
             $elements = Element::select("id", "name")
                 ->where(function ($query) use ($keyword) {
                     $query->orWhere('name', 'like', $keyword);
-                })
-                ->take(30)->pluck('id', 'name');
+                });
+                //->take(30)->pluck('id', 'name');
+
+                if ($request->has('type') && $request->get('type') != '')
+                {
+                    $type = $request->get('type');
+                    
+                    if ($type == 'Identificable')
+                        $elements->where('identify_each_element', true);
+                    else
+                        $elements->where('identify_each_element', false);
+                }
+
+                $elements = $elements->orderBy('name')->take(30)->pluck('id', 'name');
 
             return $this->respondHttp200([
                 'options' => $this->multiSelectFormat($elements)

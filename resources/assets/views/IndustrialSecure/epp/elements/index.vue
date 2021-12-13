@@ -16,7 +16,10 @@
           <b-btn v-if="auth.can['elements_c']" variant="primary" @click="importMessage()" v-b-tooltip.top title="Importar"><i class="fas fa-upload"></i></b-btn>&nbsp;&nbsp;
           <input id="fileInputImport" type="file" style="display:none" v-on:input="importElement"/>
            <b-btn v-if="auth.can['elements_c']" variant="primary" @click="importMessage2()" v-b-tooltip.top title="Importar Saldos Iniciales"><i class="fas fa-cloud-upload-alt"></i></b-btn>
-          <input id="fileInputImport2" type="file" style="display:none" v-on:input="    importElementBalance"/>
+          <input id="fileInputImport2" type="file" style="display:none" v-on:input="    importElementBalance"/>&nbsp;&nbsp;
+          <div class="card-title-elements" v-if="auth.can['transaction_r']"> 
+            <b-btn :to="{name:'industrialsecure-epps-transactions'}" variant="primary">Transacciones</b-btn>&nbsp;&nbsp;
+          </div>
           <div class="card-title-elements ml-md-auto" v-if="auth.can['elements_r']">
             <b-dd variant="default" :right="isRTL">
               <template slot="button-content">

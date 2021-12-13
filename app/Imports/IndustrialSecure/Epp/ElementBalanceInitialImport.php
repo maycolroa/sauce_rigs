@@ -170,7 +170,7 @@ class ElementBalanceInitialImport implements ToCollection, WithCalculatedFormula
                     $product->hash = Hash::make($element->element_id . str_random(10));
                     $product->element_balance_id = $element->id;
                     $product->location_id = $element->location_id;
-                    $product->code = $element->id . $element->location_id . rand(1,10000);
+                    //$product->code = rand(10000,1000000) . $element->id . $element->location_id . rand(10000,1000000);
                     $product->save();
                 }
 
@@ -211,7 +211,7 @@ class ElementBalanceInitialImport implements ToCollection, WithCalculatedFormula
                 'id_elemento' => 'required',
                 'id_ubicacion' => 'required',
                 'cantidad' => 'required',
-                'codigo' => 'required'       
+                'codigo' => 'required|unique'       
             ];
 
             if ($tipo->expiration_date)

@@ -328,6 +328,7 @@ Route::middleware(['auth'])->group(function () {
         });
 
         Route::post('eppElements', 'IndustrialSecure\EPP\ElementController@multiselect');
+        Route::post('eppLocations', 'IndustrialSecure\EPP\LocationController@multiselect');
     });
 
     Route::prefix('radios')->group(function () {
@@ -528,6 +529,14 @@ Route::middleware(['auth'])->group(function () {
         Route::ApiResource('location', 'IndustrialSecure\EPP\LocationController');
         Route::post('location/data', 'IndustrialSecure\EPP\LocationController@data');
         Route::post('location/import', 'IndustrialSecure\EPP\LocationController@import');
+
+        Route::post('transaction/data', 'IndustrialSecure\EPP\TransactionController@data');
+        Route::ApiResource('transaction', 'IndustrialSecure\EPP\TransactionController');
+        Route::get('transaction/employeeInfo/{id}', 'IndustrialSecure\EPP\TransactionController@employeeInfo');
+
+        Route::post('transaction/eppElementsLocations', 'IndustrialSecure\EPP\TransactionController@elementsLocation');
+
+        Route::post('transaction/elementInfo/', 'IndustrialSecure\EPP\TransactionController@elementInfo');
       });
 
       Route::prefix('tags')->group(function () {
