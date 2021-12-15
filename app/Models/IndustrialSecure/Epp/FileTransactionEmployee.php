@@ -27,7 +27,7 @@ class FileTransactionEmployee extends Model
 
     public function path_client($storageLocation = true)
     {
-        return "{$this->path_base($storageLocation)}{$this->transaction->elements->company_id}";
+        return "{$this->path_base($storageLocation)}{$this->transaction->company_id}";
     }
 
     public function path_donwload()

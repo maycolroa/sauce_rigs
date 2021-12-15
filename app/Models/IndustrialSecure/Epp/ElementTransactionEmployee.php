@@ -4,10 +4,13 @@ namespace App\Models\IndustrialSecure\Epp;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
+use App\Traits\CompanyTrait;
 
 
 class ElementTransactionEmployee extends Model
 {
+    use CompanyTrait;
+
     protected $table = 'sau_epp_transactions_employees';
 
     protected $fillable = [
@@ -16,6 +19,7 @@ class ElementTransactionEmployee extends Model
         'type',
         'observations',
         'firm_employee',
+        'company_id'
     ];
 
     public function multiselect()
@@ -39,12 +43,12 @@ class ElementTransactionEmployee extends Model
 
     public function path_client($storageLocation = true)
     {
-        return "{$this->path_base($storageLocation)}{$this->elements->company_id}";
+        return "{$this->path_base($storageLocation)}{$this->company_id}";
     }
 
     public function path_donwload()
     {
-        return "{$this->path_client(false)}/{$this->image}";
+        return "{$this->path_client(false)}/{$this->firm_employee}";
     }
 
     public function path_image()

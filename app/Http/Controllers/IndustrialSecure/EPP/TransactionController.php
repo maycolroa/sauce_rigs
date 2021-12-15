@@ -14,8 +14,10 @@ use App\Models\IndustrialSecure\Epp\TagsType;
 use App\Models\IndustrialSecure\Epp\FileTransactionEmployee;
 use App\Models\IndustrialSecure\Epp\ElementBalanceSpecific;
 use App\Models\IndustrialSecure\Epp\ElementBalanceLocation;
+use App\Models\IndustrialSecure\Epp\HashSelectDeliveryTemporal;
 use Validator;
 use Illuminate\Support\Facades\Storage;
+use DB;
 
 class TransactionController extends Controller
 {
@@ -67,7 +69,6 @@ class TransactionController extends Controller
      */
     public function store(ElementTransactionsRequest $request)
     {
-        \Log::info($request);
         Validator::make($request->all(), [
             "files.*.file" => [
                 function ($attribute, $value, $fail)
@@ -82,79 +83,122 @@ class TransactionController extends Controller
             ]
         ])->validate();
 
-        foreach ($request->elements_id as $key => $value) 
+        DB::beginTransaction();
+
+        try
         {
-            $element = Element::find($value->id_ele);
 
-            if ($element)
+            $employee = Employee::findOrFail($request->employee_id);
+
+            $delivery = new ElementTransactionEmployee();
+            $delivery->employee_id = $request->employee_id;
+            $delivery->position_employee_id = $employee->position->id;
+            $delivery->type = 'Entrega';
+            $delivery->observations = $request->observations ? $request->observations : NULL;
+            $delivery->location_id = $request->location_id;
+            $delivery->company_id = $this->company;
+            
+            if(!$delivery->save())
+                return $this->respondHttp500();
+
+            $elements_sync = [];
+
+            foreach ($request->elements_id as $key => $value) 
             {
-                if ($element->identify_each_element)
+                $element = Element::find($value['id_ele']);
+
+                if ($element)
                 {
-                    $disponible = ElementBalanceSpecific::where('hash', $value->code)->where('location_id', $request->location_id)->first();
+                    if ($element->identify_each_element)
+                    {
+                        $disponible = ElementBalanceSpecific::where('hash', $value['code'])->where('location_id', $request->location_id)->first();
 
-                    if ($disponible->state != 'Disponible')
-                        return $this->respondWithError('El elemento ' . $element->name . ' no se encuentra disponible en la ubicación seleccionada');
-                }
-                else
-                {
-                    $element_balance = ElementBalanceLocation::where('element_id', $element->id)->where('location_id', $request->location_id)->first();
+                        if ($disponible->state != 'Disponible')
+                            return $this->respondWithError('El elemento ' . $element->name . ' no se encuentra disponible en la ubicación seleccionada');
+                        
+                        $disponible->state = 'Asignado';
+                        $disponible->save();
 
-                    $disponible = ElementBalanceSpecific::where('element_id', $element_balance->id)->where('location_id', $request->location_id)->where('state', 'Disponible')->first();
+                        array_push($elements_sync, $disponible->id);
 
-                    if (!$disponible)
-                        return $this->respondWithError('El elemento ' . $element->name . ' no se encuentra disponible en la ubicación seleccionada');
+                        $element_balance = ElementBalanceLocation::find($disponible->element_balance_id);
+
+                        $element_balance->quantity_available = $element_balance->quantity_available - 1;
+
+                        $element_balance->quantity_allocated = $element_balance->quantity_allocated + 1;
+
+                        $element_balance->save();
+                    }
+                    else
+                    {
+                        $element_balance = ElementBalanceLocation::where('element_id', $element->id)->where('location_id', $request->location_id)->first();
+                        \Log::info($value['quantity']);
+
+                        $disponible = ElementBalanceSpecific::where('element_balance_id', $element_balance->id)->where('location_id', $request->location_id)->where('state', 'Disponible')->limit($value['quantity']);
+
+                        \Log::info($disponible);
+
+                        if (!$disponible)
+                            return $this->respondWithError('El elemento ' . $element->name . ' no se encuentra disponible en la ubicación seleccionada');
+                        else if ($disponible->count() < $value['quantity'])
+                            return $this->respondWithError('El elemento ' . $element->name . ' no se tiene disponible suficientes unidades');
+
+                        foreach ($disponible as $key => $value2) {
+                            \Log::info($value2);
+                            $value2->state = 'Asignado';
+                            $value2->save();
+                            array_push($elements_sync, $value2->id);
+                        }
+
+                        $element_balance->quantity_available = $element_balance->quantity_available - $value['quantity'];
+
+                        $element_balance->quantity_allocated = $element_balance->quantity_allocated + $value['quantity'];
+
+                        $element_balance->save();
+                    }
                 }
             }
-        }
 
-        $employee = Employee::findOrFail($request->employee_id);
+            $delivery->elements()->sync($elements_sync);
 
-        $delivery = new ElementTransactionEmployee();
-        $delivery->employee_id = $request->employee_id;
-        $delivery->position_employee_id = $employee->position->id;
-        $delivery->type = 'Entrega';
-        $delivery->observations = $request->observations ? $request->observations : NULL;
+            if ($request->firm_employee)
+            {
+                $image_64 = $request->firm_employee;
         
-        if(!$delivery->save())
+                $extension = explode('/', explode(':', substr($image_64, 0, strpos($image_64, ';')))[1])[1];
+        
+                $replace = substr($image_64, 0, strpos($image_64, ',')+1); 
+        
+                $image = str_replace($replace, '', $image_64); 
+        
+                $image = str_replace(' ', '+', $image); 
+        
+                $imageName = base64_encode($this->user->id . rand(1,10000) . now()) . '.' . $extension;
+
+                $file = base64_decode($image);
+
+                //$file->storeAs($delivery->path_client(false), $imageName, 's3');
+
+                Storage::disk('s3')->put('industrialSecure/epp/transaction/delivery/files/'.$this->company.'/' . $imageName, $file, '- ');
+
+                $delivery->firm_employee = $imageName;
+
+                if(!$delivery->update())
+                    return $this->respondHttp500();
+            }
+
+            if (count($request->files) > 0)
+            {
+                $this->processFiles($request->get('files'), $delivery->id);
+            }
+
+            DB::commit();
+
+        } catch (\Exception $e) {
+            \Log::info($e->getMessage());
+            DB::rollback();
             return $this->respondHttp500();
-
-        foreach ($request->elements_id as $key => $value) 
-        {
-           
         }
-
-        if ($request->firm_employee)
-        {
-            $image_64 = $request->firm_image;
-    
-            $extension = explode('/', explode(':', substr($image_64, 0, strpos($image_64, ';')))[1])[1];
-    
-            $replace = substr($image_64, 0, strpos($image_64, ',')+1); 
-    
-            $image = str_replace($replace, '', $image_64); 
-    
-            $image = str_replace(' ', '+', $image); 
-    
-            $imageName = base64_encode($this->user->id . rand(1,10000) . now()) . '.' . $extension;
-
-            $request->firm_image = base64_decode($image);
-
-            $file = $request->firm_image;
-
-            $file_tmp->storeAs($element->path_client(false), $imageName, 's3');
-
-            $delivery->firm_employee = $imageName;
-
-            if(!$delivery->update())
-                return $this->respondHttp500();
-        }
-
-        if (count($request->files) > 0)
-        {
-            $this->processFiles($request->files, $delivery->id);
-        }
-
-        
 
         return $this->respondHttp200([
             'message' => 'Se creo la entrrga'
@@ -164,9 +208,11 @@ class TransactionController extends Controller
     public function processFiles($files, $transaction_id)
     {
         $files_names_delete = [];
-
+    //\Log::info($files);
         foreach ($files as $keyF => $file) 
         {
+            \Log::info($keyF);
+            \Log::info($file);
             $create_file = true;
 
             if (isset($file['id']))
@@ -187,6 +233,7 @@ class TransactionController extends Controller
             if ($create_file)
             {
                 $file_tmp = $file['file'];
+                \Log::info($file);
                 $nameFile = base64_encode($this->user->id . now() . rand(1,10000) . $keyF) .'.'. $file_tmp->extension();
                 $file_tmp->storeAs($fileUpload->path_client(false), $nameFile, 's3');
                 $fileUpload->file = $nameFile;
@@ -408,7 +455,7 @@ class TransactionController extends Controller
                 ->where('state', 'Disponible')
                 ->where('element_balance_id', $element_balance->id)
                 ->orderBy('id')
-                ->pluck('id', 'hash');
+                ->pluck('hash', 'hash');
 
                 $content = [
                     'id_ele' => $ele->id,
@@ -439,13 +486,25 @@ class TransactionController extends Controller
         ->where('element_id', $request->id)
         ->first();
 
-        $disponible = ElementBalanceSpecific::select('id', 'hash')
+        $disponible = ElementBalanceSpecific::select('hash', 'hash')
         ->where('location_id', $request->location_id)
         ->where('state', 'Disponible')
         ->where('element_balance_id', $element_balance->id)
-        ->orderBy('id')
-        ->pluck('id', 'hash');
+        ->get();
 
+        foreach ($disponible as $key => $value) {
+            $select = HashSelectDeliveryTemporal::where('hash', $value->hash)->exists();
+
+            if ($select)
+            {
+                $disponible = $disponible->reject(function ($value2, $key) use ($value) {
+                    return $value2->hash == $value->hash;
+                });        
+            }
+        }
+
+        $disponible = $disponible->pluck('hash', 'hash'); 
+        
         if ($ele->identify_each_element)
         {
             return [
@@ -460,5 +519,39 @@ class TransactionController extends Controller
                 'options' => []
             ];
         }
+    }
+
+    public function hashSelected(Request $request)
+    {
+        \Log::info($request);
+        try
+        { 
+            $disponible = ElementBalanceSpecific::where('location_id', $request->location_id)
+            ->where('state', 'Disponible')
+            ->where('hash', $request->select_hash)
+            ->first();
+
+            if ($disponible)
+            {
+                $selected = new HashSelectDeliveryTemporal;
+                $selected->element_id = $request->id;
+                $selected->location_id = $request->location_id;
+                $selected->hash = $disponible->hash;
+                $selected->user_id = $this->user->id;
+                $selected->save();
+            }
+            else
+            {
+                return $this->respondWithError('El código seleccionado no existe o no se encuentra disponible');
+            }
+        } catch(Exception $e){
+            \Log::info($e->getMessage());
+            $this->respondHttp500();
+        }
+    }
+
+    public function deletedTemporal()
+    {
+        $delete = HashSelectDeliveryTemporal::where('user_id', $this->user->id)->delete();
     }
 }

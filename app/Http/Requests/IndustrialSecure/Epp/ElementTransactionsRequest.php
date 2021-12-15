@@ -39,6 +39,33 @@ class ElementTransactionsRequest extends FormRequest
         {
             foreach ($this->input('files') as $key => $value)
             {
+                //\Log::info($value);
+                $data['files'][$key] = json_decode($value, true);
+                $this->merge($data);
+            }
+
+            if ($this->has('files_binary') && COUNT($this->files_binary) > 0)
+            {
+                $data = $this->all();
+
+                foreach ($this->files_binary as $key => $value)
+                {
+                    //\Log::info($value);
+                    $data['files'][$key]['file'] = $value;
+                    //$this->merge($data);
+
+                    //\Log::info($data['files'][$key]['file']);
+                }
+
+                $this->merge($data);
+            }
+            \Log::info($data['files']);
+        }
+
+        /*if ($this->has('files'))
+        {
+            foreach ($this->input('files') as $key => $value)
+            {
                 $data['files'][$key] = json_decode($value, true);
                 $this->merge($data);
             }
@@ -54,7 +81,7 @@ class ElementTransactionsRequest extends FormRequest
             }
 
             $this->merge($data);
-        }
+        }*/
 
         return $this->all();
     }
@@ -72,7 +99,7 @@ class ElementTransactionsRequest extends FormRequest
             'employee_id' => 'required|integer',
             'position_employee' => 'required|string',
             'elements_id' => 'required|array',
-            'elements_id.*.quantity' => 'required|integer|min:1',
+            'elements_id.*.quantity' => 'integer|required_if:elements_id.*.type,No Identificable',
             'files' => 'nullable|array',
             'firm_employee' => 'nullable',
             'observations' => 'nullable'

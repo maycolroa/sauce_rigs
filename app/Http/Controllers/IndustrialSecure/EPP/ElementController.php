@@ -98,7 +98,7 @@ class ElementController extends Controller
         $mark = $this->tagsPrepare($request->get('mark'));
         $this->tagsSave($mark, TagsMark::class);
 
-        $standar_apply = tagsPrepare($request->get('applicable_standard'));
+        $standar_apply = $this->tagsPrepare($request->get('applicable_standard'));
         $this->tagsSaveSystemCompany($standar_apply, TagsApplicableStandard::class);
 
         $element = new Element();
@@ -218,6 +218,7 @@ class ElementController extends Controller
         if ($request->image != $element->image)
         {
             $file_tmp = $request->image;
+            \Log::info($file_tmp);
             $nameFile = base64_encode($this->user->id . now() . rand(1,10000)) .'.'. $file_tmp->extension();
             $file_tmp->storeAs($element->path_client(false), $nameFile, 's3');
             $element->image = $nameFile;

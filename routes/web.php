@@ -537,6 +537,10 @@ Route::middleware(['auth'])->group(function () {
         Route::post('transaction/eppElementsLocations', 'IndustrialSecure\EPP\TransactionController@elementsLocation');
 
         Route::post('transaction/elementInfo/', 'IndustrialSecure\EPP\TransactionController@elementInfo');
+
+        Route::post('transaction/hashSelected/', 'IndustrialSecure\EPP\TransactionController@hashSelected');
+
+        Route::post('transaction/deletedTemporal/', 'IndustrialSecure\EPP\TransactionController@deletedTemporal');
       });
 
       Route::prefix('tags')->group(function () {

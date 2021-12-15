@@ -22,10 +22,10 @@
               <!--<vue-advanced-select class="col-md-6" v-model="element.type" :multiple="false" :options="typesElement" :hide-selected="false" name="type" label="Tipo de elemento" placeholder="Seleccione el tipo de elemento"></vue-advanced-select>-->
               <vue-advanced-select :disabled="viewOnly" class="col-md-6" v-model="element.id_ele" name="id_ele" label="Elemento de protección personal" placeholder="Seleccione el elemento" :options="elements" :error="form.errorsFor(`elements_id.${index}.id_ele`)" @change="typeElement(index)">
                 </vue-advanced-select>
-              <vue-input :disabled="viewOnly" class="col-md-6" v-model="element.quantity" label="Cantidad" type="number" name="quantity" :error="form.errorsFor(`elements_id.${index}.quantity`)" placeholder="Cantidad"></vue-input>
+              <vue-input v-if="element.type == 'No Identificable'" :disabled="viewOnly" class="col-md-6" v-model="element.quantity" label="Cantidad" type="number" name="quantity" :error="form.errorsFor(`elements_id.${index}.quantity`)" placeholder="Cantidad"></vue-input>
               <vue-radio v-if="element.type == 'Identificable'" :disabled="viewOnly" class="col-md-6" v-model="element.entry" :options="siNo" name="entry" :error="form.errorsFor(`elements_id.${index}.entry`)" label="Como desea indresar el código del elemento?" :checked="form.identify_each_element"></vue-radio>
-              <vue-input v-if="element.entry == 'Manualmente'" :disabled="viewOnly" class="col-md-12" v-model="element.code" label="Código" type="text" name="code" :error="form.errorsFor(`elements_id.${index}.code`)" placeholder="Código"></vue-input>
-              <vue-advanced-select v-if="element.entry == 'Seleccionarlo'" :disabled="viewOnly" class="col-md-12" v-model="element.code" name="code" label="Código de elemento" placeholder="Seleccione el código" :options="codes[index]" :error="form.errorsFor(`elements_id.${index}.code`)">
+              <vue-input v-if="element.entry == 'Manualmente'" :disabled="viewOnly" class="col-md-12" v-model="element.code" label="Código" type="text" name="code" :error="form.errorsFor(`elements_id.${index}.code`)" placeholder="Código" @onBlur="hashSelected(index)" ></vue-input>
+              <vue-advanced-select v-if="element.entry == 'Seleccionarlo'" :disabled="viewOnly" class="col-md-12" v-model="element.code" name="code" label="Código de elemento" placeholder="Seleccione el código" :options="codes[index]" :error="form.errorsFor(`elements_id.${index}.code`)" @selectedName="hashSelected(index)">
                 </vue-advanced-select>
             </b-form-row>
         </div>
@@ -94,7 +94,7 @@
 
     <div class="row float-right pt-10 pr-10">
       <template>
-        <b-btn variant="default" :to="cancelUrl" :disabled="loading">{{ viewOnly ? "Atras" : "Cancelar"}}</b-btn>&nbsp;&nbsp;
+        <b-btn @click="deletedTemporal" variant="default" :to="cancelUrl" :disabled="loading">{{ viewOnly ? "Atras" : "Cancelar"}}</b-btn>&nbsp;&nbsp;
         <b-btn type="submit" :disabled="loading" variant="primary" v-if="!viewOnly">Finalizar</b-btn>
       </template>
     </div>
@@ -255,6 +255,32 @@ export default {
         .then(response => {
             this.form.elements_id[index].type = response.data.type
             this.codes[index] = response.data.options
+        })
+        .catch(error => {
+            this.isLoading = false;
+            Alerts.error('Error', 'Hubo un problema recolectando la información');
+        });
+    },
+    hashSelected(index)
+    {
+      this.isLoading = true;
+      axios.post('/industrialSecurity/epp/transaction/hashSelected', {id: this.form.elements_id[index].id_ele, location_id: this.form.location_id, select_hash: this.form.elements_id[index].code})
+        .then(response => {
+            /*this.form.elements_id[index].type = response.data.type
+            this.codes[index] = response.data.options*/
+        })
+        .catch(error => {
+            this.isLoading = false;
+            Alerts.error('Error', 'El código seleccionado no existe o no se encuentra disponible en la ubicación seleccionada');
+        });
+    },
+    deletedTemporal()
+    {
+      this.isLoading = true;
+      axios.post('/industrialSecurity/epp/transaction/deletedTemporal')
+        .then(response => {
+            /*this.form.elements_id[index].type = response.data.type
+            this.codes[index] = response.data.options*/
         })
         .catch(error => {
             this.isLoading = false;
