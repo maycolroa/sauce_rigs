@@ -6,7 +6,7 @@
         <b-form-row>
           <vue-ajax-advanced-select class="col-md-6" :disabled="viewOnly" v-model="form.employee_id"  name="employee_id" :label="keywordCheck('employee')" placeholder="Seleccione una opción" :url="employeesDataUrl" :selected-object="form.multiselect_employee" :error="form.errorsFor('employee_id')"> </vue-ajax-advanced-select>
           <vue-input :disabled="true" class="col-md-6" v-model="form.position_employee" label="Cargo" type="text" name="position_employee" :error="form.errorsFor('position_employee')" placeholder="Cargo"></vue-input>
-          <vue-ajax-advanced-select :disabled="viewOnly || !form.employee_id" class="col-md-6" v-model="form.location_id" :error="form.errorsFor('location_id')"  name="location_id" label="Ubicación" placeholder="Seleccione la ubicación" :url="tagsLocationsDataUrl" :multiple="false" :allowEmpty="true">
+          <vue-ajax-advanced-select :disabled="viewOnly || !form.employee_id" class="col-md-6" v-model="form.location_id" :error="form.errorsFor('location_id')"  name="location_id" label="Ubicación" placeholder="Seleccione la ubicación" :url="tagsLocationsDataUrl" :multiple="false" :selected-object="form.multiselect_location" :allowEmpty="true">
             </vue-ajax-advanced-select>
         </b-form-row>
       </div>
@@ -16,16 +16,16 @@
             <b-form-row>
               <div class="col-md-12">
                   <div class="float-right">
-                      <b-btn variant="outline-primary icon-btn borderless" size="sm" v-b-tooltip.top title="Eliminar" @click.prevent="removeElement(index)"><span class="ion ion-md-close-circle"></span></b-btn>
+                      <b-btn v-if="!viewOnly" variant="outline-primary icon-btn borderless" size="sm" v-b-tooltip.top title="Eliminar" @click.prevent="removeElement(index)"><span class="ion ion-md-close-circle"></span></b-btn>
                   </div>
               </div>
               <!--<vue-advanced-select class="col-md-6" v-model="element.type" :multiple="false" :options="typesElement" :hide-selected="false" name="type" label="Tipo de elemento" placeholder="Seleccione el tipo de elemento"></vue-advanced-select>-->
-              <vue-advanced-select :disabled="viewOnly" class="col-md-6" v-model="element.id_ele" name="id_ele" label="Elemento de protección personal" placeholder="Seleccione el elemento" :options="elements" :error="form.errorsFor(`elements_id.${index}.id_ele`)" @change="typeElement(index)">
+              <vue-advanced-select :disabled="viewOnly" class="col-md-6" v-model="element.id_ele" name="id_ele" label="Elemento de protección personal" placeholder="Seleccione el elemento" :options="elements" :error="form.errorsFor(`elements_id.${index}.id_ele`)" @change="typeElement(index)" :allow-empty="false" :selected-object="element.multiselect_element">
                 </vue-advanced-select>
               <vue-input v-if="element.type == 'No Identificable'" :disabled="viewOnly" class="col-md-6" v-model="element.quantity" label="Cantidad" type="number" name="quantity" :error="form.errorsFor(`elements_id.${index}.quantity`)" placeholder="Cantidad"></vue-input>
-              <vue-radio v-if="element.type == 'Identificable'" :disabled="viewOnly" class="col-md-6" v-model="element.entry" :options="siNo" name="entry" :error="form.errorsFor(`elements_id.${index}.entry`)" label="Como desea indresar el código del elemento?" :checked="form.identify_each_element"></vue-radio>
-              <vue-input v-if="element.entry == 'Manualmente'" :disabled="viewOnly" class="col-md-12" v-model="element.code" label="Código" type="text" name="code" :error="form.errorsFor(`elements_id.${index}.code`)" placeholder="Código" @onBlur="hashSelected(index)" ></vue-input>
-              <vue-advanced-select v-if="element.entry == 'Seleccionarlo'" :disabled="viewOnly" class="col-md-12" v-model="element.code" name="code" label="Código de elemento" placeholder="Seleccione el código" :options="codes[index]" :error="form.errorsFor(`elements_id.${index}.code`)" @selectedName="hashSelected(index)">
+              <vue-radio v-if="element.type == 'Identificable'" :disabled="viewOnly" class="col-md-6" v-model="element.entry" :options="siNo" name="entry" :error="form.errorsFor(`elements_id.${index}.entry`)" label="Como desea ingresar el código del elemento?" :checked="element.entry"></vue-radio>
+              <vue-input v-if="element.type == 'Identificable' && element.entry == 'Manualmente'" :disabled="viewOnly" class="col-md-12" v-model="element.code" label="Código" type="text" name="code" :error="form.errorsFor(`elements_id.${index}.code`)" placeholder="Código" @onBlur="hashSelected(index)" ></vue-input>
+              <vue-advanced-select v-if="element.type == 'Identificable' && element.entry == 'Seleccionarlo'" :disabled="viewOnly" class="col-md-12" v-model="element.code" name="code" label="Código de elemento" placeholder="Seleccione el código" :options="codes[index]" :error="form.errorsFor(`elements_id.${index}.code`)" @selectedName="hashSelected(index)" :allow-empty="false">
                 </vue-advanced-select>
             </b-form-row>
         </div>
@@ -53,10 +53,10 @@
               </template>
               <div class="col-md-12">
                   <div class="float-right">
-                      <b-btn variant="outline-primary icon-btn borderless" size="sm" v-b-tooltip.top title="Eliminar" @click.prevent="removeFile(index)"><span class="ion ion-md-close-circle"></span></b-btn>
+                      <b-btn v-if="!viewOnly" variant="outline-primary icon-btn borderless" size="sm" v-b-tooltip.top title="Eliminar" @click.prevent="removeFile(index)"><span class="ion ion-md-close-circle"></span></b-btn>
                   </div>
               </div>
-              <vue-file-simple :disabled="viewOnly" :help-text="file.id ? `Para descargar el archivo actual, haga click <a href='/legalAspects/trainingContract/download/${file.id}' target='blank'>aqui</a> ` : null" class="col-md-12" v-model="file.file" label="Archivo" name="file" placeholder="Seleccione un archivo" :error="form.errorsFor(`files.${index}.file`)" :maxFileSize="20"/>
+              <vue-file-simple :disabled="viewOnly" :help-text="file.id ? `Para descargar el archivo actual, haga click <a href='/industrialSecurity/epp/transaction/download/file/${file.id}' target='blank'>aqui</a> ` : null" class="col-md-12" v-model="file.file" label="Archivo" name="file" placeholder="Seleccione un archivo" :error="form.errorsFor(`files.${index}.file`)" :maxFileSize="20"/>
             </b-form-row>
         </div>
       </template>
@@ -72,7 +72,23 @@
       <div>
         <vue-textarea :disabled="viewOnly" class="col-md-12" v-model="form.observations" label="Observaciones (Opcional)" name="observations" placeholder="Observaciones" :error="form.errorsFor('observations')" rows="3"></vue-textarea>              
       </div>
-      <div>
+      <div class="row">
+        <div class="col-md-12">
+          <center>
+              <div class="my-4 mx-2 text-center" v-if="form.old_firm">
+                  <img class="ui-w-300" :src="`${form.firm_image}`" alt="">
+              </div>
+          </center>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-12">
+          <center>              
+            <vue-radio :disabled="viewOnly" class="col-md-6" v-model="form.edit_firm" :options="noSi" name="edit_firm" :error="form.errorsFor('edit_firm')" label="¿Desea agregar una firma?" :checked="form.edit_firm"></vue-radio>      
+          </center>
+        </div>
+      </div>
+      <div v-if="form.edit_firm == 'SI'">
           <center>
               <p><b>Ingresa aqui tu firma</b></p>
               <VueSignaturePad
@@ -140,10 +156,36 @@ export default {
           delete: {
             files: [],
             elements: []
-          }
+          },
+          edit_firm: 'NO'
         };
       }
     }
+  },
+  mounted() {
+    if (this.isEdit || this.viewOnly)
+    {
+      this.cargar = false
+    }
+    
+    setTimeout(() => {
+      this.elements = this.form.elementos
+      this.form.elements_id.splice(0);
+
+      this.form.elements_codes.forEach((eleme, key) => {
+        this.form.elements_id.push({
+          id: eleme.element.id,
+          id_ele: eleme.element.id_ele,
+          quantity: eleme.element.quantity,
+          code: eleme.element.code,
+          type: eleme.element.type,
+          entry: eleme.element.entry
+        })
+        this.codes[key] = eleme.options
+      })
+
+      this.loading = false;
+    }, 3000)
   },
   watch: {
     delivery() {
@@ -154,7 +196,7 @@ export default {
       this.updateDetails(`/industrialSecurity/epp/transaction/employeeInfo/${this.form.employee_id}`)
     },
     'form.location_id' () {
-      this.uploadElements()
+        this.uploadElements()
     }
   },
   data() {
@@ -174,6 +216,11 @@ export default {
         {text: 'Manualmente', value: 'Manualmente'},
         {text: 'Seleccionarlo', value: 'Seleccionarlo'}
       ],
+      noSi: [
+        {text: 'SI', value: 'SI'},
+        {text: 'NO', value: 'NO'}
+      ],
+      cargar: true
     };
   },
   methods: {
@@ -186,9 +233,19 @@ export default {
             this.form.addFileBinary(`${keyFile}`, file.file);
         });
 
-      const { isEmpty, data } = this.$refs.signaturePad.saveSignature()
-      if (data != null) {
-        this.form.firm_employee = data
+      if (this.isEdit && this.form.edit_firm == 'SI')
+      {
+        const { isEmpty, data } = this.$refs.signaturePad.saveSignature()
+        if (data != null) {
+          this.form.firm_employee = data
+        }
+      }
+      else if (!this.isEdit && this.form.firm_employee)
+      {
+        const { isEmpty, data } = this.$refs.signaturePad.saveSignature()
+        if (data != null) {
+          this.form.firm_employee = data
+        }
       }
 
       this.form

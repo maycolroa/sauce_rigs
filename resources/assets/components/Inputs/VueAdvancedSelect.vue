@@ -79,6 +79,7 @@ export default {
     taggable: {type: Boolean, default: false},
     filterTypeSearch: { type: Boolean, default: false },
     filterTypeSearchValue: { type: String, default: "IN" },
+    selectedObject: { type: [Object, Array] },
   },
   components: {
     Multiselect,
@@ -96,6 +97,16 @@ export default {
     }
   },
   mounted() {
+
+     if (this.selectedObject) {
+        if (typeof this.selectedObject == "object")
+            this.options.push(this.selectedObject);
+        else 
+            _.forIn(this.selectedObject, (value, key) => {
+                this.options.push(value);
+            })
+    }
+
       setTimeout(() => {
           this.setMultiselectValue();
       }, 3000)

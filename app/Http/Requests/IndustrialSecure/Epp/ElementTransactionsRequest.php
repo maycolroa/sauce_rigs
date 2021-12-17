@@ -39,7 +39,6 @@ class ElementTransactionsRequest extends FormRequest
         {
             foreach ($this->input('files') as $key => $value)
             {
-                //\Log::info($value);
                 $data['files'][$key] = json_decode($value, true);
                 $this->merge($data);
             }
@@ -50,38 +49,19 @@ class ElementTransactionsRequest extends FormRequest
 
                 foreach ($this->files_binary as $key => $value)
                 {
-                    //\Log::info($value);
                     $data['files'][$key]['file'] = $value;
-                    //$this->merge($data);
-
-                    //\Log::info($data['files'][$key]['file']);
                 }
 
                 $this->merge($data);
             }
-            \Log::info($data['files']);
         }
 
-        /*if ($this->has('files'))
+        if ($this->has('delete'))
         {
-            foreach ($this->input('files') as $key => $value)
-            {
-                $data['files'][$key] = json_decode($value, true);
-                $this->merge($data);
-            }
+            $this->merge([
+                'delete' => json_decode($this->input('delete'), true)
+            ]);
         }
-
-        if ($this->has('files_binary') && COUNT($this->files_binary) > 0)
-        {
-            $data = $this->all();
-
-            foreach ($this->files_binary as $key => $value)
-            {
-                $data['files'][$key]['file'] = $value;
-            }
-
-            $this->merge($data);
-        }*/
 
         return $this->all();
     }

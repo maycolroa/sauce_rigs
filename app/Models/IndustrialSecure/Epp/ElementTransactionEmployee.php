@@ -15,11 +15,12 @@ class ElementTransactionEmployee extends Model
 
     protected $fillable = [
         'employee_id',
-        'position_employee',
+        'position_employee_id',
         'type',
         'observations',
         'firm_employee',
-        'company_id'
+        'company_id',
+        'location_id'
     ];
 
     public function multiselect()
@@ -32,7 +33,22 @@ class ElementTransactionEmployee extends Model
 
     public function elements()
     {
-        return $this->belongsToMany('App\Models\IndustrialSecure\Epp\Element', 'sau_epp_transaction_employee_element', 'transaction_employee_id');
+        return $this->belongsToMany('App\Models\IndustrialSecure\Epp\ElementBalanceSpecific', 'sau_epp_transaction_employee_element', 'transaction_employee_id', 'element_id');
+    }
+
+    public function employee()
+    {
+        return $this->belongsTo('App\Models\Administrative\Employees\Employee', 'employee_id');
+    }
+
+    public function position()
+    {
+        return $this->belongsTo('App\Models\Administrative\Positions\EmployeePosition', 'position_employee_id');
+    }
+
+    public function location()
+    {
+        return $this->belongsTo(Location::class, 'location_id');
     }
 
     public function path_base($storageLocation = true)

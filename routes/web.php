@@ -541,6 +541,8 @@ Route::middleware(['auth'])->group(function () {
         Route::post('transaction/hashSelected/', 'IndustrialSecure\EPP\TransactionController@hashSelected');
 
         Route::post('transaction/deletedTemporal/', 'IndustrialSecure\EPP\TransactionController@deletedTemporal');
+
+        Route::get('transaction/download/file/{file}', 'IndustrialSecure\EPP\TransactionController@download');
       });
 
       Route::prefix('tags')->group(function () {
