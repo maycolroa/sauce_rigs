@@ -558,9 +558,9 @@ class TransactionController extends Controller
 
                             $element_balance = ElementBalanceLocation::find($id_balance);
 
-                            $element_balance->quantity_available = $element_balance->quantity_available - $count;
+                            $element_balance->quantity_available = $element_balance->quantity_available + $count;
 
-                            $element_balance->quantity_allocated = $element_balance->quantity_allocated + $count;
+                            $element_balance->quantity_allocated = $element_balance->quantity_allocated - $count;
 
                             $element_balance->save();
                         }
