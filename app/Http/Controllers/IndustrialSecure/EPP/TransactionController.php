@@ -500,6 +500,7 @@ class TransactionController extends Controller
                         ->join('sau_epp_elements_balance_ubication', 'sau_epp_elements_balance_ubication.id','sau_epp_elements_balance_specific.element_balance_id')
                         ->join('sau_epp_elements', 'sau_epp_elements.id', 'sau_epp_elements_balance_ubication.element_id')
                         ->where('sau_epp_transactions_employees.id', $transac_id)
+                        ->where('sau_epp_elements_balance_specific.element_balance_id', $id_balance)
                         ->where('sau_epp_elements.identify_each_element', false)
                         ->get();
 
