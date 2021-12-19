@@ -391,7 +391,7 @@ class ElementController extends Controller
     {
         try
         {
-            ElementBalanceInitialImportJob::dispatch($request->file, $this->company, $this->user);
+            ElementBalanceInitialImportJob::dispatch($request->type_element, $request->file, $this->company, $this->user);
         
             return $this->respondHttp200();
 

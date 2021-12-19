@@ -14,7 +14,6 @@
             <form-import-element-balance-inicial
               url="/industrialSecurity/epp/element/import/balanceInicial"
               method="POST"
-              :id="id"
               :cancel-url="{ name: 'industrialsecure-epps-elements'}"/>
           </div>
         </b-card-body>
@@ -30,17 +29,11 @@ import Loading from "@/components/Inputs/Loading.vue";
 export default {
   name: 'administrative-users-create',
   metaInfo: {
-    title: 'Usuarios - Importar'
+    title: 'Elementos - Importar Saldos Iniciales'
   },
   components:{
     FormImportElementBalanceInicial,
     Loading
-  },
-  data(){
-    return {
-      id: this.$route.params.id,
-      form: ''
-    }
   }
 }
 </script>

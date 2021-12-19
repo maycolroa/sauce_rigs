@@ -463,7 +463,6 @@ class TransactionController extends Controller
 
             foreach ($request->elements_id as $key => $value) 
             {
-                \Log::info($value);
                 if (isset($value['id']))
                 {
                     $disponible = ElementBalanceSpecific::find($value['id']);
@@ -486,13 +485,11 @@ class TransactionController extends Controller
                     }
                     else
                     {
-                        \Log::info('No');
 
                         $trans = ElementBalanceSpecific::join('sau_epp_transaction_employee_element', 'sau_epp_transaction_employee_element.element_id', 'sau_epp_elements_balance_specific.id')
                         ->join('sau_epp_transactions_employees', 'sau_epp_transactions_employees.id', 'sau_epp_transaction_employee_element.transaction_employee_id')
                         ->where('sau_epp_elements_balance_specific.id', $value['id'])
                         ->first();
-                        \Log::info($trans);
                             
                         $transac_id = $trans->transaction_employee_id;
                         $id_balance = $trans->element_balance_id;
@@ -506,22 +503,14 @@ class TransactionController extends Controller
                         ->where('sau_epp_elements.identify_each_element', false)
                         ->get();
 
-                        \Log::info($elements);
-                        \Log::info($elements->count());
-                        \Log::info($value['quantity']);
-
                         if ($value['quantity'] > $elements->count())
                         {
-                            \Log::info('>');
                             $count = $value['quantity'] - $elements->count();
-                            \Log::info($count);
 
                             $elements_news = ElementBalanceSpecific::where('element_balance_id', $disponible->element_balance_id)
                             ->where('state', 'Disponible')
                             ->where('location_id', $transaction->location_id)
                             ->limit($count)->get();
-
-                            \Log::info($elements_news->count());
 
                             if ($elements_news->count() < $count)
                                 return $this->respondWithError('El elemento ' . $element->name . ' no cuenta con suficientes unidades disponibles');
@@ -545,14 +534,9 @@ class TransactionController extends Controller
                         }
                         else if ($value['quantity'] < $elements->count())
                         {
-                            \Log::info('<');
                             $count = $elements->count() - $value['quantity'];
 
-                            \Log::info($count);
-
                             $elements_delete = $elements->take($count)->all();
-
-                            \Log::info($elements_delete->count());
 
                             foreach ($elements_delete as $key => $value2) {
                                 $value2->state = 'Disponible';
@@ -565,8 +549,6 @@ class TransactionController extends Controller
                             ->where('sau_epp_transactions_employees.id', $transac_id)
                             ->where('sau_epp_elements_balance_specific.state', 'Asignado')
                             ->get();
-
-                            \Log::info($elements_restantes->count());
 
                             foreach ($elements_restantes as $key => $value) {
                                 array_push($elements_sync, $value->id);
@@ -638,7 +620,6 @@ class TransactionController extends Controller
                     }
                 }
             }
-            \Log::info($elements_sync);
 
             $transaction->elements()->sync($elements_sync);
 

@@ -15,8 +15,8 @@
           <b-btn v-if="auth.can['elements_c']" variant="primary" href="/templates/elementimport" target="blank" v-b-tooltip.top title="Generar Plantilla"><i class="fas fa-file-alt"></i></b-btn>&nbsp;&nbsp;
           <b-btn v-if="auth.can['elements_c']" variant="primary" @click="importMessage()" v-b-tooltip.top title="Importar"><i class="fas fa-upload"></i></b-btn>&nbsp;&nbsp;
           <input id="fileInputImport" type="file" style="display:none" v-on:input="importElement"/>
-           <b-btn v-if="auth.can['elements_c']" variant="primary" @click="importMessage2()" v-b-tooltip.top title="Importar Saldos Iniciales"><i class="fas fa-cloud-upload-alt"></i></b-btn>
-          <input id="fileInputImport2" type="file" style="display:none" v-on:input="    importElementBalance"/>&nbsp;&nbsp;
+          <b-btn :to="{name:'industrialsecure-epps-elements-import-balance-inicial'}" v-if="auth.can['elements_c']" variant="primary" v-b-tooltip.top title="Importar Saldos Iniciales"><i class="fas fa-cloud-upload-alt"></i></b-btn>
+          <!--<input id="fileInputImport2" type="file" style="display:none" v-on:input="    importElementBalance"/>-->&nbsp;&nbsp;
           <div class="card-title-elements" v-if="auth.can['transaction_r']"> 
             <b-btn :to="{name:'industrialsecure-epps-transactions'}" variant="primary">Transacciones</b-btn>&nbsp;&nbsp;
           </div>
@@ -53,7 +53,7 @@
           <b-btn block variant="default" @click="toggleModalConfirmationImport(false)">Cancelar</b-btn>
         </b-modal>
 
-        <b-modal ref="modalConfirmationImport2" class="modal-slide" hide-header hide-footer>
+        <!--<b-modal ref="modalConfirmationImport2" class="modal-slide" hide-header hide-footer>
           <p class="text-justific mb-4">
             Estimado Usuario para realizar la importación el archivo debe cumplir lo siguiente:<br><br>
 
@@ -66,7 +66,7 @@
           </p>
           <b-btn block variant="primary" @click="importConfirmation2()">Aceptar</b-btn>
           <b-btn block variant="default" @click="toggleModalConfirmationImport2(false)">Cancelar</b-btn>
-        </b-modal>
+        </b-modal>-->
     </b-card>
     </div>
   </div>
@@ -110,7 +110,7 @@ export default {
       else
         this.$refs.modalConfirmationImport.hide();
     },
-    importElementBalance(e){
+    /*importElementBalance(e){
       var formData2 = new FormData();
       var imagefile2 = e.target.files;
 
@@ -138,7 +138,7 @@ export default {
         this.$refs.modalConfirmationImport2.show()
       else
         this.$refs.modalConfirmationImport2.hide();
-    }
+    }*/
   },
 }
 </script>
