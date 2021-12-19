@@ -530,6 +530,8 @@ class TransactionController extends Controller
                             $element_balance->quantity_available = $element_balance->quantity_available - $count;
 
                             $element_balance->quantity_allocated = $element_balance->quantity_allocated + $count;
+                            
+                            $element_balance->save();
 
                         }
                         else if ($value['quantity'] < $elements->count())
@@ -559,6 +561,8 @@ class TransactionController extends Controller
                             $element_balance->quantity_available = $element_balance->quantity_available - $count;
 
                             $element_balance->quantity_allocated = $element_balance->quantity_allocated + $count;
+
+                            $element_balance->save();
                         }
                         else
                         {
@@ -710,13 +714,34 @@ class TransactionController extends Controller
     {
         Storage::disk('s3')->delete($transaction->path_client(false)."/".$transaction->firm_employee);
 
-        if(!$element->delete())
+        $get_files = FileTransactionEmployee::where('transaction_employee_id', $transaction->id)->get();
+
+        foreach ($get_files as $key => $value) {
+            Storage::disk('s3')->delete($value->path_client(false)."/".$value->file);
+        }
+
+        foreach ($transaction->elements as $key => $value) 
+        {
+            $value->state = 'Disponible';
+            $value->save();
+
+            $element_balance = ElementBalanceLocation::find($value->element_balance_id);
+
+            $element_balance->quantity_available = $element_balance->quantity_available + 1;
+
+            $element_balance->quantity_allocated = $element_balance->quantity_allocated - 1;
+
+            $element_balance->save();
+            
+        }
+
+        if(!$transaction->delete())
         {
             return $this->respondHttp500();
         }
         
         return $this->respondHttp200([
-            'message' => 'Se elimino el peligro'
+            'message' => 'Se elimino la transacción'
         ]);
     }
 

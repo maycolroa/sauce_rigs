@@ -1258,7 +1258,7 @@ export default [
         buttons: [{
         name: 'delete',
         data: {
-            action: '/industrialSecurity/epp/element/',
+            action: '/industrialSecurity/epp/transaction/',
             id: 'id',
             messageConfirmation: 'Esta seguro de borrar el elemento __name__'
         },
