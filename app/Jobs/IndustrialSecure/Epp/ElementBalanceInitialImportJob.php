@@ -11,6 +11,7 @@ use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Imports\IndustrialSecure\Epp\ElementBalanceInitialImport;
+use App\Imports\IndustrialSecure\Epp\ElementBalanceInitialNotIdentyImport;
 
 class ElementBalanceInitialImportJob implements ShouldQueue
 {
@@ -19,13 +20,15 @@ class ElementBalanceInitialImportJob implements ShouldQueue
     protected $nameFile;
     protected $user;
     protected $company_id;
+    protected $type_element;
 
-    public function __construct(UploadedFile $file, $company_id, $user)
+    public function __construct($type_element, UploadedFile $file, $company_id, $user)
     {
       $this->nameFile = 'saldos_'.date("YmdHis").'.xlsx';
       Storage::disk('public')->putFileAs('import/1', $file, $this->nameFile);
       $this->company_id = $company_id;
       $this->user = $user;
+      $this->type_element = $type_element;
     }
 
     /**
@@ -35,7 +38,11 @@ class ElementBalanceInitialImportJob implements ShouldQueue
      */
     public function handle()
     {
-      Excel::import(new ElementBalanceInitialImport($this->company_id, $this->user), "/import/1/$this->nameFile", 'public');
+      if ($this->type_element == 'Identificable')
+        Excel::import(new ElementBalanceInitialImport($this->company_id, $this->user), "/import/1/$this->nameFile", 'public');
+      else
+        Excel::import(new ElementBalanceInitialNotIdentyImport($this->company_id, $this->user), "/import/1/$this->nameFile", 'public');
+
       Storage::disk('public')->delete('import/1/'. $this->nameFile);
     }
 }

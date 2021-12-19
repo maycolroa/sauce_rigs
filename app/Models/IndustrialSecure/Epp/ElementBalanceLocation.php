@@ -16,4 +16,9 @@ class ElementBalanceLocation extends Model
         'quantity_available',
         'quantity_allocated',
     ];
+
+    public function element()
+    {
+        return $this->belongsTo('App\Models\IndustrialSecure\Epp\Element', 'element_id');
+    }
 }

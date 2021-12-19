@@ -59,13 +59,13 @@ class ElementController extends Controller
         );
 
         return Vuetable::of($elements)
-                    ->addColumn('industrialsecure-epps-elements-import-balance-inicial', function ($element) {
+                    /*->addColumn('industrialsecure-epps-elements-import-balance-inicial', function ($element) {
                         $import = ElementBalanceInicialLog::where('element_id', $element->id)->exists();
                         if (!$import)
                             return true;
                         else
                             return false;
-                    })
+                    })*/
                     ->make();
     }
 
@@ -98,7 +98,7 @@ class ElementController extends Controller
         $mark = $this->tagsPrepare($request->get('mark'));
         $this->tagsSave($mark, TagsMark::class);
 
-        $standar_apply = tagsPrepare($request->get('applicable_standard'));
+        $standar_apply = $this->tagsPrepare($request->get('applicable_standard'));
         $this->tagsSaveSystemCompany($standar_apply, TagsApplicableStandard::class);
 
         $element = new Element();
@@ -218,6 +218,7 @@ class ElementController extends Controller
         if ($request->image != $element->image)
         {
             $file_tmp = $request->image;
+            \Log::info($file_tmp);
             $nameFile = base64_encode($this->user->id . now() . rand(1,10000)) .'.'. $file_tmp->extension();
             $file_tmp->storeAs($element->path_client(false), $nameFile, 's3');
             $element->image = $nameFile;
@@ -266,8 +267,20 @@ class ElementController extends Controller
             $elements = Element::select("id", "name")
                 ->where(function ($query) use ($keyword) {
                     $query->orWhere('name', 'like', $keyword);
-                })
-                ->take(30)->pluck('id', 'name');
+                });
+                //->take(30)->pluck('id', 'name');
+
+                if ($request->has('type') && $request->get('type') != '')
+                {
+                    $type = $request->get('type');
+                    
+                    if ($type == 'Identificable')
+                        $elements->where('identify_each_element', true);
+                    else
+                        $elements->where('identify_each_element', false);
+                }
+
+                $elements = $elements->orderBy('name')->take(30)->pluck('id', 'name');
 
             return $this->respondHttp200([
                 'options' => $this->multiSelectFormat($elements)
@@ -378,7 +391,7 @@ class ElementController extends Controller
     {
         try
         {
-            ElementBalanceInitialImportJob::dispatch($request->file, $this->company, $this->user);
+            ElementBalanceInitialImportJob::dispatch($request->type_element, $request->file, $this->company, $this->user);
         
             return $this->respondHttp200();
 

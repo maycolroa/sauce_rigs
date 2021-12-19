@@ -18,4 +18,15 @@ class ElementBalanceSpecific extends Model
         'expiration_date'
     ];
 
+    public function element()
+    {
+        return $this->belongsTo('App\Models\IndustrialSecure\Epp\ElementBalanceLocation', 'element_balance_id');
+    }
+
+    public function transaction()
+    {
+        return $this->belongsTo('App\Models\IndustrialSecure\Epp\ElementTransactionEmployee', 'sau_epp_transaction_employee_element', 'element_id', 'transaction_employee_id');
+    }
+
+
 }

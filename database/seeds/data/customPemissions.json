@@ -413,6 +413,22 @@
                     {
                         "name": "location_d",
                         "display_name": "Elementos de proteccion personal - ubicaciones borrar"
+                    },
+                    {
+                        "name": "transaction_c",
+                        "display_name": "Elementos de proteccion personal - transacciones crear"
+                    },
+                    {
+                        "name": "transaction_r",
+                        "display_name": "Elementos de proteccion personal - transacciones ver"
+                    },
+                    {
+                        "name": "transaction_u",
+                        "display_name": "Elementos de proteccion personal - transacciones actualizar"
+                    },
+                    {
+                        "name": "transaction_d",
+                        "display_name": "Elementos de proteccion personal - transacciones borrar"
                     }
                 ]
             }

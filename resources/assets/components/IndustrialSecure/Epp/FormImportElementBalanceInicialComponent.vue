@@ -4,8 +4,10 @@
 
     <b-card no-body class="mb-2 border-secondary" style="width: 100%;">
       <b-card-body>
-        <p><b>Estimado usuario recuerde cargar el archivo correspondiente a la configuración del elemento seleccionado</b></p>
-        <b-form-row>
+        <b-form-row>     
+            <vue-radio class="col-md-12" v-model="form.type_element" :options="typesElement" name="type_element" :error="form.errorsFor('type_element')" label="¿Que tipo de elemento desea importar?" :checked="form.type_element"></vue-radio>
+        </b-form-row>
+        <b-form-row v-show="form.type_element">
           <vue-file-simple class="col-md-12" v-model="form.file" label="Archivo" name="file" placeholder="Seleccione un archivo" :error="form.errorsFor(`file`)" :maxFileSize="20"/>
         </b-form-row>
       </b-card-body>
@@ -45,13 +47,11 @@ export default {
     url: { type: String },
     method: { type: String },
     cancelUrl: { type: [String, Object], required: true },
-    id: { type: Number, required: true },
-    rolesDataUrl: { type: String, default: "" },
     user: {
       default() {
         return {
           file: '',
-          id: ''
+          type_element: ''
         };
       }
     }
@@ -65,12 +65,15 @@ export default {
   data() {
     return {
       loading: this.isEdit,
-      form: Form.makeFrom(this.user, this.method)
+      form: Form.makeFrom(this.user, this.method),
+      typesElement: [
+        {text: 'Identificable', value: 'Identificable'},
+        {text: 'No Identificable', value: 'No Identificable'}
+      ],
     };
   },
   methods: {
     submit(e) {
-      this.form.id = this.id;
       this.loading = true;
       this.form
         .submit(e.target.action)

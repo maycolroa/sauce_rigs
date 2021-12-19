@@ -9,7 +9,7 @@ use App\Exports\IndustrialSecure\Epp\ElementIdentImportErrorExcel;
 use App\Exports\IndustrialSecure\Epp\ElementNotImportErrorExcel;
 use App\Facades\Mail\Facades\NotificationMail;
 use Maatwebsite\Excel\Facades\Excel;
-use Maatwebsite\Excel\Concerns\WithCalculatedFormulas;  
+use Maatwebsite\Excel\Concerns\WithCalculatedFormulas;
 use App\Models\IndustrialSecure\Epp\ElementBalanceLocation;
 use App\Models\IndustrialSecure\Epp\ElementBalanceInicialLog;
 use App\Models\IndustrialSecure\Epp\ElementBalanceSpecific;
@@ -20,7 +20,7 @@ use Hash;
 
 use App\Traits\UtilsTrait;
 
-class ElementBalanceInitialImport implements ToCollection, WithCalculatedFormulas
+class ElementBalanceInitialNotIdentyImport implements ToCollection, WithCalculatedFormulas
 {
     use UtilsTrait;
 
@@ -30,9 +30,7 @@ class ElementBalanceInitialImport implements ToCollection, WithCalculatedFormula
     private $errors_data = [];
     private $sheet = 1;
     private $key_row = 2;
-    private $secuence = [];
     private $template_error;
-    private $count = [];
 
     public function __construct($company_id, $user)
     {        
@@ -52,7 +50,7 @@ class ElementBalanceInitialImport implements ToCollection, WithCalculatedFormula
                     {
                         if (isset($row[0]) && $row[0])
                         {
-                            $this->checkElementIdent($row);
+                            $this->checkElementNotIdent($row);
                         }
                     }
                 }
@@ -72,10 +70,10 @@ class ElementBalanceInitialImport implements ToCollection, WithCalculatedFormula
                 {
                     $nameExcel = 'export/1/elements_errors_'.date("YmdHis").'.xlsx';
 
-                    \Log::info($this->errors);          
+                    \Log::info($this->errors);   
 
-                    Excel::store(new ElementIdentImportErrorExcel(collect($this->errors_data), $this->errors, $this->company_id), $nameExcel, 'public',\Maatwebsite\Excel\Excel::XLSX);
-                    $paramUrl = base64_encode($nameExcel);
+                    Excel::store(new ElementNotImportErrorExcel(collect($this->errors_data), $this->errors, $this->company_id), $nameExcel, 'public',\Maatwebsite\Excel\Excel::XLSX);
+                        $paramUrl = base64_encode($nameExcel);
             
                     NotificationMail::
                         subject('Importación de saldos iniciales de elementos')
@@ -106,56 +104,28 @@ class ElementBalanceInitialImport implements ToCollection, WithCalculatedFormula
         }
     }
 
-    private function checkElementIdent($row)
+    private function checkElementNotIdent($row)
     {
-        $fecha_ingreso = $this->validateDate($row[5]);
         $data = [
-            'codigo' => $row[0],
-            'id_elemento' => $row[1],
-            'id_ubicacion' => $row[2],
-            'vencimiento' => $fecha_ingreso
-        ];
+                'id_elemento' => $row[0],
+                'id_ubicacion' => $row[1],
+                'cantidad' => $row[2],
 
-        if (COUNT($this->count) > 0 && isset($this->count[$data['id_elemento']][$data['id_ubicacion']]))
-        {
-            $this->count[$data['id_elemento']][$data['id_ubicacion']] = $this->count[$data['id_elemento']][$data['id_ubicacion']] + 1;
-        }
-        else
-        {
-            $this->count[$data['id_elemento']][$data['id_ubicacion']] = 1;
-        }
-
-
-        $tipo = Element::find($row[1]);
-
-        $hashs = ElementBalanceSpecific::select('hash')->get()->toArray();
-
-        $hashs_validar = [];
-
-        foreach ($hashs as $key => $value) {
-            array_push($hashs_validar, $value['hash']);
-        }
+            ];
 
         $rules = [
             'id_elemento' => 'required',
             'id_ubicacion' => 'required',
-            'codigo' => 'required|not_in:'.  implode(',', $hashs_validar)
+            'cantidad' => 'required'       
         ];
 
-        if ($tipo->expiration_date)
-            array_merge($rules, ['vencimiento' => 'required|date']);
-
-        $validator = Validator::make($data, $rules,
-        [
-            'codigo.required' => 'El campo Código es requerido y debe ser unico, ya existe un elemento registrado con este código'
-
-        ]);
+        $validator = Validator::make($data, $rules);
 
         if ($validator->fails())
         {
             foreach ($validator->messages()->all() as $value)
             {
-                $this->s10.etError($value);
+                $this->setError($value);
             }
 
             $this->setErrorData($row);
@@ -163,40 +133,29 @@ class ElementBalanceInitialImport implements ToCollection, WithCalculatedFormula
         }
         else 
         {   
-            $log_exist = ElementBalanceInicialLog::where('element_id', $data['id_elemento'])->where('location_id', $data['id_ubicacion'])->exists();
-
-            $element = ElementBalanceLocation::updateOrCreate(
-                [
-                    'element_id' => $data['id_elemento'],
-                    'location_id' => $data['id_ubicacion']
-                ],
-                [
-                    'element_id' => $data['id_elemento'],
-                    'location_id' => $data['id_ubicacion'],
-                    'quantity' => $this->count[$data['id_elemento']][$data['id_ubicacion']],
-                    'quantity_available' => $this->count[$data['id_elemento']][$data['id_ubicacion']],
-                    'quantity_allocated' => 0
-                ]
-            );
-
-            /*$element = new ElementBalanceLocation();
-            $element->element_id = $data['id_elemento'];
-            $element->location_id = $data['id_ubicacion'];
-            $element->quantity = $data['cantidad'];
-            $element->quantity_available = $data['cantidad'];
-            $element->quantity_allocated = 0;
-            $element->save();*/
-
-            $product = new ElementBalanceSpecific;
-            $product->hash = $data['codigo'];
-            $product->element_balance_id = $element->id;
-            $product->location_id = $element->location_id;
-            $product->code = $data['codigo'];
-            $product->expiration_date = $tipo->expiration_date ? $data['vencimiento'] : NULL;
-            $product->save();
+            $log_exist = ElementBalanceInicialLog::where('element_id', $data['id_elemento'])
+                ->where('location_id', $data['id_ubicacion'])->exists();
 
             if (!$log_exist)
             {
+                $element = new ElementBalanceLocation();
+                $element->element_id = $data['id_elemento'];
+                $element->location_id = $data['id_ubicacion'];
+                $element->quantity = $data['cantidad'];
+                $element->quantity_available = $data['cantidad'];
+                $element->quantity_allocated = 0;
+                $element->save();
+
+                for ($i=1; $i <= $data['cantidad']; $i++) { 
+                    $hash = Hash::make($element->element_id . str_random(30));
+                    $product = new ElementBalanceSpecific;
+                    $product->hash = $hash;
+                    $product->code = $hash;
+                    $product->element_balance_id = $element->id;
+                    $product->location_id = $element->location_id;
+                    $product->save();
+                }
+
                 $log = new ElementBalanceInicialLog;
                 $log->element_id = $data['id_elemento'];
                 $log->location_id = $data['id_ubicacion'];

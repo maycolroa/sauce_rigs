@@ -1213,6 +1213,61 @@ export default [
     configuration: {
         urlData: '/industrialSecurity/epp/location/data',
         filterColumns: true,
+    },
+},
+{
+    name: 'industrialsecure-epps-transactions',
+    fields: [
+        { name: 'sau_epp_transactions_employees.id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true },
+        { name: 'sau_epp_transactions_employees.type', data: 'type', title: 'Tipo', sortable: true, searchable: true, detail: false, key: false },
+        { name: 'sau_epp_transactions_employees.employee', data: 'employee', title: 'Empleado', sortable: true, searchable: true, detail: false, key: false },
+        { name: 'sau_employees_positions.name', data: 'position', title: 'Cargo', sortable: true, searchable: true, detail: false, key: false },
+        { name: 'sau_epp_elements.name', data: 'elements', title: 'Elementos', sortable: true, searchable: true, detail: false, key: false },
+        { name: '', data: 'controlls', title: 'Controles', sortable: false, searchable: false, detail: false, key: false },
+    ],
+    'controlls': [{
+        type: 'push',
+        buttons: [{
+        config: {
+            color: 'outline-success',
+            borderless: true,
+            icon: 'ion ion-md-create',
+            title: 'Editar'
+        },
+        data: {
+            routePush: { name: 'industrialsecure-epps-transactions-edit' },
+            id: 'id',
+        },
+        permission: 'elements_u'
+        }, {
+        config: {
+            color: 'outline-info',
+            borderless: true,
+            icon: 'ion ion-md-eye',
+            title: 'Ver'
+        },
+        data: {
+            routePush: { name: 'industrialsecure-epps-transactions-view' },
+            id: 'id',
+        },
+        permission: 'elements_r'
+        }]
+    },
+    {
+        type: 'base',
+        buttons: [{
+        name: 'delete',
+        data: {
+            action: '/industrialSecurity/epp/transaction/',
+            id: 'id',
+            messageConfirmation: 'Esta seguro de borrar el elemento __name__'
+        },
+        permission: 'elements_d'
+        }],
+    }],
+    configuration: {
+        urlData: '/industrialSecurity/epp/transaction/data',
+        filterColumns: true,
     }
 }
 ];
