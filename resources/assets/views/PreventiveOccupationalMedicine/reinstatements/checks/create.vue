@@ -204,8 +204,8 @@
                   :clasification-origin="clasificationOrigin"
                   :cancel-url="{ name: 'reinstatements-checks'}"/>
               </template>
-              <template v-if="form == 'colgate'">
-                <form-check-colgate
+              <template v-if="form == 'harinera'">
+                <form-check-harinera
                   url="/biologicalmonitoring/reinstatements/check"
                   method="POST"
                   employees-data-url="/selects/employees"
@@ -220,14 +220,12 @@
                   processes-data-url="/selects/processes"
                   positions-data-url="/selects/positions"
                   restrictions-data-url="/selects/restrictions"
+                  tags-reinstatement-condition-data-url="/selects/tagsReincReinstatementcondition"
+                  tags-informant-role-data-url="/selects/tagsReincInformantRole"
                   :medical-conclusions="medicalConclusions"
                   :labor-conclusions="laborConclusions"
                   :origin-emitters="originEmitters"
-                  :sve-associated="sveAssociated"
-                  :medical-certificate-ueac="medicalCertificateUeac"
-                  :relocated-types="relocatedTypes"
-                  :eps-favorability-concept="epsFavorabilityConcept"
-                  :case-classification="caseClassification"
+                  :recommendations-validity="recommendationsValidity"
                   tracing-others-url="/biologicalmonitoring/reinstatements/check/tracingOthers"
                   :clasification-origin="clasificationOrigin"
                   :cancel-url="{ name: 'reinstatements-checks'}"/>
@@ -249,6 +247,7 @@ import FormCheckEmpresarial from '@/components/PreventiveOccupationalMedicine/Re
 import FormCheckIngeomega from '@/components/PreventiveOccupationalMedicine/Reinstatements/Checks/FormCheckIngeomegaComponent.vue';
 import FormCheckFamilia from '@/components/PreventiveOccupationalMedicine/Reinstatements/Checks/FormCheckFamiliaComponent.vue';
 import FormCheckColgate from '@/components/PreventiveOccupationalMedicine/Reinstatements/Checks/FormCheckColgateComponent.vue';
+import FormCheckHarinera from '@/components/PreventiveOccupationalMedicine/Reinstatements/Checks/FormCheckHarineraComponent.vue';
 import Loading from "@/components/Inputs/Loading.vue";
 import Alerts from '@/utils/Alerts.js';
 import GlobalMethods from '@/utils/GlobalMethods.js';
@@ -268,6 +267,7 @@ export default {
     FormCheckIngeomega,
     FormCheckFamilia,
     FormCheckColgate,
+    FormCheckHarinera,
     Loading
   },
   data(){
@@ -287,7 +287,8 @@ export default {
       epsFavorabilityConcept: [],
       caseClassification: [],
       typeQualificationControversy: [],
-      clasificationOrigin: []
+      clasificationOrigin: [],
+      recommendationsValidity: []
     }
   },
   created(){
@@ -311,6 +312,11 @@ export default {
       if (this.form == 'hptu')
       {
         this.fetchOptions('typeQualificationControversy', 'reinc_select_type_qualification_controversy')
+      }
+
+      if (this.form == 'harinera')
+      {
+        this.fetchOptions('recommendationsValidity', 'reinc_select_recommendations_validity')
       }
 
 			this.ready = true

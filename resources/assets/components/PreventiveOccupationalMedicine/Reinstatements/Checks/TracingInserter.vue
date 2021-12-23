@@ -12,6 +12,10 @@
                         </div>
                     </b-form-row>
                     <vue-textarea class="col-md-12" v-model="tracing.description" label="Nuevo Registro" name="new_tracing"></vue-textarea>
+                    <b-form-row v-if="config == 'harinera'">
+                        <vue-ajax-advanced-select-tag-unic class="col-md-12" v-model="tracing.informant_role" name="informant_role"  label="Rol informante" placeholder="Seleccione el rol del informante" :url="tagsInformantRoleDataUrl" :multiple="false" :allowEmpty="true" :taggable="true">
+                                </vue-ajax-advanced-select-tag-unic>
+                    </b-form-row>
                     <tracing-generate-pdf-button
                         v-if="generatePdf && checkId"
                         :tracing-description="tracing.description"
@@ -37,6 +41,10 @@
                 :disabled="disabled || !editableTracings"
             >
             </vue-textarea>
+            <b-form-row v-if="config == 'harinera'">
+                <vue-ajax-advanced-select-tag-unic class="col-md-12" v-model="tracing.informant_role" :disabled="disabled || !editableTracings" name="informant_role"  label="Rol informante" placeholder="Seleccione el rol del informante" :url="tagsInformantRoleDataUrl" :multiple="false" :allowEmpty="true" :taggable="true">
+                        </vue-ajax-advanced-select-tag-unic>
+            </b-form-row>
             <tracing-generate-pdf-button
                 v-if="generatePdf"
                 :tracing="tracing"
@@ -53,9 +61,14 @@
 <script>
 import VueTextarea from "@/components/Inputs/VueTextarea.vue";
 import TracingGeneratePdfButton from './TracingGeneratePdfButton.vue';
+import VueAjaxAdvancedSelectTagUnic from "@/components/Inputs/VueAjaxAdvancedSelectTagUnic.vue";
 
 export default {
     props: {
+        config: {
+            type: String,
+            default: ''
+        },
         label: {
             type: String,
             default: 'Seguimiento'
@@ -87,10 +100,15 @@ export default {
             type: Boolean,
             default: true
         },
+        tagsInformantRoleDataUrl: {
+            type: String,
+            default: ''
+        }
     },
     components: {
         VueTextarea,
-        TracingGeneratePdfButton
+        TracingGeneratePdfButton,
+        VueAjaxAdvancedSelectTagUnic
     },
     computed: {
         showOldTracings() {
@@ -126,7 +144,8 @@ export default {
         add() {
             this.newTracing.push({
                 key: new Date().getTime() + Math.round(Math.random() * 10000),
-                description: ''
+                description: '',
+                informant_role: ''
             });
         },
         remove(index) {

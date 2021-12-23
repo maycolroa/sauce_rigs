@@ -13,6 +13,10 @@
                 :disabled="true"
             >
             </vue-textarea>
+            <b-form-row v-if="config == 'harinera'">
+                <vue-ajax-advanced-select-tag-unic class="col-md-12" v-model="tracing.informant_role" :disabled="true" name="informant_role"  label="Rol informante" placeholder="Seleccione el rol del informante" :url="tagsInformantRoleDataUrl" :multiple="false" :allowEmpty="true" :taggable="true">
+                        </vue-ajax-advanced-select-tag-unic>
+            </b-form-row>
         </div>
         <h5 v-if="showNoTracingsRegisteredLabel" class="col-md-12 text-center">No hay información registrada</h5>
     </div>
@@ -20,6 +24,7 @@
 
 <script>
 import VueTextarea from "@/components/Inputs/VueTextarea.vue";
+import VueAjaxAdvancedSelectTagUnic from "@/components/Inputs/VueAjaxAdvancedSelectTagUnic.vue";
 
 export default {
     props: {
@@ -32,10 +37,19 @@ export default {
             default() {
                 return [];
             }
+        },
+        config: {
+            type: String,
+            default: ''
+        },
+        tagsInformantRoleDataUrl: {
+            type: String,
+            default: ''
         }
     },
     components: {
-        VueTextarea
+        VueTextarea,
+        VueAjaxAdvancedSelectTagUnic
     },
     computed: {
         showOldTracings() {
