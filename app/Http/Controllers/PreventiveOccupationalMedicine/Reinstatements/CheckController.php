@@ -9,6 +9,8 @@ use App\Facades\Check\Facades\CheckManager;
 use App\Models\General\Company;
 use App\Models\PreventiveOccupationalMedicine\Reinstatements\Check;
 use App\Models\PreventiveOccupationalMedicine\Reinstatements\CheckFile;
+use App\Models\PreventiveOccupationalMedicine\Reinstatements\TagsReinstatementCondition;
+use App\Models\PreventiveOccupationalMedicine\Reinstatements\TagsInformantRole;
 use App\Http\Requests\PreventiveOccupationalMedicine\Reinstatements\CheckRequest;
 use App\Jobs\PreventiveOccupationalMedicine\Reinstatements\CheckExportJob;
 use Illuminate\Support\Facades\Storage;
@@ -172,6 +174,12 @@ class CheckController extends Controller
                 return $this->respondHttp500();
             }
 
+            if (!CheckManager::saveTags('App\Models\PreventiveOccupationalMedicine\Reinstatements\TagsReinstatementCondition', $check, 'reinstatement_condition', $request->reinstatement_condition))
+            {
+                $check->delete();
+                return $this->respondHttp500();
+            }
+
             DB::commit();
 
         } catch (Exception $e){
@@ -244,6 +252,9 @@ class CheckController extends Controller
                 return $this->respondHttp500();
 
             if (!CheckManager::saveFiles($check, $request, $this->user))
+                return $this->respondHttp500();
+
+            if (!CheckManager::saveTags('App\Models\PreventiveOccupationalMedicine\Reinstatements\TagsReinstatementCondition', $check, 'reinstatement_condition', $request->reinstatement_condition))
                 return $this->respondHttp500();
 
             CheckManager::deleteData($check, $request->get('delete'));
@@ -365,7 +376,8 @@ class CheckController extends Controller
                 'id' => $tracing->id,
                 'description' => $tracing->description,
                 'made_by' => $tracing->madeBy->name,
-                'updated_at' => $tracing->updated_at->toDateString()
+                'updated_at' => $tracing->updated_at->toDateString(),
+                'informant_role' => $tracing->informant_role
             ]);
         }
 
@@ -776,6 +788,10 @@ class CheckController extends Controller
         {
             $pdf = PDF::loadView('pdf.reporteReinstatementsFamilia', ['check' => $checks, 'locationForm' => $this->getLocationFormConfModule()] );
         }
+        else if($formModel == 'harinera')
+        {
+            $pdf = PDF::loadView('pdf.reporteReinstatementsHarinera', ['check' => $checks, 'locationForm' => $this->getLocationFormConfModule()] );
+        }
 
         $pdf->setPaper('A3', 'landscape');
 
@@ -795,5 +811,39 @@ class CheckController extends Controller
         $interval = $start->diff($end);
 
         return $interval->format('%y años %m meses y %d dias');
+    }
+
+    public function multiselectReinstatementcondition(Request $request)
+    {
+        if($request->has('keyword'))
+        {
+            $keyword = "%{$request->keyword}%";
+            $tags = TagsReinstatementCondition::select("id", "name")
+                ->where(function ($query) use ($keyword) {
+                    $query->orWhere('name', 'like', $keyword);
+                })
+                ->take(30)->pluck('id', 'name');
+
+            return $this->respondHttp200([
+                'options' => $this->multiSelectFormat($tags)
+            ]);
+        }
+    }
+
+    public function multiselectInformantRole(Request $request)
+    {
+        if($request->has('keyword'))
+        {
+            $keyword = "%{$request->keyword}%";
+            $tags = TagsInformantRole::select("id", "name")
+                ->where(function ($query) use ($keyword) {
+                    $query->orWhere('name', 'like', $keyword);
+                })
+                ->take(30)->pluck('id', 'name');
+
+            return $this->respondHttp200([
+                'options' => $this->multiSelectFormat($tags)
+            ]);
+        }
     }
 }

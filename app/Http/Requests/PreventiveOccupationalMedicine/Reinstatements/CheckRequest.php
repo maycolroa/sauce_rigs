@@ -57,6 +57,15 @@ class CheckRequest extends FormRequest
             }
         }
 
+        if ($this->has('reinstatement_condition') && is_array($this->input('reinstatement_condition')))
+        {
+            foreach ($this->input('reinstatement_condition') as $key => $value)
+            {
+                $data['reinstatement_condition'][$key] = json_decode($value, true);
+                $this->merge($data);
+            }
+        }
+
         return $this->all();
     }
 

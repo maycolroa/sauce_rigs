@@ -37,7 +37,7 @@ class ElementRequest extends FormRequest
 
         if ($this->has('mark'))
         {
-            foreach ([$this->input('mark')] as $key => $value)
+            foreach ($this->input('mark') as $key => $value)
             {
                 $data['mark'][$key] = json_decode($value, true);
                 $this->merge($data);

@@ -20,6 +20,7 @@ use App\Rules\Reinstatements\RequiredIfInProcessIsNo;
 use App\Rules\Reinstatements\EndRestrictionsBePresent;
 use App\Rules\Reinstatements\RequiredIfHasIncapacitated;
 use App\Traits\ConfigurableFormTrait;
+use App\Traits\UtilsTrait;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
@@ -30,7 +31,7 @@ use DB;
 
 class CheckManager
 {
-    use ConfigurableFormTrait;
+    use ConfigurableFormTrait, UtilsTrait;
 
     protected $formModel;
 
@@ -81,15 +82,17 @@ class CheckManager
 
             foreach ($tracingDescription as $tracing)
             {
-                $tracing = json_decode($tracing);
+                $tracing = json_decode($tracing, true);
 
                 $newTracing = (new ReflectionClass($class))->newInstanceArgs([[
-                    'description' => $tracing->description
+                    'description' => $tracing['description']
                 ]]);
 
                 $newTracing->check_id = $check->id;
                 $newTracing->user_id = $madeByUser->id;
                 $newTracing->save();
+
+                $this->saveTags('App\Models\PreventiveOccupationalMedicine\Reinstatements\TagsInformantRole', $newTracing, 'informant_role', $tracing['informant_role']);
             }
 
             return true;
@@ -112,20 +115,24 @@ class CheckManager
 
         foreach ($tracingsToUpdate as $tracing)
         {
-            $tracing = json_decode($tracing);
+            $tracing = json_decode($tracing, true);
 
-            $oldTracing = (new ReflectionClass($class))->newInstanceArgs([])->where('id', $tracing->id)->first();
+            $oldTracing = (new ReflectionClass($class))->newInstanceArgs([])->where('id', $tracing['id'])->first();
 
             if (!$oldTracing)
                 continue;
 
-            if ($tracing->description != $oldTracing->description)  
+            if ($tracing['description'] != $oldTracing->description)
             {
                 $oldTracing->update([
-                    'description' => $tracing->description,
+                    'description' => $tracing['description'],
                     'user_id' => $madeByUser->id
                 ]);
+
+                
             }
+
+            $this->saveTags('App\Models\PreventiveOccupationalMedicine\Reinstatements\TagsInformantRole', $oldTracing, 'informant_role', $tracing['informant_role']);
         }
     }
 
@@ -186,6 +193,30 @@ class CheckManager
             }
 
             $check->$relation()->saveMany($monitoringsToSave);
+
+            return true;
+
+        } catch (Exception $e) {
+            $this->handleError($e);
+            return false;
+        }
+    }
+
+    /**
+     * saves a $new_tracing to the specified check and attaches it to the madeByUser
+     * @param  Check  $check
+     * @param  string $tracingDescription
+     * @param  User   $madeByUser
+     * @return boolean
+     */
+    public function saveTags($class, $check, $column, $tags)
+    {
+        try
+        {
+            $tags = $this->tagsPrepare($tags);
+            $this->tagsSave($tags, (new ReflectionClass($class))->newInstanceArgs([]));
+
+            $check->update([$column => $tags->implode(',')]);
 
             return true;
 
@@ -271,7 +302,7 @@ class CheckManager
      */
     public function checkNullAttrs(CheckRequest $request, $secCompanyId)
     {
-        $valuesToUpdate = $request->all();
+        $valuesToUpdate = $request->except(['reinstatement_condition']);
         $valuesToUpdate = $this->checkNullRecommendations($valuesToUpdate, $valuesToUpdate['has_recommendations'], $valuesToUpdate['indefinite_recommendations']);
         $valuesToUpdate = $this->checkNullEmitterOrigin($valuesToUpdate, $valuesToUpdate['in_process_origin'], $valuesToUpdate['process_origin_done']);
         $valuesToUpdate = $this->checkNullPcl($valuesToUpdate, $valuesToUpdate['in_process_pcl'], $valuesToUpdate['process_pcl_done']);
@@ -574,14 +605,20 @@ class CheckManager
 
     public function getTracingOthers($employee_id, $check_id, $table)
     {
-        $checks = Check::select(
-                "{$table}.id AS id",
-                "{$table}.description AS descripcion",
-                "{$table}.updated_at AS updated_at",
-                'sau_users.name AS name',
-                DB::raw('CONCAT(sau_reinc_cie10_codes.code, " - ", sau_reinc_cie10_codes.description) AS diagnostico'),
-                'sau_reinc_checks.disease_origin AS disease_origin'
-            )
+        if ($table == 'sau_reinc_tracings')
+            $append = ",{$table}.informant_role AS informant_role";
+        else
+            $append = "";
+
+        $checks = Check::selectRaw(
+                "{$table}.id AS id,
+                {$table}.description AS descripcion,
+                {$table}.updated_at AS updated_at,
+                sau_users.name AS name,
+                CONCAT(sau_reinc_cie10_codes.code, ' - ', sau_reinc_cie10_codes.description) AS diagnostico,
+                sau_reinc_checks.disease_origin AS disease_origin 
+                {$append}
+            ")
             ->join('sau_employees', 'sau_employees.id', 'sau_reinc_checks.employee_id')
             ->join($table, "{$table}.check_id", 'sau_reinc_checks.id' )
             ->join('sau_users', 'sau_users.id', "{$table}.user_id")
@@ -603,8 +640,8 @@ class CheckManager
                 'made_by' => $check->name,
                 'updated_at' => $check->updated_at->toDateString(),
                 'disease_origin' => $check->disease_origin,
-                'diagnosis' => $check->diagnostico
-
+                'diagnosis' => $check->diagnostico,
+                'informant_role' => isset($check->informant_role) ? $check->informant_role : null
             ]);
         }
 

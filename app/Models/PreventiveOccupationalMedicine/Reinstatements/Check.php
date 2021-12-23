@@ -108,7 +108,9 @@ class Check extends Model
         'type_qualification_origin',
         'subsystem',
         'conclusion_recommendations',
-        'position_functions_assigned_reassigned'
+        'position_functions_assigned_reassigned',
+        'reinstatement_condition',
+        'recommendations_validity'
     ];
 
     /**

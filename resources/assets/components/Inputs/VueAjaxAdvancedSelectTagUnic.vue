@@ -77,14 +77,10 @@ export default {
             return `y ${count} mas`
         },
         updateValue(event, onChange = false) {
-            let value = !this.multiple ? this.selectValue : (this.selectValue ? this.selectValue.value : '');
+
+            let value = this.selectValue ? [this.selectValue] : [];
 
             this.$emit("input", value);
-
-            if (!this.multiple)
-            {
-                this.$emit("selectedName", this.selectValue ? this.selectValue.name : '');
-            }
 
             if (onChange)
                 this.$emit("change");
@@ -113,90 +109,27 @@ export default {
                 });
         },
         addTag (newTag) {
-            this.selectValue = []
-            this.selectValue.push({
+            this.selectValue = {
                 name: newTag,
                 value: newTag
-            })
+            }
 
             this.updateValue()
         },
         setMultiselectValue() {
-            if (this.value && this.options.length > 0) {
-                if (this.multiple) {
-                    if (typeof this.value == "object") {
-                        this.selectValue = this.value;
-                    } else {
-                        this.selectValue = this.value.split(",").map(v => {
-                        
-                        return {'name': v, 'value': v}
-                        });
-                    }
-                } else {
-                    this.selectValue = this.value
-                        ? _.find(this.options, { value: this.value })
-                        : "";
-                }
+            if (this.value && this.options.length == 0 && this.taggable) {
 
-                this.updateValue()
-            }
-            else if (this.value && this.options.length == 0 && this.taggable) {
-                if (this.multiple) {
-                    if (typeof this.value == "object") {
-                        this.selectValue = this.value;
-                    } else {
-                        this.selectValue = this.value.split(",").map(v => {
-                        
-                        return {'name': v, 'value': v}
-                        });
-                    }
-                }
-                else
-                {
-                    this.selectValue = {'name': this.value, 'value': this.value}
+                this.options.push({'name': this.value, 'value': this.value})
+                this.selectValue = {
+                    name: this.value,
+                    value: this.value
                 }
 
                 this.updateValue()
             }
         },
     },
-    watch: {
-      selectedObject(){
-        this.selectValue = this.selectedObject;
-
-        if (typeof this.selectedObject == "object")
-            this.options.push(this.selectedObject);
-        else 
-            _.forIn(this.selectedObject, (value, key) => {
-                this.options.push(value);
-            })
-      },
-      emptyAll(){
-        if (this.emptyAll)
-        {
-            this.selectValue = []
-            this.options.splice(0)
-            this.$emit('updateEmpty')
-        }
-      }
-    },
     mounted() {
-        /*if (this.selectedObject) {
-            console.log(5)
-            if (typeof this.selectedObject == "object")
-            {
-                console.log(6)
-                this.options.push(this.selectedObject);
-            }
-            else 
-            {
-                console.log(7)
-                _.forIn(this.selectedObject, (value, key) => {
-                    this.options.push(value);
-                })
-            }
-        }*/
-
         setTimeout(() => {
             this.setMultiselectValue();
         }, 3000)
