@@ -204,6 +204,34 @@
                   :clasification-origin="clasificationOrigin"
                   :cancel-url="{ name: 'reinstatements-checks'}"/>
               </template>
+              <template v-if="form == 'colgate'">
+                <form-check-colgate
+                  url="/biologicalmonitoring/reinstatements/check"
+                  method="POST"
+                  employees-data-url="/selects/employees"
+                  :disease-origins="diseaseOrigins"
+                  :lateralities="lateralities"
+                  cie10-codes-data-url="/selects/cie10"
+                  :si-no="siNo"
+                  :origin-advisors="originAdvisors"
+                  regionals-data-url="/selects/regionals"
+                  headquarters-data-url="/selects/headquarters"
+                  areas-data-url="/selects/areas"
+                  processes-data-url="/selects/processes"
+                  positions-data-url="/selects/positions"
+                  restrictions-data-url="/selects/restrictions"
+                  :medical-conclusions="medicalConclusions"
+                  :labor-conclusions="laborConclusions"
+                  :origin-emitters="originEmitters"
+                  :sve-associated="sveAssociated"
+                  :medical-certificate-ueac="medicalCertificateUeac"
+                  :relocated-types="relocatedTypes"
+                  :eps-favorability-concept="epsFavorabilityConcept"
+                  :case-classification="caseClassification"
+                  tracing-others-url="/biologicalmonitoring/reinstatements/check/tracingOthers"
+                  :clasification-origin="clasificationOrigin"
+                  :cancel-url="{ name: 'reinstatements-checks'}"/>
+              </template>
             </div>
         </b-card-body>
       </b-card>
@@ -220,6 +248,7 @@ import FormCheckVivaAir from '@/components/PreventiveOccupationalMedicine/Reinst
 import FormCheckEmpresarial from '@/components/PreventiveOccupationalMedicine/Reinstatements/Checks/FormCheckEmpresarialComponent.vue';
 import FormCheckIngeomega from '@/components/PreventiveOccupationalMedicine/Reinstatements/Checks/FormCheckIngeomegaComponent.vue';
 import FormCheckFamilia from '@/components/PreventiveOccupationalMedicine/Reinstatements/Checks/FormCheckFamiliaComponent.vue';
+import FormCheckColgate from '@/components/PreventiveOccupationalMedicine/Reinstatements/Checks/FormCheckColgateComponent.vue';
 import Loading from "@/components/Inputs/Loading.vue";
 import Alerts from '@/utils/Alerts.js';
 import GlobalMethods from '@/utils/GlobalMethods.js';
@@ -238,6 +267,7 @@ export default {
     FormCheckManPower,
     FormCheckIngeomega,
     FormCheckFamilia,
+    FormCheckColgate,
     Loading
   },
   data(){
