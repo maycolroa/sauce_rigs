@@ -166,6 +166,7 @@
                     @if($check->has_recommendations == 'SI')
                     <th>Fecha Inicio Recomendaciones</th>
                     <th>¿Recomendaciones indefinidas?</th>
+                    <th>Fecha Fin Recomendaciones</th>
                     @endif
                 </tr>                
                 <tr>
@@ -173,34 +174,38 @@
                     @if($check->has_recommendations == 'SI')
                     <td>{{date('Y-m-d', strtotime($check->start_recommendations))}}</td>
                     <td>{{$check->indefinite_recommendations}}</td>
+                    <td>{{$check->end_recommendations ? date('Y-m-d', strtotime($check->end_recommendations)) : '-'}}</td>
                     @endif
                 </tr>
                 @if($check->has_recommendations == 'SI')
                 <tr>
-                    <th>Fecha Fin Recomendaciones</th>
+                    <th>Vigencia Recomendaciones</th>
                     <th>Fecha de seguimiento a recomendaciones</th>
                     <th>Procedencia de las recomendaciones</th>
+                    <th>¿Reubicado?</th>
                 </tr>
                 <tr>
-                    <td>{{$check->end_recommendations ? date('Y-m-d', strtotime($check->end_recommendations)) : '-'}}</td>
+                    <td>{{$check->recommendations_validity}}</td>
                     <td>{{date('Y-m-d', strtotime($check->monitoring_recommendations))}}</td>
                     <td>{{$check->emitter_origin}}</td>
+                    <td>{{$check->relocated}}</td>
                 </tr>
-                <tr>
-                    <th>¿Reubicado?</th>
+                <tr>                    
                     @if($check->relocated == 'NO')
                     <th>{{ Auth::user()->getKeywords()['detail_recommendations'] }}</th>
-                    <th>Cargo y funciones asignadas y/o reasignadas al trabajador</th>
+                    <th>Condición de Reincorporación</th>
+                    <th colspan="2">Cargo y funciones asignadas y/o reasignadas al trabajador</th>
+                    <th>
                     @else
                     <th>{{ Auth::user()->getKeywords()['position'] }} Actualizado</th>
                     <th>{{ Auth::user()->getKeywords()['regional'] }} Actualizada</th>
                     @endif
                 </tr>
-                <tr>
-                    <td>{{$check->relocated}}</td>
+                <tr>                    
                     @if($check->relocated == 'NO')
                     <td>{{$check->detail}}</td>
-                    <td>{{$check->position_functions_assigned_reassigned}}</td>
+                    <td>{{$check->reinstatement_condition}}</td>
+                    <td colspan="2">{{$check->position_functions_assigned_reassigned}}</td>
                     @else
                     <td>{{ isset($check->relocatedPosition['name']) ? $check->relocatedPosition['name'] : '' }}</td>
                     <td>{{ isset($check->relocatedRegional['name']) ? $check->relocatedRegional['name'] : '' }}</td>
@@ -209,12 +214,14 @@
                     @if($check->relocated == 'SI')
                         @if ($locationForm['headquarter'] == 'NO')
                             <tr>
-                                <th colspan="2">{{ Auth::user()->getKeywords()['detail_recommendations'] }}</th>
-                                <th colspan="2">Cargo y funciones asignadas y/o reasignadas al trabajador</th>
+                                <th>{{ Auth::user()->getKeywords()['detail_recommendations'] }}</th>
+                                <th>Condición de Reincorporación</th>
+                                <th>Cargo y funciones asignadas y/o reasignadas al trabajador</th>
                             </tr>
                             <tr>
-                                <td colspan="2">{{$check->detail}}</td>
-                                <td colspan="2">{{$check->position_functions_assigned_reassigned}}</td>
+                                <td>{{$check->detail}}</td>
+                                <td>{{$check->reinstatement_condition}}</td>
+                                <td>{{$check->position_functions_assigned_reassigned}}</td>
                             </tr>
                         @endif
                         
@@ -222,11 +229,13 @@
                             <tr>
                                 <th>{{ Auth::user()->getKeywords()['headquarter'] }} Actualizada</th>
                                 <th>{{ Auth::user()->getKeywords()['detail_recommendations'] }}</th>
+                                <th>Condición de Reincorporación</th>
                                 <th>Cargo y funciones asignadas y/o reasignadas al trabajador</th>
                             </tr>
                             <tr>
                                 <td>{{ isset($check->relocatedHeadquarter['name']) ? $check->relocatedHeadquarter['name'] : '' }}</td>
                                 <td>{{$check->detail}}</td>
+                                <td>{{$check->reinstatement_condition}}</td>
                                 <td>{{$check->position_functions_assigned_reassigned}}</td>
                             </tr>
                         @endif
@@ -243,9 +252,11 @@
                                 <td>{{$check->detail}}</td>
                             </tr>
                             <tr>
+                                <th>Condición de Reincorporación</th>
                                 <th colspan="3">Cargo y funciones asignadas y/o reasignadas al trabajador</th>
                             </tr>
                             <tr>
+                                <td>{{$check->reinstatement_condition}}</td>
                                 <td>{{$check->position_functions_assigned_reassigned}}</td>
                             </tr>
                         @endif
@@ -474,16 +485,18 @@
         <table class="table-general">
             <thead>
                 <tr>
-                    <td colspan="3">{{ Auth::user()->getKeywords()['tracings'] }}</td>
+                    <td colspan="4"><b>{{ Auth::user()->getKeywords()['tracings'] }}</b></td>
                 </tr>
                 <tr>
                     <th>Creador</th>
+                    <th>Rol</th>
                     <th>Fecha</th>
                     <th>Descripción</th>
                 </tr>
                 @foreach($check->tracings as $tracing)
                 <tr>
                     <td>{{$tracing->madeBy->name}}</td>
+                    <td>{{$tracing->informant_role}}</td>
                     <td>{{date('Y-m-d', strtotime($tracing->created_at))}}</td>
                     <td>{{$tracing->description}}</td>
                 </tr>
@@ -498,7 +511,7 @@
         <table class="table-general">
             <thead>
                 <tr>
-                    <td colspan="3">{{ Auth::user()->getKeywords()['labor_notes'] }}</td>
+                    <td colspan="3"><b>{{ Auth::user()->getKeywords()['labor_notes'] }}</b></td>
                 </tr>
                 <tr>
                     <th>Creador</th>

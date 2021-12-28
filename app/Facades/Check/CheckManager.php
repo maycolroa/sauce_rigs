@@ -20,7 +20,6 @@ use App\Rules\Reinstatements\RequiredIfInProcessIsNo;
 use App\Rules\Reinstatements\EndRestrictionsBePresent;
 use App\Rules\Reinstatements\RequiredIfHasIncapacitated;
 use App\Traits\ConfigurableFormTrait;
-use App\Traits\UtilsTrait;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
@@ -31,7 +30,7 @@ use DB;
 
 class CheckManager
 {
-    use ConfigurableFormTrait, UtilsTrait;
+    use ConfigurableFormTrait;
 
     protected $formModel;
 
