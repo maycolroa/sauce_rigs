@@ -156,6 +156,24 @@
                   :clasification-origin="clasificationOrigin"
                   :cancel-url="{ name: 'reinstatements-checks'}"/>
               </template>
+              <template v-if="form == 'harinera'">
+                <form-check-harinera
+                  url="/biologicalmonitoring/reinstatements/check"
+                  method="POST"
+                  :check="data"
+                  :view-only="true"
+                  :disease-origins="diseaseOrigins"
+                  :lateralities="lateralities"
+                  :si-no="siNo"
+                  :origin-advisors="originAdvisors"
+                  :medical-conclusions="medicalConclusions"
+                  :labor-conclusions="laborConclusions"
+                  :origin-emitters="originEmitters"
+                  :recommendations-validity="recommendationsValidity"
+                  tracing-others-url="/biologicalmonitoring/reinstatements/check/tracingOthers"
+                  :clasification-origin="clasificationOrigin"
+                  :cancel-url="{ name: 'reinstatements-checks'}"/>
+              </template>
             </div>
         </b-card-body>
       </b-card>
@@ -172,6 +190,7 @@ import FormCheckVivaAir from '@/components/PreventiveOccupationalMedicine/Reinst
 import FormCheckEmpresarial from '@/components/PreventiveOccupationalMedicine/Reinstatements/Checks/FormCheckEmpresarialComponent.vue';
 import FormCheckIngeomega from '@/components/PreventiveOccupationalMedicine/Reinstatements/Checks/FormCheckIngeomegaComponent.vue';
 import FormCheckFamilia from '@/components/PreventiveOccupationalMedicine/Reinstatements/Checks/FormCheckFamiliaComponent.vue';
+import FormCheckHarinera from '@/components/PreventiveOccupationalMedicine/Reinstatements/Checks/FormCheckHarineraComponent.vue';
 import Loading from "@/components/Inputs/Loading.vue";
 import Alerts from '@/utils/Alerts.js';
 import GlobalMethods from '@/utils/GlobalMethods.js';
@@ -190,6 +209,7 @@ export default {
     FormCheckManPower,
     FormCheckIngeomega,
     FormCheckFamilia,
+    FormCheckHarinera,
     Loading
   },
   data () {
@@ -210,7 +230,8 @@ export default {
       epsFavorabilityConcept: [],
       caseClassification: [],
       typeQualificationControversy: [],
-      clasificationOrigin: []
+      clasificationOrigin: [],
+      recommendationsValidity: []
     }
   },
   created(){
@@ -234,6 +255,11 @@ export default {
       if (this.form == 'hptu')
       {
         this.fetchOptions('typeQualificationControversy', 'reinc_select_type_qualification_controversy')
+      }
+
+      if (this.form == 'harinera')
+      {
+        this.fetchOptions('recommendationsValidity', 'reinc_select_recommendations_validity')
       }
       
       axios.get(`/biologicalmonitoring/reinstatements/check/${this.$route.params.id}`)

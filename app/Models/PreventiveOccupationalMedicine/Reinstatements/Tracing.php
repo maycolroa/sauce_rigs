@@ -20,6 +20,7 @@ class Tracing extends Model
      */
     protected $fillable = [
         'description', 
+        'informant_role',
         'check_id',
         'user_id'
     ];

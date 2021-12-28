@@ -251,6 +251,8 @@ Route::middleware(['auth'])->group(function () {
         Route::post('tagsTypeEpp', 'IndustrialSecure\EPP\ElementController@multiselectTypes');
         Route::post('tagsMarkEpp', 'IndustrialSecure\EPP\ElementController@multiselectMarks');
         Route::post('tagsStandarApplyEpp', 'IndustrialSecure\EPP\ElementController@multiselectApplicableStandard');
+        Route::post('tagsReincReinstatementcondition', 'PreventiveOccupationalMedicine\Reinstatements\CheckController@multiselectReinstatementcondition');
+        Route::post('tagsReincInformantRole', 'PreventiveOccupationalMedicine\Reinstatements\CheckController@multiselectInformantRole');
 
         Route::prefix('evaluations')->group(function () {
           Route::post('evaluations', 'LegalAspects\Contracs\EvaluationController@multiselectEvaluations');
