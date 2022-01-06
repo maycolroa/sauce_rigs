@@ -143,6 +143,14 @@
           <div class="col-md-12" style="padding-left: 15px; padding-right: 15px;">
             <hr class="border-dark container-m--x mt-0 mb-4">
           </div>
+
+          <b-form-row>
+            <vue-radio :disabled="viewOnly" :checked="form.has_incapacitated" class="col-md-6 offset-md-3" v-model="form.has_incapacitated" :options="siNoCon" name="has_incapacitated" :error="form.errorsFor('has_incapacitated')" label="¿Incapacidad?"></vue-radio>
+          </b-form-row>
+
+          <div class="col-md-12" style="padding-left: 15px; padding-right: 15px;">
+            <hr class="border-dark container-m--x mt-0 mb-4">
+          </div>
           
           <b-form-row>
             <div class="col-md-6">
@@ -645,7 +653,12 @@ export default {
       },
       disableWacth: this.disableWacthSelectInCreated,
       tracingOtherReport: [],
-      laborNotesOtherReport: []
+      laborNotesOtherReport: [],
+      siNoCon: [
+        {text: 'SI', value: 'SI'},
+        {text: 'NO', value: 'NO'},
+        {text: 'CONTINUA', value: 'CONTINUA'}
+      ],
     };
   },
   methods: {
