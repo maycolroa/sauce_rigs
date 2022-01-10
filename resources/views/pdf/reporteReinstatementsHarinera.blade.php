@@ -187,7 +187,7 @@
                 <tr>
                     <td>{{$check->recommendations_validity}}</td>
                     <td>{{date('Y-m-d', strtotime($check->monitoring_recommendations))}}</td>
-                    <td>{{$check->emitter_origin}}</td>
+                    <td>{{$check->origin_recommendations}}</td>
                     <td>{{$check->relocated}}</td>
                 </tr>
                 <tr>                    
