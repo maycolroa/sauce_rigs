@@ -10,11 +10,13 @@ use App\Models\Administrative\Employees\Employee;
 use App\Models\IndustrialSecure\Epp\Element;
 use App\Models\IndustrialSecure\Epp\ElementTransactionEmployee;
 use App\Http\Requests\IndustrialSecure\Epp\ElementTransactionsRequest;
+use App\Http\Requests\IndustrialSecure\Epp\ElementTransactionsReturnsRequest;
 use App\Models\IndustrialSecure\Epp\TagsType;
 use App\Models\IndustrialSecure\Epp\FileTransactionEmployee;
 use App\Models\IndustrialSecure\Epp\ElementBalanceSpecific;
 use App\Models\IndustrialSecure\Epp\ElementBalanceLocation;
 use App\Models\IndustrialSecure\Epp\HashSelectDeliveryTemporal;
+use App\Models\IndustrialSecure\Epp\EppWastes;
 use Validator;
 use Illuminate\Support\Facades\Storage;
 use DB;
@@ -64,6 +66,7 @@ class TransactionController extends Controller
         ->join('sau_epp_elements_balance_specific', 'sau_epp_elements_balance_specific.id', 'sau_epp_transaction_employee_element.element_id')
         ->join('sau_epp_elements_balance_ubication', 'sau_epp_elements_balance_ubication.id','sau_epp_elements_balance_specific.element_balance_id')
         ->join('sau_epp_elements', 'sau_epp_elements.id', 'sau_epp_elements_balance_ubication.element_id')
+        ->where('sau_epp_transactions_employees.type', 'Entrega')
         ->groupBy('sau_epp_transactions_employees.id');
 
         return Vuetable::of($transactions)
@@ -77,6 +80,19 @@ class TransactionController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(ElementTransactionsRequest $request)
+    {
+        if ($request->type == 'Entrega')
+        {
+            $this->storeDelivery($request);
+        }
+        else
+        {
+            $this->storeReturns($request);
+        }
+
+    }
+
+    public function storeDelivery(ElementTransactionsRequest $request)
     {
         Validator::make($request->all(), [
             "files.*.file" => [
@@ -182,7 +198,7 @@ class TransactionController extends Controller
 
                 $file = base64_decode($image);
 
-                Storage::disk('s3')->put('industrialSecure/epp/transaction/delivery/files/'.$this->company.'/' . $imageName, $file, 'public');
+                Storage::disk('s3')->put('industrialSecure/epp/transaction/files/'.$this->company.'/' . $imageName, $file, 'public');
 
                 $delivery->firm_employee = $imageName;
 
@@ -207,6 +223,138 @@ class TransactionController extends Controller
 
         return $this->respondHttp200([
             'message' => 'Se creo la entrrga'
+        ]);
+    }
+
+    public function storeReturns(ElementTransactionsRequest $request)
+    {
+        Validator::make($request->all(), [
+            "files.*.file" => [
+                function ($attribute, $value, $fail)
+                {
+                    if ($value && !is_string($value) && 
+                        $value->getClientMimeType() != 'image/png' && 
+                        $value->getClientMimeType() != 'image/jpg' &&
+                        $value->getClientMimeType() != 'image/jpeg')
+
+                        $fail('Imagen debe ser PNG ó JPG ó JPEG');
+                },
+            ]
+        ])->validate();
+
+        DB::beginTransaction();
+
+        try
+        {
+            $employee = Employee::findOrFail($request->employee_id);
+
+            $returns = new ElementTransactionEmployee();
+            $returns->employee_id = $request->employee_id;
+            $returns->position_employee_id = $employee->position->id;
+            $returns->type = 'Devolucion';
+            $returns->observations = $request->observations ? $request->observations : NULL;
+            $returns->location_id = $request->location_id;
+            $returns->company_id = $this->company;
+            
+            if(!$returns->save())
+                return $this->respondHttp500();
+
+            $elements_sync = [];
+
+            foreach ($request->elements_id as $key => $value) 
+            {
+                $element = Element::find($value['id_ele']);
+
+                if ($element)
+                {
+                    $asignado = ElementBalanceSpecific::where('hash', $value['code'])->where('location_id', $request->location_id)->first();
+
+                    if ($asignado->state != 'Asignado')
+                        return $this->respondWithError('El elemento ' . $element->name . ' no se encuentra asignado en la ubicación seleccionada');
+
+                    if ($value['waste'] == 'NO')
+                    {                    
+                        $asignado->state = 'Disponible';
+                        $asignado->save();
+
+                        array_push($elements_sync, $asignado->id);
+
+                        $element_balance = ElementBalanceLocation::find($asignado->element_balance_id);
+
+                        $element_balance->quantity_available = $element_balance->quantity_available + 1;
+
+                        $element_balance->quantity_allocated = $element_balance->quantity_allocated - 1;
+
+                        $element_balance->save();
+                    }
+                    else
+                    {
+                        $asignado->state = 'Desechado';
+                        $asignado->save();
+
+                        $desecho = new EppWastes;
+                        $desecho->company_id = $this->company;
+                        $desecho->employee_id = $request->employee_id;
+                        $desecho->element_id = $asignado->id;
+                        $desecho->location_id = $request->location_id;
+                        $desecho->code_element = $value['code'];
+                        $desecho->save();
+
+                        array_push($elements_sync, $asignado->id);
+
+                        $element_balance = ElementBalanceLocation::find($asignado->element_balance_id);
+
+                        $element_balance->quantity_available = $element_balance->quantity_available - 1;
+
+                        $element_balance->quantity_allocated = $element_balance->quantity_allocated - 1;
+
+                        $element_balance->save();
+                    }
+                }
+            }
+
+            $returns->elements()->sync($elements_sync);
+
+            if ($request->firm_employee)
+            {
+                $image_64 = $request->firm_employee;
+        
+                $extension = explode('/', explode(':', substr($image_64, 0, strpos($image_64, ';')))[1])[1];
+        
+                $replace = substr($image_64, 0, strpos($image_64, ',')+1); 
+        
+                $image = str_replace($replace, '', $image_64); 
+        
+                $image = str_replace(' ', '+', $image); 
+        
+                $imageName = base64_encode($this->user->id . rand(1,10000) . now()) . '.' . $extension;
+
+                $file = base64_decode($image);
+
+                Storage::disk('s3')->put('industrialSecure/epp/transaction/files/'.$this->company.'/' . $imageName, $file, 'public');
+
+                $returns->firm_employee = $imageName;
+
+
+                if(!$returns->update())
+                    return $this->respondHttp500();
+            }
+
+            if (count($request->files) > 0)
+            {
+                $this->processFiles($request->get('files'), $returns->id);
+            }
+
+            DB::commit();
+
+        } catch (\Exception $e) {
+            \Log::info($e->getMessage());
+            //DB::rollback();
+            return $this->respondHttp500();
+        }
+
+        return $this->respondHttp200([
+            'message' => 'Se creo la devolución'
         ]);
     }
 
@@ -268,102 +416,148 @@ class TransactionController extends Controller
             $transaction->position_employee = $transaction->position->name;
             $transaction->multiselect_location = $transaction->location->multiselect();
 
-            $info = $this->employeeInfo($transaction->employee_id);
-
-            $element_balance_id = [];
-            
-            foreach ($transaction->elements as $key => $value) 
-            {
-                if (!in_array($value->element_balance_id, $element_balance_id))
-                {
-                    array_push($element_balance_id, $value->element_balance_id);
-                }
-                
-            }
-
             $multiselect = [];
             $elements_id = [];
-
-            $element_balance = ElementBalanceLocation::select('sau_epp_elements_balance_ubication.id')
-            ->join('sau_epp_elements', 'sau_epp_elements.id', 'sau_epp_elements_balance_ubication.element_id')
-            ->where('location_id', $transaction->location_id)
-            ->where('sau_epp_elements.company_id', $this->company)
-            ->get()
-            ->toArray();
-
-            $disponible = ElementBalanceSpecific::select('sau_epp_elements_balance_specific.element_balance_id')
-            ->join('sau_epp_elements_balance_ubication', 'sau_epp_elements_balance_ubication.id', 'sau_epp_elements_balance_specific.element_balance_id')
-            ->join('sau_epp_elements', 'sau_epp_elements.id', 'sau_epp_elements_balance_ubication.element_id')
-            ->where('sau_epp_elements_balance_specific.location_id', $transaction->location_id)
-            ->where('sau_epp_elements_balance_specific.state', 'Disponible')
-            ->whereIn('element_balance_id', $element_balance)
-            ->get()
-            ->toArray();
-
-            $element_disponibles = ElementBalanceLocation::select('element_id')->whereIn('sau_epp_elements_balance_ubication.id', $disponible)
-            ->join('sau_epp_elements', 'sau_epp_elements.id', 'sau_epp_elements_balance_ubication.element_id')
-            ->where('location_id', $transaction->location_id)
-            ->where('sau_epp_elements.company_id', $this->company)
-            ->get()
-            ->toArray();
-
-
-            foreach ($element_disponibles as $key => $value) {
-                $ele = Element::find($value['element_id']);
-
-                array_push( $multiselect, $ele->multiselect());
-            }
-
             $elements = [];
-            $ids_balance_saltar = [];
 
-            foreach ($element_balance_id as $key => $value) {
-                $element = $transaction->elements()->where('element_balance_id', $value)->get();
+            if ($transaction->type == 'Entrega')
+            {
+                $info = $this->employeeInfo($transaction->employee_id);
 
-                foreach ($element as $key => $e) 
+                $element_balance_id = [];
+                
+                foreach ($transaction->elements as $key => $value) 
                 {
-                    $disponible_hash = ElementBalanceSpecific::select('id', 'hash')
-                    ->where('location_id', $transaction->location_id)
-                    ->where('state', 'Disponible')
-                    ->where('element_balance_id', $e->element_balance_id)
-                    ->orderBy('id')
-                    ->pluck('hash', 'hash');
-
-                    $options = $this->multiSelectFormat($disponible_hash);
-
-                    if ($e->element->element->identify_each_element)
+                    if (!in_array($value->element_balance_id, $element_balance_id))
                     {
-                        $content = [
-                            'id' => $e->id,
-                            'id_ele' => $e->element->element->id,
-                            'quantity' => '',
-                            'type' => 'Identificable',
-                            'code' => $e->hash,
-                            'entry' => 'Manualmente',
-                            'multiselect_element' => $e->element->element->multiselect()
-                        ];
+                        array_push($element_balance_id, $value->element_balance_id);
+                    }                    
+                }
 
-                        array_push($elements, ['element' => $content, 'options' => $options]);
-                    }
-                    else
+                $element_balance = ElementBalanceLocation::select('sau_epp_elements_balance_ubication.id')
+                ->join('sau_epp_elements', 'sau_epp_elements.id', 'sau_epp_elements_balance_ubication.element_id')
+                ->where('location_id', $transaction->location_id)
+                ->where('sau_epp_elements.company_id', $this->company)
+                ->get()
+                ->toArray();
+
+                $disponible = ElementBalanceSpecific::select('sau_epp_elements_balance_specific.element_balance_id')
+                ->join('sau_epp_elements_balance_ubication', 'sau_epp_elements_balance_ubication.id', 'sau_epp_elements_balance_specific.element_balance_id')
+                ->join('sau_epp_elements', 'sau_epp_elements.id', 'sau_epp_elements_balance_ubication.element_id')
+                ->where('sau_epp_elements_balance_specific.location_id', $transaction->location_id)
+                ->where('sau_epp_elements_balance_specific.state', 'Disponible')
+                ->whereIn('element_balance_id', $element_balance)
+                ->get()
+                ->toArray();
+
+                $element_disponibles = ElementBalanceLocation::select('element_id')->whereIn('sau_epp_elements_balance_ubication.id', $disponible)
+                ->join('sau_epp_elements', 'sau_epp_elements.id', 'sau_epp_elements_balance_ubication.element_id')
+                ->where('location_id', $transaction->location_id)
+                ->where('sau_epp_elements.company_id', $this->company)
+                ->get()
+                ->toArray();
+
+
+                foreach ($element_disponibles as $key => $value) {
+                    $ele = Element::find($value['element_id']);
+
+                    array_push( $multiselect, $ele->multiselect());
+                }
+
+                $ids_balance_saltar = [];
+
+                foreach ($element_balance_id as $key => $value) {
+                    $element = $transaction->elements()->where('element_balance_id', $value)->get();
+
+                    foreach ($element as $key => $e) 
                     {
-                        if (!in_array($e->element_balance_id, $ids_balance_saltar))
+                        $disponible_hash = ElementBalanceSpecific::select('id', 'hash')
+                        ->where('location_id', $transaction->location_id)
+                        ->where('state', 'Disponible')
+                        ->where('element_balance_id', $e->element_balance_id)
+                        ->orderBy('id')
+                        ->pluck('hash', 'hash');
+
+                        $options = $this->multiSelectFormat($disponible_hash);
+
+                        if ($e->element->element->identify_each_element)
                         {
                             $content = [
                                 'id' => $e->id,
                                 'id_ele' => $e->element->element->id,
-                                'quantity' => $element->count(),
-                                'type' => 'No Identificable',
-                                'code' => '',
+                                'quantity' => '',
+                                'type' => 'Identificable',
+                                'code' => $e->hash,
                                 'entry' => 'Manualmente',
                                 'multiselect_element' => $e->element->element->multiselect()
                             ];
 
                             array_push($elements, ['element' => $content, 'options' => $options]);
-                            array_push($ids_balance_saltar, $e->element_balance_id);
                         }
+                        else
+                        {
+                            if (!in_array($e->element_balance_id, $ids_balance_saltar))
+                            {
+                                $content = [
+                                    'id' => $e->id,
+                                    'id_ele' => $e->element->element->id,
+                                    'quantity' => $element->count(),
+                                    'type' => 'No Identificable',
+                                    'code' => '',
+                                    'entry' => 'Manualmente',
+                                    'multiselect_element' => $e->element->element->multiselect()
+                                ];
+
+                                array_push($elements, ['element' => $content, 'options' => $options]);
+                                array_push($ids_balance_saltar, $e->element_balance_id);
+                            }
+                        }
+                        
                     }
-                    
+                }
+            }
+            else
+            {
+                foreach ($transaction->elements as $key => $value)
+                {   
+                    $element = ElementBalanceSpecific::select('state')
+                    ->where('location_id', $transaction->location_id)
+                    ->where('id', $value->id)
+                    ->where('element_balance_id', $value->element_balance_id)
+                    ->first();
+
+                    if ($value->element->element->identify_each_element)
+                    {
+                        $content = [
+                            'id' => $value->id,
+                            'id_ele' => $value->element->element->id,
+                            'type' => 'Identificable',
+                            'quantity' => 1,
+                            'code' => $value->hash,
+                            'multiselect_element' => $value->element->element->multiselect(),
+                            'key' => (rand(1,20000) + Carbon::now()->timestamp + rand(1,10000) + Carbon::now()->timestamp) * rand(1,20),
+                            'wastes' => $element->state == 'Desechado' ? 'SI' : 'NO'
+                        ];
+
+                        array_push($elements, $content);
+                        array_push( $multiselect, $value->element->element->multiselect());
+                    }
+                    else
+                    {
+                        $content = [
+                            'id' => $value->id,
+                            'id_ele' => $value->element->element->id,
+                            'quantity' => 1,
+                            'type' => 'No Identificable',
+                            'code' => $value->hash,
+                            'multiselect_element' => $value->element->element->multiselect(),
+                            'key' => (rand(1,20000) + Carbon::now()->timestamp + rand(1,10000) + Carbon::now()->timestamp) * rand(1,20),
+                            'wastes' => $element->state == 'Desechado' ? 'SI' : 'NO'
+                        ];
+
+                        array_push($elements, $content);
+                        array_push( $multiselect, $value->element->element->multiselect());
+                    }                                
                 }
             }
 
@@ -443,6 +637,19 @@ class TransactionController extends Controller
             ]
         ])->validate();
 
+        if ($transaction->type == 'Entrega')
+        {
+            $this->updateDelivery($request, $transaction);
+        }
+        else
+        {
+            $this->updateReturn($request, $transaction);
+        }
+
+    }
+
+    public function updateDelivery(ElementTransactionsRequest $request, ElementTransactionEmployee $transaction)
+    { 
         DB::beginTransaction();
 
         try
@@ -456,7 +663,7 @@ class TransactionController extends Controller
             $transaction->location_id = $request->location_id;
             
             if(!$transaction->update()){
-            return $this->respondHttp500();
+                return $this->respondHttp500();
             }
 
             $elements_sync = [];
@@ -632,7 +839,7 @@ class TransactionController extends Controller
             {
                 if ($request->firm_employee != $transaction->firm_employee)
                 {
-                    Storage::disk('s3')->delete('industrialSecure/epp/transaction/delivery/files/'.$this->company.'/' . $transaction->firm_employee);
+                    Storage::disk('s3')->delete('industrialSecure/epp/transaction/files/'.$this->company.'/' . $transaction->firm_employee);
 
                     $image_64 = $request->firm_employee;
             
@@ -648,7 +855,7 @@ class TransactionController extends Controller
 
                     $file = base64_decode($image);
 
-                    Storage::disk('s3')->put('industrialSecure/epp/transaction/delivery/files/'.$this->company.'/' . $imageName, $file, 'public');
+                    Storage::disk('s3')->put('industrialSecure/epp/transaction/files/'.$this->company.'/' . $imageName, $file, 'public');
 
                     $transaction->firm_employee = $imageName;
 
@@ -678,6 +885,126 @@ class TransactionController extends Controller
         ]);
     }
 
+    public function updateReturn(ElementTransactionsRequest $request, ElementTransactionEmployee $transaction)
+    {
+        DB::beginTransaction();
+
+        try
+        {
+            $employee = Employee::findOrFail($request->employee_id);
+
+            $transaction->employee_id = $request->employee_id;
+            $transaction->position_employee_id = $employee->position->id;
+            $transaction->type = 'Devolucion';
+            $transaction->observations = $request->observations ? $request->observations : NULL;
+            $transaction->location_id = $request->location_id;
+            
+            if(!$transaction->update()){
+                return $this->respondHttp500();
+            }
+
+            $elements_sync = [];
+
+            foreach ($request->elements_id as $key => $value) 
+            {
+                $disponible = ElementBalanceSpecific::find($value['id']);
+                $element = Element::find($value['id_ele']);
+                $element_balance = ElementBalanceLocation::find($disponible->element_balance_id);
+
+                if ($disponible->hash == $value['code'])
+                {
+                    if ($disponible->state == 'Desechado')
+                    {
+                        if ($value['waste'] == 'NO')
+                        {
+                            $disponible->state = 'Disponible';
+                            $disponible->save();
+
+                            $desecho = EppWastes::where('code_element', $value['code'])
+                            ->where('employee_id', $request->employee_id)->first();
+
+                            if ($desecho)
+                                $desecho->delete();
+
+                            $element_balance->quantity_available = $element_balance->quantity_available + 1;
+                            $element_balance->save();
+                        }
+                    }
+                    else
+                    {
+                        if ($value['waste'] == 'SI')
+                        {
+                            $disponible->state = 'Desechado';
+                            $disponible->save();
+
+                            $desecho = new EppWastes;
+                            $desecho->company_id = $this->company;
+                            $desecho->employee_id = $request->employee_id;
+                            $desecho->element_id = $disponible->id;
+                            $desecho->location_id = $request->location_id;
+                            $desecho->code_element = $value['code'];
+                            $desecho->save();
+
+                            $element_balance->quantity_available = $element_balance->quantity_available - 1;
+                            $element_balance->save();
+                        }
+                    }
+                    
+                    array_push($elements_sync, $disponible->id);
+                }
+            }
+
+            $transaction->elements()->sync($elements_sync);
+
+            if (isset($request->edit_firm) && $request->edit_firm == 'SI')
+            {
+                if ($request->firm_employee != $transaction->firm_employee)
+                {
+                    Storage::disk('s3')->delete('industrialSecure/epp/transaction/returns/files/'.$this->company.'/' . $transaction->firm_employee);
+
+                    $image_64 = $request->firm_employee;
+            
+                    $extension = explode('/', explode(':', substr($image_64, 0, strpos($image_64, ';')))[1])[1];
+            
+                    $replace = substr($image_64, 0, strpos($image_64, ',')+1); 
+            
+                    $image = str_replace($replace, '', $image_64); 
+            
+                    $image = str_replace(' ', '+', $image); 
+            
+                    $imageName = base64_encode($this->user->id . rand(1,10000) . now()) . '.' . $extension;
+
+                    $file = base64_decode($image);
+
+                    Storage::disk('s3')->put('industrialSecure/epp/transaction/returns/files/'.$this->company.'/' . $imageName, $file, 'public');
+
+                    $transaction->firm_employee = $imageName;
+
+                    if(!$transaction->update())
+                        return $this->respondHttp500();
+                }
+            }
+
+            if (count($request->files) > 0)
+            {
+                $this->processFiles($request->get('files'), $transaction->id);
+            }
+
+            $this->deleteData($request->get('delete'));
+
+            DB::commit();
+
+        } catch (\Exception $e) {
+            \Log::info($e->getMessage());
+            DB::rollback();
+            return $this->respondHttp500();
+        }
+        
+        return $this->respondHttp200([
+            'message' => 'Se actualizo la devolución'
+        ]);
+    }
+
     public function deleteData($delete)
     {
         foreach ($delete['files'] as $id)
@@ -688,7 +1015,7 @@ class TransactionController extends Controller
             {
                 $path = $file_delete->file;
                 $file_delete->delete();
-                Storage::disk('s3')->delete('industrialSecure/epp/transaction/delivery/files/' . $this->company . '/' . $path);
+                Storage::disk('s3')->delete('industrialSecure/epp/transaction/files/' . $this->company . '/' . $path);
             }
         }
 
@@ -721,19 +1048,51 @@ class TransactionController extends Controller
             Storage::disk('s3')->delete($value->path_client(false)."/".$value->file);
         }
 
-        foreach ($transaction->elements as $key => $value) 
+        if ($transaction->type == 'Entrega')
         {
-            $value->state = 'Disponible';
-            $value->save();
+            foreach ($transaction->elements as $key => $value) 
+            {
+                if ($value->state == 'Desechado')
+                    continue;
 
-            $element_balance = ElementBalanceLocation::find($value->element_balance_id);
+                $value->state = 'Disponible';
+                $value->save();
 
-            $element_balance->quantity_available = $element_balance->quantity_available + 1;
+                $element_balance = ElementBalanceLocation::find($value->element_balance_id);
 
-            $element_balance->quantity_allocated = $element_balance->quantity_allocated - 1;
+                $element_balance->quantity_available = $element_balance->quantity_available + 1;
 
-            $element_balance->save();
-            
+                $element_balance->quantity_allocated = $element_balance->quantity_allocated - 1;
+
+                $element_balance->save();
+                
+            }
+        }
+        else
+        {
+            foreach ($transaction->elements as $key => $value) 
+            {
+                if ($value->state == 'Desechado')
+                    continue;
+
+                $value->state = 'Asignado';
+                $value->save();
+
+                /*$desecho = EppWastes::where('code_element', $value->hash)
+                ->where('employee_id', $value->employee_id)->first();
+
+                if ($desecho)
+                    $desecho->delete();*/
+
+                $element_balance = ElementBalanceLocation::find($value->element_balance_id);
+
+                $element_balance->quantity_available = $element_balance->quantity_available - 1;
+
+                $element_balance->quantity_allocated = $element_balance->quantity_allocated + 1;
+
+                $element_balance->save();
+                
+            }
         }
 
         if(!$transaction->delete())

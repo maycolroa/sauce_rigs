@@ -5,7 +5,7 @@ namespace App\Http\Requests\IndustrialSecure\Epp;
 use Illuminate\Foundation\Http\FormRequest;
 use Session;
 
-class ElementTransactionsRequest extends FormRequest
+class ElementTransactionsReturnsRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -79,8 +79,8 @@ class ElementTransactionsRequest extends FormRequest
             'employee_id' => 'required|integer',
             'position_employee' => 'required|string',
             'elements_id' => 'required|array',
-            'elements_id.*.quantity' => 'integer|required_if:elements_id.*.type,No Identificable',
-            'elements_id.*.waste' => 'string|required_if:type,Devolucion',
+            'elements_id.*.quantity' => 'required|integer',
+            'elements_id.*.waste' => 'required|string',
             'files' => 'nullable|array',
             'firm_employee' => 'nullable',
             'observations' => 'nullable'

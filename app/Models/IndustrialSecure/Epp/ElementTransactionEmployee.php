@@ -53,7 +53,7 @@ class ElementTransactionEmployee extends Model
 
     public function path_base($storageLocation = true)
     {
-        $path = "industrialSecure/epp/transaction/delivery/files/";
+        $path = "industrialSecure/epp/transaction/files/";
         return $storageLocation ? storage_path("app/public/{$path}") : $path;
     }
 

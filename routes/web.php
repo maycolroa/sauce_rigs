@@ -545,6 +545,12 @@ Route::middleware(['auth'])->group(function () {
         Route::post('transaction/deletedTemporal/', 'IndustrialSecure\EPP\TransactionController@deletedTemporal');
 
         Route::get('transaction/download/file/{file}', 'IndustrialSecure\EPP\TransactionController@download');
+
+        Route::post('transactionReturns/data', 'IndustrialSecure\EPP\TransactionReturnsController@data');
+        //Route::ApiResource('transactions', 'IndustrialSecure\EPP\TransactionReturnsController');
+        Route::get('transaction/employeeReturns/{id}', 'IndustrialSecure\EPP\TransactionReturnsController@employeeInfo');        
+        Route::post('transaction/returns/eppElementsLocations', 'IndustrialSecure\EPP\TransactionReturnsController@elementsLocation');
+        Route::post('transaction/wastes/data', 'IndustrialSecure\EPP\TransactionReturnsController@dataWastes');
       });
 
       Route::prefix('tags')->group(function () {

@@ -602,6 +602,14 @@ export default [{
       ]),
       ...middleware({ 'check-permission': 'transaction_r' }, [
         {
+          name: 'industrialsecure-epps-transactions-menu',
+          path: 'epps/transactions/menu',
+          component: () =>
+            import('@/views/IndustrialSecure/epp/transactions/indexMenu')
+        }
+      ]),
+      ...middleware({ 'check-permission': 'transaction_r' }, [
+        {
           name: 'industrialsecure-epps-transactions',
           path: 'epps/transactions',
           component: () =>
@@ -630,6 +638,38 @@ export default [{
           path: 'epps/transactions/view/:id',
           component: () =>
             import('@/views/IndustrialSecure/epp/transactions/view')
+        }
+      ]),
+      ...middleware({ 'check-permission': 'transaction_r' }, [
+        {
+          name: 'industrialsecure-epps-transactions-returns',
+          path: 'epps/transactions/returns',
+          component: () =>
+            import('@/views/IndustrialSecure/epp/transactions/indexEmployeeReturns')
+        }
+      ]), 
+      ...middleware({ 'check-permission': 'transaction_c' }, [
+        {
+          name: 'industrialsecure-epps-transactions-returns-create',
+          path: 'epps/transactions/returns/create',
+          component: () =>
+            import('@/views/IndustrialSecure/epp/transactions/createReturns')
+        }
+      ]), 
+      ...middleware({ 'check-permission': 'transaction_u' }, [
+        {
+          name: 'industrialsecure-epps-transactions-returns-edit',
+          path: 'epps/transactions/returns/edit/:id',
+          component: () =>
+            import('@/views/IndustrialSecure/epp/transactions/editReturns')
+        }
+      ]),
+      ...middleware({ 'check-permission': 'transaction_r' }, [
+        {
+          name: 'industrialsecure-epps-transactions-returns-view',
+          path: 'epps/transactions/returns/view/:id',
+          component: () =>
+            import('@/views/IndustrialSecure/epp/transactions/viewReturns')
         }
       ]),
     ]

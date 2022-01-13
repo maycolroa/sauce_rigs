@@ -1238,7 +1238,7 @@ export default [
             routePush: { name: 'industrialsecure-epps-transactions-edit' },
             id: 'id',
         },
-        permission: 'elements_u'
+        permission: 'transaction_u'
         }, {
         config: {
             color: 'outline-info',
@@ -1250,7 +1250,7 @@ export default [
             routePush: { name: 'industrialsecure-epps-transactions-view' },
             id: 'id',
         },
-        permission: 'elements_r'
+        permission: 'transaction_r'
         }]
     },
     {
@@ -1262,12 +1262,88 @@ export default [
             id: 'id',
             messageConfirmation: 'Esta seguro de borrar el elemento __name__'
         },
-        permission: 'elements_d'
+        permission: 'transaction_d'
         }],
     }],
     configuration: {
         urlData: '/industrialSecurity/epp/transaction/data',
         filterColumns: true,
     }
-}
+  },
+  {
+    name: 'industrialsecure-epps-transactions-returns',
+    fields: [
+        { name: 'sau_epp_transactions_employees.id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true },
+        { name: 'sau_epp_transactions_employees.type', data: 'type', title: 'Tipo', sortable: true, searchable: true, detail: false, key: false },
+        { name: 'sau_epp_transactions_employees.employee', data: 'employee', title: 'Empleado', sortable: true, searchable: true, detail: false, key: false },
+        { name: 'sau_employees_positions.name', data: 'position', title: 'Cargo', sortable: true, searchable: true, detail: false, key: false },
+        { name: 'sau_epp_elements.name', data: 'elements', title: 'Elementos', sortable: true, searchable: true, detail: false, key: false },
+        { name: '', data: 'controlls', title: 'Controles', sortable: false, searchable: false, detail: false, key: false },
+    ],
+    'controlls': [{
+        type: 'push',
+        buttons: [{
+        config: {
+            color: 'outline-success',
+            borderless: true,
+            icon: 'ion ion-md-create',
+            title: 'Editar'
+        },
+        data: {
+            routePush: { name: 'industrialsecure-epps-transactions-returns-edit' },
+            id: 'id',
+        },
+        permission: 'transaction_u'
+        }, {
+        config: {
+            color: 'outline-info',
+            borderless: true,
+            icon: 'ion ion-md-eye',
+            title: 'Ver'
+        },
+        data: {
+            routePush: { name: 'industrialsecure-epps-transactions-returns-view' },
+            id: 'id',
+        },
+        permission: 'transaction_r'
+        }]
+    },
+    {
+        type: 'base',
+        buttons: [{
+        name: 'delete',
+        data: {
+            action: '/industrialSecurity/epp/transaction/',
+            id: 'id',
+            messageConfirmation: 'Esta seguro de borrar el elemento __name__'
+        },
+        permission: 'transaction_d'
+        }],
+    }],
+    configuration: {
+        urlData: '/industrialSecurity/epp/transactionReturns/data',
+        filterColumns: true,
+    }
+},
+{
+    name: 'industrialsecure-epps-transactions-wastes-history',
+    fields: [
+        { name: 'sau_epp_wastes.id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true },
+        { name: 'sau_epp_elements.name', data: 'name_element', title: 'Elemento', sortable: true, searchable: true, detail: false, key: false },
+        { name: 'sau_epp_locations.name', data: 'name_location', title: 'Ubicación', sortable: true, searchable: true, detail: false, key: false },
+        { name: 'sau_epp_wastes.created_at', data: 'created_at', title: 'Fecha', sortable: true, searchable: true, detail: false, key: false },
+    ],
+    'controlls': [{
+            type: 'push',
+            buttons: []
+        },
+        {
+            type: 'base',
+            buttons: [],
+        }],
+    configuration: {
+        urlData: '/industrialSecurity/epp/transaction/wastes/data',
+        filterColumns: true,
+    }
+},
 ];

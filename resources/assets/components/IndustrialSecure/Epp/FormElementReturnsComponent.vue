@@ -11,32 +11,32 @@
         </b-form-row>
       </div>
       <b-card  bg-variant="transparent" border-variant="dark" title="Elementos" class="mb-3 box-shadow-none">
+      <b-form-row style="padding-bottom: 20px;">
+        <div class="col-md-12">
+            <center><b-btn v-if="form.employee_id" variant="primary" @click="showModalHistory()" ><span class="ion ion-md-add-circle"></span>&nbsp;&nbsp;Ver historial de desechos</b-btn></center>
+        </div>
+        <show-history-qualify
+          v-if="idHistory"
+          :id="idHistory"
+          @close-modal-history="closeModalHistory"
+        />
+      </b-form-row>
       <template v-for="(element, index) in form.elements_id">
-          <div :key="element.id">
+          <div :key="element.key">
             <b-form-row>
               <div class="col-md-12">
                   <div class="float-right">
                       <b-btn v-if="!viewOnly" variant="outline-primary icon-btn borderless" size="sm" v-b-tooltip.top title="Eliminar" @click.prevent="removeElement(index)"><span class="ion ion-md-close-circle"></span></b-btn>
                   </div>
               </div>
-              <!--<vue-advanced-select class="col-md-6" v-model="element.type" :multiple="false" :options="typesElement" :hide-selected="false" name="type" label="Tipo de elemento" placeholder="Seleccione el tipo de elemento"></vue-advanced-select>-->
-              <vue-advanced-select :disabled="viewOnly" class="col-md-6" v-model="element.id_ele" name="id_ele" label="Elemento de protección personal" placeholder="Seleccione el elemento" :options="elements" :error="form.errorsFor(`elements_id.${index}.id_ele`)" @change="typeElement(index)" :allow-empty="false" :selected-object="element.multiselect_element">
+              <vue-advanced-select :disabled="true" class="col-md-6" v-model="element.id_ele" name="id_ele" label="Elemento de protección personal" placeholder="Seleccione el elemento" :options="elements" :error="form.errorsFor(`elements_id.${index}.id_ele`)" @change="typeElement(index)" :allow-empty="false" :selected-object="element.multiselect_element">
                 </vue-advanced-select>
-              <vue-input v-if="element.type == 'No Identificable'" :disabled="viewOnly" class="col-md-6" v-model="element.quantity" label="Cantidad" type="number" name="quantity" :error="form.errorsFor(`elements_id.${index}.quantity`)" placeholder="Cantidad"></vue-input>
-              <vue-radio v-if="element.type == 'Identificable'" :disabled="viewOnly" class="col-md-6" v-model="element.entry" :options="siNo" name="entry" :error="form.errorsFor(`elements_id.${index}.entry`)" label="Como desea ingresar el código del elemento?" :checked="element.entry"></vue-radio>
-              <vue-input v-if="element.type == 'Identificable' && element.entry == 'Manualmente'" :disabled="viewOnly" class="col-md-12" v-model="element.code" label="Código" type="text" name="code" :error="form.errorsFor(`elements_id.${index}.code`)" placeholder="Código" @onBlur="hashSelected(index)" ></vue-input>
-              <vue-advanced-select v-if="element.type == 'Identificable' && element.entry == 'Seleccionarlo'" :disabled="viewOnly" class="col-md-12" v-model="element.code" name="code" label="Código de elemento" placeholder="Seleccione el código" :options="codes[index]" :error="form.errorsFor(`elements_id.${index}.code`)" @selectedName="hashSelected(index)" :allow-empty="false">
-                </vue-advanced-select>
+              <vue-input v-if="element.type == 'No Identificable'" :disabled="true" class="col-md-6" v-model="element.quantity" label="Cantidad" type="number" name="quantity" :error="form.errorsFor(`elements_id.${index}.quantity`)" placeholder="Cantidad"></vue-input>
+              <vue-input v-if="element.type == 'Identificable'" :disabled="true" class="col-md-12" v-model="element.code" label="Código" type="text" name="code" :error="form.errorsFor(`elements_id.${index}.code`)" placeholder="Código"></vue-input>
+              <vue-radio :disabled="viewOnly" class="col-md-6" v-model="element.waste" :options="noSi" :name="`waste_${index}`" :error="form.errorsFor(`elements_id.${index}.waste`)" label="¿Se desechara el elemento?" :checked="element.waste"></vue-radio>
             </b-form-row>
         </div>
-      </template>
-
-      <b-form-row style="padding-bottom: 20px;">
-          <div class="col-md-12">
-              <center><b-btn variant="primary" @click.prevent="addElement()"><span class="ion ion-md-add-circle"></span>&nbsp;&nbsp;Agregar</b-btn></center>
-          </div>
-        </b-form-row>  
-      
+      </template>      
       </b-card>
     </b-card>
 
@@ -110,7 +110,7 @@
 
     <div class="row float-right pt-10 pr-10">
       <template>
-        <b-btn @click="deletedTemporal" variant="default" :to="cancelUrl" :disabled="loading">{{ viewOnly ? "Atras" : "Cancelar"}}</b-btn>&nbsp;&nbsp;
+        <b-btn variant="default" :to="cancelUrl" :disabled="loading">{{ viewOnly ? "Atras" : "Cancelar"}}</b-btn>&nbsp;&nbsp;
         <b-btn type="submit" :disabled="loading" variant="primary" v-if="!viewOnly">Finalizar</b-btn>
       </template>
     </div>
@@ -125,6 +125,7 @@ import VueRadio from "@/components/Inputs/VueRadio.vue";
 import VueFileSimple from "@/components/Inputs/VueFileSimple.vue";
 import Form from "@/utils/Form.js";
 import VueAdvancedSelect from "@/components/Inputs/VueAdvancedSelect.vue";
+import ShowHistoryQualify from "./ShowHistoryWastesComponent.vue";
 import Alerts from '@/utils/Alerts.js';
 
 export default {
@@ -134,6 +135,7 @@ export default {
     VueAjaxAdvancedSelect,
     VueAdvancedSelect,
     VueFileSimple,
+    ShowHistoryQualify,
     VueRadio
   },
   props: {
@@ -143,7 +145,7 @@ export default {
     isEdit: { type: Boolean, default: false },
     viewOnly: { type: Boolean, default: false },
     employeesDataUrl: { type: String, default: "" },
-    delivery: {
+    returns: {
       default() {
         return {
           employee_id: '',
@@ -158,7 +160,7 @@ export default {
             elements: []
           },
           edit_firm: 'NO',
-          type: 'Entrega'
+          type: 'Devolucion'
         };
       }
     }
@@ -170,31 +172,34 @@ export default {
     }
     
     setTimeout(() => {
-      this.elements = this.form.elementos
-      this.form.elements_id.splice(0);
+      if (this.isEdit || this.viewOnly)
+      {
+        this.elements = this.form.elementos
+        this.form.elements_id.splice(0);
 
-      this.form.elements_codes.forEach((eleme, key) => {
-        this.form.elements_id.push({
-          id: eleme.element.id,
-          id_ele: eleme.element.id_ele,
-          quantity: eleme.element.quantity,
-          code: eleme.element.code,
-          type: eleme.element.type,
-          entry: eleme.element.entry
+        this.form.elements_codes.forEach((eleme, key) => {
+          this.form.elements_id.push({
+            id: eleme.id,
+            id_ele: eleme.id_ele,
+            quantity: eleme.quantity,
+            code: eleme.code,
+            type: eleme.type,
+            key: eleme.key,
+            waste: eleme.wastes
+          })
         })
-        this.codes[key] = eleme.options
-      })
+      }
 
       this.loading = false;
     }, 3000)
   },
   watch: {
-    delivery() {
+    returns() {
       this.loading = false;
-      this.form = Form.makeFrom(this.delivery, this.method);
+      this.form = Form.makeFrom(this.returns, this.method);
     },
     'form.employee_id' () {
-      this.updateDetails(`/industrialSecurity/epp/transaction/employeeInfo/${this.form.employee_id}`)
+      this.updateDetails(`/industrialSecurity/epp/transaction/employeeReturns/${this.form.employee_id}`)
     },
     'form.location_id' () {
         this.uploadElements()
@@ -203,25 +208,18 @@ export default {
   data() {
     return {
       loading: this.isEdit,
-      form: Form.makeFrom(this.delivery, this.method),
+      form: Form.makeFrom(this.returns, this.method),
       tagsLocationsDataUrl: '/selects/eppLocations',
       elements: [],
       codes: [],
-      typesElement: [
-        {name: 'Identificable', value: 'Identificable'},
-        {name: 'No Identificable', value: 'No Identificable'}
-      ],
       elements_position: [],
       postData: {},
-      siNo: [
-        {text: 'Manualmente', value: 'Manualmente'},
-        {text: 'Seleccionarlo', value: 'Seleccionarlo'}
-      ],
       noSi: [
         {text: 'SI', value: 'SI'},
         {text: 'NO', value: 'NO'}
       ],
-      cargar: true
+      cargar: true,
+      idHistory: ''
     };
   },
   methods: {
@@ -246,7 +244,7 @@ export default {
         .submit(e.target.action)
         .then(response => {
           this.loading = false;
-          this.$router.push({ name: "industrialsecure-epps-transactions" });
+          this.$router.push({ name: "industrialsecure-epps-transactions-returns" });
         })
         .catch(error => {
           this.loading = false;
@@ -258,85 +256,42 @@ export default {
       axios.get(url)
       .then(response => {
           this.form.position_employee = response.data.data.position_employee;
-          this.elements_position.splice(0);
+          this.isLoading = false;
+      })
+      .catch(error => {
+        console.log(error)
+          Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
+      });
+    },
+     uploadElements()
+    {
+      this.isLoading = true;
+
+      this.postData = Object.assign({}, {employee_id: this.form.employee_id}, {location_id: this.form.location_id});
+
+      axios.post('/industrialSecurity/epp/transaction/returns/eppElementsLocations', this.postData)
+      .then(response => {
+          this.form.elements_id.splice(0);
+          this.elements = response.data.data.multiselect
 
           response.data.data.elements.forEach((eleme, key) => {
-            this.elements_position.push({
-              id_ele: eleme.id_ele,
-            })
-          })
-
-          this.isLoading = false;
-      })
-      .catch(error => {
-          Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
-      });
-    },
-    uploadElements()
-    {
-      this.isLoading = true;
-
-      this.postData = Object.assign({}, {position_elements: this.elements_position}, {location_id: this.form.location_id});
-
-      axios.post('/industrialSecurity/epp/transaction/eppElementsLocations', this.postData)
-      .then(response => {
-          this.elements = response.data.multiselect
-          this.form.elements_id.splice(0);
-
-          response.data.elements.forEach((eleme, key) => {
             this.form.elements_id.push({
-              id_ele: eleme.element.id_ele,
-              quantity: eleme.element.quantity,
-              code: eleme.element.code,
-              type: eleme.element.type
-            })
-            this.codes[key] = eleme.options
-          })
-
+              id: eleme.id,
+              id_ele: eleme.id_ele,
+              quantity: eleme.quantity,
+              code: eleme.code,
+              type: eleme.type,
+              key: eleme.key,
+              waste: eleme.wastes
+            });
+          });          
+           
           this.isLoading = false;
       })
       .catch(error => {
+        console.log(error)
           Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
       });
-    },
-    typeElement(index)
-    {
-      this.isLoading = true;
-      axios.post('/industrialSecurity/epp/transaction/elementInfo', {id: this.form.elements_id[index].id_ele, location_id: this.form.location_id})
-        .then(response => {
-            this.form.elements_id[index].type = response.data.type
-            this.codes[index] = response.data.options
-        })
-        .catch(error => {
-            this.isLoading = false;
-            Alerts.error('Error', 'Hubo un problema recolectando la información');
-        });
-    },
-    hashSelected(index)
-    {
-      this.isLoading = true;
-      axios.post('/industrialSecurity/epp/transaction/hashSelected', {id: this.form.elements_id[index].id_ele, location_id: this.form.location_id, select_hash: this.form.elements_id[index].code})
-        .then(response => {
-            /*this.form.elements_id[index].type = response.data.type
-            this.codes[index] = response.data.options*/
-        })
-        .catch(error => {
-            this.isLoading = false;
-            Alerts.error('Error', 'El código seleccionado no existe o no se encuentra disponible en la ubicación seleccionada');
-        });
-    },
-    deletedTemporal()
-    {
-      this.isLoading = true;
-      axios.post('/industrialSecurity/epp/transaction/deletedTemporal')
-        .then(response => {
-            /*this.form.elements_id[index].type = response.data.type
-            this.codes[index] = response.data.options*/
-        })
-        .catch(error => {
-            this.isLoading = false;
-            Alerts.error('Error', 'Hubo un problema recolectando la información');
-        });
     },
     undo () {
       this.$refs.signaturePad.undoSignature()
@@ -355,16 +310,6 @@ export default {
 
       this.form.files.splice(index, 1)
     },
-    addElement() 
-    {
-      this.form.elements_id.push({
-          key: new Date().getTime(),
-          id_ele: '',
-          quantity: '',
-          type: '',
-          code: ''
-      })
-    },
     removeElement(index)
     {
       if (this.form.elements_id[index].id != undefined)
@@ -372,6 +317,12 @@ export default {
         this.form.delete.elements.push(this.form.elements_id[index].id)
       }
       this.form.elements_id.splice(index, 1)
+    },
+    showModalHistory() {
+      this.idHistory = this.form.employee_id
+    },
+    closeModalHistory() {
+      this.idHistory = ''
     },
   }
 };
