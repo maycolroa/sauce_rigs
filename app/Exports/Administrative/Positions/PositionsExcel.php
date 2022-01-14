@@ -61,8 +61,11 @@ class PositionsExcel implements FromQuery, WithMapping, WithHeadings, WithTitle,
 
       $relation = Element::select('sau_epp_elements.id')
       ->join('sau_employee_position_epp_elements', 'sau_employee_position_epp_elements.element_id', 'sau_epp_elements.id')
-      ->where('sau_employee_position_epp_elements.employee_position_id', $data->id)
-      ->get()->toArray();
+      ->where('sau_employee_position_epp_elements.employee_position_id', $data->id);
+
+      $relation->company_scope = $this->company_id;
+
+      $relation = $relation->get()->toArray();
 
       foreach ($relation as $key => $value) {
         array_push($element_position_id, $value['id']);
