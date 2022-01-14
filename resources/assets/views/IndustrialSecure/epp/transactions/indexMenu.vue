@@ -2,7 +2,7 @@
   	<div>
     	<header-module
 			title="ELEMENTOS DE PROTECCIÓN PERSONAL"
-			url="industrialsecure-epps-elements"
+			url="industrialsecure-epp"
 		/>
     	<div class="col-md">
 			<b-card no-body>

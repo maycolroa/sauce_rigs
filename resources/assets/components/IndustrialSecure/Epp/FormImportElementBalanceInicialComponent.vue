@@ -3,6 +3,10 @@
   <b-form :action="url" @submit.prevent="submit" autocomplete="off">
 
     <b-card no-body class="mb-2 border-secondary" style="width: 100%;">
+      <b-card-header class="with-elements">
+       <b-btn v-if="auth.can['elements_c']" variant="primary" href="/templates/elementnotidentimport" target="blank" v-b-tooltip.top title="Generar Plantilla Elementos sin identificar"><i class="fas fa-file-alt"></i></b-btn>&nbsp;&nbsp;
+        <b-btn v-if="auth.can['elements_c']" variant="primary" href="/templates/elementidentimport" target="blank" v-b-tooltip.top title="Generar Plantilla Elementos identicados"><i class="fas fa-file-alt"></i></b-btn>&nbsp;&nbsp;
+      </b-card-header>
       <b-card-body>
         <b-form-row>     
             <vue-radio class="col-md-12" v-model="form.type_element" :options="typesElement" name="type_element" :error="form.errorsFor('type_element')" label="¿Que tipo de elemento desea importar?" :checked="form.type_element"></vue-radio>
