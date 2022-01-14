@@ -3,7 +3,7 @@
     <header-module
       title="ELEMENTOS DE PROTECCIÓN PERSONAL"
       subtitle="IMPORTA SALDO INICIAL ELEMENTO"
-      url="industrialsecure-epps-elements"
+      url="industrialsecure-epp"
     />
 
 
@@ -14,7 +14,7 @@
             <form-import-element-balance-inicial
               url="/industrialSecurity/epp/element/import/balanceInicial"
               method="POST"
-              :cancel-url="{ name: 'industrialsecure-epps-elements'}"/>
+              :cancel-url="{ name: 'industrialsecure-epp'}"/>
           </div>
         </b-card-body>
       </b-card>
