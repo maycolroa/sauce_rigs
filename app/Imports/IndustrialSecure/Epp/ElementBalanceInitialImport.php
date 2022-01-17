@@ -130,8 +130,6 @@ class ElementBalanceInitialImport implements ToCollection, WithCalculatedFormula
         $tipo->company_scope = $this->company_id;
         $tipo = $tipo->first();
 
-        \Log::info($tipo);
-
         $hashs = ElementBalanceSpecific::select('hash')->get()->toArray();
 
         $hashs_validar = [];
