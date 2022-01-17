@@ -126,7 +126,9 @@ class ElementBalanceInitialImport implements ToCollection, WithCalculatedFormula
         }
 
 
-        $tipo = Element::find($row[1]);
+        $tipo = Element::where('id', $row[1]);
+        $tipo->company_scope = $this->company_id;
+        $tipo = $tipo->first();
 
         $hashs = ElementBalanceSpecific::select('hash')->get()->toArray();
 
