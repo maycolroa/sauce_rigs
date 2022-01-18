@@ -31,6 +31,17 @@
 									</span>
 								</router-link>
 							</div>
+
+							<!--<div class="d-flex col-sm-6 col-md-6 col-lg-6 align-items-center" v-if="auth.can['location_r']">
+								<router-link tag="a" href="javascript:void(0)" class="card-body media align-items-center text-dark" :to="{name:'industrialsecure-epps-transactions-income'}">
+									<i class="ion ion-md-add-circle display-4 d-block text-primary"></i>
+									<span class="media-body d-block ml-3">
+										<span class="text-big font-weight-bolder">Ingresos</span>
+										<br>
+										<small class="text-muted">Administrar Ingresos</small>
+									</span>
+								</router-link>
+							</div>-->
 						</div>
 					</div>
 				</b-card-header>
@@ -43,7 +54,7 @@
 import Alerts from "@/utils/Alerts.js";
 
 export default {
-	name: "audiometry",
+	name: "industrialsecure-epps-transactions",
 	metaInfo: {
 		title: "Elementos de protección personal"
 	},

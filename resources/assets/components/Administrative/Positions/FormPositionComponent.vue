@@ -3,7 +3,7 @@
   <b-form :action="url" @submit.prevent="submit" autocomplete="off">
     <b-form-row>
       <vue-input :disabled="viewOnly" class="col-md-12" v-model="form.name" label="Nombre" type="text" name="name" :error="form.errorsFor('name')" placeholder="Nombre"></vue-input>
-      <vue-ajax-advanced-select v-if="auth.can['elements_r']" :disabled="viewOnly" class="col-md-12" v-model="form.elements_id" :error="form.errorsFor('elements_id')"  name="elements_id" label="ELementos de protección personal correspondientes al cargo" placeholder="Seleccione los elementos" :url="tagsElementsDataUrl" :multiple="true" :allowEmpty="true" :selected-object="form.multiselect_elements">
+      <vue-ajax-advanced-select v-if="auth.can['elements_r']" :disabled="viewOnly" class="col-md-12" v-model="form.elements_id" :error="form.errorsFor('elements_id')"  name="elements_id" label="Elementos de protección personal correspondientes al cargo" placeholder="Seleccione los elementos" :url="tagsElementsDataUrl" :multiple="true" :allowEmpty="true" :selected-object="form.multiselect_elements">
         </vue-ajax-advanced-select>
     </b-form-row>
 

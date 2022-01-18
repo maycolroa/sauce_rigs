@@ -364,7 +364,10 @@ return [
       'questions' => 'Preguntas',
       'questions.*.description' => 'Descripción',
       'questions.*.type_question_id' => 'Tipo de pregunta',
-      'questions.*.answers' => 'Respuestas'
+      'questions.*.answers' => 'Respuestas',
+      'elements_id.*.entry' => 'Método de ingreso',
+      'elements_id.*.type' => 'el tipo de elemento',
+      'elements_id.*.quantity' => 'Cantidad'
     ],
 
 ];

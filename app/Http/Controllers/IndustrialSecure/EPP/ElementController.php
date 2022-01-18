@@ -291,7 +291,9 @@ class ElementController extends Controller
             $elements = Element::selectRaw("
                 sau_epp_elements.id as id,
                 sau_epp_elements.name as name
-            ")->pluck('id', 'name');
+            ")            
+            ->orderBy('name')
+            ->pluck('id', 'name');
         
             return $this->multiSelectFormat($elements);
         }
@@ -306,6 +308,7 @@ class ElementController extends Controller
                 ->where(function ($query) use ($keyword) {
                     $query->orWhere('name', 'like', $keyword);
                 })
+                ->orderBy('name')
                 ->take(30)->pluck('id', 'name');
 
             return $this->respondHttp200([
@@ -323,6 +326,7 @@ class ElementController extends Controller
                 ->where(function ($query) use ($keyword) {
                     $query->orWhere('name', 'like', $keyword);
                 })
+                ->orderBy('name')
                 ->take(30)->pluck('id', 'name');
 
             return $this->respondHttp200([
@@ -342,6 +346,7 @@ class ElementController extends Controller
                 })
                 ->where('system', true)
                 ->orWhere('company_id', $this->company)
+                ->orderBy('name')
                 ->take(30)->pluck('id', 'name');
 
             return $this->respondHttp200([
@@ -352,7 +357,6 @@ class ElementController extends Controller
 
     public function downloadImage(Element $element)
     {
-        \Log::info('entro');
         $name = $element->image;
 
         return Storage::disk('s3')->download($element->path_donwload(), $name);                                               
