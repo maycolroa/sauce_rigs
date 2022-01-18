@@ -672,5 +672,37 @@ export default [{
             import('@/views/IndustrialSecure/epp/transactions/viewReturns')
         }
       ]),
+      ...middleware({ 'check-permission': 'transaction_r' }, [
+        {
+          name: 'industrialsecure-epps-transactions-income',
+          path: 'epps/transactions/income',
+          component: () =>
+            import('@/views/IndustrialSecure/epp/transactions/income/index') 
+        }
+      ]), 
+      ...middleware({ 'check-permission': 'transaction_c' }, [
+        {
+          name: 'industrialsecure-epps-transactions-income-create',
+          path: 'epps/transactions/income/create',
+          component: () =>
+            import('@/views/IndustrialSecure/epp/transactions/income/create')
+        }
+      ]), 
+      ...middleware({ 'check-permission': 'transaction_u' }, [
+        {
+          name: 'industrialsecure-epps-transactions-income-edit',
+          path: 'epps/transactions/income/edit/:id',
+          component: () =>
+            import('@/views/IndustrialSecure/epp/transactions/income/edit')
+        }
+      ]),
+      ...middleware({ 'check-permission': 'transaction_r' }, [
+        {
+          name: 'industrialsecure-epps-transactions-income-view',
+          path: 'epps/transactions/income/view/:id',
+          component: () =>
+            import('@/views/IndustrialSecure/epp/transactions/income/view')
+        }
+      ]),
     ]
   }]

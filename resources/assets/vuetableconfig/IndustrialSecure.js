@@ -1219,7 +1219,7 @@ export default [
     name: 'industrialsecure-epps-transactions',
     fields: [
         { name: 'sau_epp_transactions_employees.id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true },
-        { name: 'sau_epp_transactions_employees.type', data: 'type', title: 'Tipo', sortable: true, searchable: true, detail: false, key: false },
+        { name: 'sau_epp_transactions_employees.created_at', data: 'created_at', title: 'Fecha', sortable: true, searchable: true, detail: false, key: false },
         { name: 'sau_epp_transactions_employees.employee', data: 'employee', title: 'Empleado', sortable: true, searchable: true, detail: false, key: false },
         { name: 'sau_employees_positions.name', data: 'position', title: 'Cargo', sortable: true, searchable: true, detail: false, key: false },
         { name: 'sau_epp_elements.name', data: 'elements', title: 'Elementos', sortable: true, searchable: true, detail: false, key: false },
@@ -1255,7 +1255,7 @@ export default [
     },
     {
         type: 'base',
-        buttons: [{
+        buttons: [/*{
         name: 'delete',
         data: {
             action: '/industrialSecurity/epp/transaction/',
@@ -1263,7 +1263,7 @@ export default [
             messageConfirmation: 'Esta seguro de borrar el elemento __name__'
         },
         permission: 'transaction_d'
-        }],
+        }*/],
     }],
     configuration: {
         urlData: '/industrialSecurity/epp/transaction/data',
@@ -1274,7 +1274,7 @@ export default [
     name: 'industrialsecure-epps-transactions-returns',
     fields: [
         { name: 'sau_epp_transactions_employees.id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true },
-        { name: 'sau_epp_transactions_employees.type', data: 'type', title: 'Tipo', sortable: true, searchable: true, detail: false, key: false },
+        { name: 'sau_epp_transactions_employees.created_at', data: 'created_at', title: 'Fecha', sortable: true, searchable: true, detail: false, key: false },
         { name: 'sau_epp_transactions_employees.employee', data: 'employee', title: 'Empleado', sortable: true, searchable: true, detail: false, key: false },
         { name: 'sau_employees_positions.name', data: 'position', title: 'Cargo', sortable: true, searchable: true, detail: false, key: false },
         { name: 'sau_epp_elements.name', data: 'elements', title: 'Elementos', sortable: true, searchable: true, detail: false, key: false },
@@ -1310,7 +1310,7 @@ export default [
     },
     {
         type: 'base',
-        buttons: [{
+        buttons: [/*{
         name: 'delete',
         data: {
             action: '/industrialSecurity/epp/transaction/',
@@ -1318,7 +1318,7 @@ export default [
             messageConfirmation: 'Esta seguro de borrar el elemento __name__'
         },
         permission: 'transaction_d'
-        }],
+        }*/],
     }],
     configuration: {
         urlData: '/industrialSecurity/epp/transactionReturns/data',

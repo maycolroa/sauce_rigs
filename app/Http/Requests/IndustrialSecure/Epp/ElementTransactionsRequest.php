@@ -81,6 +81,8 @@ class ElementTransactionsRequest extends FormRequest
             'elements_id' => 'required|array',
             'elements_id.*.quantity' => 'integer|required_if:elements_id.*.type,No Identificable',
             'elements_id.*.waste' => 'string|required_if:type,Devolucion',
+            'elements_id.*.entry' => 'string|required_if:elements_id.*.type,Identificable',
+            'elements_id.*.type' => 'string',
             'files' => 'nullable|array',
             'firm_employee' => 'nullable',
             'observations' => 'nullable'

@@ -2,7 +2,7 @@
   <div>
     <header-module
       title="ELEMENTOS DE PROTECCIÓN PERSONAL"
-      subtitle="TRANSACCIONES DE ELEMENTOS"
+      subtitle="TRANSACCIONES DE ELEMENTOS DEVOLUCIONES"
       url="industrialsecure-epps-transactions-menu"
     />
 
