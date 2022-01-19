@@ -253,6 +253,7 @@ Route::middleware(['auth'])->group(function () {
         Route::post('tagsStandarApplyEpp', 'IndustrialSecure\EPP\ElementController@multiselectApplicableStandard');
         Route::post('tagsReincReinstatementcondition', 'PreventiveOccupationalMedicine\Reinstatements\CheckController@multiselectReinstatementcondition');
         Route::post('tagsReincInformantRole', 'PreventiveOccupationalMedicine\Reinstatements\CheckController@multiselectInformantRole');
+        Route::post('tagsReason', 'IndustrialSecure\EPP\IncomeController@multiselectReason');
 
         Route::prefix('evaluations')->group(function () {
           Route::post('evaluations', 'LegalAspects\Contracs\EvaluationController@multiselectEvaluations');
@@ -551,6 +552,10 @@ Route::middleware(['auth'])->group(function () {
         Route::get('transaction/employeeReturns/{id}', 'IndustrialSecure\EPP\TransactionReturnsController@employeeInfo');        
         Route::post('transaction/returns/eppElementsLocations', 'IndustrialSecure\EPP\TransactionReturnsController@elementsLocation');
         Route::post('transaction/wastes/data', 'IndustrialSecure\EPP\TransactionReturnsController@dataWastes');
+
+        Route::post('income/data', 'IndustrialSecure\EPP\IncomeController@data');
+        Route::ApiResource('income', 'IndustrialSecure\EPP\IncomeController');
+        Route::post('income/elementInfo/', 'IndustrialSecure\EPP\IncomeController@elementInfo');
       });
 
       Route::prefix('tags')->group(function () {
