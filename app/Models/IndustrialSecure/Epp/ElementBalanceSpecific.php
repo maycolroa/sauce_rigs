@@ -28,5 +28,8 @@ class ElementBalanceSpecific extends Model
         return $this->belongsTo('App\Models\IndustrialSecure\Epp\ElementTransactionEmployee', 'sau_epp_transaction_employee_element', 'element_id', 'transaction_employee_id');
     }
 
-
+    public function income()
+    {
+        return $this->belongsToMany('App\Models\IndustrialSecure\Epp\EppIncomeDetail', 'sau_epp_income_detail_element', 'element_specific_id', 'income_detail_id');
+    }
 }

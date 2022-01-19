@@ -14,14 +14,17 @@ class EppIncome extends Model
 
     protected $fillable = [
         'company_id',
-        'element_id',
-        'location_id',
-        'quantity',
-        'reason'
+        'user_id',
+        'location_id'
     ];
 
-    public function element()
+    public function detail()
     {
-        return $this->belongsTo('App\Models\IndustrialSecure\Epp\Element', 'element_id');
+        return $this->hasMany('App\Models\IndustrialSecure\Epp\EppIncomeDetail', 'income_id');
+    }
+
+    public function location()
+    {
+        return $this->belongsTo(Location::class, 'location_id');
     }
 }
