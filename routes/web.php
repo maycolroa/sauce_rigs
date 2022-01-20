@@ -556,6 +556,12 @@ Route::middleware(['auth'])->group(function () {
         Route::post('income/data', 'IndustrialSecure\EPP\IncomeController@data');
         Route::ApiResource('income', 'IndustrialSecure\EPP\IncomeController');
         Route::post('income/elementInfo/', 'IndustrialSecure\EPP\IncomeController@elementInfo');
+
+        Route::post('exit/data', 'IndustrialSecure\EPP\ExitController@data');
+        Route::ApiResource('exit', 'IndustrialSecure\EPP\ExitController');
+        Route::post('exit/elementInfo/', 'IndustrialSecure\EPP\ExitController@elementInfo');
+
+        Route::post('exit/eppElementsLocations', 'IndustrialSecure\EPP\ExitController@elementsLocation');
       });
 
       Route::prefix('tags')->group(function () {

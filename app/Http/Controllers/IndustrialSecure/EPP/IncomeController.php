@@ -580,10 +580,11 @@ class IncomeController extends Controller
 
             if ($detail)
             {
-                $balance = ElementBalanceLocation::where('element_id', $element->id)
-                ->where('location_id', $request->location_id)->first();
+                $balance = ElementBalanceLocation::where('element_id', $detail->element_id)
+                ->where('location_id', $detail->location_id)->first();
 
                 $balance->quantity = $balance->quantity - $detail->quantity;
+                $balance->quantity_available = $balance->quantity_available - $detail->quantity;
                 $balance->save();
 
                 foreach ($detail->specifics as $key => $product) 
@@ -591,8 +592,9 @@ class IncomeController extends Controller
                     if(!$product->delete())
                         return $this->respondHttp500();
                 }
-            }
-                
+
+                $detail->delete();
+            }                
         }
     }
 
@@ -610,8 +612,15 @@ class IncomeController extends Controller
                 ->where('location_id', $value->location_id)->first();
 
             $balance->quantity = $balance->quantity_available - $value->quantity;
+            $balance->quantity_available = $balance->quantity_available - $detail->quantity;
 
             $balance->save();
+
+            foreach ($value->specifics as $key => $product) 
+            {                    
+                if(!$product->delete())
+                    return $this->respondHttp500();
+            }
         }
 
         if(!$income->delete())
