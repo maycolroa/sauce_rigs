@@ -1400,4 +1400,58 @@ export default [
         filterColumns: true,
     }
 },
+{
+    name: 'industrialsecure-epps-transactions-exit',
+    fields: [
+        { name: 'sau_epp_exits.id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true },
+        { name: 'sau_epp_elements.name', data: 'elements', title: 'Elementos', sortable: true, searchable: true, detail: false, key: false },
+        { name: 'sau_epp_locations.name', data: 'name_location', title: 'Ubicación', sortable: true, searchable: true, detail: false, key: false },
+        { name: 'sau_epp_exits.created_at', data: 'created_at', title: 'Fecha', sortable: true, searchable: true, detail: false, key: false },
+        { name: '', data: 'controlls', title: 'Controles', sortable: false, searchable: false, detail: false, key: false },
+    ],
+    'controlls': [{
+        type: 'push',
+        buttons: [{
+        config: {
+            color: 'outline-success',
+            borderless: true,
+            icon: 'ion ion-md-create',
+            title: 'Editar'
+        },
+        data: {
+            routePush: { name: 'industrialsecure-epps-transactions-exit-edit' },
+            id: 'id',
+        },
+        permission: 'transaction_u'
+        }, {
+        config: {
+            color: 'outline-info',
+            borderless: true,
+            icon: 'ion ion-md-eye',
+            title: 'Ver'
+        },
+        data: {
+            routePush: { name: 'industrialsecure-epps-transactions-exit-view' },
+            id: 'id',
+        },
+        permission: 'transaction_r'
+        }]
+    },
+    {
+        type: 'base',
+        buttons: [/*{
+        name: 'delete',
+        data: {
+            action: '/industrialSecurity/epp/transaction/',
+            id: 'id',
+            messageConfirmation: 'Esta seguro de borrar el elemento __name__'
+        },
+        permission: 'transaction_d'
+        }*/],
+    }],
+    configuration: {
+        urlData: '/industrialSecurity/epp/exit/data',
+        filterColumns: true,
+    }
+},
 ];

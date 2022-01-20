@@ -42,6 +42,17 @@
 									</span>
 								</router-link>
 							</div>
+
+							<div class="d-flex col-sm-6 col-md-6 col-lg-6 align-items-center" v-if="auth.can['location_r']">
+								<router-link tag="a" href="javascript:void(0)" class="card-body media align-items-center text-dark" :to="{name:'industrialsecure-epps-transactions-exit'}">
+									<i class="ion ion-md-remove-circle display-4 d-block text-primary"></i>
+									<span class="media-body d-block ml-3">
+										<span class="text-big font-weight-bolder">Salidas</span>
+										<br>
+										<small class="text-muted">Administrar Salidas</small>
+									</span>
+								</router-link>
+							</div>
 						</div>
 					</div>
 				</b-card-header>
