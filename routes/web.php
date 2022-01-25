@@ -562,6 +562,10 @@ Route::middleware(['auth'])->group(function () {
         Route::post('exit/elementInfo/', 'IndustrialSecure\EPP\ExitController@elementInfo');
 
         Route::post('exit/eppElementsLocations', 'IndustrialSecure\EPP\ExitController@elementsLocation');
+
+        Route::post('configuration', 'IndustrialSecure\EPP\ConfigurationController@store');
+
+        Route::get('configuration/view', 'IndustrialSecure\EPP\ConfigurationController@show');
       });
 
       Route::prefix('tags')->group(function () {
