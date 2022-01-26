@@ -59,13 +59,6 @@ class ElementController extends Controller
         );
 
         return Vuetable::of($elements)
-                    /*->addColumn('industrialsecure-epps-elements-import-balance-inicial', function ($element) {
-                        $import = ElementBalanceInicialLog::where('element_id', $element->id)->exists();
-                        if (!$import)
-                            return true;
-                        else
-                            return false;
-                    })*/
                     ->make();
     }
 

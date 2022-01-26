@@ -158,7 +158,7 @@ export default {
             elements: []
           },
           edit_firm: 'NO',
-          type: 'Entrega'
+          type: 'Entrega',
         };
       }
     }
@@ -221,7 +221,8 @@ export default {
         {text: 'SI', value: 'SI'},
         {text: 'NO', value: 'NO'}
       ],
-      cargar: true
+      cargar: true,
+      inventary: auth.inventaryEpp
     };
   },
   methods: {
@@ -241,6 +242,8 @@ export default {
           this.form.firm_employee = data
         }
       }
+
+      this.form.inventary = this.inventary;
 
       this.form
         .submit(e.target.action)
@@ -276,7 +279,7 @@ export default {
     {
       this.isLoading = true;
 
-      this.postData = Object.assign({}, {position_elements: this.elements_position}, {location_id: this.form.location_id});
+      this.postData = Object.assign({}, {position_elements: this.elements_position}, {location_id: this.form.location_id}, {inventary: this.inventary});
 
       axios.post('/industrialSecurity/epp/transaction/eppElementsLocations', this.postData)
       .then(response => {

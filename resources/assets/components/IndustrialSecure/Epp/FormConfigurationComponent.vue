@@ -60,7 +60,8 @@ export default {
         .submit(e.target.action)
         .then(response => {
           this.loading = false;
-          this.$router.push({ name: "industrialsecure-epp" });
+          window.location = "/industrialsecure/epp/menu"
+          //this.$router.push({ name: "industrialsecure-epp" });
         })
         .catch(error => {
           this.loading = false;

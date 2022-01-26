@@ -43,7 +43,7 @@
 								</router-link>
 							</div>
 
-							<div class="d-flex col-sm-6 col-md-6 col-lg-6 align-items-center" v-if="auth.can['elements_c']">
+							<div class="d-flex col-sm-6 col-md-6 col-lg-6 align-items-center" v-if="auth.can['elements_c'] && auth.inventaryEpp == 'SI'">
 								<router-link tag="a" href="javascript:void(0)" class="card-body media align-items-center text-dark" :to="{name:'industrialsecure-epps-elements-import-balance-inicial'}">
 									<i class="ion ion-md-cloud-upload display-4 d-block text-primary"></i>
 									<span class="media-body d-block ml-3">

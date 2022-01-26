@@ -69,7 +69,7 @@ class ElementRequest extends FormRequest
             'name' => 'required|string',
             'code' => 'required|string',
             'description' => 'required|string',
-            'type' => 'required',
+            'type' => 'required_if:inventary,SI',
             'mark' => 'required',
             'applicable_standard' => 'nullable|array',
             'observations' => 'nullable|string',
