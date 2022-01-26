@@ -160,7 +160,8 @@ export default {
             elements: []
           },
           edit_firm: 'NO',
-          type: 'Devolucion'
+          type: 'Devolucion',
+          inventary: auth.inventaryEpp,
         };
       }
     }
@@ -200,6 +201,8 @@ export default {
     },
     'form.employee_id' () {
       this.updateDetails(`/industrialSecurity/epp/transaction/employeeReturns/${this.form.employee_id}`)
+
+      this.form.location_id = '';
     },
     'form.location_id' () {
         this.uploadElements()

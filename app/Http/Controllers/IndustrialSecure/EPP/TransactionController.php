@@ -116,7 +116,6 @@ class TransactionController extends Controller
 
         try
         {
-
             $employee = Employee::findOrFail($request->employee_id);
 
             $delivery = new ElementTransactionEmployee();
@@ -754,7 +753,10 @@ class TransactionController extends Controller
 
         if ($transaction->type == 'Entrega')
         {
-            $this->updateDelivery($request, $transaction);
+            if ($request->inventary == 'SI')
+                $this->updateDelivery($request, $transaction);
+            else
+                $this->updateDeliveryNotInventary($request, $transaction);
         }
         else
         {
@@ -1482,6 +1484,7 @@ class TransactionController extends Controller
                 ->toArray();
 
                 $ids_disponibles = [];
+                $elements_no_disponibles = [];
 
                 foreach ($element_disponibles as $key => $value) {
                     $ele = Element::find($value['element_id']);
@@ -1517,6 +1520,11 @@ class TransactionController extends Controller
                         $options = $this->multiSelectFormat($disponible);
 
                         array_push( $elements_id, ['element' => $content, 'options' => $options]);
+                    }
+                    else
+                    {
+                        $ele = Element::find($value['id_ele']);
+                        array_push($elements_no_disponibles, $ele->name);
                     }
                 }
             }
@@ -1562,7 +1570,8 @@ class TransactionController extends Controller
 
             $data = [
                 'multiselect' => $multiselect,
-                'elements' => $elements_id
+                'elements' => $elements_id,
+                'elements_no_disponibles' => $elements_no_disponibles
             ];
 
             return $data;

@@ -6,34 +6,44 @@
         <b-form-row>
           <vue-ajax-advanced-select class="col-md-6" :disabled="viewOnly" v-model="form.employee_id"  name="employee_id" :label="keywordCheck('employee')" placeholder="Seleccione una opción" :url="employeesDataUrl" :selected-object="form.multiselect_employee" :error="form.errorsFor('employee_id')"> </vue-ajax-advanced-select>
           <vue-input :disabled="true" class="col-md-6" v-model="form.position_employee" label="Cargo" type="text" name="position_employee" :error="form.errorsFor('position_employee')" placeholder="Cargo"></vue-input>
-          <vue-ajax-advanced-select :disabled="viewOnly || !form.employee_id" class="col-md-6" v-model="form.location_id" :error="form.errorsFor('location_id')"  name="location_id" label="Ubicación" placeholder="Seleccione la ubicación" :url="tagsLocationsDataUrl" :multiple="false" :selected-object="form.multiselect_location" :allowEmpty="true">
+          <vue-ajax-advanced-select :disabled="viewOnly || !form.employee_id" class="col-md-6" v-model="form.location_id" :error="form.errorsFor('location_id')"  name="location_id" label="Ubicación" placeholder="Seleccione la ubicación" :url="tagsLocationsDataUrl" :multiple="false" :selected-object="form.multiselect_location" :emptyAll="true" >
             </vue-ajax-advanced-select>
         </b-form-row>
       </div>
       <b-card  bg-variant="transparent" border-variant="dark" title="Elementos" class="mb-3 box-shadow-none">
-      <template v-for="(element, index) in form.elements_id">
-          <div :key="element.id">
-            <b-form-row>
-              <div class="col-md-12">
-                  <div class="float-right">
-                      <b-btn v-if="!viewOnly" variant="outline-primary icon-btn borderless" size="sm" v-b-tooltip.top title="Eliminar" @click.prevent="removeElement(index)"><span class="ion ion-md-close-circle"></span></b-btn>
-                  </div>
-              </div>
-              <!--<vue-advanced-select class="col-md-6" v-model="element.type" :multiple="false" :options="typesElement" :hide-selected="false" name="type" label="Tipo de elemento" placeholder="Seleccione el tipo de elemento"></vue-advanced-select>-->
-              <vue-advanced-select :disabled="viewOnly" class="col-md-6" v-model="element.id_ele" name="id_ele" label="Elemento de protección personal" placeholder="Seleccione el elemento" :options="elements" :error="form.errorsFor(`elements_id.${index}.id_ele`)" @change="typeElement(index)" :allow-empty="false" :selected-object="element.multiselect_element">
-                </vue-advanced-select>
-              <vue-input v-if="element.type == 'No Identificable'" :disabled="viewOnly" class="col-md-6" v-model="element.quantity" label="Cantidad" type="number" name="quantity" :error="form.errorsFor(`elements_id.${index}.quantity`)" placeholder="Cantidad"></vue-input>
-              <vue-radio v-if="element.type == 'Identificable'" :disabled="viewOnly" class="col-md-6" v-model="element.entry" :options="siNo" name="entry" :error="form.errorsFor(`elements_id.${index}.entry`)" label="Como desea ingresar el código del elemento?" :checked="element.entry"></vue-radio>
-              <vue-input v-if="element.type == 'Identificable' && element.entry == 'Manualmente'" :disabled="viewOnly" class="col-md-12" v-model="element.code" label="Código" type="text" name="code" :error="form.errorsFor(`elements_id.${index}.code`)" placeholder="Código" @onBlur="hashSelected(index)" ></vue-input>
-              <vue-advanced-select v-if="element.type == 'Identificable' && element.entry == 'Seleccionarlo'" :disabled="viewOnly" class="col-md-12" v-model="element.code" name="code" label="Código de elemento" placeholder="Seleccione el código" :options="codes[index]" :error="form.errorsFor(`elements_id.${index}.code`)" @selectedName="hashSelected(index)" :allow-empty="false">
-                </vue-advanced-select>
-            </b-form-row>
-        </div>
-      </template>
-
+        <b-card v-if="form.location_id && elements_no_disponibles.length > 0" title="Elementos no disponibles en la ubicación">
+          <template v-for="(ele_no, index) in elements_no_disponibles">
+              <div :key="index">
+                  <b-form-row>
+                    <vue-input :disabled="true" class="col-md-12" :value="ele_no" label="Nombre" type="text" name="ele_no" ></vue-input>
+                  </b-form-row>
+            </div>
+          </template>
+        </b-card>
+        <b-card v-if="form.location_id" title="Elementos disponibles en la ubicación">
+          <template v-for="(element, index) in form.elements_id">
+            <div :key="element.id">
+              <b-form-row>
+                <div class="col-md-12">
+                    <div class="float-right">
+                        <b-btn v-if="!viewOnly" variant="outline-primary icon-btn borderless" size="sm" v-b-tooltip.top title="Eliminar" @click.prevent="removeElement(index)"><span class="ion ion-md-close-circle"></span></b-btn>
+                    </div>
+                </div>
+                <!--<vue-advanced-select class="col-md-6" v-model="element.type" :multiple="false" :options="typesElement" :hide-selected="false" name="type" label="Tipo de elemento" placeholder="Seleccione el tipo de elemento"></vue-advanced-select>-->
+                <vue-advanced-select :disabled="viewOnly" class="col-md-6" v-model="element.id_ele" name="id_ele" label="Elemento de protección personal" placeholder="Seleccione el elemento" :options="elements" :error="form.errorsFor(`elements_id.${index}.id_ele`)" @change="typeElement(index)" :allow-empty="false" :selected-object="element.multiselect_element">
+                  </vue-advanced-select>
+                <vue-input v-if="element.type == 'No Identificable'" :disabled="viewOnly" class="col-md-6" v-model="element.quantity" label="Cantidad" type="number" name="quantity" :error="form.errorsFor(`elements_id.${index}.quantity`)" placeholder="Cantidad"></vue-input>
+                <vue-radio v-if="element.type == 'Identificable'" :disabled="viewOnly" class="col-md-6" v-model="element.entry" :options="siNo" name="entry" :error="form.errorsFor(`elements_id.${index}.entry`)" label="Como desea ingresar el código del elemento?" :checked="element.entry"></vue-radio>
+                <vue-input v-if="element.type == 'Identificable' && element.entry == 'Manualmente'" :disabled="viewOnly" class="col-md-12" v-model="element.code" label="Código" type="text" name="code" :error="form.errorsFor(`elements_id.${index}.code`)" placeholder="Código" @onBlur="hashSelected(index)" ></vue-input>
+                <vue-advanced-select v-if="element.type == 'Identificable' && element.entry == 'Seleccionarlo'" :disabled="viewOnly" class="col-md-12" v-model="element.code" name="code" label="Código de elemento" placeholder="Seleccione el código" :options="codes[index]" :error="form.errorsFor(`elements_id.${index}.code`)" @selectedName="hashSelected(index)" :allow-empty="false">
+                  </vue-advanced-select>
+              </b-form-row>
+            </div>
+          </template>
+        </b-card>
       <b-form-row style="padding-bottom: 20px;">
           <div class="col-md-12">
-              <center><b-btn variant="primary" @click.prevent="addElement()"><span class="ion ion-md-add-circle"></span>&nbsp;&nbsp;Agregar</b-btn></center>
+              <center><b-btn v-if="form.location_id" variant="primary" @click.prevent="addElement()"><span class="ion ion-md-add-circle"></span>&nbsp;&nbsp;Agregar</b-btn></center>
           </div>
         </b-form-row>  
       
@@ -159,6 +169,7 @@ export default {
           },
           edit_firm: 'NO',
           type: 'Entrega',
+          inventary: auth.inventaryEpp,
         };
       }
     }
@@ -195,6 +206,7 @@ export default {
     },
     'form.employee_id' () {
       this.updateDetails(`/industrialSecurity/epp/transaction/employeeInfo/${this.form.employee_id}`)
+      this.form.location_id = '';
     },
     'form.location_id' () {
         this.uploadElements()
@@ -222,7 +234,8 @@ export default {
         {text: 'NO', value: 'NO'}
       ],
       cargar: true,
-      inventary: auth.inventaryEpp
+      inventary: auth.inventaryEpp,
+      elements_no_disponibles: []
     };
   },
   methods: {
@@ -244,6 +257,8 @@ export default {
       }
 
       this.form.inventary = this.inventary;
+
+      console.log(this.form.inventary);
 
       this.form
         .submit(e.target.action)
@@ -295,6 +310,8 @@ export default {
             })
             this.codes[key] = eleme.options
           })
+
+          this.elements_no_disponibles = response.data.elements_no_disponibles;
 
           this.isLoading = false;
       })

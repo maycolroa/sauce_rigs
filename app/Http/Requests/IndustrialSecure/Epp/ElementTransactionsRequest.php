@@ -78,10 +78,11 @@ class ElementTransactionsRequest extends FormRequest
         return [
             'employee_id' => 'required|integer',
             'position_employee' => 'required|string',
+            'type' => 'required',
             'elements_id' => 'required|array',
             'elements_id.*.quantity' => 'integer|required_if:elements_id.*.type,No Identificable',
             'elements_id.*.waste' => 'string|required_if:type,Devolucion',
-            'elements_id.*.entry' => 'string|required_if:elements_id.*.type,Identificable',
+            'elements_id.*.entry' => 'string|required_if:elements_id.*.type,Identificable && type,Entrega',
             'elements_id.*.type' => 'string',
             'files' => 'nullable|array',
             'firm_employee' => 'nullable',
