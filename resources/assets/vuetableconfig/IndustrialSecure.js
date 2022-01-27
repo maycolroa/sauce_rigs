@@ -1254,6 +1254,23 @@ export default [
         }]
     },
     {
+        type: 'simpleDownload',
+        buttons: [{
+        name: 'downloadFile',
+        config: {
+          color: 'outline-danger',
+          borderless: true,
+          icon: 'fas fa-file-pdf',
+          title: 'Descargar inspección planeada en PDF'
+        },
+        data: {
+          action: '/industrialSecurity/epp/transaction/downloadPdf/',
+          id: 'id'
+        },
+        permission: 'ph_inspections_r'
+        }],
+  },
+    {
         type: 'base',
         buttons: [/*{
         name: 'delete',
@@ -1357,7 +1374,7 @@ export default [
     ],
     'controlls': [{
         type: 'push',
-        buttons: [{
+        buttons: [/*{
         config: {
             color: 'outline-success',
             borderless: true,
@@ -1369,7 +1386,7 @@ export default [
             id: 'id',
         },
         permission: 'transaction_u'
-        }, {
+        }, */{
         config: {
             color: 'outline-info',
             borderless: true,
@@ -1411,7 +1428,7 @@ export default [
     ],
     'controlls': [{
         type: 'push',
-        buttons: [{
+        buttons: [/*{
         config: {
             color: 'outline-success',
             borderless: true,
@@ -1423,7 +1440,7 @@ export default [
             id: 'id',
         },
         permission: 'transaction_u'
-        }, {
+        },*/ {
         config: {
             color: 'outline-info',
             borderless: true,

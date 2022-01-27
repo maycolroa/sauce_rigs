@@ -17,11 +17,14 @@ use App\Models\IndustrialSecure\Epp\ElementBalanceSpecific;
 use App\Models\IndustrialSecure\Epp\ElementBalanceLocation;
 use App\Models\IndustrialSecure\Epp\HashSelectDeliveryTemporal;
 use App\Models\IndustrialSecure\Epp\EppWastes;
+use App\Models\Administrative\Configurations\ConfigurationCompany;
+use App\Models\General\Company;
 use Validator;
 use Illuminate\Support\Facades\Storage;
 use DB;
 use Carbon\Carbon;
 use Hash;
+use PDF;
 
 class TransactionController extends Controller
 {
@@ -687,6 +690,10 @@ class TransactionController extends Controller
                 'multiselect' => $multiselect,
                 'element' => $elements
             ];
+
+            $transaction->inventary = '';
+
+            $transaction->edit_firm = 'NO';
 
             $transaction->files = $this->getFiles($transaction->id);
 
@@ -1658,5 +1665,103 @@ class TransactionController extends Controller
     public function deletedTemporal()
     {
         $delete = HashSelectDeliveryTemporal::where('user_id', $this->user->id)->delete();
+    }
+
+    public function downloadPdf($id)
+    {
+        $delivery = $this->getDataExportPdf($id);
+
+        PDF::setOptions(['dpi' => 150, 'defaultFont' => 'sans-serif']);
+
+        $pdf = PDF::loadView('pdf.letterDeliveryEpp', ['delivery' => $delivery] );
+
+        $pdf->setPaper('A4');
+
+        return $pdf->download('Entrega EPP.pdf');
+    }
+
+    public function getDataExportPdf($id)
+    {
+        $delivery = ElementTransactionEmployee::findOrFail($id);
+
+        $delivery->employee_name = $delivery->employee->name;
+        $delivery->employee_identification = $delivery->employee->identification;
+
+        $element_balance_id = [];
+        $elements = [];
+            
+        foreach ($delivery->elements as $key => $value) 
+        {
+            if (!in_array($value->element_balance_id, $element_balance_id))
+            {
+                array_push($element_balance_id, $value->element_balance_id);
+            }                    
+        }
+
+        $ids_balance_saltar = [];
+
+        foreach ($element_balance_id as $key => $value) 
+        {
+            $element = $delivery->elements()->where('element_balance_id', $value)->get();
+
+            foreach ($element as $key => $e) 
+            {
+                if ($e->element->element->identify_each_element)
+                {
+                    $content = [
+                        'quantity' => 1,
+                        'name' => $e->element->element->name
+                    ];
+
+                    array_push($elements, $content);
+                }
+                else
+                {
+                    if (!in_array($e->element_balance_id, $ids_balance_saltar))
+                    {
+                        $content = [
+                            'quantity' => $element->count(),
+                            'name' => $e->element->element->name
+                        ];
+
+                        array_push($elements, $content);
+                        array_push($ids_balance_saltar, $e->element_balance_id);
+                    }
+                }
+                
+            }
+        }
+
+        if ($delivery->firm_employee)
+            $delivery->firm = $delivery->path_image();
+        else
+            $delivery->firm = NULL;
+
+        $delivery->elements = $elements;
+        $delivery->user_name = $delivery->user_id ? $delivery->user->name : '';
+
+        $company = Company::select('logo', 'name')->where('id', $this->company)->first();
+
+        $logo = ($company && $company->logo) ? $company->logo : null;
+
+        $delivery->logo = $logo;
+
+        $delivery->text_company = $this->getTextLetterEpp($company->name);
+
+        return $delivery;
+    }
+
+    public function getTextLetterEpp($company)
+    {
+        $text = ConfigurationCompany::select('value')->where('key', 'text_letter_epp')->first();
+
+        $text_default = '<p>Yo, empleado (a) de '.$company .' hago constar que he recibido lo aquí relacionado y firmado por mí.  Doy fé además que he sido informado y capacitado en cuanto al uso de los elementos de protección personal y  frente a los riesgos que me protegen, las actividades y ocasiones en las cuales debo utilizarlos.  He sido informado sobre el procedimiento para su cambio y reposición en caso que sea necesario.
+
+        *Me comprometo a hacer buen uso de todo lo recibido y a realizar el mantenimiento adecuado de los mismos.   Me comprometo a utilizarlos y cuidarlos conforme a las instrucciones recibidas y a la normativa legal vigente; así mismo me comprometo a informar a mi jefe inmediato cualquier defecto, anomalía o daño del elemento de protección personal (EPP) que pueda afectar o disminuir la efectividad de la protección.</p>';
+
+        if (!$text)
+            return $text_default;
+        else
+            return $text->value;
     }
 }

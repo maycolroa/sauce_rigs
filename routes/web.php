@@ -547,6 +547,8 @@ Route::middleware(['auth'])->group(function () {
 
         Route::get('transaction/download/file/{file}', 'IndustrialSecure\EPP\TransactionController@download');
 
+        Route::get('transaction/downloadPdf/{id}', 'IndustrialSecure\EPP\TransactionController@downloadPdf');
+
         Route::post('transactionReturns/data', 'IndustrialSecure\EPP\TransactionReturnsController@data');
         //Route::ApiResource('transactions', 'IndustrialSecure\EPP\TransactionReturnsController');
         Route::get('transaction/employeeReturns/{id}', 'IndustrialSecure\EPP\TransactionReturnsController@employeeInfo');        

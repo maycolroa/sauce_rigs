@@ -2,8 +2,12 @@
 
   <b-form :action="url" @submit.prevent="submit" autocomplete="off">
     <b-form-row>
-      <vue-radio :disabled="!auth.can['configuration_epp_c']" :checked="form.inventory_management" class="col-md-12" v-model="form.inventory_management" :options="siNo" name="inventory_management" :error="form.errorsFor('inventory_management')" label="¿Desea manejar inventario?">
+      <vue-radio :checked="form.inventory_management" class="col-md-12" v-model="form.inventory_management" :options="siNo" name="inventory_management" :error="form.errorsFor('inventory_management')" label="¿Desea manejar inventario?">
         </vue-radio>
+    </b-form-row>
+
+    <b-form-row>
+      <vue-textarea class="col-md-12" v-model="form.text_letter_epp" label="Texto a mostrar en la carta de entregas (Opcional, existe un texto por defecto)" name="text_letter_epp" placeholder="Texto" :error="form.errorsFor('text_letter_epp')" rows="5"></vue-textarea>  
     </b-form-row>
 
     <div class="row float-right pt-10 pr-10">
@@ -17,12 +21,14 @@
 <script>
 import VueInput from "@/components/Inputs/VueInput.vue";
 import VueRadio from "@/components/Inputs/VueRadio.vue";
+import VueTextarea from "@/components/Inputs/VueTextarea.vue";
 import Form from "@/utils/Form.js";
 
 export default {
   components: {
     VueInput,
-    VueRadio
+    VueRadio,
+    VueTextarea
   },
   props: {
     url: { type: String },
@@ -37,6 +43,7 @@ export default {
       default() {
         return {
           inventory_management: '',
+          text_letter_epp: ''
         };
       }
     }

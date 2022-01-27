@@ -11,7 +11,7 @@
         </b-form-row>
       </div>
       <b-card  bg-variant="transparent" border-variant="dark" title="Elementos" class="mb-3 box-shadow-none">
-        <b-card v-if="form.location_id && elements_no_disponibles.length > 0" title="Elementos no disponibles en la ubicación">
+        <b-card v-show="elements_no_disponibles.length > 0" title="Elementos no disponibles en la ubicación">
           <template v-for="(ele_no, index) in elements_no_disponibles">
               <div :key="index">
                   <b-form-row>
@@ -20,7 +20,7 @@
             </div>
           </template>
         </b-card>
-        <b-card v-if="form.location_id" title="Elementos disponibles en la ubicación">
+        <b-card>
           <template v-for="(element, index) in form.elements_id">
             <div :key="element.id">
               <b-form-row>
@@ -181,20 +181,25 @@ export default {
     }
     
     setTimeout(() => {
-      this.elements = this.form.elementos
-      this.form.elements_id.splice(0);
+      if (this.isEdit || this.viewOnly)
+      {
+        console.log(this.form)
+        this.elements = this.form.elementos
+        this.form.elements_id.splice(0);
 
-      this.form.elements_codes.forEach((eleme, key) => {
-        this.form.elements_id.push({
-          id: eleme.element.id,
-          id_ele: eleme.element.id_ele,
-          quantity: eleme.element.quantity,
-          code: eleme.element.code,
-          type: eleme.element.type,
-          entry: eleme.element.entry
+        this.form.elements_codes.forEach((eleme, key) => {
+          console.log(eleme)
+          this.form.elements_id.push({
+            id: eleme.element.id,
+            id_ele: eleme.element.id_ele,
+            quantity: eleme.element.quantity,
+            code: eleme.element.code,
+            type: eleme.element.type,
+            entry: eleme.element.entry
+          })
+          this.codes[key] = eleme.options
         })
-        this.codes[key] = eleme.options
-      })
+      }
 
       this.loading = false;
     }, 3000)
@@ -206,7 +211,10 @@ export default {
     },
     'form.employee_id' () {
       this.updateDetails(`/industrialSecurity/epp/transaction/employeeInfo/${this.form.employee_id}`)
-      this.form.location_id = '';
+      if (!this.isEdit)
+      {
+        this.form.location_id = '';
+      }
     },
     'form.location_id' () {
         this.uploadElements()

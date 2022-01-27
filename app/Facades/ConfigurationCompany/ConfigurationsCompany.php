@@ -48,7 +48,8 @@ class ConfigurationsCompany
             'show_action_plans' => 'Mostrar planes de acción en el formulario de matriz de peligros',
             'days_alert_without_activity' => 'Dias de alerta para contratistas sin actividad',
             'validate_qualification_list_check' => 'Validar calificaciones en la lista de chequeo',
-            'inventory_management' => 'Utilizar inventario en el modulo de EPP'
+            'inventory_management' => 'Utilizar inventario en el modulo de EPP',
+            'text_letter_epp' => 'Texto carta de entrega epp'
         ];
     }
 

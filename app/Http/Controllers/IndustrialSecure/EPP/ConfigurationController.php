@@ -20,8 +20,8 @@ class ConfigurationController extends Controller
     {
         parent::__construct();
         $this->middleware('auth');
-        $this->middleware("permission:configurations_c, {$this->team}", ['only' => 'store']);
-        $this->middleware("permission:configurations_r, {$this->team}");
+        /*$this->middleware("permission:configurations_epp_c, {$this->team}", ['only' => 'store']);
+        $this->middleware("permission:configurations_epp_c, {$this->team}");*/
     }
 
     /**
