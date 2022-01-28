@@ -18,6 +18,7 @@ use App\Models\IndustrialSecure\Epp\ElementBalanceLocation;
 use App\Models\IndustrialSecure\Epp\HashSelectDeliveryTemporal;
 use App\Models\IndustrialSecure\Epp\EppWastes;
 use App\Models\Administrative\Configurations\ConfigurationCompany;
+use App\Facades\Mail\Facades\NotificationMail;
 use App\Models\General\Company;
 use Validator;
 use Illuminate\Support\Facades\Storage;
@@ -25,6 +26,7 @@ use DB;
 use Carbon\Carbon;
 use Hash;
 use PDF;
+use App\Models\Administrative\Users\User;
 
 class TransactionController extends Controller
 {
@@ -88,19 +90,19 @@ class TransactionController extends Controller
         if ($request->type == 'Entrega')
         {
             if ($request->inventary == 'SI')
-                $this->storeDelivery($request);
+                return $this->storeDelivery($request);
             else
-                $this->storeDeliveryNotInventary($request);
+                return $this->storeDeliveryNotInventary($request);
         }
         else
         {
-            $this->storeReturns($request);
+            return $this->storeReturns($request);
         }
 
     }
 
     public function storeDelivery(ElementTransactionsRequest $request)
-    {
+    {                        
         Validator::make($request->all(), [
             "files.*.file" => [
                 function ($attribute, $value, $fail)
@@ -128,6 +130,9 @@ class TransactionController extends Controller
             $delivery->observations = $request->observations ? $request->observations : NULL;
             $delivery->location_id = $request->location_id;
             $delivery->company_id = $this->company;
+            $delivery->edit_firm = $request->edit_firm;
+            $delivery->firm_email = $request->firm_email;
+            $delivery->email_firm_employee = $request->email_firm_employee;
             
             if(!$delivery->save())
                 return $this->respondHttp500();
@@ -188,28 +193,51 @@ class TransactionController extends Controller
 
             $delivery->elements()->sync($elements_sync);
 
-            if ($request->firm_employee)
+            if ($delivery->edit_firm)
             {
-                $image_64 = $request->firm_employee;
-        
-                $extension = explode('/', explode(':', substr($image_64, 0, strpos($image_64, ';')))[1])[1];
-        
-                $replace = substr($image_64, 0, strpos($image_64, ',')+1); 
-        
-                $image = str_replace($replace, '', $image_64); 
-        
-                $image = str_replace(' ', '+', $image); 
-        
-                $imageName = base64_encode($this->user->id . rand(1,10000) . now()) . '.' . $extension;
+                if ($request->firm_employee && $delivery->firm_email == 'Dibujar')
+                {
+                    $image_64 = $request->firm_employee;
+            
+                    $extension = explode('/', explode(':', substr($image_64, 0, strpos($image_64, ';')))[1])[1];
+            
+                    $replace = substr($image_64, 0, strpos($image_64, ',')+1); 
+            
+                    $image = str_replace($replace, '', $image_64); 
+            
+                    $image = str_replace(' ', '+', $image); 
+            
+                    $imageName = base64_encode($this->user->id . rand(1,10000) . now()) . '.' . $extension;
 
-                $file = base64_decode($image);
+                    $file = base64_decode($image);
 
-                Storage::disk('s3')->put('industrialSecure/epp/transaction/files/'.$this->company.'/' . $imageName, $file, 'public');
+                    Storage::disk('s3')->put('industrialSecure/epp/transaction/files/'.$this->company.'/' . $imageName, $file, 'public');
 
-                $delivery->firm_employee = $imageName;
+                    $delivery->firm_employee = $imageName;
 
-                if(!$delivery->update())
-                    return $this->respondHttp500();
+                    if(!$delivery->update())
+                        return $this->respondHttp500();
+                }
+                else if ($delivery->firm_email == 'Email')
+                {
+                    $url_email = action('IndustrialSecure\EPP\TransactionFirmController@index', ['transaction' => $delivery->id, 'employee' => $employee->id]);
+
+                    \Log::info($url_email);
+
+                    $recipient = new User(['email' => $delivery->email_firm_employee]);
+
+                    NotificationMail::
+                        subject('Sauce - Elementos de protección personal')
+                        //->view('LegalAspects.legalMatrix.notifyUpdateLaws')
+                        ->recipients($recipient)
+                        ->message("Estimado $employee->name, usted tiene una solicitud de firma de una entrega de elementos de protección personal, para hacerlo ingrese a los links acontinuación: ")
+                        ->module('epp')
+                        ->buttons([['text'=>'Firmar', 'url'=>action('IndustrialSecure\EPP\TransactionFirmController@index', ['transaction' => $delivery->id, 'employee' => $employee->id])]])
+                        //->with(['user' => $employee->name, 'urls'=>$url_email])
+                        //->list(['<b>'.$delivery->type.'</b>'], 'ul')
+                        ->company($this->company)
+                        ->send();
+                }
             }
 
             if (count($request->files) > 0)
@@ -221,15 +249,15 @@ class TransactionController extends Controller
 
             DB::commit();
 
+            return $this->respondHttp200([
+                'message' => 'Se creo la entrega'
+            ]);
+
         } catch (\Exception $e) {
             \Log::info($e->getMessage());
             DB::rollback();
             return $this->respondHttp500();
         }
-
-        return $this->respondHttp200([
-            'message' => 'Se creo la entrega'
-        ]);
     }
 
     public function storeDeliveryNotInventary(ElementTransactionsRequest $request)
@@ -262,6 +290,9 @@ class TransactionController extends Controller
             $delivery->observations = $request->observations ? $request->observations : NULL;
             $delivery->location_id = $request->location_id;
             $delivery->company_id = $this->company;
+            $delivery->edit_firm = $request->edit_firm;
+            $delivery->firm_email = $request->firm_email;
+            $delivery->email_firm_employee = $request->email_firm_employee;
             
             if(!$delivery->save())
                 return $this->respondHttp500();
@@ -693,8 +724,6 @@ class TransactionController extends Controller
 
             $transaction->inventary = '';
 
-            $transaction->edit_firm = 'NO';
-
             $transaction->files = $this->getFiles($transaction->id);
 
             $transaction->delete = [
@@ -761,13 +790,13 @@ class TransactionController extends Controller
         if ($transaction->type == 'Entrega')
         {
             if ($request->inventary == 'SI')
-                $this->updateDelivery($request, $transaction);
+                return $this->updateDelivery($request, $transaction);
             else
-                $this->updateDeliveryNotInventary($request, $transaction);
+                return $this->updateDeliveryNotInventary($request, $transaction);
         }
         else
         {
-            $this->updateReturn($request, $transaction);
+            return $this->updateReturn($request, $transaction);
         }
 
     }
@@ -785,6 +814,9 @@ class TransactionController extends Controller
             $transaction->type = 'Entrega';
             $transaction->observations = $request->observations ? $request->observations : NULL;
             $transaction->location_id = $request->location_id;
+            $transaction->edit_firm = $request->edit_firm;
+            $transaction->firm_email = $request->firm_email;
+            $transaction->email_firm_employee = $request->email_firm_employee;
             
             if(!$transaction->update()){
                 return $this->respondHttp500();
@@ -1022,6 +1054,9 @@ class TransactionController extends Controller
             $transaction->type = 'Entrega';
             $transaction->observations = $request->observations ? $request->observations : NULL;
             $transaction->location_id = $request->location_id;
+            $transaction->edit_firm = $request->edit_firm;
+            $transaction->firm_email = $request->firm_email;
+            $transaction->email_firm_employee = $request->email_firm_employee;
             
             if(!$transaction->update()){
                 return $this->respondHttp500();

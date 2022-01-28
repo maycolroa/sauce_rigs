@@ -88,6 +88,11 @@
               <div class="my-4 mx-2 text-center" v-if="form.old_firm">
                   <img class="ui-w-300" :src="`${form.firm_image}`" alt="">
               </div>
+              <div v-else>
+                <label><b>No hay firma agregada</b></label>
+              </div><div v-if="form.email_firm_employee_exist">
+                <vue-input :disabled="viewOnly" class="col-md-12" v-model="form.email_firm_employee_exist" label="Email al que se solicito la firma" type="text" name="email_firm_employee_exist" :error="form.errorsFor('email_firm_employee_exist')" placeholder="Email"></vue-input>
+              </div>
           </center>
         </div>
       </div>
@@ -99,21 +104,29 @@
         </div>
       </div>
       <div v-if="form.edit_firm == 'SI'">
-          <center>
-              <p><b>Ingresa aqui tu firma</b></p>
-              <VueSignaturePad
-                  id="signature"
-                  width="100%"
-                  height="250px"
-                  ref="signaturePad"
-                  v-model="form.firm_employee"
-              />
-              <br>
-              <div>
-                  <b-btn variant="default" @click="undo">Borrar</b-btn>
-              </div>
-              <br>
+        <center>              
+            <vue-radio :disabled="viewOnly" class="col-md-6" v-model="form.firm_email" :options="typeFirm" name="firm_email" :error="form.errorsFor('firm_email')" label="¿Como desea agregar la firma?" :checked="form.firm_email"></vue-radio>      
           </center>
+          <div v-if="form.firm_email == 'Dibujar'">
+            <center>
+                <p><b>Ingresa aqui tu firma</b></p>
+                <VueSignaturePad
+                    id="signature"
+                    width="100%"
+                    height="250px"
+                    ref="signaturePad"
+                    v-model="form.firm_employee"
+                />
+                <br>
+                <div>
+                    <b-btn variant="default" @click="undo">Borrar</b-btn>
+                </div>
+                <br>
+            </center>
+          </div>
+          <div v-if="form.firm_email == 'Email'">
+            <vue-input :disabled="viewOnly" class="col-md-12" v-model="form.email_firm_employee" label="Email" type="text" name="email_firm_employee" :error="form.errorsFor('email_firm_employee')" placeholder="Email"></vue-input>
+          </div>
       </div>
         
     </b-card>
@@ -170,6 +183,8 @@ export default {
           edit_firm: 'NO',
           type: 'Entrega',
           inventary: auth.inventaryEpp,
+          firm_email: '',
+          email_firm_employee: ''
         };
       }
     }
@@ -183,12 +198,10 @@ export default {
     setTimeout(() => {
       if (this.isEdit || this.viewOnly)
       {
-        console.log(this.form)
         this.elements = this.form.elementos
         this.form.elements_id.splice(0);
 
         this.form.elements_codes.forEach((eleme, key) => {
-          console.log(eleme)
           this.form.elements_id.push({
             id: eleme.element.id,
             id_ele: eleme.element.id_ele,
@@ -241,6 +254,10 @@ export default {
         {text: 'SI', value: 'SI'},
         {text: 'NO', value: 'NO'}
       ],
+      typeFirm: [
+        {text: 'Solicitar por email', value: 'Email'},
+        {text: 'Dibujar', value: 'Dibujar'}
+      ],
       cargar: true,
       inventary: auth.inventaryEpp,
       elements_no_disponibles: []
@@ -256,7 +273,7 @@ export default {
             this.form.addFileBinary(`${keyFile}`, file.file);
         });
 
-      if (this.form.edit_firm == 'SI')
+      if (this.form.edit_firm == 'SI' && this.form.firm_email == 'Dibujar')
       {
         const { isEmpty, data } = this.$refs.signaturePad.saveSignature()
         if (data != null) {
@@ -265,8 +282,6 @@ export default {
       }
 
       this.form.inventary = this.inventary;
-
-      console.log(this.form.inventary);
 
       this.form
         .submit(e.target.action)

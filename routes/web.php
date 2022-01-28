@@ -26,6 +26,10 @@ Route::prefix('training')->group(function () {
   Route::get('download/file/{id}', 'LegalAspects\Contracs\TrainingEmployeeController@download');
 });
 
+Route::prefix('epp')->group(function () {
+  Route::get('{transaction}/{employee}', 'IndustrialSecure\EPP\TransactionFirmController@index');
+});
+
 Route::middleware(['auth'])->group(function () { 
     Route::get('appWithModules', 'General\ApplicationController@appsWhithModules');
     Route::get('getCompanies', 'General\ApplicationController@getCompanies');
