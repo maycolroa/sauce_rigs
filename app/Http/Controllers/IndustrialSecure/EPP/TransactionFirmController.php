@@ -92,7 +92,7 @@ class TransactionFirmController extends Controller
 
                     $delivery->logo = Storage::disk('public')->url('administrative/logos/'. $logo);
 
-                    $delivery->text_company = $this->getTextLetterEpp($company);
+                    $delivery->text_company = $this->getTextLetterEpp($company, $delivery->company_id);
 
                 }
                 else
@@ -111,9 +111,9 @@ class TransactionFirmController extends Controller
         ]);
     }
 
-    public function getTextLetterEpp($company)
+    public function getTextLetterEpp($company, $id)
     {
-        $text = ConfigurationCompany::select('value')->where('company_id', $company->id)->where('key', 'text_letter_epp')->first();
+        $text = ConfigurationCompany::withoutGlobalScopes()->select('value')->where('company_id', $id)->where('key', 'text_letter_epp')->first();
 
         $text_default = '<p>Yo, empleado (a) de '.$company->name .' hago constar que he recibido lo aquí relacionado y firmado por mí.  Doy fé además que he sido informado y capacitado en cuanto al uso de los elementos de protección personal y  frente a los riesgos que me protegen, las actividades y ocasiones en las cuales debo utilizarlos.  He sido informado sobre el procedimiento para su cambio y reposición en caso que sea necesario.</p>
 

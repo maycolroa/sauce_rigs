@@ -1515,6 +1515,7 @@ class TransactionController extends Controller
         {
             $multiselect = [];
             $elements_id = [];
+            $elements_no_disponibles = [];
 
             $element_balance = ElementBalanceLocation::select('sau_epp_elements_balance_ubication.id')
             ->join('sau_epp_elements', 'sau_epp_elements.id', 'sau_epp_elements_balance_ubication.element_id')
@@ -1542,7 +1543,6 @@ class TransactionController extends Controller
                 ->toArray();
 
                 $ids_disponibles = [];
-                $elements_no_disponibles = [];
 
                 foreach ($element_disponibles as $key => $value) {
                     $ele = Element::find($value['element_id']);
