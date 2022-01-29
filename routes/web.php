@@ -28,6 +28,7 @@ Route::prefix('training')->group(function () {
 
 Route::prefix('epp')->group(function () {
   Route::get('{transaction}/{employee}', 'IndustrialSecure\EPP\TransactionFirmController@index');
+  Route::post('firm', 'IndustrialSecure\EPP\TransactionFirmController@saveFirm');
 });
 
 Route::middleware(['auth'])->group(function () { 

@@ -58,8 +58,8 @@
         <table class="table-general">
             <thead> 
                 <tr>
-                    <th >Descripcion del Elemento</th>
-                    <th >Cantidad</th>
+                    <th>Descripcion del Elemento</th>
+                    <th>Cantidad</th>
                 </tr>                   
                 @foreach($delivery->elements as $element)
                     <tr>

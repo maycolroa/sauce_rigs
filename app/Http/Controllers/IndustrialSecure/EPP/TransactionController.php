@@ -133,6 +133,7 @@ class TransactionController extends Controller
             $delivery->edit_firm = $request->edit_firm;
             $delivery->firm_email = $request->firm_email;
             $delivery->email_firm_employee = $request->email_firm_employee;
+            $delivery->user_id = $this->user->id;
             
             if(!$delivery->save())
                 return $this->respondHttp500();
@@ -220,10 +221,6 @@ class TransactionController extends Controller
                 }
                 else if ($delivery->firm_email == 'Email')
                 {
-                    $url_email = action('IndustrialSecure\EPP\TransactionFirmController@index', ['transaction' => $delivery->id, 'employee' => $employee->id]);
-
-                    \Log::info($url_email);
-
                     $recipient = new User(['email' => $delivery->email_firm_employee]);
 
                     NotificationMail::
@@ -330,28 +327,47 @@ class TransactionController extends Controller
 
             $delivery->elements()->sync($elements_sync);
 
-            if ($request->firm_employee)
+            if ($delivery->edit_firm)
             {
-                $image_64 = $request->firm_employee;
-        
-                $extension = explode('/', explode(':', substr($image_64, 0, strpos($image_64, ';')))[1])[1];
-        
-                $replace = substr($image_64, 0, strpos($image_64, ',')+1); 
-        
-                $image = str_replace($replace, '', $image_64); 
-        
-                $image = str_replace(' ', '+', $image); 
-        
-                $imageName = base64_encode($this->user->id . rand(1,10000) . now()) . '.' . $extension;
+                if ($request->firm_employee && $delivery->firm_email == 'Dibujar')
+                {
+                    $image_64 = $request->firm_employee;
+            
+                    $extension = explode('/', explode(':', substr($image_64, 0, strpos($image_64, ';')))[1])[1];
+            
+                    $replace = substr($image_64, 0, strpos($image_64, ',')+1); 
+            
+                    $image = str_replace($replace, '', $image_64); 
+            
+                    $image = str_replace(' ', '+', $image); 
+            
+                    $imageName = base64_encode($this->user->id . rand(1,10000) . now()) . '.' . $extension;
 
-                $file = base64_decode($image);
+                    $file = base64_decode($image);
 
-                Storage::disk('s3')->put('industrialSecure/epp/transaction/files/'.$this->company.'/' . $imageName, $file, 'public');
+                    Storage::disk('s3')->put('industrialSecure/epp/transaction/files/'.$this->company.'/' . $imageName, $file, 'public');
 
-                $delivery->firm_employee = $imageName;
+                    $delivery->firm_employee = $imageName;
 
-                if(!$delivery->update())
-                    return $this->respondHttp500();
+                    if(!$delivery->update())
+                        return $this->respondHttp500();
+                }
+                else if ($delivery->firm_email == 'Email')
+                {
+                    $recipient = new User(['email' => $delivery->email_firm_employee]);
+
+                    NotificationMail::
+                        subject('Sauce - Elementos de protección personal')
+                        //->view('LegalAspects.legalMatrix.notifyUpdateLaws')
+                        ->recipients($recipient)
+                        ->message("Estimado $employee->name, usted tiene una solicitud de firma de una entrega de elementos de protección personal, para hacerlo ingrese a los links acontinuación: ")
+                        ->module('epp')
+                        ->buttons([['text'=>'Firmar', 'url'=>action('IndustrialSecure\EPP\TransactionFirmController@index', ['transaction' => $delivery->id, 'employee' => $employee->id])]])
+                        //->with(['user' => $employee->name, 'urls'=>$url_email])
+                        //->list(['<b>'.$delivery->type.'</b>'], 'ul')
+                        ->company($this->company)
+                        ->send();
+                }
             }
 
             if (count($request->files) > 0)

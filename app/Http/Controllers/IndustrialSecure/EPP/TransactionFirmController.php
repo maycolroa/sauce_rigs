@@ -83,14 +83,14 @@ class TransactionFirmController extends Controller
                         }
                     }
 
-                    $delivery->elements = $elements;
+                    $delivery->elements_id = $elements;
                     $delivery->user_name = $delivery->user_id ? $delivery->user->name : '';
 
                     $company = Company::select('logo', 'name')->where('id', $delivery->company_id)->first();
 
                     $logo = ($company && $company->logo) ? $company->logo : null;
 
-                    $delivery->logo = $logo;
+                    $delivery->logo = Storage::disk('public')->url('administrative/logos/'. $logo);
 
                     $delivery->text_company = $this->getTextLetterEpp($company);
 
@@ -105,19 +105,19 @@ class TransactionFirmController extends Controller
             $errorMenssage = 'El empleado no exite';
       
 
-        /*return view('legalAspects.trainingEmployee', [
+        return view('industrialSecure.DeliveryEmailEmployee', [
             'errorMenssage' => $errorMenssage,
             'data' => $delivery
-        ]);*/
+        ]);
     }
 
     public function getTextLetterEpp($company)
     {
         $text = ConfigurationCompany::select('value')->where('company_id', $company->id)->where('key', 'text_letter_epp')->first();
 
-        $text_default = '<p>Yo, empleado (a) de '.$company->name .' hago constar que he recibido lo aquí relacionado y firmado por mí.  Doy fé además que he sido informado y capacitado en cuanto al uso de los elementos de protección personal y  frente a los riesgos que me protegen, las actividades y ocasiones en las cuales debo utilizarlos.  He sido informado sobre el procedimiento para su cambio y reposición en caso que sea necesario.
+        $text_default = '<p>Yo, empleado (a) de '.$company->name .' hago constar que he recibido lo aquí relacionado y firmado por mí.  Doy fé además que he sido informado y capacitado en cuanto al uso de los elementos de protección personal y  frente a los riesgos que me protegen, las actividades y ocasiones en las cuales debo utilizarlos.  He sido informado sobre el procedimiento para su cambio y reposición en caso que sea necesario.</p>
 
-        *Me comprometo a hacer buen uso de todo lo recibido y a realizar el mantenimiento adecuado de los mismos.   Me comprometo a utilizarlos y cuidarlos conforme a las instrucciones recibidas y a la normativa legal vigente; así mismo me comprometo a informar a mi jefe inmediato cualquier defecto, anomalía o daño del elemento de protección personal (EPP) que pueda afectar o disminuir la efectividad de la protección.</p>';
+        <p>*Me comprometo a hacer buen uso de todo lo recibido y a realizar el mantenimiento adecuado de los mismos.   Me comprometo a utilizarlos y cuidarlos conforme a las instrucciones recibidas y a la normativa legal vigente; así mismo me comprometo a informar a mi jefe inmediato cualquier defecto, anomalía o daño del elemento de protección personal (EPP) que pueda afectar o disminuir la efectividad de la protección.</p>';
 
         if (!$text)
             return $text_default;
@@ -125,64 +125,36 @@ class TransactionFirmController extends Controller
             return $text->value;
     }
 
-    public function saveTraining(TrainingEmployeeRequest $request)
+    public function saveFirm(Request $request)
     {
         DB::beginTransaction();
 
         try
         {
-            $training = Training::withoutGlobalScopes()->find($request->id);
+            $delivery = ElementTransactionEmployee::withoutGlobalScopes()->find($request->id);
 
-            $attempt = new TrainingEmployeeAttempt();
-            $attempt->attempt = $request->attempt;
-            $attempt->employee_id = $request->employee;
-            $attempt->training_id = $request->id;
-            $attempt->state = 'REPROBADO';
-            $attempt->save();
-            $grade = 0;
+            $image_64 = $request->firm_employee;
+            
+            $extension = explode('/', explode(':', substr($image_64, 0, strpos($image_64, ';')))[1])[1];
+    
+            $replace = substr($image_64, 0, strpos($image_64, ',')+1); 
+    
+            $image = str_replace($replace, '', $image_64); 
+    
+            $image = str_replace(' ', '+', $image); 
+    
+            $imageName = base64_encode($delivery->user_id . rand(1,10000) . now()) . '.' . $extension;
 
-            foreach ($request->questions as $question) 
-            {
-                $questionAnswer = TrainingQuestions::find($question['id']);
-                $answer = collect($questionAnswer->answer_options->get('answers'))->sort();
+            $file = base64_decode($image);
 
-                $answersEmployee = new TrainingEmployeeQuestionsAnswers();
-                $answersEmployee->question_id = $question['id'];
-                $answersEmployee->attempt_id = $attempt->id;
+            Storage::disk('s3')->put('industrialSecure/epp/transaction/files/'.$delivery->company_id.'/' . $imageName, $file, 'public');
 
-                if (!is_array($question['answers']))
-                    $answers = $question['answers'];
-                else
-                    $answers = $this->getValuesForMultiselect($question['answers'])->sort()->implode("|");
-
-                $answersEmployee->answers = $answers;
-
-                if ($question['type']['name'] != 'selection_multiple')
-                {
-                    if ($answers == $answer->first())
-                        $answersEmployee->correct = true;
-                    else
-                        $answersEmployee->correct = false;
-                }
-                else
-                {
-                    if ($answers == $answer->implode("|"))
-                        $answersEmployee->correct = true;
-                    else
-                        $answersEmployee->correct = false;
-                }
-
-                $answersEmployee->save();
-                $grade += $answersEmployee->correct ? $questionAnswer->value_question : 0;
-            }
-
-            if ($grade >= $training->min_calification)
-                $attempt->update(['state' => 'APROBADO']);
+            $delivery->update(['firm_employee' => $imageName]);
 
             DB::commit();
 
             return $this->respondHttp200([
-                'result' => $attempt->state
+                'result' => 'El documento ha sido firmado exitosamente'
             ]);
             
         } catch (\Exception $e) {
