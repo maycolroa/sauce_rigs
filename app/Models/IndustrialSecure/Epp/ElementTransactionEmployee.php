@@ -51,6 +51,11 @@ class ElementTransactionEmployee extends Model
         return $this->belongsTo(Location::class, 'location_id');
     }
 
+    public function user()
+    {
+        return $this->belongsTo('App\Models\Administrative\Users\User', 'user_id');
+    }
+
     public function path_base($storageLocation = true)
     {
         $path = "industrialSecure/epp/transaction/files/";

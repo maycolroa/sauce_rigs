@@ -737,5 +737,13 @@ export default [{
             import('@/views/IndustrialSecure/epp/transactions/exit/view')
         }
       ]),
+      ...middleware({ 'check-permission': 'configuration_epp_c' }, [
+        {
+          name: 'industrialsecure-epps-settings',
+          path: 'epps/configurations',
+          component: () =>
+            import('@/views/IndustrialSecure/epp/settings/index')
+        }
+      ]),
     ]
   }]

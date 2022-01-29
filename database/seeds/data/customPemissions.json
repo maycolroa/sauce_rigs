@@ -429,6 +429,11 @@
                     {
                         "name": "transaction_d",
                         "display_name": "Elementos de proteccion personal - transacciones borrar"
+                    },
+
+                    {
+                        "name": "configuration_epp_c",
+                        "display_name": "Elementos de proteccion personal - configuraciones crear"
                     }
                 ]
             }

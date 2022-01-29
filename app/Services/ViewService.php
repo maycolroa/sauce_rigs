@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Facades\General\PermissionService;
 use App\Facades\Administrative\KeywordManager;
 use App\Models\Administrative\Users\User;
+use App\Models\Administrative\Configurations\ConfigurationCompany;
 use Session;
 
 class ViewService
@@ -46,5 +47,27 @@ class ViewService
     public function getTerms()
     {
         return Auth::user()->terms_conditions;
+    }
+
+    public function getInventaryEpp()
+    {
+        $configuration = ConfigurationCompany::select('value')->where('key', 'inventory_management');
+        $configuration->company_scope = Session::get('company_id');
+        $configuration = $configuration->first();
+
+        if (!$configuration)
+            return 'NO';
+        else
+            return $configuration->value;
+    }
+
+    public function allAuthData()
+    {
+        return [
+            'can' => $this->getCan(), 
+            'hasRole' => $this->getHasRole(), 
+            'inventaryEpp' => $this->getInventaryEpp(), 
+            'terms' => $this->getTerms()
+        ];
     }
 }

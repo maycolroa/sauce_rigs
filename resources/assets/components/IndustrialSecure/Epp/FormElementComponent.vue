@@ -29,8 +29,8 @@
     </b-form-row>
 
     <b-form-row>
-      <vue-radio :disabled="viewOnly" class="col-md-6" v-model="form.identify_each_element" :options="siNo" name="identify_each_element" :error="form.errorsFor('identify_each_element')" label="¿Desea identificar cada elemento?" :checked="form.identify_each_element"></vue-radio>
-      <vue-radio v-if="form.identify_each_element == 'SI'" :disabled="viewOnly" class="col-md-6" v-model="form.expiration_date" :options="siNo" name="expiration_date" :error="form.errorsFor('expiration_date')" label="¿Tiene fecha de vencimiento?" :checked="form.expiration_date"></vue-radio>
+      <vue-radio v-if="auth.inventaryEpp == 'SI'" :disabled="viewOnly" class="col-md-6" v-model="form.identify_each_element" :options="siNo" name="identify_each_element" :error="form.errorsFor('identify_each_element')" label="¿Desea identificar cada elemento?" :checked="form.identify_each_element"></vue-radio>
+      <vue-radio v-if="form.identify_each_element == 'SI' && auth.inventaryEpp == 'SI'" :disabled="viewOnly" class="col-md-6" v-model="form.expiration_date" :options="siNo" name="expiration_date" :error="form.errorsFor('expiration_date')" label="¿Tiene fecha de vencimiento?" :checked="form.expiration_date"></vue-radio>
     </b-form-row>
 
     <b-form-row>
@@ -118,11 +118,13 @@ export default {
         {text: 'SI', value: 'SI'},
         {text: 'NO', value: 'NO'}
       ],
+      inventary: auth.inventaryEpp
     };
   },
   methods: {
     submit(e) {
       this.loading = true;
+      this.form.inventary = this.inventary;
       this.form
         .submit(e.target.action)
         .then(response => {

@@ -7,6 +7,7 @@ import globals from './globals'
 import Popper from 'popper.js'
 
 import Notifications from 'vue-notification'
+import VueSignaturePad from 'vue-signature-pad';
 
 // Required to enable animations on dropdowns/tooltips/popovers
 Popper.Defaults.modifiers.computeStyle.gpuAcceleration = false
@@ -15,6 +16,7 @@ Vue.config.productionTip = false
 
 Vue.use(BootstrapVue)
 Vue.use(Notifications)
+Vue.use(VueSignaturePad);
 
 // Global RTL flag
 Vue.mixin({
@@ -29,9 +31,10 @@ import MailResetPassword from './components/Administrative/Auth/MailResetPasswor
 import GeneratePassword from './components/Administrative/Auth/GeneratePasswordComponent.vue';
 import PasswordReset from './components/Administrative/Auth/PasswordResetComponent.vue';
 import TrainingEmployee from './components/LegalAspects/Contracts/Trainings/FormTrainingEmployeeComponent.vue';
+import DeliveryEmployee from './components/IndustrialSecure/Epp/FormDeliveryFirmEmployeeComponent.vue';
 
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
-  components: { Footerlogin,Login,MailResetPassword,GeneratePassword,PasswordReset,TrainingEmployee}
+  components: { Footerlogin,Login,MailResetPassword,GeneratePassword,PasswordReset,TrainingEmployee, DeliveryEmployee}
 })

@@ -91,7 +91,8 @@ class CheckManager
                 $newTracing->user_id = $madeByUser->id;
                 $newTracing->save();
 
-                $this->saveTags('App\Models\PreventiveOccupationalMedicine\Reinstatements\TagsInformantRole', $newTracing, 'informant_role', $tracing['informant_role']);
+                if ($this->formModel == 'harinera')
+                    $this->saveTags('App\Models\PreventiveOccupationalMedicine\Reinstatements\TagsInformantRole', $newTracing, 'informant_role', $tracing['informant_role']);
             }
 
             return true;
@@ -131,7 +132,8 @@ class CheckManager
                 
             }
 
-            $this->saveTags('App\Models\PreventiveOccupationalMedicine\Reinstatements\TagsInformantRole', $oldTracing, 'informant_role', $tracing['informant_role']);
+            if ($this->formModel == 'harinera')
+                $this->saveTags('App\Models\PreventiveOccupationalMedicine\Reinstatements\TagsInformantRole', $oldTracing, 'informant_role', $tracing['informant_role']);
         }
     }
 

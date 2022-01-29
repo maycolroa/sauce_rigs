@@ -26,6 +26,11 @@ Route::prefix('training')->group(function () {
   Route::get('download/file/{id}', 'LegalAspects\Contracs\TrainingEmployeeController@download');
 });
 
+Route::prefix('epp')->group(function () {
+  Route::get('{transaction}/{employee}', 'IndustrialSecure\EPP\TransactionFirmController@index');
+  Route::post('firm', 'IndustrialSecure\EPP\TransactionFirmController@saveFirm');
+});
+
 Route::middleware(['auth'])->group(function () { 
     Route::get('appWithModules', 'General\ApplicationController@appsWhithModules');
     Route::get('getCompanies', 'General\ApplicationController@getCompanies');
@@ -547,6 +552,8 @@ Route::middleware(['auth'])->group(function () {
 
         Route::get('transaction/download/file/{file}', 'IndustrialSecure\EPP\TransactionController@download');
 
+        Route::get('transaction/downloadPdf/{id}', 'IndustrialSecure\EPP\TransactionController@downloadPdf');
+
         Route::post('transactionReturns/data', 'IndustrialSecure\EPP\TransactionReturnsController@data');
         //Route::ApiResource('transactions', 'IndustrialSecure\EPP\TransactionReturnsController');
         Route::get('transaction/employeeReturns/{id}', 'IndustrialSecure\EPP\TransactionReturnsController@employeeInfo');        
@@ -562,6 +569,10 @@ Route::middleware(['auth'])->group(function () {
         Route::post('exit/elementInfo/', 'IndustrialSecure\EPP\ExitController@elementInfo');
 
         Route::post('exit/eppElementsLocations', 'IndustrialSecure\EPP\ExitController@elementsLocation');
+
+        Route::post('configuration', 'IndustrialSecure\EPP\ConfigurationController@store');
+
+        Route::get('configuration/view', 'IndustrialSecure\EPP\ConfigurationController@show');
       });
 
       Route::prefix('tags')->group(function () {
