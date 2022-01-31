@@ -832,7 +832,6 @@ class TransactionController extends Controller
             $transaction->location_id = $request->location_id;
             $transaction->edit_firm = $request->edit_firm;
             $transaction->firm_email = $request->firm_email;
-            $transaction->email_firm_employee = $request->email_firm_employee;
             
             if(!$transaction->update()){
                 return $this->respondHttp500();
@@ -1009,7 +1008,57 @@ class TransactionController extends Controller
 
             if (isset($request->edit_firm) && $request->edit_firm == 'SI')
             {
-                if ($request->firm_employee != $transaction->firm_employee)
+                if ($request->firm_employee && $transaction->firm_email == 'Dibujar')
+                {
+                    if ($request->firm_employee != $transaction->firm_employee)
+                    {
+                        $image_64 = $request->firm_employee;
+                
+                        $extension = explode('/', explode(':', substr($image_64, 0, strpos($image_64, ';')))[1])[1];
+                
+                        $replace = substr($image_64, 0, strpos($image_64, ',')+1); 
+                
+                        $image = str_replace($replace, '', $image_64); 
+                
+                        $image = str_replace(' ', '+', $image); 
+                
+                        $imageName = base64_encode($this->user->id . rand(1,10000) . now()) . '.' . $extension;
+
+                        $file = base64_decode($image);
+
+                        Storage::disk('s3')->put('industrialSecure/epp/transaction/files/'.$this->company.'/' . $imageName, $file, 'public');
+
+                        $transaction->firm_employee = $imageName;
+
+                        if(!$transaction->update())
+                            return $this->respondHttp500();
+                    }
+                }
+                else if ($request->firm_email == 'Email')
+                {
+                    if ($request->email_firm_employee != $transaction->email_firm_employee)
+                    {
+                        $transaction->email_firm_employee = $request->email_firm_employee;
+
+                        if(!$transaction->update())
+                            return $this->respondHttp500();
+
+                        $recipient = new User(['email' => $transaction->email_firm_employee]);
+
+                        NotificationMail::
+                            subject('Sauce - Elementos de protección personal')
+                            //->view('LegalAspects.legalMatrix.notifyUpdateLaws')
+                            ->recipients($recipient)
+                            ->message("Estimado $employee->name, usted tiene una solicitud de firma de una entrega de elementos de protección personal, para hacerlo ingrese a los links acontinuación: ")
+                            ->module('epp')
+                            ->buttons([['text'=>'Firmar', 'url'=>action('IndustrialSecure\EPP\TransactionFirmController@index', ['transaction' => $transaction->id, 'employee' => $employee->id])]])
+                            //->with(['user' => $employee->name, 'urls'=>$url_email])
+                            //->list(['<b>'.$delivery->type.'</b>'], 'ul')
+                            ->company($this->company)
+                            ->send();
+                    }
+                }
+                /*if ($request->firm_employee != $transaction->firm_employee)
                 {
                     Storage::disk('s3')->delete('industrialSecure/epp/transaction/files/'.$this->company.'/' . $transaction->firm_employee);
 
@@ -1033,7 +1082,7 @@ class TransactionController extends Controller
 
                     if(!$transaction->update())
                         return $this->respondHttp500();
-                }
+                }*/
             }
 
             if (count($request->files) > 0)
@@ -1072,7 +1121,6 @@ class TransactionController extends Controller
             $transaction->location_id = $request->location_id;
             $transaction->edit_firm = $request->edit_firm;
             $transaction->firm_email = $request->firm_email;
-            $transaction->email_firm_employee = $request->email_firm_employee;
             
             if(!$transaction->update()){
                 return $this->respondHttp500();
@@ -1206,7 +1254,57 @@ class TransactionController extends Controller
 
             if (isset($request->edit_firm) && $request->edit_firm == 'SI')
             {
-                if ($request->firm_employee != $transaction->firm_employee)
+                if ($request->firm_employee && $transaction->firm_email == 'Dibujar')
+                {
+                    if ($request->firm_employee != $transaction->firm_employee)
+                    {
+                        $image_64 = $request->firm_employee;
+                
+                        $extension = explode('/', explode(':', substr($image_64, 0, strpos($image_64, ';')))[1])[1];
+                
+                        $replace = substr($image_64, 0, strpos($image_64, ',')+1); 
+                
+                        $image = str_replace($replace, '', $image_64); 
+                
+                        $image = str_replace(' ', '+', $image); 
+                
+                        $imageName = base64_encode($this->user->id . rand(1,10000) . now()) . '.' . $extension;
+
+                        $file = base64_decode($image);
+
+                        Storage::disk('s3')->put('industrialSecure/epp/transaction/files/'.$this->company.'/' . $imageName, $file, 'public');
+
+                        $transaction->firm_employee = $imageName;
+
+                        if(!$transaction->update())
+                            return $this->respondHttp500();
+                    }
+                }
+                else if ($request->firm_email == 'Email')
+                {
+                    if ($request->email_firm_employee != $transaction->email_firm_employee)
+                    {
+                        $transaction->email_firm_employee = $request->email_firm_employee;
+
+                        if(!$transaction->update())
+                            return $this->respondHttp500();
+
+                        $recipient = new User(['email' => $transaction->email_firm_employee]);
+
+                        NotificationMail::
+                            subject('Sauce - Elementos de protección personal')
+                            //->view('LegalAspects.legalMatrix.notifyUpdateLaws')
+                            ->recipients($recipient)
+                            ->message("Estimado $employee->name, usted tiene una solicitud de firma de una entrega de elementos de protección personal, para hacerlo ingrese a los links acontinuación: ")
+                            ->module('epp')
+                            ->buttons([['text'=>'Firmar', 'url'=>action('IndustrialSecure\EPP\TransactionFirmController@index', ['transaction' => $transaction->id, 'employee' => $employee->id])]])
+                            //->with(['user' => $employee->name, 'urls'=>$url_email])
+                            //->list(['<b>'.$delivery->type.'</b>'], 'ul')
+                            ->company($this->company)
+                            ->send();
+                    }
+                }
+                /*if ($request->firm_employee != $transaction->firm_employee)
                 {
                     Storage::disk('s3')->delete('industrialSecure/epp/transaction/files/'.$this->company.'/' . $transaction->firm_employee);
 
@@ -1230,7 +1328,7 @@ class TransactionController extends Controller
 
                     if(!$transaction->update())
                         return $this->respondHttp500();
-                }
+                }*/
             }
 
             if (count($request->files) > 0)
