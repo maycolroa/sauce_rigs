@@ -1261,7 +1261,7 @@ export default [
           color: 'outline-danger',
           borderless: true,
           icon: 'fas fa-file-pdf',
-          title: 'Descargar inspección planeada en PDF'
+          title: 'Descargar entrega en PDF'
         },
         data: {
           action: '/industrialSecurity/epp/transaction/downloadPdf/',
