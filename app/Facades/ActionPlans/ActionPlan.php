@@ -12,6 +12,7 @@ use App\Models\General\Module;
 use App\Models\General\Team;
 use App\Models\Administrative\ActionPlans\ActionPlansActivity;
 use App\Models\Administrative\ActionPlans\ActionPlansActivityModule;
+use App\Models\Administrative\ActionPlans\ActionPlansFileEvidence;
 use App\Models\Administrative\Regionals\EmployeeRegional;
 use App\Models\Administrative\Headquarters\EmployeeHeadquarter;
 use App\Models\Administrative\Areas\EmployeeArea;
@@ -20,9 +21,11 @@ use App\Models\System\Licenses\License;
 use App\Facades\Mail\Facades\NotificationMail;
 use App\Facades\Configuration;
 use Illuminate\Validation\Rule;
+use App\Rules\ActionPlanEvidence;
 use Validator;
 use Exception;
 use Session;
+use Illuminate\Support\Facades\Storage;
 
 
 class ActionPlan
@@ -519,7 +522,7 @@ class ActionPlan
      *
      * @return Array
      */
-    public function getRules()
+    public function getRules($request = [])
     {
         $rules = [];
 
@@ -532,7 +535,12 @@ class ActionPlan
         $rules['rules'][$this->prefixIndex.'actionPlan.activities.*.responsible_id'] = "required_unless:{$this->prefixIndex}actionPlan.activities.*.state,N/A";
         $rules['rules'][$this->prefixIndex.'actionPlan.activities.*.execution_date'] = 'date';
         $rules['rules'][$this->prefixIndex.'actionPlan.activities.*.expiration_date'] = "required_unless:{$this->prefixIndex}actionPlan.activities.*.state,N/A|date";
+        $rules['rules'][$this->prefixIndex.'actionPlan.activities.*.evidence'] = "required_unless:{$this->prefixIndex}actionPlan.activities.*.state,N/A";
         $rules['rules'][$this->prefixIndex.'actionPlan.activities.*.state'] = "required|in:$ACTION_PLAN_STATES";
+        //$rules['rules'][$this->prefixIndex.'actionPlan.activities.*.evidence_files'] = "required_if:{$this->prefixIndex}actionPlan.activities.*.state,Ejecutada|{$this->prefixIndex}actionPlan.activities.*.evidence,SI";
+
+        if (COUNT($request) > 0)
+            $rules['rules'][$this->prefixIndex.'actionPlan.activities.*.evidence_files'] = [new ActionPlanEvidence($request)];
 
         $rules['messages'][$this->prefixIndex.'actionPlan.array'] = 'El campo Planes de acción debe ser un array';
         $rules['messages'][$this->prefixIndex.'actionPlan.activities.array'] = 'El campo Actividades debe ser un array';
@@ -592,11 +600,39 @@ class ActionPlan
             $tmp['edit_all'] = $this->checkEditAll($value->activity);
             $tmp['table'] = $value->activity->activityModule->item_table_name;
             $tmp['detail_procedence'] = $value->activity->detail_procedence;
+            $tmp['evidence'] = $value->activity->evidence;
+            $tmp['evidence_files'] = $this->getFiles($value->activity->id);
+            $tmp['files_delete'] = [];
 
             array_push($data['activities'], $tmp);
         }
 
         return $data;
+    }
+
+    public function getFiles($activity)
+    {
+        $get_files = ActionPlansFileEvidence::where('activity_id', $activity)->get();
+
+        $files = [];
+
+        if ($get_files->count() > 0)
+        {               
+            $get_files->transform(function($get_file, $index) {
+                $get_file->key = Carbon::now()->timestamp + rand(1,10000);
+                $get_file->id = $get_file->id;
+                $get_file->name = $get_file->file;
+                $get_file->old_name = $get_file->file;
+                $get_file->file_name = $get_file->file_name;
+                $get_file->path = $get_file->path_image();
+
+                return $get_file;
+            });
+
+            $files = $get_files;
+        }
+
+        return $files;
     }
 
     /**
@@ -649,6 +685,9 @@ class ActionPlan
             $tmp['edit_all'] = $this->checkEditAll($activity);
             $tmp['detail_procedence'] = $activity->detail_procedence;
             $tmp['table'] = $activity->activityModule->item_table_name;
+            $tmp['evidence'] = $activity->evidence;
+            $tmp['evidence_files'] = $this->getFiles($activity->id);
+            $tmp['files_delete'] = [];
 
             array_push($data['actionPlan']['activities'], $tmp);
         }
@@ -811,6 +850,7 @@ class ActionPlan
             $activity->editable = (isset($itemA['editable']) && $itemA['editable']) ? $itemA['editable'] : 'SI';
             $activity->company_id = $company_id;
             $activity->observation = $itemA['observation'];
+            $activity->evidence = $itemA['evidence'];
             $activity->detail_procedence = $this->detailProcedence;
             $activity->save();
             
@@ -859,6 +899,62 @@ class ActionPlan
             {
                 $this->activities['activities'][$keyItem]['oldExpiration_date'] = $activity->expiration_date ? (Carbon::createFromFormat('Ymd', $activity->expiration_date))->format('D M d Y') : '';
                 $this->activities['activities'][$keyItem]['oldExecution_date'] = $activity->execution_date ? (Carbon::createFromFormat('Ymd', $activity->execution_date))->format('D M d Y') : '';
+            }
+
+            $files_names_delete = [];
+
+            if (COUNT($itemA['evidence_files']) > 0)
+            {
+                foreach ($itemA['evidence_files'] as $keyF => $file) 
+                {
+                    $create_file = true;
+
+                    if (isset($file['id']))
+                    {
+                        $fileUpload = ActionPlansFileEvidence::findOrFail($file['id']);
+
+                        if (isset($file['old_name']) && $file['old_name'] == $file['file'])
+                            $create_file = false;
+                        else
+                            array_push($files_names_delete, $file['old_name']);
+                    }
+                    else
+                    {
+                        $fileUpload = new ActionPlansFileEvidence();
+                        $fileUpload->activity_id = $activity->id;
+                    }
+
+                    if ($create_file)
+                    {
+                        $file_tmp = $file['file'];
+                        $nameFile = base64_encode($this->user->id . now() . rand(1,10000) . $keyF) .'.'. $file_tmp->extension();
+                        $file_tmp->storeAs($fileUpload->path_client(false), $nameFile, 's3');
+                        $fileUpload->file = $nameFile;
+                        $fileUpload->file_name = $file_tmp->getClientOriginalName();
+                        $fileUpload->save();
+                    }
+                }
+
+                //Borrar archivos reemplazados
+                foreach ($files_names_delete as $keyf => $file)
+                {
+                    Storage::disk('s3')->delete($fileUpload->path_client(false)."/".$file);
+                }
+            }
+
+            if (COUNT($itemA['files_delete']) > 0)
+            {
+                foreach ($itemA['files_delete'] as $id)
+                {
+                    $file_delete = ActionPlansFileEvidence::find($id);
+
+                    if ($file_delete)
+                    {
+                        $path = $file_delete->file;
+                        $file_delete->delete();
+                        Storage::disk('s3')->delete('administrative/actionPlan/evidences/' . $company_id . '/' . $path);
+                    }
+                }
             }
         }
         

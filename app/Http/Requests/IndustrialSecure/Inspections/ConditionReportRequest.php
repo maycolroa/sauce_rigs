@@ -53,7 +53,7 @@ class ConditionReportRequest extends FormRequest
             "items.*.files.*.expirationDate" => "nullable|date"*/
         ];
 
-        $rulesActionPlan = ActionPlan::getRules();
+        $rulesActionPlan = ActionPlan::getRules($this->all());
         $rules = array_merge($rules, $rulesActionPlan['rules']);
         $this->messages = $rulesActionPlan['messages'];
 

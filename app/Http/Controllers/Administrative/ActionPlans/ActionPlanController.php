@@ -8,11 +8,13 @@ use App\Vuetable\Facades\Vuetable;
 use App\Models\Administrative\Users\User;
 use App\Models\Administrative\ActionPlans\ActionPlansActivity;
 use App\Models\Administrative\ActionPlans\ActionPlansTracing;
+use App\Models\Administrative\ActionPlans\ActionPlansFileEvidence;
 use App\Facades\ActionPlans\Facades\ActionPlan;
 use App\Http\Requests\Administrative\ActionPlans\ActionPlanRequest;
 use App\Jobs\Administrative\ActionPlans\ActionPlanExportJob;
 use App\Traits\ContractTrait;
 use App\Traits\Filtertrait;
+use Illuminate\Support\Facades\Storage;
 use DB;
 
 class ActionPlanController extends Controller
@@ -281,7 +283,6 @@ class ActionPlanController extends Controller
 
     public function saveTracing(Request $request)
     {
-        \Log::info($request);
         if ($request->has('delete') && count($request->delete) > 0)
         {
             foreach ($request->delete as $key => $value) 
@@ -340,5 +341,11 @@ class ActionPlanController extends Controller
             'activity_id' => $request->id,
             'isEdit' => $isEdit
         ]);
+    }
+
+    public function download(ActionPlansFileEvidence $file)
+    {
+        $name = $file->file_name;
+        return Storage::disk('s3')->download($file->path_donwload(), $name);
     }
 }

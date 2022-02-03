@@ -164,8 +164,6 @@ class ReportController extends Controller
             if ($confLocation['area'] == 'SI')
                 $detail_procedence = $detail_procedence . '- ' .$keywords['area']. ': ' .  $report->area->name;
 
-                \Log::info($detail_procedence);
-
             ActionPlan::
                     user($this->user)
                 ->module('dangerousConditions')

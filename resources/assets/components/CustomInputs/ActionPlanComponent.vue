@@ -60,7 +60,57 @@
                                     </vue-datepicker>                           
                             </b-form-row>
                             <b-form-row>
+                                <vue-radio :disabled="viewOnly || !activity.edit_all" :checked="activity.evidence" class="col-md-12" v-model="activity.evidence" :options="siNo" name="evidence" :error="form.errorsFor(`${prefixIndex}actionPlan.activities.${index}.evidence`)" label="¿Requiere evidencia?">
+                                </vue-radio>
+                            </b-form-row>
+                            <b-form-row>
                                 <vue-textarea :disabled="viewOnly" class="col-md-12" v-model="activity.observation" label="Observación" name="observation" placeholder="Observación" :error="form.errorsFor(`${prefixIndex}actionPlan.activities.${index}.observation`)"></vue-textarea>
+                            </b-form-row>
+                            <b-form-row v-if="activity.evidence == 'SI' && (activity.responsible_id == auth.user_auth)">
+                                <b-card no-body class="mb-2 border-secondary" style="width: 100%;">
+                                    <div v-if="existError(`${prefixIndex}actionPlan.activities.${index}.`)">
+                                        <b-form-feedback class="d-block" style="padding-bottom: 10px; text-align: center">
+                                            Las evidencias son obligatorias para esta actividad.
+                                        </b-form-feedback>
+                                    </div>
+                                    <b-card-header class="bg-secondary">
+                                        <b-row>
+                                        <b-col cols="11" class="d-flex justify-content-between"> Evidencias </b-col>
+                                        <b-col cols="1">
+                                            <div class="float-right">
+                                            <b-button-group>
+                                                <b-btn href="javascript:void(0)" v-b-toggle="'accordion-file'" variant="link">
+                                                <span class="collapse-icon"></span>
+                                                </b-btn>
+                                            </b-button-group>
+                                            </div>
+                                        </b-col>
+                                        </b-row>
+                                    </b-card-header>
+                                    <b-collapse :id="`accordion-file`" visible :accordion="`accordion-master`">
+                                    <b-card-body>
+                                        <template v-for="(file, indexF) in activity.evidence_files">
+                                        <div :key="file.key">
+                                            <b-form-row>
+                                                <div class="col-md-12">
+                                                    <div class="float-right">
+                                                        <b-btn variant="outline-primary icon-btn borderless" size="sm" v-b-tooltip.top title="Eliminar" @click.prevent="removeFile(index, indexF)"><span class="ion ion-md-close-circle"></span></b-btn>
+                                                    </div>
+                                                </div>
+                                                 <vue-input v-if="file.id" :disabled="true" class="col-md-12" v-model="file.file_name" label="Archivo Cargado Actualmente" name="file_name" placeholder="Archivo Cargado"></vue-input>
+                                                <vue-file-simple :disabled="viewOnly" :help-text="file.id ? `Para descargar el archivo actual, haga click <a href='/administration/actionPlan/download/${file.id}' target='blank'>aqui</a> ` : null" class="col-md-12" v-model="file.file" label="Archivo" name="file" placeholder="Seleccione un archivo" :error="form.errorsFor(`${prefixIndex}actionPlan.activities.${index}.evidence_files.${indexF}.file`)" :maxFileSize="20"/>
+                                            </b-form-row>
+                                        </div>
+                                        </template>
+
+                                        <b-form-row style="padding-bottom: 20px;">
+                                        <div class="col-md-12">
+                                            <center><b-btn variant="primary" @click.prevent="addFile(index)"><span class="ion ion-md-add-circle"></span>&nbsp;&nbsp;Agregar</b-btn></center>
+                                        </div>
+                                        </b-form-row>          
+                                    </b-card-body>
+                                    </b-collapse>
+                                </b-card>
                             </b-form-row>
                         </b-card-body>
                     </b-collapse>
@@ -77,7 +127,9 @@ import PerfectScrollbar from '@/vendor/libs/perfect-scrollbar/PerfectScrollbar';
 import VueInput from "@/components/Inputs/VueInput.vue";
 import VueTextarea from "@/components/Inputs/VueTextarea.vue";
 import VueDatepicker from "@/components/Inputs/VueDatepicker.vue";
+import VueRadio from "@/components/Inputs/VueRadio.vue";
 import VueAdvancedSelect from "@/components/Inputs/VueAdvancedSelect.vue";
+import VueFileSimple from "@/components/Inputs/VueFileSimple.vue";
 
 export default {
     components: {
@@ -86,7 +138,9 @@ export default {
         VueInput,
         VueTextarea,
         VueDatepicker,
-        VueAdvancedSelect
+        VueAdvancedSelect,
+        VueRadio,
+        VueFileSimple
     },
     props: {
         isEdit: { type: Boolean, default: false },
@@ -118,7 +172,11 @@ export default {
     data() {
         return {
             search: '',
-            userDataUrl: '/selects/usersActionPlan'
+            userDataUrl: '/selects/usersActionPlan',
+            siNo: [
+                {text: 'SI', value: 'SI'},
+                {text: 'NO', value: 'NO'}
+            ],
         };
     },
     created() {
@@ -157,7 +215,9 @@ export default {
                 state: '',
                 observation: '',
                 editable: '',
-                edit_all: true
+                edit_all: true,
+                evidence_files: [],
+                files_delete: []
             })
         },
         removeActivity(index) {
@@ -216,7 +276,39 @@ export default {
                     to: toDate
                 }
             }
-        }
+        },
+        addFile(index) 
+        {
+            this.actionPlan.activities[index].evidence_files.push({
+                key: new Date().getTime(),
+                file: ''
+        })
+        },
+        removeFile(indexA,index)
+        {
+            if (this.actionPlan.activities[indexA].evidence_files[index].id != undefined)
+                this.actionPlan.activities[indexA].files_delete.push(this.actionPlan.activities[indexA].evidence_files[index].id)
+
+            this.actionPlan.activities[indexA].evidence_files.splice(index, 1)
+        },
+        existError(index) {
+			let keys = Object.keys(this.form.errors.errors)
+			let result = false
+
+			if (keys.length > 0)
+			{
+				for (let i = 0; i < keys.length; i++)
+				{
+					if (keys[i].indexOf(index) > -1)
+					{
+						result = true
+						break
+					}
+				}
+			}
+
+			return result
+		}
     }
 }
 </script>

@@ -33,6 +33,22 @@ class ActionPlanRequest extends FormRequest
             ]);
         }
 
+        if ($this->has('files_binary') && COUNT($this->files_binary) > 0)
+        {
+            $data = $this->all();
+
+            foreach ($this->files_binary as $key => $value)
+            {
+                $allKeys = explode("_", $key);
+                $keyA = $allKeys[0];
+                $keyF = $allKeys[1];
+
+                $data['actionPlan']['activities'][$keyA]['evidence_files'][$keyF]['file'] = $value;
+            }
+
+            $this->merge($data);
+        }
+
         return $this->all();
     }
 
@@ -43,7 +59,7 @@ class ActionPlanRequest extends FormRequest
      */
     public function rules()
     { 
-        $rulesActionPlan = ActionPlan::getRules();
+        $rulesActionPlan = ActionPlan::getRules($this->all());
         return $rulesActionPlan['rules'];
     }
 

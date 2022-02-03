@@ -119,7 +119,7 @@ class ListCheckItemsRequest extends FormRequest
             }
         }
 
-        $rulesActionPlan = ActionPlan::prefixIndex('items.*.')->getRules();
+        $rulesActionPlan = ActionPlan::prefixIndex('items.*.')->getRules($this->all());
         $rules = array_merge($rules, $rulesActionPlan['rules']);
         $this->messages = $rulesActionPlan['messages'];
 
