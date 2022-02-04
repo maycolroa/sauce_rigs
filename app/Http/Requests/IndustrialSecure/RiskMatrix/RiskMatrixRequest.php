@@ -113,7 +113,7 @@ class RiskMatrixRequest extends FormRequest
         ];
 
         $confLocation = $this->getLocationFormRules();
-        $rulesActionPlan = ActionPlan::prefixIndex('activities.*.dangers.*.')->getRules();
+        $rulesActionPlan = ActionPlan::prefixIndex('subprocesses.*.risks.*.')->getRules($this->all());
 
         $rules = array_merge($rules, $confLocation);
         $rules = array_merge($rules, $rulesActionPlan['rules']);

@@ -47,7 +47,7 @@ class SaveQualificationRequest extends FormRequest
     {
         $rules = [];
 
-        $rulesActionPlan = ActionPlan::getRules();
+        $rulesActionPlan = ActionPlan::getRules($this->all());
         $rules = array_merge($rules, $rulesActionPlan['rules']);
         $this->messages = $rulesActionPlan['messages'];
 

@@ -408,6 +408,8 @@ Route::middleware(['auth'])->group(function () {
       Route::post('actionplan/saveTracing', 'Administrative\ActionPlans\ActionPlanController@saveTracing');
       Route::post('actionplan/getTracings', 'Administrative\ActionPlans\ActionPlanController@getTracings');
 
+      Route::get('actionPlan/download/{file}', 'Administrative\ActionPlans\ActionPlanController@download');
+
       Route::get('logo/download', 'Administrative\Logos\LogoController@download');
       Route::get('logo/view', 'Administrative\Logos\LogoController@show');
       Route::post('logo', 'Administrative\Logos\LogoController@store');

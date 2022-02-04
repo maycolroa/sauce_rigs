@@ -395,7 +395,7 @@ class DangerMatrixController extends Controller
         $rulesConfLocation = $this->getLocationFormRules();
         $rules = array_merge($rules, $rulesConfLocation);
 
-        $rulesActionPlan = ActionPlan::prefixIndex('activities.*.dangers.*.')->getRules();
+        $rulesActionPlan = ActionPlan::prefixIndex('activities.*.dangers.*.')->getRules($request->all());
         $rules = array_merge($rules, $rulesActionPlan['rules']);
         $messages = array_merge($messages, $rulesActionPlan['messages']);
 

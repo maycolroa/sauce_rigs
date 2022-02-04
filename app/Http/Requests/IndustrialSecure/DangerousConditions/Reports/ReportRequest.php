@@ -66,7 +66,7 @@ class ReportRequest extends FormRequest
             'image_3' => [new FileFormat(['png','jpg','jpeg'])]
         ];
 
-        $rulesActionPlan = ActionPlan::getRules();
+        $rulesActionPlan = ActionPlan::getRules($this->all());
         $rules = array_merge($rules, $rulesActionPlan['rules']);
         $this->message = $rulesActionPlan['messages'];
 

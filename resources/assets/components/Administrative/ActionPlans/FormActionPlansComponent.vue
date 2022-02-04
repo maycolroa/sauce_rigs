@@ -61,6 +61,14 @@ export default {
     },
     methods: {
         submit(e) {
+
+            this.form.clearFilesBinary();
+
+            this.form.actionPlan.activities.forEach((activity, keyObj) => {
+                activity.evidence_files.forEach((file, keyFile) => {
+                    this.form.addFileBinary(`${keyObj}_${keyFile}`, file.file)
+                });
+            });
             this.loading = true;
             this.form
                 .submit(e.target.action)

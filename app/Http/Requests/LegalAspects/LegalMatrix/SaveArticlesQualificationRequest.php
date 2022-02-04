@@ -56,7 +56,7 @@ class SaveArticlesQualificationRequest extends FormRequest
     {
         $rules = [];
 
-        $rulesActionPlan = ActionPlan::prefixIndex('articles.*.')->getRules();
+        $rulesActionPlan = ActionPlan::prefixIndex('articles.*.')->getRules($this->all());
         $rules = array_merge($rules, $rulesActionPlan['rules']);
         $this->messages = $rulesActionPlan['messages'];
 
