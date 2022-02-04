@@ -612,8 +612,9 @@ class TransactionReturnsController extends Controller
         {
             $transactions = ElementTransactionEmployee::where('employee_id', $request->employee_id)->where('location_id', $request->location_id)->where('type', 'Entrega')->get();
             
-            $elements = [];
+            $elements = collect([]);                  
             $multiselect = [];
+            $id_balance = [];
 
             if ($transactions->count() > 0)
             { 
@@ -622,12 +623,16 @@ class TransactionReturnsController extends Controller
                     foreach ($transaction->elements as $key => $value)
                     {
                         if ($value->state == 'Asignado')
-                        {      
+                        {
+                            if (!in_array($value->element_balance_id, $id_balance))
+                                array_push($id_balance, $value->element_balance_id);
+
                             if ($value->element->element->identify_each_element)
                             {
                                 $content = [
                                     'id' => $value->id,
                                     'id_ele' => $value->element->element->id,
+                                    'balance_id' => $value->element_balance_id,
                                     'type' => 'Identificable',
                                     'quantity' => 1,
                                     'code' => $value->hash,
@@ -636,7 +641,7 @@ class TransactionReturnsController extends Controller
                                     'wastes' => 'NO'
                                 ];
         
-                                array_push($elements, $content);
+                                $elements->push($content);
                                 array_push( $multiselect, $value->element->element->multiselect());
                             }
                             else
@@ -644,6 +649,7 @@ class TransactionReturnsController extends Controller
                                 $content = [
                                     'id' => $value->id,
                                     'id_ele' => $value->element->element->id,
+                                    'balance_id' => $value->element_balance_id,
                                     'quantity' => 1,
                                     'type' => 'No Identificable',
                                     'code' => $value->hash,
@@ -652,7 +658,8 @@ class TransactionReturnsController extends Controller
                                     'wastes' => 'NO'
                                 ];
 
-                                array_push($elements, $content);
+                                //array_push($elements, $content);
+                                $elements->push($content);
                                 array_push( $multiselect, $value->element->element->multiselect());
                             }
                         }                                
@@ -660,9 +667,55 @@ class TransactionReturnsController extends Controller
                 }
             }
 
+            $ids_saltar = [];
+            $new = [];
+
+            foreach ($id_balance as $key => $id) 
+            {
+                $record = $elements->where('balance_id', $id);
+                $cantidad = $elements->where('balance_id', $id)->where('type', 'No Identificable')->sum('quantity');
+
+                foreach ($record as $key => $value) 
+                {
+                    if ($value['type'] == 'Identificable')
+                    {
+                        $content = [
+                            'id' => $value['id'],
+                            'id_ele' => $value['id_ele'],
+                            'quantity' => 1,
+                            'type' => $value['type'],
+                            'code' => $value['code'],
+                            'multiselect_element' => $value['multiselect_element'],
+                            'key' => $value['key'],
+                            'wastes' => 'NO'
+                        ];
+                        array_push($new, $content);
+                    }
+                    else
+                    {
+                        if (!in_array($value['balance_id'], $ids_saltar))
+                        {
+                            $content = [
+                                'id' => $value['id'],
+                                'id_ele' => $value['id_ele'],
+                                'quantity' => $cantidad,
+                                'type' => $value['type'],
+                                'code' => $value['code'],
+                                'multiselect_element' => $value['multiselect_element'],
+                                'key' => $value['key'],
+                                'wastes' => 'NO'
+                            ];
+
+                            array_push($ids_saltar, $value['balance_id']);
+                            array_push($new, $content);
+                        }
+                    }
+                }
+            }
+
             return $this->respondHttp200([
                 'data' => [
-                    'elements' => $elements,
+                    'elements' => $new,
                     'multiselect' => $multiselect
                 ]
             ]);
