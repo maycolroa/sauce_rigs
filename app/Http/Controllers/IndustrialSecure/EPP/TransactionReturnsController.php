@@ -642,7 +642,7 @@ class TransactionReturnsController extends Controller
                                 ];
         
                                 $elements->push($content);
-                                array_push( $multiselect, $value->element->element->multiselect());
+                                array_push($multiselect, $value->element->element->multiselect());
                             }
                             else
                             {
@@ -679,6 +679,13 @@ class TransactionReturnsController extends Controller
                 {
                     if ($value['type'] == 'Identificable')
                     {
+                        $disponible = ElementBalanceSpecific::select('id', 'hash')
+                                ->where('location_id', $request->location_id)
+                                ->where('state', 'Disponible')
+                                ->where('element_balance_id', $value['balance_id'])
+                                ->orderBy('id')
+                                ->pluck('hash', 'hash');
+
                         $content = [
                             'id' => $value['id'],
                             'id_ele' => $value['id_ele'],
@@ -689,7 +696,11 @@ class TransactionReturnsController extends Controller
                             'key' => $value['key'],
                             'wastes' => 'NO'
                         ];
-                        array_push($new, $content);
+
+                        $options = $this->multiSelectFormat($disponible);
+
+                        //$elements->push(['element' => $content, 'options' => $options]);
+                        array_push($new, ['element' => $content, 'options' => $options]);
                     }
                     else
                     {
@@ -707,7 +718,7 @@ class TransactionReturnsController extends Controller
                             ];
 
                             array_push($ids_saltar, $value['balance_id']);
-                            array_push($new, $content);
+                            array_push($new, ['element' => $content, 'options' => []]);
                         }
                     }
                 }
