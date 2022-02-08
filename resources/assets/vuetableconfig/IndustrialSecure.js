@@ -1103,6 +1103,7 @@ export default [
         { name: 'sau_epp_elements.code', data: 'code', title: 'Código', sortable: true, searchable: true, detail: false, key: false },
         { name: 'sau_epp_elements.type', data: 'type', title: 'Tipo', sortable: true, searchable: true, detail: false, key: false },
         { name: 'sau_epp_elements.mark', data: 'mark', title: 'Marca', sortable: true, searchable: true, detail: false, key: false },
+        { name: 'sau_epp_elements.identy', data: 'identy', title: '¿Identificable?', sortable: true, searchable: true, detail: false, key: false },
         { name: 'sau_epp_elements.state', data: 'state', title: '¿Activo?', sortable: true, searchable: true, detail: false, key: false },
         { name: 'sau_epp_elements.reusable', data: 'reusable', title: '¿Reutilizable?', sortable: true, searchable: true, detail: false, key: false },
         { name: '', data: 'controlls', title: 'Controles', sortable: false, searchable: false, detail: false, key: false },

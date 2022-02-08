@@ -28,7 +28,7 @@ class EppExitDetail extends Model
 
     public function exit()
     {
-        return $this->belongsTo('App\Models\IndustrialSecure\Epp\EppExit', 'element_id');
+        return $this->belongsTo('App\Models\IndustrialSecure\Epp\EppExit', 'exit_id');
     }
 
     public function specifics()

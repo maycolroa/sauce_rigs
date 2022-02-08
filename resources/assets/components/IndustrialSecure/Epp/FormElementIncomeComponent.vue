@@ -24,7 +24,7 @@
               <vue-advanced-select v-if="element.type == 'Identificable'" :disabled="viewOnly" class="col-md-12" v-model="element.codes" name="codes" label="Códigos de los elementos" placeholder="Agregue los códigos" :options="[]" :error="form.errorsFor(`elements_id.${index}.codes`)" :multiple="true" :allow-empty="true" :taggable="true" :searchable="true" :limit="50">
               </vue-advanced-select>
 
-              <vue-ajax-advanced-select :disabled="viewOnly" class="col-md-6" v-model="element.reason" name="reason" :error="form.errorsFor(`elements_id.${index}.reason`)"  label="Motivos" placeholder="Seleccione los motivos" :url="tagsSReasonDataUrl" :multiple="true" :allowEmpty="true" :taggable="true"></vue-ajax-advanced-select>
+              <vue-ajax-advanced-select-tag-unic :disabled="viewOnly" class="col-md-6" v-model="element.reason" name="reason" :error="form.errorsFor(`elements_id.${index}.reason`)" label="Motivo" placeholder="Seleccione el motivo" :url="tagsSReasonDataUrl" :multiple="false" :allowEmpty="true" :taggable="true"></vue-ajax-advanced-select-tag-unic>
             </b-form-row>
         </div>
       </template>
@@ -55,6 +55,7 @@ import VueRadio from "@/components/Inputs/VueRadio.vue";
 import VueFileSimple from "@/components/Inputs/VueFileSimple.vue";
 import Form from "@/utils/Form.js";
 import VueAdvancedSelect from "@/components/Inputs/VueAdvancedSelect.vue";
+import VueAjaxAdvancedSelectTagUnic from "@/components/Inputs/VueAjaxAdvancedSelectTagUnic.vue";
 import Alerts from '@/utils/Alerts.js';
 
 export default {
@@ -64,7 +65,8 @@ export default {
     VueAjaxAdvancedSelect,
     VueAdvancedSelect,
     VueFileSimple,
-    VueRadio
+    VueRadio,
+    VueAjaxAdvancedSelectTagUnic
   },
   props: {
     url: { type: String },

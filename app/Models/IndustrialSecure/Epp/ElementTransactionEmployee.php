@@ -20,7 +20,8 @@ class ElementTransactionEmployee extends Model
         'observations',
         'firm_employee',
         'company_id',
-        'location_id'
+        'location_id',
+        'state'
     ];
 
     public function multiselect()
@@ -49,6 +50,12 @@ class ElementTransactionEmployee extends Model
     public function location()
     {
         return $this->belongsTo(Location::class, 'location_id');
+    }
+
+    public function delivery()
+    {
+        return $this->belongsToMany('App\Models\IndustrialSecure\Epp\ReturnDelivery', 'sau_epp_transactions_returns_delivery', 'transaction_employee_id', 'delivery_id');
+        //return $this->belongsToMany(ReturnDelivery::class, 'transaction_employee_id');
     }
 
     public function user()

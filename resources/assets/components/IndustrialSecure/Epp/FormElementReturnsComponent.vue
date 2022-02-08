@@ -34,6 +34,17 @@
               <vue-input v-if="element.type == 'No Identificable'" :disabled="true" class="col-md-6" v-model="element.quantity" label="Cantidad" type="number" name="quantity" :error="form.errorsFor(`elements_id.${index}.quantity`)" placeholder="Cantidad"></vue-input>
               <vue-input v-if="element.type == 'Identificable'" :disabled="true" class="col-md-12" v-model="element.code" label="Código" type="text" name="code" :error="form.errorsFor(`elements_id.${index}.code`)" placeholder="Código"></vue-input>
               <vue-radio :disabled="viewOnly" class="col-md-6" v-model="element.waste" :options="noSi" :name="`waste_${index}`" :error="form.errorsFor(`elements_id.${index}.waste`)" label="¿Se desechara el elemento?" :checked="element.waste"></vue-radio>
+
+              <vue-input v-if="element.type == 'No Identificable' && element.waste == 'SI' && element.quantity > 1" :disabled="viewOnly" class="col-md-12" v-model="element.quantity_waste" label="Cantidad a desechar" type="number" name="quantity_waste" :error="form.errorsFor(`elements_id.${index}.quantity_waste`)" placeholder="Cantidad a desechar" ></vue-input>
+
+              <vue-radio :disabled="viewOnly" class="col-md-6" v-model="element.rechange" :options="noSi" :name="`rechange_${index}`" :error="form.errorsFor(`elements_id.${index}.rechange`)" label="¿Se hara un cambio de unidad del elemento?" :checked="element.rechange"></vue-radio>
+
+              <vue-input v-if="element.type == 'No Identificable' && element.rechange == 'SI'" :disabled="viewOnly" class="col-md-12" v-model="element.quantity_rechange" label="Cantidad a cambiar" type="number" name="quantity_rechange" :error="form.errorsFor(`elements_id.${index}.quantity_rechange`)" placeholder="Cantidad a cambiar" ></vue-input>
+
+              <vue-advanced-select v-if="element.type == 'Identificable' && element.rechange == 'SI'" :disabled="viewOnly" class="col-md-12" v-model="element.code_new" name="code_new" label="Código de elemento" placeholder="Seleccione el código" :options="codes[index]" :error="form.errorsFor(`elements_id.${index}.code_new`)" @selectedName="hashSelected(index)" :allow-empty="false">
+                </vue-advanced-select>
+
+              <vue-ajax-advanced-select-tag-unic v-if="element.rechange == 'SI'" :disabled="viewOnly" class="col-md-12" v-model="element.reason" name="reason" :error="form.errorsFor(`elements_id.${index}.reason`)" label="Motivo" placeholder="Seleccione el motivo" :url="tagsSReasonDataUrl" :multiple="false" :allowEmpty="true" :taggable="true"></vue-ajax-advanced-select-tag-unic>
             </b-form-row>
         </div>
       </template>      
@@ -110,7 +121,7 @@
 
     <div class="row float-right pt-10 pr-10">
       <template>
-        <b-btn variant="default" :to="cancelUrl" :disabled="loading">{{ viewOnly ? "Atras" : "Cancelar"}}</b-btn>&nbsp;&nbsp;
+        <b-btn variant="default" @click="deletedTemporal" :to="cancelUrl" :disabled="loading">{{ viewOnly ? "Atras" : "Cancelar"}}</b-btn>&nbsp;&nbsp;
         <b-btn type="submit" :disabled="loading" variant="primary" v-if="!viewOnly">Finalizar</b-btn>
       </template>
     </div>
@@ -127,6 +138,7 @@ import Form from "@/utils/Form.js";
 import VueAdvancedSelect from "@/components/Inputs/VueAdvancedSelect.vue";
 import ShowHistoryQualify from "./ShowHistoryWastesComponent.vue";
 import Alerts from '@/utils/Alerts.js';
+import VueAjaxAdvancedSelectTagUnic from "@/components/Inputs/VueAjaxAdvancedSelectTagUnic.vue";
 
 export default {
   components: {
@@ -136,7 +148,8 @@ export default {
     VueAdvancedSelect,
     VueFileSimple,
     ShowHistoryQualify,
-    VueRadio
+    VueRadio,
+    VueAjaxAdvancedSelectTagUnic
   },
   props: {
     url: { type: String },
@@ -162,6 +175,7 @@ export default {
           edit_firm: 'NO',
           type: 'Devolucion',
           inventary: auth.inventaryEpp,
+          ids_transactions: ''
         };
       }
     }
@@ -180,14 +194,15 @@ export default {
 
         this.form.elements_codes.forEach((eleme, key) => {
           this.form.elements_id.push({
-            id: eleme.id,
-            id_ele: eleme.id_ele,
-            quantity: eleme.quantity,
-            code: eleme.code,
-            type: eleme.type,
-            key: eleme.key,
-            waste: eleme.wastes
+            id: eleme.element.id,
+            id_ele: eleme.element.id_ele,
+            quantity: eleme.element.quantity,
+            code: eleme.element.code,
+            type: eleme.element.type,
+            key: eleme.element.key,
+            waste: eleme.element.wastes
           })
+          this.codes[key] = eleme.options
         })
       }
 
@@ -202,7 +217,10 @@ export default {
     'form.employee_id' () {
       this.updateDetails(`/industrialSecurity/epp/transaction/employeeReturns/${this.form.employee_id}`)
 
-      this.form.location_id = '';
+      if (!this.isEdit)
+      {
+        this.form.location_id = '';
+      }
     },
     'form.location_id' () {
         this.uploadElements()
@@ -222,7 +240,9 @@ export default {
         {text: 'NO', value: 'NO'}
       ],
       cargar: true,
-      idHistory: ''
+      idHistory: '', 
+      tagsSReasonDataUrl: '/selects/tagsReason',
+      ids_transactions: []
     };
   },
   methods: {
@@ -242,6 +262,8 @@ export default {
           this.form.firm_employee = data
         }
       }
+
+      this.form.ids_transactions = this.ids_transactions
 
       this.form
         .submit(e.target.action)
@@ -276,17 +298,20 @@ export default {
       .then(response => {
           this.form.elements_id.splice(0);
           this.elements = response.data.data.multiselect
+          this.ids_transactions = response.data.data.id_transactions
 
           response.data.data.elements.forEach((eleme, key) => {
             this.form.elements_id.push({
-              id: eleme.id,
-              id_ele: eleme.id_ele,
-              quantity: eleme.quantity,
-              code: eleme.code,
-              type: eleme.type,
-              key: eleme.key,
-              waste: eleme.wastes
+              id: eleme.element.id,
+              id_ele: eleme.element.id_ele,
+              quantity: eleme.element.quantity,
+              code: eleme.element.code,
+              type: eleme.element.type,
+              key: eleme.element.key,
+              waste: eleme.element.wastes
             });
+
+            this.codes[key] = eleme.options
           });          
            
           this.isLoading = false;
@@ -326,6 +351,32 @@ export default {
     },
     closeModalHistory() {
       this.idHistory = ''
+    },
+    hashSelected(index)
+    {
+      this.isLoading = true;
+      axios.post('/industrialSecurity/epp/transaction/hashSelected', {id: this.form.elements_id[index].id_ele, location_id: this.form.location_id, select_hash: this.form.elements_id[index].code})
+        .then(response => {
+            /*this.form.elements_id[index].type = response.data.type
+            this.codes[index] = response.data.options*/
+        })
+        .catch(error => {
+            this.isLoading = false;
+            Alerts.error('Error', 'El código seleccionado no existe o no se encuentra disponible en la ubicación seleccionada');
+        });
+    },
+    deletedTemporal()
+    {
+      this.isLoading = true;
+      axios.post('/industrialSecurity/epp/transaction/deletedTemporal')
+        .then(response => {
+            /*this.form.elements_id[index].type = response.data.type
+            this.codes[index] = response.data.options*/
+        })
+        .catch(error => {
+            this.isLoading = false;
+            Alerts.error('Error', 'Hubo un problema recolectando la información');
+        });
     },
   }
 };
