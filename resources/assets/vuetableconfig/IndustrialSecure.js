@@ -1228,7 +1228,7 @@ export default [
     ],
     'controlls': [{
         type: 'push',
-        buttons: [{
+        buttons: [/*{
         config: {
             color: 'outline-success',
             borderless: true,
@@ -1240,7 +1240,7 @@ export default [
             id: 'id',
         },
         permission: 'transaction_u'
-        }, {
+        }, */{
         config: {
             color: 'outline-info',
             borderless: true,
@@ -1268,7 +1268,7 @@ export default [
           action: '/industrialSecurity/epp/transaction/downloadPdf/',
           id: 'id'
         },
-        permission: 'ph_inspections_r'
+        permission: 'transaction_r'
         }],
   },
     {
@@ -1300,7 +1300,7 @@ export default [
     ],
     'controlls': [{
         type: 'push',
-        buttons: [{
+        buttons: [/*{
         config: {
             color: 'outline-success',
             borderless: true,
@@ -1312,7 +1312,7 @@ export default [
             id: 'id',
         },
         permission: 'transaction_u'
-        }, {
+        },*/ {
         config: {
             color: 'outline-info',
             borderless: true,
