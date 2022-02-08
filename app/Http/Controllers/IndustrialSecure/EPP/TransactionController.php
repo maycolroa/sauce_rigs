@@ -832,6 +832,8 @@ class TransactionController extends Controller
 
                         if ($e->element->element->identify_each_element)
                         {
+                            $rechange = ChangeElement::where('transaction_employee_id', $transaction->id)->where('element_specific_old_id', $e->id)->first();
+
                             $content = [
                                 'id' => $e->id,
                                 'id_ele' => $e->element->element->id,
@@ -840,25 +842,53 @@ class TransactionController extends Controller
                                 'code' => $e->hash,
                                 'entry' => 'Manualmente',
                                 'multiselect_element' => $e->element->element->multiselect(),
-                                'wastes' => $e->state == 'Desechado' ? 'SI' : 'NO'
+                                'wastes' => $e->state == 'Desechado' ? 'SI' : 'NO',
+                                'rechange' => $rechange ? 'SI' : 'NO'
                             ];
 
                             array_push($elements, ['element' => $content, 'options' => $options]);
                         }
                         else
                         {
+                            $rechange = ChangeElement::select('element_specific_old_id')->where('transaction_employee_id', $transaction->id)->get();
+
+                            $id_rechange = [];
+
+                            foreach ($rechange as $key => $re) 
+                            {
+                                array_push($id_rechange, $re->element_specific_old_id);
+                            }
+                                     
                             if (!in_array($e->element_balance_id, $ids_balance_saltar))
                             {
-                                $content = [
-                                    'id' => $e->id,
-                                    'id_ele' => $e->element->element->id,
-                                    'quantity' => $element->count(),
-                                    'type' => 'No Identificable',
-                                    'code' => implode(',', $codes),
-                                    'entry' => 'Manualmente',
-                                    'multiselect_element' => $e->element->element->multiselect(),
-                                    'wastes' => $e->state == 'Desechado' ? 'SI' : 'NO'
-                                ];
+                                if (in_array($e->id, $id_rechange))
+                                {
+                                    $content = [
+                                        'id' => $e->id,
+                                        'id_ele' => $e->element->element->id,
+                                        'quantity' => $element->count(),
+                                        'type' => 'No Identificable',
+                                        'code' => implode(',', $codes),
+                                        'entry' => 'Manualmente',
+                                        'multiselect_element' => $e->element->element->multiselect(),
+                                        'wastes' => $e->state == 'Desechado' ? 'SI' : 'NO',
+                                        'rechange' => 'SI'
+                                    ];
+                                }
+                                else
+                                {
+                                    $content = [
+                                        'id' => $e->id,
+                                        'id_ele' => $e->element->element->id,
+                                        'quantity' => $element->count(),
+                                        'type' => 'No Identificable',
+                                        'code' => implode(',', $codes),
+                                        'entry' => 'Manualmente',
+                                        'multiselect_element' => $e->element->element->multiselect(),
+                                        'wastes' => $e->state == 'Desechado' ? 'SI' : 'NO',
+                                        'rechange' => 'NO'
+                                    ];
+                                }
 
                                 array_push($elements, ['element' => $content, 'options' => $options]);
                                 array_push($ids_balance_saltar, $e->element_balance_id);
