@@ -19,6 +19,23 @@ export default [
         key: 'states',
         type: 'select',
         label: 'Estados'
+      },
+      {
+        url: '/selects/regionals',
+        key: 'regionals',
+        type: 'select',
+        label: 'regionals'
+      },
+      {
+        url: '/selects/users',
+        key: 'creators',
+        type: 'select',
+        label: 'Usuario Creador'
+      },
+      {
+        key: 'dateRange',
+        type: 'dateRange',
+        label: 'Fecha de vencimiento',
       }
     ]
   },
