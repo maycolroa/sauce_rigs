@@ -79,8 +79,6 @@ class ActionPlanController extends Controller
             else if ($filters['filtersType']['regionals'] == 'NOT IN')
                 $inspections->whereNotIn('sau_ph_inspection_items_qualification_area_location.employee_regional_id', $regionales);
 
-            \Log::info($inspections->get());
-
             $report = ActionPlansActivity::select(
                 'sau_action_plans_activities.*',
                 'sau_action_plans_activities.state as state_activity',
