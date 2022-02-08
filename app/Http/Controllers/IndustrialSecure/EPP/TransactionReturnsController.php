@@ -610,16 +610,19 @@ class TransactionReturnsController extends Controller
     {
         try
         {
-            $transactions = ElementTransactionEmployee::where('employee_id', $request->employee_id)->where('location_id', $request->location_id)->where('type', 'Entrega')->get();
+            $transactions = ElementTransactionEmployee::where('employee_id', $request->employee_id)->where('location_id', $request->location_id)->where('type', 'Entrega')->WhereNull('state')->get();
             
             $elements = collect([]);                  
             $multiselect = [];
             $id_balance = [];
+            $ids_transactions = [];
 
             if ($transactions->count() > 0)
             { 
                 foreach ($transactions as $key => $transaction) 
-                {            
+                {                    
+                    array_push($ids_transactions, $transaction->id);
+
                     foreach ($transaction->elements as $key => $value)
                     {
                         if ($value->state == 'Asignado')
@@ -673,7 +676,14 @@ class TransactionReturnsController extends Controller
             foreach ($id_balance as $key => $id) 
             {
                 $record = $elements->where('balance_id', $id);
+
                 $cantidad = $elements->where('balance_id', $id)->where('type', 'No Identificable')->sum('quantity');
+                $codes = [];
+
+                foreach ($record as $key => $hash) 
+                {
+                    array_push($codes, $hash['code']);
+                }
 
                 foreach ($record as $key => $value) 
                 {
@@ -711,7 +721,7 @@ class TransactionReturnsController extends Controller
                                 'id_ele' => $value['id_ele'],
                                 'quantity' => $cantidad,
                                 'type' => $value['type'],
-                                'code' => $value['code'],
+                                'code' => implode(',', $codes),
                                 'multiselect_element' => $value['multiselect_element'],
                                 'key' => $value['key'],
                                 'wastes' => 'NO'
@@ -727,7 +737,8 @@ class TransactionReturnsController extends Controller
             return $this->respondHttp200([
                 'data' => [
                     'elements' => $new,
-                    'multiselect' => $multiselect
+                    'multiselect' => $multiselect,
+                    'id_transactions' => $ids_transactions
                 ]
             ]);
 

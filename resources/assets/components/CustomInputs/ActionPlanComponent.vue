@@ -66,7 +66,7 @@
                             <b-form-row>
                                 <vue-textarea :disabled="viewOnly" class="col-md-12" v-model="activity.observation" label="Observación" name="observation" placeholder="Observación" :error="form.errorsFor(`${prefixIndex}actionPlan.activities.${index}.observation`)"></vue-textarea>
                             </b-form-row>
-                            <b-form-row v-if="activity.evidence == 'SI' && (activity.responsible_id == auth.user_auth)">
+                            <b-form-row v-if="activity.evidence == 'SI' && activity.state == 'Ejecutada'">
                                 <b-card no-body class="mb-2 border-secondary" style="width: 100%;">
                                     <div v-if="existError(`${prefixIndex}actionPlan.activities.${index}.`)">
                                         <b-form-feedback class="d-block" style="padding-bottom: 10px; text-align: center">

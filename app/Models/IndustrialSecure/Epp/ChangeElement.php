@@ -14,6 +14,7 @@ class ChangeElement extends Model
 
     protected $fillable = [
         'transaction_employee_id',
+        'transaction_delivery_id',
         'element_id',
         'element_specific_old_id',
         'element_specific_new_id',

@@ -24,7 +24,7 @@
               <vue-advanced-select v-if="element.type == 'Identificable'" :disabled="viewOnly" class="col-md-12" v-model="element.codes" name="codes" label="Código de elemento" placeholder="Seleccione el código" :options="codes[index]" :error="form.errorsFor(`elements_id.${index}.codes`)" :allow-empty="false" :multiple="true">
                 </vue-advanced-select>
 
-              <vue-ajax-advanced-select-tag-unic :disabled="viewOnly" class="col-md-6" v-model="element.reason" name="reason" :error="form.errorsFor(`elements_id.${index}.reason`)"  label="Motivo" placeholder="Seleccione el motivo" :url="tagsSReasonDataUrl" :multiple="true" :allowEmpty="true" :taggable="true"></vue-ajax-advanced-select-tag-unic>
+              <vue-ajax-advanced-select-tag-unic :disabled="viewOnly" class="col-md-6" v-model="element.reason" name="reason" :error="form.errorsFor(`elements_id.${index}.reason`)"  label="Motivo" placeholder="Seleccione el motivo" :url="tagsSReasonDataUrl" :multiple="false" :allowEmpty="true" :taggable="true"></vue-ajax-advanced-select-tag-unic>
             </b-form-row>
         </div>
       </template>
