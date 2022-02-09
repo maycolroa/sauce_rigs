@@ -109,4 +109,27 @@ class ActionPlansActivity extends Model
 
         return $query;
     }
+
+    public function scopeInUsers($query, $users, $typeSearch = 'IN')
+    {
+        if (COUNT($users) > 0)
+        {
+            if ($typeSearch == 'IN')
+                $query->whereIn('sau_action_plans_activities.user_id', $users);
+
+            else if ($typeSearch == 'NOT IN')
+                $query->whereNotIn('sau_action_plans_activities.user_id', $users);
+        }
+
+        return $query;
+    }
+
+    public function scopeBetweenDate($query, $dates)
+    {
+        if (COUNT($dates) == 2)
+        {
+            $query->whereBetween('sau_action_plans_activities.expiration_date', $dates);
+            return $query;
+        }
+    }
 }

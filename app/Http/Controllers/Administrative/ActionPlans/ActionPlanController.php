@@ -53,7 +53,55 @@ class ActionPlanController extends Controller
     */
     public function data(Request $request)
     {
-        $activities = ActionPlansActivity::select(
+        $url = '/administrative/actionplans';
+
+        $filters = COUNT($request->get('filters')) > 0 ? $request->get('filters') : $this->filterDefaultValues($this->user->id, $url);
+
+        if (isset($filters["regionals"]) && COUNT($filters["regionals"]) > 0)
+        {
+            $regionales = $this->getValuesForMultiselect($filters["regionals"]);
+
+            $inspections = ActionPlansActivity::select(
+                'sau_action_plans_activities.*',
+                'sau_action_plans_activities.state as state_activity',
+                'sau_users.name as responsible',
+                'sau_modules.display_name',
+                'u.name as user_creator')
+            ->join('sau_action_plans_activity_module', 'sau_action_plans_activity_module.activity_id', 'sau_action_plans_activities.id')
+            ->join('sau_modules', 'sau_modules.id', 'sau_action_plans_activity_module.module_id')
+            ->join('sau_users', 'sau_users.id', 'sau_action_plans_activities.responsible_id')
+            ->join('sau_users as u', 'u.id', 'sau_action_plans_activities.user_id')
+            ->join('sau_ph_inspection_items_qualification_area_location', 'sau_ph_inspection_items_qualification_area_location.item_id', 'sau_action_plans_activity_module.item_id');
+
+            if ($filters['filtersType']['regionals'] == 'IN')
+                $inspections->whereIn('sau_ph_inspection_items_qualification_area_location.employee_regional_id', $regionales);
+
+            else if ($filters['filtersType']['regionals'] == 'NOT IN')
+                $inspections->whereNotIn('sau_ph_inspection_items_qualification_area_location.employee_regional_id', $regionales);
+
+            $report = ActionPlansActivity::select(
+                'sau_action_plans_activities.*',
+                'sau_action_plans_activities.state as state_activity',
+                'sau_users.name as responsible',
+                'sau_modules.display_name',
+                'u.name as user_creator')
+            ->join('sau_action_plans_activity_module', 'sau_action_plans_activity_module.activity_id', 'sau_action_plans_activities.id')
+            ->join('sau_modules', 'sau_modules.id', 'sau_action_plans_activity_module.module_id')
+            ->join('sau_users', 'sau_users.id', 'sau_action_plans_activities.responsible_id')
+            ->join('sau_users as u', 'u.id', 'sau_action_plans_activities.user_id')
+            ->join('sau_ph_reports', 'sau_ph_reports.id', 'sau_action_plans_activity_module.item_id');
+
+            if ($filters['filtersType']['regionals'] == 'IN')
+                $report->whereIn('sau_ph_reports.employee_regional_id', $regionales);
+
+            else if ($filters['filtersType']['regionals'] == 'NOT IN')
+                $report->whereNotIn('sau_ph_reports.employee_regional_id', $regionales);
+
+            $activities = $inspections->union($report);
+        }
+        else
+        {
+            $activities = ActionPlansActivity::select(
                 'sau_action_plans_activities.*',
                 'sau_action_plans_activities.state as state_activity',
                 'sau_users.name as responsible',
@@ -63,19 +111,31 @@ class ActionPlanController extends Controller
             ->join('sau_modules', 'sau_modules.id', 'sau_action_plans_activity_module.module_id')
             ->join('sau_users', 'sau_users.id', 'sau_action_plans_activities.responsible_id')
             ->join('sau_users as u', 'u.id', 'sau_action_plans_activities.user_id');
-
-        $url = '/administrative/actionplans';
-
-        $filters = COUNT($request->get('filters')) > 0 ? $request->get('filters') : $this->filterDefaultValues($this->user->id, $url);
+        }
 
         if (isset($filters["responsibles"]))
             $activities->inResponsibles($this->getValuesForMultiselect($filters["responsibles"]), $filters['filtersType']['responsibles']);
+
+        if (isset($filters["creators"]))
+            $activities->inUsers($this->getValuesForMultiselect($filters["creators"]), $filters['filtersType']['creators']);
 
         if (isset($filters["modules"]))
             $activities->inModules($this->getValuesForMultiselect($filters["modules"]), $filters['filtersType']['modules']);
 
         if (isset($filters["states"]))
             $activities->inStates($this->getValuesForMultiselect($filters["states"]), $filters['filtersType']['states']);
+
+        $dates_request = explode('/', $filters["dateRange"]);
+
+        $dates = [];
+
+        if (COUNT($dates_request) == 2)
+        {
+            array_push($dates, $this->formatDateToSave($dates_request[0]));
+            array_push($dates, $this->formatDateToSave($dates_request[1]));
+        }
+            
+        $activities->betweenDate($dates);
             
         if (!$this->user->hasRole('Superadmin', $this->team))
         {
