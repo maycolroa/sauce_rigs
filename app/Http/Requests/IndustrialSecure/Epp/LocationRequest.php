@@ -44,10 +44,10 @@ class LocationRequest extends FormRequest
      */
     public function rules()
     {
-        //\Log::info($this->all());
+        $id = $this->input('id');
 
         $rules = [
-            'name'  => 'required|string'
+            'name'  => 'required|string|unique:sau_epp_locations,name,'.$id.',id,company_id,'.Session::get('company_id')
         ];
 
         $rulesConfLocation = $this->getLocationFormRules();

@@ -587,6 +587,7 @@ class ActionPlan
             $tmp['oldResponsible_id'] = $value->activity->responsible_id;
             $tmp['multiselect_responsible'] = $value->activity->responsible->multiselectActionPlan();
             $tmp['user_id'] = $value->activity->user_id;
+            $tmp['user_creator_name'] = $activity->user->name;
             $tmp['execution_date'] = ($value->activity->execution_date) ? (Carbon::createFromFormat('Y-m-d', $value->activity->execution_date))->format('D M d Y') : '';
             $tmp['oldExecution_date'] = ($value->activity->execution_date) ? (Carbon::createFromFormat('Y-m-d', $value->activity->execution_date))->format('D M d Y') : '';
             $tmp['expiration_date'] = ($value->activity->expiration_date) ? (Carbon::createFromFormat('Y-m-d', $value->activity->expiration_date))->format('D M d Y') : '';
@@ -851,7 +852,10 @@ class ActionPlan
             $activity->company_id = $company_id;
             $activity->observation = $itemA['observation'];
             $activity->evidence = $itemA['evidence'];
-            $activity->detail_procedence = $this->detailProcedence;
+
+            if ($this->detailProcedence)
+                $activity->detail_procedence = $this->detailProcedence;
+            
             $activity->save();
             
             if(isset($itemA['oldState']))

@@ -63,10 +63,11 @@ class ElementRequest extends FormRequest
      */
     public function rules()
     {
+        $id = $this->input('id');
         //\Log::info($this->all());
 
         return [
-            'name' => 'required|string',
+            'name' => 'required|string|unique:sau_epp_elements,name,'.$id.',id,company_id,'.Session::get('company_id'),
             'code' => 'required|string',
             'description' => 'required|string',
             'type' => 'required_if:inventary,SI',

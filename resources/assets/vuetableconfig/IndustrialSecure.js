@@ -1472,4 +1472,29 @@ export default [
         filterColumns: true,
     }
 },
+{
+    name: 'industrialsecure-epp-reports',
+    fields: [
+        { name: 'id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true },
+        { name: 'element', data: 'element', title: 'Elemento', sortable: true, searchable: false, detail: false, key: false },
+        { name: 'mark', data: 'mark', title: 'Marca', sortable: true, searchable: false, detail: false, key: false },
+        { name: 'location', data: 'location', title: 'Ubicación', sortable: true, searchable: false, detail: false, key: false },
+        { name: 'quantity', data: 'quantity', title: 'Cantidad Total', sortable: true, searchable: false, detail: false, key: false },
+        { name: 'quantity_available', data: 'quantity_available', title: 'Cantidad Disponible', sortable: true, searchable: false, detail: false, key: false },
+        { name: 'quantity_allocated', data: 'quantity_allocated', title: 'Cantidad ASignada', sortable: true, searchable: false, detail: false, key: false },
+    ],
+    'controlls': [{
+            type: 'push',
+            buttons: []
+        },
+        {
+            type: 'base',
+            buttons: [],
+        }],
+    configuration: {
+        urlData: '/industrialSecurity/epp/element/reportBalance',
+        filterColumns: false,
+        configNameFilter: 'industrialsecure-epp-report'
+    }
+},
 ];

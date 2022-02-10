@@ -494,4 +494,27 @@ export default [
         }
       ]
     },
+    {
+      name: 'industrialsecure-epp-report',
+      filters: [
+        {
+          url: '/selects/eppElements',
+          key: 'elements',
+          type: 'select',
+          label: 'Elementos'
+        },
+        {
+          url: '/selects/tagsMarkEpp',
+          key: 'marks',
+          type: 'select',
+          label: 'Marcas'
+        },
+        {
+          url: '/selects/eppLocations',
+          key: 'location',
+          type: 'select',
+          label: 'Ubicación',
+        }
+      ]
+    },
 ];
