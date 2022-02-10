@@ -18,10 +18,14 @@ use App\Exports\IndustrialSecure\Epp\ElementNotIdentExcel;
 use App\Exports\IndustrialSecure\Epp\ElementIdentExcel;
 use App\Jobs\IndustrialSecure\Epp\ElementImportJob;
 use App\Jobs\IndustrialSecure\Epp\ElementBalanceInitialImportJob;
+use App\Models\IndustrialSecure\Epp\ElementBalanceLocation;
 use Maatwebsite\Excel\Facades\Excel;
+use App\Traits\Filtertrait;
 
 class ElementController extends Controller
 {
+    use Filtertrait;
+
     /**
      * creates and instance and middlewares are checked
      */
@@ -327,6 +331,17 @@ class ElementController extends Controller
                 'options' => $this->multiSelectFormat($tags)
             ]);
         } 
+        else
+        {
+            $tags = TagsMark::selectRaw("
+                sau_epp_tags_marks.id as id,
+                sau_epp_tags_marks.name as name
+            ")            
+            ->orderBy('name')
+            ->pluck('name', 'name');
+        
+            return $this->multiSelectFormat($tags);
+        }
     }
 
     public function multiselectApplicableStandard(Request $request)
@@ -397,5 +412,50 @@ class ElementController extends Controller
         {
             return $this->respondHttp500();
         }
+    }
+
+    public function reportBalance(Request $request)
+    {
+        $report = ElementBalanceLocation::selectRaw("
+            sau_epp_elements.name as element,
+            sau_epp_elements.mark as mark,
+            sau_epp_locations.name as location,
+            count(sau_epp_elements_balance_specific.id) as quantity,
+            SUM(IF(sau_epp_elements_balance_specific.state = 'Disponible', 1, 0)) AS quantity_available,
+            SUM(IF(sau_epp_elements_balance_specific.state = 'Asignado', 1, 0)) AS quantity_allocated
+        ")
+        ->join('sau_epp_elements', 'sau_epp_elements.id', 'sau_epp_elements_balance_ubication.element_id')
+        ->join('sau_epp_locations', 'sau_epp_locations.id', 'sau_epp_elements_balance_ubication.location_id')
+        ->join('sau_epp_elements_balance_specific', 'sau_epp_elements_balance_specific.element_balance_id', 'sau_epp_elements_balance_ubication.id')
+        ->where('sau_epp_elements.company_id', $this->company)
+        ->groupBy('element','location', 'mark');
+
+        $url = "/industrialsecure/epps/report";
+
+        $filters = COUNT($request->get('filters')) > 0 ? $request->get('filters') : $this->filterDefaultValues($this->user->id, $url);
+
+        if (COUNT($filters) > 0)
+        {
+            if (isset($filters["marks"]) && COUNT($filters["marks"]) > 0)
+            {
+                $marks = $this->getValuesForMultiselect($filters["marks"]);
+
+                if ($filters['filtersType']['marks'] == 'IN')
+                    $report->whereIn('sau_epp_elements.mark', $marks);
+
+                else if ($filters['filtersType']['marks'] == 'NOT IN')
+                    $report->whereNotIn('sau_epp_elements.mark', $marks);
+            }
+
+            if (isset($filters["elements"]))
+                $report->inElement($this->getValuesForMultiselect($filters["elements"]), $filters['filtersType']['elements']);
+
+            if (isset($filters["location"]))
+                $report->inLocation($this->getValuesForMultiselect($filters["location"]), $filters['filtersType']['location']);
+        }
+
+        
+        return Vuetable::of($report)
+                    ->make();
     }
 }

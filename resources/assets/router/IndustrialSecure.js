@@ -745,5 +745,13 @@ export default [{
             import('@/views/IndustrialSecure/epp/settings/index')
         }
       ]),
+      ...middleware({ 'check-permission': 'elements_r' }, [
+        {
+          name: 'industrialsecure-epps-reports',
+          path: 'epps/report',
+          component: () =>
+            import('@/views/IndustrialSecure/epp/transactions/reports')
+        }
+      ]),
     ]
   }]
