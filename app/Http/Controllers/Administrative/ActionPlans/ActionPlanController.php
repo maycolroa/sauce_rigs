@@ -125,17 +125,20 @@ class ActionPlanController extends Controller
         if (isset($filters["states"]))
             $activities->inStates($this->getValuesForMultiselect($filters["states"]), $filters['filtersType']['states']);
 
-        $dates_request = explode('/', $filters["dateRange"]);
-
-        $dates = [];
-
-        if (COUNT($dates_request) == 2)
+        if (isset($filters["dateRange"]))
         {
-            array_push($dates, $this->formatDateToSave($dates_request[0]));
-            array_push($dates, $this->formatDateToSave($dates_request[1]));
+            $dates_request = explode('/', $filters["dateRange"]);
+
+            $dates = [];
+
+            if (COUNT($dates_request) == 2)
+            {
+                array_push($dates, $this->formatDateToSave($dates_request[0]));
+                array_push($dates, $this->formatDateToSave($dates_request[1]));
+            }
+                
+            $activities->betweenDate($dates);
         }
-            
-        $activities->betweenDate($dates);
             
         if (!$this->user->hasRole('Superadmin', $this->team))
         {
