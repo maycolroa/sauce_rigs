@@ -356,7 +356,7 @@ export default {
     hashSelected(index)
     {
       this.isLoading = true;
-      axios.post('/industrialSecurity/epp/transaction/hashSelected', {id: this.form.elements_id[index].id_ele, location_id: this.form.location_id, select_hash: this.form.elements_id[index].code})
+      axios.post('/industrialSecurity/epp/transaction/hashSelected', {id: this.form.elements_id[index].id_ele, location_id: this.form.location_id, select_hash: this.form.elements_id[index].code_new})
         .then(response => {
             /*this.form.elements_id[index].type = response.data.type
             this.codes[index] = response.data.options*/
