@@ -704,7 +704,6 @@ export default [{
             import('@/views/IndustrialSecure/epp/transactions/income/view')
         }
       ]),
-
       ...middleware({ 'check-permission': 'transaction_r' }, [
         {
           name: 'industrialsecure-epps-transactions-exit',
@@ -751,6 +750,38 @@ export default [{
           path: 'epps/report',
           component: () =>
             import('@/views/IndustrialSecure/epp/transactions/reports')
+        }
+      ]),
+      ...middleware({ 'check-permission': 'transaction_r' }, [
+        {
+          name: 'industrialsecure-epps-transactions-transfers-location',
+          path: 'epps/transactions/transfers/location',
+          component: () =>
+            import('@/views/IndustrialSecure/epp/transactions/transferLocation/index') 
+        }
+      ]), 
+      ...middleware({ 'check-permission': 'transaction_c' }, [
+        {
+          name: 'industrialsecure-epps-transactions-transfers-location-create',
+          path: 'epps/transactions/transfers/location/create',
+          component: () =>
+            import('@/views/IndustrialSecure/epp/transactions/transferLocation/create')
+        }
+      ]), 
+      ...middleware({ 'check-permission': 'transaction_u' }, [
+        {
+          name: 'industrialsecure-epps-transactions-transfers-location-edit',
+          path: 'epps/transactions/transfers/location/:id',
+          component: () =>
+            import('@/views/IndustrialSecure/epp/transactions/transferLocation/edit')
+        }
+      ]),
+      ...middleware({ 'check-permission': 'transaction_r' }, [
+        {
+          name: 'industrialsecure-epps-transactions-transfers-location-view',
+          path: 'epps/transactions/transfers/location/:id',
+          component: () =>
+            import('@/views/IndustrialSecure/epp/transactions/transferLocation/view')
         }
       ]),
     ]

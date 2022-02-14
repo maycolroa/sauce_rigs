@@ -1,10 +1,12 @@
 <template>
 
   <b-form :action="url" @submit.prevent="submit" autocomplete="off">
-    <b-card  bg-variant="transparent" border-variant="dark" title="Información de Salida" class="mb-3 box-shadow-none">
+    <b-card  bg-variant="transparent" border-variant="dark" title="Información de Ingreso" class="mb-3 box-shadow-none">
       <div class="col-md-12">
         <b-form-row>
-          <vue-ajax-advanced-select :disabled="viewOnly" class="col-md-6" v-model="form.location_id" :error="form.errorsFor('location_id')"  name="location_id" label="Ubicación" placeholder="Seleccione la ubicación" :url="tagsLocationsDataUrl" :multiple="false" :selected-object="form.multiselect_location" :allowEmpty="true">
+          <vue-ajax-advanced-select :disabled="viewOnly" class="col-md-6" v-model="form.location_origin_id" :error="form.errorsFor('location_origin_id')"  name="location_origin_id" label="Ubicación Origen" placeholder="Seleccione la ubicación de origen" :url="tagsLocationsDataUrl" :multiple="false" :selected-object="form.multiselect_location_origin" :allowEmpty="true">
+            </vue-ajax-advanced-select>
+          <vue-ajax-advanced-select :disabled="viewOnly || !form.location_origin_id" class="col-md-6" v-model="form.location_destiny_id" :error="form.errorsFor('location_destiny_id')"  name="location_destiny_id" label="Ubicación Destino" placeholder="Seleccione la ubicación de destino" :url="tagsLocationsDataUrl" :multiple="false" :selected-object="form.multiselect_location_destiny" :allowEmpty="true">
             </vue-ajax-advanced-select>
         </b-form-row>
       </div>
@@ -24,18 +26,25 @@
               <vue-advanced-select v-if="element.type == 'Identificable'" :disabled="viewOnly" class="col-md-12" v-model="element.codes" name="codes" label="Código de elemento" placeholder="Seleccione el código" :options="codes[index]" :error="form.errorsFor(`elements_id.${index}.codes`)" :allow-empty="false" :multiple="true">
                 </vue-advanced-select>
 
-              <vue-ajax-advanced-select-tag-unic :disabled="viewOnly" class="col-md-6" v-model="element.reason" name="reason" :error="form.errorsFor(`elements_id.${index}.reason`)"  label="Motivo" placeholder="Seleccione el motivo" :url="tagsSReasonDataUrl" :multiple="false" :allowEmpty="true" :taggable="true"></vue-ajax-advanced-select-tag-unic>
+              <!--<vue-ajax-advanced-select-tag-unic :disabled="viewOnly" class="col-md-6" v-model="element.reason" name="reason" :error="form.errorsFor(`elements_id.${index}.reason`)" label="Motivo" placeholder="Seleccione el motivo" :url="tagsSReasonDataUrl" :multiple="false" :allowEmpty="true" :taggable="true"></vue-ajax-advanced-select-tag-unic>-->
             </b-form-row>
         </div>
       </template>
 
       <b-form-row style="padding-bottom: 20px;" v-if="!viewOnly">
           <div class="col-md-12">
-              <center><b-btn variant="primary" v-if="form.location_id" @click.prevent="addElement()"><span class="ion ion-md-add-circle"></span>&nbsp;&nbsp;Agregar</b-btn></center>
+              <center><b-btn variant="primary" v-if="form.location_destiny_id" @click.prevent="addElement()"><span class="ion ion-md-add-circle"></span>&nbsp;&nbsp;Agregar</b-btn></center>
           </div>
         </b-form-row>  
       
       </b-card>
+
+      <div class="col-md-12">
+        <b-form-row>
+          <vue-radio :disabled="viewOnly" class="col-md-12" v-model="form.state" :options="states" name="state" :error="form.errorsFor('state')" label="Estado" :checked="form.state"></vue-radio>
+        </b-form-row>
+      </div>
+
     </b-card>
 
     <div class="row float-right pt-10 pr-10">
@@ -75,11 +84,13 @@ export default {
     isEdit: { type: Boolean, default: false },
     viewOnly: { type: Boolean, default: false },
     employeesDataUrl: { type: String, default: "" },
-    exit: {
+    transfer: {
       default() {
         return {
           elements_id: [],
-          location_id: '',
+          location_origin_id: '',
+          location_destiny_id: '',
+          state: '',
           delete: {
             elements: []
           }
@@ -94,49 +105,47 @@ export default {
     }
     
     setTimeout(() => {
-      if (this.isEdit || this.viewOnly)
-      {
-        this.elements = this.form.elementos
-        this.form.elements_id.splice(0);
+      this.elements = this.form.elementos
+      this.form.elements_id.splice(0);
 
-        this.form.elements_codes.forEach((eleme, key) => {
-          this.form.elements_id.push({
-            id: eleme.element.id,
-            id_ele: eleme.element.id_ele,
-            quantity: eleme.element.quantity,
-            codes: eleme.element.codes,
-            type: eleme.element.type,
-            reason: eleme.element.reason
-          })
-          this.codes[key] = eleme.options
+      this.form.elements_codes.forEach((eleme, key) => {
+        this.form.elements_id.push({
+          id: eleme.element.id,
+          id_ele: eleme.element.id_ele,
+          quantity: eleme.element.quantity,
+          codes: eleme.element.codes,
+          type: eleme.element.type,
+          multiselect_element: eleme.element.multiselect_element
         })
-      }
+        this.codes[key] = eleme.options
+      })
 
       this.loading = false;
     }, 3000)
   },
   watch: {
-    exit() {
+    transfer() {
       this.loading = false;
-      this.form = Form.makeFrom(this.exit, this.method);
+      this.form = Form.makeFrom(this.transfer, this.method);
     },
-    'form.location_id' () {
+    'form.location_origin_id' () {
         this.uploadElements()
     }
   },
   data() {
     return {
       loading: this.isEdit,
-      form: Form.makeFrom(this.exit, this.method),
+      form: Form.makeFrom(this.transfer, this.method),
       tagsLocationsDataUrl: '/selects/eppLocations',
-      //tagsElementsDataUrl: '/selects/eppElements',
+      tagsElementsDataUrl: '/selects/eppElements',
       tagsSReasonDataUrl: '/selects/tagsReason',
       elements: [],
+      elements_position: [],
       codes: [],
       postData: {},
-      noSi: [
-        {text: 'SI', value: 'SI'},
-        {text: 'NO', value: 'NO'}
+      states: [
+        {text: 'Inmediato', value: 'Inmediato'},
+        {text: 'En transito', value: 'En transito'}
       ],
       cargar: true
     };
@@ -149,7 +158,7 @@ export default {
         .submit(e.target.action)
         .then(response => {
           this.loading = false;
-          this.$router.push({ name: "industrialsecure-epps-transactions-exit" });
+          this.$router.push({ name: "industrialsecure-epps-transactions-transfers-location" });
         })
         .catch(error => {
           this.loading = false;
@@ -159,12 +168,12 @@ export default {
     {
       this.isLoading = true;
 
-      this.postData = Object.assign({}, {location_id: this.form.location_id});
+      this.postData = Object.assign({}, {location_origin_id: this.form.location_origin_id});
 
-      axios.post('/industrialSecurity/epp/exit/eppElementsLocations', this.postData)
+      axios.post('/industrialSecurity/epp/transfer/eppElementsLocations', this.postData)
       .then(response => {
           this.elements = response.data.multiselect
-
+          
           response.data.codes.forEach((code, key) => {
             this.codes[key] = code
           })
@@ -179,7 +188,7 @@ export default {
     typeElement(index)
     {
       this.isLoading = true;
-      axios.post('/industrialSecurity/epp/exit/elementInfo', {id: this.form.elements_id[index].id_ele})
+      axios.post('/industrialSecurity/epp/transfer/elementInfo', {id: this.form.elements_id[index].id_ele})
         .then(response => {
             this.form.elements_id[index].type = response.data.type
         })

@@ -433,13 +433,14 @@ class TransactionController extends Controller
             foreach ($request->elements_id as $key => $value) 
             {
                 $element = Element::find($value['id_ele']);
-                $disponible = ElementBalanceSpecific::where('hash', $value['code'])->first();
-                $element_balance = ElementBalanceLocation::find($disponible->element_balance_id);
+                $element_balance = ElementBalanceLocation::where('element_id', $value['id_ele'])->where('location_id', $request->location_id)->first();
 
                 if ($element) 
                 {
                     if ($element->identify_each_element)
                     {
+                        $disponible = ElementBalanceSpecific::where('hash', $value['code'])->first();
+                
                         if ($value['rechange'] == 'SI')
                         {
                             $reason = $this->tagsPrepare($value['reason']);
@@ -545,8 +546,28 @@ class TransactionController extends Controller
                                     { 
                                         $new_product = ElementBalanceSpecific::where('element_balance_id', $element_balance->id)->where('location_id', $request->location_id)->where('state', 'Disponible')->first();
 
-                                        $new_product->state = 'Asignado';
-                                        $new_product->save();
+                                        if ($new_product)
+                                        {
+                                            $new_product->state = 'Asignado';
+                                            $new_product->save();
+                                        }
+                                        else
+                                        {
+                                            if ($request->inventary == 'NO')
+                                            {
+                                                $hash = Hash::make($element_balance->element_id . str_random(30));
+                                                $product = new ElementBalanceSpecific;
+                                                $product->hash = $hash;
+                                                $product->code = $hash;
+                                                $product->element_balance_id = $element_balance->id;
+                                                $product->location_id = $element_balance->location_id;
+                                                $product->state = 'Asignado';
+                                                $product->save();
+                                            }
+                                            else
+                                                return $this->respondWithError('No existen unidades disponibles del elemento ' . $element->name);
+                                        }
+
 
                                         $old_product = ElementBalanceSpecific::whereIn('hash', $codigos)->first();
 
