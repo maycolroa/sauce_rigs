@@ -495,6 +495,16 @@ class TransactionController extends Controller
                                 array_push($elements_sync_rechange, $new_product->id);
                             }
                         }
+                        else
+                        {
+                            $disponible->state = 'Disponible';
+                            $disponible->save();
+
+                            $element_balance->quantity_available = $element_balance->quantity_available + 1;
+                            $element_balance->quantity_allocated = $element_balance->quantity_allocated - 1;
+
+                            array_push($elements_sync, $disponible->id);
+                        }
                     }
                     else
                     {

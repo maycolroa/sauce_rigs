@@ -41,7 +41,7 @@
 
               <vue-input v-if="element.type == 'No Identificable' && element.rechange == 'SI' && !viewOnly" :disabled="viewOnly" class="col-md-12" v-model="element.quantity_rechange" label="Cantidad a cambiar" type="number" name="quantity_rechange" :error="form.errorsFor(`elements_id.${index}.quantity_rechange`)" placeholder="Cantidad a cambiar" ></vue-input>
 
-              <vue-advanced-select v-if="element.type == 'Identificable' && element.rechange == 'SI' && !viewOnly" :disabled="viewOnly" class="col-md-12" v-model="element.code_new" name="code_new" label="Código de elemento" placeholder="Seleccione el código" :options="codes[index]" :error="form.errorsFor(`elements_id.${index}.code_new`)" @selectedName="hashSelected(index)" :allow-empty="false">
+              <vue-advanced-select v-if="element.type == 'Identificable' && element.rechange == 'SI' && !viewOnly" :disabled="viewOnly" class="col-md-12" v-model="element.code_new" name="code_new" label="Código de elemento" placeholder="Seleccione el código" :options="codes[element.id_ele]" :error="form.errorsFor(`elements_id.${index}.code_new`)" @selectedName="hashSelected(index)" :allow-empty="false">
                 </vue-advanced-select>
 
               <vue-ajax-advanced-select-tag-unic v-if="element.rechange == 'SI' && !viewOnly" :disabled="viewOnly" class="col-md-12" v-model="element.reason" name="reason" :error="form.errorsFor(`elements_id.${index}.reason`)" label="Motivo" placeholder="Seleccione el motivo" :url="tagsSReasonDataUrl" :multiple="false" :allowEmpty="true" :taggable="true"></vue-ajax-advanced-select-tag-unic>
@@ -203,7 +203,7 @@ export default {
             waste: eleme.element.wastes,
             rechange: eleme.element.rechange
           })
-          this.codes[key] = eleme.options
+          this.codes[eleme.element.id_ele] = eleme.options
         })
       }
 
@@ -312,7 +312,7 @@ export default {
               waste: eleme.element.wastes
             });
 
-            this.codes[key] = eleme.options
+            this.codes[eleme.element.id_ele] = eleme.options
           });          
            
           this.isLoading = false;
