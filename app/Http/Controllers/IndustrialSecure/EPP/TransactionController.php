@@ -865,6 +865,11 @@ class TransactionController extends Controller
                         {
                             $rechange = ChangeElement::where('transaction_employee_id', $transaction->id)->where('element_specific_old_id', $e->id)->first();
 
+                            \Log::info($rechange);
+
+                            if ($rechange)
+                                $rechange_hash_new = ElementBalanceSpecific::find($rechange->element_specific_new_id);
+
                             $content = [
                                 'id' => $e->id,
                                 'id_ele' => $e->element->element->id,
@@ -874,7 +879,9 @@ class TransactionController extends Controller
                                 'entry' => 'Manualmente',
                                 'multiselect_element' => $e->element->element->multiselect(),
                                 'wastes' => $e->state == 'Desechado' ? 'SI' : 'NO',
-                                'rechange' => $rechange ? 'SI' : 'NO'
+                                'rechange' => $rechange ? 'SI' : 'NO',
+                                'code_new' => $rechange ? $rechange_hash_new->hash : '',
+                                'reason' => $rechange ? $rechange->reason : ''
                             ];
 
                             array_push($elements, ['element' => $content, 'options' => $options]);
@@ -894,6 +901,8 @@ class TransactionController extends Controller
                             {
                                 if (in_array($e->id, $id_rechange))
                                 {
+                                    $rechange_ele = ChangeElement::where('transaction_employee_id', $transaction->id)->where('element_specific_old_id', $e->id)->first();
+
                                     $content = [
                                         'id' => $e->id,
                                         'id_ele' => $e->element->element->id,
@@ -903,7 +912,8 @@ class TransactionController extends Controller
                                         'entry' => 'Manualmente',
                                         'multiselect_element' => $e->element->element->multiselect(),
                                         'wastes' => $e->state == 'Desechado' ? 'SI' : 'NO',
-                                        'rechange' => 'SI'
+                                        'rechange' => 'SI',
+                                        'reason' => $rechange_ele ? $rechange_ele->reason : ''
                                     ];
                                 }
                                 else

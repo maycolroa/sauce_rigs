@@ -41,10 +41,10 @@
 
               <vue-input v-if="element.type == 'No Identificable' && element.rechange == 'SI' && !viewOnly" :disabled="viewOnly" class="col-md-12" v-model="element.quantity_rechange" label="Cantidad a cambiar" type="number" name="quantity_rechange" :error="form.errorsFor(`elements_id.${index}.quantity_rechange`)" placeholder="Cantidad a cambiar" ></vue-input>
 
-              <vue-advanced-select v-if="element.type == 'Identificable' && element.rechange == 'SI' && !viewOnly" :disabled="viewOnly" class="col-md-12" v-model="element.code_new" name="code_new" label="Código de elemento" placeholder="Seleccione el código" :options="codes[element.id_ele]" :error="form.errorsFor(`elements_id.${index}.code_new`)" @selectedName="hashSelected(index)" :allow-empty="false">
+              <vue-advanced-select v-if="element.type == 'Identificable' && element.rechange == 'SI'" :disabled="viewOnly" class="col-md-12" v-model="element.code_new" name="code_new" label="Código de nuevo elemento" placeholder="Seleccione el código" :options="codes[element.id_ele]" :error="form.errorsFor(`elements_id.${index}.code_new`)" @selectedName="hashSelected(index)" :allow-empty="false">
                 </vue-advanced-select>
 
-              <vue-ajax-advanced-select-tag-unic v-if="element.rechange == 'SI' && !viewOnly" :disabled="viewOnly" class="col-md-12" v-model="element.reason" name="reason" :error="form.errorsFor(`elements_id.${index}.reason`)" label="Motivo" placeholder="Seleccione el motivo" :url="tagsSReasonDataUrl" :multiple="false" :allowEmpty="true" :taggable="true"></vue-ajax-advanced-select-tag-unic>
+              <vue-ajax-advanced-select-tag-unic v-if="element.rechange == 'SI'" :disabled="viewOnly" class="col-md-12" v-model="element.reason" name="reason" :error="form.errorsFor(`elements_id.${index}.reason`)" label="Motivo del cambio" placeholder="Seleccione el motivo" :url="tagsSReasonDataUrl" :multiple="false" :allowEmpty="true" :taggable="true"></vue-ajax-advanced-select-tag-unic>
             </b-form-row>
         </div>
       </template>      
@@ -201,7 +201,9 @@ export default {
             type: eleme.element.type,
             key: eleme.element.key,
             waste: eleme.element.wastes,
-            rechange: eleme.element.rechange
+            rechange: eleme.element.rechange,
+            code_new: eleme.element.code_new,
+            reason: eleme.element.reason
           })
           this.codes[eleme.element.id_ele] = eleme.options
         })
@@ -355,16 +357,19 @@ export default {
     },
     hashSelected(index)
     {
-      this.isLoading = true;
-      axios.post('/industrialSecurity/epp/transaction/hashSelected', {id: this.form.elements_id[index].id_ele, location_id: this.form.location_id, select_hash: this.form.elements_id[index].code_new})
-        .then(response => {
-            /*this.form.elements_id[index].type = response.data.type
-            this.codes[index] = response.data.options*/
-        })
-        .catch(error => {
-            this.isLoading = false;
-            Alerts.error('Error', 'El código seleccionado no existe o no se encuentra disponible en la ubicación seleccionada');
-        });
+      if (!this.viewOnly)
+      {
+        this.isLoading = true;
+        axios.post('/industrialSecurity/epp/transaction/hashSelected', {id: this.form.elements_id[index].id_ele, location_id: this.form.location_id, select_hash: this.form.elements_id[index].code_new})
+          .then(response => {
+              /*this.form.elements_id[index].type = response.data.type
+              this.codes[index] = response.data.options*/
+          })
+          .catch(error => {
+              this.isLoading = false;
+              Alerts.error('Error', 'El código seleccionado no existe o no se encuentra disponible en la ubicación seleccionada');
+          });
+      }
     },
     deletedTemporal()
     {

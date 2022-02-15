@@ -13,7 +13,7 @@
                 :url="`/industrialSecurity/epp/exit/${this.$route.params.id}`"
                 method="PUT"
                 :exit="data"
-                :is-edit="true"
+                :view-only="true"
                 :cancel-url="{ name: 'industrialsecure-epps-transactions-exit'}"/>
         </b-card-body>
       </b-card>
