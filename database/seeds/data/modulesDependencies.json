@@ -135,5 +135,19 @@
             "customLabels",
             "risks"
         ]
+    },
+    {
+        "module": "epp",
+        "dependencies": [
+            "users",
+            "roles",
+            "regionals",
+            "headquarters",
+            "processes",
+            "areas",
+            "subProcesses",
+            "configurations",
+            "customLabels"
+        ]
     }
 ]
