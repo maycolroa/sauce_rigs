@@ -13,7 +13,7 @@
                 :url="`/industrialSecurity/epp/transaction/${this.$route.params.id}`"
                 method="PUT"
                 :delivery="data"
-                :is-edit="true"
+                :view-only="true"
                 employees-data-url="/selects/employees"
                 :cancel-url="{ name: 'industrialsecure-epps-transactions'}"/>
         </b-card-body>
