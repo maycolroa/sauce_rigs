@@ -56,7 +56,7 @@
 
 							<div class="d-flex col-sm-6 col-md-6 col-lg-6 align-items-center" v-if="auth.can['transaction_r']  && auth.inventaryEpp == 'SI'">
 								<router-link tag="a" href="javascript:void(0)" class="card-body media align-items-center text-dark" :to="{name:'industrialsecure-epps-transactions-transfers-location'}">
-									<i class="ion ion-md-remove-circle display-4 d-block text-primary"></i>
+									<i class="ion ion-ios-swap display-4 d-block text-primary"></i>
 									<span class="media-body d-block ml-3">
 										<span class="text-big font-weight-bolder">Traslado entre ubicaciones</span>
 										<br>
@@ -67,7 +67,7 @@
 
 							<div class="d-flex col-sm-6 col-md-6 col-lg-6 align-items-center" v-if="auth.can['transaction_r']  && auth.inventaryEpp == 'SI'">
 								<router-link tag="a" href="javascript:void(0)" class="card-body media align-items-center text-dark" :to="{name:'industrialsecure-epps-transactions-reception'}">
-									<i class="ion ion-md-remove-circle display-4 d-block text-primary"></i>
+									<i class="ion ion-ios-swap display-4 d-block text-primary"></i>
 									<span class="media-body d-block ml-3">
 										<span class="text-big font-weight-bolder">Recepciones</span>
 										<br>
