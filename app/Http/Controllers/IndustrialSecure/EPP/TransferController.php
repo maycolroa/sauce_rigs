@@ -207,7 +207,7 @@ class TransferController extends Controller
                             if ($transfer->state != 'En transito')
                             {
                                 $detail_reception->quantity_reception = $value['quantity'];
-                                $detail_reception->reception = $value['reception'];
+                                $detail_reception->reception = 'SI';
                             }
 
                             if(!$detail->save())
@@ -523,9 +523,15 @@ class TransferController extends Controller
                 array_push($codes, $options);
             }
 
+            $not_element = 'SI';
+
+            if (COUNT($multiselect) > 0)
+                $not_element = 'NO';
+
             $data = [
                 'multiselect' => $multiselect,
-                'codes' => $codes
+                'codes' => $codes,
+                'not_element' => $not_element
             ];
 
             return $data;

@@ -11,32 +11,36 @@
         </b-form-row>
       </div>
       <b-card  bg-variant="transparent" border-variant="dark" title="Elementos" class="mb-3 box-shadow-none">
-      <template v-for="(element, index) in form.elements_id">
-          <div :key="element.id">
-            <b-form-row>
-              <div class="col-md-12">
-                  <div class="float-right">
-                      <b-btn v-if="!viewOnly" variant="outline-primary icon-btn borderless" size="sm" v-b-tooltip.top title="Eliminar" @click.prevent="removeElement(index)"><span class="ion ion-md-close-circle"></span></b-btn>
-                  </div>
+          <div v-if="not_element == 'NO'">
+            <template  v-for="(element, index) in form.elements_id">
+                <div :key="element.id">
+                  <b-form-row v-if="not_element == 'NO'">
+                    <div class="col-md-12">
+                        <div class="float-right">
+                            <b-btn v-if="!viewOnly" variant="outline-primary icon-btn borderless" size="sm" v-b-tooltip.top title="Eliminar" @click.prevent="removeElement(index)"><span class="ion ion-md-close-circle"></span></b-btn>
+                        </div>
+                    </div>
+                    <vue-advanced-select :disabled="viewOnly" class="col-md-6" v-model="element.id_ele" name="id_ele" label="Elemento de protección personal" placeholder="Seleccione el elemento" :options="elements" :error="form.errorsFor(`elements_id.${index}.id_ele`)" @change="typeElement(index)" :allow-empty="false" :selected-object="element.multiselect_element">
+                      </vue-advanced-select>
+                    <vue-input v-if="element.type == 'No Identificable'" :disabled="viewOnly" class="col-md-6" v-model="element.quantity" label="Cantidad" type="number" name="quantity" :error="form.errorsFor(`elements_id.${index}.quantity`)" placeholder="Cantidad"></vue-input>
+
+                    <vue-advanced-select v-if="element.type == 'Identificable'" :disabled="viewOnly" class="col-md-12" v-model="element.codes" name="codes" label="Código de elemento" placeholder="Seleccione el código" :options="codes[index]" :error="form.errorsFor(`elements_id.${index}.codes`)" :allow-empty="false" :multiple="true">
+                      </vue-advanced-select>
+                  </b-form-row>
               </div>
-              <vue-advanced-select :disabled="viewOnly" class="col-md-6" v-model="element.id_ele" name="id_ele" label="Elemento de protección personal" placeholder="Seleccione el elemento" :options="elements" :error="form.errorsFor(`elements_id.${index}.id_ele`)" @change="typeElement(index)" :allow-empty="false" :selected-object="element.multiselect_element">
-                </vue-advanced-select>
-              <vue-input v-if="element.type == 'No Identificable'" :disabled="viewOnly" class="col-md-6" v-model="element.quantity" label="Cantidad" type="number" name="quantity" :error="form.errorsFor(`elements_id.${index}.quantity`)" placeholder="Cantidad"></vue-input>
+            </template>
 
-              <vue-advanced-select v-if="element.type == 'Identificable'" :disabled="viewOnly" class="col-md-12" v-model="element.codes" name="codes" label="Código de elemento" placeholder="Seleccione el código" :options="codes[index]" :error="form.errorsFor(`elements_id.${index}.codes`)" :allow-empty="false" :multiple="true">
-                </vue-advanced-select>
-
-              <!--<vue-ajax-advanced-select-tag-unic :disabled="viewOnly" class="col-md-6" v-model="element.reason" name="reason" :error="form.errorsFor(`elements_id.${index}.reason`)" label="Motivo" placeholder="Seleccione el motivo" :url="tagsSReasonDataUrl" :multiple="false" :allowEmpty="true" :taggable="true"></vue-ajax-advanced-select-tag-unic>-->
+            <b-form-row style="padding-bottom: 20px;" v-if="!viewOnly">
+              <div class="col-md-12">
+                <center><b-btn variant="primary" v-if="form.location_destiny_id" @click.prevent="addElement()"><span class="ion ion-md-add-circle"></span>&nbsp;&nbsp;Agregar</b-btn></center>
+              </div>
             </b-form-row>
-        </div>
-      </template>
-
-      <b-form-row style="padding-bottom: 20px;" v-if="!viewOnly">
-          <div class="col-md-12">
-              <center><b-btn variant="primary" v-if="form.location_destiny_id" @click.prevent="addElement()"><span class="ion ion-md-add-circle"></span>&nbsp;&nbsp;Agregar</b-btn></center>
           </div>
-        </b-form-row>  
-      
+          <div v-else>
+            <b-form-row>
+              <label>En la ubicación de origen seleccionada no hay elementos disponibles</label>
+            </b-form-row>
+          </div>
       </b-card>
 
       <div class="col-md-12">
@@ -105,20 +109,23 @@ export default {
     }
     
     setTimeout(() => {
-      this.elements = this.form.elementos
-      this.form.elements_id.splice(0);
+      if (this.isEdit || this.viewOnly)
+      {
+        this.elements = this.form.elementos
+        this.form.elements_id.splice(0);
 
-      this.form.elements_codes.forEach((eleme, key) => {
-        this.form.elements_id.push({
-          id: eleme.element.id,
-          id_ele: eleme.element.id_ele,
-          quantity: eleme.element.quantity,
-          codes: eleme.element.codes,
-          type: eleme.element.type,
-          multiselect_element: eleme.element.multiselect_element
+        this.form.elements_codes.forEach((eleme, key) => {
+          this.form.elements_id.push({
+            id: eleme.element.id,
+            id_ele: eleme.element.id_ele,
+            quantity: eleme.element.quantity,
+            codes: eleme.element.codes,
+            type: eleme.element.type,
+            multiselect_element: eleme.element.multiselect_element
+          })
+          this.codes[key] = eleme.options
         })
-        this.codes[key] = eleme.options
-      })
+      }
 
       this.loading = false;
     }, 3000)
@@ -147,7 +154,8 @@ export default {
         {text: 'Inmediato', value: 'Inmediato'},
         {text: 'En transito', value: 'En transito'}
       ],
-      cargar: true
+      cargar: true,
+      not_element: 'NO'
     };
   },
   methods: {
@@ -166,6 +174,7 @@ export default {
     },
     uploadElements()
     {
+      console.log('entro')
       this.isLoading = true;
 
       this.postData = Object.assign({}, {location_origin_id: this.form.location_origin_id});
@@ -173,6 +182,7 @@ export default {
       axios.post('/industrialSecurity/epp/transfer/eppElementsLocations', this.postData)
       .then(response => {
           this.elements = response.data.multiselect
+          this.not_element = response.data.not_element
           
           response.data.codes.forEach((code, key) => {
             this.codes[key] = code
