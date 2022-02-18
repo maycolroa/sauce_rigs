@@ -17,19 +17,21 @@
               <vue-advanced-select :disabled="true" class="col-md-6" v-model="element.id_ele" name="id_ele" label="Elemento de protección personal" placeholder="Seleccione el elemento" :options="elements" :error="form.errorsFor(`elements_id.${index}.id_ele`)" @change="typeElement(index)" :allow-empty="false" :selected-object="element.multiselect_element">
                 </vue-advanced-select>
 
-              <vue-input v-if="element.type == 'No Identificable'" :disabled="true" class="col-md-3" v-model="element.quantity_transfer" label="Cantidad Trasladada" type="number" name="quantity_transfer" :error="form.errorsFor(`elements_id.${index}.quantity_transfer`)" placeholder="Cantidad Trasladada"></vue-input>
+              <vue-input v-if="element.type == 'No Identificable'" :disabled="true" class="col-md-6" v-model="element.quantity_transfer" label="Cantidad Trasladada" type="number" name="quantity_transfer" :error="form.errorsFor(`elements_id.${index}.quantity_transfer`)" placeholder="Cantidad Trasladada"></vue-input>
 
-              <vue-radio :disabled="viewOnly" class="col-md-6" v-model="element.reception" :options="siNo" name="reception" :error="form.errorsFor(`elements_id.${index}.reception`)" label="¿Se recibio el elemento?" :checked="element.reception"></vue-radio>
-
-               <vue-input v-if="element.type == 'No Identificable' && element.reception == 'SI'" :disabled="viewOnly" class="col-md-3" v-model="element.quantity_reception" label="Cantidad Recibida" type="number" name="quantity_reception" :error="form.errorsFor(`elements_id.${index}.quantity_reception`)" placeholder="Cantidad Recibida"></vue-input>
-
-              <vue-advanced-select v-if="element.type == 'Identificable'" :disabled="true" class="col-md-12" v-model="element.codes_transfer" name="codes_transfer" label="Códigos Transferidos" placeholder="Seleccione el código" :options="codes_transfer[index]" :error="form.errorsFor(`elements_id.${index}.codes_transfer`)" :allow-empty="false" :multiple="true">
+              <vue-advanced-select v-if="element.type == 'Identificable'" :disabled="true" class="col-md-12" v-model="element.codes_transfer" name="codes_transfer" label="Códigos Transferidos" placeholder="Seleccione el código" :options="codes_transfer[element.id_ele]" :error="form.errorsFor(`elements_id.${index}.codes_transfer`)" :allow-empty="false" :multiple="true">
                 </vue-advanced-select>
+
+              <vue-radio :disabled="viewOnly" class="col-md-6" v-model="element.reception" :options="siNo" :name="`reception${index}`" :error="form.errorsFor(`elements_id.${index}.reception`)" label="¿Se recibio el elemento?" :checked="element.reception"></vue-radio>
+
+              <vue-radio v-if="element.reception == 'SI'" :disabled="viewOnly" class="col-md-6" v-model="element.quantity_complete" :options="siNo" :name="`quantity_complete${index}`" :error="form.errorsFor(`elements_id.${index}.quantity_complete`)" label="¿Se recibio la cantidad completa?" :checked="element.quantity_complete"></vue-radio>
+
+               <vue-input v-if="element.type == 'No Identificable' && element.reception == 'SI'" :disabled="viewOnly" class="col-md-6" v-model="element.quantity_reception" label="Cantidad Recibida" type="number" name="quantity_reception" :error="form.errorsFor(`elements_id.${index}.quantity_reception`)" placeholder="Cantidad Recibida"></vue-input>              
                 
-              <vue-advanced-select v-if="element.type == 'Identificable' && element.reception == 'SI'" :disabled="viewOnly" class="col-md-12" v-model="element.codes_reception" name="codes_reception" label="Códigos Recibidos" placeholder="Seleccione el código" :options="codes_reception[index]" :error="form.errorsFor(`elements_id.${index}.codes_reception`)" :allow-empty="false" :multiple="true">
+              <vue-advanced-select v-if="element.type == 'Identificable' && element.reception == 'SI'" :disabled="viewOnly" class="col-md-12" v-model="element.codes_reception" name="codes_reception" label="Códigos Recibidos" placeholder="Seleccione el código" :options="codes_transfer[element.id_ele]" :error="form.errorsFor(`elements_id.${index}.codes_reception`)" :allow-empty="false" :multiple="true">
                 </vue-advanced-select>
 
-              <vue-ajax-advanced-select-tag-unic :disabled="viewOnly" class="col-md-6" v-model="element.reason" name="reason" :error="form.errorsFor(`elements_id.${index}.reason`)" label="Motivo" placeholder="Seleccione el motivo" :url="tagsSReasonDataUrl" :multiple="false" :allowEmpty="true" :taggable="true"></vue-ajax-advanced-select-tag-unic>
+              <vue-ajax-advanced-select-tag-unic v-if="element.reception == 'NO' || element.quantity_complete == 'NO'" :disabled="viewOnly" class="col-md-6" v-model="element.reason" name="reason" :error="form.errorsFor(`elements_id.${index}.reason`)" label="Motivo" placeholder="Seleccione el motivo" :url="tagsSReasonDataUrl" :multiple="false" :allowEmpty="true" :taggable="true"></vue-ajax-advanced-select-tag-unic>
             </b-form-row>
         </div>
       </template>      
@@ -37,7 +39,7 @@
 
       <div class="col-md-12">
         <b-form-row>
-          <vue-checkbox-simple style="padding-top: 30px;" :disabled="viewOnly" class="col-md-6" v-model="form.state" label="¿Recibido?" :checked="form.state" name="state" checked-value="SI" unchecked-value="NO"></vue-checkbox-simple>
+          <vue-checkbox-simple style="padding-top: 30px;" :disabled="viewOnly" class="col-md-6" v-model="form.state" label="¿Recibido?" :checked="form.state" name="state" checked-value="Recibido" unchecked-value="En espera"></vue-checkbox-simple>
         </b-form-row>
       </div>
 
@@ -62,6 +64,7 @@ import Form from "@/utils/Form.js";
 import VueAdvancedSelect from "@/components/Inputs/VueAdvancedSelect.vue";
 import VueAjaxAdvancedSelectTagUnic from "@/components/Inputs/VueAjaxAdvancedSelectTagUnic.vue";
 import Alerts from '@/utils/Alerts.js';
+import VueCheckboxSimple from "@/components/Inputs/VueCheckboxSimple.vue";
 
 export default {
   components: {
@@ -71,7 +74,8 @@ export default {
     VueAdvancedSelect,
     VueFileSimple,
     VueRadio,
-    VueAjaxAdvancedSelectTagUnic
+    VueAjaxAdvancedSelectTagUnic,
+    VueCheckboxSimple
   },
   props: {
     url: { type: String },
@@ -102,12 +106,16 @@ export default {
         this.form.elements_id.push({
           id: eleme.element.id,
           id_ele: eleme.element.id_ele,
-          quantity: eleme.element.quantity,
-          codes: eleme.element.codes,
+          quantity_transfer: eleme.element.quantity_transfer,
+          quantity_reception: eleme.element.quantity_reception,
+          reception: eleme.element.reception,
+          codes_transfer: eleme.element.codes_transfer,
+          codes_reception: eleme.element.codes_reception,
           type: eleme.element.type,
-          multiselect_element: eleme.element.multiselect_element
+          multiselect_element: eleme.element.multiselect_element,
+          quantity_complete: eleme.element.quantity_complete
         })
-        this.codes[key] = eleme.options
+        this.codes_transfer[eleme.element.id_ele] = eleme.options
       })
 
       this.loading = false;
@@ -127,7 +135,7 @@ export default {
       tagsElementsDataUrl: '/selects/eppElements',
       tagsSReasonDataUrl: '/selects/tagsReason',
       elements: [],
-      codes: [],
+      codes_transfer: [],
       siNo: [
         {text: 'SI', value: 'SI'},
         {text: 'NO', value: 'NO'}
@@ -142,7 +150,7 @@ export default {
         .submit(e.target.action)
         .then(response => {
           this.loading = false;
-          this.$router.push({ name: "industrialsecure-epps-transactions-transfers-location" });
+          this.$router.push({ name: "industrialsecure-epps-transactions-reception" });
         })
         .catch(error => {
           this.loading = false;

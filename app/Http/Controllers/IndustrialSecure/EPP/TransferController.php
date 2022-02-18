@@ -8,6 +8,8 @@ use App\Vuetable\Facades\Vuetable;
 use App\Models\IndustrialSecure\Epp\Element;
 use App\Models\IndustrialSecure\Epp\EppTransfer;
 use App\Models\IndustrialSecure\Epp\EppTransferDetail;
+use App\Models\IndustrialSecure\Epp\EppReception;
+use App\Models\IndustrialSecure\Epp\EppReceptionDetail;
 use App\Models\IndustrialSecure\Epp\ElementBalanceSpecific;
 use App\Models\IndustrialSecure\Epp\ElementBalanceLocation;
 use App\Http\Requests\IndustrialSecure\Epp\ElementTransferRequest;
@@ -73,7 +75,6 @@ class TransferController extends Controller
      */
     public function store(ElementTransferRequest $request)
     {
-        \Log::info($request);
         DB::beginTransaction();
 
         try
@@ -88,6 +89,23 @@ class TransferController extends Controller
             if(!$transfer->save())
                 return $this->respondHttp500();
 
+            $reception = new EppReception;
+            $reception->company_id = $this->company;
+            $reception->user_transfer = $this->user->id;
+            $reception->transfer_id = $transfer->id;
+            $reception->location_origin_id = $request->location_origin_id;
+            $reception->location_destiny_id = $request->location_destiny_id;
+            
+            if ($transfer->state == 'En transito')
+                $reception->state = 'En espera';
+            else
+            {
+                $reception->state = 'Recibido';
+                $reception->user_reception = $this->user->id;
+            }
+            
+            $reception->save();
+
             if (COUNT($request->elements_id) > 0)
             {
                 foreach ($request->elements_id as $key => $value) 
@@ -99,12 +117,11 @@ class TransferController extends Controller
                         $balance_origin = ElementBalanceLocation::where('element_id', $element->id)
                         ->where('location_id', $request->location_origin_id)->first();
 
-                        \Log::info($balance_origin);
-
                         $balance_destiny = ElementBalanceLocation::where('element_id', $element->id)
                         ->where('location_id', $request->location_destiny_id)->first();
 
                         $elements_sync = [];
+                        $elements_sync_reception = [];
 
                         $detail = new EppTransferDetail;
                         $detail->transfer_id = $transfer->id;
@@ -113,33 +130,53 @@ class TransferController extends Controller
                         $detail->location_origin_id = $request->location_origin_id;
                         $detail->location_destiny_id = $request->location_destiny_id;
 
+                        $detail_reception = new EppReceptionDetail;
+                        $detail_reception->reception_id = $reception->id;
+                        $detail_reception->company_id = $this->company;
+                        $detail_reception->element_id = $element->id;
+                        $detail_reception->location_origin_id = $request->location_origin_id;
+                        $detail_reception->location_destiny_id = $request->location_destiny_id;
+
                         if ($element->identify_each_element)
                         {
                             $detail->quantity = COUNT($value['codes']);
+                            $detail_reception->quantity_transfer = COUNT($value['codes']);
+
+                            if ($transfer->state != 'En transito')
+                            {
+                                $detail_reception->quantity_reception = COUNT($value['codes']);
+                                $detail_reception->reception = 'SI';
+                            }
 
                             if(!$detail->save())
                                 return $this->respondHttp500();
-                            
-                            if ($balance_destiny)
-                            {
-                                $balance_destiny->quantity = $balance_destiny->quantity + $detail->quantity;
-                                $balance_destiny->quantity_available = $balance_destiny->quantity_available + $detail->quantity;
-                                $balance_destiny->save();
-                            }
-                            else
-                            {
-                                $balance_destiny = new ElementBalanceLocation();
-                                $balance_destiny->element_id = $element->id;
-                                $balance_destiny->location_id = $detail->location_destiny_id;
-                                $balance_destiny->quantity = $detail->quantity;
-                                $balance_destiny->quantity_available = $detail->quantity;
-                                $balance_destiny->quantity_allocated = 0;
-                                $balance_destiny->save();
-                            }
 
-                            $balance_origin->quantity = $balance_origin->quantity - $detail->quantity;
-                            $balance_origin->quantity_available = $balance_origin->quantity_available - $detail->quantity;
-                            $balance_origin->save();
+                            if(!$detail_reception->save())
+                                return $this->respondHttp500();
+
+                            if ($transfer->state != 'En transito')
+                            {                                   
+                                if ($balance_destiny)
+                                {
+                                    $balance_destiny->quantity = $balance_destiny->quantity + $detail->quantity;
+                                    $balance_destiny->quantity_available = $balance_destiny->quantity_available + $detail->quantity;
+                                    $balance_destiny->save();
+                                }
+                                else
+                                {
+                                    $balance_destiny = new ElementBalanceLocation();
+                                    $balance_destiny->element_id = $element->id;
+                                    $balance_destiny->location_id = $detail->location_destiny_id;
+                                    $balance_destiny->quantity = $detail->quantity;
+                                    $balance_destiny->quantity_available = $detail->quantity;
+                                    $balance_destiny->quantity_allocated = 0;
+                                    $balance_destiny->save();
+                                }
+
+                                $balance_origin->quantity = $balance_origin->quantity - $detail->quantity;
+                                $balance_origin->quantity_available = $balance_origin->quantity_available - $detail->quantity;
+                                $balance_origin->save();
+                            }
 
                             foreach ($value['codes'] as $key => $code) 
                             {
@@ -148,7 +185,7 @@ class TransferController extends Controller
                                 if ($product)
                                 {
                                     if ($transfer->state == 'En transito')
-                                        $product->state = 'No disponible o desechado';
+                                        $product->state = 'No disponible';
                                     else
                                         $product->state = 'Disponible';
 
@@ -158,19 +195,28 @@ class TransferController extends Controller
                                 }
 
                                 array_push($elements_sync, $product->id);
+                                array_push($elements_sync_reception, $product->id);
                             }
                         }
                         else
                         {
                             $detail->quantity = $value['quantity'];
 
+                            $detail_reception->quantity_transfer = $value['quantity'];
+
+                            if ($transfer->state != 'En transito')
+                            {
+                                $detail_reception->quantity_reception = $value['quantity'];
+                                $detail_reception->reception = $value['reception'];
+                            }
+
                             if(!$detail->save())
+                                return $this->respondHttp500();
+                            
+                            if(!$detail_reception->save())
                                 return $this->respondHttp500();
 
                             $products = ElementBalanceSpecific::where('element_balance_id', $balance_origin->id)->where('location_id', $request->location_origin_id)->where('state', 'Disponible')->limit($detail->quantity)->get();
-
-                            \Log::info($products->count());
-                            \Log::info($value['quantity']);
 
                             if (!$products)
                                 return $this->respondWithError('El elemento ' . $element->name . ' no se encuentra disponible en la ubicación de origen seleccionada');
@@ -196,15 +242,16 @@ class TransferController extends Controller
 
                             foreach ($products as $key => $value2) {
                                 if ($transfer->state == 'En transito')
-                                    $value2->state = 'No disponible o desechado';
+                                    $value2->state = 'No disponible';
                                 else
                                     $value2->state = 'Disponible';
                                         
                                 $value2->location_id = $request->location_destiny_id;
-                                $product->element_balance_id = $balance_destiny->id;
+                                $value2->element_balance_id = $balance_destiny->id;
                                 $value2->save();
                                 
                                 array_push($elements_sync, $value2->id);
+                                array_push($elements_sync_reception, $value2->id);
                             }
 
                             $balance_origin->quantity = $balance_origin->quantity - $detail->quantity;
@@ -213,6 +260,10 @@ class TransferController extends Controller
                         }
                         
                         $detail->specifics()->sync($elements_sync);
+                        $detail_reception->specifics()->sync($elements_sync_reception);
+
+                        if ($transfer->state != 'En transito')
+                            $detail_reception->received()->sync($elements_sync_reception);
                     }
                 }
             }
@@ -226,7 +277,7 @@ class TransferController extends Controller
         }
 
         return $this->respondHttp200([
-            'message' => 'Se creo la salida'
+            'message' => 'Se creo el traslado'
         ]);
     }
 

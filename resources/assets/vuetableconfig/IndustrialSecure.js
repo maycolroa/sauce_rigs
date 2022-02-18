@@ -1500,11 +1500,11 @@ export default [
 {
     name: 'industrialsecure-epps-transactions-transfers-location',
     fields: [
-        { name: 'sau_epp_transfers_location.id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true },
+        { name: 'sau_epp_transfers.id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true },
         { name: 'name_location_origin', data: 'name_location_origin', title: 'Ubicación origen', sortable: true, searchable: true, detail: false, key: false },
         { name: 'name_location_destiny', data: 'name_location_destiny', title: 'Ubicación destino', sortable: true, searchable: true, detail: false, key: false },
         { name: 'sau_epp_elements.name', data: 'elements', title: 'Elementos', sortable: true, searchable: true, detail: false, key: false },
-        { name: 'sau_epp_transfers_location.created_at', data: 'created_at', title: 'Fecha', sortable: true, searchable: true, detail: false, key: false },
+        { name: 'sau_epp_transfers.created_at', data: 'created_at', title: 'Fecha', sortable: true, searchable: true, detail: false, key: false },
         { name: '', data: 'controlls', title: 'Controles', sortable: false, searchable: false, detail: false, key: false },
     ],
     'controlls': [{
@@ -1549,6 +1549,62 @@ export default [
     }],
     configuration: {
         urlData: '/industrialSecurity/epp/transfer/data',
+        filterColumns: true,
+    }
+},
+{
+    name: 'industrialsecure-epps-transactions-reception',
+    fields: [
+        { name: 'sau_epp_receptions.id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true },
+        { name: 'name_location_origin', data: 'name_location_origin', title: 'Ubicación origen', sortable: true, searchable: true, detail: false, key: false },
+        { name: 'name_location_destiny', data: 'name_location_destiny', title: 'Ubicación destino', sortable: true, searchable: true, detail: false, key: false },
+        { name: 'sau_epp_elements.name', data: 'elements', title: 'Elementos', sortable: true, searchable: true, detail: false, key: false },
+        { name: 'sau_epp_receptions.state', data: 'state', title: 'Estado', sortable: true, searchable: true, detail: false, key: false },
+        { name: 'sau_epp_receptions.created_at', data: 'created_at', title: 'Fecha', sortable: true, searchable: true, detail: false, key: false },
+        { name: '', data: 'controlls', title: 'Controles', sortable: false, searchable: false, detail: false, key: false },
+    ],
+    'controlls': [{
+        type: 'push',
+        buttons: [{
+        config: {
+            color: 'outline-success',
+            borderless: true,
+            icon: 'ion ion-md-create',
+            title: 'Editar'
+        },
+        data: {
+            routePush: { name: 'industrialsecure-epps-transactions-reception-edit' },
+            id: 'id',
+        },
+        permission: 'transaction_u'
+        }, {
+        config: {
+            color: 'outline-info',
+            borderless: true,
+            icon: 'ion ion-md-eye',
+            title: 'Ver'
+        },
+        data: {
+            routePush: { name: 'industrialsecure-epps-transactions-reception-view' },
+            id: 'id',
+        },
+        permission: 'transaction_r'
+        }]
+    },
+    {
+        type: 'base',
+        buttons: [/*{
+        name: 'delete',
+        data: {
+            action: '/industrialSecurity/epp/transaction/',
+            id: 'id',
+            messageConfirmation: 'Esta seguro de borrar el elemento __name__'
+        },
+        permission: 'transaction_d'
+        }*/],
+    }],
+    configuration: {
+        urlData: '/industrialSecurity/epp/reception/data',
         filterColumns: true,
     }
 },

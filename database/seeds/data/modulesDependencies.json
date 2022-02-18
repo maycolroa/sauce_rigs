@@ -147,7 +147,9 @@
             "areas",
             "subProcesses",
             "configurations",
-            "customLabels"
+            "customLabels",
+            "positions",
+            "employees"
         ]
     }
 ]

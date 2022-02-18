@@ -582,6 +582,10 @@ Route::middleware(['auth'])->group(function () {
         Route::post('transfer/elementInfo/', 'IndustrialSecure\EPP\TransferController@elementInfo');
 
         Route::post('transfer/eppElementsLocations', 'IndustrialSecure\EPP\TransferController@elementsLocation');
+
+
+        Route::post('reception/data', 'IndustrialSecure\EPP\ReceptionController@data');
+        Route::ApiResource('reception', 'IndustrialSecure\EPP\ReceptionController');
       });
 
       Route::prefix('tags')->group(function () {
