@@ -11,7 +11,7 @@
                 <b-row>
                     <b-col>
                         <b-card bg-variant="transparent" border-variant="dark" title="" class="mb-3 box-shadow-none">
-                        <vue-ajax-advanced-select :disabled="viewOnly" class="col-md-12" v-model="form.contract_id" :selected-object="form.multiselect_contract_id" name="contract_id" label="Contratista" placeholder="Seleccione la contratista" :url="contractDataUrl" :error="form.errorsFor('contract_id')">
+                        <vue-ajax-advanced-select :disabled="viewOnly || auth.hasRole['Arrendatario'] || auth.hasRole['Contratista']" class="col-md-12" v-model="form.contract_id" :selected-object="form.multiselect_contract_id" name="contract_id" label="Contratista" placeholder="Seleccione la contratista" :url="contractDataUrl" :error="form.errorsFor('contract_id')">
                             </vue-ajax-advanced-select>
                         </b-card>
                     </b-col>

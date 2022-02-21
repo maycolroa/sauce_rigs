@@ -59,17 +59,17 @@ class ElementImportTemplateExcel implements FromCollection, WithHeadings, WithMa
     public function headings(): array
     {
       $columns = [
-        'Código',
-        'Nombre',
-        'Tipo (Si es mas de uno separarlo por comas ",")',
-        'Marca',
-        'Descripción',
+        'Código *',
+        'Nombre *',
+        'Tipo (Si es mas de uno separarlo por comas ",") *',
+        'Marca *',
+        'Descripción *',
         'Norma Aplicable',
         'Observaciones (Opcional)',
         'Instrucciones de uso (Opcional)',
-        'Estado (Activo, Inactivo)',
-        '¿Reutilizable? (SI, NO)',
-        '¿Desea identificar cada elemento? (SI, NO)',
+        'Estado (Activo, Inactivo) *',
+        '¿Reutilizable? (SI, NO) *',
+        '¿Desea identificar cada elemento? (SI, NO) *',
         '¿Tiene fecha de vencimiento? (SI, NO) (Opcional, Solo aplica si desea identificar cada elemento)'
       ];
 

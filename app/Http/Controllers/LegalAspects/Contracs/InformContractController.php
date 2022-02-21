@@ -17,6 +17,7 @@ use App\Models\LegalAspects\Contracts\InformContractItemObservation;
 use App\Models\LegalAspects\Contracts\InformContractItemFile;
 use App\Models\General\Module;
 use App\Traits\Filtertrait;
+use App\Traits\ContractTrait;
 use App\Models\General\Company;
 use Carbon\Carbon;
 use DB;
@@ -26,6 +27,7 @@ use PDF;
 class InformContractController extends Controller
 {
     use Filtertrait;
+    use ContractTrait;
 
     /**
      * creates and instance and middlewares are checked
@@ -67,7 +69,14 @@ class InformContractController extends Controller
             )
             ->join('sau_users', 'sau_users.id', 'sau_ct_inform_contract.evaluator_id')
             ->join('sau_ct_information_contract_lessee', 'sau_ct_information_contract_lessee.id', 'sau_ct_inform_contract.contract_id')
-            ->where('sau_ct_inform_contract.inform_id', '=', $request->get('modelId'));;
+            ->where('sau_ct_inform_contract.inform_id', '=', $request->get('modelId'));
+
+        if ($this->user->hasRole('Contratista', $this->team))
+        {
+            $contract = $this->getContractUser($this->user->id, $this->company);
+
+            $inform_contracts->where('sau_ct_inform_contract.contract_id', $contract->id);
+        }
 
         /*$url = "/legalaspects/inform/contracts/".$request->get('modelId');
 
