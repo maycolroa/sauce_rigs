@@ -69,6 +69,9 @@
                 <b-form-row>
                   <vue-textarea :disabled="viewOnly" class="col-md-12" v-model="observations" label="Observaciones" name="observations" placeholder="Observaciones" rows="3"/>
                 </b-form-row>
+                <b-form-row>
+                  <vue-file-simple v-if="(fulfillment_value_id && fulfillment_value_id != 3) && (fulfillment_value_id && fulfillment_value_id != 5)" :disabled="viewOnly" class="col-md-12" accept=".pdf" v-model="file_masive" label="Archivo (*.pdf)" name="file_masive" :error="form.errorsFor('file_masive')" placeholder="Seleccione un archivo"/>
+                </b-form-row>
               </b-card>
               <br>
               <div class="row float-right pt-12 pr-12y">
@@ -335,6 +338,7 @@ export default {
       responsible: '',
       observations: '',
       qualifyName: '',
+      file_masive: '',
       loadingAlternativo: false,
       totalAxios: 0,
       currentAxios: 0,
@@ -500,6 +504,7 @@ export default {
         data.append('observations', this.observations ? this.observations : '');
         data.append('responsible', this.responsible ? this.responsible : '');
         data.append('fulfillment_value_id', this.fulfillment_value_id);
+        data.append('file', this.file_masive);
 
         this.form
           .submit('/legalAspects/legalMatrix/law/saveArticlesQualificationAlls', false, data)

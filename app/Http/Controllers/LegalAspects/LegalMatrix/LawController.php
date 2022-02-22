@@ -583,11 +583,29 @@ class LawController extends Controller
         try
         {
             $ids = explode(',', $request->id);
+
+            $path = 'fulfillments/'.$this->company."/";
+
             $qualification = ArticleFulfillment::whereIn('id', $ids)
             ->update([
                 'fulfillment_value_id' => $request->fulfillment_value_id ? $request->fulfillment_value_id : NULL,
                 'observations' => $request->observations ? $request->observations : NULL,
                 'responsible' => $request->responsible ? $request->responsible : NULL,
+                'qualification_masive' => true
+            ]);
+
+            if ($request->file)
+            {
+                $file = $request->file;
+                $nameFile = base64_encode($this->user->id . now() . rand(1,10000)) .'.'. $file->extension();
+                $file->storeAs($path, $nameFile, 's3_MLegal');
+                $data['file'] = $nameFile;
+                $data['old_file'] = $nameFile;
+            }
+
+            $qualification = ArticleFulfillment::whereIn('id', $ids)
+            ->update([
+                'file' => $nameFile ? $nameFile : NULL
             ]);
 
             foreach ($ids as $id) 
@@ -643,7 +661,10 @@ class LawController extends Controller
                             if ($request->file)
                             {
                                 $file = $request->file;
-                                Storage::disk('s3_MLegal')->delete($path. $qualification->file);
+
+                                if (!$qualification->qualification_masive)
+                                    Storage::disk('s3_MLegal')->delete($path. $qualification->file);
+
                                 $nameFile = base64_encode($this->user->id . now() . rand(1,10000)) .'.'. $file->extension();
                                 $file->storeAs($path, $nameFile, 's3_MLegal');
                                 $qualification->file = $nameFile;
@@ -652,10 +673,12 @@ class LawController extends Controller
                             }
                             else
                             {
-                                /*Storage::disk('s3_MLegal')->delete($path. $qualification->file);
+                                if (!$qualification->qualification_masive)
+                                    Storage::disk('s3_MLegal')->delete($path. $qualification->file);
+                                
                                 $qualification->file = NUlL;
                                 $data['file'] = NULL;
-                                $data['old_file'] = NULL;*/
+                                $data['old_file'] = NULL;
                             }
                         }
                     }
