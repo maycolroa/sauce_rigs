@@ -299,6 +299,7 @@ export default {
       axios.get(url)
       .then(response => {
           this.form.position_employee = response.data.data.position_employee;
+          this.form.email_firm_employee = response.data.data.email;
           this.elements_position.splice(0);
 
           response.data.data.elements.forEach((eleme, key) => {
