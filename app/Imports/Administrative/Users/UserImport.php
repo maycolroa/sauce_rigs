@@ -149,7 +149,7 @@ class UserImport implements ToCollection, WithCalculatedFormulas
             {
                 $user = new User();
                 $user->name = $data['nombre_usuario'];
-                $user->email = $data['email_usuario'];
+                $user->email = trim(strtolower($data['email_usuario']));
                 $user->document = $data['documento_usuario'];
                 $user->medical_record = $data['registro_medico'];
                 $user->sst_license = $data['licencia_sst'];
