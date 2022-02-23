@@ -641,12 +641,14 @@ class IncomeController extends Controller
         {
             return [
                 'type' => 'Identificable',
+                'expiration_date' => $ele->expiration_date
             ];
         }
         else
         {
             return [
                 'type' => 'No Identificable',
+                'expiration_date' => $ele->expiration_date
             ];
         }
     }

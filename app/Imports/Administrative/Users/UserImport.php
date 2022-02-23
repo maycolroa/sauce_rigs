@@ -11,7 +11,7 @@ use App\Traits\UserTrait;
 use Maatwebsite\Excel\Concerns\ToCollection;
 use App\Facades\Configuration;
 use App\Models\General\Company;
-use App\Exports\LegalAspects\Contracts\Contractor\UsersImportErrorExcel;
+use App\Exports\Administrative\Users\UsersImportErrorExcel;
 use App\Facades\Mail\Facades\NotificationMail;
 use Maatwebsite\Excel\Facades\Excel;
 use Maatwebsite\Excel\Concerns\WithCalculatedFormulas;

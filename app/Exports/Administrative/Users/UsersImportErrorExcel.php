@@ -29,7 +29,7 @@ class UsersImportErrorExcel implements WithMultipleSheets
     {
         $sheets = [];
         
-        $sheets[] = new ContractsImportTemplateExcel($this->data, $this->company_id);        
+        $sheets[] = new UsersImportTemplate($this->data, $this->company_id);        
         $sheets[] = new AudiometryImportErrorListExcel($this->errors);
        
         return $sheets;
