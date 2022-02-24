@@ -138,7 +138,7 @@ class IncomeController extends Controller
                                 $product->code = $code['value'];
                                 $product->element_balance_id = $balance->id;
                                 $product->location_id = $balance->location_id;
-                                $product->expiration_date = $value['expiration_date'];
+                                $product->expiration_date = $value['expiration_date'] ? $value['expiration_date'] : NULL;
                                 $product->save();
 
                                 array_push($elements_sync, $product->id);
