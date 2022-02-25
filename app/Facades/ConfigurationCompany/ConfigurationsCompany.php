@@ -49,7 +49,9 @@ class ConfigurationsCompany
             'days_alert_without_activity' => 'Dias de alerta para contratistas sin actividad',
             'validate_qualification_list_check' => 'Validar calificaciones en la lista de chequeo',
             'inventory_management' => 'Utilizar inventario en el modulo de EPP',
-            'text_letter_epp' => 'Texto carta de entrega epp'
+            'text_letter_epp' => 'Texto carta de entrega epp',
+            'expired_elements_asigned' => 'Notificar por vencimiento de elementos asignados',
+            'days_alert_expiration_date_elements' => 'Dias de alerta por vencimiento de elementos asignados'
         ];
     }
 

@@ -28,7 +28,9 @@ class ConfigurationRequest extends FormRequest
         
         return [
             'location_level_form' => 'nullable',
-            'days_alert_expiration_date_action_plan' => 'nullable|min:0'
+            'days_alert_expiration_date_action_plan' => 'nullable|min:0',
+            'expired_elements_asigned' => 'nullable',
+            'days_alert_expiration_date_elements' => 'required_if:expired_elements_asigned,SI'
         ];
     }
 }

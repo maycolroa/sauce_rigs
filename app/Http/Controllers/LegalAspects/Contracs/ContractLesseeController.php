@@ -523,8 +523,16 @@ class ContractLesseeController extends Controller
             ")
             ->where(function ($query) use ($keyword) {
                 $query->orWhere('nit', 'like', $keyword);
-            })
-            ->take(30)->pluck('id', 'nit');
+            });
+
+            if ($this->user->hasRole('Arrendatario', $this->team) || $this->user->hasRole('Contratista', $this->team))
+            {
+                $contract = $this->getContractUser($this->user->id, $this->company);
+                
+                $contracts->where('sau_ct_information_contract_lessee.id', $contract->id);
+            }
+
+            $contracts = $contracts->take(30)->pluck('id', 'nit');
 
             return $this->respondHttp200([
                 'options' => $this->multiSelectFormat($contracts)
