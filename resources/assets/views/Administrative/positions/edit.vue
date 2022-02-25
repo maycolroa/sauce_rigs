@@ -8,7 +8,7 @@
 
     <div class="col-md">
       <b-card no-body>
-        <b-card-body>
+        <b-card-body style="height: 500px">
             <administrative-position-form
                 :url="`/administration/position/${this.$route.params.id}`"
                 method="PUT"
