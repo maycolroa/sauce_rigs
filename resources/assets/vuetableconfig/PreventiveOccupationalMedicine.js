@@ -425,12 +425,25 @@ export default [
             routePush: { name: 'reinstatements-checks-letter' },
             id: 'id',
         }
-    }]
+    }, {
+        config: {
+            color: 'outline-danger',
+            borderless: true,
+            icon: 'fas fa-sync',
+            title: 'Cambiar estado'
+        },
+        data: {
+            routePush: { name: 'reinstatements-checks-switchStatus' },
+            //action: '/biologicalmonitoring/reinstatements/check/switchStatus',
+            id: 'id'
+        },
+        permission: 'reinc_checks_u'
+      }]
   },
   {
     type: 'form',
     buttons: [
-      {
+      /*{
         name: 'switchStatus',
         config: {
             color: 'outline-danger',
@@ -443,7 +456,7 @@ export default [
             id: 'id'
         },
         permission: 'reinc_checks_u'
-      }
+      }*/
     ],
   },
   {

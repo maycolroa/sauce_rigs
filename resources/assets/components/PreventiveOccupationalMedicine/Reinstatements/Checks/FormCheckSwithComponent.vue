@@ -6,10 +6,14 @@
         ¿Está seguro que desea cambiar el estado del elemento seleccionado?
       </p>
     </div>
-    <b-form-row v-if="form.state == 'ABIERTO'">
-      <vue-datepicker class="col-md-6 offset-md-3" v-model="form.deadline" label="Fecha de cierre" :full-month-name="true" :error="form.errorsFor('deadline')" name="deadline" text-block="Campo opcional">
-            </vue-datepicker>
-    </b-form-row>
+    <div class="col-md-12">
+      <center>
+        <b-form-row v-if="form.state == 'ABIERTO'">
+          <vue-datepicker class="col-md-6 offset-md-3" v-model="form.deadline" label="Fecha de cierre" :full-month-name="true" :error="form.errorsFor('deadline')" name="deadline" text-block="Campo opcional">
+                </vue-datepicker>
+        </b-form-row>
+      </center>
+    </div>  
 
     <div class="col-md-12 pt-10 pr-10">
       <center>
@@ -62,7 +66,8 @@ export default {
           this.loading = false;
 
             Object.assign(this.$data, this.$options.data.apply(this))
-            this.closeEvent()
+            //this.closeEvent()
+            this.$router.push({ name: "reinstatements-checks" });
         })
         .catch(error => {
           this.loading = false;
