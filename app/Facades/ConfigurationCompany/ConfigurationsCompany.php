@@ -51,7 +51,8 @@ class ConfigurationsCompany
             'inventory_management' => 'Utilizar inventario en el modulo de EPP',
             'text_letter_epp' => 'Texto carta de entrega epp',
             'expired_elements_asigned' => 'Notificar por vencimiento de elementos asignados',
-            'days_alert_expiration_date_elements' => 'Dias de alerta por vencimiento de elementos asignados'
+            'days_alert_expiration_date_elements' => 'Dias de alerta por vencimiento de elementos asignados',
+            'users_notify_element_expired' => 'Usuarios a notificar el vencimiento de los elementos asignados'
         ];
     }
 

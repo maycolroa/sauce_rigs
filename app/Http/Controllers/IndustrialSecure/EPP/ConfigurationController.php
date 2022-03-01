@@ -10,6 +10,7 @@ use App\Models\IndustrialSecure\Epp\Element;
 use App\Models\IndustrialSecure\Epp\Location;
 use App\Models\IndustrialSecure\Epp\ElementBalanceSpecific;
 use App\Models\IndustrialSecure\Epp\ElementBalanceLocation;
+use App\Models\Administrative\Users\User;
 
 class ConfigurationController extends Controller
 {
@@ -48,6 +49,23 @@ class ConfigurationController extends Controller
         {
             if ($value)
             {
+                if ($key == 'users_notify_element_expired')
+                {
+                    $values = $this->getDataFromMultiselect($value);
+
+                    $users = [];
+                    
+                    foreach ($values as $id) 
+                    {
+                        $user = User::find($id);
+
+                        array_push($users, $user->email);
+                    }
+
+                    $value = implode(',', $users);
+                    \Log::info($value);
+                }
+
                 ConfigurationsCompany::key($key)->value($value)->save();
 
                 if ($key == 'inventory_management')
@@ -102,8 +120,33 @@ class ConfigurationController extends Controller
     {
         try
         {
+            $data = ConfigurationsCompany::findall();
+
+            foreach ($data as $key => $value) 
+            {
+                if ($key == 'users_notify_element_expired')
+                {
+                    $users = explode(',', $value);
+
+                    $multiselect = [];
+
+                    foreach ($users as $email) 
+                    {
+                        $user = User::where('email', $email)->first();
+
+                        array_push($multiselect, $user->multiselect());
+                    }
+                }   
+            }
+
+            if (isset($multiselect) && count($multiselect) > 0)
+            {
+                $data['users_notify_element_expired'] = $multiselect;
+                $data['multiselect_user_id'] = $multiselect;
+            }
+
             return $this->respondHttp200([
-                'data' => ConfigurationsCompany::findall()
+                'data' => $data
             ]);
         } catch(Exception $e){
             $this->respondHttp500();

@@ -14,6 +14,7 @@
       <vue-radio :checked="form.expired_elements_asigned" class="col-md-12" v-model="form.expired_elements_asigned" :options="siNo" name="expired_elements_asigned" :error="form.errorsFor('expired_elements_asigned')" label="¿Desea recibir notificación por vencimiento de elementos asignados?">
         </vue-radio>
       <vue-input v-if="form.expired_elements_asigned == 'SI'" class="col-md-12" v-model="form.days_alert_expiration_date_elements" label="Días de alerta por fecha de vencimiento cercana para los elementos" type="number" name="days_alert_expiration_date_elements" :error="form.errorsFor('days_alert_expiration_date_elements')" placeholder="1"></vue-input>
+      <vue-ajax-advanced-select v-if="form.expired_elements_asigned == 'SI'" class="col-md-12" v-model="form.users_notify_element_expired" :selected-object="form.multiselect_user_id" name="users_notify_element_expired" label="Usuarios a notificar el vencimiento" placeholder="Seleccione uno o mas usuarios" :url="userDataUrl" :error="form.errorsFor('users_notify_element_expired')" :multiple="true" :allowEmpty="true"> </vue-ajax-advanced-select>  
     </b-form-row>
 
     <div class="row float-right pt-10 pr-10">
@@ -28,13 +29,15 @@
 import VueInput from "@/components/Inputs/VueInput.vue";
 import VueRadio from "@/components/Inputs/VueRadio.vue";
 import VueTextarea from "@/components/Inputs/VueTextarea.vue";
+import VueAjaxAdvancedSelect from "@/components/Inputs/VueAjaxAdvancedSelect.vue";
 import Form from "@/utils/Form.js";
 
 export default {
   components: {
     VueInput,
     VueRadio,
-    VueTextarea
+    VueTextarea,
+    VueAjaxAdvancedSelect
   },
   props: {
     url: { type: String },
@@ -49,7 +52,10 @@ export default {
       default() {
         return {
           inventory_management: '',
-          text_letter_epp: ''
+          text_letter_epp: '',
+          users_notify_element_expired: '',
+          expired_elements_asigned: '',
+          days_alert_expiration_date_elements: ''
         };
       }
     }
@@ -63,7 +69,8 @@ export default {
   data() {
     return {
       loading: this.isEdit,
-      form: Form.makeFrom(this.configuration, this.method)
+      form: Form.makeFrom(this.configuration, this.method),
+      userDataUrl: '/selects/users'
     };
   },
   methods: {

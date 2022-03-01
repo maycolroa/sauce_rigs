@@ -12,6 +12,8 @@ use App\Models\IndustrialSecure\Epp\Element;
 use App\Models\IndustrialSecure\Epp\ElementBalanceSpecific;
 use App\Models\IndustrialSecure\Epp\ElementBalanceLocation;
 use App\Models\IndustrialSecure\Epp\ElementTransactionEmployee;
+use App\Models\IndustrialSecure\Epp\Location;
+use App\Models\Administrative\Employees\Employee;
 use Carbon\Carbon;
 use DB;
 
@@ -58,6 +60,8 @@ class DaysAlertExpiredElementsAsigned extends Command
 
         foreach ($companies as $key => $company)
         {
+            $expired_elements = [];
+            
             $companyElement = Company::find($company);
 
             $configDay = $this->getConfig($company);
@@ -78,21 +82,69 @@ class DaysAlertExpiredElementsAsigned extends Command
                     $elements_asigned = ElementBalanceSpecific::where('element_balance_id', $ele_ubc->id)->where('state', 'Asignado')->get();
 
                     foreach ($elements_asigned as $key => $ele_asi) 
-                    {
-                        $delivery = ElementTransactionEmployee::join('sau_epp_transaction_employee_element', 'sau_epp_transaction_employee_element.transaction_employee_id', 'sau_epp_transactions_employees.id')
+                    {                        
+                        $deliveries = ElementTransactionEmployee::join('sau_epp_transaction_employee_element', 'sau_epp_transaction_employee_element.transaction_employee_id', 'sau_epp_transactions_employees.id')
                         ->join('sau_epp_elements_balance_specific', 'sau_epp_elements_balance_specific.id', 'sau_epp_transaction_employee_element.element_id')
-                        ->where('sau_epp_elements_balance_specific', $ele_asi->id)
+                        ->where('sau_epp_elements_balance_specific.id', $ele_asi->id)
                         ->where('sau_epp_transactions_employees.type', 'Entrega')
-                        ->where('sau_epp_transactions_employees.state', '!=', 'Procesada');
+                        ->whereNull('sau_epp_transactions_employees.state');
 
-                        $delivery->company_scope = $companyElement->id;
-                        $delivery = $delivery->get();
+                        $deliveries->company_scope = $companyElement->id;
+                        $deliveries = $deliveries->get();
 
-                        \Log::info($delivery);
+                        foreach ($deliveries as $key => $delivery) 
+                        {
+                            $employee = Employee::where('id', $delivery->employee_id);
+                            $employee->company_scope = $companyElement->id;
+                            $employee = $employee->first();
+
+                            $location = Location::where('id', $delivery->location_id);
+                            $location->company_scope = $companyElement->id;
+                            $location = $location->first();
+
+                            $dateUpload = Carbon::createFromFormat('Y-m-d H:i:s', $delivery->created_at);
+
+                            if ($dateUpload->diffInDays(Carbon::now()) >= $configDay)
+                            {
+                                $content = [
+                                    'Empleado' => $employee->name,
+                                    'Elemento' => $ele->name,
+                                    'Código' => $ele_asi->hash,
+                                    'Ubicación' => $location->name
+                                ];
+
+                                array_push($expired_elements, $content);
+                            }
+                        }
                     }
                 }
             }
-            
+
+            if (count($expired_elements) > 0)
+            {
+                $responsibles = ConfigurationsCompany::company($company)->findByKey('users_notify_element_expired');
+
+                if ($responsibles)
+                    $responsibles = explode(',', $responsibles);
+
+                if (count($responsibles) > 0)
+                {
+                    foreach ($responsibles as $email)
+                    {
+                        $recipient = new User(["email" => $email]); 
+
+                        NotificationMail::
+                            subject('Sauce - EPP ELementos asignados próximos a vencerse')
+                            ->recipients($recipient)
+                            ->message("Este es el listado de elementos asignados que estan a <b>$configDay</b> dias de vencerse")
+                            ->module('epp')
+                            ->event('Tarea programada: DaysAlertExpiredElementsAsigned')
+                            ->table($expired_elements)
+                            ->company($company)
+                            ->send();
+                    }
+                }
+            }
         }
     }
 
