@@ -54,7 +54,7 @@ class DaysAlertExpiredElementsAsigned extends Command
             ->join('sau_license_module', 'sau_license_module.license_id', 'sau_licenses.id')
             ->withoutGlobalScopes()
             ->whereRaw('? BETWEEN started_at AND ended_at', [date('Y-m-d')])
-            ->where('sau_license_module.module_id', '34'); //32 prod
+            ->where('sau_license_module.module_id', '32'); //32 prod
 
         $companies = $companies->pluck('sau_licenses.company_id');
 
@@ -76,6 +76,8 @@ class DaysAlertExpiredElementsAsigned extends Command
             foreach ($elements_expired as $key => $ele) 
             {
                 $elements_ubication = ElementBalanceLocation::where('element_id', $ele->id)->get();
+
+                $days_expired = $ele->days_expired;
 
                 foreach ($elements_ubication as $key => $ele_ubc) 
                 {
@@ -104,12 +106,14 @@ class DaysAlertExpiredElementsAsigned extends Command
 
                             $dateUpload = Carbon::createFromFormat('Y-m-d H:i:s', $delivery->created_at);
 
-                            if ($dateUpload->diffInDays(Carbon::now()) >= $configDay)
+                            $diff = $dateUpload->diffInDays(Carbon::now());
+
+                            if ($diff >= ($days_expired - $configDay))
                             {
                                 $content = [
                                     'Empleado' => $employee->name,
                                     'Elemento' => $ele->name,
-                                    'Código' => $ele_asi->hash,
+                                    'Código' => $ele->identify_each_element ? $ele_asi->hash : 'N/A',
                                     'Ubicación' => $location->name
                                 ];
 

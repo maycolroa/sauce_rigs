@@ -110,6 +110,7 @@ class ElementController extends Controller
         $element->reusable = $request->reusable == "SI" ? true : false;
         $element->identify_each_element = $request->identify_each_element == "SI" ? true : false;
         $element->expiration_date = $request->expiration_date == "SI" ? true : false;
+        $element->days_expired = $request->expiration_date == "SI" ? $request->days_expired : NULL;
         $element->company_id = $this->company;
         $element->type = $types->implode(',');
         $element->mark = $mark->implode(',');
@@ -206,6 +207,7 @@ class ElementController extends Controller
         $element->reusable = $request->reusable == "SI" ? true : false;
         $element->identify_each_element = $request->identify_each_element == "SI" ? true : false;
         $element->expiration_date = $request->expiration_date == "SI" ? true : false;
+        $element->days_expired = $request->expiration_date == "SI" ? $request->days_expired : NULL;
         $element->type = $types->implode(',');
         $element->mark = $mark->implode(',');
         
@@ -216,7 +218,6 @@ class ElementController extends Controller
         if ($request->image != $element->image)
         {
             $file_tmp = $request->image;
-            \Log::info($file_tmp);
             $nameFile = base64_encode($this->user->id . now() . rand(1,10000)) .'.'. $file_tmp->extension();
             $file_tmp->storeAs($element->path_client(false), $nameFile, 's3');
             $element->image = $nameFile;

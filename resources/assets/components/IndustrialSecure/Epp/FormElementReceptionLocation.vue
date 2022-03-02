@@ -26,7 +26,7 @@
 
               <vue-radio v-if="element.reception == 'SI'" :disabled="viewOnly" class="col-md-6" v-model="element.quantity_complete" :options="siNo" :name="`quantity_complete${index}`" :error="form.errorsFor(`elements_id.${index}.quantity_complete`)" label="¿Se recibio la cantidad completa?" :checked="element.quantity_complete"></vue-radio>
 
-               <vue-input v-if="element.type == 'No Identificable' && element.reception == 'SI'" :disabled="viewOnly" class="col-md-6" v-model="element.quantity_reception" label="Cantidad Recibida" type="number" name="quantity_reception" :error="form.errorsFor(`elements_id.${index}.quantity_reception`)" placeholder="Cantidad Recibida"></vue-input>              
+               <vue-input v-if="element.type == 'No Identificable' && element.reception == 'SI' && element.quantity_complete == 'NO'" :disabled="viewOnly" class="col-md-6" v-model="element.quantity_reception" label="Cantidad Recibida" type="number" name="quantity_reception" :error="form.errorsFor(`elements_id.${index}.quantity_reception`)" placeholder="Cantidad Recibida"></vue-input>              
                 
               <vue-advanced-select v-if="element.type == 'Identificable' && element.reception == 'SI'" :disabled="viewOnly" class="col-md-12" v-model="element.codes_reception" name="codes_reception" label="Códigos Recibidos" placeholder="Seleccione el código" :options="codes_transfer[element.id_ele]" :error="form.errorsFor(`elements_id.${index}.codes_reception`)" :allow-empty="false" :multiple="true">
                 </vue-advanced-select>
@@ -39,7 +39,7 @@
 
       <div class="col-md-12">
         <b-form-row>
-          <vue-checkbox-simple style="padding-top: 30px;" :disabled="viewOnly" class="col-md-6" v-model="form.state" label="¿Recibido?" :checked="form.state" name="state" checked-value="Recibido" unchecked-value="En espera"></vue-checkbox-simple>
+          <vue-checkbox-simple style="padding-top: 30px;" :disabled="viewOnly" class="col-md-6" v-model="form.state" label="¿Cerrar Traslado?" :checked="form.state" name="state" checked-value="Recibido" unchecked-value="En espera"></vue-checkbox-simple>
         </b-form-row>
       </div>
 

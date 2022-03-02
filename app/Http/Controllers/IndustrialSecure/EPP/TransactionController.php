@@ -314,6 +314,7 @@ class TransactionController extends Controller
                         $product->code = $hash;
                         $product->element_balance_id = $element_balance->id;
                         $product->location_id = $element_balance->location_id;
+                        $product->expiration_date = $element->days_expired ? $element->days_expired : NULL;
                         $product->state = 'Asignado';
                         $product->save();
 

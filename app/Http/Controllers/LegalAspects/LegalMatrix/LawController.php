@@ -586,6 +586,8 @@ class LawController extends Controller
 
             $path = 'fulfillments/'.$this->company."/";
 
+            $nameFile = NULL;
+
             $qualification = ArticleFulfillment::whereIn('id', $ids)
             ->update([
                 'fulfillment_value_id' => $request->fulfillment_value_id ? $request->fulfillment_value_id : NULL,
@@ -605,7 +607,7 @@ class LawController extends Controller
 
             $qualification = ArticleFulfillment::whereIn('id', $ids)
             ->update([
-                'file' => $nameFile ? $nameFile : NULL
+                'file' => $nameFile
             ]);
 
             foreach ($ids as $id) 

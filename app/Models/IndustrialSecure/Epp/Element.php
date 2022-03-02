@@ -27,7 +27,8 @@ class Element extends Model
         'image',
         'company_id',
         'identify_each_element',
-        'expiration_date'
+        'expiration_date',
+        'days_expired'
     ];
 
     public function multiselect()
