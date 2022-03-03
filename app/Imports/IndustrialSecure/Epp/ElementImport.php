@@ -116,6 +116,7 @@ class ElementImport implements ToCollection, WithCalculatedFormulas
             'reutilizable' => strtoupper($row[9]),
             'identificar' => strtoupper($row[10]),
             'vencimiento' => strtoupper($row[11]),
+            'dias_vencimiento' => $row[8]
 
         ];
 
@@ -131,7 +132,8 @@ class ElementImport implements ToCollection, WithCalculatedFormulas
             'estado' => 'required|in:Activo,Inactivo',
             'reutilizable' => 'required|in:SI,NO',
             'identificar' => 'required|in:SI,NO',
-            'vencimiento' => 'nullable|in:SI,NO'          
+            'vencimiento' => 'nullable|in:SI,NO',
+            'dias_vencimiento' => 'required_if:vencimiento,SI'       
         ];
 
         $validator = Validator::make($data, $rules);
@@ -166,7 +168,8 @@ class ElementImport implements ToCollection, WithCalculatedFormulas
                 $element->state = $data['estado'] == "Activo" ? true : false;
                 $element->reusable = $data['reutilizable'] == "SI" ? true : false;
                 $element->identify_each_element = $data['identificar'] == "SI" ? true : false;
-                $element->expiration_date = $data['identificar'] == 'SI' ? ($data['vencimiento'] == "SI" ? true : false) : false;
+                $element->expiration_date = $data['vencimiento'] == "SI" ? true : false;
+                $element->days_expired = $data['vencimiento'] == "SI" ? $data['dias_vencimiento'] : NULL;
                 $element->company_id = $this->company_id;
                 $element->type = $types->implode(',');
                 $element->mark = $mark->implode(',');

@@ -108,27 +108,24 @@ class ElementBalanceInitialImport implements ToCollection, WithCalculatedFormula
 
     private function checkElementIdent($row)
     {
-        $fecha_ingreso = $this->validateDate($row[5]);
         $data = [
             'codigo' => $row[0],
             'id_elemento' => $row[1],
             'id_ubicacion' => $row[2],
-            'vencimiento' => $fecha_ingreso
         ];
 
-        if (COUNT($this->count) > 0 && isset($this->count[$data['id_elemento']][$data['id_ubicacion']]))
+        $tipo = Element::where('code', $row[1]);
+        $tipo->company_scope = $this->company_id;
+        $tipo = $tipo->first();
+        
+        if (COUNT($this->count) > 0 && isset($this->count[$tipo->id][$data['id_ubicacion']]))
         {
-            $this->count[$data['id_elemento']][$data['id_ubicacion']] = $this->count[$data['id_elemento']][$data['id_ubicacion']] + 1;
+            $this->count[$tipo->id][$data['id_ubicacion']] = $this->count[$tipo->id][$data['id_ubicacion']] + 1;
         }
         else
         {
-            $this->count[$data['id_elemento']][$data['id_ubicacion']] = 1;
+            $this->count[$tipo->id][$data['id_ubicacion']] = 1;
         }
-
-
-        $tipo = Element::where('id', $row[1]);
-        $tipo->company_scope = $this->company_id;
-        $tipo = $tipo->first();
 
         $hashs = ElementBalanceSpecific::select('hash')->get()->toArray();
 
@@ -143,9 +140,6 @@ class ElementBalanceInitialImport implements ToCollection, WithCalculatedFormula
             'id_ubicacion' => 'required',
             'codigo' => 'required|not_in:'.  implode(',', $hashs_validar)
         ];
-
-        if ($tipo->expiration_date)
-            array_merge($rules, ['vencimiento' => 'required|date']);
 
         $validator = Validator::make($data, $rules,
         [
@@ -165,24 +159,24 @@ class ElementBalanceInitialImport implements ToCollection, WithCalculatedFormula
         }
         else 
         {   
-            $log_exist = ElementBalanceInicialLog::where('element_id', $data['id_elemento'])->where('location_id', $data['id_ubicacion'])->exists();
+            $log_exist = ElementBalanceInicialLog::where('element_id', $tipo->id)->where('location_id', $data['id_ubicacion'])->exists();
 
             $element = ElementBalanceLocation::updateOrCreate(
                 [
-                    'element_id' => $data['id_elemento'],
+                    'element_id' => $tipo->id,
                     'location_id' => $data['id_ubicacion']
                 ],
                 [
-                    'element_id' => $data['id_elemento'],
+                    'element_id' => $tipo->id,
                     'location_id' => $data['id_ubicacion'],
-                    'quantity' => $this->count[$data['id_elemento']][$data['id_ubicacion']],
-                    'quantity_available' => $this->count[$data['id_elemento']][$data['id_ubicacion']],
+                    'quantity' => $this->count[$tipo->id][$data['id_ubicacion']],
+                    'quantity_available' => $this->count[$tipo->id][$data['id_ubicacion']],
                     'quantity_allocated' => 0
                 ]
             );
 
             /*$element = new ElementBalanceLocation();
-            $element->element_id = $data['id_elemento'];
+            $element->element_id = $tipo->id;
             $element->location_id = $data['id_ubicacion'];
             $element->quantity = $data['cantidad'];
             $element->quantity_available = $data['cantidad'];
@@ -200,7 +194,7 @@ class ElementBalanceInitialImport implements ToCollection, WithCalculatedFormula
             if (!$log_exist)
             {
                 $log = new ElementBalanceInicialLog;
-                $log->element_id = $data['id_elemento'];
+                $log->element_id = $tipo->id;
                 $log->location_id = $data['id_ubicacion'];
                 $log->balance_inicial = true;
                 $log->save();
@@ -221,7 +215,7 @@ class ElementBalanceInitialImport implements ToCollection, WithCalculatedFormula
         $this->key_row++;
     }
 
-    private function validateDate($date)
+    /*private function validateDate($date)
     {
         try
         {
@@ -232,5 +226,5 @@ class ElementBalanceInitialImport implements ToCollection, WithCalculatedFormula
         }
 
         return $d ? $d : null;
-    }
+    }*/
 }

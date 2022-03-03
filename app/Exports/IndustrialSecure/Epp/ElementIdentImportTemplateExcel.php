@@ -61,8 +61,7 @@ class ElementIdentImportTemplateExcel implements FromCollection, WithHeadings, W
       $columns = [
         'Código',
         'Código Elemento',
-        'Codigo Ubicación',
-        'Fecha de Vencimiento (Aplica según la configuración del elemento a ingresar) (Año-Mes-Dia)(0000-00-00)'
+        'Codigo Ubicación'
       ];
 
       return $columns;

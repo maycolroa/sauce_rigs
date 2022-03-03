@@ -54,7 +54,7 @@ class ElementTemplate implements FromQuery, WithMapping, WithHeadings, WithTitle
 
     public function query()
     {
-      $elements = Element::selectRaw("id, name")->where('identify_each_element', $this->tipo);
+      $elements = Element::selectRaw("code, name")->where('identify_each_element', $this->tipo);
 
       $elements->company_scope = $this->company_id;
       

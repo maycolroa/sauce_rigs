@@ -112,14 +112,21 @@ class ElementBalanceInitialNotIdentyImport implements ToCollection, WithCalculat
                 'cantidad' => $row[2],
 
             ];
+        
+        $tipo = Element::where('code', $row[0]);
+        $tipo->company_scope = $this->company_id;
+        $tipo = $tipo->first();
 
         $rules = [
-            'id_elemento' => 'required',
+            'id_elemento' => 'required|string|in:'.$tipo->code,
             'id_ubicacion' => 'required',
             'cantidad' => 'required'       
         ];
+        $validator = Validator::make($data, $rules,
+        [
+            'id_elemento.required' => 'El valor ingresado en el campo Código no esta registrado'
 
-        $validator = Validator::make($data, $rules);
+        ]);
 
         if ($validator->fails())
         {
@@ -133,13 +140,13 @@ class ElementBalanceInitialNotIdentyImport implements ToCollection, WithCalculat
         }
         else 
         {   
-            $log_exist = ElementBalanceInicialLog::where('element_id', $data['id_elemento'])
+            $log_exist = ElementBalanceInicialLog::where('element_id', $tipo->id)
                 ->where('location_id', $data['id_ubicacion'])->exists();
 
             if (!$log_exist)
             {
                 $element = new ElementBalanceLocation();
-                $element->element_id = $data['id_elemento'];
+                $element->element_id = $tipo->id;
                 $element->location_id = $data['id_ubicacion'];
                 $element->quantity = $data['cantidad'];
                 $element->quantity_available = $data['cantidad'];
@@ -157,7 +164,7 @@ class ElementBalanceInitialNotIdentyImport implements ToCollection, WithCalculat
                 }
 
                 $log = new ElementBalanceInicialLog;
-                $log->element_id = $data['id_elemento'];
+                $log->element_id = $tipo->id;
                 $log->location_id = $data['id_ubicacion'];
                 $log->balance_inicial = true;
                 $log->save();
