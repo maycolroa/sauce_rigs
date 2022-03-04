@@ -907,7 +907,7 @@ class ActionPlan
 
             $files_names_delete = [];
 
-            if (COUNT($itemA['evidence_files']) > 0)
+            if (isset($itemA['evidence_files']) && COUNT($itemA['evidence_files']) > 0)
             {
                 foreach ($itemA['evidence_files'] as $keyF => $file) 
                 {
