@@ -946,7 +946,7 @@ class ActionPlan
                 }
             }
 
-            if (COUNT($itemA['files_delete']) > 0)
+            if (isset($itemA['files_delete']) && COUNT($itemA['files_delete']) > 0)
             {
                 foreach ($itemA['files_delete'] as $id)
                 {
