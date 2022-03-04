@@ -135,6 +135,10 @@ class LawController extends Controller
                 $laws->inResponsibles($this->getValuesForMultiselect($filters["responsibles"]), $filters['filtersType']['responsibles']);
                 $laws->inInterests($this->getValuesForMultiselect($filters["interests"]), $filters['filtersType']['interests']);
                 $laws->inState($this->getValuesForMultiselect($filters["states"]), $filters['filtersType']['states']);
+
+                if (COUNT($filters["qualifications"]) > 0)
+                    $laws->inQualification($this->getValuesForMultiselect($filters["qualifications"]), $filters['filtersType']['qualifications']);
+                
             }
         }
 

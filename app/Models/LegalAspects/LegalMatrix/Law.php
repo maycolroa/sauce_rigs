@@ -282,6 +282,26 @@ class Law extends Model
     }
 
     /**
+     * filters checks through the given responsibles
+     * @param  Illuminate\Database\Eloquent\Builder $query
+     * @param  array $responsibles
+     * @return Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeInQualification($query, $qualifications, $typeSearch = 'IN')
+    {
+        if (COUNT($qualifications) > 0)
+        {
+            if ($typeSearch == 'IN')
+                $query->whereIn('sau_lm_articles_fulfillment.fulfillment_value_id', $qualifications);
+
+            else if ($typeSearch == 'NOT IN')
+                $query->whereNotIn('sau_lm_articles_fulfillment.fulfillment_value_id', $qualifications);
+        }
+
+        return $query;
+    }
+
+    /**
      * filters checks through the given states
      * @param  Illuminate\Database\Eloquent\Builder $query
      * @param  array $states

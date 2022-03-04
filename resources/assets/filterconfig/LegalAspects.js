@@ -302,6 +302,12 @@ export default [
           key: 'states',
           type: 'select',
           label: 'Estado de evaluación'
+        },
+        {
+          url: '/selects/legalMatrix/articlesQualifications',
+          key: 'qualifications',
+          type: 'select',
+          label: 'Calificación'
         }
       ]
     },
