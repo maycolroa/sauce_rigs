@@ -611,7 +611,7 @@ class TransactionReturnsController extends Controller
         try
         {
             $transactions = ElementTransactionEmployee::where('employee_id', $request->employee_id)
-            ->where('location_id', $request->location_id)
+            //->where('location_id', $request->location_id)
             ->where('type', 'Entrega')
             ->WhereNull('state')
             ->get();

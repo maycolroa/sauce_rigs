@@ -441,6 +441,8 @@ class TransactionController extends Controller
                     if ($element->identify_each_element)
                     {
                         $disponible = ElementBalanceSpecific::where('hash', $value['code'])->first();
+
+                        $balance_origen = ElementBalanceLocation::find($disponible->element_balance_id);
                 
                         if ($value['rechange'] == 'SI')
                         {
@@ -450,6 +452,8 @@ class TransactionController extends Controller
                             if ($value['waste'] == 'SI')
                             {
                                 $disponible->state = 'Desechado';
+                                $disponible->location_id = $request->location_id;
+                                $disponible->element_balance_id = $element_balance->id;
                                 $disponible->save();
 
                                 $desecho = new EppWastes;
@@ -460,16 +464,19 @@ class TransactionController extends Controller
                                 $desecho->code_element = $disponible->hash;
                                 $desecho->save();
 
-                                $element_balance->quantity_available = $element_balance->quantity_available - 1;
-                                $element_balance->quantity_allocated = $element_balance->quantity_allocated - 1;
+                                $balance_origen->quantity_available = $balance_origen->quantity_available - 1;
+                                $balance_origen->quantity_allocated = $balance_origen->quantity_allocated - 1;
                             }
                             else
                             {
                                 $disponible->state = 'Disponible';
+                                $disponible->element_balance_id = $element_balance->id;
+                                $disponible->location_id = $request->location_id;
                                 $disponible->save();
 
                                 $element_balance->quantity_available = $element_balance->quantity_available + 1;
-                                $element_balance->quantity_allocated = $element_balance->quantity_allocated - 1;
+                                $balance_origen->quantity_available = $balance_origen->quantity_available - 1;
+                                $balance_origen->quantity_allocated = $balance_origen->quantity_allocated - 1;
                             }
 
                             array_push($elements_sync, $disponible->id);
@@ -479,6 +486,8 @@ class TransactionController extends Controller
                             if ($new_product->state = 'Disponible')
                             {
                                 $new_product->state = 'Asignado';
+                                $new_product->location_id = $request->location_id;
+                                $new_product->element_balance_id = $element_balance->id;
                                 $new_product->save();
 
                                 $change = [
@@ -490,8 +499,9 @@ class TransactionController extends Controller
 
                                 array_push($elements_change, $change);
 
-                                $element_balance->quantity_available = $element_balance->quantity_available - 1;
                                 $element_balance->quantity_allocated = $element_balance->quantity_allocated + 1;
+                                $balance_origen->quantity_available = $balance_origen->quantity_available - 1;
+                                $balance_origen->quantity_allocated = $balance_origen->quantity_allocated - 1;
 
                                 array_push($elements_sync_rechange, $new_product->id);
                             }
@@ -499,10 +509,13 @@ class TransactionController extends Controller
                         else
                         {
                             $disponible->state = 'Disponible';
+                            $disponible->location_id = $request->location_id;
+                            $disponible->element_balance_id = $element_balance->id;
                             $disponible->save();
 
                             $element_balance->quantity_available = $element_balance->quantity_available + 1;
-                            $element_balance->quantity_allocated = $element_balance->quantity_allocated - 1;
+                            $balance_origen->quantity_available = $balance_origen->quantity_available - 1;
+                            $balance_origen->quantity_allocated = $balance_origen->quantity_allocated - 1;
 
                             array_push($elements_sync, $disponible->id);
                         }
@@ -513,13 +526,17 @@ class TransactionController extends Controller
 
                         $count_codes = COUNT($codigos);
 
+                        $balance_id = ElementBalanceSpecific::whereIn('hash', $codigos)->where('state', 'Asignado')->first();
+
+                        $balance_origen = ElementBalanceLocation::find($balance_id->element_balance_id);
+
                         if ($value['waste'] == 'SI')
                         {
                             if ($value['quantity_waste'] <= $count_codes)
                             {
                                 for ($i=1; $i <= $value['quantity_waste']; $i++) 
                                 { 
-                                    $new_product = ElementBalanceSpecific::whereIn('hash', $codigos)->where('location_id', $request->location_id)->where('state', 'Asignado')->first();
+                                    $new_product = ElementBalanceSpecific::whereIn('hash', $codigos)->where('state', 'Asignado')->first();
 
                                     $new_product->state = 'Desechado';
                                     $new_product->save();
@@ -532,8 +549,8 @@ class TransactionController extends Controller
                                     $desecho->code_element = $new_product->hash;
                                     $desecho->save();
 
-                                    $element_balance->quantity_available = $element_balance->quantity_available - 1;
-                                    $element_balance->quantity_allocated = $element_balance->quantity_allocated - 1;
+                                    $balance_origen->quantity_available = $balance_origen->quantity_available - 1;
+                                    $balance_origen->quantity_allocated = $balance_origen->quantity_allocated - 1;
 
                                     array_push($elements_sync, $new_product->id);
                                 }
@@ -561,6 +578,9 @@ class TransactionController extends Controller
                                         {
                                             $new_product->state = 'Asignado';
                                             $new_product->save();
+
+                                            $element_balance->quantity_available = $element_balance->quantity_available - 1;
+                                            $element_balance->quantity_allocated = $element_balance->quantity_allocated + 1;
                                         }
                                         else
                                         {
@@ -585,7 +605,12 @@ class TransactionController extends Controller
                                         if ($old_product->state != 'Desechado')
                                         {
                                             $old_product->state = 'Disponible';
+                                            $old_product->location_id = $request->location_id;
+                                            $old_product->element_balance_id = $element_balance->id;
                                             $old_product->save();
+
+                                            $element_balance->quantity_available = $element_balance->quantity_available + 1;
+                                            $balance_origen->quantity_available = $balance_origen->quantity_available - 1;
                                         }                                        
 
                                         $change = [
@@ -607,6 +632,8 @@ class TransactionController extends Controller
                                         if (!$old->state = 'Desechado')
                                         {
                                             $old->state = 'Disponible';
+                                            $old->location_id = $request->location_id;
+                                            $old->element_balance_id = $element_balance->id;
                                             $old->save();
                                         }
 
@@ -627,16 +654,22 @@ class TransactionController extends Controller
                             foreach ($old_products as $key => $old) 
                             {
                                 $old->state = 'Disponible';
+                                $old->location_id = $request->location_id;
+                                $old->element_balance_id = $element_balance->id;
                                 $old->save();
 
                                 array_push($elements_sync, $old->id);
                             }
+
+                            $element_balance->quantity_available = $element_balance->quantity_available + $value['quantity'];
+                            $balance_origen->quantity_available = $balance_origen->quantity_available - $value['quantity'];
                         }
                     }
                 }
             }
 
             $element_balance->save();
+            $balance_origen->save();
 
             if (COUNT($elements_sync_rechange) > 0)
             {
