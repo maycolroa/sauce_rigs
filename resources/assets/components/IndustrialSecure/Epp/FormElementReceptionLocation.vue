@@ -14,12 +14,12 @@
       <template v-for="(element, index) in form.elements_id">
           <div :key="element.id">
             <b-form-row>
-              <vue-advanced-select :disabled="true" class="col-md-6" v-model="element.id_ele" name="id_ele" label="Elemento de protección personal" placeholder="Seleccione el elemento" :options="elements" :error="form.errorsFor(`elements_id.${index}.id_ele`)" @change="typeElement(index)" :allow-empty="false" :selected-object="element.multiselect_element">
+              <vue-advanced-select :disabled="true" class="col-md-6" v-model="element.id_ele" name="id_ele" label="Elemento de protección personal" placeholder="Seleccione el elemento" :options="elements" :error="form.errorsFor(`elements_id.${index}.id_ele`)" @change="typeElement(index)" :allow-empty="false" :selected-object="element.multiselect_element" :searchable="true">
                 </vue-advanced-select>
 
               <vue-input v-if="element.type == 'No Identificable'" :disabled="true" class="col-md-6" v-model="element.quantity_transfer" label="Cantidad Trasladada" type="number" name="quantity_transfer" :error="form.errorsFor(`elements_id.${index}.quantity_transfer`)" placeholder="Cantidad Trasladada"></vue-input>
 
-              <vue-advanced-select v-if="element.type == 'Identificable'" :disabled="true" class="col-md-12" v-model="element.codes_transfer" name="codes_transfer" label="Códigos Transferidos" placeholder="Seleccione el código" :options="codes_transfer[element.id_ele]" :error="form.errorsFor(`elements_id.${index}.codes_transfer`)" :allow-empty="false" :multiple="true">
+              <vue-advanced-select v-if="element.type == 'Identificable'" :disabled="true" class="col-md-12" v-model="element.codes_transfer" name="codes_transfer" label="Códigos Transferidos" placeholder="Seleccione el código" :options="codes_transfer[element.id_ele]" :error="form.errorsFor(`elements_id.${index}.codes_transfer`)" :allow-empty="false" :multiple="true" :searchable="true">
                 </vue-advanced-select>
 
               <vue-radio :disabled="viewOnly" class="col-md-6" v-model="element.reception" :options="siNo" :name="`reception${index}`" :error="form.errorsFor(`elements_id.${index}.reception`)" label="¿Se recibio el elemento?" :checked="element.reception"></vue-radio>
@@ -28,7 +28,7 @@
 
                <vue-input v-if="element.type == 'No Identificable' && element.reception == 'SI' && element.quantity_complete == 'NO'" :disabled="viewOnly" class="col-md-6" v-model="element.quantity_reception" label="Cantidad Recibida" type="number" name="quantity_reception" :error="form.errorsFor(`elements_id.${index}.quantity_reception`)" placeholder="Cantidad Recibida"></vue-input>              
                 
-              <vue-advanced-select v-if="element.type == 'Identificable' && element.reception == 'SI'" :disabled="viewOnly" class="col-md-12" v-model="element.codes_reception" name="codes_reception" label="Códigos Recibidos" placeholder="Seleccione el código" :options="codes_transfer[element.id_ele]" :error="form.errorsFor(`elements_id.${index}.codes_reception`)" :allow-empty="false" :multiple="true">
+              <vue-advanced-select v-if="element.type == 'Identificable' && element.reception == 'SI'" :disabled="viewOnly" class="col-md-12" v-model="element.codes_reception" name="codes_reception" label="Códigos Recibidos" placeholder="Seleccione el código" :options="codes_transfer[element.id_ele]" :error="form.errorsFor(`elements_id.${index}.codes_reception`)" :allow-empty="false" :multiple="true" :searchable="true">
                 </vue-advanced-select>
 
               <vue-ajax-advanced-select-tag-unic v-if="element.reception == 'NO' || element.quantity_complete == 'NO'" :disabled="viewOnly" class="col-md-6" v-model="element.reason" name="reason" :error="form.errorsFor(`elements_id.${index}.reason`)" label="Motivo" placeholder="Seleccione el motivo" :url="tagsSReasonDataUrl" :multiple="false" :allowEmpty="true" :taggable="true"></vue-ajax-advanced-select-tag-unic>

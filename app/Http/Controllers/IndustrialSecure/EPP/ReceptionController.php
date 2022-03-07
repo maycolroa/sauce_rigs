@@ -61,7 +61,8 @@ class ReceptionController extends Controller
         ->join('sau_epp_elements', 'sau_epp_elements.id', 'sau_epp_receptions_details.element_id')
         ->join('sau_epp_locations as origin', 'origin.id', 'sau_epp_receptions.location_origin_id')
         ->join('sau_epp_locations as destiny', 'destiny.id', 'sau_epp_receptions.location_destiny_id')
-        ->groupBy('sau_epp_receptions.id', 'origin.name', 'destiny.name');
+        ->groupBy('sau_epp_receptions.id', 'origin.name', 'destiny.name')
+        ->orderBy('sau_epp_receptions.id', 'desc');
 
         return Vuetable::of($receptions)
             ->addColumn('industrialsecure-epps-transactions-reception-edit', function ($reception) {

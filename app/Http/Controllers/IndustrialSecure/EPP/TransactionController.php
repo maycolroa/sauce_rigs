@@ -582,11 +582,11 @@ class TransactionController extends Controller
 
                                         $old_product = ElementBalanceSpecific::whereIn('hash', $codigos)->first();
 
-                                        if ($old->state != 'Desechado')
+                                        if ($old_product->state != 'Desechado')
                                         {
-                                            $old->state = 'Disponible';
-                                            $old->save();
-                                        }
+                                            $old_product->state = 'Disponible';
+                                            $old_product->save();
+                                        }                                        
 
                                         $change = [
                                             'code_new' => $new_product->id,

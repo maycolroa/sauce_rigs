@@ -30,12 +30,12 @@
                     </div>
                 </div>
                 <!--<vue-advanced-select class="col-md-6" v-model="element.type" :multiple="false" :options="typesElement" :hide-selected="false" name="type" label="Tipo de elemento" placeholder="Seleccione el tipo de elemento"></vue-advanced-select>-->
-                <vue-advanced-select :disabled="viewOnly" class="col-md-6" v-model="element.id_ele" name="id_ele" label="Elemento de protección personal" placeholder="Seleccione el elemento" :options="elements" :error="form.errorsFor(`elements_id.${index}.id_ele`)" @change="typeElement(index)" :allow-empty="false" :selected-object="element.multiselect_element">
+                <vue-advanced-select :disabled="viewOnly" class="col-md-6" v-model="element.id_ele" name="id_ele" label="Elemento de protección personal" placeholder="Seleccione el elemento" :options="elements" :error="form.errorsFor(`elements_id.${index}.id_ele`)" @change="typeElement(index)" :allow-empty="false" :selected-object="element.multiselect_element" :searchable="true">
                   </vue-advanced-select>
                 <vue-input v-if="element.type == 'No Identificable'" :disabled="viewOnly" class="col-md-6" v-model="element.quantity" label="Cantidad" type="number" name="quantity" :error="form.errorsFor(`elements_id.${index}.quantity`)" placeholder="Cantidad"></vue-input>
                 <vue-radio v-if="element.type == 'Identificable'" :disabled="viewOnly" class="col-md-6" v-model="element.entry" :options="siNo" name="entry" :error="form.errorsFor(`elements_id.${index}.entry`)" label="Como desea ingresar el código del elemento?" :checked="element.entry"></vue-radio>
                 <vue-input v-if="element.type == 'Identificable' && element.entry == 'Manualmente'" :disabled="viewOnly" class="col-md-12" v-model="element.code" label="Código" type="text" name="code" :error="form.errorsFor(`elements_id.${index}.code`)" placeholder="Código" @onBlur="hashSelected(index)" ></vue-input>
-                <vue-advanced-select v-if="element.type == 'Identificable' && element.entry == 'Seleccionarlo'" :disabled="viewOnly" class="col-md-12" v-model="element.code" name="code" label="Código de elemento" placeholder="Seleccione el código" :options="codes[index]" :error="form.errorsFor(`elements_id.${index}.code`)" @selectedName="hashSelected(index)" :allow-empty="false">
+                <vue-advanced-select v-if="element.type == 'Identificable' && element.entry == 'Seleccionarlo'" :disabled="viewOnly" class="col-md-12" v-model="element.code" name="code" label="Código de elemento" placeholder="Seleccione el código" :options="codes[index]" :error="form.errorsFor(`elements_id.${index}.code`)" @selectedName="hashSelected(index)" :allow-empty="false" :searchable="true">
                   </vue-advanced-select>
               </b-form-row>
             </div>

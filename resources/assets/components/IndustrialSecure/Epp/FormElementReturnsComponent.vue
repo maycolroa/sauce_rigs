@@ -29,7 +29,7 @@
                       <b-btn v-if="!viewOnly" variant="outline-primary icon-btn borderless" size="sm" v-b-tooltip.top title="Eliminar" @click.prevent="removeElement(index)"><span class="ion ion-md-close-circle"></span></b-btn>
                   </div>
               </div>
-              <vue-advanced-select :disabled="true" class="col-md-6" v-model="element.id_ele" name="id_ele" label="Elemento de protección personal" placeholder="Seleccione el elemento" :options="elements" :error="form.errorsFor(`elements_id.${index}.id_ele`)" @change="typeElement(index)" :allow-empty="false" :selected-object="element.multiselect_element">
+              <vue-advanced-select :disabled="true" class="col-md-6" v-model="element.id_ele" name="id_ele" label="Elemento de protección personal" placeholder="Seleccione el elemento" :options="elements" :error="form.errorsFor(`elements_id.${index}.id_ele`)" @change="typeElement(index)" :allow-empty="false" :selected-object="element.multiselect_element" :searchable="true">
                 </vue-advanced-select>
               <vue-input v-if="element.type == 'No Identificable'" :disabled="true" class="col-md-6" v-model="element.quantity" label="Cantidad" type="number" name="quantity" :error="form.errorsFor(`elements_id.${index}.quantity`)" placeholder="Cantidad"></vue-input>
               <vue-input v-if="element.type == 'Identificable'" :disabled="true" class="col-md-12" v-model="element.code" label="Código" type="text" name="code" :error="form.errorsFor(`elements_id.${index}.code`)" placeholder="Código"></vue-input>
@@ -41,7 +41,7 @@
 
               <vue-input v-if="element.type == 'No Identificable' && element.rechange == 'SI' && !viewOnly" :disabled="viewOnly" class="col-md-12" v-model="element.quantity_rechange" label="Cantidad a cambiar" type="number" name="quantity_rechange" :error="form.errorsFor(`elements_id.${index}.quantity_rechange`)" placeholder="Cantidad a cambiar" ></vue-input>
 
-              <vue-advanced-select v-if="element.type == 'Identificable' && element.rechange == 'SI'" :disabled="viewOnly" class="col-md-12" v-model="element.code_new" name="code_new" label="Código de nuevo elemento" placeholder="Seleccione el código" :options="codes[element.id_ele]" :error="form.errorsFor(`elements_id.${index}.code_new`)" @selectedName="hashSelected(index)" :allow-empty="false">
+              <vue-advanced-select v-if="element.type == 'Identificable' && element.rechange == 'SI'" :disabled="viewOnly" class="col-md-12" v-model="element.code_new" name="code_new" label="Código de nuevo elemento" placeholder="Seleccione el código" :options="codes[element.id_ele]" :error="form.errorsFor(`elements_id.${index}.code_new`)" @selectedName="hashSelected(index)" :allow-empty="false" :searchable="true">
                 </vue-advanced-select>
 
               <vue-ajax-advanced-select-tag-unic v-if="element.rechange == 'SI'" :disabled="viewOnly" class="col-md-12" v-model="element.reason" name="reason" :error="form.errorsFor(`elements_id.${index}.reason`)" label="Motivo del cambio" placeholder="Seleccione el motivo" :url="tagsSReasonDataUrl" :multiple="false" :allowEmpty="true" :taggable="true"></vue-ajax-advanced-select-tag-unic>
