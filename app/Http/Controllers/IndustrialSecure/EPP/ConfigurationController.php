@@ -126,15 +126,18 @@ class ConfigurationController extends Controller
             {
                 if ($key == 'users_notify_element_expired')
                 {
-                    $users = explode(',', $value);
-
-                    $multiselect = [];
-
-                    foreach ($users as $email) 
+                    if ($value)
                     {
-                        $user = User::where('email', $email)->first();
+                        $users = explode(',', $value);
 
-                        array_push($multiselect, $user->multiselect());
+                        $multiselect = [];
+
+                        foreach ($users as $email) 
+                        {
+                            $user = User::where('email', $email)->first();
+
+                            array_push($multiselect, $user->multiselect());
+                        }
                     }
                 }   
             }
