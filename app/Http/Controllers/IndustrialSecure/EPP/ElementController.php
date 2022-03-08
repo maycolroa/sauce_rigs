@@ -423,7 +423,8 @@ class ElementController extends Controller
             sau_epp_locations.name as location,
             count(sau_epp_elements_balance_specific.id) as quantity,
             SUM(IF(sau_epp_elements_balance_specific.state = 'Disponible', 1, 0)) AS quantity_available,
-            SUM(IF(sau_epp_elements_balance_specific.state = 'Asignado', 1, 0)) AS quantity_allocated
+            SUM(IF(sau_epp_elements_balance_specific.state = 'Asignado', 1, 0)) AS quantity_allocated,
+            SUM(IF(sau_epp_elements_balance_specific.state = 'No Disponible', 1, 0)) AS quantity_transfer
         ")
         ->join('sau_epp_elements', 'sau_epp_elements.id', 'sau_epp_elements_balance_ubication.element_id')
         ->join('sau_epp_locations', 'sau_epp_locations.id', 'sau_epp_elements_balance_ubication.location_id')
