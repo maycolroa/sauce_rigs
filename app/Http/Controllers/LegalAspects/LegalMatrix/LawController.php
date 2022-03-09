@@ -608,14 +608,12 @@ class LawController extends Controller
                 $file->storeAs($path, $nameFile, 's3_MLegal');
                 $data['file'] = $nameFile;
                 $data['old_file'] = $nameFile;
+
+                $qualification_file = ArticleFulfillment::whereIn('id', $ids)
+                ->update([
+                    'file' => $nameFile
+                ]);
             }
-
-            $qualification = ArticleFulfillment::whereIn('id', $ids)
-            ->update([
-                'file' => $nameFile
-            ]);
-
-            \Log::info(2);
 
             foreach ($ids as $id) 
             {
@@ -629,6 +627,8 @@ class LawController extends Controller
             }
 
             if (!$qualification) {
+                \Log::info('error');
+                \Log::info($qualification);
                 return $this->respondHttp500();
             }
 
