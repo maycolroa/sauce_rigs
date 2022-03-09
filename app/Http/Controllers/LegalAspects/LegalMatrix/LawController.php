@@ -586,6 +586,7 @@ class LawController extends Controller
     {        
         try
         {
+            \Log::info('entro');
             $ids = explode(',', $request->id);
 
             $path = 'fulfillments/'.$this->company."/";
@@ -614,6 +615,8 @@ class LawController extends Controller
                 'file' => $nameFile
             ]);
 
+            \Log::info(2);
+
             foreach ($ids as $id) 
             {
                 $article = ArticleFulfillment::find($id);
@@ -626,10 +629,11 @@ class LawController extends Controller
             }
 
             if (!$qualification) {
-                    return $this->respondHttp500();
+                return $this->respondHttp500();
             }
 
         } catch (Exception $e){
+            \Log::info($e->getMessage());
             return $this->respondHttp500();
         }
     }

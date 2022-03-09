@@ -534,6 +534,7 @@ Route::middleware(['auth'])->group(function () {
         Route::ApiResource('element', 'IndustrialSecure\EPP\ElementController');
         Route::post('element/data', 'IndustrialSecure\EPP\ElementController@data');
         Route::post('element/reportBalance', 'IndustrialSecure\EPP\ElementController@reportBalance');
+        Route::post('element/reportEmployee', 'IndustrialSecure\EPP\ElementController@reportEmployee');
         Route::get('element/download/{element}', 'IndustrialSecure\EPP\ElementController@downloadImage');
         Route::post('element/import', 'IndustrialSecure\EPP\ElementController@import');
         Route::post('element/import/balanceInicial', 'IndustrialSecure\EPP\ElementController@importBalanceInicial');

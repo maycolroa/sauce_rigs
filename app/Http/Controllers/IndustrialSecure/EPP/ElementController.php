@@ -10,6 +10,7 @@ use App\Models\IndustrialSecure\Epp\TagsMark;
 use App\Models\IndustrialSecure\Epp\TagsType;
 use App\Models\IndustrialSecure\Epp\ElementBalanceInicialLog;
 use App\Models\IndustrialSecure\Epp\TagsApplicableStandard;
+use App\Models\IndustrialSecure\Epp\ElementTransactionEmployee;
 use App\Http\Requests\IndustrialSecure\Epp\ElementRequest;
 use Validator;
 use Illuminate\Support\Facades\Storage;
@@ -431,6 +432,55 @@ class ElementController extends Controller
         ->join('sau_epp_elements_balance_specific', 'sau_epp_elements_balance_specific.element_balance_id', 'sau_epp_elements_balance_ubication.id')
         ->where('sau_epp_elements.company_id', $this->company)
         ->groupBy('element','location', 'mark');
+
+        $url = "/industrialsecure/epps/report";
+
+        $filters = COUNT($request->get('filters')) > 0 ? $request->get('filters') : $this->filterDefaultValues($this->user->id, $url);
+
+        if (COUNT($filters) > 0)
+        {
+            if (isset($filters["marks"]) && COUNT($filters["marks"]) > 0)
+            {
+                $marks = $this->getValuesForMultiselect($filters["marks"]);
+
+                if ($filters['filtersType']['marks'] == 'IN')
+                    $report->whereIn('sau_epp_elements.mark', $marks);
+
+                else if ($filters['filtersType']['marks'] == 'NOT IN')
+                    $report->whereNotIn('sau_epp_elements.mark', $marks);
+            }
+
+            if (isset($filters["elements"]))
+                $report->inElement($this->getValuesForMultiselect($filters["elements"]), $filters['filtersType']['elements']);
+
+            if (isset($filters["location"]))
+                $report->inLocation($this->getValuesForMultiselect($filters["location"]), $filters['filtersType']['location']);
+        }
+
+        
+        return Vuetable::of($report)
+                    ->make();
+    }
+
+    public function reportEmployee(Request $request)
+    {
+        $report = ElementTransactionEmployee::selectRaw("
+            sau_employees.name as employee,
+            sau_epp_elements.id as id,
+            sau_epp_elements.name as element,
+            sau_epp_locations.name as location,
+            count(sau_epp_elements_balance_specific.id) as cantidad
+        ")
+        ->join('sau_employees', 'sau_employees.id', 'sau_epp_transactions_employees.employee_id')
+        ->join('sau_epp_transaction_employee_element', 'sau_epp_transaction_employee_element.transaction_employee_id', 'sau_epp_transactions_employees.id')
+        ->join('sau_epp_elements_balance_specific', 'sau_epp_elements_balance_specific.id', 'sau_epp_transaction_employee_element.element_id')
+        ->join('sau_epp_elements_balance_ubication', 'sau_epp_elements_balance_ubication.id','sau_epp_elements_balance_specific.element_balance_id')
+        ->join('sau_epp_elements', 'sau_epp_elements.id', 'sau_epp_elements_balance_ubication.element_id')
+        ->join('sau_epp_locations', 'sau_epp_locations.id', 'sau_epp_elements_balance_specific.location_id')
+        ->where('sau_epp_elements.company_id', $this->company)
+        ->where('sau_epp_transactions_employees.type', 'Entrega')
+        ->whereNull('sau_epp_transactions_employees.state')
+        ->groupBy('sau_employees.name', 'sau_epp_elements.id', 'sau_epp_elements.name','sau_epp_locations.name');
 
         $url = "/industrialsecure/epps/report";
 

@@ -1495,7 +1495,7 @@ export default [
     configuration: {
         urlData: '/industrialSecurity/epp/element/reportBalance',
         filterColumns: false,
-        configNameFilter: 'industrialsecure-epp-report'
+        //configNameFilter: 'industrialsecure-epp-report'
     }
 },
 {
@@ -1607,6 +1607,28 @@ export default [
     configuration: {
         urlData: '/industrialSecurity/epp/reception/data',
         filterColumns: true,
+    }
+},{
+    name: 'industrialsecure-epp-reports-employees',
+    fields: [
+        { name: 'id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true },
+        { name: 'employee', data: 'employee', title: 'Empleado', sortable: true, searchable: false, detail: false, key: false },
+        { name: 'element', data: 'element', title: 'Elemento', sortable: true, searchable: false, detail: false, key: false },
+        { name: 'location', data: 'location', title: 'Ubicación', sortable: true, searchable: false, detail: false, key: false },
+        { name: 'cantidad', data: 'cantidad', title: 'Cantidad', sortable: true, searchable: false, detail: false, key: false },
+    ],
+    'controlls': [{
+            type: 'push',
+            buttons: []
+        },
+        {
+            type: 'base',
+            buttons: [],
+        }],
+    configuration: {
+        urlData: '/industrialSecurity/epp/element/reportEmployee',
+        filterColumns: false,
+        //configNameFilter: 'industrialsecure-epp-report'
     }
 },
 ];

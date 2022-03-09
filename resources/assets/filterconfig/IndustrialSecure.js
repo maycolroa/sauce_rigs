@@ -514,6 +514,12 @@ export default [
           key: 'location',
           type: 'select',
           label: 'Ubicación',
+        },
+        {
+          url: '/selects/employees',
+          key: 'employee',
+          type: 'select',
+          label: 'Empleado',
         }
       ]
     },
