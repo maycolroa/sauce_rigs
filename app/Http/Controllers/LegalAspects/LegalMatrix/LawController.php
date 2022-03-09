@@ -586,7 +586,6 @@ class LawController extends Controller
     {        
         try
         {
-            \Log::info('entro');
             $ids = explode(',', $request->id);
 
             $path = 'fulfillments/'.$this->company."/";
@@ -627,8 +626,6 @@ class LawController extends Controller
             }
 
             if (!$qualification) {
-                \Log::info('error');
-                \Log::info($qualification);
                 return $this->respondHttp500();
             }
 
