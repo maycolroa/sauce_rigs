@@ -161,6 +161,7 @@ Route::middleware(['auth'])->group(function () {
     
     Route::prefix('selects')->group(function () {
         Route::post('employees', 'Administrative\Employees\EmployeesController@multiselect');
+        Route::post('employeesId', 'Administrative\Employees\EmployeesController@multiselectEmployee');
         Route::post('employeesDeal', 'Administrative\Employees\EmployeesController@multiselectDeal');  
         Route::post('employeesNames', 'Administrative\Employees\EmployeesController@multiselectNames');
         Route::post('employeesIdentifications', 'Administrative\Employees\EmployeesController@multiselectIdentifications');

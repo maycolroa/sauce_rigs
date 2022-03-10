@@ -111,4 +111,18 @@ class ElementTransactionEmployee extends Model
 
         return $query;
     }
+
+    public function scopeInEmployee($query, $employees, $typeSearch = 'IN')
+    {
+        if (COUNT($employees) > 0)
+        {
+            if ($typeSearch == 'IN')
+                $query->whereIn('sau_epp_transactions_employees.employee_id', $employees);
+
+            else if ($typeSearch == 'NOT IN')
+                $query->whereNotIn('sau_epp_transactions_employees.employee_id', $employees);
+        }
+
+        return $query;
+    }
 }

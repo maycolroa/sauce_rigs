@@ -24,6 +24,7 @@
                 <vue-table
                   configName="industrialsecure-epp-reports"
                   v-if="auth.can['elements_r']"
+                  :params="{filters}"
                   ref="saldosElements"
                 ></vue-table>
               </b-card-body>
@@ -38,6 +39,7 @@
                 <vue-table
                   configName="industrialsecure-epp-reports-employees"
                   v-if="auth.can['elements_r']"
+                  :params="{filters}"
                   ref="elementsAsigned"
                 ></vue-table>
               </b-card-body>

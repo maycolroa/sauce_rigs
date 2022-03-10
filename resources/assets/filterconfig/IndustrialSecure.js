@@ -516,7 +516,7 @@ export default [
           label: 'Ubicación',
         },
         {
-          url: '/selects/employees',
+          url: '/selects/employeesId',
           key: 'employee',
           type: 'select',
           label: 'Empleado',

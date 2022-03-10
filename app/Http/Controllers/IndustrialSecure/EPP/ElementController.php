@@ -504,6 +504,9 @@ class ElementController extends Controller
 
             if (isset($filters["location"]))
                 $report->inLocation($this->getValuesForMultiselect($filters["location"]), $filters['filtersType']['location']);
+
+            if (isset($filters["employee"]))
+                $report->inEmployee($this->getValuesForMultiselect($filters["employee"]), $filters['filtersType']['employee']);
         }
 
         

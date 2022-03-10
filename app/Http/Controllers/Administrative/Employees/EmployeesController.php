@@ -213,6 +213,18 @@ class EmployeesController extends Controller
         ]);
     }
 
+    public function multiselectEmployee(Request $request)
+    {
+        $elements = Employee::selectRaw("
+                sau_employees.id as id,
+                CONCAT(sau_employees.identification, ' - ', sau_employees.name) as name
+            ")            
+            ->orderBy('name')
+            ->pluck('id', 'name');
+        
+            return $this->multiSelectFormat($elements);
+    }
+
     public function multiselectDeal(Request $request)
     {
         $deals = Employee::selectRaw(
