@@ -120,8 +120,19 @@ class ElementImport implements ToCollection, WithCalculatedFormulas
 
         ];
 
+        $codes_bbdd = Element::select('code')
+        ->where('company_id', $this->company_id)
+        ->get()
+        ->toArray();
+
+        $codes = [];
+
+        foreach ($codes_bbdd as $key => $value) {
+            array_push($codes, $value['code']);
+        }
+
         $rules = [
-            'codigo' => 'required',
+            'codigo' => 'required|not_in:'.  implode(',', $codes),
             'nombre' => 'required',
             'tipo' => 'required',
             'marca' => 'required',
@@ -132,11 +143,14 @@ class ElementImport implements ToCollection, WithCalculatedFormulas
             'estado' => 'required|in:Activo,Inactivo',
             'reutilizable' => 'required|in:SI,NO',
             'identificar' => 'required|in:SI,NO',
-            'vencimiento' => 'nullable|in:SI,NO',
+            'vencimiento' => 'required|in:SI,NO',
             'dias_vencimiento' => 'required_if:vencimiento,SI'       
         ];
 
-        $validator = Validator::make($data, $rules);
+        $validator = Validator::make($data, $rules, [
+            'codigo.required' => 'El campo Código es requerido y debe ser unico, ya existe un elemento registrado con este código'
+
+        ]);
 
         if ($validator->fails())
         {
