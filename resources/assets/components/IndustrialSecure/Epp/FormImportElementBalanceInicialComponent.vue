@@ -84,7 +84,7 @@ export default {
         .then(response => {
           this.loading = false;
           Alerts.warning('Información', 'Se inicio la importación, se le notificara a su correo electronico cuando finalice el proceso.');
-          this.$router.push({ name: "industrialsecure-epps-elements" });
+          this.$router.push({ name: "industrialsecure-epp" });
         })
         .catch(error => {
           this.loading = false;

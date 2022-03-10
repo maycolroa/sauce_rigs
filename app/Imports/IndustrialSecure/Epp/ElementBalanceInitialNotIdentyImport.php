@@ -118,7 +118,7 @@ class ElementBalanceInitialNotIdentyImport implements ToCollection, WithCalculat
         $tipo = $tipo->first();
 
         $rules = [
-            'id_elemento' => 'required|string|in:'.$tipo->code,
+            'id_elemento' => 'required|in:'.$tipo->code,
             'id_ubicacion' => 'required',
             'cantidad' => 'required'       
         ];
@@ -152,6 +152,44 @@ class ElementBalanceInitialNotIdentyImport implements ToCollection, WithCalculat
                 $element->quantity_available = $data['cantidad'];
                 $element->quantity_allocated = 0;
                 $element->save();
+
+                for ($i=1; $i <= $data['cantidad']; $i++) { 
+                    $hash = Hash::make($element->element_id . str_random(30));
+                    $product = new ElementBalanceSpecific;
+                    $product->hash = $hash;
+                    $product->code = $hash;
+                    $product->element_balance_id = $element->id;
+                    $product->location_id = $element->location_id;
+                    $product->save();
+                }
+
+                $log = new ElementBalanceInicialLog;
+                $log->element_id = $tipo->id;
+                $log->location_id = $data['id_ubicacion'];
+                $log->balance_inicial = true;
+                $log->save();
+            }
+            else
+            {
+                $element = ElementBalanceLocation::where('element_id', $tipo->id)
+                ->where('location_id', $data['id_ubicacion'])->first();
+
+                if ($element)
+                {
+                    $element->quantity = $element->quantity + $data['cantidad'];
+                    $element->quantity_available = $element->quantity_available + $data['cantidad'];
+                    $element->save();
+                }
+                else
+                {
+                    $element = new ElementBalanceLocation();
+                    $element->element_id = $tipo->id;
+                    $element->location_id = $data['id_ubicacion'];
+                    $element->quantity = $data['cantidad'];
+                    $element->quantity_available = $data['cantidad'];
+                    $element->quantity_allocated = 0;
+                    $element->save();                    
+                }
 
                 for ($i=1; $i <= $data['cantidad']; $i++) { 
                     $hash = Hash::make($element->element_id . str_random(30));
