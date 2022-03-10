@@ -31,7 +31,7 @@ class ElementTemplate implements FromQuery, WithMapping, WithHeadings, WithTitle
     public function map($element): array
     {
         return [
-            $element->id,
+            $element->code,
             $element->name
         ];
     }
