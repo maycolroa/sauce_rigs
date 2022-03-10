@@ -1483,6 +1483,7 @@ export default [
         { name: 'quantity_available', data: 'quantity_available', title: 'Cantidad Disponible', sortable: true, searchable: false, detail: false, key: false },
         { name: 'quantity_allocated', data: 'quantity_allocated', title: 'Cantidad Asignada', sortable: true, searchable: false, detail: false, key: false },
         { name: 'quantity_transfer', data: 'quantity_transfer', title: 'Cantidad en transito', sortable: true, searchable: false, detail: false, key: false },
+        { name: 'quantity_wastes', data: 'quantity_wastes', title: 'Cantidad desechada', sortable: true, searchable: false, detail: false, key: false },
     ],
     'controlls': [{
             type: 'push',
