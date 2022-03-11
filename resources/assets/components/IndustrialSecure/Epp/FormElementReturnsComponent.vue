@@ -31,13 +31,13 @@
               </div>
               <vue-advanced-select :disabled="true" class="col-md-6" v-model="element.id_ele" name="id_ele" label="Elemento de protección personal" placeholder="Seleccione el elemento" :options="elements" :error="form.errorsFor(`elements_id.${index}.id_ele`)" @change="typeElement(index)" :allow-empty="false" :selected-object="element.multiselect_element" :searchable="true">
                 </vue-advanced-select>
-              <vue-input v-if="element.type == 'No Identificable'" :disabled="true" class="col-md-6" v-model="element.quantity" label="Cantidad" type="number" name="quantity" :error="form.errorsFor(`elements_id.${index}.quantity`)" placeholder="Cantidad"></vue-input>
+              <vue-input v-if="element.type == 'No Identificable'" :disabled="viewOnly" class="col-md-6" v-model="element.quantity_return" label="Cantidad" type="number" name="quantity_return" :error="form.errorsFor(`elements_id.${index}.quantity`)" placeholder="Cantidad"></vue-input>
               <vue-input v-if="element.type == 'Identificable'" :disabled="true" class="col-md-12" v-model="element.code" label="Código" type="text" name="code" :error="form.errorsFor(`elements_id.${index}.code`)" placeholder="Código"></vue-input>
               <vue-radio :disabled="viewOnly" class="col-md-6" v-model="element.waste" :options="noSi" :name="`waste_${index}`" :error="form.errorsFor(`elements_id.${index}.waste`)" label="¿Se desechara el elemento?" :checked="element.waste"></vue-radio>
 
               <vue-input v-if="element.type == 'No Identificable' && element.waste == 'SI' && element.quantity > 1 && !viewOnly" :disabled="viewOnly" class="col-md-12" v-model="element.quantity_waste" label="Cantidad a desechar" type="number" name="quantity_waste" :error="form.errorsFor(`elements_id.${index}.quantity_waste`)" placeholder="Cantidad a desechar" ></vue-input>
 
-              <vue-radio :disabled="viewOnly" class="col-md-6" v-model="element.rechange" :options="noSi" :name="`rechange_${index}`" :error="form.errorsFor(`elements_id.${index}.rechange`)" label="¿Se hara un cambio de unidad del elemento?" :checked="element.rechange"></vue-radio>
+              <vue-radio :disabled="viewOnly" class="col-md-6" v-model="element.rechange" :options="noSi" :name="`rechange_${index}`" :error="form.errorsFor(`elements_id.${index}.rechange`)" label="¿Recambio?" :checked="element.rechange"></vue-radio>
 
               <vue-input v-if="element.type == 'No Identificable' && element.rechange == 'SI' && !viewOnly" :disabled="viewOnly" class="col-md-12" v-model="element.quantity_rechange" label="Cantidad a cambiar" type="number" name="quantity_rechange" :error="form.errorsFor(`elements_id.${index}.quantity_rechange`)" placeholder="Cantidad a cambiar" ></vue-input>
 
@@ -203,7 +203,8 @@ export default {
             waste: eleme.element.wastes,
             rechange: eleme.element.rechange,
             code_new: eleme.element.code_new,
-            reason: eleme.element.reason
+            reason: eleme.element.reason,
+            quantity_return: eleme.element.quantity
           })
           this.codes[eleme.element.id_ele] = eleme.options
         })
@@ -311,7 +312,9 @@ export default {
               code: eleme.element.code,
               type: eleme.element.type,
               key: eleme.element.key,
-              waste: eleme.element.wastes
+              waste: eleme.element.wastes,
+              quantity_return: eleme.element.quantity,
+              rechange: eleme.element.rechange 
             });
 
             this.codes[eleme.element.id_ele] = eleme.options

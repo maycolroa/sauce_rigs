@@ -708,7 +708,8 @@ class TransactionReturnsController extends Controller
                             'code' => $value['code'],
                             'multiselect_element' => $value['multiselect_element'],
                             'key' => $value['key'],
-                            'wastes' => 'NO'
+                            'wastes' => 'NO',
+                            'rechange' => 'NO'
                         ];
 
                         $options = $this->multiSelectFormat($disponible);
@@ -728,7 +729,8 @@ class TransactionReturnsController extends Controller
                                 'code' => implode(',', $codes),
                                 'multiselect_element' => $value['multiselect_element'],
                                 'key' => $value['key'],
-                                'wastes' => 'NO'
+                                'wastes' => 'NO',
+                                'rechange' => 'NO'
                             ];
 
                             array_push($ids_saltar, $value['balance_id']);

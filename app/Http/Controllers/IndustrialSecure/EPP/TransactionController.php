@@ -526,17 +526,36 @@ class TransactionController extends Controller
 
                         $count_codes = COUNT($codigos);
 
-                        $balance_id = ElementBalanceSpecific::whereIn('hash', $codigos)->where('state', 'Asignado')->first();
+                        $quantity_return = $value['quantity_return'];
+
+                        if ($quantity_return > $value['quantity'])
+                        {
+                            return $this->respondWithError('No puede regresar una cantidad superior a la asignada del elemento ' . $element->name);
+                        }
+
+                        $codes_returns = [];
+
+                        foreach ($codigos as $key => $code) 
+                        {
+                            $key = $key + 1;
+
+                            if ($key <= $quantity_return)
+                                array_push($codes_returns, $code);
+                        }
+                        
+                        $count_codes_returns = COUNT($codes_returns);
+
+                        $balance_id = ElementBalanceSpecific::whereIn('hash', $codes_returns)->where('state', 'Asignado')->first();
 
                         $balance_origen = ElementBalanceLocation::find($balance_id->element_balance_id);
 
                         if ($value['waste'] == 'SI')
                         {
-                            if ($value['quantity_waste'] <= $count_codes)
+                            if ($value['quantity_waste'] <= $count_codes_returns)
                             {
                                 for ($i=1; $i <= $value['quantity_waste']; $i++) 
                                 { 
-                                    $new_product = ElementBalanceSpecific::whereIn('hash', $codigos)->where('state', 'Asignado')->first();
+                                    $new_product = ElementBalanceSpecific::whereIn('hash', $codes_returns)->where('state', 'Asignado')->first();
 
                                     $new_product->state = 'Desechado';
                                     $new_product->save();
@@ -568,7 +587,7 @@ class TransactionController extends Controller
 
                             if ($value['quantity_rechange'] > 0)
                             {
-                                if ($value['quantity_rechange'] <= $count_codes)
+                                if ($value['quantity_rechange'] <= $count_codes_returns)
                                 {
                                     for ($i=1; $i <= $value['quantity_rechange']; $i++) 
                                     { 
@@ -649,7 +668,7 @@ class TransactionController extends Controller
 
                         if ($value['waste'] == 'NO' && $value['rechange'] == 'NO')
                         {
-                            $old_products = ElementBalanceSpecific::whereIn('hash', $codigos)->get();
+                            $old_products = ElementBalanceSpecific::whereIn('hash', $codes_returns)->get();
 
                             foreach ($old_products as $key => $old) 
                             {
@@ -661,8 +680,8 @@ class TransactionController extends Controller
                                 array_push($elements_sync, $old->id);
                             }
 
-                            $element_balance->quantity_available = $element_balance->quantity_available + $value['quantity'];
-                            $balance_origen->quantity_available = $balance_origen->quantity_available - $value['quantity'];
+                            $element_balance->quantity_available = $element_balance->quantity_available + $value['quantity_return'];
+                            $balance_origen->quantity_available = $balance_origen->quantity_available - $value['quantity_return'];
                         }
                     }
                 }
