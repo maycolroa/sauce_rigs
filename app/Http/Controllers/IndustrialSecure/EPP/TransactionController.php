@@ -527,10 +527,15 @@ class TransactionController extends Controller
                         $count_codes = COUNT($codigos);
 
                         $quantity_return = $value['quantity_return'];
+                        \Log::info($value['quantity_return']);
 
                         if ($quantity_return > $value['quantity'])
                         {
                             return $this->respondWithError('No puede regresar una cantidad superior a la asignada del elemento ' . $element->name);
+                        }
+                        else if ($value['quantity_return'] == '' || $value['quantity_return'] == 0)
+                        {
+                            return $this->respondWithError('Debe colocar una cantidad valida en el elemento ' . $element->name);
                         }
 
                         $codes_returns = [];
