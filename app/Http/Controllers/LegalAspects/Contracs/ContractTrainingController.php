@@ -132,7 +132,7 @@ class ContractTrainingController extends Controller
                 $question->key = Carbon::now()->timestamp + rand(1,10000);
                 $question->multiselect_type_question_id = $question->type->multiselect();
 
-                if ($question->type_question_id == 1 || $question->type_question_id == 3)
+                if ($question->type_question_id == 1 || $question->type_question_id == 3 || $question['type_question_id'] == 5)
                 {
                     $question->options = implode("\n", $question->answer_options->get('options'));
                 }
@@ -261,10 +261,11 @@ class ContractTrainingController extends Controller
     {
         foreach ($questions as $key => $question)
         {
+            \Log::info($question);
             $id = isset($question['id']) ? $question['id'] : NULL;
             $config = collect(['options' => [], 'answers' => []]);
 
-            if ($question['type_question_id'] == 1 || $question['type_question_id'] == 3)
+            if ($question['type_question_id'] == 1 || $question['type_question_id'] == 3 || $question['type_question_id'] == 5)
             {
                 $config->put('options', explode("\n", $question['options']));
                 $config->put('answers', explode("\n", $question['answers']));

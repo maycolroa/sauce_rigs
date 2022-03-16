@@ -68,7 +68,29 @@
 
                             <!--Si y no-->
                             <vue-radio v-if="question.type.name == 'yes_no'" class="col-md-12" v-model="question.answers" :options="siNo" :name="`siNo${index}`" label="Respuesta"></vue-radio>
-                          
+
+                            <!--Empparejamiento-->
+                            <div v-if="question.type.name == 'pairing'" style="margin: 0px auto;">
+                                <table style="margin: 0 auto;">
+                                  <thead class="bg-secondary">
+                                    <tr>
+                                      <th scope="col" class="align-middle text-center">Opciones</th>
+                                      <th scope="col" class="align-middle text-center">Respuestas</th>
+                                    </tr>
+                                  </thead>
+                                  <tbody>
+                                    <template v-for="(item, index) in question.answer_options.options">
+                                      <tr :key="index">
+                                          <th scope="col" class="align-middle">{{ item['value'] }}</th>
+                                          <th scope="col" class="align-middle text-center">
+                                            <vue-advanced-select class="col-md-12" v-model="question.answers_pairing[index]" name="answers" placeholder="Seleccione la respuesta" :options="question.answer_options.answers">
+                                            </vue-advanced-select>
+                                          </th>
+                                      </tr>
+                                    </template>
+                                  </tbody>
+                                </table>
+                            </div>                          
                         </b-form-row>
                       </div>
                     </template>
@@ -123,6 +145,7 @@ import VueRadio from "@/components/Inputs/VueRadio.vue";
 import PerfectScrollbar from '@/vendor/libs/perfect-scrollbar/PerfectScrollbar';
 import Form from "@/utils/Form.js";
 import Loading from "@/components/Inputs/Loading.vue";
+import Alerts from '@/utils/Alerts.js';
 
 export default {
   components: {
@@ -144,7 +167,7 @@ export default {
             number_attemps: '',
             attempt: '',
             employee: '',
-            questions: {}
+            questions: {},
         };
       }
     }
@@ -161,7 +184,7 @@ export default {
           {text: 'Verdadero', value: 1},
           {text: 'Falso', value: 0}
         ],
-        result: ''
+        result: '',
     };
   },
   methods: {
@@ -177,6 +200,12 @@ export default {
         })
         .catch(error => {
           this.loading = false;
+          this.$notify({
+                type: 'bg-danger text-white',
+                group: 'auth',
+                title: 'Error',
+                text: error
+              });
         });
     }
   }

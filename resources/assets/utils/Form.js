@@ -137,7 +137,6 @@ export default class Form {
           resolve(response);
         })
         .catch(error => {
-          //console.log(error.response);
           if (error.response.status == 500 && error.response.data.error != 'Internal Error')
           {
             Alerts.error('Error', error.response.data.error);
@@ -155,6 +154,10 @@ export default class Form {
           if (isLogin && error.response.status == 422)
           {
             reject(error.response.data.errors.email)
+          }
+          else if (error.response.status == 422 && error.response.data.error != undefined)
+          {
+            reject(error.response.data.error);
           }
           else
           {

@@ -162,7 +162,13 @@
                       <!--Si o NO-->
                       <vue-radio v-if="question.type_question_id == '4'" :disabled="viewOnly" class="col-md-12" v-model="question.answers" :options="siNo" :name="`siNo${index}`" :error="form.errorsFor(`questions.${index}.answers`)" label="Elige la opciòn correcta" :checked="question.answers">
                       </vue-radio>
+
+                      <!--Emparejamiento-->
+                      <vue-textarea v-if="question.type_question_id == '5'" :disabled="viewOnly" class="col-md-12" v-model="question.options" label="Opciones (Separadas por enter)" name="options" placeholder="Opciones" rows="3" :error="form.errorsFor(`questions.${index}.options`)"></vue-textarea>
+                      <vue-textarea v-if="question.type_question_id == '5'" :disabled="viewOnly" class="col-md-12" v-model="question.answers" label="Respuestas (Separadas por enter. Deben estar en el mismo orden de las opciones)" name="answers" placeholder="Respuestas" rows="3" :error="form.errorsFor(`questions.${index}.answers`)"></vue-textarea>
+                      
                     </b-form-row>
+                    
 
                     <!--<b-form-row>
                       <vue-input :disabled="viewOnly" class="col-md-12" v-model="question.value_question" label="Valor de la pregunta" type="number" name="value_question" min="1" :error="form.errorsFor(`questions.${index}.value_question`)" placeholder="Valor de la pregunta"></vue-input>
@@ -224,6 +230,7 @@ export default {
           files: [],         
           activity_id: [],
           questions: [],
+          type_pairing: [],
           delete: {
             files: [],
             questions: []
@@ -298,6 +305,7 @@ export default {
             key: new Date().getTime(),
             description: '',
             type_question_id: [],
+            
             value_question: ''
         })
     },

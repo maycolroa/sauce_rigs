@@ -69,9 +69,14 @@ class TrainingEmployeeController extends Controller
         {
             $training->questions = $training->questions()->inRandomOrder()->limit($training->number_questions_show)->get()->transform(function($question, $key) {
                 $question->type;
+                $answers = $question->answer_options->except('options');
                 $options = $question->answer_options->except('answers');
+                $ans = $answers->get('answers');
+                shuffle($ans);
                 $options->put('options', $this->multiSelectFormat($options->get('options')));
+                $options->put('answers', $this->multiSelectFormat($ans));
                 $question->answer_options = $options;
+                $question->answers_pairing = [];
                 $question->answers = '';
                 $question->key = Carbon::now()->timestamp + rand(1,10000);
                 //\Log::info($question->answer_options);
@@ -93,6 +98,7 @@ class TrainingEmployeeController extends Controller
     public function saveTraining(TrainingEmployeeRequest $request)
     {
         DB::beginTransaction();
+        \Log::info($request);
 
         try
         {
@@ -122,9 +128,34 @@ class TrainingEmployeeController extends Controller
 
                 $answersEmployee->answers = $answers;
 
-                if ($question['type']['name'] != 'selection_multiple')
+                if ($question['type']['name'] != 'selection_multiple' && $question['type']['name'] != 'pairing')
                 {
                     if ($answers == $answer->first())
+                        $answersEmployee->correct = true;
+                    else
+                        $answersEmployee->correct = false;
+                }
+                else if ($question['type']['name'] == 'pairing')
+                {
+                    $answers_repeat = [];
+                    $answers = $question['answers_pairing'];
+
+                    foreach ($answers as $key => $value) 
+                    {
+                        if (!in_array($value, $answers_repeat))
+                        {
+                            array_push($answers_repeat, $value);
+                        }
+                        else
+                        {
+                            return $this->respondWithError('No puede seleccionar la misma respuesta en varias opciones, por favor revisar las respuestas en la pregunta '. $questionAnswer->description, 422);
+                        }
+                    }
+
+                    $ans = [];
+
+
+                    if (implode('|', $answers) == $answer->implode("|"))
                         $answersEmployee->correct = true;
                     else
                         $answersEmployee->correct = false;
