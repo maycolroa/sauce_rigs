@@ -61,17 +61,17 @@ class EmployeeImportDataTemplateExcel implements FromCollection, WithHeadings, W
     public function headings(): array
     {
       $columns = [
-        'Identificación',
-        'Nombre',
+        'Identificación*',
+        'Nombre*',
         'Fecha Nacimiento (YYYY-MM-DD)',
-        'Sexo (Masculino, Femenino, Sin Sexo)',
+        'Sexo (Masculino, Femenino, Sin Sexo)*',
         'Email',
-        'Fecha de Ingreso (YYYY-MM-DD)',
-        $this->keywords['regional'],
-        $this->keywords['headquarter'],
-        $this->keywords['process'],
-        $this->keywords['area'],
-        $this->keywords['position'],
+        'Fecha de Ingreso (YYYY-MM-DD)*',
+        $this->keywords['regional'].'*',
+        $this->keywords['headquarter'].'*',
+        $this->keywords['process'].'*',
+        $this->keywords['area'].'*',
+        $this->keywords['position'].'*',
         $this->keywords['businesses']
       ];
 
