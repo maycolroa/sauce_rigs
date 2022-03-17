@@ -67,7 +67,8 @@
                   <vue-input :disabled="viewOnly" class="col-md-6" v-model="responsible" label="Responsable" type="text" name="responsible" placeholder="Responsable"/>
                 </b-form-row>
                 <b-form-row>
-                  <vue-textarea :disabled="viewOnly" class="col-md-12" v-model="observations" label="Observaciones" name="observations" placeholder="Observaciones" rows="3"/>
+                  <vue-input :disabled="viewOnly" class="col-md-6" v-model="workplace" label="Centro de trabajo" type="text" name="workplace" placeholder="Centro de trabajo"/>
+                  <vue-textarea :disabled="viewOnly" class="col-md-6" v-model="observations" label="Observaciones" name="observations" placeholder="Observaciones" rows="3"/>
                 </b-form-row>
                 <b-form-row>
                   <vue-file-simple v-if="(fulfillment_value_id && fulfillment_value_id != 3) && (fulfillment_value_id && fulfillment_value_id != 5)" :disabled="viewOnly" class="col-md-12" accept=".pdf" v-model="file_masive" label="Archivo (*.pdf)" name="file_masive" :error="form.errorsFor('file_masive')" placeholder="Seleccione un archivo"/>
@@ -155,7 +156,8 @@
                     <vue-input @onBlur="saveArticleQualification(index)" :disabled="viewOnly" class="col-md-6" v-model="article.responsible" label="Responsable" name="responsible" :error="form.errorsFor('responsible')" placeholder="Responsable"/>
                   </b-form-row>
                   <b-form-row>
-                    <vue-textarea @onBlur="saveArticleQualification(index)" :disabled="viewOnly" class="col-md-12" v-model="article.observations" label="Observaciones" name="observations" placeholder="Observaciones" :error="form.errorsFor(`observations`)" rows="3"/>
+                    <vue-input @onBlur="saveArticleQualification(index)" :disabled="viewOnly" class="col-md-6" v-model="article.workplace" label="Centro de trabajo" type="text" name="workplace" placeholder="Centro de trabajo"/>
+                    <vue-textarea @onBlur="saveArticleQualification(index)" :disabled="viewOnly" class="col-md-6" v-model="article.observations" label="Observaciones" name="observations" placeholder="Observaciones" :error="form.errorsFor(`observations`)" rows="3"/>
                   </b-form-row>
 
                   <b-form-row> 
@@ -337,6 +339,7 @@ export default {
       fulfillment_value_id: '',
       responsible: '',
       observations: '',
+      workplace: '',
       qualifyName: '',
       file_masive: '',
       loadingAlternativo: false,
@@ -503,6 +506,7 @@ export default {
         data.append('id', ids);
         data.append('observations', this.observations ? this.observations : '');
         data.append('responsible', this.responsible ? this.responsible : '');
+        data.append('workplace', this.workplace ? this.workplace : '');
         data.append('fulfillment_value_id', this.fulfillment_value_id);
         data.append('file', this.file_masive);
 
@@ -584,6 +588,7 @@ export default {
         data.append('qualification_id', article.qualification_id);
         data.append('observations', article.observations == null ? '' : article.observations);
         data.append('responsible', article.responsible == null ? '' : article.responsible);
+        data.append('workplace', article.workplace == null ? '' : article.workplace);
         data.append('fulfillment_value_id', article.fulfillment_value_id == null ? '' : article.fulfillment_value_id);
         data.append('file', article.file == null ? '' : article.file);
         data.append('actionPlan', JSON.stringify(article.actionPlan));

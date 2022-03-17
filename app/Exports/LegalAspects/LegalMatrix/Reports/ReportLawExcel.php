@@ -44,7 +44,9 @@ class ReportLawExcel implements FromQuery, WithMapping, WithHeadings, WithTitle,
          IF(sau_lm_fulfillment_values.name IS NULL, 'Sin calificar', sau_lm_fulfillment_values.name) AS qualify,
          sau_lm_entities.name AS entity,
          sau_lm_articles_fulfillment.observations AS observations,
-         sau_lm_articles_fulfillment.responsible AS responsible"
+         sau_lm_articles_fulfillment.responsible AS responsible,
+         sau_lm_articles_fulfillment.workplace AS workplace
+         "
       )
       ->join('sau_lm_system_apply', 'sau_lm_system_apply.id', 'sau_lm_laws.system_apply_id')
       ->join('sau_lm_laws_types', 'sau_lm_laws_types.id', 'sau_lm_laws.law_type_id')
@@ -85,7 +87,8 @@ class ReportLawExcel implements FromQuery, WithMapping, WithHeadings, WithTitle,
         $data->qualify,
         $data->entity,
         $data->observations,
-        $data->responsible
+        $data->responsible,
+        $data->workplace
       ];
     }
 
@@ -100,7 +103,8 @@ class ReportLawExcel implements FromQuery, WithMapping, WithHeadings, WithTitle,
           'Cumplimiento',
           'Ente',
           'Observaciones',
-          'Responsable'
+          'Responsable',
+          'Centro de trabajo'
         ];
     }
 

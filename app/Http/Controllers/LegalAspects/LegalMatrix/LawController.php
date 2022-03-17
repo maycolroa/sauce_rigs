@@ -557,6 +557,7 @@ class LawController extends Controller
                 $article->file = $qualifications[$article->id][0]['file'];
                 $article->old_file = $qualifications[$article->id][0]['file'];
                 $article->responsible = $qualifications[$article->id][0]['responsible'];
+                $article->workplace = $qualifications[$article->id][0]['workplace'];
                 $article->qualify = $article->fulfillment_value_id ? FulfillmentValues::find($article->fulfillment_value_id)->name : '';
                 $article->actionPlan = [
                     "activities" => [],
@@ -597,6 +598,7 @@ class LawController extends Controller
                 'fulfillment_value_id' => $request->fulfillment_value_id ? $request->fulfillment_value_id : NULL,
                 'observations' => $request->observations ? $request->observations : NULL,
                 'responsible' => $request->responsible ? $request->responsible : NULL,
+                'workplace' => $request->workplace ? $request->workplace : NULL,
                 'qualification_masive' => true
             ]);
 
@@ -647,6 +649,7 @@ class LawController extends Controller
                 $qualification->fulfillment_value_id = $request->fulfillment_value_id ? $request->fulfillment_value_id : NULL;
                 $qualification->observations = $request->observations ? $request->observations : NULL;
                 $qualification->responsible = $request->responsible ? $request->responsible : NULL;
+                $qualification->workplace = $request->workplace ? $request->workplace : NULL;
 
                  //Se inician los atributos necesarios que seran estaticos para todas las actividades
                 // De esta forma se evitar la asignacion innecesaria una y otra vez 

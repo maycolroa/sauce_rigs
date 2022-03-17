@@ -17,7 +17,9 @@ class ArticleFulfillment extends Model
         'fulfillment_value_id',
         'observations',
         'file',
-        'responsible'
+        'responsible',
+        'qualification_masive',
+        'workplace'
     ];
 
     public function article()
