@@ -43,6 +43,8 @@ class TransactionFirmController extends Controller
                         $element_balance_id = [];
                         $elements = [];
 
+                        \Log::info($delivery->elements);
+
                         foreach ($delivery->elements as $key => $value) 
                         {
                             if (!in_array($value->element_balance_id, $element_balance_id))
@@ -56,6 +58,8 @@ class TransactionFirmController extends Controller
                         foreach ($element_balance_id as $key => $value) 
                         {
                             $element = $delivery->elements()->where('element_balance_id', $value)->get();
+
+                            \Log::info($element);
 
                             foreach ($element as $key => $e) 
                             {
