@@ -7,6 +7,9 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Storage;
 use App\Models\IndustrialSecure\Epp\ElementTransactionEmployee;
 use App\Models\IndustrialSecure\Epp\ElementBalanceSpecific;
+use App\Models\IndustrialSecure\Epp\ElementBalanceLocation;
+use App\Models\Administrative\Users\User;
+use App\Models\IndustrialSecure\Epp\Element;
 use App\Models\Administrative\Employees\Employee;
 use App\Models\Administrative\Configurations\ConfigurationCompany;
 use Carbon\Carbon;
@@ -43,8 +46,6 @@ class TransactionFirmController extends Controller
                         $element_balance_id = [];
                         $elements = [];
 
-                        \Log::info($delivery->elements);
-
                         foreach ($delivery->elements as $key => $value) 
                         {
                             if (!in_array($value->element_balance_id, $element_balance_id))
@@ -59,15 +60,17 @@ class TransactionFirmController extends Controller
                         {
                             $element = $delivery->elements()->where('element_balance_id', $value)->get();
 
-                            \Log::info($element);
-
                             foreach ($element as $key => $e) 
                             {
-                                if ($e->element->element->identify_each_element)
+                                $ele_balance = ElementBalanceLocation::find($e->element_balance_id);
+
+                                $elemen_base = Element::withoutGlobalScopes()->find($ele_balance->element_id);
+
+                                if ($elemen_base->identify_each_element)
                                 {
                                     $content = [
                                         'quantity' => 1,
-                                        'name' => $e->element->element->name
+                                        'name' => $elemen_base->name
                                     ];
 
                                     array_push($elements, $content);
@@ -78,7 +81,7 @@ class TransactionFirmController extends Controller
                                     {
                                         $content = [
                                             'quantity' => $element->count(),
-                                            'name' => $e->element->element->name
+                                            'name' => $elemen_base->name
                                         ];
 
                                         array_push($elements, $content);
@@ -90,7 +93,9 @@ class TransactionFirmController extends Controller
                         }
 
                         $delivery->elements_id = $elements;
-                        $delivery->user_name = $delivery->user_id ? $delivery->user->name : '';
+
+                        $user = User::find($delivery->user_id);
+                        $delivery->user_name = $delivery->user_id ? $user->name : '';
 
                         $company = Company::select('logo', 'name')->where('id', $delivery->company_id)->first();
 
