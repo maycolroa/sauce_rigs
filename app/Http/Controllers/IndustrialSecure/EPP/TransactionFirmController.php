@@ -33,70 +33,75 @@ class TransactionFirmController extends Controller
 
             if ($employee->company_id == $delivery->company_id)
             {
-                if (!$delivery->firm_employee)
+                if ($employee->id == $delivery->employee_id)
                 {
-                    $delivery->employee_name = $delivery->employee->name;
-                    $delivery->employee_identification = $delivery->employee->identification;
-
-                    $element_balance_id = [];
-                    $elements = [];
-
-                    foreach ($delivery->elements as $key => $value) 
+                    if (!$delivery->firm_employee)
                     {
-                        if (!in_array($value->element_balance_id, $element_balance_id))
+                        $delivery->employee_name = $employee->name;
+                        $delivery->employee_identification = $employee->identification;
+
+                        $element_balance_id = [];
+                        $elements = [];
+
+                        foreach ($delivery->elements as $key => $value) 
                         {
-                            array_push($element_balance_id, $value->element_balance_id);
-                        }                    
-                    }
+                            if (!in_array($value->element_balance_id, $element_balance_id))
+                            {
+                                array_push($element_balance_id, $value->element_balance_id);
+                            }                    
+                        }
 
-                    $ids_balance_saltar = [];
+                        $ids_balance_saltar = [];
 
-                    foreach ($element_balance_id as $key => $value) 
-                    {
-                        $element = $delivery->elements()->where('element_balance_id', $value)->get();
-
-                        foreach ($element as $key => $e) 
+                        foreach ($element_balance_id as $key => $value) 
                         {
-                            if ($e->element->element->identify_each_element)
-                            {
-                                $content = [
-                                    'quantity' => 1,
-                                    'name' => $e->element->element->name
-                                ];
+                            $element = $delivery->elements()->where('element_balance_id', $value)->get();
 
-                                array_push($elements, $content);
-                            }
-                            else
+                            foreach ($element as $key => $e) 
                             {
-                                if (!in_array($e->element_balance_id, $ids_balance_saltar))
+                                if ($e->element->element->identify_each_element)
                                 {
                                     $content = [
-                                        'quantity' => $element->count(),
+                                        'quantity' => 1,
                                         'name' => $e->element->element->name
                                     ];
 
                                     array_push($elements, $content);
-                                    array_push($ids_balance_saltar, $e->element_balance_id);
                                 }
+                                else
+                                {
+                                    if (!in_array($e->element_balance_id, $ids_balance_saltar))
+                                    {
+                                        $content = [
+                                            'quantity' => $element->count(),
+                                            'name' => $e->element->element->name
+                                        ];
+
+                                        array_push($elements, $content);
+                                        array_push($ids_balance_saltar, $e->element_balance_id);
+                                    }
+                                }
+                                
                             }
-                            
                         }
+
+                        $delivery->elements_id = $elements;
+                        $delivery->user_name = $delivery->user_id ? $delivery->user->name : '';
+
+                        $company = Company::select('logo', 'name')->where('id', $delivery->company_id)->first();
+
+                        $logo = ($company && $company->logo) ? $company->logo : null;
+
+                        $delivery->logo = Storage::disk('public')->url('administrative/logos/'. $logo);
+
+                        $delivery->text_company = $this->getTextLetterEpp($company, $delivery->company_id);
+
                     }
-
-                    $delivery->elements_id = $elements;
-                    $delivery->user_name = $delivery->user_id ? $delivery->user->name : '';
-
-                    $company = Company::select('logo', 'name')->where('id', $delivery->company_id)->first();
-
-                    $logo = ($company && $company->logo) ? $company->logo : null;
-
-                    $delivery->logo = Storage::disk('public')->url('administrative/logos/'. $logo);
-
-                    $delivery->text_company = $this->getTextLetterEpp($company, $delivery->company_id);
-
+                    else
+                        $errorMenssage = 'El empleado ya ha firmado este documento';
                 }
                 else
-                    $errorMenssage = 'El empleado ya ha firmado este documento';
+                    $errorMenssage = 'El empleado no tiene acceso a este documento';
             }
             else
                 $errorMenssage = 'El empleado no tiene acceso a este documento';
