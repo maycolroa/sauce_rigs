@@ -123,7 +123,7 @@ class LicenseController extends Controller
             if ($request->has('add_email'))
                 $mails = $this->getDataFromMultiselect($request->get('add_email'));
 
-            NotifyLicenseRenewalJob::dispatch($license->id, $license->company_id, $modules_main, $mails);
+            NotifyLicenseRenewalJob::dispatch($license->id, $license->company_id, $modules_main, $mails, 'Creación');
 
         } catch(\Exception $e) {
             \Log::info($e);
@@ -185,13 +185,26 @@ class LicenseController extends Controller
 
         try
         {
+            $modificaciones = [];
+
             $license = License::system()->findOrFail($id);
             $old_company = $license->company_id;
             $old_ended = $license->ended_at;
+            $old_started = $license->started_at;
 
             $license->fill($request->all());
             $license->started_at = (Carbon::createFromFormat('D M d Y', $request->started_at))->format('Y-m-d');
             $license->ended_at = (Carbon::createFromFormat('D M d Y', $request->ended_at))->format('Y-m-d');
+
+            if ($license->started_at != $old_started)
+                array_push($modificaciones, ['fecha_inicio' => $license->started_at]);
+
+            if ($license->ended_at != $old_ended)
+                array_push($modificaciones, ['fecha_fin' => $license->ended_at]);
+
+            $modulos_old = $license->modules()->where('main', 'SI')->get();
+
+            $modulos_delete = [];
 
             if ($old_company != $license->company_id || $old_ended != $license->ended_at)
                 $license->notified = 'NO';
@@ -203,6 +216,14 @@ class LicenseController extends Controller
             $modules = ModuleDependence::whereIn('module_id', $modules_main)->pluck('module_dependence_id')->toArray();
             $license->modules()->sync(array_merge($modules_main, $modules));
 
+            foreach ($modulos_old as $key => $value) 
+            {
+                if (!in_array($value->id, $modules_main))
+                {
+                    array_push($modulos_delete, $value->display_name);
+                }
+            }
+
             $license->histories()->create([
                 'user_id' => $this->user->id
             ]);
@@ -211,7 +232,7 @@ class LicenseController extends Controller
             
             $mails = $request->has('add_email') ? $this->getDataFromMultiselect($request->get('add_email')) : [];
 
-            NotifyLicenseRenewalJob::dispatch($license->id, $license->company_id, $modules_main, $mails);
+            NotifyLicenseRenewalJob::dispatch($license->id, $license->company_id, $modules_main, $mails, 'Modificación', $modificaciones, $modulos_delete);
 
         } catch(\Exception $e) {
             DB::rollback();

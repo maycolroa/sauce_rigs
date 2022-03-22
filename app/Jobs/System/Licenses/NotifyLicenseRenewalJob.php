@@ -25,18 +25,24 @@ class NotifyLicenseRenewalJob implements ShouldQueue
     protected $company_id;
     protected $modules;
     protected $mails;
+    protected $asunto;
+    protected $modify;
+    protected $modules_delete;
 
     /**
      * Create a new job instance.
      *
      * @return void
      */
-    public function __construct($license_id, $company_id, $modules, $mails)
+    public function __construct($license_id, $company_id, $modules, $mails, $asunto, $modify = [], $modules_delete = [])
     {
         $this->license_id = $license_id;
         $this->company_id = $company_id;
         $this->modules = $modules;
         $this->mails = $mails;
+        $this->asunto = $asunto;
+        $this->modify = $modify;
+        $this->modules_delete = $modules_delete;
     }
 
     /**
@@ -128,30 +134,55 @@ class NotifyLicenseRenewalJob implements ShouldQueue
             }
         }
 
+        $fechas_modificadas = [];
+
+        if (COUNT($this->modify) == 2)
+        {
+            foreach ($this->modify as $key => $value) 
+            {
+                if ($key == 0)
+                    array_push($fechas_modificadas, 'Fecha Inicio: '.$value['fecha_inicio']);
+                else
+                    array_push($fechas_modificadas, 'Fecha Fin: '.$value['fecha_fin']);
+            }
+        }
+        else if (COUNT($this->modify) == 1)
+        {
+            foreach ($this->modify as $key => $value) 
+            {
+                foreach ($value as $key => $value2) {
+                    if ($key == 'fecha_inicio')
+                        array_push($fechas_modificadas, 'Fecha Inicio: '.$value2);
+                    else
+                        array_push($fechas_modificadas, 'Fecha Fin: '.$value2);
+                }
+            }
+        }
+
         if (COUNT($recipients) > 0 && COUNT($admins) > 0)
         {
             NotificationMail::
-                subject('Creación de Licencia Sauce')
+                subject($this->asunto .' de Licencia Sauce')
                 ->recipients($recipients)
-                ->message("Se acaba de crear una nueva licencia para la empresa <b>{$company->name}</b>")
+                ->message($this->asunto == 'Creación' ? 'Se acaba de crear ' : 'Se acaba de modificar '. "una licencia para la empresa <b>{$company->name}</b>")
                 ->module('users')
                 ->event('Job: NotifyLicenseRenewalJob')
                 ->company($this->company_id)
                 ->view("system.license.notificationLicense")
-                ->with(['modules_news'=>$modules_news, 'modules_olds'=>$modules_olds])
+                ->with(['modules_news'=>$modules_news, 'modules_olds'=>$modules_olds, 'modify' => $fechas_modificadas, 'modules_delete' => $this->modules_delete])
                 ->copyHidden($admins)
                 ->send();
         }
         else
         {
             NotificationMail::
-                subject('Creación de Licencia Sauce')
-                ->message("Se acaba de crear una nueva licencia para la empresa <b>{$company->name}</b>")
+                subject($this->asunto .' de Licencia Sauce')
+                ->message($this->asunto == 'Creación' ? 'Se acaba de crear ' : 'Se acaba de modificar '. " una licencia para la empresa <b>{$company->name}</b>")
                 ->module('users')
                 ->event('Job: NotifyLicenseRenewalJob')
                 ->company($this->company_id)
                 ->view("system.license.notificationLicense")
-                ->with(['modules_news'=>$modules_news, 'modules_olds'=>$modules_olds])
+                ->with(['modules_news'=>$modules_news, 'modules_olds'=>$modules_olds, 'modify' => $fechas_modificadas, 'modules_delete' => $this->modules_delete])
                 ->copyHidden($admins)
                 ->send();
         }
