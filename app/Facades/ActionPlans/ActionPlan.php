@@ -851,7 +851,11 @@ class ActionPlan
             $activity->editable = (isset($itemA['editable']) && $itemA['editable']) ? $itemA['editable'] : 'SI';
             $activity->company_id = $company_id;
             $activity->observation = $itemA['observation'];
-            $activity->evidence = $itemA['evidence'];
+
+            if (isset($itemA['evidence']) && $itemA['evidence'])
+                $activity->evidence = $itemA['evidence'];
+            else
+                $activity->evidence = 'NO';
 
             if ($this->detailProcedence)
                 $activity->detail_procedence = $this->detailProcedence;
