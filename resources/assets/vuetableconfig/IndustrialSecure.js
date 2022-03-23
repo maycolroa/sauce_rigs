@@ -1281,7 +1281,22 @@ export default [
             messageConfirmation: 'Esta seguro de borrar el elemento __name__'
         },
         permission: 'transaction_d'
-        }*/],
+        }*/
+        {
+            name: 'switchStatus',
+            config: {
+                color: 'outline-danger',
+                borderless: true,
+                icon: 'fas fa-sync',
+                title: 'Revertir Entrega'
+            },
+            data: {
+                action: '/industrialSecurity/epp/transaction/returnDelivery/',
+                id: 'id',
+                messageConfirmation: '¿Esta seguro de querer revertir esta entrega?'
+            },
+            permission: 'transaction_c'
+        }],
     }],
     configuration: {
         urlData: '/industrialSecurity/epp/transaction/data',

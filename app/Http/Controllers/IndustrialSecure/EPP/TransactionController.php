@@ -79,6 +79,12 @@ class TransactionController extends Controller
         ->groupBy('sau_epp_transactions_employees.id');
 
         return Vuetable::of($transactions)
+        ->addColumn('switchStatus', function ($transaction) {
+            if ($transaction->state == 'Procesada')
+                return false;
+            else
+                return true;
+        })
         ->make();
     }
 
@@ -292,7 +298,8 @@ class TransactionController extends Controller
             $delivery->company_id = $this->company;
             $delivery->edit_firm = $request->edit_firm;
             $delivery->firm_email = $request->firm_email;
-            $delivery->email_firm_employee = $request->email_firm_employee;
+            $delivery->email_firm_employee = $request->email_firm_employee;            
+            $delivery->user_id = $this->user->id;
             
             if(!$delivery->save())
                 return $this->respondHttp500();
@@ -423,6 +430,7 @@ class TransactionController extends Controller
             $returns->observations = $request->observations ? $request->observations : NULL;
             $returns->location_id = $request->location_id;
             $returns->company_id = $this->company;
+            $returns->user_id = $this->user->id;
             
             if(!$returns->save())
                 return $this->respondHttp500();
@@ -2450,5 +2458,50 @@ class TransactionController extends Controller
             return $text_default;
         else
             return $text->value;
+    }
+
+    public function returnDelivery(ElementTransactionEmployee $transaction)
+    {
+        \Log::info($transaction);
+        $element_returns = [];
+
+        $returns = new ElementTransactionEmployee();
+        $returns->employee_id = $transaction->employee_id;
+        $returns->position_employee_id = $transaction->position_employee_id;
+        $returns->type = 'Devolucion';
+        $returns->observations = NULL;
+        $returns->location_id = $transaction->location_id;
+        $returns->company_id = $this->company;
+        $returns->user_id = $this->user->id;
+        
+        if(!$returns->save())
+            return $this->respondHttp500();
+
+        foreach ($transaction->elements as $key => $value) 
+        {
+            $balance_origen = ElementBalanceLocation::find($value->element_balance_id);
+
+            \Log::info($value);
+            
+            $value->state = 'Disponible';
+            $value->save();
+
+            $balance_origen->quantity_available = $balance_origen->quantity_available + 1;
+            $balance_origen->quantity_allocated = $balance_origen->quantity_allocated - 1;
+
+            $balance_origen->save();
+
+            array_push($element_returns, $value->id);
+        }
+
+        $returns->elements()->sync($element_returns);
+
+        $transaction->state = 'Procesada';
+        $transaction->save();
+
+        $returnDelivery = new ReturnDelivery;
+        $returnDelivery->transaction_employee_id = $returns->id;
+        $returnDelivery->delivery_id = $transaction->id;
+        $returnDelivery->save();
     }
 }
