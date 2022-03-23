@@ -2462,7 +2462,6 @@ class TransactionController extends Controller
 
     public function returnDelivery(ElementTransactionEmployee $transaction)
     {
-        \Log::info($transaction);
         $element_returns = [];
 
         $returns = new ElementTransactionEmployee();
@@ -2480,8 +2479,6 @@ class TransactionController extends Controller
         foreach ($transaction->elements as $key => $value) 
         {
             $balance_origen = ElementBalanceLocation::find($value->element_balance_id);
-
-            \Log::info($value);
             
             $value->state = 'Disponible';
             $value->save();
