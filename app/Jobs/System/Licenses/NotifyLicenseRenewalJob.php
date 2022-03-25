@@ -164,7 +164,7 @@ class NotifyLicenseRenewalJob implements ShouldQueue
             NotificationMail::
                 subject($this->asunto .' de Licencia Sauce')
                 ->recipients($recipients)
-                ->message($this->asunto == 'Creación' ? 'Se acaba de crear ' : 'Se acaba de modificar '. "una licencia para la empresa <b>{$company->name}</b>")
+                ->message($this->asunto == 'Creación' ? "Se acaba de crear una licencia para la empresa <b>{$company->name}</b>" : "Se acaba de modificar una licencia para la empresa <b>{$company->name}</b>")
                 ->module('users')
                 ->event('Job: NotifyLicenseRenewalJob')
                 ->company($this->company_id)
@@ -177,7 +177,7 @@ class NotifyLicenseRenewalJob implements ShouldQueue
         {
             NotificationMail::
                 subject($this->asunto .' de Licencia Sauce')
-                ->message($this->asunto == 'Creación' ? 'Se acaba de crear ' : 'Se acaba de modificar '. " una licencia para la empresa <b>{$company->name}</b>")
+                ->message($this->asunto == 'Creación' ? "Se acaba de crear una licencia para la empresa <b>{$company->name}</b>" : "Se acaba de modificar una licencia para la empresa <b>{$company->name}</b>")
                 ->module('users')
                 ->event('Job: NotifyLicenseRenewalJob')
                 ->company($this->company_id)
