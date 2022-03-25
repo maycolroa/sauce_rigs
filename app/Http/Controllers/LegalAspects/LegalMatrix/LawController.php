@@ -399,6 +399,9 @@ class LawController extends Controller
     {
         foreach ($articles as $key => $article)
         {
+            if ($law->repealed == 'SI')
+                $article['repealed'] = 'SI';
+                
             $id = isset($article['id']) ? $article['id'] : NULL;
             $articleNew = $law->articles()->updateOrCreate(['id'=>$id], $article);
             $articleNew->interests()->sync($this->getValuesForMultiselect($article['interests_id']));
