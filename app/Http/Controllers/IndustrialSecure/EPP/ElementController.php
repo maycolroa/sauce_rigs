@@ -514,4 +514,97 @@ class ElementController extends Controller
         return Vuetable::of($report)
                     ->make();
     }
+
+    public function reportEmployeeTotals(Request $request)
+    {
+        $report = ElementTransactionEmployee::selectRaw("
+            sau_employees.name as employee,
+            count(sau_epp_elements_balance_specific.id) as asignados
+        ")
+        ->join('sau_employees', 'sau_employees.id', 'sau_epp_transactions_employees.employee_id')
+        ->join('sau_epp_transaction_employee_element', 'sau_epp_transaction_employee_element.transaction_employee_id', 'sau_epp_transactions_employees.id')
+        ->join('sau_epp_elements_balance_specific', 'sau_epp_elements_balance_specific.id', 'sau_epp_transaction_employee_element.element_id')
+        ->join('sau_epp_elements_balance_ubication', 'sau_epp_elements_balance_ubication.id','sau_epp_elements_balance_specific.element_balance_id')
+        ->join('sau_epp_elements', 'sau_epp_elements.id', 'sau_epp_elements_balance_ubication.element_id')
+        ->join('sau_epp_locations', 'sau_epp_locations.id', 'sau_epp_elements_balance_specific.location_id')
+        ->where('sau_epp_elements.company_id', $this->company)
+        ->where('sau_epp_transactions_employees.type', 'Entrega')
+        ->whereNull('sau_epp_transactions_employees.state')
+        ->groupBy('sau_employees.name');
+
+        $url = "/industrialsecure/epps/report";
+
+        $filters = COUNT($request->get('filters')) > 0 ? $request->get('filters') : $this->filterDefaultValues($this->user->id, $url);
+
+        if (COUNT($filters) > 0)
+        {
+            if (isset($filters["marks"]) && COUNT($filters["marks"]) > 0)
+            {
+                $marks = $this->getValuesForMultiselect($filters["marks"]);
+
+                if ($filters['filtersType']['marks'] == 'IN')
+                    $report->whereIn('sau_epp_elements.mark', $marks);
+
+                else if ($filters['filtersType']['marks'] == 'NOT IN')
+                    $report->whereNotIn('sau_epp_elements.mark', $marks);
+            }
+
+            if (isset($filters["elements"]))
+                $report->inElement($this->getValuesForMultiselect($filters["elements"]), $filters['filtersType']['elements']);
+
+            if (isset($filters["location"]))
+                $report->inLocation($this->getValuesForMultiselect($filters["location"]), $filters['filtersType']['location']);
+
+            if (isset($filters["employee"]))
+                $report->inEmployee($this->getValuesForMultiselect($filters["employee"]), $filters['filtersType']['employee']);
+        }
+
+        return $this->respondHttp200([
+            'data' => $report->get()
+        ]);
+    }
+
+    public function reportTotal(Request $request)
+    {
+        $report = ElementBalanceLocation::selectRaw("
+            count(sau_epp_elements_balance_specific.id) as total,
+            SUM(IF(sau_epp_elements_balance_specific.state = 'Disponible', 1, 0)) AS disponibles,
+            SUM(IF(sau_epp_elements_balance_specific.state = 'Asignado', 1, 0)) AS asignados,
+            SUM(IF(sau_epp_elements_balance_specific.state = 'No Disponible', 1, 0)) AS transito,
+            SUM(IF(sau_epp_elements_balance_specific.state = 'No disponible o desechado', 1, 0)) AS desechados
+        ")
+        ->join('sau_epp_elements', 'sau_epp_elements.id', 'sau_epp_elements_balance_ubication.element_id')
+        ->join('sau_epp_locations', 'sau_epp_locations.id', 'sau_epp_elements_balance_ubication.location_id')
+        ->join('sau_epp_elements_balance_specific', 'sau_epp_elements_balance_specific.element_balance_id', 'sau_epp_elements_balance_ubication.id')
+        ->where('sau_epp_elements.company_id', $this->company);
+
+        $url = "/industrialsecure/epps/report";
+
+        $filters = COUNT($request->get('filters')) > 0 ? $request->get('filters') : $this->filterDefaultValues($this->user->id, $url);
+
+        if (COUNT($filters) > 0)
+        {
+            if (isset($filters["marks"]) && COUNT($filters["marks"]) > 0)
+            {
+                $marks = $this->getValuesForMultiselect($filters["marks"]);
+
+                if ($filters['filtersType']['marks'] == 'IN')
+                    $report->whereIn('sau_epp_elements.mark', $marks);
+
+                else if ($filters['filtersType']['marks'] == 'NOT IN')
+                    $report->whereNotIn('sau_epp_elements.mark', $marks);
+            }
+
+            if (isset($filters["elements"]))
+                $report->inElement($this->getValuesForMultiselect($filters["elements"]), $filters['filtersType']['elements']);
+
+            if (isset($filters["location"]))
+                $report->inLocation($this->getValuesForMultiselect($filters["location"]), $filters['filtersType']['location']);
+        }
+        \Log::info($report->first());
+        
+        return $this->respondHttp200([
+            'data' => $report->first()
+        ]);
+    }
 }
