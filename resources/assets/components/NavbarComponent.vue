@@ -31,6 +31,12 @@
       </b-navbar-nav>
 
       <b-navbar-nav class="align-items-lg-center ml-auto">
+
+        <label class="nav-item navbar-text navbar-search-box p-0 active">
+          <div class="media-body line-height-condenced ml-3">
+            <div class="text-dark">{{ auth.user_auth.email }}</div>
+          </div>
+        </label>
         
         <label class="nav-item navbar-text navbar-search-box p-0 active">
           <div class="media-body line-height-condenced ml-3">

@@ -68,7 +68,7 @@ class ViewService
             'hasRole' => $this->getHasRole(), 
             'inventaryEpp' => $this->getInventaryEpp(), 
             'terms' => $this->getTerms(),
-            'user_auth' => Auth::user()->id
+            'user_auth' => Auth::user()
         ];
     }
 }
