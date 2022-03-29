@@ -21,6 +21,7 @@ use Maatwebsite\Excel\Facades\Excel;
 use Maatwebsite\Excel\Concerns\WithCalculatedFormulas;
 use Validator;
 use Exception;
+use DB;
 
 class ContractImport implements ToCollection, WithCalculatedFormulas
 {
@@ -122,8 +123,8 @@ class ContractImport implements ToCollection, WithCalculatedFormulas
     {
         $data = [
             'nombre_usuario' => $row[0],
-            'documento_usuario' => $row[1],
-            'email_usuario' => $row[2],
+            'documento_usuario' => trim($row[1]),
+            'email_usuario' => trim($row[2]),
             'tipo_de_empresa' => strtolower($row[3]),
             'clasificacion' => strtolower($row[4]),
             'nombre_empresa' => $row[5],
@@ -207,7 +208,6 @@ class ContractImport implements ToCollection, WithCalculatedFormulas
                 }
                 else
                     $data["clasificacion"] = "Empresa";
-
 
                 $contracts = new ContractLesseeInformation();
                 $contracts->company_id = $this->company_id;
@@ -326,7 +326,7 @@ class ContractImport implements ToCollection, WithCalculatedFormulas
         if ($limit)
             $limit = $limit->value;
         else 
-            $limit = 10;
+            $limit = 1000;
 
         $count_contracts = ContractLesseeInformation::where('active', 'SI');
         $count_contracts->company_scope = $this->company_id;
