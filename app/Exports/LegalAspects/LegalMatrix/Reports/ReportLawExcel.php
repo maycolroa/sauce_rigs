@@ -12,6 +12,7 @@ use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 use Maatwebsite\Excel\Concerns\RegistersEventListeners;
 use Maatwebsite\Excel\Events\AfterSheet;
 use \Maatwebsite\Excel\Sheet;
+use DB;
 
 Sheet::macro('styleCells', function (Sheet $sheet, string $cellRange, array $style) {
   $sheet->getDelegate()->getStyle($cellRange)->applyFromArray($style);
@@ -57,6 +58,7 @@ class ReportLawExcel implements FromQuery, WithMapping, WithHeadings, WithTitle,
       ->join('sau_lm_articles_fulfillment','sau_lm_articles_fulfillment.article_id', 'sau_lm_articles.id')
       ->leftJoin('sau_lm_fulfillment_values','sau_lm_fulfillment_values.id', 'sau_lm_articles_fulfillment.fulfillment_value_id')
       ->where('sau_lm_articles_fulfillment.company_id', $this->company_id)
+      ->where('sau_lm_articles_fulfillment.hide', DB::raw("'NO'"))
       ->inLawTypes($this->filters['lawTypes'], $this->filters['filtersType']['lawTypes'])
       ->inRiskAspects($this->filters['riskAspects'], $this->filters['filtersType']['riskAspects'])
       ->inEntities($this->filters['entities'], $this->filters['filtersType']['entities'])
