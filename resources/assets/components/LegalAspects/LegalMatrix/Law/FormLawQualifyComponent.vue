@@ -150,6 +150,11 @@
 
                   <hr class="border-light container-m--x mt-0 mb-4">
 
+                   <b-form-row>
+                    <vue-radio v-if="auth.hasRole['Superadmin']" :disabled="viewOnly" :checked="form.articles[index].hide" class="col-md-12" v-model="form.articles[index].hide" @input="saveArticleQualification(index)" :options="siNoRadio" :name="`hide${index}`" :error="form.errorsFor(`articles.${index}.hide`)" label="¿Desea ocultar el artíćulo?">
+                      </vue-radio>
+                  </b-form-row>
+
                   <b-form-row>
                     <vue-advanced-select @selectedName="updateQualify($event, index)" :disabled="viewOnly" class="col-md-6" v-model="article.fulfillment_value_id" :options="qualifications" :allow-empty="false" :name="`fulfillment_value_id_${article.id}`" label="Evaluación"/>
 
@@ -244,6 +249,7 @@ import VueInput from "@/components/Inputs/VueInput.vue";
 import VueTextarea from "@/components/Inputs/VueTextarea.vue";
 import VueFileSimple from "@/components/Inputs/VueFileSimple.vue";
 import ActionPlanComponent from '@/components/CustomInputs/ActionPlanComponent.vue';
+import VueRadio from "@/components/Inputs/VueRadio.vue";
 import Alerts from '@/utils/Alerts.js';
 
 export default {
@@ -254,7 +260,8 @@ export default {
     VueInput,
     VueTextarea,
     VueFileSimple,
-    ActionPlanComponent
+    ActionPlanComponent,
+    VueRadio
   },
   props: {
     url: { type: String },
@@ -346,7 +353,11 @@ export default {
       totalAxios: 0,
       currentAxios: 0,
       eventSaveAll: false,
-      textBlock: 'Cargando...'
+      textBlock: 'Cargando...',
+      siNoRadio: [
+          {text: 'SI', value: 'SI'},
+          {text: 'NO', value: 'NO'}
+        ]
     };
   },
   mounted() {
@@ -385,6 +396,10 @@ export default {
           }
         }
         else if (this.checkFilter(article, 'filterQualification', 'qualify') || this.checkFilter(article, 'filterRepealed', 'repealed') || !this.checkFilterInterest(article))
+        {
+          show = false;     
+        }
+        else if (article.hide == 'SI' && !auth.hasRole['Superadmin'])
         {
           show = false;
         }
@@ -589,6 +604,8 @@ export default {
         data.append('observations', article.observations == null ? '' : article.observations);
         data.append('responsible', article.responsible == null ? '' : article.responsible);
         data.append('workplace', article.workplace == null ? '' : article.workplace);
+        data.append('hide', article.hide == null ? '' : article.hide);
+        
         data.append('fulfillment_value_id', article.fulfillment_value_id == null ? '' : article.fulfillment_value_id);
         data.append('file', article.file == null ? '' : article.file);
         data.append('actionPlan', JSON.stringify(article.actionPlan));
@@ -607,6 +624,11 @@ export default {
             //this.currentAxios++;
             //this.loading = false;
           });
+
+        if (article.hide == 'SI')
+        {
+          this.resetReloadShowArticles();
+        }
       }
     }
   }

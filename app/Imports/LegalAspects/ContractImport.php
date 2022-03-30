@@ -123,7 +123,7 @@ class ContractImport implements ToCollection, WithCalculatedFormulas
     {
         $data = [
             'nombre_usuario' => $row[0],
-            'documento_usuario' => trim($row[1]),
+            'documento_usuario' => $row[1],
             'email_usuario' => trim($row[2]),
             'tipo_de_empresa' => strtolower($row[3]),
             'clasificacion' => strtolower($row[4]),
@@ -143,6 +143,9 @@ class ContractImport implements ToCollection, WithCalculatedFormulas
             'clase_riesgo' => strtolower($row[18])
         ];
 
+        \Log::info($data['email_usuario']);
+        \Log::info(1);
+
         $highRisk = HighRiskType::selectRaw("LOWER(name) AS name")->pluck('name')->implode(',');
 
         $rules = [
@@ -155,6 +158,7 @@ class ContractImport implements ToCollection, WithCalculatedFormulas
             'razon_social' => 'required|string',
             'trabajo_alto_riesgo' => 'required'     
         ];
+        \Log::info(2);
 
         if ($data["tipo_de_empresa"] == 'contratista')
         {
@@ -180,6 +184,7 @@ class ContractImport implements ToCollection, WithCalculatedFormulas
                     'clase_riesgo' => "nullable|string|in:clase de riesgo i,clase de riesgo ii,clase de riesgo iii,clase de riesgo iv,clase de riesgo v"
                 ]);
         }
+        \Log::info(3);
 
 
         $validator = Validator::make($data, $rules);
@@ -196,10 +201,12 @@ class ContractImport implements ToCollection, WithCalculatedFormulas
         }
         else 
         {   
+            \Log::info(4);
             if (!$this->checkLimit())
                 $this->setError('Límite alcanzado..!! No puede crear más contratistas o arrendatarios hasta que inhabilite alguno de ellos.');
             else
             {
+                \Log::info(5);
                 //////////////////////////Creacion contratista/////////////////
 
                 if ($data["clasificacion"] == "unidad de produccion agropecuaria" || $data["clasificacion"] == "unidad de producción agropecuaria")
@@ -227,6 +234,7 @@ class ContractImport implements ToCollection, WithCalculatedFormulas
                 $contracts->high_risk_work = ucfirst($data['trabajo_alto_riesgo']);
                 $contracts->social_reason = $data['razon_social'];
                 $contracts->save();
+                \Log::info(6);
 
                 $risks = $this->checkHighRiskWork($data['tipo_trabajo_alto_riesgo']);
 
@@ -237,6 +245,7 @@ class ContractImport implements ToCollection, WithCalculatedFormulas
                 $user = User::where('email', trim(strtolower($data['email_usuario'])))->first();
 
                 $team = Team::where('name', $this->company_id)->first()->id;
+                \Log::info(7);
 
                 if (!$user)
                 {
@@ -284,7 +293,11 @@ class ContractImport implements ToCollection, WithCalculatedFormulas
                     $user->attachRole($this->getIdRole($contracts->type), $team);
                 }
 
+                \Log::info(8);
+
                 $contracts->users()->sync($user);
+
+                \Log::info(9);
 
                 return true;
 
