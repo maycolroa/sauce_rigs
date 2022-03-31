@@ -306,17 +306,20 @@ class UserController extends Controller
 
             $modification = '';
 
+            if ($request->name != $user->name)
+                $modification = $modification . 'Se modifico el nombre - ';
+
+            if ($request->email != $user->email)
+                $modification = $modification . 'Se modifico el email - ';
+        
+            if ($request->document != $user->document)
+                $modification = $modification . 'Se modifico el numero de documento - ';
+
             if ($request->active == 'NO' && $user->active == 'SI')
                 $modification = $modification . 'Se desactivo el usuario - ';
 
             else if ($request->active == 'SI' && $user->active == 'NO')
                 $modification = $modification . 'Se activo el usuario - ';
-
-            if ($request->email != $user->email)
-                $modification = $modification . 'Se modifico el email - ';
-            
-            if ($request->document != $user->document)
-                $modification = $modification . 'Se modifico el numero de documento - ';
 
             $user->fill($request->except('password'));
 
