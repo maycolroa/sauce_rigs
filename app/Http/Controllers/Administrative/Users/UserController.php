@@ -295,7 +295,6 @@ class UserController extends Controller
      */
     public function update(UserRequest $request, User $user)
     {
-        \Log::info($request);
         DB::beginTransaction();
 
         try
@@ -306,9 +305,6 @@ class UserController extends Controller
             $log_modify->modified_user = $user->id;
 
             $modification = '';
-
-            \Log::info($request->active);
-            \Log::info($user->active);
 
             if ($request->active == 'NO' && $user->active == 'SI')
                 $modification = $modification . 'Se desactivo el usuario - ';
