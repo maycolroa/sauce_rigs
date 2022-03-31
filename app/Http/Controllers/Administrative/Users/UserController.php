@@ -9,6 +9,7 @@ use App\Http\Requests\Administrative\Users\UserRequest;
 use App\Http\Requests\Administrative\Users\ChangePasswordRequest;
 use App\Http\Requests\Administrative\Users\DefaultModuleRequest;
 use App\Models\Administrative\Users\User;
+use App\Models\Administrative\Users\LogUserModify;
 use App\Models\Administrative\Roles\Role;
 use App\Models\General\Module;
 use App\Models\General\Team;
@@ -294,14 +295,42 @@ class UserController extends Controller
      */
     public function update(UserRequest $request, User $user)
     {
+        \Log::info($request);
         DB::beginTransaction();
 
         try
         { 
+            $log_modify = new LogUserModify;
+            $log_modify->company_id = $this->company;
+            $log_modify->modifier_user = $this->user->id;
+            $log_modify->modified_user = $user->id;
+
+            $modification = '';
+
+            \Log::info($request->active);
+            \Log::info($user->active);
+
+            if ($request->active == 'NO' && $user->active == 'SI')
+                $modification = $modification . 'Se desactivo el usuario - ';
+
+            else if ($request->active == 'SI' && $user->active == 'NO')
+                $modification = $modification . 'Se activo el usuario - ';
+
+            if ($request->email != $user->email)
+                $modification = $modification . 'Se modifico el email - ';
+            
+            if ($request->document != $user->document)
+                $modification = $modification . 'Se modifico el numero de documento - ';
+
             $user->fill($request->except('password'));
 
             if ($request->has('password') && $request->password)
+            {
                 $user->password = $request->password;
+
+                if ($user->password != $request->password)
+                    $modification = $modification . 'Se modifico la contraseña - ';
+            }
 
             if ($request->active == 'NO' && $user->companies->count() > 1)
             {
@@ -317,6 +346,30 @@ class UserController extends Controller
                 {
                     $roles = $this->getDataFromMultiselect($request->role_id);
                     $user->syncRoles($roles, $this->team);
+
+                    $roles_new = [];
+                    $roles_old = [];
+
+                    foreach ($request->role_id as $value) 
+                    {
+                        array_push($roles_new, json_decode($value)->name);
+                    }
+
+                    foreach ($request->multiselect_role as $value) 
+                    {
+                        array_push($roles_old, json_decode($value)->name);
+                    }
+
+                    if ($roles_old != $roles_new)
+                    {
+                        $modification = $modification . 'Se modifico el rol o roles del usuario - ';
+
+                        if (COUNT($roles_old) > 0)
+                            $log_modify->roles_old = implode(' | ', $roles_old);
+                        
+                        if (COUNT($roles_new) > 0)
+                            $log_modify->roles_new = implode(' | ', $roles_new);
+                    }
                 }
             }
 
@@ -344,12 +397,16 @@ class UserController extends Controller
             else
                 $this->deleteFilter('sau_lm_user_system_apply', $user->id);
 
+            $log_modify->modification = $modification;
+            $log_modify->save();
+
             DB::commit();
 
             SyncUsersSuperadminJob::dispatch();
 
         } catch (\Exception $e) {
             DB::rollback();
+            \Log::info($e->getMessage());
             return $this->respondHttp500();
         }
         
