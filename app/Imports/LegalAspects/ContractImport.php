@@ -11,6 +11,7 @@ use App\Models\Administrative\Users\User;
 use App\Models\Administrative\Users\GeneratePasswordUser;
 use App\Models\General\Team;
 use App\Traits\ContractTrait;
+use App\Traits\UtilsTrait;
 use App\Traits\UserTrait;
 use Maatwebsite\Excel\Concerns\ToCollection;
 use App\Facades\Configuration;
@@ -27,6 +28,7 @@ class ContractImport implements ToCollection, WithCalculatedFormulas
 {
     use ContractTrait;
     use UserTrait;
+    use UtilsTrait;
 
     private $company_id;
     private $user;
@@ -101,6 +103,7 @@ class ContractImport implements ToCollection, WithCalculatedFormulas
                 
             } catch (\Exception $e)
             {
+                DB::rollback();
                 \Log::info($e->getMessage());
                 NotificationMail::
                     subject('Importación de contratistas')
@@ -143,9 +146,6 @@ class ContractImport implements ToCollection, WithCalculatedFormulas
             'clase_riesgo' => strtolower($row[18])
         ];
 
-        \Log::info($data['email_usuario']);
-        \Log::info(1);
-
         $highRisk = HighRiskType::selectRaw("LOWER(name) AS name")->pluck('name')->implode(',');
 
         $rules = [
@@ -158,7 +158,6 @@ class ContractImport implements ToCollection, WithCalculatedFormulas
             'razon_social' => 'required|string',
             'trabajo_alto_riesgo' => 'required'     
         ];
-        \Log::info(2);
 
         if ($data["tipo_de_empresa"] == 'contratista')
         {
@@ -184,7 +183,6 @@ class ContractImport implements ToCollection, WithCalculatedFormulas
                     'clase_riesgo' => "nullable|string|in:clase de riesgo i,clase de riesgo ii,clase de riesgo iii,clase de riesgo iv,clase de riesgo v"
                 ]);
         }
-        \Log::info(3);
 
 
         $validator = Validator::make($data, $rules);
@@ -201,12 +199,11 @@ class ContractImport implements ToCollection, WithCalculatedFormulas
         }
         else 
         {   
-            \Log::info(4);
             if (!$this->checkLimit())
                 $this->setError('Límite alcanzado..!! No puede crear más contratistas o arrendatarios hasta que inhabilite alguno de ellos.');
             else
             {
-                \Log::info(5);
+                DB::beginTransaction();
                 //////////////////////////Creacion contratista/////////////////
 
                 if ($data["clasificacion"] == "unidad de produccion agropecuaria" || $data["clasificacion"] == "unidad de producción agropecuaria")
@@ -234,7 +231,6 @@ class ContractImport implements ToCollection, WithCalculatedFormulas
                 $contracts->high_risk_work = ucfirst($data['trabajo_alto_riesgo']);
                 $contracts->social_reason = $data['razon_social'];
                 $contracts->save();
-                \Log::info(6);
 
                 $risks = $this->checkHighRiskWork($data['tipo_trabajo_alto_riesgo']);
 
@@ -245,59 +241,81 @@ class ContractImport implements ToCollection, WithCalculatedFormulas
                 $user = User::where('email', trim(strtolower($data['email_usuario'])))->first();
 
                 $team = Team::where('name', $this->company_id)->first()->id;
-                \Log::info(7);
 
                 if (!$user)
                 {
-                    $user = new User();
-                    $user->name = $data['nombre_usuario'];
-                    $user->email = $data['email_usuario'];
-                    $user->document = $data['documento_usuario'];
-                    $user->save();
+                    $email_valid = $this->verifyEmailFormat($data['email_usuario']);
+                    
+                    if ($email_valid)
+                    {
+                        $user = new User();
+                        $user->name = $data['nombre_usuario'];
+                        $user->email = $data['email_usuario'];
+                        $user->document = $data['documento_usuario'];
+                        $user->save();
 
-                    $user->companies()->sync($this->company_id);
+                        $user->companies()->sync($this->company_id);
 
-                    $generatePasswordUser = new GeneratePasswordUser();
+                        $generatePasswordUser = new GeneratePasswordUser();
 
-                    $generatePasswordUser->user_id = $user->id;
-                    $generatePasswordUser->token = bcrypt($user->email.$user->document);
-                    $generatePasswordUser->save();
+                        $generatePasswordUser->user_id = $user->id;
+                        $generatePasswordUser->token = bcrypt($user->email.$user->document);
+                        $generatePasswordUser->save();
 
-                    NotificationMail::
-                        subject('Creación de usuario en sauce')
-                        ->message('Te damos la bienvenida a la plataforma, se ha generado un nuevo usuario para este correo, para establecer tu nueva contraseña, por favor dar click al siguiente enlace.')
-                        ->recipients($user)
-                        ->buttons([['text'=>'Establecer contraseña', 'url'=>url("/password/generate/".base64_encode($generatePasswordUser->token))]])
-                        ->module('users')
-                        ->subcopy('Este link sólo se puede utilizar una vez')
-                        ->company($this->company_id)
-                        ->send();
+                        NotificationMail::
+                            subject('Creación de usuario en sauce')
+                            ->message('Te damos la bienvenida a la plataforma, se ha generado un nuevo usuario para este correo, para establecer tu nueva contraseña, por favor dar click al siguiente enlace.')
+                            ->recipients($user)
+                            ->buttons([['text'=>'Establecer contraseña', 'url'=>url("/password/generate/".base64_encode($generatePasswordUser->token))]])
+                            ->module('users')
+                            ->subcopy('Este link sólo se puede utilizar una vez')
+                            ->company($this->company_id)
+                            ->send();
 
-                    $user->attachRole($this->getIdRole($contracts->type), $team);
+                        $user->attachRole($this->getIdRole($contracts->type), $team);
+
+                        $contracts->users()->sync($user);
+
+                        DB::commit();
+                    }
+                    else
+                    {
+                        DB::rollback();
+                        $this->setError('Formato de email incorrecto');
+                    }
+                    
                 }
                 else
                 {
-                    $user->companies()->attach($this->company_id);
+                    $email_valid = $this->verifyEmailFormat($user->email);
+                    
+                    if ($email_valid)
+                    {
+                        $user->companies()->attach($this->company_id);
 
-                    $company = Company::find($this->company_id);
+                        $company = Company::find($this->company_id);
 
-                    NotificationMail::
-                        subject('Creación de contratista en sauce')
-                        ->message("Usted acaba de ser creado como contratista en la empresa <b>{$company->name}</b>, por favor ingrese a Sauce y seleccione esta empresa para que pueda ingresar su información.")
-                        ->recipients($user)
-                        ->module('contracts')
-                        ->buttons([['text'=>'Ir a Sauce', 'url'=>url("/")]])
-                        ->company($this->company_id)
-                        ->send();
+                        NotificationMail::
+                            subject('Creación de contratista en sauce')
+                            ->message("Usted acaba de ser creado como contratista en la empresa <b>{$company->name}</b>, por favor ingrese a Sauce y seleccione esta empresa para que pueda ingresar su información.")
+                            ->recipients($user)
+                            ->module('contracts')
+                            ->buttons([['text'=>'Ir a Sauce', 'url'=>url("/")]])
+                            ->company($this->company_id)
+                            ->send();
 
-                    $user->attachRole($this->getIdRole($contracts->type), $team);
+                        $user->attachRole($this->getIdRole($contracts->type), $team); 
+
+                        $contracts->users()->sync($user);
+
+                        DB::commit();
+                    }
+                    else
+                    {
+                        DB::rollback();
+                        $this->setError('Formato de email incorrecto');
+                    }
                 }
-
-                \Log::info(8);
-
-                $contracts->users()->sync($user);
-
-                \Log::info(9);
 
                 return true;
 

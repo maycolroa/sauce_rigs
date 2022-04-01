@@ -481,4 +481,12 @@ trait UtilsTrait
      
         return $string;
     }
+
+    public function verifyEmailFormat($email)
+    {
+        if (preg_match('/^[_a-zA-Z0-9-]+(.[_a-zA-Z0-9-]+)*@[a-zA-Z0-9-]+(.[a-zA-Z0-9-]+)*(.[a-zA-Z]{2,4})$/', $email))
+            return true;
+        else
+            false;
+    }
 }

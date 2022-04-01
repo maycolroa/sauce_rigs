@@ -8,6 +8,7 @@ use App\Models\Administrative\Users\User;
 use App\Models\Administrative\Users\GeneratePasswordUser;
 use App\Models\General\Team;
 use App\Traits\UserTrait;
+use App\Traits\UtilsTrait;
 use Maatwebsite\Excel\Concerns\ToCollection;
 use App\Facades\Configuration;
 use App\Models\General\Company;
@@ -24,6 +25,7 @@ class UserImport implements ToCollection, WithCalculatedFormulas
 {
     use UserTrait;
     use ConfigurableFormTrait;
+    use UtilsTrait;
 
     private $company_id;
     private $user;
@@ -94,6 +96,7 @@ class UserImport implements ToCollection, WithCalculatedFormulas
                 
             } catch (\Exception $e)
             {
+                DB::rollback();
                 \Log::info($e->getMessage());
                 NotificationMail::
                     subject('Importación de usuarios')
@@ -139,6 +142,7 @@ class UserImport implements ToCollection, WithCalculatedFormulas
         }
         else 
         { 
+            DB::beginTransaction();
             ///////////////////Creacion Usiario//////////////////
 
             $user = User::where('email', trim(strtolower($data['email_usuario'])))->first();
@@ -147,51 +151,75 @@ class UserImport implements ToCollection, WithCalculatedFormulas
 
             if (!$user)
             {
-                $user = new User();
-                $user->name = $data['nombre_usuario'];
-                $user->email = trim(strtolower($data['email_usuario']));
-                $user->document = $data['documento_usuario'];
-                $user->medical_record = $data['registro_medico'];
-                $user->sst_license = $data['licencia_sst'];
-                $user->api_token = Hash::make($data['documento_usuario'] . str_random(10));
-                $user->save();
+                $email_valid = $this->verifyEmailFormat($data['email_usuario']);
 
-                $user->companies()->sync($this->company_id);
+                if ($email_valid)
+                {
+                    $user = new User();
+                    $user->name = $data['nombre_usuario'];
+                    $user->email = trim(strtolower($data['email_usuario']));
+                    $user->document = $data['documento_usuario'];
+                    $user->medical_record = $data['registro_medico'];
+                    $user->sst_license = $data['licencia_sst'];
+                    $user->api_token = Hash::make($data['documento_usuario'] . str_random(10));
+                    $user->save();
 
-                $generatePasswordUser = new GeneratePasswordUser();
+                    $user->companies()->sync($this->company_id);
 
-                $generatePasswordUser->user_id = $user->id;
-                $generatePasswordUser->token = bcrypt($user->email.$user->document);
-                $generatePasswordUser->save();
+                    $generatePasswordUser = new GeneratePasswordUser();
 
-                NotificationMail::
-                    subject('Creación de usuario en sauce')
-                    ->message('Te damos la bienvenida a la plataforma, se ha generado un nuevo usuario para este correo, para establecer tu nueva contraseña, por favor dar click al siguiente enlace.')
-                    ->recipients($user)
-                    ->buttons([['text'=>'Establecer contraseña', 'url'=>url("/password/generate/".base64_encode($generatePasswordUser->token))]])
-                    ->module('users')
-                    ->subcopy('Este link sólo se puede utilizar una vez')
-                    ->company($this->company_id)
-                    ->send();
+                    $generatePasswordUser->user_id = $user->id;
+                    $generatePasswordUser->token = bcrypt($user->email.$user->document);
+                    $generatePasswordUser->save();
 
-                $user->attachRole($this->getIdRole($this->role_id), $team);
+                    NotificationMail::
+                        subject('Creación de usuario en sauce')
+                        ->message('Te damos la bienvenida a la plataforma, se ha generado un nuevo usuario para este correo, para establecer tu nueva contraseña, por favor dar click al siguiente enlace.')
+                        ->recipients($user)
+                        ->buttons([['text'=>'Establecer contraseña', 'url'=>url("/password/generate/".base64_encode($generatePasswordUser->token))]])
+                        ->module('users')
+                        ->subcopy('Este link sólo se puede utilizar una vez')
+                        ->company($this->company_id)
+                        ->send();
+
+                    $user->attachRole($this->getIdRole($this->role_id), $team);
+
+                    DB::commit();
+                }
+                else
+                {
+                    DB::rollback();
+                    $this->setError('Formato de email incorrecto');
+                }
             }
             else
             {
-                $user->companies()->attach($this->company_id);
+                $email_valid = $this->verifyEmailFormat($user->email);
+                    
+                if ($email_valid)
+                {
+                    $user->companies()->attach($this->company_id);
 
-                $company = Company::find($this->company_id);
+                    $company = Company::find($this->company_id);
 
-                NotificationMail::
-                    subject('Creación de usuario en sauce')
-                    ->message("Estimado usuario, usted acaba de ser agregado como usuario en la empresa <b>{$company->name}</b>")
-                    ->recipients($user)
-                    ->module('users')
-                    ->buttons([['text'=>'Ir a Sauce', 'url'=>url("/")]])
-                    ->company($this->company_id)
-                    ->send();
+                    NotificationMail::
+                        subject('Creación de usuario en sauce')
+                        ->message("Estimado usuario, usted acaba de ser agregado como usuario en la empresa <b>{$company->name}</b>")
+                        ->recipients($user)
+                        ->module('users')
+                        ->buttons([['text'=>'Ir a Sauce', 'url'=>url("/")]])
+                        ->company($this->company_id)
+                        ->send();
 
-                $user->attachRole($this->getIdRole($this->role_id), $team);
+                    $user->attachRole($this->getIdRole($this->role_id), $team);
+                    
+                    DB::commit();
+                }
+                else
+                {
+                    DB::rollback();
+                    $this->setError('Formato de email incorrecto');
+                }
             }
 
             return true;
