@@ -250,6 +250,7 @@ class InspectionQualificationController extends Controller
             
         $data = collect([]);
         $data->put('inspection', $qualification->item->section->inspection->name);
+        $data->put('version', $qualification->item->section->inspection->version);
         $data->put('regional', $qualification->regional ? $qualification->regional->name : '');
         $data->put('headquarter', $qualification->headquarter ? $qualification->headquarter->name : '');
         $data->put('process', $qualification->process ? $qualification->process->name : '');

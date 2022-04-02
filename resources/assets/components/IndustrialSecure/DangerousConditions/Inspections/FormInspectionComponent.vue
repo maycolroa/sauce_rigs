@@ -29,6 +29,7 @@
               :error="form.errorsFor('type_id')" >
                   </vue-advanced-select>
             <vue-input v-show="form.type_id == 1" :disabled="viewOnly" class="col-md-6" v-model="form.fullfilment_parcial" label="Valor del cumplimiento parcial" type="number" name="fullfilment_parcial" :error="form.errorsFor('fullfilment_parcial')" placeholder="Ej: 0.1, 0.2, 0.3" help-text="Los valores de este campo deben encontrarse entre 0 y 1. De no colocar ningun valor, se tomara por defecto 0.5"></vue-input>
+            <vue-input :disabled="viewOnly" class="col-md-6" v-model="form.version" label="Versión" type="trxt" name="version" :error="form.errorsFor('version')" placeholder="Versión"></vue-input>
           </b-form-row>
           <b-form-row>
             <vue-ajax-advanced-select v-if="locationForm.regional == 'SI'" :disabled="viewOnly" class="col-md-6" v-model="form.employee_regional_id" :error="form.errorsFor('employee_regional_id')" :selected-object="form.multiselect_regional" name="employee_regional_id" :label="keywordCheck('regionals')" placeholder="Seleccione las opciones" :url="regionalsDataUrl" :multiple="true" :allowEmpty="true">
@@ -250,6 +251,7 @@ export default {
           name: '',
           type_id:'',
           fullfilment_parcial: 0.5,
+          version: '',
           employee_regional_id: [],
           employee_headquarter_id: [],
           employee_area_id: [],

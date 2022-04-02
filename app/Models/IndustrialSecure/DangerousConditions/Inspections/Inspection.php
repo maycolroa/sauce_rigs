@@ -16,7 +16,8 @@ class Inspection extends Model
         'company_id',
         'state',
         'type_id',
-        'fullfilment_parcial'
+        'fullfilment_parcial',
+        'version'
     ];
 
     public function company()

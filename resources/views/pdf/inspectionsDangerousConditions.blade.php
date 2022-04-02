@@ -55,6 +55,7 @@
                     <th style='padding: 1px; width: 20%'>
                         <p>Fecha Creación: {{\Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $inspections["created_at"])->format('Y-m-d')}}</p>
                         <p class="page">Página </p>
+                        <p>{{ $inspections["version"] }}</p>
                     </th>
                 </tr>
                 <!--<tr>
