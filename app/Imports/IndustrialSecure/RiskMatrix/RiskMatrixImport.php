@@ -247,8 +247,8 @@ class RiskMatrixImport implements ToCollection, WithCalculatedFormulas
                 'max_frecuencia_residual' => 'required|integer|min:0|max:5',
                 'desc_frecuencia_residual' => 'required',
                 'exposicion_Residual' => 'required|integer|min:0',
-                'max_evento_riesgo' => 'required'
-            //    'indicadores' => 'required'           
+                'max_evento_riesgo' => 'required',
+                'indicadores' => 'nullable'           
             ]);
         }
 
@@ -360,7 +360,7 @@ class RiskMatrixImport implements ToCollection, WithCalculatedFormulas
                 $cause->cause = $data['causa'];
                 $cause->save();
 
-                $controls = explode(' - ', $data['controles']);
+                $controls = explode(' * ', $data['controles']);
 
                 foreach ($controls as $keyC2 => $itemC2)
                 {

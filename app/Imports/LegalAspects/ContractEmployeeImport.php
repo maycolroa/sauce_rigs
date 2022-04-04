@@ -13,6 +13,7 @@ use App\Models\Administrative\Employees\EmployeeAFP;
 use App\Models\General\Team;
 use App\Traits\ContractTrait;
 use App\Traits\UserTrait;
+use App\Traits\UtilsTrait;
 use Maatwebsite\Excel\Concerns\ToCollection;
 use App\Facades\Configuration;
 use App\Models\General\Company;
@@ -30,6 +31,7 @@ class ContractEmployeeImport implements ToCollection, WithCalculatedFormulas
 {
     use ContractTrait;
     use UserTrait;
+    use UtilsTrait;
 
     private $company_id;
     private $user;
@@ -103,7 +105,6 @@ class ContractEmployeeImport implements ToCollection, WithCalculatedFormulas
                     subject('Importación de contratistas')
                     ->recipients($this->user)
                     ->message('Se produjo un error durante el proceso de importación de contratistas. Contacte con el administrador')
-                    //->message($e->getMessage())
                     ->module('contracts')
                     ->event('Job: ContractEmployeeImportJob')
                     ->company($this->company_id)
@@ -155,6 +156,10 @@ class ContractEmployeeImport implements ToCollection, WithCalculatedFormulas
         {   
                 //////////////////////////Creacion empleado/////////////////
 
+                $email_valid = $this->verifyEmailFormat($data['email_empleado']);
+
+                if ($email_valid)
+                {
                     $employee = new ContractEmployee();
                     $employee->name = $data['nombre_empleado'];
                     $employee->email = $data['email_empleado'];
@@ -169,6 +174,14 @@ class ContractEmployeeImport implements ToCollection, WithCalculatedFormulas
                     $employee->activities()->sync($data['actividades']);
 
                     TrainingSendNotificationJob::dispatch($this->company_id, '', $employee->id);
+                }
+                else
+                {
+                    $this->setError('Formato de email incorrecto');
+                    $this->setErrorData($row);
+
+                    return null;
+                }
 
 
                 ////////////////Envio de capacitacione///////////////

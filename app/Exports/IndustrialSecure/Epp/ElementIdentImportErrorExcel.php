@@ -7,7 +7,7 @@ use Maatwebsite\Excel\Concerns\WithMultipleSheets;
 use App\Exports\IndustrialSecure\Epp\ElementIdentImportTemplateExcel;
 use App\Exports\PreventiveOccupationalMedicine\BiologicalMonitoring\AudiometryImportErrorListExcel;
 
-class ElementBalanceImportErrorExcel implements WithMultipleSheets
+class ElementIdentImportErrorExcel implements WithMultipleSheets
 {
     use Exportable;
 

@@ -144,7 +144,7 @@ class ElementImport implements ToCollection, WithCalculatedFormulas
             'reutilizable' => 'required|in:SI,NO',
             'identificar' => 'required|in:SI,NO',
             'vencimiento' => 'required|in:SI,NO',
-            'dias_vencimiento' => 'required_if:vencimiento,SI'       
+            'dias_vencimiento' => 'integer|required_if:vencimiento,SI'       
         ];
 
         $validator = Validator::make($data, $rules, [

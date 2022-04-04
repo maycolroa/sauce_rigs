@@ -81,7 +81,7 @@ class InspectionsImport implements ToCollection, WithCalculatedFormulas
                 }
                 else
                 {
-                    $nameExcel = 'export/1/danger_matrix_errors_'.date("YmdHis").'.xlsx';
+                    $nameExcel = 'export/1/inspections_errors_'.date("YmdHis").'.xlsx';
 
                     \Log::info($this->errors);                    
                     Excel::store(new InspectionImportErrorExcel(collect($this->errors_data), $this->errors, $this->company_id), $nameExcel, 'public',\Maatwebsite\Excel\Excel::XLSX);

@@ -14,6 +14,7 @@ use App\Models\IndustrialSecure\Epp\ElementBalanceLocation;
 use App\Models\IndustrialSecure\Epp\ElementBalanceInicialLog;
 use App\Models\IndustrialSecure\Epp\ElementBalanceSpecific;
 use App\Models\IndustrialSecure\Epp\Element;
+use App\Models\IndustrialSecure\Epp\Location;
 use Validator;
 use Exception;
 use Hash;
@@ -117,14 +118,21 @@ class ElementBalanceInitialImport implements ToCollection, WithCalculatedFormula
         $tipo = Element::where('code', $row[1]);
         $tipo->company_scope = $this->company_id;
         $tipo = $tipo->first();
-        
-        if (COUNT($this->count) > 0 && isset($this->count[$tipo->id][$data['id_ubicacion']]))
+
+        $location = Location::where('id', $row[2]);
+        $location->company_scope = $this->company_id;
+        $location = $location->first();
+
+        if ($tipo && $location)
         {
-            $this->count[$tipo->id][$data['id_ubicacion']] = $this->count[$tipo->id][$data['id_ubicacion']] + 1;
-        }
-        else
-        {
-            $this->count[$tipo->id][$data['id_ubicacion']] = 1;
+            if (COUNT($this->count) > 0 && isset($this->count[$tipo->id][$location->id]))
+            {
+                $this->count[$tipo->id][$location->id] = $this->count[$tipo->id][$location->id] + 1;
+            }
+            else
+            {
+                $this->count[$tipo->id][$location->id] = 1;
+            }
         }
 
         $hashs = ElementBalanceSpecific::select('hash')->get()->toArray();
@@ -151,53 +159,65 @@ class ElementBalanceInitialImport implements ToCollection, WithCalculatedFormula
         {
             foreach ($validator->messages()->all() as $value)
             {
-                $this->s10.etError($value);
+                $this->setError($value);
             }
 
             $this->setErrorData($row);
             return null;
         }
         else 
-        {   
-            $log_exist = ElementBalanceInicialLog::where('element_id', $tipo->id)->where('location_id', $data['id_ubicacion'])->exists();
-
-            $element = ElementBalanceLocation::updateOrCreate(
-                [
-                    'element_id' => $tipo->id,
-                    'location_id' => $data['id_ubicacion']
-                ],
-                [
-                    'element_id' => $tipo->id,
-                    'location_id' => $data['id_ubicacion'],
-                    'quantity' => $this->count[$tipo->id][$data['id_ubicacion']],
-                    'quantity_available' => $this->count[$tipo->id][$data['id_ubicacion']],
-                    'quantity_allocated' => 0
-                ]
-            );
-
-            /*$element = new ElementBalanceLocation();
-            $element->element_id = $tipo->id;
-            $element->location_id = $data['id_ubicacion'];
-            $element->quantity = $data['cantidad'];
-            $element->quantity_available = $data['cantidad'];
-            $element->quantity_allocated = 0;
-            $element->save();*/
-
-            $product = new ElementBalanceSpecific;
-            $product->hash = $data['codigo'];
-            $product->element_balance_id = $element->id;
-            $product->location_id = $element->location_id;
-            $product->code = $data['codigo'];
-            $product->expiration_date = $tipo->expiration_date ? $data['vencimiento'] : NULL;
-            $product->save();
-
-            if (!$log_exist)
+        {  
+            if ($tipo) 
             {
-                $log = new ElementBalanceInicialLog;
-                $log->element_id = $tipo->id;
-                $log->location_id = $data['id_ubicacion'];
-                $log->balance_inicial = true;
-                $log->save();
+                if ($location)
+                {
+                    $log_exist = ElementBalanceInicialLog::where('element_id', $tipo->id)->where('location_id', $data['id_ubicacion'])->exists();
+
+                    $element = ElementBalanceLocation::updateOrCreate(
+                        [
+                            'element_id' => $tipo->id,
+                            'location_id' => $data['id_ubicacion']
+                        ],
+                        [
+                            'element_id' => $tipo->id,
+                            'location_id' => $data['id_ubicacion'],
+                            'quantity' => $this->count[$tipo->id][$data['id_ubicacion']],
+                            'quantity_available' => $this->count[$tipo->id][$data['id_ubicacion']],
+                            'quantity_allocated' => 0
+                        ]
+                    );
+
+                    $product = new ElementBalanceSpecific;
+                    $product->hash = $data['codigo'];
+                    $product->element_balance_id = $element->id;
+                    $product->location_id = $element->location_id;
+                    $product->code = $data['codigo'];
+                    $product->expiration_date = $tipo->expiration_date ? $data['vencimiento'] : NULL;
+                    $product->save();
+
+                    if (!$log_exist)
+                    {
+                        $log = new ElementBalanceInicialLog;
+                        $log->element_id = $tipo->id;
+                        $log->location_id = $data['id_ubicacion'];
+                        $log->balance_inicial = true;
+                        $log->save();
+                    }
+                }
+                else
+                {
+                    $this->setError('El código de ubicación ingresado no existe en nuestra Base de datos');
+                    $this->setErrorData($row);
+    
+                    return null;
+                }
+            }
+            else
+            {
+                $this->setError('El código de elemento ingresado no existe en nuestra Base de datos');
+                $this->setErrorData($row);
+
+                return null;
             }
 
             return true;

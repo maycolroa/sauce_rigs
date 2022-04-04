@@ -282,6 +282,9 @@ class ContractImport implements ToCollection, WithCalculatedFormulas
                     {
                         DB::rollback();
                         $this->setError('Formato de email incorrecto');
+                        $this->setErrorData($row);
+
+                        return null;
                     }
                     
                 }
@@ -314,6 +317,9 @@ class ContractImport implements ToCollection, WithCalculatedFormulas
                     {
                         DB::rollback();
                         $this->setError('Formato de email incorrecto');
+                        $this->setErrorData($row);
+
+                        return null;
                     }
                 }
 

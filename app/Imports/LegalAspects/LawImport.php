@@ -101,7 +101,6 @@ class LawImport implements ToCollection, WithCalculatedFormulas
                     subject('Importación de leyes')
                     ->recipients($this->user)
                     ->message('Se produjo un error durante el proceso de importación de matríz de peligros. Contacte con el administrador')
-                    //->message($e->getMessage())
                     ->module('legalMatrix')
                     ->event('Job: LawImportJob')
                     ->company($this->company_id)
@@ -178,7 +177,7 @@ class LawImport implements ToCollection, WithCalculatedFormulas
             $article = new Article;
             $article->description = $data['article_description'];
             $article->law_id = $law->id;
-            $article->repealed = $data['article_repealed'] ? $data['article_repealed'] : 'NO';
+            $article->repealed = $law->repealed == 'SI' ? 'SI' : ($data['article_repealed'] == 'SI' ? $data['article_repealed'] : 'NO');
             $article->sequence = $law->sequence + 1;
             $article->save();
 
