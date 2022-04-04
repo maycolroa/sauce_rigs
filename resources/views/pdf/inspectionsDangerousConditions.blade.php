@@ -56,7 +56,7 @@
                         <p>Fecha Creación: {{\Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $inspections["created_at"])->format('Y-m-d')}}</p>
                         <p class="page">Página </p>
                         @if ($inspections["version"])
-                        <p>{{ $inspections["version"] }}</p>
+                        <p>Versión: {{ $inspections["version"] }}</p>
                         @endif
                     </th>
                 </tr>
