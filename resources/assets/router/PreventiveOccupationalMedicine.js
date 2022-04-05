@@ -528,5 +528,13 @@ export default [{
 					import('@/views/PreventiveOccupationalMedicine/biologicalmonitoring/audiometry/evaluations/evaluationEdit')
 				}
 			]),
+      ...middleware({ 'check-permission': 'absen_config_r' }, [
+        {
+          name: 'absenteeism-configuration',
+          path: 'absenteeism/configurations',
+          component: () =>
+            import('@/views/PreventiveOccupationalMedicine/absenteeism/configuration/index')
+        }
+      ]),
   ]
 }]

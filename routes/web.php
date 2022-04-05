@@ -156,6 +156,9 @@ Route::middleware(['auth'])->group(function () {
           Route::get('talendUpload/download/{talendUpload}', 'PreventiveOccupationalMedicine\Absenteeism\TalendController@download');
           Route::post('talendUpload/data', 'PreventiveOccupationalMedicine\Absenteeism\TalendController@data');
           Route::ApiResource('talendUpload', 'PreventiveOccupationalMedicine\Absenteeism\TalendController');
+
+          Route::post('configuration', 'PreventiveOccupationalMedicine\Absenteeism\ConfigurationController@store');
+          Route::get('configuration/view', 'PreventiveOccupationalMedicine\Absenteeism\ConfigurationController@show');
         });
     });
     

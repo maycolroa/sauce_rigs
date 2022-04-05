@@ -264,6 +264,10 @@
                     {
                         "name": "absen_uploadFiles_error",
                         "display_name": "Ausentismo/Administrar archivos - ver errores"
+                    },
+                    {
+                        "name": "absen_config_r",
+                        "display_name": "Ausentismo/Configuraciones - ver configuraciones"
                     }
                 ]
             }
