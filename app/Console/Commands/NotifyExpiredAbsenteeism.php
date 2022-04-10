@@ -73,7 +73,7 @@ class NotifyExpiredAbsenteeism extends Command
 
                 $records = DB::connection('ausentismo')
                 ->table("ausentismo.Ausentismo_$company_get->id")
-                ->whereDate('FechaFinal', '>', '2015-12-10')//Carbon::now()->format('Y-m-d'))
+                ->whereDate('FechaFinal', '>', Carbon::now()->format('Y-m-d'))
                 //->whereRaw("FechaFinal > CURDATE()")
                 ->get();
 
@@ -81,7 +81,7 @@ class NotifyExpiredAbsenteeism extends Command
                 {
                     $dateExpired = Carbon::createFromFormat('Y-m-d H:i:s', $record->FechaFinal);
 
-                $diff = $dateExpired->diffInDays('2015-12-10'/*Carbon::now()*/);
+                $diff = $dateExpired->diffInDays(Carbon::now());
 
                     if ($diff <= $configDay)
                     {
