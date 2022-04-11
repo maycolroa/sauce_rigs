@@ -31,14 +31,17 @@ class ActionPlanEvidence implements Rule
         $pos = substr($attribute, $pos + 11);
         $index = str_replace(".evidence_files", "", $pos);
 
-        if ($this->params['actionPlan']['activities'][$index]['evidence'] == 'SI' && 
-            $this->params['actionPlan']['activities'][$index]['state'] == 'Ejecutada'
-        )
+        if (isset($this->params['actionPlan']['activities'][$index]['evidence']))
         {
-            if (!isset($this->params['actionPlan']['activities'][$index]['evidence_files']) || 
-                COUNT($this->params['actionPlan']['activities'][$index]['evidence_files']) == 0
+            if ($this->params['actionPlan']['activities'][$index]['evidence'] == 'SI' && 
+                $this->params['actionPlan']['activities'][$index]['state'] == 'Ejecutada'
             )
-                return false;
+            {
+                if (!isset($this->params['actionPlan']['activities'][$index]['evidence_files']) || 
+                    COUNT($this->params['actionPlan']['activities'][$index]['evidence_files']) == 0
+                )
+                    return false;
+            }
         }
 
         return true;

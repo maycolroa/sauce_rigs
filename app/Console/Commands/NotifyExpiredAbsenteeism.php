@@ -102,8 +102,8 @@ class NotifyExpiredAbsenteeism extends Command
                             'Codigo Diagnostico' => $record->CodigoDiagnostico,
                             'Nombre Diagnostico' => $record->NombreDiagnostico,
                             'Tipo Ausentismo' => $record->TipoAusentismo,
-                            'Fecha Inicial' => $record->FechaInicial,
-                            'Fecha Final' => $record->FechaFinal,
+                            'Fecha Inicial' => Carbon::createFromFormat('Y-m-d H:i:s', $record->FechaFinal),
+                            'Fecha Final' => Carbon::createFromFormat('Y-m-d H:i:s', $record->FechaFinal),
                             'Dias' => $record->Dias,
                             'Prorroga' => $record->IndicadorProrroga,
                         ];
