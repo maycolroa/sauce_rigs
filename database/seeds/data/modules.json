@@ -108,6 +108,12 @@
                 "display_name": "Elementos protección personal",
                 "main": "SI",
                 "logo": null
+            },
+            {
+                "name": "documentsSecurity",
+                "display_name": "Documentos",
+                "main": "SI",
+                "logo": null
             }
         ]
     },

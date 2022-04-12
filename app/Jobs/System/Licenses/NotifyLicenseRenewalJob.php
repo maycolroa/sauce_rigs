@@ -72,6 +72,18 @@ class NotifyLicenseRenewalJob implements ShouldQueue
             $recipients->push(new User(['email'=>$value]));
         }
 
+        $supers = User::select('sau_users.email')
+        ->active()
+        ->join('sau_role_user', function($q) use ($team) { 
+            $q->on('sau_role_user.user_id', '=', 'sau_users.id')
+            ->on('sau_role_user.team_id', '=', DB::raw($team->id));
+        })
+        ->join('sau_roles', 'sau_roles.id', 'sau_role_user.role_id')
+        ->where('sau_roles.display_name', 'Superadmin')
+        ->get();
+
+        $limit = 50 - $supers->count() - count($admins);
+
         $users = User::select('sau_users.email')
             ->active()
             ->join('sau_company_user', 'sau_company_user.user_id', 'sau_users.id')
@@ -86,20 +98,11 @@ class NotifyLicenseRenewalJob implements ShouldQueue
             //->where('sau_roles.company_id', $this->company_id)
             ->whereIn('sau_permissions.module_id', $this->modules)
             ->where('sau_roles.display_name', '<>', 'Superadmin')
-            ->groupBy('sau_users.id', 'sau_users.email', 'sau_roles.display_name');
+            ->groupBy('sau_users.id', 'sau_users.email'/*, 'sau_roles.display_name'*/)
+            ->limit($limit);
 
         $users->company_scope = $this->company_id;
         $users = $users->get();
-
-        $supers = User::select('sau_users.email')
-            ->active()
-            ->join('sau_role_user', function($q) use ($team) { 
-                $q->on('sau_role_user.user_id', '=', 'sau_users.id')
-                  ->on('sau_role_user.team_id', '=', DB::raw($team->id));
-            })
-            ->join('sau_roles', 'sau_roles.id', 'sau_role_user.role_id')
-            ->where('sau_roles.display_name', 'Superadmin')
-            ->get();
 
         foreach ($users as $key => $value)
         {

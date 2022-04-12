@@ -816,5 +816,33 @@ export default [{
             import('@/views/IndustrialSecure/epp/transactions/reception/view')
         }
       ]),
+      ...middleware({ 'check-permission': 'contracts_uploadFiles_r' }, [
+				{
+					name: 'industrialsecure-documentsSecurity',
+					path: 'documents',
+					component: () => import('@/views/IndustrialSecure/documents/index')
+				}
+			]),
+			...middleware({ 'check-permission': 'contracts_uploadFiles_c' }, [
+				{
+					name: 'industrialsecure-documentsSecurity-create',
+					path: 'documents/create',
+					component: () => import('@/views/IndustrialSecure/documents/create')
+				}
+			]),
+			...middleware({ 'check-permission': 'contracts_uploadFiles_u' }, [
+				{
+					name: 'industrialsecure-documentsSecurity-edit',
+					path: 'documents/edit/:id',
+					component: () => import('@/views/IndustrialSecure/documents/edit')
+				}
+			]),
+			...middleware({ 'check-permission': 'contracts_uploadFiles_r' }, [
+				{
+					name: 'industrialsecure-documentsSecurity-view',
+					path: 'documents/view/:id',
+					component: () => import('@/views/IndustrialSecure/documents/view')
+				}
+			]),
     ]
   }]
