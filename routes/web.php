@@ -534,6 +534,10 @@ Route::middleware(['auth'])->group(function () {
         Route::post('report/conditionHeadquarter', 'IndustrialSecure\DangerousConditions\Reports\ReportInformController@locationWithCondition');
       });
 
+      Route::get('document/download/{document}', 'IndustrialSecure\Documents\DocumentController@download');
+      Route::post('document/data', 'IndustrialSecure\Documents\DocumentController@data');
+      Route::ApiResource('document', 'IndustrialSecure\Documents\DocumentController');
+
       Route::prefix('epp')->group(function () {
         Route::ApiResource('element', 'IndustrialSecure\EPP\ElementController');
         Route::post('element/data', 'IndustrialSecure\EPP\ElementController@data');

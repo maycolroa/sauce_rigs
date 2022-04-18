@@ -7,15 +7,14 @@ use App\Http\Controllers\Controller;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Storage;
 use App\Vuetable\Facades\Vuetable;
-use App\Traits\ContractTrait;
 use App\Traits\Filtertrait;
 use Illuminate\Database\Eloquent\Collection;
-use App\Facades\Mail\Facades\NotificationMail;
+use App\Models\IndustrialSecure\Documents\Document;
+use App\Http\Requests\IndustrialSecure\Documents\DocumentRequest;
 use DB;
 
 class DocumentController extends Controller
 {
-    use ContractTrait;
     use Filtertrait;
     
     /**
@@ -38,22 +37,28 @@ class DocumentController extends Controller
     */
     public function data(Request $request)
     {
-        $contract_id = null;
+        $roles = [];
 
-        $files = FileUpload::selectRaw(
-            'sau_ct_file_upload_contracts_leesse.*,
-             sau_users.name as user_name,
-             GROUP_CONCAT(sau_ct_information_contract_lessee.social_reason ORDER BY social_reason ASC) AS social_reason,
-             sau_ct_section_category_items.item_name AS item_name'
+        foreach ($this->user->multiselectRoles($this->team) as $key => $value) 
+        {
+            array_push($roles, $value['value']);
+        }
+
+        $roles = implode(',', $roles);
+
+        $files = Document::selectRaw(
+            'sau_documents_security.*,
+             sau_users.name as user_name'
           )
-          ->join('sau_users','sau_users.id','sau_ct_file_upload_contracts_leesse.user_id')
-          ->join('sau_ct_file_upload_contract','sau_ct_file_upload_contract.file_upload_id','sau_ct_file_upload_contracts_leesse.id')
-          ->join('sau_ct_information_contract_lessee', 'sau_ct_information_contract_lessee.id', 'sau_ct_file_upload_contract.contract_id')
-          ->leftJoin('sau_ct_file_item_contract', 'sau_ct_file_item_contract.file_id', 'sau_ct_file_upload_contracts_leesse.id')
-          ->leftJoin('sau_ct_section_category_items', 'sau_ct_section_category_items.id', 'sau_ct_file_item_contract.item_id')
-          ->groupBy('sau_ct_file_upload_contracts_leesse.id', 'sau_ct_section_category_items.item_name');
+          ->join('sau_users','sau_users.id','sau_documents_security.user_creator_id')
+          ->leftJoin('sau_document_security_users', 'sau_document_security_users.document_security_id', 'sau_documents_security.id')
+          ->leftJoin('sau_document_security_roles', 'sau_document_security_roles.document_security_id', 'sau_documents_security.id')
+          ->whereRaw("sau_document_security_users.user_id = {$this->user->id}")
+          ->orWhere('sau_documents_security.user_creator_id', $this->user->id)
+          ->orWhereRaw("sau_document_security_roles.role_id in ($roles)")
+          ->groupBy('sau_documents_security.id');
 
-        $url = "/legalaspects/upload-files";
+        /*$url = "/industrialsecure/documents";
 
         $filters = COUNT($request->get('filters')) > 0 ? $request->get('filters') : $this->filterDefaultValues($this->user->id, $url);
 
@@ -71,15 +76,9 @@ class DocumentController extends Controller
         {
           $contract_id = $this->getContractIdUser($this->user->id);
           $files->where('sau_ct_information_contract_lessee.id', $contract_id);
-        }
+        }*/
         
         return Vuetable::of($files)
-            ->addColumn('legalaspects-upload-files-edit', function ($file) use ($contract_id) {
-              return $this->checkPermissionUserInFile($file->user_id, $contract_id);
-            })
-            ->addColumn('control_delete', function ($file) use ($contract_id) {
-              return $this->checkPermissionUserInFile($file->user_id, $contract_id);
-            })
             ->make();
     }
 
@@ -89,54 +88,44 @@ class DocumentController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(FileUploadRequest $request)
+    public function store(DocumentRequest $request)
     {
       DB::beginTransaction();
 
       try
       {
-        $fileUpload = new FileUpload();
+        $document = new Document();
         $file = $request->file;
         $nameFile = base64_encode($this->user->id . now()) .'.'. $file->extension();
         
-        $file->storeAs('legalAspects/files/', $nameFile,'s3');
+        $file->storeAs('industrialSecure/documents/files/', $nameFile,'s3');
 
-        $fileUpload->file = $nameFile;
-        $fileUpload->user_id = $this->user->id;
-        $fileUpload->name = $request->name;
-        $fileUpload->expirationDate = $request->expirationDate == null ? null : (Carbon::createFromFormat('D M d Y', $request->expirationDate))->format('Ymd');
-        $fileUpload->state = $request->state == null ? 'PENDIENTE' : $request->state;
-        $fileUpload->reason_rejection = $request->reason_rejection;
+        $document->file = $nameFile;
+        $document->user_creator_id = $this->user->id;
+        $document->name = $request->name;
+        $document->company_id = $this->company;
       
-        if(!$fileUpload->save())
+        if(!$document->save())
         {
           return $this->respondHttp500();
         }
 
-        if ($request->get('contract_id') && COUNT($request->get('contract_id')) > 0)
+        if ($request->get('users_id') && COUNT($request->get('users_id')) > 0)
         {
-          $fileUpload->contracts()->sync($this->getDataFromMultiselect($request->get('contract_id')));
+          $document->users()->sync($this->getDataFromMultiselect($request->get('users_id')));
         }
-        else 
-        {
-          $fileUpload->contracts()->sync([$this->getContractIdUser($this->user->id)]);
 
-          $state = new FileModuleState;
-          $state->contract_id = $this->getContractIdUser($this->user->id);
-          $state->file_id = $fileUpload->id;
-          $state->module = 'Subida de Archivos';
-          $state->state = 'CREADO';
-          $state->date = date('Y-m-d');
-          $state->save();
+        if ($request->get('roles_id') && COUNT($request->get('roles_id')) > 0)
+        {
+          $document->roles()->sync($this->getDataFromMultiselect($request->get('roles_id')));
         }
 
         DB::commit();
 
-        //$this->sendNotification($fileUpload);
       }
       catch(\Exception $e) {
         DB::rollback();
-        //\Log::info($e->getMessage());
+        \Log::info($e->getMessage());
         return $this->respondHttp500();
       }
 
@@ -148,28 +137,35 @@ class DocumentController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\FileUpload  $fileUpload
+     * @param  \App\Document  $fileUpload
      * @return \Illuminate\Http\Response
      */
     public function show($id)
     {
       try
       {
-        $fileUpload = FileUpload::findOrFail($id);
-        $fileUpload->expirationDate = $fileUpload->expirationDate == null ? null : (Carbon::createFromFormat('Y-m-d',$fileUpload->expirationDate))->format('D M d Y');
+        $document = Document::findOrFail($id);
+        $users_id = [];
+        $roles_id = [];
 
-        $contract_id = [];
-
-        foreach ($fileUpload->contracts as $key => $value)
+        foreach ($document->users as $key => $value)
         {
-          array_push($contract_id, $value->multiselect());
+          array_push($users_id, $value->multiselect());
         }
 
-        $fileUpload->contract_id = $contract_id;
-        $fileUpload->multiselect_contract_id = $contract_id;
+        foreach ($document->roles as $key => $value)
+        {
+          array_push($roles_id, $value->multiselect());
+        }
+
+        $document->users_id = $users_id;
+        $document->multiselect_user_id = $users_id;
+
+        $document->roles_id = $roles_id;
+        $document->multiselect_role = $roles_id;
 
         return $this->respondHttp200([
-            'data' => $fileUpload,
+            'data' => $document,
         ]);
 
       } catch(Exception $e) {
@@ -184,97 +180,42 @@ class DocumentController extends Controller
      * @param  \App\FileUpload  $fileUpload
      * @return \Illuminate\Http\Response
      */
-    public function update(FileUploadRequest $request, FileUpload $fileUpload)
+    public function update(DocumentRequest $request, Document $document)
     {
       DB::beginTransaction();
 
       try
       {
-        $contract_id = $this->getContractIdUser($this->user->id);
-
-        if (!$this->checkPermissionUserInFile($fileUpload->user_id, $contract_id))
-        {
-          return $this->respondWithError('No tiene permitido editar este archivo');
-        }
-
-        $file = FileUpload::find($fileUpload->id);
+        $file = Document::find($document->id);
         $beforeFile= $file;
 
-        if($request->file != $fileUpload->file)
+        if($request->file != $document->file)
         {
           $file = $request->file;
-          Storage::disk('s3')->delete('legalAspects/files/'. $fileUpload->file);
+          Storage::disk('s3')->delete('industrialSecure/documents/files/'. $document->file);
           $nameFile = base64_encode($this->user->id . now()) .'.'. $file->extension();
-          $file->storeAs('legalAspects/files/', $nameFile,'s3');
-          $fileUpload->file = $nameFile;
+          $file->storeAs('industrialSecure/documents/files/', $nameFile,'s3');
+          $document->file = $nameFile;
         }
         
-        $fileUpload->name = $request->name;
-        $fileUpload->expirationDate = $request->expirationDate == null ? null : (Carbon::createFromFormat('D M d Y', $request->expirationDate))->format('Ymd');        
-        $fileUpload->state = $request->state == null ? 'PENDIENTE' : $request->state;
-        $fileUpload->reason_rejection = $request->reason_rejection;
+        $document->name = $request->name;
         
-        if(!$fileUpload->save()) {
+        if(!$document->save()) {
           return $this->respondHttp500();
         }
 
-        if ($request->get('contract_id') && COUNT($request->get('contract_id')) > 0)
+        if ($request->get('users_id') && COUNT($request->get('users_id')) > 0)
         {
-          $fileUpload->contracts()->sync($this->getDataFromMultiselect($request->get('contract_id')));
-        }
-        else 
-        {
-          $fileUpload->contracts()->sync([$this->getContractIdUser($this->user->id)]);
+          $document->users()->sync($this->getDataFromMultiselect($request->get('users_id')));
         }
 
-        if(COUNT($request->get('contract_id')) == 1)
+        if ($request->get('roles_id') && COUNT($request->get('roles_id')) > 0)
         {
-          if ($beforeFile->state != $fileUpload->state && $fileUpload->state == 'RECHAZADO')
-          {
-            FileModuleState::updateOrCreate(['file_id' => $fileUpload->id, 'date' => date('Y-m-d')],
-            [
-              'contract_id' => $this->getDataFromMultiselect($request->get('contract_id'))[0],
-              'file_id' => $fileUpload->id,
-              'module' => 'Subida de Archivos',
-              'state' => 'RECHAZADO',
-              'date' => date('Y-m-d')
-            ]);
-          }
-          else 
-          {
-            if ($beforeFile->name != $fileUpload->name || $beforeFile->file != $fileUpload->file || $beforeFile->expirationDate != $fileUpload->expirationDate)
-            {
-              if (!$this->user->hasRole('Arrendatario', $this->company) || !$this->user->hasRole('Contratista', $this->company))
-              {
-                //notificar creador
-                FileModuleState::updateOrCreate(['file_id' => $fileUpload->id, 'date' => date('Y-m-d')],
-                [
-                  'contract_id' => $this->getDataFromMultiselect($request->get('contract_id'))[0],
-                  'file_id' => $fileUpload->id,
-                  'module' => 'Subida de Archivos',
-                  'state' => 'MODIFICADO CONTRATANTE',
-                  'date' => date('Y-m-d')
-                ]);
-              }
-              else
-              {
-                //notificar contratante
-                FileModuleState::updateOrCreate(['file_id' => $fileUpload->id, 'date' => date('Y-m-d')],
-                [
-                  'contract_id' => $this->getDataFromMultiselect($request->get('contract_id'))[0],
-                  'file_id' => $fileUpload->id,
-                  'module' => 'Subida de Archivos',
-                  'state' => 'MODIFICADO',
-                  'date' => date('Y-m-d')
-                ]);
-              }
-            }
-          }
+          $document->roles()->sync($this->getDataFromMultiselect($request->get('roles_id')));
         }
 
         DB::commit();
 
-        //$this->sendNotification($fileUpload, 'actualizado');
       }
       catch(\Exception $e) {
         DB::rollback();
@@ -290,23 +231,21 @@ class DocumentController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\FileUpload  $fileUpload
+     * @param  \App\Document  $fileUpload
      * @return \Illuminate\Http\Response
      */
-    public function destroy(FileUpload $fileUpload)
+    public function destroy(Document $document)
     {
       try
       {
-        $contract_id = $this->getContractIdUser($this->user->id);
-
-        if (!$this->checkPermissionUserInFile($fileUpload->user_id, $contract_id))
+        if ($document->user_creator_id != $this->user->id)
         {
           return $this->respondWithError('No tiene permitido eliminar este archivo');
         }
 
-        Storage::disk('s3')->delete('legalAspects/files/'. $fileUpload->file);
+        Storage::disk('s3')->delete('industrialSecure/documents/files/'. $document->file);
         
-        if(!$fileUpload->delete())
+        if(!$document->delete())
         {
           return $this->respondHttp500();
         }
@@ -327,21 +266,8 @@ class DocumentController extends Controller
      * @param  \App\FileUpload  $fileUpload
      * @return \Illuminate\Http\Response
      */
-    public function download(FileUpload $fileUpload)
+    public function download(Document $document)
     {
-      return Storage::disk('s3')->download('legalAspects/files/'. $fileUpload->file);
-    }
-
-    private function checkPermissionUserInFile($user_id, $contract_id)
-    {
-      if ($this->user->hasRole('Arrendatario', $this->company) || $this->user->hasRole('Contratista', $this->company))
-      {
-        if ($this->getContractIdUser($user_id) == $contract_id)
-          return true;
-        else
-          return false;
-      }
-
-      return true;
+      return Storage::disk('s3')->download('industrialSecure/documents/files/'. $document->file);
     }
 }

@@ -816,30 +816,30 @@ export default [{
             import('@/views/IndustrialSecure/epp/transactions/reception/view')
         }
       ]),
-      ...middleware({ 'check-permission': 'contracts_uploadFiles_r' }, [
+      ...middleware({ 'check-permission': 'documentsSecurity_r' }, [
 				{
-					name: 'industrialsecure-documentsSecurity',
+					name: 'industrialsecure-documentssecurity',
 					path: 'documents',
 					component: () => import('@/views/IndustrialSecure/documents/index')
 				}
 			]),
-			...middleware({ 'check-permission': 'contracts_uploadFiles_c' }, [
+			...middleware({ 'check-permission': 'documentsSecurity_c' }, [
 				{
-					name: 'industrialsecure-documentsSecurity-create',
+					name: 'industrialsecure-documentssecurity-create',
 					path: 'documents/create',
 					component: () => import('@/views/IndustrialSecure/documents/create')
 				}
 			]),
-			...middleware({ 'check-permission': 'contracts_uploadFiles_u' }, [
+			...middleware({ 'check-permission': 'documentsSecurity_u' }, [
 				{
-					name: 'industrialsecure-documentsSecurity-edit',
+					name: 'industrialsecure-documentssecurity-edit',
 					path: 'documents/edit/:id',
 					component: () => import('@/views/IndustrialSecure/documents/edit')
 				}
 			]),
-			...middleware({ 'check-permission': 'contracts_uploadFiles_r' }, [
+			...middleware({ 'check-permission': 'documentsSecurity_r' }, [
 				{
-					name: 'industrialsecure-documentsSecurity-view',
+					name: 'industrialsecure-documentssecurity-view',
 					path: 'documents/view/:id',
 					component: () => import('@/views/IndustrialSecure/documents/view')
 				}

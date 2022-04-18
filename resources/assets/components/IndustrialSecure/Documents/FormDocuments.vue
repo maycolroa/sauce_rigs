@@ -14,7 +14,7 @@
 
 					<b-form-row>
 						<vue-ajax-advanced-select :disabled="viewOnly" class="col-md-12" v-model="form.users_id" :selected-object="form.multiselect_user_id" name="users_id" label="Usuarios" placeholder="Seleccione los usuarios autorizados para ver o editar este documento" :url="userDataUrl" :error="form.errorsFor('users_id')" :multiple="true" :allowEmpty="true"> </vue-ajax-advanced-select>    
-						<vue-ajax-advanced-select :disabled="viewOnly" class="col-md-12" v-model="form.roles_id" :error="form.errorsFor('roles_id')" :selected-object="form.multiselect_role" name="roles_id" label="Roles" placeholder="Seleccione los roles autorizados para ver o editar este documento" :url="rolesDataUrl" :multiple="true"></vue-ajax-advanced-select>  
+						<vue-ajax-advanced-select :disabled="viewOnly" class="col-md-12" v-model="form.roles_id" :error="form.errorsFor('roles_id')" :selected-object="form.multiselect_role" name="roles_id" label="Roles" placeholder="Seleccione los roles autorizados para ver o editar este documento" :url="rolesDataUrl" :multiple="true" :allowEmpty="true"></vue-ajax-advanced-select>  
 					</b-form-row>
 
             	</b-card>
@@ -96,7 +96,7 @@ export default {
 			.submit(e.target.action)
 			.then(response => {
 				this.loading = false;
-				this.$router.push({ name: "industrialsecure-documentsSecurity" });
+				this.$router.push({ name: "industrialsecure-documentssecurity" });
 			})
 			.catch(error => {
 				this.loading = false;

@@ -1,8 +1,8 @@
 <template>
   <div>
     <header-module
-			title="CONTRATISTAS"
-			subtitle="ADMINISTRAR ARCHIVOS"
+			title="DOCUMENTOS"
+			subtitle="ADMINISTRAR DOCUMENTOS"
 			url="industrialsecure"
 		/>
     
@@ -10,15 +10,13 @@
       <b-card no-body>
         <b-card-header class="with-elements">
           <div class="card-title-elements" v-if="auth.can['documentsSecurity_c']">
-            <b-btn :to="{name:'industrialsecure-documentsSecurity-create'}" variant="primary">Subir Archivo</b-btn>
+            <b-btn :to="{name:'industrialsecure-documentssecurity-create'}" variant="primary">Cargar Documento</b-btn>
           </div>
         </b-card-header>
         <b-card-body>
             <vue-table
                 v-if="auth.can['documentsSecurity_r']"
-                configName="legalAspects-fileUpload"
-                :customColumnsName="true" 
-                modelId="id"
+                configName="industrialsecure-documents"
                 ></vue-table>
         </b-card-body>
     </b-card>
@@ -30,7 +28,7 @@
 import Alerts from "@/utils/Alerts.js";
 
 export default {
-	name: "upload-files",
+	name: "documentsSecurity",
 	metaInfo: {
 		title: "Subida de Archivos"
 	},

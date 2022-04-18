@@ -1,16 +1,28 @@
 <?php
 
-namespace App\Models\IndustrialSecure\Epp;
+namespace App\Models\IndustrialSecure\Documents;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Traits\CompanyTrait;
 
-
-class ElementBalanceInicialLog extends Model
+class Document extends Model
 {
-    protected $table = 'sau_epp_elements_balance_inicial_log';
+    use CompanyTrait;
+    
+    protected $table = 'sau_documents_security';
 
     protected $fillable = [
-        'element_id',
-        'balance_inicial'
+        'name',
+        'file'
     ];
+
+    public function users()
+    {
+        return $this->belongsToMany("app\Models\Administrative\Users\User",'sau_document_security_users', 'document_security_id', 'user_id');
+    }
+
+    public function roles()
+    {
+        return $this->belongsToMany("app\Models\Administrative\Roles\Role",'sau_document_security_roles', 'document_security_id', 'role_id');
+    }
 }

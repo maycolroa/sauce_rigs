@@ -1624,7 +1624,8 @@ export default [
         urlData: '/industrialSecurity/epp/reception/data',
         filterColumns: true,
     }
-},{
+},
+{
     name: 'industrialsecure-epp-reports-employees',
     fields: [
         { name: 'id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true },
@@ -1645,6 +1646,59 @@ export default [
         urlData: '/industrialSecurity/epp/element/reportEmployee',
         filterColumns: false,
         //configNameFilter: 'industrialsecure-epp-report'
+    }
+},
+{
+    name: 'industrialsecure-documents',
+    fields: [
+        { name: 'id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true },
+        { name: 'name', data: 'name', title: 'Nombre', sortable: true, searchable: false, detail: false, key: false },
+        { name: 'user_name', data: 'user_name', title: 'Usuario creador', sortable: true, searchable: false, detail: false, key: false },
+        { name: '', data: 'controlls', title: 'Controles', sortable: false, searchable: false, detail: false, key: false },
+    ],
+    'controlls': [{
+        type: 'push',
+        buttons: [{
+        config: {
+            color: 'outline-success',
+            borderless: true,
+            icon: 'ion ion-md-create',
+            title: 'Editar'
+        },
+        data: {
+            routePush: { name: 'industrialsecure-documentssecurity-edit' },
+            id: 'id',
+        },
+        permission: 'documentsSecurity_u'
+        }, {
+        config: {
+            color: 'outline-info',
+            borderless: true,
+            icon: 'ion ion-md-eye',
+            title: 'Ver'
+        },
+        data: {
+            routePush: { name: 'industrialsecure-documentssecurity-view' },
+            id: 'id',
+        },
+        permission: 'documentsSecurity_r'
+        }]
+    },
+    {
+        type: 'base',
+        buttons: [{
+        name: 'delete',
+        data: {
+            action: '/industrialSecurity/document/',
+            id: 'id',
+            messageConfirmation: 'Esta seguro de borrar el documento __name__'
+        },
+        permission: 'documentsSecurity_d'
+        }],
+    }],
+    configuration: {
+        urlData: '/industrialSecurity/document/data',
+        filterColumns: true,
     }
 },
 ];

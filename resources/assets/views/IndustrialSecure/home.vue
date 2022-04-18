@@ -88,7 +88,7 @@
 
             <b-row v-if="checkModule('documentssecurity')">
                 <b-col cols="8">
-                    <router-link :to="{ name: 'industrialsecure-documentsSecurity'}" v-on:click.native="activityUser('Documentos Seguridad')" class="text-dark cursor-pointer item-app-navbar">
+                    <router-link :to="{ name: 'industrialsecure-documentssecurity'}" v-on:click.native="activityUser('Documentos Seguridad')" class="text-dark cursor-pointer item-app-navbar">
                         <center>
                             <div style="font-size: 20px;" class="my-2 mx-2 text-center font-weight-bold" ref="documents" @mouseover="changeClassImage('documents', 'documents_hover')">
                                 <img class="ui-w-80" src="/images/Sauce-ML Ico Admin mis normas.png" alt="">

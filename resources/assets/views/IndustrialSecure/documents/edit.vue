@@ -1,21 +1,20 @@
 <template>
   <div>
     <header-module
-			title="CONTRATISTAS"
-			subtitle="EDITAR ARCHIVO"
-			url="legalaspects-upload-files"
+			title="DOCUMENTOS"
+			subtitle="EDITAR DOCUMENTO"
+			url="industrialsecure-documentsSecurity"
 		/>
 
     <div class="col-md">
       <b-card no-body>
         <b-card-body>
-            <legal-aspects-contracts-upload-file-form
-                :url="`/legalAspects/fileUpload/${this.$route.params.id}`"
+            <documents-form
+                :url="`/industrialSecurity/document/${this.$route.params.id}`"
                 method="PUT"
                 :is-edit="true"
-                :fileUpload="data"
-                :cancel-url="{ name: 'legalaspects-upload-files'}"
-                :states="states"/>
+                :document="data"
+                :cancel-url="{ name: 'industrialsecure-documentsSecurity'}"/>
         </b-card-body>
       </b-card>
     </div>
@@ -23,47 +22,31 @@
 </template>
 
 <script>
-import LegalAspectsContractsUploadFileForm from '@/components/LegalAspects/Contracts/UploadFiles/FormUploadFile.vue';
+import DocumentsForm from '@/components/IndustrialSecure/Documents/FormDocuments.vue';
 import GlobalMethods from '@/utils/GlobalMethods.js';
+import Alerts from '@/utils/Alerts.js';
 
 export default {
-  name: 'contracts-upload-files',
+  name: 'documentsSecurity-edit',
   metaInfo: {
-    title: 'Contratista - Subir Archivos'
+    title: 'Seguridad Documentos'
   },
   components:{
-    LegalAspectsContractsUploadFileForm
+    DocumentsForm
   },
   data(){
     return {
       data: {},
-      states: []
     }
   },
   created(){
-    axios.get(`/legalAspects/fileUpload/${this.$route.params.id}`)
+    axios.get(`/industrialSecurity/document/${this.$route.params.id}`)
     .then(response => {
         this.data = response.data.data;
     })
     .catch(error => {
         Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
-        this.$router.go(-1);
     });
-
-    this.fetchSelect('states', '/selects/contracts/statesFile')
-  },
-  methods: {
-    fetchSelect(key, url)
-    {
-        GlobalMethods.getDataMultiselect(url)
-        .then(response => {
-            this[key] = response;
-        })
-        .catch(error => {
-            Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
-            this.$router.go(-1);
-        });
-    },
   }
 }
 </script>

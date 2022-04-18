@@ -1,7 +1,7 @@
 <template>
   <div>
     <header-module
-			title="SEGURIDAD"
+			title="DOCUMENTOS"
 			subtitle="CREAR DOCUMENTO"
 			url="industrialsecure-documentsSecurity"
 		/>
@@ -10,7 +10,7 @@
       <b-card no-body>
         <b-card-body>
             <documents-form
-                url="/legalAspects/fileUpload"
+                url="/industrialSecurity/document"
                 method="POST"
                 :cancel-url="{ name: 'industrialsecure-documentsSecurity'}"/>
         </b-card-body>
@@ -24,7 +24,7 @@ import DocumentsForm from '@/components/IndustrialSecure/Documents/FormDocuments
 import GlobalMethods from '@/utils/GlobalMethods.js';
 
 export default {
-  name: 'documents',
+  name: 'documentsSecurity-create',
   metaInfo: {
     title: 'Seguridad - Documentos'
   },
