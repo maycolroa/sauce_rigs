@@ -1751,5 +1751,58 @@ export default [
             filterColumns: true,
             //configNameFilter: 'legalaspects-evaluations-contracts'*/
         }
-    }
+    },
+    {
+        name: 'legalaspects-documents',
+        fields: [
+            { name: 'id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true },
+            { name: 'name', data: 'name', title: 'Nombre', sortable: true, searchable: false, detail: false, key: false },
+            { name: 'user_name', data: 'user_name', title: 'Usuario creador', sortable: true, searchable: false, detail: false, key: false },
+            { name: '', data: 'controlls', title: 'Controles', sortable: false, searchable: false, detail: false, key: false },
+        ],
+        'controlls': [{
+            type: 'push',
+            buttons: [{
+            config: {
+                color: 'outline-success',
+                borderless: true,
+                icon: 'ion ion-md-create',
+                title: 'Editar'
+            },
+            data: {
+                routePush: { name: 'legalaspects-documentslegals-edit' },
+                id: 'id',
+            },
+            permission: 'documentsLegals_u'
+            }, {
+            config: {
+                color: 'outline-info',
+                borderless: true,
+                icon: 'ion ion-md-eye',
+                title: 'Ver'
+            },
+            data: {
+                routePush: { name: 'legalaspects-documentslegals-view' },
+                id: 'id',
+            },
+            permission: 'documentsLegals_r'
+            }]
+        },
+        {
+            type: 'base',
+            buttons: [{
+            name: 'delete',
+            data: {
+                action: '/legalAspects/document/',
+                id: 'id',
+                messageConfirmation: 'Esta seguro de borrar el documento __name__'
+            },
+            permission: 'documentsPreventive_d'
+            }],
+        }],
+        configuration: {
+            urlData: '/legalAspects/document/data',
+            filterColumns: true,
+        }
+    },
 ]

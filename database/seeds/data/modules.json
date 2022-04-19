@@ -187,6 +187,12 @@
                 "display_name": "Matriz Legal",
                 "main": "SI",
                 "logo": "legalmatrix.png"
+            },
+            {
+                "name": "documentsLegals",
+                "display_name": "Documentos Aspectos Legales",
+                "main": "SI",
+                "logo": null
             }
         ]
     },

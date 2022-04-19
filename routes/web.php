@@ -766,6 +766,10 @@ Route::middleware(['auth'])->group(function () {
         Route::post('articleHistory/data', 'LegalAspects\LegalMatrix\ArticleHistoryController@data');
         Route::post('articleFulfillmentHistory/data', 'LegalAspects\LegalMatrix\ArticleFulfillmentHistoryController@data');
       });
+
+      Route::get('document/download/{document}', 'LegalAspects\Documents\DocumentController@download');
+      Route::post('document/data', 'LegalAspects\Documents\DocumentController@data');
+      Route::ApiResource('document', 'LegalAspects\Documents\DocumentController');
     });
     
     //Sistema

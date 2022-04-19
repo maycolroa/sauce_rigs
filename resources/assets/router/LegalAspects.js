@@ -888,6 +888,34 @@ export default [
 					import('@/views/LegalAspects/contracts/informContract/report')
 				}
 			]),
+			...middleware({ 'check-permission': 'documentsLegals_r' }, [
+				{
+					name: 'legalaspects-documentslegals',
+					path: 'documentslegals',
+					component: () => import('@/views/LegalAspects/documents/index')
+				}
+			]),
+			...middleware({ 'check-permission': 'documentsLegals_c' }, [
+				{
+					name: 'legalaspects-documentslegals-create',
+					path: 'documentslegals/create',
+					component: () => import('@/views/LegalAspects/documents/create')
+				}
+			]),
+			...middleware({ 'check-permission': 'documentsLegals_u' }, [
+				{
+					name: 'legalaspects-documentslegals-edit',
+					path: 'documentslegals/edit/:id',
+					component: () => import('@/views/LegalAspects/documents/edit')
+				}
+			]),
+			...middleware({ 'check-permission': 'documentsLegals_r' }, [
+				{
+					name: 'legalaspects-documentslegals-view',
+					path: 'documentslegals/view/:id',
+					component: () => import('@/views/LegalAspects/documents/view')
+				}
+			]),
 		]
 	}
 ];
