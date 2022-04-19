@@ -160,6 +160,10 @@ Route::middleware(['auth'])->group(function () {
           Route::post('configuration', 'PreventiveOccupationalMedicine\Absenteeism\ConfigurationController@store');
           Route::get('configuration/view', 'PreventiveOccupationalMedicine\Absenteeism\ConfigurationController@show');
         });
+
+        Route::get('document/download/{document}', 'PreventiveOccupationalMedicine\Documents\DocumentController@download');
+        Route::post('document/data', 'PreventiveOccupationalMedicine\Documents\DocumentController@data');
+        Route::ApiResource('document', 'PreventiveOccupationalMedicine\Documents\DocumentController');
     });
     
     Route::prefix('selects')->group(function () {

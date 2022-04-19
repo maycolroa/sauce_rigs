@@ -1032,4 +1032,57 @@ export default [
         filterColumns: true,
     }
 },
+{
+    name: 'biologicalmonitoring-documents',
+    fields: [
+        { name: 'id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true },
+        { name: 'name', data: 'name', title: 'Nombre', sortable: true, searchable: false, detail: false, key: false },
+        { name: 'user_name', data: 'user_name', title: 'Usuario creador', sortable: true, searchable: false, detail: false, key: false },
+        { name: '', data: 'controlls', title: 'Controles', sortable: false, searchable: false, detail: false, key: false },
+    ],
+    'controlls': [{
+        type: 'push',
+        buttons: [{
+        config: {
+            color: 'outline-success',
+            borderless: true,
+            icon: 'ion ion-md-create',
+            title: 'Editar'
+        },
+        data: {
+            routePush: { name: 'preventiveoccupationalmedicine-documentspreventive-edit' },
+            id: 'id',
+        },
+        permission: 'documentsPreventive_u'
+        }, {
+        config: {
+            color: 'outline-info',
+            borderless: true,
+            icon: 'ion ion-md-eye',
+            title: 'Ver'
+        },
+        data: {
+            routePush: { name: 'preventiveoccupationalmedicine-documentspreventive-view' },
+            id: 'id',
+        },
+        permission: 'documentsPreventive_r'
+        }]
+    },
+    {
+        type: 'base',
+        buttons: [{
+        name: 'delete',
+        data: {
+            action: '/biologicalmonitoring/document/',
+            id: 'id',
+            messageConfirmation: 'Esta seguro de borrar el documento __name__'
+        },
+        permission: 'documentsPreventive_d'
+        }],
+    }],
+    configuration: {
+        urlData: '/biologicalmonitoring/document/data',
+        filterColumns: true,
+    }
+},
 ];

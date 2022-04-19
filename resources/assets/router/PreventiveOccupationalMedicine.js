@@ -536,5 +536,33 @@ export default [{
             import('@/views/PreventiveOccupationalMedicine/absenteeism/configuration/index')
         }
       ]),
+      ...middleware({ 'check-permission': 'documentsPreventive_r' }, [
+				{
+					name: 'preventiveoccupationalmedicine-documentspreventive',
+					path: 'documentspreventive',
+					component: () => import('@/views/PreventiveOccupationalMedicine/documents/index')
+				}
+			]),
+			...middleware({ 'check-permission': 'documentsPreventive_c' }, [
+				{
+					name: 'preventiveoccupationalmedicine-documentspreventive-create',
+					path: 'documentspreventive/create',
+					component: () => import('@/views/PreventiveOccupationalMedicine/documents/create')
+				}
+			]),
+			...middleware({ 'check-permission': 'documentsPreventive_u' }, [
+				{
+					name: 'preventiveoccupationalmedicine-documentspreventive-edit',
+					path: 'documentspreventive/edit/:id',
+					component: () => import('@/views/PreventiveOccupationalMedicine/documents/edit')
+				}
+			]),
+			...middleware({ 'check-permission': 'documentsPreventive_r' }, [
+				{
+					name: 'preventiveoccupationalmedicine-documentspreventive-view',
+					path: 'documentspreventive/view/:id',
+					component: () => import('@/views/PreventiveOccupationalMedicine/documents/view')
+				}
+			]),
   ]
 }]

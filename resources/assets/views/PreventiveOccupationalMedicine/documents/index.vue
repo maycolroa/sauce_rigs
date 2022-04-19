@@ -3,20 +3,20 @@
     <header-module
 			title="DOCUMENTOS"
 			subtitle="ADMINISTRAR DOCUMENTOS"
-			url="industrialsecure"
+			url="preventiveoccupationalmedicine"
 		/>
     
     <div class="col-md">
       <b-card no-body>
         <b-card-header class="with-elements">
-          <div class="card-title-elements" v-if="auth.can['documentsSecurity_c']">
-            <b-btn :to="{name:'industrialsecure-documentssecurity-create'}" variant="primary">Cargar Documento</b-btn>
+          <div class="card-title-elements" v-if="auth.can['documentsPreventive_c']">
+            <b-btn :to="{name:'preventiveoccupationalmedicine-documentspreventive-create'}" variant="primary">Cargar Documento</b-btn>
           </div>
         </b-card-header>
         <b-card-body>
             <vue-table
-                v-if="auth.can['documentsSecurity_r']"
-                configName="industrialsecure-documents"
+                v-if="auth.can['documentsPreventive_r']"
+                configName="biologicalmonitoring-documents"
                 ></vue-table>
         </b-card-body>
     </b-card>
@@ -28,9 +28,9 @@
 import Alerts from "@/utils/Alerts.js";
 
 export default {
-	name: "documentsSecurity",
+	name: "documentsPreventive",
 	metaInfo: {
-		title: "Documentos Seguridad"
+		title: "Documentos Medicina"
 	},
   methods: {
 
