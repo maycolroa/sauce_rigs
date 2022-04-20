@@ -63,6 +63,10 @@
 
               <b-card  bg-variant="transparent"  title="" class="mb-3 box-shadow-none">
                 <b-form-row>
+                    <vue-radio v-if="auth.hasRole['Superadmin']" :disabled="viewOnly" class="col-md-12" v-model="hide" :options="siNoRadio" name="hide" label="¿Desea ocultar todos los artíćulos?">
+                      </vue-radio>
+                  </b-form-row>
+                <b-form-row>
                   <vue-advanced-select ref="qualificationAll" :disabled="viewOnly" class="col-md-6" v-model="fulfillment_value_id" :multiple="false" :options="qualifications" name="fulfillment_value_id_all" label="Evaluación" @selectedName="updateQualifyAll"/>
                   <vue-input :disabled="viewOnly" class="col-md-6" v-model="responsible" label="Responsable" type="text" name="responsible" placeholder="Responsable"/>
                 </b-form-row>
@@ -347,6 +351,7 @@ export default {
       responsible: '',
       observations: '',
       workplace: '',
+      hide: '',
       qualifyName: '',
       file_masive: '',
       loadingAlternativo: false,
@@ -522,6 +527,7 @@ export default {
         data.append('observations', this.observations ? this.observations : '');
         data.append('responsible', this.responsible ? this.responsible : '');
         data.append('workplace', this.workplace ? this.workplace : '');
+        data.append('hide', this.hide ? this.hide : 'NO');
         data.append('fulfillment_value_id', this.fulfillment_value_id);
         data.append('file', this.file_masive);
 

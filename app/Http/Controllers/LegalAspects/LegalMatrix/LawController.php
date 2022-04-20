@@ -12,6 +12,7 @@ use App\Models\LegalAspects\LegalMatrix\FulfillmentValues;
 use App\Models\LegalAspects\LegalMatrix\ArticleFulfillment;
 use App\Models\LegalAspects\LegalMatrix\ArticleFulfillmentHistory;
 use App\Models\LegalAspects\LegalMatrix\CompanyIntetest;
+use App\Models\LegalAspects\LegalMatrix\LawHide;
 use App\Jobs\LegalAspects\LegalMatrix\SyncQualificationsCompaniesJob;
 use App\Traits\LegalMatrixTrait;
 use App\Traits\Filtertrait;
@@ -63,6 +64,15 @@ class LawController extends Controller
     {
         if ($request->has('qualify'))
         {
+            $laws_hides = LawHide::select('law_id')->get()->toArray();
+
+            $hides = [];
+
+            foreach ($laws_hides as $key => $value) 
+            {
+                array_push($hides, $value['law_id']);
+            }
+
             $laws = Law::selectRaw(
                 'sau_lm_laws.*,
                  IF(LENGTH(sau_lm_laws.description) > 50, CONCAT(SUBSTRING(sau_lm_laws.description, 1, 50), "..."), sau_lm_laws.description) AS description,
@@ -83,8 +93,12 @@ class LawController extends Controller
             ->join('sau_lm_article_interest', 'sau_lm_article_interest.article_id', 'sau_lm_articles.id')
             ->join('sau_lm_company_interest','sau_lm_company_interest.interest_id', 'sau_lm_article_interest.interest_id')
             ->join('sau_lm_articles_fulfillment','sau_lm_articles_fulfillment.article_id', 'sau_lm_articles.id')
-            ->where('sau_lm_articles_fulfillment.company_id', $this->company)
-            ->groupBy('sau_lm_laws.id');
+            ->where('sau_lm_articles_fulfillment.company_id', $this->company);
+
+            if (!$this->user->hasRole('Superadmin', $this->company) && COUNT($hides) > 0)
+                $laws->whereNotIn('sau_lm_laws.id', $hides);
+
+            $laws->groupBy('sau_lm_laws.id');
 
             $url = "/legalaspects/lm/lawsQualify";
         }
@@ -603,8 +617,27 @@ class LawController extends Controller
                 'observations' => $request->observations ? $request->observations : NULL,
                 'responsible' => $request->responsible ? $request->responsible : NULL,
                 'workplace' => $request->workplace ? $request->workplace : NULL,
-                'qualification_masive' => true
+                'qualification_masive' => true,
+                'hide' => $request->hide ? $request->hide : 'NO'
             ]);
+
+            $article_qualify = ArticleFulfillment::find($ids[0]);
+            $article_law = Article::find($article_qualify->article_id);
+            $law = Law::find($article_law->law_id);
+
+            if ($request->hide == 'SI')
+            {
+                $law_hide = LawHide::updateOrCreate(['company_id' => $this->company, 'law_id' => $law->id], ['company_id' => $this->company, 'law_id' => $law->id, 'user_id' => $this->user->id]);
+            }
+            else
+            {
+                $law_hide = LawHide::where('company_id', $this->company)
+                ->where('law_id', $law->id)
+                ->first();
+
+                if ($law_hide)
+                    $law_hide->delete();
+            }
 
             if ($request->file)
             {
