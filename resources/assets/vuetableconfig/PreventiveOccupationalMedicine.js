@@ -1053,7 +1053,7 @@ export default [
             routePush: { name: 'preventiveoccupationalmedicine-documentspreventive-edit' },
             id: 'id',
         },
-        permission: 'documentsPreventive_u'
+        //permission: 'documentsPreventive_u'
         }, {
         config: {
             color: 'outline-info',
@@ -1065,7 +1065,7 @@ export default [
             routePush: { name: 'preventiveoccupationalmedicine-documentspreventive-view' },
             id: 'id',
         },
-        permission: 'documentsPreventive_r'
+        //permission: 'documentsPreventive_r'
         }]
     },
     {
@@ -1077,7 +1077,7 @@ export default [
             id: 'id',
             messageConfirmation: 'Esta seguro de borrar el documento __name__'
         },
-        permission: 'documentsPreventive_d'
+        //permission: 'documentsPreventive_d'
         }],
     }],
     configuration: {

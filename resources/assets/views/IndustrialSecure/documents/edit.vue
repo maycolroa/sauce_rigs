@@ -3,7 +3,7 @@
     <header-module
 			title="DOCUMENTOS"
 			subtitle="EDITAR DOCUMENTO"
-			url="industrialsecure-documentsSecurity"
+			url="industrialsecure-documentssecurity"
 		/>
 
     <div class="col-md">

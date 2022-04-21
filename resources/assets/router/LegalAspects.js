@@ -888,28 +888,28 @@ export default [
 					import('@/views/LegalAspects/contracts/informContract/report')
 				}
 			]),
-			...middleware({ 'check-permission': 'documentsLegals_r' }, [
+			...middleware({ 'check-permission': ['laws_qualify_view', 'contracts_r', 'contracts_typesQualification_r', 'contracts_evaluations_r', 'interestsCustom_r', 'contracts_evaluations_report_view', 'lawsCustom_r'] }, [
 				{
 					name: 'legalaspects-documentslegals',
 					path: 'documentslegals',
 					component: () => import('@/views/LegalAspects/documents/index')
 				}
 			]),
-			...middleware({ 'check-permission': 'documentsLegals_c' }, [
+			...middleware({ 'check-permission': ['laws_qualify_view', 'contracts_r', 'contracts_typesQualification_r', 'contracts_evaluations_r', 'interestsCustom_r', 'contracts_evaluations_report_view', 'lawsCustom_r'] }, [
 				{
 					name: 'legalaspects-documentslegals-create',
 					path: 'documentslegals/create',
 					component: () => import('@/views/LegalAspects/documents/create')
 				}
 			]),
-			...middleware({ 'check-permission': 'documentsLegals_u' }, [
+			...middleware({ 'check-permission': ['laws_qualify_view', 'contracts_r', 'contracts_typesQualification_r', 'contracts_evaluations_r', 'interestsCustom_r', 'contracts_evaluations_report_view', 'lawsCustom_r'] }, [
 				{
 					name: 'legalaspects-documentslegals-edit',
 					path: 'documentslegals/edit/:id',
 					component: () => import('@/views/LegalAspects/documents/edit')
 				}
 			]),
-			...middleware({ 'check-permission': 'documentsLegals_r' }, [
+			...middleware({ 'check-permission': ['laws_qualify_view', 'contracts_r', 'contracts_typesQualification_r', 'contracts_evaluations_r', 'interestsCustom_r', 'contracts_evaluations_report_view', 'lawsCustom_r'] }, [
 				{
 					name: 'legalaspects-documentslegals-view',
 					path: 'documentslegals/view/:id',

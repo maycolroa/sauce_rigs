@@ -1669,7 +1669,7 @@ export default [
             routePush: { name: 'industrialsecure-documentssecurity-edit' },
             id: 'id',
         },
-        permission: 'documentsSecurity_u'
+        //permission: 'documentsSecurity_u'
         }, {
         config: {
             color: 'outline-info',
@@ -1681,7 +1681,7 @@ export default [
             routePush: { name: 'industrialsecure-documentssecurity-view' },
             id: 'id',
         },
-        permission: 'documentsSecurity_r'
+        //permission: 'documentsSecurity_r'
         }]
     },
     {
@@ -1693,7 +1693,7 @@ export default [
             id: 'id',
             messageConfirmation: 'Esta seguro de borrar el documento __name__'
         },
-        permission: 'documentsSecurity_d'
+        //permission: 'documentsSecurity_d'
         }],
     }],
     configuration: {

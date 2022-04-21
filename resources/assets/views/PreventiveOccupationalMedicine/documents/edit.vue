@@ -3,7 +3,7 @@
     <header-module
 			title="DOCUMENTOS"
 			subtitle="EDITAR DOCUMENTO"
-			url="preventiveoccupationalmedicine-documentsPreventive"
+			url="preventiveoccupationalmedicine-documentspreventive"
 		/>
 
     <div class="col-md">

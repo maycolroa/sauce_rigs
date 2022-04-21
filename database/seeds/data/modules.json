@@ -108,12 +108,6 @@
                 "display_name": "Elementos protección personal",
                 "main": "SI",
                 "logo": null
-            },
-            {
-                "name": "documentsSecurity",
-                "display_name": "Documentos Seguridad",
-                "main": "SI",
-                "logo": null
             }
         ]
     },
@@ -154,12 +148,6 @@
                 "display_name": "Ausentismo",
                 "main": "SI",
                 "logo": null
-            },
-            {
-                "name": "documentsPreventive",
-                "display_name": "Documentos Medicina Preventiva",
-                "main": "SI",
-                "logo": null
             }
         ]
     },
@@ -187,12 +175,6 @@
                 "display_name": "Matriz Legal",
                 "main": "SI",
                 "logo": "legalmatrix.png"
-            },
-            {
-                "name": "documentsLegals",
-                "display_name": "Documentos Aspectos Legales",
-                "main": "SI",
-                "logo": null
             }
         ]
     },

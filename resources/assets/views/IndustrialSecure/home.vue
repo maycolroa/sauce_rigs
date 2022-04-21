@@ -80,13 +80,13 @@
                 </b-col>
             </b-row>
 
-            <div class="row" v-if="checkModule('epp') && checkModule('documentssecurity')">
+            <div class="row" v-if="checkModule('epp')">
                 <div class="col-md-5 offset-md-1" style="padding-top: 40px; padding-bottom: 20px;">
                     <hr class="border-dark mt-0 mb-4">
                 </div>
             </div>
 
-            <b-row v-if="checkModule('documentssecurity')">
+            <b-row>
                 <b-col cols="8">
                     <router-link :to="{ name: 'industrialsecure-documentssecurity'}" v-on:click.native="activityUser('Documentos Seguridad')" class="text-dark cursor-pointer item-app-navbar">
                         <center>

@@ -1773,7 +1773,7 @@ export default [
                 routePush: { name: 'legalaspects-documentslegals-edit' },
                 id: 'id',
             },
-            permission: 'documentsLegals_u'
+            //permission: 'documentsLegals_u'
             }, {
             config: {
                 color: 'outline-info',
@@ -1785,7 +1785,7 @@ export default [
                 routePush: { name: 'legalaspects-documentslegals-view' },
                 id: 'id',
             },
-            permission: 'documentsLegals_r'
+            //permission: 'documentsLegals_r'
             }]
         },
         {
@@ -1797,7 +1797,7 @@ export default [
                 id: 'id',
                 messageConfirmation: 'Esta seguro de borrar el documento __name__'
             },
-            permission: 'documentsPreventive_d'
+            //permission: 'documentsPreventive_d'
             }],
         }],
         configuration: {

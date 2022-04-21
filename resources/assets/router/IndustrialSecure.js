@@ -816,28 +816,28 @@ export default [{
             import('@/views/IndustrialSecure/epp/transactions/reception/view')
         }
       ]),
-      ...middleware({ 'check-permission': 'documentsSecurity_r' }, [
+			...middleware({ 'check-permission': ['activities_r', 'elements_r', 'location_r', 'subProcesses_r', 'dangerMatrix_r', 'ph_inspections_r', 'ph_reports_r'] }, [
 				{
 					name: 'industrialsecure-documentssecurity',
 					path: 'documents',
 					component: () => import('@/views/IndustrialSecure/documents/index')
 				}
 			]),
-			...middleware({ 'check-permission': 'documentsSecurity_c' }, [
+			...middleware({ 'check-permission': ['activities_r', 'elements_r', 'location_r', 'subProcesses_r', 'dangerMatrix_r', 'ph_inspections_r', 'ph_reports_r'] }, [
 				{
 					name: 'industrialsecure-documentssecurity-create',
 					path: 'documents/create',
 					component: () => import('@/views/IndustrialSecure/documents/create')
 				}
 			]),
-			...middleware({ 'check-permission': 'documentsSecurity_u' }, [
+			...middleware({ 'check-permission': ['activities_r', 'elements_r', 'location_r', 'subProcesses_r', 'dangerMatrix_r', 'ph_inspections_r', 'ph_reports_r'] }, [
 				{
 					name: 'industrialsecure-documentssecurity-edit',
 					path: 'documents/edit/:id',
 					component: () => import('@/views/IndustrialSecure/documents/edit')
 				}
 			]),
-			...middleware({ 'check-permission': 'documentsSecurity_r' }, [
+			...middleware({ 'check-permission': ['activities_r', 'elements_r', 'location_r', 'subProcesses_r', 'dangerMatrix_r', 'ph_inspections_r', 'ph_reports_r'] }, [
 				{
 					name: 'industrialsecure-documentssecurity-view',
 					path: 'documents/view/:id',

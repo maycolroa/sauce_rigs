@@ -3,7 +3,7 @@
     <header-module
 			title="DOCUMENTOS"
 			subtitle="CREAR DOCUMENTO"
-			url="industrialsecure-documentsSecurity"
+			url="industrialsecure-documentssecurity"
 		/>
 
     <div class="col-md">

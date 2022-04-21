@@ -536,28 +536,28 @@ export default [{
             import('@/views/PreventiveOccupationalMedicine/absenteeism/configuration/index')
         }
       ]),
-      ...middleware({ 'check-permission': 'documentsPreventive_r' }, [
+      ...middleware({ 'check-permission': ['biologicalMonitoring_audiometry_r', 'reinc_restrictions_r', 'reinc_checks_r', 'absen_uploadFiles_r', 'biologicalMonitoring_respiratoryAnalysis_r', 'biologicalMonitoring_musculoskeletalAnalysis_r', 'absen_reports_r'] }, [
 				{
 					name: 'preventiveoccupationalmedicine-documentspreventive',
 					path: 'documentspreventive',
 					component: () => import('@/views/PreventiveOccupationalMedicine/documents/index')
 				}
 			]),
-			...middleware({ 'check-permission': 'documentsPreventive_c' }, [
+			...middleware({ 'check-permission': ['biologicalMonitoring_audiometry_r', 'reinc_restrictions_r', 'reinc_checks_r', 'absen_uploadFiles_r', 'biologicalMonitoring_respiratoryAnalysis_r', 'biologicalMonitoring_musculoskeletalAnalysis_r', 'absen_reports_r'] }, [
 				{
 					name: 'preventiveoccupationalmedicine-documentspreventive-create',
 					path: 'documentspreventive/create',
 					component: () => import('@/views/PreventiveOccupationalMedicine/documents/create')
 				}
 			]),
-			...middleware({ 'check-permission': 'documentsPreventive_u' }, [
+			...middleware({ 'check-permission': ['biologicalMonitoring_audiometry_r', 'reinc_restrictions_r', 'reinc_checks_r', 'absen_uploadFiles_r', 'biologicalMonitoring_respiratoryAnalysis_r', 'biologicalMonitoring_musculoskeletalAnalysis_r', 'absen_reports_r'] }, [
 				{
 					name: 'preventiveoccupationalmedicine-documentspreventive-edit',
 					path: 'documentspreventive/edit/:id',
 					component: () => import('@/views/PreventiveOccupationalMedicine/documents/edit')
 				}
 			]),
-			...middleware({ 'check-permission': 'documentsPreventive_r' }, [
+			...middleware({ 'check-permission': ['biologicalMonitoring_audiometry_r', 'reinc_restrictions_r', 'reinc_checks_r', 'absen_uploadFiles_r', 'biologicalMonitoring_respiratoryAnalysis_r', 'biologicalMonitoring_musculoskeletalAnalysis_r', 'absen_reports_r'] }, [
 				{
 					name: 'preventiveoccupationalmedicine-documentspreventive-view',
 					path: 'documentspreventive/view/:id',

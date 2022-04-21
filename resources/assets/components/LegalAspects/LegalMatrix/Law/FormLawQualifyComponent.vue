@@ -63,7 +63,7 @@
 
               <b-card  bg-variant="transparent"  title="" class="mb-3 box-shadow-none">
                 <b-form-row>
-                    <vue-radio v-if="auth.hasRole['Superadmin']" :disabled="viewOnly" class="col-md-12" v-model="hide" :options="siNoRadio" name="hide" label="¿Desea ocultar todos los artíćulos?">
+                    <vue-radio v-if="auth.hasRole['Superadmin']" :disabled="viewOnly" class="col-md-12" v-model="hide" :options="siNoRadio" name="hide" label="¿Desea ocultar todos los artículos?">
                       </vue-radio>
                   </b-form-row>
                 <b-form-row>
@@ -177,7 +177,7 @@
                   <hr class="border-light container-m--x mt-0 mb-4">
 
                    <b-form-row>
-                    <vue-radio v-if="auth.hasRole['Superadmin']" :disabled="viewOnly" :checked="form.articles[index].hide" class="col-md-12" v-model="form.articles[index].hide" @input="saveArticleQualification(index)" :options="siNoRadio" :name="`hide${index}`" :error="form.errorsFor(`articles.${index}.hide`)" label="¿Desea ocultar el artíćulo?">
+                    <vue-radio v-if="auth.hasRole['Superadmin']" :disabled="viewOnly" :checked="form.articles[index].hide" class="col-md-12" v-model="form.articles[index].hide" @input="saveArticleQualification(index)" :options="siNoRadio" :name="`hide${index}`" :error="form.errorsFor(`articles.${index}.hide`)" label="¿Desea ocultar el artículo?">
                       </vue-radio>
                   </b-form-row>
 
