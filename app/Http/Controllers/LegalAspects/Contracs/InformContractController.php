@@ -572,7 +572,6 @@ class InformContractController extends Controller
     public function downloadPdf(InformContract $informContract)
     {
         $inform = $this->getDataExportPdf($informContract->id);
-        \Log::info($inform);
 
         PDF::setOptions(['dpi' => 150, 'defaultFont' => 'sans-serif']);
 
