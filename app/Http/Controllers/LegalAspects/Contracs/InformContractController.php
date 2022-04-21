@@ -562,8 +562,11 @@ class InformContractController extends Controller
 
     public function downloadFile(InformContractItemFile $informContractItemFile)
     {
-        \Log::info($informContractItemFile);
-        return Storage::disk('s3')->download($informContractItemFile->path_donwload());
+        $name = $informContractItemFile->name_file;
+        if ($name)
+            return Storage::disk('s3')->download($informContractItemFile->path_donwload(), $name);
+        else
+            return Storage::disk('s3')->download($informContractItemFile->path_donwload());
     }
 
     public function downloadPdf(InformContract $informContract)

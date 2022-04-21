@@ -77,6 +77,28 @@
                 <b-form-row>
                   <vue-file-simple v-if="(fulfillment_value_id && fulfillment_value_id != 3) && (fulfillment_value_id && fulfillment_value_id != 5)" :disabled="viewOnly" class="col-md-12" accept=".pdf" v-model="file_masive" label="Archivo (*.pdf)" name="file_masive" :error="form.errorsFor('file_masive')" placeholder="Seleccione un archivo"/>
                 </b-form-row>
+                <b-form-row>
+                    <vue-radio v-if="fulfillment_value_id == 3 || fulfillment_value_id == 5" :disabled="viewOnly" class="col-md-12" v-model="showActionPlanMasive" :options="siNoRadio" name="showActionPlanMasive" label="¿Desea agregar plan de acción?">
+                      </vue-radio>
+                  </b-form-row>
+
+                <!-- NO CUMPLE -->               
+                  <b-card v-if="showActionPlanMasive == 'SI'" ref="modalPlanMasive" :hideFooter="true" id="modals-default-masive" class="modal-top" size="lg">
+                    <div slot="modal-title">
+                      Plan de acción <span class="font-weight-light">Evaluar Normas</span><br>
+                      <small class="text-muted">Crea planes de acción para tu justificación.</small>
+                    </div>
+
+                    <b-card bg-variant="transparent" title="" class="mb-3 box-shadow-none">
+                      <action-plan-component
+                        :is-edit="!viewOnly"
+                        :view-only="viewOnly"
+                        :form="form"
+                        :action-plan-states="actionPlanStates"
+                        v-model="actionPlanMasive"
+                        :action-plan="actionPlanMasive"/>
+                    </b-card>
+                  </b-card>
               </b-card>
               <br>
               <div class="row float-right pt-12 pr-12y">
@@ -352,6 +374,11 @@ export default {
       observations: '',
       workplace: '',
       hide: '',
+      showActionPlanMasive: '',
+      actionPlanMasive: {
+        activities: [],
+        activitiesRemoved: []
+      },
       qualifyName: '',
       file_masive: '',
       loadingAlternativo: false,
@@ -529,6 +556,7 @@ export default {
         data.append('workplace', this.workplace ? this.workplace : '');
         data.append('hide', this.hide ? this.hide : 'NO');
         data.append('fulfillment_value_id', this.fulfillment_value_id);
+        data.append('actionPlan', JSON.stringify(this.actionPlanMasive));
         data.append('file', this.file_masive);
 
         this.form

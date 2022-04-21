@@ -602,7 +602,9 @@ class LawController extends Controller
     }
 
     public function saveArticlesQualificationAlls(SaveArticlesQualificationRequest $request)
-    {        
+    {     
+        DB::beginTransaction();
+
         try
         {
             $ids = explode(',', $request->id);
@@ -652,6 +654,19 @@ class LawController extends Controller
                     'file' => $nameFile
                 ]);
             }
+            
+            if ($request->has('actionPlan') && count($request->actionPlan['activities']) > 0)
+            {
+                $detail_procedence = 'Mátriz Legal - Norma: ' . $article_qualify->article->law->name . '. - ' . 'Artículo: ' . $article_qualify->article->description . '.';
+
+                ActionPlan::user($this->user)
+                ->module('legalMatrix')
+                ->url(url('/administrative/actionplans'))
+                ->model($article_qualify)
+                ->detailProcedence($detail_procedence)
+                ->activities($request->actionPlan)
+                ->save();
+            }
 
             foreach ($ids as $id) 
             {
@@ -668,8 +683,11 @@ class LawController extends Controller
                 return $this->respondHttp500();
             }
 
+            DB::commit();
+
         } catch (Exception $e){
             \Log::info($e->getMessage());
+            DB::rollback();
             return $this->respondHttp500();
         }
     }

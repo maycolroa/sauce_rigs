@@ -40,24 +40,24 @@
     </style>
 </head>
 <body style="margin: 20px; margin-top: 0px;">
+    <div style="page-break-inside: avoid;">
         @if ($inform->logo)
         <div style="page-break-inside: avoid; text-align: right; padding-bottom: 10px;"><img src="{{ public_path('storage/administrative/logos/').$inform->logo }}" width="120px" height="120px"/></div>
         @endif
-    <div style="page-break-inside: avoid;">
         <h3> {{$inform->inform_base->name}}</h3>
         <h3> Fecha de Evaluación: {{$inform->inform_date}}</h3>
-    </div>
-
-    <br><br>
-
-    <div style="page-break-inside: avoid;">
+        <br><br>
         <table>
             <thead>
                 <tr>
+                    <th>Contratista</th>
                     <th>Evaluador</th>
                     <th>Observación</th>
                 </tr>
                  <tr>
+                     <td valign="top">
+                        {{$inform->contract->social_reason}}
+                    </td>
                     <td valign="top">
                         {{$inform->evaluator->name}}
                     </td>
@@ -67,24 +67,7 @@
                 </tr>
             </thead>
         </table>
-    </div>
-    
-    <br><br>
-
-    <!--<div style="page-break-inside: avoid;">
-        <table>
-            <thead>
-                <tr>
-                    <th>Observación</th>
-                </tr>
-                <tr>
-                    <td class="title-obj">{{$inform->observation}}</td>
-                </tr>
-            </thead>
-        </table>
-    </div>-->
-
-    <div style="page-break-inside: avoid;">
+        <br><br>
         <p style="text-align: center; font-size: 12px;"><b>Temas</b></p>
         @foreach($inform->inform->themes as $keyObj => $objective)
             <div style="page-break-inside: avoid;">
