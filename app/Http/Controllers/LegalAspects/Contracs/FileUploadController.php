@@ -333,7 +333,15 @@ class FileUploadController extends Controller
      */
     public function download(FileUpload $fileUpload)
     {
-      return Storage::disk('s3')->download('legalAspects/files/'. $fileUpload->file);
+      $sub = explode('.',$fileUpload->file)[1];
+
+      $name = $fileUpload->name.'.'.$sub;
+      
+      if ($name)
+            return Storage::disk('s3')->download('legalAspects/files/'. $fileUpload->file, $name);
+        else
+            return Storage::disk('s3')->download('legalAspects/files/'. $fileUpload->file);
+
     }
 
     private function checkPermissionUserInFile($user_id, $contract_id)

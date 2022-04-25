@@ -268,6 +268,11 @@ class DocumentController extends Controller
      */
     public function download(Document $document)
     {
-      return Storage::disk('s3')->download('industrialSecure/documents/files/'. $document->file);
+      $name = $document->name;
+
+      if ($name)
+          return Storage::disk('s3')->download('industrialSecure/documents/files/'. $document->file, $name);
+      else
+          return Storage::disk('s3')->download('industrialSecure/documents/files/'. $document->file);
     }
 }

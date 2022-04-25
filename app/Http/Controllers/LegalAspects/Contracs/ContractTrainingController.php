@@ -261,7 +261,6 @@ class ContractTrainingController extends Controller
     {
         foreach ($questions as $key => $question)
         {
-            \Log::info($question);
             $id = isset($question['id']) ? $question['id'] : NULL;
             $config = collect(['options' => [], 'answers' => []]);
 

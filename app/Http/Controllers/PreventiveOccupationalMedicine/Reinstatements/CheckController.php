@@ -419,31 +419,45 @@ class CheckController extends Controller
 
     public function downloadOriginFile($id)
     {
-        $check = Check::select('sau_reinc_checks.*')
+        $check = Check::select(
+                    'sau_reinc_checks.*',
+                    'sau_employees.*'
+                )
                 ->join('sau_employees', 'sau_employees.id', 'sau_reinc_checks.employee_id')
                 ->findOrFail($id);
 
-        return Storage::disk('public')->download('preventiveOccupationalMedicine/reinstatements/files/'.$this->company.'/'.$check->process_origin_file);
+        return Storage::disk('public')->download('preventiveOccupationalMedicine/reinstatements/files/'.$this->company.'/'.$check->process_origin_file, 'Calificacion de origen '.$check->identification.'.pdf');
     }
 
     public function downloadPclFile($id)
     {
-        $check = Check::select('sau_reinc_checks.*')
+        $check = Check::select(
+                    'sau_reinc_checks.*',
+                    'sau_employees.*'
+                )
                 ->join('sau_employees', 'sau_employees.id', 'sau_reinc_checks.employee_id')
                 ->findOrFail($id);
 
-        return Storage::disk('public')->download('preventiveOccupationalMedicine/reinstatements/files/'.$this->company.'/'.$check->process_pcl_file);
+        return Storage::disk('public')->download('preventiveOccupationalMedicine/reinstatements/files/'.$this->company.'/'.$check->process_pcl_file, 'Proceso PCL '.$check->identification.'.pdf');
     }
 
     public function downloadFile(CheckFile $file)
     {
-        $check = Check::select('sau_reinc_checks.*')
+        $check = Check::select(
+                    'sau_reinc_checks.*',
+                    'sau_employees.*'
+                )
                 ->join('sau_employees', 'sau_employees.id', 'sau_reinc_checks.employee_id')
                 ->findOrFail($file->check_id);
 
         $directory = "preventiveOccupationalMedicine/reinstatements/files/{$check->company_id}/{$file->file}";
 
-        return Storage::disk('public')->download($directory);
+        $name = $file->file_name;
+
+        if ($name)
+            return Storage::disk('s3')->download($directory, $name);
+        else
+            return Storage::disk('s3')->download($directory);
     }
 
     public function generateTracing(Request $request)

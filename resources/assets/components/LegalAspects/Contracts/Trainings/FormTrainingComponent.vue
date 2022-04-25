@@ -75,7 +75,7 @@
 
         <b-form-row style="padding-bottom: 20px;">
           <div class="col-md-12">
-              <center><b-btn variant="primary" @click.prevent="addFile()"><span class="ion ion-md-add-circle"></span>&nbsp;&nbsp;Agregar</b-btn></center>
+              <center><b-btn v-if="!viewOnly" variant="primary" @click.prevent="addFile()"><span class="ion ion-md-add-circle"></span>&nbsp;&nbsp;Agregar</b-btn></center>
           </div>
         </b-form-row>          
       </b-card-body>

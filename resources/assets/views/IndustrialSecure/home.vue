@@ -70,17 +70,17 @@
                     <router-link :to="{ name: 'industrialsecure-epp'}" v-on:click.native="activityUser('Elementos de proteccion personal')" class="text-dark cursor-pointer item-app-navbar">
                         <center>
                             <div style="font-size: 20px;" class="my-2 mx-2 text-center font-weight-bold" ref="epp" @mouseover="changeClassImage('epp', 'epp_hover')">
-                                <img class="ui-w-80" src="/images/contracts.png" alt=""> ELEMENTOS DE PROTECCIÓN PERSONAL
+                                <img class="ui-w-80" src="/images/contracts.png" alt=""> ELEMENTOS DE PROTECCIÓN PERSONAL &nbsp;&nbsp; &nbsp;&nbsp; 
                             </div>
                             <div style="font-size: 20px; text-decoration: underline rgb(244, 75, 82); text-underline-position: under;" class="my-2 mx-2 text-center font-weight-bold imgHidden" ref="epp_hover" @mouseleave="changeClassImage('epp_hover', 'epp')">
-                                <img class="ui-w-80" src="/images/contracts_hover.png" alt=""> ELEMENTOS DE PROTECCIÓN PERSONAL
+                                <img class="ui-w-80" src="/images/contracts_hover.png" alt=""> ELEMENTOS DE PROTECCIÓN PERSONAL &nbsp;&nbsp; &nbsp;&nbsp; 
                             </div>
                         </center>
                     </router-link>
                 </b-col>
             </b-row>
 
-            <div class="row" v-if="checkModule('epp')">
+            <div class="row" v-if="checkModule('epp') || checkModule('riskmatrix') || checkModule('dangermatrix') || checkModule('dangerousconditions')">
                 <div class="col-md-5 offset-md-1" style="padding-top: 40px; padding-bottom: 20px;">
                     <hr class="border-dark mt-0 mb-4">
                 </div>
@@ -92,11 +92,11 @@
                         <center>
                             <div style="font-size: 20px;" class="my-2 mx-2 text-center font-weight-bold" ref="documents" @mouseover="changeClassImage('documents', 'documents_hover')">
                                 <img class="ui-w-80" src="/images/Sauce-ML Ico Admin mis normas.png" alt="">
-                                DOCUMENTOS &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; 
+                                DOCUMENTOS &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; 
                             </div>
                             <div style="font-size: 20px; text-decoration: underline rgb(244, 75, 82); text-underline-position: under;" class="my-2 mx-2 text-center font-weight-bold imgHidden" ref="documents_hover" @mouseleave="changeClassImage('documents_hover', 'documents')">
                                 <img class="ui-w-80" src="/images/Sauce-ML Ico Admin mis normas Over.png" alt="">
-                                DOCUMENTOS &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp; 
+                                DOCUMENTOS &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;
                             </div>
                         </center>
                     </router-link>
