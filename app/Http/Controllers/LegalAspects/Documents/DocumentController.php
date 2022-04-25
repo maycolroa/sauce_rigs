@@ -24,10 +24,10 @@ class DocumentController extends Controller
     {
         parent::__construct();
         $this->middleware('auth');
-        $this->middleware("permission:documentsLegals_c, {$this->team}", ['only' => 'store']);
+        /*$this->middleware("permission:documentsLegals_c, {$this->team}", ['only' => 'store']);
         $this->middleware("permission:documentsLegals_r, {$this->team}");
         $this->middleware("permission:documentsLegals_u, {$this->team}", ['only' => 'update']);
-        $this->middleware("permission:documentsLegals_d, {$this->team}", ['only' => 'destroy']);
+        $this->middleware("permission:documentsLegals_d, {$this->team}", ['only' => 'destroy']);*/
     }
 
     /**
