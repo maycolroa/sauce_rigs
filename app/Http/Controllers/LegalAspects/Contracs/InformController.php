@@ -140,6 +140,8 @@ class InformController extends Controller
                 }
             }
 
+            \Log::info($inform->themes);
+
             $inform->delete = [
                 'themes' => [],
                 'items' => []
@@ -241,102 +243,5 @@ class InformController extends Controller
         if (COUNT($data['items']) > 0)
             InformThemeItem::destroy($data['items']);
 
-    }
-
-    /**
-     * Returns an array for a select type input
-     *
-     * @param Request $request
-     * @return Array
-     */
-
-    public function multiselectEvaluations(Request $request)
-    {
-        $evaluations = Evaluation::selectRaw(
-            "sau_ct_evaluations.id as id,
-             sau_ct_evaluations.name as name")
-        ->pluck('id', 'name');
-    
-        return $this->multiSelectFormat($evaluations);
-    }
-
-    /**
-     * Returns an array for a select type input
-     *
-     * @param Request $request
-     * @return Array
-     */
-
-    public function multiselectObjectives(Request $request)
-    {
-        $objectives = Evaluation::selectRaw(
-            "GROUP_CONCAT(sau_ct_objectives.id) as ids,
-             sau_ct_objectives.description as name")
-        ->join('sau_ct_objectives', 'sau_ct_objectives.evaluation_id', 'sau_ct_evaluations.id')
-        ->groupBy('sau_ct_objectives.description')
-        ->pluck('ids', 'name');
-    
-        return $this->multiSelectFormat($objectives);
-    }
-
-    /**
-     * Export resources from storage.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function export(Request $request)
-    {
-        try
-        {
-            $objectives = $this->getValuesForMultiselect($request->evaluationsObjectives);
-            $subobjectives = $this->getValuesForMultiselect($request->evaluationsSubobjectives);
-            $dates = [];
-            $filtersType = $request->filtersType;
-
-            if (isset($request->dateRange) && $request->dateRange)
-            {
-                $dates_request = explode('/', $request->dateRange);
-
-                if (COUNT($dates_request) == 2)
-                {
-                    array_push($dates, (Carbon::createFromFormat('D M d Y',$dates_request[0]))->format('Y-m-d 00:00:00'));
-                    array_push($dates, (Carbon::createFromFormat('D M d Y',$dates_request[1]))->format('Y-m-d 23:59:59'));
-                }
-                
-            }
-
-            $filters = [
-                'objectives' => $objectives,
-                'subobjectives' => $subobjectives,
-                'dates' => $dates,
-                'filtersType' => $filtersType
-            ];
-
-            EvaluationExportJob::dispatch($this->user, $this->company, $filters);
-        
-            return $this->respondHttp200();
-        } catch(Exception $e) {
-            return $this->respondHttp500();
-        }
-    }
-
-    public function inEdit(Request $request)
-    {
-        try
-        {
-            $evaluation = Evaluation::findOrFail($request->id);
-            $evaluation->in_edit = true;
-            $evaluation->user_edit = $this->user->name. ' - ' .$this->user->email;
-            $evaluation->time_edit = Carbon::now();
-
-            if(!$evaluation->save()){
-                return $this->respondHttp500();
-            }
-
-            return $this->respondHttp200();
-
-        } catch (\Exception $e) {
-            return $this->respondHttp500();
-        }
     }
 }

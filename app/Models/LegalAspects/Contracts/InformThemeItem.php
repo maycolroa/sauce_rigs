@@ -10,7 +10,8 @@ class InformThemeItem extends Model
 
     protected $fillable = [
         'evaluation_theme_id',
-        'description'
+        'description',
+        'show_program_value'
     ];
 
     public function theme()

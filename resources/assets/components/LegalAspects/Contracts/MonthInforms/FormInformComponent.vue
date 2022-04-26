@@ -126,6 +126,10 @@
                                   <b-form-row>
                                     <vue-textarea :disabled="viewOnly" class="col-md-12" v-model="form.themes[index].items[index2].description" label="Descripción" name="description" placeholder="Descripción" :error="form.errorsFor(`themes.${index}.items.${index2}.description`)" rows="1"></vue-textarea>
                                   </b-form-row>
+                                  <b-form-row>
+                                    <vue-radio :disabled="viewOnly" class="col-md-12" v-model="form.themes[index].items[index2].show_program_value" :options="siNo" :name="`show_program_value${index}${index2}`" :error="form.errorsFor(`themes.${index}.items.${index2}.show_program_value`)" label="Mostrar Valor Programado" :checked="form.themes[index].items[index2].show_program_value">
+                                    </vue-radio>
+                                  </b-form-row>
                                 </b-card-body>
                               </b-collapse>
                             </b-card>
@@ -157,6 +161,7 @@ import VueAjaxAdvancedSelect from "@/components/Inputs/VueAjaxAdvancedSelect.vue
 import PerfectScrollbar from '@/vendor/libs/perfect-scrollbar/PerfectScrollbar';
 import Form from "@/utils/Form.js";
 import VueTextarea from "@/components/Inputs/VueTextarea.vue";
+import VueRadio from "@/components/Inputs/VueRadio.vue";
 import Alerts from '@/utils/Alerts.js';
 
 export default {
@@ -165,6 +170,7 @@ export default {
     VueAjaxAdvancedSelect,
     PerfectScrollbar,
     VueTextarea,
+    VueRadio
   },
   props: {
     url: { type: String },
@@ -190,7 +196,11 @@ export default {
   data() {
     return {
         loading: this.isEdit,
-        form: Form.makeFrom(this.inform, this.method)
+        form: Form.makeFrom(this.inform, this.method),
+        siNo: [
+          {text: 'SI', value: 'SI'},
+          {text: 'NO', value: 'NO'}
+        ]
     };
   },
   methods: {

@@ -60,6 +60,7 @@ class InformRequest extends FormRequest
             'themes.*.description' => 'required',
             'themes.*.items' => 'required|array',
             'themes.*.items.*.description' => 'required',
+            'themes.*.items.*.show_program_value' => 'required'
         ];
     }
 }
