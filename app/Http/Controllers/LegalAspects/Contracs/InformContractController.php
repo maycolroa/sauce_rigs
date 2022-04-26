@@ -117,7 +117,6 @@ class InformContractController extends Controller
 
         if ($valid)
         {
-            \Log::info('entro');
             return $this->respondWithError('Este período ya ha sido evaluado para este contratista, por favor seleccione otro período');
         }
 
@@ -434,7 +433,7 @@ class InformContractController extends Controller
         foreach ($inform_base->themes as $objective)
         {
             foreach ($objective ->items as $item)
-            {
+            {                
                 $item->observations = $informContract->observations()->where('item_id', $item->id)->get();
                 $files = $informContract->files()->where('item_id', $item->id)->get();
 
@@ -443,7 +442,7 @@ class InformContractController extends Controller
                 $i = 0;
                 $j = 0;
 
-                $files->transform(function($file, $indexFile) use (&$i, &$j, &$images_pdf, &$count_pdf) {
+                $files->transform(function($file, $indexFile) use (&$i, &$j, &$images_pdf, &$count_pdf, $item) {
                     $file->key = Carbon::now()->timestamp + rand(1,10000);
                     $file->type_file = $file->type_file;
                     $file->name_file = $file->name_file;
@@ -452,10 +451,21 @@ class InformContractController extends Controller
                     $images_pdf[$i][$j] = ['file' => $file->path, 'type' => $file->type_file, 'name' => $file->name_file];
                     $j++;
 
-                    if ($j > 3)
+                    if ($item->show_program_value == 'SI')
                     {
-                        $i++;
-                        $j = 0;
+                        if ($j > 3)
+                        {
+                            $i++;
+                            $j = 0;
+                        }
+                    }
+                    else
+                    {
+                        if ($j > 1)
+                        {
+                            $i++;
+                            $j = 0;
+                        }
                     }
 
                     if ($file->type_file == 'pdf')

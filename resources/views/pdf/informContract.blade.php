@@ -77,24 +77,54 @@
                     <table>
                         <thead>
                             <tr style="width:100%">
+                                @if($item->show_program_value == 'SI')
                                 <th style="width:25%">Item</th>
+                                @else
+                                <th style="width:50%">Item</th>
+                                @endif
+                                @if($item->show_program_value == 'SI')
                                 <th style="width:25%">Programado</th>
+                                @endif
+                                @if($item->show_program_value == 'SI')
                                 <th style="width:25%">Ejecutado</th>
+                                @else
+                                <th style="width:50%">Ejecutado</th>
+                                @endif
+                                @if($item->show_program_value == 'SI')
                                 <th style="width:25%">% Cumplimiento</th>
+                                @endif
                             </tr>
                             <tr style="width:100%">
+                                @if($item->show_program_value == 'SI')
                                 <td style="width:25%" class="title-obj">{{ $keyObj + 1 }}.{{ $keyItem + 1 }} - {{ $item->description }}</td>
+                                @else
+                                <td style="width:50%" class="title-obj">{{ $keyObj + 1 }}.{{ $keyItem + 1 }} - {{ $item->description }}</td>
+                                @endif
                                 
+                                @if($item->show_program_value == 'SI')
                                 <td style="width:25%">{{$item->programmed ? $item->programmed : 'Sin Calificar'}}</td>
+                                @endif
 
+                                @if($item->show_program_value == 'SI')
                                 <td style="width:25%">{{$item->executed ? $item->executed : 'Sin Calificar'}}</td>
+                                @else
+                                <td style="width:50%">{{$item->executed ? $item->executed : 'Sin Calificar'}}</td>
+                                @endif
 
+                                @if($item->show_program_value == 'SI')
                                 <td style="width:25%">{{$item->compliance ? $item->compliance : 'Sin Cumplimiento'}}</td>
+                                @endif
                             </tr>
                             @if(COUNT($item->files) > 0)
+                                @if($item->show_program_value == 'SI')
                                 <tr>
                                     <th colspan="4">Archivos</th>
-                                </tr>   
+                                </tr>
+                                @else
+                                <tr>
+                                    <th colspan="2">Archivos</th>
+                                </tr>
+                                @endif   
                                 @foreach($item->files_pdf as $row)
                                     <tr>
                                     @foreach($row as $col)
@@ -112,14 +142,25 @@
                                 @endforeach
                             @endif
                             @if(COUNT($item->observations) > 0)
+                                @if($item->show_program_value == 'SI')
                                 <tr>
                                     <th colspan="4">Observaciones</th>
-                                </tr>                          
+                                </tr>
                                 @foreach($item->observations as $observation)
                                     <tr>
                                         <td colspan="4" class="title-obj">{{$observation->description}}</td>
                                     </tr>
                                 @endforeach
+                                @else
+                                <tr>
+                                    <th colspan="2">Observaciones</th>
+                                </tr>
+                                @foreach($item->observations as $observation)
+                                    <tr>
+                                        <td colspan="2" class="title-obj">{{$observation->description}}</td>
+                                    </tr>
+                                @endforeach
+                                @endif
                             @endif      
                         </thead>
                     </table>

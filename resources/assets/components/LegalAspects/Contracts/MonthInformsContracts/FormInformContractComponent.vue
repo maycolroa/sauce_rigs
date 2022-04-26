@@ -117,13 +117,16 @@
                                                   </td>
                                                   <td class="align-middle text-nowrap" style="padding: 0px; width:55%">
                                                     <b-row class="col-md-12">
-                                                      <b-col>
+                                                      <b-col v-if="form.inform.themes[index].items[index2].show_program_value == 'SI'">
                                                         <vue-input :disabled="viewOnly" v-model="form.inform.themes[index].items[index2].programmed" label="Programado" type="number" name="name" :error="form.errorsFor('name')" @input="calculatePorcentage(index, index2)"></vue-input>
                                                       </b-col>
-                                                      <b-col>
+                                                      <b-col v-if="form.inform.themes[index].items[index2].show_program_value == 'SI'">
                                                         <vue-input :disabled="viewOnly" v-model="form.inform.themes[index].items[index2].executed" label="Ejecutado" type="number" name="name" :error="form.errorsFor('name')" @input="calculatePorcentage(index, index2)"></vue-input>
                                                       </b-col>
-                                                      <b-col :key="form.inform.themes[index].items[index2].compliance">
+                                                      <b-col v-else colspan="1">
+                                                        <vue-input class="col-md-4 offset-md-4"  :disabled="viewOnly" v-model="form.inform.themes[index].items[index2].executed" label="Ejecutado" type="number" name="name" :error="form.errorsFor('name')" @input="calculatePorcentage(index, index2)"></vue-input>
+                                                      </b-col>
+                                                      <b-col v-if="form.inform.themes[index].items[index2].show_program_value == 'SI'" :key="form.inform.themes[index].items[index2].compliance">
                                                         <vue-input :disabled="true" v-model="form.inform.themes[index].items[index2].compliance" label="% Cumplimiento" type="number" name="name" :error="form.errorsFor('name')"></vue-input>
                                                       </b-col>
                                                       <b-btn @click="showModal(`modalHistory${index2}`, true, form.inform.themes[index].items[index2].id)" variant="outline-info icon-btn borderless" size="xs" v-b-tooltip.top title="Ver historial"><span class="ion ion-ios-copy"></span></b-btn>

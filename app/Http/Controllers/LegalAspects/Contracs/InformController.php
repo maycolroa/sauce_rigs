@@ -140,8 +140,6 @@ class InformController extends Controller
                 }
             }
 
-            \Log::info($inform->themes);
-
             $inform->delete = [
                 'themes' => [],
                 'items' => []
