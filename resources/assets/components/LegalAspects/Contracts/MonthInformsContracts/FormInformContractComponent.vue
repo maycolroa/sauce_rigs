@@ -88,7 +88,10 @@
                                                       <center>
                                                       <modal-observations v-model="form.inform.themes[index].items[index2].observations" :item-id="item.id" :view-only="viewOnly" @removeObservation="pushRemoveObservation" :form="form" :prefixIndex="`inform.themes.${index}.observations`"/>
                                                       <modal-file v-model="form.inform.themes[index].items[index2].files" :item-id="item.id" :view-only="viewOnly" @removeFile="pushRemoveFile" :form="form" :prefixIndex="`inform.themes${index}.items${index2}.files`"/>
-                                                      <b-btn @click="showModal(`modalPlan${index2}`)" variant="outline-info icon-btn borderless" size="xs" v-b-tooltip.top title="Ver plan de acción"><span class="ion ion-md-paper"></span></b-btn>
+                                                      <b-btn v-if="form.inform.themes[index].items[index2].actionPlan.activities.length > 0" @click="showModal(`modalPlan${index2}`)" variant="outline-success icon-btn borderless" size="xs" v-b-tooltip.top title="Ver plan de acción"><span class="ion ion-md-paper"></span></b-btn>
+
+                                                      <b-btn v-else @click="showModal(`modalPlan${index2}`)" variant="outline-info icon-btn borderless" size="xs" v-b-tooltip.top title="Ver plan de acción"><span class="ion ion-md-paper"></span></b-btn>
+
                                                       </center>
                                                       <b-modal :ref="`modalPlan${index2}`" :hideFooter="true" :id="`modals-default-${index2+1}`" class="modal-top" size="lg" @hidden="removed(index, index2)">
                                                       <div slot="modal-title">

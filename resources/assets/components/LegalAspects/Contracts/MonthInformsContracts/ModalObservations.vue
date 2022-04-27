@@ -1,7 +1,8 @@
 <template>
     <div>
         <div>
-            <b-btn class="btn-modals" variant="outline-info icon-btn borderless" size="xs" v-b-tooltip.top title="Observaciones" @click="showModal()"><span class="ion ion-md-eye"></span></b-btn>
+            <b-btn v-if="value.length > 0" class="btn-modals" variant="outline-success icon-btn borderless" size="xs" v-b-tooltip.top title="Observaciones" @click="showModal()"><span class="ion ion-md-eye"></span></b-btn>
+            <b-btn v-else class="btn-modals" variant="outline-info icon-btn borderless" size="xs" v-b-tooltip.top title="Observaciones" @click="showModal()"><span class="ion ion-md-eye"></span></b-btn>
         </div>
 
         <!-- Modal -->
