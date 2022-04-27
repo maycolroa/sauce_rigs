@@ -96,7 +96,9 @@ class ActionPlanExcel implements FromQuery, WithMapping, WithHeadings, WithTitle
         $data->expiration_date,
         $data->execution_date,
         $data->state_activity,
-        $data->display_name
+        $data->display_name,
+        $data->observation,
+        $data->detail_procedence
       ];
     }
 
@@ -108,7 +110,9 @@ class ActionPlanExcel implements FromQuery, WithMapping, WithHeadings, WithTitle
           'Fecha de vencimiento',
           'Fecha de ejecución',
           'Estado',
-          'Módulo'
+          'Módulo',
+          'Observaciones',
+          'Procedencia'
         ];
     }
 
