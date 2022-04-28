@@ -227,6 +227,12 @@ export default [
           label: 'Temas',
         },
         {
+          url: '/selects/users',
+          key: 'qualifiers',
+          type: 'select',
+          label: 'Calificador'
+        },
+        {
           key: 'dateRange',
           type: 'dateRange',
           label: 'Fecha',

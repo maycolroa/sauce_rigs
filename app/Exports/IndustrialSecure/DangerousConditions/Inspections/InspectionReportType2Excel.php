@@ -112,6 +112,9 @@ class InspectionReportType2Excel implements FromCollection, WithMapping, WithHea
         if (isset($this->filters['regionals']) && COUNT($this->filters['regionals']) > 0)
             $consultas->inRegionals($this->filters['regionals'], $this->filters['filtersType']['regionals']);
 
+        if (isset($this->filters['qualifiers']) && COUNT($this->filters['qualifiers']) > 0)
+            $consultas->inQualifiers($this->filters['qualifiers'], $this->filters['filtersType']['qualifiers']);
+
         if (isset($this->filters['headquarters']) && COUNT($this->filters['headquarters']) > 0)
             $consultas->inHeadquarters($this->filters['headquarters'], $this->filters['filtersType']['headquarters']);
         

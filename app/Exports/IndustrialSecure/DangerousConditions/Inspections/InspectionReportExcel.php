@@ -106,6 +106,9 @@ class InspectionReportExcel implements FromCollection, WithMapping, WithHeadings
         if (isset($this->filters['inspections']) && COUNT($this->filters['inspections']) > 0)
             $consultas->inInspections($this->filters['inspections'], $this->filters['filtersType']['inspections'], 'sau_ph_inspections');
 
+        if (isset($this->filters['qualifiers']) && COUNT($this->filters['qualifiers']) > 0)
+            $consultas->inQualifiers($this->filters['qualifiers'], $this->filters['filtersType']['qualifiers']);
+
         if (isset($this->filters['themes']) && COUNT($this->filters['themes']) > 0)
             $consultas->inThemes($this->filters['themes'], $this->filters['filtersType']['themes'], 'sau_ph_inspection_sections');
 

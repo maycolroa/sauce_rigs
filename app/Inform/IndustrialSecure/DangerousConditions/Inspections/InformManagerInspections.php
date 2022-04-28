@@ -51,7 +51,7 @@ class InformManagerInspections
      * create an instance and set the attribute class
      * @param array $regionals
      */
-    function __construct($company = '', $regionals = '', $headquarters = '', $processes = '', $areas = '', $themes = '', $filtersType = '', $dates = '', $inspections = '')
+    function __construct($company = '', $regionals = '', $headquarters = '', $processes = '', $areas = '', $themes = '', $filtersType = '', $dates = '', $inspections = '', $qualifiers = '')
     {
         $this->company = $company;
         $this->regionals = $regionals;
@@ -62,6 +62,7 @@ class InformManagerInspections
         $this->filtersType = $filtersType;
         $this->dates = $dates;
         $this->inspections = $inspections;
+        $this->qualifiers = $qualifiers;
 
     }
 
@@ -116,6 +117,9 @@ class InformManagerInspections
         if (COUNT($this->headquarters) > 0)
             $consultas->inHeadquarters($this->headquarters, $this->filtersType['headquarters']);
 
+        if (COUNT($this->qualifiers) > 0)
+            $consultas->inQualifiers($this->qualifiers, $this->filtersType['qualifiers']);
+
         if (COUNT($this->processes) > 0)
             $consultas->inProcesses($this->processes, $this->filtersType['processes']);
 
@@ -167,6 +171,9 @@ class InformManagerInspections
 
         if (COUNT($this->processes) > 0)
             $consultas->inProcesses($this->processes, $this->filtersType['processes']);
+
+        if (COUNT($this->qualifiers) > 0)
+            $consultas->inQualifiers($this->qualifiers, $this->filtersType['qualifiers']);
 
         if (COUNT($this->areas) > 0)
             $consultas->inAreas($this->areas, $this->filtersType['areas']);
@@ -222,6 +229,9 @@ class InformManagerInspections
         if (COUNT($this->processes) > 0)
             $consultas2->inProcesses($this->processes, $this->filtersType['processes']);
 
+        if (COUNT($this->qualifiers) > 0)
+            $consultas2->inQualifiers($this->qualifiers, $this->filtersType['qualifiers']);
+
         if (COUNT($this->areas) > 0)
             $consultas2->inAreas($this->areas, $this->filtersType['areas']);
 
@@ -275,6 +285,9 @@ class InformManagerInspections
 
         if (COUNT($this->headquarters) > 0)
             $consultas2->inHeadquarters($this->headquarters, $this->filtersType['headquarters']);
+
+        if (COUNT($this->qualifiers) > 0)
+            $consultas2->inQualifiers($this->qualifiers, $this->filtersType['qualifiers']);
 
         if (COUNT($this->processes) > 0)
             $consultas2->inProcesses($this->processes, $this->filtersType['processes']);

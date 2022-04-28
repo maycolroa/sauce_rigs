@@ -138,11 +138,8 @@
     },
     methods: {
         checkModule(search) {
-            console.log(search)
             let result = this.modules.filter(data => (data.name == search));
-
-            console.log(this.modules)
-
+            
             if (result.length > 0)
                 return true;
             else 

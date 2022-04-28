@@ -119,6 +119,9 @@ class InspectionReportController extends Controller
 
         if (COUNT($filters) > 0)
         {
+            if (isset($filters["qualifiers"]))
+              $consultas->inQualifiers($this->getValuesForMultiselect($filters["qualifiers"]), $filters['filtersType']['qualifiers']);
+
             if (isset($filters["regionals"]))
               $consultas->inRegionals($this->getValuesForMultiselect($filters["regionals"]), $filters['filtersType']['regionals']);
 
@@ -224,6 +227,9 @@ class InspectionReportController extends Controller
 
         if (COUNT($filters) > 0)
         {
+            if (isset($filters["qualifiers"]))
+              $consultas->inQualifiers($this->getValuesForMultiselect($filters["qualifiers"]), $filters['filtersType']['qualifiers']);
+
             if (isset($filters["regionals"]))
               $consultas->inRegionals($this->getValuesForMultiselect($filters["regionals"]), $filters['filtersType']['regionals']);
 
@@ -270,6 +276,8 @@ class InspectionReportController extends Controller
             $init = false;
         else 
             $filters = $this->filterDefaultValues($this->user->id, $url);
+
+        $qualifiers = !$init ? $this->getValuesForMultiselect($request->qualifiers) : (isset($filters['qualifiers']) ? $this->getValuesForMultiselect($filters['qualifiers']) : []);
 
         $regionals = !$init ? $this->getValuesForMultiselect($request->regionals) : (isset($filters['regionals']) ? $this->getValuesForMultiselect($filters['regionals']) : []);
 
@@ -344,6 +352,9 @@ class InspectionReportController extends Controller
         if (COUNT($regionals) > 0)
           $consultas->inRegionals($regionals, $filtersType['regionals']);
 
+        if (COUNT($qualifiers) > 0)
+          $consultas->inQualifiers($qualifiers, $filtersType['qualifiers']);
+
         if (COUNT($headquarters) > 0)
           $consultas->inHeadquarters($headquarters, $filtersType['headquarters']);
         
@@ -410,6 +421,8 @@ class InspectionReportController extends Controller
             $filters = $this->filterDefaultValues($this->user->id, $url);
 
         $regionals = !$init ? $this->getValuesForMultiselect($request->regionals) : (isset($filters['regionals']) ? $this->getValuesForMultiselect($filters['regionals']) : []);
+
+        $qualifiers = !$init ? $this->getValuesForMultiselect($request->qualifiers) : (isset($filters['qualifiers']) ? $this->getValuesForMultiselect($filters['qualifiers']) : []);
 
         $headquarters = !$init ? $this->getValuesForMultiselect($request->headquarters) : (isset($filters['headquarters']) ? $this->getValuesForMultiselect($filters['headquarters']) : []);
 
@@ -492,6 +505,9 @@ class InspectionReportController extends Controller
         if (COUNT($regionals) > 0)
           $consultas->inRegionals($regionals, $filtersType['regionals']);
 
+        if (COUNT($qualifiers) > 0)
+          $consultas->inQualifiers($qualifiers, $filtersType['qualifiers']);
+
         if (COUNT($headquarters) > 0)
           $consultas->inHeadquarters($headquarters, $filtersType['headquarters']);
         
@@ -555,6 +571,7 @@ class InspectionReportController extends Controller
           $areas = $this->getValuesForMultiselect($request->areas);
           $themes = $this->getValuesForMultiselect($request->themes);
           $inspections = $this->getValuesForMultiselect($request->inspections);
+          $qualifiers = $this->getValuesForMultiselect($request->qualifiers);
           $filtersType = $request->filtersType;
           $dates = [];
   
@@ -576,6 +593,7 @@ class InspectionReportController extends Controller
                 'areas' => $areas,
                 'themes' => $themes,
                 'inspections' => $inspections,
+                'qualifiers' => $qualifiers,
                 'dates' => $dates,
                 'filtersType' => $filtersType,
                 'table' => $request->table
@@ -601,6 +619,8 @@ class InspectionReportController extends Controller
           $filters = $this->filterDefaultValues($this->user->id, $url);
 
       $regionals = !$init ? $this->getValuesForMultiselect($request->regionals) : (isset($filters['regionals']) ? $this->getValuesForMultiselect($filters['regionals']) : []);
+
+      $qualifiers = !$init ? $this->getValuesForMultiselect($request->qualifiers) : (isset($filters['qualifiers']) ? $this->getValuesForMultiselect($filters['qualifiers']) : []);
 
       $headquarters = !$init ? $this->getValuesForMultiselect($request->headquarters) : (isset($filters['headquarters']) ? $this->getValuesForMultiselect($filters['headquarters']) : []);
 
@@ -629,7 +649,7 @@ class InspectionReportController extends Controller
           }
       }
 
-      $informManager = new InformManagerInspections($this->company, $regionals, $headquarters, $processes, $areas, $themes, $filtersType, $dates, $inspections);
+      $informManager = new InformManagerInspections($this->company, $regionals, $headquarters, $processes, $areas, $themes, $filtersType, $dates, $inspections, $qualifiers);
 
       return $this->respondHttp200($informManager->getInformData());
     }
