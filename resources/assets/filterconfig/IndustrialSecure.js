@@ -178,7 +178,7 @@ export default [
           url: '/selects/users',
           key: 'qualifiers',
           type: 'select',
-          label: 'Calificador'
+          label: 'Usuario Calificador'
         },
         {
           key: 'dateRange',
@@ -230,7 +230,7 @@ export default [
           url: '/selects/users',
           key: 'qualifiers',
           type: 'select',
-          label: 'Calificador'
+          label: 'Usuario Calificador'
         },
         {
           key: 'dateRange',
@@ -351,7 +351,7 @@ export default [
           url: '/selects/users',
           key: 'qualifiers',
           type: 'select',
-          label: 'Calificador'
+          label: 'Usuario Calificador'
         },
         {
           key: 'dateRange',
@@ -397,7 +397,7 @@ export default [
           url: '/selects/users',
           key: 'qualifiers',
           type: 'select',
-          label: 'Calificador'
+          label: 'Usuario Calificador'
         },
         {
           key: 'dateRange',
