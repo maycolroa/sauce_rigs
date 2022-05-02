@@ -253,15 +253,15 @@ class InformContractController extends Controller
                     'inform_id' => $informContract->id,
                     'item_id' => $item['id'],
                     'value_programed' => isset($item['programmed']) ? $item['programmed'] : NULL,
-                    'value_executed' => $item['executed'] ? $item['executed'] : NULL,
-                    'compliance' => $item['compliance'] ? $item['compliance'] : NULL
+                    'value_executed' => isset($item['executed']) ? $item['executed'] : NULL,
+                    'compliance' => isset($item['compliance']) ? $item['compliance'] : NULL
                 ], 
                 [
                     'inform_id' => $informContract->id,
                     'item_id' => $item['id'],
                     'value_programed' => isset($item['programmed']) ? $item['programmed'] : NULL,
-                    'value_executed' => $item['executed'] ? $item['executed'] : NULL,
-                    'compliance' => $item['compliance'] ? $item['compliance'] : NULL
+                    'value_executed' => isset($item['executed']) ? $item['executed'] : NULL,
+                    'compliance' => isset($item['compliance']) ? $item['compliance'] : NULL
 
                 ]);
                 

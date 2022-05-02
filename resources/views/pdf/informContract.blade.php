@@ -106,13 +106,13 @@
                                 @endif
 
                                 @if($item->show_program_value == 'SI')
-                                <td style="width:25%">{{$item->executed ? $item->executed : 'Sin Calificar'}}</td>
+                                <td style="width:25%">{{$item->executed > 0 ? $item->executed  : ($item->executed != null ? '0' : 'Sin Calificar')}}</td>
                                 @else
-                                <td style="width:50%">{{$item->executed ? $item->executed : 'Sin Calificar'}}</td>
+                                <td style="width:50%">{{$item->executed > 0 ? $item->executed  : ($item->executed != null ? '0' : 'Sin Calificar')}}</td>
                                 @endif
 
                                 @if($item->show_program_value == 'SI')
-                                <td style="width:25%">{{$item->compliance ? $item->compliance : 'Sin Cumplimiento'}}</td>
+                                <td style="width:25%">{{$item->compliance > 0 ? $item->compliance : ($item->compliance != null ? '0' :'Sin Cumplimiento')}}</td>
                                 @endif
                             </tr>
                             @if(COUNT($item->files) > 0)

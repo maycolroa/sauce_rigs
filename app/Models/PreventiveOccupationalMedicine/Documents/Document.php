@@ -18,11 +18,11 @@ class Document extends Model
 
     public function users()
     {
-        return $this->belongsToMany("app\Models\Administrative\Users\User",'sau_documents_preventive_user', 'document_preventive_id', 'user_id');
+        return $this->belongsToMany("App\Models\Administrative\Users\User",'sau_documents_preventive_user', 'document_preventive_id', 'user_id');
     }
 
     public function roles()
     {
-        return $this->belongsToMany("app\Models\Administrative\Roles\Role",'sau_documents_preventive_roles', 'document_preventive_id', 'role_id');
+        return $this->belongsToMany("App\Models\Administrative\Roles\Role",'sau_documents_preventive_roles', 'document_preventive_id', 'role_id');
     }
 }
