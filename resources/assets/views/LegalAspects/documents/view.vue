@@ -40,7 +40,7 @@ export default {
     }
   },
   created(){
-    axios.get(`/LegalAspects/document/${this.$route.params.id}`)
+    axios.get(`/legalAspects/document/${this.$route.params.id}`)
     .then(response => {
         this.data = response.data.data;
     })

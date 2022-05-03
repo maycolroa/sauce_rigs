@@ -132,9 +132,9 @@
                                                       <b-col v-if="form.inform.themes[index].items[index2].show_program_value == 'SI'" :key="form.inform.themes[index].items[index2].compliance">
                                                         <vue-input :disabled="true" v-model="form.inform.themes[index].items[index2].compliance" label="% Cumplimiento" type="number" name="name" :error="form.errorsFor('name')"></vue-input>
                                                       </b-col>
-                                                      <b-btn @click="showModal(`modalHistory${index2}`, true, form.inform.themes[index].items[index2].id)" variant="outline-info icon-btn borderless" size="xs" v-b-tooltip.top title="Ver historial"><span class="ion ion-ios-copy"></span></b-btn>
+                                                      <b-btn @click="showModal(`modalHistory${form.inform.themes[index].items[index2].id}`, true, form.inform.themes[index].items[index2].id)" variant="outline-info icon-btn borderless" size="xs" v-b-tooltip.top title="Ver historial"><span class="ion ion-ios-copy"></span></b-btn>
                                                     </b-row>
-                                                    <b-modal :ref="`modalHistory${index2}`" :hideFooter="true" :id="`modals-default-${index2+1}`" class="modal-top modal-item" size="lg">
+                                                    <b-modal :ref="`modalHistory${form.inform.themes[index].items[index2].id}`" :hideFooter="true" :id="`modals-default-${index2+1}`" class="modal-top modal-item" size="lg">
                                                       <div slot="modal-title">
                                                           Histórico<br>
                                                       </div>
@@ -162,7 +162,7 @@
                                                       </b-card>
                                                       <br>
                                                       <div class="row float-right pt-12 pr-12y">
-                                                          <b-btn variant="primary" @click="hideModal(`modalHistory${index2}`)">Cerrar</b-btn>
+                                                          <b-btn variant="primary" @click="hideModal(`modalHistory${form.inform.themes[index].items[index2].id}`)">Cerrar</b-btn>
                                                       </div>
                                                       </b-modal>
                                                   </td>
@@ -515,6 +515,7 @@ export default {
       axios.post('/legalAspects/informContract/historyItemQualification', this.postData)
         .then(response => {
           this.history = response.data
+
         }).catch(error => {
             Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
         });

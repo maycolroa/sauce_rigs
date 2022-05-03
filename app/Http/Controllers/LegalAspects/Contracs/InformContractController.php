@@ -672,6 +672,8 @@ class InformContractController extends Controller
             $headingsXls->push(['id' => $month['name'], 'name' => $month['name']]);
         }
 
+        $headingsXls->push(['id' => 'Acumulado', 'name' => 'Acumulado']);
+
         $headings = $headingsXls->pluck('name')->toArray();
 
         $qualifications = InformContractItem::select('sau_ct_inform_contract.*',
@@ -684,21 +686,39 @@ class InformContractController extends Controller
         ->get();
 
         $answers = collect([]);
+        $acumulado = 0;
 
         foreach ($headingsXls as $key => $item)
         {
-            $response = $qualifications->where('month', $item['id'])->first();
+            if ($item['id'] != 'Acumulado')
+            {
+                $response = $qualifications->where('month', $item['id'])->first();
 
-            if ($response)
-            $answers->push($response->value_executed);
+                if ($response && $response != null)
+                {
+                    $answers->push($response->value_executed);
+                    $acumulado = $acumulado + $response->value_executed;
+                }
+                else
+                {
+                    $answers->push(0);
+                    $acumulado = $acumulado + 0;
+                }
+            }
             else
-            $answers->push(0);
+            {
+                $answers->push($acumulado);
+            }
+
         }
 
         $data = [
             'headings' => $headings,
             'answers' => $answers
         ];
+
+
+        \Log::info($data);
 
         return $data;
     }
