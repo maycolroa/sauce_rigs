@@ -13,6 +13,7 @@ use App\Models\PreventiveOccupationalMedicine\Absenteeism\FileUpload;
 use Symfony\Component\Process\Exception\ProcessFailedException;
 use Symfony\Component\Process\Process;
 use App\Facades\Mail\Facades\NotificationMail;
+use Artisan;
 
 class ProcessFileUploadJob implements ShouldQueue
 {
@@ -122,6 +123,9 @@ class ProcessFileUploadJob implements ShouldQueue
                 NotificationMail::attach("{$this->file->path}registros_inconsistentes.xlsx");
 
             NotificationMail::send();
+
+            if ($result != $this::states[0])
+                Artisan::call('notify-expired-absenteeism');
         }
         catch(\Exception $e) {
             \Log::info($e->getMessage());

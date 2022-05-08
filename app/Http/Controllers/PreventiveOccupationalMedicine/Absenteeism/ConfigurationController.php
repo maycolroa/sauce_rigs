@@ -43,9 +43,11 @@ class ConfigurationController extends Controller
         {
             if ($value && $key != 'multiselect_user_id')
             {
-                if ($key == 'users_notify_expired_absenteeism_expired' || $key == 'users_notify_element_expired')
+                if ($key == 'users_notify_element_expired')
+                    continue;
+                    
+                if ($key == 'users_notify_expired_absenteeism_expired')
                 {
-
                     $values = $this->getDataFromMultiselect($value);
 
                     $users = [];
