@@ -25,9 +25,13 @@
 						</div>
 					</b-modal>
 
+					<vue-advanced-select @change="resetReloadShowItems" class="col-md-4 offset-md-1" v-model="filterQualification" :options="filterQualificationOptions" :hide-selected="false" name="filterQualification" label="Filtrar por calificación" placeholder="Seleccione la Calificación">
+                    </vue-advanced-select>
+
 			</b-card-header>
 			<b-card-body>
-				<div class="rounded ui-bordered p-3 mb-3"  v-for="(item, index) in form.items" :key="item.id">
+				<template class="rounded ui-bordered p-3 mb-3"  v-for="(item, index) in form.items">
+					<div :key="item.id" v-if="item.show">
 					<p class="my-1">{{ index + 1 }} - {{ item.item_name }}</p>
 					<b-col v-if="validate_qualificacion">
                 		<div class="float-right" style="padding-right: 10px;">
@@ -127,7 +131,8 @@
 				                Este item contiene errores en sus datos
 				             </b-form-feedback>
 					</div>
-				</div>
+					</div>
+				</template>
 			</b-card-body>
 		</b-card>
 		<br><br>
@@ -209,10 +214,20 @@ export default {
 			this.form = Form.makeFrom(this.items, this.method, false, false);
 		}
 	},
+	mounted() {
+		this.resetReloadShowItems();
+	},
 	data() {
 		return {
 			loading: this.isEdit,
 			form: Form.makeFrom(this.items, this.method, false, false),
+			filterQualification: 'Todas',
+			filterQualificationOptions: [
+         		{name: 'Todas', value: 'Todas'},
+				{name: 'Cumple', value: 'C'},
+         		{name: 'No Cumple', value: 'NC'},
+         		{name: 'No Aplica', value: 'NA'}
+			]
 		};
 	},
 	methods: {
@@ -408,7 +423,26 @@ export default {
 				}).catch(error => {
 					Alerts.error('Error', 'Debe adicionar un motivo de rechazo');
 				});
-		}
+		},
+		resetReloadShowItems() 
+		{
+			this.loading = true;
+			_.forIn(this.form.items, (item, key) => {
+				if (this.filterQualification == 'Todas')
+				{
+					item.show = true;
+				}
+				else if (this.filterQualification == item.qualification)
+				{
+					item.show = true;
+				}
+				else
+				{
+					item.show = false;
+				}
+			});
+			this.loading = false;
+		},
 	}
 };
 </script>

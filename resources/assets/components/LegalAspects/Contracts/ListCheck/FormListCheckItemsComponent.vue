@@ -36,106 +36,111 @@
 						</div>
 					</b-modal>
 
+				<vue-advanced-select @change="resetReloadShowItems" class="col-md-4 offset-md-1" v-model="filterQualification" :options="filterQualificationOptions" :hide-selected="false" name="filterQualification" label="Filtrar por calificación" placeholder="Seleccione la Calificación">
+                    </vue-advanced-select>
+
 			</b-card-header>
 			<b-card-body>
-				<div class="rounded ui-bordered p-3 mb-3"  v-for="(item, index) in form.items" :key="item.id">
-					<b-col v-if="validate_qualificacion">
-                		<div class="float-right" style="padding-right: 10px;">
-                    		<b-btn v-if="item.state_aprove_qualification == 'PENDIENTE'"  variant="warning" class="btn-circle-micro" v-b-popover.hover.focus.left="aprove" title="Calificación Pendiente"><span class="fas fa-question"></span></b-btn>
-							<b-btn v-if="item.state_aprove_qualification == 'APROBADA'"  variant="success" class="btn-circle-micro" v-b-popover.hover.focus.left="pending" title="Calificación Aprobada"><span class="fas fa-check"></span></b-btn>
-							<b-btn @click="showModal(`modalRechazo${index}`)" v-if="item.state_aprove_qualification == 'RECHAZADA'"  variant="primary" class="btn-circle-micro" v-b-popover.hover.focus.left="rechazada" title="Calificación Rechazada"><span class="fas fa-times"></span></b-btn>
-							<b-modal :ref="`modalRechazo${index}`" :hideFooter="true" :id="`modals-rechazo-${index+1}`" class="modal-top" size="lg">
-							<div slot="modal-title">
-								Motivo de Rechazo <span class="font-weight-light">de la calificación</span>
-							</div>
-							<br>
-							<vue-textarea :disabled="true" class="col-md-12" v-model="item.reason_rejection" label="Motivo del rexhazo" name="reason_rejection" placeholder="Motivo" :error="form.errorsFor(`reason_rejection`)"></vue-textarea>
-							<br>
-							<div class="row float-right pt-12 pr-12y">
-								<b-btn variant="primary" @click="hideModal(`modalRechazo${index}`)">Cerrar</b-btn>
-							</div>
-						</b-modal>
-                		</div>
-              		</b-col>
-					<p class="my-1">{{ index + 1 }} - {{ item.item_name }}</p> 
-					<b-col>
-                		<div class="float-right" style="padding-right: 10px;">
-                    		<b-btn v-b-popover.hover.focus.left="item.verification_mode" title="Modo de verificación" variant="primary" class="btn-circle-micro"><span class="fas fa-info"></span></b-btn>
-                		</div>
-              		</b-col>
-					<span class="text-muted">{{ item.criterion_description}}</span>
-					<div class="media align-items-center mt-3">
-						<div class="media-body ml-2">
-
-							<!-- NO CUMPLE -->
-							<b-btn v-if="item.qualification == 'NC'" @click="showModal(`modalPlan${index}`)" variant="primary"><span class="lnr lnr-bookmark"></span> Plan de acción</b-btn>
-
-							<b-modal v-show="item.qualification == 'NC'" :ref="`modalPlan${index}`" :hideFooter="true" :id="`modals-default-${index+1}`" class="modal-top" size="lg" @hidden="saveQualification(index)">
+				<template class="rounded ui-bordered p-3 mb-3"  v-for="(item, index) in form.items">
+					<div :key="item.id" v-if="item.show">
+						<b-col v-if="validate_qualificacion">
+							<div class="float-right" style="padding-right: 10px;">
+								<b-btn v-if="item.state_aprove_qualification == 'PENDIENTE'"  variant="warning" class="btn-circle-micro" v-b-popover.hover.focus.left="aprove" title="Calificación Pendiente"><span class="fas fa-question"></span></b-btn>
+								<b-btn v-if="item.state_aprove_qualification == 'APROBADA'"  variant="success" class="btn-circle-micro" v-b-popover.hover.focus.left="pending" title="Calificación Aprobada"><span class="fas fa-check"></span></b-btn>
+								<b-btn @click="showModal(`modalRechazo${index}`)" v-if="item.state_aprove_qualification == 'RECHAZADA'"  variant="primary" class="btn-circle-micro" v-b-popover.hover.focus.left="rechazada" title="Calificación Rechazada"><span class="fas fa-times"></span></b-btn>
+								<b-modal :ref="`modalRechazo${index}`" :hideFooter="true" :id="`modals-rechazo-${index+1}`" class="modal-top" size="lg">
 								<div slot="modal-title">
-									Plan de acción <span class="font-weight-light">Contratistas</span><br>
-									<small class="text-muted">Crea planes de acción para tu justificación.</small>
+									Motivo de Rechazo <span class="font-weight-light">de la calificación</span>
 								</div>
-
-								<b-card  bg-variant="transparent"  title="" class="mb-3 box-shadow-none">
-									<action-plan-component
-										:is-edit="!viewOnly"
-										:view-only="viewOnly"
-										:form="form"
-										:prefix-index="`items.${index}.`"
-										:action-plan-states="actionPlanStates"
-										v-model="item.actionPlan"
-										:action-plan="item.actionPlan"/>
-								</b-card>
+								<br>
+								<vue-textarea :disabled="true" class="col-md-12" v-model="item.reason_rejection" label="Motivo del rexhazo" name="reason_rejection" placeholder="Motivo" :error="form.errorsFor(`reason_rejection`)"></vue-textarea>
 								<br>
 								<div class="row float-right pt-12 pr-12y">
-									<b-btn variant="primary" @click="hideModal(`modalPlan${index}`)">Cerrar</b-btn>
+									<b-btn variant="primary" @click="hideModal(`modalRechazo${index}`)">Cerrar</b-btn>
 								</div>
 							</b-modal>
-							<!------------------------------->
+							</div>
+						</b-col>
+						<p class="my-1">{{ index + 1 }} - {{ item.item_name }}</p> 
+						<b-col>
+							<div class="float-right" style="padding-right: 10px;">
+								<b-btn v-b-popover.hover.focus.left="item.verification_mode" title="Modo de verificación" variant="primary" class="btn-circle-micro"><span class="fas fa-info"></span></b-btn>
+							</div>
+						</b-col>
+						<span class="text-muted">{{ item.criterion_description}}</span>
+						<div class="media align-items-center mt-3">
+							<div class="media-body ml-2">
 
-							<!--CUMPLE -->
-							<b-btn v-if="item.qualification == 'C'" @click="showModal(`modalFile${index}`)" variant="primary"><span class="lnr lnr-bookmark"></span> Adjuntar archivos</b-btn>
+								<!-- NO CUMPLE -->
+								<b-btn v-if="item.qualification == 'NC'" @click="showModal(`modalPlan${index}`)" variant="primary"><span class="lnr lnr-bookmark"></span> Plan de acción</b-btn>
 
-							<b-modal v-show="item.qualification == 'C'" :ref="`modalFile${index}`" :hideFooter="true" :id="`modals-file-${index+1}`" class="modal-top" size="lg" @hidden="saveQualification(index)">
-								<div slot="modal-title">
-									Subir Archivos <span class="font-weight-light">Contratistas</span><br>
-									<small class="text-muted">Selecciona archivos pdf's para este item.</small>
-								</div>
+								<b-modal v-show="item.qualification == 'NC'" :ref="`modalPlan${index}`" :hideFooter="true" :id="`modals-default-${index+1}`" class="modal-top" size="lg" @hidden="saveQualification(index)">
+									<div slot="modal-title">
+										Plan de acción <span class="font-weight-light">Contratistas</span><br>
+										<small class="text-muted">Crea planes de acción para tu justificación.</small>
+									</div>
 
-								<div v-if="existError(`items.${index}.`)">
-										<b-form-feedback class="d-block" style="padding-bottom: 10px; text-align: center;">
-							                Archivos requeridos
-							             </b-form-feedback>
-								</div>
+									<b-card  bg-variant="transparent"  title="" class="mb-3 box-shadow-none">
+										<action-plan-component
+											:is-edit="!viewOnly"
+											:view-only="viewOnly"
+											:form="form"
+											:prefix-index="`items.${index}.`"
+											:action-plan-states="actionPlanStates"
+											v-model="item.actionPlan"
+											:action-plan="item.actionPlan"/>
+									</b-card>
+									<br>
+									<div class="row float-right pt-12 pr-12y">
+										<b-btn variant="primary" @click="hideModal(`modalPlan${index}`)">Cerrar</b-btn>
+									</div>
+								</b-modal>
+								<!------------------------------->
 
-								<b-card  bg-variant="transparent"  title="" class="mb-3 box-shadow-none">
-									<form-upload-file-list-item-component
-										:form="form"
-										:view-only="viewOnly"
-										:prefix-index="`items.${index}.`"
-										v-model="form.items[index].files"
-										@removeFile="pushRemoveFile"/>
-								</b-card>
-								<br>
-								<div class="row float-right pt-12 pr-12y">
-									<b-btn variant="primary" @click="hideModal(`modalFile${index}`)">Cerrar</b-btn>
-								</div>
-							</b-modal>
-							<!------------------------------->
+								<!--CUMPLE -->
+								<b-btn v-if="item.qualification == 'C'" @click="showModal(`modalFile${index}`)" variant="primary"><span class="lnr lnr-bookmark"></span> Adjuntar archivos</b-btn>
+
+								<b-modal v-show="item.qualification == 'C'" :ref="`modalFile${index}`" :hideFooter="true" :id="`modals-file-${index+1}`" class="modal-top" size="lg" @hidden="saveQualification(index)">
+									<div slot="modal-title">
+										Subir Archivos <span class="font-weight-light">Contratistas</span><br>
+										<small class="text-muted">Selecciona archivos pdf's para este item.</small>
+									</div>
+
+									<div v-if="existError(`items.${index}.`)">
+											<b-form-feedback class="d-block" style="padding-bottom: 10px; text-align: center;">
+												Archivos requeridos
+											</b-form-feedback>
+									</div>
+
+									<b-card  bg-variant="transparent"  title="" class="mb-3 box-shadow-none">
+										<form-upload-file-list-item-component
+											:form="form"
+											:view-only="viewOnly"
+											:prefix-index="`items.${index}.`"
+											v-model="form.items[index].files"
+											@removeFile="pushRemoveFile"/>
+									</b-card>
+									<br>
+									<div class="row float-right pt-12 pr-12y">
+										<b-btn variant="primary" @click="hideModal(`modalFile${index}`)">Cerrar</b-btn>
+									</div>
+								</b-modal>
+								<!------------------------------->
+							</div>
+							<div class="text-muted small text-nowrap">	
+									<vue-radio :disabled="viewOnly" v-model="item.qualification" label="Calificación" :name="`items${item.id}`" :error="form.errorsFor(`items.${index}`)" :options="qualifications" :checked="item.qualification" @input="changeActionFiles(item.qualification, `${index}`)"></vue-radio>
+							</div>						
 						</div>
-						<div class="text-muted small text-nowrap">	
-								<vue-radio :disabled="viewOnly" v-model="item.qualification" label="Calificación" :name="`items${item.id}`" :error="form.errorsFor(`items.${index}`)" :options="qualifications" :checked="item.qualification" @input="changeActionFiles(item.qualification, `${index}`)"></vue-radio>
-						</div>						
+						<div class="col-md-12">
+							<vue-textarea @onBlur="saveQualification(`${index}`)" :disabled="viewOnly" class="col-md-12" v-model="item.observations" label="Observaciones" name="observations" placeholder="Observaciones" :error="form.errorsFor(`observations`)"></vue-textarea>
+						</div>
+						<div v-if="existError(`items.${index}.`)">
+								<b-form-feedback class="d-block" style="padding-bottom: 10px;">
+									Este item contiene errores en sus datos
+								</b-form-feedback>
+						</div>
 					</div>
-					<div class="col-md-12">
-						<vue-textarea @onBlur="saveQualification(`${index}`)" :disabled="viewOnly" class="col-md-12" v-model="item.observations" label="Observaciones" name="observations" placeholder="Observaciones" :error="form.errorsFor(`observations`)"></vue-textarea>
-					</div>
-					<div v-if="existError(`items.${index}.`)">
-							<b-form-feedback class="d-block" style="padding-bottom: 10px;">
-				                Este item contiene errores en sus datos
-				             </b-form-feedback>
-					</div>
-				</div>
+				</template>
 			</b-card-body>
 		</b-card>
 		<br><br>
@@ -221,6 +226,8 @@ export default {
 	mounted() {
 		if (this.message)
 			this.$refs.modalTransfer.show()
+
+		this.resetReloadShowItems();
 	},
 	data() {
 		return {
@@ -229,7 +236,15 @@ export default {
 			required: '',
 			aprove: 'El contratante a aprobado su calificación para el item',
 			rechazada: 'EL contratante ha rechazado su calificación, debe reevaluar el item, dele click al boton para conocer el motivo del rechazo',
-			pending: 'Calificación pendiente por aprobación del contratante'
+			pending: 'Calificación pendiente por aprobación del contratante',
+		    filterQualification: 'Todas',
+			filterQualificationOptions: [
+         		{name: 'Todas', value: 'Todas'},
+				{name: 'Cumple', value: 'C'},
+         		{name: 'No Cumple', value: 'NC'},
+         		{name: 'No Aplica', value: 'NA'},
+				 
+			]
 		};
 	},
 	methods: {
@@ -398,7 +413,26 @@ export default {
                     }).catch(error => {
                         Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
                     });
-		}
+		},
+		resetReloadShowItems() 
+		{
+			this.loading = true;
+			_.forIn(this.form.items, (item, key) => {
+				if (this.filterQualification == 'Todas')
+				{
+					item.show = true;
+				}
+				else if (this.filterQualification == item.qualification)
+				{
+					item.show = true;
+				}
+				else
+				{
+					item.show = false;
+				}
+			});
+			this.loading = false;
+		},
 	}
 };
 </script>

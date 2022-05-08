@@ -37,7 +37,7 @@
                 </b-col>
             </b-row>
 
-            <div class="row" v-if="checkModule('legalmatrix')">
+            <div class="row" v-if="checkModule('legalmatrix') || checkModule('contracts')">
                 <div class="col-md-5 offset-md-1" style="padding-top: 40px; padding-bottom: 20px;">
                     <hr class="border-dark mt-0 mb-4">
                 </div>
