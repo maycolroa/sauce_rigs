@@ -51,6 +51,9 @@
 								<td style='text-center align-middle'>
 									{{ index + 1 }} . {{ user.name }} - {{ user.email}}
 								</td>
+								<td v-if="index == 0">
+									<b-btn @click="editUser(user.id)" variant="outline-success icon-btn borderless" size="xs" v-b-tooltip.top title="Editar Usuario"><span class="ion ion-md-create"></span></b-btn>
+								</td>
 							</tr>
 						</tbody>
 					</table>
@@ -165,6 +168,10 @@ export default {
 			.catch(error => {
 				this.loading = false;
 			});
+		},
+		editUser(id)
+		{
+			this.$router.push({name: 'administrative-users-edit', params : { id }});
 		}
 	}
 };
