@@ -21,9 +21,9 @@ class CreateSauAwFormAccidentsTable extends Migration
             $table->date('fecha_envio_empresa')->nullable();
             $table->string('coordinador_delegado');
             $table->string('cargo');
-            $table->string('employee_eps_id')->nullable();
-            $table->string('codigo_arl')->nullable();
-            $table->string('codigo_afp')->nullable();
+            $table->unsignedInteger('employee_eps_id')->nullable();
+            $table->unsignedInteger('employee_arl_id')->nullable();
+            $table->unsignedInteger('employee_afp_id')->nullable();
             $table->boolean('tiene_seguro_social')->default(0);
             $table->string('nombre_seguro_social')->nullable();
 
@@ -66,7 +66,7 @@ class CreateSauAwFormAccidentsTable extends Migration
             $table->string('departamento_persona_id');
             $table->string('ciudad_persona_id');
             $table->string('zona_persona');
-            $table->string('employee_position_id');
+            $table->unsignedInteger('employee_position_id');
             $table->string('tiempo_ocupacion_habitual_persona');
             $table->date('fecha_ingreso_empresa_persona')->nullable();
             $table->integer('salario_persona');
@@ -100,10 +100,10 @@ class CreateSauAwFormAccidentsTable extends Migration
 
             $table->boolean('consolidado')->default(0);
 
-            $table->integer('user_id')->unsigned();
-            $table->integer('site_id')->unsigned()->nullable();
-            $table->integer('agent_id')->unsigned()->nullable();
-            $table->integer('mechanism_id')->unsigned()->nullable();
+            $table->unsignedInteger('user_id')->unsigned();
+            $table->unsignedInteger('site_id')->unsigned()->nullable();
+            $table->unsignedInteger('agent_id')->unsigned()->nullable();
+            $table->unsignedInteger('mechanism_id')->unsigned()->nullable();
 
             $table->timestamps();
 
@@ -111,6 +111,11 @@ class CreateSauAwFormAccidentsTable extends Migration
             $table->foreign('site_id')->references('id')->on('sau_aw_sites');
             $table->foreign('agent_id')->references('id')->on('sau_aw_agents');
             $table->foreign('mechanism_id')->references('id')->on('sau_aw_mechanisms');
+            $table->foreign('employee_position_id')->references('id')->on('sau_employees_positions');
+            $table->foreign('employee_eps_id')->references('id')->on('sau_employees_eps');
+            $table->foreign('employee_afp_id')->references('id')->on('sau_employees_afp');
+            $table->foreign('employee_arl_id')->references('id')->on('sau_employees_arl');
+
         });
     }
 
