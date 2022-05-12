@@ -108,6 +108,12 @@
                 "display_name": "Elementos protección personal",
                 "main": "SI",
                 "logo": null
+            },
+            {
+                "name": "accidentsWork",
+                "display_name": "Investigación de accidentes e incidentes de trabajo",
+                "main": "SI",
+                "logo": null
             }
         ]
     },
