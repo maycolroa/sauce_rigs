@@ -15,17 +15,27 @@ class CreateSauAwFormAccidentsTable extends Migration
     {
         Schema::create('sau_aw_form_accidents', function (Blueprint $table) {
             $table->increments('id');
+            $table->unsignedInteger('company_id');
+            $table->unsignedInteger('employee_id')->nullable();
 
-            $table->string('nivel_accidente');
-            $table->date('fecha_envio_arl')->nullable();
-            $table->date('fecha_envio_empresa')->nullable();
-            $table->string('coordinador_delegado');
-            $table->string('cargo');
-            $table->unsignedInteger('employee_eps_id')->nullable();
-            $table->unsignedInteger('employee_arl_id')->nullable();
-            $table->unsignedInteger('employee_afp_id')->nullable();
-            $table->boolean('tiene_seguro_social')->default(0);
-            $table->string('nombre_seguro_social')->nullable();
+            $table->string('tipo_vinculacion_persona');
+            $table->string('nombre_persona')->nullable();
+            $table->string('tipo_identificacion_persona')->nullable();
+            $table->string('identificacion_persona')->nullable();
+            $table->date('fecha_nacimiento_persona')->nullable();
+            $table->string('sexo_persona')->nullable();
+            $table->string('direccion_persona')->nullable();
+            $table->string('telefono_persona')->nullable();
+            $table->string('email_persona')->nullable();
+            $table->string('departamento_persona_id');
+            $table->string('ciudad_persona_id');
+            $table->string('zona_persona');
+            $table->string('cargo_persona')->nullable();
+            $table->unsignedInteger('employee_position_id');
+            $table->string('tiempo_ocupacion_habitual_persona');
+            $table->date('fecha_ingreso_empresa_persona')->nullable();
+            $table->integer('salario_persona');
+            $table->string('jornada_trabajo_habitual_persona');
 
             $table->string('tipo_vinculador_laboral');
             $table->string('razon_social');
@@ -50,27 +60,16 @@ class CreateSauAwFormAccidentsTable extends Migration
             $table->string('ciudad_centro_trabajo_id');
             $table->string('zona_centro_trabajo');
 
-            $table->string('tipo_vinculacion_persona');
-            $table->string('primer_apellido_persona');
-            $table->string('segundo_apellido_persona')->nullable();
-            $table->string('primer_nombre_persona');
-            $table->string('segundo_nombre_persona')->nullable();
-            $table->string('tipo_identificacion_persona');
-            $table->string('identificacion_persona');
-            $table->date('fecha_nacimiento_persona')->nullable();
-            $table->string('sexo_persona');
-            $table->string('direccion_persona')->nullable();
-            $table->string('telefono_persona')->nullable();
-            $table->string('fax_persona')->nullable();
-            $table->string('email_persona')->nullable();
-            $table->string('departamento_persona_id');
-            $table->string('ciudad_persona_id');
-            $table->string('zona_persona');
-            $table->unsignedInteger('employee_position_id');
-            $table->string('tiempo_ocupacion_habitual_persona');
-            $table->date('fecha_ingreso_empresa_persona')->nullable();
-            $table->integer('salario_persona');
-            $table->string('jornada_trabajo_habitual_persona');
+            $table->string('nivel_accidente');
+            $table->date('fecha_envio_arl')->nullable();
+            $table->date('fecha_envio_empresa')->nullable();
+            $table->string('coordinador_delegado');
+            $table->string('cargo');
+            $table->unsignedInteger('employee_eps_id')->nullable();
+            $table->unsignedInteger('employee_arl_id')->nullable();
+            $table->unsignedInteger('employee_afp_id')->nullable();
+            $table->boolean('tiene_seguro_social')->default(0);
+            $table->string('nombre_seguro_social')->nullable();
 
             $table->dateTime('fecha_accidente')->nullable();
             $table->string('jornada_accidente');
@@ -106,8 +105,10 @@ class CreateSauAwFormAccidentsTable extends Migration
             $table->unsignedInteger('mechanism_id')->unsigned()->nullable();
 
             $table->timestamps();
-
+            
+            $table->foreign('company_id')->references('id')->on('sau_companies')->onDelete('cascade');
             $table->foreign('user_id')->references('id')->on('sau_users');
+            $table->foreign('employee_id')->references('id')->on('sau_employees');
             $table->foreign('site_id')->references('id')->on('sau_aw_sites');
             $table->foreign('agent_id')->references('id')->on('sau_aw_agents');
             $table->foreign('mechanism_id')->references('id')->on('sau_aw_mechanisms');

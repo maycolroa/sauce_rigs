@@ -196,6 +196,8 @@ Route::middleware(['auth'])->group(function () {
         Route::post('bm_musculoskeletalCompany', 'PreventiveOccupationalMedicine\BiologicalMonitoring\MusculoskeletalAnalysis\MusculoskeletalAnalysisController@multiselectCompany');
         Route::post('bm_musculoskeletalPacient', 'PreventiveOccupationalMedicine\BiologicalMonitoring\MusculoskeletalAnalysis\MusculoskeletalAnalysisController@multiselectPacient');
         Route::post('bm_respiratoryPacient', 'PreventiveOccupationalMedicine\BiologicalMonitoring\RespiratoryAnalysis\RespiratoryAnalysisController@multiselectPacient');
+        Route::post('departaments', 'General\MultiSelectRadioController@departamentsMultiselect');
+        Route::post('municipalities', 'General\MultiSelectRadioController@municipalitiesMultiselect');
         Route::post('regionals', 'Administrative\Regionals\EmployeeRegionalController@multiselect');
         Route::post('headquarters', 'Administrative\Headquarters\EmployeeHeadquarterController@multiselect');  
         Route::post('sexs', 'General\MultiSelectRadioController@sexs');    
@@ -541,6 +543,9 @@ Route::middleware(['auth'])->group(function () {
       Route::get('document/download/{document}', 'IndustrialSecure\Documents\DocumentController@download');
       Route::post('document/data', 'IndustrialSecure\Documents\DocumentController@data');
       Route::ApiResource('document', 'IndustrialSecure\Documents\DocumentController');
+
+      Route::ApiResource('accidents', 'IndustrialSecure\AccidentsWork\AccidentsWorkController');
+      Route::post('accidents/data', 'IndustrialSecure\AccidentsWork\AccidentsWorkController@data');
 
       Route::prefix('epp')->group(function () {
         Route::ApiResource('element', 'IndustrialSecure\EPP\ElementController');

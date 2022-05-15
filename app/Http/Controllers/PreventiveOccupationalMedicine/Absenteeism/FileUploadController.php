@@ -163,7 +163,9 @@ class FileUploadController extends Controller
      */
     public function download(FileUpload $fileUpload)
     {
-      $name = $fileUpload->name;
+      $sub = explode('.',$fileUpload->file)[1];
+      $name = $fileUpload->name.'.'.$sub;
+      
 
         if ($name)
             return Storage::disk('s3')->download($fileUpload->path_donwload(), $name);

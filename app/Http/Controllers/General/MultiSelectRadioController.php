@@ -4,6 +4,9 @@ namespace App\Http\Controllers\General;
 
 use App\Http\Controllers\Controller;
 use App\Facades\ActionPlans\Facades\ActionPlan;
+use App\Models\General\Departament;
+use App\Models\General\Municipality;
+use Illuminate\Http\Request;
 
 class MultiSelectRadioController extends Controller
 {
@@ -231,5 +234,75 @@ class MultiSelectRadioController extends Controller
         ];
         
         return $this->multiSelectFormat(collect($data));
+    }
+
+    public function departamentsMultiselect(Request $request)
+    {
+        if($request->has('keyword'))
+        {
+            $keyword = "%{$request->keyword}%";
+            $departaments = Departament::select("id", "name")
+                ->where(function ($query) use ($keyword) {
+                    $query->orWhere('name', 'like', $keyword);
+                })
+                ->orderBy('name')
+                ->take(30)->pluck('id', 'name');
+
+            return $this->respondHttp200([
+                'options' => $this->multiSelectFormat($departaments)
+            ]);
+        }
+        else
+        {
+            $departaments = Departament::selectRaw("
+                sau_departaments.id as id,
+                sau_departaments.name as name
+            ")->orderBy('name')->pluck('id', 'name');
+        
+            return $this->multiSelectFormat($departaments);
+        }
+    }
+
+    public function municipalitiesMultiselect(Request $request)
+    {
+        if($request->has('keyword'))
+        {
+            $keyword = "%{$request->keyword}%";
+            $municipalities = Municipality::selectRaw(
+                "sau_municipalities.id as id,
+                sau_municipalities.name as name")
+            ->join('sau_departaments', 'sau_departaments.id', 'sau_municipalities.departament_id')
+            ->where(function ($query) use ($keyword) {
+                $query->orWhere('sau_municipalities.name', 'like', $keyword);
+            });
+
+            if ($request->has('departament') && $request->get('departament') != '')
+            {
+                $departament = $request->get('departament');
+                
+                if (is_numeric($departament))
+                    $municipalities->where('departament_id', $request->get('departament'));
+                else
+                    $municipalities->whereIn('departament_id', $this->getValuesForMultiselect($departament));
+            }
+
+            $municipalities = $municipalities->orderBy('name')->take(30)->pluck('id', 'name');
+
+            return $this->respondHttp200([
+                'options' => $this->multiSelectFormat($municipalities)
+            ]);
+        }
+        else
+        {
+            $municipalities = Municipality::selectRaw(
+                "GROUP_CONCAT(sau_municipalities.id) as ids,
+                 sau_municipalities.name as name")
+            ->join('sau_departaments', 'sau_departaments.id', 'sau_municipalities.departament_id')
+            ->groupBy('sau_municipalities.name')
+            ->orderBy('name')
+            ->pluck('ids', 'name');
+        
+            return $this->multiSelectFormat($municipalities);
+        }
     }
 }

@@ -1701,4 +1701,59 @@ export default [
         filterColumns: true,
     }
 },
+{
+    name: 'industrialsecure-accidents',
+    fields: [
+        { name: 'id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true },
+        { name: 'nombre_persona', data: 'nombre_persona', title: 'Empleado', sortable: true, searchable: false, detail: false, key: false },
+        { name: 'identificacion_persona', data: 'identificacion_persona', title: 'Identificación', sortable: true, searchable: false, detail: false, key: false },
+        { name: 'fecha_accidente', data: 'fecha_accidente', title: 'Fecha de accidente', sortable: true, searchable: false, detail: false, key: false },
+        { name: 'consolidado', data: 'consolidado', title: 'Estado', sortable: true, searchable: false, detail: false, key: false },
+        { name: '', data: 'controlls', title: 'Controles', sortable: false, searchable: false, detail: false, key: false },
+    ],
+    'controlls': [{
+        type: 'push',
+        buttons: [{
+        config: {
+            color: 'outline-success',
+            borderless: true,
+            icon: 'ion ion-md-create',
+            title: 'Editar'
+        },
+        data: {
+            routePush: { name: 'industrialsecure-accidentswork-edit' },
+            id: 'id',
+        },
+        permission: 'accidentsWork_u'
+        }, {
+        config: {
+            color: 'outline-info',
+            borderless: true,
+            icon: 'ion ion-md-eye',
+            title: 'Ver'
+        },
+        data: {
+            routePush: { name: 'industrialsecure-accidentswork-view' },
+            id: 'id',
+        },
+        permission: 'documentsSecurity_r'
+        }]
+    },
+    {
+        type: 'base',
+        buttons: [{
+        name: 'delete',
+        data: {
+            action: '/industrialSecurity/accidents/',
+            id: 'id',
+            messageConfirmation: 'Esta seguro de borrar el formulario de accidente __name__'
+        },
+        permission: 'accidentsWork_d'
+        }],
+    }],
+    configuration: {
+        urlData: '/industrialSecurity/accidents/data',
+        filterColumns: true,
+    }
+},
 ];

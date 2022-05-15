@@ -80,7 +80,28 @@
                 </b-col>
             </b-row>
 
-            <div class="row" v-if="checkModule('epp') || checkModule('riskmatrix') || checkModule('dangermatrix') || checkModule('dangerousconditions')">
+            <div class="row" v-if="checkModule('riskmatrix') && checkModule('epp')">
+                <div class="col-md-5 offset-md-1" style="padding-top: 40px; padding-bottom: 20px;">
+                    <hr class="border-dark mt-0 mb-4">
+                </div>
+            </div>
+
+            <b-row v-if="checkModule('accidentswork')">
+                <b-col cols="8">
+                    <router-link :to="{ name: 'industrialsecure-accidentswork'}" v-on:click.native="activityUser('Elementos de proteccion personal')" class="text-dark cursor-pointer item-app-navbar">
+                        <center>
+                            <div style="font-size: 20px;" class="my-2 mx-2 text-center font-weight-bold" ref="accident" @mouseover="changeClassImage('accident', 'accident_hover')">
+                                <img class="ui-w-80" src="/images/icono-negro-biomecanico.png" alt=""> INVESTIGACIÓN DE ACCIDENTES E INCIDENTES DE TRABAJO &nbsp;&nbsp; &nbsp;&nbsp; 
+                            </div>
+                            <div style="font-size: 20px; text-decoration: underline rgb(244, 75, 82); text-underline-position: under;" class="my-2 mx-2 text-center font-weight-bold imgHidden" ref="accident_hover" @mouseleave="changeClassImage('accident_hover', 'accident')">
+                                <img class="ui-w-80" src="/images/icono-rojo-biomecanico.png" alt=""> INVESTIGACIÓN DE ACCIDENTES E INCIDENTES DE TRABAJO &nbsp;&nbsp; &nbsp;&nbsp; 
+                            </div>
+                        </center>
+                    </router-link>
+                </b-col>
+            </b-row>
+
+            <div class="row" v-if="checkModule('epp') || checkModule('riskmatrix') || checkModule('dangermatrix') || checkModule('dangerousconditions') || checkModule('accidentsWork')">
                 <div class="col-md-5 offset-md-1" style="padding-top: 40px; padding-bottom: 20px;">
                     <hr class="border-dark mt-0 mb-4">
                 </div>
@@ -122,9 +143,6 @@
           return [];
         }
       }
-    },
-    mounted() {
-        console.log('entro')
     },
     computed: {
       modules() {

@@ -844,5 +844,37 @@ export default [{
 					component: () => import('@/views/IndustrialSecure/documents/view')
 				}
 			]),
+      ...middleware({ 'check-permission': 'accidentsWork_r' }, [
+        {
+          name: 'industrialsecure-accidentswork',
+          path: 'accidents',
+          component: () =>
+            import('@/views/IndustrialSecure/accidentsWorks/index') 
+        }
+      ]), 
+      ...middleware({ 'check-permission': 'accidentsWork_c' }, [
+        {
+          name: 'industrialsecure-accidentswork-create',
+          path: 'accidents/create',
+          component: () =>
+            import('@/views/IndustrialSecure/accidentsWorks/create')
+        }
+      ]), 
+      ...middleware({ 'check-permission': 'accidentsWork_u' }, [
+        {
+          name: 'industrialsecure-accidentswork-edit',
+          path: 'accidents/:id',
+          component: () =>
+            import('@/views/IndustrialSecure/accidentsWorks/edit')
+        }
+      ]),
+      ...middleware({ 'check-permission': 'accidentsWork_r' }, [
+        {
+          name: 'industrialsecure-accidentswork-view',
+          path: 'accidents/:id',
+          component: () =>
+            import('@/views/IndustrialSecure/accidentsWorks/view')
+        }
+      ]),
     ]
   }]
