@@ -1,9 +1,9 @@
 <template>
       <div>
-        <b-card bg-variant="transparent" border-variant="dark" title="Información General" class="mb-3 box-shadow-none">
+        <b-card bg-variant="transparent" border-variant="dark" class="mb-3 box-shadow-none">
           <b-form-row>
             <vue-input :disabled="viewOnly" class="col-md-6" v-model="employee.nombre_persona" label="Nombre" type="text" name="nombre_persona" :error="form.errorsFor('nombre_persona')" placeholder="Nombre"></vue-input>
-            <vue-radio :disabled="viewOnly" :checked="employee.tipo_identificacion_persona" class="col-md-6" v-model="employee.tipo_identificacion_persona" :options="typesDocuments" name="tipo_identificacion_persona" :error="form.errorsFor('tipo_identificacion_persona')" label="Tipo de vinculación"></vue-radio>
+            <vue-radio :disabled="viewOnly" :checked="employee.tipo_identificacion_persona" class="col-md-6" v-model="employee.tipo_identificacion_persona" :options="typesDocuments" name="tipo_identificacion_persona" :error="form.errorsFor('tipo_identificacion_persona')" label="Tipo de identificación"></vue-radio>
           </b-form-row>
           <b-form-row>
             <vue-input :disabled="viewOnly" class="col-md-6" v-model="employee.identificacion_persona" label="Número de identificación" type="text" name="identificacion_persona" :error="form.errorsFor('identificacion_persona')" placeholder="Documento"></vue-input>

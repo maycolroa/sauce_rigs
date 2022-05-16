@@ -53,6 +53,125 @@
         </b-row>
       </tab-content>
 
+      <tab-content title="Identificación del empleador, contratante o cooperativa">
+        <b-row>
+          <b-col>
+            <b-card bg-variant="transparent" border-variant="dark" title="" class="mb-3 box-shadow-none">
+              <b-row>
+                <b-col>
+                  <information-company
+                  :company="form"
+                  :view-only="viewOnly"
+                  :is-edit="isEdit"/>
+                </b-col>
+              </b-row>
+            </b-card>
+          </b-col>
+        </b-row>
+      </tab-content>
+
+      <tab-content title="Información básica">
+        <b-row>
+          <b-col>
+            <b-card bg-variant="transparent" border-variant="dark" title="" class="mb-3 box-shadow-none">
+              <b-row>
+                <b-col>
+                  <information-company
+                  :company="form"
+                  :view-only="viewOnly"
+                  :is-edit="isEdit"/>
+                </b-col>
+              </b-row>
+            </b-card>
+          </b-col>
+        </b-row>
+      </tab-content>
+
+      <tab-content title="Información sobre el accidente">
+        <b-row>
+          <b-col>
+            <b-card bg-variant="transparent" border-variant="dark" title="" class="mb-3 box-shadow-none">
+              <b-row>
+                <b-col>
+                  <information-company
+                  :company="form"
+                  :view-only="viewOnly"
+                  :is-edit="isEdit"/>
+                </b-col>
+              </b-row>
+            </b-card>
+          </b-col>
+        </b-row>
+      </tab-content>
+
+      <tab-content title="Descripción del accidente">
+        <b-row>
+          <b-col>
+            <b-card bg-variant="transparent" border-variant="dark" title="" class="mb-3 box-shadow-none">
+              <b-row>
+                <b-col>
+                  <information-company
+                  :company="form"
+                  :view-only="viewOnly"
+                  :is-edit="isEdit"/>
+                </b-col>
+              </b-row>
+            </b-card>
+          </b-col>
+        </b-row>
+      </tab-content>
+
+      <tab-content title="Observaciones de la empresa y registro visual">
+        <b-row>
+          <b-col>
+            <b-card bg-variant="transparent" border-variant="dark" title="" class="mb-3 box-shadow-none">
+              <b-row>
+                <b-col>
+                  <information-company
+                  :company="form"
+                  :view-only="viewOnly"
+                  :is-edit="isEdit"/>
+                </b-col>
+              </b-row>
+            </b-card>
+          </b-col>
+        </b-row>
+      </tab-content>
+
+      <tab-content title="Planes de acción">
+        <b-row>
+          <b-col>
+            <b-card bg-variant="transparent" border-variant="dark" title="" class="mb-3 box-shadow-none">
+              <b-row>
+                <b-col>
+                  <information-company
+                  :company="form"
+                  :view-only="viewOnly"
+                  :is-edit="isEdit"/>
+                </b-col>
+              </b-row>
+            </b-card>
+          </b-col>
+        </b-row>
+      </tab-content>
+
+      <tab-content title="Participantes de la investigación">
+        <b-row>
+          <b-col>
+            <b-card bg-variant="transparent" border-variant="dark" title="" class="mb-3 box-shadow-none">
+              <b-row>
+                <b-col>
+                  <information-company
+                  :company="form"
+                  :view-only="viewOnly"
+                  :is-edit="isEdit"/>
+                </b-col>
+              </b-row>
+            </b-card>
+          </b-col>
+        </b-row>
+      </tab-content>
+
       <template slot="footer" slot-scope="props">
         <b-btn variant="default" :to="cancelUrl" :disabled="loading">{{ viewOnly ? "Atras" : "Cancelar"}}</b-btn>
         <b-btn v-on:click="props.prevTab" :disabled="loading" variant="default">Anterior</b-btn>
@@ -79,6 +198,7 @@ import Form from "@/utils/Form.js";
 import Alerts from '@/utils/Alerts.js';
 import InformationGeneral from '@/components/IndustrialSecure/AccidentsWork/InformationGeneral.vue';
 import InformationEmployee from '@/components/IndustrialSecure/AccidentsWork/InformationEmployee.vue';
+import InformationCompany from '@/components/IndustrialSecure/AccidentsWork/CompanyInforComponent.vue';
 import { FormWizard, TabContent, WizardStep } from "vue-form-wizard";
 
 export default {
@@ -95,6 +215,7 @@ export default {
     FormWizard,
     TabContent,
     WizardStep,
+    InformationCompany
   },
   props: {
     url: { type: String },
