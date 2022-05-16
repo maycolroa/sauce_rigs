@@ -76,8 +76,8 @@
             <b-card bg-variant="transparent" border-variant="dark" title="" class="mb-3 box-shadow-none">
               <b-row>
                 <b-col>
-                  <information-company
-                  :company="form"
+                  <accident-infor-basic
+                  :infor="form"
                   :view-only="viewOnly"
                   :is-edit="isEdit"/>
                 </b-col>
@@ -144,10 +144,13 @@
             <b-card bg-variant="transparent" border-variant="dark" title="" class="mb-3 box-shadow-none">
               <b-row>
                 <b-col>
-                  <information-company
-                  :company="form"
+                  <action-plan-component
+                  :is-edit="isEdit"
                   :view-only="viewOnly"
-                  :is-edit="isEdit"/>
+                  :form="form"
+                  :action-plan-states="actionPlanStates"
+                  v-model="form.actionPlan"
+                  :action-plan="form.actionPlan"/>
                 </b-col>
               </b-row>
             </b-card>
@@ -199,7 +202,9 @@ import Alerts from '@/utils/Alerts.js';
 import InformationGeneral from '@/components/IndustrialSecure/AccidentsWork/InformationGeneral.vue';
 import InformationEmployee from '@/components/IndustrialSecure/AccidentsWork/InformationEmployee.vue';
 import InformationCompany from '@/components/IndustrialSecure/AccidentsWork/CompanyInforComponent.vue';
+import AccidentInforBasic from '@/components/IndustrialSecure/AccidentsWork/AccidentInforBasicComponent.vue';
 import { FormWizard, TabContent, WizardStep } from "vue-form-wizard";
+import ActionPlanComponent from '@/components/CustomInputs/ActionPlanComponent.vue';
 
 export default {
   components: {
@@ -215,7 +220,9 @@ export default {
     FormWizard,
     TabContent,
     WizardStep,
-    InformationCompany
+    InformationCompany,
+    AccidentInforBasic,
+    ActionPlanComponent
   },
   props: {
     url: { type: String },
@@ -236,6 +243,15 @@ export default {
         return [];
       }
     },
+    actionPlanStates: {
+			type: Array,
+			default: function() {
+				return [
+					{ name:'Pendiente', value:'Pendiente'},
+					{ name:'Ejecutada', value:'Ejecutada'}
+				];
+			}
+		},
     accident: {
       default() {
         return {
@@ -315,7 +331,11 @@ export default {
           user_id: '',
           site_id: '',
           agent_id: '',
-          mechanism_id: ''
+          mechanism_id: '',
+          actionPlan: {
+              activities: [],
+              activitiesRemoved: []
+          },
         };
       }
     }
