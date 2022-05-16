@@ -23,6 +23,7 @@
                   <div><b>{{ keywordCheck('arl') }}:</b> {{ employeeDetail.arl ? `${employeeDetail.arl.code} - ${employeeDetail.arl.name}` : '' }}</div>
               </b-col>
           </b-row>
+        </b-card>
           <br><br>
           <b-form-row>
             <vue-radio :disabled="viewOnly" :checked="employee.tipo_vinculacion_persona" class="col-md-12" v-model="form.tipo_vinculacion_persona" :options="personLinkingTypes" name="tipo_vinculacion_persona" :error="form.errorsFor('tipo_vinculacion_persona')" label="Tipo de vinculación"></vue-radio>
@@ -41,7 +42,6 @@
           </b-form-row> <b-form-row>
             <vue-radio :disabled="viewOnly" :checked="employee.jornada_trabajo_habitual_persona" class="col-md-12" v-model="form.jornada_trabajo_habitual_persona" :options="shifts" name="jornada_trabajo_habitual_persona" :error="form.errorsFor('jornada_trabajo_habitual_persona')" label="Jorada de trabajo habitual"></vue-radio>
           </b-form-row> 
-        </b-card>
       </div>
 </template>
 

@@ -1,6 +1,5 @@
 <template>
       <div>
-        <b-card bg-variant="transparent" border-variant="dark" class="mb-3 box-shadow-none">
           <b-form-row>
             <vue-input :disabled="viewOnly" class="col-md-6" v-model="employee.nombre_persona" label="Nombre" type="text" name="nombre_persona" :error="form.errorsFor('nombre_persona')" placeholder="Nombre"></vue-input>
             <vue-radio :disabled="viewOnly" :checked="employee.tipo_identificacion_persona" class="col-md-6" v-model="employee.tipo_identificacion_persona" :options="typesDocuments" name="tipo_identificacion_persona" :error="form.errorsFor('tipo_identificacion_persona')" label="Tipo de identificación"></vue-radio>
@@ -39,7 +38,6 @@
             <vue-input :disabled="viewOnly" class="col-md-6" v-model="employee.salario_persona" label="Salario" type="number" name="salario_persona" :error="form.errorsFor('salario_persona')" placeholder="Salario"></vue-input>
             <vue-radio :disabled="viewOnly" :checked="employee.jornada_trabajo_habitual_persona" class="col-md-6" v-model="employee.jornada_trabajo_habitual_persona" :options="shifts" name="jornada_trabajo_habitual_persona" :error="form.errorsFor('jornada_trabajo_habitual_persona')" label="Jorada de trabajo habitual"></vue-radio>
           </b-form-row> 
-        </b-card>
       </div>
 </template>
 

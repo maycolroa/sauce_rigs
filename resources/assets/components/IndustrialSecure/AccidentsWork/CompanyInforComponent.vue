@@ -1,6 +1,5 @@
 <template>
       <div>
-        <b-card bg-variant="transparent" border-variant="dark" class="mb-3 box-shadow-none">
           <b-form-row>
             <vue-input :disabled="viewOnly" class="col-md-12" v-model="company.nombre_actividad_economica_sede_principal" label="Nombre de la actividad económica" type="text" name="nombre_actividad_economica_sede_principal" :error="form.errorsFor('nombre_actividad_economica_sede_principal')" placeholder="Nombre de la actividad económica"></vue-input>
             <vue-input :disabled="viewOnly" class="col-md-12" v-model="company.razon_social" label="Nombre o razón social" type="text" name="razon_social" :error="form.errorsFor('razon_social')" placeholder="Nombre o razón social"></vue-input>            
@@ -25,7 +24,6 @@
             <label class="col-md-6 offset-md-4">Centro de trabajo donde labora el trabajador</label>
             <vue-radio :disabled="viewOnly" :checked="company.info_sede_principal_misma_centro_trabajo" class="col-md-12" v-model="company.info_sede_principal_misma_centro_trabajo" :options="siNo" name="info_sede_principal_misma_centro_trabajo" :error="form.errorsFor('info_sede_principal_misma_centro_trabajo')" label="¿Son los datos del centro de trabajo los mismos de la sede principal?"/>
           </b-form-row> 
-        </b-card>
         <b-card v-if="company.info_sede_principal_misma_centro_trabajo == 'NO'" bg-variant="transparent" title="Información centro de trabajo" border-variant="dark" class="mb-3 box-shadow-none">
           <b-form-row>
             <vue-input :disabled="viewOnly" class="col-md-6" v-model="company.nombre_actividad_economica_centro_trabajo" label="Nombre de la actividad económica" type="text" name="nombre_actividad_economica_centro_trabajo" :error="form.errorsFor('nombre_actividad_economica_centro_trabajo')" placeholder="Nombre de la actividad económica"></vue-input>

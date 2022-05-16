@@ -110,8 +110,8 @@
             <b-card bg-variant="transparent" border-variant="dark" title="" class="mb-3 box-shadow-none">
               <b-row>
                 <b-col>
-                  <information-company
-                  :company="form"
+                  <description-accident
+                  :decription="form"
                   :view-only="viewOnly"
                   :is-edit="isEdit"/>
                 </b-col>
@@ -164,10 +164,12 @@
             <b-card bg-variant="transparent" border-variant="dark" title="" class="mb-3 box-shadow-none">
               <b-row>
                 <b-col>
-                  <information-company
-                  :company="form"
+                  <person-add
+                  :persons="form.participants_investigations"
                   :view-only="viewOnly"
-                  :is-edit="isEdit"/>
+                  :is-edit="isEdit"
+                  rol='Miembro Investigación'
+                  :empty="false"/>
                 </b-col>
               </b-row>
             </b-card>
@@ -205,6 +207,8 @@ import InformationCompany from '@/components/IndustrialSecure/AccidentsWork/Comp
 import AccidentInforBasic from '@/components/IndustrialSecure/AccidentsWork/AccidentInforBasicComponent.vue';
 import { FormWizard, TabContent, WizardStep } from "vue-form-wizard";
 import ActionPlanComponent from '@/components/CustomInputs/ActionPlanComponent.vue';
+import DescriptionAccident from '@/components/IndustrialSecure/AccidentsWork/DescriptionAccidentForm.vue';
+import PersonAdd from '@/components/IndustrialSecure/AccidentsWork/PersonAddComponent.vue';
 
 export default {
   components: {
@@ -222,7 +226,9 @@ export default {
     WizardStep,
     InformationCompany,
     AccidentInforBasic,
-    ActionPlanComponent
+    ActionPlanComponent,
+    DescriptionAccident,
+    PersonAdd
   },
   props: {
     url: { type: String },
@@ -336,6 +342,18 @@ export default {
               activities: [],
               activitiesRemoved: []
           },
+          participants_investigations: {
+             persons: [
+               {
+                  name: '',
+                  cargo: '',
+                  document: '',
+                  type_document: '',
+                  rol:this.rol
+               }
+             ],
+             delete: []
+          }
         };
       }
     }

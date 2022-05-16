@@ -1,6 +1,5 @@
 <template>
       <div>
-        <b-card bg-variant="transparent" border-variant="dark" class="mb-3 box-shadow-none">
           <b-form-row>
             <vue-radio :disabled="viewOnly" :checked="infor.nivel_accidente" class="col-md-12" v-model="infor.nivel_accidente" :options="accidentLevels" name="nivel_accidente" :error="form.errorsFor('nivel_accidente')" label="Nivel de accidente"></vue-radio>          
           </b-form-row>
@@ -29,7 +28,6 @@
           <b-form-row v-if="infor.tiene_seguro_social == 'SI'">
             <vue-input :disabled="viewOnly" class="col-md-6 offset-md-3" v-model="infor.nombre_seguro_social" label="¿Cual?" type="text" name="nombre_seguro_social" :error="form.errorsFor('nombre_seguro_social')" placeholder="¿Cual?"></vue-input>
           </b-form-row>
-        </b-card>
       </div>
 </template>
 
