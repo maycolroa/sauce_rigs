@@ -1,17 +1,32 @@
 <template>
-    <b-form-group class="class text-center" :label="label">
-        <center>
+    <b-form-group :class="customClass" :label="label">
+        <div v-if="!stacked">
+            <center>
+                <b-radio-group
+                    :name="name" 
+                    :state="state" 
+                    :options="options" 
+                    :disabled="disabled" 
+                    @input="updateChecked($event)"
+                    :checked="checked"/>
+                <b-form-invalid-feedback v-if="error" :force-show="true">
+                    {{error}}
+                </b-form-invalid-feedback>
+            </center>
+        </div>
+        <div v-else>
             <b-radio-group
                 :name="name" 
                 :state="state" 
                 :options="options" 
                 :disabled="disabled" 
                 @input="updateChecked($event)"
-                :checked="checked"/>
+                :checked="checked"
+                stacked/>
             <b-form-invalid-feedback v-if="error" :force-show="true">
                 {{error}}
             </b-form-invalid-feedback>
-        </center>
+        </div>
     </b-form-group>
 </template>
 <script>
@@ -23,6 +38,8 @@ export default {
         label: {type: String},
         options: {type: [Array, Object], required: true},
         error: {type: String, default: null},
+        stacked: { type: Boolean, default: false },
+        customClass: { type: String, default: 'text-center'}
     },
     computed: {
         state(){

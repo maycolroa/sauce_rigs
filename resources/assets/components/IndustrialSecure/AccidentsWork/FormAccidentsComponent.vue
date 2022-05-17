@@ -93,8 +93,8 @@
             <b-card bg-variant="transparent" border-variant="dark" title="" class="mb-3 box-shadow-none">
               <b-row>
                 <b-col>
-                  <information-company
-                  :company="form"
+                  <infor-accident
+                  :description="form"
                   :view-only="viewOnly"
                   :is-edit="isEdit"/>
                 </b-col>
@@ -204,6 +204,7 @@ import Alerts from '@/utils/Alerts.js';
 import InformationGeneral from '@/components/IndustrialSecure/AccidentsWork/InformationGeneral.vue';
 import InformationEmployee from '@/components/IndustrialSecure/AccidentsWork/InformationEmployee.vue';
 import InformationCompany from '@/components/IndustrialSecure/AccidentsWork/CompanyInforComponent.vue';
+import InforAccident from '@/components/IndustrialSecure/AccidentsWork/InforAccidentComponent.vue';
 import AccidentInforBasic from '@/components/IndustrialSecure/AccidentsWork/AccidentInforBasicComponent.vue';
 import { FormWizard, TabContent, WizardStep } from "vue-form-wizard";
 import ActionPlanComponent from '@/components/CustomInputs/ActionPlanComponent.vue';
@@ -228,7 +229,8 @@ export default {
     AccidentInforBasic,
     ActionPlanComponent,
     DescriptionAccident,
-    PersonAdd
+    PersonAdd,
+    InforAccident
   },
   props: {
     url: { type: String },
@@ -338,9 +340,15 @@ export default {
           site_id: '',
           agent_id: '',
           mechanism_id: '',
+          lesions_id: [],
+          parts_body: [],
           actionPlan: {
               activities: [],
               activitiesRemoved: []
+          },
+          persons: {
+             persons: [],
+             delete: []
           },
           participants_investigations: {
              persons: [

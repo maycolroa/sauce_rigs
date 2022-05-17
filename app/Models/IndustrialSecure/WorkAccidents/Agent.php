@@ -7,7 +7,7 @@ use App\Traits\CompanyTrait;
 
 class Agent extends Model
 {
-    use CompanyTrait;
+    //use CompanyTrait;
 
     protected $table = 'sau_aw_agents';
 

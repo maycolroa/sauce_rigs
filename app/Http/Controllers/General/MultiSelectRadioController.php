@@ -6,6 +6,11 @@ use App\Http\Controllers\Controller;
 use App\Facades\ActionPlans\Facades\ActionPlan;
 use App\Models\General\Departament;
 use App\Models\General\Municipality;
+use App\Models\IndustrialSecure\WorkAccidents\Agent;
+use App\Models\IndustrialSecure\WorkAccidents\Mechanism;
+use App\Models\IndustrialSecure\WorkAccidents\PartBody;
+use App\Models\IndustrialSecure\WorkAccidents\Site;
+use App\Models\IndustrialSecure\WorkAccidents\TypeLesion;
 use Illuminate\Http\Request;
 
 class MultiSelectRadioController extends Controller
@@ -304,5 +309,55 @@ class MultiSelectRadioController extends Controller
         
             return $this->multiSelectFormat($municipalities);
         }
+    }
+
+    public function agents()
+    {
+        $agents = Agent::selectRaw("
+            sau_aw_agents.id as id,
+            sau_aw_agents.name as name
+        ")->orderBy('name')->pluck('id', 'name');
+
+        return $this->radioFormat($agents);
+    }
+
+    public function sites()
+    {
+        $agents = Site::selectRaw("
+            sau_aw_sites.id as id,
+            sau_aw_sites.name as name
+        ")->orderBy('name')->pluck('id', 'name');
+
+        return $this->radioFormat($agents);
+    }
+
+    public function mechanisms()
+    {
+        $agents = Mechanism::selectRaw("
+            sau_aw_mechanisms.id as id,
+            sau_aw_mechanisms.name as name
+        ")->orderBy('name')->pluck('id', 'name');
+
+        return $this->radioFormat($agents);
+    }
+
+    public function lesiontypes()
+    {
+        $agents = TypeLesion::selectRaw("
+            sau_aw_types_lesion.id as id,
+            sau_aw_types_lesion.name as name
+        ")->orderBy('name')->pluck('id', 'name');
+
+        return $this->radioFormat($agents);
+    }
+
+    public function partsbody()
+    {
+        $agents = PartBody::selectRaw("
+            sau_aw_parts_body.id as id,
+            sau_aw_parts_body.name as name
+        ")->orderBy('name')->pluck('id', 'name');
+
+        return $this->radioFormat($agents);
     }
 }

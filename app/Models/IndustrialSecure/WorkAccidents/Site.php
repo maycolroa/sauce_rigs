@@ -7,7 +7,7 @@ use App\Traits\CompanyTrait;
 
 class Site extends Model
 {
-    use CompanyTrait;
+    //use CompanyTrait;
 
     protected $table = 'sau_aw_sites';
 

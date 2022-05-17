@@ -354,6 +354,12 @@ Route::middleware(['auth'])->group(function () {
       Route::post('siNo', 'General\MultiSelectRadioController@siNo');
       Route::post('conf/locationLevelForm', 'Administrative\Configurations\ConfigurationController@radioLocationLevels');
       Route::post('ctTypesEvaluation', 'General\MultiSelectRadioController@ctTypesEvaluation');
+
+      Route::post('agents', 'General\MultiSelectRadioController@agents');
+      Route::post('sites', 'General\MultiSelectRadioController@sites');
+      Route::post('mechanisms', 'General\MultiSelectRadioController@mechanisms');
+      Route::post('partsBody', 'General\MultiSelectRadioController@partsbody');
+      Route::post('lesionTypes', 'General\MultiSelectRadioController@lesiontypes');
       
       Route::prefix('legalMatrix')->group(function () {
         Route::post('interestsSystem', 'LegalAspects\LegalMatrix\InterestController@radioSystem');

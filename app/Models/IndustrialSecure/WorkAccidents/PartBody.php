@@ -7,7 +7,7 @@ use App\Traits\CompanyTrait;
 
 class PartBody extends Model
 {
-    use CompanyTrait;
+    //use CompanyTrait;
 
     protected $table = 'sau_aw_parts_body';
 
