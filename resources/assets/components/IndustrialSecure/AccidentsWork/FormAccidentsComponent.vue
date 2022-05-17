@@ -94,7 +94,7 @@
               <b-row>
                 <b-col>
                   <infor-accident
-                  :description="form"
+                  :infor="form"
                   :view-only="viewOnly"
                   :is-edit="isEdit"/>
                 </b-col>
@@ -111,7 +111,7 @@
               <b-row>
                 <b-col>
                   <description-accident
-                  :decription="form"
+                  :description="form"
                   :view-only="viewOnly"
                   :is-edit="isEdit"/>
                 </b-col>
@@ -127,8 +127,8 @@
             <b-card bg-variant="transparent" border-variant="dark" title="" class="mb-3 box-shadow-none">
               <b-row>
                 <b-col>
-                  <information-company
-                  :company="form"
+                  <observation-files
+                  :obs="form"
                   :view-only="viewOnly"
                   :is-edit="isEdit"/>
                 </b-col>
@@ -209,6 +209,7 @@ import AccidentInforBasic from '@/components/IndustrialSecure/AccidentsWork/Acci
 import { FormWizard, TabContent, WizardStep } from "vue-form-wizard";
 import ActionPlanComponent from '@/components/CustomInputs/ActionPlanComponent.vue';
 import DescriptionAccident from '@/components/IndustrialSecure/AccidentsWork/DescriptionAccidentForm.vue';
+import ObservationFiles from '@/components/IndustrialSecure/AccidentsWork/ObservationFilesComponent.vue';
 import PersonAdd from '@/components/IndustrialSecure/AccidentsWork/PersonAddComponent.vue';
 
 export default {
@@ -230,7 +231,8 @@ export default {
     ActionPlanComponent,
     DescriptionAccident,
     PersonAdd,
-    InforAccident
+    InforAccident,
+    ObservationFiles
   },
   props: {
     url: { type: String },
@@ -357,11 +359,12 @@ export default {
                   cargo: '',
                   document: '',
                   type_document: '',
-                  rol:this.rol
+                  rol:'Miembro Investigación'
                }
              ],
              delete: []
-          }
+          },
+          files: []
         };
       }
     }

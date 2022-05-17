@@ -21,6 +21,7 @@ use App\Models\LegalAspects\Contracts\ListCheckQualification;
 use App\Models\LegalAspects\Contracts\EvaluationContract;
 use App\Models\LegalAspects\Contracts\EvaluationFile;
 use App\Models\LegalAspects\Contracts\ActivityContract;
+use App\Models\Administrative\Users\LogUserModify;
 use App\Http\Requests\LegalAspects\Contracts\DocumentRequest;
 use App\Http\Requests\LegalAspects\Contracts\ContractRequest;
 use App\Http\Requests\LegalAspects\Contracts\ListCheckItemsRequest;
@@ -192,6 +193,14 @@ class ContractLesseeController extends Controller
                     ->buttons([['text'=>'Ir a Sauce', 'url'=>url("/")]])
                     ->company($this->company)
                     ->send();
+
+                
+                $log_modify = new LogUserModify;
+                $log_modify->company_id = $this->company;
+                $log_modify->modifier_user = $this->user->id;
+                $log_modify->modified_user = $user->id;
+                $log_modify->modification = 'Se asigno como usuario rsponsable de la contratista '.$contract->social_reason;
+                $log_modify->save();
             }
 
             $user->attachRole($this->getIdRole($request->type), $this->team);
