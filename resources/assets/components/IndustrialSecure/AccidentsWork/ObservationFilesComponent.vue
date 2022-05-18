@@ -67,6 +67,7 @@ export default {
   },
   props:{
     viewOnly: { type: Boolean, default: false },
+    form: { type: Object, required: true },
     isEdit: { type: Boolean, default: false },
     obs: {
       default() {
@@ -77,9 +78,14 @@ export default {
       }
     },
   },
+  watch: {
+    obs() {
+      this.loading = false;
+      this.$emit('input', this.obs);
+    }
+  },
   data() {
     return {
-      form: Form.makeFrom(this.obs, this.method)
     }
   },
   methods: {

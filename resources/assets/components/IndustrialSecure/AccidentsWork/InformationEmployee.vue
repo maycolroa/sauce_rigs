@@ -66,6 +66,7 @@ export default {
       }
     },
     viewOnly: { type: Boolean, default: false },
+    form: { type: Object, required: true },
     isEdit: { type: Boolean, default: false },
     employee: {
       default() {
@@ -91,9 +92,14 @@ export default {
       }
     },
   },
+  watch: {
+    employee() {
+      this.loading = false;
+      this.$emit('input', this.employee);
+    }
+  },
   data() {
     return {
-      form: Form.makeFrom(this.employee, this.method),
       departamentsUrl: '/selects/departaments',
       minicipalitiessUrl: '/selects/municipalities',
       zones: [

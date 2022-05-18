@@ -27,6 +27,7 @@
               <b-row>
                 <b-col>
                   <information-general 
+                  :form="form"
                   :employee-detail="employeeDetail"
                   :employee="form"
                   :view-only="viewOnly"
@@ -42,6 +43,7 @@
               <b-row>
                 <b-col>
                   <information-employee
+                  :form="form"
                   :sexs="sexs"
                   :employee="form"
                   :view-only="viewOnly"
@@ -60,6 +62,7 @@
               <b-row>
                 <b-col>
                   <information-company
+                  :form="form"
                   :company="form"
                   :view-only="viewOnly"
                   :is-edit="isEdit"/>
@@ -77,6 +80,7 @@
               <b-row>
                 <b-col>
                   <accident-infor-basic
+                  :form="form"
                   :infor="form"
                   :view-only="viewOnly"
                   :is-edit="isEdit"/>
@@ -94,6 +98,7 @@
               <b-row>
                 <b-col>
                   <infor-accident
+                  :form="form"
                   :infor="form"
                   :view-only="viewOnly"
                   :is-edit="isEdit"/>
@@ -111,6 +116,7 @@
               <b-row>
                 <b-col>
                   <description-accident
+                  :form="form"
                   :description="form"
                   :view-only="viewOnly"
                   :is-edit="isEdit"/>
@@ -128,6 +134,7 @@
               <b-row>
                 <b-col>
                   <observation-files
+                  :form="form"
                   :obs="form"
                   :view-only="viewOnly"
                   :is-edit="isEdit"/>
@@ -165,6 +172,7 @@
               <b-row>
                 <b-col>
                   <person-add
+                  :form="form"
                   :persons="form.participants_investigations"
                   :view-only="viewOnly"
                   :is-edit="isEdit"
@@ -370,7 +378,7 @@ export default {
     }
   },
   watch: {
-    check() {
+    accident() {
       this.form = Form.makeFrom(this.accident, this.method);
     },
     'form.employee_id' () {

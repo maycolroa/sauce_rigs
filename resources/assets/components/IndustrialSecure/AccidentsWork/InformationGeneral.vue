@@ -61,6 +61,7 @@ export default {
   props:{
     viewOnly: { type: Boolean, default: false },
     isEdit: { type: Boolean, default: false },
+    form: { type: Object, required: true },
     employeeDetail: {
       default() {
         return {
@@ -98,6 +99,12 @@ export default {
       }
     }    
   },
+  watch: {
+    employee() {
+      this.loading = false;
+      this.$emit('input', this.employee);
+    }
+  },
   computed: {
     dateBirth() {
       return this.formatDate(this.employeeDetail.date_of_birth)
@@ -108,7 +115,6 @@ export default {
   },
   data() {
     return {
-      form: Form.makeFrom(this.employee, this.method),
       departamentsUrl: '/selects/departaments',
       minicipalitiessUrl: '/selects/municipalities',
       zones: [

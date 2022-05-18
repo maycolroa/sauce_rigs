@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Vuetable\Facades\Vuetable;
 use App\Models\IndustrialSecure\WorkAccidents\Accident;
-use App\Http\Requests\IndustrialSecure\Activities\ActivityRequest;
+use App\Http\Requests\IndustrialSecure\AccidentWork\AccidentRequest;
 
 class AccidentsWorkController extends Controller
 {
@@ -49,10 +49,10 @@ class AccidentsWorkController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  App\Http\Requests\IndustrialSecure\Activities\ActivityRequest  $request
+     * @param  App\Http\Requests\IndustrialSecure\Activities\AccidentRequest  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(AccidentRequest $request)
     {
         \Log::info($request);
         /*$activity = new Activity($request->all());
@@ -90,11 +90,11 @@ class AccidentsWorkController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  App\Http\Requests\IndustrialSecure\Activities\ActivityRequest  $request
+     * @param  App\Http\Requests\IndustrialSecure\Activities\AccidentRequest  $request
      * @param  Activity  $activity
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Activity $activity)
+    public function update(AccidentRequest $request, Activity $activity)
     {
         $activity->fill($request->all());
         

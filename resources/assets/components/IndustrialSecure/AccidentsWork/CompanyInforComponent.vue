@@ -64,6 +64,7 @@ export default {
   props:{
     viewOnly: { type: Boolean, default: false },
     isEdit: { type: Boolean, default: false },
+    form: { type: Object, required: true },
     company: {
       default() {
         return {
@@ -89,9 +90,14 @@ export default {
       }
     },
   },
+  watch: {
+    company() {
+      this.loading = false;
+      this.$emit('input', this.company);
+    }
+  },
   data() {
     return {
-      form: Form.makeFrom(this.company, this.method),
       departamentsUrl: '/selects/departaments',
       minicipalitiessUrl: '/selects/municipalities',
       zones: [

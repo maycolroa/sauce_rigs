@@ -71,6 +71,7 @@ export default {
   },
   props:{
     viewOnly: { type: Boolean, default: false },
+    form: { type: Object, required: true },
     isEdit: { type: Boolean, default: false },
     infor: {
       default() {
@@ -102,7 +103,6 @@ export default {
   },
   data() {
     return {
-      form: Form.makeFrom(this.infor, this.method),  
       departamentsUrl: '/selects/departaments',
       minicipalitiessUrl: '/selects/municipalities',  
       siNo: [
@@ -147,6 +147,10 @@ export default {
     }
   },
   watch: {
+    infor() {
+      this.loading = false;
+      this.$emit('input', this.infor);
+    },
     'infor.lesions_id' () {
       if (this.infor.lesions_id.includes(16))
         this.showOtherLesion = true

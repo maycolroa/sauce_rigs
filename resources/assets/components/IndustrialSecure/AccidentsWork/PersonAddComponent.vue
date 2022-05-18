@@ -76,6 +76,7 @@ export default {
   },
   props:{
     viewOnly: { type: Boolean, default: false },
+    form: { type: Object, required: true },
     isEdit: { type: Boolean, default: false },
     rol: { type: String, default: '' },
     persons: {
@@ -87,9 +88,14 @@ export default {
       }
     },
   },
+  watch: {
+    persons() {
+      this.loading = false;
+      this.$emit('input', this.persons);
+    }
+  },
   data() {
     return {
-      form: Form.makeFrom(this.persons, this.method),
       typesDocuments: [
         {text: 'NI', value: 'NI'},
         {text: 'CC', value: 'CC'},

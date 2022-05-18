@@ -50,6 +50,7 @@ export default {
   },
   props:{
     viewOnly: { type: Boolean, default: false },
+    form: { type: Object, required: true },
     isEdit: { type: Boolean, default: false },
     infor: {
       default() {
@@ -76,9 +77,14 @@ export default {
       }
     },
   },
+  watch: {
+    infor() {
+      this.loading = false;
+      this.$emit('input', this.infor);
+    }
+  },
   data() {
-    return {
-      form: Form.makeFrom(this.infor, this.method),      
+    return {   
       epsDataUrl: "/selects/eps",
       afpDataUrl: "/selects/afp",
       arlDataUrl: "/selects/arl",

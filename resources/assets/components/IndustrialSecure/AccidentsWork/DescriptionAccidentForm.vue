@@ -52,6 +52,7 @@ export default {
   },
   props:{
     viewOnly: { type: Boolean, default: false },
+    form: { type: Object, required: true },
     isEdit: { type: Boolean, default: false },
     description: {
       default() {
@@ -71,9 +72,15 @@ export default {
       }
     },
   },
+
+  watch: {
+    description() {
+      this.loading = false;
+      this.$emit('input', this.description);
+    }
+  },
   data() {
-    return {
-      form: Form.makeFrom(this.description, this.method),    
+    return {  
       siNo: [
          {text: 'SI', value: 'SI'},
          {text: 'NO', value: 'NO'}
