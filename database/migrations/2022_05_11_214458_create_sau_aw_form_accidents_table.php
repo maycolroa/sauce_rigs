@@ -27,8 +27,8 @@ class CreateSauAwFormAccidentsTable extends Migration
             $table->string('direccion_persona')->nullable();
             $table->string('telefono_persona')->nullable();
             $table->string('email_persona')->nullable();
-            $table->string('departamento_persona_id');
-            $table->string('ciudad_persona_id');
+            $table->integer('departamento_persona_id');
+            $table->integer('ciudad_persona_id');
             $table->string('zona_persona');
             $table->string('cargo_persona')->nullable();
             $table->unsignedInteger('employee_position_id')->nullable();
@@ -45,8 +45,8 @@ class CreateSauAwFormAccidentsTable extends Migration
             $table->string('direccion_sede_principal');
             $table->string('telefono_sede_principal');
             $table->string('email_sede_principal');
-            $table->string('departamento_sede_principal_id');
-            $table->string('ciudad_sede_principal_id');
+            $table->integer('departamento_sede_principal_id');
+            $table->integer('ciudad_sede_principal_id');
             $table->string('zona_sede_principal');
 
             $table->boolean('info_sede_principal_misma_centro_trabajo')->default(1);
@@ -54,8 +54,8 @@ class CreateSauAwFormAccidentsTable extends Migration
             $table->string('direccion_centro_trabajo')->nullable();
             $table->string('telefono_centro_trabajo')->nullable();
             $table->string('email_centro_trabajo')->nullable();
-            $table->string('departamento_centro_trabajo_id')->nullable();
-            $table->string('ciudad_centro_trabajo_id')->nullable();
+            $table->integer('departamento_centro_trabajo_id')->nullable();
+            $table->integer('ciudad_centro_trabajo_id')->nullable();
             $table->string('zona_centro_trabajo')->nullable();
 
             $table->string('nivel_accidente');
@@ -75,8 +75,8 @@ class CreateSauAwFormAccidentsTable extends Migration
             $table->string('otra_labor_habitual')->nullable();
             $table->string('total_tiempo_laborado');
             $table->string('tipo_accidente');
-            $table->string('departamento_accidente');
-            $table->string('ciudad_accidente');
+            $table->integer('departamento_accidente');
+            $table->integer('ciudad_accidente');
             $table->string('zona_accidente');
             $table->string('accidente_ocurrio_dentro_empresa');
             $table->boolean('causo_muerte')->default(0);

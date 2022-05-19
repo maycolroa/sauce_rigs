@@ -1,9 +1,9 @@
 <template>
       <div>
           <b-form-row>
-            <vue-date-timepicker @input="getDayWeek()" :disabled="viewOnly" class="col-md-4" v-model="infor.fecha_accidente" label="Fecha del accidente" :full-month-name="true" placeholder="Seleccione la fecha" :error="form.errorsFor('fecha_accidente')" name="fecha_accidente" :disabled-dates="disabledDates" format="YYYY-MM-DD H:i"></vue-date-timepicker>
-            <vue-input :disabled="true" class="col-md-4" v-model="infor.dia_accidente" label="Dia de la semana en que ocurrio el accidente" type="text" name="dia_accidente" :error="form.errorsFor('dia_accidente')"></vue-input>
-            <vue-radio :disabled="viewOnly" :checked="infor.jornada_accidente" class="col-md-4" v-model="infor.jornada_accidente" :options="workingDayType" name="jornada_accidente" :error="form.errorsFor('jornada_accidente')" label="Jornada en que sucede"></vue-radio>
+            <vue-date-timepicker @input="getDayWeek()" :disabled="viewOnly" class="col-md-2" v-model="infor.fecha_accidente" label="Fecha del accidente" :full-month-name="true" placeholder="Seleccione la fecha" :error="form.errorsFor('fecha_accidente')" name="fecha_accidente" :disabled-dates="disabledDates" format="YYYY-MM-DD H:i"></vue-date-timepicker>
+            <vue-input :disabled="true" class="col-md-5 offset-md-1" v-model="infor.dia_accidente" label="Dia de la semana en que ocurrio el accidente" type="text" name="dia_accidente" :error="form.errorsFor('dia_accidente')"></vue-input>
+            <vue-radio :disabled="viewOnly" :checked="infor.jornada_accidente" class="col-md-3 offset-md-1" v-model="infor.jornada_accidente" :options="workingDayType" name="jornada_accidente" :error="form.errorsFor('jornada_accidente')" label="Jornada en que sucede"></vue-radio>
           </b-form-row>
           <b-form-row>
             <vue-radio :disabled="viewOnly" :checked="infor.estaba_realizando_labor_habitual" class="col-md-6" v-model="infor.estaba_realizando_labor_habitual" :options="siNo" name="estaba_realizando_labor_habitual" :error="form.errorsFor('estaba_realizando_labor_habitual')" label="¿Estaba realizando su labor habitual?"></vue-radio>
@@ -164,6 +164,8 @@ export default {
     this.fetchSelect('mechanisms', '/radios/mechanisms')
     this.fetchSelect('lesionTypes', '/radios/lesionTypes')
     this.fetchSelect('partsBody', '/radios/partsBody')
+
+    this.getDayWeek()
   },
   methods: {
     fetchSelect(key, url)

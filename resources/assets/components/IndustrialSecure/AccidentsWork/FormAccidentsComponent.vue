@@ -363,7 +363,7 @@ export default {
           participants_investigations: {
              persons: [{
               name: '',
-              cargo: '',
+              position: '',
               document: '',
               type_document: '',
               rol:'Miembro Investigación'

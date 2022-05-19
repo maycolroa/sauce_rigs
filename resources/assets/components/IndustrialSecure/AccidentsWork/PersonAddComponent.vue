@@ -42,7 +42,7 @@
                         </b-form-row>
                         <b-form-row>
                             <vue-input :disabled="viewOnly" class="col-md-6" v-model="item.document" label="Número de identificación" type="text" name="document" :error="form.errorsFor('document')" placeholder="Documento"></vue-input>
-                            <vue-input :disabled="viewOnly" class="col-md-6" v-model="item.cargo" label="Cargo" type="text" name="cargo" :error="form.errorsFor('cargo')" placeholder="Cargo"></vue-input>
+                            <vue-input :disabled="viewOnly" class="col-md-6" v-model="item.position" label="Cargo" type="text" name="position" :error="form.errorsFor('position')" placeholder="Cargo"></vue-input>
                             <vue-input hidden :disabled="viewOnly" class="col-md-6" v-model="item.rol" label="rol" type="text" name="rol" :error="form.errorsFor('rol')" placeholder="rol" :value="rol"></vue-input>
                         </b-form-row>
                         <hr class="border-light container-m--x mt-0 mb-4">
@@ -110,7 +110,7 @@ export default {
     addInterviewed() {
         this.persons.persons.push({
             name: '',
-            cargo: '',
+            position: '',
             document: '',
             type_document: '',
             rol:this.rol

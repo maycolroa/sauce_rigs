@@ -30,10 +30,10 @@
           </b-form-row>
           <b-form-row>
             <vue-input :disabled="viewOnly" class="col-md-6" v-model="employee.direccion_persona" label="Dirección" type="text" name="direccion_persona" :error="form.errorsFor('direccion_persona')" placeholder="Dirección"></vue-input>
-            <vue-ajax-advanced-select :disabled="viewOnly" class="col-md-6" v-model="employee.departamento_persona_id" :selected-object="employee.multiselect_departament" name="departamento_persona_id" :error="form.errorsFor('departamento_persona_id')" label="Departamento" placeholder="Seleccione el departamento" :url="departamentsUrl"></vue-ajax-advanced-select>
+            <vue-ajax-advanced-select :disabled="viewOnly" class="col-md-6" v-model="employee.departamento_persona_id" :selected-object="employee.multiselect_departamento_persona" name="departamento_persona_id" :error="form.errorsFor('departamento_persona_id')" label="Departamento" placeholder="Seleccione el departamento" :url="departamentsUrl"></vue-ajax-advanced-select>
           </b-form-row>    
            <b-form-row>
-            <vue-ajax-advanced-select :disabled="viewOnly" class="col-md-6" v-model="employee.ciudad_persona_id" :selected-object="employee.multiselect_municipality" name="ciudad_persona_id" :error="form.errorsFor('ciudad_persona_id')" label="Ciudad" placeholder="Seleccione la ciudad" :url="minicipalitiessUrl" :parameters="{departament: employee.departamento_persona_id }"></vue-ajax-advanced-select>
+            <vue-ajax-advanced-select :disabled="viewOnly" class="col-md-6" v-model="employee.ciudad_persona_id" :selected-object="employee.multiselect_ciudad_persona" name="ciudad_persona_id" :error="form.errorsFor('ciudad_persona_id')" label="Ciudad" placeholder="Seleccione la ciudad" :url="minicipalitiessUrl" :parameters="{departament: employee.departamento_persona_id }"></vue-ajax-advanced-select>
             <vue-radio :disabled="viewOnly" :checked="employee.zona_persona" class="col-md-6" v-model="form.zona_persona" :options="zones" name="zona_persona" :error="form.errorsFor('zona_persona')" label="Zona"></vue-radio>
           </b-form-row>
           <b-form-row>

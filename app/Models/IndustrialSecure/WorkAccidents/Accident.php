@@ -41,7 +41,6 @@ class Accident extends Model
         'identificacion_sede_principal',
         'direccion_sede_principal',
         'telefono_sede_principal',
-        'fax_sede_principal',
         'email_sede_principal',
         'departamento_sede_principal_id',
         'ciudad_sede_principal_id',
@@ -50,7 +49,6 @@ class Accident extends Model
         'nombre_actividad_economica_centro_trabajo',
         'direccion_centro_trabajo',
         'telefono_centro_trabajo',
-        'fax_centro_trabajo',
         'email_centro_trabajo',
         'departamento_centro_trabajo_id',
         'ciudad_centro_trabajo_id',
@@ -160,7 +158,7 @@ class Accident extends Model
         return $this->belongsTo('App\Models\Administrative\Employees\EmployeeARL', 'employee_arl_id');
     }
 
-    public function persons()
+    public function personas()
     {
         return $this->hasMany(Person::class, 'form_accident_id');
     }

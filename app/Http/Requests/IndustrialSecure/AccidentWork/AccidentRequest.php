@@ -140,9 +140,9 @@ class AccidentRequest extends FormRequest
             'mechanism_id' => 'required|integer|exists:sau_aw_mechanisms,id',
             'site_id' => 'required|integer|exists:sau_aw_sites,id',
 
-            'otro_sitio' => 'string',
-            'otro_mecanismo' => 'string',
-            'otra_lesion' => 'string',
+            'otro_sitio' => 'nullable',
+            'otro_mecanismo' => 'nullable',
+            'otra_lesion' => 'nullable',
 
             'parts_body' => 'required|array',
             'lesions_id' => 'required|array',

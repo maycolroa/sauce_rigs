@@ -32,7 +32,7 @@ export default {
   }
 
   input{
-    min-width: 270px;
+    min-width: 180px;
     width:100%;
     height: 30px;
     padding: 3px;

@@ -863,7 +863,7 @@ export default [{
       ...middleware({ 'check-permission': 'accidentsWork_u' }, [
         {
           name: 'industrialsecure-accidentswork-edit',
-          path: 'accidents/:id',
+          path: 'accidents/edit/:id',
           component: () =>
             import('@/views/IndustrialSecure/accidentsWorks/edit')
         }
@@ -871,7 +871,7 @@ export default [{
       ...middleware({ 'check-permission': 'accidentsWork_r' }, [
         {
           name: 'industrialsecure-accidentswork-view',
-          path: 'accidents/:id',
+          path: 'accidents/view/:id',
           component: () =>
             import('@/views/IndustrialSecure/accidentsWorks/view')
         }

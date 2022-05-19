@@ -39,7 +39,7 @@
                                             <hr class="border-light container-m--x mt-0 mb-4">
                                         </div>
                                     </template>
-                                    <blockquote class="blockquote text-center" v-if="form.files.length == 0">
+                                    <blockquote class="blockquote text-center" v-if="obs.files.length == 0">
                                         <p class="mb-0">No hay registros</p>
                                     </blockquote>
                                 </perfect-scrollbar>
@@ -89,12 +89,6 @@ export default {
     }
   },
   methods: {
-    showModal () {
-        this.$refs.file.show()
-    },
-    hideModal () {
-        this.$refs.file.hide()
-    },
     addFile() {
         this.obs.files.push({
             file: '',
