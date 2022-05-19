@@ -11,6 +11,7 @@ use App\Models\IndustrialSecure\WorkAccidents\FileAccident;
 use App\Models\Administrative\Employees\Employee;
 use App\Http\Requests\IndustrialSecure\AccidentWork\AccidentRequest;
 use App\Facades\ActionPlans\Facades\ActionPlan;
+use Illuminate\Support\Facades\Storage;
 use Carbon\Carbon;
 use DB;
 
@@ -248,20 +249,9 @@ class AccidentsWorkController extends Controller
                     ->activities($request->actionPlan)
                     ->save();
 
-            foreach ($request->files as $keyF => $file) 
+            if (count($request->files) > 0)
             {
-                $fileUpload = new FileAccident();
-                $fileUpload->item_id = $itemModel->id;
-                $fileUpload->evaluation_id = $evaluationContract->id;
-                $file_tmp = $file['file'];
-                $nameFile = base64_encode($this->user->id . now() . rand(1,10000) . $keyF) .'.'. $file_tmp->extension();
-                $file_tmp->storeAs($fileUpload->path_client(false), $nameFile, 's3');
-                $fileUpload->file = $nameFile;
-                $fileUpload->name_file = $file_tmp->getClientOriginalName();
-                $fileUpload->type_file = $file_tmp->extension();
-
-                if (!$fileUpload->save())
-                    return $this->respondHttp500();
+                $this->processFiles($request->get('files'), $accident->id);
             }
 
             DB::commit();
@@ -276,6 +266,75 @@ class AccidentsWorkController extends Controller
             return $this->respondHttp500();
         }
     }
+
+    public function processFiles($files, $accident_id)
+    {
+        $files_names_delete = [];
+
+        foreach ($files as $keyF => $file) 
+        {
+            $create_file = true;
+
+            if (isset($file['id']))
+            {
+                $fileUpload = FileAccident::findOrFail($file['id']);
+
+                if (isset($file['old_name']) && $file['old_name'] == $file['file'])
+                    $create_file = false;
+                else
+                    array_push($files_names_delete, $file['old_name']);
+            }
+            else
+            {
+                $fileUpload = new FileAccident();
+                $fileUpload->form_accident_id = $accident_id;
+            }
+
+            if ($create_file)
+            {
+                $file_tmp = $file['file'];
+                $fileUpload->name = $file_tmp->getClientOriginalName();
+                $nameFile = base64_encode($this->user->id . now() . rand(1,10000) . $keyF) .'.'. $file_tmp->extension();
+                $fileUpload->file = $nameFile;
+                $fileUpload->type = $file_tmp->extension();
+                $file_tmp->storeAs($fileUpload->path_client(false), $nameFile, 's3');
+            }
+
+            if (!$fileUpload->save())
+                return $this->respondHttp500();
+        }
+
+         //Borrar archivos reemplazados
+         foreach ($files_names_delete as $keyf => $file)
+         {
+             Storage::disk('s3')->delete($fileUpload->path_client(false)."/".$file);
+         }
+    }
+
+    public function getFiles($accident)
+    {
+        $get_files = FileAccident::where('form_accident_id', $accident)->get();
+
+        $files = [];
+
+        if ($get_files->count() > 0)
+        {               
+            $get_files->transform(function($get_file, $index) {
+                $get_file->key = Carbon::now()->timestamp + rand(1,10000);
+                $get_file->id = $get_file->id;
+                $get_file->name = $get_file->file;
+                $get_file->old_name = $get_file->file;
+                $get_file->path = $get_file->path_image();
+
+                return $get_file;
+            });
+
+            $files = $get_files;
+        }
+
+        return $files;
+    }
+
 
     /**
      * Display the specified resource.
@@ -351,7 +410,7 @@ class AccidentsWorkController extends Controller
                 $accident->multiselect_employee = $employee->multiselect();
             }
             
-            $accident->files = [];
+            $accident->files = $this->getFiles($accident->id);
             $accident->actionPlan = ActionPlan::model($accident)->prepareDataComponent();
 
             return $this->respondHttp200([
@@ -508,10 +567,10 @@ class AccidentsWorkController extends Controller
             $accident->partsBody()->sync($request->parts_body);
             $accident->lesionTypes()->sync($request->lesions_id);
 
-            foreach ($request->persons['persons'] as $key => $value) {
-
-                if (isset($value->id))
-                    $person = Person::find($value->id);
+            foreach ($request->persons['persons'] as $key => $value) 
+            {
+                if (isset($value['id']))
+                    $person = Person::find($value['id']);
                 else
                     $person = new Person;
 
@@ -526,17 +585,17 @@ class AccidentsWorkController extends Controller
 
             foreach ($request->persons['delete'] as $key => $value) {
 
-                if (isset($value->id))
+                if (isset($value['id']))
                 {
-                    $person = Person::find($value->id);
+                    $person = Person::find($value['id']);
                     $person->delete();
                 }
             }
 
-            foreach ($request->participants_investigations['persons'] as $key => $value) {
-
-                if (isset($value->id))
-                    $person = Person::find($value->id);
+            foreach ($request->participants_investigations['persons'] as $key => $value) 
+            {
+                if (isset($value['id']))
+                    $person = Person::find($value['id']);
                 else
                     $person = new Person;
 
@@ -550,9 +609,9 @@ class AccidentsWorkController extends Controller
             }
             foreach ($request->participants_investigations['delete'] as $key => $value) {
 
-                if (isset($value->id))
+                if (isset($value['id']))
                 {
-                    $person = Person::find($value->id);
+                    $person = Person::find($value['id']);
                     $person->delete();
                 }
             }
@@ -566,6 +625,11 @@ class AccidentsWorkController extends Controller
                     ->detailProcedence($detail_procedence)
                     ->activities($request->actionPlan)
                     ->save();
+
+            if (count($request->files) > 0)
+            {
+                $this->processFiles($request->get('files'), $accident->id);
+            }
 
             DB::commit();
 
@@ -586,53 +650,41 @@ class AccidentsWorkController extends Controller
      * @param  Activity  $activity
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Activity $activity)
-    {
-        if (count($activity->dangerMatrices) > 0)
-        {
-            return $this->respondWithError('No se puede eliminar la actividad porque hay matrices de peligro asociadas a ella');
-        }
+    public function destroy(Accident $accident)
+    { 
+        DB::beginTransaction();
 
-        if(!$activity->delete())
-        {
+        try
+        { 
+            $get_files = FileAccident::where('form_accident_id', $accident->id)->get();
+
+            foreach ($get_files as $key => $value) {
+                Storage::disk('s3')->delete($value->path_client(false)."/".$value->file);
+            }
+
+            ActionPlan::model($accident)->modelDeleteAll();
+
+            if(!$accident->delete())
+            {
+                return $this->respondHttp500();
+            }
+
+            DB::commit();
+            
+            return $this->respondHttp200([
+            'message' => 'Se elimino el formulario'
+            ]);
+
+        } catch (\Exception $e) {
+            DB::rollback();
             return $this->respondHttp500();
+            //return $e->getMessage();
         }
         
-        return $this->respondHttp200([
-           'message' => 'Se elimino la actividad'
-        ]);
     }
 
-    /**
-     * Returns an array for a select type input
-     *
-     * @param Request $request
-     * @return Array
-     */
-
-    public function multiselect(Request $request)
+    public function download(FileAccident $file)
     {
-        if($request->has('keyword'))
-        {
-            $keyword = "%{$request->keyword}%";
-            $activities = Activity::select("id", "name")
-                ->where(function ($query) use ($keyword) {
-                    $query->orWhere('name', 'like', $keyword);
-                })
-                ->take(30)->pluck('id', 'name');
-
-            return $this->respondHttp200([
-                'options' => $this->multiSelectFormat($options)
-            ]);
-        }
-        else
-        {
-            $activities = Activity::selectRaw("
-                sau_dm_activities.id as id,
-                sau_dm_activities.name as name
-            ")->pluck('id', 'name');
-        
-            return $this->multiSelectFormat($activities);
-        }
+      return Storage::disk('s3')->download($file->path_donwload(), $file->name);
     }
 }

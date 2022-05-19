@@ -931,8 +931,6 @@ class TransactionController extends Controller
                         {
                             $rechange = ChangeElement::where('transaction_employee_id', $transaction->id)->where('element_specific_old_id', $e->id)->first();
 
-                            \Log::info($rechange);
-
                             if ($rechange)
                                 $rechange_hash_new = ElementBalanceSpecific::find($rechange->element_specific_new_id);
 

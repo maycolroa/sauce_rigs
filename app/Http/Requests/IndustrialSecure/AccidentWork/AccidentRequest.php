@@ -26,6 +26,27 @@ class AccidentRequest extends FormRequest
 
     public function sanitize()
     {
+        if ($this->has('files'))
+        {
+            foreach ($this->input('files') as $key => $value)
+            {
+                $data['files'][$key] = json_decode($value, true);
+                $this->merge($data);
+            }
+
+            if ($this->has('files_binary') && COUNT($this->files_binary) > 0)
+            {
+                $data = $this->all();
+
+                foreach ($this->files_binary as $key => $value)
+                {
+                    $data['files'][$key]['file'] = $value;
+                }
+
+                $this->merge($data);
+            }
+        }
+        
         if ($this->has('participants_investigations'))
         {
             $this->merge([

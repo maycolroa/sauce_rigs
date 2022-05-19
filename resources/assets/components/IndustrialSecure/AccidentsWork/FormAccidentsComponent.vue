@@ -459,11 +459,11 @@ export default {
 
       this.loading = true;
 
-      /*this.form.clearFilesBinary();
+      this.form.clearFilesBinary();
 
       this.form.files.forEach((file, keyFile) => {
         this.form.addFileBinary(`${keyFile}`, file.file)
-      });*/
+      });
       
       this.form
         .submit(e.target.action)

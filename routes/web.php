@@ -552,6 +552,7 @@ Route::middleware(['auth'])->group(function () {
 
       Route::ApiResource('accidents', 'IndustrialSecure\AccidentsWork\AccidentsWorkController');
       Route::post('accidents/data', 'IndustrialSecure\AccidentsWork\AccidentsWorkController@data');
+      Route::get('accidents/downloadFile/{file}', 'IndustrialSecure\AccidentsWork\AccidentsWorkController@download');
 
       Route::prefix('epp')->group(function () {
         Route::ApiResource('element', 'IndustrialSecure\EPP\ElementController');
