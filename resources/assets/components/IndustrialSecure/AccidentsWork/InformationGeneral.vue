@@ -29,7 +29,7 @@
             <vue-radio :disabled="viewOnly" :checked="employee.tipo_vinculacion_persona" class="col-md-12" v-model="form.tipo_vinculacion_persona" :options="personLinkingTypes" name="tipo_vinculacion_persona" :error="form.errorsFor('tipo_vinculacion_persona')" label="Tipo de vinculación"></vue-radio>
           </b-form-row>
           <b-form-row>
-            <vue-input :disabled="viewOnly" class="col-md-6" v-model="employee.name" label="Dirección" type="text" name="direccion_persona" :error="form.errorsFor('direccion_persona')" placeholder="Dirección"></vue-input>
+            <vue-input :disabled="viewOnly" class="col-md-6" v-model="employee.direccion_persona" label="Dirección" type="text" name="direccion_persona" :error="form.errorsFor('direccion_persona')" placeholder="Dirección"></vue-input>
             <vue-ajax-advanced-select :disabled="viewOnly" class="col-md-6" v-model="employee.departamento_persona_id" :selected-object="employee.multiselect_departament" name="departamento_persona_id" :error="form.errorsFor('departamento_persona_id')" label="Departamento" placeholder="Seleccione el departamento" :url="departamentsUrl"></vue-ajax-advanced-select>
           </b-form-row>    
            <b-form-row>

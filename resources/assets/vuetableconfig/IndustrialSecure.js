@@ -1736,7 +1736,7 @@ export default [
             routePush: { name: 'industrialsecure-accidentswork-view' },
             id: 'id',
         },
-        permission: 'documentsSecurity_r'
+        permission: 'accidentsWork_r'
         }]
     },
     {

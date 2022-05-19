@@ -23,6 +23,7 @@
             :persons="form.persons"
             :view-only="viewOnly"
             :is-edit="isEdit"
+            :form="form"
             rol='Presencio Accidente'/>
           </template>
       </div>

@@ -31,7 +31,7 @@ class CreateSauAwFormAccidentsTable extends Migration
             $table->string('ciudad_persona_id');
             $table->string('zona_persona');
             $table->string('cargo_persona')->nullable();
-            $table->unsignedInteger('employee_position_id');
+            $table->unsignedInteger('employee_position_id')->nullable();
             $table->string('tiempo_ocupacion_habitual_persona');
             $table->date('fecha_ingreso_empresa_persona')->nullable();
             $table->integer('salario_persona');
@@ -44,21 +44,19 @@ class CreateSauAwFormAccidentsTable extends Migration
             $table->string('identificacion_sede_principal');
             $table->string('direccion_sede_principal');
             $table->string('telefono_sede_principal');
-            $table->string('fax_sede_principal');
             $table->string('email_sede_principal');
             $table->string('departamento_sede_principal_id');
             $table->string('ciudad_sede_principal_id');
             $table->string('zona_sede_principal');
 
             $table->boolean('info_sede_principal_misma_centro_trabajo')->default(1);
-            $table->string('nombre_actividad_economica_centro_trabajo');
-            $table->string('direccion_centro_trabajo');
-            $table->string('telefono_centro_trabajo');
-            $table->string('fax_centro_trabajo');
-            $table->string('email_centro_trabajo');
-            $table->string('departamento_centro_trabajo_id');
-            $table->string('ciudad_centro_trabajo_id');
-            $table->string('zona_centro_trabajo');
+            $table->string('nombre_actividad_economica_centro_trabajo')->nullable();
+            $table->string('direccion_centro_trabajo')->nullable();
+            $table->string('telefono_centro_trabajo')->nullable();
+            $table->string('email_centro_trabajo')->nullable();
+            $table->string('departamento_centro_trabajo_id')->nullable();
+            $table->string('ciudad_centro_trabajo_id')->nullable();
+            $table->string('zona_centro_trabajo')->nullable();
 
             $table->string('nivel_accidente');
             $table->date('fecha_envio_arl')->nullable();
@@ -74,13 +72,13 @@ class CreateSauAwFormAccidentsTable extends Migration
             $table->dateTime('fecha_accidente')->nullable();
             $table->string('jornada_accidente');
             $table->boolean('estaba_realizando_labor_habitual')->default(1);
-            $table->string('otra_labor_habitual');
+            $table->string('otra_labor_habitual')->nullable();
             $table->string('total_tiempo_laborado');
             $table->string('tipo_accidente');
             $table->string('departamento_accidente');
             $table->string('ciudad_accidente');
             $table->string('zona_accidente');
-            $table->boolean('accidente_ocurrio_dentro_empresa');
+            $table->string('accidente_ocurrio_dentro_empresa');
             $table->boolean('causo_muerte')->default(0);
             $table->date('fecha_muerte')->nullable();
             $table->string('otro_sitio')->nullable();

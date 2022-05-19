@@ -5,15 +5,19 @@ namespace App\Models\IndustrialSecure\WorkAccidents;
 use Illuminate\Database\Eloquent\Model;
 use App\Traits\CompanyTrait;
 
-class PartBody extends Model
+class Person extends Model
 {
     //use CompanyTrait;
 
-    protected $table = 'sau_aw_parts_body';
+    protected $table = 'sau_aw_form_accidents_people';
 
     protected $fillable = [
         'name',
-        'code'
+        'position',
+        'type_document',
+        'document',
+        'form_accident_id',
+        'rol'
     ];
 
     public function multiselect()
@@ -26,6 +30,6 @@ class PartBody extends Model
 
     public function accident()
     {
-        return $this->belongsToMany(Accident::class, 'sau_aw_form_accidents_parts_body', 'form_accident_id', 'part_body_id');
+        return $this->belongsTo(Accident::class, 'form_accident_id');
     }
 }

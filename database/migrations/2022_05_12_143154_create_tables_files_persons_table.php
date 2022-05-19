@@ -32,6 +32,7 @@ class CreateTablesFilesPersonsTable extends Migration
             $table->string('document');
             $table->string('rol')->nullable();
             $table->unsignedInteger('form_accident_id');
+            $table->timestamps();
 
             $table->foreign('form_accident_id')->references('id')->on('sau_aw_form_accidents')->onDelete('cascade');
         });

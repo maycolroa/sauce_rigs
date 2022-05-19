@@ -23,4 +23,9 @@ class TypeLesion extends Model
             'value' => $this->id
         ];
     }
+
+    public function accident()
+    {
+        return $this->belongsToMany(Accident::class, 'sau_aw_form_accidents_types_lesion', 'form_accident_id', 'type_lesion_id');
+    }
 }

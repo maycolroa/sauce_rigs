@@ -4,6 +4,8 @@ namespace App\Models\IndustrialSecure\WorkAccidents;
 
 use Illuminate\Database\Eloquent\Model;
 use App\Traits\CompanyTrait;
+use App\Models\General\Departament;
+use App\Models\General\Municipality;
 
 class Accident extends Model
 {
@@ -93,4 +95,73 @@ class Accident extends Model
         'mechanism_id',
     ];
 
+    public function partsBody()
+    {
+        return $this->belongsToMany(PartBody::class, 'sau_aw_form_accidents_parts_body', 'form_accident_id', 'part_body_id');
+    }
+
+    public function lesionTypes()
+    {
+        return $this->belongsToMany(TypeLesion::class, 'sau_aw_form_accidents_types_lesion', 'form_accident_id', 'type_lesion_id');
+    }
+
+    public function departamentPerson()
+    {
+        return $this->belongsTo(Departament::class, 'departamento_persona_id');
+    }
+
+    public function departamentSede()
+    {
+        return $this->belongsTo(Departament::class, 'departamento_sede_principal_id');
+    }
+
+    public function departamentCentro()
+    {
+        return $this->belongsTo(Departament::class, 'departamento_centro_trabajo_id');
+    }
+
+    public function departamentAccident()
+    {
+        return $this->belongsTo(Departament::class, 'departamento_accidente');
+    }
+
+    public function ciudadPerson()
+    {
+        return $this->belongsTo(Municipality::class, 'ciudad_persona_id');
+    }
+
+    public function ciudadSede()
+    {
+        return $this->belongsTo(Municipality::class, 'ciudad_sede_principal_id');
+    }
+
+    public function ciudadCentro()
+    {
+        return $this->belongsTo(Municipality::class, 'ciudad_centro_trabajo_id');
+    }
+
+    public function ciudadAccident()
+    {
+        return $this->belongsTo(Municipality::class, 'ciudad_accidente');
+    }
+
+    public function eps()
+    {
+        return $this->belongsTo('App\Models\Administrative\Employees\EmployeeEPS', 'employee_eps_id');
+    }
+
+    public function afp()
+    {
+        return $this->belongsTo('App\Models\Administrative\Employees\EmployeeAFP', 'employee_afp_id');
+    }
+
+    public function arl()
+    {
+        return $this->belongsTo('App\Models\Administrative\Employees\EmployeeARL', 'employee_arl_id');
+    }
+
+    public function persons()
+    {
+        return $this->hasMany(Person::class, 'form_accident_id');
+    }
 }

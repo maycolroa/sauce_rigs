@@ -27,7 +27,7 @@
                 </b-card-header>
                 <b-collapse id="accordion-1" visible accordion="accordion-1">
                 <b-card-body>
-                    <template v-for="(item, index) in form.persons">
+                    <template v-for="(item, index) in persons.persons">
                     <div :key="index">
                         <b-form-row>
                             <div class="col-md-12" v-if="!viewOnly">
@@ -43,6 +43,7 @@
                         <b-form-row>
                             <vue-input :disabled="viewOnly" class="col-md-6" v-model="item.document" label="Número de identificación" type="text" name="document" :error="form.errorsFor('document')" placeholder="Documento"></vue-input>
                             <vue-input :disabled="viewOnly" class="col-md-6" v-model="item.cargo" label="Cargo" type="text" name="cargo" :error="form.errorsFor('cargo')" placeholder="Cargo"></vue-input>
+                            <vue-input hidden :disabled="viewOnly" class="col-md-6" v-model="item.rol" label="rol" type="text" name="rol" :error="form.errorsFor('rol')" placeholder="rol" :value="rol"></vue-input>
                         </b-form-row>
                         <hr class="border-light container-m--x mt-0 mb-4">
                     </div>
@@ -107,7 +108,7 @@ export default {
   },
   methods: {
     addInterviewed() {
-        this.form.persons.push({
+        this.persons.persons.push({
             name: '',
             cargo: '',
             document: '',
@@ -117,12 +118,20 @@ export default {
     },
     removeInterviewed(index)
     {
-      if ((this.form.persons.length > 1 && this.rol == 'Miembro Investigación') || this.rol == 'Presencio Accidente')
+      console.log(this.persons.persons.length)
+      if (this.persons.persons.length > 1)
       {
-        if (this.form.persons[index].id != undefined)
-          this.form.delete.push(this.form.persons[index].id)
+        if (this.persons.persons[index].id != undefined)
+          this.persons.delete.push(this.persons.persons[index].id)
 
-        this.form.persons.splice(index, 1)
+        this.persons.persons.splice(index, 1)
+      }
+      else if (this.rol == 'Presencio Accidente')
+      {
+        if (this.persons.persons[index].id != undefined)
+          this.persons.delete.push(this.persons.persons[index].id)
+
+        this.persons.persons.splice(index, 1)
       }
     },
   }
