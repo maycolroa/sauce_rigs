@@ -224,7 +224,7 @@ class EmployeeAreaController extends Controller
                 ->join('sau_process_area', 'sau_process_area.employee_area_id', 'sau_employees_areas.id')
                 ->join('sau_employees_processes', 'sau_employees_processes.id', 'sau_process_area.employee_process_id')
                 ->where(function ($query) use ($keyword) {
-                    $query->orWhere('sau_employees_processes.name', 'like', $keyword);
+                    $query->orWhere('sau_employees_areas.name', 'like', $keyword);
                 });
 
                 $headquarter = $request->get('headquarter');
