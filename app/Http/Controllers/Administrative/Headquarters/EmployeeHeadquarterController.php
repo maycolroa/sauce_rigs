@@ -185,7 +185,7 @@ class EmployeeHeadquarterController extends Controller
 
             $headquarters = $headquarters->orderBy('name')->take(30)->get();
 
-            if ($request->has('form') && $request->form == 'inspections')
+            if ($request->has('form') && $request->form == 'inspections' && $headquarters->count() > 0)
                 $headquarters->push(['id' => 'Todos', 'name' => 'Todos']);
                 
             $headquarters = $headquarters->pluck('id', 'name');

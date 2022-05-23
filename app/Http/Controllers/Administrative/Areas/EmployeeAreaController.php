@@ -287,7 +287,7 @@ class EmployeeAreaController extends Controller
 
                 $areas = $areas->orderBy('name')->take(30)->get();
 
-                if ($request->has('form') && $request->form == 'inspections')
+                if ($request->has('form') && $request->form == 'inspections' && $areas->count() > 0)
                     $areas->push(['id' => 'Todos', 'name' => 'Todos']);
                 
                 $areas = $areas->pluck('id', 'name');

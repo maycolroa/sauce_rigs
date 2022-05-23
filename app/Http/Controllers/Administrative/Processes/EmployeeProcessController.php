@@ -241,7 +241,7 @@ class EmployeeProcessController extends Controller
 
                 $processes = $processes->orderBy('name')->take(30)->get();
 
-                if ($request->has('form') && $request->form == 'inspections')
+                if ($request->has('form') && $request->form == 'inspections' && $processes->count() > 0)
                     $processes->push(['id' => 'Todos', 'name' => 'Todos']);
                 
                 $processes = $processes->pluck('id', 'name');
