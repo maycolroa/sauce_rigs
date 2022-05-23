@@ -185,6 +185,8 @@ class VuetableColumnManager
 
         $confLocation = $this->getLocationFormConfModule();
 
+        $confLocationTableInspections = $this->getLocationFormConfTableInspections();
+
         $columnsHeader = [
             'regional' => $this->keywords['regional'],
             'headquarter' => $this->keywords['headquarter'],
@@ -203,21 +205,42 @@ class VuetableColumnManager
 
         if (isset($headers['process']) && $headers['process'])
             $columnsHeader['process'] = $headers['process'];
-        
-        if ($confLocation['regional'] == 'SI')
-            array_push($colums, [
-                'name'=>'sau_employees_regionals.name', 'data'=>'regional', 'title'=>$columnsHeader['regional'], 'sortable'=>true, 'searchable'=> $searchable, 'detail'=>false, 'key'=>false
-            ]);
 
-        if ($confLocation['headquarter'] == 'SI')
-            array_push($colums, [
-                'name'=>'sau_employees_headquarters.name', 'data'=>'headquarter', 'title'=>$columnsHeader['headquarter'], 'sortable'=>true, 'searchable'=> $searchable, 'detail'=>false, 'key'=>false
-            ]);
 
-        if ($company == 661 && $table == 'inspections')
-                \Log::info('company 661, inspections');
+        if ($table == 'inspections')
+        {
+            if ($confLocationTableInspections['regional'] == 'SI')
+                array_push($colums, [
+                    'name'=>'sau_employees_regionals.name', 'data'=>'regional', 'title'=>$columnsHeader['regional'], 'sortable'=>true, 'searchable'=> $searchable, 'detail'=>false, 'key'=>false
+                ]);
+
+            if ($confLocationTableInspections['headquarter'] == 'SI')
+                array_push($colums, [
+                    'name'=>'sau_employees_headquarters.name', 'data'=>'headquarter', 'title'=>$columnsHeader['headquarter'], 'sortable'=>true, 'searchable'=> $searchable, 'detail'=>false, 'key'=>false
+                ]);
+
+            if ($confLocationTableInspections['process'] == 'SI')
+                array_push($colums, [
+                    'name'=>'sau_employees_processes.name', 'data'=>'process', 'title'=>$columnsHeader['process'], 'sortable'=>true, 'searchable'=> $searchable, 'detail'=>false, 'key'=>false
+                ]);
+
+            if ($confLocationTableInspections['area'] == 'SI')
+                array_push($colums, [
+                    'name'=>'sau_employees_areas.name', 'data'=>'area', 'title'=>$columnsHeader['area'], 'sortable'=>true, 'searchable'=> $searchable, 'detail'=>false, 'key'=>false
+                ]);
+        }
         else
         {
+            if ($confLocation['regional'] == 'SI')
+                array_push($colums, [
+                    'name'=>'sau_employees_regionals.name', 'data'=>'regional', 'title'=>$columnsHeader['regional'], 'sortable'=>true, 'searchable'=> $searchable, 'detail'=>false, 'key'=>false
+                ]);
+
+            if ($confLocation['headquarter'] == 'SI')
+                array_push($colums, [
+                    'name'=>'sau_employees_headquarters.name', 'data'=>'headquarter', 'title'=>$columnsHeader['headquarter'], 'sortable'=>true, 'searchable'=> $searchable, 'detail'=>false, 'key'=>false
+                ]);
+
             if ($confLocation['process'] == 'SI')
                 array_push($colums, [
                     'name'=>'sau_employees_processes.name', 'data'=>'process', 'title'=>$columnsHeader['process'], 'sortable'=>true, 'searchable'=> $searchable, 'detail'=>false, 'key'=>false
@@ -480,7 +503,7 @@ class VuetableColumnManager
             ['name' => 'sau_ph_inspections.name', 'data'=> 'name', 'title'=> 'Nombre', 'sortable'=> true, 'searchable'=> false, 'detail'=> false, 'key'=> false ]
         ];
 
-        $colums = array_merge($colums, $this->getColumnsLocations([], false));
+        $colums = array_merge($colums, $this->getColumnsLocations('', [], false));
         $colums = array_merge($colums, [
             ['name' => 'section', 'data'=> 'section', 'title'=> 'Temas', 'sortable'=> false, 'searchable'=> false, 'detail'=> false, 'key'=> false ],
             ['name' => 'numero_inspecciones', 'data'=> 'numero_inspecciones', 'title'=> '# Inspecciones', 'sortable'=> true, 'searchable'=> false, 'detail'=> false, 'key'=> false ],
@@ -504,7 +527,7 @@ class VuetableColumnManager
             ['name' => 'sau_ph_inspections.name', 'data'=> 'name', 'title'=> 'Nombre', 'sortable'=> true, 'searchable'=> false, 'detail'=> false, 'key'=> false ]
         ];
 
-        $colums = array_merge($colums, $this->getColumnsLocations([], false));
+        $colums = array_merge($colums, $this->getColumnsLocations('', [], false));
         $colums = array_merge($colums, [
             ['name' => 'section', 'data'=> 'section', 'title'=> 'Temas', 'sortable'=> false, 'searchable'=> false, 'detail'=> false, 'key'=> false ],
             ['name' => 'numero_inspecciones', 'data'=> 'numero_inspecciones', 'title'=> '# Inspecciones', 'sortable'=> true, 'searchable'=> false, 'detail'=> false, 'key'=> false ],

@@ -61,6 +61,55 @@ trait LocationFormTrait
         return $data;
     }
 
+    protected function getLocationFormConfTableInspections($company_id = NULL)
+    {   
+        try
+        {   
+            $data = [];
+
+            if ($company_id)
+                $locationLevelForm = ConfigurationsCompany::company($company_id)->findByKey('location_level_form_table_inspectiona');
+            else
+                $locationLevelForm = ConfigurationsCompany::findByKey('location_level_form_table_inspectiona');
+
+            if ($locationLevelForm)
+            {
+                if ($locationLevelForm == 'Regional')
+                {
+                    $data["regional"] = "SI";
+                    $data["headquarter"] = "NO";
+                    $data["process"] = "NO";
+                    $data["area"] = "NO";
+                }
+                else if ($locationLevelForm == 'Sede')
+                {
+                    $data["regional"] = "SI";
+                    $data["headquarter"] = "SI";
+                    $data["process"] = "NO";
+                    $data["area"] = "NO";
+                }
+                else if ($locationLevelForm == 'Proceso')
+                {
+                    $data["regional"] = "SI";
+                    $data["headquarter"] = "SI";
+                    $data["process"] = "SI";
+                    $data["area"] = "NO";
+                }
+                else //if ($locationLevelForm == 'Área')
+                {
+                    $data = $this->getDefaultValues();
+                }
+            }
+            else 
+                $data = $this->getLocationFormConfModule();
+
+        } catch (Exception $e) {
+            $data = $this->getLocationFormConfModule();
+        }
+    
+        return $data;
+    }
+
     /**
      * returns the configuration 
      * 
