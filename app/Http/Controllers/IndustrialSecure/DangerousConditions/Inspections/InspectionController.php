@@ -436,7 +436,6 @@ class InspectionController extends Controller
 
                     if ($verify == 'Todos')
                     {
-                        \Log::info(1);
                         $regional_alls = 'Todos';
                         break;
                     }
@@ -456,7 +455,6 @@ class InspectionController extends Controller
 
                     if ($verify == 'Todos')
                     {
-                        \Log::info(2);
                         $headquarter_alls = 'Todos';
                         break;
                     }
@@ -476,7 +474,6 @@ class InspectionController extends Controller
 
                     if ($verify == 'Todos')
                     {
-                        \Log::info(3);
                         $process_alls = 'Todos';
                         break;
                     }
@@ -496,7 +493,6 @@ class InspectionController extends Controller
 
                     if ($verify == 'Todos')
                     {
-                        \Log::info(4);
                         $areas_alls = 'Todos';
                         break;
                     }
