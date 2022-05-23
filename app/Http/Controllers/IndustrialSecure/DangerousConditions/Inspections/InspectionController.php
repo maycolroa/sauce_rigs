@@ -421,13 +421,21 @@ class InspectionController extends Controller
         $processes = [];
         $areas = [];
 
+        $regional_alls = '';
+        $headquarter_alls = '';
+        $process_alls = '';
+        $areas_alls = '';
+
         $regional_alls = count($request->employee_regional_id) == 1 ? json_decode($request->employee_regional_id[0])->value : '';
 
-        $headquarter_alls = count($request->employee_headquarter_id) == 1 ? json_decode($request->employee_headquarter_id[0])->value : '';
+        if ($request->has('employee_headquarter_id'))
+            $headquarter_alls = count($request->employee_headquarter_id) == 1 ? json_decode($request->employee_headquarter_id[0])->value : '';
 
-        $process_alls = count($request->employee_process_id) == 1 ? json_decode($request->employee_process_id[0])->value : '';
+        if ($request->has('employee_process_id'))
+            $process_alls = count($request->employee_process_id) == 1 ? json_decode($request->employee_process_id[0])->value : '';
 
-        $areas_alls = count($request->employee_area_id) == 1 ? json_decode($request->employee_area_id[0])->value : '';
+        if ($request->has('employee_area_id'))
+            $areas_alls = count($request->employee_area_id) == 1 ? json_decode($request->employee_area_id[0])->value : '';
 
         if ($request->has('employee_regional_id') && $regional_alls == 'Todos')
             $regionals = $this->getRegionals();
