@@ -157,14 +157,23 @@ class EmployeeHeadquarterController extends Controller
             if ($request->has('regional') && $request->get('regional') != '')
             {
                 $regional = $request->get('regional');
+
+                \Log::info($regional);
                 
                 if (is_numeric($regional))
                     $headquarters->where('employee_regional_id', $request->get('regional'));
+                else if ($request->has('form') && $request->form == 'inspections' && $regional[0]['name'] == 'Todos')
+                    \Log::info('Todas las regionales de '.$this->company);
                 else
                     $headquarters->whereIn('employee_regional_id', $this->getValuesForMultiselect($regional));
             }
 
-            $headquarters = $headquarters->orderBy('name')->take(30)->pluck('id', 'name');
+            $headquarters = $headquarters->orderBy('name')->take(30)->get();
+
+            if ($request->has('form') && $request->form == 'inspections')
+                $headquarters->push(['id' => 'Todos', 'name' => 'Todos']);
+                
+            $headquarters = $headquarters->pluck('id', 'name');
 
             return $this->respondHttp200([
                 'options' => $this->multiSelectFormat($headquarters)

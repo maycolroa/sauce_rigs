@@ -146,7 +146,15 @@ class EmployeeRegionalController extends Controller
                     $query->orWhere('name', 'like', $keyword);
                 })
                 ->orderBy('name')
-                ->take(30)->pluck('id', 'name');
+                ->take(30)
+                ->get();
+
+            if ($request->has('form') && $request->form == 'inspections') 
+                $regionals->push(['id' => 'Todos', 'name' => 'Todos']);
+                
+            $regionals = $regionals->pluck('id', 'name');
+            
+            \Log::info($regionals);
 
             return $this->respondHttp200([
                 'options' => $this->multiSelectFormat($regionals)

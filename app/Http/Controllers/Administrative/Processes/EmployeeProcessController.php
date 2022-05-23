@@ -216,10 +216,17 @@ class EmployeeProcessController extends Controller
                 
                 if (is_numeric($headquarter))
                     $processes->where('sau_headquarter_process.employee_headquarter_id', $headquarter);
+                else if ($request->has('form') && $request->form == 'inspections' && $headquarter[0]['name'] == 'Todos')
+                    \Log::info('Todas las sedes de '.$this->company);
                 else
                     $processes->whereIn('sau_headquarter_process.employee_headquarter_id', $this->getValuesForMultiselect($headquarter));
 
-                $processes = $processes->orderBy('name')->take(30)->pluck('id', 'name');
+                $processes = $processes->orderBy('name')->take(30)->get();
+
+                if ($request->has('form') && $request->form == 'inspections')
+                    $processes->push(['id' => 'Todos', 'name' => 'Todos']);
+                
+                $processes = $processes->pluck('id', 'name');
 
                 return $this->respondHttp200([
                     'options' => $this->multiSelectFormat($processes)

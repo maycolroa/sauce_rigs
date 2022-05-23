@@ -231,6 +231,8 @@ class EmployeeAreaController extends Controller
                 
                 if (is_numeric($headquarter))
                     $areas->where('employee_headquarter_id', $headquarter);
+                else if ($request->has('form') && $request->form == 'inspections' && $headquarter[0]['name'] == 'Todos')
+                    \Log::info('Todas las sedes de '.$this->company.' en las areas');
                 else
                     $areas->whereIn('employee_headquarter_id', $this->getValuesForMultiselect($headquarter));
                 
@@ -238,10 +240,17 @@ class EmployeeAreaController extends Controller
 
                 if (is_numeric($process))
                     $areas->where('employee_process_id', $process);
+                else if ($request->has('form') && $request->form == 'inspections' && $process[0]['name'] == 'Todos')
+                    \Log::info('Todas los procesos de '.$this->company);
                 else
                     $areas->whereIn('employee_process_id', $this->getValuesForMultiselect($process));
 
-                $areas = $areas->orderBy('name')->take(30)->pluck('id', 'name');
+                $areas = $areas->orderBy('name')->take(30)->get();
+
+                if ($request->has('form') && $request->form == 'inspections')
+                    $areas->push(['id' => 'Todos', 'name' => 'Todos']);
+                
+                $areas = $areas->pluck('id', 'name');
 
                 return $this->respondHttp200([
                     'options' => $this->multiSelectFormat($areas)
