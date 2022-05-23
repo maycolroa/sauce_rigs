@@ -10,6 +10,7 @@ use App\Models\IndustrialSecure\DangerousConditions\Inspections\TypeInspections;
 use App\Models\IndustrialSecure\DangerousConditions\Inspections\AdditionalFields;
 use App\Models\IndustrialSecure\DangerousConditions\Inspections\InspectionSection;
 use App\Models\IndustrialSecure\DangerousConditions\Inspections\InspectionSectionItem;
+use App\Models\Administrative\Regionals\EmployeeRegional;
 use App\Models\Administrative\Headquarters\EmployeeHeadquarter;
 use App\Models\Administrative\Processes\EmployeeProcess;
 use App\Models\Administrative\Areas\EmployeeArea;
@@ -420,17 +421,39 @@ class InspectionController extends Controller
         $processes = [];
         $areas = [];
 
-        if ($request->has('employee_regional_id'))
+        $regional_alls = count($request->employee_regional_id) == 1 ? json_decode($request->employee_regional_id[0])->value : '';
+
+        $headquarter_alls = count($request->employee_headquarter_id) == 1 ? json_decode($request->employee_headquarter_id[0])->value : '';
+
+        $process_alls = count($request->employee_process_id) == 1 ? json_decode($request->employee_process_id[0])->value : '';
+
+        $areas_alls = count($request->employee_area_id) == 1 ? json_decode($request->employee_area_id[0])->value : '';
+
+        if ($request->has('employee_regional_id') && $regional_alls == 'Todos')
+            $regionals = $this->getRegionals();
+        else if ($request->has('employee_regional_id'))
             $regionals = $this->getDataFromMultiselect($request->get('employee_regional_id'));
-        
-        if ($request->has('employee_headquarter_id'))
+
+        if ($request->has('employee_headquarter_id') && $headquarter_alls == 'Todos')
+            $headquarters = $this->getHeadquarter($regionals);
+        else if ($request->has('employee_headquarter_id'))
             $headquarters = $this->getDataFromMultiselect($request->get('employee_headquarter_id'));
 
-        if ($request->has('employee_process_id'))
+        if ($request->has('employee_process_id') && $process_alls == 'Todos')
+            $processes = $this->getProcess($headquarters);
+        else if ($request->has('employee_process_id'))
+            $processes = $this->getDataFromMultiselect($request->get('employee_process_id'));
+
+        if ($request->has('employee_area_id') && $areas_alls == 'Todos')
+            $areas = $this->getAreas($headquarters, $processes);
+        else if ($request->has('employee_area_id'))
+            $areas = $this->getDataFromMultiselect($request->get('employee_area_id'));
+
+        /*if ($request->has('employee_process_id'))
             $processes = $this->getDataFromMultiselect($request->get('employee_process_id'));
 
         if ($request->has('employee_area_id'))
-            $areas = $this->getDataFromMultiselect($request->get('employee_area_id'));
+            $areas = $this->getDataFromMultiselect($request->get('employee_area_id'));*/
 
         $headquarters_valid = $this->getHeadquarter($regionals);
         $headquarters = array_intersect($headquarters, $headquarters_valid);
@@ -476,6 +499,16 @@ class InspectionController extends Controller
         return $this->respondHttp200([
             'message' => 'Se cambio el estado de la inspección'
         ]);
+    }
+
+    private function getRegionals()
+    {
+        $regionals = EmployeeRegional::selectRaw(
+            "sau_employees_regionals.id as id")
+        ->pluck('id')
+        ->toArray();
+
+        return $regionals;
     }
 
     private function getHeadquarter($regionals)
