@@ -5,7 +5,7 @@
             <a v-if="textBlock" :href="actionBlock" class="d-block small">{{textBlock}}</a>
         </div>
             <date-time-base
-                :disabled="disabled"             
+                :readonly="disabled"             
                 :value="value" 
                 :placeholder="placeholder"
                 :name="name"
