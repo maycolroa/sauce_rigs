@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Vuetable\Facades\Vuetable;
 use App\Models\Administrative\Headquarters\EmployeeHeadquarter;
+use App\Models\Administrative\Regionals\EmployeeRegional;
 use App\Http\Requests\Administrative\Headquarters\HeadquarterRequest;
 
 class EmployeeHeadquarterController extends Controller
@@ -143,6 +144,12 @@ class EmployeeHeadquarterController extends Controller
 
     public function multiselect(Request $request)
     {
+        $regionals = EmployeeRegional::selectRaw(
+            "sau_employees_regionals.id as id"
+        )
+        ->pluck('id')
+        ->toArray();
+
         if($request->has('keyword'))
         {
             $keyword = "%{$request->keyword}%";
@@ -157,15 +164,23 @@ class EmployeeHeadquarterController extends Controller
             if ($request->has('regional') && $request->get('regional') != '')
             {
                 $regional = $request->get('regional');
-
-                \Log::info($regional);
                 
                 if (is_numeric($regional))
                     $headquarters->where('employee_regional_id', $request->get('regional'));
-                else if ($request->has('form') && $request->form == 'inspections' && $regional[0]['name'] == 'Todos')
-                    \Log::info('Todas las regionales de '.$this->company);
                 else
-                    $headquarters->whereIn('employee_regional_id', $this->getValuesForMultiselect($regional));
+                {
+                    $regionals_select = $this->getValuesForMultiselect($regional);
+
+                    if ($request->has('form') && $request->form == 'inspections')
+                    {
+                        if (in_array('Todos', $regionals_select->toArray()))
+                            $headquarters->whereIn('employee_regional_id', $regionals);
+                        else
+                            $headquarters->whereIn('employee_regional_id', $regionals_select);
+                    }
+                    else
+                        $headquarters->whereIn('employee_regional_id', $regionals_select);
+                }
             }
 
             $headquarters = $headquarters->orderBy('name')->take(30)->get();

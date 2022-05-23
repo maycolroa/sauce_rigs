@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Vuetable\Facades\Vuetable;
 use App\Models\Administrative\Areas\EmployeeArea;
+use App\Models\Administrative\Processes\EmployeeProcess;
+use App\Models\Administrative\Headquarters\EmployeeHeadquarter;
 use App\Http\Requests\Administrative\Areas\AreaRequest;
 use DB;
 
@@ -213,6 +215,22 @@ class EmployeeAreaController extends Controller
 
     public function multiselect(Request $request)
     {
+        $processes = EmployeeProcess::selectRaw(
+            "sau_employees_processes.id as id")
+        ->join('sau_headquarter_process', 'sau_headquarter_process.employee_process_id', 'sau_employees_processes.id')
+        ->join('sau_employees_headquarters', 'sau_employees_headquarters.id', 'sau_headquarter_process.employee_headquarter_id')
+        ->join('sau_employees_regionals', 'sau_employees_regionals.id', 'sau_employees_headquarters.employee_regional_id')
+        ->where('sau_employees_regionals.company_id', $this->company)
+        ->pluck('id')
+        ->toArray();
+
+        $headquarters = EmployeeHeadquarter::selectRaw(
+            "sau_employees_headquarters.id as id")
+        ->join('sau_employees_regionals', 'sau_employees_regionals.id', 'sau_employees_headquarters.employee_regional_id')
+        ->where('sau_employees_regionals.company_id', $this->company)
+        ->pluck('id')
+        ->toArray();
+
         if($request->has('keyword'))
         {
             if ($request->has('process') && $request->get('process') != '' && $request->has('headquarter') && $request->get('headquarter') != '')
@@ -231,19 +249,41 @@ class EmployeeAreaController extends Controller
                 
                 if (is_numeric($headquarter))
                     $areas->where('employee_headquarter_id', $headquarter);
-                else if ($request->has('form') && $request->form == 'inspections' && $headquarter[0]['name'] == 'Todos')
-                    \Log::info('Todas las sedes de '.$this->company.' en las areas');
+
                 else
-                    $areas->whereIn('employee_headquarter_id', $this->getValuesForMultiselect($headquarter));
+                {
+                    $headquarters_select = $this->getValuesForMultiselect($headquarter);
+
+                    if ($request->has('form') && $request->form == 'inspections')
+                    {
+                        if (in_array('Todos', $headquarters_select->toArray()))
+                            $areas->whereIn('employee_headquarter_id', $headquarters);
+                        else
+                            $areas->whereIn('employee_headquarter_id', $headquarters_select);
+                    }
+                    else
+                        $areas->whereIn('employee_headquarter_id', $headquarters_select);
+                }
                 
                 $process = $request->get('process');
 
                 if (is_numeric($process))
                     $areas->where('employee_process_id', $process);
-                else if ($request->has('form') && $request->form == 'inspections' && $process[0]['name'] == 'Todos')
-                    \Log::info('Todas los procesos de '.$this->company);
+
                 else
-                    $areas->whereIn('employee_process_id', $this->getValuesForMultiselect($process));
+                {
+                    $processes_select = $this->getValuesForMultiselect($process);
+
+                    if ($request->has('form') && $request->form == 'inspections')
+                    {
+                        if (in_array('Todos', $processes_select->toArray()))
+                            $areas->whereIn('employee_process_id', $processes);
+                        else
+                            $areas->whereIn('employee_process_id', $processes_select);
+                    }
+                    else
+                        $areas->whereIn('employee_process_id', $processes_select);
+                }
 
                 $areas = $areas->orderBy('name')->take(30)->get();
 

@@ -153,8 +153,6 @@ class EmployeeRegionalController extends Controller
                 $regionals->push(['id' => 'Todos', 'name' => 'Todos']);
                 
             $regionals = $regionals->pluck('id', 'name');
-            
-            \Log::info($regionals);
 
             return $this->respondHttp200([
                 'options' => $this->multiSelectFormat($regionals)

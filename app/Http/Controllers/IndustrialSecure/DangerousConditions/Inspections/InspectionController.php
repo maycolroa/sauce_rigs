@@ -426,34 +426,122 @@ class InspectionController extends Controller
         $process_alls = '';
         $areas_alls = '';
 
-        $regional_alls = count($request->employee_regional_id) == 1 ? json_decode($request->employee_regional_id[0])->value : '';
+        if ($request->has('employee_regional_id'))
+        {
+            if (count($request->employee_regional_id) > 1)
+            {
+                foreach ($request->employee_regional_id as $key => $value) 
+                {
+                    $verify = json_decode($value)->value;
+
+                    if ($verify == 'Todos')
+                    {
+                        \Log::info(1);
+                        $regional_alls = 'Todos';
+                        break;
+                    }
+                }
+            }
+            else if (count($request->employee_regional_id) == 1)
+                $regional_alls =  json_decode($request->employee_regional_id[0])->value;
+        }
 
         if ($request->has('employee_headquarter_id'))
+        {
+            if (count($request->employee_headquarter_id) > 1)
+            {
+                foreach ($request->employee_headquarter_id as $key => $value) 
+                {
+                    $verify = json_decode($value)->value;
+
+                    if ($verify == 'Todos')
+                    {
+                        \Log::info(2);
+                        $headquarter_alls = 'Todos';
+                        break;
+                    }
+                }
+            }
+            else if (count($request->employee_headquarter_id) == 1)
+                $headquarter_alls =  json_decode($request->employee_headquarter_id[0])->value;
+        }
+
+        if ($request->has('employee_process_id'))
+        {
+            if (count($request->employee_process_id) > 1)
+            {
+                foreach ($request->employee_process_id as $key => $value) 
+                {
+                    $verify = json_decode($value)->value;
+
+                    if ($verify == 'Todos')
+                    {
+                        \Log::info(3);
+                        $process_alls = 'Todos';
+                        break;
+                    }
+                }
+            }
+            else if (count($request->employee_process_id) == 1)
+                $process_alls =  json_decode($request->employee_process_id[0])->value;
+        }
+
+        if ($request->has('employee_area_id'))
+        {
+            if (count($request->employee_area_id) > 1)
+            {
+                foreach ($request->employee_area_id as $key => $value) 
+                {
+                    $verify = json_decode($value)->value;
+
+                    if ($verify == 'Todos')
+                    {
+                        \Log::info(4);
+                        $areas_alls = 'Todos';
+                        break;
+                    }
+                }
+            }
+            else if (count($request->employee_area_id) == 1)
+                $areas_alls =  json_decode($request->employee_area_id[0])->value;
+        }
+
+        /*if ($request->has('employee_headquarter_id'))
             $headquarter_alls = count($request->employee_headquarter_id) == 1 ? json_decode($request->employee_headquarter_id[0])->value : '';
 
         if ($request->has('employee_process_id'))
             $process_alls = count($request->employee_process_id) == 1 ? json_decode($request->employee_process_id[0])->value : '';
 
         if ($request->has('employee_area_id'))
-            $areas_alls = count($request->employee_area_id) == 1 ? json_decode($request->employee_area_id[0])->value : '';
+            $areas_alls = count($request->employee_area_id) == 1 ? json_decode($request->employee_area_id[0])->value : '';*/
 
         if ($request->has('employee_regional_id') && $regional_alls == 'Todos')
             $regionals = $this->getRegionals();
+
         else if ($request->has('employee_regional_id'))
             $regionals = $this->getDataFromMultiselect($request->get('employee_regional_id'));
 
+
+
         if ($request->has('employee_headquarter_id') && $headquarter_alls == 'Todos')
             $headquarters = $this->getHeadquarter($regionals);
+
         else if ($request->has('employee_headquarter_id'))
             $headquarters = $this->getDataFromMultiselect($request->get('employee_headquarter_id'));
 
+
+
         if ($request->has('employee_process_id') && $process_alls == 'Todos')
             $processes = $this->getProcess($headquarters);
+
         else if ($request->has('employee_process_id'))
             $processes = $this->getDataFromMultiselect($request->get('employee_process_id'));
 
+
+
         if ($request->has('employee_area_id') && $areas_alls == 'Todos')
             $areas = $this->getAreas($headquarters, $processes);
+
         else if ($request->has('employee_area_id'))
             $areas = $this->getDataFromMultiselect($request->get('employee_area_id'));
 

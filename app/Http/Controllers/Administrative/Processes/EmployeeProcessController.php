@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Vuetable\Facades\Vuetable;
 use App\Models\Administrative\Processes\EmployeeProcess;
+use App\Models\Administrative\Headquarters\EmployeeHeadquarter;
 use App\Http\Requests\Administrative\Processes\ProcessRequest;
 use App\Models\Administrative\Processes\TagsProcess;
 use Session;
@@ -198,6 +199,13 @@ class EmployeeProcessController extends Controller
 
     public function multiselect(Request $request)
     {
+        $headquarters = EmployeeHeadquarter::selectRaw(
+            "sau_employees_headquarters.id as id")
+        ->join('sau_employees_regionals', 'sau_employees_regionals.id', 'sau_employees_headquarters.employee_regional_id')
+        ->where('sau_employees_regionals.company_id', $this->company)
+        ->pluck('id')
+        ->toArray();
+
         if($request->has('keyword'))
         {
             if ($request->has('headquarter') && $request->get('headquarter') != '')
@@ -216,10 +224,20 @@ class EmployeeProcessController extends Controller
                 
                 if (is_numeric($headquarter))
                     $processes->where('sau_headquarter_process.employee_headquarter_id', $headquarter);
-                else if ($request->has('form') && $request->form == 'inspections' && $headquarter[0]['name'] == 'Todos')
-                    \Log::info('Todas las sedes de '.$this->company);
                 else
-                    $processes->whereIn('sau_headquarter_process.employee_headquarter_id', $this->getValuesForMultiselect($headquarter));
+                {
+                    $headquarters_select = $this->getValuesForMultiselect($headquarter);
+
+                    if ($request->has('form') && $request->form == 'inspections')
+                    {
+                        if (in_array('Todos', $headquarters_select->toArray()))
+                            $processes->whereIn('sau_headquarter_process.employee_headquarter_id', $headquarters);
+                        else
+                            $processes->whereIn('sau_headquarter_process.employee_headquarter_id', $headquarters_select);
+                    }
+                    else
+                        $processes->whereIn('sau_headquarter_process.employee_headquarter_id', $headquarters_select);
+                }
 
                 $processes = $processes->orderBy('name')->take(30)->get();
 
