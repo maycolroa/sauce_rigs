@@ -876,5 +876,13 @@ export default [{
             import('@/views/IndustrialSecure/accidentsWorks/view')
         }
       ]),
+      ...middleware({ 'check-permission': 'ph_inspections_c' }, [
+        {
+          name: 'industrialsecure-configurations',
+          path: 'configurations',
+          component: () =>
+            import('@/views/IndustrialSecure/dangerousConditions/configurations/index')
+        }
+      ]),
     ]
   }]

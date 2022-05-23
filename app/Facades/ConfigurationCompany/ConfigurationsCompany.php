@@ -56,7 +56,8 @@ class ConfigurationsCompany
             'users_notify_expired_absenteeism_expired' => 'Usuarios a notificar el vencimiento de las incapacidades',
             'expired_absenteeism' => 'Notificar por vencimiento de reposos ausentismo',
             'days_alert_expiration_date_absenteeism' => 'Dias de primera alerta por vencimiento de incapacidad',
-            'days_alert_expiration_date_absenteeism_2' => 'Dias de segunda alerta por vencimiento de incapacidad'
+            'days_alert_expiration_date_absenteeism_2' => 'Dias de segunda alerta por vencimiento de incapacidad',
+            'location_level_form_table_inspectiona' => 'Nivel de localización a mostrar en la tabla de inspecciones'
         ];
     }
 
