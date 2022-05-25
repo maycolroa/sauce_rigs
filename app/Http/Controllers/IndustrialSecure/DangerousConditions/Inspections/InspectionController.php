@@ -61,46 +61,43 @@ class InspectionController extends Controller
     */
     public function data(Request $request)
     {
-        
         $confLocationTableInspections = $this->getLocationFormConfTableInspections();
 
         $select = [];
+        $having = [];
+
+        $select[] = "sau_ph_inspections.*";
 
         if ($confLocationTableInspections['regional'] == 'SI')
-            $select[] = 'GROUP_CONCAT(DISTINCT sau_employees_regionals.name ORDER BY sau_employees_regionals.name ASC) AS regional';
+            $select[] = "(SELECT GROUP_CONCAT(r.name) 
+                FROM sau_ph_inspection_regional ri 
+                INNER JOIN sau_employees_regionals r ON r.id = ri.employee_regional_id
+                WHERE ri.inspection_id = sau_ph_inspections.id
+            ) AS regional";
 
         if ($confLocationTableInspections['headquarter'] == 'SI')
-            $select[] = 'GROUP_CONCAT(DISTINCT sau_employees_headquarters.name ORDER BY sau_employees_headquarters.name ASC) AS headquarter';
+            $select[] = "(SELECT GROUP_CONCAT(h.name) 
+                FROM sau_ph_inspection_headquarter hi 
+                INNER JOIN sau_employees_headquarters h ON h.id = hi.employee_headquarter_id
+                WHERE hi.inspection_id = sau_ph_inspections.id
+            ) AS headquarter";
 
         if ($confLocationTableInspections['process'] == 'SI')
-            $select[] = 'GROUP_CONCAT(DISTINCT sau_employees_processes.name ORDER BY sau_employees_processes.name ASC) AS process';
+            $select[] = "(SELECT GROUP_CONCAT(p.name) 
+                FROM sau_ph_inspection_process pi
+                INNER JOIN sau_employees_processes p ON p.id = pi.employee_process_id
+                WHERE pi.inspection_id = sau_ph_inspections.id
+            ) AS procesos";
 
         if ($confLocationTableInspections['area'] == 'SI')
-            $select[] = 'GROUP_CONCAT(DISTINCT sau_employees_areas.name ORDER BY sau_employees_areas.name ASC) AS area';
+            $select[] = " (SELECT GROUP_CONCAT(ar.name) 
+                FROM sau_ph_inspection_area a 
+                INNER JOIN sau_employees_areas ar ON ar.id = a.employee_area_id
+                WHERE a.inspection_id = sau_ph_inspections.id
+            ) AS areas";
 
-        $inspections = Inspection::select(
-            'sau_ph_inspections.*',
-            DB::raw(implode(",", $select))
-        )
-        ->leftJoin('sau_ph_inspection_regional', 'sau_ph_inspection_regional.inspection_id', 'sau_ph_inspections.id')
-        ->leftJoin('sau_ph_inspection_headquarter', 'sau_ph_inspection_headquarter.inspection_id', 'sau_ph_inspections.id')
-        ->leftJoin('sau_ph_inspection_process', 'sau_ph_inspection_process.inspection_id', 'sau_ph_inspections.id')
-        ->leftJoin('sau_ph_inspection_area', 'sau_ph_inspection_area.inspection_id', 'sau_ph_inspections.id');
 
-        if ($confLocationTableInspections['regional'] == 'SI')
-            $inspections->leftJoin('sau_employees_regionals', 'sau_employees_regionals.id', 'sau_ph_inspection_regional.employee_regional_id');
-
-        if ($confLocationTableInspections['headquarter'] == 'SI')
-            $inspections->leftJoin('sau_employees_headquarters', 'sau_employees_headquarters.id', 'sau_ph_inspection_headquarter.employee_headquarter_id');
-
-        if ($confLocationTableInspections['process'] == 'SI')
-            $inspections->leftJoin('sau_employees_processes', 'sau_employees_processes.id', 'sau_ph_inspection_process.employee_process_id');
-
-        if ($confLocationTableInspections['area'] == 'SI')
-            $inspections->leftJoin('sau_employees_areas', 'sau_employees_areas.id', 'sau_ph_inspection_area.employee_area_id');
-
-        $inspections->groupBy('sau_ph_inspections.id', 'sau_ph_inspections.name');
-
+        $inspections = Inspection::groupBy('sau_ph_inspections.id', 'sau_ph_inspections.name');  
 
         $url = "/industrialsecure/dangerousconditions/inspections";
 
@@ -110,17 +107,169 @@ class InspectionController extends Controller
         {
             $inspections->inInspections($this->getValuesForMultiselect($filters["inspections"]), $filters['filtersType']['inspections']);
 
-            if (isset($filters["regionals"]))
-                $inspections->inRegionals($this->getValuesForMultiselect($filters["regionals"]), $filters['filtersType']['regionals']);
+            if (isset($filters["regionals"]) && $filters["regionals"])   
+            {         
+                $select[] = "(SELECT COUNT(rf.employee_regional_id) 
+                    FROM sau_ph_inspection_regional rf 
+                    WHERE rf.inspection_id = sau_ph_inspections.id
+                    and rf.employee_regional_id ".$filters['filtersType']['regionals']." (".implode(',', $this->getValuesForMultiselect($filters["regionals"])->toArray()).")
+                ) AS regional2";    
+
+                $having[] = "regional2 >= 1";
+            }
+
+            if (isset($filters["headquarters"]) && $filters["headquarters"])
+            {
+                $select[] = "(SELECT COUNT(hf.employee_headquarter_id) 
+                    FROM sau_ph_inspection_headquarter hf 
+                    WHERE hf.inspection_id = sau_ph_inspections.id
+                    and hf.employee_headquarter_id ".$filters['filtersType']['headquarters']." (".implode(',', $this->getValuesForMultiselect($filters["headquarters"])->toArray()).")
+                ) AS headquarter2";    
+
+                $having[] = "headquarter2 >= 1";
+            }
+
+            if (isset($filters["processes"]) && $filters["processes"])
+            {
+                $select[] = "(SELECT COUNT(pf.employee_process_id) 
+                    FROM sau_ph_inspection_process pf 
+                    WHERE pf.inspection_id = sau_ph_inspections.id
+                    and pf.employee_process_id ".$filters['filtersType']['processes']." (".implode(',', $this->getValuesForMultiselect($filters["processes"])->toArray()).")
+                ) AS procesos2";    
+
+                $having[] = "procesos2 >= 1";
+            }
+            
+            if (isset($filters["areas"]) && $filters["areas"])
+            {
+                $select[] = "(SELECT COUNT(af.employee_area_id) 
+                    FROM sau_ph_inspection_area af 
+                    WHERE af.inspection_id = sau_ph_inspections.id
+                    and af.employee_area_id  ".$filters['filtersType']['areas']." (".implode(',', $this->getValuesForMultiselect($filters["areas"])->toArray()).")
+                ) AS areas2"; 
+
+                $having[] = "areas2 >= 1";
+            }
+
+            $inspections->selectRaw(implode(",", $select));
+
+            if (COUNT($having) > 0)
+                $inspections->havingRaw(implode(" and ", $having));
+            
+            $dates_request = explode('/', $filters["dateRange"]);
+
+            $dates = [];
+
+            if (COUNT($dates_request) == 2)
+            {
+                array_push($dates, $this->formatDateToSave($dates_request[0]));
+                array_push($dates, $this->formatDateToSave($dates_request[1]));
+            }
+                
+            $inspections->betweenDate($dates);
+
+        }
+
+        return Vuetable::of($inspections)
+                ->make();
+    }
+
+    public function dataCopy(Request $request)
+    {
+        $inspections_location = Inspection::select(
+            'sau_ph_inspections.*')
+        ->groupBy('sau_ph_inspections.id', 'sau_ph_inspections.name')
+        ->get();
+        \Log::info(1);
+
+        $r = [];
+        $h = [];
+        $p = [];
+        $a = [];
+
+        foreach ($inspections_location as $key => $i) {
+            $r[$i->id] = implode(',', $i->regionals()->pluck('name')->toArray());
+            $h[$i->id] = $i->headquarters()->pluck('name');
+            $p[$i->id] = $i->processes()->pluck('name');
+            $a[$i->id] = $i->areas()->pluck('name');
+        }
+        \Log::info(2);
+        
+        $confLocationTableInspections = $this->getLocationFormConfTableInspections();
+
+        $select = [];
+
+        if ($confLocationTableInspections['regional'] == 'SI')
+            $select[] = "'' AS regional";
+
+        if ($confLocationTableInspections['headquarter'] == 'SI')
+            $select[] = "'' AS headquarter";
+
+        if ($confLocationTableInspections['process'] == 'SI')
+            $select[] = "'' AS process";
+
+        if ($confLocationTableInspections['area'] == 'SI')
+            $select[] = "'' AS area";
+
+        \Log::info(4);
+
+        $inspections = Inspection::select(
+            'sau_ph_inspections.*',
+            DB::raw(implode(",", $select))
+        );
+        /*->leftJoin('sau_ph_inspection_regional', 'sau_ph_inspection_regional.inspection_id', 'sau_ph_inspections.id')
+        ->leftJoin('sau_ph_inspection_headquarter', 'sau_ph_inspection_headquarter.inspection_id', 'sau_ph_inspections.id')
+        ->leftJoin('sau_ph_inspection_process', 'sau_ph_inspection_process.inspection_id', 'sau_ph_inspections.id')
+        ->leftJoin('sau_ph_inspection_area', 'sau_ph_inspection_area.inspection_id', 'sau_ph_inspections.id');*/
+
+        /*if ($confLocationTableInspections['regional'] == 'SI')
+            $inspections->leftJoin('sau_employees_regionals', 'sau_employees_regionals.id', 'sau_ph_inspection_regional.employee_regional_id');
+
+        if ($confLocationTableInspections['headquarter'] == 'SI')
+            $inspections->leftJoin('sau_employees_headquarters', 'sau_employees_headquarters.id', 'sau_ph_inspection_headquarter.employee_headquarter_id');   
+
+        if ($confLocationTableInspections['process'] == 'SI')
+            $inspections->leftJoin('sau_employees_processes', 'sau_employees_processes.id', 'sau_ph_inspection_process.employee_process_id');
+
+        if ($confLocationTableInspections['area'] == 'SI')
+            $inspections->leftJoin('sau_employees_areas', 'sau_employees_areas.id', 'sau_ph_inspection_area.employee_area_id');*/
+
+        $inspections->groupBy('sau_ph_inspections.id', 'sau_ph_inspections.name');  
+
+        \Log::info(5);
+
+        $url = "/industrialsecure/dangerousconditions/inspections";
+
+        $filters = COUNT($request->get('filters')) > 0 ? $request->get('filters') : $this->filterDefaultValues($this->user->id, $url);
+        \Log::info(6);
+
+        if (COUNT($filters) > 0)
+        {
+            $inspections->inInspections($this->getValuesForMultiselect($filters["inspections"]), $filters['filtersType']['inspections']);
+
+            if (isset($filters["regionals"]))   
+            {             
+                $inspections->leftJoin('sau_ph_inspection_regional', 'sau_ph_inspection_regional.inspection_id', 'sau_ph_inspections.id')
+                ->inRegionals($this->getValuesForMultiselect($filters["regionals"]), $filters['filtersType']['regionals']);
+            }
 
             if (isset($filters["headquarters"]))
-                $inspections->inHeadquarters($this->getValuesForMultiselect($filters["headquarters"]), $filters['filtersType']['headquarters']);
+            {
+                $inspections->leftJoin('sau_ph_inspection_headquarter', 'sau_ph_inspection_headquarter.inspection_id', 'sau_ph_inspections.id')
+                ->inHeadquarters($this->getValuesForMultiselect($filters["headquarters"]), $filters['filtersType']['headquarters']);
+            }
 
             if (isset($filters["processes"]))
-                $inspections->inProcesses($this->getValuesForMultiselect($filters["processes"]), $filters['filtersType']['processes']);
+            {
+                $inspections->leftJoin('sau_ph_inspection_process', 'sau_ph_inspection_process.inspection_id', 'sau_ph_inspections.id')
+                ->inProcesses($this->getValuesForMultiselect($filters["processes"]), $filters['filtersType']['processes']);
+            }
             
             if (isset($filters["areas"]))
-                $inspections->inAreas($this->getValuesForMultiselect($filters["areas"]), $filters['filtersType']['areas']);
+            {
+                $inspections->leftJoin('sau_ph_inspection_area', 'sau_ph_inspection_area.inspection_id', 'sau_ph_inspections.id')
+                ->inAreas($this->getValuesForMultiselect($filters["areas"]), $filters['filtersType']['areas']);
+            }
             
             $dates_request = explode('/', $filters["dateRange"]);
 
@@ -135,8 +284,33 @@ class InspectionController extends Controller
             $inspections->betweenDate($dates);
         }
 
-        return Vuetable::of($inspections)
-                    ->make();
+        \Log::info(7);
+
+        //$inspections->limit(3);
+
+        $vuetable = Vuetable::of($inspections);
+
+       /*if ($confLocationTableInspections['regional'] == 'SI')
+            $vuetable->addColumn('regional', function ($inspection) use ($r) {
+                return $r[$inspection->id];
+            });
+
+        if ($confLocationTableInspections['headquarter'] == 'SI')
+            $vuetable->addColumn('headquarter', function ($inspection) use ($h) {
+                return $h[$inspection->id];
+            });
+
+        if ($confLocationTableInspections['process'] == 'SI')
+            $vuetable->addColumn('process', function ($inspection) use ($p) {
+                return $p[$inspection->id];
+            });
+
+        if ($confLocationTableInspections['area'] == 'SI')
+            $vuetable->addColumn('area', function ($inspection) use ($a) {
+                return $a[$inspection->id];
+            });*/
+
+        return $vuetable->make();
     }
 
     /**
