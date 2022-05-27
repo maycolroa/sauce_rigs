@@ -104,6 +104,7 @@ class ElementController extends Controller
         $element->name = $request->name;
         $element->code = $request->code;
         $element->description = $request->description;
+        $element->class_element = $request->class_element;
         $element->observations = $request->observations;
         $element->operating_instructions = $request->operating_instructions;
         $element->applicable_standard = $standar_apply->implode(',');
@@ -201,6 +202,7 @@ class ElementController extends Controller
         $element->name = $request->name;
         $element->code = $request->code;
         $element->description = $request->description;
+        $element->class_element = $request->class_element;
         $element->observations = $request->observations;
         $element->operating_instructions = $request->operating_instructions;
         $element->applicable_standard = $standar_apply->implode(',');
@@ -346,6 +348,17 @@ class ElementController extends Controller
         }
     }
 
+    public function multiselectClassElement()
+    {
+        $class = Element::selectRaw("
+                sau_epp_elements.class_element as name
+            ")            
+            ->orderBy('name')
+            ->pluck('name', 'name');
+        
+            return $this->multiSelectFormat($class);
+    }
+
     public function multiselectApplicableStandard(Request $request)
     {
         if($request->has('keyword'))
@@ -422,6 +435,7 @@ class ElementController extends Controller
             sau_epp_elements.name as element,
             sau_epp_elements.mark as mark,
             sau_epp_locations.name as location,
+            sau_epp_elements.class_element as class,
             count(sau_epp_elements_balance_specific.id) as quantity,
             SUM(IF(sau_epp_elements_balance_specific.state = 'Disponible', 1, 0)) AS quantity_available,
             SUM(IF(sau_epp_elements_balance_specific.state = 'Asignado', 1, 0)) AS quantity_allocated,
@@ -432,7 +446,7 @@ class ElementController extends Controller
         ->join('sau_epp_locations', 'sau_epp_locations.id', 'sau_epp_elements_balance_ubication.location_id')
         ->join('sau_epp_elements_balance_specific', 'sau_epp_elements_balance_specific.element_balance_id', 'sau_epp_elements_balance_ubication.id')
         ->where('sau_epp_elements.company_id', $this->company)
-        ->groupBy('element','location', 'mark');
+        ->groupBy('element','location', 'mark', 'class');
 
         $url = "/industrialsecure/epps/report";
 
@@ -449,6 +463,17 @@ class ElementController extends Controller
 
                 else if ($filters['filtersType']['marks'] == 'NOT IN')
                     $report->whereNotIn('sau_epp_elements.mark', $marks);
+            }
+
+            if (isset($filters["class"]) && COUNT($filters["class"]) > 0)
+            {
+                $class = $this->getValuesForMultiselect($filters["class"]);
+
+                if ($filters['filtersType']['class'] == 'IN')
+                    $report->whereIn('sau_epp_elements.class_element', $class);
+
+                else if ($filters['filtersType']['class'] == 'NOT IN')
+                    $report->whereNotIn('sau_epp_elements.class_element', $class);
             }
 
             if (isset($filters["elements"]))
@@ -470,6 +495,7 @@ class ElementController extends Controller
             sau_epp_elements.id as id,
             sau_epp_elements.name as element,
             sau_epp_locations.name as location,
+            sau_epp_elements.class_element as class,
             count(sau_epp_elements_balance_specific.id) as cantidad
         ")
         ->join('sau_employees', 'sau_employees.id', 'sau_epp_transactions_employees.employee_id')
@@ -481,7 +507,7 @@ class ElementController extends Controller
         ->where('sau_epp_elements.company_id', $this->company)
         ->where('sau_epp_transactions_employees.type', 'Entrega')
         ->whereNull('sau_epp_transactions_employees.state')
-        ->groupBy('sau_employees.name', 'sau_epp_elements.id', 'sau_epp_elements.name','sau_epp_locations.name');
+        ->groupBy('sau_employees.name', 'sau_epp_elements.id', 'sau_epp_elements.name','sau_epp_locations.name', 'sau_epp_elements.class_element');
 
         $url = "/industrialsecure/epps/report";
 
@@ -498,6 +524,17 @@ class ElementController extends Controller
 
                 else if ($filters['filtersType']['marks'] == 'NOT IN')
                     $report->whereNotIn('sau_epp_elements.mark', $marks);
+            }
+
+            if (isset($filters["class"]) && COUNT($filters["class"]) > 0)
+            {
+                $class = $this->getValuesForMultiselect($filters["class"]);
+
+                if ($filters['filtersType']['class'] == 'IN')
+                    $report->whereIn('sau_epp_elements.class_element', $class);
+
+                else if ($filters['filtersType']['class'] == 'NOT IN')
+                    $report->whereNotIn('sau_epp_elements.class_element', $class);
             }
 
             if (isset($filters["elements"]))
@@ -549,6 +586,17 @@ class ElementController extends Controller
                     $report->whereNotIn('sau_epp_elements.mark', $marks);
             }
 
+            if (isset($filters["class"]) && COUNT($filters["class"]) > 0)
+            {
+                $class = $this->getValuesForMultiselect($filters["class"]);
+
+                if ($filters['filtersType']['class'] == 'IN')
+                    $report->whereIn('sau_epp_elements.class_element', $class);
+
+                else if ($filters['filtersType']['class'] == 'NOT IN')
+                    $report->whereNotIn('sau_epp_elements.class_element', $class);
+            }
+
             if (isset($filters["elements"]))
                 $report->inElement($this->getValuesForMultiselect($filters["elements"]), $filters['filtersType']['elements']);
 
@@ -595,13 +643,23 @@ class ElementController extends Controller
                     $report->whereNotIn('sau_epp_elements.mark', $marks);
             }
 
+            if (isset($filters["class"]) && COUNT($filters["class"]) > 0)
+            {
+                $class = $this->getValuesForMultiselect($filters["class"]);
+
+                if ($filters['filtersType']['class'] == 'IN')
+                    $report->whereIn('sau_epp_elements.class_element', $class);
+
+                else if ($filters['filtersType']['class'] == 'NOT IN')
+                    $report->whereNotIn('sau_epp_elements.class_element', $class);
+            }
+
             if (isset($filters["elements"]))
                 $report->inElement($this->getValuesForMultiselect($filters["elements"]), $filters['filtersType']['elements']);
 
             if (isset($filters["location"]))
                 $report->inLocation($this->getValuesForMultiselect($filters["location"]), $filters['filtersType']['location']);
         }
-        \Log::info($report->first());
         
         return $this->respondHttp200([
             'data' => $report->first()

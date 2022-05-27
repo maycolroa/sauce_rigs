@@ -16,6 +16,7 @@ class Element extends Model
     protected $fillable = [
         'code',
         'name',
+        'class_element',
         'description',
         'type',
         'mark',

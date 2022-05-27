@@ -1101,6 +1101,7 @@ export default [
         { name: 'sau_epp_elements.id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true },
         { name: 'sau_epp_elements.name', data: 'name', title: 'Nombre', sortable: true, searchable: true, detail: false, key: false },
         { name: 'sau_epp_elements.code', data: 'code', title: 'Código', sortable: true, searchable: true, detail: false, key: false },
+        { name: 'sau_epp_elements.class_element', data: 'class_element', title: 'Clase', sortable: true, searchable: true, detail: false, key: false },
         { name: 'sau_epp_elements.type', data: 'type', title: 'Tipo', sortable: true, searchable: true, detail: false, key: false },
         { name: 'sau_epp_elements.mark', data: 'mark', title: 'Marca', sortable: true, searchable: true, detail: false, key: false },
         { name: 'sau_epp_elements.identy', data: 'identy', title: '¿Identificable?', sortable: true, searchable: true, detail: false, key: false },
@@ -1492,6 +1493,7 @@ export default [
     fields: [
         { name: 'id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true },
         { name: 'element', data: 'element', title: 'Elemento', sortable: true, searchable: false, detail: false, key: false },
+        { name: 'class', data: 'class', title: 'Clase', sortable: true, searchable: false, detail: false, key: false },
         { name: 'mark', data: 'mark', title: 'Marca', sortable: true, searchable: false, detail: false, key: false },
         { name: 'location', data: 'location', title: 'Ubicación', sortable: true, searchable: false, detail: false, key: false },
         { name: 'quantity', data: 'quantity', title: 'Cantidad Total', sortable: true, searchable: false, detail: false, key: false },
@@ -1631,6 +1633,7 @@ export default [
         { name: 'id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true },
         { name: 'employee', data: 'employee', title: 'Empleado', sortable: true, searchable: false, detail: false, key: false },
         { name: 'element', data: 'element', title: 'Elemento', sortable: true, searchable: false, detail: false, key: false },
+        { name: 'class', data: 'class', title: 'Clase', sortable: true, searchable: false, detail: false, key: false },
         { name: 'location', data: 'location', title: 'Ubicación', sortable: true, searchable: false, detail: false, key: false },
         { name: 'cantidad', data: 'cantidad', title: 'Cantidad', sortable: true, searchable: false, detail: false, key: false },
     ],

@@ -7,32 +7,34 @@
     </b-form-row>
 
     <b-form-row>
+      <vue-radio :disabled="viewOnly" class="col-md-6" v-model="form.class_element" :options="classElement" name="class_element" :error="form.errorsFor('class_element')" label="Clase" :checked="form.class_element"></vue-radio>
       <vue-ajax-advanced-select :disabled="viewOnly" class="col-md-6" v-model="form.type" name="type" :error="form.errorsFor('type')" label="Tipo de elemento" placeholder="Seleccione el Tipo de elemento" :url="tagsTypeDataUrl" :multiple="true" :allowEmpty="true" :taggable="true">
                     </vue-ajax-advanced-select>
+    </b-form-row>
+
+    <b-form-row>
       <vue-ajax-advanced-select-tag-unic :disabled="viewOnly" class="col-md-6" v-model="form.mark" name="mark" :error="form.errorsFor('mark')" label="Marca" placeholder="Seleccione la marca" :url="tagsMarkDataUrl" :multiple="false" :allowEmpty="true" :taggable="true">
                     </vue-ajax-advanced-select-tag-unic>
-    </b-form-row>
-
-    <b-form-row>
       <vue-textarea :disabled="viewOnly" class="col-md-6" v-model="form.description" label="Descripción" name="description" ::error="form.errorsFor('description')"  placeholder="Descripción"></vue-textarea>
+    </b-form-row>
+
+    <b-form-row>
       <vue-ajax-advanced-select :disabled="viewOnly" class="col-md-6" v-model="form.applicable_standard" name="applicable_standard" :error="form.errorsFor('applicable_standard')" label="Normas Aplicables" placeholder="Seleccione la norma" :url="tagsStandarApplyDataUrl" :multiple="true" :allowEmpty="true" :taggable="true"></vue-ajax-advanced-select>
-    </b-form-row>
-
-    <b-form-row>
       <vue-textarea :disabled="viewOnly" class="col-md-6" v-model="form.observations" label="Observaciones" name="observations" ::error="form.errorsFor('observations')"  placeholder="Observaciones"></vue-textarea>
+    </b-form-row>
+
+    <b-form-row>
       <vue-textarea :disabled="viewOnly" class="col-md-6" v-model="form.operating_instructions" label="Instrucciones de uso" name="operating_instructions" ::error="form.errorsFor('operating_instructions')"  placeholder="Instrucciones de uso"></vue-textarea>
-    </b-form-row>
-
-    <b-form-row>
       <vue-radio :disabled="viewOnly" class="col-md-6" v-model="form.state" :options="actInac" name="state" :error="form.errorsFor('state')" label="Estado" :checked="form.state"></vue-radio>
-      <vue-radio :disabled="viewOnly" class="col-md-6" v-model="form.reusable" :options="siNo" name="reusable" :error="form.errorsFor('reusable')" label="Reutilizable" :checked="form.reusable"></vue-radio>
     </b-form-row>
 
     <b-form-row>
+      <vue-radio :disabled="viewOnly" class="col-md-6" v-model="form.reusable" :options="siNo" name="reusable" :error="form.errorsFor('reusable')" label="Reutilizable" :checked="form.reusable"></vue-radio>
       <vue-radio v-if="auth.inventaryEpp == 'SI'" :disabled="viewOnly" class="col-md-6" v-model="form.identify_each_element" :options="siNo" name="identify_each_element" :error="form.errorsFor('identify_each_element')" label="¿Desea identificar cada elemento?" :checked="form.identify_each_element"></vue-radio>
+      </b-form-row>
 
+      <b-form-row>
       <vue-radio :disabled="viewOnly" class="col-md-6" v-model="form.expiration_date" :options="siNo" name="expiration_date" :error="form.errorsFor('expiration_date')" label="¿Tiene máximo tiempo de uso?" :checked="form.expiration_date"></vue-radio>
-
       <vue-input v-if="form.expiration_date == 'SI'" :disabled="viewOnly" class="col-md-6" v-model="form.days_expired" label="Máximos dias de uso" type="number" name="days_expired" :error="form.errorsFor('days_expired')" placeholder="Máximos dias de uso"></vue-input>
     </b-form-row>
 
@@ -88,6 +90,7 @@ export default {
             type: [],
             mark: [],
             description: '',
+            class_element: '',
             observations: '',
             state: '',
             reusable: '',
@@ -120,6 +123,10 @@ export default {
       siNo: [
         {text: 'SI', value: 'SI'},
         {text: 'NO', value: 'NO'}
+      ],
+      classElement: [
+        {text: 'Elemento de protección personal', value: 'Elemento de protección personal'},
+        {text: 'Dotación', value: 'Dotación'}
       ],
       inventary: auth.inventaryEpp
     };

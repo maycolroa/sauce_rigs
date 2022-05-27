@@ -516,6 +516,12 @@ export default [
           label: 'Marcas'
         },
         {
+          url: '/selects/classElement',
+          key: 'class',
+          type: 'select',
+          label: 'Clase'
+        },
+        {
           url: '/selects/eppLocations',
           key: 'location',
           type: 'select',
