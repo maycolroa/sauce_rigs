@@ -240,14 +240,14 @@
                     @endif
                 </tr>
                 <tr>
-                    <th>{{date('Y-m-d', strtotime($form->fecha_accidente))}}</th>
-                    <th>{{$form->dia_accidente}}</th>
-                    <th>{{$form->jornada_accidente}}</th>
-                    <th>{{$form->estaba_realizando_labor_habitual}}</th>
+                    <td>{{date('Y-m-d', strtotime($form->fecha_accidente))}}</td>
+                    <td>{{$form->dia_accidente}}</td>
+                    <td>{{$form->jornada_accidente}}</td>
+                    <td>{{$form->estaba_realizando_labor_habitual}}</td>
                     @if ($form->estaba_realizando_labor_habitual == 'NO')
-                    <th>{{$form->otra_labor_habitual}}</th>
+                    <td>{{$form->otra_labor_habitual}}</td>
                     @else
-                    <th>{{$form->total_tiempo_laborado}}</th>
+                    <td>{{$form->total_tiempo_laborado}}</td>
                     @endif
                 </tr>
                 <tr>
@@ -266,16 +266,16 @@
                 </tr>
                 <tr>
                     @if ($form->estaba_realizando_labor_habitual == 'SI')
-                    <th>{{$form->total_tiempo_laborado}}</th>
-                    <th>{{$form->accidente_ocurrio_dentro_empresa}}</th>
-                    <th>{{$form->tipo_accidente}}</th>
-                    <th>{{$form->departamentAccident->name}}</th>
-                    <th>{{$form->ciudadAccident->name}}</th>
+                    <td>{{$form->total_tiempo_laborado}}</td>
+                    <td>{{$form->accidente_ocurrio_dentro_empresa}}</td>
+                    <td>{{$form->tipo_accidente}}</td>
+                    <td>{{$form->departamentAccident->name}}</td>
+                    <td>{{$form->ciudadAccident->name}}</td>
                     @else
-                    <th colspan="2">{{$form->accidente_ocurrio_dentro_empresa}}</th>
-                    <th>{{$form->tipo_accidente}}</th>
-                    <th>{{$form->departamentAccident->name}}</th>
-                    <th>{{$form->ciudadAccident->name}}</th>
+                    <td colspan="2">{{$form->accidente_ocurrio_dentro_empresa}}</td>
+                    <td>{{$form->tipo_accidente}}</td>
+                    <td>{{$form->departamentAccident->name}}</td>
+                    <td>{{$form->ciudadAccident->name}}</td>
                     @endif
                 </tr>
                 <tr>

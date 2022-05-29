@@ -735,6 +735,8 @@ class AccidentsWorkController extends Controller
         $accident->persons = $persons;
 
         $accident->participants_investigations = $participants;
+
+        $accident->dia_accidente = ucfirst(Carbon::parse($accident->fecha_accidente)->locale('es_ES')->dayName);
         
         $accident->files = $this->getFiles($accident->id);
         $accident->actionPlan = ActionPlan::model($accident)->prepareDataComponent();
