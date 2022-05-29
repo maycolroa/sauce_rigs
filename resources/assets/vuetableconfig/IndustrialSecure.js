@@ -1773,6 +1773,7 @@ export default [
     }],
     configuration: {
         urlData: '/industrialSecurity/accidents/data',
+        configNameFilter: 'industrialsecure-accidents',
         filterColumns: true,
     }
 },

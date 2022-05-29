@@ -348,6 +348,17 @@ Route::middleware(['auth'])->group(function () {
 
         Route::post('eppElements', 'IndustrialSecure\EPP\ElementController@multiselect');
         Route::post('eppLocations', 'IndustrialSecure\EPP\LocationController@multiselect');
+
+        Route::prefix('accidents')->group(function () {
+          Route::post('identifications', 'IndustrialSecure\AccidentsWork\AccidentsWorkController@multiselectIdentification');
+          Route::post('names', 'IndustrialSecure\AccidentsWork\AccidentsWorkController@multiselectName');
+          Route::post('razonSocial', 'IndustrialSecure\AccidentsWork\AccidentsWorkController@multiselectSocialReason');
+          Route::post('activityEconomic', 'IndustrialSecure\AccidentsWork\AccidentsWorkController@multiselectActivityEconomic');
+          Route::post('cargo', 'IndustrialSecure\AccidentsWork\AccidentsWorkController@multiselectCargo');
+          Route::post('agents', 'IndustrialSecure\AccidentsWork\AccidentsWorkController@multiselectAgents');
+          Route::post('mechanisms', 'IndustrialSecure\AccidentsWork\AccidentsWorkController@multiselectMechanisms');
+          Route::post('siNo', 'IndustrialSecure\AccidentsWork\AccidentsWorkController@multiselectSiNo');
+        });
     });
 
     Route::prefix('radios')->group(function () {

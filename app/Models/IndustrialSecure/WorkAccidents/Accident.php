@@ -175,4 +175,150 @@ class Accident extends Model
     {
         return $this->hasMany(Person::class, 'form_accident_id');
     }
+
+    /**
+     * filters checks through the given deal
+     * @param  Illuminate\Database\Eloquent\Builder $query
+     * @param  array $deal
+     * @return Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeInIdentification($query, $identificacion_persona, $typeSearch = 'IN')
+    {
+        if (COUNT($identificacion_persona) > 0)
+        {
+            if ($typeSearch == 'IN')
+                $query->whereIn('sau_aw_form_accidents.identificacion_persona', $identificacion_persona);
+
+            else if ($typeSearch == 'NOT IN')
+                $query->whereNotIn('sau_aw_form_accidents.identificacion_persona', $identificacion_persona);
+        }
+
+        return $query;
+    }
+
+    public function scopeInName($query, $name, $typeSearch = 'IN')
+    {
+        if (COUNT($name) > 0)
+        {
+            if ($typeSearch == 'IN')
+                $query->whereIn('sau_aw_form_accidents.nombre_persona', $name);
+
+            else if ($typeSearch == 'NOT IN')
+                $query->whereNotIn('sau_aw_form_accidents.nombre_persona', $name);
+        }
+
+        return $query;
+    }
+
+    public function scopeInSexs($query, $sexs, $typeSearch = 'IN')
+    {
+        if (COUNT($sexs) > 0)
+        {
+            if ($typeSearch == 'IN')
+                $query->whereIn('sau_aw_form_accidents.sexo_persona', $sexs);
+
+            else if ($typeSearch == 'NOT IN')
+                $query->whereNotIn('sau_aw_form_accidents.sexo_persona', $sexs);
+        }
+
+        return $query;
+    }
+
+    public function scopeInSocialReason($query, $razonSocial, $typeSearch = 'IN')
+    {
+        if (COUNT($razonSocial) > 0)
+        {
+            if ($typeSearch == 'IN')
+                $query->whereIn('sau_aw_form_accidents.razon_social', $razonSocial);
+
+            else if ($typeSearch == 'NOT IN')
+                $query->whereNotIn('sau_aw_form_accidents.razon_social', $razonSocial);
+        }
+
+        return $query;
+    }
+
+    public function scopeInActivityEconomic($query, $activityEconomic, $typeSearch = 'IN')
+    {
+        if (COUNT($activityEconomic) > 0)
+        {
+            if ($typeSearch == 'IN')
+                $query->whereIn('sau_aw_form_accidents.nombre_actividad_economica_sede_principal', $activityEconomic);
+
+            else if ($typeSearch == 'NOT IN')
+                $query->whereNotIn('sau_aw_form_accidents.nombre_actividad_economica_sede_principal', $activityEconomic);
+        }
+
+        return $query;
+    }
+
+    public function scopeInCargo($query, $cargos, $typeSearch = 'IN')
+    {
+        if (COUNT($cargos) > 0)
+        {
+            if ($typeSearch == 'IN')
+                $query->whereIn('sau_aw_form_accidents.cargo_persona', $cargos);
+
+            else if ($typeSearch == 'NOT IN')
+                $query->whereNotIn('sau_aw_form_accidents.cargo_persona', $cargos);
+        }
+
+        return $query;
+    }
+
+    public function scopeInAgents($query, $agents, $typeSearch = 'IN')
+    {
+        if (COUNT($agents) > 0)
+        {
+            if ($typeSearch == 'IN')
+                $query->whereIn('sau_aw_form_accidents.agent_id', $agents);
+
+            else if ($typeSearch == 'NOT IN')
+                $query->whereNotIn('sau_aw_form_accidents.agent_id', $agents);
+        }
+
+        return $query;
+    }
+
+    public function scopeInMechanisms($query, $mechanisms, $typeSearch = 'IN')
+    {
+        if (COUNT($mechanisms) > 0)
+        {
+            if ($typeSearch == 'IN')
+                $query->whereIn('sau_aw_form_accidents.mechanism_id', $mechanisms);
+
+            else if ($typeSearch == 'NOT IN')
+                $query->whereNotIn('sau_aw_form_accidents.mechanism_id', $mechanisms);
+        }
+
+        return $query;
+    }
+
+    public function scopeInDepartamentAccident($query, $departaments, $typeSearch = 'IN')
+    {
+        if (COUNT($departaments) > 0)
+        {
+            if ($typeSearch == 'IN')
+                $query->whereIn('sau_aw_form_accidents.departamento_accidente', $departaments);
+
+            else if ($typeSearch == 'NOT IN')
+                $query->whereNotIn('sau_aw_form_accidents.departamento_accidente', $departaments);
+        }
+
+        return $query;
+    }
+
+    public function scopeInCityAccident($query, $citys, $typeSearch = 'IN')
+    {
+        if (COUNT($citys) > 0)
+        {
+            if ($typeSearch == 'IN')
+                $query->whereIn('sau_aw_form_accidents.ciudad_accidente', $citys);
+
+            else if ($typeSearch == 'NOT IN')
+                $query->whereNotIn('sau_aw_form_accidents.ciudad_accidente', $citys);
+        }
+
+        return $query;
+    }
 }

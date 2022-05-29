@@ -535,4 +535,81 @@ export default [
         }
       ]
     },
+    {
+      name: 'industrialsecure-accidents',
+      filters: [
+        {
+          url: '/selects/accidents/identifications',
+          key: 'identifications',
+          type: 'select',
+          label: 'Identificación'
+        },
+        {
+          url: '/selects/accidents/names',
+          key: 'names',
+          type: 'select',
+          label: 'Nombres'
+        },
+        {
+          url: '/selects/accidents/razonSocial',
+          key: 'razonSocial',
+          type: 'select',
+          label: 'Razón Social'
+        },
+        {
+          url: '/selects/accidents/activityEconomic',
+          key: 'activityEconomic',
+          type: 'select',
+          label: 'Actividad Económica',
+        },
+        {
+          url: '/selects/accidents/cargo',
+          key: 'cargo',
+          type: 'select',
+          label: 'Cargo',
+        },
+        {
+          url: '/selects/accidents/siNo',
+          key: 'causoMuerte',
+          type: 'select',
+          label: 'Causo Muerte',
+        },
+        {
+          url: '/selects/sexs',
+          key: 'sexs',
+          type: 'select',
+          label: 'Sexo',
+        },
+        {
+          url: '/selects/accidents/siNo',
+          key: 'dentroEmpresa',
+          type: 'select',
+          label: '¿Ocurrio dentro de la empresa?',
+        },
+        {
+          url: '/selects/departaments',
+          key: 'departament',
+          type: 'select',
+          label: 'Departamento',
+        },
+        {
+          url: '/selects/municipalities',
+          key: 'city',
+          type: 'select',
+          label: 'Ciudad',
+        },
+        {
+          url: '/selects/accidents/agents',
+          key: 'agent',
+          type: 'select',
+          label: 'Agentes',
+        },
+        {
+          url: '/selects/accidents/mechanisms',
+          key: 'mechanism',
+          type: 'select',
+          label: 'Mecanismos',
+        }
+      ]
+    }
 ];

@@ -7,6 +7,8 @@ use App\Http\Controllers\Controller;
 use App\Vuetable\Facades\Vuetable;
 use App\Models\IndustrialSecure\WorkAccidents\Accident;
 use App\Models\IndustrialSecure\WorkAccidents\Person;
+use App\Models\IndustrialSecure\WorkAccidents\Agent;
+use App\Models\IndustrialSecure\WorkAccidents\Mechanism;
 use App\Models\IndustrialSecure\WorkAccidents\FileAccident;
 use App\Models\Administrative\Employees\Employee;
 use App\Http\Requests\IndustrialSecure\AccidentWork\AccidentRequest;
@@ -17,9 +19,11 @@ use Carbon\Carbon;
 use DB;
 use Validator;
 use PDF;
+use App\Traits\Filtertrait;
 
 class AccidentsWorkController extends Controller
 {
+    use Filtertrait;
     /**
      * creates and instance and middlewares are checked
      */
@@ -53,6 +57,65 @@ class AccidentsWorkController extends Controller
         $accidents = Accident::selectRaw(
             "sau_aw_form_accidents.*,
             if(sau_aw_form_accidents.consolidado, 'SI', 'NO') AS consolidado");
+
+        $url = "/industrialsecure/accidents";
+
+        $filters = COUNT($request->get('filters')) > 0 ? $request->get('filters') : $this->filterDefaultValues($this->user->id, $url);
+
+        if (COUNT($filters) > 0)
+        {
+            if (isset($filters["mechanism"]) && $filters["mechanism"])
+                $accidents->inMechanisms($this->getValuesForMultiselect($filters["mechanism"]), $filters['filtersType']['mechanism']);
+
+            if (isset($filters["agent"]) && $filters["agent"])
+                $accidents->inAgents($this->getValuesForMultiselect($filters["agent"]), $filters['filtersType']['agent']);
+
+            if (isset($filters["cargo"]) && $filters["cargo"])
+                $accidents->inCargo($this->getValuesForMultiselect($filters["cargo"]), $filters['filtersType']['cargo']);
+
+            if (isset($filters["activityEconomic"]) && $filters["activityEconomic"])
+                $accidents->inActivityEconomic($this->getValuesForMultiselect($filters["activityEconomic"]), $filters['filtersType']['activityEconomic']);
+
+            if (isset($filters["razonSocial"]) && $filters["razonSocial"])
+                $accidents->inSocialReason($this->getValuesForMultiselect($filters["razonSocial"]), $filters['filtersType']['razonSocial']);
+
+            if (isset($filters["sexs"]) && $filters["sexs"])
+                $accidents->inSexs($this->getValuesForMultiselect($filters["sexs"]), $filters['filtersType']['sexs']);
+
+            if (isset($filters["names"]) && $filters["names"])
+                $accidents->inName($this->getValuesForMultiselect($filters["names"]), $filters['filtersType']['names']);
+
+            if (isset($filters["identifications"]) && $filters["identifications"])
+                $accidents->inIdentification($this->getValuesForMultiselect($filters["identifications"]), $filters['filtersType']['identifications']);
+
+            if (isset($filters["departament"]) && $filters["departament"])
+                $accidents->inDepartamentAccident($this->getValuesForMultiselect($filters["departament"]), $filters['filtersType']['departament']);
+
+            if (isset($filters["city"]) && $filters["city"])
+                $accidents->inCityAccident($this->getValuesForMultiselect($filters["city"]), $filters['filtersType']['city']);
+
+            if (isset($filters['causoMuerte']) && COUNT($filters['causoMuerte']) > 0)
+            {
+                $values = $this->getValuesForMultiselect($filters['causoMuerte']);
+
+                if ($filters['filtersType']['causoMuerte'] == 'IN')
+                    $accidents->whereIn('causo_muerte', $values);
+
+                else if ($filters['filtersType']['causoMuerte'] == 'NOT IN')
+                    $accidents->whereNotIn('causo_muerte', $values);
+            }
+
+            if (isset($filters["dentroEmpresa"]) && COUNT($filters["dentroEmpresa"]) > 0)
+            {
+                $values2 = $this->getValuesForMultiselect($filters["dentroEmpresa"]);
+
+                if ($filters['filtersType']['dentroEmpresa'] == 'IN')
+                    $accidents->whereIn('accidente_ocurrio_dentro_empresa', $values2);
+
+                else if ($filters['filtersType']['dentroEmpresa'] == 'NOT IN')
+                    $accidents->whereNotIn('accidente_ocurrio_dentro_empresa', $values2);
+            }
+        }
 
         return Vuetable::of($accidents)
                     ->make();
@@ -772,5 +835,99 @@ class AccidentsWorkController extends Controller
         $accident->logo = $logo;
 
         return $accident;
+    }
+
+    public function multiselectIdentification()
+    {
+      $data = Accident::selectRaw(
+        'DISTINCT identificacion_persona AS identificacion_persona'
+      )
+      ->orderBy('identificacion_persona')
+      ->get()
+      ->pluck('identificacion_persona', 'identificacion_persona');
+
+      return $this->multiSelectFormat($data);
+    }
+
+    public function multiselectName()
+    {
+      $data = Accident::selectRaw(
+        'DISTINCT nombre_persona AS nombre_persona'
+      )
+      ->orderBy('nombre_persona')
+      ->get()
+      ->pluck('nombre_persona', 'nombre_persona');
+
+      return $this->multiSelectFormat($data);
+    }
+
+    public function multiselectSexs()
+    {
+        $data = ["Masculino"=>"Masculino", "Femenino"=>"Femenino", "Sin Sexo"=>"Sin Sexo"];
+
+        return $this->multiSelectFormat(collect($data));
+    }
+
+    public function multiselectSocialReason()
+    {
+      $data = Accident::selectRaw(
+        'DISTINCT razon_social AS razon_social'
+      )
+      ->orderBy('razon_social')
+      ->get()
+      ->pluck('razon_social', 'razon_social');
+
+      return $this->multiSelectFormat($data);
+    }
+
+    public function multiselectActivityEconomic()
+    {
+      $data = Accident::selectRaw(
+        'DISTINCT nombre_actividad_economica_sede_principal AS nombre_actividad_economica_sede_principal'
+      )
+      ->orderBy('nombre_actividad_economica_sede_principal')
+      ->get()
+      ->pluck('nombre_actividad_economica_sede_principal', 'nombre_actividad_economica_sede_principal');
+
+      return $this->multiSelectFormat($data);
+    }
+
+    public function multiselectCargo()
+    {
+      $data = Accident::selectRaw(
+        'DISTINCT cargo_persona AS cargo_persona'
+      )
+      ->orderBy('cargo_persona')
+      ->get()
+      ->pluck('cargo_persona', 'cargo_persona');
+
+      return $this->multiSelectFormat($data);
+    }
+
+    public function multiselectAgents()
+    {
+        $agents = Agent::selectRaw("
+            sau_aw_agents.id as id,
+            sau_aw_agents.name as name
+        ")->orderBy('name')->pluck('id', 'name');
+
+        return $this->multiSelectFormat($agents);
+    }
+
+    public function multiselectMechanisms()
+    {
+        $mechanisms = Mechanism::selectRaw("
+            sau_aw_mechanisms.id as id,
+            sau_aw_mechanisms.name as name
+        ")->orderBy('name')->pluck('id', 'name');
+
+        return $this->multiSelectFormat($mechanisms);
+    }
+
+    public function multiselectSiNo()
+    {
+        $data = ["SI"=>"SI", "NO"=>"NO"];
+
+        return $this->multiSelectFormat(collect($data));
     }
 }
