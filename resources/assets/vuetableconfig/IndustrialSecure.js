@@ -1743,6 +1743,23 @@ export default [
         }]
     },
     {
+        type: 'simpleDownload',
+        buttons: [{
+        name: 'downloadFile',
+        config: {
+          color: 'outline-danger',
+          borderless: true,
+          icon: 'fas fa-file-pdf',
+          title: 'Descargar formulario en PDF'
+        },
+        data: {
+          action: '/industrialSecurity/accidents/downloadPdf/',
+          id: 'id'
+        },
+        permission: 'accidentsWork_r'
+        }],
+    },
+    {
         type: 'base',
         buttons: [{
         name: 'delete',

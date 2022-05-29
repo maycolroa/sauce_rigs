@@ -12,9 +12,11 @@ use App\Models\Administrative\Employees\Employee;
 use App\Http\Requests\IndustrialSecure\AccidentWork\AccidentRequest;
 use App\Facades\ActionPlans\Facades\ActionPlan;
 use Illuminate\Support\Facades\Storage;
+use App\Models\General\Company;
 use Carbon\Carbon;
 use DB;
 use Validator;
+use PDF;
 
 class AccidentsWorkController extends Controller
 {
@@ -105,6 +107,7 @@ class AccidentsWorkController extends Controller
                     $accident->email_persona = $employee->email;
                     $accident->employee_position_id = $employee->position->id;
                     $accident->fecha_ingreso_empresa_persona = $employee->income_date;
+                    $accident->cargo_persona = $employee->position->name;
                 }
                 else
                 {
@@ -455,6 +458,7 @@ class AccidentsWorkController extends Controller
                     $accident->email_persona = $employee->email;
                     $accident->employee_position_id = $employee->position->id;
                     $accident->fecha_ingreso_empresa_persona = $employee->income_date;
+                    $accident->cargo_persona = $employee->position->name;
                 }
                 else
                 {
@@ -687,5 +691,84 @@ class AccidentsWorkController extends Controller
     public function download(FileAccident $file)
     {
       return Storage::disk('s3')->download($file->path_donwload(), $file->name);
+    }
+
+    public function downloadPdf(Accident $accident)
+    {
+        $form = $this->getDataExportPdf($accident->id);
+
+        PDF::setOptions(['dpi' => 150, 'defaultFont' => 'sans-serif']);
+
+        $pdf = PDF::loadView('pdf.formularioAccidents', ['form' => $form] );
+
+        $pdf->setPaper('A3', 'landscape');
+
+        return $pdf->download('formulario_accidente.pdf');
+    }
+
+    public function getDataExportPdf($id)
+    {
+        $accident = Accident::findOrFail($id);
+
+        $accident->info_sede_principal_misma_centro_trabajo = $accident->info_sede_principal_misma_centro_trabajo ? 'SI' : 'NO';
+        $accident->tiene_seguro_social = $accident->tiene_seguro_social ? 'SI' : 'NO';
+        $accident->estaba_realizando_labor_habitual = $accident->estaba_realizando_labor_habitual ? 'SI' : 'NO';
+        $accident->causo_muerte = $accident->causo_muerte ? 'SI' : 'NO';
+        $accident->personas_presenciaron_accidente = $accident->personas_presenciaron_accidente ? 'SI' : 'NO';
+
+        $values = $accident->lesionTypes()->pluck('sau_aw_types_lesion.name')->toArray();
+        $accident->lesions_id = implode(', ', $values);
+
+        $values2 = $accident->partsBody()->pluck('sau_aw_parts_body.name')->toArray();
+        $accident->parts_body = implode(', ', $values2);
+
+        $persons = [];
+        $participants = [];
+
+        foreach ($accident->personas as $key => $value) {
+            if ($value->rol == 'Presencio Accidente')
+                array_push($persons, $value);
+            else
+                array_push($participants, $value);
+        }
+
+        $accident->persons = $persons;
+
+        $accident->participants_investigations = $participants;
+        
+        $accident->files = $this->getFiles($accident->id);
+        $accident->actionPlan = ActionPlan::model($accident)->prepareDataComponent();
+
+        $images_pdf = [];
+        $i = 0;
+        $j = 0;
+
+        $accident->files->transform(function($file, $indexFile) use (&$i, &$j, &$images_pdf) {
+            $file->key = Carbon::now()->timestamp + rand(1,10000);
+            $file->type_file = $file->type_file;
+            $file->name_file = $file->name_file;
+            $file->old_name = $file->file;
+            $file->path = $file->path_image();
+            $images_pdf[$i][$j] = ['file' => $file->path, 'type' => $file->type_file, 'name' => $file->name_file];
+            $j++;
+
+            if ($j > (3))
+            {
+                $i++;
+                $j = 0;
+            }
+
+            return $file;
+        });
+
+        $accident->files_pdf = $images_pdf;
+
+        $company = Company::select('logo')->where('id', $this->company)->first();
+
+        $logo = ($company && $company->logo) ? $company->logo : null;
+
+        $accident->logo = $logo;
+
+        return $accident;
     }
 }

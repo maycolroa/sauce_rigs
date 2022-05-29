@@ -36,8 +36,8 @@
             <vue-input v-if="infor.site_id == 9" :disabled="viewOnly" class="col-md-6" v-model="infor.otro_sitio" label="Otro sitio" type="text" name="otro_sitio" :error="form.errorsFor('otro_sitio')" placeholder="Otro sitio"></vue-input>
           </b-form-row>
           <b-form-row>
-            <vue-checkbox style="padding-top: 20px;" :disabled="viewOnly" class="col-md-6" v-model="infor.parts_body" :checked="form.parts_body" label="Partes del cuerpo aparentemente afectado" name="interests" :options="partsBody" :vertical="true"></vue-checkbox>
-            <vue-checkbox style="padding-top: 20px;" :disabled="viewOnly" class="col-md-6" v-model="infor.lesions_id" :checked="form.lesions_id" label="Tipo de lesión" name="interests" :options="lesionTypes" :vertical="true"></vue-checkbox>
+            <vue-checkbox style="padding-top: 20px;" :disabled="viewOnly" class="col-md-6" v-model="infor.parts_body" :checked="form.parts_body" label="Partes del cuerpo aparentemente afectado" name="parts_body" :options="partsBody" :vertical="true"></vue-checkbox>
+            <vue-checkbox style="padding-top: 20px;" :disabled="viewOnly" class="col-md-6" v-model="infor.lesions_id" :checked="form.lesions_id" label="Tipo de lesión" name="lesions_id" :options="lesionTypes" :vertical="true"></vue-checkbox>
           </b-form-row>
           <b-form-row>
             <vue-input v-if="showOtherLesion" :disabled="viewOnly" class="col-md-6" v-model="infor.otra_lesion" label="Otra lesión" type="text" name="otra_lesion" :error="form.errorsFor('otra_lesion')" placeholder="Otro Mecanismo"></vue-input>

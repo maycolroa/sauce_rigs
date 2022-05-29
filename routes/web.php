@@ -555,6 +555,8 @@ Route::middleware(['auth'])->group(function () {
       Route::post('accidents/data', 'IndustrialSecure\AccidentsWork\AccidentsWorkController@data');
       Route::get('accidents/downloadFile/{file}', 'IndustrialSecure\AccidentsWork\AccidentsWorkController@download');
 
+      Route::get('accidents/downloadPdf/{accident}', 'IndustrialSecure\AccidentsWork\AccidentsWorkController@downloadPdf');
+
       Route::post('configuration', 'IndustrialSecure\DangerousConditions\ConfigurationController@store');
       Route::get('configuration/view', 'IndustrialSecure\DangerousConditions\ConfigurationController@show');
 

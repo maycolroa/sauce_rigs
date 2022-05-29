@@ -93,6 +93,19 @@ class Accident extends Model
         'mechanism_id',
     ];
 
+    public function agentAccident()
+    {
+        return $this->belongsTo(Agent::class, 'agent_id');
+    }
+    public function mechanismAccident()
+    {
+        return $this->belongsTo(Mechanism::class, 'mechanism_id');
+    }
+    public function siteAccident()
+    {
+        return $this->belongsTo(Site::class, 'site_id');
+    }
+
     public function partsBody()
     {
         return $this->belongsToMany(PartBody::class, 'sau_aw_form_accidents_parts_body', 'form_accident_id', 'part_body_id');

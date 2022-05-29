@@ -5,7 +5,7 @@
             <vue-input :disabled="viewOnly" class="col-md-12" v-model="company.razon_social" label="Nombre o razón social" type="text" name="razon_social" :error="form.errorsFor('razon_social')" placeholder="Nombre o razón social"></vue-input>            
           </b-form-row>
           <b-form-row>
-            <vue-radio :disabled="viewOnly" :checked="company.tipo_identificacion_sede_principal" class="col-md-6" v-model="company.tipo_identificacion_sede_principal" :options="typesDocuments" name="tipo_identificacion_sede_principal" :error="form.errorsFor('tipo_identificacion_sede_principal')" label="Tipo de vinculación"></vue-radio>
+            <vue-radio :disabled="viewOnly" :checked="company.tipo_identificacion_sede_principal" class="col-md-6" v-model="company.tipo_identificacion_sede_principal" :options="typesDocuments" name="tipo_identificacion_sede_principal" :error="form.errorsFor('tipo_identificacion_sede_principal')" label="Tipo de identificación"></vue-radio>
             <vue-input :disabled="viewOnly" class="col-md-6" v-model="company.identificacion_sede_principal" label="Número" type="text" name="identificacion_sede_principal" :error="form.errorsFor('identificacion_sede_principal')" placeholder="Documento"></vue-input>
           </b-form-row>
           <b-form-row>
