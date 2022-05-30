@@ -384,6 +384,7 @@ class InformReportController extends Controller
             ->where('sau_ct_inform_contract.year', $request->year)
             ->where('contract_id', $request->contract_id)
             ->where('sau_ct_inform_contract.inform_id', $request->inform_id)
+            ->where('sau_ct_inform_theme_item.show_program_value', DB::raw("'SI'"))
             ->groupBy('sau_ct_inform_theme_item.description');
 
             $total = InformContractItem::selectRaw('
@@ -395,6 +396,7 @@ class InformReportController extends Controller
             ->where('sau_ct_inform_theme_item.evaluation_theme_id', $theme['id'])
             ->where('sau_ct_inform_contract.inform_id', $request->inform_id)
             ->where('contract_id', $request->contract_id)
+            ->where('sau_ct_inform_theme_item.show_program_value', DB::raw("'SI'"))
             ->get()->toArray();
 
             foreach ($total as $key => $value) {
@@ -473,6 +475,7 @@ class InformReportController extends Controller
             ->where('sau_ct_inform_contract.year', $request->year)
             ->where('sau_ct_inform_contract.inform_id', $request->inform_id)
             ->where('contract_id', $request->contract_id)
+            ->where('sau_ct_inform_theme_item.show_program_value', DB::raw("'SI'"))
             ->groupBy('sau_ct_inform_theme_item.description', 'sau_ct_inform_contract_items.id')
             ->get();
 

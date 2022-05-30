@@ -717,9 +717,6 @@ class InformContractController extends Controller
             'answers' => $answers
         ];
 
-
-        \Log::info($data);
-
         return $data;
     }
 }

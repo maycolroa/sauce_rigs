@@ -124,10 +124,10 @@
                                                         <vue-input :disabled="viewOnly" v-model="form.inform.themes[index].items[index2].programmed" label="Programado" type="number" name="name" :error="form.errorsFor('name')" @input="calculatePorcentage(index, index2)"></vue-input>
                                                       </b-col>
                                                       <b-col v-if="form.inform.themes[index].items[index2].show_program_value == 'SI'">
-                                                        <vue-input :disabled="viewOnly" v-model="form.inform.themes[index].items[index2].executed" label="Ejecutado" type="number" name="name" :error="form.errorsFor('name')" @input="calculatePorcentage(index, index2)"></vue-input>
+                                                        <vue-input :disabled="viewOnly" v-model="form.inform.themes[index].items[index2].executed" label="Real" type="number" name="name" :error="form.errorsFor('name')" @input="calculatePorcentage(index, index2)"></vue-input>
                                                       </b-col>
                                                       <b-col v-else colspan="1">
-                                                        <vue-input class="col-md-4 offset-md-4"  :disabled="viewOnly" v-model="form.inform.themes[index].items[index2].executed" label="Ejecutado" type="number" name="name" :error="form.errorsFor('name')" @input="calculatePorcentage(index, index2)"></vue-input>
+                                                        <vue-input class="col-md-4 offset-md-4"  :disabled="viewOnly" v-model="form.inform.themes[index].items[index2].executed" label="Real" type="number" name="name" :error="form.errorsFor('name')" @input="calculatePorcentage(index, index2)"></vue-input>
                                                       </b-col>
                                                       <b-col v-if="form.inform.themes[index].items[index2].show_program_value == 'SI'" :key="form.inform.themes[index].items[index2].compliance">
                                                         <vue-input :disabled="true" v-model="form.inform.themes[index].items[index2].compliance" label="% Cumplimiento" type="number" name="name" :error="form.errorsFor('name')"></vue-input>

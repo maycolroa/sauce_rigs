@@ -29,7 +29,7 @@
                     </b-col>
                 </b-row>
                 <b-row>
-                    <label class="col-md-6"><b>Valor Ejecutado</b></label>
+                    <label class="col-md-6 offset-md-1"><b>Valor Real</b></label>
                 </b-row>
                 <b-row style="width:100%" v-if="report.length > 0">
                     <b-card bg-variant="transparent"  title="" class="mb-3 box-shadow-none">
@@ -93,7 +93,7 @@
                     </b-card>
                 </b-row>
                 <b-row>
-                    <label class="col-md-6"><b>Cumplimiento</b></label>
+                    <label class="col-md-6 offset-md-1"><b>Cumplimiento</b></label>
                 </b-row>
                 <b-row style="width:95%%" v-if="report_porcentage.length > 0">
                     <b-card bg-variant="transparent"  title="" class="mb-3 box-shadow-none">
