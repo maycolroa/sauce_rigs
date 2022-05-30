@@ -15,6 +15,7 @@ use App\Http\Requests\IndustrialSecure\AccidentWork\AccidentRequest;
 use App\Facades\ActionPlans\Facades\ActionPlan;
 use Illuminate\Support\Facades\Storage;
 use App\Models\General\Company;
+use App\Jobs\IndustrialSecure\AccidentsWork\AccidentsExportJob;
 use Carbon\Carbon;
 use DB;
 use Validator;
@@ -275,7 +276,7 @@ class AccidentsWorkController extends Controller
             $accident->observaciones_empresa = $request->observaciones_empresa;
 
 
-            $accident->consolidado = false;
+            $accident->consolidado = true;
             
             if(!$accident->save()){
                 return $this->respondHttp500();
@@ -626,7 +627,7 @@ class AccidentsWorkController extends Controller
             $accident->observaciones_empresa = $request->observaciones_empresa;
 
 
-            $accident->consolidado = false;
+            $accident->consolidado = true;
             
             if(!$accident->update()){
                 return $this->respondHttp500();
@@ -929,5 +930,59 @@ class AccidentsWorkController extends Controller
         $data = ["SI"=>"SI", "NO"=>"NO"];
 
         return $this->multiSelectFormat(collect($data));
+    }
+
+    public function export(Request $request)
+    {
+        try
+        {
+            $mechanis = $request->mechanism ? $this->getValuesForMultiselect($request->mechanism) : [];
+
+            $agents = $request->agent ? $this->getValuesForMultiselect($request->agent) : [];
+
+            $cargos = $request->cargo ? $this->getValuesForMultiselect($request->cargo) : [];
+
+            $activityEconomic = $request->activityEconomic ? $this->getValuesForMultiselect($request->activityEconomic) : [];
+
+            $razonSocial = $request->razonSocial ? $this->getValuesForMultiselect($request->razonSocial) : [];
+
+            $sexs = $request->sexs ? $this->getValuesForMultiselect($request->sexs) : [];
+
+            $names = $request->names ? $this->getValuesForMultiselect($request->names) : [];
+
+            $identifications = $request->identifications ? $this->getValuesForMultiselect($request->identifications) : [];
+
+            $departament = $request->departament ? $this->getValuesForMultiselect($request->departament) : [];
+
+            $city = $request->city ? $this->getValuesForMultiselect($request->city) : [];
+
+            $causoMuerte = $request->causoMuerte ? $this->getValuesForMultiselect($request->causoMuerte) : [];
+            $dentroEmpresa = $request->dentroEmpresa ? $this->getValuesForMultiselect($request->dentroEmpresa) : [];
+
+            $filtersType = $request->filtersType;
+
+            $filters = [
+                'mechanism' => $mechanis,
+                'agent' => $agents,
+                'cargo' => $cargos,
+                'activityEconomic' => $activityEconomic,
+                'razonSocial' => $razonSocial,
+                'sexs' => $sexs,
+                'names' => $names,
+                'identifications' => $identifications,
+                'departament' => $departament,
+                'city' => $city,
+                'causoMuerte' => $causoMuerte,
+                'dentroEmpresa' => $dentroEmpresa,
+                'filtersType' => $filtersType
+            ];
+
+            AccidentsExportJob::dispatch($this->user, $this->company, $filters);
+          
+            return $this->respondHttp200();
+
+        } catch(Exception $e) {
+            return $this->respondHttp500();
+        }
     }
 }
