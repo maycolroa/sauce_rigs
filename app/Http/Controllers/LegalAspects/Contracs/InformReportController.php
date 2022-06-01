@@ -262,9 +262,15 @@ class InformReportController extends Controller
                 ->join('sau_ct_informs_themes', 'sau_ct_informs_themes.id', 'sau_ct_inform_theme_item.evaluation_theme_id')
                 ->where(function ($query) use ($keyword) {
                     $query->orWhere('sau_ct_inform_theme_item.description', 'like', $keyword);
-                })
-                ->where('sau_ct_informs_themes.inform_id', $request->inform_id)
-                ->take(30)->pluck('sau_ct_inform_theme_item.id', 'sau_ct_inform_theme_item.description');
+                });
+            
+            if ($request->has('theme_id') && $request->theme_id)                
+                $data->where('sau_ct_inform_theme_item.evaluation_theme_id', $request->theme_id);
+            if ($request->has('compliance') && $request->compliance) 
+                $data->where('show_program_value', DB::raw("'SI'"));
+            
+            $data = $data->where('sau_ct_informs_themes.inform_id', $request->inform_id)
+            ->take(30)->pluck('sau_ct_inform_theme_item.id', 'sau_ct_inform_theme_item.description');
 
             return $this->respondHttp200([
                 'options' => $this->multiSelectFormat($data)

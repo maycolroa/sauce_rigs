@@ -124,7 +124,7 @@ class ProcessFileUploadJob implements ShouldQueue
 
             NotificationMail::send();
 
-            if ($result != $this::states[0])
+            if ($result != $this::states[0] && $this->company_id == 605)
                 Artisan::call('notify-expired-absenteeism');
         }
         catch(\Exception $e) {
