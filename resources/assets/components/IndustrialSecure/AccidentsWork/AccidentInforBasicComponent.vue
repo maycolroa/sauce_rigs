@@ -14,14 +14,14 @@
             <vue-input :disabled="viewOnly" class="col-md-6" v-model="infor.cargo" label="Cargo" type="text" name="cargo" :error="form.errorsFor('cargo')" placeholder="Cargo"></vue-input> 
           </b-form-row>
           <b-form-row>
-            <vue-ajax-advanced-select :disabled="viewOnly" class="col-md-6" v-model="infor.employee_eps_id" :error="form.errorsFor('employee_eps_id')" :selected-object="infor.multiselect_eps" name="employee_eps_id" :label="keywordCheck('eps')+' a la que esta afiliado'" placeholder="Seleccione una opción" :url="epsDataUrl">
+            <vue-ajax-advanced-select :disabled="viewOnly" class="col-md-6" v-model="infor.employee_eps_id" :error="form.errorsFor('employee_eps_id')" :selected-object="infor.multiselect_eps" name="employee_eps_id" :label="keywordCheck('eps')+' a la que está afiliado'" placeholder="Seleccione una opción" :url="epsDataUrl">
             </vue-ajax-advanced-select>
-            <vue-ajax-advanced-select :disabled="viewOnly" class="col-md-6" v-model="infor.employee_afp_id" :error="form.errorsFor('employee_afp_id')" :selected-object="infor.multiselect_afp" name="employee_afp_id" :label="keywordCheck('afp')+' a la que esta afiliado'" placeholder="Seleccione una opción" :url="afpDataUrl">
+            <vue-ajax-advanced-select :disabled="viewOnly" class="col-md-6" v-model="infor.employee_afp_id" :error="form.errorsFor('employee_afp_id')" :selected-object="infor.multiselect_afp" name="employee_afp_id" :label="keywordCheck('afp')+' a la que está afiliado'" placeholder="Seleccione una opción" :url="afpDataUrl">
             </vue-ajax-advanced-select>   
           </b-form-row>  
 
           <b-form-row>
-            <vue-ajax-advanced-select :disabled="viewOnly" class="col-md-6" v-model="infor.employee_arl_id" :error="form.errorsFor('employee_arl_id')" :selected-object="infor.multiselect_arl" name="employee_arl_id" :label="keywordCheck('arl')+' a la que esta afiliado'" placeholder="Seleccione una opción" :url="arlDataUrl">
+            <vue-ajax-advanced-select :disabled="viewOnly" class="col-md-6" v-model="infor.employee_arl_id" :error="form.errorsFor('employee_arl_id')" :selected-object="infor.multiselect_arl" name="employee_arl_id" :label="keywordCheck('arl')+' a la que está afiliado'" placeholder="Seleccione una opción" :url="arlDataUrl">
             </vue-ajax-advanced-select>
             <vue-radio :disabled="viewOnly" :checked="infor.tiene_seguro_social" class="col-md-6" v-model="infor.tiene_seguro_social" :options="siNo" name="tiene_seguro_social" :error="form.errorsFor('tiene_seguro_social')" label="Seguro Social"/>
           </b-form-row>

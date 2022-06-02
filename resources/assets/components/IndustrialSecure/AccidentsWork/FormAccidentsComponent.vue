@@ -7,7 +7,7 @@
         <span slot="title" :class="{'text-danger':props.tab.validationError}" v-html="props.tab.title"></span>
         </wizard-step>
       </template>      
-      <tab-content title="Información de la persona que se accidento">
+      <tab-content title="Información de la persona que se accidentó">
         <b-row>
           <b-col>
             <b-card bg-variant="transparent" border-variant="dark" title="" class="mb-3 box-shadow-none">
