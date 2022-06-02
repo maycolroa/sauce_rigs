@@ -410,7 +410,7 @@ export default {
       vinculationLaboral: [
         {text: 'Empleador', value: 'Empleador'},
         {text: 'Contratante', value: 'Contratante'},
-        {text: 'Cooperativa de trabaso asociado', value: 'Cooperativa de trabaso asociado'}
+        {text: 'Cooperativa de trabajo asociado', value: 'Cooperativa de trabajo asociado'}
       ],
       zones: [
          {text: 'Urbana', value: 'Urbana'},
