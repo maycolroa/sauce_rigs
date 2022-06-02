@@ -760,6 +760,8 @@ Route::middleware(['auth'])->group(function () {
 
       Route::post('informContract/reportLineItemPorcentege', 'LegalAspects\Contracs\InformReportController@reportLineItemPorcentage');
 
+      Route::post('informContract/reportTablePorcentageGlobal', 'LegalAspects\Contracs\InformReportController@reportTableTotalesContractsPorcentage');
+
       Route::prefix('legalMatrix')->group(function () {
 
         Route::post('interest/data', 'LegalAspects\LegalMatrix\InterestController@data');

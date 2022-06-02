@@ -13,157 +13,230 @@
         </div>
         <loading :display="isLoading"/>
         <div style="width:100%" class="col-md" v-show="!isLoading">
-            <b-card style="width:100%" no-body>
-                <b-row style="width:95%; padding-left: 5%">
-                    <b-col cols="4">
-                        <vue-ajax-advanced-select :disabled="isLoading" v-model="contract_id" name="contract_id" label="Contratista" placeholder="Seleccione la contratista" :url="contractDataUrl">
-                                </vue-ajax-advanced-select>
-                    </b-col>
-                    <b-col cols="4">
-                        <vue-ajax-advanced-select :disabled="isLoading || !contract_id" v-model="year" name="year" label="Año" placeholder=Año :url="urlMultiselect" :parameters="{column: 'year'}" @updateEmpty="updateEmptyKey('year')" :emptyAll="empty.year">
-                        </vue-ajax-advanced-select>
-                    </b-col>
-                    <b-col cols="4">
-                        <vue-ajax-advanced-select :disabled="isLoading || !year" v-model="theme" name="theme" label="Tema" placeholder=Tema :url="urlMultiselectTheme" :parameters="{inform_id: inform_id}" @updateEmpty="updateEmptyKey('theme')" :emptyAll="empty.theme">
-                        </vue-ajax-advanced-select>
-                    </b-col>
-                </b-row>
-                <b-row>
-                    <label class="col-md-6 offset-md-1"><b>Valor Real</b></label>
-                </b-row>
-                <b-row style="width:100%" v-if="report.length > 0">
-                    <b-card bg-variant="transparent"  title="" class="mb-3 box-shadow-none">
-                        <table style="width:90%; font-size: 14px" class="table table-bordered mb-2">
-                            <tbody>
-                                <template v-for="(theme, index) in report">
-                                    <tr :key="index+round()" style="width:100%;">
-                                        <td :colspan="theme.headings[0].length" style="width:100%; background-color:#f0635f"><center><b>{{theme.name}}</b></center></td>
-                                    </tr>
-                                    <tr :key="index+round()" style="width:100%">
-                                        <template v-for="(month, indexM) in theme.headings[0]">
-                                            <td v-if="indexM == 13" style="width:100%; background-color:#dcdcdc" :key="indexM+round()">{{month}}</td>
-                                            <td v-else :key="indexM+round()">{{month}}</td>
-                                        </template>
-                                    </tr>
-                                    <template v-for="(executed, indexE) in theme.items[0]">
-                                        <tr v-if="theme.items[0].length == (indexE + 1)" :key="indexE+round()" style="width:100%; background-color:#dcdcdc">
-                                            <template v-for="(value, indexV) in executed">
-                                                <td  v-if="indexV == 'total'" style="vertical-align: middle; background-color:#dcdcdc" :key="indexV+round()">
-                                                    <center>{{value}}</center>
-                                                </td>
-                                                <td  v-else style="vertical-align: middle;" :key="indexV+round()">
-                                                    <center>{{value}}</center>
-                                                </td>
-                                            </template>
-                                        </tr>
-                                        <tr v-else :key="indexE+round()" style="width:100%">
-                                            <template v-for="(value, indexV) in executed">
-                                                <td  v-if="indexV == 'total'" style="vertical-align: middle; background-color:#dcdcdc" :key="indexV+round()">
-                                                    <center>{{value}}</center>
-                                                </td>
-                                                <td  v-else style="vertical-align: middle;" :key="indexV+round()">
-                                                    <center>{{value}}</center>
-                                                </td>
-                                            </template>
-                                        </tr>
-                                    </template>
-                                </template>
-                            </tbody>
-                        </table>
-                    </b-card>
-                </b-row>
-                <b-row>
-                    <b-card style="width:95%" no-body>
+            <b-card no-body>
+                <b-tabs card pills class="nav-responsive-md md-pills-light">
+                    <b-tab>
+                        <template slot="title">
+                            <strong>Reporte por contratista</strong> 
+                        </template>
                         <b-row style="width:95%; padding-left: 5%">
                             <b-col cols="4">
-                                <vue-ajax-advanced-select :disabled="isLoading || !year" v-model="theme_id_grafic_values" name="theme" label="Tema" placeholder=Tema :url="urlMultiselectTheme" :parameters="{inform_id: inform_id}" @updateEmpty="updateEmptyKey('theme')" :emptyAll="empty.theme">
-                                </vue-ajax-advanced-select>
+                                <vue-ajax-advanced-select :disabled="isLoading" v-model="contract_id" name="contract_id" label="Contratista" placeholder="Seleccione la contratista" :url="contractDataUrl">
+                                        </vue-ajax-advanced-select>
                             </b-col>
-                            <b-col>
-                                <vue-ajax-advanced-select :disabled="isLoading || !year" class="col-md-12" v-model="item" name="item" label="Item para graficar" placeholder="Item" :url="urlMultiselectItem" :parameters="{inform_id: inform_id, theme_id: theme_id_grafic_values}" @updateEmpty="updateEmptyKey('item')" :emptyAll="true">
-                            </vue-ajax-advanced-select>
-                            </b-col>
-                        </b-row>
-                        <b-row class="col-md-12">
-                            <b-col v-if="item">
-                                <line-component v-if="report_line.answers.length > 0" :key="test" :chartData="chartData" ref="line"></line-component>
-                                <b-container v-else>
-                                    <b-row align-h="center">
-                                        <b-col cols="6">No hay resultados</b-col>
-                                    </b-row>
-                                </b-container>
-                            </b-col>
-                        </b-row>
-                    </b-card>
-                </b-row>
-                <b-row>
-                    <label class="col-md-6 offset-md-1"><b>Cumplimiento</b></label>
-                </b-row>
-                <b-row style="width:95%%" v-if="report_porcentage.length > 0">
-                    <b-card bg-variant="transparent"  title="" class="mb-3 box-shadow-none">
-                        <table style="width:90%; font-size: 14px" class="table table-bordered mb-2">
-                            <tbody>
-                                <template v-for="(theme, index) in report_porcentage">
-                                    <tr :key="index+round()" style="width:100%;">
-                                        <td :colspan="theme.headings[0].length" style="width:100%; background-color:#f0635f"><center><b>{{theme.name}}</b></center></td>
-                                    </tr>
-                                    <tr :key="index+round()" style="width:100%">
-                                        <template v-for="(month, indexM) in theme.headings[0]">
-                                            <td v-if="indexM == 13" style="width:100%; background-color:#dcdcdc" :key="indexM+round()">{{month}}</td>
-                                            <td v-else :key="indexM+round()">{{month}}</td>
-                                        </template>
-                                    </tr>
-                                    <template v-for="(executed, indexE) in theme.items[0]">
-                                        <tr v-if="theme.items[0].length == (indexE + 1)" :key="indexE+round()" style="width:100%; background-color:#dcdcdc">
-                                            <template v-for="(value, indexV) in executed">
-                                                <td  v-if="indexV == 'total'" style="vertical-align: middle; background-color:#dcdcdc" :key="indexV+round()">
-                                                    <center>{{value}}%</center>
-                                                </td>
-                                                <td  v-else style="vertical-align: middle;" :key="indexV+round()">
-                                                    <center>{{value}}%</center>
-                                                </td>
-                                            </template>
-                                        </tr>
-                                        <tr v-else :key="indexE+round()" style="width:100%">
-                                            <template v-for="(value, indexV) in executed">
-                                                <td  v-if="indexV == 'total'" style="vertical-align: middle; background-color:#dcdcdc" :key="indexV+round()">
-                                                    <center>{{value}}%</center>
-                                                </td>
-                                                <td  v-else style="vertical-align: middle;" :key="indexV+round()">
-                                                    <center>{{value}}%</center>
-                                                </td>
-                                            </template>
-                                        </tr>
-                                    </template>
-                                </template>
-                            </tbody>
-                        </table>
-                    </b-card>
-                </b-row>
-                <b-row>
-                    <b-card style="width:95%" no-body>
-                        <b-row style="width:95%; padding-left: 5%">
                             <b-col cols="4">
-                                <vue-ajax-advanced-select :disabled="isLoading || !year" v-model="theme_id_grafic_compliance" name="theme" label="Tema" placeholder=Tema :url="urlMultiselectTheme" :parameters="{inform_id: inform_id}" @updateEmpty="updateEmptyKey('theme')" :emptyAll="empty.theme">
+                                <vue-ajax-advanced-select :disabled="isLoading || !contract_id" v-model="year" name="year" label="Año" placeholder="Año" :url="urlMultiselect" :parameters="{column: 'year'}" @updateEmpty="updateEmptyKey('year')" :emptyAll="empty.year">
                                 </vue-ajax-advanced-select>
                             </b-col>
-                            <b-col>
-                                <vue-ajax-advanced-select :disabled="isLoading || !year" class="col-md-12" v-model="item_2" name="item" label="Item para graficar Cumplimientos" placeholder="Item" :url="urlMultiselectItem" :parameters="{inform_id: inform_id, theme_id: theme_id_grafic_compliance, compliance:'si'}" @updateEmpty="updateEmptyKey('item')" :emptyAll="true">
-                            </vue-ajax-advanced-select>
+                            <b-col cols="4">
+                                <vue-ajax-advanced-select :disabled="isLoading || !year" v-model="theme" name="theme" label="Tema" placeholder="Tema" :url="urlMultiselectTheme" :parameters="{inform_id: inform_id}" @updateEmpty="updateEmptyKey('theme')" :emptyAll="empty.theme">
+                                </vue-ajax-advanced-select>
                             </b-col>
                         </b-row>
-                        <b-row class="col-md-12">
-                            <b-col v-if="item_2">
-                                <line-component v-if="report_line_porcentage.answers.length > 0" :key="test" :chartData="chartData2" ref="line"></line-component>
-                                <b-container v-else>
-                                    <b-row align-h="center">
-                                        <b-col cols="6">No hay resultados</b-col>
+                        <b-row>
+                            <label class="col-md-6 offset-md-1"><b>Valor Real</b></label>
+                        </b-row>
+                        <b-row style="width:100%" v-if="report.length > 0">
+                            <b-card bg-variant="transparent"  title="" class="mb-3 box-shadow-none">
+                                <table style="width:90%; font-size: 14px" class="table table-bordered mb-2">
+                                    <tbody>
+                                        <template v-for="(theme, index) in report">
+                                            <tr :key="index+round()" style="width:100%;">
+                                                <td :colspan="theme.headings[0].length" style="width:100%; background-color:#f0635f"><center><b>{{theme.name}}</b></center></td>
+                                            </tr>
+                                            <tr :key="index+round()" style="width:100%">
+                                                <template v-for="(month, indexM) in theme.headings[0]">
+                                                    <td v-if="indexM == 13" style="width:100%; background-color:#dcdcdc" :key="indexM+round()">{{month}}</td>
+                                                    <td v-else :key="indexM+round()">{{month}}</td>
+                                                </template>
+                                            </tr>
+                                            <template v-for="(executed, indexE) in theme.items[0]">
+                                                <tr v-if="theme.items[0].length == (indexE + 1)" :key="indexE+round()" style="width:100%; background-color:#dcdcdc">
+                                                    <template v-for="(value, indexV) in executed">
+                                                        <td  v-if="indexV == 'total'" style="vertical-align: middle; background-color:#dcdcdc" :key="indexV+round()">
+                                                            <center>{{value}}</center>
+                                                        </td>
+                                                        <td  v-else style="vertical-align: middle;" :key="indexV+round()">
+                                                            <center>{{value}}</center>
+                                                        </td>
+                                                    </template>
+                                                </tr>
+                                                <tr v-else :key="indexE+round()" style="width:100%">
+                                                    <template v-for="(value, indexV) in executed">
+                                                        <td  v-if="indexV == 'total'" style="vertical-align: middle; background-color:#dcdcdc" :key="indexV+round()">
+                                                            <center>{{value}}</center>
+                                                        </td>
+                                                        <td  v-else style="vertical-align: middle;" :key="indexV+round()">
+                                                            <center>{{value}}</center>
+                                                        </td>
+                                                    </template>
+                                                </tr>
+                                            </template>
+                                        </template>
+                                    </tbody>
+                                </table>
+                            </b-card>
+                        </b-row>
+                        <b-row>
+                            <b-card style="width:95%" no-body>
+                                <b-row style="width:95%; padding-left: 5%">
+                                    <b-col cols="4">
+                                        <vue-ajax-advanced-select :disabled="isLoading || !year" v-model="theme_id_grafic_values" name="theme" label="Tema" placeholder=Tema :url="urlMultiselectTheme" :parameters="{inform_id: inform_id}" @updateEmpty="updateEmptyKey('theme')" :emptyAll="empty.theme">
+                                        </vue-ajax-advanced-select>
+                                    </b-col>
+                                    <b-col>
+                                        <vue-ajax-advanced-select :disabled="isLoading || !year" class="col-md-12" v-model="item" name="item" label="Item para graficar" placeholder="Item" :url="urlMultiselectItem" :parameters="{inform_id: inform_id, theme_id: theme_id_grafic_values}" @updateEmpty="updateEmptyKey('item')" :emptyAll="true">
+                                    </vue-ajax-advanced-select>
+                                    </b-col>
+                                </b-row>
+                                <b-row class="col-md-12">
+                                    <b-col v-if="item">
+                                        <line-component v-if="report_line.answers.length > 0" :key="test" :chartData="chartData" ref="line"></line-component>
+                                        <b-container v-else>
+                                            <b-row align-h="center">
+                                                <b-col cols="6">No hay resultados</b-col>
+                                            </b-row>
+                                        </b-container>
+                                    </b-col>
+                                </b-row>
+                            </b-card>
+                        </b-row>
+                        <b-row>
+                            <label class="col-md-6 offset-md-1"><b>Cumplimiento</b></label>
+                        </b-row>
+                        <b-row style="width:95%" v-if="report_porcentage.length > 0">
+                            <b-card bg-variant="transparent"  title="" class="mb-3 box-shadow-none">
+                                <table style="width:90%; font-size: 14px" class="table table-bordered mb-2">
+                                    <tbody>
+                                        <template v-for="(theme, index) in report_porcentage">
+                                            <tr :key="index+round()" style="width:100%;">
+                                                <td :colspan="theme.headings[0].length" style="width:100%; background-color:#f0635f"><center><b>{{theme.name}}</b></center></td>
+                                            </tr>
+                                            <tr :key="index+round()" style="width:100%">
+                                                <template v-for="(month, indexM) in theme.headings[0]">
+                                                    <td v-if="indexM == 13" style="width:100%; background-color:#dcdcdc" :key="indexM+round()">{{month}}</td>
+                                                    <td v-else :key="indexM+round()">{{month}}</td>
+                                                </template>
+                                            </tr>
+                                            <template v-for="(executed, indexE) in theme.items[0]">
+                                                <tr v-if="theme.items[0].length == (indexE + 1)" :key="indexE+round()" style="width:100%; background-color:#dcdcdc">
+                                                    <template v-for="(value, indexV) in executed">
+                                                        <td  v-if="indexV == 'total'" style="vertical-align: middle; background-color:#dcdcdc" :key="indexV+round()">
+                                                            <center>{{value}}%</center>
+                                                        </td>
+                                                        <td style="vertical-align: middle;" v-if="indexV == 'item'" :key="indexV+round()">
+                                                            <center>{{value}}</center>
+                                                        </td>
+                                                        <td  v-else style="vertical-align: middle;" :key="indexV+round()">
+                                                            <center>{{value}}%</center>
+                                                        </td>
+                                                    </template>
+                                                </tr>
+                                                <tr v-else :key="indexE+round()" style="width:100%">
+                                                    <template v-for="(value, indexV) in executed">
+                                                        <td  v-if="indexV == 'total'" style="vertical-align: middle; background-color:#dcdcdc" :key="indexV+round()">
+                                                            <center>{{value}}%</center>
+                                                        </td>
+                                                        <td style="vertical-align: middle;" v-if="indexV == 'item'"  :key="indexV+round()">
+                                                            <center>{{value}}%</center>
+                                                        </td>
+                                                        <td  v-else style="vertical-align: middle;" :key="indexV+round()">
+                                                            <center>{{value}}%</center>
+                                                        </td>
+                                                    </template>
+                                                </tr>
+                                            </template>
+                                        </template>
+                                    </tbody>
+                                </table>
+                            </b-card>
+                        </b-row>
+                        <b-row>
+                            <b-card style="width:95%" no-body>
+                                <b-row style="width:95%; padding-left: 5%">
+                                    <b-col cols="4">
+                                        <vue-ajax-advanced-select :disabled="isLoading || !year" v-model="theme_id_grafic_compliance" name="theme" label="Tema" placeholder=Tema :url="urlMultiselectTheme" :parameters="{inform_id: inform_id}" @updateEmpty="updateEmptyKey('theme')" :emptyAll="empty.theme">
+                                        </vue-ajax-advanced-select>
+                                    </b-col>
+                                    <b-col>
+                                        <vue-ajax-advanced-select :disabled="isLoading || !year" class="col-md-12" v-model="item_2" name="item" label="Item para graficar Cumplimientos" placeholder="Item" :url="urlMultiselectItem" :parameters="{inform_id: inform_id, theme_id: theme_id_grafic_compliance, compliance:'si'}" @updateEmpty="updateEmptyKey('item')" :emptyAll="true">
+                                    </vue-ajax-advanced-select>
+                                    </b-col>
+                                </b-row>
+                                <b-row class="col-md-12">
+                                    <b-col v-if="item_2">
+                                        <line-component v-if="report_line_porcentage.answers.length > 0" :key="test" :chartData="chartData2" ref="line"></line-component>
+                                        <b-container v-else>
+                                            <b-row align-h="center">
+                                                <b-col cols="6">No hay resultados</b-col>
+                                            </b-row>
+                                        </b-container>
+                                    </b-col>
+                                </b-row>
+                            </b-card>
+                        </b-row>
+                    </b-tab>
+                    <b-tab>
+                        <template slot="title">
+                            <strong>Reporte Global</strong> 
+                        </template>
+                            <b-row style="width:100%">
+                                <b-col cols="4">
+                                    <vue-ajax-advanced-select :disabled="isLoading" v-model="year_global" name="year" label="Año" placeholder="Año" :url="urlMultiselect" :parameters="{column: 'year'}" @updateEmpty="updateEmptyKey('year_global')" :emptyAll="empty.year">
+                                    </vue-ajax-advanced-select>
+                                </b-col>
+                                <b-col cols="4">
+                                    <vue-ajax-advanced-select :disabled="isLoading || !year_global" v-model="theme_global" name="theme_global" label="Tema" placeholder="Tema" :url="urlMultiselectTheme" :parameters="{inform_id: inform_id}" @updateEmpty="updateEmptyKey('theme')" :emptyAll="empty.theme">
+                                    </vue-ajax-advanced-select>
+                                </b-col>
+                            </b-row>
+                            <b-row style="width:100%">
+                                <b-card bg-variant="transparent"  title="" class="mb-3 box-shadow-none">
+                                    <b-row>
+                                        <b-col>
+                                            <table style="width:90%; font-size: 13px" class="table table-bordered mb-2">
+                                                <tbody>
+                                                    <template v-for="(theme, index) in report_porcentage_global">
+                                                        <tr :key="index+round()" style="width:100%;">
+                                                            <td :colspan="theme.headings[0].length" style="width:100%; background-color:#f0635f"><center><b>{{theme.name}}</b></center></td>
+                                                        </tr>
+                                                        <tr :key="index+round()" style="width:100%">
+                                                            <template v-for="(month, indexM) in theme.headings[0]">
+                                                                <td v-if="indexM == 13" style="width:100%; background-color:#dcdcdc" :key="indexM+round()">{{month}}</td>
+                                                                <td v-else :key="indexM+round()">{{month}}</td>
+                                                            </template>
+                                                        </tr>
+                                                        <template v-for="(executed, indexE) in theme.items[0]">
+                                                            <tr v-if="theme.items[0].length == (indexE + 1)" :key="indexE+round()" style="width:100%; background-color:#dcdcdc">
+                                                                <template v-for="(value, indexV) in executed">
+                                                                    <td v-if="indexV == 'total'" style="vertical-align: middle; background-color:#dcdcdc" :key="indexV+round()">
+                                                                        <center>{{value}}%</center>
+                                                                    </td>
+                                                                    <td v-else style="vertical-align: middle;" :key="indexV+round()">
+                                                                        <center>{{value}}%</center>
+                                                                    </td>
+                                                                </template>
+                                                            </tr>
+                                                            <tr v-else :key="indexE+round()" style="width:100%">
+                                                                <template v-for="(value, indexV) in executed">
+                                                                    <td @click="modalContract(executed['item'], indexV)" v-if="indexV == 'total'" style="vertical-align: middle; background-color:#dcdcdc" :key="indexV+round()">
+                                                                        <center>{{value}}%</center>
+                                                                    </td>
+                                                                    <td @click="modalContract(executed['item'], indexV)" v-else style="vertical-align: middle;" :key="indexV+round()">
+                                                                        <center>{{value}}%</center>
+                                                                    </td>
+                                                                </template>
+                                                            </tr>
+                                                        </template>
+                                                    </template>
+                                                </tbody>
+                                            </table>
+                                        </b-col>
                                     </b-row>
-                                </b-container>
-                            </b-col>
-                        </b-row>
-                    </b-card>
-                </b-row>
+                                </b-card>
+                            </b-row>
+                    </b-tab>
+                </b-tabs>
             </b-card>
         </div>
     </diV>
@@ -194,6 +267,8 @@ export default {
             report: [],
             year: '',
             theme: '',
+            year_global: '',
+            theme_global: '',
             contract_id: '',
             item: '',
             item_2: '',
@@ -215,6 +290,8 @@ export default {
                 answers: []
             },
             report_porcentage: [],
+            report_porcentage_global: [],
+            report_porcentage_for_contract: [],
             report_line_porcentage: {
                 item: '',
                 headings: [],
@@ -248,6 +325,13 @@ export default {
         'item_2'()
         {
             this.fetch4()
+        },
+        'year_global'() {
+            if (this.year_global)
+            {
+                this.emptySelect('theme_global', 'theme_global')
+                this.fetch5()
+            }
         },
     },
     methods: {
@@ -332,6 +416,19 @@ export default {
                     Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
                 });
         },
+        fetch5()
+        {
+            console.log('entro')
+            this.postData2 = Object.assign({}, {year: this.year_global}, {inform_id: this.inform_id}, {theme: this.theme_global});
+
+            axios.post('/legalAspects/informContract/reportTablePorcentageGlobal', this.postData2)
+                .then(response => {
+                this.report_porcentage_global = response.data
+                this.isLoading = false;
+                }).catch(error => {
+                    Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
+                });
+        },
         emptySelect(keySelect, keyEmpty)
         {
             if (this[keySelect] !== '')
@@ -347,6 +444,11 @@ export default {
         round()
         {
             return Math.random();
+        },
+        modalContract(item, mes)
+        {
+            console.log(item)
+            console.log(mes)
         }
     }
 }

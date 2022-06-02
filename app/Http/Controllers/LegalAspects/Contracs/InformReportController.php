@@ -515,4 +515,134 @@ class InformReportController extends Controller
 
         return $data;
     }
+
+    public function reportTableTotalesContractsPorcentage(Request $request)
+    {
+        $themes = collect([]);
+
+        if ($request->theme)
+        {
+            $inform_themes = InformTheme::find($request->theme);
+
+            $themes->push(['id' => $inform_themes->id, 'name' => $inform_themes->description, 'headings' => collect([]), 'items' => collect([])]);
+        }
+        else
+        {
+            $inform_themes = InformTheme::where('inform_id',$request->inform_id)->get();
+
+            foreach ($inform_themes as $key => $value) 
+            {
+                $themes->push(['id' => $value->id, 'name' => $value->description, 'headings' => collect([]), 'items' => collect([])]);
+            }
+        }
+
+        $headingsXls = collect([['id' => 'id', 'name' => 'Item']]);
+
+        $months = $this->multiselectMonth();
+
+        foreach ($months as $key => $month) 
+        {
+            $headingsXls->push(['id' => $month['name'], 'name' => $month['name']]);
+        }
+
+        $headingsXls->push(['id' => 'Total', 'name' => 'Total']);
+
+        foreach ($themes as $key => $theme) 
+        {
+            $theme['headings']->push($headingsXls->pluck('name')->toArray());
+
+            $qualifications = InformContractItem::join('sau_ct_inform_contract', 'sau_ct_inform_contract.id', 'sau_ct_inform_contract_items.inform_id')
+            ->join('sau_ct_inform_theme_item', 'sau_ct_inform_theme_item.id', 'sau_ct_inform_contract_items.item_id')
+            ->where('sau_ct_inform_theme_item.evaluation_theme_id', $theme['id'])
+            ->where('sau_ct_inform_contract.year', $request->year)
+            //->where('contract_id', $request->contract_id)
+            ->where('sau_ct_inform_contract.inform_id', $request->inform_id)
+            ->where('sau_ct_inform_theme_item.show_program_value', DB::raw("'SI'"))
+            ->groupBy('sau_ct_inform_theme_item.description', 'sau_ct_inform_contract.contract_id');
+
+            $total = InformContractItem::selectRaw('
+                COUNT(DISTINCT sau_ct_inform_contract.month) AS total,
+                sau_ct_inform_contract.contract_id AS contract
+            ')
+            ->join('sau_ct_inform_contract', 'sau_ct_inform_contract.id', 'sau_ct_inform_contract_items.inform_id')
+            ->join('sau_ct_inform_theme_item', 'sau_ct_inform_theme_item.id', 'sau_ct_inform_contract_items.item_id')
+            ->where('year', $request->year)
+            ->where('sau_ct_inform_theme_item.evaluation_theme_id', $theme['id'])
+            ->where('sau_ct_inform_contract.inform_id', $request->inform_id)
+            //->where('contract_id', $request->contract_id)
+            ->where('sau_ct_inform_theme_item.show_program_value', DB::raw("'SI'"))
+            ->groupBy('contract');
+
+            foreach ($months as $key => $month)
+            {
+                $select[] = "SUM(
+                        CASE 
+                            WHEN sau_ct_inform_contract.month = '{$month['name']}' THEN 
+                            CASE
+                                WHEN compliance IS NOT NULL 
+                                THEN compliance ELSE 0 END
+                            ELSE 0
+                        END
+                    ) AS month{$key}";
+            }
+
+            $qualifications = $qualifications->select(
+                "sau_ct_inform_theme_item.description AS item",
+                DB::raw(implode(",", $select)),
+                DB::raw("round(SUM(compliance)/total_qualification.total, 1) as total"),
+                "total_qualification.contract"
+            )
+            ->joinSub($total, 'total_qualification', function ($join) {
+                $join->on('sau_ct_inform_contract.contract_id', 'total_qualification.contract');
+            })
+            ->groupBy('total_qualification.contract')->get();
+
+            $qualifications = $qualifications->groupBy("item");
+
+            $qualification_global = collect([]);
+
+            foreach ($qualifications as $key => $value) 
+            {
+                $content['item'] = $key;
+                $total = 0;
+                $count = 0;
+
+                for ($i=0; $i < 12; $i++)
+                { 
+                    $content["month{$i}"] = $value->sum("month{$i}") / $value->count();
+                    $total += $content["month{$i}"];
+                    $count += $content["month{$i}"] > 0 ? 1 : 0;
+                }
+
+                $content['total'] = $count > 0 ? round($total / $count, 2) : 0;
+
+                $qualification_global->push($content);
+            }
+
+            $qualifications_2 = [
+                'item' => 'Total',
+                'month0' => $qualification_global->sum('month0') > 0 ? (round($qualification_global->sum('month0')/($qualification_global->count() > 0 ? $qualification_global->count() : 1), 2)) : 0,
+                'month1' => $qualification_global->sum('month1') > 0 ? (round($qualification_global->sum('month1')/($qualification_global->count() > 0 ? $qualification_global->count() : 1), 2)) : 0,
+                'month2' => $qualification_global->sum('month2') > 0 ? (round($qualification_global->sum('month2')/($qualification_global->count() > 0 ? $qualification_global->count() : 1), 2)) : 0,
+                'month3' => $qualification_global->sum('month3') > 0 ? (round($qualification_global->sum('month3')/($qualification_global->count() > 0 ? $qualification_global->count() : 1), 2)) : 0,
+                'month4' => $qualification_global->sum('month4') > 0 ? (round($qualification_global->sum('month4')/($qualification_global->count() > 0 ? $qualification_global->count() : 1), 2)) : 0,
+                'month5' => $qualification_global->sum('month5') > 0 ? (round($qualification_global->sum('month5')/($qualification_global->count() > 0 ? $qualification_global->count() : 1), 2)) : 0,
+                'month6' => $qualification_global->sum('month6') > 0 ? (round($qualification_global->sum('month6')/($qualification_global->count() > 0 ? $qualification_global->count() : 1), 2)) : 0,
+                'month7' => $qualification_global->sum('month7') > 0 ? (round($qualification_global->sum('month7')/($qualification_global->count() > 0 ? $qualification_global->count() : 1), 2)) : 0,
+                'month8' => $qualification_global->sum('month8') > 0 ? (round($qualification_global->sum('month8')/($qualification_global->count() > 0 ? $qualification_global->count() : 1), 2)) : 0,
+                'month9' => $qualification_global->sum('month9') > 0 ? (round($qualification_global->sum('month9')/($qualification_global->count() > 0 ? $qualification_global->count() : 1), 2)) : 0,
+                'month10' => $qualification_global->sum('month10') > 0 ? (round($qualification_global->sum('month10')/($qualification_global->count() > 0 ? $qualification_global->count() : 1), 2)) : 0,
+                'month11' => $qualification_global->sum('month11') > 0 ? (round($qualification_global->sum('month11')/($qualification_global->count() > 0 ? $qualification_global->count() : 1), 2)) : 0,
+                'total' => $qualification_global->sum('total') > 0 ? (round($qualification_global->sum('total')/$qualification_global->count(), 1)) : 0,
+            ];
+
+            $qualifications_2 = collect($qualifications_2);
+
+            $qualification_global->push($qualifications_2);    
+
+            $theme['items']->push($qualification_global);
+        }
+
+        return $themes;
+    }
 }
