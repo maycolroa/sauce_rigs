@@ -645,4 +645,110 @@ class InformReportController extends Controller
 
         return $themes;
     }
+
+    public function detailContractGlobal(Request $request)
+    {
+        $month = '';
+
+        if ($request->month == 'month0')
+            $month = 'Enero';
+        if ($request->month == 'month1')
+            $month = 'Febrero';
+        if ($request->month == 'month2')
+            $month = 'Marzo';
+        if ($request->month == 'month3')
+            $month = 'Abril';
+        if ($request->month == 'month4')
+            $month = 'Mayo';
+        if ($request->month == 'month5')
+            $month = 'Junio';
+        if ($request->month == 'month6')
+            $month = 'Julio';
+        if ($request->month == 'month7')
+            $month = 'Agosto';
+        if ($request->month == 'month8')
+            $month = 'Septiembre';
+        if ($request->month == 'month09')
+            $month = 'Octubre';
+        if ($request->month == 'month10')
+            $month = 'Noviembre';
+        if ($request->month == 'month11')
+            $month = 'Diciembre';
+        if ($request->month == 'total')
+            $month = 'total';
+        
+        $item = collect([]);
+
+        $themes = InformTheme::find($request->theme);
+
+        $qualifications = InformContractItem::join('sau_ct_inform_contract', 'sau_ct_inform_contract.id', 'sau_ct_inform_contract_items.inform_id')
+        ->join('sau_ct_inform_theme_item', 'sau_ct_inform_theme_item.id', 'sau_ct_inform_contract_items.item_id')
+        ->join('sau_ct_information_contract_lessee', 'sau_ct_information_contract_lessee.id', 'sau_ct_inform_contract.contract_id')
+        ->where('sau_ct_inform_theme_item.evaluation_theme_id', $themes->id)
+        ->where('sau_ct_inform_contract.year', $request->year)
+        ->where('sau_ct_inform_contract.inform_id', $request->inform_id)
+        ->where('sau_ct_inform_theme_item.show_program_value', DB::raw("'SI'"))
+        ->where('sau_ct_inform_theme_item.description', $request->item)
+        ->where('sau_ct_inform_contract.month', $month)
+        ->groupBy('sau_ct_inform_theme_item.description', 'sau_ct_inform_contract.contract_id');
+
+        $total = InformContractItem::selectRaw('
+            COUNT(DISTINCT sau_ct_inform_contract.month) AS total,
+            sau_ct_inform_contract.contract_id AS contract,
+            sau_ct_information_contract_lessee.social_reason as name
+        ')
+        ->join('sau_ct_inform_contract', 'sau_ct_inform_contract.id', 'sau_ct_inform_contract_items.inform_id')
+        ->join('sau_ct_inform_theme_item', 'sau_ct_inform_theme_item.id', 'sau_ct_inform_contract_items.item_id')
+        ->join('sau_ct_information_contract_lessee', 'sau_ct_information_contract_lessee.id', 'sau_ct_inform_contract.contract_id')
+        ->where('year', $request->year)
+        ->where('sau_ct_inform_theme_item.evaluation_theme_id', $themes->id)
+        ->where('sau_ct_inform_contract.inform_id', $request->inform_id)
+        ->where('sau_ct_inform_contract.month', $month)
+        ->where('sau_ct_inform_theme_item.show_program_value', DB::raw("'SI'"))
+        ->groupBy('contract');
+
+        if ($month != 'Total')
+            $select[] = "SUM(
+                CASE 
+                    WHEN sau_ct_inform_contract.month = '{$month}' THEN 
+                    CASE
+                        WHEN compliance IS NOT NULL 
+                        THEN compliance ELSE 0 END
+                    ELSE 0
+                END
+            ) AS {$month}";
+
+        $qualifications = $qualifications->select(
+            "sau_ct_inform_theme_item.description AS item",
+            DB::raw(implode(",", $select)),
+            DB::raw("round(SUM(compliance)/total_qualification.total, 1) as total"),
+            "total_qualification.contract",
+            "total_qualification.name",
+            DB::raw("'$month' as month_name")
+        )
+        ->joinSub($total, 'total_qualification', function ($join) {
+            $join->on('sau_ct_inform_contract.contract_id', 'total_qualification.contract');
+        })
+        ->groupBy('total_qualification.contract')->get();
+
+        $qualifications = $qualifications->groupBy("item");
+
+        $qualification_global = collect([]);
+
+        foreach ($qualifications as $key => $value) 
+        {
+            for ($i=0; $i < 12; $i++)
+            { 
+                if ($request->month == "month{$i}")
+                    $qualification_global->push($value);
+            }
+        }
+        
+        $item = $qualification_global;
+
+        if (count($item) > 0)
+            return $item[0];
+        else
+            return [];
+    }
 }

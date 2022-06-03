@@ -219,12 +219,9 @@
                                                             </tr>
                                                             <tr v-else :key="indexE+round()" style="width:100%">
                                                                 <template v-for="(value, indexV) in executed">
-                                                                    <td @click="modalContract(executed['item'], indexV)" v-if="indexV == 'total'" style="vertical-align: middle; background-color:#dcdcdc" :key="indexV+round()">
+                                                                    <td @click="modalContract(executed['item'], indexV, theme.id, value)" :style="indexV == 'total' ? 'vertical-align: middle; background-color:#dcdcdc' : 'vertical-align: middle;'" :key="indexV+round()">
                                                                         <center>{{value}}%</center>
-                                                                    </td>
-                                                                    <td @click="modalContract(executed['item'], indexV)" v-else style="vertical-align: middle;" :key="indexV+round()">
-                                                                        <center>{{value}}%</center>
-                                                                    </td>
+                                                                    </td>        
                                                                 </template>
                                                             </tr>
                                                         </template>
@@ -235,6 +232,39 @@
                                     </b-row>
                                 </b-card>
                             </b-row>
+                            <b-modal ref="modalpercentage" :hideFooter="true" id="modals-default-percentage" class="modal-top modal-item" size="xs">
+                                <div slot="modal-title">
+                                    item: {{item_modal}}<br>
+                                     
+                                </div>
+                                <b-card bg-variant="transparent" title="" class="mb-3 box-shadow-none">
+                                    <table class="table table-bordered mb-2">
+                                        <tbody>
+                                            <tr>
+                                                <th style="text-align: center;" colspan="2">{{month_name}} de {{year_global}}    {{percentage_global}}%</th>
+                                            </tr>
+                                            <tr>
+                                                <td style="text-align: center;" ><b>Contratista</b></td>
+                                                <td style="text-align: center;" ><b>Porcentage</b></td>
+                                            </tr>
+                                            <template v-for="(contract, indexG) in report_porcentage_for_contract">
+                                            <tr :key="indexG+round()">
+                                                <td style="text-align: center;" >
+                                                    {{contract['name']}}
+                                                </td>
+                                                <td style="text-align: center;" >
+                                                    {{contract[contract['month_name']]}}%
+                                                </td>
+                                            </tr>
+                                            </template>
+                                        </tbody>
+                                    </table>
+                                </b-card>
+                                <br>
+                                <div class="row float-right pt-12 pr-12y">
+                                    <b-btn variant="primary" @click="hideModal(`modalpercentage${refer}`)">Cerrar</b-btn>
+                                </div>
+                            </b-modal>
                     </b-tab>
                 </b-tabs>
             </b-card>
@@ -297,6 +327,9 @@ export default {
                 headings: [],
                 answers: []
             },
+            item_modal: '',
+            month_name: '',
+            percentage_global: ''
         }
     },
     created(){
@@ -418,7 +451,6 @@ export default {
         },
         fetch5()
         {
-            console.log('entro')
             this.postData2 = Object.assign({}, {year: this.year_global}, {inform_id: this.inform_id}, {theme: this.theme_global});
 
             axios.post('/legalAspects/informContract/reportTablePorcentageGlobal', this.postData2)
@@ -443,13 +475,32 @@ export default {
         },
         round()
         {
-            return Math.random();
+            return new Date().getTime() + Math.round(Math.random() * 10000);
         },
-        modalContract(item, mes)
+        modalContract(item, mes, theme_id, value)
         {
-            console.log(item)
-            console.log(mes)
-        }
+             this.postData2 = Object.assign({}, {year: this.year_global}, {inform_id: this.inform_id}, {theme: theme_id}, {month: mes}, {item: item});
+
+            axios.post('/legalAspects/informContract/detailContractGlobal', this.postData2)
+                .then(response => {
+                this.report_porcentage_for_contract = response.data
+
+                if (this.report_porcentage_for_contract.length > 0)
+                {
+                    this.item_modal = item;
+                    this.month_name = this.report_porcentage_for_contract[0].month_name;
+                    this.percentage_global = value
+                    this.$refs.modalpercentage.show();
+                }
+                this.isLoading = false;
+                }).catch(error => {
+                    console.log(error)
+                    Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
+                });
+        },
+        hideModal(ref) {
+            this.$refs.modalpercentage.hide()
+        },
     }
 }
 
