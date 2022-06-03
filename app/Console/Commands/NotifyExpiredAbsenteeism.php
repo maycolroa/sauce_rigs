@@ -250,7 +250,9 @@ class NotifyExpiredAbsenteeism extends Command
                                 ->message("Este es el listado de incapacidades que cumplen o estan proximas a cumplir <b>$configDay[1]</b> dias.")
                                 ->module('absenteeism')
                                 ->event('Tarea programada: NotifyExpiredAbsenteeism')
-                                ->table($expired_email_1_alert)
+                                ->view('preventiveoccupationalmedicine.abssenteeism.notifyExpiredAbssen')
+                                ->with(['data'=>$expired_email_1_alert])
+                                //->table($expired_email_1_alert)
                                 ->company($company)
                                 ->send();
                         }
@@ -271,7 +273,9 @@ class NotifyExpiredAbsenteeism extends Command
                                 ->message("Este es el listado de incapacidades que cumplen o estan proximas a cumplir <b>$configDay[2]</b> dias.")
                                 ->module('absenteeism')
                                 ->event('Tarea programada: NotifyExpiredAbsenteeism')
-                                ->table($expired_email_2_alert)
+                                ->view('preventiveoccupationalmedicine.abssenteeism.notifyExpiredAbssen')
+                                ->with(['data'=>$expired_email_2_alert])
+                                //->table($expired_email_2_alert)
                                 ->company($company)
                                 ->send();
                         }

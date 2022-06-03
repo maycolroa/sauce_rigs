@@ -45,7 +45,7 @@ class MonitoringRecomendation implements Rule
                     {
                         return false;
                     } else {
-                        if ($this->indefinite_recommendations == 'NO')
+                        /*if ($this->indefinite_recommendations == 'NO')
                         {
                             if (Carbon::createFromFormat('D M d Y', $value)->lt(Carbon::createFromFormat('D M d Y', $this->end_recommendations)))
                             {
@@ -56,7 +56,8 @@ class MonitoringRecomendation implements Rule
                             }
                         } else {
                             return true;
-                        }
+                        }*/
+                        return true;
                     }
                 }
                 else {
@@ -81,7 +82,8 @@ class MonitoringRecomendation implements Rule
     {
         if ($this->indefinite_recommendations == 'NO')
         {
-            return ":attribute debe ser una fecha superior a Fecha Inicio Recomendaciones y debe ser anterior a Fecha Fin Recomendaciones";
+            return ":attribute debe ser una fecha superior a Fecha Inicio Recomendaciones";
+            //return ":attribute debe ser una fecha superior a Fecha Inicio Recomendaciones y debe ser anterior a Fecha Fin Recomendaciones";
         }
         else if ($this->start_recommendations == null)
         {
