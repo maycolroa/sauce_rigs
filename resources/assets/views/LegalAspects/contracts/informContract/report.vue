@@ -219,7 +219,7 @@
                                                             </tr>
                                                             <tr v-else :key="indexE+round()" style="width:100%">
                                                                 <template v-for="(value, indexV) in executed">
-                                                                    <td @click="modalContract(executed['item'], indexV, theme.id, value)" :style="indexV == 'total' ? 'vertical-align: middle; background-color:#dcdcdc' : 'vertical-align: middle;'" :key="indexV+round()">
+                                                                    <td @click="modalContract(executed['item'], indexV, theme.id, value, theme.name)" :style="indexV == 'total' ? 'vertical-align: middle; background-color:#dcdcdc' : 'vertical-align: middle;'" :key="indexV+round()">
                                                                         <center>{{value}}%</center>
                                                                     </td>        
                                                                 </template>
@@ -234,14 +234,16 @@
                             </b-row>
                             <b-modal ref="modalpercentage" :hideFooter="true" id="modals-default-percentage" class="modal-top modal-item" size="xs">
                                 <div slot="modal-title">
-                                    item: {{item_modal}}<br>
+                                    Tema: {{item_modal}}<br>
+                                    Item: {{theme_name}}<br>
                                      
                                 </div>
                                 <b-card bg-variant="transparent" title="" class="mb-3 box-shadow-none">
                                     <table class="table table-bordered mb-2">
                                         <tbody>
                                             <tr>
-                                                <th style="text-align: center;" colspan="2">{{month_name}} de {{year_global}}    {{percentage_global}}%</th>
+                                                <th style="text-align: center;">{{month_name}} de {{year_global}}</th>
+                                                <th style="text-align: center;">{{percentage_global}}%</th>
                                             </tr>
                                             <tr>
                                                 <td style="text-align: center;" ><b>Contratista</b></td>
@@ -329,7 +331,8 @@ export default {
             },
             item_modal: '',
             month_name: '',
-            percentage_global: ''
+            percentage_global: '',
+            theme_name: ''
         }
     },
     created(){
@@ -477,7 +480,7 @@ export default {
         {
             return new Date().getTime() + Math.round(Math.random() * 10000);
         },
-        modalContract(item, mes, theme_id, value)
+        modalContract(item, mes, theme_id, value, theme_name)
         {
              this.postData2 = Object.assign({}, {year: this.year_global}, {inform_id: this.inform_id}, {theme: theme_id}, {month: mes}, {item: item});
 
@@ -490,6 +493,7 @@ export default {
                     this.item_modal = item;
                     this.month_name = this.report_porcentage_for_contract[0].month_name;
                     this.percentage_global = value
+                    this.theme_name = theme_name
                     this.$refs.modalpercentage.show();
                 }
                 this.isLoading = false;
