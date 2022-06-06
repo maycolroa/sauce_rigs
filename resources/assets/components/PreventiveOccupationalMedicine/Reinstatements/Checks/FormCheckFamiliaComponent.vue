@@ -95,6 +95,12 @@
             </b-form-row>
           </div>
           <div v-show="form.has_recommendations == 'SI'" class="col-md-12">
+             <b-form-row>
+              <vue-radio :disabled="viewOnly" :checked="form.has_function_setting" class="col-md-6 offset-md-3" v-model="form.has_function_setting" :options="siNo" name="has_function_setting" :error="form.errorsFor('has_function_setting')" label="¿Tiene Ajustes de funciones?"></vue-radio>
+            </b-form-row>
+            <b-form-row v-show="form.has_function_setting == 'SI'">
+              <vue-textarea :disabled="viewOnly" class="col-md-12" v-model="form.function_setting" label="Ajuste de funciones" name="function_setting" :error="form.errorsFor('function_setting')" placeholder=""></vue-textarea>
+            </b-form-row>
             <b-form-row>
               <vue-radio :disabled="viewOnly" :checked="form.relocated" class="col-md-3" v-model="form.relocated" :options="siNo" name="relocated" :error="form.errorsFor('relocated')" label="¿Reubicado?"></vue-radio>
               <vue-datepicker :disabled="viewOnly" class="col-md-5" v-model="form.monitoring_recommendations" label="Fecha de seguimiento a recomendaciones" :full-month-name="true" placeholder="Fecha de seguimiento a recomendaciones" :error="form.errorsFor('monitoring_recommendations')" name="monitoring_recommendations">
@@ -117,6 +123,11 @@
             </b-form-row>
             <b-form-row>
               <vue-textarea :disabled="viewOnly" class="col-md-12" v-model="form.position_functions_assigned_reassigned" label="Cargo y funciones asignadas y/o reasignadas al trabajador" name="position_functions_assigned_reassigned" :error="form.errorsFor('position_functions_assigned_reassigned')" placeholder=""></vue-textarea>
+            </b-form-row>
+          </div>
+          <div v-show="form.has_recommendations == 'NO'" class="col-md-12">
+            <b-form-row>
+              <vue-textarea :disabled="viewOnly" class="col-md-12" v-model="form.Observations_recommendatios" label="Observaciones" name="Observations_recommendatios" :error="form.errorsFor('Observations_recommendatios')" placeholder=""></vue-textarea>
             </b-form-row>
           </div>
 
@@ -500,7 +511,9 @@ export default {
           medical_certificate_ueac: '',
           relocated_type: '',
           created_at: '',
-          
+          has_function_setting: '',
+          function_setting: '',
+          Observations_recommendatios: '',          
           new_tracing: [],
           oldTracings: [],
           medical_monitorings: [],

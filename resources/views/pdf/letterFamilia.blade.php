@@ -53,6 +53,21 @@
         @else
             <p>Las anteriores recomendaciones han sido emitidas por {{$check->origin_recommendations}} y son de <b>carácter temporal</b> por {{$check->time_different}} días a partir del {{$check->start_recommendations}} hasta el {{$check->end_recommendations}} fecha de reintegro.</p>
         @endif
+    @else
+        <p>Observaciones:</p>
+        
+        <div style="border: solid black 1px; padding: 0px 20px; text-align: justify; text-justify: inter-word; padding-top: 5px; padding-bottom: 5px;">
+            {!! nl2br($check->Observations_recommendatios) !!}
+        </div>
+    @endif
+
+    @if ($check->start_recommendations)
+        
+        @if ($check->indefinite_recommendations != "NO")
+            <p>Las anteriores recomendaciones han sido emitidas por {{$check->origin_recommendations}} y son <b>indefinidas</b>.</p>
+        @else
+            <p>Las anteriores recomendaciones han sido emitidas por {{$check->origin_recommendations}} y son de <b>carácter temporal</b> por {{$check->time_different}} días a partir del {{$check->start_recommendations}} hasta el {{$check->end_recommendations}} fecha de reintegro.</p>
+        @endif
         
     @endif
 

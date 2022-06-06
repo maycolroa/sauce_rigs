@@ -522,6 +522,7 @@ class CheckController extends Controller
            'sau_reinc_checks.detail as check_detail,
             sau_reinc_checks.start_recommendations AS start_recommendations,
             sau_reinc_checks.disease_origin AS disease_origin,
+            sau_reinc_checks.Observations_recommendatios AS Observations_recommendatios,
             sau_employees.income_date AS income_date,
             sau_reinc_checks.end_recommendations AS end_recommendations,
             DATEDIFF(sau_reinc_checks.end_recommendations, sau_reinc_checks.start_recommendations) AS time_different,
@@ -559,6 +560,7 @@ class CheckController extends Controller
             'income_date' => $check->income_date,
             'firm' => $request->firm,
             'recommendations' => $this->replaceLast(',', ' y ', $request->selectedRecommendations),
+            'observations_recommendatiosn' => $check->Observations_recommendatios,
             'logo' => ($company && $company->logo) ? $company->logo : null
         ];
 

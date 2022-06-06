@@ -110,7 +110,10 @@ class Check extends Model
         'conclusion_recommendations',
         'position_functions_assigned_reassigned',
         'reinstatement_condition',
-        'recommendations_validity'
+        'recommendations_validity',
+        'has_function_setting',
+        'function_setting',
+        'Observations_recommendatios'
     ];
 
     /**
