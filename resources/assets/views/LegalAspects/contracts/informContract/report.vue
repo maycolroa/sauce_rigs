@@ -264,7 +264,7 @@
                                 </b-card>
                                 <br>
                                 <div class="row float-right pt-12 pr-12y">
-                                    <b-btn variant="primary" @click="hideModal(`modalpercentage${refer}`)">Cerrar</b-btn>
+                                    <b-btn variant="primary" @click="hideModal('modalpercentage')">Cerrar</b-btn>
                                 </div>
                             </b-modal>
                     </b-tab>
