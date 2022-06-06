@@ -668,7 +668,7 @@ class InformReportController extends Controller
             $month = 'Agosto';
         if ($request->month == 'month8')
             $month = 'Septiembre';
-        if ($request->month == 'month09')
+        if ($request->month == 'month9')
             $month = 'Octubre';
         if ($request->month == 'month10')
             $month = 'Noviembre';
@@ -688,7 +688,7 @@ class InformReportController extends Controller
         ->where('sau_ct_inform_contract.year', $request->year)
         ->where('sau_ct_inform_contract.inform_id', $request->inform_id)
         ->where('sau_ct_inform_theme_item.show_program_value', DB::raw("'SI'"))
-        ->where('sau_ct_inform_theme_item.description', $request->item)
+        ->where('sau_ct_inform_theme_item.description', "$request->item")
         ->where('sau_ct_inform_contract.month', $month)
         ->groupBy('sau_ct_inform_theme_item.description', 'sau_ct_inform_contract.contract_id');
 
