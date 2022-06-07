@@ -643,6 +643,10 @@ class InformReportController extends Controller
             $theme['items']->push($qualification_global);
         }
 
+        $themes = $themes->reject(function ($value, $key) {
+            return COUNT($value['items'][0]) < 2;
+        });
+
         return $themes;
     }
 

@@ -14,6 +14,8 @@
         <loading :display="isLoading"/>
         <div style="width:100%" class="col-md" v-show="!isLoading">
             <b-card no-body>
+                <br>
+                <h4 style="padding-left: 5%">Informe:  {{name_inform}}.</h4>
                 <b-tabs card pills class="nav-responsive-md md-pills-light">
                     <b-tab>
                         <template slot="title">
@@ -332,11 +334,18 @@ export default {
             item_modal: '',
             month_name: '',
             percentage_global: '',
-            theme_name: ''
+            theme_name: '',
+            name_inform: ''
         }
     },
     created(){
-        //this.fetch()
+        axios.get(`/legalAspects/inform/${this.inform_id}`)
+            .then(response => {
+                this.name_inform = response.data.data.name;
+            })
+            .catch(error => {
+                console.log(error)
+            });
     },
     watch: {
         'contract_id'() {

@@ -1,7 +1,7 @@
 <template>
   	<div>
 		<header-module
-			title="MATRIZ DE PELIGROS"
+			title="MATRIZ DE RIESGOS"
 			subtitle="MAESTRO"
 			url="industrialsecure-dangermatrix"
 		/>

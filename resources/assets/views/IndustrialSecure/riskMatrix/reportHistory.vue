@@ -1,7 +1,7 @@
 <template>
     <div>
         <header-module
-            title="MATRIZ DE PELIGROS"
+            title="MATRIZ DE RIESGOS"
             subtitle="REPORTE HISTORICO"
             url="industrialsecure-riskmatrix-report"
         />
@@ -49,7 +49,7 @@
                                     <tr v-for="(row, index) in information" :key="index">
                                         <th v-if="showLabelCol" class="text-center align-middle">{{information.length - index}}.{{ row[0].col }}</th>
                                         <td v-for="(col, index2) in row" :key="index2" :class="`bg-${col.color}`">
-                                            <b-btn style="width: 100%;" :variant="col.color">{{ col.label }} <b-badge variant="light">{{ col.count }}</b-badge></b-btn>
+                                            <b-btn style="width: 100%;" :variant="col.color"><b-badge variant="light">{{ col.count }}</b-badge></b-btn>
                                         </td>
                                     </tr>
                                 </tbody>
@@ -78,7 +78,7 @@
                                     <tr v-for="(row, index) in informationResidual" :key="index">
                                         <th v-if="showLabelCol" class="text-center align-middle">{{informationResidual.length - index}}.{{ row[0].col }}</th>
                                         <td v-for="(col, index2) in row" :key="index2" :class="`bg-${col.color}`">
-                                            <b-btn style="width: 100%;" :variant="col.color">{{ col.label }} <b-badge variant="light">{{ col.count }}</b-badge></b-btn>
+                                            <b-btn style="width: 100%;" :variant="col.color"><b-badge variant="light">{{ col.count }}</b-badge></b-btn>
                                         </td>
                                     </tr>
                                 </tbody>
