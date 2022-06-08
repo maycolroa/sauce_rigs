@@ -1085,4 +1085,47 @@ export default [
         filterColumns: true,
     }
 },
+{
+    name: 'reinstatements-letter-recommendations',
+    fields: [
+        { name: 'sau_reinc_letter_recommendations_history.id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true },
+        { name: 'code', data: 'code', title: 'Código CIE 10', sortable: true, searchable: true, detail: false, key: false },
+        { name: 'disease_origin', data: 'disease_origin', title: 'Tipo de evento', sortable: true, searchable: true, detail: false, key: false },
+        { name: 'name', data: 'name', title: 'Empleado', sortable: true, searchable: true, detail: false, key: false },
+        { name: 'sau_reinc_letter_recommendations_history.to', data: 'to', title: 'De', sortable: true, searchable: true, detail: false, key: false },
+        { name: 'sau_reinc_letter_recommendations_history.from', data: 'from', title: 'Para', sortable: true, searchable: true, detail: false, key: false },
+        { name: 'sau_reinc_letter_recommendations_history.subject', data: 'subject', title: 'Asunto', sortable: true, searchable: true, detail: false, key: false },
+        { name: 'sau_reinc_letter_recommendations_history.send_date', data: 'send_date', title: 'Fecha de envio', sortable: true, searchable: true, detail: false, key: false },
+        { name: '', data: 'controlls', title: 'Controles', sortable: false, searchable: false, detail: false, key: false },
+    ],
+    'controlls': [{
+            type: 'push',
+            buttons: []
+        },
+        {
+            type: 'base',
+            buttons: [],
+        },
+        {
+            type: 'simpleDownload',
+            buttons: [{
+            name: 'downloadFile',
+            config: {
+                color: 'outline-success',
+                borderless: true,
+                icon: 'ion ion-md-clipboard',
+                title: 'Generar Carta'
+            },
+            data: {
+                action: '/biologicalmonitoring/reinstatements/check/generatePdf/',
+                id: 'id'
+            }
+        }],
+    }],
+    configuration: {
+        urlData: '/biologicalmonitoring/reinstatements/check/data2',
+        filterColumns: true,
+        //configNameFilter: 'legalaspects-evaluations-contracts'
+    }
+},
 ];

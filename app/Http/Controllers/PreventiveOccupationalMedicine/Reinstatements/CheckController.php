@@ -11,6 +11,7 @@ use App\Models\PreventiveOccupationalMedicine\Reinstatements\Check;
 use App\Models\PreventiveOccupationalMedicine\Reinstatements\CheckFile;
 use App\Models\PreventiveOccupationalMedicine\Reinstatements\TagsReinstatementCondition;
 use App\Models\PreventiveOccupationalMedicine\Reinstatements\TagsInformantRole;
+use App\Models\PreventiveOccupationalMedicine\Reinstatements\LetterHistory;
 use App\Http\Requests\PreventiveOccupationalMedicine\Reinstatements\CheckRequest;
 use App\Jobs\PreventiveOccupationalMedicine\Reinstatements\CheckExportJob;
 use Illuminate\Support\Facades\Storage;
@@ -550,6 +551,20 @@ class CheckController extends Controller
             
         $company = Company::select('logo')->where('id', $this->company)->first();
 
+        $record_letter = LetterHistory::where('check_id', $request->check_id)->where('to', $request->to)->where('from', $request->from)->where('subject', $request->subject)->first();
+
+        if (!$record_letter)
+        {
+            $record_letter = new LetterHistory;
+            $record_letter->to = $request->to;
+            $record_letter->from = $request->from;
+            $record_letter->subject = $request->subject;
+            $record_letter->send_date = $date;
+            $record_letter->check_id = $request->check_id;
+            $record_letter->company_id = $this->company;
+            $record_letter->save();
+        }
+
         $data = [
             'to' => $request->to,
             'from' => $request->from,
@@ -861,5 +876,101 @@ class CheckController extends Controller
                 'options' => $this->multiSelectFormat($tags)
             ]);
         }
+    }
+
+    public function dataLetters(Request $request)
+    {
+        $data = LetterHistory::select(
+            'sau_reinc_letter_recommendations_history.*',
+            'sau_reinc_cie10_codes.code AS code',
+            'sau_reinc_checks.disease_origin AS disease_origin',
+            'sau_employees.name AS name'
+        )
+        ->join('sau_reinc_checks', 'sau_reinc_checks.id', 'sau_reinc_letter_recommendations_history.check_id')        
+        ->join('sau_reinc_cie10_codes', 'sau_reinc_cie10_codes.id', 'sau_reinc_checks.cie10_code_id')
+        ->join('sau_employees', 'sau_employees.id', 'sau_reinc_checks.employee_id');
+
+        return Vuetable::of($data)
+            ->make();
+    }
+
+    public function regenerateLetter($id)
+    {
+        $record_letter = LetterHistory::find($id);
+
+        $check = Check::selectRaw(
+           'sau_reinc_checks.detail as check_detail,
+            sau_reinc_checks.start_recommendations AS start_recommendations,
+            sau_reinc_checks.disease_origin AS disease_origin,
+            sau_reinc_checks.Observations_recommendatios AS Observations_recommendatios,
+            sau_employees.income_date AS income_date,
+            sau_reinc_checks.end_recommendations AS end_recommendations,
+            DATEDIFF(sau_reinc_checks.end_recommendations, sau_reinc_checks.start_recommendations) AS time_different,
+            sau_reinc_checks.indefinite_recommendations AS indefinite_recommendations,
+            sau_employees_regionals.name as regional,
+            sau_employees_headquarters.name AS headquarter,
+            sau_employees.name AS name,
+            sau_employees.identification AS identification,
+            sau_reinc_checks.origin_recommendations as origin_recommendations,
+            sau_employees_positions.name AS position,
+            sau_reinc_checks.position_functions_assigned_reassigned as position_functions_assigned_reassigned'
+        )
+        ->join('sau_employees', 'sau_employees.id', '=', 'sau_reinc_checks.employee_id')
+        ->leftJoin('sau_employees_regionals', 'sau_employees_regionals.id', '=', 'sau_employees.employee_regional_id')
+        ->leftJoin('sau_employees_headquarters', 'sau_employees_headquarters.id', '=', 'sau_employees.employee_headquarter_id')
+        ->leftJoin('sau_employees_positions', 'sau_employees_positions.id', '=', 'sau_employees.employee_position_id')
+        ->where('sau_reinc_checks.id', $record_letter->check_id)
+        ->first();
+
+        $now = Carbon::now();
+
+        $check->income_date = Carbon::parse($check->income_date, 'UTC')->isoFormat('ll');
+
+        $date = $record_letter->send_date;
+            
+        $company = Company::select('logo')->where('id', $this->company)->first();
+
+        $data = [
+            'to' => $record_letter->to,
+            'from' => $record_letter->from,
+            'subject' => $record_letter->subject, 
+            'user' => $this->user,
+            'check' => $check,
+            'date' => $record_letter->send_date,
+            'income_date' => $check->income_date,
+            'observations_recommendatiosn' => $check->Observations_recommendatios,
+            'logo' => ($company && $company->logo) ? $company->logo : null
+        ];
+
+        PDF::setOptions(['dpi' => 150, 'defaultFont' => 'sans-serif']);
+
+        $formModel = $this->getFormModel('reinc_letter_recomendatios');
+        if ($formModel == 'default')
+        { 
+            $pdf = PDF::loadView('pdf.letter', $data);
+        }
+        else if ($formModel == 'vivaAir')
+        {
+            $pdf = PDF::loadView('pdf.letterVivaAir', $data);
+        }
+        else if ($formModel == 'hptu')
+        {
+            $pdf = PDF::loadView('pdf.letterHptu', $data);
+        }
+        else if($formModel == 'reditos')
+        {
+            $pdf = PDF::loadView('pdf.letterReditos', $data);
+        }
+        else if($formModel == 'manpower')
+        {
+            $pdf = PDF::loadView('pdf.letterManpower', $data);
+        }
+        else if($formModel == 'familia')
+        {
+            $pdf = PDF::loadView('pdf.letterFamilia', $data);
+        }
+
+        return $pdf->stream('recomendaciones.pdf');
+    
     }
 }

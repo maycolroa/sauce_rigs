@@ -12,6 +12,7 @@
           <div class="card-title-elements">
             <b-btn v-if="auth.can['reinc_checks_c']" :to="{name:'reinstatements-checks-create'}" variant="primary">Crear Reporte</b-btn>
             <b-btn v-if="auth.can['reinc_checks_export']" variant="primary" @click="exportData()" v-b-tooltip.top title="Exportar"><i class="fas fa-download"></i></b-btn>
+            <b-btn :to="{name:'reinstatements-checks-letter-regenerate'}" variant="primary">Consulta de Cartas</b-btn>
           </div>
         </b-card-header>
         <b-card-body>

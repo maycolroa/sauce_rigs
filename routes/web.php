@@ -110,6 +110,10 @@ Route::middleware(['auth'])->group(function () {
           Route::post('check/tracingOthers', 'PreventiveOccupationalMedicine\Reinstatements\CheckController@tracingOthers');
           Route::get('check/downloadFile/{file}', 'PreventiveOccupationalMedicine\Reinstatements\CheckController@downloadFile');
 
+          Route::post('check/data2', 'PreventiveOccupationalMedicine\Reinstatements\CheckController@dataLetters');
+
+          Route::get('check/generatePdf/{id}', 'PreventiveOccupationalMedicine\Reinstatements\CheckController@regenerateLetter');
+
           Route::ApiResource('cie10', 'PreventiveOccupationalMedicine\Reinstatements\Cie10Controller')->only('show');
 
           Route::post('diseaseOrigin/data', 'PreventiveOccupationalMedicine\Reinstatements\DiseaseOriginController@data');

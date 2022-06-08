@@ -61,16 +61,6 @@
         </div>
     @endif
 
-    @if ($check->start_recommendations)
-        
-        @if ($check->indefinite_recommendations != "NO")
-            <p>Las anteriores recomendaciones han sido emitidas por {{$check->origin_recommendations}} y son <b>indefinidas</b>.</p>
-        @else
-            <p>Las anteriores recomendaciones han sido emitidas por {{$check->origin_recommendations}} y son de <b>carácter temporal</b> por {{$check->time_different}} días a partir del {{$check->start_recommendations}} hasta el {{$check->end_recommendations}} fecha de reintegro.</p>
-        @endif
-        
-    @endif
-
     <p>Le indicamos que usted _______________________________, como trabajador(a) de la empresa  ___________________,  tiene  el  deber  legal  de  cumplir  a  cabalidad  con  las  medidas recomendadas y es por ello que también notificamos a su jefe inmediato, quien velará por el cumplimiento de las mismas y será garante de que ninguna tarea de su trabajo esté en contra de estas indicaciones médicas. A la firma de esta acta, se da por entendido igualmente que usted comprende y acepta las funciones  asignadas/reasignadas  y  se  compromete  a  dar  cumplimiento  estricto  a  las mismas  bajo  las  recomendaciones/restricciones  generadas  para  su  caso,  las  cuales también debe aplicar en el desarrollo de actividades extralaborales.</p>
 
     <div>

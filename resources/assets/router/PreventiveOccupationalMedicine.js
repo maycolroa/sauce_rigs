@@ -168,6 +168,14 @@ export default [{
           import('@/views/PreventiveOccupationalMedicine/reinstatements/checks/informs')
       }
     ]),
+    ...middleware({ 'check-permission': 'reinc_checks_r' }, [
+      {
+        name: 'reinstatements-checks-letter-regenerate',
+        path: 'reinstatements/checks/letterregenerate',
+        component: () =>
+          import('@/views/PreventiveOccupationalMedicine/reinstatements/checks/indexLetterRegenerate')
+      }
+    ]), 
     ...middleware({ 'check-permission': 'biologicalMonitoring_musculoskeletalAnalysis_r' }, [
       {
         name: 'biologicalmonitoring-musculoskeletalanalysis',
