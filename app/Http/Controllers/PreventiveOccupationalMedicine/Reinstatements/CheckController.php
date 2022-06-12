@@ -12,6 +12,7 @@ use App\Models\PreventiveOccupationalMedicine\Reinstatements\CheckFile;
 use App\Models\PreventiveOccupationalMedicine\Reinstatements\TagsReinstatementCondition;
 use App\Models\PreventiveOccupationalMedicine\Reinstatements\TagsInformantRole;
 use App\Models\PreventiveOccupationalMedicine\Reinstatements\LetterHistory;
+use App\Models\PreventiveOccupationalMedicine\Reinstatements\Tracing;
 use App\Http\Requests\PreventiveOccupationalMedicine\Reinstatements\CheckRequest;
 use App\Jobs\PreventiveOccupationalMedicine\Reinstatements\CheckExportJob;
 use Illuminate\Support\Facades\Storage;
@@ -515,6 +516,61 @@ class CheckController extends Controller
         }
 
         return $pdf->stream('seguimiento.pdf');
+    }
+
+    public function generateTracingGlobal(Request $request)
+    {
+        $check = Check::selectRaw(
+           'sau_employees.name AS name,
+            sau_employees.identification AS identification,
+            sau_employees_positions.name AS position,
+            sau_reinc_cie10_codes.description AS diagnosis,
+            sau_reinc_checks.disease_origin AS disease_origin,
+            sau_reinc_checks.start_recommendations AS start_recommendations,
+            sau_reinc_checks.end_recommendations AS end_recommendations,
+            DATEDIFF(sau_reinc_checks.end_recommendations, sau_reinc_checks.start_recommendations) AS time_different,
+            sau_reinc_checks.indefinite_recommendations AS indefinite_recommendations,
+            sau_reinc_checks.monitoring_recommendations AS monitoring_recommendations,
+            sau_employees_headquarters.name AS headquarter,
+            sau_reinc_checks.origin_recommendations as origin_recommendations'
+        )
+        ->join('sau_employees', 'sau_employees.id', 'sau_reinc_checks.employee_id')
+        ->leftJoin('sau_employees_headquarters', 'sau_employees_headquarters.id', 'sau_employees.employee_headquarter_id')
+        ->leftJoin('sau_reinc_cie10_codes', 'sau_reinc_cie10_codes.id', 'sau_reinc_checks.cie10_code_id')
+        ->leftJoin('sau_employees_positions', 'sau_employees_positions.id', 'sau_employees.employee_position_id')
+        ->where('sau_reinc_checks.id', $request->check_id)
+        ->first();
+
+        $tracings = Tracing::where('check_id', $request->check_id)->get();
+
+        $now = Carbon::now();
+
+        $check->income_date = Carbon::parse($check->income_date, 'UTC')->isoFormat('ll');
+
+        $check->now = Carbon::parse($now, 'UTC')->isoFormat('ll');
+
+        $company = Company::select('logo')->where('id', $this->company)->first();
+
+        $data = [
+            'tracings' => $tracings,
+            'check' => $check,
+            'logo' => ($company && $company->logo) ? $company->logo : null
+        ];
+
+        PDF::setOptions(['dpi' => 150, 'defaultFont' => 'sans-serif']);
+
+        $formModel = $this->getFormModel('reinc_letter_tracing');
+
+        if ($formModel == 'default')
+        { 
+            $pdf = PDF::loadView('pdf.tracingGlobal', $data);
+        }
+        else if ($formModel == 'familia')
+        {
+            $pdf = PDF::loadView('pdf.tracingFamiliaGlobal', $data);
+        }
+
+        return $pdf->stream('seguimientos.pdf');
     }
 
     public function generateLetter(Request $request)
