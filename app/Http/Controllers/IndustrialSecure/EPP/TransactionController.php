@@ -2174,6 +2174,7 @@ class TransactionController extends Controller
                 ->where('sau_epp_elements_balance_specific.location_id', $request->location_id)
                 ->where('sau_epp_elements_balance_specific.state', 'Disponible')
                 ->whereIn('element_balance_id', $element_balance)
+                ->where('sau_epp_elements.class_element', $request->class_element)
                 ->get()
                 ->toArray();
 
@@ -2181,6 +2182,7 @@ class TransactionController extends Controller
                 ->join('sau_epp_elements', 'sau_epp_elements.id', 'sau_epp_elements_balance_ubication.element_id')
                 ->where('location_id', $request->location_id)
                 ->where('sau_epp_elements.company_id', $this->company)
+                ->where('sau_epp_elements.class_element', $request->class_element)
                 ->get()
                 ->toArray();
 
@@ -2234,6 +2236,7 @@ class TransactionController extends Controller
                 ->join('sau_epp_elements', 'sau_epp_elements.id', 'sau_epp_elements_balance_ubication.element_id')
                 ->where('location_id', $request->location_id)
                 ->where('sau_epp_elements.company_id', $this->company)
+                ->where('sau_epp_elements.class_element', $request->class_element)
                 ->get()
                 ->toArray();
 

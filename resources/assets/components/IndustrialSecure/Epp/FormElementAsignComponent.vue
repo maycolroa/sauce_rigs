@@ -8,6 +8,7 @@
           <vue-input :disabled="true" class="col-md-6" v-model="form.position_employee" label="Cargo" type="text" name="position_employee" :error="form.errorsFor('position_employee')" placeholder="Cargo"></vue-input>
           <vue-ajax-advanced-select :disabled="viewOnly || !form.employee_id" class="col-md-6" v-model="form.location_id" :error="form.errorsFor('location_id')"  name="location_id" label="Ubicación" placeholder="Seleccione la ubicación" :url="tagsLocationsDataUrl" :multiple="false" :selected-object="form.multiselect_location" :emptyAll="true" >
             </vue-ajax-advanced-select>
+          <vue-radio :disabled="viewOnly" class="col-md-6" v-model="form.class_element" :options="classElement" name="class_element" :error="form.errorsFor('class_element')" label="Clase de elemento" :checked="form.class_element"></vue-radio>
         </b-form-row>
       </div>
       <b-card  bg-variant="transparent" border-variant="dark" title="Elementos" class="mb-3 box-shadow-none">
@@ -173,6 +174,7 @@ export default {
           position_employee: '',
           elements_id: [],
           location_id: '',
+          class_element: '',
           files: [],
           firm_employee: '',
           observations: '',
@@ -229,7 +231,7 @@ export default {
         this.form.location_id = '';
       }
     },
-    'form.location_id' () {
+    'form.class_element' () {
         this.uploadElements()
     }
   },
@@ -257,6 +259,10 @@ export default {
       typeFirm: [
         {text: 'Solicitar por email', value: 'Email'},
         {text: 'Dibujar', value: 'Dibujar'}
+      ],
+      classElement: [
+        {text: 'Elemento de protección personal', value: 'Elemento de protección personal'},
+        {text: 'Dotación', value: 'Dotación'}
       ],
       cargar: true,
       inventary: auth.inventaryEpp,
@@ -318,7 +324,7 @@ export default {
     {
       this.isLoading = true;
 
-      this.postData = Object.assign({}, {position_elements: this.elements_position}, {location_id: this.form.location_id}, {inventary: this.inventary});
+      this.postData = Object.assign({}, {position_elements: this.elements_position}, {location_id: this.form.location_id}, {inventary: this.inventary}, {class_element: this.form.class_element});
 
       axios.post('/industrialSecurity/epp/transaction/eppElementsLocations', this.postData)
       .then(response => {
