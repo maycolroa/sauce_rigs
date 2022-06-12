@@ -139,6 +139,7 @@ class TransactionController extends Controller
             $delivery->observations = $request->observations ? $request->observations : NULL;
             $delivery->location_id = $request->location_id;
             $delivery->company_id = $this->company;
+            $delivery->class_element = $request->class_element;
             $delivery->edit_firm = $request->edit_firm;
             $delivery->firm_email = $request->firm_email;
             $delivery->email_firm_employee = $request->firm_email == 'Email' ? $request->email_firm_employee : NULL;
