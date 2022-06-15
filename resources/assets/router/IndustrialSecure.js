@@ -884,5 +884,13 @@ export default [{
             import('@/views/IndustrialSecure/dangerousConditions/configurations/index')
         }
       ]),
+      ...middleware({ 'check-permission': 'accidentsWork_r' }, [
+        {
+          name: 'industrialsecure-accidentswork-report',
+          path: 'accidents/report',
+          component: () =>
+            import('@/views/IndustrialSecure/accidentsWorks/report')
+        }
+      ]),
     ]
   }]

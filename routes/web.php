@@ -575,6 +575,9 @@ Route::middleware(['auth'])->group(function () {
 
       Route::post('accidents/export', 'IndustrialSecure\AccidentsWork\AccidentsWorkController@export');
 
+
+      Route::post('accidents/reportLine', 'IndustrialSecure\AccidentsWork\AccidentsWorkReportController@reportLineNumberAccidents');
+
       Route::post('configuration', 'IndustrialSecure\DangerousConditions\ConfigurationController@store');
       Route::get('configuration/view', 'IndustrialSecure\DangerousConditions\ConfigurationController@show');
 
