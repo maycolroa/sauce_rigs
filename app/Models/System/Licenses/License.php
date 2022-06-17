@@ -42,4 +42,27 @@ class License extends Model
     {
         return $query->where('notified', 'NO');
     }
+
+    public function scopeInModules($query, $modules, $typeSearch = 'IN')
+    {
+        if (COUNT($modules) > 0)
+        {
+            if ($typeSearch == 'IN')
+                $query->whereIn('sau_license_module.module_id', $modules);
+
+            else if ($typeSearch == 'NOT IN')
+                $query->whereNotIn('sau_license_module.module_id', $modules);
+        }
+
+        return $query;
+    }
+
+    public function scopeBetweenDate($query, $dates)
+    {
+        if (COUNT($dates) == 2)
+        {
+            $query->whereBetween('sau_licenses.updated_at', $dates);
+            return $query;
+        }
+    }
 }

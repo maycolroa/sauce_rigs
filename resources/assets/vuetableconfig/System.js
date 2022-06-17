@@ -53,6 +53,7 @@ export default [
         configuration: {
             urlData: '/system/license/data',
             filterColumns: true,
+            configNameFilter: 'system-licenses'
         }
     },
     {

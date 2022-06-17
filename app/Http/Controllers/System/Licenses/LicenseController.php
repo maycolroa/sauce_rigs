@@ -13,12 +13,15 @@ use Illuminate\Validation\Rule;
 use App\Models\General\Company;
 use App\Models\Administrative\Users\User;
 use App\Models\Administrative\Roles\Role;
+use App\Models\General\Module;
+use App\Traits\Filtertrait;
 use Carbon\Carbon;
 use Validator;
 use DB;
 
 class LicenseController extends Controller
 {
+    use Filtertrait;
     /**
      * creates and instance and middlewares are checked
      */
@@ -50,16 +53,37 @@ class LicenseController extends Controller
     public function data(Request $request)
     {
         $licenses = License::system()
-                ->selectRaw(
-                    'sau_licenses.*,
-                     GROUP_CONCAT(" ", sau_modules.display_name ORDER BY sau_modules.display_name) AS modules,
-                     sau_companies.name AS company'
-                )
-                ->join('sau_companies', 'sau_companies.id', 'sau_licenses.company_id')
-                ->join('sau_license_module', 'sau_license_module.license_id', 'sau_licenses.id')
-                ->join('sau_modules', 'sau_modules.id', 'sau_license_module.module_id')
-                ->where('sau_modules.main', 'SI')
-                ->groupBy('sau_licenses.id');
+            ->selectRaw(
+                'sau_licenses.*,
+                    GROUP_CONCAT(" ", sau_modules.display_name ORDER BY sau_modules.display_name) AS modules,
+                    sau_companies.name AS company'
+            )
+            ->join('sau_companies', 'sau_companies.id', 'sau_licenses.company_id')
+            ->join('sau_license_module', 'sau_license_module.license_id', 'sau_licenses.id')
+            ->join('sau_modules', 'sau_modules.id', 'sau_license_module.module_id')
+            ->where('sau_modules.main', 'SI')
+            ->groupBy('sau_licenses.id');
+
+        $url = "/preventiveoccupationalmedicine/reinstatements/checks";
+
+        $filters = COUNT($request->get('filters')) > 0 ? $request->get('filters') : $this->filterDefaultValues($this->user->id, $url);
+
+        if (COUNT($filters) > 0)
+        {
+            $licenses->inModules($this->getValuesForMultiselect($filters["modules"]), $filters['filtersType']['modules']);
+                
+            $dates_request = explode('/', $filters["dateRange"]);
+
+            $dates = [];
+
+            if (COUNT($dates_request) == 2)
+            {
+                array_push($dates, $this->formatDateToSave($dates_request[0]));
+                array_push($dates, $this->formatDateToSave($dates_request[1]));
+            }
+                
+            $licenses->betweenDate($dates);
+        }
 
         return Vuetable::of($licenses)
                     ->make();

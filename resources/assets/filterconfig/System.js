@@ -26,5 +26,21 @@ export default [
             label: 'Permisos'
         },
       ]
+    },
+    {
+      name: 'system-licenses',
+      filters: [
+        {
+            url: '/selects/modules',
+            key: 'modules',
+            type: 'select',
+            label: 'Módulos'
+        },
+        {
+          key: 'dateRange',
+          type: 'dateRange',
+          label: 'Fecha de creación',
+        }
+      ]
     }
 ]
