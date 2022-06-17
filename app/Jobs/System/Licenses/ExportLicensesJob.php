@@ -53,7 +53,5 @@ class ExportLicensesJob implements ShouldQueue
         ->event('Job: ExportLicensesJob')
         ->company($this->company_id)
         ->send();
-
-      \Log::info('se envio');
     }
 }

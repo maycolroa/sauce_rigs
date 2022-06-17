@@ -313,8 +313,6 @@ class LicenseController extends Controller
           ];
   
           ExportLicensesJob::dispatch($this->user, $this->company, $filters);
-
-          \Log::info('salio');
         
           return $this->respondHttp200();
   
