@@ -57,7 +57,8 @@ class AccidentsWorkController extends Controller
     {
         $accidents = Accident::selectRaw(
             "sau_aw_form_accidents.*,
-            if(sau_aw_form_accidents.consolidado, 'SI', 'NO') AS consolidado");
+            if(sau_aw_form_accidents.consolidado, 'SI', 'NO') AS consolidado")
+        ->where('sau_aw_form_accidents.company_id', $this->company);
 
         $url = "/industrialsecure/accidents";
 
@@ -843,6 +844,7 @@ class AccidentsWorkController extends Controller
       $data = Accident::selectRaw(
         'DISTINCT identificacion_persona AS identificacion_persona'
       )
+      ->where('sau_aw_form_accidents.company_id', $this->company)
       ->orderBy('identificacion_persona')
       ->get()
       ->pluck('identificacion_persona', 'identificacion_persona');
@@ -855,6 +857,7 @@ class AccidentsWorkController extends Controller
       $data = Accident::selectRaw(
         'DISTINCT nombre_persona AS nombre_persona'
       )
+      ->where('sau_aw_form_accidents.company_id', $this->company)
       ->orderBy('nombre_persona')
       ->get()
       ->pluck('nombre_persona', 'nombre_persona');
@@ -874,6 +877,7 @@ class AccidentsWorkController extends Controller
       $data = Accident::selectRaw(
         'DISTINCT razon_social AS razon_social'
       )
+      ->where('sau_aw_form_accidents.company_id', $this->company)
       ->orderBy('razon_social')
       ->get()
       ->pluck('razon_social', 'razon_social');
@@ -886,6 +890,7 @@ class AccidentsWorkController extends Controller
       $data = Accident::selectRaw(
         'DISTINCT nombre_actividad_economica_sede_principal AS nombre_actividad_economica_sede_principal'
       )
+      ->where('sau_aw_form_accidents.company_id', $this->company)
       ->orderBy('nombre_actividad_economica_sede_principal')
       ->get()
       ->pluck('nombre_actividad_economica_sede_principal', 'nombre_actividad_economica_sede_principal');
@@ -898,6 +903,7 @@ class AccidentsWorkController extends Controller
       $data = Accident::selectRaw(
         'DISTINCT cargo_persona AS cargo_persona'
       )
+      ->where('sau_aw_form_accidents.company_id', $this->company)
       ->orderBy('cargo_persona')
       ->get()
       ->pluck('cargo_persona', 'cargo_persona');

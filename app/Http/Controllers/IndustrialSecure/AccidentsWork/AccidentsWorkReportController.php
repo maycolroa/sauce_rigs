@@ -25,6 +25,24 @@ use App\Traits\Filtertrait;
 class AccidentsWorkReportController extends Controller
 {
     use Filtertrait;
+
+    const INFORMS = [
+        'accidents',
+        'persons'
+    ];
+
+    const GROUPING_COLUMNS = [
+        ['sau_departaments.name', 'departament'],        
+        ['sau_municipalities.name', 'city'],
+        ['sau_aw_parts_body.name', 'part_body'],
+        ['sau_aw_types_lesion.name', 'lesion_type'],
+        ['sau_aw_form_accidents.sexo_persona', 'sexo'], 
+        ['sau_aw_form_accidents.cargo_persona', 'cargo'],
+        ['sau_aw_form_accidents.causo_muerte', 'causo_muerte'],
+        ['sau_aw_mechanisms.name', 'mecanismo'],
+        ['sau_aw_sites.name', 'sitio'],
+        ['sau_aw_agents.name', 'agente']
+    ];
     /**
      * creates and instance and middlewares are checked
      */
@@ -76,6 +94,7 @@ class AccidentsWorkReportController extends Controller
                     DB::raw("YEAR(fecha_accidente) AS year"),
                     DB::raw("COUNT(sau_aw_form_accidents.id) AS count")
                 )
+                ->where('sau_aw_form_accidents.company_id', $this->company)
                 ->groupBy('year', 'month')
                 ->get();
 
@@ -87,11 +106,10 @@ class AccidentsWorkReportController extends Controller
                     DB::raw("YEAR(fecha_accidente) AS year"),
                     DB::raw("COUNT(DISTINCT sau_aw_form_accidents.employee_id) AS count")
                 )
+                ->where('sau_aw_form_accidents.company_id', $this->company)
                 ->groupBy('year', 'month')
                 ->get();
             }
-
-            \Log::info($count->groupBy('year'));
 
             $count = $count->groupBy('year');
             
@@ -134,10 +152,21 @@ class AccidentsWorkReportController extends Controller
                 'headings' => $headings,
                 'answers' => $records
             ];
-
-            \Log::info($data);
             
         return $data;
+    }
+
+    public function getInformDataDinamic($components = [])
+    {
+        if (!$components) {
+            $components = $this::INFORMS;
+        }
+        $informData = collect([]);
+        foreach ($components as $component) {
+            $informData->put($component, $this->$component());
+        }
+
+        return $informData->toArray();
     }
 
     public function multiselectMonth()
@@ -158,5 +187,152 @@ class AccidentsWorkReportController extends Controller
         ];
 
         return $this->multiSelectFormat(collect($months));
+    }
+
+    public function accidents()
+    {
+        $columns = $this::GROUPING_COLUMNS;
+        $informData = collect([]);
+
+        foreach ($columns as $column) {
+            $informData->put($column[1], $this->accidentsBar($column[0]));
+        }
+    
+        return $informData->toArray();
+    }
+
+    private function accidentsBar($column)
+    {
+        if ($column == 'sau_aw_form_accidents.causo_muerte')
+        {
+            $column = "if(sau_aw_form_accidents.causo_muerte, 'SI', 'NO')";
+
+            $consultas = Accident::select( 
+                DB::raw("if(sau_aw_form_accidents.causo_muerte, 'SI', 'NO') as category"), 
+                DB::raw('COUNT(DISTINCT sau_aw_form_accidents.id) AS count')
+            );
+        }
+        else
+        {
+            $consultas = Accident::select("$column as category", 
+              DB::raw('COUNT(DISTINCT sau_aw_form_accidents.id) AS count')
+            );
+        }
+
+        $consultas->join('sau_aw_agents','sau_aw_form_accidents.agent_id', 'sau_aw_agents.id')
+            ->join('sau_aw_sites','sau_aw_form_accidents.site_id', 'sau_aw_sites.id')
+            ->join('sau_departaments','sau_aw_form_accidents.departamento_accidente', 'sau_departaments.id')
+            ->join('sau_aw_mechanisms','sau_aw_form_accidents.mechanism_id', 'sau_aw_mechanisms.id')
+            ->join('sau_municipalities','sau_aw_form_accidents.ciudad_accidente', 'sau_municipalities.id')
+            ->join('sau_aw_form_accidents_parts_body','sau_aw_form_accidents.id', 'sau_aw_form_accidents_parts_body.form_accident_id')
+            ->join('sau_aw_parts_body','sau_aw_form_accidents_parts_body.part_body_id', 'sau_aw_parts_body.id')
+            ->join('sau_aw_form_accidents_types_lesion','sau_aw_form_accidents.id', 'sau_aw_form_accidents_types_lesion.form_accident_id')
+            ->join('sau_aw_types_lesion','sau_aw_form_accidents_types_lesion.type_lesion_id', 'sau_aw_types_lesion.id')
+            ->where('sau_aw_form_accidents.company_id', $this->company)
+            ->groupBy('sau_aw_form_accidents.id', 'category');
+
+        $consultas = DB::table(DB::raw("({$consultas->toSql()}) AS t"))
+        ->selectRaw("
+             t.category AS category,
+             SUM(t.count) AS total
+        ")
+        ->mergeBindings($consultas->getQuery())
+        ->groupBy('t.category')
+        ->pluck('total', 'category');
+
+        return $this->buildDataChart($consultas);
+    }
+
+    public function persons()
+    {
+        $columns = $this::GROUPING_COLUMNS;
+        $informData = collect([]);
+
+        foreach ($columns as $column) {
+            $informData->put($column[1], $this->personsBar($column[0]));
+        }
+    
+        return $informData->toArray();
+    }
+
+    private function personsBar($column)
+    {
+        if ($column == 'sau_aw_form_accidents.causo_muerte')
+        {
+            $column = "if(sau_aw_form_accidents.causo_muerte, 'SI', 'NO')";
+
+            $consultas = Accident::select( 
+                DB::raw("if(sau_aw_form_accidents.causo_muerte, 'SI', 'NO') as category"), 
+                DB::raw('COUNT(DISTINCT sau_aw_form_accidents.employee_id) AS count')
+            );
+        }
+        else
+        {
+            $consultas = Accident::select("$column as category", 
+              DB::raw('COUNT(DISTINCT sau_aw_form_accidents.employee_id) AS count')
+            );
+        }
+
+        $consultas->join('sau_aw_agents','sau_aw_form_accidents.agent_id', 'sau_aw_agents.id')
+        ->join('sau_aw_sites','sau_aw_form_accidents.site_id', 'sau_aw_sites.id')
+        ->join('sau_departaments','sau_aw_form_accidents.departamento_accidente', 'sau_departaments.id')
+        ->join('sau_aw_mechanisms','sau_aw_form_accidents.mechanism_id', 'sau_aw_mechanisms.id')
+        ->join('sau_municipalities','sau_aw_form_accidents.ciudad_accidente', 'sau_municipalities.id')
+        ->join('sau_aw_form_accidents_parts_body','sau_aw_form_accidents.id', 'sau_aw_form_accidents_parts_body.form_accident_id')
+        ->join('sau_aw_parts_body','sau_aw_form_accidents_parts_body.part_body_id', 'sau_aw_parts_body.id')
+        ->join('sau_aw_form_accidents_types_lesion','sau_aw_form_accidents.id', 'sau_aw_form_accidents_types_lesion.form_accident_id')
+        ->join('sau_aw_types_lesion','sau_aw_form_accidents_types_lesion.type_lesion_id', 'sau_aw_types_lesion.id')
+        ->where('sau_aw_form_accidents.company_id', $this->company)
+        ->groupBy('sau_aw_form_accidents.employee_id', 'category');
+
+        $consultas = DB::table(DB::raw("({$consultas->toSql()}) AS t"))
+        ->selectRaw("
+             t.category AS category,
+             SUM(t.count) AS total
+        ")
+        ->mergeBindings($consultas->getQuery())
+        ->groupBy('t.category')
+        ->pluck('total', 'category');
+
+        return $this->buildDataChart($consultas);
+    }
+
+    protected function buildDataChart($rawData)
+    {
+        $labels = [];
+        $data = [];
+        $total = 0;
+        foreach ($rawData as $label => $count) {
+            $label2 = strlen($label) > 50 ? substr($this->sanear_string($label), 0, 50).'...' : $label;
+            array_push($labels, $label2);
+            array_push($data, ['name' => $label, 'value' => $count]);
+            $total += $count;
+        }
+
+        return collect([
+            'labels' => $labels,
+            'datasets' => [
+                'data' => $data,
+                'count' => $total
+            ]
+        ]);
+    }
+
+    public function multiselectBar()
+    {
+      $select = [
+        'Departamento' =>  'departament',        
+        'Ciudad' =>  'city',
+        'Parte del cuerpo' =>  'part_body',
+        'Tipo de lesión' =>  'lesion_type',
+        'Sexo' =>  'sexo', 
+        'Cargo' =>  'cargo',
+        'Causo Muerte' =>  'causo_muerte',
+        'Mecanismo' =>  'mecanismo',
+        'Sitio' =>  'sitio',
+        'Agente' =>  'agente'
+      ];
+  
+      return $this->multiSelectFormat(collect($select));
     }
 }

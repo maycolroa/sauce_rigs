@@ -9,8 +9,6 @@ use App\Models\General\Municipality;
 
 class Accident extends Model
 {
-    use CompanyTrait;
-
     protected $table = 'sau_aw_form_accidents';
 
     protected $fillable = [

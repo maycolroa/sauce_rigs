@@ -51,7 +51,8 @@ class AccidentExcel implements FromCollection, WithHeadings, WithMapping, WithEv
     {
       $accidents = Accident::selectRaw(
         "sau_aw_form_accidents.*,
-        if(sau_aw_form_accidents.consolidado, 'SI', 'NO') AS consolidado");
+        if(sau_aw_form_accidents.consolidado, 'SI', 'NO') AS consolidado")
+        ->where('sau_aw_form_accidents.company_id', $this->company_id);
 
       if (isset($this->filters["mechanism"]) && $this->filters["mechanism"])
           $accidents->inMechanisms($this->filters["mechanism"], $this->filters['filtersType']['mechanism']);
