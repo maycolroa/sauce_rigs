@@ -71,14 +71,14 @@ class InspectionListExcel implements FromQuery, WithMapping, WithHeadings, WithT
                 FROM sau_ph_inspection_process pi
                 INNER JOIN sau_employees_processes p ON p.id = pi.employee_process_id
                 WHERE pi.inspection_id = sau_ph_inspections.id
-            ) AS procesos";
+            ) AS proceso";
 
         if ($this->confLocationTableInspections['area'] == 'SI')
             $select[] = " (SELECT GROUP_CONCAT(ar.name) 
                 FROM sau_ph_inspection_area a 
                 INNER JOIN sau_employees_areas ar ON ar.id = a.employee_area_id
                 WHERE a.inspection_id = sau_ph_inspections.id
-            ) AS areas";
+            ) AS area";
 
         $inspections = Inspection::groupBy('sau_ph_inspections.id', 'sau_ph_inspections.name', 'sau_ph_inspections.created_at', 'sau_ph_inspections.state', 'sau_ph_inspection_sections.name', 'sau_ph_inspection_section_items.description')
         ->join('sau_ph_inspection_sections', function ($join) 
@@ -166,9 +166,9 @@ class InspectionListExcel implements FromQuery, WithMapping, WithHeadings, WithT
               FROM sau_ph_inspection_process pf 
               WHERE pf.inspection_id = sau_ph_inspections.id
               and pf.employee_process_id ".$this->filters['filtersType']['processes']." (".implode(',', $this->getValuesForMultiselect($this->filters["processes"])->toArray()).")
-          ) AS procesos2";    
+          ) AS proceso2";    
 
-          $having[] = "procesos2 >= 1";
+          $having[] = "proceso2 >= 1";
       }
       
       if (isset($this->filters["areas"]) && COUNT($this->filters["areas"]) > 0)
@@ -177,9 +177,9 @@ class InspectionListExcel implements FromQuery, WithMapping, WithHeadings, WithT
               FROM sau_ph_inspection_area af 
               WHERE af.inspection_id = sau_ph_inspections.id
               and af.employee_area_id  ".$this->filters['filtersType']['areas']." (".implode(',', $this->getValuesForMultiselect($this->filters["areas"])->toArray()).")
-          ) AS areas2"; 
+          ) AS area2"; 
 
-          $having[] = "areas2 >= 1";
+          $having[] = "area2 >= 1";
       }
       /*->inRegionals($this->filters['regionals'], $this->filters['filtersType']['regionals'])
       ->inHeadquarters($this->filters['headquarters'], $this->filters['filtersType']['headquarters'])
