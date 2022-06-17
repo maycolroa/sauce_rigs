@@ -9,6 +9,7 @@ use App\Models\System\Licenses\License;
 use App\Models\General\ModuleDependence;
 use App\Http\Requests\System\Licenses\LicenseRequest;
 use App\Jobs\System\Licenses\NotifyLicenseRenewalJob;
+use App\Jobs\System\Licenses\ExportLicensesJob;
 use Illuminate\Validation\Rule;
 use App\Models\General\Company;
 use App\Models\Administrative\Users\User;
@@ -70,7 +71,8 @@ class LicenseController extends Controller
 
         if (COUNT($filters) > 0)
         {
-            $licenses->inModules($this->getValuesForMultiselect($filters["modules"]), $filters['filtersType']['modules']);
+            if (isset($filters["modules"]) && $filters["modules"])
+                $licenses->inModules($this->getValuesForMultiselect($filters["modules"]), $filters['filtersType']['modules']);
                 
             $dates_request = explode('/', $filters["dateRange"]);
 
@@ -286,5 +288,38 @@ class LicenseController extends Controller
         return $this->respondHttp200([
             'message' => 'Se elimino la licencia'
         ]);
+    }
+
+    public function export(Request $request)
+    {
+        try
+        {
+          $modules = $this->getValuesForMultiselect($request->modules);
+          $filtersType = $request->filtersType;
+  
+          $dates = [];
+          $dates_request = explode('/', $request->dateRange);
+  
+          if (COUNT($dates_request) == 2)
+          {
+              array_push($dates, (Carbon::createFromFormat('D M d Y', $dates_request[0]))->format('Y-m-d'));
+              array_push($dates, (Carbon::createFromFormat('D M d Y', $dates_request[1]))->format('Y-m-d'));
+          }
+  
+          $filters = [
+              'modules' => $modules,
+              'dates' => $dates,
+              'filtersType' => $filtersType
+          ];
+  
+          ExportLicensesJob::dispatch($this->user, $this->company, $filters);
+
+          \Log::info('salio');
+        
+          return $this->respondHttp200();
+  
+        } catch(Exception $e) {
+          return $this->respondHttp500();
+        }
     }
 }

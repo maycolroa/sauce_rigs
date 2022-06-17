@@ -198,6 +198,7 @@ class EmployeePositionController extends Controller
         return $this->respondHttp500();
       }
     }
+    
     public function export()
     {
       PositionExportJob::dispatch($this->user, $this->company);
