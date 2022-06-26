@@ -356,7 +356,7 @@ export default {
           site_id: '',
           agent_id: '',
           mechanism_id: '',
-          lesions_id: '',
+          type_lesion_id: '',
           parts_body_id: '',
           actionPlan: {
               activities: [],

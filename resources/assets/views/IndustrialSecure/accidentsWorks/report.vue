@@ -9,6 +9,11 @@
         <loading :display="isLoading"/>
         <div style="width:100%" class="col-md" v-show="!isLoading">
             <b-card no-body>
+                <div v-if="option">
+                    <filter-general 
+                        v-model="filters" 
+                        configName="industrialsecure-accidents-report" />
+                </div>
                 <b-row>
                     <b-card style="width:95%">
                         <b-row style="width:95%;">
@@ -58,6 +63,7 @@ import VueAdvancedSelect from "@/components/Inputs/VueAdvancedSelect.vue";
 import LineComponent from '@/components/Chartjs/ChartLine.vue';
 import ChartBar from '@/components/ECharts/ChartBar.vue';
 import GlobalMethods from '@/utils/GlobalMethods.js';
+import FilterGeneral from '@/components/Filters/FilterGeneral.vue';
 
 export default {
     name: 'legalaspects-informs-report',
@@ -68,7 +74,8 @@ export default {
         Loading,
         VueAdvancedSelect,
         LineComponent,
-        ChartBar
+        ChartBar,
+        FilterGeneral
     },
     data () {
         return {
@@ -174,6 +181,16 @@ export default {
             category: 'departament',
             selectBar: [],
             test2: true,
+            filters: []
+        }
+    },
+    watch: {
+        filters: {
+            handler(val){
+                this.fetch()
+                this.fetch2()
+            },
+            deep: true
         }
     },
     computed: {
@@ -186,14 +203,13 @@ export default {
         }
     },
     created() {
-
         this.fetchSelect('selectBar', '/selects/multiselectBarAccident')
         this.fetch2()
     },
     methods: {
         fetch()
         {
-            this.postData = Object.assign({}, {option: this.option});
+            this.postData = Object.assign({}, {option: this.option}, {filters: this.filters});
 
             axios.post('/industrialSecurity/accidents/reportLine', this.postData)
                 .then(response => {
@@ -203,8 +219,10 @@ export default {
                     labels: response.data.headings,
                     datasets: response.data.answers
                 }
-
-                this.test = !this.test;
+  
+                setTimeout(() => {
+                    this.test = !this.test;
+                }, 1500);
 
                 }).catch(error => {
                     console.log(error)
@@ -218,7 +236,7 @@ export default {
                 //console.log('buscando...')
                 this.isLoading = true;
 
-                let postData = Object.assign({}, this.postData);
+                let postData = Object.assign({}, {filters: this.filters});
 
                 axios.post('/industrialSecurity/accidents/reportDinamic', postData)
                 .then(data => {

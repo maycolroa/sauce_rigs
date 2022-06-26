@@ -609,6 +609,21 @@ export default [
           key: 'mechanism',
           type: 'select',
           label: 'Mecanismos',
+        },
+        {
+          key: 'dateRange',
+          type: 'dateRange',
+          label: 'Fecha de accidente',
+        }
+      ]
+    },
+    {
+      name: 'industrialsecure-accidents-report',
+      filters: [
+        {
+          key: 'dateRange',
+          type: 'dateRange',
+          label: 'Fecha de accidente',
         }
       ]
     }

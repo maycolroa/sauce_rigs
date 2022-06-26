@@ -21,7 +21,7 @@
           <b-form-row>
             <vue-radio :disabled="viewOnly" :checked="infor.tipo_accidente" class="col-md-12" v-model="infor.tipo_accidente" :options="accidentTypes" name="tipo_accidente" :error="form.errorsFor('tipo_accidente')" label="Tipo de accidente"/>
           </b-form-row>
-           <b-form-row v-if="form.accidente_ocurrio_dentro_empresa == 'Fuera de la empresa'">
+           <b-form-row v-if="infor.accidente_ocurrio_dentro_empresa == 'Fuera de la empresa' || infor.tipo_vinculador_laboral == 'Independiente'">
             <vue-ajax-advanced-select :disabled="viewOnly" class="col-md-4" v-model="infor.departamento_accidente" :selected-object="infor.multiselect_departament_accident" name="departamento_accidente" :error="form.errorsFor('departamento_accidente')" label="Departamento" placeholder="Seleccione el departamento" :url="departamentsUrl"></vue-ajax-advanced-select>
             <vue-ajax-advanced-select :disabled="viewOnly" class="col-md-4" v-model="infor.ciudad_accidente" :selected-object="infor.multiselect_municipality_accident" name="ciudad_accidente" :error="form.errorsFor('ciudad_accidente')" label="Ciudad" placeholder="Seleccione la ciudad" :url="minicipalitiessUrl" :parameters="{departament: infor.departamento_persona_id }"></vue-ajax-advanced-select>
             <vue-radio :disabled="viewOnly" :checked="infor.zona_accidente" class="col-md-4" v-model="infor.zona_accidente" :options="zones" name="zona_accidente" :error="form.errorsFor('zona_accidente')" label="Zona"></vue-radio>
@@ -31,11 +31,11 @@
           </b-form-row>-->
           <b-form-row>
             <vue-radio :disabled="viewOnly" :checked="infor.site_id" class="col-md-6" v-model="infor.site_id" :options="mechanisms" name="site_id" :error="form.errorsFor('site_id')" label="Indique el sitio donde ocurrió el accidente" :stacked="true" custom-class="text-left"></vue-radio>
-            <vue-radio style="padding-top: 20px;" :disabled="viewOnly" class="col-md-6" v-model="infor.lesions_id" :checked="form.lesions_id" label="Tipo de lesión" name="lesions_id" :options="lesionTypes" :stacked="true" custom-class="text-left"></vue-radio>
+            <vue-radio style="padding-top: 20px;" :disabled="viewOnly" class="col-md-6" v-model="infor.type_lesion_id" :checked="form.type_lesion_id" label="Tipo de lesión" name="type_lesion_id" :options="lesionTypes" :stacked="true" custom-class="text-left"></vue-radio>
           </b-form-row>
           <b-form-row>
             <vue-input v-if="infor.site_id == 9" :disabled="viewOnly" class="col-md-6" v-model="infor.otro_sitio" label="Otro sitio" type="text" name="otro_sitio" :error="form.errorsFor('otro_sitio')" placeholder="Otro sitio"></vue-input>
-            <vue-input v-if="infor.lesions_id == 16" :disabled="viewOnly" class="col-md-6" v-model="infor.otra_lesion" label="Otra lesión" type="text" name="otra_lesion" :error="form.errorsFor('otra_lesion')" placeholder="Otro Mecanismo"></vue-input>
+            <vue-input v-if="infor.type_lesion_id == 16" :disabled="viewOnly" class="col-md-6" v-model="infor.otra_lesion" label="Otra lesión" type="text" name="otra_lesion" :error="form.errorsFor('otra_lesion')" placeholder="Otro Mecanismo"></vue-input>
           </b-form-row>
           <b-form-row>
             <vue-radio style="padding-top: 20px;" :disabled="viewOnly" class="col-md-4" v-model="infor.parts_body_id" :checked="form.parts_body_id" label="Partes del cuerpo aparentemente afectado" name="parts_body_id" :options="partsBody" :stacked="true" custom-class="text-left"></vue-radio>
@@ -101,7 +101,7 @@ export default {
           site_id: '',
           agent_id: '',
           mechanism_id: '',
-          lesions_id: '',
+          type_lesion_id: '',
           parts_body_id: '',
         }
       }
@@ -164,8 +164,8 @@ export default {
       this.loading = false;
       this.$emit('input', this.infor);
     },
-    /*'infor.lesions_id' () {
-      if (this.infor.lesions_id.includes(16))
+    /*'infor.type_lesion_id' () {
+      if (this.infor.type_lesion_id.includes(16))
         this.showOtherLesion = true
       else
          this.showOtherLesion = false

@@ -113,6 +113,9 @@ export default {
   },
   data() {
     return {
+      epsDataUrl: "/selects/eps",
+      afpDataUrl: "/selects/afp",
+      arlDataUrl: "/selects/arl",
       departamentsUrl: '/selects/departaments',
       minicipalitiessUrl: '/selects/municipalities',
       zones: [

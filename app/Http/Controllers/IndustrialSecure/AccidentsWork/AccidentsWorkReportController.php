@@ -95,8 +95,22 @@ class AccidentsWorkReportController extends Controller
                     DB::raw("COUNT(sau_aw_form_accidents.id) AS count")
                 )
                 ->where('sau_aw_form_accidents.company_id', $this->company)
-                ->groupBy('year', 'month')
-                ->get();
+                ->groupBy('year', 'month');
+
+                if (isset($request->filters['dateRange']) && $request->filters['dateRange'])
+                {
+                    $dates_request = explode('/', $request->filters['dateRange']);
+
+                    $dates = [];
+
+                    if (COUNT($dates_request) == 2)
+                    {
+                        array_push($dates, $this->formatDateToSave($dates_request[0]));
+                        array_push($dates, $this->formatDateToSave($dates_request[1]));
+                    }
+                        
+                    $count->whereBetween('sau_aw_form_accidents.fecha_accidente', $dates);
+                }
 
             }
             else if ($request->option == "persons")
@@ -107,10 +121,25 @@ class AccidentsWorkReportController extends Controller
                     DB::raw("COUNT(DISTINCT sau_aw_form_accidents.employee_id) AS count")
                 )
                 ->where('sau_aw_form_accidents.company_id', $this->company)
-                ->groupBy('year', 'month')
-                ->get();
+                ->groupBy('year', 'month');
+
+                if (isset($request->filters['dateRange']) && $request->filters['dateRange'])
+                {
+                    $dates_request = explode('/', $request->filters['dateRange']);
+
+                    $dates = [];
+
+                    if (COUNT($dates_request) == 2)
+                    {
+                        array_push($dates, $this->formatDateToSave($dates_request[0]));
+                        array_push($dates, $this->formatDateToSave($dates_request[1]));
+                    }
+                        
+                    $count->whereBetween('sau_aw_form_accidents.fecha_accidente', $dates);
+                }
             }
 
+            $count = $count->get();
             $count = $count->groupBy('year');
             
             $records = collect([]);
@@ -156,14 +185,14 @@ class AccidentsWorkReportController extends Controller
         return $data;
     }
 
-    public function getInformDataDinamic($components = [])
+    public function getInformDataDinamic(Request $request, $components = [])
     {
         if (!$components) {
             $components = $this::INFORMS;
         }
         $informData = collect([]);
         foreach ($components as $component) {
-            $informData->put($component, $this->$component());
+            $informData->put($component, $this->$component($request));
         }
 
         return $informData->toArray();
@@ -189,19 +218,19 @@ class AccidentsWorkReportController extends Controller
         return $this->multiSelectFormat(collect($months));
     }
 
-    public function accidents()
+    public function accidents($request)
     {
         $columns = $this::GROUPING_COLUMNS;
         $informData = collect([]);
 
         foreach ($columns as $column) {
-            $informData->put($column[1], $this->accidentsBar($column[0]));
+            $informData->put($column[1], $this->accidentsBar($column[0], $request));
         }
     
         return $informData->toArray();
     }
 
-    private function accidentsBar($column)
+    private function accidentsBar($column, $request)
     {
         if ($column == 'sau_aw_form_accidents.causo_muerte')
         {
@@ -231,6 +260,21 @@ class AccidentsWorkReportController extends Controller
             ->where('sau_aw_form_accidents.company_id', $this->company)
             ->groupBy('sau_aw_form_accidents.id', 'category');
 
+        if (isset($request->filters['dateRange']) && $request->filters['dateRange'])
+        {
+            $dates_request = explode('/', $request->filters['dateRange']);
+
+            $dates = [];
+
+            if (COUNT($dates_request) == 2)
+            {
+                array_push($dates, $this->formatDateToSave($dates_request[0]));
+                array_push($dates, $this->formatDateToSave($dates_request[1]));
+            }
+                
+            $consultas->betweenDate($dates);
+        }
+
         $consultas = DB::table(DB::raw("({$consultas->toSql()}) AS t"))
         ->selectRaw("
              t.category AS category,
@@ -243,19 +287,19 @@ class AccidentsWorkReportController extends Controller
         return $this->buildDataChart($consultas);
     }
 
-    public function persons()
+    public function persons($request)
     {
         $columns = $this::GROUPING_COLUMNS;
         $informData = collect([]);
 
         foreach ($columns as $column) {
-            $informData->put($column[1], $this->personsBar($column[0]));
+            $informData->put($column[1], $this->personsBar($column[0], $request));
         }
     
         return $informData->toArray();
     }
 
-    private function personsBar($column)
+    private function personsBar($column, $request)
     {
         if ($column == 'sau_aw_form_accidents.causo_muerte')
         {
@@ -284,6 +328,21 @@ class AccidentsWorkReportController extends Controller
         ->join('sau_aw_types_lesion','sau_aw_form_accidents_types_lesion.type_lesion_id', 'sau_aw_types_lesion.id')
         ->where('sau_aw_form_accidents.company_id', $this->company)
         ->groupBy('sau_aw_form_accidents.employee_id', 'category');
+
+        if (isset($request->filters['dateRange']) && $request->filters['dateRange'])
+        {
+            $dates_request = explode('/', $request->filters['dateRange']);
+
+            $dates = [];
+
+            if (COUNT($dates_request) == 2)
+            {
+                array_push($dates, $this->formatDateToSave($dates_request[0]));
+                array_push($dates, $this->formatDateToSave($dates_request[1]));
+            }
+                
+            $consultas->betweenDate($dates);
+        }
 
         $consultas = DB::table(DB::raw("({$consultas->toSql()}) AS t"))
         ->selectRaw("

@@ -107,11 +107,11 @@ class AccidentExcel implements FromCollection, WithHeadings, WithMapping, WithEv
 
     public function map($data): array
     {
-      $values = $data->lesionTypes()->pluck('sau_aw_types_lesion.name')->toArray();
+      /*$values = $data->lesionTypes()->pluck('sau_aw_types_lesion.name')->toArray();
       $data->lesions_id = implode(', ', $values);
 
       $values2 = $data->partsBody()->pluck('sau_aw_parts_body.name')->toArray();
-      $data->parts_body = implode(', ', $values2);
+      $data->parts_body = implode(', ', $values2);*/
 
       $data->dia_Semana = ucfirst(Carbon::parse($data->fecha_accidente)->locale('es_ES')->dayName);
 
@@ -175,11 +175,11 @@ class AccidentExcel implements FromCollection, WithHeadings, WithMapping, WithEv
         $data->zona_accidente,
         $data->causo_muerte  ? 'SI' : 'NO',
         $data->fecha_muerte,
-        $data->agent_id,
-        $data->mechanism_id,
-        $data->site_id,
-        $data->parts_body,
-        $data->lesions_id,
+        $data->agent_id != 8? $data->agentAccident->name : $data->otro_agente,        
+        $data->mechanism_id != 9 ? $data->mechanismAccident->name : $data->otro_mecanismo,
+        $data->site_id != 9 ? $data->siteAccident->name : $data->otro_sitio,
+        $data->parts_body_id != 11 ? $data->partsBody->name : $data->otra_parte,
+        $data->type_lesion_id != 16 ? $data->lesionTypes->name : $data->otra_lesion,
         $data->fecha_diligenciamiento_informe,
         $data->nombres_apellidos_responsable_informe,
         $data->tipo_identificacion_responsable_informe.' - '.$data->identificacion_responsable_informe,

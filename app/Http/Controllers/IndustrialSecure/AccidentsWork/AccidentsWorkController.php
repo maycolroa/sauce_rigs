@@ -117,6 +117,21 @@ class AccidentsWorkController extends Controller
                 else if ($filters['filtersType']['dentroEmpresa'] == 'NOT IN')
                     $accidents->whereNotIn('accidente_ocurrio_dentro_empresa', $values2);
             }
+
+            if (isset($filters["dateRange"]) && $filters["dateRange"])
+            {
+                $dates_request = explode('/', $filters["dateRange"]);
+
+                $dates = [];
+
+                if (COUNT($dates_request) == 2)
+                {
+                    array_push($dates, $this->formatDateToSave($dates_request[0]));
+                    array_push($dates, $this->formatDateToSave($dates_request[1]));
+                }
+                    
+                $accidents->betweenDate($dates);
+            }
         }
 
         return Vuetable::of($accidents)
@@ -153,7 +168,7 @@ class AccidentsWorkController extends Controller
             $accident = new Accident();
             $accident->company_id = $this->company;
             $accident->user_id = $this->user->id;
-            $accident->tipo_vinculacion_persona = $request->tipo_vinculacion_persona;
+            //$accident->tipo_vinculacion_persona = $request->tipo_vinculacion_persona;
 
             ///////////////Empleado//////////////
 
@@ -173,6 +188,9 @@ class AccidentsWorkController extends Controller
                     $accident->employee_position_id = $employee->position->id;
                     $accident->fecha_ingreso_empresa_persona = $employee->income_date;
                     $accident->cargo_persona = $employee->position->name;
+                    $accident->employee_eps_id = $employee->eps->id;
+                    $accident->employee_arl_id = $employee->arl->id;
+                    $accident->employee_afp_id = $employee->afp->id;
                 }
                 else
                 {
@@ -185,6 +203,9 @@ class AccidentsWorkController extends Controller
                     $accident->email_persona = $request->email_persona;
                     $accident->cargo_persona = $request->cargo_persona;
                     $accident->fecha_ingreso_empresa_persona = $request->fecha_ingreso_empresa_persona ? (Carbon::createFromFormat('D M d Y',$request->fecha_ingreso_empresa_persona))->format('Ymd') : NULL;
+                    $accident->employee_eps_id = $request->employee_eps_id;
+                    $accident->employee_arl_id = $request->employee_arl_id;
+                    $accident->employee_afp_id = $request->employee_afp_id;
                 }
             }
             else
@@ -198,6 +219,9 @@ class AccidentsWorkController extends Controller
                 $accident->email_persona = $request->email_persona;
                 $accident->cargo_persona = $request->cargo_persona;
                 $accident->fecha_ingreso_empresa_persona = $request->fecha_ingreso_empresa_persona ? (Carbon::createFromFormat('D M d Y',$request->fecha_ingreso_empresa_persona))->format('Ymd') : NULL;
+                $accident->employee_eps_id = $request->employee_eps_id;
+                $accident->employee_arl_id = $request->employee_arl_id;
+                $accident->employee_afp_id = $request->employee_afp_id;
             }
             
             $accident->direccion_persona = $request->direccion_persona;
@@ -231,32 +255,44 @@ class AccidentsWorkController extends Controller
             $accident->zona_centro_trabajo = $request->zona_centro_trabajo;
 
 
-            ////////////////////////////////Informacion basica///////////////////////
-            $accident->nivel_accidente = $request->nivel_accidente;
-            $accident->fecha_envio_arl = (Carbon::createFromFormat('D M d Y',$request->fecha_envio_arl))->format('Ymd');
-            $accident->fecha_envio_empresa = (Carbon::createFromFormat('D M d Y',$request->fecha_envio_empresa))->format('Ymd');
-            $accident->coordinador_delegado = $request->coordinador_delegado;
-            $accident->cargo = $request->cargo;
-            $accident->employee_eps_id = $request->employee_eps_id;
-            $accident->employee_arl_id = $request->employee_arl_id;
-            $accident->employee_afp_id = $request->employee_afp_id;
+            /*///////////////////////////////Informacion basica///////////////////////
             $accident->tiene_seguro_social = $request->tiene_seguro_social == 'SI' ? true : false;
-            $accident->nombre_seguro_social = $request->nombre_seguro_social;
+            $accident->nombre_seguro_social = $request->nombre_seguro_social;*/
 
 
             ////////////////////Informacion accidente //////////////////////////
+            $accident->nivel_accidente = $request->nivel_accidente;
             $accident->fecha_accidente = $request->fecha_accidente;
             $accident->jornada_accidente = $request->jornada_accidente;
             $accident->estaba_realizando_labor_habitual = $request->estaba_realizando_labor_habitual == 'SI' ? true : false;
             $accident->otra_labor_habitual = $request->otra_labor_habitual;
             $accident->total_tiempo_laborado = $request->total_tiempo_laborado;
             $accident->tipo_accidente = $request->tipo_accidente;
-            $accident->departamento_accidente = $request->departamento_accidente;
-            $accident->ciudad_accidente = $request->ciudad_accidente;
-            $accident->zona_accidente = $request->zona_accidente;
+            
+            if ($request->accidente_ocurrio_dentro_empresa == 'Fuera de la empresa' && $request->tipo_vinculador_laboral != "Independiente")
+            {
+                $accident->departamento_accidente = $request->departamento_accidente;
+                $accident->ciudad_accidente = $request->ciudad_accidente;
+                $accident->zona_accidente = $request->zona_accidente;
+            }
+            else if ($request->tipo_vinculador_laboral == "Independiente")
+            {
+                $accident->departamento_accidente = $request->departamento_accidente;
+                $accident->ciudad_accidente = $request->ciudad_accidente;
+                $accident->zona_accidente = $request->zona_accidente;
+            }
+            else if ($request->accidente_ocurrio_dentro_empresa == 'Dentro de la empresa' && $request->tipo_vinculador_laboral != "Independiente")
+            {
+                $accident->departamento_accidente = $request->departamento_sede_principal_id;
+                $accident->ciudad_accidente = $request->ciudad_sede_principal_id;
+                $accident->zona_accidente = $request->zona_sede_principal;
+            }
+            
             $accident->accidente_ocurrio_dentro_empresa = $request->accidente_ocurrio_dentro_empresa;
             $accident->causo_muerte = $request->causo_muerte == 'SI' ? true : false;
             $accident->fecha_muerte = $request->fecha_muerte ? (Carbon::createFromFormat('D M d Y',$request->fecha_muerte))->format('Ymd'): NULL;
+            $accident->parts_body_id = $request->parts_body_id;
+            $accident->type_lesion_id = $request->type_lesion_id;
             $accident->otro_sitio = $request->otro_sitio;
             $accident->otro_mecanismo = $request->otro_mecanismo;
             $accident->otra_lesion = $request->otra_lesion;
@@ -265,6 +301,10 @@ class AccidentsWorkController extends Controller
             $accident->site_id = $request->site_id;
 
             ///////////////////Descripcion del accidente/////////////////////////
+            $accident->fecha_envio_arl = (Carbon::createFromFormat('D M d Y',$request->fecha_envio_arl))->format('Ymd');
+            $accident->fecha_envio_empresa = (Carbon::createFromFormat('D M d Y',$request->fecha_envio_empresa))->format('Ymd');
+            $accident->coordinador_delegado = $request->coordinador_delegado;
+            $accident->cargo = $request->cargo;
             $accident->descripcion_accidente = $request->descripcion_accidente;
             $accident->personas_presenciaron_accidente = $request->personas_presenciaron_accidente  == 'SI' ? true : false;
             $accident->nombres_apellidos_responsable_informe = $request->nombres_apellidos_responsable_informe;
@@ -283,8 +323,8 @@ class AccidentsWorkController extends Controller
                 return $this->respondHttp500();
             }
 
-            $accident->partsBody()->sync($request->parts_body);
-            $accident->lesionTypes()->sync($request->lesions_id);
+            /*$accident->partsBody()->sync($request->parts_body);
+            $accident->lesionTypes()->sync($request->lesions_id);*/
 
             foreach ($request->persons['persons'] as $key => $value) {
                 $person = new Person;
@@ -444,11 +484,11 @@ class AccidentsWorkController extends Controller
             $accident->multiselect_municipality_centro = $accident->ciudad_centro_trabajo_id ? $accident->ciudadCentro->multiselect() : [];
             $accident->multiselect_municipality_accident = $accident->ciudadAccident->multiselect();
 
-            $values = $accident->lesionTypes()->pluck('sau_aw_types_lesion.id');
+            /*$values = $accident->lesionTypes()->pluck('sau_aw_types_lesion.id');
             $accident->lesions_id = $values;
 
             $values2 = $accident->partsBody()->pluck('sau_aw_parts_body.id');
-            $accident->parts_body = $values2;
+            $accident->parts_body = $values2;*/
 
             $accident->multiselect_eps = $accident->eps->multiselect();
             $accident->multiselect_afp = $accident->afp->multiselect();
@@ -504,7 +544,7 @@ class AccidentsWorkController extends Controller
 
         try 
         {
-            $accident->tipo_vinculacion_persona = $request->tipo_vinculacion_persona;
+            //$accident->tipo_vinculacion_persona = $request->tipo_vinculacion_persona;
 
             ///////////////Empleado//////////////
 
@@ -524,6 +564,9 @@ class AccidentsWorkController extends Controller
                     $accident->employee_position_id = $employee->position->id;
                     $accident->fecha_ingreso_empresa_persona = $employee->income_date;
                     $accident->cargo_persona = $employee->position->name;
+                    $accident->employee_eps_id = $employee->eps->id;
+                    $accident->employee_arl_id = $employee->arl->id;
+                    $accident->employee_afp_id = $employee->afp->id;
                 }
                 else
                 {
@@ -536,6 +579,9 @@ class AccidentsWorkController extends Controller
                     $accident->email_persona = $request->email_persona;
                     $accident->cargo_persona = $request->cargo_persona;
                     $accident->fecha_ingreso_empresa_persona = $request->fecha_ingreso_empresa_persona ? (Carbon::createFromFormat('D M d Y',$request->fecha_ingreso_empresa_persona))->format('Ymd') : NULL;
+                    $accident->employee_eps_id = $request->employee_eps_id;
+                    $accident->employee_arl_id = $request->employee_arl_id;
+                    $accident->employee_afp_id = $request->employee_afp_id;
                 }
             }
             else
@@ -549,6 +595,9 @@ class AccidentsWorkController extends Controller
                 $accident->email_persona = $request->email_persona;
                 $accident->cargo_persona = $request->cargo_persona;
                 $accident->fecha_ingreso_empresa_persona = $request->fecha_ingreso_empresa_persona ? (Carbon::createFromFormat('D M d Y',$request->fecha_ingreso_empresa_persona))->format('Ymd') : NULL;
+                $accident->employee_eps_id = $request->employee_eps_id;
+                $accident->employee_arl_id = $request->employee_arl_id;
+                $accident->employee_afp_id = $request->employee_afp_id;
             }
             
             $accident->direccion_persona = $request->direccion_persona;
@@ -582,32 +631,43 @@ class AccidentsWorkController extends Controller
             $accident->zona_centro_trabajo = $request->zona_centro_trabajo;
 
 
-            ////////////////////////////////Informacion basica///////////////////////
-            $accident->nivel_accidente = $request->nivel_accidente;
-            $accident->fecha_envio_arl = (Carbon::createFromFormat('D M d Y',$request->fecha_envio_arl))->format('Ymd');
-            $accident->fecha_envio_empresa = (Carbon::createFromFormat('D M d Y',$request->fecha_envio_empresa))->format('Ymd');
-            $accident->coordinador_delegado = $request->coordinador_delegado;
-            $accident->cargo = $request->cargo;
-            $accident->employee_eps_id = $request->employee_eps_id;
-            $accident->employee_arl_id = $request->employee_arl_id;
-            $accident->employee_afp_id = $request->employee_afp_id;
+            /*///////////////////////////////Informacion basica///////////////////////
             $accident->tiene_seguro_social = $request->tiene_seguro_social == 'SI' ? true : false;
-            $accident->nombre_seguro_social = $request->nombre_seguro_social;
+            $accident->nombre_seguro_social = $request->nombre_seguro_social;*/
 
 
             ////////////////////Informacion accidente //////////////////////////
+            $accident->nivel_accidente = $request->nivel_accidente;
             $accident->fecha_accidente = $request->fecha_accidente;
             $accident->jornada_accidente = $request->jornada_accidente;
             $accident->estaba_realizando_labor_habitual = $request->estaba_realizando_labor_habitual == 'SI' ? true : false;
             $accident->otra_labor_habitual = $request->otra_labor_habitual;
             $accident->total_tiempo_laborado = $request->total_tiempo_laborado;
             $accident->tipo_accidente = $request->tipo_accidente;
-            $accident->departamento_accidente = $request->departamento_accidente;
-            $accident->ciudad_accidente = $request->ciudad_accidente;
-            $accident->zona_accidente = $request->zona_accidente;
+
+            if ($request->accidente_ocurrio_dentro_empresa == 'Fuera de la empresa' && $request->tipo_vinculador_laboral != "Independiente")
+            {
+                $accident->departamento_accidente = $request->departamento_accidente;
+                $accident->ciudad_accidente = $request->ciudad_accidente;
+                $accident->zona_accidente = $request->zona_accidente;
+            }
+            else if ($request->tipo_vinculador_laboral == "Independiente")
+            {
+                $accident->departamento_accidente = $request->departamento_accidente;
+                $accident->ciudad_accidente = $request->ciudad_accidente;
+                $accident->zona_accidente = $request->zona_accidente;
+            }
+            else if ($request->accidente_ocurrio_dentro_empresa == 'Dentro de la empresa' && $request->tipo_vinculador_laboral != "Independiente")
+            {
+                $accident->departamento_accidente = $request->departamento_sede_principal_id;
+                $accident->ciudad_accidente = $request->ciudad_sede_principal_id;
+                $accident->zona_accidente = $request->zona_sede_principal;
+            }
             $accident->accidente_ocurrio_dentro_empresa = $request->accidente_ocurrio_dentro_empresa;
             $accident->causo_muerte = $request->causo_muerte == 'SI' ? true : false;
             $accident->fecha_muerte = $request->fecha_muerte ? (Carbon::createFromFormat('D M d Y',$request->fecha_muerte))->format('Ymd'): NULL;
+            $accident->parts_body_id = $request->parts_body_id;
+            $accident->type_lesion_id = $request->type_lesion_id;
             $accident->otro_sitio = $request->otro_sitio;
             $accident->otro_mecanismo = $request->otro_mecanismo;
             $accident->otra_lesion = $request->otra_lesion;
@@ -616,6 +676,10 @@ class AccidentsWorkController extends Controller
             $accident->site_id = $request->site_id;
 
             ///////////////////Descripcion del accidente/////////////////////////
+            $accident->fecha_envio_arl = (Carbon::createFromFormat('D M d Y',$request->fecha_envio_arl))->format('Ymd');
+            $accident->fecha_envio_empresa = (Carbon::createFromFormat('D M d Y',$request->fecha_envio_empresa))->format('Ymd');
+            $accident->coordinador_delegado = $request->coordinador_delegado;
+            $accident->cargo = $request->cargo;
             $accident->descripcion_accidente = $request->descripcion_accidente;
             $accident->personas_presenciaron_accidente = $request->personas_presenciaron_accidente  == 'SI' ? true : false;
             $accident->nombres_apellidos_responsable_informe = $request->nombres_apellidos_responsable_informe;
@@ -634,8 +698,8 @@ class AccidentsWorkController extends Controller
                 return $this->respondHttp500();
             }
 
-            $accident->partsBody()->sync($request->parts_body);
-            $accident->lesionTypes()->sync($request->lesions_id);
+            /*$accident->partsBody()->sync($request->parts_body);
+            $accident->lesionTypes()->sync($request->lesions_id);*/
 
             foreach ($request->persons['persons'] as $key => $value) 
             {
@@ -781,11 +845,11 @@ class AccidentsWorkController extends Controller
         $accident->causo_muerte = $accident->causo_muerte ? 'SI' : 'NO';
         $accident->personas_presenciaron_accidente = $accident->personas_presenciaron_accidente ? 'SI' : 'NO';
 
-        $values = $accident->lesionTypes()->pluck('sau_aw_types_lesion.name')->toArray();
+        /*$values = $accident->lesionTypes()->pluck('sau_aw_types_lesion.name')->toArray();
         $accident->lesions_id = implode(', ', $values);
 
         $values2 = $accident->partsBody()->pluck('sau_aw_parts_body.name')->toArray();
-        $accident->parts_body = implode(', ', $values2);
+        $accident->parts_body = implode(', ', $values2);*/
 
         $persons = [];
         $participants = [];

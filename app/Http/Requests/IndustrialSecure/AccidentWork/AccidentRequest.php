@@ -81,7 +81,7 @@ class AccidentRequest extends FormRequest
         $id = $this->input('id');
 
         $accidentLevels = ['Accidente', 'Accidente grave', 'Accidente mortal', 'Accidente leve', 'Incidente' ];
-        $laborLinkingTypes = ['Empleador','Contratante','Cooperativa de trabaso asociado'];
+        $laborLinkingTypes = ['Empleador','Misión','Cooperativa de trabaso asociado', 'Estudiante o Aprendiz', 'Independiente'];
         $idTypes = ['NI','CC','CE','NU','PA'];
         $zones = ['Urbana', 'Rural'];
         $shifts = ['Diurna','Nocturna','Mixto','Turnos'];
@@ -93,7 +93,7 @@ class AccidentRequest extends FormRequest
 
         $rules = [
             'tipo_vinculador_laboral' => 'required|string|in:' . implode(',', $laborLinkingTypes),
-            'tipo_vinculacion_persona' => 'required|string|in:' . implode(',', $personLinkingTypes),
+            //'tipo_vinculacion_persona' => 'nullable|string|in:' . implode(',', $personLinkingTypes),
             'nombre_persona' => 'required_unless:tipo_vinculador_laboral,Empleador|',
             'tipo_identificacion_persona' => 'nullable'/*'required_unless:tipo_vinculador_laboral,Empleador|in:' . implode(',', $idTypes)*/,
             'identificacion_persona' => 'required_unless:tipo_vinculador_laboral,Empleador',
@@ -164,9 +164,10 @@ class AccidentRequest extends FormRequest
             'otro_sitio' => 'nullable',
             'otro_mecanismo' => 'nullable',
             'otra_lesion' => 'nullable',
+            'otro_agente' => 'nullable',
 
-            'parts_body' => 'required|array',
-            'lesions_id' => 'required|array',
+            'parts_body_id' => 'required|array',
+            'type_lesion_id' => 'required|array',
             //////////////////////////////////////////////////////////////////
             'descripcion_accidente' => 'required|string',
             'personas_presenciaron_accidente' => 'required|string',

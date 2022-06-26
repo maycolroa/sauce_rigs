@@ -298,7 +298,7 @@
                     <td>{{$form->agentAccident->name}}</td>
                     <td>{{$form->mechanismAccident->name == 'Otro' ? $form->otro_mecanismo : $form->mechanismAccident->name}}</td>
                     @else
-                    <td colspan="2">{{$form->agentAccident->name}}</td>
+                    <td colspan="2">{{$form->agentAccident->name == 'Otros agentes no clasificados' ? $form->otro_agente : $form->agentAccident->name}}</td>
                     <td>{{$form->mechanismAccident->name == 'Otro' ? $form->otro_mecanismo : $form->mechanismAccident->name}}</td>
                     @endif
                 </tr>
@@ -308,9 +308,9 @@
                     <th colspan="2">Tipo de lesión</th>
                 </tr>
                 <tr>
-                    <td>{{$form->siteAccident->name}}</td>
-                    <td colspan="2">{{$form->parts_body}}</td>
-                    <td colspan="2">{{$form->lesions_id}}</td>
+                    <td>{{$form->siteAccident->name == 'Otro' ? $form->otro_ditio : $form->siteAccident->name}}</td>
+                    <td>{{$form->partsBody->name == 'Ubicaciones múltiples' ? $form->otra_parte : $form->partsBody->name}}</td>
+                    <td>{{$form->lesionTypes->name == 'Otro' ? $form->otra_lesion : $form->lesionTypes->name}}</td>
                 </tr>
             </thead>
         </table>

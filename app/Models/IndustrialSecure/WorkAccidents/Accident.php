@@ -89,6 +89,10 @@ class Accident extends Model
         'site_id',
         'agent_id',
         'mechanism_id',
+        'parts_body_id',
+        'type_lesion_id',
+        'otro_agente',
+        'otra_parte'
     ];
 
     public function agentAccident()
@@ -106,12 +110,12 @@ class Accident extends Model
 
     public function partsBody()
     {
-        return $this->belongsToMany(PartBody::class, 'sau_aw_form_accidents_parts_body', 'form_accident_id', 'part_body_id');
+        return $this->belongsTo(PartBody::class, 'parts_body_id');
     }
 
     public function lesionTypes()
     {
-        return $this->belongsToMany(TypeLesion::class, 'sau_aw_form_accidents_types_lesion', 'form_accident_id', 'type_lesion_id');
+        return $this->belongsTo(TypeLesion::class, 'type_lesion_id');
     }
 
     public function departamentPerson()
@@ -318,5 +322,14 @@ class Accident extends Model
         }
 
         return $query;
+    }
+
+    public function scopeBetweenDate($query, $dates)
+    {
+        if (COUNT($dates) == 2)
+        {
+            $query->whereBetween('sau_aw_form_accidents.fecha_accidente', $dates);
+            return $query;
+        }
     }
 }
