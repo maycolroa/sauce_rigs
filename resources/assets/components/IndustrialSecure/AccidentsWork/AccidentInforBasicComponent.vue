@@ -1,18 +1,6 @@
 <template>
       <div>
-          <b-form-row>
-            <vue-radio :disabled="viewOnly" :checked="infor.nivel_accidente" class="col-md-12" v-model="infor.nivel_accidente" :options="accidentLevels" name="nivel_accidente" :error="form.errorsFor('nivel_accidente')" label="Nivel de accidente"></vue-radio>          
-          </b-form-row>
-          <b-form-row>
-            <vue-datepicker :disabled="viewOnly" class="col-md-6" v-model="infor.fecha_envio_arl" label="Fecha en que se envía la investigación a la ARL" :full-month-name="true" placeholder="Seleccione la fecha" :error="form.errorsFor('fecha_envio_arl')" name="fecha_envio_arl" :disabled-dates="disabledDates">
-                </vue-datepicker>
-            <vue-datepicker :disabled="viewOnly" class="col-md-6" v-model="infor.fecha_envio_empresa" label="Fecha en que se envía recomendación a la empresa" :full-month-name="true" placeholder="Seleccione la fecha" :error="form.errorsFor('fecha_envio_empresa')" name="fecha_envio_empresa" :disabled-dates="disabledDates">
-            </vue-datepicker>
-          </b-form-row>
-          <b-form-row>
-            <vue-input :disabled="viewOnly" class="col-md-6" v-model="infor.coordinador_delegado" label="Coordinador delegado" type="text" name="coordinador_delegado" :error="form.errorsFor('coordinador_delegado')" placeholder="Coordinador delegado"></vue-input>   
-            <vue-input :disabled="viewOnly" class="col-md-6" v-model="infor.cargo" label="Cargo" type="text" name="cargo" :error="form.errorsFor('cargo')" placeholder="Cargo"></vue-input> 
-          </b-form-row>
+          
           <b-form-row>
             <vue-ajax-advanced-select :disabled="viewOnly" class="col-md-6" v-model="infor.employee_eps_id" :error="form.errorsFor('employee_eps_id')" :selected-object="infor.multiselect_eps" name="employee_eps_id" :label="keywordCheck('eps')+' a la que está afiliado'" placeholder="Seleccione una opción" :url="epsDataUrl">
             </vue-ajax-advanced-select>
@@ -102,13 +90,6 @@ export default {
         {text: 'CE', value: 'CE'},
         {text: 'NU', value: 'NU'},
         {text: 'PA', value: 'PA'},
-      ],
-      accidentLevels: [
-        {text: 'Accidente', value: 'Accidente'},
-        {text: 'Accidente grave', value: 'Accidente grave'},
-        {text: 'Accidente mortal', value: 'Accidente mortal'},
-        {text: 'Accidente leve', value: 'Accidente leve'},
-        {text: 'Incidente', value: 'Incidente'},
       ],
       disabledDates: {
         from: new Date()

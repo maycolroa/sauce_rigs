@@ -6,8 +6,9 @@
         <wizard-step :tab="props.tab" @click.native="props.navigateToTab(props.index)" @keyup.enter.native="props.navigateToTab(props.index)" :transition="props.transition" :index="props.index">
         <span slot="title" :class="{'text-danger':props.tab.validationError}" v-html="props.tab.title"></span>
         </wizard-step>
-      </template>      
-      <tab-content title="Información de la persona que se accidentó">
+      </template>
+
+      <tab-content title="Identificación del empleador, contratante o cooperativa">
         <b-row>
           <b-col>
             <b-card bg-variant="transparent" border-variant="dark" title="" class="mb-3 box-shadow-none">
@@ -16,7 +17,30 @@
               </b-form-row>
             </b-card>
           </b-col>
-        </b-row>                           
+        </b-row>
+        <b-row>
+          <b-col>
+            <b-card v-if="form.tipo_vinculador_laboral" bg-variant="transparent" border-variant="dark" title="" class="mb-3 box-shadow-none">
+              <b-row v-if="form.tipo_vinculador_laboral != 'Independiente'">
+                <b-col>
+                  <information-company
+                  :form="form"
+                  :company="form"
+                  :view-only="viewOnly"
+                  :is-edit="isEdit"/>
+                </b-col>
+              </b-row>
+              <b-row v-else>
+                <b-col>
+                  <vue-input :disabled="viewOnly" class="col-md-12" v-model="form.razon_social" label="Nombre o razón social" type="text" name="razon_social" :error="form.errorsFor('razon_social')" placeholder="Nombre o razón social"></vue-input> 
+                </b-col>
+              </b-row>
+            </b-card>
+          </b-col>
+        </b-row>
+      </tab-content>
+
+      <tab-content title="Información de la persona que se accidentó">                         
         <b-row v-if="form.tipo_vinculador_laboral == 'Empleador'">
           <b-col>
             <b-card bg-variant="transparent" border-variant="dark" title="" class="mb-3 box-shadow-none">
@@ -37,7 +61,7 @@
             </b-card>
           </b-col>
         </b-row>
-        <b-row v-if="form.tipo_vinculador_laboral == 'Contratante' || form.tipo_vinculador_laboral == 'Cooperativa de trabaso asociado'">
+        <b-row v-if="form.tipo_vinculador_laboral && form.tipo_vinculador_laboral != 'Empleador'">
           <b-col>
             <b-card bg-variant="transparent" border-variant="dark" title="" class="mb-3 box-shadow-none">
               <b-row>
@@ -55,25 +79,7 @@
         </b-row>
       </tab-content>
 
-      <tab-content title="Identificación del empleador, contratante o cooperativa">
-        <b-row>
-          <b-col>
-            <b-card bg-variant="transparent" border-variant="dark" title="" class="mb-3 box-shadow-none">
-              <b-row>
-                <b-col>
-                  <information-company
-                  :form="form"
-                  :company="form"
-                  :view-only="viewOnly"
-                  :is-edit="isEdit"/>
-                </b-col>
-              </b-row>
-            </b-card>
-          </b-col>
-        </b-row>
-      </tab-content>
-
-      <tab-content title="Información básica">
+      <!--<tab-content title="Información básica">
         <b-row>
           <b-col>
             <b-card bg-variant="transparent" border-variant="dark" title="" class="mb-3 box-shadow-none">
@@ -89,7 +95,7 @@
             </b-card>
           </b-col>
         </b-row>
-      </tab-content>
+      </tab-content>-->
 
       <tab-content title="Información sobre el accidente">
         <b-row>
@@ -350,8 +356,8 @@ export default {
           site_id: '',
           agent_id: '',
           mechanism_id: '',
-          lesions_id: [],
-          parts_body: [],
+          lesions_id: '',
+          parts_body_id: '',
           actionPlan: {
               activities: [],
               activitiesRemoved: []
@@ -381,16 +387,30 @@ export default {
     },
     'form.employee_id' () {
       this.updateDetails(`/administration/employee/${this.form.employee_id}`, 'employeeDetail')
+    },
+    'form.tipo_vinculador_laboral' () {
+      if (this.form.tipo_vinculador_laboral == 'Empleador')
+      {
+          axios.get(`/system/company/${this.auth.company_id}`)
+          .then(response => {
+              this.form.razon_social = response.data.data.name;
+          })
+          .catch(error => {
+              Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
+          });
+      }
+      else
+      {
+        this.form.razon_social = '';
+      }
     }
-  },
-  computed: {
   },
   mounted() {
     setTimeout(() => {
       this.$refs.wizardFormEvaluation.activateAll();
       if (this.form.employee_id)
       {
-      this.updateDetails(`/administration/employee/${this.form.employee_id}`, 'employeeDetail')
+        this.updateDetails(`/administration/employee/${this.form.employee_id}`, 'employeeDetail')
       } 
     }, 4000)       
   },
@@ -409,8 +429,10 @@ export default {
       ],
       vinculationLaboral: [
         {text: 'Empleador', value: 'Empleador'},
-        {text: 'Contratante', value: 'Contratante'},
-        {text: 'Cooperativa de trabajo asociado', value: 'Cooperativa de trabajo asociado'}
+        {text: 'Misión', value: 'Misión'},
+        {text: 'Cooperativa de trabajo asociado', value: 'Cooperativa de trabajo asociado'},
+        {text: 'Estudiante o Aprendiz', value: 'Estudiante o Aprendiz'},
+        {text: 'Independiente', value: 'Independiente'}
       ],
       zones: [
          {text: 'Urbana', value: 'Urbana'},

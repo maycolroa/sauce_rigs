@@ -367,7 +367,10 @@ return [
       'questions.*.answers' => 'Respuestas',
       'elements_id.*.entry' => 'Método de ingreso',
       'elements_id.*.type' => 'el tipo de elemento',
-      'elements_id.*.quantity' => 'Cantidad'
+      'elements_id.*.quantity' => 'Cantidad',
+      'mechanism_id' => 'Mecanismo',
+      'site_id' => 'Sitio',
+      'agent_id' => 'Agente'
     ],
 
 ];

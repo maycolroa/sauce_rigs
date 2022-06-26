@@ -1,6 +1,16 @@
 <template>
       <div>
           <b-form-row>
+            <vue-datepicker :disabled="viewOnly" class="col-md-6" v-model="description.fecha_envio_arl" label="Fecha en que se envía la investigación a la ARL" :full-month-name="true" placeholder="Seleccione la fecha" :error="form.errorsFor('fecha_envio_arl')" name="fecha_envio_arl" :disabled-dates="disabledDates">
+                </vue-datepicker>
+            <vue-datepicker :disabled="viewOnly" class="col-md-6" v-model="description.fecha_envio_empresa" label="Fecha en que se envía recomendación a la empresa" :full-month-name="true" placeholder="Seleccione la fecha" :error="form.errorsFor('fecha_envio_empresa')" name="fecha_envio_empresa" :disabled-dates="disabledDates">
+            </vue-datepicker>
+          </b-form-row>
+          <b-form-row>
+            <vue-input :disabled="viewOnly" class="col-md-6" v-model="description.coordinador_delegado" label="Coordinador delegado" type="text" name="coordinador_delegado" :error="form.errorsFor('coordinador_delegado')" placeholder="Coordinador delegado"></vue-input>   
+            <vue-input :disabled="viewOnly" class="col-md-6" v-model="description.cargo" label="Cargo" type="text" name="cargo" :error="form.errorsFor('cargo')" placeholder="Cargo"></vue-input> 
+          </b-form-row>
+          <b-form-row>
             <vue-datepicker :disabled="viewOnly" class="col-md-6 offset-md-3" v-model="description.fecha_diligenciamiento_informe" label="Fecha de diligenciamiento del informe" :full-month-name="true" placeholder="Seleccione la fecha" :error="form.errorsFor('fecha_diligenciamiento_informe')" name="fecha_diligenciamiento_informe" :disabled-dates="disabledDates"></vue-datepicker>        
           </b-form-row>
           <b-form-row>
@@ -58,6 +68,10 @@ export default {
     description: {
       default() {
         return {
+          fecha_envio_arl: '',
+          fecha_envio_empresa: '',
+          coordinador_delegado: '',
+          cargo: '',
           nombres_apellidos_responsable_informe: '',
           cargo_responsable_informe: '',
           tipo_identificacion_responsable_informe: '',

@@ -38,6 +38,16 @@
             <vue-input :disabled="viewOnly" class="col-md-6" v-model="employee.salario_persona" label="Salario" type="number" name="salario_persona" :error="form.errorsFor('salario_persona')" placeholder="Salario"></vue-input>
             <vue-radio :disabled="viewOnly" :checked="employee.jornada_trabajo_habitual_persona" class="col-md-6" v-model="employee.jornada_trabajo_habitual_persona" :options="shifts" name="jornada_trabajo_habitual_persona" :error="form.errorsFor('jornada_trabajo_habitual_persona')" label="Jorada de trabajo habitual"></vue-radio>
           </b-form-row> 
+          <b-form-row>
+            <vue-ajax-advanced-select :disabled="viewOnly" class="col-md-6" v-model="employee.employee_eps_id" :error="form.errorsFor('employee_eps_id')" :selected-object="employee.multiselect_eps" name="employee_eps_id" :label="keywordCheck('eps')+' a la que está afiliado'" placeholder="Seleccione una opción" :url="epsDataUrl">
+            </vue-ajax-advanced-select>
+            <vue-ajax-advanced-select :disabled="viewOnly" class="col-md-6" v-model="employee.employee_afp_id" :error="form.errorsFor('employee_afp_id')" :selected-object="employee.multiselect_afp" name="employee_afp_id" :label="keywordCheck('afp')+' a la que está afiliado'" placeholder="Seleccione una opción" :url="afpDataUrl">
+            </vue-ajax-advanced-select>   
+          </b-form-row>  
+          <b-form-row>
+            <vue-ajax-advanced-select :disabled="viewOnly" class="col-md-6" v-model="employee.employee_arl_id" :error="form.errorsFor('employee_arl_id')" :selected-object="employee.multiselect_arl" name="employee_arl_id" :label="keywordCheck('arl')+' a la que está afiliado'" placeholder="Seleccione una opción" :url="arlDataUrl">
+            </vue-ajax-advanced-select>
+          </b-form-row>
       </div>
 </template>
 
@@ -87,7 +97,10 @@ export default {
           tiempo_ocupacion_habitual_persona: '',
           fecha_ingreso_empresa_persona: '',
           salario_persona: '',
-          jornada_trabajo_habitual_persona: ''
+          jornada_trabajo_habitual_persona: '',
+          employee_eps_id: '',
+          employee_arl_id: '',
+          employee_afp_id: '',
         }
       }
     },
