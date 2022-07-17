@@ -33,7 +33,7 @@
       <vue-radio v-if="auth.inventaryEpp == 'SI'" :disabled="viewOnly" class="col-md-6" v-model="form.identify_each_element" :options="siNo" name="identify_each_element" :error="form.errorsFor('identify_each_element')" label="¿Desea identificar cada elemento?" :checked="form.identify_each_element"></vue-radio>
       </b-form-row>
 
-      <b-form-row>
+    <b-form-row>
       <vue-radio :disabled="viewOnly" class="col-md-6" v-model="form.expiration_date" :options="siNo" name="expiration_date" :error="form.errorsFor('expiration_date')" label="¿Tiene máximo tiempo de uso?" :checked="form.expiration_date"></vue-radio>
       <vue-input v-if="form.expiration_date == 'SI'" :disabled="viewOnly" class="col-md-6" v-model="form.days_expired" label="Máximos dias de uso" type="number" name="days_expired" :error="form.errorsFor('days_expired')" placeholder="Máximos dias de uso"></vue-input>
     </b-form-row>
@@ -48,6 +48,34 @@
       </template>
       <vue-file-simple :disabled="viewOnly" :help-text="(form.id && form.image) ? `Para descargar el archivo actual, haga click <a href='/industrialSecurity/epp/element/download/${form.id}' target='blank'>aqui</a> ` : null" class="col-md-12" v-model="form.image" label="Imagen" name="image" placeholder="Seleccione un archivo" :error="form.errorsFor(`image`)" :maxFileSize="20"/>
     </b-form-row>
+
+    <b-form-row>
+      <vue-radio :disabled="viewOnly" class="col-md-12" v-model="form.stock_minimun" :options="siNo" name="stock_minimun" :error="form.errorsFor('stock_minimun')" label="¿Desea configurar stock mínimo para este elemento?" :checked="form.stock_minimun"></vue-radio>
+    </b-form-row>
+
+    <b-card v-if="form.stock_minimun == 'SI'" bg-variant="transparent" border-variant="dark" title="Ubicaciones" class="mb-3 box-shadow-none">
+        <b-card>
+          <template v-for="(location, index) in form.locations_stock">
+            <div :key="location.id">
+              <b-form-row>
+                <div class="col-md-12">
+                    <div class="float-right">
+                        <b-btn v-if="!viewOnly" variant="outline-primary icon-btn borderless" size="sm" v-b-tooltip.top title="Eliminar" @click.prevent="removeLocation(index)"><span class="ion ion-md-close-circle"></span></b-btn>
+                    </div>
+                </div>
+                <vue-ajax-advanced-select :disabled="viewOnly" class="col-md-6" v-model="location.id_loc" :error="form.errorsFor(`locations_stock.${index}.id_loc`)" name="id_loc" label="Ubicación" placeholder="Seleccione la ubicación" :url="tagsLocationsDataUrl" :multiple="false" :selected-object="location.multiselect_location" :emptyAll="true" >
+              </vue-ajax-advanced-select>
+                <vue-input :disabled="viewOnly" class="col-md-6" v-model="location.quantity" label="Cantidad" type="number" name="quantity" :error="form.errorsFor(`locations_stock.${index}.quantity`)" placeholder="Cantidad"></vue-input>
+              </b-form-row>
+            </div>
+          </template>
+        </b-card>
+    </b-card>
+    <b-form-row style="padding-bottom: 20px;">
+      <div class="col-md-12">
+          <center><b-btn v-if="form.stock_minimun == 'SI'" variant="primary" @click.prevent="addLocation()"><span class="ion ion-md-add-circle"></span>&nbsp;&nbsp;Agregar</b-btn></center>
+      </div>
+    </b-form-row>  
 
     <div class="row float-right pt-10 pr-10">
       <template>
@@ -98,7 +126,8 @@ export default {
             operating_instructions: '',
             applicable_standard: [],
             identify_each_element: '',
-            expiration_date: ''
+            expiration_date: '',
+            locations_stock: []
         };
       }
     }
@@ -128,7 +157,8 @@ export default {
         {text: 'Elemento de protección personal', value: 'Elemento de protección personal'},
         {text: 'Dotación', value: 'Dotación'}
       ],
-      inventary: auth.inventaryEpp
+      inventary: auth.inventaryEpp,
+      tagsLocationsDataUrl: '/selects/eppLocations',
     };
   },
   methods: {
@@ -144,7 +174,24 @@ export default {
         .catch(error => {
           this.loading = false;
         });
-    }
+    },
+    addLocation() 
+    {
+      this.form.locations_stock.push({
+          key: new Date().getTime(),
+          id_loc: '',
+          quantity: '',
+          
+      })
+    },
+    removeLocation(index)
+    {
+      if (this.form.locations_stock[index].id != undefined)
+      {
+        this.form.delete.elements.push(this.form.locations_stock[index].id)
+      }
+      this.form.locations_stock.splice(index, 1)
+    },
   }
 };
 </script>

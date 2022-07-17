@@ -11,6 +11,7 @@ use App\Models\IndustrialSecure\Epp\TagsType;
 use App\Models\IndustrialSecure\Epp\ElementBalanceInicialLog;
 use App\Models\IndustrialSecure\Epp\TagsApplicableStandard;
 use App\Models\IndustrialSecure\Epp\ElementTransactionEmployee;
+use App\Models\IndustrialSecure\Epp\ElementStockMinimun;
 use App\Http\Requests\IndustrialSecure\Epp\ElementRequest;
 use Validator;
 use Illuminate\Support\Facades\Storage;
@@ -76,6 +77,7 @@ class ElementController extends Controller
      */
     public function store(ElementRequest $request)
     {
+        \Log::info($request);
         Validator::make($request->all(), [
             "image" => [
                 function ($attribute, $value, $fail)
@@ -113,6 +115,7 @@ class ElementController extends Controller
         $element->identify_each_element = $request->identify_each_element == "SI" ? true : false;
         $element->expiration_date = $request->expiration_date == "SI" ? true : false;
         $element->days_expired = $request->expiration_date == "SI" ? $request->days_expired : NULL;
+        $element->stock_minimun = $request->stock_minimun == "SI" ? true : false;
         $element->company_id = $this->company;
         $element->type = $types->implode(',');
         $element->mark = $mark->implode(',');
@@ -129,6 +132,18 @@ class ElementController extends Controller
 
             if(!$element->update())
                 return $this->respondHttp500();
+        }
+
+        if ($request->has('locations_stock') && count($request->locations_stock) > 0)
+        {
+            foreach ($request->locations_stock as $key => $stock) 
+            {
+                $record = new ElementStockMinimun;
+                $record->element_id = $element->id;
+                $record->location_id = $stock['id_loc'];
+                $record->quantity = $stock['quantity'];
+                $record->save();
+            }
         }
 
         return $this->respondHttp200([
@@ -152,10 +167,32 @@ class ElementController extends Controller
             $element->reusable = $element->reusable ? 'SI' : 'NO';
             $element->identify_each_element = $element->identify_each_element ? 'SI' : 'NO';
             $element->expiration_date = $element->expiration_date ? 'SI' : 'NO';
+            $element->stock_minimun = $element->stock_minimun ? 'SI' : 'NO';
             if ($element->image)
                 $element->path = $element->path_image();
             else
                 $element->path = NULL;
+
+            $locations = ElementStockMinimun::where('element_id', $element->id)->get();
+
+            $stock_minimun = [];
+
+            if ($locations->count() > 0)
+            {
+                foreach ($locations as $key => $loc) 
+                {
+                   $content = [
+                    'id' => $loc->id,
+                    'id_loc' => $loc->location_id,
+                    'quantity' => $loc->quantity,
+                    'multiselect_location' => $loc->location->multiselect(),
+                   ];
+
+                   array_push($stock_minimun, $content);
+                }
+            }
+
+            $element->locations_stock = $stock_minimun;
 
             return $this->respondHttp200([
                 'data' => $element,
@@ -227,6 +264,24 @@ class ElementController extends Controller
 
             if(!$element->update())
                 return $this->respondHttp500();
+        }
+
+        if ($request->has('locations_stock') && count($request->locations_stock) > 0)
+        {
+            foreach ($request->locations_stock as $key => $stock) 
+            {
+                $record = ElementStockMinimun::updateOrCreate(
+                    [
+                        "element_id" => $element->id,
+                        "location_id" => $stock['id_loc']
+                    ],
+                    [
+                        'element_id' => $element->id,
+                        'location_id' => $stock['id_loc'],
+                        'quantity' => $stock['quantity']
+                    ]
+                );
+            }
         }
         
         return $this->respondHttp200([

@@ -53,6 +53,15 @@ class ElementRequest extends FormRequest
             }
         }
 
+        if ($this->has('locations_stock'))
+        {
+            foreach ($this->input('locations_stock') as $key => $value)
+            {
+                $data['locations_stock'][$key] = json_decode($value, true);
+                $this->merge($data);
+            }
+        }
+
         return $this->all();
     }
 
