@@ -18,6 +18,7 @@ class CreateSauEppMinimumStockTable extends Migration
             $table->unsignedInteger('element_id');
             $table->unsignedInteger('location_id');
             $table->integer('quantity');
+            $table->boolean('below_stock')->default(false);
             $table->timestamps();
 
             $table->foreign('element_id')->references('id')->on('sau_epp_elements')->onDelete('cascade');

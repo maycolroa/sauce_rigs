@@ -591,6 +591,7 @@ Route::middleware(['auth'])->group(function () {
         Route::post('element/reportEmployee', 'IndustrialSecure\EPP\ElementController@reportEmployee');
         Route::post('element/reportTotal', 'IndustrialSecure\EPP\ElementController@reportTotal');
         Route::post('element/reportEmployeeTotals', 'IndustrialSecure\EPP\ElementController@reportEmployeeTotals');
+        Route::post('element/reportStockMinimun', 'IndustrialSecure\EPP\ElementController@reportBalanceStockMinimun');        
         Route::get('element/download/{element}', 'IndustrialSecure\EPP\ElementController@downloadImage');
         Route::post('element/import', 'IndustrialSecure\EPP\ElementController@import');
         Route::post('element/importStockMinimun', 'IndustrialSecure\EPP\ElementController@importStockMinimun');

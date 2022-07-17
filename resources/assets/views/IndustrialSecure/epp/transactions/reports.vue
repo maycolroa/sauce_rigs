@@ -101,6 +101,21 @@
               </b-card-body>
             </b-card>
           </b-tab>
+          <b-tab>
+            <template slot="title">
+                <strong>Reporte Existencias Mínimas</strong> 
+            </template>
+            <b-card>
+              <b-card-body>
+                <vue-table
+                  configName="industrialsecure-epp-reports-stock-minimun"
+                  v-if="auth.can['elements_r']"
+                  :params="{filters}"
+                  ref="stockMinimun"
+                ></vue-table>
+              </b-card-body>
+            </b-card>
+          </b-tab>
         </b-tabs>
     </b-card>
     </div>
@@ -140,6 +155,7 @@ export default {
             handler(val){
                 this.$refs.saldosElements.refresh()
                 this.$refs.elementsAsigned.refresh()
+                this.$refs.stockMinimun.refresh()
                 this.updateTotales()
             },
             deep: true

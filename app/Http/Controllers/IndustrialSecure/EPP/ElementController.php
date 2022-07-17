@@ -735,4 +735,66 @@ class ElementController extends Controller
             'data' => $report->first()
         ]);
     }
+
+    public function reportBalanceStockMinimun(Request $request)
+    {
+        $report = ElementBalanceLocation::selectRaw("
+            sau_epp_elements.name as element,
+            sau_epp_elements.mark as mark,
+            sau_epp_locations.name as location,
+            sau_epp_elements.class_element as class,
+            sau_epp_minimum_stock.quantity as quantity,
+            SUM(IF(sau_epp_elements_balance_specific.state = 'Disponible', 1, 0)) AS quantity_available
+        ")
+        ->join('sau_epp_elements', 'sau_epp_elements.id', 'sau_epp_elements_balance_ubication.element_id')
+        ->join('sau_epp_locations', 'sau_epp_locations.id', 'sau_epp_elements_balance_ubication.location_id')
+        ->join('sau_epp_elements_balance_specific', 'sau_epp_elements_balance_specific.element_balance_id', 'sau_epp_elements_balance_ubication.id')
+        ->join('sau_epp_minimum_stock', function ($join) 
+        {
+            $join->on("sau_epp_minimum_stock.element_id", 'sau_epp_elements_balance_ubication.element_id');
+            $join->on("sau_epp_minimum_stock.location_id", 'sau_epp_elements_balance_ubication.location_id');
+        })
+        ->where('sau_epp_elements.company_id', $this->company)
+        ->where('sau_epp_minimum_stock.below_stock', true)
+        ->groupBy('element','location', 'mark', 'class', 'quantity');
+
+        $url = "/industrialsecure/epps/report";
+
+        $filters = COUNT($request->get('filters')) > 0 ? $request->get('filters') : $this->filterDefaultValues($this->user->id, $url);
+
+        if (COUNT($filters) > 0)
+        {
+            if (isset($filters["marks"]) && COUNT($filters["marks"]) > 0)
+            {
+                $marks = $this->getValuesForMultiselect($filters["marks"]);
+
+                if ($filters['filtersType']['marks'] == 'IN')
+                    $report->whereIn('sau_epp_elements.mark', $marks);
+
+                else if ($filters['filtersType']['marks'] == 'NOT IN')
+                    $report->whereNotIn('sau_epp_elements.mark', $marks);
+            }
+
+            if (isset($filters["class"]) && COUNT($filters["class"]) > 0)
+            {
+                $class = $this->getValuesForMultiselect($filters["class"]);
+
+                if ($filters['filtersType']['class'] == 'IN')
+                    $report->whereIn('sau_epp_elements.class_element', $class);
+
+                else if ($filters['filtersType']['class'] == 'NOT IN')
+                    $report->whereNotIn('sau_epp_elements.class_element', $class);
+            }
+
+            if (isset($filters["elements"]))
+                $report->inElement($this->getValuesForMultiselect($filters["elements"]), $filters['filtersType']['elements']);
+
+            if (isset($filters["location"]))
+                $report->inLocation($this->getValuesForMultiselect($filters["location"]), $filters['filtersType']['location']);
+        }
+
+        
+        return Vuetable::of($report)
+                    ->make();
+    }
 }

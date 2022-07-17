@@ -1777,4 +1777,27 @@ export default [
         filterColumns: true,
     }
 },
+{
+    name: 'industrialsecure-epp-reports-stock-minimun',
+    fields: [
+        { name: 'id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true },
+        { name: 'element', data: 'element', title: 'Elemento', sortable: true, searchable: false, detail: false, key: false },
+        { name: 'location', data: 'location', title: 'Ubicación', sortable: true, searchable: false, detail: false, key: false },
+        { name: 'quantity', data: 'quantity', title: 'Existencia Mínima', sortable: true, searchable: false, detail: false, key: false },
+        { name: 'quantity_available', data: 'quantity_available', title: 'Existencia Disponible', sortable: true, searchable: false, detail: false, key: false },
+    ],
+    'controlls': [{
+            type: 'push',
+            buttons: []
+        },
+        {
+            type: 'base',
+            buttons: [],
+        }],
+    configuration: {
+        urlData: '/industrialSecurity/epp/element/reportStockMinimun',
+        filterColumns: false,
+        //configNameFilter: 'industrialsecure-epp-report'
+    }
+},
 ];

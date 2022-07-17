@@ -33,6 +33,8 @@ class Kernel extends ConsoleKernel
         'App\Console\Commands\DeleteFilesTemporal',
         'App\Console\Commands\SendAutomaticNotifications',
         'App\Console\Commands\NotificationRequestFirmInspection',
+        'App\Console\Commands\UpdateEppElementsBelowStock',
+        'App\Console\Commands\DaysAlertExpiredElementsAsigned',
         //'App\Console\Commands\RememberRepeatInspetion'
     ];
 
@@ -131,6 +133,14 @@ class Kernel extends ConsoleKernel
         $schedule->command('notification-request-firm-inspection')
             ->timezone('America/Bogota')
             ->dailyAt('12:00');
+
+        $schedule->command('days-alert-expired-elements-asigned')
+            ->timezone('America/Bogota')
+            ->dailyAt('3:00');
+
+        $schedule->command('update-epp-elements-below-stock')
+            ->timezone('America/Bogota')
+            ->everyMinute();
     }
 
     /**
