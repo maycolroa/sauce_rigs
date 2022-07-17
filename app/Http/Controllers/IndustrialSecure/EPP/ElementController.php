@@ -19,6 +19,7 @@ use App\Exports\IndustrialSecure\Epp\ElementImportTemplateExcel;
 use App\Exports\IndustrialSecure\Epp\ElementNotIdentExcel;
 use App\Exports\IndustrialSecure\Epp\ElementIdentExcel;
 use App\Jobs\IndustrialSecure\Epp\ElementImportJob;
+use App\Jobs\IndustrialSecure\Epp\ElementImportStockMinimunJob;
 use App\Jobs\IndustrialSecure\Epp\ElementBalanceInitialImportJob;
 use App\Models\IndustrialSecure\Epp\ElementBalanceLocation;
 use Maatwebsite\Excel\Facades\Excel;
@@ -451,6 +452,20 @@ class ElementController extends Controller
       try
       {
         ElementImportJob::dispatch($request->file, $this->company, $this->user);
+      
+        return $this->respondHttp200();
+
+      } catch(Exception $e)
+      {
+        return $this->respondHttp500();
+      }
+    }
+
+    public function importStockMinimun(Request $request)
+    {
+      try
+      {
+        ElementImportStockMinimunJob::dispatch($request->file, $this->company, $this->user);
       
         return $this->respondHttp200();
 

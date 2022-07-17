@@ -593,6 +593,7 @@ Route::middleware(['auth'])->group(function () {
         Route::post('element/reportEmployeeTotals', 'IndustrialSecure\EPP\ElementController@reportEmployeeTotals');
         Route::get('element/download/{element}', 'IndustrialSecure\EPP\ElementController@downloadImage');
         Route::post('element/import', 'IndustrialSecure\EPP\ElementController@import');
+        Route::post('element/importStockMinimun', 'IndustrialSecure\EPP\ElementController@importStockMinimun');
         Route::post('element/import/balanceInicial', 'IndustrialSecure\EPP\ElementController@importBalanceInicial');
         Route::ApiResource('location', 'IndustrialSecure\EPP\LocationController');
         Route::post('location/data', 'IndustrialSecure\EPP\LocationController@data');
