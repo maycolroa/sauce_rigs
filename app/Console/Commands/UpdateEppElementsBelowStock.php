@@ -76,6 +76,11 @@ class UpdateEppElementsBelowStock extends Command
                         $stock->below_stock = true;
                         $stock->save();
                     }
+                    else
+                    {
+                        $stock->below_stock = false;
+                        $stock->save();
+                    }
                 }
             }
         }
