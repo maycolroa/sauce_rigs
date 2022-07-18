@@ -17,6 +17,12 @@
       <vue-ajax-advanced-select v-if="form.expired_elements_asigned == 'SI'" class="col-md-12" v-model="form.users_notify_element_expired" :selected-object="form.multiselect_user_id" name="users_notify_element_expired" label="Usuarios a notificar el vencimiento" placeholder="Seleccione uno o mas usuarios" :url="userDataUrl" :error="form.errorsFor('users_notify_element_expired')" :multiple="true" :allowEmpty="true"> </vue-ajax-advanced-select>  
     </b-form-row>
 
+    <b-form-row>
+      <vue-radio :checked="form.stock_minimun" class="col-md-12" v-model="form.stock_minimun" :options="siNo" name="stock_minimun" :error="form.errorsFor('stock_minimun')" label="¿Desea recibir notificación por existencia mínima?">
+        </vue-radio>
+      <vue-ajax-advanced-select v-if="form.stock_minimun == 'SI'" class="col-md-12" v-model="form.users_notify_stock_minimun" :selected-object="form.multiselect_user_stock_id" name="users_notify_stock_minimun" label="Usuarios a notificar el vencimiento" placeholder="Seleccione uno o mas usuarios" :url="userDataUrl" :error="form.errorsFor('users_notify_stock_minimun')" :multiple="true" :allowEmpty="true"> </vue-ajax-advanced-select>  
+    </b-form-row>
+
     <div class="row float-right pt-10 pr-10">
       <template>
         <b-btn type="submit" :disabled="loading || (!auth.can['configuration_epp_c'])" variant="primary">Guardar</b-btn>
@@ -55,7 +61,9 @@ export default {
           text_letter_epp: '',
           users_notify_element_expired: '',
           expired_elements_asigned: '',
-          days_alert_expiration_date_elements: ''
+          days_alert_expiration_date_elements: '',
+          stock_minimun: '',
+          users_notify_stock_minimun: ''
         };
       }
     }

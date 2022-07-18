@@ -49,7 +49,7 @@ class ConfigurationController extends Controller
         {
             if ($value)
             {
-                if ($key == 'users_notify_element_expired')
+                if ($key == 'users_notify_element_expired' || $key == 'users_notify_stock_minimun')
                 {
                     $values = $this->getDataFromMultiselect($value);
 
@@ -63,8 +63,10 @@ class ConfigurationController extends Controller
                     }
 
                     $value = implode(',', $users);
-                    \Log::info($value);
                 }
+
+                if ($key == 'multiselect_user_id')
+                    continue;
 
                 ConfigurationsCompany::key($key)->value($value)->save();
 
@@ -139,13 +141,39 @@ class ConfigurationController extends Controller
                             array_push($multiselect, $user->multiselect());
                         }
                     }
-                }   
+                }
+                
+                if ($key == 'users_notify_stock_minimun')
+                {
+                    if ($value)
+                    {
+                        $users_stock = explode(',', $value);
+
+                        $multiselect_stock = [];
+
+                        foreach ($users_stock as $email) 
+                        {
+                            $user = User::where('email', $email)->first();
+
+                            array_push($multiselect_stock, $user->multiselect());
+                        }
+                    }
+                }
+
+                if ($key == 'multiselect_user_id')
+                    continue;
             }
 
             if (isset($multiselect) && count($multiselect) > 0)
             {
                 $data['users_notify_element_expired'] = $multiselect;
                 $data['multiselect_user_id'] = $multiselect;
+            }
+
+            if (isset($multiselect_stock) && count($multiselect_stock) > 0)
+            {
+                $data['users_notify_stock_minimun'] = $multiselect_stock;
+                $data['multiselect_user_stock_id'] = $multiselect_stock;
             }
 
             return $this->respondHttp200([

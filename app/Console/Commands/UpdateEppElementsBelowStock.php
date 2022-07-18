@@ -46,7 +46,7 @@ class UpdateEppElementsBelowStock extends Command
         ->join('sau_license_module', 'sau_license_module.license_id', 'sau_licenses.id')
         ->withoutGlobalScopes()
         ->whereRaw('? BETWEEN started_at AND ended_at', [date('Y-m-d')])
-        ->where('sau_license_module.module_id', '34' /*32 prod, 34 local*/);
+        ->where('sau_license_module.module_id', '32' /*32 prod, 34 local*/);
 
         $companies = $companies->pluck('sau_licenses.company_id');
 
