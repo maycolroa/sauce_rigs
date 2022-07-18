@@ -249,6 +249,7 @@ class ElementController extends Controller
         $element->identify_each_element = $request->identify_each_element == "SI" ? true : false;
         $element->expiration_date = $request->expiration_date == "SI" ? true : false;
         $element->days_expired = $request->expiration_date == "SI" ? $request->days_expired : NULL;
+        $element->stock_minimun = $request->stock_minimun == "SI" ? true : false;
         $element->type = $types->implode(',');
         $element->mark = $mark->implode(',');
         

@@ -114,6 +114,8 @@ class ElementStockMinimunImport implements ToCollection, WithCalculatedFormulas
         $tipo = Element::where('code', $row[0]);
         $tipo->company_scope = $this->company_id;
         $tipo = $tipo->first();
+        $tipo->stock_minimun = true;
+        $tipo->save();
 
         $location = Location::where('id', $row[1]);
         $location->company_scope = $this->company_id;
