@@ -517,6 +517,7 @@ class ElementController extends Controller
         ->join('sau_epp_locations', 'sau_epp_locations.id', 'sau_epp_elements_balance_ubication.location_id')
         ->join('sau_epp_elements_balance_specific', 'sau_epp_elements_balance_specific.element_balance_id', 'sau_epp_elements_balance_ubication.id')
         ->where('sau_epp_elements.company_id', $this->company)
+        ->where('sau_epp_locations.company_id', $this->company)
         ->groupBy('element','location', 'mark', 'class');
 
         $url = "/industrialsecure/epps/report";
