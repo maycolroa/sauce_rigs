@@ -367,13 +367,7 @@ export default {
              delete: []
           },
           participants_investigations: {
-             persons: [{
-              name: '',
-              position: '',
-              document: '',
-              type_document: '',
-              rol:'Miembro Investigación'
-          }],
+             persons: [],
              delete: []
           },
           files: []

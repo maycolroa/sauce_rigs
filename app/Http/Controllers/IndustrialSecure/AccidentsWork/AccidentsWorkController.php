@@ -10,6 +10,7 @@ use App\Models\IndustrialSecure\WorkAccidents\Person;
 use App\Models\IndustrialSecure\WorkAccidents\Agent;
 use App\Models\IndustrialSecure\WorkAccidents\Mechanism;
 use App\Models\IndustrialSecure\WorkAccidents\FileAccident;
+use App\Models\IndustrialSecure\WorkAccidents\TagsRolesParticipant;
 use App\Models\Administrative\Employees\Employee;
 use App\Http\Requests\IndustrialSecure\AccidentWork\AccidentRequest;
 use App\Facades\ActionPlans\Facades\ActionPlan;
@@ -338,6 +339,10 @@ class AccidentsWorkController extends Controller
             }
 
             foreach ($request->participants_investigations['persons'] as $key => $value) {
+
+                $type_rol = $this->tagsPrepare($value['type_rol']);
+                $this->tagsSaveSystemCompany($mark, TagsRolesParticipant::class);
+
                 $person = new Person;
                 $person->name = $value['name'];
                 $person->position = $value['position'];
@@ -345,6 +350,7 @@ class AccidentsWorkController extends Controller
                 $person->document = $value['document'];
                 $person->form_accident_id = $accident->id;
                 $person->rol = $value['rol'];
+                $person->type_rol = $type_rol->implode(',');
                 $person->save();
             }
 
@@ -490,9 +496,9 @@ class AccidentsWorkController extends Controller
             $values2 = $accident->partsBody()->pluck('sau_aw_parts_body.id');
             $accident->parts_body = $values2;*/
 
-            $accident->multiselect_eps = $accident->eps->multiselect();
-            $accident->multiselect_afp = $accident->afp->multiselect();
-            $accident->multiselect_arl = $accident->arl->multiselect();
+            $accident->multiselect_eps = $accident->eps ? $accident->eps->multiselect() : [];
+            $accident->multiselect_afp = $accident->afp ? $accident->afp->multiselect() : [];
+            $accident->multiselect_arl = $accident->arl ? $accident->arl->multiselect() : [];
 
             $persons = [];
             $participants = [];
@@ -564,9 +570,9 @@ class AccidentsWorkController extends Controller
                     $accident->employee_position_id = $employee->position->id;
                     $accident->fecha_ingreso_empresa_persona = $employee->income_date;
                     $accident->cargo_persona = $employee->position->name;
-                    $accident->employee_eps_id = $employee->eps->id;
-                    $accident->employee_arl_id = $employee->arl->id;
-                    $accident->employee_afp_id = $employee->afp->id;
+                    $accident->employee_eps_id = $employee->eps ? $employee->eps->id : NULL;
+                    $accident->employee_arl_id = $employee->arl ? $employee->arl->id : NULL;
+                    $accident->employee_afp_id = $employee->afp ? $employee->afp->id : NULL;
                 }
                 else
                 {
@@ -663,6 +669,7 @@ class AccidentsWorkController extends Controller
                 $accident->ciudad_accidente = $request->ciudad_sede_principal_id;
                 $accident->zona_accidente = $request->zona_sede_principal;
             }
+
             $accident->accidente_ocurrio_dentro_empresa = $request->accidente_ocurrio_dentro_empresa;
             $accident->causo_muerte = $request->causo_muerte == 'SI' ? true : false;
             $accident->fecha_muerte = $request->fecha_muerte ? (Carbon::createFromFormat('D M d Y',$request->fecha_muerte))->format('Ymd'): NULL;
@@ -690,7 +697,6 @@ class AccidentsWorkController extends Controller
 
             ///////////////////Observaciones y archivos
             $accident->observaciones_empresa = $request->observaciones_empresa;
-
 
             $accident->consolidado = true;
             
@@ -728,6 +734,9 @@ class AccidentsWorkController extends Controller
 
             foreach ($request->participants_investigations['persons'] as $key => $value) 
             {
+                $type_rol = $this->tagsPrepare($value['type_rol']);
+                $this->tagsSaveSystemCompany($type_rol, TagsRolesParticipant::class);
+
                 if (isset($value['id']))
                     $person = Person::find($value['id']);
                 else
@@ -739,6 +748,7 @@ class AccidentsWorkController extends Controller
                 $person->document = $value['document'];
                 $person->form_accident_id = $accident->id;
                 $person->rol = $value['rol'];
+                $person->type_rol = $type_rol->implode(',');
                 $person->save();
             }
             foreach ($request->participants_investigations['delete'] as $key => $value) {
@@ -1053,6 +1063,43 @@ class AccidentsWorkController extends Controller
 
         } catch(Exception $e) {
             return $this->respondHttp500();
+        }
+    }
+
+    public function multiselectRolesParticipants(Request $request)
+    {
+        if($request->has('keyword'))
+        {
+            $keyword = "%{$request->keyword}%";
+            $tags = TagsRolesParticipant::select("id", "name")
+                ->where(function ($query) use ($keyword) {
+                    $query->orWhere('name', 'like', $keyword);
+                })
+                ->where(function ($query) {
+                    $query->where('system', true);
+                    $query->orWhere('company_id', $this->company);
+                })
+                /*->where('system', true)
+                ->orWhere('company_id', $this->company)*/
+                ->orderBy('name')
+                ->take(30)->pluck('id', 'name');
+
+            return $this->respondHttp200([
+                'options' => $this->multiSelectFormat($tags)
+            ]);
+        } 
+        else
+        {
+            $tags = TagsRolesParticipant::selectRaw("
+                sau_epp_tags_marks.id as id,
+                sau_epp_tags_marks.name as name
+            ")
+            ->where('system', true)
+            ->orWhere('company_id', $this->company)
+            ->orderBy('name')
+            ->pluck('name', 'name');
+        
+            return $this->multiSelectFormat($tags);
         }
     }
 }

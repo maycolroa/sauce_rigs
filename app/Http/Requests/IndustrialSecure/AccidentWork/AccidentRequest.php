@@ -166,8 +166,8 @@ class AccidentRequest extends FormRequest
             'otra_lesion' => 'nullable',
             'otro_agente' => 'nullable',
 
-            'parts_body_id' => 'required|array',
-            'type_lesion_id' => 'required|array',
+            'parts_body_id' => 'required',
+            'type_lesion_id' => 'required',
             //////////////////////////////////////////////////////////////////
             'descripcion_accidente' => 'required|string',
             'personas_presenciaron_accidente' => 'required|string',

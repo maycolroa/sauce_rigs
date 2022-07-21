@@ -31,10 +31,14 @@
                     <div :key="index">
                         <b-form-row>
                             <div class="col-md-12" v-if="!viewOnly">
-                            <div class="float-right">
-                                <b-btn v-if="!viewOnly" variant="outline-primary icon-btn borderless" size="sm" v-b-tooltip.top title="Eliminar Persona" @click.prevent="removeInterviewed(index)"><span class="ion ion-md-close-circle"></span></b-btn>
+                              <div class="float-right">
+                                  <b-btn v-if="!viewOnly" variant="outline-primary icon-btn borderless" size="sm" v-b-tooltip.top title="Eliminar Persona" @click.prevent="removeInterviewed(index)"><span class="ion ion-md-close-circle"></span></b-btn>
+                              </div>
                             </div>
-                            </div>
+                        </b-form-row>
+                        <b-form-row v-if="rol == 'Miembro Investigación'">
+                            <vue-ajax-advanced-select-tag-unic :disabled="viewOnly" class="col-md-12" v-model="item.type_rol" name="type_rol" :error="form.errorsFor('type_rol')" label="Rol" placeholder="Seleccione el rol" :url="tagsRolesAWDataUrl" :multiple="false" :allowEmpty="true" :taggable="true">
+                              </vue-ajax-advanced-select-tag-unic>
                         </b-form-row>
                         <b-form-row>
                             <vue-input :disabled="viewOnly" class="col-md-6" v-model="item.name" label="Nombre" type="text" name="name" :error="form.errorsFor('name')" placeholder="Nombre"></vue-input>
@@ -65,6 +69,7 @@ import VueDatepicker from "@/components/Inputs/VueDatepicker.vue";
 import VueRadio from "@/components/Inputs/VueRadio.vue";
 import Form from "@/utils/Form.js";
 import PerfectScrollbar from '@/vendor/libs/perfect-scrollbar/PerfectScrollbar';
+import VueAjaxAdvancedSelectTagUnic from "@/components/Inputs/VueAjaxAdvancedSelectTagUnic.vue";
 
 export default {
   components: {
@@ -73,7 +78,8 @@ export default {
     VueDatepicker,
     VueInput,
     VueRadio,
-    PerfectScrollbar
+    PerfectScrollbar,
+    VueAjaxAdvancedSelectTagUnic
   },
   props:{
     viewOnly: { type: Boolean, default: false },
@@ -104,6 +110,25 @@ export default {
         {text: 'NU', value: 'NU'},
         {text: 'PA', value: 'PA'},
       ],
+      tagsRolesAWDataUrl: '/selects/tagsRoles',
+      roles: []
+    }
+  },
+  mounted() {
+    if (this.persons.persons.length < 1 && this.rol == 'Miembro Investigación')
+    {
+      this.roles = ['Jefe inmediato del trabajador o del área', 'Representante del COPASST / Vigía', 'Encargado del desarrollo del SG-SST', 'Profesional con licencia en Salud Ocupacional (propio o contratado)', 'Encargado del diseño de normas, procesos y/o mantenimiento.'];
+
+      this.roles.forEach(rol => {
+        this.persons.persons.push({
+          name: '',
+          position: '',
+          document: '',
+          type_document: '',
+          type_rol: rol,
+          rol:this.rol
+        })        
+      });
     }
   },
   methods: {
@@ -113,12 +138,12 @@ export default {
             position: '',
             document: '',
             type_document: '',
+            type_rol: '',
             rol:this.rol
         })
     },
     removeInterviewed(index)
     {
-      console.log(this.persons.persons.length)
       if (this.persons.persons.length > 1)
       {
         if (this.persons.persons[index].id != undefined)
