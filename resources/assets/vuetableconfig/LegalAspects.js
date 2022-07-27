@@ -480,7 +480,7 @@ export default [
                         id: 'id',
                         messageConfirmation: '¿Esta seguro de querer reactivar este usuario y reenviar el correo de bienvenida?'
                     },
-                    permission: 'ph_inspections_u'
+                    permission: 'contracts_u'
                 },
                 {
                     name: 'delete',

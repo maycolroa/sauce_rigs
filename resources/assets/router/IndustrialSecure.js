@@ -892,5 +892,13 @@ export default [{
             import('@/views/IndustrialSecure/accidentsWorks/report')
         }
       ]),
+      ...middleware({ 'check-permission': 'accidentsWork_u' }, [
+        {
+          name: 'industrialsecure-accidentswork-causes',
+          path: 'accidents/causes/:id',
+          component: () =>
+            import('@/views/IndustrialSecure/accidentsWorks/causes')
+        }
+      ]),
     ]
   }]

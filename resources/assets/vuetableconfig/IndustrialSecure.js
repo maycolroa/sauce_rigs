@@ -1714,33 +1714,50 @@ export default [
         { name: 'consolidado', data: 'consolidado', title: 'Estado', sortable: true, searchable: false, detail: false, key: false },
         { name: '', data: 'controlls', title: 'Controles', sortable: false, searchable: false, detail: false, key: false },
     ],
-    'controlls': [{
+    'controlls': [
+        {
         type: 'push',
-        buttons: [{
-        config: {
-            color: 'outline-success',
-            borderless: true,
-            icon: 'ion ion-md-create',
-            title: 'Editar'
-        },
-        data: {
-            routePush: { name: 'industrialsecure-accidentswork-edit' },
-            id: 'id',
-        },
-        permission: 'accidentsWork_u'
-        }, {
-        config: {
-            color: 'outline-info',
-            borderless: true,
-            icon: 'ion ion-md-eye',
-            title: 'Ver'
-        },
-        data: {
-            routePush: { name: 'industrialsecure-accidentswork-view' },
-            id: 'id',
-        },
-        permission: 'accidentsWork_r'
-        }]
+        buttons: [
+            {
+                config: {
+                    color: 'outline-success',
+                    borderless: true,
+                    icon: 'ion ion-md-create',
+                    title: 'Editar'
+                },
+                data: {
+                    routePush: { name: 'industrialsecure-accidentswork-edit' },
+                    id: 'id',
+                },
+                permission: 'accidentsWork_u'
+            }, 
+            {
+                config: {
+                    color: 'outline-info',
+                    borderless: true,
+                    icon: 'ion ion-md-eye',
+                    title: 'Ver'
+                },
+                data: {
+                    routePush: { name: 'industrialsecure-accidentswork-view' },
+                    id: 'id',
+                },
+                permission: 'accidentsWork_r'
+            },
+            {
+                config: {
+                    color: 'outline-success',
+                    borderless: true,
+                    icon: 'ion ion-md-list',
+                    title: 'Causas'
+                },
+                data: {
+                    routePush: { name: 'industrialsecure-accidentswork-causes' },
+                    id: 'id',
+                },
+                permission: 'accidentsWork_u'
+            }
+        ]
     },
     {
         type: 'simpleDownload',

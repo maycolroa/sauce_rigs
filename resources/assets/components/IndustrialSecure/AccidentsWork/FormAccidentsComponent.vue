@@ -422,7 +422,7 @@ export default {
         {text: 'Independiente', value: 'Independiente'}
       ],
       vinculationLaboral: [
-        {text: 'Empleador', value: 'Empleador'},
+        {text: 'Empleado', value: 'Empleado'},
         {text: 'Misión', value: 'Misión'},
         {text: 'Cooperativa de trabajo asociado', value: 'Cooperativa de trabajo asociado'},
         {text: 'Estudiante o Aprendiz', value: 'Estudiante o Aprendiz'},

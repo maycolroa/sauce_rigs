@@ -11,6 +11,9 @@ use App\Models\IndustrialSecure\WorkAccidents\Agent;
 use App\Models\IndustrialSecure\WorkAccidents\Mechanism;
 use App\Models\IndustrialSecure\WorkAccidents\FileAccident;
 use App\Models\IndustrialSecure\WorkAccidents\TagsRolesParticipant;
+use App\Models\IndustrialSecure\WorkAccidents\MainCause;
+use App\Models\IndustrialSecure\WorkAccidents\SecondaryCause;
+use App\Models\IndustrialSecure\WorkAccidents\TertiaryCause;
 use App\Models\Administrative\Employees\Employee;
 use App\Http\Requests\IndustrialSecure\AccidentWork\AccidentRequest;
 use App\Facades\ActionPlans\Facades\ActionPlan;
@@ -1101,5 +1104,158 @@ class AccidentsWorkController extends Controller
         
             return $this->multiSelectFormat($tags);
         }
+    }
+
+    public function saveCauses(Request $request)
+    {
+        $data['delete'] = json_decode($request->delete, true);
+        $request->merge($data);
+
+        if ($request->delete && count($request->delete) > 0)
+        {
+            foreach ($request->delete as $key => $value) 
+            {
+                if ($key == 0)
+                {
+                    if (count($value) > 0)
+                    {
+                        foreach ($value as $key => $cause) 
+                        {
+                            $causeDel = MainCause::find($cause);
+
+                            if ($causeDel)
+                                $causeDel->delete();
+                        }
+                    }
+                }
+                else if ($key == 1)
+                {
+                    if (count($value) > 0)
+                    {
+                        foreach ($value as $key => $cause) 
+                        {
+                            $causeDel = SecondaryCause::find($cause);
+
+                            if ($causeDel)
+                                $causeDel->delete();
+                        }
+                    }
+                }
+                else if ($key == 2)
+                {
+                    if (count($value) > 0)
+                    {
+                        foreach ($value as $key => $cause) 
+                        {
+                            $causeDel = TertiaryCause::find($cause);
+
+                            if ($causeDel)
+                                $causeDel->delete();
+                        }
+                    }
+                }
+            }
+        }
+
+        foreach ($request->causes as $key => $value)
+        {
+            $data['causes'][$key] = json_decode($value, true);
+            $request->merge($data);
+        }
+
+        foreach ($request->causes as $cause)
+        {
+            $id = isset($cause['id']) ? $cause['id'] : NULL;
+            $causeNew = MainCause::updateOrCreate(
+                [
+                    'id' => $id
+                ], 
+                [
+                    'id' => $id,
+                    'description' => $cause['description'],
+                    'accident_id' => $request->accident_id
+                ]
+            );
+
+            $this->secondaryCauses($causeNew, $cause['secondary']);
+        }
+
+        return $this->respondHttp200([
+            'message' => 'Se guardaron las causas'
+        ]);
+    }
+
+    private function secondaryCauses($cause, $secondaries)
+    {
+        foreach ($secondaries as $secondary)
+        {
+            $id = isset($secondary['id']) ? $secondary['id'] : NULL;
+            $secondaryNew = SecondaryCause::updateOrCreate(
+                [
+                    'id' => $id
+                ], 
+                [
+                    'id' => $id,
+                    'description' => $secondary['description'],
+                    'main_cause_id' => $cause->id
+                ]
+            );
+
+            $this->saveItems($secondaryNew, $secondary['tertiary']);
+        }
+    }
+
+    private function saveItems($secondary, $tertiaries)
+    {
+        foreach ($tertiaries as $tertiary)
+        {
+            $id = isset($tertiary['id']) ? $tertiary['id'] : NULL;
+            $tertiaryNew = TertiaryCause::updateOrCreate(
+                [
+                    'id' => $id
+                ], 
+                [
+                    'id' => $id,
+                    'description' => $tertiary['description'],
+                    'secondary_cause_id' => $secondary->id
+                ]
+            );
+        }
+    }
+
+    public function getCauses(Request $request)
+    {
+        $isEdit = false;
+
+        $causes = MainCause::where('accident_id', $request->id)->get();
+
+        if ($causes->count() > 0)
+        {
+            foreach ($causes as $key => $cause) 
+            {
+                foreach ($cause->secondary as $secondary)
+                {
+                    $secondary->key = Carbon::now()->timestamp + rand(1,10000);
+
+                    foreach ($secondary->tertiary as $tertiary)
+                    {
+                        $tertiary->key = Carbon::now()->timestamp + rand(1,10000);
+                    }
+                }
+            }
+
+            $isEdit = true;
+        }
+
+        return $this->respondHttp200([
+            'delete' => [
+                'causes' => [],
+                'secondary' => [],
+                'tertiary' => []
+            ],
+            'causes' => $causes,
+            'accident_id' => $request->id,
+            'isEdit' => $isEdit
+        ]);
     }
 }

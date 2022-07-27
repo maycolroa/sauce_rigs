@@ -316,7 +316,7 @@ class MultiSelectRadioController extends Controller
         $agents = Agent::selectRaw("
             sau_aw_agents.id as id,
             sau_aw_agents.name as name
-        ")->orderBy('name')->pluck('id', 'name');
+        ")->orderBy('id')->pluck('id', 'name');
 
         return $this->radioFormat($agents);
     }
@@ -326,7 +326,7 @@ class MultiSelectRadioController extends Controller
         $agents = Site::selectRaw("
             sau_aw_sites.id as id,
             sau_aw_sites.name as name
-        ")->orderBy('name')->pluck('id', 'name');
+        ")->orderBy('id')->pluck('id', 'name');
 
         return $this->radioFormat($agents);
     }
@@ -336,7 +336,7 @@ class MultiSelectRadioController extends Controller
         $agents = Mechanism::selectRaw("
             sau_aw_mechanisms.id as id,
             sau_aw_mechanisms.name as name
-        ")->orderBy('name')->pluck('id', 'name');
+        ")->orderBy('id')->pluck('id', 'name');
 
         return $this->radioFormat($agents);
     }
@@ -346,7 +346,7 @@ class MultiSelectRadioController extends Controller
         $agents = TypeLesion::selectRaw("
             sau_aw_types_lesion.id as id,
             sau_aw_types_lesion.name as name
-        ")->orderBy('name')->pluck('id', 'name');
+        ")->orderBy('id')->pluck('id', 'name');
 
         return $this->radioFormat($agents);
     }
@@ -356,7 +356,7 @@ class MultiSelectRadioController extends Controller
         $agents = PartBody::selectRaw("
             sau_aw_parts_body.id as id,
             sau_aw_parts_body.name as name
-        ")->orderBy('name')->pluck('id', 'name');
+        ")->orderBy('id')->pluck('id', 'name');
 
         return $this->radioFormat($agents);
     }

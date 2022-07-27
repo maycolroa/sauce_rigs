@@ -582,6 +582,10 @@ Route::middleware(['auth'])->group(function () {
 
       Route::post('accidents/reportDinamic', 'IndustrialSecure\AccidentsWork\AccidentsWorkReportController@getInformDataDinamic');
 
+      Route::post('accidents/saveCauses', 'IndustrialSecure\AccidentsWork\AccidentsWorkController@saveCauses');
+
+      Route::post('accidents/getCauses', 'IndustrialSecure\AccidentsWork\AccidentsWorkController@getCauses');
+
       Route::post('configuration', 'IndustrialSecure\DangerousConditions\ConfigurationController@store');
       Route::get('configuration/view', 'IndustrialSecure\DangerousConditions\ConfigurationController@show');
 
