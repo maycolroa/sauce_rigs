@@ -32,9 +32,10 @@ class AuthController extends ApiController
             {
                 $companies = PermissionService::getCompaniesActive($user);
                 $module = PermissionService::getModuleByName('dangerousConditions');
+                $module_2 = PermissionService::getModuleByName('epp');
 
-                $companies = $companies->filter(function ($item, $keyCompany) use ($module) {
-                    return PermissionService::existsLicenseByModule($item["id"], $module->id);
+                $companies = $companies->filter(function ($item, $keyCompany) use ($module, $module_2) {
+                    return PermissionService::existsLicenseByModule($item["id"], [$module->id, $module_2->id]);
                 })
                 ->map(function ($item, $keyCompany) use ($user) {
                     return [

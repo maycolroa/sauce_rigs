@@ -626,5 +626,15 @@ export default [
           label: 'Fecha de accidente',
         }
       ]
-    }
+    },
+    {
+      name: 'industrialsecure-epp-delivery',
+      filters: [
+        {
+          key: 'dateRange',
+          type: 'dateRange',
+          label: 'Fecha de creación',
+        }
+      ]
+    },
 ];

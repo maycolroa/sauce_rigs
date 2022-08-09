@@ -125,10 +125,13 @@ class PermissionService
      */
     public function existsLicenseByModule($company_id, $module_id)
     {
+        if (!is_array($module_id))
+            $module_id = [$module_id];
+
         $licenses = License::
               join('sau_license_module', 'sau_license_module.license_id', 'sau_licenses.id')
             ->whereRaw('? BETWEEN started_at AND ended_at', [date('Y-m-d')])
-            ->where('sau_license_module.module_id', $module_id);
+            ->whereIn('sau_license_module.module_id', $module_id);
 
         $licenses->company_scope = $company_id;
 

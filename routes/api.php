@@ -60,4 +60,18 @@ Route::group(['prefix'=>'v1', 'middleware' => 'api'], function () {
         Route::post('quelifiedListUser', 'Api\InspectionController@quelifiedListUser');
         Route::post('optionsMasive', 'Api\InspectionController@optionsMasiveQualification');
     });
+
+
+    Route::group(['prefix'=>'epp'], function () {
+        Route::post('moduleEpp', 'Api\EppController@getModuleEpp');
+        Route::post('location', 'Api\EppController@getLocation');
+        Route::post('employee', 'Api\EppController@getEmployees');
+        Route::post('elements', 'Api\EppController@getElementsLocation');
+        Route::post('elementsQuantity', 'Api\EppController@getElementsQuantity');
+        /*Route::post('create', 'Api\InspectionController@create');
+        Route::post('register', 'Api\InspectionController@store');
+        Route::post('imageItem', 'Api\InspectionController@imageItem');
+        Route::post('quelifiedListUser', 'Api\InspectionController@quelifiedListUser');
+        Route::post('optionsMasive', 'Api\InspectionController@optionsMasiveQualification');*/
+    });
 });

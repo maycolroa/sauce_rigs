@@ -606,6 +606,7 @@ Route::middleware(['auth'])->group(function () {
         Route::post('location/import', 'IndustrialSecure\EPP\LocationController@import');
 
         Route::post('transaction/data', 'IndustrialSecure\EPP\TransactionController@data');
+        Route::post('transaction/delivery/export', 'IndustrialSecure\EPP\TransactionController@export');
         Route::ApiResource('transaction', 'IndustrialSecure\EPP\TransactionController');
         Route::get('transaction/employeeInfo/{id}', 'IndustrialSecure\EPP\TransactionController@employeeInfo');
 

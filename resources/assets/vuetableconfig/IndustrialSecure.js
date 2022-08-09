@@ -1302,6 +1302,7 @@ export default [
     configuration: {
         urlData: '/industrialSecurity/epp/transaction/data',
         filterColumns: true,
+        configNameFilter: 'industrialsecure-epp-delivery'
     }
   },
   {

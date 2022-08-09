@@ -23,7 +23,9 @@ use App\Models\Administrative\Configurations\ConfigurationCompany;
 use App\Models\IndustrialSecure\Epp\TagReason;
 use App\Facades\Mail\Facades\NotificationMail;
 use App\Models\General\Company;
+use App\Jobs\IndustrialSecure\Epp\DeliveryExportJob;
 use Validator;
+use App\Traits\Filtertrait;
 use Illuminate\Support\Facades\Storage;
 use DB;
 use Carbon\Carbon;
@@ -33,6 +35,7 @@ use App\Models\Administrative\Users\User;
 
 class TransactionController extends Controller
 {
+    use Filtertrait;
     /**
      * creates and instance and middlewares are checked
      */
@@ -77,6 +80,25 @@ class TransactionController extends Controller
         ->join('sau_epp_elements', 'sau_epp_elements.id', 'sau_epp_elements_balance_ubication.element_id')
         ->where('sau_epp_transactions_employees.type', 'Entrega')
         ->groupBy('sau_epp_transactions_employees.id');
+
+        $url = '/industrialsecure/epps/transactions';
+
+        $filters = COUNT($request->get('filters')) > 0 ? $request->get('filters') : $this->filterDefaultValues($this->user->id, $url);
+
+        if (COUNT($filters) > 0)
+        {
+            $dates_request = explode('/', $filters["dateRange"]);
+
+            $dates = [];
+
+            if (COUNT($dates_request) == 2)
+            {
+                array_push($dates, $this->formatDateToSave($dates_request[0]));
+                array_push($dates, $this->formatDateToSave($dates_request[1]));
+            }
+                
+            $transactions->betweenDate($dates);
+        }
 
         return Vuetable::of($transactions)
         ->addColumn('switchStatus', function ($transaction) {
@@ -2502,5 +2524,41 @@ class TransactionController extends Controller
         $returnDelivery->transaction_employee_id = $returns->id;
         $returnDelivery->delivery_id = $transaction->id;
         $returnDelivery->save();
+    }
+
+    public function export(Request $request)
+    {
+        try
+        {
+            $dates = [];
+
+            if ($request->has('dateRange'))
+            {
+                $dates_request = explode('/', $request->dateRange);
+
+                $date1 = Carbon::createFromFormat('D M d Y', $dates_request[0]);
+                $date2 = Carbon::createFromFormat('D M d Y', $dates_request[1]);
+
+                if ($dates_request && COUNT($dates_request) == 2)
+                {
+                    array_push($dates, $date1->format('Y-m-d 00:00:00'));
+                    array_push($dates, $date2->format('Y-m-d 23:59:59'));
+                }
+            }
+
+            $filtersType = $request->has('filtersType') ? $request->filtersType : [];
+            
+            $filters = [
+                'dates' => $dates,
+                'filtersType' => $filtersType
+            ];
+
+            DeliveryExportJob::dispatch($this->user, $this->company, $filters );
+          
+            return $this->respondHttp200();
+
+        } catch(Exception $e) {
+            return $this->respondHttp500();
+        }
     }
 }
