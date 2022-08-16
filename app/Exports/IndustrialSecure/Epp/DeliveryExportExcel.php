@@ -37,10 +37,15 @@ class DeliveryExportExcel implements FromQuery, WithMapping, WithHeadings, WithT
     {
         $transactions = ElementTransactionEmployee::selectRaw(
           "sau_epp_transactions_employees.*,
+          sau_epp_elements.*,
+          sau_epp_elements.code AS code_element,
           sau_employees.name AS employee,
           sau_employees_positions.name as position,
           sau_epp_elements.name AS element,
-          sau_epp_locations.name AS location"
+          sau_epp_locations.name AS location,          
+          count(sau_epp_elements_balance_specific.id) as asignados,
+          GROUP_CONCAT(DISTINCT sau_epp_elements_balance_specific.code) AS codes
+          "
         )        
         ->join('sau_employees', 'sau_employees.id', 'sau_epp_transactions_employees.employee_id')
         ->join('sau_employees_positions', 'sau_employees_positions.id', 'sau_employees.employee_position_id')
@@ -50,7 +55,7 @@ class DeliveryExportExcel implements FromQuery, WithMapping, WithHeadings, WithT
         ->join('sau_epp_elements', 'sau_epp_elements.id', 'sau_epp_elements_balance_ubication.element_id')
         ->join('sau_epp_locations', 'sau_epp_locations.id', 'sau_epp_transactions_employees.location_id')
         ->where('sau_epp_transactions_employees.type', 'Entrega')
-        ->groupBy('sau_epp_transactions_employees.id', 'element', 'location')
+        ->groupBy('sau_epp_transactions_employees.id', 'element', 'location', 'sauce.sau_epp_elements.id')
         ->betweenDate($this->filters["dates"]);
 
       $transactions->company_scope = $this->company_id;
@@ -61,11 +66,17 @@ class DeliveryExportExcel implements FromQuery, WithMapping, WithHeadings, WithT
     public function map($data): array
     {
       $values = [
-        $data->id,
+        $data->created_at,
         $data->employee,
         $data->position,
         $data->location,
+        $data->code_element,
+        $data->class_element,
+        $data->identify_each_element ? 'Identificable' : 'No Identificable',
         $data->element,
+        $data->mark,
+        $data->asignados,
+        $data->identify_each_element ? $data->codes : ''
       ];
 
 
@@ -75,11 +86,17 @@ class DeliveryExportExcel implements FromQuery, WithMapping, WithHeadings, WithT
     public function headings(): array
     {
       $columns = [
-        'Código',
+        'Fecha',
         'Empleado',
         'Cargo',
         'Ubicación',
-        'Elemento'
+        'Código Elemento',
+        'Clase',
+        'Tipo',
+        'Elemento',
+        'Marca',
+        'Cantidad',
+        'Código Específico'
       ];
 
       return $columns;
