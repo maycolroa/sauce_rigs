@@ -142,7 +142,6 @@
                         <div class="column">
                             <div
                                 class="flex-grow overflow-auto"
-                                style="width:100%;"
                             >
                                 <flowy
                                     class="q-mx-auto"
@@ -346,10 +345,3 @@ export default {
     }
 };
 </script>
-<style>
-
-.flowy-block{
-  height: 70px !important;
-}
-
-</style>

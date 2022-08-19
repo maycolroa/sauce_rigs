@@ -27,10 +27,14 @@ const DiagramaFlujo = {
   },
   props: ['remove', 'node', 'title', 'description'],
   template: `
-    <b-card bg-variant="transparent" border-variant="dark" class="mb-3 box-shadow-none">
+    <b-card no-body bg-variant="transparent" border-variant="dark" class="mb-3 box-shadow-none" >
+    <b-card-body style="
+    padding: 2px !important;
+">
       <b-row>
         <b-col v-html="description"/>
       </b-row>
+    </b-card-body>
     </b-card>
   `
 }
