@@ -13,6 +13,33 @@ import Popper from 'popper.js'
 import BlockUI from 'vue-blockui';
 import VueSignaturePad from 'vue-signature-pad';
 
+import FlowyPlugin from "@hipsjs/flowy-vue";
+import "@hipsjs/flowy-vue/dist/lib/flowy-vue.css";
+
+
+Vue.use(FlowyPlugin);
+
+const DiagramaFlujo = {
+  data () {
+    return {
+      text: 'This is component A'
+    }
+  },
+  props: ['remove', 'node', 'title', 'description'],
+  template: `
+    <b-card bg-variant="transparent" border-variant="dark" class="mb-3 box-shadow-none">
+      <b-row>
+        <b-col v-html="description"/>
+      </b-row>
+    </b-card>
+  `
+}
+
+Vue.component('diagrama-flujo', DiagramaFlujo)
+
+
+/////
+
 // Required to enable animations on dropdowns/tooltips/popovers
 Popper.Defaults.modifiers.computeStyle.gpuAcceleration = false
 

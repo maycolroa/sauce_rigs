@@ -9,11 +9,14 @@
 		<div class="col-md">
 			<b-card no-body>
 				<b-card-body>
-					<form-causes-component
-						url="/industrialSecurity/accidents/saveCauses"
-						method="POST"
-						:cancel-url="{ name: 'industrialsecure-accidentswork'}"
-						:causes="causes"/>
+          			<loading :display="!ready"/>
+					<div v-if="ready">
+						<form-causes-component
+							url="/industrialSecurity/accidents/saveCauses"
+							method="POST"
+							:cancel-url="{ name: 'industrialsecure-accidentswork'}"
+							:causes="causes"/>
+					</div>
 				</b-card-body>
 			</b-card>
 		</div>
@@ -23,6 +26,7 @@
 <script>
 import FormCausesComponent from '@/components/IndustrialSecure/AccidentsWork/FormCausesComponent.vue';
 import Alerts from '@/utils/Alerts.js';
+import Loading from "@/components/Inputs/Loading.vue";
 
 export default {
 	name: 'industrialsecure-accidentswork-causes',
@@ -30,15 +34,13 @@ export default {
 		title: 'Accidentes e incidentes - Causas'
 	},
 	components:{
-		FormCausesComponent
+		FormCausesComponent,
+		Loading
 	},
 	data(){
 		return {
-			causes: {
-				causes: [],
-				accident_id: '',
-				isEdit: false
-			}
+			causes: {},
+      		ready: false,
 		}
 	},
 	created(){
@@ -46,6 +48,7 @@ export default {
 		axios.post("/industrialSecurity/accidents/getCauses", {id: `${this.$route.params.id}`})
 		.then(response => {
 			this.causes = response.data;
+			console.log(response);
 			this.ready = true
 		})
 		.catch(error => {

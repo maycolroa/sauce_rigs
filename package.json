@@ -88,6 +88,7 @@
     ]
   },
   "dependencies": {
+    "@hipsjs/flowy-vue": "^1.0.13",
     "vue-analytics": "^5.22.1",
     "vue-router-middleware": "^0.2.1",
     "vue-signature-pad": "^2.0.2",

@@ -135,6 +135,24 @@
                         </b-form-row>
                     </div>
             	</b-card>
+<br><br>
+            <b-card v-if="form.isEdit" border-variant="primary" title="Arbol de causas">
+                <b-card-body>
+                    <div class="q-ma-md">
+                        <div class="column">
+                            <div
+                                class="flex-grow overflow-auto"
+                                style="width:100%;"
+                            >
+                                <flowy
+                                    class="q-mx-auto"
+                                    :nodes="form.nodes"
+                                ></flowy>
+                            </div>
+                        </div>
+                    </div>
+                </b-card-body>
+            </b-card>
 
 				<br>
 				<div class="row float-right pt-10 pr-10">
@@ -174,7 +192,8 @@ export default {
                         causes: [],
                         secondary: [],
                         tertiary: []
-                    }
+                    },
+                    nodes: []
 				};
 			}
 		}
@@ -188,7 +207,84 @@ export default {
     data() {
         return {
             loading: this.isEdit,
-            form: Form.makeFrom(this.causes, this.method)
+            form: Form.makeFrom(this.causes, this.method),
+            
+            holder: [],
+            dragging: false,
+            nodes: [
+                /*{
+                    id: '1',
+                    parentId: -1,
+                    nodeComponent: 'diagrama-flujo',
+                    data: {
+                        description: '<span>Causa principal 1</span>',
+                    },
+                },
+                {
+                    id: '2',
+                    parentId: '1',
+                    nodeComponent: 'diagrama-flujo',
+                    data: {
+                        description: '<span>Causa secundaria 1</i></span>',
+                    },
+                },
+                {
+                    id: '7',
+                    parentId: '2',
+                    nodeComponent: 'diagrama-flujo',
+                    data: {
+                        description: '<span>Causa terciaria 1.2</i></span>',
+                    },
+                },
+                {
+                    id: '3',
+                    parentId: '1',
+                    nodeComponent: 'diagrama-flujo',
+                    data: {
+                        description: '<span>Causa secundaria 2</i></span>',
+                    },
+                },
+                {
+                    id: '4',
+                    parentId: '2',
+                    nodeComponent: 'diagrama-flujo',
+                    data: {
+                        description: '<span>Causa terciaria 2.1</i></span>',
+                    },
+                },
+                {
+                    id: '5',
+                    parentId: '3',
+                    nodeComponent: 'diagrama-flujo',
+                    data: {
+                        description: '<span>Causa terciaria 2.2</i></span>',
+                    },
+                },
+                {
+                    id: '6',
+                    parentId: '3',
+                    nodeComponent: 'diagrama-flujo',
+                    data: {
+                        description: '<span>Causa terciaria 2.3</i></span>',
+                    },
+                },
+                 {
+                    id: '6',
+                    parentId: -1,
+                    nodeComponent: 'diagrama-flujo',
+                    data: {
+                        description: '<span>Causa principal 2</span>',
+                    },
+                },
+                {
+                    id: '8',
+                    parentId: '6',
+                    nodeComponent: 'diagrama-flujo',
+                    data: {
+                        description: '<span>Causa secundaria 1</i></span>',
+                    },
+                },*/
+            ]
         };
     },
     methods: {
@@ -250,3 +346,10 @@ export default {
     }
 };
 </script>
+<style>
+
+.flowy-block{
+  height: 70px !important;
+}
+
+</style>

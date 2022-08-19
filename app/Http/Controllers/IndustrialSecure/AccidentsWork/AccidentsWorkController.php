@@ -1227,18 +1227,61 @@ class AccidentsWorkController extends Controller
     {
         $isEdit = false;
 
+        $tree = [];
+
         $causes = MainCause::where('accident_id', $request->id)->get();
+
+        $id_tree = 0;
 
         if ($causes->count() > 0)
         {
             foreach ($causes as $key => $cause) 
             {
+                $id_tree++;
+            
+                $principal = [
+                    'id'=> $id_tree,
+                    'parentId'=> -1,
+                    'nodeComponent'=> 'diagrama-flujo',
+                    'data'=> [
+                        'description'=> '<span>'.$cause->description.'</span>',
+                    ],
+                ];
+
+                array_push($tree, $principal);
+
                 foreach ($cause->secondary as $secondary)
                 {
+                    $id_tree++;
+
+                    $secundaria = [
+                        'id'=> $id_tree,
+                        'parentId'=> $principal['id'],
+                        'nodeComponent'=> 'diagrama-flujo',
+                        'data'=> [
+                            'description'=> '<span>'.$secondary->description.'</span>',
+                        ],
+                    ];
+
+                    array_push($tree, $secundaria);
+
                     $secondary->key = Carbon::now()->timestamp + rand(1,10000);
 
                     foreach ($secondary->tertiary as $tertiary)
                     {
+                        $id_tree++;
+
+                        $terciaria = [
+                            'id'=> $id_tree,
+                            'parentId'=> $secundaria['id'],
+                            'nodeComponent'=> 'diagrama-flujo',
+                            'data'=> [
+                                'description'=> '<span>'.$tertiary->description.'</span>',
+                            ],
+                        ];
+
+                        array_push($tree, $terciaria);
+
                         $tertiary->key = Carbon::now()->timestamp + rand(1,10000);
                     }
                 }
@@ -1255,7 +1298,8 @@ class AccidentsWorkController extends Controller
             ],
             'causes' => $causes,
             'accident_id' => $request->id,
-            'isEdit' => $isEdit
+            'isEdit' => $isEdit,
+            'nodes' => $tree
         ]);
     }
 }
