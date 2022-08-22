@@ -136,23 +136,18 @@
                     </div>
             	</b-card>
 <br><br>
-            <b-card v-if="form.isEdit" border-variant="primary" title="Arbol de causas">
-                <b-card-body>
-                    <div class="q-ma-md">
-                        <div class="column">
                             <div
-                                class="flex-grow overflow-auto"
+                                class="flex-grow"
                             >
                                 <flowy
                                     class="q-mx-auto"
                                     :nodes="form.nodes"
+                                    id="tree_cause"
                                 ></flowy>
                             </div>
-                        </div>
-                    </div>
-                </b-card-body>
-            </b-card>
+<div class="html2canvas-container">
 
+</div>
 				<br>
 				<div class="row float-right pt-10 pr-10">
                     <template>
@@ -170,12 +165,14 @@ import Form from "@/utils/Form.js";
 import VueTextarea from "@/components/Inputs/VueTextarea.vue";
 import VueInput from "@/components/Inputs/VueInput.vue";
 import PerfectScrollbar from '@/vendor/libs/perfect-scrollbar/PerfectScrollbar';
+import html2canvas from 'html2canvas';
 
 export default {
     components: {
         VueTextarea,
         VueInput,
-        PerfectScrollbar
+        PerfectScrollbar,
+        html2canvas
     },
     props: {
         url: { type: String },
@@ -210,80 +207,7 @@ export default {
             
             holder: [],
             dragging: false,
-            nodes: [
-                /*{
-                    id: '1',
-                    parentId: -1,
-                    nodeComponent: 'diagrama-flujo',
-                    data: {
-                        description: '<span>Causa principal 1</span>',
-                    },
-                },
-                {
-                    id: '2',
-                    parentId: '1',
-                    nodeComponent: 'diagrama-flujo',
-                    data: {
-                        description: '<span>Causa secundaria 1</i></span>',
-                    },
-                },
-                {
-                    id: '7',
-                    parentId: '2',
-                    nodeComponent: 'diagrama-flujo',
-                    data: {
-                        description: '<span>Causa terciaria 1.2</i></span>',
-                    },
-                },
-                {
-                    id: '3',
-                    parentId: '1',
-                    nodeComponent: 'diagrama-flujo',
-                    data: {
-                        description: '<span>Causa secundaria 2</i></span>',
-                    },
-                },
-                {
-                    id: '4',
-                    parentId: '2',
-                    nodeComponent: 'diagrama-flujo',
-                    data: {
-                        description: '<span>Causa terciaria 2.1</i></span>',
-                    },
-                },
-                {
-                    id: '5',
-                    parentId: '3',
-                    nodeComponent: 'diagrama-flujo',
-                    data: {
-                        description: '<span>Causa terciaria 2.2</i></span>',
-                    },
-                },
-                {
-                    id: '6',
-                    parentId: '3',
-                    nodeComponent: 'diagrama-flujo',
-                    data: {
-                        description: '<span>Causa terciaria 2.3</i></span>',
-                    },
-                },
-                 {
-                    id: '6',
-                    parentId: -1,
-                    nodeComponent: 'diagrama-flujo',
-                    data: {
-                        description: '<span>Causa principal 2</span>',
-                    },
-                },
-                {
-                    id: '8',
-                    parentId: '6',
-                    nodeComponent: 'diagrama-flujo',
-                    data: {
-                        description: '<span>Causa secundaria 1</i></span>',
-                    },
-                },*/
-            ]
+            nodes: []
         };
     },
     methods: {
@@ -342,6 +266,22 @@ export default {
 
             this.form.causes[indexObj].secondary[indexSub].tertiary.splice(index, 1)
         }
-    }
+    },
+    mounted() {
+        setTimeout(() => {
+            html2canvas(document.querySelector(".flowy-tree")).then(function(canvas) {
+            document.querySelector(".html2canvas-container").appendChild(canvas);
+        });    
+        }, 5000);
+        
+    },
 };
 </script>
+
+<style scoped>
+.html2canvas-container { width: 3000px !important; height: 3000px !important; }
+
+#tree_cause {
+    overflow: visible !important;
+}
+</style>

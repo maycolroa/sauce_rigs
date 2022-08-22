@@ -19,6 +19,7 @@ Route::get('export/{url}',function($url){
 //Generar contraseña
 Route::get('/password/generate/{token}', 'Auth\GeneratePasswordController@generatePassword');
 Route::post('/password/generate/{id}', 'Auth\GeneratePasswordController@updatePassword');
+Route::get('/accidentWork/causesExport/{id}', 'IndustrialSecure\AccidentsWork\AccidentsWorkController@prueba');
 
 Route::prefix('training')->group(function () {
   Route::get('{training}/{token}', 'LegalAspects\Contracs\TrainingEmployeeController@index');

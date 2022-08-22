@@ -35,7 +35,7 @@ class AccidentsWorkController extends Controller
     function __construct()
     {
         parent::__construct();
-        $this->middleware('auth');
+        $this->middleware('auth', ['except' => ['prueba', 'getCauses']]);
         /*$this->middleware("permission:activities_c, {$this->team}", ['only' => 'store']);
         $this->middleware("permission:activities_r, {$this->team}", ['except' =>'multiselect']);
         $this->middleware("permission:activities_u, {$this->team}", ['only' => 'update']);
@@ -1290,7 +1290,7 @@ class AccidentsWorkController extends Controller
             $isEdit = true;
         }
 
-        return $this->respondHttp200([
+        $data = [
             'delete' => [
                 'causes' => [],
                 'secondary' => [],
@@ -1300,6 +1300,22 @@ class AccidentsWorkController extends Controller
             'accident_id' => $request->id,
             'isEdit' => $isEdit,
             'nodes' => $tree
-        ]);
+        ];
+
+        if ($request->has('no_encrypt'))
+            return $data;
+        else
+            return $this->respondHttp200($data);
+    }
+
+    public function prueba(Request $request)
+    {
+        $myRequest = new \Illuminate\Http\Request();
+        $myRequest->setMethod('POST');
+        $myRequest->request->add(['id' => $request->id]);
+        $myRequest->request->add(['no_encrypt' => true]);
+        $result = $this->getCauses($myRequest);
+
+        return view('industrialSecure.arreglar', ['data' => $result]);
     }
 }

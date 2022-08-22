@@ -24,7 +24,6 @@ use Hash;
 class UserImport implements ToCollection, WithCalculatedFormulas
 {
     use UserTrait;
-    use ConfigurableFormTrait;
     use UtilsTrait;
 
     private $company_id;
