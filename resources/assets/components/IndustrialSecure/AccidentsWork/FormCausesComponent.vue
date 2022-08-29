@@ -136,18 +136,11 @@
                     </div>
             	</b-card>
 <br><br>
-                            <div
-                                class="flex-grow"
-                            >
-                                <flowy
-                                    class="q-mx-auto"
-                                    :nodes="form.nodes"
-                                    id="tree_cause"
-                                ></flowy>
-                            </div>
-<div class="html2canvas-container">
-
-</div>
+                <b-card v-show="form.isEdit">
+                    <div style="overflow-x: auto;" id="tree_cause" class="tree_cause">
+                    </div>
+                    <b-btn type="button" @click="download" variant="primary">Descargar Imagen</b-btn>
+                </b-card>
 				<br>
 				<div class="row float-right pt-10 pr-10">
                     <template>
@@ -165,14 +158,13 @@ import Form from "@/utils/Form.js";
 import VueTextarea from "@/components/Inputs/VueTextarea.vue";
 import VueInput from "@/components/Inputs/VueInput.vue";
 import PerfectScrollbar from '@/vendor/libs/perfect-scrollbar/PerfectScrollbar';
-import html2canvas from 'html2canvas';
 
 export default {
     components: {
         VueTextarea,
         VueInput,
         PerfectScrollbar,
-        html2canvas
+        //CausesExport
     },
     props: {
         url: { type: String },
@@ -265,23 +257,136 @@ export default {
                 this.form.delete.tertiary.push(this.form.causes[indexObj].secondary[indexSub].tertiary[index].id)
 
             this.form.causes[indexObj].secondary[indexSub].tertiary.splice(index, 1)
+        },
+        download()
+        {
+            let serializer = new XMLSerializer();
+            var svgData = serializer.serializeToString(document.getElementById('tree_cause'));
+            var svgBlob = new Blob([svgData], {type:"image/svg+xml;charset=utf-8"});
+            var svgUrl = URL.createObjectURL(svgBlob);
+            var downloadLink = document.createElement("a");
+            downloadLink.href = svgUrl;
+            downloadLink.download = "treeCause.svg";
+            document.body.appendChild(downloadLink);
+            downloadLink.click();
+        },
+        initTree() {
+            const margin = {top: 20, right: 300, bottom: 100, left: 20},
+            width  = 2000 - margin.left - margin.right,
+            height = 1000 - margin.top - margin.bottom;
+
+            // declares a tree layout and assigns the size
+            const treemap = d3.tree().size([height, width]);
+
+            //  assigns the data to a hierarchy using parent-child relationships
+            let nodes = d3.hierarchy(this.causes.treeData, d => d.children);
+
+            // maps the node data to the tree layout
+            nodes = treemap(nodes);
+
+            // append the svg object to the body of the page
+            // appends a 'group' element to 'svg'
+            // moves the 'group' element to the top left margin
+            const svg = d3.select(".tree_cause").append("svg")
+                    .attr("width", width + margin.left + margin.right)
+                    .attr("height", height + margin.top + margin.bottom)
+                .attr("id", 'svg_main')
+                .style("background-color", 'white'),
+                 g = svg.append("g")
+                    .attr("transform",
+                        "translate(" + margin.left + "," + margin.top + ")");
+
+            // adds the links between the nodes
+            const link = g.selectAll(".link")
+                .data( nodes.descendants().slice(1))
+            .enter().append("path")
+                .attr("class", "link")
+                .style("stroke", d => d.data.level)
+            .attr("d", d => {
+                return "M" + d.y + "," + d.x
+                    + "," + d.parent.y + "," + d.parent.x;
+                });
+
+            // adds each node as a group
+            const node = g.selectAll(".node")
+                .data(nodes.descendants())
+                .enter().append("g")
+                .attr("id", "gbox")
+                .attr("class", d => "node" + (d.children ? " node--internal" : " node--leaf"))
+                .attr("transform", d => "translate(" + d.y + "," + d.x + ")");
+
+            var svg2 = document.getElementById('svg_main');
+            var bbox = svg2.firstElementChild.getBBox();
+
+            console.log(bbox.height)
+
+            // adds the circle to the node
+            node.append("circle")
+            .attr("r", d => d.data.value)
+            .style("stroke", d => d.data.type)
+            .style("fill", d => d.data.level);
+            
+            // adds the text to the node
+            node.append("foreignObject")
+            .attr("width", "250px")
+            //.attr("width", d => parseInt(d.data.name.length * 10) + 'px')
+            //.attr("height", "100px")
+            .attr("height", d => this.builderHeight(parseInt(d.data.name.length)))
+            .attr("dy", ".35em")
+            .attr("x", d => this.builderX(d.data))
+            .attr("y", 5)
+            .style("border","1px")
+            .style("border-color","black")
+            .style("border-style","solid")
+            .style("text-align", "center")
+            .style("margin", "auto")
+            .html(d => '<text style="background-color: white;">'+d.data.name+'</text>');
+        },
+        builderHeight(length) {
+            let height = Math.ceil(length / 45) * 30;
+
+            if (height < 45)
+                height = 45;
+
+            return height + 'px';
+        },
+        builderX(data) {
+            return data.isPar != undefined && data.isPar ? -260 : data.value;
         }
     },
     mounted() {
-        setTimeout(() => {
-            html2canvas(document.querySelector(".flowy-tree")).then(function(canvas) {
-            document.querySelector(".html2canvas-container").appendChild(canvas);
-        });    
-        }, 5000);
-        
-    },
+        this.initTree();
+    }
 };
 </script>
 
-<style scoped>
-.html2canvas-container { width: 3000px !important; height: 3000px !important; }
 
-#tree_cause {
-    overflow: visible !important;
+<style lang="scss">
+body {
+background-color: #eee;
+}
+
+.node--internal {
+    max-width: 100%;
+    max-height: 100%;
+}
+
+.node--leaf {
+    max-width: 100%;
+    max-height: 100%;
+}
+
+.node circle {
+fill: #fff;
+stroke: steelblue;
+stroke-width: 3px;
+}
+
+.node text { font: 12px sans-serif; }
+
+.link {
+fill: none;
+stroke: #fff;
+stroke-width: 2px;
 }
 </style>

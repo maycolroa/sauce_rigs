@@ -20,11 +20,12 @@ use App\Traits\ConfigurableFormTrait;
 use Validator;
 use Exception;
 use Hash;
+use DB;
 
 class UserImport implements ToCollection, WithCalculatedFormulas
 {
     use UserTrait;
-    use UtilsTrait;
+    use ConfigurableFormTrait;
 
     private $company_id;
     private $user;

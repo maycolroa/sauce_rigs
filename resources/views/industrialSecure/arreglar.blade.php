@@ -26,6 +26,9 @@
     
     <link rel="stylesheet" href="{{ mix('/app.css') }}">
 
+    <script src="https://d3js.org/d3.v4.min.js"></script>
+
+
 </head>
 <body>
     <div id="app">

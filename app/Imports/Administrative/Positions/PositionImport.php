@@ -128,7 +128,8 @@ class PositionImport implements ToCollection, WithCalculatedFormulas
             $position->company_id = $this->company_id;
             $position->save();
 
-            $position->elements()->sync($data['elementos']);
+            if (COUNT($data['elementos']) && $data['elementos'][0])
+                $position->elements()->sync($data['elementos']);
 
 
             return true;

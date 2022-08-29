@@ -48,7 +48,6 @@ export default {
 		axios.post("/industrialSecurity/accidents/getCauses", {id: `${this.$route.params.id}`})
 		.then(response => {
 			this.causes = response.data;
-			console.log(response);
 			this.ready = true
 		})
 		.catch(error => {

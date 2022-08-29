@@ -1226,12 +1226,18 @@ class AccidentsWorkController extends Controller
     public function getCauses(Request $request)
     {
         $isEdit = false;
+        $id_tree = 0;
+        $id_tree++;
 
-        $tree = [];
+        $tree = [
+            "children" => [],
+            'name' => "Causas",
+            'value' => 15,
+            'type' => "black",
+            'level' => "orange",
+        ];
 
         $causes = MainCause::where('accident_id', $request->id)->get();
-
-        $id_tree = 0;
 
         if ($causes->count() > 0)
         {
@@ -1240,55 +1246,55 @@ class AccidentsWorkController extends Controller
                 $id_tree++;
             
                 $principal = [
-                    'id'=> $id_tree,
-                    'parentId'=> -1,
-                    'nodeComponent'=> 'diagrama-flujo',
-                    'data'=> [
-                        'description'=> '<span>'.$cause->description.'</span>',
-                    ],
+                    "children" => [],
+                    'name' => $cause->description,
+                    'value' => 10,
+                    'type' => "grey",
+                    'level' => "red"
                 ];
-
-                array_push($tree, $principal);
 
                 foreach ($cause->secondary as $secondary)
                 {
                     $id_tree++;
 
                     $secundaria = [
-                        'id'=> $id_tree,
-                        'parentId'=> $principal['id'],
-                        'nodeComponent'=> 'diagrama-flujo',
-                        'data'=> [
-                            'description'=> '<span>'.$secondary->description.'</span>',
-                        ],
+                        "children" => [],
+                        'name' => $secondary->description,
+                        'value' => 7,
+                        'type' => "grey",
+                        'level' => "purple"
                     ];
-
-                    array_push($tree, $secundaria);
 
                     $secondary->key = Carbon::now()->timestamp + rand(1,10000);
 
-                    foreach ($secondary->tertiary as $tertiary)
+                    foreach ($secondary->tertiary as $indexLevel => $tertiary)
                     {
                         $id_tree++;
 
                         $terciaria = [
-                            'id'=> $id_tree,
-                            'parentId'=> $secundaria['id'],
-                            'nodeComponent'=> 'diagrama-flujo',
-                            'data'=> [
-                                'description'=> '<span>'.$tertiary->description.'</span>',
-                            ],
+                            "children" => [],
+                            'name' => $tertiary->description,
+                            'value' => 5,
+                            'type' => "grey",
+                            'level' => "blue",
+                            'isPar' => ($indexLevel % 2) == 0
                         ];
 
-                        array_push($tree, $terciaria);
+                        array_push($secundaria['children'], $terciaria);
 
                         $tertiary->key = Carbon::now()->timestamp + rand(1,10000);
                     }
+
+                    array_push($principal['children'], $secundaria);
                 }
+
+                array_push($tree['children'], $principal);
             }
 
             $isEdit = true;
         }
+
+        \Log::info($isEdit);
 
         $data = [
             'delete' => [
@@ -1299,7 +1305,7 @@ class AccidentsWorkController extends Controller
             'causes' => $causes,
             'accident_id' => $request->id,
             'isEdit' => $isEdit,
-            'nodes' => $tree
+            'treeData' => $tree
         ];
 
         if ($request->has('no_encrypt'))
