@@ -73,7 +73,10 @@ class EmployeeImport implements ToCollection
                     {
                         if (COUNT($row) == 14 || COUNT($row) == 18)
                         {
-                            $this->checkEmployee($row);
+                            if (isset($row[0]) && $row[0])
+                            {
+                                $this->checkEmployee($row);
+                            }
                         }
                         else
                         {
