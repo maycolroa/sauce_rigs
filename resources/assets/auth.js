@@ -8,8 +8,8 @@ import Popper from 'popper.js'
 
 import Notifications from 'vue-notification'
 import VueSignaturePad from 'vue-signature-pad';
-import FlowyPlugin from "@hipsjs/flowy-vue";
-import "@hipsjs/flowy-vue/dist/lib/flowy-vue.css";
+/*import FlowyPlugin from "@hipsjs/flowy-vue";
+import "@hipsjs/flowy-vue/dist/lib/flowy-vue.css";*/
 
 // Required to enable animations on dropdowns/tooltips/popovers
 Popper.Defaults.modifiers.computeStyle.gpuAcceleration = false
@@ -19,7 +19,7 @@ Vue.config.productionTip = false
 Vue.use(BootstrapVue)
 Vue.use(Notifications)
 Vue.use(VueSignaturePad);
-Vue.use(FlowyPlugin);
+//Vue.use(FlowyPlugin);
 
 const DiagramaFlujo = {
   data () {

@@ -13,11 +13,11 @@ import Popper from 'popper.js'
 import BlockUI from 'vue-blockui';
 import VueSignaturePad from 'vue-signature-pad';
 
-import FlowyPlugin from "@hipsjs/flowy-vue";
-import "@hipsjs/flowy-vue/dist/lib/flowy-vue.css";
+/*import FlowyPlugin from "@hipsjs/flowy-vue";
+import "@hipsjs/flowy-vue/dist/lib/flowy-vue.css";*/
 
 
-Vue.use(FlowyPlugin);
+//Vue.use(FlowyPlugin);
 
 const DiagramaFlujo = {
   data () {
