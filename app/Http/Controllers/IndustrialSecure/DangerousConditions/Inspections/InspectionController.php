@@ -180,7 +180,6 @@ class InspectionController extends Controller
             'sau_ph_inspections.*')
         ->groupBy('sau_ph_inspections.id', 'sau_ph_inspections.name')
         ->get();
-        \Log::info(1);
 
         $r = [];
         $h = [];

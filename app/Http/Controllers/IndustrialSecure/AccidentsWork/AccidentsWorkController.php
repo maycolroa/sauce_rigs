@@ -1294,8 +1294,6 @@ class AccidentsWorkController extends Controller
             $isEdit = true;
         }
 
-        \Log::info($isEdit);
-
         $data = [
             'delete' => [
                 'causes' => [],

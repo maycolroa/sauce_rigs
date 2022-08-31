@@ -311,6 +311,48 @@ class Check extends Model
         return $query;
     }
 
+    public function scopeInHeadquarters($query, $headquarters, $typeSearch = 'IN')
+    {
+        if (COUNT($headquarters) > 0)
+        {
+            if ($typeSearch == 'IN')
+                $query->whereIn('sau_employees.employee_headquarter_id', $headquarters);
+
+            else if ($typeSearch == 'NOT IN')
+                $query->whereNotIn('sau_employees.employee_headquarter_id', $headquarters);
+        }
+
+        return $query;
+    }
+
+    public function scopeInProcesses($query, $processes, $typeSearch = 'IN')
+    {
+        if (COUNT($processes) > 0)
+        {
+            if ($typeSearch == 'IN')
+                $query->whereIn('sau_employees.employee_process_id', $processes);
+
+            else if ($typeSearch == 'NOT IN')
+                $query->whereNotIn('sau_employees.employee_process_id', $processes);
+        }
+
+        return $query;
+    }
+
+    public function scopeInAreas($query, $areas, $typeSearch = 'IN')
+    {
+        if (COUNT($areas) > 0)
+        {
+            if ($typeSearch == 'IN')
+                $query->whereIn('sau_employees.employee_area_id', $areas);
+
+            else if ($typeSearch == 'NOT IN')
+                $query->whereNotIn('sau_employees.employee_area_id', $areas);
+        }
+
+        return $query;
+    }
+
     public function scopeInDiseaseOrigin($query, $diseaseOrigin, $typeSearch = 'IN')
     {
         if (COUNT($diseaseOrigin) > 0)

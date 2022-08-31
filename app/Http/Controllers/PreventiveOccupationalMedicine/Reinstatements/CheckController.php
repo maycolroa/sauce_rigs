@@ -116,6 +116,24 @@ class CheckController extends Controller
             }
                 
             $checks->betweenDate($dates);
+
+            if (isset($filters["headquarters"]))
+            {
+                $checks->leftJoin('sau_employees_headquarters', 'sau_employees_headquarters.id', 'sau_employees.employee_headquarter_id')
+                ->inHeadquarters($this->getValuesForMultiselect($filters["headquarters"]), $filters['filtersType']['headquarters']);
+            }
+
+            if (isset($filters["processes"]))
+            {
+                $checks->leftJoin('sau_employees_processes', 'sau_employees_processes.id', 'sau_employees.employee_process_id')
+                ->inProcesses($this->getValuesForMultiselect($filters["processes"]), $filters['filtersType']['processes']);
+            }
+            
+            if (isset($filters["areas"]))
+            {
+                $checks->leftJoin('sau_employees_areas', 'sau_employees_areas.id', 'sau_employees.employee_area_id')
+                ->inAreas($this->getValuesForMultiselect($filters["areas"]), $filters['filtersType']['areas']);
+            }
         }
 
         return Vuetable::of($checks)

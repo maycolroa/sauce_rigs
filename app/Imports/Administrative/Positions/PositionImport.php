@@ -123,14 +123,17 @@ class PositionImport implements ToCollection, WithCalculatedFormulas
         }
         else 
         {   
-            $position = new EmployeePosition();
-            $position->name = $data['nombre'];
-            $position->company_id = $this->company_id;
-            $position->save();
+            $position = EmployeePosition::updateOrCreate([                
+                'company_id' => $this->company_id,
+                'name' => $data['nombre']
+              ],
+              [
+                'company_id' => $this->company_id,
+                'name' => $data['nombre']
+              ]);
 
             if (COUNT($data['elementos']) && $data['elementos'][0])
                 $position->elements()->sync($data['elementos']);
-
 
             return true;
 
