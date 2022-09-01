@@ -360,7 +360,7 @@ class RiskMatrixImport implements ToCollection, WithCalculatedFormulas
                 $cause->cause = $data['causa'];
                 $cause->save();
 
-                $controls = explode(' * ', $data['controles']);
+                $controls = explode('*', $data['controles']);
 
                 foreach ($controls as $keyC2 => $itemC2)
                 {
@@ -376,7 +376,7 @@ class RiskMatrixImport implements ToCollection, WithCalculatedFormulas
 
                 if ($data['indicadores'])
                 {
-                    $indicators =explode(' * ', $data['indicadores']);
+                    $indicators =explode('*', $data['indicadores']);
 
                     foreach ($indicators as $keyI => $itemI)
                     {
