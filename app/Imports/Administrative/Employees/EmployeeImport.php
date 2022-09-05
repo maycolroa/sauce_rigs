@@ -71,7 +71,7 @@ class EmployeeImport implements ToCollection
                 {  
                     if ($key > 0) //Saltar cabecera
                     {
-                        if (COUNT($row) == 14 || COUNT($row) == 18)
+                        if (COUNT($row) == 14 || COUNT($row) == 18 || COUNT($row) == 15)
                         {
                             if (isset($row[0]) && $row[0])
                             {

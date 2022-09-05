@@ -35,7 +35,7 @@ class EmpployeeImportJob implements ShouldQueue
       $recordImport = new LogFilesImport;
       $recordImport->company_id = $this->company_id;
       $recordImport->user_id = $this->user->id;
-      $recordImport->file = Storage::disk('s3')->url($url);
+      $recordImport->file = Storage::disk('s3')->url('imports/files/' . $this->nameFile);
       $recordImport->module = "Empleados";
       $recordImport->save();
     }
