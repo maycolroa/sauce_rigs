@@ -65,6 +65,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('templates/positionimport','Administrative\Positions\EmployeePositionController@downloadTemplateImport');
     Route::get('templates/elementnotidentimport','IndustrialSecure\EPP\ElementController@elementNotIdentImport');
     Route::get('templates/elementidentimport','IndustrialSecure\EPP\ElementController@elementIdentImport');
+    Route::get('templates/regionalsimport','Administrative\Regionals\EmployeeRegionalController@downloadTemplateImport');
 
 	//Cerrar sesión 
 	Route::get('/logout', 'Auth\LoginController@logout')->name('logout');

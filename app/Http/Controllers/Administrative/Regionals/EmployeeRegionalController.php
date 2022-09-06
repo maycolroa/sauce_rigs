@@ -7,6 +7,8 @@ use App\Http\Controllers\Controller;
 use App\Vuetable\Facades\Vuetable;
 use App\Models\Administrative\Regionals\EmployeeRegional;
 use App\Http\Requests\Administrative\Regionals\RegionalRequest;
+use App\Exports\Administrative\Regionals\RegionalImportTemplateExcel;
+use Maatwebsite\Excel\Facades\Excel;
 
 class EmployeeRegionalController extends Controller
 {
@@ -167,5 +169,10 @@ class EmployeeRegionalController extends Controller
         
             return $this->multiSelectFormat($regionals);
         }
+    }
+
+    public function downloadTemplateImport()
+    {
+      return Excel::download(new RegionalImportTemplateExcel(collect([]), $this->company), 'PlantillaImportacionNiveles.xlsx');
     }
 }
