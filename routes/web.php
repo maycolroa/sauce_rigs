@@ -412,6 +412,8 @@ Route::middleware(['auth'])->group(function () {
 			Route::post('regional/data', 'Administrative\Regionals\EmployeeRegionalController@data');
 			Route::ApiResource('regional', 'Administrative\Regionals\EmployeeRegionalController');
 
+			Route::post('regional/import', 'Administrative\Regionals\EmployeeRegionalController@import');
+
 			Route::post('business/data', 'Administrative\Businesses\EmployeeBusinessController@data');
 			Route::ApiResource('business', 'Administrative\Businesses\EmployeeBusinessController');
 

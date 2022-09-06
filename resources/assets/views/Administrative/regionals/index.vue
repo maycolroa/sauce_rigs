@@ -60,7 +60,7 @@ export default {
       var imagefile = e.target.files;
 
       formData.append("file", imagefile[0]);
-      axios.post('/administration/employee/import', formData, {
+      axios.post('/administration/regional/import', formData, {
           headers: {
             'Content-Type': 'multipart/form-data'
           }
