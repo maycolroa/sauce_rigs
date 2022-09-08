@@ -402,11 +402,8 @@ class RiskMatrixManager extends BaseManager
                     $array_table['process'] = $itemMatrix->process;
                     $array_table['area'] = $itemMatrix->area;
                     
-                    $frec = $itemRisk->description_residual_frequency;
-                    $imp = $itemRisk->description_residual_impact;
-
-                    \Log::info($itemRisk);
-                    \Log::info($data[$frec][$imp]);
+                    $frec = trim($itemRisk->description_residual_frequency);
+                    $imp = trim($itemRisk->description_residual_impact);
 
                     $array_table['risk'] = ['sequence' => $itemRisk->risk_sequence, 'color' => $data[$frec][$imp]['color']];
 
