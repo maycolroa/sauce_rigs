@@ -4,7 +4,7 @@ namespace App\Models\General;
 
 use Illuminate\Database\Eloquent\Model;
 
-class EmailListaNegra extends Model
+class EmailBlackList extends Model
 {
     /**
      * The table associated with the model.

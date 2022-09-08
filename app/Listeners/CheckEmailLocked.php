@@ -35,56 +35,33 @@ class CheckEmailLocked
 
         if (is_array($event->message->getTo())) {
             foreach ($event->message->getTo() as $correo => $valor) {
-                $correos[] = $valor->getAddress();
+                $correos[] = $correo;
             }
         }
 
         if (is_array($event->message->getCc())) {
             foreach ($event->message->getCc() as $correo => $valor) {
-                $correos[] = $valor->getAddress();
+                $correos[] = $correo;
             }
         }
 
         if (is_array($event->message->getBcc())) {
             foreach ($event->message->getBcc() as $correo => $valor) {
-                $correos[] = $valor->getAddress();
+                $correos[] = $correo;
             }
         }
 
         $except = EmailBlackList::whereIn('email', $correos)->pluck('email')->unique();
 
-        foreach ($this->filterData($event->message->getTo(), $except) as $key => $value)
-        {
-            if ($key == 0)
-                $event->message->to($value);
-            else
-                $event->message->addTo($value);
-        }
-
-        foreach ($this->filterData($event->message->getCc(), $except) as $key => $value)
-        {
-            if ($key == 0)
-                $event->message->cc($value);
-            else
-                $event->message->addCc($value);
-        }
-
-        foreach ($this->filterData($event->message->getBcc(), $except) as $key => $value)
-        {
-            if ($key == 0)
-                $event->message->bcc($value);
-            else
-                $event->message->addBcc($value);
-        }
+        $event->message->setTo($this->filterData($event->message->getTo(), $except));
+        $event->message->setCc($this->filterData($event->message->getCc(), $except));
+        $event->message->setBcc($this->filterData($event->message->getBcc(), $except));
     }
 
     public function filterData($data, $except)
     {
         $data = collect($data)->filter(function ($value, $email) use ($except) {
-            return $this->validEmail($value->getAddress()) && !$except->contains($value->getAddress());
-        })
-        ->map(function ($value, $key) {
-            return $value->getAddress();
+            return $this->validEmail($email) && !$except->contains($email);
         })
         ->toArray();
 
