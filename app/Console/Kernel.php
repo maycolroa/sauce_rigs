@@ -37,6 +37,7 @@ class Kernel extends ConsoleKernel
         'App\Console\Commands\DaysAlertExpiredElementsAsigned',
         'App\Console\Commands\NotifyAlertStockMinimun',
         'App\Console\Commands\SendBounceSummary',
+        'App\Console\Commands\DeleteFilesImportS3',
         //'App\Console\Commands\RememberRepeatInspetion'
     ];
 
@@ -151,6 +152,10 @@ class Kernel extends ConsoleKernel
         $schedule->command('send-bounce-summary')
             ->timezone('America/Bogota')
             ->dailyAt('7:00');
+        
+        $schedule->command('delete-files-import-s3')
+            ->timezone('America/Bogota')
+            ->dailyAt('3:30');
     }
 
     /**
