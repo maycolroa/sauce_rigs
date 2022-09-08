@@ -36,6 +36,7 @@ class Kernel extends ConsoleKernel
         'App\Console\Commands\UpdateEppElementsBelowStock',
         'App\Console\Commands\DaysAlertExpiredElementsAsigned',
         'App\Console\Commands\NotifyAlertStockMinimun',
+        'App\Console\Commands\SendBounceSummary',
         //'App\Console\Commands\RememberRepeatInspetion'
     ];
 
@@ -146,6 +147,10 @@ class Kernel extends ConsoleKernel
         $schedule->command('notify-alert-stock-minimun')
             ->timezone('America/Bogota')
             ->dailyAt('3:10');
+
+        $schedule->command('send-bounce-summary')
+            ->timezone('America/Bogota')
+            ->dailyAt('7:00');
     }
 
     /**

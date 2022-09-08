@@ -52,8 +52,6 @@ class SendBounceSummary extends Command
 
         $recipients = User::where('id', -1)->get();
 
-        \Log::info($result);
-
         if ($result->bounce > 0 || $result->complaint > 0)
         {
             $emails = EmailBlackList::select('*')
