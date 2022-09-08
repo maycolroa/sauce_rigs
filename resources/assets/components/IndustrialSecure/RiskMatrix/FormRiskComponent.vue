@@ -497,13 +497,13 @@ export default {
       if (
       (this.risk.description_residual_frequency == 'Baja' && this.risk.description_residual_impact == 'Extremo') || 
       (this.risk.description_residual_frequency == 'Moderada' && this.risk.description_residual_impact == 'Grave') || 
-      (this.risk.description_residual_frequency == 'Alta' && this.risk.description_residual_impact == 'Moderado') ||
+      (this.risk.description_residual_frequency == 'Alta' && this.risk.description_residual_impact == 'Moderada') ||
       (this.risk.description_residual_frequency == 'Muy Alta' && this.risk.description_residual_impact == 'Leve'))
       {
         return 'colorOrange';
       }
       else if (
-      (this.risk.description_residual_frequency == 'Muy Baja' && this.risk.description_residual_impact == 'Moderado') || 
+      (this.risk.description_residual_frequency == 'Muy Baja' && this.risk.description_residual_impact == 'Moderada') || 
       (this.risk.description_residual_frequency == 'Muy Baja' && this.risk.description_residual_impact == 'Leve') || 
       (this.risk.description_residual_frequency == 'Baja' && this.risk.description_residual_impact == 'Leve') ||
       (this.risk.description_residual_frequency == 'Baja' && this.risk.description_residual_impact == 'No Significativo') ||
@@ -518,7 +518,7 @@ export default {
       (this.risk.description_residual_frequency == 'Alta' && this.risk.description_residual_impact == 'Grave') ||
       (this.risk.description_residual_frequency == 'Muy Alta' && this.risk.description_residual_impact == 'Extremo') ||
       (this.risk.description_residual_frequency == 'Muy Alta' && this.risk.description_residual_impact == 'Grave') ||
-      (this.risk.description_residual_frequency == 'Muy Alta' && this.risk.description_residual_impact == 'Moderado'))
+      (this.risk.description_residual_frequency == 'Muy Alta' && this.risk.description_residual_impact == 'Moderada'))
       {
         return 'colorRed';
       }
@@ -526,8 +526,8 @@ export default {
       (this.risk.description_residual_frequency == 'Muy Baja' && this.risk.description_residual_impact == 'Extremo') || 
       (this.risk.description_residual_frequency == 'Muy Baja' && this.risk.description_residual_impact == 'Grave') || 
       (this.risk.description_residual_frequency == 'Baja' && this.risk.description_residual_impact == 'Grave') ||
-      (this.risk.description_residual_frequency == 'Baja' && this.risk.description_residual_impact == 'Moderado') ||
-      (this.risk.description_residual_frequency == 'Moderada' && this.risk.description_residual_impact == 'Moderado') ||
+      (this.risk.description_residual_frequency == 'Baja' && this.risk.description_residual_impact == 'Moderada') ||
+      (this.risk.description_residual_frequency == 'Moderada' && this.risk.description_residual_impact == 'Moderada') ||
       (this.risk.description_residual_frequency == 'Moderada' && this.risk.description_residual_impact == 'Leve') ||
       (this.risk.description_residual_frequency == 'Alta' && this.risk.description_residual_impact == 'Leve') ||
       (this.risk.description_residual_frequency == 'Alta' && this.risk.description_residual_impact == 'No Significativo') ||
@@ -544,13 +544,13 @@ export default {
       if (
       (this.risk.description_inherent_frequency == 'Baja' && this.risk.description_inherent_impact == 'Extremo') || 
       (this.risk.description_inherent_frequency == 'Moderada' && this.risk.description_inherent_impact == 'Grave') || 
-      (this.risk.description_inherent_frequency == 'Alta' && this.risk.description_inherent_impact == 'Moderado') ||
+      (this.risk.description_inherent_frequency == 'Alta' && this.risk.description_inherent_impact == 'Moderada') ||
       (this.risk.description_inherent_frequency == 'Muy Alta' && this.risk.description_inherent_impact == 'Leve'))
       {
         return 'colorOrange';
       }
       else if (
-      (this.risk.description_inherent_frequency == 'Muy Baja' && this.risk.description_inherent_impact == 'Moderado') || 
+      (this.risk.description_inherent_frequency == 'Muy Baja' && this.risk.description_inherent_impact == 'Moderada') || 
       (this.risk.description_inherent_frequency == 'Muy Baja' && this.risk.description_inherent_impact == 'Leve') || 
       (this.risk.description_inherent_frequency == 'Baja' && this.risk.description_inherent_impact == 'Leve') ||
       (this.risk.description_inherent_frequency == 'Baja' && this.risk.description_inherent_impact == 'No Significativo') ||
@@ -565,7 +565,7 @@ export default {
       (this.risk.description_inherent_frequency == 'Alta' && this.risk.description_inherent_impact == 'Grave') ||
       (this.risk.description_inherent_frequency == 'Muy Alta' && this.risk.description_inherent_impact == 'Extremo') ||
       (this.risk.description_inherent_frequency == 'Muy Alta' && this.risk.description_inherent_impact == 'Grave') ||
-      (this.risk.description_inherent_frequency == 'Muy Alta' && this.risk.description_inherent_impact == 'Moderado'))
+      (this.risk.description_inherent_frequency == 'Muy Alta' && this.risk.description_inherent_impact == 'Moderada'))
       {
         return 'colorRed';
       }
@@ -573,8 +573,8 @@ export default {
       (this.risk.description_inherent_frequency == 'Muy Baja' && this.risk.description_inherent_impact == 'Extremo') || 
       (this.risk.description_inherent_frequency == 'Muy Baja' && this.risk.description_inherent_impact == 'Grave') || 
       (this.risk.description_inherent_frequency == 'Baja' && this.risk.description_inherent_impact == 'Grave') ||
-      (this.risk.description_inherent_frequency == 'Baja' && this.risk.description_inherent_impact == 'Moderado') ||
-      (this.risk.description_inherent_frequency == 'Moderada' && this.risk.description_inherent_impact == 'Moderado') ||
+      (this.risk.description_inherent_frequency == 'Baja' && this.risk.description_inherent_impact == 'Moderada') ||
+      (this.risk.description_inherent_frequency == 'Moderada' && this.risk.description_inherent_impact == 'Moderada') ||
       (this.risk.description_inherent_frequency == 'Moderada' && this.risk.description_inherent_impact == 'Leve') ||
       (this.risk.description_inherent_frequency == 'Alta' && this.risk.description_inherent_impact == 'Leve') ||
       (this.risk.description_inherent_frequency == 'Alta' && this.risk.description_inherent_impact == 'No Significativo') ||
