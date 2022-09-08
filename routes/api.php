@@ -75,3 +75,5 @@ Route::group(['prefix'=>'v1', 'middleware' => 'api'], function () {
         Route::post('optionsMasive', 'Api\InspectionController@optionsMasiveQualification');*/
     });
 });
+
+Route::post('amazon-sns/notifications', 'Api\AmazonController@handleBounceOrComplaint');

@@ -18,7 +18,10 @@ class EventServiceProvider extends ServiceProvider
         ],
         'jdavidbakr\MailTracker\Events\EmailSentEvent' => [
             'App\Listeners\EmailSent',
-        ]
+        ],
+        'Illuminate\Mail\Events\MessageSending' => [
+            'App\Listeners\CheckEmailLocked',
+        ],
     ];
 
     /**
