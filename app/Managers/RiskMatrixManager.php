@@ -405,6 +405,8 @@ class RiskMatrixManager extends BaseManager
                     $frec = $itemRisk->description_residual_frequency;
                     $imp = $itemRisk->description_residual_impact;
 
+                    \Log::info($itemRisk);
+
                     $array_table['risk'] = ['sequence' => $itemRisk->risk_sequence, 'color' => $data[$frec][$imp]['color']];
 
                     $array_table['risk_name'] = $itemRisk->risk->name;
