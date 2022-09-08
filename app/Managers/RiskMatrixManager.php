@@ -406,6 +406,7 @@ class RiskMatrixManager extends BaseManager
                     $imp = $itemRisk->description_residual_impact;
 
                     \Log::info($itemRisk);
+                    \Log::info($data[$frec][$imp]);
 
                     $array_table['risk'] = ['sequence' => $itemRisk->risk_sequence, 'color' => $data[$frec][$imp]['color']];
 
