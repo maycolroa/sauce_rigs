@@ -21,7 +21,7 @@ class AmazonController extends Controller
 
     public function handleBounceOrComplaint(Request $request)
     {
-        Log::info($request->json()->all());
+        //Log::info($request->json()->all());
         $data = $request->json()->all();
         
         if ($request->json('Type') == 'SubscriptionConfirmation')

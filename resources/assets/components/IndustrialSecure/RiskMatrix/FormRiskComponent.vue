@@ -243,7 +243,7 @@
                                 <b-btn v-if="!viewOnly" variant="outline-primary icon-btn borderless" size="sm" v-b-tooltip.top title="Eliminar" @click.prevent="removeIndicator(indexInd)"><span class="ion ion-md-close-circle"></span></b-btn>
                             </div>
                         </div>
-                        <vue-input :disabled="viewOnly" class="col-md-12" v-model="indicator.indicator" label="Indicador" type="text" name="indicator"></vue-input>
+                        <vue-textarea :disabled="viewOnly" class="col-md-12" v-model="indicator.indicator" label="Indicador" type="text" name="indicator"></vue-textarea>
                       </b-form-row>
                   </div>
                 </template>
