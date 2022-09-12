@@ -16,7 +16,7 @@ trait RiskMatrixTrait
         $matriz['Automático']['SI']['Total']['No Documentado']['NO'] = 'Altamente Efectivo';
         $matriz['Automático']['NO']['Total']['Documentado']['SI'] = 'Altamente Efectivo';
         $matriz['Automático']['NO']['Total']['Parcialmente Documentado']['SI'] = 'Efectivo';
-        $matriz['Mixto']['SI']['Total']['Documentado']['SI'] = 'Efectivo';
+        $matriz['Mixto']['SI']['Total']['Documentado']['SI'] = 'Altamente Efectivo';
         $matriz['Automático']['NO']['Total']['No Documentado']['SI'] = 'Efectivo';
         $matriz['Mixto']['NO']['Total']['Documentado']['SI'] = 'Efectivo';
         $matriz['Automático']['SI']['Parcial']['Documentado']['SI'] = 'Efectivo';
