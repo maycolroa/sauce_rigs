@@ -335,9 +335,9 @@ class RiskMatrixImport implements ToCollection, WithCalculatedFormulas
                 $risk_subproocess->legal_regulatory = $data['legal_Regulatorio'];
                 $risk_subproocess->environmental = $data['ambiental'];
                 $risk_subproocess->max_inherent_impact = $data['max_impacto_inherente'];
-                $risk_subproocess->description_inherent_impact = $data['desc_impacto_inherente'];
+                $risk_subproocess->description_inherent_impact = trim($data['desc_impacto_inherente']);
                 $risk_subproocess->max_inherent_frequency = $data['max_frecuencia_inherente'];            
-                $risk_subproocess->description_inherent_frequency = $data['desc_frecuencia_inherente'];
+                $risk_subproocess->description_inherent_frequency = trim($data['desc_frecuencia_inherente']);
                 $risk_subproocess->inherent_exposition = $data['exposicion_inherente'];
                 $risk_subproocess->controls_decrease = $data['control_disminuir'];
                 $risk_subproocess->nature = $data['naturaleza'];
@@ -348,9 +348,9 @@ class RiskMatrixImport implements ToCollection, WithCalculatedFormulas
                 $risk_subproocess->control_evaluation = $data['evaluacion_control'];
                 $risk_subproocess->percentege_mitigation = $data['mitigacion'];
                 $risk_subproocess->max_residual_impact = $data['max_impacto_residual'];
-                $risk_subproocess->description_residual_impact = $data['desc_max_impacto_residual'];
+                $risk_subproocess->description_residual_impact = trim($data['desc_max_impacto_residual']);
                 $risk_subproocess->max_residual_frequency = $data['max_frecuencia_residual'];
-                $risk_subproocess->description_residual_frequency = $data['desc_frecuencia_residual'];
+                $risk_subproocess->description_residual_frequency = trim($data['desc_frecuencia_residual']);
                 $risk_subproocess->residual_exposition = $data['exposicion_Residual'];
                 $risk_subproocess->max_impact_event_risk = $data['max_evento_riesgo'];
                 $risk_subproocess->save();
