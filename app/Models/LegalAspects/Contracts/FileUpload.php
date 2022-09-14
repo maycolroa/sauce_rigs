@@ -57,6 +57,20 @@ class FileUpload extends Model
         return $query;
     }
 
+    public function scopeInUsers($query, $users, $typeSearch = 'IN')
+    {
+        if (COUNT($users) > 0)
+        {
+            if ($typeSearch == 'IN')
+                $query->whereIn('sau_ct_file_upload_contracts_leesse.user_id', $users);
+
+            else if ($typeSearch == 'NOT IN')
+                $query->whereNotIn('sau_ct_file_upload_contracts_leesse.user_id', $users);
+        }
+
+        return $query;
+    }
+
     /**
      * filters checks through the given items
      * @param  Illuminate\Database\Eloquent\Builder $query

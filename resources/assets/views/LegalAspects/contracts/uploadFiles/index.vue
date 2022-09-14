@@ -9,8 +9,9 @@
     <div class="col-md">
       <b-card no-body>
         <b-card-header class="with-elements">
-          <div class="card-title-elements" v-if="auth.can['contracts_uploadFiles_c']">
-            <b-btn :to="{name:'legalaspects-upload-files-create'}" variant="primary">Subir Archivo</b-btn>
+          <div class="card-title-elements">
+            <b-btn v-if="auth.can['contracts_uploadFiles_c']" :to="{name:'legalaspects-upload-files-create'}" variant="primary">Subir Archivo</b-btn>
+            <b-btn :to="{name:'legalaspects-upload-files-report'}" variant="primary">Ver Reportes</b-btn>
           </div>
         </b-card-header>
         <b-card-body>

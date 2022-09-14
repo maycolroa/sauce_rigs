@@ -1805,4 +1805,29 @@ export default [
             filterColumns: true,
         }
     },
+    {
+        name: 'legalaspects-fileUpload-reports',
+        fields: [
+            { name: 'id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true },
+            { name: 'contract', data: 'contract', title: 'Contratista', sortable: false, searchable: false, detail: false, key: false },
+            { name: 'num_pend', data: 'num_pend', title: 'Archivos Pendientes', sortable: true, searchable: false, detail: false, key: false },
+            { name: 'num_acep', data: 'num_acep', title: 'Archivos Aceptados', sortable: true, searchable: false, detail: false, key: false },
+            { name: 'num_reject', data: 'num_reject', title: 'Archivos Rechazados', sortable: true, searchable: false, detail: false, key: false },
+            { name: 'num_files', data: 'num_files', title: 'Total', sortable: true, searchable: false, detail: false, key: false },
+        ],
+        
+        'controlls': [{
+            type: 'push',
+            buttons: []
+        },
+        {
+            type: 'base',
+            buttons: [],
+        }],
+        configuration: {
+            urlData: '/legalAspects/fileUpload/report',
+            filterColumns: false,
+            configNameFilter: 'legalaspects-fileUpload-report'
+        }
+    },
 ]

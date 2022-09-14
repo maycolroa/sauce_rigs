@@ -422,5 +422,38 @@ class FileUploadController extends Controller
       });
 
       return $files;
-  }
+    }
+
+    public function dataReport(Request $request)
+    {
+      $data = FileUpload::selectRaw("
+        sau_ct_information_contract_lessee.id as id,
+        sau_ct_information_contract_lessee.social_reason as contract,
+        count(sau_ct_file_upload_contracts_leesse.id) as num_files,
+        COUNT(IF(state = 'RECHAZADO', sau_ct_file_upload_contracts_leesse.id, NULL)) as num_reject,
+        COUNT(IF(state = 'ACEPTADO', sau_ct_file_upload_contracts_leesse.id, NULL)) as num_acep,
+        COUNT(IF(state = 'PENDIENTE', sau_ct_file_upload_contracts_leesse.id, NULL)) as num_pend
+      ")
+      ->join('sau_ct_file_upload_contract','sau_ct_file_upload_contract.file_upload_id','sau_ct_file_upload_contracts_leesse.id')
+      ->join('sau_ct_information_contract_lessee', 'sau_ct_information_contract_lessee.id', 'sau_ct_file_upload_contract.contract_id')
+      ->groupBy('sau_ct_information_contract_lessee.id');
+
+      $url = "/legalaspects/upload-files/report";
+
+      $filters = COUNT($request->get('filters')) > 0 ? $request->get('filters') : $this->filterDefaultValues($this->user->id, $url);
+
+      if (COUNT($filters) > 0)
+      {
+        if (isset($filters['contracts']))
+          $data->inContracts($this->getValuesForMultiselect($filters["contracts"]), $filters['filtersType']['contracts']);
+
+        if (isset($filters['users']))
+          $data->inUsers($this->getValuesForMultiselect($filters["users"]), $filters['filtersType']['users']);
+
+        $data->betweenCreated($filters["dateRange"]);
+      }
+
+      return Vuetable::of($data)
+            ->make();
+    }
 }

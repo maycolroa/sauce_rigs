@@ -321,5 +321,27 @@ export default [
         },
         
       ]
+    },
+    {
+      name: 'legalaspects-fileUpload-report',
+      filters: [
+        {
+          url: '/selects/contractors',
+          key: 'contracts',
+          type: 'select',
+          label: 'Contratistas'
+        },
+        {
+          url: '/selects/users',
+          key: 'users',
+          type: 'select',
+          label: 'Usuarios'
+        },
+        {
+          key: 'dateRange',
+          type: 'dateRange',
+          label: 'Rango de fecha',
+        }
+      ]
     }
 ];
