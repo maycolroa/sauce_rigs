@@ -544,7 +544,7 @@ export default {
       if (
       (this.risk.description_inherent_frequency == 'Baja' && this.risk.description_inherent_impact == 'Extremo') || 
       (this.risk.description_inherent_frequency == 'Moderada' && this.risk.description_inherent_impact == 'Grave') || 
-      (this.risk.description_inherent_frequency == 'Alta' && this.risk.description_inherent_impact == 'Moderada') ||
+      (this.risk.description_inherent_frequency == 'Alta' && this.risk.description_inherent_impact == 'Moderado') ||
       (this.risk.description_inherent_frequency == 'Muy Alta' && this.risk.description_inherent_impact == 'Leve'))
       {
         return 'colorOrange';
