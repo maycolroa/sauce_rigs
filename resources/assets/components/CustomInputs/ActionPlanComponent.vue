@@ -56,8 +56,14 @@
                                     </vue-datepicker>
                                 <vue-advanced-select :disabled="viewOnly" class="col-md-4" v-model="activity.state" :multiple="false" :options="actionPlanStates" :hide-selected="false" name="state" label="Estado" placeholder="Seleccione el estado" :error="form.errorsFor(`${prefixIndex}actionPlan.activities.${index}.state`)">
                                     </vue-advanced-select>
-                                <vue-datepicker :disabled="viewOnly || activity.expiration_date == ''" class="col-md-4" v-model="activity.execution_date" label="Fecha de ejecución" placeholder="Seleccione la fecha de ejecución" name="execution_date" :disabled-dates="disabledExecutionDate(index)" :error="form.errorsFor(`${prefixIndex}actionPlan.activities.${index}.execution_date`)">
-                                    </vue-datepicker>                           
+                                <vue-datepicker :disabled="viewOnly || activity.expiration_date == '' || activity.state == 'Pendiente'" class="col-md-3" v-model="activity.execution_date" label="Fecha de ejecución" placeholder="Seleccione la fecha de ejecución" name="execution_date" :disabled-dates="disabledExecutionDate(index)" :error="form.errorsFor(`${prefixIndex}actionPlan.activities.${index}.execution_date`)">
+                                    </vue-datepicker> 
+                                <b-btn variant="outline-primary icon-btn borderless" v-if="activity.expiration_date == '' || activity.state == 'Pendiente'" size="sm" v-b-tooltip.top title="Limpiar Fecha" @click.prevent="cleanDate(index)"><span class="ion ion-md-close-circle"></span></b-btn>    
+                               <!-- <b-btn @click.prevent="cleanDate(index)" 
+                                v-if="activity.expiration_date == '' || activity.state == 'Pendiente'"
+                                size="sm" 
+                                variant="primary icon-btn borderless"
+                                v-b-tooltip.top title="Limpiar Fecha"/>-->                     
                             </b-form-row>
                             <b-form-row>
                                 <vue-radio :disabled="viewOnly || !activity.edit_all" :checked="activity.evidence" class="col-md-12" v-model="activity.evidence" :options="siNo" name="evidence" :error="form.errorsFor(`${prefixIndex}actionPlan.activities.${index}.evidence`)" label="¿Requiere evidencia?">
@@ -87,7 +93,7 @@
                                         </b-col>
                                         </b-row>
                                     </b-card-header>
-                                    <b-collapse :id="`accordion-file`" visible :accordion="`accordion-master`">
+                                    <b-collapse :id="`accordion-file`"  :accordion="`accordion-master`">
                                     <b-card-body>
                                         <template v-for="(file, indexF) in activity.evidence_files">
                                         <div :key="file.key">
@@ -290,6 +296,10 @@ export default {
                 this.actionPlan.activities[indexA].files_delete.push(this.actionPlan.activities[indexA].evidence_files[index].id)
 
             this.actionPlan.activities[indexA].evidence_files.splice(index, 1)
+        },
+        cleanDate(index)
+        {
+            this.actionPlan.activities[index].execution_date = '';
         },
         existError(index) {
 			let keys = Object.keys(this.form.errors.errors)
