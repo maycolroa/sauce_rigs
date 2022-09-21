@@ -177,54 +177,60 @@
                     <td>{{$check->emitter_origin}}</td>
                 </tr>
                 <tr>
+                    <th>Clasificación reintegro</th>
                     <th>¿Reubicado?</th>
                     @if($check->relocated == 'NO')
-                    <th colspan="2">{{ Auth::user()->getKeywords()['detail_recommendations'] }}</th>
+                    <th>{{ Auth::user()->getKeywords()['detail_recommendations'] }}</th>
                     @else
                     <th>{{ Auth::user()->getKeywords()['position'] }} Actualizado</th>
-                    <th>{{ Auth::user()->getKeywords()['regional'] }} Actualizada</th>
                     @endif
                 </tr>
                 <tr>
+                    <td>{{$check->refund_classification}}</td>
                     <td>{{$check->relocated}}</td>
                     @if($check->relocated == 'NO')
-                    <td colspan="2">{{$check->detail}}</td>
+                    <td>{{$check->detail}}</td>
                     @else
                     <td>{{ isset($check->relocatedPosition['name']) ? $check->relocatedPosition['name'] : '' }}</td>
-                    <td>{{ isset($check->relocatedRegional['name']) ? $check->relocatedRegional['name'] : '' }}</td>
                     @endif
                 </tr>
                     @if($check->relocated == 'SI')
                         @if ($locationForm['headquarter'] == 'NO')
                             <tr>
-                                <th colspan="4">{{ Auth::user()->getKeywords()['detail_recommendations'] }}</th>
+                                <th>{{ Auth::user()->getKeywords()['regional'] }} Actualizada</th>
+                                <th colspan="3">{{ Auth::user()->getKeywords()['detail_recommendations'] }}</th>
                             </tr>
                             <tr>
-                                <td colspan="4">{{$check->detail}}</td>
+                                <td>{{ isset($check->relocatedRegional['name']) ? $check->relocatedRegional['name'] : '' }}</td>
+                                <td colspan="3">{{$check->detail}}</td>
                             </tr>
                         @endif
 
                         @if ($locationForm['headquarter'] == 'SI' && $locationForm['process'] == 'NO')
                             <tr>
-                                <th colspan="2">{{ Auth::user()->getKeywords()['headquarter'] }} Actualizada</th>
+                                <th>{{ Auth::user()->getKeywords()['regional'] }} Actualizada</th>
+                                <th>{{ Auth::user()->getKeywords()['headquarter'] }} Actualizada</th>
                                 <th colspan="2">{{ Auth::user()->getKeywords()['detail_recommendations'] }}</th>
                             </tr>
                             <tr>
-                                <td colspan="2">{{ isset($check->relocatedHeadquarter['name']) ? $check->relocatedHeadquarter['name'] : '' }}</td>
+                                <td>{{ isset($check->relocatedRegional['name']) ? $check->relocatedRegional['name'] : '' }}</td>
+                                <td>{{ isset($check->relocatedHeadquarter['name']) ? $check->relocatedHeadquarter['name'] : '' }}</td>
                                 <td colspan="2">{{$check->detail}}</td>
                             </tr>
                         @endif
 
                         @if ($locationForm['process'] == 'SI' && ($locationForm['area'] == 'SI' || $locationForm['area'] == 'NO'))
                             <tr>
+                                <th>{{ Auth::user()->getKeywords()['regional'] }} Actualizada</th>
                                 <th>{{ Auth::user()->getKeywords()['headquarter'] }} Actualizada</th>
                                 <th>{{ Auth::user()->getKeywords()['process'] }} Actualizada</th>
-                                <th colspan="2">{{ Auth::user()->getKeywords()['detail_recommendations'] }}</th>
+                                <th>{{ Auth::user()->getKeywords()['detail_recommendations'] }}</th>
                             </tr>
                             <tr>
+                                <td>{{ isset($check->relocatedRegional['name']) ? $check->relocatedRegional['name'] : '' }}</td>
                                 <td>{{ isset($check->relocatedHeadquarter['name']) ? $check->relocatedHeadquarter['name'] : '' }}</td>
                                 <td>{{ isset($check->relocatedProcess['name']) ? $check->relocatedProcess['name'] : '' }}</td>
-                                <td colspan="2">{{$check->detail}}</td>
+                                <td>{{$check->detail}}</td>
                             </tr>
                         @endif
                     @endif
