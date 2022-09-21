@@ -136,6 +136,7 @@
                   cie10-codes-data-url="/selects/cie10"
                   :si-no="siNo"
                   :origin-advisors="originAdvisors"
+                  :refund-classification="refundClassification"
                   regionals-data-url="/selects/regionals"
                   headquarters-data-url="/selects/headquarters"
                   areas-data-url="/selects/areas"
@@ -278,6 +279,7 @@ export default {
       lateralities: [],
       siNo: [],
       originAdvisors: [],
+      refundClassification: [],
       medicalConclusions: [],
       laborConclusions: [],
       originEmitters: [],
@@ -329,6 +331,7 @@ export default {
     this.fetchOptions('diseaseOrigins', 'reinc_select_disease_origin')
     this.fetchOptions('lateralities', 'reinc_select_lateralities')
     this.fetchOptions('originAdvisors', 'reinc_select_origin_advisors')
+    this.fetchOptions('refundClassification', 'reinc_select_refund_classification')
     this.fetchOptions('medicalConclusions', 'reinc_select_medical_conclusions')
     this.fetchOptions('laborConclusions', 'reinc_select_labor_conclusions')
     this.fetchOptions('originEmitters', 'reinc_select_emitter_origin')

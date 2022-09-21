@@ -101,6 +101,8 @@
                   </vue-datepicker>-->
               <vue-advanced-select :disabled="viewOnly" class="col-md-4" v-model="form.origin_recommendations" :error="form.errorsFor('origin_recommendations')" :multiple="false" :options="originAdvisors" :hide-selected="false" name="origin_recommendations" label="Procedencia de las recomendaciones" placeholder="Seleccione una opción">
                   </vue-advanced-select>
+                <vue-advanced-select :disabled="viewOnly" class="col-md-4" v-model="form.refund_classification" :error="form.errorsFor('refund_classification')" :multiple="false" :options="refundClassification" :hide-selected="false" name="refund_classification" label="Clasificación reintegro" placeholder="Seleccione una opción">
+                </vue-advanced-select>
             </b-form-row>
             <b-form-row v-show="form.relocated == 'SI'">
               <vue-ajax-advanced-select :disabled="viewOnly" class="col-md-3" v-model="form.relocated_position_id" name="relocated_position_id" :label="`${keywordCheck('position')} Actualizado`" placeholder="Seleccione una opción" :url="positionsDataUrl" :selected-object="form.relocated_position_multiselect">
@@ -414,6 +416,12 @@ export default {
         return [];
       }
     },
+    refundClassification: {
+      type: Array,
+      default: function() {
+        return [];
+      }
+    },
     medicalConclusions: {
       type: Array,
       default: function() {
@@ -514,6 +522,7 @@ export default {
           medical_certificate_ueac: '',
           relocated_type: '',
           created_at: '',
+          refundClassification: '',
           
           new_tracing: [],
           oldTracings: [],

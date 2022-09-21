@@ -113,7 +113,8 @@ class Check extends Model
         'recommendations_validity',
         'has_function_setting',
         'function_setting',
-        'Observations_recommendatios'
+        'Observations_recommendatios',
+        'refund_classification'
     ];
 
     /**
