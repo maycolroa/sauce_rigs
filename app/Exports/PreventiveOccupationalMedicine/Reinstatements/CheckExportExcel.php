@@ -55,6 +55,14 @@ class CheckExportExcel implements WithMultipleSheets
             $sheets[] = new TracingExcel($this->data['tracings'], $this->keywords['tracings']);
             $sheets[] = new TracingExcel($this->data['laborNotes'], $this->keywords['labor_notes']);
         }
+        else if ($formModel == 'hptu')
+        {
+            $sheets[] = new CheckExcelHPTU($this->company_id, $this->data['checks']);
+            $sheets[] = new MonitoringsExcel($this->data['medicalMonitorings'], 'Seguimientos Medicos');
+            $sheets[] = new MonitoringsExcel($this->data['laborMonitorings'], 'Seguimientos Laborales');
+            $sheets[] = new TracingExcel($this->data['tracings'], $this->keywords['tracings']);
+            $sheets[] = new TracingExcel($this->data['laborNotes'], $this->keywords['labor_notes']);
+        }
         else
         {
             $sheets[] = new CheckExcel($this->company_id, $this->data['checks']);
