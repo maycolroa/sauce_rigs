@@ -51,6 +51,7 @@ class EmployeesController extends Controller
             'sau_employees_regionals.name as regional',
             'sau_employees_headquarters.name as headquarter',
             'sau_employees_processes.name as process',
+            'sau_employees_areas.name as area',
             'sau_employees_businesses.name as business',
             'sau_employees_eps.name as eps',
             'sau_employees_afp.name as afp',
