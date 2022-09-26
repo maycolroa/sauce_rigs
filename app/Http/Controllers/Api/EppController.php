@@ -69,11 +69,11 @@ class EppController extends ApiController
 
       if ($location_level['regional'] == 'SI')
           $employees->where('employee_regional_id', $location->employee_regional_id);
-      else if ($location_level['headquarter'] == 'SI')
+      if ($location_level['headquarter'] == 'SI')
           $employees->where('employee_headquarter_id', $location->employee_headquarter_id);
-      else if ($location_level['process'] == 'SI')
+      if ($location_level['process'] == 'SI')
           $employees->where('employee_process_id', $location->employee_process_id);
-      else
+      if ($location_level['area'] == 'SI')
           $employees->where('employee_area_id', $location->employee_area_id);
 
 
@@ -174,6 +174,7 @@ class EppController extends ApiController
 
                 $content = [
                     'id_ele' => $ele->id,
+                    'class' => $ele->class_element,
                     'quantity' => '',
                     'type' => $ele->identify_each_element ? 'Identificable' : 'No Identificable',
                     'code' => ''
@@ -213,6 +214,7 @@ class EppController extends ApiController
 
                 $content = [
                     'id_ele' => $ele->id,
+                    'class' => $ele->class_element,
                     'quantity' => '',
                     'type' => $ele->identify_each_element ? 'Identificable' : 'No Identificable',
                     'code' => ''

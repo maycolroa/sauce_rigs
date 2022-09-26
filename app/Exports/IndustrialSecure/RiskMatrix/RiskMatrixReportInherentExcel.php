@@ -70,7 +70,7 @@ class RiskMatrixReportInherentExcel implements FromView, WithEvents, WithTitle
               $imp = $itemRisk->description_inherent_impact;
 
               if (isset($data[$frec]) && isset($data[$frec][$imp]))
-                      $data[$frec][$imp]['count']++;
+                $data[$frec][$imp]['count']++;
           }
         }
       }
@@ -78,7 +78,7 @@ class RiskMatrixReportInherentExcel implements FromView, WithEvents, WithTitle
       $matriz = [];
       $headers = array_keys($data);
 
-      $count = isset($data['Muy Bajo']) ? COUNT($data['Muy Bajo']) : 0;
+      $count = isset($data['Muy Baja']) ? COUNT($data['Muy Baja']) : 0;
 
       for ($i=0; $i < $count; $i++)
       { 
