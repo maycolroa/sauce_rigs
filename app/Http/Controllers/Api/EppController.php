@@ -17,6 +17,10 @@ use App\Models\IndustrialSecure\Epp\ElementBalanceLocation;
 use App\Models\IndustrialSecure\Epp\Location;
 use App\Facades\General\PermissionService;
 use App\Models\Administrative\Configurations\ConfigurationCompany;
+use App\Models\IndustrialSecure\Epp\ElementTransactionEmployee;
+use App\Http\Requests\IndustrialSecure\Epp\ElementTransactionsRequest;
+use App\Models\IndustrialSecure\DangerousConditions\ImageApi;
+use App\Models\IndustrialSecure\Epp\FileTransactionEmployee;
 use Auth;
 
 class EppController extends ApiController
@@ -255,31 +259,249 @@ class EppController extends ApiController
         ]);
     }
 
-    /*public function saveImageApi(Request $request)
+    public function saveDelivery(CompanyRequiredRequest $request)
     {
-      DB::beginTransaction();
-          
+      \Log::info($request);
+      if ($request->inventary == 'SI')
+          return $this->storeDelivery($request);
+      else
+          return $this->storeDeliveryNotInventary($request);
+    }
+
+    public function storeDelivery(Request $request)
+    {
+        DB::beginTransaction();
+
         try
         {
-          $img = $this->base64($request->image);
-          $fileName = $img['name'];
-          $file = $img['image'];
+          \Log::info($request->firm);
+            $employee = Employee::query();
+            $employee->company_scope = $request->company_id;
+            $employee = $employee->find($request->employee_id['value']);
 
-          $image = new ImageApi;
-          $image->file = $fileName;
-          $image->type = $request->type;
-          $image->hash = $request->hash;
-          $image->save();
+            $position = EmployeePosition::query();
+            $position->company_scope = $request->company_id;
+            $position = $position->find($employee->employee_position_id);
 
-          if (!$image->save())
+            $delivery = new ElementTransactionEmployee();
+            $delivery->employee_id = $request->employee_id['value'];
+            $delivery->position_employee_id = $position->id;
+            $delivery->type = 'Entrega';
+            $delivery->observations = $request->observations ? $request->observations : NULL;
+            $delivery->location_id = $request->location_id;
+            $delivery->company_id = $request->company_id;
+            $delivery->class_element = $request->class_element['value'];
+            $delivery->edit_firm = count($request->firm) > 0 ? 'SI' : 'NO';
+            $delivery->firm_email = $request->firm['type'] == 'Email' ? 'Email' : ($request->firm['type'] == 'Dibujar' ? 'Dibujar' : NULL);
+            $delivery->email_firm_employee = $request->firm['type'] == 'Email' ? $request->firm['email'] : NULL;
+            $delivery->user_id = $this->user->id;
+            
+            if(!$delivery->save())
                 return $this->respondHttp500();
 
-          if ($image->type == 1)
-            (new Report)->store_image_api($fileName, $file);
-          else
-            (new InspectionItemsQualificationAreaLocation)->store_image_api($fileName, $file);
+            $elements_sync = [];
 
-          DB::commit();
+            foreach ($request->elements_id as $key => $value) 
+            {
+                ///$element = Element::find($value['id_ele']['value']);
+
+                $element = Element::query();
+                $element->company_scope = $request->company_id;
+                $element = $element->find($value['id_ele']['value']);
+
+                if ($element)
+                {
+                    if ($element->identify_each_element)
+                    {
+                        $disponible = ElementBalanceSpecific::where('hash', $value['code'])->where('location_id', $request->location_id)->first();
+
+                        if ($disponible->state != 'Disponible')
+                            return $this->respondHttp422('El elemento ' . $element->name . ' no se encuentra disponible en la ubicación seleccionada');
+                        
+                        $disponible->state = 'Asignado';
+                        $disponible->save();
+
+                        array_push($elements_sync, $disponible->id);
+
+                        $element_balance = ElementBalanceLocation::find($disponible->element_balance_id);
+
+                        $element_balance->quantity_available = $element_balance->quantity_available - 1;
+
+                        $element_balance->quantity_allocated = $element_balance->quantity_allocated + 1;
+
+                        $element_balance->save();
+                    }
+                    else
+                    {
+                        $element_balance = ElementBalanceLocation::where('element_id', $element->id)->where('location_id', $request->location_id)->first();
+
+                        $disponible = ElementBalanceSpecific::where('element_balance_id', $element_balance->id)->where('location_id', $request->location_id)->where('state', 'Disponible')->limit($value['quantity'])->get();
+
+                        if (!$disponible)
+                            return $this->respondHttp422('El elemento ' . $element->name . ' no se encuentra disponible en la ubicación seleccionada');
+                        else if ($disponible->count() < $value['quantity'])
+                            return $this->respondHttp422('El elemento ' . $element->name . ' no se tiene disponible suficientes unidades');
+
+                        foreach ($disponible as $key => $value2) {
+                            $value2->state = 'Asignado';
+                            $value2->save();
+                            array_push($elements_sync, $value2->id);
+                        }
+
+                        $element_balance->quantity_available = $element_balance->quantity_available - $value['quantity'];
+
+                        $element_balance->quantity_allocated = $element_balance->quantity_allocated + $value['quantity'];
+
+                        $element_balance->save();
+                    }
+                }
+            }
+
+            $delivery->elements()->sync($elements_sync);
+
+            if ($delivery->edit_firm)
+            {
+                if (isset($request->firm['image']) && $delivery->firm_email == 'Dibujar')
+                {
+                  $img_firm = ImageApi::where('hash', $request->firm['image'])->where('type', 3)->first();
+
+                  $delivery->firm_employee = $img_firm->file;
+
+                  if(!$delivery->update())
+                      return $this->respondHttp500();
+                }
+                else if ($delivery->firm_email == 'Email')
+                {
+                    $recipient = new User(['email' => $delivery->email_firm_employee]);
+
+                    NotificationMail::
+                        subject('Sauce - Elementos de protección personal')
+                        ->recipients($recipient)
+                        ->message("Estimado $employee->name, usted tiene una solicitud de firma de una entrega de elementos de protección personal, para hacerlo ingrese a los links acontinuación: ")
+                        ->module('epp')
+                        ->buttons([['text'=>'Firmar', 'url'=>action('IndustrialSecure\EPP\TransactionFirmController@index', ['transaction' => $delivery->id, 'employee' => $employee->id])]])
+                        ->company($request->company_id)
+                        ->send();
+                }
+            }
+
+            if (count($request->files) > 0)
+            {
+                $this->processFiles($request->get('files'), $delivery->id);
+            }
+
+            DB::commit();
+
+            return $this->respondHttp200([
+              'data' => $delivery
+            ]);
+
+        } catch (\Exception $e) {
+            \Log::info($e->getMessage());
+            DB::rollback();
+            return $this->respondHttp500();
+        }
+    }
+
+    public function storeDeliveryNotInventary(Request $request)
+    {
+        DB::beginTransaction();
+
+        try
+        {
+            $employee = Employee::query();
+            $employee->company_scope = $request->company_id;
+            $employee = $employee->find($request->employee_id['value']);
+
+
+            $position = EmployeePosition::query();
+            $position->company_scope = $request->company_id;
+            $position = $position->find($employee->employee_position_id);
+
+            $delivery = new ElementTransactionEmployee();
+            $delivery->employee_id = $request->employee_id['value'];
+            $delivery->position_employee_id = $position->id;
+            $delivery->type = 'Entrega';
+            $delivery->observations = $request->observations ? $request->observations : NULL;
+            $delivery->location_id = $request->location_id;
+            $delivery->company_id = $request->company_id;
+            $delivery->class_element = $request->class_element['value'];
+            $delivery->edit_firm = count($request->firm) > 0 ? 'SI' : 'NO';
+            $delivery->firm_email = $request->firm['type'] == 'Email' ? 'Email' : ($request->firm['type'] == 'Dibujar' ? 'Dibujar' : NULL);
+            $delivery->email_firm_employee = $request->firm['type'] == 'Email' ? $request->firm['email'] : NULL;
+            $delivery->user_id = $this->user->id;
+            
+            if(!$delivery->save())
+                return $this->respondHttp500();
+
+            $elements_sync = [];
+
+            foreach ($request->elements_id as $key => $value) 
+            {
+                $element = Element::query();
+                $element->company_scope = $request->company_id;
+                $element = $element->find($value['id_ele']['value']);
+
+                if ($element)
+                {
+                    $element_balance = ElementBalanceLocation::where('element_id', $element->id)->where('location_id', $request->location_id)->first();
+
+                    for ($i=1; $i <= $value['quantity']; $i++) { 
+                        $hash = Hash::make($element_balance->element_id . str_random(30));
+                        $product = new ElementBalanceSpecific;
+                        $product->hash = $hash;
+                        $product->code = $hash;
+                        $product->element_balance_id = $element_balance->id;
+                        $product->location_id = $element_balance->location_id;
+                        $product->expiration_date = $element->days_expired ? $element->days_expired : NULL;
+                        $product->state = 'Asignado';
+                        $product->save();
+
+                        array_push($elements_sync, $product->id);
+                    }
+
+                    $element_balance->quantity_available = $element_balance->quantity_available - $value['quantity'];
+
+                    $element_balance->quantity_allocated = $element_balance->quantity_allocated + $value['quantity'];
+
+                    $element_balance->save();
+                }
+            }
+
+            $delivery->elements()->sync($elements_sync);
+
+            if ($delivery->edit_firm)
+            {
+                if (isset($request->firm['image']) && $delivery->firm_email == 'Dibujar')
+                {
+                  $img_firm = ImageApi::where('hash', $firm['image'])->where('type', 3)->first();
+
+                  $delivery->firm_employee = $img_firm->file;
+
+                  if(!$delivery->update())
+                      return $this->respondHttp500();
+                }
+                else if ($delivery->firm_email == 'Email')
+                {
+                    $recipient = new User(['email' => $delivery->email_firm_employee]);
+
+                    NotificationMail::
+                        subject('Sauce - Elementos de protección personal')
+                        ->recipients($recipient)
+                        ->message("Estimado $employee->name, usted tiene una solicitud de firma de una entrega de elementos de protección personal, para hacerlo ingrese a los links acontinuación: ")
+                        ->module('epp')
+                        ->buttons([['text'=>'Firmar', 'url'=>action('IndustrialSecure\EPP\TransactionFirmController@index', ['transaction' => $delivery->id, 'employee' => $employee->id])]])
+                        ->company($request->company_id)
+                        ->send();
+                }
+            }
+
+            if (count($request->files) > 0)
+            {
+                $this->processFiles($request->get('files'), $delivery->id);
+            }
+
+            DB::commit();
 
         } catch (\Exception $e) {
             \Log::info($e->getMessage());
@@ -287,28 +509,24 @@ class EppController extends ApiController
             return $this->respondHttp500();
         }
 
-        return $this->respondHttp200([
-          'data' => $request->id
+        return $this->respondHttp200([            
+          'data' => $delivery
         ]);
     }
 
-    public function base64($file)
-    {
-      $image_64 = $file;
+    public function processFiles($files, $transaction_id)
+    { 
+        foreach ($files as $keyF => $file) 
+        {
+          if ($file['file'])
+          {
+            $img_firm = ImageApi::where('hash', $file['file'])->where('type', 3)->first();
 
-      $extension = explode('/', explode(':', substr($image_64, 0, strpos($image_64, ';')))[1])[1];
-
-      $replace = substr($image_64, 0, strpos($image_64, ',')+1); 
-
-      $image = str_replace($replace, '', $image_64); 
-
-      $image = str_replace(' ', '+', $image); 
-
-      $imageName = base64_encode($this->user->id . rand(1,10000) . now()) . '.' . $extension;
-
-      $imagen = base64_decode($image);
-
-      return ['name' => $imageName, 'image' => $imagen];
-
-    } */
+            $fileUpload = new FileTransactionEmployee();
+            $fileUpload->transaction_employee_id = $transaction_id;
+            $fileUpload->file = $img_firm->file;
+            $fileUpload->save();
+          }
+        }
+    }
 }

@@ -568,7 +568,7 @@ class InspectionController extends ApiController
                             if ($exist_firm)
                             {
                                 $img_firm = ImageApi::where('hash', $firms['image'])->where('type', 3)->first();
-
+                                
                                 if ($img_firm)
                                     $exist_firm->image = $img_firm->file;
                                 else

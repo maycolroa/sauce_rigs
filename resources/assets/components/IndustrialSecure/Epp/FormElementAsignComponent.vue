@@ -74,7 +74,7 @@
 
       <b-form-row style="padding-bottom: 20px;">
           <div class="col-md-12">
-              <center><b-btn variant="primary" @click.prevent="addFile()"><span class="ion ion-md-add-circle"></span>&nbsp;&nbsp;Agregar</b-btn></center>
+              <center><b-btn v-if="!viewOnly" variant="primary" @click.prevent="addFile()"><span class="ion ion-md-add-circle"></span>&nbsp;&nbsp;Agregar</b-btn></center>
           </div>
         </b-form-row>  
     </b-card>
@@ -108,7 +108,7 @@
         <center>              
             <vue-radio :disabled="viewOnly" class="col-md-6" v-model="form.firm_email" :options="typeFirm" name="firm_email" :error="form.errorsFor('firm_email')" label="¿Como desea agregar la firma?" :checked="form.firm_email"></vue-radio>      
           </center>
-          <div v-if="form.firm_email == 'Dibujar'">
+          <div v-if="form.firm_email == 'Dibujar' && !viewOnly">
             <center>
                 <p><b>Ingresa aqui tu firma</b></p>
                 <VueSignaturePad
