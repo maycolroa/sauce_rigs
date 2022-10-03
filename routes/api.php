@@ -59,6 +59,7 @@ Route::group(['prefix'=>'v1', 'middleware' => 'api'], function () {
         Route::post('imageItem', 'Api\InspectionController@imageItem');
         Route::post('quelifiedListUser', 'Api\InspectionController@quelifiedListUser');
         Route::post('optionsMasive', 'Api\InspectionController@optionsMasiveQualification');
+        Route::post('getPlanActionMandatory', 'Api\InspectionController@getPlanActionMandatory');
     });
 
 

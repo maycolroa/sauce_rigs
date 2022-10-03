@@ -59,7 +59,8 @@ class ConfigurationsCompany
             'days_alert_expiration_date_absenteeism_2' => 'Dias de segunda alerta por vencimiento de incapacidad',
             'location_level_form_table_inspectiona' => 'Nivel de localización a mostrar en la tabla de inspecciones',
             'stock_minimun' => 'Notificar por existencia por debajo del stock minimo configurado por elemento',
-            'users_notify_stock_minimun' => 'Usuarios a notifica por existencia minima'
+            'users_notify_stock_minimun' => 'Usuarios a notifica por existencia minima',
+            'mandatory_action_plan_inspections' => 'Parametro para pedir o no planes de accion segun la calificacion del item dentro de las inspecciones no planeadas'
         ];
     }
 

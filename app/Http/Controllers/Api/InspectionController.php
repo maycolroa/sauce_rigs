@@ -26,6 +26,7 @@ use App\Http\Requests\Api\InspectionsRequest;
 use App\Http\Requests\Api\InspectionsCreateRequest;
 use App\Http\Requests\Api\InspectionQualificationsRequest;
 use App\Http\Requests\Api\ImageInspectionRequest;
+use App\Facades\ConfigurationCompany\Facades\ConfigurationsCompany;
 use Validator;
 use Carbon\Carbon;
 use DB;
@@ -210,6 +211,18 @@ class InspectionController extends ApiController
 
         return $this->respondHttp200([
             'data' => $qualifications,
+        ]);
+    }
+
+    public function getPlanActionMandatory(Request $request)
+    {
+        $company = Company::find($request->company_id);
+        $qualifications = [];
+
+        $data = ConfigurationsCompany::company($company->id)->findByKey('mandatory_action_plan_inspections');
+
+        return $this->respondHttp200([
+            'data' => $data,
         ]);
     }
 

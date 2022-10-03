@@ -43,6 +43,7 @@ export default {
   },
   created(){
     this.fetchSelect('locationLevels', '/radios/conf/locationLevelForm')
+    this.fetchSelect('siNo', '/radios/siNo')
 
     axios.get('/industrialSecurity/configuration/view')
     .then(response => {
