@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+        body: {
+            padding-bottom: 100px;
+            padding-right: 100px;
+            padding-left : 100px;
+            padding-top: 0px;
+        }
+    </style>
+</head>
+<body style="margin: 50px; margin-top: 0px;">
+    <!-- Define header and footer blocks before your content -->
+    @if ($logo)
+    <div style="text-align: right"><img src="{{ public_path('storage/administrative/logos/').$logo }}" width="120px" height="120px"/></div>
+    @endif
+    <p><b>{{$date}}</b></p>
+    <br/>
+    <p style="text-align: center"><b>COMUNICACIÓN INTERNA</b></p>
+    <br/>
+    <b>Para: {{ $to }}</b>
+    <br/><br/>
+    <b>De: {{$from}}</b>
+    <br/><br/>
+    <b>Asunto: {{$subject}}</b>
+    <br/><br/>
+    <p>Una vez analizado el estado de salud, de <b>{{$check->name}}</b>, identificado(a) con DNI <b>{{$check->identification}}</b> cargo: <b>{{$check->position}}</b>, asignado a <b>{{$check->headquarter}}</b>, con fecha de ingreso {{$income_date}}, quien ha tenido un evento de {{$check->disease_origin}}, nos permitimos informarle que:</p>    
+    <p>De acuerdo a lo establecido en los artículos 7 y 8 de la Ley 776/2002, nos permitimos dar algunas sugerencias con el fin de en la recuperacióndel estado de salud y lograr el mejor desempeño laboral posible de <b>{{$check->name}}</b>:</p>
+
+    <br/>
+    @if ($check->check_detail)
+        <div style="border: solid black 1px; padding: 0px 20px; text-align: justify; text-justify: inter-word; padding-top: 5px; padding-bottom: 5px;">
+            {!! nl2br($check->check_detail) !!}
+        </div>
+    @endif
+    
+    @if ($check->start_recommendations)
+        
+        @if ($check->indefinite_recommendations != "NO")
+            <p>Las anteriores recomendaciones han sido emitidas por {{$check->origin_recommendations}} y tienen un carácter <b>indefinido</b>, y para ello se realizará el respectivo acompañamiento y seguimiento desde Seguridad y Salud en el Trabajo.</p>
+        @else
+            <p>Las anteriores recomendaciones han sido emitidas por {{$check->origin_recommendations}} y tienen un carácter <b>temporal</b>, y para ello se realizará el respectivo acompañamiento y seguimiento desde Seguridad y Salud en el Trabajo.</p>
+        @endif
+        
+    @endif
+    <br/><br/>
+    <div>
+        <table style="background-color: white; width: 100%">
+            <tr style="background-color: white;">
+                <td style="border: 0px solid #dddddd; text-align: left; padding: 0px">Firma Médico</td>
+                <td style="border: 0px solid #dddddd; text-align: left; padding: 0px">Firma Colaborador</td>
+            </tr>
+            <tr style="background-color: white;">
+                <td style="border: 0px solid #dddddd; text-align: left; padding: 0px">
+                    <p>__________________________</p>
+                </td>
+                <td style="border: 0px solid #dddddd; text-align: letf; padding: 0px">
+                    <p>__________________________</p>
+                </td>
+            </tr>
+            <tr style="background-color: white;">
+                <td style="border: 0px solid #dddddd; text-align: left; padding: 0px">Firma Analista SST y/o Analista en salud</td>
+                <td style="border: 0px solid #dddddd; text-align: left; padding: 0px">Firma Director Gestión Humana</td>
+            </tr>
+            <tr style="background-color: white;">
+                <td style="border: 0px solid #dddddd; text-align: left; padding: 0px">
+                    <p>__________________________</p>
+                </td>
+                <td style="border: 0px solid #dddddd; text-align: left; padding: 0px">
+                    <p>__________________________</p>
+                </td>
+            </tr>
+
+            <tr style="background-color: white;">
+                <td style="border: 0px solid #dddddd; text-align: left; padding: 0px">Firma Jefe de área</td>
+                <td style="border: 0px solid #dddddd; text-align: left; padding: 0px">Firma Supervisor</td>
+            </tr>
+            <tr style="background-color: white;">
+                <td style="border: 0px solid #dddddd; text-align: left; padding: 0px">
+                    <p>__________________________</p>
+                </td>
+                <td style="border: 0px solid #dddddd; text-align: left; padding: 0px">
+                    <p>__________________________</p>
+                </td>
+            </tr>
+        </table>
+    </div>
+</body>
+</html>

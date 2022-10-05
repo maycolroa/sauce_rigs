@@ -532,6 +532,10 @@ class CheckController extends Controller
         {
             $pdf = PDF::loadView('pdf.tracingFamilia', $data);
         }
+        else if ($formModel == 'chia')
+        {
+            $pdf = PDF::loadView('pdf.tracingChia', $data);
+        }
 
         return $pdf->stream('seguimiento.pdf');
     }
@@ -587,6 +591,10 @@ class CheckController extends Controller
         {
             $pdf = PDF::loadView('pdf.tracingFamiliaGlobal', $data);
         }
+        else if ($formModel == 'chia')
+        {
+            $pdf = PDF::loadView('pdf.tracingGlobalChia', $data);
+        }
 
         return $pdf->stream('seguimientos.pdf');
     }
@@ -625,7 +633,7 @@ class CheckController extends Controller
             
         $company = Company::select('logo')->where('id', $this->company)->first();
 
-        $record_letter = LetterHistory::where('check_id', $request->check_id)->where('to', $request->to)->where('from', $request->from)->where('subject', $request->subject)->first();
+        $record_letter = LetterHistory::where('check_id', $request->check_id)->where('to', $request->to)->where('from', $request->from)->where('subject', $request->subject)->where('user_id', $this->user->id)->first();
 
         if (!$record_letter)
         {
@@ -636,13 +644,16 @@ class CheckController extends Controller
             $record_letter->send_date = $date;
             $record_letter->check_id = $request->check_id;
             $record_letter->company_id = $this->company;
+            $record_letter->user_id = $this->user->id;
             $record_letter->save();
+            $record_letter->user_name = $record_letter->user->name;
         }
 
         $data = [
             'to' => $request->to,
             'from' => $request->from,
             'subject' => $request->subject, 
+            'history_letter' => $record_letter,
             'user' => $this->user,
             'check' => $check,
             'date' => $date,
@@ -680,7 +691,10 @@ class CheckController extends Controller
         {
             $pdf = PDF::loadView('pdf.letterFamilia', $data);
         }
-
+        else if($formModel == 'chia')
+        {
+            $pdf = PDF::loadView('pdf.letterChia', $data);
+        } 
 
         return $pdf->stream('recomendaciones.pdf');
     
@@ -1008,7 +1022,7 @@ class CheckController extends Controller
             'to' => $record_letter->to,
             'from' => $record_letter->from,
             'subject' => $record_letter->subject, 
-            'user' => $this->user,
+            'user' => $record_letter->user ? $record_letter->user : $this->user,
             'check' => $check,
             'date' => $record_letter->send_date,
             'income_date' => $check->income_date,
@@ -1042,6 +1056,10 @@ class CheckController extends Controller
         else if($formModel == 'familia')
         {
             $pdf = PDF::loadView('pdf.letterFamilia', $data);
+        }
+        else if($formModel == 'chia')
+        {
+            $pdf = PDF::loadView('pdf.letterChia', $data);
         }
 
         return $pdf->stream('recomendaciones.pdf');

@@ -18,6 +18,7 @@ class LetterHistory extends Model
         'to',
         'from',
         'subject',
+        'user_id'
     ];
 
     public function multiselect()
@@ -28,8 +29,8 @@ class LetterHistory extends Model
         ];
     }
 
-    public function checks()
+    public function user()
     {
-        return $this->hasMany(Check::class, 'restriction_id');
+        return $this->belongsTo('App\Models\Administrative\Users\User', 'user_id');
     }
 }
