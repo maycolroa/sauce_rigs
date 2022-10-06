@@ -236,7 +236,8 @@
                                                                         :prefix-index="`evaluation.objectives.${index}.subobjectives.${index2}.items.${index3}.actionPlan`"
                                                                         :action-plan-states="actionPlanStates"
                                                                         v-model="form.evaluation.objectives[index].subobjectives[index2].items[index3].actionPlan"
-                                                                        :action-plan="form.evaluation.objectives[index].subobjectives[index2].items[index3].actionPlan"/>
+                                                                        :action-plan="form.evaluation.objectives[index].subobjectives[index2].items[index3].actionPlan"
+										                                module="Contratista"/>
                                                                     </b-card>
                                                                     <br>
                                                                     <div class="row float-right pt-12 pr-12y">

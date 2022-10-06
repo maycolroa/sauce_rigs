@@ -107,7 +107,8 @@
                                                           :prefix-index="`inform.themes${index}.items${index2}-actionPlan`"
                                                           :action-plan-states="actionPlanStates"
                                                           v-model="form.inform.themes[index].items[index2].actionPlan"
-                                                          :action-plan="form.inform.themes[index].items[index2].actionPlan"/>
+                                                          :action-plan="form.inform.themes[index].items[index2].actionPlan"
+										                                      module="Contratista"/>
                                                       </b-card>
                                                       <br>
                                                       <div class="row float-right pt-12 pr-12y">

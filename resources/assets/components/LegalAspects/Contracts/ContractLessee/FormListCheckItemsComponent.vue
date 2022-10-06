@@ -61,7 +61,8 @@
 										:prefix-index="`items.${index}.`"
 										:action-plan-states="actionPlanStates"
 										v-model="item.actionPlan"
-										:action-plan="item.actionPlan"/>
+										:action-plan="item.actionPlan"
+										module="Contratista"/>
 								</b-card>
 								<br>
 								<div class="row float-right pt-12 pr-12y">

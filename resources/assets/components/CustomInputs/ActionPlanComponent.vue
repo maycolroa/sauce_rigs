@@ -149,6 +149,7 @@ export default {
         VueFileSimple
     },
     props: {
+        module: { type: String, default: '' },
         isEdit: { type: Boolean, default: false },
         isEditItem: { type: Boolean, default: false },
         viewOnly: { type: Boolean, default: false },    
@@ -178,7 +179,7 @@ export default {
     data() {
         return {
             search: '',
-            userDataUrl: '/selects/usersActionPlan',
+            userDataUrl: this.module == 'Contratista' ? '/selects/usersActionPlanContract' : '/selects/usersActionPlan',
             siNo: [
                 {text: 'SI', value: 'SI'},
                 {text: 'NO', value: 'NO'}

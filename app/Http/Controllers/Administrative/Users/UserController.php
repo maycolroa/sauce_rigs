@@ -770,6 +770,75 @@ class UserController extends Controller
         }
     }
 
+    public function multiselectUsersActionPlanContract(Request $request)
+    {
+        $users = User::active();
+
+        if ($this->user->hasRole('Arrendatario', $this->team) || $this->user->hasRole('Contratista', $this->team))
+        {
+            
+            $users->selectRaw("
+                sau_users.id as id,
+                Concat(sau_users.name, ' - ', sau_ct_information_contract_lessee.social_reason) as name
+            ")
+            ->join('sau_user_information_contract_lessee', 'sau_user_information_contract_lessee.user_id', 'sau_users.id')
+            ->leftJoin('sau_ct_information_contract_lessee', 'sau_ct_information_contract_lessee.id', 'sau_users.id')
+            ->where('sau_user_information_contract_lessee.information_id', $this->getContractIdUser($this->user->id));
+        }
+        else
+        {
+            $users->selectRaw("
+                sau_users.id as id,
+                Concat(sau_users.name, ' - ', sau_ct_information_contract_lessee.social_reason) as name
+            ")
+            ->join('sau_company_user', 'sau_company_user.user_id', 'sau_users.id')
+            ->Join('sau_ct_information_contract_lessee', 'sau_ct_information_contract_lessee.id', 'sau_users.id');
+        }
+
+        if($request->has('keyword'))
+        {
+            $keyword = "%{$request->keyword}%";
+
+            $users = $users->where(function ($query) use ($keyword) {
+                        $query->orWhere('sau_users.name', 'like', $keyword)                     
+                        ->orWhere('sau_ct_information_contract_lessee.social_reason', 'like', $keyword);
+                    })->get();
+                    //->take(30)->pluck('id', 'name');
+
+            $isSuper = $this->user->hasRole('Superadmin', $this->team);
+
+            if (!$isSuper)
+            {
+                $users = $users->filter(function ($user, $key) {
+                    return !$user->hasRole('Superadmin', $this->team);
+                });
+            }
+
+            $users = $users->take(30)->pluck('id', 'name');
+
+            return $this->respondHttp200([
+                'options' => $this->multiSelectFormat($users)
+            ]);
+        }
+        else
+        {
+            $users = $users->get();
+
+            $isSuper = $this->user->hasRole('Superadmin', $this->team);
+
+            if (!$isSuper)
+            {
+                $users = $users->filter(function ($user, $key) {
+                    return !$user->hasRole('Superadmin', $this->team);
+                });
+            }
+
+            $users = $users->pluck('id', 'name');
+
+            return $this->multiSelectFormat($users);
+        }
+    }
+
     public function addUserOtherCompany(UserOtherCompanyRequest $request)
     {
         DB::beginTransaction();

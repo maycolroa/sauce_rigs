@@ -181,6 +181,7 @@ Route::middleware(['auth'])->group(function () {
         Route::post('employeesIdentifications', 'Administrative\Employees\EmployeesController@multiselectIdentifications');
         Route::post('users', 'Administrative\Users\UserController@multiselect');
         Route::post('usersActionPlan', 'Administrative\Users\UserController@multiselectUsersActionPlan');
+        Route::post('usersActionPlanContract', 'Administrative\Users\UserController@multiselectUsersActionPlanContract');
         Route::post('usersOtherCompany', 'Administrative\Users\UserController@multiselectUsers');
         Route::post('usersAutomaticSend', 'Administrative\Users\UserController@multiselectUsersAutomaticSend');
         Route::post('responsiblesFilter', 'Administrative\ActionPlans\ActionPlanController@multiselectResponsiblesFilter');  
