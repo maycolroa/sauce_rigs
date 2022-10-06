@@ -386,5 +386,13 @@ export default [{
             import('@/views/Administrative/labels/view')
         }
       ]),
+      ...middleware({ 'check-permission': 'actionPlans_r' }, [
+        {
+          name: 'administrative-actionPlan-report',
+          path: 'actionplans/report',
+          component: () =>
+            import('@/views/Administrative/actionplans/report')
+        }
+      ])
     ]
   }]

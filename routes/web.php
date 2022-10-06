@@ -447,6 +447,7 @@ Route::middleware(['auth'])->group(function () {
       Route::ApiResource('actionplan', 'Administrative\ActionPlans\ActionPlanController');
       Route::post('actionplan/saveTracing', 'Administrative\ActionPlans\ActionPlanController@saveTracing');
       Route::post('actionplan/getTracings', 'Administrative\ActionPlans\ActionPlanController@getTracings');
+      Route::post('actionplan/report', 'Administrative\ActionPlans\ActionPlanController@report');
 
       Route::get('actionPlan/download/{file}', 'Administrative\ActionPlans\ActionPlanController@download');
 

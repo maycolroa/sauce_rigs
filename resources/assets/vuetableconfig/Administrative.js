@@ -580,5 +580,29 @@ export default [
           urlData: '/administration/label/data',
           filterColumns: true,
       }
-  }
+  },
+  {
+    name: 'action-plan-report',
+    fields: [
+        { name: 'ap_id', data: 'ap_id', title: 'ID', sortable: false, searchable: false, detail: false, key: true },
+        { name: 'name', data: 'name', title: 'Responsable', sortable: true, searchable: true, detail: false, key: false },
+        { name: 'numero_planes_no_ejecutados', data: 'numero_planes_no_ejecutados', title: 'Pendientes', sortable: true, searchable: true, detail: false, key: false },
+        { name: 'p_num_no_eje', data: 'p_num_no_eje', title: '% Pendientes', sortable: true, searchable: true, detail: false, key: false },
+        { name: 'numero_planes_ejecutados', data: 'numero_planes_ejecutados', title: 'Ejecutados', sortable: true, searchable: true, detail: false, key: false },
+        { name: 'p_num_eje', data: 'p_num_eje', title: '% Ejecutados', sortable: true, searchable: true, detail: false, key: false }
+    ],
+    'controlls': [{
+        type: 'push',
+        buttons: []
+    },
+    {
+        type: 'base',
+        buttons: [],
+    }],
+    configuration: {
+        urlData: '/administration/actionplan/report',
+        filterColumns: true,
+        configNameFilter: 'administrative-actionplans'
+    }
+}
 ];

@@ -411,4 +411,69 @@ class ActionPlanController extends Controller
         $name = $file->file_name;
         return Storage::disk('s3')->download($file->path_donwload(), $name);
     }
+
+    public function report(Request $request)
+    {
+        $url = '/administrative/actionplans/report';
+
+        $filters = COUNT($request->get('filters')) > 0 ? $request->get('filters') : $this->filterDefaultValues($this->user->id, $url);
+
+        $reports = ActionPlansActivity::selectRaw("
+            sau_action_plans_activities.responsible_id as ap_id,
+            sau_users.name as name,
+            COUNT(sau_action_plans_activities.id) as num_act,
+            COUNT(DISTINCT IF(sau_action_plans_activities.state = 'Pendiente', sau_action_plans_activities.id, NULL)) AS numero_planes_no_ejecutados,
+            COUNT(DISTINCT IF(sau_action_plans_activities.state = 'Ejecutada', sau_action_plans_activities.id, NULL)) AS numero_planes_ejecutados
+        ")
+        ->join('sau_users', 'sau_users.id', 'sau_action_plans_activities.responsible_id')
+        ->join('sau_action_plans_activity_module', 'sau_action_plans_activity_module.activity_id', 'sau_action_plans_activities.id')
+        ->join('sau_modules', 'sau_modules.id', 'sau_action_plans_activity_module.module_id')
+        ->groupBy('sau_action_plans_activities.responsible_id');
+
+        if (isset($filters["responsibles"]))
+            $reports->inResponsibles($this->getValuesForMultiselect($filters["responsibles"]), $filters['filtersType']['responsibles']);
+
+        if (isset($filters["creators"]))
+            $reports->inUsers($this->getValuesForMultiselect($filters["creators"]), $filters['filtersType']['creators']);
+
+        if (isset($filters["modules"]))
+            $reports->inModules($this->getValuesForMultiselect($filters["modules"]), $filters['filtersType']['modules']);
+
+        if (isset($filters["states"]))
+            $reports->inStates($this->getValuesForMultiselect($filters["states"]), $filters['filtersType']['states']);
+
+        if (isset($filters["dateRange"]))
+        {
+            $dates_request = explode('/', $filters["dateRange"]);
+
+            $dates = [];
+
+            if (COUNT($dates_request) == 2)
+            {
+                array_push($dates, $this->formatDateToSave($dates_request[0]));
+                array_push($dates, $this->formatDateToSave($dates_request[1]));
+            }
+                
+            $reports->betweenDate($dates);
+        }
+
+        return Vuetable::of($reports)
+            ->addColumn('p_num_eje', function ($report) {
+                if (($report->numero_planes_ejecutados + $report->numero_planes_no_ejecutados) > 0)
+                    $report->p_num_eje = round(($report->numero_planes_ejecutados / ($report->numero_planes_ejecutados + $report->numero_planes_no_ejecutados)) * 100, 3)."%";
+                else
+                    $report->p_num_eje = '0%';
+
+                return $report->p_num_eje;
+            })
+            ->addColumn('p_num_no_eje', function ($report) {
+                if (($report->numero_planes_ejecutados + $report->numero_planes_no_ejecutados) > 0)
+                    $report->p_num_no_eje = round(($report->numero_planes_no_ejecutados / ($report->numero_planes_ejecutados + $report->numero_planes_no_ejecutados)) * 100, 3)."%";
+                else
+                    $report->p_num_no_eje = '0%';
+
+                return $report->p_num_no_eje;
+            })
+            ->make();
+    }
 }

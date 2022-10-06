@@ -49,5 +49,39 @@ export default [
         label: 'Roles'
       }
     ] 
-  }
+  },
+  {
+    name: 'administrative-actionplans-report',
+    filters: [
+      {
+        url: '/selects/responsiblesFilter',
+        key: 'responsibles',
+        type: 'select',
+        label: 'Responsables'
+      },
+      {
+        url: '/selects/actionPlanModules',
+        key: 'modules',
+        type: 'select',
+        label: 'Módulos'
+      },
+      {
+        url: '/selects/actionPlanStates/all',
+        key: 'states',
+        type: 'select',
+        label: 'Estados'
+      },
+      {
+        url: '/selects/users',
+        key: 'creators',
+        type: 'select',
+        label: 'Usuario Creador'
+      },
+      {
+        key: 'dateRange',
+        type: 'dateRange',
+        label: 'Fecha de vencimiento',
+      }
+    ]
+  },
 ];
