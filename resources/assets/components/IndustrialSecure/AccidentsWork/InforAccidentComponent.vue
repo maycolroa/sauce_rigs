@@ -19,7 +19,7 @@
             <vue-radio :disabled="viewOnly" :checked="infor.accidente_ocurrio_dentro_empresa" class="col-md-6" v-model="infor.accidente_ocurrio_dentro_empresa" :options="companyAccident" name="accidente_ocurrio_dentro_empresa" :error="form.errorsFor('accidente_ocurrio_dentro_empresa')" label="Lugar donde ocurrió el accidente"></vue-radio>
           </b-form-row>
           <b-form-row>
-            <vue-radio :disabled="viewOnly" :checked="infor.tipo_accidente" class="col-md-12" v-model="infor.tipo_accidente" :options="accidentTypes" name="tipo_accidente" :error="form.errorsFor('tipo_accidente')" label="Tipo de accidente"/>
+            <vue-radio :disabled="viewOnly" :checked="infor.tipo_accidente" class="col-md-12" v-model="infor.tipo_accidente" :options="accidentTypes" name="tipo_accidente" :error="form.errorsFor('tipo_accidente')" label="Tipo de accidente"></vue-radio>
           </b-form-row>
            <b-form-row v-if="infor.accidente_ocurrio_dentro_empresa == 'Fuera de la empresa' || infor.tipo_vinculador_laboral == 'Independiente'">
             <vue-ajax-advanced-select :disabled="viewOnly" class="col-md-4" v-model="infor.departamento_accidente" :selected-object="infor.multiselect_departament_accident" name="departamento_accidente" :error="form.errorsFor('departamento_accidente')" label="Departamento" placeholder="Seleccione el departamento" :url="departamentsUrl"></vue-ajax-advanced-select>

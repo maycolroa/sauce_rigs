@@ -1,6 +1,5 @@
 <template>
       <div>
-          
           <b-form-row>
             <vue-ajax-advanced-select :disabled="viewOnly" class="col-md-6" v-model="infor.employee_eps_id" :error="form.errorsFor('employee_eps_id')" :selected-object="infor.multiselect_eps" name="employee_eps_id" :label="keywordCheck('eps')+' a la que está afiliado'" placeholder="Seleccione una opción" :url="epsDataUrl">
             </vue-ajax-advanced-select>
@@ -11,7 +10,7 @@
           <b-form-row>
             <vue-ajax-advanced-select :disabled="viewOnly" class="col-md-6" v-model="infor.employee_arl_id" :error="form.errorsFor('employee_arl_id')" :selected-object="infor.multiselect_arl" name="employee_arl_id" :label="keywordCheck('arl')+' a la que está afiliado'" placeholder="Seleccione una opción" :url="arlDataUrl">
             </vue-ajax-advanced-select>
-            <vue-radio :disabled="viewOnly" :checked="infor.tiene_seguro_social" class="col-md-6" v-model="infor.tiene_seguro_social" :options="siNo" name="tiene_seguro_social" :error="form.errorsFor('tiene_seguro_social')" label="Seguro Social"/>
+            <vue-radio :disabled="viewOnly" :checked="infor.tiene_seguro_social" class="col-md-6" v-model="infor.tiene_seguro_social" :options="siNo" name="tiene_seguro_social" :error="form.errorsFor('tiene_seguro_social')" label="Seguro Social"></vue-radio>
           </b-form-row>
           <b-form-row v-if="infor.tiene_seguro_social == 'SI'">
             <vue-input :disabled="viewOnly" class="col-md-6 offset-md-3" v-model="infor.nombre_seguro_social" label="¿Cual?" type="text" name="nombre_seguro_social" :error="form.errorsFor('nombre_seguro_social')" placeholder="¿Cual?"></vue-input>

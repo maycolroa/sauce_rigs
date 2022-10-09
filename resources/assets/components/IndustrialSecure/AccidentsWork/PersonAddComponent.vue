@@ -2,9 +2,9 @@
     <div>
         <b-form-row>
             <div class="col-md-12" v-if="!viewOnly">
-            <div class="float-right" style="padding-top: 10px;">
-                <b-btn variant="primary" @click.prevent="addInterviewed()"><span class="ion ion-md-add-circle"></span>&nbsp;&nbsp;Agregar Persona</b-btn>
-            </div>
+              <div class="float-right" style="padding-top: 10px;">
+                  <b-btn variant="primary" @click.prevent="addInterviewed()"><span class="ion ion-md-add-circle"></span>&nbsp;&nbsp;Agregar Persona</b-btn>
+              </div>
             </div>
         </b-form-row>
 
@@ -27,7 +27,7 @@
                 </b-card-header>
                 <b-collapse id="accordion-1" visible accordion="accordion-1">
                 <b-card-body>
-                    <template v-for="(item, index) in persons.persons">
+                  <template v-for="(item, index) in persons.persons">
                     <div :key="index">
                         <b-form-row>
                             <div class="col-md-12" v-if="!viewOnly">
@@ -51,7 +51,7 @@
                         </b-form-row>
                         <hr class="border-light container-m--x mt-0 mb-4">
                     </div>
-                    </template>
+                  </template>
                 </b-card-body>
                 </b-collapse>
             </b-card>

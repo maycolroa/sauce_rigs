@@ -8,7 +8,7 @@
 
     <div class="col-md">
       <b-card no-body>
-        <b-card-body style="height: 500px">
+        <b-card-body>
             <accident-form
                 url="/industrialSecurity/accidents"
                 method="POST"

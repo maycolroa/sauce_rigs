@@ -11,9 +11,9 @@
                         <b-card-body>
                             <b-form-row>
                                 <div class="col-md-12" v-if="!viewOnly">
-                                <div class="float-right">
-                                    <b-btn variant="primary" @click.prevent="addFile()"><span class="ion ion-md-add-circle"></span>&nbsp;&nbsp;Agregar</b-btn>
-                                </div>
+                                    <div class="float-right">
+                                        <b-btn variant="primary" @click.prevent="addFile()"><span class="ion ion-md-add-circle"></span>&nbsp;&nbsp;Agregar</b-btn>
+                                    </div>
                                 </div>
                             </b-form-row>
 

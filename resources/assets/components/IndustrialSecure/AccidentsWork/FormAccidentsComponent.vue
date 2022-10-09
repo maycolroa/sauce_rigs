@@ -8,7 +8,7 @@
         </wizard-step>
       </template>
 
-      <tab-content title="Identificación del empleador, contratante o cooperativa">
+      <tab-content title="Identificación del empleado, contratante o cooperativa">
         <b-row>
           <b-col>
             <b-card bg-variant="transparent" border-variant="dark" title="" class="mb-3 box-shadow-none">
@@ -41,7 +41,7 @@
       </tab-content>
 
       <tab-content title="Información de la persona que se accidentó">                         
-        <b-row v-if="form.tipo_vinculador_laboral == 'Empleador'">
+        <b-row v-if="form.tipo_vinculador_laboral == 'Empleado'">
           <b-col>
             <b-card bg-variant="transparent" border-variant="dark" title="" class="mb-3 box-shadow-none">
               <b-row>
@@ -61,7 +61,7 @@
             </b-card>
           </b-col>
         </b-row>
-        <b-row v-if="form.tipo_vinculador_laboral && form.tipo_vinculador_laboral != 'Empleador'">
+        <b-row v-if="form.tipo_vinculador_laboral && form.tipo_vinculador_laboral != 'Empleado'">
           <b-col>
             <b-card bg-variant="transparent" border-variant="dark" title="" class="mb-3 box-shadow-none">
               <b-row>
@@ -383,7 +383,7 @@ export default {
       this.updateDetails(`/administration/employee/${this.form.employee_id}`, 'employeeDetail')
     },
     'form.tipo_vinculador_laboral' () {
-      if (this.form.tipo_vinculador_laboral == 'Empleador')
+      if (this.form.tipo_vinculador_laboral == 'Empleado')
       {
           axios.get(`/system/company/${this.auth.company_id}`)
           .then(response => {

@@ -22,7 +22,7 @@
           </b-form-row>
           <b-form-row>
             <label class="col-md-6 offset-md-4">Centro de trabajo donde labora el trabajador</label>
-            <vue-radio :disabled="viewOnly" :checked="company.info_sede_principal_misma_centro_trabajo" class="col-md-12" v-model="company.info_sede_principal_misma_centro_trabajo" :options="siNo" name="info_sede_principal_misma_centro_trabajo" :error="form.errorsFor('info_sede_principal_misma_centro_trabajo')" label="¿Son los datos del centro de trabajo los mismos de la sede principal?"/>
+            <vue-radio :disabled="viewOnly" :checked="company.info_sede_principal_misma_centro_trabajo" class="col-md-12" v-model="company.info_sede_principal_misma_centro_trabajo" :options="siNo" name="info_sede_principal_misma_centro_trabajo" :error="form.errorsFor('info_sede_principal_misma_centro_trabajo')" label="¿Son los datos del centro de trabajo los mismos de la sede principal?"></vue-radio>
           </b-form-row> 
         <b-card v-if="company.info_sede_principal_misma_centro_trabajo == 'NO'" bg-variant="transparent" title="Información centro de trabajo" border-variant="dark" class="mb-3 box-shadow-none">
           <b-form-row>

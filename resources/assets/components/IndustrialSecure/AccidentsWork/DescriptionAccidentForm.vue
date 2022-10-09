@@ -26,7 +26,7 @@
             <vue-textarea class="col-md-12" :disabled="viewOnly" v-model="description.descripcion_accidente" label="Descripción del accidente. Responda a las preguntas qué pasó, cuándo, dónde, cómo y por qué" name="descripcion_accidente" placeholder="Descripción" rows="4"></vue-textarea> 
           </b-form-row>  
           <b-form-row>
-            <vue-radio :disabled="viewOnly" :checked="description.personas_presenciaron_accidente" class="col-md-6 offset-md-3" v-model="description.personas_presenciaron_accidente" :options="siNo" name="personas_presenciaron_accidente" :error="form.errorsFor('personas_presenciaron_accidente')" label="¿Hubo personas que presenciaron el accidente?"/>
+            <vue-radio :disabled="viewOnly" :checked="description.personas_presenciaron_accidente" class="col-md-6 offset-md-3" v-model="description.personas_presenciaron_accidente" :options="siNo" name="personas_presenciaron_accidente" :error="form.errorsFor('personas_presenciaron_accidente')" label="¿Hubo personas que presenciaron el accidente?"></vue-radio>
           </b-form-row>
           <template v-if="description.personas_presenciaron_accidente == 'SI'">
             <person-add
