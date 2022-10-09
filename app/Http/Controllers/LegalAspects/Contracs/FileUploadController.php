@@ -436,7 +436,8 @@ class FileUploadController extends Controller
       ")
       ->join('sau_ct_file_upload_contract','sau_ct_file_upload_contract.file_upload_id','sau_ct_file_upload_contracts_leesse.id')
       ->join('sau_ct_information_contract_lessee', 'sau_ct_information_contract_lessee.id', 'sau_ct_file_upload_contract.contract_id')
-      ->groupBy('sau_ct_information_contract_lessee.id');
+      ->groupBy('sau_ct_information_contract_lessee.id')
+      ->orderBy('contract');
 
       $url = "/legalaspects/upload-files/report";
 

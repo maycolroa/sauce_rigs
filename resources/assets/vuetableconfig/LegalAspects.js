@@ -1809,7 +1809,7 @@ export default [
         name: 'legalaspects-fileUpload-reports',
         fields: [
             { name: 'id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true },
-            { name: 'contract', data: 'contract', title: 'Contratista', sortable: false, searchable: false, detail: false, key: false },
+            { name: 'contract', data: 'contract', title: 'Contratista', sortable: true, searchable: false, detail: false, key: false },
             { name: 'num_pend', data: 'num_pend', title: 'Archivos Pendientes', sortable: true, searchable: false, detail: false, key: false },
             { name: 'num_acep', data: 'num_acep', title: 'Archivos Aceptados', sortable: true, searchable: false, detail: false, key: false },
             { name: 'num_reject', data: 'num_reject', title: 'Archivos Rechazados', sortable: true, searchable: false, detail: false, key: false },

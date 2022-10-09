@@ -29,8 +29,8 @@
     <br/><br/>
     <b>Asunto: {{$subject}}</b>
     <br/><br/>
-    <p>Una vez analizado el estado de salud, de <b>{{$check->name}}</b>, identificado(a) con DNI <b>{{$check->identification}}</b> cargo: <b>{{$check->position}}</b>, asignado a <b>{{$check->headquarter}}</b>, con fecha de ingreso {{$income_date}}, quien ha tenido un evento de {{$check->disease_origin}}, nos permitimos informarle que:</p>    
-    <p>De acuerdo a lo establecido en los artículos 7 y 8 de la Ley 776/2002, nos permitimos dar algunas sugerencias con el fin de en la recuperacióndel estado de salud y lograr el mejor desempeño laboral posible de <b>{{$check->name}}</b>:</p>
+    <p style="text-align: justify;">Una vez analizado el estado de salud, de <b>{{$check->name}}</b>, identificado(a) con C.C. <b>{{$check->identification}}</b> cargo: <b>{{$check->position}}</b>, asignado a <b>{{$check->headquarter}}</b>, con fecha de ingreso {{$income_date}}, quien ha tenido un evento de {{$check->disease_origin}}, nos permitimos informarle que:</p>    
+    <p style="text-align: justify;">De acuerdo a lo establecido en los artículos 7 y 8 de la Ley 776/2002, nos permitimos dar algunas sugerencias con el fin de la recuperación del estado de salud y lograr el mejor desempeño laboral posible de <b>{{$check->name}}</b>:</p>
 
     <br/>
     @if ($check->check_detail)
@@ -42,50 +42,46 @@
     @if ($check->start_recommendations)
         
         @if ($check->indefinite_recommendations != "NO")
-            <p>Las anteriores recomendaciones han sido emitidas por {{$check->origin_recommendations}} y tienen un carácter <b>indefinido</b>, y para ello se realizará el respectivo acompañamiento y seguimiento desde Seguridad y Salud en el Trabajo.</p>
+            <p style="text-align: justify;">Las anteriores recomendaciones han sido emitidas por {{$check->origin_recommendations}} y tienen un carácter <b>indefinido</b>, y para ello se realizará el respectivo acompañamiento y seguimiento desde Seguridad y Salud en el Trabajo.</p>
         @else
-            <p>Las anteriores recomendaciones han sido emitidas por {{$check->origin_recommendations}} y tienen un carácter <b>temporal</b>, y para ello se realizará el respectivo acompañamiento y seguimiento desde Seguridad y Salud en el Trabajo.</p>
+            <p style="text-align: justify;">Las anteriores recomendaciones han sido emitidas por {{$check->origin_recommendations}} y son de <b>carácter temporal</b> a partir de {{$check->start_recommendations}} hasta el {{$check->end_recommendations}}.</p>
         @endif
         
     @endif
     <br/><br/>
     <div>
-        <table style="background-color: white; width: 100%">
-            <tr style="background-color: white;">
-                <td style="border: 0px solid #dddddd; text-align: left; padding: 0px">Firma Médico</td>
-                <td style="border: 0px solid #dddddd; text-align: left; padding: 0px">Firma Colaborador</td>
-            </tr>
-            <tr style="background-color: white;">
-                <td style="border: 0px solid #dddddd; text-align: left; padding: 0px">
-                    <p>__________________________</p>
+        <table style="width: 100%">
+            <tr>
+                <td style="text-align: letf">
+                    <center>__________________________________</center>
+                    <center>Firma Médico:</center>                    
                 </td>
-                <td style="border: 0px solid #dddddd; text-align: letf; padding: 0px">
-                    <p>__________________________</p>
+                <td style="text-align: right;">
+                    <center>__________________________________</center>
+                     <center>Firma Colaborador</center>
                 </td>
             </tr>
-            <tr style="background-color: white;">
-                <td style="border: 0px solid #dddddd; text-align: left; padding: 0px">Firma Analista SST y/o Analista en salud</td>
-                <td style="border: 0px solid #dddddd; text-align: left; padding: 0px">Firma Director Gestión Humana</td>
-            </tr>
-            <tr style="background-color: white;">
-                <td style="border: 0px solid #dddddd; text-align: left; padding: 0px">
-                    <p>__________________________</p>
+            <tr style="padding-top: 15px;">
+                <td style="padding-top: 15px; text-align: letf;">
+                    <br><br>
+                    <center>__________________________________</center>
+                    <center>Firma Analista SST y/o Analista en salud:</center>
                 </td>
-                <td style="border: 0px solid #dddddd; text-align: left; padding: 0px">
-                    <p>__________________________</p>
+                <td style="padding-top: 15px; text-align: right;">
+                    <br><br>
+                    <center>__________________________________</center>
+                    <center>Firma Director Gestión Humana:</center>
                 </td>
-            </tr>
-
-            <tr style="background-color: white;">
-                <td style="border: 0px solid #dddddd; text-align: left; padding: 0px">Firma Jefe de área</td>
-                <td style="border: 0px solid #dddddd; text-align: left; padding: 0px">Firma Supervisor</td>
-            </tr>
-            <tr style="background-color: white;">
-                <td style="border: 0px solid #dddddd; text-align: left; padding: 0px">
-                    <p>__________________________</p>
+            </tr><tr style="padding-top: 15px;">
+                <td style="padding-top: 15px; text-align: letf;">
+                    <br><br>
+                    <center>__________________________________</center>
+                    <center>Firma Jefe de área:</center>
                 </td>
-                <td style="border: 0px solid #dddddd; text-align: left; padding: 0px">
-                    <p>__________________________</p>
+                <td style="padding-top: 15px; text-align: right;">
+                    <br><br>
+                    <center>__________________________________</center>
+                    <center>Firma Supervisor:</center>
                 </td>
             </tr>
         </table>

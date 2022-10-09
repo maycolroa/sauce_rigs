@@ -22,13 +22,13 @@
     <div style="text-align: center"><img src="{{ public_path('storage/administrative/logos/').$logo }}" width="140px" height="120px"/></div>
     @endif
     <br>
-    <center>FORMATO DE SEGUIMIENTO</center>
-    <center>MÉDICO LABORAL</center>
+    <center><b>FORMATO DE SEGUIMIENTO</b></center>
+    <center><b>MÉDICO LABORAL</b></center>
     <br><br>
 
     <b>Nombre del colaborador: </b>{{$check->name}}<br>
     <b>Identificación: </b>{{$check->identification}}<br>
-    <b>Fecha de seguimiento: </b>{{$check->monitoring_recommendations}}<br>
+    {{--<b>Fecha de seguimiento: </b>{{$check->monitoring_recommendations}}<br>--}}
     <b>Cargo: </b>{{$check->position}}<br>
     <b>Área o unidad: </b>{{$check->headquarter}}<br>
     <b>Contingencia: </b>{{$check->disease_origin}}<br>
@@ -142,42 +142,38 @@
     </table>
 
     <br/><br/>
-    <table style="background-color: white; width: 100%">
-        <tr style="background-color: white;">
-            <td style="border: 0px solid #dddddd; text-align: left; padding: 0px">Firma Médico</td>
-            <td style="border: 0px solid #dddddd; text-align: left; padding: 0px">Firma Colaborador</td>
-        </tr>
-        <tr style="background-color: white;">
-            <td style="border: 0px solid #dddddd; text-align: left; padding: 0px">
-                <p>__________________________</p>
+    <table style="width: 100%">
+        <tr>
+            <td style="text-align: letf">
+                <center>__________________________________</center>
+                <center>Firma Médico:</center>                    
             </td>
-            <td style="border: 0px solid #dddddd; text-align: letf; padding: 0px">
-                <p>__________________________</p>
+            <td style="text-align: right">
+                <center>__________________________________</center>
+                 <center>Firma Colaborador</center>
             </td>
         </tr>
-        <tr style="background-color: white;">
-            <td style="border: 0px solid #dddddd; text-align: left; padding: 0px">Firma Analista SST y/o Analista en salud</td>
-            <td style="border: 0px solid #dddddd; text-align: left; padding: 0px">Firma Director Gestión Humana</td>
-        </tr>
-        <tr style="background-color: white;">
-            <td style="border: 0px solid #dddddd; text-align: left; padding: 0px">
-                <p>__________________________</p>
+        <tr style="padding-top: 15px;">
+            <td style="padding-top: 15px; text-align: letf;">
+                <br><br>
+                <center>__________________________________</center>
+                <center>Firma Analista SST y/o Analista en salud:</center>
             </td>
-            <td style="border: 0px solid #dddddd; text-align: left; padding: 0px">
-                <p>__________________________</p>
+            <td style="padding-top: 15px; text-align: right;">
+                <br><br>
+                <center>__________________________________</center>
+                <center>Firma Director Gestión Humana:</center>
             </td>
-        </tr>
-
-        <tr style="background-color: white;">
-            <td style="border: 0px solid #dddddd; text-align: left; padding: 0px">Firma Jefe de área</td>
-            <td style="border: 0px solid #dddddd; text-align: left; padding: 0px">Firma Supervisor</td>
-        </tr>
-        <tr style="background-color: white;">
-            <td style="border: 0px solid #dddddd; text-align: left; padding: 0px">
-                <p>__________________________</p>
+        </tr><tr style="padding-top: 15px;">
+            <td style="padding-top: 15px; text-align: letf;">
+                <br><br>
+                <center>__________________________________</center>
+                <center>Firma Jefe de área:</center>
             </td>
-            <td style="border: 0px solid #dddddd; text-align: left; padding: 0px">
-                <p>__________________________</p>
+            <td style="padding-top: 15px; text-align: right;">
+                <br><br>
+                <center>__________________________________</center>
+                <center>Firma Supervisor:</center>
             </td>
         </tr>
     </table>

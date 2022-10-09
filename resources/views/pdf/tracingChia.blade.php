@@ -22,13 +22,13 @@
     <div style="text-align: center"><img src="{{ public_path('storage/administrative/logos/').$logo }}" width="140px" height="120px"/></div>
     @endif
     <br>
-    <center>FORMATO DE SEGUIMIENTO</center>
+    <center><b>FORMATO DE SEGUIMIENTO</b></center>
     <center><b>MÉDICO LABORAL</b></center>
     <br><br>
 
     <b>Nombre del colaborador: </b>{{$check->name}}<br>
     <b>Identificación: </b>{{$check->identification}}<br>
-    <b>Fecha de seguimiento: </b>{{$check->monitoring_recommendations}}<br>
+    {{--<b>Fecha de seguimiento: </b>{{$check->monitoring_recommendations}}<br>--}}
     <b>Cargo: </b>{{$check->position}}<br>
     <b>Área o unidad: </b>{{$check->headquarter}}<br>
     <b>Contingencia: </b>{{$check->disease_origin}}<br>
@@ -121,7 +121,7 @@
     @endif
 
     <br>
-    <center><b>Observaciones y plan de acción si aplica: </b></center><br>
+    <center><b>Seguimientos: </b></center><br>
     {!!$tracing_description!!}<br><br>
 
     <table style="width: 100%">
@@ -139,37 +139,35 @@
     <table style="width: 100%">
         <tr>
             <td style="text-align: letf">
-                    <center>Firma Médico:</center>
-                    <br>
-                    <center>_______________________</center>
+                <center>__________________________________</center>
+                <center>Firma Médico:</center>                    
             </td>
             <td style="text-align: right">
-                    <center>Firma Colaborador</center>
-                    <br>
-                    <center>__________________________________</center>
+                <center>__________________________________</center>
+                 <center>Firma Colaborador</center>
             </td>
         </tr>
         <tr style="padding-top: 15px;">
             <td style="padding-top: 15px; text-align: letf;">
-                    <center>Firma Analista SST y/o Analista en salud:</center>
-                    <br>
-                    <center>_______________________</center>
+                <br><br>
+                <center>__________________________________</center>
+                <center>Firma Analista SST y/o Analista en salud:</center>
             </td>
             <td style="padding-top: 15px; text-align: right;">
-                    <center>Firma Director Gestión Humana:</center>
-                    <br>
-                    <center>__________________________________</center>
+                <br><br>
+                <center>__________________________________</center>
+                <center>Firma Director Gestión Humana:</center>
             </td>
         </tr><tr style="padding-top: 15px;">
             <td style="padding-top: 15px; text-align: letf;">
-                    <center>Firma Jefe de área:</center>
-                    <br>
-                    <center>_______________________</center>
+                <br><br>
+                <center>__________________________________</center>
+                <center>Firma Jefe de área:</center>
             </td>
             <td style="padding-top: 15px; text-align: right;">
-                    <center>Firma Supervisor:</center>
-                    <br>
-                    <center>__________________________________</center>
+                <br><br>
+                <center>__________________________________</center>
+                <center>Firma Supervisor:</center>
             </td>
         </tr>
     </table>
