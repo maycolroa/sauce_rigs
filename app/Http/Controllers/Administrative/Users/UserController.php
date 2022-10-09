@@ -712,20 +712,27 @@ class UserController extends Controller
 
     public function multiselectUsersActionPlan(Request $request)
     {
+        $team = $this->team;
         $users = User::selectRaw("
                     sau_users.id as id,
                     sau_users.name as name
                 ")->active();
 
-        if ($this->user->hasRole('Arrendatario', $this->team) || $this->user->hasRole('Contratista', $this->team))
+        /*if ($this->user->hasRole('Arrendatario', $this->team) || $this->user->hasRole('Contratista', $this->team))
         {
             $users->join('sau_user_information_contract_lessee', 'sau_user_information_contract_lessee.user_id', 'sau_users.id')
                   ->where('sau_user_information_contract_lessee.information_id', $this->getContractIdUser($this->user->id));
         }
         else
-        {
-            $users->join('sau_company_user', 'sau_company_user.user_id', 'sau_users.id');
-        }
+        {*/
+            $users->join('sau_company_user', 'sau_company_user.user_id', 'sau_users.id')
+            ->leftJoin('sau_role_user', function($q) use ($team) { 
+                $q->on('sau_role_user.user_id', '=', 'sau_users.id')
+                  ->on('sau_role_user.team_id', '=', DB::raw($team));
+            })
+            ->leftJoin('sau_roles', 'sau_roles.id', 'sau_role_user.role_id')
+            ->whereNotIn('sau_roles.id', [8,9]);
+        //}
 
         if($request->has('keyword'))
         {
@@ -974,8 +981,6 @@ class UserController extends Controller
                 }
             }
         }
-
-        \Log::info($user);
 
         if (!$user->update())
             return $this->respondHttp500();
