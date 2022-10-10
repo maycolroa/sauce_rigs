@@ -146,15 +146,21 @@
             <hr class="border-dark container-m--x mt-0 mb-4">
           </div>
           
-          <b-form-row>
-            <div class="col-md-6">
+         <b-form-row>
+            <div class="col-md-12">
                 <monitoring-selector :disabled="viewOnly" :options="medicalConclusions" ref="medicalMonitoring" :monitoring-registered="check.medical_monitorings">
                     <template slot="monitoring-label">Fecha Seguimiento Médico</template>
                     <template slot="conclusion-label">Conclusión Seguimiento Médico</template>
                 </monitoring-selector>
             </div>
+          </b-form-row>
 
-            <div class="col-md-6">
+          <div class="col-md-12" style="padding-left: 15px; padding-right: 15px; padding-top: 15px;">
+            <hr class="border-dark container-m--x mt-0 mb-4">
+          </div>
+          
+          <b-form-row>
+            <div class="col-md-12">
                 <monitoring-selector :disabled="viewOnly" :options="laborConclusions" ref="laborMonitoring" :monitoring-registered="check.labor_monitorings">
                     <template slot="monitoring-label">Fecha Seguimiento Laboral</template>
                     <template slot="conclusion-label">Conclusión Seguimiento Laboral</template>
