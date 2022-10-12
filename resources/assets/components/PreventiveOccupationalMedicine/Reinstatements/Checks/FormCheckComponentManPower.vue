@@ -88,10 +88,12 @@
           </b-form-row>
           <div v-show="form.has_recommendations == 'SI'" class="col-md-12">
             <b-form-row>
-              <vue-datepicker :disabled="viewOnly" class="col-md-4" v-model="form.start_recommendations" label="Fecha Inicio Recomendaciones" :full-month-name="true" placeholder="Fecha Inicio Recomendaciones" :error="form.errorsFor('start_recommendations')" name="start_recommendations">
+              <vue-datepicker :disabled="viewOnly" class="col-md-6" v-model="form.start_recommendations" label="Fecha Inicio Recomendaciones" :full-month-name="true" placeholder="Fecha Inicio Recomendaciones" :error="form.errorsFor('start_recommendations')" name="start_recommendations">
                 </vue-datepicker>
-              <vue-radio :disabled="viewOnly" :checked="form.indefinite_recommendations" class="col-md-4" v-model="form.indefinite_recommendations" :options="siNo" name="indefinite_recommendations" :error="form.errorsFor('indefinite_recommendations')" label="¿Recomendaciones indefinidas?"></vue-radio>
-              <vue-datepicker :disabled="viewOnly" v-show="form.indefinite_recommendations == 'NO'" class="col-md-4" v-model="form.end_recommendations" label="Fecha Fin Recomendaciones" :full-month-name="true" placeholder="Fecha Fin Recomendaciones" :error="form.errorsFor('end_recommendations')" name="end_recommendations">
+              <vue-radio :disabled="viewOnly" :checked="form.indefinite_recommendations" class="col-md-6" v-model="form.indefinite_recommendations" :options="siNo" name="indefinite_recommendations" :error="form.errorsFor('indefinite_recommendations')" label="¿Recomendaciones indefinidas?"></vue-radio>
+            </b-form-row>
+            <b-form-row>
+              <vue-datepicker :disabled="viewOnly" v-show="form.indefinite_recommendations == 'NO'" class="col-md-6 offset-md-3" v-model="form.end_recommendations" label="Fecha Fin Recomendaciones" :full-month-name="true" placeholder="Fecha Fin Recomendaciones" :error="form.errorsFor('end_recommendations')" name="end_recommendations">
                 </vue-datepicker>
             </b-form-row>
           </div>
