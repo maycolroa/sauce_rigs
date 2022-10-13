@@ -261,7 +261,6 @@ class EppController extends ApiController
 
     public function saveDelivery(CompanyRequiredRequest $request)
     {
-      \Log::info($request);
       if ($request->inventary == 'SI')
           return $this->storeDelivery($request);
       else
@@ -274,7 +273,6 @@ class EppController extends ApiController
 
         try
         {
-          \Log::info($request->firm);
             $employee = Employee::query();
             $employee->company_scope = $request->company_id;
             $employee = $employee->find($request->employee_id['value']);
@@ -292,9 +290,12 @@ class EppController extends ApiController
             $delivery->company_id = $request->company_id;
             $delivery->class_element = $request->class_element['value'];
             $delivery->edit_firm = count($request->firm) > 0 ? 'SI' : 'NO';
-            $delivery->firm_email = $request->firm['type'] == 'Email' ? 'Email' : ($request->firm['type'] == 'Dibujar' ? 'Dibujar' : NULL);
-            $delivery->email_firm_employee = $request->firm['type'] == 'Email' ? $request->firm['email'] : NULL;
+            $nulo = isset($request->firm['type']) ? ($request->firm['type'] == 'Email' ? 'Email' : ($request->firm['type'] == 'Dibujar' ? 'Dibujar' : NULL)) : NULL;
+            $delivery->firm_email = $nulo;
+            $delivery->email_firm_employee = $nulo ? ($request->firm['type'] == 'Email' ? $request->firm['email'] : NULL) : NULL;
             $delivery->user_id = $this->user->id;
+
+            \Log::info(11);
             
             if(!$delivery->save())
                 return $this->respondHttp500();
@@ -426,9 +427,10 @@ class EppController extends ApiController
             $delivery->location_id = $request->location_id;
             $delivery->company_id = $request->company_id;
             $delivery->class_element = $request->class_element['value'];
-            $delivery->edit_firm = count($request->firm) > 0 ? 'SI' : 'NO';
-            $delivery->firm_email = $request->firm['type'] == 'Email' ? 'Email' : ($request->firm['type'] == 'Dibujar' ? 'Dibujar' : NULL);
-            $delivery->email_firm_employee = $request->firm['type'] == 'Email' ? $request->firm['email'] : NULL;
+            $delivery->edit_firm = count($request->firm) > 0 ? 'SI' : 'NO';            
+            $nulo = isset($request->firm['type']) ? ($request->firm['type'] == 'Email' ? 'Email' : ($request->firm['type'] == 'Dibujar' ? 'Dibujar' : NULL)) : NULL;
+            $delivery->firm_email = $nulo;
+            $delivery->email_firm_employee = $nulo ? ($request->firm['type'] == 'Email' ? $request->firm['email'] : NULL) : NULL;
             $delivery->user_id = $this->user->id;
             
             if(!$delivery->save())
