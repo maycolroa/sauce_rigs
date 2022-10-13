@@ -798,8 +798,10 @@ class UserController extends Controller
                 sau_users.id as id,
                 Concat(sau_users.name, ' - ', sau_ct_information_contract_lessee.social_reason) as name
             ")
-            ->join('sau_company_user', 'sau_company_user.user_id', 'sau_users.id')
-            ->Join('sau_ct_information_contract_lessee', 'sau_ct_information_contract_lessee.id', 'sau_users.id');
+            //->join('sau_company_user', 'sau_company_user.user_id', 'sau_users.id')
+            ->join('sau_user_information_contract_lessee', 'sau_user_information_contract_lessee.user_id', 'sau_users.id')
+            ->Join('sau_ct_information_contract_lessee', 'sau_ct_information_contract_lessee.id', 'sau_user_information_contract_lessee.information_id')
+            ->where('sau_ct_information_contract_lessee.company_id', $this->company);
         }
 
         if($request->has('keyword'))
