@@ -23,7 +23,7 @@
     @endif
     <br>
     <center><b>FORMATO DE SEGUIMIENTO</b></center>
-    <center><b>MÉDICO LABORAL</b></center>
+    <center><b>LABORAL</b></center>
     <br><br>
 
     <b>Nombre del colaborador: </b>{{$check->name}}<br>

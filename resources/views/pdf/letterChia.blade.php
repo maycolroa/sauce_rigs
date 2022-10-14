@@ -30,7 +30,7 @@
     <b>Asunto: {{$subject}}</b>
     <br/><br/>
     <p style="text-align: justify;">Una vez analizado el estado de salud, de <b>{{$check->name}}</b>, identificado(a) con C.C. <b>{{$check->identification}}</b> cargo: <b>{{$check->position}}</b>, asignado a <b>{{$check->headquarter}}</b>, con fecha de ingreso {{$income_date}}, quien ha tenido un evento de {{$check->disease_origin}}, nos permitimos informarle que:</p>    
-    <p style="text-align: justify;">De acuerdo a lo establecido en los artículos 7 y 8 de la Ley 776/2002, nos permitimos dar algunas sugerencias con el fin de la recuperación del estado de salud y lograr el mejor desempeño laboral posible de <b>{{$check->name}}</b>:</p>
+    <p style="text-align: justify;">De acuerdo a lo establecido en los artículos 7 y 8 de la Ley 776/2002, nos permitimos dar algunas sugerencias con el fin de favorecer el proceso de recuperación del estado de salud y lograr el mejor desempeño laboral posible de <b>{{$check->name}}</b>:</p>
 
     <br/>
     @if ($check->check_detail)
