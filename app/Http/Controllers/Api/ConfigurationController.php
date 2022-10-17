@@ -13,6 +13,7 @@ use App\Models\IndustrialSecure\DangerousConditions\Inspections\InspectionItemsQ
 use App\Models\General\Team;
 use App\Models\IndustrialSecure\DangerousConditions\Reports\Report;
 use Auth;
+use Illuminate\Support\Facades\Storage;
 
 class ConfigurationController extends ApiController
 {
@@ -37,6 +38,8 @@ class ConfigurationController extends ApiController
 
           if ($image->type == 1)
             (new Report)->store_image_api($fileName, $file);
+          else if ($image->type == 4)
+            Storage::disk('s3')->put('industrialSecure/epp/transaction/files/'.$this->company.'/' . $imageName, $file, 'public');
           else
             (new InspectionItemsQualificationAreaLocation)->store_image_api($fileName, $file);
 

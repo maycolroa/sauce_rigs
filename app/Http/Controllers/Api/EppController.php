@@ -520,7 +520,7 @@ class EppController extends ApiController
     { 
         foreach ($files as $keyF => $file) 
         {
-          if ($file['file'])
+          if ($file['photo_'.$keyF]['file'])
           {
             $img_firm = ImageApi::where('hash', $file['file'])->where('type', 3)->first();
 
