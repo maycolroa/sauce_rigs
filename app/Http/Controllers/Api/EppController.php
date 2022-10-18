@@ -295,8 +295,6 @@ class EppController extends ApiController
             $delivery->email_firm_employee = $nulo ? ($request->firm['type'] == 'Email' ? $request->firm['email'] : NULL) : NULL;
             $delivery->user_id = $this->user->id;
 
-            \Log::info(11);
-            
             if(!$delivery->save())
                 return $this->respondHttp500();
 
@@ -364,7 +362,7 @@ class EppController extends ApiController
             {
                 if (isset($request->firm['image']) && $delivery->firm_email == 'Dibujar')
                 {
-                  $img_firm = ImageApi::where('hash', $request->firm['image'])->where('type', 3)->first();
+                  $img_firm = ImageApi::where('hash', $request->firm['image'])->where('type', 4)->first();
 
                   $delivery->firm_employee = $img_firm->file;
 
@@ -386,9 +384,11 @@ class EppController extends ApiController
                 }
             }
 
-            if (count($request->files) > 0)
+            $files = $request->get('files');
+
+            if (count($files) > 0)
             {
-                $this->processFiles($request->get('files'), $delivery->id);
+                $this->processFiles($files, $delivery->id);
             }
 
             DB::commit();
@@ -520,9 +520,9 @@ class EppController extends ApiController
     { 
         foreach ($files as $keyF => $file) 
         {
-          if ($file['photo_'.$keyF]['file'])
+          if ($file['file'])
           {
-            $img_firm = ImageApi::where('hash', $file['file'])->where('type', 3)->first();
+            $img_firm = ImageApi::where('hash', $file['file'])->where('type', 5)->first();
 
             $fileUpload = new FileTransactionEmployee();
             $fileUpload->transaction_employee_id = $transaction_id;

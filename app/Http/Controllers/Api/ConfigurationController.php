@@ -23,14 +23,14 @@ class ConfigurationController extends ApiController
           
         try
         {
-          $img = $this->base64($request->image);
+          $img = $this->base64($request->image['image']);
           $fileName = $img['name'];
           $file = $img['image'];
 
           $image = new ImageApi;
           $image->file = $fileName;
-          $image->type = $request->type;
-          $image->hash = $request->hash;
+          $image->type = $request->image['type'];
+          $image->hash = $request->image['hash'];
           $image->save();
 
           if (!$image->save())
@@ -39,7 +39,9 @@ class ConfigurationController extends ApiController
           if ($image->type == 1)
             (new Report)->store_image_api($fileName, $file);
           else if ($image->type == 4)
-            Storage::disk('s3')->put('industrialSecure/epp/transaction/files/'.$this->company.'/' . $imageName, $file, 'public');
+            Storage::disk('s3')->put('industrialSecure/epp/transaction/files/'.$request->company_id.'/' . $fileName, $file, 'public');
+          else if ($image->type == 5)
+            Storage::disk('s3')->put('industrialSecure/epp/transaction/delivery/files/'.$request->company_id.'/' . $fileName, $file, 'public');
           else
             (new InspectionItemsQualificationAreaLocation)->store_image_api($fileName, $file);
 
@@ -52,7 +54,7 @@ class ConfigurationController extends ApiController
         }
 
         return $this->respondHttp200([
-          'data' => $request->id
+          'data' => $request->image['id']
         ]);
     }
 
