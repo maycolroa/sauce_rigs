@@ -21,6 +21,7 @@ use App\Models\IndustrialSecure\Epp\ElementTransactionEmployee;
 use App\Http\Requests\IndustrialSecure\Epp\ElementTransactionsRequest;
 use App\Models\IndustrialSecure\DangerousConditions\ImageApi;
 use App\Models\IndustrialSecure\Epp\FileTransactionEmployee;
+use App\Facades\Mail\Facades\NotificationMail;
 use Auth;
 
 class EppController extends ApiController
