@@ -166,12 +166,14 @@
                     <tr>
                         <th>Item</th>
                         <th>Calificación</th>
+                        <th>Nivel de riesgo</th>
                         <th>Hallazgo</th>
                     </tr>
                     @foreach($theme["items"] as $keyItem => $item)
                     <tr>
                         <td class="title-obj">{{ $keyTheme + 1 }}.{{ $keyItem + 1 }} - {{ $item["description"] }}</td>
                         <td>{{ $item["qualification"] }}</td>
+                        <td>{{ $item["level_risk"] }}</td>
                         <td>{{ $item["find"] }}</td>
                     </tr> 
                     @if($item["photo_1"] || $item["photo_2"])
