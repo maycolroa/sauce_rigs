@@ -175,6 +175,12 @@ export default [
           label: 'areas'
         },
         {
+          url: '/selects/levelRisk',
+          key: 'levelRisk',
+          type: 'select',
+          label: 'Nivel de Riesgo'
+        },
+        {
           url: '/selects/users',
           key: 'qualifiers',
           type: 'select',

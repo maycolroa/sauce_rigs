@@ -268,6 +268,17 @@ class MultiSelectRadioController extends Controller
         }
     }
 
+    public function levelRiskInspections()
+    {
+        $data = [
+            "Alto" => "Alto",
+            "Medio" => "Medio",
+            "Bajo" => "Bajo"
+        ];
+        
+        return $this->multiSelectFormat(collect($data));
+    }
+
     public function municipalitiesMultiselect(Request $request)
     {
         if($request->has('keyword'))

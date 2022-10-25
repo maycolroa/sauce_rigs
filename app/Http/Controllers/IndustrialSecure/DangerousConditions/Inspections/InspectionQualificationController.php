@@ -68,7 +68,8 @@ class InspectionQualificationController extends Controller
                 'sau_employees_headquarters.name AS headquarter',
                 'sau_employees_processes.name AS process',
                 'sau_employees_areas.name AS area',
-                'sau_users.name AS qualificator'
+                'sau_users.name AS qualificator',
+                'sau_ph_inspection_items_qualification_area_location.level_risk AS level_risk'
             )
             ->leftJoin('sau_employees_regionals', 'sau_employees_regionals.id', 'sau_ph_inspection_items_qualification_area_location.employee_regional_id')
             ->leftJoin('sau_employees_headquarters', 'sau_employees_headquarters.id', 'sau_ph_inspection_items_qualification_area_location.employee_headquarter_id')
@@ -78,7 +79,7 @@ class InspectionQualificationController extends Controller
             ->join('sau_ph_inspection_section_items', 'sau_ph_inspection_section_items.id', 'sau_ph_inspection_items_qualification_area_location.item_id')
             ->join('sau_ph_inspection_sections','sau_ph_inspection_sections.id', 'sau_ph_inspection_section_items.inspection_section_id')
             ->where('sau_ph_inspection_sections.inspection_id', $request->inspectionId)
-            ->groupBy('sau_ph_inspection_items_qualification_area_location.qualification_date', 'regional', 'headquarter', 'process', 'area', 'qualificator');
+            ->groupBy('sau_ph_inspection_items_qualification_area_location.qualification_date', 'regional', 'headquarter', 'process', 'area', 'qualificator', 'level_risk');
 
         $url = "/industrialsecure/dangerousconditions/inspections/qualification/".$request->get('modelId');
 
@@ -99,6 +100,9 @@ class InspectionQualificationController extends Controller
             
             if (isset($filters["areas"]))
                 $qualifications->inAreas($this->getValuesForMultiselect($filters["areas"]), $filters['filtersType']['areas']);
+
+            if (isset($filters["levelRisk"]))
+                $qualifications->inLevelRisk($this->getValuesForMultiselect($filters["levelRisk"]), $filters['filtersType']['levelRisk']);
 
             $dates_request = explode('/', $filters["dateRange"]);
 
@@ -178,6 +182,7 @@ class InspectionQualificationController extends Controller
                 $itemRow->put('description', $item->item_name);
                 $itemRow->put('qualification', $item->qualification);
                 $itemRow->put('find', $item->find);
+                $itemRow->put('level_risk', $item->level_risk);
                 $itemRow->put('photo_1', $item->photo_1);
                 $itemRow->put('old_1', $item->photo_1);
                 $itemRow->put('path_1', $item->path_image('photo_1'));

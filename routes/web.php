@@ -209,7 +209,8 @@ Route::middleware(['auth'])->group(function () {
         Route::post('regionals', 'Administrative\Regionals\EmployeeRegionalController@multiselect');
         Route::post('headquarters', 'Administrative\Headquarters\EmployeeHeadquarterController@multiselect');  
         Route::post('sexs', 'General\MultiSelectRadioController@sexs');    
-        Route::post('typesDocument', 'General\MultiSelectRadioController@typesDocumentContract');        
+        Route::post('typesDocument', 'General\MultiSelectRadioController@typesDocumentContract');     
+        Route::post('levelRisk', 'General\MultiSelectRadioController@levelRiskInspections');     
         Route::post('days', 'General\MultiSelectRadioController@days');  
         Route::post('processes', 'Administrative\Processes\EmployeeProcessController@multiselect');
         Route::post('macroprocess', 'IndustrialSecure\RiskMatrix\MacroprocessController@multiselect');

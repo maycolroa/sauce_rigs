@@ -338,6 +338,7 @@ class InspectionController extends ApiController
                     $item->item_id = $value["item_id"];
                     $item->qualification_id = $value["qualification_id"];
                     $item->find = isset($value["find"]) ? $value["find"] : '';
+                    $item->level_risk = isset($value["level_risk"]) ? $value["level_risk"] : '';
                     $item->qualifier_id = $qualifier_id;
                     $item->employee_regional_id = $employee_regional_id;
                     $item->employee_process_id = $employee_process_id;
