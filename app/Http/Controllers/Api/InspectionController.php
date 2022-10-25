@@ -240,6 +240,32 @@ class InspectionController extends ApiController
         }
     }
 
+    public function getLevelRiskMandatory(Request $request)
+    {
+        $company = Company::find($request->company_id);
+        
+        try
+        {
+            $data = ConfigurationsCompany::company($company->id)->findByKey('mandatory_level_risk_inspections');
+
+            if ($data && $data == 'SI')
+            {
+                return $this->respondHttp200([
+                    'data' => $data,
+                ]);
+            }
+            else
+                return $this->respondHttp200([
+                    'data' => 'NO'
+                ]);
+            
+        } catch (\Exception $e) {
+            return $this->respondHttp200([
+                'data' => 'NO'
+            ]);
+        }
+    }
+
     public function getQualificationDate($regional)
     {
         $date = Carbon::now();

@@ -12,6 +12,11 @@
         </vue-radio>
     </b-form-row>  
 
+    <b-form-row>
+      <vue-radio :disabled="!auth.can['configurations_c']" :checked="form.mandatory_level_risk_inspections" class="col-md-12" v-model="form.mandatory_level_risk_inspections" :options="siNo" name="mandatory_level_risk_inspections" :error="form.errorsFor('mandatory_level_risk_inspections')" label="¿Se debe pedir obligatoriamente el campo nivel de riesgo en los items calificados?">
+        </vue-radio>
+    </b-form-row> 
+
     <div class="row float-right pt-10 pr-10">
       <template>
         <b-btn type="submit" :disabled="loading || (!auth.can['configurations_c'])" variant="primary">Guardar</b-btn>
