@@ -782,8 +782,8 @@ class UserController extends Controller
         $users = User::active();
 
         if ($this->user->hasRole('Arrendatario', $this->team) || $this->user->hasRole('Contratista', $this->team))
-        {
-            
+        {  
+            \Log::info('contratista');          
             $users->selectRaw("
                 sau_users.id as id,
                 Concat(sau_users.name, ' - ', sau_ct_information_contract_lessee.social_reason) as name
@@ -794,6 +794,7 @@ class UserController extends Controller
         }
         else
         {
+            \Log::info('contratante'); 
             $users->selectRaw("
                 sau_users.id as id,
                 Concat(sau_users.name, ' - ', sau_ct_information_contract_lessee.social_reason) as name
@@ -824,6 +825,8 @@ class UserController extends Controller
             }
 
             $users = $users->take(30)->pluck('id', 'name');
+
+            \Log::info($users);
 
             return $this->respondHttp200([
                 'options' => $this->multiSelectFormat($users)

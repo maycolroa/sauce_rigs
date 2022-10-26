@@ -707,6 +707,16 @@ class LawController extends Controller
                 $qualification->workplace = $request->workplace ? $request->workplace : NULL;
                 $qualification->hide = $request->hide ? $request->hide : 'NO';
 
+                if ($request->hide == 'NO')
+                {
+                    $law_hide = LawHide::where('company_id', $this->company)
+                    ->where('law_id', $law->id)
+                    ->first();
+
+                    if ($law_hide)
+                        $law_hide->delete();
+                }
+
                  //Se inician los atributos necesarios que seran estaticos para todas las actividades
                 // De esta forma se evitar la asignacion innecesaria una y otra vez 
                 ActionPlan::
