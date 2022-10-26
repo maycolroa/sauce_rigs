@@ -779,16 +779,16 @@ class UserController extends Controller
 
     public function multiselectUsersActionPlanContract(Request $request)
     {
-        $users = User::active();
+        $users = User::selectRaw("
+            sau_users.id as id,
+            Concat(sau_users.name, ' - ', sau_ct_information_contract_lessee.social_reason) as name
+        ")
+        ->active();
 
         if ($this->user->hasRole('Arrendatario', $this->team) || $this->user->hasRole('Contratista', $this->team))
         {  
             \Log::info('contratista');          
-            $users->selectRaw("
-                sau_users.id as id,
-                Concat(sau_users.name, ' - ', sau_ct_information_contract_lessee.social_reason) as name
-            ")
-            ->join('sau_user_information_contract_lessee', 'sau_user_information_contract_lessee.user_id', 'sau_users.id')
+            $users->join('sau_user_information_contract_lessee', 'sau_user_information_contract_lessee.user_id', 'sau_users.id')
             ->leftJoin('sau_ct_information_contract_lessee', 'sau_ct_information_contract_lessee.id', 'sau_users.id')
             ->where('sau_user_information_contract_lessee.information_id', $this->getContractIdUser($this->user->id));
 
@@ -797,10 +797,10 @@ class UserController extends Controller
         }
         else
         {
-            $users->selectRaw("
+            $users/*->selectRaw("
                 sau_users.id as id,
                 Concat(sau_users.name, ' - ', sau_ct_information_contract_lessee.social_reason) as name
-            ")
+            ")*/
             //->join('sau_company_user', 'sau_company_user.user_id', 'sau_users.id')
             ->join('sau_user_information_contract_lessee', 'sau_user_information_contract_lessee.user_id', 'sau_users.id')
             ->Join('sau_ct_information_contract_lessee', 'sau_ct_information_contract_lessee.id', 'sau_user_information_contract_lessee.information_id')
