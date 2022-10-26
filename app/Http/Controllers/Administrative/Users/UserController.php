@@ -786,14 +786,10 @@ class UserController extends Controller
         ->active();
 
         if ($this->user->hasRole('Arrendatario', $this->team) || $this->user->hasRole('Contratista', $this->team))
-        {  
-            \Log::info('contratista');          
+        {      
             $users->join('sau_user_information_contract_lessee', 'sau_user_information_contract_lessee.user_id', 'sau_users.id')
-            ->leftJoin('sau_ct_information_contract_lessee', 'sau_ct_information_contract_lessee.id', 'sau_users.id')
+            ->join('sau_ct_information_contract_lessee', 'sau_ct_information_contract_lessee.id', 'sau_user_information_contract_lessee.information_id')
             ->where('sau_user_information_contract_lessee.information_id', $this->getContractIdUser($this->user->id));
-
-            \Log::info($this->getContractIdUser($this->user->id));
-            \Log::info($users->take(30)->pluck('id', 'name'));
         }
         else
         {
@@ -827,8 +823,6 @@ class UserController extends Controller
             }
 
             $users = $users->take(30)->pluck('id', 'name');
-
-            \Log::info($users);
 
             return $this->respondHttp200([
                 'options' => $this->multiSelectFormat($users)
