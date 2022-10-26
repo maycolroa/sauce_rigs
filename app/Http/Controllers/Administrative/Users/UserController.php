@@ -792,11 +792,11 @@ class UserController extends Controller
             ->leftJoin('sau_ct_information_contract_lessee', 'sau_ct_information_contract_lessee.id', 'sau_users.id')
             ->where('sau_user_information_contract_lessee.information_id', $this->getContractIdUser($this->user->id));
 
+            \Log::info($this->getContractIdUser($this->user->id));
             \Log::info($users->take(30)->pluck('id', 'name'));
         }
         else
         {
-            \Log::info('contratante'); 
             $users->selectRaw("
                 sau_users.id as id,
                 Concat(sau_users.name, ' - ', sau_ct_information_contract_lessee.social_reason) as name
