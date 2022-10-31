@@ -16,4 +16,9 @@ class LocationLevelFormController extends Controller
     {
       return $this->getLocationFormConfModule();
     }
+
+    public function getConfUser(Request $request)
+    {
+      return $this->getLocationFormConfUser($this->company);
+    }
 }

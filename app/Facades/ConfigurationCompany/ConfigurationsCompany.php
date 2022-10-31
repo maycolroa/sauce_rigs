@@ -61,7 +61,9 @@ class ConfigurationsCompany
             'stock_minimun' => 'Notificar por existencia por debajo del stock minimo configurado por elemento',
             'users_notify_stock_minimun' => 'Usuarios a notifica por existencia minima',
             'mandatory_action_plan_inspections' => 'Parametro para pedir o no planes de accion segun la calificacion del item dentro de las inspecciones no planeadas',
-            'mandatory_level_risk_inspections' => 'Parametro para pedir o no campo nivel de riesgo del item dentro de las inspecciones planeadas'
+            'mandatory_level_risk_inspections' => 'Parametro para pedir o no campo nivel de riesgo del item dentro de las inspecciones planeadas',
+            'filter_inspections' => 'Activar filtrado de inspecciones segun configuracion de usuarios',
+            'location_level_form_user_inspection_filter' => 'Nivel de localización a mostrar para el filtrado de inspecciones',
         ];
     }
 

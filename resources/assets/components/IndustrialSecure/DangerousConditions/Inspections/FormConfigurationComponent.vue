@@ -17,6 +17,16 @@
         </vue-radio>
     </b-form-row> 
 
+    <b-form-row>
+      <vue-radio :disabled="!auth.can['configurations_c']" :checked="form.filter_inspections" class="col-md-12" v-model="form.filter_inspections" :options="siNo" name="filter_inspections" :error="form.errorsFor('filter_inspections')" label="¿Desea activar el filtrado de visualizacion de inspecciones por parte de usuarios segun nivel de localizacion?">
+        </vue-radio>
+    </b-form-row>
+
+    <b-form-row v-if="form.filter_inspections == 'SI'">
+      <vue-radio :disabled="!auth.can['configurations_c']" :checked="form.location_level_form_user_inspection_filter" class="col-md-12" v-model="form.location_level_form_user_inspection_filter" :options="locationLevels" name="location_level_form_user_inspection_filter" :error="form.errorsFor('location_level_form_user_inspection_filter')" label="Nivel localización en tabla de inspecciones planeadas">
+        </vue-radio>
+    </b-form-row>
+
     <div class="row float-right pt-10 pr-10">
       <template>
         <b-btn type="submit" :disabled="loading || (!auth.can['configurations_c'])" variant="primary">Guardar</b-btn>

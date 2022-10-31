@@ -282,4 +282,24 @@ class User extends Authenticatable
 
         return $query;
     }
+
+    public function headquartersFilter()
+    {
+        return $this->belongsToMany('App\Models\Administrative\Headquarters\EmployeeHeadquarter', 'sau_ph_user_headquarters')->withPivot('company_id');
+    }
+
+    public function regionals()
+    {
+        return $this->belongsToMany('App\Models\Administrative\Regionals\EmployeeRegional', 'sau_ph_user_regionals')->withPivot('company_id');
+    }
+
+    public function processes()
+    {
+        return $this->belongsToMany('App\Models\Administrative\Processes\EmployeeProcess', 'sau_ph_user_processes')->withPivot('company_id');
+    }
+
+    public function areas()
+    {
+        return $this->belongsToMany('App\Models\Administrative\Areas\EmployeeArea', 'sau_ph_user_areas')->withPivot('company_id');
+    }
 }

@@ -438,6 +438,7 @@ Route::middleware(['auth'])->group(function () {
 
       Route::prefix('configurations')->group(function () {
         Route::post('locationLevelForms/getConfModule', 'Administrative\Configurations\LocationLevelFormController@getConfModule');
+        Route::post('locationLevelForms/getConfUser', 'Administrative\Configurations\LocationLevelFormController@getConfUser');
 				Route::post('locationLevelForms/data', 'Administrative\Configurations\LocationLevelFormController@data');
 				Route::ApiResource('locationLevelForms', 'Administrative\Configurations\LocationLevelFormController');
       });

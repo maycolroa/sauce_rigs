@@ -61,6 +61,64 @@ trait LocationFormTrait
         return $data;
     }
 
+    protected function getLocationFormConfUser($company_id = NULL)
+    {   
+        try
+        {   
+            $data = [];
+
+            if ($company_id)
+                $configLevel = ConfigurationsCompany::company($company_id)->findByKey('filter_inspections');
+            else
+                $configLevel = 'NO';
+            
+
+            if ($configLevel == 'SI')
+            {
+                if ($company_id)
+                    $locationLevelForm = ConfigurationsCompany::company($company_id)->findByKey('location_level_form_user_inspection_filter');
+                else
+                    $locationLevelForm = ConfigurationsCompany::findByKey('location_level_form_user_inspection_filter');
+
+                if ($locationLevelForm)
+                {
+                    if ($locationLevelForm == 'Regional')
+                    {
+                        $data["regional"] = "SI";
+                        $data["headquarter"] = "NO";
+                        $data["process"] = "NO";
+                        $data["area"] = "NO";
+                    }
+                    else if ($locationLevelForm == 'Sede')
+                    {
+                        $data["regional"] = "SI";
+                        $data["headquarter"] = "SI";
+                        $data["process"] = "NO";
+                        $data["area"] = "NO";
+                    }
+                    else if ($locationLevelForm == 'Proceso')
+                    {
+                        $data["regional"] = "SI";
+                        $data["headquarter"] = "SI";
+                        $data["process"] = "SI";
+                        $data["area"] = "NO";
+                    }
+                    else //if ($locationLevelForm == 'Área')
+                    {
+                        $data = $this->getDefaultValues();
+                    }
+                }
+                else 
+                    $data = $this->getDefaultValues();
+            }
+
+        } catch (Exception $e) {
+            $data = [];
+        }
+    
+        return $data;
+    }
+
     protected function getLocationFormConfTableInspections($company_id = NULL)
     {   
         try

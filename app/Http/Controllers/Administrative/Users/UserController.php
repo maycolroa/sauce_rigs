@@ -192,6 +192,8 @@ class UserController extends Controller
                     $user->systemsApply()->sync($data);
             }
 
+            $this->saveLocation($user, $request);
+
             DB::commit();
 
             SyncUsersSuperadminJob::dispatch();
@@ -231,6 +233,11 @@ class UserController extends Controller
             
         try
         {
+            $regionals = [];
+            $headquarters = [];
+            $processes = [];
+            $areas = [];
+
             if ($user->hasRole('Arrendatario', $this->team) || $user->hasRole('Contratista', $this->team))
                 $user->edit_role = false;
             else
@@ -274,6 +281,39 @@ class UserController extends Controller
 
             $user->multiselect_filter_system_apply = $systemsApply;
             $user->filter_system_apply = $systemsApply;
+
+            foreach ($user->regionals as $key => $value)
+            {
+                array_push($regionals, $value->multiselect());
+            }
+
+            foreach ($user->headquartersFilter as $key => $value)
+            {
+                array_push($headquarters, $value->multiselect());
+            }
+
+            foreach ($user->processes as $key => $value)
+            {
+                array_push($processes, $value->multiselect());
+            }
+
+            foreach ($user->areas as $key => $value)
+            {
+                array_push($areas, $value->multiselect());
+            }
+            
+            $user->multiselect_regional = $regionals;
+            $user->employee_regional_id = $regionals;
+
+            $user->multiselect_sede = $headquarters;
+            $user->employee_headquarter_id = $headquarters;
+
+            $user->multiselect_proceso = $processes;
+            $user->employee_process_id = $processes;
+
+            $user->multiselect_area = $areas;
+            $user->employee_area_id = $areas;
+
             $data = $user->toArray();
             $data['password'] = '';
             
@@ -295,6 +335,8 @@ class UserController extends Controller
      */
     public function update(UserRequest $request, User $user)
     {
+
+        \Log::info($request);
         DB::beginTransaction();
 
         try
@@ -398,6 +440,8 @@ class UserController extends Controller
 
             $log_modify->modification = $modification;
             $log_modify->save();
+
+            $this->saveLocation($user, $request);
 
             DB::commit();
 
@@ -626,7 +670,7 @@ class UserController extends Controller
         //$includeSuper = $this->user->hasRole('Superadmin', $this->company) ? true : false;
 
         $roles = Role::alls(true)->get();
-        $modules = Module::whereIn('name', ['legalMatrix', 'reinstatements'])->get();
+        $modules = Module::whereIn('name', ['legalMatrix', 'reinstatements', 'dangerousConditions'])->get();
         $mods_license = [];
         $data = [];
 
@@ -658,6 +702,113 @@ class UserController extends Controller
         }
 
         return $data;
+    }
+
+    private function saveLocation($user, $request)
+    {
+        $regionals = [];
+        $headquarters = [];
+        $processes = [];
+        $areas = [];
+
+        if ($request->has('employee_regional_id'))
+        {
+            if (count($request->employee_regional_id) > 1)
+            {
+                foreach ($request->employee_regional_id as $key => $value) 
+                {
+                    $verify = json_decode($value)->value;
+
+                    if ($verify == 'Todos')
+                    {
+                        $regional_alls = 'Todos';
+                        break;
+                    }
+                }
+            }
+            else if (count($request->employee_regional_id) == 1)
+                $regional_alls =  json_decode($request->employee_regional_id[0])->value;
+        }
+
+        if ($request->has('employee_headquarter_id'))
+        {
+            if (count($request->employee_headquarter_id) > 1)
+            {
+                foreach ($request->employee_headquarter_id as $key => $value) 
+                {
+                    $verify = json_decode($value)->value;
+
+                    if ($verify == 'Todos')
+                    {
+                        $headquarter_alls = 'Todos';
+                        break;
+                    }
+                }
+            }
+            else if (count($request->employee_headquarter_id) == 1)
+                $headquarter_alls =  json_decode($request->employee_headquarter_id[0])->value;
+        }
+
+        if ($request->has('employee_process_id'))
+        {
+            if (count($request->employee_process_id) > 1)
+            {
+                foreach ($request->employee_process_id as $key => $value) 
+                {
+                    $verify = json_decode($value)->value;
+
+                    if ($verify == 'Todos')
+                    {
+                        $process_alls = 'Todos';
+                        break;
+                    }
+                }
+            }
+            else if (count($request->employee_process_id) == 1)
+                $process_alls =  json_decode($request->employee_process_id[0])->value;
+        }
+
+        if ($request->has('employee_area_id'))
+        {
+            if (count($request->employee_area_id) > 1)
+            {
+                foreach ($request->employee_area_id as $key => $value) 
+                {
+                    $verify = json_decode($value)->value;
+
+                    if ($verify == 'Todos')
+                    {
+                        $areas_alls = 'Todos';
+                        break;
+                    }
+                }
+            }
+            else if (count($request->employee_area_id) == 1)
+                $areas_alls =  json_decode($request->employee_area_id[0])->value;
+        }
+
+        if ($request->has('employee_regional_id'))
+            $regionals = $this->builderArrayFilter($this->getDataFromMultiselect($request->get('employee_regional_id')));
+
+
+
+        if ($request->has('employee_headquarter_id'))
+            $headquarters = $this->builderArrayFilter($this->getDataFromMultiselect($request->get('employee_headquarter_id')));
+
+
+
+        if ($request->has('employee_process_id'))
+            $processes = $this->builderArrayFilter($this->getDataFromMultiselect($request->get('employee_process_id')));
+
+
+
+        if ($request->has('employee_area_id'))
+            $areas = $this->builderArrayFilter($this->getDataFromMultiselect($request->get('employee_area_id')));
+
+        $user->headquartersFilter()->sync($headquarters);
+        $user->regionals()->sync($regionals);
+        $user->processes()->sync($processes);
+        $user->areas()->sync($areas);
     }
 
     public function multiselectUsers()

@@ -192,7 +192,6 @@ class InspectionController extends Controller
             $p[$i->id] = $i->processes()->pluck('name');
             $a[$i->id] = $i->areas()->pluck('name');
         }
-        \Log::info(2);
         
         $confLocationTableInspections = $this->getLocationFormConfTableInspections();
 
@@ -210,7 +209,6 @@ class InspectionController extends Controller
         if ($confLocationTableInspections['area'] == 'SI')
             $select[] = "'' AS area";
 
-        \Log::info(4);
 
         $inspections = Inspection::select(
             'sau_ph_inspections.*',
@@ -235,12 +233,10 @@ class InspectionController extends Controller
 
         $inspections->groupBy('sau_ph_inspections.id', 'sau_ph_inspections.name');  
 
-        \Log::info(5);
 
         $url = "/industrialsecure/dangerousconditions/inspections";
 
         $filters = COUNT($request->get('filters')) > 0 ? $request->get('filters') : $this->filterDefaultValues($this->user->id, $url);
-        \Log::info(6);
 
         if (COUNT($filters) > 0)
         {
@@ -282,8 +278,6 @@ class InspectionController extends Controller
                 
             $inspections->betweenDate($dates);
         }
-
-        \Log::info(7);
 
         //$inspections->limit(3);
 

@@ -30,6 +30,18 @@
         <vue-ajax-advanced-select :disabled="viewOnly" class="col-md-12" v-model="form.filter_system_apply" :error="form.errorsFor('filter_system_apply')" :selected-object="form.multiselect_filter_system_apply" name="filter_system_apply" label="Sistemas que aplican (Opcional)" placeholder="Seleccione los sistemas" :url="systemApplyDataUrl" :allowEmpty="true" :multiple="true" text-block="Sistemas que aplican mediante los cuales sera filtrada la información que podra visualizar el usuario en el módulo de Matriz Legal">
             </vue-ajax-advanced-select>
       </b-form-row>
+
+      <b-form-row v-if="filterInspections">
+        <vue-ajax-advanced-select v-if="locationFormUser.regional == 'SI' && auth.filter_inspections == 'SI'" :disabled="viewOnly" class="col-md-6" v-model="form.employee_regional_id" :error="form.errorsFor('employee_regional_id')" :selected-object="form.multiselect_regional" name="employee_regional_id" :label="keywordCheck('regionals')" :parameters="{form: 'inspections' }" placeholder="Seleccione las opciones" :url="regionalsDataUrl" :multiple="true" :allowEmpty="true">
+            </vue-ajax-advanced-select>
+        <vue-ajax-advanced-select v-if="locationFormUser.headquarter == 'SI' && auth.filter_inspections == 'SI'" :disabled="viewOnly || (form.employee_regional_id && form.employee_regional_id.length == 0)" class="col-md-6" v-model="form.employee_headquarter_id" :error="form.errorsFor('employee_headquarter_id')" :selected-object="form.multiselect_sede" name="employee_headquarter_id" :label="keywordCheck('headquarters')" placeholder="Seleccione las opciones" :url="headquartersDataUrl2" :parameters="{regional: form.employee_regional_id, form: 'inspections' }" :multiple="true" :allowEmpty="true">
+            </vue-ajax-advanced-select>
+        
+        <vue-ajax-advanced-select v-if="locationFormUser.process == 'SI' && auth.filter_inspections == 'SI'" :disabled="viewOnly || (form.employee_headquarter_id &&form.employee_headquarter_id.length == 0)" class="col-md-6" v-model="form.employee_process_id" :error="form.errorsFor('employee_process_id')" :selected-object="form.multiselect_proceso" name="employee_process_id" :label="keywordCheck('processes')" placeholder="Seleccione las opciones" :url="processesDataUrl" :parameters="{headquarter: form.employee_headquarter_id, form: 'inspections' }" :multiple="true" :allowEmpty="true">
+        </vue-ajax-advanced-select>
+        <vue-ajax-advanced-select v-if="locationFormUser.area == 'SI' && auth.filter_inspections == 'SI'" :disabled="viewOnly || (form.employee_process_id && form.employee_process_id.length == 0)" class="col-md-6" v-model="form.employee_area_id" :error="form.errorsFor('employee_area_id')" :selected-object="form.multiselect_area" name="employee_area_id" :label="keywordCheck('areas')" placeholder="Seleccione las opciones" :url="areasDataUrl" :parameters="{process: form.employee_process_id, headquarter: form.employee_headquarter_id, form: 'inspections' }" :multiple="true" :allowEmpty="true">
+        </vue-ajax-advanced-select>
+      </b-form-row>
     </template>
 
     <template v-if="!auth.hasRole['Arrendatario'] && !auth.hasRole['Contratista']" v-show="contracts.length > 0">
@@ -61,12 +73,14 @@ import VueAjaxAdvancedSelect from "@/components/Inputs/VueAjaxAdvancedSelect.vue
 import VueInput from "@/components/Inputs/VueInput.vue";
 import VueCheckboxSimple from "@/components/Inputs/VueCheckboxSimple.vue";
 import Form from "@/utils/Form.js";
+//import LocationLevelComponent from '@/components/CustomInputs/LocationLevelUserComponent.vue';
 
 export default {
   components: {
     VueAjaxAdvancedSelect,
     VueInput,
-    VueCheckboxSimple
+    VueCheckboxSimple,
+   // LocationLevelComponent
   },
   props: {
     url: { type: String },
@@ -96,7 +110,11 @@ export default {
             role_id: [],
             edit_role: true,
             filter_headquarter: [],
-            filter_system_apply: []
+            filter_system_apply: [],
+            employee_regional_id: [],
+            employee_headquarter_id: [],
+            employee_area_id: [],
+            employee_process_id: [],
         };
       }
     }
@@ -113,12 +131,36 @@ export default {
     },
     filterLegalMatrix() {
       return this.showFilter('legalMatrix');
+    },
+    filterInspections() {
+      return this.showFilter('dangerousConditions');
     }
   },
+  created()
+    {
+        axios.post('/administration/configurations/locationLevelForms/getConfUser')
+        .then(data => {
+            console.log(data.data)
+            if (Object.keys(data.data).length > 0)
+                setTimeout(() => {
+                    this.locationFormUser = data.data
+                }, 3000)
+            this.isLoading = false;
+        })
+        .catch(error => {
+            this.isLoading = false;
+            Alerts.error('Error', 'Hubo un problema recolectando la información');
+        });
+    },
   data() {
     return {
       loading: false,//this.isEdit,
       form: Form.makeFrom(this.user, this.method),
+      regionalsDataUrl: '/selects/regionals',
+      headquartersDataUrl2: '/selects/headquarters',
+      areasDataUrl: '/selects/areas',
+      processesDataUrl: '/selects/processes',
+      locationFormUser: []
     };
   },
   methods: {
@@ -147,6 +189,8 @@ export default {
         if (!this.filterLegalMatrix)
           this.form.filter_system_apply.splice(0)
       }
+ 
+      console.log(this.form)
 
       this.loading = true;
       this.form
