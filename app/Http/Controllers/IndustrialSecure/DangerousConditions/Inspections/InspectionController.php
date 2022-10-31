@@ -16,6 +16,7 @@ use App\Models\Administrative\Processes\EmployeeProcess;
 use App\Models\Administrative\Areas\EmployeeArea;
 use App\Models\IndustrialSecure\DangerousConditions\Inspections\Qualifications;
 use App\Models\General\Company;
+use App\Models\Administrative\Users\User;
 use App\Facades\ConfigurationCompany\Facades\ConfigurationsCompany;
 use App\Http\Requests\IndustrialSecure\DangerousConditions\Inspections\InspectionRequest;
 use App\Jobs\IndustrialSecure\DangerousConditions\Inspections\InspectionExportJob;
@@ -151,8 +152,6 @@ class InspectionController extends Controller
                 $having[] = "areas2 >= 1";
             }
 
-            $inspections->selectRaw(implode(",", $select));
-
             if (COUNT($having) > 0)
                 $inspections->havingRaw(implode(" and ", $having));
             
@@ -168,6 +167,70 @@ class InspectionController extends Controller
                 
             $inspections->betweenDate($dates);
 
+        }
+
+        $inspections->selectRaw(implode(",", $select));
+
+        $configLevel = ConfigurationsCompany::company($this->company)->findByKey('filter_inspections');
+
+
+        if ($configLevel == 'SI')
+        {
+            $locationLevelForm = ConfigurationsCompany::company($this->company)->findByKey('location_level_form_user_inspection_filter');
+
+            if ($locationLevelForm)
+            {
+                if ($locationLevelForm == 'Regional')
+                {
+                    $regionals = User::find($this->user->id)->regionals()->pluck('id');
+
+                    if (count($regionals) > 0)
+                        $inspections->join('sau_ph_inspection_regional', 'sau_ph_inspection_regional.inspection_id', 'sau_ph_inspections.id')
+                        ->whereIn('sau_ph_inspection_regional.employee_regional_id',$regionals);
+                }
+                else if ($locationLevelForm == 'Sede')
+                {
+                    $regionals = User::find($this->user->id)->regionals()->pluck('id');
+                    $headquarters = User::find($this->user->id)->headquartersFilter()->pluck('id');
+
+                    if (count($regionals) > 0 && count($headquarters) > 0)
+                        $inspections->join('sau_ph_inspection_regional', 'sau_ph_inspection_regional.inspection_id', 'sau_ph_inspections.id')
+                        ->join('sau_ph_inspection_headquarter', 'sau_ph_inspection_headquarter.inspection_id', 'sau_ph_inspections.id')
+                        ->whereIn('sau_ph_inspection_headquarter.employee_headquarter_id',$headquarters)
+                        ->whereIn('sau_ph_inspection_regional.employee_regional_id', $regionals);
+                }
+                else if ($locationLevelForm == 'Proceso')
+                {
+                    $regionals = User::find($this->user->id)->regionals()->pluck('id');
+                    $headquarters = User::find($this->user->id)->headquartersFilter()->pluck('id');
+                    $processes = User::find($this->user->id)->processes()->pluck('id');
+
+                    if (count($regionals) > 0 && count($headquarters) > 0 && count($processes) > 0)
+                        $inspections->join('sau_ph_inspection_regional', 'sau_ph_inspection_regional.inspection_id', 'sau_ph_inspections.id')
+                        ->join('sau_ph_inspection_headquarter', 'sau_ph_inspection_headquarter.inspection_id', 'sau_ph_inspections.id')
+                        ->join('sau_ph_inspection_process', 'sau_ph_inspection_process.inspection_id', 'sau_ph_inspections.id')
+                        ->whereIn('sau_ph_inspection_regional.employee_regional_id',$regionals)->whereIn('sau_ph_inspection_headquarter.employee_headquarter_id',$headquarters)
+                        ->whereIn('sau_ph_inspection_process.employee_process_id',$processes);
+                }
+                else if ($locationLevelForm == 'Área')
+                {                        
+                    $regionals = User::find($this->user->id)->regionals()->pluck('id');
+                    $headquarters = User::find($this->user->id)->headquartersFilter()->pluck('id');
+                    $processes = User::find($this->user->id)->processes()->pluck('id');
+                    $areas = User::find($this->user->id)->areas()->pluck('id');
+
+                    if (count($regionals) > 0 && count($headquarters) > 0 && count($processes) > 0 && count($areas) > 0)
+                    {
+                        $inspections->join('sau_ph_inspection_regional', 'sau_ph_inspection_regional.inspection_id', 'sau_ph_inspections.id')
+                        ->join('sau_ph_inspection_headquarter', 'sau_ph_inspection_headquarter.inspection_id', 'sau_ph_inspections.id')
+                        ->join('sau_ph_inspection_process', 'sau_ph_inspection_process.inspection_id', 'sau_ph_inspections.id')
+                        ->join('sau_ph_inspection_area', 'sau_ph_inspection_area.inspection_id', 'sau_ph_inspections.id')
+                        ->whereIn('sau_ph_inspection_regional.employee_regional_id',$regionals)->whereIn('sau_ph_inspection_headquarter.employee_headquarter_id',$headquarters)
+                        ->whereIn('sau_ph_inspection_process.employee_process_id',$processes)
+                        ->whereIn('sau_ph_inspection_area.employee_area_id',$areas);
+                    }
+                }
+            }
         }
 
         return Vuetable::of($inspections)
