@@ -4,9 +4,17 @@ namespace App\Models\IndustrialSecure\DangerousConditions\Inspections;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
+use App\Scopes\InspectionsFilterScope;
 
 class InspectionItemsQualificationAreaLocation extends Model
 {
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::addGlobalScope(new InspectionsFilterScope);
+    }
+
     const DISK = 's3_DConditions';
 
     protected $table = "sau_ph_inspection_items_qualification_area_location";

@@ -10,7 +10,7 @@ use App\Models\Administrative\Users\User;
 use App\Facades\ConfigurationCompany\Facades\ConfigurationsCompany;
 use Session;
 
-class InspectionsFilterScope implements Scope
+class ReportInspectionsFilterScope implements Scope
 {
     /**
      * Apply the scope to a given Eloquent query builder.
@@ -42,22 +42,22 @@ class InspectionsFilterScope implements Scope
             if ($locationLevelForm == 'Regional')
             {
                 if (count($regionals) > 0)
-                  $builder->whereIn('sau_ph_inspection_items_qualification_area_location.employee_regional_id', $regionals);
+                  $builder->whereIn('sau_employees_regionals.id', $regionals);
             }
             else if ($locationLevelForm == 'Sede')
             {
               if (count($regionals) > 0 && count($headquarters) > 0)
-                $builder->whereIn('sau_ph_inspection_items_qualification_area_location.employee_regional_id', $regionals)->whereIn('sau_ph_inspection_items_qualification_area_location.employee_headquarter_id', $headquarters);
+                $builder->whereIn('sau_employees_regionals.id', $regionals)->whereIn('sau_employees_headquarters.id', $headquarters);
             }
             else if ($locationLevelForm == 'Proceso')
             {
               if (count($regionals) > 0 && count($headquarters) > 0 && count($processes) > 0)
-                $builder->whereIn('sau_ph_inspection_items_qualification_area_location.employee_regional_id', $regionals)->whereIn('sau_ph_inspection_items_qualification_area_location.employee_headquarter_id', $headquarters)->whereIn('sau_ph_inspection_items_qualification_area_location.employee_process_id', $processes);
+                $builder->whereIn('sau_employees_regionals.id', $regionals)->whereIn('sau_employees_headquarters.id', $headquarters)->whereIn('sau_employees_processes.id', $processes);
             }
             else if ($locationLevelForm == 'Área')
             {                        
               if (count($regionals) > 0 && count($headquarters) > 0 && count($processes) > 0 && count($areas) > 0)
-                $builder->whereIn('sau_ph_inspection_items_qualification_area_location.employee_regional_id', $regionals)->whereIn('sau_ph_inspection_items_qualification_area_location.employee_headquarter_id', $headquarters)->whereIn('sau_ph_inspection_items_qualification_area_location.employee_process_id', $processes)->whereIn('sau_ph_inspection_items_qualification_area_location.employee_area_id', $areas);
+                $builder->whereIn('sau_employees_regionals.id', $regionals)->whereIn('sau_employees_headquarters.id', $headquarters)->whereIn('sau_employees_processes.id', $processes)->whereIn('sau_employees_areas.id', $areas);
             }
           }
         }

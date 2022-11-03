@@ -7,9 +7,17 @@ use App\Traits\CompanyTrait;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Support\Facades\Storage;
+use App\Scopes\ReportInspectionsFilterScope;
 
 class Report extends Model
 {
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::addGlobalScope(new ReportInspectionsFilterScope);
+    }
+    
     const DISK = 's3_DConditions';
 
     use CompanyTrait;

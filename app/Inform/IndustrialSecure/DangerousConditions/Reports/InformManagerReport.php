@@ -4,8 +4,11 @@ namespace App\Inform\IndustrialSecure\DangerousConditions\Reports;
 
 use App\Models\IndustrialSecure\DangerousConditions\Reports\Report;
 use App\Models\Administrative\Employees\Employee;
+use App\Models\Administrative\Users\User;
+use App\Facades\ConfigurationCompany\Facades\ConfigurationsCompany;
 use DB;
 use App\Traits\UtilsTrait;
+use Illuminate\Support\Facades\Auth;
 
 class InformManagerReport
 {
@@ -69,6 +72,51 @@ class InformManagerReport
         $this->months = $months;
         $this->dates = $dates;
         $this->filtersType = $filtersType;
+
+
+        $this->regionalsFilter = [];
+        $this->headquartersFilter = [];
+        $this->processesFilter = [];
+        $this->areasFilter = [];
+        $this->locationLevelForm = '';
+
+        $this->configLevel = ConfigurationsCompany::company($this->company)->findByKey('filter_inspections');
+
+        if ($this->configLevel == 'SI')
+        {
+            $this->locationLevelForm = ConfigurationsCompany::company($this->company)->findByKey('location_level_form_user_inspection_filter');
+
+            if ($this->locationLevelForm)
+            {
+                $id = Auth::user() ? Auth::user()->id : (isset($builder->user) ? $builder->user : null);
+
+                if ($id)
+                {
+                    if ($this->locationLevelForm == 'Regional')
+                    {
+                        $this->regionalsFilter = User::find($id)->regionals()->pluck('id');
+                    }
+                    else if ($this->locationLevelForm == 'Sede')
+                    {
+                        $this->regionalsFilter = User::find($id)->regionals()->pluck('id');
+                        $this->headquartersFilter = User::find($id)->headquartersFilter()->pluck('id');
+                    }
+                    else if ($this->locationLevelForm == 'Proceso')
+                    {
+                        $this->regionalsFilter = User::find($id)->regionals()->pluck('id');
+                        $this->headquartersFilter = User::find($id)->headquartersFilter()->pluck('id');
+                        $this->processesFilter = User::find($id)->processes()->pluck('id');
+                    }
+                    else if ($this->locationLevelForm == 'Área')
+                    {
+                        $this->regionalsFilter = User::find($id)->regionals()->pluck('id');
+                        $this->headquartersFilter = User::find($id)->headquartersFilter()->pluck('id');
+                        $this->processesFilter = User::find($id)->processes()->pluck('id');
+                        $this->areasFilter = User::find($id)->areas()->pluck('id');
+                    }
+                }
+            }
+        }
     }
 
     /**
@@ -133,6 +181,10 @@ class InformManagerReport
         ->join('sau_employees_headquarters', 'sau_employees_headquarters.id', 'sau_ph_reports.employee_headquarter_id')
         ->join('sau_employees_areas', 'sau_employees_areas.id', 'sau_ph_reports.employee_area_id')
         ->where($column, '<>', '')
+        ->whereIn('sau_employees_headquarters.id', $this->headquartersFilter)
+        ->whereIn('sau_employees_areas.id', $this->areasFilter)
+        ->withoutGlobalScopes()
+        ->where('company_id', $this->company)
         ->groupBy($column)
         ->orderBy($column)
         ->pluck('count', $column);
@@ -152,7 +204,11 @@ class InformManagerReport
         )
         ->join('sau_employees_headquarters', 'sau_employees_headquarters.id', 'sau_ph_reports.employee_headquarter_id')
         ->join('sau_employees_areas', 'sau_employees_areas.id', 'sau_ph_reports.employee_area_id')
+        ->whereIn('sau_employees_headquarters.id', $this->headquartersFilter)
+        ->whereIn('sau_employees_areas.id', $this->areasFilter)
         ->groupBy('sau_employees_headquarters.name', 'sau_employees_areas.name')
+        ->withoutGlobalScopes()
+        ->where('company_id', $this->company)
         ->orderBy('name')
         ->pluck('count', 'name');
 
@@ -185,6 +241,25 @@ class InformManagerReport
         ->leftJoin('sau_employees_processes', 'sau_employees_processes.id','sau_ph_reports.employee_process_id' )
         ->where('sau_ph_reports.company_id', $this->company)
         ->groupBy('category');
+
+        if ($this->locationLevelForm == 'Regional' && COUNT($this->regionalsFilter) > 0)
+        {
+            $consultas->whereIn('sau_ph_reports.employee_regional_id', $this->regionalsFilter);
+        }
+        else if ($this->locationLevelForm == 'Sede' && COUNT($this->regionalsFilter) > 0)
+        {
+            $consultas->whereIn('sau_ph_reports.employee_regional_id', $this->regionalsFilter)->whereIn('sau_ph_reports.employee_headquarter_id', $this->headquartersFilter);
+        }
+        else if ($this->locationLevelForm == 'Proceso' && COUNT($this->regionalsFilter) > 0)
+        {
+            $consultas->whereIn('sau_ph_reports.employee_regional_id', $this->regionalsFilter)->whereIn('sau_ph_reports.employee_headquarter_id', $this->headquartersFilter)->whereIn('sau_ph_reports.employee_process_id', $this->processesFilter);
+        }
+        else if ($this->locationLevelForm == 'Área' && COUNT($this->regionalsFilter) > 0)
+        {
+            $consultas->whereIn('sau_ph_reports.employee_regional_id', $this->regionalsFilter)->whereIn('sau_ph_reports.employee_headquarter_id', $this->headquartersFilter)->whereIn('sau_ph_reports.employee_process_id', $this->processesFilter)->whereIn('sau_ph_reports.employee_area_id', $this->areasFilter);
+        }
+        
+        //\Log::info($consultas->toSql());
 
         if (COUNT($this->conditions) > 0)
             $consultas->inConditions($this->conditions, $this->filtersType['conditions']);
@@ -276,7 +351,7 @@ class InformManagerReport
         ]);
     }
 
-    public function locationWithCondition($headquarters)
+    /*public function locationWithCondition($headquarters)
     {
         $report = Report::select(
             DB::raw('count(sau_ph_reports.id) as reports'),
@@ -300,5 +375,5 @@ class InformManagerReport
             'condition' => $report->condition,
         ];
 
-    }
+    }*/
 }

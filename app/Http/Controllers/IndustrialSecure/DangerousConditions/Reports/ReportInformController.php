@@ -127,6 +127,8 @@ class ReportInformController extends Controller
         $years = Report::selectRaw(
             'DISTINCT YEAR(sau_ph_reports.created_at) AS year'
         )
+        ->withoutGlobalScopes()
+        ->where('company_id', $this->company)
         ->orderBy('year')
         ->pluck('year', 'year');
 
@@ -138,6 +140,8 @@ class ReportInformController extends Controller
         $months = Report::selectRaw(
             'DISTINCT month(sau_ph_reports.created_at) AS month'
         )
+        ->withoutGlobalScopes()
+        ->where('company_id', $this->company)
         ->orderBy('month')
         ->get();
 

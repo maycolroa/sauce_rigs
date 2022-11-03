@@ -6,6 +6,9 @@ use App\Models\IndustrialSecure\DangerousConditions\Inspections\Inspections;
 use App\Models\IndustrialSecure\DangerousConditions\Inspections\InspectionItemsQualificationAreaLocation;
 use DB;
 use App\Traits\UtilsTrait;
+use App\Models\Administrative\Users\User;
+use App\Facades\ConfigurationCompany\Facades\ConfigurationsCompany;
+use Illuminate\Support\Facades\Auth;
 
 class InformManagerInspections
 {
@@ -64,6 +67,50 @@ class InformManagerInspections
         $this->inspections = $inspections;
         $this->qualifiers = $qualifiers;
 
+        $this->regionalsFilter = [];
+        $this->headquartersFilter = [];
+        $this->processesFilter = [];
+        $this->areasFilter = [];
+        $this->locationLevelForm = '';
+
+        $this->configLevel = ConfigurationsCompany::company($this->company)->findByKey('filter_inspections');
+
+        if ($this->configLevel == 'SI')
+        {
+            $this->locationLevelForm = ConfigurationsCompany::company($this->company)->findByKey('location_level_form_user_inspection_filter');
+
+            if ($this->locationLevelForm)
+            {
+                $id = Auth::user() ? Auth::user()->id : (isset($builder->user) ? $builder->user : null);
+
+                if ($id)
+                {
+                    if ($this->locationLevelForm == 'Regional')
+                    {
+                        $this->regionalsFilter = User::find($id)->regionals()->pluck('id');
+                    }
+                    else if ($this->locationLevelForm == 'Sede')
+                    {
+                        $this->regionalsFilter = User::find($id)->regionals()->pluck('id');
+                        $this->headquartersFilter = User::find($id)->headquartersFilter()->pluck('id');
+                    }
+                    else if ($this->locationLevelForm == 'Proceso')
+                    {
+                        $this->regionalsFilter = User::find($id)->regionals()->pluck('id');
+                        $this->headquartersFilter = User::find($id)->headquartersFilter()->pluck('id');
+                        $this->processesFilter = User::find($id)->processes()->pluck('id');
+                    }
+                    else if ($this->locationLevelForm == 'Área')
+                    {
+                        $this->regionalsFilter = User::find($id)->regionals()->pluck('id');
+                        $this->headquartersFilter = User::find($id)->headquartersFilter()->pluck('id');
+                        $this->processesFilter = User::find($id)->processes()->pluck('id');
+                        $this->areasFilter = User::find($id)->areas()->pluck('id');
+                    }
+                }
+            }
+        }
+
     }
 
     /**
@@ -107,9 +154,27 @@ class InformManagerInspections
             //->inThemes($this->themes, $this->filtersType['themes'])
             //->inInspections($this->inspections, $this->filtersType['inspections'])
             ->betweenDate($this->dates)
+            ->withoutGlobalScopes()
             ->where('sau_ph_inspections.company_id', $this->company)
             ->where('sau_ph_inspections.type_id', 1)
             ->groupBy('category', 'sau_ph_inspection_items_qualification_area_location.qualification_date');
+
+        if ($this->locationLevelForm == 'Regional' && COUNT($this->regionalsFilter) > 0)
+        {
+            $consultas->whereIn('sau_ph_inspection_items_qualification_area_location.employee_regional_id', $this->regionalsFilter);
+        }
+        else if ($this->locationLevelForm == 'Sede' && COUNT($this->regionalsFilter) > 0)
+        {
+            $consultas->whereIn('sau_ph_inspection_items_qualification_area_location.employee_regional_id', $this->regionalsFilter)->whereIn('sau_ph_inspection_items_qualification_area_location.employee_headquarter_id', $this->headquartersFilter);
+        }
+        else if ($this->locationLevelForm == 'Proceso' && COUNT($this->regionalsFilter) > 0)
+        {
+            $consultas->whereIn('sau_ph_inspection_items_qualification_area_location.employee_regional_id', $this->regionalsFilter)->whereIn('sau_ph_inspection_items_qualification_area_location.employee_headquarter_id', $this->headquartersFilter)->whereIn('sau_ph_inspection_items_qualification_area_location.employee_process_id', $this->processesFilter);
+        }
+        else if ($this->locationLevelForm == 'Área' && COUNT($this->regionalsFilter) > 0)
+        {
+            $consultas->whereIn('sau_ph_inspection_items_qualification_area_location.employee_regional_id', $this->regionalsFilter)->whereIn('sau_ph_inspection_items_qualification_area_location.employee_headquarter_id', $this->headquartersFilter)->whereIn('sau_ph_inspection_items_qualification_area_location.employee_process_id', $this->processesFilter)->whereIn('sau_ph_inspection_items_qualification_area_location.employee_area_id', $this->areasFilter);
+        }
 
         if (COUNT($this->regionals) > 0)
             $consultas->inRegionals($this->regionals, $this->filtersType['regionals']);
@@ -159,9 +224,27 @@ class InformManagerInspections
             //->inThemes($this->themes, $this->filtersType['themes'])
             //->inInspections($this->inspections, $this->filtersType['inspections'])
             ->betweenDate($this->dates)
+            ->withoutGlobalScopes()
             ->where('sau_ph_inspections.company_id', $this->company)
             ->where('sau_ph_inspections.type_id', 2)
             ->groupBy('category', 'sau_ph_inspection_items_qualification_area_location.qualification_date');
+
+        if ($this->locationLevelForm == 'Regional' && COUNT($this->regionalsFilter) > 0)
+        {
+            $consultas->whereIn('sau_ph_inspection_items_qualification_area_location.employee_regional_id', $this->regionalsFilter);
+        }
+        else if ($this->locationLevelForm == 'Sede' && COUNT($this->regionalsFilter) > 0)
+        {
+            $consultas->whereIn('sau_ph_inspection_items_qualification_area_location.employee_regional_id', $this->regionalsFilter)->whereIn('sau_ph_inspection_items_qualification_area_location.employee_headquarter_id', $this->headquartersFilter);
+        }
+        else if ($this->locationLevelForm == 'Proceso' && COUNT($this->regionalsFilter) > 0)
+        {
+            $consultas->whereIn('sau_ph_inspection_items_qualification_area_location.employee_regional_id', $this->regionalsFilter)->whereIn('sau_ph_inspection_items_qualification_area_location.employee_headquarter_id', $this->headquartersFilter)->whereIn('sau_ph_inspection_items_qualification_area_location.employee_process_id', $this->processesFilter);
+        }
+        else if ($this->locationLevelForm == 'Área' && COUNT($this->regionalsFilter) > 0)
+        {
+            $consultas->whereIn('sau_ph_inspection_items_qualification_area_location.employee_regional_id', $this->regionalsFilter)->whereIn('sau_ph_inspection_items_qualification_area_location.employee_headquarter_id', $this->headquartersFilter)->whereIn('sau_ph_inspection_items_qualification_area_location.employee_process_id', $this->processesFilter)->whereIn('sau_ph_inspection_items_qualification_area_location.employee_area_id', $this->areasFilter);
+        }
 
         if (COUNT($this->regionals) > 0)
             $consultas->inRegionals($this->regionals, $this->filtersType['regionals']);
@@ -216,9 +299,27 @@ class InformManagerInspections
             //->inThemes($this->themes, $this->filtersType['themes'])
             //->inInspections($this->inspections, $this->filtersType['inspections'])
             ->betweenDate($this->dates)
+            ->withoutGlobalScopes()
             ->where('sau_ph_inspections.company_id', $this->company)
             ->where('sau_ph_inspections.type_id', 1)
             ->groupBy('category');
+
+        if ($this->locationLevelForm == 'Regional' && COUNT($this->regionalsFilter) > 0)
+        {
+            $consultas2->whereIn('sau_ph_inspection_items_qualification_area_location.employee_regional_id', $this->regionalsFilter);
+        }
+        else if ($this->locationLevelForm == 'Sede' && COUNT($this->regionalsFilter) > 0)
+        {
+            $consultas2->whereIn('sau_ph_inspection_items_qualification_area_location.employee_regional_id', $this->regionalsFilter)->whereIn('sau_ph_inspection_items_qualification_area_location.employee_headquarter_id', $this->headquartersFilter);
+        }
+        else if ($this->locationLevelForm == 'Proceso' && COUNT($this->regionalsFilter) > 0)
+        {
+            $consultas2->whereIn('sau_ph_inspection_items_qualification_area_location.employee_regional_id', $this->regionalsFilter)->whereIn('sau_ph_inspection_items_qualification_area_location.employee_headquarter_id', $this->headquartersFilter)->whereIn('sau_ph_inspection_items_qualification_area_location.employee_process_id', $this->processesFilter);
+        }
+        else if ($this->locationLevelForm == 'Área' && COUNT($this->regionalsFilter) > 0)
+        {
+            $consultas2->whereIn('sau_ph_inspection_items_qualification_area_location.employee_regional_id', $this->regionalsFilter)->whereIn('sau_ph_inspection_items_qualification_area_location.employee_headquarter_id', $this->headquartersFilter)->whereIn('sau_ph_inspection_items_qualification_area_location.employee_process_id', $this->processesFilter)->whereIn('sau_ph_inspection_items_qualification_area_location.employee_area_id', $this->areasFilter);
+        }
 
         if (COUNT($this->regionals) > 0)
             $consultas2->inRegionals($this->regionals, $this->filtersType['regionals']);
@@ -276,9 +377,27 @@ class InformManagerInspections
             //->inThemes($this->themes, $this->filtersType['themes'])
             //->inInspections($this->inspections, $this->filtersType['inspections'])
             ->betweenDate($this->dates)
+            ->withoutGlobalScopes()
             ->where('sau_ph_inspections.company_id', $this->company)
             ->where('sau_ph_inspections.type_id', 2)
             ->groupBy('sau_ph_inspection_sections.id', 'category');
+
+        if ($this->locationLevelForm == 'Regional' && COUNT($this->regionalsFilter) > 0)
+        {
+            $consultas2->whereIn('sau_ph_inspection_items_qualification_area_location.employee_regional_id', $this->regionalsFilter);
+        }
+        else if ($this->locationLevelForm == 'Sede' && COUNT($this->regionalsFilter) > 0)
+        {
+            $consultas2->whereIn('sau_ph_inspection_items_qualification_area_location.employee_regional_id', $this->regionalsFilter)->whereIn('sau_ph_inspection_items_qualification_area_location.employee_headquarter_id', $this->headquartersFilter);
+        }
+        else if ($this->locationLevelForm == 'Proceso' && COUNT($this->regionalsFilter) > 0)
+        {
+            $consultas2->whereIn('sau_ph_inspection_items_qualification_area_location.employee_regional_id', $this->regionalsFilter)->whereIn('sau_ph_inspection_items_qualification_area_location.employee_headquarter_id', $this->headquartersFilter)->whereIn('sau_ph_inspection_items_qualification_area_location.employee_process_id', $this->processesFilter);
+        }
+        else if ($this->locationLevelForm == 'Área' && COUNT($this->regionalsFilter) > 0)
+        {
+            $consultas2->whereIn('sau_ph_inspection_items_qualification_area_location.employee_regional_id', $this->regionalsFilter)->whereIn('sau_ph_inspection_items_qualification_area_location.employee_headquarter_id', $this->headquartersFilter)->whereIn('sau_ph_inspection_items_qualification_area_location.employee_process_id', $this->processesFilter)->whereIn('sau_ph_inspection_items_qualification_area_location.employee_area_id', $this->areasFilter);
+        }
 
         if (COUNT($this->regionals) > 0)
             $consultas2->inRegionals($this->regionals, $this->filtersType['regionals']);
