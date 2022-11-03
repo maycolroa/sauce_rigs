@@ -14,6 +14,7 @@ class AuthController extends ApiController
 {
     public function login(LoginRequest $request)
     {
+        \Log::info($request);
         $user = User::select(
             'sau_users.*'
         )

@@ -246,15 +246,15 @@ class InformManagerReport
         {
             $consultas->whereIn('sau_ph_reports.employee_regional_id', $this->regionalsFilter);
         }
-        else if ($this->locationLevelForm == 'Sede' && COUNT($this->regionalsFilter) > 0)
+        else if ($this->locationLevelForm == 'Sede' && COUNT($this->headquartersFilter) > 0)
         {
             $consultas->whereIn('sau_ph_reports.employee_regional_id', $this->regionalsFilter)->whereIn('sau_ph_reports.employee_headquarter_id', $this->headquartersFilter);
         }
-        else if ($this->locationLevelForm == 'Proceso' && COUNT($this->regionalsFilter) > 0)
+        else if ($this->locationLevelForm == 'Proceso' && COUNT($this->processesFilter) > 0)
         {
             $consultas->whereIn('sau_ph_reports.employee_regional_id', $this->regionalsFilter)->whereIn('sau_ph_reports.employee_headquarter_id', $this->headquartersFilter)->whereIn('sau_ph_reports.employee_process_id', $this->processesFilter);
         }
-        else if ($this->locationLevelForm == 'Área' && COUNT($this->regionalsFilter) > 0)
+        else if ($this->locationLevelForm == 'Área' && COUNT($this->areasFilter) > 0)
         {
             $consultas->whereIn('sau_ph_reports.employee_regional_id', $this->regionalsFilter)->whereIn('sau_ph_reports.employee_headquarter_id', $this->headquartersFilter)->whereIn('sau_ph_reports.employee_process_id', $this->processesFilter)->whereIn('sau_ph_reports.employee_area_id', $this->areasFilter);
         }

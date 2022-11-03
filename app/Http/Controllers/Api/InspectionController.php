@@ -273,7 +273,7 @@ class InspectionController extends ApiController
         do {
             $date = $date->addSecond(rand(1,999));
             $exist = InspectionItemsQualificationAreaLocation::
-                  where('qualification_date', $date->copy()->format('Y-m-d H:i:s'))
+                  where('qualification_date', $date->copy()->format('Y-m-d H:i:s'))->withoutGlobalScopes()
                 ->where('employee_regional_id', $regional)
                 ->exists();
 
@@ -353,7 +353,7 @@ class InspectionController extends ApiController
                     $fileName2 = null;
 
                     if (isset($value['id']) && $value['id'])
-                        $item = InspectionItemsQualificationAreaLocation::find($value['id']);
+                        $item = InspectionItemsQualificationAreaLocation::find($value['id'])->withoutGlobalScopes();
                     else { 
                         $item = new InspectionItemsQualificationAreaLocation();
                         $item->qualification_date = $qualification_date;
@@ -405,7 +405,8 @@ class InspectionController extends ApiController
 
                     if (isset($value["actionPlan"]))
                     {
-
+                        \Log::info('ap');
+                        \Log::info($request->company_id);
                         $regional_detail = EmployeeRegional::where('id', $employee_regional_id);
                         $regional_detail->company_scope = $request->company_id;
                         $regional_detail = $regional_detail->first();
@@ -704,7 +705,7 @@ class InspectionController extends ApiController
         }
         
         //$inspections = Inspection::where('qualifier_id', $this->user->id)->orderBy('execution_date','desc')->paginate(15);
-        $inspectionsReady = InspectionItemsQualificationAreaLocation::distinct()->select(
+        $inspectionsReady = InspectionItemsQualificationAreaLocation::distinct()->withoutGlobalScopes()->select(
           'ph_areas.name as area',
           'ph_locations.name as location',
           'ph_inspection_items_qualification_area_location.location_id as location_id',
@@ -734,7 +735,7 @@ class InspectionController extends ApiController
             
 
             $items = InspectionItemsQualificationAreaLocation::where('location_id', $inspectionReady->location_id)->where('area_id', $inspectionReady->area_id)
-                                                      ->where('qualification_date', $inspectionReady->qualification_date)->get();
+                                                      ->where('qualification_date', $inspectionReady->qualification_date)->withoutGlobalScopes()->get();
             
             $tmp_items = [];
             //dd($items[0]->actions()->toSql());
