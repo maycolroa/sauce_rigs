@@ -41,7 +41,7 @@ class InspectionQualifyExportJob implements ShouldQueue
     public function handle()
     {
       $nameExcel = 'export/1/inspecciones_calificadas_'.date("YmdHis").'.xlsx';
-      Excel::store(new InspectionCompletExcel($this->company_id, $this->filters, $this->id),$nameExcel,'public',\Maatwebsite\Excel\Excel::XLSX);
+      Excel::store(new InspectionCompletExcel($this->company_id, $this->filters, $this->id, $this->user),$nameExcel,'public',\Maatwebsite\Excel\Excel::XLSX);
       
       $paramUrl = base64_encode($nameExcel);
       

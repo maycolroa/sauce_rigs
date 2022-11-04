@@ -65,18 +65,14 @@ class LocationController extends ApiController
                 if ($id)
                 {
                     if ($locationLevelForm == 'Regional')
-                    {
-                        $regionalsFilter = User::find($id)->regionals()->pluck('id');
+                    {                        
+                        $regionalsFilter = DB::table('sau_ph_user_regionals')->where('user_id', $id)->pluck('employee_regional_id')->unique();
 
                     }
                     else if ($locationLevelForm == 'Sede')
                     {
                         $regionalsFilter = DB::table('sau_ph_user_regionals')->where('user_id', $id)->pluck('employee_regional_id')->unique();
-                        //$regionalsFilter = User::find($id)->regionals()->pluck('id');
-                        \Log::info(User::find($id)->regionals()->get());
-                        \Log::info($regionalsFilter);
                         $headquartersFilter = User::find($id)->headquartersFilter()->pluck('id');
-                        \Log::info($headquartersFilter);
                     }
                     else if ($locationLevelForm == 'Proceso')
                     {

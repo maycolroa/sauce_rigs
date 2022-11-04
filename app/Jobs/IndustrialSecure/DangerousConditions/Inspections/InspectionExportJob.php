@@ -39,7 +39,7 @@ class InspectionExportJob implements ShouldQueue
     public function handle()
     {
       $nameExcel = 'export/1/inspecciones_'.date("YmdHis").'.xlsx';
-      Excel::store(new InspectionExcel($this->company_id, $this->filters),$nameExcel,'public',\Maatwebsite\Excel\Excel::XLSX);
+      Excel::store(new InspectionExcel($this->company_id, $this->filters, $this->user),$nameExcel,'public',\Maatwebsite\Excel\Excel::XLSX);
       
       $paramUrl = base64_encode($nameExcel);
       

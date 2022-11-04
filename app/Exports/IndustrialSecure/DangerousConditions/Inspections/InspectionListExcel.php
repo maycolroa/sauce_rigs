@@ -15,6 +15,8 @@ use \Maatwebsite\Excel\Sheet;
 use DB;
 use App\Traits\UtilsTrait;
 use App\Traits\LocationFormTrait;
+use App\Models\Administrative\Users\User;
+use App\Facades\ConfigurationCompany\Facades\ConfigurationsCompany;
 
 Sheet::macro('styleCells', function (Sheet $sheet, string $cellRange, array $style) {
   $sheet->getDelegate()->getStyle($cellRange)->applyFromArray($style);
@@ -30,13 +32,17 @@ class InspectionListExcel implements FromQuery, WithMapping, WithHeadings, WithT
     protected $filters;
     protected $keywords;
 
-    public function __construct($company_id, $filters)
+    public function __construct($company_id, $filters, $user)
     {
       $this->company_id = $company_id;
       $this->filters = $filters;
       $this->keywords = $this->getKeywordQueue($this->company_id);
       $this->confLocation = $this->getLocationFormConfModule($this->company_id);
       $this->confLocationTableInspections = $this->getLocationFormConfTableInspections($this->company_id);
+
+      $this->configLevel = ConfigurationsCompany::company($this->company_id)->findByKey('filter_inspections');
+
+      $this->user = $user;
 
     }
 
@@ -203,14 +209,75 @@ class InspectionListExcel implements FromQuery, WithMapping, WithHeadings, WithT
       if ($this->confLocationTableInspections['regional'] == 'SI')
             $select2[] = "GROUP_CONCAT(regional) AS regional";
 
-        if ($this->confLocationTableInspections['headquarter'] == 'SI')
-            $select2[] = "GROUP_CONCAT(sede) AS sede";
+      if ($this->confLocationTableInspections['headquarter'] == 'SI')
+          $select2[] = "GROUP_CONCAT(sede) AS sede";
 
-        if ($this->confLocationTableInspections['process'] == 'SI')
-            $select2[] = "GROUP_CONCAT(proceso) AS proceso";
+      if ($this->confLocationTableInspections['process'] == 'SI')
+          $select2[] = "GROUP_CONCAT(proceso) AS proceso";
 
-        if ($this->confLocationTableInspections['area'] == 'SI')
-            $select2[] = "GROUP_CONCAT(area) AS area";
+      if ($this->confLocationTableInspections['area'] == 'SI')
+          $select2[] = "GROUP_CONCAT(area) AS area";
+
+
+      if ($this->configLevel == 'SI')
+      {
+          $locationLevelForm = ConfigurationsCompany::company($this->company_id)->findByKey('location_level_form_user_inspection_filter');
+
+          if ($locationLevelForm)
+          {
+              $id = $this->user->id;
+              if ($locationLevelForm == 'Regional')
+              {                  
+                $regionals = DB::table('sau_ph_user_regionals')->where('user_id', $id)->pluck('employee_regional_id')->unique();
+
+                  if (count($regionals) > 0)
+                      $inspections->join('sau_ph_inspection_regional', 'sau_ph_inspection_regional.inspection_id', 'sau_ph_inspections.id')
+                      ->whereIn('sau_ph_inspection_regional.employee_regional_id',$regionals);
+              }
+              else if ($locationLevelForm == 'Sede')
+              {
+                $regionals = DB::table('sau_ph_user_regionals')->where('user_id', $id)->pluck('employee_regional_id')->unique();
+                  $headquarters = User::find($this->user->id)->headquartersFilter()->pluck('id');
+
+                  if (count($regionals) > 0 && count($headquarters) > 0)
+                      $inspections->join('sau_ph_inspection_regional', 'sau_ph_inspection_regional.inspection_id', 'sau_ph_inspections.id')
+                      ->join('sau_ph_inspection_headquarter', 'sau_ph_inspection_headquarter.inspection_id', 'sau_ph_inspections.id')
+                      ->whereIn('sau_ph_inspection_headquarter.employee_headquarter_id',$headquarters)
+                      ->whereIn('sau_ph_inspection_regional.employee_regional_id', $regionals);
+              }
+              else if ($locationLevelForm == 'Proceso')
+              {
+                  $$regionals = DB::table('sau_ph_user_regionals')->where('user_id', $id)->pluck('employee_regional_id')->unique();
+                  $headquarters = User::find($this->user->id)->headquartersFilter()->pluck('id');
+                  $processes = User::find($this->user->id)->processes()->pluck('id');
+
+                  if (count($regionals) > 0 && count($headquarters) > 0 && count($processes) > 0)
+                      $inspections->join('sau_ph_inspection_regional', 'sau_ph_inspection_regional.inspection_id', 'sau_ph_inspections.id')
+                      ->join('sau_ph_inspection_headquarter', 'sau_ph_inspection_headquarter.inspection_id', 'sau_ph_inspections.id')
+                      ->join('sau_ph_inspection_process', 'sau_ph_inspection_process.inspection_id', 'sau_ph_inspections.id')
+                      ->whereIn('sau_ph_inspection_regional.employee_regional_id',$regionals)->whereIn('sau_ph_inspection_headquarter.employee_headquarter_id',$headquarters)
+                      ->whereIn('sau_ph_inspection_process.employee_process_id',$processes);
+              }
+              else if ($locationLevelForm == 'Área')
+              {                        
+                $regionals = DB::table('sau_ph_user_regionals')->where('user_id', $id)->pluck('employee_regional_id')->unique();
+                  $headquarters = User::find($this->user->id)->headquartersFilter()->pluck('id');
+                  $processes = User::find($this->user->id)->processes()->pluck('id');
+                  $areas = User::find($this->user->id)->areas()->pluck('id');
+
+                  if (count($regionals) > 0 && count($headquarters) > 0 && count($processes) > 0 && count($areas) > 0)
+                  {
+                      $inspections->join('sau_ph_inspection_regional', 'sau_ph_inspection_regional.inspection_id', 'sau_ph_inspections.id')
+                      ->join('sau_ph_inspection_headquarter', 'sau_ph_inspection_headquarter.inspection_id', 'sau_ph_inspections.id')
+                      ->join('sau_ph_inspection_process', 'sau_ph_inspection_process.inspection_id', 'sau_ph_inspections.id')
+                      ->join('sau_ph_inspection_area', 'sau_ph_inspection_area.inspection_id', 'sau_ph_inspections.id')
+                      ->whereIn('sau_ph_inspection_regional.employee_regional_id',$regionals)->whereIn('sau_ph_inspection_headquarter.employee_headquarter_id',$headquarters)
+                      ->whereIn('sau_ph_inspection_process.employee_process_id',$processes)
+                      ->whereIn('sau_ph_inspection_area.employee_area_id',$areas);
+                  }
+              }
+          }
+      }
       
       $result = DB::table(DB::raw("({$inspections->toSql()}) AS t"))
       ->selectRaw(implode(",", $select2))

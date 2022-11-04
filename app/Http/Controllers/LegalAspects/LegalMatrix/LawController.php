@@ -710,7 +710,7 @@ class LawController extends Controller
                 if ($request->hide == 'NO')
                 {
                     $law_hide = LawHide::where('company_id', $this->company)
-                    ->where('law_id', $law->id)
+                    ->where('law_id', $qualification->article->law->id)
                     ->first();
 
                     if ($law_hide)

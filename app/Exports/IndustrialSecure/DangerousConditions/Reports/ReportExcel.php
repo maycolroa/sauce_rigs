@@ -15,10 +15,11 @@ class ReportExcel implements WithMultipleSheets
     protected $company_id;
     protected $filters;
     
-    public function __construct($company_id, $filters)
+    public function __construct($company_id, $filters, $user)
     {
         $this->company_id = $company_id;
         $this->filters = $filters;
+        $this->user = $user;
     }
 
     /**
@@ -28,7 +29,7 @@ class ReportExcel implements WithMultipleSheets
     {
         $sheets = [];
 
-        $sheets[] = new ReportListExcel($this->company_id, $this->filters);
+        $sheets[] = new ReportListExcel($this->company_id, $this->filters, $this->user);
         //$sheets[] = new ActivitiesExcel($this->company_id, $this->filters);
 
         return $sheets;

@@ -17,10 +17,11 @@ class InspectionExcel implements WithMultipleSheets
     protected $company_id;
     protected $filters;
     
-    public function __construct($company_id, $filters)
+    public function __construct($company_id, $filters, $user)
     {
         $this->company_id = $company_id;
         $this->filters = $filters;
+        $this->user = $user;
     }
 
     /**
@@ -30,7 +31,7 @@ class InspectionExcel implements WithMultipleSheets
     {
         $sheets = [];
 
-        $sheets[] = new InspectionListExcel($this->company_id, $this->filters);
+        $sheets[] = new InspectionListExcel($this->company_id, $this->filters, $this->user);
         /*$sheets[] = new InspectionCompletExcel($this->company_id, $this->filters);
         $sheets[] = new QualificationsExcel($this->company_id, $this->filters);
         $sheets[] = new ActivitiesExcel($this->company_id, $this->filters);*/

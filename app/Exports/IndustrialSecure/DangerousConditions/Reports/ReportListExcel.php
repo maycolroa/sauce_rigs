@@ -16,6 +16,8 @@ use \Maatwebsite\Excel\Sheet;
 use DB;
 use App\Traits\UtilsTrait;
 use App\Traits\LocationFormTrait;
+use App\Models\Administrative\Users\User;
+use App\Facades\ConfigurationCompany\Facades\ConfigurationsCompany;
 
 Sheet::macro('styleCells', function (Sheet $sheet, string $cellRange, array $style) {
   $sheet->getDelegate()->getStyle($cellRange)->applyFromArray($style);
@@ -32,13 +34,15 @@ class ReportListExcel implements FromQuery, WithMapping, WithHeadings, WithTitle
     protected $module_id;
     protected $keywords;
 
-    public function __construct($company_id, $filters)
+    public function __construct($company_id, $filters, $user)
     {
       $this->company_id = $company_id;
       $this->filters = $filters;
+      $this->user = $user;
       $this->module_id = Module::where('name', 'dangerousConditions')->first()->id;
       $this->keywords = $this->getKeywordQueue($this->company_id);
       $this->confLocation = $this->getLocationFormConfModule($this->company_id);
+      $this->configLevel = ConfigurationsCompany::company($this->company_id)->findByKey('filter_inspections');
     }
 
     public function query()
@@ -86,6 +90,56 @@ class ReportListExcel implements FromQuery, WithMapping, WithHeadings, WithTitle
         }
 
       $report->company_scope = $this->company_id;
+      
+      if ($this->configLevel == 'SI')
+      {
+          $locationLevelForm = ConfigurationsCompany::company($this->company_id)->findByKey('location_level_form_user_inspection_filter');
+
+          if ($locationLevelForm)
+          {
+              $id = $this->user->id;
+              if ($locationLevelForm == 'Regional')
+              {                  
+                $regionals = DB::table('sau_ph_user_regionals')->where('user_id', $id)->pluck('employee_regional_id')->unique();
+
+                  if (count($regionals) > 0)
+                      $report->whereIn('sau_ph_reports.employee_regional_id',$regionals);
+              }
+              else if ($locationLevelForm == 'Sede')
+              {
+                $regionals = DB::table('sau_ph_user_regionals')->where('user_id', $id)->pluck('employee_regional_id')->unique();
+                  $headquarters = User::find($this->user->id)->headquartersFilter()->pluck('id');
+
+                  if (count($regionals) > 0 && count($headquarters) > 0)
+                      $report->whereIn('sau_ph_reports.employee_headquarter_id',$headquarters)
+                      ->whereIn('sau_ph_reports.employee_regional_id', $regionals);
+              }
+              else if ($locationLevelForm == 'Proceso')
+              {
+                  $$regionals = DB::table('sau_ph_user_regionals')->where('user_id', $id)->pluck('employee_regional_id')->unique();
+                  $headquarters = User::find($this->user->id)->headquartersFilter()->pluck('id');
+                  $processes = User::find($this->user->id)->processes()->pluck('id');
+
+                  if (count($regionals) > 0 && count($headquarters) > 0 && count($processes) > 0)
+                      $report->whereIn('sau_ph_reports.employee_regional_id',$regionals)->whereIn('sau_ph_reports.employee_headquarter_id',$headquarters)
+                      ->whereIn('sau_ph_reports.employee_process_id',$processes);
+              }
+              else if ($locationLevelForm == 'Área')
+              {                        
+                $regionals = DB::table('sau_ph_user_regionals')->where('user_id', $id)->pluck('employee_regional_id')->unique();
+                  $headquarters = User::find($this->user->id)->headquartersFilter()->pluck('id');
+                  $processes = User::find($this->user->id)->processes()->pluck('id');
+                  $areas = User::find($this->user->id)->areas()->pluck('id');
+
+                  if (count($regionals) > 0 && count($headquarters) > 0 && count($processes) > 0 && count($areas) > 0)
+                  {
+                      $report->whereIn('sau_ph_reports.employee_regional_id',$regionals)->whereIn('sau_ph_reports.employee_headquarter_id',$headquarters)
+                      ->whereIn('sau_ph_reports.employee_process_id',$processes)
+                      ->whereIn('sau_ph_reports.employee_area_id',$areas);
+                  }
+              }
+          }
+      }
 
       return $report;
     }
