@@ -13,6 +13,10 @@ use App\Models\Administrative\Users\LogUserModify;
 use App\Models\Administrative\Roles\Role;
 use App\Models\General\Module;
 use App\Models\General\Team;
+use App\Models\Administrative\Regionals\EmployeeRegional;
+use App\Models\Administrative\Headquarters\EmployeeHeadquarter;
+use App\Models\Administrative\Processes\EmployeeProcess;
+use App\Models\Administrative\Areas\EmployeeArea;
 use App\Traits\UserTrait;
 use App\Traits\ContractTrait;
 use App\Traits\PermissionTrait;
@@ -335,8 +339,6 @@ class UserController extends Controller
      */
     public function update(UserRequest $request, User $user)
     {
-
-        \Log::info($request);
         DB::beginTransaction();
 
         try
@@ -711,6 +713,11 @@ class UserController extends Controller
         $processes = [];
         $areas = [];
 
+        $regional_alls = '';
+        $headquarter_alls = '';
+        $process_alls = '';
+        $areas_alls = '';
+
         if ($request->has('employee_regional_id'))
         {
             if (count($request->employee_regional_id) > 1)
@@ -787,7 +794,34 @@ class UserController extends Controller
                 $areas_alls =  json_decode($request->employee_area_id[0])->value;
         }
 
-        if ($request->has('employee_regional_id'))
+        if ($request->has('employee_regional_id') && $regional_alls == 'Todos')
+            $regionals = $this->getRegionals();
+
+        else if ($request->has('employee_regional_id'))
+            $regionals = $this->getDataFromMultiselect($request->get('employee_regional_id'));
+
+
+        if ($request->has('employee_headquarter_id') && $headquarter_alls == 'Todos')
+            $headquarters = $this->getHeadquarter($regionals);
+
+        else if ($request->has('employee_headquarter_id'))
+            $headquarters = $this->getDataFromMultiselect($request->get('employee_headquarter_id'));
+
+
+        if ($request->has('employee_process_id') && $process_alls == 'Todos')
+            $processes = $this->getProcess($headquarters);
+
+        else if ($request->has('employee_process_id'))
+            $processes = $this->getDataFromMultiselect($request->get('employee_process_id'));
+
+
+        if ($request->has('employee_area_id') && $areas_alls == 'Todos')
+            $areas = $this->getAreas($headquarters, $processes);
+
+        else if ($request->has('employee_area_id'))
+            $areas = $this->getDataFromMultiselect($request->get('employee_area_id'));
+
+        /*if ($request->has('employee_regional_id'))
             $regionals = $this->builderArrayFilter($this->getDataFromMultiselect($request->get('employee_regional_id')));
 
 
@@ -803,12 +837,61 @@ class UserController extends Controller
 
 
         if ($request->has('employee_area_id'))
-            $areas = $this->builderArrayFilter($this->getDataFromMultiselect($request->get('employee_area_id')));
+            $areas = $this->builderArrayFilter($this->getDataFromMultiselect($request->get('employee_area_id')));*/
 
-        $user->headquartersFilter()->sync($headquarters);
-        $user->regionals()->sync($regionals);
-        $user->processes()->sync($processes);
-        $user->areas()->sync($areas);
+        $user->headquartersFilter()->sync($this->builderArrayFilter($headquarters));
+        $user->regionals()->sync($this->builderArrayFilter($regionals));
+        $user->processes()->sync($this->builderArrayFilter($processes));
+        $user->areas()->sync($this->builderArrayFilter($areas));
+    }
+
+    private function getRegionals()
+    {
+        $regionals = EmployeeRegional::selectRaw(
+            "sau_employees_regionals.id as id")
+        ->pluck('id')
+        ->toArray();
+
+        return $regionals;
+    }
+
+    private function getHeadquarter($regionals)
+    {
+        $headquarters = EmployeeHeadquarter::selectRaw(
+            "sau_employees_headquarters.id as id")
+        ->join('sau_employees_regionals', 'sau_employees_regionals.id', 'sau_employees_headquarters.employee_regional_id')
+        ->whereIn('employee_regional_id', $regionals)
+        ->pluck('id')
+        ->toArray();
+
+        return $headquarters;
+    }
+
+    private function getProcess($headquarters)
+    {
+        $processes = EmployeeProcess::selectRaw(
+            "sau_employees_processes.id as id")
+        ->join('sau_headquarter_process', 'sau_headquarter_process.employee_process_id', 'sau_employees_processes.id')
+        ->join('sau_employees_headquarters', 'sau_employees_headquarters.id', 'sau_headquarter_process.employee_headquarter_id')
+        ->whereIn('sau_headquarter_process.employee_headquarter_id', $headquarters)
+        ->pluck('id')
+        ->toArray();
+
+        return $processes;
+    }
+
+    private function getAreas($headquarters, $process)
+    {
+        $areas = EmployeeArea::selectRaw(
+            "sau_employees_areas.id as id")
+        ->join('sau_process_area', 'sau_process_area.employee_area_id', 'sau_employees_areas.id')
+        ->join('sau_employees_processes', 'sau_employees_processes.id', 'sau_process_area.employee_process_id')
+        ->whereIn('employee_headquarter_id', $headquarters)
+        ->whereIn('employee_process_id', $process)
+        ->pluck('id')
+        ->toArray();
+    
+        return $areas;
     }
 
     public function multiselectUsers()
