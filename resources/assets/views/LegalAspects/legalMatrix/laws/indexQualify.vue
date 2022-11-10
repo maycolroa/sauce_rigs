@@ -13,6 +13,7 @@
                 v-if="auth.can['laws_qualify'] || auth.can['laws_qualify_view']"
                 configName="legalaspects-lm-laws-qualify"
                 :params="{ qualify : true }"
+                :customColumnsName="true"
                 @rowClick="redirectQualify"
                 ></vue-table>
         </b-card-body>

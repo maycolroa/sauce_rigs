@@ -62,6 +62,7 @@ class LawController extends Controller
     */
     public function data(Request $request)
     {
+        \Log::info($request);
         if ($request->has('qualify'))
         {
             $laws_hides = LawHide::select('law_id')->get()->toArray();
@@ -81,6 +82,7 @@ class LawController extends Controller
                  sau_lm_risks_aspects.name AS risk_aspect,
                  sau_lm_entities.name AS entity,
                  sau_lm_sst_risks.name AS sst_risk,
+                 IF(sau_lm_laws_hide_companies.id IS NOT NULL, "SI", "NO") hide,
                  SUM(IF(sau_lm_articles_fulfillment.fulfillment_value_id IS NOT NULL, 1, 0)) qualify,
                  SUM(IF(sau_lm_articles_fulfillment.fulfillment_value_id IS NULL, 1, 0)) no_qualify'
             )
@@ -93,12 +95,13 @@ class LawController extends Controller
             ->join('sau_lm_article_interest', 'sau_lm_article_interest.article_id', 'sau_lm_articles.id')
             ->join('sau_lm_company_interest','sau_lm_company_interest.interest_id', 'sau_lm_article_interest.interest_id')
             ->join('sau_lm_articles_fulfillment','sau_lm_articles_fulfillment.article_id', 'sau_lm_articles.id')
+            ->leftJoin('sau_lm_laws_hide_companies', 'sau_lm_laws_hide_companies.law_id', 'sau_lm_laws.id')
             ->where('sau_lm_articles_fulfillment.company_id', $this->company);
 
             if (!$this->user->hasRole('Superadmin', $this->company) && COUNT($hides) > 0)
                 $laws->whereNotIn('sau_lm_laws.id', $hides);
 
-            $laws->groupBy('sau_lm_laws.id');
+            $laws->groupBy('sau_lm_laws.id', 'sau_lm_laws_hide_companies.id');
 
             $url = "/legalaspects/lm/lawsQualify";
         }

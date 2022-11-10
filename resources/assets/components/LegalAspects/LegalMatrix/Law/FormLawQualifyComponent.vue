@@ -103,6 +103,32 @@
               <br>
               <div class="row float-right pt-12 pr-12y">
                 <b-btn variant="default" @click="$refs.modalQualificationAll.hide()" :disabled="loading">Cerrar</b-btn>&nbsp;&nbsp;
+                <b-btn variant="primary" @click="saveAllArticlesConfirm()" :disabled="loading">Guardar</b-btn>
+              </div>
+            </b-modal>
+
+            <b-modal ref="modalConfirmationHideLaw" :hideFooter="true" id="modals-qualification-all" class="modal-top" size="lg">
+              <b-card  bg-variant="transparent"  title="" class="mb-3 box-shadow-none">
+                <b-form-row>
+                    <center><p style="text-align: center;">¿Esta seguro de ocultar todos los articulos de la norma? Esto la ocultara al completo</p></center>
+                  </b-form-row>
+              </b-card>
+              <br>
+              <div class="row float-right pt-12 pr-12y">
+                <b-btn variant="default" @click="$refs.modalConfirmationHideLaw.hide()" :disabled="loading">Cerrar</b-btn>&nbsp;&nbsp;
+                <b-btn variant="primary" @click="saveAllArticles()" :disabled="loading">Guardar</b-btn>
+              </div>
+            </b-modal>
+
+            <b-modal ref="modalConfirmationShowLaw" :hideFooter="true" id="modals-qualification-all" class="modal-top" size="lg">
+              <b-card  bg-variant="transparent"  title="" class="mb-3 box-shadow-none">
+                <b-form-row>
+                    <center><p style="text-align: center;">¿Esta seguro de mostrar todos los articulos de la norma? Esto la mostrara en el listado para evaluar</p></center>
+                  </b-form-row>
+              </b-card>
+              <br>
+              <div class="row float-right pt-12 pr-12y">
+                <b-btn variant="default" @click="$refs.modalConfirmationShowLaw.hide()" :disabled="loading">Cerrar</b-btn>&nbsp;&nbsp;
                 <b-btn variant="primary" @click="saveAllArticles()" :disabled="loading">Guardar</b-btn>
               </div>
             </b-modal>
@@ -533,6 +559,21 @@ export default {
     },
     updateQualifyAll(value) {
       this.qualifyName = value;
+    },
+    saveAllArticlesConfirm()
+    {
+      if (this.hide == 'SI')
+      {
+        this.$refs.modalConfirmationHideLaw.show()
+      }
+      else if (this.hide == 'NO')
+      {
+        this.$refs.modalConfirmationShowLaw.show()
+      }
+      else
+      {
+        this.saveAllArticles()
+      }
     },
     saveAllArticles()
     {
