@@ -460,7 +460,7 @@ class ActionPlanController extends Controller
         return Vuetable::of($reports)
             ->addColumn('p_num_eje', function ($report) {
                 if (($report->numero_planes_ejecutados + $report->numero_planes_no_ejecutados) > 0)
-                    $report->p_num_eje = round(($report->numero_planes_ejecutados / ($report->numero_planes_ejecutados + $report->numero_planes_no_ejecutados)) * 100, 3)."%";
+                    $report->p_num_eje = round(($report->numero_planes_ejecutados / ($report->numero_planes_ejecutados + $report->numero_planes_no_ejecutados)) * 100, 1)."%";
                 else
                     $report->p_num_eje = '0%';
 
@@ -468,7 +468,7 @@ class ActionPlanController extends Controller
             })
             ->addColumn('p_num_no_eje', function ($report) {
                 if (($report->numero_planes_ejecutados + $report->numero_planes_no_ejecutados) > 0)
-                    $report->p_num_no_eje = round(($report->numero_planes_no_ejecutados / ($report->numero_planes_ejecutados + $report->numero_planes_no_ejecutados)) * 100, 3)."%";
+                    $report->p_num_no_eje = round(($report->numero_planes_no_ejecutados / ($report->numero_planes_ejecutados + $report->numero_planes_no_ejecutados)) * 100, 1)."%";
                 else
                     $report->p_num_no_eje = '0%';
 
