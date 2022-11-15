@@ -21,7 +21,13 @@ class InspectionsFilterScope implements Scope
      */
     public function apply(Builder $builder, Model $model)
     {
-      $configLevel = ConfigurationsCompany::company(Session::get('company_id'))->findByKey('filter_inspections');
+      try
+      {
+        $configLevel = ConfigurationsCompany::company(Session::get('company_id'))->findByKey('filter_inspections');
+          
+      } catch (\Exception $e) {
+        $configLevel = 'NO';
+      }
 
       if ($configLevel == 'SI')
       {

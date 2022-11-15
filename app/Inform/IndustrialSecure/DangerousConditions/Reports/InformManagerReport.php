@@ -80,7 +80,13 @@ class InformManagerReport
         $this->areasFilter = [];
         $this->locationLevelForm = '';
 
-        $this->configLevel = ConfigurationsCompany::company($this->company)->findByKey('filter_inspections');
+        try
+        {
+            $this->configLevel = ConfigurationsCompany::company($this->company)->findByKey('filter_inspections');
+            
+        } catch (\Exception $e) {
+            $this->configLevel = 'NO';
+        }
 
         if ($this->configLevel == 'SI')
         {

@@ -170,8 +170,13 @@ class InspectionController extends Controller
         }
 
         $inspections->selectRaw(implode(",", $select));
-
-        $configLevel = ConfigurationsCompany::company($this->company)->findByKey('filter_inspections');
+        
+        try
+        {
+            $configLevel = ConfigurationsCompany::company($this->company)->findByKey('filter_inspections');
+        } catch (\Exception $e) {
+            $configLevel = 'NO';
+        }
 
 
         if ($configLevel == 'SI')

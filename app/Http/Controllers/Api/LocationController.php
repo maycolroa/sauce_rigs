@@ -52,7 +52,14 @@ class LocationController extends ApiController
         $locationLevelForm = '';
         $configLevel = '';
 
-        $configLevel = ConfigurationsCompany::company($request->company_id)->findByKey('filter_inspections');
+        
+        try
+        {
+            $configLevel = ConfigurationsCompany::company($request->company_id)->findByKey('filter_inspections');
+            
+        } catch (\Exception $e) {
+            $configLevel = 'NO';
+        }
 
         if ($configLevel == 'SI')
         {
