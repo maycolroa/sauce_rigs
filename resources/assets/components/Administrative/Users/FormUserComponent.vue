@@ -137,21 +137,21 @@ export default {
     }
   },
   created()
-    {
-        axios.post('/administration/configurations/locationLevelForms/getConfUser')
-        .then(data => {
-            console.log(data.data)
-            if (Object.keys(data.data).length > 0)
-                setTimeout(() => {
-                    this.locationFormUser = data.data
-                }, 3000)
-            this.isLoading = false;
-        })
-        .catch(error => {
-            this.isLoading = false;
-            Alerts.error('Error', 'Hubo un problema recolectando la información');
-        });
-    },
+  {
+      axios.post('/administration/configurations/locationLevelForms/getConfUser')
+      .then(data => {
+          console.log(data.data)
+          if (Object.keys(data.data).length > 0)
+              setTimeout(() => {
+                  this.locationFormUser = data.data
+              }, 3000)
+          this.isLoading = false;
+      })
+      .catch(error => {
+          this.isLoading = false;
+          Alerts.error('Error', 'Hubo un problema recolectando la información');
+      });
+  },
   data() {
     return {
       loading: false,//this.isEdit,

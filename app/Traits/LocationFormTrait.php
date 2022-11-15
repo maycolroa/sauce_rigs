@@ -113,10 +113,10 @@ trait LocationFormTrait
                     }
                     else //if ($locationLevelForm == 'Área')
                     {
-                        $data["regional"] = "NO";
-                        $data["headquarter"] = "NO";
-                        $data["process"] = "NO";
-                        $data["area"] = "NO";
+                        $data["regional"] = "SI";
+                        $data["headquarter"] = "SI";
+                        $data["process"] = "SI";
+                        $data["area"] = "SI";
                     }
                 }
                 else 
