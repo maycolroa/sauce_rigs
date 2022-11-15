@@ -68,7 +68,15 @@ trait LocationFormTrait
             $data = [];
 
             if ($company_id)
-                $configLevel = ConfigurationsCompany::company($company_id)->findByKey('filter_inspections');
+            {
+                try
+                {                    
+                    $configLevel = ConfigurationsCompany::company($company_id)->findByKey('filter_inspections');
+                    
+                } catch (\Exception $e) {
+                    $configLevel = 'NO';
+                }
+            }
             else
                 $configLevel = 'NO';
             
@@ -105,15 +113,26 @@ trait LocationFormTrait
                     }
                     else //if ($locationLevelForm == 'Área')
                     {
-                        $data = $this->getDefaultValues();
+                        $data["regional"] = "NO";
+                        $data["headquarter"] = "NO";
+                        $data["process"] = "NO";
+                        $data["area"] = "NO";
                     }
                 }
                 else 
-                    $data = $this->getDefaultValues();
+                {
+                    $data["regional"] = "NO";
+                    $data["headquarter"] = "NO";
+                    $data["process"] = "NO";
+                    $data["area"] = "NO";
+                }
             }
 
         } catch (Exception $e) {
-            $data = [];
+            $data["regional"] = "NO";
+            $data["headquarter"] = "NO";
+            $data["process"] = "NO";
+            $data["area"] = "NO";
         }
     
         return $data;
