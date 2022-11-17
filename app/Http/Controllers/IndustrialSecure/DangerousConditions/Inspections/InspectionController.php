@@ -178,7 +178,6 @@ class InspectionController extends Controller
             $configLevel = 'NO';
         }
 
-
         if ($configLevel == 'SI')
         {
             $locationLevelForm = ConfigurationsCompany::company($this->company)->findByKey('location_level_form_user_inspection_filter');
@@ -1014,6 +1013,99 @@ class InspectionController extends Controller
 
         return $this->respondHttp200([
             'data' => $qualifications,
+        ]);
+    }
+
+    public function getFiltersUsers()
+    {
+        $value = '';
+        $message = '';
+        $isSuper = $this->user->hasRole('Superadmin', $this->team);
+
+        if (!$isSuper)
+        {
+            try
+            {
+                $configLevel = ConfigurationsCompany::company($this->company)->findByKey('filter_inspections');
+            } catch (\Exception $e) {
+                $configLevel = 'NO';
+            }
+
+            if ($configLevel == 'SI')
+            {
+                $locationLevelForm = ConfigurationsCompany::company($this->company)->findByKey('location_level_form_user_inspection_filter');
+
+                if ($locationLevelForm == 'Regional')
+                {
+                    $regionals = User::find($this->user->id)->regionals()->pluck('id');
+
+                    if (count($regionals) > 0)
+                    {
+                        $value = false;
+                    }
+                    else
+                    {
+                        $value = true;
+                        $message = 'Debe configurar el nivel de localización al usuario';
+                    }
+                        
+                }
+                else if ($locationLevelForm == 'Sede')
+                {
+                    $regionals = User::find($this->user->id)->regionals()->pluck('id');
+                    $headquarters = User::find($this->user->id)->headquartersFilter()->pluck('id');
+
+                    if (count($regionals) > 0 && count($headquarters) > 0)
+                    {
+                        $value = false;
+                    }
+                    else
+                    {
+                        $value = true;
+                        $message = 'Debe configurar los niveles de localización al usuario';
+                    }
+                }
+                else if ($locationLevelForm == 'Proceso')
+                {
+                    $regionals = User::find($this->user->id)->regionals()->pluck('id');
+                    $headquarters = User::find($this->user->id)->headquartersFilter()->pluck('id');
+                    $processes = User::find($this->user->id)->processes()->pluck('id');
+
+                    if (count($regionals) > 0 && count($headquarters) > 0 && count($processes) > 0)
+                    {
+                        $value = false;
+                    }
+                    else
+                    {
+                        $value = true;
+                        $message = 'Debe configurar los niveles de localización al usuario';
+                    }
+                }
+                else if ($locationLevelForm == 'Área')
+                {                        
+                    $regionals = User::find($this->user->id)->regionals()->pluck('id');
+                    $headquarters = User::find($this->user->id)->headquartersFilter()->pluck('id');
+                    $processes = User::find($this->user->id)->processes()->pluck('id');
+                    $areas = User::find($this->user->id)->areas()->pluck('id');
+
+                    if (count($regionals) > 0 && count($headquarters) > 0 && count($processes) > 0 && count($areas) > 0)
+                    {
+                        $value = false;
+                    }
+                    else
+                    {
+                        $value = true;
+                        $message = 'Debe configurar los niveles de localización al usuario';
+                    }
+                }
+            }
+        }
+
+        return $this->respondHttp200([
+            'data' => [
+                'value' => $value,
+                'message' => $message
+            ]
         ]);
     }
 }

@@ -22,12 +22,17 @@
           </div>
         </b-card-header>
         <b-card-body>
+          <template v-if="showMessage">
+            <p><b>{{message}}</b></p>
+          </template>
+          <template v-else>
              <vue-table
                 configName="dangerousconditions-inspections"
                 :customColumnsName="true" 
                 v-if="auth.can['ph_inspections_r']"
                 @filtersUpdate="setFilters"
                 ></vue-table>
+          </template>
         </b-card-body>
     </b-card>
     </div>
@@ -44,8 +49,14 @@ export default {
   },
   data () {
     return {
-      filters: []
+      filters: [],
+      showMessage: false,
+      message: ''
     }
+  },
+  created() {
+    console.log(123)
+    this.getMessage()
   },
   methods: {
     setFilters(value)
@@ -56,6 +67,17 @@ export default {
       axios.post('/industrialSecurity/dangerousConditions/inspection/export', this.filters)
       .then(response => {
         Alerts.warning('Información', 'Se inicio la exportación, se le notificara a su correo electronico cuando finalice el proceso.');
+      }).catch(error => {
+        Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
+      });
+    },
+    getMessage()
+    {
+      axios.post('/industrialSecurity/dangerousConditions/inspection/getFiltersUsers')
+      .then(response => {
+        console.log(response)
+        this.showMessage = response.data.data.value
+        this.message = response.data.data.message
       }).catch(error => {
         Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
       });
