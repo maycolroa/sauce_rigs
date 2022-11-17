@@ -156,10 +156,6 @@ class Kernel extends ConsoleKernel
         $schedule->command('delete-files-import-s3')
             ->timezone('America/Bogota')
             ->dailyAt('3:30');
-
-        $schedule->command('notify-rejected-documents-contracts')
-            ->timezone('America/Bogota')
-            ->dailyAt('3:30');
     }
 
     /**
