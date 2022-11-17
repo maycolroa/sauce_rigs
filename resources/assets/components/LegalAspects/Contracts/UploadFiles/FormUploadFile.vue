@@ -20,9 +20,14 @@
                     </b-form-row>
 
                     <b-form-row v-if="!auth.hasRole['Arrendatario'] && !auth.hasRole['Contratista']">
-						<vue-advanced-select class="col-md-6" v-model="form.state"  name="state" label="Estado del documento" placeholder="Seleccione el estado" :options="states" :error="form.errorsFor('state')" :multiple="false" :allow-empty="false">
+						<vue-advanced-select class="col-md-6" v-model="form.state"  name="state" label="Estado del documento" placeholder="Seleccione el estado" :options="states" :error="form.errorsFor('state')" :multiple="false" :allow-empty="false" :disabled="viewOnly">
 						</vue-advanced-select>
-						<vue-textarea v-if="form.state == 'RECHAZADO'" class="col-md-6" v-model="form.reason_rejection" label="Motivo del rechazo" name="reason_rejection" :error="form.errorsFor('reason_rejection')" placeholder="Motivo del rechazo"></vue-textarea>
+						<vue-textarea v-if="form.state == 'RECHAZADO'" class="col-md-6" v-model="form.reason_rejection" label="Motivo del rechazo" name="reason_rejection" :error="form.errorsFor('reason_rejection')" placeholder="Motivo del rechazo" :disabled="viewOnly"></vue-textarea>
+					</b-form-row>
+					<b-form-row v-else>
+						<vue-advanced-select class="col-md-6" v-model="form.state"  name="state" label="Estado del documento" placeholder="Seleccione el estado" :options="states" :error="form.errorsFor('state')" :multiple="false" :allow-empty="false" :disabled="true">
+						</vue-advanced-select>
+						<vue-textarea v-if="form.state == 'RECHAZADO'" class="col-md-6" v-model="form.reason_rejection" label="Motivo del rechazo" name="reason_rejection" :error="form.errorsFor('reason_rejection')" placeholder="Motivo del rechazo" :disabled="true"></vue-textarea>
 					</b-form-row>
 
             	</b-card>

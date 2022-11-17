@@ -357,7 +357,22 @@ class ReportController extends Controller
 
         try
         { 
+            $keywords = $this->user->getKeywords();
+            $confLocation = $this->getLocationFormConfModule();
+            $description_delete = '';
+
+            if ($confLocation['regional'] == 'SI')
+                $description_delete = 'Hallazgo: '. $report->condition->description . ' - ' . $keywords['regional']. ': ' .  $report->regional->name;
+            if ($confLocation['headquarter'] == 'SI')
+                $description_delete = $description_delete . ' - ' .$keywords['headquarter']. ': ' .  $report->headquarter->name;
+            if ($confLocation['process'] == 'SI')
+                $description_delete = $description_delete . ' - ' .$keywords['process']. ': ' .  $report->process->name;
+            if ($confLocation['area'] == 'SI')
+                $description_delete = $description_delete . ' - ' .$keywords['area']. ': ' .  $report->area->name;
+
             ActionPlan::model($report)->modelDeleteAll();
+
+            $this->saveLogDelete('Inspecciones - Inspecciones no planeadas', 'Se elimino la inspección realizada '.$description_delete);
 
             if (!$report->delete())
                 return $this->respondHttp500();
@@ -365,6 +380,7 @@ class ReportController extends Controller
             DB::commit();
 
         } catch (\Exception $e) {
+            \Log::info($e->getMessage());
             DB::rollback();
             return $this->respondHttp500();
         }

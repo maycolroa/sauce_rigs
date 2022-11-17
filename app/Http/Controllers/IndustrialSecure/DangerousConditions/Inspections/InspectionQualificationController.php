@@ -560,13 +560,29 @@ class InspectionQualificationController extends Controller
 
     public function destroy($qualification)
     {
-        //DB::beginTransaction();
+        DB::beginTransaction();
 
         $qualification = InspectionItemsQualificationAreaLocation::findOrFail($qualification);
 
         $items = InspectionItemsQualificationAreaLocation::where('qualification_date', $qualification->qualification_date)->get();
 
         $firms = InspectionFirm::where('qualification_date', $qualification->qualification_date)->get();
+
+        $keywords = $this->user->getKeywords();
+        $confLocation = $this->getLocationFormConfModule();
+        $inspection = $qualification->item->section->inspection;
+        $description_delete = '';
+
+        if ($confLocation['regional'] == 'SI')
+            $description_delete = $keywords['regional']. ': ' .  $qualification->regional->name;
+        if ($confLocation['headquarter'] == 'SI')
+            $description_delete = $description_delete . ' - ' .$keywords['headquarter']. ': ' .  $qualification->headquarter->name;
+        if ($confLocation['process'] == 'SI')
+            $description_delete = $description_delete . ' - ' .$keywords['process']. ': ' .  $qualification->process->name;
+        if ($confLocation['area'] == 'SI')
+            $description_delete = $description_delete . ' - ' .$keywords['area']. ': ' .  $qualification->area->name;
+
+        $this->saveLogDelete('Inspecciones - Inspecciones planeadas', 'Se elimino la inspección '. $inspection->name .' realizada en '.$description_delete);
 
         try
         { 
@@ -594,6 +610,7 @@ class InspectionQualificationController extends Controller
             DB::commit();
 
         } catch (\Exception $e) {
+            \Log::info($e->getMessage());
             DB::rollback();
             return $this->respondHttp500();
             //return $e->getMessage();
