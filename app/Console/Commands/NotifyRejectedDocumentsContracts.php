@@ -69,7 +69,7 @@ class NotifyRejectedDocumentsContracts extends Command
             {
                 $uploadDocuments = FileModuleState::select(
                     'sau_ct_file_upload_contracts_leesse.id AS id',
-                    'sau_ct_file_module_state.state AS state',
+                    'sau_ct_file_upload_contracts_leesse.state AS state',
                     'sau_ct_file_upload_contracts_leesse.name AS name',
                     'sau_ct_file_module_state.module AS module',
                     'sau_users.email AS email',
@@ -79,7 +79,7 @@ class NotifyRejectedDocumentsContracts extends Command
                 ->join('sau_users', 'sau_users.id', 'sau_ct_file_upload_contracts_leesse.user_id')
                 ->where('date', $date)
                 ->where('contract_id', $contract->id)
-                ->whereIN('sau_ct_file_module_state.state', ['RECHAZADO', 'MODIFICADO CONTRATANTE', 'ACEPTADO'])
+                ->whereIN('sau_ct_file_upload_contracts_leesse.state', ['RECHAZADO', 'ACEPTADO'])
                 ->get();
 
                 if (COUNT($uploadDocuments) > 0)
