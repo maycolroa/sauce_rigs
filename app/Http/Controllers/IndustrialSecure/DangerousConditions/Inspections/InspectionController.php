@@ -599,6 +599,8 @@ class InspectionController extends Controller
                 }
             }
 
+            $this->saveLogDelete('Inspecciones - Inspecciones planeadas', 'Se elimino el formato de inspección '.$inspection->name);
+
             if(!$inspection->delete())
             {
                 return $this->respondHttp500();
