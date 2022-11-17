@@ -79,7 +79,7 @@ class NotifyRejectedDocumentsContracts extends Command
                 ->join('sau_users', 'sau_users.id', 'sau_ct_file_upload_contracts_leesse.user_id')
                 ->where('date', $date)
                 ->where('contract_id', $contract->id)
-                ->whereIN('sau_ct_file_module_state.state', ['RECHAZADO', 'MODIFICADO CONTRATANTE'])
+                ->whereIN('sau_ct_file_module_state.state', ['RECHAZADO', 'MODIFICADO CONTRATANTE', 'ACEPTADO'])
                 ->get();
 
                 if (COUNT($uploadDocuments) > 0)
