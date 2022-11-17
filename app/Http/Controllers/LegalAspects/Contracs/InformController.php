@@ -203,6 +203,8 @@ class InformController extends Controller
             return $this->respondWithError('No se puede eliminar el informe porque ya existen informes realizados asociados a el');
         }*/
 
+        $this->saveLogDelete('Contratistas - Informes mensuales', 'Se elimino el formato de informe '.$inform->name);
+
         if(!$inform->delete())
         {
             return $this->respondHttp500();

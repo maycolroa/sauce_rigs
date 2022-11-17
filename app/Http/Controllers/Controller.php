@@ -12,6 +12,7 @@ use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Support\Facades\Auth;
 use App\Models\General\Team;
+use App\Models\General\LogDelete;
 use Session;
 
 class Controller extends BaseController
@@ -32,5 +33,15 @@ class Controller extends BaseController
         $this->team = $team ? $team->id : null;
         $this->company = Session::get('company_id');
         $this->user = Auth::user();
+    }
+
+    public function saveLogDelete($module, $description)
+    {
+        $record = new LogDelete;
+        $record->user_id = $this->user->id;
+        $record->company_id = $this->company;
+        $record->module = $module;
+        $record->description = $description;
+        $record->save();
     }
 }

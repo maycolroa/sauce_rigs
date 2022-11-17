@@ -552,6 +552,8 @@ class InformContractController extends Controller
                 }
             }
 
+            $this->saveLogDelete('Contratistas - Informes mensuales', 'Se elimino el informe '.$informContract->inform->name.' realizada al contratista '.$informContract->contract->social_reason.' en el mes '.$informContract->month.' en el año '.$informContract->year);
+
             if(!$informContract->delete())
             {
                 return $this->respondHttp500();

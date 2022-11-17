@@ -334,7 +334,9 @@ class ActionPlanController extends Controller
 
      public function destroy($id)
     {
-        $activity = ActionPlansActivity::where('id', $id);
+        $activity = ActionPlansActivity::where('id', $id)->first();
+
+        $this->saveLogDelete('Planes de acción', $activity->description);
 
         if(!$activity->delete())
             return $this->respondHttp500();

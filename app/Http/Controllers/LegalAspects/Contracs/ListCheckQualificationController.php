@@ -167,6 +167,9 @@ class ListCheckQualificationController extends Controller
                 $file->delete();
                 Storage::disk('s3')->delete('legalAspects/files/'. $file->file);
             }
+
+            $this->saveLogDelete('Contratistas - Lista de Chequeo', 'Se elimino la lista de chequeo del periodo '.$qualification->validity_period.' del contratista '.$qualification->contract->social_reason);
+
             if(!$qualification->delete())
                 return $this->respondHttp500();
         }

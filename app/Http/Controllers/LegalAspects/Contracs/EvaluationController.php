@@ -275,6 +275,8 @@ class EvaluationController extends Controller
             return $this->respondWithError('No se puede eliminar la evaluación porque ya existen evaluaciones realizadas asociadas a ella');
         }
 
+        $this->saveLogDelete('Contratistas - Evaluaciones', 'Se elimino el formato de evaluación '.$evaluation->name);
+
         if(!$evaluation->delete())
         {
             return $this->respondHttp500();

@@ -1406,6 +1406,8 @@ class ContractLesseeController extends Controller
 
             //Borrado de contratista
 
+            $this->saveLogDelete('Contratistas', 'Se elimino la contratista '.$contract->social_reason.'-'.$contract->nit);
+
             if(!$contract->delete())
             {
                 return $this->respondHttp500();

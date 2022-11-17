@@ -484,6 +484,8 @@ class UserController extends Controller
             {
                 $roles = DB::table('sau_role_user')->where('user_id', $user->id)->where('team_id', $this->company)->pluck('role_id');
 
+                $this->saveLogDelete('Usuarios', 'Se elimino el usuario '.$user->name.'-'.$user->email.' de la compañia');
+
                 $user->companies()->detach($this->company);
                 $user->detachRoles($roles, $this->company);
             }
@@ -492,6 +494,8 @@ class UserController extends Controller
                 $user->update(['active' => 'NO']);
 
                 DB::commit();
+
+                $this->saveLogDelete('Usuarios', 'Se desactivo el usuario '.$user->name.'-'.$user->email.' de la compañia');
 
                 return $this->respondWithError('Este usuario no puede ser eliminado, se ha desactivado automáticamente ya que solo esta asociado a la compañia en sesión');
             }

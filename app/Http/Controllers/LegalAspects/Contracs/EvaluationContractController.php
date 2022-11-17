@@ -724,6 +724,8 @@ class EvaluationContractController extends Controller
                 }
             }
 
+            $this->saveLogDelete('Contratistas - Evaluaciones', 'Se elimino la evaluacion '.$evaluationContract->evaluation->name.' realizada al contratista '.$evaluationContract->contract->social_reason);
+
             if(!$evaluationContract->delete())
             {
                 return $this->respondHttp500();
