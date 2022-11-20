@@ -82,7 +82,10 @@ class FileUploadController extends Controller
               return $this->checkPermissionUserInFile($file->user_id, $contract_id);
             })
             ->addColumn('control_delete', function ($file) use ($contract_id) {
-              return $this->checkPermissionUserInFile($file->user_id, $contract_id);
+              if ($file->state == 'PENDIENTE')
+                return $this->checkPermissionUserInFile($file->user_id, $contract_id);
+              else
+                return false;
             })
             ->make();
     }

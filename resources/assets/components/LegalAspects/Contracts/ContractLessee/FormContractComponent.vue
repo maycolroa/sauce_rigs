@@ -39,7 +39,7 @@
 						<vue-checkbox-simple style="padding-top: 20px;" :disabled="viewOnly" class="col-md-6" v-model="form.active" label="¿Activo?" :checked="form.active" name="active" checked-value="SI" unchecked-value="NO"></vue-checkbox-simple>
 					</b-form-row>
 					<b-form-row>
-						<vue-advanced-select :disabled="viewOnly" class="col-md-12" v-model="form.users_responsibles" :selected-object="form.multiselect_users_responsibles" :error="form.errorsFor('users_responsibles')" name="users_responsibles" label="Responsable del contratista" placeholder="Seleccione el responsable del contratista" :options="usersResponsibles" :multiple="true">
+						<vue-advanced-select :disabled="viewOnly" class="col-md-12" v-model="form.users_responsibles" :selected-object="form.multiselect_users_responsibles" :error="form.errorsFor('users_responsibles')" name="users_responsibles" label="Responsable del contratista" placeholder="Seleccione el responsable del contratista" :options="usersResponsibles" :multiple="true" :searchable="true">
 						</vue-advanced-select>
 					</b-form-row>
             	</b-card>

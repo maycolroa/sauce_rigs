@@ -1259,7 +1259,7 @@ export default [
         configuration: {
             urlData: '/legalAspects/legalMatrix/law/data',
             filterColumns: true,
-            //configNameFilter: 'legalAspects-legalMatrix-law-qualify'
+            configNameFilter: 'legalAspects-legalMatrix-law-qualify'
         }
     },
     {
