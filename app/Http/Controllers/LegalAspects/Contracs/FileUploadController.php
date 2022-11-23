@@ -15,6 +15,7 @@ use App\Traits\ContractTrait;
 use App\Traits\Filtertrait;
 use Illuminate\Database\Eloquent\Collection;
 use App\Facades\Mail\Facades\NotificationMail;
+use App\Facades\ConfigurationCompany\Facades\ConfigurationsCompany;
 use DB;
 
 class FileUploadController extends Controller
@@ -43,6 +44,13 @@ class FileUploadController extends Controller
     public function data(Request $request)
     {
         $contract_id = null;
+
+        try
+        {
+            $deleteFilesConfig = ConfigurationsCompany::company($this->company)->findByKey('contracts_delete_file_upload');
+        } catch (\Exception $e) {
+            $deleteFilesConfig = 'NO';
+        }
 
         $files = FileUpload::selectRaw(
             'sau_ct_file_upload_contracts_leesse.*,
@@ -81,11 +89,11 @@ class FileUploadController extends Controller
             ->addColumn('legalaspects-upload-files-edit', function ($file) use ($contract_id) {
               return $this->checkPermissionUserInFile($file->user_id, $contract_id);
             })
-            ->addColumn('control_delete', function ($file) use ($contract_id) {
-              if ($file->state == 'PENDIENTE')
-                return $this->checkPermissionUserInFile($file->user_id, $contract_id);
+            ->addColumn('control_delete', function ($file) use ($contract_id, $deleteFilesConfig) {
+              if (($file->state == 'RECHAZADO' || $file->state == 'ACEPTADO') && $deleteFilesConfig == 'NO')
+                return false;                
               else
-                return false;
+                return $this->checkPermissionUserInFile($file->user_id, $contract_id);
             })
             ->make();
     }

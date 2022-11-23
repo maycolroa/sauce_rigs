@@ -64,6 +64,7 @@ class ConfigurationsCompany
             'mandatory_level_risk_inspections' => 'Parametro para pedir o no campo nivel de riesgo del item dentro de las inspecciones planeadas',
             'filter_inspections' => 'Activar filtrado de inspecciones segun configuracion de usuarios',
             'location_level_form_user_inspection_filter' => 'Nivel de localización a mostrar para el filtrado de inspecciones',
+            'contracts_delete_file_upload' => 'Parametro para establecer el permiso para borrado de archivos cargados'
         ];
     }
 

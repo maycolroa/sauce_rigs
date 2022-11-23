@@ -713,6 +713,9 @@ Route::middleware(['auth'])->group(function () {
       Route::post('contracts/getInformationResponsibles', 'LegalAspects\Contracs\ContractLesseeController@getInformationResponsibles');
       Route::post('contracts/saveMasiveResponsibles', 'LegalAspects\Contracs\ContractLesseeController@saveMasiveResponsibles');
 
+      Route::post('contracts/configuration', 'LegalAspects\Contracs\ConfigurationController@store');
+      Route::get('contracts/configuration/view', 'LegalAspects\Contracs\ConfigurationController@show');
+
       Route::ApiResource('listCheck', 'LegalAspects\Contracs\ListCheckQualificationController');
       Route::post('listCheck/data', 'LegalAspects\Contracs\ListCheckQualificationController@data');
       Route::post('listCheck/getListCheckItems', 'LegalAspects\Contracs\ListCheckQualificationController@getListCheckItems');

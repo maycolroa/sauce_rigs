@@ -25,6 +25,14 @@ export default [
 					import('@/views/LegalAspects/contracts/contractor/index')
 				}
 			]),
+			...middleware({ 'check-permission': 'contracts_r' }, [
+				{
+					name: 'legalaspects-contracts-configurations',
+					path: 'contractor/configurations',
+					component: () =>
+					import('@/views/LegalAspects/contracts/indexConfiguration')
+				}
+			]),
 			...middleware({ 'check-permission': 'contracts_c' }, [
 				{
 					name: 'legalaspects-contractor-create',
