@@ -131,6 +131,9 @@ Route::middleware(['auth'])->group(function () {
           Route::post('medicalConclusion/data', 'PreventiveOccupationalMedicine\Reinstatements\MedicalConclusionController@data');
           Route::ApiResource('medicalConclusion', 'PreventiveOccupationalMedicine\Reinstatements\MedicalConclusionController');
           Route::get('check/downloadPdf/{id}', 'PreventiveOccupationalMedicine\Reinstatements\CheckController@downloadPdf');
+
+          Route::post('configuration', 'PreventiveOccupationalMedicine\Reinstatements\ConfigurationController@store');
+          Route::get('configuration/view', 'PreventiveOccupationalMedicine\Reinstatements\ConfigurationController@show');
         });
         
         Route::post('musculoskeletalAnalysis/reportIndividual', 'PreventiveOccupationalMedicine\BiologicalMonitoring\MusculoskeletalAnalysis\MusculoskeletalAnalysisInformController@dataIndividual');

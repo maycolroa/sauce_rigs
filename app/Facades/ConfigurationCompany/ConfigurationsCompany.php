@@ -64,7 +64,10 @@ class ConfigurationsCompany
             'mandatory_level_risk_inspections' => 'Parametro para pedir o no campo nivel de riesgo del item dentro de las inspecciones planeadas',
             'filter_inspections' => 'Activar filtrado de inspecciones segun configuracion de usuarios',
             'location_level_form_user_inspection_filter' => 'Nivel de localización a mostrar para el filtrado de inspecciones',
-            'contracts_delete_file_upload' => 'Parametro para establecer el permiso para borrado de archivos cargados'
+            'contracts_delete_file_upload' => 'Parametro para establecer el permiso para borrado de archivos cargados',
+            'reports_opens_notify' => 'Notificar por reportes con muchos dias abiertos',
+            'days_alert_expiration_report_notify' => 'Numero de dias para enviar la notificacion por reportes abiertos',
+            'users_notify_expired_report' => 'Usuarios a notifica por los reportes',
         ];
     }
 

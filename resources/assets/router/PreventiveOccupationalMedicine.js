@@ -114,6 +114,14 @@ export default [{
     ]), 
     ...middleware({ 'check-permission': 'reinc_checks_r' }, [
       {
+        name: 'reinstatements-configuration',
+        path: 'reinstatements/configurations',
+        component: () =>
+          import('@/views/PreventiveOccupationalMedicine/reinstatements/configuration/index')
+      }
+    ]),
+    ...middleware({ 'check-permission': 'reinc_checks_r' }, [
+      {
         name: 'reinstatements-checks',
         path: 'reinstatements/checks',
         component: () =>
