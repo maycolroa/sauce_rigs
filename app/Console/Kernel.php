@@ -38,6 +38,7 @@ class Kernel extends ConsoleKernel
         'App\Console\Commands\NotifyAlertStockMinimun',
         'App\Console\Commands\SendBounceSummary',
         'App\Console\Commands\DeleteFilesImportS3',
+        'App\Console\Commands\NotifyReportsOpenConfig',
         //'App\Console\Commands\RememberRepeatInspetion'
     ];
 
@@ -156,6 +157,10 @@ class Kernel extends ConsoleKernel
         $schedule->command('delete-files-import-s3')
             ->timezone('America/Bogota')
             ->dailyAt('3:30');
+
+        $schedule->command('notify-reports-open-config')
+            ->timezone('America/Bogota')
+            ->dailyAt('4:00');
     }
 
     /**
