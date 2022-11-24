@@ -64,31 +64,33 @@ class UserRequest extends FormRequest
                 array_push($roles, $key);
         }
 
-        foreach ($this->role_id as $key => $value) {
-            $value = json_decode($value);
-            \Log::info($value->value);
-            if (in_array($value->value, $roles))
-            {\Log::info(2);
-                $validar_rol = true;
-                break;
-            }
-        }
-
-        if ($validar_rol)
+        if (isset($this->role_id) && $this->role_id)
         {
-            \Log::info(3);
-            $confLocation = $this->getLocationFormConfUser(Session::get('company_id'));
 
-            if ($confLocation)
+            foreach ($this->role_id as $key => $value) {
+                $value = json_decode($value);
+                if (in_array($value->value, $roles))
+                {
+                    $validar_rol = true;
+                    break;
+                }
+            }
+
+            if ($validar_rol)
             {
-                if ($confLocation['regional'] == 'SI')
-                    $rules['employee_regional_id'] = 'required';
-                if ($confLocation['headquarter'] == 'SI')
-                    $rules['employee_headquarter_id'] = 'required';
-                if ($confLocation['process'] == 'SI')
-                    $rules['employee_process_id'] = 'required';
-                if ($confLocation['area'] == 'SI')
-                    $rules['employee_area_id'] = 'required';
+                $confLocation = $this->getLocationFormConfUser(Session::get('company_id'));
+
+                if ($confLocation)
+                {
+                    if ($confLocation['regional'] == 'SI')
+                        $rules['employee_regional_id'] = 'required';
+                    if ($confLocation['headquarter'] == 'SI')
+                        $rules['employee_headquarter_id'] = 'required';
+                    if ($confLocation['process'] == 'SI')
+                        $rules['employee_process_id'] = 'required';
+                    if ($confLocation['area'] == 'SI')
+                        $rules['employee_area_id'] = 'required';
+                }
             }
         }
 
