@@ -3,6 +3,9 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
+use App\Models\System\LogMails\LogMail;
+use App\Facades\ConfigurationCompany\Facades\ConfigurationsCompany;
+use Carbon\Carbon;
 
 class DeleteRecordLogEmail extends Command
 {
@@ -37,6 +40,35 @@ class DeleteRecordLogEmail extends Command
      */
     public function handle()
     {
-        //
+        $emails = LogMail::get();
+
+        try 
+        {
+            $days = ConfigurationsCompany::company(1)->findByKey('delete_records_log_mails');
+            $now = Carbon::now();
+            $count = 0;
+
+            \Log::info($days);
+            \Log::info('comenzo la tarea');
+            \Log::info(Carbon::now());
+
+            foreach ($emails as $key => $email) 
+            {
+                $diff = $now->diffInDays($email->created_at);
+
+                if ($diff >= $days)
+                {
+                    $count++;
+                    $email->delete();
+                }
+            }
+
+            \Log::info($count);
+            \Log::info(Carbon::now());
+            \Log::info('Termino la tarea');
+            
+        } catch (\Exception $e) {                
+            \Log::info('No se ha configurado el parametro');
+        }
     }
 }

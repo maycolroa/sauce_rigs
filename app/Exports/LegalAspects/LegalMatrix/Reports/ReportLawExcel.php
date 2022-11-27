@@ -46,7 +46,8 @@ class ReportLawExcel implements FromQuery, WithMapping, WithHeadings, WithTitle,
          sau_lm_entities.name AS entity,
          sau_lm_articles_fulfillment.observations AS observations,
          sau_lm_articles_fulfillment.responsible AS responsible,
-         sau_lm_articles_fulfillment.workplace AS workplace
+         sau_lm_articles_fulfillment.workplace AS workplace,
+         sau_lm_articles.repealed AS derogado
          "
       )
       ->join('sau_lm_system_apply', 'sau_lm_system_apply.id', 'sau_lm_laws.system_apply_id')
@@ -85,6 +86,7 @@ class ReportLawExcel implements FromQuery, WithMapping, WithHeadings, WithTitle,
         $data->type,
         $data->law_number,
         $data->law_year,
+        $data->derogado,
         $data->system,
         $data->qualify,
         $data->entity,
@@ -101,6 +103,7 @@ class ReportLawExcel implements FromQuery, WithMapping, WithHeadings, WithTitle,
           'Tipo de Norma',
           'Número de Norma',
           'Año',
+          'Derogado',
           'Sistema',
           'Cumplimiento',
           'Ente',
