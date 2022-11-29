@@ -3,7 +3,7 @@
     <header-module
       title="ANÁLISIS RESPIRATORIO"
       subtitle="ADMINISTRAR ANÁLISIS"
-      url="preventiveoccupationalmedicine"
+      url="biologicalmonitoring-menu"
     />
 
     <div class="col-md">

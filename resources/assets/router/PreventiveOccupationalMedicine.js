@@ -1,5 +1,5 @@
 import LayoutModules from '@/views/layoutModules'
-import Home from '@/views/home'
+import Home from '@/views/PreventiveOccupationalMedicine/home'
 import { middleware } from 'vue-router-middleware'
 
 export default [{
@@ -10,6 +10,12 @@ export default [{
       name: 'preventiveoccupationalmedicine',
       path: '',
       component: Home
+    },
+    {
+      name: 'biologicalmonitoring-menu',
+      path: 'biologicalmonitoring/menu',
+      component: () =>
+          import('@/views/PreventiveOccupationalMedicine/biologicalmonitoring/indexMenu')
     },
     ...middleware({ 'check-permission': 'biologicalMonitoring_audiometry_r' }, [
       {

@@ -2,7 +2,7 @@
   	<div>
     	<header-module
 			title="AUDIOMETRIAS"
-			url="preventiveoccupationalmedicine"
+			url="biologicalmonitoring-menu"
 		/>
     	<div class="col-md">
 			<b-card no-body>
