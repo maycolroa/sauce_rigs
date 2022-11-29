@@ -40,9 +40,15 @@ class DeleteRecordLogEmail extends Command
      */
     public function handle()
     {
-        $emails = LogMail::get();
+        //$emails = LogMail::get();
 
-        try 
+        $date = Carbon::now()->subMonth(6)->format('Y-m-d 00:00:00');
+
+        $emails = LogMail::
+        where('created_at', '<', $date)
+        ->delete();
+
+        /*try 
         {
             $days = ConfigurationsCompany::company(1)->findByKey('delete_records_log_mails');
             $now = Carbon::now();
@@ -69,6 +75,6 @@ class DeleteRecordLogEmail extends Command
             
         } catch (\Exception $e) {                
             \Log::info('No se ha configurado el parametro');
-        }
+        }*/
     }
 }
