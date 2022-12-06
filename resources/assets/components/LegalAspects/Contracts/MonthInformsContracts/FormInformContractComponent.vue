@@ -31,7 +31,7 @@
                 </b-form-row>
                 <b-form-row>
                     <vue-advanced-select class="col-md-2" :disabled="viewOnly" v-model="form.year" :options="yearsOptions" :searchable="false" name="years" placeholder="Año" :multiple="false"></vue-advanced-select>
-                    <vue-advanced-select class="col-md-2" :disabled="viewOnly" v-model="form.month" :options="monthsOptions" @input="periodValid()" :searchable="false" name="years" placeholder="Mes" :multiple="false"></vue-advanced-select>
+                    <vue-advanced-select class="col-md-2" :disabled="viewOnly" v-model="form.month" :options="monthsOptions" @input="periodValid()" :searchable="true" name="months" placeholder="Mes" :multiple="false"></vue-advanced-select>
                 </b-form-row>
                 <b-form-row>
                     <vue-input v-if="viewOnly || isEdit" disabled class="col-md-4" v-model="form.inform_date" label="Fecha de presentación" type="text" name="inform_date" placeholder="Fecha de presentación"></vue-input>

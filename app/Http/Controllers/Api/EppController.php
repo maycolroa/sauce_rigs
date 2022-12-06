@@ -532,4 +532,95 @@ class EppController extends ApiController
           }
         }
     }
+
+    public function getDeliveryEmployee(Request $request)
+    {
+        $location = Location::withoutGlobalScopes()->find($request->location_id);
+
+        $location_level = $this->getLocationFormConfModule($request->company_id);
+
+        $employees = Employee::select("*");
+
+        if ($location_level['regional'] == 'SI')
+            $employees->where('employee_regional_id', $location->employee_regional_id);
+        if ($location_level['headquarter'] == 'SI')
+            $employees->where('employee_headquarter_id', $location->employee_headquarter_id);
+        if ($location_level['process'] == 'SI')
+            $employees->where('employee_process_id', $location->employee_process_id);
+        if ($location_level['area'] == 'SI')
+            $employees->where('employee_area_id', $location->employee_area_id);
+
+
+        $employees->company_scope = $request->company_id;
+        $employees = $employees->get();
+
+        $employees = $employees->map(function ($item, $keyCompany) use ($request) {
+            $elements = [];
+
+            $position = EmployeePosition::withoutGlobalScopes()->find($item->employee_position_id);
+
+            $transactions = ElementTransactionEmployee::where('employee_id', $item->id)
+            ->where('type', 'Entrega')
+            ->WhereNull('state')
+            ->get();
+
+            foreach ($transaction->elements as $key => $value)
+            {
+                if ($value->state == 'Asignado')
+                {
+                    if (!in_array($value->element_balance_id, $id_balance))
+                        array_push($id_balance, $value->element_balance_id);
+
+                    $element_base = Element::withoutGlobalScopes()->find($value->element->element_id);
+
+                    if ($element_base->identify_each_element)
+                    {
+                        $content = [
+                            'id' => $value->id,
+                            'id_ele' => $element_base->id,
+                            'balance_id' => $value->element_balance_id,
+                            'type' => 'Identificable',
+                            'quantity' => 1,
+                            'code' => $value->hash,
+                            'multiselect_element' => $element_base->multiselect(),
+                            'key' => (rand(1,20000) + Carbon::now()->timestamp + rand(1,10000) + Carbon::now()->timestamp) * rand(1,20),
+                            'wastes' => 'NO'
+                        ];
+
+                        $elements->push($content);
+                        array_push($multiselect, $element_base->multiselect());
+                    }
+                    else
+                    {
+                        $content = [
+                            'id' => $value->id,
+                            'id_ele' => $value->element->element->id,
+                            'balance_id' => $value->element_balance_id,
+                            'quantity' => 1,
+                            'type' => 'No Identificable',
+                            'code' => $value->hash,
+                            'multiselect_element' => $value->element->element->multiselect(),
+                            'key' => (rand(1,20000) + Carbon::now()->timestamp + rand(1,10000) + Carbon::now()->timestamp) * rand(1,20),
+                            'wastes' => 'NO'
+                        ];
+
+                        //array_push($elements, $content);
+                        $elements->push($content);
+                        array_push( $multiselect, $value->element->element->multiselect());
+                    }
+                }                                
+            }
+
+            return [
+                'id'        => $item->id,
+                'name'      => $item->name,
+                'position'  => $position->multiselect(),
+                'elements'  => $elements
+            ];
+        });
+
+        return $this->respondHttp200([
+        'data' => $employees->values()
+        ]);
+    }
 }
