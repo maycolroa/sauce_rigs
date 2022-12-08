@@ -23,9 +23,14 @@ use App\Models\IndustrialSecure\DangerousConditions\ImageApi;
 use App\Models\IndustrialSecure\Epp\FileTransactionEmployee;
 use App\Facades\Mail\Facades\NotificationMail;
 use Auth;
+use Carbon\Carbon;
+use App\Traits\UtilsTrait;
+use App\Models\IndustrialSecure\Epp\TagReason;
 
 class EppController extends ApiController
 {
+    use UtilsTrait; 
+
     public function getModuleEpp(Request $request)
     {
       $module = PermissionService::getModuleByName('epp');
@@ -561,66 +566,540 @@ class EppController extends ApiController
 
             $transactions = ElementTransactionEmployee::where('employee_id', $item->id)
             ->where('type', 'Entrega')
-            ->WhereNull('state')
-            ->get();
+            ->WhereNull('state');
 
-            foreach ($transaction->elements as $key => $value)
-            {
-                if ($value->state == 'Asignado')
-                {
-                    if (!in_array($value->element_balance_id, $id_balance))
-                        array_push($id_balance, $value->element_balance_id);
+            $transactions->company_scope = $request->company_id;
+            $transactions = $transactions->get();
 
-                    $element_base = Element::withoutGlobalScopes()->find($value->element->element_id);
+            $elements = collect([]);                  
+            $multiselect = [];
+            $id_balance = [];
+            $ids_transactions = [];
 
-                    if ($element_base->identify_each_element)
+            if ($transactions->count() > 0)
+            { 
+                foreach ($transactions as $key => $transaction) 
+                {                    
+                    array_push($ids_transactions, $transaction->id);
+
+                    foreach ($transaction->elements as $key => $value)
                     {
+                        if ($value->state == 'Asignado')
+                        {
+                            if (!in_array($value->element_balance_id, $id_balance))
+                                array_push($id_balance, $value->element_balance_id);
+
+                            $element_base = Element::withoutGlobalScopes()->find($value->element->element_id);
+
+                            if ($element_base->identify_each_element)
+                            {
+                                $content = [
+                                    'id' => $value->id,
+                                    'id_ele' => $element_base->id,
+                                    'balance_id' => $value->element_balance_id,
+                                    'type' => 'Identificable',
+                                    'quantity' => 1,
+                                    'code' => $value->hash,
+                                    'multiselect_element' => $element_base->multiselect(),
+                                    'key' => (rand(1,20000) + Carbon::now()->timestamp + rand(1,10000) + Carbon::now()->timestamp) * rand(1,20),
+                                    'wastes' => 'NO'
+                                ];
+
+                                $elements->push($content);
+                                array_push($multiselect, $element_base->multiselect());
+                            }
+                            else
+                            {
+                                $content = [
+                                    'id' => $value->id,
+                                    'id_ele' => $element_base->id,
+                                    'balance_id' => $value->element_balance_id,
+                                    'quantity' => 1,
+                                    'type' => 'No Identificable',
+                                    'code' => $value->hash,
+                                    'multiselect_element' => $element_base->multiselect(),
+                                    'key' => (rand(1,20000) + Carbon::now()->timestamp + rand(1,10000) + Carbon::now()->timestamp) * rand(1,20),
+                                    'wastes' => 'NO'
+                                ];
+
+                                //array_push($elements, $content);
+                                $elements->push($content);
+                                array_push( $multiselect, $element_base->multiselect());
+                            }
+                        }                                
+                    }
+                }
+            }
+
+            $ids_saltar = [];
+            $new = [];
+
+            foreach ($id_balance as $key => $id) 
+            {
+                $record = $elements->where('balance_id', $id);
+
+                $cantidad = $elements->where('balance_id', $id)->where('type', 'No Identificable')->sum('quantity');
+                $codes = [];
+
+                foreach ($record as $key => $hash) 
+                {
+                    array_push($codes, $hash['code']);
+                }
+
+                foreach ($record as $key => $value) 
+                {
+                    if ($value['type'] == 'Identificable')
+                    {
+                        $disponible = ElementBalanceSpecific::select('id', 'hash')
+                                ->where('location_id', $request->location_id)
+                                ->where('state', 'Disponible')
+                                ->where('element_balance_id', $value['balance_id'])
+                                ->orderBy('id')
+                                ->pluck('hash', 'hash');
+
                         $content = [
-                            'id' => $value->id,
-                            'id_ele' => $element_base->id,
-                            'balance_id' => $value->element_balance_id,
-                            'type' => 'Identificable',
+                            'id' => $value['id'],
+                            'id_ele' => $value['id_ele'],
                             'quantity' => 1,
-                            'code' => $value->hash,
-                            'multiselect_element' => $element_base->multiselect(),
-                            'key' => (rand(1,20000) + Carbon::now()->timestamp + rand(1,10000) + Carbon::now()->timestamp) * rand(1,20),
-                            'wastes' => 'NO'
+                            'type' => $value['type'],
+                            'code' => $value['code'],
+                            'multiselect_element' => $value['multiselect_element'],
+                            'key' => $value['key'],
+                            'wastes' => 'NO',
+                            'rechange' => 'NO'
                         ];
 
-                        $elements->push($content);
-                        array_push($multiselect, $element_base->multiselect());
+                        $options = $this->multiSelectFormat($disponible);
+
+                        //$elements->push(['element' => $content, 'options' => $options]);
+                        array_push($new, ['element' => $content, 'options' => $options]);
                     }
                     else
                     {
-                        $content = [
-                            'id' => $value->id,
-                            'id_ele' => $value->element->element->id,
-                            'balance_id' => $value->element_balance_id,
-                            'quantity' => 1,
-                            'type' => 'No Identificable',
-                            'code' => $value->hash,
-                            'multiselect_element' => $value->element->element->multiselect(),
-                            'key' => (rand(1,20000) + Carbon::now()->timestamp + rand(1,10000) + Carbon::now()->timestamp) * rand(1,20),
-                            'wastes' => 'NO'
-                        ];
+                        if (!in_array($value['balance_id'], $ids_saltar))
+                        {
+                            $content = [
+                                'id' => $value['id'],
+                                'id_ele' => $value['id_ele'],
+                                'quantity' => $cantidad,
+                                'type' => $value['type'],
+                                'code' => implode(',', $codes),
+                                'multiselect_element' => $value['multiselect_element'],
+                                'key' => $value['key'],
+                                'wastes' => 'NO',
+                                'rechange' => 'NO'
+                            ];
 
-                        //array_push($elements, $content);
-                        $elements->push($content);
-                        array_push( $multiselect, $value->element->element->multiselect());
+                            array_push($ids_saltar, $value['balance_id']);
+                            array_push($new, ['element' => $content, 'options' => []]);
+                        }
                     }
-                }                                
+                }
             }
 
             return [
                 'id'        => $item->id,
                 'name'      => $item->name,
                 'position'  => $position->multiselect(),
-                'elements'  => $elements
+                'elements'  => $new
             ];
         });
 
         return $this->respondHttp200([
         'data' => $employees->values()
+        ]);
+    }
+
+    public function saveReturns()
+    {
+        if ($request->inventary == 'SI')
+          return $this->storeReturns($request);
+      else
+          return $this->storeReturnNotInventary($request);
+    }
+
+    public function storeReturns(Request $request )
+    {
+        DB::beginTransaction();
+
+        try
+        {
+            $employee = Employee::query();
+            $employee->company_scope = $request->company_id;
+            $employee = $employee->find($request->employee_id['value']);
+
+            $position = EmployeePosition::query();
+            $position->company_scope = $request->company_id;
+            $position = $position->find($employee->employee_position_id);
+
+            $returns = new ElementTransactionEmployee();
+            $returns->employee_id = $request->employee_id['value'];
+            $returns->position_employee_id = $position->id;
+            $returns->type = 'Devolucion';
+            $returns->observations = $request->observations ? $request->observations : NULL;
+            $returns->location_id = $request->location_id;
+            $returns->company_id = $request->company_id;
+            $returns->class_element = $request->class_element['value'];
+            $returns->edit_firm = count($request->firm) > 0 ? 'SI' : 'NO';
+            $nulo = isset($request->firm['type']) ? ($request->firm['type'] == 'Email' ? 'Email' : ($request->firm['type'] == 'Dibujar' ? 'Dibujar' : NULL)) : NULL;
+            $returns->firm_email = $nulo;
+            $returns->email_firm_employee = $nulo ? ($request->firm['type'] == 'Email' ? $request->firm['email'] : NULL) : NULL;
+            $returns->user_id = $this->user->id;
+            
+            if(!$returns->save())
+                return $this->respondHttp500();
+
+            $elements_sync = [];
+            $elements_sync_rechange = [];
+            $elements_change = [];
+
+            foreach ($request->elements_id as $key => $value) 
+            {
+                $element = Element::withoutGlobalScopes()->find($value['id_ele']);
+                $element_balance = ElementBalanceLocation::where('element_id', $value['id_ele'])->where('location_id', $request->location_id)->first();
+
+                if ($element) 
+                {
+                    if ($element->identify_each_element)
+                    {
+                        $disponible = ElementBalanceSpecific::where('hash', $value['code'])->first();
+
+                        $balance_origen = ElementBalanceLocation::find($disponible->element_balance_id);
+                
+                        if ($value['rechange'] == 'SI')
+                        {
+                            $reason = $this->tagsPrepare($value['reason']);
+                            $this->tagsSave($reason, TagReason::class);
+                            
+                            if ($value['waste'] == 'SI')
+                            {
+                                $disponible->state = 'Desechado';
+                                $disponible->location_id = $request->location_id;
+                                $disponible->element_balance_id = $element_balance->id;
+                                $disponible->save();
+
+                                $desecho = new EppWastes;
+                                $desecho->company_id = $this->company;
+                                $desecho->employee_id = $request->employee_id['value'];
+                                $desecho->element_id = $disponible->id;
+                                $desecho->location_id = $request->location_id;
+                                $desecho->code_element = $disponible->hash;
+                                $desecho->save();
+
+                                $balance_origen->quantity_available = $balance_origen->quantity_available - 1;
+                                $balance_origen->quantity_allocated = $balance_origen->quantity_allocated - 1;
+                            }
+                            else
+                            {
+                                $disponible->state = 'Disponible';
+                                $disponible->element_balance_id = $element_balance->id;
+                                $disponible->location_id = $request->location_id;
+                                $disponible->save();
+
+                                $element_balance->quantity_available = $element_balance->quantity_available + 1;
+                                $balance_origen->quantity_available = $balance_origen->quantity_available - 1;
+                                $balance_origen->quantity_allocated = $balance_origen->quantity_allocated - 1;
+                            }
+
+                            array_push($elements_sync, $disponible->id);
+
+                            $new_product = ElementBalanceSpecific::where('hash', $value['code_new'])->first();
+
+                            if ($new_product->state = 'Disponible')
+                            {
+                                $new_product->state = 'Asignado';
+                                $new_product->location_id = $request->location_id;
+                                $new_product->element_balance_id = $element_balance->id;
+                                $new_product->save();
+
+                                $change = [
+                                    'code_new' => $new_product->id,
+                                    'code_old' => $disponible->id,
+                                    'element_id' => $element->id,
+                                    'reason' => $reason->implode(',')
+                                ];
+
+                                array_push($elements_change, $change);
+
+                                $element_balance->quantity_allocated = $element_balance->quantity_allocated + 1;
+                                $balance_origen->quantity_available = $balance_origen->quantity_available - 1;
+                                $balance_origen->quantity_allocated = $balance_origen->quantity_allocated - 1;
+
+                                array_push($elements_sync_rechange, $new_product->id);
+                            }
+                        }
+                        else
+                        {
+                            $disponible->state = 'Disponible';
+                            $disponible->location_id = $request->location_id;
+                            $disponible->element_balance_id = $element_balance->id;
+                            $disponible->save();
+
+                            $element_balance->quantity_available = $element_balance->quantity_available + 1;
+                            $balance_origen->quantity_available = $balance_origen->quantity_available - 1;
+                            $balance_origen->quantity_allocated = $balance_origen->quantity_allocated - 1;
+
+                            array_push($elements_sync, $disponible->id);
+                        }
+                    }
+                    else
+                    {
+                        $codigos = explode(',' , $value['code']);
+
+                        $count_codes = COUNT($codigos);
+
+                        $quantity_return = $value['quantity_return'];
+
+                        $codes_returns = [];
+
+                        foreach ($codigos as $key => $code) 
+                        {
+                            $key = $key + 1;
+
+                            if ($key <= $quantity_return)
+                                array_push($codes_returns, $code);
+                        }
+                        
+                        $count_codes_returns = COUNT($codes_returns);
+
+                        $balance_id = ElementBalanceSpecific::whereIn('hash', $codes_returns)->where('state', 'Asignado')->first();
+
+                        $balance_origen = ElementBalanceLocation::find($balance_id->element_balance_id);
+
+                        if ($value['waste'] == 'SI')
+                        {
+                            if ($value['quantity_waste'] <= $count_codes_returns)
+                            {
+                                for ($i=1; $i <= $value['quantity_waste']; $i++) 
+                                { 
+                                    $new_product = ElementBalanceSpecific::whereIn('hash', $codes_returns)->where('state', 'Asignado')->first();
+
+                                    $new_product->state = 'Desechado';
+                                    $new_product->save();
+
+                                    $desecho = new EppWastes;
+                                    $desecho->company_id = $request->company_id;
+                                    $desecho->employee_id = $request->employee_id['value'];
+                                    $desecho->element_id = $new_product->id;
+                                    $desecho->location_id = $request->location_id;
+                                    $desecho->code_element = $new_product->hash;
+                                    $desecho->save();
+
+                                    $balance_origen->quantity_available = $balance_origen->quantity_available - 1;
+                                    $balance_origen->quantity_allocated = $balance_origen->quantity_allocated - 1;
+
+                                    array_push($elements_sync, $new_product->id);
+                                }
+                            }
+                            else
+                            {
+                                return $this->respondWithError('No puede desechar una cantidad superior a la asignada del elemento ' . $element->name);
+                            }
+                        }
+
+                        if ($value['rechange'] == 'SI')
+                        {
+                            $reason = $this->tagsPrepare($value['reason']);
+                            $this->tagsSave($reason, TagReason::class);
+
+                            if ($value['quantity_rechange'] > 0)
+                            {
+                                if ($value['quantity_rechange'] <= $count_codes_returns)
+                                {
+                                    for ($i=1; $i <= $value['quantity_rechange']; $i++) 
+                                    { 
+                                        $new_product = ElementBalanceSpecific::where('element_balance_id', $element_balance->id)->where('location_id', $request->location_id)->where('state', 'Disponible')->first();
+
+                                        if ($new_product)
+                                        {
+                                            $new_product->state = 'Asignado';
+                                            $new_product->save();
+
+                                            $element_balance->quantity_available = $element_balance->quantity_available - 1;
+                                            $element_balance->quantity_allocated = $element_balance->quantity_allocated + 1;
+                                        }
+                                        else
+                                        {
+                                            if ($request->inventary == 'NO')
+                                            {
+                                                $hash = Hash::make($element_balance->element_id . str_random(30));
+                                                $product = new ElementBalanceSpecific;
+                                                $product->hash = $hash;
+                                                $product->code = $hash;
+                                                $product->element_balance_id = $element_balance->id;
+                                                $product->location_id = $element_balance->location_id;
+                                                $product->state = 'Asignado';
+                                                $product->save();
+                                            }
+                                            else
+                                                return $this->respondWithError('No existen unidades disponibles del elemento ' . $element->name);
+                                        }
+
+
+                                        $old_product = ElementBalanceSpecific::whereIn('hash', $codigos)->first();
+
+                                        if ($old_product->state != 'Desechado')
+                                        {
+                                            $old_product->state = 'Disponible';
+                                            $old_product->location_id = $request->location_id;
+                                            $old_product->element_balance_id = $element_balance->id;
+                                            $old_product->save();
+
+                                            $element_balance->quantity_available = $element_balance->quantity_available + 1;
+                                            $balance_origen->quantity_available = $balance_origen->quantity_available - 1;
+                                        }                                        
+
+                                        $change = [
+                                            'code_new' => $new_product->id,
+                                            'code_old' => $old_product->id,
+                                            'element_id' => $element->id,
+                                            'reason' => $reason->implode(',')
+                                        ];
+
+                                        array_push($elements_change, $change);
+
+                                        array_push($elements_sync_rechange, $new_product->id);
+                                    }
+
+                                    $old_products = ElementBalanceSpecific::whereIn('hash', $codigos)->get();
+
+                                    foreach ($old_products as $key => $old) 
+                                    {
+                                        if (!$old->state = 'Desechado')
+                                        {
+                                            $old->state = 'Disponible';
+                                            $old->location_id = $request->location_id;
+                                            $old->element_balance_id = $element_balance->id;
+                                            $old->save();
+                                        }
+
+                                        array_push($elements_sync, $old->id);
+                                    }
+                                }
+                                else
+                                {
+                                    return $this->respondWithError('No puede hacer un recambio de una cantidad superior a la asignada del elemento ' . $element->name);
+                                }
+                            }
+                        }
+
+                        if ($value['waste'] == 'NO' && $value['rechange'] == 'NO')
+                        {
+                            $old_products = ElementBalanceSpecific::whereIn('hash', $codes_returns)->get();
+
+                            foreach ($old_products as $key => $old) 
+                            {
+                                $old->state = 'Disponible';
+                                $old->location_id = $request->location_id;
+                                $old->element_balance_id = $element_balance->id;
+                                $old->save();
+
+                                array_push($elements_sync, $old->id);
+                            }
+
+                            $element_balance->quantity_available = $element_balance->quantity_available + $value['quantity_return'];
+                            $balance_origen->quantity_available = $balance_origen->quantity_available - $value['quantity_return'];
+                        }
+                    }
+                }
+            }
+
+            $element_balance->save();
+            $balance_origen->save();
+
+            if (COUNT($elements_sync_rechange) > 0)
+            {
+                $new_delivery = new ElementTransactionEmployee;
+                $new_delivery->employee_id = $request->employee_id['value'];
+                $new_delivery->position_employee_id = $position->id;
+                $new_delivery->type = 'Entrega';
+                $new_delivery->observations = NULL;
+                $new_delivery->location_id = $request->location_id;
+                $new_delivery->company_id = $request->company_id;
+                $new_delivery->user_id = $this->user->id;
+                $new_delivery->save();
+
+                $new_delivery->elements()->sync($elements_sync_rechange);
+            }
+
+            if (COUNT($elements_change) > 0)
+            {
+                foreach ($elements_change as $key => $change) 
+                {
+                    $rechange = new ChangeElement;
+                    $rechange->transaction_employee_id = $returns->id;
+                    $rechange->transaction_delivery_id = $new_delivery->id;
+                    $rechange->element_id = $change['element_id'];
+                    $rechange->element_specific_old_id = $change['code_old'];
+                    $rechange->element_specific_new_id = $change['code_new'];
+                    $rechange->company_id = $request->company_id;
+                    $rechange->user_id = $this->user->id;
+                    $rechange->reason = $change['reason'];
+                    $rechange->save();
+                }
+            }
+
+            $returns->elements()->sync($elements_sync);
+
+            if ($returns->edit_firm)
+            {
+                if (isset($request->firm['image']) && $returns->firm_email == 'Dibujar')
+                {
+                  $img_firm = ImageApi::where('hash', $request->firm['image'])->where('type', 4)->first();
+
+                  $returns->firm_employee = $img_firm->file;
+
+                  if(!$returns->update())
+                      return $this->respondHttp500();
+                }
+                else if ($returns->firm_email == 'Email')
+                {
+                    $recipient = new User(['email' => $returns->email_firm_employee]);
+
+                    NotificationMail::
+                        subject('Sauce - Elementos de protección personal')
+                        ->recipients($recipient)
+                        ->message("Estimado $employee->name, usted tiene una solicitud de firma de una entrega de elementos de protección personal, para hacerlo ingrese a los links acontinuación: ")
+                        ->module('epp')
+                        ->buttons([['text'=>'Firmar', 'url'=>action('IndustrialSecure\EPP\TransactionFirmController@index', ['transaction' => $returns->id, 'employee' => $employee->id])]])
+                        ->company($request->company_id)
+                        ->send();
+                }
+            }
+
+            if (count($request->files) > 0)
+            {
+                $this->processFiles($request->get('files'), $returns->id);
+            }
+
+            foreach ($request->ids_transactions as $key => $value) 
+            {
+                $delivery = ElementTransactionEmployee::find($value);
+
+                $delivery_disponibles = $delivery->elements()->where('state', 'Asignado')->get();
+
+                if ($delivery && $delivery_disponibles->count() == 0)
+                {
+                    $returnDelivery = new ReturnDelivery;
+                    $returnDelivery->transaction_employee_id = $returns->id;
+                    $returnDelivery->delivery_id = $value;
+                    $returnDelivery->save();
+
+                    $delivery->state = 'Procesada';
+                    $delivery->save();
+                }
+            }
+
+            DB::commit();
+
+        } catch (\Exception $e) {
+            \Log::info($e->getMessage());
+            //DB::rollback();
+            return $this->respondHttp500();
+        }
+
+        return $this->respondHttp200([
+            'message' => 'Se creo la devolución'
         ]);
     }
 }

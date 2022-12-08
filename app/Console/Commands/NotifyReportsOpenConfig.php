@@ -67,6 +67,9 @@ class NotifyReportsOpenConfig extends Command
             if (!$configDay)
                 continue;
 
+            \Log::info('entro');
+            \Log::info($company);
+
             $reports = Check::select(
                 'sau_reinc_checks.id AS id',
                 'sau_reinc_checks.deadline AS deadline',
