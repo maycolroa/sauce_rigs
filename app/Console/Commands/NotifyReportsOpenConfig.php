@@ -101,11 +101,11 @@ class NotifyReportsOpenConfig extends Command
                 {
                     $content = [
                         'Empleado' => $check->name,
-                        $keywords['disease_origin'] => $check->disease_origin,
+                        'Tipo de Evento' => $check->disease_origin,
                         'Codigo CIE' => $check->code,
                         'Descripción CIE' => $check->dx,
                         'Fecha' => Carbon::createFromFormat('D M d Y', $check->created_at)->format('Y-m-d'),
-                        $keywords['regional'] => $check->regional,
+                        'Regional' => $check->regional,
                         'Estado' => $check->state
                     ];
 
@@ -129,10 +129,12 @@ class NotifyReportsOpenConfig extends Command
                         NotificationMail::
                             subject('Sauce - Reincorporaciones Reportes')
                             ->recipients($recipient)
-                            ->message("Este es el listado de empleados con reportes abiertos desde hace mas de <b>$configDay</b> dias.")
+                            ->message("Este es el listado de empleados con reportes con seguimientos desde hace mas de <b>$configDay</b> dias.")
                             ->module('reinstatements')
                             ->event('Tarea programada: NotifyReportsOpenConfig')
-                            ->table($expired_reports)
+                            ->view('preventiveoccupationalmedicine.reinstatements.notifyExpiredCheck')
+                            ->with(['data'=>$expired_reports])
+                            //->table($expired_reports)
                             ->company($company)
                             ->send();
                     }

@@ -72,7 +72,7 @@ Route::group(['prefix'=>'v1', 'middleware' => 'api'], function () {
         Route::post('elementsQuantity', 'Api\EppController@getElementsQuantity');
         Route::post('createDelivery', 'Api\EppController@saveDelivery');
         Route::post('deliveryEmployee', 'Api\EppController@getDeliveryEmployee');
-        Route::post('createReturns', 'Api\EppController@saveReturns');
+        Route::post('createReturns', 'Api\EppController@storeReturns');
         /*Route::post('imageItem', 'Api\InspectionController@imageItem');
         Route::post('quelifiedListUser', 'Api\InspectionController@quelifiedListUser');
         Route::post('optionsMasive', 'Api\InspectionController@optionsMasiveQualification');*/
