@@ -417,6 +417,7 @@ class InspectionController extends Controller
                 return $this->respondHttp500();
 
             $this->saveLocation($inspection, $request);
+            $this->saveLogActivitySystem('Inspecciones - Inspecciones planeadas', 'Se creo el formato de inspección '.$inspection->name);
 
             if ($request->has('additional_fields') && $request->additional_fields)            
                 $this->saveAdditionalFields($inspection, $request->get('additional_fields'));
@@ -564,6 +565,7 @@ class InspectionController extends Controller
             $this->saveThemes($inspection, $request->get('themes'));
 
             $this->deleteData($request->get('delete'));
+            $this->saveLogActivitySystem('Inspecciones - Inspecciones planeadas', 'Se edito el formato de inspección '.$inspection->name);
 
             DB::commit();
 

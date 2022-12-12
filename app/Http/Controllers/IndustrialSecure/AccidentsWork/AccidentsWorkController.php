@@ -371,6 +371,8 @@ class AccidentsWorkController extends Controller
             {
                 $this->processFiles($request->get('files'), $accident->id);
             }
+            
+            $this->saveLogActivitySystem('Investigación de accidentes', 'Se creo el registro de accidente del empleado: '.$accident->nombre_persona . ', con fecha ' . $accident->fecha_accidente);
 
             DB::commit();
 
@@ -778,6 +780,8 @@ class AccidentsWorkController extends Controller
                 $this->processFiles($request->get('files'), $accident->id);
             }
 
+            $this->saveLogActivitySystem('Investigación de accidentes', 'Se edito el registro de accidente del empleado: '.$accident->nombre_persona . ', con fecha ' . $accident->fecha_accidente);
+
             DB::commit();
 
             return $this->respondHttp200([
@@ -815,6 +819,9 @@ class AccidentsWorkController extends Controller
             {
                 return $this->respondHttp500();
             }
+
+            $this->saveLogDelete('Investigación de accidentes', 'Se creo el registro de accidente del empleado: '.$accident->nombre_persona . ', con fecha ' . $accident->fecha_accidente);
+
 
             DB::commit();
             

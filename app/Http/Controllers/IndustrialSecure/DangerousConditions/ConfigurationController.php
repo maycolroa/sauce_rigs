@@ -48,6 +48,8 @@ class ConfigurationController extends Controller
             }
         }
 
+        $this->saveLogActivitySystem('Inspecciones - Configuracion', 'Se creo o edito la configuración');
+
         return $this->respondHttp200([
             'message' => 'Se actualizó la configuración'
         ]);

@@ -13,6 +13,7 @@ use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Support\Facades\Auth;
 use App\Models\General\Team;
 use App\Models\General\LogDelete;
+use App\Models\General\LogUserActivitySystem;
 use Session;
 
 class Controller extends BaseController
@@ -38,6 +39,16 @@ class Controller extends BaseController
     public function saveLogDelete($module, $description)
     {
         $record = new LogDelete;
+        $record->user_id = $this->user->id;
+        $record->company_id = $this->company;
+        $record->module = $module;
+        $record->description = $description;
+        $record->save();
+    }
+
+    public function saveLogActivitySystem($module, $description)
+    {
+        $record = new LogUserActivitySystem;
         $record->user_id = $this->user->id;
         $record->company_id = $this->company;
         $record->module = $module;

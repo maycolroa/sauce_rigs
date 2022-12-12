@@ -416,6 +416,8 @@ class InspectionQualificationController extends Controller
 
             ActionPlan::sendMail();
 
+            $this->saveLogActivitySystem('Inspecciones - Inspecciones planeadas', 'Se edito la inspección '. $inspection->name .' realizada en '.$detail_procedence);
+
             DB::commit();
 
             return $this->respondHttp200([
@@ -473,6 +475,8 @@ class InspectionQualificationController extends Controller
 
         if (!$qualification->update())
             return $this->respondHttp500();
+
+        $this->saveLogActivitySystem('Inspecciones - Inspecciones planeadas', 'Se cargaron imagenes a la inspección '. $inspection->name .' realizada en '.$detail_procedence);
 
         return $this->respondHttp200([
             'data' => $data

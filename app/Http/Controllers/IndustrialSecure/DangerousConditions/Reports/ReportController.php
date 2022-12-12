@@ -179,6 +179,8 @@ class ReportController extends Controller
                 ->save();
 
             ActionPlan::sendMail();
+
+            $this->saveLogActivitySystem('Inspecciones - Inspecciones no planeadas', 'Se creo la inspección no planeada realizada '.$detail_procedence);
                 
             DB::commit();
 
@@ -325,6 +327,8 @@ class ReportController extends Controller
 
             ActionPlan::sendMail();
 
+            $this->saveLogActivitySystem('Inspecciones - Inspecciones no planeadas', 'Se edito la inspección no planeada realizada '.$detail_procedence);
+
             DB::commit();
 
         } catch (\Exception $e) {
@@ -372,7 +376,7 @@ class ReportController extends Controller
 
             ActionPlan::model($report)->modelDeleteAll();
 
-            $this->saveLogDelete('Inspecciones - Inspecciones no planeadas', 'Se elimino la inspección realizada '.$description_delete);
+            $this->saveLogDelete('Inspecciones - Inspecciones no planeadas', 'Se elimino la inspección no planeada realizada '.$description_delete);
 
             if (!$report->delete())
                 return $this->respondHttp500();

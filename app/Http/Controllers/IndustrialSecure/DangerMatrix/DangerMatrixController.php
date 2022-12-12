@@ -218,6 +218,8 @@ class DangerMatrixController extends Controller
                 }
             }
 
+            $this->saveLogActivitySystem('Matriz de peligros', 'Se elimino la matriz de peligros '.$dangersMatrix.' ');
+
             if(!$dangersMatrix->delete())
             {
                 return $this->respondHttp500();
@@ -415,12 +417,19 @@ class DangerMatrixController extends Controller
      */
     private function saveDangerMatrix($request, $dangerMatrix = null)
     {
+
+        $keywords = $this->user->getKeywords();
+        $confLocation = $this->getLocationFormConfModule();
+        
         DB::beginTransaction();
 
         try
         { 
+            $details_log = '';
+
             if ($dangerMatrix)
             {
+                $details_log = $details_log.'Se actualizo la matriz de peligros ubicada en: ';
                 $msg = 'Se actualizo la matriz de peligro';
 
                 $history_change = $this->tagsPrepare($request->get('changeHistory'));
@@ -433,6 +442,7 @@ class DangerMatrixController extends Controller
             }
             else
             {
+                $details_log = $details_log.'Se creo la matriz de peligros ubicada en: ';
                 $msg = 'Se creo la matriz de peligro';
                 $dangerMatrix = new DangerMatrix();
                 $dangerMatrix->company_id = $this->company;
@@ -496,6 +506,18 @@ class DangerMatrixController extends Controller
                 ->process($dangerMatrix->process ? $dangerMatrix->process->name : null)
                 ->creationDate($dangerMatrix->created_at)
                 ->url(url('/industrialsecure/dangermatrix/view/'.$dangerMatrix->id));
+
+
+            if ($confLocation['regional'] == 'SI')
+                $details_log = $details_log . $keywords['regional']. ': ' .  $dangerMatrix->regional->name;
+            if ($confLocation['headquarter'] == 'SI')
+                $details_log = $details_log . '- ' .$keywords['headquarter']. ': ' .  $dangerMatrix->headquarter->name;
+            if ($confLocation['process'] == 'SI')
+                $details_log = $details_log . '- ' .$keywords['process']. ': ' .  $dangerMatrix->process->name;
+            if ($confLocation['area'] == 'SI')
+                $details_log = $details_log . '- ' .$keywords['area']. ': ' .  $dangerMatrix->area->name;
+
+            $this->saveLogActivitySystem('Matriz de peligros', $details_log);
 
             foreach ($request->get('activities') as $keyA => $itemA)
             {
