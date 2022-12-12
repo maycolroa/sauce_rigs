@@ -2,7 +2,7 @@
 
   <b-form :action="url" @submit.prevent="submit" autocomplete="off">
     <b-form-row>
-      <vue-radio :checked="form.reports_opens_notify" class="col-md-12" v-model="form.reports_opens_notify" :options="siNo" name="reports_opens_notify" :error="form.errorsFor('reports_opens_notify')" label="¿Desea recibir notificación por reportes con muchos dias abiertos?">
+      <vue-radio :checked="form.reports_opens_notify" class="col-md-12" v-model="form.reports_opens_notify" :options="siNo" name="reports_opens_notify" :error="form.errorsFor('reports_opens_notify')" label="¿Desea recibir notificación por reportes con muchos dias sin seguimiento?">
         </vue-radio>
       <vue-input v-if="form.reports_opens_notify == 'SI'" class="col-md-12" v-model="form.days_alert_expiration_report_notify" label="Número de dias para el envio de la notificación" type="number" name="days_alert_expiration_report_notify" :error="form.errorsFor('days_alert_expiration_report_notify')" placeholder="1"></vue-input>
 

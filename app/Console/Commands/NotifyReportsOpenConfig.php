@@ -81,7 +81,8 @@ class NotifyReportsOpenConfig extends Command
                 'sau_reinc_checks.state AS state',
                 'sau_employees.identification AS identification',
                 'sau_employees.name AS name',
-                DB::raw("DATE_FORMAT(sau_reinc_checks.created_at, '%Y-%m-%d') as created_at")
+                DB::raw("IFNULL((SELECT DATE_FORMAT(MAX(rt.created_at), '%Y-%m-%d') FROM sau_reinc_tracings rt WHERE rt.check_id = sau_reinc_checks.id), DATE_FORMAT(sau_reinc_checks.created_at, '%Y-%m-%d')) AS created_at")
+                //DB::raw("DATE_FORMAT(sau_reinc_checks.created_at, '%Y-%m-%d') as created_at")
             )
             ->join('sau_reinc_cie10_codes', 'sau_reinc_cie10_codes.id', 'sau_reinc_checks.cie10_code_id')
             ->join('sau_employees', 'sau_employees.id', 'sau_reinc_checks.employee_id')
@@ -129,7 +130,7 @@ class NotifyReportsOpenConfig extends Command
                         NotificationMail::
                             subject('Sauce - Reincorporaciones Reportes')
                             ->recipients($recipient)
-                            ->message("Este es el listado de empleados con reportes con seguimientos desde hace mas de <b>$configDay</b> dias.")
+                            ->message("Este es el listado de empleados con seguimientos desde hace mas de <b>$configDay</b> dias.")
                             ->module('reinstatements')
                             ->event('Tarea programada: NotifyReportsOpenConfig')
                             ->view('preventiveoccupationalmedicine.reinstatements.notifyExpiredCheck')
