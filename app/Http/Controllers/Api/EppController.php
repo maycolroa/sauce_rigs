@@ -766,6 +766,7 @@ class EppController extends ApiController
                 \Log::info(3);
                 $element = Element::withoutGlobalScopes()->find($value['id_ele']);
                 $element_balance = ElementBalanceLocation::where('element_id', $value['id_ele'])->where('location_id', $request->location_id)->first();
+                \Log::info('element_balance '.$element_balance->id);
 
                 if ($element) 
                 {
