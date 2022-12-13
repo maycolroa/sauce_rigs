@@ -768,6 +768,17 @@ class EppController extends ApiController
                 \Log::info($value['id_ele']);
                 \Log::info($request->location_id);
                 $element_balance = ElementBalanceLocation::where('element_id', $value['id_ele'])->where('location_id', $request->location_id)->first();
+
+                if (!$element_balance)
+                {
+                    $element_balance = new ElementBalanceLocation();
+                    $element_balance->element_id = $element->id;
+                    $element_balance->location_id = $request->location_id;
+                    $element_balance->quantity = 0;
+                    $element_balance->quantity_available = 0;
+                    $element_balance->quantity_allocated = 0;
+                    $element_balance->save();
+                }
                 \Log::info('element_balance '.$element_balance->id);
 
                 if ($element) 
