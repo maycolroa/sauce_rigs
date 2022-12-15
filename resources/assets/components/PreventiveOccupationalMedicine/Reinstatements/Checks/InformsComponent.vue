@@ -185,6 +185,37 @@
                                 </b-card>
                             </b-col>
                         </b-row>
+                        <b-row>
+                            <b-col>
+                                <b-card border-variant="primary" :title="`Reporte por ${keywordCheck('disease_origin')}`" class="mb-3 box-shadow-none">
+                                    
+                                    <b-row>
+                                        <b-col>
+                                            <table class="table table-bordered table-sm table-striped table-hover" style="width: 100%; margin-bottom: 0px">
+                                                <thead>
+                                                    <tr>
+                                                        <th scope="col" class="text-center align-middle">Descripción</th>
+                                                        <th scope="col" class="text-center align-middle">Activos</th>
+                                                        <th scope="col" class="text-center align-middle">Inactivos</th>
+                                                        <th scope="col" class="text-center align-middle">Total</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <template v-for="(record, index3) in employee_active_disease_origin.table">
+                                                    <tr :key="index3">
+                                                        <td class="align-middle">{{record[1].disease_origin}}</td>
+                                                        <td class="align-middle">{{record[1].activo}}</td>
+                                                        <td class="align-middle">{{record[1].inactivo}}</td>
+                                                        <td class="align-middle">{{record[1].total}}</td>
+                                                    </tr>
+                                                    </template>
+                                                </tbody>
+                                            </table>
+                                        </b-col>
+                                    </b-row>
+                                </b-card>
+                            </b-col>
+                        </b-row>
                         <b-row v-if="form == 'argos'">
                             <b-col>
                                 <b-card border-variant="primary" title="Reportes por categoría Código CIE 10" class="mb-3 box-shadow-none">
@@ -441,6 +472,9 @@ export default {
                     datasets: []
                 }
             },
+            employee_active_disease_origin: {
+                table: [],
+            },
             cases_per_sve_associateds_pie: {
                 table: [],
                 chart: {
@@ -509,6 +543,8 @@ export default {
         update(data) {
             _.forIn(data.data, (value, key) => {
                 if (this[key]) {
+                    console.log(this[key])
+                    console.log(value)
                     this[key] = value;
                 }
             });

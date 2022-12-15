@@ -58,7 +58,7 @@ class CheckInformController extends Controller
             array_push($dates, (Carbon::createFromFormat('D M d Y', $dates_request[1]))->format('Y-m-d'));
         }
         
-        $informManager = new InformManagerCheck($identifications, $names, $regionals, $businesses, $diseaseOrigin, $nextFollowDays, $dates, $years, $sveAssociateds, $medicalCertificates, $relocatedTypes, $filtersType);
+        $informManager = new InformManagerCheck($identifications, $names, $regionals, $businesses, $diseaseOrigin, $nextFollowDays, $dates, $years, $sveAssociateds, $medicalCertificates, $relocatedTypes, $filtersType, $this->company);
         
         return $this->respondHttp200($informManager->getInformData());
     }

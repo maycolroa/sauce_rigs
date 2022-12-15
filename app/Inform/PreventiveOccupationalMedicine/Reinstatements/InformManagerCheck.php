@@ -5,6 +5,7 @@ namespace App\Inform\PreventiveOccupationalMedicine\Reinstatements;
 use App\Models\PreventiveOccupationalMedicine\Reinstatements\Check;
 use App\Traits\ConfigurableFormTrait;
 use App\Traits\LocationFormTrait;
+use DB;
 
 class InformManagerCheck
 {
@@ -37,7 +38,8 @@ class InformManagerCheck
         'cases_per_cie_10_per_EL_pie',
         'cases_per_cie_10_per_AT_pie',
         'cases_per_cie_10_pie',
-        'cases_per_relocated_types_pie'
+        'cases_per_relocated_types_pie',
+        'employee_active_disease_origin'
     ];
 
     const INFORM_LOCATION = [
@@ -70,7 +72,7 @@ class InformManagerCheck
      * create an instance and set the attribute class
      * @param array $identifications
      */
-    function __construct($identifications = [], $names = [], $regionals = [], $businesses = [], $diseaseOrigin = [], $nextFollowDays = [], $dateRange = [], $years = [], $sveAssociateds = [], $medicalCertificates = [], $relocatedTypes = [], $filtersType = [])
+    function __construct($identifications = [], $names = [], $regionals = [], $businesses = [], $diseaseOrigin = [], $nextFollowDays = [], $dateRange = [], $years = [], $sveAssociateds = [], $medicalCertificates = [], $relocatedTypes = [], $filtersType = [], $company_id)
     {
         $this->identifications = $identifications;
         $this->names = $names;
@@ -87,6 +89,7 @@ class InformManagerCheck
         $this->formModel = $this->getFormModel('form_check');
         $this->totalChecks = $this->getTotalChecks();
         $this->locationForm = $this->getLocationFormConfModule();
+        $this->company = $company_id;
     }
 
     /**
@@ -877,5 +880,34 @@ class InformManagerCheck
         }
 
         return round(($value / $totalValue) * 100, 1);
+    }
+
+    public function employee_active_disease_origin()
+    {
+        $checks = DB::table('sau_reinc_checks')->selectRaw("
+            disease_origin,
+            employee_id,
+            SUM(DISTINCT CASE WHEN state = 'ABIERTO' THEN 1 ELSE 0 END) AS state
+        ")
+        ->whereRaw("company_id = {$this->company}")
+        ->groupBy('disease_origin', 'employee_id');
+
+        $report = DB::table(DB::raw("({$checks->toSql()}) AS t"))
+        ->selectRaw("
+            t.disease_origin,
+            COUNT(CASE WHEN t.state = 1 THEN 1 END) AS activo,
+            COUNT(CASE WHEN t.state = 0 THEN 1 END) AS inactivo,
+            COUNT(*) AS total
+        ")
+        //->mergeBindings($checks->getQuery())
+        ->groupBy('t.disease_origin')
+        ->get();
+
+        \Log::info($this->buildTable($report));
+
+        return collect([
+            'table' => $this->buildTable($report)
+        ]);
+      
     }
 }
