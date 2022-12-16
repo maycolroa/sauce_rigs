@@ -587,4 +587,18 @@ class Check extends Model
 
         return $query;
     }
+
+    public function scopeInCodCie($query, $codsCie, $typeSearch = 'IN')
+    {
+        if ($codsCie && is_array($codsCie) && COUNT($codsCie) > 0)
+        {
+            if ($typeSearch == 'IN')
+                $query->whereIn('sau_reinc_checks.cie10_code_id', $codsCie);
+
+            else if ($typeSearch == 'NOT IN')
+                $query->whereNotIn('sau_reinc_checks.cie10_code_id', $codsCie);
+        }
+
+        return $query;
+    }
 }

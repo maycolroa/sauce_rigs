@@ -67,12 +67,13 @@ class InformManagerCheck
     protected $formModel;
     protected $totalChecks;
     protected $locationForm;
+    protected $cie10;
 
     /**
      * create an instance and set the attribute class
      * @param array $identifications
      */
-    function __construct($identifications = [], $names = [], $regionals = [], $businesses = [], $diseaseOrigin = [], $nextFollowDays = [], $dateRange = [], $years = [], $sveAssociateds = [], $medicalCertificates = [], $relocatedTypes = [], $filtersType = [], $company_id)
+    function __construct($identifications = [], $names = [], $regionals = [], $businesses = [], $diseaseOrigin = [], $nextFollowDays = [], $dateRange = [], $years = [], $sveAssociateds = [], $medicalCertificates = [], $relocatedTypes = [], $filtersType = [], $company_id, $cie10)
     {
         $this->identifications = $identifications;
         $this->names = $names;
@@ -90,6 +91,7 @@ class InformManagerCheck
         $this->totalChecks = $this->getTotalChecks();
         $this->locationForm = $this->getLocationFormConfModule();
         $this->company = $company_id;
+        $this->cie10 = $cie10->toArray();
     }
 
     /**
@@ -137,6 +139,7 @@ class InformManagerCheck
         ->inBusinesses($this->businesses, $this->filtersType['businesses'])
         ->inDiseaseOrigin($this->diseaseOrigin, $this->filtersType['diseaseOrigin'])
         ->inYears($this->years, $this->filtersType['years'])
+        ->inCodCie($this->cie10, $this->filtersType['cie10'])
         ->betweenDate($this->dateRange);
 
         if ($this->nextFollowDays)
@@ -167,6 +170,7 @@ class InformManagerCheck
         ->inBusinesses($this->businesses, $this->filtersType['businesses'])
         ->inDiseaseOrigin($this->diseaseOrigin, $this->filtersType['diseaseOrigin'])
         ->inYears($this->years, $this->filtersType['years'])
+        ->inCodCie($this->cie10, $this->filtersType['cie10'])
         ->betweenDate($this->dateRange);
 
         if ($this->nextFollowDays)
@@ -197,6 +201,7 @@ class InformManagerCheck
         ->inBusinesses($this->businesses, $this->filtersType['businesses'])
         ->inDiseaseOrigin($this->diseaseOrigin, $this->filtersType['diseaseOrigin'])
         ->inYears($this->years, $this->filtersType['years'])
+        ->inCodCie($this->cie10, $this->filtersType['cie10'])
         ->betweenDate($this->dateRange);
 
         if ($condition)
@@ -229,6 +234,7 @@ class InformManagerCheck
         ->inBusinesses($this->businesses, $this->filtersType['businesses'])
         ->inDiseaseOrigin($this->diseaseOrigin, $this->filtersType['diseaseOrigin'])
         ->inYears($this->years, $this->filtersType['years'])
+        ->inCodCie($this->cie10, $this->filtersType['cie10'])
         ->betweenDate($this->dateRange)
         ->whereRaw("YEAR(sau_reinc_checks.created_at) = ".date('Y'). " AND MONTH(sau_reinc_checks.created_at) = ".date('m'));
 
@@ -502,6 +508,7 @@ class InformManagerCheck
         ->inBusinesses($this->businesses, $this->filtersType['businesses'])
         ->inDiseaseOrigin($this->diseaseOrigin, $this->filtersType['diseaseOrigin'])
         ->inYears($this->years, $this->filtersType['years'])
+        ->inCodCie($this->cie10, $this->filtersType['cie10'])
         ->betweenDate($this->dateRange)
         ->groupBy('month');
 
@@ -572,6 +579,7 @@ class InformManagerCheck
         ->inBusinesses($this->businesses, $this->filtersType['businesses'])
         ->inDiseaseOrigin($this->diseaseOrigin, $this->filtersType['diseaseOrigin'])
         ->inYears($this->years, $this->filtersType['years'])
+        ->inCodCie($this->cie10, $this->filtersType['cie10'])
         ->betweenDate($this->dateRange)
         ->groupBy('year');
 
@@ -642,6 +650,7 @@ class InformManagerCheck
         ->inBusinesses($this->businesses, $this->filtersType['businesses'])
         ->inDiseaseOrigin($this->diseaseOrigin, $this->filtersType['diseaseOrigin'])
         ->inYears($this->years, $this->filtersType['years'])
+        ->inCodCie($this->cie10, $this->filtersType['cie10'])
         ->betweenDate($this->dateRange)
         ->where($column, '<>', '')
         ->groupBy($column);
@@ -720,6 +729,7 @@ class InformManagerCheck
         ->inBusinesses($this->businesses, $this->filtersType['businesses'])
         ->inDiseaseOrigin($this->diseaseOrigin, $this->filtersType['diseaseOrigin'])
         ->inYears($this->years, $this->filtersType['years'])
+        ->inCodCie($this->cie10, $this->filtersType['cie10'])
         ->betweenDate($this->dateRange)
         ->groupBy('sau_reinc_cie10_codes.category');
 
@@ -797,6 +807,7 @@ class InformManagerCheck
         ->inBusinesses($this->businesses, $this->filtersType['businesses'])
         ->inDiseaseOrigin($this->diseaseOrigin, $this->filtersType['diseaseOrigin'])
         ->inYears($this->years, $this->filtersType['years'])
+        ->inCodCie($this->cie10, $this->filtersType['cie10'])
         ->betweenDate($this->dateRange)
         ->groupBy($table.'.name');
 
@@ -884,6 +895,7 @@ class InformManagerCheck
 
     public function employee_active_disease_origin()
     {
+
         $checks = DB::table('sau_reinc_checks')->selectRaw("
             disease_origin,
             employee_id,
@@ -891,6 +903,17 @@ class InformManagerCheck
         ")
         ->whereRaw("company_id = {$this->company}")
         ->groupBy('disease_origin', 'employee_id');
+
+        if ($this->filtersType['cie10'] == 'IN' && count($this->cie10) > 0)
+        {
+            $cie = implode(',', $this->cie10);
+            $checks->whereRaw("cie10_code_id in ({$cie})");
+        }
+        else if ($this->filtersType['cie10'] == 'NOT IN' && count($this->cie10) > 0)
+        {
+            $cie = implode(',', $this->cie10);
+            $checks->whereRaw("cie10_code_id not in ({$cie})");
+        }
 
         $report = DB::table(DB::raw("({$checks->toSql()}) AS t"))
         ->selectRaw("
@@ -902,8 +925,6 @@ class InformManagerCheck
         //->mergeBindings($checks->getQuery())
         ->groupBy('t.disease_origin')
         ->get();
-
-        \Log::info($this->buildTable($report));
 
         return collect([
             'table' => $this->buildTable($report)

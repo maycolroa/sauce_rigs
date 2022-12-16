@@ -217,6 +217,12 @@ export default [
           label: 'Próximo seguimiento (Dias)'
         }, 
         {
+          url: '/selects/cie10',
+          key: 'cie10',
+          type: 'select',
+          label: 'Código Cie'
+        }, 
+        {
           key: 'dateRange',
           type: 'dateRange',
           label: 'Rango de fecha',
