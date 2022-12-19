@@ -187,7 +187,7 @@
                         </b-row>
                         <b-row>
                             <b-col>
-                                <b-card border-variant="primary" :title="`Reporte por ${keywordCheck('disease_origin')}`" class="mb-3 box-shadow-none">
+                                <b-card border-variant="primary" :title="`Reporte de ${keywordCheck('employees')} en el programa de reincorporaciones`" class="mb-3 box-shadow-none">
                                     
                                     <b-row>
                                         <b-col>
