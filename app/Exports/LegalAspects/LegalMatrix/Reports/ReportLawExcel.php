@@ -134,6 +134,8 @@ class ReportLawExcel implements FromQuery, WithMapping, WithHeadings, WithTitle,
 
       $colors = [];
 
+      \Log::info($report_colors['colors']->count());
+
       if ($report_colors['colors'] && $report_colors['colors']->count() > 0)
       {
         foreach ($report_colors['qualify'] as $index => $color)
