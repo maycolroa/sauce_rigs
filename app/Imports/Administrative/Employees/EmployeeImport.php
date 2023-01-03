@@ -275,7 +275,7 @@ class EmployeeImport implements ToCollection
                 'identification' => $data['identificacion'],
                 'name' => $data['nombre'],
                 'sex' => $data['sexo'],
-                'email' => $data['email'],
+                'email' => $data['email'] ? $data['email'] : NULL,
                 'date_of_birth' => $data['fecha_nacimiento'],
                 'employee_position_id' => $this->checkPosition($data['cargo']),
                 'employee_business_id' => $this->checkBusiness($data['centro_costo']),
