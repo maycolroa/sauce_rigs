@@ -34,6 +34,8 @@ class ReportLawExcel implements FromQuery, WithMapping, WithHeadings, WithTitle,
       $this->filters = $filters;
       $this->user = $user;
       $this->colors_company = QualificationColorDinamic::where('company_id', $this->company_id)->withoutGlobalScopes()->first();
+      \Log::info($this->company_id);
+      \Log::info($this->colors_company);
       /*$this->colors_company->company_scope = $this->company_id;
       $this->colors_company = $this->colors_company->first();*/
     }
