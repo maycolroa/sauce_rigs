@@ -3,6 +3,7 @@
 namespace App\Exports\LegalAspects\LegalMatrix\Reports;
 
 use App\Models\LegalAspects\LegalMatrix\Law;
+use App\Models\LegalAspects\LegalMatrix\QualificationColorDinamic;
 use Maatwebsite\Excel\Concerns\FromQuery;
 use Maatwebsite\Excel\Concerns\WithMapping;
 use Maatwebsite\Excel\Concerns\WithHeadings;
@@ -25,12 +26,14 @@ class ReportLawExcel implements FromQuery, WithMapping, WithHeadings, WithTitle,
     protected $company_id;
     protected $filters;
     protected $user;
+    protected $colors_company;
 
     public function __construct($company_id, $user, $filters)
     {
       $this->company_id = $company_id;
       $this->filters = $filters;
       $this->user = $user;
+      $this->colors_company = QualificationColorDinamic::where('company_id', $this->company_id)->first();
     }
 
     public function query()
@@ -71,10 +74,20 @@ class ReportLawExcel implements FromQuery, WithMapping, WithHeadings, WithTitle,
       ->inResponsibles($this->filters['responsibles'], $this->filters['filtersType']['responsibles'])
       ->inInterests($this->filters['interests'], $this->filters['filtersType']['interests'])
       ->inState($this->filters['states'], $this->filters['filtersType']['states'])
-      ->groupBy('id');
+      ->groupBy('id')
+      ->orderBy('law_number');
 
       $laws->company_scope = $this->company_id;
       $laws->user = $this->user->id;
+
+      $colors = [
+        'qualify' => $laws->get(),
+        'colors' => $this->colors_company
+      ];
+
+      Sheet::macro('getColors', function (Sheet $sheet) use ($colors) {
+        return $colors;
+      });
 
       return $laws;
     }
@@ -115,6 +128,40 @@ class ReportLawExcel implements FromQuery, WithMapping, WithHeadings, WithTitle,
 
     public static function afterSheet(AfterSheet $event)
     {
+      $report_colors = $event->sheet->getColors();
+
+      $colors = [];
+
+      if ($report_colors['colors'] && $report_colors['colors']->count() > 0)
+      {
+        foreach ($report_colors['qualify'] as $index => $color)
+        {
+          $columna = str_replace(" ", "_", strtolower($color->qualify));
+          $number = $index + 2;
+
+          $colors['G'.$number] = $report_colors['colors']["$columna"];
+        }
+
+        foreach ($colors as $cols => $color)
+        {
+          $event->sheet->styleCells(
+            $cols,
+              [
+                'fill' => [
+                    'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_GRADIENT_LINEAR,
+                    'rotation' => 90,
+                    'startColor' => [
+                        'rgb' => $color
+                    ],
+                    'endColor' => [
+                        'rgb' => $color
+                    ],
+                  ],
+              ]
+          );
+        }
+      }
+
       $event->sheet->styleCells(
         'A1:I1',
           [

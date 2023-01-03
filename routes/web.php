@@ -689,6 +689,7 @@ Route::middleware(['auth'])->group(function () {
 		
 		//Aspectos Legales
 		Route::prefix('legalAspects')->group(function () {
+      Route::post('configuration', 'LegalAspects\LegalMatrix\ConfigurationController@store');
       Route::post('contracts/data', 'LegalAspects\Contracs\ContractLesseeController@data');
       Route::get('contracts/getInformation', 'LegalAspects\Contracs\ContractLesseeController@getInformation');
       Route::post('contracts/getListCheckItems', 'LegalAspects\Contracs\ContractLesseeController@getListCheckItems');
@@ -798,6 +799,10 @@ Route::middleware(['auth'])->group(function () {
       Route::post('informContract/reportTablePorcentageGlobal', 'LegalAspects\Contracs\InformReportController@reportTableTotalesContractsPorcentage');
 
       Route::post('informContract/detailContractGlobal', 'LegalAspects\Contracs\InformReportController@detailContractGlobal');
+
+
+      Route::post('configuration', 'LegalAspects\LegalMatrix\ConfigurationController@store');
+      Route::get('configuration/view', 'LegalAspects\LegalMatrix\ConfigurationController@show');
 
       Route::prefix('legalMatrix')->group(function () {
 

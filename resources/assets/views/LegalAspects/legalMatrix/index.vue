@@ -86,6 +86,30 @@
                 </router-link>
       </b-col>
 
+      <b-col cols="3" class="col-item" v-if="auth.can['laws_qualify']">
+                <router-link :to="{name:'legalaspects-lm-law-configuration'}" class="text-dark cursor-pointer item-app-navbar">
+                        <br>
+                    <div class="my-2 mx-2" ref="custom_law_configuration" @mouseover="changeClassImage('custom_law_configuration', 'custom_law_configuration_hover')">
+                        <i class="ion ion-md-settings display-3 d-block text-dark"></i>
+                        <div class="font-weight-bold pt-1">
+                          Configuración
+                        </div>
+            <small class="text-muted">Configuración</small>
+                    </div>
+                    <div class="my-2 mx-2 imgHidden" ref="custom_law_configuration_hover" @mouseleave="changeClassImage('custom_law_configuration_hover', 'custom_law_configuration')">
+                        <i class="ion ion-md-settings display-3 d-block text-primary"></i>
+
+                        <div class="font-weight-bold pt-1">
+                          Configuración 
+                        </div>
+            <small class="text-muted">Configuración</small>
+            <div style="padding-top: 10px;">
+              <hr class="border-divider mt-0 mb-4">
+            </div>
+                    </div>
+                </router-link>
+      </b-col>
+
       <b-col cols="3" class="col-item" v-if="auth.can['interestsCustom_r']">
                 <router-link :to="{name:'legalaspects-lm-interest-company'}" class="text-dark cursor-pointer item-app-navbar">
                     <div class="my-2 mx-2" ref="custom_interest" @mouseover="changeClassImage('custom_interest', 'custom_interest_hover')">

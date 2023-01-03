@@ -721,6 +721,14 @@ export default [
 					import('@/views/LegalAspects/legalMatrix/reports/index')
 				}
 			]),
+			...middleware({ 'check-permission': 'laws_qualify' }, [
+				{
+					name: 'legalaspects-lm-law-configuration',
+					path: 'lm/laws/configuration',
+					component: () =>
+					import('@/views/LegalAspects/legalMatrix/configurations/index')
+				}
+			]),
 			...middleware({ 'check-permission': 'contracts_list_standards_qualification_r' }, [
 				{
 					name: 'legalaspects-list-check-qualification',
