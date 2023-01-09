@@ -113,6 +113,30 @@
                     </b-card>
                 </b-col>
             </b-row>
+
+            <b-row>
+                <b-col>
+                    <b-card border-variant="primary" class="mb-3 box-shadow-none">
+                        <div class="col-md-10">
+                            <b-row>                            
+                                    <b-col>
+                                        <table-report
+                                            :rows="fulfillmentPie.datasets.table"
+                                        />
+                                    </b-col>
+                                    <b-col>
+                                    <chart-pie 
+                                        :chart-data="fulfillmentPie"
+                                        title="Cumplimiento de Artículos"
+                                        color-line="red"
+                                        :colors="colors"
+                                        ref="fulfillmentPie"/>                                
+                                    </b-col>
+                            </b-row>
+                        </div>
+                    </b-card>
+                </b-col>
+            </b-row>
         </div>
     </div>
 </template>
@@ -125,6 +149,8 @@ import Loading from "@/components/Inputs/Loading.vue";
 import FilterGeneral from '@/components/Filters/FilterGeneral.vue';
 import ChartBarMultiple from '@/components/ECharts/ChartBarMultiple.vue';
 import VueAdvancedSelect from "@/components/Inputs/VueAdvancedSelect.vue";
+import ChartPie from '@/components/ECharts/ChartPieDinamicColors.vue';
+import TableReport from '@/components/PreventiveOccupationalMedicine/Reinstatements/Checks/TableReport.vue';
 
 export default {
     name: 'legalaspects-lm-law-report',
@@ -135,7 +161,9 @@ export default {
         Loading,
         FilterGeneral,
         ChartBarMultiple,
-        VueAdvancedSelect
+        VueAdvancedSelect,
+        ChartPie,
+        TableReport
     },
     data () {
         return {
@@ -148,6 +176,15 @@ export default {
                     count: []
                 }
             },
+            fulfillmentPie: {
+                labels: [],
+                datasets: {
+                    table: [],
+                    data: [],
+                    count: []
+                }
+            },
+            colors: [],
             legalMatrixSelected: 'systemApply',
             reportTableDinamic: [],
             resumenFulfillment: {

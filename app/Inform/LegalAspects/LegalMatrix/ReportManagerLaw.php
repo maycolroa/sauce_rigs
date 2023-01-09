@@ -5,6 +5,7 @@ namespace App\Inform\LegalAspects\LegalMatrix;
 use App\Models\LegalAspects\LegalMatrix\FulfillmentValues;
 use App\Models\LegalAspects\LegalMatrix\SystemApply;
 use App\Models\LegalAspects\LegalMatrix\Law;
+use App\Models\LegalAspects\LegalMatrix\QualificationColorDinamic;
 use Session;
 
 class ReportManagerLaw
@@ -21,7 +22,9 @@ class ReportManagerLaw
     const INFORMS = [
         'fulfillment',
         'resumenFulfillment',
-        'reportTableDinamic'
+        'reportTableDinamic',
+        'fulfillmentPie',
+        'colors'
     ];
 
     const CATEGORY_COLUMNS = [
@@ -113,6 +116,33 @@ class ReportManagerLaw
         return $informData->toArray();
     }
 
+    public function colors()
+    {
+        $colors = QualificationColorDinamic::first();
+
+        $colors_company = [];
+
+        if ($colors)
+        {
+            if ($colors->sin_calificar == 'ffffff' || $colors->cumple == 'ffffff' || $colors->no_cumple == 'ffffff' || $colors->en_estudio == 'ffffff' || $colors->parcial == 'ffffff' || $colors->no_aplica == 'ffffff' || $colors->informativo == 'ffffff')
+            {
+                $colors_company = [];
+            }
+            else
+            {
+                array_push($colors_company, '#'.$colors->sin_calificar);
+                array_push($colors_company, '#'.$colors->cumple);
+                array_push($colors_company, '#'.$colors->no_cumple);
+                array_push($colors_company, '#'.$colors->en_estudio);
+                array_push($colors_company, '#'.$colors->parcial);
+                array_push($colors_company, '#'.$colors->no_aplica);
+                array_push($colors_company, '#'.$colors->informativo);
+            }
+        }
+
+        return $colors_company;
+    }
+
     private function fulfillment()
     {
         $laws = Law::selectRaw(
@@ -172,6 +202,89 @@ class ReportManagerLaw
         }
 
         return $this->buildMultiBarDataChart($data, $barSeries);
+    }
+
+    private function fulfillmentPie()
+    {
+        $laws = Law::selectRaw(
+            'IF(sau_lm_fulfillment_values.name IS NULL, "Sin calificar", sau_lm_fulfillment_values.name) AS qualify,
+             COUNT(DISTINCT sau_lm_articles_fulfillment.id) AS count'
+        )
+        ->join('sau_lm_system_apply', 'sau_lm_system_apply.id', 'sau_lm_laws.system_apply_id')
+        ->join('sau_lm_articles', 'sau_lm_articles.law_id', 'sau_lm_laws.id')
+        ->join('sau_lm_article_interest', 'sau_lm_article_interest.article_id', 'sau_lm_articles.id')
+        ->join('sau_lm_company_interest','sau_lm_company_interest.interest_id', 'sau_lm_article_interest.interest_id')
+        ->join('sau_lm_articles_fulfillment','sau_lm_articles_fulfillment.article_id', 'sau_lm_articles.id')
+        ->leftJoin('sau_lm_fulfillment_values','sau_lm_fulfillment_values.id', 'sau_lm_articles_fulfillment.fulfillment_value_id')
+        ->where('sau_lm_articles_fulfillment.company_id', Session::get('company_id'))
+        ->inLawTypes($this->lawTypes, $this->filtersType['lawTypes'])
+        ->inRiskAspects($this->riskAspects, $this->filtersType['riskAspects'])
+        ->inEntities($this->entities, $this->filtersType['entities'])
+        ->inSstRisks($this->sstRisks, $this->filtersType['sstRisks'])
+        ->inSystemApply($this->systemApply, $this->filtersType['systemApply'])
+        ->inLawNumbers($this->lawNumbers, $this->filtersType['lawNumbers'])
+        ->inLawYears($this->lawYears, $this->filtersType['lawYears'])
+        ->inRepealed($this->repealed, $this->filtersType['repealed'])
+        ->inResponsibles($this->responsibles,$this->filtersType['responsibles'])
+        ->inInterests($this->interests,$this->filtersType['interests'])
+        ->inState($this->states,$this->filtersType['states'])
+        ->groupBy('qualify')
+        ->get();
+
+        $qualifications = [];
+
+        foreach ($laws as $key => $value)
+        {
+            $qualifications[$value->qualify] = $value->count;
+        }
+
+        $values_fulfillments = $laws->pluck('qualify')->unique();
+
+        $fulfillments = FulfillmentValues::whereIn('name', $values_fulfillments)->get();
+        $data = collect([]);
+
+        foreach ($fulfillments as $fulfillment)
+        {
+            $qualify = isset($qualifications[$fulfillment->name]) ? $qualifications[$fulfillment->name] : 0;
+            $data->push(['name' => $fulfillment->name, "count" => $qualify]);
+        }
+
+        return $this->buildDataChart($data);
+    }
+
+    protected function buildDataChart($rawData)
+    {
+        $labels = [];
+        $data = [];
+        $total = 0;
+        foreach ($rawData as $count) {
+            array_push($labels, $count['name']);
+            array_push($data, ['name' => $count['name'], 'value' => $count['count']]);
+            $total += $count['count'];
+        }
+
+        return collect([
+            'labels' => $labels,
+            'datasets' => [
+                'table' => $this->buildTable($rawData),
+                'data' => $data,
+                'count' => $total
+            ]
+        ]);
+    }
+
+    private function buildTable($data)
+    {
+        $result = [];
+
+        foreach ($data as $value)
+        {
+            array_push($result, [
+                $value['name'], $value['count']
+            ]);
+        }
+
+        return $result;
     }
 
     private function reportTableDinamic()

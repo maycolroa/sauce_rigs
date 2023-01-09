@@ -85,6 +85,7 @@ export default {
         {name: 'Naranja', value: 'ff9565'},
         {name: 'Mostaza', value: 'ca8622'},
         {name: 'Marron', value: 'd48265'},
+        {name: 'Sin Color', value: 'ffffff'},
       ]
     };
   },

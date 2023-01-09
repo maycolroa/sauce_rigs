@@ -41,7 +41,7 @@ export default {
             }
         }
     },
-    colors: {type: Array, default:['FFD950', '7fafec', '02BC77', 'f0635f', 'ff9565', 'ca8622', 'd48265']},
+    colors: {type: Array, default: []},
     title: {type: String, default:''},
     colorLine: {type: String, default:'red'}
   },
@@ -50,7 +50,8 @@ export default {
   },
   data:() => ({
     pieOptions:{},
-    height: '300px !important'
+    height: '300px !important',
+    colorsDefault: ['#FFD950', '#7fafec', '#02BC77', '#f0635f', '#ff9565', '#ca8622', '#d48265']
     }),
 
   watch:{
@@ -58,7 +59,7 @@ export default {
         this.showLoading()
         
         this.pieOptions = {
-            color: this.colors,
+            color: this.colors.length > 0 ? this.colors : this.colorsDefault,
             backgroundColor: '#fff',
             title: {
                 text: 'Pie chart',
