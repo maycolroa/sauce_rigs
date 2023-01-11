@@ -48,6 +48,7 @@ class Check extends Model
         'origin_recommendations',
         'relocated',
         'laterality',
+        'qualification_dme',
         'detail',
         'monitoring_recommendations',
         'in_process_origin',

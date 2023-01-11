@@ -92,7 +92,7 @@ class Kernel extends ConsoleKernel
 
         $schedule->command('reinc-send-mail')
             ->timezone('America/Bogota')
-            ->dailyAt('03:00');
+            ->dailyAt('06:00');
 
         /*$schedule->command('reinc-notification-next-follow-up')
             ->timezone('America/Bogota')

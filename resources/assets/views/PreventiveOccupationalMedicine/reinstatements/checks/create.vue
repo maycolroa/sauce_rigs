@@ -34,6 +34,30 @@
                   :clasification-origin="clasificationOrigin"
                   :cancel-url="{ name: 'reinstatements-checks'}"/>
               </template>
+              <template v-if="form == 'chia'">
+                <form-check-chia
+                  url="/biologicalmonitoring/reinstatements/check"
+                  method="POST"
+                  employees-data-url="/selects/employees"
+                  :disease-origins="diseaseOrigins"
+                  :lateralities="lateralities"
+                  :qualifications-dme="qualificationsDME"
+                  cie10-codes-data-url="/selects/cie10"
+                  :si-no="siNo"
+                  :origin-advisors="originAdvisors"
+                  regionals-data-url="/selects/regionals"
+                  headquarters-data-url="/selects/headquarters"
+                  areas-data-url="/selects/areas"
+                  processes-data-url="/selects/processes"
+                  positions-data-url="/selects/positions"
+                  restrictions-data-url="/selects/restrictions"
+                  :medical-conclusions="medicalConclusions"
+                  :labor-conclusions="laborConclusions"
+                  :origin-emitters="originEmitters"
+                  tracing-others-url="/biologicalmonitoring/reinstatements/check/tracingOthers"
+                  :clasification-origin="clasificationOrigin"
+                  :cancel-url="{ name: 'reinstatements-checks'}"/>
+              </template>
               <template v-if="form == 'familia'">
                 <form-check-familia
                   url="/biologicalmonitoring/reinstatements/check"
@@ -249,6 +273,7 @@ import FormCheckIngeomega from '@/components/PreventiveOccupationalMedicine/Rein
 import FormCheckFamilia from '@/components/PreventiveOccupationalMedicine/Reinstatements/Checks/FormCheckFamiliaComponent.vue';
 import FormCheckColgate from '@/components/PreventiveOccupationalMedicine/Reinstatements/Checks/FormCheckColgateComponent.vue';
 import FormCheckHarinera from '@/components/PreventiveOccupationalMedicine/Reinstatements/Checks/FormCheckHarineraComponent.vue';
+import FormCheckChia from '@/components/PreventiveOccupationalMedicine/Reinstatements/Checks/FormCheckChiaComponent.vue';
 import Loading from "@/components/Inputs/Loading.vue";
 import Alerts from '@/utils/Alerts.js';
 import GlobalMethods from '@/utils/GlobalMethods.js';
@@ -269,6 +294,7 @@ export default {
     FormCheckFamilia,
     FormCheckColgate,
     FormCheckHarinera,
+    FormCheckChia,
     Loading
   },
   data(){
@@ -277,6 +303,7 @@ export default {
       form: '',
       diseaseOrigins: [],
       lateralities: [],
+      qualificationsDME: [],
       siNo: [],
       originAdvisors: [],
       refundClassification: [],
@@ -319,6 +346,11 @@ export default {
       if (this.form == 'harinera')
       {
         this.fetchOptions('recommendationsValidity', 'reinc_select_recommendations_validity')
+      }
+
+      if (this.form == 'chia')
+      {        
+        this.fetchOptions('qualificationsDME', 'reinc_select_qualifications_dme')
       }
 
 			this.ready = true
