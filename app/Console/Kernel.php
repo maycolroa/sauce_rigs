@@ -39,6 +39,7 @@ class Kernel extends ConsoleKernel
         'App\Console\Commands\SendBounceSummary',
         'App\Console\Commands\DeleteFilesImportS3',
         'App\Console\Commands\NotifyReportsOpenConfig',
+        'App\Console\Commands\ReincPendienteResumen',
         //'App\Console\Commands\RememberRepeatInspetion'
     ];
 
@@ -93,6 +94,10 @@ class Kernel extends ConsoleKernel
         $schedule->command('reinc-send-mail')
             ->timezone('America/Bogota')
             ->dailyAt('06:00');
+
+        $schedule->command('reinc-pendiente-resumen')
+            ->timezone('America/Bogota')
+            ->dailyAt('0 6 1 1-12 *');
 
         /*$schedule->command('reinc-notification-next-follow-up')
             ->timezone('America/Bogota')
