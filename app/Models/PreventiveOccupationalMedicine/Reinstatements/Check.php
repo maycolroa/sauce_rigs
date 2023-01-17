@@ -65,6 +65,8 @@ class Check extends Model
         'process_pcl_file',
         'process_pcl_file_name',
         'cie10_code_id',
+        'cie10_code_2_id',
+        'cie10_code_3_id',
         'restriction_id',
         'has_restrictions',
         'relocated_regional_id',
@@ -154,6 +156,16 @@ class Check extends Model
     public function cie10Code()
     {
         return $this->belongsTo(Cie10Code::class, 'cie10_code_id');
+    }
+
+    public function cie10Code2()
+    {
+        return $this->belongsTo(Cie10Code::class, 'cie10_code_2_id');
+    }
+
+    public function cie10Code3()
+    {
+        return $this->belongsTo(Cie10Code::class, 'cie10_code_3_id');
     }
 
     public function files()

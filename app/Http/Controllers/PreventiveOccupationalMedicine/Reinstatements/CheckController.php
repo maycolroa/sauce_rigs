@@ -370,6 +370,8 @@ class CheckController extends Controller
 
         $check->multiselect_employee = $check->employee->multiselect();
         $check->multiselect_cie10Code = $check->cie10Code->multiselect();
+        $check->multiselect_cie10Code2 = $check->cie10_code_2_id ? $check->cie10Code2->multiselect() : NULL;
+        $check->multiselect_cie10Code3 = $check->cie10_code_3_id ? $check->cie10Code3->multiselect() : NULL;
         $check->multiselect_restriction = $check->restriction ? $check->restriction->multiselect() : [];
         $check->relocated_regional_multiselect = $check->relocatedRegional ? $check->relocatedRegional->multiselect() : [];
         $check->relocated_headquarter_multiselect = $check->relocatedHeadquarter ? $check->relocatedHeadquarter->multiselect() : [];
@@ -910,6 +912,10 @@ class CheckController extends Controller
         else if($formModel == 'harinera')
         {
             $pdf = PDF::loadView('pdf.reporteReinstatementsHarinera', ['check' => $checks, 'locationForm' => $this->getLocationFormConfModule()] );
+        }
+        else if($formModel == 'chia')
+        {
+            $pdf = PDF::loadView('pdf.reporteReinstatementsChia', ['check' => $checks, 'locationForm' => $this->getLocationFormConfModule()] );
         }
 
         $pdf->setPaper('A3', 'landscape');
