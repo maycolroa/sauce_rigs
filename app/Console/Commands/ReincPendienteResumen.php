@@ -10,6 +10,7 @@ use DB;
 use App\Models\PreventiveOccupationalMedicine\Reinstatements\Check;
 use Illuminate\Database\Eloquent\Builder;
 use App\Facades\Mail\Facades\NotificationMail;
+use App\Facades\ConfigurationCompany\Facades\ConfigurationsCompany;
 use Carbon\Carbon;
 
 
@@ -58,17 +59,22 @@ class ReincPendienteResumen extends Command
 
         foreach ($companies as $company)
         {
-            $checks = DB::table('sau_reinc_checks')
+            $configDay = $this->getConfig($company);
+
+            if (!$configDay)
+                continue;
+
+            /*$checks = DB::table('sau_reinc_checks')
             ->selectRaw('DISTINCT company_id AS id')
             ->where('company_id', $company)
-            ->get();
+            ->get();*/
 
             $users = User::select('sau_users.*')
-                            ->active()
-                            ->join('sau_company_user', 'sau_company_user.user_id', 'sau_users.id');
-
-            $users->company_scope = $company;
-            $users = $users->get();
+            ->withoutGlobalScopes()
+            ->active()
+            ->join('sau_company_user', 'sau_company_user.user_id', 'sau_users.id')
+            ->where('sau_company_user.company_id', $company)
+            ->get();
 
             $users = $users->filter(function ($user, $index) use ($company) {
                 return $user->can('reinc_receive_notifications', $company) && !$user->isSuperAdmin($company);
@@ -85,6 +91,7 @@ class ReincPendienteResumen extends Command
                     DB::raw('MIN(sau_reinc_medical_monitorings.set_at) AS medical_monitoring'),
                     DB::raw('MIN(sau_reinc_labor_monitorings.set_at) AS laboral_monitoring')
                 )
+                ->withoutGlobalScopes()
                 ->isOpen()
                 ->join('sau_employees', 'sau_employees.id', 'sau_reinc_checks.employee_id')
                 ->leftJoin('sau_reinc_medical_monitorings', 'sau_reinc_medical_monitorings.check_id', 'sau_reinc_checks.id')
@@ -95,6 +102,7 @@ class ReincPendienteResumen extends Command
                     or (year(sau_reinc_medical_monitorings.set_at) = $now->year and month(sau_reinc_medical_monitorings.set_at) = $now->month)
                     or (year(sau_reinc_labor_monitorings.set_at) = $now->year and month(sau_reinc_labor_monitorings.set_at) = $now->month)"
                 )
+                ->where('sau_reinc_checks.company_id', $company)
                 /*->whereRaw('(
                     CURDATE() = DATE_ADD(monitoring_recommendations, INTERVAL -7 DAY) 
                     or CURDATE() = DATE_ADD(end_recommendations, INTERVAL -7 DAY) 
@@ -108,7 +116,7 @@ class ReincPendienteResumen extends Command
                 ]);
 
                 $data->user = $user->id;
-                $data->company_scope = $company;
+                //$data->company_scope = $company;
             
                 $data = DB::table(DB::raw("({$this->getSqlWithBinding($data)}) AS t"))
                 ->select(
@@ -126,6 +134,7 @@ class ReincPendienteResumen extends Command
                         CASE WHEN year(medical_monitoring) = $now->year and month(medical_monitoring) = $now->month THEN 'Seguimiento Medico. ' ELSE '' END,
                         CASE WHEN year(laboral_monitoring) = $now->year and month(laboral_monitoring) = $now->month THEN 'Seguimiento Laboral.' ELSE '' END) AS message")
                     )
+                    ->where('company_id', $company)
                     ->get();
                     
                     if (COUNT($data) > 0)
@@ -166,5 +175,27 @@ class ReincPendienteResumen extends Command
         }
 
         return $sql;
+    }
+
+    public function getConfig($company_id)
+    {
+        $key = "reports_resumen_month";
+
+        try
+        {
+            $exists = ConfigurationsCompany::company($company_id)->findByKey($key);
+
+            if ($exists && $exists == 'SI')
+            {
+                \Log::info('SI');
+                return true;
+            }
+            else
+                return NULL;
+        } catch (\Exception $e) {
+            \Log::info('NO');
+            return NULL;
+        }
+
     }
 }

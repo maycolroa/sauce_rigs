@@ -68,6 +68,7 @@ class ConfigurationsCompany
             'reports_opens_notify' => 'Notificar por reportes con muchos dias abiertos',
             'days_alert_expiration_report_notify' => 'Numero de dias para enviar la notificacion por reportes abiertos',
             'users_notify_expired_report' => 'Usuarios a notifica por los reportes',
+            'reports_resumen_month' => 'Activar envio de resumen mensual de eventos pendientes a vencerse en Reincorporaciones'
         ];
     }
 

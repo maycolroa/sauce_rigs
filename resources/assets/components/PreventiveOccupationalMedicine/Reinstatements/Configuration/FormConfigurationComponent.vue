@@ -7,6 +7,9 @@
       <vue-input v-if="form.reports_opens_notify == 'SI'" class="col-md-12" v-model="form.days_alert_expiration_report_notify" label="Número de dias para el envio de la notificación" type="number" name="days_alert_expiration_report_notify" :error="form.errorsFor('days_alert_expiration_report_notify')" placeholder="1"></vue-input>
 
       <vue-ajax-advanced-select v-if="form.reports_opens_notify == 'SI'" class="col-md-12" v-model="form.users_notify_expired_report" :selected-object="form.multiselect_user_id" name="users_notify_expired_report" label="Usuarios a notificar" placeholder="Seleccione uno o mas usuarios" :url="userDataUrl" :error="form.errorsFor('users_notify_expired_report')" :multiple="true" :allowEmpty="true"> </vue-ajax-advanced-select>  
+
+      <vue-radio :checked="form.reports_resumen_month" class="col-md-12" v-model="form.reports_resumen_month" :options="siNo" name="reports_resumen_month" :error="form.errorsFor('reports_resumen_month')" label="¿Desea recibir notificación mensual con el resumen de los eventos a cumplirse?">
+        </vue-radio>
     </b-form-row>
 
     <div class="row float-right pt-10 pr-10">
@@ -45,7 +48,8 @@ export default {
         return {
           users_notify_expired_report: '',
           reports_opens_notify: '',
-          days_alert_expiration_report_notify: ''
+          days_alert_expiration_report_notify: '',
+          reports_resumen_month: '',
         };
       }
     }
