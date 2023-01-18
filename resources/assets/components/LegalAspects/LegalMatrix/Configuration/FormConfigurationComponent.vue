@@ -30,7 +30,7 @@
 
     <div class="row float-right pt-10 pr-10">
       <template>
-        <b-btn type="submit" :disabled="loading || (!auth.can['absen_config_r'])" variant="primary">Guardar</b-btn>
+        <b-btn type="submit" :disabled="loading" variant="primary">Guardar</b-btn>
       </template>
     </div>
   </b-form>
