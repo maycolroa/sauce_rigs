@@ -67,21 +67,21 @@
                 </vue-advanced-select>
           </b-form-row>
           <b-form-row>
-            <vue-ajax-advanced-select :disabled="viewOnly" class="col-md-12" v-model="form.cie10_code_id" :error="form.errorsFor('cie10_code_id')" :selected-object="form.multiselect_cie10Code" name="cie10_code_id" label="Código CIE 10" placeholder="Seleccione una opción" :url="cie10CodesDataUrl"> </vue-ajax-advanced-select>
+            <vue-ajax-advanced-select :disabled="viewOnly" class="col-md-12" v-model="form.cie10_code_id" :error="form.errorsFor('cie10_code_id')" :selected-object="form.multiselect_cie10Code" name="cie10_code_id" label="Código CIE 10 (1)" placeholder="Seleccione una opción" :url="cie10CodesDataUrl"> </vue-ajax-advanced-select>
           </b-form-row>
           <b-form-row>
             <vue-input :disabled="true" class="col-md-6" v-model="cie10CodeDetail.system" label="Sistema" type="text" name="system"></vue-input>
             <vue-input :disabled="true" class="col-md-6" v-model="cie10CodeDetail.category" label="Categoría" type="text" name="category"></vue-input>
           </b-form-row>
           <b-form-row>
-            <vue-ajax-advanced-select :disabled="viewOnly" class="col-md-12" v-model="form.cie10_code_2_id" :error="form.errorsFor('cie10_code_2_id')" :selected-object="form.multiselect_cie10Code2" name="cie10_code_2_id" label="Código CIE 10 Secundario" placeholder="Seleccione una opción" :url="cie10CodesDataUrl"> </vue-ajax-advanced-select>
+            <vue-ajax-advanced-select :disabled="viewOnly" class="col-md-12" v-model="form.cie10_code_2_id" :error="form.errorsFor('cie10_code_2_id')" :selected-object="form.multiselect_cie10Code2" name="cie10_code_2_id" label="Código CIE 10 (2)" placeholder="Seleccione una opción" :url="cie10CodesDataUrl"> </vue-ajax-advanced-select>
           </b-form-row>
           <b-form-row>
             <vue-input :disabled="true" class="col-md-6" v-model="cie10CodeDetail2.system" label="Sistema" type="text" name="system2"></vue-input>
             <vue-input :disabled="true" class="col-md-6" v-model="cie10CodeDetail2.category" label="Categoría" type="text" name="category2"></vue-input>
           </b-form-row>
           <b-form-row>
-            <vue-ajax-advanced-select :disabled="viewOnly" class="col-md-12" v-model="form.cie10_code_3_id" :error="form.errorsFor('cie10_code_3_id')" :selected-object="form.multiselect_cie10Code3" name="cie10_code_3_id" label="Código CIE 10 Terciario" placeholder="Seleccione una opción" :url="cie10CodesDataUrl"> </vue-ajax-advanced-select>
+            <vue-ajax-advanced-select :disabled="viewOnly" class="col-md-12" v-model="form.cie10_code_3_id" :error="form.errorsFor('cie10_code_3_id')" :selected-object="form.multiselect_cie10Code3" name="cie10_code_3_id" label="Código CIE 10 (3)" placeholder="Seleccione una opción" :url="cie10CodesDataUrl"> </vue-ajax-advanced-select>
           </b-form-row>
           <b-form-row>
             <vue-input :disabled="true" class="col-md-6" v-model="cie10CodeDetail3.system" label="Sistema" type="text" name="system3"></vue-input>

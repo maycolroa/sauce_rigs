@@ -135,7 +135,7 @@
             <thead>
                 <tr>
                     <th>{{ Auth::user()->getKeywords()['disease_origin'] }}</th>
-                    <th>Código CIE 10</th>
+                    <th>Código CIE 10 (1)</th>
                     <th>Sistema</th>
                     
                 </tr>
@@ -156,7 +156,7 @@
                 </tr>  
                 @if($check->cie10_code_2_id) 
                 <tr>
-                    <th>Código CIE 10 Secundario</th>
+                    <th>Código CIE 10 (2)</th>
                     <th>Sistema</th>
                     <th>Categoría</th>
                 </tr>
@@ -168,7 +168,7 @@
                 @endif
                 @if($check->cie10_code_3_id)
                 <tr>
-                    <th>Código CIE 10 Terciario</th>
+                    <th>Código CIE 10 (3)</th>
                     <th>Sistema</th>
                     <th>Categoría</th>
                 </tr>
