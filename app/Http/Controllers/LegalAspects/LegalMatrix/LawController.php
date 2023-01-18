@@ -62,7 +62,6 @@ class LawController extends Controller
     */
     public function data(Request $request)
     {
-        \Log::info($request);
         if ($request->has('qualify'))
         {
             $laws_hides = LawHide::select('law_id')->get()->toArray();
