@@ -121,9 +121,9 @@ class NotifyUpdateLaws extends Command
                                 $number = $key+1;
                                 $number = $number.'-';
                                 if ($key == 0)
-                                    $description = $number.$article->article."\n";
+                                    $description = '<b>Artículos</b>: '.$number.$article->article."...". "\n";
                                 else
-                                    $description = $description.$number.$article->article."\n";
+                                    $description = $description.$number.$article->article."...". "\n";
                             }
                         }
                         else

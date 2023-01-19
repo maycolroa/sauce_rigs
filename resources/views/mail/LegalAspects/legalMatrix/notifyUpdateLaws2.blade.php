@@ -46,7 +46,7 @@
                 @foreach($mail->with['data'] as $index => $item)
                 <tr>
                     <td style="text-align: center; width: 40%; border-bottom: solid gray 1px;border-right: solid gray 1px;"><a href="{{ $mail->with['urls'][$index] }}" target="_blank">{!! nl2br($item['law']) !!}</a></td>
-                    <td style="text-align: center; width: 60%; border-bottom: solid gray 1px;">{{$item['modification']}}</td>
+                    <td style="text-align: center; width: 60%; border-bottom: solid gray 1px;">{!! nl2br($item['modification']) !!}</td>
                 </tr>
                 @endforeach
             </tbody>
