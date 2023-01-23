@@ -61,6 +61,8 @@ class DangerController extends Controller
             return $this->respondHttp500();
         }
 
+        $this->saveLogActivitySystem('Matriz de peligros - Peligros', 'Se creo el peligro '.$danger->name.' ');
+
         return $this->respondHttp200([
             'message' => 'Se creo el peligro'
         ]);
@@ -100,6 +102,9 @@ class DangerController extends Controller
         if(!$danger->update()){
           return $this->respondHttp500();
         }
+
+        $this->saveLogActivitySystem('Matriz de peligros - Actividades', 'Se edito el peligro '.$danger->name.' ');
+
         
         return $this->respondHttp200([
             'message' => 'Se actualizo el peligro'
@@ -123,6 +128,10 @@ class DangerController extends Controller
         {
             return $this->respondHttp500();
         }
+
+
+        $this->saveLogActivitySystem('Matriz de peligros - Actividades', 'Se elimino el peligro '.$danger->name.' ');
+
         
         return $this->respondHttp200([
             'message' => 'Se elimino el peligro'

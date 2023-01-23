@@ -396,6 +396,8 @@ class ReceptionController extends Controller
 
             DB::commit();
 
+            $this->saveLogActivitySystem('Epp - Recepción', 'Se realizo una recepcion en la ubicacion '.$reception->destiny->name.' proveniente de la ubicación '.$reception->origin->name);
+
         } catch (\Exception $e) {
             \Log::info($e->getMessage());
             //DB::rollback();

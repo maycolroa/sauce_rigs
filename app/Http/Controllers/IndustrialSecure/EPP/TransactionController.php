@@ -278,6 +278,9 @@ class TransactionController extends Controller
 
             DB::commit();
 
+            $this->saveLogActivitySystem('EPP - Entregas', 'Se creo una entrega para el empleado '.$employee->name.' ');
+
+
             return $this->respondHttp200([
                 'message' => 'Se creo la entrega'
             ]);
@@ -410,6 +413,8 @@ class TransactionController extends Controller
             }
 
             $this->deletedTemporal();
+
+            $this->saveLogActivitySystem('EPP - Entregas', 'Se creo una entrega para el empleado '.$employee->name.' ');
 
             DB::commit();
 
@@ -815,6 +820,8 @@ class TransactionController extends Controller
             //DB::rollback();
             return $this->respondHttp500();
         }
+
+        $this->saveLogActivitySystem('EPP - Devoluviones', 'Se creo una devolucion para el empleado '.$employee->name.' ');
 
         return $this->respondHttp200([
             'message' => 'Se creo la devolución'

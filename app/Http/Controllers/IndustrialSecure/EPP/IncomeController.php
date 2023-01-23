@@ -189,11 +189,15 @@ class IncomeController extends Controller
 
             DB::commit();
 
+            $this->saveLogActivitySystem('Epp - Ingresos', 'Se realizo un ingreso para la ubicacion '.$income->location->name.' ');
+
         } catch (\Exception $e) {
             \Log::info($e->getMessage());
             //DB::rollback();
             return $this->respondHttp500();
         }
+
+        
 
         return $this->respondHttp200([
             'message' => 'Se creo el ingreso'

@@ -60,7 +60,7 @@ class ElementReceptionRequest extends FormRequest
             'elements_id' => 'required|array',
             'elements_id.*.reception' => 'required',
             'elements_id.*.quantity_complete' => 'required',
-            'elements_id.*.quantity_reception' => 'integer|required_if:elements_id.*.type,No Identificable',
+            'elements_id.*.quantity_reception' => 'nullable|integer|required_if:elements_id.*.quantity_complete,NO',
             'elements_id.*.codes_reception' => 'array|required_if:elements_id.*.type,Identificable',
             'elements_id.*.type' => 'string',
             'state' => 'required',

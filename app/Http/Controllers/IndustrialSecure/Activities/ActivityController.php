@@ -61,6 +61,8 @@ class ActivityController extends Controller
             return $this->respondHttp500();
         }
 
+        $this->saveLogActivitySystem('Matriz de peligros - Actividades', 'Se creo la actividad '.$activity->name.' ');
+
         return $this->respondHttp200([
             'message' => 'Se creo la actividad'
         ]);
@@ -100,6 +102,8 @@ class ActivityController extends Controller
         if(!$activity->update()){
           return $this->respondHttp500();
         }
+
+        $this->saveLogActivitySystem('Matriz de peligros - Actividades', 'Se edito la actividad '.$activity->name.' ');
         
         return $this->respondHttp200([
             'message' => 'Se actualizo la actividad'
@@ -123,6 +127,8 @@ class ActivityController extends Controller
         {
             return $this->respondHttp500();
         }
+
+        $this->saveLogActivitySystem('Matriz de peligros - Actividades', 'Se elimino la actividad '.$activity->name.' ');
         
         return $this->respondHttp200([
             'message' => 'Se elimino la actividad'

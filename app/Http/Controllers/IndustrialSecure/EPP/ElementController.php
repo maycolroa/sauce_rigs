@@ -78,7 +78,6 @@ class ElementController extends Controller
      */
     public function store(ElementRequest $request)
     {
-        \Log::info($request);
         Validator::make($request->all(), [
             "image" => [
                 function ($attribute, $value, $fail)
@@ -146,6 +145,8 @@ class ElementController extends Controller
                 $record->save();
             }
         }
+
+        $this->saveLogActivitySystem('EPP - Elementos', 'Se creo el elemento '.$element->name.' ');
 
         return $this->respondHttp200([
             'message' => 'Se creo el elemento'
@@ -285,6 +286,8 @@ class ElementController extends Controller
                 );
             }
         }
+
+        $this->saveLogActivitySystem('EPP - Elementos', 'Se edito el elemento '.$element->name.' ');
         
         return $this->respondHttp200([
             'message' => 'Se actualizo el elemento'
@@ -305,6 +308,8 @@ class ElementController extends Controller
         {
             return $this->respondHttp500();
         }
+
+        $this->saveLogActivitySystem('EPP - Elementos', 'Se elimino el elemento '.$element->name.' ');
         
         return $this->respondHttp200([
             'message' => 'Se elimino el peligro'

@@ -72,7 +72,6 @@ class ExitController extends Controller
      */
     public function store(ElementExitRequest $request)
     {
-        \Log::info($request);
         DB::beginTransaction();
 
         try
@@ -163,6 +162,8 @@ class ExitController extends Controller
             }
 
             DB::commit();
+
+            $this->saveLogActivitySystem('Epp - Salidas', 'Se realizo una salida en la ubicacion '.$exit->location->name.' ');
 
         } catch (\Exception $e) {
             \Log::info($e->getMessage());

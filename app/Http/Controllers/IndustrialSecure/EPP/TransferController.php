@@ -270,6 +270,8 @@ class TransferController extends Controller
 
             DB::commit();
 
+            $this->saveLogActivitySystem('Epp - Transferencias', 'Se realizo una transferencia de la ubicacion '.$transfer->origin->name.' a la ubicación '.$transfer->destiny->name);
+
         } catch (\Exception $e) {
             \Log::info($e->getMessage());
             //DB::rollback();

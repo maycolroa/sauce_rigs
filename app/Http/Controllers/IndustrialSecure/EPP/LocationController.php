@@ -81,6 +81,8 @@ class LocationController extends Controller
             return $this->respondHttp500();
         }
 
+        $this->saveLogActivitySystem('EPP - Ubicación', 'Se creo la ubicación '.$location->name.' ');
+
         return $this->respondHttp200([
             'message' => 'Se creo la ubicación'
         ]);
@@ -127,6 +129,9 @@ class LocationController extends Controller
         {
             return $this->respondHttp500();
         }
+
+        $this->saveLogActivitySystem('EPP - Ubicación', 'Se edito la ubicación '.$location->name.' ');
+
         
         return $this->respondHttp200([
             'message' => 'Se actualizo la ubicación'
@@ -146,6 +151,9 @@ class LocationController extends Controller
         {
             return $this->respondHttp500();
         }
+
+        $this->saveLogActivitySystem('EPP - Ubicación', 'Se elimino la ubicación '.$location->name.' ');
+
         
         return $this->respondHttp200([
             'message' => 'Se elimino la ubicación'
