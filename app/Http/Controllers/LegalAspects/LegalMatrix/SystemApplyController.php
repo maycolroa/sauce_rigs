@@ -65,6 +65,8 @@ class SystemApplyController extends Controller
         if(!$system_apply->save()){
             return $this->respondHttp500();
         }
+        
+        $this->saveLogActivitySystem('Matriz legal - Sistema que aplica', 'Se creo el sistema '.$system_apply->name);
 
         return $this->respondHttp200([
             'message' => 'Se creo el Sistema que Aplica'
@@ -107,6 +109,8 @@ class SystemApplyController extends Controller
           return $this->respondHttp500();
         }
         
+        $this->saveLogActivitySystem('Matriz legal - Sistema que aplica', 'Se edito el sistema '.$systemApply->name);
+
         return $this->respondHttp200([
             'message' => 'Se actualizo el Sistema que Aplica'
         ]);
@@ -124,6 +128,8 @@ class SystemApplyController extends Controller
         {
             return $this->respondWithError('No se puede eliminar el Sistema que Aplica porque hay registros asociados a él');
         }
+
+        $this->saveLogActivitySystem('Matriz legal - Sistema que aplica', 'Se elimino el sistema '.$systemApply->name);
 
         if(!$systemApply->delete())
         {

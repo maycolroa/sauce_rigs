@@ -60,6 +60,8 @@ class SstRiskController extends Controller
             return $this->respondHttp500();
         }
 
+        $this->saveLogActivitySystem('Matriz legal - Tema SST', 'Se creo el tema sst '.$sst_risk->name);
+
         return $this->respondHttp200([
             'message' => 'Se creo el Tema SST'
         ]);
@@ -99,6 +101,8 @@ class SstRiskController extends Controller
         if(!$sstRisk->update()){
           return $this->respondHttp500();
         }
+
+        $this->saveLogActivitySystem('Matriz legal - Tema SST', 'Se edito el tema sst '.$sstRisk->name);
         
         return $this->respondHttp200([
             'message' => 'Se actualizo el Tema SST'
@@ -117,6 +121,8 @@ class SstRiskController extends Controller
         {
             return $this->respondWithError('No se puede eliminar el Tema SST porque hay registros asociados a él');
         }
+
+        $this->saveLogActivitySystem('Matriz legal - Tema SST', 'Se elimino el tema sst '.$sstRisk->name);
 
         if(!$sstRisk->delete())
         {

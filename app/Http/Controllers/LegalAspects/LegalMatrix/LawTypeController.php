@@ -67,6 +67,8 @@ class LawTypeController extends Controller
             return $this->respondHttp500();
         }
 
+        $this->saveLogActivitySystem('Matriz legal - Tipos de normas', 'Se creo el tipo de norma '.$type->name);
+
         return $this->respondHttp200([
             'message' => 'Se creo el tipo'
         ]);
@@ -107,6 +109,8 @@ class LawTypeController extends Controller
         if(!$type->update()){
           return $this->respondHttp500();
         }
+
+        $this->saveLogActivitySystem('Matriz legal - Tipos de normas', 'Se edito el tipo de norma '.$type->name);
         
         return $this->respondHttp200([
             'message' => 'Se actualizo el tipo'
@@ -125,6 +129,8 @@ class LawTypeController extends Controller
         {
             return $this->respondWithError('No se puede eliminar la entidad porque hay registros asociados a ella');
         }
+
+        $this->saveLogActivitySystem('Matriz legal - Tipos de normas', 'Se elimino el tipo de norma '.$type->name);
 
         if(!$type->delete())
         {

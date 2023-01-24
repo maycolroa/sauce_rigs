@@ -60,6 +60,8 @@ class RiskAspectController extends Controller
             return $this->respondHttp500();
         }
 
+        $this->saveLogActivitySystem('Matriz legal - Tema Ambiental', 'Se creo el tema ambiental '.$risk_aspect->name);
+
         return $this->respondHttp200([
             'message' => 'Se creo el Riesgo/Aspecto Ambiental'
         ]);
@@ -99,6 +101,8 @@ class RiskAspectController extends Controller
         if(!$riskAspect->update()){
           return $this->respondHttp500();
         }
+
+        $this->saveLogActivitySystem('Matriz legal - Tema Ambiental', 'Se edito el tema ambiental '.$riskAspect->name);
         
         return $this->respondHttp200([
             'message' => 'Se actualizo el Riesgo/Aspecto Ambiental'
@@ -117,6 +121,8 @@ class RiskAspectController extends Controller
         {
             return $this->respondWithError('No se puede eliminar el Riesgo/Aspecto Ambiental porque hay registros asociados a él');
         }
+
+        $this->saveLogActivitySystem('Matriz legal - Tema Ambiental', 'Se elimino el tema ambiental '.$riskAspect->name);
 
         if(!$riskAspect->delete())
         {

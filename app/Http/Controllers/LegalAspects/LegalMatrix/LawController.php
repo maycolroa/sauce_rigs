@@ -214,6 +214,8 @@ class LawController extends Controller
             $data['articles'] = $this->saveArticles($law, $request->get('articles'));
             $data['delete'] = [];
 
+            $this->saveLogActivitySystem('Matriz legal - Normas', 'Se creo la norma '.$law->name);
+
             DB::commit();
 
             SyncQualificationsCompaniesJob::dispatch($law->id);
@@ -336,6 +338,8 @@ class LawController extends Controller
                 Article::destroy($request->delete);
             }
 
+            $this->saveLogActivitySystem('Matriz legal - Normas', 'Se edito la norma '.$law->name);
+
             DB::commit();
 
             SyncQualificationsCompaniesJob::dispatch($law->id);
@@ -372,6 +376,8 @@ class LawController extends Controller
 
             $this->deleteQualifications($qualifications);
         }
+
+        $this->saveLogActivitySystem('Matriz legal - Normas', 'Se elimino la norma '.$law->name);
 
         if(!$law->delete())
             return $this->respondHttp500();

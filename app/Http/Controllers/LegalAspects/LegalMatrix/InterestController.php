@@ -79,6 +79,8 @@ class InterestController extends Controller
             $company->interests()->attach($interest->id);
         }
 
+        $this->saveLogActivitySystem('Matriz legal - Intereses', 'Se creo el interes '.$interest->name);
+
         return $this->respondHttp200([
             'message' => 'Se creo el interes'
         ]);
@@ -119,6 +121,9 @@ class InterestController extends Controller
         if(!$interest->update()){
           return $this->respondHttp500();
         }
+
+
+        $this->saveLogActivitySystem('Matriz legal - Intereses', 'Se edito el interes '.$interest->name);
         
         return $this->respondHttp200([
             'message' => 'Se actualizo el interes'
@@ -137,6 +142,8 @@ class InterestController extends Controller
         {
             return $this->respondWithError('No se puede eliminar el interés porque hay registros asociados a el');
         }
+
+        $this->saveLogActivitySystem('Matriz legal - Intereses', 'Se elimino el interes '.$interest->name);
 
         if (!$interest->delete())
         {

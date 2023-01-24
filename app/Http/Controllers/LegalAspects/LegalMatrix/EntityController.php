@@ -66,6 +66,8 @@ class EntityController extends Controller
             return $this->respondHttp500();
         }
 
+        $this->saveLogActivitySystem('Matriz legal - Entidades', 'Se creo la entidad '.$entity->name);
+
         return $this->respondHttp200([
             'message' => 'Se creo la entidad'
         ]);
@@ -106,6 +108,8 @@ class EntityController extends Controller
         if(!$entity->update()){
           return $this->respondHttp500();
         }
+
+        $this->saveLogActivitySystem('Matriz legal - Entidades', 'Se edito la entidad '.$entity->name);
         
         return $this->respondHttp200([
             'message' => 'Se actualizo la entidad'
@@ -124,6 +128,8 @@ class EntityController extends Controller
         {
             return $this->respondWithError('No se puede eliminar la entidad porque hay registros asociados a ella');
         }
+
+        $this->saveLogActivitySystem('Matriz legal - Entidades', 'Se elimino la entidad '.$entity->name);
 
         if(!$entity->delete())
         {
