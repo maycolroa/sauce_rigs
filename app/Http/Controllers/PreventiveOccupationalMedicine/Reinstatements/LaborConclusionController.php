@@ -62,6 +62,8 @@ class LaborConclusionController extends Controller
             return $this->respondHttp500();
         }
 
+        $this->saveLogActivitySystem('Reincorporaciones - Conclusiones laborales', 'Se creo la conclusion laboral '. $laborConclusion->name);
+
         SyncReincOptionsSelectJob::dispatch($this->company, 'reinc_select_labor_conclusions', $laborConclusion->getTable());
 
         return $this->respondHttp200([
@@ -104,6 +106,8 @@ class LaborConclusionController extends Controller
           return $this->respondHttp500();
         }
         
+        $this->saveLogActivitySystem('Reincorporaciones - Conclusiones laborales', 'Se edito la conclusion laboral '. $laborConclusion->name);
+
         SyncReincOptionsSelectJob::dispatch($this->company, 'reinc_select_labor_conclusions', $laborConclusion->getTable());
 
         return $this->respondHttp200([
@@ -119,6 +123,8 @@ class LaborConclusionController extends Controller
      */
     public function destroy(LaborConclusion $laborConclusion)
     {
+        $this->saveLogActivitySystem('Reincorporaciones - Conclusiones laborales', 'Se elimino la conclusion laboral '. $laborConclusion->name);
+
         if (!$laborConclusion->delete())
             return $this->respondHttp500();
 

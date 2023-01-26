@@ -62,6 +62,8 @@ class DiseaseOriginController extends Controller
             return $this->respondHttp500();
         }
 
+        $this->saveLogActivitySystem('Reincorporaciones - Tipo de evento', 'Se creo el tipo de evento '. $diseaseOrigin->name);
+
         SyncReincOptionsSelectJob::dispatch($this->company, 'reinc_select_disease_origin', $diseaseOrigin->getTable());
 
         return $this->respondHttp200([
@@ -103,6 +105,8 @@ class DiseaseOriginController extends Controller
         if(!$diseaseOrigin->update()){
           return $this->respondHttp500();
         }
+
+        $this->saveLogActivitySystem('Reincorporaciones - Tipo de evento', 'Se edito el tipo de evento '. $diseaseOrigin->name);
         
         SyncReincOptionsSelectJob::dispatch($this->company, 'reinc_select_disease_origin', $diseaseOrigin->getTable());
 
@@ -119,6 +123,8 @@ class DiseaseOriginController extends Controller
      */
     public function destroy(DiseaseOrigin $diseaseOrigin)
     {
+        $this->saveLogActivitySystem('Reincorporaciones - Tipo de evento', 'Se elimino el tipo de evento '. $diseaseOrigin->name);
+
         if (!$diseaseOrigin->delete())
             return $this->respondHttp500();
 

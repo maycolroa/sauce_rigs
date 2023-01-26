@@ -66,6 +66,8 @@ class ConfigurationController extends Controller
             }
         }
 
+        $this->saveLogActivitySystem('Reincorporaciones - Configuración', 'Se creo o modifico la configuracion de la compañia');
+
         return $this->respondHttp200([
             'message' => 'Se actualizó la configuración'
         ]);

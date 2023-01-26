@@ -62,6 +62,8 @@ class OriginAdvisorController extends Controller
             return $this->respondHttp500();
         }
 
+        $this->saveLogActivitySystem('Reincorporaciones - Procedencia de recomendaciones', 'Se creo la procedencia '. $originAdvisor->name);
+
         SyncReincOptionsSelectJob::dispatch($this->company, 'reinc_select_origin_advisors', $originAdvisor->getTable());
 
         return $this->respondHttp200([
@@ -104,6 +106,8 @@ class OriginAdvisorController extends Controller
           return $this->respondHttp500();
         }
 
+        $this->saveLogActivitySystem('Reincorporaciones - Procedencia de recomendaciones', 'Se edito la procedencia '. $originAdvisor->name);
+
         SyncReincOptionsSelectJob::dispatch($this->company, 'reinc_select_origin_advisors', $originAdvisor->getTable());
         
         return $this->respondHttp200([
@@ -119,6 +123,8 @@ class OriginAdvisorController extends Controller
      */
     public function destroy(OriginAdvisor $originAdvisor)
     {
+        $this->saveLogActivitySystem('Reincorporaciones - Procedencia de recomendaciones', 'Se elimino la procedencia '. $originAdvisor->name);
+
         if (!$originAdvisor->delete())
             return $this->respondHttp500();
         

@@ -200,6 +200,9 @@ class CheckController extends Controller
                 return $this->respondHttp500();
             }
 
+
+        $this->saveLogActivitySystem('Reincorporaciones - Reportes', 'Se creo un reporte para el empleado '. $check->employee->name.'con el diagnostico '. $check->cie10Code->description);
+
             DB::commit();
 
         } catch (Exception $e){
@@ -278,6 +281,8 @@ class CheckController extends Controller
                 return $this->respondHttp500();
 
             CheckManager::deleteData($check, $request->get('delete'));
+            
+            $this->saveLogActivitySystem('Reincorporaciones - Reportes', 'Se edito el reporte realizado al empleado '. $check->employee->name.'con el diagnostico '. $check->cie10Code->description);
 
             DB::commit();
 
@@ -302,6 +307,8 @@ class CheckController extends Controller
         $check = Check::select('sau_reinc_checks.*')
                 ->join('sau_employees', 'sau_employees.id', 'sau_reinc_checks.employee_id')
                 ->findOrFail($id);
+        
+        $this->saveLogActivitySystem('Reincorporaciones - Reportes', 'Se elimino el reporte realizado al empleado '. $check->employee->name.'con el diagnostico '. $check->cie10Code->description);
 
         if (!$check->delete())
             return $this->respondHttp500();

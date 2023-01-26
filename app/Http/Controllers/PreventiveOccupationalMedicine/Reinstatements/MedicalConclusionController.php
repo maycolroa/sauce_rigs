@@ -62,6 +62,8 @@ class MedicalConclusionController extends Controller
             return $this->respondHttp500();
         }
 
+        $this->saveLogActivitySystem('Reincorporaciones - Conclusiones medicas', 'Se creo la conclusion medica '. $medicalConclusion->name);
+
         SyncReincOptionsSelectJob::dispatch($this->company, 'reinc_select_medical_conclusions', $medicalConclusion->getTable());
 
         return $this->respondHttp200([
@@ -103,6 +105,8 @@ class MedicalConclusionController extends Controller
         if(!$medicalConclusion->update()){
           return $this->respondHttp500();
         }
+
+        $this->saveLogActivitySystem('Reincorporaciones - Conclusiones medicas', 'Se edito la conclusion medica '. $medicalConclusion->name);
         
         SyncReincOptionsSelectJob::dispatch($this->company, 'reinc_select_medical_conclusions', $medicalConclusion->getTable());
 
@@ -119,6 +123,8 @@ class MedicalConclusionController extends Controller
      */
     public function destroy(MedicalConclusion $medicalConclusion)
     {
+        $this->saveLogActivitySystem('Reincorporaciones - Conclusiones medicas', 'Se elimino la conclusion medica '. $medicalConclusion->name);
+
         if (!$medicalConclusion->delete())
             return $this->respondHttp500();
 

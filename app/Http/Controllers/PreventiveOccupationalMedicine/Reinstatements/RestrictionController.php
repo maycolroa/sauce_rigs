@@ -61,6 +61,8 @@ class RestrictionController extends Controller
             return $this->respondHttp500();
         }
 
+        $this->saveLogActivitySystem('Reincorporaciones - Restricciones', 'Se creo la restriccion '. $restriction->name);
+
         return $this->respondHttp200([
             'message' => 'Se creo la Restricción'
         ]);
@@ -100,6 +102,8 @@ class RestrictionController extends Controller
         if(!$restriction->update()){
           return $this->respondHttp500();
         }
+
+        $this->saveLogActivitySystem('Reincorporaciones - Restricciones', 'Se edito la restriccion '. $restriction->name);
         
         return $this->respondHttp200([
             'message' => 'Se actualizo la Restricción'
@@ -117,6 +121,8 @@ class RestrictionController extends Controller
         //Falta probar esto
         if (COUNT($restriction->checks) > 0)
             return $this->respondWithError('No se puede eliminar la Restricción porque hay registros asociados a él');
+
+        $this->saveLogActivitySystem('Reincorporaciones - Restricciones', 'Se elimino la restriccion '. $restriction->name);
 
         if (!$restriction->delete())
             return $this->respondHttp500();
