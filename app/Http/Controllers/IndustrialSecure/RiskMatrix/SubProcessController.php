@@ -61,6 +61,8 @@ class SubProcessController extends Controller
             return $this->respondHttp500();
         }
 
+        $this->saveLogActivitySystem('Matriz de riesgos - Subprocesos', 'Se creo el subproceso  '.$subProcess->name);
+
         return $this->respondHttp200([
             'message' => 'Se creo el subproceso'
         ]);
@@ -99,8 +101,10 @@ class SubProcessController extends Controller
         
         if(!$subProcess->update()){
           return $this->respondHttp500();
-        }
+        }        
         
+        $this->saveLogActivitySystem('Matriz de riesgos - Subprocesos', 'Se edito el subproceso  '.$subProcess->name);
+
         return $this->respondHttp200([
             'message' => 'Se actualizo el subproceso'
         ]);
@@ -118,6 +122,7 @@ class SubProcessController extends Controller
         {
             return $this->respondWithError('No se puede eliminar la actividad porque hay matrices de peligro asociadas a ella');
         }*/
+        $this->saveLogActivitySystem('Matriz de riesgos - Subprocesos', 'Se elimino el subproceso  '.$subProcess->name);
 
         if(!$subProcess->delete())
         {

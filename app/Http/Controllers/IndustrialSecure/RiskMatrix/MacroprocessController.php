@@ -76,6 +76,8 @@ class MacroprocessController extends Controller
     public function update(Request $request, TagsProcess $macroprocess)
     {
         $macroprocess->fill($request->all());
+
+        $this->saveLogActivitySystem('Matriz de riesgos - Tags Macroprocesos', 'Se creo el macroproceso  '.$macroprocess->name);
         
         if(!$macroprocess->update()){
           return $this->respondHttp500();

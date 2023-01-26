@@ -60,6 +60,8 @@ class RiskController extends Controller
         if(!$risk->save()){
             return $this->respondHttp500();
         }
+        
+        $this->saveLogActivitySystem('Matriz de riesgos - Riesgos', 'Se creo el riesgo  '.$risk->name);
 
         return $this->respondHttp200([
             'message' => 'Se creo el riesgo'
@@ -100,6 +102,8 @@ class RiskController extends Controller
         if(!$risk->update()){
           return $this->respondHttp500();
         }
+
+        $this->saveLogActivitySystem('Matriz de riesgos - Riesgos', 'Se edito el riesgo  '.$risk->name);
         
         return $this->respondHttp200([
             'message' => 'Se actualizo el riesgo'
@@ -118,6 +122,8 @@ class RiskController extends Controller
         {
             return $this->respondWithError('No se puede eliminar la actividad porque hay matrices de peligro asociadas a ella');
         }*/
+
+        $this->saveLogActivitySystem('Matriz de riesgos - Riesgos', 'Se elimino el riesgo  '.$risk->name);
 
         if(!$risk->delete())
         {

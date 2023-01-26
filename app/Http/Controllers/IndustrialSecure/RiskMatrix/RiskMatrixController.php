@@ -200,14 +200,18 @@ class RiskMatrixController extends Controller
        // \Log::info($request);
         DB::beginTransaction();
 
+        $details_log = '';
+
         try
         { 
             if ($riskMatrix)
             {
+                $details_log = $details_log.'Se actualizo la matriz de riesgos ubicada en: ';
                 $msg = 'Se actualizo la matriz de riesgos';
            }
             else
             {
+                $details_log = $details_log.'Se creo la matriz de riesgos ubicada en: ';
                 $msg = 'Se creo la matriz de riesgos';
                 $riskMatrix = new RiskMatrix();
                 $riskMatrix->company_id = $this->company;
@@ -263,6 +267,17 @@ class RiskMatrixController extends Controller
 
             $count_sequence = 0;
             $count_controls = 0;
+
+            if ($confLocation['regional'] == 'SI')
+                $details_log = $details_log . $keywords['regional']. ': ' .  $riskMatrix->regional->name;
+            if ($confLocation['headquarter'] == 'SI')
+                $details_log = $details_log . '- ' .$keywords['headquarter']. ': ' .  $riskMatrix->headquarter->name;
+            if ($confLocation['process'] == 'SI')
+                $details_log = $details_log . '- ' .$keywords['process']. ': ' .  $riskMatrix->process->name;
+            if ($confLocation['area'] == 'SI')
+                $details_log = $details_log . '- ' .$keywords['area']. ': ' .  $riskMatrix->area->name;
+
+            $this->saveLogActivitySystem('Matriz de riesgos', $details_log);
 
             foreach ($request->get('subprocesses') as $keyA => $itemS)
             {
