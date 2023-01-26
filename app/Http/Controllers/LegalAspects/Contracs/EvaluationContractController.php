@@ -160,6 +160,8 @@ class EvaluationContractController extends Controller
             $this->saveResults($evaluation_contract, $request->get('evaluation'));
 
             $this->deleteData($request->get('delete'));
+            
+            $this->saveLogActivitySystem('Contratistas - Evaluación Realizada', 'Se realizo una evaluación '.$evaluation_contract->evaluation->name .'al contratista '.$evaluation_contract->contract->social_reason);
 
             DB::commit();
 
@@ -244,6 +246,8 @@ class EvaluationContractController extends Controller
             ]);
 
             $this->deleteData($request->get('delete'));
+
+            $this->saveLogActivitySystem('Contratistas - Evaluación Realizada', 'Se edito la evaluación '.$evaluationContract->evaluation->name .'al contratista '.$evaluationContract->contract->social_reason);
 
             DB::commit();
 

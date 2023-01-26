@@ -99,7 +99,9 @@ class ContractTrainingController extends Controller
 
             $this->saveFile($training, $request->get('files'));
 
-            $this->saveQuestions($training, $request->get('questions'));
+            $this->saveQuestions($training, $request->get('questions'));  
+
+            $this->saveLogActivitySystem('Contratistas - Capacitaciones', 'Se creo la capacitación '.$training->name);
 
             DB::commit();
 
@@ -215,6 +217,8 @@ class ContractTrainingController extends Controller
 
             $this->deleteData($request->get('delete'));
 
+            $this->saveLogActivitySystem('Contratistas - Capacitaciones', 'Se edito la capacitación '.$trainingContract->name);
+
             DB::commit();
 
         } catch (\Exception $e) {
@@ -248,6 +252,8 @@ class ContractTrainingController extends Controller
                 Storage::disk('s3')->delete('legalAspects/contracts/trainings/files/'. $path);
             }
         }
+
+        $this->saveLogActivitySystem('Contratistas - Capacitaciones', 'Se elimino la capacitación '.$trainingContract->name);
 
         if (!$trainingContract->delete())
             return $this->respondHttp500();
@@ -412,6 +418,8 @@ class ContractTrainingController extends Controller
         if (!$training->update($data)) {
             return $this->respondHttp500();
         }
+
+        $this->saveLogActivitySystem('Contratistas - Capacitaciones', 'Se cambio el estado a '.$training->active);
         
         return $this->respondHttp200([
             'message' => 'Se cambio el estado de la capacitación'

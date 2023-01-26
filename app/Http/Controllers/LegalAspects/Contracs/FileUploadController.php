@@ -145,6 +145,8 @@ class FileUploadController extends Controller
           $state->save();
         }
 
+        $this->saveLogActivitySystem('Contratistas - Archivos', 'Se creo el archivo '.$fileUpload->name);
+
         DB::commit();
 
         //$this->sendNotification($fileUpload);
@@ -287,6 +289,9 @@ class FileUploadController extends Controller
           }
         }
 
+
+        $this->saveLogActivitySystem('Contratistas - Archivos', 'Se edito el archivo '.$fileUpload->name);
+
         DB::commit();
 
         //$this->sendNotification($fileUpload, 'actualizado');
@@ -320,6 +325,8 @@ class FileUploadController extends Controller
         }
 
         Storage::disk('s3')->delete('legalAspects/files/'. $fileUpload->file);
+
+        $this->saveLogActivitySystem('Contratistas - Archivos', 'Se elimino el archivo '.$fileUpload->name);
         
         if(!$fileUpload->delete())
         {

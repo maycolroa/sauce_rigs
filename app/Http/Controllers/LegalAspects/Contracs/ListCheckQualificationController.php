@@ -98,6 +98,8 @@ class ListCheckQualificationController extends Controller
             return $this->respondHttp500();
         }
 
+        $this->saveLogActivitySystem('Contratistas - Lista de chequeo', 'Se creo la lista de chequeo para el periodo '.$qualification->validity_period);
+
         if($qualification_exist)
             $qualification_exist->update([
                 'state' => false
@@ -142,6 +144,8 @@ class ListCheckQualificationController extends Controller
         if(!$listCheck->update()){
           return $this->respondHttp500();
         }
+
+        $this->saveLogActivitySystem('Contratistas - Lista de chequeo', 'Se edito la lista de chequeo para el periodo '.$listCheck->validity_period);
         
         return $this->respondHttp200([
             'message' => 'Se actualizo el registro'

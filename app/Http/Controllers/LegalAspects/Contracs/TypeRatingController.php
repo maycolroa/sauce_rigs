@@ -56,6 +56,8 @@ class TypeRatingController extends Controller
     {
         $rating = new TypeRating($request->all());
         $rating->company_id = $this->company;
+
+        $this->saveLogActivitySystem('Contratistas - Evaluaciones', 'Se creo el proceso a evaluar '.$rating->name);
         
         if(!$rating->save()){
             return $this->respondHttp500();
@@ -100,6 +102,8 @@ class TypeRatingController extends Controller
         if(!$typeRating->update()){
           return $this->respondHttp500();
         }
+
+        $this->saveLogActivitySystem('Contratistas - Evaluaciones', 'Se edito el proceso a evaluar '.$rating->name);
         
         return $this->respondHttp200([
             'message' => 'Se actualizo el tipo de calificación'
@@ -118,6 +122,8 @@ class TypeRatingController extends Controller
         {
             return $this->respondWithError('No se puede eliminar el tipo de calificación porque hay items asociados a el');
         }
+
+        $this->saveLogActivitySystem('Contratistas - Evaluaciones', 'Se elimino el proceso a evaluar '.$rating->name);
 
         if(!$typeRating->delete())
         {

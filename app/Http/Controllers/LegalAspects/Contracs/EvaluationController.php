@@ -120,6 +120,8 @@ class EvaluationController extends Controller
 
             $this->saveObjectives($evaluation, $request->get('objectives'));
 
+            $this->saveLogActivitySystem('Contratistas - Evaluaciones', 'Se creo el formato de evaluacion '.$evaluation->name.' - '.$evaluation->type);
+
             DB::commit();
 
         } catch (\Exception $e) {
@@ -247,6 +249,8 @@ class EvaluationController extends Controller
             $this->saveObjectives($evaluation, $request->get('objectives'));
 
             $this->deleteData($request->get('delete'));
+
+            $this->saveLogActivitySystem('Contratistas - Evaluaciones', 'Se edito el formato de evaluacion '.$evaluation->name.' - '.$evaluation->type);
 
             DB::commit();
 

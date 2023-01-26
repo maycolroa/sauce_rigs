@@ -98,8 +98,7 @@ class TrainingEmployeeController extends Controller
     public function saveTraining(TrainingEmployeeRequest $request)
     {
         DB::beginTransaction();
-        \Log::info($request);
-
+        
         try
         {
             $training = Training::withoutGlobalScopes()->find($request->id);

@@ -74,6 +74,8 @@ class ContractActivityController extends Controller
 
             DB::commit();
 
+        $this->saveLogActivitySystem('Contratistas - Actividades', 'Se creo la actividad '.$activity->name);
+
         } catch (\Exception $e) {
             DB::rollback();
             return $this->respondHttp500();
@@ -140,6 +142,8 @@ class ContractActivityController extends Controller
 
             DB::commit();
 
+            $this->saveLogActivitySystem('Contratistas - Actividades', 'Se edito la actividad '.$activityContract->name);
+
         } catch (\Exception $e) {
             DB::rollback();
             return $this->respondHttp500();
@@ -158,6 +162,8 @@ class ContractActivityController extends Controller
      */
     public function destroy(ActivityContract $activityContract)
     {
+        $this->saveLogActivitySystem('Contratistas - Actividades', 'Se elimino la actividad '.$activityContract->name);
+
         if (!$activityContract->delete())
         {
             return $this->respondHttp500();

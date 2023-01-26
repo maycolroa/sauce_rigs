@@ -121,6 +121,8 @@ class ContractEmployeeController extends Controller
 
             TrainingSendNotificationJob::dispatch($this->company, '', $employee->id);
 
+            $this->saveLogActivitySystem('Contratistas - Empleados', 'Se creo el empleado '.$employee->name.' - '.$employee->identification);
+
             DB::commit();
 
         } catch (\Exception $e) {
@@ -230,6 +232,8 @@ class ContractEmployeeController extends Controller
                     }
                 }
             }
+
+            $this->saveLogActivitySystem('Contratistas - Empleados', 'Se creo el empleado '.$employeeContract->name.' - '.$employeeContract->identification);
 
             DB::commit();
 
@@ -358,6 +362,8 @@ class ContractEmployeeController extends Controller
                     Storage::disk('s3')->delete('legalAspects/files/'. $path);
                 }
             }
+
+            $this->saveLogActivitySystem('Contratistas - Empleados', 'Se elimino el empleado '.$employeeContract->name.' - '.$employeeContract->identification);
 
             if (!$employeeContract->delete())
                 return $this->respondHttp500();

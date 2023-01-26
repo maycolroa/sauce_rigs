@@ -152,6 +152,8 @@ class InformContractController extends Controller
             $this->saveResults($inform_contract, $request->get('inform'));
 
             $this->deleteData($request->get('delete'));
+            
+            $this->saveLogActivitySystem('Contratistas - Informes Mensuales', 'Se realizo un informe '.$inform_contract->inform->name .'al contratista '.$inform_contract->contract->social_reason.' en el mes '.$inform_contract->month.' en el año '.$inform_contract->year);
 
             DB::commit();
 
@@ -210,6 +212,8 @@ class InformContractController extends Controller
             $this->saveResults($informContract, $request->get('inform'));
 
             $this->deleteData($request->get('delete'));
+            
+            $this->saveLogActivitySystem('Contratistas - Informes Mensuales', 'Se realizo un informe '.$informContract->inform->name .'al contratista '.$informContract->contract->social_reason.' en el mes '.$informContract->month.' en el año '.$informContract->year);
 
             DB::commit();
 
