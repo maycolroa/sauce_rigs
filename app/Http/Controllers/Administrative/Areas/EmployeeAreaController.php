@@ -89,6 +89,8 @@ class EmployeeAreaController extends Controller
 
             $area->processes()->sync($ids);
 
+            $this->saveLogActivitySystem('Areas', 'Se creo el area '.$area->name);
+
             DB::commit();
 
         } catch (\Exception $e) {
@@ -171,6 +173,8 @@ class EmployeeAreaController extends Controller
             
             $area->processes()->sync($ids);
 
+            $this->saveLogActivitySystem('Areas', 'Se edito el area '.$area->name);
+
             DB::commit();
 
         } catch (\Exception $e) {
@@ -195,6 +199,8 @@ class EmployeeAreaController extends Controller
         {
             return $this->respondWithError('No se puede eliminar el registro porque hay otros registros asociados a el');
         }
+
+        $this->saveLogActivitySystem('Areas', 'Se elimino el area '.$area->name);
 
         if(!$area->delete())
         {

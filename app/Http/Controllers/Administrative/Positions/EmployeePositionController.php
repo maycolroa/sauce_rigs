@@ -65,6 +65,8 @@ class EmployeePositionController extends Controller
             return $this->respondHttp500();
         }
 
+        $this->saveLogActivitySystem('Cargos', 'Se creo el cargo  '.$position->name);
+
         $position->elements()->sync($this->getDataFromMultiselect($request->get('elements_id')));
 
         return $this->respondHttp200([
@@ -115,7 +117,8 @@ class EmployeePositionController extends Controller
         if(!$position->update()){
           return $this->respondHttp500();
         }
-        \Log::info($request->get('elements_id'));
+
+        $this->saveLogActivitySystem('Cargos', 'Se edito el cargo  '.$position->name);
 
         $position->elements()->sync($this->getDataFromMultiselect($request->get('elements_id')));
         
@@ -136,6 +139,8 @@ class EmployeePositionController extends Controller
         {
             return $this->respondWithError('No se puede eliminar el registro porque hay otros registros asociados a el');
         }
+
+        $this->saveLogActivitySystem('Cargos', 'Se elimino el cargo  '.$position->name);
 
         if(!$position->delete())
         {

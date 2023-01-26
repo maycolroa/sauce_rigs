@@ -64,6 +64,8 @@ class EmployeeRegionalController extends Controller
             return $this->respondHttp500();
         }
 
+        $this->saveLogActivitySystem('Regionales', 'Se creo la regional  '.$regional->name);
+
         return $this->respondHttp200([
             'message' => 'Se creo el registro'
         ]);
@@ -104,6 +106,8 @@ class EmployeeRegionalController extends Controller
           return $this->respondHttp500();
         }
         
+        $this->saveLogActivitySystem('Regionales', 'Se edito la regional  '.$regional->name);
+
         return $this->respondHttp200([
             'message' => 'Se actualizo el registro'
         ]);
@@ -121,6 +125,8 @@ class EmployeeRegionalController extends Controller
         {
             return $this->respondWithError('No se puede eliminar el registro porque hay otros registros asociados a el');
         }
+
+        $this->saveLogActivitySystem('Regionales', 'Se elimino la regional  '.$regional->name);
 
         if(!$regional->delete())
         {

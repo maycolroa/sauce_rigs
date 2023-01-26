@@ -83,6 +83,8 @@ class EmployeeProcessController extends Controller
 
             $process->headquarters()->sync($this->getDataFromMultiselect($request->get('employee_headquarter_id')));
 
+            $this->saveLogActivitySystem('Procesos', 'Se creo el proceso  '.$process->name);
+
             DB::commit();
 
         } catch (\Exception $e) {
@@ -155,6 +157,8 @@ class EmployeeProcessController extends Controller
 
             $process->headquarters()->sync($this->getDataFromMultiselect($request->get('employee_headquarter_id')));
 
+            $this->saveLogActivitySystem('Procesos', 'Se edito el proceso  '.$process->name);
+
             DB::commit();
 
         } catch (\Exception $e) {
@@ -179,6 +183,8 @@ class EmployeeProcessController extends Controller
         {
             return $this->respondWithError('No se puede eliminar el registro porque hay otros registros asociados a el');
         }
+
+        $this->saveLogActivitySystem('Procesos', 'Se elimino el proceso  '.$process->name);
 
         if(!$process->delete())
         {

@@ -96,6 +96,8 @@ class EmployeesController extends Controller
         if($this->updateModelLocationForm($employee, $request->get('locations')))
             return $this->respondHttp500();
 
+        $this->saveLogActivitySystem('Empleados', 'Se creo el empleado  '.$employee->name. ' - '.$employee->identification);
+
         return $this->respondHttp200([
             'message' => 'Se creo el registro'
         ]);
@@ -170,6 +172,8 @@ class EmployeesController extends Controller
         if($this->updateModelLocationForm($employee, $request->get('locations')))
             return $this->respondHttp500();
 
+            $this->saveLogActivitySystem('Empleados', 'Se edito el empleado  '.$employee->name. ' - '.$employee->identification);
+
         return $this->respondHttp200([
             'message' => 'Se actualizo el registro'
         ]);
@@ -187,6 +191,8 @@ class EmployeesController extends Controller
         {
             return $this->respondWithError('No se puede eliminar el registro porque hay otros registros asociados a el');
         }
+
+        $this->saveLogActivitySystem('Empleados', 'Se elimino el empleado  '.$employee->name. ' - '.$employee->identification);
 
         if(!$employee->delete())
         {

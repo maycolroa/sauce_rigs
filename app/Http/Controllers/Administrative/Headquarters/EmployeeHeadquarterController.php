@@ -65,6 +65,8 @@ class EmployeeHeadquarterController extends Controller
             return $this->respondHttp500();
         }
 
+        $this->saveLogActivitySystem('Sedes', 'Se creo la sede  '.$headquarter->name);
+
         return $this->respondHttp200([
             'message' => 'Se creo el registro'
         ]);
@@ -106,6 +108,8 @@ class EmployeeHeadquarterController extends Controller
         if(!$headquarter->update()){
           return $this->respondHttp500();
         }
+
+        $this->saveLogActivitySystem('Sedes', 'Se edito la sede  '.$headquarter->name);
         
         return $this->respondHttp200([
             'message' => 'Se actualizo el registro'
@@ -124,6 +128,8 @@ class EmployeeHeadquarterController extends Controller
         {
             return $this->respondWithError('No se puede eliminar el registro porque hay otros registros asociados a el');
         }
+
+        $this->saveLogActivitySystem('Sedes', 'Se elimino la sede  '.$headquarter->name);
 
         if(!$headquarter->delete())
         {

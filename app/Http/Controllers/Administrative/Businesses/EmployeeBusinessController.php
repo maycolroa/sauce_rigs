@@ -61,6 +61,8 @@ class EmployeeBusinessController extends Controller
             return $this->respondHttp500();
         }
 
+        $this->saveLogActivitySystem('Centro de costos', 'Se creo el centro de costos  '.$business->name);
+
         return $this->respondHttp200([
             'message' => 'Se creo el registro'
         ]);
@@ -100,6 +102,8 @@ class EmployeeBusinessController extends Controller
         if(!$business->update()){
           return $this->respondHttp500();
         }
+
+        $this->saveLogActivitySystem('Centro de costos', 'Se edito el centro de costos  '.$business->name);
         
         return $this->respondHttp200([
             'message' => 'Se actualizo el registro'
@@ -118,6 +122,8 @@ class EmployeeBusinessController extends Controller
         {
             return $this->respondWithError('No se puede eliminar el registro porque hay otros registros asociados a el');
         }
+
+        $this->saveLogActivitySystem('Centro de costos', 'Se elimino el centro de costos  '.$business->name);
 
         if(!$business->delete())
         {

@@ -46,6 +46,9 @@ class ConfigurationController extends Controller
                 ConfigurationsCompany::key($key)->value($value)->save();
         }
 
+
+        $this->saveLogActivitySystem('Configuracion de la compañia', 'Se creo o modifico la confiduracion de la compañia');
+
         return $this->respondHttp200([
             'message' => 'Se actualizó la configuración'
         ]);

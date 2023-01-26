@@ -132,6 +132,8 @@ class RoleController extends Controller
 
         $role->syncPermissions($ids); 
 
+        $this->saveLogActivitySystem('Roles', 'Se creo el rol  '.$role->name);
+
         return $this->respondHttp200([
             'message' => 'Se creo el rol'
         ]);
@@ -203,6 +205,8 @@ class RoleController extends Controller
             return $this->respondHttp500();
         }
 
+        $this->saveLogActivitySystem('Roles', 'Se edito el rol  '.$role->name);
+
         $permissions = [];
 
         foreach($request->get('permissions_asignates') as $v)
@@ -238,6 +242,8 @@ class RoleController extends Controller
 
         $role->users()->sync([]); // Eliminar datos de relaciones
         $role->permissions()->sync([]); // Eliminar datos de relaciones
+
+        $this->saveLogActivitySystem('Roles', 'Se elimino el rol  '.$role->name);
 
         // Ahora forzar la eliminación funcionará independientemente de si 
         //la tabla dinámica tiene eliminación en cascada
