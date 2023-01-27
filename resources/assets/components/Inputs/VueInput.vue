@@ -13,6 +13,7 @@
             :name="name"
             :min="min"
             :max="max"
+            :step="step"
             :disabled="disabled"
             :autocomplete="autocomplete ? 'off' : ''"
             @input="updateValue($event)"
@@ -46,7 +47,8 @@ export default {
     autocomplete: { type: Boolean, default: false },
     textBlock: {type: String},
     actionBlock: {type: String},
-    helpText: {type: String}
+    helpText: {type: String},
+    step: { type: Number, default: '0.01' },
   },
   computed:{
       state(){
