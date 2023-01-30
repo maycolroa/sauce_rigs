@@ -84,4 +84,26 @@ export default [
       }
     ]
   },
+  {
+    name: 'administrative-user-activity',
+    filters: [
+      {
+        url: '/selects/usersActivitiesModule',
+        key: 'modules',
+        type: 'select',
+        label: 'Modulo'
+      },
+      {
+        url: '/selects/users',
+        key: 'users',
+        type: 'select',
+        label: 'Usuario'
+      },
+      {
+        key: 'dateRange',
+        type: 'dateRange',
+        label: 'Fecha de realización',
+      }
+    ] 
+  },
 ];

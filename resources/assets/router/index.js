@@ -8,6 +8,7 @@ import ChangePassword from '@/views/Administrative/users/changePassword'
 import DefaultModule from '@/views/Administrative/users/defaultModule'
 import TermsCondition from '@/views/Administrative/users/termsConditions'
 import Firm from '@/views/Administrative/users/firm'
+import UserActivity from '@/views/Administrative/userActivity/index'
 import Alerts from '@/utils/Alerts.js';
 
 import globals from '@/globals'
@@ -58,6 +59,11 @@ const router = new Router({
             name: 'firm',
             path: 'firm',
             component: Firm
+          },
+          {
+            name: 'useractivitymonitoring',
+            path: 'useractivitymonitoring',
+            component: UserActivity
           },
         ]
           .concat(Administrative) 

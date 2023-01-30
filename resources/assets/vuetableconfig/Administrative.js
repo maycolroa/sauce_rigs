@@ -604,5 +604,28 @@ export default [
         filterColumns: true,
         configNameFilter: 'administrative-actionplans'
     }
-}
+  },
+  {
+    name: 'administrative-user-activity',
+    fields: [
+        { name: 'id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true },
+        { name: 'name', data: 'name', title: 'Usuario', sortable: true, searchable: true, detail: false, key: false },
+        { name: 'module', data: 'module', title: 'Módulo', sortable: true, searchable: true, detail: false, key: false },
+        { name: 'description', data: 'description', title: 'Descripción', sortable: true, searchable: true, detail: false, key: false },
+        { name: 'date', data: 'date', title: 'Fecha', sortable: true, searchable: true, detail: false, key: false },
+    ],
+    'controlls': [{
+        type: 'push',
+        buttons: []
+    },
+    {
+        type: 'base',
+        buttons: [],
+    }],
+    configuration: {
+        urlData: '/administration/userActivities',
+        filterColumns: true,
+        configNameFilter: 'administrative-user-activity'
+    }
+  }
 ];

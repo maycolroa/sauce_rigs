@@ -8,7 +8,7 @@
 
     <div class="col-md">
       <b-card no-body>
-        <b-card-body>
+        <b-card-body style="height: 500px">
             <form-configuration-component
                 url="/legalAspects/configuration"
                 method="POST"

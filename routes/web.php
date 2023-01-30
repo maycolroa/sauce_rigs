@@ -183,6 +183,7 @@ Route::middleware(['auth'])->group(function () {
         Route::post('employeesNames', 'Administrative\Employees\EmployeesController@multiselectNames');
         Route::post('employeesIdentifications', 'Administrative\Employees\EmployeesController@multiselectIdentifications');
         Route::post('users', 'Administrative\Users\UserController@multiselect');
+        Route::post('usersActivitiesModule', 'Administrative\Users\UserController@multiselectModuleActivity');
         Route::post('usersActionPlan', 'Administrative\Users\UserController@multiselectUsersActionPlan');
         Route::post('usersActionPlanContract', 'Administrative\Users\UserController@multiselectUsersActionPlanContract');
         Route::post('usersOtherCompany', 'Administrative\Users\UserController@multiselectUsers');
@@ -405,6 +406,7 @@ Route::middleware(['auth'])->group(function () {
       Route::post('users/firm', 'Administrative\Users\UserController@storeFirm');
       Route::post('users/addUserOtherCompany', 'Administrative\Users\UserController@addUserOtherCompany');
 			Route::ApiResource('users', 'Administrative\Users\UserController');
+			Route::post('userActivities', 'Administrative\Users\UserController@userActivities');
 
 			Route::post('role/data', 'Administrative\Roles\RoleController@data');
 			Route::ApiResource('role', 'Administrative\Roles\RoleController');

@@ -2,7 +2,7 @@
   <div>
     <header-module
       title="REINCORPORACIONES"
-      subtitle="ADMINISTAR REPORTES"
+      subtitle="ADMINISTRAR REPORTES"
       url="preventiveoccupationalmedicine-reinstatements"
     />
 

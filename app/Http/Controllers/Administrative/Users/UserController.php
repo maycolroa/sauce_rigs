@@ -17,6 +17,8 @@ use App\Models\Administrative\Regionals\EmployeeRegional;
 use App\Models\Administrative\Headquarters\EmployeeHeadquarter;
 use App\Models\Administrative\Processes\EmployeeProcess;
 use App\Models\Administrative\Areas\EmployeeArea;
+use App\Models\General\LogDelete;
+use App\Models\General\LogUserActivitySystem;
 use App\Traits\UserTrait;
 use App\Traits\ContractTrait;
 use App\Traits\PermissionTrait;
@@ -1250,5 +1252,127 @@ class UserController extends Controller
         } catch(Exception $e){
             $this->respondHttp500();
         }
+    }
+
+    public function userActivities(Request $request)
+    {
+        $data = LogUserActivitySystem::selectRaw("
+            sau_users.name,
+            sau_log_activities_users_system.module as module,
+            sau_log_activities_users_system.description as description,
+            date_format(sau_log_activities_users_system.created_at, '%Y-%m-%d') as date
+        ")
+        ->join('sau_users', 'sau_users.id', 'sau_log_activities_users_system.user_id')
+        ->where('company_id', $this->company);
+
+        if (COUNT($request->get('filters')) > 0)
+        {
+            $filters = $request->get('filters');
+
+            if (isset($filters['modules']) && COUNT($filters['modules']) > 0)
+            {
+                if ($filters['filtersType']['modules'] == 'IN')
+                    $data->whereIn('sau_log_activities_users_system.module', $this->getValuesForMultiselect($filters["modules"]));
+                else
+                    $data->whereNotIn('sau_log_activities_users_system.module', $this->getValuesForMultiselect($filters["modules"]));
+                
+            }
+
+            if (isset($filters['users']) && COUNT($filters['users']) > 0)
+            {
+                if ($filters['filtersType']['users'] == 'IN')
+                    $data->whereIn('sau_log_activities_users_system.user_id', $this->getValuesForMultiselect($filters["users"]));
+                else
+                    $data->whereNotIn('sau_log_activities_users_system.user_id', $this->getValuesForMultiselect($filters["users"]));
+                
+            }
+
+            if (isset($filters["dateRange"]) && $filters["dateRange"])
+            {
+                $dates_request = explode('/', $filters["dateRange"]);
+
+                $dates = [];
+
+                if (COUNT($dates_request) == 2)
+                {
+                    array_push($dates, $this->formatDateToSave($dates_request[0]));
+                    array_push($dates, $this->formatDateToSave($dates_request[1]));
+                }
+                    
+                $data->betweenDate($dates);
+            }
+        }
+
+        $data2 = LogDelete::selectRaw("
+            sau_users.name,
+            sau_log_delete.module as module,
+            sau_log_delete.description as description,
+            date_format(sau_log_delete.created_at, '%Y-%m-%d') as date
+        ")
+        ->join('sau_users', 'sau_users.id', 'sau_log_delete.user_id')
+        ->where('company_id', $this->company);
+
+        if (COUNT($request->get('filters')) > 0)
+        {
+            $filters = $request->get('filters');
+
+            if (isset($filters['modules']) && COUNT($filters['modules']) > 0)
+            {
+                if ($filters['filtersType']['modules'] == 'IN')
+                    $data2->whereIn('sau_log_delete.module', $this->getValuesForMultiselect($filters["modules"]));
+                else
+                    $data2->whereNotIn('sau_log_delete.module', $this->getValuesForMultiselect($filters["modules"]));
+                
+            }
+
+            if (isset($filters['users']) && COUNT($filters['users']) > 0)
+            {
+                if ($filters['filtersType']['users'] == 'IN')
+                    $data2->whereIn('sau_log_delete.user_id', $this->getValuesForMultiselect($filters["users"]));
+                else
+                    $data2->whereNotIn('sau_log_delete.user_id', $this->getValuesForMultiselect($filters["users"]));
+                
+            }
+
+            if (isset($filters["dateRange"]) && $filters["dateRange"])
+            {
+                $dates_request = explode('/', $filters["dateRange"]);
+
+                $dates = [];
+
+                if (COUNT($dates_request) == 2)
+                {
+                    array_push($dates, $this->formatDateToSave($dates_request[0]));
+                    array_push($dates, $this->formatDateToSave($dates_request[1]));
+                }
+                    
+                $data2->betweenDate($dates);
+            }
+        }
+
+        $data->union($data2)->orderBy('date');
+
+        return Vuetable::of($data)
+                ->make();
+    }
+
+    public function multiselectModuleActivity()
+    {
+        $data = LogUserActivitySystem::selectRaw("
+            distinct(sau_log_activities_users_system.module) as name
+        ")
+        ->where('company_id', $this->company);
+
+        $data2 = LogDelete::selectRaw("
+            distinct(sau_log_delete.module) as name
+        ")
+        ->where('company_id', $this->company);
+
+        $data->union($data2);
+
+        $data = $data->pluck('name', 'name');
+
+        return $this->multiSelectFormat($data);
+
     }
 }

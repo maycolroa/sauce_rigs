@@ -46,6 +46,26 @@
                   </center>
                 </router-link>
               </b-col>
+             <b-col v-if="key_row == 1">
+                <router-link :to="{ name: 'useractivitymonitoring'}" v-on:click.native="activityUser('Monitoreo de actividades')" class="text-dark cursor-pointer item-app-navbar">
+                  <center>
+                    <div class="my-2 mx-2 text-center" ref="userActivity" @mouseover="changeClassImage('userActivity', 'userActivity_hover')">
+                      <img class="ui-w-80" src="/images/userActivity.png" alt="" >
+
+                      <div class="text-center font-weight-bold pt-1">
+                        Monitoreo de actividades
+                      </div>
+                    </div>
+                    <div class="my-2 mx-2 text-center imgHidden" ref="userActivity_hover" @mouseleave="changeClassImage('userActivity_hover', 'userActivity')">
+                      <img class="ui-w-80" src="/images/userActivity_hover.png" alt="">
+
+                      <div class="text-center font-weight-bold pt-1" style="text-decoration: underline rgb(244, 75, 82); text-underline-position: under;">
+                        Monitoreo de actividades
+                      </div>
+                    </div>
+                  </center>
+                </router-link>
+              </b-col>
           </b-row>
         </template>
       </div>
@@ -80,6 +100,7 @@
 
           for (var prop in this.apps)
           {
+            console.log(prop)
             let item = this.apps[prop]
             item.url = prop
             item.current_img = item.image
