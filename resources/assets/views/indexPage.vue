@@ -46,7 +46,7 @@
                   </center>
                 </router-link>
               </b-col>
-             <b-col v-if="key_row == 1">
+             <!--<b-col v-if="key_row == 1">
                 <router-link :to="{ name: 'useractivitymonitoring'}" v-on:click.native="activityUser('Monitoreo de actividades')" class="text-dark cursor-pointer item-app-navbar">
                   <center>
                     <div class="my-2 mx-2 text-center" ref="userActivity" @mouseover="changeClassImage('userActivity', 'userActivity_hover')">
@@ -65,7 +65,7 @@
                     </div>
                   </center>
                 </router-link>
-              </b-col>
+              </b-col>-->
           </b-row>
         </template>
       </div>

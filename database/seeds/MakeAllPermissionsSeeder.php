@@ -61,6 +61,10 @@ class MakeAllPermissionsSeeder extends Seeder
                 'epp_r',
                 'epp_u',
                 'epp_d',
+                'useractivitymonitoring_c',
+                'useractivitymonitoring_r',
+                'useractivitymonitoring_u',
+                'useractivitymonitoring_d'
             ];
 
             $modules = Module::all();

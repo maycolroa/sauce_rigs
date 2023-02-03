@@ -656,6 +656,15 @@
                 ]
             },
             {
+                "name": "useractivitymonitoring",
+                "permissions": [
+                    {
+                        "name": "user_monitoring_r",
+                        "display_name": "Monitoreo de usuarios - ver"
+                    }
+                ]
+            },
+            {
                 "name": "legalMatrix",
                 "permissions": [
                     {
