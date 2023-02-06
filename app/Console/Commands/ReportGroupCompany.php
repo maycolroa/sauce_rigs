@@ -63,30 +63,32 @@ class ReportGroupCompany extends Command
 
         foreach ($groups as $key => $group) 
         {
-
-            $nameExcel = 'export/1/reportCompanies'.date("YmdHis").'.xlsx';
-            Excel::store(new ReportExcel($group),$nameExcel,'public',\Maatwebsite\Excel\Excel::XLSX);
-            
-            $paramUrl = base64_encode($nameExcel);
-
-            $recipients = User::where('id', -1)->get();
-            $emails = explode(",", $group->emails);
-
-            foreach ($emails as $key => $value)
+            if ($group->receive_report == 'SI')
             {
-                $recipients->push(new User(['email'=>$value]));
+                $nameExcel = 'export/1/reportCompanies'.date("YmdHis").'.xlsx';
+                Excel::store(new ReportExcel($group),$nameExcel,'public',\Maatwebsite\Excel\Excel::XLSX);
+                
+                $paramUrl = base64_encode($nameExcel);
+
+                $recipients = User::where('id', -1)->get();
+                $emails = explode(",", $group->emails);
+
+                foreach ($emails as $key => $value)
+                {
+                    $recipients->push(new User(['email'=>$value]));
+                }
+            
+                NotificationMail::
+                    subject('Resumen de actividad de compañias')
+                    ->recipients($recipients)
+                    ->message('Se ha generado una exportación.')
+                    ->subcopy('Este link es valido por 24 horas')
+                    ->buttons([['text'=>'Descargar', 'url'=>url("/export/{$paramUrl}")]])
+                    ->module('users')
+                    ->event('ReportGroupCompany')
+                    ->company(1)
+                    ->send();
             }
-        
-            NotificationMail::
-                subject('Resumen de actividad de compañias')
-                ->recipients($recipients)
-                ->message('Se ha generado una exportación.')
-                ->subcopy('Este link es valido por 24 horas')
-                ->buttons([['text'=>'Descargar', 'url'=>url("/export/{$paramUrl}")]])
-                ->module('users')
-                ->event('ReportGroupCompany')
-                ->company(1)
-                ->send();
         }
     }
 }

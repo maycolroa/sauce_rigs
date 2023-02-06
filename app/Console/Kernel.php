@@ -40,6 +40,7 @@ class Kernel extends ConsoleKernel
         'App\Console\Commands\DeleteFilesImportS3',
         'App\Console\Commands\NotifyReportsOpenConfig',
         'App\Console\Commands\ReincPendienteResumen',
+        'App\Console\Commands\ReportGroupCompany',
         //'App\Console\Commands\RememberRepeatInspetion'
     ];
 
@@ -98,6 +99,10 @@ class Kernel extends ConsoleKernel
         $schedule->command('reinc-pendiente-resumen')
             ->timezone('America/Bogota')
             ->dailyAt('0 6 1 1-12 *');
+
+        $schedule->command('report-group-company')
+            ->timezone('America/Bogota')
+            ->dailyAt('0 7 30 1-12 *');
 
         /*$schedule->command('reinc-notification-next-follow-up')
             ->timezone('America/Bogota')
