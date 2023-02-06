@@ -31,8 +31,6 @@ class ReinstatementsTemplateExcel implements FromQuery, WithMapping, WithHeading
 
     public function query()
     {
-      \Log::info('4');
-
       $now = Carbon::now();
 
       $reports = Check::select(

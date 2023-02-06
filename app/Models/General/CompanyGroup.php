@@ -15,7 +15,7 @@ class CompanyGroup extends Model
 
     public function company()
     {
-        return $this->belongsToMany(Company::class, 'company_group_id');
+        return $this->hasMany(Company::class, 'company_group_id');
     }
 
     public function multiselect()
