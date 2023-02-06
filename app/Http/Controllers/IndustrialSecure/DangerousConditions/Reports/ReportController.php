@@ -217,6 +217,9 @@ class ReportController extends Controller
             $report->path_3 = $report->path_image('image_3');
             $report->actionPlan = ActionPlan::model($report)->prepareDataComponent();
             $report->locations = $this->prepareDataLocationForm($report);
+            $report->type_condition = $report->condition->condition_type_id;
+
+            \Log::info($report->type_condition);
 
             return $this->respondHttp200([
                 'data' => $report,
@@ -429,8 +432,14 @@ class ReportController extends Controller
             $conditions = Condition::select("id", "description")
                 ->where(function ($query) use ($keyword) {
                     $query->orWhere('description', 'like', $keyword);
-                })
-                ->take(30)->pluck('id', 'description');
+                });
+
+            $condition_type = $request->get('condition');
+                    
+            if (is_numeric($condition_type))
+                $conditions->where('condition_type_id', $condition_type);         
+            
+            $conditions = $conditions->orderBy('description')->take(30)->pluck('id', 'description');
 
             return $this->respondHttp200([
                 'options' => $this->multiSelectFormat($conditions)

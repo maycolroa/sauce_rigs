@@ -5,7 +5,11 @@
     <b-form-row>
       <vue-advanced-select :disabled="viewOnly" class="col-md-6" v-model="form.rate" :multiple="false" :options="rates" :hide-selected="false" name="rate" :error="form.errorsFor('rate')" label="Severidad" placeholder="Seleccione el grado de severidad">
         </vue-advanced-select>
-      <vue-ajax-advanced-select :disabled="viewOnly" class="col-md-6" v-model="form.condition_id" :error="form.errorsFor('condition_id')" :selected-object="form.multiselect_condition" name="condition_id" label="Hallazgo" placeholder="Seleccione el Hallazgo" :url="conditionsDataUrl">
+      <vue-radio :disabled="viewOnly" :checked="form.type_condition" class="col-md-6" v-model="form.type_condition" :options="condition" name="type_condition" :error="form.errorsFor('type_condition')" label="Selecciona el tipo de reporte">
+        </vue-radio>
+    </b-form-row>
+    <b-form-row v-if="form.type_condition">
+      <vue-ajax-advanced-select :disabled="viewOnly" :parameters="{condition: form.type_condition }" class="col-md-12" v-model="form.condition_id" :error="form.errorsFor('condition_id')" :selected-object="form.multiselect_condition" name="condition_id" label="Hallazgo" placeholder="Seleccione el Hallazgo" :url="conditionsDataUrl">
           </vue-ajax-advanced-select>
     </b-form-row>
 
@@ -112,6 +116,7 @@ import Form from "@/utils/Form.js";
 import ActionPlanComponent from '@/components/CustomInputs/ActionPlanComponent.vue';
 import Loading from "@/components/Inputs/Loading.vue";
 import VueFileSimple from "@/components/Inputs/VueFileSimple.vue";
+import VueRadio from "@/components/Inputs/VueRadio.vue";
 
 export default {
   components: {
@@ -122,7 +127,8 @@ export default {
     PerfectScrollbar,
     ActionPlanComponent,
     Loading,
-    VueFileSimple
+    VueFileSimple,
+    VueRadio
   },
   props: {
     url: { type: String },
@@ -186,6 +192,10 @@ export default {
     return {
       loading: false,
       form: Form.makeFrom(this.report, this.method),
+      condition: [
+          {text: 'Condiciones Inseguras', value: 1},
+          {text: 'Comportamientos Inseguros', value: 2}
+        ],
     };
   },
   methods: {
