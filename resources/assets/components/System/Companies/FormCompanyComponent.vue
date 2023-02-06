@@ -5,6 +5,16 @@
       <vue-input :disabled="viewOnly" class="col-md-12" v-model="form.name" label="Nombre" type="text" name="name" :error="form.errorsFor('name')" placeholder="Nombre"></vue-input>
     </b-form-row>
 
+    <b-form-row>
+      <vue-radio :disabled="viewOnly" :checked="form.group_company" class="col-md-12" v-model="form.group_company" :options="siNo" name="group_company" :error="form.errorsFor('group_company')" label="¿Pertenece a algun grupo de compañias?">
+        </vue-radio>
+    </b-form-row>
+
+    <b-form-row v-if="form.group_company == 'SI'">
+      <vue-ajax-advanced-select :disabled="viewOnly" class="col-md-12" v-model="form.company_group_id" :error="form.errorsFor('company_group_id')" :selected-object="form.multiselect_company_group" name="company_group_id" label="Grupo de compañias" placeholder="Seleccione el grupo" :url="companiesGroupDataUrl">
+          </vue-ajax-advanced-select>
+    </b-form-row>
+
     <b-form-row v-if="isEdit">
       <div class="col-md-12">
         <div class="float-right" style="padding-top: 10px;">
@@ -44,12 +54,16 @@
 
 <script>
 import VueAdvancedSelect from "@/components/Inputs/VueAdvancedSelect.vue";
+import VueAjaxAdvancedSelect from "@/components/Inputs/VueAjaxAdvancedSelect.vue";
 import VueInput from "@/components/Inputs/VueInput.vue";
+import VueRadio from "@/components/Inputs/VueRadio.vue";
 import Form from "@/utils/Form.js";
 
 export default {
   components: {
     VueAdvancedSelect,
+    VueAjaxAdvancedSelect,
+    VueRadio,
     VueInput
   },
   props: {
@@ -74,7 +88,9 @@ export default {
       default() {
         return {
           name: '',
-          users: []
+          users: [],
+          group_company: '',
+          company_group_id: ''
         };
       }
     }
@@ -107,6 +123,11 @@ export default {
     return {
       loading: this.isEdit,
       form: Form.makeFrom(this.company, this.method),
+      companiesGroupDataUrl: '/selects/companiesGroup',
+      siNo: [
+          {text: 'SI', value: 'SI'},
+          {text: 'NO', value: 'NO'}
+        ],
     };
   },
   methods: {

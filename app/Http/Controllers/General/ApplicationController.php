@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Auth;
 use Session;
 //use App\Models\General\License;
 use App\Models\General\Company;
+use App\Models\General\CompanyGroup;
 use App\Models\General\LogUserActivity;
 use App\Models\General\Module;
 use App\Models\General\FiltersState;
@@ -299,6 +300,32 @@ class ApplicationController extends Controller
             $companies = Company::selectRaw("
                 sau_companies.id as id,
                 sau_companies.name as name
+            ")->pluck('id', 'name');
+        
+            return $this->multiSelectFormat($companies);
+        }
+    }
+
+    public function multiselectCompaniesGroup(Request $request)
+    {
+        if($request->has('keyword'))
+        {
+            $keyword = "%{$request->keyword}%";
+            $companies = CompanyGroup::select("id", "name")
+                ->where(function ($query) use ($keyword) {
+                    $query->orWhere('name', 'like', $keyword);
+                })
+                ->take(30)->pluck('id', 'name');
+
+            return $this->respondHttp200([
+                'options' => $this->multiSelectFormat($companies)
+            ]);
+        }
+        else
+        {
+            $companies = CompanyGroup::selectRaw("
+              sau_company_groups.id as id,
+              sau_company_groups.name as name
             ")->pluck('id', 'name');
         
             return $this->multiSelectFormat($companies);

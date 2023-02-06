@@ -1,15 +1,15 @@
 <?php
 
-namespace App\Http\Controllers\System\Companies;
+namespace App\Http\Controllers\System\CompanyGroup;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Vuetable\Facades\Vuetable;
 use App\Models\Administrative\Users\User;
 use App\Models\Administrative\Roles\Role;
-use App\Models\General\Company;
+use App\Models\General\CompanyGroup;
 use App\Models\General\Team;
-use App\Http\Requests\System\Companies\CompanyRequest;
+use App\Http\Requests\System\Companies\CompanyGroupRequest;
 use DB;
 use App\Jobs\System\Companies\SyncUsersSuperadminJob;
 
@@ -45,11 +45,11 @@ class CompanyController extends Controller
     */
     public function data(Request $request)
     {
-        $companies = Company::select('*');
+        $companies = CompanyGroup::select('*');
 
         return Vuetable::of($companies)
             ->addColumn('switchStatus', function ($company) {
-                return $company->id != $this->company; 
+                return true; 
             })
             ->make();
     }
@@ -57,39 +57,37 @@ class CompanyController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  App\Http\Requests\IndustrialSecure\Activities\CompanyRequest  $request
+     * @param  App\Http\Requests\IndustrialSecure\Activities\CompanyGroupRequest  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(CompanyRequest $request)
+    public function store(CompanyGroupRequest $request)
     {
         DB::beginTransaction();
         
         try
         {
-            $company = new Company($request->all());
-        
-            if (!$company->save())
-                return $this->respondHttp500();
+            $mails = $this->getDataFromMultiselect($request->get('emails'));
 
-            $team = new Team();
-            $team->id = $company->id;
-            $team->name = $company->id;
-            $team->display_name = $company->name;
-            $team->description = "Equipo ".$company->name;
-            $team->save();
+            $companyGroup = new CompanyGroup;
+            $companyGroup->name = $request->name;
+            $companyGroup->receive_report = $request->receive_report;
+            $companyGroup->emails = implode($mails, ',');
+        
+            if (!$companyGroup->save())
+                return $this->respondHttp500();
 
             DB::commit();
 
             SyncUsersSuperadminJob::dispatch();
 
         } catch (\Exception $e) {
-            //\Log::info($e->getMessage());
+            \Log::info($e->getMessage());
             DB::rollback();
             return $this->respondHttp500();
         }
 
         return $this->respondHttp200([
-            'message' => 'Se creo la compañia'
+            'message' => 'Se creo el grupo'
         ]);
     }
 
@@ -103,13 +101,7 @@ class CompanyController extends Controller
     {
         try
         {
-            $company = Company::findOrFail($id);
-            $company->users = [];
-            $company->delete = [];
-
-            $company->multiselect_company_group = $company->company_group_id ? $company->group->multiselect() : [];
-
-            $company->group_company = $company->company_group_id ? 'SI' : 'NO';
+            $company = CompanyGroup::findOrFail($id);
 
             return $this->respondHttp200([
                 'data' => $company,
@@ -122,39 +114,35 @@ class CompanyController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  App\Http\Requests\IndustrialSecure\Activities\CompanyRequest  $request
+     * @param  App\Http\Requests\IndustrialSecure\Activities\CompanyGroupRequest  $request
      * @param  Company  $company
      * @return \Illuminate\Http\Response
      */
-    public function update(CompanyRequest $request, Company $company)
+    public function update(CompanyGroupRequest $request, CompanyGroup $companyGroup)
     {
         DB::beginTransaction();
 
         try
-        {
-        
-            $company->fill($request->all());
-
-            if ($request->group_company == 'NO')
-                $company->company_group_id = NULL;
+        {        
+            $companyGroup->fill($request->all());
 
             if ($request->ph_state_incentives == true)
-                $company->ph_state_incentives = 1;
+                $companyGroup->ph_state_incentives = 1;
             else
-                $company->ph_state_incentives = 0;
+                $companyGroup->ph_state_incentives = 0;
            
-            if(!$company->update())
+            if(!$companyGroup->update())
                 return $this->respondHttp500();
 
             $team = Team::updateOrCreate(
                 [
-                    'name' => $company->id,
+                    'name' => $companyGroup->id,
                 ], 
                 [
-                    'id' => $company->id,
-                    'name' => $company->id,
-                    'display_name' => $company->name,
-                    'description' => "Equipo ".$company->name
+                    'id' => $companyGroup->id,
+                    'name' => $companyGroup->id,
+                    'display_name' => $companyGroup->name,
+                    'description' => "Equipo ".$companyGroup->name
                 ]
             );
 
@@ -166,14 +154,14 @@ class CompanyController extends Controller
 
                     if ($user)
                     {
-                        $user->companies()->attach($company->id);
+                        $user->companies()->attach($companyGroup->id);
 
                         $roles = $this->getValuesForMultiselect($value['role_id']);
                         $roles = Role::whereIn('id', $roles)->get();
 
                         if (COUNT($roles) > 0)
                         {
-                            $team = Team::where('name', $company->id)->first();
+                            $team = Team::where('name', $companyGroup->id)->first();
                             $user->attachRoles($roles, $team);
                         }
                     }
@@ -201,9 +189,18 @@ class CompanyController extends Controller
      * @param  Company  $company
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Company $company)
+    public function destroy($id)
     {
+        $companyGroup = Company::findOrFail($id);
         
+        if(!$companyGroup->delete())
+        {
+            return $this->respondHttp500();
+        }
+        
+        return $this->respondHttp200([
+            'message' => 'Se elimino el grupo de compañias'
+        ]);
     }
 
     /**
@@ -211,18 +208,29 @@ class CompanyController extends Controller
      * @param  Company $company
      * @return \Illuminate\Http\Response
      */
-    public function toggleState(Company $company)
+    public function toggleState(CompanyGroup $company)
     {
-        $newState = $company->isActive() ? "NO" : "SI";
-        $data = ['active' => $newState];
+        \Log::info($company);
+        try
+        {
+            $newState = $company->isActive() ? "NO" : "SI";
 
-        if (!$company->update($data)) {
+            \Log::info($newState);
+            $data = ['active' => $newState];
+
+            if (!$company->update($data)) {
+                return $this->respondHttp500();
+            }
+            
+            return $this->respondHttp200([
+                'message' => 'Se cambio el estado del grupo'
+            ]);
+
+        } catch (\Exception $e) {
+            \Log::info($e->getMessage());
+            DB::rollback();
             return $this->respondHttp500();
         }
-        
-        return $this->respondHttp200([
-            'message' => 'Se cambio el estado de la compañia'
-        ]);
     }
 
     /**

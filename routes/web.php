@@ -268,6 +268,7 @@ Route::middleware(['auth'])->group(function () {
         Route::post('ctkindsRisks', 'General\MultiSelectRadioController@ctkindsRisks'); 
         Route::post('siNo', 'General\MultiSelectRadioController@siNoSelect');
         Route::post('companies', 'General\ApplicationController@multiselectCompanies');
+        Route::post('companiesGroup', 'General\ApplicationController@multiselectCompaniesGroup');
         Route::post('reincYears', 'PreventiveOccupationalMedicine\Reinstatements\CheckController@multiselectYears');
         Route::post('reincSveAssociateds', 'PreventiveOccupationalMedicine\Reinstatements\CheckController@multiselectSveAssociateds');
         Route::post('reincMedicalCertificates', 'PreventiveOccupationalMedicine\Reinstatements\CheckController@multiselectMedicalCertificates');
@@ -866,6 +867,9 @@ Route::middleware(['auth'])->group(function () {
       Route::post('company/data', 'System\Companies\CompanyController@data');
       Route::ApiResource('company', 'System\Companies\CompanyController');  
       Route::post('company/switchStatus/{company}', 'System\Companies\CompanyController@toggleState');
+      Route::post('companyGroup/data', 'System\CompanyGroup\CompanyController@data');
+      Route::ApiResource('companyGroup', 'System\CompanyGroup\CompanyController');  
+      Route::post('companyGroup/switchStatus/{company}', 'System\CompanyGroup\CompanyController@toggleState');
       Route::post('customermonitoring/dataReinstatements', 'System\CustomerMonitoring\CustomerMonitoringController@dataReinstatements');
       Route::post('customermonitoring/dataDangerousConditions', 'System\CustomerMonitoring\CustomerMonitoringController@dataDangerousConditions');
       Route::post('customermonitoring/dataAutomaticsSend', 'System\CustomerMonitoring\CustomerMonitoringController@dataAutomaticsSend');

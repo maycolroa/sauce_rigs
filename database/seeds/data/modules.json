@@ -222,6 +222,12 @@
                 "display_name": "Monitoreo de clientes",
                 "main": "NO",
                 "logo": null
+            },
+            {
+                "name": "companygroup",
+                "display_name": "Grupos de empresas",
+                "main": "NO",
+                "logo": null
             }
         ]
     }

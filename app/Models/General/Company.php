@@ -11,11 +11,16 @@ class Company extends Model
     
     protected $table = 'sau_companies';
 
-    protected $fillable = ['name', 'active', 'logo', 'ph_state_incentives', 'ph_file_incentives'];
+    protected $fillable = ['name', 'active', 'logo', 'ph_state_incentives', 'ph_file_incentives', 'company_group_id'];
 
     protected $casts = [
         'ph_state_incentives' => 'boolean',
     ];
+
+    public function group()
+    {
+        return $this->belongsTo(CompanyGroup::class, 'company_group_id');
+    }
 
     public function users()
     {

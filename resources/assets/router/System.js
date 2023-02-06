@@ -195,5 +195,37 @@ export default [{
             import('@/views/System/customerMonitoring/sendAutomatics/edit')
         }
       ]),
+      ...middleware({ 'check-permission': 'companies_r' }, [
+        {
+          name: 'system-companygroup',
+          path: 'companygroup',
+          component: () =>
+            import('@/views/System/companyGroup/index')
+        }
+      ]), 
+      ...middleware({ 'check-permission': 'companies_c' }, [
+        {
+          name: 'system-companygroup-create',
+          path: 'companygroup/create',
+          component: () =>
+            import('@/views/System/companyGroup/create')
+        }
+      ]), 
+      ...middleware({ 'check-permission': 'companies_u' }, [
+        {
+          name: 'system-companygroup-edit',
+          path: 'companygroup/edit/:id',
+          component: () =>
+            import('@/views/System/companyGroup/edit')
+        }
+      ]),
+      ...middleware({ 'check-permission': 'companies_r' }, [
+        {
+          name: 'system-companygroup-view',
+          path: 'companygroup/view/:id',
+          component: () =>
+            import('@/views/System/companyGroup/view')
+        }
+      ])
     ]
   }]

@@ -48,7 +48,7 @@ export default {
     textBlock: {type: String},
     actionBlock: {type: String},
     helpText: {type: String},
-    step: { type: Number, default: '0.01' },
+    step: { type: Number, default: 0.01 },
   },
   computed:{
       state(){

@@ -369,4 +369,65 @@ export default [
             filterColumns: true,
         }
     },
+    {
+        name: 'system-companygroup',
+        fields: [
+            { name: 'sau_company_groups.id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true },
+            { name: 'sau_company_groups.name', data: 'name', title: 'Nombre', sortable: true, searchable: true, detail: false, key: false },
+            { name: 'sau_company_groups.active', data: 'active', title: '¿Activo?', sortable: true, searchable: true, detail: false, key: false },
+            { name: '', data: 'controlls', title: 'Controles', sortable: false, searchable: false, detail: false, key: false },
+        ],
+        'controlls': [{
+            type: 'push',
+            buttons: [{
+            config: {
+                color: 'outline-success',
+                borderless: true,
+                icon: 'ion ion-md-create',
+                title: 'Editar'
+            },
+            data: {
+                routePush: { name: 'system-companygroup-edit' },
+                id: 'id',
+            },
+            permission: 'companies_u'
+            }, {
+            config: {
+                color: 'outline-info',
+                borderless: true,
+                icon: 'ion ion-md-eye',
+                title: 'Ver'
+            },
+            data: {
+                routePush: { name: 'system-companygroup-view' },
+                id: 'id',
+            },
+            permission: 'companies_r'
+            }]
+        },
+        {
+            type: 'base',
+            buttons: [
+                {
+                    name: 'switchStatus',
+                    config: {
+                        color: 'outline-danger',
+                        borderless: true,
+                        icon: 'fas fa-sync',
+                        title: 'Cambiar Estado'
+                    },
+                    data: {
+                        action: '/system/companyGroup/switchStatus/',
+                        id: 'id',
+                        messageConfirmation: 'Esta seguro de querer cambiar el estado de __name__'
+                    },
+                    permission: 'companies_u'
+                }
+            ],
+        }],
+        configuration: {
+            urlData: '/system/companyGroup/data',
+            filterColumns: true,
+        }
+    },
 ]

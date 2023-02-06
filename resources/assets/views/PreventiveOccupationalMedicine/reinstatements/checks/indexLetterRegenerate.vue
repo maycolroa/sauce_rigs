@@ -2,7 +2,7 @@
   <div>
     <header-module
       title="REINCORPORACIONES"
-      subtitle="ADMINISTAR CARTAS"
+      subtitle="ADMINISTRAR CARTAS"
       url="reinstatements-checks"
     />
 
