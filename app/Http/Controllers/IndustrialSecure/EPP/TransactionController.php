@@ -2408,6 +2408,8 @@ class TransactionController extends Controller
 
     public function getDataExportPdf($id)
     {
+        $typeElement = '';
+
         $delivery = ElementTransactionEmployee::findOrFail($id);
 
         $delivery->employee_name = $delivery->employee->name;
@@ -2432,6 +2434,9 @@ class TransactionController extends Controller
 
             foreach ($element as $key => $e) 
             {
+                if ($key == 0)
+                    $typeElement = $e->element->element->class_element;
+
                 if ($e->element->element->identify_each_element)
                 {
                     $content = [
@@ -2472,14 +2477,14 @@ class TransactionController extends Controller
 
         $delivery->logo = $logo;
 
-        $delivery->text_company = $this->getTextLetterEpp($company->name);
+        $delivery->text_company = $this->getTextLetterEpp($company->name, $typeElement);
 
         return $delivery;
     }
 
-    public function getTextLetterEpp($company)
+    public function getTextLetterEpp($company, $typeElement)
     {
-        $text = ConfigurationCompany::select('value')->where('key', 'text_letter_epp')->first();
+        /*$text = ConfigurationCompany::select('value')->where('key', 'text_letter_epp')->first();
 
         $text_default = '<p>Yo, empleado (a) de '.$company .' hago constar que he recibido lo aquí relacionado y firmado por mí.  Doy fé además que he sido informado y capacitado en cuanto al uso de los elementos de protección personal y  frente a los riesgos que me protegen, las actividades y ocasiones en las cuales debo utilizarlos.  He sido informado sobre el procedimiento para su cambio y reposición en caso que sea necesario.
 
@@ -2487,6 +2492,29 @@ class TransactionController extends Controller
 
         if (!$text)
             return $text_default;
+        else
+            return $text->value;*/
+
+        if ($typeElement == 'Elemento de protección personal')
+            $text = ConfigurationCompany::select('value')->where('key', 'text_letter_epp')->first();
+        else if ($typeElement == 'Dotación')
+            $text = ConfigurationCompany::select('value')->where('key', 'text_letter_dotation')->first();
+
+        $text_default_epp = '<p>Yo, empleado (a) de '.$company .' hago constar que he recibido lo aquí relacionado y firmado por mí.  Doy fé además que he sido informado y capacitado en cuanto al uso de los elementos de protección personal y  frente a los riesgos que me protegen, las actividades y ocasiones en las cuales debo utilizarlos.  He sido informado sobre el procedimiento para su cambio y reposición en caso que sea necesario.</p>
+
+        <p>*Me comprometo a hacer buen uso de todo lo recibido y a realizar el mantenimiento adecuado de los mismos. Me comprometo a utilizarlos y cuidarlos conforme a las instrucciones recibidas y a la normativa legal vigente; así mismo me comprometo a informar a mi jefe inmediato cualquier defecto, anomalía o daño del elemento de protección personal (EPP) que pueda afectar o disminuir la efectividad de la protección.</p>';
+
+        $text_default_dotation = '<p>Yo, empleado (a) de '.$company .' hago constar que he recibido lo aquí relacionado y firmado por mí.  Doy fé además que he sido informado y capacitado en cuanto al uso de los elementos de dotación y  frente a los riesgos que me protegen, las actividades y ocasiones en las cuales debo utilizarlos.  He sido informado sobre el procedimiento para su cambio y reposición en caso que sea necesario.</p>
+
+        <p>*Me comprometo a hacer buen uso de todo lo recibido y a realizar el mantenimiento adecuado de los mismos. Me comprometo a utilizarlos y cuidarlos conforme a las instrucciones recibidas y a la normativa legal vigente; así mismo me comprometo a informar a mi jefe inmediato cualquier defecto, anomalía o daño del elemento de dotación que pueda afectar o disminuir la efectividad del mismo.</p>';
+
+        if (!$text)
+        {
+            if ($typeElement == 'Elemento de protección personal')                
+                return $text_default_epp;
+            else if ($typeElement == 'Dotación')
+                return $text_default_dotation;
+        }
         else
             return $text->value;
     }

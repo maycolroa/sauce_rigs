@@ -65,7 +65,7 @@ class ConfigurationController extends Controller
                     $value = implode(',', $users);
                 }
 
-                if ($key == 'multiselect_user_id')
+                if ($key == 'multiselect_user_id' || $key == 'multiselect_user_stock_id')
                     continue;
 
                 ConfigurationsCompany::key($key)->value($value)->save();

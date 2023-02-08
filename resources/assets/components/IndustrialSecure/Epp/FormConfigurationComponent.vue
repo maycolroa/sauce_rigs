@@ -7,7 +7,10 @@
     </b-form-row>
 
     <b-form-row>
-      <vue-textarea class="col-md-12" v-model="form.text_letter_epp" label="Texto a mostrar en la carta de entregas (Opcional, existe un texto por defecto)" name="text_letter_epp" placeholder="Texto" :error="form.errorsFor('text_letter_epp')" rows="5"></vue-textarea>  
+      <vue-textarea class="col-md-12" v-model="form.text_letter_epp" label="Texto a mostrar en la carta de entregas de elementos de proteccion personal (Opcional, existe un texto por defecto)" name="text_letter_epp" placeholder="Texto" :error="form.errorsFor('text_letter_epp')" rows="5"></vue-textarea>  
+    </b-form-row> 
+    <b-form-row>
+      <vue-textarea class="col-md-12" v-model="form.text_letter_dotation" label="Texto a mostrar en la carta de entregas de elementos de dotación (Opcional, existe un texto por defecto)" name="text_letter_dotation" placeholder="Texto" :error="form.errorsFor('text_letter_dotation')" rows="5"></vue-textarea>  
     </b-form-row>
 
     <b-form-row>

@@ -27,6 +27,7 @@ class TransactionFirmController extends Controller
     {
         $errorMenssage = '';
         $data = collect([]);
+        $typeElement = '';
 
         $employee = Employee::withoutGlobalScopes()->findOrFail($employee);
 
@@ -66,6 +67,9 @@ class TransactionFirmController extends Controller
 
                                 $elemen_base = Element::withoutGlobalScopes()->find($ele_balance->element_id);
 
+                                if ($key == 0)
+                                    $typeElement = $elemen_base->class_element;
+
                                 if ($elemen_base->identify_each_element)
                                 {
                                     $content = [
@@ -103,7 +107,7 @@ class TransactionFirmController extends Controller
 
                         $delivery->logo = Storage::disk('public')->url('administrative/logos/'. $logo);
 
-                        $delivery->text_company = $this->getTextLetterEpp($company, $delivery->company_id);
+                        $delivery->text_company = $this->getTextLetterEpp($company, $delivery->company_id, $typeElement);
 
                     }
                     else
@@ -125,16 +129,28 @@ class TransactionFirmController extends Controller
         ]);
     }
 
-    public function getTextLetterEpp($company, $id)
+    public function getTextLetterEpp($company, $id, $typeElement)
     {
-        $text = ConfigurationCompany::withoutGlobalScopes()->select('value')->where('company_id', $id)->where('key', 'text_letter_epp')->first();
+        if ($typeElement == 'Elemento de protección personal')
+            $text = ConfigurationCompany::withoutGlobalScopes()->select('value')->where('company_id', $id)->where('key', 'text_letter_epp')->first();
+        else if ($typeElement == 'Dotación')
+            $text = ConfigurationCompany::withoutGlobalScopes()->select('value')->where('company_id', $id)->where('key', 'text_letter_dotation')->first();
 
-        $text_default = '<p>Yo, empleado (a) de '.$company->name .' hago constar que he recibido lo aquí relacionado y firmado por mí.  Doy fé además que he sido informado y capacitado en cuanto al uso de los elementos de protección personal y  frente a los riesgos que me protegen, las actividades y ocasiones en las cuales debo utilizarlos.  He sido informado sobre el procedimiento para su cambio y reposición en caso que sea necesario.</p>
+        $text_default_epp = '<p>Yo, empleado (a) de '.$company->name .' hago constar que he recibido lo aquí relacionado y firmado por mí.  Doy fé además que he sido informado y capacitado en cuanto al uso de los elementos de protección personal y  frente a los riesgos que me protegen, las actividades y ocasiones en las cuales debo utilizarlos.  He sido informado sobre el procedimiento para su cambio y reposición en caso que sea necesario.</p>
 
-        <p>*Me comprometo a hacer buen uso de todo lo recibido y a realizar el mantenimiento adecuado de los mismos.   Me comprometo a utilizarlos y cuidarlos conforme a las instrucciones recibidas y a la normativa legal vigente; así mismo me comprometo a informar a mi jefe inmediato cualquier defecto, anomalía o daño del elemento de protección personal (EPP) que pueda afectar o disminuir la efectividad de la protección.</p>';
+        <p>*Me comprometo a hacer buen uso de todo lo recibido y a realizar el mantenimiento adecuado de los mismos. Me comprometo a utilizarlos y cuidarlos conforme a las instrucciones recibidas y a la normativa legal vigente; así mismo me comprometo a informar a mi jefe inmediato cualquier defecto, anomalía o daño del elemento de protección personal (EPP) que pueda afectar o disminuir la efectividad de la protección.</p>';
+
+        $text_default_dotation = '<p>Yo, empleado (a) de '.$company->name .' hago constar que he recibido lo aquí relacionado y firmado por mí.  Doy fé además que he sido informado y capacitado en cuanto al uso de los elementos de dotación y  frente a los riesgos que me protegen, las actividades y ocasiones en las cuales debo utilizarlos.  He sido informado sobre el procedimiento para su cambio y reposición en caso que sea necesario.</p>
+
+        <p>*Me comprometo a hacer buen uso de todo lo recibido y a realizar el mantenimiento adecuado de los mismos. Me comprometo a utilizarlos y cuidarlos conforme a las instrucciones recibidas y a la normativa legal vigente; así mismo me comprometo a informar a mi jefe inmediato cualquier defecto, anomalía o daño del elemento de dotación que pueda afectar o disminuir la efectividad del mismo.</p>';
 
         if (!$text)
-            return $text_default;
+        {
+            if ($typeElement == 'Elemento de protección personal')                
+                return $text_default_epp;
+            else if ($typeElement == 'Dotación')
+                return $text_default_dotation;
+        }
         else
             return $text->value;
     }
