@@ -264,10 +264,16 @@ class CheckManager
 
             'process_origin_done_date' => new ProcessOriginDoneMustBePresent($request->in_process_origin, $request->process_origin_done),
             'emitter_origin' => new ProcessOriginDoneMustBePresent($request->in_process_origin, $request->process_origin_done, true),
-            'process_pcl_done_date' => new ProcessPclDoneMustBePresent($request->in_process_pcl, $request->process_pcl_done),
-            'pcl' => new ProcessPclDoneMustBePresent($request->in_process_pcl, $request->process_pcl_done, true),
-            'entity_rating_pcl' => new ProcessPclDoneMustBePresent($request->in_process_pcl, $request->process_pcl_done, true)
         ];
+
+        if ($this->formModel != 'chia')
+        {
+            $rules = array_merge($rules, [
+                'process_pcl_done_date' => new ProcessPclDoneMustBePresent($request->in_process_pcl, $request->process_pcl_done), 
+                'pcl' => new ProcessPclDoneMustBePresent($request->in_process_pcl, $request->process_pcl_done, true),
+                'entity_rating_pcl' => new ProcessPclDoneMustBePresent($request->in_process_pcl, $request->process_pcl_done, true)
+            ]);
+        }
 
         if ($this->formModel != 'hptu' && $this->formModel != 'argos')
         {
