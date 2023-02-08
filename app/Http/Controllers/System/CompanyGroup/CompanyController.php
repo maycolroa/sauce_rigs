@@ -66,12 +66,15 @@ class CompanyController extends Controller
         
         try
         {
-            $mails = $this->getDataFromMultiselect($request->get('emails'));
+            if ($request->get('emails') && count($request->get('emails')) > 0)
+                $mails = $this->getDataFromMultiselect($request->get('emails'));
+            else
+                $mails = NULL;
 
             $companyGroup = new CompanyGroup;
             $companyGroup->name = $request->name;
             $companyGroup->receive_report = $request->receive_report;
-            $companyGroup->emails = implode($mails, ',');
+            $companyGroup->emails = $request->get('emails') ? implode($mails, ',') : $mails;
         
             if (!$companyGroup->save())
                 return $this->respondHttp500();
