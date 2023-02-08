@@ -106,6 +106,7 @@ class ElementController extends Controller
         $element->name = $request->name;
         $element->code = $request->code;
         $element->description = $request->description;
+        $element->size = $request->size;
         $element->class_element = $request->class_element;
         $element->observations = $request->observations;
         $element->operating_instructions = $request->operating_instructions;
@@ -243,6 +244,7 @@ class ElementController extends Controller
         $element->description = $request->description;
         $element->class_element = $request->class_element;
         $element->observations = $request->observations;
+        $element->size = $request->size;
         $element->operating_instructions = $request->operating_instructions;
         $element->applicable_standard = $standar_apply->implode(',');
         $element->state = $request->state == "Activo" ? true : false;

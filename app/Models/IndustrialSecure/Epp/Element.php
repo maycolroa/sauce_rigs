@@ -29,7 +29,8 @@ class Element extends Model
         'company_id',
         'identify_each_element',
         'expiration_date',
-        'days_expired'
+        'days_expired',
+        'size'
     ];
 
     public function multiselect()
