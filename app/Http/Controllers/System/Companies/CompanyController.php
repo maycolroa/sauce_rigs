@@ -12,9 +12,11 @@ use App\Models\General\Team;
 use App\Http\Requests\System\Companies\CompanyRequest;
 use DB;
 use App\Jobs\System\Companies\SyncUsersSuperadminJob;
+use App\Traits\Filtertrait;
 
 class CompanyController extends Controller
 {
+    use Filtertrait;
     /**
      * creates and instance and middlewares are checked
      */
@@ -46,6 +48,16 @@ class CompanyController extends Controller
     public function data(Request $request)
     {
         $companies = Company::select('*');
+
+        $url = "/system/companies";
+
+        $filters = COUNT($request->get('filters')) > 0 ? $request->get('filters') : $this->filterDefaultValues($this->user->id, $url);
+
+        if (COUNT($filters) > 0)
+        {
+            if (isset($filters["groups"]) && $filters["groups"])
+                $companies->inGroups($this->getValuesForMultiselect($filters["groups"]), $filters['filtersType']['groups']);
+        }
 
         return Vuetable::of($companies)
             ->addColumn('switchStatus', function ($company) {

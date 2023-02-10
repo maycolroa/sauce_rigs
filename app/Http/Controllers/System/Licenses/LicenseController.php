@@ -65,7 +65,7 @@ class LicenseController extends Controller
             ->where('sau_modules.main', 'SI')
             ->groupBy('sau_licenses.id');
 
-        $url = "/preventiveoccupationalmedicine/reinstatements/checks";
+        $url = "/system/licenses";
 
         $filters = COUNT($request->get('filters')) > 0 ? $request->get('filters') : $this->filterDefaultValues($this->user->id, $url);
 

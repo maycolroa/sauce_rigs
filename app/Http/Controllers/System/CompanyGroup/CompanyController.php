@@ -213,7 +213,6 @@ class CompanyController extends Controller
      */
     public function toggleState(CompanyGroup $company)
     {
-        \Log::info($company);
         try
         {
             $newState = $company->isActive() ? "NO" : "SI";
@@ -234,67 +233,5 @@ class CompanyController extends Controller
             DB::rollback();
             return $this->respondHttp500();
         }
-    }
-
-    /**
-     * Returns an array for a select type input
-     *
-     * @param Request $request
-     * @return Array
-     */
-
-    /*public function multiselect(Request $request)
-    {
-        if($request->has('keyword'))
-        {
-            $keyword = "%{$request->keyword}%";
-            $activities = Activity::select("id", "name")
-                ->where(function ($query) use ($keyword) {
-                    $query->orWhere('name', 'like', $keyword);
-                })
-                ->take(30)->pluck('id', 'name');
-
-            return $this->respondHttp200([
-                'options' => $this->multiSelectFormat($activities)
-            ]);
-        }
-        else
-        {
-            $activities = Activity::selectRaw("
-                sau_dm_activities.id as id,
-                sau_dm_activities.name as name
-            ")->pluck('id', 'name');
-        
-            return $this->multiSelectFormat($activities);
-        }
-    }*/
-
-    public function multiselectUsers(Request $request)
-    {
-        $users_ids = User::withoutGlobalScopes()
-                ->select('sau_users.*')
-                ->join('sau_company_user', 'sau_company_user.user_id', 'sau_users.id')
-                ->where('sau_company_user.company_id', $request->id)
-                ->pluck('id')
-                ->toArray();
-
-        $users = User::select(
-                    "sau_users.id AS id",
-                    DB::raw("CONCAT(sau_users.document, ' - ', sau_users.name) AS name")
-                )
-                ->active()
-                ->whereNotIn('sau_users.id', $users_ids)
-                ->pluck('id', 'name');
-                
-        return $this->multiSelectFormat($users);
-    }
-
-    public function multiselectRoles(Request $request)
-    {
-        $roles = Role::form(false, $request->id)
-                    ->select("id", "name")
-                    ->pluck('id', 'name');
-
-        return $this->multiSelectFormat($roles);
     }
 }

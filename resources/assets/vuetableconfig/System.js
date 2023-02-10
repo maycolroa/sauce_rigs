@@ -212,6 +212,7 @@ export default [
         configuration: {
             urlData: '/system/company/data',
             filterColumns: true,
+            configNameFilter: 'system-companies'
         }
     },
     {

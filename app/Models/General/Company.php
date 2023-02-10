@@ -47,6 +47,20 @@ class Company extends Model
         return $this->belongsToMany('App\Models\LegalAspects\Contracts\SectionCategoryItems', 'sau_ct_standard_items_required')->withPivot('required');
     }
 
+    public function scopeInGroups($query, $groups, $typeSearch = 'IN')
+    {
+        if (COUNT($groups) > 0)
+        {
+            if ($typeSearch == 'IN')
+                $query->whereIn('sau_companies.company_group_id', $groups);
+
+            else if ($typeSearch == 'NOT IN')
+                $query->whereNotIn('sau_companies.company_group_id', $groups);
+        }
+
+        return $query;
+    }
+
     public function multiselect()
     {
         return [

@@ -42,5 +42,16 @@ export default [
           label: 'Fecha de creación',
         }
       ]
-    }
+    },
+    {
+      name: 'system-companies',
+      filters: [
+        {
+          url: '/selects/companiesGroup',
+          key: 'groups',
+          type: 'select',
+          label: 'Grupo de Compañias'
+        },
+      ]
+    },
 ]
