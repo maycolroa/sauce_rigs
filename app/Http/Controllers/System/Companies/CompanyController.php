@@ -47,7 +47,11 @@ class CompanyController extends Controller
     */
     public function data(Request $request)
     {
-        $companies = Company::select('*');
+        $companies = Company::select(
+            'sau_companies.*',
+            'sau_company_groups.name as group'
+        )
+        ->leftJoin('sau_company_groups', 'sau_company_groups.id', 'sau_companies.company_group_id');
 
         $url = "/system/companies";
 
