@@ -192,7 +192,20 @@ class EmployeesController extends Controller
             return $this->respondWithError('No se puede eliminar el registro porque hay otros registros asociados a el');
         }
 
+        if (count($employee->reports) > 0)
+        {
+            return $this->respondWithError('No se puede eliminar el registro porque hay otros registros asociados a el');
+        }
+
         $this->saveLogActivitySystem('Empleados', 'Se elimino el empleado  '.$employee->name. ' - '.$employee->identification);
+
+        if (count($employee->reports) > 0)
+        {
+            foreach ($employee->reports as $key => $report) 
+            {
+                $this->saveLogActivitySystem('Empleados', 'Al eliminar el empleado  '.$employee->name. ' - '.$employee->identification.', se borro el reporte con el diagnostico ',$check->report->description);
+            }
+        }
 
         if(!$employee->delete())
         {
@@ -213,7 +226,8 @@ class EmployeesController extends Controller
         ->where(function ($query) use ($keyword) {
             $query->orWhere('identification', 'like', $keyword)
             ->orWhere('name', 'like', $keyword);
-        })
+        })  
+        ->active()
         ->take(30)->pluck('id', 'name');
         return $this->respondHttp200([
             'options' => $this->multiSelectFormat($employees)
@@ -226,6 +240,7 @@ class EmployeesController extends Controller
                 sau_employees.id as id,
                 CONCAT(sau_employees.identification, ' - ', sau_employees.name) as name
             ")            
+            ->active()
             ->orderBy('name')
             ->pluck('id', 'name');
         
@@ -248,6 +263,7 @@ class EmployeesController extends Controller
         $identifications = Employee::selectRaw(
                     "DISTINCT sau_employees.identification AS identification"
                 )
+                ->active()
                 ->whereNotNull('sau_employees.identification')
                 ->pluck('identification', 'identification');
             
@@ -259,6 +275,7 @@ class EmployeesController extends Controller
         $names = Employee::selectRaw(
                     "DISTINCT sau_employees.name AS name"
                 )
+                ->active()
                 ->whereNotNull('sau_employees.name')
                 ->pluck('name', 'name');
             
@@ -303,5 +320,27 @@ class EmployeesController extends Controller
         $interval = $start->diff($end);
 
         return $interval->format('%y años %m meses y %d dias');
+    }
+
+    public function toggleState(Employee $employee)
+    {
+        try
+        {
+            $newState = $employee->isActive() ? "NO" : "SI";
+            $data = ['active' => $newState];
+
+            if (!$employee->update($data)) {
+                return $this->respondHttp500();
+            }
+            
+            return $this->respondHttp200([
+                'message' => 'Se cambio el estado del empleado'
+            ]);
+
+        } catch (\Exception $e) {
+            \Log::info($e->getMessage());
+            DB::rollback();
+            return $this->respondHttp500();
+        }
     }
 }

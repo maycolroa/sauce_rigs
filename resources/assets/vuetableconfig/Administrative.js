@@ -458,10 +458,25 @@ export default [
         data: {
           action: '/administration/employee/',
           id: 'id',
-          messageConfirmation: 'Esta seguro de borrar el registro __name__'
+          messageConfirmation: 'Esta seguro de borrar el registro __name__, al borrarlo Sauce eliminara toda la información relacionada con el mismo tal como: reportes de reincorporaciones, transacciones de EPP, entre otros.'
         },
         permission: 'employees_d'
-      }],
+      },
+      {
+        name: 'switchStatus',
+        config: {
+            color: 'outline-danger',
+            borderless: true,
+            icon: 'fas fa-sync',
+            title: 'Cambiar Estado'
+        },
+        data: {
+            action: '/administration/employee/switchStatus/',
+            id: 'id',
+            messageConfirmation: 'Esta seguro de querer cambiar el estado de __name__'
+        },
+        permission: 'employees_u'
+    }],
     }],
     configuration: {
       urlData: '/administration/employee/data',

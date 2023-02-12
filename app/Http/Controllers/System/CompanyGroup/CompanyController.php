@@ -216,8 +216,6 @@ class CompanyController extends Controller
         try
         {
             $newState = $company->isActive() ? "NO" : "SI";
-
-            \Log::info($newState);
             $data = ['active' => $newState];
 
             if (!$company->update($data)) {

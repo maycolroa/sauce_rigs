@@ -438,6 +438,8 @@ Route::middleware(['auth'])->group(function () {
 			Route::post('employee/data', 'Administrative\Employees\EmployeesController@data');
 			Route::ApiResource('employee', 'Administrative\Employees\EmployeesController');
 
+      Route::post('employee/switchStatus/{employee}', 'Administrative\Employees\EmployeesController@toggleState');
+
       Route::post('configuration', 'Administrative\Configurations\ConfigurationController@store');
       Route::get('configuration/view', 'Administrative\Configurations\ConfigurationController@show');
 					

@@ -48,11 +48,16 @@ class Employee extends Model
       'mobile',
       'extension',
       'age',
-      'salary'
+      'salary',
+      'active'
   ];
 
     public function audiometries(){
         return $this->hasMany('App\Models\PreventiveOccupationalMedicine\BiologicalMonitoring\Audiometry','employee_id');
+    }
+
+    public function reports(){
+        return $this->hasMany('App\Models\PreventiveOccupationalMedicine\Reinstatements\Check','employee_id');
     }
 
     public function multiselect(){
@@ -297,6 +302,21 @@ class Employee extends Model
             else if ($typeSearch == 'NOT IN')
                 $query->whereNotIn('sau_employees.identification', $identifications);
         }
+
+        return $query;
+    }
+
+    public function isActive()
+    {
+        return $this->active == 'SI';
+    }
+
+    public function scopeActive($query, $active = true)
+    {
+        if ($active)
+            $query->where('sau_employees.active', 'SI');
+        else
+            $query->where('sau_employees.active', 'NO');
 
         return $query;
     }

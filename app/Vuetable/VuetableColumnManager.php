@@ -409,6 +409,7 @@ class VuetableColumnManager
             ['name' => 'sau_employees.identification', 'data'=> 'identification', 'title'=> 'Identificación', 'sortable'=> true, 'searchable'=> true, 'detail'=> false, 'key'=> false ],
             ['name' => 'sau_employees.name', 'data'=> 'name', 'title'=> 'Nombre', 'sortable'=> true, 'searchable'=> true, 'detail'=> false, 'key'=> false ],
             ['name' => 'sau_employees.sex', 'data'=> 'sex', 'title'=> 'Sexo', 'sortable'=> true, 'searchable'=> true, 'detail'=> false, 'key'=> false ],
+            ['name' => 'sau_employees.active', 'data'=> 'active', 'title'=> '¿Activo?', 'sortable'=> true, 'searchable'=> true, 'detail'=> false, 'key'=> false ],
             ['name' => 'sau_employees.income_date', 'data'=> 'income_date', 'title'=> 'Fecha de Ingreso', 'sortable'=> true, 'searchable'=> true, 'detail'=> false, 'key'=> false ],
             ['name' => 'sau_employees_positions.name', 'data'=> 'position', 'title'=> $this->keywords['position'], 'sortable'=> true, 'searchable'=> true, 'detail'=> false, 'key'=> false ]
         ];
