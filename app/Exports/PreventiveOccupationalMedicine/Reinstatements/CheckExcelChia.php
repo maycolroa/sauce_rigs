@@ -23,6 +23,10 @@ use App\Models\Administrative\Business\EmployeeBusiness;
 use App\Models\Administrative\Regionals\EmployeeRegional;
 use App\Models\PreventiveOccupationalMedicine\Reinstatements\Restriction;
 use App\Traits\UtilsTrait;
+use App\Traits\LocationFormTrait;
+use App\Models\Administrative\Areas\EmployeeArea;
+use App\Models\Administrative\Headquarters\EmployeeHeadquarter;
+use App\Models\Administrative\Processes\EmployeeProcess;
 
 Sheet::macro('styleCells', function (Sheet $sheet, string $cellRange, array $style) {
   $sheet->getDelegate()->getStyle($cellRange)->applyFromArray($style);
@@ -31,7 +35,7 @@ Sheet::macro('styleCells', function (Sheet $sheet, string $cellRange, array $sty
 class CheckExcelChia implements FromCollection, WithHeadings, WithMapping, WithColumnFormatting, WithEvents, WithTitle, ShouldAutoSize
 {
     use RegistersEventListeners;
-    use UtilsTrait;
+    use UtilsTrait, LocationFormTrait;
 
     protected $company_id;
     protected $data;
@@ -42,6 +46,7 @@ class CheckExcelChia implements FromCollection, WithHeadings, WithMapping, WithC
       $this->company_id = $company_id;
       $this->data = $data;
       $this->keywords = $this->getKeywordQueue($this->company_id);
+      $this->confLocation = $this->getLocationFormConfModule($this->company_id);
     }
 
     /**
@@ -58,7 +63,7 @@ class CheckExcelChia implements FromCollection, WithHeadings, WithMapping, WithC
       $employee->company_scope = $this->company_id;
       $employee = $employee->find($data->employee_id);
 
-      $position = $business = $regional = $restriction = '';
+      $position = $business = $regional = $restriction = $headquarter = $process = $area = '';
 
       if ($employee->employee_position_id)
       {
@@ -88,8 +93,31 @@ class CheckExcelChia implements FromCollection, WithHeadings, WithMapping, WithC
         $restriction = $restriction->find($data->restriction_id)->name;
       }
 
-      //\Log::info($data);
-      return [
+      if ($this->confLocation['headquarter'] == 'SI')
+      {
+          $headquarter = EmployeeHeadquarter::query();
+          $headquarter->company_scope = $this->company_id;
+          $headquarter = $headquarter->find($employee->employee_headquarter_id);
+          $headquarter = $headquarter ? $headquarter->name : '';
+      }
+
+      if ($this->confLocation['process'] == 'SI')
+      {
+          $process = EmployeeProcess::query();
+          $process->company_scope = $this->company_id;
+          $process = $process->find($employee->employee_process_id);
+          $process = $process ? $process->name : '';
+      }
+
+      if ($this->confLocation['area'] == 'SI')
+      {
+          $area = EmployeeArea::query();
+          $area->company_scope = $this->company_id;
+          $area = $area->find($employee->employee_area_id);
+          $area = $area ? $area->name : '';
+      }
+
+      $values = [
         $data->id,
         $data->state,
         Carbon::createFromFormat('D M d Y', $data->created_at)->format('Y-m-d'),
@@ -102,7 +130,21 @@ class CheckExcelChia implements FromCollection, WithHeadings, WithMapping, WithC
         ($employee->date_of_birth ? $this->timeDifference((Carbon::createFromFormat('Y-m-d', $employee->date_of_birth))->toDateString()) : ''),
         $position,
         $business,
-        $regional,
+        $regional
+      ];
+
+      if ($this->confLocation['headquarter'] == 'SI')
+            array_push($values, $headquarter);
+
+      if ($this->confLocation['process'] == 'SI')
+      {
+          array_push($values, $process);
+      }
+
+      if ($this->confLocation['area'] == 'SI')
+          array_push($values, $area);
+
+      $values = array_merge($values, [ 
         ($employee->eps ? $employee->eps->name : ''),
         $data->disease_origin,
         $data->cie10Code->code,
@@ -139,12 +181,14 @@ class CheckExcelChia implements FromCollection, WithHeadings, WithMapping, WithC
         $data->process_pcl_done_date,
         $data->pcl,
         $data->entity_rating_pcl
-      ];
+      ]);
+
+      return $values;
     }
 
     public function headings(): array
     {
-      return [
+      $columns = [
         'ID Reporte',
         'Estado',
         'Fecha creación reporte',
@@ -156,8 +200,22 @@ class CheckExcelChia implements FromCollection, WithHeadings, WithMapping, WithC
         'Antigüedad',
         'Edad',
         $this->keywords['position'],
-        $this->keywords['businesses'],
-        $this->keywords['regional'],
+        $this->keywords['businesses']
+      ];
+
+      if ($this->confLocation['regional'] == 'SI')
+            array_push($columns, $this->keywords['regional']);
+
+      if ($this->confLocation['headquarter'] == 'SI')
+          array_push($columns, $this->keywords['headquarter']);
+
+      if ($this->confLocation['process'] == 'SI')
+          array_push($columns, $this->keywords['process']);
+
+      if ($this->confLocation['area'] == 'SI')
+          array_push($columns, $this->keywords['area']);
+
+      $columns = array_merge($columns, [
         $this->keywords['eps'],
         $this->keywords['disease_origin'],
         'Código CIE10',
@@ -194,7 +252,9 @@ class CheckExcelChia implements FromCollection, WithHeadings, WithMapping, WithC
         'Fecha proceso PCL',
         'Calificación PCL',
         'Entidad que califica PCL'
-      ];
+      ]);
+
+      return $columns;
     }
 
     public function columnFormats(): array
