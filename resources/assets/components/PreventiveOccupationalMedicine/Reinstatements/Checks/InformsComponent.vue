@@ -69,16 +69,15 @@
                                         </b-col>
                                     </b-row>
                                     <b-row>
-                                        <b-col v-if="form != 'argos'">
+                                        <!--<b-col v-if="form != 'argos'">
                                             <table-report
                                                 :rows="disease_origin_reports_pie.table"
                                             />
-                                        </b-col>
+                                        </b-col>-->
                                         <b-col>
-                                            <chart-pie 
+                                            <chart-bar 
                                                 :chart-data="disease_origin_reports_pie.chart"
                                                 :title="keywordCheck('disease_origin')"
-                                                color-line="red"
                                                 ref="disease_origin_reports_pie"/>
                                         </b-col>
                                     </b-row>
@@ -94,16 +93,15 @@
                                         </b-col>
                                     </b-row>
                                     <b-row>
-                                        <b-col v-if="form != 'argos'">
+                                        <!--<b-col v-if="form != 'argos'">
                                             <table-report
                                                 :rows="cases_per_regional_pie.table"
                                             />
-                                        </b-col>
+                                        </b-col>-->
                                         <b-col>
-                                            <chart-pie 
+                                            <chart-bar 
                                                 :chart-data="cases_per_regional_pie.chart"
                                                 :title="`Reportes por ${keywordCheck('regional')}`"
-                                                color-line="red"
                                                 ref="cases_per_regional_pie"/>
                                         </b-col>
                                     </b-row>
@@ -119,16 +117,15 @@
                                         </b-col>
                                     </b-row>
                                     <b-row>
-                                        <b-col>
+                                        <!--<b-col>
                                             <table-report
                                                 :rows="cases_per_headquarter_pie.table"
                                             />
-                                        </b-col>
+                                        </b-col>-->
                                         <b-col>
-                                            <chart-pie 
+                                            <chart-bar 
                                                 :chart-data="cases_per_headquarter_pie.chart"
                                                 :title="`Reportes por ${keywordCheck('headquarter')}`"
-                                                color-line="red"
                                                 ref="cases_per_headquarter_pie"/>
                                         </b-col>
                                     </b-row>
@@ -144,16 +141,15 @@
                                         </b-col>
                                     </b-row>
                                     <b-row>
-                                        <b-col>
+                                        <!--<b-col>
                                             <table-report
                                                 :rows="cases_per_process_pie.table"
                                             />
-                                        </b-col>
+                                        </b-col>-->
                                         <b-col>
-                                            <chart-pie 
+                                            <chart-bar 
                                                 :chart-data="cases_per_process_pie.chart"
                                                 :title="`Reportes por ${keywordCheck('process')}`"
-                                                color-line="red"
                                                 ref="cases_per_process_pie"/>
                                         </b-col>
                                     </b-row>
@@ -169,13 +165,13 @@
                                         </b-col>
                                     </b-row>
                                     <b-row>
-                                        <b-col v-if="form != 'argos'">
+                                        <!--<b-col v-if="form != 'argos'">
                                             <table-report
                                                 :rows="cases_per_business_pie.table"
                                             />
-                                        </b-col>
+                                        </b-col>-->
                                         <b-col>
-                                            <chart-pie 
+                                            <chart-bar 
                                                 :chart-data="cases_per_business_pie.chart"
                                                 :title="`Reportes por ${keywordCheck('businesses')}`"
                                                 color-line="red"
@@ -226,10 +222,9 @@
                                     </b-row>
                                     <b-row>
                                         <b-col>
-                                            <chart-pie 
+                                            <chart-bar 
                                                 :chart-data="cases_per_cie_10_pie"
                                                 title="Código CIE 10"
-                                                color-line="red"
                                                 ref="cases_per_cie_10_pie"/>
                                         </b-col>
                                     </b-row>
@@ -245,16 +240,15 @@
                                         </b-col>
                                     </b-row>
                                     <b-row>
-                                        <b-col>
+                                        <!--<b-col>
                                             <table-report
                                                 :rows="cases_per_sve_associateds_pie.table"
                                             />
-                                        </b-col>
+                                        </b-col>-->
                                         <b-col>
-                                            <chart-pie 
+                                            <chart-bar 
                                                 :chart-data="cases_per_sve_associateds_pie.chart"
                                                 title="Reportes por SVE Asociados"
-                                                color-line="red"
                                                 ref="cases_per_sve_associateds_pie"/>
                                         </b-col>
                                     </b-row>
@@ -270,16 +264,15 @@
                                         </b-col>
                                     </b-row>
                                     <b-row>
-                                        <b-col>
+                                        <!--<b-col>
                                             <table-report
                                                 :rows="cases_per_medical_certificates_pie.table"
                                             />
-                                        </b-col>
+                                        </b-col>-->
                                         <b-col>
-                                            <chart-pie 
+                                            <chart-bar 
                                                 :chart-data="cases_per_medical_certificates_pie.chart"
                                                 title="Reportes por Certificado médico UEAC"
-                                                color-line="red"
                                                 ref="cases_per_medical_certificates_pie"/>
                                         </b-col>
                                     </b-row>
@@ -295,16 +288,15 @@
                                         </b-col>
                                     </b-row>
                                     <b-row>
-                                        <b-col>
+                                        <!--<b-col>
                                             <table-report
                                                 :rows="cases_per_relocated_types_pie.table"
                                             />
-                                        </b-col>
+                                        </b-col>-->
                                         <b-col>
-                                            <chart-pie 
+                                            <chart-bar 
                                                 :chart-data="cases_per_relocated_types_pie.chart"
                                                 title="Reportes por Tipos de Reintegro"
-                                                color-line="red"
                                                 ref="cases_per_relocated_types_pie"/>
                                         </b-col>
                                     </b-row>
@@ -325,7 +317,7 @@
                                 </b-row>
                                 <b-row>
                                     <b-col>
-                                        <chart-pie 
+                                        <chart-bar 
                                             :chart-data="cases_per_cie_10_per_EG_pie"
                                             title="Código CIE 10 por EG"
                                             color-line="red"
@@ -348,7 +340,7 @@
                                 </b-row>
                                 <b-row>
                                     <b-col>
-                                        <chart-pie 
+                                        <chart-bar 
                                             :chart-data="cases_per_cie_10_per_EL_pie"
                                             title="Código CIE 10 por EL"
                                             color-line="red"
@@ -371,7 +363,7 @@
                                 </b-row>
                                 <b-row>
                                     <b-col>
-                                        <chart-pie 
+                                        <chart-bar 
                                             :chart-data="cases_per_cie_10_per_AT_pie"
                                             title="Código CIE 10 por AT"
                                             color-line="red"
