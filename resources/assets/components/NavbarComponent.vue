@@ -44,15 +44,6 @@
           </div>
         </label>
 
-        <!--<label class="nav-item navbar-text navbar-search-box p-0 active">
-          <div class="media-body line-height-condenced ml-3">
-            <div class="text-dark">
-              <vue-advanced-select class="col-md-12" v-model="company_test" :multiple="false" :options="companiesData" name="company" :searchable="true">
-            </vue-advanced-select>
-            </div>
-          </div>
-        </label>-->
-
         <b-nav-item-dropdown no-caret :right="!isRTL" class="demo-navbar-notifications mr-lg-3"
             v-if="Object.keys(company.data).length > 1">
           <template slot="button-content">
@@ -60,20 +51,28 @@
             <span class="d-lg-none align-middle">&nbsp; </span>
           </template>
 
-          <div>
-            <perfect-scrollbar :options="{ wheelPropagation: true }" class="mb-4" style="min-height: 250px; padding-right: 10px;">
-              <vue-advanced-select class="col-md-12" v-model="company_test" :multiple="false" :options="companiesData" name="company" :searchable="true" @input="changeCompany()"></vue-advanced-select>            
-            </perfect-scrollbar>
-          </div>
-            <!--<template v-for="(item, index) in companiesData">
+          <b-list-group-item class="media d-flex align-items-center" style="min-height: 40px;">
+            <div class="media-body line-height-condenced ml-3">
+              <div class="text-dark">
+                <b-input 
+                  placeholder="Buscar..." 
+                  type="text"
+                  autocomplete="off"
+                  v-model="searchCompany"
+                  />
+                </div>
+            </div>
+          </b-list-group-item>
+
+            <template v-for="(item, index) in companiesData">
               <b-list-group-item href="javascript:void(0)" class="media d-flex align-items-center" style="min-height: 40px;"
-                 :key="index" v-if="item.id != company.selected" @click="changeCompany(item.id)">
+                 :key="index" v-if="item.id != company.selected && showItem(item.name)" @click="changeCompany(item.id)">
                 <div class="ui-icon ui-icon-sm ion bg-primary border-0 text-white"> {{ item.name.substr(0,1).toUpperCase() }} </div>
                 <div class="media-body line-height-condenced ml-3">
                   <div class="text-dark">{{ item.name }}</div>
                 </div>
               </b-list-group-item>
-            </template>-->
+            </template>
         </b-nav-item-dropdown>
 
         <!-- Divider -->
@@ -169,7 +168,7 @@ export default {
           selected: null,
           data: []
         },
-        company_test: ''
+        searchCompany: ''
       }
     },
   methods: {
@@ -205,10 +204,10 @@ export default {
             Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
         });
     },
-    changeCompany() {
+    changeCompany(company) {
       axios
         .post('/changeCompany', {
-            company_id: this.company_test,
+            company_id: company,
             currentPath: this.$route.path,
             currentName: this.$route.name
         })
@@ -222,6 +221,14 @@ export default {
     toggleApp(description) {
       document.getElementById('navbar-application-sauce__BV_button_').click()
       this.userActivity(description)
+    },
+    showItem(label) {
+      if (this.searchCompany)
+      {
+          return label.toLowerCase().includes(this.searchCompany.toLowerCase())
+      }
+      else
+          return true
     }
   },
   created () {
@@ -239,13 +246,11 @@ export default {
       },
       companiesData() {
         let data = [];
-        let content = [];
 
         if (this.company.selected) 
         {
           _.forIn(this.company.data, (value, key) => {
-            content = {name: value.name, value: value.id};
-              data.push(content);
+              data.push(value);
           })
 
           data.sort((a, b) => (a.name > b.name) ? 1 : -1)
