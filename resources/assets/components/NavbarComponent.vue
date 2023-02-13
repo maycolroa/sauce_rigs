@@ -64,6 +64,7 @@
             </div>
           </b-list-group-item>
 
+          <b-list-group flush style="max-height: 300px; overflow-y: scroll;">
             <template v-for="(item, index) in companiesData">
               <b-list-group-item href="javascript:void(0)" class="media d-flex align-items-center" style="min-height: 40px;"
                  :key="index" v-if="item.id != company.selected && showItem(item.name)" @click="changeCompany(item.id)">
@@ -73,6 +74,7 @@
                 </div>
               </b-list-group-item>
             </template>
+          </b-list-group>
         </b-nav-item-dropdown>
 
         <!-- Divider -->
