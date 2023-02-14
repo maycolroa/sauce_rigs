@@ -653,7 +653,8 @@ class InformManagerCheck
         ->inCodCie($this->cie10, $this->filtersType['cie10'])
         ->betweenDate($this->dateRange)
         ->where($column, '<>', '')
-        ->groupBy($column);
+        ->groupBy($column)
+        ->orderBy('count');
 
         if ($this->nextFollowDays)
             $data->inNextFollowDays($this->nextFollowDays, $this->filtersType['nextFollowDays']);
@@ -731,7 +732,8 @@ class InformManagerCheck
         ->inYears($this->years, $this->filtersType['years'])
         ->inCodCie($this->cie10, $this->filtersType['cie10'])
         ->betweenDate($this->dateRange)
-        ->groupBy('sau_reinc_cie10_codes.category');
+        ->groupBy('sau_reinc_cie10_codes.category')
+        ->orderBy('count_per_cie10_code');
 
         if ($disease_origin != null)
             $checksPerCie10Code->where('sau_reinc_checks.disease_origin', $disease_origin);
@@ -809,7 +811,8 @@ class InformManagerCheck
         ->inYears($this->years, $this->filtersType['years'])
         ->inCodCie($this->cie10, $this->filtersType['cie10'])
         ->betweenDate($this->dateRange)
-        ->groupBy($table.'.name');
+        ->groupBy($table.'.name')
+        ->orderBy('count');
 
         if ($this->nextFollowDays)
             $checksPerColumn->inNextFollowDays($this->nextFollowDays, $this->filtersType['nextFollowDays']);
