@@ -405,8 +405,6 @@ class InspectionController extends ApiController
 
                     if (isset($value["actionPlan"]))
                     {
-                        \Log::info('ap');
-                        \Log::info($request->company_id);
                         $regional_detail = EmployeeRegional::where('id', $employee_regional_id);
                         $regional_detail->company_scope = $request->company_id;
                         $regional_detail = $regional_detail->first();

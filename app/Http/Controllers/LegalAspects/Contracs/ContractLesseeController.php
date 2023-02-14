@@ -214,7 +214,7 @@ class ContractLesseeController extends Controller
 
             $contract->responsibles()->sync($responsibles);
 
-            $this->saveLogActivitySystem('Contratistas - Contratistas', 'Se creo el contratista '.$contract->social_reason.' - '.$employeeContract->nit);
+            $this->saveLogActivitySystem('Contratistas - Contratistas', 'Se creo el contratista '.$contract->social_reason.' - '.$contract->nit);
 
             DB::commit();
 
@@ -501,7 +501,7 @@ class ContractLesseeController extends Controller
                 $this->reloadLiskCheckResumen($contract, $qualification_list->id);
 
             
-            $this->saveLogActivitySystem('Contratistas - Contratistas', 'Se edito el contratista '.$contract->social_reason.' - '.$employeeContract->nit);
+            $this->saveLogActivitySystem('Contratistas - Contratistas', 'Se edito el contratista '.$contract->social_reason.' - '.$contract->nit);
 
             DB::commit();
 
