@@ -148,7 +148,7 @@ class CheckController extends Controller
     {
         try
         {
-            $checks = Check::where('sau_reinc_checks.employee_id', '=', $request->employee_id);
+            $checks = Check::join('sau_employees', 'sau_employees.id', 'sau_reinc_checks.employee_id')->where('sau_reinc_checks.employee_id', '=', $request->employee_id);
 
             if ($request->check_id)
                 $checks->where('sau_reinc_checks.employee_id', '<>', $request->check_id);
