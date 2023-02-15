@@ -5,6 +5,8 @@ namespace App\Inform\PreventiveOccupationalMedicine\Reinstatements;
 use App\Models\PreventiveOccupationalMedicine\Reinstatements\Check;
 use App\Traits\ConfigurableFormTrait;
 use App\Traits\LocationFormTrait;
+use Illuminate\Support\Facades\Auth;
+use App\Models\Administrative\Users\User;
 use DB;
 
 class InformManagerCheck
@@ -898,14 +900,26 @@ class InformManagerCheck
 
     public function employee_active_disease_origin()
     {
+        $headquarters = [];
+        $id = Auth::user() ? Auth::user()->id : null;
+
+        if ($id)
+            $headquarters = User::find($id)->headquarters()->pluck('id')->toArray();
 
         $checks = DB::table('sau_reinc_checks')->selectRaw("
             disease_origin,
             employee_id,
             SUM(DISTINCT CASE WHEN state = 'ABIERTO' THEN 1 ELSE 0 END) AS state
         ")
-        ->whereRaw("company_id = {$this->company}")
+        ->whereRaw("sau_reinc_checks.company_id = {$this->company}")
         ->groupBy('disease_origin', 'employee_id');
+
+        if (count($headquarters) > 0)
+        {
+            $headquarters = implode(',', $headquarters);
+
+            $checks->join('sau_employees', 'sau_employees.id', 'sau_reinc_checks.employee_id')->whereRaw("sau_employees.employee_headquarter_id in ({$headquarters})");
+        }
 
         if ($this->filtersType['cie10'] == 'IN' && count($this->cie10) > 0)
         {

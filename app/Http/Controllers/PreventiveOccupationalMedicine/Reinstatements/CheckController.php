@@ -981,6 +981,8 @@ class CheckController extends Controller
 
     public function dataLetters(Request $request)
     {
+        $headquarters =$this->user->headquarters()->pluck('id')->toArray();
+
         $data = LetterHistory::select(
             'sau_reinc_letter_recommendations_history.*',
             'sau_reinc_cie10_codes.code AS code',
@@ -990,6 +992,13 @@ class CheckController extends Controller
         ->join('sau_reinc_checks', 'sau_reinc_checks.id', 'sau_reinc_letter_recommendations_history.check_id')        
         ->join('sau_reinc_cie10_codes', 'sau_reinc_cie10_codes.id', 'sau_reinc_checks.cie10_code_id')
         ->join('sau_employees', 'sau_employees.id', 'sau_reinc_checks.employee_id');
+
+        if (count($headquarters) > 0)
+        {
+            $headquarters = implode(',', $headquarters);
+
+            $data->whereRaw("sau_employees.employee_headquarter_id in ({$headquarters})");
+        }
 
         return Vuetable::of($data)
             ->make();
