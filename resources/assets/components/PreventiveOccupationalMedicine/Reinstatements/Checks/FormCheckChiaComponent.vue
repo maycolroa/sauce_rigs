@@ -7,7 +7,7 @@
           <vue-ajax-advanced-select class="col-md-12" :disabled="viewOnly" v-model="form.employee_id"  name="employee_id" :label="keywordCheck('employee')" placeholder="Seleccione una opción" :url="employeesDataUrl" :selected-object="form.multiselect_employee" :error="form.errorsFor('employee_id')">
                 </vue-ajax-advanced-select>
 
-          <center v-if="employeeDetail.id">
+          <center v-if="showOld">
             <b-btn variant="primary" size="md" @click="$refs.modalHistorial.show()" ><span class="ion ion-md-eye"></span> Ver otros reportes relacionados con {{ employeeDetail.name }}</b-btn>
           </center>
 
@@ -235,7 +235,7 @@
                 <vue-datepicker :disabled="viewOnly" v-show="form.in_process_pcl == 'NO' && form.process_pcl_done == 'SI'" class="col-md-6" v-model="form.process_pcl_done_date" label="Fecha proceso PCL" :full-month-name="true" :error="form.errorsFor('process_pcl_done_date')" name="process_pcl_done_date">
                   </vue-datepicker>
 
-                <vue-input :disabled="viewOnly" class="col-md-6" v-show="showPcl" v-model="form.pcl" label="Calificación PCL" type="number" name="pcl" min="0.00" max="100.00" step="0.01" :error="form.errorsFor('pcl')"></vue-input>
+                <vue-input :disabled="viewOnly" class="col-md-6" v-show="showPcl" v-model="form.pcl" label="Calificación PCL" type="number" name="pcl" min="0.00" max="100.00" :step="0.01" :error="form.errorsFor('pcl')"></vue-input>
 
                 <vue-input :disabled="viewOnly" class="col-md-6 offset-md-6" v-show="showPcl" v-model="form.entity_rating_pcl" label="Entidad que califica PCL" type="text" name="entity_rating_pcl" :error="form.errorsFor('entity_rating_pcl')"></vue-input>
 
@@ -549,6 +549,7 @@ export default {
       this.updateDetails(`/administration/employee/${this.form.employee_id}`, 'employeeDetail')
       this.updateTracingOtherReport('sau_reinc_tracings', 'tracingOtherReport');      
       this.updateTracingOtherReport('sau_reinc_labor_notes', 'laborNotesOtherReport');
+      this.oldCheck();
     },
     'form.cie10_code_id': function() {
       this.updateDetails(`/biologicalmonitoring/reinstatements/cie10/${this.form.cie10_code_id}`, 'cie10CodeDetail');
@@ -626,6 +627,7 @@ export default {
       this.updateDetails(`/administration/employee/${this.form.employee_id}`, 'employeeDetail')
       this.updateTracingOtherReport('sau_reinc_tracings', 'tracingOtherReport');
       this.updateTracingOtherReport('sau_reinc_labor_notes', 'laborNotesOtherReport');
+      this.oldCheck();
     }
 
     if (!this.isEdit && !this.viewOnly)
@@ -660,7 +662,8 @@ export default {
       },
       disableWacth: this.disableWacthSelectInCreated,
       tracingOtherReport: [],
-      laborNotesOtherReport: []
+      laborNotesOtherReport: [],
+      showOld: false
     };
   },
   methods: {
@@ -700,6 +703,31 @@ export default {
         .catch(error => {
           this.loading = false;
         });
+    },
+    oldCheck()
+    {
+      if (this.form.id)
+      {
+        axios.post('/biologicalmonitoring/reinstatements/check/oldReport', {employee_id: this.form.employee_id, check_id: this.form.id})
+        .then(response => {
+            this.showOld = response.data.data;
+        })
+        .catch(error => {
+            Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
+            this.$router.go(-1);
+        });
+      }
+      else 
+      {
+        axios.post('/biologicalmonitoring/reinstatements/check/oldReport', {employee_id: this.form.employee_id})
+        .then(response => {
+            this.showOld = response.data.data;
+        })
+        .catch(error => {
+            Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
+            this.$router.go(-1);
+        });
+      }
     },
     updateDetails(url, key)
     {

@@ -627,6 +627,7 @@ export default {
       this.updateDetails(`/administration/employee/${this.form.employee_id}`, 'employeeDetail')
       this.updateTracingOtherReport('sau_reinc_tracings', 'tracingOtherReport');
       this.updateTracingOtherReport('sau_reinc_labor_notes', 'laborNotesOtherReport');
+      this.oldCheck();
     }
 
     if (!this.isEdit && !this.viewOnly)
@@ -660,7 +661,8 @@ export default {
       },
       disableWacth: this.disableWacthSelectInCreated,
       tracingOtherReport: [],
-      laborNotesOtherReport: []
+      laborNotesOtherReport: [],
+      showOld: false
     };
   },
   methods: {
@@ -695,6 +697,31 @@ export default {
         .catch(error => {
           this.loading = false;
         });
+    },
+    oldCheck()
+    {
+      if (this.form.id)
+      {
+        axios.post('/biologicalmonitoring/reinstatements/check/oldReport', {employee_id: this.form.employee_id, check_id: this.form.id})
+        .then(response => {
+            this.showOld = response.data.data;
+        })
+        .catch(error => {
+            Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
+            this.$router.go(-1);
+        });
+      }
+      else 
+      {
+        axios.post('/biologicalmonitoring/reinstatements/check/oldReport', {employee_id: this.form.employee_id})
+        .then(response => {
+            this.showOld = response.data.data;
+        })
+        .catch(error => {
+            Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
+            this.$router.go(-1);
+        });
+      }
     },
     updateDetails(url, key)
     {

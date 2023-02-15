@@ -144,6 +144,36 @@ class CheckController extends Controller
                     ->make();
     }
 
+    public function data2(Request $request)
+    {
+        try
+        {
+            $checks = Check::where('sau_reinc_checks.employee_id', '=', $request->employee_id);
+
+            if ($request->check_id)
+                $checks->where('sau_reinc_checks.employee_id', '<>', $request->check_id);
+                    
+            $checks = $checks->get();
+
+            if ($checks->count() > 0)
+            {
+                return $this->respondHttp200([
+                    'data' => true
+                ]);
+            }
+            else
+            {
+                return $this->respondHttp200([
+                    'data' => false
+                ]);
+            }
+        } catch (Exception $e){
+            \Log::info($e->getMessage());
+            DB::rollback();
+            return $this->respondHttp500();
+        }
+    }
+
     /**
      * Store a newly created resource in storage.
      *

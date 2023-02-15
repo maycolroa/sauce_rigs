@@ -42,7 +42,6 @@ class UserRequest extends FormRequest
      */
     public function rules()
     {
-        \Log::info($this);
         $id = $this->input('id');
 
         $rules = [

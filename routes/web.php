@@ -115,6 +115,8 @@ Route::middleware(['auth'])->group(function () {
 
           Route::post('check/data2', 'PreventiveOccupationalMedicine\Reinstatements\CheckController@dataLetters');
 
+          Route::post('check/oldReport', 'PreventiveOccupationalMedicine\Reinstatements\CheckController@data2');
+
           Route::get('check/generatePdf/{id}', 'PreventiveOccupationalMedicine\Reinstatements\CheckController@regenerateLetter');
 
           Route::ApiResource('cie10', 'PreventiveOccupationalMedicine\Reinstatements\Cie10Controller')->only('show');
