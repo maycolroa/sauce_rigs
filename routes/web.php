@@ -50,6 +50,7 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('templates/audiometryimport','PreventiveOccupationalMedicine\BiologicalMonitoring\AudiometryController@downloadTemplateImport');
     Route::get('templates/employeeimport','Administrative\Employees\EmployeesController@downloadTemplateImport');    
+    Route::get('templates/employeeinactiveimport','Administrative\Employees\EmployeesController@downloadTemplateInactiveImport');   
     Route::get('templates/dangermatriximport','IndustrialSecure\DangerMatrix\DangerMatrixController@downloadTemplateImport');
     Route::get('templates/contractimport','LegalAspects\Contracs\ContractLesseeController@downloadTemplateImport');
     Route::get('templates/legalmatriximport','LegalAspects\LegalMatrix\LawController@downloadTemplateImport');  
@@ -437,6 +438,7 @@ Route::middleware(['auth'])->group(function () {
 			Route::ApiResource('process', 'Administrative\Processes\EmployeeProcessController');
 
       Route::post('employee/import', 'Administrative\Employees\EmployeesController@import');
+      Route::post('employee/importInactive', 'Administrative\Employees\EmployeesController@importInactive');
 			Route::post('employee/data', 'Administrative\Employees\EmployeesController@data');
 			Route::ApiResource('employee', 'Administrative\Employees\EmployeesController');
 

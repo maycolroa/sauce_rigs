@@ -56,7 +56,7 @@
                                     </vue-datepicker>
                                 <vue-advanced-select :disabled="viewOnly" class="col-md-4" v-model="activity.state" :multiple="false" :options="actionPlanStates" :hide-selected="false" name="state" label="Estado" placeholder="Seleccione el estado" :error="form.errorsFor(`${prefixIndex}actionPlan.activities.${index}.state`)">
                                     </vue-advanced-select>
-                                <vue-datepicker :disabled="viewOnly || activity.expiration_date == '' || activity.state == 'Pendiente'" class="col-md-3" v-model="activity.execution_date" label="Fecha de ejecución" placeholder="Seleccione la fecha de ejecución" name="execution_date" :disabled-dates="disabledExecutionDate(index)" :error="form.errorsFor(`${prefixIndex}actionPlan.activities.${index}.execution_date`)">
+                                <vue-datepicker :disabled="viewOnly || activity.expiration_date == '' || activity.state == 'Pendiente'" class="col-md-4" v-model="activity.execution_date" label="Fecha de ejecución" placeholder="Seleccione la fecha de ejecución" name="execution_date" :disabled-dates="disabledExecutionDate(index)" :error="form.errorsFor(`${prefixIndex}actionPlan.activities.${index}.execution_date`)">
                                     </vue-datepicker> 
                                 <b-btn variant="outline-primary icon-btn borderless" v-if="activity.expiration_date == '' || activity.state == 'Pendiente'" size="sm" v-b-tooltip.top title="Limpiar Fecha" @click.prevent="cleanDate(index)"><span class="ion ion-md-close-circle"></span></b-btn>    
                                <!-- <b-btn @click.prevent="cleanDate(index)" 

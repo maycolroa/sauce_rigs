@@ -8,7 +8,9 @@ use App\Vuetable\Facades\Vuetable;
 use App\Models\Administrative\Employees\Employee;
 use App\Http\Requests\Administrative\Employees\EmployeeRequest;
 use App\Exports\Administrative\Employees\EmployeeImportTemplate;
+use App\Exports\Administrative\Employees\EmployeeInactiveTemplate;
 use App\Jobs\Administrative\Employees\EmpployeeImportJob;
+use App\Jobs\Administrative\Employees\EmployeeImportInactiveJob;
 use Maatwebsite\Excel\Facades\Excel;
 use Carbon\Carbon;
 use Datetime;
@@ -287,6 +289,11 @@ class EmployeesController extends Controller
       return Excel::download(new EmployeeImportTemplate($this->company), 'PlantillaImportacionEmpleados.xlsx');
     }
 
+    public function downloadTemplateInactiveImport()
+    {
+      return Excel::download(new EmployeeInactiveTemplate(collect([]), $this->company), 'PlantillaInactivacionEmpleados.xlsx');
+    }
+
     /**
      * import.
      *
@@ -298,6 +305,20 @@ class EmployeesController extends Controller
       try
       {
         EmpployeeImportJob::dispatch($request->file, $this->company, $this->user);
+      
+        return $this->respondHttp200();
+
+      } catch(Exception $e)
+      {
+        return $this->respondHttp500();
+      }
+    }
+
+    public function importInactive(Request $request)
+    {
+      try
+      {
+        EmployeeImportInactiveJob::dispatch($request->file, $this->company, $this->user);
       
         return $this->respondHttp200();
 
