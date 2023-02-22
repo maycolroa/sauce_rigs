@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Vuetable\Facades\Vuetable;
 use App\Models\IndustrialSecure\RiskMatrix\Risk;
 use App\Http\Requests\IndustrialSecure\RiskMatrix\RiskRequest;
+use App\Models\IndustrialSecure\RiskMatrix\TagsRmCategoryRisk;
 
 class RiskController extends Controller
 {
@@ -54,8 +55,12 @@ class RiskController extends Controller
      */
     public function store(RiskRequest $request)
     {
+        $category = $this->tagsPrepare($request->get('category'));
+        $this->tagsSave($mark, TagsRmCategoryRisk::class);
+
         $risk = new Risk($request->all());
         $risk->company_id = $this->company;
+        $risk->category = $category->implode(',');
         
         if(!$risk->save()){
             return $this->respondHttp500();
@@ -97,7 +102,11 @@ class RiskController extends Controller
      */
     public function update(RiskRequest $request, Risk $risk)
     {
+        $category = $this->tagsPrepare($request->get('category'));
+        $this->tagsSave($category, TagsRmCategoryRisk::class);
+
         $risk->fill($request->all());
+        $risk->category = $category->implode(',');
         
         if(!$risk->update()){
           return $this->respondHttp500();

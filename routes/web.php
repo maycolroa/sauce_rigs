@@ -257,8 +257,9 @@ Route::middleware(['auth'])->group(function () {
         Route::post('tagsTypeProcess', 'General\TagController@multiselectTypeProcess');
         Route::post('tagsTypeProcessRiskMatrix', 'General\TagController@multiselectTypeProcessRiskMatrx');
         Route::post('tagsSubstitution', 'IndustrialSecure\Tags\TagController@multiselectSubstitution');
-        Route::post('tagsParticipants', 'IndustrialSecure\Tags\TagController@multiselectSubstitution');
+        Route::post('tagsParticipants', 'IndustrialSecure\Tags\TagController@multiselectParticipants');
         Route::post('tagsRmParticipants', 'IndustrialSecure\RiskMatrix\Tags\ParticipantsController@multiselect');
+        Route::post('tagsRmCategories', 'IndustrialSecure\RiskMatrix\Tags\CategoryRiskController@multiselect');
         Route::post('tagsRmRiskCausesControls', 'IndustrialSecure\RiskMatrix\Tags\CauseControlsController@multiselect');
         Route::post('tagsDangerDescription', 'IndustrialSecure\Tags\TagController@multiselectDangerDescription');
         Route::post('tagsRoles', 'IndustrialSecure\AccidentsWork\AccidentsWorkController@multiselectRolesParticipants');

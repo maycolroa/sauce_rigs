@@ -5,9 +5,9 @@ namespace App\Http\Controllers\IndustrialSecure\RiskMatrix\Tags;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Vuetable\Facades\Vuetable;
-use App\Models\IndustrialSecure\RiskMatrix\TagsRmParticipant;
+use App\Models\IndustrialSecure\RiskMatrix\TagsRmCategoryRisk;
 
-class ParticipantsController extends Controller
+class CategoryRiskController extends Controller
 {
     /**
      * creates and instance and middlewares are checked
@@ -36,19 +36,19 @@ class ParticipantsController extends Controller
     */
     public function data(Request $request)
     {
-        $participants = TagsRmParticipant::select('*');
+        $category = TagsRmCategoryRisk::select('*');
 
-        return Vuetable::of($participants)
+        return Vuetable::of($category)
                     ->make();
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  TagsRmParticipant  $participant
+     * @param  TagsRmCategoryRisk  $participant
      * @return \Illuminate\Http\Response
      */
-    public function destroy(TagsRmParticipant $participant)
+    public function destroy(TagsRmCategoryRisk $participant)
     {
 
         if(!$participant->delete())
@@ -66,7 +66,7 @@ class ParticipantsController extends Controller
         if($request->has('keyword'))
         {
             $keyword = "%{$request->keyword}%";
-            $tags = TagsRmParticipant::select("id", "name")
+            $tags = TagsRmCategoryRisk::select("id", "name")
                 ->where(function ($query) use ($keyword) {
                     $query->orWhere('name', 'like', $keyword);
                 })

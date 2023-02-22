@@ -17,6 +17,27 @@ class RiskRequest extends FormRequest
         return true;
     }
 
+    public function validator($factory)
+    {
+        return $factory->make(
+            $this->sanitize(), $this->container->call([$this, 'rules']), $this->messages()
+        );
+    }
+
+    public function sanitize()
+    {
+        if ($this->has('category'))
+        {
+            foreach ($this->input('category') as $key => $value)
+            {
+                $data['category'][$key] = json_decode($value, true);
+                $this->merge($data);
+            }
+        } 
+
+        return $this->all();
+    }
+
     /**
      * Get the validation rules that apply to the request.
      *

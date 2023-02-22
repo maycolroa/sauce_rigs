@@ -16,7 +16,7 @@ class CauseControlsController extends Controller
     {
         parent::__construct();
         $this->middleware('auth');
-        $this->middleware("permission:dangerMatrix_c, {$this->team}");
+        //$this->middleware("permission:dangerMatrix_c, {$this->team}");
     }
 
     /**
