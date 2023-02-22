@@ -604,7 +604,8 @@ export default [
         { name: 'numero_planes_no_ejecutados', data: 'numero_planes_no_ejecutados', title: 'Pendientes', sortable: true, searchable: true, detail: false, key: false },
         { name: 'p_num_no_eje', data: 'p_num_no_eje', title: '% Pendientes', sortable: true, searchable: true, detail: false, key: false },
         { name: 'numero_planes_ejecutados', data: 'numero_planes_ejecutados', title: 'Ejecutados', sortable: true, searchable: true, detail: false, key: false },
-        { name: 'p_num_eje', data: 'p_num_eje', title: '% Ejecutados', sortable: true, searchable: true, detail: false, key: false }
+        { name: 'p_num_eje', data: 'p_num_eje', title: '% Ejecutados', sortable: true, searchable: true, detail: false, key: false },
+        { name: 'total', data: 'total', title: 'Total', sortable: true, searchable: true, detail: false, key: false }
     ],
     'controlls': [{
         type: 'push',

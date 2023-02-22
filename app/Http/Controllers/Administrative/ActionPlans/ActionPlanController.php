@@ -476,6 +476,12 @@ class ActionPlanController extends Controller
 
                 return $report->p_num_no_eje;
             })
+            ->addColumn('total', function ($report) {
+
+                $report->total = $report->numero_planes_ejecutados + $report->numero_planes_no_ejecutados;
+
+                return $report->total;
+            })
             ->make();
     }
 }

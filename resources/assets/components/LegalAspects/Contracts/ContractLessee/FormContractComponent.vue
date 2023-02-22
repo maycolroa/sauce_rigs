@@ -9,7 +9,7 @@
                     </b-form-row>
 
                     <b-form-row>
-						<vue-input :disabled="viewOnly" class="col-md-12" v-model="form.email" label="Email" type="text" name="email" :error="form.errorsFor('email')" placeholder="Email"></vue-input>
+						<vue-input :disabled="viewOnly" class="col-md-12" v-model="form.email" label="Email" type="text" name="email" :error="form.errorsFor('email')" placeholder="Email" help-text="El correo electronico a ingresar preferiblemente debe ser una correo corporativo"></vue-input>
                     </b-form-row>
             	</b-card>
 				<b-card border-variant="primary" title="Datos empresariales" class="mb-3 box-shadow-none">
