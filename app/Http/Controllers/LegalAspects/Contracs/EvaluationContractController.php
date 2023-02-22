@@ -69,9 +69,10 @@ class EvaluationContractController extends Controller
                 'sau_ct_information_contract_lessee.social_reason as social_reason',
                 'sau_ct_information_contract_lessee.nit as nit',
                 'sau_users.name as name'
-            )
+            ) 
             ->join('sau_users', 'sau_users.id', 'sau_ct_evaluation_contract.evaluator_id')
             ->join('sau_ct_information_contract_lessee', 'sau_ct_information_contract_lessee.id', 'sau_ct_evaluation_contract.contract_id')
+            ->orderBy('sau_ct_evaluation_contract.evaluation_date', 'DESC')
             /*->join('sau_ct_evaluations', 'sau_ct_evaluations.id', 'sau_ct_evaluation_contract.evaluation_id')
             ->join('sau_ct_objectives', 'sau_ct_objectives.evaluation_id', 'sau_ct_evaluations.id')
             ->join('sau_ct_subobjectives', 'sau_ct_subobjectives.objective_id', 'sau_ct_objectives.id')

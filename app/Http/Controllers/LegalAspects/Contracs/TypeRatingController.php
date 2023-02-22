@@ -103,7 +103,7 @@ class TypeRatingController extends Controller
           return $this->respondHttp500();
         }
 
-        $this->saveLogActivitySystem('Contratistas - Evaluaciones', 'Se edito el proceso a evaluar '.$rating->name);
+        $this->saveLogActivitySystem('Contratistas - Evaluaciones', 'Se edito el proceso a evaluar '.$typeRating->name);
         
         return $this->respondHttp200([
             'message' => 'Se actualizo el tipo de calificación'

@@ -119,7 +119,7 @@
                         @endif
                     </tr>
                 @endif
-                @if (!$inspections["process"] && $inspections["area"] && $inspections["compliance"])
+                @if (!$inspections["process"] && !$inspections["area"] && $inspections["compliance"])
                     <tr>
                         <th colspan="2">Porcentaje de cumplimiento</th>
                     </tr>

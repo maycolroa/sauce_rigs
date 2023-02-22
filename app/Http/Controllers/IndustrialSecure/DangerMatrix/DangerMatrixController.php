@@ -210,6 +210,9 @@ class DangerMatrixController extends Controller
 
         try
         { 
+
+            $confLocation = $this->getLocationFormConfModule();
+
             foreach ($dangersMatrix->activities as $keyActivity => $itemActivity)
             {  
                 foreach ($itemActivity->dangers as $keyDanger => $itemDanger)
@@ -218,7 +221,16 @@ class DangerMatrixController extends Controller
                 }
             }
 
-            $this->saveLogActivitySystem('Matriz de peligros', 'Se elimino la matriz de peligros '.$dangersMatrix.' ');
+            if ($confLocation['regional'] == 'SI')
+                $details_log = $details_log . $keywords['regional']. ': ' .  $dangersMatrix->regional->name;
+            if ($confLocation['headquarter'] == 'SI')
+                $details_log = $details_log . '- ' .$keywords['headquarter']. ': ' .  $dangersMatrix->headquarter->name;
+            if ($confLocation['process'] == 'SI')
+                $details_log = $details_log . '- ' .$keywords['process']. ': ' .  $dangersMatrix->process->name;
+            if ($confLocation['area'] == 'SI')
+                $details_log = $details_log . '- ' .$keywords['area']. ': ' .  $dangersMatrix->area->name;
+
+            $this->saveLogActivitySystem('Matriz de peligros', 'Se elimino la matriz de peligros ubicada en '.$details_log.' ');
 
             if(!$dangersMatrix->delete())
             {

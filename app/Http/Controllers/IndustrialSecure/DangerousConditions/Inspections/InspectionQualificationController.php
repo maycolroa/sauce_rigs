@@ -125,6 +125,7 @@ class InspectionQualificationController extends Controller
     {
         try
         {
+            \Log::info($id);
             return $this->respondHttp200([
                 'data' => $this->getInformationInspection($id),
             ]);
@@ -135,7 +136,7 @@ class InspectionQualificationController extends Controller
 
     public function getInformationInspection($id)
     {
-        $qualification = InspectionItemsQualificationAreaLocation::findOrFail($id);
+        $qualification = InspectionItemsQualificationAreaLocation::withoutGlobalScopes()->findOrFail($id);
 
         $inspectionsReady = InspectionItemsQualificationAreaLocation::select(
                 'sau_ph_inspection_items_qualification_area_location.*',
@@ -147,6 +148,7 @@ class InspectionQualificationController extends Controller
             ->leftJoin('sau_ph_qualifications_inspections', 'sau_ph_qualifications_inspections.id', 'sau_ph_inspection_items_qualification_area_location.qualification_id')
             ->join('sau_ph_inspection_section_items', 'sau_ph_inspection_section_items.id', 'sau_ph_inspection_items_qualification_area_location.item_id')
             ->join('sau_ph_inspection_sections', 'sau_ph_inspection_sections.id', 'sau_ph_inspection_section_items.inspection_section_id')
+            ->withoutGlobalScopes()
             ->where('sau_ph_inspection_items_qualification_area_location.qualification_date', $qualification->qualification_date);
 
         if ($qualification->employee_regional_id)
@@ -278,7 +280,7 @@ class InspectionQualificationController extends Controller
 
     public function complianceType1($id)
     {
-        $qualification = InspectionItemsQualificationAreaLocation::findOrFail($id);
+        $qualification = InspectionItemsQualificationAreaLocation::withoutGlobalScopes()->findOrFail($id);
 
         $consultas = InspectionItemsQualificationAreaLocation::select(
             DB::raw('count(sau_ph_inspection_items_qualification_area_location.qualification_id) as numero_items'),
@@ -294,7 +296,8 @@ class InspectionQualificationController extends Controller
             ->leftJoin('sau_employees_headquarters', 'sau_employees_headquarters.id', 'sau_ph_inspection_items_qualification_area_location.employee_headquarter_id')
             ->leftJoin('sau_employees_processes', 'sau_employees_processes.id', 'sau_ph_inspection_items_qualification_area_location.employee_process_id')
             ->leftJoin('sau_employees_areas', 'sau_employees_areas.id','sau_ph_inspection_items_qualification_area_location.employee_area_id')
-            ->where('sau_ph_inspection_items_qualification_area_location.qualification_date', $qualification->qualification_date);
+            ->where('sau_ph_inspection_items_qualification_area_location.qualification_date', $qualification->qualification_date)
+            ->withoutGlobalScopes();
 
         if ($qualification->employee_regional_id)
             $consultas->where('sau_ph_inspection_items_qualification_area_location.employee_regional_id', $qualification->employee_regional_id);
@@ -416,7 +419,7 @@ class InspectionQualificationController extends Controller
 
             ActionPlan::sendMail();
 
-            $this->saveLogActivitySystem('Inspecciones - Inspecciones planeadas', 'Se edito la inspección '. $inspection->name .' realizada en '.$detail_procedence);
+            $this->saveLogActivitySystem('Inspecciones - Inspecciones planeadas', 'Se edito la calificacion realizada en '.$detail_procedence);
 
             DB::commit();
 
@@ -445,6 +448,8 @@ class InspectionQualificationController extends Controller
                 },
             ]
         ])->validate();
+
+        $confLocation = $this->getLocationFormConfModule();
 
         $qualification = InspectionItemsQualificationAreaLocation::findOrFail($request->id);
         $data = $request->all();
@@ -476,7 +481,20 @@ class InspectionQualificationController extends Controller
         if (!$qualification->update())
             return $this->respondHttp500();
 
-        $this->saveLogActivitySystem('Inspecciones - Inspecciones planeadas', 'Se cargaron imagenes a la inspección '. $inspection->name .' realizada en '.$detail_procedence);
+        $inspection = $qualification->item->section->inspection;
+
+        $details = 'Inspección: ' . $inspection->name . ' - ' . $theme->name . ' - ' . $item->description;
+
+        if ($confLocation['regional'] == 'SI')
+            $detail_procedence = 'Inspecciones - Inspecciones Planeadas. ' . $details . '- ' . $keywords['regional']. ': ' .  $qualification->regional->name;
+        if ($confLocation['headquarter'] == 'SI')
+            $detail_procedence = $detail_procedence . ' - ' .$keywords['headquarter']. ': ' .  $qualification->headquarter->name;
+        if ($confLocation['process'] == 'SI')
+            $detail_procedence = $detail_procedence . ' - ' .$keywords['process']. ': ' .  $qualification->process->name;
+        if ($confLocation['area'] == 'SI')
+            $detail_procedence = $detail_procedence . ' - ' .$keywords['area']. ': ' .  $qualification->area->name;
+
+        $this->saveLogActivitySystem('Inspecciones - Inspecciones planeadas', 'Se cargaron imagenes a la calificacion realizada en '.$detail_procedence);
 
         return $this->respondHttp200([
             'data' => $data
