@@ -484,4 +484,74 @@ class ActionPlanController extends Controller
             })
             ->make();
     }
+
+    public function reportPie(Request $request)
+    {
+        $url = '/administrative/actionplans/report';
+
+        $filters = COUNT($request->get('filters')) > 0 ? $request->get('filters') : $this->filterDefaultValues($this->user->id, $url);
+
+        $reports = ActionPlansActivity::selectRaw("
+            COUNT(DISTINCT IF(sau_action_plans_activities.state = 'Pendiente', sau_action_plans_activities.id, NULL)) AS Pendientes,
+            COUNT(DISTINCT IF(sau_action_plans_activities.state = 'Ejecutada', sau_action_plans_activities.id, NULL)) AS Ejecutados
+        ")
+        ->join('sau_users', 'sau_users.id', 'sau_action_plans_activities.responsible_id')
+        ->join('sau_action_plans_activity_module', 'sau_action_plans_activity_module.activity_id', 'sau_action_plans_activities.id')
+        ->join('sau_modules', 'sau_modules.id', 'sau_action_plans_activity_module.module_id');
+
+        if (isset($filters["responsibles"]))
+            $reports->inResponsibles($this->getValuesForMultiselect($filters["responsibles"]), $filters['filtersType']['responsibles']);
+
+        if (isset($filters["creators"]))
+            $reports->inUsers($this->getValuesForMultiselect($filters["creators"]), $filters['filtersType']['creators']);
+
+        if (isset($filters["modules"]))
+            $reports->inModules($this->getValuesForMultiselect($filters["modules"]), $filters['filtersType']['modules']);
+
+        if (isset($filters["states"]))
+            $reports->inStates($this->getValuesForMultiselect($filters["states"]), $filters['filtersType']['states']);
+
+        if (isset($filters["dateRange"]))
+        {
+            $dates_request = explode('/', $filters["dateRange"]);
+
+            $dates = [];
+
+            if (COUNT($dates_request) == 2)
+            {
+                array_push($dates, $this->formatDateToSave($dates_request[0]));
+                array_push($dates, $this->formatDateToSave($dates_request[1]));
+            }
+                
+            $reports->betweenDate($dates);
+        }
+
+        $reports = $reports->get();
+
+        $labels = [];
+        $data = [];
+        $total = 0;
+
+        foreach ($reports as $key => $value) 
+        {
+            array_push($labels, 'Pendientes');
+            array_push($labels, 'Ejecutados');
+            array_push($data, ['name' => 'Pendientes', 'value' => $value->Pendientes]);
+            array_push($data, ['name' => 'Ejecutados', 'value' => $value->Ejecutados]);
+            $total = $value->Ejecutados + $value->Pendientes;
+        }
+
+        $data2 = collect([
+            'labels' => $labels,
+            'datasets' => [
+                'data' => $data,
+                'count' => $total
+            ]
+        ]);
+
+        \Log::info($data2);
+
+        return $data2;
+
+    }
 }
