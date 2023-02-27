@@ -178,7 +178,8 @@ export default {
       component: null,
       filters: [],
       tableReady: false,
-      keyVuetable: 'Vuetable'
+      keyVuetable: 'Vuetable',
+      pagina: 1
     }
   },
   watch: {
@@ -195,12 +196,12 @@ export default {
     modelId() {
       Vue.nextTick( () => this.$refs.vuetable.refresh() )
     },
-    /*tableReady() {
+    tableReady() {
       if (this.tableReady)
       {
-        Vue.nextTick( () => this.$refs.vuetable.setPage(2) )
+        Vue.nextTick( () => this.$refs.vuetable.setPage(this.pagina) )
       }
-    }*/
+    }
   },
   computed: {
     configNameFilter() {
@@ -243,8 +244,19 @@ export default {
               this.dispatch('error', e);
           }
           .bind(this))
-          .finally(function(e) {
-              console.log(data.page)
+          .finally(function(e) {         
+            let data2 = {
+                vuetable: data.nameTable,
+                page: data.page
+            }
+
+            axios.post(`/setStatePageVuetable`, data2)
+              .then(response => {
+              })
+              .catch(error => {
+                  //Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
+                  //this.$router.go(-1);
+              });
            });
         },
         texts:{
@@ -264,6 +276,8 @@ export default {
         params: {
           filters: this.filters,
           modelId: this.modelId,
+          nameTable: this.configName,
+          pagina: this.pagina,
           tables: {}
         }
       };
@@ -433,6 +447,8 @@ export default {
               })
     }
 
+    this.getPageVuetable();
+
     setTimeout(() => {
         this.tableReady = true
     }, 4000)
@@ -452,6 +468,24 @@ export default {
     }
   },
   methods: {
+    getPageVuetable()
+    {
+        axios.post(`/getPageVuetable`, { vuetable: this.configName })
+          .then(response => {
+              if (response.data)
+              {
+                this.pagina = response.data;
+                  /*setTimeout(() => {
+                      //this.$emit('input', this.filtersSelected)
+                      return response.data
+                  }, 2000)*/
+              }
+          })
+          .catch(error => {
+              //Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
+              //this.$router.go(-1);
+          });
+    },
     onRowClick: function(row) {
       this.$emit("rowClick", row.row);
     },

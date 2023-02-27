@@ -14,6 +14,7 @@ use App\Models\General\CompanyGroup;
 use App\Models\General\LogUserActivity;
 use App\Models\General\Module;
 use App\Models\General\FiltersState;
+use App\Models\General\PageVuetable;
 use DB;
 use App\Models\Administrative\Employees\EmployeeEPS;
 use App\Models\Administrative\Employees\EmployeeAFP;
@@ -270,6 +271,26 @@ class ApplicationController extends Controller
       ]);
     }
 
+    public function setStatePageVuetable(Request $request)
+    {
+      PageVuetable::updateOrCreate(
+          [
+            'user_id' => $this->user->id, 
+            'vuetable' => $request->vuetable,
+            'company_id' => $this->company
+          ],
+          [
+            'user_id' => $this->user->id,
+            'company_id' => $this->company,
+            'vuetable' => $request->vuetable,
+            'page' => $request->page
+          ]);
+
+      return $this->respondHttp200([
+        'data' => 'ok'
+      ]);
+    }
+
     public function getStateFilters(Request $request)
     {
       $filters = FiltersState::where('user_id', Auth::user()->id)->where('url', $request->url)->first();
@@ -278,6 +299,16 @@ class ApplicationController extends Controller
         $filters = json_decode($filters->data, true);
       
       return $filters;
+    }
+
+    public function getPageVuetable(Request $request)
+    {
+      $pages = PageVuetable::where('user_id', Auth::user()->id)->where('vuetable', $request->vuetable)->first();
+
+      if ($pages)
+        $pages = $pages->page;
+      
+      return $pages;
     }
 
     public function multiselectCompanies(Request $request)

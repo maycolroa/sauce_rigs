@@ -38,7 +38,9 @@ Route::middleware(['auth'])->group(function () {
     Route::post('changeCompany', 'General\ApplicationController@changeCompany');
     Route::post('vuetableCustomColumns', 'General\ApplicationController@vuetableCustomColumns');
     Route::post('setStateFilters', 'General\ApplicationController@setStateFilters');
+    Route::post('setStatePageVuetable', 'General\ApplicationController@setStatePageVuetable');
     Route::post('getStateFilters', 'General\ApplicationController@getStateFilters');    
+    Route::post('getPageVuetable', 'General\ApplicationController@getPageVuetable');    
     Route::post('userActivity', 'General\ApplicationController@userActivity');
     Route::get('get_terms_conditions', 'General\ApplicationController@getTermsConditionsUsers');
     Route::post('accept_terms_conditions', 'General\ApplicationController@accepTermsConditionsUsers');
