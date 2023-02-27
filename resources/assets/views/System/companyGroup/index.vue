@@ -2,7 +2,7 @@
   <div>
     <header-module
       title="SISTEMA"
-      subtitle="GRUṔO DE COMPAÑIAS"
+      subtitle="GRUPO DE COMPAÑIAS"
       url="system"
     />
 

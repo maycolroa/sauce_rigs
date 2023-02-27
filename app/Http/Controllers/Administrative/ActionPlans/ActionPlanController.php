@@ -57,9 +57,12 @@ class ActionPlanController extends Controller
 
         $filters = COUNT($request->get('filters')) > 0 ? $request->get('filters') : $this->filterDefaultValues($this->user->id, $url);
 
-        if (isset($filters["regionals"]) && COUNT($filters["regionals"]) > 0)
+        if ((isset($filters["regionals"]) && COUNT($filters["regionals"]) > 0) || (isset($filters["headquarters"]) && COUNT($filters["headquarters"]) > 0) || (isset($filters["processes"]) && COUNT($filters["processes"]) > 0) ||(isset($filters["areas"]) && COUNT($filters["areas"]) > 0))
         {
-            $regionales = $this->getValuesForMultiselect($filters["regionals"]);
+            $regionales = [];
+            $headquarters = [];
+            $processes = [];
+            $areas = [];
 
             $inspections = ActionPlansActivity::select(
                 'sau_action_plans_activities.*',
@@ -73,11 +76,50 @@ class ActionPlanController extends Controller
             ->join('sau_users as u', 'u.id', 'sau_action_plans_activities.user_id')
             ->join('sau_ph_inspection_items_qualification_area_location', 'sau_ph_inspection_items_qualification_area_location.item_id', 'sau_action_plans_activity_module.item_id');
 
-            if ($filters['filtersType']['regionals'] == 'IN')
-                $inspections->whereIn('sau_ph_inspection_items_qualification_area_location.employee_regional_id', $regionales);
+            if (isset($filters["regionals"]) && COUNT($filters["regionals"]) > 0)
+            {
+                $regionales = $this->getValuesForMultiselect($filters["regionals"]);
 
-            else if ($filters['filtersType']['regionals'] == 'NOT IN')
-                $inspections->whereNotIn('sau_ph_inspection_items_qualification_area_location.employee_regional_id', $regionales);
+                if ($filters['filtersType']['regionals'] == 'IN')
+                    $inspections->whereIn('sau_ph_inspection_items_qualification_area_location.employee_regional_id', $regionales);
+
+                else if ($filters['filtersType']['regionals'] == 'NOT IN')
+                    $inspections->whereNotIn('sau_ph_inspection_items_qualification_area_location.employee_regional_id', $regionales);
+            }
+
+            if (isset($filters["headquarters"]) && COUNT($filters["headquarters"]) > 0)
+            {
+                $headquarters = $this->getValuesForMultiselect($filters["headquarters"]);
+
+                if ($filters['filtersType']['headquarters'] == 'IN')
+                    $inspections->whereIn('sau_ph_inspection_items_qualification_area_location.employee_headquarter_id', $headquarters);
+
+                else if ($filters['filtersType']['headquarters'] == 'NOT IN')
+                    $inspections->whereNotIn('sau_ph_inspection_items_qualification_area_location.employee_headquarter_id', $headquarters);
+            }
+
+            if (isset($filters["processes"]) && COUNT($filters["processes"]) > 0)
+            {
+                $processes = $this->getValuesForMultiselect($filters["processes"]);
+
+                if ($filters['filtersType']['processes'] == 'IN')
+                    $inspections->whereIn('sau_ph_inspection_items_qualification_area_location.employee_process_id', $processes);
+
+                else if ($filters['filtersType']['processes'] == 'NOT IN')
+                    $inspections->whereNotIn('sau_ph_inspection_items_qualification_area_location.employee_process_id', $processes);
+            }
+
+            if (isset($filters["areas"]) && COUNT($filters["areas"]) > 0)
+            {
+                $areas = $this->getValuesForMultiselect($filters["areas"]);
+
+                if ($filters['filtersType']['areas'] == 'IN')
+                    $inspections->whereIn('sau_ph_inspection_items_qualification_area_location.employee_area_id', $areas);
+
+                else if ($filters['filtersType']['areas'] == 'NOT IN')
+                    $inspections->whereNotIn('sau_ph_inspection_items_qualification_area_location.employee_area_id', $areas);
+            }
+
 
             $report = ActionPlansActivity::select(
                 'sau_action_plans_activities.*',
@@ -91,11 +133,55 @@ class ActionPlanController extends Controller
             ->join('sau_users as u', 'u.id', 'sau_action_plans_activities.user_id')
             ->join('sau_ph_reports', 'sau_ph_reports.id', 'sau_action_plans_activity_module.item_id');
 
-            if ($filters['filtersType']['regionals'] == 'IN')
+            /*if ($filters['filtersType']['regionals'] == 'IN')
                 $report->whereIn('sau_ph_reports.employee_regional_id', $regionales);
 
             else if ($filters['filtersType']['regionals'] == 'NOT IN')
-                $report->whereNotIn('sau_ph_reports.employee_regional_id', $regionales);
+                $report->whereNotIn('sau_ph_reports.employee_regional_id', $regionales);*/
+
+            if (isset($filters["regionals"]) && COUNT($filters["regionals"]) > 0)
+            {
+                $regionales = $this->getValuesForMultiselect($filters["regionals"]);
+
+                if ($filters['filtersType']['regionals'] == 'IN')
+                    $report->whereIn('sau_ph_reports.employee_regional_id', $regionales);
+
+                else if ($filters['filtersType']['regionals'] == 'NOT IN')
+                    $report->whereNotIn('sau_ph_reports.employee_regional_id', $regionales);
+            }
+
+            if (isset($filters["headquarters"]) && COUNT($filters["headquarters"]) > 0)
+            {
+                $headquarters = $this->getValuesForMultiselect($filters["headquarters"]);
+
+                if ($filters['filtersType']['headquarters'] == 'IN')
+                    $report->whereIn('sau_ph_reports.employee_headquarter_id', $headquarters);
+
+                else if ($filters['filtersType']['headquarters'] == 'NOT IN')
+                    $report->whereNotIn('sau_ph_reports.employee_headquarter_id', $headquarters);
+            }
+
+            if (isset($filters["processes"]) && COUNT($filters["processes"]) > 0)
+            {
+                $processes = $this->getValuesForMultiselect($filters["processes"]);
+
+                if ($filters['filtersType']['processes'] == 'IN')
+                    $report->whereIn('sau_ph_reports.employee_process_id', $processes);
+
+                else if ($filters['filtersType']['processes'] == 'NOT IN')
+                    $report->whereNotIn('sau_ph_reports.employee_process_id', $processes);
+            }
+
+            if (isset($filters["areas"]) && COUNT($filters["areas"]) > 0)
+            {
+                $areas = $this->getValuesForMultiselect($filters["areas"]);
+
+                if ($filters['filtersType']['areas'] == 'IN')
+                    $report->whereIn('sau_ph_reports.employee_area_id', $areas);
+
+                else if ($filters['filtersType']['areas'] == 'NOT IN')
+                    $report->whereNotIn('sau_ph_reports.employee_area_id', $areas);
+            }
 
             $activities = $inspections->union($report);
         }
@@ -548,8 +634,6 @@ class ActionPlanController extends Controller
                 'count' => $total
             ]
         ]);
-
-        \Log::info($data2);
 
         return $data2;
 

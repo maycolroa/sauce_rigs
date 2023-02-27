@@ -194,7 +194,13 @@ export default {
     },
     modelId() {
       Vue.nextTick( () => this.$refs.vuetable.refresh() )
-    }
+    },
+    /*tableReady() {
+      if (this.tableReady)
+      {
+        Vue.nextTick( () => this.$refs.vuetable.setPage(2) )
+      }
+    }*/
   },
   computed: {
     configNameFilter() {
@@ -235,7 +241,11 @@ export default {
           return axios.post(this.url, data)
           .catch(function (e) {
               this.dispatch('error', e);
-          }.bind(this));
+          }
+          .bind(this))
+          .finally(function(e) {
+              console.log(data.page)
+           });
         },
         texts:{
           count:"Mostrando del {from} al {to} de {count} registros|{count} registros|Un registro",
