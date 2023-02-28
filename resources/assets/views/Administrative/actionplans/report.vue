@@ -1,7 +1,7 @@
 <template>
   <div>
     <header-module
-      title="INSPECCIONES"
+      title="ADMINISTRATIVO"
       subtitle="REPORTE DE PLANES DE ACCIÓN"
       url="administrative-actionplans"
     />
