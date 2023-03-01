@@ -36,7 +36,7 @@ import GlobalMethods from '@/utils/GlobalMethods.js';
 export default {
   name: 'industrialsecure-dangermatrix-clone',
   metaInfo: {
-    title: 'Matriz de Peligros - Clonar'
+    title: 'Matriz de Riesgos - Clonar'
   },
   components:{
     IndustrialSecureDangerMatrixForm

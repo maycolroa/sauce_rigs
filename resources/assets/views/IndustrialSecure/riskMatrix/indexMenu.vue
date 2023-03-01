@@ -50,7 +50,7 @@ import Alerts from "@/utils/Alerts.js";
 export default {
 	name: "dangerMatrix",
 	metaInfo: {
-		title: "Matriz de Peligros"
+		title: "Matriz de Riesgos"
 	},
   	methods: {
   	}

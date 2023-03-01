@@ -133,7 +133,7 @@ import VueAjaxAdvancedSelect from "@/components/Inputs/VueAjaxAdvancedSelect.vue
 export default {
     name: 'industrialsecure-dangermatrix-report-history',
     metaInfo: {
-        title: 'Matriz de Peligros - Reporte Historico'
+        title: 'Matriz de Riesgos - Reporte Historico'
     },
     components:{
         Loading,
