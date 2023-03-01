@@ -126,54 +126,19 @@ class CompanyController extends Controller
         DB::beginTransaction();
 
         try
-        {        
-            $companyGroup->fill($request->all());
-
-            if ($request->ph_state_incentives == true)
-                $companyGroup->ph_state_incentives = 1;
+        {
+            if ($request->get('emails') && count($request->get('emails')) > 0)
+                $mails = $this->getDataFromMultiselect($request->get('emails'));
             else
-                $companyGroup->ph_state_incentives = 0;
+                $mails = NULL;
+
+            $companyGroup->fill($request->all());
+            $companyGroup->emails = $request->get('emails') ? implode($mails, ',') : $mails;
            
             if(!$companyGroup->update())
                 return $this->respondHttp500();
-
-            $team = Team::updateOrCreate(
-                [
-                    'name' => $companyGroup->id,
-                ], 
-                [
-                    'id' => $companyGroup->id,
-                    'name' => $companyGroup->id,
-                    'display_name' => $companyGroup->name,
-                    'description' => "Equipo ".$companyGroup->name
-                ]
-            );
-
-            if ($request->has('users') && COUNT($request->users) > 0)
-            {
-                foreach ($request->users as $key => $value)
-                {
-                    $user = User::find($value['user_id']);
-
-                    if ($user)
-                    {
-                        $user->companies()->attach($companyGroup->id);
-
-                        $roles = $this->getValuesForMultiselect($value['role_id']);
-                        $roles = Role::whereIn('id', $roles)->get();
-
-                        if (COUNT($roles) > 0)
-                        {
-                            $team = Team::where('name', $companyGroup->id)->first();
-                            $user->attachRoles($roles, $team);
-                        }
-                    }
-                }
-            }
                 
             DB::commit();
-
-            SyncUsersSuperadminJob::dispatch();
 
         } catch (\Exception $e) {
             \Log::info($e->getMessage());
@@ -182,7 +147,7 @@ class CompanyController extends Controller
         }
 
         return $this->respondHttp200([
-            'message' => 'Se actualizo la compañia'
+            'message' => 'Se actualizo el grupo de compañia'
         ]);
     }
 
@@ -194,7 +159,7 @@ class CompanyController extends Controller
      */
     public function destroy($id)
     {
-        $companyGroup = Company::findOrFail($id);
+        $companyGroup = CompanyGroup::findOrFail($id);
         
         if(!$companyGroup->delete())
         {

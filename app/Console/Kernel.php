@@ -102,7 +102,7 @@ class Kernel extends ConsoleKernel
 
         $schedule->command('report-group-company')
             ->timezone('America/Bogota')
-            ->dailyAt('0 7 30 1-12 *');
+            ->dailyAt('0 7 1 1-12 *');
 
         /*$schedule->command('reinc-notification-next-follow-up')
             ->timezone('America/Bogota')
