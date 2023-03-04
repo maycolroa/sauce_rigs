@@ -12,6 +12,7 @@
           <div class="card-title-elements" v-if="auth.can['licenses_c']">
             <b-btn :to="{name:'system-licenses-create'}" variant="primary">Crear Licencia</b-btn>
             <b-btn v-if="auth.can['ph_inspections_export']" variant="primary" @click="exportData()" v-b-tooltip.top title="Exportar"><i class="fas fa-download"></i></b-btn>
+            <b-btn :to="{name:'system-licenses-report'}" variant="primary">Reportes</b-btn>
           </div>
         </b-card-header>
         <b-card-body>

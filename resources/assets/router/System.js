@@ -43,6 +43,14 @@ export default [{
             import('@/views/System/licenses/view')
         }
       ]),
+      ...middleware({ 'check-permission': 'licenses_r' }, [
+        {
+          name: 'system-licenses-report',
+          path: 'licenses/report',
+          component: () =>
+            import('@/views/System/licenses/report')
+        }
+      ]),
       ...middleware({ 'check-permission': 'logMails_r' }, [
         {
           name: 'system-logmails',

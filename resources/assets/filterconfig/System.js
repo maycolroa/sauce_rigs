@@ -54,4 +54,14 @@ export default [
         },
       ]
     },
+    {
+      name: 'system-licenses-report',
+      filters: [
+        {
+          key: 'dateRange',
+          type: 'dateRange',
+          label: 'Fecha de creación',
+        }
+      ]
+    },
 ]

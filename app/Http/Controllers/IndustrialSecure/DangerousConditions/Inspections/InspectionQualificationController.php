@@ -482,6 +482,8 @@ class InspectionQualificationController extends Controller
             return $this->respondHttp500();
 
         $inspection = $qualification->item->section->inspection;
+        $theme = $qualification->item->section;
+        $item = $qualification->item;
 
         $details = 'Inspección: ' . $inspection->name . ' - ' . $theme->name . ' - ' . $item->description;
 
