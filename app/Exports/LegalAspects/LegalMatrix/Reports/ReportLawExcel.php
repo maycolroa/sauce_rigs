@@ -163,7 +163,7 @@ class ReportLawExcel implements FromQuery, WithMapping, WithHeadings, WithTitle,
       }
 
       $event->sheet->styleCells(
-        'A1:I1',
+        'A1:AZ1',
           [
             'alignment' => [
               'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT,

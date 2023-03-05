@@ -97,7 +97,7 @@ class ActivitiesExcel implements FromQuery, WithMapping, WithHeadings, WithTitle
     public static function afterSheet(AfterSheet $event)
     {
       $event->sheet->styleCells(
-        'A1:F1',
+        'A1:Z1',
           [
             'alignment' => [
               'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT,

@@ -146,7 +146,7 @@ class AudiometryImportDataTemplateExcel implements FromCollection, WithHeadings,
       $white = "FFFFFF";
 
       $event->sheet->styleCells(
-        'A1:AQ1',
+        'A1:AZ1',
           [
             'alignment' => [
               'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT,

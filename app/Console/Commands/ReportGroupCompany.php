@@ -67,7 +67,7 @@ class ReportGroupCompany extends Command
             {
                 if ($group->company->count() > 0)
                 {
-                    $nameExcel = 'export/1/'.$group->name.date("YmdHis").'.xlsx';
+                    $nameExcel = 'export/1/'.$group->name.'-'.date("YmdHis").'.xlsx';
                     Excel::store(new ReportExcel($group),$nameExcel,'public',\Maatwebsite\Excel\Excel::XLSX);
                     
                     $paramUrl = base64_encode($nameExcel);

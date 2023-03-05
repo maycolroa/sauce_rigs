@@ -198,7 +198,7 @@ class RespiratoryAnalysisExcel implements FromQuery, WithMapping, WithHeadings, 
     public static function afterSheet(AfterSheet $event)
     {
       $event->sheet->styleCells(
-        'A1:AR1',
+        'A1:AZ1',
           [
             'alignment' => [
               'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT,

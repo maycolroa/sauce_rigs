@@ -130,7 +130,7 @@ class EmployeeImportDataTemplateExcel implements FromCollection, WithHeadings, W
     public static function afterSheet(AfterSheet $event)
     {
       $event->sheet->styleCells(
-        'A1:R1',
+        'A1:AZ1',
           [
             'alignment' => [
               'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT,

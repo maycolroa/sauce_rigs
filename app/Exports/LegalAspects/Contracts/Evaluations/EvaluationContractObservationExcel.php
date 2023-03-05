@@ -29,7 +29,7 @@ class EvaluationContractObservationExcel implements FromView, WithEvents, WithTi
     public static function afterSheet(AfterSheet $event)
     {
       $event->sheet->styleCells(
-        'A1:J1',
+        'A1:Z1',
           [
             'alignment' => [
               'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
@@ -42,7 +42,7 @@ class EvaluationContractObservationExcel implements FromView, WithEvents, WithTi
       );
 
       $event->sheet->styleCells(
-        'A2:J2',
+        'A2:Z2',
           [
             'alignment' => [
               'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_JUSTIFY,

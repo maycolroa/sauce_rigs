@@ -205,7 +205,7 @@ class AudiometryExcel implements FromCollection, WithHeadings, WithMapping, With
         $white = "FFFFFF";
 
       $event->sheet->styleCells(
-        'A1:BB1',
+        'A1:BZ1',
           [
             'alignment' => [
               'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT,

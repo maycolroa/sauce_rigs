@@ -64,7 +64,7 @@ class ElementTemplate implements FromQuery, WithMapping, WithHeadings, WithTitle
     public static function afterSheet(AfterSheet $event)
     {
       $event->sheet->styleCells(
-        'A1:B1',
+        'A1:C1',
           [
             'alignment' => [
               'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT,

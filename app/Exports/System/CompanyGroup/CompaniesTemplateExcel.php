@@ -44,7 +44,8 @@ class CompaniesTemplateExcel implements FromQuery, WithMapping, WithHeadings, Wi
       ->whereRaw('? BETWEEN sau_licenses.started_at AND sau_licenses.ended_at', [date('Y-m-d')])
       ->where('sau_companies.company_group_id', DB::raw($this->group->id))
       ->where('sau_companies.active', 'SI')
-      ->groupby('sau_companies.id');
+      ->groupby('sau_companies.id')
+      ->orderBY('sau_companies.name');
 
       return $companies;
     }

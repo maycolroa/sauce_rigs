@@ -228,36 +228,36 @@ class LicensesUseTemplateExcel implements FromQuery, WithMapping, WithHeadings, 
           ->mergeBindings($dangerMatrix->getQuery())
           ->leftJoin(DB::raw("({$contract->toSql()}) as t7"), function ($join) {
             $join->on("t7.company_id", "sau_companies.id");
-        })
-        ->mergeBindings($contract->getQuery())
-        ->leftJoin(DB::raw("({$evaluations->toSql()}) as t8"), function ($join) {
-            $join->on("t8.company_id", "sau_companies.id");
-        })
-        ->mergeBindings($evaluations->getQuery())
-        ->leftJoin(DB::raw("({$qualifications->toSql()}) as t9"), function ($join) {
-            $join->on("t9.company_id", "sau_companies.id");
-        })
-        ->mergeBindings($qualifications->getQuery())
-        ->leftJoin(DB::raw("({$list_files->toSql()}) as t10"), function ($join) {
-            $join->on("t10.company_id", "sau_companies.id");
-        })
-        ->mergeBindings($list_files->getQuery())
-        ->leftJoin(DB::raw("({$eva_files->toSql()}) as t11"), function ($join) {
-            $join->on("t11.company_id", "sau_companies.id");
-        })
-        ->mergeBindings($eva_files->getQuery())
-        ->leftJoin(DB::raw("({$reports_abs->toSql()}) as t12"), function ($join) {
-          $join->on("t12.company_id", "sau_companies.id");
-        })
-        ->mergeBindings($reports_abs->getQuery())
-        ->leftJoin(DB::raw("({$files->toSql()}) as t13"), function ($join) {
-            $join->on("t13.company_id", "sau_companies.id");
-        })
-        ->mergeBindings($files->getQuery())
+          })
+          ->mergeBindings($contract->getQuery())
+          ->leftJoin(DB::raw("({$evaluations->toSql()}) as t8"), function ($join) {
+              $join->on("t8.company_id", "sau_companies.id");
+          })
+          ->mergeBindings($evaluations->getQuery())
+          ->leftJoin(DB::raw("({$qualifications->toSql()}) as t9"), function ($join) {
+              $join->on("t9.company_id", "sau_companies.id");
+          })
+          ->mergeBindings($qualifications->getQuery())
+          ->leftJoin(DB::raw("({$list_files->toSql()}) as t10"), function ($join) {
+              $join->on("t10.company_id", "sau_companies.id");
+          })
+          ->mergeBindings($list_files->getQuery())
+          ->leftJoin(DB::raw("({$eva_files->toSql()}) as t11"), function ($join) {
+              $join->on("t11.company_id", "sau_companies.id");
+          })
+          ->mergeBindings($eva_files->getQuery())
+          ->leftJoin(DB::raw("({$reports_abs->toSql()}) as t12"), function ($join) {
+            $join->on("t12.company_id", "sau_companies.id");
+          })
+          ->mergeBindings($reports_abs->getQuery())
+          ->leftJoin(DB::raw("({$files->toSql()}) as t13"), function ($join) {
+              $join->on("t13.company_id", "sau_companies.id");
+          })
+          ->mergeBindings($files->getQuery())
           ->whereRaw('? BETWEEN started_at AND ended_at', [date('Y-m-d')])
           ->whereIn('sau_licenses.company_id', $companies_group)
           ->groupBy('sau_companies.id')
-          ->orderBy('sau_companies.id');
+          ->orderBy('sau_companies.name');
 
       return $companies;
     }
@@ -331,7 +331,7 @@ class LicensesUseTemplateExcel implements FromQuery, WithMapping, WithHeadings, 
     public static function afterSheet(AfterSheet $event)
     {
       $event->sheet->styleCells(
-        'A1:R1',
+        'A1:AZ1',
           [
             'alignment' => [
               'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT,
@@ -350,7 +350,7 @@ class LicensesUseTemplateExcel implements FromQuery, WithMapping, WithHeadings, 
     */
     public function title(): string
     {
-      return 'Licencias';
+      return 'Monitoreo';
     }
 }
 

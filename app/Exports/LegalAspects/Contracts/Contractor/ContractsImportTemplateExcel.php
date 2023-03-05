@@ -89,7 +89,7 @@ class ContractsImportTemplateExcel implements FromCollection, WithHeadings, With
       $white = "FFFFFF";
 
       $event->sheet->styleCells(
-        'A1:S1',
+        'A1:Z1',
           [
             'alignment' => [
               'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT,

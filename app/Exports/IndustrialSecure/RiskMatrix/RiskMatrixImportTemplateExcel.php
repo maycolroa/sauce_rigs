@@ -6,6 +6,7 @@ use Maatwebsite\Excel\Concerns\Exportable;
 use Maatwebsite\Excel\Concerns\WithMultipleSheets;
 use App\Exports\IndustrialSecure\RiskMatrix\RiskMatrixImportTemplate;
 use App\Exports\IndustrialSecure\RiskMatrix\RiskCategoriesExcel;
+use App\Models\IndustrialSecure\RiskMatrix\TagsRmCategoryRisk;
 
 class RiskMatrixImportTemplateExcel implements WithMultipleSheets
 {
@@ -22,7 +23,11 @@ class RiskMatrixImportTemplateExcel implements WithMultipleSheets
 
         $this->data_cat = collect([]);
 
-        $leyends = [
+        $leyends = TagsRmCategoryRisk::select('name');
+        $leyends->company_scope = $this->company_id;
+        $leyends = $leyends->get();
+
+        /*$leyends = [
             "Estratégico - Direccionamiento Estratégico/Gobernabilidad",
             "Estratégico - Modelo de Operación y Estructura",
             "Estratégico - Financiero/Sostenibilidad",
@@ -41,11 +46,11 @@ class RiskMatrixImportTemplateExcel implements WithMultipleSheets
             "Puro - Físico",
             "Puro - laboral",
             "Puro - Social"
-        ];
+        ];*/
 
         foreach ($leyends as $key => $value)
         {
-            $this->data_cat->push(['leyend'=>$value]);
+            $this->data_cat->push(['leyend'=>$value->name]);
         }
     }
 

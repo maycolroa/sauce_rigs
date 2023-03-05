@@ -233,7 +233,7 @@ class InspectionReportType2Excel implements FromCollection, WithMapping, WithHea
     public static function afterSheet(AfterSheet $event)
     {
       $event->sheet->styleCells(
-        'A1:K1',
+        'A1:AZ1',
           [
             'alignment' => [
               'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT,
