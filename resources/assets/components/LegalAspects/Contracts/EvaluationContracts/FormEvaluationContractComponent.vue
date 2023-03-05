@@ -286,6 +286,9 @@
                                             </b-card>
                                         </template>
                                 </b-form-row>
+                                <b-form-row>
+                                    <vue-textarea class="col-md-12" :disabled="viewOnly" v-model="objetive.observation" label="Observaciones" name="observations" placeholder="Observaciónes" rows="4"></vue-textarea>
+                                </b-form-row>
                                 </b-card-body>
                             </b-collapse>
                             </b-card>

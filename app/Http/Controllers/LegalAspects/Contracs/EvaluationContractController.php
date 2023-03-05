@@ -16,6 +16,7 @@ use App\Models\LegalAspects\Contracts\Item;
 use App\Models\LegalAspects\Contracts\Observation;
 use App\Models\LegalAspects\Contracts\EvaluationFile;
 use App\Models\LegalAspects\Contracts\EvaluationContractItem;
+use App\Models\LegalAspects\Contracts\EvaluationContractObjectiveObservation;
 use App\Models\General\Module;
 use App\Models\LegalAspects\Contracts\TypeRating;
 use App\Jobs\LegalAspects\Contracts\Evaluations\EvaluationContractReportExportJob;
@@ -283,6 +284,19 @@ class EvaluationContractController extends Controller
 
         foreach ($evaluation['objectives'] as $objective)
         {
+            if (isset($objective['observation']) && $objective['observation'])
+            {
+                $observation_objective = EvaluationContractObjectiveObservation::updateOrCreate(
+                    [
+                        'evaluation_id' => $evaluationContract->id,
+                        'objective_id' => $objective['id']
+                    ],
+                    [
+                        'observation' => $objective['observation']
+                    ]
+                );
+            }
+
             foreach ($objective['subobjectives'] as $subobjective)
             {
                 foreach ($subobjective['items'] as $item)
@@ -546,6 +560,11 @@ class EvaluationContractController extends Controller
 
         foreach ($evaluation_base->objectives as $objective)
         {
+            $objective->observation = $evaluationContract->observationObjective()->select('observation')->where('objective_id', $objective->id)->first() ? $evaluationContract->observationObjective()->select('observation')->where('objective_id', $objective->id)->first()->observation : '';
+
+
+
+
             foreach ($objective->subobjectives as $subobjective)
             {
                 $clone_report = $report;

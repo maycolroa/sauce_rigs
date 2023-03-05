@@ -98,11 +98,11 @@ class Kernel extends ConsoleKernel
 
         $schedule->command('reinc-pendiente-resumen')
             ->timezone('America/Bogota')
-            ->dailyAt('0 6 1 1-12 *');
+            ->cron('0 6 1 * *');
 
         $schedule->command('report-group-company')
             ->timezone('America/Bogota')
-            ->dailyAt('0 7 1 1-12 *');
+            ->cron('0 7 1 * *');
 
         /*$schedule->command('reinc-notification-next-follow-up')
             ->timezone('America/Bogota')
