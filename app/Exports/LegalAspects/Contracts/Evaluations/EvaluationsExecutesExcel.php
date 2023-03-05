@@ -85,6 +85,7 @@ class EvaluationsExecutesExcel implements FromCollection, WithHeadings, WithMapp
           sau_ct_evaluations.type as type,
           sau_ct_evaluations.created_at as created_at,
           sau_ct_objectives.description as objective,
+          sau_ct_evaluation_contract_objective_observations.observation as observation_objective,
           sau_ct_subobjectives.description as subobjective,
           sau_ct_items.description as item,
           sau_ct_items.id as item_id,
@@ -102,6 +103,10 @@ class EvaluationsExecutesExcel implements FromCollection, WithHeadings, WithMapp
         ->leftJoin('sau_ct_item_observations', function($q) {
             $q->on('sau_ct_item_observations.item_id', '=', 'sau_ct_items.id')
               ->on('sau_ct_evaluation_contract.id', '=', 'sau_ct_item_observations.evaluation_id');
+        })
+        ->leftJoin('sau_ct_evaluation_contract_objective_observations', function($q) {
+            $q->on('sau_ct_evaluation_contract_objective_observations.objective_id', '=', 'sau_ct_objectives.id')
+              ->on('sau_ct_evaluation_contract.id', '=', 'sau_ct_evaluation_contract_objective_observations.evaluation_id');
         })
         ->join('sau_users', 'sau_users.id', 'sau_ct_evaluation_contract.evaluator_id');
 
@@ -134,6 +139,7 @@ class EvaluationsExecutesExcel implements FromCollection, WithHeadings, WithMapp
         //$data->user_creator,
         $data->created_at,
         $data->objective,
+        $data->observation_objective,
         $data->subobjective,
         $data->item,
         $data->contract,
@@ -170,6 +176,7 @@ class EvaluationsExecutesExcel implements FromCollection, WithHeadings, WithMapp
         //'Usuario creador',
         'Fecha de creación',
         'Tema',
+        'Observación Tema',
         'Subtema',
         'Item',
         'Contratista',

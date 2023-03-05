@@ -246,6 +246,15 @@
                     </thead>
                 </table>
             @endforeach
+            <table>
+                <thead>
+                    <tr>
+                        <th>Observaciones Tema</th>
+                    <tr>
+                        <td>{{$objective->observation}}</td>
+                    </tr>
+                </thead>
+            </table>
         @endforeach
 
         

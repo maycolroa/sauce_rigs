@@ -562,9 +562,6 @@ class EvaluationContractController extends Controller
         {
             $objective->observation = $evaluationContract->observationObjective()->select('observation')->where('objective_id', $objective->id)->first() ? $evaluationContract->observationObjective()->select('observation')->where('objective_id', $objective->id)->first()->observation : '';
 
-
-
-
             foreach ($objective->subobjectives as $subobjective)
             {
                 $clone_report = $report;
