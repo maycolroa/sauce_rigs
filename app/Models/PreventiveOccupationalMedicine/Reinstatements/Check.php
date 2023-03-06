@@ -117,7 +117,8 @@ class Check extends Model
         'has_function_setting',
         'function_setting',
         'Observations_recommendatios',
-        'refund_classification'
+        'refund_classification',
+        'motive_close'
     ];
 
     /**

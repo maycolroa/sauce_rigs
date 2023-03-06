@@ -74,7 +74,11 @@ class CheckExportExcel implements WithMultipleSheets
         }
         else
         {
-            $sheets[] = new CheckExcel($this->company_id, $this->data['checks']);
+            if ($this->company_id == 499)
+                $sheets[] = new CheckExcelMitsubishi($this->company_id, $this->data['checks']);
+            else
+                $sheets[] = new CheckExcel($this->company_id, $this->data['checks']);
+
             $sheets[] = new MonitoringsExcel($this->data['medicalMonitorings'], 'Seguimientos Medicos');
             $sheets[] = new MonitoringsExcel($this->data['laborMonitorings'], 'Seguimientos Laborales');
             $sheets[] = new TracingExcel($this->data['tracings'], $this->keywords['tracings']);

@@ -291,6 +291,7 @@ Route::middleware(['auth'])->group(function () {
         Route::post('tagsStandarApplyEpp', 'IndustrialSecure\EPP\ElementController@multiselectApplicableStandard');
         Route::post('tagsReincReinstatementcondition', 'PreventiveOccupationalMedicine\Reinstatements\CheckController@multiselectReinstatementcondition');
         Route::post('tagsReincInformantRole', 'PreventiveOccupationalMedicine\Reinstatements\CheckController@multiselectInformantRole');
+        Route::post('tagsReincMotive', 'PreventiveOccupationalMedicine\Reinstatements\CheckController@multiselectMotiveClose');
         Route::post('tagsReason', 'IndustrialSecure\EPP\IncomeController@multiselectReason');
 
         Route::prefix('evaluations')->group(function () {

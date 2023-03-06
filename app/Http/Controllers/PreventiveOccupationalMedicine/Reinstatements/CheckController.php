@@ -11,6 +11,7 @@ use App\Models\PreventiveOccupationalMedicine\Reinstatements\Check;
 use App\Models\PreventiveOccupationalMedicine\Reinstatements\CheckFile;
 use App\Models\PreventiveOccupationalMedicine\Reinstatements\TagsReinstatementCondition;
 use App\Models\PreventiveOccupationalMedicine\Reinstatements\TagsInformantRole;
+use App\Models\PreventiveOccupationalMedicine\Reinstatements\TagsMotiveClose;
 use App\Models\PreventiveOccupationalMedicine\Reinstatements\LetterHistory;
 use App\Models\PreventiveOccupationalMedicine\Reinstatements\Tracing;
 use App\Http\Requests\PreventiveOccupationalMedicine\Reinstatements\CheckRequest;
@@ -817,7 +818,31 @@ class CheckController extends Controller
                 ->findOrFail($id);
 
         $newState = $check->isOpen() ? "CERRADO" : "ABIERTO";
-        $data = ['state' => $newState];
+
+        if ($check->isOpen() && isset($request->motive_close) && $request->motive_close)  
+        {      
+            foreach ($request->motive_close as $key => $value)
+            {
+                $data2['motive_close'][$key] = json_decode($value, true);
+                $request->merge($data2);
+            }
+            //$motives = json_decode($request->get('motive_close'), true);
+            $motive = $this->tagsPrepare($request->get('motive_close'));
+            $this->tagsSave($motive, TagsMotiveClose::class);
+
+            $data = [
+                'state' => $newState, 
+                'motive_close' => $motive ? $motive->implode(',') : NULL
+            ];
+        }
+        else
+        {
+            $data = [
+                'state' => $newState,
+                'motive_close' => NULL
+            ];
+        }
+
 
         if ($request->has('deadline') && $check->isOpen())
             $data['deadline'] = $this->formatDateToSave($request->get('deadline'));
@@ -913,10 +938,14 @@ class CheckController extends Controller
         PDF::setOptions(['dpi' => 150, 'defaultFont' => 'sans-serif']);
 
         $formModel = $this->getFormModel('form_check');
+        \Log::info($checks->state);
 
         if ($formModel == 'default')
         { 
-            $pdf = PDF::loadView('pdf.reporteReinstatements', ['check' => $checks, 'locationForm' => $this->getLocationFormConfModule()]);
+            if ($this->company == 499)
+                $pdf = PDF::loadView('pdf.reporteReinstatementsMitsubishi', ['check' => $checks, 'locationForm' => $this->getLocationFormConfModule()]);
+            else
+                $pdf = PDF::loadView('pdf.reporteReinstatements', ['check' => $checks, 'locationForm' => $this->getLocationFormConfModule()]);
         }
         else if ($formModel == 'misionEmpresarial')
         {
@@ -998,6 +1027,23 @@ class CheckController extends Controller
         {
             $keyword = "%{$request->keyword}%";
             $tags = TagsInformantRole::select("id", "name")
+                ->where(function ($query) use ($keyword) {
+                    $query->orWhere('name', 'like', $keyword);
+                })
+                ->take(30)->pluck('id', 'name');
+
+            return $this->respondHttp200([
+                'options' => $this->multiSelectFormat($tags)
+            ]);
+        }
+    }
+
+    public function multiselectMotiveClose(Request $request)
+    {
+        if($request->has('keyword'))
+        {
+            $keyword = "%{$request->keyword}%";
+            $tags = TagsMotiveClose::select("id", "name")
                 ->where(function ($query) use ($keyword) {
                     $query->orWhere('name', 'like', $keyword);
                 })

@@ -12,6 +12,7 @@
             <form-check-swith
               :url="`/biologicalmonitoring/reinstatements/check/switchStatus/${this.$route.params.id}`"
               :check="data"
+              :cancel-url="{ name: 'reinstatements-checks'}"
             />
         </b-card-body>
       </b-card>
@@ -45,7 +46,6 @@ export default {
       })
       .catch(error => {
           Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
-          this.$router.go(-1);
       });
   }
 }
