@@ -39,7 +39,7 @@ export default [
         {
           key: 'dateRange',
           type: 'dateRange',
-          label: 'Fecha de creación',
+          label: 'Fecha de inicio',
         }
       ]
     },
@@ -60,7 +60,7 @@ export default [
         {
           key: 'dateRange',
           type: 'dateRange',
-          label: 'Fecha de creación',
+          label: 'Fecha de inicio',
         }
       ]
     },

@@ -11,7 +11,7 @@ class Company extends Model
     
     protected $table = 'sau_companies';
 
-    protected $fillable = ['name', 'active', 'logo', 'ph_state_incentives', 'ph_file_incentives', 'company_group_id'];
+    protected $fillable = ['name', 'active', 'logo', 'ph_state_incentives', 'ph_file_incentives', 'company_group_id', 'test'];
 
     protected $casts = [
         'ph_state_incentives' => 'boolean',

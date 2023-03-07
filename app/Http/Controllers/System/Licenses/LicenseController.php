@@ -328,17 +328,17 @@ class LicenseController extends Controller
             $headers = [];
             $dates = [];
             $dates_old = [];
-            $dates_request = $request->dateRange ? explode('/', $request->dateRange) : NULL;
+            //$dates_request = $request->dateRange ? explode('/', $request->dateRange) : NULL;
 
             $url = "/system/licenses/report";
 
-            $filters = $dates_request && COUNT($dates_request) > 0 ? $dates_request : $this->filterDefaultValues($this->user->id, $url);
+            //$filters = $request->dateRange && COUNT($request->dateRange) > 0 ? $request->dateRange : $this->filterDefaultValues($this->user->id, $url);
+
+            $filters = COUNT($request->get('filters')) > 0 ? $request->get('filters') : $this->filterDefaultValues($this->user->id, $url);
 
             if (COUNT($filters) > 0)
-            {                             
-                $dates_request = $dates_request && COUNT($dates_request) > 0 ? $dates_request : explode('/', $filters["dateRange"]);
-
-                $dates = [];
+            {                    
+                $dates_request = explode('/', $filters["dateRange"]);
 
                 if (COUNT($dates_request) == 2)
                 {
@@ -376,6 +376,7 @@ class LicenseController extends Controller
 
             $id_license_renew = [];
             $id_module_renew = [];
+            $id_module_group_renew = [];
             $id_group_renew = [];
             $table_general = [];
             $table_module = [];
@@ -395,6 +396,7 @@ class LicenseController extends Controller
             ->join('sau_companies', 'sau_companies.id', 'sau_licenses.company_id')
             ->leftJoin('sau_company_groups', 'sau_company_groups.id', 'sau_companies.company_group_id')
             ->where('sau_modules.main', DB::raw("'SI'"))
+            //->where('sau_companies.test', DB::raw("'NO'"))
             ->orderBy('sau_licenses.id')
             ->get();
 
@@ -430,9 +432,34 @@ class LicenseController extends Controller
                 });
             });
 
+            $grupos_modulos = [];
+
+            $modules = $prueba->groupBy('group_name')
+            ->each(function($modules, $companyId) use (&$id_module_group_renew, &$grupos_modulos) {
+                $modules->groupBy('module')
+                ->each(function($licenses, $moduleId) use (&$id_module_group_renew, $companyId, &$grupos_modulos) {
+                    $i = 0;
+
+                    foreach ($licenses as $license)
+                    {
+                        if (!isset($id_module_group_renew[$moduleId]))
+                        {
+                            $id_module_group_renew[$moduleId] = [];
+                            array_push($grupos_modulos, $moduleId);
+                        }
+
+                        if ($i > 0)
+                            array_push($id_module_group_renew[$moduleId], $license->license_id);
+
+                        $i++;
+                    }
+                });
+            });
+
             $prueba = $prueba->map(function ($item, $key) use ($id_license_renew, $id_module_renew) {
                 $item->renewed = in_array($item->license_id, $id_license_renew);
                 $item->renewed_module = isset($id_module_renew[$item->module]) && in_array($item->license_id, $id_module_renew[$item->module]);
+                $item->renewed_group_module = isset($id_module_group_renew[$item->module]) && in_array($item->license_id, $id_module_group_renew[$item->module]);
 
                 return $item;
             });
@@ -528,19 +555,20 @@ class LicenseController extends Controller
 
                 foreach ($groups as $key => $group) 
                 {
-                    foreach ($modules_all as $key => $value) 
+                    foreach ($grupos_modulos as $key => $value) 
                     {
                         $content = [
                             'group' => $group,
                             'module' => $value,
-                            'renew_old' => $range_old->where('group_name', $group)->where('module', $value)->where('renewed_module', true)->count(),
-                            'new_old' => $range_old->where('group_name', $group)->where('module', $value)->where('renewed_module',false)->count(),
-                            'renew' => $range_actual->where('group_name', $group)->where('module', $value)->where('renewed_module', true)->count(),
-                            'new' => $range_actual->where('group_name', $group)->where('module', $value)->where('renewed_module',false)->count()
+                            'renew_old' => $range_old->where('group_name', $group)->where('module', $value)->where('renewed_group_module', true)->count(),
+                            'new_old' => $range_old->where('group_name', $group)->where('module', $value)->where('renewed_group_module',false)->count(),
+                            'renew' => $range_actual->where('group_name', $group)->where('module', $value)->where('renewed_group_module', true)->count(),
+                            'new' => $range_actual->where('group_name', $group)->where('module', $value)->where('renewed_group_module',false)->count()
                         ];
+
+                        array_push($table_groups_modules, $content);
                     }
 
-                    array_push($table_groups_modules, $content);
                 }
 
                 $table_general = [

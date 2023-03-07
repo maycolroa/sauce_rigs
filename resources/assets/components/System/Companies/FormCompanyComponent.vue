@@ -15,6 +15,11 @@
           </vue-ajax-advanced-select>
     </b-form-row>
 
+    <b-form-row>
+      <vue-radio :disabled="viewOnly" :checked="form.test" class="col-md-12" v-model="form.test" :options="siNo" name="test" :error="form.errorsFor('test')" label="¿Es una compañia de prueba o para Demo?">
+        </vue-radio>
+    </b-form-row>
+
     <b-form-row v-if="isEdit">
       <div class="col-md-12">
         <div class="float-right" style="padding-top: 10px;">
@@ -90,7 +95,8 @@ export default {
           name: '',
           users: [],
           group_company: '',
-          company_group_id: ''
+          company_group_id: '',
+          test: ''
         };
       }
     }

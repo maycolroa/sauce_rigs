@@ -134,13 +134,15 @@ export default {
         }
     },
     created() {
-        //this.updateTotales()
         this.fetch()
     },
     watch: {
         filters: {
             handler(val) {
-                this.fetch()
+                setTimeout(() => {
+                    this.fetch()
+                }, 2000)
+                
             },
             deep: true,
         },
@@ -157,7 +159,7 @@ export default {
             {
                 this.isLoading = true;
 
-                let postData = Object.assign({}, this.filters);
+                let postData = Object.assign({}, {filters: this.filters});
 
                 axios.post('/system/license/report', postData)
                 .then(data => {
