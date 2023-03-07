@@ -396,7 +396,7 @@ class LicenseController extends Controller
             ->join('sau_companies', 'sau_companies.id', 'sau_licenses.company_id')
             ->leftJoin('sau_company_groups', 'sau_company_groups.id', 'sau_companies.company_group_id')
             ->where('sau_modules.main', DB::raw("'SI'"))
-            ->where('sau_companies.test', DB::raw("'NO'"))
+            //->where('sau_companies.test', DB::raw("'NO'"))
             ->orderBy('sau_licenses.id')
             ->get();
 
@@ -445,11 +445,20 @@ class LicenseController extends Controller
                         if (!isset($id_module_group_renew[$moduleId]))
                         {
                             $id_module_group_renew[$moduleId] = [];
-                            array_push($grupos_modulos, $moduleId);
+                        }
+
+                        if (!isset($grupos_modulos[$license->group_name]))
+                        {
+                            if (!is_null($license->group_name))
+                                $grupos_modulos[$license->group_name] = [];
                         }
 
                         if ($i > 0)
+                        {
                             array_push($id_module_group_renew[$moduleId], $license->license_id);
+                            if (!is_null($license->group_name))
+                                array_push($grupos_modulos[$license->group_name], $license->module);
+                        }
 
                         $i++;
                     }
@@ -555,7 +564,7 @@ class LicenseController extends Controller
 
                 foreach ($groups as $key => $group) 
                 {
-                    foreach ($grupos_modulos as $key => $value) 
+                    foreach (collect($grupos_modulos[$group])->unique()->values() as $key => $value) 
                     {
                         $content = [
                             'group' => $group,
