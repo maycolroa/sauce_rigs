@@ -12,10 +12,10 @@
           <vue-datepicker class="col-md-6 offset-md-3" v-model="form.deadline" label="Fecha de cierre" :full-month-name="true" :error="form.errorsFor('deadline')" name="deadline" text-block="Campo opcional">
                 </vue-datepicker>
         </b-form-row>
-        <b-form-row v-if="auth.company_id == 499 && form.state == 'ABIERTO'">
+        <!--<b-form-row v-if="auth.company_id == 499 && form.state == 'ABIERTO'">
           <vue-ajax-advanced-select-tag-unic class="col-md-12" v-model="form.motive_close" name="motive_close" :error="form.errorsFor('motive_close')" label="Motivo del cierre" placeholder="Seleccione una opción" :url="tagsMotiveDataUrl" :multiple="false" :allowEmpty="true" :taggable="true">
           </vue-ajax-advanced-select-tag-unic>
-        </b-form-row>
+        </b-form-row>-->
       </center>
     </div>  
 

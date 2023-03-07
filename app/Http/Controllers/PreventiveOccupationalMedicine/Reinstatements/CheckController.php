@@ -819,7 +819,7 @@ class CheckController extends Controller
 
         $newState = $check->isOpen() ? "CERRADO" : "ABIERTO";
 
-        if ($check->isOpen() && isset($request->motive_close) && $request->motive_close)  
+        /*if ($check->isOpen() && isset($request->motive_close) && $request->motive_close)  
         {      
             foreach ($request->motive_close as $key => $value)
             {
@@ -836,12 +836,12 @@ class CheckController extends Controller
             ];
         }
         else
-        {
+        {*/
             $data = [
                 'state' => $newState,
                 'motive_close' => NULL
             ];
-        }
+        //}
 
 
         if ($request->has('deadline') && $check->isOpen())
@@ -942,9 +942,9 @@ class CheckController extends Controller
 
         if ($formModel == 'default')
         { 
-            if ($this->company == 499)
+            /*if ($this->company == 499)
                 $pdf = PDF::loadView('pdf.reporteReinstatementsMitsubishi', ['check' => $checks, 'locationForm' => $this->getLocationFormConfModule()]);
-            else
+            else*/
                 $pdf = PDF::loadView('pdf.reporteReinstatements', ['check' => $checks, 'locationForm' => $this->getLocationFormConfModule()]);
         }
         else if ($formModel == 'misionEmpresarial')

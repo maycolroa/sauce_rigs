@@ -83,6 +83,29 @@
                         </div>
                     </b-card>
                 </b-row>
+                <b-row>
+                    <b-card style="width:95%">
+                        <div style= "margin-bottom: 20px;">
+                            <h4><b>Reporte por Grupo de Compañia - Módulo</b></h4>
+                            <table class="table table-bordered table-sm table-striped table-hover" style="width: 100%; font-size: 10px;">
+                                <thead>
+                                    <tr>
+                                        <th v-for="(header, index) in headers.group_module" :key="`th-${index}`" class="text-center align-middle">
+                                            {{ header.label }}
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr v-for="(parameter, key) in data2.group_module" :key="key">
+                                        <td style='text-align:center;' v-for="(header, index) in headers.group_module" :key="index">
+                                            {{ parameter[header.name] }}
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </b-card>
+                </b-row>
             </b-card>
         </div>
     </diV>
@@ -126,14 +149,12 @@ export default {
         setFilters(value)
         { 
             this.filters = value
-            //this.updateTotales()
             this.fetch()
         },
         fetch()
         {
             if (!this.isLoading)
             {
-                //console.log('buscando...')
                 this.isLoading = true;
 
                 let postData = Object.assign({}, this.filters);
@@ -143,7 +164,6 @@ export default {
                     this.headers = data.data.headers;
                     this.data2 = data.data.data
                     this.isLoading = false;
-                    console.log(this.data2)
                 })
                 .catch(error => {
                     console.log(error);

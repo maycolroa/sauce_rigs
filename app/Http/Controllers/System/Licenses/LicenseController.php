@@ -325,184 +325,54 @@ class LicenseController extends Controller
     {
         try
         {
-            $headers = [
-                'general' => [],
-                'module' => [],
-                'grupo' => []
-            ];
-            $data = [
-                'general' => [],
-                'module' => [],
-                'grupo' => []
-            ];
+            $headers = [];
             $dates = [];
             $dates_old = [];
-            $dates_request = explode('/', $request->dateRange);
-    
-            if (COUNT($dates_request) == 2)
-            {
-                array_push($dates, (Carbon::createFromFormat('D M d Y', $dates_request[0]))->format('Y-m-d'));
-                array_push($dates, (Carbon::createFromFormat('D M d Y', $dates_request[1]))->format('Y-m-d'));
+            $dates_request = $request->dateRange ? explode('/', $request->dateRange) : NULL;
 
-                array_push($dates_old, (Carbon::createFromFormat('D M d Y', $dates_request[0]))->subYear(1)->format('Y-m-d'));
-                array_push($dates_old, (Carbon::createFromFormat('D M d Y', $dates_request[1]))->subYear(1)->format('Y-m-d'));
+            $url = "/system/licenses/report";
 
-            }
+            $filters = $dates_request && COUNT($dates_request) > 0 ? $dates_request : $this->filterDefaultValues($this->user->id, $url);
 
-///////////////////////////Reporte general comienza///////////////////////////
+            if (COUNT($filters) > 0)
+            {                             
+                $dates_request = $dates_request && COUNT($dates_request) > 0 ? $dates_request : explode('/', $filters["dateRange"]);
 
-                /*$general = License::selectRaw('
-                    company_id,
-                    count(id) as cant
-                ')
-                ->groupBy('company_id')
-                ->withoutGlobalScopes();
+                $dates = [];
 
-            if (COUNT($dates) > 0)
-            {            
-                $headers['general'] = [                    
-                    'Periodo Anterior Licencias Nuevas',
-                    'Periodo Anterior Licencias Renovadas',
-                    'Periodo Actual Licencias Nuevas',
-                    'Periodo Actual Licencias Renovadas'
-                ];
+                if (COUNT($dates_request) == 2)
+                {
+                    array_push($dates, $this->formatDateToSave($dates_request[0]));
+                    array_push($dates, $this->formatDateToSave($dates_request[1]));
 
-                $general->whereBetween('sau_licenses.started_at', $dates);
+                    array_push($dates_old, (Carbon::createFromFormat('D M d Y', $dates_request[0]))->subYear(1)->format('Y-m-d'));
+                    array_push($dates_old, (Carbon::createFromFormat('D M d Y', $dates_request[1]))->subYear(1)->format('Y-m-d'));
+                }
+                else
+                {
+                    $start = Carbon::now()->startOfYear()->format('Y-m-d');
+                    $end = Carbon::now()->format('Y-m-d');
+                    $start_old = Carbon::now()->subYear(1)->startOfYear()->format('Y-m-d');
+                    $end_old = Carbon::now()->subYear(1)->format('Y-m-d');
 
-                $general_complete = $general->havingRaw("count(l.id) > 1")->get();
-
-                $report_general = DB::table(DB::raw("({$general->toSql()}) AS t"))
-                ->selectRaw("
-                    sum(1) AS nuevas_actual,
-                    sum(case when t.cant > 1 then t.cant - 1 end) as renovadas_actual
-                ")
-                ->mergeBindings($general->getQuery())
-                ->get()->toArray();
-
-
-
-                $general2 = License::selectRaw('
-                    0 as cant_actual,
-                    count(id) as cant_old'
-                )
-                ->groupBy('company_id')
-                ->withoutGlobalScopes()
-                ->whereBetween('sau_licenses.started_at', $dates_old);
-            
-                
-                $report_general = DB::table(DB::raw("({$general->toSql()}) AS t"))
-                ->selectRaw("
-                    sum(1) AS nuevas,
-                    sum(case when t.cant > 1 then t.cant - 1 end) as renovadas
-                ")
-                ->mergeBindings($general->getQuery())
-                ->get()->toArray();
+                    array_push($dates, $start);
+                    array_push($dates, $end);
+                    array_push($dates_old, $start_old);
+                    array_push($dates_old, $end_old);
+                }
             }
             else
             {
-                $headers['general'] = [                    
-                    'Licencias Nuevas',
-                    'Licencias Renovadas'
-                ];
-                $report_general = DB::table(DB::raw("({$general->toSql()}) AS t"))
-                ->selectRaw("
-                    sum(1) AS nuevas,
-                    sum(case when t.cant > 1 then t.cant - 1 end) as renovadas
-                ")
-                ->mergeBindings($general->getQuery())
-                ->get()->toArray();
+                $start = Carbon::now()->startOfYear()->format('Y-m-d');
+                $end = Carbon::now()->format('Y-m-d');
+                $start_old = Carbon::now()->subYear(1)->startOfYear()->format('Y-m-d');
+                $end_old = Carbon::now()->subYear(1)->format('Y-m-d');
+
+                array_push($dates, $start);
+                array_push($dates, $end);
+                array_push($dates_old, $start_old);
+                array_push($dates_old, $end_old);
             }
-
-///////////////////////////Reporte general termina////////////////////////////
-///////////////////////////Reporte Modulos comienza///////////////////////////
-
-            $modules = Module::selectRaw("
-                sau_modules.display_name as display_name,
-                count(sau_licenses.id) as cant
-            ")
-            ->join('sau_license_module', 'sau_license_module.module_id', 'sau_modules.id')
-            ->join('sau_licenses', 'sau_licenses.id', 'sau_license_module.license_id')
-            ->where('sau_modules.main', DB::raw("'SI'"))
-            ->groupBy('sau_modules.id', 'sau_licenses.company_id');
-
-            if (COUNT($dates) > 0)
-            {
-                $headers['module'] = [      
-                    'Módulo',              
-                    'Periodo Anterior Licencias Nuevas',
-                    'Periodo Anterior Licencias Renovadas',
-                    'Periodo Actual Licencias Nuevas',
-                    'Periodo Actual Licencias Renovadas'
-                ];
-
-                $modules->whereBetween('sau_licenses.started_at', $dates);
-            }
-            else
-            {
-                $headers['module'] = [     
-                    'Modulo',
-                    'Licencias Nuevas',
-                    'Licencias Renovadas'
-                ];
-            }
-
-            $report_modules = DB::table(DB::raw("({$modules->toSql()}) AS t"))
-            ->selectRaw("
-                t.display_name as module,
-                sum(1) AS nuevas,
-                sum(case when t.cant > 1 then t.cant - 1 end) as renovadas
-            ")
-            ->mergeBindings($modules->getQuery())
-            ->groupBy('t.display_name')
-            ->get()->toArray();
-
-///////////////////////////Reporte Modulos termina///////////////////////////
-///////////////////////////Reporte Grupos comienza///////////////////////////
-
-            $group = License::selectRaw('
-                count(sau_licenses.id) as cant,
-                sau_company_groups.name as grupo
-            ')
-            ->join('sau_companies', 'sau_companies.id', 'sau_licenses.company_id')
-            ->join('sau_company_groups', 'sau_company_groups.id', 'sau_companies.company_group_id')
-            ->groupBy('company_group_id')
-            ->withoutGlobalScopes();
-
-            if (COUNT($dates) > 0)
-            {
-                $headers['group'] = [                
-                    'Grupo de compañia',
-                    'Periodo Anterior Licencias Nuevas',
-                    'Periodo Anterior Licencias Renovadas',
-                    'Periodo Actual Licencias Nuevas',
-                    'Periodo Actual Licencias Renovadas'
-                ];
-
-                $group->whereBetween('sau_licenses.started_at', $dates);
-            }
-            else
-            {
-                $headers['group'] = [                
-                    'Grupo de compañia',
-                    'Licencias Nuevas',
-                    'Licencias Renovadas'
-                ];
-            }
-
-            $report_group = DB::table(DB::raw("({$group->toSql()}) AS t"))
-            ->selectRaw("
-                t.grupo,
-                sum(1) AS nuevas,
-                sum(case when t.cant > 1 then t.cant - 1 end) as renovadas
-            ")
-            ->mergeBindings($group->getQuery())
-            ->groupBy('t.grupo')
-            ->get()->toArray();*/
-
-///////////////////////////Reporte Grupos termina///////////////////////////
-
-
-///////////////////////Prueba//////////////////////////////////////////////
 
             $id_license_renew = [];
             $id_module_renew = [];
@@ -510,6 +380,7 @@ class LicenseController extends Controller
             $table_general = [];
             $table_module = [];
             $table_groups = [];
+            $table_groups_modules = [];
 
             $prueba = License::selectRaw("
                 sau_companies.id as company_id,
@@ -540,21 +411,6 @@ class LicenseController extends Controller
                 }
             });
 
-            /*$companies_group = $prueba->filter(function ($item, $key) {
-                return $item->group_name;
-            })
-            ->groupBy('group_name')
-            ->each(function($item, $key) use (&$id_group_renew) {
-                $i = 0;
-                foreach ($item->groupBy('license_id')->all() as $license_id => $license)
-                {
-                    if ($i > 0)
-                        array_push($id_group_renew, $license_id);
-
-                    $i++;
-                }
-            });*/
-
             $modules = $prueba->groupBy('company_id')
             ->each(function($modules, $companyId) use (&$id_module_renew) {
                 $modules->groupBy('module')
@@ -577,10 +433,42 @@ class LicenseController extends Controller
             $prueba = $prueba->map(function ($item, $key) use ($id_license_renew, $id_module_renew) {
                 $item->renewed = in_array($item->license_id, $id_license_renew);
                 $item->renewed_module = isset($id_module_renew[$item->module]) && in_array($item->license_id, $id_module_renew[$item->module]);
-                //$item->renewed_group = in_array($item->license_id, $id_group_renew);
 
                 return $item;
             });
+
+            $headers['general'] = [                    
+                ['name' => 'new_old', 'label' => 'Periodo '.$dates_old[0].'/'.$dates_old[1].' Licencias Nuevas'],
+                ['name' => 'renew_old', 'label' => 'Periodo '.$dates_old[0].'/'.$dates_old[1].' Licencias Renovadas'],
+                ['name' => 'new', 'label' => 'Periodo '.$dates[0].'/'.$dates[1].' Licencias Nuevas'],
+                ['name' => 'renew', 'label' => 'Periodo '.$dates[0].'/'.$dates[1].' Licencias Renovadas']
+            ];
+
+            $headers['group'] = [                       
+                ['name' => 'group', 'label' => 'Grupo de compañia'],                 
+                ['name' => 'new_old', 'label' => 'Periodo '.$dates_old[0].'/'.$dates_old[1].' Licencias Nuevas'],
+                ['name' => 'renew_old', 'label' => 'Periodo '.$dates_old[0].'/'.$dates_old[1].' Licencias Renovadas'],
+                ['name' => 'new', 'label' => 'Periodo '.$dates[0].'/'.$dates[1].' Licencias Nuevas'],
+                ['name' => 'renew', 'label' => 'Periodo '.$dates[0].'/'.$dates[1].' Licencias Renovadas']
+            ];
+
+            $headers['module'] = [      
+                ['name' => 'module', 'label' => 'Módulo'],
+                ['name' => 'new_old', 'label' => 'Periodo '.$dates_old[0].'/'.$dates_old[1].' Licencias Nuevas'],
+                ['name' => 'renew_old', 'label' => 'Periodo '.$dates_old[0].'/'.$dates_old[1].' Licencias Renovadas'],
+                ['name' => 'new', 'label' => 'Periodo '.$dates[0].'/'.$dates[1].' Licencias Nuevas'],
+                ['name' => 'renew', 'label' => 'Periodo '.$dates[0].'/'.$dates[1].' Licencias Renovadas']
+            ];
+
+            $headers['group_module'] = [      
+                ['name' => 'group', 'label' => 'Grupo de compañia'],
+                ['name' => 'module', 'label' => 'Módulo'],
+                ['name' => 'new_old', 'label' => 'Periodo '.$dates_old[0].'/'.$dates_old[1].' Licencias Nuevas'],
+                ['name' => 'renew_old', 'label' => 'Periodo '.$dates_old[0].'/'.$dates_old[1].' Licencias Renovadas'],
+                ['name' => 'new', 'label' => 'Periodo '.$dates[0].'/'.$dates[1].' Licencias Nuevas'],
+                ['name' => 'renew', 'label' => 'Periodo '.$dates[0].'/'.$dates[1].' Licencias Renovadas']
+            ];
+
 
             if (COUNT($dates) > 0)
             {
@@ -597,29 +485,6 @@ class LicenseController extends Controller
                 $modules_old = $range_old->pluck('module');
 
                 $modules_all = $modules_actual->merge($modules_old)->unique()->values();
-
-                $headers['general'] = [                    
-                    ['name' => 'new_old', 'label' => 'Periodo Anterior Licencias Nuevas'],
-                    ['name' => 'renew_old', 'label' => 'Periodo Anterior Licencias Renovadas'],
-                    ['name' => 'new', 'label' => 'Periodo Actual Licencias Nuevas'],
-                    ['name' => 'renew', 'label' => 'Periodo Actual Licencias Renovadas']
-                ];
-
-                $headers['group'] = [                       
-                    ['name' => 'group', 'label' => 'Grupo de compañia'],                 
-                    ['name' => 'new_old', 'label' => 'Periodo Anterior Licencias Nuevas'],
-                    ['name' => 'renew_old', 'label' => 'Periodo Anterior Licencias Renovadas'],
-                    ['name' => 'new', 'label' => 'Periodo Actual Licencias Nuevas'],
-                    ['name' => 'renew', 'label' => 'Periodo Actual Licencias Renovadas']
-                ];
-
-                $headers['module'] = [      
-                    ['name' => 'module', 'label' => 'Módulo'],
-                    ['name' => 'new_old', 'label' => 'Periodo Anterior Licencias Nuevas'],
-                    ['name' => 'renew_old', 'label' => 'Periodo Anterior Licencias Renovadas'],
-                    ['name' => 'new', 'label' => 'Periodo Actual Licencias Nuevas'],
-                    ['name' => 'renew', 'label' => 'Periodo Actual Licencias Renovadas']
-                ];
 
                 $groups = $prueba->filter(function ($item, $key) {
                     return $item->group_name;
@@ -638,6 +503,16 @@ class LicenseController extends Controller
                     array_push($table_groups, $content);
                 }
 
+                $content = [
+                    'group' => 'Sin grupo',
+                    'renew_old' => $range_old->where('group_name', NULL)->where('renewed', true)->count(),
+                    'new_old' => $range_old->where('group_name', NULL)->where('renewed',false)->count(),
+                    'renew' => $range_actual->where('group_name', NULL)->where('renewed', true)->count(),
+                    'new' => $range_actual->where('group_name', NULL)->where('renewed',false)->count()
+                ];
+
+                array_push($table_groups, $content);
+
                 foreach ($modules_all as $key => $value) 
                 {
                     $content = [
@@ -651,6 +526,23 @@ class LicenseController extends Controller
                     array_push($table_module, $content);
                 }
 
+                foreach ($groups as $key => $group) 
+                {
+                    foreach ($modules_all as $key => $value) 
+                    {
+                        $content = [
+                            'group' => $group,
+                            'module' => $value,
+                            'renew_old' => $range_old->where('group_name', $group)->where('module', $value)->where('renewed_module', true)->count(),
+                            'new_old' => $range_old->where('group_name', $group)->where('module', $value)->where('renewed_module',false)->count(),
+                            'renew' => $range_actual->where('group_name', $group)->where('module', $value)->where('renewed_module', true)->count(),
+                            'new' => $range_actual->where('group_name', $group)->where('module', $value)->where('renewed_module',false)->count()
+                        ];
+                    }
+
+                    array_push($table_groups_modules, $content);
+                }
+
                 $table_general = [
                     [
                         'renew_old' => $range_old->where('renewed', true)->count(),
@@ -660,7 +552,7 @@ class LicenseController extends Controller
                     ]
                 ];
             }
-            else
+            /*else
             {
                 $headers['general'] = [                    
                     ['name' => 'new', 'label' => 'Licencias Nuevas'],
@@ -713,7 +605,15 @@ class LicenseController extends Controller
                     array_push($table_groups, $content);
                 }
 
-            }
+                $content = [
+                    'group' => 'Sin grupo',
+                    'renew' => $prueba->where('renewed', true)->where('group_name', NULL)->unique('license_id')->count(),
+                    'new' => $prueba->where('renewed', false)->where('group_name', NULL)->unique('license_id')->count()
+                ];
+
+                array_push($table_groups, $content);
+
+            }*/
 
 
 ////////////////////////////////////////////////////////////////////////////
@@ -723,7 +623,8 @@ class LicenseController extends Controller
                 'data' => [
                     'general' => $table_general,
                     'module' => $table_module,
-                    'group' => $table_groups
+                    'group' => $table_groups,
+                    'group_module' => $table_groups_modules
                 ],
             ];
 

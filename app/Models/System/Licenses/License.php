@@ -61,7 +61,7 @@ class License extends Model
     {
         if (COUNT($dates) == 2)
         {
-            $query->whereBetween('sau_licenses.updated_at', $dates);
+            $query->whereBetween('sau_licenses.started_at', $dates);
             return $query;
         }
     }
