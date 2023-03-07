@@ -139,9 +139,7 @@ export default {
     watch: {
         filters: {
             handler(val) {
-                setTimeout(() => {
-                    this.fetch()
-                }, 2000)
+                this.fetch()
                 
             },
             deep: true,
