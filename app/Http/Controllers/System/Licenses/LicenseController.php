@@ -396,7 +396,7 @@ class LicenseController extends Controller
             ->join('sau_companies', 'sau_companies.id', 'sau_licenses.company_id')
             ->leftJoin('sau_company_groups', 'sau_company_groups.id', 'sau_companies.company_group_id')
             ->where('sau_modules.main', DB::raw("'SI'"))
-            //->where('sau_companies.test', DB::raw("'NO'"))
+            ->where('sau_companies.test', DB::raw("'NO'"))
             ->orderBy('sau_licenses.id')
             ->get();
 
