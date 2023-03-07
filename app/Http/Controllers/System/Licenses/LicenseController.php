@@ -579,13 +579,12 @@ class LicenseController extends Controller
                     }
 
                 }
-
                 $table_general = [
                     [
-                        'renew_old' => $range_old->where('renewed', true)->count(),
-                        'new_old' => $range_old->where('renewed',false)->count(),
-                        'renew' => $range_actual->where('renewed', true)->count(),
-                        'new' => $range_actual->where('renewed',false)->count(),
+                        'renew_old' => $range_old->where('renewed', true)->unique('license_id')->count(),
+                        'new_old' => $range_old->where('renewed',false)->unique('license_id')->count(),
+                        'renew' => $range_actual->where('renewed', true)->unique('license_id')->count(),
+                        'new' => $range_actual->where('renewed',false)->unique('license_id')->count(),
                     ]
                 ];
             }
