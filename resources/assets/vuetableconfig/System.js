@@ -160,6 +160,7 @@ export default [
             { name: 'sau_companies.name', data: 'name', title: 'Nombre', sortable: true, searchable: true, detail: false, key: false },
             { name: 'group', data: 'group', title: 'Grupo de compañia', sortable: true, searchable: true, detail: false, key: false },
             { name: 'sau_companies.active', data: 'active', title: '¿Activo?', sortable: true, searchable: true, detail: false, key: false },
+            { name: 'sau_companies.test', data: 'test', title: '¿Prueba?', sortable: true, searchable: true, detail: false, key: false },
             { name: '', data: 'controlls', title: 'Controles', sortable: false, searchable: false, detail: false, key: false },
         ],
         'controlls': [{
