@@ -468,6 +468,8 @@ class LicenseController extends Controller
                 });
             });
 
+            \Log::info($grupos_modulos);
+
             $prueba = $prueba->map(function ($item, $key) use ($id_license_renew, $id_module_renew, $id_module_group_renew) {
                 $item->renewed = in_array($item->license_id, $id_license_renew);
                 $item->renewed_module = isset($id_module_renew[$item->module]) && in_array($item->license_id, $id_module_renew[$item->module]);
