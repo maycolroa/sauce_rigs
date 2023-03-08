@@ -29,7 +29,8 @@
                                 <tbody>
                                     <tr style='text-center' v-for="(parameter, key) in data2.general" :key="key">
                                         <td style='text-align:center;' v-for="(header, index) in headers.general" :key="index">
-                                            {{ parameter[header.name] }}
+                                            <b v-if="header.name == 'total' || header.name == 'total_old' || header.name == 'retention'"> {{ parameter[header.name] }} </b>
+                                            <p v-else>{{ parameter[header.name] }}</p>
                                         </td>
                                     </tr>
                                 </tbody>
@@ -52,7 +53,8 @@
                                 <tbody>
                                     <tr v-for="(parameter, key) in data2.module" :key="key">
                                         <td style='text-align:center;' v-for="(header, index) in headers.module" :key="index">
-                                            {{ parameter[header.name] }}
+                                            <b v-if="header.name == 'total' || header.name == 'total_old' || header.name == 'retention'"> {{ parameter[header.name] }} </b>
+                                            <p v-else>{{ parameter[header.name] }}</p>
                                         </td>
                                     </tr>
                                 </tbody>
@@ -75,7 +77,8 @@
                                 <tbody>
                                     <tr v-for="(parameter, key) in data2.group" :key="key">
                                         <td style='text-align:center;' v-for="(header, index) in headers.group" :key="index">
-                                            {{ parameter[header.name] }}
+                                            <b v-if="header.name == 'total' || header.name == 'total_old' || header.name == 'retention'"> {{ parameter[header.name] }} </b>
+                                            <p v-else>{{ parameter[header.name] }}</p>
                                         </td>
                                     </tr>
                                 </tbody>
@@ -98,7 +101,8 @@
                                 <tbody>
                                     <tr v-for="(parameter, key) in data2.group_module" :key="key">
                                         <td style='text-align:center;' v-for="(header, index) in headers.group_module" :key="index">
-                                            {{ parameter[header.name] }}
+                                            <b v-if="header.name == 'total' || header.name == 'total_old' || header.name == 'retention'"> {{ parameter[header.name] }} </b>
+                                            <p v-else>{{ parameter[header.name] }}</p>
                                         </td>
                                     </tr>
                                 </tbody>

@@ -450,7 +450,10 @@ class LicenseController extends Controller
                         if (!isset($grupos_modulos[$license->group_name]))
                         {
                             if (!is_null($license->group_name))
+                            {
                                 $grupos_modulos[$license->group_name] = [];
+                                array_push($grupos_modulos[$license->group_name], $license->module);
+                            }
                         }
 
                         if ($i > 0)
