@@ -551,7 +551,7 @@ class LicenseController extends Controller
                         'new_old' => $range_old->where('group_name', $group)->where('renewed',false)->where('renewed_module', false)->count() + $range_old->where('group_name', $group)->where('renewed', true)->where('renewed_module', false)->count(),
                         'total_old' => $range_old->where('group_name', $group)->count(),
                         'renew' => $range_actual->where('group_name', $group)->where('renewed_module', true)->where('renewed', true)->count(),
-                        'new' => $range_actual->where('group_name', $group)->where('renewed',false)->where('renewed_module', false)->count() + $range_old->where('group_name', $group)->where('renewed', true)->where('renewed_module', false)->count(),
+                        'new' => $range_actual->where('group_name', $group)->where('renewed',false)->where('renewed_module', false)->count() + $range_actual->where('group_name', $group)->where('renewed', true)->where('renewed_module', false)->count(),
                         'total' => $range_actual->where('group_name', $group)->count(),
                         'retention' => $retention.'%'
                     ];
