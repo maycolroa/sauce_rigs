@@ -643,7 +643,7 @@ class LicenseController extends Controller
                 {
                     foreach (collect($grupos_modulos[$group])->unique()->values() as $key => $value) 
                     {
-                        $retention = $range_old->where('group_name', $group)->where('module', $value)->count() > 0 ? round(($range_actual->where('group_name', $group)->where('module', $value)->where('renewed_group_module', true)->count()/$range_old->where('group_name', $group)->where('module', $value)->count())*100, 2) : 0;
+                        $retention = $range_old->where('group_name', $group)->where('module', $value)->count() > 0 ? round(($range_actual->where('group_name', $group)->where('module', $value)->where('renewed_group_module', true)->where('renewed',true)->count()/$range_old->where('group_name', $group)->where('module', $value)->count())*100, 2) : 0;
 
                         $content = [
                             'group' => $group,
