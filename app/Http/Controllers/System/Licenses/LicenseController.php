@@ -442,6 +442,9 @@ class LicenseController extends Controller
 
                     foreach ($licenses as $license)
                     {
+                        if ($license->group_name == 'Grim') 
+                           \Log::info($license);
+
                         if (!isset($id_module_group_renew[$moduleId]))
                         {
                             $id_module_group_renew[$moduleId] = [];
@@ -467,8 +470,6 @@ class LicenseController extends Controller
                     }
                 });
             });
-
-            \Log::info($grupos_modulos);
 
             $prueba = $prueba->map(function ($item, $key) use ($id_license_renew, $id_module_renew, $id_module_group_renew) {
                 $item->renewed = in_array($item->license_id, $id_license_renew);
