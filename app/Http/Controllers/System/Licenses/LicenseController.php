@@ -454,10 +454,13 @@ class LicenseController extends Controller
                         {
                             if (!is_null($license->group_name))
                             {
-                                \Log::info('creacion');
-                                \Log::info($i);
-                                \Log::info($license->license_id);
-                                \Log::info($license->module);
+                                if ($license->group_name == 'GRIM')
+                                {
+                                    \Log::info('creacion');
+                                    \Log::info($i);
+                                    \Log::info($license->license_id);
+                                    \Log::info($license->module);
+                                }
                                 $grupos_modulos[$license->group_name] = [];
                                 array_push($grupos_modulos[$license->group_name], $license->module);
                             }
@@ -468,10 +471,13 @@ class LicenseController extends Controller
                             array_push($id_module_group_renew[$moduleId], $license->license_id);
                             if (!is_null($license->group_name))
                             {
-                                \Log::info('renovar');
-                                \Log::info($i);
-                                \Log::info($license->license_id);
-                                \Log::info($license->module);
+                                if ($license->group_name == 'GRIM')
+                                {
+                                    \Log::info('renovar');
+                                    \Log::info($i);
+                                    \Log::info($license->license_id);
+                                    \Log::info($license->module);
+                                }
                                 array_push($grupos_modulos[$license->group_name], $license->module);
                             }
                         }
