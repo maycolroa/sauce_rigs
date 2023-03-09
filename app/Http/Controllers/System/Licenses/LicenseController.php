@@ -443,7 +443,6 @@ class LicenseController extends Controller
                     foreach ($licenses as $license)
                     {
                         if ($license->group_name == 'GRIM') 
-                           \Log::info($license);
 
                         if (!isset($id_module_group_renew[$moduleId]))
                         {
@@ -471,13 +470,6 @@ class LicenseController extends Controller
                             array_push($id_module_group_renew[$moduleId], $license->license_id);
                             if (!is_null($license->group_name))
                             {
-                                if ($license->group_name == 'GRIM')
-                                {
-                                    \Log::info('renovar');
-                                    \Log::info($i);
-                                    \Log::info($license->license_id);
-                                    \Log::info($license->module);
-                                }
                                 array_push($grupos_modulos[$license->group_name], $license->module);
                             }
                         }
@@ -579,7 +571,7 @@ class LicenseController extends Controller
                 }
 
 
-                $retention_sg = $range_old->where('group_name', NULL)->count() > 0 ? round(($range_actual->where('group_name', NULL)->where('renewed', true)->count()/$range_old->where('group_name', NULL)->count())*100, 2) : 0;
+                $retention_sg = $range_old->where('group_name', NULL)->count() > 0 ? round(($range_actual->where('group_name', NULL)->where('renewed', true)->where('renewed_module', true)->count()/$range_old->where('group_name', NULL)->count())*100, 2) : 0;
 
                 $content = [
                     'group' => 'Sin grupo',
@@ -592,7 +584,7 @@ class LicenseController extends Controller
                     'retention' => $retention_sg.'%'
                 ];
 
-                $retention_sg_t = $range_old->count() > 0 ? round(($range_actual->where('renewed', true)->count()/$range_old->count())*100, 2) : 0;
+                $retention_sg_t = $range_old->count() > 0 ? round(($range_actual->where('renewed', true)->where('renewed_module', true)->count()/$range_old->count())*100, 2) : 0;
 
                 $content2 = [
                     'group' => 'Total',
@@ -651,11 +643,11 @@ class LicenseController extends Controller
                         $content = [
                             'group' => $group,
                             'module' => $value,
-                            'renew_old' => $range_old->where('group_name', $group)->where('module', $value)->where('renewed_group_module', true)->count(),
-                            'new_old' => $range_old->where('group_name', $group)->where('module', $value)->where('renewed_group_module',false)->count(),
+                            'renew_old' => $range_old->where('group_name', $group)->where('module', $value)->where('renewed_group_module', true)->where('renewed',true)->count(),
+                            'new_old' => $range_old->where('group_name', $group)->where('module', $value)->where('renewed_group_module',false)->where('renewed',false)->count(),
                             'total_old' => $range_old->where('group_name', $group)->where('module', $value)->count(),
-                            'renew' => $range_actual->where('group_name', $group)->where('module', $value)->where('renewed_group_module', true)->count(),
-                            'new' => $range_actual->where('group_name', $group)->where('module', $value)->where('renewed_group_module',false)->count(),
+                            'renew' => $range_actual->where('group_name', $group)->where('module', $value)->where('renewed_group_module', true)->where('renewed',true)->count(),
+                            'new' => $range_actual->where('group_name', $group)->where('module', $value)->where('renewed_group_module',false)->where('renewed',false)->count(),
                             'total' => $range_actual->where('group_name', $group)->where('module', $value)->count(),
                             'retention' => $retention.'%'
                         ];
@@ -670,11 +662,11 @@ class LicenseController extends Controller
                 $content2 = [
                     'group' => 'Total',
                     'module' => 'Todos',
-                    'renew_old' => $range_old->where('group_name', '!=', NULL)->unique('license_id')->where('renewed_group_module', true)->count(),
-                    'new_old' => $range_old->where('group_name', '!=', NULL)->unique('license_id')->where('renewed_group_module',false)->count(),
+                    'renew_old' => $range_old->where('group_name', '!=', NULL)->unique('license_id')->where('renewed_group_module', true)->where('renewed',true)->count(),
+                    'new_old' => $range_old->where('group_name', '!=', NULL)->unique('license_id')->where('renewed_group_module',false)->where('renewed',false)->count(),
                     'total_old' => $range_old->where('group_name', '!=', NULL)->unique('license_id')->count(),
-                    'renew' => $range_actual->where('group_name', '!=', NULL)->where('renewed_group_module', true)->unique('license_id')->count(),
-                    'new' => $range_actual->where('group_name', '!=', NULL)->where('renewed_group_module',false)->unique('license_id')->count(),
+                    'renew' => $range_actual->where('group_name', '!=', NULL)->where('renewed_group_module', true)->unique('license_id')->where('renewed',true)->count(),
+                    'new' => $range_actual->where('group_name', '!=', NULL)->where('renewed',false)->where('renewed_group_module',false)->unique('license_id')->count(),
                     'total' => $range_actual->where('group_name', '!=', NULL)->unique('license_id')->count(),
                     'retention' => $retention_g_t.'%'
                 ];
