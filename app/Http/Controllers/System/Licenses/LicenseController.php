@@ -482,18 +482,15 @@ class LicenseController extends Controller
                             }
                         }
                         else
-                        {
-                            if (!isset($grupos_modulos[$license->group_name]))
+                        {                            
+                            if (!is_null($license->group_name))
                             {
-                                if (!is_null($license->group_name))
-                                {
-                                    \Log::info('else');
-                                    \Log::info($i);
-                                    \Log::info($license->license_id);
-                                    \Log::info($license->module);
-                                    $grupos_modulos[$license->group_name] = [];
-                                    array_push($grupos_modulos[$license->group_name], $license->module);
-                                }
+                                \Log::info('else');
+                                \Log::info($i);
+                                \Log::info($license->license_id);
+                                \Log::info($license->module);
+                                $grupos_modulos[$license->group_name] = [];
+                                array_push($grupos_modulos[$license->group_name], $license->module);
                             }
                         }
 
