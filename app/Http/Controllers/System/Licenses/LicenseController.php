@@ -442,7 +442,7 @@ class LicenseController extends Controller
 
                     foreach ($licenses as $license)
                     {
-                        if ($license->group_name == 'Grim') 
+                        if ($license->group_name == 'GRIM') 
                            \Log::info($license);
 
                         if (!isset($id_module_group_renew[$moduleId]))
