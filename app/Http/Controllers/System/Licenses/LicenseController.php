@@ -467,7 +467,12 @@ class LicenseController extends Controller
 
                         if ($i > 0)
                         {
-                            array_push($id_module_group_renew[$moduleId], $license->license_id);
+                            if (!isset($id_module_group_renew[$moduleId]))
+                            {
+                                $id_module_group_renew[$moduleId] = [];
+                            }
+                            else
+                                array_push($id_module_group_renew[$moduleId], $license->license_id);
                             if (!is_null($license->group_name))
                             {
                                 array_push($grupos_modulos[$license->group_name], $license->module);
