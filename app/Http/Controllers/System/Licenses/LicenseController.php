@@ -590,7 +590,7 @@ class LicenseController extends Controller
                     'retention' => $retention_sg.'%'
                 ];
 
-                $retention_sg_t = $range_old->count() > 0 ? round(($range_actual->where('renewed', true)->where('renewed_module', true)->count()/$range_old->count())*100, 2) : 0;
+                $retention_sg_t = $range_old->count() > 0 ? round(($range_actual->where('renewed', true)->count()/$range_old->count())*100, 2) : 0;
 
                 $content2 = [
                     'group' => 'Total',
