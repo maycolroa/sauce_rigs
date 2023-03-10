@@ -278,6 +278,29 @@
         <table class="table-general">
             <thead>
                 <tr>
+                    <th>¿Incapacitado?</th>
+                    @if($check->has_incapacitated == 'SI')
+                    <th>Fecha Inicio</th>
+                    <th>Fecha Fin</th>
+                    @endif
+                </tr>
+                <tr>
+                    <td>{{$check->has_incapacitated}}</td>
+                    @if($check->has_incapacitated == 'SI')
+                    <td>{{$check->start_incapacitated ? date('Y-m-d', strtotime($check->start_incapacitated)) : '-'}}</td>
+                    <td>{{$check->end_incapacitated ? date('Y-m-d', strtotime($check->end_incapacitated)) : '-'}}</td>
+                    @endif
+                </tr>
+            </thead>
+        </table>
+    </div>
+
+    <br><br>
+
+    <div style="page-break-inside: avoid;">
+        <table class="table-general">
+            <thead>
+                <tr>
                     <th>Fecha Seguimiento Médico</th>
                     <th>Conclusión Seguimiento Médico</th>
                 </tr>

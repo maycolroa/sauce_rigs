@@ -400,6 +400,8 @@ class CheckController extends Controller
         $check->start_restrictions = $this->formatDateToForm($check->start_restrictions);
         $check->end_restrictions = $this->formatDateToForm($check->end_restrictions);
         $check->incapacitated_last_extension = $this->formatDateToForm($check->incapacitated_last_extension);
+        $check->start_incapacitated = $this->formatDateToForm($check->start_incapacitated);
+        $check->end_incapacitated = $this->formatDateToForm($check->end_incapacitated);
         $check->deadline = $this->formatDateToForm($check->deadline);
         $check->next_date_tracking = $this->formatDateToForm($check->next_date_tracking);
 

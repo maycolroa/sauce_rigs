@@ -135,6 +135,18 @@
           <div class="col-md-12" style="padding-left: 15px; padding-right: 15px;">
             <hr class="border-dark container-m--x mt-0 mb-4">
           </div>
+
+          <b-form-row>
+            <vue-radio :disabled="viewOnly" :checked="form.has_incapacitated" class="col-md-6 offset-md-3" v-model="form.has_incapacitated" :options="siNo" name="has_incapacitated" :error="form.errorsFor('has_incapacitated')" label="¿Incapacitado?"></vue-radio>
+          </b-form-row>
+           <b-form-row v-show="form.has_incapacitated == 'SI'">
+            <vue-datepicker :disabled="viewOnly" class="col-md-6" v-model="form.start_incapacitated" label="Fecha inicio" :full-month-name="true" placeholder="Fecha inicio" :error="form.errorsFor('start_incapacitated')" name="start_incapacitated"></vue-datepicker>
+            <vue-datepicker :disabled="viewOnly" class="col-md-6" v-model="form.end_incapacitated" label="Fecha fin" :full-month-name="true" placeholder="Fecha fin" :error="form.errorsFor('end_incapacitated')" name="end_incapacitated"></vue-datepicker>
+          </b-form-row>
+
+          <div class="col-md-12" style="padding-left: 15px; padding-right: 15px;">
+            <hr class="border-dark container-m--x mt-0 mb-4">
+          </div>
           
           <b-form-row>
             <div class="col-md-12">
@@ -531,6 +543,8 @@ export default {
           relocated_type: '',
           created_at: '',
           refundClassification: '',
+          start_incapacitated: '',
+          end_incapacitated: '',
           
           new_tracing: [],
           oldTracings: [],

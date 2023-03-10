@@ -520,7 +520,9 @@ class CheckManager
             'incapacitated_last_extension',
             'deadline',
             'next_date_tracking',
-            'relocated_date'
+            'relocated_date',            
+            'start_incapacitated',
+            'end_incapacitated'
         ];
 
         if ($this->formModel == 'ingeomega')
