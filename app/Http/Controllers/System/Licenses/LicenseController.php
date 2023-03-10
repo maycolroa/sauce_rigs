@@ -590,7 +590,9 @@ class LicenseController extends Controller
                     'retention' => $retention_sg.'%'
                 ];
 
-                $retention_sg_t = $range_old->unique('license_id')->count() > 0 ? round(($range_actual->where('renewed', true)->unique('license_id')->count()/$range_old->unique('license_id')>count())*100, 2) : 0;
+                /*$retention_sg_t = $range_old->unique('license_id')->count() > 0 ? round(($range_actual->where('renewed', true)->unique('license_id')->count()/$range_old->unique('license_id')>count())*100, 2) : 0;*/
+
+                $retention_sg_t = $range_old->unique('license_id')->count() > 0 ? round(($range_actual->where('renewed', true)/*->where('renewed_module', true)*/->unique('license_id')->count()/$range_old->unique('license_id')->count())*100, 2) : 0;
 
                 $content2 = [
                     'group' => 'Total',
