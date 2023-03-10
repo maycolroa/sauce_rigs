@@ -15,6 +15,10 @@
                         configName="system-licenses-report" />
                 </div>
                 <b-row>
+                    <vue-advanced-select class="col-md-6 offset-md-2" v-model="order" :multiple="false" :options="options" :hide-selected="false" @input="fetch" name="table" label="Ordenar por:" placeholder="Seleccione una opción">
+                    </vue-advanced-select>
+                </b-row>
+                <b-row>
                     <b-card style="width:95%">
                         <div style= "margin-bottom: 20px;">
                             <h4><b>Reporte General</b></h4>
@@ -22,7 +26,8 @@
                                 <thead>
                                     <tr>
                                         <th v-for="(header, index) in headers.general" :key="`th-${index}`" class="text-center align-middle">
-                                            {{ header.label }}
+                                            <b v-if="header.name == 'total' || header.name == 'total_old' || header.name == 'retention'"> {{ header.label }} </b>
+                                            <p v-else>{{ header.label }}</p>                                            
                                         </th>
                                     </tr>
                                 </thead>
@@ -46,7 +51,8 @@
                                 <thead>
                                     <tr>
                                         <th v-for="(header, index) in headers.module" :key="`th-${index}`" class="text-center align-middle">
-                                            {{ header.label }}
+                                            <b v-if="header.name == 'total' || header.name == 'total_old' || header.name == 'retention'"> {{ header.label }} </b>
+                                            <p v-else>{{ header.label }}</p> 
                                         </th>
                                     </tr>
                                 </thead>
@@ -70,7 +76,8 @@
                                 <thead>
                                     <tr>
                                         <th v-for="(header, index) in headers.group" :key="`th-${index}`" class="text-center align-middle">
-                                            {{ header.label }}
+                                            <b v-if="header.name == 'total' || header.name == 'total_old' || header.name == 'retention'"> {{ header.label }} </b>
+                                            <p v-else>{{ header.label }}</p> 
                                         </th>
                                     </tr>
                                 </thead>
@@ -94,7 +101,8 @@
                                 <thead>
                                     <tr>
                                         <th v-for="(header, index) in headers.group_module" :key="`th-${index}`" class="text-center align-middle">
-                                            {{ header.label }}
+                                            <b v-if="header.name == 'total' || header.name == 'total_old' || header.name == 'retention'"> {{ header.label }} </b>
+                                            <p v-else>{{ header.label }}</p> 
                                         </th>
                                     </tr>
                                 </thead>
@@ -118,6 +126,7 @@
 <script>
 import Loading from "@/components/Inputs/Loading.vue";
 import FilterGeneral from '@/components/Filters/FilterGeneral.vue';
+import VueAdvancedSelect from "@/components/Inputs/VueAdvancedSelect.vue";
 import Alerts from '@/utils/Alerts.js';
 
 export default {
@@ -127,7 +136,8 @@ export default {
     },
     components:{
         Loading,
-        FilterGeneral
+        FilterGeneral,
+        VueAdvancedSelect
     },
     data () {
         return {
@@ -135,6 +145,13 @@ export default {
             filters: [],
             headers: [],
             data2: {},
+            options: 
+            [
+                { name: 'Total Actual', value: 'total'},
+                { name: 'Total Anterior', value: 'total_old'},
+                { name: 'Retención', value: 'retention'}
+			],
+            order: 'total'
         }
     },
     created() {
@@ -161,7 +178,7 @@ export default {
             {
                 this.isLoading = true;
 
-                let postData = Object.assign({}, {filters: this.filters});
+                let postData = Object.assign({}, {filters: this.filters, order: this.order});
 
                 axios.post('/system/license/report', postData)
                 .then(data => {
