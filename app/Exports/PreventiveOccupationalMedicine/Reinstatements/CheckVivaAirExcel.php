@@ -92,6 +92,8 @@ class CheckVivaAirExcel implements FromCollection, WithHeadings, WithMapping, Wi
       return [
         $data->id,
         $data->state,
+        $data->deadline,
+        $data->motive_close,
         Carbon::createFromFormat('D M d Y', $data->created_at)->format('Y-m-d'),
         $employee->identification,
         $employee->name,
@@ -141,6 +143,8 @@ class CheckVivaAirExcel implements FromCollection, WithHeadings, WithMapping, Wi
       return [
         'ID Reporte',
         'Estado',
+        'Fecha de cierre',
+        'Motivo de cierre',
         'Fecha creación reporte',
         'Identificación',
         'Nombre Trabajador',

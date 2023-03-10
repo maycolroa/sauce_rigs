@@ -92,6 +92,8 @@ class CheckEmpresarialExcel implements FromCollection, WithHeadings, WithMapping
       return [
         $data->id,
         $data->state,
+        $data->deadline,
+        $data->motive_close,
         Carbon::createFromFormat('D M d Y', $data->created_at)->format('Y-m-d'),
         $employee->identification,
         $employee->name,
@@ -152,6 +154,8 @@ class CheckEmpresarialExcel implements FromCollection, WithHeadings, WithMapping
       return [
         'ID Reporte',
         'Estado',
+        'Fecha de cierre',
+        'Motivo de cierre',
         'Fecha Inicio',
         'Identificación',
         'Nombre Trabajador',

@@ -938,14 +938,10 @@ class CheckController extends Controller
         PDF::setOptions(['dpi' => 150, 'defaultFont' => 'sans-serif']);
 
         $formModel = $this->getFormModel('form_check');
-        \Log::info($checks->state);
 
         if ($formModel == 'default')
         { 
-            /*if ($this->company == 499)
-                $pdf = PDF::loadView('pdf.reporteReinstatementsMitsubishi', ['check' => $checks, 'locationForm' => $this->getLocationFormConfModule()]);
-            else*/
-                $pdf = PDF::loadView('pdf.reporteReinstatements', ['check' => $checks, 'locationForm' => $this->getLocationFormConfModule()]);
+            $pdf = PDF::loadView('pdf.reporteReinstatementsMitsubishi', ['check' => $checks, 'locationForm' => $this->getLocationFormConfModule()]);
         }
         else if ($formModel == 'misionEmpresarial')
         {

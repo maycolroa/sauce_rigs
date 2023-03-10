@@ -125,6 +125,18 @@
     <div style="page-break-inside: avoid;">
         <table class="table-general">
             <thead>
+                @if($check->state == 'CERRADO')
+                <tr>
+                    <th>Estado del reporte</th>
+                    <th>Fecha de cierre</th>
+                    <th>Motivo de cierre</th>
+                </tr>
+                <tr>
+                    <td>{{$check->state}}</td>
+                    <td>{{$check->deadline ? date('Y-m-d', strtotime($check->deadline)) : '-'}}</td>
+                    <td>{{$check->motive_close}}</td>
+                </tr>
+                @endif
                 <tr>
                     <th>{{ Auth::user()->getKeywords()['disease_origin'] }}</th>
                     <th colspan="2">Código CIE 10</th>
