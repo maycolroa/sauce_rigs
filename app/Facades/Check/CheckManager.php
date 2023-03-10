@@ -520,15 +520,21 @@ class CheckManager
             'incapacitated_last_extension',
             'deadline',
             'next_date_tracking',
-            'relocated_date',            
-            'start_incapacitated',
-            'end_incapacitated'
+            'relocated_date'
         ];
 
         if ($this->formModel == 'ingeomega')
         {
             $attrs = array_merge($attrs, [
                 'disease_origin_date',
+            ]);
+        }
+
+        if ($this->formModel == 'hptu')
+        {
+            $attrs = array_merge($attrs, [
+                'start_incapacitated',
+                'end_incapacitated'
             ]);
         }
 
