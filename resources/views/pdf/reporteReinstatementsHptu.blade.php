@@ -285,7 +285,7 @@
                     @endif
                 </tr>
                 <tr>
-                    <td>{{$check->has_incapacitated}}</td>
+                    <td>{{$check->has_incapacitated ? $check->has_incapacitated : 'NO'}}</td>
                     @if($check->has_incapacitated == 'SI')
                     <td>{{$check->start_incapacitated ? date('Y-m-d', strtotime($check->start_incapacitated)) : '-'}}</td>
                     <td>{{$check->end_incapacitated ? date('Y-m-d', strtotime($check->end_incapacitated)) : '-'}}</td>
