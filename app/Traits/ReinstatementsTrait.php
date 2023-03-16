@@ -16,9 +16,6 @@ trait ReinstatementsTrait
         //Default
         $rules = [
             'employee_id' => 'required|exists:sau_employees,id',
-            'disease_origin' => "required",
-            'cie10_code_id' => 'required|exists:sau_reinc_cie10_codes,id',
-            'laterality' => "nullable",
             'has_recommendations' => "required",
             'start_recommendations' => 'nullable|date',
             'indefinite_recommendations' => "nullable",
@@ -54,7 +51,9 @@ trait ReinstatementsTrait
         if ($formModel == 'vivaAir')
         {
             $rules = array_merge($rules, [
-
+                'disease_origin' => "required",
+                'cie10_code_id' => 'required|exists:sau_reinc_cie10_codes,id',
+                'laterality' => "nullable",
                 'sve_associated' => 'required',
                 'medical_certificate_ueac' => 'required',
             ]);
@@ -62,6 +61,9 @@ trait ReinstatementsTrait
         else if ($formModel == 'misionEmpresarial')
         {
             $rules = array_merge($rules, [
+                'disease_origin' => "required",
+                'cie10_code_id' => 'required|exists:sau_reinc_cie10_codes,id',
+                'laterality' => "nullable",
                 'eps_favorability_concept' => 'required',
                 'created_at' => 'required',
                 'has_incapacitated' => "required",
@@ -74,8 +76,25 @@ trait ReinstatementsTrait
         else if ($formModel == 'hptu')
         {
             $rules = array_merge($rules, [
+                'disease_origin' => "required",
+                'cie10_code_id' => 'required|exists:sau_reinc_cie10_codes,id',
+                'laterality' => "nullable",
                 'type_controversy_origin_1' => 'nullable',
                 'type_controversy_origin_2' => 'nullable'
+            ]);
+        }
+        else if ($formModel == 'chia')
+        {
+            $rules = array_merge($rules, [
+                'dxs' => 'required'
+            ]);
+        }
+        else
+        {
+            $rules = array_merge($rules, [
+                'disease_origin' => "required",
+                'cie10_code_id' => 'required|exists:sau_reinc_cie10_codes,id',
+                'laterality' => "nullable"
             ]);
         }
 

@@ -120,7 +120,21 @@ class Check extends Model
         'refund_classification',
         'motive_close',
         'start_incapacitated',
-        'end_incapacitated'
+        'end_incapacitated',
+        'cie10_code_4_id',
+        'cie10_code_5_id',
+        'disease_origin_2',
+        'disease_origin_3',
+        'disease_origin_4',
+        'disease_origin_5',
+        'laterality_2',
+        'laterality_3',
+        'laterality_4',
+        'laterality_5',
+        'qualification_dme_2',
+        'qualification_dme_3',
+        'qualification_dme_4',
+        'qualification_dme_5',
     ];
 
     /**
@@ -169,6 +183,16 @@ class Check extends Model
     public function cie10Code3()
     {
         return $this->belongsTo(Cie10Code::class, 'cie10_code_3_id');
+    }
+
+    public function cie10Code4()
+    {
+        return $this->belongsTo(Cie10Code::class, 'cie10_code_4_id');
+    }
+
+    public function cie10Code5()
+    {
+        return $this->belongsTo(Cie10Code::class, 'cie10_code_5_id');
     }
 
     public function files()

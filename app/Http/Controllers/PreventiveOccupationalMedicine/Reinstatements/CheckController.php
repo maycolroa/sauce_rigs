@@ -189,8 +189,35 @@ class CheckController extends Controller
         {
             DB::beginTransaction();
 
+            $formModel = $this->getFormModel('form_check');
+
             $check = new Check(CheckManager::checkNullAttrs($request, $this->company));
             $check->company_id = $this->company;
+
+            if ($formModel == 'chia')
+            {
+                foreach ($request->dxs as $key => $dx) 
+                {
+                    $index = $key + 1;
+                    $indexC = $index + 1;
+                    $cie_name = 'cie10_code_'.$indexC.'_id';
+
+                    if ($key > 0)
+                    {
+                        $check['disease_origin_'.$index] = $dx['disease_origin'];
+                        $check[$cie_name] = $dx['cie10_code_id'];
+                        $check['laterality_'.$index] = $dx['laterality'];
+                        $check['qualification_dme_'.$index] = $dx['qualification_dme'];
+                    }   
+                    else
+                    {
+                        $check['disease_origin'] = $dx['disease_origin'];
+                        $check['cie10_code_id'] = $dx['cie10_code_id'];
+                        $check['laterality'] = $dx['laterality'];
+                        $check['qualification_dme'] = $dx['qualification_dme'];
+                    }    
+                }
+            }
 
             if (!$check->save())
                 return $this->respondHttp500();
@@ -289,6 +316,37 @@ class CheckController extends Controller
             DB::beginTransaction();
 
             $check->fill(CheckManager::checkNullAttrs($request, $this->company));
+
+            $formModel = $this->getFormModel('form_check');
+
+            if ($formModel == 'chia')
+            {
+                foreach ($request->dxs as $key => $dx) 
+                {
+                    $index = $key + 1;
+                    
+                    if ($key > 0)
+                    {
+                        $indexC = $index + 1;
+                        $cie_name = 'cie10_code_'.$index.'_id';
+                    }
+
+                    if ($key > 0)
+                    {
+                        $check['disease_origin_'.$index] = $dx['disease_origin'];
+                        $check[$cie_name] = $dx['cie10_code_id'];
+                        $check['laterality_'.$index] = $dx['laterality'];
+                        $check['qualification_dme_'.$index] = $dx['qualification_dme'];
+                    }   
+                    else
+                    {
+                        $check['disease_origin'] = $dx['disease_origin'];
+                        $check['cie10_code_id'] = $dx['cie10_code_id'];
+                        $check['laterality'] = $dx['laterality'];
+                        $check['qualification_dme'] = $dx['qualification_dme'];
+                    }    
+                }
+            }
             
             if (!$check->save())
                 return $this->respondHttp500();
@@ -412,6 +470,8 @@ class CheckController extends Controller
         $check->multiselect_cie10Code = $check->cie10Code->multiselect();
         $check->multiselect_cie10Code2 = $check->cie10_code_2_id ? $check->cie10Code2->multiselect() : NULL;
         $check->multiselect_cie10Code3 = $check->cie10_code_3_id ? $check->cie10Code3->multiselect() : NULL;
+        $check->multiselect_cie10Code4 = $check->cie10_code_4_id ? $check->cie10Code4->multiselect() : NULL;
+        $check->multiselect_cie10Code5 = $check->cie10_code_5_id ? $check->cie10Code5->multiselect() : NULL;
         $check->multiselect_restriction = $check->restriction ? $check->restriction->multiselect() : [];
         $check->relocated_regional_multiselect = $check->relocatedRegional ? $check->relocatedRegional->multiselect() : [];
         $check->relocated_headquarter_multiselect = $check->relocatedHeadquarter ? $check->relocatedHeadquarter->multiselect() : [];
@@ -475,6 +535,80 @@ class CheckController extends Controller
         $check->delete = [
             'files' => []
         ];
+
+        $formModel = $this->getFormModel('form_check');
+
+        if ($formModel == 'chia')
+        {
+            $dxs = [];
+
+            if ($check->disease_origin)
+            {
+                $content = [
+                    'disease_origin' => $check->disease_origin,
+                    'cie10_code_id' => $check->cie10_code_id,
+                    'multiselect_cie10Code' => $check->multiselect_cie10Code,
+                    'qualification_dme' => $check->qualification_dme,
+                    'laterality' => $check->laterality
+                ];
+
+                array_push($dxs, $content);
+            }
+
+            if ($check->disease_origin_2)
+            {
+                $content = [
+                    'disease_origin' => $check->disease_origin_2,
+                    'cie10_code_id' => $check->cie10_code_2_id,
+                    'multiselect_cie10Code' => $check->multiselect_cie10Code2,
+                    'qualification_dme' => $check->qualification_dme_2,
+                    'laterality' => $check->laterality_2
+                ];
+
+                array_push($dxs, $content);
+            }
+
+            if ($check->disease_origin_3)
+            {
+                $content = [
+                    'disease_origin' => $check->disease_origin_3,
+                    'cie10_code_id' => $check->cie10_code_3_id,
+                    'multiselect_cie10Code' => $check->multiselect_cie10Code3,
+                    'qualification_dme' => $check->qualification_dme_3,
+                    'laterality' => $check->laterality_3
+                ];
+
+                array_push($dxs, $content);
+            }
+
+            if ($check->disease_origin_4)
+            {
+                $content = [
+                    'disease_origin' => $check->disease_origin_4,
+                    'cie10_code_id' => $check->cie10_code_4_id,
+                    'multiselect_cie10Code' => $check->multiselect_cie10Code4,
+                    'qualification_dme' => $check->qualification_dme_4,
+                    'laterality' => $check->laterality_4
+                ];
+
+                array_push($dxs, $content);
+            }
+            
+            if ($check->disease_origin_5)
+            {
+                $content = [
+                    'disease_origin' => $check->disease_origin_5,
+                    'cie10_code_id' => $check->cie10_code_5_id,
+                    'multiselect_cie10Code' => $check->multiselect_cie10Code5,
+                    'qualification_dme' => $check->qualification_dme_5,
+                    'laterality' => $check->laterality_5
+                ];
+
+                array_push($dxs, $content);
+            }
+
+            $check->dxs = $dxs;
+        }
 
         return $check;
     }

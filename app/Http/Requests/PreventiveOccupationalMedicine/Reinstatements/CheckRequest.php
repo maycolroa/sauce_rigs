@@ -66,6 +66,15 @@ class CheckRequest extends FormRequest
             }
         }
 
+        if ($this->has('dxs') && is_array($this->input('dxs')))
+        {
+            foreach ($this->input('dxs') as $key => $value)
+            {
+                $data['dxs'][$key] = json_decode($value, true);
+                $this->merge($data);
+            }
+        }
+
         return $this->all();
     }
 
