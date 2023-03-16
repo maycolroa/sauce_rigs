@@ -12,6 +12,7 @@ use App\Exports\LegalAspects\Contracts\Evaluations\EvaluationContractExcel;
 use App\Facades\Mail\Facades\NotificationMail;
 use App\Models\LegalAspects\Contracts\EvaluationContract;
 use App\Models\Administrative\Users\User;
+use App\Models\LegalAspects\Contracts\ContractLesseeInformation;
 
 class EvaluationSendNotificationJob implements ShouldQueue
 {
@@ -45,10 +46,26 @@ class EvaluationSendNotificationJob implements ShouldQueue
       $evaluationContract->company_scope = $this->company_id;
       $evaluationContract = $evaluationContract->get();
 
+      $evaluation = EvaluationContract::where('sau_ct_evaluation_contract.id', $this->id);
+      $evaluation->company_scope = $this->company_id;
+      $evaluation = $evaluation->first();
+
+      $contract = ContractLesseeInformation::where('id', $evaluation->contract_id);
+      $contract->company_scope = $this->company_id;
+      $contract = $contract->first();
+
+      $responsibles = $contract->responsibles;
+
       if ($evaluationContract)
       {
         $recipients = $evaluationContract->toArray();
         $recipients = User::active()->whereIn('id', $recipients)->get();
+
+        foreach ($responsibles as $key => $value) 
+        {
+          $recipients->push(User::active()->where('id', $value->id)->first());
+        }
+        
         $recipients = $recipients->filter(function ($recipient, $index) {
           return $recipient->can('contracts_receive_notifications', $this->company_id);
         });
@@ -61,7 +78,7 @@ class EvaluationSendNotificationJob implements ShouldQueue
           $paramUrl = base64_encode($nameExcel);
           
           NotificationMail::
-            subject('Resultados de evaluación')
+            subject('Resultados de evaluación '.$contract->social_reason)
             ->recipients($recipients)
             ->message('Se le ha realizado una evaluación por parte de su contratante, en el siguiente botón puede descargar los resultados')
             ->subcopy('Este link es valido por 24 horas')
