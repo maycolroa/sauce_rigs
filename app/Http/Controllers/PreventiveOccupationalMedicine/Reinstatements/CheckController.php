@@ -143,8 +143,13 @@ class CheckController extends Controller
                             return $check->isOpen();
                     })
                     ->addColumn('viewVisor', function ($check) {
-                        if ($this->user->hasRole('Rol Visor Reincorporaciones', $this->team) || $this->user->hasRole('Superadmin', $this->team))
-                            return true;
+                        if ($this->team == 409 || $this->team == 1 || $this->team == 130)
+                        {
+                            if ($this->user->hasRole('Rol Visor Reincorporaciones', $this->team) || $this->user->hasRole('Superadmin', $this->team))
+                                return true;
+                            else
+                                return false;
+                        }
                         else
                             return false;
                     })
