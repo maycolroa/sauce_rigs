@@ -158,6 +158,14 @@ export default [{
           import('@/views/PreventiveOccupationalMedicine/reinstatements/checks/view')
       }
     ]), 
+    ...middleware({ 'check-permission': 'reinc_checks_visor' }, [
+      {
+        name: 'reinstatements-checks-visor',
+        path: 'reinstatements/checks/visor/:id',
+        component: () =>
+          import('@/views/PreventiveOccupationalMedicine/reinstatements/checks/viewVisor')
+      }
+    ]), 
     ...middleware({ 'check-permission': 'reinc_checks_c' }, [
       {
         name: 'reinstatements-checks-switchStatus',

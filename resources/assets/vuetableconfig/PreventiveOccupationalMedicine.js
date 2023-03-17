@@ -438,6 +438,20 @@ export default [
             id: 'id'
         },
         permission: 'reinc_checks_u'
+      }, {
+        config: {
+            name: 'viewVisor',
+            color: 'outline-info',
+            borderless: true,
+            icon: 'ion ion-md-eye',
+            title: 'Ver Reporte'
+        },
+        data: {
+            routePush: { name: 'reinstatements-checks-visor' },
+            //action: '/biologicalmonitoring/reinstatements/check/switchStatus',
+            id: 'id'
+        },
+        permission: 'reinc_checks_visor'
       }]
   },
   {

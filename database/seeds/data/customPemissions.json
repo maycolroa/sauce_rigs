@@ -203,6 +203,10 @@
                     {
                         "name": "reinc_medical_conclusion_d",
                         "display_name": "Reincorporaciones/Conclusiones médicas - eliminar"
+                    },
+                    {
+                        "name": "reinc_checks_visor",
+                        "display_name": "Reincorporaciones/Reportes - visor"
                     }
                 ]
             },
@@ -652,15 +656,6 @@
                     {
                         "name": "contracts_informs_report_export",
                         "display_name": "Contratistas/Informes mensuales - exportar reportes"
-                    }
-                ]
-            },
-            {
-                "name": "useractivitymonitoring",
-                "permissions": [
-                    {
-                        "name": "user_monitoring_r",
-                        "display_name": "Monitoreo de usuarios - ver"
                     }
                 ]
             },

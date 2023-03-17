@@ -139,8 +139,32 @@ class CheckController extends Controller
 
         return Vuetable::of($checks)
                     ->addColumn('reinstatements-checks-edit', function ($check) {
-
-                        return $check->isOpen();
+                        if (!$this->user->hasRole('Rol Visor Reincorporaciones', $this->team))
+                            return $check->isOpen();
+                    })
+                    ->addColumn('viewVisor', function ($check) {
+                        if ($this->user->hasRole('Rol Visor Reincorporaciones', $this->team) || $this->user->hasRole('Superadmin', $this->team))
+                            return true;
+                        else
+                            return false;
+                    })
+                    ->addColumn('reinstatements-checks-view', function ($check) {
+                        if ($this->user->hasRole('Rol Visor Reincorporaciones', $this->team))
+                            return false;
+                        else
+                            return true;
+                    })
+                    ->addColumn('downloadFile', function ($check) {
+                        if ($this->user->hasRole('Rol Visor Reincorporaciones', $this->team))
+                            return false;
+                        else
+                            return true;
+                    })
+                    ->addColumn('reinstatements-checks-letter', function ($check) {
+                        if ($this->user->hasRole('Rol Visor Reincorporaciones', $this->team))
+                            return false;
+                        else
+                            return true;
                     })
                     ->make();
     }
