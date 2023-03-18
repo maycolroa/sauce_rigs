@@ -114,7 +114,7 @@ class UserController extends Controller
 
             if (!$isSuper)
                 $users->where('sau_role_user.role_id', '<>', $role->id)
-                      ->orWhereNull('sau_role_user.role_id');
+                      /*->orWhereNull('sau_role_user.role_id')*/;
         }
             
         $filters = COUNT($request->get('filters')) > 0 ? $request->get('filters') : $this->filterDefaultValues($this->user->id, $url);
