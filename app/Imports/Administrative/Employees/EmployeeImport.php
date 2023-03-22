@@ -191,7 +191,7 @@ class EmployeeImport implements ToCollection
         {
             $rules = array_merge($rules,
             [
-                'identificacion' => 'required|numeric',
+                'identificacion' => 'required|string',
                 'nombre' => 'required|string',
                 'fecha_nacimiento' => 'nullable|date',
                 'sexo' => 'required|string|in:Masculino,Femenino,Sin Sexo',
@@ -207,7 +207,7 @@ class EmployeeImport implements ToCollection
         {
             $rules = array_merge($rules,
             [
-                'identificacion' => 'required|numeric',
+                'identificacion' => 'required|string',
                 'nombre' => 'required|string',
                 'fecha_nacimiento' => 'nullable|date',
                 'sexo' => 'required|string|in:Masculino,Femenino,Sin Sexo',
@@ -226,7 +226,7 @@ class EmployeeImport implements ToCollection
         {
             $rules = array_merge($rules,
             [
-                'identificacion' => 'required|numeric',
+                'identificacion' => 'required|string',
                 'nombre' => 'required|string',
                 'fecha_nacimiento' => 'nullable|date',
                 'sexo' => 'required|string|in:Masculino,Femenino,Sin Sexo',
