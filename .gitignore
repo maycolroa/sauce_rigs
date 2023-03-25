@@ -4,6 +4,7 @@
 /public/vendor
 /public/*.js
 /public/*.css
+!/public/app_air.css
 /public/mix-manifest.json
 /storage/*.key
 /storage/framework
