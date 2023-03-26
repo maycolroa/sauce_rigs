@@ -13,9 +13,11 @@
 
           <br><br>
 
-          <!--<element-fixed-component>
-              <h4 style="text-color: white; text-align: center;">{{ message }}</h4>
-          </element-fixed-component>-->
+          <center>
+            <div v-show="showMessage" class="fixedFooter">
+                <h6 style="text-color: white; text-align: center;">{{ message }}</h6>
+            </div>
+          </center>
 
 					<b-modal ref="modalHistorial" :hideFooter="true" id="modals-historial" class="modal-top" size="lg">
 						<div slot="modal-title">
@@ -650,6 +652,8 @@ export default {
       this.is_firm_process_pcl = 'SI';
     }
 
+    this.getMessageIncapacitate();
+
     setTimeout(() => {
       this.disableWacth = false
     }, 3000)
@@ -671,7 +675,8 @@ export default {
       disableWacth: this.disableWacthSelectInCreated,
       tracingOtherReport: [],
       laborNotesOtherReport: [],
-      message: 'El empleado Santiago Calab Noreña supera los 90 dias de incapacidad'
+      message: '',
+      showMessage: false
     };
   },
   methods: {
@@ -763,8 +768,9 @@ export default {
     {
       axios.post('/biologicalmonitoring/reinstatements/getMessageIncapacitate', {check_id: this.form.id})
           .then(response => {
-              if (response.data)
-                this.message = response.data.data;
+            this.message = response.data;
+            if (this.message)
+              this.showMessage = true;
           })
           .catch(error => {
             Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
@@ -808,6 +814,7 @@ export default {
     border: 2px solid #aaa5a6;
     border-radius: 8px;
     margin-bottom: 5px;
+    width: 300px;
 }
 
 </style>

@@ -15,6 +15,7 @@ use App\Models\PreventiveOccupationalMedicine\Reinstatements\TagsMotiveClose;
 use App\Models\PreventiveOccupationalMedicine\Reinstatements\LetterHistory;
 use App\Models\PreventiveOccupationalMedicine\Reinstatements\Tracing;
 use App\Http\Requests\PreventiveOccupationalMedicine\Reinstatements\CheckRequest;
+use App\Facades\ConfigurationCompany\Facades\ConfigurationsCompany;
 use App\Jobs\PreventiveOccupationalMedicine\Reinstatements\CheckExportJob;
 use Illuminate\Support\Facades\Storage;
 use App\Traits\ConfigurableFormTrait;
@@ -1350,13 +1351,40 @@ class CheckController extends Controller
     public function getMessageIncapacitate(Request $request)
     {
         $check = Check::find($request->check_id);
-        $message = 'El empleado posee mas de - dias de incapacidad';
+        $message = NULL;
 
         if ($check->start_incapacitated)
         {
-            $days = $this->timeDifference((Carbon::createFromFormat('Y-m-d', $check->start_incapacitated))->toDateString());
+            $configDay = $this->getConfig();
 
-            \Log::info($days);
+            if ($configDay)
+            {
+                $days = $this->timeDifferenceDays((Carbon::createFromFormat('Y-m-d', $check->start_incapacitated))->toDateString());
+
+                \Log::info($days);
+
+                if (COUNT($configDay) == 3)
+                {
+                    if ($days >= $configDay[2])
+                        $message = "El empleado ha superado los ".$configDay[2]." dias de incapacidad";
+                    else if ($days >= $configDay[1])
+                        $message = "El empleado ha superado los ".$configDay[1]." dias de incapacidad";
+                    else if ($days >= $configDay[0])
+                        $message = "El empleado ha superado los ".$configDay[0]." dias de incapacidad";
+                }
+                if (COUNT($configDay) == 2)
+                {
+                    if ($days >= $configDay[1])
+                        $message = "El empleado ha superado los ".$configDay[1]." dias de incapacidad";
+                    else if ($days >= $configDay[0])
+                        $message = "El empleado ha superado los ".$configDay[0]." dias de incapacidad";
+                }
+                if (COUNT($configDay) == 2)
+                {
+                    if ($days >= $configDay[0])
+                        $message = "El empleado ha superado los ".$configDay[0]." dias de incapacidad";
+                }
+            }
         }
 
         return $message;
@@ -1374,6 +1402,45 @@ class CheckController extends Controller
 
       $interval = $start->diff($end);
 
-      return $interval->format(' %d dias');
+      return $interval->format('%a');
+    }
+
+    public function getConfig()
+    {
+        $key = "notify_incapacitated";
+        $key1 = "days_notify_incapacitated";
+        $key2 = "days_notify_incapacitated_2";
+        $key3 = "days_notify_incapacitated_3";
+        
+        try
+        {
+            $exists = ConfigurationsCompany::company($this->company)->findByKey($key);
+
+            if ($exists && $exists == 'SI')
+            {
+                $days = [];
+
+                $days_1 = ConfigurationsCompany::company($this->company)->findByKey($key1);
+                
+                array_push($days, $days_1);
+
+                $days_2 = ConfigurationsCompany::company($this->company)->findByKey($key2);
+
+                $days_3 = ConfigurationsCompany::company($this->company)->findByKey($key3);
+
+                if ($days_2 && $days_2 > 0)
+                    array_push($days, $days_2);
+
+                if ($days_3 && $days_3 > 0)
+                    array_push($days, $days_3);
+    
+                return $days;
+            }
+            else
+                return NULL;
+            
+        } catch (\Exception $e) {
+            return null;
+        }
     }
 }
