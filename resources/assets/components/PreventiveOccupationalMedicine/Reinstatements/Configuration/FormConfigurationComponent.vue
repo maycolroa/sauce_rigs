@@ -11,7 +11,7 @@
       <vue-radio :checked="form.reports_resumen_month" class="col-md-12" v-model="form.reports_resumen_month" :options="siNo" name="reports_resumen_month" :error="form.errorsFor('reports_resumen_month')" label="¿Desea recibir notificación mensual con el resumen de los eventos a cumplirse?">
         </vue-radio>
     </b-form-row>
-    <b-form-row>
+    <b-form-row v-if="auth.company_id == 409">
       <vue-radio :checked="form.notify_incapacitated" class="col-md-12" v-model="form.notify_incapacitated" :options="siNo" name="notify_incapacitated" :error="form.errorsFor('notify_incapacitated')" label="¿Desea recibir notificación por tiempo de incapacidad?">
         </vue-radio>
       <vue-input v-if="form.notify_incapacitated == 'SI'" class="col-md-12" v-model="form.days_notify_incapacitated" label="Número de días de incapacidad para la primera notificación" type="number" name="days_notify_incapacitated" :error="form.errorsFor('days_notify_incapacitated')" placeholder="1"></vue-input>
@@ -25,7 +25,7 @@
 
     <div class="row float-right pt-10 pr-10">
       <template>
-        <b-btn type="submit" :disabled="loading || (!auth.can['absen_config_r'])" variant="primary">Guardar</b-btn>
+        <b-btn type="submit" :disabled="loading" variant="primary">Guardar</b-btn>
       </template>
     </div>
   </b-form>
