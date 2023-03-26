@@ -70,6 +70,11 @@ class ConfigurationsCompany
             'users_notify_expired_report' => 'Usuarios a notifica por los reportes',
             'reports_resumen_month' => 'Activar envio de resumen mensual de eventos pendientes a vencerse en Reincorporaciones',
             'text_letter_dotation' => 'Texto carta de entrega epp dotacion',
+            'users_notify_incapacitated' => 'Usuarios a notificar las incapacidades que superan el numero de dias configurados',
+            'notify_incapacitated' => 'Activar las notificacion sobre incapacidades',
+            'days_notify_incapacitated' => 'Primera notificacion por incapacidad',
+            'days_notify_incapacitated_2' => 'Segunda notificacion por incapacidad',
+            'days_notify_incapacitated_3' =>  'Tercera notificacion por incapacidad'
         ];
     }
 

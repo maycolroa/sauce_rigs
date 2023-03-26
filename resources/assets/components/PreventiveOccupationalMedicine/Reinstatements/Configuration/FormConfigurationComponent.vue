@@ -11,6 +11,17 @@
       <vue-radio :checked="form.reports_resumen_month" class="col-md-12" v-model="form.reports_resumen_month" :options="siNo" name="reports_resumen_month" :error="form.errorsFor('reports_resumen_month')" label="¿Desea recibir notificación mensual con el resumen de los eventos a cumplirse?">
         </vue-radio>
     </b-form-row>
+    <b-form-row>
+      <vue-radio :checked="form.notify_incapacitated" class="col-md-12" v-model="form.notify_incapacitated" :options="siNo" name="notify_incapacitated" :error="form.errorsFor('notify_incapacitated')" label="¿Desea recibir notificación por tiempo de incapacidad?">
+        </vue-radio>
+      <vue-input v-if="form.notify_incapacitated == 'SI'" class="col-md-12" v-model="form.days_notify_incapacitated" label="Número de días de incapacidad para la primera notificación" type="number" name="days_notify_incapacitated" :error="form.errorsFor('days_notify_incapacitated')" placeholder="1"></vue-input>
+
+      <vue-input v-if="form.notify_incapacitated == 'SI'" class="col-md-12" v-model="form.days_notify_incapacitated_2" label="Número de días de incapacidad para la segunda notificación (Este parametro es opcional)" type="number" name="days_notify_incapacitated_2" :error="form.errorsFor('days_notify_incapacitated_2')" placeholder="1"></vue-input>
+
+      <vue-input v-if="form.notify_incapacitated == 'SI'" class="col-md-12" v-model="form.days_notify_incapacitated_3" label="Número de días de incapacidad para la segunda notificación (Este parametro es opcional)" type="number" name="days_notify_incapacitated_3" :error="form.errorsFor('days_notify_incapacitated_3')" placeholder="1"></vue-input>
+
+      <vue-ajax-advanced-select v-if="form.notify_incapacitated == 'SI'" class="col-md-12" v-model="form.users_notify_incapacitated" :selected-object="form.multiselect_user_incapacitated_id" name="users_notify_incapacitated" label="Usuarios a notificar el vencimiento" placeholder="Seleccione uno o mas usuarios" :url="userDataUrl" :error="form.errorsFor('users_notify_incapacitated')" :multiple="true" :allowEmpty="true"> </vue-ajax-advanced-select>  
+    </b-form-row>
 
     <div class="row float-right pt-10 pr-10">
       <template>
@@ -50,6 +61,12 @@ export default {
           reports_opens_notify: '',
           days_alert_expiration_report_notify: '',
           reports_resumen_month: '',
+          users_notify_incapacitated: '',
+          notify_incapacitated: '',
+          days_notify_incapacitated: '',
+          days_notify_incapacitated_2 : '',
+          days_notify_incapacitated_3 : ''
+
         };
       }
     }

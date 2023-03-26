@@ -43,26 +43,30 @@ class ConfigurationController extends Controller
         {
             if ($value && $key != 'multiselect_user_id')
             {
-                if ($key == 'users_notify_element_expired' || $key == 'users_notify_expired_absenteeism_expired')
-                    continue;
-                    
-                if ($key == 'users_notify_expired_report')
+                if ($value && $key != 'multiselect_user_incapacitated_id')
                 {
-                    $values = $this->getDataFromMultiselect($value);
-
-                    $users = [];
-                    
-                    foreach ($values as $id) 
+                  
+                    if ($key == 'users_notify_element_expired' || $key == 'users_notify_expired_absenteeism_expired')
+                        continue;
+                        
+                    if ($key == 'users_notify_expired_report' || $key == 'users_notify_incapacitated')
                     {
-                        $user = User::find($id);
+                        $values = $this->getDataFromMultiselect($value);
 
-                        array_push($users, $user->email);
+                        $users = [];
+                        
+                        foreach ($values as $id) 
+                        {
+                            $user = User::find($id);
+
+                            array_push($users, $user->email);
+                        }
+
+                        $value = implode(',', $users);
                     }
 
-                    $value = implode(',', $users);
+                    ConfigurationsCompany::key($key)->value($value)->save();
                 }
-
-                ConfigurationsCompany::key($key)->value($value)->save();
             }
         }
 
@@ -102,12 +106,34 @@ class ConfigurationController extends Controller
                         }
                     }
                 }   
+                if ($key == 'users_notify_incapacitated')
+                {
+                    if ($value)
+                    {
+                        $users = explode(',', $value);
+
+                        $multiselect_incapacitated = [];
+
+                        foreach ($users as $email) 
+                        {
+                            $user = User::where('email', $email)->first();
+
+                            array_push($multiselect_incapacitated, $user->multiselect());
+                        }
+                    }
+                } 
             }
 
             if (isset($multiselect) && count($multiselect) > 0)
             {
                 $data['users_notify_expired_report'] = $multiselect;
                 $data['multiselect_user_id'] = $multiselect;
+            }
+
+            if (isset($multiselect_incapacitated) && count($multiselect_incapacitated) > 0)
+            {
+                $data['users_notify_incapacitated'] = $multiselect_incapacitated;
+                $data['multiselect_user_incapacitated_id'] = $multiselect_incapacitated;
             }
 
             return $this->respondHttp200([
