@@ -346,30 +346,30 @@ class CheckController extends Controller
             $check->fill(CheckManager::checkNullAttrs($request, $this->company));
 
             $formModel = $this->getFormModel('form_check');
-            for ($i=0; $i < 5; $i++) 
-            { 
-                if ($i > 0)
-                {
-                    $indexC = $i + 1;
-                    $cie_name_delete = 'cie10_code_'.$indexC.'_id';
-                
-                    $check['disease_origin_'.$indexC] = NULL;
-                    $check[$cie_name_delete] = NULL;
-                    $check['laterality_'.$indexC] = NULL;
-                    $check['qualification_dme_'.$indexC] = NULL;
-                }   
-                else
-                {
-                    $check['disease_origin'] = NULL;
-                    $check['cie10_code_id'] = NULL;
-                    $check['laterality'] = NULL;
-                    $check['qualification_dme'] = NULL;
-                }    
-                
-            }
 
             if ($formModel == 'chia')
             {
+                for ($i=0; $i < 5; $i++) 
+                { 
+                    if ($i > 0)
+                    {
+                        $indexC = $i + 1;
+                        $cie_name_delete = 'cie10_code_'.$indexC.'_id';
+                    
+                        $check['disease_origin_'.$indexC] = NULL;
+                        $check[$cie_name_delete] = NULL;
+                        $check['laterality_'.$indexC] = NULL;
+                        $check['qualification_dme_'.$indexC] = NULL;
+                    }   
+                    else
+                    {
+                        $check['disease_origin'] = NULL;
+                        $check['cie10_code_id'] = NULL;
+                        $check['laterality'] = NULL;
+                        $check['qualification_dme'] = NULL;
+                    }    
+                    
+                }
                 foreach ($request->dxs as $key => $dx) 
                 {
                     $index = $key + 1;
@@ -1345,5 +1345,35 @@ class CheckController extends Controller
 
         return $pdf->stream('recomendaciones.pdf');
     
+    }
+
+    public function getMessageIncapacitate(Request $request)
+    {
+        $check = Check::find($request->check_id);
+        $message = 'El empleado posee mas de - dias de incapacidad';
+
+        if ($check->start_incapacitated)
+        {
+            $days = $this->timeDifference((Carbon::createFromFormat('Y-m-d', $check->start_incapacitated))->toDateString());
+
+            \Log::info($days);
+        }
+
+        return $message;
+    }
+
+    private function timeDifferenceDays($startDate, $endDate = null)
+    {
+      $start = new DateTime($startDate);
+      $end;
+
+      if ($endDate == null)
+          $end = new DateTime();
+      else
+          $start = new DateTime($endDate);
+
+      $interval = $start->diff($end);
+
+      return $interval->format(' %d dias');
     }
 }

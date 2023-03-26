@@ -11,6 +11,12 @@
             <b-btn variant="primary" size="md" @click="$refs.modalHistorial.show()" ><span class="ion ion-md-eye"></span> Ver otros reportes relacionados con {{ employeeDetail.name }}</b-btn>
           </center>
 
+          <br><br>
+
+          <!--<element-fixed-component>
+              <h4 style="text-color: white; text-align: center;">{{ message }}</h4>
+          </element-fixed-component>-->
+
 					<b-modal ref="modalHistorial" :hideFooter="true" id="modals-historial" class="modal-top" size="lg">
 						<div slot="modal-title">
 							Otros reportes relacionados con {{ employeeDetail.name }}
@@ -380,6 +386,7 @@ import Alerts from '@/utils/Alerts.js';
 import TracingInserter from './TracingInserter.vue';
 import TracingOtherCheck from './TracingOtherCheck.vue';
 import FilesMultiple from './FilesMultiple.vue';
+import ElementFixedComponent from '@/components/General/ElementFixedComponent.vue';
 
 export default {
   components: {
@@ -393,7 +400,8 @@ export default {
     VueFileSimple,
     TracingInserter,
     FilesMultiple,
-    TracingOtherCheck
+    TracingOtherCheck,
+    ElementFixedComponent
   },
   props: {
     url: { type: String },
@@ -662,7 +670,8 @@ export default {
       },
       disableWacth: this.disableWacthSelectInCreated,
       tracingOtherReport: [],
-      laborNotesOtherReport: []
+      laborNotesOtherReport: [],
+      message: 'El empleado Santiago Calab Noreña supera los 90 dias de incapacidad'
     };
   },
   methods: {
@@ -750,6 +759,17 @@ export default {
           });
       }
     },
+    getMessageIncapacitate()
+    {
+      axios.post('/biologicalmonitoring/reinstatements/getMessageIncapacitate', {check_id: this.form.id})
+          .then(response => {
+              if (response.data)
+                this.message = response.data.data;
+          })
+          .catch(error => {
+            Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
+          });
+    },
     formatDate(param)
     {
       let date = ''
@@ -778,3 +798,16 @@ export default {
   }
 };
 </script>
+
+<style scoped>
+
+.fixedFooter {
+    padding: 10px;
+    background: #f0635f;
+    color: #fff;
+    border: 2px solid #aaa5a6;
+    border-radius: 8px;
+    margin-bottom: 5px;
+}
+
+</style>
