@@ -137,32 +137,60 @@
                 <tr>
                     <th>Estado del reporte</th>
                     <th>Fecha de cierre</th>
-                    <th>Motivo de cierre</th>
+                    <th colspan="2">Motivo de cierre</th>
                 </tr>
                 <tr>
                     <td>{{$check->state}}</td>
                     <td>{{$check->deadline ? date('Y-m-d', strtotime($check->deadline)) : '-'}}</td>
-                    <td>{{$check->motive_close}}</td>
+                    <td colspan="2">{{$check->motive_close}}</td>
                 </tr>
                 @endif
                 <tr>
-                    <th>{{ Auth::user()->getKeywords()['disease_origin'] }}</th>
+                    <th colspan="2">{{ Auth::user()->getKeywords()['disease_origin'] }}</th>
                     <th colspan="2">Código CIE 10</th>                    
                 </tr>
                 <tr>
-                    <td>{{$check->disease_origin}}</td>
+                    <td colspan="2">{{$check->disease_origin}}</td>
                     <td colspan="2">{{$check->cie10Code->code}} - {{$check->cie10Code->description}}</td>
                 </tr>
                 <tr>
-                    <th>Sistema</th>
+                    <th colspan="2">Sistema</th>
                     <th>Categoría</th>
                     <th>Lateralidad</th>
                 </tr>
                 <tr>
-                    <td>{{$check->cie10Code->system}}</td>
+                    <td colspan="2">{{$check->cie10Code->system}}</td>
                     <td>{{$check->cie10Code->category}}</td>
                     <td>{{$check->laterality}}</td>
                 </tr>   
+                @if($check->cie10_code_2_id) 
+                <tr>
+                    <th>Código CIE 10 (2)</th>
+                    <th>Sistema</th>
+                    <th>Categoría</th>
+                    <th>Lateralidad (2)</th>
+                </tr>
+                <tr>
+                    <td>{{$check->cie10Code2->code}} - {{$check->cie10Code2->description}}</td>
+                    <td>{{$check->cie10Code2->system}}</td>
+                    <td>{{$check->cie10Code2->category}}</td>
+                    <td>{{$check->laterality_2}}</td>
+                </tr>
+                @endif
+                @if($check->cie10_code_3_id)
+                <tr>
+                    <th>Código CIE 10 (3)</th>
+                    <th>Sistema</th>
+                    <th>Categoría</th>
+                    <th>Lateralidad (3)</th>
+                </tr>
+                <tr>
+                    <td>{{$check->cie10Code3->code}} - {{$check->cie10Code3->description}}</td>
+                    <td>{{$check->cie10Code3->system}}</td>
+                    <td>{{$check->cie10Code3->category}}</td>
+                    <td>{{$check->laterality_3}}</td>
+                </tr>
+                @endif
             </thead>
         </table>
     </div>

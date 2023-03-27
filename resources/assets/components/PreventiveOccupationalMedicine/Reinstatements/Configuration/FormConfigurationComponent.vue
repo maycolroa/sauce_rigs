@@ -18,7 +18,7 @@
 
       <vue-input v-if="form.notify_incapacitated == 'SI'" class="col-md-12" v-model="form.days_notify_incapacitated_2" label="Número de días de incapacidad para la segunda notificación (Este parametro es opcional)" type="number" name="days_notify_incapacitated_2" :error="form.errorsFor('days_notify_incapacitated_2')" placeholder="1"></vue-input>
 
-      <vue-input v-if="form.notify_incapacitated == 'SI'" class="col-md-12" v-model="form.days_notify_incapacitated_3" label="Número de días de incapacidad para la segunda notificación (Este parametro es opcional)" type="number" name="days_notify_incapacitated_3" :error="form.errorsFor('days_notify_incapacitated_3')" placeholder="1"></vue-input>
+      <vue-input v-if="form.notify_incapacitated == 'SI'" class="col-md-12" v-model="form.days_notify_incapacitated_3" label="Número de días de incapacidad para la tercera notificación (Este parametro es opcional)" type="number" name="days_notify_incapacitated_3" :error="form.errorsFor('days_notify_incapacitated_3')" placeholder="1"></vue-input>
 
       <vue-ajax-advanced-select v-if="form.notify_incapacitated == 'SI'" class="col-md-12" v-model="form.users_notify_incapacitated" :selected-object="form.multiselect_user_incapacitated_id" name="users_notify_incapacitated" label="Usuarios a notificar el vencimiento" placeholder="Seleccione uno o mas usuarios" :url="userDataUrl" :error="form.errorsFor('users_notify_incapacitated')" :multiple="true" :allowEmpty="true"> </vue-ajax-advanced-select>  
     </b-form-row>

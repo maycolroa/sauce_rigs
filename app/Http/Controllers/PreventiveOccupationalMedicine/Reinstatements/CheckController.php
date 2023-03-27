@@ -247,6 +247,13 @@ class CheckController extends Controller
                     }    
                 }
             }
+            else if ($formModel == 'mitsubishi')
+            {
+                $check['cie10_code_2_id'] = $request['cie10_code_2_id'];
+                $check['laterality_2'] = $request['laterality_2'];
+                $check['cie10_code_3_id'] = $request['cie10_code_3_id'];
+                $check['laterality_3'] = $request['laterality_3'];
+            }
 
             if (!$check->save())
                 return $this->respondHttp500();
@@ -393,6 +400,13 @@ class CheckController extends Controller
                         $check['qualification_dme'] = $dx['qualification_dme'];
                     }    
                 }
+            }
+            else if ($formModel == 'mitsubishi')
+            {
+                $check['cie10_code_2_id'] = $request['cie10_code_2_id'];
+                $check['laterality_2'] = $request['laterality_2'];
+                $check['cie10_code_3_id'] = $request['cie10_code_3_id'];
+                $check['laterality_3'] = $request['laterality_3'];
             }
             
             if (!$check->save())
@@ -1129,7 +1143,7 @@ class CheckController extends Controller
 
         if ($formModel == 'default')
         { 
-            $pdf = PDF::loadView('pdf.reporteReinstatementsMitsubishi', ['check' => $checks, 'locationForm' => $this->getLocationFormConfModule()]);
+            $pdf = PDF::loadView('pdf.reporteReinstatements', ['check' => $checks, 'locationForm' => $this->getLocationFormConfModule()]);
         }
         else if ($formModel == 'misionEmpresarial')
         {
@@ -1166,6 +1180,10 @@ class CheckController extends Controller
         else if($formModel == 'chia')
         {
             $pdf = PDF::loadView('pdf.reporteReinstatementsChia', ['check' => $checks, 'locationForm' => $this->getLocationFormConfModule()] );
+        }
+        else if($formModel == 'mitsubishi')
+        {
+            $pdf = PDF::loadView('pdf.reporteReinstatementsMitsubishi', ['check' => $checks, 'locationForm' => $this->getLocationFormConfModule()] );
         }
 
         $pdf->setPaper('A3', 'landscape');

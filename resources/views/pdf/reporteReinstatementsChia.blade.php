@@ -148,8 +148,7 @@
                 <tr>
                     <th>{{ Auth::user()->getKeywords()['disease_origin'] }}</th>
                     <th>Código CIE 10 (1)</th>
-                    <th>Sistema</th>
-                    
+                    <th>Sistema</th>                    
                 </tr>
                 <tr>
                     <td>{{$check->disease_origin}}</td>
@@ -166,29 +165,95 @@
                     <td>{{$check->qualification_dme}}
                     <td>{{$check->laterality}}</td>
                 </tr>  
-                @if($check->cie10_code_2_id) 
+                @if($check->disease_origin_2) 
                 <tr>
+                    <th>{{ Auth::user()->getKeywords()['disease_origin'] }} (2)</th>
                     <th>Código CIE 10 (2)</th>
-                    <th>Sistema</th>
-                    <th>Categoría</th>
+                    <th>Sistema</th>                    
                 </tr>
                 <tr>
+                    <td>{{$check->disease_origin_2}}</td>
                     <td>{{$check->cie10Code2->code}} - {{$check->cie10Code2->description}}</td>
                     <td>{{$check->cie10Code2->system}}</td>
-                    <td>{{$check->cie10Code2->category}}</td>
                 </tr>
-                @endif
-                @if($check->cie10_code_3_id)
                 <tr>
-                    <th>Código CIE 10 (3)</th>
-                    <th>Sistema</th>
                     <th>Categoría</th>
+                    <th>Calificación DME (2)</th>
+                    <th>Lateralidad (2)</th>
                 </tr>
                 <tr>
+                    <td>{{$check->cie10Code2->category}}</td>
+                    <td>{{$check->qualification_dme_2}}
+                    <td>{{$check->laterality_2}}</td>
+                </tr>  
+                @endif
+                @if($check->disease_origin_3) 
+                <tr>
+                    <th>{{ Auth::user()->getKeywords()['disease_origin'] }} (3)</th>
+                    <th>Código CIE 10 (3)</th>
+                    <th>Sistema</th>                    
+                </tr>
+                <tr>
+                    <td>{{$check->disease_origin_3}}</td>
                     <td>{{$check->cie10Code3->code}} - {{$check->cie10Code3->description}}</td>
                     <td>{{$check->cie10Code3->system}}</td>
-                    <td>{{$check->cie10Code3->category}}</td>
                 </tr>
+                <tr>
+                    <th>Categoría</th>
+                    <th>Calificación DME (3)</th>
+                    <th>Lateralidad (3)</th>
+                </tr>
+                <tr>
+                    <td>{{$check->cie10Code3->category}}</td>
+                    <td>{{$check->qualification_dme_3}}
+                    <td>{{$check->laterality_3}}</td>
+                </tr>  
+                @endif
+                @if($check->disease_origin_4) 
+                <tr>
+                    <th>{{ Auth::user()->getKeywords()['disease_origin'] }} (4)</th>
+                    <th>Código CIE 10 (4)</th>
+                    <th>Sistema</th>
+                    
+                </tr>
+                <tr>
+                    <td>{{$check->disease_origin_4}}</td>
+                    <td>{{$check->cie10Code4->code}} - {{$check->cie10Code4->description}}</td>
+                    <td>{{$check->cie10Code4->system}}</td>
+                </tr>
+                <tr>
+                    <th>Categoría</th>
+                    <th>Calificación DME (4)</th>
+                    <th>Lateralidad (4)</th>
+                </tr>
+                <tr>
+                    <td>{{$check->cie10Code2->category}}</td>
+                    <td>{{$check->qualification_dme_4}}
+                    <td>{{$check->laterality_4}}</td>
+                </tr>  
+                @endif
+                @if($check->disease_origin_5) 
+                <tr>
+                    <th>{{ Auth::user()->getKeywords()['disease_origin'] }} (5)</th>
+                    <th>Código CIE 10 (5)</th>
+                    <th>Sistema</th>
+                    
+                </tr>
+                <tr>
+                    <td>{{$check->disease_origin_5}}</td>
+                    <td>{{$check->cie10Code5->code}} - {{$check->cie10Code5->description}}</td>
+                    <td>{{$check->cie10Code5->system}}</td>
+                </tr>
+                <tr>
+                    <th>Categoría</th>
+                    <th>Calificación DME (5)</th>
+                    <th>Lateralidad (5)</th>
+                </tr>
+                <tr>
+                    <td>{{$check->cie10Code2->category}}</td>
+                    <td>{{$check->qualification_dme_5}}
+                    <td>{{$check->laterality_5}}</td>
+                </tr>  
                 @endif
             </thead>
         </table>

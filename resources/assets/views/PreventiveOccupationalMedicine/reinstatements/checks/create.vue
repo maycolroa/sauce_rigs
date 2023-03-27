@@ -34,6 +34,29 @@
                   :clasification-origin="clasificationOrigin"
                   :cancel-url="{ name: 'reinstatements-checks'}"/>
               </template>
+              <template v-if="form == 'mitsubishi'">
+                <form-check-mitsubishi
+                  url="/biologicalmonitoring/reinstatements/check"
+                  method="POST"
+                  employees-data-url="/selects/employees"
+                  :disease-origins="diseaseOrigins"
+                  :lateralities="lateralities"
+                  cie10-codes-data-url="/selects/cie10"
+                  :si-no="siNo"
+                  :origin-advisors="originAdvisors"
+                  regionals-data-url="/selects/regionals"
+                  headquarters-data-url="/selects/headquarters"
+                  areas-data-url="/selects/areas"
+                  processes-data-url="/selects/processes"
+                  positions-data-url="/selects/positions"
+                  restrictions-data-url="/selects/restrictions"
+                  :medical-conclusions="medicalConclusions"
+                  :labor-conclusions="laborConclusions"
+                  :origin-emitters="originEmitters"
+                  tracing-others-url="/biologicalmonitoring/reinstatements/check/tracingOthers"
+                  :clasification-origin="clasificationOrigin"
+                  :cancel-url="{ name: 'reinstatements-checks'}"/>
+              </template>
               <template v-if="form == 'chia'">
                 <form-check-chia
                   url="/biologicalmonitoring/reinstatements/check"
@@ -264,6 +287,7 @@
 
 <script>
 import FormCheck from '@/components/PreventiveOccupationalMedicine/Reinstatements/Checks/FormCheckComponent.vue';
+import FormCheckMitsubishi from '@/components/PreventiveOccupationalMedicine/Reinstatements/Checks/FormCheckMitsubishiComponent.vue';
 import FormCheckManPower from '@/components/PreventiveOccupationalMedicine/Reinstatements/Checks/FormCheckComponentManPower.vue';
 import FormCheckHptu from '@/components/PreventiveOccupationalMedicine/Reinstatements/Checks/FormCheckHptuComponent.vue';
 import FormCheckArgos from '@/components/PreventiveOccupationalMedicine/Reinstatements/Checks/FormCheckArgosComponent.vue';
@@ -295,6 +319,7 @@ export default {
     FormCheckColgate,
     FormCheckHarinera,
     FormCheckChia,
+    FormCheckMitsubishi,
     Loading
   },
   data(){
