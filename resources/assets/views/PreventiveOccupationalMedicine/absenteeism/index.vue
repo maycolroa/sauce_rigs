@@ -43,7 +43,7 @@
 								</router-link>
 							</div>
 
-							<div class="d-flex col-sm-6 col-md-4 col-lg-6 align-items-center" v-if="auth.can['absen_config_r'] && (auth.company_id == 605 || auth.company_id == 130 || auth.company_id == 1)">
+							<div class="d-flex col-sm-6 col-md-4 col-lg-6 align-items-center" v-if="auth.can['absen_config_r'] && (auth.company_id == 605 || auth.company_id == 130 || auth.company_id == 1 || auth.company_id == 499)">
 								<router-link tag="a" href="javascript:void(0)" class="card-body media align-items-center text-dark" :to="{name:'absenteeism-configuration'}">
 									<i class="ion ion-md-settings display-4 d-block text-primary"></i>
 									<span class="media-body d-block ml-3">
