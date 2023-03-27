@@ -5,28 +5,35 @@ namespace App\Console\Commands;
 use Illuminate\Console\Command;
 use App\Models\System\Licenses\License;
 use App\Models\General\Company;
-use App\Models\PreventiveOccupationalMedicine\Absenteeism\LogNotifyExpired;
+use App\Models\PreventiveOccupationalMedicine\Reinstatements\LogNotifyExpired;
 use App\Facades\ConfigurationCompany\Facades\ConfigurationsCompany;
 use App\Facades\Mail\Facades\NotificationMail;
 use App\Models\Administrative\Users\User;
+use App\Models\PreventiveOccupationalMedicine\Reinstatements\Check;
+use App\Models\Administrative\Employees\Employee;
 use Carbon\Carbon;
 use DB;
+use DateTime;
 
-class NotifyExpiredAbsenteeism extends Command
+class NotifyIncapacitatedReinc extends Command
 {
+
+    protected $expired_email_1_alert = [];
+    protected $expired_email_2_alert = [];           
+    protected $expired_email_3_alert = [];  
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'notify-expired-absenteeism';
+    protected $signature = 'notify-incapacitated-reinc';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Envio de notificacion por vencimiento cercano de incapacidades de ausentismo, los dias anticipados seran configurados por el cliente';
+    protected $description = 'Envio de notificacion por dias de incapacidad superados en los reportes de reincorporaciones, los dias anticipados seran configurados por el cliente';
 
     /**
      * Create a new command instance.
@@ -47,13 +54,15 @@ class NotifyExpiredAbsenteeism extends Command
     {
         try
         {
+            \Log::info('Comenzo tarea reincorporaciones incapacidades: '.Carbon::now());
+
             DB::beginTransaction();
 
             $companies = License::selectRaw('DISTINCT company_id')
                 ->join('sau_license_module', 'sau_license_module.license_id', 'sau_licenses.id')
                 ->withoutGlobalScopes()
                 ->whereRaw('? BETWEEN started_at AND ended_at', [date('Y-m-d')])
-                ->where('sau_license_module.module_id', '24');
+                ->where('sau_license_module.module_id', '21');
 
             $companies = $companies->pluck('sau_licenses.company_id');
 
@@ -63,227 +72,137 @@ class NotifyExpiredAbsenteeism extends Command
 
                 $company_get = Company::find($company);
 
-                if ($company_get->id == 1 || $company_get->id == 130)
-                    continue;
-
-                $configDay = $this->getConfig($company);
-
-                if (!$configDay)
-                    continue;
-
-                $responsibles_bbdd = ConfigurationsCompany::company($company)->findByKey('users_notify_expired_absenteeism_expired');
-
-                if ($company_get->id == 605)
+                if ($company_get->id == 1 || $company_get->id == 130 || $company_get->id == 409)
                 {
-                    \Log::info('Comenzo tarea ausentismo: '.Carbon::now());
-                    $records = DB::connection('ausentismo')
-                    ->table("ausentismo.Ausentismo_$company_get->id")
-                    //->limit(100)
-                    ->get();
+                    $configDay = $this->getConfig($company);
 
-                    $expired_email_1_alert = [];
-                    $expired_email_2_alert = [];                
+                    if (!$configDay)
+                        continue;
+
+                    $responsibles_bbdd = ConfigurationsCompany::company($company)->findByKey('users_notify_incapacitated');
+
+                    $checks = Check::withoutGlobalScopes()->where('company_id', $company)->get();
+            
                     $responsibles = [];
                     $number_notification = 0;
 
-                    foreach ($records as $key => $record) 
+                    foreach ($checks as $key => $check) 
                     {
-                        if ($record->IndicadorProrroga == 'NO')
+                        if ($check->start_incapacitated)
                         {
-                            $prorrogas = collect($records->where('prorroga', $record->id)
-                            ->where('IndicadorProrroga', 'SI')->all());
+                            $employee = Employee::withoutGlobalScopes()->find($check->employee_id);
 
-                            if ($prorrogas->count() > 0)
+                            $days = $this->timeDifferenceDays((Carbon::createFromFormat('Y-m-d', $check->start_incapacitated))->toDateString());
+
+                            $content = [
+                                'Identificacion' => $employee->identification,
+                                'Nombre' => $employee->name,
+                                'Codigo Diagnostico' => $check->cie10Code->code,
+                                'Nombre Diagnostico' => $check->cie10Code->description,
+                                'Fecha Inicial' => $check->start_incapacitated,
+                                'Dias' => $days
+                            ];
+
+                            if (COUNT($configDay) == 3)
                             {
-                                $days = $prorrogas->sum('Dias') + $record->Dias;
-                                $fecha_max = $prorrogas->max('FechaFinal');
-
-                                if ($fecha_max > Carbon::now()->format('Y-m-d'))
-                                {
-                                    if ($responsibles_bbdd)
-                                        $responsibles = explode(',', $responsibles_bbdd);
-
-                                    $fecha_max = Carbon::parse($fecha_max)->format('Y-m-d');
-                                    $fecha_ini = Carbon::parse($record->FechaInicial)->format('Y-m-d');
-
-                                    $content = [
-                                        'Identificacion' => $record->Identificacion,
-                                        'Nombre' => $record->Nombre,
-                                        'Codigo Diagnostico' => $record->CodigoDiagnostico,
-                                        'Nombre Diagnostico' => $record->NombreDiagnostico,
-                                        'Tipo Ausentismo' => $record->TipoAusentismo,
-                                        'Fecha Inicial' => $fecha_ini,
-                                        'Dias' => $days
-                                    ];
-
-                                    if (COUNT($configDay) == 2)
-                                    {
-                                        if ($days >= $configDay[1])
-                                            $number_notification = 1;
-                                    }
-                                    else
-                                    {                                        
-                                        if ($days >= $configDay[1] && $days < $configDay[2])
-                                        {
-                                            $notify_1_exist = $this->checkSend($record->Identificacion, $record->id, $company_get->id, 1);
-
-
-                                            if ($notify_1_exist)
-                                            {
-                                                array_push($expired_email_1_alert, $content);
-
-                                                $insert_email_record = new LogNotifyExpired;
-                                                $insert_email_record->company_id = $company;
-                                                $insert_email_record->document = $record->Identificacion;
-                                                $insert_email_record->id_consecutivo = $record->id;
-                                                $insert_email_record->number_notification = 1;
-                                                $insert_email_record->email_send = $responsibles_bbdd;
-                                                $insert_email_record->save();
-                                            }                                            
-                                        }
-                                        else if ($days >= $configDay[2])
-                                        {
-                                            $notify_2_exist = $this->checkSend($record->Identificacion, $record->id, $company_get->id, 2);
-
-                                            if ($notify_2_exist)
-                                            {
-                                                array_push($expired_email_2_alert, $content);
-
-                                                $insert_email_record = new LogNotifyExpired;
-                                                $insert_email_record->company_id = $company;
-                                                $insert_email_record->document = $record->Identificacion;
-                                                $insert_email_record->id_consecutivo = $record->id;
-                                                $insert_email_record->number_notification = 2;
-                                                $insert_email_record->email_send = $responsibles_bbdd;
-                                                $insert_email_record->save();
-                                            }
-
-                                        }
-                                    }
-                                }
+                                if ($days >= $configDay[2])
+                                    $this->verifyNotification($check->id, $content, $responsibles_bbdd, $company);
+                                else if ($days >= $configDay[1])
+                                    $this->verifyNotification($check->id, $content, $responsibles_bbdd, $company);
+                                else if ($days >= $configDay[0])
+                                    $this->verifyNotification($check->id, $content, $responsibles_bbdd, $company);
                             }
-                            else
+                            else if (COUNT($configDay) == 2)
                             {
-                                $fecha_max = Carbon::parse($record->FechaFinal)->format('Y-m-d');
-                                $fecha_ini = Carbon::parse($record->FechaInicial)->format('Y-m-d');
-                                $days = $record->Dias;
-
-                                if ($fecha_max > Carbon::now()->format('Y-m-d'))
-                                {
-                                    if ($responsibles_bbdd)
-                                        $responsibles = explode(',', $responsibles_bbdd);
-
-                                    $content = [
-                                        'Identificacion' => $record->Identificacion,
-                                        'Nombre' => $record->Nombre,
-                                        'Codigo Diagnostico' => $record->CodigoDiagnostico,
-                                        'Nombre Diagnostico' => $record->NombreDiagnostico,
-                                        'Tipo Ausentismo' => $record->TipoAusentismo,
-                                        'Fecha Inicial' => $fecha_ini,
-                                        'Dias' => $days
-                                    ];
-
-                                    if (COUNT($configDay) == 2)
-                                    {
-                                        if ($days >= $configDay[1])
-                                            $number_notification = 1;
-                                    }
-                                    else
-                                    {
-                                        if ($days >= $configDay[1] && $days < $configDay[2])
-                                        {
-                                            $notify_1_exist = $this->checkSend($record->Identificacion, $record->id, $company_get->id, 1);
-
-                                            if ($notify_1_exist)
-                                            {
-                                                array_push($expired_email_1_alert, $content);
-
-                                                $insert_email_record = new LogNotifyExpired;
-                                                $insert_email_record->company_id = $company;
-                                                $insert_email_record->document = $record->Identificacion;
-                                                $insert_email_record->id_consecutivo = $record->id;
-                                                $insert_email_record->number_notification = 1;
-                                                $insert_email_record->email_send = $responsibles_bbdd;
-                                                $insert_email_record->save();
-                                            }                                            
-                                        }
-                                        else if ($days >= $configDay[2])
-                                        {
-                                            $notify_2_exist = $this->checkSend($record->Identificacion, $record->id, $company_get->id, 2);
-
-                                            if ($notify_2_exist)
-                                            {
-                                                array_push($expired_email_2_alert, $content);
-
-                                                $insert_email_record = new LogNotifyExpired;
-                                                $insert_email_record->company_id = $company;
-                                                $insert_email_record->document = $record->Identificacion;
-                                                $insert_email_record->id_consecutivo = $record->id;
-                                                $insert_email_record->number_notification = 2;
-                                                $insert_email_record->email_send = $responsibles_bbdd;
-                                                $insert_email_record->save();
-                                            }
-
-                                        }
-                                    }
-                                }
+                                if ($days >= $configDay[1])
+                                    $this->verifyNotification($check->id, $content, $responsibles_bbdd, $company);
+                                else if ($days >= $configDay[0])       
+                                    $this->verifyNotification($check->id, $content, $responsibles_bbdd, $company);
                             }
+                            else if (COUNT($configDay) == 1)
+                            {
+                                if ($days >= $configDay[0])       
+                                    $this->verifyNotification($check->id, $content, $responsibles_bbdd, $company);
+                            }
+                        }
+                        else
+                        {
+                            continue;
                         }
                     }
-                }
-                else
-                {
-                    continue;
-                }                
 
-                if (COUNT($expired_email_1_alert) > 0)
-                {            
-                    if (count($responsibles) > 0)
+                    $responsibles = explode(',', $responsibles_bbdd);
+
+                    if (COUNT($this->expired_email_1_alert) > 0)
                     {
-                        foreach ($responsibles as $email)
+                        if (count($responsibles) > 0)
                         {
-                            $recipient = new User(["email" => $email]); 
+                            foreach ($responsibles as $email)
+                            {
+                                $recipient = new User(["email" => $email]); 
 
-                            NotificationMail::
-                                subject('Sauce - Primera Alerta Incapacidades')
-                                ->recipients($recipient)
-                                ->message("Este es el listado de incapacidades que cumplen o estan proximas a cumplir <b>$configDay[1]</b> dias.")
-                                ->module('absenteeism')
-                                ->event('Tarea programada: NotifyExpiredAbsenteeism')
-                                ->view('preventiveoccupationalmedicine.abssenteeism.notifyExpiredAbssen')
-                                ->with(['data'=>$expired_email_1_alert])
-                                //->table($expired_email_1_alert)
-                                ->company($company)
-                                ->send();
-                        }
-                    } 
+                                NotificationMail::
+                                    subject('Sauce - Primera Alerta Incapacidades')
+                                    ->recipients($recipient)
+                                    ->message("Este es el listado de incapacidades que cumplen o superan <b>$configDay[0]</b> dias.")
+                                    ->module('absenteeism')
+                                    ->event('Tarea programada: NotifyIncapacitatedReinc')
+                                    ->view('preventiveoccupationalmedicine.reinstatements.notifyExpiredIncapacitated')
+                                    ->with(['data'=>$this->expired_email_1_alert])
+                                    ->company($company)
+                                    ->send();
+                            }
+                        } 
+                    }
+
+                    if (COUNT($this->expired_email_2_alert) > 0)
+                    {            
+                        if (count($responsibles) > 0)
+                        {
+                            foreach ($responsibles as $email)
+                            {
+                                $recipient = new User(["email" => $email]); 
+
+                                NotificationMail::
+                                    subject('Sauce - Segunda Alerta Incapacidades')
+                                    ->recipients($recipient)
+                                    ->message("Este es el listado de incapacidades que cumplen o estan proximas a cumplir <b>$configDay[1]</b> dias.")
+                                    ->module('absenteeism')
+                                    ->event('Tarea programada: NotifyExpiredAbsenteeism')
+                                    ->view('preventiveoccupationalmedicine.reinstatements.notifyExpiredIncapacitated')
+                                    ->with(['data'=>$this->expired_email_2_alert])
+                                    ->company($company)
+                                    ->send();
+                            }
+                        } 
+                    }
+
+                    if (COUNT($this->expired_email_3_alert) > 0)
+                    {            
+                        if (count($responsibles) > 0)
+                        {
+                            foreach ($responsibles as $email)
+                            {
+                                $recipient = new User(["email" => $email]); 
+
+                                NotificationMail::
+                                    subject('Sauce - Segunda Alerta Incapacidades')
+                                    ->recipients($recipient)
+                                    ->message("Este es el listado de incapacidades que cumplen o estan proximas a cumplir <b>$configDay[2]</b> dias.")
+                                    ->module('absenteeism')
+                                    ->event('Tarea programada: NotifyExpiredAbsenteeism')
+                                    ->view('preventiveoccupationalmedicine.reinstatements.notifyExpiredIncapacitated')
+                                    ->with(['data'=>$this->expired_email_3_alert])
+                                    ->company($company)
+                                    ->send();
+                            }
+                        } 
+                    }
                 }
 
-                if (COUNT($expired_email_2_alert) > 0)
-                {            
-                    if (count($responsibles) > 0)
-                    {
-                        foreach ($responsibles as $email)
-                        {
-                            $recipient = new User(["email" => $email]); 
-
-                            NotificationMail::
-                                subject('Sauce - Segunda Alerta Incapacidades')
-                                ->recipients($recipient)
-                                ->message("Este es el listado de incapacidades que cumplen o estan proximas a cumplir <b>$configDay[2]</b> dias.")
-                                ->module('absenteeism')
-                                ->event('Tarea programada: NotifyExpiredAbsenteeism')
-                                ->view('preventiveoccupationalmedicine.abssenteeism.notifyExpiredAbssen')
-                                ->with(['data'=>$expired_email_2_alert])
-                                //->table($expired_email_2_alert)
-                                ->company($company)
-                                ->send();
-                        }
-                    } 
-                }
             }
 
-            \Log::info('Termino tarea ausentismo: '.Carbon::now());
+            \Log::info('Termino tarea reincorporaciones incapacidades: '.Carbon::now());
 
             DB::commit();
 
@@ -325,14 +244,75 @@ class NotifyExpiredAbsenteeism extends Command
         }
     }
 
-    public function checkSend($ident, $id_consecutivo, $company_id, $number)
+    public function checkSend($check_id, $company_id, $number)
     {
-        $var = LogNotifyExpired::where('company_id', $company_id)
-        ->where('document', $ident)->where('id_consecutivo', $id_consecutivo)->where('number_notification', $number)->first();
+        $var = LogNotifyExpired::where('company_id', $company_id)->where('check_id', $check_id)->where('number_notification', $number)->first();
 
         if ($var)
             return false;
         else
             return true;
+    }
+
+    private function timeDifferenceDays($startDate, $endDate = null)
+    {
+      $start = new DateTime($startDate);
+      $end;
+
+      if ($endDate == null)
+          $end = new DateTime();
+      else
+          $start = new DateTime($endDate);
+
+      $interval = $start->diff($end);
+
+      return $interval->format('%a');
+    }
+
+    public function verifyNotification($check_id, $content, $responsibles_bbdd, $company)
+    {
+        $notify_1_exist = $this->checkSend($check_id, $company, 1);
+        $notify_2_exist = $this->checkSend($check_id, $company, 2);
+        $notify_3_exist = $this->checkSend($check_id, $company, 3);
+
+        if ($notify_1_exist)
+        {
+            if ($notify_2_exist)
+            {
+                if ($notify_3_exist)
+                {
+                    array_push($this->expired_email_3_alert, $content);
+
+                    $insert_email_check = new LogNotifyExpired;
+                    $insert_email_check->company_id = $company;
+                    $insert_email_check->check_id = $check_id;
+                    $insert_email_check->number_notification = 3;
+                    $insert_email_check->email_send = $responsibles_bbdd;
+                    $insert_email_check->save();
+                }
+            }
+            else
+            {
+                array_push($this->expired_email_2_alert, $content);
+
+                $insert_email_check = new LogNotifyExpired;
+                $insert_email_check->company_id = $company;
+                $insert_email_check->check_id = $check_id;
+                $insert_email_check->number_notification = 2;
+                $insert_email_check->email_send = $responsibles_bbdd;
+                $insert_email_check->save();
+            }
+        }
+        else
+        {
+            array_push($this->expired_email_1_alert, $content);
+
+            $insert_email_check = new LogNotifyExpired;
+            $insert_email_check->company_id = $company;
+            $insert_email_check->check_id = $check_id;
+            $insert_email_check->number_notification = 1;
+            $insert_email_check->email_send = $responsibles_bbdd;
+            $insert_email_check->save();
+        }
     }
 }

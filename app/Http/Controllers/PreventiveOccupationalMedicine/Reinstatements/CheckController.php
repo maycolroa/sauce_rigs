@@ -1361,8 +1361,6 @@ class CheckController extends Controller
             {
                 $days = $this->timeDifferenceDays((Carbon::createFromFormat('Y-m-d', $check->start_incapacitated))->toDateString());
 
-                \Log::info($days);
-
                 if (COUNT($configDay) == 3)
                 {
                     if ($days >= $configDay[2])
@@ -1379,7 +1377,7 @@ class CheckController extends Controller
                     else if ($days >= $configDay[0])
                         $message = "El empleado ha superado los ".$configDay[0]." dias de incapacidad";
                 }
-                if (COUNT($configDay) == 2)
+                if (COUNT($configDay) == 1)
                 {
                     if ($days >= $configDay[0])
                         $message = "El empleado ha superado los ".$configDay[0]." dias de incapacidad";

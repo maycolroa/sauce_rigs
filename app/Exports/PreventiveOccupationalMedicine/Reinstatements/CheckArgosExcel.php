@@ -162,8 +162,6 @@ class CheckArgosExcel implements FromCollection, WithHeadings, WithMapping, With
         array_push($check, empty($tracing[$i]) ? "" : $tracing[$i]->description);
       }
 
-      \Log::info($check);
-
       return $check;
 
 
@@ -234,8 +232,6 @@ class CheckArgosExcel implements FromCollection, WithHeadings, WithMapping, With
         array_push($headers,"Usuario Seguimiento $i");
         array_push($headers,"Descripcion Seguimiento $i");
       }
-
-      \Log::info($headers);
 
       return $headers;
 
