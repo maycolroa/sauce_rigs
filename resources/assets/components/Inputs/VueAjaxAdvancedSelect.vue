@@ -207,4 +207,10 @@ export default {
   .multiselect--disabled{
     opacity: 1 !important;
   }
+
+  .multiselect .multiselect__tag {
+    overflow: visible !important;
+    white-space: break-spaces !important;
+    height: 100% !important;  
+  }
 </style>
