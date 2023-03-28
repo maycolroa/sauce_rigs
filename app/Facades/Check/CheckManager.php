@@ -19,6 +19,7 @@ use App\Rules\Reinstatements\RequiredIfHasRestrictions;
 use App\Rules\Reinstatements\RequiredIfInProcessIsNo;
 use App\Rules\Reinstatements\EndRestrictionsBePresent;
 use App\Rules\Reinstatements\RequiredIfHasIncapacitated;
+use App\Rules\Reinstatements\StartIncapacitated;
 use App\Traits\ConfigurableFormTrait;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Log;
@@ -279,6 +280,13 @@ class CheckManager
         {
             $rules = array_merge($rules, [
                 'monitoring_recommendations' => [new RequiredIfHasRecommendations($request->has_recommendations), new MonitoringRecomendation($request->indefinite_recommendations, $request->start_recommendations, $request->end_recommendations, $request->has_recommendations)],
+            ]);
+        }
+
+        if ($this->formModel == 'hptu')
+        {
+            $rules = array_merge($rules, [
+                'start_incapacitated' => [new StartIncapacitated( $request->end_incapacitated, $request->has_incapacitated)],
             ]);
         }
 

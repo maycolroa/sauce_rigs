@@ -370,7 +370,8 @@ return [
       'elements_id.*.quantity' => 'Cantidad',
       'mechanism_id' => 'Mecanismo',
       'site_id' => 'Sitio',
-      'agent_id' => 'Agente'
+      'agent_id' => 'Agente',
+      'start_incapacitated' => 'Fecha Inicio Incapacidad'
     ],
 
 ];

@@ -1021,7 +1021,7 @@ class CheckController extends Controller
 
         $newState = $check->isOpen() ? "CERRADO" : "ABIERTO";
 
-        /*if ($check->isOpen() && isset($request->motive_close) && $request->motive_close)  
+        if ($check->isOpen() && isset($request->motive_close) && $request->motive_close)  
         {      
             foreach ($request->motive_close as $key => $value)
             {
@@ -1038,12 +1038,12 @@ class CheckController extends Controller
             ];
         }
         else
-        {*/
+        {
             $data = [
                 'state' => $newState,
                 'motive_close' => NULL
             ];
-        //}
+        }
 
 
         if ($request->has('deadline') && $check->isOpen())
