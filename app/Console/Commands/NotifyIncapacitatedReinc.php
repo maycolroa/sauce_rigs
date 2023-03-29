@@ -72,19 +72,12 @@ class NotifyIncapacitatedReinc extends Command
 
                 $company_get = Company::find($company);
 
-
-                \Log::info($company_get);
-
                 if ($company_get->id == 1 || $company_get->id == 130 || $company_get->id == 409)
                 {
-
-                    \Log::info('entro 2');
                     $configDay = $this->getConfig($company);
 
                     if (!$configDay)
                         continue;
-
-                        \Log::info($company);
 
                     $responsibles_bbdd = ConfigurationsCompany::company($company)->findByKey('users_notify_incapacitated');
 
@@ -97,8 +90,6 @@ class NotifyIncapacitatedReinc extends Command
                     {
                         if ($check->start_incapacitated)
                         {
-
-                            \Log::info('entro 1');
                             $employee = Employee::withoutGlobalScopes()->find($check->employee_id);
 
                             $days = $this->timeDifferenceDays((Carbon::createFromFormat('Y-m-d', $check->start_incapacitated))->toDateString());
@@ -111,9 +102,6 @@ class NotifyIncapacitatedReinc extends Command
                                 'Fecha Inicial' => $check->start_incapacitated,
                                 'Dias' => $days
                             ];
-
-
-                            \Log::info($days);
 
                             if (COUNT($configDay) == 3)
                             {
