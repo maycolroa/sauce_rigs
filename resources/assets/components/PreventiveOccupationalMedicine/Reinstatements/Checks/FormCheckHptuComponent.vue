@@ -766,7 +766,7 @@ export default {
     },
     getMessageIncapacitate()
     {
-      if (this.isEdit)
+      if (this.isEdit || this.viewOnly)
       {
         axios.post('/biologicalmonitoring/reinstatements/getMessageIncapacitate', {check_id: this.form.id})
           .then(response => {
