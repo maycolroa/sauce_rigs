@@ -72,8 +72,13 @@ class NotifyIncapacitatedReinc extends Command
 
                 $company_get = Company::find($company);
 
+
+                \Log::info($company_get);
+
                 if ($company_get->id == 1 || $company_get->id == 130 || $company_get->id == 409)
                 {
+
+                    \Log::info('entro 2');
                     $configDay = $this->getConfig($company);
 
                     if (!$configDay)
