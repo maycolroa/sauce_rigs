@@ -6,6 +6,12 @@
         <b-card bg-variant="transparent" border-variant="dark" title="" class="mb-3 box-shadow-none">
           <vue-ajax-advanced-select class="col-md-12" :disabled="viewOnly" v-model="form.employee_id"  name="employee_id" :label="keywordCheck('employee')" placeholder="Seleccione una opción" :url="employeesDataUrl" :selected-object="form.multiselect_employee" :error="form.errorsFor('employee_id')">
                 </vue-ajax-advanced-select>
+                <br><br>
+                <center>
+                  <div v-show="showMessage" class="fixedFooter">
+                      <h6 style="text-color: white; text-align: center;">{{ message }}</h6>
+                  </div>
+                </center>
         </b-card>
       </b-col>
     </b-row>
@@ -335,6 +341,8 @@ export default {
       //this.updateTracingOtherReport('sau_reinc_labor_notes', 'laborNotesOtherReport');
     }
 
+    this.getMessageIncapacitate();
+
     setTimeout(() => {
       this.disableWacth = false
     }, 3000)
@@ -355,7 +363,9 @@ export default {
       },
       disableWacth: this.disableWacthSelectInCreated,
       tracingOtherReport: [],
-      laborNotesOtherReport: []
+      laborNotesOtherReport: [],
+      message: '',
+      showMessage: false
     };
   },
   methods: {
@@ -378,6 +388,21 @@ export default {
       {
         this.empty[keyEmpty] = true
         this.form[keySelect] = ''
+      }
+    },
+    getMessageIncapacitate()
+    {
+      if (this.isEdit || this.viewOnly)
+      {
+        axios.post('/biologicalmonitoring/reinstatements/getMessageIncapacitate', {check_id: this.form.id})
+          .then(response => {
+            this.message = response.data;
+            if (this.message)
+              this.showMessage = true;
+          })
+          .catch(error => {
+            Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
+          });
       }
     },
     updateDetails(url, key)
@@ -415,3 +440,18 @@ export default {
   }
 };
 </script>
+
+
+<style scoped>
+
+.fixedFooter {
+    padding: 10px;
+    background: #f0635f;
+    color: #fff;
+    border: 2px solid #aaa5a6;
+    border-radius: 8px;
+    margin-bottom: 5px;
+    width: 300px;
+}
+
+</style>
