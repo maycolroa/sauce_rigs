@@ -224,27 +224,34 @@ class NotifyIncapacitatedReinc extends Command
         }
     }
 
-    public function getConfig($company_id)
+    public function getConfig()
     {
-        $key = "expired_absenteeism";
-        $key1 = "days_alert_expiration_date_absenteeism";
-        $key2 = "days_alert_expiration_date_absenteeism_2";
+        $key = "notify_incapacitated";
+        $key1 = "days_notify_incapacitated";
+        $key2 = "days_notify_incapacitated_2";
+        $key3 = "days_notify_incapacitated_3";
         
         try
         {
-            $exists = ConfigurationsCompany::company($company_id)->findByKey($key);
+            $exists = ConfigurationsCompany::company($this->company)->findByKey($key);
 
             if ($exists && $exists == 'SI')
             {
                 $days = [];
-                array_push($days, 0);
-                $days_1 = ConfigurationsCompany::company($company_id)->findByKey($key1);
+
+                $days_1 = ConfigurationsCompany::company($this->company)->findByKey($key1);
+                
                 array_push($days, $days_1);
 
-                $days_2 = ConfigurationsCompany::company($company_id)->findByKey($key2);
+                $days_2 = ConfigurationsCompany::company($this->company)->findByKey($key2);
+
+                $days_3 = ConfigurationsCompany::company($this->company)->findByKey($key3);
 
                 if ($days_2 && $days_2 > 0)
                     array_push($days, $days_2);
+
+                if ($days_3 && $days_3 > 0)
+                    array_push($days, $days_3);
     
                 return $days;
             }
