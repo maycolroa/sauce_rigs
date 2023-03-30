@@ -1371,7 +1371,7 @@ class CheckController extends Controller
         $check = Check::find($request->check_id);
         $message = NULL;
 
-        if ($check->start_incapacitated)
+        if ($check->has_incapacitated == 'SI' && $check->start_incapacitated)
         {
             $configDay = $this->getConfig();
 
