@@ -21,6 +21,7 @@ class NotifyIncapacitatedReinc extends Command
     protected $expired_email_1_alert = [];
     protected $expired_email_2_alert = [];           
     protected $expired_email_3_alert = [];  
+    protected $expired_email_global = [];
     /**
      * The name and signature of the console command.
      *
@@ -133,7 +134,7 @@ class NotifyIncapacitatedReinc extends Command
 
                     $responsibles = explode(',', $responsibles_bbdd);
 
-                    if (COUNT($this->expired_email_1_alert) > 0)
+                    if (COUNT($this->expired_email_global) > 0)
                     {
                         if (count($responsibles) > 0)
                         {
@@ -142,7 +143,29 @@ class NotifyIncapacitatedReinc extends Command
                                 $recipient = new User(["email" => $email]); 
 
                                 NotificationMail::
-                                    subject('Sauce - Primera Alerta Incapacidades')
+                                    subject('Sauce - Alerta Incapacidad')
+                                    ->recipients($recipient)
+                                    ->message("Este es el listado de empleados que cumplen o superan los dias de incapacidad configurados.")
+                                    ->module('absenteeism')
+                                    ->event('Tarea programada: NotifyIncapacitatedReinc')
+                                    ->view('preventiveoccupationalmedicine.reinstatements.notifyExpiredIncapacitated')
+                                    ->with(['data'=>$this->expired_email_global])
+                                    ->company($company)
+                                    ->send();
+                            }
+                        } 
+                    }
+
+                    /*if (COUNT($this->expired_email_1_alert) > 0)
+                    {
+                        if (count($responsibles) > 0)
+                        {
+                            foreach ($responsibles as $email)
+                            {
+                                $recipient = new User(["email" => $email]); 
+
+                                NotificationMail::
+                                    subject('Sauce - Alerta Incapacidad')
                                     ->recipients($recipient)
                                     ->message("Este es el listado de incapacidades que cumplen o superan <b>$configDay[0]</b> dias.")
                                     ->module('absenteeism')
@@ -164,7 +187,7 @@ class NotifyIncapacitatedReinc extends Command
                                 $recipient = new User(["email" => $email]); 
 
                                 NotificationMail::
-                                    subject('Sauce - Segunda Alerta Incapacidades')
+                                    subject('Sauce - Alerta Incapacidad')
                                     ->recipients($recipient)
                                     ->message("Este es el listado de incapacidades que cumplen o estan proximas a cumplir <b>$configDay[1]</b> dias.")
                                     ->module('absenteeism')
@@ -186,7 +209,7 @@ class NotifyIncapacitatedReinc extends Command
                                 $recipient = new User(["email" => $email]); 
 
                                 NotificationMail::
-                                    subject('Sauce - Segunda Alerta Incapacidades')
+                                    subject('Sauce - Alerta Incapacidad')
                                     ->recipients($recipient)
                                     ->message("Este es el listado de incapacidades que cumplen o estan proximas a cumplir <b>$configDay[2]</b> dias.")
                                     ->module('absenteeism')
@@ -197,7 +220,7 @@ class NotifyIncapacitatedReinc extends Command
                                     ->send();
                             }
                         } 
-                    }
+                    }*/
                 }
 
             }
@@ -289,6 +312,7 @@ class NotifyIncapacitatedReinc extends Command
                 if ($notify_3_exist)
                 {
                     array_push($this->expired_email_3_alert, $content);
+                    array_push($this->expired_email_global, $content);
 
                     $insert_email_check = new LogNotifyExpired;
                     $insert_email_check->company_id = $company;
@@ -301,6 +325,7 @@ class NotifyIncapacitatedReinc extends Command
             else
             {
                 array_push($this->expired_email_2_alert, $content);
+                array_push($this->expired_email_global, $content);
 
                 $insert_email_check = new LogNotifyExpired;
                 $insert_email_check->company_id = $company;
@@ -313,6 +338,7 @@ class NotifyIncapacitatedReinc extends Command
         else
         {
             array_push($this->expired_email_1_alert, $content);
+            array_push($this->expired_email_global, $content);
 
             $insert_email_check = new LogNotifyExpired;
             $insert_email_check->company_id = $company;
