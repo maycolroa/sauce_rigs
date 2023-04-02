@@ -177,7 +177,7 @@
                             </template>
                             <b-card bg-variant="transparent" border-variant="dark" title="" class="mb-3 box-shadow-none">
                                 <b-row>
-                                    <table class="table table-bordered table-sm table-striped table-hover" style="width: 100%; font-size: 10px;">
+                                    <table class="table table-bordered table-sm table-striped table-hover" style="width: 100%; font-size: 13px;">
                                         <thead>
                                             <tr>
                                                 <th v-for="(header, index) in headers.group_module_not" :key="`th-${index}`" class="text-center align-middle; font-size: 13px;">
