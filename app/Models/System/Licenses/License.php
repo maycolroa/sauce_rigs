@@ -15,12 +15,18 @@ class License extends Model
         'started_at',
         'ended_at',
         'company_id',
-        'notified'
+        'notified',
+        'user_id'
     ];
 
     public function company()
     {
         return $this->belongsTo('App\Models\General\Company');
+    }
+
+    public function user()
+    {
+        return $this->belongsTo('App\Models\Administrative\Users\User');
     }
 
     public function modules()
