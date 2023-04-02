@@ -51,6 +51,14 @@ export default [{
             import('@/views/System/licenses/report')
         }
       ]),
+      ...middleware({ 'check-permission': 'licenses_c' }, [
+        {
+          name: 'system-licenses-configuration',
+          path: 'licenses/configurations',
+          component: () =>
+            import('@/views/System/licenses/configuration')
+        }
+      ]),
       ...middleware({ 'check-permission': 'logMails_r' }, [
         {
           name: 'system-logmails',

@@ -74,7 +74,9 @@ class ConfigurationsCompany
             'notify_incapacitated' => 'Activar las notificacion sobre incapacidades',
             'days_notify_incapacitated' => 'Primera notificacion por incapacidad',
             'days_notify_incapacitated_2' => 'Segunda notificacion por incapacidad',
-            'days_notify_incapacitated_3' =>  'Tercera notificacion por incapacidad'
+            'days_notify_incapacitated_3' =>  'Tercera notificacion por incapacidad',
+            'users_notify_report_license' => 'Usuarios a notificar el reporte de licencias',
+            'filters_date_license' => 'Filtros de fechas a aplicar para el envio del reporte de licencias',
         ];
     }
 

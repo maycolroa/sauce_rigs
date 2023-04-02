@@ -871,6 +871,9 @@ Route::middleware(['auth'])->group(function () {
       Route::post('license/export', 'System\Licenses\LicenseController@export');
       Route::post('license/report', 'System\Licenses\LicenseController@report');
 
+      Route::post('license/configuration', 'System\Licenses\ConfigurationController@store');
+      Route::get('license/configuration/view', 'System\Licenses\ConfigurationController@show');
+
       Route::post('logMail/data', 'System\LogMails\LogMailController@data');
       Route::ApiResource('logMail', 'System\LogMails\LogMailController');
 
