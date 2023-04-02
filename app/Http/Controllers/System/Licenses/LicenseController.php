@@ -390,7 +390,8 @@ class LicenseController extends Controller
                 sau_licenses.id as license_id,
                 sau_modules.display_name as module,
                 sau_licenses.started_at as fecha,
-                sau_company_groups.name as group_name
+                sau_company_groups.name as group_name,
+                sau_companies.name as name_company
             ")
             ->withoutGlobalScopes()
             ->join('sau_license_module', 'sau_license_module.license_id', 'sau_licenses.id')
@@ -398,7 +399,7 @@ class LicenseController extends Controller
             ->join('sau_companies', 'sau_companies.id', 'sau_licenses.company_id')
             ->leftJoin('sau_company_groups', 'sau_company_groups.id', 'sau_companies.company_group_id')
             ->where('sau_modules.main', DB::raw("'SI'"))
-            //->where('sau_companies.test', DB::raw("'NO'"))
+            ->where('sau_companies.test', DB::raw("'NO'"))
             ->orderBy('sau_licenses.id')
             ->get();
 
@@ -734,7 +735,125 @@ class LicenseController extends Controller
                 ];
             }
 
-////////////////////////////////////////////////////////////////////////////
+///////////////Reporte grupo - compañia - modulos que no posee//////////////
+
+            $prueba2 = License::selectRaw("
+                sau_companies.id as company_id,
+                sau_licenses.id as license_id,
+                sau_modules.display_name as module,
+                sau_licenses.started_at as fecha,
+                sau_company_groups.name as group_name,
+                sau_companies.name as name_company
+            ")
+            ->withoutGlobalScopes()
+            ->join('sau_license_module', 'sau_license_module.license_id', 'sau_licenses.id')
+            ->join('sau_modules', 'sau_modules.id', 'sau_license_module.module_id')
+            ->join('sau_companies', 'sau_companies.id', 'sau_licenses.company_id')
+            ->leftJoin('sau_company_groups', 'sau_company_groups.id', 'sau_companies.company_group_id')
+            ->where('sau_modules.main', DB::raw("'SI'"))
+            ->whereRaw('? BETWEEN started_at AND ended_at', [date('Y-m-d')])
+            ->where('sau_companies.test', DB::raw("'NO'"))
+            ->orderBy('sau_licenses.id')
+            ->get();
+
+
+            $modules_totales = Module::select('display_name')->where('main', DB::raw("'SI'"))->pluck('display_name')->toArray();
+
+            $table_not_module = [];
+
+            foreach ($groups as $key => $group) 
+            {
+                $companies = $prueba2->filter(function ($item, $key) use ($group) {
+                    return $item->group_name == $group;
+                })
+                ->pluck('name_company')->unique()->values();
+
+                foreach ($companies as $key => $company) 
+                {
+                    $modules_disponibles = [];
+                    $modules_company = $prueba2->filter(function ($item, $key) use ($group, $company){
+                        return $item->group_name == $group && $item->name_company == $company;
+                    })
+                    ->pluck('module')->unique()->values();
+                    
+                    foreach ($modules_company as $key => $company_module) 
+                    {
+                        if (is_array($company_module) && COUNT($company_module) > 0)
+                            array_push($modules_disponibles, $company_module);
+                        else if (is_string($company_module))
+                            array_push($modules_disponibles, $company_module);
+                    }
+
+                    $content = [];
+
+                    foreach ($modules_totales as $key => $module) 
+                    {
+                       if (!in_array($module, $modules_disponibles))
+                           array_push($content, $module);
+                    }
+
+                    if (COUNT($content) > 0)
+                    {
+                        $content = [
+                            'group' => $group,
+                            'company' => $company,
+                            'module' => implode(' - ',$content)
+                        ];
+
+                        array_push($table_not_module, $content);
+                    }
+                }
+
+                $companies_sin_grupo = $prueba2->filter(function ($item, $key) {
+                    return !$item->group_name;
+                })
+                ->pluck('name_company')->unique()->values();
+
+                foreach ($companies_sin_grupo as $key => $company) 
+                {
+                    $modules_disponibles = [];
+                    $modules_company = $prueba2->filter(function ($item, $key) use ($company){
+                        return !$item->group_name && $item->name_company == $company;
+                    })
+                    ->pluck('module')->unique()->values();
+                    
+                    foreach ($modules_company as $key => $company_module) 
+                    {
+                        if (is_array($company_module) && COUNT($company_module) > 0)
+                            array_push($modules_disponibles, $company_module);
+                        else if (is_string($company_module))
+                            array_push($modules_disponibles, $company_module);
+                    }
+
+                    $content = [];
+
+                    foreach ($modules_totales as $key => $module) 
+                    {
+                       if (!in_array($module, $modules_disponibles))
+                           array_push($content, $module);
+                    }
+
+                    if (COUNT($content) > 0)
+                    {
+                        $content = [
+                            'group' => 'Sin grupo',
+                            'company' => $company,
+                            'module' => implode(' - ',$content)
+                        ];
+
+                        array_push($table_not_module, $content);
+                    }
+                }
+            }
+
+            $headers['group_module_not'] = [      
+                ['name' => 'group', 'label' => 'Grupo de compañia'],
+                ['name' => 'company', 'label' => 'compañia'],
+                ['name' => 'module', 'label' => 'Módulo'],
+            ];
+
+
+///////////////////////////////////////////////////////////////////////////
 
             $data = [
                 'headers' => $headers,
@@ -742,7 +861,8 @@ class LicenseController extends Controller
                     'general' => $table_general,
                     'module' => $table_module,
                     'group' => $table_groups,
-                    'group_module' => $table_groups_modules
+                    'group_module' => $table_groups_modules,
+                    'group_module_not' => $table_not_module
                 ],
 
             ];

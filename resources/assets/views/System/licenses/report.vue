@@ -9,12 +9,9 @@
         <loading :display="isLoading"/>
         <div style="width:95%" class="col-md" v-show="!isLoading">
             <b-card no-body>
-                <b-card-header class="with-elements">
                     <div class="card-title-elements" v-if="auth.can['licenses_c'] && auth.company_id == 1">
                         <b-btn :to="{name:'system-licenses-configuration'}" variant="primary">Configurar Envio</b-btn>
                     </div>
-                </b-card-header>
-                <b-card-body>
                     <div>
                         <filter-general 
                             v-model="filters" 
@@ -174,8 +171,34 @@
                                 </b-row>
                             </b-card>
                         </b-tab>
+                        <b-tab>
+                            <template slot="title">
+                                <strong>Reporte por Grupo de Compañia- Compañia - Módulos no contratados</strong> 
+                            </template>
+                            <b-card bg-variant="transparent" border-variant="dark" title="" class="mb-3 box-shadow-none">
+                                <b-row>
+                                    <table class="table table-bordered table-sm table-striped table-hover" style="width: 100%; font-size: 10px;">
+                                        <thead>
+                                            <tr>
+                                                <th v-for="(header, index) in headers.group_module_not" :key="`th-${index}`" class="text-center align-middle; font-size: 13px;">
+                                                    {{ header.label }}
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr v-for="(parameter, key) in data2.group_module_not" :key="key">
+                                                <template>
+                                                    <td style='text-align:center; font-size: 13px;' v-for="(header, index) in headers.group_module_not" :key="index">
+                                                        {{ parameter[header.name] }}
+                                                    </td>
+                                                </template>
+                                            </tr>
+                                        </tbody>
+                                    </table>                
+                                </b-row>
+                            </b-card>
+                        </b-tab>
                     </b-tabs>
-                 </b-card-body>
             </b-card>
         </div>
     </diV>
