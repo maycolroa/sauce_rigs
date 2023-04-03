@@ -30,7 +30,9 @@ class ConfigurationRequest extends FormRequest
             'location_level_form' => 'nullable',
             'days_alert_expiration_date_action_plan' => 'nullable|min:0',
             'expired_elements_asigned' => 'nullable',
-            'days_alert_expiration_date_elements' => 'required_if:expired_elements_asigned,SI'
+            'days_alert_expiration_date_elements' => 'required_if:expired_elements_asigned,SI',
+            'filter_inspections' => 'nullable',
+            'location_level_form_user_inspection_filter' => 'required_if:filter_inspections,SI',
         ];
     }
 }
