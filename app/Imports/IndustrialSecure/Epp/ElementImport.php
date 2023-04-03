@@ -58,7 +58,7 @@ class ElementImport implements ToCollection, WithCalculatedFormulas
                     NotificationMail::
                         subject('Importación de elementos')
                         ->recipients($this->user)
-                        ->message('El proceso de importación de todos los registros de llos elementos finalizo correctamente')
+                        ->message('El proceso de importación de todos los registros finalizo correctamente')
                         ->module('epp')
                         ->event('Job: ElementImportJob')
                         ->company($this->company_id)
@@ -144,7 +144,7 @@ class ElementImport implements ToCollection, WithCalculatedFormulas
             'reutilizable' => 'required|in:SI,NO',
             'identificar' => 'required|in:SI,NO',
             'vencimiento' => 'required|in:SI,NO',
-            'dias_vencimiento' => 'integer|required_if:vencimiento,SI'       
+            'dias_vencimiento' => 'required_if:vencimiento,SI'       
         ];
 
         $validator = Validator::make($data, $rules, [
