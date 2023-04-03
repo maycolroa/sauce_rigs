@@ -174,7 +174,7 @@ class LicenseController extends Controller
         {
             $license = License::system()->findOrFail($id);
             $license->multiselect_company = $license->company->multiselect();
-            $license->multiselect_user = $license->user->multiselect();
+            $license->multiselect_user = $license->user_id ? $license->user->multiselect() : NULL;
             $license->started_at = (Carbon::createFromFormat('Y-m-d', $license->started_at))->format('D M d Y');
             $license->ended_at = (Carbon::createFromFormat('Y-m-d', $license->ended_at))->format('D M d Y');
 

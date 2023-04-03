@@ -23,7 +23,7 @@
     </b-form-row>
 
     <b-form-row v-if="form.filter_inspections == 'SI'">
-      <vue-radio :disabled="!auth.can['configurations_c']" :checked="form.location_level_form_user_inspection_filter" class="col-md-12" v-model="form.location_level_form_user_inspection_filter" :options="locationLevels" name="location_level_form_user_inspection_filter" :error="form.errorsFor('location_level_form_user_inspection_filter')" label="Nivel localización en tabla de inspecciones planeadas">
+      <vue-radio :disabled="!auth.can['configurations_c']" :checked="form.location_level_form_user_inspection_filter" class="col-md-12" v-model="form.location_level_form_user_inspection_filter" :options="locationLevels" name="location_level_form_user_inspection_filter" :error="form.errorsFor('location_level_form_user_inspection_filter')" label="Nivel localización en tabla de inspecciones planeadas para los usuarios">
         </vue-radio>
     </b-form-row>
 
@@ -64,6 +64,10 @@ export default {
       default() {
         return {
           location_level_form_table_inspectiona: '',
+          mandatory_action_plan_inspections: '',
+          mandatory_level_risk_inspections: '',
+          filter_inspections: '',
+          location_level_form_user_inspection_filter: ''
         };
       }
     }
