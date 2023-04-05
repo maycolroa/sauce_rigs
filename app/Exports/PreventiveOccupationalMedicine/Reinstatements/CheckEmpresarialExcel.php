@@ -215,22 +215,23 @@ class CheckEmpresarialExcel implements FromCollection, WithHeadings, WithMapping
     {
         return [
             'A' => NumberFormat::FORMAT_NUMBER,
-            'J' => NumberFormat::FORMAT_NUMBER,
-            'Q' => NumberFormat::FORMAT_NUMBER,
+            'S' => NumberFormat::FORMAT_NUMBER,
+            'P' => NumberFormat::FORMAT_NUMBER,
             'AO' => NumberFormat::FORMAT_NUMBER,
             'C' => NumberFormat::FORMAT_DATE_DDMMYYYY,
-            'F' => NumberFormat::FORMAT_DATE_DDMMYYYY,
+            'E' => NumberFormat::FORMAT_DATE_DDMMYYYY,
             'H' => NumberFormat::FORMAT_DATE_DDMMYYYY,
-            'R' => NumberFormat::FORMAT_DATE_DDMMYYYY,
-            'AB' => NumberFormat::FORMAT_DATE_DDMMYYYY,
+            'J' => NumberFormat::FORMAT_DATE_DDMMYYYY,
+            'T' => NumberFormat::FORMAT_DATE_DDMMYYYY,
+            'BB' => NumberFormat::FORMAT_DATE_DDMMYYYY,
             'AD' => NumberFormat::FORMAT_DATE_DDMMYYYY,
             'AF' => NumberFormat::FORMAT_DATE_DDMMYYYY,
-            'AJ' => NumberFormat::FORMAT_DATE_DDMMYYYY,
+            'AH' => NumberFormat::FORMAT_DATE_DDMMYYYY,
             'AL' => NumberFormat::FORMAT_DATE_DDMMYYYY,
-            'AP' => NumberFormat::FORMAT_DATE_DDMMYYYY,
+            'AN' => NumberFormat::FORMAT_DATE_DDMMYYYY,
             'AR' => NumberFormat::FORMAT_DATE_DDMMYYYY,
-            'AU' => NumberFormat::FORMAT_DATE_DDMMYYYY,
-            'AY' => NumberFormat::FORMAT_DATE_DDMMYYYY,
+            'AT' => NumberFormat::FORMAT_DATE_DDMMYYYY,
+            'Aw' => NumberFormat::FORMAT_DATE_DDMMYYYY,
         ];
     }
 

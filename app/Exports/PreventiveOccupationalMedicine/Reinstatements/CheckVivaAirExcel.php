@@ -193,15 +193,16 @@ class CheckVivaAirExcel implements FromCollection, WithHeadings, WithMapping, Wi
     {
         return [
             'A' => NumberFormat::FORMAT_NUMBER,
-            'J' => NumberFormat::FORMAT_NUMBER,
+            //'J' => NumberFormat::FORMAT_NUMBER,
             'C' => NumberFormat::FORMAT_DATE_DDMMYYYY,
-            'F' => NumberFormat::FORMAT_DATE_DDMMYYYY,
+            'E' => NumberFormat::FORMAT_DATE_DDMMYYYY,
             'H' => NumberFormat::FORMAT_DATE_DDMMYYYY,
-            'Y' => NumberFormat::FORMAT_DATE_DDMMYYYY,
+            'J' => NumberFormat::FORMAT_DATE_DDMMYYYY,
             'AA' => NumberFormat::FORMAT_DATE_DDMMYYYY,
             'AC' => NumberFormat::FORMAT_DATE_DDMMYYYY,
-            'AJ' => NumberFormat::FORMAT_DATE_DDMMYYYY,
-            'AO' => NumberFormat::FORMAT_DATE_DDMMYYYY,
+            'AE' => NumberFormat::FORMAT_DATE_DDMMYYYY,
+            'AL' => NumberFormat::FORMAT_DATE_DDMMYYYY,
+            'AQ' => NumberFormat::FORMAT_DATE_DDMMYYYY,
         ];
     }
 

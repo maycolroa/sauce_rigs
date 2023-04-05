@@ -207,15 +207,16 @@ class CheckExcelMitsubishi implements FromCollection, WithHeadings, WithMapping,
     {
         return [
             'A' => NumberFormat::FORMAT_NUMBER,
-            'J' => NumberFormat::FORMAT_NUMBER,
+            //'J' => NumberFormat::FORMAT_NUMBER,
             'C' => NumberFormat::FORMAT_DATE_DDMMYYYY,
-            'F' => NumberFormat::FORMAT_DATE_DDMMYYYY,
+            'E' => NumberFormat::FORMAT_DATE_DDMMYYYY,
             'H' => NumberFormat::FORMAT_DATE_DDMMYYYY,
-            'V' => NumberFormat::FORMAT_DATE_DDMMYYYY,
-            'X' => NumberFormat::FORMAT_DATE_DDMMYYYY,
-            'Z' => NumberFormat::FORMAT_DATE_DDMMYYYY,
-            'AG' => NumberFormat::FORMAT_DATE_DDMMYYYY,
-            'AK' => NumberFormat::FORMAT_DATE_DDMMYYYY,
+            'J' => NumberFormat::FORMAT_DATE_DDMMYYYY,
+            'AH' => NumberFormat::FORMAT_DATE_DDMMYYYY,
+            'AJ' => NumberFormat::FORMAT_DATE_DDMMYYYY,
+            'AL' => NumberFormat::FORMAT_DATE_DDMMYYYY,
+            'AS' => NumberFormat::FORMAT_DATE_DDMMYYYY,
+            'AX' => NumberFormat::FORMAT_DATE_DDMMYYYY,
         ];
     }
 

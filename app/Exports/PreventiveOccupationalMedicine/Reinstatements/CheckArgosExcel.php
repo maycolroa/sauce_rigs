@@ -241,13 +241,13 @@ class CheckArgosExcel implements FromCollection, WithHeadings, WithMapping, With
     {
         return [
             'A' => NumberFormat::FORMAT_NUMBER,
-            'J' => NumberFormat::FORMAT_NUMBER,
+            'G' => NumberFormat::FORMAT_NUMBER,
             'C' => NumberFormat::FORMAT_DATE_DDMMYYYY,
-            'F' => NumberFormat::FORMAT_DATE_DDMMYYYY,
+            'E' => NumberFormat::FORMAT_DATE_DDMMYYYY,
             'H' => NumberFormat::FORMAT_DATE_DDMMYYYY,
-            'V' => NumberFormat::FORMAT_DATE_DDMMYYYY,
-            'X' => NumberFormat::FORMAT_DATE_DDMMYYYY,
-            'Z' => NumberFormat::FORMAT_DATE_DDMMYYYY,
+            'K' => NumberFormat::FORMAT_DATE_DDMMYYYY,
+            'U' => NumberFormat::FORMAT_DATE_DDMMYYYY,
+            'W' => NumberFormat::FORMAT_DATE_DDMMYYYY,
             'AG' => NumberFormat::FORMAT_DATE_DDMMYYYY,
             'AK' => NumberFormat::FORMAT_DATE_DDMMYYYY,
         ];

@@ -195,15 +195,17 @@ class CheckExcelHPTU implements FromCollection, WithHeadings, WithMapping, WithC
     {
         return [
             'A' => NumberFormat::FORMAT_NUMBER,
-            'J' => NumberFormat::FORMAT_NUMBER,
             'C' => NumberFormat::FORMAT_DATE_DDMMYYYY,
-            'F' => NumberFormat::FORMAT_DATE_DDMMYYYY,
+            'E' => NumberFormat::FORMAT_DATE_DDMMYYYY,
             'H' => NumberFormat::FORMAT_DATE_DDMMYYYY,
-            'V' => NumberFormat::FORMAT_DATE_DDMMYYYY,
+            'J' => NumberFormat::FORMAT_DATE_DDMMYYYY,
             'X' => NumberFormat::FORMAT_DATE_DDMMYYYY,
             'Z' => NumberFormat::FORMAT_DATE_DDMMYYYY,
-            'AH' => NumberFormat::FORMAT_DATE_DDMMYYYY,
-            'AL' => NumberFormat::FORMAT_DATE_DDMMYYYY,
+            'AB' => NumberFormat::FORMAT_DATE_DDMMYYYY,
+            'AC' => NumberFormat::FORMAT_DATE_DDMMYYYY,
+            'AE' => NumberFormat::FORMAT_DATE_DDMMYYYY,
+            'AM' => NumberFormat::FORMAT_DATE_DDMMYYYY,
+            'AR' => NumberFormat::FORMAT_DATE_DDMMYYYY,
         ];
     }
 

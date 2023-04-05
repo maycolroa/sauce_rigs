@@ -85,9 +85,7 @@
                     <vue-input :disabled="true" class="col-md-6" v-model="dx.category" label="Categoría" type="text" name="category"></vue-input>
                   </b-form-row>
                   <b-form-row>
-                    <vue-advanced-select :disabled="viewOnly" class="col-md-6" v-model="dx.qualification_dme" :error="form.errorsFor(`dxs.${index}.qualification_dme`)" :multiple="false" :options="qualificationsDme" :hide-selected="false" name="qualification_dme" label="Calificación DME" placeholder="Seleccione una opción">
-                        </vue-advanced-select>
-                    <vue-advanced-select :disabled="viewOnly" class="col-md-6" v-model="dx.laterality" :error="form.errorsFor(`dxs.${index}.laterality`)" :multiple="false" :options="lateralities" :hide-selected="false" name="laterality" label="Lateralidad" placeholder="Seleccione una opción">
+                    <vue-advanced-select :disabled="viewOnly" class="col-md-6 offset-md-3" v-model="dx.laterality" :error="form.errorsFor(`dxs.${index}.laterality`)" :multiple="false" :options="lateralities" :hide-selected="false" name="laterality" label="Lateralidad" placeholder="Seleccione una opción">
                         </vue-advanced-select>
                   </b-form-row>
                 </b-card>
@@ -99,22 +97,11 @@
                   <center><b-btn v-if="!viewOnly" variant="primary" @click.prevent="addDx()"><span class="ion ion-md-add-circle"></span>&nbsp;&nbsp;Agregar</b-btn></center>
               </div>
             </b-form-row>
+            <b-form-row>
+              <vue-advanced-select :disabled="viewOnly" class="col-md-6 offset-md-3" v-model="form.qualification_dme" :error="form.errorsFor('qualification_dme')" :multiple="false" :options="qualificationsDme" :hide-selected="false" name="qualification_dme" label="Calificación DME" placeholder="Seleccione una opción"></vue-advanced-select>
+            </b-form-row>
           </b-card>
-          <!--<b-form-row>
-                  <vue-ajax-advanced-select :disabled="viewOnly" class="col-md-12" :allowEmpty="true" v-model="form.cie10_code_2_id" :error="form.errorsFor('cie10_code_2_id')" :selected-object="form.multiselect_cie10Code2" name="cie10_code_2_id" label="Código CIE 10 (2)" placeholder="Seleccione una opción" :url="cie10CodesDataUrl"> </vue-ajax-advanced-select>
-                </b-form-row>
-                <b-form-row>
-                  <vue-input :disabled="true" class="col-md-6" v-model="cie10CodeDetail2.system" label="Sistema" type="text" name="system2"></vue-input>
-                  <vue-input :disabled="true" class="col-md-6" v-model="cie10CodeDetail2.category" label="Categoría" type="text" name="category2"></vue-input>
-                </b-form-row>
-                <b-form-row>
-                  <vue-ajax-advanced-select :disabled="viewOnly" class="col-md-12" v-model="form.cie10_code_3_id" :allowEmpty="true" :error="form.errorsFor('cie10_code_3_id')" :selected-object="form.multiselect_cie10Code3" name="cie10_code_3_id" label="Código CIE 10 (3)" placeholder="Seleccione una opción" :url="cie10CodesDataUrl"> </vue-ajax-advanced-select>
-                </b-form-row>
-                <b-form-row>
-                  <vue-input :disabled="true" class="col-md-6" v-model="cie10CodeDetail3.system" label="Sistema" type="text" name="system3"></vue-input>
-                  <vue-input :disabled="true" class="col-md-6" v-model="cie10CodeDetail3.category" label="Categoría" type="text" name="category3"></vue-input>
-                </b-form-row>-->
-
+          
           <div class="col-md-12" style="padding-left: 15px; padding-right: 15px;">
             <hr class="border-dark container-m--x mt-0 mb-4">
           </div>
