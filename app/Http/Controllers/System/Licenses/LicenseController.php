@@ -811,48 +811,48 @@ class LicenseController extends Controller
                         array_push($table_not_module, $content);
                     }
                 }
+            }
 
-                $companies_sin_grupo = $prueba2->filter(function ($item, $key) {
-                    return !$item->group_name;
+            $companies_sin_grupo = $prueba2->filter(function ($item, $key) {
+                return !$item->group_name;
+            })
+            ->pluck('name_company')->unique()->values();
+
+            \Log::info($companies_sin_grupo);
+
+            foreach ($companies_sin_grupo as $key => $company) 
+            {
+                $modules_disponibles = [];
+                $modules_company = $prueba2->filter(function ($item, $key) use ($company){
+                    return !$item->group_name && $item->name_company == $company;
                 })
-                ->pluck('name_company')->unique()->values();
-
-                \Log::info($companies_sin_grupo);
-
-                foreach ($companies_sin_grupo as $key => $company) 
+                ->pluck('module')->unique()->values();
+                
+                foreach ($modules_company as $key => $company_module) 
                 {
-                    $modules_disponibles = [];
-                    $modules_company = $prueba2->filter(function ($item, $key) use ($company){
-                        return !$item->group_name && $item->name_company == $company;
-                    })
-                    ->pluck('module')->unique()->values();
-                    
-                    foreach ($modules_company as $key => $company_module) 
-                    {
-                        if (is_array($company_module) && COUNT($company_module) > 0)
-                            array_push($modules_disponibles, $company_module);
-                        else if (is_string($company_module))
-                            array_push($modules_disponibles, $company_module);
-                    }
+                    if (is_array($company_module) && COUNT($company_module) > 0)
+                        array_push($modules_disponibles, $company_module);
+                    else if (is_string($company_module))
+                        array_push($modules_disponibles, $company_module);
+                }
 
-                    $content = [];
+                $content = [];
 
-                    foreach ($modules_totales as $key => $module) 
-                    {
-                    if (!in_array($module, $modules_disponibles))
-                        array_push($content, $module);
-                    }
+                foreach ($modules_totales as $key => $module) 
+                {
+                if (!in_array($module, $modules_disponibles))
+                    array_push($content, $module);
+                }
 
-                    if (COUNT($content) > 0)
-                    {
-                        $content = [
-                            'group' => 'Sin grupo',
-                            'company' => $company,
-                            'module' => implode(' - ',$content)
-                        ];
+                if (COUNT($content) > 0)
+                {
+                    $content = [
+                        'group' => 'Sin grupo',
+                        'company' => $company,
+                        'module' => implode(' - ',$content)
+                    ];
 
-                        array_push($table_not_module, $content);
-                    }
+                    array_push($table_not_module, $content);
                 }
             }
 
