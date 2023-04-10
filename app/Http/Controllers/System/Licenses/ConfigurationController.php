@@ -39,28 +39,19 @@ class ConfigurationController extends Controller
     {
         $request = $request->except('_method');
 
-        \Log::info('entro 1');
-
         try
         {
-
-            \Log::info('entro 2');
             foreach ($request as $key => $value)
             {
                 if ($value && $key != 'multiselect_user_id')
                 {
-
-                    \Log::info('entro 3');
                     if ($value && $key != 'multiselect_user_incapacitated_id')
                     {               
-                        
-                        \Log::info('entro 4');     
                         if ($key == 'users_notify_element_expired' || $key == 'users_notify_expired_absenteeism_expired' || $key == 'users_notify_expired_report' || $key == 'users_notify_incapacitated')
                             continue;
                             
                         if ($key == 'users_notify_report_license')
                         {
-                            \Log::info('entro 5');
                             $values = $this->getDataFromMultiselect($value);
 
                             $users = [];
@@ -73,6 +64,20 @@ class ConfigurationController extends Controller
                             }
 
                             $value = implode(',', $users);
+                        }
+
+                        if ($key == 'license_reports_sends')
+                        {
+                            $values = $this->getDataFromMultiselect($value);
+
+                            $reports = [];
+
+                            foreach ($values as $id) 
+                            {
+                                array_push($reports, $id);
+                            }
+
+                            $value = implode(',', $reports);
                         }
 
                         ConfigurationsCompany::key($key)->value($value)->save();
@@ -121,12 +126,61 @@ class ConfigurationController extends Controller
                         }
                     }
                 }   
+
+                if ($key == 'license_reports_sends')
+                {
+                    if ($value)
+                    {
+                        $reports = explode(',', $value);
+
+                        $multiselect_reports = [];
+
+                        foreach ($reports as $report) 
+                        {
+                            if ($report == 'general')
+                            {
+                                $content = [
+                                    'name' => 'Reporte General',
+                                    'value' => $report
+                                ];
+                            }
+                            else if ($report == 'module')
+                            {
+                                $content = [
+                                    'name' => 'Reporte por Módulo',
+                                    'value' => $report
+                                ];
+                            }
+                            else if ($report == 'group')
+                            {
+                                $content = [
+                                    'name' => 'Reporte por Grupo de Compañia',
+                                    'value' => $report
+                                ];
+                            }
+                            else if ($report == 'group_module')
+                            {
+                                $content = [
+                                    'name' => 'Reporte por Grupo de Compañia - Módulo',
+                                    'value' => $report
+                                ];
+                            }
+
+                            array_push($multiselect_reports, $content);
+                        }
+                    }
+                } 
             }
 
             if (isset($multiselect) && count($multiselect) > 0)
             {
                 $data['users_notify_report_license'] = $multiselect;
                 $data['multiselect_user_id'] = $multiselect;
+            }
+
+            if (isset($multiselect_reports) && count($multiselect_reports) > 0)
+            {
+                $data['license_reports_sends'] = $multiselect_reports;
             }
 
             return $this->respondHttp200([

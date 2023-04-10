@@ -11,6 +11,7 @@
             <b-card no-body>
                     <div class="card-title-elements" v-if="auth.can['licenses_c'] && auth.company_id == 1">
                         <b-btn :to="{name:'system-licenses-configuration'}" variant="primary">Configurar Envio</b-btn>
+                        <b-btn variant="primary" @click="exportData()" v-b-tooltip.top title="Exportar"><i class="fas fa-download"></i></b-btn>
                     </div>
                     <div>
                         <filter-general 
@@ -274,6 +275,16 @@ export default {
                 });
             }
         },
+        exportData(){
+
+            let postData = Object.assign({}, {filters: this.filters, order: this.order});
+            axios.post('/system/license/exportReport', postData)
+            .then(response => {
+                Alerts.warning('Información', 'Se inicio la exportación, se le notificara a su correo electronico cuando finalice el proceso.');
+            }).catch(error => {
+                Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
+            });
+        }
     }
 }
 </script>

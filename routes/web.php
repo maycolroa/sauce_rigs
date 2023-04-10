@@ -870,6 +870,7 @@ Route::middleware(['auth'])->group(function () {
       Route::ApiResource('license', 'System\Licenses\LicenseController');
       Route::post('license/export', 'System\Licenses\LicenseController@export');
       Route::post('license/report', 'System\Licenses\LicenseController@report');
+      Route::post('license/exportReport', 'System\Licenses\LicenseController@exportReport');
 
       Route::post('license/configuration', 'System\Licenses\ConfigurationController@store');
       Route::get('license/configuration/view', 'System\Licenses\ConfigurationController@show');

@@ -77,6 +77,7 @@ class ConfigurationsCompany
             'days_notify_incapacitated_3' =>  'Tercera notificacion por incapacidad',
             'users_notify_report_license' => 'Usuarios a notificar el reporte de licencias',
             'filters_date_license' => 'Filtros de fechas a aplicar para el envio del reporte de licencias',
+            'license_reports_sends' => 'Reportes seleccionados para realizar el envio'
         ];
     }
 

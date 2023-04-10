@@ -61,7 +61,13 @@ export default [
           key: 'dateRange',
           type: 'dateRange',
           label: 'Fecha de inicio',
-        }
+        }, 
+        {
+          url: '/selects/modules',
+          key: 'modules',
+          type: 'select',
+          label: 'Módulos no contratados'
+      },
       ]
     },
 ]
