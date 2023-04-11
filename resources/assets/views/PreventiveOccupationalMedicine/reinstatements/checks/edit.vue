@@ -2,7 +2,7 @@
   <div>
     <header-module
       title="REINCORPORACIONES"
-      subtitle="EDITAR REPORTE"
+      subtitle="EDITAR CASO"
       url="reinstatements-checks"
     />
 
@@ -336,7 +336,7 @@ import GlobalMethods from '@/utils/GlobalMethods.js';
 export default {
   name: 'reinstatements-checks-edit',
   metaInfo: {
-    title: 'Reportes - Editar'
+    title: 'casos - Editar'
   },
   components:{
     FormCheck,

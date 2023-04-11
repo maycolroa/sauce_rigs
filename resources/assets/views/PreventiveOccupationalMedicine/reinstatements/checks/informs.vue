@@ -2,7 +2,7 @@
   <div>
     <header-module
       title="REINCORPORACIONES"
-      subtitle="INFORMES"
+      subtitle="REPORTES"
       url="reinstatements-checks"
     />
 

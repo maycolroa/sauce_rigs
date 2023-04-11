@@ -7,12 +7,12 @@
           <vue-ajax-advanced-select class="col-md-12" :disabled="viewOnly" v-model="form.employee_id"  name="employee_id" :label="keywordCheck('employee')" placeholder="Seleccione una opción" :url="employeesDataUrl" :selected-object="form.multiselect_employee" :error="form.errorsFor('employee_id')">
                 </vue-ajax-advanced-select>
           <center v-if="employeeDetail.id">
-            <b-btn variant="primary" size="md" @click="$refs.modalHistorial.show()" ><span class="ion ion-md-eye"></span> Ver otros reportes relacionados con {{ employeeDetail.name }}</b-btn>
+            <b-btn variant="primary" size="md" @click="$refs.modalHistorial.show()" ><span class="ion ion-md-eye"></span> Ver otros casos relacionados con {{ employeeDetail.name }}</b-btn>
           </center>
 
 					<b-modal ref="modalHistorial" :hideFooter="true" id="modals-historial" class="modal-top" size="lg">
 						<div slot="modal-title">
-							Otros reportes relacionados con {{ employeeDetail.name }}
+							Otros casos relacionados con {{ employeeDetail.name }}
 						</div>
 
 						<b-card  bg-variant="transparent"  title="" class="mb-3 box-shadow-none">

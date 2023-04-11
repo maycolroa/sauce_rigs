@@ -25,9 +25,9 @@
 								<router-link tag="a" href="javascript:void(0)" class="card-body media align-items-center text-dark" :to="{name:'reinstatements-checks'}">
 									<i class="lnr lnr-list display-4 d-block text-primary"></i>
 									<span class="media-body d-block ml-3">
-										<span class="text-big font-weight-bolder">Administrar Reportes</span>
+										<span class="text-big font-weight-bolder">Administrar Casos</span>
 										<br>
-										<small class="text-muted">Administrar Reportes</small>
+										<small class="text-muted">Administrar Casos</small>
 									</span>
 								</router-link>
 							</div>
@@ -80,9 +80,9 @@
 								<router-link tag="a" href="javascript:void(0)" class="card-body media align-items-center text-dark" :to="{name:'reinstatements-informs'}">
 									<i class="lnr lnr-chart-bars display-4 d-block text-primary"></i>
 									<span class="media-body d-block ml-3">
-										<span class="text-big font-weight-bolder">Ver Informes</span>
+										<span class="text-big font-weight-bolder">Ver Reportes</span>
 										<br>
-										<small class="text-muted">Ver Informes</small>
+										<small class="text-muted">Ver Reportes</small>
 									</span>
 								</router-link>
 							</div>

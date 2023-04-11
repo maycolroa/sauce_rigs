@@ -818,8 +818,6 @@ class LicenseController extends Controller
             })
             ->pluck('name_company')->unique()->values();
 
-            \Log::info($companies_sin_grupo);
-
             foreach ($companies_sin_grupo as $key => $company) 
             {
                 $modules_disponibles = [];

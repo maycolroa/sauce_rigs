@@ -2,7 +2,7 @@
   <div>
     <header-module
       title="REINCORPORACIONES"
-      subtitle="ADMINISTRAR REPORTES"
+      subtitle="ADMINISTRAR CASOS"
       url="preventiveoccupationalmedicine-reinstatements"
     />
 
@@ -10,7 +10,7 @@
       <b-card no-body>
         <b-card-header class="with-elements">
           <div class="card-title-elements">
-            <b-btn v-if="auth.can['reinc_checks_c']" :to="{name:'reinstatements-checks-create'}" variant="primary">Crear Reporte</b-btn>
+            <b-btn v-if="auth.can['reinc_checks_c']" :to="{name:'reinstatements-checks-create'}" variant="primary">Crear Caso</b-btn>
             <b-btn v-if="auth.can['reinc_checks_export']" variant="primary" @click="exportData()" v-b-tooltip.top title="Exportar"><i class="fas fa-download"></i></b-btn>
             <b-btn v-if="!auth.hasRole['Rol Visor Reincorporaciones']" :to="{name:'reinstatements-checks-letter-regenerate'}" variant="primary">Consulta de Cartas</b-btn>
           </div>
@@ -44,7 +44,7 @@ import FilterReincChecks from '@/components/Filters/FilterReincChecks.vue';
 export default {
   name: 'reinstatements-checks',
   metaInfo: {
-    title: 'Reportes'
+    title: 'Casos'
   },
   components:{
       FilterReincChecks

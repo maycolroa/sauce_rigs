@@ -8,7 +8,7 @@
                 </vue-ajax-advanced-select>
 
           <center v-if="employeeDetail.id">
-            <b-btn variant="primary" size="md" @click="$refs.modalHistorial.show()" ><span class="ion ion-md-eye"></span> Ver otros reportes relacionados con {{ employeeDetail.name }}</b-btn>
+            <b-btn variant="primary" size="md" @click="$refs.modalHistorial.show()" ><span class="ion ion-md-eye"></span> Ver otros casos relacionados con {{ employeeDetail.name }}</b-btn>
           </center>
 
           <br><br>
@@ -21,7 +21,7 @@
 
 					<b-modal ref="modalHistorial" :hideFooter="true" id="modals-historial" class="modal-top" size="lg">
 						<div slot="modal-title">
-							Otros reportes relacionados con {{ employeeDetail.name }}
+							Otros casos relacionados con {{ employeeDetail.name }}
 						</div>
 
 						<b-card  bg-variant="transparent"  title="" class="mb-3 box-shadow-none">
