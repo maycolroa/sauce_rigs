@@ -1350,7 +1350,7 @@ class UserController extends Controller
             }
         }
 
-        $data->union($data2)->orderBy('date');
+        $data->union($data2)->orderBy('date', 'DESC');
 
         return Vuetable::of($data)
                 ->make();
