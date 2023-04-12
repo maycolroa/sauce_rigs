@@ -875,6 +875,12 @@ Route::middleware(['auth'])->group(function () {
       Route::post('license/configuration', 'System\Licenses\ConfigurationController@store');
       Route::get('license/configuration/view', 'System\Licenses\ConfigurationController@show');
 
+      Route::post('newsletterSend/data', 'System\NewsletterSend\NewsletterSendController@data');
+      Route::ApiResource('newsletterSend', 'System\NewsletterSend\NewsletterSendController');
+      Route::post('newsletterSend/switchStatus/{newsletter}', 'System\NewsletterSend\NewsletterSendController@toggleState');
+      
+      Route::get('newsletterSend/downloadImage/{id}', 'System\NewsletterSend\NewsletterSendController@download');
+
       Route::post('logMail/data', 'System\LogMails\LogMailController@data');
       Route::ApiResource('logMail', 'System\LogMails\LogMailController');
 

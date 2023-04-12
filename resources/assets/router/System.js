@@ -242,6 +242,38 @@ export default [{
           component: () =>
             import('@/views/System/companyGroup/view')
         }
+      ]),
+      ...middleware({ 'check-permission': 'newsletterSend_r' }, [
+        {
+          name: 'system-newslettersend',
+          path: 'newslettersend',
+          component: () =>
+            import('@/views/System/newsletterSend/index')
+        }
+      ]), 
+      ...middleware({ 'check-permission': 'newsletterSend_c' }, [
+        {
+          name: 'system-newslettersend-create',
+          path: 'newslettersend/create',
+          component: () =>
+            import('@/views/System/newsletterSend/create')
+        }
+      ]), 
+      ...middleware({ 'check-permission': 'newsletterSend_u' }, [
+        {
+          name: 'system-newslettersend-edit',
+          path: 'newslettersend/edit/:id',
+          component: () =>
+            import('@/views/System/newsletterSend/edit')
+        }
+      ]),
+      ...middleware({ 'check-permission': 'newsletterSend_r' }, [
+        {
+          name: 'system-newslettersend-view',
+          path: 'newslettersend/view/:id',
+          component: () =>
+            import('@/views/System/newsletterSend/view')
+        }
       ])
     ]
   }]

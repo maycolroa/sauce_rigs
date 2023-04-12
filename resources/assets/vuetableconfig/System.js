@@ -433,4 +433,68 @@ export default [
             filterColumns: true,
         }
     },
+    {
+        name: 'system-newslettersend',
+        fields: [
+            { name: 'sau_newsletters_sends.id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true },
+            { name: 'sau_newsletters_sends.subject', data: 'subject', title: 'Asunto', sortable: true, searchable: true, detail: false, key: false },
+            { name: 'sau_newsletters_sends.date_send', data: 'date_send', title: 'Fecha de envio', sortable: true, searchable: true, detail: false, key: false },
+            { name: 'sau_newsletters_sends.hour', data: 'hour', title: 'Hora de envio', sortable: true, searchable: true, detail: false, key: false },
+            { name: 'active_send', data: 'active_send', title: '¿Activo?', sortable: true, searchable: true, detail: false, key: false },
+            { name: 'send_2"', data: 'send_2', title: '¿Enviado?', sortable: true, searchable: true, detail: false, key: false },
+            { name: '', data: 'controlls', title: 'Controles', sortable: false, searchable: false, detail: false, key: false },
+        ],
+        'controlls': [{
+            type: 'push',
+            buttons: [{
+            config: {
+                color: 'outline-success',
+                borderless: true,
+                icon: 'ion ion-md-create',
+                title: 'Editar'
+            },
+            data: {
+                routePush: { name: 'system-newslettersend-edit' },
+                id: 'id',
+            },
+            permission: 'newsletterSend_u'
+            }, {
+            config: {
+                color: 'outline-info',
+                borderless: true,
+                icon: 'ion ion-md-eye',
+                title: 'Ver'
+            },
+            data: {
+                routePush: { name: 'system-newslettersend-view' },
+                id: 'id',
+            },
+            permission: 'newsletterSend_r'
+            }]
+        },
+        {
+            type: 'base',
+            buttons: [
+                {
+                    name: 'switchStatus',
+                    config: {
+                        color: 'outline-danger',
+                        borderless: true,
+                        icon: 'fas fa-sync',
+                        title: 'Cambiar Estado'
+                    },
+                    data: {
+                        action: '/system/newsletterSend/switchStatus/',
+                        id: 'id',
+                        messageConfirmation: 'Esta seguro de querer cambiar el estado de __name__'
+                    },
+                    permission: 'newsletterSend_u'
+                }
+            ],
+        }],
+        configuration: {
+            urlData: '/system/newsletterSend/data',
+            filterColumns: true,
+        }
+    },
 ]

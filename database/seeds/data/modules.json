@@ -228,6 +228,12 @@
                 "display_name": "Grupos de empresas",
                 "main": "NO",
                 "logo": null
+            },
+            {
+                "name": "newsletterSend",
+                "display_name": "Envio de boletin",
+                "main": "NO",
+                "logo": null
             }
         ]
     }
