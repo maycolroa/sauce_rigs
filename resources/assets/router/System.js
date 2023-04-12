@@ -274,6 +274,14 @@ export default [{
           component: () =>
             import('@/views/System/newsletterSend/view')
         }
+      ]),
+      ...middleware({ 'check-permission': 'newsletterSend_r' }, [
+        {
+          name: 'system-newslettersend-program',
+          path: 'newslettersend/program/:id',
+          component: () =>
+            import('@/views/System/newsletterSend/switchStatus')
+        }
       ])
     ]
   }]

@@ -470,6 +470,18 @@ export default [
                 id: 'id',
             },
             permission: 'newsletterSend_r'
+            }, {
+                config: {
+                    color: 'outline-success',
+                    borderless: true,
+                    icon: 'ion ion-md-clipboard',
+                    title: 'Programar Envio'
+                },
+                data: {
+                    routePush: { name: 'system-newslettersend-program' },
+                    id: 'id'
+                },
+                permission: 'newsletterSend_r'
             }]
         },
         {

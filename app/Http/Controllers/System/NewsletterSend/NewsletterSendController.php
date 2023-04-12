@@ -63,6 +63,12 @@ class NewsletterSendController extends Controller
                 else
                     return true;
             })
+            ->addColumn('system-newslettersend-program', function ($newsletter) {
+                if ($newsletter->active)
+                    return true; 
+                else
+                    return false;
+            })
             ->make();
     }
 
@@ -224,5 +230,23 @@ class NewsletterSendController extends Controller
     {
         $newsletter = NewsletterSend::find($id);
         return Storage::disk('s3')->download('newsletters/'. $newsletter->image, $newsletter->image_name);
+    }
+
+    public function programSend(Request $request, $newsletter)
+    {
+        $newsletterSend = NewsletterSend::findOrFail($newsletter);
+        
+        $data = [
+            'date_send' => $this->formatDateToSave($request->get('date_send')),
+            'hour' => $request->hour
+        ];
+
+        if (!$newsletterSend->update($data)) {
+            return $this->respondHttp500();
+        }
+
+        return $this->respondHttp200([
+            'message' => 'Se programo el envio'
+        ]);
     }
 }

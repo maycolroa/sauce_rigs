@@ -878,8 +878,10 @@ Route::middleware(['auth'])->group(function () {
       Route::post('newsletterSend/data', 'System\NewsletterSend\NewsletterSendController@data');
       Route::ApiResource('newsletterSend', 'System\NewsletterSend\NewsletterSendController');
       Route::post('newsletterSend/switchStatus/{newsletter}', 'System\NewsletterSend\NewsletterSendController@toggleState');
-      
+
       Route::get('newsletterSend/downloadImage/{id}', 'System\NewsletterSend\NewsletterSendController@download');
+
+      Route::put('newsletterSend/program/{newsletter}', 'System\NewsletterSend\NewsletterSendController@programSend');
 
       Route::post('logMail/data', 'System\LogMails\LogMailController@data');
       Route::ApiResource('logMail', 'System\LogMails\LogMailController');
