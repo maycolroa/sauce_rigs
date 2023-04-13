@@ -197,6 +197,7 @@ Route::middleware(['auth'])->group(function () {
         Route::post('responsiblesFilter', 'Administrative\ActionPlans\ActionPlanController@multiselectResponsiblesFilter');  
         Route::post('multiselect', 'General\ApplicationController@multiselect');
         Route::post('roles', 'Administrative\Roles\RoleController@multiselect');
+        Route::post('rolesDefined', 'Administrative\Roles\RoleController@multiselectDefined');
         Route::post('modules', 'General\ApplicationController@multiselectModules');
         Route::post('modulesGroup', 'General\ApplicationController@multiselectGroupModules');
         Route::post('linceseModulesGroup', 'General\ApplicationController@multiselectGroupLicenseModules');
@@ -882,6 +883,8 @@ Route::middleware(['auth'])->group(function () {
       Route::get('newsletterSend/downloadImage/{id}', 'System\NewsletterSend\NewsletterSendController@download');
 
       Route::put('newsletterSend/program/{newsletter}', 'System\NewsletterSend\NewsletterSendController@programSend');
+      Route::post('newsletterSend/saveRoles/', 'System\NewsletterSend\NewsletterSendController@saveRoles');
+      Route::get('newsletterSend/configuration/view', 'System\NewsletterSend\NewsletterSendController@configurationView');
 
       Route::post('logMail/data', 'System\LogMails\LogMailController@data');
       Route::ApiResource('logMail', 'System\LogMails\LogMailController');

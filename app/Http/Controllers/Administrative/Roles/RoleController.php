@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Administrative\Roles\RoleRequest;
 use App\Models\Administrative\Roles\Role;
 use App\Models\General\Permission;
+use DB;
 
 class RoleController extends Controller
 {
@@ -333,6 +334,39 @@ class RoleController extends Controller
                "sau_permissions.id as id,
                 sau_permissions.description as name")
                 ->orderBy('name')
+            ->pluck('id', 'name');
+        
+            return $this->multiSelectFormat($roles);
+
+        }
+    }
+
+    public function multiselectDefined(Request $request)
+    {
+        if($request->has('keyword'))
+        {
+            $keyword = "%{$request->keyword}%";
+            $rol_admin = "%Admin%";
+            $roles = Role::form(false)->select("id", "name")
+                ->where('type_role', DB::raw("'Definido'"))
+                ->where('name', 'like', $rol_admin)
+                ->where(function ($query) use ($keyword) {
+                    $query->orWhere('name', 'like', $keyword);
+                })
+                ->take(30)->pluck('id', 'name');
+
+            return $this->respondHttp200([
+                'options' => $this->multiSelectFormat($roles)
+            ]);
+        }
+        else
+        {
+            $roles = Role::alls(false)->selectRaw(
+               "sau_roles.id as id,
+                sau_roles.name as name")
+            ->where('type_role', DB::raw("'Definido'"))
+            ->where('name', 'like', $rol_admin)
+            ->orderBy('name')
             ->pluck('id', 'name');
         
             return $this->multiSelectFormat($roles);

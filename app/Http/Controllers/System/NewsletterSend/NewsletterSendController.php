@@ -11,6 +11,8 @@ use App\Models\General\NewsletterSend;
 use App\Models\General\Team;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Requests\System\NewsletterSend\NewsletterSendRequest;
+use App\Http\Requests\Administrative\Configuration\ConfigurationRequest;
+use App\Facades\ConfigurationCompany\Facades\ConfigurationsCompany;
 use DB;
 use Validator;
 
@@ -248,5 +250,84 @@ class NewsletterSendController extends Controller
         return $this->respondHttp200([
             'message' => 'Se programo el envio'
         ]);
+    }
+
+    public function saveRoles(ConfigurationRequest $request)
+    {
+        $values = [];
+
+        foreach ($request->roles_newsletter as $key => $value)
+        {
+            array_push($values, $value['value']);
+        }
+
+        $value = implode(',', $values);
+
+        ConfigurationsCompany::key('roles_newsletter')->value($value)->save();
+
+        $this->saveLogActivitySystem('Sistemas - Configuración de Roles', 'Se creo o modifico la configuracion de roles para el envio de boletines');
+
+        return $this->respondHttp200([
+            'message' => 'Se actualizó la configuración'
+        ]);
+    }
+
+    /**
+     * Display the specified resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function configurationView()
+    {
+        try
+        {
+            try
+            {
+                $value = ConfigurationsCompany::company(1)->findByKey('roles_newsletter');;
+
+                if ($value)
+                {
+                    $roles = explode(',', $value);
+
+                    $multiselect = [];
+
+                    foreach ($roles as $id) 
+                    {
+                        $role = Role::find($id);
+
+                        array_push($multiselect, $role->multiselect());
+                    }
+
+                    if (isset($multiselect) && count($multiselect) > 0)
+                    {
+                        $data['roles_newsletter'] = $multiselect;
+                        $data['multiselect_roles'] = $multiselect;
+                    }
+
+                    return $this->respondHttp200([
+                        'data' => $data
+                    ]);
+                }
+                else
+                {
+                    $data['roles_newsletter'] = [];
+                    $data['multiselect_roles'] = [];
+    
+                    return $this->respondHttp200([
+                        'data' => $data
+                    ]);
+                }
+            } catch (\Exception $e) {
+                $data['roles_newsletter'] = [];
+                $data['multiselect_roles'] = [];
+
+                return $this->respondHttp200([
+                    'data' => $data
+                ]);
+            }
+            
+        } catch(Exception $e){
+            $this->respondHttp500();
+        }
     }
 }
