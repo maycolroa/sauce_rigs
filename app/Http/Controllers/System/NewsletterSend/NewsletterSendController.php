@@ -263,7 +263,24 @@ class NewsletterSendController extends Controller
 
         $value = implode(',', $values);
 
-        ConfigurationsCompany::key('roles_newsletter')->value($value)->save();
+        $configuration = ConfigurationCompany::where('key', 'roles_newsletter')->where('company_id', 1)->first();
+
+        if (!$configuration)
+        {
+            ConfigurationCompany::create([
+                'company_id' => 1,
+                'key' => 'roles_newsletter',
+                'value' => $value,
+                'observation' => 'Roles a los cuales se les enviara el boletin'
+            ]);
+        }
+        else
+        {
+            $configuration->update([
+                'value' => $value,
+                'observation' => 'Roles a los cuales se les enviara el boletin'
+            ]);
+        }
 
         $this->saveLogActivitySystem('Sistemas - Configuración de Roles', 'Se creo o modifico la configuracion de roles para el envio de boletines');
 
