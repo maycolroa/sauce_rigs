@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Storage;
 use App\Http\Requests\System\NewsletterSend\NewsletterSendRequest;
 use App\Http\Requests\Administrative\Configuration\ConfigurationRequest;
 use App\Models\Administrative\Configurations\ConfigurationCompany;
+use App\Facades\ConfigurationCompany\Facades\ConfigurationsCompany;
 use DB;
 use Validator;
 
