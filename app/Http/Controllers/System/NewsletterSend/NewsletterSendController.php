@@ -14,8 +14,10 @@ use App\Http\Requests\System\NewsletterSend\NewsletterSendRequest;
 use App\Http\Requests\Administrative\Configuration\ConfigurationRequest;
 use App\Models\Administrative\Configurations\ConfigurationCompany;
 use App\Facades\ConfigurationCompany\Facades\ConfigurationsCompany;
+use App\Facades\Mail\Facades\NotificationMail;
 use DB;
 use Validator;
+use App\Models\System\LogMails\LogMail;
 
 
 class NewsletterSendController extends Controller
@@ -347,5 +349,44 @@ class NewsletterSendController extends Controller
         } catch(Exception $e){
             $this->respondHttp500();
         }
+    }
+
+    public function reportOpensEmails(Request $request)
+    {
+        $newsletterSend = NewsletterSend::find($request->get('modelId'));
+
+        $emails = LogMail::select(
+            "sau_log_mails.id AS id",
+            "sau_log_mails.company_id AS company_id",
+            "sau_log_mails.recipients AS email",
+            "sau_users.name AS user",
+            //"sau_companies.name AS company",
+            DB::raw("case when sent_emails.opens > 0 then 'SI' else 'NO' end AS open")
+        )
+        ->withoutGlobalScopes()
+        ->join('sent_emails', 'sent_emails.message_id', 'sau_log_mails.message_id')
+        ->join('sau_companies', 'sau_companies.id', 'sau_log_mails.company_id')
+        ->join('sau_users', 'sau_users.email', 'sau_log_mails.recipients')
+        ->where('sau_log_mails.module_id', 1)
+        ->where('sau_log_mails.event', DB::raw("'Tarea programada: SendNewsletterEmail'"))
+        ->where('sau_log_mails.subject', $newsletterSend->subject);
+        
+        return Vuetable::of($emails)->make();
+    }
+
+    public function sendMailManual(NewsletterSend $newsletter)
+    {
+        $newsletter->path = Storage::disk('s3')->url('newsletters/'. $newsletter->image);
+
+        NotificationMail::
+            subject($newsletter->subject)
+            ->view('system.newsletters.newsletter')
+            ->recipients($this->user)
+            ->module('users')
+            ->event('Prueba: SendNewsletterEmail')
+            ->with(['data' => $newsletter])
+            ->company(1)
+            ->send();
+
     }
 }

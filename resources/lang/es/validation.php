@@ -371,7 +371,8 @@ return [
       'mechanism_id' => 'Mecanismo',
       'site_id' => 'Sitio',
       'agent_id' => 'Agente',
-      'start_incapacitated' => 'Fecha Inicio Incapacidad'
+      'start_incapacitated' => 'Fecha Inicio Incapacidad',
+      'subject' => 'El Asunto'
     ],
 
 ];

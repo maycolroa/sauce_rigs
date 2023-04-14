@@ -90,7 +90,11 @@ class NewsletterInformationCalculate extends Command
                             'state' => false
                         ]
                     );
-                }                
+                }      
+                
+                $news->update([
+                    'send' => true
+                ]);
             }
         }
     }

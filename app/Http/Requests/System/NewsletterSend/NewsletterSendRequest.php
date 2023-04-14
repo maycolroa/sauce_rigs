@@ -27,8 +27,10 @@ class NewsletterSendRequest extends FormRequest
      */
     public function rules()
     {
+        $id = $this->input('id');
+
         $rules = [
-            'subject' => 'required',
+            'subject' => 'required|unique:sau_newsletters_sends,subject,'.$id.',id',
             //'image' => [new FileFormat(['png'])],
         ];
 

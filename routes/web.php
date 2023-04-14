@@ -885,6 +885,8 @@ Route::middleware(['auth'])->group(function () {
       Route::put('newsletterSend/program/{newsletter}', 'System\NewsletterSend\NewsletterSendController@programSend');
       Route::post('newsletterSend/saveRoles/', 'System\NewsletterSend\NewsletterSendController@saveRoles');
       Route::get('newsletterSend/configuration/view', 'System\NewsletterSend\NewsletterSendController@configurationView');
+      Route::post('newsletterSend/data/opens', 'System\NewsletterSend\NewsletterSendController@reportOpensEmails');
+      Route::post('newsletterSend/sendMailManual/{newsletter}', 'System\NewsletterSend\NewsletterSendController@sendMailManual');
 
       Route::post('logMail/data', 'System\LogMails\LogMailController@data');
       Route::ApiResource('logMail', 'System\LogMails\LogMailController');

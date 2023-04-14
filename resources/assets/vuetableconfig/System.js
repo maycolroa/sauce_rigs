@@ -482,6 +482,19 @@ export default [
                     id: 'id'
                 },
                 permission: 'newsletterSend_r'
+            },
+            {
+                config: {
+                    color: 'outline-info',
+                    borderless: true,
+                    icon: 'ion ion-md-list',
+                    title: 'Ver Usuarios Receptores'
+                },
+                data: {
+                    routePush: { name: 'system-newslettersend-opens' },
+                    id: 'id',
+                },
+                permission: 'newsletterSend_r'
             }]
         },
         {
@@ -501,11 +514,49 @@ export default [
                         messageConfirmation: 'Esta seguro de querer cambiar el estado de __name__'
                     },
                     permission: 'newsletterSend_u'
-                }
+                },
+                {
+                    name: 'retrySendMail',
+                    config: {
+                        color: 'outline-danger',
+                        borderless: true,
+                        icon: 'ion ion-ios-mail',
+                        title: 'Enviarme boletin'
+                    },
+                    data: {
+                        action: '/system/newsletterSend/sendMailManual/',
+                        id: 'id',
+                        messageConfirmation: 'Esta seguro de enviarse el boletin'
+                    },
+                    permission: 'newsletterSend_u'
+                },
             ],
         }],
         configuration: {
             urlData: '/system/newsletterSend/data',
+            filterColumns: true,
+        }
+    },
+    {
+        name: 'system-newslettersend-opens',
+        fields: [
+            { name: 'id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true },
+            { name: 'user', data: 'user', title: 'Usuario', sortable: true, searchable: true, detail: false, key: false },
+            { name: 'email', data: 'email', title: 'Email', sortable: true, searchable: true, detail: false, key: false },
+            //{ name: 'company', data: 'company', title: 'Compañia', sortable: true, searchable: true, detail: false, key: false },
+            { name: 'open', data: 'open', title: '¿Abierto?', sortable: true, searchable: true, detail: false, key: false },
+            { name: '', data: 'controlls', title: 'Controles', sortable: false, searchable: false, detail: false, key: false },
+        ],
+        'controlls': [{
+            type: 'push',
+            buttons: []
+        },
+        {
+            type: 'base',
+            buttons: [],
+        }],
+        configuration: {
+            urlData: '/system/newsletterSend/data/opens',
             filterColumns: true,
         }
     },
