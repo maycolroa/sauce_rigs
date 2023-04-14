@@ -41,6 +41,8 @@ class Kernel extends ConsoleKernel
         'App\Console\Commands\NotifyReportsOpenConfig',
         'App\Console\Commands\ReincPendienteResumen',
         'App\Console\Commands\ReportGroupCompany',
+        'App\Console\Commands\NewsletterInformationCalculate',
+        'App\Console\Commands\SendNewsletterEmail',
         //'App\Console\Commands\RememberRepeatInspetion'
     ];
 
@@ -171,6 +173,18 @@ class Kernel extends ConsoleKernel
         $schedule->command('notify-reports-open-config')
             ->timezone('America/Bogota')
             ->dailyAt('4:00');
+        
+        $schedule->command('newsletter-information-calculate')
+            ->timezone('America/Bogota')
+            ->cron('*/60 * * * *');
+
+        $schedule->command('send-newsletter-email')
+            ->timezone('America/Bogota')
+            ->cron('*/2 * * * *');
+
+        $schedule->command('license-report-send')
+            ->timezone('America/Bogota')
+            ->cron('0 8 1 1-12/1 *');
     }
 
     /**
