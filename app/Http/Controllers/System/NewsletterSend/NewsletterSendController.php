@@ -301,7 +301,7 @@ class NewsletterSendController extends Controller
         {
             try
             {
-                $value = ConfigurationsCompany::company(1)->findByKey('roles_newsletter');;
+                $value = ConfigurationsCompany::company(1)->findByKey('roles_newsletter');
 
                 if ($value)
                 {

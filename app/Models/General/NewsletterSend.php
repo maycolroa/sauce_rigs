@@ -28,4 +28,9 @@ class NewsletterSend extends Model
     {
         return $this->active;
     }
+
+    public function isSend()
+    {
+        return $this->send;
+    }
 }
