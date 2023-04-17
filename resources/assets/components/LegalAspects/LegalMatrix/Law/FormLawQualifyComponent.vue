@@ -42,6 +42,18 @@
       </b-card-header>
       <b-collapse :id="`accordion-articles`" visible :accordion="`accordion-master`">
         <b-card-body>
+          <div class="media-body line-height-condenced ml-3">
+              <div class="text-dark">
+                <label>Buscar Artículo</label>
+                <b-input 
+                  placeholder="Buscar..." 
+                  type="text"
+                  autocomplete="off"
+                  v-model="searchArticles"
+                  />
+              </div>
+          </div>
+          <br><br>
           <blockquote class="blockquote">
             <p class="mb-0">Filtrar por:</p>
           </blockquote>
@@ -378,6 +390,10 @@ export default {
           }, 3000);
         }
       }
+    },
+    'searchArticles' : function() {
+      console.log(this.searchArticles)
+      this.searchOptions();
     }
   },
   computed: {
@@ -415,7 +431,8 @@ export default {
       siNoRadio: [
           {text: 'SI', value: 'SI'},
           {text: 'NO', value: 'NO'}
-        ]
+      ],
+      searchArticles: ''
     };
   },
   mounted() {
@@ -515,6 +532,45 @@ export default {
 		},
     closeModalHistory() {
       this.idHistory = ''
+    },
+    searchOptions() {
+      this.currentShow = 0;
+      this.totalShow = 0;
+
+      _.forIn(this.form.articles, (article) => {
+        let show = true;
+        article.show_article_real = false;
+
+        if (this.currentShow == this.limitShowArticles)
+        {
+          show = false;
+
+          if (!article.description.toLowerCase().includes(this.searchArticles.toLowerCase()))
+          {
+            this.totalShow++;
+            article.show_article_real = true;
+          }
+        }
+        else if (!article.description.toLowerCase().includes(this.searchArticles.toLowerCase()))
+        {
+            show = false;
+        } 
+        else
+        {
+          this.totalShow++;
+          article.show_article_real = true;
+        }
+
+        article.show_article = show;
+        article.key = !show ? new Date().getTime() + Math.round(Math.random() * 10000) : article.key;
+        this.currentShow += show ? 1 : 0;
+      });
+
+      setTimeout(() => {
+        this.$nextTick(() => {
+          this.loading = false;
+        });
+      }, 2000)
     },
     builderFilterQualificationOptions() {
       this.filterQualificationOptions.splice(0);
