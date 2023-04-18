@@ -239,11 +239,13 @@ class NotifyExpiredAbsenteeism extends Command
                                 }
                             }
                         }
-                        else if ($company_get->id == 499)
+                        /*else if ($company_get->id == 499)
                         {
                             $fecha_max = Carbon::parse($record->FechaFinal)->format('Y-m-d');
                             $fecha_ini = Carbon::parse($record->FechaInicial)->format('Y-m-d');
                             $days = $record->Dias;
+                            $month = $record->Mes;
+                            $anio = $record->Anio;
 
                             if ($fecha_max > Carbon::now()->format('Y-m-d'))
                             {
@@ -304,7 +306,7 @@ class NotifyExpiredAbsenteeism extends Command
                                     }
                                 }
                             }
-                        }
+                        }*/
                     }
                 }
                 else
