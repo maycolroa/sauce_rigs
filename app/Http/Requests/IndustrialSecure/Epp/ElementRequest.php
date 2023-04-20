@@ -46,10 +46,13 @@ class ElementRequest extends FormRequest
 
         if ($this->has('applicable_standard'))
         {
-            foreach ($this->input('applicable_standard') as $key => $value)
+            if (is_array($this->input('applicable_standard')) && count($this->input('applicable_standard')) > 0)
             {
-                $data['applicable_standard'][$key] = json_decode($value, true);
-                $this->merge($data);
+                foreach ($this->input('applicable_standard') as $key => $value)
+                {
+                    $data['applicable_standard'][$key] = json_decode($value, true);
+                    $this->merge($data);
+                }
             }
         }
 
@@ -72,6 +75,7 @@ class ElementRequest extends FormRequest
      */
     public function rules()
     {
+        \Log::info($this);
         $id = $this->input('id');
         //\Log::info($this->all());
 
