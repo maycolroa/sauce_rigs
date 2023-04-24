@@ -210,7 +210,7 @@ export default [
                     title: 'Ver'
                 },
                 data: {
-                    routePush: { name: 'industrialsecure-dangermatrix-view' },
+                    routePush: { name: 'industrialsecure-dangermatrix-report-detail' },
                     id: 'id',
                 },
                 permission: 'dangerMatrix_r'

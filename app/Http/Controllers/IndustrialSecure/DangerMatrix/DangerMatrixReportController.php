@@ -8,8 +8,13 @@ use App\Vuetable\Facades\Vuetable;
 use App\Models\IndustrialSecure\DangerMatrix\QualificationCompany;
 use App\Models\IndustrialSecure\DangerMatrix\DangerMatrix;
 use App\Jobs\IndustrialSecure\DangerMatrix\DangerMatrixReportExportJob;
+use App\Models\IndustrialSecure\DangerMatrix\DangerMatrixActivity;
+use App\Models\IndustrialSecure\DangerMatrix\ActivityDanger;
 use App\Traits\DangerMatrixTrait;
 use App\Traits\Filtertrait;
+use Carbon\Carbon;
+use DB;
+
 
 class DangerMatrixReportController extends Controller
 {
@@ -229,9 +234,10 @@ class DangerMatrixReportController extends Controller
         /***********************************************/
 
         $dangers = DangerMatrix::select(
-            'sau_dangers_matrix.id AS id',
+            'sau_dangers_matrix.id AS id2',
             'sau_dm_dangers.name AS name',
             'sau_dm_activity_danger.danger_description AS danger_description',
+            'sau_dm_activity_danger.id AS id',
             'sau_employees_regionals.name as regional',
             'sau_employees_headquarters.name as headquarter',
             'sau_employees_processes.name as process',
@@ -289,5 +295,68 @@ class DangerMatrixReportController extends Controller
         } catch(Exception $e) {
             return $this->respondHttp500();
         }
+    }
+
+
+    public function reportDetail($id)
+    {
+        $danger = ActivityDanger::find($id);
+
+        $danger->key = Carbon::now()->timestamp + rand(1,10000);
+        $danger->multiselect_danger = $danger->danger->multiselect();
+
+        $qualificationsData = [];
+
+        foreach ($danger->qualifications as $keyQ => $itemQ)
+        {
+            $qualificationsData[$itemQ->type_id] = ["value_id"=>$itemQ->value_id, "type_id"=>$itemQ->type_id];
+        }
+
+        $danger->qualificationsData = $qualificationsData;
+
+        $danger_activity = DangerMatrixActivity::find($danger->dm_activity_id);
+
+        $dangerMatrix = DangerMatrix::findOrFail($danger_activity->danger_matrix_id);
+
+        if ($dangerMatrix->approved == true)
+            $dangerMatrix->approved = 'SI';
+        else
+            $dangerMatrix->approved = 'NO';
+
+        $dangerMatrix->activitiesRemoved = [];
+        $dangerMatrix->locations = $this->prepareDataLocationForm($dangerMatrix);
+        $dangerMatrix->changeHistory = '';
+
+        $dangerMatrix->add_fields = [];
+
+        foreach ($dangerMatrix->activities as $keyActivity => $itemActivity)
+        {   
+            $itemActivity->key = Carbon::now()->timestamp + rand(1,10000);
+            $itemActivity->dangersRemoved = [];
+            $itemActivity->multiselect_activity = $itemActivity->activity->multiselect();
+
+            foreach ($itemActivity->dangers as $keyDanger => $itemDanger)
+            {
+                $itemDanger->key = Carbon::now()->timestamp + rand(1,10000);
+                $itemDanger->multiselect_danger = $itemDanger->danger->multiselect();
+
+                $qualificationsData = [];
+
+                foreach ($itemDanger->qualifications as $keyQ => $itemQ)
+                {
+                    $qualificationsData[$itemQ->type_id] = ["value_id"=>$itemQ->value_id, "type_id"=>$itemQ->type_id];
+                }
+
+                $itemDanger->qualificationsData = $qualificationsData;
+            }
+        }
+
+        return $this->respondHttp200([
+            'data' => [
+                'form' => $dangerMatrix,
+                'danger' => $danger
+            ]
+        ]);
+
     }
 }
