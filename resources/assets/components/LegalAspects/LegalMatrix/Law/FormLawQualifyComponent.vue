@@ -64,6 +64,7 @@
                     </vue-advanced-select>
             <vue-advanced-select @change="resetReloadShowArticles" class="col-md-4" v-model="filterInterests" :multiple="true" :options="filterInterestsOptions" :allowEmpty="true" name="filterInterests" label="Intereses" placeholder="Seleccione los intereses">
                     </vue-advanced-select>
+            <label><strong>IMPORTANTE: Si tiene un filtro aplicado sobre los artículos, se aplicará la evaluación solo en los artículos filtrados.</strong></label>
           </b-form-row>
           <blockquote class="blockquote text-center">
             <p class="mb-0">Artículos de la norma | <b-btn v-if="isEdit" variant="primary" size="sm" @click="$refs.modalQualificationAll.show()" ><span class="ion ion-md-clipboard"></span> Evaluar todos </b-btn></p>
