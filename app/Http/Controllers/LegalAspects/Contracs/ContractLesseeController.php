@@ -537,6 +537,7 @@ class ContractLesseeController extends Controller
             ")
             ->where(function ($query) use ($keyword) {
                 $query->orWhere('nit', 'like', $keyword);
+                $query->orWhere('social_reason', 'like', $keyword);
             });
 
             if ($this->user->hasRole('Arrendatario', $this->team) || $this->user->hasRole('Contratista', $this->team))
