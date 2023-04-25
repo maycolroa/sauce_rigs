@@ -46,7 +46,7 @@ class StartIncapacitated implements Rule
                     }
                 }
                 else {
-                    return false;
+                    return true;
                 }
             } else {
                 return true;
