@@ -315,6 +315,7 @@ class DangerMatrixReportController extends Controller
         $danger->qualificationsData = $qualificationsData;
 
         $danger_activity = DangerMatrixActivity::find($danger->dm_activity_id);
+        $danger_activity->multiselect_activity = $danger_activity->activity->multiselect();
 
         $dangerMatrix = DangerMatrix::findOrFail($danger_activity->danger_matrix_id);
 
@@ -354,7 +355,8 @@ class DangerMatrixReportController extends Controller
         return $this->respondHttp200([
             'data' => [
                 'form' => $dangerMatrix,
-                'danger' => $danger
+                'danger' => $danger,
+                'activity' => $danger_activity
             ]
         ]);
 

@@ -16,9 +16,11 @@
                 :view-only="true"
                 :danger="danger"
                 :danger-generated="dangerGenerated"
+                :type-activities="typeActivities"
                 :si-no="siNo"
                 :qualifications="qualifications"
                 :form="data"
+                :activity="activity"
                 :configuration="configuration"
               />
           </div>
@@ -50,6 +52,7 @@ export default {
       siNo: [],
       qualifications: [],
       data: [],
+      activity: [],
       danger: [],
       configuration: [],      
       ready: false
@@ -60,7 +63,7 @@ export default {
     .then(response => {
         this.danger = response.data.data.danger;
         this.data = response.data.data.form;
-        this.fields = response.data.data.add_fields;
+        this.activity = response.data.data.activity;
 
         axios.get('/administration/configuration/view')
         .then(response2 => {
