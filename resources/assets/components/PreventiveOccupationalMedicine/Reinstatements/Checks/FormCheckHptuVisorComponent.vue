@@ -49,7 +49,7 @@
             <vue-advanced-select :disabled="viewOnly" class="col-md-6 offset-md-3" v-model="form.disease_origin" :error="form.errorsFor('disease_origin')" :multiple="false" :options="diseaseOrigins" :hide-selected="false" name="disease_origin" :label="keywordCheck('disease_origin')" placeholder="Seleccione una opción">
                 </vue-advanced-select>
           </b-form-row>
-          <b-form-row>
+          <!--<b-form-row>
             <vue-ajax-advanced-select :disabled="viewOnly" class="col-md-12" v-model="form.cie10_code_id" :error="form.errorsFor('cie10_code_id')" :selected-object="form.multiselect_cie10Code" name="cie10_code_id" label="Código CIE 10" placeholder="Seleccione una opción" :url="cie10CodesDataUrl"> </vue-ajax-advanced-select>
           </b-form-row>
           <b-form-row>
@@ -59,7 +59,7 @@
           <b-form-row>
             <vue-advanced-select :disabled="viewOnly" class="col-md-6 offset-md-3" v-model="form.laterality" :error="form.errorsFor('laterality')" :multiple="false" :options="lateralities" :hide-selected="false" name="laterality" label="Lateralidad" placeholder="Seleccione una opción">
                 </vue-advanced-select>
-          </b-form-row>
+          </b-form-row>-->
 
           <div class="col-md-12" style="padding-left: 15px; padding-right: 15px;">
             <hr class="border-dark container-m--x mt-0 mb-4">
@@ -78,14 +78,14 @@
             <hr class="border-dark container-m--x mt-0 mb-4">
           </div>
           
-          <b-form-row>
+          <!--<b-form-row>
             <div class="col-md-12">
                 <monitoring-selector :disabled="viewOnly" :options="laborConclusions" ref="laborMonitoring" :monitoring-registered="check.labor_monitorings">
                     <template slot="monitoring-label">Fecha Seguimiento Laboral</template>
                     <template slot="conclusion-label">Conclusión Seguimiento Laboral</template>
                 </monitoring-selector>
             </div>
-          </b-form-row>
+          </b-form-row>-->
 
           <div class="col-md-12" style="padding-left: 15px; padding-right: 15px;">
             <hr class="border-dark container-m--x mt-0 mb-4">
