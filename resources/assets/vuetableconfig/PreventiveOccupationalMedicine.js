@@ -1128,7 +1128,7 @@ export default [
                 color: 'outline-success',
                 borderless: true,
                 icon: 'ion ion-md-clipboard',
-                title: 'Generar Carta'
+                title: 'Consultar Carta'
             },
             data: {
                 action: '/biologicalmonitoring/reinstatements/check/generatePdf/',

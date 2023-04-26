@@ -1325,6 +1325,7 @@ class CheckController extends Controller
             'subject' => $record_letter->subject, 
             'user' => $record_letter->user ? $record_letter->user : $this->user,
             'check' => $check,
+            'firm_user' => $this->user->firm ? Storage::disk('s3')->url('administrative/firms_users/'. $this->user->id . '/' . $this->user->firm) : null,
             'date' => $record_letter->send_date,
             'income_date' => $check->income_date,
             'observations_recommendatiosn' => $check->Observations_recommendatios,
