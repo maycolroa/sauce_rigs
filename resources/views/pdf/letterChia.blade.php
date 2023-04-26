@@ -72,7 +72,8 @@
                     <center>__________________________________</center>
                     <center>Firma Director Gestión Humana:</center>
                 </td>
-            </tr><tr style="padding-top: 15px;">
+            </tr>
+            <tr style="padding-top: 15px;">
                 <td style="padding-top: 15px; text-align: letf;">
                     <br><br>
                     <center>__________________________________</center>
@@ -84,6 +85,16 @@
                     <center>Firma Supervisor:</center>
                 </td>
             </tr>
+            @if($firm_user)
+            <tr style="padding-top: 15px;">
+                <td colspan="2" style="padding-top: 15px;">
+                    <center>
+                        <img src="{{$firm_user}}" width="150px" height="75px"/>
+                    </center>
+                    <p style="text-align: center; font-size: 12px;"><b>{{ $user->name }}</b><p>
+                </td>
+            </tr>
+            @endif
         </table>
     </div>
 </body>

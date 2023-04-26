@@ -741,6 +741,10 @@ class CheckController extends Controller
         $check->now = Carbon::parse($now, 'UTC')->isoFormat('ll');
 
         $company = Company::select('logo')->where('id', $this->company)->first();
+        $firm_path = [
+            'firm' => $this->user->firm ? Storage::disk('s3')->url('administrative/firms_users/'. $this->user->id . '/' . $this->user->firm) : null,
+            'name' => $this->user->name
+        ];
         $new_date_tracing = $request->new_date_tracing ? (Carbon::createFromFormat('D M d Y', $request->new_date_tracing))->format('Y-m-d') : '';
 
         $data = [
@@ -748,7 +752,8 @@ class CheckController extends Controller
             'new_date_tracing' => $new_date_tracing,
             'tracing_description' => $request->tracing_description,
             'check' => $check,
-            'logo' => ($company && $company->logo) ? $company->logo : null
+            'logo' => ($company && $company->logo) ? $company->logo : null,
+            'firm' =>  $firm_path
         ];
 
         PDF::setOptions(['dpi' => 150, 'defaultFont' => 'sans-serif']);
@@ -804,10 +809,16 @@ class CheckController extends Controller
 
         $company = Company::select('logo')->where('id', $this->company)->first();
 
+        $firm_path = [
+            'firm' => $this->user->firm ? Storage::disk('s3')->url('administrative/firms_users/'. $this->user->id . '/' . $this->user->firm) : null,
+            'name' => $this->user->name
+        ];
+
         $data = [
             'tracings' => $tracings,
             'check' => $check,
-            'logo' => ($company && $company->logo) ? $company->logo : null
+            'logo' => ($company && $company->logo) ? $company->logo : null,
+            'firm' =>  $firm_path
         ];
 
         PDF::setOptions(['dpi' => 150, 'defaultFont' => 'sans-serif']);
@@ -890,6 +901,7 @@ class CheckController extends Controller
             'date' => $date,
             'income_date' => $check->income_date,
             'firm' => $request->firm,
+            'firm_user' => $this->user->firm ? Storage::disk('s3')->url('administrative/firms_users/'. $this->user->id . '/' . $this->user->firm) : null,
             'recommendations' => $this->replaceLast(',', ' y ', $request->selectedRecommendations),
             'observations_recommendatiosn' => $check->Observations_recommendatios,
             'logo' => ($company && $company->logo) ? $company->logo : null

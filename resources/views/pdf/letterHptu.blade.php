@@ -52,7 +52,14 @@
         
     @endif
     <br/><br/><br/><br/><br/><br/><br/>
+    @if($firm_user)
+    <center>
+        <img src="{{$firm_user}}" width="150px" height="75px"/>
+    </center>
+    <p style="text-align: center; font-size: 12px;"><b>{{ $user->name }}</b><p>
+    @else
     <p><b>{{$user->name}}</b>
+    @endif
     <br>
     <b>{{$user->medical_record ? "Registro Médico: " . $user->medical_record : ''}}</b>
     <br>

@@ -273,6 +273,16 @@
                 <td style="border: 0px solid #dddddd; text-align: left; padding: 0px">Cargo</td>
                 <td style="border: 0px solid #dddddd; text-align: left; padding: 0px">Cargo</td>
             </tr>
+            @if($firm)
+            <tr style="padding-top: 15px;">
+                <td colspan="2" style="padding-top: 15px;">
+                    <center>
+                        <img src="{{$firm['firm']}}" width="150px" height="75px"/>
+                    </center>
+                    <p style="text-align: center; font-size: 12px;"><b>{{ $firm['name'] }}</b><p>
+                </td>
+            </tr>
+            @endif
         </table>
     </div>
     <br>

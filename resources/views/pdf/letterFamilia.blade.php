@@ -105,6 +105,16 @@
                 <td style="border: 0px solid #dddddd; text-align: left; padding: 0px">Cargo</td>
                 <td style="border: 0px solid #dddddd; text-align: left; padding: 0px">Cargo</td>
             </tr>
+            @if($firm_user)
+            <tr style="padding-top: 15px;">
+                <td colspan="2" style="padding-top: 15px;">
+                    <center>
+                        <img src="{{$firm_user}}" width="150px" height="75px"/>
+                    </center>
+                    <p style="text-align: center; font-size: 12px;"><b>{{ $user->name }}</b><p>
+                </td>
+            </tr>
+            @endif
         </table>
     </div>
 </body>

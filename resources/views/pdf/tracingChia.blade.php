@@ -121,7 +121,7 @@
     @endif
 
     <br>
-    <center><b>Seguimientos: </b></center><br>
+    <center><b>Seguimientos: </b></center>
     {!!$tracing_description!!}<br><br>
 
     <table style="width: 100%">
@@ -170,6 +170,16 @@
                 <center>Firma Supervisor:</center>
             </td>
         </tr>
+        @if($firm)
+        <tr style="padding-top: 15px;">
+            <td colspan="2" style="padding-top: 15px;">
+                <center>
+                    <img src="{{$firm['firm']}}" width="150px" height="75px"/>
+                </center>
+                <p style="text-align: center; font-size: 12px;"><b>{{ $firm['name'] }}</b><p>
+            </td>
+        </tr>
+        @endif
     </table>
     <br>
     <div id="abajo" align="center" style="text-align: right;">

@@ -95,8 +95,15 @@ class IncomeController extends Controller
                         $balance = ElementBalanceLocation::where('element_id', $element->id)
                         ->where('location_id', $request->location_id)->first();
 
-                        $reason = $this->tagsPrepare($value['reason']);
-                        $this->tagsSave($reason, TagReason::class);
+                        if (isset($value['reason']) && $value['reason'])
+                        {
+                            $reason = $this->tagsPrepare($value['reason']);
+                            $this->tagsSave($reason, TagReason::class);
+                        }
+                        else
+                        {
+                            $reason = [];
+                        }
 
                         $elements_sync = [];
 
@@ -105,7 +112,7 @@ class IncomeController extends Controller
                         $detail->company_id = $this->company;
                         $detail->element_id = $element->id;
                         $detail->location_id = $request->location_id;
-                        $detail->reason = $reason->implode(',');
+                        $detail->reason = COUNT($reason) > 0 ? $reason->implode(',') : NULL;
 
                         if ($element->identify_each_element)
                         {

@@ -76,6 +76,16 @@
             <td>CARGO</td>
             <td colpan="2"></td>
         </tr>
+        @if($firm_user)
+            <tr style="padding-top: 15px;">
+                <td colspan="6" style="padding-top: 15px;">
+                    <center>
+                        <img src="{{$firm_user}}" width="150px" height="75px"/>
+                    </center>
+                    <p style="text-align: center; font-size: 12px;"><b>{{ $user->name }}</b><p>
+                </td>
+            </tr>
+        @endif
     </table>
 
 </body>
