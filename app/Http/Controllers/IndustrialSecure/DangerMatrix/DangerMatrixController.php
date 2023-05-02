@@ -210,8 +210,10 @@ class DangerMatrixController extends Controller
 
         try
         { 
+            $keywords = $this->user->getKeywords();
 
             $confLocation = $this->getLocationFormConfModule();
+            $details_log = 'Se elimino la matriz de peligros ubicada en:';
 
             foreach ($dangersMatrix->activities as $keyActivity => $itemActivity)
             {  
@@ -241,6 +243,7 @@ class DangerMatrixController extends Controller
 
         } catch (\Exception $e) {
             DB::rollback();
+            \Log::info($e->getMessage());
             return $this->respondHttp500();
             //return $e->getMessage();
         }

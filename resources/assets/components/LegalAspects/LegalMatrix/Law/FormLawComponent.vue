@@ -308,8 +308,8 @@ export default {
         .then(response => {
           this.loading = false;
 
-          if (redirect)
-            this.$router.go(-1);
+          if (redirect)            
+				    this.$router.push({ name: "legalaspects-lm-law" });
           else
           {
             _.forIn(response.data.data, (value, key) => {

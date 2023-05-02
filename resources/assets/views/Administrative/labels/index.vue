@@ -15,6 +15,9 @@
           </div>
         </b-card-header>
         <b-card-body>
+          <template>
+            <p><b>Nota:</b>Las etiquetas pertenecientes a los niveles de locación se deben configurar en plural y singular.</p>
+          </template>
              <vue-table
                 configName="administrative-labels"
                 v-if="auth.can['customLabels_r']"

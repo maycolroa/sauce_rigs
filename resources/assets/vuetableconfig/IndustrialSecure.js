@@ -1222,7 +1222,7 @@ export default [
     fields: [
         { name: 'sau_epp_transactions_employees.id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true },
         { name: 'sau_epp_transactions_employees.created_at', data: 'created_at', title: 'Fecha', sortable: true, searchable: true, detail: false, key: false },
-        { name: 'employee', data: 'employee', title: 'Empleado', sortable: true, searchable: true, detail: false, key: false },
+        { name: 'sau_employees.name', data: 'employee', title: 'Empleado', sortable: true, searchable: true, detail: false, key: false },
         { name: 'sau_employees_positions.name', data: 'position', title: 'Cargo', sortable: true, searchable: true, detail: false, key: false },
         { name: 'sau_epp_elements.name', data: 'elements', title: 'Elementos', sortable: true, searchable: true, detail: false, key: false },
         { name: '', data: 'controlls', title: 'Controles', sortable: false, searchable: false, detail: false, key: false },

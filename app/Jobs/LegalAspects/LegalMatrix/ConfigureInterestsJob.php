@@ -45,6 +45,8 @@ class ConfigureInterestsJob implements ShouldQueue
 
       $this->syncQualificationsCompany($this->company_id);
 
+      UpdateQualificationsRepeleadCompany::dispatch($this->company_id);
+
       $users = User::select('sau_users.*')
                 ->active()
                 ->join('sau_company_user', 'sau_company_user.user_id', 'sau_users.id');      

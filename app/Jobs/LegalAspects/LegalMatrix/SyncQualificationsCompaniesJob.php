@@ -8,6 +8,8 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use App\Traits\LegalMatrixTrait;
+use App\Models\LegalAspects\LegalMatrix\Law;
+use App\Jobs\LegalAspects\LegalMatrix\UpdateQualificationsRepelead;
 
 class SyncQualificationsCompaniesJob implements ShouldQueue
 {
@@ -32,5 +34,12 @@ class SyncQualificationsCompaniesJob implements ShouldQueue
     public function handle()
     {
       $this->syncQualificationsCompanies($this->law_id);
+
+      $law = Law::find($this->law_id);
+
+      if ($law->repealed == 'SI')
+      {
+          UpdateQualificationsRepelead::dispatch($law);
+      }
     }
 }

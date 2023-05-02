@@ -2,7 +2,7 @@
     <b-row>
         <b-col>
             <b-form :action="url" @submit.prevent="submit" autocomplete="off">
-				<b-card border-variant="primary" title="Datos Responsable del Contratista" class="mb-3 box-shadow-none" v-if="!isEdit && !viewOnly">
+				<b-card border-variant="primary" title="Datos Responsable SST Empresa Contratista" class="mb-3 box-shadow-none" v-if="!isEdit && !viewOnly">
                     <b-form-row>
                         <vue-input :disabled="viewOnly" class="col-md-6" v-model="form.name" label="Nombre" type="text" name="name" :error="form.errorsFor('name')" placeholder="Nombre"></vue-input>
                         <vue-input :disabled="viewOnly" class="col-md-6" v-model="form.document" label="Documento" type="text" name="document" :error="form.errorsFor('document')" placeholder="Documento"></vue-input>
