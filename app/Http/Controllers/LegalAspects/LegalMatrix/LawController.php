@@ -626,82 +626,84 @@ class LawController extends Controller
             {
                 return $this->respondWithError("Está norma es de Sauce no puede calificarse como 'No vigente'");
             }
-
-            $path = 'fulfillments/'.$this->company."/";
-
-            $nameFile = NULL;
-
-            $qualification = ArticleFulfillment::whereIn('id', $ids)
-            ->update([
-                'fulfillment_value_id' => $request->fulfillment_value_id ? $request->fulfillment_value_id : NULL,
-                'observations' => $request->observations ? $request->observations : NULL,
-                'responsible' => $request->responsible ? $request->responsible : NULL,
-                'workplace' => $request->workplace ? $request->workplace : NULL,
-                'qualification_masive' => true,
-                'hide' => $request->hide ? $request->hide : 'NO'
-            ]);
-
-            $article_qualify = ArticleFulfillment::find($ids[0]);
-            $article_law = Article::find($article_qualify->article_id);
-            $law = Law::find($article_law->law_id);
-
-            if ($request->hide == 'SI')
-            {
-                $law_hide = LawHide::updateOrCreate(['company_id' => $this->company, 'law_id' => $law->id], ['company_id' => $this->company, 'law_id' => $law->id, 'user_id' => $this->user->id]);
-            }
             else
             {
-                $law_hide = LawHide::where('company_id', $this->company)
-                ->where('law_id', $law->id)
-                ->first();
+                $path = 'fulfillments/'.$this->company."/";
 
-                if ($law_hide)
-                    $law_hide->delete();
-            }
+                $nameFile = NULL;
 
-            if ($request->file)
-            {
-                $file = $request->file;
-                $nameFile = base64_encode($this->user->id . now() . rand(1,10000)) .'.'. $file->extension();
-                $file->storeAs($path, $nameFile, 's3_MLegal');
-                $data['file'] = $nameFile;
-                $data['old_file'] = $nameFile;
-
-                $qualification_file = ArticleFulfillment::whereIn('id', $ids)
+                $qualification = ArticleFulfillment::whereIn('id', $ids)
                 ->update([
-                    'file' => $nameFile
+                    'fulfillment_value_id' => $request->fulfillment_value_id ? $request->fulfillment_value_id : NULL,
+                    'observations' => $request->observations ? $request->observations : NULL,
+                    'responsible' => $request->responsible ? $request->responsible : NULL,
+                    'workplace' => $request->workplace ? $request->workplace : NULL,
+                    'qualification_masive' => true,
+                    'hide' => $request->hide ? $request->hide : 'NO'
                 ]);
+
+                $article_qualify = ArticleFulfillment::find($ids[0]);
+                $article_law = Article::find($article_qualify->article_id);
+                $law = Law::find($article_law->law_id);
+
+                if ($request->hide == 'SI')
+                {
+                    $law_hide = LawHide::updateOrCreate(['company_id' => $this->company, 'law_id' => $law->id], ['company_id' => $this->company, 'law_id' => $law->id, 'user_id' => $this->user->id]);
+                }
+                else
+                {
+                    $law_hide = LawHide::where('company_id', $this->company)
+                    ->where('law_id', $law->id)
+                    ->first();
+
+                    if ($law_hide)
+                        $law_hide->delete();
+                }
+
+                if ($request->file)
+                {
+                    $file = $request->file;
+                    $nameFile = base64_encode($this->user->id . now() . rand(1,10000)) .'.'. $file->extension();
+                    $file->storeAs($path, $nameFile, 's3_MLegal');
+                    $data['file'] = $nameFile;
+                    $data['old_file'] = $nameFile;
+
+                    $qualification_file = ArticleFulfillment::whereIn('id', $ids)
+                    ->update([
+                        'file' => $nameFile
+                    ]);
+                }
+                
+                if ($request->has('actionPlan') && count($request->actionPlan['activities']) > 0)
+                {
+                    $detail_procedence = 'Mátriz Legal - Norma: ' . $article_qualify->article->law->name . '. - ' . 'Artículo: ' . $article_qualify->article->description . '.';
+
+                    ActionPlan::user($this->user)
+                    ->module('legalMatrix')
+                    ->url(url('/administrative/actionplans'))
+                    ->model($article_qualify)
+                    ->detailProcedence($detail_procedence)
+                    ->activities($request->actionPlan)
+                    ->save();
+                }
+
+                foreach ($ids as $id) 
+                {
+                    $article = ArticleFulfillment::find($id);
+
+                    $article->histories()->create([
+                        'user_id' => $this->user->id,
+                        'fulfillment_value' => $article->fulfillment_value ? $article->fulfillment_value->name : NULL,
+                        'observations' => $article->observations
+                    ]);
+                }
+
+                if (!$qualification) {
+                    return $this->respondHttp500();
+                }
+
+                DB::commit();
             }
-            
-            if ($request->has('actionPlan') && count($request->actionPlan['activities']) > 0)
-            {
-                $detail_procedence = 'Mátriz Legal - Norma: ' . $article_qualify->article->law->name . '. - ' . 'Artículo: ' . $article_qualify->article->description . '.';
-
-                ActionPlan::user($this->user)
-                ->module('legalMatrix')
-                ->url(url('/administrative/actionplans'))
-                ->model($article_qualify)
-                ->detailProcedence($detail_procedence)
-                ->activities($request->actionPlan)
-                ->save();
-            }
-
-            foreach ($ids as $id) 
-            {
-                $article = ArticleFulfillment::find($id);
-
-                $article->histories()->create([
-                    'user_id' => $this->user->id,
-                    'fulfillment_value' => $article->fulfillment_value ? $article->fulfillment_value->name : NULL,
-                    'observations' => $article->observations
-                ]);
-            }
-
-            if (!$qualification) {
-                return $this->respondHttp500();
-            }
-
-            DB::commit();
 
         } catch (Exception $e){
             \Log::info($e->getMessage());
