@@ -323,3 +323,13 @@ export default {
     }
 }
 </script>
+
+<style scoped>
+
+.ps__rail-y {
+    width: 15px !important;
+}
+.ps__thumb-y {
+    width: 15px !important;
+}
+</style>
