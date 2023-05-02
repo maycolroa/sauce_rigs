@@ -615,8 +615,17 @@ class LawController extends Controller
         DB::beginTransaction();
 
         try
-        {
+        {           
             $ids = explode(',', $request->id);
+
+            $article_qualify = ArticleFulfillment::find($ids[0]);
+            $article_law = Article::find($article_qualify->article_id);
+            $law = Law::find($article_law->law_id);
+
+            if ($request->fulfillment_value_id == 8 && $law->company_id == NULL)
+            {
+                return $this->respondWithError("Está norma es de Sauce no puede calificarse como 'No vigente'");
+            }
 
             $path = 'fulfillments/'.$this->company."/";
 
@@ -706,102 +715,112 @@ class LawController extends Controller
         try
         {
             $data = $request->except('articles');
-            
-            DB::transaction(function () use (&$data, $request) {
 
-                $qualification = ArticleFulfillment::find($request->qualification_id);
-                $qualification->fulfillment_value_id = $request->fulfillment_value_id ? $request->fulfillment_value_id : NULL;
-                $qualification->observations = $request->observations ? $request->observations : NULL;
-                $qualification->responsible = $request->responsible ? $request->responsible : NULL;
-                $qualification->workplace = $request->workplace ? $request->workplace : NULL;
-                $qualification->hide = $request->hide ? $request->hide : 'NO';
 
-                if ($request->hide == 'NO')
-                {
-                    $law_hide = LawHide::where('company_id', $this->company)
-                    ->where('law_id', $qualification->article->law->id)
-                    ->first();
+            $qualification = ArticleFulfillment::find($request->qualification_id);
 
-                    if ($law_hide)
-                        $law_hide->delete();
-                }
+            if ($request->fulfillment_value_id == 8 && !$qualification->article->law->company_id)
+            {
+                \Log::info('entro');
+                return $this->respondWithError("Está norma es de Sauce no puede calificarse como 'No vigente'");
+            }
+            else
+            {
+                DB::transaction(function () use (&$data, $request, $qualification) {
 
-                 //Se inician los atributos necesarios que seran estaticos para todas las actividades
-                // De esta forma se evitar la asignacion innecesaria una y otra vez 
-                ActionPlan::
-                        user($this->user)
-                    ->module('legalMatrix')
-                    ->url(url('/administrative/actionplans'));
+                    $qualification->fulfillment_value_id = $request->fulfillment_value_id ? $request->fulfillment_value_id : NULL;
+                    $qualification->observations = $request->observations ? $request->observations : NULL;
+                    $qualification->responsible = $request->responsible ? $request->responsible : NULL;
+                    $qualification->workplace = $request->workplace ? $request->workplace : NULL;
+                    $qualification->hide = $request->hide ? $request->hide : 'NO';
 
-                $path = 'fulfillments/'.$this->company."/";
-
-                if ($qualification->fulfillment_value_id)
-                {
-                    $qualify = FulfillmentValues::find($qualification->fulfillment_value_id);
-
-                    if ($qualify->name != 'No cumple' && $qualify->name != 'Parcial')
+                    if ($request->hide == 'NO')
                     {
-                        if ($request->file != $qualification->file)
+                        $law_hide = LawHide::where('company_id', $this->company)
+                        ->where('law_id', $qualification->article->law->id)
+                        ->first();
+
+                        if ($law_hide)
+                            $law_hide->delete();
+                    }
+
+                    //Se inician los atributos necesarios que seran estaticos para todas las actividades
+                    // De esta forma se evitar la asignacion innecesaria una y otra vez 
+                    ActionPlan::
+                            user($this->user)
+                        ->module('legalMatrix')
+                        ->url(url('/administrative/actionplans'));
+
+                    $path = 'fulfillments/'.$this->company."/";
+
+                    if ($qualification->fulfillment_value_id)
+                    {
+                        $qualify = FulfillmentValues::find($qualification->fulfillment_value_id);
+
+                        if ($qualify->name != 'No cumple' && $qualify->name != 'Parcial')
                         {
-                            if ($request->file)
+                            if ($request->file != $qualification->file)
                             {
-                                $file = $request->file;
+                                if ($request->file)
+                                {
+                                    $file = $request->file;
 
-                                if (!$qualification->qualification_masive)
-                                    Storage::disk('s3_MLegal')->delete($path. $qualification->file);
+                                    if (!$qualification->qualification_masive)
+                                        Storage::disk('s3_MLegal')->delete($path. $qualification->file);
 
-                                $nameFile = base64_encode($this->user->id . now() . rand(1,10000)) .'.'. $file->extension();
-                                $file->storeAs($path, $nameFile, 's3_MLegal');
-                                $qualification->file = $nameFile;
-                                $data['file'] = $nameFile;
-                                $data['old_file'] = $nameFile;
+                                    $nameFile = base64_encode($this->user->id . now() . rand(1,10000)) .'.'. $file->extension();
+                                    $file->storeAs($path, $nameFile, 's3_MLegal');
+                                    $qualification->file = $nameFile;
+                                    $data['file'] = $nameFile;
+                                    $data['old_file'] = $nameFile;
+                                }
+                                else
+                                {
+                                    if (!$qualification->qualification_masive)
+                                        Storage::disk('s3_MLegal')->delete($path. $qualification->file);
+                                    
+                                    $qualification->file = NUlL;
+                                    $data['file'] = NULL;
+                                    $data['old_file'] = NULL;
+                                }
                             }
-                            else
+                        }
+                        else
+                        {
+                            /*if ($qualification->file)
                             {
-                                if (!$qualification->qualification_masive)
-                                    Storage::disk('s3_MLegal')->delete($path. $qualification->file);
-                                
+                                Storage::disk('s3_MLegal')->delete($path. $qualification->file);
                                 $qualification->file = NUlL;
                                 $data['file'] = NULL;
                                 $data['old_file'] = NULL;
-                            }
+                            }*/
                         }
+
+                        $detail_procedence = 'Mátriz Legal - Norma: ' . $qualification->article->law->name . '. - ' . 'Artículo: ' . $qualification->article->description . '.';
+
+                        /**Planes de acción*/
+                        ActionPlan::
+                            model($qualification)
+                            ->detailProcedence($detail_procedence)
+                            ->activities($request->actionPlan)
+                            ->save();
+
+                        $data['actionPlan'] = ActionPlan::getActivities();
                     }
-                    else
-                    {
-                        /*if ($qualification->file)
-                        {
-                            Storage::disk('s3_MLegal')->delete($path. $qualification->file);
-                            $qualification->file = NUlL;
-                            $data['file'] = NULL;
-                            $data['old_file'] = NULL;
-                        }*/
-                    }
 
-                    $detail_procedence = 'Mátriz Legal - Norma: ' . $qualification->article->law->name . '. - ' . 'Artículo: ' . $qualification->article->description . '.';
+                    if (!$qualification->save())
+                        return $this->respondHttp500();
 
-                    /**Planes de acción*/
-                    ActionPlan::
-                        model($qualification)
-                        ->detailProcedence($detail_procedence)
-                        ->activities($request->actionPlan)
-                        ->save();
+                    ActionPlan::sendMail();
 
-                    $data['actionPlan'] = ActionPlan::getActivities();
-                }
+                    $data['fulfillment_value_id'] = (int) $qualification->fulfillment_value_id;
 
-                if (!$qualification->save())
-                    return $this->respondHttp500();
+                }, 3);
 
-                ActionPlan::sendMail();
-
-                $data['fulfillment_value_id'] = (int) $qualification->fulfillment_value_id;
-
-            }, 3);
-
-            return $this->respondHttp200([
-                'data' => $data
-            ]);
+                return $this->respondHttp200([
+                    'data' => $data
+                ]);
+            }
 
         } catch (Exception $e){
             return $this->respondHttp500();
