@@ -231,7 +231,12 @@ class ConfigurationsCompany
             throw new \Exception('A valid value has not been entered.');
 
         $configuration = ConfigurationCompany::where('key', $this->key);
-        $configuration->company_scope = $this->company;
+        
+        if ($this->key == 'roles_newsletter')
+            $configuration->company_scope = 1;
+        else
+            $configuration->company_scope = $this->company;
+
         $configuration = $configuration->first();
 
         if (!$configuration)

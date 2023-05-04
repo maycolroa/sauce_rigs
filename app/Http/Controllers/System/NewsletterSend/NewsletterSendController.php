@@ -266,7 +266,11 @@ class NewsletterSendController extends Controller
 
         $value = implode(',', $values);
 
-        ConfigurationCompany::updateOrCreate(
+        //$value2 = ConfigurationsCompany::company(1)->findByKey('roles_newsletter');
+        
+        ConfigurationsCompany::key('roles_newsletter')->value($value)->save();
+
+        /*ConfigurationCompany::updateOrCreate(
             [
                 'company_id' => 1,
                 'key' => 'roles_newsletter',
@@ -277,7 +281,7 @@ class NewsletterSendController extends Controller
                 'value' => $value,
                 'observation' => 'Roles a los cuales se les enviara el boletin'
             ]
-        );
+        );*/
 
         $this->saveLogActivitySystem('Sistemas - Configuración de Roles', 'Se creo o modifico la configuracion de roles para el envio de boletines');
 
