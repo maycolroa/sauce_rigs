@@ -82,10 +82,13 @@ class ReincPendienteResumen extends Command
 
             $users->map(function($user) use ($company, $now)
             {
+                $headquarters = User::find($user->id)->headquarters()->pluck('id')->toArray();
+
                 $data = Check::select(
                     'sau_reinc_checks.company_id',
                     'sau_employees.identification',
                     'sau_employees.name',
+                    'sau_employees.employee_headquarter_id as sede',
                     DB::raw('MIN(monitoring_recommendations) AS monitoring_recommendations'),
                     DB::raw('MIN(end_recommendations) AS end_recommendations'),
                     DB::raw('MIN(sau_reinc_medical_monitorings.set_at) AS medical_monitoring'),
@@ -102,17 +105,24 @@ class ReincPendienteResumen extends Command
                     or (year(sau_reinc_medical_monitorings.set_at) = $now->year and month(sau_reinc_medical_monitorings.set_at) = $now->month)
                     or (year(sau_reinc_labor_monitorings.set_at) = $now->year and month(sau_reinc_labor_monitorings.set_at) = $now->month)"
                 )
-                ->where('sau_reinc_checks.company_id', $company)
+                ->where('sau_reinc_checks.company_id', $company);
+
+                if (count($headquarters) > 0)
+                {
+                    $headquarters2 = implode(',', $headquarters);
+                    $data->whereRaw("sau_employees.employee_headquarter_id in ({$headquarters2})");
+                }
                 /*->whereRaw('(
                     CURDATE() = DATE_ADD(monitoring_recommendations, INTERVAL -7 DAY) 
                     or CURDATE() = DATE_ADD(end_recommendations, INTERVAL -7 DAY) 
                     or CURDATE() = DATE_ADD(sau_reinc_medical_monitorings.set_at, INTERVAL -7 DAY) 
                     or CURDATE() = DATE_ADD(sau_reinc_labor_monitorings.set_at, INTERVAL -7 DAY) )'
                 )*/
-                ->groupBy([
+                $data->groupBy([
                     'sau_reinc_checks.company_id',
                     'sau_employees.identification',
-                    'sau_employees.name'
+                    'sau_employees.name',
+                    'sau_employees.employee_headquarter_id'
                 ]);
 
                 $data->user = $user->id;
@@ -123,6 +133,7 @@ class ReincPendienteResumen extends Command
                     'company_id',
                     'identification', 
                     'name', 
+                    'sede',
                     /*DB::raw("CONCAT(
                         CASE WHEN CURDATE() = DATE_ADD(monitoring_recommendations, INTERVAL -7 DAY) THEN 'Seguimiento de las recomendaciones. \n' ELSE '' END,
                         CASE WHEN CURDATE() = DATE_ADD(end_recommendations, INTERVAL -7 DAY) THEN 'Finalizacion de las recomendaciones. \n' ELSE '' END,
@@ -134,8 +145,15 @@ class ReincPendienteResumen extends Command
                         CASE WHEN year(medical_monitoring) = $now->year and month(medical_monitoring) = $now->month THEN 'Seguimiento Medico. ' ELSE '' END,
                         CASE WHEN year(laboral_monitoring) = $now->year and month(laboral_monitoring) = $now->month THEN 'Seguimiento Laboral.' ELSE '' END) AS message")
                     )
-                    ->where('company_id', $company)
-                    ->get();
+                    ->where('company_id', $company);
+
+                    if (count($headquarters) > 0)
+                    {
+                        $headquarters22 = implode(',', $headquarters);
+                        $data->whereRaw("sede in ({$headquarters22})");
+                    }
+
+                    $data = $data->get();
                     
                     if (COUNT($data) > 0)
                     {
