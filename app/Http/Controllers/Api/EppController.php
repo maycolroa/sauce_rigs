@@ -129,16 +129,16 @@ class EppController extends ApiController
         $elements_id = [];
         $elements_no_disponibles = [];
 
-        $element_balance = ElementBalanceLocation::select('sau_epp_elements_balance_ubication.id')
-        ->withoutGlobalScopes()
-        ->join('sau_epp_elements', 'sau_epp_elements.id', 'sau_epp_elements_balance_ubication.element_id')
-        ->where('location_id', $request->location_id)
-        ->where('sau_epp_elements.company_id', $request->company_id)
-        ->get()
-        ->toArray();
-
         if ($request->inventary)
         {
+            $element_balance = ElementBalanceLocation::select('sau_epp_elements_balance_ubication.id')
+            ->withoutGlobalScopes()
+            ->join('sau_epp_elements', 'sau_epp_elements.id', 'sau_epp_elements_balance_ubication.element_id')
+            ->where('location_id', $request->location_id)
+            ->where('sau_epp_elements.company_id', $request->company_id)
+            ->get()
+            ->toArray();
+
             $disponible = ElementBalanceSpecific::select('sau_epp_elements_balance_specific.element_balance_id')
             ->join('sau_epp_elements_balance_ubication', 'sau_epp_elements_balance_ubication.id', 'sau_epp_elements_balance_specific.element_balance_id')
             ->join('sau_epp_elements', 'sau_epp_elements.id', 'sau_epp_elements_balance_ubication.element_id')
@@ -200,7 +200,8 @@ class EppController extends ApiController
         }
         else
         {
-            $element_disponibles = ElementBalanceLocation::select('element_id')
+            \Log::info('entro');
+            /*$element_disponibles = ElementBalanceLocation::select('element_id')
             ->join('sau_epp_elements', 'sau_epp_elements.id', 'sau_epp_elements_balance_ubication.element_id')
             ->where('location_id', $request->location_id)
             ->where('sau_epp_elements.company_id', $this->company)
@@ -215,15 +216,16 @@ class EppController extends ApiController
 
                 array_push( $multiselect, $ele->multiselect());
                 array_push( $ids_disponibles, $ele->id);
-            }
+            }*/
+            $eles = Element::withoutGlobalScopes()->where('company_id', $request->company_id)->get();
 
-            foreach ($ids_disponibles as $key => $value) {
+            foreach ($eles as $key => $ele) {
+                \Log::info($ele);
+                //$ele = Element::withoutGlobalScopes()->find($value);
 
-                $ele = Element::withoutGlobalScopes()->find($value);
-
-                $element_balance = ElementBalanceLocation::where('location_id', $request->location_id)
+                /*$element_balance = ElementBalanceLocation::where('location_id', $request->location_id)
                 ->where('element_id', $ele->id)
-                ->first();
+                ->first();*/
 
                 $content = [
                     'id_ele' => $ele->id,
@@ -233,7 +235,7 @@ class EppController extends ApiController
                     'code' => ''
                 ];
 
-                array_push( $elements_id, ['element' => $content, 'options' => []]);
+                array_push( $elements_id, ['element' => $content, 'options' => []]);array_push( $multiselect, $ele->multiselect());
             }
         }
 
