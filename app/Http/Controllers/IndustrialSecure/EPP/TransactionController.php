@@ -338,15 +338,15 @@ class TransactionController extends Controller
 
                 if ($element)
                 {
-                    $element_balance = ElementBalanceLocation::where('element_id', $element->id)->where('location_id', $request->location_id)->first();
+                    /*$element_balance = ElementBalanceLocation::where('element_id', $element->id)->where('location_id', $request->location_id)->first();*/
 
                     for ($i=1; $i <= $value['quantity']; $i++) { 
-                        $hash = Hash::make($element_balance->element_id . str_random(30));
+                        $hash = Hash::make($element->id . str_random(30));
                         $product = new ElementBalanceSpecific;
                         $product->hash = $hash;
                         $product->code = $hash;
-                        $product->element_balance_id = $element_balance->id;
-                        $product->location_id = $element_balance->location_id;
+                        $product->element_balance_id = NULL;
+                        $product->location_id = $request->location_id;
                         $product->expiration_date = $element->days_expired ? $element->days_expired : NULL;
                         $product->state = 'Asignado';
                         $product->save();
@@ -354,11 +354,11 @@ class TransactionController extends Controller
                         array_push($elements_sync, $product->id);
                     }
 
-                    $element_balance->quantity_available = $element_balance->quantity_available - $value['quantity'];
+                    /*$element_balance->quantity_available = $element_balance->quantity_available - $value['quantity'];
 
                     $element_balance->quantity_allocated = $element_balance->quantity_allocated + $value['quantity'];
 
-                    $element_balance->save();
+                    $element_balance->save();*/
                 }
             }
 
