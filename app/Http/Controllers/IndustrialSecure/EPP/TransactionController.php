@@ -76,7 +76,7 @@ class TransactionController extends Controller
         ->join('sau_employees_positions', 'sau_employees_positions.id', 'sau_employees.employee_position_id')
         ->join('sau_epp_transaction_employee_element', 'sau_epp_transaction_employee_element.transaction_employee_id', 'sau_epp_transactions_employees.id')
         ->join('sau_epp_elements_balance_specific', 'sau_epp_elements_balance_specific.id', 'sau_epp_transaction_employee_element.element_id')
-        ->join('sau_epp_elements_balance_ubication', 'sau_epp_elements_balance_ubication.id','sau_epp_elements_balance_specific.element_balance_id')
+        ->leftJoin('sau_epp_elements_balance_ubication', 'sau_epp_elements_balance_ubication.id','sau_epp_elements_balance_specific.element_balance_id')
         ->join('sau_epp_elements', 'sau_epp_elements.id', 'sau_epp_elements_balance_ubication.element_id')
         ->where('sau_epp_transactions_employees.type', 'Entrega')
         ->groupBy('sau_epp_transactions_employees.id');
