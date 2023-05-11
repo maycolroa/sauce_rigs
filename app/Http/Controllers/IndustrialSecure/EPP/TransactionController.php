@@ -2189,15 +2189,16 @@ class TransactionController extends Controller
             $elements_id = [];
             $elements_no_disponibles = [];
 
-            $element_balance = ElementBalanceLocation::select('sau_epp_elements_balance_ubication.id')
-            ->join('sau_epp_elements', 'sau_epp_elements.id', 'sau_epp_elements_balance_ubication.element_id')
-            ->where('location_id', $request->location_id)
-            ->where('sau_epp_elements.company_id', $this->company)
-            ->get()
-            ->toArray();
 
             if ($request->inventary == 'SI')
             {
+                $element_balance = ElementBalanceLocation::select('sau_epp_elements_balance_ubication.id')
+                ->join('sau_epp_elements', 'sau_epp_elements.id', 'sau_epp_elements_balance_ubication.element_id')
+                ->where('location_id', $request->location_id)
+                ->where('sau_epp_elements.company_id', $this->company)
+                ->get()
+                ->toArray();
+                
                 $disponible = ElementBalanceSpecific::select('sau_epp_elements_balance_specific.element_balance_id')
                 ->join('sau_epp_elements_balance_ubication', 'sau_epp_elements_balance_ubication.id', 'sau_epp_elements_balance_specific.element_balance_id')
                 ->join('sau_epp_elements', 'sau_epp_elements.id', 'sau_epp_elements_balance_ubication.element_id')
@@ -2262,7 +2263,7 @@ class TransactionController extends Controller
             }
             else
             {
-                $element_disponibles = ElementBalanceLocation::select('element_id')
+                /*$element_disponibles = ElementBalanceLocation::select('element_id')
                 ->join('sau_epp_elements', 'sau_epp_elements.id', 'sau_epp_elements_balance_ubication.element_id')
                 ->where('location_id', $request->location_id)
                 ->where('sau_epp_elements.company_id', $this->company)
@@ -2277,17 +2278,18 @@ class TransactionController extends Controller
 
                     array_push( $multiselect, $ele->multiselect());
                     array_push( $ids_disponibles, $ele->id);
-                }
+                }*/
 
                 foreach ($request->position_elements as $key => $value) {
 
-                    if (in_array($value['id_ele'], $ids_disponibles))
-                    {
+                    /*if (in_array($value['id_ele'], $ids_disponibles))
+                    {*/
                         $ele = Element::find($value['id_ele']);
+                        array_push( $multiselect, $ele->multiselect());
 
-                        $element_balance = ElementBalanceLocation::where('location_id', $request->location_id)
+                        /*$element_balance = ElementBalanceLocation::where('location_id', $request->location_id)
                         ->where('element_id', $ele->id)
-                        ->first();
+                        ->first();*/
 
                         $content = [
                             'id_ele' => $ele->id,
@@ -2297,8 +2299,15 @@ class TransactionController extends Controller
                         ];
 
                         array_push( $elements_id, ['element' => $content, 'options' => []]);
-                    }
+                    //}
                 }
+
+                $eles = Element::where('company_id', $this->company)->get();
+
+                foreach ($eles as $key => $value) {
+                    array_push( $multiselect, $value->multiselect());
+                }
+                        
             }
 
             $data = [
