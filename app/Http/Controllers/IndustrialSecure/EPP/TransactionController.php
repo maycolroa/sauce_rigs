@@ -356,7 +356,7 @@ class TransactionController extends Controller
                         $product = new ElementBalanceSpecific;
                         $product->hash = $hash;
                         $product->code = $hash;
-                        $product->element_balance_id = NULL;
+                        $product->element_balance_id =  $element_balance->id;
                         $product->location_id = $request->location_id;
                         $product->expiration_date = $element->days_expired ? $element->days_expired : NULL;
                         $product->state = 'Asignado';
