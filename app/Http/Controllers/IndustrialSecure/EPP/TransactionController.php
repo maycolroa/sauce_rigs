@@ -338,7 +338,18 @@ class TransactionController extends Controller
 
                 if ($element)
                 {
-                    /*$element_balance = ElementBalanceLocation::where('element_id', $element->id)->where('location_id', $request->location_id)->first();*/
+                    $element_balance = ElementBalanceLocation::where('element_id', $element->id)->where('location_id', $request->location_id)->first();
+
+                    if (!$element_balance)
+                    {
+                        $element_balance = new ElementBalanceLocation();
+                        $element_balance->element_id = $element->id;
+                        $element_balance->location_id = $request->location_id;
+                        $element_balance->quantity = 0;
+                        $element_balance->quantity_available = 0;
+                        $element_balance->quantity_allocated = 0;
+                        $element_balance->save();
+                    }
 
                     for ($i=1; $i <= $value['quantity']; $i++) { 
                         $hash = Hash::make($element->id . str_random(30));
