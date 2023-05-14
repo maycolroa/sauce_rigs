@@ -45,7 +45,7 @@ class EppController extends ApiController
       return $this->respondHttp200([
         'data' => [
           'module_epp' => PermissionService::existsLicenseByModule($request->company_id, $module->id),
-          'inventary' => $configuration == 'SI' ? true : false
+          'inventary' => $configuration
         ]
       ]);
     }
