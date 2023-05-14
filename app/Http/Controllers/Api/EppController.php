@@ -125,12 +125,15 @@ class EppController extends ApiController
 
     public function getElementsLocation(Request $request)
     {
-        \Log::info($request);
         $multiselect = [];
         $elements_id = [];
         $elements_no_disponibles = [];
 
-        if ($request->inventary == 'SI')
+        $configuration = ConfigurationCompany::select('value')->where('key', 'inventory_management');
+        $configuration->company_scope = $request->company_id;
+        $configuration = $configuration->first();
+
+        if ($configuration->value == 'SI')
         {
             $element_balance = ElementBalanceLocation::select('sau_epp_elements_balance_ubication.id')
             ->withoutGlobalScopes()
