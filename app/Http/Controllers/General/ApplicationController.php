@@ -306,7 +306,12 @@ class ApplicationController extends Controller
       $pages = PageVuetable::where('user_id', Auth::user()->id)->where('vuetable', $request->vuetable)->first();
 
       if ($pages)
-        $pages = $pages->page;
+      {
+        if ($request->vuetable == 'dangerousconditions-inspections-qualification')
+          $pages = 1;
+        else
+          $pages = $pages->page;
+      }
       
       return $pages;
     }
