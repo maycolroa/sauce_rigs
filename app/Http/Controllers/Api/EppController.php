@@ -276,7 +276,11 @@ class EppController extends ApiController
 
     public function saveDelivery(CompanyRequiredRequest $request)
     {
-      if ($request->inventary == 'SI')
+        $configuration = ConfigurationCompany::select('value')->where('key', 'inventory_management');
+        $configuration->company_scope = $request->company_id;
+        $configuration = $configuration->first();
+
+      if ($configuration->value == 'SI')
           return $this->storeDelivery($request);
       else
           return $this->storeDeliveryNotInventary($request);
@@ -730,12 +734,10 @@ class EppController extends ApiController
 
     public function storeReturns(Request $request)
     {
-        \Log::info($request);
         DB::beginTransaction();
 
         try
         {
-            \Log::info(1);
             $employee = Employee::query();
             $employee->company_scope = $request->company_id;
             $employee = $employee->find($request->employee_id['value']);
@@ -761,18 +763,13 @@ class EppController extends ApiController
             if(!$returns->save())
                 return $this->respondHttp500();
 
-            \Log::info(2);
-
             $elements_sync = [];
             $elements_sync_rechange = [];
             $elements_change = [];
 
             foreach ($request->elements_id as $key => $value) 
             {
-                \Log::info(3);
                 $element = Element::withoutGlobalScopes()->find($value['id_ele']);
-                \Log::info($value['id_ele']);
-                \Log::info($request->location_id);
                 $element_balance = ElementBalanceLocation::where('element_id', $value['id_ele'])->where('location_id', $request->location_id)->first();
 
                 if (!$element_balance)
@@ -785,11 +782,9 @@ class EppController extends ApiController
                     $element_balance->quantity_allocated = 0;
                     $element_balance->save();
                 }
-                \Log::info('element_balance '.$element_balance->id);
 
                 if ($element) 
                 {
-                    \Log::info(4);
                     if ($element->identify_each_element)
                     {
                         $disponible = ElementBalanceSpecific::where('hash', $value['code'])->first();
@@ -798,7 +793,6 @@ class EppController extends ApiController
                 
                         if ($value['rechange'] == 'SI')
                         {
-                            \Log::info(5);
                             $reason = TagReason::firstOrCreate(
                                 [
                                     'name' => $value['reason'],
@@ -812,7 +806,6 @@ class EppController extends ApiController
                             
                             if ($value['wastes'] == 'SI')
                             {
-                                \Log::info(6);
                                 $disponible->state = 'Desechado';
                                 $disponible->location_id = $request->location_id;
                                 $disponible->element_balance_id = $element_balance->id;
@@ -831,7 +824,6 @@ class EppController extends ApiController
                             }
                             else
                             {
-                                \Log::info(7);
                                 $disponible->state = 'Disponible';
                                 $disponible->element_balance_id = $element_balance->id;
                                 $disponible->location_id = $request->location_id;
@@ -844,13 +836,11 @@ class EppController extends ApiController
 
                             array_push($elements_sync, $disponible->id);
 
-                            \Log::info(8);
 
                             $new_product = ElementBalanceSpecific::where('hash', $value['code_new'])->first();
 
                             if ($new_product->state = 'Disponible')
                             {
-                                \Log::info(9);
                                 $new_product->state = 'Asignado';
                                 $new_product->location_id = $request->location_id;
                                 $new_product->element_balance_id = $element_balance->id;
@@ -874,7 +864,6 @@ class EppController extends ApiController
                         }
                         else
                         {
-                            \Log::info(10);
                             $disponible->state = 'Disponible';
                             $disponible->location_id = $request->location_id;
                             $disponible->element_balance_id = $element_balance->id;
@@ -889,7 +878,6 @@ class EppController extends ApiController
                     }
                     else
                     {
-                        \Log::info(11);
                         $codigos = explode(',' , $value['code']);
 
                         $count_codes = COUNT($codigos);
@@ -905,7 +893,6 @@ class EppController extends ApiController
                             if ($key <= $quantity_return)
                                 array_push($codes_returns, $code);
                         }
-                        \Log::info(12);
                         
                         $count_codes_returns = COUNT($codes_returns);
 
@@ -915,10 +902,8 @@ class EppController extends ApiController
 
                         if ($value['wastes'] == 'SI')
                         {
-                            \Log::info(13);
                             if ($value['quantity_waste'] <= $count_codes_returns)
                             {
-                                \Log::info(14);
                                 for ($i=1; $i <= $value['quantity_waste']; $i++) 
                                 { 
                                     $new_product = ElementBalanceSpecific::whereIn('hash', $codes_returns)->where('state', 'Asignado')->first();
@@ -946,12 +931,8 @@ class EppController extends ApiController
                             }
                         }
 
-                        \Log::info(15);
-
                         if ($value['rechange'] == 'SI')
                         {
-
-                            \Log::info(16);
                             $reason = TagReason::firstOrCreate(
                                 [
                                     'name' => $value['reason'],
@@ -965,10 +946,8 @@ class EppController extends ApiController
 
                             if ($value['quantity_rechange'] > 0)
                             {
-                                \Log::info(17);
                                 if ($value['quantity_rechange'] <= $count_codes_returns)
                                 {
-                                    \Log::info(18);
                                     for ($i=1; $i <= $value['quantity_rechange']; $i++) 
                                     { 
                                         $new_product = ElementBalanceSpecific::where('element_balance_id', $element_balance->id)->where('location_id', $request->location_id)->where('state', 'Disponible')->first();
@@ -1024,7 +1003,6 @@ class EppController extends ApiController
                                         array_push($elements_sync_rechange, $new_product->id);
                                     }
 
-                                    \Log::info(19);
                                     $old_products = ElementBalanceSpecific::whereIn('hash', $codigos)->get();
 
                                     foreach ($old_products as $key => $old) 
@@ -1047,11 +1025,9 @@ class EppController extends ApiController
                             }
                         }
 
-                        \Log::info(20);
 
                         if ($value['wastes'] == 'NO' && $value['rechange'] == 'NO')
                         {
-                            \Log::info(21);
                             $old_products = ElementBalanceSpecific::whereIn('hash', $codes_returns)->get();
 
                             foreach ($old_products as $key => $old) 
@@ -1074,7 +1050,6 @@ class EppController extends ApiController
             $element_balance->save();
             $balance_origen->save();
 
-            \Log::info(22);
 
             if (COUNT($elements_sync_rechange) > 0)
             {
@@ -1089,13 +1064,10 @@ class EppController extends ApiController
                 $new_delivery->save();
 
                 $new_delivery->elements()->sync($elements_sync_rechange);
-
-                \Log::info(23);
             }
 
             if (COUNT($elements_change) > 0)
             {
-                \Log::info(24);
                 foreach ($elements_change as $key => $change) 
                 {
                     $rechange = new ChangeElement;
@@ -1110,7 +1082,6 @@ class EppController extends ApiController
                     $rechange->save();
                 }
             }
-            \Log::info(25);
 
             $returns->elements()->sync($elements_sync);
 
@@ -1140,8 +1111,6 @@ class EppController extends ApiController
                 }
             }
 
-            \Log::info(26);
-
             if (count($request->files) > 0)
             {
                 $this->processFiles($request->get('files'), $returns->id);
@@ -1149,9 +1118,7 @@ class EppController extends ApiController
 
             foreach ($request->ids_transactions as $key => $value) 
             {
-                \Log::info($value);
                 $delivery = ElementTransactionEmployee::withoutGlobalScopes()->find($value);
-                \Log::info($delivery);
 
                 $delivery_disponibles = $delivery->elements()->where('state', 'Asignado')->get();
 
@@ -1167,8 +1134,6 @@ class EppController extends ApiController
                 }
             }
 
-            \Log::info(27);
-
             DB::commit();
 
         } catch (\Exception $e) {
@@ -1176,8 +1141,6 @@ class EppController extends ApiController
             //DB::rollback();
             return $this->respondHttp500();
         }
-
-        \Log::info(28);
 
         return $this->respondHttp200([
             'data' => $returns
