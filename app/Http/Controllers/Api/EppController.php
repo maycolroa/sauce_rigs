@@ -205,7 +205,6 @@ class EppController extends ApiController
         }
         else
         {
-            \Log::info('entro');
             /*$element_disponibles = ElementBalanceLocation::select('element_id')
             ->join('sau_epp_elements', 'sau_epp_elements.id', 'sau_epp_elements_balance_ubication.element_id')
             ->where('location_id', $request->location_id)
@@ -225,7 +224,6 @@ class EppController extends ApiController
             $eles = Element::withoutGlobalScopes()->where('company_id', $request->company_id)->get();
 
             foreach ($eles as $key => $ele) {
-                \Log::info($ele);
                 //$ele = Element::withoutGlobalScopes()->find($value);
 
                 /*$element_balance = ElementBalanceLocation::where('location_id', $request->location_id)
