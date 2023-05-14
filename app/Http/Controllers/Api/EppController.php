@@ -467,6 +467,17 @@ class EppController extends ApiController
                 {
                     $element_balance = ElementBalanceLocation::where('element_id', $element->id)->where('location_id', $request->location_id)->first();
 
+                    if (!$element_balance)
+                    {
+                        $element_balance = new ElementBalanceLocation();
+                        $element_balance->element_id = $element->id;
+                        $element_balance->location_id = $request->location_id;
+                        $element_balance->quantity = 0;
+                        $element_balance->quantity_available = 0;
+                        $element_balance->quantity_allocated = 0;
+                        $element_balance->save();
+                    }
+
                     for ($i=1; $i <= $value['quantity']; $i++) { 
                         $hash = Hash::make($element_balance->element_id . str_random(30));
                         $product = new ElementBalanceSpecific;
@@ -481,11 +492,11 @@ class EppController extends ApiController
                         array_push($elements_sync, $product->id);
                     }
 
-                    $element_balance->quantity_available = $element_balance->quantity_available - $value['quantity'];
+                    /*$element_balance->quantity_available = $element_balance->quantity_available - $value['quantity'];
 
                     $element_balance->quantity_allocated = $element_balance->quantity_allocated + $value['quantity'];
 
-                    $element_balance->save();
+                    $element_balance->save();*/
                 }
             }
 
