@@ -29,6 +29,7 @@ use App\Models\IndustrialSecure\Epp\TagReason;
 use App\Models\IndustrialSecure\Epp\EppWastes;
 use App\Models\IndustrialSecure\Epp\ReturnDelivery;
 use App\Models\IndustrialSecure\Epp\ChangeElement;
+use Hash;
 
 class EppController extends ApiController
 {
