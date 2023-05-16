@@ -14,6 +14,7 @@ use App\Models\PreventiveOccupationalMedicine\Reinstatements\TagsInformantRole;
 use App\Models\PreventiveOccupationalMedicine\Reinstatements\TagsMotiveClose;
 use App\Models\PreventiveOccupationalMedicine\Reinstatements\LetterHistory;
 use App\Models\PreventiveOccupationalMedicine\Reinstatements\Tracing;
+use App\Models\Administrative\Employees\Employee;
 use App\Http\Requests\PreventiveOccupationalMedicine\Reinstatements\CheckRequest;
 use App\Facades\ConfigurationCompany\Facades\ConfigurationsCompany;
 use App\Jobs\PreventiveOccupationalMedicine\Reinstatements\CheckExportJob;
@@ -293,7 +294,7 @@ class CheckController extends Controller
             }
 
 
-        $this->saveLogActivitySystem('Reincorporaciones - Reportes', 'Se creo un reporte para el empleado '. $check->employee->name.'con el diagnostico '. $check->cie10Code->description);
+        $this->saveLogActivitySystem('Reincorporaciones - Reportes', 'Se creo un reporte para el empleado '. $check->employee->name. '-' .$check->employee->name.' con el diagnostico '. $check->cie10Code->description.' con el ID de caso '.$check->id);
 
             DB::commit();
 
@@ -342,6 +343,8 @@ class CheckController extends Controller
         $check = Check::select('sau_reinc_checks.*')
                 ->join('sau_employees', 'sau_employees.id', 'sau_reinc_checks.employee_id')
                 ->findOrFail($id);
+        
+        $employee_old = $check->employee->id.'-'.$check->employee->name;
 
         $this->validate($request, CheckManager::getProcessRules($request));
         
@@ -406,6 +409,9 @@ class CheckController extends Controller
             if (!$check->save())
                 return $this->respondHttp500();
 
+            $employee_new = Employee::find($request->employee_id);            
+            $employee_new = $employee_new->id.'-'.$employee_new->name;
+
             if (!CheckManager::saveMedicalMonitoring($check, $request->medical_monitorings, true))
                 return $this->respondHttp500();
 
@@ -426,7 +432,7 @@ class CheckController extends Controller
 
             CheckManager::deleteData($check, $request->get('delete'));
             
-            $this->saveLogActivitySystem('Reincorporaciones - Reportes', 'Se edito el reporte realizado al empleado '. $check->employee->name.'con el diagnostico '. $check->cie10Code->description);
+            $this->saveLogActivitySystem('Reincorporaciones - Reportes', 'Se edito el reporte realizado al empleado '. $employee_old.' con el diagnostico '. $check->cie10Code->description . '. Con el id de caso '.$id.'. Pertenecia al empleado '.$employee_new);
 
             DB::commit();
 
@@ -452,7 +458,7 @@ class CheckController extends Controller
                 ->join('sau_employees', 'sau_employees.id', 'sau_reinc_checks.employee_id')
                 ->findOrFail($id);
         
-        $this->saveLogActivitySystem('Reincorporaciones - Reportes', 'Se elimino el reporte realizado al empleado '. $check->employee->name.'con el diagnostico '. $check->cie10Code->description);
+        $this->saveLogActivitySystem('Reincorporaciones - Reportes', 'Se elimino el reporte realizado al empleado '.$check->employee->id.'-'.$check->employee->name.' con el diagnostico '. $check->cie10Code->description . 'Con el id de caso '.$id);
 
         if (!$check->delete())
             return $this->respondHttp500();

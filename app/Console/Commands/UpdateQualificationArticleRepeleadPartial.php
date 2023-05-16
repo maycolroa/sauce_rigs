@@ -48,7 +48,7 @@ class UpdateQualificationArticleRepeleadPartial extends Command
             
             $laws = Law::where('repealed', DB::raw("'Parcial'"))
             ->whereNull('company_id')
-            ->limit(1)
+            //->limit(1)
             ->get();
 
             foreach ($laws as $key => $law) 
@@ -61,7 +61,7 @@ class UpdateQualificationArticleRepeleadPartial extends Command
 
                 $articles_qualification = DB::table('sau_lm_articles_fulfillment')
                 ->whereIn('article_id', $ids_articles)
-                ->where('company_id', 1)
+                //->where('company_id', 1)
                 //->limit(10)
                 ->get();
 

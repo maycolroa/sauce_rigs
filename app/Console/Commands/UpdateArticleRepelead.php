@@ -48,7 +48,7 @@ class UpdateArticleRepelead extends Command
             
             $laws = Law::where('repealed', DB::raw("'SI'"))
             ->whereNull('company_id')
-            ->limit(1)
+            //->limit(1)
             ->get();
 
             foreach ($laws as $key => $law) 
