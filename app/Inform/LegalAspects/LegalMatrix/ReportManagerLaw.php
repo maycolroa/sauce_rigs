@@ -45,7 +45,8 @@ class ReportManagerLaw
         "En estudio"    => ["count" => 1, "qualify" => 0],
         "Parcial"       => ["count" => 1, "qualify" => 0.5],
         "No aplica"     => ["count" => 0, "qualify" => 0],
-        "Informativo"   => ["count" => 0, "qualify" => 0]
+        "Informativo"   => ["count" => 0, "qualify" => 0],
+        "No vigente"   => ["count" => 0, "qualify" => 0]
     ];
 
     /**
