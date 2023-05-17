@@ -155,6 +155,14 @@
           <div class="col-md-12" style="padding-left: 15px; padding-right: 15px;">
             <hr class="border-dark container-m--x mt-0 mb-4">
           </div>
+
+          <b-form-row>
+            <vue-radio :disabled="viewOnly" :checked="form.reinforced_job_stability" class="col-md-6 offset-md-3" v-model="form.reinforced_job_stability" :options="siNo" name="reinforced_job_stability" :error="form.errorsFor('reinforced_job_stability')" label="¿Tiene estabilidad laboral reforzada?"></vue-radio>
+          </b-form-row>
+
+          <div class="col-md-12" style="padding-left: 15px; padding-right: 15px;">
+            <hr class="border-dark container-m--x mt-0 mb-4">
+          </div>
           
           <b-form-row>
             <div class="col-md-12">
@@ -516,6 +524,7 @@ export default {
           cie10_code_id: '',
           restriction_id: '',
           has_restrictions: '',
+          reinforced_job_stability: '',
           relocated_regional_id: '',
           relocated_headquarter_id: '',
           relocated_process_id: '',

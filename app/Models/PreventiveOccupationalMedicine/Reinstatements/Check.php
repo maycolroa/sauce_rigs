@@ -135,6 +135,7 @@ class Check extends Model
         'qualification_dme_3',
         'qualification_dme_4',
         'qualification_dme_5',
+        'reinforced_job_stability'
     ];
 
     /**

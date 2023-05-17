@@ -505,7 +505,7 @@ class EppController extends ApiController
             {
                 if (isset($request->firm['image']) && $delivery->firm_email == 'Dibujar')
                 {
-                  $img_firm = ImageApi::where('hash', $firm['image'])->where('type', 3)->first();
+                  $img_firm = ImageApi::where('hash', $request->firm['image'])->where('type', 4)->first();
 
                   $delivery->firm_employee = $img_firm->file;
 

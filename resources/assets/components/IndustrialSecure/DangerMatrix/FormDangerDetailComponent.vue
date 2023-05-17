@@ -18,6 +18,7 @@
           </vue-ajax-advanced-select><vue-ajax-advanced-select :disabled="viewOnly" class="col-md-6" v-model="activity.activity_id" :selected-object="activity.multiselect_activity" name="activity_id" label="Actividad" placeholder="Seleccione la actividad" :url="activitiesDataUrl"></vue-ajax-advanced-select>
           <vue-radio :disabled="viewOnly" :checked="activity.type_activity" class="col-md-6" v-model="activity.type_activity" :options="typeActivities" name="type_activity" label="Tipo de actividad"></vue-radio>
           <vue-ajax-advanced-select :disabled="viewOnly" class="col-md-6" v-model="danger.danger_id" :selected-object="danger.multiselect_danger" name="danger_id" label="Peligro" placeholder="Seleccione el peligro" :url="dangersDataUrl"></vue-ajax-advanced-select>
+          <vue-textarea :disabled="viewOnly" class="col-md-6" v-model="danger.generating_source" label="Fuente generadora" name="generating_source"  placeholder="Fuente generadora" row="3"></vue-textarea>
         </b-form-row>
       </b-card>
         <form-wizard ref="wizardFormDanger">
