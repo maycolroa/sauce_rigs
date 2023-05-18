@@ -92,6 +92,29 @@
 
           <b-form-row>
             <vue-radio :disabled="viewOnly" :checked="form.has_recommendations" class="col-md-6 offset-md-3" v-model="form.has_recommendations" :options="siNo" name="has_recommendations" :error="form.errorsFor('has_recommendations')" label="¿Tiene recomendaciones?"></vue-radio>
+            <b-btn v-show="isEdit && form.has_recommendations == 'SI'" class="col-md-1 offset-md-2" @click="showModal('modalsendRecommendations')" variant="outline-danger icon-btn borderless" size="xs" v-b-tooltip.top title="Ver historial"><span class="ion ion-ios-mail"></span></b-btn>
+            <b-modal ref="modalsendRecommendations" :hideFooter="true" id="modalsendRecommendations" class="modal-top modal-item" size="lg">
+              <div slot="modal-title">
+                  Histórico<br>
+              </div>
+              <b-card bg-variant="transparent"  title="Correos" class="mb-3 box-shadow-none">
+                  <b-form-row>
+                    <vue-input class="col-md-12" v-model="email_recommendations_1" label="Correo 1" name="email_recommendations_1"></vue-input>
+                  </b-form-row>
+                  <b-form-row>
+                    <vue-input variant="primary" class="col-md-12" v-model="email_recommendations_2" label="Correo 2" name="email_recommendations_2"></vue-input>
+                  </b-form-row>
+                  <b-form-row>
+                    <vue-radio variant="primary" :checked="continue_recommendations" class="col-md-6 offset-md-3" v-model="continue_recommendations" :options="siNo" name="continue_recommendations" label="¿Continua con las recomendaciones?"></vue-radio>
+                    <h4 class="col-md-6 offset-md-3" v-show="validation_mail_send" style="color: red;">Debe completar los campos</h4>
+                  </b-form-row>
+              </b-card>
+              <br>
+              <div class="row float-right pt-12 pr-12y">
+                <b-btn variant="primary" @click="sendEmailRecommendations()">Enviar</b-btn>&nbsp;&nbsp;
+                <b-btn variant="primary" @click="hideModal('modalsendRecommendations')">Cerrar</b-btn>
+              </div>
+            </b-modal>
           </b-form-row>
           <div v-show="form.has_recommendations == 'SI'" class="col-md-12">
             <b-form-row>
@@ -685,7 +708,11 @@ export default {
       tracingOtherReport: [],
       laborNotesOtherReport: [],
       message: '',
-      showMessage: false
+      showMessage: false,
+      email_recommendations_1: '',
+      email_recommendations_2: '',
+      continue_recommendations: '',
+      validation_mail_send: false
     };
   },
   methods: {
@@ -813,6 +840,49 @@ export default {
     {
       this.form.delete.files.push(value)
     },
+    showModal(ref) 
+    {
+      this.$refs[ref].show()
+    },
+    hideModal(ref) {
+        this.$refs[ref].hide()
+    },
+    sendEmailRecommendations()
+    {
+      if (this.continue_recommendations == 'SI' || this.continue_recommendations == 'NO')
+      {
+        if (this.email_recommendations_1 != '' && this.email_recommendations_2 != '')
+        {
+
+          this.validation_mail_send = false;
+          let postData = Object.assign(
+            {}, 
+            {email_1: this.email_recommendations_1}, 
+            {email_2: this.email_recommendations_2}, 
+            {continue_recommendations: this.continue_recommendations},
+            {check_id: this.form.id}
+          );
+
+          axios.post('/biologicalmonitoring/reinstatements/check/sendEmailRecommendations', postData)
+            .then(response => {
+              this.hideModal('modalsendRecommendations')
+              this.email_recommendations_1 = '';
+              this.email_recommendations_2 = '';
+              this.continue_recommendations = '';
+            }).catch(error => {
+                Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
+            });
+        }
+        else
+        {
+          this.validation_mail_send = true;
+        }
+      }
+      else
+      {
+        this.validation_mail_send = true;
+      }
+    }
   }
 };
 </script>

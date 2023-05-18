@@ -14,12 +14,14 @@ use App\Models\PreventiveOccupationalMedicine\Reinstatements\TagsInformantRole;
 use App\Models\PreventiveOccupationalMedicine\Reinstatements\TagsMotiveClose;
 use App\Models\PreventiveOccupationalMedicine\Reinstatements\LetterHistory;
 use App\Models\PreventiveOccupationalMedicine\Reinstatements\Tracing;
+use App\Models\Administrative\Users\User;
 use App\Models\Administrative\Employees\Employee;
 use App\Http\Requests\PreventiveOccupationalMedicine\Reinstatements\CheckRequest;
 use App\Facades\ConfigurationCompany\Facades\ConfigurationsCompany;
 use App\Jobs\PreventiveOccupationalMedicine\Reinstatements\CheckExportJob;
 use Illuminate\Support\Facades\Storage;
 use App\Traits\ConfigurableFormTrait;
+use App\Facades\Mail\Facades\NotificationMail;
 use App\Traits\Filtertrait;
 use Carbon\Carbon;
 use DB;
@@ -1351,7 +1353,10 @@ class CheckController extends Controller
         }
         else if ($formModel == 'hptu')
         {
-            $pdf = PDF::loadView('pdf.letterHptu', $data);
+            if ($record_letter->not_recommendations)
+                $pdf = PDF::loadView('pdf.letterHptuNotRecommendations', $data);
+            else
+                $pdf = PDF::loadView('pdf.letterHptu', $data);
         }
         else if($formModel == 'reditos')
         {
@@ -1466,5 +1471,96 @@ class CheckController extends Controller
         } catch (\Exception $e) {
             return null;
         }
+    }
+
+    public function sendEmailRecommendations(Request $request)
+    {
+        $check = Check::selectRaw(
+            'sau_reinc_checks.detail as check_detail,
+             sau_reinc_checks.start_recommendations AS start_recommendations,
+             sau_reinc_checks.disease_origin AS disease_origin,
+             sau_reinc_checks.Observations_recommendatios AS Observations_recommendatios,
+             sau_employees.income_date AS income_date,
+             sau_reinc_checks.end_recommendations AS end_recommendations,
+             DATEDIFF(sau_reinc_checks.end_recommendations, sau_reinc_checks.start_recommendations) AS time_different,
+             sau_reinc_checks.indefinite_recommendations AS indefinite_recommendations,
+             sau_employees_regionals.name as regional,
+             sau_employees_headquarters.name AS headquarter,
+             sau_employees.name AS name,
+             sau_employees.identification AS identification,
+             sau_reinc_checks.origin_recommendations as origin_recommendations,
+             sau_employees_positions.name AS position,
+             sau_reinc_checks.position_functions_assigned_reassigned as position_functions_assigned_reassigned'
+         )
+         ->join('sau_employees', 'sau_employees.id', '=', 'sau_reinc_checks.employee_id')
+         ->leftJoin('sau_employees_regionals', 'sau_employees_regionals.id', '=', 'sau_employees.employee_regional_id')
+         ->leftJoin('sau_employees_headquarters', 'sau_employees_headquarters.id', '=', 'sau_employees.employee_headquarter_id')
+         ->leftJoin('sau_employees_positions', 'sau_employees_positions.id', '=', 'sau_employees.employee_position_id')
+         ->where('sau_reinc_checks.id', $request->check_id)
+         ->first();
+ 
+         $now = Carbon::now();
+ 
+         $check->income_date = Carbon::parse($check->income_date, 'UTC')->isoFormat('ll');
+ 
+         $date = Carbon::parse($now, 'UTC')->isoFormat('ll');
+ 
+         $data = [
+             'to' => $request->email_1.', '.$request->email_2,
+             'from' => $this->user->name,
+             'subject' => 'Recomendaciones',
+             'user' => $this->user,
+             'check' => $check,
+             'date' => $date,
+             'income_date' => $check->income_date,
+             'recommendations' => $this->replaceLast(',', ' y ', $request->selectedRecommendations),
+             'observations_recommendatiosn' => $check->Observations_recommendatios,
+         ];
+
+        $recipients = User::where('id', -1)->get();
+        $recipients->push(new User(['email' => $request->email_1]));
+        $recipients->push(new User(['email' => $request->email_2]));
+
+        $record_letter = new LetterHistory;
+        $record_letter->to = $request->email_1.', '.$request->email_2;
+        $record_letter->from = $this->user->name;
+        $record_letter->subject = 'Recomendaciones';
+        $record_letter->send_date = $date;
+        $record_letter->check_id = $request->check_id;
+        $record_letter->company_id = $this->company;
+        $record_letter->user_id = $this->user->id;
+
+        if ($request->continue_recommendations == 'SI')
+        {        
+            NotificationMail::
+            subject('Reincorporaciones - Recomendaciones')
+            ->message("COMUNICACIÓN INTERNA")
+            ->recipients($recipients)
+            ->module('reinstatements')
+            ->view("preventiveoccupationalmedicine.reinstatements.recommendations")
+            ->with(['data' => $data])
+            ->company($this->company)
+            ->send();
+
+            $record_letter->not_recommendations = false;
+        }
+        else
+        {
+            NotificationMail::
+                subject('Reincorporaciones - Recomendaciones')
+                ->message("COMUNICACIÓN INTERNA")
+                ->recipients($recipients)
+                ->module('reinstatements')
+                ->view("preventiveoccupationalmedicine.reinstatements.not_recommendations")
+                ->with(['data' => $data])
+                ->company($this->company)
+                ->send();
+
+            $record_letter->not_recommendations = true;
+        }
+        
+        $record_letter->save();
+
+        return $this->respondHttp200();
     }
 }

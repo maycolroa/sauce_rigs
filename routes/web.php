@@ -104,6 +104,7 @@ Route::middleware(['auth'])->group(function () {
           Route::ApiResource('restriction', 'PreventiveOccupationalMedicine\Reinstatements\RestrictionController');
           Route::post('getMessageIncapacitate', 'PreventiveOccupationalMedicine\Reinstatements\CheckController@getMessageIncapacitate');
 
+          Route::post('check/sendEmailRecommendations', 'PreventiveOccupationalMedicine\Reinstatements\CheckController@sendEmailRecommendations');
           Route::post('check/export', 'PreventiveOccupationalMedicine\Reinstatements\CheckController@export');
           Route::get('check/generateLetter', 'PreventiveOccupationalMedicine\Reinstatements\CheckController@generateLetter')->name('checks.generateLetter');
           Route::get('check/generateLetterTracingGlobal', 'PreventiveOccupationalMedicine\Reinstatements\CheckController@generateTracingGlobal')->name('checks.generateLetterTracingGlobal');

@@ -146,7 +146,7 @@ class NotifyIncapacitatedReinc extends Command
                                     subject('Sauce - Alerta Incapacidad')
                                     ->recipients($recipient)
                                     ->message("Este es el listado de empleados que cumplen o superan los dias de incapacidad configurados.")
-                                    ->module('absenteeism')
+                                    ->module('reinstatements')
                                     ->event('Tarea programada: NotifyIncapacitatedReinc')
                                     ->view('preventiveoccupationalmedicine.reinstatements.notifyExpiredIncapacitated')
                                     ->with(['data'=>$this->expired_email_global])
