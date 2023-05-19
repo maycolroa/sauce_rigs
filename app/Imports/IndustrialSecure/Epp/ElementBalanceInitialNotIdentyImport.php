@@ -45,6 +45,7 @@ class ElementBalanceInitialNotIdentyImport implements ToCollection, WithCalculat
         {            
             try
             {
+                \Log::info('comenzo la importacion de saldos');
                 foreach ($rows as $key => $row) 
                 {  
                     if ($key > 0) //Saltar cabecera
@@ -55,6 +56,8 @@ class ElementBalanceInitialNotIdentyImport implements ToCollection, WithCalculat
                         }
                     }
                 }
+
+                \Log::info('termino la importacion de saldos');
 
                 if (COUNT($this->errors) == 0)
                 {
