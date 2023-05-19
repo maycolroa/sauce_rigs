@@ -222,12 +222,12 @@ class VuetableColumnManager
 
             if ($confLocationTableInspections['process'] == 'SI')
                 array_push($colums, [
-                    'name'=>'sau_employees_processes.name', 'data'=>'process', 'title'=>$columnsHeader['process'], 'sortable'=>true, 'searchable'=> false, 'detail'=>false, 'key'=>false
+                    'name'=>'sau_employees_processes.name', 'data'=>'procesos', 'title'=>$columnsHeader['process'], 'sortable'=>true, 'searchable'=> false, 'detail'=>false, 'key'=>false
                 ]);
 
             if ($confLocationTableInspections['area'] == 'SI')
                 array_push($colums, [
-                    'name'=>'sau_employees_areas.name', 'data'=>'area', 'title'=>$columnsHeader['area'], 'sortable'=>true, 'searchable'=> false, 'detail'=>false, 'key'=>false
+                    'name'=>'sau_employees_areas.name', 'data'=>'areas', 'title'=>$columnsHeader['area'], 'sortable'=>true, 'searchable'=> false, 'detail'=>false, 'key'=>false
                 ]);
         }
         else
@@ -244,12 +244,12 @@ class VuetableColumnManager
 
             if ($confLocation['process'] == 'SI')
                 array_push($colums, [
-                    'name'=>'sau_employees_processes.name', 'data'=>'process', 'title'=>$columnsHeader['process'], 'sortable'=>true, 'searchable'=> $searchable, 'detail'=>false, 'key'=>false
+                    'name'=>'sau_employees_processes.name', 'data'=>'procesos', 'title'=>$columnsHeader['process'], 'sortable'=>true, 'searchable'=> $searchable, 'detail'=>false, 'key'=>false
                 ]);
 
             if ($confLocation['area'] == 'SI')
                 array_push($colums, [
-                    'name'=>'sau_employees_areas.name', 'data'=>'area', 'title'=>$columnsHeader['area'], 'sortable'=>true, 'searchable'=> $searchable, 'detail'=>false, 'key'=>false
+                    'name'=>'sau_employees_areas.name', 'data'=>'areas', 'title'=>$columnsHeader['area'], 'sortable'=>true, 'searchable'=> $searchable, 'detail'=>false, 'key'=>false
                 ]);
         }
 

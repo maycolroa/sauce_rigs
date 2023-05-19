@@ -110,6 +110,8 @@ class ElementBalanceInitialNotIdentyImport implements ToCollection, WithCalculat
 
     private function checkElementNotIdent($row)
     {
+        \Log::info(1);
+        $detalles = [];
         $data = [
                 'id_elemento' => $row[0],
                 'id_ubicacion' => $row[1],
@@ -165,14 +167,20 @@ class ElementBalanceInitialNotIdentyImport implements ToCollection, WithCalculat
                         $element->quantity_allocated = 0;
                         $element->save();
 
-                        for ($i=1; $i <= $data['cantidad']; $i++) { 
+                        for ($i=1; $i <= $data['cantidad']; $i++) {                             
                             $hash = Hash::make($element->element_id . str_random(30));
-                            $product = new ElementBalanceSpecific;
+                            array_push($detalles, [
+                                'hash' => $hash,
+                                'code' => $hash,
+                                'element_balance_id' => $element->id,
+                                'location_id' => $element->location_id
+                            ]);
+                            /*$product = new ElementBalanceSpecific;
                             $product->hash = $hash;
                             $product->code = $hash;
                             $product->element_balance_id = $element->id;
                             $product->location_id = $element->location_id;
-                            $product->save();
+                            $product->save();*/
                         }
 
                         $log = new ElementBalanceInicialLog;
@@ -205,12 +213,19 @@ class ElementBalanceInitialNotIdentyImport implements ToCollection, WithCalculat
 
                         for ($i=1; $i <= $data['cantidad']; $i++) { 
                             $hash = Hash::make($element->element_id . str_random(30));
+                            array_push($detalles, [
+                                'hash' => $hash,
+                                'code' => $hash,
+                                'element_balance_id' => $element->id,
+                                'location_id' => $element->location_id
+                            ]);
+                            /*$hash = Hash::make($element->element_id . str_random(30));
                             $product = new ElementBalanceSpecific;
                             $product->hash = $hash;
                             $product->code = $hash;
                             $product->element_balance_id = $element->id;
                             $product->location_id = $element->location_id;
-                            $product->save();
+                            $product->save();*/
                         }
 
                         $log = new ElementBalanceInicialLog;
@@ -218,6 +233,13 @@ class ElementBalanceInitialNotIdentyImport implements ToCollection, WithCalculat
                         $log->location_id = $data['id_ubicacion'];
                         $log->balance_inicial = true;
                         $log->save();
+                    }
+
+                    \Log::info(count($detalles));
+                    foreach (array_chunk($detalles, 2000) as $t)
+                    {
+                        \Log::info(2);
+                        ElementBalanceSpecific::insert($t);
                     }
                 }
                 else
