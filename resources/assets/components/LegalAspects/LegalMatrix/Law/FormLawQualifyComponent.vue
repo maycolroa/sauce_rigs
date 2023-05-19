@@ -393,7 +393,6 @@ export default {
       }
     },
     'searchArticles' : function() {
-      console.log(this.searchArticles)
       this.searchOptions();
     }
   },

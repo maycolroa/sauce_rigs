@@ -721,9 +721,8 @@ class LawController extends Controller
 
             $qualification = ArticleFulfillment::find($request->qualification_id);
 
-            if ($request->fulfillment_value_id == 8 && !$qualification->article->law->company_id)
+            if ($request->fulfillment_value_id == 8 && !$qualification->article->law->company_id && $qualification->fulfillment_value_id != 8)
             {
-                \Log::info('entro');
                 return $this->respondWithError("Está norma es de Sauce no puede calificarse como 'No vigente'");
             }
             else

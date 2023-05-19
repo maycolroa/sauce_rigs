@@ -92,7 +92,7 @@
 
           <b-form-row>
             <vue-radio :disabled="viewOnly" :checked="form.has_recommendations" class="col-md-6 offset-md-3" v-model="form.has_recommendations" :options="siNo" name="has_recommendations" :error="form.errorsFor('has_recommendations')" label="¿Tiene recomendaciones?"></vue-radio>
-            <b-btn v-show="isEdit && form.has_recommendations == 'SI'" class="col-md-1 offset-md-2" @click="showModal('modalsendRecommendations')" variant="outline-danger icon-btn borderless" size="xs" v-b-tooltip.top title="Ver historial"><span class="ion ion-ios-mail"></span></b-btn>
+            <b-btn v-show="isEdit && form.has_recommendations == 'SI'" class="col-md-1 offset-md-2" @click="showModal('modalsendRecommendations')" variant="outline-danger icon-btn borderless" size="xs" v-b-tooltip.top title="Enviar correo"><span class="ion ion-ios-mail"></span></b-btn>
             <b-modal ref="modalsendRecommendations" :hideFooter="true" id="modalsendRecommendations" class="modal-top modal-item" size="lg">
               <div slot="modal-title">
                   Histórico<br>
