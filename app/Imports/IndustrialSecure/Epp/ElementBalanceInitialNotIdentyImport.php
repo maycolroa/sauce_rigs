@@ -15,6 +15,8 @@ use App\Models\IndustrialSecure\Epp\ElementBalanceInicialLog;
 use App\Models\IndustrialSecure\Epp\ElementBalanceSpecific;
 use App\Models\IndustrialSecure\Epp\Element;
 use App\Models\IndustrialSecure\Epp\Location;
+use Illuminate\Validation\Rule;
+use Carbon\Carbon;
 use Validator;
 use Exception;
 use Hash;
@@ -110,31 +112,34 @@ class ElementBalanceInitialNotIdentyImport implements ToCollection, WithCalculat
 
     private function checkElementNotIdent($row)
     {
-        \Log::info(1);
         $detalles = [];
         $data = [
-                'id_elemento' => $row[0],
+                'code' => $row[0],
                 'id_ubicacion' => $row[1],
+                'id' => $row[1],
                 'cantidad' => $row[2],
-
-            ];
-        
-        $tipo = Element::where('code', $row[0]);
-        $tipo->company_scope = $this->company_id;
-        $tipo = $tipo->first();
-
-        $location = Location::where('id', $row[1]);
-        $location->company_scope = $this->company_id;
-        $location = $location->first();
+        ];
 
         $rules = [
-            'id_elemento' => 'required|in:'.$tipo->code,
-            'id_ubicacion' => 'required',
+            'code' => [
+                'required',
+                Rule::exists('sau_epp_elements')->where(function ($query) use ($row) {
+                    $query/*->where('code', $row[0])*/
+                          ->where('company_id', $this->company_id);
+                })
+            ],
+            'id' => [
+                'required',
+                Rule::exists('sau_epp_locations')->where(function ($query) use ($row) {
+                    $query/*->where('id', $row[1])*/
+                          ->where('company_id', $this->company_id);
+                })
+            ],
             'cantidad' => 'required'       
         ];
         $validator = Validator::make($data, $rules,
         [
-            'id_elemento.required' => 'El valor ingresado en el campo Código no esta registrado'
+            'code.required' => 'El valor ingresado en el campo Código no esta registrado'
 
         ]);
 
@@ -149,7 +154,15 @@ class ElementBalanceInitialNotIdentyImport implements ToCollection, WithCalculat
             return null;
         }
         else 
-        {   
+        {
+            $tipo = Element::where('code', $row[0]);
+            $tipo->company_scope = $this->company_id;
+            $tipo = $tipo->first();
+
+            $location = Location::where('id', $row[1]);
+            $location->company_scope = $this->company_id;
+            $location = $location->first();
+
             if ($tipo) 
             {
                 if ($location)
@@ -168,12 +181,15 @@ class ElementBalanceInitialNotIdentyImport implements ToCollection, WithCalculat
                         $element->save();
 
                         for ($i=1; $i <= $data['cantidad']; $i++) {                             
-                            $hash = Hash::make($element->element_id . str_random(30));
+                            //$hash = Hash::make($element->element_id . str_random(30));
+                            $hash = $element->element_id.str_random(30);
                             array_push($detalles, [
                                 'hash' => $hash,
                                 'code' => $hash,
                                 'element_balance_id' => $element->id,
-                                'location_id' => $element->location_id
+                                'location_id' => $element->location_id,
+                                'created_at' => Carbon::now(),
+                                'updated_at' => Carbon::now()
                             ]);
                             /*$product = new ElementBalanceSpecific;
                             $product->hash = $hash;
@@ -212,12 +228,15 @@ class ElementBalanceInitialNotIdentyImport implements ToCollection, WithCalculat
                         }
 
                         for ($i=1; $i <= $data['cantidad']; $i++) { 
-                            $hash = Hash::make($element->element_id . str_random(30));
+                            //$hash = Hash::make($element->element_id . str_random(30));
+                            $hash = $element->element_id.str_random(30);
                             array_push($detalles, [
                                 'hash' => $hash,
                                 'code' => $hash,
                                 'element_balance_id' => $element->id,
-                                'location_id' => $element->location_id
+                                'location_id' => $element->location_id,
+                                'created_at' => Carbon::now(),
+                                'updated_at' => Carbon::now()
                             ]);
                             /*$hash = Hash::make($element->element_id . str_random(30));
                             $product = new ElementBalanceSpecific;
@@ -235,7 +254,6 @@ class ElementBalanceInitialNotIdentyImport implements ToCollection, WithCalculat
                         $log->save();
                     }
 
-                    \Log::info(count($detalles));
                     foreach (array_chunk($detalles, 2000) as $t)
                     {
                         \Log::info(2);
