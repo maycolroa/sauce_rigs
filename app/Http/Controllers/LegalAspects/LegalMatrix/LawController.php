@@ -14,6 +14,7 @@ use App\Models\LegalAspects\LegalMatrix\ArticleFulfillmentHistory;
 use App\Models\LegalAspects\LegalMatrix\CompanyIntetest;
 use App\Models\LegalAspects\LegalMatrix\LawHide;
 use App\Jobs\LegalAspects\LegalMatrix\SyncQualificationsCompaniesJob;
+use App\Jobs\LegalAspects\LegalMatrix\UpdateQualificationsRepeleadArticle;
 use App\Traits\LegalMatrixTrait;
 use App\Traits\Filtertrait;
 use App\Facades\ActionPlans\Facades\ActionPlan;
@@ -429,6 +430,12 @@ class LawController extends Controller
             $articleNew = $law->articles()->updateOrCreate(['id'=>$id], $article);
             $articleNew->interests()->sync($this->getValuesForMultiselect($article['interests_id']));
             $articles[$key]['id'] = $articleNew->id;
+
+            if ($law->repealed == 'Parcial')
+            {
+                if ($articleNew->repealed == 'SI')
+                    UpdateQualificationsRepeleadArticle::dispatch($articleNew->id);
+            }
         }
 
         return $articles;
