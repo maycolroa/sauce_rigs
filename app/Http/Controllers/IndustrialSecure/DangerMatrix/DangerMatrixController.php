@@ -481,17 +481,20 @@ class DangerMatrixController extends Controller
                 return $this->respondHttp500();
             }
 
-            foreach ($request->add_fields as $key => $value) 
+            if (isset($request->add_fields))
             {
-                $fields_add = $this->tagsPrepare($value['value']);
+                foreach ($request->add_fields as $key => $value) 
+                {
+                    $fields_add = $this->tagsPrepare($value['value']);
 
-                $this->tagsSaveFields($fields_add, TagsAddFields::class, $value['id']);
+                    $this->tagsSaveFields($fields_add, TagsAddFields::class, $value['id']);
 
-                $field_exist = AdditionalFieldsValues::updateOrCreate(['danger_matrix_id'=> $dangerMatrix->id, 'field_id' => $value['id']], [
-                    'field_id' => $value['id'],
-                    'danger_matrix_id' => $dangerMatrix->id,
-                    'value' => $fields_add->implode(',')
-                ]);
+                    $field_exist = AdditionalFieldsValues::updateOrCreate(['danger_matrix_id'=> $dangerMatrix->id, 'field_id' => $value['id']], [
+                        'field_id' => $value['id'],
+                        'danger_matrix_id' => $dangerMatrix->id,
+                        'value' => $fields_add->implode(',')
+                    ]);
+                }
             }
 
             if($this->updateModelLocationForm($dangerMatrix, $request->get('locations')))
@@ -614,6 +617,7 @@ class DangerMatrixController extends Controller
                     $danger->intervention_measures_warning_signage = $intervention_measures_warning_signage->implode(',');
                     $danger->intervention_measures_administrative_controls = $intervention_measures_administrative_controls->implode(',');
                     $danger->intervention_measures_epp = $intervention_measures_epp->implode(',');
+                    $danger->observation_qualifications = $itemD['observation_qualifications'];
 
                     if(!$danger->save()){
                         return $this->respondHttp500();

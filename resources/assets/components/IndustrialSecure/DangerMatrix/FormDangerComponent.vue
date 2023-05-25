@@ -78,6 +78,9 @@
                   :index-danger="indexDanger"
                   :qualifications-data="danger.qualificationsData"
                 />
+                <b-form-row>
+                  <vue-textarea :disabled="viewOnly" class="col-md-6" v-model="danger.observation_qualifications" label="Observaciones" name="observation_qualifications" :error="form.errorsFor(`activities.${indexActivity}.dangers.${indexDanger}.observation_qualifications`)" placeholder="Observaciones"></vue-textarea>
+                </b-form-row>
               </b-card>
             </tab-content>
 

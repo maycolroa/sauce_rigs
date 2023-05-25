@@ -38,7 +38,8 @@ class ActivityDanger extends Model
         'intervention_measures_warning_signage',
         'intervention_measures_administrative_controls',
         'intervention_measures_epp',
-        'qualification'
+        'qualification',
+        'observation_qualifications'
     ];
 
     public function danger()
