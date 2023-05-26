@@ -25,6 +25,8 @@ use App\Models\IndustrialSecure\DangerMatrix\TagsHistoryChange;
 use App\Models\IndustrialSecure\DangerMatrix\ChangeHistory;
 use App\Models\IndustrialSecure\DangerMatrix\AdditionalFields;
 use App\Models\IndustrialSecure\DangerMatrix\AdditionalFieldsValues;
+use App\Models\IndustrialSecure\DangerMatrix\QualificationType;
+use App\Models\IndustrialSecure\DangerMatrix\HistoryQualificationChange;
 use App\Http\Requests\IndustrialSecure\DangerMatrix\AddFieldsRequest;
 use App\Jobs\IndustrialSecure\DangerMatrix\DangerMatrixExportJob;
 use App\Facades\ActionPlans\Facades\ActionPlan;
@@ -556,10 +558,15 @@ class DangerMatrixController extends Controller
 
                 foreach ($itemA['dangers'] as $keyD => $itemD)
                 {
+                    $change = 0;
+                    $observation_qualifications_old = '';
+
                     if ($itemD['id'] == '')
                         $danger = new ActivityDanger();
                     else
-                        $danger = ActivityDanger::find($itemD['id']);
+                    {    $danger = ActivityDanger::find($itemD['id']);
+                        $observation_qualifications_old =  $danger->observation_qualifications;
+                    }
                     
                     //TAGS
                     $possible_consequences_danger = $this->tagsPrepare($itemD['possible_consequences_danger']);
@@ -623,6 +630,8 @@ class DangerMatrixController extends Controller
                         return $this->respondHttp500();
                     }
 
+                    $qualification_old = QualificationDanger::where('activity_danger_id', $danger->id)->get();
+
                     QualificationDanger::where('activity_danger_id', $danger->id)->delete();
 
                     $conf = QualificationCompany::select('qualification_id')->first();
@@ -659,7 +668,16 @@ class DangerMatrixController extends Controller
 
                         if (!$qualification->save())
                             return $this->respondHttp500();
+
+                        
+                        $var = $qualification_old->where('type_id', $itemQ['type_id'])->first();
+
+                        if ($var->value_id != $qualification->value_id)
+                            $change++;
+
                     }
+
+                    $qualification_new = QualificationDanger::where('activity_danger_id', $danger->id)->get();
 
                     if ($conf == 'Tipo 1')
                     {
@@ -694,6 +712,26 @@ class DangerMatrixController extends Controller
                         ->activities($itemD['actionPlan'])
                         ->detailProcedence($detail_procedence)
                         ->save();
+                    
+                    if ($observation_qualifications_old != $danger->observation_qualifications)
+                        $change++;
+
+                    if ($change > 0)
+                    {
+                        $infor_log_qualification = [
+                            'old' => $qualification_old->toArray(),
+                            'new' => $qualification_new->toArray(),
+                            'observations_old' =>  $observation_qualifications_old,
+                            'observations_new' => $danger->observation_qualifications,
+                            'activity_danger' => $danger->id,
+                            'activity' => $activity_procedence->id,
+                            'danger' => $danger_procedence->id,
+                            'matrix' => $dangerMatrix->id
+                        ];
+
+                        $this->saveLogQualification($infor_log_qualification);
+                    }
+
                 }
 
                 if (isset($itemA['dangersRemoved']) && COUNT($itemA['dangersRemoved']) > 0)
@@ -790,5 +828,48 @@ class DangerMatrixController extends Controller
       {
         return $this->respondHttp500();
       }
+    }
+
+    public function saveLogQualification($infor)
+    {
+        $qualification_old = collect([]);
+        $qualification_new = collect([]);
+
+        foreach($infor['old'] as $value)
+        {
+            $qualification_old->push([
+                "name" => QualificationType::find($value['type_id'])->description,
+                "value" => $value['value_id']
+            ]);
+        }
+
+        $qualification_old->push([
+            "name" => 'Observaciones',
+            "value" => $infor['observations_old']
+        ]);
+
+        foreach($infor['new'] as $value)
+        {
+            $qualification_new->push([
+                "name" => QualificationType::find($value['type_id'])->description,
+                "value" => $value['value_id']
+            ]);
+        }
+
+        $qualification_new->push([
+            "name" => 'Observaciones',
+            "value" => $infor['observations_new']
+        ]);
+
+        $history = new HistoryQualificationChange;
+        $history->company_id = $this->company;
+        $history->user_id = $this->user->id;
+        $history->danger_matrix_id = $infor['matrix'];
+        $history->activity_id = $infor['activity'];
+        $history->danger_id = $infor['danger'];
+        $history->activity_danger_id = $infor['activity_danger'];
+        $history->qualification_old = json_encode($qualification_old->toArray());
+        $history->qualification_new = json_encode($qualification_new->toArray());
+        $history->save();
     }
 }
