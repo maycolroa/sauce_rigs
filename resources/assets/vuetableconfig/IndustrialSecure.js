@@ -227,6 +227,38 @@ export default [
     }
 },
 {
+    name: 'industrialsecure-dangermatrix-report-history',
+    fields: [
+        { name: 'sau_dm_report_histories.id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true }
+    ],
+    'controlls': [
+        {
+            type: 'push',
+            buttons: [{
+                config: {
+                    color: 'outline-info',
+                    borderless: true,
+                    icon: 'ion ion-md-eye',
+                    title: 'Ver'
+                },
+                data: {
+                    routePush: { name: 'industrialsecure-dangermatrix-report-detail-history' },
+                    id: 'id',
+                },
+                permission: 'dangerMatrix_r'
+            }]
+        },
+        {
+            type: 'base',
+            buttons: [],
+        }
+    ],
+    configuration: {
+        urlData: '/industrialSecurity/dangersMatrix/history/reportDangerTable',
+        filterColumns: true,
+    }
+},
+{
     name: 'industrialsecure-dangermatrix-tags-administrative-controls',
     fields: [
         { name: 'sau_tags_administrative_controls.id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true },

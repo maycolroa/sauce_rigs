@@ -10,6 +10,7 @@ use Session;
 use App\Models\IndustrialSecure\DangerMatrix\QualificationHistory;
 use App\Models\IndustrialSecure\DangerMatrix\ReportHistory;
 use App\Traits\Filtertrait;
+use App\Vuetable\Facades\Vuetable;
 
 class DangerMatrixReportHistoryController extends Controller
 {
@@ -311,5 +312,93 @@ class DangerMatrixReportHistoryController extends Controller
         }
 
         return [];
+    }
+
+    public function reportDangerTable(Request $request)
+    {
+        $url = "/industrialsecure/dangermatrix/report/history";
+        $init = true;
+        $filters = [];
+
+        if ($request->has('filtersType'))
+            $init = false;
+        else 
+            $filters = $this->filterDefaultValues($this->user->id, $url);
+
+        /** FIltros */
+        $regionals = !$init ? $this->getValuesForMultiselect($request->regionals) : (isset($filters['regionals']) ? $this->getValuesForMultiselect($filters['regionals']) : []);
+            
+        $headquarters = !$init ? $this->getValuesForMultiselect($request->headquarters) : (isset($filters['headquarters']) ? $this->getValuesForMultiselect($filters['headquarters']) : []);
+        
+        $areas = !$init ? $this->getValuesForMultiselect($request->areas) : (isset($filters['areas']) ? $this->getValuesForMultiselect($filters['areas']) : []);
+        
+        $processes = !$init ? $this->getValuesForMultiselect($request->processes) : (isset($filters['processes']) ? $this->getValuesForMultiselect($filters['processes']) : []);
+        
+        $dangers = !$init ? $this->getValuesForMultiselect($request->dangers) : (isset($filters['dangers']) ? $this->getValuesForMultiselect($filters['dangers']) : []);
+        
+        $dangerDescription = !$init ? $this->getValuesForMultiselect($request->dangerDescription) : (isset($filters['dangerDescription']) ? $this->getValuesForMultiselect($filters['dangerDescription']) : []);
+        //$matrix = $this->getValuesForMultiselect($request->matrix);
+        $filtersType = !$init ? $request->filtersType : (isset($filters['filtersType']) ? $filters['filtersType'] : null);
+        /***********************************************/
+
+        $dangers = ReportHistory::select('sau_dm_report_histories.*')
+        ->inRegionals($regionals, isset($filtersType['regionals']) ? $filtersType['regionals'] : 'IN')
+        ->inHeadquarters($headquarters, isset($filtersType['headquarters']) ? $filtersType['headquarters'] : 'IN')
+        ->inAreas($areas, isset($filtersType['areas']) ? $filtersType['areas'] : 'IN')
+        ->inProcesses($processes, isset($filtersType['processes']) ? $filtersType['processes'] : 'IN')
+        ->inDangers($dangers, $filtersType['dangers'])
+        ->inDangerDescription($dangerDescription, $filtersType['dangerDescription'])
+        ->where('qualification_text', $request->label)
+        ->where('nivel_probabilily', $request->row)
+        ->where("year", $request->year)
+        ->where("month", $request->month);
+
+        return Vuetable::of($dangers)
+                    ->make();
+    }
+
+    public function reportDetail($id)
+    {
+        $danger = ReportHistory::find($id);
+
+        $qualifications = json_decode($danger->qualification);
+        
+        $danger->nr_persons = $qualifications[1]->value;
+        $danger->nr_economic = $qualifications[2]->value;
+        $danger->nr_image = $qualifications[3]->value;
+        $danger->nri = $qualifications[4]->value;
+
+        $danger->locations = $this->prepareDataLocationForm($danger);
+
+        return $this->respondHttp200([
+            'data' => [
+                'form' => $danger,
+            ]
+        ]);
+
+    }
+
+    protected function prepareDataLocationForm($model)
+    {
+        $data = [];
+
+        $data['regional'] = $model->regional;
+        $data['headquarter'] = $model->headquarter;
+        $data['process'] = $model->process;
+        $data['area'] = $model->area;
+
+        /*if ($model->macroprocess_id)
+        {            
+            $data['macroprocess_id'] = $model->macroprocess_id;
+            $data['multiselect_macroprocess'] = $model->macroprocess ? $model->macroprocess->multiselect() : null;
+            $data['nomenclature'] = $model->nomenclature;
+        }
+
+        $data['multiselect_regional'] = $model->regional2 ? $model->regional2->multiselect() : null;
+        $data['multiselect_headquarter'] = $model->headquarter2 ? $model->headquarter2->multiselect() : null;
+        $data['multiselect_process'] = $model->process2 ? $model->process2->multiselect() : null;
+        $data['multiselect_area'] = $model->area2 ? $model->area2->multiselect() : null;*/
+
+        return $data;
     }
 }

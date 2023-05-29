@@ -496,7 +496,9 @@ Route::middleware(['auth'])->group(function () {
       Route::post('dangersMatrix/getfields', 'IndustrialSecure\DangerMatrix\DangerMatrixController@getAdditionalFiels');
       Route::post('dangersMatrix/report', 'IndustrialSecure\DangerMatrix\DangerMatrixReportController@report');
       Route::post('dangersMatrix/reportDangerTable', 'IndustrialSecure\DangerMatrix\DangerMatrixReportController@reportDangerTable');
+      Route::post('dangersMatrix/history/reportDangerTable', 'IndustrialSecure\DangerMatrix\DangerMatrixReportHistoryController@reportDangerTable');
       Route::get('dangersMatrix/reportDetail/{id}', 'IndustrialSecure\DangerMatrix\DangerMatrixReportController@reportDetail');
+      Route::get('dangersMatrix/reportDetailHistory/{id}', 'IndustrialSecure\DangerMatrix\DangerMatrixReportHistoryController@reportDetail');
       Route::post('dangersMatrix/reportExport ', 'IndustrialSecure\DangerMatrix\DangerMatrixReportController@reportExport');
       Route::post('dangersMatrix/reportHistory', 'IndustrialSecure\DangerMatrix\DangerMatrixReportHistoryController@report');
       Route::post('dangersMatrix/reportHistoryExport ', 'IndustrialSecure\DangerMatrix\DangerMatrixReportHistoryController@reportExport');

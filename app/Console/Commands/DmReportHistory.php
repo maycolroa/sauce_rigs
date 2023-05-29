@@ -10,6 +10,7 @@ use App\Models\IndustrialSecure\DangerMatrix\QualificationHistory;
 use App\Models\IndustrialSecure\DangerMatrix\ReportHistory;
 use App\Models\IndustrialSecure\DangerMatrix\QualificationCompany;
 use App\Models\IndustrialSecure\Dangers\Danger;
+use App\Models\IndustrialSecure\Activities\Activity;
 use Carbon\Carbon;
 
 class DmReportHistory extends Command
@@ -91,7 +92,8 @@ class DmReportHistory extends Command
 
                     $dangersMatrix = DangerMatrix::select(
                         'sau_dangers_matrix.*',
-                        'sau_employees_regionals.name as regionalName'
+                        'sau_employees_regionals.name as regionalName',
+                        'sau_employees_regionals.id as regionalId'
                     )
                     ->leftJoin('sau_employees_regionals', 'sau_employees_regionals.id', 'sau_dangers_matrix.employee_regional_id')
                     ->leftJoin('sau_employees_processes', 'sau_employees_processes.id', 'sau_dangers_matrix.employee_process_id'); 
@@ -109,9 +111,13 @@ class DmReportHistory extends Command
                                 $frec = -1;
                                 $sev = -1;
                                 $qualification = collect([]);
+                                $nivel_probability = '';
 
                                 foreach ($itemDanger->qualifications as $keyQ => $itemQ)
                                 {
+                                    if ($itemQ->typeQualification->id == 11)
+                                        $nivel_probability = $itemQ->value_id;
+
                                     $qualification->push([
                                         "name" => $itemQ->typeQualification->description,
                                         "value" => $itemQ->value_id
@@ -156,6 +162,10 @@ class DmReportHistory extends Command
                                   }
                                 }
 
+                                $activity = Activity::where('id', $itemActivity->activity_id);
+                                $activity->company_scope = $company;
+                                $activity = $activity->first();
+
                                 $danger = Danger::where("id", $itemDanger->danger_id);
                                 $danger->company_scope = $company;
                                 $danger = $danger->first();
@@ -173,6 +183,22 @@ class DmReportHistory extends Command
                                 $reportHistory->type_configuration = $conf;
                                 $reportHistory->danger = $danger->name;
                                 $reportHistory->danger_description = $itemDanger->danger_description;
+                                $reportHistory->activity = $activity->name;
+                                $reportHistory->type_activity = $itemActivity->type_activity;
+                                $reportHistory->participants = $itemMatrix->participants;
+                                $reportHistory->name_matrix = $itemMatrix->name;
+                                $reportHistory->generating_source = $itemDanger->generating_source;
+                                $reportHistory->existing_controls_engineering_controls = $itemDanger->existing_controls_engineering_controls;
+                                $reportHistory->existing_controls_substitution = $itemDanger->existing_controls_substitution;
+                                $reportHistory->existing_controls_warning_signage = $itemDanger->existing_controls_warning_signage;
+                                $reportHistory->existing_controls_administrative_controls = $itemDanger->existing_controls_administrative_controls;
+                                $reportHistory->existing_controls_epp = $itemDanger->existing_controls_epp;
+                                $reportHistory->qualification_text = $itemDanger->qualification;
+                                $reportHistory->regional_id = $itemMatrix->regionalId;
+                                $reportHistory->area_id = $itemMatrix->area ? $itemMatrix->area->id : null;
+                                $reportHistory->headquarter_id = $itemMatrix->headquarter ? $itemMatrix->headquarter->id : null;
+                                $reportHistory->process_id = $itemMatrix->process ? $itemMatrix->process->id : null;
+                                $reportHistory->nivel_probabilily = $nivel_probability;
                                 $reportHistory->save();
                             }
                         }

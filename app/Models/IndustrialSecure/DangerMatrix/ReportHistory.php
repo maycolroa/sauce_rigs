@@ -44,10 +44,10 @@ class ReportHistory extends Model
         if (COUNT($regionals) > 0)
         {
             if ($typeSearch == 'IN')
-                $query->whereIn('sau_dm_report_histories.regional', $regionals);
+                $query->whereIn('sau_dm_report_histories.regional_id', $regionals);
 
             else if ($typeSearch == 'NOT IN')
-                $query->whereNotIn('sau_dm_report_histories.regional', $regionals);
+                $query->whereNotIn('sau_dm_report_histories.regional_id', $regionals);
         }
 
         return $query;
@@ -73,10 +73,10 @@ class ReportHistory extends Model
             $ids = explode(",", implode(",", $ids));
 
             if ($typeSearch == 'IN')
-                $query->whereIn('sau_dm_report_histories.headquarter', $ids);
+                $query->whereIn('sau_dm_report_histories.headquarter_id', $ids);
 
             else if ($typeSearch == 'NOT IN')
-                $query->whereNotIn('sau_dm_report_histories.headquarter', $ids);
+                $query->whereNotIn('sau_dm_report_histories.headquarter_id', $ids);
         }
 
         return $query;
@@ -93,10 +93,10 @@ class ReportHistory extends Model
         if (COUNT($areas) > 0)
         {
             if ($typeSearch == 'IN')
-                $query->whereIn('sau_dm_report_histories.area', $areas);
+                $query->whereIn('sau_dm_report_histories.area_id', $areas);
 
             else if ($typeSearch == 'NOT IN')
-                $query->whereNotIn('sau_dm_report_histories.area', $areas);
+                $query->whereNotIn('sau_dm_report_histories.area_id', $areas);
         }
 
         return $query;
@@ -113,10 +113,10 @@ class ReportHistory extends Model
         if (COUNT($processes) > 0)
         {
             if ($typeSearch == 'IN')
-                $query->whereIn('sau_dm_report_histories.process', $processes);
+                $query->whereIn('sau_dm_report_histories.process_id', $processes);
 
             else if ($typeSearch == 'NOT IN')
-                $query->whereNotIn('sau_dm_report_histories.process', $processes);
+                $query->whereNotIn('sau_dm_report_histories.process_id', $processes);
         }
 
         return $query;
@@ -198,5 +198,25 @@ class ReportHistory extends Model
         }
 
         return $query;
+    }
+
+    public function regional2()
+    {
+        return $this->belongsTo('App\Models\Administrative\Regionals\EmployeeRegional', 'regional_id');
+    }
+
+    public function headquarter2()
+    {
+        return $this->belongsTo('App\Models\Administrative\Headquarters\EmployeeHeadquarter', 'headquarter_id');
+    }
+
+    public function area2()
+    {
+        return $this->belongsTo('App\Models\Administrative\Areas\EmployeeArea', 'area_id');
+    }
+
+    public function process2()
+    {
+        return $this->belongsTo('App\Models\Administrative\Processes\EmployeeProcess', 'process_id');
     }
 }

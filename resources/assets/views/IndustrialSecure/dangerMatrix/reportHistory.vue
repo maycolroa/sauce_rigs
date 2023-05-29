@@ -48,12 +48,26 @@
                                     <tr v-for="(row, index) in information" :key="index">
                                         <th v-if="showLabelCol" class="text-center align-middle">{{ row[0].col }}</th>
                                         <td v-for="(col, index2) in row" :key="index2" :class="`bg-${col.color}`">
-                                            <b-btn style="width: 100%;" :variant="col.color">{{ col.label }} <b-badge variant="light">{{ col.count }}</b-badge></b-btn>
+                                            <!--<b-btn style="width: 100%;" :variant="col.color">{{ col.label }} <b-badge variant="light">{{ col.count }}</b-badge></b-btn>-->
+
+                                            <b-btn @click="fetchTable(col.row, col.col, col.label, col.count)" style="width: 100%;" :variant="col.color">{{ col.label }} <b-badge variant="light">{{ col.count }}</b-badge></b-btn>
                                         </td>
                                     </tr>
                                 </tbody>
                             </table>
                         </div>
+                    </b-card>
+                </b-col>
+            </b-row>
+            <b-row>
+                <b-col>
+                    <b-card border-variant="secondary" :title="titleTable" class="mb-3 box-shadow-none" v-if="showTableDanger" :key="keyTableDanger">
+                        <vue-table
+                            ref="tableDanger"
+                            configName="industrialsecure-dangermatrix-report-history"
+                            :customColumnsName="true"
+                            :params="paramsTable"
+                            ></vue-table>
                     </b-card>
                 </b-col>
             </b-row>
@@ -96,7 +110,13 @@ export default {
                 month: false
             },
             urlMultiselect: '/selects/dmReportMultiselect',
-            keyFilter: true
+            keyFilter: true,
+            showTableDanger: false,
+            keyTableDanger: '',
+            titleTable: '',
+            paramsTable: {},
+            data: [],
+            typeParams: 'filters'
         }
     },
     created(){
@@ -187,6 +207,35 @@ export default {
         updateEmptyKey(keyEmpty)
         {
             this.empty[keyEmpty]  = false
+        },
+        clearAttrTable()
+        {
+            this.showTableDanger = false
+            this.titleTable = ''
+            this.paramsTable = {}
+            this.keyTableDanger = new Date().getTime() + Math.round(Math.random() * 10000)
+            this.typeParams = 'filters'
+        },
+        fetchTable(row, col, label, count)
+        {
+            this.clearAttrTable()
+
+            if (count > 0)
+            {
+                this.$set(this.paramsTable, 'row', row)
+                this.$set(this.paramsTable, 'col', col)
+                this.$set(this.paramsTable, 'label', label)
+                this.$set(this.paramsTable, 'year', this.year)
+                this.$set(this.paramsTable, 'month', this.month)
+                
+                _.forIn(this.filters, (value, key) => {
+                    this.$set(this.paramsTable, key, value)
+                });
+                
+                this.titleTable = `Peligros ${label} de (${row})`
+                this.typeParams = 'paramsTable'
+                this.showTableDanger = true
+            }
         },
     }
 }

@@ -147,6 +147,14 @@ export default [{
             import('@/views/IndustrialSecure/dangerMatrix/viewReportDetail')
         }
       ]),
+      ...middleware({ 'check-permission': 'dangerMatrix_r' }, [
+        {
+          name: 'industrialsecure-dangermatrix-report-detail-history',
+          path: 'dangermatrix/reportDetailHistory/:id',
+          component: () =>
+            import('@/views/IndustrialSecure/dangerMatrix/viewReportDetailHistory')
+        }
+      ]),
       ...middleware({ 'check-permission': 'dangerMatrix_c' }, [
         {
           name: 'industrialsecure-dangermatrix-tags',
