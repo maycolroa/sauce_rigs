@@ -872,4 +872,6 @@ class DangerMatrixController extends Controller
         $history->qualification_new = json_encode($qualification_new->toArray());
         $history->save();
     }
+
+    //public function
 }
