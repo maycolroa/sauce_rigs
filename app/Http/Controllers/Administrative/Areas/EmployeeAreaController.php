@@ -47,7 +47,7 @@ class EmployeeAreaController extends Controller
             'sau_employees_areas.id as id,
              sau_employees_areas.name as name,
              GROUP_CONCAT(CONCAT(" ", sau_employees_processes.name) ORDER BY sau_employees_processes.name ASC) as proceso,
-             sau_employees_headquarters.name as sede,
+             GROUP_CONCAT(CONCAT(" ", sau_employees_headquarters.name) ORDER BY sau_employees_headquarters.name ASC) as sede,
              sau_employees_regionals.name as regional'
         )
         ->join('sau_process_area', 'sau_process_area.employee_area_id', 'sau_employees_areas.id')
@@ -58,7 +58,7 @@ class EmployeeAreaController extends Controller
         })
         ->join('sau_employees_headquarters', 'sau_employees_headquarters.id', 'sau_headquarter_process.employee_headquarter_id')
         ->join('sau_employees_regionals', 'sau_employees_regionals.id', 'sau_employees_headquarters.employee_regional_id')
-        ->groupBy('sau_employees_areas.id', 'sau_employees_areas.name', 'sau_employees_regionals.name', 'sau_employees_headquarters.name');
+    ->groupBy('sau_employees_areas.id', 'sau_employees_areas.name', 'sau_employees_regionals.name'/*, 'sau_employees_headquarters.name'*/);
 
         return Vuetable::of($areas)
                 ->make();
@@ -79,15 +79,28 @@ class EmployeeAreaController extends Controller
             $area = new EmployeeArea($request->all());
             $area->save();
 
+            $headquarters = $this->getDataFromMultiselect($request->get('employee_headquarter_id'));
             $process = $this->getDataFromMultiselect($request->get('employee_process_id'));
-            $ids = [];
+            //$ids = [];
 
-            foreach ($process as $value)
-            {
-                $ids[$value] = ['employee_headquarter_id'=>$request->get('employee_headquarter_id')];
+            foreach ($headquarters as $key => $valueH) {
+
+                $processes_valid = $this->getProcess($valueH);
+                $processes = array_intersect($process, $processes_valid);
+
+                foreach ($processes as $valueP)
+                {
+                    $insert = [$valueP, $area->id, $valueH];
+                    DB::insert('insert into sau_process_area (employee_process_id, employee_area_id, employee_headquarter_id) values (?, ?, ?)', $insert);
+                }
             }
 
-            $area->processes()->sync($ids);
+            /*foreach ($process as $value)
+            {
+                $ids[$value] = ['employee_headquarter_id'=>$request->get('employee_headquarter_id')];
+            }*/
+
+            //$area->processes()->sync($ids);
 
             $this->saveLogActivitySystem('Areas', 'Se creo el area '.$area->name);
 
@@ -95,12 +108,26 @@ class EmployeeAreaController extends Controller
 
         } catch (\Exception $e) {
             DB::rollback();
+            \Log::info($e->getMessage());
             return $this->respondHttp500();
         }
 
         return $this->respondHttp200([
             'message' => 'Se creo el registro'
         ]);
+    }
+
+    private function getProcess($headquarters)
+    {
+        $processes = EmployeeProcess::selectRaw(
+            "sau_employees_processes.id as id")
+        ->join('sau_headquarter_process', 'sau_headquarter_process.employee_process_id', 'sau_employees_processes.id')
+        ->join('sau_employees_headquarters', 'sau_employees_headquarters.id', 'sau_headquarter_process.employee_headquarter_id')
+        ->where('sau_headquarter_process.employee_headquarter_id', $headquarters)
+        ->pluck('id')
+        ->toArray();
+
+        return $processes;
     }
 
     /**
@@ -115,34 +142,56 @@ class EmployeeAreaController extends Controller
         {
             $area = EmployeeArea::findOrFail($id);
             $process = [];
+            $headquarters = [];
+            $repeat = [];
+            $repeat_p = [];
 
             foreach ($area->processes as $key => $value)
             {
-                if ($key == 0)
+
+                foreach ($value->headquarters as $key2 => $value2)
                 {
-                    foreach ($value->headquarters as $key2 => $value2)
+                    if ($key == 0)
                     {
-                        if ($value->pivot->employee_headquarter_id == $value2->id)
+                        $area->employee_regional_id = $value2->regional->id;
+                        $area->multiselect_regional = $value2->regional->multiselect();
+                    }
+
+                    if ($value->pivot->employee_headquarter_id == $value2->id)
+                    {
+                        if (!in_array($value2->id, $repeat))
                         {
-                            $area->employee_headquarter_id = $value2->id;
-                            $area->multiselect_sede = $value2->multiselect();
-                            $area->employee_regional_id = $value2->regional->id;
-                            $area->multiselect_regional = $value2->regional->multiselect();
-                            break;
+                            array_push($headquarters, $value2->multiselect());
+                            array_push($repeat, $value2->id);
                         }
+                        /*$area->employee_headquarter_id = $value2->id;
+                        $area->multiselect_sede = $value2->multiselect();*/
+                        
+                        //break;
                     }
                 }
+                //}
+
+                if (!in_array($value->id, $repeat_p))
+                {
+                    array_push($process, $value->multiselect());
+                    array_push($repeat_p, $value->id);
+                }
                 
-                array_push($process, $value->multiselect());
+                //array_push($process, $value->multiselect());
             }
 
             $area->multiselect_employee_process_id = $process;
             $area->employee_process_id = $process;
 
+            $area->multiselect_sede = $headquarters;
+            $area->employee_headquarter_id = $headquarters;
+
             return $this->respondHttp200([
                 'data' => $area,
             ]);
         } catch(Exception $e){
+            \Log::info($e->getMessage());
             $this->respondHttp500();
         }
     }
@@ -163,15 +212,29 @@ class EmployeeAreaController extends Controller
             $area->fill($request->all());
             $area->update();
 
+            $headquarters = $this->getDataFromMultiselect($request->get('employee_headquarter_id'));
             $process = $this->getDataFromMultiselect($request->get('employee_process_id'));
-            $ids = [];
+            //$ids = [];
 
-            foreach ($process as $value)
+            DB::delete("delete from sau_process_area where employee_area_id = $area->id");
+
+            foreach ($headquarters as $key => $valueH) {
+                $processes_valid = $this->getProcess($valueH);
+                $processes = array_intersect($process, $processes_valid);
+
+                foreach ($processes as $valueP)
+                {
+                    $insert = [$valueP, $area->id, $valueH];
+                    DB::insert('insert into sau_process_area (employee_process_id, employee_area_id, employee_headquarter_id) values (?, ?, ?)', $insert);
+                }
+            }
+
+            /*foreach ($process as $value)
             {
                 $ids[$value] = ['employee_headquarter_id'=>$request->get('employee_headquarter_id')];
             }
             
-            $area->processes()->sync($ids);
+            $area->processes()->sync($ids);*/
 
             $this->saveLogActivitySystem('Areas', 'Se edito el area '.$area->name);
 
@@ -179,6 +242,7 @@ class EmployeeAreaController extends Controller
 
         } catch (\Exception $e) {
             DB::rollback();
+            \Log::info($e->getMessage());
             return $this->respondHttp500();
         }
 

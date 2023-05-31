@@ -30,7 +30,7 @@ class AreaRequest extends FormRequest
         return [
             'name' => ['required','string',new AreaUnique($id)],
             'employee_regional_id' => 'required|exists:sau_employees_regionals,id',
-            'employee_headquarter_id' => 'required|exists:sau_employees_headquarters,id',
+            'employee_headquarter_id' => 'required|array',//exists:sau_employees_headquarters,id',
             'employee_process_id' => 'required|array'
         ];
     }
