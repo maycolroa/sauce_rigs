@@ -114,8 +114,7 @@
       <div class="row float-right pt-10 pr-10">
         <template>
           <b-btn variant="default" :to="cancelUrl" :disabled="loading">{{ viewOnly ? "Atras" : "Cancelar"}}</b-btn>&nbsp;&nbsp;
-          <b-btn v-show="false" @click="submit(false)" :disabled="loading" variant="primary" v-if="!viewOnly">Guardar y continuar</b-btn>&nbsp;&nbsp;
-
+          <b-btn @click="submit(false)" :disabled="loading" variant="primary" v-if="!viewOnly">Guardar y continuar</b-btn>&nbsp;&nbsp;
           <b-btn @click="submit" :disabled="loading" variant="primary" v-if="!viewOnly">Finalizar</b-btn>
         </template>
       </div>
@@ -248,6 +247,12 @@ export default {
 
           if (redirect)
             this.$router.push({ name: "industrialsecure-dangermatrix" });
+          else
+          {
+            _.forIn(response.data.data, (value, key) => {
+              this.form[key] = value
+            })
+          }
         })
         .catch(error => {
           this.loading = false;
