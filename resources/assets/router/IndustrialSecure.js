@@ -165,6 +165,14 @@ export default [{
       ]),
       ...middleware({ 'check-permission': 'dangerMatrix_c' }, [
         {
+          name: 'industrialsecure-dangermatrix-log-qualification',
+          path: 'dangermatrix/logQualification',
+          component: () =>
+            import('@/views/IndustrialSecure/dangerMatrix/indexLogQualification')
+        }
+      ]),
+      ...middleware({ 'check-permission': 'dangerMatrix_c' }, [
+        {
           name: 'industrialsecure-dangermatrix-tags-administrative-controls',
           path: 'dangermatrix/tags/administrativecontrols',
           component: () =>

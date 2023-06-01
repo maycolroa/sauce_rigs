@@ -1850,4 +1850,36 @@ export default [
         //configNameFilter: 'industrialsecure-epp-report'
     }
 },
+{
+    name: 'industrialsecure-dangermatrix-log-qualifications',
+    fields: [
+        { name: 'sau_dm_history_qualification_change.id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true },
+        { name: 'sau_dangers_matrix.name', data: 'matriz', title: 'Matriz', sortable: true, searchable: true, detail: false, key: false },
+        { name: 'fecha', data: 'fecha', title: 'Fecha', sortable: true, searchable: true, detail: false, key: false },
+        { name: 'sau_users.name', data: 'user', title: 'Usuario', sortable: true, searchable: true, detail: false, key: false },
+        { name: 'sau_dm_activities.name', data: 'activity', title: 'Actividad', sortable: true, searchable: true, detail: false, key: false },
+        { name: 'sau_dm_dangers.name', data: 'danger', title: 'Peligro', sortable: true, searchable: true, detail: false, key: false },
+        { name: 'nr_persona_old', data: 'nr_persona_old', title: 'NR Persona Anterior', sortable: true, searchable: false, detail: false, key: false },
+        { name: 'nr_persona_new', data: 'nr_persona_new', title: 'NR Persona Nuevo', sortable: true, searchable: false, detail: false, key: false },
+        { name: 'qualification_old2', data: 'qualification_old2', title: 'Calificación Anterior', sortable: true, searchable: false, detail: false, key: false },
+        { name: 'qualification_new2', data: 'qualification_new2', title: 'Calificación Nueva', sortable: true, searchable: false, detail: false, key: false },
+        { name: 'observation_old2', data: 'observation_old2', title: 'Observaciones Anteriores', sortable: true, searchable: false, detail: false, key: false },
+        { name: 'observation_new2', data: 'observation_new2', title: 'Observaciones Nueva', sortable: true, searchable: false, detail: false, key: false }
+    ],
+    'controlls': [
+        {
+            type: 'push',
+            buttons: [],
+        },
+        {
+            type: 'base',
+            buttons: [],
+        },
+    ],
+    configuration: {
+        urlData: '/industrialSecurity/dangersMatrix/historyQualification/data',
+        filterColumns: true,
+        configNameFilter: 'industrialsecure-dangermatrix-log-qualification'
+    }
+},
 ];

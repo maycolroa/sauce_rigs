@@ -36,11 +36,12 @@ use App\Jobs\IndustrialSecure\DangerMatrix\DangerMatrixImportJob;
 use Carbon\Carbon;
 use Maatwebsite\Excel\Facades\Excel;
 use Validator;
+use App\Traits\Filtertrait;
 use DB;
 
 class DangerMatrixController extends Controller
 {
-    use DangerMatrixTrait;
+    use DangerMatrixTrait, Filtertrait;
 
     /**
      * creates and instance and middlewares are checked
@@ -630,6 +631,8 @@ class DangerMatrixController extends Controller
                         return $this->respondHttp500();
                     }
 
+                    $qualification_old_value = $danger->qualification;
+
                     $qualification_old = QualificationDanger::where('activity_danger_id', $danger->id)->get();
 
                     QualificationDanger::where('activity_danger_id', $danger->id)->delete();
@@ -689,7 +692,7 @@ class DangerMatrixController extends Controller
                             $danger->save();
                         }
                     }
-
+                    
                     else if ($conf == 'Tipo 2')
                     {
                         $matriz_calification = $this->getMatrixCalification($conf);
@@ -723,10 +726,12 @@ class DangerMatrixController extends Controller
                             'new' => $qualification_new->toArray(),
                             'observations_old' =>  $observation_qualifications_old,
                             'observations_new' => $danger->observation_qualifications,
+                            'calification_old' =>  $qualification_old_value,
+                            'calification_new' => $danger->qualification,
                             'activity_danger' => $danger->id,
                             'activity' => $activity_procedence->id,
                             'danger' => $danger_procedence->id,
-                            'matrix' => $dangerMatrix->id
+                            'matrix' => $dangerMatrix->id,
                         ];
 
                         $this->saveLogQualification($infor_log_qualification);
@@ -844,6 +849,11 @@ class DangerMatrixController extends Controller
         }
 
         $qualification_old->push([
+            "name" => 'Calificacion',
+            "value" => $infor['calification_old']
+        ]);
+
+        $qualification_old->push([
             "name" => 'Observaciones',
             "value" => $infor['observations_old']
         ]);
@@ -855,6 +865,11 @@ class DangerMatrixController extends Controller
                 "value" => $value['value_id']
             ]);
         }
+        
+        $qualification_new->push([
+            "name" => 'Calificacion',
+            "value" => $infor['calification_new']
+        ]);
 
         $qualification_new->push([
             "name" => 'Observaciones',
@@ -873,5 +888,53 @@ class DangerMatrixController extends Controller
         $history->save();
     }
 
-    //public function
+    public function getLogQualificationChange(Request $request)
+    {
+        $url = 'industrialsecure/dangermatrix/logQualification';
+
+        $filters = COUNT($request->get('filters')) > 0 ? $request->get('filters') : $this->filterDefaultValues($this->user->id, $url);
+
+        if (COUNT($filters) > 0)
+        {
+            /** FIltros */
+            $regionals = isset($filters['regionals']) ? $this->getValuesForMultiselect($filters['regionals']) : [];
+            
+            $headquarters = isset($filters['headquarters']) ? $this->getValuesForMultiselect($filters['headquarters']) : [];
+            
+            $areas = isset($filters['areas']) ? $this->getValuesForMultiselect($filters['areas']) : [];
+            
+            $processes = isset($filters['processes']) ? $this->getValuesForMultiselect($filters['processes']) : [];
+            
+            $dangers = isset($filters['dangers']) ? $this->getValuesForMultiselect($filters['dangers']) : [];
+
+            $activities = isset($filters['activities']) ? $this->getValuesForMultiselect($filters['activities']) : [];
+        }
+
+        $histories = HistoryQualificationChange::select(
+            'sau_dm_activities.name as activity',
+            'sau_dm_dangers.name as danger',
+            'sau_users.name as user',
+            'sau_dangers_matrix.name as matriz',
+            DB::raw("JSON_UNQUOTE(json_extract(sau_dm_history_qualification_change.qualification_old, '$[1].value')) as nr_persona_old"),
+            DB::raw("JSON_UNQUOTE(json_extract(sau_dm_history_qualification_change.qualification_old, '$[5].value')) as qualification_old2"),
+            DB::raw("JSON_UNQUOTE(json_extract(sau_dm_history_qualification_change.qualification_old, '$[6].value')) as observation_old2"),
+            DB::raw("JSON_UNQUOTE(json_extract(sau_dm_history_qualification_change.qualification_new, '$[1].value')) as nr_persona_new"),
+            DB::raw("JSON_UNQUOTE(json_extract(sau_dm_history_qualification_change.qualification_new, '$[5].value')) as qualification_new2"),
+            DB::raw("JSON_UNQUOTE(json_extract(sau_dm_history_qualification_change.qualification_new, '$[6].value')) as observation_new2"),
+            Db::raw("DATE_FORMAT(sau_dm_history_qualification_change.created_at, '%Y-%m-%d') as fecha")
+        )
+        ->join('sau_dangers_matrix', 'sau_dangers_matrix.id', 'sau_dm_history_qualification_change.danger_matrix_id')
+        ->join('sau_dm_activities', 'sau_dm_activities.id', 'sau_dm_history_qualification_change.activity_id')
+        ->join('sau_dm_dangers', 'sau_dm_dangers.id', 'sau_dm_history_qualification_change.danger_id')
+        ->join('sau_users', 'sau_users.id', 'sau_dm_history_qualification_change.user_id')
+        ->inRegionals($regionals, isset($filtersType['regionals']) ? $filters['filtersType']['regionals'] : 'IN')
+        ->inHeadquarters($headquarters, isset($filtersType['headquarters']) ? $filters['filtersType']['headquarters'] : 'IN')
+        ->inAreas($areas, isset($filters['filtersType']['areas']) ? $filters['filtersType']['areas'] : 'IN')
+        ->inProcesses($processes, isset($filters['filtersType']['processes']) ? $filters['filtersType']['processes'] : 'IN')
+        ->inDangers($dangers, isset($filters['filtersType']['dangers']) ? $filters['filtersType']['dangers'] : 'IN')
+        ->inActivities($activities, isset($filters['filtersType']['activities']) ? $filters['filtersType']['activities'] : 'IN');
+
+        return Vuetable::of($histories)
+                    ->make();
+    }
 }

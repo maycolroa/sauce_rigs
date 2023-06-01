@@ -19,6 +19,7 @@
             <b-btn v-if="auth.can['dangerMatrix_c']" variant="primary" href="/templates/dangermatriximport" target="blank" v-b-tooltip.top title="Generar Plantilla"><i class="fas fa-file-alt"></i></b-btn>
             <b-btn v-if="auth.can['dangerMatrix_c']" variant="primary" @click="importMessage()" v-b-tooltip.top title="Importar"><i class="fas fa-upload"></i></b-btn>
             <input id="fileInputImport" type="file" style="display:none" v-on:input="importDangerMatrix"/>
+            <b-btn v-if="auth.can['dangerMatrix_c']" :to="{name:'industrialsecure-dangermatrix-log-qualification'}" variant="primary">Log Calificaiones</b-btn>
           </div>
         </b-card-header>
         <b-card-body>
