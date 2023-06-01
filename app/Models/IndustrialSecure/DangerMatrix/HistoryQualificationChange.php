@@ -3,9 +3,12 @@
 namespace App\Models\IndustrialSecure\DangerMatrix;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Traits\CompanyTrait;
 
 class HistoryQualificationChange extends Model
 {
+    use CompanyTrait;
+    
     protected $table = 'sau_dm_history_qualification_change';
 
     public $timestamps = true;

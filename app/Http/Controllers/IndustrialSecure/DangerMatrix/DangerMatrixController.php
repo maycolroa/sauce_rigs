@@ -893,6 +893,12 @@ class DangerMatrixController extends Controller
         $url = 'industrialsecure/dangermatrix/logQualification';
 
         $filters = COUNT($request->get('filters')) > 0 ? $request->get('filters') : $this->filterDefaultValues($this->user->id, $url);
+        $regionals = [];
+        $headquarters = [];
+        $areas = [];
+        $processes = [];
+        $dangers = [];
+        $activities = [];
 
         if (COUNT($filters) > 0)
         {
