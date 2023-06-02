@@ -96,13 +96,17 @@ export default {
   methods: {
     submit(e) {
       this.loading = true;
-      const { isEmpty, data } = this.$refs.signaturePad.saveSignature()
-      if (data != null) {
-        this.form.firm_image = data
-      } else {
-          if (this.form.type == 'Dibujar')
-            Alerts.error('Error', 'Por favor ingrese su firma');
+      if (this.form.type == 'Dibujar')
+      {
+        const { isEmpty, data } = this.$refs.signaturePad.saveSignature()
+        if (data != null) {
+          this.form.firm_image = data
+        } else {
+            if (this.form.type == 'Dibujar')
+              Alerts.error('Error', 'Por favor ingrese su firma');
+        }
       }
+      
       this.form
         .submit(e.target.action)
         .then(response => {
