@@ -387,10 +387,10 @@ class InspectionQualificationController extends Controller
 
             $details = 'Inspección: ' . $inspection->name . ' - ' . $theme->name . ' - ' . $item->description;
 
-            $regionals = $inspection->regionals ? $inspection->regionals->implode('name', ', ') : null;
+            /*$regionals = $inspection->regionals ? $inspection->regionals->implode('name', ', ') : null;
             $headquarters =  $inspection->headquarters ? $inspection->headquarters->implode('name', ', ') : null;
             $processes = $inspection->processes ? $inspection->processes->implode('name', ', ') : null;
-            $areas = $inspection->areas ? $inspection->areas->implode('name', ', ') : null;
+            $areas = $inspection->areas ? $inspection->areas->implode('name', ', ') : null;*/
 
             if ($confLocation['regional'] == 'SI')
                 $detail_procedence = 'Inspecciones - Inspecciones Planeadas. ' . $details . '- ' . $keywords['regional']. ': ' .  $qualification->regional->name;
@@ -406,10 +406,10 @@ class InspectionQualificationController extends Controller
                 ->module('dangerousConditions')
                 ->url(url('/administrative/actionplans'))
                 ->model($qualification)
-                ->regional($regionals)
-                ->headquarter($headquarters)
-                ->area($areas)
-                ->process($processes)
+                ->regional($qualification->regional->name)
+                ->headquarter($qualification->headquarter->name)
+                ->area($qualification->area->name)
+                ->process($qualification->process->name)
                 ->details($details)
                 ->detailProcedence($detail_procedence)
                 ->activities($request->actionPlan)
