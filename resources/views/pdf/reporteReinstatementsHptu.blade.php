@@ -268,6 +268,12 @@
                     <td>{{$check->restriction->name}}</td>
                     @endif
                 </tr>
+                <tr>
+                    <th colspan="2">¿Tiene estabilidad laboral reforzada?</th>
+                </tr>
+                <tr>
+                    <td colspan="2">{{$check->reinforced_job_stability}}</td>
+                </tr>
             </thead>
         </table>
     </div>

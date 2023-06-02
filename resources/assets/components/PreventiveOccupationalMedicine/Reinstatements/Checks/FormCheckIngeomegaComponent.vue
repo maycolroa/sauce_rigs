@@ -4,7 +4,7 @@
     <b-row>
       <b-col>
         <b-card bg-variant="transparent" border-variant="dark" title="" class="mb-3 box-shadow-none">
-          <vue-ajax-advanced-select class="col-md-12" :disabled="viewOnly" v-model="form.employee_id"  name="employee_id" :label="keywordCheck('employee')" placeholder="Seleccione una opción" :url="employeesDataUrl" :selected-object="form.multiselect_employee" :error="form.errorsFor('employee_id')">
+          <vue-ajax-advanced-select class="col-md-12" :disabled="isEdit || viewOnly" v-model="form.employee_id"  name="employee_id" :label="keywordCheck('employee')" placeholder="Seleccione una opción" :url="employeesDataUrl" :selected-object="form.multiselect_employee" :error="form.errorsFor('employee_id')">
                 </vue-ajax-advanced-select>
 
           <center v-if="employeeDetail.id">
