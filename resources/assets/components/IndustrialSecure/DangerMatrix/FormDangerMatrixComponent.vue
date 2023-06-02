@@ -44,6 +44,33 @@
 
       </b-form-row>
 
+      <b-card v-if="isEdit || viewOnly" bg-variant="transparent" border-variant="dark" title="" class="mb-3 box-shadow-none">
+        <b-form-row>
+          <vue-input :disabled="false" class="col-md-12" v-model="search_keyword" label="Buscar" type="text" name="name" :error="form.errorsFor('name')" placeholder="Nombre" help-text="Se buscara en los campos 'Fuente Generadora', 'Posible consecuencias del peligro' y en 'Controles existentes - Controles administrativos'"></vue-input>
+          <div class="float-center" style="padding-top: 20px;">
+            <b-btn variant="primary" @click="searchkeywordShow('modalHistorial')">&nbsp;&nbsp;Buscar</b-btn>
+          </div>
+        </b-form-row>
+
+        <b-modal ref="modalHistorial" :hideFooter="true" id="modals-historial" class="modal-top" size="lg">
+						<div slot="modal-title">
+							Se encontro la palabra <b>{{search_keyword}}</b> en:
+						</div>
+
+						<b-card  bg-variant="transparent"  title="" class="mb-3 box-shadow-none">
+							<vue-table
+                ref="tableDangerMatrix"
+                configName="industrialsecure-dangermatrix-search"
+                :params="{ keyword: search_keyword, danger_matrix: form.id }"
+                ></vue-table>
+						</b-card>
+						<br>
+						<div class="row float-right pt-12 pr-12y">
+							<b-btn variant="primary" @click="searchkeywordHide('modalHistorial')">Cerrar</b-btn>
+						</div>
+				</b-modal>
+      </b-card>
+
       <b-form-row>
         <div class="col-md-12" v-if="!viewOnly">
           <div class="float-right" style="padding-top: 20px;">
@@ -233,7 +260,8 @@ export default {
       loading: false,
       form: Form.makeFrom(this.dangerMatrix, this.method),
       configLocation: {},      
-      tagsHistoryChangeDataUrl: '/selects/tagsHistoryChange'
+      tagsHistoryChangeDataUrl: '/selects/tagsHistoryChange',
+      search_keyword: ''
     }
   },
   methods: {
@@ -282,7 +310,17 @@ export default {
     setConfigLocation(value)
     {
       this.configLocation = value
-    }
+    },
+    searchkeywordShow(ref)
+    {
+      this.$refs.tableDangerMatrix.refresh()
+      this.$refs[ref].show();
+    },
+    searchkeywordHide(ref)
+    {
+      this.$refs.tableDangerMatrix.refresh()
+      this.$refs[ref].hide();
+    },
   }
 };
 </script>

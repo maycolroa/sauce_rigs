@@ -510,6 +510,8 @@ Route::middleware(['auth'])->group(function () {
 
       Route::post('dangersMatrix/historyQualification/data', 'IndustrialSecure\DangerMatrix\DangerMatrixController@getLogQualificationChange');
 
+      Route::post('dangersMatrix/searchKeyword/data', 'IndustrialSecure\DangerMatrix\DangerMatrixController@searchKeyword');
+
       Route::post('risksMatrix/data', 'IndustrialSecure\RiskMatrix\RiskMatrixController@data');
       Route::post('risksMatrix/getEvaluationControls', 'IndustrialSecure\RiskMatrix\RiskMatrixController@getEvaluationControl');
       Route::post('risksMatrix/getTextHelp', 'IndustrialSecure\RiskMatrix\RiskMatrixController@getTextHelp');

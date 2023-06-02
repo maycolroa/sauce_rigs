@@ -1882,4 +1882,29 @@ export default [
         configNameFilter: 'industrialsecure-dangermatrix-log-qualification'
     }
 },
+{
+    name: 'industrialsecure-dangermatrix-search',
+    fields: [
+        { name: 'sau_dangers_matrix.id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true },
+        { name: 'sau_dm_activities.name', data: 'activity', title: 'Actividad', sortable: true, searchable: true, detail: false, key: false },
+        { name: 'sau_dm_dangers.name', data: 'danger', title: 'Peligro', sortable: true, searchable: true, detail: false, key: false },
+        { name: 'campo', data: 'campo', title: 'Campo', sortable: true, searchable: true, detail: false, key: false },
+        { name: 'value', data: 'value', title: 'Valor', sortable: true, searchable: true, detail: false, key: false }
+    ],
+    'controlls': [
+        {
+            type: 'push',
+            buttons: [],
+        },
+        {
+            type: 'base',
+            buttons: [],
+        },
+    ],
+    configuration: {
+        urlData: '/industrialSecurity/dangersMatrix/searchKeyword/data',
+        /*filterColumns: true,
+        configNameFilter: 'industrialsecure-dangermatrix-log-qualification'*/
+    }
+},
 ];
