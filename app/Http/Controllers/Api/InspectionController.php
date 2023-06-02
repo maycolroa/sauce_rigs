@@ -297,18 +297,13 @@ class InspectionController extends ApiController
             ]), 401);
         }*/
 
-        $keywords = $this->getKeywordQueue($request->company_id);
-        $confLocation = $this->getLocationFormConfModule($request->company_id);;
-
-        $response = $request->all();
-
-        $inspection = Inspection::selectRaw("
+        /*$inspection = Inspection::selectRaw("
           sau_ph_inspections.*,
           GROUP_CONCAT(DISTINCT sau_employees_headquarters.name ORDER BY sau_employees_headquarters.name ASC) AS sede,
           GROUP_CONCAT(DISTINCT sau_employees_areas.name ORDER BY sau_employees_areas.name ASC) AS area,
           GROUP_CONCAT(DISTINCT sau_employees_regionals.name ORDER BY sau_employees_regionals.name ASC) AS regional,
-          GROUP_CONCAT(DISTINCT sau_employees_processes.name ORDER BY sau_employees_processes.name ASC) AS proceso")
-        ->leftJoin('sau_ph_inspection_headquarter', 'sau_ph_inspection_headquarter.inspection_id', 'sau_ph_inspections.id')
+          GROUP_CONCAT(DISTINCT sau_employees_processes.name ORDER BY sau_employees_processes.name ASC) AS proceso")*/
+        /*->leftJoin('sau_ph_inspection_headquarter', 'sau_ph_inspection_headquarter.inspection_id', 'sau_ph_inspections.id')
         ->leftJoin('sau_ph_inspection_area', 'sau_ph_inspection_area.inspection_id', 'sau_ph_inspections.id')
         ->leftJoin('sau_employees_headquarters', 'sau_employees_headquarters.id', 'sau_ph_inspection_headquarter.employee_headquarter_id')
         ->leftJoin('sau_employees_areas', 'sau_employees_areas.id', 'sau_ph_inspection_area.employee_area_id')
@@ -320,12 +315,26 @@ class InspectionController extends ApiController
         ->groupBy('sau_ph_inspections.id');
 
         $inspection->company_scope = $request->company_id;
-        $inspection = $inspection->first();
+        $inspection = $inspection->first();*/
 
-        $regionals = $inspection->regional ? $inspection->regional : null;
+        /*$regionals = $inspection->regional ? $inspection->regional : null;
         $headquarters =  $inspection->sede ? $inspection->sede : null;
         $processes = $inspection->proceso ? $inspection->proceso : null;
-        $areas = $inspection->area ? $inspection->area : null;
+        $areas = $inspection->area ? $inspection->area : null;*/
+
+        $keywords = $this->getKeywordQueue($request->company_id);
+        $confLocation = $this->getLocationFormConfModule($request->company_id);;
+
+        $response = $request->all();
+
+        $inspection = Inspection::selectRaw("
+          sau_ph_inspections.*
+        ")
+        ->where('sau_ph_inspections.id', $request->inspection_id)
+        ->groupBy('sau_ph_inspections.id');
+
+        $inspection->company_scope = $request->company_id;
+        $inspection = $inspection->first();
 
         if (!$inspection)
         {
@@ -430,10 +439,10 @@ class InspectionController extends ApiController
                         ->module('dangerousConditions')
                         ->url(url('/administrative/actionplans'))
                         ->model($item)
-                        ->regional($regionals)
-                        ->headquarter($headquarters)
-                        ->area($areas)
-                        ->process($processes)
+                        ->regional($regional_detail)
+                        ->headquarter($headquarter_detail)
+                        ->area($area_detail)
+                        ->process($process_detail)
                         ->activities($value["actionPlan"])                
                         ->company($request->company_id)
                         ->details($details)
