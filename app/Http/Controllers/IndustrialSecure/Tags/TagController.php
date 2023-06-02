@@ -58,6 +58,7 @@ class TagController extends Controller
                 ->where(function ($query) use ($keyword) {
                     $query->orWhere('name', 'like', $keyword);
                 })
+                ->orderBy('name')
                 ->take(30)->pluck('id', 'name');
 
             return $this->respondHttp200([
@@ -82,6 +83,7 @@ class TagController extends Controller
                 ->where(function ($query) use ($keyword) {
                     $query->orWhere('name', 'like', $keyword);
                 })
+                ->orderBy('name')
                 ->take(30)->pluck('id', 'name');
 
             return $this->respondHttp200([
@@ -106,6 +108,7 @@ class TagController extends Controller
                 ->where(function ($query) use ($keyword) {
                     $query->orWhere('name', 'like', $keyword);
                 })
+                ->orderBy('name')
                 ->take(30)->pluck('id', 'name');
 
             return $this->respondHttp200([
@@ -130,6 +133,7 @@ class TagController extends Controller
                 ->where(function ($query) use ($keyword) {
                     $query->orWhere('name', 'like', $keyword);
                 })
+                ->orderBy('name')
                 ->take(30)->pluck('id', 'name');
 
             return $this->respondHttp200([
@@ -154,6 +158,7 @@ class TagController extends Controller
                 ->where(function ($query) use ($keyword) {
                     $query->orWhere('name', 'like', $keyword);
                 })
+                ->orderBy('name')
                 ->take(30)->pluck('id', 'name');
 
             return $this->respondHttp200([
@@ -178,6 +183,7 @@ class TagController extends Controller
                 ->where(function ($query) use ($keyword) {
                     $query->orWhere('name', 'like', $keyword);
                 })
+                ->orderBy('name')
                 ->take(30)->pluck('id', 'name');
 
             return $this->respondHttp200([
@@ -202,6 +208,7 @@ class TagController extends Controller
                 ->where(function ($query) use ($keyword) {
                     $query->orWhere('name', 'like', $keyword);
                 })
+                ->orderBy('name')
                 ->take(30)->pluck('id', 'name');
 
             return $this->respondHttp200([
@@ -219,6 +226,7 @@ class TagController extends Controller
                 ->where(function ($query) use ($keyword) {
                     $query->orWhere('name', 'like', $keyword);
                 })
+                ->orderBy('name')
                 ->take(30)->pluck('id', 'name');
 
             return $this->respondHttp200([
@@ -245,6 +253,7 @@ class TagController extends Controller
                 ->where(function ($query) use ($keyword) {
                     $query->orWhere('name', 'like', $keyword);
                 })
+                ->orderBy('name')
                 ->take(30)->pluck('id', 'name');
 
             return $this->respondHttp200([
