@@ -13,7 +13,7 @@
             <div v-if="ready">
               <template>
                 <form-check-hptu
-                  url="/biologicalmonitoring/reinstatements/check"
+                  url="/biologicalmonitoring/reinstatements/saveLaborRelationsNotes"
                   method="POST"
                   :check="data"
                   :view-only="true"

@@ -105,6 +105,25 @@
               </tracing-inserter>
             </div>
           </b-form-row>
+
+          <div class="col-md-12" style="padding-left: 15px; padding-right: 15px;">
+            <hr class="border-dark container-m--x mt-0 mb-4">
+          </div>
+
+          <b-form-row>
+            <div class="col-md-12">
+              <tracing-inserter
+                label="Notas relaciones laborales"
+                :generate-pdf="false"
+                :disabled="false"
+                :editable-tracings="auth.hasRole['Rol Visor Reincorporaciones'] || auth.hasRole['SuperAdmin']"
+                :old-tracings="check.oldLaborNotesRelations"
+                :si-no="siNo"
+                ref="laborNotesRelationsInserter"
+              >
+              </tracing-inserter>
+            </div>
+          </b-form-row>
           
         </b-card>
       </b-col>
@@ -113,7 +132,7 @@
     <div class="row float-right pt-10 pr-10">
       <template>
         <b-btn variant="default" :to="cancelUrl" :disabled="loading">{{ viewOnly ? "Atras" : "Cancelar"}}</b-btn>&nbsp;&nbsp;
-        <b-btn type="submit" :disabled="loading" variant="primary" v-if="!viewOnly">Finalizar</b-btn>
+        <b-btn type="submit" :disabled="loading" variant="primary">Finalizar</b-btn>
       </template>
     </div>
   </b-form>
@@ -305,7 +324,9 @@ export default {
           labor_monitorings: [],
           new_labor_notes: [],
           oldLaborNotes: [],
-          files: []
+          files: [],
+          new_labor_notes_relations: [],
+          oldLaborNotesRelations: []
         };
       }
     }
@@ -369,6 +390,21 @@ export default {
     };
   },
   methods: {
+    submit(e) {
+
+      this.loading = true;
+      this.form.new_labor_notes_relations = this.$refs.laborNotesRelationsInserter.getNewTracing();
+      
+      this.form
+        .submit(e.target.action)
+        .then(response => {
+          this.loading = false;
+          this.$router.push({ name: "reinstatements-checks" });
+        })
+        .catch(error => {
+          this.loading = false;
+        });
+    },
     formatDate(param)
     {
       let date = ''

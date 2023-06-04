@@ -14,6 +14,7 @@ use App\Models\PreventiveOccupationalMedicine\Reinstatements\TagsInformantRole;
 use App\Models\PreventiveOccupationalMedicine\Reinstatements\TagsMotiveClose;
 use App\Models\PreventiveOccupationalMedicine\Reinstatements\LetterHistory;
 use App\Models\PreventiveOccupationalMedicine\Reinstatements\Tracing;
+use App\Models\PreventiveOccupationalMedicine\Reinstatements\LaborNotes;
 use App\Models\Administrative\Users\User;
 use App\Models\Administrative\Employees\Employee;
 use App\Http\Requests\PreventiveOccupationalMedicine\Reinstatements\CheckRequest;
@@ -504,8 +505,11 @@ class CheckController extends Controller
                 $query->with('madeBy')->orderBy('created_at', 'desc');
             },
             'laborNotes' => function ($query) {
-                $query->with('madeBy')->orderBy('created_at', 'desc');
-            }
+                $query->with('madeBy')->where('role_visor', 'NO')->orderBy('created_at', 'desc');
+            },
+            'laborNotesRelations' => function ($query) {
+                $query->with('madeBy')->where('role_visor', 'SI')->orderBy('created_at', 'desc');
+            },
         ]);
 
         $check->start_recommendations = $this->formatDateToForm($check->start_recommendations);
@@ -567,6 +571,7 @@ class CheckController extends Controller
         }
 
         $check->new_labor_notes = '';
+        $check->new_labor_notes_relations = '';
 
         $check->oldTracings = $oldTracings;
 
@@ -583,6 +588,20 @@ class CheckController extends Controller
         }
 
         $check->oldLaborNotes = $oldLaborNotes;
+
+        $oldLaborNotesRelations = [];
+
+        foreach ($check->laborNotesRelations as $tracing)
+        {
+            array_push($oldLaborNotesRelations, [
+                'id' => $tracing->id,
+                'description' => $tracing->description,
+                'made_by' => $tracing->madeBy->name,
+                'updated_at' => $tracing->updated_at->toDateString()
+            ]);
+        }
+
+        $check->oldLaborNotesRelations = $oldLaborNotesRelations;
 
         $files = $check->files;
                     
@@ -1563,4 +1582,22 @@ class CheckController extends Controller
 
         return $this->respondHttp200();
     }
+
+    public function saveLaborRelationsNotes(Request $request)
+    {
+        foreach ($request->new_labor_notes_relations as $key => $value) 
+        {
+            $note = json_decode($value, true);
+
+            LaborNotes::create(
+                [
+                    'description' => $note['description'],
+                    'check_id' => $request->id,
+                    'user_id' => $this->user->id,
+                    'role_visor' => 'SI'
+                ]
+            );
+        }
+    }
+
 }

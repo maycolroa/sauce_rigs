@@ -255,6 +255,11 @@ class Check extends Model
         return $this->hasMany(LaborNotes::class, 'check_id');
     }
 
+    public function laborNotesRelations()
+    {
+        return $this->hasMany(LaborNotes::class, 'check_id');
+    }
+
     /**
      * verifies if the check is open
      * @return boolean

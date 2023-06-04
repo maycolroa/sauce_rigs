@@ -21,7 +21,8 @@ class LaborNotes extends Model
     protected $fillable = [
         'description', 
         'check_id',
-        'user_id'
+        'user_id',
+        'role_visor'
     ];
 
     /**

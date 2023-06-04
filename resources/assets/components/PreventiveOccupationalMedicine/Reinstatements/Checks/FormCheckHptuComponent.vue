@@ -391,6 +391,25 @@
               </tracing-other-check>
             </div>
           </b-form-row>
+
+          <div class="col-md-12" style="padding-left: 15px; padding-right: 15px;">
+            <hr class="border-dark container-m--x mt-0 mb-4">
+          </div>
+
+           <b-form-row>
+            <div class="col-md-12">
+              <tracing-inserter
+                label="Notas relaciones laborales"
+                :generate-pdf="false"
+                :disabled="true"
+                :editable-tracings="auth.can['reinc_checks_manage_tracings']"
+                :old-tracings="check.oldLaborNotesRelations"
+                :si-no="siNo"
+                ref="laborRelationsNotesInserter"
+              >
+              </tracing-inserter>
+            </div>
+          </b-form-row>
           
         </b-card>
       </b-col>
@@ -594,6 +613,8 @@ export default {
           labor_monitorings: [],
           new_labor_notes: [],
           oldLaborNotes: [],
+          new_labor_notes_relations: [],
+          oldLaborNotesRelations: [],
           files: []
         };
       }
@@ -742,6 +763,7 @@ export default {
       this.form.oldTracings = this.$refs.tracingInserter.getOldTracings();
       this.form.new_labor_notes = this.$refs.laborNotesInserter.getNewTracing();
       this.form.oldLaborNotes = this.$refs.laborNotesInserter.getOldTracings();
+      this.form.oldLaborRelationsNotes = this.$refs.laborRelationsNotesInserter.getOldTracings();
       
       this.form
         .submit(e.target.action)
