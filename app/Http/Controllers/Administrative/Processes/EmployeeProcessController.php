@@ -71,6 +71,7 @@ class EmployeeProcessController extends Controller
 
         try
         { 
+            \Log::info($request);
             /**CREA LOS TAGS */
             $types = $this->tagsPrepare($request->types);
             $this->tagsSave($types, TagsProcess::class);
@@ -81,21 +82,60 @@ class EmployeeProcessController extends Controller
             $process->types = $types->implode(',');
             $process->save();
 
-            $process->headquarters()->sync($this->getDataFromMultiselect($request->get('employee_headquarter_id')));
+            $headquarter_alls = '';
+
+            if ($request->has('employee_headquarter_id'))
+            {
+                if (count($request->employee_headquarter_id) > 1)
+                {
+                    foreach ($request->employee_headquarter_id as $key => $value) 
+                    {
+                        $verify = json_decode($value)->value;
+    
+                        if ($verify == 'Todos')
+                        {
+                            $headquarter_alls = 'Todos';
+                            break;
+                        }
+                    }
+                }
+                else if (count($request->employee_headquarter_id) == 1)
+                    $headquarter_alls =  json_decode($request->employee_headquarter_id[0])->value;
+            }
+
+            if ($request->has('employee_headquarter_id') && $headquarter_alls == 'Todos')
+                $headquarters = $this->getHeadquarter($request->employee_regional_id);
+
+            else if ($request->has('employee_headquarter_id'))
+                $headquarters = $this->getDataFromMultiselect($request->get('employee_headquarter_id'));
+
+            $process->headquarters()->sync($headquarters);
 
             $this->saveLogActivitySystem('Procesos', 'Se creo el proceso  '.$process->name);
 
             DB::commit();
 
         } catch (\Exception $e) {
+            \Log::info($e->getMessage());
             DB::rollback();
-            return $e->getMessage();
-            //return $this->respondHttp500();
+            return $this->respondHttp500();
         }
 
         return $this->respondHttp200([
             'message' => 'Se creo el registro'
         ]);
+    }
+
+    private function getHeadquarter($regionals)
+    {
+        $headquarters = EmployeeHeadquarter::selectRaw(
+            "sau_employees_headquarters.id as id")
+        ->join('sau_employees_regionals', 'sau_employees_regionals.id', 'sau_employees_headquarters.employee_regional_id')
+        ->where('employee_regional_id', $regionals)
+        ->pluck('id')
+        ->toArray();
+
+        return $headquarters;
     }
 
     /**
@@ -155,7 +195,36 @@ class EmployeeProcessController extends Controller
             $process->types = $types->implode(',');
             $process->update();
 
-            $process->headquarters()->sync($this->getDataFromMultiselect($request->get('employee_headquarter_id')));
+            $headquarter_alls = '';
+
+            if ($request->has('employee_headquarter_id'))
+            {
+                if (count($request->employee_headquarter_id) > 1)
+                {
+                    foreach ($request->employee_headquarter_id as $key => $value) 
+                    {
+                        $verify = json_decode($value)->value;
+    
+                        if ($verify == 'Todos')
+                        {
+                            $headquarter_alls = 'Todos';
+                            break;
+                        }
+                    }
+                }
+                else if (count($request->employee_headquarter_id) == 1)
+                    $headquarter_alls =  json_decode($request->employee_headquarter_id[0])->value;
+            }
+
+            if ($request->has('employee_headquarter_id') && $headquarter_alls == 'Todos')
+                $headquarters = $this->getHeadquarter($request->employee_regional_id);
+
+            else if ($request->has('employee_headquarter_id'))
+                $headquarters = $this->getDataFromMultiselect($request->get('employee_headquarter_id'));
+
+            $process->headquarters()->sync($headquarters);
+
+            /*$process->headquarters()->sync($this->getDataFromMultiselect($request->get('employee_headquarter_id')));*/
 
             $this->saveLogActivitySystem('Procesos', 'Se edito el proceso  '.$process->name);
 
