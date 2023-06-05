@@ -46,8 +46,8 @@ class EmployeeAreaController extends Controller
         $areas = EmployeeArea::selectRaw(
             'sau_employees_areas.id as id,
              sau_employees_areas.name as name,
-             GROUP_CONCAT(CONCAT(" ", sau_employees_processes.name) ORDER BY sau_employees_processes.name ASC) as proceso,
-             GROUP_CONCAT(CONCAT(" ", sau_employees_headquarters.name) ORDER BY sau_employees_headquarters.name ASC) as sede,
+             GROUP_CONCAT(DISTINCT CONCAT(" ", sau_employees_processes.name) ORDER BY sau_employees_processes.name ASC) as proceso,
+             GROUP_CONCAT(DISTINCT CONCAT(" ", sau_employees_headquarters.name) ORDER BY sau_employees_headquarters.name ASC) as sede,
              sau_employees_regionals.name as regional'
         )
         ->join('sau_process_area', 'sau_process_area.employee_area_id', 'sau_employees_areas.id')
@@ -58,7 +58,7 @@ class EmployeeAreaController extends Controller
         })
         ->join('sau_employees_headquarters', 'sau_employees_headquarters.id', 'sau_headquarter_process.employee_headquarter_id')
         ->join('sau_employees_regionals', 'sau_employees_regionals.id', 'sau_employees_headquarters.employee_regional_id')
-    ->groupBy('sau_employees_areas.id', 'sau_employees_areas.name', 'sau_employees_regionals.name'/*, 'sau_employees_headquarters.name'*/);
+    ->groupBy('sau_employees_areas.id', 'sau_employees_areas.name', 'sau_employees_regionals.name'/*, 'sau_employees_headquarters.name', 'sau_employees_processes.name'*/);
 
         return Vuetable::of($areas)
                 ->make();
@@ -79,14 +79,64 @@ class EmployeeAreaController extends Controller
             $area = new EmployeeArea($request->all());
             $area->save();
 
-            $headquarters = $this->getDataFromMultiselect($request->get('employee_headquarter_id'));
-            $process = $this->getDataFromMultiselect($request->get('employee_process_id'));
+            /*$headquarters = $this->getDataFromMultiselect($request->get('employee_headquarter_id'));
+            $process = $this->getDataFromMultiselect($request->get('employee_process_id'));*/
             //$ids = [];
+
+            if ($request->has('employee_headquarter_id'))
+            {
+                if (count($request->employee_headquarter_id) > 1)
+                {
+                    foreach ($request->employee_headquarter_id as $key => $value) 
+                    {
+                        $verify = json_decode($value)->value;
+    
+                        if ($verify == 'Todos')
+                        {
+                            $headquarter_alls = 'Todos';
+                            break;
+                        }
+                    }
+                }
+                else if (count($request->employee_headquarter_id) == 1)
+                    $headquarter_alls =  json_decode($request->employee_headquarter_id[0])->value;
+            }
+
+            if ($request->has('employee_headquarter_id') && $headquarter_alls == 'Todos')
+                $headquarters = $this->getHeadquarter($request->employee_regional_id);
+
+            else if ($request->has('employee_headquarter_id'))
+                $headquarters = $this->getDataFromMultiselect($request->get('employee_headquarter_id'));
+
+            if ($request->has('employee_process_id'))
+            {
+                if (count($request->employee_process_id) > 1)
+                {
+                    foreach ($request->employee_process_id as $key => $value) 
+                    {
+                        $verify = json_decode($value)->value;
+    
+                        if ($verify == 'Todos')
+                        {
+                            $process_alls = 'Todos';
+                            break;
+                        }
+                    }
+                }
+                else if (count($request->employee_process_id) == 1)
+                    $process_alls =  json_decode($request->employee_process_id[0])->value;
+            }
+
+            if ($request->has('employee_process_id') && $process_alls == 'Todos')
+                $processes = $this->getProcess($headquarters);
+
+            else if ($request->has('employee_process_id'))
+                $processes = $this->getDataFromMultiselect($request->get('employee_process_id'));
 
             foreach ($headquarters as $key => $valueH) {
 
-                $processes_valid = $this->getProcess($valueH);
-                $processes = array_intersect($process, $processes_valid);
+                /*$processes_valid = $this->getProcess($valueH);
+                $processes = array_intersect($process, $processes_valid);*/
 
                 foreach ($processes as $valueP)
                 {
@@ -128,6 +178,18 @@ class EmployeeAreaController extends Controller
         ->toArray();
 
         return $processes;
+    }
+
+    private function getHeadquarter($regionals)
+    {
+        $headquarters = EmployeeHeadquarter::selectRaw(
+            "sau_employees_headquarters.id as id")
+        ->join('sau_employees_regionals', 'sau_employees_regionals.id', 'sau_employees_headquarters.employee_regional_id')
+        ->where('employee_regional_id', $regionals)
+        ->pluck('id')
+        ->toArray();
+
+        return $headquarters;
     }
 
     /**
@@ -212,13 +274,13 @@ class EmployeeAreaController extends Controller
             $area->fill($request->all());
             $area->update();
 
-            $headquarters = $this->getDataFromMultiselect($request->get('employee_headquarter_id'));
-            $process = $this->getDataFromMultiselect($request->get('employee_process_id'));
+            /*$headquarters = $this->getDataFromMultiselect($request->get('employee_headquarter_id'));
+            $process = $this->getDataFromMultiselect($request->get('employee_process_id'));*/
             //$ids = [];
 
             DB::delete("delete from sau_process_area where employee_area_id = $area->id");
 
-            foreach ($headquarters as $key => $valueH) {
+            /*foreach ($headquarters as $key => $valueH) {
                 $processes_valid = $this->getProcess($valueH);
                 $processes = array_intersect($process, $processes_valid);
 
@@ -235,6 +297,68 @@ class EmployeeAreaController extends Controller
             }
             
             $area->processes()->sync($ids);*/
+
+            if ($request->has('employee_headquarter_id'))
+            {
+                if (count($request->employee_headquarter_id) > 1)
+                {
+                    foreach ($request->employee_headquarter_id as $key => $value) 
+                    {
+                        $verify = json_decode($value)->value;
+    
+                        if ($verify == 'Todos')
+                        {
+                            $headquarter_alls = 'Todos';
+                            break;
+                        }
+                    }
+                }
+                else if (count($request->employee_headquarter_id) == 1)
+                    $headquarter_alls =  json_decode($request->employee_headquarter_id[0])->value;
+            }
+
+            if ($request->has('employee_headquarter_id') && $headquarter_alls == 'Todos')
+                $headquarters = $this->getHeadquarter($request->employee_regional_id);
+
+            else if ($request->has('employee_headquarter_id'))
+                $headquarters = $this->getDataFromMultiselect($request->get('employee_headquarter_id'));
+
+            if ($request->has('employee_process_id'))
+            {
+                if (count($request->employee_process_id) > 1)
+                {
+                    foreach ($request->employee_process_id as $key => $value) 
+                    {
+                        $verify = json_decode($value)->value;
+    
+                        if ($verify == 'Todos')
+                        {
+                            $process_alls = 'Todos';
+                            break;
+                        }
+                    }
+                }
+                else if (count($request->employee_process_id) == 1)
+                    $process_alls =  json_decode($request->employee_process_id[0])->value;
+            }
+
+            if ($request->has('employee_process_id') && $process_alls == 'Todos')
+                $processes = $this->getProcess($headquarters);
+
+            else if ($request->has('employee_process_id'))
+                $processes = $this->getDataFromMultiselect($request->get('employee_process_id'));
+
+            foreach ($headquarters as $key => $valueH) {
+
+                /*$processes_valid = $this->getProcess($valueH);
+                $processes = array_intersect($process, $processes_valid);*/
+
+                foreach ($processes as $valueP)
+                {
+                    $insert = [$valueP, $area->id, $valueH];
+                    DB::insert('insert into sau_process_area (employee_process_id, employee_area_id, employee_headquarter_id) values (?, ?, ?)', $insert);
+                }
+            }
 
             $this->saveLogActivitySystem('Areas', 'Se edito el area '.$area->name);
 
