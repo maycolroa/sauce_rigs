@@ -59,7 +59,7 @@
                 </b-col>
             </b-row>
 
-            <div class="row" v-if="checkModule('riskmatrix') && checkModule('epp')">
+            <div class="row" v-if="(checkModule('riskmatrix') && checkModule('epp')) || (checkModule('dangermatrix') && checkModule('epp'))">
                 <div class="col-md-5 offset-md-1" style="padding-top: 40px; padding-bottom: 20px;">
                     <hr class="border-dark mt-0 mb-4">
                 </div>
