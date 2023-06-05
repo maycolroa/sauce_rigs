@@ -75,6 +75,7 @@ class DangerMatrixController extends Controller
     {
         $dangersMatrix = DangerMatrix::selectRaw("
             sau_dangers_matrix.*,
+            DATE_FORMAT(sau_dangers_matrix.created_at, '%Y-%m-%d') as date,
             sau_employees_regionals.name as regional,
             sau_employees_headquarters.name as headquarter,
             sau_employees_areas.name as area,
