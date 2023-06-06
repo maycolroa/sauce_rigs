@@ -4,7 +4,7 @@ namespace App\Exports\LegalAspects\LegalMatrix\Laws;
 
 use Maatwebsite\Excel\Concerns\Exportable;
 use Maatwebsite\Excel\Concerns\WithMultipleSheets;
-use App\Exports\LegalAspects\Contracts\Contractor\ContractsImportTemplateExcel;
+use App\Exports\LegalAspects\LegalMatrix\Laws\LegalMatrixImportTemplate;
 use App\Exports\PreventiveOccupationalMedicine\BiologicalMonitoring\AudiometryImportErrorListExcel;
 
 class LawsImportErrorExcel implements WithMultipleSheets
@@ -29,7 +29,7 @@ class LawsImportErrorExcel implements WithMultipleSheets
     {
         $sheets = [];
         
-        $sheets[] = new ContractsImportTemplateExcel($this->data, $this->company_id);        
+        $sheets[] = new LegalMatrixImportTemplate($this->data, $this->company_id);        
         $sheets[] = new AudiometryImportErrorListExcel($this->errors);
        
         return $sheets;
