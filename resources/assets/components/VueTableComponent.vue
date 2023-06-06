@@ -133,7 +133,7 @@
   .vuetable-master {
     font-size: 12px;
   }
-  table tr:nth-child(3) {
+  .table thead th {
     white-space: nowrap;
   }
 </style>
