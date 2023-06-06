@@ -133,6 +133,9 @@
   .vuetable-master {
     font-size: 12px;
   }
+  table tr:nth-child(3) {
+    white-space: nowrap;
+  }
 </style>
 
 <style src="@/vendor/libs/vue-data-tables/vue-data-tables.scss" lang="scss"></style>
