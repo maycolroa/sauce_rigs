@@ -125,7 +125,7 @@
     white-space: nowrap;
   }
   .table-without-detail tbody td {
-    white-space: nowrap;
+    white-space: normal;
   }
   .VueTables__limit {
     float: left;

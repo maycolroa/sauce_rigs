@@ -200,7 +200,7 @@ class DangerMatrixExcel implements FromCollection, WithHeadings, WithMapping, Wi
             (String) $data->visitor_quantity,
             (String) $data->student_quantity,
             (String) $data->esc_quantity,
-            $data->observations,
+            str_replace('=', '', $data->observations),
             $data->existing_controls_engineering_controls,
             $data->existing_controls_substitution,
             $data->existing_controls_warning_signage,
