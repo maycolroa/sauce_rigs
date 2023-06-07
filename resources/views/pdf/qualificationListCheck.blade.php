@@ -67,6 +67,27 @@
     </div>
 
     <div>
+        <p style="text-align: center; font-size: 12px;"><b>Procentajes de cumplimiento</b></p>
+        <table>
+            <thead>
+                <tr>
+                    <th>Cumple</th>
+                    <th>No Cumple</th>
+                    <th>No aplica</th>
+                    <th>Total</th>
+                </tr>
+                <tr>                    
+                    <td>{{ $listCheck["cumplimiento"]['p_cumple'] }}%</td>
+                    <td>{{ $listCheck["cumplimiento"]['pp_no_cumple'] }}%</td>
+                    <td>{{ $listCheck["cumplimiento"]['p_no_aplica'] }}%</td>
+                    <td>{{ $listCheck["cumplimiento"]['p_total'] }}%</td>
+                </tr>              
+            </thead>
+        </table>
+    </div>
+    <br><br>
+
+    <div>
         <p style="text-align: center; font-size: 12px;"><b>Estándares Mínimos</b></p>
         <table>
             <thead>

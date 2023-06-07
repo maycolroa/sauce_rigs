@@ -580,9 +580,16 @@ class ListCheckQualificationController extends Controller
             ->where('list_qualification_id', $qualification_list->id)
             ->pluck("reason_rejection", "item_id");
 
+        $compliance = [
+            'cumple' => 0,
+            'no_cumple' => 0,
+            'no_aplica' => 0,
+            'total' => 0       
+        ];
+
         if (COUNT($items) > 0)
         {
-            $items->transform(function($item, $index) use ($qualifications, $items_calificated, $contract, $items_observations, $qualification_list, $items_aprove, $items_reason_reject) {
+            $items->transform(function($item, $index) use ($qualifications, $items_calificated, $contract, $items_observations, $qualification_list, $items_aprove, $items_reason_reject,&$compliance) {
                 //Añade las actividades definidas de cada item para los planes de acción
                 $item->activities_defined = $item->activities()->pluck("description");
                 $item->qualification = isset($items_calificated[$item->id]) ? $qualifications[$items_calificated[$item->id]] : '';
@@ -600,8 +607,12 @@ class ListCheckQualificationController extends Controller
                     "activitiesRemoved" => []
                 ];
 
+                if ($item->qualification == 'NA')
+                    $compliance['no_aplica']++;
+
                 if ($item->qualification == 'C')
                 {
+                    $compliance['cumple']++;
                     $files = FileUpload::select(
                                 'sau_ct_file_upload_contracts_leesse.id AS id',
                                 'sau_ct_file_upload_contracts_leesse.name AS name',
@@ -630,6 +641,7 @@ class ListCheckQualificationController extends Controller
                 }
                 else if ($item->qualification == 'NC')
                 {
+                    $compliance['no_cumple']++;
                     $model_activity = ItemQualificationContractDetail::
                                 where('contract_id', $contract->id)
                             ->where('item_id', $item->id)
@@ -639,8 +651,27 @@ class ListCheckQualificationController extends Controller
                     $item->actionPlan = ActionPlan::model($model_activity)->prepareDataComponent();
                 }
 
+                $compliance['total']++;
+
                 return $item;
             });
+
+            \Log::info($compliance);
+            $compliance['p_cumple'] = round(($compliance['cumple']/$compliance['total'])*100, 2);
+            $compliance['p_no_aplica'] = round(($compliance['no_aplica']/$compliance['total'])*100, 2);
+            $compliance['p_total'] = round(($compliance['cumple']/$compliance['total'])*100, 2);
+
+
+            if ($compliance['no_cumple'] > 0)
+            {
+                $compliance['p_no_cumple']  = $compliance['total']-$compliance['cumple']-$compliance['no_aplica']+$compliance['no_cumple'];
+                $compliance['pp_no_cumple'] = round(($compliance['p_no_cumple']/$compliance['total'])*100, 2);
+            }
+            else
+            {
+                $compliance['p_no_cumple']  = $compliance['total']-$compliance['cumple']-$compliance['no_aplica'];
+                $compliance['pp_no_cumple'] = round(($compliance['p_no_cumple']/$compliance['total'])*100, 2);
+            }
 
             $qualifications_creator = ListCheckQualification::select(
                 'sau_ct_list_check_qualifications.*',
@@ -662,7 +693,8 @@ class ListCheckQualificationController extends Controller
                 'validity_period' => $qualification_list->validity_period,
                 'user_Creator' => $qualifications_creator->user_creator,
                 'state' => $qualifications_creator->state_list,
-                'contract_name' => $contract->social_reason
+                'contract_name' => $contract->social_reason,
+                'cumplimiento' => $compliance
             ];
         }
         else
