@@ -74,7 +74,7 @@
                     <th>Cumple</th>
                     <th>No Cumple</th>
                     <th>No aplica</th>
-                    <th>Total</th>
+                    <th>Cumple + No aplica</th>
                 </tr>
                 <tr>                    
                     <td>{{ $listCheck["cumplimiento"]['p_cumple'] }}%</td>

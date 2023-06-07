@@ -659,7 +659,7 @@ class ListCheckQualificationController extends Controller
             \Log::info($compliance);
             $compliance['p_cumple'] = round(($compliance['cumple']/$compliance['total'])*100, 2);
             $compliance['p_no_aplica'] = round(($compliance['no_aplica']/$compliance['total'])*100, 2);
-            $compliance['p_total'] = round(($compliance['cumple']/$compliance['total'])*100, 2);
+            $compliance['p_total'] = round((($compliance['cumple']+$compliance['no_aplica'])/$compliance['total'])*100, 2);
 
 
             if ($compliance['no_cumple'] > 0)
