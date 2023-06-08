@@ -191,7 +191,7 @@ class EmployeeImport implements ToCollection
         {
             $rules = array_merge($rules,
             [
-                'identificacion' => 'required|string',
+                'identificacion' => 'required',
                 'nombre' => 'required|string',
                 'fecha_nacimiento' => 'nullable|date',
                 'sexo' => 'required|string|in:Masculino,Femenino,Sin Sexo',
