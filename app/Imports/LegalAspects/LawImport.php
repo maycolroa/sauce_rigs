@@ -115,17 +115,19 @@ class LawImport implements ToCollection, WithCalculatedFormulas
 
     private function checkLaw($row, $fila)
     {
+        \Log::info('entro '.$fila);
         $data = [
             'name' => $row[0],
             'number' => $row[1],
-            'type' => strtolower($row[2]),
+            'type' => trim(strtolower($row[2])),
             'year' => $row[3],
-            'system_apply' => $row[4],
+            'system_apply' => trim($row[4]),
             'description' => $row[5],
             'observation' => $row[6],
-            'risk_aspect' => strtolower($row[7]),
+            'risk_aspect' => trim(strtolower($row[7]))
+            ,
             'entity' => $row[8],
-            'risk_sst' => strtolower($row[9]),
+            'risk_sst' => trim(strtolower($row[9])),
             'repealed' => strtoupper($row[10]),
             'article_description' => $row[11],
             'article_interests' => $row[12],
@@ -166,6 +168,7 @@ class LawImport implements ToCollection, WithCalculatedFormulas
         }
         else 
         {
+            \Log::info('valido');
             $this->type = $this->checkType($data['type']);
             $this->system_apply = $this->checkSystem($data['system_apply']);
             $this->risk_aspect = $this->checkRiskAspect($data['risk_aspect']);
