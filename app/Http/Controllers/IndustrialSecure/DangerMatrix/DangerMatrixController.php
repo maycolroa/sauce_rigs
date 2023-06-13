@@ -166,6 +166,8 @@ class DangerMatrixController extends Controller
                 }
             }
 
+            $dangerMatrix->historial = true;
+
             return $this->respondHttp200([
                 'data' => $dangerMatrix,
             ]);
@@ -321,6 +323,7 @@ class DangerMatrixController extends Controller
      */
     private function rulesDangerMatrix($request, $dangerMatrix = null)
     {
+        \Log::info($request);
         foreach ($request->activities as $key => $value)
         {
             $data['activities'][$key] = json_decode($value, true);
@@ -422,7 +425,12 @@ class DangerMatrixController extends Controller
 
 
         if ($dangerMatrix)
-            $rules['changeHistory'] = 'required';
+        {
+            if ($request->historial != 'false')
+                $rules['changeHistory'] = 'required';
+            else
+                $rules['changeHistory'] = 'nullable';
+        }
         
         return Validator::make($request->all(), $rules, $messages)->validate();
     }
@@ -451,13 +459,16 @@ class DangerMatrixController extends Controller
                 $details_log = $details_log.'Se actualizo la matriz de peligros ubicada en: ';
                 $msg = 'Se actualizo la matriz de peligro';
 
-                $history_change = $this->tagsPrepare($request->get('changeHistory'));
-                $this->tagsSave($history_change, TagsHistoryChange::class);
-
-                $dangerMatrix->histories()->create([
-                    'user_id' => $this->user->id,
-                    'description' => $history_change->implode(',')
-                ]);
+                if ($request->has('changeHistory') && $request->get('changeHistory'))
+                {
+                    $history_change = $this->tagsPrepare($request->get('changeHistory'));
+                    $this->tagsSave($history_change, TagsHistoryChange::class);
+    
+                    $dangerMatrix->histories()->create([
+                        'user_id' => $this->user->id,
+                        'description' => $history_change->implode(',')
+                    ]);
+                }
             }
             else
             {
@@ -946,9 +957,7 @@ class DangerMatrixController extends Controller
     }
 
     public function searchKeyword(Request $request)
-    {
-        \Log::info($request);
-        
+    {        
         $generating_source = DangerMatrix::selectRaw("
             sau_dm_activities.name as activity, 
             sau_dm_dangers.name as danger, 

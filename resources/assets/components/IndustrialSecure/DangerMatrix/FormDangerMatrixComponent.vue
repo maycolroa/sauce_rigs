@@ -245,7 +245,8 @@ export default {
               }
             ],
             activitiesRemoved: [],
-            changeHistory: ''
+            changeHistory: '',
+            historial: true
         };
       }
     }
@@ -285,6 +286,8 @@ export default {
     submit(redirect = true) {
       this.loading = true;
       this.form.add_fields = this.fields;
+      this.form.historial = redirect;
+      console.log(redirect)
       this.form
         .submit(this.url)
         .then(response => {
