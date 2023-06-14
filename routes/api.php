@@ -77,6 +77,16 @@ Route::group(['prefix'=>'v1', 'middleware' => 'api'], function () {
         Route::post('quelifiedListUser', 'Api\InspectionController@quelifiedListUser');
         Route::post('optionsMasive', 'Api\InspectionController@optionsMasiveQualification');*/
     });
+
+    Route::group(['prefix'=>'accidents'], function () {
+        Route::post('employee', 'Api\AccidentsController@getEmployees');
+        Route::post('positions', 'Api\AccidentsController@getPositions');
+        Route::post('departaments', 'Api\AccidentsController@getDepartaments');
+        Route::post('dataAccidents', 'Api\AccidentsController@dataAccidents');
+        /*Route::post('imageItem', 'Api\InspectionController@imageItem');
+        Route::post('quelifiedListUser', 'Api\InspectionController@quelifiedListUser');
+        Route::post('optionsMasive', 'Api\InspectionController@optionsMasiveQualification');*/
+    });
 });
 
 Route::post('amazon-sns/notifications', 'Api\AmazonController@handleBounceOrComplaint');

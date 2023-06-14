@@ -313,7 +313,7 @@ class CustomerMonitoringController extends Controller
             })
             ->mergeBindings($eva_files->getQuery())
             ->whereRaw('? BETWEEN started_at AND ended_at', [date('Y-m-d')])
-            ->where('sau_license_module.module_id', 14)
+            ->where('sau_license_module.module_id', 16)
             ->groupBy('sau_companies.id');
 
         return Vuetable::of($companies)

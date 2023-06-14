@@ -110,10 +110,8 @@ class LocationController extends ApiController
 
         if ($configLevel == 'SI' && $locationLevelForm != '' && COUNT($regionalsFilter) > 0)
         {
-            \Log::info('SI');
             if ($locationLevelForm == 'Regional' && COUNT($regionalsFilter) > 0)
             {
-                \Log::info('R');
                 $regionals = $regionals = EmployeeRegional::select('id', 'name');
                 $regionals = $regionals->whereIn('id', $regionalsFilter);
                 $regionals->company_scope = $request->company_id;
@@ -127,9 +125,6 @@ class LocationController extends ApiController
             }
             else if ($locationLevelForm == 'Sede' && COUNT($headquartersFilter) > 0)
             {
-                \Log::info('H');
-                \Log::info($regionalsFilter);
-                \Log::info($headquartersFilter);
                 $regionals = $regionals = EmployeeRegional::select('id', 'name');
                 $regionals->whereIn('id', $regionalsFilter);
                 $regionals->company_scope = $request->company_id;
@@ -155,7 +150,6 @@ class LocationController extends ApiController
             }
             else if ($locationLevelForm == 'Proceso' && COUNT($processesFilter) > 0)
             {
-                \Log::info('P');
                 $regionals = $regionals = EmployeeRegional::select('id', 'name');
                 $regionals->whereIn('id', $regionalsFilter);
                 $regionals->company_scope = $request->company_id;
@@ -201,7 +195,6 @@ class LocationController extends ApiController
             }
             else if ($locationLevelForm == 'Área' && COUNT($areasFilter) > 0)
             {
-                \Log::info('A');
                 $regionals = $regionals = EmployeeRegional::select('id', 'name');
                 $regionals->whereIn('id', $regionalsFilter);
                 $regionals->company_scope = $request->company_id;
@@ -269,7 +262,6 @@ class LocationController extends ApiController
         }
         else
         {
-            \Log::info('NO');
             $regionals = $regionals = EmployeeRegional::select('id', 'name');
             $regionals->company_scope = $request->company_id;
             $regionals = $regionals->orderBy('name')->get();
