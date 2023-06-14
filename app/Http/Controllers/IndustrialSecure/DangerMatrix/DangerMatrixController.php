@@ -683,11 +683,13 @@ class DangerMatrixController extends Controller
                         if (!$qualification->save())
                             return $this->respondHttp500();
 
-                        
                         $var = $qualification_old->where('type_id', $itemQ['type_id'])->first();
 
-                        if ($var->value_id != $qualification->value_id)
-                            $change++;
+                        if ($var && $var->value_id)
+                        {
+                            if ($var->value_id != $qualification->value_id)
+                                $change++;
+                        }
 
                     }
 
