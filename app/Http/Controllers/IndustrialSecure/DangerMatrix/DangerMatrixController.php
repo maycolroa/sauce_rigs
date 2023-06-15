@@ -636,7 +636,7 @@ class DangerMatrixController extends Controller
                     $danger->intervention_measures_warning_signage = $intervention_measures_warning_signage->implode(',');
                     $danger->intervention_measures_administrative_controls = $intervention_measures_administrative_controls->implode(',');
                     $danger->intervention_measures_epp = $intervention_measures_epp->implode(',');
-                    $danger->observation_qualifications = $itemD['observation_qualifications'];
+                    $danger->observation_qualifications = isset($itemD['observation_qualifications']) ? $itemD['observation_qualifications'] : null;
 
                     if(!$danger->save()){
                         return $this->respondHttp500();
