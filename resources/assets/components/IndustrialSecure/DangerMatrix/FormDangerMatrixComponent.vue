@@ -300,11 +300,18 @@ export default {
             _.forIn(response.data.data, (value, key) => {
               this.form[key] = value
             })
+
+            this.clearAllErrors();
           }
         })
         .catch(error => {
           this.loading = false;
         });
+    },
+    clearAllErrors() {
+      _.forIn(this.form.errors.errors, (value, key) => {
+            this.form.errors.errors[key].splice(0, this.form.errors.errors[key].length);
+      })
     },
     addActiviy() {
       this.dangerMatrix.activities.push({
