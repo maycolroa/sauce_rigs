@@ -83,8 +83,8 @@ Route::group(['prefix'=>'v1', 'middleware' => 'api'], function () {
         Route::post('positions', 'Api\AccidentsController@getPositions');
         Route::post('departaments', 'Api\AccidentsController@getDepartaments');
         Route::post('dataAccidents', 'Api\AccidentsController@dataAccidents');
-        /*Route::post('imageItem', 'Api\InspectionController@imageItem');
-        Route::post('quelifiedListUser', 'Api\InspectionController@quelifiedListUser');
+        Route::post('create', 'Api\AccidentsController@createAccident');
+        /* Route::post('quelifiedListUser', 'Api\InspectionController@quelifiedListUser');
         Route::post('optionsMasive', 'Api\InspectionController@optionsMasiveQualification');*/
     });
 });

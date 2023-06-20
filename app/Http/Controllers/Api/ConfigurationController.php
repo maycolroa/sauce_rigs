@@ -42,6 +42,8 @@ class ConfigurationController extends ApiController
             Storage::disk('s3')->put('industrialSecure/epp/transaction/files/'.$request->company_id.'/' . $fileName, $file, 'public');
           else if ($image->type == 5)
             Storage::disk('s3')->put('industrialSecure/epp/transaction/delivery/files/'.$request->company_id.'/' . $fileName, $file, 'public');
+          else if ($image->type == 6)
+            Storage::disk('s3')->put('industrialSecure/accidentWork/'.$request->company_id.'/' . $fileName, $file, 'public');
           else
             (new InspectionItemsQualificationAreaLocation)->store_image_api($fileName, $file);
 

@@ -118,7 +118,7 @@ class EmployeesController extends Controller
             $employee = Employee::findOrFail($id);
             $employee->antiquity = $this->timeDifference($employee->income_date);
 
-            $employee->income_date = (Carbon::createFromFormat('Y-m-d',$employee->income_date))->format('D M d Y');
+            $employee->income_date = $employee->income_date ? (Carbon::createFromFormat('Y-m-d',$employee->income_date))->format('D M d Y') : NULL;
 
             if($this->company != 616) 
                 $employee->age = $employee->age ? $employee->age : ($employee->date_of_birth ? $this->timeDifference((Carbon::createFromFormat('Y-m-d',$employee->date_of_birth))->toDateString()) : '');

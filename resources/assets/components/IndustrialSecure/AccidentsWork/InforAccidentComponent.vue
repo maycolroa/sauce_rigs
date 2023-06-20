@@ -30,7 +30,7 @@
             <vue-radio :disabled="viewOnly" :checked="infor.causo_muerte" class="col-md-6" v-model="infor.causo_muerte" :options="siNo" name="causo_muerte" :error="form.errorsFor('causo_muerte')" label="¿Causó la muerte del trabajador?"></vue-radio>
           </b-form-row>-->
           <b-form-row>
-            <vue-radio :disabled="viewOnly" :checked="infor.site_id" class="col-md-6" v-model="infor.site_id" :options="mechanisms" name="site_id" :error="form.errorsFor('site_id')" label="Indique el sitio donde ocurrió el accidente" :stacked="true" custom-class="text-left"></vue-radio>
+            <vue-radio :disabled="viewOnly" :checked="infor.site_id" class="col-md-6" v-model="infor.site_id" :options="sites" name="site_id" :error="form.errorsFor('site_id')" label="Indique el sitio donde ocurrió el accidente" :stacked="true" custom-class="text-left"></vue-radio>
             <vue-radio style="padding-top: 20px;" :disabled="viewOnly" class="col-md-6" v-model="infor.type_lesion_id" :checked="form.type_lesion_id" label="Tipo de lesión" name="type_lesion_id" :options="lesionTypes" :stacked="true" custom-class="text-left"></vue-radio>
           </b-form-row>
           <b-form-row>
@@ -40,11 +40,11 @@
           <b-form-row>
             <vue-radio style="padding-top: 20px;" :disabled="viewOnly" class="col-md-4" v-model="infor.parts_body_id" :checked="form.parts_body_id" label="Partes del cuerpo aparentemente afectado" name="parts_body_id" :options="partsBody" :stacked="true" custom-class="text-left"></vue-radio>
             <vue-radio :disabled="viewOnly" :checked="infor.agent_id" class="col-md-4" v-model="infor.agent_id" :options="agents" name="agent_id" :error="form.errorsFor('agent_id')" label="Agente del accidente (con que se lesionó el trabajador)" :stacked="true" custom-class="text-left"></vue-radio>
-            <vue-radio :disabled="viewOnly" :checked="infor.mechanism_id" class="col-md-4" v-model="infor.mechanism_id" :options="sites" name="mechanism_id" :error="form.errorsFor('mechanism_id')" label="Mecanismo o forma del accidente" :stacked="true" custom-class="text-left"></vue-radio>
+            <vue-radio :disabled="viewOnly" :checked="infor.mechanism_id" class="col-md-4" v-model="infor.mechanism_id" :options="mechanisms" name="mechanism_id" :error="form.errorsFor('mechanism_id')" label="Mecanismo o forma del accidente" :stacked="true" custom-class="text-left"></vue-radio>
           </b-form-row>
           <b-form-row>
             <vue-input v-if="infor.parts_body_id == 11" :disabled="viewOnly" class="col-md-4" v-model="infor.otra_parte_body" label="Otra parte" type="text" name="otra_parte_body" :error="form.errorsFor('otra_parte_body')" placeholder="Otra parte"></vue-input>
-            <vue-input v-if="infor.agent_id == 8" :disabled="viewOnly" class="col-md-4" v-model="infor.otro_agente" label="Otro agente" type="text" name="otro_agente" :error="form.errorsFor('otro_agente')" placeholder="Otro agente"></vue-input>
+            <vue-input v-if="infor.agent_id == 11" :disabled="viewOnly" class="col-md-4" v-model="infor.otro_agente" label="Otro agente" type="text" name="otro_agente" :error="form.errorsFor('otro_agente')" placeholder="Otro agente"></vue-input>
             <vue-input v-if="infor.mechanism_id == 9" :disabled="viewOnly" class="col-md-4" v-model="infor.otro_mecanismo" label="Otro Mecanismo" type="text" name="otro_mecanismo" :error="form.errorsFor('otro_mecanismo')" placeholder="Otro Mecanismo"></vue-input>
           </b-form-row>
       </div>

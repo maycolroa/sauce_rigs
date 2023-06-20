@@ -468,17 +468,17 @@ class AccidentsWorkController extends Controller
         {
             $accident = Accident::findOrFail($id);
 
-            $accident->fecha_nacimiento_persona = (Carbon::createFromFormat('Y-m-d',$accident->fecha_nacimiento_persona))->format('D M d Y');
+            $accident->fecha_nacimiento_persona = $accident->fecha_nacimiento_persona ? (Carbon::createFromFormat('Y-m-d',$accident->fecha_nacimiento_persona))->format('D M d Y') : $accident->fecha_nacimiento_persona;
 
-            $accident->fecha_ingreso_empresa_persona = (Carbon::createFromFormat('Y-m-d',$accident->fecha_ingreso_empresa_persona))->format('D M d Y');
+            $accident->fecha_ingreso_empresa_persona = $accident->fecha_ingreso_empresa_persona ? (Carbon::createFromFormat('Y-m-d',$accident->fecha_ingreso_empresa_persona))->format('D M d Y') : $accident->fecha_ingreso_empresa_persona;
 
-            $accident->fecha_envio_arl = (Carbon::createFromFormat('Y-m-d',$accident->fecha_envio_arl))->format('D M d Y');
+            $accident->fecha_envio_arl = $accident->fecha_envio_arl ? (Carbon::createFromFormat('Y-m-d',$accident->fecha_envio_arl))->format('D M d Y') : $accident->fecha_envio_arl;
 
-            $accident->fecha_envio_empresa = (Carbon::createFromFormat('Y-m-d',$accident->fecha_envio_empresa))->format('D M d Y');
+            $accident->fecha_envio_empresa = $accident->fecha_envio_empresa ? (Carbon::createFromFormat('Y-m-d',$accident->fecha_envio_empresa))->format('D M d Y') : $accident->fecha_envio_empresa;
 
             $accident->fecha_muerte = $accident->fecha_muerte ? (Carbon::createFromFormat('Y-m-d',$accident->fecha_muerte))->format('D M d Y') : $accident->fecha_muerte;
 
-            $accident->fecha_diligenciamiento_informe = (Carbon::createFromFormat('Y-m-d',$accident->fecha_diligenciamiento_informe))->format('D M d Y');
+            $accident->fecha_diligenciamiento_informe = $accident->fecha_diligenciamiento_informe ? (Carbon::createFromFormat('Y-m-d',$accident->fecha_diligenciamiento_informe))->format('D M d Y') : $accident->fecha_diligenciamiento_informe;
 
             $accident->info_sede_principal_misma_centro_trabajo = $accident->info_sede_principal_misma_centro_trabajo ? 'SI' : 'NO';
             $accident->tiene_seguro_social = $accident->tiene_seguro_social ? 'SI' : 'NO';
@@ -487,13 +487,13 @@ class AccidentsWorkController extends Controller
             $accident->personas_presenciaron_accidente = $accident->personas_presenciaron_accidente ? 'SI' : 'NO';
 
             $accident->multiselect_departamento_persona = $accident->departamentPerson->multiselect();
-            $accident->multiselect_departament_sede = $accident->departamentSede->multiselect();
+            $accident->multiselect_departament_sede = $accident->departamento_sede_principal_id ? $accident->departamentSede->multiselect() : [];
             $accident->multiselect_departament_centro = $accident->departamento_centro_trabajo_id ? $accident->departamentCentro->multiselect() : [];
-            $accident->multiselect_departament_accident = $accident->departamentAccident->multiselect();
+            $accident->multiselect_departament_accident = $accident->departamento_accidente ? $accident->departamentAccident->multiselect() : [];
             $accident->multiselect_ciudad_persona = $accident->ciudadPerson->multiselect();
-            $accident->multiselect_municipality_sede = $accident->ciudadSede->multiselect();
+            $accident->multiselect_municipality_sede = $accident->ciudad_sede_principal_id ? $accident->ciudadSede->multiselect() : [];
             $accident->multiselect_municipality_centro = $accident->ciudad_centro_trabajo_id ? $accident->ciudadCentro->multiselect() : [];
-            $accident->multiselect_municipality_accident = $accident->ciudadAccident->multiselect();
+            $accident->multiselect_municipality_accident = $accident->ciudad_accidente ? $accident->ciudadAccident->multiselect() : [];
 
             /*$values = $accident->lesionTypes()->pluck('sau_aw_types_lesion.id');
             $accident->lesions_id = $values;
