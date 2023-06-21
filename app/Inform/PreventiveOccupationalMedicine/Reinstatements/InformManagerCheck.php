@@ -699,7 +699,10 @@ class InformManagerCheck
      */
     public function cases_per_cie_10_per_AT_pie()
     {
-        return $this->getReportPerCie10Data('Accidente de Trabajo');
+        if ($this->company == 669)
+            return $this->getReportPerCie10Data('Accidente Trabajo');
+        else
+            return $this->getReportPerCie10Data('Accidente de Trabajo');
     }
 
     /**
