@@ -51,6 +51,13 @@ export default {
     axios.get(`/industrialSecurity/accidents/${this.$route.params.id}`)
     .then(response => {
         this.data = response.data.data;
+
+        if (!response.data.data.employee_regional_id)
+        {
+          Alerts.error('Error', 'Debe completar la informacion del empleado');
+          this.$router.go(-1);
+        }
+
         this.ready = true
     })
     .catch(error => {

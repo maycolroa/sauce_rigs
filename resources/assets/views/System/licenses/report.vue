@@ -27,6 +27,7 @@
                             <template slot="title">
                                 <strong>Reporte General</strong> 
                             </template>
+                            <perfect-scrollbar :options="{ wheelPropagation: true }" class="mb-4" style="height: 450px; padding-right: 10px;">
                             <b-card bg-variant="transparent" border-variant="dark" title="" class="mb-3 box-shadow-none">
                                 <b-row>
                                     <table class="table table-bordered table-sm table-striped table-hover" style="width: 100%; font-size: 10px;">
@@ -49,11 +50,13 @@
                                     </table>                        
                                 </b-row>
                             </b-card>
+                            </perfect-scrollbar>
                         </b-tab>
                         <b-tab>
                             <template slot="title">
                                 <strong>Reporte por Módulo</strong> 
                             </template>
+                            <perfect-scrollbar :options="{ wheelPropagation: true }" class="mb-4" style="height: 450px; padding-right: 10px;">
                             <b-card bg-variant="transparent" border-variant="dark" title="" class="mb-3 box-shadow-none">
                                 <b-row>
                                     <table class="table table-bordered table-sm table-striped table-hover" style="width: 100%; font-size: 10px;">
@@ -83,11 +86,13 @@
                                     </table>                   
                                 </b-row>
                             </b-card>
+                            </perfect-scrollbar>
                         </b-tab>
                         <b-tab>
                             <template slot="title">
                                 <strong>Reporte por Grupo de Compañia</strong> 
                             </template>
+                            <perfect-scrollbar :options="{ wheelPropagation: true }" class="mb-4" style="height: 450px; padding-right: 10px;">
                             <b-card bg-variant="transparent" border-variant="dark" title="" class="mb-3 box-shadow-none">
                                 <b-row>
                                     <table class="table table-bordered table-sm table-striped table-hover" style="width: 100%; font-size: 10px;">
@@ -137,11 +142,13 @@
                                     </table>                  
                                 </b-row>
                             </b-card>
+                            </perfect-scrollbar>
                         </b-tab>
                         <b-tab>
                             <template slot="title">
                                 <strong>Reporte por Grupo de Compañia - Módulo</strong> 
                             </template>
+                            <perfect-scrollbar :options="{ wheelPropagation: true }" class="mb-4" style="height: 450px; padding-right: 10px;">
                             <b-card bg-variant="transparent" border-variant="dark" title="" class="mb-3 box-shadow-none">
                                 <b-row>
                                     <table class="table table-bordered table-sm table-striped table-hover" style="width: 100%; font-size: 10px;">
@@ -171,11 +178,13 @@
                                     </table>                
                                 </b-row>
                             </b-card>
+                            </perfect-scrollbar>
                         </b-tab>
                         <b-tab>
                             <template slot="title">
                                 <strong>Reporte por Grupo de Compañia- Compañia - Módulos no contratados</strong> 
                             </template>
+                            <perfect-scrollbar :options="{ wheelPropagation: true }" class="mb-4" style="height: 450px; padding-right: 10px;">
                             <b-card bg-variant="transparent" border-variant="dark" title="" class="mb-3 box-shadow-none">
                                 <b-row>
                                     <table class="table table-bordered table-sm table-striped table-hover" style="width: 100%; font-size: 13px;">
@@ -198,6 +207,7 @@
                                     </table>                
                                 </b-row>
                             </b-card>
+                            </perfect-scrollbar>
                         </b-tab>
                     </b-tabs>
             </b-card>
@@ -209,6 +219,7 @@
 import Loading from "@/components/Inputs/Loading.vue";
 import FilterGeneral from '@/components/Filters/FilterGeneral.vue';
 import VueAdvancedSelect from "@/components/Inputs/VueAdvancedSelect.vue";
+import PerfectScrollbar from '@/vendor/libs/perfect-scrollbar/PerfectScrollbar'
 import Alerts from '@/utils/Alerts.js';
 
 export default {

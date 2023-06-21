@@ -22,6 +22,13 @@
             <vue-input :disabled="viewOnly" class="col-md-6" v-model="description.identificacion_responsable_informe" label="Número de identificación" type="text" name="identificacion_responsable_informe" :error="form.errorsFor('identificacion_responsable_informe')" placeholder="Documento"></vue-input>
             <vue-input :disabled="viewOnly" class="col-md-6" v-model="description.cargo_responsable_informe" label="Cargo" type="text" name="cargo_responsable_informe" :error="form.errorsFor('cargo_responsable_informe')" placeholder="Cargo"></vue-input>
           </b-form-row>
+          <center>
+            <div v-if="form.old_firm" class="my-4 mx-2 text-center">
+              <label class="col-md-6">Firma del responsable del informe</label>
+              <br>
+                <img class="ui-w-200" :src="`${form.firm_image}`" alt="">
+            </div>
+          </center>
           <b-form-row>
             <vue-textarea class="col-md-12" :disabled="viewOnly" v-model="description.descripcion_accidente" label="Descripción del accidente. Responda a las preguntas qué pasó, cuándo, dónde, cómo y por qué" name="descripcion_accidente" placeholder="Descripción" rows="4"></vue-textarea> 
           </b-form-row>  
@@ -83,6 +90,8 @@ export default {
              persons: [],
              delete: []
           },
+          firm_image: '',
+          old_firm: ''
         }
       }
     },

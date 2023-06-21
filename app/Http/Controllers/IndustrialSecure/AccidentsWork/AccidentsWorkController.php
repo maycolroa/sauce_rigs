@@ -433,7 +433,7 @@ class AccidentsWorkController extends Controller
 
     public function getFiles($accident)
     {
-        $get_files = FileAccident::where('form_accident_id', $accident)->get();
+        $get_files = FileAccident::where('form_accident_id', $accident)->where('type', '<>', DB::raw("'firm'"))->orWhereNull('type')->get();
 
         $files = [];
 
@@ -528,6 +528,25 @@ class AccidentsWorkController extends Controller
             {
                 $employee = Employee::find($accident->employee_id);
                 $accident->multiselect_employee = $employee->multiselect();
+                $accident->employee_regional_id = $employee->employee_regional_id;
+
+                /*if (!$employee->employee_regional_id)
+                {
+                    \Log::info('error');
+                    return $this->respondHttp422('Debe completar la informacion del empleado '.$employee->name);
+                    //return $this->respondWithError('Debe completar la informacion del empleado '.$employee->name);
+                }*/
+            }
+
+            $accident->firm_image =  '';
+            $accident->old_firm =  '';
+
+            $firm = FileAccident::where('form_accident_id', $accident->id)->where('type', DB::raw("'firm'"))->first();
+
+            if ($firm)
+            {                
+                $accident->firm_image =  $firm->path_image();
+                $accident->old_firm =  $firm->file;
             }
             
             $accident->files = $this->getFiles($accident->id);

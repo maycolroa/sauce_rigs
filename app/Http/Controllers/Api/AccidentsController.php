@@ -218,7 +218,6 @@ class AccidentsController extends ApiController
 
     public function createAccident(Request $request)
     {
-        \Log::info($request);
         DB::beginTransaction();
 
         try 
@@ -335,56 +334,55 @@ class AccidentsController extends ApiController
                 $person->rol = 'Presencio Accidente';
                 $person->save();
             }
+            
+            $files_acc = $request->get('files');
 
-            if (count($request->files) > 0)
+            if ($files_acc['photo_1']['file']) 
             {
-                if ($request->files['photo_1']['file']) 
-                {
-                    $fileUpload = new FileAccident();
-                    $fileUpload->form_accident_id = $$accident->id;
+                $fileUpload_1 = new FileAccident();
+                $fileUpload_1->form_accident_id = $accident->id;
 
-                    $photo_1 = ImageApi::where('hash', $request->files['photo_1']['file'])->where('type', 6)->first();
+                $photo_1 = ImageApi::where('hash', $files_acc['photo_1']['file'])->where('type', 6)->first();
 
-                    $fileUpload->file = $photo_1->file;
-                    $fileUpload->name = $photo_1->file;
-                    $fileUpload->save();
-                }
+                $fileUpload_1->file = $photo_1->file;
+                $fileUpload_1->name = $photo_1->file;
+                $fileUpload_1->save();
+            }
 
-                if ($request->files['photo_4']['file']) 
-                {
-                    $fileUpload = new FileAccident();
-                    $fileUpload->form_accident_id = $$accident->id;
+            if ($files_acc['photo_4']['file']) 
+            {
+                $fileUpload_2 = new FileAccident();
+                $fileUpload_2->form_accident_id = $accident->id;
 
-                    $photo_4 = ImageApi::where('hash', $request->files['photo_4']['file'])->where('type', 6)->first();
+                $photo_4 = ImageApi::where('hash', $files_acc['photo_4']['file'])->where('type', 6)->first();
 
-                    $fileUpload->file = $photo_4->file;
-                    $fileUpload->name = $photo_4->file;
-                    $fileUpload->save();
-                }
+                $fileUpload_2->file = $photo_4->file;
+                $fileUpload_2->name = $photo_4->file;
+                $fileUpload_2->save();
+            }
 
-                if ($request->files['photo_2']['file']) 
-                {
-                    $fileUpload = new FileAccident();
-                    $fileUpload->form_accident_id = $$accident->id;
+            if ($files_acc['photo_2']['file']) 
+            {
+                $fileUpload_3 = new FileAccident();
+                $fileUpload_3->form_accident_id = $accident->id;
 
-                    $photo_2 = ImageApi::where('hash', $request->files['photo_2']['file'])->where('type', 6)->first();
+                $photo_2 = ImageApi::where('hash', $files_acc['photo_2']['file'])->where('type', 6)->first();
 
-                    $fileUpload->file = $photo_2->file;
-                    $fileUpload->name = $photo_2->file;
-                    $fileUpload->save();
-                }
+                $fileUpload_3->file = $photo_2->file;
+                $fileUpload_3->name = $photo_2->file;
+                $fileUpload_3->save();
+            }
 
-                if ($request->files['photo_3']['file']) 
-                {
-                    $fileUpload = new FileAccident();
-                    $fileUpload->form_accident_id = $$accident->id;
+            if ($files_acc['photo_3']['file']) 
+            {
+                $fileUpload_4 = new FileAccident();
+                $fileUpload_4->form_accident_id = $accident->id;
 
-                    $photo_3 = ImageApi::where('hash', $request->files['photo_3']['file'])->where('type', 6)->first();
+                $photo_3 = ImageApi::where('hash', $files_acc['photo_3']['file'])->where('type', 6)->first();
 
-                    $fileUpload->file = $photo_3->file;
-                    $fileUpload->name = $photo_3->file;
-                    $fileUpload->save();
-                }
+                $fileUpload_4->file = $photo_3->file;
+                $fileUpload_4->name = $photo_3->file;
+                $fileUpload_4->save();
             }
 
             $form_accident = collect();
@@ -448,25 +446,6 @@ class AccidentsController extends ApiController
                     ]);
                 }
             }
-
-            /*$form_accident->push('files', [
-                'photo_1' => [
-                    'file' => '7021f63358d044e6a858523b5d119cb8',
-                    'url' => NULL,
-                ],
-                'photo_2' => [
-                    'file' => NULL,
-                    'url' => NULL,
-                ],
-                'photo_3' => [
-                    'file' => NULL,
-                    'url' => NULL,
-                ],
-                'photo_4' => [
-                    'file' => NULL,
-                    'url' => NULL,
-                ]
-            ]);*/
 
             DB::commit();
 

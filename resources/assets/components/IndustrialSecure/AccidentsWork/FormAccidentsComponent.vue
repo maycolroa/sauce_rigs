@@ -370,7 +370,9 @@ export default {
              persons: [],
              delete: []
           },
-          files: []
+          files: [],
+          firm_image: '',
+          old_firm: ''
         };
       }
     }
