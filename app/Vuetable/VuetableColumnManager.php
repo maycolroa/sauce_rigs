@@ -469,9 +469,9 @@ class VuetableColumnManager
         $formModel = $this->getFormModel('table_check');
 
         $colums = [
-            ['name' => 'sau_checks.id', 'data'=> 'id', 'title'=> 'ID', 'sortable'=> false, 'searchable'=> false, 'detail'=> false, 'key'=> true ],
+            ['name' => 'sau_reinc_checks.id', 'data'=> 'id', 'title'=> 'ID', 'sortable'=> false, 'searchable'=> false, 'detail'=> false, 'key'=> true ],
             ['name' => 'sau_reinc_cie10_codes.code', 'data'=> 'code', 'title'=> 'Código CIE 10', 'sortable'=> true, 'searchable'=> true, 'detail'=> false, 'key'=> false ],
-            ['name' => 'sau_checks.disease_origin', 'data'=> 'disease_origin', 'title'=> $this->keywords['disease_origin'], 'sortable'=> true, 'searchable'=> true, 'detail'=> false, 'key'=> false ],
+            ['name' => 'sau_reinc_checks.disease_origin', 'data'=> 'disease_origin', 'title'=> $this->keywords['disease_origin'], 'sortable'=> true, 'searchable'=> true, 'detail'=> false, 'key'=> false ],
             ['name' => 'sau_employees_regionals.name', 'data'=> 'regional', 'title'=> $this->keywords['regional'], 'sortable'=> true, 'searchable'=> true, 'detail'=> false, 'key'=> false ],
             ['name' => 'sau_reinc_checks.state', 'data'=> 'state', 'title'=> 'Estado del Reporte', 'sortable'=> true, 'searchable'=> true, 'detail'=> false, 'key'=> false],
             ['name' => 'sau_employees.name', 'data'=> 'name', 'title'=> $this->keywords['employee'], 'sortable'=> true, 'searchable'=> true, 'detail'=> false, 'key'=> false ]
@@ -481,14 +481,14 @@ class VuetableColumnManager
         {
             $colums = array_merge($colums, [
                 ['name' => 'sau_employees.identification', 'data'=> 'identification', 'title'=> 'Identificación', 'sortable'=> true, 'searchable'=> true, 'detail'=> false, 'key'=> false ],
-                ['name' => 'sau_checks.deadline', 'data'=> 'deadline', 'title'=> 'Fecha de Cierre', 'sortable'=> true, 'searchable'=> true, 'detail'=> false, 'key'=> false ]
+                ['name' => 'sau_reinc_checks.deadline', 'data'=> 'deadline', 'title'=> 'Fecha de Cierre', 'sortable'=> true, 'searchable'=> true, 'detail'=> false, 'key'=> false ]
             ]);
         }
 
         if ($formModel == 'misionEmpresarial')
         { 
             $colums = array_merge($colums, [
-                ['name' => 'sau_checks.next_date_tracking', 'data'=> 'next_date_tracking', 'title'=> 'Próximo Seguimiento', 'sortable'=> true, 'searchable'=> true, 'detail'=> false, 'key'=> false ]
+                ['name' => 'sau_reinc_checks.next_date_tracking', 'data'=> 'next_date_tracking', 'title'=> 'Próximo Seguimiento', 'sortable'=> true, 'searchable'=> true, 'detail'=> false, 'key'=> false ]
             ]);
         }
 
