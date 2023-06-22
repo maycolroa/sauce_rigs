@@ -294,6 +294,22 @@ export default [
 					import('@/views/LegalAspects/contracts/employees/index')
 				}
 			]),
+			...middleware({ 'check-permission': 'contracts_r' }, [
+				{
+					name: 'legalaspects-contracts-employees-view-contract',
+					path: 'employees/view/contract/:id',
+					component: () =>
+					import('@/views/LegalAspects/contracts/employees/indexContract')
+				}
+			]),
+			...middleware({ 'check-permission': 'contracts_r' }, [
+				{
+					name: 'legalaspects-contracts-employees-view-contract-view',
+					path: 'employees/view/contract/view/:id',
+					component: () =>
+					import('@/views/LegalAspects/contracts/employees/viewContract')
+				}
+			]),
 			...middleware({ 'check-permission': 'contracts_employee_c' }, [
 				{
 					name: 'legalaspects-contracts-employees-create',

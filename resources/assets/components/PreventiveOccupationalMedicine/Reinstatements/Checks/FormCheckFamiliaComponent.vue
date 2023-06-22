@@ -126,6 +126,10 @@
             <b-form-row>
               <vue-textarea :disabled="viewOnly" class="col-md-12" v-model="form.position_functions_assigned_reassigned" label="Cargo y funciones asignadas y/o reasignadas al trabajador" name="position_functions_assigned_reassigned" :error="form.errorsFor('position_functions_assigned_reassigned')" placeholder=""></vue-textarea>
             </b-form-row>
+            <b-form-row>
+              <vue-datepicker :disabled="viewOnly" class="col-md-6 offset-md-3" v-model="form.date_new_valoration" label="Fecha de nueva valoración" :full-month-name="true" placeholder="Fecha de nueva valoración" :error="form.errorsFor('date_new_valoration')" name="date_new_valoration">
+                </vue-datepicker>
+            </b-form-row>
           </div>
           <div v-show="form.has_recommendations == 'NO'" class="col-md-12">
             <b-form-row>
@@ -528,7 +532,8 @@ export default {
           labor_monitorings: [],
           new_labor_notes: [],
           oldLaborNotes: [],
-          files: []
+          files: [],
+          date_new_valoration : ''
         };
       }
     }

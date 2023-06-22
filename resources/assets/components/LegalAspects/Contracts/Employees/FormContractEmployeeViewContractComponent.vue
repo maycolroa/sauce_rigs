@@ -124,8 +124,7 @@
 
     <div class="row float-right pt-10 pr-10" style="padding-top: 20px;">
       <template>
-        <b-btn variant="default" :to="cancelUrl" :disabled="loading">{{ viewOnly ? "Atras" : "Cancelar"}}</b-btn>&nbsp;&nbsp;
-        <b-btn type="submit" :disabled="loading" variant="primary" v-if="!viewOnly">Finalizar</b-btn>
+        <b-btn variant="default" @click="refresh()" :disabled="loading">Atras</b-btn>&nbsp;&nbsp;
       </template>
     </div>
   </b-form>
@@ -152,7 +151,7 @@ export default {
   props: {
     url: { type: String },
     method: { type: String },
-    cancelUrl: { type: [String, Object], required: true },
+    contract_id: { type: [String, Number], required: true },
     isEdit: { type: Boolean, default: false },
     viewOnly: { type: Boolean, default: false },    
     activitiesUrl: { type: String, default: "" },
@@ -184,32 +183,15 @@ export default {
       form: Form.makeFrom(this.employee, this.method),
       disabledDates: {
         to: new Date()
-      }
+      },
+      cancelUrl: { name: 'legalaspects-contracts-employees-view-contract', id: this.contract_id}
     };
   },
   methods: {
-    submit(e) {
-      this.loading = true;
-
-      this.form.clearFilesBinary();
-      _.forIn(this.form.activities, (activity, keyActvity) => {
-        _.forIn(activity.documents, (documento, keyDocument) => {
-          _.forIn(documento.files, (file, keyFile) => {
-            if (file.file)
-              this.form.addFileBinary(`${keyActvity}_${keyDocument}_${keyFile}`, file.file);
-          });
-        });
-      });
-
-      this.form
-        .submit(e.target.action)
-        .then(response => {
-          this.loading = false;
-          this.$router.push({ name: 'legalaspects-contracts-employees' });
-        })
-        .catch(error => {
-          this.loading = false;
-        });
+    refresh() {
+      this.form.id = this.contract_id
+      console.log(this.form.id)
+      window.location =  "/legalaspects/employees/view/contract/"+this.form.id
     },
     addActvity() {
         this.form.activities.push({

@@ -218,15 +218,25 @@
                     <td>{{ isset($check->relocatedRegional['name']) ? $check->relocatedRegional['name'] : '' }}</td>
                     @endif
                 </tr>
+                @if($check->relocated == 'NO')
+                <tr>
+                    <th colspan="3">Fecha de nueva valoración</th>
+                </tr>
+                <tr>
+                    <td colspan="3">{{$check->date_new_valoration}}</td>
+                </tr>
+                @endif
                     @if($check->relocated == 'SI')
                         @if ($locationForm['headquarter'] == 'NO')
                             <tr>
                                 <th colspan="2">{{ Auth::user()->getKeywords()['detail_recommendations'] }}</th>
-                                <th colspan="2">Cargo y funciones asignadas y/o reasignadas al trabajador</th>
+                                <th>Cargo y funciones asignadas y/o reasignadas al trabajador</th>
+                                <th>Fecha de nueva valoración</th>
                             </tr>
                             <tr>
                                 <td colspan="2">{{$check->detail}}</td>
-                                <td colspan="2">{{$check->position_functions_assigned_reassigned}}</td>
+                                <td>{{$check->position_functions_assigned_reassigned}}</td>
+                                <td>{{$check->date_new_valoration}}</td>
                             </tr>
                         @endif
                         
@@ -235,12 +245,20 @@
                                 <th>{{ Auth::user()->getKeywords()['headquarter'] }} Actualizada</th>
                                 <th>{{ Auth::user()->getKeywords()['detail_recommendations'] }}</th>
                                 <th>Cargo y funciones asignadas y/o reasignadas al trabajador</th>
+                                <th colspan="3">Fecha de nueva valoración</th>
                             </tr>
                             <tr>
                                 <td>{{ isset($check->relocatedHeadquarter['name']) ? $check->relocatedHeadquarter['name'] : '' }}</td>
                                 <td>{{$check->detail}}</td>
                                 <td>{{$check->position_functions_assigned_reassigned}}</td>
+                                <td colspan="3">{{$check->date_new_valoration}}</td>
                             </tr>
+                            {{--<tr>
+                                <th colspan="3">Fecha de nueva valoración</th>
+                            </tr>
+                            <tr>
+                                <td colspan="3">{{$check->date_new_valoration}}</td>
+                            </tr>--}}
                         @endif
 
                         @if ($locationForm['process'] == 'SI' && ($locationForm['area'] == 'SI' || $locationForm['area'] == 'NO'))
@@ -255,10 +273,12 @@
                                 <td>{{$check->detail}}</td>
                             </tr>
                             <tr>
-                                <th colspan="3">Cargo y funciones asignadas y/o reasignadas al trabajador</th>
+                                <th colspan="2">Cargo y funciones asignadas y/o reasignadas al trabajador</th>
+                                <th>Fecha de nueva valoración</th>
                             </tr>
                             <tr>
                                 <td>{{$check->position_functions_assigned_reassigned}}</td>
+                                <td>{{$check->date_new_valoration}}</td>
                             </tr>
                         @endif
                     @endif

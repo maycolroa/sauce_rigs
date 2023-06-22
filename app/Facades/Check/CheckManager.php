@@ -290,6 +290,13 @@ class CheckManager
             ]);
         }
 
+        if ($this->formModel == 'familia')
+        {
+            $rules = array_merge($rules, [
+                'date_new_valoration' => 'required'
+            ]);
+        }
+
         if ($this->formModel == 'misionEmpresarial')
         {
             $rules = array_merge($rules, [
@@ -380,7 +387,8 @@ class CheckManager
             'origin_recommendations',
             'relocated',
             'detail',
-            'monitoring_recommendations'
+            'monitoring_recommendations',
+            'date_new_valoration'
         ];
 
         $valuesToUpdate = $this->setNullAttrs($valuesToUpdate, $has_recommendations, $attrs);
@@ -543,6 +551,13 @@ class CheckManager
             $attrs = array_merge($attrs, [
                 'start_incapacitated',
                 'end_incapacitated'
+            ]);
+        }
+
+        if ($this->formModel == 'familia')
+        {
+            $attrs = array_merge($attrs, [
+                'date_new_valoration'
             ]);
         }
 

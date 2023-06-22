@@ -74,6 +74,27 @@ class ContractEmployeeController extends Controller
                     ->make();
     }
 
+    public function dataContract(Request $request)
+    {
+        $employees = ContractEmployee::select(
+            'sau_ct_contract_employees.id AS id',
+            'sau_ct_contract_employees.name AS name',
+            'sau_ct_contract_employees.email AS email',
+            'sau_ct_contract_employees.position AS position',
+            'sau_ct_contract_employees.identification AS identification');
+
+        if ($request->has('modelId') && $request->get('modelId'))
+            $employees->where('sau_ct_contract_employees.contract_id', $request->get('modelId'));
+        else 
+        {
+            $employees->join('sau_user_information_contract_lessee', 'sau_user_information_contract_lessee.information_id', 'sau_ct_contract_employees.contract_id');
+            $employees->where('sau_user_information_contract_lessee.user_id', '=', $this->user->id);
+        }
+
+        return Vuetable::of($employees)
+                    ->make();
+    }
+
     /**
      * Store a newly created resource in storage.
      *
@@ -155,7 +176,7 @@ class ContractEmployeeController extends Controller
                 $activity->name = $activity->name;
                 $activity->selected = $activity->id;
                 $activity->multiselect_activity = $activity->multiselect();
-                $activity->documents = $this->getFilesByActivity($activity->id, $contractEmployee->id);
+                $activity->documents = $this->getFilesByActivity($activity->id, $contractEmployee->id, $contractEmployee->contract_id);
 
                 return $activity;
             });
@@ -423,17 +444,17 @@ class ContractEmployeeController extends Controller
     public function getFilesForm(Request $request)
     {
         return $this->respondHttp200([
-            'data' => $this->getFilesByActivity($request->activity, $request->employee)
+            'data' => $this->getFilesByActivity($request->activity, $request->employee, $request->contract_id)
         ]);
     }
 
-    public function getFilesByActivity($activity, $employee_id)
+    public function getFilesByActivity($activity, $employee_id, $contract_id)
     {
         $documents = ActivityDocument::where('activity_id', $activity)->where('type', 'Empleado')->get();
 
         if ($documents->count() > 0)
         {
-            $contract = $this->getContractUser($this->user->id, $this->company);
+            $contract = $contract_id;
             $documents = $documents->transform(function($document, $key) use ($contract, $employee_id) {
                 $document->key = Carbon::now()->timestamp + rand(1,10000);
                 $document->files = [];
@@ -446,7 +467,7 @@ class ContractEmployeeController extends Controller
                 )
                 ->join('sau_ct_file_upload_contract','sau_ct_file_upload_contract.file_upload_id','sau_ct_file_upload_contracts_leesse.id')
                 ->join('sau_ct_file_document_employee', 'sau_ct_file_document_employee.file_id', 'sau_ct_file_upload_contracts_leesse.id')
-                ->where('sau_ct_file_upload_contract.contract_id', $contract->id)
+                ->where('sau_ct_file_upload_contract.contract_id', $contract)
                 ->where('sau_ct_file_document_employee.document_id', $document->id)
                 ->where('sau_ct_file_document_employee.employee_id', $employee_id)
                 ->get();

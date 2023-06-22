@@ -447,6 +447,19 @@ export default [
                     id: 'id',
                 },
                 permission: 'contracts_view_list_standards'
+              },
+              {
+                config: {
+                    color: 'outline-info',
+                    borderless: true,
+                    icon: 'ion ion-md-person',
+                    title: 'Ver Empleados'
+                },
+                data: {
+                    routePush: { name: 'legalaspects-contracts-employees-view-contract' },
+                    id: 'id',
+                },
+                permission: 'contracts_r'
             }]
           },
           {
@@ -794,6 +807,41 @@ export default [
         }],
         configuration: {
             urlData: '/legalAspects/employeeContract/data',
+            filterColumns: true,
+        }
+    },
+    {
+        name: 'legalaspects-contracts-employees-view-contractor',
+        fields: [
+            { name: 'sau_ct_contract_employees.id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true },
+            { name: 'sau_ct_contract_employees.identification', data: 'identification', title: 'Identificación', sortable: true, searchable: true, detail: false, key: false },
+            { name: 'sau_ct_contract_employees.name', data: 'name', title: 'Nombre', sortable: true, searchable: true, detail: false, key: false },
+            { name: 'sau_ct_contract_employees.position', data: 'position', title: 'Posición', sortable: true, searchable: true, detail: false, key: false },
+            { name: 'sau_ct_contract_employees.email', data: 'email', title: 'Email', sortable: true, searchable: true, detail: false, key: false },
+            { name: '', data: 'controlls', title: 'Controles', sortable: false, searchable: false, detail: false, key: false },
+        ],
+        'controlls': [{
+            type: 'push',
+            buttons: [{
+            config: {
+                color: 'outline-info',
+                borderless: true,
+                icon: 'ion ion-md-eye',
+                title: 'Ver'
+            },
+            data: {
+                routePush: { name: 'legalaspects-contracts-employees-view-contract-view' },
+                id: 'id',
+            },
+            permission: 'contracts_r'
+            }]
+        },
+        {
+            type: 'base',
+            buttons: [],
+        }],
+        configuration: {
+            urlData: '/legalAspects/employeeContract/dataContract',
             filterColumns: true,
         }
     },
