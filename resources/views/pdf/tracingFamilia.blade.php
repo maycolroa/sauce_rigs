@@ -262,7 +262,7 @@
                 </td>
             </tr>
             <tr style="background-color: white;">
-                <td style="border: 0px solid #dddddd; text-align: left; padding: 0px">Responsable SST</td>
+                <td style="border: 0px solid #dddddd; text-align: left; padding: 0px">Responsable RESH</td>
                 <td style="border: 0px solid #dddddd; text-align: left; padding: 0px">Médico laboral de empresa</td>
             </tr>
             <tr style="background-color: white;">
