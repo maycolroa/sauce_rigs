@@ -20,6 +20,7 @@ use App\Rules\Reinstatements\RequiredIfInProcessIsNo;
 use App\Rules\Reinstatements\EndRestrictionsBePresent;
 use App\Rules\Reinstatements\RequiredIfHasIncapacitated;
 use App\Rules\Reinstatements\StartIncapacitated;
+use App\Rules\Reinstatements\NewValoration;
 use App\Traits\ConfigurableFormTrait;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Log;
@@ -293,7 +294,7 @@ class CheckManager
         if ($this->formModel == 'familia')
         {
             $rules = array_merge($rules, [
-                'date_new_valoration' => 'required'
+                'date_new_valoration' => [new NewValoration( $request->has_recommendations)]
             ]);
         }
 
