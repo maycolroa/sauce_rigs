@@ -32,9 +32,9 @@ class NewValoration implements Rule
         if ($this->has_recommendations == 'SI')
         {
             if ($value != null) 
-                return true;
-            else 
                 return false;
+            else 
+                return true;
         }
     }
 
