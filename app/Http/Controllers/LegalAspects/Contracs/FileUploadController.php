@@ -6,6 +6,8 @@ use App\Models\LegalAspects\Contracts\FileUpload;
 use App\Models\LegalAspects\Contracts\FileModuleState;
 use App\Models\LegalAspects\Contracts\ContractLesseeInformation;
 use App\Http\Requests\LegalAspects\Contracts\FileUploadRequest;
+use App\Models\LegalAspects\Contracts\ContractEmployee;
+use App\Models\LegalAspects\Contracts\ActivityDocument;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Carbon\Carbon;
@@ -53,16 +55,18 @@ class FileUploadController extends Controller
         }
 
         $files = FileUpload::selectRaw(
-            'sau_ct_file_upload_contracts_leesse.*,
+            "sau_ct_file_upload_contracts_leesse.*,
              sau_users.name as user_name,
              GROUP_CONCAT(sau_ct_information_contract_lessee.social_reason ORDER BY social_reason ASC) AS social_reason,
-             sau_ct_section_category_items.item_name AS item_name'
+             sau_ct_section_category_items.item_name AS item_name,
+             IF(sau_ct_file_document_employee.file_id, 'Empleados', '') AS module"
           )
           ->join('sau_users','sau_users.id','sau_ct_file_upload_contracts_leesse.user_id')
           ->join('sau_ct_file_upload_contract','sau_ct_file_upload_contract.file_upload_id','sau_ct_file_upload_contracts_leesse.id')
           ->join('sau_ct_information_contract_lessee', 'sau_ct_information_contract_lessee.id', 'sau_ct_file_upload_contract.contract_id')
           ->leftJoin('sau_ct_file_item_contract', 'sau_ct_file_item_contract.file_id', 'sau_ct_file_upload_contracts_leesse.id')
           ->leftJoin('sau_ct_section_category_items', 'sau_ct_section_category_items.id', 'sau_ct_file_item_contract.item_id')
+          ->leftJoin('sau_ct_file_document_employee', 'sau_ct_file_document_employee.file_id', 'sau_ct_file_upload_contracts_leesse.id')
           ->groupBy('sau_ct_file_upload_contracts_leesse.id', 'sau_ct_section_category_items.item_name');
 
         $url = "/legalaspects/upload-files";
@@ -287,6 +291,8 @@ class FileUploadController extends Controller
               }
             }
           }
+
+          $this->updateEmployee($fileUpload->id);
         }
 
 
@@ -298,13 +304,105 @@ class FileUploadController extends Controller
       }
       catch(\Exception $e) {
         DB::rollback();
-        //return $e->getMessage();
+        \Log::info($e->getMessage());
         return $this->respondHttp500();
       }
 
       return $this->respondHttp200([
         'message' => 'Se actualizo el archivo correctamente'
       ]);
+    }
+
+    public function updateEmployee($file_id)
+    {
+        $file = DB::table('sau_ct_file_document_employee')->where('file_id', $file_id)->first();
+        
+        if ($file)
+        {
+          $employee = ContractEmployee::find($file->employee_id);
+          
+          foreach ($employee->activities as $activity)
+          {
+            $activity->documents = $this->getFilesByActivity($activity->id, $employee->id, $employee->contract_id);
+
+            $documents_counts = $activity->documents->count();
+            $count = 0;
+            foreach ($activity->documents as $document)
+            {
+                if (COUNT($document['files']) > 0)
+                {
+                    $count_aprobe = 0;
+
+                    foreach ($document['files'] as $key => $file) 
+                    {
+                        $fileUpload = FileUpload::findOrFail($file['id']);
+
+                        if ($fileUpload->state == 'ACEPTADO')
+                            $count_aprobe++;
+                    }
+
+                    if ($count_aprobe == COUNT($document['files']))
+                        $count++;
+                }
+            }
+
+            if ($documents_counts > $count)
+            {
+                $employee->update(
+                  [ 'state' => 'Pendiente']
+                );
+                break;
+            }
+          }
+
+          $employee->update(
+            [ 'state' => 'Aprobado']
+          );
+        }
+    }
+
+    public function getFilesByActivity($activity, $employee_id, $contract_id)
+    {
+        $documents = ActivityDocument::where('activity_id', $activity)->where('type', 'Empleado')->get();
+
+        if ($documents->count() > 0)
+        {
+            $contract = $contract_id;
+            $documents = $documents->transform(function($document, $key) use ($contract, $employee_id) {
+                $document->key = Carbon::now()->timestamp + rand(1,10000);
+                $document->files = [];
+
+                $files = FileUpload::select(
+                    'sau_ct_file_upload_contracts_leesse.id AS id',
+                    'sau_ct_file_upload_contracts_leesse.name AS name',
+                    'sau_ct_file_upload_contracts_leesse.file AS file',
+                    'sau_ct_file_upload_contracts_leesse.expirationDate AS expirationDate'
+                )
+                ->join('sau_ct_file_upload_contract','sau_ct_file_upload_contract.file_upload_id','sau_ct_file_upload_contracts_leesse.id')
+                ->join('sau_ct_file_document_employee', 'sau_ct_file_document_employee.file_id', 'sau_ct_file_upload_contracts_leesse.id')
+                ->where('sau_ct_file_upload_contract.contract_id', $contract)
+                ->where('sau_ct_file_document_employee.document_id', $document->id)
+                ->where('sau_ct_file_document_employee.employee_id', $employee_id)
+                ->get();
+
+                if ($files)
+                {
+                    $files->transform(function($file, $index) {
+                        $file->key = Carbon::now()->timestamp + rand(1,10000);
+                        $file->old_name = $file->file;
+                        $file->expirationDate = $file->expirationDate == null ? null : (Carbon::createFromFormat('Y-m-d',$file->expirationDate))->format('D M d Y');
+
+                        return $file;
+                    });
+
+                    $document->files = $files;
+                }
+
+                return $document;
+            });
+        }
+
+        return $documents;
     }
 
     /**

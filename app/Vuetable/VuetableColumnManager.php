@@ -319,7 +319,8 @@ class VuetableColumnManager
                 ['name' => 'sau_users.name', 'data'=> 'user_name', 'title'=> 'Usuario Creador', 'sortable'=> true, 'searchable'=> true, 'detail'=> false, 'key'=> false ],
                 ['name' => 'sau_ct_file_upload_contracts_leesse.created_at', 'data'=> 'created_at', 'title'=> 'Fecha Creación', 'sortable'=> true, 'searchable'=> true, 'detail'=> false, 'key'=> false ],
                 ['name' => 'sau_ct_file_upload_contracts_leesse.updated_at', 'data'=> 'updated_at', 'title'=> 'Fecha Actualización', 'sortable'=> true, 'searchable'=> true, 'detail'=> false, 'key'=> false ],
-                ['name' => 'sau_ct_file_upload_contracts_leesse.state', 'data'=> 'state', 'title'=> 'Estado', 'sortable'=> true, 'searchable'=> true, 'detail'=> false, 'key'=> false ]
+                ['name' => 'sau_ct_file_upload_contracts_leesse.state', 'data'=> 'state', 'title'=> 'Estado', 'sortable'=> true, 'searchable'=> true, 'detail'=> false, 'key'=> false ],
+                ['name' => 'sau_ct_file_module_state.module', 'data'=> 'module', 'title'=> 'Modulo', 'sortable'=> true, 'searchable'=> true, 'detail'=> false, 'key'=> false ]
             ];
         else 
             $colums = [
@@ -331,7 +332,8 @@ class VuetableColumnManager
                 ['name' => 'sau_users.name', 'data'=> 'user_name', 'title'=> 'Usuario Creador', 'sortable'=> true, 'searchable'=> true, 'detail'=> false, 'key'=> false ],
                 ['name' => 'sau_ct_file_upload_contracts_leesse.created_at', 'data'=> 'created_at', 'title'=> 'Fecha Creación', 'sortable'=> true, 'searchable'=> true, 'detail'=> false, 'key'=> false ],
                 ['name' => 'sau_ct_file_upload_contracts_leesse.updated_at', 'data'=> 'updated_at', 'title'=> 'Fecha Actualización', 'sortable'=> true, 'searchable'=> true, 'detail'=> false, 'key'=> false ],
-                ['name' => 'sau_ct_file_upload_contracts_leesse.state', 'data'=> 'state', 'title'=> 'Estado', 'sortable'=> true, 'searchable'=> true, 'detail'=> false, 'key'=> false ]
+                ['name' => 'sau_ct_file_upload_contracts_leesse.state', 'data'=> 'state', 'title'=> 'Estado', 'sortable'=> true, 'searchable'=> true, 'detail'=> false, 'key'=> false ],
+                ['name' => 'sau_ct_file_module_state.module', 'data'=> 'module', 'title'=> 'Modulo', 'sortable'=> true, 'searchable'=> true, 'detail'=> false, 'key'=> false ]
             ];
 
         $colums = array_merge($colums, [

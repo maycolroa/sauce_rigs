@@ -60,7 +60,9 @@ class ContractEmployeeController extends Controller
             'sau_ct_contract_employees.name AS name',
             'sau_ct_contract_employees.email AS email',
             'sau_ct_contract_employees.position AS position',
-            'sau_ct_contract_employees.identification AS identification');
+            'sau_ct_contract_employees.identification AS identification',
+            'sau_ct_contract_employees.state as state'
+        );
 
         if ($request->has('modelId') && $request->get('modelId'))
             $employees->where('sau_ct_contract_employees.contract_id', $request->get('modelId'));
@@ -81,7 +83,9 @@ class ContractEmployeeController extends Controller
             'sau_ct_contract_employees.name AS name',
             'sau_ct_contract_employees.email AS email',
             'sau_ct_contract_employees.position AS position',
-            'sau_ct_contract_employees.identification AS identification');
+            'sau_ct_contract_employees.identification AS identification',
+            'sau_ct_contract_employees.state as state'
+        );
 
         if ($request->has('modelId') && $request->get('modelId'))
             $employees->where('sau_ct_contract_employees.contract_id', $request->get('modelId'));
@@ -134,11 +138,19 @@ class ContractEmployeeController extends Controller
                 return $this->respondHttp500();
 
             $activities = collect([]);
+            $documents_complets = false;
 
             if($request->has('activities'))
+            {
                 $activities = $this->saveActivities($employee, $request->activities);
+                $documents_complets = $this->documentscomplets($employee, $request->activities);
+            }
 
             $employee->activities()->sync($activities->values());
+
+            $employee->update(
+                [ 'state' => $documents_complets ? 'Aprobado' : 'Pendiente']
+            );
 
             TrainingSendNotificationJob::dispatch($this->company, '', $employee->id);
 
@@ -233,11 +245,19 @@ class ContractEmployeeController extends Controller
             }
 
             $activities = collect([]);
+            $documents_complets = false;
 
             if($request->has('activities'))
+            {
                 $activities = $this->saveActivities($employeeContract, $request->activities);
+                $documents_complets = $this->documentscomplets($employeeContract, $request->activities);
+            }
 
             $employeeContract->activities()->sync($activities->values());
+
+            $employeeContract->update(
+                [ 'state' => $documents_complets ? 'Aprobado' : 'Pendiente']
+            );
 
             if ($request->has('delete'))
             {
@@ -357,6 +377,43 @@ class ContractEmployeeController extends Controller
 
         return $activities;
     }
+
+    public function documentscomplets($employee, $activitiesList)
+    {
+        $activities = collect([]);
+
+        foreach ($activitiesList as $activity)
+        {
+            $activities->push($activity['selected']);
+            $documents_counts = COUNT($activity['documents']);
+            $count = 0;
+
+            foreach ($activity['documents'] as $document)
+            {
+                if (COUNT($document['files']) > 0)
+                {
+                    $count_aprobe = 0;
+
+                    foreach ($document['files'] as $key => $file) 
+                    {
+                        $fileUpload = FileUpload::findOrFail($file['id']);
+
+                        if ($fileUpload->state == 'ACEPTADO')
+                            $count_aprobe++;
+                    }
+
+                    if ($count_aprobe == COUNT($document['files']))
+                        $count++;
+                }
+            }
+
+            if ($documents_counts > $count)
+                return false;
+        }
+
+        return true;
+    }
+
 
     /**
      * Remove the specified resource from storage.

@@ -763,6 +763,7 @@ export default [
             { name: 'sau_ct_contract_employees.name', data: 'name', title: 'Nombre', sortable: true, searchable: true, detail: false, key: false },
             { name: 'sau_ct_contract_employees.position', data: 'position', title: 'Posición', sortable: true, searchable: true, detail: false, key: false },
             { name: 'sau_ct_contract_employees.email', data: 'email', title: 'Email', sortable: true, searchable: true, detail: false, key: false },
+            { name: 'sau_ct_contract_employees.state', data: 'state', title: 'Estado', sortable: true, searchable: true, detail: false, key: false },
             { name: '', data: 'controlls', title: 'Controles', sortable: false, searchable: false, detail: false, key: false },
         ],
         'controlls': [{
@@ -818,6 +819,7 @@ export default [
             { name: 'sau_ct_contract_employees.name', data: 'name', title: 'Nombre', sortable: true, searchable: true, detail: false, key: false },
             { name: 'sau_ct_contract_employees.position', data: 'position', title: 'Posición', sortable: true, searchable: true, detail: false, key: false },
             { name: 'sau_ct_contract_employees.email', data: 'email', title: 'Email', sortable: true, searchable: true, detail: false, key: false },
+            { name: 'sau_ct_contract_employees.state', data: 'state', title: 'Estado', sortable: true, searchable: true, detail: false, key: false },
             { name: '', data: 'controlls', title: 'Controles', sortable: false, searchable: false, detail: false, key: false },
         ],
         'controlls': [{

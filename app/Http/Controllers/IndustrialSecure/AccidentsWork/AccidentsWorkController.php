@@ -865,13 +865,20 @@ class AccidentsWorkController extends Controller
     {
         $form = $this->getDataExportPdf($accident->id);
 
-        PDF::setOptions(['dpi' => 150, 'defaultFont' => 'sans-serif']);
+        if ($form->consolidado)
+        {
+            PDF::setOptions(['dpi' => 150, 'defaultFont' => 'sans-serif']);
 
-        $pdf = PDF::loadView('pdf.formularioAccidents', ['form' => $form] );
+            $pdf = PDF::loadView('pdf.formularioAccidents2', ['form' => $form] );
 
-        $pdf->setPaper('A3', 'landscape');
+            $pdf->setPaper('A3', 'landscape');
 
-        return $pdf->download('formulario_accidente.pdf');
+            return $pdf->download('formulario_accidente.pdf');
+        }
+        else
+        {
+            return $this->respondWithError('Debe completar la informacion del accidente o incidente');
+        }
     }
 
     public function getDataExportPdf($id)
@@ -919,7 +926,7 @@ class AccidentsWorkController extends Controller
             $file->name_file = $file->name_file;
             $file->old_name = $file->file;
             $file->path = $file->path_image();
-            $images_pdf[$i][$j] = ['file' => $file->path, 'type' => $file->type_file, 'name' => $file->name_file];
+            $images_pdf[$i][$j] = ['file' => $file->path, 'type' => $file->type, 'name' => $file->name];
             $j++;
 
             if ($j > (3))

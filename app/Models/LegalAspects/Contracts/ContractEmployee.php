@@ -20,7 +20,8 @@ class ContractEmployee extends Model
         'email',
         'company_id',
         'token',
-        'employee_afp_id'
+        'employee_afp_id',
+        'state'
     ];
 
     public function contract()
