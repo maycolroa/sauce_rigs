@@ -95,7 +95,7 @@
             <b-btn v-show="isEdit && form.has_recommendations == 'SI'" class="col-md-1 offset-md-2" @click="showModal('modalsendRecommendations')" variant="outline-danger icon-btn borderless" size="xs" v-b-tooltip.top title="Enviar correo"><span class="ion ion-ios-mail"></span></b-btn>
             <b-modal ref="modalsendRecommendations" :hideFooter="true" id="modalsendRecommendations" class="modal-top modal-item" size="lg">
               <div slot="modal-title">
-                  Histórico<br>
+                  Correo de Recomendaciones<br>
               </div>
               <b-card bg-variant="transparent"  title="Correos" class="mb-3 box-shadow-none">
                   <b-form-row>

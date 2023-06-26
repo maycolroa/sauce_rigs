@@ -936,10 +936,12 @@ class DangerMatrixController extends Controller
             'sau_dangers_matrix.name as matriz',
             DB::raw("JSON_UNQUOTE(json_extract(sau_dm_history_qualification_change.qualification_old, '$[1].value')) as nr_persona_old"),
             DB::raw("JSON_UNQUOTE(json_extract(sau_dm_history_qualification_change.qualification_old, '$[5].value')) as qualification_old2"),
-            DB::raw("JSON_UNQUOTE(json_extract(sau_dm_history_qualification_change.qualification_old, '$[6].value')) as observation_old2"),
+            //DB::raw("JSON_UNQUOTE(json_extract(sau_dm_history_qualification_change.qualification_old, '$[6].value')) as observation_old2"),
+            DB::raw("IFNULL(JSON_UNQUOTE(json_extract(sau_dm_history_qualification_change.qualification_old, '$[6].value')), '') as observation_old2"),
             DB::raw("JSON_UNQUOTE(json_extract(sau_dm_history_qualification_change.qualification_new, '$[1].value')) as nr_persona_new"),
             DB::raw("JSON_UNQUOTE(json_extract(sau_dm_history_qualification_change.qualification_new, '$[5].value')) as qualification_new2"),
-            DB::raw("JSON_UNQUOTE(json_extract(sau_dm_history_qualification_change.qualification_new, '$[6].value')) as observation_new2"),
+            //DB::raw("JSON_UNQUOTE(json_extract(sau_dm_history_qualification_change.qualification_new, '$[6].value')) as observation_new2"),
+            DB::raw("IFNULL(JSON_UNQUOTE(json_extract(sau_dm_history_qualification_change.qualification_new, '$[6].value')), '') as observation_new2"),
             Db::raw("DATE_FORMAT(sau_dm_history_qualification_change.created_at, '%Y-%m-%d') as fecha")
         )
         ->join('sau_dangers_matrix', 'sau_dangers_matrix.id', 'sau_dm_history_qualification_change.danger_matrix_id')
