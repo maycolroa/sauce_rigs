@@ -250,10 +250,10 @@ class ContractEmployeeController extends Controller
             if($request->has('activities'))
             {
                 $activities = $this->saveActivities($employeeContract, $request->activities);
-                $documents_complets = $this->documentscomplets($employeeContract, $request->activities);
+                $documents_complets = $this->documentscomplets($employeeContract, $request->activities, $activities['files']);
             }
 
-            $employeeContract->activities()->sync($activities->values());
+            $employeeContract->activities()->sync($activities['activities']->values());
 
             $employeeContract->update(
                 [ 'state' => $documents_complets ? 'Aprobado' : 'Pendiente']
@@ -298,6 +298,7 @@ class ContractEmployeeController extends Controller
         foreach ($activitiesList as $activity)
         {
             $activities->push($activity['selected']);
+            $files_id = [];
 
             foreach ($activity['documents'] as $document)
             {
@@ -363,6 +364,7 @@ class ContractEmployeeController extends Controller
                         $fileUpload->contracts()->sync([$employee->contract_id]);
                         $ids = [];
                         $ids[$document['id']] = ['employee_id' => $employee->id];
+                        $files_id[$file['key']] = $fileUpload->id;
                         $fileUpload->documents()->sync($ids);
                     }
 
@@ -375,16 +377,18 @@ class ContractEmployeeController extends Controller
             }
         }
 
-        return $activities;
+        $data = [
+            'activities' => $activities,
+            'files' => $files_id
+        ];
+
+        return $data;
     }
 
-    public function documentscomplets($employee, $activitiesList)
+    public function documentscomplets($employee, $activitiesList, $documents)
     {
-        $activities = collect([]);
-
         foreach ($activitiesList as $activity)
         {
-            $activities->push($activity['selected']);
             $documents_counts = COUNT($activity['documents']);
             $count = 0;
 
@@ -396,7 +400,8 @@ class ContractEmployeeController extends Controller
 
                     foreach ($document['files'] as $key => $file) 
                     {
-                        $fileUpload = FileUpload::findOrFail($file['id']);
+                        
+                        $fileUpload = FileUpload::findOrFail($documents[$file['key']]);
 
                         if ($fileUpload->state == 'ACEPTADO')
                             $count_aprobe++;
