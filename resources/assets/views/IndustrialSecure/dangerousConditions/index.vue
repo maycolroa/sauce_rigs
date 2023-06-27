@@ -32,7 +32,7 @@
 								<router-link tag="a" href="javascript:void(0)" class="card-body media align-items-center text-dark" :to="{name:'industrialsecure-accidentswork'}">
 									<i class="far fa-newspaper display-4 d-block text-primary" ></i>
 									<span class="media-body d-block ml-3">
-										<span class="text-big font-weight-bolder">Investigación de accidentes e incidentes de trabajo</span>
+										<span class="text-big font-weight-bolder">Incidentes y accidentes</span>
 									</span>
 								</router-link>
 							</div>
