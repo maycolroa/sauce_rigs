@@ -384,6 +384,22 @@
                     {
                         "name": "ph_receive_notifications",
                         "display_name": "Inspecciones Planeadas - recibir notificaciones"
+                    },
+                    {
+                        "name": "accidentsWork_c",
+                        "display_name": "Investigación de accidentes e incidentes de trabajo - crear"
+                    },
+                    {
+                        "name": "accidentsWork_r",
+                        "display_name": "Investigación de accidentes e incidentes de trabajo - ver"
+                    },
+                    {
+                        "name": "accidentsWork_u",
+                        "display_name": "Investigación de accidentes e incidentes de trabajo - editar"
+                    },
+                    {
+                        "name": "accidentsWork_d",
+                        "display_name": "Investigación de accidentes e incidentes de trabajo - eliminar"
                     }
                 ]
             },

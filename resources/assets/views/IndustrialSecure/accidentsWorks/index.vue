@@ -3,7 +3,7 @@
     <header-module
       title="ACCIDENTES E INCIDENTES DE TRABAJO"
       subtitle="ADMINISTRAR ACCIDENTES"
-      url="industrialsecure"
+      url="industrialsecure-dangerousconditions"
     />
 
     <div class="col-md">

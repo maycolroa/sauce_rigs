@@ -75,7 +75,9 @@
             "actionPlans",
             "customLabels",
             "configurations",
-            "logos"
+            "logos",
+            "positions",
+            "employees"
         ]
     },
     {
@@ -150,22 +152,6 @@
             "customLabels",
             "positions",
             "employees"
-        ]
-    },
-    {
-        "module": "accidentsWork",
-        "dependencies": [
-            "users",
-            "roles",
-            "regionals",
-            "headquarters",
-            "processes",
-            "areas",
-            "configurations",
-            "customLabels",
-            "positions",
-            "employees",
-            "actionPlans"
         ]
     }
 ]
