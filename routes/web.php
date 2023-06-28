@@ -790,6 +790,7 @@ Route::middleware(['auth'])->group(function () {
       Route::post('trainingContract/switchStatus/{trainingContract}', 'LegalAspects\Contracs\ContractTrainingController@toggleState');
       Route::post('trainingContract/sendNotification/{trainingContract}', 'LegalAspects\Contracs\ContractTrainingController@sendNotification');
       Route::post('employeeContract/files', 'LegalAspects\Contracs\ContractEmployeeController@getFilesForm');
+      Route::post('employeeContract/filesAprobe', 'LegalAspects\Contracs\FileUploadController@aproveFile');
       Route::post('employeeContract/data', 'LegalAspects\Contracs\ContractEmployeeController@data');
       Route::post('employeeContract/dataContract', 'LegalAspects\Contracs\ContractEmployeeController@dataContract');
       Route::ApiResource('employeeContract', 'LegalAspects\Contracs\ContractEmployeeController');

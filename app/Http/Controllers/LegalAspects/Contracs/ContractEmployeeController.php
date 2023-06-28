@@ -525,7 +525,9 @@ class ContractEmployeeController extends Controller
                     'sau_ct_file_upload_contracts_leesse.id AS id',
                     'sau_ct_file_upload_contracts_leesse.name AS name',
                     'sau_ct_file_upload_contracts_leesse.file AS file',
-                    'sau_ct_file_upload_contracts_leesse.expirationDate AS expirationDate'
+                    'sau_ct_file_upload_contracts_leesse.expirationDate AS expirationDate',
+                    'sau_ct_file_upload_contracts_leesse.state AS state',
+                    'sau_ct_file_upload_contracts_leesse.reason_rejection AS reason_rejection'
                 )
                 ->join('sau_ct_file_upload_contract','sau_ct_file_upload_contract.file_upload_id','sau_ct_file_upload_contracts_leesse.id')
                 ->join('sau_ct_file_document_employee', 'sau_ct_file_document_employee.file_id', 'sau_ct_file_upload_contracts_leesse.id')
@@ -540,6 +542,8 @@ class ContractEmployeeController extends Controller
                         $file->key = Carbon::now()->timestamp + rand(1,10000);
                         $file->old_name = $file->file;
                         $file->expirationDate = $file->expirationDate == null ? null : (Carbon::createFromFormat('Y-m-d',$file->expirationDate))->format('D M d Y');
+                        $file->state = $file->state;
+                        $file->reason_rejection = $file->reason_rejection;
 
                         return $file;
                     });

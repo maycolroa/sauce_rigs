@@ -11,7 +11,8 @@
             <form-contract-employee-view
                 :employee="data"
                 :view-only="true"
-                :contract_id="contract_id"/>
+                :contract_id="contract_id"
+                :states="states"/>
         </b-card-body>
       </b-card>
     </div>
@@ -21,6 +22,7 @@
 <script>
 import FormContractEmployeeView from '@/components/LegalAspects/Contracts/Employees/FormContractEmployeeViewContractComponent.vue';
 import Alerts from '@/utils/Alerts.js';
+import GlobalMethods from '@/utils/GlobalMethods.js';
 
 export default {
   name: 'legalaspects-contracts-employees-view-contract-view',
@@ -33,7 +35,8 @@ export default {
   data () {
     return {
       data: [],
-      contract_id: ''
+      contract_id: '',
+      states: []
     }
   },
   created(){
@@ -45,6 +48,21 @@ export default {
     .catch(error => {
         Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
     });
+
+    this.fetchSelect('states', '/selects/contracts/statesFile')
   },
+  methods: {
+    fetchSelect(key, url)
+    {
+        GlobalMethods.getDataMultiselect(url)
+        .then(response => {
+            this[key] = response;
+        })
+        .catch(error => {
+            Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
+            this.$router.go(-1);
+        });
+    },
+  }
 }
 </script>

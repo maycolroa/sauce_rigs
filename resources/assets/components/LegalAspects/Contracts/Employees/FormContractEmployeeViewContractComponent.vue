@@ -105,7 +105,11 @@
                                   <b-form-row>
                                     <vue-file-simple :disabled="viewOnly" :help-text="file.id ? `Para descargar el archivo actual, haga click <a href='/legalAspects/fileUpload/download/${file.id}' target='blank'>aqui</a> ` : null" class="col-md-12" v-model="file.file" label="Archivo" name="file" placeholder="Seleccione un archivo" :error="form.errorsFor(`activities.${index}.documents.${indexDocument}.files.${indexFile}.file`)" :maxFileSize="20"/>
                                   </b-form-row>
-                                  
+                                  <b-form-row>
+                                    <vue-advanced-select class="col-md-6" v-model="file.state"  name="state" label="Estado del documento" placeholder="Seleccione el estado" :options="states" :error="form.errorsFor('state')" @input="documentAprobe(file.id, file.state, file.reason_rejection)" :multiple="false" :allow-empty="false">
+                                    </vue-advanced-select>
+                                    <vue-textarea v-if="form.state == 'RECHAZADO'" class="col-md-6" v-model="form.reason_rejection" label="Motivo del rechazo" name="reason_rejection" :error="form.errorsFor('reason_rejection')" placeholder="Motivo del rechazo" @onBlur="documentAprobe(file.id, file.state, file.reason_rejection)"></vue-textarea>
+                                  </b-form-row>
                                 </div>
                               </b-card-body>
                             </b-collapse>
@@ -137,6 +141,7 @@ import VueDatepicker from "@/components/Inputs/VueDatepicker.vue";
 import VueFileSimple from "@/components/Inputs/VueFileSimple.vue";
 import Form from "@/utils/Form.js";
 import PerfectScrollbar from '@/vendor/libs/perfect-scrollbar/PerfectScrollbar';
+import VueAdvancedSelect from "@/components/Inputs/VueAdvancedSelect.vue";
 import GlobalMethods from '@/utils/GlobalMethods.js';
 import Alerts from '@/utils/Alerts.js';
 
@@ -146,7 +151,8 @@ export default {
     VueAjaxAdvancedSelect,
     VueInput,
     VueDatepicker,
-    PerfectScrollbar
+    PerfectScrollbar,
+    VueAdvancedSelect
   },
   props: {
     url: { type: String },
@@ -156,6 +162,12 @@ export default {
     viewOnly: { type: Boolean, default: false },    
     activitiesUrl: { type: String, default: "" },
     afpDataUrl: { type: String, default: "" },
+		states: {
+      type: Array,
+      default: function() {
+        return [];
+      }
+    },
     employee: {
       default() {
         return {
@@ -175,6 +187,10 @@ export default {
   watch: {
     employee() {
       this.form = Form.makeFrom(this.employee, this.method);
+
+      setTimeout(() => {
+          this.ready = true
+      }, 5000)
     }
   },
   data() {
@@ -184,6 +200,7 @@ export default {
       disabledDates: {
         to: new Date()
       },
+      ready: false,
       cancelUrl: { name: 'legalaspects-contracts-employees-view-contract', id: this.contract_id}
     };
   },
@@ -203,13 +220,6 @@ export default {
     },
     removeActivity(index)
     {
-      /*if (this.form.activities[index].id != undefined)
-      {
-        _.forIn(this.form.activities[index].documents, (documento, key) => {
-            this.removeFile(documento, key);
-        });
-      }*/
-
       this.form.activities.splice(index, 1)
     },
     updateActivityNameTab(values, index) {
@@ -232,19 +242,21 @@ export default {
         });
       }
     },
-    addFile(documento) {
-      documento.files.push({
-        key: new Date().getTime(),
-        name: '',
-        expirationDate: '',
-        file: ''
-      });
-    },
-    removeFile(documento, index) {
-      if (documento.files[index].id != undefined)
-        this.form.delete.files.push(documento.files[index].id)
-        
-      documento.files.splice(index, 1);
+    documentAprobe(file, state, reason_rejection)
+    {
+      if (this.ready)
+      {
+        axios.post('/legalAspects/employeeContract/filesAprobe',{
+          file: file,
+          state: state,
+          reason_rejection: reason_rejection
+        })
+        .then(response => {
+        })
+        .catch(error => {
+            Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
+        });
+      }
     }
   }
 };

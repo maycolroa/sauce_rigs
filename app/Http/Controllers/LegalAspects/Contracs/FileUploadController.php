@@ -573,4 +573,48 @@ class FileUploadController extends Controller
       return Vuetable::of($data)
             ->make();
     }
+
+    public function aproveFile(Request $request)
+    {
+      DB::beginTransaction();
+
+      try
+      {
+        $file = FileUpload::find($request->file);
+        $beforeFile= $file;
+
+        $file->state = $request->state == null ? 'PENDIENTE' : $request->state;
+        $file->reason_rejection = $request->reason_rejection;
+        $contract = $file->contracts;
+        
+        if(!$file->save()) {
+          return $this->respondHttp500();
+        }
+
+        if ($beforeFile->state != $file->state && $file->state == 'RECHAZADO')
+        {
+          FileModuleState::updateOrCreate(['file_id' => $file->id, 'date' => date('Y-m-d')],
+          [
+            'contract_id' => $contract->id,
+            'file_id' => $file->id,
+            'module' => 'Subida de Archivos',
+            'state' => 'RECHAZADO',
+            'date' => date('Y-m-d')
+          ]);
+        }
+
+        $this->updateEmployee($file->id);
+
+        DB::commit();
+      }
+      catch(\Exception $e) {
+        DB::rollback();
+        \Log::info($e->getMessage());
+        return $this->respondHttp500();
+      }
+
+      return $this->respondHttp200([
+        'message' => 'Se actualizo el archivo correctamente'
+      ]);
+    }
 }

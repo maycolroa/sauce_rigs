@@ -449,6 +449,8 @@ class InspectionQualificationController extends Controller
             ]
         ])->validate();
 
+
+        $keywords = $this->user->getKeywords();
         $confLocation = $this->getLocationFormConfModule();
 
         $qualification = InspectionItemsQualificationAreaLocation::findOrFail($request->id);
