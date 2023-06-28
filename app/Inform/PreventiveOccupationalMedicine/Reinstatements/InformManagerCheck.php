@@ -30,6 +30,7 @@ class InformManagerCheck
         'closed_reports_bar_year',
         'closed_reports_bar_month',
         'disease_origin_reports_pie',
+        'closed_motive_reports_pie',
         'cases_per_regional_pie',
         'cases_per_headquarter_pie',
         'cases_per_process_pie',
@@ -671,6 +672,52 @@ class InformManagerCheck
             $data->inRelocatedTypes($this->relocatedTypes, $this->filtersType['relocatedTypes']);
 
         $data = $data->pluck('count', $column);
+
+        return $this->buildTableChartData($data);
+    }
+
+
+    public function closed_motive_reports_pie()
+    {
+        return $this->getReportPerColumnClosed('motive_close');
+    }
+
+    /**
+     * Returns the reports of pta for column.
+     * @return collection
+     */
+    private function getReportPerColumnClosed($column)
+    {
+        $data = Check::selectRaw(
+            "IFNULL(motive_close, 'Sin motivo') AS motive_close,            
+            COUNT(DISTINCT employee_id) AS count")
+        ->isOpen(false)
+        ->join('sau_employees', 'sau_employees.id', 'sau_reinc_checks.employee_id')
+        ->inIdentifications($this->identifications, $this->filtersType['identifications'])
+        ->inNames($this->names, $this->filtersType['names'])
+        ->inRegionals($this->regionals, $this->filtersType['regionals'])
+        ->inBusinesses($this->businesses, $this->filtersType['businesses'])
+        ->inDiseaseOrigin($this->diseaseOrigin, $this->filtersType['diseaseOrigin'])
+        ->inYears($this->years, $this->filtersType['years'])
+        ->inCodCie($this->cie10, $this->filtersType['cie10'])
+        ->betweenDate($this->dateRange)
+        //->where($column, '<>', '')
+        ->groupBy('motive_close')
+        ->orderBy('count');
+
+        if ($this->nextFollowDays)
+            $data->inNextFollowDays($this->nextFollowDays, $this->filtersType['nextFollowDays']);
+
+        if ($this->sveAssociateds)
+            $data->inSveAssociateds($this->sveAssociateds, $this->filtersType['sveAssociateds']);
+
+        if ($this->medicalCertificates)
+            $data->inMedicalCertificates($this->medicalCertificates, $this->filtersType['medicalCertificates']);
+
+        if ($this->relocatedTypes)
+            $data->inRelocatedTypes($this->relocatedTypes, $this->filtersType['relocatedTypes']);
+
+        $data = $data->pluck('count', 'motive_close');
 
         return $this->buildTableChartData($data);
     }

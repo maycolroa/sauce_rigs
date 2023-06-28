@@ -86,6 +86,25 @@
                         </b-row>
                         <b-row>
                             <b-col>
+                                <b-card border-variant="primary" title="Reportes por motivo de cierre"  class="mb-3 box-shadow-none">
+                                    <b-row align-h="end">
+                                        <b-col cols="2">
+                                            <b>Total reportes: {{ closed_motive_reports_pie.chart.datasets.count }} </b>
+                                        </b-col>
+                                    </b-row>
+                                    <b-row>
+                                        <b-col>
+                                            <chart-bar 
+                                                :chart-data="closed_motive_reports_pie.chart"
+                                                title="Reportes por motivo de cierre"
+                                                ref="closed_motive_reports_pie"/>
+                                        </b-col>
+                                    </b-row>
+                                </b-card>
+                            </b-col>
+                        </b-row>
+                        <b-row>
+                            <b-col>
                                 <b-card border-variant="primary" :title="`Reportes por ${keywordCheck('regional')}`" class="mb-3 box-shadow-none">
                                     <b-row align-h="end">
                                         <b-col cols="2">
@@ -496,6 +515,13 @@ export default {
             cases_per_cie_10_pie: {
                 labels: [],
                 datasets: []
+            },
+            closed_motive_reports_pie: {
+                table: [],
+                chart: {
+                    labels: [],
+                    datasets: []
+                }
             }
         }
     },
