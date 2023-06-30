@@ -3,11 +3,11 @@
 namespace App\Models\LegalAspects\Contracts;
 
 use Illuminate\Database\Eloquent\Model;
-use App\Traits\CompanyTrait;
+//use App\Traits\CompanyTrait;
 
 class ActivityContract extends Model
 {
-    use CompanyTrait;
+    //use CompanyTrait;
 
     protected $table = 'sau_ct_activities';
     
