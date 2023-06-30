@@ -99,6 +99,10 @@
                         
                                   <b-form-row>
                                     <vue-input :disabled="viewOnly" class="col-md-6" v-model="file.name" label="Nombre" type="text" name="name"  placeholder="Nombre" :error="form.errorsFor(`activities.${index}.documents.${indexDocument}.files.${indexFile}.name`)"/>
+                                    <vue-radio :disabled="viewOnly" class="col-md-6" v-model="file.required_expiration_date" :options="siNo" :name="`siNo${indexDocument}${indexFile}`" label="Elige la opciòn correcta" :checked="file.required_expiration_date">
+                                    </vue-radio>
+                                  </b-form-row>
+                                  <b-form-row  v-if="file.required_expiration_date == 'SI'">
                                     <vue-datepicker :disabled="viewOnly" class="col-md-6" v-model="file.expirationDate" label="Fecha de vencimiento" :full-month-name="true" placeholder="Seleccione la fecha de vencimiento"  name="expirationDate" :disabled-dates="disabledDates"/>
                                   </b-form-row>
 
@@ -139,6 +143,7 @@ import VueFileSimple from "@/components/Inputs/VueFileSimple.vue";
 import Form from "@/utils/Form.js";
 import PerfectScrollbar from '@/vendor/libs/perfect-scrollbar/PerfectScrollbar';
 import GlobalMethods from '@/utils/GlobalMethods.js';
+import VueRadio from "@/components/Inputs/VueRadio.vue";
 import Alerts from '@/utils/Alerts.js';
 
 export default {
@@ -147,7 +152,8 @@ export default {
     VueAjaxAdvancedSelect,
     VueInput,
     VueDatepicker,
-    PerfectScrollbar
+    PerfectScrollbar,
+    VueRadio
   },
   props: {
     url: { type: String },
@@ -184,7 +190,11 @@ export default {
       form: Form.makeFrom(this.employee, this.method),
       disabledDates: {
         to: new Date()
-      }
+      },
+      siNo: [
+        {text: 'SI', value: 'SI'},
+        {text: 'NO', value: 'NO'}
+      ],
     };
   },
   methods: {

@@ -334,7 +334,7 @@ class ContractEmployeeController extends Controller
                         }
 
                         $fileUpload->name = $file['name'];
-                        $fileUpload->expirationDate = $file['expirationDate'] == null ? null : (Carbon::createFromFormat('D M d Y', $file['expirationDate']))->format('Ymd');
+                        $fileUpload->expirationDate = $file['required_expiration_date'] == 'SI' ? ($file['expirationDate'] == null ? null : (Carbon::createFromFormat('D M d Y', $file['expirationDate']))->format('Ymd')) : null;
 
                         if (!$fileUpload->save())
                             return $this->respondHttp500();
@@ -403,8 +403,16 @@ class ContractEmployeeController extends Controller
                         
                         $fileUpload = FileUpload::findOrFail($documents[$file['key']]);
 
-                        if ($fileUpload->state == 'ACEPTADO')
-                            $count_aprobe++;
+                        if ($fileUpload->expirationDate && $fileUpload->expirationDate > date('Y-m-d'))
+                        {
+                            if ($fileUpload->state == 'ACEPTADO')
+                                $count_aprobe++;
+                        }
+                        else if (!$fileUpload->expirationDate)
+                        {
+                            if ($fileUpload->state == 'ACEPTADO')
+                                $count_aprobe++;
+                        }
                     }
 
                     if ($count_aprobe == COUNT($document['files']))
@@ -415,6 +423,7 @@ class ContractEmployeeController extends Controller
             if ($documents_counts > $count)
                 return false;
         }
+
 
         return true;
     }
@@ -542,6 +551,7 @@ class ContractEmployeeController extends Controller
                         $file->key = Carbon::now()->timestamp + rand(1,10000);
                         $file->old_name = $file->file;
                         $file->expirationDate = $file->expirationDate == null ? null : (Carbon::createFromFormat('Y-m-d',$file->expirationDate))->format('D M d Y');
+                        $file->required_expiration_date = $file->expirationDate == null ? 'NO' : 'SI';
                         $file->state = $file->state;
                         $file->reason_rejection = $file->reason_rejection;
 

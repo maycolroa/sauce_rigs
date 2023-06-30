@@ -115,6 +115,7 @@ class UpdateEmployeeContratFilesExpired extends Command
                 )
                 ->join('sau_ct_file_upload_contract','sau_ct_file_upload_contract.file_upload_id','sau_ct_file_upload_contracts_leesse.id')
                 ->join('sau_ct_file_document_employee', 'sau_ct_file_document_employee.file_id', 'sau_ct_file_upload_contracts_leesse.id')
+                ->whereNotNull('sau_ct_file_upload_contracts_leesse.expirationDate')
                 ->where('sau_ct_file_upload_contract.contract_id', $contract)
                 ->where('sau_ct_file_document_employee.document_id', $document->id)
                 ->where('sau_ct_file_document_employee.employee_id', $employee_id)

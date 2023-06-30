@@ -337,8 +337,16 @@ class FileUploadController extends Controller
                     {
                         $fileUpload = FileUpload::findOrFail($file['id']);
 
-                        if ($fileUpload->state == 'ACEPTADO')
-                            $count_aprobe++;
+                        if ($fileUpload->expirationDate && $fileUpload->expirationDate > date('Y-m-d'))
+                        {
+                            if ($fileUpload->state == 'ACEPTADO')
+                                $count_aprobe++;
+                        }
+                        else if (!$fileUpload->expirationDate)
+                        {
+                            if ($fileUpload->state == 'ACEPTADO')
+                                $count_aprobe++;
+                        }
                     }
 
                     if ($count_aprobe == COUNT($document['files']))
