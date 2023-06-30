@@ -43,6 +43,7 @@ class Kernel extends ConsoleKernel
         'App\Console\Commands\ReportGroupCompany',
         'App\Console\Commands\NewsletterInformationCalculate',
         'App\Console\Commands\SendNewsletterEmail',
+        'App\Console\Commands\UpdateEmployeeContratFilesExpired',
         //'App\Console\Commands\RememberRepeatInspetion'
     ];
 
@@ -185,6 +186,10 @@ class Kernel extends ConsoleKernel
         $schedule->command('license-report-send')
             ->timezone('America/Bogota')
             ->cron('0 8 1 1-12/1 *');
+
+        $schedule->command('update-employee-contrat-files-expired')
+            ->timezone('America/Bogota')
+            ->dailyAt('01:45');
     }
 
     /**
