@@ -75,7 +75,7 @@ class DangerMatrixController extends Controller
     {
         $dangersMatrix = DangerMatrix::selectRaw("
             sau_dangers_matrix.*,
-            DATE_FORMAT(sau_dangers_matrix.created_at, '%Y-%m-%d') as date,
+            DATE_FORMAT(sau_dangers_matrix.updated_at, '%Y-%m-%d') as date,
             sau_employees_regionals.name as regional,
             sau_employees_headquarters.name as headquarter,
             sau_employees_areas.name as area,
@@ -145,6 +145,7 @@ class DangerMatrixController extends Controller
 
             foreach ($dangerMatrix->activities as $keyActivity => $itemActivity)
             {   
+                $itemActivity->id = $itemActivity->id;
                 $itemActivity->key = Carbon::now()->timestamp + rand(1,10000);
                 $itemActivity->dangersRemoved = [];
                 $itemActivity->multiselect_activity = $itemActivity->activity->multiselect();
@@ -475,10 +476,10 @@ class DangerMatrixController extends Controller
                 $msg = 'Se creo la matriz de peligro';
                 $dangerMatrix = new DangerMatrix();
                 $dangerMatrix->company_id = $this->company;
-                $dangerMatrix->user_id = $this->user->id;
             }
 
             $dangerMatrix->name = $request->get('name');
+            $dangerMatrix->user_id = $this->user->id;
 
             $approved = $request->get('approved');
 
@@ -778,6 +779,11 @@ class DangerMatrixController extends Controller
             return $this->respondHttp500();
             //return $e->getMessage();
         }
+
+
+        return $this->respondHttp200([
+            'data' => $this->show($dangerMatrix->id)
+        ]);
 
         return $this->respondHttp200([
             'message' => $msg

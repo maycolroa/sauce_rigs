@@ -287,7 +287,7 @@ export default {
       this.loading = true;
       this.form.add_fields = this.fields;
       this.form.historial = redirect;
-      console.log(redirect)
+
       this.form
         .submit(this.url)
         .then(response => {
@@ -297,7 +297,7 @@ export default {
             this.$router.push({ name: "industrialsecure-dangermatrix" });
           else
           {
-            _.forIn(response.data.data, (value, key) => {
+            _.forIn(response.data.data.original.data, (value, key) => {
               this.form[key] = value
             })
 
@@ -327,9 +327,10 @@ export default {
       })
     },
     removeActivity(index) {
-      if (this.dangerMatrix.activities[index].id != '')
-        this.form.activitiesRemoved.push(this.dangerMatrix.activities[index])
-      this.dangerMatrix.activities.splice(index, 1)
+      
+      if (this.form.activities[index].id != '')
+        this.form.activitiesRemoved.push(this.form.activities[index])
+      this.form.activities.splice(index, 1)
     },
     updateActivityNameTab(values, index) {
       this.form.activities[index].activity.name = values
