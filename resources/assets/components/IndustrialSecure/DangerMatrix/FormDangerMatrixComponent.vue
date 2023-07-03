@@ -298,7 +298,8 @@ export default {
           else
           {
             _.forIn(response.data.data.original.data, (value, key) => {
-              if (key === 'participants')
+              
+              if (key == 'participants')
               {
                 let arrayNombres = value.split(",");
                 part = [];
@@ -311,6 +312,7 @@ export default {
 
                 value = part;
               }
+
               this.form[key] = value
             })
 
