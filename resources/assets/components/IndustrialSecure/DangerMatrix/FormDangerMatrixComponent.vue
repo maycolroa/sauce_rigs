@@ -298,6 +298,19 @@ export default {
           else
           {
             _.forIn(response.data.data.original.data, (value, key) => {
+              if (key === 'participants')
+              {
+                let arrayNombres = value.split(",");
+                part = [];
+                
+                _.forIn(arrayNombres, (value2) => {
+                  part.push(
+                    {name: value2, value: value2}
+                  )
+                })
+
+                value = part;
+              }
               this.form[key] = value
             })
 
