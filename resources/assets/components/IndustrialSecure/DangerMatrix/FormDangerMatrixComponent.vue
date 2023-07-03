@@ -279,7 +279,8 @@ export default {
           {name: 'Medidas de intervencion - Señalización y advertencia', value: 1},
           {name: 'Medidas de intervencion - Controles Administrativos', value: 1},
           {name: 'Medidas de intervencion - Epp', value: 1}
-      ]
+      ],
+      part: []
     }
   },
   methods: {
@@ -298,22 +299,21 @@ export default {
           else
           {
             _.forIn(response.data.data.original.data, (value, key) => {
-              
+                this.form[key] = value
+            })
+
+            _.forIn(response.data.data.original.data, (value, key) => {
               if (key == 'participants')
               {
-                let arrayNombres = value.split(",");
-                part = [];
-                
-                _.forIn(arrayNombres, (value2) => {
-                  part.push(
-                    {name: value2, value: value2}
-                  )
+                let arrayP = value.split(',');
+
+                _.forIn(arrayP, (value2) => {
+                  this.part.push({
+                    name: value2, value: value2
+                  })
                 })
-
-                value = part;
               }
-
-              this.form[key] = value
+                this.form.participants = this.part
             })
 
             this.clearAllErrors();
