@@ -324,6 +324,7 @@ class DangerMatrixController extends Controller
      */
     private function rulesDangerMatrix($request, $dangerMatrix = null)
     {
+        \Log::info($request);
         foreach ($request->activities as $key => $value)
         {
             $data['activities'][$key] = json_decode($value, true);
