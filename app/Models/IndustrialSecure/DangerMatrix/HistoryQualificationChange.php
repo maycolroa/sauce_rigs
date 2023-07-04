@@ -157,4 +157,18 @@ class HistoryQualificationChange extends Model
 
         return $query;
     }
+
+    public function scopeInYears($query, $year, $typeSearch = 'IN')
+    {
+        if (COUNT($year) > 0)
+        {
+            if ($typeSearch == 'IN')
+                $query->whereIn('sau_dangers_matrix.year', $year);
+
+            else if ($typeSearch == 'NOT IN')
+                $query->whereNotIn('sau_dangers_matrix.year', $year);
+        }
+
+        return $query;
+    }
 }
