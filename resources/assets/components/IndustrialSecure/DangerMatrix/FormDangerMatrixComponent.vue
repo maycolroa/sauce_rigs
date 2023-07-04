@@ -14,6 +14,7 @@
       <b-form-row>
         <vue-radio v-if="auth.can['dangerMatrix_approved_matrix']" :disabled="viewOnly" :checked="form.approved" class="col-md-6" v-model="form.approved" :options="siNo" name="approved" :error="form.errorsFor('approved')" label="¿Aprobar mátriz?">
           </vue-radio>
+        <vue-input :disabled="viewOnly" class="col-md-6" v-model="form.year" label="Año" type="text" name="year" :error="form.errorsFor('year')" placeholder="Año"></vue-input>
       </b-form-row>
       
       <b-form-row>

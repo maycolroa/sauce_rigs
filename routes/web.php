@@ -268,6 +268,7 @@ Route::middleware(['auth'])->group(function () {
         Route::post('tagsRmCategories', 'IndustrialSecure\RiskMatrix\Tags\CategoryRiskController@multiselect');
         Route::post('tagsRmRiskCausesControls', 'IndustrialSecure\RiskMatrix\Tags\CauseControlsController@multiselect');
         Route::post('tagsDangerDescription', 'IndustrialSecure\Tags\TagController@multiselectDangerDescription');
+        Route::post('yearDangerMatrix', 'IndustrialSecure\DangerMatrix\DangerMatrixController@multiselectYear');
         Route::post('tagsRoles', 'IndustrialSecure\AccidentsWork\AccidentsWorkController@multiselectRolesParticipants');
         Route::post('actionPlanStates/{all?}', 'General\MultiSelectRadioController@actionPlanStates');
         Route::post('actionPlanModules', 'Administrative\ActionPlans\ActionPlanController@actionPlanModules');

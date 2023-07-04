@@ -65,6 +65,8 @@ class DangerMatrixReportController extends Controller
             $data = $matriz_calification;
 
             /** FIltros */
+            $years = !$init ? $this->getValuesForMultiselect($request->years) : (isset($filters['years']) ? $this->getValuesForMultiselect($filters['years']) : []);
+
             $regionals = !$init ? $this->getValuesForMultiselect($request->regionals) : (isset($filters['regionals']) ? $this->getValuesForMultiselect($filters['regionals']) : []);
             
             $headquarters = !$init ? $this->getValuesForMultiselect($request->headquarters) : (isset($filters['headquarters']) ? $this->getValuesForMultiselect($filters['headquarters']) : []);
@@ -88,6 +90,7 @@ class DangerMatrixReportController extends Controller
                 ->inHeadquarters($headquarters, isset($filtersType['headquarters']) ? $filtersType['headquarters'] : 'IN')
                 ->inAreas($areas, isset($filtersType['areas']) ? $filtersType['areas'] : 'IN')
                 ->inProcesses($processes, isset($filtersType['processes']) ? $filtersType['processes'] : 'IN')
+                ->inYears($years, isset($filtersType['years']) ? $filtersType['years'] : 'IN')
                 ->inMacroprocesses($macroprocesses, isset($filtersType['macroprocesses']) ? $filtersType['macroprocesses'] : 'IN')
                 //->inMatrix($matrix, $filtersType['matrix'])
                 ->get();

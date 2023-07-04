@@ -324,7 +324,6 @@ class DangerMatrixController extends Controller
      */
     private function rulesDangerMatrix($request, $dangerMatrix = null)
     {
-        \Log::info($request);
         foreach ($request->activities as $key => $value)
         {
             $data['activities'][$key] = json_decode($value, true);
@@ -381,6 +380,7 @@ class DangerMatrixController extends Controller
         $rules = [
             'name' => 'nullable|string|unique:sau_dangers_matrix,name,'.$id.',id,company_id,'.$this->company,
             'approved' => 'nullable',
+            'year' => 'nullable',
             'participants' => 'nullable|array',
             'activities' => 'required|array',
             'activities.*.activity_id' => 'required|exists:sau_dm_activities,id',
@@ -480,6 +480,7 @@ class DangerMatrixController extends Controller
             }
 
             $dangerMatrix->name = $request->get('name');
+            $dangerMatrix->year = $request->get('year');
             $dangerMatrix->user_id = $this->user->id;
 
             $approved = $request->get('approved');
@@ -822,6 +823,15 @@ class DangerMatrixController extends Controller
         
             return $this->multiSelectFormat($danger_matrix);
         }
+    }
+
+    public function multiselectYear(Request $request)
+    {
+        $danger_matrix = DangerMatrix::selectRaw("
+                sau_dangers_matrix.year as id
+            ")->pluck('id', 'id');
+        
+        return $this->multiSelectFormat($danger_matrix);
     }
 
     public function download(DangerMatrix $dangersMatrix)

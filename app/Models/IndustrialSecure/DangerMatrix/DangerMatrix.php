@@ -19,7 +19,8 @@ class DangerMatrix extends Model
         'employee_headquarter_id',
         'employee_area_id',
         'employee_process_id',
-        'participants'
+        'participants',
+        'year'
     ];
      
     public function activities()
@@ -234,6 +235,20 @@ class DangerMatrix extends Model
 
             else if ($typeSearch == 'NOT IN')
                 $query->where('sau_dm_activity_danger.danger_description', 'NOT REGEXP', $regexp);
+        }
+
+        return $query;
+    }
+
+    public function scopeInYears($query, $year, $typeSearch = 'IN')
+    {
+        if (COUNT($year) > 0)
+        {
+            if ($typeSearch == 'IN')
+                $query->whereIn('sau_dangers_matrix.year', $year);
+
+            else if ($typeSearch == 'NOT IN')
+                $query->whereNotIn('sau_dangers_matrix.year', $year);
         }
 
         return $query;

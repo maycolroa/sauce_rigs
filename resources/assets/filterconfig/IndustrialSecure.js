@@ -43,6 +43,12 @@ export default [
           key: 'dangerDescription',
           type: 'select',
           label: 'Descripción del peligro'
+        },
+        {
+          url: '/selects/yearDangerMatrix',
+          key: 'years',
+          type: 'select',
+          label: 'Año'
         }
       ]
     },
