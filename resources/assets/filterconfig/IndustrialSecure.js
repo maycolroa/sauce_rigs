@@ -687,6 +687,12 @@ export default [
           key: 'activities',
           type: 'select',
           label: 'Actividades'
+        },
+        {
+          url: '/selects/yearDangerMatrix',
+          key: 'years',
+          type: 'select',
+          label: 'Año'
         }
       ]
     },

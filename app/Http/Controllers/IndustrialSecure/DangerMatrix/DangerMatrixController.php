@@ -929,10 +929,13 @@ class DangerMatrixController extends Controller
         $processes = [];
         $dangers = [];
         $activities = [];
+        $years = [];
 
         if (COUNT($filters) > 0)
         {
             /** FIltros */
+            $years = isset($filters['years']) ? $this->getValuesForMultiselect($filters['years']) : [];
+
             $regionals = isset($filters['regionals']) ? $this->getValuesForMultiselect($filters['regionals']) : [];
             
             $headquarters = isset($filters['headquarters']) ? $this->getValuesForMultiselect($filters['headquarters']) : [];
@@ -951,6 +954,7 @@ class DangerMatrixController extends Controller
             'sau_dm_dangers.name as danger',
             'sau_users.name as user',
             'sau_dangers_matrix.name as matriz',
+            'sau_dangers_matrix.year as year',
             DB::raw("JSON_UNQUOTE(json_extract(sau_dm_history_qualification_change.qualification_old, '$[1].value')) as nr_persona_old"),
             DB::raw("JSON_UNQUOTE(json_extract(sau_dm_history_qualification_change.qualification_old, '$[5].value')) as qualification_old2"),
             //DB::raw("JSON_UNQUOTE(json_extract(sau_dm_history_qualification_change.qualification_old, '$[6].value')) as observation_old2"),
@@ -970,7 +974,8 @@ class DangerMatrixController extends Controller
         ->inAreas($areas, isset($filters['filtersType']['areas']) ? $filters['filtersType']['areas'] : 'IN')
         ->inProcesses($processes, isset($filters['filtersType']['processes']) ? $filters['filtersType']['processes'] : 'IN')
         ->inDangers($dangers, isset($filters['filtersType']['dangers']) ? $filters['filtersType']['dangers'] : 'IN')
-        ->inActivities($activities, isset($filters['filtersType']['activities']) ? $filters['filtersType']['activities'] : 'IN');
+        ->inActivities($activities, isset($filters['filtersType']['activities']) ? $filters['filtersType']['activities'] : 'IN')
+        ->inYears($years, isset($filters['filtersType']['years']) ? $filtersType['filtersType']['years'] : 'IN');
 
         return Vuetable::of($histories)
                     ->make();
