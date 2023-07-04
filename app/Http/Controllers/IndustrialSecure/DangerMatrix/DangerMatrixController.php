@@ -975,7 +975,7 @@ class DangerMatrixController extends Controller
         ->inProcesses($processes, isset($filters['filtersType']['processes']) ? $filters['filtersType']['processes'] : 'IN')
         ->inDangers($dangers, isset($filters['filtersType']['dangers']) ? $filters['filtersType']['dangers'] : 'IN')
         ->inActivities($activities, isset($filters['filtersType']['activities']) ? $filters['filtersType']['activities'] : 'IN')
-        ->inYears($years, isset($filters['filtersType']['years']) ? $filtersType['filtersType']['years'] : 'IN');
+        ->inYears($years, isset($filters['filtersType']['years']) ? $filters['filtersType']['years'] : 'IN');
 
         return Vuetable::of($histories)
                     ->make();
