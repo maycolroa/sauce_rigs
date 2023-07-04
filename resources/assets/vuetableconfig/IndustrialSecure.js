@@ -1856,6 +1856,7 @@ export default [
         { name: 'sau_dm_history_qualification_change.id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true },
         { name: 'sau_dangers_matrix.name', data: 'matriz', title: 'Matriz', sortable: true, searchable: true, detail: false, key: false },
         { name: 'fecha', data: 'fecha', title: 'Fecha', sortable: true, searchable: true, detail: false, key: false },
+        { name: 'year', data: 'year', title: 'Año', sortable: true, searchable: true, detail: false, key: false },
         { name: 'sau_users.name', data: 'user', title: 'Usuario', sortable: true, searchable: true, detail: false, key: false },
         { name: 'sau_dm_activities.name', data: 'activity', title: 'Actividad', sortable: true, searchable: true, detail: false, key: false },
         { name: 'sau_dm_dangers.name', data: 'danger', title: 'Peligro', sortable: true, searchable: true, detail: false, key: false },
