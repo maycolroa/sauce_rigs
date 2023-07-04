@@ -30,7 +30,7 @@
                                 <thead>
                                     <tr>
                                         <th v-if="showLabelCol"> </th>
-                                        <th v-for="(header, index) in headers" :key="index" class="text-center align-middle">
+                                        <th v-for="(header, index) in headers" :key="index" class="text-center align-middle" style="white-space: normal">
                                             {{ header }}
                                         </th>
                                     </tr>
