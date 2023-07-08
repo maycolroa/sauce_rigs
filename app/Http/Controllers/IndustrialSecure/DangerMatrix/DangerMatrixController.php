@@ -997,18 +997,19 @@ class DangerMatrixController extends Controller
         ->where('sau_dm_activity_danger.generating_source', 'like', "%$request->keyword%");
 
 
-        $possible_consequences_danger = DangerMatrix::selectRaw("
+        $existing_controls_engineering_controls = DangerMatrix::selectRaw("
             sau_dm_activities.name as activity, 
             sau_dm_dangers.name as danger, 
-            'Posibles consecuencias del peligro' campo,  
-            sau_dm_activity_danger.possible_consequences_danger as value
+            'Controles de ingenieria' campo,  
+            sau_dm_activity_danger.existing_controls_engineering_controls as value
         ")
         ->join('sau_danger_matrix_activity', 'sau_danger_matrix_activity.danger_matrix_id', 'sau_dangers_matrix.id')
         ->join('sau_dm_activity_danger', 'sau_dm_activity_danger.dm_activity_id', 'sau_danger_matrix_activity.id')
         ->join('sau_dm_dangers', 'sau_dm_dangers.id', 'sau_dm_activity_danger.danger_id')
         ->join('sau_dm_activities', 'sau_dm_activities.id', 'sau_danger_matrix_activity.activity_id')
         ->where('sau_dangers_matrix.id', $request->danger_matrix)
-        ->where('sau_dm_activity_danger.possible_consequences_danger', 'like', "%$request->keyword%");
+        ->where('sau_dm_activity_danger.existing_controls_engineering_controls', 'like', "%$request->keyword%");
+
 
         $existing_controls_administrative_controls = DangerMatrix::selectRaw("
             sau_dm_activities.name as activity, 
@@ -1023,8 +1024,52 @@ class DangerMatrixController extends Controller
         ->where('sau_dangers_matrix.id', $request->danger_matrix)
         ->where('sau_dm_activity_danger.existing_controls_administrative_controls', 'like', "%$request->keyword%");
 
-        $generating_source->union($possible_consequences_danger);
+
+        $existing_controls_substitution = DangerMatrix::selectRaw("
+            sau_dm_activities.name as activity, 
+            sau_dm_dangers.name as danger, 
+            'Controles Sustitución' campo,  
+            sau_dm_activity_danger.existing_controls_substitution as value
+        ")
+        ->join('sau_danger_matrix_activity', 'sau_danger_matrix_activity.danger_matrix_id', 'sau_dangers_matrix.id')
+        ->join('sau_dm_activity_danger', 'sau_dm_activity_danger.dm_activity_id', 'sau_danger_matrix_activity.id')
+        ->join('sau_dm_dangers', 'sau_dm_dangers.id', 'sau_dm_activity_danger.danger_id')
+        ->join('sau_dm_activities', 'sau_dm_activities.id', 'sau_danger_matrix_activity.activity_id')
+        ->where('sau_dangers_matrix.id', $request->danger_matrix)
+        ->where('sau_dm_activity_danger.existing_controls_substitution', 'like', "%$request->keyword%");
+
+        $existing_controls_epp = DangerMatrix::selectRaw("
+            sau_dm_activities.name as activity, 
+            sau_dm_dangers.name as danger, 
+            'Controles EPP' campo,  
+            sau_dm_activity_danger.existing_controls_epp as value
+        ")
+        ->join('sau_danger_matrix_activity', 'sau_danger_matrix_activity.danger_matrix_id', 'sau_dangers_matrix.id')
+        ->join('sau_dm_activity_danger', 'sau_dm_activity_danger.dm_activity_id', 'sau_danger_matrix_activity.id')
+        ->join('sau_dm_dangers', 'sau_dm_dangers.id', 'sau_dm_activity_danger.danger_id')
+        ->join('sau_dm_activities', 'sau_dm_activities.id', 'sau_danger_matrix_activity.activity_id')
+        ->where('sau_dangers_matrix.id', $request->danger_matrix)
+        ->where('sau_dm_activity_danger.existing_controls_epp', 'like', "%$request->keyword%");
+        
+        $existing_controls_warning_signage = DangerMatrix::selectRaw("
+            sau_dm_activities.name as activity, 
+            sau_dm_dangers.name as danger, 
+            'Controles Señalización, Advertencia' campo,  
+            sau_dm_activity_danger.existing_controls_warning_signage as value
+        ")
+        ->join('sau_danger_matrix_activity', 'sau_danger_matrix_activity.danger_matrix_id', 'sau_dangers_matrix.id')
+        ->join('sau_dm_activity_danger', 'sau_dm_activity_danger.dm_activity_id', 'sau_danger_matrix_activity.id')
+        ->join('sau_dm_dangers', 'sau_dm_dangers.id', 'sau_dm_activity_danger.danger_id')
+        ->join('sau_dm_activities', 'sau_dm_activities.id', 'sau_danger_matrix_activity.activity_id')
+        ->where('sau_dangers_matrix.id', $request->danger_matrix)
+        ->where('sau_dm_activity_danger.existing_controls_warning_signage', 'like', "%$request->keyword%");
+
+
+        $generating_source->union($existing_controls_engineering_controls);
         $generating_source->union($existing_controls_administrative_controls);
+        $generating_source->union($existing_controls_substitution);
+        $generating_source->union($existing_controls_epp);
+        $generating_source->union($existing_controls_warning_signage);
 
         return Vuetable::of($generating_source)
                     ->make();

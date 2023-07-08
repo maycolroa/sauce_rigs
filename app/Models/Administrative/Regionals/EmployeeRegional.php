@@ -32,6 +32,11 @@ class EmployeeRegional extends Model
         return $this->hasMany('App\Models\IndustrialSecure\DangerMatrix\DangerMatrix', 'employee_regional_id');
     }
 
+    public function reports()
+    {
+        return $this->hasMany('App\Models\PreventiveOccupationalMedicine\Reinstatements\Check', 'relocated_regional_id');
+    }
+
     public function multiselect()
     {
         return [

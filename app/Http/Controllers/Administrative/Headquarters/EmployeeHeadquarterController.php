@@ -124,7 +124,7 @@ class EmployeeHeadquarterController extends Controller
      */
     public function destroy(EmployeeHeadquarter $headquarter)
     {
-        if (count($headquarter->employees) > 0 || count($headquarter->processes) > 0 || count($headquarter->dangerMatrices) > 0)
+        if (count($headquarter->employees) > 0 || count($headquarter->processes) > 0 || count($headquarter->dangerMatrices) > 0 || count($headquarter->reports) > 0)
         {
             return $this->respondWithError('No se puede eliminar el registro porque hay otros registros asociados a el');
         }

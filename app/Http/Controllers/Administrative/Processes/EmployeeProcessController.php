@@ -248,7 +248,7 @@ class EmployeeProcessController extends Controller
      */
     public function destroy(EmployeeProcess $process)
     {
-        if (count($process->employees) > 0 || count($process->areas) > 0 || count($process->dangerMatrices) > 0)
+        if (count($process->employees) > 0 || count($process->areas) > 0 || count($process->dangerMatrices) > 0 || count($process->reports) > 0)
         {
             return $this->respondWithError('No se puede eliminar el registro porque hay otros registros asociados a el');
         }

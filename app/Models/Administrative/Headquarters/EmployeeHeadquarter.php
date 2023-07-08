@@ -40,6 +40,11 @@ class EmployeeHeadquarter extends Model
         return $this->hasMany('App\Models\IndustrialSecure\DangerMatrix\DangerMatrix', 'employee_headquarter_id');
     }
 
+    public function reports()
+    {
+        return $this->hasMany('App\Models\PreventiveOccupationalMedicine\Reinstatements\Check', 'relocated_headquarter_id');
+    }
+
     public function multiselect()
     {
         return [

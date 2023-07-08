@@ -142,7 +142,7 @@ export default [
         data: {
           action: '/administration/position/',
           id: 'id',
-          messageConfirmation: 'Esta seguro de borrar el registro __name__'
+          messageConfirmation: 'Esta seguro de borrar el registro __name__, al borrarlo Sauce eliminara toda la información relacionada con el mismo tal como: empleados, reportes, entre otros'
         },
         permission: 'positions_d'
       }],
@@ -194,7 +194,7 @@ export default [
         data: {
           action: '/administration/regional/',
           id: 'id',
-          messageConfirmation: 'Esta seguro de borrar el registro __name__'
+          messageConfirmation: 'Esta seguro de borrar el registro __name__, al borrarlo Sauce eliminara toda la información relacionada con el mismo tal como: empleados, reportes, inspecciones, matrices de peligros, entre otros'
         },
         permission: 'regionals_d'
       }],
@@ -246,7 +246,7 @@ export default [
         data: {
           action: '/administration/business/',
           id: 'id',
-          messageConfirmation: 'Esta seguro de borrar el registro __name__'
+          messageConfirmation: 'Esta seguro de borrar el registro __name__, al borrarlo Sauce eliminara toda la información relacionada con el mismo tal como: empleados, entre otros'
         },
         permission: 'businesses_d'
       }],
@@ -299,7 +299,7 @@ export default [
         data: {
           action: '/administration/headquarter/',
           id: 'id',
-          messageConfirmation: 'Esta seguro de borrar el registro __name__'
+          messageConfirmation: 'Esta seguro de borrar el registro __name__, al borrarlo Sauce eliminara toda la información relacionada con el mismo tal como: empleados, reportes, inspecciones, matrices de peligros, entre otros'
         },
         permission: 'headquarters_d'
       }],
@@ -354,7 +354,7 @@ export default [
         data: {
           action: '/administration/area/',
           id: 'id',
-          messageConfirmation: 'Esta seguro de borrar el registro __name__'
+          messageConfirmation: 'Esta seguro de borrar el registro __name__, al borrarlo Sauce eliminara toda la información relacionada con el mismo tal como: empleados, reportes, inspecciones, matrices de peligros, entre otros'
         },
         permission: 'areas_d'
       }],
@@ -408,7 +408,7 @@ export default [
         data: {
           action: '/administration/process/',
           id: 'id',
-          messageConfirmation: 'Esta seguro de borrar el registro __name__'
+          messageConfirmation: 'Esta seguro de borrar el registro __name__, al borrarlo Sauce eliminara toda la información relacionada con el mismo tal como: empleados, reportes, inspecciones, matrices de peligros, entre otros'
         },
         permission: 'processes_d'
       }],

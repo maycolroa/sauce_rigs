@@ -26,6 +26,11 @@ class EmployeePosition extends Model
         return $this->belongsToMany('App\Models\IndustrialSecure\Epp\Element', 'sau_employee_position_epp_elements');
     }
 
+    public function reports()
+    {
+        return $this->hasMany('App\Models\PreventiveOccupationalMedicine\Reinstatements\Check', 'relocated_position_id');
+    }
+
     public function multiselect()
     {
         return [

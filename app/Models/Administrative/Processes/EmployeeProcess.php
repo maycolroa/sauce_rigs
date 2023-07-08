@@ -40,6 +40,11 @@ class EmployeeProcess extends Model
         return $this->hasMany('App\Models\IndustrialSecure\DangerMatrix\DangerMatrix', 'employee_process_id');
     }
 
+    public function reports()
+    {
+        return $this->hasMany('App\Models\PreventiveOccupationalMedicine\Reinstatements\Check', 'relocated_process_id');
+    }
+
     public function multiselect()
     {
         return [

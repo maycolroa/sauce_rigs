@@ -121,7 +121,7 @@ class EmployeeRegionalController extends Controller
      */
     public function destroy(EmployeeRegional $regional)
     {
-        if (count($regional->employees) > 0 || count($regional->headquarters) > 0 || count($regional->dangerMatrices) > 0)
+        if (count($regional->employees) > 0 || count($regional->headquarters) > 0 || count($regional->dangerMatrices) > 0 || count($regional->reports) > 0)
         {
             return $this->respondWithError('No se puede eliminar el registro porque hay otros registros asociados a el');
         }
