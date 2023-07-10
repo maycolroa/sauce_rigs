@@ -47,7 +47,7 @@
 
       <b-card v-if="isEdit || viewOnly" bg-variant="transparent" border-variant="dark" title="" class="mb-3 box-shadow-none">
         <b-form-row>
-          <vue-input :disabled="false" class="col-md-12" v-model="search_keyword" label="Buscar" type="text" name="name" :error="form.errorsFor('name')" placeholder="Nombre"></vue-input>
+          <vue-input :disabled="false" class="col-md-12" v-model="search_keyword" label="Buscar" type="text" name="name" :error="form.errorsFor('name')" placeholder="Nombre" help-text="Se buscara en los campos Fuente generadora y Controles existentes"></vue-input>
           <div class="float-center" style="padding-top: 20px;">
             <b-btn variant="primary" @click="searchkeywordShow('modalHistorial')">&nbsp;&nbsp;Buscar</b-btn>
           </div>
