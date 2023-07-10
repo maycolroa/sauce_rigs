@@ -136,6 +136,8 @@ class DangerMatrixReportHistoryController extends Controller
 
         $matriz = [];
 
+        $headers = [];
+
         if ($conf == 'Tipo 1')
         {       
             $headers = array_keys($data);
