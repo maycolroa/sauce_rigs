@@ -44,7 +44,7 @@
         @if ($check->indefinite_recommendations != "NO")
             <p>Las anteriores recomendaciones han sido emitidas por {{$check->origin_recommendations}} y son <b>indefinidas</b>.</p>
         @else
-            <p>Las anteriores recomendaciones han sido emitidas por {{$check->origin_recommendations}} y son de <b>carácter temporal</b> por {{$check->time_different}} días a partir del {{$check->start_recommendations}} hasta el {{$check->end_recommendations}} fecha de reintegro.</p>
+            <p>Las anteriores recomendaciones han sido emitidas por {{$check->origin_recommendations}} y son de <b>carácter temporal</b> por {{$check->time_different}} días a partir del {{$check->start_recommendations}} hasta el {{$check->end_recommendations}}.</p>
         @endif
         
     @endif
