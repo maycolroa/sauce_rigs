@@ -278,6 +278,7 @@ Route::middleware(['auth'])->group(function () {
         Route::post('ctContractClassifications', 'General\MultiSelectRadioController@ctContractClassifications'); 
         Route::post('ctkindsRisks', 'General\MultiSelectRadioController@ctkindsRisks'); 
         Route::post('siNo', 'General\MultiSelectRadioController@siNoSelect');
+        Route::post('siNoFiltro', 'General\ApplicationController@siNo');
         Route::post('companies', 'General\ApplicationController@multiselectCompanies');
         Route::post('companiesGroup', 'General\ApplicationController@multiselectCompaniesGroup');
         Route::post('reincYears', 'PreventiveOccupationalMedicine\Reinstatements\CheckController@multiselectYears');

@@ -44,10 +44,10 @@ class ReportHistory extends Model
         if (COUNT($regionals) > 0)
         {
             if ($typeSearch == 'IN')
-                $query->whereIn('sau_dm_report_histories.regional_id', $regionals);
+                $query->whereIn('sau_dm_report_histories.regional', $regionals);
 
             else if ($typeSearch == 'NOT IN')
-                $query->whereNotIn('sau_dm_report_histories.regional_id', $regionals);
+                $query->whereNotIn('sau_dm_report_histories.regional', $regionals);
         }
 
         return $query;
@@ -73,10 +73,10 @@ class ReportHistory extends Model
             $ids = explode(",", implode(",", $ids));
 
             if ($typeSearch == 'IN')
-                $query->whereIn('sau_dm_report_histories.headquarter_id', $ids);
+                $query->whereIn('sau_dm_report_histories.headquarter', $ids);
 
             else if ($typeSearch == 'NOT IN')
-                $query->whereNotIn('sau_dm_report_histories.headquarter_id', $ids);
+                $query->whereNotIn('sau_dm_report_histories.headquarter', $ids);
         }
 
         return $query;
@@ -93,10 +93,10 @@ class ReportHistory extends Model
         if (COUNT($areas) > 0)
         {
             if ($typeSearch == 'IN')
-                $query->whereIn('sau_dm_report_histories.area_id', $areas);
+                $query->whereIn('sau_dm_report_histories.area', $areas);
 
             else if ($typeSearch == 'NOT IN')
-                $query->whereNotIn('sau_dm_report_histories.area_id', $areas);
+                $query->whereNotIn('sau_dm_report_histories.area', $areas);
         }
 
         return $query;
@@ -113,10 +113,10 @@ class ReportHistory extends Model
         if (COUNT($processes) > 0)
         {
             if ($typeSearch == 'IN')
-                $query->whereIn('sau_dm_report_histories.process_id', $processes);
+                $query->whereIn('sau_dm_report_histories.process', $processes);
 
             else if ($typeSearch == 'NOT IN')
-                $query->whereNotIn('sau_dm_report_histories.process_id', $processes);
+                $query->whereNotIn('sau_dm_report_histories.process', $processes);
         }
 
         return $query;

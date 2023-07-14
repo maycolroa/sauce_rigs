@@ -58,9 +58,11 @@ class LicenseController extends Controller
             ->selectRaw(
                 'sau_licenses.*,
                     GROUP_CONCAT(" ", sau_modules.display_name ORDER BY sau_modules.display_name) AS modules,
-                    sau_companies.name AS company'
+                    sau_companies.name AS company,
+                    sau_company_groups.name AS group_company'
             )
             ->join('sau_companies', 'sau_companies.id', 'sau_licenses.company_id')
+            ->leftJoin('sau_company_groups', 'sau_company_groups.id', 'sau_companies.company_group_id')
             ->join('sau_license_module', 'sau_license_module.license_id', 'sau_licenses.id')
             ->join('sau_modules', 'sau_modules.id', 'sau_license_module.module_id')
             ->where('sau_modules.main', 'SI')
@@ -74,6 +76,13 @@ class LicenseController extends Controller
         {
             if (isset($filters["modules"]) && $filters["modules"])
                 $licenses->inModules($this->getValuesForMultiselect($filters["modules"]), $filters['filtersType']['modules']);
+
+            if (isset($filters["groups"]) && $filters["groups"])
+                $licenses->inGroups($this->getValuesForMultiselect($filters["groups"]), $filters['filtersType']['groups']);
+
+            if (isset($filters["freeze"]) && $filters["freeze"])
+                $licenses->inFreeze($this->getValuesForMultiselect($filters["freeze"]), $filters['filtersType']['freeze']);
+                
                 
             $dates_request = explode('/', $filters["dateRange"]);
 

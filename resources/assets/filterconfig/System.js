@@ -40,6 +40,18 @@ export default [
           key: 'dateRange',
           type: 'dateRange',
           label: 'Fecha de inicio',
+        },
+        {
+          url: '/selects/companiesGroup',
+          key: 'groups',
+          type: 'select',
+          label: 'Grupo de Compañias'
+        },
+        {
+          url: '/selects/siNoFiltro',
+          key: 'freeze',
+          type: 'select',
+          label: 'Congeladas'
         }
       ]
     },

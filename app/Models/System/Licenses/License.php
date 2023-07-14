@@ -16,7 +16,9 @@ class License extends Model
         'ended_at',
         'company_id',
         'notified',
-        'user_id'
+        'user_id',
+        'freeze',
+        'available_days'
     ];
 
     public function company()
@@ -70,5 +72,33 @@ class License extends Model
             $query->whereBetween('sau_licenses.started_at', $dates);
             return $query;
         }
+    }
+
+    public function scopeInGroups($query, $modules, $typeSearch = 'IN')
+    {
+        if (COUNT($modules) > 0)
+        {
+            if ($typeSearch == 'IN')
+                $query->whereIn('sau_companies.company_group_id', $modules);
+
+            else if ($typeSearch == 'NOT IN')
+                $query->whereNotIn('sau_companies.company_group_id', $modules);
+        }
+
+        return $query;
+    }
+
+    public function scopeInFreeze($query, $options, $typeSearch = 'IN')
+    {
+        if (COUNT($options) > 0)
+        {
+            if ($typeSearch == 'IN')
+                $query->whereIn('sau_licenses.freeze', $options);
+
+            else if ($typeSearch == 'NOT IN')
+                $query->whereNotIn('sau_licenses.freeze', $options);
+        }
+
+        return $query;
     }
 }

@@ -397,6 +397,12 @@ class ApplicationController extends Controller
         }
     }
 
+    public function siNo()
+    {
+        $data = ["SI"=>"SI", "NO"=>"NO"];
+        return $this->multiSelectFormat(collect($data));
+    }
+
     public function userActivity(Request $request)
     {
         $activity = new LogUserActivity;

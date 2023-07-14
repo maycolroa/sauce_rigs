@@ -26,6 +26,10 @@
       </vue-advanced-select>
     </b-form-row>
 
+    <b-form-row>
+      <vue-checkbox-simple v-if="isEdit || viewOnly" style="padding-top: 30px;" :disabled="viewOnly" class="col-md-6" v-model="form.freeze" label="¿Congelar?" :checked="form.freeze" name="freeze" checked-value="SI" unchecked-value="NO"></vue-checkbox-simple>
+    </b-form-row>
+
     <b-form-row v-if="viewOnly">
       <div class="col-md-12">
         <h4 class="font-weight-bold mb-1">
@@ -55,13 +59,15 @@ import VueAdvancedSelect from "@/components/Inputs/VueAdvancedSelect.vue";
 import VueAdvancedSelectGroup from "@/components/Inputs/VueAdvancedSelectGroup.vue";
 import VueDatepicker from "@/components/Inputs/VueDatepicker.vue";
 import Form from "@/utils/Form.js";
+import VueCheckboxSimple from "@/components/Inputs/VueCheckboxSimple.vue";
 
 export default {
   components: {
     VueAjaxAdvancedSelect,
     VueAdvancedSelectGroup,
     VueAdvancedSelect,
-    VueDatepicker
+    VueDatepicker,
+    VueCheckboxSimple
   },
   props: {
     url: { type: String },
@@ -85,7 +91,9 @@ export default {
           company_id: '',
           module_id: '',
           add_email: [],
-          user_id: ''
+          user_id: '',
+          freeze: '',
+          available_days: ''
         };
       }
     }
