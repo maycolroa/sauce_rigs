@@ -66,7 +66,8 @@ class LicenseController extends Controller
             ->join('sau_license_module', 'sau_license_module.license_id', 'sau_licenses.id')
             ->join('sau_modules', 'sau_modules.id', 'sau_license_module.module_id')
             ->where('sau_modules.main', 'SI')
-            ->groupBy('sau_licenses.id');
+            ->groupBy('sau_licenses.id')
+            ->orderBy('sau_licenses.id', 'DESC');
 
         $url = "/system/licenses";
 
@@ -83,6 +84,54 @@ class LicenseController extends Controller
             if (isset($filters["freeze"]) && $filters["freeze"])
                 $licenses->inFreeze($this->getValuesForMultiselect($filters["freeze"]), $filters['filtersType']['freeze']);
                 
+                
+            $dates_request = explode('/', $filters["dateRange"]);
+
+            $dates = [];
+
+            if (COUNT($dates_request) == 2)
+            {
+                array_push($dates, $this->formatDateToSave($dates_request[0]));
+                array_push($dates, $this->formatDateToSave($dates_request[1]));
+            }
+                
+            $licenses->betweenDate($dates);
+        }
+
+        return Vuetable::of($licenses)
+                    ->make();
+    }
+
+    public function dataReasignacion(Request $request)
+    {
+        $licenses = License::system()
+            ->selectRaw(
+                'sau_licenses.*,
+                    GROUP_CONCAT(" ", sau_modules.display_name ORDER BY sau_modules.display_name) AS modules,
+                    sau_companies.name AS company,
+                    sau_company_groups.name AS group_company'
+            )
+            ->join('sau_companies', 'sau_companies.id', 'sau_licenses.company_id')
+            ->leftJoin('sau_company_groups', 'sau_company_groups.id', 'sau_companies.company_group_id')
+            ->join('sau_license_module', 'sau_license_module.license_id', 'sau_licenses.id')
+            ->join('sau_modules', 'sau_modules.id', 'sau_license_module.module_id')
+            ->where('sau_modules.main', 'SI')
+            ->where('sau_licenses.freeze', 'SI')
+            ->whereNull('sau_licenses.reassigned')
+            ->groupBy('sau_licenses.id')
+            ->orderBy('sau_licenses.id', 'DESC');
+
+        $url = "/system/licenses";
+
+        $filters = COUNT($request->get('filters')) > 0 ? $request->get('filters') : $this->filterDefaultValues($this->user->id, $url);
+
+        if (COUNT($filters) > 0)
+        {
+            if (isset($filters["modules"]) && $filters["modules"])
+                $licenses->inModules($this->getValuesForMultiselect($filters["modules"]), $filters['filtersType']['modules']);
+
+            if (isset($filters["groups"]) && $filters["groups"])
+                $licenses->inGroups($this->getValuesForMultiselect($filters["groups"]), $filters['filtersType']['groups']);                
                 
             $dates_request = explode('/', $filters["dateRange"]);
 
@@ -173,6 +222,85 @@ class LicenseController extends Controller
     }
 
     /**
+     * Store a newly created resource in storage.
+     *
+     * @param  App\Http\Requests\System\Licenses\LicenseRequest  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function saveReasignar(LicenseRequest $request)
+    {
+        \Log::info($request);
+        Validator::make($request->all(), [
+            'add_email' => Rule::requiredIf(function() use($request){
+
+                $company = Company::find($request->company_id);
+                $role = Role::defined()->where('name', 'Superadmin')->first();
+
+                $users = User::withoutGlobalScopes()->join('sau_company_user', 'sau_company_user.user_id', 'sau_users.id')
+                ->leftJoin('sau_role_user', function($q) use ($company) { 
+                    $q->on('sau_role_user.user_id', '=', 'sau_users.id')
+                    ->on('sau_role_user.team_id', '=', DB::raw($company->id));
+                })
+                ->where('sau_role_user.role_id', '<>', $role->id)
+                ->groupBy('sau_users.id')
+                ->count();
+
+                if ($users == 0)
+                    return true;
+                else
+                    return false;
+            })
+        ],[
+          'required'  => 'Por favor, agregue emails para notificar la creación de la licencia.'
+        ])->validate();
+
+        DB::beginTransaction();
+
+        try
+        {
+            $license = new License($request->all());
+            $license->started_at = (Carbon::createFromFormat('D M d Y', $request->started_at))->format('Y-m-d');
+            $license->ended_at = (Carbon::createFromFormat('D M d Y', $request->ended_at))->format('Ymd');
+            
+            if (!$license->save())
+                return $this->respondHttp500();
+
+            $modules_main = $this->getDataFromMultiselect($request->get('module_id'));
+            $modules = ModuleDependence::whereIn('module_id', $modules_main)->pluck('module_dependence_id')->toArray();
+            $license->modules()->sync(array_merge($modules_main, $modules));
+
+            $license->histories()->create([
+                'user_id' => $this->user->id
+            ]);
+
+            DB::commit();
+
+            $mails = [];
+
+            if ($request->has('add_email'))
+                $mails = $this->getDataFromMultiselect($request->get('add_email'));
+
+            \Log::info($request->id_license);
+
+            $license_origin = License::system()->findOrFail($request->id_license);
+            \Log::info($license_origin);
+            $license_origin->reassigned = 'SI';
+            $license_origin->save();
+
+            NotifyLicenseRenewalJob::dispatch($license->id, $license->company_id, $modules_main, $mails, 'Creación');
+
+        } catch(\Exception $e) {
+            \Log::info($e);
+            DB::rollback();
+            return $this->respondHttp500();
+        }
+
+        return $this->respondHttp200([
+            'message' => 'Se reasigno la licencia'
+        ]);
+    }
+
+    /**
      * Display the specified resource.
      *
      * @param  int  $id
@@ -207,6 +335,52 @@ class LicenseController extends Controller
         } catch(Exception $e){
             $this->respondHttp500();
         }
+    }
+
+    public function showReasignar($id)
+    {
+        try
+        {
+            $license = License::system()->findOrFail($id);
+            $license->multiselect_company = $license->company->multiselect();
+            $license->multiselect_user = NULL;
+            $license->user_id = NULL;
+            $license->started_at = Carbon::now()->format('D M d Y');
+            $end = Carbon::now()->addDays($license->available_days)->format('D M d Y');
+            //$license->started_at = $ini->format('D M d Y');
+            $license->ended_at = $end;
+
+            $modules = [];
+
+            $mails = [];
+
+            foreach ($license->modules()->main()->get() as $key => $value)
+            {               
+                array_push($modules, $value->multiselect());
+            }
+
+            $license->module_id = $modules;
+
+            $license->add_email = $mails;
+            $license->id_license = $license->id;
+            $license->id = NULL;
+            $license->freeze = 'NO';
+            $license->group_company = $license->company->company_group_id;
+
+            return $this->respondHttp200([
+                'data' => $license,
+            ]);
+
+        } catch(Exception $e){
+            $this->respondHttp500();
+        }
+    }
+
+    public function updateEndedAt(Request $request)
+    {
+        $end = Carbon::parse($request->ini)->addDays($request->days)->format('D M d Y');
+
+        return $end;
     }
 
     /**
@@ -264,6 +438,24 @@ class LicenseController extends Controller
             $license->histories()->create([
                 'user_id' => $this->user->id
             ]);
+
+            if ($license->freeze == 'SI')
+            {
+                $end = (Carbon::createFromFormat('D M d Y', $request->ended_at))->format('Y-m-d');
+
+                $date1 = Carbon::parse(date('Y-m-d'));
+                $date2 = Carbon::parse($end);
+
+                $days_available = $date1->diffInDays($date2);
+
+                $license->available_days = $days_available;
+                $license->save();
+            }
+            else
+            {
+                $license->available_days = NULL;
+                $license->save();
+            }
             
             DB::commit();
             

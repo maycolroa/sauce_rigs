@@ -280,6 +280,7 @@ Route::middleware(['auth'])->group(function () {
         Route::post('siNo', 'General\MultiSelectRadioController@siNoSelect');
         Route::post('siNoFiltro', 'General\ApplicationController@siNo');
         Route::post('companies', 'General\ApplicationController@multiselectCompanies');
+        Route::post('companiesGroupSpecific', 'General\ApplicationController@multiselectCompaniesGroupSpecific');
         Route::post('companiesGroup', 'General\ApplicationController@multiselectCompaniesGroup');
         Route::post('reincYears', 'PreventiveOccupationalMedicine\Reinstatements\CheckController@multiselectYears');
         Route::post('reincSveAssociateds', 'PreventiveOccupationalMedicine\Reinstatements\CheckController@multiselectSveAssociateds');
@@ -881,6 +882,10 @@ Route::middleware(['auth'])->group(function () {
 
       Route::post('license/history/data', 'System\Licenses\LicenseHistoryController@data');
       Route::post('license/data', 'System\Licenses\LicenseController@data');
+      Route::post('license/dataReasignation', 'System\Licenses\LicenseController@dataReasignacion');
+      Route::get('license/getReasignar/{id}', 'System\Licenses\LicenseController@showReasignar');
+      Route::post('license/reasignar', 'System\Licenses\LicenseController@saveReasignar');
+      Route::post('license/recalculateEndedat', 'System\Licenses\LicenseController@updateEndedAt');
       Route::ApiResource('license', 'System\Licenses\LicenseController');
       Route::post('license/export', 'System\Licenses\LicenseController@export');
       Route::post('license/report', 'System\Licenses\LicenseController@report');

@@ -368,6 +368,35 @@ class ApplicationController extends Controller
         }
     }
 
+    public function multiselectCompaniesGroupSpecific(Request $request)
+    {
+        if($request->has('keyword'))
+        {
+            $keyword = "%{$request->keyword}%";
+            $id_group = $request->group_id;
+            \Log::info($id_group);
+            $companies = Company::select("id", "name")
+                ->where(function ($query) use ($keyword) {
+                    $query->orWhere('name', 'like', $keyword);
+                })
+                ->where('company_group_id', $id_group)
+                ->take(30)->pluck('id', 'name');
+
+            return $this->respondHttp200([
+                'options' => $this->multiSelectFormat($companies)
+            ]);
+        }
+        else
+        {
+            $companies = Company::selectRaw("
+                sau_companies.id as id,
+                sau_companies.name as name
+            ")->pluck('id', 'name');
+        
+            return $this->multiSelectFormat($companies);
+        }
+    }
+
     public function multiselectModules(Request $request)
     {
         if($request->has('keyword'))

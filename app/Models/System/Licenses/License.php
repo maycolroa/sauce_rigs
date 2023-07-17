@@ -18,7 +18,8 @@ class License extends Model
         'notified',
         'user_id',
         'freeze',
-        'available_days'
+        'available_days',
+        'reassigned'
     ];
 
     public function company()

@@ -82,4 +82,26 @@ export default [
       },
       ]
     },
+    {
+      name: 'system-licenses-reasignacion',
+      filters: [
+        {
+            url: '/selects/modules',
+            key: 'modules',
+            type: 'select',
+            label: 'Módulos'
+        },
+        {
+          key: 'dateRange',
+          type: 'dateRange',
+          label: 'Fecha de inicio',
+        },
+        {
+          url: '/selects/companiesGroup',
+          key: 'groups',
+          type: 'select',
+          label: 'Grupo de Compañias'
+        }
+      ]
+    },
 ]

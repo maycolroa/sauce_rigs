@@ -21,6 +21,22 @@ export default [{
       ]), 
       ...middleware({ 'check-permission': 'licenses_c' }, [
         {
+          name: 'system-licenses-reasignacion-index',
+          path: 'licenses/reasignation',
+          component: () =>
+            import('@/views/System/licenses/indexReasignacion')
+        }
+      ]),  
+      ...middleware({ 'check-permission': 'licenses_c' }, [
+        {
+          name: 'system-licenses-reasignar',
+          path: 'licenses/reasignation/edit/:id',
+          component: () =>
+            import('@/views/System/licenses/editReasignar')
+        }
+      ]), 
+      ...middleware({ 'check-permission': 'licenses_c' }, [
+        {
           name: 'system-licenses-create',
           path: 'licenses/create',
           component: () =>
