@@ -30,7 +30,7 @@
 
 			</b-card-header>
 			<b-card-body>
-				<template class="rounded ui-bordered p-3 mb-3"  v-for="(item, index) in form.items">
+				<template v-for="(item, index) in form.items">
 					<div :key="item.id" v-if="item.show">
 					<p class="my-1">{{ index + 1 }} - {{ item.item_name }}</p>
 					<b-col v-if="validate_qualificacion">
@@ -65,8 +65,21 @@
 										module="Contratista"/>
 								</b-card>
 								<br>
+								<vue-textarea class="col-md-12" v-model="item.general_observations_ac" label="Observaciones generales (El contenido de este campo se replicara en el campo de observaciones de todas las actividades contenidas en el Plan de acción)" name="general_observations_ac" placeholder="Observaciones generales" :error="form.errorsFor(`general_observations_ac`)"></vue-textarea>
+								<br>
+								<div v-if="item.general_observations_ac">
+									<center>
+										<p> ¿Esta seguro de que desea continuar, el contenido del campo Observaciones generales sobreescribira la informacion de observaciones de todas las actividades contenidas en el Plan de acción? </p>
+										<br>
+										<div>
+											<b-btn @click="hideModal(`modalPlan${index}`, index)" :disabled="loading" variant="primary">SI</b-btn>&nbsp;&nbsp;
+											<b-btn variant="primary" @click="clearObs(index)">NO</b-btn>
+										</div>
+									</center>
+								</div>
+								<br>
 								<div class="row float-right pt-12 pr-12y">
-									<b-btn variant="primary" @click="hideModal(`modalPlan${index}`)">Cerrar</b-btn>
+									<b-btn variant="primary" @click="hideModal(`modalPlan${index}`, index)">Cerrar</b-btn>
 								</div>
 							</b-modal>
 							<!------------------------------->
@@ -242,6 +255,11 @@ export default {
 		{
 			this.form.delete.files.push(value)
 		},
+		clearObs(index)
+		{
+			let item = this.form.items[index]
+			item.general_observations_ac = '';
+		},
 		changeActionFiles(qualification, index)
 		{
 			if (qualification == 'C')
@@ -334,6 +352,13 @@ export default {
       		{
 				this.loading = true;
         		let item = this.form.items[index]
+
+				if (item.general_observations_ac)
+				{
+					item.actionPlan.activities.forEach((activity) => {
+						activity.observation = item.general_observations_ac;
+					});
+				}
         
 				let data = new FormData();
 				data.append('id', item.id);
@@ -365,21 +390,23 @@ export default {
 					}
 				}
 
-	        this.form.resetError()
-	        this.form
-	          .submit(this.url, false, data)
-	          .then(response => {
-	            _.forIn(response.data.data, (value, key) => {
-	              item[key] = value
-	            })
+				this.form.resetError()
+				this.form
+				.submit(this.url, false, data)
+				.then(response => {
+					_.forIn(response.data.data, (value, key) => {
+					item[key] = value
+					})
 
-	            this.loading = false;
-	            
-	          })
-	          .catch(error => {
-	            this.loading = false;
-	          });
-				}
+					this.loading = false;
+					
+				})
+				.catch(error => {
+					this.loading = false;
+				});
+
+				item.general_observations_ac = '';
+			}
 		},
 		verifyRequiredFile(item_id, index)
 		{

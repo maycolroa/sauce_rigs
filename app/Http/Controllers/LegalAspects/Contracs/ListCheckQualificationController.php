@@ -497,6 +497,8 @@ class ListCheckQualificationController extends Controller
 
             DB::commit();
 
+            $data['observations'] = $data['observations'] ? $data['observations'] : '';
+
             //$this->sendNotification($contract);
 
             return $this->respondHttp200([

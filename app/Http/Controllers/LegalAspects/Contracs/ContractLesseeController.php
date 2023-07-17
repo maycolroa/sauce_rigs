@@ -1060,6 +1060,8 @@ class ContractLesseeController extends Controller
 
             DB::commit();
 
+            $data['observations'] = $data['observations'] != 'null' ? $data['observations'] : '';
+
             //$this->sendNotification($contract);
 
             return $this->respondHttp200([
