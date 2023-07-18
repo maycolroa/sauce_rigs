@@ -230,7 +230,6 @@ class LicenseController extends Controller
      */
     public function saveReasignar(LicenseRequest $request)
     {
-        \Log::info($request);
         Validator::make($request->all(), [
             'add_email' => Rule::requiredIf(function() use($request){
 
@@ -281,10 +280,7 @@ class LicenseController extends Controller
             if ($request->has('add_email'))
                 $mails = $this->getDataFromMultiselect($request->get('add_email'));
 
-            \Log::info($request->id_license);
-
             $license_origin = License::system()->findOrFail($request->id_license);
-            \Log::info($license_origin);
             $license_origin->reassigned = 'SI';
             $license_origin->save();
 
