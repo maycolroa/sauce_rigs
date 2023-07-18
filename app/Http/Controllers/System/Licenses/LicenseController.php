@@ -189,6 +189,7 @@ class LicenseController extends Controller
             $license = new License($request->all());
             $license->started_at = (Carbon::createFromFormat('D M d Y', $request->started_at))->format('Ymd');
             $license->ended_at = (Carbon::createFromFormat('D M d Y', $request->ended_at))->format('Ymd');
+            $license->freeze = 'NO';
             
             if (!$license->save())
                 return $this->respondHttp500();
