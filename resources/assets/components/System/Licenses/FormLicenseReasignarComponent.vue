@@ -12,7 +12,7 @@
           </vue-datepicker>
     </b-form-row>
     <b-form-row>
-      <vue-advanced-select-group :disabled="true" v-model="form.module_id" class="col-md-12" :options="modules" :limit="1000" :searchable="true" name="module_id" label="Aplicación \ Módulo" placeholder="Seleccione los módulos" text-block="Módulos que están disponible para esta licencia" :error="form.errorsFor('module_id')" :selected-object="form.multiselect_module" :multiple="true">
+      <vue-advanced-select-group :disabled="viewOnly" v-model="form.module_id" class="col-md-12" :options="modules" :limit="1000" :searchable="true" name="module_id" label="Aplicación \ Módulo" placeholder="Seleccione los módulos" text-block="Módulos que están disponible para esta licencia" :error="form.errorsFor('module_id')" :selected-object="form.multiselect_module" :multiple="true">
           </vue-advanced-select-group>
     </b-form-row>
 
