@@ -65,6 +65,7 @@ class NotificationRequestFirmInspection extends Command
             ->join('sau_users', 'sau_users.id', 'sau_ph_qualification_inspection_firm.user_id')
             ->where('sau_ph_qualification_inspection_firm.state', 'Pendiente')
             ->where('company_id', $company)
+            ->where('sau_users.active', 'SI')
             ->groupBy('user_id')
             ->get();
 

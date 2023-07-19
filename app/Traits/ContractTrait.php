@@ -15,7 +15,7 @@ use App\Facades\ConfigurationCompany\Facades\ConfigurationsCompany;
 
 trait ContractTrait
 {
-    public function getUsersContract($contract_id, $company_id = null, $scope_active = false)
+    public function getUsersContract($contract_id, $company_id = null, $scope_active = true)
     {
         if (!is_numeric($contract_id))
             throw new \Exception('Contract invalid');
