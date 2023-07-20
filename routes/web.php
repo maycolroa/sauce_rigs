@@ -720,6 +720,7 @@ Route::middleware(['auth'])->group(function () {
       Route::post('configuration', 'LegalAspects\LegalMatrix\ConfigurationController@store');
       Route::post('contracts/data', 'LegalAspects\Contracs\ContractLesseeController@data');
       Route::get('contracts/getInformation', 'LegalAspects\Contracs\ContractLesseeController@getInformation');
+      Route::get('contracts/downloadListCheckPdf/{id}', 'LegalAspects\Contracs\ContractLesseeController@downloadPdf');
       Route::post('contracts/getListCheckItems', 'LegalAspects\Contracs\ContractLesseeController@getListCheckItems');
       Route::post('contracts/getValidationQualificarion', 'LegalAspects\Contracs\ContractLesseeController@verifyValidateQualificationListCheck');
       Route::post('contracts/aproveQualification', 'LegalAspects\Contracs\ContractLesseeController@aproveQualification');

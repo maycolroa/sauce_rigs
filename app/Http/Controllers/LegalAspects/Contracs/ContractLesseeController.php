@@ -43,6 +43,7 @@ use Carbon\Carbon;
 use Maatwebsite\Excel\Facades\Excel;
 use Validator;
 use DB;
+use PDF;
 
 class ContractLesseeController extends Controller
 {
@@ -1567,5 +1568,178 @@ class ContractLesseeController extends Controller
         }
         else
             return $this->respondWithError('Debe adicionar un motivo de rechazo');
+    }
+
+    public function downloadPdf($id)
+    {
+        $listCheck = $this->getDataExportPdf($id);
+
+        PDF::setOptions(['dpi' => 150, 'defaultFont' => 'sans-serif']);
+
+        $pdf = PDF::loadView('pdf.qualificationListCheck', ['listCheck' => $listCheck] );
+
+        $pdf->setPaper('A4', 'landscape');
+
+        return $pdf->download('lista de estandares mínimos.pdf');
+    }
+
+    public function getDataExportPdf($id)
+    {
+        $listCheck = $this->getListCheckItemsPdf($id);
+
+        return $listCheck;
+    }
+
+    public function getListCheckItemsPdf($id)
+    {
+        $contract = ContractLesseeInformation::findOrFail($id);
+
+        $qualification_list = ListCheckQualification::where('contract_id', $contract->id)->where('state', true)->first();
+
+        $items = $this->getStandardItemsContract($contract);
+
+        $qualifications = Qualifications::pluck("name", "id");
+
+        //Obtiene los items calificados
+        $items_calificated = ItemQualificationContractDetail::
+                    where('contract_id', $contract->id)
+                ->where('list_qualification_id', $qualification_list->id)
+                ->pluck("qualification_id", "item_id");
+        
+        $items_observations = ItemQualificationContractDetail::
+                    where('contract_id', $contract->id)
+                ->where('list_qualification_id', $qualification_list->id)                     
+                ->pluck("observations", "item_id");
+
+        $items_aprove = ItemQualificationContractDetail::
+            where('contract_id', $contract->id)
+            ->where('list_qualification_id', $qualification_list->id)
+            ->pluck("state_aprove_qualification", "item_id");
+
+        $items_reason_reject = ItemQualificationContractDetail::
+            where('contract_id', $contract->id)
+            ->where('list_qualification_id', $qualification_list->id)
+            ->pluck("reason_rejection", "item_id");
+
+        $compliance = [
+            'cumple' => 0,
+            'no_cumple' => 0,
+            'no_aplica' => 0,
+            'total' => 0       
+        ];
+
+        if (COUNT($items) > 0)
+        {
+            $items->transform(function($item, $index) use ($qualifications, $items_calificated, $contract, $items_observations, $qualification_list, $items_aprove, $items_reason_reject,&$compliance) {
+                //Añade las actividades definidas de cada item para los planes de acción
+                $item->activities_defined = $item->activities()->pluck("description");
+                $item->qualification = isset($items_calificated[$item->id]) ? $qualifications[$items_calificated[$item->id]] : '';
+                $item->observations = (isset($items_observations[$item->id]) && $items_observations[$item->id] != 'null') ? $items_observations[$item->id] : '';
+                //$item->observations = isset($items_observations[$item->id]) ? $items_observations[$item->id] : '';
+                $item->list_qualification_id = $qualification_list->id;
+                $item->state_aprove_qualification = isset($items_aprove[$item->id]) ? $items_aprove[$item->id] : 'NULL';
+                        
+                if (isset($items_reason_reject[$item->id]))
+                    $item->reason_rejection = isset($items_reason_reject[$item->id]) ? $items_reason_reject[$item->id] : 'NULL';
+
+                $item->files = [];
+                $item->actionPlan = [
+                    "activities" => [],
+                    "activitiesRemoved" => []
+                ];
+
+                if ($item->qualification == 'NA')
+                    $compliance['no_aplica']++;
+
+                if ($item->qualification == 'C')
+                {
+                    $compliance['cumple']++;
+                    $files = FileUpload::select(
+                                'sau_ct_file_upload_contracts_leesse.id AS id',
+                                'sau_ct_file_upload_contracts_leesse.name AS name',
+                                'sau_ct_file_upload_contracts_leesse.file AS file',
+                                'sau_ct_file_upload_contracts_leesse.expirationDate AS expirationDate'
+                            )
+                            ->join('sau_ct_file_upload_contract','sau_ct_file_upload_contract.file_upload_id','sau_ct_file_upload_contracts_leesse.id')
+                            ->join('sau_ct_file_item_contract', 'sau_ct_file_item_contract.file_id', 'sau_ct_file_upload_contracts_leesse.id')
+                            ->where('sau_ct_file_upload_contract.contract_id', $contract->id)
+                            ->where('sau_ct_file_item_contract.item_id', $item->id)
+                            ->where('sau_ct_file_item_contract.list_qualification_id', $qualification_list->id)
+                            ->get();
+
+                    if ($files)
+                    {
+                        $files->transform(function($file, $index) {
+                            $file->key = Carbon::now()->timestamp + rand(1,10000);
+                            $file->old_name = $file->file;
+                            $file->expirationDate = $file->expirationDate == null ? null : (Carbon::createFromFormat('Y-m-d',$file->expirationDate))->format('D M d Y');
+
+                            return $file;
+                        });
+
+                        $item->files = $files;
+                    }
+                }
+                else if ($item->qualification == 'NC')
+                {
+                    $compliance['no_cumple']++;
+                    $model_activity = ItemQualificationContractDetail::
+                                where('contract_id', $contract->id)
+                            ->where('item_id', $item->id)
+                            ->where('list_qualification_id', $qualification_list->id)
+                            ->first();
+
+                    $item->actionPlan = ActionPlan::model($model_activity)->prepareDataComponent();
+                }
+
+                $compliance['total']++;
+
+                return $item;
+            });
+
+            $compliance['p_cumple'] = round(($compliance['cumple']/$compliance['total'])*100, 2);
+            $compliance['p_no_aplica'] = round(($compliance['no_aplica']/$compliance['total'])*100, 2);
+            $compliance['p_total'] = round((($compliance['cumple']+$compliance['no_aplica'])/$compliance['total'])*100, 2);
+
+
+            if ($compliance['no_cumple'] > 0)
+            {
+                $compliance['p_no_cumple']  = $compliance['total']-$compliance['cumple']-$compliance['no_aplica']+$compliance['no_cumple'];
+                $compliance['pp_no_cumple'] = round(($compliance['p_no_cumple']/$compliance['total'])*100, 2);
+            }
+            else
+            {
+                $compliance['p_no_cumple']  = $compliance['total']-$compliance['cumple']-$compliance['no_aplica'];
+                $compliance['pp_no_cumple'] = round(($compliance['p_no_cumple']/$compliance['total'])*100, 2);
+            }
+
+            $qualifications_creator = ListCheckQualification::select(
+                'sau_ct_list_check_qualifications.*',
+                DB::raw("case when sau_ct_list_check_qualifications.state is true then 'ACTIVA' else 'INACTIVA' end as state_list"),
+                'sau_users.name as user_creator')
+            ->join('sau_users', 'sau_users.id', 'sau_ct_list_check_qualifications.user_id')
+            ->where('company_id', $this->company)
+            ->where('contract_id', $contract->id)
+            ->where('sau_ct_list_check_qualifications.id', $qualification_list->id)
+            ->first();
+
+            $data = [
+                'id' => $contract->id,
+                'items' => $items,
+                'id_qualification_list' => $qualification_list->id,
+                'delete' => [
+                    'files' => []
+                ],
+                'validity_period' => $qualification_list->validity_period,
+                'user_Creator' => $qualifications_creator->user_creator,
+                'state' => $qualifications_creator->state_list,
+                'contract_name' => $contract->social_reason,
+                'cumplimiento' => $compliance
+            ];
+        }
+        else
+            $data = [];
+
+        return  $data;
     }
 }

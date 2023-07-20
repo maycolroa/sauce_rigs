@@ -463,6 +463,23 @@ export default [
             }]
           },
           {
+            type: 'simpleDownload',
+            buttons: [{
+            name: 'downloadFile',
+            config: {
+              color: 'outline-danger',
+              borderless: true,
+              icon: 'fas fa-file-pdf',
+              title: 'Descargar lista de chequeo en PDF'
+            },
+            data: {
+              action: '/legalAspects/contracts/downloadListCheckPdf/',
+              id: 'id'
+            },
+            permission: 'contracts_list_standards_qualification_u'
+            }],
+          },
+          {
             type: 'base',
             buttons: [
                 {
