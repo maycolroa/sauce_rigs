@@ -72,10 +72,13 @@ class ReincSendMail extends Command
 
             $users->map(function($user) use ($company)
             {
+                $headquarters = User::find($user->id)->headquarters()->pluck('id')->toArray();
+
                 $data = Check::select(
                     'sau_reinc_checks.company_id',
                     'sau_employees.identification',
                     'sau_employees.name',
+                    'sau_employees.employee_headquarter_id as sede',
                     DB::raw('MIN(monitoring_recommendations) AS monitoring_recommendations'),
                     DB::raw('MIN(end_recommendations) AS end_recommendations'),
                     DB::raw('MIN(sau_reinc_medical_monitorings.set_at) AS medical_monitoring'),
@@ -94,8 +97,15 @@ class ReincSendMail extends Command
                 ->groupBy([
                     'sau_reinc_checks.company_id',
                     'sau_employees.identification',
-                    'sau_employees.name'
+                    'sau_employees.name',
+                    'sau_employees.employee_headquarter_id'
                 ]);
+
+                if (count($headquarters) > 0)
+                {
+                    $headquarters2 = implode(',', $headquarters);
+                    $data->whereRaw("sau_employees.employee_headquarter_id in ({$headquarters2})");
+                }
 
                 $data->user = $user->id;
                 $data->company_scope = $company;
@@ -105,13 +115,21 @@ class ReincSendMail extends Command
                     'company_id',
                     'identification', 
                     'name', 
+                    'sede',
                     DB::raw("CONCAT(
                         CASE WHEN CURDATE() = DATE_ADD(monitoring_recommendations, INTERVAL -7 DAY) THEN 'Seguimiento de las recomendaciones. \n' ELSE '' END,
                         CASE WHEN CURDATE() = DATE_ADD(end_recommendations, INTERVAL -7 DAY) THEN 'Finalizacion de las recomendaciones. \n' ELSE '' END,
                         CASE WHEN CURDATE() = DATE_ADD(medical_monitoring, INTERVAL -7 DAY) THEN 'Seguimiento Medico. \n' ELSE '' END,
                         CASE WHEN CURDATE() = DATE_ADD(laboral_monitoring, INTERVAL -7 DAY) THEN 'Seguimiento Laboral. \n' ELSE '' END) AS message")
-                    )
-                    ->get();
+                    );
+
+                    if (count($headquarters) > 0)
+                    {
+                        $headquarters22 = implode(',', $headquarters);
+                        $data->whereRaw("sede in ({$headquarters22})");
+                    }
+
+                    $data = $data->get();
                     
                     if (COUNT($data) > 0)
                     {
@@ -126,16 +144,20 @@ class ReincSendMail extends Command
                             ]);
                         }
 
-                        NotificationMail::
-                            subject('Reincorporaciones: Eventos pendientes')
-                            ->view('notification')
-                            ->recipients($user)
-                            ->message('Listado de personas con eventos que estan a 7 dias de cumplirse ')
-                            ->module('reinstatements')
-                            ->event('Tarea programada: ReincSendMail')
-                            ->table($table)
-                            ->company($company)
-                            ->send();
+                        if ($user->email == 'santiago.cuartas@floreseltrigal.com' || $user->email == 'laura.bajonero@floresdelhato.com')
+                        {
+
+                            NotificationMail::
+                                subject('Reincorporaciones: Eventos pendientes')
+                                ->view('notification')
+                                ->recipients($user)
+                                ->message('Listado de personas con eventos que estan a 7 dias de cumplirse ')
+                                ->module('reinstatements')
+                                ->event('Tarea programada: ReincSendMail')
+                                ->table($table)
+                                ->company($company)
+                                ->send();
+                        }
                     }     
                 });
         }
