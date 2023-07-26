@@ -28,6 +28,9 @@
 
     <b-form-row>
       <vue-checkbox-simple v-if="isEdit || viewOnly" style="padding-top: 30px;" :disabled="viewOnly" class="col-md-6" v-model="form.freeze" label="¿Congelar?" :checked="form.freeze" name="freeze" checked-value="SI" unchecked-value="NO"></vue-checkbox-simple>
+      <vue-datepicker v-if="form.freeze == 'SI'" :disabled="viewOnly" class="col-md-6" v-model="form.start_freeze" label="Fecha Inicio Congelamiento" :full-month-name="true" placeholder="Seleccione la fecha de congelamiento" :error="form.errorsFor('start_freeze')" name="start_freeze">
+          </vue-datepicker>
+      <vue-textarea :disabled="viewOnly" class="col-md-6" v-model="form.observations" label="Observaciones" name="observations" :error="form.errorsFor('observations')"  placeholder="Observaciones"></vue-textarea>
     </b-form-row>
 
     <b-form-row v-if="viewOnly">
@@ -60,6 +63,7 @@ import VueAdvancedSelectGroup from "@/components/Inputs/VueAdvancedSelectGroup.v
 import VueDatepicker from "@/components/Inputs/VueDatepicker.vue";
 import Form from "@/utils/Form.js";
 import VueCheckboxSimple from "@/components/Inputs/VueCheckboxSimple.vue";
+import VueTextarea from "@/components/Inputs/VueTextarea.vue";
 
 export default {
   components: {
@@ -67,7 +71,8 @@ export default {
     VueAdvancedSelectGroup,
     VueAdvancedSelect,
     VueDatepicker,
-    VueCheckboxSimple
+    VueCheckboxSimple,
+    VueTextarea
   },
   props: {
     url: { type: String },

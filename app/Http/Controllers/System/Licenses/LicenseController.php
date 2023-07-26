@@ -312,6 +312,7 @@ class LicenseController extends Controller
             $license->multiselect_user = $license->user_id ? $license->user->multiselect() : NULL;
             $license->started_at = (Carbon::createFromFormat('Y-m-d', $license->started_at))->format('D M d Y');
             $license->ended_at = (Carbon::createFromFormat('Y-m-d', $license->ended_at))->format('D M d Y');
+            $license->start_freeze = $license->start_freeze ? (Carbon::createFromFormat('Y-m-d', $license->start_freeze))->format('D M d Y') : NULL;
 
             $modules = [];
 
@@ -403,6 +404,7 @@ class LicenseController extends Controller
             $license->fill($request->all());
             $license->started_at = (Carbon::createFromFormat('D M d Y', $request->started_at))->format('Y-m-d');
             $license->ended_at = (Carbon::createFromFormat('D M d Y', $request->ended_at))->format('Y-m-d');
+            $license->start_freeze = (Carbon::createFromFormat('D M d Y', $request->start_freeze))->format('Y-m-d');
 
             if ($license->started_at != $old_started)
                 array_push($modificaciones, ['fecha_inicio' => $license->started_at]);
@@ -440,12 +442,14 @@ class LicenseController extends Controller
             {
                 $end = (Carbon::createFromFormat('D M d Y', $request->ended_at))->format('Y-m-d');
 
-                $date1 = Carbon::parse(date('Y-m-d'));
+                $date1 = Carbon::parse($license->start_freeze);
                 $date2 = Carbon::parse($end);
 
                 $days_available = $date1->diffInDays($date2);
 
                 $license->available_days = $days_available;
+                $license->observations = $request->observations;
+                $license->date_freeze = Carbon::now()->format('Y-m-d');
                 $license->save();
             }
             else
@@ -462,6 +466,7 @@ class LicenseController extends Controller
 
         } catch(\Exception $e) {
             DB::rollback();
+            \Log::info($e->getMessage());
             return $this->respondHttp500();
         }
         

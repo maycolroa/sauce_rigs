@@ -19,7 +19,10 @@ class License extends Model
         'user_id',
         'freeze',
         'available_days',
-        'reassigned'
+        'reassigned',
+        'start_freeze',
+        'date_freeze',
+        'observations'
     ];
 
     public function company()

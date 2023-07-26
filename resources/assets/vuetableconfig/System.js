@@ -10,6 +10,7 @@ export default [
             { name: 'sau_licenses.created_at', data: 'created_at', title: 'Fecha Creación', sortable: true, searchable: true, detail: false, key: false },
             { name: 'modules', data: 'modules', title: 'Módulos', sortable: true, searchable: false, detail: false, key: false },
             { name: 'sau_licenses.freeze', data: 'freeze', title: '¿Congelada?', sortable: true, searchable: true, detail: false, key: false },
+            { name: 'sau_licenses.date_freeze', data: 'date_freeze', title: 'Fecha de congelamiento', sortable: true, searchable: true, detail: false, key: false },
             { name: '', data: 'controlls', title: 'Controles', sortable: false, searchable: false, detail: false, key: false },
         ],
         'controlls': [{

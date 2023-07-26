@@ -8,7 +8,7 @@
 
     <div class="col-md">
       <b-card no-body>
-        <b-card-body>
+        <b-card-body  style="height: 1000px">
             <form-license
                 :url="`/system/license/${this.$route.params.id}`"
                 method="PUT"

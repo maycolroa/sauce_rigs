@@ -230,7 +230,8 @@ export default {
     components:{
         Loading,
         FilterGeneral,
-        VueAdvancedSelect
+        VueAdvancedSelect,
+        PerfectScrollbar
     },
     data () {
         return {
@@ -299,3 +300,10 @@ export default {
     }
 }
 </script>
+
+<style scoped>
+.table thead th {
+    white-space: normal;
+}
+
+</style>

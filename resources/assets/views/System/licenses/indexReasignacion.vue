@@ -2,7 +2,7 @@
   <div>
     <header-module
       title="SISTEMA"
-      subtitle="ADMINISTRAR LICENCIAS"
+      subtitle="REASIGNAR LICENCIAS"
       url="system"
     />
 

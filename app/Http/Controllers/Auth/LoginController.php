@@ -64,6 +64,7 @@ class LoginController extends Controller
                                 ->whereRaw('company_id = ? 
                                             AND ? BETWEEN started_at AND ended_at', 
                                             [$val->pivot->company_id, date('Y-m-d')])
+                                //->where('freeze', DB::raw("'NO'"))
                                 ->get();
 
                         if (COUNT($license) > 0)
