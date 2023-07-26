@@ -12,7 +12,7 @@
           </vue-datepicker>
     </b-form-row>
     <b-form-row>
-      <vue-advanced-select-group :disabled="viewOnly" v-model="form.module_id" class="col-md-12" :options="modules" :limit="1000" :searchable="true" name="module_id" label="Aplicación \ Módulo" placeholder="Seleccione los módulos" text-block="Módulos que están disponible para esta licencia" :error="form.errorsFor('module_id')" :selected-object="form.multiselect_module" :multiple="true">
+      <vue-advanced-select-group v-model="form.module_id" class="col-md-12" :options="modules" :searchable="true" name="module_id" label="Aplicación \ Módulo" placeholder="Seleccione los módulos" text-block="Módulos que están disponible para esta licencia" :error="form.errorsFor('module_id')" :selected-object="form.multiselect_module" :multiple="true" @input="countModules()">
           </vue-advanced-select-group>
     </b-form-row>
 
@@ -60,6 +60,7 @@ import VueAdvancedSelectGroup from "@/components/Inputs/VueAdvancedSelectGroup.v
 import VueDatepicker from "@/components/Inputs/VueDatepicker.vue";
 import Form from "@/utils/Form.js";
 import VueCheckboxSimple from "@/components/Inputs/VueCheckboxSimple.vue";
+import Alerts from '@/utils/Alerts.js';
 
 export default {
   components: {
@@ -94,7 +95,8 @@ export default {
           user_id: '',
           freeze: '',
           available_days: '',
-          id_license: ''
+          id_license: '',
+          modules_quantity: ''
         };
       }
     }
@@ -109,8 +111,16 @@ export default {
     return {
       loading: this.isEdit,
       form: Form.makeFrom(this.license, this.method),
-      usersOptions: '/selects/users'
+      usersOptions: '/selects/users',
+      activateEvent: false,
     };
+  }, 
+  mounted() {
+    setTimeout(() => {
+      this.$nextTick(() => {
+        this.activateEvent = true;
+      });
+    }, 5000)
   },
   methods: {
     submit(e) {
@@ -138,6 +148,18 @@ export default {
             Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
             //this.$router.go(-1);
         });
+      }
+    },
+    countModules()
+    {
+      console.log('entro');
+      if (this.activateEvent)
+      {
+        if (this.form.module_id.length > this.form.modules_quantity)
+        {
+          Alerts.error('Error', 'Solo puede seleccionar '+this.form.modules_quantity+' modulo(s)');
+          this.form.module_id.pop()
+        }
       }
     }
   }

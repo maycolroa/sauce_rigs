@@ -79,7 +79,13 @@ export default [
           key: 'modules',
           type: 'select',
           label: 'Módulos no contratados'
-      },
+        },
+        {
+          url: '/selects/siNoFiltro',
+          key: 'freeze',
+          type: 'select',
+          label: 'Congeladas'
+        }
       ]
     },
     {

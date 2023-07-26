@@ -357,6 +357,8 @@ class LicenseController extends Controller
                 array_push($modules, $value->multiselect());
             }
 
+            $license->modules_quantity = count($modules);
+
             $license->module_id = $modules;
 
             $license->add_email = $mails;
@@ -604,8 +606,12 @@ class LicenseController extends Controller
             ->leftJoin('sau_company_groups', 'sau_company_groups.id', 'sau_companies.company_group_id')
             ->where('sau_modules.main', DB::raw("'SI'"))
             ->where('sau_companies.test', DB::raw("'NO'"))
-            ->orderBy('sau_licenses.id')
-            ->get();
+            ->orderBy('sau_licenses.id');
+
+            if (isset($filters["freeze"]) && $filters["freeze"])
+                $prueba->inFreeze($this->getValuesForMultiselect($filters["freeze"]), $filters['filtersType']['freeze']);
+
+            $prueba = $prueba->get();
 
             $companies = $prueba->groupBy('company_id')
             ->each(function($item, $key) use (&$id_license_renew) {
