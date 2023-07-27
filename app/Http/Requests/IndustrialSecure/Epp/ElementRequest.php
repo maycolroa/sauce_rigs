@@ -90,7 +90,8 @@ class ElementRequest extends FormRequest
             'operating_instructions' => 'nullable|string',
             'state' => 'required',
             'reusable' => 'required',
-            'image' => 'nullable'
+            'image' => 'nullable',
+            'identify_each_element' => 'required'
         ];
     }
 }

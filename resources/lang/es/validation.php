@@ -376,7 +376,8 @@ return [
       'site_id' => 'Sitio',
       'agent_id' => 'Agente',
       'start_incapacitated' => 'Fecha Inicio Incapacidad',
-      'subject' => 'El Asunto'
+      'subject' => 'El Asunto',
+      'identify_each_element' => 'Tipo de indentificacion del elemento'
     ],
 
 ];

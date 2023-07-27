@@ -134,16 +134,16 @@ class ElementImport implements ToCollection, WithCalculatedFormulas
         $rules = [
             'codigo' => 'required|not_in:'.  implode(',', $codes),
             'nombre' => 'required',
-            'tipo' => 'required',
-            'marca' => 'required',
-            'descripcion' => 'required',
+            'tipo' => 'nullable',
+            'marca' => 'nullable',
+            'descripcion' => 'nullable',
             'norma' => 'nullable',
             'observaciones' => 'nullable',
             'instrucciones' => 'nullable',
             'estado' => 'required|in:Activo,Inactivo',
             'reutilizable' => 'required|in:SI,NO',
             'identificar' => 'required|in:SI,NO',
-            'vencimiento' => 'required|in:SI,NO',
+            'vencimiento' => 'nullable|in:SI,NO',
             'dias_vencimiento' => 'required_if:vencimiento,SI'       
         ];
 
