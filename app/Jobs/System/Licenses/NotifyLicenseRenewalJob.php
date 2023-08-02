@@ -28,13 +28,15 @@ class NotifyLicenseRenewalJob implements ShouldQueue
     protected $asunto;
     protected $modify;
     protected $modules_delete;
+    protected $freeze;
+    protected $observations;
 
     /**
      * Create a new job instance.
      *
      * @return void
      */
-    public function __construct($license_id, $company_id, $modules, $mails, $asunto, $modify = [], $modules_delete = [])
+    public function __construct($license_id, $company_id, $modules, $mails, $asunto, $modify = [], $modules_delete = [], $freeze, $observations)
     {
         $this->license_id = $license_id;
         $this->company_id = $company_id;
@@ -43,6 +45,8 @@ class NotifyLicenseRenewalJob implements ShouldQueue
         $this->asunto = $asunto;
         $this->modify = $modify;
         $this->modules_delete = $modules_delete;
+        $this->freeze = $freeze;
+        $this->observations = $observations;
     }
 
     /**
@@ -84,29 +88,33 @@ class NotifyLicenseRenewalJob implements ShouldQueue
 
         $limit = 50 - $supers->count() - count($admins);
 
-        $users = User::select('sau_users.email')
-            ->active()
-            ->join('sau_company_user', 'sau_company_user.user_id', 'sau_users.id')
-            ->join('sau_role_user', function($q) use ($team) { 
-                $q->on('sau_role_user.user_id', '=', 'sau_users.id')
-                  ->on('sau_role_user.team_id', '=', DB::raw($team->id));
-            })
-            ->join('sau_roles', 'sau_roles.id', 'sau_role_user.role_id')
-            ->join('sau_permission_role', 'sau_permission_role.role_id', 'sau_roles.id')
-            ->join('sau_permissions', 'sau_permissions.id', 'sau_permission_role.permission_id')
-            //->where('sau_company_user.company_id', $this->company_id)
-            //->where('sau_roles.company_id', $this->company_id)
-            ->whereIn('sau_permissions.module_id', $this->modules)
-            ->where('sau_roles.display_name', '<>', 'Superadmin')
-            ->groupBy('sau_users.id', 'sau_users.email'/*, 'sau_roles.display_name'*/)
-            ->limit($limit);
-
-        $users->company_scope = $this->company_id;
-        $users = $users->get();
-
-        foreach ($users as $key => $value)
+        if ($this->freeze == 'NO')
         {
-            $recipients->push(new User(['email'=>$value->email]));
+            \Log::info('normal');
+            $users = User::select('sau_users.email')
+                ->active()
+                ->join('sau_company_user', 'sau_company_user.user_id', 'sau_users.id')
+                ->join('sau_role_user', function($q) use ($team) { 
+                    $q->on('sau_role_user.user_id', '=', 'sau_users.id')
+                    ->on('sau_role_user.team_id', '=', DB::raw($team->id));
+                })
+                ->join('sau_roles', 'sau_roles.id', 'sau_role_user.role_id')
+                ->join('sau_permission_role', 'sau_permission_role.role_id', 'sau_roles.id')
+                ->join('sau_permissions', 'sau_permissions.id', 'sau_permission_role.permission_id')
+                //->where('sau_company_user.company_id', $this->company_id)
+                //->where('sau_roles.company_id', $this->company_id)
+                ->whereIn('sau_permissions.module_id', $this->modules)
+                ->where('sau_roles.display_name', '<>', 'Superadmin')
+                ->groupBy('sau_users.id', 'sau_users.email'/*, 'sau_roles.display_name'*/)
+                ->limit($limit);
+
+            $users->company_scope = $this->company_id;
+            $users = $users->get();
+
+            foreach ($users as $key => $value)
+            {
+                $recipients->push(new User(['email'=>$value->email]));
+            }
         }
 
         foreach ($supers as $key => $value)
@@ -167,7 +175,7 @@ class NotifyLicenseRenewalJob implements ShouldQueue
             NotificationMail::
                 subject($this->asunto .' de Licencia Sauce')
                 ->recipients($recipients)
-                ->message($this->asunto == 'Creación' ? "Se acaba de crear una licencia para la empresa <b>{$company->name}</b>" : "Se acaba de modificar una licencia para la empresa <b>{$company->name}</b>")
+                ->message($this->asunto == 'Creación' ? "Se acaba de crear una licencia para la empresa <b>{$company->name}</b>" : ($this->freeze == 'NO' ? "Se acaba de modificar una licencia para la empresa <b>{$company->name}</b>" :"Se acaba de congelar una licencia para la empresa <b>{$company->name}</b>, con las siguientes observaciones <b>{$this->observations}</b>"))
                 ->module('users')
                 ->event('Job: NotifyLicenseRenewalJob')
                 ->company($this->company_id)
@@ -180,7 +188,7 @@ class NotifyLicenseRenewalJob implements ShouldQueue
         {
             NotificationMail::
                 subject($this->asunto .' de Licencia Sauce')
-                ->message($this->asunto == 'Creación' ? "Se acaba de crear una licencia para la empresa <b>{$company->name}</b>" : "Se acaba de modificar una licencia para la empresa <b>{$company->name}</b>")
+                ->message($this->asunto == 'Creación' ? "Se acaba de crear una licencia para la empresa <b>{$company->name}</b>" : ($this->freeze == 'NO' ? "Se acaba de modificar una licencia para la empresa <b>{$company->name}</b>" :"Se acaba de congelar una licencia para la empresa <b>{$company->name}</b>, con las siguientes observaciones <b>{$this->observations}</b>"))
                 ->module('users')
                 ->event('Job: NotifyLicenseRenewalJob')
                 ->company($this->company_id)

@@ -98,10 +98,40 @@ class LawController extends Controller
             ->leftJoin('sau_lm_laws_hide_companies', 'sau_lm_laws_hide_companies.law_id', 'sau_lm_laws.id')
             ->where('sau_lm_articles_fulfillment.company_id', $this->company);
 
+
+            $laws2 = Law::selectRaw(
+                'sau_lm_laws.*,
+                 IF(LENGTH(sau_lm_laws.description) > 50, CONCAT(SUBSTRING(sau_lm_laws.description, 1, 50), "..."), sau_lm_laws.description) AS description,
+                 sau_lm_system_apply.name AS system_apply,
+                 sau_lm_laws_types.name AS law_type,
+                 sau_lm_risks_aspects.name AS risk_aspect,
+                 sau_lm_entities.name AS entity,
+                 sau_lm_sst_risks.name AS sst_risk,
+                 IF(sau_lm_laws_hide_companies.id IS NOT NULL, "SI", "NO") hide,
+                 SUM(IF(sau_lm_articles_fulfillment.fulfillment_value_id IS NOT NULL, 1, 0)) qualify,
+                 SUM(IF(sau_lm_articles_fulfillment.fulfillment_value_id IS NULL, 1, 0)) no_qualify'
+            )
+            ->join('sau_lm_system_apply', 'sau_lm_system_apply.id', 'sau_lm_laws.system_apply_id')
+            ->join('sau_lm_laws_types', 'sau_lm_laws_types.id', 'sau_lm_laws.law_type_id')
+            ->join('sau_lm_risks_aspects', 'sau_lm_risks_aspects.id', 'sau_lm_laws.risk_aspect_id')
+            ->join('sau_lm_entities', 'sau_lm_entities.id', 'sau_lm_laws.entity_id')
+            ->join('sau_lm_sst_risks', 'sau_lm_sst_risks.id', 'sau_lm_laws.sst_risk_id')
+            ->join('sau_lm_articles', 'sau_lm_articles.law_id', 'sau_lm_laws.id')
+            ->join('sau_lm_articles_fulfillment','sau_lm_articles_fulfillment.article_id', 'sau_lm_articles.id')
+            ->leftJoin('sau_lm_laws_hide_companies', 'sau_lm_laws_hide_companies.law_id', 'sau_lm_laws.id')
+            ->where('sau_lm_articles_fulfillment.company_id', $this->company)
+            ->where('sau_lm_laws.company_id', $this->company);
+            //->groupBy('sau_lm_laws.id', 'sau_lm_laws_hide_companies.id');
+
+
             if (!$this->user->hasRole('Superadmin', $this->company) && COUNT($hides) > 0)
                 $laws->whereNotIn('sau_lm_laws.id', $hides);
 
+            
             $laws->groupBy('sau_lm_laws.id', 'sau_lm_laws_hide_companies.id');
+            $laws2->groupBy('sau_lm_laws.id', 'sau_lm_laws_hide_companies.id');
+
+            $laws = $laws->union($laws2);
 
             $url = "/legalaspects/lm/lawsQualify";
         }

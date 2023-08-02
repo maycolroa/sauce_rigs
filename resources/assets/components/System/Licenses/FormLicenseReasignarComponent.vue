@@ -6,7 +6,7 @@
           </vue-ajax-advanced-select>
     </b-form-row>
     <b-form-row>
-      <vue-datepicker :disabled="viewOnly" class="col-md-6" v-model="form.started_at" label="Fecha Inicio" :full-month-name="true" placeholder="Seleccione la fecha inicio" :error="form.errorsFor('started_at')" name="started_at" @input="recalculateDateEndedAt()">
+      <vue-datepicker :disabled="viewOnly" class="col-md-6" v-model="form.started_at" label="Fecha Inicio" :full-month-name="true" placeholder="Seleccione la fecha inicio" :error="form.errorsFor('started_at')" name="started_at" :disabled-dates="disabledDates()" @input="recalculateDateEndedAt()">
           </vue-datepicker>
       <vue-datepicker :disabled="true" class="col-md-6" v-model="form.ended_at" label="Fecha Fin" :full-month-name="true" placeholder="Seleccione la fecha fin" :error="form.errorsFor('ended_at')" name="ended_at">
           </vue-datepicker>
@@ -152,7 +152,6 @@ export default {
     },
     countModules()
     {
-      console.log('entro');
       if (this.activateEvent)
       {
         if (this.form.module_id.length > this.form.modules_quantity)
@@ -161,7 +160,14 @@ export default {
           this.form.module_id.pop()
         }
       }
-    }
+    },
+    disabledDates() {
+      let toDate = new Date(this.form.started_at);
+
+      return {
+            to: new Date(toDate.getFullYear(), toDate.getMonth(), toDate.getDate())
+        }
+    },
   }
 };
 </script>

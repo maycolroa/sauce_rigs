@@ -343,9 +343,9 @@ class LicenseController extends Controller
             $license->multiselect_company = $license->company->multiselect();
             $license->multiselect_user = NULL;
             $license->user_id = NULL;
-            $license->started_at = Carbon::now()->format('D M d Y');
+            //$license->started_at = Carbon::now()->format('D M d Y');
             $end = Carbon::now()->addDays($license->available_days)->format('D M d Y');
-            //$license->started_at = $ini->format('D M d Y');
+            $license->started_at = (Carbon::createFromFormat('Y-m-d', $license->start_freeze))->addDays(1)->format('D M d Y');
             $license->ended_at = $end;
 
             $modules = [];
@@ -464,7 +464,7 @@ class LicenseController extends Controller
             
             $mails = $request->has('add_email') ? $this->getDataFromMultiselect($request->get('add_email')) : [];
 
-            NotifyLicenseRenewalJob::dispatch($license->id, $license->company_id, $modules_main, $mails, 'Modificación', $modificaciones, $modulos_delete);
+            NotifyLicenseRenewalJob::dispatch($license->id, $license->company_id, $modules_main, $mails, 'Modificación', $modificaciones, $modulos_delete, $license->freeze, $license->observations);
 
         } catch(\Exception $e) {
             DB::rollback();
