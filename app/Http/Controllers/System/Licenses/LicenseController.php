@@ -406,7 +406,7 @@ class LicenseController extends Controller
             $license->fill($request->all());
             $license->started_at = (Carbon::createFromFormat('D M d Y', $request->started_at))->format('Y-m-d');
             $license->ended_at = (Carbon::createFromFormat('D M d Y', $request->ended_at))->format('Y-m-d');
-            $license->start_freeze = (Carbon::createFromFormat('D M d Y', $request->start_freeze))->format('Y-m-d');
+            $license->start_freeze = $request->start_freeze ? (Carbon::createFromFormat('D M d Y', $request->start_freeze))->format('Y-m-d') : NULL;
 
             if ($license->started_at != $old_started)
                 array_push($modificaciones, ['fecha_inicio' => $license->started_at]);

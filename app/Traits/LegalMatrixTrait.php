@@ -8,6 +8,7 @@ use App\Models\Administrative\Users\User;
 use App\Models\LegalAspects\LegalMatrix\Article;
 use App\Models\LegalAspects\LegalMatrix\ArticleFulfillment;
 use App\Models\LegalAspects\LegalMatrix\FulfillmentValues;
+use App\Models\LegalAspects\LegalMatrix\Law;
 use App\Facades\ActionPlans\Facades\ActionPlan;
 use DB;
 
@@ -122,13 +123,63 @@ trait LegalMatrixTrait
 
     public function syncQualificationsCompanies($law_id)
     {
-        $companies = DB::table('sau_lm_company_interest')
-            ->selectRaw('DISTINCT company_id AS company_id')
-            ->get();
+        $law_company = Law::find($law_id);
 
-        foreach ($companies as $key => $value)
-        {            
-            $this->syncQualificationsCompany($value->company_id, $law_id);
+        if ($law_company->company_id)
+            $this->syncQualificationsLawCompany($law_company->company_id, $law_id);
+        else
+        {
+            $companies = DB::table('sau_lm_company_interest')
+                ->selectRaw('DISTINCT company_id AS company_id')
+                ->get();
+
+            foreach ($companies as $key => $value)
+            {            
+                $this->syncQualificationsCompany($value->company_id, $law_id);
+            }
         }
+    }
+
+    public function syncQualificationsLawCompany($company_id, $law_id = null)
+    {
+        if ($company_id && !is_numeric($company_id))
+            throw new \Exception('Company invalid');
+
+        $articles = $this->getArticlesLawCompany($company_id, $law_id);
+        $ids_article = [];
+
+        foreach ($articles as $key => $value)
+        {
+            $qualification = ArticleFulfillment::query();
+            $qualification->company_scope = $company_id;
+
+            $qualification = $qualification->firstOrCreate(
+                ['article_id' => $value->id],
+                ['article_id' => $value->id, 'company_id' => $company_id, 'fulfillment_value_id' => 1]
+            );
+
+            array_push($ids_article, $value->id);
+        }
+
+        $this->deleteQualificationsDuplicates($company_id);
+    }
+
+    public function getArticlesLawCompany($company_id = null, $law_id = null)
+    {
+        if ($company_id && !is_numeric($company_id))
+            throw new \Exception('Company invalid');
+
+        $articles = Article::select('sau_lm_articles.*')
+            ->join('sau_lm_laws', 'sau_lm_laws.id', 'sau_lm_articles.law_id')
+            ->alls($company_id)
+            ->groupBy('sau_lm_articles.id');
+
+        if ($company_id)
+            $articles->company_scope = $company_id;
+
+        if ($law_id)
+            $articles->where('sau_lm_articles.law_id', $law_id);
+
+        return $articles->get();
     }
 }

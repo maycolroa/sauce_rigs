@@ -36,7 +36,7 @@ class NotifyLicenseRenewalJob implements ShouldQueue
      *
      * @return void
      */
-    public function __construct($license_id, $company_id, $modules, $mails, $asunto, $modify = [], $modules_delete = [], $freeze, $observations)
+    public function __construct($license_id, $company_id, $modules, $mails, $asunto, $modify = [], $modules_delete = [], $freeze = null, $observations = '')
     {
         $this->license_id = $license_id;
         $this->company_id = $company_id;
