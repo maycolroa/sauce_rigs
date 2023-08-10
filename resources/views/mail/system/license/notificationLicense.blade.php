@@ -44,4 +44,14 @@
 </ol>
 @endif
 
+@if(count($mail->with["modules_freeze"]) > 0)
+<b>Módulos congelados:</b>
+<br>
+<ol>
+@foreach($mail->with["modules_freeze"] as $item)
+<li>{{ $item }}</li>
+@endforeach
+</ol>
+@endif
+
 @endcomponent

@@ -8,7 +8,7 @@
 
     <div class="col-md">
       <b-card no-body>
-        <b-card-body>
+        <b-card-body style="height: 1500px">
             <form-license
                 url="/system/license"
                 method="POST"

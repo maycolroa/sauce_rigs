@@ -26,24 +26,6 @@
       </vue-advanced-select>
     </b-form-row>
 
-    <b-form-row>
-      <vue-checkbox-simple v-if="isEdit || viewOnly" style="padding-top: 30px;" :disabled="viewOnly" class="col-md-6" v-model="form.freeze" label="¿Congelar?" :checked="form.freeze" name="freeze" checked-value="SI" unchecked-value="NO"></vue-checkbox-simple>
-    </b-form-row>
-
-    <b-form-row v-if="viewOnly">
-      <div class="col-md-12">
-        <h4 class="font-weight-bold mb-1">
-          Historial de cambios realizados
-        </h4>
-        <div class="col-md">
-          <vue-table
-              configName="system-license-histories"
-              :modelId="form.id ? form.id : -1"
-              ></vue-table>
-        </div>
-      </div>
-    </b-form-row>
-
     <div class="row float-right pt-10 pr-10">
       <template>
         <b-btn variant="default" :to="cancelUrl" :disabled="loading">{{ viewOnly ? "Atras" : "Cancelar"}}</b-btn>&nbsp;&nbsp;

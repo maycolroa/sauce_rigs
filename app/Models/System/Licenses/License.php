@@ -40,6 +40,11 @@ class License extends Model
         return $this->belongsToMany('App\Models\General\Module','sau_license_module');
     }
 
+    public function modulesFreeze()
+    {
+        return $this->belongsToMany('App\Models\General\Module','sau_license_module_freeze');
+    }
+
     public function scopeSystem($query)
     {
       return $query->withoutGlobalScopes();

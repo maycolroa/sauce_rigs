@@ -113,8 +113,8 @@ class LicenseController extends Controller
             )
             ->join('sau_companies', 'sau_companies.id', 'sau_licenses.company_id')
             ->leftJoin('sau_company_groups', 'sau_company_groups.id', 'sau_companies.company_group_id')
-            ->join('sau_license_module', 'sau_license_module.license_id', 'sau_licenses.id')
-            ->join('sau_modules', 'sau_modules.id', 'sau_license_module.module_id')
+            ->join('sau_license_module_freeze', 'sau_license_module_freeze.license_id', 'sau_licenses.id')
+            ->join('sau_modules', 'sau_modules.id', 'sau_license_module_freeze.module_id')
             ->where('sau_modules.main', 'SI')
             ->where('sau_licenses.freeze', 'SI')
             ->whereNull('sau_licenses.reassigned')
@@ -212,7 +212,7 @@ class LicenseController extends Controller
             NotifyLicenseRenewalJob::dispatch($license->id, $license->company_id, $modules_main, $mails, 'Creación');
 
         } catch(\Exception $e) {
-            \Log::info($e);
+            \Log::info($e->getMessage());
             DB::rollback();
             return $this->respondHttp500();
         }
@@ -258,9 +258,13 @@ class LicenseController extends Controller
 
         try
         {
-            $license = new License($request->all());
+            $license = new License();
             $license->started_at = (Carbon::createFromFormat('D M d Y', $request->started_at))->format('Y-m-d');
             $license->ended_at = (Carbon::createFromFormat('D M d Y', $request->ended_at))->format('Ymd');
+            $license->company_id = $request->company_id;
+            $license->notified = 'NO';
+
+            //$license = new License($request->all());
             
             if (!$license->save())
                 return $this->respondHttp500();
@@ -287,7 +291,7 @@ class LicenseController extends Controller
             NotifyLicenseRenewalJob::dispatch($license->id, $license->company_id, $modules_main, $mails, 'Creación');
 
         } catch(\Exception $e) {
-            \Log::info($e);
+            \Log::info($e->getMessage());
             DB::rollback();
             return $this->respondHttp500();
         }
@@ -315,6 +319,7 @@ class LicenseController extends Controller
             $license->start_freeze = $license->start_freeze ? (Carbon::createFromFormat('Y-m-d', $license->start_freeze))->format('D M d Y') : NULL;
 
             $modules = [];
+            $modules_freeze = [];
 
             $mails = [];
 
@@ -327,10 +332,21 @@ class LicenseController extends Controller
 
             $license->add_email = $mails;
 
+            if ($license->freeze == 'SI')
+            {
+                foreach ($license->modulesFreeze()->main()->get() as $key => $value)
+                {               
+                    array_push($modules_freeze, $value->multiselect());
+                }
+            }
+
+            $license->module_freeze = $modules_freeze;
+
             return $this->respondHttp200([
                 'data' => $license,
             ]);
         } catch(Exception $e){
+            \Log::info($e->getMessage());
             $this->respondHttp500();
         }
     }
@@ -344,15 +360,16 @@ class LicenseController extends Controller
             $license->multiselect_user = NULL;
             $license->user_id = NULL;
             //$license->started_at = Carbon::now()->format('D M d Y');
-            $end = Carbon::now()->addDays($license->available_days)->format('D M d Y');
-            $license->started_at = (Carbon::createFromFormat('Y-m-d', $license->start_freeze))->addDays(1)->format('D M d Y');
+            $inicio = (Carbon::createFromFormat('Y-m-d', $license->start_freeze))->addDays(1);
+            $license->started_at = $inicio->format('D M d Y');
+            $end = $inicio->addDays($license->available_days)->format('D M d Y');
             $license->ended_at = $end;
 
             $modules = [];
 
             $mails = [];
 
-            foreach ($license->modules()->main()->get() as $key => $value)
+            foreach ($license->modulesFreeze()->main()->get() as $key => $value)
             {               
                 array_push($modules, $value->multiselect());
             }
@@ -372,6 +389,7 @@ class LicenseController extends Controller
             ]);
 
         } catch(Exception $e){
+            \Log::info($e->getMessage());
             $this->respondHttp500();
         }
     }
@@ -417,6 +435,7 @@ class LicenseController extends Controller
             $modulos_old = $license->modules()->where('main', 'SI')->get();
 
             $modulos_delete = [];
+            $modulos_freeze = [];
 
             if ($old_company != $license->company_id || $old_ended != $license->ended_at)
                 $license->notified = 'NO';
@@ -426,13 +445,31 @@ class LicenseController extends Controller
 
             $modules_main = $this->getDataFromMultiselect($request->get('module_id'));
             $modules = ModuleDependence::whereIn('module_id', $modules_main)->pluck('module_dependence_id')->toArray();
+
             $license->modules()->sync(array_merge($modules_main, $modules));
+
+
+            $modules_freeze = $request->has('module_freeze') && count($request->get('module_freeze')) > 0 ? $this->getDataFromMultiselect($request->get('module_freeze')) : [];
+            $modules_f = ModuleDependence::whereIn('module_id', $modules_freeze)->pluck('module_dependence_id')->toArray();
+            
+            $license->modulesFreeze()->sync(array_merge($modules_freeze, $modules_f));
 
             foreach ($modulos_old as $key => $value) 
             {
                 if (!in_array($value->id, $modules_main))
                 {
                     array_push($modulos_delete, $value->display_name);
+                }
+            }
+
+            if (count($modules_freeze) > 0)
+            {
+                foreach ($modulos_old as $key => $value) 
+                {
+                    if (in_array($value->id, $modules_freeze))
+                    {
+                        array_push($modulos_freeze, $value->id);
+                    }
                 }
             }
 
@@ -453,6 +490,24 @@ class LicenseController extends Controller
                 $license->observations = $request->observations;
                 $license->date_freeze = Carbon::now()->format('Y-m-d');
                 $license->save();
+
+                if (count($modules_main) > count($modules_freeze))
+                {
+                    $mudules_license_new = [];
+
+                    foreach ($modules_main as $key => $modul) 
+                    {
+                        if (!in_array($modul, $modules_freeze))
+                        {
+                            array_push($mudules_license_new, $modul);
+                        }
+                    }
+
+                    if (count($mudules_license_new) > 0)
+                    {
+                        $this->saveLicenseNewFreeze($license, $mudules_license_new);
+                    }
+                }
             }
             else
             {
@@ -464,7 +519,7 @@ class LicenseController extends Controller
             
             $mails = $request->has('add_email') ? $this->getDataFromMultiselect($request->get('add_email')) : [];
 
-            NotifyLicenseRenewalJob::dispatch($license->id, $license->company_id, $modules_main, $mails, 'Modificación', $modificaciones, $modulos_delete, $license->freeze, $license->observations);
+            NotifyLicenseRenewalJob::dispatch($license->id, $license->company_id, $modules_main, $mails, 'Modificación', $modificaciones, $modulos_delete, $license->freeze, $license->observations, $modulos_freeze);
 
         } catch(\Exception $e) {
             DB::rollback();
@@ -474,6 +529,42 @@ class LicenseController extends Controller
         
         return $this->respondHttp200([
             'message' => 'Se actualizo la licencia'
+        ]);
+    }
+
+    public function saveLicenseNewFreeze($request, $modules_new)
+    {
+        DB::beginTransaction();
+
+        try
+        {
+            $license = new License();
+            $license->started_at = $request->started_at;
+            $license->ended_at = $request->ended_at;
+            $license->company_id = $request->company_id;
+            $license->notified = 'NO';
+            
+            if (!$license->save())
+                return $this->respondHttp500();
+
+            $modules = ModuleDependence::whereIn('module_id', $modules_new)->pluck('module_dependence_id')->toArray();
+            $license->modules()->sync(array_merge($modules_new, $modules));
+
+            $license->histories()->create([
+                'user_id' => $this->user->id
+            ]);
+
+            DB::commit();
+
+
+        } catch(\Exception $e) {
+            \Log::info($e->getMessage());
+            DB::rollback();
+            return $this->respondHttp500();
+        }
+
+        return $this->respondHttp200([
+            'message' => 'Se reasigno la licencia'
         ]);
     }
 

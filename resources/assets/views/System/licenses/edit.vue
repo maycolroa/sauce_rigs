@@ -8,7 +8,7 @@
 
     <div class="col-md">
       <b-card no-body>
-        <b-card-body  style="height: 1000px">
+        <b-card-body style="height: 1500px">
             <form-license
                 :url="`/system/license/${this.$route.params.id}`"
                 method="PUT"
@@ -16,6 +16,7 @@
                 :modules="modules"
                 companies-data-url="/selects/companies"
                 :is-edit="true"
+                :view-only="freeze"
                 :cancel-url="{ name: 'system-licenses'}"/>
         </b-card-body>
       </b-card>
@@ -39,13 +40,19 @@ export default {
   data () {
     return {
       data: [],
-      modules: []
+      modules: [],
+      freeze: false
     }
   },
   created(){
     axios.get(`/system/license/${this.$route.params.id}`)
     .then(response => {
         this.data = response.data.data;
+
+        if (this.data.freeze == 'SI')
+        {
+          this.freeze = true;
+        }
     })
     .catch(error => {
         Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');

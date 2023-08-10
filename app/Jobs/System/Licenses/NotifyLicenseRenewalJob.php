@@ -30,13 +30,14 @@ class NotifyLicenseRenewalJob implements ShouldQueue
     protected $modules_delete;
     protected $freeze;
     protected $observations;
+    protected $modules_freeze;
 
     /**
      * Create a new job instance.
      *
      * @return void
      */
-    public function __construct($license_id, $company_id, $modules, $mails, $asunto, $modify = [], $modules_delete = [], $freeze = null, $observations = '')
+    public function __construct($license_id, $company_id, $modules, $mails, $asunto, $modify = [], $modules_delete = [], $freeze = null, $observations = '', $modules_freeze = [])
     {
         $this->license_id = $license_id;
         $this->company_id = $company_id;
@@ -47,6 +48,7 @@ class NotifyLicenseRenewalJob implements ShouldQueue
         $this->modules_delete = $modules_delete;
         $this->freeze = $freeze;
         $this->observations = $observations;
+        $this->modules_freeze = $modules_freeze;
     }
 
     /**
@@ -88,9 +90,12 @@ class NotifyLicenseRenewalJob implements ShouldQueue
 
         $limit = 50 - $supers->count() - count($admins);
 
+        $modules_news = collect([]);
+        $modules_olds = collect([]);
+        $modules_f = collect([]);
+
         if ($this->freeze == 'NO')
         {
-            \Log::info('normal');
             $users = User::select('sau_users.email')
                 ->active()
                 ->join('sau_company_user', 'sau_company_user.user_id', 'sau_users.id')
@@ -116,14 +121,28 @@ class NotifyLicenseRenewalJob implements ShouldQueue
                 $recipients->push(new User(['email'=>$value->email]));
             }
         }
+        else
+        {
+            foreach ($this->modules_freeze as $module)
+            {
+                $exists = License::select('sau_modules.display_name AS display_name')
+                    ->join('sau_license_module_freeze', 'sau_license_module_freeze.license_id', 'sau_licenses.id')
+                    ->join('sau_modules', 'sau_modules.id', 'sau_license_module_freeze.module_id')
+                    ->where('sau_licenses.id', $this->license_id)
+                    ->where('sau_modules.id', $module);
+    
+                $exists->company_scope = $this->company_id;
+                $exists = $exists->first();
+    
+                if ($exists)
+                    $modules_f->push($exists->display_name);
+            }
+        }
 
         foreach ($supers as $key => $value)
         {
             $admins->push(['email'=>$value->email]);
         }
-
-        $modules_news = collect([]);
-        $modules_olds = collect([]);
 
         foreach ($this->modules as $module)
         {
@@ -180,7 +199,7 @@ class NotifyLicenseRenewalJob implements ShouldQueue
                 ->event('Job: NotifyLicenseRenewalJob')
                 ->company($this->company_id)
                 ->view("system.license.notificationLicense")
-                ->with(['modules_news'=>$modules_news, 'modules_olds'=>$modules_olds, 'modify' => $fechas_modificadas, 'modules_delete' => $this->modules_delete])
+                ->with(['modules_news'=>$modules_news, 'modules_olds'=>$modules_olds, 'modify' => $fechas_modificadas, 'modules_delete' => $this->modules_delete, 'modules_freeze' => $modules_f])
                 ->copyHidden($admins)
                 ->send();
         }
@@ -193,7 +212,7 @@ class NotifyLicenseRenewalJob implements ShouldQueue
                 ->event('Job: NotifyLicenseRenewalJob')
                 ->company($this->company_id)
                 ->view("system.license.notificationLicense")
-                ->with(['modules_news'=>$modules_news, 'modules_olds'=>$modules_olds, 'modify' => $fechas_modificadas, 'modules_delete' => $this->modules_delete])
+                ->with(['modules_news'=>$modules_news, 'modules_olds'=>$modules_olds, 'modify' => $fechas_modificadas, 'modules_delete' => $this->modules_delete, 'modules_freeze' => $modules_f])
                 ->copyHidden($admins)
                 ->send();
         }
