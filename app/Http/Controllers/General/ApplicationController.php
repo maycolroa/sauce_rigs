@@ -307,7 +307,7 @@ class ApplicationController extends Controller
 
       if ($pages)
       {
-        if ($request->vuetable == 'dangerousconditions-inspections-qualification' || 'industrialsecure-dangermatrix-history')
+        if ($request->vuetable == 'dangerousconditions-inspections-qualification' || $request->vuetable == 'industrialsecure-dangermatrix-history' || $request->vuetable == 'industrialsecure-tags-administrative-control-search')
           $pages = 1;
         else
           $pages = $pages->page;
