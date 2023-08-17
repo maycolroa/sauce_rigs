@@ -98,8 +98,19 @@ class LicenseController extends Controller
             $licenses->betweenDate($dates);
         }
 
+        $now = Carbon::now()->format('Y-m-d');
+
         return Vuetable::of($licenses)
-                    ->make();
+                /*->addColumn('system-licenses-edit', function ($license) use ($now) {
+                    $end_at = Carbon::parse($license->ended_at);
+                    $started_at = Carbon::parse($now);
+
+                    if ($end_at > $started_at)
+                        return true;
+                    else
+                        return false;
+                })*/
+                ->make();
     }
 
     public function dataReasignacion(Request $request)
@@ -332,6 +343,13 @@ class LicenseController extends Controller
 
             $license->add_email = $mails;
 
+            $now = Carbon::now()->format('Y-m-d');
+
+            $end_at = Carbon::parse($license->ended_at);
+            $started_at = Carbon::parse($now);
+
+            $license->vigency = $end_at > $started_at;
+
             if ($license->freeze == 'SI')
             {
                 foreach ($license->modulesFreeze()->main()->get() as $key => $value)
@@ -446,13 +464,13 @@ class LicenseController extends Controller
             $modules_main = $this->getDataFromMultiselect($request->get('module_id'));
             $modules = ModuleDependence::whereIn('module_id', $modules_main)->pluck('module_dependence_id')->toArray();
 
-            $license->modules()->sync(array_merge($modules_main, $modules));
-
+            //$license->modules()->sync(array_merge($modules_main, $modules));
 
             $modules_freeze = $request->has('module_freeze') && count($request->get('module_freeze')) > 0 ? $this->getDataFromMultiselect($request->get('module_freeze')) : [];
             $modules_f = ModuleDependence::whereIn('module_id', $modules_freeze)->pluck('module_dependence_id')->toArray();
             
             $license->modulesFreeze()->sync(array_merge($modules_freeze, $modules_f));
+            $license->modules()->sync(array_merge($modules_freeze, $modules_f));
 
             foreach ($modulos_old as $key => $value) 
             {

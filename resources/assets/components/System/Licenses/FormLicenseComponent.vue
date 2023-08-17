@@ -26,8 +26,8 @@
       </vue-advanced-select>
     </b-form-row>
 
-    <b-form-row>
-      <vue-checkbox-simple v-if="isEdit || viewOnly" style="padding-top: 30px;" :disabled="viewOnly" class="col-md-6" v-model="form.freeze" label="¿Congelar?" :checked="form.freeze" name="freeze" checked-value="SI" unchecked-value="NO"></vue-checkbox-simple>
+    <b-form-row v-if="form.vigency && (isEdit || viewOnly)">
+      <vue-checkbox-simple style="padding-top: 30px;" :disabled="viewOnly" class="col-md-6" v-model="form.freeze" label="¿Congelar?" :checked="form.freeze" name="freeze" checked-value="SI" unchecked-value="NO"></vue-checkbox-simple>
       <vue-datepicker v-if="form.freeze == 'SI'" :disabled="viewOnly" class="col-md-6" v-model="form.start_freeze" label="Fecha Inicio Congelamiento" :full-month-name="true" placeholder="Seleccione la fecha de congelamiento" :error="form.errorsFor('start_freeze')" name="start_freeze" :disabled-dates="disabledDates()">
           </vue-datepicker>
       <vue-advanced-select v-if="form.freeze == 'SI'" :disabled="viewOnly" v-model="form.module_freeze" class="col-md-12" :options="form.module_id" :limit="1000" :searchable="true" name="module_freeze" label="Aplicación \ Módulo a congelar" placeholder="Seleccione los módulos" :error="form.errorsFor('module_freeze')" :selected-object="form.multiselect_module_freeze" :multiple="true">
