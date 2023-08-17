@@ -17,7 +17,7 @@
     </b-card>
 
     <b-form-row v-if="isEdit && !isDeleted">
-      <vue-radio :disabled="viewOnly" :checked="form.rewrite" class="col-md-6" v-model="form.rewrite" :options="siNo" name="rewrite" :error="form.errorsFor('rewrite')" label="¿Desea sobreescribir el valor en todas las matrices en las cuales se encuentra?">
+      <vue-radio :disabled="viewOnly" :checked="form.rewrite" class="col-md-12" v-model="form.rewrite" :options="siNo" name="rewrite" :error="form.errorsFor('rewrite')" label="¿Desea sobreescribir el valor en todas las matrices en las cuales se encuentra?">
                     </vue-radio>
     </b-form-row>
 
