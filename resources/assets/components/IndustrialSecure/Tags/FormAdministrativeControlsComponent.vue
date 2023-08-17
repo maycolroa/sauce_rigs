@@ -2,10 +2,10 @@
 
   <b-form :action="url" @submit.prevent="submit" autocomplete="off">
     <b-form-row>
-      <vue-input :disabled="viewOnly" class="col-md-12" v-model="form.name" label="Nombre" type="text" name="name" :error="form.errorsFor('name')" placeholder="Nombre"></vue-input>
+      <vue-input v-show="!isDeleted" :disabled="viewOnly" class="col-md-12" v-model="form.name" label="Nombre" type="text" name="name" :error="form.errorsFor('name')" placeholder="Nombre"></vue-input>
     </b-form-row>
 
-    <b-card>
+    <b-card v-if="isEdit || isDeleted">
       <div>
         <template>
           <vue-table
@@ -16,9 +16,17 @@
       </div>
     </b-card>
 
-    <b-form-row>
+    <b-form-row v-if="isEdit && !isDeleted">
       <vue-radio :disabled="viewOnly" :checked="form.rewrite" class="col-md-6" v-model="form.rewrite" :options="siNo" name="rewrite" :error="form.errorsFor('rewrite')" label="¿Desea sobreescribir el valor en todas las matrices en las cuales se encuentra?">
                     </vue-radio>
+    </b-form-row>
+
+    <b-form-row v-if="isDeleted">
+      <vue-radio :disabled="viewOnly" :checked="form.replace" class="col-md-12" v-model="form.replace" :options="siNo" name="replace" :error="form.errorsFor('replace')" label="¿Desea reemplazar el valor a eliminar en todas las matrices en las cuales se encuentra?">
+                    </vue-radio>
+      <vue-ajax-advanced-select v-if="form.replace == 'SI'" :disabled="viewOnly" class="col-md-12" v-model="form.replace_deleted" name="replace_deleted" :error="form.errorsFor('replace_deleted')" label="Tags para remmplazar" placeholder="Seleccione los controles administrativos" :url="tagsAdministrativeControlsDataUrl" :multiple="false" :allowEmpty="true" :taggable="false">
+                    </vue-ajax-advanced-select>
+
     </b-form-row>
 
     <div class="row float-right pt-10 pr-10">
@@ -33,12 +41,14 @@
 <script>
 import VueInput from "@/components/Inputs/VueInput.vue";
 import VueRadio from "@/components/Inputs/VueRadio.vue";
+import VueAjaxAdvancedSelect from "@/components/Inputs/VueAjaxAdvancedSelect.vue";
 import Form from "@/utils/Form.js";
 
 export default {
   components: {
     VueInput,
-    VueRadio
+    VueRadio,
+    VueAjaxAdvancedSelect
   },
   props: {
     url: { type: String },
@@ -46,11 +56,14 @@ export default {
     cancelUrl: { type: [String, Object], required: true },
     isEdit: { type: Boolean, default: false },
     viewOnly: { type: Boolean, default: false },
+    isDeleted: { type: Boolean, default: false },
     tag: {
       default() {
         return {
             name: '',
-            rewrite: ''
+            rewrite: '',
+            replace: '',
+            replace_deleted: ''
         };
       }
     }
@@ -69,6 +82,7 @@ export default {
         {text: 'SI', value: 'SI'},
         {text: 'NO', value: 'NO'}
       ],
+      tagsAdministrativeControlsDataUrl: '/selects/tagsAdministrativeControls',
     };
   },
   methods: {

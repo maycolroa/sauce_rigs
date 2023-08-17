@@ -72,6 +72,8 @@ class AdministrativeControlsController extends Controller
         {
             $tag = TagsAdministrativeControls::findOrFail($id);
             $tag->rewrite = '';
+            $tag->replace = '';
+            $tag->replace_deleted = '';
 
             return $this->respondHttp200([
                 'data' => $tag,
@@ -90,21 +92,38 @@ class AdministrativeControlsController extends Controller
      */
     public function update(Request $request, TagsAdministrativeControls $administrativeControl)
     {
-        $name_old = $administrativeControl->name;
-        $administrativeControl->fill($request->all());
-        
-        if(!$administrativeControl->update()){
-          return $this->respondHttp500();
+        if ($request->rewrite)
+        {
+            $name_old = $administrativeControl->name;
+            $administrativeControl->fill($request->all());
+            
+            if(!$administrativeControl->update()){
+            return $this->respondHttp500();
+            }
+
+            if ($request->rewrite == 'SI')
+                $this->rewriteTag($name_old, $administrativeControl->name);
+
+            $this->saveLogActivitySystem('Matriz de peligros - TAG Controles administrativos', 'Se edito el tag '.$administrativeControl->name.' ');
+            
+            return $this->respondHttp200([
+                'message' => 'Se actualizo el tag'
+            ]);
         }
+        else if ($request->replace && $request->replace == 'SI')
+        { 
+            \Log::info('SI');
+            $new_tag = TagsAdministrativeControls::find($request->replace_deleted);
 
-        if ($request->rewrite == 'SI')
-            $this->rewriteTag($name_old, $administrativeControl->name);
-
-        $this->saveLogActivitySystem('Matriz de peligros - TAG Controles administrativos', 'Se edito el tag '.$administrativeControl->name.' ');
-        
-        return $this->respondHttp200([
-            'message' => 'Se actualizo el tag'
-        ]);
+            $this->rewriteTag($administrativeControl->name, $new_tag->name);
+            $this->destroy($administrativeControl);
+        }
+        else if ($request->replace && $request->replace == 'NO')
+        {
+            \Log::info('NO');
+            $this->rewriteTag($administrativeControl->name, '');
+            $this->destroy($administrativeControl);
+        }
     }
 
     public function rewriteTag($old_name, $new_name)

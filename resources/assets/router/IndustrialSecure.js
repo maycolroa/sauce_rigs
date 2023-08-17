@@ -187,13 +187,20 @@ export default [{
             import('@/views/IndustrialSecure/dangerMatrix/tagAdministrativeControls/create')
         }
       ]),
-
       ...middleware({ 'check-permission': 'dangerMatrix_c' }, [
         {
           name: 'industrialsecure-tags-administrative-controls-edit',
           path: 'dangermatrix/tags/administrativecontrols/edit/:id',
           component: () =>
             import('@/views/IndustrialSecure/dangerMatrix/tagAdministrativeControls/edit')
+        }
+      ]),
+      ...middleware({ 'check-permission': 'dangerMatrix_c' }, [
+        {
+          name: 'industrialsecure-tags-administrative-controls-deleted',
+          path: 'dangermatrix/tags/administrativecontrols/delete/:id',
+          component: () =>
+            import('@/views/IndustrialSecure/dangerMatrix/tagAdministrativeControls/deleted')
         }
       ]),
       ...middleware({ 'check-permission': 'dangerMatrix_c' }, [

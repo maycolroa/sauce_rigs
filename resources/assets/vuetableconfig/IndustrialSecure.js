@@ -282,11 +282,24 @@ export default [
                     },
                     permission: 'dangerMatrix_c'
                 },
+                {
+                    config: {
+                        color: 'outline-danger',
+                        borderless: true,
+                        icon: 'ion ion-md-close',
+                        title: 'Eliminar'
+                    },
+                    data: {
+                        routePush: { name: 'industrialsecure-tags-administrative-controls-deleted' },
+                        id: 'id',
+                    },
+                    permission: 'dangerMatrix_c'
+                },
             ],
         },
         {
             type: 'base',
-            buttons: [{
+            buttons: [/*{
             name: 'delete',
             data: {
                 action: '/industrialSecurity/tags/administrativeControls/',
@@ -294,7 +307,7 @@ export default [
                 messageConfirmation: 'Esta seguro de borrar el tag __name__'
             },
             permission: 'dangerMatrix_c'
-            }],
+            }*/],
         },
     ],
     configuration: {
