@@ -213,6 +213,30 @@ export default [{
       ]),
       ...middleware({ 'check-permission': 'dangerMatrix_c' }, [
         {
+          name: 'industrialsecure-tags-engineering-controls-create',
+          path: 'dangermatrix/tags/engineeringcontrols/create',
+          component: () =>
+            import('@/views/IndustrialSecure/dangerMatrix/tagEngineeringControls/create')
+        }
+      ]),
+      ...middleware({ 'check-permission': 'dangerMatrix_c' }, [
+        {
+          name: 'industrialsecure-tags-engineering-controls-edit',
+          path: 'dangermatrix/tags/engineeringcontrols/edit/:id',
+          component: () =>
+            import('@/views/IndustrialSecure/dangerMatrix/tagEngineeringControls/edit')
+        }
+      ]),
+      ...middleware({ 'check-permission': 'dangerMatrix_c' }, [
+        {
+          name: 'industrialsecure-tags-engineering-controls-deleted',
+          path: 'dangermatrix/tags/engineeringcontrols/delete/:id',
+          component: () =>
+            import('@/views/IndustrialSecure/dangerMatrix/tagEngineeringControls/deleted')
+        }
+      ]),
+      ...middleware({ 'check-permission': 'dangerMatrix_c' }, [
+        {
           name: 'industrialsecure-dangermatrix-tags-possible-consequences-danger',
           path: 'dangermatrix/tagspossibleconsequencesdanger',
           component: () =>
