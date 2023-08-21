@@ -208,7 +208,7 @@ export default [{
           name: 'industrialsecure-dangermatrix-tags-engineering-controls',
           path: 'dangermatrix/tags/engineeringcontrols',
           component: () =>
-            import('@/views/IndustrialSecure/dangerMatrix/indexTags')
+            import('@/views/IndustrialSecure/dangerMatrix/tagEngineeringControls/index')
         }
       ]),
       ...middleware({ 'check-permission': 'dangerMatrix_c' }, [
@@ -264,7 +264,31 @@ export default [{
           name: 'industrialsecure-dangermatrix-tags-epp',
           path: 'dangermatrix/tags/epp',
           component: () =>
-            import('@/views/IndustrialSecure/dangerMatrix/indexTags')
+            import('@/views/IndustrialSecure/dangerMatrix/tagEppControls/index')
+        }
+      ]),
+      ...middleware({ 'check-permission': 'dangerMatrix_c' }, [
+        {
+          name: 'industrialsecure-tags-epp-create',
+          path: 'dangermatrix/tags/eppcontrols/create',
+          component: () =>
+            import('@/views/IndustrialSecure/dangerMatrix/tagEppControls/create')
+        }
+      ]),
+      ...middleware({ 'check-permission': 'dangerMatrix_c' }, [
+        {
+          name: 'industrialsecure-tags-epp-edit',
+          path: 'dangermatrix/tags/eppcontrols/edit/:id',
+          component: () =>
+            import('@/views/IndustrialSecure/dangerMatrix/tagEppControls/edit')
+        }
+      ]),
+      ...middleware({ 'check-permission': 'dangerMatrix_c' }, [
+        {
+          name: 'industrialsecure-tags-epp-deleted',
+          path: 'dangermatrix/tags/eppcontrols/delete/:id',
+          component: () =>
+            import('@/views/IndustrialSecure/dangerMatrix/tagEppControls/deleted')
         }
       ]),
       ...middleware({ 'check-permission': 'dangerMatrix_c' }, [

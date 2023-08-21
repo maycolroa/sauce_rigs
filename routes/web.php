@@ -519,6 +519,7 @@ Route::middleware(['auth'])->group(function () {
 
       Route::post('dangersMatrix/tagAdministrativeControls/searchKeyword/data', 'IndustrialSecure\Tags\AdministrativeControlsController@sharedTag');
       Route::post('dangersMatrix/engineeringControls/searchKeyword/data', 'IndustrialSecure\Tags\EngineeringControlsController@sharedTag');
+      Route::post('dangersMatrix/epp/searchKeyword/data', 'IndustrialSecure\Tags\EppController@sharedTag');
 
       Route::post('risksMatrix/data', 'IndustrialSecure\RiskMatrix\RiskMatrixController@data');
       Route::post('risksMatrix/getEvaluationControls', 'IndustrialSecure\RiskMatrix\RiskMatrixController@getEvaluationControl');
@@ -705,7 +706,7 @@ Route::middleware(['auth'])->group(function () {
         Route::post('engineeringControls/data', 'IndustrialSecure\Tags\EngineeringControlsController@data');
         Route::ApiResource('engineeringControls', 'IndustrialSecure\Tags\EngineeringControlsController');
         Route::post('epp/data', 'IndustrialSecure\Tags\EppController@data');
-        Route::ApiResource('epp', 'IndustrialSecure\Tags\EppController')->only('destroy');
+        Route::ApiResource('epp', 'IndustrialSecure\Tags\EppController');
         Route::post('possibleConsequencesDanger/data', 'IndustrialSecure\Tags\PossibleConsequencesDangerController@data');
         Route::ApiResource('possibleConsequencesDanger', 'IndustrialSecure\Tags\PossibleConsequencesDangerController')->only('destroy');
         Route::post('warningSignage/data', 'IndustrialSecure\Tags\WarningSignageController@data');
