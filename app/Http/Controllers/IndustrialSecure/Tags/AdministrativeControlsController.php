@@ -112,7 +112,6 @@ class AdministrativeControlsController extends Controller
         }
         else if ($request->replace && $request->replace == 'SI')
         { 
-            \Log::info('SI');
             $new_tag = TagsAdministrativeControls::find($request->replace_deleted);
 
             $this->rewriteTag($administrativeControl->name, $new_tag->name);
@@ -120,7 +119,6 @@ class AdministrativeControlsController extends Controller
         }
         else if ($request->replace && $request->replace == 'NO')
         {
-            \Log::info('NO');
             $this->rewriteTag($administrativeControl->name, '');
             $this->destroy($administrativeControl);
         }

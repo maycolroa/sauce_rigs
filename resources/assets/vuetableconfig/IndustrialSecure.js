@@ -434,19 +434,38 @@ export default [
     'controlls': [
         {
             type: 'push',
-            buttons: [],
+            buttons: [
+                {
+                    config: {
+                        color: 'outline-success',
+                        borderless: true,
+                        icon: 'ion ion-md-create',
+                        title: 'Editar'
+                    },
+                    data: {
+                        routePush: { name: 'industrialsecure-tags-warning-signage-edit' },
+                        id: 'id',
+                    },
+                    permission: 'dangerMatrix_c'
+                },
+                {
+                    config: {
+                        color: 'outline-danger',
+                        borderless: true,
+                        icon: 'fas fa-sync',
+                        title: 'Eliminar/Reemplazar'
+                    },
+                    data: {
+                        routePush: { name: 'industrialsecure-tags-warning-signage-deleted' },
+                        id: 'id',
+                    },
+                    permission: 'dangerMatrix_c'
+                },
+            ],
         },
         {
             type: 'base',
-            buttons: [{
-            name: 'delete',
-            data: {
-                action: '/industrialSecurity/tags/warningSignage/',
-                id: 'id',
-                messageConfirmation: 'Esta seguro de borrar el tag __name__'
-            },
-            permission: 'dangerMatrix_c'
-            }],
+            buttons: [],
         },
     ],
     configuration: {
@@ -2047,6 +2066,32 @@ export default [
     ],
     configuration: {
         urlData: '/industrialSecurity/dangersMatrix/epp/searchKeyword/data',
+        filterColumns: true,
+        /*configNameFilter: 'industrialsecure-dangermatrix-log-qualification'*/
+    }
+},
+{
+    name: 'industrialsecure-tags-warning-signage-control-search',
+    fields: [
+        { name: 'sau_dangers_matrix.id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true },
+        { name: 'sau_dangers_matrix.name', data: 'matriz', title: 'Matriz', sortable: true, searchable: false, detail: false, key: false },
+        { name: 'sau_dm_activities.name', data: 'activity', title: 'Actividad', sortable: true, searchable: false, detail: false, key: false },
+        { name: 'sau_dm_dangers.name', data: 'danger', title: 'Peligro', sortable: true, searchable: false, detail: false, key: false },
+        { name: 'campo', data: 'campo', title: 'Campo', sortable: true, searchable: false, detail: false, key: false },
+        { name: 'value', data: 'value', title: 'Valor', sortable: true, searchable: false, detail: false, key: false }
+    ],
+    'controlls': [
+        {
+            type: 'push',
+            buttons: [],
+        },
+        {
+            type: 'base',
+            buttons: [],
+        },
+    ],
+    configuration: {
+        urlData: '/industrialSecurity/dangersMatrix/warningSignage/searchKeyword/data',
         filterColumns: true,
         /*configNameFilter: 'industrialsecure-dangermatrix-log-qualification'*/
     }

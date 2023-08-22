@@ -256,7 +256,31 @@ export default [{
           name: 'industrialsecure-dangermatrix-tags-warning-signage',
           path: 'dangermatrix/tags/warningsignage',
           component: () =>
-            import('@/views/IndustrialSecure/dangerMatrix/indexTags')
+            import('@/views/IndustrialSecure/dangerMatrix/tagWarningSignageControls/index')
+        }
+      ]),
+      ...middleware({ 'check-permission': 'dangerMatrix_c' }, [
+        {
+          name: 'industrialsecure-tags-warning-signage-create',
+          path: 'dangermatrix/tags/warningsignage/create',
+          component: () =>
+            import('@/views/IndustrialSecure/dangerMatrix/tagWarningSignageControls/create')
+        }
+      ]),
+      ...middleware({ 'check-permission': 'dangerMatrix_c' }, [
+        {
+          name: 'industrialsecure-tags-warning-signage-edit',
+          path: 'dangermatrix/tags/warningsignage/edit/:id',
+          component: () =>
+            import('@/views/IndustrialSecure/dangerMatrix/tagWarningSignageControls/edit')
+        }
+      ]),
+      ...middleware({ 'check-permission': 'dangerMatrix_c' }, [
+        {
+          name: 'industrialsecure-tags-warning-signage-deleted',
+          path: 'dangermatrix/tags/warningsignage/delete/:id',
+          component: () =>
+            import('@/views/IndustrialSecure/dangerMatrix/tagWarningSignageControls/deleted')
         }
       ]),
       ...middleware({ 'check-permission': 'dangerMatrix_c' }, [
