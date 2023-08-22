@@ -240,7 +240,31 @@ export default [{
           name: 'industrialsecure-dangermatrix-tags-possible-consequences-danger',
           path: 'dangermatrix/tagspossibleconsequencesdanger',
           component: () =>
-            import('@/views/IndustrialSecure/dangerMatrix/indexTags')
+            import('@/views/IndustrialSecure/dangerMatrix/tagPossibleConsequencesDanger/index')
+        }
+      ]),
+      ...middleware({ 'check-permission': 'dangerMatrix_c' }, [
+        {
+          name: 'industrialsecure-tags-possible-consequences-danger-create',
+          path: 'dangermatrix/tags/tagspossibleconsequencesdanger/create',
+          component: () =>
+            import('@/views/IndustrialSecure/dangerMatrix/tagPossibleConsequencesDanger/create')
+        }
+      ]),
+      ...middleware({ 'check-permission': 'dangerMatrix_c' }, [
+        {
+          name: 'industrialsecure-tags-possible-consequences-danger-edit',
+          path: 'dangermatrix/tags/tagspossibleconsequencesdanger/edit/:id',
+          component: () =>
+            import('@/views/IndustrialSecure/dangerMatrix/tagPossibleConsequencesDanger/edit')
+        }
+      ]),
+      ...middleware({ 'check-permission': 'dangerMatrix_c' }, [
+        {
+          name: 'industrialsecure-tags-possible-consequences-danger-deleted',
+          path: 'dangermatrix/tags/tagspossibleconsequencesdanger/delete/:id',
+          component: () =>
+            import('@/views/IndustrialSecure/dangerMatrix/tagPossibleConsequencesDanger/deleted')
         }
       ]),
       ...middleware({ 'check-permission': 'dangerMatrix_c' }, [
@@ -344,7 +368,31 @@ export default [{
           name: 'industrialsecure-dangermatrix-tags-participants',
           path: 'dangermatrix/tags/participants',
           component: () =>
-            import('@/views/IndustrialSecure/dangerMatrix/indexTags')
+            import('@/views/IndustrialSecure/dangerMatrix/tagParticipants/index')
+        }
+      ]),
+      ...middleware({ 'check-permission': 'dangerMatrix_c' }, [
+        {
+          name: 'industrialsecure-tags-participants-create',
+          path: 'dangermatrix/tags/participants/create',
+          component: () =>
+            import('@/views/IndustrialSecure/dangerMatrix/tagParticipants/create')
+        }
+      ]),
+      ...middleware({ 'check-permission': 'dangerMatrix_c' }, [
+        {
+          name: 'industrialsecure-tags-participants-edit',
+          path: 'dangermatrix/tags/participants/edit/:id',
+          component: () =>
+            import('@/views/IndustrialSecure/dangerMatrix/tagParticipants/edit')
+        }
+      ]),
+      ...middleware({ 'check-permission': 'dangerMatrix_c' }, [
+        {
+          name: 'industrialsecure-tags-participants-deleted',
+          path: 'dangermatrix/tags/participants/delete/:id',
+          component: () =>
+            import('@/views/IndustrialSecure/dangerMatrix/tagParticipants/deleted')
         }
       ]),
       ...middleware({ 'check-permission': 'dangerMatrix_c' }, [
@@ -352,7 +400,31 @@ export default [{
           name: 'industrialsecure-dangermatrix-tags-danger-description',
           path: 'dangermatrix/tags/dangerdescription',
           component: () =>
-            import('@/views/IndustrialSecure/dangerMatrix/indexTags')
+            import('@/views/IndustrialSecure/dangerMatrix/tagDangerDescription/index')
+        }
+      ]),
+      ...middleware({ 'check-permission': 'dangerMatrix_c' }, [
+        {
+          name: 'industrialsecure-tags-danger-description-create',
+          path: 'dangermatrix/tags/dangerdescription/create',
+          component: () =>
+            import('@/views/IndustrialSecure/dangerMatrix/tagDangerDescription/create')
+        }
+      ]),
+      ...middleware({ 'check-permission': 'dangerMatrix_c' }, [
+        {
+          name: 'industrialsecure-tags-danger-description-edit',
+          path: 'dangermatrix/tags/dangerdescription/edit/:id',
+          component: () =>
+            import('@/views/IndustrialSecure/dangerMatrix/tagDangerDescription/edit')
+        }
+      ]),
+      ...middleware({ 'check-permission': 'dangerMatrix_c' }, [
+        {
+          name: 'industrialsecure-tags-danger-description-deleted',
+          path: 'dangermatrix/tags/dangerdescription/delete/:id',
+          component: () =>
+            import('@/views/IndustrialSecure/dangerMatrix/tagDangerDescription/deleted')
         }
       ]),
       ...middleware({ 'check-permission': 'dangerMatrix_view_report' }, [

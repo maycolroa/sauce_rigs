@@ -264,23 +264,6 @@ export default {
       configLocation: {},      
       tagsHistoryChangeDataUrl: '/selects/tagsHistoryChange',
       search_keyword: '',
-      selectCampos: [        
-          {name: 'Descripcion del Peligro', value: 1},
-          {name: 'Peligro Generado', value: 1},
-          {name: 'Posibles consecuencias del peligro', value: 1},
-          {name: 'Fuente Generadora', value: 1},
-          {name: 'Controles de ingenieria', value: 1},
-          {name: 'Controles de sustitución', value: 1},
-          {name: 'Controles Señalización y advertencia', value: 1},
-          {name: 'Controles Administrativos', value: 1},
-          {name: 'Controles Epp', value: 1},
-          {name: 'Medidas de intervencion - Eliminación', value: 1},
-          {name: 'Medidas de intervencion - Sustitución', value: 1},
-          {name: 'Medidas de intervencion - Controles de ingenieria', value: 1},
-          {name: 'Medidas de intervencion - Señalización y advertencia', value: 1},
-          {name: 'Medidas de intervencion - Controles Administrativos', value: 1},
-          {name: 'Medidas de intervencion - Epp', value: 1}
-      ],
       part: []
     }
   },

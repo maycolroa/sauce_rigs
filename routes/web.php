@@ -523,6 +523,9 @@ Route::middleware(['auth'])->group(function () {
       Route::post('dangersMatrix/epp/searchKeyword/data', 'IndustrialSecure\Tags\EppController@sharedTag');
       Route::post('dangersMatrix/warningSignage/searchKeyword/data', 'IndustrialSecure\Tags\WarningSignageController@sharedTag');
       Route::post('dangersMatrix/substitution/searchKeyword/data', 'IndustrialSecure\Tags\SubstitutionController@sharedTag');
+      Route::post('dangersMatrix/possibleConsequencesDanger/searchKeyword/data', 'IndustrialSecure\Tags\PossibleConsequencesDangerController@sharedTag');
+      Route::post('dangersMatrix/participants/searchKeyword/data', 'IndustrialSecure\Tags\ParticipantsController@sharedTag');
+      Route::post('dangersMatrix/dangerDescription/searchKeyword/data', 'IndustrialSecure\Tags\DangerDescriptionController@sharedTag');
 
 ////////
 
@@ -713,15 +716,15 @@ Route::middleware(['auth'])->group(function () {
         Route::post('epp/data', 'IndustrialSecure\Tags\EppController@data');
         Route::ApiResource('epp', 'IndustrialSecure\Tags\EppController');
         Route::post('possibleConsequencesDanger/data', 'IndustrialSecure\Tags\PossibleConsequencesDangerController@data');
-        Route::ApiResource('possibleConsequencesDanger', 'IndustrialSecure\Tags\PossibleConsequencesDangerController')->only('destroy');
+        Route::ApiResource('possibleConsequencesDanger', 'IndustrialSecure\Tags\PossibleConsequencesDangerController');
         Route::post('warningSignage/data', 'IndustrialSecure\Tags\WarningSignageController@data');
         Route::ApiResource('warningSignage', 'IndustrialSecure\Tags\WarningSignageController');
         Route::post('substitution/data', 'IndustrialSecure\Tags\SubstitutionController@data');
         Route::ApiResource('substitution', 'IndustrialSecure\Tags\SubstitutionController');
         Route::post('participants/data', 'IndustrialSecure\Tags\ParticipantsController@data');
-        Route::ApiResource('participants', 'IndustrialSecure\Tags\ParticipantsController')->only('destroy');
+        Route::ApiResource('participants', 'IndustrialSecure\Tags\ParticipantsController');
         Route::post('dangerDescription/data', 'IndustrialSecure\Tags\DangerDescriptionController@data');
-        Route::ApiResource('dangerDescription', 'IndustrialSecure\Tags\DangerDescriptionController')->only('destroy');
+        Route::ApiResource('dangerDescription', 'IndustrialSecure\Tags\DangerDescriptionController');
       });
 		});
 		
