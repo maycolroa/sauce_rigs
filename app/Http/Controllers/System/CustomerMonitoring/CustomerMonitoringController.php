@@ -22,6 +22,7 @@ use App\Models\LegalAspects\LegalMatrix\ArticleFulfillment;
 use App\Models\System\CustomerMonitoring\NotificationScheduled;
 use App\Models\System\CustomerMonitoring\Notification;
 use App\Models\System\LogMails\LogMail;
+use App\Models\IndustrialSecure\RiskMatrix\RiskMatrix;
 use Carbon\Carbon;
 use Validator;
 use DB;
@@ -120,6 +121,40 @@ class CustomerMonitoringController extends Controller
             ->mergeBindings($dangerMatrix->getQuery())
             ->whereRaw('? BETWEEN started_at AND ended_at', [date('Y-m-d')])
             ->where('sau_license_module.module_id', 14)
+            ->groupBy('sau_companies.id');
+
+        return Vuetable::of($companies)
+                    ->make();
+    }
+
+    public function dataRiskMatrix(Request $request)
+    {
+        $now = Carbon::now();
+
+        $riskMatrix = RiskMatrix::select(
+            "sau_rm_risks_matrix.company_id AS company_id",
+            DB::raw("SUM(CASE WHEN YEAR(sau_rm_risks_matrix.updated_at) = {$now->year} AND MONTH(sau_rm_risks_matrix.updated_at) = {$now->month} THEN 1 ELSE 0 END) AS total_mes"),
+            DB::raw("SUM(CASE WHEN YEAR(sau_rm_risks_matrix.updated_at) = {$now->year} THEN 1 ELSE 0 END) AS total_anio")
+        )
+        ->withoutGlobalScopes()
+        ->groupBy('sau_rm_risks_matrix.company_id');  
+        
+        $companies = Company::selectRaw('
+                sau_companies.id AS id,
+                sau_companies.name AS name,
+                MAX(sau_licenses.started_at) AS started_at,
+                MAX(sau_licenses.ended_at) AS ended_at,
+                IFNULL(t.total_mes, 0) AS total_mes,
+                IFNULL(t.total_anio, 0) AS total_anio'
+            )
+            ->join('sau_licenses', 'sau_licenses.company_id', 'sau_companies.id')
+            ->join('sau_license_module', 'sau_license_module.license_id', 'sau_licenses.id')
+            ->leftJoin(DB::raw("({$riskMatrix->toSql()}) as t"), function ($join) {
+                $join->on("t.company_id", "sau_companies.id");
+            })
+            ->mergeBindings($riskMatrix->getQuery())
+            ->whereRaw('? BETWEEN started_at AND ended_at', [date('Y-m-d')])
+            ->where('sau_license_module.module_id', 31)
             ->groupBy('sau_companies.id');
 
         return Vuetable::of($companies)

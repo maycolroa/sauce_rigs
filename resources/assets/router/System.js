@@ -197,6 +197,14 @@ export default [{
       ]), 
       ...middleware({ 'check-permission': 'customerMonitoring_r' }, [
         {
+          name: 'system-customermonitoring-riskMatrix',
+          path: 'customermonitoring/riskMatrix',
+          component: () =>
+            import('@/views/System/customerMonitoring/indexRiskMatrix')
+        }
+      ]), 
+      ...middleware({ 'check-permission': 'customerMonitoring_r' }, [
+        {
           name: 'system-customermonitoring-contract',
           path: 'customermonitoring/contract',
           component: () =>
