@@ -2,7 +2,7 @@
   <div>
     <header-module
       title="MATRIZ DE PELIGROS"
-      subtitle="TAG CONTROLES SEÑALIZACION Y ADVERTENCIAS"
+      subtitle="TAG SEÑALIZACION Y ADVERTENCIAS"
       url="industrialsecure-dangermatrix-tags"
     />
 

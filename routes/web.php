@@ -516,11 +516,15 @@ Route::middleware(['auth'])->group(function () {
 
       Route::post('dangersMatrix/searchKeyword/data', 'IndustrialSecure\DangerMatrix\DangerMatrixController@searchKeyword');
 
+//tags
 
       Route::post('dangersMatrix/tagAdministrativeControls/searchKeyword/data', 'IndustrialSecure\Tags\AdministrativeControlsController@sharedTag');
       Route::post('dangersMatrix/engineeringControls/searchKeyword/data', 'IndustrialSecure\Tags\EngineeringControlsController@sharedTag');
       Route::post('dangersMatrix/epp/searchKeyword/data', 'IndustrialSecure\Tags\EppController@sharedTag');
       Route::post('dangersMatrix/warningSignage/searchKeyword/data', 'IndustrialSecure\Tags\WarningSignageController@sharedTag');
+      Route::post('dangersMatrix/substitution/searchKeyword/data', 'IndustrialSecure\Tags\SubstitutionController@sharedTag');
+
+////////
 
       Route::post('risksMatrix/data', 'IndustrialSecure\RiskMatrix\RiskMatrixController@data');
       Route::post('risksMatrix/getEvaluationControls', 'IndustrialSecure\RiskMatrix\RiskMatrixController@getEvaluationControl');
@@ -713,7 +717,7 @@ Route::middleware(['auth'])->group(function () {
         Route::post('warningSignage/data', 'IndustrialSecure\Tags\WarningSignageController@data');
         Route::ApiResource('warningSignage', 'IndustrialSecure\Tags\WarningSignageController');
         Route::post('substitution/data', 'IndustrialSecure\Tags\SubstitutionController@data');
-        Route::ApiResource('substitution', 'IndustrialSecure\Tags\SubstitutionController')->only('destroy');
+        Route::ApiResource('substitution', 'IndustrialSecure\Tags\SubstitutionController');
         Route::post('participants/data', 'IndustrialSecure\Tags\ParticipantsController@data');
         Route::ApiResource('participants', 'IndustrialSecure\Tags\ParticipantsController')->only('destroy');
         Route::post('dangerDescription/data', 'IndustrialSecure\Tags\DangerDescriptionController@data');

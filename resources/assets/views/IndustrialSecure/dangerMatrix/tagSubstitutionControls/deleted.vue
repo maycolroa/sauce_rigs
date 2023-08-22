@@ -3,19 +3,19 @@
     <header-module
       title="MATRIZ DE PELIGROS"
       subtitle="ELIMINAR TAG"
-      url="industrialsecure-dangermatrix-tags-epp"
+      url="industrialsecure-dangermatrix-tags-substitutions"
     />
 
     <div class="col-md">
       <b-card no-body>
         <b-card-body>
             <form-tag
-                :url="`/industrialSecurity/tags/epp/${this.$route.params.id}`"
+                :url="`/industrialSecurity/tags/substitution/${this.$route.params.id}`"
                 method="PUT"
                 :tag="data"
                 :is-edit="true"
                 :is-deleted="true"
-                :cancel-url="{ name: 'industrialsecure-dangermatrix-tags-epp'}"/>
+                :cancel-url="{ name: 'industrialsecure-dangermatrix-tags-substitutions'}"/>
         </b-card-body>
       </b-card>
     </div>
@@ -23,13 +23,13 @@
 </template>
 
 <script>
-import FormTag from '@/components/IndustrialSecure/Tags/FormEppControlsComponent.vue';
+import FormTag from '@/components/IndustrialSecure/Tags/FormSubstitutionsComponent.vue';
 import Alerts from '@/utils/Alerts.js';
 
 export default {
-  name: 'industrialsecure-tag-epp-deleted',
+  name: 'industrialsecure-tag-substitutions-deleted',
   metaInfo: {
-    title: 'Controles de EPP - Eliminar'
+    title: 'Sustituciones - Eliminar'
   },
   components:{
     FormTag
@@ -40,7 +40,7 @@ export default {
     }
   },
   created(){
-    axios.get(`/industrialSecurity/tags/epp/${this.$route.params.id}`)
+    axios.get(`/industrialSecurity/tags/substitution/${this.$route.params.id}`)
     .then(response => {
         this.data = response.data.data;
     })

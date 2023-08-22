@@ -187,7 +187,7 @@ class EppController extends Controller
             sau_dangers_matrix.name as matriz,
             sau_dm_activities.name as activity, 
             sau_dm_dangers.name as danger, 
-            'Controles Existentes - Controles Administrativos' campo,  
+            'Controles Existentes - EPP' campo,  
             sau_dm_activity_danger.existing_controls_epp as value
         ")
         ->join('sau_danger_matrix_activity', 'sau_danger_matrix_activity.danger_matrix_id', 'sau_dangers_matrix.id')
@@ -201,7 +201,7 @@ class EppController extends Controller
             sau_dangers_matrix.name as matriz,
             sau_dm_activities.name as activity, 
             sau_dm_dangers.name as danger, 
-            'Medidas de prevencion - Controles administrativos' campo,  
+            'Medidas de prevencion - EPP' campo,  
             sau_dm_activity_danger.intervention_measures_epp as value
         ")
         ->join('sau_danger_matrix_activity', 'sau_danger_matrix_activity.danger_matrix_id', 'sau_dangers_matrix.id')

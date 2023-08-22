@@ -188,7 +188,7 @@ class EngineeringControlsController extends Controller
             sau_dangers_matrix.name as matriz,
             sau_dm_activities.name as activity, 
             sau_dm_dangers.name as danger, 
-            'Controles Existentes - Controles Administrativos' campo,  
+            'Controles Existentes - Controles Ingenieria' campo,  
             sau_dm_activity_danger.existing_controls_engineering_controls as value
         ")
         ->join('sau_danger_matrix_activity', 'sau_danger_matrix_activity.danger_matrix_id', 'sau_dangers_matrix.id')
@@ -202,7 +202,7 @@ class EngineeringControlsController extends Controller
             sau_dangers_matrix.name as matriz,
             sau_dm_activities.name as activity, 
             sau_dm_dangers.name as danger, 
-            'Medidas de prevencion - Controles administrativos' campo,  
+            'Medidas de prevencion - Controles Ingenieria' campo,  
             sau_dm_activity_danger.intervention_measures_engineering_controls as value
         ")
         ->join('sau_danger_matrix_activity', 'sau_danger_matrix_activity.danger_matrix_id', 'sau_dangers_matrix.id')

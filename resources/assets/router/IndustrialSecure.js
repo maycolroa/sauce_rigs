@@ -248,7 +248,31 @@ export default [{
           name: 'industrialsecure-dangermatrix-tags-substitutions',
           path: 'dangermatrix/tags/substitutions',
           component: () =>
-            import('@/views/IndustrialSecure/dangerMatrix/indexTags')
+            import('@/views/IndustrialSecure/dangerMatrix/tagSubstitutionControls/index')
+        }
+      ]),
+      ...middleware({ 'check-permission': 'dangerMatrix_c' }, [
+        {
+          name: 'industrialsecure-tags-substitutions-create',
+          path: 'dangermatrix/tags/substitutions/create',
+          component: () =>
+            import('@/views/IndustrialSecure/dangerMatrix/tagSubstitutionControls/create')
+        }
+      ]),
+      ...middleware({ 'check-permission': 'dangerMatrix_c' }, [
+        {
+          name: 'industrialsecure-tags-substitutions-edit',
+          path: 'dangermatrix/tags/substitutions/edit/:id',
+          component: () =>
+            import('@/views/IndustrialSecure/dangerMatrix/tagSubstitutionControls/edit')
+        }
+      ]),
+      ...middleware({ 'check-permission': 'dangerMatrix_c' }, [
+        {
+          name: 'industrialsecure-tags-substitutions-deleted',
+          path: 'dangermatrix/tags/substitutions/delete/:id',
+          component: () =>
+            import('@/views/IndustrialSecure/dangerMatrix/tagSubstitutionControls/deleted')
         }
       ]),
       ...middleware({ 'check-permission': 'dangerMatrix_c' }, [

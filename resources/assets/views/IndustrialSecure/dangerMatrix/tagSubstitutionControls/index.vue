@@ -2,7 +2,7 @@
   <div>
     <header-module
       title="MATRIZ DE PELIGROS"
-      subtitle="TAG EPP"
+      subtitle="TAG SUSTITUCIONES"
       url="industrialsecure-dangermatrix-tags"
     />
 
@@ -10,14 +10,14 @@
       <b-card no-body>
         <b-card-header class="with-elements">
           <div class="card-title-elements">
-            <b-btn :to="{name:'industrialsecure-tags-epp-create'}" variant="primary">Crear Tag</b-btn>
+            <b-btn :to="{name:'industrialsecure-tags-substitutions-create'}" variant="primary">Crear Tag</b-btn>
           </div>
         </b-card-header>
         <b-card-body>
           <div>
             <template>
                 <vue-table
-                  configName="industrialsecure-dangermatrix-tags-epp"
+                  configName="industrialsecure-dangermatrix-tags-substitutions"
                   ></vue-table>
             </template>
           </div>
@@ -33,7 +33,7 @@ import Loading from "@/components/Inputs/Loading.vue";
 export default {
   name: 'dangermatrix-tag-epp',
   metaInfo: {
-    title: 'Tags Controles de Epp'
+    title: 'Tags Sustituciones'
   },
 }
 </script>
