@@ -40,6 +40,9 @@ class CheckInformController extends Controller
         $identifications = $this->getValuesForMultiselect($request->identifications);
         $names = $this->getValuesForMultiselect($request->names);
         $regionals = $this->getValuesForMultiselect($request->regionals);
+        $headquarters_filters = $this->getValuesForMultiselect($request->headquarters);
+        $processes = $this->getValuesForMultiselect($request->processes);
+        $areas = $this->getValuesForMultiselect($request->areas);
         $businesses = $this->getValuesForMultiselect($request->businesses);
         $diseaseOrigin = $this->getValuesForMultiselect($request->diseaseOrigin);
         $codsCie = $this->getValuesForMultiselect($request->cie10);
@@ -59,7 +62,7 @@ class CheckInformController extends Controller
             array_push($dates, (Carbon::createFromFormat('D M d Y', $dates_request[1]))->format('Y-m-d'));
         }
         
-        $informManager = new InformManagerCheck($identifications, $names, $regionals, $businesses, $diseaseOrigin, $nextFollowDays, $dates, $years, $sveAssociateds, $medicalCertificates, $relocatedTypes, $filtersType, $this->company, $codsCie);
+        $informManager = new InformManagerCheck($identifications, $names, $regionals, $businesses, $diseaseOrigin, $nextFollowDays, $dates, $years, $sveAssociateds, $medicalCertificates, $relocatedTypes, $filtersType, $this->company, $codsCie, $headquarters_filters, $processes, $areas);
         
         return $this->respondHttp200($informManager->getInformData());
     }

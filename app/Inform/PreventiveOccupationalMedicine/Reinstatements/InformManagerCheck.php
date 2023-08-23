@@ -71,16 +71,22 @@ class InformManagerCheck
     protected $totalChecks;
     protected $locationForm;
     protected $cie10;
+    protected $headquarters_filters;
+    protected $processes;
+    protected $areas;
 
     /**
      * create an instance and set the attribute class
      * @param array $identifications
      */
-    function __construct($identifications = [], $names = [], $regionals = [], $businesses = [], $diseaseOrigin = [], $nextFollowDays = [], $dateRange = [], $years = [], $sveAssociateds = [], $medicalCertificates = [], $relocatedTypes = [], $filtersType = [], $company_id, $cie10)
+    function __construct($identifications = [], $names = [], $regionals = [], $businesses = [], $diseaseOrigin = [], $nextFollowDays = [], $dateRange = [], $years = [], $sveAssociateds = [], $medicalCertificates = [], $relocatedTypes = [], $filtersType = [], $company_id, $cie10, $headquarters_filters = [], $processes = [], $areas = [])
     {
         $this->identifications = $identifications;
         $this->names = $names;
         $this->regionals = $regionals;
+        $this->headquarters_filters = $headquarters_filters;
+        $this->areas = $areas;
+        $this->processes = $processes;
         $this->businesses = $businesses;
         $this->diseaseOrigin = $diseaseOrigin;
         $this->nextFollowDays = $nextFollowDays;
@@ -139,6 +145,9 @@ class InformManagerCheck
         ->inIdentifications($this->identifications, $this->filtersType['identifications'])
         ->inNames($this->names, $this->filtersType['names'])
         ->inRegionals($this->regionals, $this->filtersType['regionals'])
+        ->inHeadquarters($this->headquarters_filters, $this->filtersType['headquarters'])
+        ->inProcesses($this->processes, $this->filtersType['processes'])
+        ->inAreas($this->areas, $this->filtersType['areas'])
         ->inBusinesses($this->businesses, $this->filtersType['businesses'])
         ->inDiseaseOrigin($this->diseaseOrigin, $this->filtersType['diseaseOrigin'])
         ->inYears($this->years, $this->filtersType['years'])
@@ -170,6 +179,9 @@ class InformManagerCheck
         ->inIdentifications($this->identifications, $this->filtersType['identifications'])
         ->inNames($this->names, $this->filtersType['names'])
         ->inRegionals($this->regionals, $this->filtersType['regionals'])
+        ->inHeadquarters($this->headquarters_filters, $this->filtersType['headquarters'])
+        ->inProcesses($this->processes, $this->filtersType['processes'])
+        ->inAreas($this->areas, $this->filtersType['areas'])
         ->inBusinesses($this->businesses, $this->filtersType['businesses'])
         ->inDiseaseOrigin($this->diseaseOrigin, $this->filtersType['diseaseOrigin'])
         ->inYears($this->years, $this->filtersType['years'])
@@ -201,6 +213,9 @@ class InformManagerCheck
         ->inIdentifications($this->identifications, $this->filtersType['identifications'])
         ->inNames($this->names, $this->filtersType['names'])
         ->inRegionals($this->regionals, $this->filtersType['regionals'])
+        ->inHeadquarters($this->headquarters_filters, $this->filtersType['headquarters'])
+        ->inProcesses($this->processes, $this->filtersType['processes'])
+        ->inAreas($this->areas, $this->filtersType['areas'])
         ->inBusinesses($this->businesses, $this->filtersType['businesses'])
         ->inDiseaseOrigin($this->diseaseOrigin, $this->filtersType['diseaseOrigin'])
         ->inYears($this->years, $this->filtersType['years'])
@@ -234,6 +249,9 @@ class InformManagerCheck
         ->inIdentifications($this->identifications, $this->filtersType['identifications'])
         ->inNames($this->names, $this->filtersType['names'])
         ->inRegionals($this->regionals, $this->filtersType['regionals'])
+        ->inHeadquarters($this->headquarters_filters, $this->filtersType['headquarters'])
+        ->inProcesses($this->processes, $this->filtersType['processes'])
+        ->inAreas($this->areas, $this->filtersType['areas'])
         ->inBusinesses($this->businesses, $this->filtersType['businesses'])
         ->inDiseaseOrigin($this->diseaseOrigin, $this->filtersType['diseaseOrigin'])
         ->inYears($this->years, $this->filtersType['years'])
@@ -508,6 +526,9 @@ class InformManagerCheck
         ->inIdentifications($this->identifications, $this->filtersType['identifications'])
         ->inNames($this->names, $this->filtersType['names'])
         ->inRegionals($this->regionals, $this->filtersType['regionals'])
+        ->inHeadquarters($this->headquarters_filters, $this->filtersType['headquarters'])
+        ->inProcesses($this->processes, $this->filtersType['processes'])
+        ->inAreas($this->areas, $this->filtersType['areas'])
         ->inBusinesses($this->businesses, $this->filtersType['businesses'])
         ->inDiseaseOrigin($this->diseaseOrigin, $this->filtersType['diseaseOrigin'])
         ->inYears($this->years, $this->filtersType['years'])
@@ -579,6 +600,9 @@ class InformManagerCheck
         ->inIdentifications($this->identifications, $this->filtersType['identifications'])
         ->inNames($this->names, $this->filtersType['names'])
         ->inRegionals($this->regionals, $this->filtersType['regionals'])
+        ->inHeadquarters($this->headquarters_filters, $this->filtersType['headquarters'])
+        ->inProcesses($this->processes, $this->filtersType['processes'])
+        ->inAreas($this->areas, $this->filtersType['areas'])
         ->inBusinesses($this->businesses, $this->filtersType['businesses'])
         ->inDiseaseOrigin($this->diseaseOrigin, $this->filtersType['diseaseOrigin'])
         ->inYears($this->years, $this->filtersType['years'])
@@ -650,6 +674,9 @@ class InformManagerCheck
         ->inIdentifications($this->identifications, $this->filtersType['identifications'])
         ->inNames($this->names, $this->filtersType['names'])
         ->inRegionals($this->regionals, $this->filtersType['regionals'])
+        ->inHeadquarters($this->headquarters_filters, $this->filtersType['headquarters'])
+        ->inProcesses($this->processes, $this->filtersType['processes'])
+        ->inAreas($this->areas, $this->filtersType['areas'])
         ->inBusinesses($this->businesses, $this->filtersType['businesses'])
         ->inDiseaseOrigin($this->diseaseOrigin, $this->filtersType['diseaseOrigin'])
         ->inYears($this->years, $this->filtersType['years'])
@@ -696,6 +723,9 @@ class InformManagerCheck
         ->inIdentifications($this->identifications, $this->filtersType['identifications'])
         ->inNames($this->names, $this->filtersType['names'])
         ->inRegionals($this->regionals, $this->filtersType['regionals'])
+        ->inHeadquarters($this->headquarters_filters, $this->filtersType['headquarters'])
+        ->inProcesses($this->processes, $this->filtersType['processes'])
+        ->inAreas($this->areas, $this->filtersType['areas'])
         ->inBusinesses($this->businesses, $this->filtersType['businesses'])
         ->inDiseaseOrigin($this->diseaseOrigin, $this->filtersType['diseaseOrigin'])
         ->inYears($this->years, $this->filtersType['years'])
@@ -779,6 +809,9 @@ class InformManagerCheck
         ->inIdentifications($this->identifications, $this->filtersType['identifications'])
         ->inNames($this->names, $this->filtersType['names'])
         ->inRegionals($this->regionals, $this->filtersType['regionals'])
+        ->inHeadquarters($this->headquarters_filters, $this->filtersType['headquarters'])
+        ->inProcesses($this->processes, $this->filtersType['processes'])
+        ->inAreas($this->areas, $this->filtersType['areas'])
         ->inBusinesses($this->businesses, $this->filtersType['businesses'])
         ->inDiseaseOrigin($this->diseaseOrigin, $this->filtersType['diseaseOrigin'])
         ->inYears($this->years, $this->filtersType['years'])
@@ -858,6 +891,9 @@ class InformManagerCheck
         ->inIdentifications($this->identifications, $this->filtersType['identifications'])
         ->inNames($this->names, $this->filtersType['names'])
         ->inRegionals($this->regionals, $this->filtersType['regionals'])
+        ->inHeadquarters($this->headquarters_filters, $this->filtersType['headquarters'])
+        ->inProcesses($this->processes, $this->filtersType['processes'])
+        ->inAreas($this->areas, $this->filtersType['areas'])
         ->inBusinesses($this->businesses, $this->filtersType['businesses'])
         ->inDiseaseOrigin($this->diseaseOrigin, $this->filtersType['diseaseOrigin'])
         ->inYears($this->years, $this->filtersType['years'])

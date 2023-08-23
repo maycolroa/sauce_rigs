@@ -464,13 +464,8 @@ class LicenseController extends Controller
             $modules_main = $this->getDataFromMultiselect($request->get('module_id'));
             $modules = ModuleDependence::whereIn('module_id', $modules_main)->pluck('module_dependence_id')->toArray();
 
-            //$license->modules()->sync(array_merge($modules_main, $modules));
-
             $modules_freeze = $request->has('module_freeze') && count($request->get('module_freeze')) > 0 ? $this->getDataFromMultiselect($request->get('module_freeze')) : [];
             $modules_f = ModuleDependence::whereIn('module_id', $modules_freeze)->pluck('module_dependence_id')->toArray();
-            
-            $license->modulesFreeze()->sync(array_merge($modules_freeze, $modules_f));
-            $license->modules()->sync(array_merge($modules_freeze, $modules_f));
 
             foreach ($modulos_old as $key => $value) 
             {
@@ -497,6 +492,9 @@ class LicenseController extends Controller
 
             if ($license->freeze == 'SI')
             {
+                $license->modulesFreeze()->sync(array_merge($modules_freeze, $modules_f));
+                $license->modules()->sync(array_merge($modules_freeze, $modules_f));
+
                 $end = (Carbon::createFromFormat('D M d Y', $request->ended_at))->format('Y-m-d');
 
                 $date1 = Carbon::parse($license->start_freeze);
@@ -529,6 +527,7 @@ class LicenseController extends Controller
             }
             else
             {
+                $license->modules()->sync(array_merge($modules_main, $modules));
                 $license->available_days = NULL;
                 $license->save();
             }
