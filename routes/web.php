@@ -940,6 +940,7 @@ Route::middleware(['auth'])->group(function () {
       Route::post('customermonitoring/dataRiskMatrix', 'System\CustomerMonitoring\CustomerMonitoringController@dataRiskMatrix');
       Route::post('customermonitoring/dataContract', 'System\CustomerMonitoring\CustomerMonitoringController@dataContract');
       Route::post('customermonitoring/dataLegalMatrix', 'System\CustomerMonitoring\CustomerMonitoringController@dataLegalMatrix');
+      Route::post('customermonitoring/dataEpp', 'System\CustomerMonitoring\CustomerMonitoringController@dataEpp');
       Route::ApiResource('notification', 'System\CustomerMonitoring\CustomerMonitoringController');      
 
       Route::post('usersCompanies/data', 'System\UsersCompanies\UserCompanyController@data');

@@ -23,6 +23,12 @@ use App\Models\System\CustomerMonitoring\NotificationScheduled;
 use App\Models\System\CustomerMonitoring\Notification;
 use App\Models\System\LogMails\LogMail;
 use App\Models\IndustrialSecure\RiskMatrix\RiskMatrix;
+use App\Models\IndustrialSecure\Epp\Element;
+use App\Models\IndustrialSecure\Epp\EppExit;
+use App\Models\IndustrialSecure\Epp\EppIncome;
+use App\Models\IndustrialSecure\Epp\EppTransfer;
+use App\Models\IndustrialSecure\Epp\EppReception;
+use App\Models\IndustrialSecure\Epp\ElementTransactionEmployee;
 use Carbon\Carbon;
 use Validator;
 use DB;
@@ -401,6 +407,127 @@ class CustomerMonitoringController extends Controller
             ->mergeBindings($emails->getQuery())
             ->whereRaw('? BETWEEN started_at AND ended_at', [date('Y-m-d')])
             ->where('sau_license_module.module_id', 17)
+            ->groupBy('sau_companies.id');
+
+        return Vuetable::of($companies)
+                    ->make();
+    }
+
+    public function dataEpp(Request $request)
+    {
+        $now = Carbon::now();
+
+        $elements = Element::select(
+            "sau_epp_elements.company_id AS company_id",
+            DB::raw("SUM(CASE WHEN YEAR(sau_epp_elements.created_at) = {$now->year} AND MONTH(sau_epp_elements.created_at) = {$now->month} THEN 1 ELSE 0 END) AS element_mes"),
+            DB::raw("SUM(CASE WHEN YEAR(sau_epp_elements.created_at) = {$now->year} THEN 1 ELSE 0 END) AS element_anio")
+        )
+        ->withoutGlobalScopes()
+        ->groupBy('sau_epp_elements.company_id');
+
+        $incomen = EppIncome::select(
+            "sau_epp_incomen.company_id AS company_id",
+            DB::raw("SUM(CASE WHEN YEAR(sau_epp_incomen.updated_at) = {$now->year} AND MONTH(sau_epp_incomen.updated_at) = {$now->month} THEN 1 ELSE 0 END) AS incomen_mes"),
+            DB::raw("SUM(CASE WHEN YEAR(sau_epp_incomen.updated_at) = {$now->year} THEN 1 ELSE 0 END) AS incomen_anio")
+        )
+        ->withoutGlobalScopes()
+        ->groupBy('sau_epp_incomen.company_id');
+
+        $exits = EppExit::select(
+            "sau_epp_exits.company_id AS company_id",
+            DB::raw("SUM(CASE WHEN YEAR(sau_epp_exits.updated_at) = {$now->year} AND MONTH(sau_epp_exits.updated_at) = {$now->month} THEN 1 ELSE 0 END) AS exit_mes"),
+            DB::raw("SUM(CASE WHEN YEAR(sau_epp_exits.updated_at) = {$now->year} THEN 1 ELSE 0 END) AS exit_anio")
+        )
+        ->withoutGlobalScopes()
+        ->groupBy('sau_epp_exits.company_id');
+
+        $transfers = EppTransfer::select(
+            "sau_epp_transfers.company_id AS company_id",
+            DB::raw("SUM(CASE WHEN YEAR(sau_epp_transfers.updated_at) = {$now->year} AND MONTH(sau_epp_transfers.updated_at) = {$now->month} THEN 1 ELSE 0 END) AS transfer_mes"),
+            DB::raw("SUM(CASE WHEN YEAR(sau_epp_transfers.updated_at) = {$now->year} THEN 1 ELSE 0 END) AS transfer_anio")
+        )
+        ->withoutGlobalScopes()
+        ->groupBy('sau_epp_transfers.company_id');
+
+        
+        $reception = EppReception::select(
+            "sau_epp_receptions.company_id AS company_id",
+            DB::raw("SUM(CASE WHEN YEAR(sau_epp_receptions.updated_at) = {$now->year} AND MONTH(sau_epp_receptions.updated_at) = {$now->month} THEN 1 ELSE 0 END) AS reception_mes"),
+            DB::raw("SUM(CASE WHEN YEAR(sau_epp_receptions.updated_at) = {$now->year} THEN 1 ELSE 0 END) AS reception_anio")
+        )
+        ->withoutGlobalScopes()
+        ->groupBy('sau_epp_receptions.company_id');
+
+        $delivery = ElementTransactionEmployee::select(
+            "sau_epp_transactions_employees.company_id AS company_id",
+            DB::raw("SUM(CASE WHEN YEAR(sau_epp_transactions_employees.updated_at) = {$now->year} AND MONTH(sau_epp_transactions_employees.updated_at) = {$now->month} THEN 1 ELSE 0 END) AS delivery_mes"),
+            DB::raw("SUM(CASE WHEN YEAR(sau_epp_transactions_employees.updated_at) = {$now->year} THEN 1 ELSE 0 END) AS delivery_anio")
+        )
+        ->where('sau_epp_transactions_employees.type', DB::raw("'Entrega'"))
+        ->withoutGlobalScopes()
+        ->groupBy('sau_epp_transactions_employees.company_id');
+
+        $return = ElementTransactionEmployee::select(
+            "sau_epp_transactions_employees.company_id AS company_id",
+            DB::raw("SUM(CASE WHEN YEAR(sau_epp_transactions_employees.updated_at) = {$now->year} AND MONTH(sau_epp_transactions_employees.updated_at) = {$now->month} THEN 1 ELSE 0 END) AS return_mes"),
+            DB::raw("SUM(CASE WHEN YEAR(sau_epp_transactions_employees.updated_at) = {$now->year} THEN 1 ELSE 0 END) AS return_anio")
+        )
+        ->where('sau_epp_transactions_employees.type', DB::raw("'Devolucion'"))
+        ->withoutGlobalScopes()
+        ->groupBy('sau_epp_transactions_employees.company_id');
+        
+        $companies = Company::selectRaw('
+                sau_companies.id AS id,
+                sau_companies.name AS name,
+                MAX(sau_licenses.started_at) AS started_at,
+                MAX(sau_licenses.ended_at) AS ended_at,
+                IFNULL(t.element_mes, 0) AS element_mes,
+                IFNULL(t.element_anio, 0) AS element_anio,
+                IFNULL(t2.incomen_mes, 0) AS incomen_mes,
+                IFNULL(t2.incomen_anio, 0) AS incomen_anio,
+                IFNULL(t3.exit_mes, 0) AS exit_mes,
+                IFNULL(t3.exit_anio, 0) AS exit_anio,
+                IFNULL(t4.transfer_mes, 0) AS transfer_mes,
+                IFNULL(t4.transfer_anio, 0) AS transfer_anio,
+                IFNULL(t5.reception_mes, 0)  AS reception_mes,
+                IFNULL(t5.reception_anio, 0)  AS reception_anio,
+                IFNULL(t6.delivery_mes, 0) AS delivery_mes,
+                IFNULL(t6.delivery_anio, 0) AS delivery_anio,
+                IFNULL(t7.return_mes, 0) AS return_mes,
+                IFNULL(t7.return_anio, 0) AS return_anio'
+            )
+            ->join('sau_licenses', 'sau_licenses.company_id', 'sau_companies.id')
+            ->join('sau_license_module', 'sau_license_module.license_id', 'sau_licenses.id')
+            ->leftJoin(DB::raw("({$elements->toSql()}) as t"), function ($join) {
+                $join->on("t.company_id", "sau_companies.id");
+            })
+            ->mergeBindings($elements->getQuery())
+            ->leftJoin(DB::raw("({$incomen->toSql()}) as t2"), function ($join) {
+                $join->on("t2.company_id", "sau_companies.id");
+            })
+            ->mergeBindings($incomen->getQuery())
+            ->leftJoin(DB::raw("({$exits->toSql()}) as t3"), function ($join) {
+                $join->on("t3.company_id", "sau_companies.id");
+            })
+            ->mergeBindings($exits->getQuery())
+            ->leftJoin(DB::raw("({$transfers->toSql()}) as t4"), function ($join) {
+                $join->on("t4.company_id", "sau_companies.id");
+            })
+            ->mergeBindings($transfers->getQuery())
+            ->leftJoin(DB::raw("({$reception->toSql()}) as t5"), function ($join) {
+                $join->on("t5.company_id", "sau_companies.id");
+            })
+            ->mergeBindings($reception->getQuery())
+            ->leftJoin(DB::raw("({$delivery->toSql()}) as t6"), function ($join) {
+                $join->on("t6.company_id", "sau_companies.id");
+            })
+            ->mergeBindings($delivery->getQuery())
+            ->leftJoin(DB::raw("({$return->toSql()}) as t7"), function ($join) {
+                $join->on("t7.company_id", "sau_companies.id");
+            })
+            ->mergeBindings($return->getQuery())
+            ->whereRaw('? BETWEEN started_at AND ended_at', [date('Y-m-d')])
+            ->where('sau_license_module.module_id', 32)
             ->groupBy('sau_companies.id');
 
         return Vuetable::of($companies)

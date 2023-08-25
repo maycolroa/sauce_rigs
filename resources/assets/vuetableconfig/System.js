@@ -379,7 +379,35 @@ export default [
             urlData: '/system/customermonitoring/dataContract',
             filterColumns: true,
         }
-    },,
+    },
+    {
+        name: 'system-customermonitoring-epp',
+        fields: [
+            { name: 'id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true },
+            { name: 'name', data: 'name', title: 'Compañia', sortable: true, searchable: true, detail: false, key: false },
+            { name: 'started_at', data: 'started_at', title: 'Fecha Inicio Licencia', sortable: true, searchable: true, detail: false, key: false },
+            { name: 'ended_at', data: 'ended_at', title: 'Fecha Fin Licencia', sortable: true, searchable: true, detail: false, key: false },
+            { name: 'element_mes', data: 'element_mes', title: 'Elementos creados este mes', sortable: true, searchable: true, detail: false, key: false },
+            { name: 'element_anio', data: 'element_anio', title: 'Elementos creados este año', sortable: true, searchable: true, detail: false, key: false },
+            { name: 'delivery_mes', data: 'delivery_mes', title: 'Entregas creadas este mes', sortable: true, searchable: true, detail: false, key: false },
+            { name: 'delivery_anio', data: 'delivery_anio', title: 'Entregas creadas este año', sortable: true, searchable: true, detail: false, key: false },
+            { name: 'return_mes', data: 'return_mes', title: 'Devoluciones creadas este mes', sortable: true, searchable: true, detail: false, key: false },
+            { name: 'return_anio', data: 'return_anio', title: 'Devoluciones creadas este año', sortable: true, searchable: true, detail: false, key: false },
+            { name: 'incomen_mes', data: 'incomen_mes', title: 'Ingresos creados este mes', sortable: true, searchable: true, detail: false, key: false },
+            { name: 'incomen_anio', data: 'incomen_anio', title: 'Ingresos creados este año', sortable: true, searchable: true, detail: false, key: false },
+            { name: 'exit_mes', data: 'exit_mes', title: 'Salidas creadas este mes', sortable: true, searchable: true, detail: false, key: false },
+            { name: 'exit_anio', data: 'exit_anio', title: 'Salidas creadas este año', sortable: true, searchable: true, detail: false, key: false },
+            { name: 'transfer_mes', data: 'transfer_mes', title: 'Transferencias creadas este mes', sortable: true, searchable: true, detail: false, key: false },
+            { name: 'transfer_anio', data: 'transfer_anio', title: 'Transferencias creadas este año', sortable: true, searchable: true, detail: false, key: false },
+            { name: 'reception_mes', data: 'reception_mes', title: 'Recepciones creadas este mes', sortable: true, searchable: true, detail: false, key: false },
+            { name: 'reception_anio', data: 'reception_anio', title: 'Recepciones creadas este año', sortable: true, searchable: true, detail: false, key: false }
+        ],
+        'controlls': [],
+        configuration: {
+            urlData: '/system/customermonitoring/dataEpp',
+            filterColumns: true,
+        }
+    },
     {
         name: 'system-customermonitoring-legalMatrix',
         fields: [

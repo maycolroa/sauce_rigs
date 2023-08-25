@@ -205,6 +205,14 @@ export default [{
       ]), 
       ...middleware({ 'check-permission': 'customerMonitoring_r' }, [
         {
+          name: 'system-customermonitoring-epp',
+          path: 'customermonitoring/epp',
+          component: () =>
+            import('@/views/System/customerMonitoring/indexEpp')
+        }
+      ]), 
+      ...middleware({ 'check-permission': 'customerMonitoring_r' }, [
+        {
           name: 'system-customermonitoring-contract',
           path: 'customermonitoring/contract',
           component: () =>
