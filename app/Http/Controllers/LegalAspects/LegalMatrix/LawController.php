@@ -566,16 +566,16 @@ class LawController extends Controller
             else
             {            
                 $articles = Article::select('sau_lm_articles.*')
-                    ->join('sau_lm_article_interest', function ($join) use ($law)
-                    {
-                        $join->on("sau_lm_article_interest.article_id", "sau_lm_articles.id");
-                        $join->on("sau_lm_articles.law_id", DB::raw($law->id));
-                    })
-                    ->join('sau_lm_company_interest','sau_lm_company_interest.interest_id', 'sau_lm_article_interest.interest_id')
-                    ->groupBy('sau_lm_articles.id')
-                    //->where('sau_lm_articles.law_id', $law->id)
-                    ->orderBy('sau_lm_articles.sequence')
-                    ->get();
+                ->join('sau_lm_article_interest', function ($join) use ($law)
+                {
+                    $join->on("sau_lm_article_interest.article_id", "sau_lm_articles.id");
+                    $join->on("sau_lm_articles.law_id", DB::raw($law->id));
+                })
+                ->join('sau_lm_company_interest','sau_lm_company_interest.interest_id', 'sau_lm_article_interest.interest_id')
+                ->groupBy('sau_lm_articles.id')
+                //->where('sau_lm_articles.law_id', $law->id)
+                ->orderBy('sau_lm_articles.sequence')
+                ->get();
             }
 
             $qualifications = ArticleFulfillment::all();
@@ -612,10 +612,10 @@ class LawController extends Controller
                     "activitiesRemoved" => []
                 ];
 
-                /*if ($article->qualify == 'No cumple' || $article->qualify == 'Parcial')
-                {*/
+                if ($article->qualify == 'No cumple' || $article->qualify == 'Parcial')
+                {
                     $article->actionPlan = ActionPlan::model(ArticleFulfillment::find($article->qualification_id))->prepareDataComponent();
-                //}
+                }
 
                 return $article;
             });
