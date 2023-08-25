@@ -10,7 +10,7 @@
       <b-card no-body>
         <b-card-header class="with-elements">
           <div class="card-title-elements" v-if="auth.can['accidentsWork_c']">
-            <b-btn :to="{name:'industrialsecure-accidentswork-create'}" variant="primary">Crear Formulario</b-btn><b-btn v-if="auth.can['ph_inspections_export']" variant="primary" @click="exportData()" v-b-tooltip.top title="Exportar"><i class="fas fa-download"></i></b-btn>
+            <b-btn :to="{name:'industrialsecure-accidentswork-create'}" variant="primary">Crear Reporte</b-btn><b-btn v-if="auth.can['ph_inspections_export']" variant="primary" @click="exportData()" v-b-tooltip.top title="Exportar"><i class="fas fa-download"></i></b-btn>
             <b-btn v-if="auth.can['accidentsWork_r']" :to="{name:'industrialsecure-accidentswork-report'}" variant="primary">Reportes</b-btn>
           </div>
         </b-card-header>
