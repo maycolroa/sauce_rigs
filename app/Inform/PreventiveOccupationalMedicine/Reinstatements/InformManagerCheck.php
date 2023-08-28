@@ -145,14 +145,20 @@ class InformManagerCheck
         ->inIdentifications($this->identifications, $this->filtersType['identifications'])
         ->inNames($this->names, $this->filtersType['names'])
         ->inRegionals($this->regionals, $this->filtersType['regionals'])
-        ->inHeadquarters($this->headquarters_filters, $this->filtersType['headquarters'])
-        ->inProcesses($this->processes, $this->filtersType['processes'])
-        ->inAreas($this->areas, $this->filtersType['areas'])
         ->inBusinesses($this->businesses, $this->filtersType['businesses'])
         ->inDiseaseOrigin($this->diseaseOrigin, $this->filtersType['diseaseOrigin'])
         ->inYears($this->years, $this->filtersType['years'])
         ->inCodCie($this->cie10, $this->filtersType['cie10'])
         ->betweenDate($this->dateRange);
+
+        if (COUNT($this->headquarters_filters))
+            $totalChecks->inHeadquarters($this->headquarters_filters, $this->filtersType['headquarters']);
+
+        if (COUNT($this->processes))
+            $totalChecks->inProcesses($this->processes, $this->filtersType['processes']);
+
+        if (COUNT($this->areas))
+            $totalChecks->inAreas($this->areas, $this->filtersType['areas']);
 
         if ($this->nextFollowDays)
             $totalChecks->inNextFollowDays($this->nextFollowDays, $this->filtersType['nextFollowDays']);
@@ -179,14 +185,20 @@ class InformManagerCheck
         ->inIdentifications($this->identifications, $this->filtersType['identifications'])
         ->inNames($this->names, $this->filtersType['names'])
         ->inRegionals($this->regionals, $this->filtersType['regionals'])
-        ->inHeadquarters($this->headquarters_filters, $this->filtersType['headquarters'])
-        ->inProcesses($this->processes, $this->filtersType['processes'])
-        ->inAreas($this->areas, $this->filtersType['areas'])
         ->inBusinesses($this->businesses, $this->filtersType['businesses'])
         ->inDiseaseOrigin($this->diseaseOrigin, $this->filtersType['diseaseOrigin'])
         ->inYears($this->years, $this->filtersType['years'])
         ->inCodCie($this->cie10, $this->filtersType['cie10'])
         ->betweenDate($this->dateRange);
+
+        if (COUNT($this->headquarters_filters))
+            $data->inHeadquarters($this->headquarters_filters, $this->filtersType['headquarters']);
+
+        if (COUNT($this->processes))
+            $data->inProcesses($this->processes, $this->filtersType['processes']);
+
+        if (COUNT($this->areas))
+            $data->inAreas($this->areas, $this->filtersType['areas']);
 
         if ($this->nextFollowDays)
             $data->inNextFollowDays($this->nextFollowDays, $this->filtersType['nextFollowDays']);
@@ -213,14 +225,21 @@ class InformManagerCheck
         ->inIdentifications($this->identifications, $this->filtersType['identifications'])
         ->inNames($this->names, $this->filtersType['names'])
         ->inRegionals($this->regionals, $this->filtersType['regionals'])
-        ->inHeadquarters($this->headquarters_filters, $this->filtersType['headquarters'])
-        ->inProcesses($this->processes, $this->filtersType['processes'])
-        ->inAreas($this->areas, $this->filtersType['areas'])
         ->inBusinesses($this->businesses, $this->filtersType['businesses'])
         ->inDiseaseOrigin($this->diseaseOrigin, $this->filtersType['diseaseOrigin'])
         ->inYears($this->years, $this->filtersType['years'])
         ->inCodCie($this->cie10, $this->filtersType['cie10'])
         ->betweenDate($this->dateRange);
+
+
+        if (COUNT($this->headquarters_filters))
+            $data->inHeadquarters($this->headquarters_filters, $this->filtersType['headquarters']);
+
+        if (COUNT($this->processes))
+            $data->inProcesses($this->processes, $this->filtersType['processes']);
+
+        if (COUNT($this->areas))
+            $data->inAreas($this->areas, $this->filtersType['areas']);
 
         if ($condition)
             $data->where($condition);
@@ -249,15 +268,22 @@ class InformManagerCheck
         ->inIdentifications($this->identifications, $this->filtersType['identifications'])
         ->inNames($this->names, $this->filtersType['names'])
         ->inRegionals($this->regionals, $this->filtersType['regionals'])
-        ->inHeadquarters($this->headquarters_filters, $this->filtersType['headquarters'])
-        ->inProcesses($this->processes, $this->filtersType['processes'])
-        ->inAreas($this->areas, $this->filtersType['areas'])
         ->inBusinesses($this->businesses, $this->filtersType['businesses'])
         ->inDiseaseOrigin($this->diseaseOrigin, $this->filtersType['diseaseOrigin'])
         ->inYears($this->years, $this->filtersType['years'])
         ->inCodCie($this->cie10, $this->filtersType['cie10'])
         ->betweenDate($this->dateRange)
         ->whereRaw("YEAR(sau_reinc_checks.created_at) = ".date('Y'). " AND MONTH(sau_reinc_checks.created_at) = ".date('m'));
+
+
+        if (COUNT($this->headquarters_filters))
+            $data->inHeadquarters($this->headquarters_filters, $this->filtersType['headquarters']);
+
+        if (COUNT($this->processes))
+            $data->inProcesses($this->processes, $this->filtersType['processes']);
+
+        if (COUNT($this->areas))
+            $data->inAreas($this->areas, $this->filtersType['areas']);
 
         if ($this->nextFollowDays)
             $data->inNextFollowDays($this->nextFollowDays, $this->filtersType['nextFollowDays']);
@@ -526,15 +552,22 @@ class InformManagerCheck
         ->inIdentifications($this->identifications, $this->filtersType['identifications'])
         ->inNames($this->names, $this->filtersType['names'])
         ->inRegionals($this->regionals, $this->filtersType['regionals'])
-        ->inHeadquarters($this->headquarters_filters, $this->filtersType['headquarters'])
-        ->inProcesses($this->processes, $this->filtersType['processes'])
-        ->inAreas($this->areas, $this->filtersType['areas'])
         ->inBusinesses($this->businesses, $this->filtersType['businesses'])
         ->inDiseaseOrigin($this->diseaseOrigin, $this->filtersType['diseaseOrigin'])
         ->inYears($this->years, $this->filtersType['years'])
         ->inCodCie($this->cie10, $this->filtersType['cie10'])
         ->betweenDate($this->dateRange)
         ->groupBy('month');
+
+
+        if (COUNT($this->headquarters_filters))
+            $checksPerMonth->inHeadquarters($this->headquarters_filters, $this->filtersType['headquarters']);
+
+        if (COUNT($this->processes))
+            $checksPerMonth->inProcesses($this->processes, $this->filtersType['processes']);
+
+        if (COUNT($this->areas))
+            $checksPerMonth->inAreas($this->areas, $this->filtersType['areas']);
 
         if ($this->nextFollowDays)
             $checksPerMonth->inNextFollowDays($this->nextFollowDays, $this->filtersType['nextFollowDays']);
@@ -600,15 +633,22 @@ class InformManagerCheck
         ->inIdentifications($this->identifications, $this->filtersType['identifications'])
         ->inNames($this->names, $this->filtersType['names'])
         ->inRegionals($this->regionals, $this->filtersType['regionals'])
-        ->inHeadquarters($this->headquarters_filters, $this->filtersType['headquarters'])
-        ->inProcesses($this->processes, $this->filtersType['processes'])
-        ->inAreas($this->areas, $this->filtersType['areas'])
         ->inBusinesses($this->businesses, $this->filtersType['businesses'])
         ->inDiseaseOrigin($this->diseaseOrigin, $this->filtersType['diseaseOrigin'])
         ->inYears($this->years, $this->filtersType['years'])
         ->inCodCie($this->cie10, $this->filtersType['cie10'])
         ->betweenDate($this->dateRange)
         ->groupBy('year');
+
+
+        if (COUNT($this->headquarters_filters))
+            $checksPerYear->inHeadquarters($this->headquarters_filters, $this->filtersType['headquarters']);
+
+        if (COUNT($this->processes))
+            $checksPerYear->inProcesses($this->processes, $this->filtersType['processes']);
+
+        if (COUNT($this->areas))
+            $checksPerYear->inAreas($this->areas, $this->filtersType['areas']);
 
         if ($this->nextFollowDays)
             $checksPerYear->inNextFollowDays($this->nextFollowDays, $this->filtersType['nextFollowDays']);
@@ -674,9 +714,6 @@ class InformManagerCheck
         ->inIdentifications($this->identifications, $this->filtersType['identifications'])
         ->inNames($this->names, $this->filtersType['names'])
         ->inRegionals($this->regionals, $this->filtersType['regionals'])
-        ->inHeadquarters($this->headquarters_filters, $this->filtersType['headquarters'])
-        ->inProcesses($this->processes, $this->filtersType['processes'])
-        ->inAreas($this->areas, $this->filtersType['areas'])
         ->inBusinesses($this->businesses, $this->filtersType['businesses'])
         ->inDiseaseOrigin($this->diseaseOrigin, $this->filtersType['diseaseOrigin'])
         ->inYears($this->years, $this->filtersType['years'])
@@ -685,6 +722,16 @@ class InformManagerCheck
         ->where($column, '<>', '')
         ->groupBy($column)
         ->orderBy('count');
+
+
+        if (COUNT($this->headquarters_filters))
+            $data->inHeadquarters($this->headquarters_filters, $this->filtersType['headquarters']);
+
+        if (COUNT($this->processes))
+            $data->inProcesses($this->processes, $this->filtersType['processes']);
+
+        if (COUNT($this->areas))
+            $data->inAreas($this->areas, $this->filtersType['areas']);
 
         if ($this->nextFollowDays)
             $data->inNextFollowDays($this->nextFollowDays, $this->filtersType['nextFollowDays']);
@@ -723,9 +770,6 @@ class InformManagerCheck
         ->inIdentifications($this->identifications, $this->filtersType['identifications'])
         ->inNames($this->names, $this->filtersType['names'])
         ->inRegionals($this->regionals, $this->filtersType['regionals'])
-        ->inHeadquarters($this->headquarters_filters, $this->filtersType['headquarters'])
-        ->inProcesses($this->processes, $this->filtersType['processes'])
-        ->inAreas($this->areas, $this->filtersType['areas'])
         ->inBusinesses($this->businesses, $this->filtersType['businesses'])
         ->inDiseaseOrigin($this->diseaseOrigin, $this->filtersType['diseaseOrigin'])
         ->inYears($this->years, $this->filtersType['years'])
@@ -734,6 +778,15 @@ class InformManagerCheck
         //->where($column, '<>', '')
         ->groupBy('motive_close')
         ->orderBy('count');
+
+        if (COUNT($this->headquarters_filters))
+            $data->inHeadquarters($this->headquarters_filters, $this->filtersType['headquarters']);
+
+        if (COUNT($this->processes))
+            $data->inProcesses($this->processes, $this->filtersType['processes']);
+
+        if (COUNT($this->areas))
+            $data->inAreas($this->areas, $this->filtersType['areas']);
 
         if ($this->nextFollowDays)
             $data->inNextFollowDays($this->nextFollowDays, $this->filtersType['nextFollowDays']);
@@ -809,9 +862,6 @@ class InformManagerCheck
         ->inIdentifications($this->identifications, $this->filtersType['identifications'])
         ->inNames($this->names, $this->filtersType['names'])
         ->inRegionals($this->regionals, $this->filtersType['regionals'])
-        ->inHeadquarters($this->headquarters_filters, $this->filtersType['headquarters'])
-        ->inProcesses($this->processes, $this->filtersType['processes'])
-        ->inAreas($this->areas, $this->filtersType['areas'])
         ->inBusinesses($this->businesses, $this->filtersType['businesses'])
         ->inDiseaseOrigin($this->diseaseOrigin, $this->filtersType['diseaseOrigin'])
         ->inYears($this->years, $this->filtersType['years'])
@@ -819,6 +869,16 @@ class InformManagerCheck
         ->betweenDate($this->dateRange)
         ->groupBy('sau_reinc_cie10_codes.category')
         ->orderBy('count_per_cie10_code');
+
+
+        if (COUNT($this->headquarters_filters))
+            $checksPerCie10Code->inHeadquarters($this->headquarters_filters, $this->filtersType['headquarters']);
+
+        if (COUNT($this->processes))
+            $checksPerCie10Code->inProcesses($this->processes, $this->filtersType['processes']);
+
+        if (COUNT($this->areas))
+            $checksPerCie10Code->inAreas($this->areas, $this->filtersType['areas']);
 
         if ($disease_origin != null)
             $checksPerCie10Code->where('sau_reinc_checks.disease_origin', $disease_origin);
@@ -891,9 +951,6 @@ class InformManagerCheck
         ->inIdentifications($this->identifications, $this->filtersType['identifications'])
         ->inNames($this->names, $this->filtersType['names'])
         ->inRegionals($this->regionals, $this->filtersType['regionals'])
-        ->inHeadquarters($this->headquarters_filters, $this->filtersType['headquarters'])
-        ->inProcesses($this->processes, $this->filtersType['processes'])
-        ->inAreas($this->areas, $this->filtersType['areas'])
         ->inBusinesses($this->businesses, $this->filtersType['businesses'])
         ->inDiseaseOrigin($this->diseaseOrigin, $this->filtersType['diseaseOrigin'])
         ->inYears($this->years, $this->filtersType['years'])
@@ -901,6 +958,16 @@ class InformManagerCheck
         ->betweenDate($this->dateRange)
         ->groupBy($table.'.name')
         ->orderBy('count');
+
+
+        if (COUNT($this->headquarters_filters))
+            $checksPerColumn->inHeadquarters($this->headquarters_filters, $this->filtersType['headquarters']);
+
+        if (COUNT($this->processes))
+            $checksPerColumn->inProcesses($this->processes, $this->filtersType['processes']);
+
+        if (COUNT($this->areas))
+            $checksPerColumn->inAreas($this->areas, $this->filtersType['areas']);
 
         if ($this->nextFollowDays)
             $checksPerColumn->inNextFollowDays($this->nextFollowDays, $this->filtersType['nextFollowDays']);
@@ -997,6 +1064,7 @@ class InformManagerCheck
             employee_id,
             SUM(DISTINCT CASE WHEN state = 'ABIERTO' THEN 1 ELSE 0 END) AS state
         ")
+        ->join('sau_employees', 'sau_employees.id', 'sau_reinc_checks.employee_id')
         ->whereRaw("sau_reinc_checks.company_id = {$this->company}")
         ->groupBy('disease_origin', 'employee_id');
 
@@ -1004,7 +1072,7 @@ class InformManagerCheck
         {
             $headquarters = implode(',', $headquarters);
 
-            $checks->join('sau_employees', 'sau_employees.id', 'sau_reinc_checks.employee_id')->whereRaw("sau_employees.employee_headquarter_id in ({$headquarters})");
+            $checks->whereRaw("sau_employees.employee_headquarter_id in ({$headquarters})");
         }
 
         if ($this->filtersType['cie10'] == 'IN' && count($this->cie10) > 0)
@@ -1016,6 +1084,50 @@ class InformManagerCheck
         {
             $cie = implode(',', $this->cie10);
             $checks->whereRaw("cie10_code_id not in ({$cie})");
+        }
+
+        if ($this->filtersType['regionals'] == 'IN' && count($this->regionals) > 0)
+        {
+            $r = $this->regionals->implode(',');
+            $checks->whereRaw("sau_employees.employee_regional_id in ({$r})");
+        }
+        else if ($this->filtersType['regionals'] == 'NOT IN' && count($this->regionals) > 0)
+        {
+            $r = $this->regionals->implode(',');
+            $checks->whereRaw("sau_employees.employee_regional_id in ({$r})");
+        }
+
+        if (isset($this->filtersType['headquarters']) && $this->filtersType['headquarters'] == 'IN' && count($this->headquarters_filters) > 0)
+        {
+            $h = $this->headquarters_filters->implode(',');
+            $checks->whereRaw("sau_employees.employee_headquarter_id in ({$h})");
+        }
+        else if (isset($this->filtersType['headquarters']) && $this->filtersType['headquarters'] == 'NOT IN' && count($this->headquarters_filters) > 0)
+        {
+            $h = $this->headquarters_filters->implode(',');
+            $checks->whereRaw("sau_employees.employee_headquarter_id in ({$h})");
+        }
+
+        if (isset($this->filtersType['processes']) && $this->filtersType['processes'] == 'IN' && count($this->processes) > 0)
+        {
+            $p = $this->processes->implode(',');
+            $checks->whereRaw("sau_employees.employee_headquarter_id in ({$h})");
+        }
+        else if (isset($this->filtersType['processes']) && $this->filtersType['processes'] == 'NOT IN' && count($this->processes) > 0)
+        {
+            $p = $this->processes->implode(',');
+            $checks->whereRaw("sau_employees.employee_headquarter_id in ({$h})");
+        }
+
+        if (isset($this->filtersType['areas']) && $this->filtersType['areas'] == 'IN' && count($this->areas) > 0)
+        {
+            $a = $this->areas->implode(',');
+            $checks->whereRaw("sau_employees.employee_area_id in ({$a})");
+        }
+        else if (isset($this->filtersType['areas']) && $this->filtersType['areas'] == 'NOT IN' && count($this->areas) > 0)
+        {
+            $a = $this->areas->implode(',');
+            $checks->whereRaw("sau_employees.employee_area_id in ({$a})");
         }
 
         $report = DB::table(DB::raw("({$checks->toSql()}) AS t"))
