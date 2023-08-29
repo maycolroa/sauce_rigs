@@ -11,11 +11,38 @@ class Company extends Model
     
     protected $table = 'sau_companies';
 
-    protected $fillable = ['name', 'active', 'logo', 'ph_state_incentives', 'ph_file_incentives', 'company_group_id', 'test'];
+    protected $fillable = [
+        'name', 
+        'active', 
+        'logo', 
+        'ph_state_incentives', 
+        'ph_file_incentives', 
+        'company_group_id', 
+        'test',
+        'nombre_actividad_economica_sede_principal',
+        'tipo_identificacion_sede_principal',
+        'identificacion_sede_principal',
+        'direccion_sede_principal',
+        'telefono_sede_principal',
+        'email_sede_principal',
+        'departamento_sede_principal_id',
+        'ciudad_sede_principal_id',
+        'zona_sede_principal'
+    ];
 
     protected $casts = [
         'ph_state_incentives' => 'boolean',
     ];
+
+    public function departament()
+    {
+        return $this->belongsTo(Departament::class, 'departamento_sede_principal_id');
+    }
+
+    public function city()
+    {
+        return $this->belongsTo(Municipality::class, 'ciudad_sede_principal_id');
+    }
 
     public function group()
     {

@@ -124,6 +124,8 @@ class CompanyController extends Controller
             $company->delete = [];
 
             $company->multiselect_company_group = $company->company_group_id ? $company->group->multiselect() : [];
+            $company->multiselect_departament_sede = $company->departamento_sede_principal_id ? $company->departament->multiselect() : [];
+            $company->multiselect_municipality_sede = $company->ciudad_sede_principal_id ? $company->city->multiselect() : [];
 
             $company->group_company = $company->company_group_id ? 'SI' : 'NO';
 
@@ -131,6 +133,7 @@ class CompanyController extends Controller
                 'data' => $company,
             ]);
         } catch(Exception $e){
+            \Log::info($e->getMessage());
             $this->respondHttp500();
         }
     }

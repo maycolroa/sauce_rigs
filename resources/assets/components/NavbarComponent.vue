@@ -126,6 +126,7 @@
           <!-- <b-dd-item><i class="ion ion-ios-person text-lightest"></i> &nbsp; Mi Perfil</b-dd-item>
           <b-dd-divider /> -->
 
+          <b-dd-item :to="{ name: 'system-companies-edit-info', params : { id }}"><i class="ion ion-ios-copy text-danger"></i> &nbsp; Completar informacion de la compañia</b-dd-item>
           <b-dd-item :to="{ name: 'changepassword'}"><i class="ion ion-md-key text-danger"></i> &nbsp; Cambiar contraseña</b-dd-item>
           <b-dd-item :to="{ name: 'defaultmodule'}"><i class="ion ion-ios-star-outline text-danger"></i> &nbsp; Módulo favorito</b-dd-item>
           <b-dd-item :to="{ name: 'termsconditions'}"><i class="ion ion-md-list text-danger"></i> &nbsp; Términos y condiciones</b-dd-item>
@@ -245,6 +246,9 @@ export default {
       },
       companyName: function () {
         return this.company.data[this.company.selected] != undefined ? this.company.data[this.company.selected].name : ''
+      },
+      id: function () {
+        return this.company.data[this.company.selected] != undefined ? this.company.data[this.company.selected].id : ''
       },
       companiesData() {
         let data = [];

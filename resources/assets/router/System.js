@@ -139,6 +139,14 @@ export default [{
             import('@/views/System/companies/edit')
         }
       ]),
+      ...middleware({ 'check-permission': 'companies_u' }, [
+        {
+          name: 'system-companies-edit-info',
+          path: 'companies/edit/info/:id',
+          component: () =>
+            import('@/views/System/companies/editInfo')
+        }
+      ]),
       ...middleware({ 'check-permission': 'companies_r' }, [
         {
           name: 'system-companies-view',
