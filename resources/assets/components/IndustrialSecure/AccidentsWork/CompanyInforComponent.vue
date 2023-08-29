@@ -1,24 +1,24 @@
 <template>
       <div>
           <b-form-row>
-            <vue-input :disabled="viewOnly" class="col-md-12" v-model="company.nombre_actividad_economica_sede_principal" label="Nombre de la actividad económica" type="text" name="nombre_actividad_economica_sede_principal" :error="form.errorsFor('nombre_actividad_economica_sede_principal')" placeholder="Nombre de la actividad económica"></vue-input>
-            <vue-input :disabled="viewOnly" class="col-md-12" v-model="company.razon_social" label="Nombre o razón social" type="text" name="razon_social" :error="form.errorsFor('razon_social')" placeholder="Nombre o razón social"></vue-input>            
+            <vue-input :disabled="true" class="col-md-12" v-model="company.nombre_actividad_economica_sede_principal" label="Nombre de la actividad económica" type="text" name="nombre_actividad_economica_sede_principal" :error="form.errorsFor('nombre_actividad_economica_sede_principal')" placeholder="Nombre de la actividad económica"></vue-input>
+            <vue-input :disabled="true" class="col-md-12" v-model="company.razon_social" label="Nombre o razón social" type="text" name="razon_social" :error="form.errorsFor('razon_social')" placeholder="Nombre o razón social"></vue-input>            
           </b-form-row>
           <b-form-row>
-            <vue-radio :disabled="viewOnly" :checked="company.tipo_identificacion_sede_principal" class="col-md-6" v-model="company.tipo_identificacion_sede_principal" :options="typesDocuments" name="tipo_identificacion_sede_principal" :error="form.errorsFor('tipo_identificacion_sede_principal')" label="Tipo de identificación"></vue-radio>
-            <vue-input :disabled="viewOnly" class="col-md-6" v-model="company.identificacion_sede_principal" label="Número" type="text" name="identificacion_sede_principal" :error="form.errorsFor('identificacion_sede_principal')" placeholder="Documento"></vue-input>
+            <vue-radio :disabled="true" :checked="company.tipo_identificacion_sede_principal" class="col-md-6" v-model="company.tipo_identificacion_sede_principal" :options="typesDocuments" name="tipo_identificacion_sede_principal" :error="form.errorsFor('tipo_identificacion_sede_principal')" label="Tipo de identificación"></vue-radio>
+            <vue-input :disabled="true" class="col-md-6" v-model="company.identificacion_sede_principal" label="Número" type="text" name="identificacion_sede_principal" :error="form.errorsFor('identificacion_sede_principal')" placeholder="Documento"></vue-input>
           </b-form-row>
           <b-form-row>
-            <vue-input :disabled="viewOnly" class="col-md-6" v-model="company.direccion_sede_principal" label="Dirección" type="text" name="direccion_sede_principal" :error="form.errorsFor('direccion_sede_principal')" placeholder="Dirección"></vue-input>
-            <vue-input :disabled="viewOnly" class="col-md-6" v-model="company.email_sede_principal" label="Email" type="text" name="email_sede_principal" :error="form.errorsFor('email_sede_principal')" placeholder="Email"></vue-input>
+            <vue-input :disabled="true" class="col-md-6" v-model="company.direccion_sede_principal" label="Dirección" type="text" name="direccion_sede_principal" :error="form.errorsFor('direccion_sede_principal')" placeholder="Dirección"></vue-input>
+            <vue-input :disabled="true" class="col-md-6" v-model="company.email_sede_principal" label="Email" type="text" name="email_sede_principal" :error="form.errorsFor('email_sede_principal')" placeholder="Email"></vue-input>
           </b-form-row>
           <b-form-row>
-            <vue-input :disabled="viewOnly" class="col-md-6" v-model="company.telefono_sede_principal" label="Teléfono" type="text" name="telefono_sede_principal" :error="form.errorsFor('telefono_sede_principal')" placeholder="Teléfono"></vue-input>
-            <vue-ajax-advanced-select :disabled="viewOnly" class="col-md-6" v-model="company.departamento_sede_principal_id" :selected-object="company.multiselect_departament_sede" name="departamento_sede_principal_id" :error="form.errorsFor('departamento_sede_principal_id')" label="Departamento" placeholder="Seleccione el departamento" :url="departamentsUrl"></vue-ajax-advanced-select>
+            <vue-input :disabled="true" class="col-md-6" v-model="company.telefono_sede_principal" label="Teléfono" type="text" name="telefono_sede_principal" :error="form.errorsFor('telefono_sede_principal')" placeholder="Teléfono"></vue-input>
+            <vue-ajax-advanced-select :disabled="true" class="col-md-6" v-model="company.departamento_sede_principal_id" :selected-object="company.multiselect_departament_sede" name="departamento_sede_principal_id" :error="form.errorsFor('departamento_sede_principal_id')" label="Departamento" placeholder="Seleccione el departamento" :url="departamentsUrl"></vue-ajax-advanced-select>
           </b-form-row>    
            <b-form-row>
-            <vue-ajax-advanced-select :disabled="viewOnly" class="col-md-6" v-model="company.ciudad_sede_principal_id" :selected-object="company.multiselect_municipality_sede" name="ciudad_sede_principal_id" :error="form.errorsFor('ciudad_sede_principal_id')" label="Ciudad" placeholder="Seleccione la ciudad" :url="minicipalitiessUrl" :parameters="{departament: company.departamento_sede_principal_id }"></vue-ajax-advanced-select>
-            <vue-radio :disabled="viewOnly" :checked="company.zona_sede_principal" class="col-md-6" v-model="company.zona_sede_principal" :options="zones" name="zona_sede_principal" :error="form.errorsFor('zona_sede_principal')" label="Zona"></vue-radio>
+            <vue-ajax-advanced-select :disabled="true" class="col-md-6" v-model="company.ciudad_sede_principal_id" :selected-object="company.multiselect_municipality_sede" name="ciudad_sede_principal_id" :error="form.errorsFor('ciudad_sede_principal_id')" label="Ciudad" placeholder="Seleccione la ciudad" :url="minicipalitiessUrl" :parameters="{departament: company.departamento_sede_principal_id }"></vue-ajax-advanced-select>
+            <vue-radio :disabled="true" :checked="company.zona_sede_principal" class="col-md-6" v-model="company.zona_sede_principal" :options="zones" name="zona_sede_principal" :error="form.errorsFor('zona_sede_principal')" label="Zona"></vue-radio>
           </b-form-row>
           <b-form-row>
             <label class="col-md-6 offset-md-4">Centro de trabajo donde labora el trabajador</label>
@@ -109,7 +109,7 @@ export default {
          {text: 'NO', value: 'NO'}
       ],
       typesDocuments: [
-        {text: 'NI', value: 'NI'},
+        {text: 'NIT', value: 'NIT'},
         {text: 'CC', value: 'CC'},
         {text: 'CE', value: 'CE'},
         {text: 'NU', value: 'NU'},

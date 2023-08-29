@@ -307,7 +307,9 @@ export default {
           fax_sede_principal: '',
           email_sede_principal: '',
           departamento_sede_principal_id: '',
+          multiselect_departament_sede: {},
           ciudad_sede_principal_id: '',
+          multiselect_municipality_sede: {},
           zona_sede_principal: '',
           info_sede_principal_misma_centro_trabajo: '',
           nombre_actividad_economica_centro_trabajo: '',
@@ -390,6 +392,17 @@ export default {
           axios.get(`/system/company/${this.auth.company_id}`)
           .then(response => {
               this.form.razon_social = response.data.data.name;
+              this.form.nombre_actividad_economica_sede_principal = response.data.data.nombre_actividad_economica_sede_principal;
+              this.form.tipo_identificacion_sede_principal = response.data.data.tipo_identificacion_sede_principal;
+              this.form.identificacion_sede_principal = response.data.data.identificacion_sede_principal;
+              this.form.direccion_sede_principal = response.data.data.direccion_sede_principal;
+              this.form.telefono_sede_principal = response.data.data.telefono_sede_principal;
+              this.form.email_sede_principal = response.data.data.email_sede_principal;
+              this.form.departamento_sede_principal_id = response.data.data.departamento_sede_principal_id;
+              this.form.ciudad_sede_principal_id = response.data.data.ciudad_sede_principal_id;
+              this.form.zona_sede_principal = response.data.data.zona_sede_principal;
+              this.form.multiselect_departament_sede = response.data.data.multiselect_departament_sede;
+              this.form.multiselect_municipality_sede = response.data.data.multiselect_municipality_sede;
           })
           .catch(error => {
               Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
