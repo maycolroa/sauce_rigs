@@ -252,13 +252,7 @@ class AccidentsWorkController extends Controller
             $accident->ciudad_sede_principal_id = $request->ciudad_sede_principal_id;
             $accident->zona_sede_principal = $request->zona_sede_principal;
             $accident->info_sede_principal_misma_centro_trabajo = $request->info_sede_principal_misma_centro_trabajo == 'SI' ? true : false;
-            $accident->nombre_actividad_economica_centro_trabajo = $request->nombre_actividad_economica_centro_trabajo;
-            $accident->direccion_centro_trabajo = $request->direccion_centro_trabajo;
-            $accident->telefono_centro_trabajo = $request->telefono_centro_trabajo;
-            $accident->email_centro_trabajo = $request->email_centro_trabajo;
-            $accident->departamento_centro_trabajo_id = $request->departamento_centro_trabajo_id;
-            $accident->ciudad_centro_trabajo_id = $request->ciudad_centro_trabajo_id;
-            $accident->zona_centro_trabajo = $request->zona_centro_trabajo;
+            $accident->centro_trabajo_secundary_id = $request->centro_trabajo_secundary_id;
 
 
             /*///////////////////////////////Informacion basica///////////////////////
@@ -307,10 +301,8 @@ class AccidentsWorkController extends Controller
             $accident->site_id = $request->site_id;
 
             ///////////////////Descripcion del accidente/////////////////////////
-            $accident->fecha_envio_arl = (Carbon::createFromFormat('D M d Y',$request->fecha_envio_arl))->format('Ymd');
-            $accident->fecha_envio_empresa = (Carbon::createFromFormat('D M d Y',$request->fecha_envio_empresa))->format('Ymd');
-            $accident->coordinador_delegado = $request->coordinador_delegado;
-            $accident->cargo = $request->cargo;
+            $accident->investigation_arl = $request->investigation_arl;
+            $accident->fecha_envio_arl = $request->fecha_envio_arl ? (Carbon::createFromFormat('D M d Y',$request->fecha_envio_arl))->format('Ymd'): null;
             $accident->descripcion_accidente = $request->descripcion_accidente;
             $accident->personas_presenciaron_accidente = $request->personas_presenciaron_accidente  == 'SI' ? true : false;
             $accident->nombres_apellidos_responsable_informe = $request->nombres_apellidos_responsable_informe;
@@ -703,10 +695,8 @@ class AccidentsWorkController extends Controller
             $accident->site_id = $request->site_id;
 
             ///////////////////Descripcion del accidente/////////////////////////
-            $accident->fecha_envio_arl = (Carbon::createFromFormat('D M d Y',$request->fecha_envio_arl))->format('Ymd');
-            $accident->fecha_envio_empresa = (Carbon::createFromFormat('D M d Y',$request->fecha_envio_empresa))->format('Ymd');
-            $accident->coordinador_delegado = $request->coordinador_delegado;
-            $accident->cargo = $request->cargo;
+            $accident->investigation_arl = $request->investigation_arl;
+            $accident->fecha_envio_arl = $request->fecha_envio_arl ? (Carbon::createFromFormat('D M d Y',$request->fecha_envio_arl))->format('Ymd') : null;
             $accident->descripcion_accidente = $request->descripcion_accidente;
             $accident->personas_presenciaron_accidente = $request->personas_presenciaron_accidente  == 'SI' ? true : false;
             $accident->nombres_apellidos_responsable_informe = $request->nombres_apellidos_responsable_informe;
