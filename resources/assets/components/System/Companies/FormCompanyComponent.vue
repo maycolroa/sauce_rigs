@@ -153,6 +153,7 @@ export default {
     },
     submit(e) {
       this.loading = true;
+      this.form.input = false;
       this.form
         .submit(e.target.action)
         .then(response => {

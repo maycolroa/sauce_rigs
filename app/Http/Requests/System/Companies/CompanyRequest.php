@@ -35,6 +35,15 @@ class CompanyRequest extends FormRequest
             }
         }
 
+        if ($this->has('work_centers'))
+        {
+            foreach ($this->input('work_centers') as $key => $value)
+            {
+                $data['work_centers'][$key] = json_decode($value, true);
+                $this->merge($data);
+            }
+        }
+
         return $this->all();
     }
 
@@ -51,7 +60,13 @@ class CompanyRequest extends FormRequest
             'name' => 'required|string|unique:sau_companies,name,'.$id.',id',
             'users' => 'nullable|array',
             'users.*.user_id' => 'required',
-            'users.*.role_id' => 'required'
+            'users.*.role_id' => 'required',
+            'work_centers' => 'nullable|array',
+            'work_centers.*.activity_economic' => 'required',
+            'work_centers.*.direction' => 'required',
+            'work_centers.*.departament_id' => 'required',
+            'work_centers.*.city_id' => 'required',
+            'work_centers.*.zona' => 'required'
         ];
     }
 }

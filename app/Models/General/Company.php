@@ -59,6 +59,11 @@ class Company extends Model
         return $this->hasMany('App\Models\System\Licenses\License');
     }
 
+    public function centers()
+    {
+        return $this->hasMany(WorkCenter::class, 'company_id');
+    }
+
     public function interests()
     {
         return $this->belongsToMany('App\Models\LegalAspects\LegalMatrix\Interest', 'sau_lm_company_interest');

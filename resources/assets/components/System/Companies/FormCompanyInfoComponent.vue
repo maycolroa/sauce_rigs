@@ -24,6 +24,45 @@
       <vue-radio :disabled="viewOnly" :checked="form.zona_sede_principal" class="col-md-6" v-model="form.zona_sede_principal" :options="zones" name="zona_sede_principal" :error="form.errorsFor('zona_sede_principal')" label="Zona"></vue-radio>
     </b-form-row>
 
+    <b-form-row v-if="isEdit">
+      <div class="col-md-12">
+        <div class="float-right" style="padding-top: 10px;">
+              <b-btn variant="primary" @click.prevent="addUser()"><span class="ion ion-md-add-circle"></span>&nbsp;&nbsp;Agregar Centro de trabajo</b-btn>
+          </div>
+      </div>
+    </b-form-row>
+
+    <b-form-row style="padding-top: 15px;" v-if="isEdit">
+      <template v-for="(center, index) in form.work_centers">
+        <div class="col-md-12" :key="center.key">
+          <b-form-row>
+            <div class="col-md-12">
+              <div class="float-right">
+                <b-btn variant="outline-primary icon-btn borderless" size="sm" v-b-tooltip.top title="Eliminar Centro" @click.prevent="removeUser(index)"><span class="ion ion-md-close-circle"></span></b-btn>
+              </div>
+            </div>
+          </b-form-row>
+          <b-card bg-variant="transparent" title="Información centro de trabajo" border-variant="dark" class="mb-3 box-shadow-none">
+            <b-form-row>
+              <vue-input :disabled="viewOnly" class="col-md-6" v-model="center.activity_economic" label="Nombre de la actividad económica" type="text" name="activity_economic" :error="form.errorsFor('activity_economic')" placeholder="Nombre de la actividad económica"></vue-input>
+              <vue-input :disabled="viewOnly" class="col-md-6" v-model="center.direction" label="Dirección" type="text" name="direction" :error="form.errorsFor('direction')" placeholder="Dirección"></vue-input>         
+            </b-form-row>
+            <b-form-row>
+              <vue-input :disabled="viewOnly" class="col-md-6" v-model="center.email" label="Email" type="text" name="email" :error="form.errorsFor('email')" placeholder="Email"></vue-input>
+              <vue-input :disabled="viewOnly" class="col-md-6" v-model="center.telephone" label="Teléfono" type="text" name="telephone" :error="form.errorsFor('telephone')" placeholder="Teléfono"></vue-input>
+            </b-form-row>
+            <b-form-row>            
+              <vue-ajax-advanced-select :disabled="viewOnly" class="col-md-6" v-model="center.departament_id" :selected-object="center.multiselect_departament_centro" name="departament_id" :error="form.errorsFor('departament_id')" label="Departamento" placeholder="Seleccione el departamento" :url="departamentsUrl"></vue-ajax-advanced-select>
+              <vue-ajax-advanced-select :disabled="viewOnly" class="col-md-6" v-model="center.city_id" :selected-object="center.multiselect_municipality_centro" name="city_id" :error="form.errorsFor('city_id')" label="Ciudad" placeholder="Seleccione la ciudad" :url="minicipalitiessUrl" :parameters="{departament: center.departament_id }"></vue-ajax-advanced-select>
+            </b-form-row>    
+            <b-form-row>            
+              <vue-radio :disabled="viewOnly" :checked="center.zona" class="col-md-12" v-model="center.zona" :options="zones" name="zona" :error="form.errorsFor('zona')" label="Zona"></vue-radio>
+            </b-form-row>
+          </b-card>
+        </div>
+      </template>
+    </b-form-row>
+
     <div class="row float-right pt-10 pr-10">
       <template>
         <b-btn variant="default" @click="$router.go(-1)" :disabled="loading">Cancelar</b-btn>&nbsp;&nbsp;
@@ -77,7 +116,9 @@ export default {
           email_sede_principal: '',
           departamento_sede_principal_id: '',
           ciudad_sede_principal_id: '',
-          zona_sede_principal: ''
+          zona_sede_principal: '',
+          work_centers: {},
+          delete: []
         };
       }
     }
@@ -113,21 +154,27 @@ export default {
   },
   methods: {
     addUser() {
-      this.form.users.push({
+      this.form.work_centers.push({
         key: new Date().getTime() + Math.round(Math.random() * 10000),
-        user_id: '',
-        role_id: []
+        activity_economic: '',
+        direction: '',
+        telephone: '',
+        email: '',
+        departament_id: '',
+        city_id: '',
+        zona: '',
       })
     },
     removeUser(index)
     {
-      if (this.form.users[index].user_id != undefined)
-        this.form.delete.push(this.form.users[index].user_id)
+      if (this.form.work_centers[index].user_id != undefined)
+        this.form.delete.push(this.form.work_centers[index].user_id)
 
-      this.form.users.splice(index, 1)
+      this.form.work_centers.splice(index, 1)
     },
     submit(e) {
       this.loading = true;
+      this.form.input = true;
       this.form
         .submit(e.target.action)
         .then(response => {
