@@ -8,7 +8,7 @@
         </wizard-step>
       </template>
 
-      <tab-content title="Identificación del empleado, contratante o cooperativa">
+      <tab-content title="Identificación de la persona que presento el evento">
         <b-row>
           <b-col>
             <b-card bg-variant="transparent" border-variant="dark" title="" class="mb-3 box-shadow-none">
@@ -40,7 +40,7 @@
         </b-row>
       </tab-content>
 
-      <tab-content title="Información de la persona que se accidentó">                         
+      <tab-content title="Información de la persona">                         
         <b-row v-if="form.tipo_vinculador_laboral == 'Empleado'">
           <b-col>
             <b-card bg-variant="transparent" border-variant="dark" title="" class="mb-3 box-shadow-none">
@@ -97,7 +97,7 @@
         </b-row>
       </tab-content>-->
 
-      <tab-content title="Información sobre el accidente">
+      <tab-content title="Detalles del evento">
         <b-row>
           <b-col>
             <b-card bg-variant="transparent" border-variant="dark" title="" class="mb-3 box-shadow-none">
@@ -115,7 +115,7 @@
         </b-row>
       </tab-content>
 
-      <tab-content title="Descripción del accidente">
+      <tab-content title="Descripción del evento">
         <b-row>
           <b-col>
             <b-card bg-variant="transparent" border-variant="dark" title="" class="mb-3 box-shadow-none">
@@ -133,7 +133,7 @@
         </b-row>
       </tab-content>
 
-      <tab-content title="Observaciones de la empresa y registro visual">
+      <tab-content title="Observaciones de la empresa y registro fotografico">
         <b-row>
           <b-col>
             <b-card bg-variant="transparent" border-variant="dark" title="" class="mb-3 box-shadow-none">
@@ -310,16 +310,9 @@ export default {
           multiselect_departament_sede: {},
           ciudad_sede_principal_id: '',
           multiselect_municipality_sede: {},
+          centro_trabajo_secundary_id: {},
           zona_sede_principal: '',
           info_sede_principal_misma_centro_trabajo: '',
-          nombre_actividad_economica_centro_trabajo: '',
-          direccion_centro_trabajo: '',
-          telefono_centro_trabajo: '',
-          fax_centro_trabajo: '',
-          email_centro_trabajo: '',
-          departamento_centro_trabajo_id: '',
-          ciudad_centro_trabajo_id: '',
-          zona_centro_trabajo: '',
           nivel_accidente: '',
           fecha_envio_arl: '',
           fecha_envio_empresa: '',

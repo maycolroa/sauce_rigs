@@ -61,7 +61,9 @@ class AccidentsWorkController extends Controller
     {
         $accidents = Accident::selectRaw(
             "sau_aw_form_accidents.*,
-            if(sau_aw_form_accidents.consolidado, 'SI', 'NO') AS consolidado")
+            if(sau_aw_form_accidents.consolidado, 'SI', 'NO') AS consolidado,
+            sau_users.name as user")
+        ->join('sau_users', 'sau_users.id', 'sau_aw_form_accidents.user_id')
         ->where('sau_aw_form_accidents.company_id', $this->company);
 
         $url = "/industrialsecure/accidents";
@@ -494,6 +496,7 @@ class AccidentsWorkController extends Controller
             $accident->multiselect_municipality_sede = $accident->ciudad_sede_principal_id ? $accident->ciudadSede->multiselect() : [];
             $accident->multiselect_municipality_centro = $accident->ciudad_centro_trabajo_id ? $accident->ciudadCentro->multiselect() : [];
             $accident->multiselect_municipality_accident = $accident->ciudad_accidente ? $accident->ciudadAccident->multiselect() : [];
+            $accident->multiselect_center = $accident->centro_trabajo_secundary_id ? $accident->centroEmployee->multiselect() : [];
 
             /*$values = $accident->lesionTypes()->pluck('sau_aw_types_lesion.id');
             $accident->lesions_id = $values;
@@ -578,7 +581,7 @@ class AccidentsWorkController extends Controller
 
             ///////////////Empleado//////////////
 
-            if ($request->tipo_vinculador_laboral == "Empleador")
+            if ($request->tipo_vinculador_laboral == "Empleado")
             {
                 $employee = Employee::find($request->employee_id);
 
@@ -652,14 +655,7 @@ class AccidentsWorkController extends Controller
             $accident->ciudad_sede_principal_id = $request->ciudad_sede_principal_id;
             $accident->zona_sede_principal = $request->zona_sede_principal;
             $accident->info_sede_principal_misma_centro_trabajo = $request->info_sede_principal_misma_centro_trabajo == 'SI' ? true : false;
-            $accident->nombre_actividad_economica_centro_trabajo = $request->nombre_actividad_economica_centro_trabajo;
-            $accident->direccion_centro_trabajo = $request->direccion_centro_trabajo;
-            $accident->telefono_centro_trabajo = $request->telefono_centro_trabajo;
-            $accident->email_centro_trabajo = $request->email_centro_trabajo;
-            $accident->departamento_centro_trabajo_id = $request->departamento_centro_trabajo_id;
-            $accident->ciudad_centro_trabajo_id = $request->ciudad_centro_trabajo_id;
-            $accident->zona_centro_trabajo = $request->zona_centro_trabajo;
-
+            $accident->centro_trabajo_secundary_id = $request->centro_trabajo_secundary_id;
 
             /*///////////////////////////////Informacion basica///////////////////////
             $accident->tiene_seguro_social = $request->tiene_seguro_social == 'SI' ? true : false;

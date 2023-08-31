@@ -78,10 +78,11 @@ class AccidentRequest extends FormRequest
      */
     public function rules()
     {
+        \Log::info($this);
         $id = $this->input('id');
 
         $accidentLevels = ['Accidente', 'Accidente grave', 'Accidente mortal', 'Accidente leve', 'Incidente' ];
-        $laborLinkingTypes = ['Empleador','Misión','Cooperativa de trabaso asociado', 'Estudiante o Aprendiz', 'Independiente'];
+        $laborLinkingTypes = ['Empleado','Misión','Cooperativa de trabaso asociado', 'Estudiante o Aprendiz', 'Independiente'];
         $idTypes = ['NI','CC','CE','NU','PA'];
         $zones = ['Urbana', 'Rural'];
         $shifts = ['Diurna','Nocturna','Mixto','Turnos'];
@@ -94,53 +95,37 @@ class AccidentRequest extends FormRequest
         $rules = [
             'tipo_vinculador_laboral' => 'required|string|in:' . implode(',', $laborLinkingTypes),
             //'tipo_vinculacion_persona' => 'nullable|string|in:' . implode(',', $personLinkingTypes),
-            'nombre_persona' => 'required_unless:tipo_vinculador_laboral,Empleador|',
-            'tipo_identificacion_persona' => 'nullable'/*'required_unless:tipo_vinculador_laboral,Empleador|in:' . implode(',', $idTypes)*/,
-            'identificacion_persona' => 'required_unless:tipo_vinculador_laboral,Empleador',
-            'fecha_nacimiento_persona' => 'required_unless:tipo_vinculador_laboral,Empleador',
-            'sexo_persona' => 'required_unless:tipo_vinculador_laboral,Empleador',
+            'nombre_persona' => 'nullable',
+            'tipo_identificacion_persona' => 'nullable'/*'nullable|in:' . implode(',', $idTypes)*/,
+            'identificacion_persona' => 'nullable',
+            'fecha_nacimiento_persona' => 'nullable',
+            'sexo_persona' => 'nullable',
             'direccion_persona' => 'required|string',
-            'telefono_persona' => 'required_unless:tipo_vinculador_laboral,Empleador',
-            'email_persona' => 'required_unless:tipo_vinculador_laboral,Empleador',
+            'telefono_persona' => 'nullable',
+            'email_persona' => 'nullable',
             'fax_persona' => 'nullable',
             'departamento_persona_id' => 'required',
             'ciudad_persona_id' => 'required|string',
             'zona_persona' => 'required|string|in:' . implode(',', $zones),
-            'cargo_persona' => 'required_unless:tipo_vinculador_laboral,Empleador',
+            'cargo_persona' => 'nullable',
             'salario_persona' => 'required|integer|min:0',
             'jornada_trabajo_habitual_persona' => 'required|string|in:' . implode(',', $shifts),
-            'fecha_ingreso_empresa_persona' => 'required_unless:tipo_vinculador_laboral,Empleador',
+            'fecha_ingreso_empresa_persona' => 'nullable',
             'tiempo_ocupacion_habitual_persona' => 'required',
             /////////////////////////////////////////////////////////////////////////////
-            'nombre_actividad_economica_sede_principal' => 'required|string',
-            'razon_social' => 'required_unless:tipo_vinculador_laboral,Independiente|string',
-            'tipo_identificacion_sede_principal' => 'required_unless:tipo_vinculador_laboral,Independiente|string|in:' . implode(',', $idTypes),
-            'identificacion_sede_principal' => 'required_unless:tipo_vinculador_laboral,Independiente|string',
-            'direccion_sede_principal' => 'required_unless:tipo_vinculador_laboral,Independiente|string',
-            'telefono_sede_principal' => 'required_unless:tipo_vinculador_laboral,Independiente|string',
-            'email_sede_principal' => 'required_unless:tipo_vinculador_laboral,Independiente|email',
-            'departamento_sede_principal_id' => 'required_unless:tipo_vinculador_laboral,Independiente|string',
-            'ciudad_sede_principal_id' => 'required_unless:tipo_vinculador_laboral,Independiente|string',
-            'zona_sede_principal' => 'required_unless:tipo_vinculador_laboral,Independiente|string|in:' . implode(',', $zones),
 
             'info_sede_principal_misma_centro_trabajo' => 'required_unless:tipo_vinculador_laboral,Independiente|string',
+            'centro_trabajo_secundary_id' => 'required_if:info_sede_principal_misma_centro_trabajo,NO',
 
-            'nombre_actividad_economica_centro_trabajo' => 'required_if:info_sede_principal_misma_centro_trabajo,NO',
-            'direccion_centro_trabajo' => 'required_if:info_sede_principal_misma_centro_trabajo,NO',
-            'telefono_centro_trabajo' => 'required_if:info_sede_principal_misma_centro_trabajo,NO',
-            'email_centro_trabajo' => 'required_if:info_sede_principal_misma_centro_trabajo,NO',
-            'departamento_centro_trabajo_id' => 'required_if:info_sede_principal_misma_centro_trabajo,NO',
-            'ciudad_centro_trabajo_id' => 'required_if:info_sede_principal_misma_centro_trabajo,NO',
-            'zona_centro_trabajo' => 'required_if:info_sede_principal_misma_centro_trabajo,NO',
             //////////////////////////////////////////////////////////////
             'nivel_accidente' => 'required|string|in:' . implode(',', $accidentLevels),
             'fecha_envio_arl' => 'required',
             'fecha_envio_empresa' => 'required',
             'coordinador_delegado' => 'required|string',
             'cargo' => 'required|string',
-            'employee_eps_id' => 'required_unless:tipo_vinculador_laboral,Empleador',
-            'employee_arl_id' => 'required_unless:tipo_vinculador_laboral,Empleador',
-            'employee_afp_id' => 'required_unless:tipo_vinculador_laboral,Empleador',
+            'employee_eps_id' => 'nullable',
+            'employee_arl_id' => 'nullable',
+            'employee_afp_id' => 'nullable',
             'tiene_seguro_social' => 'required|string',
             'nombre_seguro_social' => 'required_if:tiene_seguro_social,SI',
             /////////////////////////////////////////////////////////////

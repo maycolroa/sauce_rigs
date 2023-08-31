@@ -347,9 +347,31 @@ class CompanyController extends Controller
 
     public function multiselectCenters(Request $request)
     {
-        $centers = WorkCenter::select("id", "activity_economic as name")
-                    ->pluck('id', 'name');
+        if($request->has('keyword'))
+        {
+            $keyword = "%{$request->keyword}%";
+            $centers = WorkCenter::select("id", "activity_economic as name")
+                ->where(function ($query) use ($keyword) {
+                    $query->orWhere('activity_economic', 'like', $keyword);
+                })
+                ->orderBy('name')
+                ->take(30)
+                ->get();
+                
+            $centers = $centers->pluck('id', 'name');
 
-        return $this->multiSelectFormat($centers);
+            return $this->respondHttp200([
+                'options' => $this->multiSelectFormat($centers)
+            ]);
+        }
+        else
+        {
+            $centers = WorkCenter::selectRaw("
+                sau_company_work_centers.id as id,
+                sau_company_work_centers.activity_economic as name
+            ")->orderBy('name')->pluck('id', 'name');
+        
+            return $this->multiSelectFormat($centers);
+        }
     }
 }

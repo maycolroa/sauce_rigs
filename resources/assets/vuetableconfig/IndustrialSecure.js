@@ -1901,10 +1901,11 @@ export default [
     name: 'industrialsecure-accidents',
     fields: [
         { name: 'id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true },
-        { name: 'nombre_persona', data: 'nombre_persona', title: 'Empleado', sortable: true, searchable: false, detail: false, key: false },
+        { name: 'nombre_persona', data: 'nombre_persona', title: 'Persona asociada al evento', sortable: true, searchable: false, detail: false, key: false },
         { name: 'identificacion_persona', data: 'identificacion_persona', title: 'Identificación', sortable: true, searchable: false, detail: false, key: false },
-        { name: 'fecha_accidente', data: 'fecha_accidente', title: 'Fecha de accidente', sortable: true, searchable: false, detail: false, key: false },
-        { name: 'consolidado', data: 'consolidado', title: 'Estado', sortable: true, searchable: false, detail: false, key: false },
+        { name: 'fecha_accidente', data: 'fecha_accidente', title: 'Fecha de evento', sortable: true, searchable: false, detail: false, key: false },
+        { name: 'estado_evento', data: 'estado_evento', title: 'Estado', sortable: true, searchable: false, detail: false, key: false },
+        { name: 'sau_users.name', data: 'user', title: 'Reportado por', sortable: true, searchable: false, detail: false, key: false },
         { name: '', data: 'controlls', title: 'Controles', sortable: false, searchable: false, detail: false, key: false },
     ],
     'controlls': [

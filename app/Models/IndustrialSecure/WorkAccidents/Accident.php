@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use App\Traits\CompanyTrait;
 use App\Models\General\Departament;
 use App\Models\General\Municipality;
+use App\Models\General\WorkCenter;
 
 class Accident extends Model
 {
@@ -92,7 +93,8 @@ class Accident extends Model
         'parts_body_id',
         'type_lesion_id',
         'otro_agente',
-        'otra_parte'
+        'otra_parte',
+        'centro_trabajo_secundary_id'
     ];
 
     public function agentAccident()
@@ -156,6 +158,11 @@ class Accident extends Model
     public function ciudadAccident()
     {
         return $this->belongsTo(Municipality::class, 'ciudad_accidente');
+    }
+
+    public function centroEmployee()
+    {
+        return $this->belongsTo(WorkCenter::class, 'centro_trabajo_secundary_id');
     }
 
     public function eps()
