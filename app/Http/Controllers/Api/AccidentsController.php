@@ -305,6 +305,13 @@ class AccidentsController extends ApiController
             $accident->descripcion_accidente = $request->descripcion_accidente;
 
             $accident->consolidado = false;
+
+            $complete = $this->inforCompanyComplete($request->company_id);
+
+            if ($complete)
+                $accident->estado_evento = 'Reportado';
+            else
+                $accident->estado_evento = 'Por completar';
             
             if(!$accident->save()){
                 return $this->respondHttp500();

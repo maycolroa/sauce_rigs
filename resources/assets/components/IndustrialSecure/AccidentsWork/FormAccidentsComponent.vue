@@ -406,14 +406,28 @@ export default {
     }
   },
   mounted() {
-    setTimeout(() => {
-      this.$refs.wizardFormEvaluation.activateAll();
-      if (this.form.employee_id)
+    axios.post('/system/company/information')
+    .then(response2 => {
+      console.log(response2.data.data)
+      if (response2.data.data)
       {
-        this.updateDetails(`/administration/employee/${this.form.employee_id}`, 'employeeDetail')
-      } 
-    }, 4000)       
-  },
+        setTimeout(() => {
+          this.$refs.wizardFormEvaluation.activateAll();
+          if (this.form.employee_id)
+          {
+            this.updateDetails(`/administration/employee/${this.form.employee_id}`, 'employeeDetail')
+          } 
+        }, 4000)  
+      }
+      else
+      {
+        Alerts.error('Error', 'Para grabar un reporte debe completar primero la informacion de la compañia');
+        } 
+    })
+    .catch(error => {
+        Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
+    });    
+},
   data() {
     return {
       loading: false,

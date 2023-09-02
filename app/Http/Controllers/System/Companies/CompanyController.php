@@ -374,4 +374,11 @@ class CompanyController extends Controller
             return $this->multiSelectFormat($centers);
         }
     }
+
+    public function informationCompany()
+    {
+        return $this->respondHttp200([
+            'data' => $this->inforCompanyComplete()
+        ]);
+    }
 }

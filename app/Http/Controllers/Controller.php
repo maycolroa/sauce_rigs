@@ -12,6 +12,7 @@ use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Support\Facades\Auth;
 use App\Models\General\Team;
+use App\Models\General\Company;
 use App\Models\General\LogDelete;
 use App\Models\General\LogUserActivitySystem;
 use Session;
@@ -54,5 +55,16 @@ class Controller extends BaseController
         $record->module = $module;
         $record->description = $description;
         $record->save();
+    }
+
+    public function inforCompanyComplete()
+    {
+        $infor_company = Company::find($this->company);
+
+        if (isset($infor_company->nombre_actividad_economica_sede_principal) && $infor_company->nombre_actividad_economica_sede_principal)
+            return true;
+        else
+            return false;
+
     }
 }

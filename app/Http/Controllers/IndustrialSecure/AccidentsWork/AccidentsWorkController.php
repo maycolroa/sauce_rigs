@@ -151,7 +151,6 @@ class AccidentsWorkController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(AccidentRequest $request)
-    //public function store(Request $request)
     {
         Validator::make($request->all(), [
             "files.*.file" => [

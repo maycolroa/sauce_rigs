@@ -928,6 +928,7 @@ Route::middleware(['auth'])->group(function () {
       Route::ApiResource('label', 'System\Labels\LabelController');   
 
       Route::post('company/data', 'System\Companies\CompanyController@data');
+      Route::post('company/information', 'System\Companies\CompanyController@informationCompany');
       Route::ApiResource('company', 'System\Companies\CompanyController');  
       Route::post('company/switchStatus/{company}', 'System\Companies\CompanyController@toggleState');
       Route::post('companyGroup/data', 'System\CompanyGroup\CompanyController@data');
