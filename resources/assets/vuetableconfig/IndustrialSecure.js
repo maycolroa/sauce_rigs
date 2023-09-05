@@ -1906,6 +1906,7 @@ export default [
         { name: 'fecha_accidente', data: 'fecha_accidente', title: 'Fecha de evento', sortable: true, searchable: false, detail: false, key: false },
         { name: 'estado_evento', data: 'estado_evento', title: 'Estado', sortable: true, searchable: false, detail: false, key: false },
         { name: 'sau_users.name', data: 'user', title: 'Reportado por', sortable: true, searchable: false, detail: false, key: false },
+        { name: 'consolidado', data: 'consolidado', title: '¿Abierto?', sortable: true, searchable: false, detail: false, key: false },
         { name: '', data: 'controlls', title: 'Controles', sortable: false, searchable: false, detail: false, key: false },
     ],
     'controlls': [
@@ -1943,10 +1944,10 @@ export default [
                     color: 'outline-success',
                     borderless: true,
                     icon: 'ion ion-md-list',
-                    title: 'Causas'
+                    title: 'Investigacion'
                 },
                 data: {
-                    routePush: { name: 'industrialsecure-accidentswork-causes' },
+                    routePush: { name: 'industrialsecure-accidentswork-investigation' },
                     id: 'id',
                 },
                 permission: 'accidentsWork_u'
@@ -1980,6 +1981,21 @@ export default [
             messageConfirmation: 'Esta seguro de borrar el formulario de accidente __name__'
         },
         permission: 'accidentsWork_d'
+        },
+        {
+            name: 'switchStatus',
+            config: {
+                color: 'outline-danger',
+                borderless: true,
+                icon: 'fas fa-sync',
+                title: 'Cambiar Estado'
+            },
+            data: {
+                action: '/industrialSecurity/accidents/switchStatus/',
+                id: 'id',
+                messageConfirmation: 'Esta seguro de querer cambiar el estado de __name__'
+            },
+            permission: 'employees_u'
         }],
     }],
     configuration: {

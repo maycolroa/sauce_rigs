@@ -78,7 +78,6 @@ class AccidentRequest extends FormRequest
      */
     public function rules()
     {
-        \Log::info($this);
         $id = $this->input('id');
 
         $accidentLevels = ['Accidente', 'Accidente grave', 'Accidente mortal', 'Accidente leve', 'Incidente' ];

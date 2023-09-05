@@ -87,6 +87,8 @@ class NotifyReportsOpenConfig extends Command
             ->leftJoin('sau_employees_regionals', 'sau_employees_regionals.id', 'sau_employees.employee_regional_id')
             ->isOpen();
 
+            \Log::info($reports->toSql());
+
             $reports->company_scope = $company;
             $reports = $reports->get();
 

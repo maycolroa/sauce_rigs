@@ -2,7 +2,7 @@
   <div>
     <header-module
       title="ACCIDENTES E INCIDENTES DE TRABAJO"
-      subtitle="EDITAR REPORTE"
+      subtitle="INVESTIGACIÓN"
       url="industrialsecure-accidentswork"
     />
 
@@ -12,8 +12,8 @@
           <loading :display="!ready"/>
           <div v-if="ready">
             <accident-form
-                :url="`/industrialSecurity/accidents/${this.$route.params.id}`"
-                method="PUT"
+                url="/industrialSecurity/accidents/investigation"
+                method="POST"
                 :accident="data"
                 :is-edit="true"
                 :sexs="sexs"
@@ -26,15 +26,15 @@
 </template>
 
 <script>
-import AccidentForm from '@/components/IndustrialSecure/AccidentsWork/FormAccidentsComponent.vue';
+import AccidentForm from '@/components/IndustrialSecure/AccidentsWork/Investigation/FormAccidentsComponent.vue';
 import Alerts from '@/utils/Alerts.js';
 import GlobalMethods from '@/utils/GlobalMethods.js';
 import Loading from "@/components/Inputs/Loading.vue";
 
 export default {
-  name: 'industrialsecure-accidents-work-edit',
+  name: 'industrialsecure-accidents-work-investigation',
   metaInfo: {
-    title: 'Accidentes e incidentes - Editar'
+    title: 'Accidentes e incidentes - Investigacion'
   },
   components:{
     AccidentForm,

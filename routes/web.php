@@ -629,6 +629,10 @@ Route::middleware(['auth'])->group(function () {
 
       Route::get('accidents/downloadPdf/{accident}', 'IndustrialSecure\AccidentsWork\AccidentsWorkController@downloadPdf');
 
+      Route::post('accidents/switchStatus/{accident}', 'IndustrialSecure\AccidentsWork\AccidentsWorkController@toggleState');
+
+      Route::post('accidents/investigation', 'IndustrialSecure\AccidentsWork\AccidentsWorkController@investigation');
+
       Route::post('accidents/export', 'IndustrialSecure\AccidentsWork\AccidentsWorkController@export');
 
 

@@ -2,7 +2,7 @@
   <div>
     <header-module
       title="ACCIDENTES E INCIDENTES DE TRABAJO"
-      subtitle="CREAR FORMULARIO"
+      subtitle="CREAR REPORTE"
       url="industrialsecure-accidentswork"
     />
 

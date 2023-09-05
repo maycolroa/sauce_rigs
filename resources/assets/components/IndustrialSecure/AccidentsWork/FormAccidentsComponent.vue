@@ -100,7 +100,7 @@
       <tab-content title="Detalles del evento">
         <b-row>
           <b-col>
-            <b-card bg-variant="transparent" border-variant="dark" title="" class="mb-3 box-shadow-none">
+            <b-card style="min-height: 500px" bg-variant="transparent" border-variant="dark" title="" class="mb-3 box-shadow-none">
               <b-row>
                 <b-col>
                   <infor-accident
@@ -133,7 +133,7 @@
         </b-row>
       </tab-content>
 
-      <tab-content title="Observaciones de la empresa y registro fotografico">
+     <!-- <tab-content title="Observaciones de la empresa y registro fotografico">
         <b-row>
           <b-col>
             <b-card bg-variant="transparent" border-variant="dark" title="" class="mb-3 box-shadow-none">
@@ -189,7 +189,7 @@
             </b-card>
           </b-col>
         </b-row>
-      </tab-content>
+      </tab-content>-->
 
       <template slot="footer" slot-scope="props">
         <b-btn variant="default" :to="cancelUrl" :disabled="loading">{{ viewOnly ? "Atras" : "Cancelar"}}</b-btn>

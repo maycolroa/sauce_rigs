@@ -13,7 +13,7 @@
           <b-col>
             <b-card bg-variant="transparent" border-variant="dark" title="" class="mb-3 box-shadow-none">
               <b-form-row>
-                <vue-radio :disabled="viewOnly" :checked="form.tipo_vinculador_laboral" class="col-md-12" v-model="form.tipo_vinculador_laboral" :options="vinculationLaboral" name="tipo_vinculador_laboral" :error="form.errorsFor('tipo_vinculador_laboral')" label="Tipo de vinculación laboral"></vue-radio>
+                <vue-radio :disabled="true" :checked="form.tipo_vinculador_laboral" class="col-md-12" v-model="form.tipo_vinculador_laboral" :options="vinculationLaboral" name="tipo_vinculador_laboral" :error="form.errorsFor('tipo_vinculador_laboral')" label="Tipo de vinculación laboral"></vue-radio>
               </b-form-row>
             </b-card>
           </b-col>
@@ -26,13 +26,13 @@
                   <information-company
                   :form="form"
                   :company="form"
-                  :view-only="viewOnly"
-                  :is-edit="isEdit"/>
+                  :view-only="true"
+                  :is-edit="false"/>
                 </b-col>
               </b-row>
               <b-row v-else>
                 <b-col>
-                  <vue-input :disabled="viewOnly" class="col-md-12" v-model="form.razon_social" label="Nombre o razón social" type="text" name="razon_social" :error="form.errorsFor('razon_social')" placeholder="Nombre o razón social"></vue-input> 
+                  <vue-input :disabled="true" class="col-md-12" v-model="form.razon_social" label="Nombre o razón social" type="text" name="razon_social" :error="form.errorsFor('razon_social')" placeholder="Nombre o razón social"></vue-input> 
                 </b-col>
               </b-row>
             </b-card>
@@ -45,7 +45,7 @@
           <b-col>
             <b-card bg-variant="transparent" border-variant="dark" title="" class="mb-3 box-shadow-none">
               <b-row>
-                <vue-ajax-advanced-select class="col-md-12" :disabled="viewOnly" v-model="form.employee_id"  name="employee_id" :label="keywordCheck('employee')" placeholder="Seleccione una opción" :url="employeesDataUrl" :selected-object="form.multiselect_employee" :error="form.errorsFor('employee_id')">
+                <vue-ajax-advanced-select class="col-md-12" :disabled="true" v-model="form.employee_id"  name="employee_id" :label="keywordCheck('employee')" placeholder="Seleccione una opción" :url="employeesDataUrl" :selected-object="form.multiselect_employee" :error="form.errorsFor('employee_id')">
                     </vue-ajax-advanced-select>
               </b-row>
               <b-row>
@@ -54,8 +54,8 @@
                   :form="form"
                   :employee-detail="employeeDetail"
                   :employee="form"
-                  :view-only="viewOnly"
-                  :is-edit="isEdit"/>
+                  :view-only="true"
+                  :is-edit="false"/>
                 </b-col>
               </b-row>
             </b-card>
@@ -70,8 +70,8 @@
                   :form="form"
                   :sexs="sexs"
                   :employee="form"
-                  :view-only="viewOnly"
-                  :is-edit="isEdit"/>
+                  :view-only="true"
+                  :is-edit="false"/>
                 </b-col>
               </b-row>
             </b-card>
@@ -89,7 +89,7 @@
                   :form="form"
                   :infor="form"
                   :view-only="viewOnly"
-                  :is-edit="isEdit"/>
+                  :is-edit="false"/>
                 </b-col>
               </b-row>
             </b-card>
@@ -106,8 +106,8 @@
                   <infor-accident
                   :form="form"
                   :infor="form"
-                  :view-only="viewOnly"
-                  :is-edit="isEdit"/>
+                  :view-only="true"
+                  :is-edit="false"/>
                 </b-col>
               </b-row>
             </b-card>
@@ -124,8 +124,8 @@
                   <description-accident
                   :form="form"
                   :description="form"
-                  :view-only="viewOnly"
-                  :is-edit="isEdit"/>
+                  :view-only="true"
+                  :is-edit="false"/>
                 </b-col>
               </b-row>
             </b-card>
@@ -215,16 +215,16 @@ import VueTextarea from "@/components/Inputs/VueTextarea.vue";
 import VueFileSimple from "@/components/Inputs/VueFileSimple.vue";
 import Form from "@/utils/Form.js";
 import Alerts from '@/utils/Alerts.js';
-import InformationGeneral from '@/components/IndustrialSecure/AccidentsWork/InformationGeneral.vue';
-import InformationEmployee from '@/components/IndustrialSecure/AccidentsWork/InformationEmployee.vue';
-import InformationCompany from '@/components/IndustrialSecure/AccidentsWork/CompanyInforComponent.vue';
-import InforAccident from '@/components/IndustrialSecure/AccidentsWork/InforAccidentComponent.vue';
-import AccidentInforBasic from '@/components/IndustrialSecure/AccidentsWork/AccidentInforBasicComponent.vue';
+import InformationGeneral from '@/components/IndustrialSecure/AccidentsWork/Investigation/InformationGeneral.vue';
+import InformationEmployee from '@/components/IndustrialSecure/AccidentsWork/Investigation/InformationEmployee.vue';
+import InformationCompany from '@/components/IndustrialSecure/AccidentsWork/Investigation/CompanyInforComponent.vue';
+import InforAccident from '@/components/IndustrialSecure/AccidentsWork/Investigation/InforAccidentComponent.vue';
+import AccidentInforBasic from '@/components/IndustrialSecure/AccidentsWork/Investigation/AccidentInforBasicComponent.vue';
 import { FormWizard, TabContent, WizardStep } from "vue-form-wizard";
 import ActionPlanComponent from '@/components/CustomInputs/ActionPlanComponent.vue';
-import DescriptionAccident from '@/components/IndustrialSecure/AccidentsWork/DescriptionAccidentForm.vue';
-import ObservationFiles from '@/components/IndustrialSecure/AccidentsWork/ObservationFilesComponent.vue';
-import PersonAdd from '@/components/IndustrialSecure/AccidentsWork/PersonAddComponent.vue';
+import DescriptionAccident from '@/components/IndustrialSecure/AccidentsWork/Investigation/DescriptionAccidentForm.vue';
+import ObservationFiles from '@/components/IndustrialSecure/AccidentsWork/Investigation/ObservationFilesComponent.vue';
+import PersonAdd from '@/components/IndustrialSecure/AccidentsWork/Investigation/PersonAddComponent.vue';
 
 export default {
   components: {

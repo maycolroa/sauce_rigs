@@ -1116,5 +1116,13 @@ export default [{
             import('@/views/IndustrialSecure/accidentsWorks/causes')
         }
       ]),
+      ...middleware({ 'check-permission': 'accidentsWork_u' }, [
+        {
+          name: 'industrialsecure-accidentswork-investigation',
+          path: 'accidents/investigation/:id',
+          component: () =>
+            import('@/views/IndustrialSecure/accidentsWorks/investigation')
+        }
+      ]),
     ]
   }]
