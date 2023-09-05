@@ -138,9 +138,17 @@ class DangerDescriptionController extends Controller
 
         foreach ($danger_description_data as $key => $value) 
         {
-           $value->danger_description = str_replace($old_name, $new_name, $value->danger_description);
+            if ($value->danger_description)
+            {
+                $controls = explode(',', $value->danger_description);
+                $controls = collect($controls)->map(function ($item, $key) use ($old_name, $new_name) {
+                    return $item == $old_name ? $new_name : $item;
+                })
+                ->implode(",");
 
-           $value->save();
+                $value->danger_description = $controls;
+                $value->save();
+            }
         }
     }
 

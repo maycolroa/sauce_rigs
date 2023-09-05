@@ -134,9 +134,17 @@ class ParticipantsController extends Controller
 
         foreach ($participants_data as $key => $value) 
         {
-           $value->participants = str_replace($old_name, $new_name, $value->participants);
+            if ($value->participants)
+            {
+                $controls = explode(',', $value->participants);
+                $controls = collect($controls)->map(function ($item, $key) use ($old_name, $new_name) {
+                    return $item == $old_name ? $new_name : $item;
+                })
+                ->implode(",");
 
-           $value->save();
+                $value->participants = $controls;
+                $value->save();
+            }
         }
     }
 

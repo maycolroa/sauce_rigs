@@ -140,9 +140,17 @@ class PossibleConsequencesDangerController extends Controller
 
         foreach ($possible_consequences_danger_data as $key => $value) 
         {
-           $value->possible_consequences_danger = str_replace($old_name, $new_name, $value->possible_consequences_danger);
+            if ($value->possible_consequences_danger)
+            {
+                $controls = explode(',', $value->possible_consequences_danger);
+                $controls = collect($controls)->map(function ($item, $key) use ($old_name, $new_name) {
+                    return $item == $old_name ? $new_name : $item;
+                })
+                ->implode(",");
 
-           $value->save();
+                $value->possible_consequences_danger = $controls;
+                $value->save();
+            }
         }
     }
 

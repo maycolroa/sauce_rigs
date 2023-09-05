@@ -138,9 +138,17 @@ class SubstitutionController extends Controller
 
         foreach ($existing_controls_substitution_data as $key => $value) 
         {
-           $value->existing_controls_substitution = str_replace($old_name, $new_name, $value->existing_controls_substitution);
+           if ($value->existing_controls_substitution)
+            {
+                $controls = explode(',', $value->existing_controls_substitution);
+                $controls = collect($controls)->map(function ($item, $key) use ($old_name, $new_name) {
+                    return $item == $old_name ? $new_name : $item;
+                })
+                ->implode(",");
 
-           $value->save();
+                $value->existing_controls_substitution = $controls;
+                $value->save();
+            }
         }
 
         $intervention_measures_substitution_data = ActivityDanger::selectRaw("
@@ -155,9 +163,17 @@ class SubstitutionController extends Controller
 
         foreach ($intervention_measures_substitution_data as $key => $value) 
         {
-           $value->intervention_measures_substitution = str_replace($old_name, $new_name, $value->intervention_measures_substitution);
+           if ($value->intervention_measures_substitution)
+            {
+                $controls = explode(',', $value->intervention_measures_substitution);
+                $controls = collect($controls)->map(function ($item, $key) use ($old_name, $new_name) {
+                    return $item == $old_name ? $new_name : $item;
+                })
+                ->implode(",");
 
-           $value->save();
+                $value->intervention_measures_substitution = $controls;
+                $value->save();
+            }
         }
     }
 

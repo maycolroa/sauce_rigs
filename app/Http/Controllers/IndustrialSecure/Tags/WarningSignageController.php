@@ -138,9 +138,17 @@ class WarningSignageController extends Controller
 
         foreach ($existing_controls_warning_signage_data as $key => $value) 
         {
-           $value->existing_controls_warning_signage = str_replace($old_name, $new_name, $value->existing_controls_warning_signage);
+            if ($value->existing_controls_warning_signage)
+            {
+                $controls = explode(',', $value->existing_controls_warning_signage);
+                $controls = collect($controls)->map(function ($item, $key) use ($old_name, $new_name) {
+                    return $item == $old_name ? $new_name : $item;
+                })
+                ->implode(",");
 
-           $value->save();
+                $value->existing_controls_warning_signage = $controls;
+                $value->save();
+            }
         }
 
         $intervention_measures_warning_signage_data = ActivityDanger::selectRaw("
@@ -155,9 +163,17 @@ class WarningSignageController extends Controller
 
         foreach ($intervention_measures_warning_signage_data as $key => $value) 
         {
-           $value->intervention_measures_warning_signage = str_replace($old_name, $new_name, $value->intervention_measures_warning_signage);
+            if ($value->intervention_measures_warning_signage)
+            {
+                $controls = explode(',', $value->intervention_measures_warning_signage);
+                $controls = collect($controls)->map(function ($item, $key) use ($old_name, $new_name) {
+                    return $item == $old_name ? $new_name : $item;
+                })
+                ->implode(",");
 
-           $value->save();
+                $value->intervention_measures_warning_signage = $controls;
+                $value->save();
+            }
         }
     }
 

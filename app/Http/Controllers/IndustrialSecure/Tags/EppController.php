@@ -139,9 +139,17 @@ class EppController extends Controller
 
         foreach ($existing_controls_epp_data as $key => $value) 
         {
-           $value->existing_controls_epp = str_replace($old_name, $new_name, $value->existing_controls_epp);
+           if ($value->existing_controls_epp)
+            {
+                $controls = explode(',', $value->existing_controls_epp);
+                $controls = collect($controls)->map(function ($item, $key) use ($old_name, $new_name) {
+                    return $item == $old_name ? $new_name : $item;
+                })
+                ->implode(",");
 
-           $value->save();
+                $value->existing_controls_epp = $controls;
+                $value->save();
+            }
         }
 
         $intervention_measures_epp_data = ActivityDanger::selectRaw("
@@ -156,9 +164,17 @@ class EppController extends Controller
 
         foreach ($intervention_measures_epp_data as $key => $value) 
         {
-           $value->intervention_measures_epp = str_replace($old_name, $new_name, $value->intervention_measures_epp);
+           if ($value->intervention_measures_epp)
+            {
+                $controls = explode(',', $value->intervention_measures_epp);
+                $controls = collect($controls)->map(function ($item, $key) use ($old_name, $new_name) {
+                    return $item == $old_name ? $new_name : $item;
+                })
+                ->implode(",");
 
-           $value->save();
+                $value->intervention_measures_epp = $controls;
+                $value->save();
+            }
         }
     }
 
