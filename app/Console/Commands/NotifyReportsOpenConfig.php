@@ -66,6 +66,8 @@ class NotifyReportsOpenConfig extends Command
 
             if (!$configDay)
                 continue;
+
+            \Log::info($company);
                 
             $reports = Check::select(
                 'sau_reinc_checks.id AS id',
@@ -87,8 +89,6 @@ class NotifyReportsOpenConfig extends Command
             ->leftJoin('sau_employees_regionals', 'sau_employees_regionals.id', 'sau_employees.employee_regional_id')
             ->isOpen();
 
-            \Log::info($reports->toSql());
-
             $reports->company_scope = $company;
             $reports = $reports->get();
 
@@ -99,6 +99,7 @@ class NotifyReportsOpenConfig extends Command
 
             if (count($responsibles) > 0)
             {
+                \Log::info('si hay correos configurados');
                 foreach ($responsibles as $email)
                 {
                     $expired_reports = [];
@@ -118,6 +119,7 @@ class NotifyReportsOpenConfig extends Command
 
                                 if ($diff >= $configDay)
                                 {
+                                    \Log::info('entro con sedes');
                                     $content = [
                                         'Empleado' => $check->name,
                                         'Tipo de Evento' => $check->disease_origin,
@@ -140,6 +142,7 @@ class NotifyReportsOpenConfig extends Command
 
                             if ($diff >= $configDay)
                             {
+                                \Log::info('entro sin sedes');
                                 $content = [
                                     'Empleado' => $check->name,
                                     'Tipo de Evento' => $check->disease_origin,
@@ -157,7 +160,9 @@ class NotifyReportsOpenConfig extends Command
 
                     if (count($expired_reports) > 0)
                     {
-                        NotificationMail::
+                        \Log::info($user);
+                        \Log::info($expired_reports);
+                        /*NotificationMail::
                             subject('Sauce - Reincorporaciones Reportes')
                             ->recipients($user)
                             ->message("Este es el listado de empleados con seguimientos desde hace mas de <b>$configDay</b> dias.")
@@ -167,7 +172,7 @@ class NotifyReportsOpenConfig extends Command
                             ->with(['data'=>$expired_reports])
                             //->table($expired_reports)
                             ->company($company)
-                            ->send();
+                            ->send();*/
                     }
                 }
             }
