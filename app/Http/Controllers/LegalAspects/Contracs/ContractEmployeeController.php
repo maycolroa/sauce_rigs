@@ -143,10 +143,10 @@ class ContractEmployeeController extends Controller
             if($request->has('activities'))
             {
                 $activities = $this->saveActivities($employee, $request->activities);
-                $documents_complets = $this->documentscomplets($employee, $request->activities);
+                $documents_complets = $this->documentscomplets($employee, $request->activities, $activities['files']);
             }
 
-            $employee->activities()->sync($activities->values());
+            $employee->activities()->sync($activities['activities']->values());
 
             $employee->update(
                 [ 'state' => $documents_complets ? 'Aprobado' : 'Pendiente']
