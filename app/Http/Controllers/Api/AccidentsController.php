@@ -216,6 +216,21 @@ class AccidentsController extends ApiController
         //return $this->respondHttp200($result->toArray());
     }
 
+
+
+    public function inforCompanyComplete($company_id)
+    {
+        $infor_company = Company::find($company_id);
+
+        if (isset($infor_company->nombre_actividad_economica_sede_principal) && $infor_company->nombre_actividad_economica_sede_principal)
+        {
+            return true;
+        }
+        else
+            return false;
+    }
+    
+
     public function createAccident(Request $request)
     {
         DB::beginTransaction();
