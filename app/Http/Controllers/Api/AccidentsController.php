@@ -218,7 +218,7 @@ class AccidentsController extends ApiController
 
 
 
-    public function inforCompanyComplete($company_id)
+    public function inforCompanyCompleteAccidents($company_id)
     {
         $infor_company = Company::find($company_id);
 
@@ -229,7 +229,7 @@ class AccidentsController extends ApiController
         else
             return false;
     }
-    
+
 
     public function createAccident(Request $request)
     {
@@ -321,7 +321,7 @@ class AccidentsController extends ApiController
 
             $accident->consolidado = false;
 
-            $complete = $this->inforCompanyComplete($request->company_id);
+            $complete = $this->inforCompanyCompleteAccidents($request->company_id);
 
             if ($complete)
                 $accident->estado_evento = 'Reportado';
