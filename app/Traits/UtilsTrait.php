@@ -229,12 +229,20 @@ trait UtilsTrait
                 });
     }
 
+    protected function getValuesForMultiselectTags($data, $keyRef = 'value')
+    {
+        return  collect($data)
+                ->transform(function ($item, $index) use ($keyRef) {
+                    return trim(str_replace(',', '', $item[$keyRef]));
+                });
+    }
+
     protected function tagsPrepare($data)
     {
         $item = collect([]);
 
         if (!empty($data))
-            $item = $this->getValuesForMultiselect($data, 'name')->unique();
+            $item = $this->getValuesForMultiselectTags($data, 'name')->unique();
 
         return $item;
     }

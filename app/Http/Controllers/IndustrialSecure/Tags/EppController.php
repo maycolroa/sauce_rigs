@@ -46,6 +46,7 @@ class EppController extends Controller
     public function store(Request $request)
     {
         $tag = new TagsEpp($request->all());
+        $tag->name = trim(str_replace(',', '', $request->name));
         $tag->company_id = $this->company;
         
         if(!$tag->save()){
@@ -110,16 +111,14 @@ class EppController extends Controller
             ]);
         }
         else if ($request->replace && $request->replace == 'SI')
-        { 
-            \Log::info('SI');
+        {
             $new_tag = TagsEpp::find($request->replace_deleted);
 
-            $this->rewriteTag($epp->name, $new_tag->name);
+            $this->rewriteTag($epp->name, trim($new_tag->name));
             $this->destroy($epp);
         }
         else if ($request->replace && $request->replace == 'NO')
         {
-            \Log::info('NO');
             $this->rewriteTag($epp->name, '');
             $this->destroy($epp);
         }
@@ -145,6 +144,9 @@ class EppController extends Controller
                 $controls = collect($controls)->map(function ($item, $key) use ($old_name, $new_name) {
                     return $item == $old_name ? $new_name : $item;
                 })
+                ->filter(function ($item, $key) {
+                    return $item;
+                })
                 ->implode(",");
 
                 $value->existing_controls_epp = $controls;
@@ -169,6 +171,9 @@ class EppController extends Controller
                 $controls = explode(',', $value->intervention_measures_epp);
                 $controls = collect($controls)->map(function ($item, $key) use ($old_name, $new_name) {
                     return $item == $old_name ? $new_name : $item;
+                })
+                ->filter(function ($item, $key) {
+                    return $item;
                 })
                 ->implode(",");
 
@@ -210,7 +215,7 @@ class EppController extends Controller
         ->join('sau_dm_activity_danger', 'sau_dm_activity_danger.dm_activity_id', 'sau_danger_matrix_activity.id')
         ->join('sau_dm_dangers', 'sau_dm_dangers.id', 'sau_dm_activity_danger.danger_id')
         ->join('sau_dm_activities', 'sau_dm_activities.id', 'sau_danger_matrix_activity.activity_id')
-        ->where('sau_dm_activity_danger.existing_controls_epp', 'like', "%$request->keyword%");
+        ->whereRaw("FIND_IN_SET('$request->keyword', sau_dm_activity_danger.existing_controls_epp) > 0");
 
 
         $intervention_measures_epp = DangerMatrix::selectRaw("
@@ -224,7 +229,7 @@ class EppController extends Controller
         ->join('sau_dm_activity_danger', 'sau_dm_activity_danger.dm_activity_id', 'sau_danger_matrix_activity.id')
         ->join('sau_dm_dangers', 'sau_dm_dangers.id', 'sau_dm_activity_danger.danger_id')
         ->join('sau_dm_activities', 'sau_dm_activities.id', 'sau_danger_matrix_activity.activity_id')
-        ->where('sau_dm_activity_danger.intervention_measures_epp', 'like', "%$request->keyword%");
+        ->whereRaw("FIND_IN_SET('$request->keyword', sau_dm_activity_danger.intervention_measures_epp) > 0");
 
         $existing_controls_epp->union($intervention_measures_epp);
 

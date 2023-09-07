@@ -144,6 +144,9 @@ class WarningSignageController extends Controller
                 $controls = collect($controls)->map(function ($item, $key) use ($old_name, $new_name) {
                     return $item == $old_name ? $new_name : $item;
                 })
+                ->filter(function ($item, $key) {
+                    return $item;
+                })
                 ->implode(",");
 
                 $value->existing_controls_warning_signage = $controls;
@@ -168,6 +171,9 @@ class WarningSignageController extends Controller
                 $controls = explode(',', $value->intervention_measures_warning_signage);
                 $controls = collect($controls)->map(function ($item, $key) use ($old_name, $new_name) {
                     return $item == $old_name ? $new_name : $item;
+                })
+                ->filter(function ($item, $key) {
+                    return $item;
                 })
                 ->implode(",");
 
@@ -210,7 +216,7 @@ class WarningSignageController extends Controller
         ->join('sau_dm_activity_danger', 'sau_dm_activity_danger.dm_activity_id', 'sau_danger_matrix_activity.id')
         ->join('sau_dm_dangers', 'sau_dm_dangers.id', 'sau_dm_activity_danger.danger_id')
         ->join('sau_dm_activities', 'sau_dm_activities.id', 'sau_danger_matrix_activity.activity_id')
-        ->where('sau_dm_activity_danger.existing_controls_warning_signage', 'like', "%$request->keyword%");
+        ->whereRaw("FIND_IN_SET('$request->keyword', sau_dm_activity_danger.existing_controls_warning_signage) > 0");
 
 
         $intervention_measures_warning_signage = DangerMatrix::selectRaw("
@@ -224,7 +230,7 @@ class WarningSignageController extends Controller
         ->join('sau_dm_activity_danger', 'sau_dm_activity_danger.dm_activity_id', 'sau_danger_matrix_activity.id')
         ->join('sau_dm_dangers', 'sau_dm_dangers.id', 'sau_dm_activity_danger.danger_id')
         ->join('sau_dm_activities', 'sau_dm_activities.id', 'sau_danger_matrix_activity.activity_id')
-        ->where('sau_dm_activity_danger.intervention_measures_warning_signage', 'like', "%$request->keyword%");
+        ->whereRaw("FIND_IN_SET('$request->keyword', sau_dm_activity_danger.intervention_measures_warning_signage) > 0");
 
         $existing_controls_warning_signage->union($intervention_measures_warning_signage);
 

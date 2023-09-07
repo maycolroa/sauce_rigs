@@ -146,6 +146,9 @@ class PossibleConsequencesDangerController extends Controller
                 $controls = collect($controls)->map(function ($item, $key) use ($old_name, $new_name) {
                     return $item == $old_name ? $new_name : $item;
                 })
+                ->filter(function ($item, $key) {
+                    return $item;
+                })
                 ->implode(",");
 
                 $value->possible_consequences_danger = $controls;
@@ -187,7 +190,7 @@ class PossibleConsequencesDangerController extends Controller
         ->join('sau_dm_activity_danger', 'sau_dm_activity_danger.dm_activity_id', 'sau_danger_matrix_activity.id')
         ->join('sau_dm_dangers', 'sau_dm_dangers.id', 'sau_dm_activity_danger.danger_id')
         ->join('sau_dm_activities', 'sau_dm_activities.id', 'sau_danger_matrix_activity.activity_id')
-        ->where('sau_dm_activity_danger.possible_consequences_danger', 'like', "%$request->keyword%");
+        ->whereRaw("FIND_IN_SET('$request->keyword', sau_dm_activity_danger.possible_consequences_danger) > 0");
 
         return Vuetable::of($possible_consequences_danger
         )
