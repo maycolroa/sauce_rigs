@@ -47,6 +47,7 @@ class WarningSignageController extends Controller
     public function store(Request $request)
     {
         $tag = new TagsWarningSignage($request->all());
+        $tag->name = trim(str_replace(',', '', $request->name));
         $tag->company_id = $this->company;
         
         if(!$tag->save()){
@@ -96,6 +97,7 @@ class WarningSignageController extends Controller
         {
             $name_old = $warningSignage->name;
             $warningSignage->fill($request->all());
+            $warningSignage->name = trim(str_replace(',', '', $request->name));
             
             if(!$warningSignage->update()){
             return $this->respondHttp500();

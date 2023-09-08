@@ -47,6 +47,7 @@ class PossibleConsequencesDangerController extends Controller
     public function store(Request $request)
     {
         $tag = new TagsPossibleConsequencesDanger($request->all());
+        $tag->name = trim(str_replace(',', '', $request->name));
         $tag->company_id = $this->company;
         
         if(!$tag->save()){
@@ -98,6 +99,7 @@ class PossibleConsequencesDangerController extends Controller
         {
             $name_old = $possibleConsequencesDanger->name;
             $possibleConsequencesDanger->fill($request->all());
+            $possibleConsequencesDanger->name = trim(str_replace(',', '', $request->name));
             
             if(!$possibleConsequencesDanger->update()){
             return $this->respondHttp500();

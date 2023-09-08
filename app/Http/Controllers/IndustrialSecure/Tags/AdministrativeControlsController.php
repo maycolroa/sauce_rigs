@@ -47,6 +47,7 @@ class AdministrativeControlsController extends Controller
     public function store(Request $request)
     {
         $tag = new TagsAdministrativeControls($request->all());
+        $tag->name = trim(str_replace(',', '', $request->name));
         $tag->company_id = $this->company;
         
         if(!$tag->save()){
@@ -96,6 +97,7 @@ class AdministrativeControlsController extends Controller
         {
             $name_old = $administrativeControl->name;
             $administrativeControl->fill($request->all());
+            $administrativeControl->name = trim(str_replace(',', '', $request->name));
             
             if(!$administrativeControl->update()){
             return $this->respondHttp500();

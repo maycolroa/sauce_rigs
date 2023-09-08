@@ -47,6 +47,7 @@ class DangerDescriptionController extends Controller
     public function store(Request $request)
     {
         $tag = new TagsDangerDescription($request->all());
+        $tag->name = trim(str_replace(',', '', $request->name));
         $tag->company_id = $this->company;
         
         if(!$tag->save()){
@@ -96,6 +97,7 @@ class DangerDescriptionController extends Controller
         {
             $name_old = $dangerDescription->name;
             $dangerDescription->fill($request->all());
+            $dangerDescription->name = trim(str_replace(',', '', $request->name));
             
             if(!$dangerDescription->update()){
             return $this->respondHttp500();

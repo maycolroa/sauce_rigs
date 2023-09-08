@@ -46,6 +46,7 @@ class ParticipantsController extends Controller
     public function store(Request $request)
     {
         $tag = new TagsParticipant($request->all());
+        $tag->name = trim(str_replace(',', '', $request->name));
         $tag->company_id = $this->company;
         
         if(!$tag->save()){
@@ -95,6 +96,7 @@ class ParticipantsController extends Controller
         {
             $name_old = $participant->name;
             $participant->fill($request->all());
+            $participant->name = trim(str_replace(',', '', $request->name));
             
             if(!$participant->update()){
             return $this->respondHttp500();

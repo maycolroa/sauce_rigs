@@ -47,6 +47,7 @@ class EngineeringControlsController extends Controller
     public function store(Request $request)
     {
         $tag = new TagsEngineeringControls($request->all());
+        $tag->name = trim(str_replace(',', '', $request->name));
         $tag->company_id = $this->company;
         
         if(!$tag->save()){
@@ -96,6 +97,7 @@ class EngineeringControlsController extends Controller
         {
             $name_old = $engineeringControl->name;
             $engineeringControl->fill($request->all());
+            $engineeringControl->name = trim(str_replace(',', '', $request->name));
             
             if(!$engineeringControl->update()){
             return $this->respondHttp500();

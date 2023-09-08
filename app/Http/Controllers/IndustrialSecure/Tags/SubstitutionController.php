@@ -47,6 +47,7 @@ class SubstitutionController extends Controller
     public function store(Request $request)
     {
         $tag = new TagsSubstitution($request->all());
+        $tag->name = trim(str_replace(',', '', $request->name));
         $tag->company_id = $this->company;
         
         if(!$tag->save()){
@@ -96,6 +97,7 @@ class SubstitutionController extends Controller
         {
             $name_old = $substitution->name;
             $substitution->fill($request->all());
+            $substitution->name = trim(str_replace(',', '', $request->name));
             
             if(!$substitution->update()){
             return $this->respondHttp500();

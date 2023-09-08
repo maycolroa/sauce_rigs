@@ -7,7 +7,7 @@
 
     <b-card v-if="isEdit || isDeleted">
       <div>
-        <template>
+        <template v-if="ready">
           <vue-table
             configName="industrialsecure-tags-danger-description-search"
             :params="{ keyword: form.name}"
@@ -72,6 +72,7 @@ export default {
     tag() {
       this.loading = false;
       this.form = Form.makeFrom(this.tag, this.method);
+      this.ready = true;
     }
   },
   data() {
@@ -82,7 +83,8 @@ export default {
         {text: 'SI', value: 'SI'},
         {text: 'NO', value: 'NO'}
       ],
-      tagsDangerDescriptionDataUrl: '/selects/tagsDangerDescription'
+      tagsDangerDescriptionDataUrl: '/selects/tagsDangerDescription',
+      ready: false
     };
   },
   methods: {
