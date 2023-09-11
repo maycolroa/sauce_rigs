@@ -23,6 +23,7 @@ class NotifyReportsOpenConfig extends Command
      * @var string
      */
     protected $signature = 'notify-reports-open-config';
+    protected $responsibles = [];
 
     /**
      * The console command description.
@@ -52,7 +53,7 @@ class NotifyReportsOpenConfig extends Command
             ->join('sau_license_module', 'sau_license_module.license_id', 'sau_licenses.id')
             ->withoutGlobalScopes()
             ->whereRaw('? BETWEEN started_at AND ended_at', [date('Y-m-d')])
-            ->where('sau_license_module.module_id', '21'); //32 prod
+            ->where('sau_license_module.module_id', '21');
 
         $companies = $companies->pluck('sau_licenses.company_id');
 
@@ -66,8 +67,6 @@ class NotifyReportsOpenConfig extends Command
 
             if (!$configDay)
                 continue;
-
-            \Log::info($company);
                 
             $reports = Check::select(
                 'sau_reinc_checks.id AS id',
@@ -92,20 +91,17 @@ class NotifyReportsOpenConfig extends Command
             $reports->company_scope = $company;
             $reports = $reports->get();
 
-            $responsibles = ConfigurationsCompany::company($company)->findByKey('users_notify_expired_report');
+            if ($this->responsibles)
+                $this->responsibles = explode(',', $this->responsibles);
 
-            if ($responsibles)
-                $responsibles = explode(',', $responsibles);
-
-            if (count($responsibles) > 0)
+            if (count($this->responsibles) > 0)
             {
-                \Log::info('si hay correos configurados');
-                foreach ($responsibles as $email)
+                foreach ($this->responsibles as $email)
                 {
                     $expired_reports = [];
                     $user = User::select('*')->active()->withoutGlobalScopes()->where('email', $email)->first();
 
-                    $headquarters = $user->headquarters()->pluck('id')->toArray();
+                    $headquarters = $this->getHeadquarters($user);
 
                     foreach ($reports as $key => $check) 
                     { 
@@ -119,7 +115,6 @@ class NotifyReportsOpenConfig extends Command
 
                                 if ($diff >= $configDay)
                                 {
-                                    \Log::info('entro con sedes');
                                     $content = [
                                         'Empleado' => $check->name,
                                         'Tipo de Evento' => $check->disease_origin,
@@ -142,7 +137,6 @@ class NotifyReportsOpenConfig extends Command
 
                             if ($diff >= $configDay)
                             {
-                                \Log::info('entro sin sedes');
                                 $content = [
                                     'Empleado' => $check->name,
                                     'Tipo de Evento' => $check->disease_origin,
@@ -160,9 +154,7 @@ class NotifyReportsOpenConfig extends Command
 
                     if (count($expired_reports) > 0)
                     {
-                        \Log::info($user);
-                        \Log::info($expired_reports);
-                        /*NotificationMail::
+                        NotificationMail::
                             subject('Sauce - Reincorporaciones Reportes')
                             ->recipients($user)
                             ->message("Este es el listado de empleados con seguimientos desde hace mas de <b>$configDay</b> dias.")
@@ -172,11 +164,31 @@ class NotifyReportsOpenConfig extends Command
                             ->with(['data'=>$expired_reports])
                             //->table($expired_reports)
                             ->company($company)
-                            ->send();*/
+                            ->send();
                     }
                 }
             }
         }
+    }
+
+    public function getHeadquarters($user)
+    {        
+        try
+        {
+            $headquarters_users = $user->headquarters;
+
+            if ($headquarters_users)
+                $headquarters_users = $user->headquarters()->pluck('id')->toArray();
+            else
+                $headquarters_users = [];
+
+            return $headquarters_users;
+                
+        } catch (\Exception $e) {
+            \Log::info($e->getMessage());
+            return [];
+        }
+
     }
 
     public function getConfig($company_id)
@@ -191,11 +203,15 @@ class NotifyReportsOpenConfig extends Command
             if ($exists && $exists == 'SI')
             {
                 $days = ConfigurationsCompany::company($company_id)->findByKey($key1);
+
+                $this->responsibles = ConfigurationsCompany::company($company_id)->findByKey('users_notify_expired_report');
+                
                 return $days;
             }
             else
                 return NULL;
         } catch (\Exception $e) {
+            \Log::info($e->getMessage());
             return NULL;
         }
 
