@@ -234,6 +234,9 @@ trait UtilsTrait
         return  collect($data)
                 ->transform(function ($item, $index) use ($keyRef) {
                     return trim(str_replace(',', '', $item[$keyRef]));
+                })
+                ->filter(function ($item, $key) {
+                    return $item;
                 });
     }
 
