@@ -145,6 +145,11 @@ class DangerMatrixController extends Controller
 
             foreach ($dangerMatrix->activities as $keyActivity => $itemActivity)
             {   
+                if ($keyActivity == 0)
+                    $itemActivity->activate = true;
+                else
+                    $itemActivity->activate = false;
+
                 $itemActivity->id = $itemActivity->id;
                 $itemActivity->key = Carbon::now()->timestamp + rand(1,10000);
                 $itemActivity->dangersRemoved = [];
@@ -152,6 +157,11 @@ class DangerMatrixController extends Controller
 
                 foreach ($itemActivity->dangers as $keyDanger => $itemDanger)
                 {
+                    if ($keyDanger == 0)
+                        $itemDanger->activate = true;
+                    else
+                        $itemDanger->activate = false;
+
                     $itemDanger->key = Carbon::now()->timestamp + rand(1,10000);
                     $itemDanger->multiselect_danger = $itemDanger->danger->multiselect();
 
@@ -984,6 +994,8 @@ class DangerMatrixController extends Controller
     public function searchKeyword(Request $request)
     {        
         $generating_source = DangerMatrix::selectRaw("
+            sau_danger_matrix_activity.id as id_activity,
+            sau_dm_activity_danger.id as id_danger,
             sau_dm_activities.name as activity, 
             sau_dm_dangers.name as danger, 
             'Fuente Generadora' campo,  
@@ -998,6 +1010,8 @@ class DangerMatrixController extends Controller
 
 
         $existing_controls_engineering_controls = DangerMatrix::selectRaw("
+            sau_danger_matrix_activity.id as id_activity,
+            sau_dm_activity_danger.id as id_danger,
             sau_dm_activities.name as activity, 
             sau_dm_dangers.name as danger, 
             'Controles de ingenieria' campo,  
@@ -1012,6 +1026,8 @@ class DangerMatrixController extends Controller
 
 
         $existing_controls_administrative_controls = DangerMatrix::selectRaw("
+            sau_danger_matrix_activity.id as id_activity,
+            sau_dm_activity_danger.id as id_danger,
             sau_dm_activities.name as activity, 
             sau_dm_dangers.name as danger, 
             'Controles Administrativos' campo,  
@@ -1026,6 +1042,8 @@ class DangerMatrixController extends Controller
 
 
         $existing_controls_substitution = DangerMatrix::selectRaw("
+            sau_danger_matrix_activity.id as id_activity,
+            sau_dm_activity_danger.id as id_danger,
             sau_dm_activities.name as activity, 
             sau_dm_dangers.name as danger, 
             'Controles Sustitución' campo,  
@@ -1039,6 +1057,8 @@ class DangerMatrixController extends Controller
         ->where('sau_dm_activity_danger.existing_controls_substitution', 'like', "%$request->keyword%");
 
         $existing_controls_epp = DangerMatrix::selectRaw("
+            sau_danger_matrix_activity.id as id_activity,
+            sau_dm_activity_danger.id as id_danger,
             sau_dm_activities.name as activity, 
             sau_dm_dangers.name as danger, 
             'Controles EPP' campo,  
@@ -1052,6 +1072,8 @@ class DangerMatrixController extends Controller
         ->where('sau_dm_activity_danger.existing_controls_epp', 'like', "%$request->keyword%");
         
         $existing_controls_warning_signage = DangerMatrix::selectRaw("
+            sau_danger_matrix_activity.id as id_activity,
+            sau_dm_activity_danger.id as id_danger,
             sau_dm_activities.name as activity, 
             sau_dm_dangers.name as danger, 
             'Controles Señalización, Advertencia' campo,  
@@ -1071,7 +1093,13 @@ class DangerMatrixController extends Controller
         $generating_source->union($existing_controls_epp);
         $generating_source->union($existing_controls_warning_signage);
 
-        return Vuetable::of($generating_source)
-                    ->make();
+        $generating_source = $generating_source->get();
+
+        return $this->respondHttp200([
+            'data' => $generating_source,
+        ]);
+
+        /*return Vuetable::of($generating_source)
+                    ->make();*/
     }
 }

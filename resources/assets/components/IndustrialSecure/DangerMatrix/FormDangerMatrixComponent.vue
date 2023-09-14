@@ -59,11 +59,35 @@
 						</div>
 
 						<b-card  bg-variant="transparent"  title="" class="mb-3 box-shadow-none">
-							<vue-table
+              <table class="table table-bordered table-hover">
+                <thead class="bg-secondary">
+                  <tr>
+                    <th>Actividad</th>
+                    <th>Peligro</th>
+                    <th>Campo</th>
+                    <th>Valor</th>
+                    <th>Buscar</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <template v-for="row in sharedData">
+                    <tr :key="row.key">
+                      <td>{{row.activity}}</td>
+                      <td>{{row.danger}}</td>
+                      <td>{{row.campo}}</td>
+                      <td>{{row.value}}</td>
+                      <td>
+                        <b-btn @click="showRow(row.id_activity, row.id_danger, 'modalHistorial')" variant="outline-info icon-btn borderless" size="xs" v-b-tooltip.top title="Buscar"><span class="ion ion-ios-copy"></span></b-btn>
+                      </td>
+                    </tr>
+                  </template>
+                </tbody>
+              </table>
+							<!--<vue-table
                 ref="tableDangerMatrix"
                 configName="industrialsecure-dangermatrix-search"
                 :params="{ keyword: search_keyword, danger_matrix: form.id }"
-                ></vue-table>
+                ></vue-table>-->
 						</b-card>
 						<br>
 						<div class="row float-right pt-12 pr-12y">
@@ -82,12 +106,13 @@
 
       <b-form-row>
         <b-card no-body variant="white" class="mb-3" style="width: 100%;">
-          <b-tabs card pills class="nav-responsive-md md-pills-light">
+          <b-tabs card pills class="nav-responsive-md md-pills-light" ref="tabActivity">
             <b-tab 
                 v-for="(activity, index) in form.activities"
-                :key="activity.key">
+                :key="activity.key"
+                :active="activity.activate">
                 <template slot="title">
-                  <strong>{{ form.activities[index].activity.name ? form.activities[index].activity.name : `Nuevo Actividad ${index + 1}` }}</strong> 
+                  <strong>{{ form.activities[index].activity.name ? form.activities[index].activity.name : `Nuevo Actividad ${index + 1}`}}</strong> 
                   <b-btn @click.prevent="removeActivity(index)" 
                     v-if="form.activities.length > 1 && !viewOnly"
                     size="sm" 
@@ -151,6 +176,7 @@
 </template>
 
 <script>
+import Vue from 'vue'
 import VueInput from "@/components/Inputs/VueInput.vue";
 import Form from "@/utils/Form.js";
 import VueRadio from "@/components/Inputs/VueRadio.vue";
@@ -159,6 +185,7 @@ import ModalsCreateComponent from '@/components/IndustrialSecure/DangerMatrix/Mo
 import LocationLevelComponent from '@/components/CustomInputs/LocationLevelComponent.vue';
 import VueTextarea from "@/components/Inputs/VueTextarea.vue";
 import VueAjaxAdvancedSelect from "@/components/Inputs/VueAjaxAdvancedSelect.vue";
+import Alerts from '@/utils/Alerts.js';
 
 export default {
   components: {
@@ -264,7 +291,9 @@ export default {
       configLocation: {},      
       tagsHistoryChangeDataUrl: '/selects/tagsHistoryChange',
       search_keyword: '',
-      part: []
+      part: [],
+      sharedData: [],
+      postData: {}
     }
   },
   methods: {
@@ -322,7 +351,8 @@ export default {
         dangersRemoved: [],
         activity: {
           name: ''
-        }
+        },
+        activate:true
       })
     },
     removeActivity(index) {
@@ -340,14 +370,64 @@ export default {
     },
     searchkeywordShow(ref)
     {
-      this.$refs.tableDangerMatrix.refresh()
-      this.$refs[ref].show();
+      //this.$refs.tableDangerMatrix.refresh()
+
+      let postData = Object.assign({}, {keyword: this.search_keyword}, {danger_matrix: this.form.id});
+
+      axios.post('/industrialSecurity/dangersMatrix/searchKeyword/data', postData)
+      .then(response => {
+          this.sharedData = response.data.data;
+          this.$refs[ref].show();
+      })
+      .catch(error => {
+          console.log(error);
+          Alerts.error('Error', 'Hubo un problema recolectando la información');
+      });
     },
     searchkeywordHide(ref)
     {
-      this.$refs.tableDangerMatrix.refresh()
       this.$refs[ref].hide();
     },
+    showRow(activity, danger, ref)
+    {
+      _.forIn(this.form.activities, (act) => {
+        act.activate = false
+      })
+
+      let activar = this.form.activities.findIndex(act => act.id == activity);
+
+      if (activar)
+      {
+        this.form.activities[activar].activate = true
+
+        _.forIn(this.form.activities[activar].dangers, (d) => {
+          d.activate = false
+        })
+
+        let activarD = this.form.activities[activar].dangers.findIndex(dang => dang.id == danger);
+
+        this.form.activities[activar].dangers[activarD].activate = true
+
+        this.$refs.tabActivity.setTab(activar);
+      }
+
+      this.$refs[ref].hide();
+
+       /*_.forIn(this.form.activities, (act) => {
+
+          if (act.id !== activity)
+          {
+            act.activate = false;
+          }
+          
+          if (act.id == activity)
+          {
+            act.activate = true;
+            this.$refs[ref].hide();
+          }
+       })*/
+
+    }
   }
 };
 </script>

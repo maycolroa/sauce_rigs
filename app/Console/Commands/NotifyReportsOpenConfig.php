@@ -80,12 +80,14 @@ class NotifyReportsOpenConfig extends Command
                 'sau_employees.identification AS identification',
                 'sau_employees.name AS name',
                 'sau_employees.employee_headquarter_id AS sede',
+                'sau_employees_headquarters.name AS sede_name',
                 DB::raw("IFNULL((SELECT DATE_FORMAT(MAX(rt.created_at), '%Y-%m-%d') FROM sau_reinc_tracings rt WHERE rt.check_id = sau_reinc_checks.id), DATE_FORMAT(sau_reinc_checks.created_at, '%Y-%m-%d')) AS created_at")
                 //DB::raw("DATE_FORMAT(sau_reinc_checks.created_at, '%Y-%m-%d') as created_at")
             )
             ->join('sau_reinc_cie10_codes', 'sau_reinc_cie10_codes.id', 'sau_reinc_checks.cie10_code_id')
             ->join('sau_employees', 'sau_employees.id', 'sau_reinc_checks.employee_id')
             ->leftJoin('sau_employees_regionals', 'sau_employees_regionals.id', 'sau_employees.employee_regional_id')
+            ->leftJoin('sau_employees_headquarters', 'sau_employees_headquarters.id', 'sau_employees.employee_headquarter_id')
             ->isOpen();
 
             $reports->company_scope = $company;
@@ -121,7 +123,7 @@ class NotifyReportsOpenConfig extends Command
                                         'Codigo CIE' => $check->code,
                                         'Descripción CIE' => $check->dx,
                                         'Fecha' => Carbon::createFromFormat('D M d Y', $check->created_at)->format('Y-m-d'),
-                                        'Regional' => $check->regional,
+                                        'Sede' => $check->sede_name,
                                         'Estado' => $check->state
                                     ];
 
@@ -143,7 +145,7 @@ class NotifyReportsOpenConfig extends Command
                                     'Codigo CIE' => $check->code,
                                     'Descripción CIE' => $check->dx,
                                     'Fecha' => Carbon::createFromFormat('D M d Y', $check->created_at)->format('Y-m-d'),
-                                    'Regional' => $check->regional,
+                                    'Sede' => $check->sede_name,
                                     'Estado' => $check->state
                                 ];
 
