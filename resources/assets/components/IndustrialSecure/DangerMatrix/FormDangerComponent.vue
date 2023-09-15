@@ -28,7 +28,7 @@
               </b-card>
             </tab-content>
 
-            <tab-content title="Expuestos">
+            <tab-content :active="true" title="Expuestos">
               <b-card bg-variant="transparent" border-variant="secondary" title="Tipo y número de expuestos" class="mb-3 box-shadow-none">
                 <b-form-row>
                   <vue-input :disabled="viewOnly" class="col-md-6" v-model="danger.collaborators_quantity" label="Colaboradores" type="number" name="collaborators_quantity" :error="form.errorsFor(`activities.${indexActivity}.dangers.${indexDanger}.collaborators_quantity`)" placeholder="0"></vue-input>
@@ -141,7 +141,7 @@
 
             <template slot="footer" slot-scope="props">
                 <b-btn v-on:click="props.prevTab" :disabled="loading" variant="default">Anterior</b-btn>
-                <b-btn v-on:click="props.nextTab" :disabled="loading || props.isLastStep" variant="default">Siguiente</b-btn>
+                <b-btn v-on:click="props.nextTab" :id="`next-${indexActivity}-${indexDanger}`" :disabled="loading || props.isLastStep" variant="default">Siguiente</b-btn>
             </template>
         </form-wizard>
       <b-form-row>

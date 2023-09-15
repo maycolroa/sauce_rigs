@@ -45,6 +45,7 @@
               <b-collapse :id="`accordion${danger.key}-1`" :visible="danger.activate" :accordion="`accordion-${indexActivity}`">
                 <b-card-body>
                   <form-danger-component
+                    :ref="`danger-${danger.id ? danger.id : danger.key}`"
                     :is-edit="isEdit"
                     :view-only="viewOnly"
                     :danger="danger"

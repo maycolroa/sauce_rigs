@@ -77,7 +77,7 @@
                       <td>{{row.campo}}</td>
                       <td>{{row.value}}</td>
                       <td>
-                        <b-btn @click="showRow(row.id_activity, row.id_danger, 'modalHistorial')" variant="outline-info icon-btn borderless" size="xs" v-b-tooltip.top title="Buscar"><span class="ion ion-ios-copy"></span></b-btn>
+                        <b-btn @click="showRow(row.id_activity, row.id_danger, 'modalHistorial', row.campo)" variant="outline-info icon-btn borderless" size="xs" v-b-tooltip.top title="Buscar"><span class="ion ion-ios-copy"></span></b-btn>
                       </td>
                     </tr>
                   </template>
@@ -123,6 +123,7 @@
                 </template>
                   
                 <form-activity-component
+                  :ref="`activity-${activity.id ? activity.id : activity.key}`"
                   :is-edit="isEdit"
                   :view-only="viewOnly"
                   :activity="activity"
@@ -388,7 +389,7 @@ export default {
     {
       this.$refs[ref].hide();
     },
-    showRow(activity, danger, ref)
+    showRow(activity, danger, ref, campo)
     {
       _.forIn(this.form.activities, (act) => {
         act.activate = false
@@ -409,24 +410,12 @@ export default {
         this.form.activities[activar].dangers[activarD].activate = true
 
         this.$refs.tabActivity.setTab(activar);
+
+        if (campo !== 'Fuente Generadora')
+          this.$refs[`activity-${activity}`][0].$refs[`danger-${danger}`][0].$refs.wizardFormDanger.activateTab(2)
       }
 
       this.$refs[ref].hide();
-
-       /*_.forIn(this.form.activities, (act) => {
-
-          if (act.id !== activity)
-          {
-            act.activate = false;
-          }
-          
-          if (act.id == activity)
-          {
-            act.activate = true;
-            this.$refs[ref].hide();
-          }
-       })*/
-
     }
   }
 };
