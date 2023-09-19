@@ -1,7 +1,7 @@
 <template>
       <div>
           <b-form-row>
-            <vue-radio :disabled="viewOnly" :checked="infor.nivel_accidente" class="col-md-12" v-model="infor.nivel_accidente" :options="accidentLevels" name="nivel_accidente" :error="form.errorsFor('nivel_accidente')" label="Nivel de accidente"></vue-radio>          
+            <vue-radio :disabled="viewOnly" :checked="infor.nivel_accidente" class="col-md-12" v-model="infor.nivel_accidente" :options="accidentLevels" name="nivel_accidente" :error="form.errorsFor('nivel_accidente')" label="Nivel del evento"></vue-radio>          
           </b-form-row>
           <div v-if="infor.nivel_accidente">
             <b-form-row>

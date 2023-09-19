@@ -850,6 +850,7 @@ class AccidentsWorkController extends Controller
         {
             $accident = Accident::find($request->id);
             ///////////////////Observaciones y archivos
+            $accident->description_details = $request->description_details;
             $accident->observaciones_empresa = $request->observaciones_empresa;
 
             $accident->consolidado = false;

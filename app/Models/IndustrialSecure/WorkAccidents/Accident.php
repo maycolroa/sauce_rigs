@@ -94,7 +94,8 @@ class Accident extends Model
         'type_lesion_id',
         'otro_agente',
         'otra_parte',
-        'centro_trabajo_secundary_id'
+        'centro_trabajo_secundary_id',
+        'description_details'
     ];
 
     public function agentAccident()

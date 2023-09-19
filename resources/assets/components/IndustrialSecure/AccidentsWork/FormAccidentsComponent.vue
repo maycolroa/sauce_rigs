@@ -8,7 +8,7 @@
         </wizard-step>
       </template>
 
-      <tab-content title="Identificación de la persona que presento el evento">
+      <tab-content title="Informacion de la empresa">
         <b-row>
           <b-col>
             <b-card bg-variant="transparent" border-variant="dark" title="" class="mb-3 box-shadow-none">
@@ -365,7 +365,8 @@ export default {
           },
           files: [],
           firm_image: '',
-          old_firm: ''
+          old_firm: '',
+          description_details: '',
         };
       }
     }

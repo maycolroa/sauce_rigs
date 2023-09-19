@@ -1,6 +1,9 @@
 <template>
       <div>
           <b-form-row>
+            <vue-textarea class="col-md-12" :disabled="viewOnly" v-model="obs.description_details" label="Amplie la descripcion del evento" name="description_details" placeholder="Amplie la descripcion del evento" rows="4"></vue-textarea> 
+          </b-form-row>
+          <b-form-row>
             <vue-textarea class="col-md-12" :disabled="viewOnly" v-model="obs.observaciones_empresa" label="Observaciones de la empresa (Equipo de salud ocupacional, jefe inmediato y comité paritario)" name="observaciones_empresa" placeholder="Observaciones de la empresa (Equipo de salud ocupacional, jefe inmediato y comité paritario)" rows="4"></vue-textarea> 
           </b-form-row>  
         <label class="col-md-12">Registro visual (Formato permitidos: jpg, jpeg, png)</label>
@@ -72,6 +75,7 @@ export default {
     obs: {
       default() {
         return {
+          description_details: '',
           observaciones_empresa: '',
           files: []
         }
