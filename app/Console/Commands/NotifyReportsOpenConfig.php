@@ -103,13 +103,37 @@ class NotifyReportsOpenConfig extends Command
                     $expired_reports = [];
                     $user = User::select('*')->active()->withoutGlobalScopes()->where('email', $email)->first();
 
-                    $headquarters = $this->getHeadquarters($user);
+                    if ($user)
+                    {
+                        $headquarters = $this->getHeadquarters($user);
 
-                    foreach ($reports as $key => $check) 
-                    { 
-                        if (count($headquarters) > 0)
-                        {
-                            if (in_array($check->sede,$headquarters))
+                        foreach ($reports as $key => $check) 
+                        { 
+                            if (count($headquarters) > 0)
+                            {
+                                if (in_array($check->sede,$headquarters))
+                                {
+                                    $now = Carbon::now();
+
+                                    $diff = $now->diffInDays($check->created_at);
+
+                                    if ($diff >= $configDay)
+                                    {
+                                        $content = [
+                                            'Empleado' => $check->name,
+                                            'Tipo de Evento' => $check->disease_origin,
+                                            'Codigo CIE' => $check->code,
+                                            'Descripción CIE' => $check->dx,
+                                            'Fecha' => Carbon::createFromFormat('D M d Y', $check->created_at)->format('Y-m-d'),
+                                            'Sede' => $check->sede_name,
+                                            'Estado' => $check->state
+                                        ];
+
+                                        array_push($expired_reports, $content);
+                                    }
+                                }
+                            }
+                            else
                             {
                                 $now = Carbon::now();
 
@@ -131,42 +155,27 @@ class NotifyReportsOpenConfig extends Command
                                 }
                             }
                         }
-                        else
+
+                        if (count($expired_reports) > 0)
                         {
-                            $now = Carbon::now();
-
-                            $diff = $now->diffInDays($check->created_at);
-
-                            if ($diff >= $configDay)
-                            {
-                                $content = [
-                                    'Empleado' => $check->name,
-                                    'Tipo de Evento' => $check->disease_origin,
-                                    'Codigo CIE' => $check->code,
-                                    'Descripción CIE' => $check->dx,
-                                    'Fecha' => Carbon::createFromFormat('D M d Y', $check->created_at)->format('Y-m-d'),
-                                    'Sede' => $check->sede_name,
-                                    'Estado' => $check->state
-                                ];
-
-                                array_push($expired_reports, $content);
-                            }
+                            \Log::info($expired_reports);
+                            \Log::info($user);
+                            /*NotificationMail::
+                                subject('Sauce - Reincorporaciones Reportes')
+                                ->recipients($user)
+                                ->message("Este es el listado de empleados con seguimientos desde hace mas de <b>$configDay</b> dias.")
+                                ->module('reinstatements')
+                                ->event('Tarea programada: NotifyReportsOpenConfig')
+                                ->view('preventiveoccupationalmedicine.reinstatements.notifyExpiredCheck')
+                                ->with(['data'=>$expired_reports])
+                                //->table($expired_reports)
+                                ->company($company)
+                                ->send();*/
                         }
                     }
-
-                    if (count($expired_reports) > 0)
+                    else
                     {
-                        NotificationMail::
-                            subject('Sauce - Reincorporaciones Reportes')
-                            ->recipients($user)
-                            ->message("Este es el listado de empleados con seguimientos desde hace mas de <b>$configDay</b> dias.")
-                            ->module('reinstatements')
-                            ->event('Tarea programada: NotifyReportsOpenConfig')
-                            ->view('preventiveoccupationalmedicine.reinstatements.notifyExpiredCheck')
-                            ->with(['data'=>$expired_reports])
-                            //->table($expired_reports)
-                            ->company($company)
-                            ->send();
+                        continue;
                     }
                 }
             }
