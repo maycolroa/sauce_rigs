@@ -158,9 +158,7 @@ class NotifyReportsOpenConfig extends Command
 
                         if (count($expired_reports) > 0)
                         {
-                            \Log::info($expired_reports);
-                            \Log::info($user);
-                            /*NotificationMail::
+                            NotificationMail::
                                 subject('Sauce - Reincorporaciones Reportes')
                                 ->recipients($user)
                                 ->message("Este es el listado de empleados con seguimientos desde hace mas de <b>$configDay</b> dias.")
@@ -170,7 +168,7 @@ class NotifyReportsOpenConfig extends Command
                                 ->with(['data'=>$expired_reports])
                                 //->table($expired_reports)
                                 ->company($company)
-                                ->send();*/
+                                ->send();
                         }
                     }
                     else

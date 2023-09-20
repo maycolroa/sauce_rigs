@@ -21,7 +21,7 @@
                     <th style="width: 10%">Código CIE</th>
                     <th style="width: 20%">Descripción CIE</th>
                     <th style="width: 15%">Fecha</th>
-                    <th style="width: 15%">Regional</th>
+                    <th style="width: 15%">Sede</th>
                     <th style="width: 10%">Estado</th>
                 </tr>
             </thead>
@@ -33,7 +33,7 @@
                     <td style="text-align: center; width: 10%">{{$item['Codigo CIE']}}</td>
                     <td style="text-align: center; width: 20%">{{$item['Descripción CIE']}}</td>
                     <td style="text-align: center; width: 15%">{{$item['Fecha']}}</td>
-                    <td style="text-align: center; width: 15%">{{$item['Regional']}}</td>
+                    <td style="text-align: center; width: 15%">{{$item['Sede']}}</td>
                     <td style="text-align: center; width: 10%">{{$item['Estado']}}</td>
                 </tr>
                 @endforeach
