@@ -210,7 +210,7 @@ trait ContractTrait
         $items = [];
         $items_delete = [];
         
-        if ($contract->type == 'Contratista')
+        if ($contract->type == 'Contratista' || $contract->type == 'Proveedor')
             $items = $this->getStandardItemsContract($contract);
         
         $items_delete = COUNT($items) > 0 ? $items->pluck('id') : [];

@@ -103,7 +103,7 @@ class MultiSelectRadioController extends Controller
      */
     public function ctRoles()
     {
-        $data = ["Arrendatario"=>"Arrendatario", "Contratista"=>"Contratista"];
+        $data = ["Arrendatario"=>"Arrendatario", "Contratista"=>"Contratista", "Proveedor"=>"Proveedor"];
         return $this->multiSelectFormat(collect($data));
     }
 

@@ -152,7 +152,7 @@ class ContractImport implements ToCollection, WithCalculatedFormulas
             'nombre_usuario' => 'required|string',
             'documento_usuario' => 'required',
             'email_usuario' => 'required|email',
-            'tipo_de_empresa' => 'required|string|in:contratista,arrendatario',
+            'tipo_de_empresa' => 'required|string|in:contratista,arrendatario,proveedor',
             'nombre_empresa' => 'required',
             'nit' => 'required|numeric',
             'razon_social' => 'required|string',
@@ -272,6 +272,9 @@ class ContractImport implements ToCollection, WithCalculatedFormulas
                             ->company($this->company_id)
                             ->send();
 
+                        if ($contracts->type == 'Proveedor')
+                            $contracts->type = 'Contratista';
+
                         $user->attachRole($this->getIdRole($contracts->type), $team);
 
                         $contracts->users()->sync($user);
@@ -306,6 +309,9 @@ class ContractImport implements ToCollection, WithCalculatedFormulas
                             ->buttons([['text'=>'Ir a Sauce', 'url'=>url("/")]])
                             ->company($this->company_id)
                             ->send();
+
+                        if ($contracts->type == 'Proveedor')
+                            $contracts->type = 'Contratista';
 
                         $user->attachRole($this->getIdRole($contracts->type), $team); 
 

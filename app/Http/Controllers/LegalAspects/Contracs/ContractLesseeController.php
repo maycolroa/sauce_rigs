@@ -204,6 +204,9 @@ class ContractLesseeController extends Controller
                 $log_modify->save();
             }
 
+            if ($request->type == 'Proveedor')
+                $request->type = 'Contratista';
+            
             $user->attachRole($this->getIdRole($request->type), $this->team);
             $contract->users()->sync($user);
             

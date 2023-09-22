@@ -1973,30 +1973,46 @@ export default [
     },
     {
         type: 'base',
-        buttons: [{
-        name: 'delete',
-        data: {
-            action: '/industrialSecurity/accidents/',
-            id: 'id',
-            messageConfirmation: 'Esta seguro de borrar el formulario de accidente __name__'
-        },
-        permission: 'accidentsWork_d'
-        },
-        {
-            name: 'switchStatus',
-            config: {
-                color: 'outline-danger',
-                borderless: true,
-                icon: 'fas fa-sync',
-                title: 'Cambiar Estado'
-            },
-            data: {
-                action: '/industrialSecurity/accidents/switchStatus/',
-                id: 'id',
-                messageConfirmation: 'Esta seguro de querer cambiar el estado de __name__'
-            },
-            permission: 'employees_u'
-        }],
+        buttons: [
+            /*{
+                name: 'pdfSendMail',
+                config: {
+                    color: 'outline-danger',
+                    borderless: true,
+                    icon: 'ion ion-ios-mail',
+                    title: 'Enviar Reporte al correo'
+                },
+                data: {
+                    action: '/industrialSecurity/accidents/emailPdf/',
+                    id: 'id',
+                    messageConfirmation: '¿Esta seguro de enviar el reporte del evento?'
+                },
+                permission: 'accidentsWork_r'
+            },*/
+            {
+                name: 'delete',
+                data: {
+                    action: '/industrialSecurity/accidents/',
+                    id: 'id',
+                    messageConfirmation: 'Esta seguro de borrar el formulario de accidente __name__'
+                },
+                permission: 'accidentsWork_d'
+                },
+            {
+                name: 'switchStatus',
+                config: {
+                    color: 'outline-danger',
+                    borderless: true,
+                    icon: 'fas fa-sync',
+                    title: 'Cambiar Estado'
+                },
+                data: {
+                    action: '/industrialSecurity/accidents/switchStatus/',
+                    id: 'id',
+                    messageConfirmation: 'Esta seguro de querer cambiar el estado de __name__'
+                },
+                permission: 'employees_u'
+            }],
     }],
     configuration: {
         urlData: '/industrialSecurity/accidents/data',

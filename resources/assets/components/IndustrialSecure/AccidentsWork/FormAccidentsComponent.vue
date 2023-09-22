@@ -379,7 +379,7 @@ export default {
       this.updateDetails(`/administration/employee/${this.form.employee_id}`, 'employeeDetail')
     },
     'form.tipo_vinculador_laboral' () {
-      if (this.form.tipo_vinculador_laboral == 'Empleado')
+      if (this.form.tipo_vinculador_laboral != 'Independiente')
       {
           axios.get(`/system/company/${this.auth.company_id}`)
           .then(response => {

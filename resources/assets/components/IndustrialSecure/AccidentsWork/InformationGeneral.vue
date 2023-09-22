@@ -25,9 +25,9 @@
         </b-row>
       </b-card>
       <br><br>
-      <b-form-row>
+      <!--<b-form-row>
         <vue-radio :disabled="viewOnly" :checked="employee.tipo_vinculacion_persona" class="col-md-12" v-model="form.tipo_vinculacion_persona" :options="personLinkingTypes" name="tipo_vinculacion_persona" :error="form.errorsFor('tipo_vinculacion_persona')" label="Tipo de vinculación"></vue-radio>
-      </b-form-row>
+      </b-form-row>-->
       <b-form-row>
         <vue-input :disabled="viewOnly" class="col-md-6" v-model="employee.direccion_persona" label="Dirección" type="text" name="direccion_persona" :error="form.errorsFor('direccion_persona')" placeholder="Dirección"></vue-input>
         <vue-ajax-advanced-select :disabled="viewOnly" class="col-md-6" v-model="employee.departamento_persona_id" :selected-object="employee.multiselect_departamento_persona" name="departamento_persona_id" :error="form.errorsFor('departamento_persona_id')" label="Departamento" placeholder="Seleccione el departamento" :url="departamentsUrl"></vue-ajax-advanced-select>
@@ -37,11 +37,11 @@
         <vue-radio :disabled="viewOnly" :checked="employee.zona_persona" class="col-md-6" v-model="form.zona_persona" :options="zones" name="zona_persona" :error="form.errorsFor('zona_persona')" label="Zona"></vue-radio>
       </b-form-row>
       <b-form-row>
-        <vue-input :disabled="viewOnly" class="col-md-6" v-model="employee.tiempo_ocupacion_habitual_persona" label="Tiempo de ocupacion habitual al momento del accidente" type="text" name="tiempo_ocupacion_habitual_persona" :error="form.errorsFor('tiempo_ocupacion_habitual_persona')" placeholder="Ej 5:40" help-text="Coloque el numero de horas seguido del numero de minutos separandolos con dos puntos"></vue-input>
-        <vue-input :disabled="viewOnly" class="col-md-6" v-model="employee.salario_persona" label="Salario" type="number" name="" :error="form.errorsFor('salario_persona')" placeholder="Salario"></vue-input>
+        <vue-radio :disabled="viewOnly" :checked="employee.jornada_trabajo_habitual_persona" class="col-md-6" v-model="form.jornada_trabajo_habitual_persona" :options="shifts" name="jornada_trabajo_habitual_persona" :error="form.errorsFor('jornada_trabajo_habitual_persona')" label="Jorada de trabajo habitual"></vue-radio>
+        <vue-input :disabled="viewOnly" class="col-md-6" v-model="employee.tiempo_ocupacion_habitual_persona" label="Hora de inicio del turno (Formato 24H)" type="text" name="tiempo_ocupacion_habitual_persona" :error="form.errorsFor('tiempo_ocupacion_habitual_persona')" placeholder="Ej 5:40" help-text="Coloque el numero de horas seguido del numero de minutos separandolos con dos puntos"></vue-input>
       </b-form-row> 
-      <b-form-row>
-        <vue-radio :disabled="viewOnly" :checked="employee.jornada_trabajo_habitual_persona" class="col-md-12" v-model="form.jornada_trabajo_habitual_persona" :options="shifts" name="jornada_trabajo_habitual_persona" :error="form.errorsFor('jornada_trabajo_habitual_persona')" label="Jorada de trabajo habitual"></vue-radio>
+      <b-form-row>        
+        <vue-input :disabled="viewOnly" class="col-md-6" v-model="employee.salario_persona" label="Salario" type="number" name="" :error="form.errorsFor('salario_persona')" placeholder="Salario"></vue-input>
       </b-form-row> 
     </div>
 </template>

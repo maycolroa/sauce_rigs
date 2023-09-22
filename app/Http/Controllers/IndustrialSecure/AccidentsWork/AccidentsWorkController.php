@@ -20,6 +20,8 @@ use App\Facades\ActionPlans\Facades\ActionPlan;
 use Illuminate\Support\Facades\Storage;
 use App\Models\General\Company;
 use App\Jobs\IndustrialSecure\AccidentsWork\AccidentsExportJob;
+use App\Jobs\IndustrialSecure\AccidentsWork\AccidentPdfExportJob;
+use App\Models\General\WorkCenter;
 use Carbon\Carbon;
 use DB;
 use Validator;
@@ -170,7 +172,6 @@ class AccidentsWorkController extends Controller
 
         try 
         {
-            \Log::info($request);
             $accident = new Accident();
             $accident->company_id = $this->company;
             $accident->user_id = $this->user->id;
@@ -977,12 +978,6 @@ class AccidentsWorkController extends Controller
         $accident->causo_muerte = $accident->causo_muerte ? 'SI' : 'NO';
         $accident->personas_presenciaron_accidente = $accident->personas_presenciaron_accidente ? 'SI' : 'NO';
 
-        /*$values = $accident->lesionTypes()->pluck('sau_aw_types_lesion.name')->toArray();
-        $accident->lesions_id = implode(', ', $values);
-
-        $values2 = $accident->partsBody()->pluck('sau_aw_parts_body.name')->toArray();
-        $accident->parts_body = implode(', ', $values2);*/
-
         $persons = [];
         $participants = [];
 
@@ -1026,7 +1021,46 @@ class AccidentsWorkController extends Controller
 
         $accident->files_pdf = $images_pdf;
 
-        $company = Company::select('logo')->where('id', $this->company)->first();
+        $company = Company::select('*')->where('id', $this->company)->first();
+
+        $accident->nombre_actividad_economica_sede_principal = $company->nombre_actividad_economica_sede_principal;
+
+        $accident->razon_social = $company->name;
+
+        $accident->tipo_identificacion_sede_principal = $company->tipo_identificacion_sede_principal;
+
+        $accident->identificacion_sede_principal = $company->identificacion_sede_principal;
+
+        $accident->direccion_sede_principal = $company->direccion_sede_principal;
+
+        $accident->email_sede_principal = $company->email_sede_principal;
+
+        $accident->telefono_sede_principal = $company->telefono_sede_principal;
+
+        $accident->departamentSede = $company->departament ? $company->departament->name : NULL;
+
+        $accident->ciudadSede = $company->city ? $company->city->name : NULL;
+
+        $accident->zona_sede_principal = $company->zona_sede_principal;
+
+        if ($accident->info_sede_principal_misma_centro_trabajo == 'NO')
+        {
+            $centro = WorkCenter::find($accident->centro_trabajo_secundary_id);
+
+            $accident->nombre_actividad_economica_centro_trabajo = $centro->activity_economic;
+
+            $accident->direccion_centro_trabajo = $centro->direction;
+
+            $accident->telefono_centro_trabajo = $centro->telephone;
+
+            $accident->email_centro_trabajo = $centro->email;
+
+            $accident->departamentCentro = $centro->departamentCentro;
+
+            $accident->ciudadCentro = $centro->ciudadCentro;
+
+            $accident->zona_centro_trabajo = $centro->zona;
+        }
 
         $logo = ($company && $company->logo) ? $company->logo : null;
 
@@ -1451,7 +1485,18 @@ class AccidentsWorkController extends Controller
         }
         
         return $this->respondHttp200([
-            'message' => 'Se cambio el estado del boletin'
+            'message' => 'Se cambio el estado del evento'
         ]);
+    }
+    public function downloadEmail(Accident $accident)
+    {
+        try
+        {
+            AccidentPdfExportJob::dispatch($this->user, $this->company, $accident->id);
+
+            return $this->respondHttp200();
+        } catch(Exception $e) {
+            return $this->respondHttp500();
+        }
     }
 }

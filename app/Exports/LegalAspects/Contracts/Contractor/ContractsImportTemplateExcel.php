@@ -58,7 +58,7 @@ class ContractsImportTemplateExcel implements FromCollection, WithHeadings, With
         'Nombre (*)',
         'Documento de identificación (*)',
         'Email (*)',
-        'Tipo de empresa (*) (Contratista o Arrendatario)',
+        'Tipo de empresa (*) (Contratista, Arrendatario o Proveedor)',
         'Clasificación (Unidad de Produccion Agropecuaria, Empresa)',
         'Nombre de la empresa (*)',
         'Nit (*)',
