@@ -111,7 +111,7 @@ class ContractLesseeController extends Controller
         return Vuetable::of($contracts)
             ->addColumn('legalaspects-contracts-view-list-check', function ($contract) {
                 
-                if ($contract->type == 'Contratista')
+                if ($contract->type == 'Contratista' || $contract->type == 'Proveedor')
                     return true;
 
                 return false;
@@ -496,6 +496,9 @@ class ContractLesseeController extends Controller
 
             foreach ($users as $user)
             {
+                if ($contract->type == 'Proveedor')
+                    $contract->type = 'Contratista';
+                    
                 $user->syncRoles([$this->getIdRole($contract->type)], $this->team);
             }
 
