@@ -23,7 +23,7 @@
 						<vue-input :disabled="viewOnly" class="col-md-6" v-model="form.social_reason" label="Razón social" type="text" name="social_reason" :error="form.errorsFor('social_reason')" placeholder="Razón social"></vue-input>
 					</b-form-row>
 					<b-form-row>
-						<vue-advanced-select v-if="form.type == 'Contratista'" :disabled="viewOnly" class="col-md-6" v-model="form.classification" :error="form.errorsFor('classification')" name="classification" label="Clasificación" placeholder="Seleccione una clasificación" :options="contractClassifications">
+						<vue-advanced-select v-if="form.type == 'Contratista' || form.type == 'Proveedor'" :disabled="viewOnly" class="col-md-6" v-model="form.classification" :error="form.errorsFor('classification')" name="classification" label="Clasificación" placeholder="Seleccione una clasificación" :options="contractClassifications">
                         </vue-advanced-select>
 						<vue-radio :disabled="viewOnly" :checked="form.high_risk_work" class="col-md-6 offset-md-3" v-model="form.high_risk_work" :options="siNo" name="high_risk_work" :error="form.errorsFor('high_risk_work')" label="¿La empresa realiza tareas de alto riesgo?"></vue-radio>
 					</b-form-row>
