@@ -82,9 +82,9 @@
                     <th>Tiempo de ocupacion habitual al momento del accidente</th>
                 </tr>
                 <tr>
-                    <td>{{$form->departamentPerson->name}}</td>
-                    <td>{{$form->ciudadPerson->name}}</td>
-                    <td>{{$form->zona_persona}}</td>
+                    <td>{{$form->departamentPerson->name ? $form->departamentPerson->name : ''}}</td>
+                    <td>{{$form->ciudadPerson->name ? $form->ciudadPerson->name : ''}}</td>
+                    <td>{{$form->zona_persona ? $form->zona_persona : ''}}</td>
                     <td>{{date('Y-m-d', strtotime($form->fecha_ingreso_empresa_persona))}}</td>
                     <td>{{$form->tiempo_ocupacion_habitual_persona}}</td>
                 </tr>

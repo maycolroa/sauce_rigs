@@ -25,6 +25,7 @@
 <script>
 import VueAdvancedSelect from "@/components/Inputs/VueAdvancedSelect.vue";
 import Form from "@/utils/Form.js";
+import Alerts from '@/utils/Alerts.js';
 
 export default {
   components: {
@@ -54,6 +55,20 @@ export default {
       loading: false,
       form: Form.makeFrom(this.event, this.method),
     };
+  },
+  mounted() {
+    axios.post('/system/company/information')
+    .then(response2 => {
+      console.log(response2.data.data)
+      if (!response2.data.data)
+      {
+        Alerts.error('Error', 'Para enviar un reporte debe completar primero la informacion de la compañia');
+        this.$router.push({ name: "industrialsecure-accidentswork" });
+      } 
+    })
+    .catch(error => {
+        Alerts.error('Error', 'Se ha generado un error en el proceso, por favor contacte con el administrador');
+    });    
   },
   methods: {
     submit(e) {
