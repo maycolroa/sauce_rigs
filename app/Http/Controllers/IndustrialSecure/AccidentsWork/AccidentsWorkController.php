@@ -1488,11 +1488,14 @@ class AccidentsWorkController extends Controller
             'message' => 'Se cambio el estado del evento'
         ]);
     }
-    public function downloadEmail(Accident $accident)
+
+    public function downloadEmail(Request $request, Accident $accident)
     {
         try
         {
-            AccidentPdfExportJob::dispatch($this->user, $this->company, $accident->id);
+            $mails = $this->getDataFromMultiselect($request->get('add_email'));
+
+            AccidentPdfExportJob::dispatch($this->user, $this->company, $accident->id, $mails);
 
             return $this->respondHttp200();
         } catch(Exception $e) {

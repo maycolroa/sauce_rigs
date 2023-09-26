@@ -1124,5 +1124,13 @@ export default [{
             import('@/views/IndustrialSecure/accidentsWorks/investigation')
         }
       ]),
+      ...middleware({ 'check-permission': 'accidentsWork_u' }, [
+        {
+          name: 'industrialsecure-accidentswork-send-pdf',
+          path: 'accidents/sendEmail/:id',
+          component: () =>
+            import('@/views/IndustrialSecure/accidentsWorks/sendMailPdf')
+        }
+      ]),
     ]
   }]

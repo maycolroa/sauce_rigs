@@ -1951,7 +1951,21 @@ export default [
                     id: 'id',
                 },
                 permission: 'accidentsWork_u'
-            }
+            },
+            {
+                name: 'pdfSendMail',
+                config: {
+                    color: 'outline-danger',
+                    borderless: true,
+                    icon: 'ion ion-ios-mail',
+                    title: 'Enviar Reporte al correo'
+                },
+                data: {
+                    routePush: { name: 'industrialsecure-accidentswork-send-pdf' },
+                    id: 'id',
+                },
+                permission: 'accidentsWork_r'
+            },
         ]
     },
     {
@@ -1974,21 +1988,6 @@ export default [
     {
         type: 'base',
         buttons: [
-            /*{
-                name: 'pdfSendMail',
-                config: {
-                    color: 'outline-danger',
-                    borderless: true,
-                    icon: 'ion ion-ios-mail',
-                    title: 'Enviar Reporte al correo'
-                },
-                data: {
-                    action: '/industrialSecurity/accidents/emailPdf/',
-                    id: 'id',
-                    messageConfirmation: '¿Esta seguro de enviar el reporte del evento?'
-                },
-                permission: 'accidentsWork_r'
-            },*/
             {
                 name: 'delete',
                 data: {

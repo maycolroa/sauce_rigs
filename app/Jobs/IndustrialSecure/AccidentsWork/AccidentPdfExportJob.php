@@ -15,7 +15,9 @@ use App\Models\IndustrialSecure\WorkAccidents\FileAccident;
 use App\Facades\Mail\Facades\NotificationMail;
 use App\Models\General\WorkCenter;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Storage;
 use App\Models\General\Company;
+use App\Models\Administrative\Users\User;
 use PDF;
 use DB;
 
@@ -28,17 +30,19 @@ class AccidentPdfExportJob implements ShouldQueue
     protected $company_id;
     protected $form;
     protected $accident_id;
+    protected $emails;
 
     /**
      * Create a new job instance.
      *
      * @return void
      */
-    public function __construct($user, $company_id, $accident_id)
+    public function __construct($user, $company_id, $accident_id, $emails)
     {
       $this->user = $user;
       $this->company_id = $company_id;
       $this->accident_id = $accident_id;
+      $this->emails = $emails;
     }
 
     /**
@@ -48,7 +52,12 @@ class AccidentPdfExportJob implements ShouldQueue
      */
     public function handle()
     {
-      $nameExcel = 'export/1/';
+      $recipients = User::where('id', -1)->get();
+      
+      foreach ($this->emails as $key => $value)
+      {
+          $recipients->push(new User(['email'=>$value]));
+      }
 
       PDF::setOptions(['dpi' => 150, 'defaultFont' => 'sans-serif']);
       
@@ -60,17 +69,21 @@ class AccidentPdfExportJob implements ShouldQueue
 
       $namePdf = 'reporte_evento_'.date("YmdHis").'.pdf';
 
-      $pdf->setWarnings(false)->save($namePdf);
+      Storage::disk('public')->put('export/1/accidents/reportsEmail/'.$namePdf, $pdf->output());
+
+      $path = Storage::disk('public')->url('export/1/accidents/reportsEmail/'.$namePdf);
+
+      //$pdf->save('export/1/'.$namePdf);
       
-      $paramUrl = base64_encode($nameExcel.$namePdf);
+      $paramUrl = base64_encode('export/1/accidents/reportsEmail/'.$namePdf);
       
       NotificationMail::
         subject('Exportación de los formularios de accidentes')
-        ->recipients($this->user)
+        ->recipients($recipients)
         ->message('Se ha generado una exportación de accidentes.')
         ->subcopy('Este link es valido por 24 horas')
         ->buttons([['text'=>'Descargar', 'url'=>url("/export/{$paramUrl}")]])
-        ->module('accidentsWork')
+        ->module('dangerousConditions')
         ->event('Job: AccidentsExportJob')
         ->company($this->company_id)
         ->send();
