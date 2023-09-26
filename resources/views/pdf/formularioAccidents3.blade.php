@@ -63,7 +63,7 @@
                 <tr>
                     <th>Email</th>
                     <th>Teléfono</th>
-                    <th>{{ Auth::user()->getKeywords()['position'] }}</th>
+                    <th>{{$form->keywords['position'] }}</th>
                     <th>Tipo de vinculación</th>
                     <th>Dirección</th>
                 </tr>
@@ -195,9 +195,9 @@
                     <td>{{$form->cargo}}</td>
                 </tr>
                 <tr>
-                    <th>{{ Auth::user()->getKeywords()['eps'] }} a la que esta afiliado</th>
-                    <th>{{ Auth::user()->getKeywords()['afp'] }} a la que esta afiliado</th>
-                    <th>{{ Auth::user()->getKeywords()['arl'] }} a la que esta afiliado</th>
+                    <th>{{ $form->keywords['eps'] }} a la que esta afiliado</th>
+                    <th>{{ $form->keywords['afp'] }} a la que esta afiliado</th>
+                    <th>{{ $form->keywords['arl'] }} a la que esta afiliado</th>
                     @if ($form->tiene_seguro_social == 'SI')
                     <th>Seguro Social</th>
                     <th>Nombre Seguro Social</th>

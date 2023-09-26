@@ -18,19 +18,21 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\Storage;
 use App\Models\General\Company;
 use App\Models\Administrative\Users\User;
+use App\Traits\UtilsTrait;
 use PDF;
 use DB;
 
 
 class AccidentPdfExportJob implements ShouldQueue
 {
-    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels, UtilsTrait;
 
     protected $user;
     protected $company_id;
     protected $form;
     protected $accident_id;
     protected $emails;
+    protected $keywords;
 
     /**
      * Create a new job instance.
@@ -43,6 +45,8 @@ class AccidentPdfExportJob implements ShouldQueue
       $this->company_id = $company_id;
       $this->accident_id = $accident_id;
       $this->emails = $emails;
+
+      $this->keywords = $this->getKeywordQueue($this->company_id);
     }
 
     /**
@@ -154,6 +158,8 @@ class AccidentPdfExportJob implements ShouldQueue
       $logo = ($company && $company->logo) ? $company->logo : null;
 
       $accident->logo = $logo;
+
+      $accident->keywords = $this->keywords;
 
       return $accident;
     }
