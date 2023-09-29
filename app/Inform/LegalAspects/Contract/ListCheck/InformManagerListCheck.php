@@ -35,19 +35,20 @@ class InformManagerListCheck
     protected $classification;
     protected $itemStandar;
     protected $filtersType;
+    protected $contract_user_id;
 
     /**
      * create an instance and set the attribute class
      * @param array $identifications
      */
-    function __construct($company_id, $contracts = [], $classification = [], $itemStandar = [], $filtersType = [])
+    function __construct($company_id, $contracts = [], $classification = [], $itemStandar = [], $filtersType = [], $contract_user_id = null)
     {
         $this->company_id = $company_id;
         $this->contracts = $contracts;
         $this->classification = $classification;
         $this->itemStandar = $itemStandar;
         $this->filtersType = $filtersType;
-
+        $this->contract_user_id = $contract_user_id;
     }
 
     /**
@@ -98,8 +99,12 @@ class InformManagerListCheck
         ->leftJoin('sau_ct_list_check_resumen', 'sau_ct_list_check_resumen.list_qualification_id', 'sau_ct_list_check_qualifications.id')
         ->inContracts($this->contracts, $this->filtersType['contracts'])
         ->inClassification($this->classification, $this->filtersType['classification'])
-        ->where('sau_ct_information_contract_lessee.type', 'Contratista')
-        ->groupBy('label', 'orden')
+        ->whereRaw("sau_ct_information_contract_lessee.type = 'Contratista' OR sau_ct_information_contract_lessee.type = 'Proveedor'");
+
+        /*if ($this->contract_user_id && $this->contract_user_id > 0)
+            $contracts->where('sau_ct_information_contract_lessee.id', $this->contract_user_id);*/
+        
+        $contracts = $contracts->groupBy('label', 'orden')
         ->orderBy('orden', 'DESC')
         ->pluck('total', 'label');
 
@@ -131,6 +136,9 @@ class InformManagerListCheck
         ->inClassification($this->classification, $this->filtersType['classification'])
         ->where('sau_ct_information_contract_lessee.company_id', $this->company_id)
         ->havingRaw("standard_name IS NOT NULL");
+
+        if ($this->contract_user_id && $this->contract_user_id > 0)
+            $items_apply->where('sau_ct_information_contract_lessee.id', $this->contract_user_id);
 
         //$items_apply->company_scope = $this->company_id;
 

@@ -15,12 +15,12 @@
 
     <div class="col-md">
         <b-card border-variant="primary" title="Estandares mínimos" class="mb-3 box-shadow-none">
-            <b-row>
+            <b-row v-if="!auth.hasRole['Arrendatario'] && !auth.hasRole['Contratista']">
                 <b-col class="text-center" style="padding-bottom: 15px;">
                     <h4>Rango de Cumplimiento por Contratista</h4>
                 </b-col>
             </b-row>
-            <b-row>
+            <b-row v-if="!auth.hasRole['Arrendatario'] && !auth.hasRole['Contratista']">
                 <div class="col-md-12">
                     <chart-bar 
                         :chart-data="contracts"

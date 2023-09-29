@@ -12,12 +12,13 @@ use App\Models\LegalAspects\Contracts\ContractLesseeInformation;
 use App\Models\LegalAspects\Contracts\TrainingEmployeeSend;
 use App\Models\LegalAspects\Contracts\TrainingEmployeeQuestionsAnswers;
 use App\Traits\Filtertrait;
+use App\Traits\ContractTrait;
 use App\Vuetable\Facades\Vuetable;
 use DB;
 
 class ListCheckReportController extends Controller
 {
-    use Filtertrait;
+    use Filtertrait, ContractTrait;
     /**
      * creates and instance and middlewares are checked
      */
@@ -46,12 +47,17 @@ class ListCheckReportController extends Controller
      */
     public function data(Request $request)
     {
+        if ($this->user->hasRole('Arrendatario', $this->team) || $this->user->hasRole('Contratista', $this->team))
+            $contract_user_id = $this->getContractIdUser($this->user->id);
+        else
+            $contract_user_id = '';
+
         $contracts = $this->getValuesForMultiselect($request->contracts);
         $classification = $this->getValuesForMultiselect($request->classification);
         $itemStandar = $this->getValuesForMultiselect($request->itemStandar);
         $filtersType = $request->filtersType;
         
-        $informManager = new InformManagerListCheck($this->company, $contracts, $classification, $itemStandar, $filtersType);
+        $informManager = new InformManagerListCheck($this->company, $contracts, $classification, $itemStandar, $filtersType, $contract_user_id);
         
         return $this->respondHttp200($informManager->getInformData());
     }
@@ -75,6 +81,14 @@ class ListCheckReportController extends Controller
                 $join->on("sau_ct_file_document_employee.employee_id", "sau_ct_contract_employee_activities.employee_id");
                 $join->on("sau_ct_file_document_employee.document_id", "sau_ct_activities_documents.id");
             });
+
+        
+        if ($this->user->hasRole('Arrendatario', $this->team) || $this->user->hasRole('Contratista', $this->team))
+        {
+            $contract_user_id = $this->getContractIdUser($this->user->id);
+
+            $documentsEmployee->where('sau_ct_information_contract_lessee.id', $contract_user_id);
+        }
             
         $url = "/legalaspects/report/contracts";
 
@@ -109,6 +123,13 @@ class ListCheckReportController extends Controller
                 $exist = true;            
             else
                 $exist = false;
+
+        if ($this->user->hasRole('Arrendatario', $this->team) || $this->user->hasRole('Contratista', $this->team))
+        {
+            $contract_user_id = $this->getContractIdUser($this->user->id);
+
+            $documentsGlobal->where('sau_ct_information_contract_lessee.id', $contract_user_id);
+        }
 
         $url = "/legalaspects/report/contracts";
 
@@ -149,6 +170,13 @@ class ListCheckReportController extends Controller
         ->withoutGlobalScopes()        
         ->where('sau_ct_information_contract_lessee.company_id', $this->company)
         ->groupBy('sau_ct_training_employee_send.training_id', 'sau_ct_training_employee_send.employee_id', 'sau_ct_training_employee_attempts.id');
+
+        if ($this->user->hasRole('Arrendatario', $this->team) || $this->user->hasRole('Contratista', $this->team))
+        {
+            $contract_user_id = $this->getContractIdUser($this->user->id);
+
+            $trainigsDetails->where('sau_ct_information_contract_lessee.id', $contract_user_id);
+        }
 
         $url = "/legalaspects/report/contracts";
 
@@ -192,6 +220,13 @@ class ListCheckReportController extends Controller
         ->withoutGlobalScopes()        
         ->where('sau_ct_information_contract_lessee.company_id', $this->company)
         ->groupBy('sau_ct_training_employee_send.training_id', 'sau_ct_training_employee_send.employee_id', 'sau_ct_training_employee_attempts.id');
+
+        if ($this->user->hasRole('Arrendatario', $this->team) || $this->user->hasRole('Contratista', $this->team))
+        {
+            $contract_user_id = $this->getContractIdUser($this->user->id);
+
+            $consolidated->where('sau_ct_information_contract_lessee.id', $contract_user_id);
+        }
 
         $url = "/legalaspects/report/contracts";
 
