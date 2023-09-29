@@ -14,9 +14,13 @@
         </b-card-header>
         <b-card-body>
           <vue-table
+            v-if="auth.hasRole['Arrendatario'] || auth.hasRole['Contratista']"
+            configName="legalaspects-informs-contracts-lesse"
+          ></vue-table>
+          <vue-table
             configName="legalaspects-informs-contracts"
             :modelId="`${this.$route.params.id}`"
-            ></vue-table>
+          ></vue-table>
         </b-card-body>
     </b-card>
     </div>

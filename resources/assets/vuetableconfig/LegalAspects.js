@@ -313,7 +313,7 @@ export default [
       }
     },
     {
-      name: 'legalaspects-evaluations-lessee',
+      name: 'legalaspects-evaluations-lessee', 
       fields: [
           { name: 'sau_ct_evaluation_contract.id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true },
           { name: 'sau_ct_evaluation_contract.evaluation_date', data: 'evaluation_date', title: 'Fecha evaluación', sortable: true, searchable: true, detail: false, key: false },
@@ -1812,6 +1812,48 @@ export default [
                 },
                 permission: 'contracts_evaluations_export'
               }],
+          }
+        ],
+        configuration: {
+            urlData: '/legalAspects/informContract/data',
+            filterColumns: true,
+            //configNameFilter: 'legalaspects-evaluations-contracts'*/
+        }
+    },
+    {
+        name: 'legalaspects-informs-contracts-lesse',
+        fields: [
+            { name: 'sau_ct_inform_contract.id', data: 'id', title: 'ID', sortable: false, searchable: false, detail: false, key: true },
+            { name: 'sau_ct_inform_contract.inform_date', data: 'inform_date', title: 'Fecha evaluación', sortable: true, searchable: true, detail: false, key: false },
+            { name: 'sau_ct_inform_contract.periodo', data: 'periodo', title: 'Período', sortable: true, searchable: true, detail: false, key: false },
+            { name: 'sau_ct_inform_contract.state', data: 'state', title: 'Estado', sortable: true, searchable: true, detail: false, key: false },
+            { name: '', data: 'controlls', title: 'Controles', sortable: false, searchable: false, detail: false, key: false },
+        ],
+        'controlls': [
+            {
+              type: 'push',
+              buttons: [
+                {
+                config: {
+                    color: 'outline-info',
+                    borderless: true,
+                    icon: 'ion ion-md-eye',
+                    title: 'Ver'
+                },
+                data: {
+                    routePush: { name: 'legalaspects-informs-contracts-view' },
+                    id: 'id',
+                },
+                permission: 'contracts_informs_view_informs_made'
+              }]
+          },
+          {
+              type: 'base',
+              buttons: [],
+          },
+          {
+              type: 'simpleDownload',
+              buttons: [],
           }
         ],
         configuration: {

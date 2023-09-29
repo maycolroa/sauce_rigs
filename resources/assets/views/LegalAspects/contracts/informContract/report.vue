@@ -3,6 +3,7 @@
         <header-module
             title="INFORMES MENSUALES"
             subtitle="REPORTE"
+            url="legalaspects-informs"
         />
         <div class="col-md">
             <b-card no-body>

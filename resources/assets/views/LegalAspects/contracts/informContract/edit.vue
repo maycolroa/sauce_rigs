@@ -3,6 +3,7 @@
     <header-module
         title="CONTRATISTAS"
         subtitle="EDITAR INFORME MENSUAL REALIZADO"
+        url="legalaspects-informs"
     />
 
     <div class="col-md">

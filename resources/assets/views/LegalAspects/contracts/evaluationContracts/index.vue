@@ -11,6 +11,9 @@
           <div class="card-title-elements" v-if="!auth.hasRole['Arrendatario'] && !auth.hasRole['Contratista']"> 
             <b-btn :to="{name:'legalaspects-evaluations'}" variant="secondary">Regresar</b-btn>
           </div>
+          <div class="card-title-elements" v-else> 
+            <b-btn :to="{name:'legalaspects-contracts'}" variant="secondary">Regresar</b-btn>
+          </div>
         </b-card-header>
         <b-card-body>
              <vue-table

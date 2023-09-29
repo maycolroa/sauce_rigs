@@ -85,7 +85,7 @@ export default [
 					component: () => import('@/views/LegalAspects/contracts/contract/listCheckItems')
 				}
 			]),
-			...middleware({ 'check-permission': 'contracts_c' }, [
+			...middleware({ 'check-permission': 'contracts_r' }, [
 				{
 					name: 'legalaspects-contracts-report',
 					path: 'report/contracts',
