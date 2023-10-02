@@ -56,12 +56,12 @@ export default {
     },
     created() {},
     watch: {
-        filters: {
+        /*filters: {
             handler(val) {
-                this.message = 'Cargando registros';
+                //this.message = 'Cargando registros';
             },
             deep: true,
-        }
+        }*/
     },
     computed: {},
     methods: {
